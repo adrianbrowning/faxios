@@ -37,7 +37,7 @@ describe('cancellation', () => {
   });
 
   test('in-flight AbortController abort cancels the request', async () => {
-    const fetch = (_input: unknown, init?: RequestInit) =>
+    const fetch = async (_input: unknown, init?: RequestInit) =>
       new Promise<Response>((_resolve, reject) => {
         const abortError = () =>
           reject(new DOMException('The operation was aborted', 'AbortError'));

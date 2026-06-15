@@ -1,10 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { EventEmitter } from "node:events";
+import { PassThrough } from "node:stream";
+import axios from "axios";
+import { describe, expect, it } from "vitest";
 
-import { EventEmitter } from 'events';
-import { PassThrough } from 'stream';
-import axios from 'axios';
-
-const createTransport = (config) => {
+const createTransport = config => {
   const opts = config || {};
 
   return {
@@ -32,12 +31,12 @@ const createTransport = (config) => {
 
         const res = new PassThrough();
         res.statusCode = 200;
-        res.statusMessage = 'OK';
-        res.headers = { 'content-type': 'application/json' };
+        res.statusMessage = "OK";
+        res.headers = { "content-type": "application/json" };
         res.req = req;
 
         onResponse(res);
-        res.end(opts.body === undefined ? '{"ok":true}' : opts.body);
+        res.end(opts.body === undefined ? "{\"ok\":true}" : opts.body);
       };
 
       return req;
@@ -45,69 +44,69 @@ const createTransport = (config) => {
   };
 };
 
-describe('timeout compat (dist export only)', () => {
-  it('rejects with ECONNABORTED on timeout', async () => {
+describe("timeout compat (dist export only)", () => {
+  it("rejects with ECONNABORTED on timeout", async () => {
     const err = await axios
-      .get('http://example.com/timeout', {
+      .get("http://example.com/timeout", {
         proxy: false,
         timeout: 25,
         transport: createTransport({ triggerTimeout: true }),
       })
-      .catch((e) => e);
+      .catch(e => e);
 
     expect(axios.isAxiosError(err)).toBe(true);
-    expect(err.code).toBe('ECONNABORTED');
-    expect(err.message).toBe('timeout of 25ms exceeded');
+    expect(err.code).toBe("ECONNABORTED");
+    expect(err.message).toBe("timeout of 25ms exceeded");
   });
 
-  it('uses timeoutErrorMessage when provided', async () => {
+  it("uses timeoutErrorMessage when provided", async () => {
     const err = await axios
-      .get('http://example.com/timeout', {
+      .get("http://example.com/timeout", {
         proxy: false,
         timeout: 25,
-        timeoutErrorMessage: 'custom timeout',
+        timeoutErrorMessage: "custom timeout",
         transport: createTransport({ triggerTimeout: true }),
       })
-      .catch((e) => e);
+      .catch(e => e);
 
     expect(axios.isAxiosError(err)).toBe(true);
-    expect(err.code).toBe('ECONNABORTED');
-    expect(err.message).toBe('custom timeout');
+    expect(err.code).toBe("ECONNABORTED");
+    expect(err.message).toBe("custom timeout");
   });
 
-  it('accepts timeout as a numeric string', async () => {
+  it("accepts timeout as a numeric string", async () => {
     const err = await axios
-      .get('http://example.com/timeout', {
+      .get("http://example.com/timeout", {
         proxy: false,
-        timeout: '30',
+        timeout: "30",
         transport: createTransport({ triggerTimeout: true }),
       })
-      .catch((e) => e);
+      .catch(e => e);
 
     expect(axios.isAxiosError(err)).toBe(true);
-    expect(err.code).toBe('ECONNABORTED');
-    expect(err.message).toBe('timeout of 30ms exceeded');
+    expect(err.code).toBe("ECONNABORTED");
+    expect(err.message).toBe("timeout of 30ms exceeded");
   });
 
-  it('rejects with ERR_BAD_OPTION_VALUE when timeout is not parsable', async () => {
+  it("rejects with ERR_BAD_OPTION_VALUE when timeout is not parsable", async () => {
     const err = await axios
-      .get('http://example.com/timeout', {
+      .get("http://example.com/timeout", {
         proxy: false,
         timeout: { invalid: true },
         transport: createTransport(),
       })
-      .catch((e) => e);
+      .catch(e => e);
 
     expect(axios.isAxiosError(err)).toBe(true);
-    expect(err.code).toBe('ERR_BAD_OPTION_VALUE');
-    expect(err.message).toBe('error trying to parse `config.timeout` to int');
+    expect(err.code).toBe("ERR_BAD_OPTION_VALUE");
+    expect(err.message).toBe("error trying to parse `config.timeout` to int");
   });
 
-  it('does not time out when timeout is 0', async () => {
-    const response = await axios.get('http://example.com/no-timeout', {
+  it("does not time out when timeout is 0", async () => {
+    const response = await axios.get("http://example.com/no-timeout", {
       proxy: false,
       timeout: 0,
-      transport: createTransport({ body: '{"ok":true}' }),
+      transport: createTransport({ body: "{\"ok\":true}" }),
     });
 
     expect(response.status).toBe(200);

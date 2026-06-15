@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'vitest';
-import AxiosError from '../../../lib/core/AxiosError.js';
-import validator from '../../../lib/helpers/validator.js';
+import { describe, it, expect } from "vitest";
+import AxiosError from "../../../lib/core/AxiosError.js";
+import validator from "../../../lib/helpers/validator.js";
 
-describe('validator::assertOptions', () => {
-  it('should throw only if unknown an option was passed', () => {
+describe("validator::assertOptions", () => {
+  it("should throw only if unknown an option was passed", () => {
     let error;
     try {
       validator.assertOptions(
@@ -14,11 +14,12 @@ describe('validator::assertOptions', () => {
           y: validator.validators.boolean,
         }
       );
-    } catch (err) {
+    }
+    catch (err) {
       error = err;
     }
     expect(error).toBeInstanceOf(AxiosError);
-    expect(error.message).toBe('Unknown option x');
+    expect(error.message).toBe("Unknown option x");
     expect(error.code).toBe(AxiosError.ERR_BAD_OPTION);
 
     expect(() => {
@@ -31,7 +32,7 @@ describe('validator::assertOptions', () => {
           y: validator.validators.boolean,
         }
       );
-    }).not.toThrow(new Error('Unknown option x'));
+    }).not.toThrow(new Error("Unknown option x"));
   });
 
   it("should throw TypeError only if option type doesn't match", () => {
@@ -45,11 +46,12 @@ describe('validator::assertOptions', () => {
           x: validator.validators.boolean,
         }
       );
-    } catch (err) {
+    }
+    catch (err) {
       error = err;
     }
     expect(error).toBeInstanceOf(AxiosError);
-    expect(error.message).toBe('option x must be a boolean');
+    expect(error.message).toBe("option x must be a boolean");
     expect(error.code).toBe(AxiosError.ERR_BAD_OPTION_VALUE);
 
     expect(() => {

@@ -1,15 +1,15 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import axios from '../../index.js';
+import axios from "../../index.js";
 
 class MockXMLHttpRequest {
   constructor() {
     this.requestHeaders = {};
-    this.responseHeaders = '';
+    this.responseHeaders = "";
     this.readyState = 0;
     this.status = 0;
-    this.statusText = '';
-    this.responseText = '';
+    this.statusText = "";
+    this.responseText = "";
     this.response = null;
     this.onreadystatechange = null;
     this.onloadend = null;
@@ -39,7 +39,7 @@ class MockXMLHttpRequest {
     requests.push(this);
   }
 
-  respondWith({ status = 200, statusText = 'OK', responseText = '', responseHeaders = '' } = {}) {
+  respondWith({ status = 200, statusText = "OK", responseText = "", responseHeaders = "" } = {}) {
     this.status = status;
     this.statusText = statusText;
     this.responseText = responseText;
@@ -50,7 +50,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -76,7 +77,7 @@ const flushSuccess = async (request, promise) => {
   await promise;
 };
 
-describe('basicAuth (vitest browser)', () => {
+describe("basicAuth (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
@@ -87,73 +88,74 @@ describe('basicAuth (vitest browser)', () => {
     window.XMLHttpRequest = OriginalXMLHttpRequest;
   });
 
-  it('should accept HTTP Basic auth with username/password', async () => {
-    const { request, promise } = startRequest('/foo', {
+  it("should accept HTTP Basic auth with username/password", async () => {
+    const { request, promise } = startRequest("/foo", {
       auth: {
-        username: 'Aladdin',
-        password: 'open sesame',
+        username: "Aladdin",
+        password: "open sesame",
       },
     });
 
-    expect(request.requestHeaders.Authorization).toBe('Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==');
+    expect(request.requestHeaders.Authorization).toBe("Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==");
 
     await flushSuccess(request, promise);
   });
 
-  it('should accept HTTP Basic auth credentials without the password parameter', async () => {
-    const { request, promise } = startRequest('/foo', {
+  it("should accept HTTP Basic auth credentials without the password parameter", async () => {
+    const { request, promise } = startRequest("/foo", {
       auth: {
-        username: 'Aladdin',
+        username: "Aladdin",
       },
     });
 
-    expect(request.requestHeaders.Authorization).toBe('Basic QWxhZGRpbjo=');
+    expect(request.requestHeaders.Authorization).toBe("Basic QWxhZGRpbjo=");
 
     await flushSuccess(request, promise);
   });
 
-  it('should accept HTTP Basic auth credentials with non-Latin1 characters in password', async () => {
-    const { request, promise } = startRequest('/foo', {
+  it("should accept HTTP Basic auth credentials with non-Latin1 characters in password", async () => {
+    const { request, promise } = startRequest("/foo", {
       auth: {
-        username: 'Aladdin',
-        password: 'open ßç£☃sesame',
+        username: "Aladdin",
+        password: "open ßç£☃sesame",
       },
     });
 
-    expect(request.requestHeaders.Authorization).toBe('Basic QWxhZGRpbjpvcGVuIMOfw6fCo+KYg3Nlc2FtZQ==');
+    expect(request.requestHeaders.Authorization).toBe("Basic QWxhZGRpbjpvcGVuIMOfw6fCo+KYg3Nlc2FtZQ==");
 
     await flushSuccess(request, promise);
   });
 
-  it('should ignore inherited nested auth fields', async () => {
-    Object.defineProperty(Object.prototype, 'username', {
-      value: 'inherited-user',
+  it("should ignore inherited nested auth fields", async () => {
+    Object.defineProperty(Object.prototype, "username", {
+      value: "inherited-user",
       configurable: true,
     });
-    Object.defineProperty(Object.prototype, 'password', {
-      value: 'inherited-pass',
+    Object.defineProperty(Object.prototype, "password", {
+      value: "inherited-pass",
       configurable: true,
     });
 
     try {
-      const { request, promise } = startRequest('/foo', {
+      const { request, promise } = startRequest("/foo", {
         auth: {},
       });
 
-      expect(request.requestHeaders.Authorization).toBe('Basic Og==');
+      expect(request.requestHeaders.Authorization).toBe("Basic Og==");
 
       await flushSuccess(request, promise);
-    } finally {
+    }
+    finally {
       delete Object.prototype.username;
       delete Object.prototype.password;
     }
   });
 
-  it('should fail to encode HTTP Basic auth credentials with non-Latin1 characters in username', async () => {
-    await expect(axios('/foo', {
+  it("should fail to encode HTTP Basic auth credentials with non-Latin1 characters in username", async () => {
+    await expect(axios("/foo", {
       auth: {
-        username: 'Aladßç£☃din',
-        password: 'open sesame',
+        username: "Aladßç£☃din",
+        password: "open sesame",
       },
     })).rejects.toThrow(/character/i);
   });

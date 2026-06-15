@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
@@ -6,9 +6,9 @@ export default defineConfig({
     projects: [
       {
         test: {
-          name: 'module',
-          environment: 'node',
-          include: ['tests/**/*.module.test.js'],
+          name: "module",
+          environment: "node",
+          include: [ "tests/**/*.module.test.js" ],
           setupFiles: [],
         },
       },

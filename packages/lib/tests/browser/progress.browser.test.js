@@ -1,6 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import axios from '../../index.js';
+import axios from "../../index.js";
 
 class MockXMLHttpRequest {
   constructor() {
@@ -8,8 +8,8 @@ class MockXMLHttpRequest {
     this.responseHeaders = {};
     this.readyState = 0;
     this.status = 0;
-    this.statusText = '';
-    this.responseText = '';
+    this.statusText = "";
+    this.responseText = "";
     this.response = null;
     this.timeout = 0;
     this.withCredentials = false;
@@ -45,8 +45,8 @@ class MockXMLHttpRequest {
 
   getAllResponseHeaders() {
     return Object.entries(this.responseHeaders)
-      .map(([key, value]) => `${key}: ${value}`)
-      .join('\n');
+      .map(([ key, value ]) => `${key}: ${value}`)
+      .join("\n");
   }
 
   send(data) {
@@ -55,20 +55,20 @@ class MockXMLHttpRequest {
     requests.push(this);
   }
 
-  getListenerCount(type, target = 'request') {
-    const listeners = target === 'upload' ? this._uploadListeners : this._listeners;
+  getListenerCount(type, target = "request") {
+    const listeners = target === "upload" ? this._uploadListeners : this._listeners;
     return listeners[type]?.length || 0;
   }
 
-  emit(type, target = 'request', event = {}) {
-    const listeners = target === 'upload' ? this._uploadListeners : this._listeners;
-    (listeners[type] || []).forEach((listener) => listener(event));
+  emit(type, target = "request", event = {}) {
+    const listeners = target === "upload" ? this._uploadListeners : this._listeners;
+    (listeners[type] || []).forEach(listener => listener(event));
   }
 
   respondWith({
     status = 200,
-    statusText = 'OK',
-    responseText = '',
+    statusText = "OK",
+    responseText = "",
     response = null,
     headers = {},
   } = {}) {
@@ -79,7 +79,7 @@ class MockXMLHttpRequest {
     this.responseHeaders = headers;
     this.readyState = 4;
 
-    this.emit('progress', 'request', {
+    this.emit("progress", "request", {
       loaded: responseText.length,
       total: responseText.length,
       lengthComputable: true,
@@ -88,7 +88,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -106,7 +107,7 @@ const getLastRequest = () => {
   return request;
 };
 
-describe('progress (vitest browser)', () => {
+describe("progress (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
@@ -118,93 +119,93 @@ describe('progress (vitest browser)', () => {
     vi.restoreAllMocks();
   });
 
-  it('should add a download progress handler', async () => {
+  it("should add a download progress handler", async () => {
     const progressSpy = vi.fn();
-    const responsePromise = axios('/foo', { onDownloadProgress: progressSpy });
+    const responsePromise = axios("/foo", { onDownloadProgress: progressSpy });
     const request = getLastRequest();
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
 
     expect(progressSpy).toHaveBeenCalled();
   });
 
-  it('should add an upload progress handler', async () => {
+  it("should add an upload progress handler", async () => {
     const progressSpy = vi.fn();
-    const responsePromise = axios('/foo', { onUploadProgress: progressSpy });
+    const responsePromise = axios("/foo", { onUploadProgress: progressSpy });
     const request = getLastRequest();
 
-    expect(request.getListenerCount('progress', 'upload')).toBe(1);
+    expect(request.getListenerCount("progress", "upload")).toBe(1);
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
   });
 
-  it('should add both upload and download progress handlers', async () => {
+  it("should add both upload and download progress handlers", async () => {
     const downloadProgressSpy = vi.fn();
     const uploadProgressSpy = vi.fn();
-    const responsePromise = axios('/foo', {
+    const responsePromise = axios("/foo", {
       onDownloadProgress: downloadProgressSpy,
       onUploadProgress: uploadProgressSpy,
     });
     const request = getLastRequest();
 
     expect(downloadProgressSpy).not.toHaveBeenCalled();
-    expect(request.getListenerCount('progress', 'request')).toBe(1);
-    expect(request.getListenerCount('progress', 'upload')).toBe(1);
+    expect(request.getListenerCount("progress", "request")).toBe(1);
+    expect(request.getListenerCount("progress", "upload")).toBe(1);
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
 
     expect(downloadProgressSpy).toHaveBeenCalled();
   });
 
-  it('should add a download progress handler from instance config', async () => {
+  it("should add a download progress handler from instance config", async () => {
     const progressSpy = vi.fn();
     const instance = axios.create({
       onDownloadProgress: progressSpy,
     });
 
-    const responsePromise = instance.get('/foo');
+    const responsePromise = instance.get("/foo");
     const request = getLastRequest();
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
 
     expect(progressSpy).toHaveBeenCalled();
   });
 
-  it('should add an upload progress handler from instance config', async () => {
+  it("should add an upload progress handler from instance config", async () => {
     const progressSpy = vi.fn();
     const instance = axios.create({
       onUploadProgress: progressSpy,
     });
 
-    const responsePromise = instance.get('/foo');
+    const responsePromise = instance.get("/foo");
     const request = getLastRequest();
 
-    expect(request.getListenerCount('progress', 'upload')).toBe(1);
+    expect(request.getListenerCount("progress", "upload")).toBe(1);
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
   });
 
-  it('should add upload and download progress handlers from instance config', async () => {
+  it("should add upload and download progress handlers from instance config", async () => {
     const downloadProgressSpy = vi.fn();
     const uploadProgressSpy = vi.fn();
     const instance = axios.create({
@@ -212,16 +213,16 @@ describe('progress (vitest browser)', () => {
       onUploadProgress: uploadProgressSpy,
     });
 
-    const responsePromise = instance.get('/foo');
+    const responsePromise = instance.get("/foo");
     const request = getLastRequest();
 
     expect(downloadProgressSpy).not.toHaveBeenCalled();
-    expect(request.getListenerCount('progress', 'request')).toBe(1);
-    expect(request.getListenerCount('progress', 'upload')).toBe(1);
+    expect(request.getListenerCount("progress", "request")).toBe(1);
+    expect(request.getListenerCount("progress", "upload")).toBe(1);
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
 

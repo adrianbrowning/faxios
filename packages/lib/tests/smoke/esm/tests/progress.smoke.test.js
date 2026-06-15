@@ -1,11 +1,10 @@
-import { describe, expect, it } from 'vitest';
+import { Readable, Writable, PassThrough } from "node:stream";
+import axios from "axios";
+import { describe, expect, it } from "vitest";
 
-import { Readable, Writable, PassThrough } from 'stream';
-import axios from 'axios';
-
-const createProgressTransport = (config) => {
+const createProgressTransport = config => {
   const opts = config || {};
-  const responseChunks = opts.responseChunks || ['ok'];
+  const responseChunks = opts.responseChunks || [ "ok" ];
   const responseHeaders = opts.responseHeaders || {};
 
   return {
@@ -34,10 +33,10 @@ const createProgressTransport = (config) => {
 
         const res = new PassThrough();
         res.statusCode = 200;
-        res.statusMessage = 'OK';
+        res.statusMessage = "OK";
         res.headers = Object.assign(
           {
-            'content-type': 'text/plain',
+            "content-type": "text/plain",
           },
           responseHeaders
         );
@@ -45,7 +44,7 @@ const createProgressTransport = (config) => {
 
         onResponse(res);
 
-        responseChunks.forEach((chunk) => {
+        responseChunks.forEach(chunk => {
           res.write(chunk);
         });
         res.end();
@@ -56,22 +55,22 @@ const createProgressTransport = (config) => {
   };
 };
 
-describe('progress compat (dist export only)', () => {
-  it('emits upload progress events for stream payloads', async () => {
+describe("progress compat (dist export only)", () => {
+  it("emits upload progress events for stream payloads", async () => {
     const samples = [];
-    const payload = ['abc', 'def', 'ghi'];
-    const total = payload.join('').length;
+    const payload = [ "abc", "def", "ghi" ];
+    const total = payload.join("").length;
 
-    await axios.post('http://example.com/upload', Readable.from(payload), {
+    await axios.post("http://example.com/upload", Readable.from(payload), {
       proxy: false,
       headers: {
-        'Content-Length': String(total),
+        "Content-Length": String(total),
       },
       onUploadProgress: ({ loaded, total: reportedTotal, upload }) => {
         samples.push({ loaded, total: reportedTotal, upload });
       },
       transport: createProgressTransport({
-        responseChunks: ['uploaded'],
+        responseChunks: [ "uploaded" ],
       }),
     });
 
@@ -83,26 +82,26 @@ describe('progress compat (dist export only)', () => {
     });
   });
 
-  it('emits download progress events', async () => {
+  it("emits download progress events", async () => {
     const samples = [];
-    const chunks = ['ab', 'cd', 'ef'];
-    const total = chunks.join('').length;
+    const chunks = [ "ab", "cd", "ef" ];
+    const total = chunks.join("").length;
 
-    const response = await axios.get('http://example.com/download', {
+    const response = await axios.get("http://example.com/download", {
       proxy: false,
-      responseType: 'text',
+      responseType: "text",
       onDownloadProgress: ({ loaded, total: reportedTotal, download }) => {
         samples.push({ loaded, total: reportedTotal, download });
       },
       transport: createProgressTransport({
         responseChunks: chunks,
         responseHeaders: {
-          'content-length': String(total),
+          "content-length": String(total),
         },
       }),
     });
 
-    expect(response.data).toBe('abcdef');
+    expect(response.data).toBe("abcdef");
     expect(samples.length).toBeGreaterThan(0);
     expect(samples[samples.length - 1]).toMatchObject({
       loaded: total,

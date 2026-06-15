@@ -1,7 +1,6 @@
-import { describe, expect, it } from 'vitest';
-
-import { EventEmitter } from 'events';
-import axios from 'axios';
+import { EventEmitter } from "node:events";
+import axios from "axios";
+import { describe, expect, it } from "vitest";
 
 const createPendingTransport = () => {
   let requestCount = 0;
@@ -30,14 +29,14 @@ const createPendingTransport = () => {
   };
 };
 
-describe('cancel compat (dist export only)', () => {
-  it('supports cancellation with AbortController (pre-aborted signal)', async () => {
+describe("cancel compat (dist export only)", () => {
+  it("supports cancellation with AbortController (pre-aborted signal)", async () => {
     const { transport, getRequestCount } = createPendingTransport();
     const controller = new AbortController();
     controller.abort();
 
     try {
-      const request = axios.get('http://example.com/resource', {
+      const request = axios.get("http://example.com/resource", {
         signal: controller.signal,
         transport,
         proxy: false,
@@ -45,19 +44,20 @@ describe('cancel compat (dist export only)', () => {
 
       controller.abort();
       await request;
-    } catch (error) {
-      expect(error.code).toBe('ERR_CANCELED');
+    }
+    catch (error) {
+      expect(error.code).toBe("ERR_CANCELED");
     }
 
     expect(getRequestCount()).toBe(0);
   });
 
-  it('supports cancellation with AbortController (in-flight)', async () => {
+  it("supports cancellation with AbortController (in-flight)", async () => {
     const { transport, getRequestCount } = createPendingTransport();
     const controller = new AbortController();
 
     try {
-      const request = axios.get('http://example.com/resource', {
+      const request = axios.get("http://example.com/resource", {
         signal: controller.signal,
         transport,
         proxy: false,
@@ -65,47 +65,48 @@ describe('cancel compat (dist export only)', () => {
 
       controller.abort();
       await request;
-    } catch (error) {
-      expect(error.code).toBe('ERR_CANCELED');
+    }
+    catch (error) {
+      expect(error.code).toBe("ERR_CANCELED");
     }
 
     expect(getRequestCount()).toBe(1);
   });
 
-  it('supports cancellation with CancelToken (pre-canceled token)', async () => {
+  it("supports cancellation with CancelToken (pre-canceled token)", async () => {
     const { transport, getRequestCount } = createPendingTransport();
     const source = axios.CancelToken.source();
-    source.cancel('Operation canceled by the user.');
+    source.cancel("Operation canceled by the user.");
 
     const error = await axios
-      .get('http://example.com/resource', {
+      .get("http://example.com/resource", {
         cancelToken: source.token,
         transport,
         proxy: false,
       })
-      .catch((err) => err);
+      .catch(err => err);
 
     expect(axios.isCancel(error)).toBe(true);
-    expect(error.code).toBe('ERR_CANCELED');
+    expect(error.code).toBe("ERR_CANCELED");
     expect(getRequestCount()).toBe(0);
   });
 
-  it('supports cancellation with CancelToken (in-flight)', async () => {
+  it("supports cancellation with CancelToken (in-flight)", async () => {
     const { transport, getRequestCount } = createPendingTransport();
     const source = axios.CancelToken.source();
 
-    const request = axios.get('http://example.com/resource', {
+    const request = axios.get("http://example.com/resource", {
       cancelToken: source.token,
       transport,
       proxy: false,
     });
 
-    source.cancel('Operation canceled by the user.');
+    source.cancel("Operation canceled by the user.");
 
-    const error = await request.catch((err) => err);
+    const error = await request.catch(err => err);
 
     expect(axios.isCancel(error)).toBe(true);
-    expect(error.code).toBe('ERR_CANCELED');
+    expect(error.code).toBe("ERR_CANCELED");
     expect(getRequestCount()).toBe(1);
   });
 });

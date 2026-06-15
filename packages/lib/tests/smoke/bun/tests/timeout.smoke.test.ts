@@ -8,7 +8,7 @@ const env = (fetch: typeof globalThis.fetch) => ({
 });
 
 const createAbortedError = () => {
-  const error = new Error('The operation was aborted') as Error & { code?: string; name: string };
+  const error = new Error('The operation was aborted') as Error & { code?: string; name: string; };
   error.name = 'AbortError';
   error.code = 'ECONNABORTED';
   return error;
@@ -16,7 +16,7 @@ const createAbortedError = () => {
 
 describe('timeout', () => {
   test('timeout: 50 with never-resolving fetch mock rejects with ETIMEDOUT', async () => {
-    const fetch = (input: unknown, init?: RequestInit) =>
+    const fetch = async (input: unknown, init?: RequestInit) =>
       new Promise<Response>((_resolve, reject) => {
         const signal = init?.signal || (input instanceof Request ? input.signal : undefined);
 

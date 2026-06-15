@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest';
-import { progressEventReducer } from '../../../lib/helpers/progressEventReducer.js';
+import { describe, it, expect } from "vitest";
+import { progressEventReducer } from "../../../lib/helpers/progressEventReducer.js";
 
-describe('helpers::progressEventReducer', () => {
-  it('should clamp loaded/progress and avoid negative bytes for out-of-order events', () => {
+describe("helpers::progressEventReducer", () => {
+  it("should clamp loaded/progress and avoid negative bytes for out-of-order events", () => {
     const events = [];
-    const [onProgress, flush] = progressEventReducer((data) => {
+    const [ onProgress, flush ] = progressEventReducer(data => {
       events.push(data);
     }, false, Number.POSITIVE_INFINITY);
 
@@ -25,9 +25,9 @@ describe('helpers::progressEventReducer', () => {
     expect(last.bytes).toBe(20);
   });
 
-  it('should ignore malformed events that lack a numeric loaded value', () => {
+  it("should ignore malformed events that lack a numeric loaded value", () => {
     const events = [];
-    const [onProgress, flush] = progressEventReducer((data) => {
+    const [ onProgress, flush ] = progressEventReducer(data => {
       events.push(data);
     }, false, Number.POSITIVE_INFINITY);
 
@@ -35,7 +35,7 @@ describe('helpers::progressEventReducer', () => {
     onProgress(null);
     onProgress({});
     onProgress({ loaded: null, total: 100, lengthComputable: true });
-    onProgress({ loaded: 'abc', total: 100, lengthComputable: true });
+    onProgress({ loaded: "abc", total: 100, lengthComputable: true });
     flush();
 
     expect(events.length).toBe(0);

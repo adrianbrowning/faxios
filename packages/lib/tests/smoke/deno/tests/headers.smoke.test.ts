@@ -2,7 +2,7 @@ import { assertEquals } from '@std/assert';
 import axios from 'axios';
 
 const createFetchCapture = () => {
-  const calls: Request[] = [];
+  const calls: Array<Request> = [];
 
   const fetch = async (input: any, init?: any) => {
     const request = input instanceof Request ? input : new Request(input, init);

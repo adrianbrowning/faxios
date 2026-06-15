@@ -36,7 +36,7 @@ Deno.test('cancel: pre-aborted AbortController cancels request', async () => {
 });
 
 Deno.test('cancel: in-flight abort cancels request', async () => {
-  const fetch = (_input: any, init?: any) =>
+  const fetch = async (_input: any, init?: any) =>
     new Promise<Response>((_resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new DOMException('The operation was aborted', 'AbortError'));

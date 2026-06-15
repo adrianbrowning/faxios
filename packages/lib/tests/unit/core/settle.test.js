@@ -1,13 +1,13 @@
-import { describe, it, expect, vi } from 'vitest';
-import settle from '../../../lib/core/settle.js';
-import AxiosError from '../../../lib/core/AxiosError.js';
+import { describe, it, expect, vi } from "vitest";
+import AxiosError from "../../../lib/core/AxiosError.js";
+import settle from "../../../lib/core/settle.js";
 
 /**
  * Builds a minimal response object that settle() expects.
  * @param {number} status - HTTP status code
  * @param {Function} [validateStatus] - optional custom validator
  */
-function makeResponse(status, validateStatus = (s) => s >= 200 && s < 300) {
+function makeResponse(status, validateStatus = s => s >= 200 && s < 300) {
   return {
     status,
     config: { validateStatus },
@@ -17,9 +17,9 @@ function makeResponse(status, validateStatus = (s) => s >= 200 && s < 300) {
   };
 }
 
-describe('core::settle', () => {
-  describe('resolves the promise', () => {
-    it('resolves for a 200 status by default', () => {
+describe("core::settle", () => {
+  describe("resolves the promise", () => {
+    it("resolves for a 200 status by default", () => {
       const resolve = vi.fn();
       const reject = vi.fn();
       settle(resolve, reject, makeResponse(200));
@@ -27,7 +27,7 @@ describe('core::settle', () => {
       expect(reject).not.toHaveBeenCalled();
     });
 
-    it('resolves when validateStatus is not provided', () => {
+    it("resolves when validateStatus is not provided", () => {
       const resolve = vi.fn();
       const reject = vi.fn();
       const response = makeResponse(500);
@@ -36,7 +36,7 @@ describe('core::settle', () => {
       expect(resolve).toHaveBeenCalledTimes(1);
     });
 
-    it('resolves when status is 0 (no response, e.g. network error)', () => {
+    it("resolves when status is 0 (no response, e.g. network error)", () => {
       const resolve = vi.fn();
       const reject = vi.fn();
       const response = makeResponse(0);
@@ -45,8 +45,8 @@ describe('core::settle', () => {
     });
   });
 
-  describe('error code assignment', () => {
-    it('assigns ERR_BAD_REQUEST for a 400 status', () => {
+  describe("error code assignment", () => {
+    it("assigns ERR_BAD_REQUEST for a 400 status", () => {
       const resolve = vi.fn();
       const reject = vi.fn();
       settle(resolve, reject, makeResponse(400, () => false));
@@ -56,7 +56,7 @@ describe('core::settle', () => {
       expect(error.code).toBe(AxiosError.ERR_BAD_REQUEST);
     });
 
-    it('assigns ERR_BAD_REQUEST for a 404 status', () => {
+    it("assigns ERR_BAD_REQUEST for a 404 status", () => {
       const resolve = vi.fn();
       const reject = vi.fn();
       settle(resolve, reject, makeResponse(404, () => false));
@@ -64,7 +64,7 @@ describe('core::settle', () => {
       expect(error.code).toBe(AxiosError.ERR_BAD_REQUEST);
     });
 
-    it('assigns ERR_BAD_REQUEST for a 499 status (top of 4xx range)', () => {
+    it("assigns ERR_BAD_REQUEST for a 499 status (top of 4xx range)", () => {
       const resolve = vi.fn();
       const reject = vi.fn();
       settle(resolve, reject, makeResponse(499, () => false));
@@ -72,7 +72,7 @@ describe('core::settle', () => {
       expect(error.code).toBe(AxiosError.ERR_BAD_REQUEST);
     });
 
-    it('assigns ERR_BAD_RESPONSE for a 500 status', () => {
+    it("assigns ERR_BAD_RESPONSE for a 500 status", () => {
       const resolve = vi.fn();
       const reject = vi.fn();
       settle(resolve, reject, makeResponse(500, () => false));
@@ -80,7 +80,7 @@ describe('core::settle', () => {
       expect(error.code).toBe(AxiosError.ERR_BAD_RESPONSE);
     });
 
-    it('assigns ERR_BAD_RESPONSE for a 503 status', () => {
+    it("assigns ERR_BAD_RESPONSE for a 503 status", () => {
       const resolve = vi.fn();
       const reject = vi.fn();
       settle(resolve, reject, makeResponse(503, () => false));
@@ -90,7 +90,7 @@ describe('core::settle', () => {
 
     // A custom validateStatus can reject any status — including 1xx, 2xx, 3xx,
     // or ≥ 600 — and the resulting AxiosError must always have a defined code.
-    it('assigns ERR_BAD_RESPONSE for a 3xx status rejected via custom validateStatus', () => {
+    it("assigns ERR_BAD_RESPONSE for a 3xx status rejected via custom validateStatus", () => {
       const resolve = vi.fn();
       const reject = vi.fn();
       settle(resolve, reject, makeResponse(301, () => false));
@@ -99,7 +99,7 @@ describe('core::settle', () => {
       expect(error.code).toBe(AxiosError.ERR_BAD_RESPONSE);
     });
 
-    it('assigns ERR_BAD_RESPONSE for a 2xx status rejected via custom validateStatus', () => {
+    it("assigns ERR_BAD_RESPONSE for a 2xx status rejected via custom validateStatus", () => {
       const resolve = vi.fn();
       const reject = vi.fn();
       settle(resolve, reject, makeResponse(200, () => false));
@@ -108,7 +108,7 @@ describe('core::settle', () => {
       expect(error.code).toBe(AxiosError.ERR_BAD_RESPONSE);
     });
 
-    it('assigns ERR_BAD_RESPONSE for a 6xx status rejected via custom validateStatus', () => {
+    it("assigns ERR_BAD_RESPONSE for a 6xx status rejected via custom validateStatus", () => {
       const resolve = vi.fn();
       const reject = vi.fn();
       settle(resolve, reject, makeResponse(600, () => false));
@@ -118,13 +118,13 @@ describe('core::settle', () => {
     });
   });
 
-  describe('error message', () => {
-    it('includes the status code in the error message', () => {
+  describe("error message", () => {
+    it("includes the status code in the error message", () => {
       const resolve = vi.fn();
       const reject = vi.fn();
       settle(resolve, reject, makeResponse(404, () => false));
       const error = reject.mock.calls[0][0];
-      expect(error.message).toBe('Request failed with status code 404');
+      expect(error.message).toBe("Request failed with status code 404");
     });
   });
 });

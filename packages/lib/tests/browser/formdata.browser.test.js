@@ -1,15 +1,15 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import axios from '../../index.js';
+import axios from "../../index.js";
 
 class MockXMLHttpRequest {
   constructor() {
     this.requestHeaders = {};
-    this.responseHeaders = '';
+    this.responseHeaders = "";
     this.readyState = 0;
     this.status = 0;
-    this.statusText = '';
-    this.responseText = '';
+    this.statusText = "";
+    this.responseText = "";
     this.response = null;
     this.onreadystatechange = null;
     this.onloadend = null;
@@ -39,7 +39,7 @@ class MockXMLHttpRequest {
     requests.push(this);
   }
 
-  respondWith({ status = 200, statusText = 'OK', responseText = '', responseHeaders = '' } = {}) {
+  respondWith({ status = 200, statusText = "OK", responseText = "", responseHeaders = "" } = {}) {
     this.status = status;
     this.statusText = statusText;
     this.responseText = responseText;
@@ -50,7 +50,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -70,7 +71,7 @@ const getLastRequest = () => {
   return request;
 };
 
-describe('formdata (vitest browser)', () => {
+describe("formdata (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
@@ -81,23 +82,23 @@ describe('formdata (vitest browser)', () => {
     window.XMLHttpRequest = OriginalXMLHttpRequest;
   });
 
-  it('should allow FormData posting', async () => {
-    const responsePromise = axios.postForm('/foo', {
-      a: 'foo',
-      b: 'bar',
+  it("should allow FormData posting", async () => {
+    const responsePromise = axios.postForm("/foo", {
+      a: "foo",
+      b: "bar",
     });
     const request = getLastRequest();
 
     expect(request.params).toBeInstanceOf(FormData);
     expect(Object.fromEntries(request.params.entries())).toEqual({
-      a: 'foo',
-      b: 'bar',
+      a: "foo",
+      b: "bar",
     });
 
     request.respondWith({
       status: 200,
-      responseText: '{}',
-      responseHeaders: 'Content-Type: application/json',
+      responseText: "{}",
+      responseHeaders: "Content-Type: application/json",
     });
     await responsePromise;
   });

@@ -1,56 +1,55 @@
-import { describe, it } from 'vitest';
-import assert from 'assert';
-import https from 'https';
-import net from 'net';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import axios from '../../../index.js';
+import assert from "node:assert";
+import fs from "node:fs";
+import https from "node:https";
+import net from "node:net";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { describe, it } from "vitest";
+import axios from "../../../index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const getClosedPort = async () => {
-  return await new Promise((resolve) => {
-    const srv = net.createServer();
-    srv.listen(0, '127.0.0.1', () => {
-      const { port } = srv.address();
-      srv.close(() => resolve(port));
-    });
+const getClosedPort = async () => await new Promise(resolve => {
+  const srv = net.createServer();
+  srv.listen(0, "127.0.0.1", () => {
+    const { port } = srv.address();
+    srv.close(() => resolve(port));
   });
-};
+});
 
-describe('adapters - network-error details', () => {
-  it('should expose ECONNREFUSED and set error.cause on connection refusal', async () => {
+describe("adapters - network-error details", () => {
+  it("should expose ECONNREFUSED and set error.cause on connection refusal", async () => {
     const port = await getClosedPort();
 
     try {
       await axios.get(`http://127.0.0.1:${port}`, { timeout: 500 });
-      assert.fail('request unexpectedly succeeded');
-    } catch (err) {
-      assert.ok(err instanceof Error, 'should be an Error');
-      assert.strictEqual(err.isAxiosError, true, 'isAxiosError should be true');
+      assert.fail("request unexpectedly succeeded");
+    }
+    catch (err) {
+      assert.ok(err instanceof Error, "should be an Error");
+      assert.strictEqual(err.isAxiosError, true, "isAxiosError should be true");
 
-      assert.strictEqual(err.code, 'ECONNREFUSED');
-      assert.ok('cause' in err, 'error.cause should exist');
-      assert.ok(err.cause instanceof Error, 'cause should be an Error');
-      assert.strictEqual(err.cause && err.cause.code, 'ECONNREFUSED');
+      assert.strictEqual(err.code, "ECONNREFUSED");
+      assert.ok("cause" in err, "error.cause should exist");
+      assert.ok(err.cause instanceof Error, "cause should be an Error");
+      assert.strictEqual(err.cause && err.cause.code, "ECONNREFUSED");
 
-      assert.strictEqual(typeof err.message, 'string');
+      assert.strictEqual(typeof err.message, "string");
     }
   });
 
-  it('should expose self-signed TLS error and set error.cause', async () => {
-    const certsDir = path.resolve(__dirname, '../../../tests/unit/adapters/');
-    const keyPath = path.join(certsDir, 'key.pem');
-    const certPath = path.join(certsDir, 'cert.pem');
+  it("should expose self-signed TLS error and set error.cause", async () => {
+    const certsDir = path.resolve(__dirname, "../../../tests/unit/adapters/");
+    const keyPath = path.join(certsDir, "key.pem");
+    const certPath = path.join(certsDir, "cert.pem");
 
     const key = fs.readFileSync(keyPath);
     const cert = fs.readFileSync(certPath);
 
-    const httpsServer = https.createServer({ key, cert }, (req, res) => res.end('ok'));
+    const httpsServer = https.createServer({ key, cert }, (req, res) => res.end("ok"));
 
-    await new Promise((resolve) => httpsServer.listen(0, '127.0.0.1', resolve));
+    await new Promise(resolve => httpsServer.listen(0, "127.0.0.1", resolve));
     const { port } = httpsServer.address();
 
     try {
@@ -58,16 +57,17 @@ describe('adapters - network-error details', () => {
         timeout: 500,
         httpsAgent: new https.Agent({ rejectUnauthorized: true }),
       });
-      assert.fail('request unexpectedly succeeded');
-    } catch (err) {
+      assert.fail("request unexpectedly succeeded");
+    }
+    catch (err) {
       const codeStr = String(err.code);
       assert.ok(
         /SELF_SIGNED|UNABLE_TO_VERIFY_LEAF_SIGNATURE|DEPTH_ZERO/.test(codeStr),
         `unexpected TLS code: ${codeStr}`
       );
 
-      assert.ok('cause' in err, 'error.cause should exist');
-      assert.ok(err.cause instanceof Error, 'cause should be an Error');
+      assert.ok("cause" in err, "error.cause should exist");
+      assert.ok(err.cause instanceof Error, "cause should be an Error");
 
       const causeCode = String(err.cause && err.cause.code);
       assert.ok(
@@ -75,9 +75,10 @@ describe('adapters - network-error details', () => {
         `unexpected cause code: ${causeCode}`
       );
 
-      assert.strictEqual(typeof err.message, 'string');
-    } finally {
-      await new Promise((resolve) => httpsServer.close(resolve));
+      assert.strictEqual(typeof err.message, "string");
+    }
+    finally {
+      await new Promise(resolve => httpsServer.close(resolve));
     }
   });
 });

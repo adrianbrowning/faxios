@@ -1,16 +1,16 @@
-import { describe, it } from 'vitest';
-import platform from '../../lib/platform/index.js';
-import assert from 'assert';
+import assert from "node:assert";
+import { describe, it } from "vitest";
+import platform from "../../lib/platform/index.js";
 
-describe('generateString', () => {
-  it('should generate a string of the specified length using the default alphabet', () => {
+describe("generateString", () => {
+  it("should generate a string of the specified length using the default alphabet", () => {
     const size = 10;
     const str = platform.generateString(size);
 
     assert.strictEqual(str.length, size);
   });
 
-  it('should generate a string using only characters from the default alphabet', () => {
+  it("should generate a string using only characters from the default alphabet", () => {
     const size = 10;
     const alphabet = platform.ALPHABET.ALPHA_DIGIT;
 

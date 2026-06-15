@@ -11,12 +11,12 @@ type TransportCall = {
 const createTransportMock = (
   responseFactory?: (body: Buffer, options: Record<string, any>) => Record<string, any>
 ) => {
-  const calls: TransportCall[] = [];
+  const calls: Array<TransportCall> = [];
 
   const transport = {
     request(options: Record<string, any>, onResponse: (res: PassThrough) => void) {
       const req = new EventEmitter() as Record<string, any>;
-      const chunks: Buffer[] = [];
+      const chunks: Array<Buffer> = [];
 
       req.destroyed = false;
       req.setTimeout = () => {};

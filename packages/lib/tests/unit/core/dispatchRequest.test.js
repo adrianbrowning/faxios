@@ -1,9 +1,9 @@
-import { describe, it } from 'vitest';
-import assert from 'assert';
-import dispatchRequest from '../../../lib/core/dispatchRequest.js';
-import AxiosError from '../../../lib/core/AxiosError.js';
-import defaults from '../../../lib/defaults/index.js';
-import resolveConfig from '../../../lib/helpers/resolveConfig.js';
+import assert from "node:assert";
+import { describe, it } from "vitest";
+import AxiosError from "../../../lib/core/AxiosError.js";
+import dispatchRequest from "../../../lib/core/dispatchRequest.js";
+import defaults from "../../../lib/defaults/index.js";
+import resolveConfig from "../../../lib/helpers/resolveConfig.js";
 
 class ReactNativeFormData {
   append() {}
@@ -13,41 +13,41 @@ class ReactNativeFormData {
   }
 
   get [Symbol.toStringTag]() {
-    return 'FormData';
+    return "FormData";
   }
 }
 
 function baseConfig(overrides = {}) {
   return {
-    method: 'get',
-    url: '/test',
+    method: "get",
+    url: "/test",
     headers: {},
     transformRequest: defaults.transformRequest,
     transformResponse: defaults.transformResponse,
     transitional: { silentJSONParsing: false, forcedJSONParsing: true },
-    responseType: 'json',
+    responseType: "json",
     ...overrides,
   };
 }
 
-describe('core::dispatchRequest', () => {
-  describe('JSON FormData transform', () => {
-    it('rejects deeply nested field paths before adapter dispatch', async () => {
+describe("core::dispatchRequest", () => {
+  describe("JSON FormData transform", () => {
+    it("rejects deeply nested field paths before adapter dispatch", async () => {
       const data = new FormData();
       let adapterCalled = false;
 
-      data.append('foo' + '[bar]'.repeat(101), '123');
+      data.append("foo" + "[bar]".repeat(101), "123");
 
       const config = baseConfig({
         data,
-        headers: { 'Content-Type': 'application/json' },
-        method: 'post',
+        headers: { "Content-Type": "application/json" },
+        method: "post",
         adapter(adapterConfig) {
           adapterCalled = true;
           return Promise.resolve({
             data: null,
             status: 200,
-            statusText: 'OK',
+            statusText: "OK",
             headers: {},
             config: adapterConfig,
             request: {},
@@ -58,20 +58,21 @@ describe('core::dispatchRequest', () => {
       let thrown;
       try {
         await dispatchRequest(config);
-      } catch (e) {
+      }
+      catch (e) {
         thrown = e;
       }
 
-      assert.ok(thrown instanceof AxiosError, 'must be AxiosError');
+      assert.ok(thrown instanceof AxiosError, "must be AxiosError");
       assert.strictEqual(thrown.code, AxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
       assert.strictEqual(adapterCalled, false);
     });
   });
 
-  describe('JSON parse failure on adapter resolution', () => {
-    it('rejects with AxiosError carrying response and status', async () => {
+  describe("JSON parse failure on adapter resolution", () => {
+    it("rejects with AxiosError carrying response and status", async () => {
       const response = {
-        data: '{bad json',
+        data: "{bad json",
         status: 418,
         statusText: "I'm a teapot",
         headers: {},
@@ -83,21 +84,22 @@ describe('core::dispatchRequest', () => {
       let thrown;
       try {
         await dispatchRequest(config);
-      } catch (e) {
+      }
+      catch (e) {
         thrown = e;
       }
 
-      assert.ok(thrown instanceof AxiosError, 'must be AxiosError');
+      assert.ok(thrown instanceof AxiosError, "must be AxiosError");
       assert.strictEqual(thrown.code, AxiosError.ERR_BAD_RESPONSE);
-      assert.strictEqual(thrown.response, response, 'error.response must be the original response');
-      assert.strictEqual(thrown.status, 418, 'error.status must equal response status');
+      assert.strictEqual(thrown.response, response, "error.response must be the original response");
+      assert.strictEqual(thrown.status, 418, "error.status must equal response status");
     });
 
-    it('cleans up config.response after the transform throws', async () => {
+    it("cleans up config.response after the transform throws", async () => {
       const response = {
-        data: '{bad json',
+        data: "{bad json",
         status: 200,
-        statusText: 'OK',
+        statusText: "OK",
         headers: {},
         config: null,
         request: {},
@@ -106,90 +108,93 @@ describe('core::dispatchRequest', () => {
 
       try {
         await dispatchRequest(config);
-      } catch (_) {
+      }
+      catch (_) {
         // expected
       }
 
       assert.strictEqual(
-        Object.prototype.hasOwnProperty.call(config, 'response'),
+        Object.prototype.hasOwnProperty.call(config, "response"),
         false,
-        'config.response must be deleted in finally'
+        "config.response must be deleted in finally"
       );
     });
   });
 
-  describe('JSON parse failure on adapter rejection', () => {
-    it('rejects with AxiosError carrying response and status (rejection path)', async () => {
+  describe("JSON parse failure on adapter rejection", () => {
+    it("rejects with AxiosError carrying response and status (rejection path)", async () => {
       const response = {
-        data: '{bad json',
+        data: "{bad json",
         status: 500,
-        statusText: 'Internal Server Error',
+        statusText: "Internal Server Error",
         headers: {},
         config: null,
         request: {},
       };
-      const reason = new AxiosError('Request failed', AxiosError.ERR_BAD_RESPONSE);
+      const reason = new AxiosError("Request failed", AxiosError.ERR_BAD_RESPONSE);
       reason.response = response;
       const config = baseConfig({ adapter: () => Promise.reject(reason) });
 
       let thrown;
       try {
         await dispatchRequest(config);
-      } catch (e) {
+      }
+      catch (e) {
         thrown = e;
       }
 
-      assert.ok(thrown instanceof AxiosError, 'must be AxiosError');
-      assert.strictEqual(thrown.response, response, 'error.response must be the original response');
-      assert.strictEqual(thrown.status, 500, 'error.status must equal response status');
+      assert.ok(thrown instanceof AxiosError, "must be AxiosError");
+      assert.strictEqual(thrown.response, response, "error.response must be the original response");
+      assert.strictEqual(thrown.status, 500, "error.status must equal response status");
     });
 
-    it('cleans up config.response after the rejection-path transform', async () => {
+    it("cleans up config.response after the rejection-path transform", async () => {
       const response = {
-        data: '{bad json',
+        data: "{bad json",
         status: 500,
-        statusText: 'Internal Server Error',
+        statusText: "Internal Server Error",
         headers: {},
         config: null,
         request: {},
       };
-      const reason = new AxiosError('Request failed', AxiosError.ERR_BAD_RESPONSE);
+      const reason = new AxiosError("Request failed", AxiosError.ERR_BAD_RESPONSE);
       reason.response = response;
       const config = baseConfig({ adapter: () => Promise.reject(reason) });
 
       try {
         await dispatchRequest(config);
-      } catch (_) {
+      }
+      catch (_) {
         // expected
       }
 
       assert.strictEqual(
-        Object.prototype.hasOwnProperty.call(config, 'response'),
+        Object.prototype.hasOwnProperty.call(config, "response"),
         false,
-        'config.response must be deleted in finally on the rejection path'
+        "config.response must be deleted in finally on the rejection path"
       );
     });
   });
 
-  describe('happy path', () => {
-    it('clears default Content-Type for React Native FormData before adapter headers are sent', async () => {
+  describe("happy path", () => {
+    it("clears default Content-Type for React Native FormData before adapter headers are sent", async () => {
       const data = new ReactNativeFormData();
       const response = {
-        data: '{"ok":true}',
+        data: "{\"ok\":true}",
         status: 200,
-        statusText: 'OK',
+        statusText: "OK",
         headers: {},
         config: null,
         request: {},
       };
       const config = baseConfig({
-        method: 'post',
+        method: "post",
         data,
-        adapter: (adapterConfig) => {
+        adapter: adapterConfig => {
           assert.strictEqual(
             adapterConfig.headers.getContentType(),
-            'application/x-www-form-urlencoded',
-            'dispatchRequest should apply the default POST Content-Type first'
+            "application/x-www-form-urlencoded",
+            "dispatchRequest should apply the default POST Content-Type first"
           );
 
           const resolvedConfig = resolveConfig(adapterConfig);
@@ -197,9 +202,9 @@ describe('core::dispatchRequest', () => {
           assert.strictEqual(resolvedConfig.data, data);
           assert.strictEqual(resolvedConfig.headers.getContentType(), undefined);
           assert.strictEqual(
-            Object.prototype.hasOwnProperty.call(resolvedConfig.headers.toJSON(), 'Content-Type'),
+            Object.prototype.hasOwnProperty.call(resolvedConfig.headers.toJSON(), "Content-Type"),
             false,
-            'resolved adapter headers must omit Content-Type for React Native FormData'
+            "resolved adapter headers must omit Content-Type for React Native FormData"
           );
 
           return Promise.resolve(response);
@@ -211,11 +216,11 @@ describe('core::dispatchRequest', () => {
       assert.deepStrictEqual(result.data, { ok: true });
     });
 
-    it('cleans up config.response after a successful resolution', async () => {
+    it("cleans up config.response after a successful resolution", async () => {
       const response = {
-        data: '{"ok":true}',
+        data: "{\"ok\":true}",
         status: 200,
-        statusText: 'OK',
+        statusText: "OK",
         headers: {},
         config: null,
         request: {},
@@ -226,9 +231,9 @@ describe('core::dispatchRequest', () => {
 
       assert.deepStrictEqual(result.data, { ok: true });
       assert.strictEqual(
-        Object.prototype.hasOwnProperty.call(config, 'response'),
+        Object.prototype.hasOwnProperty.call(config, "response"),
         false,
-        'config.response must not be left set after a successful request'
+        "config.response must not be left set after a successful request"
       );
     });
   });

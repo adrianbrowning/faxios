@@ -4,7 +4,7 @@ import axios from 'axios';
 const createFetchMock = (
   responseFactory?: (input: any, init: any) => Response | Promise<Response>
 ) => {
-  const calls: Array<{ input: any; init: any }> = [];
+  const calls: Array<{ input: any; init: any; }> = [];
 
   const mockFetch = async (input: any, init: any = {}) => {
     calls.push({ input, init });
@@ -73,7 +73,8 @@ Deno.test('fetch adapter: forwards HTTP methods', async () => {
           env: env(mockFetch),
         }
       );
-    } else {
+    }
+    else {
       await axios[method]('https://example.com/items', {
         adapter: 'fetch',
         env: env(mockFetch),

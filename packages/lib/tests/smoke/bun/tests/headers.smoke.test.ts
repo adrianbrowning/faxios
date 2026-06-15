@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import axios from 'axios';
 
 const createFetchCapture = () => {
-  const calls: Request[] = [];
+  const calls: Array<Request> = [];
 
   const fetch = async (input: unknown, init?: RequestInit) => {
     const request = input instanceof Request ? input : new Request(input as string, init);

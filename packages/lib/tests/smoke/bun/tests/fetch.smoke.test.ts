@@ -4,7 +4,7 @@ import axios from 'axios';
 const createFetchMock = (
   responseFactory?: (input: unknown, init: RequestInit) => Response | Promise<Response>
 ) => {
-  const calls: Array<{ input: unknown; init: RequestInit }> = [];
+  const calls: Array<{ input: unknown; init: RequestInit; }> = [];
 
   const mockFetch = async (input: unknown, init: RequestInit = {}) => {
     calls.push({ input, init });
@@ -91,7 +91,8 @@ describe('fetch adapter', () => {
             env: env(mockFetch),
           }
         );
-      } else {
+      }
+      else {
         await axios[method]('https://example.com/items', {
           adapter: 'fetch',
           env: env(mockFetch),

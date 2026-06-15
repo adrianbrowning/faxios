@@ -1,7 +1,6 @@
 // @ts-nocheck
-import axios, {
+import type {
   AxiosRequestConfig,
-  AxiosHeaders,
   AxiosRequestHeaders,
   AxiosResponseHeaders,
   RawAxiosRequestHeaders,
@@ -14,14 +13,16 @@ import axios, {
   Canceler,
   AxiosProgressEvent,
   ParamsSerializerOptions,
+  AddressFamily } from 'axios';
+import axios, {
+  AxiosHeaders,
   toFormData,
   formToJSON,
   getAdapter,
   all,
   isCancel,
   isAxiosError,
-  spread,
-  AddressFamily,
+  spread
 } from 'axios';
 
 const config: AxiosRequestConfig = {
@@ -30,7 +31,7 @@ const config: AxiosRequestConfig = {
   baseURL: 'https://api.example.com/',
   allowAbsoluteUrls: false,
   transformRequest: (data: any) => '{"foo":"bar"}',
-  transformResponse: [(data: any) => ({ baz: 'qux' })],
+  transformResponse: [ (data: any) => ({ baz: 'qux' }) ],
   headers: { 'X-FOO': 'bar' },
   params: { id: 12345 },
   paramsSerializer: {
@@ -82,38 +83,48 @@ const handleError = (error: AxiosError) => {
     console.log(error.response.data);
     console.log(error.response.status);
     console.log(error.response.headers);
-  } else {
+  }
+  else {
     console.log(error.message);
   }
 };
 
-axios(config).then(handleResponse).catch(handleError);
+axios(config).then(handleResponse)
+  .catch(handleError);
 
-axios.get('/user?id=12345').then(handleResponse).catch(handleError);
+axios.get('/user?id=12345').then(handleResponse)
+  .catch(handleError);
 
 axios
   .get('/user', { params: { id: 12345 } })
   .then(handleResponse)
   .catch(handleError);
 
-axios.head('/user').then(handleResponse).catch(handleError);
+axios.head('/user').then(handleResponse)
+  .catch(handleError);
 
-axios.options('/user').then(handleResponse).catch(handleError);
+axios.options('/user').then(handleResponse)
+  .catch(handleError);
 
-axios.delete('/user').then(handleResponse).catch(handleError);
+axios.delete('/user').then(handleResponse)
+  .catch(handleError);
 
-axios.post('/user', { foo: 'bar' }).then(handleResponse).catch(handleError);
+axios.post('/user', { foo: 'bar' }).then(handleResponse)
+  .catch(handleError);
 
 axios
   .post('/user', { foo: 'bar' }, { headers: { 'X-FOO': 'bar' } })
   .then(handleResponse)
   .catch(handleError);
 
-axios.put('/user', { foo: 'bar' }).then(handleResponse).catch(handleError);
+axios.put('/user', { foo: 'bar' }).then(handleResponse)
+  .catch(handleError);
 
-axios.patch('/user', { foo: 'bar' }).then(handleResponse).catch(handleError);
+axios.patch('/user', { foo: 'bar' }).then(handleResponse)
+  .catch(handleError);
 
-axios.query('/user', { foo: 'bar' }).then(handleResponse).catch(handleError);
+axios.query('/user', { foo: 'bar' }).then(handleResponse)
+  .catch(handleError);
 
 // Typed methods
 interface UserCreationDef {
@@ -140,29 +151,36 @@ const handleUserResponse = (response: AxiosResponse<User>) => {
   console.log(response.config);
 };
 
-axios.get<User>('/user?id=12345').then(handleUserResponse).catch(handleError);
+axios.get<User>('/user?id=12345').then(handleUserResponse)
+  .catch(handleError);
 
 axios
   .get<User>('/user', { params: { id: 12345 } })
   .then(handleUserResponse)
   .catch(handleError);
 
-axios.head<User>('/user').then(handleUserResponse).catch(handleError);
+axios.head<User>('/user').then(handleUserResponse)
+  .catch(handleError);
 
-axios.options<User>('/user').then(handleUserResponse).catch(handleError);
+axios.options<User>('/user').then(handleUserResponse)
+  .catch(handleError);
 
-axios.delete<User>('/user').then(handleUserResponse).catch(handleError);
+axios.delete<User>('/user').then(handleUserResponse)
+  .catch(handleError);
 
-axios.post<User>('/user', { name: 'foo', id: 1 }).then(handleUserResponse).catch(handleError);
+axios.post<User>('/user', { name: 'foo', id: 1 }).then(handleUserResponse)
+  .catch(handleError);
 
 axios
   .post<User>('/user', { name: 'foo', id: 1 }, { headers: { 'X-FOO': 'bar' } })
   .then(handleUserResponse)
   .catch(handleError);
 
-axios.put<User>('/user', { name: 'foo', id: 1 }).then(handleUserResponse).catch(handleError);
+axios.put<User>('/user', { name: 'foo', id: 1 }).then(handleUserResponse)
+  .catch(handleError);
 
-axios.patch<User>('/user', { name: 'foo', id: 1 }).then(handleUserResponse).catch(handleError);
+axios.patch<User>('/user', { name: 'foo', id: 1 }).then(handleUserResponse)
+  .catch(handleError);
 
 // with custom response headers AxiosResponse<T, any, H> result
 
@@ -232,18 +250,22 @@ const handleStringResponse = (response: string) => {
   console.log(response);
 };
 
-axios.get<User, string>('/user?id=12345').then(handleStringResponse).catch(handleError);
+axios.get<User, string>('/user?id=12345').then(handleStringResponse)
+  .catch(handleError);
 
 axios
   .get<User, string>('/user', { params: { id: 12345 } })
   .then(handleStringResponse)
   .catch(handleError);
 
-axios.head<User, string>('/user').then(handleStringResponse).catch(handleError);
+axios.head<User, string>('/user').then(handleStringResponse)
+  .catch(handleError);
 
-axios.options<User, string>('/user').then(handleStringResponse).catch(handleError);
+axios.options<User, string>('/user').then(handleStringResponse)
+  .catch(handleError);
 
-axios.delete<User, string>('/user').then(handleStringResponse).catch(handleError);
+axios.delete<User, string>('/user').then(handleStringResponse)
+  .catch(handleError);
 
 axios
   .post<Partial<UserCreationDef>, string>('/user', { name: 'foo' })
@@ -278,20 +300,25 @@ axios
 const instance1: AxiosInstance = axios.create();
 const instance2: AxiosInstance = instance1.create(config);
 
-instance1(config).then(handleResponse).catch(handleError);
+instance1(config).then(handleResponse)
+  .catch(handleError);
 
-instance1.request(config).then(handleResponse).catch(handleError);
+instance1.request(config).then(handleResponse)
+  .catch(handleError);
 
-instance1.get('/user?id=12345').then(handleResponse).catch(handleError);
+instance1.get('/user?id=12345').then(handleResponse)
+  .catch(handleError);
 
-instance1.options('/user').then(handleResponse).catch(handleError);
+instance1.options('/user').then(handleResponse)
+  .catch(handleError);
 
 instance1
   .get('/user', { params: { id: 12345 } })
   .then(handleResponse)
   .catch(handleError);
 
-instance1.post('/user', { foo: 'bar' }).then(handleResponse).catch(handleError);
+instance1.post('/user', { foo: 'bar' }).then(handleResponse)
+  .catch(handleError);
 
 instance1
   .post('/user', { foo: 'bar' }, { headers: { 'X-FOO': 'bar' } })
@@ -331,39 +358,39 @@ axios.create({
 // Interceptors
 
 const requestInterceptorId: number = axios.interceptors.request.use(
-  async (config) => {
+  async config => {
     await axios.get('/foo', {
       headers: config.headers,
     });
     return config;
   },
-  (error: any) => Promise.reject(error),
+  async (error: any) => Promise.reject(error),
   { synchronous: false }
 );
 
 axios.interceptors.request.eject(requestInterceptorId);
 
 axios.interceptors.request.use(
-  (config) => Promise.resolve(config),
-  (error: any) => Promise.reject(error)
+  async config => Promise.resolve(config),
+  async (error: any) => Promise.reject(error)
 );
 
-axios.interceptors.request.use((config) => config);
-axios.interceptors.request.use((config) => Promise.resolve(config));
+axios.interceptors.request.use(config => config);
+axios.interceptors.request.use(async config => Promise.resolve(config));
 
 const responseInterceptorId: number = axios.interceptors.response.use(
   (response: AxiosResponse) => response,
-  (error: any) => Promise.reject(error)
+  async (error: any) => Promise.reject(error)
 );
 
 axios.interceptors.response.eject(responseInterceptorId);
 
 axios.interceptors.response.use(
-  (response: AxiosResponse) => Promise.resolve(response),
-  (error: any) => Promise.reject(error)
+  async (response: AxiosResponse) => Promise.resolve(response),
+  async (error: any) => Promise.reject(error)
 );
 
-axios.interceptors.request.use((req) => {
+axios.interceptors.request.use(req => {
   // https://github.com/axios/axios/issues/5415
   req.headers.set('foo', 'bar');
   req.headers['Content-Type'] = 123;
@@ -372,26 +399,26 @@ axios.interceptors.request.use((req) => {
 
 const voidRequestInterceptorId = axios.interceptors.request.use(
   // @ts-expect-error -- Must return an AxiosRequestConfig (or throw)
-  (_response) => {},
-  (error: any) => Promise.reject(error)
+  _response => {},
+  async (error: any) => Promise.reject(error)
 );
 const voidResponseInterceptorId = axios.interceptors.response.use(
   // @ts-expect-error -- Must return an AxiosResponse (or throw)
-  (_response) => {},
-  (error: any) => Promise.reject(error)
+  _response => {},
+  async (error: any) => Promise.reject(error)
 );
 axios.interceptors.request.eject(voidRequestInterceptorId);
 axios.interceptors.response.eject(voidResponseInterceptorId);
 
 axios.interceptors.response.use((response: AxiosResponse) => response);
-axios.interceptors.response.use((response: AxiosResponse) => Promise.resolve(response));
+axios.interceptors.response.use(async (response: AxiosResponse) => Promise.resolve(response));
 
 axios.interceptors.request.clear();
 axios.interceptors.response.clear();
 
 // Adapters
 
-const adapter: AxiosAdapter = (config) => {
+const adapter: AxiosAdapter = async config => {
   const response: AxiosResponse = {
     data: { foo: 'bar' },
     status: 200,
@@ -406,27 +433,27 @@ axios.defaults.adapter = adapter;
 
 // axios.all
 
-const promises = [Promise.resolve(1), Promise.resolve(2)];
+const promises = [ Promise.resolve(1), Promise.resolve(2) ];
 
-const promise: Promise<number[]> = axios.all(promises);
+const promise: Promise<Array<number>> = axios.all(promises);
 
 // axios.all named export
 
 (() => {
-  const promises = [Promise.resolve(1), Promise.resolve(2)];
+  const promises = [ Promise.resolve(1), Promise.resolve(2) ];
 
-  const promise: Promise<number[]> = all(promises);
+  const promise: Promise<Array<number>> = all(promises);
 })();
 
 // axios.spread
 
 const fn1 = (a: number, b: number, c: number) => `${a}-${b}-${c}`;
-const fn2: (arr: number[]) => string = axios.spread(fn1);
+const fn2: (arr: Array<number>) => string = axios.spread(fn1);
 
 // axios.spread named export
 (() => {
   const fn1 = (a: number, b: number, c: number) => `${a}-${b}-${c}`;
-  const fn2: (arr: number[]) => string = spread(fn1);
+  const fn2: (arr: Array<number>) => string = spread(fn1);
 })();
 
 // Promises
@@ -438,7 +465,7 @@ axios
 
 axios
   .get('/user')
-  .then((response: AxiosResponse) => Promise.resolve('foo'))
+  .then(async (response: AxiosResponse) => Promise.resolve('foo'))
   .then((value: string) => {});
 
 axios
@@ -464,7 +491,7 @@ axios
 
 axios
   .get('/user')
-  .catch((error: any) => Promise.resolve('foo'))
+  .catch(async (error: any) => Promise.resolve('foo'))
   .then((value: any) => {});
 
 // Cancellation
@@ -586,7 +613,7 @@ axios.get('/user', {
 });
 
 axios.get('/user', {
-  maxRate: [1000, 1000],
+  maxRate: [ 1000, 1000 ],
 });
 
 // Node progress
@@ -611,7 +638,7 @@ axios.get('/user', {
 });
 
 axios.get('/user', {
-  adapter: ['xhr', 'http'],
+  adapter: [ 'xhr', 'http' ],
 });
 
 {
@@ -620,22 +647,22 @@ axios.get('/user', {
   getAdapter(axios.create().defaults.adapter);
   getAdapter(undefined);
   getAdapter([]);
-  getAdapter(['xhr']);
-  getAdapter([adapter]);
-  getAdapter(['xhr', 'http']);
-  getAdapter([adapter, 'xhr']);
-  getAdapter([adapter, adapter]);
+  getAdapter([ 'xhr' ]);
+  getAdapter([ adapter ]);
+  getAdapter([ 'xhr', 'http' ]);
+  getAdapter([ adapter, 'xhr' ]);
+  getAdapter([ adapter, adapter ]);
   getAdapter('xhr');
   getAdapter(adapter);
   const _: AxiosAdapter = getAdapter('xhr');
-  const __: AxiosAdapter = getAdapter(['xhr']);
+  const __: AxiosAdapter = getAdapter([ 'xhr' ]);
 
   // @ts-expect-error
   getAdapter();
   // @ts-expect-error
   getAdapter(123);
   // @ts-expect-error
-  getAdapter([123]);
+  getAdapter([ 123 ]);
   // @ts-expect-error
   getAdapter('xhr', 'http');
 }
@@ -646,7 +673,7 @@ axios.get('/user', {
 
 const headers = new AxiosHeaders({ foo: 'bar' });
 
-for (const [header, value] of headers) {
+for (const [ header, value ] of headers) {
   console.log(header, value);
 }
 
@@ -672,7 +699,7 @@ for (const [header, value] of headers) {
 
 {
   const requestInterceptorId: number = axios.interceptors.request.use(
-    async (config) => {
+    async config => {
       config.headers.Accept = 'foo';
       config.headers.setAccept('foo');
       config.headers = new AxiosHeaders({ x: 1 });
@@ -683,7 +710,7 @@ for (const [header, value] of headers) {
       config.headers = { ...config.headers } as AxiosRequestHeaders;
       return config;
     },
-    (error: any) => Promise.reject(error)
+    async (error: any) => Promise.reject(error)
   );
 }
 
@@ -711,9 +738,7 @@ axios.get('/user', {
 
 // lookup async
 axios.get('/user', {
-  lookup: (hostname: string, opt: object) => {
-    return ['127.0.0.1', 4];
-  },
+  lookup: (hostname: string, opt: object) => [ '127.0.0.1', 4 ],
 });
 
 // AxiosError.cause should be typed as Error to allow accessing .message

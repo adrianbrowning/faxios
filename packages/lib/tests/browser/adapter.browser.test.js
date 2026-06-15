@@ -1,13 +1,13 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import axios from '../../index.js';
+import axios from "../../index.js";
 
 class MockXMLHttpRequest {
   constructor() {
     this.readyState = 0;
     this.status = 0;
-    this.statusText = '';
-    this.responseText = '';
+    this.statusText = "";
+    this.responseText = "";
     this.response = null;
     this.onreadystatechange = null;
     this.onloadend = null;
@@ -30,7 +30,7 @@ class MockXMLHttpRequest {
   addEventListener() {}
 
   getAllResponseHeaders() {
-    return '';
+    return "";
   }
 
   send(data) {
@@ -38,7 +38,7 @@ class MockXMLHttpRequest {
     requests.push(this);
   }
 
-  respondWith({ status = 200, statusText = 'OK', responseText = '' } = {}) {
+  respondWith({ status = 200, statusText = "OK", responseText = "" } = {}) {
     this.status = status;
     this.statusText = statusText;
     this.responseText = responseText;
@@ -48,7 +48,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -60,7 +61,7 @@ class MockXMLHttpRequest {
 let requests = [];
 let OriginalXMLHttpRequest;
 
-const sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms = 0) => new Promise(resolve => setTimeout(resolve, ms));
 
 const waitForRequest = async (timeoutMs = 1000) => {
   const start = Date.now();
@@ -74,10 +75,10 @@ const waitForRequest = async (timeoutMs = 1000) => {
     await sleep(0);
   }
 
-  throw new Error('Expected an XHR request to be sent');
+  throw new Error("Expected an XHR request to be sent");
 };
 
-describe('adapter (vitest browser)', () => {
+describe("adapter (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
@@ -90,12 +91,12 @@ describe('adapter (vitest browser)', () => {
     axios.interceptors.response.handlers = [];
   });
 
-  it('should support custom adapter', async () => {
-    const responsePromise = axios('/foo', {
+  it("should support custom adapter", async () => {
+    const responsePromise = axios("/foo", {
       adapter(config) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           const request = new XMLHttpRequest();
-          request.open('GET', '/bar');
+          request.open("GET", "/bar");
 
           request.onreadystatechange = function onReadyStateChange() {
             resolve({
@@ -110,20 +111,20 @@ describe('adapter (vitest browser)', () => {
     });
 
     const request = await waitForRequest();
-    expect(request.url).toBe('/bar');
+    expect(request.url).toBe("/bar");
 
     request.respondWith();
     await responsePromise;
   });
 
-  it('should execute adapter code synchronously', async () => {
+  it("should execute adapter code synchronously", async () => {
     let asyncFlag = false;
 
-    const responsePromise = axios('/foo', {
+    const responsePromise = axios("/foo", {
       adapter(config) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           const request = new XMLHttpRequest();
-          request.open('GET', '/bar');
+          request.open("GET", "/bar");
 
           request.onreadystatechange = function onReadyStateChange() {
             resolve({
@@ -145,19 +146,19 @@ describe('adapter (vitest browser)', () => {
     await responsePromise;
   });
 
-  it('should execute adapter code asynchronously when interceptor is present', async () => {
+  it("should execute adapter code asynchronously when interceptor is present", async () => {
     let asyncFlag = false;
 
-    axios.interceptors.request.use((config) => {
-      config.headers.async = 'async it!';
+    axios.interceptors.request.use(config => {
+      config.headers.async = "async it!";
       return config;
     });
 
-    const responsePromise = axios('/foo', {
+    const responsePromise = axios("/foo", {
       adapter(config) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           const request = new XMLHttpRequest();
-          request.open('GET', '/bar');
+          request.open("GET", "/bar");
 
           request.onreadystatechange = function onReadyStateChange() {
             resolve({
@@ -179,16 +180,16 @@ describe('adapter (vitest browser)', () => {
     await responsePromise;
   });
 
-  it('should sanitize request headers containing CRLF characters', async () => {
-    const responsePromise = axios('/foo', {
+  it("should sanitize request headers containing CRLF characters", async () => {
+    const responsePromise = axios("/foo", {
       headers: {
-        'x-test': '\tok\r\nInjected: yes ',
+        "x-test": "\tok\r\nInjected: yes ",
       },
     });
 
     const request = await waitForRequest();
 
-    expect(request.requestHeaders['x-test']).toBe('okInjected: yes');
+    expect(request.requestHeaders["x-test"]).toBe("okInjected: yes");
     expect(request.requestHeaders.Injected).toBeUndefined();
 
     request.respondWith();

@@ -9,7 +9,7 @@ import axios, {
   isAxiosError,
   isCancel,
   all,
-  toFormData,
+  toFormData
 } from 'axios';
 
 assert.strictEqual(typeof axios, 'function');

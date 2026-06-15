@@ -8,7 +8,7 @@ const createTransportMock = (
 ) => {
   const transport = {
     request(options: Record<string, any>, onResponse: (res: PassThrough) => void) {
-      const chunks: Buffer[] = [];
+      const chunks: Array<Buffer> = [];
 
       const req = new Writable({
         write(chunk, _encoding, callback) {
@@ -26,7 +26,7 @@ const createTransportMock = (
       };
       req.close = req.destroy;
       const originalEnd = req.end.bind(req);
-      req.end = (...args: unknown[]) => {
+      req.end = (...args: Array<unknown>) => {
         originalEnd(...(args as Parameters<Writable['end']>));
 
         const body = Buffer.concat(chunks);
@@ -51,9 +51,7 @@ const createTransportMock = (
   return { transport };
 };
 
-const bodyAsUtf8 = (value: unknown) => {
-  return Buffer.isBuffer(value) ? value.toString('utf8') : String(value);
-};
+const bodyAsUtf8 = (value: unknown) => Buffer.isBuffer(value) ? value.toString('utf8') : String(value);
 
 describe('form data', () => {
   test('native Bun FormData body produces multipart/form-data content-type', async () => {
