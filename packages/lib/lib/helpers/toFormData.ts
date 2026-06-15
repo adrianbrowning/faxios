@@ -1,8 +1,8 @@
 "use strict";
 
+import PlatformFormData from "form-data";
 import AxiosError from "../core/AxiosError.js";
 // temporary hotfix to avoid circular references until AxiosURLSearchParams is refactored
-import PlatformFormData from "../platform/node/classes/FormData.js";
 import utils from "../utils.js";
 
 // Default nesting limit shared with the inverse transform (formDataToJSON) so
@@ -45,7 +45,6 @@ function renderKey(path, key, dots) {
   return path
     .concat(key)
     .map(function each(token, i) {
-       
       token = removeBrackets(token);
       return !dots && i ? "[" + token + "]" : token;
     })
@@ -94,9 +93,10 @@ function toFormData(obj, formData, options) {
   if (!utils.isObject(obj)) {
     throw new TypeError("target must be an object");
   }
-   
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   formData = formData || new (PlatformFormData || FormData)();
-   
+
   options = utils.toFlatObject(
     options,
     {
@@ -106,18 +106,20 @@ function toFormData(obj, formData, options) {
     },
     false,
     function defined(option, source) {
-       
       return !utils.isUndefined(source[option]);
     }
   );
 
   const metaTokens = options.metaTokens;
-   
+
   const visitor = options.visitor || defaultVisitor;
   const dots = options.dots;
   const indexes = options.indexes;
   const _Blob = options.Blob || (typeof Blob !== "undefined" && Blob);
-  const maxDepth = options.maxDepth === undefined ? DEFAULT_FORM_DATA_MAX_DEPTH : options.maxDepth;
+  const maxDepth =
+    options.maxDepth === undefined
+      ? DEFAULT_FORM_DATA_MAX_DEPTH
+      : options.maxDepth;
   const useBlob = _Blob && utils.isSpecCompliantForm(formData);
   const stack = [];
 
@@ -141,7 +143,9 @@ function toFormData(obj, formData, options) {
     }
 
     if (utils.isArrayBuffer(value) || utils.isTypedArray(value)) {
-      return useBlob && typeof Blob === "function" ? new Blob([ value ]) : Buffer.from(value);
+      return useBlob && typeof Blob === "function"
+        ? new Blob([ value ])
+        : Buffer.from(value);
     }
 
     return value;
@@ -150,7 +154,10 @@ function toFormData(obj, formData, options) {
   function throwIfMaxDepthExceeded(depth) {
     if (depth > maxDepth) {
       throw new AxiosError(
-        "Object is too deeply nested (" + depth + " levels). Max depth: " + maxDepth,
+        "Object is too deeply nested (" +
+          depth +
+          " levels). Max depth: " +
+          maxDepth,
         AxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED
       );
     }
@@ -199,22 +206,20 @@ function toFormData(obj, formData, options) {
 
     if (value && !path && typeof value === "object") {
       if (utils.endsWith(key, "{}")) {
-         
         key = metaTokens ? key : key.slice(0, -2);
-         
+
         value = stringifyWithDepthLimit(value, 1);
       }
       else if (
         (utils.isArray(value) && isFlatArray(value)) ||
-        ((utils.isFileList(value) || utils.endsWith(key, "[]")) && (arr = utils.toArray(value)))
+        ((utils.isFileList(value) || utils.endsWith(key, "[]")) &&
+          (arr = utils.toArray(value)))
       ) {
-         
         key = removeBrackets(key);
 
         arr.forEach(function each(el, index) {
           !(utils.isUndefined(el) || el === null) &&
             formData.append(
-               
               /* eslint-disable sonarjs/no-nested-conditional */
               indexes === true
                 ? renderKey([ key ], index, dots)
@@ -258,7 +263,13 @@ function toFormData(obj, formData, options) {
     utils.forEach(value, function each(el, key) {
       const result =
         !(utils.isUndefined(el) || el === null) &&
-        visitor.call(formData, el, utils.isString(key) ? key.trim() : key, path, exposedHelpers);
+        visitor.call(
+          formData,
+          el,
+          utils.isString(key) ? key.trim() : key,
+          path,
+          exposedHelpers
+        );
 
       if (result === true) {
         build(el, path ? path.concat(key) : [ key ], depth + 1);
