@@ -37,7 +37,7 @@ type RequestInterceptorEntry = {
 };
 
 function patchErrorStack(err: Error): void {
-  let dummy: { stack?: string } = {};
+  let dummy: { stack?: string; } = {};
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (Error.captureStackTrace) {
     Error.captureStackTrace(dummy);
@@ -113,7 +113,7 @@ function resolveAllowAbsoluteUrls(
 }
 
 function buildRequestInterceptorChain(
-  interceptors: { forEach: (fn: (h: RequestInterceptorEntry) => void) => void },
+  interceptors: { forEach: (fn: (h: RequestInterceptorEntry) => void) => void; },
   config: AxiosRequestConfig
 ): {
   chain: Array<((...args: Array<unknown>) => unknown) | undefined>;
@@ -332,8 +332,7 @@ class Axios {
     let promise;
     let i = 0;
     let len;
-
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+     
     if (!synchronousRequestInterceptors) {
       const chain: Array<((...args: Array<unknown>) => unknown) | undefined> = [
         dispatchRequest.bind(this) as (...args: Array<unknown>) => unknown,
@@ -358,7 +357,6 @@ class Axios {
       async cfg => dispatchRequest.call(this, cfg) as Promise<unknown>
     );
 
-    i = 0;
     len = responseInterceptorChain.length;
 
     while (i < len) {
