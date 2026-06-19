@@ -114,7 +114,7 @@ class Axios {
       config.url = configOrUrl;
     }
     else {
-      config = configOrUrl ?? {};
+      config = configOrUrl;
     }
 
     config = mergeConfig(this.defaults, config);
@@ -260,7 +260,7 @@ class Axios {
     }
 
     promise = Promise.resolve(newConfig as InternalAxiosRequestConfig)
-      .then(cfg => dispatchRequest.call(this, cfg) as Promise<unknown>);
+      .then(async cfg => dispatchRequest.call(this, cfg) as Promise<unknown>);
 
     i = 0;
     len = responseInterceptorChain.length;
