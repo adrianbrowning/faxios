@@ -23,16 +23,12 @@ function normalizeHeader(header: string): string {
     .toLowerCase();
 }
 
-function normalizeValue(
-  value: AxiosHeaderValue | undefined
-): AxiosHeaderValue | undefined {
-  if (value === false || value == null) {
-    return value;
-  }
-  if (utils.isArray(value)) {
-    return value.map(v => normalizeValue(v) as string);
-  }
-  return sanitizeHeaderValue(String(value));
+function normalizeValue(value: AxiosHeaderValue | undefined): AxiosHeaderValue | undefined {
+  return (value === false || value == null)
+    ? value
+    : utils.isArray(value)
+      ? value.map(v => normalizeValue(v) as string)
+      : sanitizeHeaderValue(String(value));
 }
 
 function parseTokens(str: string): Record<string, string> {
