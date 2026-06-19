@@ -16,6 +16,8 @@ type RewriteOption =
   | boolean
   | ((this: AxiosHeaders, value: string, name: string) => boolean);
 
+type HeaderInput = Record<string, unknown> | AxiosHeaders | string | undefined | null;
+
 function normalizeHeader(header: string): string {
   return header && String(header).trim()
     .toLowerCase();
@@ -24,11 +26,13 @@ function normalizeHeader(header: string): string {
 function normalizeValue(
   value: AxiosHeaderValue | undefined
 ): AxiosHeaderValue | undefined {
-  return (value === false || value == null)
-    ? value
-    : utils.isArray(value)
-      ? value.map(v => normalizeValue(v) as string)
-      : sanitizeHeaderValue(String(value));
+  if (value === false || value == null) {
+    return value;
+  }
+  const normalized = utils.isArray(value)
+    ? value.map(v => normalizeValue(v) as string)
+    : sanitizeHeaderValue(String(value));
+  return normalized;
 }
 
 function parseTokens(str: string): Record<string, string> {
@@ -124,7 +128,7 @@ class AxiosHeaders {
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   set(
-    header: Record<string, unknown> | AxiosHeaders | string | undefined | null,
+    header: HeaderInput,
     valueOrRewrite?: unknown,
     rewrite?: RewriteOption
   ): this {
