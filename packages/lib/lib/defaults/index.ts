@@ -5,7 +5,7 @@ import formDataToJSON from "../helpers/formDataToJSON.js";
 import toFormData from "../helpers/toFormData.js";
 import toURLEncodedForm from "../helpers/toURLEncodedForm.js";
 import platform from "../platform/index.js";
-import type { AxiosDefaults } from "../types.js";
+import type { AxiosAdapterName, AxiosDefaults, AxiosRequestHeaders, AxiosResponse, GenericFormData, InternalAxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
 import transitionalDefaults from "./transitional.js";
 
@@ -42,11 +42,11 @@ function stringifySafely(
 const defaults: AxiosDefaults = {
   transitional: transitionalDefaults,
 
-  adapter: [ "xhr", "http", "fetch" ] as Array<import("../types.js").AxiosAdapterName>,
+  adapter: [ "xhr", "http", "fetch" ] as Array<AxiosAdapterName>,
 
   transformRequest: [
     // eslint-disable-next-line sonarjs/cognitive-complexity
-    function transformRequest(this: import("../types.js").InternalAxiosRequestConfig, data: unknown, headers: import("../types.js").AxiosRequestHeaders) {
+    function transformRequest(this: InternalAxiosRequestConfig, data: unknown, headers: AxiosRequestHeaders) {
       const contentType = (headers.getContentType() as string | null | undefined) || "";
       const hasJSONContentType = contentType.indexOf("application/json") > -1;
       const isObjectPayload = utils.isObject(data);
@@ -99,7 +99,7 @@ const defaults: AxiosDefaults = {
 
           return toFormData(
             isFileList ? { "files[]": data } : data,
-            (_FormData && new _FormData()) as import("../types.js").GenericFormData | null | undefined,
+            (_FormData && new _FormData()) as GenericFormData | null | undefined,
             formSerializer
           );
         }
@@ -115,7 +115,7 @@ const defaults: AxiosDefaults = {
   ],
 
   transformResponse: [
-    function transformResponse(this: import("../types.js").InternalAxiosRequestConfig, data: unknown) {
+    function transformResponse(this: InternalAxiosRequestConfig, data: unknown) {
       const transitional = (this.transitional || defaults.transitional);
       const forcedJSONParsing = transitional && transitional.forcedJSONParsing;
       const responseType = this.responseType;
@@ -139,7 +139,7 @@ const defaults: AxiosDefaults = {
         catch (e) {
           if (strictJSONParsing) {
             if ((e as { name?: string; }).name === "SyntaxError") {
-              throw AxiosError.from(e as Error, AxiosError.ERR_BAD_RESPONSE, this, null, (this as unknown as Record<string, unknown>)["response"] as import("../types.js").AxiosResponse | undefined);
+              throw AxiosError.from(e as Error, AxiosError.ERR_BAD_RESPONSE, this, null, (this as unknown as Record<string, unknown>)["response"] as AxiosResponse | undefined);
             }
             throw e;
           }
