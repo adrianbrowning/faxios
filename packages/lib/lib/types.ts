@@ -22,7 +22,7 @@ type UppercaseMethod =
   | "UNLINK"
   | "QUERY";
 
-export type Method = (UppercaseMethod | Lowercase<UppercaseMethod>) & {};
+export type Method = UppercaseMethod | Lowercase<UppercaseMethod>;
 
 type CommonRequestHeadersList =
   | "Accept"
@@ -76,7 +76,7 @@ type UppercaseResponseEncoding =
 export type responseEncoding = (
   | UppercaseResponseEncoding
   | Lowercase<UppercaseResponseEncoding>
-) & {};
+);
 
 export interface TransitionalOptions {
   silentJSONParsing?: boolean;
@@ -128,7 +128,7 @@ export interface SerializerOptions {
 }
 
 // tslint:disable-next-line
-export interface FormSerializerOptions extends SerializerOptions {}
+export type FormSerializerOptions = SerializerOptions;
 
 export interface ParamEncoder {
   (value: unknown, defaultEncoder: (value: unknown) => unknown): unknown;
@@ -279,7 +279,7 @@ export interface AxiosRequestConfig<D = unknown> {
   httpAgent?: unknown;
   httpsAgent?: unknown;
   proxy?: AxiosProxyConfig | false;
-  cancelToken?: CancelToken | undefined;
+  cancelToken?: CancelToken;
   decompress?: boolean;
   transitional?: TransitionalOptions;
   signal?: GenericAbortSignal;
