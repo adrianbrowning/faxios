@@ -769,6 +769,7 @@ const reduceDescriptors = (obj: object, reducer: (descriptor: PropertyDescriptor
  */
 
 const freezeMethods = (obj: object) => {
+  // eslint-disable-next-line sonarjs/function-return-type
   reduceDescriptors(obj, (descriptor, name): PropertyDescriptor | false => {
     // skip restricted props in strict mode
     if (isFunction(obj) && [ "arguments", "caller", "callee" ].includes(name)) {
