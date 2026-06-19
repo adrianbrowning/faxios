@@ -13,7 +13,7 @@ import resolveConfig from "../helpers/resolveConfig.js";
 import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import { trackStream } from "../helpers/trackStream.js";
 import platform from "../platform/index.js";
-import type { CancelToken } from "../types.js";
+import type { CancelToken, InternalAxiosRequestConfig, AxiosRequestHeaders, AxiosResponse } from "../types.js";
 import utils from "../utils.js";
 
 // btoa is a global in Node 16+ and browsers; accessed via globalThis for no-DOM lib compat
@@ -94,10 +94,7 @@ const maybeWithAuthCredentials = (url: string): boolean => {
 
 // eslint-disable-next-line sonarjs/function-return-type
 const factory = (env: Record<string, unknown>) => {
-  const globalObject: Record<string, unknown> =
-    utils.global !== undefined && utils.global !== null
-      ? utils.global
-      : globalThis;
+  const globalObject: Record<string, unknown> = utils.global;
   const ReadableStream = globalObject["ReadableStream"] as (AnyConstructor & { prototype: AnyReadableStream; }) | undefined;
   const TextEncoder = globalObject["TextEncoder"] as (new () => AnyTextEncoder) | undefined;
 
@@ -155,7 +152,7 @@ const factory = (env: Record<string, unknown>) => {
       const hasContentType = request.headers.has("Content-Type");
 
       if (request.body != null) {
-        request.body.cancel();
+        void request.body.cancel();
       }
 
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -177,7 +174,7 @@ const factory = (env: Record<string, unknown>) => {
       [ "text", "arrayBuffer", "blob", "formData", "stream" ].forEach(type => {
         !resolvers[type] &&
           (resolvers[type] = (res: AnyResponse, config?: unknown) => {
-            const method = res && (res as Record<string, unknown>)[type];
+            const method = (res as Record<string, unknown>)[type];
 
             if (method) {
               return (method as (this: AnyResponse) => unknown).call(res);
@@ -186,7 +183,7 @@ const factory = (env: Record<string, unknown>) => {
             throw new AxiosError(
               `Response type '${type}' is not supported`,
               AxiosError.ERR_NOT_SUPPORT,
-              config as import("../types.js").InternalAxiosRequestConfig
+              config as InternalAxiosRequestConfig
             );
           });
       });
@@ -223,15 +220,15 @@ const factory = (env: Record<string, unknown>) => {
     return undefined;
   };
 
-  const resolveBodyLength = async (headers: import("../types.js").AxiosRequestHeaders, body: unknown): Promise<number | undefined> => {
+  const resolveBodyLength = async (headers: AxiosRequestHeaders, body: unknown): Promise<number | undefined> => {
     const length = utils.toFiniteNumber((headers.getContentLength)());
 
     return length == null ? getBodyLength(body) : length;
   };
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  return async (config: import("../types.js").InternalAxiosRequestConfig) => {
-    const _resolved = resolveConfig(config) as import("../types.js").InternalAxiosRequestConfig & {
+  return async (config: InternalAxiosRequestConfig) => {
+    const _resolved = resolveConfig(config) as InternalAxiosRequestConfig & {
       fetchOptions?: Record<string, unknown>;
       withCredentials?: string | boolean;
     };
@@ -628,14 +625,14 @@ const factory = (env: Record<string, unknown>) => {
       }
 
       const _err = err as Record<string, unknown> & Error;
-      if (_err && _err.name === "TypeError" && /Load failed|fetch/i.test(_err.message)) {
+      if (_err.name === "TypeError" && /Load failed|fetch/i.test(_err.message)) {
         throw Object.assign(
           new AxiosError(
             "Network Error",
             AxiosError.ERR_NETWORK,
             config,
             request,
-            _err["response"] as import("../types.js").AxiosResponse | undefined
+            _err["response"] as AxiosResponse | undefined
           ),
           {
             cause: _err["cause"] || _err,
@@ -645,10 +642,10 @@ const factory = (env: Record<string, unknown>) => {
 
       throw AxiosError.from(
         _err,
-        _err && (_err["code"] as string | undefined),
+        _err["code"] as string | undefined,
         config,
         request,
-        _err && (_err["response"] as import("../types.js").AxiosResponse | undefined)
+        _err["response"] as AxiosResponse | undefined
       );
     }
   };
