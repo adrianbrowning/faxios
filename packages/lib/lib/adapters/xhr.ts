@@ -8,8 +8,8 @@ import { progressEventReducer } from "../helpers/progressEventReducer.js";
 import resolveConfig from "../helpers/resolveConfig.js";
 import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import platform from "../platform/index.js";
-import utils from "../utils.js";
 import type { Cancel } from "../types.js";
+import utils from "../utils.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const XHRCtor = (globalThis as Record<string, unknown>).XMLHttpRequest as (new () => any) | undefined;

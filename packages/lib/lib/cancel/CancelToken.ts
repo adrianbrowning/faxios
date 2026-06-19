@@ -24,7 +24,7 @@ class CancelToken {
     const token = this;
 
     /* eslint-disable promise/always-return */
-    // eslint-disable-next-line promise/catch-or-return, sonarjs/no-async-constructor
+    // eslint-disable-next-line sonarjs/no-async-constructor
     void this.promise.then(cancel => {
       if (!token._listeners) return;
 
