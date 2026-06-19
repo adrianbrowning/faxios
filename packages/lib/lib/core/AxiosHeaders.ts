@@ -27,7 +27,7 @@ function normalizeValue(
   value: AxiosHeaderValue | undefined
 ): AxiosHeaderValue | undefined {
   if (value === false || value == null) {
-    return value;
+    return value as AxiosHeaderValue | undefined;
   }
   return utils.isArray(value)
     ? value.map(v => normalizeValue(v) as string)
