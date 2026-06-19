@@ -26,6 +26,26 @@ import transitionalDefaults from "./transitional.js";
  *
  * @returns {string} A stringified version of the rawValue.
  */
+function serializeObjectPayload(
+  data: unknown,
+  contentType: string,
+  formSerializer: Record<string, unknown> | undefined,
+  FormDataCtor: (new (...args: Array<unknown>) => object) | undefined
+): unknown {
+  if (contentType.indexOf("application/x-www-form-urlencoded") > -1) {
+    return toURLEncodedForm(data, formSerializer).toString();
+  }
+  const isFileList = utils.isFileList(data);
+  if (isFileList || contentType.indexOf("multipart/form-data") > -1) {
+    const _FormData = FormDataCtor;
+    return toFormData(
+      isFileList ? { "files[]": data } : data,
+      (_FormData && new _FormData()) as GenericFormData | null | undefined,
+      formSerializer
+    );
+  }
+}
+
 function stringifySafely(
   rawValue: unknown,
   parser?: ((s: string) => unknown) | null,
@@ -98,29 +118,10 @@ const defaults: AxiosDefaults = {
         return (data as { toString: () => string; }).toString();
       }
 
-      let isFileList: unknown;
-
       if (isObjectPayload) {
-        const formSerializer = this.formSerializer as
-          | Record<string, unknown>
-          | undefined;
-        if (contentType.indexOf("application/x-www-form-urlencoded") > -1) {
-          return toURLEncodedForm(data, formSerializer).toString();
-        }
-
-        isFileList = utils.isFileList(data);
-        if (isFileList || contentType.indexOf("multipart/form-data") > -1) {
-          const _FormData = this.env?.FormData;
-
-          return toFormData(
-            isFileList ? { "files[]": data } : data,
-            (_FormData && new _FormData()) as
-              | GenericFormData
-              | null
-              | undefined,
-            formSerializer
-          );
-        }
+        const formSerializer = this.formSerializer as Record<string, unknown> | undefined;
+        const serialized = serializeObjectPayload(data, contentType, formSerializer, this.env?.FormData);
+        if (serialized !== undefined) return serialized;
       }
 
       if (isObjectPayload || hasJSONContentType) {
