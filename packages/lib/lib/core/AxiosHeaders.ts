@@ -98,6 +98,24 @@ function formatHeader(header: string): string {
     .replace(/([a-z\d])(\w*)/g, (_w, char, str) => char.toUpperCase() + str);
 }
 
+function iterableToHeaders(header: Iterable<unknown>): Record<string, unknown> {
+  const obj: Record<string, unknown> = Object.create(null);
+  for (const entry of header) {
+    if (!utils.isArray(entry)) {
+      throw new TypeError("Object iterator must return a key-value pair");
+    }
+    const key = (entry as Array<unknown>)[0] as string;
+    const val = (entry as Array<unknown>)[1];
+    if (utils.hasOwnProp(obj, key)) {
+      const dest = obj[key];
+      obj[key] = utils.isArray(dest) ? [ ...(dest as Array<unknown>), val ] : [ dest, val ];
+    } else {
+      obj[key] = val;
+    }
+  }
+  return obj;
+}
+
 function buildAccessors(obj: object, header: string): void {
   const accessorName = utils.toCamelCase(" " + header);
 
@@ -182,28 +200,7 @@ class AxiosHeaders {
       }
     }
     else if (utils.isObject(header) && utils.isSafeIterable(header)) {
-      let obj: Record<string, unknown> = Object.create(null),
-        dest: unknown,
-        key: string;
-      for (const entry of header as Iterable<unknown>) {
-        if (!utils.isArray(entry)) {
-          throw new TypeError("Object iterator must return a key-value pair");
-        }
-
-        key = (entry as Array<unknown>)[0] as string;
-
-        if (utils.hasOwnProp(obj, key)) {
-          dest = obj[key];
-          obj[key] = utils.isArray(dest)
-            ? [ ...(dest as Array<unknown>), (entry as Array<unknown>)[1] ]
-            : [ dest, (entry as Array<unknown>)[1] ];
-        }
-        else {
-          obj[key] = (entry as Array<unknown>)[1];
-        }
-      }
-
-      setHeaders(obj, valueOrRewrite);
+      setHeaders(iterableToHeaders(header as Iterable<unknown>), valueOrRewrite);
     }
     else {
       header != null && setHeader(valueOrRewrite, header as string, rewrite);
