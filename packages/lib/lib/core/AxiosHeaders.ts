@@ -31,7 +31,7 @@ function normalizeValue(
   }
   return utils.isArray(value)
     ? value.map(v => normalizeValue(v) as string)
-    : sanitizeHeaderValue(String(value));
+    : sanitizeHeaderValue(String(value)) as string;
 }
 
 function parseTokens(str: string): Record<string, string> {
