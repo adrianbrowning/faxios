@@ -36,9 +36,7 @@ class InterceptorManager<T> {
   }
 
   clear(): void {
-    if (this.handlers) {
-      this.handlers = [];
-    }
+    this.handlers = [];
   }
 
   forEach(fn: (handler: AxiosInterceptorHandler<T>) => void): void {
