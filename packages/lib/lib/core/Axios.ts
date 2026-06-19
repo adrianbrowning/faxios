@@ -29,6 +29,150 @@ const validators = validator.validators as Record<
   spelling?: SpellingFn;
 };
 
+type RequestInterceptorEntry = {
+  runWhen?: ((c: InternalAxiosRequestConfig) => boolean) | null;
+  synchronous?: boolean;
+  fulfilled?: (...args: Array<unknown>) => unknown;
+  rejected?: (...args: Array<unknown>) => unknown;
+};
+
+function patchErrorStack(err: Error): void {
+  let dummy: { stack?: string } = {};
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(dummy);
+  }
+  else {
+    dummy = new Error();
+  }
+
+  const rawStack = dummy.stack ?? "";
+  const firstNewline = rawStack.indexOf("\n");
+  // slice off the Error: ... line
+  const stack = firstNewline === -1 ? "" : rawStack.slice(firstNewline + 1);
+
+  try {
+    if (!err.stack) {
+      err.stack = stack;
+      // match without the 2 top stack lines
+    }
+    else if (stack) {
+      const firstNewlineIndex = stack.indexOf("\n");
+      const secondNewlineIndex =
+        firstNewlineIndex === -1
+          ? -1
+          : stack.indexOf("\n", firstNewlineIndex + 1);
+      const stackWithoutTwoTopLines =
+        secondNewlineIndex === -1
+          ? ""
+          : stack.slice(secondNewlineIndex + 1);
+
+      if (!String(err.stack).endsWith(stackWithoutTwoTopLines)) {
+        err.stack += "\n" + stack;
+      }
+    }
+  }
+  catch {
+    // ignore the case where "stack" is an un-writable property
+  }
+}
+
+function normalizeParamsSerializer(config: AxiosRequestConfig): void {
+  const { paramsSerializer } = config;
+  if (paramsSerializer == null) return;
+
+  if (utils.isFunction(paramsSerializer)) {
+    config.paramsSerializer = {
+      serialize: paramsSerializer as (
+        params: Record<string, unknown>
+      ) => string,
+    };
+  }
+  else {
+    validator.assertOptions(
+      paramsSerializer,
+      {
+        encode: validators.function!,
+        serialize: validators.function!,
+      },
+      true
+    );
+  }
+}
+
+function resolveAllowAbsoluteUrls(
+  config: AxiosRequestConfig,
+  defaults: AxiosRequestConfig
+): void {
+  if (config.allowAbsoluteUrls === undefined) {
+    config.allowAbsoluteUrls =
+      defaults.allowAbsoluteUrls !== undefined
+        ? defaults.allowAbsoluteUrls
+        : true;
+  }
+}
+
+function buildRequestInterceptorChain(
+  interceptors: { forEach: (fn: (h: RequestInterceptorEntry) => void) => void },
+  config: AxiosRequestConfig
+): {
+  chain: Array<((...args: Array<unknown>) => unknown) | undefined>;
+  synchronous: boolean;
+} {
+  const chain: Array<((...args: Array<unknown>) => unknown) | undefined> = [];
+  let synchronous = true;
+
+  interceptors.forEach((interceptor: RequestInterceptorEntry) => {
+    if (
+      typeof interceptor.runWhen === "function" &&
+      interceptor.runWhen(config as InternalAxiosRequestConfig) === false
+    ) {
+      return;
+    }
+
+    synchronous = synchronous && !!interceptor.synchronous;
+
+    const transitional = config.transitional || transitionalDefaults;
+    const legacyInterceptorReqResOrdering =
+      transitional.legacyInterceptorReqResOrdering;
+
+    if (legacyInterceptorReqResOrdering) {
+      chain.unshift(interceptor.fulfilled, interceptor.rejected);
+    }
+    else {
+      chain.push(interceptor.fulfilled, interceptor.rejected);
+    }
+  });
+
+  return { chain, synchronous };
+}
+
+function runSyncInterceptors(
+  interceptorChain: Array<((...args: Array<unknown>) => unknown) | undefined>,
+  config: AxiosRequestConfig,
+  context: unknown
+): AxiosRequestConfig {
+  let newConfig = config;
+  let i = 0;
+  const len = interceptorChain.length;
+
+  while (i < len) {
+    const onFulfilled = interceptorChain[i++];
+    const onRejected = interceptorChain[i++];
+    try {
+      newConfig = onFulfilled
+        ? (onFulfilled(newConfig) as AxiosRequestConfig)
+        : newConfig;
+    }
+    catch (error) {
+      if (onRejected) onRejected.call(context, error);
+      break;
+    }
+  }
+
+  return newConfig;
+}
+
 /**
  * Create a new instance of Axios
  *
@@ -85,52 +229,7 @@ class Axios {
     }
     catch (err) {
       if (err instanceof Error) {
-        let dummy: { stack?: string; } = {};
-
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (Error.captureStackTrace) {
-          Error.captureStackTrace(dummy);
-        }
-        else {
-          dummy = new Error();
-        }
-
-        // slice off the Error: ... line
-        const stack = (() => {
-          if (!dummy.stack) {
-            return "";
-          }
-
-          const firstNewlineIndex = dummy.stack.indexOf("\n");
-
-          return firstNewlineIndex === -1
-            ? ""
-            : dummy.stack.slice(firstNewlineIndex + 1);
-        })();
-        try {
-          if (!err.stack) {
-            err.stack = stack;
-            // match without the 2 top stack lines
-          }
-          else if (stack) {
-            const firstNewlineIndex = stack.indexOf("\n");
-            const secondNewlineIndex =
-              firstNewlineIndex === -1
-                ? -1
-                : stack.indexOf("\n", firstNewlineIndex + 1);
-            const stackWithoutTwoTopLines =
-              secondNewlineIndex === -1
-                ? ""
-                : stack.slice(secondNewlineIndex + 1);
-
-            if (!String(err.stack).endsWith(stackWithoutTwoTopLines)) {
-              err.stack += "\n" + stack;
-            }
-          }
-        }
-        catch {
-          // ignore the case where "stack" is an un-writable property
-        }
+        patchErrorStack(err);
       }
 
       throw err;
@@ -153,7 +252,7 @@ class Axios {
 
     config = mergeConfig(this.defaults, config);
 
-    const { transitional, paramsSerializer, headers } = config;
+    const { transitional, headers } = config;
 
     if (transitional !== undefined) {
       validator.assertOptions(
@@ -176,36 +275,8 @@ class Axios {
       );
     }
 
-    if (paramsSerializer != null) {
-      if (utils.isFunction(paramsSerializer)) {
-        config.paramsSerializer = {
-          serialize: paramsSerializer as (
-            params: Record<string, unknown>
-          ) => string,
-        };
-      }
-      else {
-        validator.assertOptions(
-          paramsSerializer,
-          {
-            encode: validators.function!,
-            serialize: validators.function!,
-          },
-          true
-        );
-      }
-    }
-
-    // Set config.allowAbsoluteUrls
-    if (config.allowAbsoluteUrls !== undefined) {
-      // do nothing
-    }
-    else if (this.defaults.allowAbsoluteUrls !== undefined) {
-      config.allowAbsoluteUrls = this.defaults.allowAbsoluteUrls;
-    }
-    else {
-      config.allowAbsoluteUrls = true;
-    }
+    normalizeParamsSerializer(config);
+    resolveAllowAbsoluteUrls(config, this.defaults);
 
     validator.assertOptions(
       config,
@@ -238,46 +309,10 @@ class Axios {
       ...(h ? [ h as unknown as null ] : [])
     );
 
-    // filter out skipped interceptors
-    const requestInterceptorChain: Array<
-      ((...args: Array<unknown>) => unknown) | undefined
-    > = [];
-    let synchronousRequestInterceptors = true;
-    this.interceptors.request.forEach(
-      function unshiftRequestInterceptors(interceptor: {
-        runWhen?: ((config: InternalAxiosRequestConfig) => boolean) | null;
-        synchronous?: boolean;
-        fulfilled?: (...args: Array<unknown>) => unknown;
-        rejected?: (...args: Array<unknown>) => unknown;
-      }) {
-        if (
-          typeof interceptor.runWhen === "function" &&
-          interceptor.runWhen(config as InternalAxiosRequestConfig) === false
-        ) {
-          return;
-        }
-
-        synchronousRequestInterceptors =
-          synchronousRequestInterceptors && !!interceptor.synchronous;
-
-        const transitional = config.transitional || transitionalDefaults;
-        const legacyInterceptorReqResOrdering =
-          transitional.legacyInterceptorReqResOrdering;
-
-        if (legacyInterceptorReqResOrdering) {
-          requestInterceptorChain.unshift(
-            interceptor.fulfilled,
-            interceptor.rejected
-          );
-        }
-        else {
-          requestInterceptorChain.push(
-            interceptor.fulfilled,
-            interceptor.rejected
-          );
-        }
-      }
-    );
+    const {
+      chain: requestInterceptorChain,
+      synchronous: synchronousRequestInterceptors,
+    } = buildRequestInterceptorChain(this.interceptors.request, config);
 
     const responseInterceptorChain: Array<
       ((...args: Array<unknown>) => unknown) | undefined
@@ -317,23 +352,7 @@ class Axios {
       return promise;
     }
 
-    len = requestInterceptorChain.length;
-
-    let newConfig = config;
-
-    while (i < len) {
-      const onFulfilled = requestInterceptorChain[i++];
-      const onRejected = requestInterceptorChain[i++];
-      try {
-        newConfig = onFulfilled
-          ? (onFulfilled(newConfig) as AxiosRequestConfig)
-          : newConfig;
-      }
-      catch (error) {
-        if (onRejected) onRejected.call(this, error);
-        break;
-      }
-    }
+    const newConfig = runSyncInterceptors(requestInterceptorChain, config, this);
 
     promise = Promise.resolve(newConfig as InternalAxiosRequestConfig).then(
       async cfg => dispatchRequest.call(this, cfg) as Promise<unknown>
