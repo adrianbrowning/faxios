@@ -28,10 +28,9 @@ function hasOwnOrPrototypeToJSON(source: unknown): boolean {
 // (case-insensitive) listed in `redactKeys` with REDACTED. Walks through arrays
 // and AxiosHeaders, and short-circuits on circular references.
 function redactConfig(config: unknown, redactKeys: Array<string>): unknown {
-  const lowerKeys = new Set(redactKeys.map(k => String(k).toLowerCase()));
+  const lowerKeys = new Set(redactKeys.map((k) => String(k).toLowerCase()));
   const seen: Array<object> = [];
 
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   const visit = (source: unknown): unknown => {
     if (source === null || typeof source !== "object") return source;
     if (utils.isBuffer(source)) return source;
@@ -52,16 +51,17 @@ function redactConfig(config: unknown, redactKeys: Array<string>): unknown {
           (result as Array<unknown>)[i] = reducedValue;
         }
       });
-    }
-    else {
+    } else {
       if (!utils.isPlainObject(source) && hasOwnOrPrototypeToJSON(source)) {
         seen.pop();
         return source;
       }
 
       result = Object.create(null);
-      for (const [ key, value ] of Object.entries(source as object)) {
-        const reducedValue = lowerKeys.has(key.toLowerCase()) ? REDACTED : visit(value);
+      for (const [key, value] of Object.entries(source as object)) {
+        const reducedValue = lowerKeys.has(key.toLowerCase())
+          ? REDACTED
+          : visit(value);
         if (!utils.isUndefined(reducedValue)) {
           (result as Record<string, unknown>)[key] = reducedValue;
         }
@@ -108,14 +108,20 @@ class AxiosError extends Error {
   static readonly ERR_FORM_DATA_DEPTH_EXCEEDED: string;
 
   static from(
-    error: Error & { code?: string; status?: number; },
+    error: Error & { code?: string; status?: number },
     code?: string,
     config?: InternalAxiosRequestConfig,
     request?: unknown,
     response?: AxiosResponse,
-    customProps?: Record<string, unknown>
+    customProps?: Record<string, unknown>,
   ): AxiosError {
-    const axiosError = new AxiosError(error.message, code || error.code, config, request, response);
+    const axiosError = new AxiosError(
+      error.message,
+      code || error.code,
+      config,
+      request,
+      response,
+    );
     axiosError.cause = error;
     axiosError.name = error.name;
 
@@ -144,19 +150,23 @@ class AxiosError extends Error {
     code?: string,
     config?: InternalAxiosRequestConfig,
     request?: unknown,
-    response?: AxiosResponse
+    response?: AxiosResponse,
   ) {
     super(message);
 
     // Make message enumerable to maintain backward compatibility
     // The native Error constructor sets message as non-enumerable,
     // but axios < v1.13.3 had it as enumerable
-    Object.defineProperty(this, "message", Object.assign(Object.create(null) as PropertyDescriptor, {
-      value: message,
-      enumerable: true,
-      writable: true,
-      configurable: true,
-    }));
+    Object.defineProperty(
+      this,
+      "message",
+      Object.assign(Object.create(null) as PropertyDescriptor, {
+        value: message,
+        enumerable: true,
+        writable: true,
+        configurable: true,
+      }),
+    );
 
     this.name = "AxiosError";
     this.isAxiosError = true;
@@ -175,7 +185,8 @@ class AxiosError extends Error {
     // with REDACTED in the serialized snapshot. Undefined or empty leaves the
     // existing serialization behavior unchanged.
     const config = this.config;
-    const redactKeys = config && utils.hasOwnProp(config, "redact") ? config.redact : undefined;
+    const redactKeys =
+      config && utils.hasOwnProp(config, "redact") ? config.redact : undefined;
     const serializedConfig =
       utils.isArray(redactKeys) && redactKeys.length > 0
         ? redactConfig(config, redactKeys)

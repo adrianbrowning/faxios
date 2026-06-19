@@ -27,7 +27,7 @@ import Http2Sessions from "../helpers/Http2Sessions.js";
 import {
   progressEventReducer,
   progressEventDecorator,
-  asyncDecorator
+  asyncDecorator,
 } from "../helpers/progressEventReducer.js";
 import readBlob from "../helpers/readBlob.js";
 import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
@@ -54,7 +54,7 @@ const zstdOptions = {
 
 const isBrotliSupported = utils.isFunction(zlib.createBrotliDecompress);
 const isZstdSupported = utils.isFunction(
-  (zlib as Record<string, unknown>)["createZstdDecompress"]
+  (zlib as Record<string, unknown>)["createZstdDecompress"],
 );
 const ACCEPT_ENCODING =
   "gzip, compress, deflate" + (isBrotliSupported ? ", br" : "");
@@ -64,19 +64,19 @@ const ACCEPT_ENCODING_WITH_ZSTD =
 const { http: httpFollow, https: httpsFollow } = followRedirects;
 
 const isHttps = /https:?/;
-const FORM_DATA_CONTENT_HEADERS = [ "content-type", "content-length" ];
+const FORM_DATA_CONTENT_HEADERS = ["content-type", "content-length"];
 
 function setFormDataHeaders(
   headers: AxiosHeaders,
   formHeaders: Record<string, unknown>,
-  policy: unknown
+  policy: unknown,
 ): void {
   if (policy !== "content-only") {
     headers.set(formHeaders);
     return;
   }
 
-  Object.entries(formHeaders).forEach(([ key, val ]) => {
+  Object.entries(formHeaders).forEach(([key, val]) => {
     if (FORM_DATA_CONTENT_HEADERS.includes(key.toLowerCase())) {
       headers.set(key, val);
     }
@@ -109,8 +109,8 @@ const tunnelingAgentCacheUser = new WeakMap<
 function getTunnelingAgent(
   agentOptions: Record<string, unknown>,
   userHttpsAgent:
-    | (http.Agent & { options?: Record<string, unknown>; })
-    | undefined
+    | (http.Agent & { options?: Record<string, unknown> })
+    | undefined,
 ): HttpsProxyAgentInstance {
   const key =
     String(agentOptions["protocol"]) +
@@ -148,7 +148,7 @@ function getTunnelingAgent(
       }
     ).callback = function axiosTunnelingAgentCallback(
       req: unknown,
-      opts: unknown
+      opts: unknown,
     ) {
       // HttpsProxyAgent v5 reads callback opts for the post-CONNECT origin TLS upgrade.
       return callback.call(this, req, {
@@ -164,7 +164,7 @@ function getTunnelingAgent(
 }
 
 const supportedProtocols = platform.protocols.map(
-  (protocol: string) => protocol + ":"
+  (protocol: string) => protocol + ":",
 );
 
 // Node's WHATWG URL parser returns `username` and `password` percent-encoded.
@@ -178,15 +178,14 @@ const decodeURIComponentSafe = (value: unknown): unknown => {
 
   try {
     return decodeURIComponent(value as string);
-  }
-  catch {
+  } catch {
     return value;
   }
 };
 
 const flushOnFinish = (
   s: stream.Stream,
-  [ throttled, flush ]: [unknown, () => void]
+  [throttled, flush]: [unknown, () => void],
 ): unknown => {
   s.on("end", flush).on("error", flush);
 
@@ -206,7 +205,7 @@ const http2Sessions = new Http2Sessions();
 function dispatchBeforeRedirect(
   options: Record<string, unknown>,
   responseDetails: unknown,
-  requestDetails: unknown
+  requestDetails: unknown,
 ): void {
   const beforeRedirects = options["beforeRedirects"] as
     | Record<string, ((...args: Array<unknown>) => void) | undefined>
@@ -228,13 +227,13 @@ function dispatchBeforeRedirect(
 
 function stripMatchingHeaders(
   headers: Record<string, unknown> | undefined,
-  sensitiveSet: Set<string>
+  sensitiveSet: Set<string>,
 ): void {
   if (!headers) {
     return;
   }
 
-  Object.keys(headers).forEach(header => {
+  Object.keys(headers).forEach((header) => {
     if (sensitiveSet.has(header.toLowerCase())) {
       delete headers[header];
     }
@@ -243,7 +242,7 @@ function stripMatchingHeaders(
 
 function isSameOriginRedirect(
   redirectOptions: Record<string, unknown>,
-  requestDetails: { url?: string; } | undefined
+  requestDetails: { url?: string } | undefined,
 ): boolean {
   if (!requestDetails) {
     return false;
@@ -254,8 +253,7 @@ function isSameOriginRedirect(
       new URL(String(requestDetails.url)).origin ===
       new URL(String(redirectOptions["href"])).origin
     );
-  }
-  catch {
+  } catch {
     // If origin comparison fails, treat the redirect as unsafe.
     return false;
   }
@@ -270,13 +268,13 @@ function isSameOriginRedirect(
  *
  * @returns {http.ClientRequestArgs}
  */
-// eslint-disable-next-line sonarjs/cognitive-complexity
+
 function setProxy(
   options: Record<string, unknown>,
   configProxy: unknown,
   location: string,
   isRedirect: boolean,
-  configHttpsAgent: unknown
+  configHttpsAgent: unknown,
 ): void {
   let proxy: unknown = configProxy;
   if (!proxy && proxy !== false) {
@@ -350,12 +348,11 @@ function setProxy(
 
       if (validProxyAuth) {
         proxyAuth = (authUsername || "") + ":" + (authPassword || "");
-      }
-      else if (authIsObject) {
+      } else if (authIsObject) {
         throw new AxiosError(
           "Invalid proxy authorization",
           AxiosError.ERR_BAD_OPTION,
-          { proxy } as unknown as InternalAxiosRequestConfig
+          { proxy } as unknown as InternalAxiosRequestConfig,
         );
       }
     }
@@ -396,7 +393,7 @@ function setProxy(
             ? `[${proxyHostStr}]`
             : proxyHostStr;
         const proxyURL = new URL(
-          `${normalizedProtocol}//${proxyHostForURL}${proxyPort ? ":" + String(proxyPort) : ""}`
+          `${normalizedProtocol}//${proxyHostForURL}${proxyPort ? ":" + String(proxyPort) : ""}`,
         );
         const agentOptions: Record<string, unknown> = {
           protocol: proxyURL.protocol,
@@ -406,13 +403,13 @@ function setProxy(
             proxyAuth && typeof proxyAuth === "string" ? proxyAuth : undefined,
         };
         if (proxyURL.protocol === "https:") {
-          agentOptions["ALPNProtocols"] = [ "http/1.1" ];
+          agentOptions["ALPNProtocols"] = ["http/1.1"];
         }
         const tunnelingAgent = getTunnelingAgent(
           agentOptions,
           configHttpsAgent as
-            | (http.Agent & { options?: Record<string, unknown>; })
-            | undefined
+            | (http.Agent & { options?: Record<string, unknown> })
+            | undefined,
         );
         // Set both: `options.agent` is consumed by the native https.request path
         // (maxRedirects === 0); `options.agents.https` is consumed by
@@ -424,14 +421,13 @@ function setProxy(
             tunnelingAgent;
         }
       }
-    }
-    else {
+    } else {
       // Forward-proxy mode for plaintext HTTP targets. The request line carries
       // the absolute URL and the proxy sees everything — acceptable for plain
       // HTTP since the wire was already plaintext.
       if (proxyAuth) {
         const base64 = Buffer.from(String(proxyAuth), "utf8").toString(
-          "base64"
+          "base64",
         );
         (options["headers"] as Record<string, unknown>)["Proxy-Authorization"] =
           "Basic " + base64;
@@ -441,7 +437,7 @@ function setProxy(
       // the value forwarded to the proxy; otherwise default to the request URL's host.
       let hasUserHostHeader = false;
       for (const name of Object.keys(
-        options["headers"] as Record<string, unknown>
+        options["headers"] as Record<string, unknown>,
       )) {
         if (name.toLowerCase() === "host") {
           hasUserHostHeader = true;
@@ -477,7 +473,7 @@ function setProxy(
         configProxy,
         String((redirectOptions as Record<string, unknown>)["href"]),
         true,
-        configHttpsAgent
+        configHttpsAgent,
       );
     };
 }
@@ -491,7 +487,7 @@ type OnDoneHandler = (value: unknown, isRejected?: boolean) => void;
 type AsyncExecutor = (
   resolve: (value: unknown) => void,
   reject: (reason?: unknown) => void,
-  onDone: (handler: OnDoneHandler) => void
+  onDone: (handler: OnDoneHandler) => void,
 ) => Promise<void>;
 
 const wrapAsync = async (asyncExecutor: AsyncExecutor): Promise<unknown> =>
@@ -518,7 +514,7 @@ const wrapAsync = async (asyncExecutor: AsyncExecutor): Promise<unknown> =>
     asyncExecutor(
       _resolve,
       _reject,
-      onDoneHandler => (onDoneCallback = onDoneHandler)
+      (onDoneHandler) => (onDoneCallback = onDoneHandler),
     ).catch(_reject);
   });
 
@@ -528,7 +524,7 @@ const resolveFamily = ({
 }: {
   address: unknown;
   family?: unknown;
-}): { address: string; family: number; } => {
+}): { address: string; family: number } => {
   if (!utils.isString(address)) {
     throw TypeError("address must be a string");
   }
@@ -541,12 +537,12 @@ const resolveFamily = ({
 
 const buildAddressEntry = (
   address: unknown,
-  family?: unknown
-): { address: string; family: number; } =>
+  family?: unknown,
+): { address: string; family: number } =>
   resolveFamily(
     utils.isObject(address)
-      ? (address as { address: unknown; family?: unknown; })
-      : { address, family }
+      ? (address as { address: unknown; family?: unknown })
+      : { address, family },
   );
 
 const http2Transport = {
@@ -564,7 +560,7 @@ const http2Transport = {
 
     const session = http2Sessions.getSession(
       authority,
-      http2Options as Record<string, unknown>
+      http2Options as Record<string, unknown>,
     );
 
     const {
@@ -612,9 +608,7 @@ const http2Transport = {
 /*eslint consistent-return:0*/
 export default isHttpAdapterSupported &&
   async function httpAdapter(config: InternalAxiosRequestConfig) {
-     
     return wrapAsync(
-      // eslint-disable-next-line sonarjs/cognitive-complexity
       async function dispatchHttpRequest(resolve, reject, onDone) {
         // Read config pollution-safely: own properties and members inherited from
         // a non-Object.prototype source (e.g. an Object.create(defaults) template)
@@ -647,7 +641,7 @@ export default isHttpAdapterSupported &&
 
         if (Number.isNaN(httpVersion)) {
           throw TypeError(
-            `Invalid protocol version: '${String((config as unknown as Record<string, unknown>)["httpVersion"])}' is not a number`
+            `Invalid protocol version: '${String((config as unknown as Record<string, unknown>)["httpVersion"])}' is not a number`,
           );
         }
 
@@ -661,18 +655,18 @@ export default isHttpAdapterSupported &&
           const _lookup = callbackify(
             lookup as (...args: Array<unknown>) => unknown,
             (value: unknown) =>
-              utils.isArray(value) ? (value as Array<unknown>) : [ value ]
+              utils.isArray(value) ? (value as Array<unknown>) : [value],
           ) as (
             hostname: string,
             opt: unknown,
-            cb: (err: Error | null, ...args: Array<unknown>) => void
+            cb: (err: Error | null, ...args: Array<unknown>) => void,
           ) => void;
           // hotfix to support opt.all option which is required for node 20.x
 
           lookup = (
             hostname: string,
             opt: Record<string, unknown>,
-            cb: (err: Error | null, ...args: Array<unknown>) => void
+            cb: (err: Error | null, ...args: Array<unknown>) => void,
           ) => {
             _lookup(
               hostname,
@@ -685,15 +679,15 @@ export default isHttpAdapterSupported &&
                 /* eslint-disable sonarjs/no-nested-functions */
                 const addresses = utils.isArray(arg0)
                   ? (arg0 as Array<unknown>).map((addr: unknown) =>
-                    buildAddressEntry(addr)
-                  )
-                  : [ buildAddressEntry(arg0, arg1) ];
+                      buildAddressEntry(addr),
+                    )
+                  : [buildAddressEntry(arg0, arg1)];
                 /* eslint-enable sonarjs/no-nested-functions */
 
                 opt["all"]
                   ? cb(null, addresses)
                   : cb(null, addresses[0]!.address, addresses[0]!.family);
-              }
+              },
             );
           };
         }
@@ -706,10 +700,9 @@ export default isHttpAdapterSupported &&
               "abort",
               !reason || (reason as Record<string, unknown>)["type"]
                 ? new CanceledError(null, config, req)
-                : reason
+                : reason,
             );
-          }
-          catch {
+          } catch {
             // ignore emit errors
           }
         }
@@ -736,7 +729,7 @@ export default isHttpAdapterSupported &&
               ? AxiosError.ETIMEDOUT
               : AxiosError.ECONNABORTED,
             config,
-            req
+            req,
           );
         }
 
@@ -787,8 +780,7 @@ export default isHttpAdapterSupported &&
               offListeners();
               onFinished();
             });
-          }
-          else {
+          } else {
             onFinished();
           }
         });
@@ -798,11 +790,11 @@ export default isHttpAdapterSupported &&
           own("baseURL"),
           own("url"),
           own("allowAbsoluteUrls"),
-          config
+          config,
         );
         const parsed = new URL(
           fullPath,
-          platform.hasBrowserEnv ? platform.origin : undefined
+          platform.hasBrowserEnv ? platform.origin : undefined,
         );
         const protocol = parsed.protocol || supportedProtocols[0]!;
 
@@ -820,8 +812,8 @@ export default isHttpAdapterSupported &&
                     String(maxContentLength) +
                     " exceeded",
                   AxiosError.ERR_BAD_RESPONSE,
-                  config
-                )
+                  config,
+                ),
               );
             }
           }
@@ -849,29 +841,27 @@ export default isHttpAdapterSupported &&
                   ((config.env as Record<string, unknown>)["Blob"] as
                     | (new (...args: Array<unknown>) => object)
                     | undefined),
-              }
+              },
             );
-          }
-          catch (err) {
+          } catch (err) {
             throw AxiosError.from(
               err as Error,
               AxiosError.ERR_BAD_REQUEST,
-              config
+              config,
             );
           }
 
           if (responseType === "text") {
             convertedData = (convertedData as Buffer).toString(
-              responseEncoding as BufferEncoding
+              responseEncoding as BufferEncoding,
             );
 
             if (!responseEncoding || responseEncoding === "utf8") {
               convertedData = utils.stripBOM(convertedData as string);
             }
-          }
-          else if (responseType === "stream") {
+          } else if (responseType === "stream") {
             convertedData = stream.Readable.from(
-              convertedData as Iterable<unknown>
+              convertedData as Iterable<unknown>,
             );
           }
 
@@ -890,13 +880,13 @@ export default isHttpAdapterSupported &&
             new AxiosError(
               "Unsupported protocol " + protocol,
               AxiosError.ERR_BAD_REQUEST,
-              config
-            )
+              config,
+            ),
           );
         }
 
         const headers = AxiosHeaders.from(config.headers).normalize(
-          false
+          false,
         ) as AxiosHeaders & {
           setContentType: (value: unknown, rewrite?: unknown) => void;
           setContentLength: (value: unknown, rewrite?: unknown) => void;
@@ -919,7 +909,7 @@ export default isHttpAdapterSupported &&
         // support for spec compliant FormData objects
         if (utils.isSpecCompliantForm(data)) {
           const userBoundary = headers.getContentType(
-            /boundary=([-\w]{10,70})/i
+            /boundary=([-\w]{10,70})/i,
           );
 
           data = formDataToStream(
@@ -931,11 +921,10 @@ export default isHttpAdapterSupported &&
               tag: `axios-${VERSION}-boundary`,
               boundary: (userBoundary &&
                 (userBoundary as RegExpMatchArray)[1]) as string | undefined,
-            }
+            },
           );
           // support for https://www.npmjs.com/package/form-data api
-        }
-        else if (
+        } else if (
           utils.isFormData(data) &&
           utils.isFunction((data as Record<string, unknown>)["getHeaders"])
         ) {
@@ -946,7 +935,7 @@ export default isHttpAdapterSupported &&
           setFormDataHeaders(
             headers,
             dataWithHeaders.getHeaders(),
-            own("formDataHeaderPolicy")
+            own("formDataHeaderPolicy"),
           );
 
           if (!headers.hasContentLength()) {
@@ -958,36 +947,30 @@ export default isHttpAdapterSupported &&
                 knownLength >= 0 &&
                 headers.setContentLength(knownLength);
               /*eslint no-empty:0*/
-            }
-            catch {}
+            } catch {}
           }
-        }
-        else if (utils.isBlob(data) || utils.isFile(data)) {
-          const blobData = data as { size: number; type: string; };
+        } else if (utils.isBlob(data) || utils.isFile(data)) {
+          const blobData = data as { size: number; type: string };
           blobData.size &&
             headers.setContentType(blobData.type || "application/octet-stream");
           headers.setContentLength(blobData.size || 0);
           data = stream.Readable.from(
-            readBlob(data as Parameters<typeof readBlob>[0])
+            readBlob(data as Parameters<typeof readBlob>[0]),
           );
-        }
-        else if (data && !utils.isStream(data)) {
+        } else if (data && !utils.isStream(data)) {
           if (Buffer.isBuffer(data)) {
             // Nothing to do...
-          }
-          else if (utils.isArrayBuffer(data)) {
+          } else if (utils.isArrayBuffer(data)) {
             data = Buffer.from(new Uint8Array(data as ArrayBuffer));
-          }
-          else if (utils.isString(data)) {
+          } else if (utils.isString(data)) {
             data = Buffer.from(data as string, "utf-8");
-          }
-          else {
+          } else {
             return reject(
               new AxiosError(
                 "Data after transformation must be a string, an ArrayBuffer, a Buffer, or a Stream",
                 AxiosError.ERR_BAD_REQUEST,
-                config
-              )
+                config,
+              ),
             );
           }
 
@@ -1002,8 +985,8 @@ export default isHttpAdapterSupported &&
               new AxiosError(
                 "Request body larger than maxBodyLength limit",
                 AxiosError.ERR_BAD_REQUEST,
-                config
-              )
+                config,
+              ),
             );
           }
         }
@@ -1013,8 +996,7 @@ export default isHttpAdapterSupported &&
         if (utils.isArray(maxRate)) {
           maxUploadRate = maxRate[0];
           maxDownloadRate = maxRate[1];
-        }
-        else {
+        } else {
           maxUploadRate = maxDownloadRate = maxRate as number;
         }
 
@@ -1028,7 +1010,7 @@ export default isHttpAdapterSupported &&
           data = (
             stream.pipeline as unknown as (
               streams: Array<unknown>,
-              cb: unknown
+              cb: unknown,
             ) => stream.Readable
           )(
             [
@@ -1037,7 +1019,7 @@ export default isHttpAdapterSupported &&
                 maxRate: utils.toFiniteNumber(maxUploadRate),
               }),
             ],
-            utils.noop
+            utils.noop,
           );
 
           onUploadProgress &&
@@ -1049,13 +1031,13 @@ export default isHttpAdapterSupported &&
                   contentLength,
                   progressEventReducer(
                     asyncDecorator(
-                      onUploadProgress as (...args: Array<unknown>) => unknown
+                      onUploadProgress as (...args: Array<unknown>) => unknown,
                     ),
                     false,
-                    3
-                  )
-                )
-              ) as (...args: Array<unknown>) => void
+                    3,
+                  ),
+                ),
+              ) as (...args: Array<unknown>) => void,
             );
         }
 
@@ -1064,10 +1046,10 @@ export default isHttpAdapterSupported &&
         const configAuth = own("auth");
         if (configAuth) {
           const username = String(
-            utils.getSafeProp(configAuth, "username") || ""
+            utils.getSafeProp(configAuth, "username") || "",
           );
           const password = String(
-            utils.getSafeProp(configAuth, "password") || ""
+            utils.getSafeProp(configAuth, "password") || "",
           );
           auth = username + ":" + password;
         }
@@ -1086,10 +1068,9 @@ export default isHttpAdapterSupported &&
           path = buildURL(
             parsed.pathname + parsed.search,
             own("params"),
-            own("paramsSerializer")
+            own("paramsSerializer"),
           ).replace(/^\?/, "");
-        }
-        catch (err) {
+        } catch (err) {
           const customErr = new Error((err as Error).message) as Error & {
             config?: unknown;
             url?: unknown;
@@ -1107,7 +1088,7 @@ export default isHttpAdapterSupported &&
             transitional.advertiseZstdAcceptEncoding === true
             ? ACCEPT_ENCODING_WITH_ZSTD
             : ACCEPT_ENCODING,
-          false
+          false,
         );
 
         // Null-prototype to block prototype pollution gadgets on properties read
@@ -1125,7 +1106,7 @@ export default isHttpAdapterSupported &&
             beforeRedirect: dispatchBeforeRedirect,
             beforeRedirects: Object.create(null) as Record<string, unknown>,
             http2Options,
-          }
+          },
         );
 
         // cacheable-lookup integration hotfix
@@ -1138,8 +1119,8 @@ export default isHttpAdapterSupported &&
               new AxiosError(
                 "socketPath must be a string",
                 AxiosError.ERR_BAD_OPTION_VALUE,
-                config
-              )
+                config,
+              ),
             );
           }
 
@@ -1147,13 +1128,13 @@ export default isHttpAdapterSupported &&
           if (allowedSocketPaths != null) {
             const allowed = Array.isArray(allowedSocketPaths)
               ? (allowedSocketPaths as Array<string>)
-              : [ allowedSocketPaths as string ];
+              : [allowedSocketPaths as string];
 
             const resolvedSocket = resolvePath(socketPath);
             const isAllowed = allowed.some(
               (entry: unknown) =>
                 typeof entry === "string" &&
-                resolvePath(entry) === resolvedSocket
+                resolvePath(entry) === resolvedSocket,
             );
 
             if (!isAllowed) {
@@ -1161,15 +1142,14 @@ export default isHttpAdapterSupported &&
                 new AxiosError(
                   `socketPath "${socketPath}" is not permitted by allowedSocketPaths`,
                   AxiosError.ERR_BAD_OPTION_VALUE,
-                  config
-                )
+                  config,
+                ),
               );
             }
           }
 
           options["socketPath"] = socketPath;
-        }
-        else {
+        } else {
           options["hostname"] = parsed.hostname.startsWith("[")
             ? parsed.hostname.slice(1, -1)
             : parsed.hostname;
@@ -1183,7 +1163,7 @@ export default isHttpAdapterSupported &&
               (parsed.port ? ":" + parsed.port : "") +
               String(options["path"]),
             false,
-            httpsAgent
+            httpsAgent,
           );
         }
         let transport: {
@@ -1204,17 +1184,14 @@ export default isHttpAdapterSupported &&
 
         if (isHttp2) {
           transport = http2Transport;
-        }
-        else {
+        } else {
           const configTransport = own("transport");
           if (configTransport) {
             transport = configTransport as typeof transport;
-          }
-          else if (maxRedirects === 0) {
+          } else if (maxRedirects === 0) {
             transport = (isHttpsRequest ? https : http) as typeof transport;
             isNativeTransport = true;
-          }
-          else {
+          } else {
             transportEnforcesMaxBodyLength = true;
             options["sensitiveHeaders"] = [];
             if (maxRedirects) {
@@ -1239,15 +1216,14 @@ export default isHttpAdapterSupported &&
                     if (
                       new URL(
                         String(
-                          (redirectOptions as Record<string, unknown>)["href"]
-                        )
+                          (redirectOptions as Record<string, unknown>)["href"],
+                        ),
                       ).origin === requestOrigin
                     ) {
                       (redirectOptions as Record<string, unknown>)["auth"] =
                         authToRestore;
                     }
-                  }
-                  catch {
+                  } catch {
                     // ignore malformed URL: leaving auth stripped is fail-safe
                   }
                 };
@@ -1259,8 +1235,8 @@ export default isHttpAdapterSupported &&
                   new AxiosError(
                     "sensitiveHeaders must be an array of strings",
                     AxiosError.ERR_BAD_OPTION_VALUE,
-                    config
-                  )
+                    config,
+                  ),
                 );
               }
 
@@ -1271,8 +1247,8 @@ export default isHttpAdapterSupported &&
                     new AxiosError(
                       "sensitiveHeaders must be an array of strings",
                       AxiosError.ERR_BAD_OPTION_VALUE,
-                      config
-                    )
+                      config,
+                    ),
                   );
                 }
 
@@ -1285,19 +1261,19 @@ export default isHttpAdapterSupported &&
                   "sensitiveHeaders"
                 ] = function beforeRedirectSensitiveHeaders(
                   redirectOptions: unknown,
-                  requestDetails: unknown
+                  requestDetails: unknown,
                 ) {
                   if (
                     !isSameOriginRedirect(
                       redirectOptions as Record<string, unknown>,
-                      requestDetails as { url?: string; } | undefined
+                      requestDetails as { url?: string } | undefined,
                     )
                   ) {
                     stripMatchingHeaders(
                       (redirectOptions as Record<string, unknown>)[
                         "headers"
                       ] as Record<string, unknown> | undefined,
-                      sensitiveSet
+                      sensitiveSet,
                     );
                   }
                 };
@@ -1311,8 +1287,7 @@ export default isHttpAdapterSupported &&
 
         if ((maxBodyLength as number) > -1) {
           options["maxBodyLength"] = maxBodyLength;
-        }
-        else {
+        } else {
           // follow-redirects does not skip comparison, so it should always succeed for axios -1 unlimited
           options["maxBodyLength"] = Infinity;
         }
@@ -1323,7 +1298,7 @@ export default isHttpAdapterSupported &&
         options["insecureHTTPParser"] = Boolean(own("insecureHTTPParser"));
 
         // Create the request
-        // eslint-disable-next-line sonarjs/cognitive-complexity
+
         req = transport.request(options, function handleResponse(res: unknown) {
           clearConnectPhaseTimer();
 
@@ -1333,10 +1308,10 @@ export default isHttpAdapterSupported &&
 
           if ((req as http.ClientRequest).destroyed) return;
 
-          const streams: Array<stream.Stream | stream.Readable> = [ resObj ];
+          const streams: Array<stream.Stream | stream.Readable> = [resObj];
 
           const responseLength = utils.toFiniteNumber(
-            resObj.headers["content-length"]
+            resObj.headers["content-length"],
           );
 
           if (onDownloadProgress || maxDownloadRate) {
@@ -1355,13 +1330,13 @@ export default isHttpAdapterSupported &&
                       asyncDecorator(
                         onDownloadProgress as (
                           ...args: Array<unknown>
-                        ) => unknown
+                        ) => unknown,
                       ),
                       true,
-                      3
-                    )
-                  )
-                ) as (...args: Array<unknown>) => void
+                      3,
+                    ),
+                  ),
+                ) as (...args: Array<unknown>) => void,
               );
 
             streams.push(transformStream);
@@ -1416,7 +1391,7 @@ export default isHttpAdapterSupported &&
                         string,
                         (opts: unknown) => stream.Transform
                       >
-                    )["createZstdDecompress"]!(zstdOptions)
+                    )["createZstdDecompress"]!(zstdOptions),
                   );
                   delete resObj.headers["content-encoding"];
                 }
@@ -1427,11 +1402,11 @@ export default isHttpAdapterSupported &&
           responseStream =
             streams.length > 1
               ? (
-                stream.pipeline as unknown as (
-                  streams: Array<unknown>,
-                  cb: unknown
-                ) => stream.Readable
-              )(streams, utils.noop)
+                  stream.pipeline as unknown as (
+                    streams: Array<unknown>,
+                    cb: unknown,
+                  ) => stream.Readable
+                )(streams, utils.noop)
               : streams[0]!;
 
           const response = {
@@ -1458,7 +1433,7 @@ export default isHttpAdapterSupported &&
                       "maxContentLength size of " + limit + " exceeded",
                       AxiosError.ERR_BAD_RESPONSE,
                       config,
-                      lastRequest
+                      lastRequest,
                     );
                   }
                   yield chunk;
@@ -1470,8 +1445,7 @@ export default isHttpAdapterSupported &&
             }
             response.data = responseStream;
             settle(resolve, reject, response);
-          }
-          else {
+          } else {
             const responseBuffer: Array<Buffer> = [];
             let totalResponseBytes = 0;
 
@@ -1494,8 +1468,8 @@ export default isHttpAdapterSupported &&
                       " exceeded",
                     AxiosError.ERR_BAD_RESPONSE,
                     config,
-                    lastRequest
-                  )
+                    lastRequest,
+                  ),
                 );
               }
             });
@@ -1510,7 +1484,7 @@ export default isHttpAdapterSupported &&
                 AxiosError.ERR_BAD_RESPONSE,
                 config,
                 lastRequest,
-                response
+                response,
               );
               (responseStream as stream.Readable).destroy(err);
               reject(err);
@@ -1519,7 +1493,7 @@ export default isHttpAdapterSupported &&
             responseStream.on("error", function handleStreamError(err: Error) {
               if (rejected) return;
               reject(
-                AxiosError.from(err, undefined, config, lastRequest, response)
+                AxiosError.from(err, undefined, config, lastRequest, response),
               );
             });
 
@@ -1529,27 +1503,26 @@ export default isHttpAdapterSupported &&
                   responseBuffer.length === 1
                     ? responseBuffer[0]!
                     : Buffer.concat(
-                      responseBuffer as unknown as Array<Uint8Array>
-                    );
+                        responseBuffer as unknown as Array<Uint8Array>,
+                      );
                 if (responseType !== "arraybuffer") {
                   responseData = responseData.toString(
-                    responseEncoding as BufferEncoding
+                    responseEncoding as BufferEncoding,
                   );
                   if (!responseEncoding || responseEncoding === "utf8") {
                     responseData = utils.stripBOM(responseData);
                   }
                 }
                 response.data = responseData;
-              }
-              catch (err) {
+              } catch (err) {
                 return reject(
                   AxiosError.from(
                     err as Error,
                     undefined,
                     config,
                     response.request,
-                    response
-                  )
+                    response,
+                  ),
                 );
               }
               settle(resolve, reject, response);
@@ -1572,8 +1545,7 @@ export default isHttpAdapterSupported &&
           };
           if (reqObj.close) {
             reqObj.close();
-          }
-          else {
+          } else {
             reqObj.destroy(err);
           }
         });
@@ -1583,7 +1555,7 @@ export default isHttpAdapterSupported &&
           "error",
           function handleRequestError(err: Error) {
             reject(AxiosError.from(err, undefined, config, req));
-          }
+          },
         );
 
         // set tcp keep alive to prevent drop connection by peer
@@ -1612,7 +1584,7 @@ export default isHttpAdapterSupported &&
             if (!s[kAxiosSocketListener]) {
               socket.on("error", function handleSocketError(err: Error) {
                 const current = s[kAxiosCurrentReq] as
-                  | (http.ClientRequest & { destroyed: boolean; })
+                  | (http.ClientRequest & { destroyed: boolean })
                   | null;
                 if (current && !current.destroyed) {
                   current.destroy(err);
@@ -1623,7 +1595,7 @@ export default isHttpAdapterSupported &&
 
             s[kAxiosCurrentReq] = req;
             boundSockets.add(s);
-          }
+          },
         );
 
         (req as http.ClientRequest).once("close", function clearCurrentReq() {
@@ -1648,8 +1620,8 @@ export default isHttpAdapterSupported &&
                 "error trying to parse `config.timeout` to int",
                 AxiosError.ERR_BAD_OPTION_VALUE,
                 config,
-                req
-              )
+                req,
+              ),
             );
 
             return;
@@ -1673,8 +1645,7 @@ export default isHttpAdapterSupported &&
           // And then these socket which be hang up will devouring CPU little by little.
           // ClientRequest.setTimeout will be fired on the specify milliseconds, and can make sure that abort() will be fired after connect.
           (req as http.ClientRequest).setTimeout(timeout, handleTimeout);
-        }
-        else {
+        } else {
           // explicitly reset the socket timeout value for a possible `keep-alive` request
           (req as http.ClientRequest).setTimeout(0);
         }
@@ -1699,8 +1670,8 @@ export default isHttpAdapterSupported &&
                 new CanceledError(
                   "Request stream has been aborted",
                   config,
-                  req
-                )
+                  req,
+                ),
               );
             }
           });
@@ -1719,7 +1690,7 @@ export default isHttpAdapterSupported &&
             uploadStream = (
               stream.pipeline as unknown as (
                 streams: Array<unknown>,
-                cb: unknown
+                cb: unknown,
               ) => stream.Readable
             )(
               [
@@ -1728,7 +1699,7 @@ export default isHttpAdapterSupported &&
                   transform(
                     chunk: Buffer,
                     _enc: BufferEncoding,
-                    cb: (err?: Error | null, data?: Buffer) => void
+                    cb: (err?: Error | null, data?: Buffer) => void,
                   ) {
                     bytesSent += chunk.length;
                     if (bytesSent > limit) {
@@ -1737,15 +1708,15 @@ export default isHttpAdapterSupported &&
                           "Request body larger than maxBodyLength limit",
                           AxiosError.ERR_BAD_REQUEST,
                           config,
-                          req
-                        )
+                          req,
+                        ),
                       );
                     }
                     cb(null, chunk);
                   },
                 }),
               ],
-              utils.noop
+              utils.noop,
             );
             uploadStream.on("error", (err: Error) => {
               const reqObj = req as http.ClientRequest;
@@ -1754,12 +1725,11 @@ export default isHttpAdapterSupported &&
           }
 
           (uploadStream as stream.Readable).pipe(req as http.ClientRequest);
-        }
-        else {
+        } else {
           data && (req as http.ClientRequest).write(data);
           (req as http.ClientRequest).end();
         }
-      }
+      },
     );
   };
 

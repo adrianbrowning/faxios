@@ -13,9 +13,10 @@ const isHexDigit = (charCode: number) =>
   (charCode >= 97 && charCode <= 102);
 
 const isPercentEncodedByte = (str: string, i: number, len: number) =>
-  i + 2 < len && isHexDigit(str.charCodeAt(i + 1)) && isHexDigit(str.charCodeAt(i + 2));
+  i + 2 < len &&
+  isHexDigit(str.charCodeAt(i + 1)) &&
+  isHexDigit(str.charCodeAt(i + 2));
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export default function estimateDataURLDecodedBytes(url: string): number {
   if (!url || typeof url !== "string") return 0;
   if (!url.startsWith("data:")) return 0;
@@ -57,14 +58,17 @@ export default function estimateDataURLDecodedBytes(url: string): number {
       if (body.charCodeAt(idx) === 61 /* '=' */) {
         pad++;
         idx--;
-      }
-      else if (tailIsPct3D(idx)) {
+      } else if (tailIsPct3D(idx)) {
         pad++;
         idx -= 3;
       }
     }
 
-    if (pad === 1 && idx >= 0 && (body.charCodeAt(idx) === 61 /* '=' */ || tailIsPct3D(idx))) {
+    if (
+      pad === 1 &&
+      idx >= 0 &&
+      (body.charCodeAt(idx) === 61 /* '=' */ || tailIsPct3D(idx))
+    ) {
       pad++;
     }
 
@@ -83,24 +87,19 @@ export default function estimateDataURLDecodedBytes(url: string): number {
     if (c === 37 /* '%' */ && isPercentEncodedByte(body, i, len)) {
       bytes += 1;
       i += 2;
-    }
-    else if (c < 0x80) {
+    } else if (c < 0x80) {
       bytes += 1;
-    }
-    else if (c < 0x800) {
+    } else if (c < 0x800) {
       bytes += 2;
-    }
-    else if (c >= 0xd800 && c <= 0xdbff && i + 1 < len) {
+    } else if (c >= 0xd800 && c <= 0xdbff && i + 1 < len) {
       const next = body.charCodeAt(i + 1);
       if (next >= 0xdc00 && next <= 0xdfff) {
         bytes += 4;
         i++;
-      }
-      else {
+      } else {
         bytes += 3;
       }
-    }
-    else {
+    } else {
       bytes += 3;
     }
   }

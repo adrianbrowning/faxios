@@ -5,7 +5,14 @@ import formDataToJSON from "../helpers/formDataToJSON.js";
 import toFormData from "../helpers/toFormData.js";
 import toURLEncodedForm from "../helpers/toURLEncodedForm.js";
 import platform from "../platform/index.js";
-import type { AxiosAdapterName, AxiosDefaults, AxiosRequestHeaders, AxiosResponse, GenericFormData, InternalAxiosRequestConfig } from "../types.js";
+import type {
+  AxiosAdapterName,
+  AxiosDefaults,
+  AxiosRequestHeaders,
+  AxiosResponse,
+  GenericFormData,
+  InternalAxiosRequestConfig,
+} from "../types.js";
 import utils from "../utils.js";
 import transitionalDefaults from "./transitional.js";
 
@@ -22,15 +29,14 @@ import transitionalDefaults from "./transitional.js";
 function stringifySafely(
   rawValue: unknown,
   parser?: ((s: string) => unknown) | null,
-  encoder?: ((v: unknown) => string) | null
+  encoder?: ((v: unknown) => string) | null,
 ): unknown {
   if (utils.isString(rawValue)) {
     try {
       (parser || JSON.parse)(rawValue as string);
       return utils.trim(rawValue as string);
-    }
-    catch (e) {
-      if ((e as { name?: string; }).name !== "SyntaxError") {
+    } catch (e) {
+      if ((e as { name?: string }).name !== "SyntaxError") {
         throw e;
       }
     }
@@ -42,17 +48,23 @@ function stringifySafely(
 const defaults: AxiosDefaults = {
   transitional: transitionalDefaults,
 
-  adapter: [ "xhr", "http", "fetch" ] as Array<AxiosAdapterName>,
+  adapter: ["xhr", "http", "fetch"] as Array<AxiosAdapterName>,
 
   transformRequest: [
-    // eslint-disable-next-line sonarjs/cognitive-complexity
-    function transformRequest(this: InternalAxiosRequestConfig, data: unknown, headers: AxiosRequestHeaders) {
-      const contentType = (headers.getContentType() as string | null | undefined) || "";
+    function transformRequest(
+      this: InternalAxiosRequestConfig,
+      data: unknown,
+      headers: AxiosRequestHeaders,
+    ) {
+      const contentType =
+        (headers.getContentType() as string | null | undefined) || "";
       const hasJSONContentType = contentType.indexOf("application/json") > -1;
       const isObjectPayload = utils.isObject(data);
 
       if (isObjectPayload && utils.isHTMLForm(data)) {
-        const GlobalFormData = (globalThis as Record<string, unknown>)["FormData"] as (new (el?: unknown) => unknown) | undefined;
+        const GlobalFormData = (globalThis as Record<string, unknown>)[
+          "FormData"
+        ] as (new (el?: unknown) => unknown) | undefined;
         if (GlobalFormData) {
           data = new GlobalFormData(data);
         }
@@ -78,29 +90,34 @@ const defaults: AxiosDefaults = {
         return (data as ArrayBufferView).buffer;
       }
       if (utils.isURLSearchParams(data)) {
-        headers.setContentType("application/x-www-form-urlencoded;charset=utf-8", false);
-        return (data as { toString: () => string; }).toString();
+        headers.setContentType(
+          "application/x-www-form-urlencoded;charset=utf-8",
+          false,
+        );
+        return (data as { toString: () => string }).toString();
       }
 
       let isFileList: unknown;
 
       if (isObjectPayload) {
-        const formSerializer = this.formSerializer as Record<string, unknown> | undefined;
+        const formSerializer = this.formSerializer as
+          | Record<string, unknown>
+          | undefined;
         if (contentType.indexOf("application/x-www-form-urlencoded") > -1) {
           return toURLEncodedForm(data, formSerializer).toString();
         }
 
         isFileList = utils.isFileList(data);
-        if (
-          isFileList ||
-          contentType.indexOf("multipart/form-data") > -1
-        ) {
+        if (isFileList || contentType.indexOf("multipart/form-data") > -1) {
           const _FormData = this.env?.FormData;
 
           return toFormData(
             isFileList ? { "files[]": data } : data,
-            (_FormData && new _FormData()) as GenericFormData | null | undefined,
-            formSerializer
+            (_FormData && new _FormData()) as
+              | GenericFormData
+              | null
+              | undefined,
+            formSerializer,
           );
         }
       }
@@ -115,8 +132,11 @@ const defaults: AxiosDefaults = {
   ],
 
   transformResponse: [
-    function transformResponse(this: InternalAxiosRequestConfig, data: unknown) {
-      const transitional = (this.transitional || defaults.transitional);
+    function transformResponse(
+      this: InternalAxiosRequestConfig,
+      data: unknown,
+    ) {
+      const transitional = this.transitional || defaults.transitional;
       const forcedJSONParsing = transitional && transitional.forcedJSONParsing;
       const responseType = this.responseType;
       const JSONRequested = responseType === "json";
@@ -130,16 +150,24 @@ const defaults: AxiosDefaults = {
         utils.isString(data) &&
         ((forcedJSONParsing && !responseType) || JSONRequested)
       ) {
-        const silentJSONParsing = transitional && transitional.silentJSONParsing;
+        const silentJSONParsing =
+          transitional && transitional.silentJSONParsing;
         const strictJSONParsing = !silentJSONParsing && JSONRequested;
 
         try {
           return JSON.parse(data as string, this.parseReviver);
-        }
-        catch (e) {
+        } catch (e) {
           if (strictJSONParsing) {
-            if ((e as { name?: string; }).name === "SyntaxError") {
-              throw AxiosError.from(e as Error, AxiosError.ERR_BAD_RESPONSE, this, null, (this as unknown as Record<string, unknown>)["response"] as AxiosResponse | undefined);
+            if ((e as { name?: string }).name === "SyntaxError") {
+              throw AxiosError.from(
+                e as Error,
+                AxiosError.ERR_BAD_RESPONSE,
+                this,
+                null,
+                (this as unknown as Record<string, unknown>)["response"] as
+                  | AxiosResponse
+                  | undefined,
+              );
             }
             throw e;
           }
@@ -163,7 +191,9 @@ const defaults: AxiosDefaults = {
   maxBodyLength: -1,
 
   env: {
-    FormData: platform.classes.FormData as unknown as (new (...args: Array<unknown>) => object) | undefined,
+    FormData: platform.classes.FormData as unknown as
+      | (new (...args: Array<unknown>) => object)
+      | undefined,
   },
 
   validateStatus: function validateStatus(status: number) {

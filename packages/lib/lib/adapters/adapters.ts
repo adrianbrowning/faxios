@@ -28,13 +28,20 @@ utils.forEach(knownAdapters, (fn, value) => {
     try {
       // Null-proto descriptors so a polluted Object.prototype.get cannot turn
       // these data descriptors into accessor descriptors on the way in.
-      Object.defineProperty(fn, "name", Object.assign(Object.create(null) as PropertyDescriptor, { value }));
-    }
-    // eslint-disable-next-line sonarjs/no-ignored-exceptions
-    catch (_e) {
+      Object.defineProperty(
+        fn,
+        "name",
+        Object.assign(Object.create(null) as PropertyDescriptor, { value }),
+      );
+    } catch (_e) {
+      // eslint-disable-next-line sonarjs/no-ignored-exceptions
       // ignore: defineProperty may throw in strict envs
     }
-    Object.defineProperty(fn, "adapterName", Object.assign(Object.create(null) as PropertyDescriptor, { value }));
+    Object.defineProperty(
+      fn,
+      "adapterName",
+      Object.assign(Object.create(null) as PropertyDescriptor, { value }),
+    );
   }
 });
 
@@ -65,11 +72,14 @@ const isResolvedHandle = (adapter: unknown) =>
  * @throws {AxiosError} If no suitable adapter is available
  * @returns {Function} The resolved adapter function
  */
-// eslint-disable-next-line sonarjs/cognitive-complexity
-function getAdapter(adapters: unknown, config: InternalAxiosRequestConfig): AxiosAdapter {
-  adapters = utils.isArray(adapters) ? adapters : [ adapters ];
 
-  const { length } = (adapters as Array<unknown>);
+function getAdapter(
+  adapters: unknown,
+  config: InternalAxiosRequestConfig,
+): AxiosAdapter {
+  adapters = utils.isArray(adapters) ? adapters : [adapters];
+
+  const { length } = adapters as Array<unknown>;
   let nameOrAdapter: unknown;
   let adapter: unknown;
 
@@ -91,7 +101,7 @@ function getAdapter(adapters: unknown, config: InternalAxiosRequestConfig): Axio
     }
 
     if (!utils.isFunction(adapter) && adapter) {
-      adapter = (adapter as { get: (config: unknown) => unknown; }).get(config);
+      adapter = (adapter as { get: (config: unknown) => unknown }).get(config);
     }
     if (adapter) {
       break;
@@ -102,25 +112,25 @@ function getAdapter(adapters: unknown, config: InternalAxiosRequestConfig): Axio
 
   if (!adapter) {
     const reasons = Object.entries(rejectedReasons).map(
-      ([ id, state ]) =>
+      ([id, state]) =>
         `adapter ${id} ` +
-        (state === false ? "is not supported by the environment" : "is not available in the build")
+        (state === false
+          ? "is not supported by the environment"
+          : "is not available in the build"),
     );
 
     let s;
     if (!length) {
       s = "as no adapter specified";
-    }
-    else if (reasons.length > 1) {
+    } else if (reasons.length > 1) {
       s = "since :\n" + reasons.map(renderReason).join("\n");
-    }
-    else {
+    } else {
       s = " " + renderReason(reasons[0] ?? "");
     }
 
     throw new AxiosError(
       `There is no suitable adapter to dispatch the request ` + s,
-      "ERR_NOT_SUPPORT"
+      "ERR_NOT_SUPPORT",
     );
   }
 
