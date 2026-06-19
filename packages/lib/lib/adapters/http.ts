@@ -1270,7 +1270,7 @@ function resolveDefaultAgent(
   }
 }
 
-function resolveAcceptEncoding(transitional: typeof import("../defaults/transitional.js").default): string {
+function resolveAcceptEncoding(transitional: typeof transitionalDefaults): string {
   return utils.hasOwnProp(transitional, "advertiseZstdAcceptEncoding") &&
     (transitional as Record<string, unknown>)["advertiseZstdAcceptEncoding"] === true
     ? ACCEPT_ENCODING_WITH_ZSTD
@@ -1299,7 +1299,7 @@ function applyUploadProgress(
   }
   data = (
     stream.pipeline as unknown as (streams: Array<unknown>, cb: unknown) => stream.Readable
-  )([data, new AxiosTransformStream({ maxRate: utils.toFiniteNumber(maxUploadRate) })], utils.noop);
+  )([ data, new AxiosTransformStream({ maxRate: utils.toFiniteNumber(maxUploadRate) }) ], utils.noop);
   onUploadProgress &&
     (data as stream.Stream).on(
       "progress",
@@ -1353,7 +1353,7 @@ function resolveHttpVersion(own: (key: string) => unknown, config: InternalAxios
   return v;
 }
 
-function clearConnectPhaseTimerRef(ref: { value: ReturnType<typeof setTimeout> | undefined }): void {
+function clearConnectPhaseTimerRef(ref: { value: ReturnType<typeof setTimeout> | undefined; }): void {
   if (ref.value) {
     clearTimeout(ref.value);
     ref.value = undefined;
@@ -1362,7 +1362,7 @@ function clearConnectPhaseTimerRef(ref: { value: ReturnType<typeof setTimeout> |
 
 function makeTimeoutError(
   own: (key: string) => unknown,
-  transitional: typeof import("../defaults/transitional.js").default,
+  transitional: typeof transitionalDefaults,
   config: InternalAxiosRequestConfig,
   getReq: () => unknown
 ): AxiosError {
@@ -1383,7 +1383,7 @@ function setupRequestTimeout(
   req: unknown,
   own: (key: string) => unknown,
   abort: (reason?: unknown) => void,
-  transitional: typeof import("../defaults/transitional.js").default,
+  transitional: typeof transitionalDefaults,
   isDone: { value: boolean | undefined; },
   isNativeTransport: boolean,
   config: InternalAxiosRequestConfig,
