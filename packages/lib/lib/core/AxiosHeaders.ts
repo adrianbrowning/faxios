@@ -26,13 +26,15 @@ function normalizeHeader(header: string): string {
 function normalizeValue(
   value: AxiosHeaderValue | undefined
 ): AxiosHeaderValue | undefined {
+  let result: AxiosHeaderValue | undefined;
   if (value === false || value == null) {
-    return value;
+    result = value;
+  } else if (utils.isArray(value)) {
+    result = value.map(v => normalizeValue(v) as string);
+  } else {
+    result = sanitizeHeaderValue(String(value));
   }
-  if (utils.isArray(value)) {
-    return value.map(v => normalizeValue(v) as string);
-  }
-  return sanitizeHeaderValue(String(value)) as string;
+  return result;
 }
 
 function parseTokens(str: string): Record<string, string> {
