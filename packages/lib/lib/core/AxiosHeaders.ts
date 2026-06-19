@@ -23,9 +23,9 @@ function normalizeHeader(header: string): string {
     .toLowerCase();
 }
 
-function normalizeValue(value: AxiosHeaderValue | undefined): AxiosHeaderValue | undefined {
+function normalizeValue(value: AxiosHeaderValue | undefined): string | string[] | undefined {
   if (value === false || value == null) {
-    return value;
+    return undefined;
   }
   if (utils.isArray(value)) {
     return value.map(v => normalizeValue(v) as string);
