@@ -7,6 +7,15 @@ import utils from "../utils.js";
 
 const $internals = Symbol("internals");
 
+type HeaderMatcher =
+  | string
+  | RegExp
+  | ((this: AxiosHeaders, value: string, name: string) => boolean);
+
+type RewriteOption =
+  | boolean
+  | ((this: AxiosHeaders, value: string, name: string) => boolean);
+
 function normalizeHeader(header: string): string {
   return header && String(header).trim()
     .toLowerCase();
@@ -15,13 +24,11 @@ function normalizeHeader(header: string): string {
 function normalizeValue(
   value: AxiosHeaderValue | undefined
 ): AxiosHeaderValue | undefined {
-  if (value === false || value == null) {
-    return value;
-  }
-
-  return utils.isArray(value)
-    ? value.map(v => normalizeValue(v) as string)
-    : sanitizeHeaderValue(String(value));
+  return (value === false || value == null)
+    ? value
+    : utils.isArray(value)
+      ? value.map(v => normalizeValue(v) as string)
+      : sanitizeHeaderValue(String(value));
 }
 
 function parseTokens(str: string): Record<string, string> {
@@ -119,9 +126,7 @@ class AxiosHeaders {
   set(
     header: Record<string, unknown> | AxiosHeaders | string | undefined | null,
     valueOrRewrite?: unknown,
-    rewrite?:
-      | boolean
-      | ((this: AxiosHeaders, value: string, name: string) => boolean)
+    rewrite?: RewriteOption
   ): this {
     const self = this;
 
@@ -159,11 +164,11 @@ class AxiosHeaders {
     if (utils.isPlainObject(header) || header instanceof this.constructor) {
       setHeaders(header as object, valueOrRewrite);
     }
-    else if (
-      utils.isString(header) &&
-      !isValidHeaderName((header = (header as string).trim()))
-    ) {
-      setHeaders(parseHeaders(header), valueOrRewrite);
+    else if (utils.isString(header)) {
+      header = (header as string).trim();
+      if (!isValidHeaderName(header)) {
+        setHeaders(parseHeaders(header), valueOrRewrite);
+      }
     }
     else if (utils.isObject(header) && utils.isSafeIterable(header)) {
       let obj: Record<string, unknown> = Object.create(null),
@@ -247,10 +252,7 @@ class AxiosHeaders {
 
   has(
     header: string,
-    matcher?:
-      | string
-      | RegExp
-      | ((this: AxiosHeaders, value: string, name: string) => boolean)
+    matcher?: HeaderMatcher
   ): boolean {
     header = normalizeHeader(header);
 
@@ -275,10 +277,7 @@ class AxiosHeaders {
 
   delete(
     header: string | Array<string>,
-    matcher?:
-      | string
-      | RegExp
-      | ((this: AxiosHeaders, value: string, name: string) => boolean)
+    matcher?: HeaderMatcher
   ): boolean {
     const self = this;
     let deleted = false;
@@ -316,12 +315,7 @@ class AxiosHeaders {
     return deleted;
   }
 
-  clear(
-    matcher?:
-      | string
-      | RegExp
-      | ((this: AxiosHeaders, value: string, name: string) => boolean)
-  ): boolean {
+  clear(matcher?: HeaderMatcher): boolean {
     const keys = Object.keys(this);
     let i = keys.length;
     let deleted = false;
@@ -413,7 +407,7 @@ class AxiosHeaders {
   }
 
   getSetCookie(): Array<string> {
-    return (this.get("set-cookie") as Array<string>) || [];
+    return (this.get("set-cookie") as Array<string> | null) ?? [];
   }
 
   get [Symbol.toStringTag](): string {
