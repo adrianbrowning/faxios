@@ -145,7 +145,7 @@ export default function mergeConfig(config1: AxiosRequestConfig, config2?: Axios
   };
 
   const c1 = config1 as Record<string, unknown>;
-  const c2 = (config2 || {}) as Record<string, unknown>;
+  const c2 = config2 as Record<string, unknown>;
   const out = config as Record<string, unknown>;
 
   utils.forEach(Object.keys({ ...config1, ...config2 }), function computeConfigValue(_value: unknown, _prop: unknown) {
