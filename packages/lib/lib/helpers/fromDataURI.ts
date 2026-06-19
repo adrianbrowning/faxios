@@ -5,10 +5,11 @@ import platform from "../platform/index.js";
 import parseProtocol from "./parseProtocol.js";
 
 // RFC 2397: data:[<mediatype>][;base64],<data>
-// mediatype = type/subtype followed by optional ;name=value parameters
- 
-const DATA_URL_PATTERN =
-  /^([^,;]+\/[^,;]+)?((?:;[^,;=]+=[^,;]+)*)(;base64)?,([\s\S]*)$/;
+
+function getMime(type: string | undefined, params: string): string | undefined {
+  if (type) return params ? type + params : type;
+  return params ? "text/plain" + params : undefined;
+}
 
 /**
  * Parse data uri to a Buffer or Blob
@@ -36,48 +37,36 @@ export default function fromDataURI(
     asBlob = true;
   }
 
-  if (protocol === "data") {
-    uri = protocol.length ? uri.slice(protocol.length + 1) : uri;
-
-    const match = DATA_URL_PATTERN.exec(uri);
-
-    if (!match) {
-      throw new AxiosError("Invalid URL", AxiosError.ERR_INVALID_URL);
-    }
-
-    const type = match[1];
-    const params = match[2];
-    const encoding: BufferEncoding = match[3] ? "base64" : "utf8";
-    const body = match[4] ?? "";
-
-    // RFC 2397 section 3: default mediatype is text/plain;charset=US-ASCII
-    // Bare `data:,` leaves mime undefined; Blob normalises that to "" per spec.
-    let mime: string | undefined;
-    if (type) {
-      mime = params ? type + params : type;
-    }
-    else if (params) {
-      mime = "text/plain" + params;
-    }
-
-    const buffer = Buffer.from(decodeURIComponent(body), encoding);
-
-    if (asBlob) {
-      if (!_Blob) {
-        throw new AxiosError(
-          "Blob is not supported",
-          AxiosError.ERR_NOT_SUPPORT
-        );
-      }
-
-      return new _Blob([ buffer ], { type: mime });
-    }
-
-    return buffer;
+  if (protocol !== "data") {
+    throw new AxiosError(
+      "Unsupported protocol " + protocol,
+      AxiosError.ERR_NOT_SUPPORT
+    );
   }
 
-  throw new AxiosError(
-    "Unsupported protocol " + protocol,
-    AxiosError.ERR_NOT_SUPPORT
-  );
+  uri = protocol.length ? uri.slice(protocol.length + 1) : uri;
+
+  const commaIdx = uri.indexOf(',');
+  if (commaIdx < 0) {
+    throw new AxiosError("Invalid URL", AxiosError.ERR_INVALID_URL);
+  }
+
+  const header = uri.slice(0, commaIdx);
+  const body = uri.slice(commaIdx + 1);
+  const isBase64 = header.endsWith(';base64');
+  const headerCore = isBase64 ? header.slice(0, -7) : header;
+  const semiIdx = headerCore.indexOf(';');
+  const type = (semiIdx >= 0 ? headerCore.slice(0, semiIdx) : headerCore) || undefined;
+  const params = semiIdx >= 0 ? headerCore.slice(semiIdx) : '';
+  const encoding: BufferEncoding = isBase64 ? "base64" : "utf8";
+  const mime = getMime(type, params);
+  const buffer = Buffer.from(decodeURIComponent(body), encoding);
+
+  if (!asBlob) return buffer;
+
+  if (!_Blob) {
+    throw new AxiosError("Blob is not supported", AxiosError.ERR_NOT_SUPPORT);
+  }
+
+  return new _Blob([ buffer ], { type: mime });
 }
