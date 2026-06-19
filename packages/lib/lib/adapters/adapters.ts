@@ -1,4 +1,5 @@
 import AxiosError from "../core/AxiosError.js";
+import type { AxiosAdapter, InternalAxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
 import * as fetchAdapter from "./fetch.js";
 import httpAdapter from "./http.js";
@@ -27,13 +28,13 @@ utils.forEach(knownAdapters, (fn, value) => {
     try {
       // Null-proto descriptors so a polluted Object.prototype.get cannot turn
       // these data descriptors into accessor descriptors on the way in.
-      Object.defineProperty(fn, "name", { __proto__: null, value });
+      Object.defineProperty(fn, "name", Object.assign(Object.create(null) as PropertyDescriptor, { value }));
     }
     // eslint-disable-next-line sonarjs/no-ignored-exceptions
     catch (_e) {
       // ignore: defineProperty may throw in strict envs
     }
-    Object.defineProperty(fn, "adapterName", { __proto__: null, value });
+    Object.defineProperty(fn, "adapterName", Object.assign(Object.create(null) as PropertyDescriptor, { value }));
   }
 });
 
@@ -43,7 +44,7 @@ utils.forEach(knownAdapters, (fn, value) => {
  * @param {string} reason
  * @returns {string}
  */
-const renderReason = reason => `- ${reason}`;
+const renderReason = (reason: string) => `- ${reason}`;
 
 /**
  * Check if the adapter is resolved (function, null, or false)
@@ -51,7 +52,7 @@ const renderReason = reason => `- ${reason}`;
  * @param {Function|null|false} adapter
  * @returns {boolean}
  */
-const isResolvedHandle = adapter =>
+const isResolvedHandle = (adapter: unknown) =>
   utils.isFunction(adapter) || adapter === null || adapter === false;
 
 /**
@@ -65,24 +66,24 @@ const isResolvedHandle = adapter =>
  * @returns {Function} The resolved adapter function
  */
 // eslint-disable-next-line sonarjs/cognitive-complexity
-function getAdapter(adapters, config) {
+function getAdapter(adapters: unknown, config: InternalAxiosRequestConfig): AxiosAdapter {
   adapters = utils.isArray(adapters) ? adapters : [ adapters ];
 
-  const { length } = adapters;
-  let nameOrAdapter;
-  let adapter;
+  const { length } = (adapters as Array<unknown>);
+  let nameOrAdapter: unknown;
+  let adapter: unknown;
 
-  const rejectedReasons = {};
+  const rejectedReasons: Record<string, unknown> = {};
 
   for (let i = 0; i < length; i++) {
-    nameOrAdapter = adapters[i];
-    let id;
+    nameOrAdapter = (adapters as Array<unknown>)[i];
+    let id: string | undefined;
 
     adapter = nameOrAdapter;
 
     if (!isResolvedHandle(nameOrAdapter)) {
       id = String(nameOrAdapter);
-      adapter = knownAdapters[id.toLowerCase()];
+      adapter = (knownAdapters as Record<string, unknown>)[id.toLowerCase()];
 
       if (adapter === undefined) {
         throw new AxiosError(`Unknown adapter '${id}'`);
@@ -90,13 +91,13 @@ function getAdapter(adapters, config) {
     }
 
     if (!utils.isFunction(adapter) && adapter) {
-      adapter = adapter.get(config);
+      adapter = (adapter as { get: (config: unknown) => unknown; }).get(config);
     }
     if (adapter) {
       break;
     }
 
-    rejectedReasons[id || "#" + i] = adapter;
+    rejectedReasons[id ?? "#" + i] = adapter;
   }
 
   if (!adapter) {
@@ -114,7 +115,7 @@ function getAdapter(adapters, config) {
       s = "since :\n" + reasons.map(renderReason).join("\n");
     }
     else {
-      s = " " + renderReason(reasons[0]);
+      s = " " + renderReason(reasons[0] ?? "");
     }
 
     throw new AxiosError(
@@ -123,7 +124,7 @@ function getAdapter(adapters, config) {
     );
   }
 
-  return adapter;
+  return adapter as AxiosAdapter;
 }
 
 /**

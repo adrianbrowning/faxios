@@ -22,7 +22,7 @@ const ignoreDuplicateOf = utils.toObjectSet([
   "referer",
   "retry-after",
   "user-agent",
-]);
+], "");
 
 /**
  * Parse headers into an object
@@ -38,11 +38,11 @@ const ignoreDuplicateOf = utils.toObjectSet([
  *
  * @returns {Object} Headers parsed into an object
  */
-export default rawHeaders => {
-  const parsed = {};
-  let key;
-  let val;
-  let i;
+export default (rawHeaders: string): Record<string, string | Array<string>> => {
+  const parsed: Record<string, string | Array<string>> = {};
+  let key: string;
+  let val: string;
+  let i: number;
 
   rawHeaders &&
     rawHeaders.split("\n").forEach(function parser(line) {
@@ -51,20 +51,22 @@ export default rawHeaders => {
         .toLowerCase();
       val = line.substring(i + 1).trim();
 
-      if (!key || (parsed[key] && ignoreDuplicateOf[key])) {
+      if (!key || (parsed[key] !== undefined && ignoreDuplicateOf[key] !== undefined)) {
         return;
       }
 
       if (key === "set-cookie") {
-        if (parsed[key]) {
-          parsed[key].push(val);
+        const existing = parsed[key];
+        if (existing) {
+          (existing as Array<string>).push(val);
         }
         else {
           parsed[key] = [ val ];
         }
       }
       else {
-        parsed[key] = parsed[key] ? parsed[key] + ", " + val : val;
+        const existing = parsed[key] as string | undefined;
+        parsed[key] = existing ? existing + ", " + val : val;
       }
     });
 

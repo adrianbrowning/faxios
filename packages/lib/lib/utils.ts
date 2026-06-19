@@ -11,7 +11,7 @@ const { iterator, toStringTag } = Symbol;
 /* Creating a function that will check if an object has a property. */
 const hasOwnProperty = (
   ({ hasOwnProperty }) =>
-    (obj, prop) =>
+    (obj: unknown, prop: PropertyKey) =>
       hasOwnProperty.call(obj, prop)
 )(Object.prototype);
 
@@ -27,9 +27,10 @@ const hasOwnProperty = (
  *
  * @returns {boolean} True when `prop` is owned below Object.prototype
  */
-const hasOwnInPrototypeChain = (thing, prop) => {
-  let obj = thing;
-  const seen = [];
+const hasOwnInPrototypeChain = (thing: unknown, prop: PropertyKey): boolean => {
+  let obj: object | null = thing != null && typeof thing === "object" ? thing : null;
+  if (obj === null) return false;
+  const seen: Array<object> = [];
 
   while (obj != null && obj !== Object.prototype) {
     if (seen.indexOf(obj) !== -1) {
@@ -40,7 +41,7 @@ const hasOwnInPrototypeChain = (thing, prop) => {
     if (hasOwnProperty(obj, prop)) {
       return true;
     }
-    obj = getPrototypeOf(obj);
+    obj = getPrototypeOf(obj) as object | null;
   }
   return false;
 };
@@ -56,20 +57,20 @@ const hasOwnInPrototypeChain = (thing, prop) => {
  *
  * @returns {*} The resolved value, or undefined when unsafe/absent
  */
-const getSafeProp = (obj, prop) =>
-  obj != null && hasOwnInPrototypeChain(obj, prop) ? obj[prop] : undefined;
+const getSafeProp = (obj: unknown, prop: PropertyKey): unknown =>
+  obj != null && hasOwnInPrototypeChain(obj, prop) ? (obj as Record<PropertyKey, unknown>)[prop] : undefined;
 
-const kindOf = (cache => thing => {
+const kindOf = (cache => (thing: unknown) => {
   const str = toString.call(thing);
-  return cache[str] || (cache[str] = str.slice(8, -1).toLowerCase());
-})(Object.create(null));
+  return (cache as Record<string, string>)[str] || ((cache as Record<string, string>)[str] = str.slice(8, -1).toLowerCase());
+})(Object.create(null) as object);
 
-const kindOfTest = type => {
+const kindOfTest = (type: string) => {
   type = type.toLowerCase();
-  return thing => kindOf(thing) === type;
+  return (thing: unknown) => kindOf(thing) === type;
 };
 
-const typeOfTest = type => thing => typeof thing === type;
+const typeOfTest = (type: string) => (thing: unknown) => typeof thing === type;
 
 /**
  * Determine if a value is a non-null object
@@ -96,14 +97,14 @@ const isUndefined = typeOfTest("undefined");
  *
  * @returns {boolean} True if value is a Buffer, otherwise false
  */
-function isBuffer(val) {
+function isBuffer(val: unknown): boolean {
   return (
     val !== null &&
     !isUndefined(val) &&
-    val.constructor !== null &&
-    !isUndefined(val.constructor) &&
-    isFunction(val.constructor.isBuffer) &&
-    val.constructor.isBuffer(val)
+    (val as Record<string, unknown>).constructor !== null &&
+    !isUndefined((val as Record<string, unknown>).constructor) &&
+    isFunction((val as { constructor: Record<string, unknown>; }).constructor["isBuffer"]) &&
+    (val as { constructor: { isBuffer: (v: unknown) => boolean; }; }).constructor.isBuffer(val)
   );
 }
 
@@ -123,16 +124,16 @@ const isArrayBuffer = kindOfTest("ArrayBuffer");
  *
  * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
  */
-function isArrayBufferView(val) {
+function isArrayBufferView(val: unknown): boolean {
   let result;
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (typeof ArrayBuffer !== "undefined" && ArrayBuffer.isView) {
     result = ArrayBuffer.isView(val);
   }
   else {
-    result = val && val.buffer && isArrayBuffer(val.buffer);
+    result = val && (val as Record<string, unknown>).buffer && isArrayBuffer((val as Record<string, unknown>).buffer);
   }
-  return result;
+  return !!result;
 }
 
 /**
@@ -168,7 +169,7 @@ const isNumber = typeOfTest("number");
  *
  * @returns {boolean} True if value is an Object, otherwise false
  */
-const isObject = thing => thing !== null && typeof thing === "object";
+const isObject = (thing: unknown): thing is object => thing !== null && typeof thing === "object";
 
 /**
  * Determine if a value is a Boolean
@@ -176,7 +177,7 @@ const isObject = thing => thing !== null && typeof thing === "object";
  * @param {*} thing The value to test
  * @returns {boolean} True if value is a Boolean, otherwise false
  */
-const isBoolean = thing => thing === true || thing === false;
+const isBoolean = (thing: unknown) => thing === true || thing === false;
 
 /**
  * Determine if a value is a plain Object
@@ -185,7 +186,7 @@ const isBoolean = thing => thing === true || thing === false;
  *
  * @returns {boolean} True if value is a plain Object, otherwise false
  */
-const isPlainObject = val => {
+const isPlainObject = (val: unknown): boolean => {
   if (!isObject(val)) {
     return false;
   }
@@ -210,7 +211,7 @@ const isPlainObject = val => {
  *
  * @returns {boolean} True if value is an empty object, otherwise false
  */
-const isEmptyObject = val => {
+const isEmptyObject = (val: unknown): boolean => {
   // Early return for non-objects or Buffers to prevent RangeError
   if (!isObject(val) || isBuffer(val)) {
     return false;
@@ -254,7 +255,7 @@ const isFile = kindOfTest("File");
  *
  * @returns {boolean} True if value is a React Native Blob, otherwise false
  */
-const isReactNativeBlob = value => !!(value && typeof value.uri !== "undefined");
+const isReactNativeBlob = (value: unknown) => !!(value && typeof (value as Record<string, unknown>).uri !== "undefined");
 
 /**
  * Determine if environment is React Native
@@ -264,7 +265,7 @@ const isReactNativeBlob = value => !!(value && typeof value.uri !== "undefined")
  *
  * @returns {boolean} True if environment is React Native, otherwise false
  */
-const isReactNative = formData => formData && typeof formData.getParts !== "undefined";
+const isReactNative = (formData: unknown) => formData && typeof (formData as Record<string, unknown>).getParts !== "undefined";
 
 /**
  * Determine if a value is a Blob
@@ -291,7 +292,7 @@ const isFileList = kindOfTest("FileList");
  *
  * @returns {boolean} True if value is a Stream, otherwise false
  */
-const isStream = val => isObject(val) && isFunction(val.pipe);
+const isStream = (val: unknown) => isObject(val) && isFunction((val as Record<string, unknown>).pipe);
 
 /**
  * Determine if a value is a FormData
@@ -300,29 +301,33 @@ const isStream = val => isObject(val) && isFunction(val.pipe);
  *
  * @returns {boolean} True if value is an FormData, otherwise false
  */
-function getGlobal() {
+function getGlobal(): Record<string, unknown> {
   if (typeof globalThis !== "undefined") return globalThis;
+  // @ts-expect-error self may not exist in all environments
+   
   if (typeof self !== "undefined") return self;
+  // @ts-expect-error window may not exist in all environments
+   
   if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+  if (typeof global !== "undefined") return global as unknown as Record<string, unknown>;
   return {};
 }
 
 const G = getGlobal();
-const FormDataCtor = typeof G.FormData !== "undefined" ? G.FormData : undefined;
+const FormDataCtor = typeof G["FormData"] !== "undefined" ? G["FormData"] as new () => object : undefined;
 
-const isFormData = thing => {
+const isFormData = (thing: unknown): boolean => {
   if (!thing) return false;
   if (FormDataCtor && thing instanceof FormDataCtor) return true;
   // Reject plain objects inheriting directly from Object.prototype so prototype-pollution gadgets can't spoof FormData.
   const proto = getPrototypeOf(thing);
   if (!proto || proto === Object.prototype) return false;
-  if (!isFunction(thing.append)) return false;
+  if (!isFunction((thing as Record<string, unknown>).append)) return false;
   const kind = kindOf(thing);
   return (
     kind === "formdata" ||
     // detect form-data instance
-    (kind === "object" && isFunction(thing.toString) && thing.toString() === "[object FormData]")
+    (kind === "object" && isFunction((thing as Record<string, unknown>).toString) && (thing as { toString: () => string; }).toString() === "[object FormData]")
   );
 };
 
@@ -350,7 +355,7 @@ const [ isReadableStream, isRequest, isResponse, isHeaders ] = [
  * @returns {String} The String freed of excess whitespace
  */
 // eslint-disable-next-line sonarjs/slow-regex
-const trim = str => str.trim ? str.trim() : str.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "");
+const trim = (str: string) => str.trim ? str.trim() : str.replace(/^[\s﻿\xA0]+|[\s﻿\xA0]+$/g, "");
 /**
  * Iterate over an Array or an Object invoking a function for each item.
  *
@@ -367,14 +372,14 @@ const trim = str => str.trim ? str.trim() : str.replace(/^[\s\uFEFF\xA0]+|[\s\uF
  * @param {Boolean} [options.allOwnKeys = false]
  * @returns {any}
  */
-function forEach(obj, fn, { allOwnKeys = false } = {}) {
+function forEach(obj: unknown, fn: (value: unknown, key: unknown, obj: unknown) => void, { allOwnKeys = false } = {}): void {
   // Don't bother if no value provided
   if (obj === null || typeof obj === "undefined") {
     return;
   }
 
-  let i;
-  let l;
+  let i: number;
+  let l: number;
 
   // Force an array if not already something iterable
   if (typeof obj !== "object") {
@@ -395,13 +400,13 @@ function forEach(obj, fn, { allOwnKeys = false } = {}) {
     }
 
     // Iterate over object keys
-    const keys = allOwnKeys ? Object.getOwnPropertyNames(obj) : Object.keys(obj);
+    const keys = allOwnKeys ? Object.getOwnPropertyNames(obj) : Object.keys(obj as object);
     const len = keys.length;
-    let key;
+    let key: string | undefined;
 
     for (i = 0; i < len; i++) {
-      key = keys[i];
-      fn.call(null, obj[key], key, obj);
+      key = keys[i]!;
+      fn.call(null, (obj as Record<string, unknown>)[key], key, obj);
     }
   }
 }
@@ -414,17 +419,17 @@ function forEach(obj, fn, { allOwnKeys = false } = {}) {
  * @param {string} key - The key to find (case-insensitive).
  * @returns {?string} The actual key name if found, otherwise null.
  */
-function findKey(obj, key) {
+function findKey(obj: unknown, key: string): string | null {
   if (isBuffer(obj)) {
     return null;
   }
 
   key = key.toLowerCase();
-  const keys = Object.keys(obj);
+  const keys = Object.keys(obj as object);
   let i = keys.length;
-  let _key;
+  let _key: string | undefined;
   while (i-- > 0) {
-    _key = keys[i];
+    _key = keys[i]!;
     if (key === _key.toLowerCase()) {
       return _key;
     }
@@ -435,11 +440,16 @@ function findKey(obj, key) {
 const _global = (() => {
   /*eslint no-undef:0*/
   if (typeof globalThis !== "undefined") return globalThis;
-  // eslint-disable-next-line sonarjs/no-nested-conditional
-  return typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : global;
-})();
+  // @ts-expect-error self may not exist in all environments
+   
+  if (typeof self !== "undefined") return self;
+  // @ts-expect-error window may not exist in all environments
+   
+  if (typeof window !== "undefined") return window;
+  return global as unknown as Record<string, unknown>;
+})() as Record<string, unknown> & { addEventListener?: (type: string, listener: (event: Record<string, unknown>) => void, capture?: boolean) => void; postMessage?: (message: unknown, targetOrigin: string) => void; };
 
-const isContextDefined = context => !isUndefined(context) && context !== _global;
+const isContextDefined = (context: unknown) => !isUndefined(context) && context !== _global;
 
 /**
  * Accepts varargs expecting each argument to be an object, then
@@ -459,18 +469,21 @@ const isContextDefined = context => !isUndefined(context) && context !== _global
  *
  * @returns {Object} Result of all merge properties
  */
-function merge(...objs) {
-  const { caseless, skipUndefined } = (isContextDefined(this) && this) || {};
-  const result = {};
-  const assignValue = (val, key) => {
+function merge(this: unknown, ...objs: Array<unknown>): Record<string, unknown> {
+  const ctx = (isContextDefined(this) && this) as { caseless?: unknown; skipUndefined?: unknown; } | false;
+  const caseless = ctx && ctx.caseless;
+  const skipUndefined = ctx && ctx.skipUndefined;
+  const result: Record<string | symbol, unknown> = {};
+  const assignValue = (val: unknown, key: unknown) => {
+    const keyStr = key as string | symbol;
     // Skip dangerous property names to prevent prototype pollution
-    if (key === "__proto__" || key === "constructor" || key === "prototype") {
+    if (keyStr === "__proto__" || keyStr === "constructor" || keyStr === "prototype") {
       return;
     }
 
     // findKey lowercases the key, so caseless lookup only applies to strings —
     // symbol keys are identity-matched.
-    const targetKey = (caseless && typeof key === "string" && findKey(result, key)) || key;
+    const targetKey: string | symbol = (caseless && typeof keyStr === "string" ? (findKey(result, keyStr) ?? (keyStr)) : (keyStr));
     // Read via own-prop only — a bare `result[targetKey]` walks the prototype
     // chain, so a polluted Object.prototype value could surface here and get
     // copied into the merged result.
@@ -503,9 +516,9 @@ function merge(...objs) {
 
     const symbols = Object.getOwnPropertySymbols(source);
     for (let j = 0; j < symbols.length; j++) {
-      const symbol = symbols[j];
+      const symbol = symbols[j]!;
       if (propertyIsEnumerable.call(source, symbol)) {
-        assignValue(source[symbol], symbol);
+        assignValue((source as Record<symbol, unknown>)[symbol], symbol);
       }
     }
   }
@@ -523,29 +536,25 @@ function merge(...objs) {
  * @param {Boolean} [options.allOwnKeys]
  * @returns {Object} The resulting value of object a
  */
-const extend = (a, b, thisArg, { allOwnKeys } = {}) => {
+const extend = (a: Record<string, unknown>, b: unknown, thisArg: unknown, { allOwnKeys }: { allOwnKeys?: boolean; } = {}) => {
   forEach(
     b,
     (val, key) => {
       if (thisArg && isFunction(val)) {
-        Object.defineProperty(a, key, {
-          // Null-proto descriptor so a polluted Object.prototype.get cannot
-          // hijack defineProperty's accessor-vs-data resolution.
-          __proto__: null,
-          value: bind(val, thisArg),
+        Object.defineProperty(a, key as PropertyKey, Object.assign(Object.create(null) as PropertyDescriptor, {
+          value: bind(val as (...args: Array<unknown>) => unknown, thisArg),
           writable: true,
           enumerable: true,
           configurable: true,
-        });
+        }));
       }
       else {
-        Object.defineProperty(a, key, {
-          __proto__: null,
+        Object.defineProperty(a, key as PropertyKey, Object.assign(Object.create(null) as PropertyDescriptor, {
           value: val,
           writable: true,
           enumerable: true,
           configurable: true,
-        });
+        }));
       }
     },
     { allOwnKeys }
@@ -560,7 +569,7 @@ const extend = (a, b, thisArg, { allOwnKeys } = {}) => {
  *
  * @returns {string} content value without BOM
  */
-const stripBOM = content => {
+const stripBOM = (content: string) => {
   if (content.charCodeAt(0) === 0xfeff) {
     content = content.slice(1);
   }
@@ -576,19 +585,17 @@ const stripBOM = content => {
  *
  * @returns {void}
  */
-const inherits = (constructor, superConstructor, props, descriptors) => {
-  constructor.prototype = Object.create(superConstructor.prototype, descriptors);
-  Object.defineProperty(constructor.prototype, "constructor", {
-    __proto__: null,
+const inherits = (constructor: { prototype: object; super?: object; }, superConstructor: { prototype: object; }, props?: object, descriptors?: PropertyDescriptorMap) => {
+  constructor.prototype = Object.create(superConstructor.prototype, descriptors as PropertyDescriptorMap);
+  Object.defineProperty(constructor.prototype, "constructor", Object.assign(Object.create(null) as PropertyDescriptor, {
     value: constructor,
     writable: true,
     enumerable: false,
     configurable: true,
-  });
-  Object.defineProperty(constructor, "super", {
-    __proto__: null,
+  }));
+  Object.defineProperty(constructor, "super", Object.assign(Object.create(null) as PropertyDescriptor, {
     value: superConstructor.prototype,
-  });
+  }));
   props && Object.assign(constructor.prototype, props);
 };
 
@@ -601,30 +608,32 @@ const inherits = (constructor, superConstructor, props, descriptors) => {
  *
  * @returns {Object}
  */
-const toFlatObject = (sourceObj, destObj, filter, propFilter) => {
-  let props;
-  let i;
-  let prop;
-  const merged = {};
+const toFlatObject = (sourceObj: unknown, destObj?: Record<string, unknown>, filter?: ((src: object, dest: Record<string, unknown>) => boolean) | false, propFilter?: (prop: string, src: unknown, dest: Record<string, unknown>) => boolean): Record<string, unknown> => {
+  let props: Array<string>;
+  let i: number;
+  let prop: string | undefined;
+  const merged: Record<string, boolean> = {};
 
-  destObj = destObj || {};
-   
-  if (sourceObj == null) return destObj;
+  const dest: Record<string, unknown> = destObj ?? {};
+
+  if (sourceObj == null) return dest;
+
+  let src: unknown = sourceObj;
 
   do {
-    props = Object.getOwnPropertyNames(sourceObj);
+    props = Object.getOwnPropertyNames(src);
     i = props.length;
     while (i-- > 0) {
-      prop = props[i];
-      if ((!propFilter || propFilter(prop, sourceObj, destObj)) && !merged[prop]) {
-        destObj[prop] = sourceObj[prop];
+      prop = props[i]!;
+      if ((!propFilter || propFilter(prop, src, dest)) && !merged[prop]) {
+        dest[prop] = (src as Record<string, unknown>)[prop];
         merged[prop] = true;
       }
     }
-    sourceObj = filter !== false && getPrototypeOf(sourceObj);
-  } while (sourceObj && (!filter || filter(sourceObj, destObj)) && sourceObj !== Object.prototype);
+    src = filter !== false && getPrototypeOf(src);
+  } while (src && (!filter || filter(src, dest)) && src !== Object.prototype);
 
-  return destObj;
+  return dest;
 };
 
 /**
@@ -636,7 +645,7 @@ const toFlatObject = (sourceObj, destObj, filter, propFilter) => {
  *
  * @returns {boolean}
  */
-const endsWith = (str, searchString, position) => {
+const endsWith = (str: string, searchString: string, position?: number) => {
   str = String(str);
   if (position === undefined || position > str.length) {
     position = str.length;
@@ -653,14 +662,16 @@ const endsWith = (str, searchString, position) => {
  *
  * @returns {?Array}
  */
-const toArray = thing => {
+const toArray = (thing: unknown): Array<unknown> | null => {
   if (!thing) return null;
   if (isArray(thing)) return thing;
-  let i = thing.length;
+  let i = (thing as { length?: unknown; }).length;
   if (!isNumber(i)) return null;
-  const arr = new Array(i);
-  while (i-- > 0) {
-    arr[i] = thing[i];
+  const len = i as number;
+  const arr = new Array(len) as Array<unknown>;
+  let idx = len;
+  while (idx-- > 0) {
+    arr[idx] = (thing as Record<number, unknown>)[idx];
   }
   return arr;
 };
@@ -673,11 +684,11 @@ const toArray = thing => {
  *
  * @returns {Array}
  */
- 
-const isTypedArray = (TypedArray => 
-   
-  thing => TypedArray && thing instanceof TypedArray
-)(typeof Uint8Array !== "undefined" && getPrototypeOf(Uint8Array));
+
+const isTypedArray = ((TypedArray: false | (abstract new (...args: Array<unknown>) => unknown)) =>
+
+  (thing: unknown) => TypedArray && thing instanceof TypedArray
+)(typeof Uint8Array !== "undefined" && getPrototypeOf(Uint8Array) as abstract new (...args: Array<unknown>) => unknown);
 
 /**
  * For each entry in the object, call the function with the key and value.
@@ -687,12 +698,13 @@ const isTypedArray = (TypedArray =>
  *
  * @returns {void}
  */
-const forEachEntry = (obj, fn) => {
-  const generator = obj && obj[iterator];
+const forEachEntry = (obj: unknown, fn: (key: unknown, value: unknown) => void) => {
+  const iterable = obj as Record<symbol, ((this: unknown) => Iterator<[unknown, unknown]>) | undefined>;
+  const generator = iterable[iterator];
 
-  const _iterator = generator.call(obj);
+  const _iterator = generator!.call(obj);
 
-  let result;
+  let result: IteratorResult<[unknown, unknown]>;
 
   result = _iterator.next();
   while (result && !result.done) {
@@ -710,9 +722,9 @@ const forEachEntry = (obj, fn) => {
  *
  * @returns {Array<boolean>}
  */
-const matchAll = (regExp, str) => {
-  let matches;
-  const arr = [];
+const matchAll = (regExp: RegExp, str: string) => {
+  let matches: RegExpExecArray | null;
+  const arr: Array<RegExpExecArray> = [];
 
   while ((matches = regExp.exec(str)) !== null) {
     arr.push(matches);
@@ -724,7 +736,7 @@ const matchAll = (regExp, str) => {
 /* Checking if the kindOfTest function returns true when passed an HTMLFormElement. */
 const isHTMLForm = kindOfTest("HTMLFormElement");
 
-const toCamelCase = str => str.toLowerCase().replace(/[-_\s]([a-z\d])(\w*)/g, function replacer(m, p1, p2) {
+const toCamelCase = (str: string) => str.toLowerCase().replace(/[-_\s]([a-z\d])(\w*)/g, function replacer(_m: string, p1: string, p2: string) {
   return p1.toUpperCase() + p2;
 });
 
@@ -739,14 +751,14 @@ const { propertyIsEnumerable } = Object.prototype;
  */
 const isRegExp = kindOfTest("RegExp");
 
-const reduceDescriptors = (obj, reducer) => {
+const reduceDescriptors = (obj: object, reducer: (descriptor: PropertyDescriptor, name: string, obj: object) => PropertyDescriptor | false | undefined) => {
   const descriptors = Object.getOwnPropertyDescriptors(obj);
-  const reducedDescriptors = {};
+  const reducedDescriptors: PropertyDescriptorMap = {};
 
   forEach(descriptors, (descriptor, name) => {
     let ret;
-    if ((ret = reducer(descriptor, name, obj)) !== false) {
-      reducedDescriptors[name] = ret || descriptor;
+    if ((ret = reducer(descriptor as PropertyDescriptor, name as string, obj)) !== false) {
+      reducedDescriptors[name as string] = ret ?? (descriptor as PropertyDescriptor);
     }
   });
 
@@ -758,22 +770,22 @@ const reduceDescriptors = (obj, reducer) => {
  * @param {Object} obj
  */
 
-const freezeMethods = obj => {
+const freezeMethods = (obj: object) => {
   reduceDescriptors(obj, (descriptor, name) => {
     // skip restricted props in strict mode
     if (isFunction(obj) && [ "arguments", "caller", "callee" ].includes(name)) {
       return false;
     }
 
-    const value = obj[name];
+    const value = (obj as Record<string, unknown>)[name];
 
-    if (!isFunction(value)) return;
+    if (!isFunction(value)) return false;
 
     descriptor.enumerable = false;
 
     if ("writable" in descriptor) {
       descriptor.writable = false;
-      return;
+      return descriptor;
     }
 
     if (!descriptor.set) {
@@ -781,6 +793,7 @@ const freezeMethods = obj => {
         throw Error("Can not rewrite read-only method '" + name + "'");
       };
     }
+    return descriptor;
   });
 };
 
@@ -792,12 +805,12 @@ const freezeMethods = obj => {
  * @param {string} delimiter - The delimiter to use if input is a string.
  * @returns {Object} An object with keys from the array or string, values set to true.
  */
-const toObjectSet = (arrayOrString, delimiter) => {
-  const obj = {};
+const toObjectSet = (arrayOrString: Array<unknown> | string, delimiter: string) => {
+  const obj: Record<string, boolean> = {};
 
-  const define = arr => {
+  const define = (arr: Array<unknown>) => {
     arr.forEach(value => {
-      obj[value] = true;
+      obj[value as string] = true;
     });
   };
 
@@ -808,8 +821,8 @@ const toObjectSet = (arrayOrString, delimiter) => {
 
 const noop = () => {};
 
-const toFiniteNumber = (value, defaultValue) => {
-  const num = +value;
+const toFiniteNumber = (value: unknown, defaultValue?: number) => {
+  const num = +(value as number);
   return value != null && Number.isFinite(num) ? num : defaultValue;
 };
 
@@ -820,12 +833,12 @@ const toFiniteNumber = (value, defaultValue) => {
  *
  * @returns {boolean}
  */
-function isSpecCompliantForm(thing) {
+function isSpecCompliantForm(thing: unknown): boolean {
   return !!(
     thing &&
-    isFunction(thing.append) &&
-    thing[toStringTag] === "FormData" &&
-    thing[iterator]
+    isFunction((thing as Record<string | symbol, unknown>).append) &&
+    (thing as Record<string | symbol, unknown>)[toStringTag] === "FormData" &&
+    (thing as Record<string | symbol, unknown>)[iterator]
   );
 }
 
@@ -835,10 +848,10 @@ function isSpecCompliantForm(thing) {
  * @param {Object} obj - The object to convert.
  * @returns {Object} The JSON-compatible object.
  */
-const toJSONObject = obj => {
-  const visited = new WeakSet();
+const toJSONObject = (obj: unknown): unknown => {
+  const visited = new WeakSet<object>();
 
-  const visit = source => {
+  const visit = (source: unknown): unknown => {
     if (isObject(source)) {
       if (visited.has(source)) {
         return;
@@ -852,11 +865,11 @@ const toJSONObject = obj => {
       if (!("toJSON" in source)) {
         // add-on descent / delete-on-ascent: preserves path semantics, so DAG nodes serialise at every occurrence (see #7230).
         visited.add(source);
-        const target = isArray(source) ? [] : {};
+        const target: Record<string | number, unknown> = isArray(source) ? ([] as Record<number, unknown>) : {};
 
         forEach(source, (value, key) => {
           const reducedValue = visit(value);
-          !isUndefined(reducedValue) && (target[key] = reducedValue);
+          !isUndefined(reducedValue) && (target[key as string] = reducedValue);
         });
 
         visited.delete(source);
@@ -885,11 +898,11 @@ const isAsyncFn = kindOfTest("AsyncFunction");
  * @param {*} thing - The value to test.
  * @returns {boolean} True if value is thenable, otherwise false.
  */
-const isThenable = thing =>
+const isThenable = (thing: unknown) =>
   thing &&
   (isObject(thing) || isFunction(thing)) &&
-  isFunction(thing.then) &&
-  isFunction(thing.catch);
+  isFunction((thing as Record<string, unknown>).then) &&
+  isFunction((thing as Record<string, unknown>).catch);
 
 // original code
 // https://github.com/DigitalBrainJS/AxiosPromise/blob/16deab13710ec09779922131f3fa5954320f83ab/lib/utils.js#L11-L34
@@ -903,31 +916,31 @@ const isThenable = thing =>
  * @returns {Function} A function to schedule a callback asynchronously.
  */
 // eslint-disable-next-line sonarjs/function-return-type
-const _setImmediate = ((setImmediateSupported, postMessageSupported) => {
+const _setImmediate = ((setImmediateSupported: boolean, postMessageSupported: boolean) => {
   if (setImmediateSupported) {
     return setImmediate;
   }
 
   return postMessageSupported
-    ? ((token, callbacks) => {
-      _global.addEventListener(
+    ? ((token: string, callbacks: Array<() => void>) => {
+      _global.addEventListener?.(
         "message",
-        ({ source, data }) => {
-          if (source === _global && data === token) {
-            callbacks.length && callbacks.shift()();
+        (evt: Record<string, unknown>) => {
+          if (evt["source"] === _global && evt["data"] === token) {
+            callbacks.length && callbacks.shift()!();
           }
         },
         false
       );
 
-      return cb => {
+      return (cb: () => void) => {
         callbacks.push(cb);
-        _global.postMessage(token, "*");
+        _global.postMessage?.(token, "*");
       };
     // eslint-disable-next-line sonarjs/pseudo-random
     })(`axios@${Math.random()}`, [])
-    : cb => setTimeout(cb);
-})(typeof setImmediate === "function", isFunction(_global.postMessage));
+    : (cb: () => void) => setTimeout(cb);
+})(typeof setImmediate === "function", isFunction(_global["postMessage"]));
 
 /**
  * Schedules a microtask or asynchronous callback as soon as possible.
@@ -938,13 +951,13 @@ const _setImmediate = ((setImmediateSupported, postMessageSupported) => {
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 const asap =
   typeof queueMicrotask !== "undefined"
-    ? queueMicrotask.bind(_global)
+    ? queueMicrotask.bind(globalThis)
     : (typeof process !== "undefined" && process.nextTick) || _setImmediate;
 /* eslint-enable @typescript-eslint/no-unnecessary-condition */
 
 // *********************
 
-const isIterable = thing => thing != null && isFunction(thing[iterator]);
+const isIterable = (thing: unknown) => thing != null && isFunction((thing as Record<symbol, unknown>)[iterator]);
 
 /**
  * Determine if a value is iterable via an iterator that is NOT sourced solely
@@ -957,7 +970,7 @@ const isIterable = thing => thing != null && isFunction(thing[iterator]);
  *
  * @returns {boolean} True if value has a non-polluted iterator
  */
-const isSafeIterable = thing =>
+const isSafeIterable = (thing: unknown) =>
   thing != null && hasOwnInPrototypeChain(thing, iterator) && isIterable(thing);
 
 export default {

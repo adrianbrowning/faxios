@@ -18,7 +18,7 @@ const generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
   const randomValues = new Uint32Array(size);
   crypto.randomFillSync(randomValues);
   for (let i = 0; i < size; i++) {
-    str += alphabet[randomValues[i] % length];
+    str += alphabet[(randomValues[i]! % length)] ?? "";
   }
 
   return str;
@@ -29,7 +29,7 @@ export default {
   classes: {
     URLSearchParams,
     FormData,
-    Blob: (typeof Blob !== "undefined" && Blob) || null,
+    Blob: ((globalThis as { Blob?: unknown; }).Blob !== undefined && (globalThis as { Blob?: unknown; }).Blob) || null,
   },
   ALPHABET,
   generateString,

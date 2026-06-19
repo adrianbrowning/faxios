@@ -1,69 +1,50 @@
 "use strict";
 
+import type {
+  AxiosInterceptorHandler,
+  AxiosInterceptorFulfilled,
+  AxiosInterceptorRejected,
+  AxiosInterceptorOptions
+} from "../types.js";
 import utils from "../utils.js";
 
-class InterceptorManager {
+class InterceptorManager<T> {
+  handlers: Array<AxiosInterceptorHandler<T> | null>;
+
   constructor() {
     this.handlers = [];
   }
 
-  /**
-   * Add a new interceptor to the stack
-   *
-   * @param {Function} fulfilled The function to handle `then` for a `Promise`
-   * @param {Function} rejected The function to handle `reject` for a `Promise`
-   * @param {Object} options The options for the interceptor, synchronous and runWhen
-   *
-   * @return {Number} An ID used to remove interceptor later
-   */
-  use(fulfilled, rejected, options) {
+  use(
+    fulfilled: AxiosInterceptorFulfilled<T>,
+    rejected?: AxiosInterceptorRejected,
+    options?: AxiosInterceptorOptions
+  ): number {
     this.handlers.push({
       fulfilled,
       rejected,
-      synchronous: options ? options.synchronous : false,
+      synchronous: options ? !!options.synchronous : false,
       runWhen: options ? options.runWhen : null,
     });
     return this.handlers.length - 1;
   }
 
-  /**
-   * Remove an interceptor from the stack
-   *
-   * @param {Number} id The ID that was returned by `use`
-   *
-   * @returns {void}
-   */
-  eject(id) {
+  eject(id: number): void {
     if (this.handlers[id]) {
       this.handlers[id] = null;
     }
   }
 
-  /**
-   * Clear all interceptors from the stack
-   *
-   * @returns {void}
-   */
-  clear() {
+  clear(): void {
     if (this.handlers) {
       this.handlers = [];
     }
   }
 
-  /**
-   * Iterate over all the registered interceptors
-   *
-   * This method is particularly useful for skipping over any
-   * interceptors that may have become `null` calling `eject`.
-   *
-   * @param {Function} fn The function to call for each interceptor
-   *
-   * @returns {void}
-   */
-  forEach(fn) {
-    utils.forEach(this.handlers, function forEachHandler(h) {
+  forEach(fn: (handler: AxiosInterceptorHandler<T>) => void): void {
+    utils.forEach(this.handlers, function forEachHandler(h: unknown) {
       if (h !== null) {
-        fn(h);
+        fn(h as AxiosInterceptorHandler<T>);
       }
     });
   }

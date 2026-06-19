@@ -3,6 +3,7 @@
 import PlatformFormData from "form-data";
 import AxiosError from "../core/AxiosError.js";
 // temporary hotfix to avoid circular references until AxiosURLSearchParams is refactored
+import type { GenericFormData, SerializerVisitor, FormDataVisitorHelpers } from "../types.js";
 import utils from "../utils.js";
 
 // Default nesting limit shared with the inverse transform (formDataToJSON) so
@@ -16,7 +17,7 @@ export const DEFAULT_FORM_DATA_MAX_DEPTH = 100;
  *
  * @returns {boolean}
  */
-function isVisitable(thing) {
+function isVisitable(thing: unknown): boolean {
   return utils.isPlainObject(thing) || utils.isArray(thing);
 }
 
@@ -27,7 +28,7 @@ function isVisitable(thing) {
  *
  * @returns {string} the key without the brackets.
  */
-function removeBrackets(key) {
+function removeBrackets(key: string): string {
   return utils.endsWith(key, "[]") ? key.slice(0, -2) : key;
 }
 
@@ -40,12 +41,12 @@ function removeBrackets(key) {
  *
  * @returns {string} The path to the current key.
  */
-function renderKey(path, key, dots) {
-  if (!path) return key;
+function renderKey(path: Array<string | number> | null | undefined, key: string | number, dots: unknown): string {
+  if (!path) return String(key);
   return path
     .concat(key)
-    .map(function each(token, i) {
-      token = removeBrackets(token);
+    .map(function each(token: string | number, i: number) {
+      token = removeBrackets(String(token));
       return !dots && i ? "[" + token + "]" : token;
     })
     .join(dots ? "." : "");
@@ -58,11 +59,11 @@ function renderKey(path, key, dots) {
  *
  * @returns {boolean}
  */
-function isFlatArray(arr) {
-  return utils.isArray(arr) && !arr.some(isVisitable);
+function isFlatArray(arr: unknown): boolean {
+  return utils.isArray(arr) && !(arr as Array<unknown>).some(isVisitable);
 }
 
-const predicates = utils.toFlatObject(utils, {}, null, function filter(prop) {
+const predicates = utils.toFlatObject(utils, {}, null as unknown as false, function filter(prop: string) {
   return /^is[A-Z]/.test(prop);
 });
 
@@ -89,13 +90,15 @@ const predicates = utils.toFlatObject(utils, {}, null, function filter(prop) {
  *
  * @returns
  */
-function toFormData(obj, formData, options) {
+function toFormData(obj: unknown, formData?: GenericFormData | null, options?: Record<string, unknown>): GenericFormData {
   if (!utils.isObject(obj)) {
     throw new TypeError("target must be an object");
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  formData = formData || new (PlatformFormData || FormData)();
+  const GlobalFormData = (globalThis as Record<string, unknown>)["FormData"] as (new () => GenericFormData) | undefined;
+   
+  const FormDataCtor = (PlatformFormData as unknown as (new () => GenericFormData) | undefined) || GlobalFormData;
+  formData = formData || new FormDataCtor!();
 
   options = utils.toFlatObject(
     options,
@@ -105,37 +108,37 @@ function toFormData(obj, formData, options) {
       indexes: false,
     },
     false,
-    function defined(option, source) {
-      return !utils.isUndefined(source[option]);
+    function defined(option: string, source: unknown) {
+      return !utils.isUndefined((source as Record<string, unknown>)[option]);
     }
   );
 
-  const metaTokens = options.metaTokens;
+  const metaTokens = options["metaTokens"];
 
-  const visitor = options.visitor || defaultVisitor;
-  const dots = options.dots;
-  const indexes = options.indexes;
-  const _Blob = options.Blob || (typeof Blob !== "undefined" && Blob);
+  const visitor = (options["visitor"] || defaultVisitor) as SerializerVisitor;
+  const dots = options["dots"];
+  const indexes = options["indexes"];
+  const _Blob = options["Blob"] || (typeof (globalThis as Record<string, unknown>)["Blob"] !== "undefined" && (globalThis as Record<string, unknown>)["Blob"]);
   const maxDepth =
-    options.maxDepth === undefined
+    options["maxDepth"] === undefined
       ? DEFAULT_FORM_DATA_MAX_DEPTH
-      : options.maxDepth;
+      : (options["maxDepth"] as number);
   const useBlob = _Blob && utils.isSpecCompliantForm(formData);
-  const stack = [];
+  const stack: Array<unknown> = [];
 
   if (!utils.isFunction(visitor)) {
     throw new TypeError("visitor must be a function");
   }
 
-  function convertValue(value) {
+  function convertValue(value: unknown): unknown {
     if (value === null) return "";
 
     if (utils.isDate(value)) {
-      return value.toISOString();
+      return (value as Date).toISOString();
     }
 
     if (utils.isBoolean(value)) {
-      return value.toString();
+      return String(value);
     }
 
     if (!useBlob && utils.isBlob(value)) {
@@ -143,16 +146,17 @@ function toFormData(obj, formData, options) {
     }
 
     if (utils.isArrayBuffer(value) || utils.isTypedArray(value)) {
-      return useBlob && typeof Blob === "function"
-        ? new Blob([ value ])
-        : Buffer.from(value);
+      const BlobCtor = (globalThis as Record<string, unknown>)["Blob"] as (new (parts: Array<unknown>) => unknown) | undefined;
+      return useBlob && typeof BlobCtor === "function"
+        ? new BlobCtor([ value ])
+        : Buffer.from(value as ArrayBuffer);
     }
 
     return value;
   }
 
-  function throwIfMaxDepthExceeded(depth) {
-    if (depth > maxDepth) {
+  function throwIfMaxDepthExceeded(depth: number): void {
+    if (depth > (maxDepth)) {
       throw new AxiosError(
         "Object is too deeply nested (" +
           depth +
@@ -163,14 +167,14 @@ function toFormData(obj, formData, options) {
     }
   }
 
-  function stringifyWithDepthLimit(value, depth) {
+  function stringifyWithDepthLimit(value: unknown, depth: number): string {
     if (maxDepth === Infinity) {
       return JSON.stringify(value);
     }
 
-    const ancestors = [];
+    const ancestors: Array<unknown> = [];
 
-    return JSON.stringify(value, function limitDepth(_key, currentValue) {
+    return JSON.stringify(value, function limitDepth(this: unknown, _key: string, currentValue: unknown): unknown {
       if (!utils.isObject(currentValue)) {
         return currentValue;
       }
@@ -196,36 +200,36 @@ function toFormData(obj, formData, options) {
    *
    * @returns {boolean} return true to visit the each prop of the value recursively
    */
-  function defaultVisitor(value, key, path) {
-    let arr = value;
+  function defaultVisitor(this: GenericFormData, value: unknown, key: string | number, path: null | Array<string | number>, _helpers?: FormDataVisitorHelpers): boolean {
+    let arr: unknown = value;
 
     if (utils.isReactNative(formData) && utils.isReactNativeBlob(value)) {
-      formData.append(renderKey(path, key, dots), convertValue(value));
+      (formData as GenericFormData).append(renderKey(path, key, dots), convertValue(value));
       return false;
     }
 
     if (value && !path && typeof value === "object") {
-      if (utils.endsWith(key, "{}")) {
-        key = metaTokens ? key : key.slice(0, -2);
+      if (utils.endsWith(String(key), "{}")) {
+        key = metaTokens ? key : String(key).slice(0, -2);
 
         value = stringifyWithDepthLimit(value, 1);
       }
       else if (
         (utils.isArray(value) && isFlatArray(value)) ||
-        ((utils.isFileList(value) || utils.endsWith(key, "[]")) &&
+        ((utils.isFileList(value) || utils.endsWith(String(key), "[]")) &&
           (arr = utils.toArray(value)))
       ) {
-        key = removeBrackets(key);
+        key = removeBrackets(String(key));
 
-        arr.forEach(function each(el, index) {
+        (arr as Array<unknown>).forEach(function each(el: unknown, index: number) {
           !(utils.isUndefined(el) || el === null) &&
-            formData.append(
+            (formData as GenericFormData).append(
               /* eslint-disable sonarjs/no-nested-conditional */
               indexes === true
-                ? renderKey([ key ], index, dots)
+                ? renderKey([ String(key) ], index, dots)
                 : indexes === null
-                  ? key
-                  : key + "[]",
+                  ? String(key)
+                  : String(key) + "[]",
               /* eslint-enable sonarjs/no-nested-conditional */
               convertValue(el)
             );
@@ -238,41 +242,41 @@ function toFormData(obj, formData, options) {
       return true;
     }
 
-    formData.append(renderKey(path, key, dots), convertValue(value));
+    (formData as GenericFormData).append(renderKey(path, key, dots), convertValue(value));
 
     return false;
   }
 
-  const exposedHelpers = Object.assign(predicates, {
-    defaultVisitor,
+  const exposedHelpers: FormDataVisitorHelpers = Object.assign(predicates, {
+    defaultVisitor: defaultVisitor,
     convertValue,
     isVisitable,
   });
 
-  function build(value, path, depth = 0) {
+  function build(value: unknown, path?: Array<string | number>, depth = 0): void {
     if (utils.isUndefined(value)) return;
 
     throwIfMaxDepthExceeded(depth);
 
     if (stack.indexOf(value) !== -1) {
-      throw new Error("Circular reference detected in " + path.join("."));
+      throw new Error("Circular reference detected in " + (path ?? []).join("."));
     }
 
     stack.push(value);
 
-    utils.forEach(value, function each(el, key) {
+    utils.forEach(value, function each(el: unknown, key: unknown) {
       const result =
         !(utils.isUndefined(el) || el === null) &&
         visitor.call(
-          formData,
+          formData as GenericFormData,
           el,
-          utils.isString(key) ? key.trim() : key,
-          path,
+          utils.isString(key) ? (key as string).trim() : key as string | number,
+          path ?? null,
           exposedHelpers
         );
 
       if (result === true) {
-        build(el, path ? path.concat(key) : [ key ], depth + 1);
+        build(el, path ? path.concat(key as string | number) : [ key as string | number ], depth + 1);
       }
     });
 

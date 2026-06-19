@@ -1,6 +1,14 @@
-const hasBrowserEnv = typeof window !== "undefined" && typeof document !== "undefined";
+const _globalThis = globalThis as {
+  window?: { location?: { href?: string; }; };
+  document?: unknown;
+  navigator?: { product?: string; userAgent?: string; };
+  WorkerGlobalScope?: unknown;
+  self?: { importScripts?: unknown; };
+};
 
-const _navigator = (typeof navigator === "object" && navigator) || undefined;
+const hasBrowserEnv = typeof _globalThis.window !== "undefined" && typeof _globalThis.document !== "undefined";
+
+const _navigator = (typeof _globalThis.navigator === "object" && _globalThis.navigator) || undefined;
 
 /**
  * Determine if we're running in a standard browser environment
@@ -21,7 +29,7 @@ const _navigator = (typeof navigator === "object" && navigator) || undefined;
  */
 const hasStandardBrowserEnv =
   hasBrowserEnv &&
-  (!_navigator || [ "ReactNative", "NativeScript", "NS" ].indexOf(_navigator.product) < 0);
+  (!_navigator || [ "ReactNative", "NativeScript", "NS" ].indexOf(_navigator.product ?? "") < 0);
 
 /**
  * Determine if we're running in a standard browser webWorker environment
@@ -33,13 +41,12 @@ const hasStandardBrowserEnv =
  * This leads to a problem when axios post `FormData` in webWorker
  */
 const hasStandardBrowserWebWorkerEnv = (() => (
-  typeof WorkerGlobalScope !== "undefined" &&
-     
-    self instanceof WorkerGlobalScope &&
-    typeof self.importScripts === "function"
+  typeof _globalThis.WorkerGlobalScope !== "undefined" &&
+    _globalThis.self instanceof (_globalThis.WorkerGlobalScope as new (...args: Array<unknown>) => unknown) &&
+    typeof _globalThis.self?.importScripts === "function"
 ))();
 
-const origin = (hasBrowserEnv && window.location.href) || "http://localhost";
+const origin = (hasBrowserEnv && _globalThis.window?.location?.href) || "http://localhost";
 
 export {
   hasBrowserEnv,

@@ -1,19 +1,19 @@
 const LOOPBACK_HOSTNAMES = new Set([ "localhost", "0.0.0.0" ]);
 
-const isIPv4Loopback = host => {
+const isIPv4Loopback = (host: string): boolean => {
   const parts = host.split(".");
   if (parts.length !== 4) return false;
   if (parts[0] !== "127") return false;
   return parts.every(p => /^\d+$/.test(p) && Number(p) >= 0 && Number(p) <= 255);
 };
 
-const isIPv6ZeroGroup = group => /^0{1,4}$/.test(group);
+const isIPv6ZeroGroup = (group: string): boolean => /^0{1,4}$/.test(group);
 
 // The unspecified address (IPv4 0.0.0.0 / IPv6 ::) resolves to the local host
 // for outbound connections, so treat it as loopback-equivalent for NO_PROXY
 // matching. 0.0.0.0 is covered by LOOPBACK_HOSTNAMES; this handles compressed
 // and full IPv6 all-zero forms so both families bypass symmetrically.
-const isIPv6Unspecified = host => {
+const isIPv6Unspecified = (host: string): boolean => {
   if (host === "::") return true;
 
   const compressionIndex = host.indexOf("::");
@@ -38,7 +38,7 @@ const isIPv6Unspecified = host => {
   return groups.length === 8 && groups.every(isIPv6ZeroGroup);
 };
 
-const isIPv6Loopback = host => {
+const isIPv6Loopback = (host: string): boolean => {
   // Collapse all-zero groups: any form of ::1 / 0:0:...:0:1
   // First, strip any leading "::" by normalising with Set lookup of common forms,
   // then fall back to structural check.
@@ -47,11 +47,11 @@ const isIPv6Loopback = host => {
   // Check IPv4-mapped IPv6 loopback: ::ffff:<v4-loopback> or ::ffff:<hex-v4-loopback>
   // Node's URL parser normalises ::ffff:127.0.0.1 → ::ffff:7f00:1
   const v4MappedDotted = host.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i);
-  if (v4MappedDotted) return isIPv4Loopback(v4MappedDotted[1]);
+  if (v4MappedDotted) return isIPv4Loopback(v4MappedDotted[1]!);
 
   const v4MappedHex = host.match(/^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/i);
   if (v4MappedHex) {
-    const high = parseInt(v4MappedHex[1], 16);
+    const high = parseInt(v4MappedHex[1]!, 16);
     // High 16 bits must start with 127 (0x7f) — i.e. 0x7f00..0x7fff
     return high >= 0x7f00 && high <= 0x7fff;
   }
@@ -61,15 +61,15 @@ const isIPv6Loopback = host => {
   const groups = host.split(":");
   if (groups.length === 8) {
     for (let i = 0; i < 7; i++) {
-      if (!/^0+$/.test(groups[i])) return false;
+      if (!/^0+$/.test(groups[i]!)) return false;
     }
-    return /^0*1$/.test(groups[7]);
+    return /^0*1$/.test(groups[7]!);
   }
 
   return false;
 };
 
-const isLoopback = host => {
+const isLoopback = (host: string): boolean => {
   if (!host) return false;
   if (LOOPBACK_HOSTNAMES.has(host)) return true;
   if (isIPv4Loopback(host)) return true;
@@ -77,7 +77,9 @@ const isLoopback = host => {
   return isIPv6Loopback(host);
 };
 
-const DEFAULT_PORTS = {
+type KnownProtocol = "http" | "https" | "ws" | "wss" | "ftp";
+
+const DEFAULT_PORTS: Record<KnownProtocol, number> = {
   http: 80,
   https: 443,
   ws: 80,
@@ -85,7 +87,7 @@ const DEFAULT_PORTS = {
   ftp: 21,
 };
 
-const parseNoProxyEntry = entry => {
+const parseNoProxyEntry = (entry: string): [string, number] => {
   let entryHost = entry;
   let entryPort = 0;
 
@@ -128,23 +130,23 @@ const parseNoProxyEntry = entry => {
 const IPV4_MAPPED_DOTTED_RE = /^(?:::|(?:0{1,4}:){1,4}:|(?:0{1,4}:){5})ffff:(\d+\.\d+\.\d+\.\d+)$/i;
 const IPV4_MAPPED_HEX_RE = /^(?:::|(?:0{1,4}:){1,4}:|(?:0{1,4}:){5})ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/i;
 
-const unmapIPv4MappedIPv6 = host => {
+const unmapIPv4MappedIPv6 = (host: string): string => {
   if (typeof host !== "string" || host.indexOf(":") === -1) return host;
 
   const dotted = IPV4_MAPPED_DOTTED_RE.exec(host);
-  if (dotted) return dotted[1];
+  if (dotted) return dotted[1]!;
 
   const hex = IPV4_MAPPED_HEX_RE.exec(host);
   if (hex) {
-    const high = parseInt(hex[1], 16);
-    const low = parseInt(hex[2], 16);
+    const high = parseInt(hex[1]!, 16);
+    const low = parseInt(hex[2]!, 16);
     return `${high >> 8}.${high & 0xff}.${low >> 8}.${low & 0xff}`;
   }
 
   return host;
 };
 
-const normalizeNoProxyHost = hostname => {
+const normalizeNoProxyHost = (hostname: string): string => {
   if (!hostname) {
     return hostname;
   }
@@ -157,7 +159,7 @@ const normalizeNoProxyHost = hostname => {
   return unmapIPv4MappedIPv6(hostname.replace(/\.+$/, ""));
 };
 
-export default function shouldBypassProxy(location) {
+export default function shouldBypassProxy(location: string): boolean {
   let parsed;
 
   try {
@@ -167,7 +169,7 @@ export default function shouldBypassProxy(location) {
     return false;
   }
 
-  const noProxy = (process.env.no_proxy || process.env.NO_PROXY || "").toLowerCase();
+  const noProxy = (process.env["no_proxy"] || process.env["NO_PROXY"] || "").toLowerCase();
 
   if (!noProxy) {
     return false;
@@ -177,8 +179,9 @@ export default function shouldBypassProxy(location) {
     return true;
   }
 
+  const proto = parsed.protocol.split(":", 1)[0] as KnownProtocol | undefined;
   const port =
-    Number.parseInt(parsed.port, 10) || DEFAULT_PORTS[parsed.protocol.split(":", 1)[0]] || 0;
+    Number.parseInt(parsed.port, 10) || (proto ? DEFAULT_PORTS[proto] ?? 0 : 0);
 
   const hostname = normalizeNoProxyHost(parsed.hostname.toLowerCase());
 

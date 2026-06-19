@@ -7,7 +7,7 @@ import AxiosError from "./AxiosError.js";
 const malformedHttpProtocol = /^https?:(?!\/\/)/i;
 const httpProtocolControlCharacters = /[\t\n\r]/g;
 
-function stripLeadingC0ControlOrSpace(url) {
+function stripLeadingC0ControlOrSpace(url: string): string {
   let i = 0;
   while (i < url.length && url.charCodeAt(i) <= 0x20) {
     i++;
@@ -15,16 +15,16 @@ function stripLeadingC0ControlOrSpace(url) {
   return url.slice(i);
 }
 
-function normalizeURLForProtocolCheck(url) {
+function normalizeURLForProtocolCheck(url: string): string {
   return stripLeadingC0ControlOrSpace(url).replace(httpProtocolControlCharacters, "");
 }
 
-function assertValidHttpProtocolURL(url, config) {
+function assertValidHttpProtocolURL(url: unknown, config: unknown): void {
   if (typeof url === "string" && malformedHttpProtocol.test(normalizeURLForProtocolCheck(url))) {
     throw new AxiosError(
       "Invalid URL: missing \"//\" after protocol",
       AxiosError.ERR_INVALID_URL,
-      config
+      config as import("../types.js").InternalAxiosRequestConfig
     );
   }
 }
@@ -39,12 +39,12 @@ function assertValidHttpProtocolURL(url, config) {
  *
  * @returns {string} The combined full path
  */
-export default function buildFullPath(baseURL, requestedURL, allowAbsoluteUrls, config) {
+export default function buildFullPath(baseURL: unknown, requestedURL: unknown, allowAbsoluteUrls: unknown, config: unknown): string {
   assertValidHttpProtocolURL(requestedURL, config);
   let isRelativeUrl = !isAbsoluteURL(requestedURL);
   if (baseURL && (isRelativeUrl || allowAbsoluteUrls === false)) {
     assertValidHttpProtocolURL(baseURL, config);
-    return combineURLs(baseURL, requestedURL);
+    return combineURLs(baseURL as string, requestedURL as string);
   }
-  return requestedURL;
+  return requestedURL as string;
 }

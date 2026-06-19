@@ -1,5 +1,25 @@
-export const streamChunk = function* (chunk, chunkSize) {
-  let len = chunk.byteLength;
+type ReadableStreamController = {
+  enqueue: (chunk: Uint8Array) => void;
+  close: () => void;
+};
+
+type ReadableStreamSource = {
+  pull?: (controller: ReadableStreamController) => Promise<void>;
+  cancel?: (reason?: unknown) => Promise<unknown>;
+};
+
+type ReadableStreamInit = {
+  highWaterMark?: number;
+};
+
+type ReadableStreamCtor = new (source: ReadableStreamSource, init?: ReadableStreamInit) => unknown;
+
+const ReadableStreamGlobal = (globalThis as Record<string, unknown>)["ReadableStream"] as ReadableStreamCtor | undefined;
+
+type ByteChunk = { byteLength: number; slice: (start: number, end?: number) => ByteChunk; };
+
+export const streamChunk = function* (chunk: ByteChunk, chunkSize?: number): Generator<ByteChunk> {
+  const len = chunk.byteLength;
 
   if (!chunkSize || len < chunkSize) {
     yield chunk;
@@ -7,7 +27,7 @@ export const streamChunk = function* (chunk, chunkSize) {
   }
 
   let pos = 0;
-  let end;
+  let end: number;
 
   while (pos < len) {
     end = pos + chunkSize;
@@ -16,19 +36,30 @@ export const streamChunk = function* (chunk, chunkSize) {
   }
 };
 
-export const readBytes = async function* (iterable, chunkSize) {
+export const readBytes = async function* (iterable: AsyncIterable<ByteChunk> | unknown, chunkSize?: number): AsyncGenerator<ByteChunk> {
   for await (const chunk of readStream(iterable)) {
     yield* streamChunk(chunk, chunkSize);
   }
 };
 
-const readStream = async function* (stream) {
-  if (stream[Symbol.asyncIterator]) {
-    yield* stream;
+type ReaderLike = {
+  read: () => Promise<{ done: boolean; value: ByteChunk; }>;
+  cancel: () => Promise<void>;
+};
+
+type StreamLike = {
+  [Symbol.asyncIterator]?: () => AsyncIterator<ByteChunk>;
+  getReader?: () => ReaderLike;
+};
+
+const readStream = async function* (stream: unknown): AsyncGenerator<ByteChunk> {
+  const s = stream as StreamLike;
+  if (s[Symbol.asyncIterator]) {
+    yield* s as AsyncIterable<ByteChunk>;
     return;
   }
 
-  const reader = stream.getReader();
+  const reader = s.getReader!();
   try {
     for (;;) {
       // eslint-disable-next-line no-await-in-loop
@@ -44,45 +75,45 @@ const readStream = async function* (stream) {
   }
 };
 
-export const trackStream = (stream, chunkSize, onProgress, onFinish) => {
+export const trackStream = (stream: unknown, chunkSize: number | undefined, onProgress?: ((bytes: number) => void) | null, onFinish?: ((err?: unknown) => void) | null): unknown => {
   const iterator = readBytes(stream, chunkSize);
 
   let bytes = 0;
-  let done;
-  let _onFinish = e => {
+  let done = false;
+  const _onFinish = (e?: unknown): void => {
     if (!done) {
       done = true;
       onFinish && onFinish(e);
     }
   };
 
-  return new ReadableStream(
+  return new ReadableStreamGlobal!(
     {
-      async pull(controller) {
+      async pull(controller: ReadableStreamController) {
         try {
-          const { done, value } = await iterator.next();
+          const { done: iterDone, value } = await iterator.next();
 
-          if (done) {
+          if (iterDone) {
             _onFinish();
             controller.close();
             return;
           }
 
-          let len = value.byteLength;
+          const len = value.byteLength;
           if (onProgress) {
-            let loadedBytes = (bytes += len);
+            const loadedBytes = (bytes += len);
             onProgress(loadedBytes);
           }
-          controller.enqueue(new Uint8Array(value));
+          controller.enqueue(new Uint8Array(value as unknown as ArrayBuffer));
         }
         catch (err) {
           _onFinish(err);
           throw err;
         }
       },
-      async cancel(reason) {
+      async cancel(reason?: unknown) {
         _onFinish(reason);
-        return iterator.return();
+        return iterator.return(undefined);
       },
     },
     {

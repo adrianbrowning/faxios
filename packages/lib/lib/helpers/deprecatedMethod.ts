@@ -12,7 +12,7 @@
  *
  * @returns {void}
  */
-export default function deprecatedMethod(method, instead, docs) {
+export default function deprecatedMethod(method: string, instead?: string, docs?: string) {
   try {
     console.warn(
       "DEPRECATED method `" +

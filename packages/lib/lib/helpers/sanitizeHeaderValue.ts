@@ -2,7 +2,7 @@
 
 import utils from "../utils.js";
 
-function trimSPorHTAB(str) {
+function trimSPorHTAB(str: string): string {
   let start = 0;
   let end = str.length;
 
@@ -35,25 +35,25 @@ const INVALID_UNICODE_HEADER_VALUE_CHARS = new RegExp("[\\u0000-\\u0008\\u000a-\
 // eslint-disable-next-line no-control-regex
 const INVALID_BYTE_STRING_HEADER_VALUE_CHARS = new RegExp("[^\\u0009\\u0020-\\u007e\\u0080-\\u00ff]+", "g");
 
-function sanitizeValue(value, invalidChars) {
+function sanitizeValue(value: unknown, invalidChars: RegExp): string | Array<string> {
   if (utils.isArray(value)) {
-    return value.map(item => sanitizeValue(item, invalidChars));
+    return (value as Array<unknown>).map(item => sanitizeValue(item, invalidChars) as string);
   }
 
   return trimSPorHTAB(String(value).replace(invalidChars, ""));
 }
 
-export const sanitizeHeaderValue = value =>
+export const sanitizeHeaderValue = (value: unknown) =>
   sanitizeValue(value, INVALID_UNICODE_HEADER_VALUE_CHARS);
 
-export const sanitizeByteStringHeaderValue = value =>
+export const sanitizeByteStringHeaderValue = (value: unknown) =>
   sanitizeValue(value, INVALID_BYTE_STRING_HEADER_VALUE_CHARS);
 
-export function toByteStringHeaderObject(headers) {
-  const byteStringHeaders = Object.create(null);
+export function toByteStringHeaderObject(headers: { toJSON: () => Record<string, unknown>; }) {
+  const byteStringHeaders: Record<string, unknown> = Object.create(null);
 
-  utils.forEach(headers.toJSON(), (value, header) => {
-    byteStringHeaders[header] = sanitizeByteStringHeaderValue(value);
+  utils.forEach(headers.toJSON(), (value: unknown, header: unknown) => {
+    byteStringHeaders[String(header)] = sanitizeByteStringHeaderValue(value);
   });
 
   return byteStringHeaders;

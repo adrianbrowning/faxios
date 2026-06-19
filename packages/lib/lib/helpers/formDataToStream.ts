@@ -6,68 +6,85 @@ import readBlob from "./readBlob.js";
 
 const BOUNDARY_ALPHABET = platform.ALPHABET.ALPHA_DIGIT + "-_";
 
-const textEncoder = typeof TextEncoder === "function" ? new TextEncoder() : new util.TextEncoder();
+const TextEncoderCtor = (globalThis as Record<string, unknown>)["TextEncoder"] as (new () => { encode: (input?: string) => Uint8Array; }) | undefined;
+const textEncoder: { encode: (input?: string) => Uint8Array; } =
+  TextEncoderCtor ? new TextEncoderCtor() : new util.TextEncoder();
 
 const CRLF = "\r\n";
 const CRLF_BYTES = textEncoder.encode(CRLF);
 const CRLF_BYTES_COUNT = 2;
 
+type FormDataValue = string | { name?: string; type?: string; size: number; };
+
 class FormDataPart {
-  constructor(name, value) {
-    const { escapeName } = this.constructor;
+  headers: Uint8Array;
+  contentLength: number;
+  size: number;
+  name: string;
+  value: Uint8Array | FormDataValue;
+
+  constructor(name: string, value: FormDataValue) {
+    const { escapeName } = FormDataPart;
     const isStringValue = utils.isString(value);
 
     let headers = `Content-Disposition: form-data; name="${escapeName(name)}"${
-      !isStringValue && value.name ? `; filename="${escapeName(value.name)}"` : ""
+      !isStringValue && (value as { name?: string; }).name ? `; filename="${escapeName((value as { name: string; }).name)}"` : ""
     }${CRLF}`;
 
+    let encodedValue: Uint8Array | FormDataValue;
     if (isStringValue) {
-      value = textEncoder.encode(String(value).replace(/\r?\n|\r\n?/g, CRLF));
+      encodedValue = textEncoder.encode(String(value).replace(/\r?\n|\r\n?/g, CRLF));
     }
     else {
-      const safeType = String(value.type || "application/octet-stream").replace(/[\r\n]/g, "");
+      const safeType = String((value as { type?: string; }).type || "application/octet-stream").replace(/[\r\n]/g, "");
       headers += `Content-Type: ${safeType}${CRLF}`;
+      encodedValue = value;
     }
 
     this.headers = textEncoder.encode(headers + CRLF);
 
-    this.contentLength = isStringValue ? value.byteLength : value.size;
+    this.contentLength = isStringValue ? (encodedValue as Uint8Array).byteLength : (value as { size: number; }).size;
 
     this.size = this.headers.byteLength + this.contentLength + CRLF_BYTES_COUNT;
 
     this.name = name;
-    this.value = value;
+    this.value = encodedValue;
   }
 
-  async *encode() {
+  async *encode(): AsyncGenerator<Uint8Array> {
     yield this.headers;
 
     const { value } = this;
 
     if (utils.isTypedArray(value)) {
-      yield value;
+      yield value as Uint8Array;
     }
     else {
-      yield* readBlob(value);
+      yield* readBlob(value as Parameters<typeof readBlob>[0]) as AsyncIterable<Uint8Array>;
     }
 
     yield CRLF_BYTES;
   }
 
-  static escapeName(name) {
+  static escapeName(name: string): string {
+    const escapeMap: Record<string, string> = {
+      "\r": "%0D",
+      "\n": "%0A",
+      "\"": "%22",
+    };
     return String(name).replace(
       /[\r\n"]/g,
-      match =>
-        ({
-          "\r": "%0D",
-          "\n": "%0A",
-          "\"": "%22",
-        })[match]
+      (match: string) => escapeMap[match] ?? match
     );
   }
 }
 
-const formDataToStream = (form, headersHandler, options) => {
+type ComputedHeaders = {
+  "Content-Type": string;
+  "Content-Length"?: number;
+};
+
+const formDataToStream = (form: unknown, headersHandler?: ((headers: ComputedHeaders) => void) | null, options?: { tag?: string; size?: number; boundary?: string; } | null): Readable => {
   const {
     tag = "form-data-boundary",
     size = 25,
@@ -86,7 +103,8 @@ const formDataToStream = (form, headersHandler, options) => {
   const footerBytes = textEncoder.encode("--" + boundary + "--" + CRLF);
   let contentLength = footerBytes.byteLength;
 
-  const parts = Array.from(form.entries()).map(([ name, value ]) => {
+  const formWithEntries = form as { entries: () => Iterable<[string, FormDataValue]>; };
+  const parts = Array.from(formWithEntries.entries()).map(([ name, value ]) => {
     const part = new FormDataPart(name, value);
     contentLength += part.size;
     return part;
@@ -94,9 +112,9 @@ const formDataToStream = (form, headersHandler, options) => {
 
   contentLength += boundaryBytes.byteLength * parts.length;
 
-  contentLength = utils.toFiniteNumber(contentLength);
+  contentLength = utils.toFiniteNumber(contentLength, 0) ?? 0;
 
-  const computedHeaders = {
+  const computedHeaders: ComputedHeaders = {
     "Content-Type": `multipart/form-data; boundary=${boundary}`,
   };
 

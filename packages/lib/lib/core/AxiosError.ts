@@ -1,11 +1,12 @@
 "use strict";
 
+import type { InternalAxiosRequestConfig, AxiosResponse } from "../types.js";
 import utils from "../utils.js";
 import AxiosHeaders from "./AxiosHeaders.js";
 
 const REDACTED = "[REDACTED ****]";
 
-function hasOwnOrPrototypeToJSON(source) {
+function hasOwnOrPrototypeToJSON(source: unknown): boolean {
   if (utils.hasOwnProp(source, "toJSON")) {
     return true;
   }
@@ -26,12 +27,12 @@ function hasOwnOrPrototypeToJSON(source) {
 // Build a plain-object snapshot of `config` and replace the value of any key
 // (case-insensitive) listed in `redactKeys` with REDACTED. Walks through arrays
 // and AxiosHeaders, and short-circuits on circular references.
-function redactConfig(config, redactKeys) {
+function redactConfig(config: unknown, redactKeys: Array<string>): unknown {
   const lowerKeys = new Set(redactKeys.map(k => String(k).toLowerCase()));
-  const seen = [];
+  const seen: Array<object> = [];
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  const visit = source => {
+  const visit = (source: unknown): unknown => {
     if (source === null || typeof source !== "object") return source;
     if (utils.isBuffer(source)) return source;
     if (seen.indexOf(source) !== -1) return undefined;
@@ -40,15 +41,15 @@ function redactConfig(config, redactKeys) {
       source = source.toJSON();
     }
 
-    seen.push(source);
+    seen.push(source as object);
 
-    let result;
+    let result: unknown;
     if (utils.isArray(source)) {
       result = [];
-      source.forEach((v, i) => {
+      (source as Array<unknown>).forEach((v, i) => {
         const reducedValue = visit(v);
         if (!utils.isUndefined(reducedValue)) {
-          result[i] = reducedValue;
+          (result as Array<unknown>)[i] = reducedValue;
         }
       });
     }
@@ -59,10 +60,10 @@ function redactConfig(config, redactKeys) {
       }
 
       result = Object.create(null);
-      for (const [ key, value ] of Object.entries(source)) {
+      for (const [ key, value ] of Object.entries(source as object)) {
         const reducedValue = lowerKeys.has(key.toLowerCase()) ? REDACTED : visit(value);
         if (!utils.isUndefined(reducedValue)) {
-          result[key] = reducedValue;
+          (result as Record<string, unknown>)[key] = reducedValue;
         }
       }
     }
@@ -75,7 +76,45 @@ function redactConfig(config, redactKeys) {
 }
 
 class AxiosError extends Error {
-  static from(error, code, config, request, response, customProps) {
+  isAxiosError: boolean;
+  code?: string;
+  config?: InternalAxiosRequestConfig;
+  request?: unknown;
+  response?: AxiosResponse;
+  status?: number;
+  override cause?: Error;
+  // legacy/cross-browser optional props:
+  description?: unknown;
+  number?: unknown;
+  fileName?: unknown;
+  lineNumber?: unknown;
+  columnNumber?: unknown;
+  event?: unknown;
+  override name: string;
+
+  static ERR_BAD_OPTION_VALUE: string;
+  static ERR_BAD_OPTION: string;
+  static ECONNABORTED: string;
+  static ETIMEDOUT: string;
+  static ECONNREFUSED: string;
+  static ERR_NETWORK: string;
+  static ERR_FR_TOO_MANY_REDIRECTS: string;
+  static ERR_DEPRECATED: string;
+  static ERR_BAD_RESPONSE: string;
+  static ERR_BAD_REQUEST: string;
+  static ERR_CANCELED: string;
+  static ERR_NOT_SUPPORT: string;
+  static ERR_INVALID_URL: string;
+  static ERR_FORM_DATA_DEPTH_EXCEEDED: string;
+
+  static from(
+    error: Error & { code?: string; status?: number; },
+    code?: string,
+    config?: InternalAxiosRequestConfig,
+    request?: unknown,
+    response?: AxiosResponse,
+    customProps?: Record<string, unknown>
+  ): AxiosError {
     const axiosError = new AxiosError(error.message, code || error.code, config, request, response);
     axiosError.cause = error;
     axiosError.name = error.name;
@@ -100,21 +139,24 @@ class AxiosError extends Error {
    *
    * @returns {Error} The created error.
    */
-  constructor(message, code, config, request, response) {
+  constructor(
+    message: string,
+    code?: string,
+    config?: InternalAxiosRequestConfig,
+    request?: unknown,
+    response?: AxiosResponse
+  ) {
     super(message);
 
     // Make message enumerable to maintain backward compatibility
     // The native Error constructor sets message as non-enumerable,
     // but axios < v1.13.3 had it as enumerable
-    Object.defineProperty(this, "message", {
-      // Null-proto descriptor so a polluted Object.prototype.get cannot turn
-      // this data descriptor into an accessor descriptor on the way in.
-      __proto__: null,
+    Object.defineProperty(this, "message", Object.assign(Object.create(null) as PropertyDescriptor, {
       value: message,
       enumerable: true,
       writable: true,
       configurable: true,
-    });
+    }));
 
     this.name = "AxiosError";
     this.isAxiosError = true;

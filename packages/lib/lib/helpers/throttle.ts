@@ -4,13 +4,13 @@
  * @param {Number} freq
  * @return {Function}
  */
-function throttle(fn, freq) {
+function throttle(fn: (...args: Array<unknown>) => void, freq: number): [(...args: Array<unknown>) => void, () => void] {
   let timestamp = 0;
-  let threshold = 1000 / freq;
-  let lastArgs;
-  let timer;
+  const threshold = 1000 / freq;
+  let lastArgs: Array<unknown> | null = null;
+  let timer: ReturnType<typeof setTimeout> | null = null;
 
-  const invoke = (args, now = Date.now()) => {
+  const invoke = (args: Array<unknown>, now: number = Date.now()) => {
     timestamp = now;
     lastArgs = null;
     if (timer) {
@@ -20,7 +20,7 @@ function throttle(fn, freq) {
     fn(...args);
   };
 
-  const throttled = (...args) => {
+  const throttled = (...args: Array<unknown>) => {
     const now = Date.now();
     const passed = now - timestamp;
     if (passed >= threshold) {
@@ -31,13 +31,13 @@ function throttle(fn, freq) {
       if (!timer) {
         timer = setTimeout(() => {
           timer = null;
-          invoke(lastArgs);
+          invoke(lastArgs!);
         }, threshold - passed);
       }
     }
   };
 
-  const flush = () => lastArgs && invoke(lastArgs);
+  const flush = () => { if (lastArgs) invoke(lastArgs); };
 
   return [ throttled, flush ];
 }

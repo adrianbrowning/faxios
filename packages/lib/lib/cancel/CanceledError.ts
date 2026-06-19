@@ -12,10 +12,10 @@ class CanceledError extends AxiosError {
    *
    * @returns {CanceledError} The created error.
    */
-  constructor(message, config, request) {
-    super(message == null ? "canceled" : message, AxiosError.ERR_CANCELED, config, request);
+  constructor(message?: string | null, config?: import("../types.js").AxiosRequestConfig, request?: unknown) {
+    super(message == null ? "canceled" : message, AxiosError.ERR_CANCELED, config as import("../types.js").InternalAxiosRequestConfig, request);
     this.name = "CanceledError";
-    this.__CANCEL__ = true;
+    (this as unknown as Record<string, unknown>)["__CANCEL__"] = true;
   }
 }
 

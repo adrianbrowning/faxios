@@ -5,9 +5,26 @@ import utils from "../utils.js";
 
 const kInternals = Symbol("internals");
 
+type Internals = {
+  timeWindow: number;
+  chunkSize: number;
+  maxRate: number;
+  minChunkSize: number | false;
+  bytesSeen: number;
+  isCaptured: boolean;
+  notifiedBytesLoaded: number;
+  ts: number;
+  bytes: number;
+  onReadCallback: (() => void) | null;
+};
+
+type AxiosTransformStreamWithInternals = AxiosTransformStream & {
+  [kInternals]: Internals;
+};
+
 class AxiosTransformStream extends stream.Transform {
-  constructor(options) {
-    options = utils.toFlatObject(
+  constructor(options?: Record<string, unknown>) {
+    const resolvedOptions = utils.toFlatObject(
       options,
       {
         maxRate: 0,
@@ -17,19 +34,19 @@ class AxiosTransformStream extends stream.Transform {
         ticksRate: 2,
         samplesCount: 15,
       },
-      null,
-      (prop, source) => !utils.isUndefined(source[prop])
+      null as unknown as false,
+      (prop: string, source: unknown) => !utils.isUndefined((source as Record<string, unknown>)[prop])
     );
 
     super({
-      readableHighWaterMark: options.chunkSize,
+      readableHighWaterMark: resolvedOptions["chunkSize"] as number,
     });
 
-    const internals = (this[kInternals] = {
-      timeWindow: options.timeWindow,
-      chunkSize: options.chunkSize,
-      maxRate: options.maxRate,
-      minChunkSize: options.minChunkSize,
+    const internals: Internals = ((this as unknown as AxiosTransformStreamWithInternals)[kInternals] = {
+      timeWindow: resolvedOptions["timeWindow"] as number,
+      chunkSize: resolvedOptions["chunkSize"] as number,
+      maxRate: resolvedOptions["maxRate"] as number,
+      minChunkSize: resolvedOptions["minChunkSize"] as number | false,
       bytesSeen: 0,
       isCaptured: false,
       notifiedBytesLoaded: 0,
@@ -38,7 +55,7 @@ class AxiosTransformStream extends stream.Transform {
       onReadCallback: null,
     });
 
-    this.on("newListener", event => {
+    this.on("newListener", (event: string) => {
       if (event === "progress") {
         if (!internals.isCaptured) {
           internals.isCaptured = true;
@@ -47,8 +64,8 @@ class AxiosTransformStream extends stream.Transform {
     });
   }
 
-  _read(size) {
-    const internals = this[kInternals];
+  override _read(size: number): void {
+    const internals = (this as unknown as AxiosTransformStreamWithInternals)[kInternals];
 
     if (internals.onReadCallback) {
       internals.onReadCallback();
@@ -57,8 +74,8 @@ class AxiosTransformStream extends stream.Transform {
     return super._read(size);
   }
 
-  _transform(chunk, encoding, callback) {
-    const internals = this[kInternals];
+  override _transform(chunk: Buffer, _encoding: BufferEncoding, callback: stream.TransformCallback): void {
+    const internals = (this as unknown as AxiosTransformStreamWithInternals)[kInternals];
     const maxRate = internals.maxRate;
 
     const readableHighWaterMark = this.readableHighWaterMark;
@@ -72,8 +89,8 @@ class AxiosTransformStream extends stream.Transform {
         ? Math.max(internals.minChunkSize, bytesThreshold * 0.01)
         : 0;
 
-    const pushChunk = (_chunk, _callback) => {
-      const bytes = Buffer.byteLength(_chunk);
+    const pushChunk = (_chunk: Buffer, _callback: () => void): void => {
+      const bytes = Buffer.byteLength(_chunk as unknown as string);
       internals.bytesSeen += bytes;
       internals.bytes += bytes;
 
@@ -90,11 +107,11 @@ class AxiosTransformStream extends stream.Transform {
       }
     };
 
-    const transformChunk = (_chunk, _callback) => {
-      const chunkSize = Buffer.byteLength(_chunk);
-      let chunkRemainder = null;
+    const transformChunk = (_chunk: Buffer, _callback: (err: Error | null, chunk?: Buffer) => void): ReturnType<typeof setTimeout> | void => {
+      const chunkSize = Buffer.byteLength(_chunk as unknown as string);
+      let chunkRemainder: Buffer | null = null;
       let maxChunkSize = readableHighWaterMark;
-      let bytesLeft;
+      let bytesLeft: number | undefined;
       let passed = 0;
 
       if (maxRate) {
@@ -111,15 +128,15 @@ class AxiosTransformStream extends stream.Transform {
       }
 
       if (maxRate) {
-        if (bytesLeft <= 0) {
+        if ((bytesLeft ?? 0) <= 0) {
           // next time window
           return setTimeout(() => {
             _callback(null, _chunk);
           }, timeWindow - passed);
         }
 
-        if (bytesLeft < maxChunkSize) {
-          maxChunkSize = bytesLeft;
+        if ((bytesLeft ?? 0) < maxChunkSize) {
+          maxChunkSize = bytesLeft!;
         }
       }
 
@@ -134,11 +151,11 @@ class AxiosTransformStream extends stream.Transform {
           ? () => {
             process.nextTick(_callback, null, chunkRemainder);
           }
-          : _callback
+          : () => _callback(null)
       );
     };
 
-    transformChunk(chunk, function transformNextChunk(err, _chunk) {
+    transformChunk(chunk, function transformNextChunk(err: Error | null, _chunk?: Buffer) {
       if (err) {
         return callback(err);
       }

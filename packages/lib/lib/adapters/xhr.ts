@@ -10,32 +10,41 @@ import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import platform from "../platform/index.js";
 import utils from "../utils.js";
 
-const isXHRAdapterSupported = typeof XMLHttpRequest !== "undefined";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const XHRCtor = (globalThis as Record<string, unknown>).XMLHttpRequest as (new () => any) | undefined;
+
+const isXHRAdapterSupported = typeof (globalThis as Record<string, unknown>).XMLHttpRequest !== "undefined";
 
 /* eslint-disable sonarjs/cognitive-complexity */
 export default isXHRAdapterSupported &&
-  async function (config) {
-    return new Promise(function dispatchXhrRequest(resolve, reject) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async function (config: any) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return new Promise(function dispatchXhrRequest(resolve: (value: any) => void, reject: (reason?: any) => void) {
       const _config = resolveConfig(config);
       let requestData = _config.data;
-      const requestHeaders = AxiosHeaders.from(_config.headers).normalize();
+      const requestHeaders = AxiosHeaders.from(_config.headers).normalize(false);
       let { responseType, onUploadProgress, onDownloadProgress } = _config;
-      let onCanceled;
-      let uploadThrottled, downloadThrottled;
-      let flushUpload, flushDownload;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let onCanceled: ((cancel?: any) => void) | undefined;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let uploadThrottled: any, downloadThrottled: any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let flushUpload: any, flushDownload: any;
 
       function done() {
         flushUpload && flushUpload(); // flush events
         flushDownload && flushDownload(); // flush events
 
-        _config.cancelToken && _config.cancelToken.unsubscribe(onCanceled);
+        _config.cancelToken && _config.cancelToken.unsubscribe(onCanceled as (cancel: import("../types.js").Cancel) => void);
 
-        _config.signal && _config.signal.removeEventListener("abort", onCanceled);
+        _config.signal && _config.signal.removeEventListener && _config.signal.removeEventListener("abort", onCanceled);
       }
 
-      let request = new XMLHttpRequest();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let request: any = XHRCtor ? new XHRCtor() : null;
 
-      request.open(_config.method.toUpperCase(), _config.url, true);
+      request.open((_config.method ?? "GET").toUpperCase(), _config.url, true);
 
       // Set the request timeout in MS
       request.timeout = _config.timeout;
@@ -62,11 +71,11 @@ export default isXHRAdapterSupported &&
         };
 
         settle(
-          function _resolve(value) {
+          function _resolve(value: unknown) {
             resolve(value);
             done();
           },
-          function _reject(err) {
+          function _reject(err: unknown) {
             reject(err);
             done();
           },
@@ -118,7 +127,8 @@ export default isXHRAdapterSupported &&
       };
 
       // Handle low level network errors
-      request.onerror = function handleError(event) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      request.onerror = function handleError(event: any) {
         // Browsers deliver a ProgressEvent in XHR onerror
         // (message may be empty; when present, surface it)
         // See https://developer.mozilla.org/docs/Web/API/XMLHttpRequest/error_event
@@ -155,11 +165,11 @@ export default isXHRAdapterSupported &&
       };
 
       // Remove Content-Type if data is undefined
-      requestData === undefined && requestHeaders.setContentType(null);
+      requestData === undefined && (requestHeaders.setContentType as (value: unknown) => unknown)(null);
 
       // Add headers to the request
       if ("setRequestHeader" in request) {
-        utils.forEach(toByteStringHeaderObject(requestHeaders), function setRequestHeader(val, key) {
+        utils.forEach(toByteStringHeaderObject(requestHeaders), function setRequestHeader(val: unknown, key: unknown) {
           request.setRequestHeader(key, val);
         });
       }
@@ -182,7 +192,7 @@ export default isXHRAdapterSupported &&
 
       // Not all browsers support upload events
       if (onUploadProgress && request.upload) {
-        [ uploadThrottled, flushUpload ] = progressEventReducer(onUploadProgress);
+        [ uploadThrottled, flushUpload ] = progressEventReducer(onUploadProgress, false);
 
         request.upload.addEventListener("progress", uploadThrottled);
 
@@ -191,8 +201,9 @@ export default isXHRAdapterSupported &&
 
       if (_config.cancelToken || _config.signal) {
         // Handle cancellation
-         
-        onCanceled = cancel => {
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onCanceled = (cancel?: any) => {
           if (!request) {
             return;
           }
@@ -206,11 +217,11 @@ export default isXHRAdapterSupported &&
         if (_config.signal) {
           _config.signal.aborted
             ? onCanceled()
-            : _config.signal.addEventListener("abort", onCanceled);
+            : _config.signal.addEventListener && _config.signal.addEventListener("abort", onCanceled);
         }
       }
 
-      const protocol = parseProtocol(_config.url);
+      const protocol = parseProtocol(_config.url ?? "");
 
       if (protocol && !platform.protocols.includes(protocol)) {
         reject(

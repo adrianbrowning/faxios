@@ -10,25 +10,34 @@
     "test:vitest:browser": "pnpm --filter axios test:vitest:browser",
     "test:vitest:browser:headless": "pnpm --filter axios test:vitest:browser:headless",
     "test:vitest:watch": "pnpm --filter axios test:vitest:watch",
-    "lint": "pnpm --filter axios lint",
+    "lint": "pnpm lint:ts && pnpm lint:esl && pnpm lint:fix",
     "start": "pnpm --filter @faxios/sandbox start",
     "examples": "pnpm --filter @faxios/examples start",
-    "lint:knip": "knip"
+    "lint:knip": "knip",
+    "lint:ts": "tsc --noEmit",
+    "lint:esl": "eslint --config eslint.config.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
+    "lint:esl:fix": "pnpm lint:esl --fix",
+    "lint:s": "eslint --config eslint.config.style.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
+    "lint:fix": "pnpm lint:s --fix",
+    "lint:jscpd": "jscpd .",
+    "lint:e18e": "pnpm dlx @e18e/cli analyze"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.4",
+    "@ai-hero/sandcastle": "^0.10.0",
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
-    "@gingacodemonkey/config": "^0.0.32",
-    "eslint": "^10.4.0",
+    "@eslint/js": "^9.39.4",
+    "@gingacodemonkey/config": "^0.0.33",
+    "eslint": "^9.39.4",
     "globals": "^17.6.0",
-    "minimist": "^1.2.8",
     "husky": "^9.1.7",
     "jscpd": "^4.2.5",
     "knip": "5.70.1",
     "lint-staged": "^17.0.5",
+    "minimist": "^1.2.8",
+    "only-allow": "^1.2.2",
     "prettier": "^3.8.3",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "pnpm": {
     "minimumReleaseAge": 4320

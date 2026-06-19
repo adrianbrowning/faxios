@@ -8,7 +8,7 @@
  *
  * @returns {string} The combined URL
  */
-export default function combineURLs(baseURL, relativeURL) {
+export default function combineURLs(baseURL: string, relativeURL?: string) {
   return relativeURL
     ? baseURL.replace(/\/?\/$/, "") + "/" + relativeURL.replace(/^\/+/, "")
     : baseURL;

@@ -8,12 +8,17 @@
 import http2 from "node:http2";
 import util from "node:util";
 
+type SessionOptions = Record<string, unknown> & { sessionTimeout?: number; };
+type SessionEntry = [http2.ClientHttp2Session, SessionOptions];
+
 class Http2Sessions {
+  sessions: Record<string, Array<SessionEntry>>;
+
   constructor() {
-    this.sessions = Object.create(null);
+    this.sessions = Object.create(null) as Record<string, Array<SessionEntry>>;
   }
 
-  getSession(authority, options) {
+  getSession(authority: string, options: SessionOptions): http2.ClientHttp2Session {
     options = Object.assign(
       {
         sessionTimeout: 1000,
@@ -21,13 +26,13 @@ class Http2Sessions {
       options
     );
 
-    let authoritySessions = this.sessions[authority];
+    let authoritySessions: Array<SessionEntry> | undefined = this.sessions[authority];
 
     if (authoritySessions) {
-      let len = authoritySessions.length;
+      const len = authoritySessions.length;
 
       for (let i = 0; i < len; i++) {
-        const [ sessionHandle, sessionOptions ] = authoritySessions[i];
+        const [ sessionHandle, sessionOptions ] = authoritySessions[i]!;
         if (
           !sessionHandle.destroyed &&
           !sessionHandle.closed &&
@@ -38,10 +43,10 @@ class Http2Sessions {
       }
     }
 
-    const session = http2.connect(authority, options);
+    const session = http2.connect(authority, options as unknown as http2.SecureClientSessionOptions);
 
-    let removed;
-    let timer;
+    let removed: boolean | undefined;
+    let timer: ReturnType<typeof setTimeout> | null = null;
 
     const removeSession = () => {
       if (removed) {
@@ -55,12 +60,13 @@ class Http2Sessions {
         timer = null;
       }
 
-      let entries = authoritySessions,
-        len = entries.length,
-        i = len;
+      const entries = authoritySessions;
+      if (!entries) return;
+      let len = entries.length;
+      let i = len;
 
       while (i--) {
-        if (entries[i][0] === session) {
+        if (entries[i]![0] === session) {
           if (len === 1) {
             delete this.sessions[authority];
           }
@@ -75,15 +81,15 @@ class Http2Sessions {
       }
     };
 
-    const originalRequestFn = session.request;
+    const originalRequestFn = session.request.bind(session);
 
     const { sessionTimeout } = options;
 
     if (sessionTimeout != null) {
       let streamsCount = 0;
 
-      session.request = function () {
-        const stream = originalRequestFn.apply(this, arguments);
+      (session as unknown as { request: (...args: Parameters<http2.ClientHttp2Session["request"]>) => http2.ClientHttp2Stream; }).request = function (...args: Parameters<http2.ClientHttp2Session["request"]>) {
+        const stream = originalRequestFn(...args);
 
         streamsCount++;
 
@@ -107,7 +113,7 @@ class Http2Sessions {
 
     session.once("close", removeSession);
 
-    let entry = [ session, options ];
+    const entry: SessionEntry = [ session, options ];
 
     if (authoritySessions) {
       authoritySessions.push(entry);

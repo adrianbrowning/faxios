@@ -16,6 +16,7 @@ import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isAxiosError from "./helpers/isAxiosError.js";
 import spread from "./helpers/spread.js";
 import toFormData from "./helpers/toFormData.js";
+import type { AxiosRequestConfig } from "./types.js";
 import utils from "./utils.js";
 
 /**
@@ -25,9 +26,9 @@ import utils from "./utils.js";
  *
  * @returns {Axios} A new instance of Axios
  */
-function createInstance(defaultConfig) {
+function createInstance(defaultConfig: AxiosRequestConfig): AxiosInstance {
   const context = new Axios(defaultConfig);
-  const instance = bind(Axios.prototype.request, context);
+  const instance = bind(Axios.prototype.request as (...args: Array<unknown>) => unknown, context) as unknown as AxiosInstance;
 
   // Copy axios.prototype to instance
   utils.extend(instance, Axios.prototype, context, { allOwnKeys: true });
@@ -36,15 +37,38 @@ function createInstance(defaultConfig) {
   utils.extend(instance, context, null, { allOwnKeys: true });
 
   // Factory for creating new instances
-  instance.create = function create(instanceConfig) {
+  instance.create = function create(instanceConfig?: AxiosRequestConfig): AxiosInstance {
     return createInstance(mergeConfig(defaultConfig, instanceConfig));
   };
 
   return instance;
 }
 
+type AxiosInstance = {
+  (config: AxiosRequestConfig): Promise<unknown>;
+  create: (instanceConfig?: AxiosRequestConfig) => AxiosInstance;
+  Axios: typeof Axios;
+  CanceledError: typeof CanceledError;
+  CancelToken: typeof CancelToken;
+  isCancel: typeof isCancel;
+  VERSION: typeof VERSION;
+  toFormData: typeof toFormData;
+  AxiosError: typeof AxiosError;
+  Cancel: typeof CanceledError;
+  all: (promises: Array<Promise<unknown>>) => Promise<Array<unknown>>;
+  spread: typeof spread;
+  isAxiosError: typeof isAxiosError;
+  mergeConfig: typeof mergeConfig;
+  AxiosHeaders: typeof AxiosHeaders;
+  formToJSON: (thing: unknown) => unknown;
+  getAdapter: typeof adapters.getAdapter;
+  HttpStatusCode: typeof HttpStatusCode;
+  default: AxiosInstance;
+  [key: string]: unknown;
+};
+
 // Create the default instance to be exported
-const axios = createInstance(defaults);
+const axios = createInstance(defaults as unknown as AxiosRequestConfig);
 
 // Expose Axios class to allow class inheritance
 axios.Axios = Axios;
@@ -63,7 +87,7 @@ axios.AxiosError = AxiosError;
 axios.Cancel = axios.CanceledError;
 
 // Expose all/spread
-axios.all = async function all(promises) {
+axios.all = async function all(promises: Array<Promise<unknown>>): Promise<Array<unknown>> {
   return Promise.all(promises);
 };
 
@@ -77,7 +101,10 @@ axios.mergeConfig = mergeConfig;
 
 axios.AxiosHeaders = AxiosHeaders;
 
-axios.formToJSON = thing => formDataToJSON(utils.isHTMLForm(thing) ? new FormData(thing) : thing);
+axios.formToJSON = (thing: unknown): unknown => formDataToJSON(utils.isHTMLForm(thing) ? ((): unknown => {
+  const GlobalFormData = (globalThis as Record<string, unknown>)["FormData"] as (new (el?: unknown) => unknown) | undefined;
+  return GlobalFormData ? new GlobalFormData(thing) : thing;
+})() : thing);
 
 axios.getAdapter = adapters.getAdapter;
 

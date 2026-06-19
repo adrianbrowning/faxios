@@ -2,10 +2,21 @@ import CanceledError from "../cancel/CanceledError.js";
 import AxiosError from "../core/AxiosError.js";
 import utils from "../utils.js";
 
-const composeSignals = (signals, timeout) => {
-  signals = signals ? signals.filter(Boolean) : [];
+type AbortHandler = (this: AbortSignal & { reason?: unknown; }, reason: unknown) => void;
+type EventListenerFn = (event: unknown) => void;
+type SignalLike = {
+  unsubscribe?: (() => void) | ((handler: AbortHandler) => void);
+  addEventListener: (type: string, listener: EventListenerFn) => void;
+  removeEventListener: (type: string, listener: EventListenerFn) => void;
+  aborted: boolean;
+  reason?: unknown;
+};
+export type ExtendedAbortSignal = AbortSignal & { unsubscribe?: (() => void) | ((handler: AbortHandler) => void); };
 
-  if (!timeout && !signals.length) {
+const composeSignals = (signals: Array<unknown> | null | undefined, timeout?: number): ExtendedAbortSignal | undefined => {
+  let activeSignals: Array<SignalLike> | null = signals ? (signals.filter(Boolean) as Array<SignalLike>) : [];
+
+  if (!timeout && !activeSignals.length) {
     return;
   }
 
@@ -13,41 +24,42 @@ const composeSignals = (signals, timeout) => {
 
   let aborted = false;
 
-  const onabort = function (reason) {
+  const onabort: AbortHandler = function (this: AbortSignal & { reason?: unknown; }, reason: unknown) {
     if (!aborted) {
       aborted = true;
       unsubscribe();
       const err = reason instanceof Error ? reason : this.reason;
-      const errMsg = err instanceof Error ? err.message : err;
-      const abortErr = err instanceof AxiosError ? err : new CanceledError(errMsg);
+      const errMsg = err instanceof Error ? err.message : (err as string | undefined);
+      const abortErr = err instanceof AxiosError ? err : new CanceledError(errMsg, undefined, undefined);
       controller.abort(abortErr);
     }
   };
 
-  let timer =
-    timeout &&
-    setTimeout(() => {
-      timer = null;
-      onabort(new AxiosError(`timeout of ${timeout}ms exceeded`, AxiosError.ETIMEDOUT));
-    }, timeout);
+  let timer: ReturnType<typeof setTimeout> | null =
+    timeout
+      ? setTimeout(() => {
+        timer = null;
+        onabort.call(controller.signal, new AxiosError(`timeout of ${timeout}ms exceeded`, AxiosError.ETIMEDOUT));
+      }, timeout)
+      : null;
 
   const unsubscribe = () => {
-    if (!signals) { return; }
-    timer && clearTimeout(timer);
+    if (!activeSignals) { return; }
+    if (timer) { clearTimeout(timer); }
     timer = null;
-    signals.forEach(signal => {
+    activeSignals.forEach(signal => {
       signal.unsubscribe
-        ? signal.unsubscribe(onabort)
+        ? (signal.unsubscribe)(onabort)
         : signal.removeEventListener("abort", onabort);
     });
-    signals = null;
+    activeSignals = null;
   };
 
-  signals.forEach(signal => signal.addEventListener("abort", onabort));
+  activeSignals.forEach(signal => signal.addEventListener("abort", onabort));
 
   const { signal } = controller;
 
-  signal.unsubscribe = () => utils.asap(unsubscribe);
+  (signal as ExtendedAbortSignal).unsubscribe = () => utils.asap(unsubscribe);
 
   return signal;
 };

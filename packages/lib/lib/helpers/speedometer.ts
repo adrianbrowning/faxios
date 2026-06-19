@@ -6,17 +6,17 @@
  * @param {Number} [min= 1000]
  * @returns {Function}
  */
-function speedometer(samplesCount, min) {
+function speedometer(samplesCount?: number, min?: number): (chunkLength: number) => number | undefined {
   samplesCount = samplesCount || 10;
-  const bytes = new Array(samplesCount);
-  const timestamps = new Array(samplesCount);
+  const bytes: Array<number> = new Array(samplesCount);
+  const timestamps: Array<number> = new Array(samplesCount);
   let head = 0;
   let tail = 0;
-  let firstSampleTS;
+  let firstSampleTS: number | undefined;
 
   min = min !== undefined ? min : 1000;
 
-  return function push(chunkLength) {
+  return function push(chunkLength: number): number | undefined {
     const now = Date.now();
 
     const startedAt = timestamps[tail];
@@ -32,7 +32,7 @@ function speedometer(samplesCount, min) {
     let bytesCount = 0;
 
     while (i !== head) {
-      bytesCount += bytes[i++];
+      bytesCount += bytes[i++]!;
       i = i % samplesCount;
     }
 

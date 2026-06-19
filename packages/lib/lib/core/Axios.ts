@@ -3,6 +3,11 @@
 import transitionalDefaults from "../defaults/transitional.js";
 import buildURL from "../helpers/buildURL.js";
 import validator from "../helpers/validator.js";
+import type { ValidatorFn } from "../helpers/validator.js";
+import type {
+  AxiosRequestConfig,
+  InternalAxiosRequestConfig
+} from "../types.js";
 import utils from "../utils.js";
 import AxiosHeaders from "./AxiosHeaders.js";
 import buildFullPath from "./buildFullPath.js";
@@ -10,7 +15,12 @@ import dispatchRequest from "./dispatchRequest.js";
 import InterceptorManager from "./InterceptorManager.js";
 import mergeConfig from "./mergeConfig.js";
 
-const validators = validator.validators;
+type TransitionalFn = (validator: ValidatorFn | false | undefined, version?: string, message?: string) => ValidatorFn;
+type SpellingFn = (correctSpelling: string) => ValidatorFn;
+const validators = validator.validators as Record<string, ValidatorFn | undefined> & {
+  transitional?: TransitionalFn;
+  spelling?: SpellingFn;
+};
 
 /**
  * Create a new instance of Axios
@@ -20,7 +30,13 @@ const validators = validator.validators;
  * @return {Axios} A new instance of Axios
  */
 class Axios {
-  constructor(instanceConfig) {
+  defaults: AxiosRequestConfig;
+  interceptors: {
+    request: { forEach: (fn: (h: { runWhen?: ((c: InternalAxiosRequestConfig) => boolean) | null; synchronous?: boolean; fulfilled?: (...args: Array<unknown>) => unknown; rejected?: (...args: Array<unknown>) => unknown; }) => void) => void; };
+    response: { forEach: (fn: (h: { fulfilled?: (...args: Array<unknown>) => unknown; rejected?: (...args: Array<unknown>) => unknown; }) => void) => void; };
+  };
+
+  constructor(instanceConfig?: AxiosRequestConfig) {
     this.defaults = instanceConfig || {};
     this.interceptors = {
       request: new InterceptorManager(),
@@ -37,13 +53,13 @@ class Axios {
    * @returns {Promise} The Promise to be fulfilled
    */
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  async request(configOrUrl, config) {
+  async request(configOrUrl: string | AxiosRequestConfig, config?: AxiosRequestConfig) {
     try {
       return await this._request(configOrUrl, config);
     }
     catch (err) {
       if (err instanceof Error) {
-        let dummy = {};
+        let dummy: { stack?: string; } = {};
 
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (Error.captureStackTrace) {
@@ -90,7 +106,7 @@ class Axios {
   }
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  _request(configOrUrl, config) {
+  async _request(configOrUrl: string | AxiosRequestConfig, config?: AxiosRequestConfig) {
     /*eslint no-param-reassign:0*/
     // Allow for axios('example/url'[, config]) a la fetch API
     if (typeof configOrUrl === "string") {
@@ -109,12 +125,12 @@ class Axios {
       validator.assertOptions(
         transitional,
         {
-          silentJSONParsing: validators.transitional(validators.boolean),
-          forcedJSONParsing: validators.transitional(validators.boolean),
-          clarifyTimeoutError: validators.transitional(validators.boolean),
-          legacyInterceptorReqResOrdering: validators.transitional(validators.boolean),
-          advertiseZstdAcceptEncoding: validators.transitional(validators.boolean),
-          validateStatusUndefinedResolves: validators.transitional(validators.boolean),
+          silentJSONParsing: validators.transitional!(validators.boolean),
+          forcedJSONParsing: validators.transitional!(validators.boolean),
+          clarifyTimeoutError: validators.transitional!(validators.boolean),
+          legacyInterceptorReqResOrdering: validators.transitional!(validators.boolean),
+          advertiseZstdAcceptEncoding: validators.transitional!(validators.boolean),
+          validateStatusUndefinedResolves: validators.transitional!(validators.boolean),
         },
         false
       );
@@ -123,15 +139,15 @@ class Axios {
     if (paramsSerializer != null) {
       if (utils.isFunction(paramsSerializer)) {
         config.paramsSerializer = {
-          serialize: paramsSerializer,
+          serialize: paramsSerializer as (params: Record<string, unknown>) => string,
         };
       }
       else {
         validator.assertOptions(
           paramsSerializer,
           {
-            encode: validators.function,
-            serialize: validators.function,
+            encode: validators.function!,
+            serialize: validators.function!,
           },
           true
         );
@@ -152,34 +168,40 @@ class Axios {
     validator.assertOptions(
       config,
       {
-        baseUrl: validators.spelling("baseURL"),
-        withXsrfToken: validators.spelling("withXSRFToken"),
+        baseUrl: validators.spelling!("baseURL"),
+        withXsrfToken: validators.spelling!("withXSRFToken"),
       },
       true
     );
 
     // Set config.method
-    config.method = (config.method || this.defaults.method || "get").toLowerCase();
+    config.method = ((config.method || this.defaults.method || "get") as string).toLowerCase();
 
     // Flatten headers
-    let contextHeaders = headers && utils.merge(headers.common, headers[config.method]);
+    const h = headers;
+    let contextHeaders = h && utils.merge((h).common, (h)[config.method]);
 
-    headers &&
+    h &&
       utils.forEach([ "delete", "get", "head", "post", "put", "patch", "query", "common" ], method => {
-        delete headers[method];
+        delete (h)[method as string];
       });
 
-    config.headers = AxiosHeaders.concat(contextHeaders, headers);
+    config.headers = AxiosHeaders.concat(contextHeaders, ...(h ? [ h as unknown as null ] : []));
 
     // filter out skipped interceptors
-    const requestInterceptorChain = [];
+    const requestInterceptorChain: Array<((...args: Array<unknown>) => unknown) | undefined> = [];
     let synchronousRequestInterceptors = true;
-    this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
-      if (typeof interceptor.runWhen === "function" && interceptor.runWhen(config) === false) {
+    this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor: {
+      runWhen?: ((config: InternalAxiosRequestConfig) => boolean) | null;
+      synchronous?: boolean;
+      fulfilled?: (...args: Array<unknown>) => unknown;
+      rejected?: (...args: Array<unknown>) => unknown;
+    }) {
+      if (typeof interceptor.runWhen === "function" && interceptor.runWhen(config as InternalAxiosRequestConfig) === false) {
         return;
       }
 
-      synchronousRequestInterceptors = synchronousRequestInterceptors && interceptor.synchronous;
+      synchronousRequestInterceptors = synchronousRequestInterceptors && !!interceptor.synchronous;
 
       const transitional = config.transitional || transitionalDefaults;
       const legacyInterceptorReqResOrdering =
@@ -193,8 +215,11 @@ class Axios {
       }
     });
 
-    const responseInterceptorChain = [];
-    this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
+    const responseInterceptorChain: Array<((...args: Array<unknown>) => unknown) | undefined> = [];
+    this.interceptors.response.forEach(function pushResponseInterceptors(interceptor: {
+      fulfilled?: (...args: Array<unknown>) => unknown;
+      rejected?: (...args: Array<unknown>) => unknown;
+    }) {
       responseInterceptorChain.push(interceptor.fulfilled, interceptor.rejected);
     });
 
@@ -204,15 +229,15 @@ class Axios {
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!synchronousRequestInterceptors) {
-      const chain = [ dispatchRequest.bind(this), undefined ];
+      const chain: Array<((...args: Array<unknown>) => unknown) | undefined> = [ dispatchRequest.bind(this) as (...args: Array<unknown>) => unknown, undefined ];
       chain.unshift(...requestInterceptorChain);
       chain.push(...responseInterceptorChain);
       len = chain.length;
 
-      promise = Promise.resolve(config);
+      promise = Promise.resolve(config) as Promise<unknown>;
 
       while (i < len) {
-        promise = promise.then(chain[i++], chain[i++]);
+        promise = (promise).then(chain[i++], chain[i++]);
       }
 
       return promise;
@@ -226,16 +251,16 @@ class Axios {
       const onFulfilled = requestInterceptorChain[i++];
       const onRejected = requestInterceptorChain[i++];
       try {
-        newConfig = onFulfilled(newConfig);
+        newConfig = onFulfilled ? (onFulfilled(newConfig) as AxiosRequestConfig) : newConfig;
       }
       catch (error) {
-        onRejected.call(this, error);
+        if (onRejected) onRejected.call(this, error);
         break;
       }
     }
 
     try {
-      promise = dispatchRequest.call(this, newConfig);
+      promise = dispatchRequest.call(this, newConfig as import("../types.js").InternalAxiosRequestConfig) as Promise<unknown>;
     }
     catch (error) {
       return Promise.reject(error);
@@ -245,13 +270,13 @@ class Axios {
     len = responseInterceptorChain.length;
 
     while (i < len) {
-      promise = promise.then(responseInterceptorChain[i++], responseInterceptorChain[i++]);
+      promise = (promise).then(responseInterceptorChain[i++], responseInterceptorChain[i++]);
     }
 
     return promise;
   }
 
-  getUri(config) {
+  getUri(config?: AxiosRequestConfig) {
     config = mergeConfig(this.defaults, config);
     const fullPath = buildFullPath(config.baseURL, config.url, config.allowAbsoluteUrls, config);
     return buildURL(fullPath, config.params, config.paramsSerializer);
@@ -261,10 +286,10 @@ class Axios {
 // Provide aliases for supported request methods
 utils.forEach([ "delete", "get", "head", "options" ], function forEachMethodNoData(method) {
   /*eslint func-names:0*/
-  Axios.prototype[method] = async function (url, config) {
+  (Axios.prototype as unknown as Record<string, unknown>)[method as string] = async function (this: Axios, url: string, config?: AxiosRequestConfig) {
     return this.request(
       mergeConfig(config || {}, {
-        method,
+        method: method as string,
         url,
         data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
       })
@@ -273,11 +298,11 @@ utils.forEach([ "delete", "get", "head", "options" ], function forEachMethodNoDa
 });
 
 utils.forEach([ "post", "put", "patch", "query" ], function forEachMethodWithData(method) {
-  function generateHTTPMethod(isForm) {
-    return function httpMethod(url, data, config) {
+  function generateHTTPMethod(isForm?: boolean) {
+    return async function httpMethod(this: Axios, url: string, data?: unknown, config?: AxiosRequestConfig) {
       return this.request(
         mergeConfig(config || {}, {
-          method,
+          method: method as string,
           headers: isForm
             ? {
               "Content-Type": "multipart/form-data",
@@ -290,12 +315,12 @@ utils.forEach([ "post", "put", "patch", "query" ], function forEachMethodWithDat
     };
   }
 
-  Axios.prototype[method] = generateHTTPMethod();
+  (Axios.prototype as unknown as Record<string, unknown>)[method as string] = generateHTTPMethod();
 
   // QUERY is a safe/idempotent read method; multipart form bodies don't fit
   // its semantics, so no queryForm shorthand is generated.
   if (method !== "query") {
-    Axios.prototype[method + "Form"] = generateHTTPMethod(true);
+    (Axios.prototype as unknown as Record<string, unknown>)[(method as string) + "Form"] = generateHTTPMethod(true);
   }
 });
 

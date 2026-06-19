@@ -7,16 +7,16 @@
  * @param {string} url
  * @returns {number}
  */
-const isHexDigit = charCode =>
+const isHexDigit = (charCode: number) =>
   (charCode >= 48 && charCode <= 57) ||
   (charCode >= 65 && charCode <= 70) ||
   (charCode >= 97 && charCode <= 102);
 
-const isPercentEncodedByte = (str, i, len) =>
+const isPercentEncodedByte = (str: string, i: number, len: number) =>
   i + 2 < len && isHexDigit(str.charCodeAt(i + 1)) && isHexDigit(str.charCodeAt(i + 2));
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export default function estimateDataURLDecodedBytes(url) {
+export default function estimateDataURLDecodedBytes(url: string): number {
   if (!url || typeof url !== "string") return 0;
   if (!url.startsWith("data:")) return 0;
 
@@ -47,7 +47,7 @@ export default function estimateDataURLDecodedBytes(url) {
     let pad = 0;
     let idx = len - 1;
 
-    const tailIsPct3D = j =>
+    const tailIsPct3D = (j: number) =>
       j >= 2 &&
       body.charCodeAt(j - 2) === 37 && // '%'
       body.charCodeAt(j - 1) === 51 && // '3'

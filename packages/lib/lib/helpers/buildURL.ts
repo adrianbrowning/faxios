@@ -11,7 +11,7 @@ import AxiosURLSearchParams from "./AxiosURLSearchParams.js";
  *
  * @returns {string} The encoded value.
  */
-export function encode(val) {
+export function encode(val: string): string {
   return encodeURIComponent(val)
     .replace(/%3A/gi, ":")
     .replace(/%24/g, "$")
@@ -28,7 +28,7 @@ export function encode(val) {
  *
  * @returns {string} The formatted url
  */
-export default function buildURL(url, params, options) {
+export default function buildURL(url: string, params?: unknown, options?: unknown): string {
   if (!params) {
     return url;
   }
@@ -42,18 +42,18 @@ export default function buildURL(url, params, options) {
   // Read serializer options pollution-safely: own properties and methods on a
   // class/template prototype are honored, but values injected onto a polluted
   // Object.prototype are ignored.
-  const _encode = utils.getSafeProp(_options, "encode") || encode;
-  const serializeFn = utils.getSafeProp(_options, "serialize");
+  const _encode = (utils.getSafeProp(_options, "encode") as ((val: string) => string) | undefined) || encode;
+  const serializeFn = utils.getSafeProp(_options, "serialize") as ((params: unknown, options: unknown) => string) | undefined;
 
-  let serializedParams;
+  let serializedParams: string | undefined;
 
   if (serializeFn) {
     serializedParams = serializeFn(params, _options);
   }
   else {
     serializedParams = utils.isURLSearchParams(params)
-      ? params.toString()
-      : new AxiosURLSearchParams(params, _options).toString(_encode);
+      ? (params as { toString: () => string; }).toString()
+      : new (AxiosURLSearchParams as unknown as new (params: unknown, options: unknown) => { toString: (enc?: (val: string) => string) => string; })(params, _options).toString(_encode);
   }
 
   if (serializedParams) {

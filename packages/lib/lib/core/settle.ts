@@ -1,5 +1,6 @@
 "use strict";
 
+import type { AxiosResponse } from "../types.js";
 import AxiosError from "./AxiosError.js";
 
 /**
@@ -11,7 +12,7 @@ import AxiosError from "./AxiosError.js";
  *
  * @returns {object} The response.
  */
-export default function settle(resolve, reject, response) {
+export default function settle(resolve: (value: AxiosResponse) => void, reject: (reason: unknown) => void, response: AxiosResponse) {
   const validateStatus = response.config.validateStatus;
   if (!response.status || !validateStatus || validateStatus(response.status)) {
     resolve(response);

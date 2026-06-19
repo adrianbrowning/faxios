@@ -5,84 +5,63 @@ import CanceledError from "../cancel/CanceledError.js";
 import isCancel from "../cancel/isCancel.js";
 import AxiosHeaders from "../core/AxiosHeaders.js";
 import defaults from "../defaults/index.js";
+import type { InternalAxiosRequestConfig, AxiosResponse } from "../types.js";
 import transformData from "./transformData.js";
 
-/**
- * Throws a `CanceledError` if cancellation has been requested.
- *
- * @param {Object} config The config that is to be used for the request
- *
- * @returns {void}
- */
-function throwIfCancellationRequested(config) {
+function throwIfCancellationRequested(config: InternalAxiosRequestConfig): void {
   if (config.cancelToken) {
     config.cancelToken.throwIfRequested();
   }
 
   if (config.signal && config.signal.aborted) {
-    throw new CanceledError(null, config);
+    throw new CanceledError(undefined, config);
   }
 }
 
-/**
- * Dispatch a request to the server using the configured adapter.
- *
- * @param {object} config The config that is to be used for the request
- *
- * @returns {Promise} The Promise to be fulfilled
- */
-export default function dispatchRequest(config) {
+export default async function dispatchRequest(this: unknown, config: InternalAxiosRequestConfig): Promise<AxiosResponse> {
   throwIfCancellationRequested(config);
 
-  config.headers = AxiosHeaders.from(config.headers);
+  config.headers = AxiosHeaders.from(config.headers) as unknown as typeof config.headers;
 
-  // Transform request data
-  config.data = transformData.call(config, config.transformRequest);
+  config.data = transformData.call(config, config.transformRequest as never);
 
-  if ([ "post", "put", "patch" ].indexOf(config.method) !== -1) {
-    config.headers.setContentType("application/x-www-form-urlencoded", false);
+  if ([ "post", "put", "patch" ].indexOf(config.method as string) !== -1) {
+    (config.headers as unknown as { setContentType: (v: string, r: boolean) => void; }).setContentType("application/x-www-form-urlencoded", false);
   }
 
   const adapter = adapters.getAdapter(config.adapter || defaults.adapter, config);
-   
+
   /* eslint-disable promise/always-return */
-  return adapter(config).then(
-    function onAdapterResolution(response) {
+  return (adapter(config)).then(
+    function onAdapterResolution(response: AxiosResponse) {
       throwIfCancellationRequested(config);
 
-      // Expose the current response on config so that transformResponse can
-      // attach it to any AxiosError it throws (e.g. on JSON parse failure).
-      // We clean it up afterwards to avoid polluting the config object.
-      config.response = response;
+      (config as unknown as Record<string, unknown>)["response"] = response;
 
       try {
-        response.data = transformData.call(config, config.transformResponse, response);
+        response.data = transformData.call(config, config.transformResponse as never, response);
         response.headers = AxiosHeaders.from(response.headers);
       }
       finally {
-        delete config.response;
+        delete (config as unknown as Record<string, unknown>)["response"];
       }
 
       return response;
     },
-    async function onAdapterRejection(reason) {
+    async function onAdapterRejection(reason: unknown) {
       if (!isCancel(reason)) {
         throwIfCancellationRequested(config);
 
-        // Transform response data
-        if (reason && reason.response) {
-          config.response = reason.response;
+        const r = reason as { response?: { data?: unknown; headers?: unknown; status?: number; [k: string]: unknown; }; } | null;
+        if (r?.response) {
+          (config as unknown as Record<string, unknown>)["response"] = r.response;
           try {
-            reason.response.data = transformData.call(
-              config,
-              config.transformResponse,
-              reason.response
-            );
+            r.response.data = transformData.call(config, config.transformResponse as never, r.response);
           }
           finally {
-            delete config.response;
+            delete (config as unknown as Record<string, unknown>)["response"];
           }
-          reason.response.headers = AxiosHeaders.from(reason.response.headers);
+          r.response.headers = AxiosHeaders.from(r.response.headers as Record<string, unknown>);
         }
       }
 

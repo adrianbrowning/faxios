@@ -20,8 +20,8 @@ const DATA_URL_PATTERN = /^([^,;]+\/[^,;]+)?((?:;[^,;=]+=[^,;]+)*)(;base64)?,([\
  * @returns {Buffer|Blob}
  */
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export default function fromDataURI(uri, asBlob, options) {
-  const _Blob = (options && options.Blob) || platform.classes.Blob;
+export default function fromDataURI(uri: string, asBlob?: boolean, options?: { Blob?: new (...args: Array<unknown>) => object; }) {
+  const _Blob = ((options && options.Blob) || platform.classes.Blob) as (new (...args: Array<unknown>) => object) | null | undefined;
   const protocol = parseProtocol(uri);
 
   if (asBlob === undefined && _Blob) {
@@ -39,12 +39,12 @@ export default function fromDataURI(uri, asBlob, options) {
 
     const type = match[1];
     const params = match[2];
-    const encoding = match[3] ? "base64" : "utf8";
-    const body = match[4];
+    const encoding: BufferEncoding = match[3] ? "base64" : "utf8";
+    const body = (match[4] ?? "");
 
     // RFC 2397 section 3: default mediatype is text/plain;charset=US-ASCII
     // Bare `data:,` leaves mime undefined; Blob normalises that to "" per spec.
-    let mime;
+    let mime: string | undefined;
     if (type) {
       mime = params ? type + params : type;
     }

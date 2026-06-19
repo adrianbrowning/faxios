@@ -13,7 +13,32 @@ import resolveConfig from "../helpers/resolveConfig.js";
 import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import { trackStream } from "../helpers/trackStream.js";
 import platform from "../platform/index.js";
+import type { CancelToken } from "../types.js";
 import utils from "../utils.js";
+
+// btoa is a global in Node 16+ and browsers; accessed via globalThis for no-DOM lib compat
+const _btoa: (data: string) => string = (globalThis as unknown as Record<string, unknown>)["btoa"] as (data: string) => string;
+type AnyConstructor = new (...args: Array<unknown>) => unknown;
+type FetchFn = (input: unknown, init?: unknown) => Promise<AnyResponse>;
+type AnyResponse = {
+  body: unknown;
+  headers: { has: (name: string) => boolean; get: (name: string) => string | null; [key: string]: unknown; };
+  status: number;
+  statusText: string;
+  arrayBuffer: () => Promise<ArrayBuffer>;
+  [key: string]: unknown;
+};
+type AnyRequest = {
+  headers: { has: (name: string) => boolean; get: (name: string) => string | null; };
+  body: { cancel: () => Promise<void>; } | null;
+  arrayBuffer: () => Promise<ArrayBuffer>;
+  [key: string]: unknown;
+};
+type AnyReadableStream = { cancel: () => Promise<void>; [key: string]: unknown; };
+type AnyTextEncoder = { encode: (str: string) => Uint8Array; };
+
+type CancelTokenWithAbortSignal = CancelToken & { toAbortSignal: () => unknown; };
+type ComposedSignal = AbortSignal & { unsubscribe?: () => void; };
 
 const DEFAULT_CHUNK_SIZE = 64 * 1024;
 
@@ -27,8 +52,8 @@ const { isFunction } = utils;
  *
  * @returns {string} UTF-8 bytes as a Latin-1 string
  */
-const encodeUTF8 = str =>
-  encodeURIComponent(str).replace(/%([0-9A-F]{2})/gi, (_, hex) =>
+const encodeUTF8 = (str: string): string =>
+  encodeURIComponent(str).replace(/%([0-9A-F]{2})/gi, (_: string, hex: string) =>
     String.fromCharCode(parseInt(hex, 16))
   );
 
@@ -36,20 +61,20 @@ const encodeUTF8 = str =>
 // Decode before composing the `auth` option so credentials such as
 // `my%40email.com:pass` are sent as `my@email.com:pass`. Falls back to the
 // original value for malformed input so a bad encoding never throws.
-const decodeURIComponentSafe = value => {
+const decodeURIComponentSafe = (value: unknown): unknown => {
   if (!utils.isString(value)) {
     return value;
   }
 
   try {
-    return decodeURIComponent(value);
+    return decodeURIComponent(value as string);
   }
   catch {
     return value;
   }
 };
 
-const test = (fn, ...args) => {
+const test = (fn: (...args: Array<unknown>) => unknown, ...args: Array<unknown>): boolean => {
   try {
     return !!fn(...args);
   }
@@ -58,7 +83,7 @@ const test = (fn, ...args) => {
   }
 };
 
-const maybeWithAuthCredentials = url => {
+const maybeWithAuthCredentials = (url: string): boolean => {
   const protocolIndex = url.indexOf("://");
   let urlToCheck = url;
   if (protocolIndex !== -1) {
@@ -68,26 +93,32 @@ const maybeWithAuthCredentials = url => {
 };
 
 // eslint-disable-next-line sonarjs/function-return-type
-const factory = env => {
-  const globalObject =
+const factory = (env: Record<string, unknown>) => {
+  const globalObject: Record<string, unknown> =
     utils.global !== undefined && utils.global !== null
       ? utils.global
       : globalThis;
-  const { ReadableStream, TextEncoder } = globalObject;
+  const ReadableStream = globalObject["ReadableStream"] as (AnyConstructor & { prototype: AnyReadableStream; }) | undefined;
+  const TextEncoder = globalObject["TextEncoder"] as (new () => AnyTextEncoder) | undefined;
 
   env = utils.merge.call(
     {
       skipUndefined: true,
     },
     {
-      Request: globalObject.Request,
-      Response: globalObject.Response,
+      Request: globalObject["Request"],
+      Response: globalObject["Response"],
     },
     env
   );
 
-  const { fetch: envFetch, Request, Response } = env;
-  const isFetchSupported = envFetch ? isFunction(envFetch) : typeof fetch === "function";
+  const { fetch: envFetch, Request, Response } = env as {
+    fetch?: FetchFn;
+    Request?: AnyConstructor;
+    Response?: AnyConstructor;
+  };
+  const _globalFetch = (globalThis as unknown as Record<string, unknown>)["fetch"];
+  const isFetchSupported = envFetch ? isFunction(envFetch) : isFunction(_globalFetch);
   const isRequestSupported = isFunction(Request);
   const isResponseSupported = isFunction(Response);
 
@@ -97,14 +128,14 @@ const factory = env => {
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const isReadableStreamSupported = isFetchSupported && isFunction(ReadableStream);
-   
-  const encodeText =
+
+  const encodeText: (str: string) => Promise<Uint8Array> | Uint8Array =
     (typeof TextEncoder === "function"
       ? (
-        encoder => str =>
+        (encoder: AnyTextEncoder) => (str: string) =>
           encoder.encode(str)
       )(new TextEncoder())
-      : async str => new Uint8Array(await new Request(str).arrayBuffer()));
+      : async (str: string) => new Uint8Array(await (new (Request as AnyConstructor)(str) as AnyRequest).arrayBuffer()));
 
   const supportsRequestStream =
     isRequestSupported &&
@@ -112,17 +143,17 @@ const factory = env => {
     test(() => {
       let duplexAccessed = false;
 
-      const request = new Request(platform.origin, {
-        body: new ReadableStream(),
+      const request = new (Request as AnyConstructor)(platform.origin, {
+        body: new (ReadableStream as AnyConstructor)(),
         method: "POST",
         get duplex() {
           duplexAccessed = true;
           return "half";
         },
-      });
+      }) as AnyRequest;
 
       const hasContentType = request.headers.has("Content-Type");
-       
+
       if (request.body != null) {
         request.body.cancel();
       }
@@ -134,10 +165,10 @@ const factory = env => {
   const supportsResponseStream =
     isResponseSupported &&
     isReadableStreamSupported &&
-    test(() => utils.isReadableStream(new Response("").body));
+    test(() => utils.isReadableStream!((new (Response as AnyConstructor)("") as AnyResponse).body));
 
-  const resolvers = {
-    stream: supportsResponseStream && (res => res.body),
+  const resolvers: Record<string, ((res: AnyResponse, config?: unknown) => unknown) | false> = {
+    stream: supportsResponseStream && ((res: AnyResponse) => res.body),
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -145,41 +176,41 @@ const factory = env => {
     (() => {
       [ "text", "arrayBuffer", "blob", "formData", "stream" ].forEach(type => {
         !resolvers[type] &&
-          (resolvers[type] = (res, config) => {
-            let method = res && res[type];
+          (resolvers[type] = (res: AnyResponse, config?: unknown) => {
+            const method = res && (res as Record<string, unknown>)[type];
 
             if (method) {
-              return method.call(res);
+              return (method as (this: AnyResponse) => unknown).call(res);
             }
 
             throw new AxiosError(
               `Response type '${type}' is not supported`,
               AxiosError.ERR_NOT_SUPPORT,
-              config
+              config as import("../types.js").InternalAxiosRequestConfig
             );
           });
       });
     })();
 
-  const getBodyLength = async body => {
+  const getBodyLength = async (body: unknown): Promise<number | undefined> => {
     if (body == null) {
       return 0;
     }
 
     if (utils.isBlob(body)) {
-      return body.size;
+      return (body as { size: number; }).size;
     }
 
     if (utils.isSpecCompliantForm(body)) {
-      const _request = new Request(platform.origin, {
+      const _request = new (Request as AnyConstructor)(platform.origin, {
         method: "POST",
         body,
-      });
+      }) as AnyRequest;
       return (await _request.arrayBuffer()).byteLength;
     }
 
     if (utils.isArrayBufferView(body) || utils.isArrayBuffer(body)) {
-      return body.byteLength;
+      return (body as ArrayBufferView | ArrayBuffer).byteLength;
     }
 
     if (utils.isURLSearchParams(body)) {
@@ -187,18 +218,23 @@ const factory = env => {
     }
 
     if (utils.isString(body)) {
-      return (await encodeText(body)).byteLength;
+      return (await encodeText(body as string)).byteLength;
     }
+    return undefined;
   };
 
-  const resolveBodyLength = async (headers, body) => {
-    const length = utils.toFiniteNumber(headers.getContentLength());
+  const resolveBodyLength = async (headers: import("../types.js").AxiosRequestHeaders, body: unknown): Promise<number | undefined> => {
+    const length = utils.toFiniteNumber((headers.getContentLength)());
 
     return length == null ? getBodyLength(body) : length;
   };
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  return async config => {
+  return async (config: import("../types.js").InternalAxiosRequestConfig) => {
+    const _resolved = resolveConfig(config) as import("../types.js").InternalAxiosRequestConfig & {
+      fetchOptions?: Record<string, unknown>;
+      withCredentials?: string | boolean;
+    };
     let {
       url,
       method,
@@ -209,33 +245,33 @@ const factory = env => {
       onDownloadProgress,
       onUploadProgress,
       responseType,
-      headers,
-      withCredentials = "same-origin",
       fetchOptions,
       maxContentLength,
       maxBodyLength,
-    } = resolveConfig(config);
+    } = _resolved;
+    let headers = _resolved.headers;
+    let withCredentials: string | boolean = _resolved.withCredentials ?? "same-origin";
 
-    const hasMaxContentLength = utils.isNumber(maxContentLength) && maxContentLength > -1;
-    const hasMaxBodyLength = utils.isNumber(maxBodyLength) && maxBodyLength > -1;
-    const own = key => (utils.hasOwnProp(config, key) ? config[key] : undefined);
+    const hasMaxContentLength = utils.isNumber(maxContentLength) && maxContentLength! > -1;
+    const hasMaxBodyLength = utils.isNumber(maxBodyLength) && maxBodyLength! > -1;
+    const own = (key: string): unknown => (utils.hasOwnProp(config, key) ? (config as unknown as Record<string, unknown>)[key] : undefined);
 
-    let _fetch = envFetch || fetch;
+    let _fetch: FetchFn = (envFetch || _globalFetch) as FetchFn;
 
-    responseType = responseType ? (responseType + "").toLowerCase() : "text";
+    responseType = (responseType ? (responseType + "").toLowerCase() : "text") as typeof responseType;
 
     let composedSignal = composeSignals(
-      [ signal, cancelToken && cancelToken.toAbortSignal() ],
+      [ signal, cancelToken && (cancelToken as CancelTokenWithAbortSignal).toAbortSignal() ],
       timeout
-    );
+    ) as ComposedSignal | undefined;
 
-    let request = null;
+    let request: unknown = null;
 
     const unsubscribe =
       composedSignal &&
       composedSignal.unsubscribe &&
       (() => {
-        composedSignal.unsubscribe();
+        (composedSignal).unsubscribe!();
       });
 
     let requestContentLength;
@@ -244,7 +280,7 @@ const factory = env => {
     // by identity so the catch block can surface it directly, regardless of
     // how the runtime wraps the resulting fetch rejection (undici exposes it
     // as `err.cause`; some browsers drop the original error entirely).
-    let pendingBodyError = null;
+    let pendingBodyError: (AxiosError & { request?: unknown; }) | null = null;
 
     const maxBodyLengthError = () =>
       new AxiosError(
@@ -268,8 +304,8 @@ const factory = env => {
         };
       }
 
-      if (maybeWithAuthCredentials(url)) {
-        const parsedURL = new URL(url, platform.origin);
+      if (maybeWithAuthCredentials(url!)) {
+        const parsedURL = new URL(url!, platform.origin);
 
         if (!auth && (parsedURL.username || parsedURL.password)) {
           const urlUsername = decodeURIComponentSafe(parsedURL.username);
@@ -291,7 +327,7 @@ const factory = env => {
         headers.delete("authorization");
         headers.set(
           "Authorization",
-          "Basic " + btoa(encodeUTF8((auth.username || "") + ":" + (auth.password || "")))
+          "Basic " + _btoa(encodeUTF8(String(auth.username || "") + ":" + String(auth.password || "")))
         );
       }
 
@@ -300,7 +336,7 @@ const factory = env => {
       // "if (protocol === 'data:')" branch).
       if (hasMaxContentLength && typeof url === "string" && url.startsWith("data:")) {
         const estimated = estimateDataURLDecodedBytes(url);
-        if (estimated > maxContentLength) {
+        if (estimated > maxContentLength!) {
           throw new AxiosError(
             "maxContentLength size of " + maxContentLength + " exceeded",
             AxiosError.ERR_BAD_RESPONSE,
@@ -319,7 +355,7 @@ const factory = env => {
         const outboundLength = await getBodyLength(data);
         if (typeof outboundLength === "number" && isFinite(outboundLength)) {
           requestContentLength = outboundLength;
-          if (outboundLength > maxBodyLength) {
+          if (outboundLength > maxBodyLength!) {
             throw maxBodyLengthError();
           }
         }
@@ -328,14 +364,14 @@ const factory = env => {
       // A streamed body under maxBodyLength must be counted as fetch consumes
       // it; its size is never trusted from a caller-declared Content-Length.
       const mustEnforceStreamBody =
-        hasMaxBodyLength && (utils.isReadableStream(data) || utils.isStream(data));
+        hasMaxBodyLength && (utils.isReadableStream!(data) || utils.isStream(data));
 
-      const trackRequestStream = (stream, onProgress, flush) =>
+      const trackRequestStream = (stream: unknown, onProgress?: (bytes: number) => void, flush?: () => void) =>
         trackStream(
           stream,
           DEFAULT_CHUNK_SIZE,
-          loadedBytes => {
-            if (hasMaxBodyLength && loadedBytes > maxBodyLength) {
+          (loadedBytes: number) => {
+            if (hasMaxBodyLength && loadedBytes > maxBodyLength!) {
               pendingBodyError = maxBodyLengthError();
               throw pendingBodyError;
             }
@@ -356,16 +392,16 @@ const factory = env => {
         // A declared length of 0 is only trusted to skip the wrap when we are
         // not enforcing a stream limit (which must not rely on that header).
         if (requestContentLength !== 0 || mustEnforceStreamBody) {
-          let _request = new Request(url, {
+          let _request = new (Request as AnyConstructor)(url!, {
             method: "POST",
             body: data,
             duplex: "half",
-          });
+          }) as AnyRequest;
 
-          let contentTypeHeader;
-           
+          let contentTypeHeader: string | null;
+
           if (utils.isFormData(data) && (contentTypeHeader = _request.headers.get("content-type"))) {
-            headers.setContentType(contentTypeHeader);
+            (headers.setContentType)(contentTypeHeader);
           }
 
           if (_request.body) {
@@ -373,7 +409,7 @@ const factory = env => {
             const [ onProgress, flush ] = onUploadProgress
               ? progressEventDecorator(
                 requestContentLength,
-                progressEventReducer(asyncDecorator(onUploadProgress))
+                progressEventReducer(asyncDecorator(onUploadProgress as (...args: Array<unknown>) => unknown), false)
               )
               : [];
 
@@ -411,12 +447,12 @@ const factory = env => {
 
       // Cloudflare Workers throws when credentials are defined
       // see https://github.com/cloudflare/workerd/issues/902
-      const isCredentialsSupported = isRequestSupported && "credentials" in Request.prototype;
+      const isCredentialsSupported = isRequestSupported && Request != null && "credentials" in ((Request).prototype as object);
 
       // If data is FormData and Content-Type is multipart/form-data without boundary,
       // delete it so fetch can set it correctly with the boundary
       if (utils.isFormData(data)) {
-        const contentType = headers.getContentType();
+        const contentType = (headers.getContentType)() as string | null | undefined;
         if (
           contentType &&
           /^multipart\/form-data/i.test(contentType) &&
@@ -432,26 +468,26 @@ const factory = env => {
       const resolvedOptions = {
         ...fetchOptions,
         signal: composedSignal,
-        method: method.toUpperCase(),
-        headers: toByteStringHeaderObject(headers.normalize()),
+        method: (method as string).toUpperCase(),
+        headers: toByteStringHeaderObject(headers.normalize(false) as AxiosHeaders),
         body: data,
         duplex: "half",
         credentials: isCredentialsSupported ? withCredentials : undefined,
       };
 
-      request = isRequestSupported && new Request(url, resolvedOptions);
+      request = isRequestSupported && new (Request as AnyConstructor)(url!, resolvedOptions);
 
       let response = await (isRequestSupported
         ? _fetch(request, fetchOptions)
-        : _fetch(url, resolvedOptions));
+        : _fetch(url!, resolvedOptions));
 
       const responseHeaders = AxiosHeaders.from(response.headers);
 
       // Cheap pre-check: if the server honestly declares a content-length that
       // already exceeds the cap, reject before we start streaming.
       if (hasMaxContentLength) {
-        const declaredLength = utils.toFiniteNumber(responseHeaders.getContentLength());
-        if (declaredLength != null && declaredLength > maxContentLength) {
+        const declaredLength = utils.toFiniteNumber((responseHeaders.getContentLength as () => unknown)());
+        if (declaredLength != null && declaredLength > maxContentLength!) {
           throw new AxiosError(
             "maxContentLength size of " + maxContentLength + " exceeded",
             AxiosError.ERR_BAD_RESPONSE,
@@ -469,26 +505,26 @@ const factory = env => {
         response.body &&
         (onDownloadProgress || hasMaxContentLength || (isStreamResponse && unsubscribe))
       ) {
-        const options = {};
+        const options: Record<string, unknown> = {};
 
         [ "status", "statusText", "headers" ].forEach(prop => {
           options[prop] = response[prop];
         });
 
-        const responseContentLength = utils.toFiniteNumber(responseHeaders.getContentLength());
+        const responseContentLength = utils.toFiniteNumber((responseHeaders.getContentLength as () => unknown)());
          
         const [ onProgress, flush ] = onDownloadProgress
           ? progressEventDecorator(
             responseContentLength,
-            progressEventReducer(asyncDecorator(onDownloadProgress), true)
+            progressEventReducer(asyncDecorator(onDownloadProgress as (...args: Array<unknown>) => unknown), true)
           )
           : [];
 
         let bytesRead = 0;
-        const onChunkProgress = loadedBytes => {
+        const onChunkProgress = (loadedBytes: number): void => {
           if (hasMaxContentLength) {
             bytesRead = loadedBytes;
-            if (bytesRead > maxContentLength) {
+            if (bytesRead > maxContentLength!) {
               throw new AxiosError(
                 "maxContentLength size of " + maxContentLength + " exceeded",
                 AxiosError.ERR_BAD_RESPONSE,
@@ -500,21 +536,20 @@ const factory = env => {
           onProgress && onProgress(loadedBytes);
         };
 
-        response = new Response(
+        response = new (Response as AnyConstructor)(
           trackStream(response.body, DEFAULT_CHUNK_SIZE, onChunkProgress, () => {
             flush && flush();
             unsubscribe && unsubscribe();
           }),
           options
-        );
+        ) as AnyResponse;
       }
 
       responseType = responseType || "text";
 
-      let responseData = await resolvers[utils.findKey(resolvers, responseType) || "text"](
-        response,
-        config
-      );
+      const resolverKey = utils.findKey(resolvers, responseType) || "text";
+      const resolver = resolvers[resolverKey];
+      let responseData = await (resolver && (resolver)(response, config));
 
       // Fallback enforcement for environments without ReadableStream support
       // (legacy runtimes). Detect materialized size from typed output; skip
@@ -522,11 +557,12 @@ const factory = env => {
       if (hasMaxContentLength && !supportsResponseStream && !isStreamResponse) {
         let materializedSize;
         if (responseData != null) {
-          if (typeof responseData.byteLength === "number") {
-            materializedSize = responseData.byteLength;
+          const rd = responseData as Record<string, unknown>;
+          if (typeof rd["byteLength"] === "number") {
+            materializedSize = rd["byteLength"];
           }
-          else if (typeof responseData.size === "number") {
-            materializedSize = responseData.size;
+          else if (typeof rd["size"] === "number") {
+            materializedSize = rd["size"];
           }
           else if (typeof responseData === "string") {
             materializedSize =
@@ -535,7 +571,7 @@ const factory = env => {
                 : responseData.length;
           }
         }
-        if (typeof materializedSize === "number" && materializedSize > maxContentLength) {
+        if (typeof materializedSize === "number" && materializedSize > maxContentLength!) {
           throw new AxiosError(
             "maxContentLength size of " + maxContentLength + " exceeded",
             AxiosError.ERR_BAD_RESPONSE,
@@ -568,7 +604,7 @@ const factory = env => {
         const canceledError = composedSignal.reason;
         canceledError.config = config;
         request && (canceledError.request = request);
-        err !== canceledError && (canceledError.cause = err);
+        err !== canceledError && (canceledError.cause = err as Error);
         throw canceledError;
       }
 
@@ -579,7 +615,8 @@ const factory = env => {
       // AxiosError that merely happened to land in `err.cause`.
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (pendingBodyError) {
-        request && !pendingBodyError.request && (pendingBodyError.request = request);
+        const _pbe = pendingBodyError as AxiosError & { request?: unknown; };
+        request && !_pbe.request && (_pbe.request = request);
         throw pendingBodyError;
       }
 
@@ -590,49 +627,56 @@ const factory = env => {
         throw err;
       }
 
-      if (err && err.name === "TypeError" && /Load failed|fetch/i.test(err.message)) {
+      const _err = err as Record<string, unknown> & Error;
+      if (_err && _err.name === "TypeError" && /Load failed|fetch/i.test(_err.message)) {
         throw Object.assign(
           new AxiosError(
             "Network Error",
             AxiosError.ERR_NETWORK,
             config,
             request,
-            err.response
+            _err["response"] as import("../types.js").AxiosResponse | undefined
           ),
           {
-            cause: err.cause || err,
+            cause: _err["cause"] || _err,
           }
         );
       }
 
-      throw AxiosError.from(err, err && err.code, config, request, err && err.response);
+      throw AxiosError.from(
+        _err,
+        _err && (_err["code"] as string | undefined),
+        config,
+        request,
+        _err && (_err["response"] as import("../types.js").AxiosResponse | undefined)
+      );
     }
   };
 };
 
-const seedCache = new Map();
+const seedCache = new Map<unknown, unknown>();
 
-export const getFetch = config => {
-  let env = (config && config.env) || {};
-  const { fetch, Request, Response } = env;
-  const seeds = [ Request, Response, fetch ];
+export const getFetch = (config?: { env?: Record<string, unknown>; }) => {
+  const env: Record<string, unknown> = (config && config.env) || {};
+  const { fetch, Request, Response } = env as { fetch?: unknown; Request?: unknown; Response?: unknown; };
+  const seeds: Array<unknown> = [ Request, Response, fetch ];
 
-  let len = seeds.length,
-    i = len,
-    seed,
-    target,
-    map = seedCache;
+  const len = seeds.length;
+  let i = len;
+  let seed: unknown;
+  let target: unknown;
+  let map: Map<unknown, unknown> = seedCache;
 
   while (i--) {
     seed = seeds[i];
     target = map.get(seed);
 
     if (target === undefined) {
-      target = i ? new Map() : factory(env);
+      target = i ? new Map<unknown, unknown>() : factory(env);
       map.set(seed, target);
     }
 
-    map = target;
+    map = target as Map<unknown, unknown>;
   }
 
   return target;

@@ -1,28 +1,28 @@
 "use strict";
 
+import type { Cancel, Canceler, AxiosRequestConfig } from "../types.js";
 import CanceledError from "./CanceledError.js";
 
-/**
- * A `CancelToken` is an object that can be used to request cancellation of an operation.
- *
- * @param {Function} executor The executor function.
- *
- * @returns {CancelToken}
- */
+type CancelListener = (cancel: Cancel) => void;
+
 class CancelToken {
-  constructor(executor) {
+  promise: Promise<Cancel>;
+  reason?: Cancel;
+  _listeners: Array<CancelListener> | null = null;
+
+  constructor(executor: (cancel: Canceler) => void) {
     if (typeof executor !== "function") {
       throw new TypeError("executor must be a function.");
     }
 
-    let resolvePromise;
+    let resolvePromise: ((value: Cancel) => void) | undefined;
 
-    this.promise = new Promise(function promiseExecutor(resolve) {
+    this.promise = new Promise<Cancel>(function promiseExecutor(resolve) {
       resolvePromise = resolve;
     });
 
     const token = this;
-     
+
     /* eslint-disable promise/always-return */
     // eslint-disable-next-line promise/catch-or-return
     this.promise.then(cancel => {
@@ -31,52 +31,47 @@ class CancelToken {
       let i = token._listeners.length;
 
       while (i-- > 0) {
-        token._listeners[i](cancel);
+        token._listeners[i]!(cancel);
       }
       token._listeners = null;
     });
     /* eslint-enable promise/always-return */
-     
-    this.promise.then = async onfulfilled => {
-      let _resolve;
-       
-      const promise = new Promise(resolve => {
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (this.promise as any).then = async (onfulfilled: ((value: Cancel) => unknown) | undefined) => {
+      let _resolve: CancelListener | undefined;
+
+      const promise = new Promise<Cancel>(resolve => {
         token.subscribe(resolve);
         _resolve = resolve;
       }).then(onfulfilled);
 
-      promise.cancel = function reject() {
-        token.unsubscribe(_resolve);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (promise as any).cancel = function reject() {
+        token.unsubscribe(_resolve!);
       };
 
       return promise;
     };
 
-    executor(function cancel(message, config, request) {
+    executor(function cancel(message?: string, config?: AxiosRequestConfig, request?: unknown) {
       if (token.reason) {
         // Cancellation has already been requested
         return;
       }
 
       token.reason = new CanceledError(message, config, request);
-      resolvePromise(token.reason);
+      resolvePromise!(token.reason);
     });
   }
 
-  /**
-   * Throws a `CanceledError` if cancellation has been requested.
-   */
-  throwIfRequested() {
+  throwIfRequested(): void {
     if (this.reason) {
       throw this.reason;
     }
   }
 
-  /**
-   * Subscribe to the cancel signal
-   */
-
-  subscribe(listener) {
+  subscribe(listener: CancelListener): void {
     if (this.reason) {
       listener(this.reason);
       return;
@@ -90,11 +85,7 @@ class CancelToken {
     }
   }
 
-  /**
-   * Unsubscribe from the cancel signal
-   */
-
-  unsubscribe(listener) {
+  unsubscribe(listener: CancelListener): void {
     if (!this._listeners) {
       return;
     }
@@ -104,32 +95,28 @@ class CancelToken {
     }
   }
 
-  toAbortSignal() {
+  toAbortSignal(): AbortSignal & { unsubscribe?: () => void; } {
     const controller = new AbortController();
 
-    const abort = err => {
+    const abort = (err: Cancel) => {
       controller.abort(err);
     };
 
     this.subscribe(abort);
 
-    controller.signal.unsubscribe = () => this.unsubscribe(abort);
+    (controller.signal as AbortSignal & { unsubscribe?: () => void; }).unsubscribe = () => this.unsubscribe(abort);
 
     return controller.signal;
   }
 
-  /**
-   * Returns an object that contains a new `CancelToken` and a function that, when called,
-   * cancels the `CancelToken`.
-   */
-  static source() {
-    let cancel;
+  static source(): { token: CancelToken; cancel: Canceler; } {
+    let cancel: Canceler | undefined;
     const token = new CancelToken(function executor(c) {
       cancel = c;
     });
     return {
       token,
-      cancel,
+      cancel: cancel!,
     };
   }
 }

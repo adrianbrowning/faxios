@@ -5,10 +5,9 @@ import formDataToJSON from "../helpers/formDataToJSON.js";
 import toFormData from "../helpers/toFormData.js";
 import toURLEncodedForm from "../helpers/toURLEncodedForm.js";
 import platform from "../platform/index.js";
+import type { AxiosDefaults } from "../types.js";
 import utils from "../utils.js";
 import transitionalDefaults from "./transitional.js";
-
-const own = (obj, key) => (obj != null && utils.hasOwnProp(obj, key) ? obj[key] : undefined);
 
 /**
  * It takes a string, tries to parse it, and if it fails, it returns the stringified version
@@ -20,14 +19,18 @@ const own = (obj, key) => (obj != null && utils.hasOwnProp(obj, key) ? obj[key] 
  *
  * @returns {string} A stringified version of the rawValue.
  */
-function stringifySafely(rawValue, parser, encoder) {
+function stringifySafely(
+  rawValue: unknown,
+  parser?: ((s: string) => unknown) | null,
+  encoder?: ((v: unknown) => string) | null
+): unknown {
   if (utils.isString(rawValue)) {
     try {
-      (parser || JSON.parse)(rawValue);
-      return utils.trim(rawValue);
+      (parser || JSON.parse)(rawValue as string);
+      return utils.trim(rawValue as string);
     }
     catch (e) {
-      if (e.name !== "SyntaxError") {
+      if ((e as { name?: string; }).name !== "SyntaxError") {
         throw e;
       }
     }
@@ -36,20 +39,23 @@ function stringifySafely(rawValue, parser, encoder) {
   return (encoder || JSON.stringify)(rawValue);
 }
 
-const defaults = {
+const defaults: AxiosDefaults = {
   transitional: transitionalDefaults,
 
-  adapter: [ "xhr", "http", "fetch" ],
+  adapter: [ "xhr", "http", "fetch" ] as Array<import("../types.js").AxiosAdapterName>,
 
   transformRequest: [
     // eslint-disable-next-line sonarjs/cognitive-complexity
-    function transformRequest(data, headers) {
-      const contentType = headers.getContentType() || "";
+    function transformRequest(this: import("../types.js").InternalAxiosRequestConfig, data: unknown, headers: import("../types.js").AxiosRequestHeaders) {
+      const contentType = (headers.getContentType() as string | null | undefined) || "";
       const hasJSONContentType = contentType.indexOf("application/json") > -1;
       const isObjectPayload = utils.isObject(data);
 
       if (isObjectPayload && utils.isHTMLForm(data)) {
-        data = new FormData(data);
+        const GlobalFormData = (globalThis as Record<string, unknown>)["FormData"] as (new (el?: unknown) => unknown) | undefined;
+        if (GlobalFormData) {
+          data = new GlobalFormData(data);
+        }
       }
 
       const isFormData = utils.isFormData(data);
@@ -64,22 +70,22 @@ const defaults = {
         utils.isStream(data) ||
         utils.isFile(data) ||
         utils.isBlob(data) ||
-        utils.isReadableStream(data)
+        utils.isReadableStream?.(data)
       ) {
         return data;
       }
       if (utils.isArrayBufferView(data)) {
-        return data.buffer;
+        return (data as ArrayBufferView).buffer;
       }
       if (utils.isURLSearchParams(data)) {
         headers.setContentType("application/x-www-form-urlencoded;charset=utf-8", false);
-        return data.toString();
+        return (data as { toString: () => string; }).toString();
       }
 
-      let isFileList;
+      let isFileList: unknown;
 
       if (isObjectPayload) {
-        const formSerializer = own(this, "formSerializer");
+        const formSerializer = this.formSerializer as Record<string, unknown> | undefined;
         if (contentType.indexOf("application/x-www-form-urlencoded") > -1) {
           return toURLEncodedForm(data, formSerializer).toString();
         }
@@ -89,12 +95,11 @@ const defaults = {
           isFileList ||
           contentType.indexOf("multipart/form-data") > -1
         ) {
-          const env = own(this, "env");
-          const _FormData = env && env.FormData;
+          const _FormData = this.env?.FormData;
 
           return toFormData(
             isFileList ? { "files[]": data } : data,
-            _FormData && new _FormData(),
+            (_FormData && new _FormData()) as import("../types.js").GenericFormData | null | undefined,
             formSerializer
           );
         }
@@ -110,13 +115,13 @@ const defaults = {
   ],
 
   transformResponse: [
-    function transformResponse(data) {
-      const transitional = own(this, "transitional") || defaults.transitional;
+    function transformResponse(this: import("../types.js").InternalAxiosRequestConfig, data: unknown) {
+      const transitional = (this.transitional || defaults.transitional);
       const forcedJSONParsing = transitional && transitional.forcedJSONParsing;
-      const responseType = own(this, "responseType");
+      const responseType = this.responseType;
       const JSONRequested = responseType === "json";
 
-      if (utils.isResponse(data) || utils.isReadableStream(data)) {
+      if (utils.isResponse?.(data) || utils.isReadableStream?.(data)) {
         return data;
       }
 
@@ -129,12 +134,12 @@ const defaults = {
         const strictJSONParsing = !silentJSONParsing && JSONRequested;
 
         try {
-          return JSON.parse(data, own(this, "parseReviver"));
+          return JSON.parse(data as string, this.parseReviver);
         }
         catch (e) {
           if (strictJSONParsing) {
-            if (e.name === "SyntaxError") {
-              throw AxiosError.from(e, AxiosError.ERR_BAD_RESPONSE, this, null, own(this, "response"));
+            if ((e as { name?: string; }).name === "SyntaxError") {
+              throw AxiosError.from(e as Error, AxiosError.ERR_BAD_RESPONSE, this, null, (this as unknown as Record<string, unknown>)["response"] as import("../types.js").AxiosResponse | undefined);
             }
             throw e;
           }
@@ -158,11 +163,10 @@ const defaults = {
   maxBodyLength: -1,
 
   env: {
-    FormData: platform.classes.FormData,
-    Blob: platform.classes.Blob,
+    FormData: platform.classes.FormData as unknown as (new (...args: Array<unknown>) => object) | undefined,
   },
 
-  validateStatus: function validateStatus(status) {
+  validateStatus: function validateStatus(status: number) {
     return status >= 200 && status < 300;
   },
 
@@ -171,11 +175,14 @@ const defaults = {
       Accept: "application/json, text/plain, */*",
       "Content-Type": undefined,
     },
+    delete: {},
+    get: {},
+    head: {},
+    post: {},
+    put: {},
+    patch: {},
+    query: {},
   },
 };
-
-utils.forEach([ "delete", "get", "head", "post", "put", "patch", "query" ], method => {
-  defaults.headers[method] = {};
-});
 
 export default defaults;
