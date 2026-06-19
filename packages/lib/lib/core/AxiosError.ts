@@ -31,6 +31,17 @@ function redactConfig(config: unknown, redactKeys: Array<string>): unknown {
   const lowerKeys = new Set(redactKeys.map(k => String(k).toLowerCase()));
   const seen: Array<object> = [];
 
+  const visitObject = (source: object): Record<string, unknown> => {
+    const result: Record<string, unknown> = Object.create(null);
+    for (const [ key, value ] of Object.entries(source)) {
+      const reducedValue = lowerKeys.has(key.toLowerCase()) ? REDACTED : visit(value);
+      if (!utils.isUndefined(reducedValue)) {
+        result[key] = reducedValue;
+      }
+    }
+    return result;
+  };
+
   const visit = (source: unknown): unknown => {
     if (source === null || typeof source !== "object") return source;
     if (utils.isBuffer(source)) return source;
@@ -57,16 +68,7 @@ function redactConfig(config: unknown, redactKeys: Array<string>): unknown {
         seen.pop();
         return source;
       }
-
-      result = Object.create(null);
-      for (const [ key, value ] of Object.entries(source as object)) {
-        const reducedValue = lowerKeys.has(key.toLowerCase())
-          ? REDACTED
-          : visit(value);
-        if (!utils.isUndefined(reducedValue)) {
-          (result as Record<string, unknown>)[key] = reducedValue;
-        }
-      }
+      result = visitObject(source as object);
     }
 
     seen.pop();
