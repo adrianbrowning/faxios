@@ -261,6 +261,155 @@ function isSameOriginRedirect(
   }
 }
 
+function makeProxyFieldReader(proxy: unknown): (key: string) => unknown {
+  const isProxyURL = proxy instanceof URL;
+  return (key: string): unknown =>
+    isProxyURL || utils.hasOwnProp(proxy, key)
+      ? (proxy as Record<string, unknown>)[key]
+      : undefined;
+}
+
+function resolveProxyAuth(proxy: unknown): unknown {
+  const readField = makeProxyFieldReader(proxy);
+
+  const proxyUsername = readField("username");
+  const proxyPassword = readField("password");
+  let proxyAuth: unknown = utils.hasOwnProp(proxy, "auth")
+    ? (proxy as Record<string, unknown>)["auth"]
+    : undefined;
+
+  if (proxyUsername) {
+    proxyAuth = proxyUsername + ":" + (proxyPassword || "");
+  }
+
+  if (proxyAuth && typeof proxyAuth === "object") {
+    const authUsername = utils.hasOwnProp(proxyAuth, "username")
+      ? (proxyAuth as Record<string, unknown>)["username"]
+      : undefined;
+    const authPassword = utils.hasOwnProp(proxyAuth, "password")
+      ? (proxyAuth as Record<string, unknown>)["password"]
+      : undefined;
+
+    if (authUsername || authPassword) {
+      proxyAuth = (authUsername || "") + ":" + (authPassword || "");
+    }
+    else {
+      throw new AxiosError(
+        "Invalid proxy authorization",
+        AxiosError.ERR_BAD_OPTION,
+        { proxy } as unknown as InternalAxiosRequestConfig
+      );
+    }
+  }
+
+  return proxyAuth;
+}
+
+function setupHttpsProxy(
+  options: Record<string, unknown>,
+  proxy: unknown,
+  proxyAuth: unknown,
+  configHttpsAgent: unknown
+): void {
+  if (configHttpsAgent instanceof createHttpsProxyAgent.HttpsProxyAgent) {
+    return;
+  }
+  const readField = makeProxyFieldReader(proxy);
+
+  const proxyHost = readField("hostname") || readField("host");
+  const proxyPort = readField("port");
+  const rawProxyProtocol = readField("protocol");
+  /* eslint-disable sonarjs/no-nested-conditional */
+  const normalizedProtocol = rawProxyProtocol
+    ? String(rawProxyProtocol).includes(":")
+      ? String(rawProxyProtocol)
+      : `${rawProxyProtocol}:`
+    : "http:";
+  /* eslint-enable sonarjs/no-nested-conditional */
+  const proxyHostStr = proxyHost ? String(proxyHost) : "";
+  const proxyHostForURL =
+    proxyHostStr &&
+    proxyHostStr.includes(":") &&
+    !proxyHostStr.startsWith("[")
+      ? `[${proxyHostStr}]`
+      : proxyHostStr;
+  const proxyURL = new URL(
+    `${normalizedProtocol}//${proxyHostForURL}${proxyPort ? ":" + String(proxyPort) : ""}`
+  );
+  const agentOptions: Record<string, unknown> = {
+    protocol: proxyURL.protocol,
+    hostname: proxyURL.hostname.replace(/^\[|\]$/g, ""),
+    port: proxyURL.port,
+    auth:
+      proxyAuth && typeof proxyAuth === "string" ? proxyAuth : undefined,
+  };
+  if (proxyURL.protocol === "https:") {
+    agentOptions["ALPNProtocols"] = [ "http/1.1" ];
+  }
+  const tunnelingAgent = getTunnelingAgent(
+    agentOptions,
+    configHttpsAgent as
+      | (http.Agent & { options?: Record<string, unknown>; })
+      | undefined
+  );
+  options["agent"] = tunnelingAgent;
+  if (options["agents"]) {
+    (options["agents"] as Record<string, unknown>)["https"] = tunnelingAgent;
+  }
+}
+
+function setupHttpProxy(
+  options: Record<string, unknown>,
+  proxy: unknown,
+  proxyAuth: unknown,
+  location: string
+): void {
+  if (proxyAuth) {
+    const base64 = Buffer.from(String(proxyAuth), "utf8").toString("base64");
+    (options["headers"] as Record<string, unknown>)["Proxy-Authorization"] =
+      "Basic " + base64;
+  }
+
+  let hasUserHostHeader = false;
+  for (const name of Object.keys(
+    options["headers"] as Record<string, unknown>
+  )) {
+    if (name.toLowerCase() === "host") {
+      hasUserHostHeader = true;
+      break;
+    }
+  }
+  if (!hasUserHostHeader) {
+    (options["headers"] as Record<string, unknown>)["host"] =
+      String(options["hostname"]) +
+      (options["port"] ? ":" + String(options["port"]) : "");
+  }
+
+  const readField = makeProxyFieldReader(proxy);
+
+  const proxyHost = readField("hostname") || readField("host");
+  options["hostname"] = proxyHost;
+  options["host"] = proxyHost;
+  options["port"] = readField("port");
+  options["path"] = location;
+
+  const proxyProtocol = readField("protocol");
+  if (proxyProtocol) {
+    options["protocol"] = String(proxyProtocol).includes(":")
+      ? String(proxyProtocol)
+      : `${proxyProtocol}:`;
+  }
+}
+
+function stripProxyAuthHeaders(options: Record<string, unknown>): void {
+  if (!options["headers"]) return;
+  for (const name of Object.keys(options["headers"])) {
+    if (name.toLowerCase() === "proxy-authorization") {
+      delete (options["headers"] as Record<string, unknown>)[name];
+    }
+  }
+}
+
 /**
  * If the proxy or config afterRedirects functions are defined, call them with the options
  *
@@ -281,197 +430,31 @@ function setProxy(
   let proxy: unknown = configProxy;
   if (!proxy && proxy !== false) {
     const proxyUrl = getProxyForUrl(location);
-    if (proxyUrl) {
-      if (!shouldBypassProxy(location)) {
-        proxy = new URL(proxyUrl);
-      }
+    if (proxyUrl && !shouldBypassProxy(location)) {
+      proxy = new URL(proxyUrl);
     }
   }
-  // On redirect re-invocation, strip any stale Proxy-Authorization header carried
-  // over from the prior request (e.g. new target no longer uses a proxy, or uses
-  // a different proxy). Skip on the initial request so user-supplied headers are
-  // preserved. Header names are case-insensitive, so remove every case variant.
-  if (isRedirect && options["headers"]) {
-    for (const name of Object.keys(options["headers"])) {
-      if (name.toLowerCase() === "proxy-authorization") {
-        delete (options["headers"] as Record<string, unknown>)[name];
-      }
+
+  if (isRedirect) {
+    stripProxyAuthHeaders(options);
+    if (options["agent"] && (options["agent"] as Record<symbol, unknown>)[kAxiosInstalledTunnel]) {
+      options["agent"] = undefined;
     }
   }
-  // Strip any tunneling agent we installed for the previous hop so a redirect
-  // that drops the proxy or crosses an HTTPS↔HTTP boundary doesn't reuse a
-  // stale one. Match on our Symbol marker so a user-supplied HttpsProxyAgent
-  // (which won't carry the marker) is left alone.
-  if (
-    isRedirect &&
-    options["agent"] &&
-    (options["agent"] as Record<symbol, unknown>)[kAxiosInstalledTunnel]
-  ) {
-    options["agent"] = undefined;
-  }
+
   if (proxy) {
-    // Read proxy fields without traversing the prototype chain. URL instances expose
-    // username/password/hostname/host/port/protocol via getters on URL.prototype (so
-    // direct reads are shielded), but plain object proxies — and the `auth` field
-    // (which URL does not expose) — must be guarded so a polluted Object.prototype
-    // (e.g. Object.prototype.auth = { username, password }) cannot inject
-    // attacker-controlled credentials into the Proxy-Authorization header or
-    // redirect proxying to an attacker-controlled host.
-    const isProxyURL = proxy instanceof URL;
-    const readProxyField = (key: string): unknown =>
-      isProxyURL || utils.hasOwnProp(proxy, key)
-        ? (proxy as Record<string, unknown>)[key]
-        : undefined;
-
-    const proxyUsername = readProxyField("username");
-    const proxyPassword = readProxyField("password");
-    let proxyAuth: unknown = utils.hasOwnProp(proxy, "auth")
-      ? (proxy as Record<string, unknown>)["auth"]
-      : undefined;
-
-    // Basic proxy authorization
-    if (proxyUsername) {
-      proxyAuth = proxyUsername + ":" + (proxyPassword || "");
-    }
-
-    if (proxyAuth) {
-      // Support proxy auth object form. Read sub-fields via own-prop checks so a
-      // plain object inheriting from polluted Object.prototype cannot leak creds.
-      const authIsObject = typeof proxyAuth === "object";
-      const authUsername =
-        authIsObject && utils.hasOwnProp(proxyAuth, "username")
-          ? (proxyAuth as Record<string, unknown>)["username"]
-          : undefined;
-      const authPassword =
-        authIsObject && utils.hasOwnProp(proxyAuth, "password")
-          ? (proxyAuth as Record<string, unknown>)["password"]
-          : undefined;
-      const validProxyAuth = Boolean(authUsername || authPassword);
-
-      if (validProxyAuth) {
-        proxyAuth = (authUsername || "") + ":" + (authPassword || "");
-      }
-      else if (authIsObject) {
-        throw new AxiosError(
-          "Invalid proxy authorization",
-          AxiosError.ERR_BAD_OPTION,
-          { proxy } as unknown as InternalAxiosRequestConfig
-        );
-      }
-    }
-
+    const proxyAuth = resolveProxyAuth(proxy);
     const targetIsHttps = isHttps.test(String(options["protocol"]));
-
     if (targetIsHttps) {
-      // CONNECT-tunneling path for HTTPS targets. Preserves end-to-end TLS to
-      // the origin so the proxy cannot inspect the URL, headers, or body — the
-      // behavior already promised by THREATMODEL.md (T-R9). HttpsProxyAgent
-      // sends Proxy-Authorization on the CONNECT request only, never on the
-      // wrapped TLS request, which is why we don't stamp it onto
-      // options.headers here. If the user already supplied an HttpsProxyAgent,
-      // they own tunneling end-to-end and we leave them alone; otherwise we
-      // install our own tunneling agent and forward their TLS options (if any)
-      // so a custom httpsAgent for cert pinning / rejectUnauthorized still
-      // applies to the origin TLS upgrade.
-      if (
-        !(configHttpsAgent instanceof createHttpsProxyAgent.HttpsProxyAgent)
-      ) {
-        const proxyHost = readProxyField("hostname") || readProxyField("host");
-        const proxyPort = readProxyField("port");
-        const rawProxyProtocol = readProxyField("protocol");
-        /* eslint-disable sonarjs/no-nested-conditional */
-        const normalizedProtocol = rawProxyProtocol
-          ? String(rawProxyProtocol).includes(":")
-            ? String(rawProxyProtocol)
-            : `${rawProxyProtocol}:`
-          : "http:";
-        /* eslint-enable sonarjs/no-nested-conditional */
-        // Bracket IPv6 literals for URL parsing; URL.hostname strips the
-        // brackets again on read so the agent receives the raw form.
-        const proxyHostStr = proxyHost ? String(proxyHost) : "";
-        const proxyHostForURL =
-          proxyHostStr &&
-          proxyHostStr.includes(":") &&
-          !proxyHostStr.startsWith("[")
-            ? `[${proxyHostStr}]`
-            : proxyHostStr;
-        const proxyURL = new URL(
-          `${normalizedProtocol}//${proxyHostForURL}${proxyPort ? ":" + String(proxyPort) : ""}`
-        );
-        const agentOptions: Record<string, unknown> = {
-          protocol: proxyURL.protocol,
-          hostname: proxyURL.hostname.replace(/^\[|\]$/g, ""),
-          port: proxyURL.port,
-          auth:
-            proxyAuth && typeof proxyAuth === "string" ? proxyAuth : undefined,
-        };
-        if (proxyURL.protocol === "https:") {
-          agentOptions["ALPNProtocols"] = [ "http/1.1" ];
-        }
-        const tunnelingAgent = getTunnelingAgent(
-          agentOptions,
-          configHttpsAgent as
-            | (http.Agent & { options?: Record<string, unknown>; })
-            | undefined
-        );
-        // Set both: `options.agent` is consumed by the native https.request path
-        // (maxRedirects === 0); `options.agents.https` is consumed by
-        // follow-redirects, which ignores `options.agent` when `options.agents`
-        // is present.
-        options["agent"] = tunnelingAgent;
-        if (options["agents"]) {
-          (options["agents"] as Record<string, unknown>)["https"] =
-            tunnelingAgent;
-        }
-      }
+      setupHttpsProxy(options, proxy, proxyAuth, configHttpsAgent);
     }
     else {
-      // Forward-proxy mode for plaintext HTTP targets. The request line carries
-      // the absolute URL and the proxy sees everything — acceptable for plain
-      // HTTP since the wire was already plaintext.
-      if (proxyAuth) {
-        const base64 = Buffer.from(String(proxyAuth), "utf8").toString(
-          "base64"
-        );
-        (options["headers"] as Record<string, unknown>)["Proxy-Authorization"] =
-          "Basic " + base64;
-      }
-
-      // Preserve a user-supplied Host header (case-insensitive) so callers can override
-      // the value forwarded to the proxy; otherwise default to the request URL's host.
-      let hasUserHostHeader = false;
-      for (const name of Object.keys(
-        options["headers"] as Record<string, unknown>
-      )) {
-        if (name.toLowerCase() === "host") {
-          hasUserHostHeader = true;
-          break;
-        }
-      }
-      if (!hasUserHostHeader) {
-        (options["headers"] as Record<string, unknown>)["host"] =
-          String(options["hostname"]) +
-          (options["port"] ? ":" + String(options["port"]) : "");
-      }
-      const proxyHost = readProxyField("hostname") || readProxyField("host");
-      options["hostname"] = proxyHost;
-      // Replace 'host' since options is not a URL object
-      options["host"] = proxyHost;
-      options["port"] = readProxyField("port");
-      options["path"] = location;
-      const proxyProtocol = readProxyField("protocol");
-      if (proxyProtocol) {
-        options["protocol"] = String(proxyProtocol).includes(":")
-          ? String(proxyProtocol)
-          : `${proxyProtocol}:`;
-      }
+      setupHttpProxy(options, proxy, proxyAuth, location);
     }
   }
 
   (options["beforeRedirects"] as Record<string, unknown>)["proxy"] =
     function beforeRedirect(redirectOptions: unknown) {
-      // Configure proxy for redirected request, passing the original config proxy to apply
-      // the exact same logic as if the redirected request was performed by axios directly.
       setProxy(
         redirectOptions as Record<string, unknown>,
         configProxy,
@@ -609,23 +592,990 @@ const http2Transport = {
   },
 };
 
+type AxiosHeadersExtended = AxiosHeaders & {
+  setContentType: (value: unknown, rewrite?: unknown) => void;
+  setContentLength: (value: unknown, rewrite?: unknown) => void;
+  getContentLength: (matcher?: unknown) => unknown;
+  getContentType: (matcher?: unknown) => unknown;
+  hasContentLength: (matcher?: unknown) => boolean;
+};
+
+function handleDataURI(
+  resolve: (value: unknown) => void,
+  reject: (reason?: unknown) => void,
+  config: InternalAxiosRequestConfig,
+  own: (key: string) => unknown,
+  method: string,
+  maxContentLength: unknown,
+  responseType: unknown,
+  responseEncoding: unknown,
+  fullPath: string
+): boolean {
+  if ((maxContentLength as number) > -1) {
+    const dataUrl = String(own("url") || fullPath || "");
+    const estimated = estimateDataURLDecodedBytes(dataUrl);
+    if (estimated > (maxContentLength as number)) {
+      reject(
+        new AxiosError(
+          "maxContentLength size of " + String(maxContentLength) + " exceeded",
+          AxiosError.ERR_BAD_RESPONSE,
+          config
+        )
+      );
+      return true;
+    }
+  }
+
+  if (method !== "GET") {
+    settle(resolve, reject, {
+      status: 405,
+      statusText: "method not allowed",
+      headers: {},
+      config,
+      data: undefined,
+      request: undefined,
+    });
+    return true;
+  }
+
+  let convertedData: unknown;
+  try {
+    convertedData = fromDataURI(
+      own("url") as string,
+      responseType === "blob",
+      {
+        Blob:
+          config.env &&
+          ((config.env as Record<string, unknown>)["Blob"] as
+            | (new (...args: Array<unknown>) => object)
+            | undefined),
+      }
+    );
+  }
+  catch (err) {
+    throw AxiosError.from(err as Error, AxiosError.ERR_BAD_REQUEST, config);
+  }
+
+  if (responseType === "text") {
+    convertedData = (convertedData as Buffer).toString(
+      responseEncoding as BufferEncoding
+    );
+    if (!responseEncoding || responseEncoding === "utf8") {
+      convertedData = utils.stripBOM(convertedData as string);
+    }
+  }
+  else if (responseType === "stream") {
+    convertedData = stream.Readable.from(convertedData as Iterable<unknown>);
+  }
+
+  settle(resolve, reject, {
+    data: convertedData,
+    status: 200,
+    statusText: "OK",
+    headers: new AxiosHeaders(),
+    config,
+    request: undefined,
+  });
+  return true;
+}
+
+async function applyFormDataHeaders(
+  data: unknown,
+  headers: AxiosHeadersExtended,
+  own: (key: string) => unknown
+): Promise<void> {
+  const dataWithHeaders = data as {
+    getHeaders: () => Record<string, unknown>;
+    getLength: (cb: (err: Error | null, len: number) => void) => void;
+  };
+  setFormDataHeaders(headers, dataWithHeaders.getHeaders(), own("formDataHeaderPolicy"));
+  if (!headers.hasContentLength()) {
+    try {
+      const knownLength = await util.promisify(dataWithHeaders.getLength).call(data);
+      Number.isFinite(knownLength) && knownLength >= 0 && headers.setContentLength(knownLength);
+      /*eslint no-empty:0*/
+    }
+    catch {}
+  }
+}
+
+function toBufferData(data: unknown): { data: Buffer | null; invalid: boolean; } {
+  if (Buffer.isBuffer(data)) return { data, invalid: false };
+  if (utils.isArrayBuffer(data)) return { data: Buffer.from(new Uint8Array(data as ArrayBuffer)), invalid: false };
+  if (utils.isString(data)) return { data: Buffer.from(data as string, "utf-8"), invalid: false };
+  return { data: null, invalid: true };
+}
+
+async function prepareRequestData(
+  data: unknown,
+  headers: AxiosHeadersExtended,
+  own: (key: string) => unknown,
+  maxBodyLength: unknown,
+  reject: (reason?: unknown) => void,
+  config: InternalAxiosRequestConfig
+): Promise<{ data: unknown; rejected: boolean; }> {
+  if (utils.isSpecCompliantForm(data)) {
+    const userBoundary = headers.getContentType(/boundary=([-\w]{10,70})/i);
+    data = formDataToStream(
+      data,
+      (formHeaders: Record<string, unknown>) => {
+        headers.set(formHeaders);
+      },
+      {
+        tag: `axios-${VERSION}-boundary`,
+        boundary: (userBoundary &&
+          (userBoundary as RegExpMatchArray)[1]) as string | undefined,
+      }
+    );
+  }
+  else if (
+    utils.isFormData(data) &&
+    utils.isFunction((data as Record<string, unknown>)["getHeaders"])
+  ) {
+    await applyFormDataHeaders(data, headers, own);
+  }
+  else if (utils.isBlob(data) || utils.isFile(data)) {
+    const blobData = data as { size: number; type: string; };
+    blobData.size && headers.setContentType(blobData.type || "application/octet-stream");
+    headers.setContentLength(blobData.size || 0);
+    data = stream.Readable.from(readBlob(data as Parameters<typeof readBlob>[0]));
+  }
+  else if (data && !utils.isStream(data)) {
+    const { data: buf, invalid } = toBufferData(data);
+    if (invalid) {
+      reject(
+        new AxiosError(
+          "Data after transformation must be a string, an ArrayBuffer, a Buffer, or a Stream",
+          AxiosError.ERR_BAD_REQUEST,
+          config
+        )
+      );
+      return { data, rejected: true };
+    }
+    data = buf;
+    headers.setContentLength((data as Buffer).length, false);
+    if (
+      (maxBodyLength as number) > -1 &&
+      (data as Buffer).length > (maxBodyLength as number)
+    ) {
+      reject(
+        new AxiosError(
+          "Request body larger than maxBodyLength limit",
+          AxiosError.ERR_BAD_REQUEST,
+          config
+        )
+      );
+      return { data, rejected: true };
+    }
+  }
+  return { data, rejected: false };
+}
+
+type TransportType = {
+  request: (options: unknown, cb: (res: unknown) => void) => unknown;
+};
+
+function setupSensitiveHeaders(
+  options: Record<string, unknown>,
+  own: (key: string) => unknown,
+  reject: (reason?: unknown) => void,
+  config: InternalAxiosRequestConfig
+): boolean {
+  const sensitiveHeaders = own("sensitiveHeaders");
+  if (sensitiveHeaders == null) return false;
+  if (!utils.isArray(sensitiveHeaders)) {
+    reject(new AxiosError("sensitiveHeaders must be an array of strings", AxiosError.ERR_BAD_OPTION_VALUE, config));
+    return true;
+  }
+  const sensitiveSet = new Set<string>();
+  for (const header of sensitiveHeaders as Array<unknown>) {
+    if (!utils.isString(header)) {
+      reject(new AxiosError("sensitiveHeaders must be an array of strings", AxiosError.ERR_BAD_OPTION_VALUE, config));
+      return true;
+    }
+    sensitiveSet.add((header as string).toLowerCase());
+  }
+  if (sensitiveSet.size) {
+    options["sensitiveHeaders"] = Array.from(sensitiveSet);
+    (options["beforeRedirects"] as Record<string, unknown>)["sensitiveHeaders"] =
+      function beforeRedirectSensitiveHeaders(redirectOptions: unknown, requestDetails: unknown) {
+        if (!isSameOriginRedirect(
+          redirectOptions as Record<string, unknown>,
+          requestDetails as { url?: string; } | undefined
+        )) {
+          stripMatchingHeaders(
+            (redirectOptions as Record<string, unknown>)["headers"] as Record<string, unknown> | undefined,
+            sensitiveSet
+          );
+        }
+      };
+  }
+  return false;
+}
+
+function setupAuthRedirect(
+  options: Record<string, unknown>,
+  auth: string,
+  requestOrigin: string
+): void {
+  const authToRestore = auth;
+  (options["beforeRedirects"] as Record<string, unknown>)["auth"] =
+    function beforeRedirectAuth(redirectOptions: unknown) {
+      try {
+        if (new URL(String((redirectOptions as Record<string, unknown>)["href"])).origin === requestOrigin) {
+          (redirectOptions as Record<string, unknown>)["auth"] = authToRestore;
+        }
+      }
+      catch {
+        // ignore malformed URL: leaving auth stripped is fail-safe
+      }
+    };
+}
+
+function setupFollowRedirectsTransport(
+  options: Record<string, unknown>,
+  own: (key: string) => unknown,
+  isHttpsRequest: boolean,
+  maxRedirects: unknown,
+  auth: string | undefined,
+  parsed: URL,
+  reject: (reason?: unknown) => void,
+  config: InternalAxiosRequestConfig
+): { transport: TransportType; rejected: boolean; } {
+  options["sensitiveHeaders"] = [];
+  if (maxRedirects) options["maxRedirects"] = maxRedirects;
+  const configBeforeRedirect = own("beforeRedirect");
+  if (configBeforeRedirect) {
+    (options["beforeRedirects"] as Record<string, unknown>)["config"] = configBeforeRedirect;
+  }
+  if (auth) setupAuthRedirect(options, auth, parsed.origin);
+  if (setupSensitiveHeaders(options, own, reject, config)) {
+    return { transport: http2Transport, rejected: true };
+  }
+  return { transport: (isHttpsRequest ? httpsFollow : httpFollow) as TransportType, rejected: false };
+}
+
+function selectTransport(
+  options: Record<string, unknown>,
+  own: (key: string) => unknown,
+  isHttp2: boolean,
+  isHttpsRequest: boolean,
+  maxRedirects: unknown,
+  auth: string | undefined,
+  parsed: URL,
+  reject: (reason?: unknown) => void,
+  config: InternalAxiosRequestConfig
+): {
+  transport: TransportType;
+  isNativeTransport: boolean;
+  transportEnforcesMaxBodyLength: boolean;
+  rejected: boolean;
+} {
+  if (isHttp2) {
+    return { transport: http2Transport, isNativeTransport: false, transportEnforcesMaxBodyLength: false, rejected: false };
+  }
+
+  const configTransport = own("transport");
+  if (configTransport) {
+    return { transport: configTransport as TransportType, isNativeTransport: false, transportEnforcesMaxBodyLength: false, rejected: false };
+  }
+
+  if (maxRedirects === 0) {
+    return {
+      transport: (isHttpsRequest ? https : http) as TransportType,
+      isNativeTransport: true,
+      transportEnforcesMaxBodyLength: false,
+      rejected: false,
+    };
+  }
+
+  const { transport, rejected } = setupFollowRedirectsTransport(options, own, isHttpsRequest, maxRedirects, auth, parsed, reject, config);
+  return { transport, isNativeTransport: false, transportEnforcesMaxBodyLength: !rejected, rejected };
+}
+
+interface ResponseContext {
+  req: unknown;
+  rejected: { value: boolean; };
+  abort: (reason?: unknown) => void;
+  abortEmitter: EventEmitter;
+  config: InternalAxiosRequestConfig;
+  decompress: unknown;
+  method: string;
+  onDownloadProgress: unknown;
+  maxDownloadRate: number | undefined;
+  responseType: unknown;
+  responseEncoding: unknown;
+  maxContentLength: unknown;
+  resolve: (value: unknown) => void;
+  reject: (reason?: unknown) => void;
+  clearConnectPhaseTimer: () => void;
+}
+
+function handleBufferedResponse(
+  responseStream: stream.Stream | stream.Readable,
+  ctx: ResponseContext,
+  response: { status: number; statusText: string; headers: AxiosHeaders; config: InternalAxiosRequestConfig; request: unknown; data: unknown; },
+  lastRequest: unknown
+): void {
+  const responseBuffer: Array<Buffer> = [];
+  let totalResponseBytes = 0;
+
+  responseStream.on("data", function handleStreamData(chunk: Buffer) {
+    responseBuffer.push(chunk);
+    totalResponseBytes += chunk.length;
+    if ((ctx.maxContentLength as number) > -1 && totalResponseBytes > (ctx.maxContentLength as number)) {
+      ctx.rejected.value = true;
+      (responseStream as stream.Readable).destroy();
+      ctx.abort(new AxiosError(
+        "maxContentLength size of " + String(ctx.maxContentLength) + " exceeded",
+        AxiosError.ERR_BAD_RESPONSE,
+        ctx.config,
+        lastRequest
+      ));
+    }
+  });
+
+  responseStream.on("aborted", function handlerStreamAborted() {
+    if (ctx.rejected.value) return;
+    const err = new AxiosError("stream has been aborted", AxiosError.ERR_BAD_RESPONSE, ctx.config, lastRequest, response);
+    (responseStream as stream.Readable).destroy(err);
+    ctx.reject(err);
+  });
+
+  responseStream.on("error", function handleStreamError(err: Error) {
+    if (ctx.rejected.value) return;
+    ctx.reject(AxiosError.from(err, undefined, ctx.config, lastRequest, response));
+  });
+
+  responseStream.on("end", function handleStreamEnd() {
+    try {
+      let responseData: Buffer | string =
+        responseBuffer.length === 1
+          ? responseBuffer[0]!
+          : Buffer.concat(responseBuffer);
+      if (ctx.responseType !== "arraybuffer") {
+        responseData = responseData.toString(ctx.responseEncoding as BufferEncoding);
+        if (!ctx.responseEncoding || ctx.responseEncoding === "utf8") {
+          responseData = utils.stripBOM(responseData);
+        }
+      }
+      response.data = responseData;
+    }
+    catch (err) {
+      return ctx.reject(AxiosError.from(err as Error, undefined, ctx.config, response.request, response));
+    }
+    settle(ctx.resolve, ctx.reject, response);
+  });
+}
+
+function makeHandleResponse(ctx: ResponseContext): (res: unknown) => void {
+  return function handleResponse(res: unknown): void {
+    ctx.clearConnectPhaseTimer();
+
+    const resObj = res as http.IncomingMessage & { req?: http.ClientRequest; };
+    if ((ctx.req as http.ClientRequest).destroyed) return;
+
+    const streams: Array<stream.Stream | stream.Readable> = [ resObj ];
+    const responseLength = utils.toFiniteNumber(resObj.headers["content-length"]);
+
+    if (ctx.onDownloadProgress || ctx.maxDownloadRate) {
+      const transformStream = new AxiosTransformStream({ maxRate: utils.toFiniteNumber(ctx.maxDownloadRate) });
+      ctx.onDownloadProgress &&
+        transformStream.on(
+          "progress",
+          flushOnFinish(
+            transformStream,
+            progressEventDecorator(
+              responseLength,
+              progressEventReducer(asyncDecorator(ctx.onDownloadProgress as (...args: Array<unknown>) => unknown), true, 3)
+            )
+          ) as (...args: Array<unknown>) => void
+        );
+      streams.push(transformStream);
+    }
+
+    let responseStream: stream.Stream | stream.Readable = resObj;
+    const lastRequest = resObj.req || ctx.req;
+
+    if (ctx.decompress !== false && resObj.headers["content-encoding"]) {
+      applyDecompression(streams, resObj, ctx.method);
+    }
+
+    responseStream = streams.length > 1
+      ? (stream.pipeline as unknown as (streams: Array<unknown>, cb: unknown) => stream.Readable)(streams, utils.noop)
+      : streams[0]!;
+
+    const response = {
+      status: resObj.statusCode ?? 0,
+      statusText: resObj.statusMessage ?? "",
+      headers: new AxiosHeaders(resObj.headers),
+      config: ctx.config,
+      request: lastRequest,
+      data: undefined as unknown,
+    };
+
+    if (ctx.responseType === "stream") {
+      if ((ctx.maxContentLength as number) > -1) {
+        const limit = ctx.maxContentLength as number;
+        const source = responseStream;
+        async function* enforceMaxContentLength() {
+          let totalResponseBytes = 0;
+          for await (const chunk of source as unknown as AsyncIterable<Buffer>) {
+            totalResponseBytes += chunk.length;
+            if (totalResponseBytes > limit) {
+              throw new AxiosError(
+                "maxContentLength size of " + limit + " exceeded",
+                AxiosError.ERR_BAD_RESPONSE,
+                ctx.config,
+                lastRequest
+              );
+            }
+            yield chunk;
+          }
+        }
+        responseStream = stream.Readable.from(enforceMaxContentLength(), { objectMode: false });
+      }
+      response.data = responseStream;
+      settle(ctx.resolve, ctx.reject, response);
+    }
+    else {
+      handleBufferedResponse(responseStream, ctx, response, lastRequest);
+    }
+
+    ctx.abortEmitter.once("abort", (err: unknown) => {
+      const readableStream = responseStream as stream.Readable;
+      if (!readableStream.destroyed) {
+        readableStream.emit("error", err);
+        readableStream.destroy();
+      }
+    });
+  };
+}
+
+type LookupFn = (
+  hostname: string,
+  opt: Record<string, unknown>,
+  cb: (err: Error | null, ...args: Array<unknown>) => void
+) => void;
+
+interface AbortContext {
+  abortEmitter: EventEmitter;
+  config: InternalAxiosRequestConfig;
+  req: unknown;
+}
+
+function makeAbort(ctx: AbortContext): (reason?: unknown) => void {
+  return function abort(reason?: unknown): void {
+    try {
+      ctx.abortEmitter.emit(
+        "abort",
+        !reason || (reason as Record<string, unknown>)["type"]
+          ? new CanceledError(null, ctx.config, ctx.req)
+          : reason
+      );
+    }
+    catch {
+      // ignore emit errors
+    }
+  };
+}
+
+interface OnFinishedContext {
+  clearConnectPhaseTimer: () => void;
+  config: InternalAxiosRequestConfig;
+  abort: (reason?: unknown) => void;
+  abortEmitter: EventEmitter;
+}
+
+function makeOnFinished(ctx: OnFinishedContext): () => void {
+  return (): void => {
+    ctx.clearConnectPhaseTimer();
+    if (ctx.config.cancelToken) {
+      ctx.config.cancelToken.unsubscribe(ctx.abort);
+    }
+    if (ctx.config.signal) {
+      ctx.config.signal.removeEventListener &&
+        ctx.config.signal.removeEventListener("abort", ctx.abort);
+    }
+    ctx.abortEmitter.removeAllListeners();
+  };
+}
+
+function makeOnDoneHandler(
+  isDone: { value: boolean | undefined; },
+  rejected: { value: boolean; },
+  clearConnectPhaseTimer: () => void,
+  onFinished: () => void
+): (response: unknown, isRejected?: boolean) => void {
+  return (response: unknown, isRejected?: boolean): void => {
+    isDone.value = true;
+    clearConnectPhaseTimer();
+    if (isRejected) {
+      rejected.value = true;
+      onFinished();
+      return;
+    }
+    const responseData = (response as Record<string, unknown>)["data"];
+    if (responseData instanceof stream.Readable || responseData instanceof stream.Duplex) {
+      const offListeners = stream.finished(responseData, () => {
+        offListeners();
+        onFinished();
+      });
+    }
+    else {
+      onFinished();
+    }
+  };
+}
+
+function buildRequestOptions(
+  own: (key: string) => unknown,
+  path: string,
+  method: string,
+  headers: AxiosHeadersExtended,
+  httpAgent: unknown,
+  httpsAgent: unknown,
+  auth: string | undefined,
+  protocol: string,
+  family: unknown,
+  http2Options: unknown,
+  lookup: unknown,
+  maxBodyLength: unknown,
+  parsed: URL,
+  reject: (reason?: unknown) => void,
+  config: InternalAxiosRequestConfig
+): { options: Record<string, unknown> | null; } {
+  const options: Record<string, unknown> = Object.assign(
+    Object.create(null) as object,
+    {
+      path,
+      method: method,
+      headers: toByteStringHeaderObject(headers),
+      agents: { http: httpAgent, https: httpsAgent },
+      auth,
+      protocol,
+      family,
+      beforeRedirect: dispatchBeforeRedirect,
+      beforeRedirects: Object.create(null) as Record<string, unknown>,
+      http2Options,
+    }
+  );
+
+  !utils.isUndefined(lookup) && (options["lookup"] = lookup);
+
+  const socketPath = own("socketPath");
+  if (socketPath) {
+    if (validateSocketPath(socketPath, own, reject, config)) return { options: null };
+    options["socketPath"] = socketPath;
+  }
+  else {
+    options["hostname"] = parsed.hostname.startsWith("[")
+      ? parsed.hostname.slice(1, -1)
+      : parsed.hostname;
+    options["port"] = parsed.port;
+    setProxy(
+      options,
+      own("proxy"),
+      protocol + "//" + parsed.hostname + (parsed.port ? ":" + parsed.port : "") + String(options["path"]),
+      false,
+      httpsAgent
+    );
+  }
+
+  options["maxBodyLength"] = (maxBodyLength as number) > -1 ? maxBodyLength : Infinity;
+  options["insecureHTTPParser"] = Boolean(own("insecureHTTPParser"));
+
+  return { options };
+}
+
+function attachReqDestroyOnAbort(abortEmitter: EventEmitter, ctx: AbortContext): void {
+  abortEmitter.once("abort", (err: unknown) => {
+    const reqObj = ctx.req as { close?: () => void; destroy: (err?: unknown) => void; };
+    if (reqObj.close) reqObj.close();
+    else reqObj.destroy(err);
+  });
+}
+
+function resolveMaxRates(maxRate: unknown): { maxUploadRate: number | undefined; maxDownloadRate: number | undefined; } {
+  if (utils.isArray(maxRate)) {
+    return { maxUploadRate: maxRate[0] as number, maxDownloadRate: maxRate[1] as number };
+  }
+  return { maxUploadRate: maxRate as number, maxDownloadRate: maxRate as number };
+}
+
+function buildAuth(own: (key: string) => unknown, parsed: URL): string | undefined {
+  const configAuth = own("auth");
+  if (configAuth) {
+    const username = String(utils.getSafeProp(configAuth, "username") || "");
+    const password = String(utils.getSafeProp(configAuth, "password") || "");
+    return username + ":" + password;
+  }
+  if (parsed.username || parsed.password) {
+    const urlUsername = decodeURIComponentSafe(parsed.username);
+    const urlPassword = decodeURIComponentSafe(parsed.password);
+    return String(urlUsername) + ":" + String(urlPassword);
+  }
+  return undefined;
+}
+
+function buildRequestPath(
+  own: (key: string) => unknown,
+  parsed: URL,
+  reject: (reason?: unknown) => void,
+  config: InternalAxiosRequestConfig
+): { path: string; rejected: boolean; } {
+  try {
+    const path = buildURL(
+      parsed.pathname + parsed.search,
+      own("params"),
+      own("paramsSerializer")
+    ).replace(/^\?/, "");
+    return { path, rejected: false };
+  }
+  catch (err) {
+    const customErr = new Error((err as Error).message) as Error & {
+      config?: unknown;
+      url?: unknown;
+      exists?: boolean;
+    };
+    customErr.config = config;
+    customErr.url = own("url");
+    customErr.exists = true;
+    reject(customErr);
+    return { path: "", rejected: true };
+  }
+}
+
+function setupCancellation(
+  config: InternalAxiosRequestConfig,
+  abort: (reason?: unknown) => void
+): void {
+  if (!config.cancelToken && !config.signal) return;
+  config.cancelToken && config.cancelToken.subscribe(abort);
+  if (config.signal) {
+    config.signal.aborted
+      ? abort()
+      : config.signal.addEventListener && config.signal.addEventListener("abort", abort);
+  }
+}
+
+function resolveDefaultAgent(
+  options: Record<string, unknown>,
+  isHttpsRequest: boolean,
+  httpsAgent: unknown,
+  httpAgent: unknown
+): void {
+  if (options["agent"] == null) {
+    options["agent"] = isHttpsRequest ? httpsAgent : httpAgent;
+  }
+}
+
+function resolveAcceptEncoding(transitional: typeof import("../defaults/transitional.js").default): string {
+  return utils.hasOwnProp(transitional, "advertiseZstdAcceptEncoding") &&
+    (transitional as Record<string, unknown>)["advertiseZstdAcceptEncoding"] === true
+    ? ACCEPT_ENCODING_WITH_ZSTD
+    : ACCEPT_ENCODING;
+}
+
+function applyUploadProgressIfNeeded(
+  data: unknown,
+  onUploadProgress: unknown,
+  maxUploadRate: number | undefined,
+  contentLength: number | null
+): unknown {
+  return (data && (onUploadProgress || maxUploadRate))
+    ? applyUploadProgress(data, onUploadProgress, maxUploadRate, contentLength)
+    : data;
+}
+
+function applyUploadProgress(
+  data: unknown,
+  onUploadProgress: unknown,
+  maxUploadRate: number | undefined,
+  contentLength: number | null
+): unknown {
+  if (!utils.isStream(data)) {
+    data = stream.Readable.from(data as Iterable<unknown>, { objectMode: false });
+  }
+  data = (
+    stream.pipeline as unknown as (streams: Array<unknown>, cb: unknown) => stream.Readable
+  )([data, new AxiosTransformStream({ maxRate: utils.toFiniteNumber(maxUploadRate) })], utils.noop);
+  onUploadProgress &&
+    (data as stream.Stream).on(
+      "progress",
+      flushOnFinish(
+        data as stream.Stream,
+        progressEventDecorator(
+          contentLength,
+          progressEventReducer(asyncDecorator(onUploadProgress as (...args: Array<unknown>) => unknown), false, 3)
+        )
+      ) as (...args: Array<unknown>) => void
+    );
+  return data;
+}
+
+function validateSocketPath(
+  socketPath: unknown,
+  own: (key: string) => unknown,
+  reject: (reason?: unknown) => void,
+  config: InternalAxiosRequestConfig
+): boolean {
+  if (typeof socketPath !== "string") {
+    reject(new AxiosError("socketPath must be a string", AxiosError.ERR_BAD_OPTION_VALUE, config));
+    return true;
+  }
+  const allowedSocketPaths = own("allowedSocketPaths");
+  if (allowedSocketPaths == null) return false;
+  const allowed = Array.isArray(allowedSocketPaths)
+    ? (allowedSocketPaths as Array<string>)
+    : [ allowedSocketPaths as string ];
+  const resolvedSocket = resolvePath(socketPath);
+  const isAllowed = allowed.some(
+    (entry: unknown) => typeof entry === "string" && resolvePath(entry) === resolvedSocket
+  );
+  if (!isAllowed) {
+    reject(new AxiosError(`socketPath "${socketPath}" is not permitted by allowedSocketPaths`, AxiosError.ERR_BAD_OPTION_VALUE, config));
+    return true;
+  }
+  return false;
+}
+
+function resolveHttpVersion(own: (key: string) => unknown, config: InternalAxiosRequestConfig): number {
+  let httpVersion: unknown = own("httpVersion");
+  if (httpVersion === undefined) httpVersion = 1;
+  const v = Number(httpVersion);
+  if (Number.isNaN(v)) {
+    throw TypeError(
+      `Invalid protocol version: '${String((config as unknown as Record<string, unknown>)["httpVersion"])}' is not a number`
+    );
+  }
+  if (v !== 1 && v !== 2) throw TypeError(`Unsupported protocol version '${v}'`);
+  return v;
+}
+
+function clearConnectPhaseTimerRef(ref: { value: ReturnType<typeof setTimeout> | undefined }): void {
+  if (ref.value) {
+    clearTimeout(ref.value);
+    ref.value = undefined;
+  }
+}
+
+function makeTimeoutError(
+  own: (key: string) => unknown,
+  transitional: typeof import("../defaults/transitional.js").default,
+  config: InternalAxiosRequestConfig,
+  getReq: () => unknown
+): AxiosError {
+  const configTimeout = own("timeout");
+  const timeoutMsg = configTimeout
+    ? "timeout of " + String(configTimeout) + "ms exceeded"
+    : "timeout exceeded";
+  const customMsg = own("timeoutErrorMessage");
+  return new AxiosError(
+    customMsg ? String(customMsg) : timeoutMsg,
+    transitional.clarifyTimeoutError ? AxiosError.ETIMEDOUT : AxiosError.ECONNABORTED,
+    config,
+    getReq()
+  );
+}
+
+function setupRequestTimeout(
+  req: unknown,
+  own: (key: string) => unknown,
+  abort: (reason?: unknown) => void,
+  transitional: typeof import("../defaults/transitional.js").default,
+  isDone: { value: boolean | undefined; },
+  isNativeTransport: boolean,
+  config: InternalAxiosRequestConfig,
+  abortCtx: AbortContext
+): { connectPhaseTimer: ReturnType<typeof setTimeout> | undefined; aborted: boolean; } {
+  const configTimeout = own("timeout");
+  if (!configTimeout) {
+    (req as http.ClientRequest).setTimeout(0);
+    return { connectPhaseTimer: undefined, aborted: false };
+  }
+  const timeout = parseInt(String(configTimeout), 10);
+  if (Number.isNaN(timeout)) {
+    abort(new AxiosError("error trying to parse `config.timeout` to int", AxiosError.ERR_BAD_OPTION_VALUE, config, req));
+    return { connectPhaseTimer: undefined, aborted: true };
+  }
+  const handleTimeout = (): void => {
+    if (isDone.value) return;
+    abort(makeTimeoutError(own, transitional, config, () => abortCtx.req));
+  };
+  let connectPhaseTimer: ReturnType<typeof setTimeout> | undefined;
+  if (isNativeTransport && timeout > 0) {
+    connectPhaseTimer = setTimeout(handleTimeout, timeout);
+  }
+  (req as http.ClientRequest).setTimeout(timeout, handleTimeout);
+  return { connectPhaseTimer, aborted: false };
+}
+
+function wrapLookup(lookup: unknown): LookupFn {
+  const _lookup = callbackify(
+    lookup as (...args: Array<unknown>) => unknown,
+    (value: unknown) =>
+      utils.isArray(value) ? (value as Array<unknown>) : [ value ]
+  ) as LookupFn;
+
+  return function wrappedLookup(
+    hostname: string,
+    opt: Record<string, unknown>,
+    cb: (err: Error | null, ...args: Array<unknown>) => void
+  ) {
+    _lookup(hostname, opt, (err: Error | null, arg0: unknown, arg1: unknown) => {
+      if (err) return cb(err);
+      const addresses = utils.isArray(arg0)
+        ? (arg0 as Array<unknown>).map((addr: unknown) => buildAddressEntry(addr))
+        : [ buildAddressEntry(arg0, arg1) ];
+      opt["all"] ? cb(null, addresses) : cb(null, addresses[0]!.address, addresses[0]!.family);
+    });
+  };
+}
+
+function setupSocketTracking(
+  req: unknown,
+  boundSockets: Set<net.Socket & Record<symbol, unknown>>,
+  clearConnectPhaseTimer: () => void
+): void {
+  (req as http.ClientRequest).on("socket", function handleRequestSocket(socket: net.Socket) {
+    socket.setKeepAlive(true, 1000 * 60);
+    const s = socket as net.Socket & Record<symbol, unknown>;
+    if (!s[kAxiosSocketListener]) {
+      socket.on("error", function handleSocketError(err: Error) {
+        const current = s[kAxiosCurrentReq] as (http.ClientRequest & { destroyed: boolean; }) | null;
+        if (current && !current.destroyed) {
+          current.destroy(err);
+        }
+      });
+      s[kAxiosSocketListener] = true;
+    }
+    s[kAxiosCurrentReq] = req;
+    boundSockets.add(s);
+  });
+
+  (req as http.ClientRequest).once("close", function clearCurrentReq() {
+    clearConnectPhaseTimer();
+    for (const socket of boundSockets) {
+      if (socket[kAxiosCurrentReq] === req) {
+        socket[kAxiosCurrentReq] = null;
+      }
+    }
+    boundSockets.clear();
+  });
+}
+
+function pipeStreamData(
+  data: unknown,
+  req: unknown,
+  abort: (reason?: unknown) => void,
+  maxBodyLength: unknown,
+  transportEnforcesMaxBodyLength: boolean,
+  config: InternalAxiosRequestConfig
+): void {
+  let ended = false;
+  let errored = false;
+
+  (data as stream.Readable).on("end", () => { ended = true; });
+  (data as stream.Readable).once("error", (err: Error) => {
+    errored = true;
+    (req as http.ClientRequest).destroy(err);
+  });
+  (data as stream.Readable).on("close", () => {
+    if (!ended && !errored) {
+      abort(new CanceledError("Request stream has been aborted", config, req));
+    }
+  });
+
+  let uploadStream: stream.Stream = data as stream.Readable;
+  if ((maxBodyLength as number) > -1 && !transportEnforcesMaxBodyLength) {
+    const limit = maxBodyLength as number;
+    let bytesSent = 0;
+    uploadStream = (
+      stream.pipeline as unknown as (streams: Array<unknown>, cb: unknown) => stream.Readable
+    )(
+      [
+        data,
+        new stream.Transform({
+          transform(chunk: Buffer, _enc: BufferEncoding, cb: (err?: Error | null, data?: Buffer) => void) {
+            bytesSent += chunk.length;
+            if (bytesSent > limit) {
+              return cb(new AxiosError("Request body larger than maxBodyLength limit", AxiosError.ERR_BAD_REQUEST, config, req));
+            }
+            cb(null, chunk);
+          },
+        }),
+      ],
+      utils.noop
+    );
+    uploadStream.on("error", (err: Error) => {
+      const reqObj = req as http.ClientRequest;
+      if (!reqObj.destroyed) reqObj.destroy(err);
+    });
+  }
+  (uploadStream as stream.Readable).pipe(req as http.ClientRequest);
+}
+
+function applyDecompression(
+  streams: Array<stream.Stream | stream.Readable>,
+  resObj: http.IncomingMessage,
+  method: string
+): void {
+  if (method === "HEAD" || resObj.statusCode === 204) {
+    delete resObj.headers["content-encoding"];
+    return;
+  }
+  switch ((resObj.headers["content-encoding"] || "").toLowerCase()) {
+    /*eslint default-case:0*/
+    case "gzip":
+    case "x-gzip":
+    case "compress":
+    case "x-compress":
+      streams.push(zlib.createUnzip(zlibOptions));
+      delete resObj.headers["content-encoding"];
+      break;
+    case "deflate":
+      streams.push(new ZlibHeaderTransformStream());
+      streams.push(zlib.createUnzip(zlibOptions));
+      delete resObj.headers["content-encoding"];
+      break;
+    case "br":
+      if (isBrotliSupported) {
+        streams.push(zlib.createBrotliDecompress(brotliOptions));
+        delete resObj.headers["content-encoding"];
+      }
+      break;
+    case "zstd":
+      if (isZstdSupported) {
+        streams.push(
+          (
+            zlib as unknown as Record<
+              string,
+              (opts: unknown) => stream.Transform
+            >
+          )["createZstdDecompress"]!(zstdOptions)
+        );
+        delete resObj.headers["content-encoding"];
+      }
+      break;
+  }
+}
+
 /*eslint consistent-return:0*/
 export default isHttpAdapterSupported &&
   async function httpAdapter(config: InternalAxiosRequestConfig) {
+    // Read config pollution-safely: own properties and members inherited from
+    // a non-Object.prototype source (e.g. an Object.create(defaults) template)
+    // are honored, but values injected onto a polluted Object.prototype are
+    // ignored. All behavior-affecting reads in this adapter go through own()
+    // so the protection boundary stays consistent.
+    const own = (key: string): unknown => utils.getSafeProp(config, key);
     return wrapAsync(
       async function dispatchHttpRequest(resolve, reject, onDone) {
-        // Read config pollution-safely: own properties and members inherited from
-        // a non-Object.prototype source (e.g. an Object.create(defaults) template)
-        // are honored, but values injected onto a polluted Object.prototype are
-        // ignored. All behavior-affecting reads in this adapter go through own()
-        // so the protection boundary stays consistent.
-        const own = (key: string): unknown => utils.getSafeProp(config, key);
         const transitional = own("transitional") as typeof transitionalDefaults;
         let data: unknown = own("data");
         let lookup: unknown = own("lookup");
         let family: unknown = own("family");
-        let httpVersion: unknown = own("httpVersion");
-        if (httpVersion === undefined) httpVersion = 1;
         const http2Options: unknown = own("http2Options");
         const responseType: unknown = own("responseType");
         const responseEncoding: unknown = own("responseEncoding");
@@ -636,160 +1586,30 @@ export default isHttpAdapterSupported &&
         const maxBodyLength: unknown = own("maxBodyLength");
         const maxContentLength: unknown = own("maxContentLength");
         const decompress: unknown = own("decompress");
-        let isDone: boolean | undefined;
-        let rejected = false;
+        const isDone = { value: undefined as boolean | undefined };
+        const rejected = { value: false };
         let req: unknown;
-        let connectPhaseTimer: ReturnType<typeof setTimeout> | undefined;
+        const connectPhaseTimer = { value: undefined as ReturnType<typeof setTimeout> | undefined };
 
-        httpVersion = Number(httpVersion);
-
-        if (Number.isNaN(httpVersion)) {
-          throw TypeError(
-            `Invalid protocol version: '${String((config as unknown as Record<string, unknown>)["httpVersion"])}' is not a number`
-          );
-        }
-
-        if (httpVersion !== 1 && httpVersion !== 2) {
-          throw TypeError(`Unsupported protocol version '${httpVersion}'`);
-        }
-
+        const httpVersion = resolveHttpVersion(own, config);
         const isHttp2 = httpVersion === 2;
 
         if (lookup) {
-          const _lookup = callbackify(
-            lookup as (...args: Array<unknown>) => unknown,
-            (value: unknown) =>
-              utils.isArray(value) ? (value as Array<unknown>) : [ value ]
-          ) as (
-            hostname: string,
-            opt: unknown,
-            cb: (err: Error | null, ...args: Array<unknown>) => void
-          ) => void;
           // hotfix to support opt.all option which is required for node 20.x
-
-          lookup = (
-            hostname: string,
-            opt: Record<string, unknown>,
-            cb: (err: Error | null, ...args: Array<unknown>) => void
-          ) => {
-            _lookup(
-              hostname,
-              opt,
-              (err: Error | null, arg0: unknown, arg1: unknown) => {
-                if (err) {
-                  return cb(err);
-                }
-
-                /* eslint-disable sonarjs/no-nested-functions */
-                const addresses = utils.isArray(arg0)
-                  ? (arg0 as Array<unknown>).map((addr: unknown) =>
-                    buildAddressEntry(addr)
-                  )
-                  : [ buildAddressEntry(arg0, arg1) ];
-                /* eslint-enable sonarjs/no-nested-functions */
-
-                opt["all"]
-                  ? cb(null, addresses)
-                  : cb(null, addresses[0]!.address, addresses[0]!.family);
-              }
-            );
-          };
+          lookup = wrapLookup(lookup);
         }
 
         const abortEmitter = new EventEmitter();
+        const abortCtx: AbortContext = { abortEmitter, config, req };
+        const abort = makeAbort(abortCtx);
 
-        function abort(reason?: unknown): void {
-          try {
-            abortEmitter.emit(
-              "abort",
-              !reason || (reason as Record<string, unknown>)["type"]
-                ? new CanceledError(null, config, req)
-                : reason
-            );
-          }
-          catch {
-            // ignore emit errors
-          }
-        }
-
-        function clearConnectPhaseTimer(): void {
-          if (connectPhaseTimer) {
-            clearTimeout(connectPhaseTimer);
-            connectPhaseTimer = undefined;
-          }
-        }
-
-        function createTimeoutError(): AxiosError {
-          const configTimeout = own("timeout");
-          let timeoutErrorMessage = configTimeout
-            ? "timeout of " + String(configTimeout) + "ms exceeded"
-            : "timeout exceeded";
-          const configTimeoutErrorMessage = own("timeoutErrorMessage");
-          if (configTimeoutErrorMessage) {
-            timeoutErrorMessage = String(configTimeoutErrorMessage);
-          }
-          return new AxiosError(
-            timeoutErrorMessage,
-            transitional.clarifyTimeoutError
-              ? AxiosError.ETIMEDOUT
-              : AxiosError.ECONNABORTED,
-            config,
-            req
-          );
-        }
+        const clearConnectPhaseTimer = (): void => clearConnectPhaseTimerRef(connectPhaseTimer);
 
         abortEmitter.once("abort", reject);
 
-        const onFinished = (): void => {
-          clearConnectPhaseTimer();
-
-          if (config.cancelToken) {
-            config.cancelToken.unsubscribe(abort);
-          }
-
-          if (config.signal) {
-            config.signal.removeEventListener &&
-              config.signal.removeEventListener("abort", abort);
-          }
-
-          abortEmitter.removeAllListeners();
-        };
-
-        if (config.cancelToken || config.signal) {
-          config.cancelToken && config.cancelToken.subscribe(abort);
-          if (config.signal) {
-            config.signal.aborted
-              ? abort()
-              : config.signal.addEventListener &&
-                config.signal.addEventListener("abort", abort);
-          }
-        }
-
-        onDone((response: unknown, isRejected?: boolean) => {
-          isDone = true;
-          clearConnectPhaseTimer();
-
-          if (isRejected) {
-            rejected = true;
-            onFinished();
-            return;
-          }
-
-          const responseData = (response as Record<string, unknown>)["data"];
-
-          if (
-            responseData instanceof stream.Readable ||
-            responseData instanceof stream.Duplex
-          ) {
-            const offListeners = stream.finished(responseData, () => {
-              offListeners();
-              onFinished();
-            });
-          }
-          else {
-            onFinished();
-          }
-        });
+        const onFinished = makeOnFinished({ clearConnectPhaseTimer, config, abort, abortEmitter });
+        setupCancellation(config, abort);
+        onDone(makeOnDoneHandler(isDone, rejected, clearConnectPhaseTimer, onFinished));
 
         // Parse url
         const fullPath = buildFullPath(
@@ -805,82 +1625,8 @@ export default isHttpAdapterSupported &&
         const protocol = parsed.protocol || supportedProtocols[0]!;
 
         if (protocol === "data:") {
-          // Apply the same semantics as HTTP: only enforce if a finite, non-negative cap is set.
-          if ((maxContentLength as number) > -1) {
-            // Use the exact string passed to fromDataURI (the configured url); fall back to fullPath if needed.
-            const dataUrl = String(own("url") || fullPath || "");
-            const estimated = estimateDataURLDecodedBytes(dataUrl);
-
-            if (estimated > (maxContentLength as number)) {
-              return reject(
-                new AxiosError(
-                  "maxContentLength size of " +
-                    String(maxContentLength) +
-                    " exceeded",
-                  AxiosError.ERR_BAD_RESPONSE,
-                  config
-                )
-              );
-            }
-          }
-
-          let convertedData: unknown;
-
-          if (method !== "GET") {
-            return settle(resolve, reject, {
-              status: 405,
-              statusText: "method not allowed",
-              headers: {},
-              config,
-              data: undefined,
-              request: undefined,
-            });
-          }
-
-          try {
-            convertedData = fromDataURI(
-              own("url") as string,
-              responseType === "blob",
-              {
-                Blob:
-                  config.env &&
-                  ((config.env as Record<string, unknown>)["Blob"] as
-                    | (new (...args: Array<unknown>) => object)
-                    | undefined),
-              }
-            );
-          }
-          catch (err) {
-            throw AxiosError.from(
-              err as Error,
-              AxiosError.ERR_BAD_REQUEST,
-              config
-            );
-          }
-
-          if (responseType === "text") {
-            convertedData = (convertedData as Buffer).toString(
-              responseEncoding as BufferEncoding
-            );
-
-            if (!responseEncoding || responseEncoding === "utf8") {
-              convertedData = utils.stripBOM(convertedData as string);
-            }
-          }
-          else if (responseType === "stream") {
-            convertedData = stream.Readable.from(
-              convertedData as Iterable<unknown>
-            );
-          }
-
-          return settle(resolve, reject, {
-            data: convertedData,
-            status: 200,
-            statusText: "OK",
-            headers: new AxiosHeaders(),
-            config,
-            request: undefined,
-          });
+          handleDataURI(resolve, reject, config, own, method, maxContentLength, responseType, responseEncoding, fullPath);
+          return;
         }
 
         if (supportedProtocols.indexOf(protocol) === -1) {
@@ -895,18 +1641,8 @@ export default isHttpAdapterSupported &&
 
         const headers = AxiosHeaders.from(config.headers).normalize(
           false
-        ) as AxiosHeaders & {
-          setContentType: (value: unknown, rewrite?: unknown) => void;
-          setContentLength: (value: unknown, rewrite?: unknown) => void;
-          getContentLength: (matcher?: unknown) => unknown;
-          getContentType: (matcher?: unknown) => unknown;
-          hasContentLength: (matcher?: unknown) => boolean;
-        };
+        ) as AxiosHeadersExtended;
 
-        // Set User-Agent (required by some servers)
-        // See https://github.com/axios/axios/issues/69
-        // User-Agent is specified; handle case where no UA header is desired
-        // Only set header if it hasn't been set in config
         headers.set("User-Agent", "axios/" + VERSION, false);
 
         const { onUploadProgress, onDownloadProgress } = config;
@@ -914,844 +1650,82 @@ export default isHttpAdapterSupported &&
         let maxUploadRate: number | undefined = undefined;
         let maxDownloadRate: number | undefined = undefined;
 
-        // support for spec compliant FormData objects
-        if (utils.isSpecCompliantForm(data)) {
-          const userBoundary = headers.getContentType(
-            /boundary=([-\w]{10,70})/i
-          );
-
-          data = formDataToStream(
-            data,
-            (formHeaders: Record<string, unknown>) => {
-              headers.set(formHeaders);
-            },
-            {
-              tag: `axios-${VERSION}-boundary`,
-              boundary: (userBoundary &&
-                (userBoundary as RegExpMatchArray)[1]) as string | undefined,
-            }
-          );
-          // support for https://www.npmjs.com/package/form-data api
-        }
-        else if (
-          utils.isFormData(data) &&
-          utils.isFunction((data as Record<string, unknown>)["getHeaders"])
-        ) {
-          const dataWithHeaders = data as {
-            getHeaders: () => Record<string, unknown>;
-            getLength: (cb: (err: Error | null, len: number) => void) => void;
-          };
-          setFormDataHeaders(
-            headers,
-            dataWithHeaders.getHeaders(),
-            own("formDataHeaderPolicy")
-          );
-
-          if (!headers.hasContentLength()) {
-            try {
-              const knownLength = await util
-                .promisify(dataWithHeaders.getLength)
-                .call(data);
-              Number.isFinite(knownLength) &&
-                knownLength >= 0 &&
-                headers.setContentLength(knownLength);
-              /*eslint no-empty:0*/
-            }
-            catch {}
-          }
-        }
-        else if (utils.isBlob(data) || utils.isFile(data)) {
-          const blobData = data as { size: number; type: string; };
-          blobData.size &&
-            headers.setContentType(blobData.type || "application/octet-stream");
-          headers.setContentLength(blobData.size || 0);
-          data = stream.Readable.from(
-            readBlob(data as Parameters<typeof readBlob>[0])
-          );
-        }
-        else if (data && !utils.isStream(data)) {
-          if (Buffer.isBuffer(data)) {
-            // Nothing to do...
-          }
-          else if (utils.isArrayBuffer(data)) {
-            data = Buffer.from(new Uint8Array(data as ArrayBuffer));
-          }
-          else if (utils.isString(data)) {
-            data = Buffer.from(data as string, "utf-8");
-          }
-          else {
-            return reject(
-              new AxiosError(
-                "Data after transformation must be a string, an ArrayBuffer, a Buffer, or a Stream",
-                AxiosError.ERR_BAD_REQUEST,
-                config
-              )
-            );
-          }
-
-          // Add Content-Length header if data exists
-          headers.setContentLength((data as Buffer).length, false);
-
-          if (
-            (maxBodyLength as number) > -1 &&
-            (data as Buffer).length > (maxBodyLength as number)
-          ) {
-            return reject(
-              new AxiosError(
-                "Request body larger than maxBodyLength limit",
-                AxiosError.ERR_BAD_REQUEST,
-                config
-              )
-            );
-          }
+        {
+          const result = await prepareRequestData(data, headers, own, maxBodyLength, reject, config);
+          if (result.rejected) return;
+          data = result.data;
         }
 
         const contentLength = utils.toFiniteNumber(headers.getContentLength());
 
-        if (utils.isArray(maxRate)) {
-          maxUploadRate = maxRate[0];
-          maxDownloadRate = maxRate[1];
-        }
-        else {
-          maxUploadRate = maxDownloadRate = maxRate as number;
-        }
+        ({ maxUploadRate, maxDownloadRate } = resolveMaxRates(maxRate));
 
-        if (data && (onUploadProgress || maxUploadRate)) {
-          if (!utils.isStream(data)) {
-            data = stream.Readable.from(data as Iterable<unknown>, {
-              objectMode: false,
-            });
-          }
-
-          data = (
-            stream.pipeline as unknown as (
-              streams: Array<unknown>,
-              cb: unknown
-            ) => stream.Readable
-          )(
-            [
-              data,
-              new AxiosTransformStream({
-                maxRate: utils.toFiniteNumber(maxUploadRate),
-              }),
-            ],
-            utils.noop
-          );
-
-          onUploadProgress &&
-            (data as stream.Stream).on(
-              "progress",
-              flushOnFinish(
-                data as stream.Stream,
-                progressEventDecorator(
-                  contentLength,
-                  progressEventReducer(
-                    asyncDecorator(
-                      onUploadProgress as (...args: Array<unknown>) => unknown
-                    ),
-                    false,
-                    3
-                  )
-                )
-              ) as (...args: Array<unknown>) => void
-            );
-        }
+        data = applyUploadProgressIfNeeded(data, onUploadProgress, maxUploadRate, contentLength);
 
         // HTTP basic authentication
-        let auth: string | undefined = undefined;
-        const configAuth = own("auth");
-        if (configAuth) {
-          const username = String(
-            utils.getSafeProp(configAuth, "username") || ""
-          );
-          const password = String(
-            utils.getSafeProp(configAuth, "password") || ""
-          );
-          auth = username + ":" + password;
-        }
+        const auth = buildAuth(own, parsed);
+        if (auth) headers.delete("authorization");
 
-        if (!auth && (parsed.username || parsed.password)) {
-          const urlUsername = decodeURIComponentSafe(parsed.username);
-          const urlPassword = decodeURIComponentSafe(parsed.password);
-          auth = String(urlUsername) + ":" + String(urlPassword);
-        }
+        const pathResult = buildRequestPath(own, parsed, reject, config);
+        if (pathResult.rejected) return;
+        const path = pathResult.path;
 
-        auth && headers.delete("authorization");
+        headers.set("Accept-Encoding", resolveAcceptEncoding(transitional), false);
 
-        let path: string;
+        const { options } = buildRequestOptions(own, path, method, headers, httpAgent, httpsAgent, auth, protocol, family, http2Options, lookup, maxBodyLength, parsed, reject, config);
+        if (!options) return;
 
-        try {
-          path = buildURL(
-            parsed.pathname + parsed.search,
-            own("params"),
-            own("paramsSerializer")
-          ).replace(/^\?/, "");
-        }
-        catch (err) {
-          const customErr = new Error((err as Error).message) as Error & {
-            config?: unknown;
-            url?: unknown;
-            exists?: boolean;
-          };
-          customErr.config = config;
-          customErr.url = own("url");
-          customErr.exists = true;
-          return reject(customErr);
-        }
-
-        headers.set(
-          "Accept-Encoding",
-          utils.hasOwnProp(transitional, "advertiseZstdAcceptEncoding") &&
-            transitional.advertiseZstdAcceptEncoding === true
-            ? ACCEPT_ENCODING_WITH_ZSTD
-            : ACCEPT_ENCODING,
-          false
-        );
-
-        // Null-prototype to block prototype pollution gadgets on properties read
-        // directly by Node's http.request (e.g. insecureHTTPParser, lookup).
-        const options: Record<string, unknown> = Object.assign(
-          Object.create(null) as object,
-          {
-            path,
-            method: method,
-            headers: toByteStringHeaderObject(headers),
-            agents: { http: httpAgent, https: httpsAgent },
-            auth,
-            protocol,
-            family,
-            beforeRedirect: dispatchBeforeRedirect,
-            beforeRedirects: Object.create(null) as Record<string, unknown>,
-            http2Options,
-          }
-        );
-
-        // cacheable-lookup integration hotfix
-        !utils.isUndefined(lookup) && (options["lookup"] = lookup);
-
-        const socketPath = own("socketPath");
-        if (socketPath) {
-          if (typeof socketPath !== "string") {
-            return reject(
-              new AxiosError(
-                "socketPath must be a string",
-                AxiosError.ERR_BAD_OPTION_VALUE,
-                config
-              )
-            );
-          }
-
-          const allowedSocketPaths = own("allowedSocketPaths");
-          if (allowedSocketPaths != null) {
-            const allowed = Array.isArray(allowedSocketPaths)
-              ? (allowedSocketPaths as Array<string>)
-              : [ allowedSocketPaths as string ];
-
-            const resolvedSocket = resolvePath(socketPath);
-            const isAllowed = allowed.some(
-              (entry: unknown) =>
-                typeof entry === "string" &&
-                resolvePath(entry) === resolvedSocket
-            );
-
-            if (!isAllowed) {
-              return reject(
-                new AxiosError(
-                  `socketPath "${socketPath}" is not permitted by allowedSocketPaths`,
-                  AxiosError.ERR_BAD_OPTION_VALUE,
-                  config
-                )
-              );
-            }
-          }
-
-          options["socketPath"] = socketPath;
-        }
-        else {
-          options["hostname"] = parsed.hostname.startsWith("[")
-            ? parsed.hostname.slice(1, -1)
-            : parsed.hostname;
-          options["port"] = parsed.port;
-          setProxy(
-            options,
-            own("proxy"),
-            protocol +
-              "//" +
-              parsed.hostname +
-              (parsed.port ? ":" + parsed.port : "") +
-              String(options["path"]),
-            false,
-            httpsAgent
-          );
-        }
-        let transport: {
-          request: (options: unknown, cb: (res: unknown) => void) => unknown;
-        } = http2Transport;
-        let isNativeTransport = false;
-        // True only for the follow-redirects transport, which applies
-        // options.maxBodyLength itself. Every other transport (http2, native
-        // http/https, a user-supplied custom transport) needs the explicit
-        // byte-counting pipeline below to enforce maxBodyLength on streamed uploads.
-        let transportEnforcesMaxBodyLength = false;
         const isHttpsRequest = isHttps.test(String(options["protocol"]));
-        // Don't clobber a CONNECT-tunneling agent installed by setProxy() for an
-        // HTTPS target.
-        if (options["agent"] == null) {
-          options["agent"] = isHttpsRequest ? httpsAgent : httpAgent;
-        }
+        resolveDefaultAgent(options, isHttpsRequest, httpsAgent, httpAgent);
 
-        if (isHttp2) {
-          transport = http2Transport;
-        }
-        else {
-          const configTransport = own("transport");
-          if (configTransport) {
-            transport = configTransport as typeof transport;
-          }
-          else if (maxRedirects === 0) {
-            transport = (isHttpsRequest ? https : http) as typeof transport;
-            isNativeTransport = true;
-          }
-          else {
-            transportEnforcesMaxBodyLength = true;
-            options["sensitiveHeaders"] = [];
-            if (maxRedirects) {
-              options["maxRedirects"] = maxRedirects;
-            }
-            const configBeforeRedirect = own("beforeRedirect");
-            if (configBeforeRedirect) {
-              (options["beforeRedirects"] as Record<string, unknown>)[
-                "config"
-              ] = configBeforeRedirect;
-            }
-            if (auth) {
-              // Restore HTTP Basic credentials on same-origin redirects only.
-              // follow-redirects >= 1.15.8 strips Authorization on every redirect (see #6929);
-              // cross-origin stripping is the documented mitigation for T-R2 in THREATMODEL.md
-              // and is preserved by deliberately not restoring on origin change.
-              const requestOrigin = parsed.origin;
-              const authToRestore = auth;
-              (options["beforeRedirects"] as Record<string, unknown>)["auth"] =
-                function beforeRedirectAuth(redirectOptions: unknown) {
-                  try {
-                    if (
-                      new URL(
-                        String(
-                          (redirectOptions as Record<string, unknown>)["href"]
-                        )
-                      ).origin === requestOrigin
-                    ) {
-                      (redirectOptions as Record<string, unknown>)["auth"] =
-                        authToRestore;
-                    }
-                  }
-                  catch {
-                    // ignore malformed URL: leaving auth stripped is fail-safe
-                  }
-                };
-            }
-            const sensitiveHeaders = own("sensitiveHeaders");
-            if (sensitiveHeaders != null) {
-              if (!utils.isArray(sensitiveHeaders)) {
-                return reject(
-                  new AxiosError(
-                    "sensitiveHeaders must be an array of strings",
-                    AxiosError.ERR_BAD_OPTION_VALUE,
-                    config
-                  )
-                );
-              }
-
-              const sensitiveSet = new Set<string>();
-              for (const header of sensitiveHeaders as Array<unknown>) {
-                if (!utils.isString(header)) {
-                  return reject(
-                    new AxiosError(
-                      "sensitiveHeaders must be an array of strings",
-                      AxiosError.ERR_BAD_OPTION_VALUE,
-                      config
-                    )
-                  );
-                }
-
-                sensitiveSet.add((header as string).toLowerCase());
-              }
-
-              if (sensitiveSet.size) {
-                options["sensitiveHeaders"] = Array.from(sensitiveSet);
-                (options["beforeRedirects"] as Record<string, unknown>)[
-                  "sensitiveHeaders"
-                ] = function beforeRedirectSensitiveHeaders(
-                  redirectOptions: unknown,
-                  requestDetails: unknown
-                ) {
-                  if (
-                    !isSameOriginRedirect(
-                      redirectOptions as Record<string, unknown>,
-                      requestDetails as { url?: string; } | undefined
-                    )
-                  ) {
-                    stripMatchingHeaders(
-                      (redirectOptions as Record<string, unknown>)[
-                        "headers"
-                      ] as Record<string, unknown> | undefined,
-                      sensitiveSet
-                    );
-                  }
-                };
-              }
-            }
-            transport = (
-              isHttpsRequest ? httpsFollow : httpFollow
-            ) as typeof transport;
-          }
-        }
-
-        if ((maxBodyLength as number) > -1) {
-          options["maxBodyLength"] = maxBodyLength;
-        }
-        else {
-          // follow-redirects does not skip comparison, so it should always succeed for axios -1 unlimited
-          options["maxBodyLength"] = Infinity;
-        }
-
-        // Always set an explicit own value so a polluted
-        // Object.prototype.insecureHTTPParser cannot enable the lenient parser
-        // through Node's internal options copy
-        options["insecureHTTPParser"] = Boolean(own("insecureHTTPParser"));
+        const transportResult = selectTransport(
+          options, own, isHttp2, isHttpsRequest, maxRedirects, auth, parsed, reject, config
+        );
+        if (transportResult.rejected) return;
+        const { transport, isNativeTransport, transportEnforcesMaxBodyLength } = transportResult;
 
         // Create the request
 
-        req = transport.request(options, function handleResponse(res: unknown) {
-          clearConnectPhaseTimer();
+        const responseCtx: ResponseContext = {
+          req,
+          rejected,
+          abort,
+          abortEmitter,
+          config,
+          decompress,
+          method,
+          onDownloadProgress,
+          maxDownloadRate,
+          responseType,
+          responseEncoding,
+          maxContentLength,
+          resolve,
+          reject,
+          clearConnectPhaseTimer,
+        };
 
-          const resObj = res as http.IncomingMessage & {
-            req?: http.ClientRequest;
-          };
+        req = transport.request(options, makeHandleResponse(responseCtx));
+        responseCtx.req = req;
+        abortCtx.req = req;
 
-          if ((req as http.ClientRequest).destroyed) return;
-
-          const streams: Array<stream.Stream | stream.Readable> = [ resObj ];
-
-          const responseLength = utils.toFiniteNumber(
-            resObj.headers["content-length"]
-          );
-
-          if (onDownloadProgress || maxDownloadRate) {
-            const transformStream = new AxiosTransformStream({
-              maxRate: utils.toFiniteNumber(maxDownloadRate),
-            });
-
-            onDownloadProgress &&
-              transformStream.on(
-                "progress",
-                flushOnFinish(
-                  transformStream,
-                  progressEventDecorator(
-                    responseLength,
-                    progressEventReducer(
-                      asyncDecorator(
-                        onDownloadProgress as (
-                          ...args: Array<unknown>
-                        ) => unknown
-                      ),
-                      true,
-                      3
-                    )
-                  )
-                ) as (...args: Array<unknown>) => void
-              );
-
-            streams.push(transformStream);
-          }
-
-          // decompress the response body transparently if required
-          let responseStream: stream.Stream | stream.Readable = resObj;
-
-          // return the last request in case of redirects
-          const lastRequest = resObj.req || req;
-
-          // if decompress disabled we should not decompress
-          if (decompress !== false && resObj.headers["content-encoding"]) {
-            // if no content, but headers still say that it is encoded,
-            // remove the header not confuse downstream operations
-            if (method === "HEAD" || resObj.statusCode === 204) {
-              delete resObj.headers["content-encoding"];
-            }
-
-            switch ((resObj.headers["content-encoding"] || "").toLowerCase()) {
-              /*eslint default-case:0*/
-              case "gzip":
-              case "x-gzip":
-              case "compress":
-              case "x-compress":
-                // add the unzipper to the body stream processing pipeline
-                streams.push(zlib.createUnzip(zlibOptions));
-
-                // remove the content-encoding in order to not confuse downstream operations
-                delete resObj.headers["content-encoding"];
-                break;
-              case "deflate":
-                streams.push(new ZlibHeaderTransformStream());
-
-                // add the unzipper to the body stream processing pipeline
-                streams.push(zlib.createUnzip(zlibOptions));
-
-                // remove the content-encoding in order to not confuse downstream operations
-                delete resObj.headers["content-encoding"];
-                break;
-              case "br":
-                if (isBrotliSupported) {
-                  streams.push(zlib.createBrotliDecompress(brotliOptions));
-                  delete resObj.headers["content-encoding"];
-                }
-                break;
-              case "zstd":
-                if (isZstdSupported) {
-                  streams.push(
-                    (
-                      zlib as unknown as Record<
-                        string,
-                        (opts: unknown) => stream.Transform
-                      >
-                    )["createZstdDecompress"]!(zstdOptions)
-                  );
-                  delete resObj.headers["content-encoding"];
-                }
-                break;
-            }
-          }
-
-          responseStream =
-            streams.length > 1
-              ? (
-                stream.pipeline as unknown as (
-                  streams: Array<unknown>,
-                  cb: unknown
-                ) => stream.Readable
-              )(streams, utils.noop)
-              : streams[0]!;
-
-          const response = {
-            status: resObj.statusCode ?? 0,
-            statusText: resObj.statusMessage ?? "",
-            headers: new AxiosHeaders(resObj.headers),
-            config,
-            request: lastRequest,
-            data: undefined as unknown,
-          };
-
-          if (responseType === "stream") {
-            // Enforce maxContentLength on streamed responses; previously this
-            // was applied only to buffered responses.
-            if ((maxContentLength as number) > -1) {
-              const limit = maxContentLength as number;
-              const source = responseStream;
-              async function* enforceMaxContentLength() {
-                let totalResponseBytes = 0;
-                for await (const chunk of source as unknown as AsyncIterable<Buffer>) {
-                  totalResponseBytes += chunk.length;
-                  if (totalResponseBytes > limit) {
-                    throw new AxiosError(
-                      "maxContentLength size of " + limit + " exceeded",
-                      AxiosError.ERR_BAD_RESPONSE,
-                      config,
-                      lastRequest
-                    );
-                  }
-                  yield chunk;
-                }
-              }
-              responseStream = stream.Readable.from(enforceMaxContentLength(), {
-                objectMode: false,
-              });
-            }
-            response.data = responseStream;
-            settle(resolve, reject, response);
-          }
-          else {
-            const responseBuffer: Array<Buffer> = [];
-            let totalResponseBytes = 0;
-
-            responseStream.on("data", function handleStreamData(chunk: Buffer) {
-              responseBuffer.push(chunk);
-              totalResponseBytes += chunk.length;
-
-              // make sure the content length is not over the maxContentLength if specified
-              if (
-                (maxContentLength as number) > -1 &&
-                totalResponseBytes > (maxContentLength as number)
-              ) {
-                // stream.destroy() emit aborted event before calling reject() on Node.js v16
-                rejected = true;
-                (responseStream as stream.Readable).destroy();
-                abort(
-                  new AxiosError(
-                    "maxContentLength size of " +
-                      String(maxContentLength) +
-                      " exceeded",
-                    AxiosError.ERR_BAD_RESPONSE,
-                    config,
-                    lastRequest
-                  )
-                );
-              }
-            });
-
-            responseStream.on("aborted", function handlerStreamAborted() {
-              if (rejected) {
-                return;
-              }
-
-              const err = new AxiosError(
-                "stream has been aborted",
-                AxiosError.ERR_BAD_RESPONSE,
-                config,
-                lastRequest,
-                response
-              );
-              (responseStream as stream.Readable).destroy(err);
-              reject(err);
-            });
-
-            responseStream.on("error", function handleStreamError(err: Error) {
-              if (rejected) return;
-              reject(
-                AxiosError.from(err, undefined, config, lastRequest, response)
-              );
-            });
-
-            responseStream.on("end", function handleStreamEnd() {
-              try {
-                let responseData: Buffer | string =
-                  responseBuffer.length === 1
-                    ? responseBuffer[0]!
-                    : Buffer.concat(
-                      responseBuffer as unknown as Array<Uint8Array>
-                    );
-                if (responseType !== "arraybuffer") {
-                  responseData = responseData.toString(
-                    responseEncoding as BufferEncoding
-                  );
-                  if (!responseEncoding || responseEncoding === "utf8") {
-                    responseData = utils.stripBOM(responseData);
-                  }
-                }
-                response.data = responseData;
-              }
-              catch (err) {
-                return reject(
-                  AxiosError.from(
-                    err as Error,
-                    undefined,
-                    config,
-                    response.request,
-                    response
-                  )
-                );
-              }
-              settle(resolve, reject, response);
-            });
-          }
-
-          abortEmitter.once("abort", (err: unknown) => {
-            const readableStream = responseStream as stream.Readable;
-            if (!readableStream.destroyed) {
-              readableStream.emit("error", err);
-              readableStream.destroy();
-            }
-          });
-        });
-
-        abortEmitter.once("abort", (err: unknown) => {
-          const reqObj = req as {
-            close?: () => void;
-            destroy: (err?: unknown) => void;
-          };
-          if (reqObj.close) {
-            reqObj.close();
-          }
-          else {
-            reqObj.destroy(err);
-          }
-        });
+        attachReqDestroyOnAbort(abortEmitter, abortCtx);
 
         // Handle errors
-        (req as http.ClientRequest).on(
-          "error",
-          function handleRequestError(err: Error) {
-            reject(AxiosError.from(err, undefined, config, req));
-          }
-        );
+        (req as http.ClientRequest).on("error", (err: Error) => reject(AxiosError.from(err, undefined, config, abortCtx.req)));
 
-        // set tcp keep alive to prevent drop connection by peer
-        // Track every socket bound to this outer RedirectableRequest so a single
-        // 'close' listener can release ownership on all of them. follow-redirects
-        // re-emits the 'socket' event for each hop's native request onto the same
-        // outer request, so attaching per-request listeners inside this handler
-        // would accumulate across hops and trigger MaxListenersExceededWarning at
-        // >= 11 redirects. Clearing only the last-bound socket would leave stale
-        // kAxiosCurrentReq refs on earlier hop sockets returned to the keep-alive
-        // pool, causing an idle-pool 'error' to be attributed to a closed req.
         const boundSockets = new Set<net.Socket & Record<symbol, unknown>>();
-
-        (req as http.ClientRequest).on(
-          "socket",
-          function handleRequestSocket(socket: net.Socket) {
-            // default interval of sending ack packet is 1 minute
-            socket.setKeepAlive(true, 1000 * 60);
-
-            // Install a single 'error' listener per socket (not per request) to avoid
-            // accumulating listeners on pooled keep-alive sockets that get reassigned
-            // to new requests before the previous request's 'close' fires (issue #10780).
-            // The listener is bound to the socket's currently-active request via a
-            // symbol, which is swapped as the socket is reassigned.
-            const s = socket as net.Socket & Record<symbol, unknown>;
-            if (!s[kAxiosSocketListener]) {
-              socket.on("error", function handleSocketError(err: Error) {
-                const current = s[kAxiosCurrentReq] as
-                  | (http.ClientRequest & { destroyed: boolean; })
-                  | null;
-                if (current && !current.destroyed) {
-                  current.destroy(err);
-                }
-              });
-              s[kAxiosSocketListener] = true;
-            }
-
-            s[kAxiosCurrentReq] = req;
-            boundSockets.add(s);
-          }
-        );
-
-        (req as http.ClientRequest).once("close", function clearCurrentReq() {
-          clearConnectPhaseTimer();
-
-          for (const socket of boundSockets) {
-            if (socket[kAxiosCurrentReq] === req) {
-              socket[kAxiosCurrentReq] = null;
-            }
-          }
-          boundSockets.clear();
-        });
+        setupSocketTracking(req, boundSockets, clearConnectPhaseTimer);
 
         // Handle request timeout
-        if (own("timeout")) {
-          // This is forcing a int timeout to avoid problems if the `req` interface doesn't handle other types.
-          const timeout = parseInt(String(own("timeout")), 10);
-
-          if (Number.isNaN(timeout)) {
-            abort(
-              new AxiosError(
-                "error trying to parse `config.timeout` to int",
-                AxiosError.ERR_BAD_OPTION_VALUE,
-                config,
-                req
-              )
-            );
-
-            return;
-          }
-
-          const handleTimeout = function handleTimeout(): void {
-            if (isDone) return;
-            abort(createTimeoutError());
-          };
-
-          if (isNativeTransport && timeout > 0) {
-            // Native ClientRequest#setTimeout starts from the socket lifecycle and
-            // may not fire while TCP connect is still pending. Mirror the
-            // follow-redirects wall-clock timer for the maxRedirects === 0 path.
-            connectPhaseTimer = setTimeout(handleTimeout, timeout);
-          }
-
-          // Sometime, the response will be very slow, and does not respond, the connect event will be block by event loop system.
-          // And timer callback will be fired, and abort() will be invoked before connection, then get "socket hang up" and code ECONNRESET.
-          // At this time, if we have a large number of request, nodejs will hang up some socket on background. and the number will up and up.
-          // And then these socket which be hang up will devouring CPU little by little.
-          // ClientRequest.setTimeout will be fired on the specify milliseconds, and can make sure that abort() will be fired after connect.
-          (req as http.ClientRequest).setTimeout(timeout, handleTimeout);
-        }
-        else {
-          // explicitly reset the socket timeout value for a possible `keep-alive` request
-          (req as http.ClientRequest).setTimeout(0);
+        {
+          const result = setupRequestTimeout(req, own, abort, transitional, isDone, isNativeTransport, config, abortCtx);
+          if (result.aborted) return;
+          connectPhaseTimer.value = result.connectPhaseTimer;
         }
 
         // Send the request
         if (utils.isStream(data)) {
-          let ended = false;
-          let errored = false;
-
-          (data as stream.Readable).on("end", () => {
-            ended = true;
-          });
-
-          (data as stream.Readable).once("error", (err: Error) => {
-            errored = true;
-            (req as http.ClientRequest).destroy(err);
-          });
-
-          (data as stream.Readable).on("close", () => {
-            if (!ended && !errored) {
-              abort(
-                new CanceledError(
-                  "Request stream has been aborted",
-                  config,
-                  req
-                )
-              );
-            }
-          });
-
-          // Enforce maxBodyLength for streamed uploads on every transport that
-          // does not apply options.maxBodyLength itself (native http/https, http2,
-          // and user-supplied custom transports). The follow-redirects transport
-          // enforces it on the redirected HTTP/1 path.
-          let uploadStream: stream.Stream = data as stream.Readable;
-          if (
-            (maxBodyLength as number) > -1 &&
-            !transportEnforcesMaxBodyLength
-          ) {
-            const limit = maxBodyLength as number;
-            let bytesSent = 0;
-            uploadStream = (
-              stream.pipeline as unknown as (
-                streams: Array<unknown>,
-                cb: unknown
-              ) => stream.Readable
-            )(
-              [
-                data,
-                new stream.Transform({
-                  transform(
-                    chunk: Buffer,
-                    _enc: BufferEncoding,
-                    cb: (err?: Error | null, data?: Buffer) => void
-                  ) {
-                    bytesSent += chunk.length;
-                    if (bytesSent > limit) {
-                      return cb(
-                        new AxiosError(
-                          "Request body larger than maxBodyLength limit",
-                          AxiosError.ERR_BAD_REQUEST,
-                          config,
-                          req
-                        )
-                      );
-                    }
-                    cb(null, chunk);
-                  },
-                }),
-              ],
-              utils.noop
-            );
-            uploadStream.on("error", (err: Error) => {
-              const reqObj = req as http.ClientRequest;
-              if (!reqObj.destroyed) reqObj.destroy(err);
-            });
-          }
-
-          (uploadStream as stream.Readable).pipe(req as http.ClientRequest);
+          pipeStreamData(data, req, abort, maxBodyLength, transportEnforcesMaxBodyLength, config);
         }
         else {
           data && (req as http.ClientRequest).write(data);
