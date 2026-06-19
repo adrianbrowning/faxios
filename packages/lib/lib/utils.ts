@@ -101,7 +101,6 @@ function isBuffer(val: unknown): boolean {
   return (
     val !== null &&
     !isUndefined(val) &&
-    (val as Record<string, unknown>).constructor !== null &&
     !isUndefined((val as Record<string, unknown>).constructor) &&
     isFunction((val as { constructor: Record<string, unknown>; }).constructor["isBuffer"]) &&
     (val as { constructor: { isBuffer: (v: unknown) => boolean; }; }).constructor.isBuffer(val)
@@ -354,8 +353,7 @@ const [ isReadableStream, isRequest, isResponse, isHeaders ] = [
  *
  * @returns {String} The String freed of excess whitespace
  */
-// eslint-disable-next-line sonarjs/slow-regex
-const trim = (str: string) => str.trim ? str.trim() : str.replace(/^[\s﻿\xA0]+|[\s﻿\xA0]+$/g, "");
+const trim = (str: string) => str.trim();
 /**
  * Iterate over an Array or an Object invoking a function for each item.
  *
@@ -707,7 +705,7 @@ const forEachEntry = (obj: unknown, fn: (key: unknown, value: unknown) => void) 
   let result: IteratorResult<[unknown, unknown]>;
 
   result = _iterator.next();
-  while (result && !result.done) {
+  while (!result.done) {
     const pair = result.value;
     fn.call(obj, pair[0], pair[1]);
     result = _iterator.next();
@@ -771,7 +769,7 @@ const reduceDescriptors = (obj: object, reducer: (descriptor: PropertyDescriptor
  */
 
 const freezeMethods = (obj: object) => {
-  reduceDescriptors(obj, (descriptor, name) => {
+  reduceDescriptors(obj, (descriptor, name): PropertyDescriptor | false => {
     // skip restricted props in strict mode
     if (isFunction(obj) && [ "arguments", "caller", "callee" ].includes(name)) {
       return false;
