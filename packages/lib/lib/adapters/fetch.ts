@@ -158,8 +158,7 @@ const factory = (env: Record<string, unknown>) => {
     return false;
   }
    
-  const isReadableStreamSupported =
-    isFetchSupported && isFunction(ReadableStream);
+  const isReadableStreamSupported = isFunction(ReadableStream);
 
   const encodeText: (str: string) => Promise<Uint8Array> | Uint8Array =
     typeof TextEncoder === "function"
@@ -276,6 +275,439 @@ const factory = (env: Record<string, unknown>) => {
     return length == null ? getBodyLength(body) : length;
   };
 
+  type PendingBodyErrorRef = { value: (AxiosError & { request?: unknown; }) | null };
+
+  const normalizeCredentials = (wc: string | boolean): string => {
+    if (utils.isString(wc)) return wc as string;
+    return wc ? "include" : "omit";
+  };
+
+  // HTTP basic authentication: extract auth from config or URL, set Authorization header,
+  // strip credentials from URL. Returns the (possibly updated) URL.
+  const applyAuthToRequest = (
+    url: string,
+    headers: AxiosRequestHeaders,
+    own: (key: string) => unknown
+  ): string => {
+    let auth: { username: unknown; password: unknown; } | undefined;
+    const configAuth = own("auth");
+    if (configAuth) {
+      auth = {
+        username: utils.getSafeProp(configAuth, "username") || "",
+        password: utils.getSafeProp(configAuth, "password") || "",
+      };
+    }
+    if (maybeWithAuthCredentials(url)) {
+      const parsedURL = new URL(url, platform.origin);
+      if (!auth && (parsedURL.username || parsedURL.password)) {
+        auth = {
+          username: decodeURIComponentSafe(parsedURL.username),
+          password: decodeURIComponentSafe(parsedURL.password),
+        };
+      }
+      if (parsedURL.username || parsedURL.password) {
+        parsedURL.username = "";
+        parsedURL.password = "";
+        url = parsedURL.href;
+      }
+    }
+    if (auth) {
+      headers.delete("authorization");
+      headers.set(
+        "Authorization",
+        "Basic " +
+          _btoa(
+            encodeUTF8(
+              String(auth.username || "") + ":" + String(auth.password || "")
+            )
+          )
+      );
+    }
+    return url;
+  };
+
+  // Pre-flight size checks: data: URL content-length and known-size body maxBodyLength.
+  // Returns requestContentLength if computed, else undefined.
+  const checkPreflightLimits = async (
+    url: string,
+    data: unknown,
+    method: string,
+    hasMaxContentLength: boolean,
+    maxContentLength: number,
+    hasMaxBodyLength: boolean,
+    maxBodyLength: number,
+    config: InternalAxiosRequestConfig,
+    request: unknown
+  ): Promise<number | undefined> => {
+    // Enforce maxContentLength for data: URLs up-front so we never materialize
+    // an oversized payload. The HTTP adapter applies the same check.
+    if (
+      hasMaxContentLength &&
+      typeof url === "string" &&
+      url.startsWith("data:")
+    ) {
+      const estimated = estimateDataURLDecodedBytes(url);
+      if (estimated > maxContentLength) {
+        throw new AxiosError(
+          "maxContentLength size of " + maxContentLength + " exceeded",
+          AxiosError.ERR_BAD_RESPONSE,
+          config,
+          request
+        );
+      }
+    }
+    // Enforce maxBodyLength against known-size bodies before dispatch using
+    // the body's actual size — never a caller-declared Content-Length.
+    if (hasMaxBodyLength && method !== "get" && method !== "head") {
+      const outboundLength = await getBodyLength(data);
+      if (typeof outboundLength === "number" && isFinite(outboundLength)) {
+        if (outboundLength > maxBodyLength) {
+          throw new AxiosError(
+            "Request body larger than maxBodyLength limit",
+            AxiosError.ERR_BAD_REQUEST,
+            config,
+            request
+          );
+        }
+        return outboundLength;
+      }
+    }
+    return undefined;
+  };
+
+  // Wrap a Request body with upload progress tracking and optional maxBodyLength enforcement.
+  const applyUploadProgress = (
+    _request: AnyRequest,
+    data: unknown,
+    headers: AxiosRequestHeaders,
+    requestContentLength: number | undefined,
+    onUploadProgress: unknown,
+    _trackStream: (stream: unknown, onProgress?: (bytes: number) => void, flush?: () => void) => unknown
+  ): unknown => {
+    let contentTypeHeader: string | null;
+    if (
+      utils.isFormData(data) &&
+      (contentTypeHeader = _request.headers.get("content-type"))
+    ) {
+      headers.setContentType(contentTypeHeader);
+    }
+    if (_request.body) {
+      const [ onProgress, flush ] = onUploadProgress
+        ? progressEventDecorator(
+          requestContentLength,
+          progressEventReducer(
+            asyncDecorator(
+              onUploadProgress as (...args: Array<unknown>) => unknown
+            ),
+            false
+          )
+        )
+        : [];
+      return _trackStream(_request.body, onProgress, flush);
+    }
+    return data;
+  };
+
+  // Set up request body streaming with upload progress and/or maxBodyLength enforcement.
+  const buildUploadStream = async (
+    data: unknown,
+    url: string,
+    method: string,
+    headers: AxiosRequestHeaders,
+    onUploadProgress: unknown,
+    mustEnforceStreamBody: boolean,
+    requestContentLength: number | undefined,
+    hasMaxBodyLength: boolean,
+    maxBodyLength: number,
+    config: InternalAxiosRequestConfig,
+    request: unknown,
+    pendingBodyErrorRef: PendingBodyErrorRef
+  ): Promise<{ data: unknown; requestContentLength: number | undefined; }> => {
+    const _makeBodyLengthError = () =>
+      new AxiosError(
+        "Request body larger than maxBodyLength limit",
+        AxiosError.ERR_BAD_REQUEST,
+        config,
+        request
+      );
+
+    const _trackStream = (
+      stream: unknown,
+      onProgress?: (bytes: number) => void,
+      flush?: () => void
+    ) =>
+      trackStream(
+        stream,
+        DEFAULT_CHUNK_SIZE,
+        (loadedBytes: number) => {
+          if (hasMaxBodyLength && loadedBytes > maxBodyLength) {
+            pendingBodyErrorRef.value = _makeBodyLengthError();
+            throw pendingBodyErrorRef.value;
+          }
+          onProgress && onProgress(loadedBytes);
+        },
+        flush
+      );
+
+    if (
+      supportsRequestStream &&
+      method !== "get" &&
+      method !== "head" &&
+      (onUploadProgress || mustEnforceStreamBody)
+    ) {
+      requestContentLength =
+        requestContentLength == null
+          ? await resolveBodyLength(headers, data)
+          : requestContentLength;
+
+      // A declared length of 0 is only trusted to skip the wrap when we are
+      // not enforcing a stream limit (which must not rely on that header).
+      if (requestContentLength !== 0 || mustEnforceStreamBody) {
+        const _request = new (Request as AnyConstructor)(url, {
+          method: "POST",
+          body: data,
+          duplex: "half",
+        }) as AnyRequest;
+        data = applyUploadProgress(_request, data, headers, requestContentLength, onUploadProgress, _trackStream);
+      }
+    }
+    else if (
+      mustEnforceStreamBody &&
+      !isRequestSupported &&
+      isReadableStreamSupported &&
+      method !== "get" &&
+      method !== "head"
+    ) {
+      data = _trackStream(data);
+    }
+    else if (
+      mustEnforceStreamBody &&
+      isRequestSupported &&
+      !supportsRequestStream &&
+      method !== "get" &&
+      method !== "head"
+    ) {
+      throw new AxiosError(
+        "Stream request bodies are not supported by the current fetch implementation",
+        AxiosError.ERR_NOT_SUPPORT,
+        config,
+        request
+      );
+    }
+
+    return { data, requestContentLength };
+  };
+
+  // If data is FormData and Content-Type is multipart/form-data without boundary,
+  // delete it so fetch can set it correctly with the boundary.
+  const cleanFormDataContentType = (
+    data: unknown,
+    headers: AxiosRequestHeaders
+  ): void => {
+    if (utils.isFormData(data)) {
+      const contentType = headers.getContentType() as string | null | undefined;
+      if (
+        contentType &&
+        /^multipart\/form-data/i.test(contentType) &&
+        !/boundary=/i.test(contentType)
+      ) {
+        headers.delete("content-type");
+      }
+    }
+  };
+
+  // Cheap pre-check: if the server declares a content-length exceeding the cap, reject early.
+  const checkDeclaredContentLength = (
+    responseHeaders: AxiosHeaders,
+    hasMaxContentLength: boolean,
+    maxContentLength: number,
+    config: InternalAxiosRequestConfig,
+    request: unknown
+  ): void => {
+    if (!hasMaxContentLength) return;
+    const declaredLength = utils.toFiniteNumber(
+      (responseHeaders.getContentLength as () => unknown)()
+    );
+    if (declaredLength != null && declaredLength > maxContentLength) {
+      throw new AxiosError(
+        "maxContentLength size of " + maxContentLength + " exceeded",
+        AxiosError.ERR_BAD_RESPONSE,
+        config,
+        request
+      );
+    }
+  };
+
+  // Wrap the response body stream with download progress tracking and maxContentLength enforcement.
+  const buildDownloadStream = (
+    response: AnyResponse,
+    responseHeaders: AxiosHeaders,
+    onDownloadProgress: unknown,
+    hasMaxContentLength: boolean,
+    maxContentLength: number,
+    isStreamResponse: boolean,
+    unsubscribe: (() => void) | false | undefined,
+    config: InternalAxiosRequestConfig,
+    request: unknown
+  ): AnyResponse => {
+    const needsWrapping = onDownloadProgress || hasMaxContentLength || (isStreamResponse && unsubscribe);
+    if (!supportsResponseStream || !response.body || !needsWrapping) {
+      return response;
+    }
+
+    const options: Record<string, unknown> = {};
+    [ "status", "statusText", "headers" ].forEach(prop => {
+      options[prop] = response[prop];
+    });
+
+    const responseContentLength = utils.toFiniteNumber(
+      (responseHeaders.getContentLength as () => unknown)()
+    );
+
+    const [ onProgress, flush ] = onDownloadProgress
+      ? progressEventDecorator(
+        responseContentLength,
+        progressEventReducer(
+          asyncDecorator(
+            onDownloadProgress as (...args: Array<unknown>) => unknown
+          ),
+          true
+        )
+      )
+      : [];
+
+    let bytesRead = 0;
+    const onChunkProgress = (loadedBytes: number): void => {
+      if (hasMaxContentLength) {
+        bytesRead = loadedBytes;
+        if (bytesRead > maxContentLength) {
+          throw new AxiosError(
+            "maxContentLength size of " + maxContentLength + " exceeded",
+            AxiosError.ERR_BAD_RESPONSE,
+            config,
+            request
+          );
+        }
+      }
+      onProgress && onProgress(loadedBytes);
+    };
+
+    return new (Response as AnyConstructor)(
+      trackStream(
+        response.body,
+        DEFAULT_CHUNK_SIZE,
+        onChunkProgress,
+        () => {
+          flush && flush();
+          unsubscribe && unsubscribe();
+        }
+      ),
+      options
+    ) as AnyResponse;
+  };
+
+  // Fallback enforcement for environments without ReadableStream support (legacy runtimes).
+  // Detects materialized size from typed output; skips streams/Response passthrough.
+  const checkMaterializedSize = (
+    responseData: unknown,
+    hasMaxContentLength: boolean,
+    maxContentLength: number,
+    isStreamResponse: boolean,
+    config: InternalAxiosRequestConfig,
+    request: unknown
+  ): void => {
+    if (!hasMaxContentLength || supportsResponseStream || isStreamResponse) return;
+    if (responseData == null) return;
+    let materializedSize: number | undefined;
+    const rd = responseData as Record<string, unknown>;
+    if (typeof rd["byteLength"] === "number") {
+      materializedSize = rd["byteLength"];
+    }
+    else if (typeof rd["size"] === "number") {
+      materializedSize = rd["size"];
+    }
+    else if (typeof responseData === "string") {
+      materializedSize =
+        typeof TextEncoder === "function"
+          ? new TextEncoder().encode(responseData).byteLength
+          : responseData.length;
+    }
+    if (typeof materializedSize === "number" && materializedSize > maxContentLength) {
+      throw new AxiosError(
+        "maxContentLength size of " + maxContentLength + " exceeded",
+        AxiosError.ERR_BAD_RESPONSE,
+        config,
+        request
+      );
+    }
+  };
+
+  // Handle errors caught from the fetch call, re-throwing as appropriate AxiosErrors.
+  const handleFetchCaughtError = (
+    err: unknown,
+    composedSignal: ComposedSignal | undefined,
+    pendingBodyErrorRef: PendingBodyErrorRef,
+    config: InternalAxiosRequestConfig,
+    request: unknown
+  ): never => {
+    // Safari can surface fetch aborts as a DOMException-like object whose
+    // branded getters throw. Prefer our composed signal reason before reading
+    // the caught error, preserving timeout vs cancellation semantics.
+    if (
+      composedSignal &&
+      composedSignal.aborted &&
+      composedSignal.reason instanceof AxiosError
+    ) {
+      const canceledError = composedSignal.reason;
+      canceledError.config = config;
+      request && (canceledError.request = request);
+      err !== canceledError && (canceledError.cause = err as Error);
+      throw canceledError;
+    }
+
+    // Surface a maxBodyLength violation we raised while the request body was
+    // being streamed. Matching by identity keeps the error deterministic across
+    // runtimes and avoids prototype-pollution reads.
+    if (pendingBodyErrorRef.value) {
+      const _pbe = pendingBodyErrorRef.value;
+      request && !_pbe.request && (_pbe.request = request);
+      throw _pbe;
+    }
+
+    // Re-throw AxiosErrors we raised synchronously without re-wrapping them.
+    if (err instanceof AxiosError) {
+      request && !err.request && (err.request = request);
+      throw err;
+    }
+
+    const _err = err as Record<string, unknown> & Error;
+    if (
+      _err.name === "TypeError" &&
+      /Load failed|fetch/i.test(_err.message)
+    ) {
+      throw Object.assign(
+        new AxiosError(
+          "Network Error",
+          AxiosError.ERR_NETWORK,
+          config,
+          request,
+          _err["response"] as AxiosResponse | undefined
+        ),
+        {
+          cause: _err["cause"] || _err,
+        }
+      );
+    }
+
+    throw AxiosError.from(
+      _err,
+      _err["code"] as string | undefined,
+      config,
+      request,
+      _err["response"] as AxiosResponse | undefined
+    );
+  };
+
   return async (config: InternalAxiosRequestConfig) => {
     const _resolved = resolveConfig(config) as InternalAxiosRequestConfig & {
       fetchOptions?: Record<string, unknown>;
@@ -308,13 +740,13 @@ const factory = (env: Record<string, unknown>) => {
         ? (config as unknown as Record<string, unknown>)[key]
         : undefined;
 
-    let _fetch: FetchFn = (envFetch || _globalFetch) as FetchFn;
+    const _fetch: FetchFn = (envFetch || _globalFetch) as FetchFn;
 
     responseType = (
       responseType ? (responseType + "").toLowerCase() : "text"
     ) as typeof responseType;
 
-    let composedSignal = composeSignals(
+    const composedSignal = composeSignals(
       [
         signal,
         cancelToken &&
@@ -323,8 +755,6 @@ const factory = (env: Record<string, unknown>) => {
       timeout
     ) as ComposedSignal | undefined;
 
-    let request: unknown = null;
-
     const unsubscribe =
       composedSignal &&
       composedSignal.unsubscribe &&
@@ -332,101 +762,23 @@ const factory = (env: Record<string, unknown>) => {
         composedSignal.unsubscribe!();
       });
 
-    let requestContentLength;
+    let request: unknown = null;
+    const pendingBodyErrorRef: PendingBodyErrorRef = { value: null };
 
-    // AxiosError we raise while the request body is being streamed. Captured
-    // by identity so the catch block can surface it directly, regardless of
-    // how the runtime wraps the resulting fetch rejection (undici exposes it
-    // as `err.cause`; some browsers drop the original error entirely).
-    let pendingBodyError: (AxiosError & { request?: unknown; }) | null = null;
+    try {
+      url = applyAuthToRequest(url!, headers, own);
 
-    const maxBodyLengthError = () =>
-      new AxiosError(
-        "Request body larger than maxBodyLength limit",
-        AxiosError.ERR_BAD_REQUEST,
+      const preflightContentLength = await checkPreflightLimits(
+        url,
+        data,
+        method!,
+        hasMaxContentLength,
+        maxContentLength!,
+        hasMaxBodyLength,
+        maxBodyLength!,
         config,
         request
       );
-
-    try {
-      // HTTP basic authentication
-      let auth = undefined;
-      const configAuth = own("auth");
-
-      if (configAuth) {
-        const username = utils.getSafeProp(configAuth, "username") || "";
-        const password = utils.getSafeProp(configAuth, "password") || "";
-        auth = {
-          username,
-          password,
-        };
-      }
-
-      if (maybeWithAuthCredentials(url!)) {
-        const parsedURL = new URL(url!, platform.origin);
-
-        if (!auth && (parsedURL.username || parsedURL.password)) {
-          const urlUsername = decodeURIComponentSafe(parsedURL.username);
-          const urlPassword = decodeURIComponentSafe(parsedURL.password);
-          auth = {
-            username: urlUsername,
-            password: urlPassword,
-          };
-        }
-
-        if (parsedURL.username || parsedURL.password) {
-          parsedURL.username = "";
-          parsedURL.password = "";
-          url = parsedURL.href;
-        }
-      }
-
-      if (auth) {
-        headers.delete("authorization");
-        headers.set(
-          "Authorization",
-          "Basic " +
-            _btoa(
-              encodeUTF8(
-                String(auth.username || "") + ":" + String(auth.password || "")
-              )
-            )
-        );
-      }
-
-      // Enforce maxContentLength for data: URLs up-front so we never materialize
-      // an oversized payload. The HTTP adapter applies the same check (see http.js
-      // "if (protocol === 'data:')" branch).
-      if (
-        hasMaxContentLength &&
-        typeof url === "string" &&
-        url.startsWith("data:")
-      ) {
-        const estimated = estimateDataURLDecodedBytes(url);
-        if (estimated > maxContentLength!) {
-          throw new AxiosError(
-            "maxContentLength size of " + maxContentLength + " exceeded",
-            AxiosError.ERR_BAD_RESPONSE,
-            config,
-            request
-          );
-        }
-      }
-
-      // Enforce maxBodyLength against known-size bodies before dispatch using
-      // the body's *actual* size — never a caller-declared Content-Length,
-      // which could under-report to slip an oversized body past the check.
-      // Unknown-size streams return undefined here and are counted per-chunk
-      // below as fetch consumes them.
-      if (hasMaxBodyLength && method !== "get" && method !== "head") {
-        const outboundLength = await getBodyLength(data);
-        if (typeof outboundLength === "number" && isFinite(outboundLength)) {
-          requestContentLength = outboundLength;
-          if (outboundLength > maxBodyLength!) {
-            throw maxBodyLengthError();
-          }
-        }
-      }
 
       // A streamed body under maxBodyLength must be counted as fetch consumes
       // it; its size is never trusted from a caller-declared Content-Length.
@@ -434,97 +786,22 @@ const factory = (env: Record<string, unknown>) => {
         hasMaxBodyLength &&
         (utils.isReadableStream!(data) || utils.isStream(data));
 
-      const trackRequestStream = (
-        stream: unknown,
-        onProgress?: (bytes: number) => void,
-        flush?: () => void
-      ) =>
-        trackStream(
-          stream,
-          DEFAULT_CHUNK_SIZE,
-          (loadedBytes: number) => {
-            if (hasMaxBodyLength && loadedBytes > maxBodyLength!) {
-              pendingBodyError = maxBodyLengthError();
-              throw pendingBodyError;
-            }
-            onProgress && onProgress(loadedBytes);
-          },
-          flush
-        );
+      ({ data } = await buildUploadStream(
+        data,
+        url,
+        method!,
+        headers,
+        onUploadProgress,
+        mustEnforceStreamBody,
+        preflightContentLength,
+        hasMaxBodyLength,
+        maxBodyLength!,
+        config,
+        request,
+        pendingBodyErrorRef
+      ));
 
-      if (
-        supportsRequestStream &&
-        method !== "get" &&
-        method !== "head" &&
-        (onUploadProgress || mustEnforceStreamBody)
-      ) {
-        requestContentLength =
-          requestContentLength == null
-            ? await resolveBodyLength(headers, data)
-            : requestContentLength;
-
-        // A declared length of 0 is only trusted to skip the wrap when we are
-        // not enforcing a stream limit (which must not rely on that header).
-        if (requestContentLength !== 0 || mustEnforceStreamBody) {
-          let _request = new (Request as AnyConstructor)(url!, {
-            method: "POST",
-            body: data,
-            duplex: "half",
-          }) as AnyRequest;
-
-          let contentTypeHeader: string | null;
-
-          if (
-            utils.isFormData(data) &&
-            (contentTypeHeader = _request.headers.get("content-type"))
-          ) {
-            headers.setContentType(contentTypeHeader);
-          }
-
-          if (_request.body) {
-            const [ onProgress, flush ] = onUploadProgress
-              ? progressEventDecorator(
-                requestContentLength,
-                progressEventReducer(
-                  asyncDecorator(
-                    onUploadProgress as (...args: Array<unknown>) => unknown
-                  ),
-                  false
-                )
-              )
-              : [];
-
-            data = trackRequestStream(_request.body, onProgress, flush);
-          }
-        }
-      }
-      else if (
-        mustEnforceStreamBody &&
-        !isRequestSupported &&
-        isReadableStreamSupported &&
-        method !== "get" &&
-        method !== "head"
-      ) {
-        data = trackRequestStream(data);
-      }
-      else if (
-        mustEnforceStreamBody &&
-        isRequestSupported &&
-        !supportsRequestStream &&
-        method !== "get" &&
-        method !== "head"
-      ) {
-        throw new AxiosError(
-          "Stream request bodies are not supported by the current fetch implementation",
-          AxiosError.ERR_NOT_SUPPORT,
-          config,
-          request
-        );
-      }
-
-      if (!utils.isString(withCredentials)) {
-        withCredentials = withCredentials ? "include" : "omit";
-      }
+      withCredentials = normalizeCredentials(withCredentials);
 
       // Cloudflare Workers throws when credentials are defined
       // see https://github.com/cloudflare/workerd/issues/902
@@ -533,21 +810,7 @@ const factory = (env: Record<string, unknown>) => {
         Request != null &&
         "credentials" in (Request.prototype as object);
 
-      // If data is FormData and Content-Type is multipart/form-data without boundary,
-      // delete it so fetch can set it correctly with the boundary
-      if (utils.isFormData(data)) {
-        const contentType = headers.getContentType() as
-          | string
-          | null
-          | undefined;
-        if (
-          contentType &&
-          /^multipart\/form-data/i.test(contentType) &&
-          !/boundary=/i.test(contentType)
-        ) {
-          headers.delete("content-type");
-        }
-      }
+      cleanFormDataContentType(data, headers);
 
       // Set User-Agent header if not already set (fetch defaults to 'node' in Node.js)
       headers.set("User-Agent", "axios/" + VERSION, false);
@@ -566,131 +829,46 @@ const factory = (env: Record<string, unknown>) => {
 
       request =
         isRequestSupported &&
-        new (Request as AnyConstructor)(url!, resolvedOptions);
+        new (Request as AnyConstructor)(url, resolvedOptions);
 
       let response = await (isRequestSupported
         ? _fetch(request, fetchOptions)
-        : _fetch(url!, resolvedOptions));
+        : _fetch(url, resolvedOptions));
 
       const responseHeaders = AxiosHeaders.from(response.headers);
 
-      // Cheap pre-check: if the server honestly declares a content-length that
-      // already exceeds the cap, reject before we start streaming.
-      if (hasMaxContentLength) {
-        const declaredLength = utils.toFiniteNumber(
-          (responseHeaders.getContentLength as () => unknown)()
-        );
-        if (declaredLength != null && declaredLength > maxContentLength!) {
-          throw new AxiosError(
-            "maxContentLength size of " + maxContentLength + " exceeded",
-            AxiosError.ERR_BAD_RESPONSE,
-            config,
-            request
-          );
-        }
-      }
+      checkDeclaredContentLength(responseHeaders, hasMaxContentLength, maxContentLength!, config, request);
 
       const isStreamResponse =
         supportsResponseStream &&
         (responseType === "stream" || responseType === "response");
 
-      if (
-        supportsResponseStream &&
-        response.body &&
-        (onDownloadProgress ||
-          hasMaxContentLength ||
-          (isStreamResponse && unsubscribe))
-      ) {
-        const options: Record<string, unknown> = {};
-
-        [ "status", "statusText", "headers" ].forEach(prop => {
-          options[prop] = response[prop];
-        });
-
-        const responseContentLength = utils.toFiniteNumber(
-          (responseHeaders.getContentLength as () => unknown)()
-        );
-
-        const [ onProgress, flush ] = onDownloadProgress
-          ? progressEventDecorator(
-            responseContentLength,
-            progressEventReducer(
-              asyncDecorator(
-                onDownloadProgress as (...args: Array<unknown>) => unknown
-              ),
-              true
-            )
-          )
-          : [];
-
-        let bytesRead = 0;
-        const onChunkProgress = (loadedBytes: number): void => {
-          if (hasMaxContentLength) {
-            bytesRead = loadedBytes;
-            if (bytesRead > maxContentLength!) {
-              throw new AxiosError(
-                "maxContentLength size of " + maxContentLength + " exceeded",
-                AxiosError.ERR_BAD_RESPONSE,
-                config,
-                request
-              );
-            }
-          }
-          onProgress && onProgress(loadedBytes);
-        };
-
-        response = new (Response as AnyConstructor)(
-          trackStream(
-            response.body,
-            DEFAULT_CHUNK_SIZE,
-            onChunkProgress,
-            () => {
-              flush && flush();
-              unsubscribe && unsubscribe();
-            }
-          ),
-          options
-        ) as AnyResponse;
-      }
+      response = buildDownloadStream(
+        response,
+        responseHeaders,
+        onDownloadProgress,
+        hasMaxContentLength,
+        maxContentLength!,
+        isStreamResponse,
+        unsubscribe,
+        config,
+        request
+      );
 
       responseType = responseType || "text";
 
       const resolverKey = utils.findKey(resolvers, responseType) || "text";
       const resolver = resolvers[resolverKey];
-      let responseData = await (resolver && resolver(response, config));
+      const responseData = await (resolver && resolver(response, config));
 
-      // Fallback enforcement for environments without ReadableStream support
-      // (legacy runtimes). Detect materialized size from typed output; skip
-      // streams/Response passthrough since the user will read those themselves.
-      if (hasMaxContentLength && !supportsResponseStream && !isStreamResponse) {
-        let materializedSize;
-        if (responseData != null) {
-          const rd = responseData as Record<string, unknown>;
-          if (typeof rd["byteLength"] === "number") {
-            materializedSize = rd["byteLength"];
-          }
-          else if (typeof rd["size"] === "number") {
-            materializedSize = rd["size"];
-          }
-          else if (typeof responseData === "string") {
-            materializedSize =
-              typeof TextEncoder === "function"
-                ? new TextEncoder().encode(responseData).byteLength
-                : responseData.length;
-          }
-        }
-        if (
-          typeof materializedSize === "number" &&
-          materializedSize > maxContentLength!
-        ) {
-          throw new AxiosError(
-            "maxContentLength size of " + maxContentLength + " exceeded",
-            AxiosError.ERR_BAD_RESPONSE,
-            config,
-            request
-          );
-        }
-      }
+      checkMaterializedSize(
+        responseData,
+        hasMaxContentLength,
+        maxContentLength!,
+        isStreamResponse,
+        config,
+        request
+      );
 
       !isStreamResponse && unsubscribe && unsubscribe();
 
@@ -707,67 +885,7 @@ const factory = (env: Record<string, unknown>) => {
     }
     catch (err) {
       unsubscribe && unsubscribe();
-
-      // Safari can surface fetch aborts as a DOMException-like object whose
-      // branded getters throw. Prefer our composed signal reason before reading
-      // the caught error, preserving timeout vs cancellation semantics.
-      if (
-        composedSignal &&
-        composedSignal.aborted &&
-        composedSignal.reason instanceof AxiosError
-      ) {
-        const canceledError = composedSignal.reason;
-        canceledError.config = config;
-        request && (canceledError.request = request);
-        err !== canceledError && (canceledError.cause = err as Error);
-        throw canceledError;
-      }
-
-      // Surface a maxBodyLength violation we raised while the request body was
-      // being streamed. Matching by identity (rather than reading
-      // `err.cause.isAxiosError`) keeps the error deterministic across runtimes
-      // and avoids both prototype-pollution reads and mis-attributing a foreign
-      // AxiosError that merely happened to land in `err.cause`.
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (pendingBodyError) {
-        const _pbe = pendingBodyError as AxiosError & { request?: unknown; };
-        request && !_pbe.request && (_pbe.request = request);
-        throw pendingBodyError;
-      }
-
-      // Re-throw AxiosErrors we raised synchronously (data: URL / content-length
-      // pre-checks, response size enforcement) without re-wrapping them.
-      if (err instanceof AxiosError) {
-        request && !err.request && (err.request = request);
-        throw err;
-      }
-
-      const _err = err as Record<string, unknown> & Error;
-      if (
-        _err.name === "TypeError" &&
-        /Load failed|fetch/i.test(_err.message)
-      ) {
-        throw Object.assign(
-          new AxiosError(
-            "Network Error",
-            AxiosError.ERR_NETWORK,
-            config,
-            request,
-            _err["response"] as AxiosResponse | undefined
-          ),
-          {
-            cause: _err["cause"] || _err,
-          }
-        );
-      }
-
-      throw AxiosError.from(
-        _err,
-        _err["code"] as string | undefined,
-        config,
-        request,
-        _err["response"] as AxiosResponse | undefined
-      );
+      handleFetchCaughtError(err, composedSignal, pendingBodyErrorRef, config, request);
     }
   };
 };
