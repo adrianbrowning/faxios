@@ -27,12 +27,11 @@ function normalizeValue(
   value: AxiosHeaderValue | undefined
 ): AxiosHeaderValue | undefined {
   if (value === false || value == null) {
-    return value;
+    return value as AxiosHeaderValue | undefined;
   }
-  const normalized = utils.isArray(value)
+  return utils.isArray(value)
     ? value.map(v => normalizeValue(v) as string)
     : sanitizeHeaderValue(String(value));
-  return normalized;
 }
 
 function parseTokens(str: string): Record<string, string> {
@@ -377,9 +376,7 @@ class AxiosHeaders {
   }
 
   concat(
-    ...targets: Array<
-      Record<string, unknown> | AxiosHeaders | string | undefined | null
-    >
+    ...targets: Array<HeaderInput>
   ): AxiosHeaders {
     return (this.constructor as typeof AxiosHeaders).concat(this, ...targets);
   }
