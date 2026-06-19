@@ -23,6 +23,7 @@ function normalizeHeader(header: string): string {
     .toLowerCase();
 }
 
+// eslint-disable-next-line sonarjs/function-return-type
 function normalizeValue(value: AxiosHeaderValue | undefined): string | Array<string> | undefined {
   if (value === false || value == null) {
     return undefined;
