@@ -3,6 +3,7 @@
 import combineURLs from "../helpers/combineURLs.js";
 import isAbsoluteURL from "../helpers/isAbsoluteURL.js";
 import AxiosError from "./AxiosError.js";
+import type { InternalAxiosRequestConfig } from "../types.js";
 
 const malformedHttpProtocol = /^https?:(?!\/\/)/i;
 const httpProtocolControlCharacters = /[\t\n\r]/g;
@@ -24,7 +25,7 @@ function assertValidHttpProtocolURL(url: unknown, config: unknown): void {
     throw new AxiosError(
       "Invalid URL: missing \"//\" after protocol",
       AxiosError.ERR_INVALID_URL,
-      config as import("../types.js").InternalAxiosRequestConfig
+      config as InternalAxiosRequestConfig
     );
   }
 }
