@@ -2,8 +2,8 @@
 
 import combineURLs from "../helpers/combineURLs.js";
 import isAbsoluteURL from "../helpers/isAbsoluteURL.js";
-import AxiosError from "./AxiosError.js";
 import type { InternalAxiosRequestConfig } from "../types.js";
+import AxiosError from "./AxiosError.js";
 
 const malformedHttpProtocol = /^https?:(?!\/\/)/i;
 const httpProtocolControlCharacters = /[\t\n\r]/g;
