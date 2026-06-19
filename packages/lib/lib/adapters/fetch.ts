@@ -7,7 +7,7 @@ import estimateDataURLDecodedBytes from "../helpers/estimateDataURLDecodedBytes.
 import {
   progressEventReducer,
   progressEventDecorator,
-  asyncDecorator,
+  asyncDecorator
 } from "../helpers/progressEventReducer.js";
 import resolveConfig from "../helpers/resolveConfig.js";
 import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
@@ -17,7 +17,7 @@ import type {
   CancelToken,
   InternalAxiosRequestConfig,
   AxiosRequestHeaders,
-  AxiosResponse,
+  AxiosResponse
 } from "../types.js";
 import utils from "../utils.js";
 
@@ -44,7 +44,7 @@ type AnyRequest = {
     has: (name: string) => boolean;
     get: (name: string) => string | null;
   };
-  body: { cancel: () => Promise<void> } | null;
+  body: { cancel: () => Promise<void>; } | null;
   arrayBuffer: () => Promise<ArrayBuffer>;
   [key: string]: unknown;
 };
@@ -52,12 +52,12 @@ type AnyReadableStream = {
   cancel: () => Promise<void>;
   [key: string]: unknown;
 };
-type AnyTextEncoder = { encode: (str: string) => Uint8Array };
+type AnyTextEncoder = { encode: (str: string) => Uint8Array; };
 
 type CancelTokenWithAbortSignal = CancelToken & {
   toAbortSignal: () => unknown;
 };
-type ComposedSignal = AbortSignal & { unsubscribe?: () => void };
+type ComposedSignal = AbortSignal & { unsubscribe?: () => void; };
 
 const DEFAULT_CHUNK_SIZE = 64 * 1024;
 
@@ -74,7 +74,7 @@ const { isFunction } = utils;
 const encodeUTF8 = (str: string): string =>
   encodeURIComponent(str).replace(
     /%([0-9A-F]{2})/gi,
-    (_: string, hex: string) => String.fromCharCode(parseInt(hex, 16)),
+    (_: string, hex: string) => String.fromCharCode(parseInt(hex, 16))
   );
 
 // Node's WHATWG URL parser returns `username` and `password` percent-encoded.
@@ -88,7 +88,8 @@ const decodeURIComponentSafe = (value: unknown): unknown => {
 
   try {
     return decodeURIComponent(value as string);
-  } catch {
+  }
+  catch {
     return value;
   }
 };
@@ -99,7 +100,8 @@ const test = (
 ): boolean => {
   try {
     return !!fn(...args);
-  } catch {
+  }
+  catch {
     return false;
   }
 };
@@ -117,7 +119,7 @@ const maybeWithAuthCredentials = (url: string): boolean => {
 const factory = (env: Record<string, unknown>) => {
   const globalObject: Record<string, unknown> = utils.global;
   const ReadableStream = globalObject["ReadableStream"] as
-    | (AnyConstructor & { prototype: AnyReadableStream })
+    | (AnyConstructor & { prototype: AnyReadableStream; })
     | undefined;
   const TextEncoder = globalObject["TextEncoder"] as
     | (new () => AnyTextEncoder)
@@ -131,7 +133,7 @@ const factory = (env: Record<string, unknown>) => {
       Request: globalObject["Request"],
       Response: globalObject["Response"],
     },
-    env,
+    env
   );
 
   const {
@@ -155,23 +157,22 @@ const factory = (env: Record<string, unknown>) => {
   if (!isFetchSupported) {
     return false;
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+   
   const isReadableStreamSupported =
     isFetchSupported && isFunction(ReadableStream);
 
   const encodeText: (str: string) => Promise<Uint8Array> | Uint8Array =
     typeof TextEncoder === "function"
       ? (
-          (encoder: AnyTextEncoder) => (str: string) =>
-            encoder.encode(str)
-        )(new TextEncoder())
+        (encoder: AnyTextEncoder) => (str: string) =>
+          encoder.encode(str)
+      )(new TextEncoder())
       : async (str: string) =>
-          new Uint8Array(
-            await (
-              new (Request as AnyConstructor)(str) as AnyRequest
-            ).arrayBuffer(),
-          );
+        new Uint8Array(
+          await (
+            new (Request as AnyConstructor)(str) as AnyRequest
+          ).arrayBuffer()
+        );
 
   const supportsRequestStream =
     isRequestSupported &&
@@ -203,8 +204,8 @@ const factory = (env: Record<string, unknown>) => {
     isReadableStreamSupported &&
     test(() =>
       utils.isReadableStream!(
-        (new (Response as AnyConstructor)("") as AnyResponse).body,
-      ),
+        (new (Response as AnyConstructor)("") as AnyResponse).body
+      )
     );
 
   const resolvers: Record<
@@ -217,7 +218,7 @@ const factory = (env: Record<string, unknown>) => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   isFetchSupported &&
     (() => {
-      ["text", "arrayBuffer", "blob", "formData", "stream"].forEach((type) => {
+      [ "text", "arrayBuffer", "blob", "formData", "stream" ].forEach(type => {
         !resolvers[type] &&
           (resolvers[type] = (res: AnyResponse, config?: unknown) => {
             const method = (res as Record<string, unknown>)[type];
@@ -229,7 +230,7 @@ const factory = (env: Record<string, unknown>) => {
             throw new AxiosError(
               `Response type '${type}' is not supported`,
               AxiosError.ERR_NOT_SUPPORT,
-              config as InternalAxiosRequestConfig,
+              config as InternalAxiosRequestConfig
             );
           });
       });
@@ -241,7 +242,7 @@ const factory = (env: Record<string, unknown>) => {
     }
 
     if (utils.isBlob(body)) {
-      return (body as { size: number }).size;
+      return (body as { size: number; }).size;
     }
 
     if (utils.isSpecCompliantForm(body)) {
@@ -268,7 +269,7 @@ const factory = (env: Record<string, unknown>) => {
 
   const resolveBodyLength = async (
     headers: AxiosRequestHeaders,
-    body: unknown,
+    body: unknown
   ): Promise<number | undefined> => {
     const length = utils.toFiniteNumber(headers.getContentLength());
 
@@ -319,7 +320,7 @@ const factory = (env: Record<string, unknown>) => {
         cancelToken &&
           (cancelToken as CancelTokenWithAbortSignal).toAbortSignal(),
       ],
-      timeout,
+      timeout
     ) as ComposedSignal | undefined;
 
     let request: unknown = null;
@@ -337,14 +338,14 @@ const factory = (env: Record<string, unknown>) => {
     // by identity so the catch block can surface it directly, regardless of
     // how the runtime wraps the resulting fetch rejection (undici exposes it
     // as `err.cause`; some browsers drop the original error entirely).
-    let pendingBodyError: (AxiosError & { request?: unknown }) | null = null;
+    let pendingBodyError: (AxiosError & { request?: unknown; }) | null = null;
 
     const maxBodyLengthError = () =>
       new AxiosError(
         "Request body larger than maxBodyLength limit",
         AxiosError.ERR_BAD_REQUEST,
         config,
-        request,
+        request
       );
 
     try {
@@ -387,9 +388,9 @@ const factory = (env: Record<string, unknown>) => {
           "Basic " +
             _btoa(
               encodeUTF8(
-                String(auth.username || "") + ":" + String(auth.password || ""),
-              ),
-            ),
+                String(auth.username || "") + ":" + String(auth.password || "")
+              )
+            )
         );
       }
 
@@ -407,7 +408,7 @@ const factory = (env: Record<string, unknown>) => {
             "maxContentLength size of " + maxContentLength + " exceeded",
             AxiosError.ERR_BAD_RESPONSE,
             config,
-            request,
+            request
           );
         }
       }
@@ -436,7 +437,7 @@ const factory = (env: Record<string, unknown>) => {
       const trackRequestStream = (
         stream: unknown,
         onProgress?: (bytes: number) => void,
-        flush?: () => void,
+        flush?: () => void
       ) =>
         trackStream(
           stream,
@@ -448,7 +449,7 @@ const factory = (env: Record<string, unknown>) => {
             }
             onProgress && onProgress(loadedBytes);
           },
-          flush,
+          flush
         );
 
       if (
@@ -481,22 +482,23 @@ const factory = (env: Record<string, unknown>) => {
           }
 
           if (_request.body) {
-            const [onProgress, flush] = onUploadProgress
+            const [ onProgress, flush ] = onUploadProgress
               ? progressEventDecorator(
-                  requestContentLength,
-                  progressEventReducer(
-                    asyncDecorator(
-                      onUploadProgress as (...args: Array<unknown>) => unknown,
-                    ),
-                    false,
+                requestContentLength,
+                progressEventReducer(
+                  asyncDecorator(
+                    onUploadProgress as (...args: Array<unknown>) => unknown
                   ),
+                  false
                 )
+              )
               : [];
 
             data = trackRequestStream(_request.body, onProgress, flush);
           }
         }
-      } else if (
+      }
+      else if (
         mustEnforceStreamBody &&
         !isRequestSupported &&
         isReadableStreamSupported &&
@@ -504,7 +506,8 @@ const factory = (env: Record<string, unknown>) => {
         method !== "head"
       ) {
         data = trackRequestStream(data);
-      } else if (
+      }
+      else if (
         mustEnforceStreamBody &&
         isRequestSupported &&
         !supportsRequestStream &&
@@ -515,7 +518,7 @@ const factory = (env: Record<string, unknown>) => {
           "Stream request bodies are not supported by the current fetch implementation",
           AxiosError.ERR_NOT_SUPPORT,
           config,
-          request,
+          request
         );
       }
 
@@ -554,7 +557,7 @@ const factory = (env: Record<string, unknown>) => {
         signal: composedSignal,
         method: (method as string).toUpperCase(),
         headers: toByteStringHeaderObject(
-          headers.normalize(false) as AxiosHeaders,
+          headers.normalize(false) as AxiosHeaders
         ),
         body: data,
         duplex: "half",
@@ -575,14 +578,14 @@ const factory = (env: Record<string, unknown>) => {
       // already exceeds the cap, reject before we start streaming.
       if (hasMaxContentLength) {
         const declaredLength = utils.toFiniteNumber(
-          (responseHeaders.getContentLength as () => unknown)(),
+          (responseHeaders.getContentLength as () => unknown)()
         );
         if (declaredLength != null && declaredLength > maxContentLength!) {
           throw new AxiosError(
             "maxContentLength size of " + maxContentLength + " exceeded",
             AxiosError.ERR_BAD_RESPONSE,
             config,
-            request,
+            request
           );
         }
       }
@@ -600,24 +603,24 @@ const factory = (env: Record<string, unknown>) => {
       ) {
         const options: Record<string, unknown> = {};
 
-        ["status", "statusText", "headers"].forEach((prop) => {
+        [ "status", "statusText", "headers" ].forEach(prop => {
           options[prop] = response[prop];
         });
 
         const responseContentLength = utils.toFiniteNumber(
-          (responseHeaders.getContentLength as () => unknown)(),
+          (responseHeaders.getContentLength as () => unknown)()
         );
 
-        const [onProgress, flush] = onDownloadProgress
+        const [ onProgress, flush ] = onDownloadProgress
           ? progressEventDecorator(
-              responseContentLength,
-              progressEventReducer(
-                asyncDecorator(
-                  onDownloadProgress as (...args: Array<unknown>) => unknown,
-                ),
-                true,
+            responseContentLength,
+            progressEventReducer(
+              asyncDecorator(
+                onDownloadProgress as (...args: Array<unknown>) => unknown
               ),
+              true
             )
+          )
           : [];
 
         let bytesRead = 0;
@@ -629,7 +632,7 @@ const factory = (env: Record<string, unknown>) => {
                 "maxContentLength size of " + maxContentLength + " exceeded",
                 AxiosError.ERR_BAD_RESPONSE,
                 config,
-                request,
+                request
               );
             }
           }
@@ -644,9 +647,9 @@ const factory = (env: Record<string, unknown>) => {
             () => {
               flush && flush();
               unsubscribe && unsubscribe();
-            },
+            }
           ),
-          options,
+          options
         ) as AnyResponse;
       }
 
@@ -665,9 +668,11 @@ const factory = (env: Record<string, unknown>) => {
           const rd = responseData as Record<string, unknown>;
           if (typeof rd["byteLength"] === "number") {
             materializedSize = rd["byteLength"];
-          } else if (typeof rd["size"] === "number") {
+          }
+          else if (typeof rd["size"] === "number") {
             materializedSize = rd["size"];
-          } else if (typeof responseData === "string") {
+          }
+          else if (typeof responseData === "string") {
             materializedSize =
               typeof TextEncoder === "function"
                 ? new TextEncoder().encode(responseData).byteLength
@@ -682,7 +687,7 @@ const factory = (env: Record<string, unknown>) => {
             "maxContentLength size of " + maxContentLength + " exceeded",
             AxiosError.ERR_BAD_RESPONSE,
             config,
-            request,
+            request
           );
         }
       }
@@ -699,7 +704,8 @@ const factory = (env: Record<string, unknown>) => {
           request,
         });
       });
-    } catch (err) {
+    }
+    catch (err) {
       unsubscribe && unsubscribe();
 
       // Safari can surface fetch aborts as a DOMException-like object whose
@@ -724,7 +730,7 @@ const factory = (env: Record<string, unknown>) => {
       // AxiosError that merely happened to land in `err.cause`.
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (pendingBodyError) {
-        const _pbe = pendingBodyError as AxiosError & { request?: unknown };
+        const _pbe = pendingBodyError as AxiosError & { request?: unknown; };
         request && !_pbe.request && (_pbe.request = request);
         throw pendingBodyError;
       }
@@ -747,11 +753,11 @@ const factory = (env: Record<string, unknown>) => {
             AxiosError.ERR_NETWORK,
             config,
             request,
-            _err["response"] as AxiosResponse | undefined,
+            _err["response"] as AxiosResponse | undefined
           ),
           {
             cause: _err["cause"] || _err,
-          },
+          }
         );
       }
 
@@ -760,7 +766,7 @@ const factory = (env: Record<string, unknown>) => {
         _err["code"] as string | undefined,
         config,
         request,
-        _err["response"] as AxiosResponse | undefined,
+        _err["response"] as AxiosResponse | undefined
       );
     }
   };
@@ -768,14 +774,14 @@ const factory = (env: Record<string, unknown>) => {
 
 const seedCache = new Map<unknown, unknown>();
 
-export const getFetch = (config?: { env?: Record<string, unknown> }) => {
+export const getFetch = (config?: { env?: Record<string, unknown>; }) => {
   const env: Record<string, unknown> = (config && config.env) || {};
   const { fetch, Request, Response } = env as {
     fetch?: unknown;
     Request?: unknown;
     Response?: unknown;
   };
-  const seeds: Array<unknown> = [Request, Response, fetch];
+  const seeds: Array<unknown> = [ Request, Response, fetch ];
 
   const len = seeds.length;
   let i = len;

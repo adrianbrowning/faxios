@@ -28,7 +28,7 @@ function hasOwnOrPrototypeToJSON(source: unknown): boolean {
 // (case-insensitive) listed in `redactKeys` with REDACTED. Walks through arrays
 // and AxiosHeaders, and short-circuits on circular references.
 function redactConfig(config: unknown, redactKeys: Array<string>): unknown {
-  const lowerKeys = new Set(redactKeys.map((k) => String(k).toLowerCase()));
+  const lowerKeys = new Set(redactKeys.map(k => String(k).toLowerCase()));
   const seen: Array<object> = [];
 
   const visit = (source: unknown): unknown => {
@@ -51,14 +51,15 @@ function redactConfig(config: unknown, redactKeys: Array<string>): unknown {
           (result as Array<unknown>)[i] = reducedValue;
         }
       });
-    } else {
+    }
+    else {
       if (!utils.isPlainObject(source) && hasOwnOrPrototypeToJSON(source)) {
         seen.pop();
         return source;
       }
 
       result = Object.create(null);
-      for (const [key, value] of Object.entries(source as object)) {
+      for (const [ key, value ] of Object.entries(source as object)) {
         const reducedValue = lowerKeys.has(key.toLowerCase())
           ? REDACTED
           : visit(value);
@@ -108,19 +109,19 @@ class AxiosError extends Error {
   static readonly ERR_FORM_DATA_DEPTH_EXCEEDED: string;
 
   static from(
-    error: Error & { code?: string; status?: number },
+    error: Error & { code?: string; status?: number; },
     code?: string,
     config?: InternalAxiosRequestConfig,
     request?: unknown,
     response?: AxiosResponse,
-    customProps?: Record<string, unknown>,
+    customProps?: Record<string, unknown>
   ): AxiosError {
     const axiosError = new AxiosError(
       error.message,
       code || error.code,
       config,
       request,
-      response,
+      response
     );
     axiosError.cause = error;
     axiosError.name = error.name;
@@ -150,7 +151,7 @@ class AxiosError extends Error {
     code?: string,
     config?: InternalAxiosRequestConfig,
     request?: unknown,
-    response?: AxiosResponse,
+    response?: AxiosResponse
   ) {
     super(message);
 
@@ -165,7 +166,7 @@ class AxiosError extends Error {
         enumerable: true,
         writable: true,
         configurable: true,
-      }),
+      })
     );
 
     this.name = "AxiosError";

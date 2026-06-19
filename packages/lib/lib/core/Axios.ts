@@ -6,7 +6,7 @@ import validator from "../helpers/validator.js";
 import type { ValidatorFn } from "../helpers/validator.js";
 import type {
   AxiosRequestConfig,
-  InternalAxiosRequestConfig,
+  InternalAxiosRequestConfig
 } from "../types.js";
 import utils from "../utils.js";
 import AxiosHeaders from "./AxiosHeaders.js";
@@ -18,7 +18,7 @@ import mergeConfig from "./mergeConfig.js";
 type TransitionalFn = (
   validator: ValidatorFn | false | undefined,
   version?: string,
-  message?: string,
+  message?: string
 ) => ValidatorFn;
 type SpellingFn = (correctSpelling: string) => ValidatorFn;
 const validators = validator.validators as Record<
@@ -46,7 +46,7 @@ class Axios {
           synchronous?: boolean;
           fulfilled?: (...args: Array<unknown>) => unknown;
           rejected?: (...args: Array<unknown>) => unknown;
-        }) => void,
+        }) => void
       ) => void;
     };
     response: {
@@ -54,7 +54,7 @@ class Axios {
         fn: (h: {
           fulfilled?: (...args: Array<unknown>) => unknown;
           rejected?: (...args: Array<unknown>) => unknown;
-        }) => void,
+        }) => void
       ) => void;
     };
   };
@@ -78,18 +78,20 @@ class Axios {
 
   async request(
     configOrUrl: string | AxiosRequestConfig,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ) {
     try {
       return await this._request(configOrUrl, config);
-    } catch (err) {
+    }
+    catch (err) {
       if (err instanceof Error) {
-        let dummy: { stack?: string } = {};
+        let dummy: { stack?: string; } = {};
 
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (Error.captureStackTrace) {
           Error.captureStackTrace(dummy);
-        } else {
+        }
+        else {
           dummy = new Error();
         }
 
@@ -109,7 +111,8 @@ class Axios {
           if (!err.stack) {
             err.stack = stack;
             // match without the 2 top stack lines
-          } else if (stack) {
+          }
+          else if (stack) {
             const firstNewlineIndex = stack.indexOf("\n");
             const secondNewlineIndex =
               firstNewlineIndex === -1
@@ -124,7 +127,8 @@ class Axios {
               err.stack += "\n" + stack;
             }
           }
-        } catch {
+        }
+        catch {
           // ignore the case where "stack" is an un-writable property
         }
       }
@@ -135,14 +139,15 @@ class Axios {
 
   async _request(
     configOrUrl: string | AxiosRequestConfig,
-    config?: AxiosRequestConfig,
+    config?: AxiosRequestConfig
   ) {
     /*eslint no-param-reassign:0*/
     // Allow for axios('example/url'[, config]) a la fetch API
     if (typeof configOrUrl === "string") {
       config = config || {};
       config.url = configOrUrl;
-    } else {
+    }
+    else {
       config = configOrUrl;
     }
 
@@ -158,16 +163,16 @@ class Axios {
           forcedJSONParsing: validators.transitional!(validators.boolean),
           clarifyTimeoutError: validators.transitional!(validators.boolean),
           legacyInterceptorReqResOrdering: validators.transitional!(
-            validators.boolean,
+            validators.boolean
           ),
           advertiseZstdAcceptEncoding: validators.transitional!(
-            validators.boolean,
+            validators.boolean
           ),
           validateStatusUndefinedResolves: validators.transitional!(
-            validators.boolean,
+            validators.boolean
           ),
         },
-        false,
+        false
       );
     }
 
@@ -175,17 +180,18 @@ class Axios {
       if (utils.isFunction(paramsSerializer)) {
         config.paramsSerializer = {
           serialize: paramsSerializer as (
-            params: Record<string, unknown>,
+            params: Record<string, unknown>
           ) => string,
         };
-      } else {
+      }
+      else {
         validator.assertOptions(
           paramsSerializer,
           {
             encode: validators.function!,
             serialize: validators.function!,
           },
-          true,
+          true
         );
       }
     }
@@ -193,9 +199,11 @@ class Axios {
     // Set config.allowAbsoluteUrls
     if (config.allowAbsoluteUrls !== undefined) {
       // do nothing
-    } else if (this.defaults.allowAbsoluteUrls !== undefined) {
+    }
+    else if (this.defaults.allowAbsoluteUrls !== undefined) {
       config.allowAbsoluteUrls = this.defaults.allowAbsoluteUrls;
-    } else {
+    }
+    else {
       config.allowAbsoluteUrls = true;
     }
 
@@ -205,7 +213,7 @@ class Axios {
         baseUrl: validators.spelling!("baseURL"),
         withXsrfToken: validators.spelling!("withXSRFToken"),
       },
-      true,
+      true
     );
 
     // Set config.method
@@ -219,15 +227,15 @@ class Axios {
 
     h &&
       utils.forEach(
-        ["delete", "get", "head", "post", "put", "patch", "query", "common"],
-        (method) => {
+        [ "delete", "get", "head", "post", "put", "patch", "query", "common" ],
+        method => {
           delete h[method as string];
-        },
+        }
       );
 
     config.headers = AxiosHeaders.concat(
       contextHeaders,
-      ...(h ? [h as unknown as null] : []),
+      ...(h ? [ h as unknown as null ] : [])
     );
 
     // filter out skipped interceptors
@@ -259,15 +267,16 @@ class Axios {
         if (legacyInterceptorReqResOrdering) {
           requestInterceptorChain.unshift(
             interceptor.fulfilled,
-            interceptor.rejected,
-          );
-        } else {
-          requestInterceptorChain.push(
-            interceptor.fulfilled,
-            interceptor.rejected,
+            interceptor.rejected
           );
         }
-      },
+        else {
+          requestInterceptorChain.push(
+            interceptor.fulfilled,
+            interceptor.rejected
+          );
+        }
+      }
     );
 
     const responseInterceptorChain: Array<
@@ -280,9 +289,9 @@ class Axios {
       }) {
         responseInterceptorChain.push(
           interceptor.fulfilled,
-          interceptor.rejected,
+          interceptor.rejected
         );
-      },
+      }
     );
 
     let promise;
@@ -319,14 +328,15 @@ class Axios {
         newConfig = onFulfilled
           ? (onFulfilled(newConfig) as AxiosRequestConfig)
           : newConfig;
-      } catch (error) {
+      }
+      catch (error) {
         if (onRejected) onRejected.call(this, error);
         break;
       }
     }
 
     promise = Promise.resolve(newConfig as InternalAxiosRequestConfig).then(
-      async (cfg) => dispatchRequest.call(this, cfg) as Promise<unknown>,
+      async cfg => dispatchRequest.call(this, cfg) as Promise<unknown>
     );
 
     i = 0;
@@ -335,7 +345,7 @@ class Axios {
     while (i < len) {
       promise = promise.then(
         responseInterceptorChain[i++],
-        responseInterceptorChain[i++],
+        responseInterceptorChain[i++]
       );
     }
 
@@ -348,7 +358,7 @@ class Axios {
       config.baseURL,
       config.url,
       config.allowAbsoluteUrls,
-      config,
+      config
     );
     return buildURL(fullPath, config.params, config.paramsSerializer);
   }
@@ -356,7 +366,7 @@ class Axios {
 
 // Provide aliases for supported request methods
 utils.forEach(
-  ["delete", "get", "head", "options"],
+  [ "delete", "get", "head", "options" ],
   function forEachMethodNoData(method) {
     /*eslint func-names:0*/
     (Axios.prototype as unknown as Record<string, unknown>)[method as string] =
@@ -369,33 +379,33 @@ utils.forEach(
               config && utils.hasOwnProp(config, "data")
                 ? config.data
                 : undefined,
-          }),
+          })
         );
       };
-  },
+  }
 );
 
 utils.forEach(
-  ["post", "put", "patch", "query"],
+  [ "post", "put", "patch", "query" ],
   function forEachMethodWithData(method) {
     function generateHTTPMethod(isForm?: boolean) {
       return async function httpMethod(
         this: Axios,
         url: string,
         data?: unknown,
-        config?: AxiosRequestConfig,
+        config?: AxiosRequestConfig
       ) {
         return this.request(
           mergeConfig(config || {}, {
             method: method as string,
             headers: isForm
               ? {
-                  "Content-Type": "multipart/form-data",
-                }
+                "Content-Type": "multipart/form-data",
+              }
               : {},
             url,
             data,
-          }),
+          })
         );
       };
     }
@@ -410,7 +420,7 @@ utils.forEach(
         (method as string) + "Form"
       ] = generateHTTPMethod(true);
     }
-  },
+  }
 );
 
 export default Axios;

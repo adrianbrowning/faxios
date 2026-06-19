@@ -24,19 +24,20 @@ type HeaderInput =
   | null;
 
 function normalizeHeader(header: string): string {
-  return header && String(header).trim().toLowerCase();
+  return header && String(header).trim()
+    .toLowerCase();
 }
 
 // eslint-disable-next-line sonarjs/function-return-type
 function normalizeValue(
-  value: AxiosHeaderValue | undefined,
+  value: AxiosHeaderValue | undefined
 ): string | Array<string> | undefined {
   if (value === false || value == null) {
     return undefined;
   }
   if (utils.isArray(value)) {
-    return (value as Array<AxiosHeaderValue>).map((v) =>
-      sanitizeHeaderValue(String(v)),
+    return (value as Array<AxiosHeaderValue>).map(v =>
+      sanitizeHeaderValue(String(v))
     );
   }
   return sanitizeHeaderValue(String(value));
@@ -66,7 +67,7 @@ function matchHeaderValue(
     | RegExp
     | ((this: AxiosHeaders, value: string, name: string) => boolean)
     | undefined,
-  isHeaderNameFilter?: boolean,
+  isHeaderNameFilter?: boolean
 ): boolean | undefined {
   if (utils.isFunction(filter)) {
     return (
@@ -100,7 +101,7 @@ function formatHeader(header: string): string {
 function buildAccessors(obj: object, header: string): void {
   const accessorName = utils.toCamelCase(" " + header);
 
-  ["get", "set", "has"].forEach((methodName) => {
+  [ "get", "set", "has" ].forEach(methodName => {
     Object.defineProperty(
       obj,
       methodName + accessorName,
@@ -109,7 +110,7 @@ function buildAccessors(obj: object, header: string): void {
           this: AxiosHeaders,
           arg1: unknown,
           arg2: unknown,
-          arg3: unknown,
+          arg3: unknown
         ) {
           return (
             this as unknown as Record<
@@ -119,7 +120,7 @@ function buildAccessors(obj: object, header: string): void {
           )[methodName]!.call(this, header, arg1, arg2, arg3);
         },
         configurable: true,
-      }),
+      })
     );
   });
 }
@@ -128,7 +129,7 @@ class AxiosHeaders {
   [key: string]: unknown;
 
   constructor(
-    headers?: Record<string, unknown> | AxiosHeaders | string | null,
+    headers?: Record<string, unknown> | AxiosHeaders | string | null
   ) {
     headers && this.set(headers);
   }
@@ -136,14 +137,14 @@ class AxiosHeaders {
   set(
     header: HeaderInput,
     valueOrRewrite?: unknown,
-    rewrite?: RewriteOption,
+    rewrite?: RewriteOption
   ): this {
     const self = this;
 
     function setHeader(
       _value: unknown,
       _header: string,
-      _rewrite: unknown,
+      _rewrite: unknown
     ): void {
       const lHeader = normalizeHeader(_header);
 
@@ -161,24 +162,26 @@ class AxiosHeaders {
           (self as Record<string, unknown>)[key] !== false)
       ) {
         (self as Record<string, unknown>)[key || _header] = normalizeValue(
-          _value as AxiosHeaderValue,
+          _value as AxiosHeaderValue
         );
       }
     }
 
     const setHeaders = (headers: object, _rewrite: unknown): void =>
       utils.forEach(headers, (_value: unknown, _header: unknown) =>
-        setHeader(_value, _header as string, _rewrite),
+        setHeader(_value, _header as string, _rewrite)
       );
 
     if (utils.isPlainObject(header) || header instanceof this.constructor) {
       setHeaders(header as object, valueOrRewrite);
-    } else if (utils.isString(header)) {
+    }
+    else if (utils.isString(header)) {
       header = (header as string).trim();
       if (!isValidHeaderName(header)) {
         setHeaders(parseHeaders(header), valueOrRewrite);
       }
-    } else if (utils.isObject(header) && utils.isSafeIterable(header)) {
+    }
+    else if (utils.isObject(header) && utils.isSafeIterable(header)) {
       let obj: Record<string, unknown> = Object.create(null),
         dest: unknown,
         key: string;
@@ -192,15 +195,17 @@ class AxiosHeaders {
         if (utils.hasOwnProp(obj, key)) {
           dest = obj[key];
           obj[key] = utils.isArray(dest)
-            ? [...(dest as Array<unknown>), (entry as Array<unknown>)[1]]
-            : [dest, (entry as Array<unknown>)[1]];
-        } else {
+            ? [ ...(dest as Array<unknown>), (entry as Array<unknown>)[1] ]
+            : [ dest, (entry as Array<unknown>)[1] ];
+        }
+        else {
           obj[key] = (entry as Array<unknown>)[1];
         }
       }
 
       setHeaders(obj, valueOrRewrite);
-    } else {
+    }
+    else {
       header != null && setHeader(valueOrRewrite, header as string, rewrite);
     }
 
@@ -212,11 +217,11 @@ class AxiosHeaders {
     parser?:
       | RegExp
       | ((
-          this: AxiosHeaders,
-          value: AxiosHeaderValue,
-          header: string,
-        ) => unknown)
-      | true,
+        this: AxiosHeaders,
+        value: AxiosHeaderValue,
+        header: string
+      ) => unknown)
+      | true
   ): unknown {
     header = normalizeHeader(header);
 
@@ -241,7 +246,7 @@ class AxiosHeaders {
             parser as (
               this: AxiosHeaders,
               value: AxiosHeaderValue,
-              header: string,
+              header: string
             ) => unknown
           ).call(this, value, key);
         }
@@ -270,7 +275,7 @@ class AxiosHeaders {
             this,
             (this as Record<string, unknown>)[key],
             key,
-            matcher,
+            matcher
           ))
       );
     }
@@ -295,7 +300,7 @@ class AxiosHeaders {
               self,
               (self as Record<string, unknown>)[key],
               key,
-              matcher,
+              matcher
             ))
         ) {
           delete (self as Record<string, unknown>)[key];
@@ -307,7 +312,8 @@ class AxiosHeaders {
 
     if (utils.isArray(header)) {
       header.forEach(deleteHeader);
-    } else {
+    }
+    else {
       deleteHeader(header);
     }
 
@@ -328,7 +334,7 @@ class AxiosHeaders {
           (this as Record<string, unknown>)[key],
           key,
           matcher,
-          true,
+          true
         )
       ) {
         delete (this as Record<string, unknown>)[key];
@@ -349,7 +355,7 @@ class AxiosHeaders {
 
       if (key) {
         (self as Record<string, unknown>)[key] = normalizeValue(
-          value as AxiosHeaderValue,
+          value as AxiosHeaderValue
         );
         delete (self as Record<string, unknown>)[header];
         return;
@@ -362,7 +368,7 @@ class AxiosHeaders {
       }
 
       (self as Record<string, unknown>)[normalized] = normalizeValue(
-        value as AxiosHeaderValue,
+        value as AxiosHeaderValue
       );
 
       headers[normalized] = true;
@@ -397,7 +403,7 @@ class AxiosHeaders {
 
   toString(): string {
     return Object.entries(this.toJSON())
-      .map(([header, value]) => header + ": " + value)
+      .map(([ header, value ]) => header + ": " + value)
       .join("\n");
   }
 
@@ -410,7 +416,7 @@ class AxiosHeaders {
   }
 
   static from(
-    thing?: Record<string, unknown> | AxiosHeaders | string | null,
+    thing?: Record<string, unknown> | AxiosHeaders | string | null
   ): AxiosHeaders {
     return thing instanceof this ? thing : new this(thing);
   }
@@ -423,7 +429,7 @@ class AxiosHeaders {
   ): AxiosHeaders {
     const computed = new this(first);
 
-    targets.forEach((target) => computed.set(target));
+    targets.forEach(target => computed.set(target));
 
     return computed;
   }
@@ -431,15 +437,15 @@ class AxiosHeaders {
   static accessor(header: string | Array<string>): typeof AxiosHeaders {
     const self = this as unknown as Record<
       symbol,
-      { accessors: Record<string, boolean> }
+      { accessors: Record<string, boolean>; }
     >;
     const internals =
       (self[$internals] =
-      self[$internals] =
-        {
+        self[$internals] =
+          {
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          accessors: {} as Record<string, boolean>,
-        });
+            accessors: {} as Record<string, boolean>,
+          });
 
     const accessors = internals.accessors;
     const prototype = this.prototype;
@@ -481,7 +487,7 @@ utils.reduceDescriptors(
         this[mapped] = headerValue;
       },
     };
-  },
+  }
 );
 
 utils.freezeMethods(AxiosHeaders);

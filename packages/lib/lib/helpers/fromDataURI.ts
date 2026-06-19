@@ -6,7 +6,7 @@ import parseProtocol from "./parseProtocol.js";
 
 // RFC 2397: data:[<mediatype>][;base64],<data>
 // mediatype = type/subtype followed by optional ;name=value parameters
-// eslint-disable-next-line sonarjs/slow-regex
+ 
 const DATA_URL_PATTERN =
   /^([^,;]+\/[^,;]+)?((?:;[^,;=]+=[^,;]+)*)(;base64)?,([\s\S]*)$/;
 
@@ -24,7 +24,7 @@ const DATA_URL_PATTERN =
 export default function fromDataURI(
   uri: string,
   asBlob?: boolean,
-  options?: { Blob?: new (...args: Array<unknown>) => object },
+  options?: { Blob?: new (...args: Array<unknown>) => object; }
 ) {
   const _Blob = ((options && options.Blob) || platform.classes.Blob) as
     | (new (...args: Array<unknown>) => object)
@@ -55,7 +55,8 @@ export default function fromDataURI(
     let mime: string | undefined;
     if (type) {
       mime = params ? type + params : type;
-    } else if (params) {
+    }
+    else if (params) {
       mime = "text/plain" + params;
     }
 
@@ -65,11 +66,11 @@ export default function fromDataURI(
       if (!_Blob) {
         throw new AxiosError(
           "Blob is not supported",
-          AxiosError.ERR_NOT_SUPPORT,
+          AxiosError.ERR_NOT_SUPPORT
         );
       }
 
-      return new _Blob([buffer], { type: mime });
+      return new _Blob([ buffer ], { type: mime });
     }
 
     return buffer;
@@ -77,6 +78,6 @@ export default function fromDataURI(
 
   throw new AxiosError(
     "Unsupported protocol " + protocol,
-    AxiosError.ERR_NOT_SUPPORT,
+    AxiosError.ERR_NOT_SUPPORT
   );
 }

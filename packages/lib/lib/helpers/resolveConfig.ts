@@ -8,19 +8,19 @@ import buildURL from "./buildURL.js";
 import cookies from "./cookies.js";
 import isURLSameOrigin from "./isURLSameOrigin.js";
 
-const FORM_DATA_CONTENT_HEADERS = ["content-type", "content-length"];
+const FORM_DATA_CONTENT_HEADERS = [ "content-type", "content-length" ];
 
 function setFormDataHeaders(
   headers: AxiosHeaders,
   formHeaders: Record<string, unknown>,
-  policy: unknown,
+  policy: unknown
 ): void {
   if (policy !== "content-only") {
     headers.set(formHeaders);
     return;
   }
 
-  Object.entries(formHeaders).forEach(([key, val]) => {
+  Object.entries(formHeaders).forEach(([ key, val ]) => {
     if (FORM_DATA_CONTENT_HEADERS.includes(key.toLowerCase())) {
       headers.set(key, val);
     }
@@ -38,7 +38,7 @@ function setFormDataHeaders(
 const encodeUTF8 = (str: string): string =>
   encodeURIComponent(str).replace(
     /%([0-9A-F]{2})/gi,
-    (_: string, hex: string) => String.fromCharCode(parseInt(hex, 16)),
+    (_: string, hex: string) => String.fromCharCode(parseInt(hex, 16))
   );
 
 function resolveConfig(config: AxiosRequestConfig): AxiosRequestConfig {
@@ -65,14 +65,14 @@ function resolveConfig(config: AxiosRequestConfig): AxiosRequestConfig {
   const url = own("url");
 
   const headers: AxiosHeaders = AxiosHeaders.from(
-    own("headers") as Record<string, unknown> | null | undefined,
+    own("headers") as Record<string, unknown> | null | undefined
   );
   newConfig.headers = headers;
 
   newConfig.url = buildURL(
     buildFullPath(baseURL, url, allowAbsoluteUrls, newConfig),
     own("params"),
-    own("paramsSerializer"),
+    own("paramsSerializer")
   );
 
   // HTTP basic authentication
@@ -85,9 +85,9 @@ function resolveConfig(config: AxiosRequestConfig): AxiosRequestConfig {
       "Basic " +
         (
           (globalThis as Record<string, unknown>)["btoa"] as (
-            s: string,
+            s: string
           ) => string
-        )(username + ":" + (password ? encodeUTF8(password) : "")),
+        )(username + ":" + (password ? encodeUTF8(password) : ""))
     );
   }
 
@@ -98,14 +98,15 @@ function resolveConfig(config: AxiosRequestConfig): AxiosRequestConfig {
       utils.isReactNative(data)
     ) {
       (headers.setContentType as (v: unknown) => unknown)(undefined); // browser/web worker/RN handles it
-    } else if (
+    }
+    else if (
       utils.isFunction((data as Record<string, unknown>)["getHeaders"])
     ) {
       // Node.js FormData (like form-data package)
       setFormDataHeaders(
         headers,
-        (data as { getHeaders: () => Record<string, unknown> }).getHeaders(),
-        own("formDataHeaderPolicy"),
+        (data as { getHeaders: () => Record<string, unknown>; }).getHeaders(),
+        own("formDataHeaderPolicy")
       );
     }
   }
@@ -117,7 +118,7 @@ function resolveConfig(config: AxiosRequestConfig): AxiosRequestConfig {
   if (platform.hasStandardBrowserEnv) {
     if (utils.isFunction(withXSRFToken)) {
       withXSRFToken = (withXSRFToken as (cfg: unknown) => unknown)(
-        newConfig,
+        newConfig
       ) as boolean | null | undefined;
     }
 

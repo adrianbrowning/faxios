@@ -11,7 +11,7 @@ import type {
   AxiosRequestHeaders,
   AxiosResponse,
   GenericFormData,
-  InternalAxiosRequestConfig,
+  InternalAxiosRequestConfig
 } from "../types.js";
 import utils from "../utils.js";
 import transitionalDefaults from "./transitional.js";
@@ -29,14 +29,15 @@ import transitionalDefaults from "./transitional.js";
 function stringifySafely(
   rawValue: unknown,
   parser?: ((s: string) => unknown) | null,
-  encoder?: ((v: unknown) => string) | null,
+  encoder?: ((v: unknown) => string) | null
 ): unknown {
   if (utils.isString(rawValue)) {
     try {
       (parser || JSON.parse)(rawValue as string);
       return utils.trim(rawValue as string);
-    } catch (e) {
-      if ((e as { name?: string }).name !== "SyntaxError") {
+    }
+    catch (e) {
+      if ((e as { name?: string; }).name !== "SyntaxError") {
         throw e;
       }
     }
@@ -48,13 +49,13 @@ function stringifySafely(
 const defaults: AxiosDefaults = {
   transitional: transitionalDefaults,
 
-  adapter: ["xhr", "http", "fetch"] as Array<AxiosAdapterName>,
+  adapter: [ "xhr", "http", "fetch" ] as Array<AxiosAdapterName>,
 
   transformRequest: [
     function transformRequest(
       this: InternalAxiosRequestConfig,
       data: unknown,
-      headers: AxiosRequestHeaders,
+      headers: AxiosRequestHeaders
     ) {
       const contentType =
         (headers.getContentType() as string | null | undefined) || "";
@@ -92,9 +93,9 @@ const defaults: AxiosDefaults = {
       if (utils.isURLSearchParams(data)) {
         headers.setContentType(
           "application/x-www-form-urlencoded;charset=utf-8",
-          false,
+          false
         );
-        return (data as { toString: () => string }).toString();
+        return (data as { toString: () => string; }).toString();
       }
 
       let isFileList: unknown;
@@ -117,7 +118,7 @@ const defaults: AxiosDefaults = {
               | GenericFormData
               | null
               | undefined,
-            formSerializer,
+            formSerializer
           );
         }
       }
@@ -134,7 +135,7 @@ const defaults: AxiosDefaults = {
   transformResponse: [
     function transformResponse(
       this: InternalAxiosRequestConfig,
-      data: unknown,
+      data: unknown
     ) {
       const transitional = this.transitional || defaults.transitional;
       const forcedJSONParsing = transitional && transitional.forcedJSONParsing;
@@ -156,9 +157,10 @@ const defaults: AxiosDefaults = {
 
         try {
           return JSON.parse(data as string, this.parseReviver);
-        } catch (e) {
+        }
+        catch (e) {
           if (strictJSONParsing) {
-            if ((e as { name?: string }).name === "SyntaxError") {
+            if ((e as { name?: string; }).name === "SyntaxError") {
               throw AxiosError.from(
                 e as Error,
                 AxiosError.ERR_BAD_RESPONSE,
@@ -166,7 +168,7 @@ const defaults: AxiosDefaults = {
                 null,
                 (this as unknown as Record<string, unknown>)["response"] as
                   | AxiosResponse
-                  | undefined,
+                  | undefined
               );
             }
             throw e;
