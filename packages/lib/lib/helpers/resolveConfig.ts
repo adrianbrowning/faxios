@@ -41,6 +41,36 @@ const encodeUTF8 = (str: string): string =>
     (_: string, hex: string) => String.fromCharCode(parseInt(hex, 16))
   );
 
+function applyXSRFToken(
+  headers: AxiosHeaders,
+  withXSRFToken: ((cfg: unknown) => unknown) | boolean | null | undefined,
+  xsrfHeaderName: string | undefined,
+  xsrfCookieName: string | undefined,
+  config: AxiosRequestConfig
+): void {
+  if (utils.isFunction(withXSRFToken)) {
+    withXSRFToken = (withXSRFToken as (cfg: unknown) => unknown)(
+      config
+    ) as boolean | null | undefined;
+  }
+
+  // Strict boolean check — prevents proto-pollution gadgets (e.g. Object.prototype.withXSRFToken = 1)
+  // and misconfigurations (e.g. "false") from short-circuiting the same-origin check and leaking
+  // the XSRF token cross-origin.
+  const shouldSendXSRF =
+    withXSRFToken === true ||
+    (withXSRFToken == null && isURLSameOrigin(config.url ?? ""));
+
+  if (shouldSendXSRF) {
+    const xsrfValue =
+      xsrfHeaderName && xsrfCookieName && cookies.read(xsrfCookieName);
+
+    if (xsrfValue) {
+      headers.set(xsrfHeaderName, xsrfValue);
+    }
+  }
+}
+
 function resolveConfig(config: AxiosRequestConfig): AxiosRequestConfig {
   const newConfig = mergeConfig({}, config);
 
@@ -114,29 +144,8 @@ function resolveConfig(config: AxiosRequestConfig): AxiosRequestConfig {
   // Add xsrf header
   // This is only done if running in a standard browser environment.
   // Specifically not if we're in a web worker, or react-native.
-
   if (platform.hasStandardBrowserEnv) {
-    if (utils.isFunction(withXSRFToken)) {
-      withXSRFToken = (withXSRFToken as (cfg: unknown) => unknown)(
-        newConfig
-      ) as boolean | null | undefined;
-    }
-
-    // Strict boolean check — prevents proto-pollution gadgets (e.g. Object.prototype.withXSRFToken = 1)
-    // and misconfigurations (e.g. "false") from short-circuiting the same-origin check and leaking
-    // the XSRF token cross-origin.
-    const shouldSendXSRF =
-      withXSRFToken === true ||
-      (withXSRFToken == null && isURLSameOrigin(newConfig.url ?? ""));
-
-    if (shouldSendXSRF) {
-      const xsrfValue =
-        xsrfHeaderName && xsrfCookieName && cookies.read(xsrfCookieName);
-
-      if (xsrfValue) {
-        headers.set(xsrfHeaderName, xsrfValue);
-      }
-    }
+    applyXSRFToken(headers, withXSRFToken, xsrfHeaderName, xsrfCookieName, newConfig);
   }
 
   return newConfig;
