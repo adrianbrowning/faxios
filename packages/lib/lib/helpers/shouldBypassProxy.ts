@@ -46,10 +46,10 @@ const isIPv6Loopback = (host: string): boolean => {
 
   // Check IPv4-mapped IPv6 loopback: ::ffff:<v4-loopback> or ::ffff:<hex-v4-loopback>
   // Node's URL parser normalises ::ffff:127.0.0.1 → ::ffff:7f00:1
-  const v4MappedDotted = host.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i);
+  const v4MappedDotted = /^::ffff:(\d+\.\d+\.\d+\.\d+)$/i.exec(host);
   if (v4MappedDotted) return isIPv4Loopback(v4MappedDotted[1]!);
 
-  const v4MappedHex = host.match(/^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/i);
+  const v4MappedHex = /^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/i.exec(host);
   if (v4MappedHex) {
     const high = parseInt(v4MappedHex[1]!, 16);
     // High 16 bits must start with 127 (0x7f) — i.e. 0x7f00..0x7fff
@@ -181,7 +181,7 @@ export default function shouldBypassProxy(location: string): boolean {
 
   const proto = parsed.protocol.split(":", 1)[0] as KnownProtocol | undefined;
   const port =
-    Number.parseInt(parsed.port, 10) || (proto ? DEFAULT_PORTS[proto] ?? 0 : 0);
+    Number.parseInt(parsed.port, 10) || (proto ? DEFAULT_PORTS[proto] : 0);
 
   const hostname = normalizeNoProxyHost(parsed.hostname.toLowerCase());
 
