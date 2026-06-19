@@ -30,9 +30,9 @@ function normalizeValue(
     return value as AxiosHeaderValue | undefined;
   }
   if (utils.isArray(value)) {
-    return value.map(v => normalizeValue(v) as string) as AxiosHeaderValue;
+    return value.map(v => normalizeValue(v) as string);
   }
-  return sanitizeHeaderValue(String(value)) as AxiosHeaderValue;
+  return sanitizeHeaderValue(String(value));
 }
 
 function parseTokens(str: string): Record<string, string> {
