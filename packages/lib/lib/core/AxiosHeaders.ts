@@ -29,10 +29,9 @@ function normalizeValue(
   if (value === false || value == null) {
     return value;
   }
-  if (utils.isArray(value)) {
-    return value.map(v => normalizeValue(v) as string);
-  }
-  return sanitizeHeaderValue(String(value));
+  return utils.isArray(value)
+    ? value.map(v => normalizeValue(v) as string)
+    : sanitizeHeaderValue(String(value));
 }
 
 function parseTokens(str: string): Record<string, string> {
