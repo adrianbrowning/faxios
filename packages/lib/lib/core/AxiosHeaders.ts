@@ -24,11 +24,13 @@ function normalizeHeader(header: string): string {
 }
 
 function normalizeValue(value: AxiosHeaderValue | undefined): string | Array<string> | undefined {
-  return (value === false || value == null)
-    ? undefined
-    : utils.isArray(value)
-      ? value.map(v => normalizeValue(v) as string)
-      : sanitizeHeaderValue(String(value));
+  if (value === false || value == null) {
+    return undefined;
+  }
+  if (utils.isArray(value)) {
+    return value.map(v => normalizeValue(v) as string);
+  }
+  return sanitizeHeaderValue(String(value));
 }
 
 function parseTokens(str: string): Record<string, string> {
