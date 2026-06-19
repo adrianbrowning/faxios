@@ -1,6 +1,7 @@
 "use strict";
 
 import AxiosError from "../core/AxiosError.js";
+import type { AxiosRequestConfig, InternalAxiosRequestConfig } from "../types.js";
 
 class CanceledError extends AxiosError {
   /**
@@ -12,8 +13,8 @@ class CanceledError extends AxiosError {
    *
    * @returns {CanceledError} The created error.
    */
-  constructor(message?: string | null, config?: import("../types.js").AxiosRequestConfig, request?: unknown) {
-    super(message == null ? "canceled" : message, AxiosError.ERR_CANCELED, config as import("../types.js").InternalAxiosRequestConfig, request);
+  constructor(message?: string | null, config?: AxiosRequestConfig, request?: unknown) {
+    super(message == null ? "canceled" : message, AxiosError.ERR_CANCELED, config as InternalAxiosRequestConfig, request);
     this.name = "CanceledError";
     (this as unknown as Record<string, unknown>)["__CANCEL__"] = true;
   }
