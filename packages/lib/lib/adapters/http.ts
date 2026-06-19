@@ -614,6 +614,7 @@ export default isHttpAdapterSupported &&
   async function httpAdapter(config: InternalAxiosRequestConfig) {
      
     return wrapAsync(
+      // eslint-disable-next-line sonarjs/cognitive-complexity
       async function dispatchHttpRequest(resolve, reject, onDone) {
         // Read config pollution-safely: own properties and members inherited from
         // a non-Object.prototype source (e.g. an Object.create(defaults) template)
