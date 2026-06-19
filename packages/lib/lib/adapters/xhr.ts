@@ -9,6 +9,7 @@ import resolveConfig from "../helpers/resolveConfig.js";
 import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import platform from "../platform/index.js";
 import utils from "../utils.js";
+import type { Cancel } from "../types.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const XHRCtor = (globalThis as Record<string, unknown>).XMLHttpRequest as (new () => any) | undefined;
@@ -36,7 +37,7 @@ export default isXHRAdapterSupported &&
         flushUpload && flushUpload(); // flush events
         flushDownload && flushDownload(); // flush events
 
-        _config.cancelToken && _config.cancelToken.unsubscribe(onCanceled as (cancel: import("../types.js").Cancel) => void);
+        _config.cancelToken && _config.cancelToken.unsubscribe(onCanceled as (cancel: Cancel) => void);
 
         _config.signal && _config.signal.removeEventListener && _config.signal.removeEventListener("abort", onCanceled);
       }
