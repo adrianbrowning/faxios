@@ -8,7 +8,7 @@ const _globalThis = globalThis as {
 
 const hasBrowserEnv = typeof _globalThis.window !== "undefined" && typeof _globalThis.document !== "undefined";
 
-const _navigator = (typeof _globalThis.navigator === "object" && _globalThis.navigator) || undefined;
+const _navigator = typeof _globalThis.navigator === "object" ? _globalThis.navigator : undefined;
 
 /**
  * Determine if we're running in a standard browser environment
