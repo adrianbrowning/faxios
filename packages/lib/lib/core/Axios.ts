@@ -114,7 +114,7 @@ class Axios {
       config.url = configOrUrl;
     }
     else {
-      config = configOrUrl || {};
+      config = configOrUrl ?? {};
     }
 
     config = mergeConfig(this.defaults, config);
@@ -205,7 +205,7 @@ class Axios {
 
       const transitional = config.transitional || transitionalDefaults;
       const legacyInterceptorReqResOrdering =
-        transitional && transitional.legacyInterceptorReqResOrdering;
+        transitional.legacyInterceptorReqResOrdering;
 
       if (legacyInterceptorReqResOrdering) {
         requestInterceptorChain.unshift(interceptor.fulfilled, interceptor.rejected);
@@ -259,12 +259,8 @@ class Axios {
       }
     }
 
-    try {
-      promise = dispatchRequest.call(this, newConfig as import("../types.js").InternalAxiosRequestConfig) as Promise<unknown>;
-    }
-    catch (error) {
-      return Promise.reject(error);
-    }
+    promise = Promise.resolve(newConfig as InternalAxiosRequestConfig)
+      .then(cfg => dispatchRequest.call(this, cfg) as Promise<unknown>);
 
     i = 0;
     len = responseInterceptorChain.length;
