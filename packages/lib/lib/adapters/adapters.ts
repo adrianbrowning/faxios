@@ -34,8 +34,7 @@ utils.forEach(knownAdapters, (fn, value) => {
         Object.assign(Object.create(null) as PropertyDescriptor, { value })
       );
     }
-    catch (_e) {
-       
+    catch {
       // ignore: defineProperty may throw in strict envs
     }
     Object.defineProperty(
@@ -53,6 +52,12 @@ utils.forEach(knownAdapters, (fn, value) => {
  * @returns {string}
  */
 const renderReason = (reason: string) => `- ${reason}`;
+
+const buildNoAdapterMessage = (length: number, reasons: string[]) => {
+  if (!length) return "as no adapter specified";
+  if (reasons.length > 1) return "since :\n" + reasons.map(renderReason).join("\n");
+  return " " + renderReason(reasons[0] ?? "");
+};
 
 /**
  * Check if the adapter is resolved (function, null, or false)
@@ -120,19 +125,8 @@ function getAdapter(
           : "is not available in the build")
     );
 
-    let s;
-    if (!length) {
-      s = "as no adapter specified";
-    }
-    else if (reasons.length > 1) {
-      s = "since :\n" + reasons.map(renderReason).join("\n");
-    }
-    else {
-      s = " " + renderReason(reasons[0] ?? "");
-    }
-
     throw new AxiosError(
-      `There is no suitable adapter to dispatch the request ` + s,
+      `There is no suitable adapter to dispatch the request ` + buildNoAdapterMessage(length, reasons),
       "ERR_NOT_SUPPORT"
     );
   }
