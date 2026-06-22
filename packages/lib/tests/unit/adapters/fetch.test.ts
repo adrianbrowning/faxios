@@ -1,6 +1,8 @@
 import assert from "node:assert";
+import type { AddressInfo } from "node:net";
 import stream from "node:stream";
 import util from "node:util";
+// @ts-expect-error no declaration file for abortcontroller-polyfill
 import { AbortController } from "abortcontroller-polyfill/dist/cjs-ponyfill.js";
 import NodeFormData from "form-data";
 import { describe, it, vi } from "vitest";
@@ -9,6 +11,7 @@ import { getFetch } from "../../../src/lib/adapters/fetch.js";
 import AxiosError from "../../../src/lib/core/AxiosError.js";
 import { VERSION } from "../../../src/lib/env/data.js";
 import utils from "../../../src/lib/utils.js";
+import type { AxiosInstance as TypedAxiosInstance, AxiosStatic as TypedAxiosStatic, AxiosProgressEvent, AxiosHeaders as TypedAxiosHeaders } from "../../../src/index.old.js";
 import {
   startHTTPServer,
   stopHTTPServer,
@@ -26,10 +29,10 @@ const pipelineAsync = util.promisify(stream.pipeline);
 const fetchAxios = axios.create({
   baseURL: LOCAL_SERVER_URL,
   adapter: "fetch",
-});
+}) as unknown as TypedAxiosInstance;
 
-const getFetchSignal = (input, init) =>
-  (init && init.signal) || (input && input.signal);
+const getFetchSignal = (input: RequestInfo | URL | {signal?: AbortSignal}, init?: RequestInit | {signal?: AbortSignal}) =>
+  (init && init.signal) || (input && (input as {signal?: AbortSignal}).signal);
 
 const createBrokenDOMExceptionLikeError = () =>
   Object.defineProperties(
@@ -62,7 +65,7 @@ describe.runIf(typeof fetch === "function")(
       ]) {
         await assert.rejects(
           () =>
-            axios.get(url, {
+            (axios as unknown as TypedAxiosStatic).get(url, {
               adapter: "fetch",
               headers: {
                 "X-Test": "yes",
@@ -70,13 +73,14 @@ describe.runIf(typeof fetch === "function")(
             }),
           (error) => {
             assert.ok(error instanceof AxiosError);
-            assert.strictEqual(error.code, AxiosError.ERR_INVALID_URL);
+            const axiosError = error as AxiosError;
+            assert.strictEqual(axiosError.code, AxiosError.ERR_INVALID_URL);
             assert.strictEqual(
-              error.message,
+              axiosError.message,
               'Invalid URL: missing "//" after protocol',
             );
-            assert.strictEqual(error.config.url, url);
-            assert.strictEqual(error.config.headers.get("X-Test"), "yes");
+            assert.strictEqual(axiosError.config!.url, url);
+            assert.strictEqual(axiosError.config!.headers.get("X-Test"), "yes");
             return true;
           },
         );
@@ -126,13 +130,13 @@ describe.runIf(typeof fetch === "function")(
       });
 
       try {
-        Object.prototype[Symbol.iterator] = function* () {
+        (Object.prototype as Record<symbol, unknown>)[Symbol.iterator] = function* () {
           yield ["X-Injected", "yes"];
           yield ["Authorization", "Bearer CHANGED"];
         };
 
         const { data } = await fetchAxios.get(
-          `http://localhost:${server.address().port}/`,
+          `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             headers: {
               Authorization: "Bearer VALID_USER_TOKEN",
@@ -145,7 +149,7 @@ describe.runIf(typeof fetch === "function")(
         assert.strictEqual(data.xApp, "safe");
         assert.strictEqual(data.xInjected, null);
       } finally {
-        delete Object.prototype[Symbol.iterator];
+        delete (Object.prototype as Record<symbol, unknown>)[Symbol.iterator];
         await stopHTTPServer(server);
       }
     });
@@ -168,7 +172,7 @@ describe.runIf(typeof fetch === "function")(
       const instance = axios.create({
         baseURL: LOCAL_SERVER_URL,
         adapter: "fetch",
-      });
+      }) as unknown as TypedAxiosInstance;
 
       instance.interceptors.request.use((config) => {
         config.headers.oprtName = encodeURIComponent(config.headers.oprtName);
@@ -221,7 +225,7 @@ describe.runIf(typeof fetch === "function")(
         const originalData = "my data";
 
         const server = await startHTTPServer(
-          (req, res) => res.end(originalData),
+          (_req, res) => res.end(originalData),
           {
             port: SERVER_PORT,
           },
@@ -229,7 +233,7 @@ describe.runIf(typeof fetch === "function")(
 
         try {
           const { data } = await fetchAxios.get(
-            `http://localhost:${server.address().port}/`,
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "text",
             },
@@ -245,7 +249,7 @@ describe.runIf(typeof fetch === "function")(
         const originalData = "my data";
 
         const server = await startHTTPServer(
-          (req, res) => res.end(originalData),
+          (_req, res) => res.end(originalData),
           {
             port: SERVER_PORT,
           },
@@ -253,7 +257,7 @@ describe.runIf(typeof fetch === "function")(
 
         try {
           const { data } = await fetchAxios.get(
-            `http://localhost:${server.address().port}/`,
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "arraybuffer",
             },
@@ -273,7 +277,7 @@ describe.runIf(typeof fetch === "function")(
         const originalData = "my data";
 
         const server = await startHTTPServer(
-          (req, res) => res.end(originalData),
+          (_req, res) => res.end(originalData),
           {
             port: SERVER_PORT,
           },
@@ -281,7 +285,7 @@ describe.runIf(typeof fetch === "function")(
 
         try {
           const { data } = await fetchAxios.get(
-            `http://localhost:${server.address().port}/`,
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "blob",
             },
@@ -297,7 +301,7 @@ describe.runIf(typeof fetch === "function")(
         const originalData = "my data";
 
         const server = await startHTTPServer(
-          (req, res) => res.end(originalData),
+          (_req, res) => res.end(originalData),
           {
             port: SERVER_PORT,
           },
@@ -305,7 +309,7 @@ describe.runIf(typeof fetch === "function")(
 
         try {
           const { data } = await fetchAxios.get(
-            `http://localhost:${server.address().port}/`,
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "stream",
             },
@@ -330,10 +334,10 @@ describe.runIf(typeof fetch === "function")(
         originalData.append("x", "123");
 
         const server = await startHTTPServer(
-          async (req, res) => {
+          async (_req, res) => {
             const response = await new Response(originalData);
 
-            res.setHeader("Content-Type", response.headers.get("Content-Type"));
+            res.setHeader("Content-Type", response.headers.get("Content-Type") ?? "");
 
             res.end(await response.text());
           },
@@ -342,7 +346,7 @@ describe.runIf(typeof fetch === "function")(
 
         try {
           const { data } = await fetchAxios.get(
-            `http://localhost:${server.address().port}/`,
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "formdata",
             },
@@ -366,7 +370,7 @@ describe.runIf(typeof fetch === "function")(
         const originalData = { x: "my data" };
 
         const server = await startHTTPServer(
-          (req, res) => res.end(JSON.stringify(originalData)),
+          (_req, res) => res.end(JSON.stringify(originalData)),
           {
             port: SERVER_PORT,
           },
@@ -374,7 +378,7 @@ describe.runIf(typeof fetch === "function")(
 
         try {
           const { data } = await fetchAxios.get(
-            `http://localhost:${server.address().port}/`,
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "json",
             },
@@ -416,10 +420,10 @@ describe.runIf(typeof fetch === "function")(
               })(),
             );
 
-            const samples = [];
+            const samples: AxiosProgressEvent[] = [];
 
             const { data } = await fetchAxios.post(
-              `http://localhost:${server.address().port}/`,
+              `http://localhost:${(server.address() as AddressInfo).port}/`,
               readable,
               {
                 onUploadProgress: ({
@@ -428,9 +432,9 @@ describe.runIf(typeof fetch === "function")(
                   progress,
                   bytes,
                   upload,
-                }) => {
+                }: AxiosProgressEvent) => {
                   console.log(
-                    `Upload Progress ${loaded} from ${total} bytes (${(progress * 100).toFixed(1)}%)`,
+                    `Upload Progress ${loaded} from ${total} bytes (${((progress ?? 0) * 100).toFixed(1)}%)`,
                   );
 
                   samples.push({
@@ -439,7 +443,7 @@ describe.runIf(typeof fetch === "function")(
                     progress,
                     bytes,
                     upload,
-                  });
+                  } as AxiosProgressEvent);
                 },
                 headers: {
                   "Content-Length": contentLength,
@@ -474,13 +478,13 @@ describe.runIf(typeof fetch === "function")(
         }, 15000);
 
         it("should not fail with get method", async () => {
-          const server = await startHTTPServer((req, res) => res.end("OK"), {
+          const server = await startHTTPServer((_req, res) => res.end("OK"), {
             port: SERVER_PORT,
           });
 
           try {
             const { data } = await fetchAxios.get(
-              `http://localhost:${server.address().port}/`,
+              `http://localhost:${(server.address() as AddressInfo).port}/`,
               {
                 onUploadProgress() {},
               },
@@ -523,10 +527,10 @@ describe.runIf(typeof fetch === "function")(
               })(),
             );
 
-            const samples = [];
+            const samples: AxiosProgressEvent[] = [];
 
             const { data } = await fetchAxios.post(
-              `http://localhost:${server.address().port}/`,
+              `http://localhost:${(server.address() as AddressInfo).port}/`,
               readable,
               {
                 onDownloadProgress: ({
@@ -535,9 +539,9 @@ describe.runIf(typeof fetch === "function")(
                   progress,
                   bytes,
                   download,
-                }) => {
+                }: AxiosProgressEvent) => {
                   console.log(
-                    `Download Progress ${loaded} from ${total} bytes (${(progress * 100).toFixed(1)}%)`,
+                    `Download Progress ${loaded} from ${total} bytes (${((progress ?? 0) * 100).toFixed(1)}%)`,
                   );
 
                   samples.push({
@@ -546,7 +550,7 @@ describe.runIf(typeof fetch === "function")(
                     progress,
                     bytes,
                     download,
-                  });
+                  } as AxiosProgressEvent);
                 },
                 headers: {
                   "Content-Length": contentLength,
@@ -595,7 +599,7 @@ describe.runIf(typeof fetch === "function")(
         const user = "foo";
         const headers = { Authorization: "Bearer 1234" };
         const res = await fetchAxios.get(
-          `http://${user}@localhost:${server.address().port}/`,
+          `http://${user}@localhost:${(server.address() as AddressInfo).port}/`,
           {
             headers,
           },
@@ -618,7 +622,7 @@ describe.runIf(typeof fetch === "function")(
 
       try {
         const response = await fetchAxios.get(
-          `http://my%40email.com:pa%24ss@localhost:${server.address().port}/`,
+          `http://my%40email.com:pa%24ss@localhost:${(server.address() as AddressInfo).port}/`,
         );
         const base64 = Buffer.from("my@email.com:pa$ss", "utf8").toString(
           "base64",
@@ -639,7 +643,7 @@ describe.runIf(typeof fetch === "function")(
 
       try {
         const response = await fetchAxios.get(
-          `http://%E7%94%A8%E6%88%B7:pa%C3%9F@localhost:${server.address().port}/`,
+          `http://%E7%94%A8%E6%88%B7:pa%C3%9F@localhost:${(server.address() as AddressInfo).port}/`,
         );
         const base64 = Buffer.from("\u7528\u6237:pa\u00df", "utf8").toString(
           "base64",
@@ -660,7 +664,7 @@ describe.runIf(typeof fetch === "function")(
 
       try {
         const response = await fetchAxios.get(
-          `http://user%:foo%zz@localhost:${server.address().port}/`,
+          `http://user%:foo%zz@localhost:${(server.address() as AddressInfo).port}/`,
         );
         const base64 = Buffer.from("user%:foo%zz", "utf8").toString("base64");
         assert.strictEqual(response.data, `Basic ${base64}`);
@@ -679,7 +683,7 @@ describe.runIf(typeof fetch === "function")(
 
       try {
         const response = await fetchAxios.get(
-          `http://:secret@localhost:${server.address().port}/`,
+          `http://:secret@localhost:${(server.address() as AddressInfo).port}/`,
         );
         const base64 = Buffer.from(":secret", "utf8").toString("base64");
         assert.strictEqual(response.data, `Basic ${base64}`);
@@ -699,7 +703,7 @@ describe.runIf(typeof fetch === "function")(
       try {
         const auth = { username: "config-user", password: "config-pass" };
         const response = await fetchAxios.get(
-          `http://url-user:url-pass@localhost:${server.address().port}/`,
+          `http://url-user:url-pass@localhost:${(server.address() as AddressInfo).port}/`,
           { auth },
         );
         const base64 = Buffer.from("config-user:config-pass", "utf8").toString(
@@ -723,7 +727,7 @@ describe.runIf(typeof fetch === "function")(
         const auth = { username: "foo", password: "bar" };
         const headers = { AuThOrIzAtIoN: "Bearer 1234" }; // wonky casing to ensure caseless comparison
         const response = await fetchAxios.get(
-          `http://localhost:${server.address().port}/`,
+          `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             auth,
             headers,
@@ -755,28 +759,28 @@ describe.runIf(typeof fetch === "function")(
 
       try {
         const response = await fetchAxios.get(
-          `http://localhost:${server.address().port}/`,
+          `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
-            auth: {},
+            auth: {} as { username: string; password: string },
           },
         );
 
         assert.strictEqual(response.data, "Basic Og==");
       } finally {
-        delete Object.prototype.username;
-        delete Object.prototype.password;
+        delete (Object.prototype as Record<string, unknown>).username;
+        delete (Object.prototype as Record<string, unknown>).password;
         await stopHTTPServer(server);
       }
     });
 
     it("should support stream.Readable as a payload", async () => {
-      const server = await startHTTPServer(async (req, res) => res.end("OK"), {
+      const server = await startHTTPServer(async (_req, res) => res.end("OK"), {
         port: SERVER_PORT,
       });
 
       try {
         const { data } = await fetchAxios.post(
-          `http://localhost:${server.address().port}/`,
+          `http://localhost:${(server.address() as AddressInfo).port}/`,
           stream.Readable.from("OK"),
         );
 
@@ -805,7 +809,7 @@ describe.runIf(typeof fetch === "function")(
 
           await assert.rejects(async () => {
             await fetchAxios.post(
-              `http://localhost:${server.address().port}/`,
+              `http://localhost:${(server.address() as AddressInfo).port}/`,
               makeReadableStream(),
               {
                 responseType: "stream",
@@ -820,7 +824,7 @@ describe.runIf(typeof fetch === "function")(
 
       it("should be able to abort the response stream", async () => {
         const server = await startHTTPServer(
-          (req, res) => {
+          (_req, res) => {
             pipelineAsync(generateReadable(10000, 10), res).catch(() => {
               // Client-side abort intentionally closes the stream early in this test.
             });
@@ -836,7 +840,7 @@ describe.runIf(typeof fetch === "function")(
           }, 800);
 
           const { data } = await fetchAxios.get(
-            `http://localhost:${server.address().port}/`,
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "stream",
               signal: controller.signal,
@@ -844,7 +848,7 @@ describe.runIf(typeof fetch === "function")(
           );
 
           await assert.rejects(async () => {
-            await data.pipeTo(makeEchoStream());
+            await data.pipeTo(makeEchoStream(false));
           }, /^(AbortError|CanceledError):/);
         } finally {
           await stopHTTPServer(server);
@@ -854,7 +858,7 @@ describe.runIf(typeof fetch === "function")(
 
     it("should support a timeout", async () => {
       const server = await startHTTPServer(
-        async (req, res) => {
+        async (_req, res) => {
           await setTimeoutAsync(1000);
           res.end("OK");
         },
@@ -867,7 +871,7 @@ describe.runIf(typeof fetch === "function")(
         const ts = Date.now();
 
         await assert.rejects(async () => {
-          await fetchAxios(`http://localhost:${server.address().port}/`, {
+          await fetchAxios(`http://localhost:${(server.address() as AddressInfo).port}/`, {
             timeout,
           });
         }, /timeout/);
@@ -886,7 +890,7 @@ describe.runIf(typeof fetch === "function")(
     describe("fetch adapter - timeout normalization", () => {
       it("should reject with an AxiosError(ETIMEDOUT) on timeout", async () => {
         const server = await startHTTPServer(
-          async (req, res) => {
+          async (_req, res) => {
             await setTimeoutAsync(1000);
             res.end("OK");
           },
@@ -896,13 +900,14 @@ describe.runIf(typeof fetch === "function")(
         try {
           await assert.rejects(
             async () =>
-              fetchAxios(`http://localhost:${server.address().port}/`, {
+              fetchAxios(`http://localhost:${(server.address() as AddressInfo).port}/`, {
                 timeout: 200,
               }),
             (err) => {
-              assert.strictEqual(err.name, "AxiosError");
-              assert.strictEqual(err.code, "ETIMEDOUT");
-              assert.match(err.message, /timeout of 200ms exceeded/);
+              const e = err as { name: string; code: string; message: string };
+              assert.strictEqual(e.name, "AxiosError");
+              assert.strictEqual(e.code, "ETIMEDOUT");
+              assert.match(e.message, /timeout of 200ms exceeded/);
               return true;
             },
           );
@@ -912,8 +917,8 @@ describe.runIf(typeof fetch === "function")(
       });
 
       it("should not classify a user-initiated abort as a timeout", async () => {
-        const safariFetch = async (url, init) => {
-          const signal = getFetchSignal(url, init);
+        const safariFetch = async (url: RequestInfo | URL, init?: RequestInit) => {
+          const signal = getFetchSignal(url, init) as AbortSignal;
 
           return new Promise((_resolve, reject) => {
             const onAbort = () => {
@@ -930,7 +935,7 @@ describe.runIf(typeof fetch === "function")(
 
         const request = fetchAxios.get("/", {
           signal: controller.signal,
-          env: { fetch: safariFetch },
+          env: { fetch: safariFetch as unknown as (input: string | Request | URL, init?: RequestInit) => Promise<Response> },
         });
 
         controller.abort();
@@ -938,8 +943,9 @@ describe.runIf(typeof fetch === "function")(
         await assert.rejects(
           () => request,
           (err) => {
-            assert.strictEqual(err.name, "CanceledError");
-            assert.strictEqual(err.code, "ERR_CANCELED");
+            const e = err as { name: string; code: string };
+            assert.strictEqual(e.name, "CanceledError");
+            assert.strictEqual(e.code, "ERR_CANCELED");
             assert.strictEqual(axios.isCancel(err), true);
             return true;
           },
@@ -953,8 +959,8 @@ describe.runIf(typeof fetch === "function")(
         "should surface ETIMEDOUT when fetch rejects with a broken DOMException on abort (Safari)",
         { retry: 2 },
         async () => {
-          const safariFetch = async (url, init) => {
-            const signal = getFetchSignal(url, init);
+          const safariFetch = async (url: RequestInfo | URL, init?: RequestInit) => {
+            const signal = getFetchSignal(url, init) as AbortSignal;
 
             return new Promise((_resolve, reject) => {
               const onAbort = () => {
@@ -971,12 +977,13 @@ describe.runIf(typeof fetch === "function")(
             () =>
               fetchAxios.get("/", {
                 timeout: 50,
-                env: { fetch: safariFetch },
+                env: { fetch: safariFetch as unknown as (input: string | Request | URL, init?: RequestInit) => Promise<Response> },
               }),
             (err) => {
-              assert.strictEqual(err.name, "AxiosError");
-              assert.strictEqual(err.code, "ETIMEDOUT");
-              assert.match(err.message, /timeout of 50ms exceeded/);
+              const e = err as { name: string; code: string; message: string };
+              assert.strictEqual(e.name, "AxiosError");
+              assert.strictEqual(e.code, "ETIMEDOUT");
+              assert.match(e.message, /timeout of 50ms exceeded/);
               return true;
             },
           );
@@ -985,7 +992,7 @@ describe.runIf(typeof fetch === "function")(
     });
 
     it("should combine baseURL and url", async () => {
-      const server = await startHTTPServer(async (req, res) => res.end("OK"), {
+      const server = await startHTTPServer(async (_req, res) => res.end("OK"), {
         port: SERVER_PORT,
       });
       try {
@@ -1015,7 +1022,7 @@ describe.runIf(typeof fetch === "function")(
 
       try {
         const { data } = await fetchAxios.query(
-          `http://localhost:${server.address().port}/search`,
+          `http://localhost:${(server.address() as AddressInfo).port}/search`,
           {
             selector: "field1",
           },
@@ -1035,7 +1042,7 @@ describe.runIf(typeof fetch === "function")(
       });
       try {
         const { data } = await fetchAxios.get(
-          `http://localhost:${server.address().port}/?test=1`,
+          `http://localhost:${(server.address() as AddressInfo).port}/?test=1`,
           {
             params: {
               foo: 1,
@@ -1055,8 +1062,9 @@ describe.runIf(typeof fetch === "function")(
         await fetchAxios("http://notExistsUrl.in.nowhere");
         assert.fail("should fail");
       } catch (err) {
-        assert.strictEqual(String(err), "AxiosError: Network Error");
-        assert.strictEqual(err.cause && err.cause.code, "ENOTFOUND");
+        const axiosErr = err as AxiosError;
+        assert.strictEqual(String(axiosErr), "AxiosError: Network Error");
+        assert.strictEqual(axiosErr.cause && (axiosErr.cause as {code?: string}).code, "ENOTFOUND");
       }
     });
 
@@ -1071,13 +1079,13 @@ describe.runIf(typeof fetch === "function")(
 
       try {
         const { headers } = await fetchAxios.get(
-          `http://localhost:${server.address().port}/`,
+          `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             responseType: "stream",
           },
         );
 
-        assert.strictEqual(headers.get("foo"), "bar");
+        assert.strictEqual((headers as unknown as TypedAxiosHeaders).get("foo"), "bar");
       } finally {
         await stopHTTPServer(server);
       }
@@ -1091,7 +1099,7 @@ describe.runIf(typeof fetch === "function")(
         const server = await startHTTPServer(
           (req, res) => {
             const contentType = req.headers["content-type"];
-            assert.match(contentType, /^multipart\/form-data; boundary=/i);
+            assert.match(contentType!, /^multipart\/form-data; boundary=/i);
             res.end("OK");
           },
           { port: SERVER_PORT },
@@ -1099,7 +1107,7 @@ describe.runIf(typeof fetch === "function")(
 
         try {
           await fetchAxios.post(
-            `http://localhost:${server.address().port}/form`,
+            `http://localhost:${(server.address() as AddressInfo).port}/form`,
             form,
           );
         } finally {
@@ -1114,7 +1122,7 @@ describe.runIf(typeof fetch === "function")(
         const server = await startHTTPServer(
           (req, res) => {
             const contentType = req.headers["content-type"];
-            assert.match(contentType, /^multipart\/form-data; boundary=/i);
+            assert.match(contentType!, /^multipart\/form-data; boundary=/i);
             res.end("OK");
           },
           { port: SERVER_PORT },
@@ -1122,7 +1130,7 @@ describe.runIf(typeof fetch === "function")(
 
         try {
           await fetchAxios.post(
-            `http://localhost:${server.address().port}/form`,
+            `http://localhost:${(server.address() as AddressInfo).port}/form`,
             form,
             {
               headers: { "Content-Type": "multipart/form-data" },
@@ -1142,7 +1150,7 @@ describe.runIf(typeof fetch === "function")(
         const server = await startHTTPServer(
           (req, res) => {
             const contentType = req.headers["content-type"];
-            assert.ok(contentType.includes(customBoundary));
+            assert.ok(contentType!.includes(customBoundary));
             res.end("OK");
           },
           { port: SERVER_PORT },
@@ -1150,7 +1158,7 @@ describe.runIf(typeof fetch === "function")(
 
         try {
           await fetchAxios.post(
-            `http://localhost:${server.address().port}/form`,
+            `http://localhost:${(server.address() as AddressInfo).port}/form`,
             form,
             {
               headers: {
@@ -1176,7 +1184,7 @@ describe.runIf(typeof fetch === "function")(
 
         try {
           const { data } = await fetchAxios.post(
-            `http://localhost:${server.address().port}/`,
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               payload: "test",
             },
@@ -1201,7 +1209,7 @@ describe.runIf(typeof fetch === "function")(
 
         try {
           const { data } = await fetchAxios.post(
-            `http://localhost:${server.address().port}/`,
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
             { payload: "test" },
             { headers: { "User-Agent": customUA } },
           );
@@ -1218,7 +1226,7 @@ describe.runIf(typeof fetch === "function")(
         const originalGlobal = utils.global;
 
         try {
-          utils.global = undefined;
+          (utils as {global: unknown}).global = undefined;
 
           assert.doesNotThrow(() =>
             getFetch({
@@ -1243,10 +1251,10 @@ describe.runIf(typeof fetch === "function")(
                 text: async () => "test",
               };
             },
-          },
+          } as unknown as { fetch?: typeof fetch },
         });
 
-        assert.strictEqual(headers.get("foo"), "1");
+        assert.strictEqual((headers as unknown as TypedAxiosHeaders).get("foo"), "1");
         assert.strictEqual(data, "test");
       });
 
@@ -1269,10 +1277,10 @@ describe.runIf(typeof fetch === "function")(
                 text: async () => "test",
               };
             },
-          },
+          } as unknown as { Request?: typeof Request; fetch?: typeof fetch },
         });
 
-        assert.strictEqual(headers.get("foo"), "1");
+        assert.strictEqual((headers as unknown as TypedAxiosHeaders).get("foo"), "1");
         assert.strictEqual(data, "test");
       });
 
@@ -1292,21 +1300,21 @@ describe.runIf(typeof fetch === "function")(
                 text: async () => "test",
               };
             },
-          },
+          } as unknown as { Request?: typeof Request; fetch?: typeof fetch },
         });
 
-        assert.strictEqual(headers.get("foo"), "1");
+        assert.strictEqual((headers as unknown as TypedAxiosHeaders).get("foo"), "1");
         assert.strictEqual(data, "test");
       });
 
       it("should fallback to the global on undefined env value", async () => {
-        const server = await startHTTPServer((req, res) => res.end("OK"), {
+        const server = await startHTTPServer((_req, res) => res.end("OK"), {
           port: SERVER_PORT,
         });
 
         try {
           const { data } = await fetchAxios.get(
-            `http://localhost:${server.address().port}/`,
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               env: {
                 fetch: undefined,
@@ -1330,13 +1338,13 @@ describe.runIf(typeof fetch === "function")(
           text: async () => "global",
         }));
 
-        const server = await startHTTPServer((req, res) => res.end("OK"), {
+        const server = await startHTTPServer((_req, res) => res.end("OK"), {
           port: SERVER_PORT,
         });
 
         try {
           const { data } = await fetchAxios.get(
-            `http://localhost:${server.address().port}/`,
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               env: {
                 fetch: undefined,
@@ -1353,7 +1361,7 @@ describe.runIf(typeof fetch === "function")(
     });
 
     describe("size limits", () => {
-      const makeUploadStream = (totalBytes, chunkSize = 512) => {
+      const makeUploadStream = (totalBytes: number, chunkSize = 512) => {
         let remaining = totalBytes;
 
         return new ReadableStream({
@@ -1372,7 +1380,7 @@ describe.runIf(typeof fetch === "function")(
 
       it("should reject an outbound body that exceeds maxBodyLength with ERR_BAD_REQUEST", async () => {
         const server = await startHTTPServer(
-          (req, res) => {
+          (_req, res) => {
             res.end("ok");
           },
           { port: SERVER_PORT },
@@ -1384,9 +1392,10 @@ describe.runIf(typeof fetch === "function")(
               maxBodyLength: 1024,
             }),
             (err) => {
-              assert.strictEqual(err.code, "ERR_BAD_REQUEST");
+              const e = err as { code: string; message: string };
+              assert.strictEqual(e.code, "ERR_BAD_REQUEST");
               assert.match(
-                err.message,
+                e.message,
                 /Request body larger than maxBodyLength limit/,
               );
               return true;
@@ -1419,9 +1428,10 @@ describe.runIf(typeof fetch === "function")(
               headers: { "Content-Type": "application/octet-stream" },
             }),
             (err) => {
-              assert.strictEqual(err.code, "ERR_BAD_REQUEST");
+              const e = err as { code: string; message: string };
+              assert.strictEqual(e.code, "ERR_BAD_REQUEST");
               assert.strictEqual(
-                err.message,
+                e.message,
                 "Request body larger than maxBodyLength limit",
               );
               return true;
@@ -1464,9 +1474,10 @@ describe.runIf(typeof fetch === "function")(
               },
             }),
             (err) => {
-              assert.strictEqual(err.code, "ERR_BAD_REQUEST");
+              const e = err as { code: string; message: string };
+              assert.strictEqual(e.code, "ERR_BAD_REQUEST");
               assert.strictEqual(
-                err.message,
+                e.message,
                 "Request body larger than maxBodyLength limit",
               );
               return true;
@@ -1494,8 +1505,8 @@ describe.runIf(typeof fetch === "function")(
             },
             env: {
               Request: null,
-              async fetch(_url, options) {
-                for await (const chunk of options.body) {
+              async fetch(_url: string | Request | URL, options?: RequestInit & {body?: AsyncIterable<{byteLength: number}>}) {
+                for await (const chunk of (options!.body as AsyncIterable<{byteLength: number}>)) {
                   bytesRead += chunk.byteLength;
                 }
                 return {
@@ -1505,12 +1516,13 @@ describe.runIf(typeof fetch === "function")(
                   text: async () => "ok",
                 };
               },
-            },
+            } as unknown as { Request?: typeof Request; fetch?: typeof fetch },
           }),
           (err) => {
-            assert.strictEqual(err.code, "ERR_BAD_REQUEST");
+            const e = err as { code: string; message: string };
+            assert.strictEqual(e.code, "ERR_BAD_REQUEST");
             assert.strictEqual(
-              err.message,
+              e.message,
               "Request body larger than maxBodyLength limit",
             );
             return true;
@@ -1527,8 +1539,8 @@ describe.runIf(typeof fetch === "function")(
         let fetchCalled = false;
 
         class NoStreamRequest {
-          constructor(_url, init) {
-            if (init && utils.isReadableStream(init.body)) {
+          constructor(_url: string | Request | URL, init?: {body?: unknown}) {
+            if (init && utils.isReadableStream!(init?.body)) {
               throw new TypeError(
                 "ReadableStream request bodies are unsupported",
               );
@@ -1554,12 +1566,13 @@ describe.runIf(typeof fetch === "function")(
                   text: async () => "ok",
                 };
               },
-            },
+            } as unknown as { Request?: typeof Request; fetch?: typeof fetch },
           }),
           (err) => {
-            assert.strictEqual(err.code, "ERR_NOT_SUPPORT");
+            const e = err as { code: string; message: string };
+            assert.strictEqual(e.code, "ERR_NOT_SUPPORT");
             assert.strictEqual(
-              err.message,
+              e.message,
               "Stream request bodies are not supported by the current fetch implementation",
             );
             return true;
@@ -1576,7 +1589,7 @@ describe.runIf(typeof fetch === "function")(
       it("should reject a response whose Content-Length exceeds maxContentLength with ERR_BAD_RESPONSE", async () => {
         const payload = "A".repeat(8 * 1024);
         const server = await startHTTPServer(
-          (req, res) => {
+          (_req, res) => {
             res.setHeader("Content-Length", Buffer.byteLength(payload));
             res.end(payload);
           },
@@ -1589,9 +1602,10 @@ describe.runIf(typeof fetch === "function")(
               maxContentLength: 1024,
             }),
             (err) => {
-              assert.strictEqual(err.code, "ERR_BAD_RESPONSE");
+              const e = err as { code: string; message: string };
+              assert.strictEqual(e.code, "ERR_BAD_RESPONSE");
               assert.match(
-                err.message,
+                e.message,
                 /maxContentLength size of 1024 exceeded/,
               );
               return true;
@@ -1622,24 +1636,25 @@ describe.runIf(typeof fetch === "function")(
                 }),
               };
             },
-          },
+          } as unknown as { fetch?: typeof fetch },
         });
 
         assert.strictEqual(data, "test");
-        assert.strictEqual(headers.get("foo"), "bar");
+        assert.strictEqual((headers as unknown as TypedAxiosHeaders).get("foo"), "bar");
       });
 
       it("should reject a chunked response that exceeds maxContentLength during streaming", async () => {
         const server = await startHTTPServer(
-          (req, res) => {
+          (_req, res) => {
             // Omit content-length so the cheap pre-check cannot fire; force
             // the stream-based enforcement path.
             res.setHeader("Transfer-Encoding", "chunked");
             const chunk = "B".repeat(1024);
             let sent = 0;
-            const writeNext = () => {
+            const writeNext = (): void => {
               if (sent >= 8) {
-                return res.end();
+                res.end();
+                return;
               }
               sent++;
               res.write(chunk, writeNext);
@@ -1655,9 +1670,10 @@ describe.runIf(typeof fetch === "function")(
               maxContentLength: 512,
             }),
             (err) => {
-              assert.strictEqual(err.code, "ERR_BAD_RESPONSE");
+              const e = err as { code: string; message: string };
+              assert.strictEqual(e.code, "ERR_BAD_RESPONSE");
               assert.match(
-                err.message,
+                e.message,
                 /maxContentLength size of 512 exceeded/,
               );
               return true;
@@ -1676,13 +1692,14 @@ describe.runIf(typeof fetch === "function")(
 
         // Use a dedicated instance without baseURL — combineURLs would otherwise
         // prepend baseURL to a data: URL and neutralise the pre-check.
-        const bareAxios = axios.create({ adapter: "fetch" });
+        const bareAxios = axios.create({ adapter: "fetch" }) as unknown as TypedAxiosInstance;
 
         await assert.rejects(
           bareAxios.get(dataUrl, { maxContentLength: 16 }),
           (err) => {
-            assert.strictEqual(err.code, "ERR_BAD_RESPONSE");
-            assert.match(err.message, /maxContentLength size of 16 exceeded/);
+            const e = err as { code: string; message: string };
+            assert.strictEqual(e.code, "ERR_BAD_RESPONSE");
+            assert.match(e.message, /maxContentLength size of 16 exceeded/);
             return true;
           },
         );
@@ -1691,20 +1708,21 @@ describe.runIf(typeof fetch === "function")(
       it("should reject a data: URL whose body size exceeds maxContentLength (non-base64)", async () => {
         const dataUrl = "data:text/plain," + "X".repeat(4096);
 
-        const bareAxios = axios.create({ adapter: "fetch" });
+        const bareAxios = axios.create({ adapter: "fetch" }) as unknown as TypedAxiosInstance;
 
         await assert.rejects(
           bareAxios.get(dataUrl, { maxContentLength: 16 }),
           (err) => {
-            assert.strictEqual(err.code, "ERR_BAD_RESPONSE");
-            assert.match(err.message, /maxContentLength size of 16 exceeded/);
+            const e = err as { code: string; message: string };
+            assert.strictEqual(e.code, "ERR_BAD_RESPONSE");
+            assert.match(e.message, /maxContentLength size of 16 exceeded/);
             return true;
           },
         );
       });
 
       it("should allow a percent-encoded data: URL within decoded maxContentLength", async () => {
-        const bareAxios = axios.create({ adapter: "fetch" });
+        const bareAxios = axios.create({ adapter: "fetch" }) as unknown as TypedAxiosInstance;
         const { data } = await bareAxios.get("data:text/plain,%E2%82%AC", {
           maxContentLength: 4,
         });
@@ -1715,7 +1733,7 @@ describe.runIf(typeof fetch === "function")(
       it("should allow a response at or below maxContentLength", async () => {
         const payload = "ok";
         const server = await startHTTPServer(
-          (req, res) => {
+          (_req, res) => {
             res.end(payload);
           },
           { port: SERVER_PORT },
@@ -1768,7 +1786,7 @@ describe.runIf(typeof fetch === "function")(
         let received;
         const server = await startHTTPServer(
           (req, res) => {
-            const chunks = [];
+            const chunks: Buffer[] = [];
             req.on("data", (c) => chunks.push(c));
             req.on("end", () => {
               received = Buffer.concat(chunks).toString();
