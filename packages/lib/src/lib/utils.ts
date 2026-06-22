@@ -438,11 +438,7 @@ function findKey(obj: unknown, key: string): string | null {
 const _global = (() => {
   /*eslint no-undef:0*/
   if (typeof globalThis !== "undefined") return globalThis;
-  // @ts-expect-error self may not exist in all environments
-   
   if (typeof self !== "undefined") return self;
-  // @ts-expect-error window may not exist in all environments
-   
   if (typeof window !== "undefined") return window;
   return global as unknown as Record<string, unknown>;
 })() as Record<string, unknown> & { addEventListener?: (type: string, listener: (event: Record<string, unknown>) => void, capture?: boolean) => void; postMessage?: (message: unknown, targetOrigin: string) => void; };
