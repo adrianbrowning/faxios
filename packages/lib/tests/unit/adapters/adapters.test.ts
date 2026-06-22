@@ -1,41 +1,44 @@
 import assert from "node:assert";
 import { beforeEach, describe, it } from "vitest";
 import adapters from "../../../src/lib/adapters/adapters.js";
+import type { InternalAxiosRequestConfig } from "../../../src/lib/types.js";
+
+const store = { ...adapters.adapters } as Record<string, unknown>;
+const adapterStore = adapters.adapters as Record<string, unknown>;
+const config = {} as InternalAxiosRequestConfig;
 
 describe("adapters", () => {
-  const store = { ...adapters.adapters };
-
   beforeEach(() => {
-    Object.keys(adapters.adapters).forEach((name) => {
-      delete adapters.adapters[name];
+    Object.keys(adapterStore).forEach((name) => {
+      delete adapterStore[name];
     });
 
-    Object.assign(adapters.adapters, store);
+    Object.assign(adapterStore, store);
   });
 
   it("should support loading by fn handle", () => {
     const adapter = () => {};
-    assert.strictEqual(adapters.getAdapter(adapter), adapter);
+    assert.strictEqual(adapters.getAdapter(adapter, config), adapter);
   });
 
   it("should support loading by name", () => {
     const adapter = () => {};
-    adapters.adapters.testadapter = adapter;
-    assert.strictEqual(adapters.getAdapter("testAdapter"), adapter);
+    adapterStore.testadapter = adapter;
+    assert.strictEqual(adapters.getAdapter("testAdapter", config), adapter);
   });
 
   it("should detect adapter unavailable status", () => {
-    adapters.adapters.testadapter = null;
+    adapterStore.testadapter = null;
     assert.throws(
-      () => adapters.getAdapter("testAdapter"),
+      () => adapters.getAdapter("testAdapter", config),
       /is not available in the build/,
     );
   });
 
   it("should detect adapter unsupported status", () => {
-    adapters.adapters.testadapter = false;
+    adapterStore.testadapter = false;
     assert.throws(
-      () => adapters.getAdapter("testAdapter"),
+      () => adapters.getAdapter("testAdapter", config),
       /is not supported by the environment/,
     );
   });
@@ -43,12 +46,12 @@ describe("adapters", () => {
   it("should pick suitable adapter from the list", () => {
     const adapter = () => {};
 
-    Object.assign(adapters.adapters, {
+    Object.assign(adapterStore, {
       foo: false,
       bar: null,
       baz: adapter,
     });
 
-    assert.strictEqual(adapters.getAdapter(["foo", "bar", "baz"]), adapter);
+    assert.strictEqual(adapters.getAdapter(["foo", "bar", "baz"], config), adapter);
   });
 });
