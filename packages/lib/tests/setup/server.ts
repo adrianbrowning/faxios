@@ -12,7 +12,7 @@ export const SERVER_HANDLER_STREAM_ECHO = (req: IncomingMessage, res: ServerResp
 export const setTimeoutAsync = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const certificatePromise = selfsigned.generate(undefined, { keySize: 2048 });
-const trackedServers = new Set();
+const trackedServers = new Set<ExtendedServer>();
 
 const untrackServer = (server: http.Server | http2.Http2SecureServer) => {
   trackedServers.delete(server);
@@ -31,6 +31,7 @@ type ServerOptions = {
 
 type ExtendedServer = (http.Server | http2.Http2SecureServer) & {
   closeAllSessions?: () => void;
+  closeAllConnections?: () => void;
 };
 
 export const startHTTPServer = async (handlerOrOptions: ((req: IncomingMessage, res: ServerResponse) => void) | ServerOptions, options?: ServerOptions): Promise<ExtendedServer> => {
@@ -58,7 +59,7 @@ export const startHTTPServer = async (handlerOrOptions: ((req: IncomingMessage, 
     options
   );
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const serverHandler =
       handler ||
       async function (req: IncomingMessage, res: ServerResponse) {
@@ -66,19 +67,19 @@ export const startHTTPServer = async (handlerOrOptions: ((req: IncomingMessage, 
           req.headers["content-length"] &&
             res.setHeader("content-length", req.headers["content-length"]);
 
-          let dataStream = req;
+          let dataStream: stream.Readable = req;
 
           if (useBuffering) {
             dataStream = stream.Readable.from(await getStream(req));
           }
 
-          const streams = [ dataStream ];
+          const streams: stream.Stream[] = [ dataStream ];
 
           if (rate) {
             streams.push(new Throttle({ rate }));
           }
 
-          streams.push(res);
+          streams.push(res as unknown as stream.Writable);
 
           stream.pipeline(streams, err => {
             err && console.log("Server warning: " + err.message);
@@ -90,7 +91,7 @@ export const startHTTPServer = async (handlerOrOptions: ((req: IncomingMessage, 
       };
 
     const server = useHTTP2
-      ? http2.createSecureServer({ key, cert }, serverHandler)
+      ? http2.createSecureServer({ key, cert }, serverHandler as unknown as (req: http2.Http2ServerRequest, res: http2.Http2ServerResponse) => void)
       : http.createServer(serverHandler);
 
     const sessions = new Set<http2.ServerHttp2Session>();
@@ -214,7 +215,7 @@ export const makeEchoStream = (echo: boolean) =>
 
 export const startTestServer = async (port: number) => {
   const handler = async (req: IncomingMessage) => {
-    const parsed = new URL(req.url, `http://localhost:${port}`);
+    const parsed = new URL(req.url ?? "/", `http://localhost:${port}`);
 
     const params = Object.fromEntries(parsed.searchParams);
 
