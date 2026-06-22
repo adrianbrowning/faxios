@@ -952,7 +952,7 @@ function handleBufferedResponse(
       let responseData: Buffer | string =
         responseBuffer.length === 1
           ? responseBuffer[0]!
-          : Buffer.concat(responseBuffer);
+          : Buffer.concat(responseBuffer as unknown as Uint8Array[]);
       if (ctx.responseType !== "arraybuffer") {
         responseData = responseData.toString(ctx.responseEncoding as BufferEncoding);
         if (!ctx.responseEncoding || ctx.responseEncoding === "utf8") {
@@ -1306,7 +1306,7 @@ function applyUploadProgress(
       flushOnFinish(
         data as stream.Stream,
         progressEventDecorator(
-          contentLength,
+          contentLength ?? undefined,
           progressEventReducer(asyncDecorator(onUploadProgress as (...args: Array<unknown>) => unknown), false, 3)
         )
       ) as (...args: Array<unknown>) => void
@@ -1660,7 +1660,7 @@ export default isHttpAdapterSupported &&
 
         ({ maxUploadRate, maxDownloadRate } = resolveMaxRates(maxRate));
 
-        data = applyUploadProgressIfNeeded(data, onUploadProgress, maxUploadRate, contentLength);
+        data = applyUploadProgressIfNeeded(data, onUploadProgress, maxUploadRate, contentLength ?? null);
 
         // HTTP basic authentication
         const auth = buildAuth(own, parsed);
