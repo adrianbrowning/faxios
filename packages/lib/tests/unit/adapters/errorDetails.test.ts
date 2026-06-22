@@ -7,7 +7,6 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "vitest";
 import axios from "../../../src/index.js";
-import { type AxiosError } from "../../../src/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,7 +28,7 @@ describe("adapters - network-error details", () => {
       await (axios as unknown as { get: (url: string, config?: unknown) => Promise<unknown> }).get(`http://127.0.0.1:${port}`, { timeout: 500 });
       assert.fail("request unexpectedly succeeded");
     } catch (err) {
-      const e = err as AxiosError;
+      const e = err as Error & { isAxiosError: boolean; code: string };
       assert.ok(e instanceof Error, "should be an Error");
       assert.strictEqual(e.isAxiosError, true, "isAxiosError should be true");
 
@@ -67,7 +66,7 @@ describe("adapters - network-error details", () => {
       });
       assert.fail("request unexpectedly succeeded");
     } catch (err) {
-      const e = err as AxiosError;
+      const e = err as Error & { code: string };
       const codeStr = String(e.code);
       assert.ok(
         /SELF_SIGNED|UNABLE_TO_VERIFY_LEAF_SIGNATURE|DEPTH_ZERO/.test(codeStr),
