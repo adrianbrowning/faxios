@@ -911,7 +911,7 @@ interface ResponseContext {
 }
 
 function handleBufferedResponse(
-  responseStream: stream.Stream | stream.Readable,
+  responseStream: stream.Readable,
   ctx: ResponseContext,
   response: { status: number; statusText: string; headers: AxiosHeaders; config: InternalAxiosRequestConfig; request: unknown; data: unknown; },
   lastRequest: unknown
@@ -1038,7 +1038,7 @@ function makeHandleResponse(ctx: ResponseContext): (res: unknown) => void {
       settle(ctx.resolve, ctx.reject, response);
     }
     else {
-      handleBufferedResponse(responseStream, ctx, response, lastRequest);
+      handleBufferedResponse(responseStream as stream.Readable, ctx, response, lastRequest);
     }
 
     ctx.abortEmitter.once("abort", (err: unknown) => {
