@@ -1,23 +1,39 @@
 import http from "node:http";
 import http2 from "node:http2";
 import stream from "node:stream";
+import type { IncomingMessage, ServerResponse } from "node:http";
 import { IncomingForm } from "formidable";
 import getStream, { getStreamAsBuffer } from "get-stream";
 import selfsigned from "selfsigned";
 import { Throttle } from "stream-throttle";
 
-export const SERVER_HANDLER_STREAM_ECHO = (req, res) => req.pipe(res);
+export const SERVER_HANDLER_STREAM_ECHO = (req: IncomingMessage, res: ServerResponse) => req.pipe(res);
 
-export const setTimeoutAsync = ms => new Promise(resolve => setTimeout(resolve, ms));
+export const setTimeoutAsync = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const certificatePromise = selfsigned.generate(null, { keySize: 2048 });
+const certificatePromise = selfsigned.generate(undefined, { keySize: 2048 });
 const trackedServers = new Set();
 
-const untrackServer = server => {
+const untrackServer = (server: http.Server | http2.Http2SecureServer) => {
   trackedServers.delete(server);
 };
 
-export const startHTTPServer = async (handlerOrOptions, options) => {
+type ServerOptions = {
+  handler?: (req: IncomingMessage, res: ServerResponse) => void;
+  useBuffering?: boolean;
+  rate?: number;
+  port?: number;
+  keepAlive?: number;
+  useHTTP2?: boolean;
+  key?: string;
+  cert?: string;
+};
+
+type ExtendedServer = (http.Server | http2.Http2SecureServer) & {
+  closeAllSessions?: () => void;
+};
+
+export const startHTTPServer = async (handlerOrOptions: ((req: IncomingMessage, res: ServerResponse) => void) | ServerOptions, options?: ServerOptions): Promise<ExtendedServer> => {
   const certificate = await certificatePromise;
 
   const {
@@ -45,7 +61,7 @@ export const startHTTPServer = async (handlerOrOptions, options) => {
   return new Promise((resolve, reject) => {
     const serverHandler =
       handler ||
-      async function (req, res) {
+      async function (req: IncomingMessage, res: ServerResponse) {
         try {
           req.headers["content-length"] &&
             res.setHeader("content-length", req.headers["content-length"]);
@@ -77,10 +93,10 @@ export const startHTTPServer = async (handlerOrOptions, options) => {
       ? http2.createSecureServer({ key, cert }, serverHandler)
       : http.createServer(serverHandler);
 
-    const sessions = new Set();
+    const sessions = new Set<http2.ServerHttp2Session>();
 
     if (useHTTP2) {
-      server.on("session", session => {
+      (server as http2.Http2SecureServer).on("session", (session: http2.ServerHttp2Session) => {
         sessions.add(session);
 
         session.once("close", () => {
@@ -88,29 +104,24 @@ export const startHTTPServer = async (handlerOrOptions, options) => {
         });
       });
 
-      server.closeAllSessions = () => {
+      (server as ExtendedServer).closeAllSessions = () => {
         for (const session of sessions) {
           session.destroy();
         }
       };
     }
     else {
-      server.keepAliveTimeout = keepAlive;
+      (server as http.Server).keepAliveTimeout = keepAlive;
     }
 
-    server.listen(port, function (err) {
-      if (err) {
-        reject(err);
-        return;
-      }
-
+    server.listen(port, function (this: ExtendedServer) {
       trackedServers.add(this);
       resolve(this);
     });
   });
 };
 
-export const stopHTTPServer = async (server, timeout = 10000) => {
+export const stopHTTPServer = async (server: ExtendedServer, timeout = 10000) => {
   if (!server) return;
 
   // Try a graceful close first so in-flight requests can finish writing and
@@ -144,7 +155,7 @@ export const stopAllTrackedHTTPServers = async (timeout = 10000) => {
   await Promise.all(servers.map(server => stopHTTPServer(server, timeout)));
 };
 
-export const handleFormData = req => new Promise((resolve, reject) => {
+export const handleFormData = (req: IncomingMessage) => new Promise<{ fields: Record<string, string | string[]>; files: Record<string, unknown> }>((resolve, reject) => {
   const form = new IncomingForm();
 
   form.parse(req, (err, fields, files) => {
@@ -194,20 +205,20 @@ export const makeReadableStream = (chunk = "chunk", n = 10, timeout = 100) => ne
   }
 );
 
-export const makeEchoStream = echo =>
+export const makeEchoStream = (echo: boolean) =>
   new WritableStream({
     write(chunk) {
       echo && console.log("Echo chunk", chunk);
     },
   });
 
-export const startTestServer = async port => {
-  const handler = async req => {
+export const startTestServer = async (port: number) => {
+  const handler = async (req: IncomingMessage) => {
     const parsed = new URL(req.url, `http://localhost:${port}`);
 
     const params = Object.fromEntries(parsed.searchParams);
 
-    const response = {
+    const response: Record<string, unknown> = {
       url: req.url,
       pathname: parsed.pathname,
       params,
@@ -254,8 +265,8 @@ export const startTestServer = async port => {
         return;
       }
 
-      Promise.resolve(handler(req, res)).then(result => {
-        const { status = 200, headers = {}, body } = result || {};
+      Promise.resolve(handler(req)).then(result => {
+        const { status = 200, headers = {}, body } = (result || {}) as { status?: number; headers?: Record<string, string>; body?: unknown };
 
         res.statusCode = status;
 
