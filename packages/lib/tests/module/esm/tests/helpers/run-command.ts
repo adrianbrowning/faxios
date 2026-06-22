@@ -1,4 +1,4 @@
-import { spawnSync, SpawnSyncOptionsWithStringEncoding } from "node:child_process";
+import { spawnSync, type SpawnSyncOptionsWithStringEncoding } from "node:child_process";
 
 const formatCommand = (command: string, args: string[]) => [ command, ...(args || []) ].join(" ");
 
