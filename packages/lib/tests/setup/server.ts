@@ -73,7 +73,7 @@ export const startHTTPServer = async (handlerOrOptions: ((req: IncomingMessage, 
             dataStream = stream.Readable.from(await getStream(req));
           }
 
-          const streams: stream.Stream[] = [ dataStream ];
+          const streams: (NodeJS.ReadableStream | NodeJS.WritableStream | NodeJS.ReadWriteStream)[] = [ dataStream ];
 
           if (rate) {
             streams.push(new Throttle({ rate }));
