@@ -885,7 +885,7 @@ const factory = (env: Record<string, unknown>) => {
     }
     catch (err) {
       unsubscribe && unsubscribe();
-      handleFetchCaughtError(err, composedSignal, pendingBodyErrorRef, config, request);
+      throw handleFetchCaughtError(err, composedSignal, pendingBodyErrorRef, config, request);
     }
   };
 };
