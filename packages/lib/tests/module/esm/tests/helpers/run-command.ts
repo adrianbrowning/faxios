@@ -1,9 +1,9 @@
-import { spawnSync } from "node:child_process";
+import { spawnSync, SpawnSyncOptionsWithStringEncoding } from "node:child_process";
 
-const formatCommand = (command, args) => [ command, ...(args || []) ].join(" ");
+const formatCommand = (command: string, args: string[]) => [ command, ...(args || []) ].join(" ");
 
-export const runCommand = (command, args = [], options = {}) => {
-  const spawnOptions = { encoding: "utf8", ...options };
+export const runCommand = (command: string, args: string[] = [], options: Omit<SpawnSyncOptionsWithStringEncoding, 'encoding'> = {}) => {
+  const spawnOptions: SpawnSyncOptionsWithStringEncoding = { encoding: "utf8", ...options };
   const result = spawnSync(command, args, spawnOptions);
 
   const output = {
