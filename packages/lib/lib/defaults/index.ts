@@ -44,6 +44,7 @@ function serializeObjectPayload(
       formSerializer
     );
   }
+  return undefined;
 }
 
 function stringifySafely(
