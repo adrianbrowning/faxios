@@ -95,20 +95,20 @@ class AxiosError extends Error {
   event?: unknown;
   override name: string;
 
-  static readonly ERR_BAD_OPTION_VALUE: string;
-  static readonly ERR_BAD_OPTION: string;
-  static readonly ECONNABORTED: string;
-  static readonly ETIMEDOUT: string;
-  static readonly ECONNREFUSED: string;
-  static readonly ERR_NETWORK: string;
-  static readonly ERR_FR_TOO_MANY_REDIRECTS: string;
-  static readonly ERR_DEPRECATED: string;
-  static readonly ERR_BAD_RESPONSE: string;
-  static readonly ERR_BAD_REQUEST: string;
-  static readonly ERR_CANCELED: string;
-  static readonly ERR_NOT_SUPPORT: string;
-  static readonly ERR_INVALID_URL: string;
-  static readonly ERR_FORM_DATA_DEPTH_EXCEEDED: string;
+  static ERR_BAD_OPTION_VALUE: string;
+  static ERR_BAD_OPTION: string;
+  static ECONNABORTED: string;
+  static ETIMEDOUT: string;
+  static ECONNREFUSED: string;
+  static ERR_NETWORK: string;
+  static ERR_FR_TOO_MANY_REDIRECTS: string;
+  static ERR_DEPRECATED: string;
+  static ERR_BAD_RESPONSE: string;
+  static ERR_BAD_REQUEST: string;
+  static ERR_CANCELED: string;
+  static ERR_NOT_SUPPORT: string;
+  static ERR_INVALID_URL: string;
+  static ERR_FORM_DATA_DEPTH_EXCEEDED: string;
 
   static from(
     error: Error & { code?: string; status?: number; },
