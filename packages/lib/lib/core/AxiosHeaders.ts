@@ -38,7 +38,7 @@ function normalizeValue(
   if (utils.isArray(value)) {
     return (value as Array<AxiosHeaderValue>).map(v =>
       sanitizeHeaderValue(String(v))
-    );
+    ) as string[];
   }
   return sanitizeHeaderValue(String(value));
 }
