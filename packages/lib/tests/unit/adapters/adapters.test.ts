@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { beforeEach, describe, it } from "vitest";
-import adapters from "../../../src/src/lib/adapters/adapters.js";
+import adapters from "../../../src/lib/adapters/adapters.js";
 
 describe("adapters", () => {
   const store = { ...adapters.adapters };
