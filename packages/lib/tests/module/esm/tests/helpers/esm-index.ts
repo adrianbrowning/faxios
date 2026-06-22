@@ -13,8 +13,9 @@ import type {
   Canceler,
   AxiosProgressEvent,
   ParamsSerializerOptions,
-  AddressFamily } from 'axios';
-import axios, {
+  AddressFamily,
+} from "faxios";
+import faxios, {
   AxiosHeaders,
   toFormData,
   formToJSON,
@@ -22,33 +23,36 @@ import axios, {
   all,
   isCancel,
   isAxiosError,
-  spread
-} from 'axios';
+  spread,
+} from "faxios";
 
 const config: AxiosRequestConfig = {
-  url: '/user',
-  method: 'get',
-  baseURL: 'https://api.example.com/',
+  url: "/user",
+  method: "get",
+  baseURL: "https://api.example.com/",
   allowAbsoluteUrls: false,
   transformRequest: (data: any) => '{"foo":"bar"}',
-  transformResponse: [ (data: any) => ({ baz: 'qux' }) ],
-  headers: { 'X-FOO': 'bar' },
+  transformResponse: [(data: any) => ({ baz: "qux" })],
+  headers: { "X-FOO": "bar" },
   params: { id: 12345 },
   paramsSerializer: {
     indexes: true,
     encode: (value: any) => value,
-    serialize: (value: Record<string, any>, options?: ParamsSerializerOptions) => String(value),
+    serialize: (
+      value: Record<string, any>,
+      options?: ParamsSerializerOptions,
+    ) => String(value),
   },
-  data: { foo: 'bar' },
+  data: { foo: "bar" },
   timeout: 10000,
   withCredentials: true,
   auth: {
-    username: 'janedoe',
-    password: 's00pers3cret',
+    username: "janedoe",
+    password: "s00pers3cret",
   },
-  responseType: 'json',
-  xsrfCookieName: 'XSRF-TOKEN',
-  xsrfHeaderName: 'X-XSRF-TOKEN',
+  responseType: "json",
+  xsrfCookieName: "XSRF-TOKEN",
+  xsrfHeaderName: "X-XSRF-TOKEN",
   onUploadProgress: (progressEvent: AxiosProgressEvent) => {},
   onDownloadProgress: (progressEvent: AxiosProgressEvent) => {},
   maxContentLength: 2000,
@@ -56,10 +60,10 @@ const config: AxiosRequestConfig = {
   validateStatus: (status: number) => status >= 200 && status < 300,
   maxRedirects: 5,
   proxy: {
-    host: '127.0.0.1',
+    host: "127.0.0.1",
     port: 9000,
   },
-  cancelToken: new axios.CancelToken((cancel: Canceler) => {}),
+  cancelToken: new faxios.CancelToken((cancel: Canceler) => {}),
 };
 
 const nullValidateStatusConfig: AxiosRequestConfig = {
@@ -83,48 +87,38 @@ const handleError = (error: AxiosError) => {
     console.log(error.response.data);
     console.log(error.response.status);
     console.log(error.response.headers);
-  }
-  else {
+  } else {
     console.log(error.message);
   }
 };
 
-axios(config).then(handleResponse)
-  .catch(handleError);
+faxios(config).then(handleResponse).catch(handleError);
 
-axios.get('/user?id=12345').then(handleResponse)
-  .catch(handleError);
+faxios.get("/user?id=12345").then(handleResponse).catch(handleError);
 
-axios
-  .get('/user', { params: { id: 12345 } })
+faxios
+  .get("/user", { params: { id: 12345 } })
   .then(handleResponse)
   .catch(handleError);
 
-axios.head('/user').then(handleResponse)
-  .catch(handleError);
+faxios.head("/user").then(handleResponse).catch(handleError);
 
-axios.options('/user').then(handleResponse)
-  .catch(handleError);
+faxios.options("/user").then(handleResponse).catch(handleError);
 
-axios.delete('/user').then(handleResponse)
-  .catch(handleError);
+faxios.delete("/user").then(handleResponse).catch(handleError);
 
-axios.post('/user', { foo: 'bar' }).then(handleResponse)
-  .catch(handleError);
+faxios.post("/user", { foo: "bar" }).then(handleResponse).catch(handleError);
 
-axios
-  .post('/user', { foo: 'bar' }, { headers: { 'X-FOO': 'bar' } })
+faxios
+  .post("/user", { foo: "bar" }, { headers: { "X-FOO": "bar" } })
   .then(handleResponse)
   .catch(handleError);
 
-axios.put('/user', { foo: 'bar' }).then(handleResponse)
-  .catch(handleError);
+faxios.put("/user", { foo: "bar" }).then(handleResponse).catch(handleError);
 
-axios.patch('/user', { foo: 'bar' }).then(handleResponse)
-  .catch(handleError);
+faxios.patch("/user", { foo: "bar" }).then(handleResponse).catch(handleError);
 
-axios.query('/user', { foo: 'bar' }).then(handleResponse)
-  .catch(handleError);
+faxios.query("/user", { foo: "bar" }).then(handleResponse).catch(handleError);
 
 // Typed methods
 interface UserCreationDef {
@@ -137,7 +131,7 @@ interface User {
 }
 
 interface ResponseHeaders {
-  'x-header': string;
+  "x-header": string;
 }
 
 // with default AxiosResponse<T> result
@@ -151,41 +145,43 @@ const handleUserResponse = (response: AxiosResponse<User>) => {
   console.log(response.config);
 };
 
-axios.get<User>('/user?id=12345').then(handleUserResponse)
-  .catch(handleError);
+faxios.get<User>("/user?id=12345").then(handleUserResponse).catch(handleError);
 
-axios
-  .get<User>('/user', { params: { id: 12345 } })
+faxios
+  .get<User>("/user", { params: { id: 12345 } })
   .then(handleUserResponse)
   .catch(handleError);
 
-axios.head<User>('/user').then(handleUserResponse)
-  .catch(handleError);
+faxios.head<User>("/user").then(handleUserResponse).catch(handleError);
 
-axios.options<User>('/user').then(handleUserResponse)
-  .catch(handleError);
+faxios.options<User>("/user").then(handleUserResponse).catch(handleError);
 
-axios.delete<User>('/user').then(handleUserResponse)
-  .catch(handleError);
+faxios.delete<User>("/user").then(handleUserResponse).catch(handleError);
 
-axios.post<User>('/user', { name: 'foo', id: 1 }).then(handleUserResponse)
-  .catch(handleError);
-
-axios
-  .post<User>('/user', { name: 'foo', id: 1 }, { headers: { 'X-FOO': 'bar' } })
+faxios
+  .post<User>("/user", { name: "foo", id: 1 })
   .then(handleUserResponse)
   .catch(handleError);
 
-axios.put<User>('/user', { name: 'foo', id: 1 }).then(handleUserResponse)
+faxios
+  .post<User>("/user", { name: "foo", id: 1 }, { headers: { "X-FOO": "bar" } })
+  .then(handleUserResponse)
   .catch(handleError);
 
-axios.patch<User>('/user', { name: 'foo', id: 1 }).then(handleUserResponse)
+faxios
+  .put<User>("/user", { name: "foo", id: 1 })
+  .then(handleUserResponse)
+  .catch(handleError);
+
+faxios
+  .patch<User>("/user", { name: "foo", id: 1 })
+  .then(handleUserResponse)
   .catch(handleError);
 
 // with custom response headers AxiosResponse<T, any, H> result
 
 const handleUserResponseWithCustomHeaders = (
-  response: AxiosResponse<User, any, ResponseHeaders>
+  response: AxiosResponse<User, any, ResponseHeaders>,
 ) => {
   console.log(response.data.id);
   console.log(response.data.name);
@@ -195,52 +191,63 @@ const handleUserResponseWithCustomHeaders = (
   console.log(response.config);
 };
 
-axios
-  .get<User, AxiosResponse<User, any, ResponseHeaders>>('/user?id=12345')
+faxios
+  .get<User, AxiosResponse<User, any, ResponseHeaders>>("/user?id=12345")
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
-axios
-  .get<User, AxiosResponse<User, any, ResponseHeaders>>('/user', { params: { id: 12345 } })
+faxios
+  .get<User, AxiosResponse<User, any, ResponseHeaders>>("/user", {
+    params: { id: 12345 },
+  })
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
-axios
-  .head<User, AxiosResponse<User, any, ResponseHeaders>>('/user')
+faxios
+  .head<User, AxiosResponse<User, any, ResponseHeaders>>("/user")
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
-axios
-  .options<User, AxiosResponse<User, any, ResponseHeaders>>('/user')
+faxios
+  .options<User, AxiosResponse<User, any, ResponseHeaders>>("/user")
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
-axios
-  .delete<User, AxiosResponse<User, any, ResponseHeaders>>('/user')
+faxios
+  .delete<User, AxiosResponse<User, any, ResponseHeaders>>("/user")
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
-axios
-  .post<User, AxiosResponse<User, any, ResponseHeaders>>('/user', { name: 'foo', id: 1 })
+faxios
+  .post<
+    User,
+    AxiosResponse<User, any, ResponseHeaders>
+  >("/user", { name: "foo", id: 1 })
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
-axios
+faxios
   .post<User, AxiosResponse<User, any, ResponseHeaders>>(
-    '/user',
-    { name: 'foo', id: 1 },
-    { headers: { 'X-FOO': 'bar' } }
+    "/user",
+    { name: "foo", id: 1 },
+    { headers: { "X-FOO": "bar" } },
   )
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
-axios
-  .put<User, AxiosResponse<User, any, ResponseHeaders>>('/user', { name: 'foo', id: 1 })
+faxios
+  .put<
+    User,
+    AxiosResponse<User, any, ResponseHeaders>
+  >("/user", { name: "foo", id: 1 })
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
-axios
-  .patch<User, AxiosResponse<User, any, ResponseHeaders>>('/user', { name: 'foo', id: 1 })
+faxios
+  .patch<
+    User,
+    AxiosResponse<User, any, ResponseHeaders>
+  >("/user", { name: "foo", id: 1 })
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
@@ -250,102 +257,109 @@ const handleStringResponse = (response: string) => {
   console.log(response);
 };
 
-axios.get<User, string>('/user?id=12345').then(handleStringResponse)
-  .catch(handleError);
-
-axios
-  .get<User, string>('/user', { params: { id: 12345 } })
+faxios
+  .get<User, string>("/user?id=12345")
   .then(handleStringResponse)
   .catch(handleError);
 
-axios.head<User, string>('/user').then(handleStringResponse)
-  .catch(handleError);
-
-axios.options<User, string>('/user').then(handleStringResponse)
-  .catch(handleError);
-
-axios.delete<User, string>('/user').then(handleStringResponse)
-  .catch(handleError);
-
-axios
-  .post<Partial<UserCreationDef>, string>('/user', { name: 'foo' })
+faxios
+  .get<User, string>("/user", { params: { id: 12345 } })
   .then(handleStringResponse)
   .catch(handleError);
 
-axios
-  .post<Partial<UserCreationDef>, string>('/user', { name: 'foo' }, { headers: { 'X-FOO': 'bar' } })
+faxios
+  .head<User, string>("/user")
   .then(handleStringResponse)
   .catch(handleError);
 
-axios
-  .put<Partial<UserCreationDef>, string>('/user', { name: 'foo' })
+faxios
+  .options<User, string>("/user")
   .then(handleStringResponse)
   .catch(handleError);
 
-axios
-  .patch<Partial<UserCreationDef>, string>('/user', { name: 'foo' })
+faxios
+  .delete<User, string>("/user")
   .then(handleStringResponse)
   .catch(handleError);
 
-axios
+faxios
+  .post<Partial<UserCreationDef>, string>("/user", { name: "foo" })
+  .then(handleStringResponse)
+  .catch(handleError);
+
+faxios
+  .post<Partial<UserCreationDef>, string>(
+    "/user",
+    { name: "foo" },
+    { headers: { "X-FOO": "bar" } },
+  )
+  .then(handleStringResponse)
+  .catch(handleError);
+
+faxios
+  .put<Partial<UserCreationDef>, string>("/user", { name: "foo" })
+  .then(handleStringResponse)
+  .catch(handleError);
+
+faxios
+  .patch<Partial<UserCreationDef>, string>("/user", { name: "foo" })
+  .then(handleStringResponse)
+  .catch(handleError);
+
+faxios
   .request<User, string>({
-    method: 'get',
-    url: '/user?id=12345',
+    method: "get",
+    url: "/user?id=12345",
   })
   .then(handleStringResponse)
   .catch(handleError);
 
 // Instances
 
-const instance1: AxiosInstance = axios.create();
+const instance1: AxiosInstance = faxios.create();
 const instance2: AxiosInstance = instance1.create(config);
 
-instance1(config).then(handleResponse)
-  .catch(handleError);
+instance1(config).then(handleResponse).catch(handleError);
 
-instance1.request(config).then(handleResponse)
-  .catch(handleError);
+instance1.request(config).then(handleResponse).catch(handleError);
 
-instance1.get('/user?id=12345').then(handleResponse)
-  .catch(handleError);
+instance1.get("/user?id=12345").then(handleResponse).catch(handleError);
 
-instance1.options('/user').then(handleResponse)
-  .catch(handleError);
+instance1.options("/user").then(handleResponse).catch(handleError);
 
 instance1
-  .get('/user', { params: { id: 12345 } })
+  .get("/user", { params: { id: 12345 } })
   .then(handleResponse)
   .catch(handleError);
 
-instance1.post('/user', { foo: 'bar' }).then(handleResponse)
-  .catch(handleError);
+instance1.post("/user", { foo: "bar" }).then(handleResponse).catch(handleError);
 
 instance1
-  .post('/user', { foo: 'bar' }, { headers: { 'X-FOO': 'bar' } })
+  .post("/user", { foo: "bar" }, { headers: { "X-FOO": "bar" } })
   .then(handleResponse)
   .catch(handleError);
 
 // Defaults
 
-axios.defaults.headers['X-FOO'];
+faxios.defaults.headers["X-FOO"];
 
-axios.defaults.baseURL = 'https://api.example.com/';
-axios.defaults.headers.common['Accept'] = 'application/json';
-axios.defaults.headers.post['X-FOO'] = 'bar';
-axios.defaults.timeout = 2500;
+faxios.defaults.baseURL = "https://api.example.com/";
+faxios.defaults.headers.common["Accept"] = "application/json";
+faxios.defaults.headers.post["X-FOO"] = "bar";
+faxios.defaults.timeout = 2500;
 
-instance1.defaults.baseURL = 'https://api.example.com/';
-instance1.defaults.headers.common['Accept'] = 'application/json';
-instance1.defaults.headers.post['X-FOO'] = 'bar';
+instance1.defaults.baseURL = "https://api.example.com/";
+instance1.defaults.headers.common["Accept"] = "application/json";
+instance1.defaults.headers.post["X-FOO"] = "bar";
 instance1.defaults.timeout = 2500;
 
-// axios create defaults
+// faxios create defaults
 
-axios.create({ headers: { foo: 'bar' } });
-axios.create({ headers: { common: { foo: 'bar' } } });
-axios.create({
+faxios.create({ headers: { foo: "bar" } });
+faxios.create({ headers: { common: { foo: "bar" } } });
+faxios.create({
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
   formSerializer: {
     indexes: null,
@@ -357,100 +371,102 @@ axios.create({
 
 // Interceptors
 
-const requestInterceptorId: number = axios.interceptors.request.use(
-  async config => {
-    await axios.get('/foo', {
+const requestInterceptorId: number = faxios.interceptors.request.use(
+  async (config) => {
+    await faxios.get("/foo", {
       headers: config.headers,
     });
     return config;
   },
   async (error: any) => Promise.reject(error),
-  { synchronous: false }
+  { synchronous: false },
 );
 
-axios.interceptors.request.eject(requestInterceptorId);
+faxios.interceptors.request.eject(requestInterceptorId);
 
-axios.interceptors.request.use(
-  async config => Promise.resolve(config),
-  async (error: any) => Promise.reject(error)
+faxios.interceptors.request.use(
+  async (config) => Promise.resolve(config),
+  async (error: any) => Promise.reject(error),
 );
 
-axios.interceptors.request.use(config => config);
-axios.interceptors.request.use(async config => Promise.resolve(config));
+faxios.interceptors.request.use((config) => config);
+faxios.interceptors.request.use(async (config) => Promise.resolve(config));
 
-const responseInterceptorId: number = axios.interceptors.response.use(
+const responseInterceptorId: number = faxios.interceptors.response.use(
   (response: AxiosResponse) => response,
-  async (error: any) => Promise.reject(error)
+  async (error: any) => Promise.reject(error),
 );
 
-axios.interceptors.response.eject(responseInterceptorId);
+faxios.interceptors.response.eject(responseInterceptorId);
 
-axios.interceptors.response.use(
+faxios.interceptors.response.use(
   async (response: AxiosResponse) => Promise.resolve(response),
-  async (error: any) => Promise.reject(error)
+  async (error: any) => Promise.reject(error),
 );
 
-axios.interceptors.request.use(req => {
-  // https://github.com/axios/axios/issues/5415
-  req.headers.set('foo', 'bar');
-  req.headers['Content-Type'] = 123;
+faxios.interceptors.request.use((req) => {
+  // https://github.com/faxios/faxios/issues/5415
+  req.headers.set("foo", "bar");
+  req.headers["Content-Type"] = 123;
   return req;
 });
 
-const voidRequestInterceptorId = axios.interceptors.request.use(
+const voidRequestInterceptorId = faxios.interceptors.request.use(
   // @ts-expect-error -- Must return an AxiosRequestConfig (or throw)
-  _response => {},
-  async (error: any) => Promise.reject(error)
+  (_response) => {},
+  async (error: any) => Promise.reject(error),
 );
-const voidResponseInterceptorId = axios.interceptors.response.use(
+const voidResponseInterceptorId = faxios.interceptors.response.use(
   // @ts-expect-error -- Must return an AxiosResponse (or throw)
-  _response => {},
-  async (error: any) => Promise.reject(error)
+  (_response) => {},
+  async (error: any) => Promise.reject(error),
 );
-axios.interceptors.request.eject(voidRequestInterceptorId);
-axios.interceptors.response.eject(voidResponseInterceptorId);
+faxios.interceptors.request.eject(voidRequestInterceptorId);
+faxios.interceptors.response.eject(voidResponseInterceptorId);
 
-axios.interceptors.response.use((response: AxiosResponse) => response);
-axios.interceptors.response.use(async (response: AxiosResponse) => Promise.resolve(response));
+faxios.interceptors.response.use((response: AxiosResponse) => response);
+faxios.interceptors.response.use(async (response: AxiosResponse) =>
+  Promise.resolve(response),
+);
 
-axios.interceptors.request.clear();
-axios.interceptors.response.clear();
+faxios.interceptors.request.clear();
+faxios.interceptors.response.clear();
 
 // Adapters
 
-const adapter: AxiosAdapter = async config => {
+const adapter: AxiosAdapter = async (config) => {
   const response: AxiosResponse = {
-    data: { foo: 'bar' },
+    data: { foo: "bar" },
     status: 200,
-    statusText: 'OK',
-    headers: { 'X-FOO': 'bar' },
+    statusText: "OK",
+    headers: { "X-FOO": "bar" },
     config,
   };
   return Promise.resolve(response);
 };
 
-axios.defaults.adapter = adapter;
+faxios.defaults.adapter = adapter;
 
-// axios.all
+// faxios.all
 
-const promises = [ Promise.resolve(1), Promise.resolve(2) ];
+const promises = [Promise.resolve(1), Promise.resolve(2)];
 
-const promise: Promise<Array<number>> = axios.all(promises);
+const promise: Promise<Array<number>> = faxios.all(promises);
 
-// axios.all named export
+// faxios.all named export
 
 (() => {
-  const promises = [ Promise.resolve(1), Promise.resolve(2) ];
+  const promises = [Promise.resolve(1), Promise.resolve(2)];
 
   const promise: Promise<Array<number>> = all(promises);
 })();
 
-// axios.spread
+// faxios.spread
 
 const fn1 = (a: number, b: number, c: number) => `${a}-${b}-${c}`;
-const fn2: (arr: Array<number>) => string = axios.spread(fn1);
+const fn2: (arr: Array<number>) => string = faxios.spread(fn1);
 
-// axios.spread named export
+// faxios.spread named export
 (() => {
   const fn1 = (a: number, b: number, c: number) => `${a}-${b}-${c}`;
   const fn2: (arr: Array<number>) => string = spread(fn1);
@@ -458,52 +474,52 @@ const fn2: (arr: Array<number>) => string = axios.spread(fn1);
 
 // Promises
 
-axios
-  .get('/user')
-  .then((response: AxiosResponse) => 'foo')
+faxios
+  .get("/user")
+  .then((response: AxiosResponse) => "foo")
   .then((value: string) => {});
 
-axios
-  .get('/user')
-  .then(async (response: AxiosResponse) => Promise.resolve('foo'))
+faxios
+  .get("/user")
+  .then(async (response: AxiosResponse) => Promise.resolve("foo"))
   .then((value: string) => {});
 
-axios
-  .get('/user')
+faxios
+  .get("/user")
   .then(
-    (response: AxiosResponse) => 'foo',
-    (error: any) => 'bar'
+    (response: AxiosResponse) => "foo",
+    (error: any) => "bar",
   )
   .then((value: string) => {});
 
-axios
-  .get('/user')
+faxios
+  .get("/user")
   .then(
-    (response: AxiosResponse) => 'foo',
-    (error: any) => 123
+    (response: AxiosResponse) => "foo",
+    (error: any) => 123,
   )
   .then((value: string | number) => {});
 
-axios
-  .get('/user')
-  .catch((error: any) => 'foo')
+faxios
+  .get("/user")
+  .catch((error: any) => "foo")
   .then((value: any) => {});
 
-axios
-  .get('/user')
-  .catch(async (error: any) => Promise.resolve('foo'))
+faxios
+  .get("/user")
+  .catch(async (error: any) => Promise.resolve("foo"))
   .then((value: any) => {});
 
 // Cancellation
 
-const source: CancelTokenSource = axios.CancelToken.source();
+const source: CancelTokenSource = faxios.CancelToken.source();
 
-axios
-  .get('/user', {
+faxios
+  .get("/user", {
     cancelToken: source.token,
   })
   .catch((thrown: AxiosError | Cancel) => {
-    if (axios.isCancel(thrown)) {
+    if (faxios.isCancel(thrown)) {
       const cancel: Cancel = thrown;
       console.log(cancel.message);
     }
@@ -515,12 +531,12 @@ axios
     }
   });
 
-source.cancel('Operation has been canceled.');
+source.cancel("Operation has been canceled.");
 
 // AxiosError
 
-axios.get('/user').catch((error: AxiosError) => {
-  if (axios.isAxiosError(error)) {
+faxios.get("/user").catch((error: AxiosError) => {
+  if (faxios.isAxiosError(error)) {
     const axiosError: AxiosError = error;
     console.log(axiosError.message);
   }
@@ -535,50 +551,50 @@ axios.get('/user').catch((error: AxiosError) => {
 
 // FormData
 
-axios.toFormData({ x: 1 }, new FormData());
+faxios.toFormData({ x: 1 }, new FormData());
 
 // named export
 toFormData({ x: 1 }, new FormData());
 
 // formToJSON
 
-axios.toFormData(new FormData());
+faxios.toFormData(new FormData());
 
 // named export
 formToJSON(new FormData());
 
 // AbortSignal
 
-axios.get('/user', { signal: new AbortController().signal });
+faxios.get("/user", { signal: new AbortController().signal });
 
 // AxiosHeaders methods
 
-axios.get('/user', {
+faxios.get("/user", {
   transformRequest: [
     (data: any, headers) => {
-      headers.setContentType('text/plain');
-      return 'baz';
+      headers.setContentType("text/plain");
+      return "baz";
     },
     (data: any, headers) => {
-      headers['foo'] = 'bar';
-      return 'baz';
+      headers["foo"] = "bar";
+      return "baz";
     },
   ],
 
   transformResponse: [
     (data: any, headers: AxiosResponseHeaders) => {
-      headers.has('foo');
+      headers.has("foo");
     },
   ],
 });
 
 // config headers
 
-axios.get('/user', {
+faxios.get("/user", {
   headers: new AxiosHeaders({ x: 1 }),
 });
 
-axios.get('/user', {
+faxios.get("/user", {
   headers: {
     foo: 1,
   },
@@ -608,17 +624,17 @@ function getRequestConfig2(options: AxiosRequestConfig): AxiosRequestConfig {
 
 // Max Rate
 
-axios.get('/user', {
+faxios.get("/user", {
   maxRate: 1000,
 });
 
-axios.get('/user', {
-  maxRate: [ 1000, 1000 ],
+faxios.get("/user", {
+  maxRate: [1000, 1000],
 });
 
 // Node progress
 
-axios.get('/user', {
+faxios.get("/user", {
   onUploadProgress: (e: AxiosProgressEvent) => {
     console.log(e.loaded);
     console.log(e.total);
@@ -629,51 +645,51 @@ axios.get('/user', {
 
 // adapters
 
-axios.get('/user', {
-  adapter: 'xhr',
+faxios.get("/user", {
+  adapter: "xhr",
 });
 
-axios.get('/user', {
-  adapter: 'http',
+faxios.get("/user", {
+  adapter: "http",
 });
 
-axios.get('/user', {
-  adapter: [ 'xhr', 'http' ],
+faxios.get("/user", {
+  adapter: ["xhr", "http"],
 });
 
 {
   // getAdapter
 
-  getAdapter(axios.create().defaults.adapter);
+  getAdapter(faxios.create().defaults.adapter);
   getAdapter(undefined);
   getAdapter([]);
-  getAdapter([ 'xhr' ]);
-  getAdapter([ adapter ]);
-  getAdapter([ 'xhr', 'http' ]);
-  getAdapter([ adapter, 'xhr' ]);
-  getAdapter([ adapter, adapter ]);
-  getAdapter('xhr');
+  getAdapter(["xhr"]);
+  getAdapter([adapter]);
+  getAdapter(["xhr", "http"]);
+  getAdapter([adapter, "xhr"]);
+  getAdapter([adapter, adapter]);
+  getAdapter("xhr");
   getAdapter(adapter);
-  const _: AxiosAdapter = getAdapter('xhr');
-  const __: AxiosAdapter = getAdapter([ 'xhr' ]);
+  const _: AxiosAdapter = getAdapter("xhr");
+  const __: AxiosAdapter = getAdapter(["xhr"]);
 
   // @ts-expect-error
   getAdapter();
   // @ts-expect-error
   getAdapter(123);
   // @ts-expect-error
-  getAdapter([ 123 ]);
+  getAdapter([123]);
   // @ts-expect-error
-  getAdapter('xhr', 'http');
+  getAdapter("xhr", "http");
 }
 
 // AxiosHeaders
 
 // iterator
 
-const headers = new AxiosHeaders({ foo: 'bar' });
+const headers = new AxiosHeaders({ foo: "bar" });
 
-for (const [ header, value ] of headers) {
+for (const [header, value] of headers) {
   console.log(header, value);
 }
 
@@ -692,32 +708,32 @@ for (const [ header, value ] of headers) {
 
   headers.y = 2;
 
-  headers.get('x');
+  headers.get("x");
 })();
 
 // AxiosHeaders instance assignment
 
 {
-  const requestInterceptorId: number = axios.interceptors.request.use(
-    async config => {
-      config.headers.Accept = 'foo';
-      config.headers.setAccept('foo');
+  const requestInterceptorId: number = faxios.interceptors.request.use(
+    async (config) => {
+      config.headers.Accept = "foo";
+      config.headers.setAccept("foo");
       config.headers = new AxiosHeaders({ x: 1 });
-      config.headers.foo = '1';
-      config.headers.set('bar', '2');
-      config.headers.set({ myHeader: 'myValue' });
-      config.headers = new AxiosHeaders({ myHeader: 'myValue' });
+      config.headers.foo = "1";
+      config.headers.set("bar", "2");
+      config.headers.set({ myHeader: "myValue" });
+      config.headers = new AxiosHeaders({ myHeader: "myValue" });
       config.headers = { ...config.headers } as AxiosRequestHeaders;
       return config;
     },
-    async (error: any) => Promise.reject(error)
+    async (error: any) => Promise.reject(error),
   );
 }
 
 {
   const config: AxiosRequestConfig = { headers: new AxiosHeaders({ foo: 1 }) };
 
-  axios.get('', {
+  faxios.get("", {
     headers: {
       bar: 2,
       ...config.headers,
@@ -726,23 +742,23 @@ for (const [ header, value ] of headers) {
 }
 
 // lookup
-axios.get('/user', {
+faxios.get("/user", {
   lookup: (
     hostname: string,
     opt: object,
-    cb: (err: Error | null, address: string, family: AddressFamily) => void
+    cb: (err: Error | null, address: string, family: AddressFamily) => void,
   ) => {
-    cb(null, '127.0.0.1', 4);
+    cb(null, "127.0.0.1", 4);
   },
 });
 
 // lookup async
-axios.get('/user', {
-  lookup: (hostname: string, opt: object) => [ '127.0.0.1', 4 ],
+faxios.get("/user", {
+  lookup: (hostname: string, opt: object) => ["127.0.0.1", 4],
 });
 
 // AxiosError.cause should be typed as Error to allow accessing .message
-axios.get('/user').catch((error: AxiosError) => {
+faxios.get("/user").catch((error: AxiosError) => {
   if (error.cause) {
     // This should not produce a type error - cause is typed as Error
     const causeMessage: string | undefined = error.cause.message;

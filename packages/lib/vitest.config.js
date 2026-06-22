@@ -11,6 +11,8 @@ export default defineConfig({
           environment: 'node',
           include: ['tests/unit/**/*.test.js'],
           setupFiles: [],
+          maxWorkers: 1,
+          minWorkers: 1,
         },
       },
       {

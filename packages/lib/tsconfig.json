@@ -2,8 +2,21 @@
   "extends": "@gingacodemonkey/config/tsc/no-dom/library",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "."
+    "rootDir": ".",
+    "incremental": false
   },
-  "include": ["eslint.config.ts", "eslint.config.style.ts", "./lib/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "eslint.config.ts",
+    "eslint.config.style.ts",
+    "./src/**/*.ts",
+    "./tests/unit/**/*.ts",
+    "./tests/setup/**/*.ts",
+    "./tests/module/esm/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "tests/smoke",
+    "tests/module/cjs"
+  ]
 }

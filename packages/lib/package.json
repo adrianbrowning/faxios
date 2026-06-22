@@ -3,57 +3,19 @@
   "version": "1.18.0",
   "description": "Promise based HTTP client for the browser and node.js",
   "main": "./dist/node/faxios.cjs",
-  "module": "./index.js",
+  "module": "./dist/src/index.js",
   "type": "module",
-  "types": "index.d.ts",
+  "types": "./dist/src/index.d.ts",
   "jsdelivr": "dist/faxios.min.js",
   "unpkg": "dist/faxios.min.js",
   "typings": "./index.d.ts",
-  "exports": {
-    ".": {
-      "types": {
-        "require": "./index.d.cts",
-        "default": "./index.d.ts"
-      },
-      "bun": {
-        "require": "./dist/node/faxios.cjs",
-        "default": "./index.js"
-      },
-      "react-native": {
-        "require": "./dist/browser/faxios.cjs",
-        "default": "./dist/esm/faxios.js"
-      },
-      "browser": {
-        "require": "./dist/browser/faxios.cjs",
-        "default": "./index.js"
-      },
-      "default": {
-        "require": "./dist/node/faxios.cjs",
-        "default": "./index.js"
-      }
-    },
-    "./lib/adapters/http.js": "./lib/adapters/http.js",
-    "./lib/adapters/xhr.js": "./lib/adapters/xhr.js",
-    "./unsafe/*": "./lib/*",
-    "./unsafe/core/settle.js": "./lib/core/settle.js",
-    "./unsafe/core/buildFullPath.js": "./lib/core/buildFullPath.js",
-    "./unsafe/helpers/isAbsoluteURL.js": "./lib/helpers/isAbsoluteURL.js",
-    "./unsafe/helpers/buildURL.js": "./lib/helpers/buildURL.js",
-    "./unsafe/helpers/combineURLs.js": "./lib/helpers/combineURLs.js",
-    "./unsafe/adapters/http.js": "./lib/adapters/http.js",
-    "./unsafe/adapters/xhr.js": "./lib/adapters/xhr.js",
-    "./unsafe/utils.js": "./lib/utils.js",
-    "./package.json": "./package.json",
-    "./dist/browser/faxios.cjs": "./dist/browser/faxios.cjs",
-    "./dist/node/faxios.cjs": "./dist/node/faxios.cjs"
-  },
-  "browser": {
+  "~browser": {
     "./dist/node/faxios.cjs": "./dist/browser/faxios.cjs",
     "./lib/adapters/http.js": "./lib/helpers/null.js",
     "./lib/platform/node/index.js": "./lib/platform/browser/index.js",
     "./lib/platform/node/classes/FormData.js": "./lib/helpers/null.js"
   },
-  "react-native": {
+  "~react-native": {
     "./dist/node/faxios.cjs": "./dist/browser/faxios.cjs",
     "./lib/adapters/http.js": "./lib/helpers/null.js",
     "./lib/platform/node/index.js": "./lib/platform/browser/index.js",
@@ -75,7 +37,7 @@
     "api",
     "client"
   ],
-  "author": "Matt Zabriskie",
+  "author": "Adrian Elton-Browning",
   "contributors": [
     "Matt Zabriskie (https://github.com/mzabriskie)",
     "Jay (https://github.com/jasonsaayman)",
@@ -104,17 +66,11 @@
     "CHANGELOG.md",
     "MIGRATION_GUIDE.md",
     "lib/",
-    "dist/faxios.js",
-    "dist/faxios.min.js",
-    "dist/faxios.min.js.map",
-    "dist/esm/faxios.js",
-    "dist/esm/faxios.min.js",
-    "dist/esm/faxios.min.js.map",
-    "dist/browser/faxios.cjs",
-    "dist/node/faxios.cjs"
+    "src/",
+    "dist/"
   ],
   "scripts": {
-    "build": "gulp clear && cross-env NODE_ENV=production rollup -c -m",
+    "build": "zshy",
     "version": "npm run build && git add package.json",
     "preversion": "gulp version",
     "test": "pnpm test:vitest",
@@ -131,9 +87,9 @@
     "test:module:esm": "npm --prefix tests/module/esm run test:module:esm",
     "docs:dev": "cd docs && npm run docs:dev",
     "lint": "pnpm lint:ts; pnpm lint:fix",
-    "lint:ts": "tsc --noEmit",
-    "lint:esl": "eslint --config eslint.config.ts \"lib/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
-    "lint:s": "eslint --config eslint.config.style.ts \"lib/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
+    "lint:ts": "tsc --noEmit && tsc --noEmit -p tests/browser/tsconfig.json",
+    "lint:esl": "eslint --config eslint.config.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
+    "lint:s": "eslint --config eslint.config.style.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
     "lint:fix": "pnpm lint:s --fix",
     "lint:e18e": "pnpm dlx @e18e/cli analyze"
   },
@@ -177,10 +133,66 @@
     "selfsigned": "^5.5.0",
     "stream-throttle": "^0.1.3",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.7"
+    "vitest": "^4.1.7",
+    "zshy": "latest"
+  },
+  "zshy": {
+    "exports": {
+      ".": "./src/index.ts",
+      "./unsafe/core/settle.js": "./src/lib/core/settle.ts",
+      "./unsafe/core/buildFullPath.js": "./src/lib/core/buildFullPath.ts",
+      "./unsafe/helpers/isAbsoluteURL.js": "./src/lib/helpers/isAbsoluteURL.ts",
+      "./unsafe/helpers/buildURL.js": "./src/lib/helpers/buildURL.ts",
+      "./unsafe/helpers/combineURLs.js": "./src/lib/helpers/combineURLs.ts",
+      "./unsafe/adapters/http.js": "./src/lib/adapters/http.ts",
+      "./unsafe/adapters/xhr.js": "./src/lib/adapters/xhr.ts",
+      "./unsafe/utils.js": "./src/lib/utils.ts",
+      "./package.json": "./package.json"
+    },
+    "cjs": false,
+    "noEdit": false
   },
   "engines": {
     "node": ">=24.0.0",
     "pnpm": ">=10.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./unsafe/core/settle.js": {
+      "types": "./dist/src/lib/core/settle.d.ts",
+      "default": "./dist/src/lib/core/settle.js"
+    },
+    "./unsafe/core/buildFullPath.js": {
+      "types": "./dist/src/lib/core/buildFullPath.d.ts",
+      "default": "./dist/src/lib/core/buildFullPath.js"
+    },
+    "./unsafe/helpers/isAbsoluteURL.js": {
+      "types": "./dist/src/lib/helpers/isAbsoluteURL.d.ts",
+      "default": "./dist/src/lib/helpers/isAbsoluteURL.js"
+    },
+    "./unsafe/helpers/buildURL.js": {
+      "types": "./dist/src/lib/helpers/buildURL.d.ts",
+      "default": "./dist/src/lib/helpers/buildURL.js"
+    },
+    "./unsafe/helpers/combineURLs.js": {
+      "types": "./dist/src/lib/helpers/combineURLs.d.ts",
+      "default": "./dist/src/lib/helpers/combineURLs.js"
+    },
+    "./unsafe/adapters/http.js": {
+      "types": "./dist/src/lib/adapters/http.d.ts",
+      "default": "./dist/src/lib/adapters/http.js"
+    },
+    "./unsafe/adapters/xhr.js": {
+      "types": "./dist/src/lib/adapters/xhr.d.ts",
+      "default": "./dist/src/lib/adapters/xhr.js"
+    },
+    "./unsafe/utils.js": {
+      "types": "./dist/src/lib/utils.d.ts",
+      "default": "./dist/src/lib/utils.js"
+    },
+    "./package.json": "./package.json"
   }
 }
