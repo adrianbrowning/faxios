@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-export const createTempFixture = (suiteRoot, name, sourcePath, tsconfig, packageJson) => {
+export const createTempFixture = (suiteRoot: string, name: string, sourcePath: string, tsconfig: object, packageJson?: object) => {
   const tempRoot = fs.mkdtempSync(path.join(suiteRoot, `.tmp-module-${name}-`));
   const source = fs.readFileSync(sourcePath, "utf8");
 
@@ -15,6 +15,6 @@ export const createTempFixture = (suiteRoot, name, sourcePath, tsconfig, package
   return tempRoot;
 };
 
-export const cleanupTempFixture = dirPath => {
+export const cleanupTempFixture = (dirPath: string) => {
   fs.rmSync(dirPath, { recursive: true, force: true });
 };
