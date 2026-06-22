@@ -81,7 +81,7 @@ export const startHTTPServer = async (handlerOrOptions: ((req: IncomingMessage, 
 
           streams.push(res as unknown as stream.Writable);
 
-          stream.pipeline(streams, err => {
+          stream.pipeline(streams, (err: NodeJS.ErrnoException | null) => {
             err && console.log("Server warning: " + err.message);
           });
         }
