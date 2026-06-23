@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import AxiosError from "../../../lib/src/lib/core/AxiosError.js";
 import settle from "../../../lib/src/lib/core/settle.js";
+import type { AxiosResponse } from "../../../lib/src/lib/types.js";
 
 describe("core::settle (vitest browser)", () => {
   it("resolves when response status is missing", () => {
@@ -11,7 +12,7 @@ describe("core::settle (vitest browser)", () => {
       config: {
         validateStatus: () => true,
       },
-    };
+    } as unknown as AxiosResponse;
 
     settle(resolve, reject, response);
 
@@ -25,7 +26,7 @@ describe("core::settle (vitest browser)", () => {
     const response = {
       status: 500,
       config: {},
-    };
+    } as unknown as AxiosResponse;
 
     settle(resolve, reject, response);
 
@@ -41,7 +42,7 @@ describe("core::settle (vitest browser)", () => {
       config: {
         validateStatus: () => true,
       },
-    };
+    } as unknown as AxiosResponse;
 
     settle(resolve, reject, response);
 
@@ -61,14 +62,14 @@ describe("core::settle (vitest browser)", () => {
         validateStatus: () => false,
       },
       request,
-    };
+    } as unknown as AxiosResponse;
 
     settle(resolve, reject, response);
 
     expect(resolve).not.toHaveBeenCalled();
     expect(reject).toHaveBeenCalledOnce();
 
-    const reason = reject.mock.calls[0][0];
+    const reason = reject.mock.calls[0]![0];
     expect(reason).toBeInstanceOf(AxiosError);
     expect(reason.message).toBe("Request failed with status code 500");
     expect(reason.code).toBe(AxiosError.ERR_BAD_RESPONSE);
@@ -86,7 +87,7 @@ describe("core::settle (vitest browser)", () => {
       config: {
         validateStatus,
       },
-    };
+    } as unknown as AxiosResponse;
 
     settle(resolve, reject, response);
 
