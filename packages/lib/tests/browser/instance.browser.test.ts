@@ -1,30 +1,35 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import axios from "../../src/index.js";
+import type { AxiosResponse, InternalAxiosRequestConfig } from "../../src/lib/types.js";
+import type InterceptorManager from "../../src/lib/core/InterceptorManager.js";
 
 class MockXMLHttpRequest {
-  constructor() {
-    this.requestHeaders = {};
-    this.responseHeaders = "";
-    this.readyState = 0;
-    this.status = 0;
-    this.statusText = "";
-    this.responseText = "";
-    this.response = null;
-    this.onreadystatechange = null;
-    this.onloadend = null;
-    this.upload = {
-      addEventListener() {},
-    };
-  }
+  requestHeaders: Record<string, string> = {};
+  responseHeaders = "";
+  readyState = 0;
+  status = 0;
+  statusText = "";
+  responseText = "";
+  response: string | null = null;
+  onreadystatechange: (() => void) | null = null;
+  onloadend: (() => void) | null = null;
+  upload = { addEventListener() {} };
+  method?: string;
+  url?: string;
+  async?: boolean;
+  params?: unknown;
+  timeout?: number;
 
-  open(method, url, async = true) {
+  constructor() {}
+
+  open(method: string, url: string, async = true) {
     this.method = method;
     this.url = url;
     this.async = async;
   }
 
-  setRequestHeader(key, value) {
+  setRequestHeader(key: string, value: string) {
     this.requestHeaders[key] = value;
   }
 
@@ -34,7 +39,7 @@ class MockXMLHttpRequest {
     return this.responseHeaders;
   }
 
-  send(data) {
+  send(data: unknown) {
     this.params = data;
     requests.push(this);
   }
@@ -44,7 +49,7 @@ class MockXMLHttpRequest {
     statusText = "OK",
     responseText = "",
     responseHeaders = "",
-  } = {}) {
+  }: { status?: number; statusText?: string; responseText?: string; responseHeaders?: string } = {}) {
     this.status = status;
     this.statusText = statusText;
     this.responseText = responseText;
@@ -62,23 +67,23 @@ class MockXMLHttpRequest {
   }
 }
 
-let requests = [];
-let OriginalXMLHttpRequest;
+let requests: MockXMLHttpRequest[] = [];
+let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
-const getLastRequest = () => {
+const getLastRequest = (): MockXMLHttpRequest => {
   const request = requests.at(-1);
 
   expect(request).toBeDefined();
 
-  return request;
+  return request!;
 };
 
-const flushSuccess = async (request, promise) => {
+const flushSuccess = async (request: MockXMLHttpRequest, promise: Promise<unknown>) => {
   request.respondWith({ status: 200 });
   await promise;
 };
 
-const waitForRequest = async (timeoutMs = 1000) => {
+const waitForRequest = async (timeoutMs = 1000): Promise<MockXMLHttpRequest> => {
   const start = Date.now();
 
   while (Date.now() - start < timeoutMs) {
@@ -97,7 +102,7 @@ describe("instance (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest;
+    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -190,15 +195,15 @@ describe("instance (vitest browser)", () => {
   });
 
   it("should have interceptors on the instance", async () => {
-    const requestInterceptorId = axios.interceptors.request.use((config) => {
-      config.foo = true;
+    const requestInterceptorId = (axios.interceptors.request as unknown as InterceptorManager<InternalAxiosRequestConfig>).use((config) => {
+      (config as InternalAxiosRequestConfig & Record<string, unknown>).foo = true;
       return config;
     });
 
     const instance = axios.create();
-    const instanceInterceptorId = instance.interceptors.request.use(
+    const instanceInterceptorId = (instance.interceptors.request as unknown as InterceptorManager<InternalAxiosRequestConfig>).use(
       (config) => {
-        config.bar = true;
+        (config as InternalAxiosRequestConfig & Record<string, unknown>).bar = true;
         return config;
       },
     );
@@ -211,13 +216,13 @@ describe("instance (vitest browser)", () => {
         status: 200,
       });
 
-      const response = await responsePromise;
+      const response = await responsePromise as AxiosResponse;
 
-      expect(response.config.foo).toBeUndefined();
-      expect(response.config.bar).toBe(true);
+      expect((response.config as Record<string, unknown>).foo).toBeUndefined();
+      expect((response.config as Record<string, unknown>).bar).toBe(true);
     } finally {
-      axios.interceptors.request.eject(requestInterceptorId);
-      instance.interceptors.request.eject(instanceInterceptorId);
+      (axios.interceptors.request as unknown as InterceptorManager<InternalAxiosRequestConfig>).eject(requestInterceptorId);
+      (instance.interceptors.request as unknown as InterceptorManager<InternalAxiosRequestConfig>).eject(instanceInterceptorId);
     }
   });
 
