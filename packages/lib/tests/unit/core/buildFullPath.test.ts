@@ -58,8 +58,8 @@ describe("core::buildFullPath", () => {
       }
 
       expect(error).toBeInstanceOf(AxiosError);
-      expect(error.code).toBe(AxiosError.ERR_INVALID_URL);
-      expect(error.message).toBe('Invalid URL: missing "//" after protocol');
+      expect((error as AxiosError).code).toBe(AxiosError.ERR_INVALID_URL);
+      expect((error as AxiosError).message).toBe('Invalid URL: missing "//" after protocol');
     }
   });
 
@@ -83,7 +83,7 @@ describe("core::buildFullPath", () => {
     }
 
     expect(error).toBeInstanceOf(AxiosError);
-    expect(error.code).toBe(AxiosError.ERR_INVALID_URL);
-    expect(error.message).toBe('Invalid URL: missing "//" after protocol');
+    expect((error as AxiosError).code).toBe(AxiosError.ERR_INVALID_URL);
+    expect((error as AxiosError).message).toBe('Invalid URL: missing "//" after protocol');
   });
 });

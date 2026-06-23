@@ -40,7 +40,7 @@ function assertValidHttpProtocolURL(url: unknown, config: unknown): void {
  *
  * @returns {string} The combined full path
  */
-export default function buildFullPath(baseURL: unknown, requestedURL: unknown, allowAbsoluteUrls: unknown, config: unknown): string {
+export default function buildFullPath(baseURL: unknown, requestedURL: unknown, allowAbsoluteUrls?: unknown, config?: unknown): string {
   assertValidHttpProtocolURL(requestedURL, config);
   let isRelativeUrl = !isAbsoluteURL(requestedURL);
   if (baseURL && (isRelativeUrl || allowAbsoluteUrls === false)) {
