@@ -104,7 +104,7 @@ describe.runIf(typeof fetch === "function")(
       );
 
       try {
-        const { data } = await fetchAxios.get(`${LOCAL_SERVER_URL}/`, {
+        const { data } = await fetchAxios.get<Record<string, unknown>>(`${LOCAL_SERVER_URL}/`, {
           headers: {
             "x-test": "\tok\r\nInjected: yes ",
           },
@@ -135,7 +135,7 @@ describe.runIf(typeof fetch === "function")(
           yield ["Authorization", "Bearer CHANGED"];
         };
 
-        const { data } = await fetchAxios.get(
+        const { data } = await fetchAxios.get<Record<string, unknown>>(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             headers: {
@@ -175,12 +175,12 @@ describe.runIf(typeof fetch === "function")(
       }) as unknown as TypedAxiosInstance;
 
       instance.interceptors.request.use((config) => {
-        config.headers.oprtName = encodeURIComponent(config.headers.oprtName);
+        config.headers.oprtName = encodeURIComponent(config.headers.oprtName as string);
         return config;
       });
 
       try {
-        const { data } = await instance.get("/", {
+        const { data } = await instance.get<Record<string, unknown>>("/", {
           headers: {
             oprtName: "请求用户",
           },
@@ -208,7 +208,7 @@ describe.runIf(typeof fetch === "function")(
       );
 
       try {
-        const { data } = await fetchAxios.get(`${LOCAL_SERVER_URL}/`, {
+        const { data } = await fetchAxios.get<Record<string, unknown>>(`${LOCAL_SERVER_URL}/`, {
           headers: {
             "x-test": "请求用户",
           },
@@ -848,7 +848,7 @@ describe.runIf(typeof fetch === "function")(
           );
 
           await assert.rejects(async () => {
-            await data.pipeTo(makeEchoStream(false));
+            await (data as ReadableStream).pipeTo(makeEchoStream(false));
           }, /^(AbortError|CanceledError):/);
         } finally {
           await stopHTTPServer(server);
@@ -1021,7 +1021,7 @@ describe.runIf(typeof fetch === "function")(
       );
 
       try {
-        const { data } = await fetchAxios.query(
+        const { data } = await fetchAxios.query<Record<string, unknown>>(
           `http://localhost:${(server.address() as AddressInfo).port}/search`,
           {
             selector: "field1",
@@ -1030,7 +1030,7 @@ describe.runIf(typeof fetch === "function")(
 
         assert.strictEqual(data.method, "QUERY");
         assert.strictEqual(data.url, "/search");
-        assert.deepStrictEqual(JSON.parse(data.body), { selector: "field1" });
+        assert.deepStrictEqual(JSON.parse(data.body as string), { selector: "field1" });
       } finally {
         await stopHTTPServer(server);
       }
@@ -1183,7 +1183,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          const { data } = await fetchAxios.post(
+          const { data } = await fetchAxios.post<Record<string, unknown>>(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               payload: "test",
@@ -1208,7 +1208,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          const { data } = await fetchAxios.post(
+          const { data } = await fetchAxios.post<Record<string, unknown>>(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             { payload: "test" },
             { headers: { "User-Agent": customUA } },
@@ -1766,7 +1766,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          const { data } = await fetchAxios.post(
+          const { data } = await fetchAxios.post<Record<string, unknown>>(
             `${LOCAL_SERVER_URL}/`,
             makeUploadStream(payloadLength),
             {
