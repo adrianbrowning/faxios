@@ -2,7 +2,6 @@ import assert from "node:assert";
 import type { AddressInfo } from "node:net";
 import stream from "node:stream";
 import util from "node:util";
-// @ts-expect-error no declaration file for abortcontroller-polyfill
 import { AbortController } from "abortcontroller-polyfill/dist/cjs-ponyfill.js";
 import NodeFormData from "form-data";
 import { describe, it, vi } from "vitest";
@@ -12,6 +11,7 @@ import AxiosError from "../../../src/lib/core/AxiosError.js";
 import { VERSION } from "../../../src/lib/env/data.js";
 import utils from "../../../src/lib/utils.js";
 import type { AxiosInstance as TypedAxiosInstance, AxiosStatic as TypedAxiosStatic, AxiosProgressEvent, AxiosHeaders as TypedAxiosHeaders } from "../../../src/index.old.js";
+import type { GenericAbortSignal } from "../../../src/lib/types.js";
 import {
   startHTTPServer,
   stopHTTPServer,
@@ -813,7 +813,7 @@ describe.runIf(typeof fetch === "function")(
               makeReadableStream(),
               {
                 responseType: "stream",
-                signal: controller.signal,
+                signal: controller.signal as GenericAbortSignal,
               },
             );
           }, /CanceledError/);
@@ -843,7 +843,7 @@ describe.runIf(typeof fetch === "function")(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "stream",
-              signal: controller.signal,
+              signal: controller.signal as GenericAbortSignal,
             },
           );
 
@@ -934,7 +934,7 @@ describe.runIf(typeof fetch === "function")(
         const controller = new AbortController();
 
         const request = fetchAxios.get("/", {
-          signal: controller.signal,
+          signal: controller.signal as GenericAbortSignal,
           env: { fetch: safariFetch as unknown as (input: string | Request | URL, init?: RequestInit) => Promise<Response> },
         });
 
