@@ -102,12 +102,12 @@ class MockXMLHttpRequest {
 let requests: MockXMLHttpRequest[] = [];
 let OriginalXMLHttpRequest: typeof window.XMLHttpRequest;
 
-const getLastRequest = () => {
+const getLastRequest = (): MockXMLHttpRequest => {
   const request = requests.at(-1);
 
   expect(request).toBeDefined();
 
-  return request;
+  return request!;
 };
 
 describe("progress (vitest browser)", () => {
