@@ -43,7 +43,7 @@ describe("utils::isX", () => {
   });
 
   it("should validate Undefined", () => {
-    expect(utils.isUndefined()).toEqual(true);
+    expect(utils.isUndefined(undefined)).toEqual(true);
     expect(utils.isUndefined(null)).toEqual(false);
   });
 
@@ -61,11 +61,12 @@ describe("utils::isX", () => {
   });
 
   it("should ignore inherited symbol properties when validating plain Object", () => {
+    const proto = Object.prototype as Record<symbol, unknown>;
     try {
-      Object.prototype[Symbol.iterator] = function* () {
+      proto[Symbol.iterator] = function* () {
         yield ["x-injected", "yes"];
       };
-      Object.prototype[Symbol.toStringTag] = "Custom";
+      proto[Symbol.toStringTag] = "Custom";
 
       expect(utils.isPlainObject({})).toEqual(true);
       expect(utils.isPlainObject([])).toEqual(false);
@@ -82,8 +83,8 @@ describe("utils::isX", () => {
         }),
       ).toEqual(false);
     } finally {
-      delete Object.prototype[Symbol.iterator];
-      delete Object.prototype[Symbol.toStringTag];
+      delete proto[Symbol.iterator];
+      delete proto[Symbol.toStringTag];
     }
   });
 
@@ -113,13 +114,13 @@ describe("utils::isX", () => {
       expect(utils.isSafeIterable({})).toEqual(false);
       expect(accessed).toEqual(false);
     } finally {
-      delete Object.prototype[Symbol.iterator];
+      delete (Object.prototype as Record<symbol, unknown>)[Symbol.iterator];
     }
   });
 
   it("should stop safe prototype-chain reads on cyclic Proxy prototypes", () => {
     let calls = 0;
-    let proxy;
+    let proxy: object;
     proxy = new Proxy(
       {},
       {
