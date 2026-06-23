@@ -4,7 +4,7 @@ import shouldBypassProxy from "../../../src/lib/helpers/shouldBypassProxy.js";
 const originalNoProxy = process.env.no_proxy;
 const originalNOProxy = process.env.NO_PROXY;
 
-const setNoProxy = (value) => {
+const setNoProxy = (value: string) => {
   process.env.no_proxy = value;
   process.env.NO_PROXY = value;
 };
