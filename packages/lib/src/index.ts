@@ -23,9 +23,11 @@ const {
   create,
 } = axios;
 
+// eslint-disable-next-line no-barrel-files/no-barrel-files
 export type { InternalAxiosRequestConfig } from "./lib/types.ts";
 
 export {
+  // eslint-disable-next-line no-barrel-files/no-barrel-files
   axios as default,
   create,
   Axios,
@@ -43,5 +45,5 @@ export {
   HttpStatusCode,
   formToJSON,
   getAdapter,
-  mergeConfig,
+  mergeConfig
 };
