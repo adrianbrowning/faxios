@@ -7,8 +7,12 @@ import os from "node:os";
 import stream from "node:stream";
 import zlib from "node:zlib";
 import path from "node:path";
+import type { AddressInfo } from "node:net";
+// @ts-expect-error no declaration file for abortcontroller-polyfill
 import { AbortController } from "abortcontroller-polyfill/dist/cjs-ponyfill.js";
+// @ts-expect-error no declaration file for body-parser
 import bodyParser from "body-parser";
+// @ts-expect-error no declaration file for dev-null
 import devNull from "dev-null";
 import FormDataLegacy from "form-data";
 import { IncomingForm } from "formidable";
@@ -16,7 +20,9 @@ import {
   FormData as FormDataPolyfill,
   Blob as BlobPolyfill,
 } from "formdata-node";
+// @ts-expect-error no declaration file for express
 import express from "express";
+// @ts-expect-error no declaration file for multer
 import multer from "multer";
 import getStream from "get-stream";
 import { EventEmitter } from "node:events";
@@ -24,6 +30,7 @@ import assert from "node:assert";
 import HttpsProxyAgent from "https-proxy-agent";
 import { describe, it } from "vitest";
 import axios from "../../../src/index.js";
+import type { AxiosInstance as TypedAxiosInstance, AxiosStatic as TypedAxiosStatic } from "../../../src/index.old.js";
 import httpAdapter, {
   __isSameOriginRedirect,
   __setProxy,
@@ -51,23 +58,24 @@ describe("supports http with nodejs", () => {
   const BlobSpecCompliant = typeof Blob !== "undefined" ? Blob : BlobPolyfill;
   const isBlobSupported = typeof Blob !== "undefined";
 
-  function toleranceRange(positive, negative) {
+  function toleranceRange(positive: any, negative: any) {
     const p = 1 + positive / 100;
     const n = 1 - negative / 100;
 
-    return (actualValue, value) =>
+    return (actualValue: any, value: any) =>
       actualValue > value ? actualValue <= value * p : actualValue >= value * n;
   }
 
   class HangingConnectSocket extends stream.Duplex {
+    connecting: boolean;
     constructor() {
       super();
       this.connecting = true;
     }
 
-    _read() {}
+    override _read() {}
 
-    _write(_chunk, _encoding, callback) {
+    override _write(_chunk: any, _encoding: any, callback: any) {
       callback();
     }
 
@@ -85,7 +93,7 @@ describe("supports http with nodejs", () => {
   }
 
   class HangingConnectAgent extends http.Agent {
-    createConnection() {
+    override createConnection(): any {
       return new HangingConnectSocket();
     }
   }
@@ -98,7 +106,7 @@ describe("supports http with nodejs", () => {
     };
 
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Content-Type", "application/json");
         res.end(JSON.stringify(data));
       },
@@ -106,8 +114,8 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data: responseData } = await axios.get(
-        `http://127.0.0.1:${server.address().port}`,
+      const { data: responseData } = await (axios as unknown as TypedAxiosStatic).get(
+        `http://127.0.0.1:${(server.address() as AddressInfo).port}`,
       );
       assert.deepStrictEqual(responseData, data);
     } finally {
@@ -123,7 +131,7 @@ describe("supports http with nodejs", () => {
     };
 
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Content-Type", "application/json");
         res.end(JSON.stringify(data));
       },
@@ -131,8 +139,8 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data: responseData } = await axios.get(
-        `http://[::1]:${server.address().port}`,
+      const { data: responseData } = await (axios as unknown as TypedAxiosStatic).get(
+        `http://[::1]:${(server.address() as AddressInfo).port}`,
         {
           proxy: false,
         },
@@ -145,7 +153,7 @@ describe("supports http with nodejs", () => {
 
   it("should throw an error if the timeout property is not parsable as a number", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         setTimeout(() => {
           res.end();
         }, 1000);
@@ -155,10 +163,10 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        axios.get(`http://localhost:${server.address().port}`, {
-          timeout: { strangeTimeout: 250 },
+        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
+          timeout: { strangeTimeout: 250 } as any,
         }),
-        (error) => {
+        (error: any) => {
           assert.strictEqual(error.code, AxiosError.ERR_BAD_OPTION_VALUE);
           assert.strictEqual(
             error.message,
@@ -174,7 +182,7 @@ describe("supports http with nodejs", () => {
 
   it("should sanitize request headers containing CRLF characters", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (req: any, res: any) => {
         res.setHeader("Content-Type", "application/json");
         res.end(
           JSON.stringify({
@@ -187,8 +195,8 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data } = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const { data } = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           headers: {
             "x-test": "\tok\r\nInjected: yes ",
@@ -205,7 +213,7 @@ describe("supports http with nodejs", () => {
 
   it("should allow request interceptors to encode Unicode header values before Node sends them", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (req: any, res: any) => {
         res.setHeader("Content-Type", "application/json");
         res.end(
           JSON.stringify({
@@ -218,14 +226,14 @@ describe("supports http with nodejs", () => {
 
     const instance = axios.create({ proxy: false });
 
-    instance.interceptors.request.use((config) => {
+    (instance as unknown as TypedAxiosInstance).interceptors.request.use((config) => {
       config.headers.oprtName = encodeURIComponent(config.headers.oprtName);
       return config;
     });
 
     try {
-      const { data } = await instance.get(
-        `http://localhost:${server.address().port}/`,
+      const { data } = await (instance as unknown as TypedAxiosInstance).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           headers: {
             oprtName: "请求用户",
@@ -241,7 +249,7 @@ describe("supports http with nodejs", () => {
 
   it("should sanitize unencoded Unicode request headers before passing them to Node", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (req: any, res: any) => {
         res.setHeader("Content-Type", "application/json");
         res.end(
           JSON.stringify({
@@ -253,8 +261,8 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data } = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const { data } = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           proxy: false,
           headers: {
@@ -271,7 +279,7 @@ describe("supports http with nodejs", () => {
 
   it("should parse the timeout property", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         setTimeout(() => {
           res.end();
         }, 1000);
@@ -281,10 +289,10 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        axios.get(`http://localhost:${server.address().port}`, {
-          timeout: "250",
+        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
+          timeout: "250" as any,
         }),
-        (error) => {
+        (error: any) => {
           assert.strictEqual(error.code, "ECONNABORTED");
           assert.strictEqual(error.message, "timeout of 250ms exceeded");
           return true;
@@ -297,7 +305,7 @@ describe("supports http with nodejs", () => {
 
   it("should respect the timeout property", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         setTimeout(() => {
           res.end();
         }, 1000);
@@ -307,10 +315,10 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        axios.get(`http://localhost:${server.address().port}`, {
+        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
           timeout: 250,
         }),
-        (error) => {
+        (error: any) => {
           assert.strictEqual(error.code, "ECONNABORTED");
           assert.strictEqual(error.message, "timeout of 250ms exceeded");
           return true;
@@ -328,7 +336,7 @@ describe("supports http with nodejs", () => {
     const controller = new AbortController();
     const agent = new HangingConnectAgent();
     let guardTimer;
-    const request = axios.get("http://connect-timeout.test/", {
+    const request = (axios as unknown as TypedAxiosStatic).get("http://connect-timeout.test/", {
       httpAgent: agent,
       maxRedirects: 0,
       proxy: false,
@@ -343,7 +351,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      await assert.rejects(Promise.race([request, guard]), (error) => {
+      await assert.rejects(Promise.race([request, guard]), (error: any) => {
         const elapsed = Date.now() - started;
         assert.strictEqual(error.code, "ECONNABORTED");
         assert.strictEqual(error.message, `timeout of ${timeout}ms exceeded`);
@@ -363,17 +371,17 @@ describe("supports http with nodejs", () => {
   it("should not time out immediately for timeout set to zero during TCP connect", async () => {
     const controller = new AbortController();
     const agent = new HangingConnectAgent();
-    const request = axios
+    const request = (axios as unknown as TypedAxiosStatic)
       .get("http://connect-timeout.test/", {
         httpAgent: agent,
         maxRedirects: 0,
         proxy: false,
         signal: controller.signal,
-        timeout: "0",
+        timeout: "0" as any,
       })
       .then(
         () => null,
-        (error) => error,
+        (error: any) => error,
       );
 
     try {
@@ -389,7 +397,7 @@ describe("supports http with nodejs", () => {
 
   it("should respect the timeoutErrorMessage property", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         setTimeout(() => {
           res.end();
         }, 1000);
@@ -399,11 +407,11 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        axios.get(`http://localhost:${server.address().port}`, {
+        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
           timeout: 250,
           timeoutErrorMessage: "oops, timeout",
         }),
-        (error) => {
+        (error: any) => {
           assert.strictEqual(error.code, "ECONNABORTED");
           assert.strictEqual(error.message, "oops, timeout");
           return true;
@@ -422,7 +430,7 @@ describe("supports http with nodejs", () => {
     };
 
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Content-Type", "application/json");
         res.end(JSON.stringify(data));
       },
@@ -430,8 +438,8 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data: responseData } = await axios.get(
-        `http://localhost:${server.address().port}`,
+      const { data: responseData } = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}`,
       );
       assert.deepStrictEqual(responseData, data);
     } finally {
@@ -447,7 +455,7 @@ describe("supports http with nodejs", () => {
     };
 
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Content-Type", "application/json");
         const bomBuffer = Buffer.from([0xef, 0xbb, 0xbf]);
         const jsonBuffer = Buffer.from(JSON.stringify(data));
@@ -457,8 +465,8 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data: responseData } = await axios.get(
-        `http://localhost:${server.address().port}`,
+      const { data: responseData } = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}`,
       );
       assert.deepStrictEqual(responseData, data);
     } finally {
@@ -470,7 +478,7 @@ describe("supports http with nodejs", () => {
     const expectedResponse = "test response";
     const server = await startHTTPServer(
       (req, res) => {
-        if (req.url === "/one") {
+        if (req.url! === "/one") {
           res.setHeader("Location", "/two");
           res.statusCode = 302;
           res.end();
@@ -483,8 +491,8 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/one`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/one`,
         {
           maxRedirects: 1,
         },
@@ -499,7 +507,7 @@ describe("supports http with nodejs", () => {
 
   it("should not redirect", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Location", "/foo");
         res.statusCode = 302;
         res.end();
@@ -508,8 +516,8 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/one`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/one`,
         {
           maxRedirects: 0,
         },
@@ -517,7 +525,7 @@ describe("supports http with nodejs", () => {
 
       assert.strictEqual(response.status, 302);
       assert.strictEqual(response.headers.location, "/foo");
-    } catch (error) {
+    } catch (error: any) {
       assert.strictEqual(error.message, "Request failed with status code 302");
       assert.strictEqual(error.response.status, 302);
       assert.strictEqual(error.response.headers.location, "/foo");
@@ -529,7 +537,7 @@ describe("supports http with nodejs", () => {
   it("should support max redirects", async () => {
     var i = 1;
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Location", `/${i}`);
         res.statusCode = 302;
         res.end();
@@ -539,10 +547,10 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      await axios.get(`http://localhost:${server.address().port}`, {
+      await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
         maxRedirects: 3,
       });
-    } catch (error) {
+    } catch (error: any) {
       assert.strictEqual(error.code, AxiosError.ERR_FR_TOO_MANY_REDIRECTS);
       assert.strictEqual(error.message, "Maximum number of redirects exceeded");
     } finally {
@@ -552,7 +560,7 @@ describe("supports http with nodejs", () => {
 
   it("should support beforeRedirect", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Location", "/foo");
         res.statusCode = 302;
         res.end();
@@ -561,7 +569,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      await axios.get(`http://localhost:${server.address().port}/one`, {
+      await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/one`, {
         maxRedirects: 3,
         beforeRedirect: (options, responseDetails) => {
           if (
@@ -572,7 +580,7 @@ describe("supports http with nodejs", () => {
           }
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       assert.strictEqual(
         error.message,
         "Redirected request failed: Provided path is not allowed",
@@ -584,7 +592,7 @@ describe("supports http with nodejs", () => {
 
   it("should pass requestDetails to beforeRedirect with the original URL", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Location", "/foo");
         res.statusCode = 302;
         res.end();
@@ -592,11 +600,11 @@ describe("supports http with nodejs", () => {
       { port: SERVER_PORT },
     );
 
-    const originalUrl = `http://localhost:${server.address().port}/bar`;
+    const originalUrl = `http://localhost:${(server.address() as AddressInfo).port}/bar`;
     let capturedUrl;
 
     try {
-      await axios.get(originalUrl, {
+      await (axios as unknown as TypedAxiosStatic).get(originalUrl, {
         maxRedirects: 3,
         beforeRedirect: (options, responseDetails, requestDetails) => {
           if (
@@ -608,7 +616,7 @@ describe("supports http with nodejs", () => {
           }
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       assert.strictEqual(
         error.message,
         "Redirected request failed: Provided path is not allowed",
@@ -626,7 +634,7 @@ describe("supports http with nodejs", () => {
     let configBeforeRedirectCount = 0;
 
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         requestCount += 1;
         if (requestCount <= totalRedirectCount) {
           res.setHeader("Location", `http://localhost:${SERVER_PORT}`);
@@ -641,22 +649,22 @@ describe("supports http with nodejs", () => {
       (req, res) => {
         proxyUseCount += 1;
         const targetUrl = new URL(
-          req.url,
-          `http://localhost:${server.address().port}`,
+          req.url!,
+          `http://localhost:${(server.address() as AddressInfo).port}`,
         );
         const opts = {
           host: targetUrl.hostname,
-          port: targetUrl.port,
-          path: targetUrl.path,
+          port: Number(targetUrl.port) || undefined,
+          path: targetUrl.pathname,
           method: req.method,
         };
 
-        const request = http.get(opts, (response) => {
-          res.writeHead(response.statusCode, response.headers);
+        const request = http.get(opts as any, (response) => {
+          res.writeHead(response.statusCode!, response.headers);
           stream.pipeline(response, res, () => {});
         });
 
-        request.on("error", (err) => {
+        request.on("error", (err: any) => {
           console.warn("request error", err);
           res.statusCode = 500;
           res.end();
@@ -665,13 +673,13 @@ describe("supports http with nodejs", () => {
       { port: PROXY_PORT },
     );
 
-    await axios.get(`http://localhost:${server.address().port}/`, {
+    await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
       proxy: {
         host: "localhost",
         port: PROXY_PORT,
       },
       maxRedirects: totalRedirectCount,
-      beforeRedirect: (options) => {
+      beforeRedirect: (_options: any) => {
         configBeforeRedirectCount += 1;
       },
     });
@@ -694,29 +702,29 @@ describe("supports http with nodejs", () => {
     });
 
     // origin server — redirects to destination (cross-origin)
-    const origin = await startHTTPServer((req, res) => {
+    const origin = await startHTTPServer((_req: any, res: any) => {
       res.setHeader(
         "Location",
-        `http://localhost:${destination.address().port}/dest`,
+        `http://localhost:${(destination.address() as AddressInfo).port}/dest`,
       );
       res.statusCode = 302;
       res.end();
     });
 
     try {
-      await axios.get(`http://localhost:${origin.address().port}/src`, {
+      await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(origin.address() as AddressInfo).port}/src`, {
         maxRedirects: 5,
         headers: { "X-API-Key": "secret", "X-Other": "keep" },
         sensitiveHeaders: ["X-API-Key"],
       });
 
       assert.strictEqual(
-        capturedHeaders["x-api-key"],
+        (capturedHeaders as any)["x-api-key"],
         undefined,
         "X-API-Key should be stripped",
       );
       assert.strictEqual(
-        capturedHeaders["x-other"],
+        (capturedHeaders as any)["x-other"],
         "keep",
         "X-Other should be preserved",
       );
@@ -730,7 +738,7 @@ describe("supports http with nodejs", () => {
     let capturedHeaders;
     let requestCount = 0;
 
-    const server = await startHTTPServer((req, res) => {
+    const server = await startHTTPServer((req: any, res: any) => {
       requestCount++;
       if (requestCount === 1) {
         res.setHeader("Location", "/dest");
@@ -744,14 +752,14 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      await axios.get(`http://localhost:${server.address().port}/src`, {
+      await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/src`, {
         maxRedirects: 5,
         headers: { "X-API-Key": "secret" },
         sensitiveHeaders: ["X-API-Key"],
       });
 
       assert.strictEqual(
-        capturedHeaders["x-api-key"],
+        (capturedHeaders as any)["x-api-key"],
         "secret",
         "X-API-Key should be preserved on same-origin redirect",
       );
@@ -769,17 +777,17 @@ describe("supports http with nodejs", () => {
       res.end("ok");
     });
 
-    const origin = await startHTTPServer((req, res) => {
+    const origin = await startHTTPServer((_req: any, res: any) => {
       res.setHeader(
         "Location",
-        `http://localhost:${destination.address().port}/dest`,
+        `http://localhost:${(destination.address() as AddressInfo).port}/dest`,
       );
       res.statusCode = 302;
       res.end();
     });
 
     try {
-      await axios.get(`http://localhost:${origin.address().port}/src`, {
+      await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(origin.address() as AddressInfo).port}/src`, {
         maxRedirects: 5,
         // Header sent with mixed casing; sensitiveHeaders list uses different casing
         headers: { "X-Api-Key": "secret" },
@@ -787,7 +795,7 @@ describe("supports http with nodejs", () => {
       });
 
       assert.strictEqual(
-        capturedHeaders["x-api-key"],
+        (capturedHeaders as any)["x-api-key"],
         undefined,
         "X-Api-Key should be stripped case-insensitively",
       );
@@ -806,10 +814,10 @@ describe("supports http with nodejs", () => {
       res.end("ok");
     });
 
-    const origin = await startHTTPServer((req, res) => {
+    const origin = await startHTTPServer((_req: any, res: any) => {
       res.setHeader(
         "Location",
-        `http://localhost:${destination.address().port}/dest`,
+        `http://localhost:${(destination.address() as AddressInfo).port}/dest`,
       );
       res.statusCode = 302;
       res.end();
@@ -821,17 +829,17 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      await client.get(`http://localhost:${origin.address().port}/src`, {
+      await (client as unknown as TypedAxiosInstance).get(`http://localhost:${(origin.address() as AddressInfo).port}/src`, {
         maxRedirects: 5,
       });
 
       assert.strictEqual(
-        capturedHeaders["x-api-key"],
+        (capturedHeaders as any)["x-api-key"],
         undefined,
         "X-API-Key should be stripped",
       );
       assert.strictEqual(
-        capturedHeaders["x-other"],
+        (capturedHeaders as any)["x-other"],
         "keep",
         "X-Other should be preserved",
       );
@@ -843,8 +851,8 @@ describe("supports http with nodejs", () => {
 
   it("should reject invalid sensitiveHeaders config", async () => {
     await assert.rejects(
-      axios.get("http://localhost:1/", { sensitiveHeaders: "X-API-Key" }),
-      (error) => {
+      (axios as unknown as TypedAxiosStatic).get("http://localhost:1/", { sensitiveHeaders: "X-API-Key" as any }),
+      (error: any) => {
         assert.strictEqual(error.code, AxiosError.ERR_BAD_OPTION_VALUE);
         assert.strictEqual(
           error.message,
@@ -855,8 +863,8 @@ describe("supports http with nodejs", () => {
     );
 
     await assert.rejects(
-      axios.get("http://localhost:1/", { sensitiveHeaders: [null] }),
-      (error) => {
+      (axios as unknown as TypedAxiosStatic).get("http://localhost:1/", { sensitiveHeaders: [null as any] }),
+      (error: any) => {
         assert.strictEqual(error.code, AxiosError.ERR_BAD_OPTION_VALUE);
         assert.strictEqual(
           error.message,
@@ -883,14 +891,14 @@ describe("supports http with nodejs", () => {
       false,
     );
     assert.strictEqual(
-      __isSameOriginRedirect({ href: "http://localhost/final" }),
+      __isSameOriginRedirect({ href: "http://localhost/final" } as any, undefined as any),
       false,
     );
   });
 
   it("should wrap HTTP errors and keep stack", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.statusCode = 400;
         res.end();
       },
@@ -900,9 +908,9 @@ describe("supports http with nodejs", () => {
     try {
       await assert.rejects(
         async function stackTraceTest() {
-          await axios.get(`http://localhost:${server.address().port}/`);
+          await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`);
         },
-        (error) => {
+        (error: any) => {
           const matches = [...error.stack.matchAll(/stackTraceTest/g)];
 
           assert.strictEqual(error.name, "AxiosError");
@@ -925,12 +933,12 @@ describe("supports http with nodejs", () => {
   it("should wrap interceptor errors and keep stack", async () => {
     const axiosInstance = axios.create();
 
-    axiosInstance.interceptors.request.use((res) => {
+    (axiosInstance as unknown as TypedAxiosInstance).interceptors.request.use((_res: any) => {
       throw new Error("from request interceptor");
     });
 
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.end();
       },
       { port: SERVER_PORT },
@@ -939,11 +947,11 @@ describe("supports http with nodejs", () => {
     try {
       await assert.rejects(
         async function stackTraceTest() {
-          await axiosInstance.get(
-            `http://localhost:${server.address().port}/one`,
+          await (axiosInstance as unknown as TypedAxiosInstance).get(
+            `http://localhost:${(server.address() as AddressInfo).port}/one`,
           );
         },
-        (error) => {
+        (error: any) => {
           const matches = [...error.stack.matchAll(/stackTraceTest/g)];
 
           assert.strictEqual(error.name, "Error");
@@ -961,13 +969,13 @@ describe("supports http with nodejs", () => {
   it("should preserve the HTTP verb on redirect", async () => {
     const server = await startHTTPServer(
       (req, res) => {
-        if (req.method.toLowerCase() !== "head") {
+        if (req.method!.toLowerCase() !== "head") {
           res.statusCode = 400;
           res.end();
           return;
         }
 
-        var parsed = new URL(req.url, "http://localhost");
+        var parsed = new URL(req.url!!, "http://localhost");
         if (parsed.pathname === "/one") {
           res.setHeader("Location", "/two");
           res.statusCode = 302;
@@ -980,8 +988,8 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await axios.head(
-        `http://localhost:${server.address().port}/one`,
+      const response = await (axios as unknown as TypedAxiosStatic).head(
+        `http://localhost:${(server.address() as AddressInfo).port}/one`,
       );
       assert.strictEqual(response.status, 200);
     } finally {
@@ -1001,7 +1009,7 @@ describe("supports http with nodejs", () => {
         emailAddr: "fred@example.com",
       };
 
-      const zipped = await new Promise((resolve, reject) => {
+      const zipped: any = await new Promise((resolve, reject) => {
         zlib.gzip(JSON.stringify(data), (error, compressed) => {
           if (error) {
             reject(error);
@@ -1013,7 +1021,7 @@ describe("supports http with nodejs", () => {
       });
 
       const server = await startHTTPServer(
-        (req, res) => {
+        (_req: any, res: any) => {
           res.setHeader("Content-Type", "application/json");
           res.setHeader("Content-Encoding", "gzip");
           res.end(zipped);
@@ -1022,8 +1030,8 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const { data: responseData } = await axios.get(
-          `http://localhost:${server.address().port}/`,
+        const { data: responseData } = await (axios as unknown as TypedAxiosStatic).get(
+          `http://localhost:${(server.address() as AddressInfo).port}/`,
         );
         assert.deepStrictEqual(responseData, data);
       } finally {
@@ -1033,7 +1041,7 @@ describe("supports http with nodejs", () => {
 
     it("should support gunzip error handling", async () => {
       const server = await startHTTPServer(
-        (req, res) => {
+        (_req: any, res: any) => {
           res.statusCode = 206;
           res.setHeader("Content-Type", "application/json");
           res.setHeader("Content-Encoding", "gzip");
@@ -1046,12 +1054,12 @@ describe("supports http with nodejs", () => {
       try {
         await assert.rejects(
           async () => {
-            await axios.get(`http://localhost:${server.address().port}/`);
+            await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`);
           },
-          (error) => {
+          (error: any) => {
             assert.strictEqual(error.response.status, 206);
             assert.strictEqual(
-              error.response.headers.get("x-stream-error"),
+              (error.response.headers as any).get("x-stream-error"),
               "yes",
             );
             assert.strictEqual(error.status, 206);
@@ -1067,7 +1075,7 @@ describe("supports http with nodejs", () => {
     it("should support disabling automatic decompression of response data", async () => {
       const data = "Test data";
 
-      const zipped = await new Promise((resolve, reject) => {
+      const zipped: any = await new Promise((resolve, reject) => {
         zlib.gzip(data, (error, compressed) => {
           if (error) {
             reject(error);
@@ -1079,7 +1087,7 @@ describe("supports http with nodejs", () => {
       });
 
       const server = await startHTTPServer(
-        (req, res) => {
+        (_req: any, res: any) => {
           res.setHeader("Content-Type", "text/html;charset=utf-8");
           res.setHeader("Content-Encoding", "gzip");
           res.end(zipped);
@@ -1088,8 +1096,8 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const response = await axios.get(
-          `http://localhost:${server.address().port}/`,
+        const response = await (axios as unknown as TypedAxiosStatic).get(
+          `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             decompress: false,
             responseType: "arraybuffer",
@@ -1116,8 +1124,8 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        await axios.get(`http://localhost:${server.address().port}/`);
-        assert.strictEqual(acceptEncoding.includes("zstd"), false);
+        await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`);
+        assert.strictEqual(acceptEncoding!.includes("zstd"), false);
       } finally {
         await stopHTTPServer(server);
       }
@@ -1139,12 +1147,12 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        await axios.get(`http://localhost:${server.address().port}/`, {
+        await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
           transitional: {
             advertiseZstdAcceptEncoding: true,
           },
         });
-        assert.strictEqual(acceptEncoding.includes("zstd"), true);
+        assert.strictEqual(acceptEncoding!.includes("zstd"), true);
       } finally {
         await stopHTTPServer(server);
       }
@@ -1153,7 +1161,7 @@ describe("supports http with nodejs", () => {
     describe("algorithms", () => {
       const responseBody = "str";
 
-      const gzip = async (value) =>
+      const gzip = async (value: any) =>
         new Promise((resolve, reject) => {
           zlib.gzip(value, (error, compressed) => {
             if (error) {
@@ -1165,7 +1173,7 @@ describe("supports http with nodejs", () => {
           });
         });
 
-      const deflate = async (value) =>
+      const deflate = async (value: any) =>
         new Promise((resolve, reject) => {
           zlib.deflate(value, (error, compressed) => {
             if (error) {
@@ -1177,7 +1185,7 @@ describe("supports http with nodejs", () => {
           });
         });
 
-      const deflateRaw = async (value) =>
+      const deflateRaw = async (value: any) =>
         new Promise((resolve, reject) => {
           zlib.deflateRaw(value, (error, compressed) => {
             if (error) {
@@ -1189,7 +1197,7 @@ describe("supports http with nodejs", () => {
           });
         });
 
-      const brotliCompress = async (value) =>
+      const brotliCompress = async (value: any) =>
         new Promise((resolve, reject) => {
           zlib.brotliCompress(value, (error, compressed) => {
             if (error) {
@@ -1201,7 +1209,7 @@ describe("supports http with nodejs", () => {
           });
         });
 
-      const zstdCompress = async (value) =>
+      const zstdCompress = async (value: any) =>
         new Promise((resolve, reject) => {
           zlib.zstdCompress(value, (error, compressed) => {
             if (error) {
@@ -1227,7 +1235,7 @@ describe("supports http with nodejs", () => {
         describe(`${typeName} decompression`, () => {
           it("should support decompression", async () => {
             const server = await startHTTPServer(
-              async (req, res) => {
+              async (_req: any, res: any) => {
                 res.setHeader("Content-Encoding", type);
                 res.end(await zipped);
               },
@@ -1235,8 +1243,8 @@ describe("supports http with nodejs", () => {
             );
 
             try {
-              const { data } = await axios.get(
-                `http://localhost:${server.address().port}`,
+              const { data } = await (axios as unknown as TypedAxiosStatic).get(
+                `http://localhost:${(server.address() as AddressInfo).port}`,
               );
               assert.strictEqual(data, responseBody);
             } finally {
@@ -1246,7 +1254,7 @@ describe("supports http with nodejs", () => {
 
           it(`should not fail if response content-length header is missing (${type})`, async () => {
             const server = await startHTTPServer(
-              async (req, res) => {
+              async (_req: any, res: any) => {
                 res.setHeader("Content-Encoding", type);
                 res.removeHeader("Content-Length");
                 res.end(await zipped);
@@ -1255,8 +1263,8 @@ describe("supports http with nodejs", () => {
             );
 
             try {
-              const { data } = await axios.get(
-                `http://localhost:${server.address().port}`,
+              const { data } = await (axios as unknown as TypedAxiosStatic).get(
+                `http://localhost:${(server.address() as AddressInfo).port}`,
               );
               assert.strictEqual(data, responseBody);
             } finally {
@@ -1266,7 +1274,7 @@ describe("supports http with nodejs", () => {
 
           it("should not fail with chunked responses (without Content-Length header)", async () => {
             const server = await startHTTPServer(
-              async (req, res) => {
+              async (_req: any, res: any) => {
                 res.setHeader("Content-Encoding", type);
                 res.setHeader("Transfer-Encoding", "chunked");
                 res.removeHeader("Content-Length");
@@ -1277,8 +1285,8 @@ describe("supports http with nodejs", () => {
             );
 
             try {
-              const { data } = await axios.get(
-                `http://localhost:${server.address().port}`,
+              const { data } = await (axios as unknown as TypedAxiosStatic).get(
+                `http://localhost:${(server.address() as AddressInfo).port}`,
               );
               assert.strictEqual(data, responseBody);
             } finally {
@@ -1288,7 +1296,7 @@ describe("supports http with nodejs", () => {
 
           it("should not fail with an empty response without content-length header (Z_BUF_ERROR)", async () => {
             const server = await startHTTPServer(
-              (req, res) => {
+              (_req: any, res: any) => {
                 res.setHeader("Content-Encoding", type);
                 res.removeHeader("Content-Length");
                 res.end();
@@ -1297,8 +1305,8 @@ describe("supports http with nodejs", () => {
             );
 
             try {
-              const { data } = await axios.get(
-                `http://localhost:${server.address().port}`,
+              const { data } = await (axios as unknown as TypedAxiosStatic).get(
+                `http://localhost:${(server.address() as AddressInfo).port}`,
               );
               assert.strictEqual(data, "");
             } finally {
@@ -1308,7 +1316,7 @@ describe("supports http with nodejs", () => {
 
           it("should not fail with an empty response with content-length header (Z_BUF_ERROR)", async () => {
             const server = await startHTTPServer(
-              (req, res) => {
+              (_req: any, res: any) => {
                 res.setHeader("Content-Encoding", type);
                 res.end();
               },
@@ -1316,7 +1324,7 @@ describe("supports http with nodejs", () => {
             );
 
             try {
-              await axios.get(`http://localhost:${server.address().port}`);
+              await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`);
             } finally {
               await stopHTTPServer(server);
             }
@@ -1324,22 +1332,22 @@ describe("supports http with nodejs", () => {
 
           it("should reject when the server aborts mid-stream and maxRedirects is 0", async () => {
             const server = await startHTTPServer(
-              async (req, res) => {
+              async (_req: any, res: any) => {
                 res.setHeader("Content-Encoding", type);
                 res.setHeader("Transfer-Encoding", "chunked");
                 res.removeHeader("Content-Length");
                 res.write(await zipped);
-                setTimeout(() => res.socket.destroy(), 10);
+                setTimeout(() => res.socket!.destroy(), 10);
               },
               { port: SERVER_PORT },
             );
 
             try {
               await assert.rejects(
-                axios.get(`http://localhost:${server.address().port}`, {
+                (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
                   maxRedirects: 0,
                 }),
-                (err) => err && err.code === "ECONNRESET",
+                (err: any) => err && err.code === "ECONNRESET",
               );
             } finally {
               await stopHTTPServer(server);
@@ -1354,7 +1362,7 @@ describe("supports http with nodejs", () => {
     const str = Array(100000).join("ж");
 
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Content-Type", "text/html; charset=UTF-8");
         res.end(str);
       },
@@ -1362,8 +1370,8 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       assert.strictEqual(response.data, str);
     } finally {
@@ -1373,7 +1381,7 @@ describe("supports http with nodejs", () => {
 
   it("should support basic auth", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (req: any, res: any) => {
         res.end(req.headers.authorization);
       },
       { port: SERVER_PORT },
@@ -1382,8 +1390,8 @@ describe("supports http with nodejs", () => {
     try {
       const user = "foo";
       const headers = { Authorization: "Bearer 1234" };
-      const response = await axios.get(
-        `http://${user}@localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://${user}@localhost:${(server.address() as AddressInfo).port}/`,
         {
           headers,
         },
@@ -1397,15 +1405,15 @@ describe("supports http with nodejs", () => {
 
   it("should decode basic auth credentials from the request URL", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (req: any, res: any) => {
         res.end(req.headers.authorization);
       },
       { port: SERVER_PORT },
     );
 
     try {
-      const response = await axios.get(
-        `http://my%40email.com:pa%24ss@localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://my%40email.com:pa%24ss@localhost:${(server.address() as AddressInfo).port}/`,
       );
       const base64 = Buffer.from("my@email.com:pa$ss", "utf8").toString(
         "base64",
@@ -1418,15 +1426,15 @@ describe("supports http with nodejs", () => {
 
   it("keeps malformed URL credentials percent-encoding and does not throw", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (req: any, res: any) => {
         res.end(req.headers.authorization);
       },
       { port: SERVER_PORT },
     );
 
     try {
-      const response = await axios.get(
-        `http://user%:foo%zz@localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://user%:foo%zz@localhost:${(server.address() as AddressInfo).port}/`,
       );
       const base64 = Buffer.from("user%:foo%zz", "utf8").toString("base64");
       assert.strictEqual(response.data, `Basic ${base64}`);
@@ -1437,15 +1445,15 @@ describe("supports http with nodejs", () => {
 
   it("should support password-only basic auth credentials from the request URL", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (req: any, res: any) => {
         res.end(req.headers.authorization);
       },
       { port: SERVER_PORT },
     );
 
     try {
-      const response = await axios.get(
-        `http://:secret@localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://:secret@localhost:${(server.address() as AddressInfo).port}/`,
       );
       const base64 = Buffer.from(":secret", "utf8").toString("base64");
       assert.strictEqual(response.data, `Basic ${base64}`);
@@ -1456,7 +1464,7 @@ describe("supports http with nodejs", () => {
 
   it("should support basic auth with a header", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (req: any, res: any) => {
         res.end(req.headers.authorization);
       },
       { port: SERVER_PORT },
@@ -1465,8 +1473,8 @@ describe("supports http with nodejs", () => {
     try {
       const auth = { username: "foo", password: "bar" };
       const headers = { AuThOrIzAtIoN: "Bearer 1234" }; // wonky casing to ensure caseless comparison
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           auth,
           headers,
@@ -1481,7 +1489,7 @@ describe("supports http with nodejs", () => {
 
   it("should ignore inherited nested request option fields in http adapter", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (req: any, res: any) => {
         res.setHeader("Content-Type", "application/json");
         res.end(
           JSON.stringify({
@@ -1509,10 +1517,10 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/demo`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/demo`,
         {
-          auth: {},
+          auth: {} as any,
           params: { value: "a b" },
           paramsSerializer: {},
         },
@@ -1523,9 +1531,9 @@ describe("supports http with nodejs", () => {
         url: "/demo?value=a+b",
       });
     } finally {
-      delete Object.prototype.username;
-      delete Object.prototype.password;
-      delete Object.prototype.serialize;
+      delete (Object.prototype as any).username;
+      delete (Object.prototype as any).password;
+      delete (Object.prototype as any).serialize;
       await stopHTTPServer(server);
     }
   });
@@ -1538,7 +1546,7 @@ describe("supports http with nodejs", () => {
       "HTTPS_PROXY",
     ];
     const originalProxyEnv = Object.create(null);
-    let proxy;
+    let proxy: any;
     let target;
     let proxyHits = 0;
     let targetHits = 0;
@@ -1565,14 +1573,14 @@ describe("supports http with nodejs", () => {
         value: {
           protocol: "http",
           host: "127.0.0.1",
-          port: proxy.address().port,
+          port: (proxy.address() as AddressInfo).port,
         },
         configurable: true,
       });
 
-      const response = await httpAdapter({
+      const response = await (httpAdapter as any)({
         method: "get",
-        url: `http://127.0.0.1:${target.address().port}/direct`,
+        url: `http://127.0.0.1:${(target.address() as AddressInfo).port}/direct`,
         headers: {},
         maxRedirects: 0,
         maxContentLength: -1,
@@ -1585,7 +1593,7 @@ describe("supports http with nodejs", () => {
       assert.strictEqual(targetHits, 1);
       assert.deepStrictEqual(data, { via: "target", url: "/direct" });
     } finally {
-      delete Object.prototype.proxy;
+      delete (Object.prototype as any).proxy;
 
       for (const key of proxyEnvKeys) {
         if (originalProxyEnv[key] === undefined) {
@@ -1595,13 +1603,13 @@ describe("supports http with nodejs", () => {
         }
       }
 
-      await stopHTTPServer(target);
+      await stopHTTPServer(target as any);
       await stopHTTPServer(proxy);
     }
   });
 
   it("should ignore inherited paramsSerializer when http adapter receives a plain config", async () => {
-    let server;
+    let server: any;
     let serializerInvoked = false;
 
     Object.defineProperty(Object.prototype, "paramsSerializer", {
@@ -1613,14 +1621,14 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      server = await startHTTPServer((req, res) => {
+      server = await startHTTPServer((req: any, res: any) => {
         res.setHeader("Content-Type", "application/json");
         res.end(JSON.stringify({ url: req.url }));
       });
 
-      const response = await httpAdapter({
+      const response = await (httpAdapter as any)({
         method: "get",
-        url: `http://127.0.0.1:${server.address().port}/direct`,
+        url: `http://127.0.0.1:${(server.address() as AddressInfo).port}/direct`,
         headers: {},
         params: { value: "a b" },
         proxy: false,
@@ -1634,7 +1642,7 @@ describe("supports http with nodejs", () => {
       assert.strictEqual(serializerInvoked, false);
       assert.deepStrictEqual(data, { url: "/direct?value=a+b" });
     } finally {
-      delete Object.prototype.paramsSerializer;
+      delete (Object.prototype as any).paramsSerializer;
       await stopHTTPServer(server);
     }
   });
@@ -1642,7 +1650,7 @@ describe("supports http with nodejs", () => {
   it("should preserve basic auth across same-origin 303 POST -> GET redirect", async () => {
     const server = await startHTTPServer(
       (req, res) => {
-        if (req.url === "/login") {
+        if (req.url! === "/login") {
           res.setHeader("Location", "/profile");
           res.statusCode = 303;
           res.end();
@@ -1655,8 +1663,8 @@ describe("supports http with nodejs", () => {
 
     try {
       const auth = { username: "foo", password: "bar" };
-      const response = await axios.post(
-        `http://localhost:${server.address().port}/login`,
+      const response = await (axios as unknown as TypedAxiosStatic).post(
+        `http://localhost:${(server.address() as AddressInfo).port}/login`,
         { hello: "world" },
         { auth, maxRedirects: 1 },
       );
@@ -1670,16 +1678,16 @@ describe("supports http with nodejs", () => {
 
   it("should strip basic auth on cross-origin redirect", async () => {
     const targetServer = await startHTTPServer(
-      (req, res) => {
+      (req: any, res: any) => {
         res.end(req.headers.authorization || "no-auth");
       },
       { port: ALTERNATE_SERVER_PORT },
     );
     const redirectServer = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader(
           "Location",
-          `http://127.0.0.1:${targetServer.address().port}/`,
+          `http://127.0.0.1:${(targetServer.address() as AddressInfo).port}/`,
         );
         res.statusCode = 302;
         res.end();
@@ -1689,8 +1697,8 @@ describe("supports http with nodejs", () => {
 
     try {
       const auth = { username: "foo", password: "bar" };
-      const response = await axios.get(
-        `http://localhost:${redirectServer.address().port}/start`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(redirectServer.address() as AddressInfo).port}/start`,
         {
           auth,
           maxRedirects: 1,
@@ -1706,13 +1714,13 @@ describe("supports http with nodejs", () => {
   it("should preserve basic auth across multi-hop same-origin redirects", async () => {
     const server = await startHTTPServer(
       (req, res) => {
-        if (req.url === "/a") {
+        if (req.url! === "/a") {
           res.setHeader("Location", "/b");
           res.statusCode = 302;
           res.end();
           return;
         }
-        if (req.url === "/b") {
+        if (req.url! === "/b") {
           res.setHeader("Location", "/c");
           res.statusCode = 302;
           res.end();
@@ -1725,8 +1733,8 @@ describe("supports http with nodejs", () => {
 
     try {
       const auth = { username: "foo", password: "bar" };
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/a`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/a`,
         {
           auth,
           maxRedirects: 5,
@@ -1742,15 +1750,15 @@ describe("supports http with nodejs", () => {
 
   it("should provides a default User-Agent header", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (req: any, res: any) => {
         res.end(req.headers["user-agent"]);
       },
       { port: SERVER_PORT },
     );
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       assert.ok(
         /^axios\/[\d.]+[-]?[a-z]*[.]?[\d]+$/.test(response.data),
@@ -1763,7 +1771,7 @@ describe("supports http with nodejs", () => {
 
   it("should allow the User-Agent header to be overridden", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (req: any, res: any) => {
         res.end(req.headers["user-agent"]);
       },
       { port: SERVER_PORT },
@@ -1771,8 +1779,8 @@ describe("supports http with nodejs", () => {
 
     try {
       const headers = { "UsEr-AgEnT": "foo bar" }; // wonky casing to ensure caseless comparison
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
         { headers },
       );
       assert.strictEqual(response.data, "foo bar");
@@ -1792,7 +1800,7 @@ describe("supports http with nodejs", () => {
 
     try {
       const headers = { "CoNtEnT-lEnGtH": "42" }; // wonky casing to ensure caseless comparison
-      await axios.post(`http://localhost:${server.address().port}/`, "foo", {
+      await (axios as unknown as TypedAxiosStatic).post(`http://localhost:${(server.address() as AddressInfo).port}/`, "foo", {
         headers,
       });
     } finally {
@@ -1802,7 +1810,7 @@ describe("supports http with nodejs", () => {
 
   it("should support max content length", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Content-Type", "text/html; charset=UTF-8");
         res.end(Array(5000).join("#"));
       },
@@ -1811,7 +1819,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        axios.get(`http://localhost:${server.address().port}/`, {
+        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
           maxContentLength: 2000,
           maxRedirects: 0,
         }),
@@ -1826,7 +1834,7 @@ describe("supports http with nodejs", () => {
     const str = Array(100000).join("ж");
     const server = await startHTTPServer(
       (req, res) => {
-        const parsed = new URL(req.url, "http://localhost");
+        const parsed = new URL(req.url!!, "http://localhost");
 
         if (parsed.pathname === "/two") {
           res.setHeader("Content-Type", "text/html; charset=UTF-8");
@@ -1843,10 +1851,10 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        axios.get(`http://localhost:${server.address().port}/one`, {
+        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/one`, {
           maxContentLength: 2000,
         }),
-        (error) => {
+        (error: any) => {
           assert.strictEqual(
             error.message,
             "maxContentLength size of 2000 exceeded",
@@ -1862,7 +1870,7 @@ describe("supports http with nodejs", () => {
   it("should support max body length", async () => {
     const data = Array(100000).join("ж");
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Content-Type", "text/html; charset=UTF-8");
         res.end();
       },
@@ -1871,8 +1879,8 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        axios.post(
-          `http://localhost:${server.address().port}/`,
+        (axios as unknown as TypedAxiosStatic).post(
+          `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             data,
           },
@@ -1880,7 +1888,7 @@ describe("supports http with nodejs", () => {
             maxBodyLength: 2000,
           },
         ),
-        (error) => {
+        (error: any) => {
           assert.strictEqual(
             error.message,
             "Request body larger than maxBodyLength limit",
@@ -1897,7 +1905,7 @@ describe("supports http with nodejs", () => {
     const size = 2 * 1024 * 1024;
     const body = Buffer.alloc(size, 0x63);
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Content-Type", "application/octet-stream");
         res.end(body);
       },
@@ -1905,8 +1913,8 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           responseType: "stream",
           maxContentLength: 1024,
@@ -1915,7 +1923,7 @@ describe("supports http with nodejs", () => {
 
       let bytesRead = 0;
       const err = await new Promise((resolve) => {
-        response.data.on("data", (chunk) => {
+        response.data.on("data", (chunk: any) => {
           bytesRead += chunk.length;
         });
         response.data.on("error", resolve);
@@ -1923,7 +1931,7 @@ describe("supports http with nodejs", () => {
       });
 
       assert.ok(err, "stream should emit an error");
-      assert.strictEqual(err.message, "maxContentLength size of 1024 exceeded");
+      assert.strictEqual((err as any).message, "maxContentLength size of 1024 exceeded");
       assert.ok(
         bytesRead <= 1024 * 64,
         `stream should not deliver full payload; got ${bytesRead}`,
@@ -1936,7 +1944,7 @@ describe("supports http with nodejs", () => {
   it("should allow streamed responses under maxContentLength", async () => {
     const body = Buffer.alloc(512, 0x64);
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Content-Type", "application/octet-stream");
         res.end(body);
       },
@@ -1944,17 +1952,17 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           responseType: "stream",
           maxContentLength: 1024,
         },
       );
 
-      const chunks = [];
-      await new Promise((resolve, reject) => {
-        response.data.on("data", (chunk) => chunks.push(chunk));
+      const chunks: any[] = [];
+      await new Promise<void>((resolve, reject) => {
+        response.data.on("data", (chunk: any) => chunks.push(chunk));
         response.data.on("error", reject);
         response.data.on("end", resolve);
       });
@@ -1969,7 +1977,7 @@ describe("supports http with nodejs", () => {
     let bytesReceived = 0;
     const server = await startHTTPServer(
       (req, res) => {
-        req.on("data", (chunk) => {
+        req.on("data", (chunk: any) => {
           bytesReceived += chunk.length;
         });
         req.on("end", () => {
@@ -1986,12 +1994,12 @@ describe("supports http with nodejs", () => {
       const source = stream.Readable.from([buf]);
 
       await assert.rejects(
-        axios.post(`http://localhost:${server.address().port}/`, source, {
+        (axios as unknown as TypedAxiosStatic).post(`http://localhost:${(server.address() as AddressInfo).port}/`, source, {
           maxBodyLength: 1024,
           maxRedirects: 0,
           headers: { "Content-Type": "application/octet-stream" },
         }),
-        (error) => {
+        (error: any) => {
           assert.strictEqual(
             error.message,
             "Request body larger than maxBodyLength limit",
@@ -2013,7 +2021,7 @@ describe("supports http with nodejs", () => {
     let bytesReceived = 0;
     const server = await startHTTPServer(
       (req, res) => {
-        req.on("data", (chunk) => {
+        req.on("data", (chunk: any) => {
           bytesReceived += chunk.length;
         });
         req.on("end", () => {
@@ -2028,8 +2036,8 @@ describe("supports http with nodejs", () => {
       const payload = Buffer.alloc(512, 0x62);
       const source = stream.Readable.from([payload]);
 
-      const response = await axios.post(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).post(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
         source,
         {
           maxBodyLength: 1024,
@@ -2061,8 +2069,8 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await axios.post(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).post(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           data,
         },
@@ -2078,12 +2086,12 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        axios.get(`http://localhost:${server.address().port}/`, {
+        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
           params: {
-            errorParam: new Date(undefined),
+            errorParam: new Date(undefined as any),
           },
         }),
-        (error) => {
+        (error: any) => {
           assert.deepStrictEqual(error.exists, true);
           return true;
         },
@@ -2105,7 +2113,7 @@ describe("supports http with nodejs", () => {
       socketName = "\\\\.\\pipe\\libuv-test";
     }
 
-    let server;
+    let server: any;
     try {
       server = await new Promise((resolve, reject) => {
         const socketServer = net
@@ -2118,7 +2126,7 @@ describe("supports http with nodejs", () => {
 
         socketServer.on("error", reject);
       });
-    } catch (error) {
+    } catch (error: any) {
       if (error && error.code === "EPERM") {
         return;
       }
@@ -2127,15 +2135,15 @@ describe("supports http with nodejs", () => {
     }
 
     try {
-      const response = await axios({
+      const response = await (axios as unknown as TypedAxiosStatic)({
         socketPath: socketName,
         url: "http://localhost:4444/socket",
       });
       assert.strictEqual(response.status, 200);
       assert.strictEqual(response.statusText, "OK");
     } finally {
-      await new Promise((resolve, reject) => {
-        server.close((error) => {
+      await new Promise<void>((resolve, reject) => {
+        server.close((error: any) => {
           if (error) {
             reject(error);
             return;
@@ -2157,8 +2165,8 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const response = await axios.post(
-          `http://localhost:${server.address().port}/`,
+        const response = await (axios as unknown as TypedAxiosStatic).post(
+          `http://localhost:${(server.address() as AddressInfo).port}/`,
           fs.createReadStream(thisTestFilePath),
           {
             responseType: "stream",
@@ -2166,9 +2174,9 @@ describe("supports http with nodejs", () => {
         );
 
         const responseText = await new Promise((resolve, reject) => {
-          const chunks = [];
+          const chunks: any[] = [];
 
-          response.data.on("data", (chunk) => {
+          response.data.on("data", (chunk: any) => {
             chunks.push(chunk);
           });
 
@@ -2194,11 +2202,11 @@ describe("supports http with nodejs", () => {
 
       try {
         await assert.rejects(
-          axios.post(
-            `http://localhost:${server.address().port}/`,
+          (axios as unknown as TypedAxiosStatic).post(
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
             fs.createReadStream(notExistPath),
           ),
-          (error) => {
+          (error: any) => {
             assert.strictEqual(
               error.message,
               `ENOENT: no such file or directory, open '${notExistPath}'`,
@@ -2212,29 +2220,29 @@ describe("supports http with nodejs", () => {
     });
 
     it("should destroy the response stream with an error on request stream destroying", async () => {
-      const server = await startHTTPServer();
+      const server = await startHTTPServer({});
       const requestStream = generateReadable();
 
       setTimeout(() => {
         requestStream.destroy();
       }, 1000);
 
-      const { data } = await axios.post(
-        `http://localhost:${server.address().port}/`,
+      const { data } = await (axios as unknown as TypedAxiosStatic).post(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
         requestStream,
         {
           responseType: "stream",
         },
       );
 
-      let streamError;
-      data.on("error", (error) => {
+      let streamError: any;
+      data.on("error", (error: any) => {
         streamError = error;
       });
 
       try {
-        await new Promise((resolve, reject) => {
-          stream.pipeline(data, devNull(), (error) => {
+        await new Promise<void>((resolve, reject) => {
+          stream.pipeline(data, devNull(), (error: any) => {
             if (error) {
               reject(error);
               return;
@@ -2244,7 +2252,7 @@ describe("supports http with nodejs", () => {
           });
         });
         assert.fail("stream was not aborted");
-      } catch (error) {
+      } catch (error: any) {
         // Expected: the request stream is destroyed before completion.
       } finally {
         assert.strictEqual(streamError && streamError.code, "ERR_CANCELED");
@@ -2267,8 +2275,8 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await axios.post(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).post(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
         buf,
         {
           responseType: "stream",
@@ -2276,9 +2284,9 @@ describe("supports http with nodejs", () => {
       );
 
       const responseText = await new Promise((resolve, reject) => {
-        const chunks = [];
+        const chunks: any[] = [];
 
-        response.data.on("data", (chunk) => {
+        response.data.on("data", (chunk: any) => {
           chunks.push(chunk);
         });
 
@@ -2297,7 +2305,7 @@ describe("supports http with nodejs", () => {
 
   it("should support HTTP proxies", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Content-Type", "text/html; charset=UTF-8");
         res.end("12345");
       },
@@ -2307,7 +2315,7 @@ describe("supports http with nodejs", () => {
     let connectAttempts = 0;
     const proxy = await startHTTPServer(
       (request, response) => {
-        const parsed = new URL(request.url);
+        const parsed = new URL(request.url!);
         const opts = {
           host: parsed.hostname,
           port: parsed.port,
@@ -2329,18 +2337,18 @@ describe("supports http with nodejs", () => {
       },
       { port: PROXY_PORT },
     );
-    proxy.on("connect", (req, sock) => {
+    proxy.on("connect", (_req, sock) => {
       connectAttempts += 1;
       sock.end();
     });
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           proxy: {
             host: "localhost",
-            port: proxy.address().port,
+            port: (proxy.address() as AddressInfo).port,
           },
         },
       );
@@ -2367,20 +2375,10 @@ describe("supports http with nodejs", () => {
       cert: fs.readFileSync(path.join(adaptersTestsDir, "cert.pem")),
     };
 
-    const closeServer = async (server) =>
-      new Promise((resolve, reject) => {
-        server.close((error) => {
-          if (error) {
-            reject(error);
-            return;
-          }
+    // Note: closeServer helper removed (unused)
 
-          resolve();
-        });
-      });
-
-    const server = await new Promise((resolve, reject) => {
-      const httpsServer = https.createServer(tlsOptions, (req, res) => {
+    const server: any = await new Promise<any>((resolve, reject) => {
+      const httpsServer = https.createServer(tlsOptions, (_req: any, res: any) => {
         res.setHeader("Content-Type", "text/html; charset=UTF-8");
         res.end("12345");
       });
@@ -2389,16 +2387,16 @@ describe("supports http with nodejs", () => {
     });
 
     let plaintextRequests = 0;
-    const connectTargets = [];
-    const upstreamSockets = [];
-    const proxy = await new Promise((resolve, reject) => {
+    const connectTargets: string[] = [];
+    const upstreamSockets: any[] = [];
+    const proxy: any = await new Promise<any>((resolve, reject) => {
       const httpsProxy = https.createServer(tlsOptions, () => {
         plaintextRequests += 1;
       });
 
       httpsProxy.on("connect", (req, clientSocket, head) => {
-        connectTargets.push(req.url);
-        const [targetHost, targetPort] = req.url.split(":");
+        connectTargets.push(req.url!);
+        const [targetHost, targetPort] = req.url!.split(":");
         const upstream = net.connect(Number(targetPort), targetHost, () => {
           clientSocket.write("HTTP/1.1 200 Connection Established\r\n\r\n");
           if (head && head.length) upstream.write(head);
@@ -2416,16 +2414,16 @@ describe("supports http with nodejs", () => {
 
     const originalReject = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-    const tunnelingAgent = new HttpsProxyAgent({
+    const tunnelingAgent = new (HttpsProxyAgent as any)({
       protocol: "https:",
       host: "127.0.0.1",
-      port: proxy.address().port,
+      port: (proxy.address() as AddressInfo).port,
       ALPNProtocols: ["http/1.1"],
       rejectUnauthorized: false,
     });
     try {
-      const response = await axios.get(
-        `https://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `https://localhost:${(server.address() as AddressInfo).port}/`,
         {
           httpsAgent: tunnelingAgent,
         },
@@ -2448,8 +2446,8 @@ describe("supports http with nodejs", () => {
         "proxy should see exactly one CONNECT",
       );
       assert.ok(
-        connectTargets[0].startsWith(`localhost:${server.address().port}`),
-        `CONNECT should target the origin: ${connectTargets[0]}`,
+        connectTargets[0]?.startsWith(`localhost:${(server.address() as AddressInfo).port}`),
+        `CONNECT should target the origin: ${connectTargets[0]!}`,
       );
     } finally {
       if (originalReject === undefined) {
@@ -2478,7 +2476,7 @@ describe("supports http with nodejs", () => {
       cert: fs.readFileSync(path.join(adaptersTestsDir, "cert.pem")),
     };
 
-    const origin = await new Promise((resolve, reject) => {
+    const origin: any = await new Promise<any>((resolve, reject) => {
       const s = https.createServer(tlsOptions, (req, res) => {
         if (req.headers["proxy-authorization"]) {
           // Proxy-Authorization MUST NOT reach the origin under tunneling.
@@ -2493,19 +2491,19 @@ describe("supports http with nodejs", () => {
       s.on("error", reject);
     });
 
-    const captured = { plaintext: 0, connectTargets: [], connectAuth: [] };
-    const upstreamSockets = [];
-    const proxy = await new Promise((resolve, reject) => {
+    const captured: { plaintext: number; connectTargets: string[]; connectAuth: (string|null)[]; plaintextUrl?: string } = { plaintext: 0, connectTargets: [], connectAuth: [] };
+    const upstreamSockets: any[] = [];
+    const proxy: any = await new Promise<any>((resolve, reject) => {
       const p = http.createServer((req) => {
         // Plaintext arrival = tunneling regression. Capture URL/headers so
         // assertions below can show what leaked.
         captured.plaintext += 1;
-        captured.plaintextUrl = req.url;
+        captured.plaintextUrl = req.url!;
       });
       p.on("connect", (req, clientSocket, head) => {
-        captured.connectTargets.push(req.url);
-        captured.connectAuth.push(req.headers["proxy-authorization"] || null);
-        const [host, port] = req.url.split(":");
+        captured.connectTargets.push(req.url!!);
+        captured.connectAuth.push((req.headers["proxy-authorization"] as string) || null);
+        const [host, port] = req.url!.split(":");
         const upstream = net.connect(Number(port), host, () => {
           clientSocket.write("HTTP/1.1 200 Connection Established\r\n\r\n");
           if (head && head.length) upstream.write(head);
@@ -2523,13 +2521,13 @@ describe("supports http with nodejs", () => {
     const originalReject = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     try {
-      const response = await axios.post(
-        `https://localhost:${origin.address().port}/path?token=abc123`,
+      const response = await (axios as unknown as TypedAxiosStatic).post(
+        `https://localhost:${(origin.address() as AddressInfo).port}/path?token=abc123`,
         { sensitive: "leak-canary" },
         {
           proxy: {
             host: "127.0.0.1",
-            port: proxy.address().port,
+            port: (proxy.address() as AddressInfo).port,
             protocol: "http",
             auth: { username: "admin", password: "secret" },
           },
@@ -2553,8 +2551,8 @@ describe("supports http with nodejs", () => {
         "proxy should see exactly one CONNECT",
       );
       assert.ok(
-        captured.connectTargets[0].startsWith(
-          `localhost:${origin.address().port}`,
+        captured.connectTargets[0]!.startsWith(
+          `localhost:${(origin.address() as AddressInfo).port}`,
         ),
         `CONNECT should target the origin host:port, got ${captured.connectTargets[0]}`,
       );
@@ -2598,8 +2596,8 @@ describe("supports http with nodejs", () => {
       cert: fs.readFileSync(path.join(adaptersTestsDir, "cert.pem")),
     };
 
-    const origin = await new Promise((resolve, reject) => {
-      const s = https.createServer(tlsOptions, (req, res) => {
+    const origin: any = await new Promise<any>((resolve, reject) => {
+      const s = https.createServer(tlsOptions, (_req: any, res: any) => {
         res.setHeader("Content-Type", "text/html; charset=UTF-8");
         res.end("trusted-through-agent");
       });
@@ -2607,15 +2605,15 @@ describe("supports http with nodejs", () => {
       s.on("error", reject);
     });
 
-    const captured = { plaintext: 0, connectTargets: [] };
-    const upstreamSockets = [];
-    const proxy = await new Promise((resolve, reject) => {
+    const captured: { plaintext: number; connectTargets: string[] } = { plaintext: 0, connectTargets: [] };
+    const upstreamSockets: any[] = [];
+    const proxy: any = await new Promise<any>((resolve, reject) => {
       const p = http.createServer(() => {
         captured.plaintext += 1;
       });
       p.on("connect", (req, clientSocket, head) => {
-        captured.connectTargets.push(req.url);
-        const [host, port] = req.url.split(":");
+        captured.connectTargets.push(req.url!!);
+        const [host, port] = req.url!.split(":");
         const upstream = net.connect(Number(port), host, () => {
           clientSocket.write("HTTP/1.1 200 Connection Established\r\n\r\n");
           if (head && head.length) upstream.write(head);
@@ -2633,13 +2631,13 @@ describe("supports http with nodejs", () => {
     const httpsAgent = new https.Agent({ ca: tlsOptions.cert });
 
     try {
-      const response = await axios.get(
-        `https://localhost:${origin.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `https://localhost:${(origin.address() as AddressInfo).port}/`,
         {
           httpsAgent,
           proxy: {
             host: "127.0.0.1",
-            port: proxy.address().port,
+            port: (proxy.address() as AddressInfo).port,
             protocol: "http",
           },
         },
@@ -2657,8 +2655,8 @@ describe("supports http with nodejs", () => {
         "proxy should see exactly one CONNECT",
       );
       assert.ok(
-        captured.connectTargets[0].startsWith(
-          `localhost:${origin.address().port}`,
+        captured.connectTargets[0]!.startsWith(
+          `localhost:${(origin.address() as AddressInfo).port}`,
         ),
         `CONNECT should target the origin host:port, got ${captured.connectTargets[0]}`,
       );
@@ -2675,9 +2673,9 @@ describe("supports http with nodejs", () => {
   });
 
   it("should surface a CONNECT 407 from the proxy as an AxiosError (issue #6320)", async () => {
-    const proxy = await new Promise((resolve, reject) => {
+    const proxy: any = await new Promise<any>((resolve, reject) => {
       const p = http.createServer();
-      p.on("connect", (req, clientSocket) => {
+      p.on("connect", (_req, clientSocket) => {
         clientSocket.write(
           "HTTP/1.1 407 Proxy Authentication Required\r\n" +
             'Proxy-Authenticate: Basic realm="proxy"\r\n' +
@@ -2693,16 +2691,16 @@ describe("supports http with nodejs", () => {
     try {
       await assert.rejects(
         async () => {
-          await axios.get("https://127.0.0.1:1/", {
+          await (axios as unknown as TypedAxiosStatic).get("https://127.0.0.1:1/", {
             proxy: {
               host: "127.0.0.1",
-              port: proxy.address().port,
+              port: (proxy.address() as AddressInfo).port,
               protocol: "http",
             },
             timeout: 4000,
           });
         },
-        (err) => {
+        (err: any) => {
           assert.ok(
             err instanceof AxiosError,
             "rejection should be an AxiosError",
@@ -2722,7 +2720,7 @@ describe("supports http with nodejs", () => {
     process.env.http_proxy = "http://does-not-exists.example.com:4242/";
 
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Content-Type", "text/html; charset=UTF-8");
         res.end("123456789");
       },
@@ -2730,8 +2728,8 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           proxy: false,
         },
@@ -2760,7 +2758,7 @@ describe("supports http with nodejs", () => {
     const originalNOProxy = process.env.NO_PROXY;
 
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Content-Type", "text/html; charset=UTF-8");
         res.end("4567");
       },
@@ -2769,7 +2767,7 @@ describe("supports http with nodejs", () => {
 
     const proxy = await startHTTPServer(
       (request, response) => {
-        const parsed = new URL(request.url);
+        const parsed = new URL(request.url!);
         const opts = {
           host: parsed.hostname,
           port: parsed.port,
@@ -2792,15 +2790,15 @@ describe("supports http with nodejs", () => {
       { port: PROXY_PORT },
     );
 
-    const proxyUrl = `http://localhost:${proxy.address().port}/`;
+    const proxyUrl = `http://localhost:${(proxy.address() as AddressInfo).port}/`;
     process.env.http_proxy = proxyUrl;
     process.env.HTTP_PROXY = proxyUrl;
     process.env.no_proxy = "";
     process.env.NO_PROXY = "";
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
 
       assert.strictEqual(
@@ -2849,20 +2847,10 @@ describe("supports http with nodejs", () => {
       cert: fs.readFileSync(path.join(adaptersTestsDir, "cert.pem")),
     };
 
-    const closeServer = async (server) =>
-      new Promise((resolve, reject) => {
-        server.close((error) => {
-          if (error) {
-            reject(error);
-            return;
-          }
+    // Note: closeServer helper removed (unused)
 
-          resolve();
-        });
-      });
-
-    const server = await new Promise((resolve, reject) => {
-      const httpsServer = https.createServer(tlsOptions, (req, res) => {
+    const server: any = await new Promise<any>((resolve, reject) => {
+      const httpsServer = https.createServer(tlsOptions, (_req: any, res: any) => {
         res.setHeader("Content-Type", "text/html; charset=UTF-8");
         res.end("12345");
       });
@@ -2871,16 +2859,16 @@ describe("supports http with nodejs", () => {
     });
 
     let plaintextRequests = 0;
-    const connectTargets = [];
-    const upstreamSockets = [];
-    const proxy = await new Promise((resolve, reject) => {
+    const connectTargets: string[] = [];
+    const upstreamSockets: any[] = [];
+    const proxy: any = await new Promise<any>((resolve, reject) => {
       const httpsProxy = https.createServer(tlsOptions, () => {
         plaintextRequests += 1;
       });
 
       httpsProxy.on("connect", (req, clientSocket, head) => {
-        connectTargets.push(req.url);
-        const [targetHost, targetPort] = req.url.split(":");
+        connectTargets.push(req.url!);
+        const [targetHost, targetPort] = req.url!.split(":");
         const upstream = net.connect(Number(targetPort), targetHost, () => {
           clientSocket.write("HTTP/1.1 200 Connection Established\r\n\r\n");
           if (head && head.length) upstream.write(head);
@@ -2896,7 +2884,7 @@ describe("supports http with nodejs", () => {
       httpsProxy.on("error", reject);
     });
 
-    const proxyUrl = `https://127.0.0.1:${proxy.address().port}/`;
+    const proxyUrl = `https://127.0.0.1:${(proxy.address() as AddressInfo).port}/`;
     process.env.https_proxy = proxyUrl;
     process.env.HTTPS_PROXY = proxyUrl;
     process.env.no_proxy = "";
@@ -2905,8 +2893,8 @@ describe("supports http with nodejs", () => {
     const originalReject = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     try {
-      const response = await axios.get(
-        `https://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `https://localhost:${(server.address() as AddressInfo).port}/`,
       );
 
       assert.strictEqual(
@@ -2973,10 +2961,10 @@ describe("supports http with nodejs", () => {
     let proxyUseCount = 0;
 
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader(
           "Location",
-          `http://localhost:${proxy.address().port}/redirected`,
+          `http://localhost:${(proxy.address() as AddressInfo).port}/redirected`,
         );
         res.statusCode = 302;
         res.end();
@@ -2986,10 +2974,10 @@ describe("supports http with nodejs", () => {
 
     const proxy = await startHTTPServer(
       (request, response) => {
-        const parsed = new URL(request.url, "http://localhost");
+        const parsed = new URL(request.url!, "http://localhost");
 
         if (parsed.pathname === "/redirected") {
-          response.statusCode = 200;
+          (response as any).statusCode = 200;
           response.end();
           return;
         }
@@ -3012,7 +3000,7 @@ describe("supports http with nodejs", () => {
 
           res.on("end", () => {
             response.setHeader("Content-Type", "text/html; charset=UTF-8");
-            response.setHeader("Location", res.headers.location);
+            response.setHeader("Location", res.headers.location ?? "");
             response.end(body);
           });
         });
@@ -3020,15 +3008,15 @@ describe("supports http with nodejs", () => {
       { port: PROXY_PORT },
     );
 
-    const proxyUrl = `http://localhost:${proxy.address().port}`;
+    const proxyUrl = `http://localhost:${(proxy.address() as AddressInfo).port}`;
     process.env.http_proxy = proxyUrl;
     process.env.HTTP_PROXY = proxyUrl;
-    process.env.no_proxy = `localhost:${proxy.address().port}`;
-    process.env.NO_PROXY = `localhost:${proxy.address().port}`;
+    process.env.no_proxy = `localhost:${(proxy.address() as AddressInfo).port}`;
+    process.env.NO_PROXY = `localhost:${(proxy.address() as AddressInfo).port}`;
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       assert.equal(response.status, 200);
       assert.equal(proxyUseCount, 1);
@@ -3069,7 +3057,7 @@ describe("supports http with nodejs", () => {
     const originalNOProxy = process.env.NO_PROXY;
 
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Content-Type", "text/html; charset=UTF-8");
         res.end("4567");
       },
@@ -3078,7 +3066,7 @@ describe("supports http with nodejs", () => {
 
     const proxy = await startHTTPServer(
       (request, response) => {
-        const parsed = new URL(request.url);
+        const parsed = new URL(request.url!);
         const opts = {
           host: parsed.hostname,
           port: parsed.port,
@@ -3102,15 +3090,15 @@ describe("supports http with nodejs", () => {
     );
 
     const noProxyValue = "foo.com, localhost,bar.net , , quix.co";
-    const proxyUrl = `http://localhost:${proxy.address().port}/`;
+    const proxyUrl = `http://localhost:${(proxy.address() as AddressInfo).port}/`;
     process.env.http_proxy = proxyUrl;
     process.env.HTTP_PROXY = proxyUrl;
     process.env.no_proxy = noProxyValue;
     process.env.NO_PROXY = noProxyValue;
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       assert.equal(
         response.data,
@@ -3163,14 +3151,14 @@ describe("supports http with nodejs", () => {
     );
 
     const noProxyValue = "localhost,127.0.0.1,::1";
-    const proxyUrl = `http://localhost:${proxy.address().port}/`;
+    const proxyUrl = `http://localhost:${(proxy.address() as AddressInfo).port}/`;
     process.env.http_proxy = proxyUrl;
     process.env.HTTP_PROXY = proxyUrl;
     process.env.no_proxy = noProxyValue;
     process.env.NO_PROXY = noProxyValue;
 
     try {
-      await assert.rejects(axios.get("http://localhost.:1/", { timeout: 100 }));
+      await assert.rejects((axios as unknown as TypedAxiosStatic).get("http://localhost.:1/", { timeout: 100 }));
       assert.equal(
         proxyRequests,
         0,
@@ -3221,14 +3209,14 @@ describe("supports http with nodejs", () => {
     );
 
     const noProxyValue = "localhost,127.0.0.1,::1";
-    const proxyUrl = `http://localhost:${proxy.address().port}/`;
+    const proxyUrl = `http://localhost:${(proxy.address() as AddressInfo).port}/`;
     process.env.http_proxy = proxyUrl;
     process.env.HTTP_PROXY = proxyUrl;
     process.env.no_proxy = noProxyValue;
     process.env.NO_PROXY = noProxyValue;
 
     try {
-      await assert.rejects(axios.get("http://[::1]:1/", { timeout: 100 }));
+      await assert.rejects((axios as unknown as TypedAxiosStatic).get("http://[::1]:1/", { timeout: 100 }));
       assert.equal(proxyRequests, 0, "should not use proxy for IPv6 loopback");
     } finally {
       await stopHTTPServer(proxy);
@@ -3266,7 +3254,7 @@ describe("supports http with nodejs", () => {
     const originalNOProxy = process.env.NO_PROXY;
 
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.setHeader("Content-Type", "text/html; charset=UTF-8");
         res.end("4567");
       },
@@ -3275,7 +3263,7 @@ describe("supports http with nodejs", () => {
 
     const proxy = await startHTTPServer(
       (request, response) => {
-        const parsed = new URL(request.url);
+        const parsed = new URL(request.url!);
         const opts = {
           host: parsed.hostname,
           port: parsed.port,
@@ -3299,15 +3287,15 @@ describe("supports http with nodejs", () => {
     );
 
     const noProxyValue = "foo.com, ,bar.net , quix.co";
-    const proxyUrl = `http://localhost:${proxy.address().port}/`;
+    const proxyUrl = `http://localhost:${(proxy.address() as AddressInfo).port}/`;
     process.env.http_proxy = proxyUrl;
     process.env.HTTP_PROXY = proxyUrl;
     process.env.no_proxy = noProxyValue;
     process.env.NO_PROXY = noProxyValue;
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       assert.equal(
         response.data,
@@ -3346,7 +3334,7 @@ describe("supports http with nodejs", () => {
 
   it("should support HTTP proxy auth", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.end();
       },
       { port: SERVER_PORT },
@@ -3354,7 +3342,7 @@ describe("supports http with nodejs", () => {
 
     const proxy = await startHTTPServer(
       (request, response) => {
-        const parsed = new URL(request.url);
+        const parsed = new URL(request.url!);
         const opts = {
           host: parsed.hostname,
           port: parsed.port,
@@ -3375,12 +3363,12 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           proxy: {
             host: "localhost",
-            port: proxy.address().port,
+            port: (proxy.address() as AddressInfo).port,
             auth: {
               username: "user",
               password: "pass",
@@ -3408,7 +3396,7 @@ describe("supports http with nodejs", () => {
     const originalNOProxy = process.env.NO_PROXY;
 
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.end();
       },
       { port: SERVER_PORT },
@@ -3416,7 +3404,7 @@ describe("supports http with nodejs", () => {
 
     const proxy = await startHTTPServer(
       (request, response) => {
-        const parsed = new URL(request.url);
+        const parsed = new URL(request.url!);
         const opts = {
           host: parsed.hostname,
           port: parsed.port,
@@ -3436,15 +3424,15 @@ describe("supports http with nodejs", () => {
       { port: PROXY_PORT },
     );
 
-    const proxyUrl = `http://user:pass@localhost:${proxy.address().port}/`;
+    const proxyUrl = `http://user:pass@localhost:${(proxy.address() as AddressInfo).port}/`;
     process.env.http_proxy = proxyUrl;
     process.env.HTTP_PROXY = proxyUrl;
     process.env.no_proxy = "";
     process.env.NO_PROXY = "";
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       const base64 = Buffer.from("user:pass", "utf8").toString("base64");
       assert.equal(
@@ -3495,11 +3483,11 @@ describe("supports http with nodejs", () => {
       };
 
       await assert.rejects(
-        axios.get("https://test-domain.abc", { proxy }),
-        (error) => {
+        (axios as unknown as TypedAxiosStatic).get("https://test-domain.abc", { proxy }),
+        (error: any) => {
           assert.strictEqual(error.message, "Invalid proxy authorization");
           assert.strictEqual(error.code, "ERR_BAD_OPTION");
-          assert.deepStrictEqual(error.config.proxy, proxy);
+          assert.deepStrictEqual(error.config!.proxy, proxy);
           return true;
         },
       );
@@ -3571,8 +3559,8 @@ describe("supports http with nodejs", () => {
 
     for (const test of testCases) {
       it(test.description, () => {
-        const options = { headers: {}, beforeRedirects: {} };
-        __setProxy(options, test.proxyConfig, destination);
+        const options: { headers: Record<string, any>; beforeRedirects: Record<string, any>; [key: string]: any } = { headers: {}, beforeRedirects: {} };
+        __setProxy(options, test.proxyConfig, destination, undefined as any, undefined);
 
         for (const [key, expected] of Object.entries(test.expectedOptions)) {
           assert.strictEqual(options[key], expected);
@@ -3589,16 +3577,16 @@ describe("supports http with nodejs", () => {
     };
 
     it("defaults the Host header to the request target when the user does not set one", () => {
-      const options = {
+      const options: { headers: Record<string, any>; beforeRedirects: Record<string, any>; [key: string]: any } = {
         headers: {},
         beforeRedirects: {},
         hostname: "127.0.0.1",
         port: 4000,
       };
 
-      __setProxy(options, proxyConfig, "http://127.0.0.1:4000/");
+      __setProxy(options, proxyConfig, "http://127.0.0.1:4000/", undefined as any, undefined);
 
-      assert.strictEqual(options.headers.host, "127.0.0.1:4000");
+      assert.strictEqual((options.headers as any).host, "127.0.0.1:4000");
     });
 
     it("preserves a user-supplied lowercase host header", () => {
@@ -3609,9 +3597,9 @@ describe("supports http with nodejs", () => {
         port: 4000,
       };
 
-      __setProxy(options, proxyConfig, "http://127.0.0.1:4000/");
+      __setProxy(options, proxyConfig, "http://127.0.0.1:4000/", undefined as any, undefined);
 
-      assert.strictEqual(options.headers.host, "example.com");
+      assert.strictEqual((options.headers as any).host, "example.com");
     });
 
     it("preserves a user-supplied Host header regardless of casing", () => {
@@ -3622,10 +3610,10 @@ describe("supports http with nodejs", () => {
         port: 4000,
       };
 
-      __setProxy(options, proxyConfig, "http://127.0.0.1:4000/");
+      __setProxy(options, proxyConfig, "http://127.0.0.1:4000/", undefined as any, undefined);
 
-      assert.strictEqual(options.headers.Host, "example.com");
-      assert.strictEqual(options.headers.host, undefined);
+      assert.strictEqual((options.headers as any).Host, "example.com");
+      assert.strictEqual((options.headers as any).host, undefined);
     });
 
     it("preserves a user-supplied Host header across a redirect re-invocation", () => {
@@ -3636,16 +3624,16 @@ describe("supports http with nodejs", () => {
         port: 4000,
       };
 
-      __setProxy(options, proxyConfig, "http://127.0.0.1:4000/", true);
+      __setProxy(options, proxyConfig, "http://127.0.0.1:4000/", true, undefined);
 
-      assert.strictEqual(options.headers.Host, "example.com");
-      assert.strictEqual(options.headers.host, undefined);
+      assert.strictEqual((options.headers as any).Host, "example.com");
+      assert.strictEqual((options.headers as any).host, undefined);
     });
 
     it("ignores polluted prototype Host fields when detecting user-supplied headers", () => {
-      Object.prototype.host = "polluted.example.com";
+      (Object.prototype as any).host = "polluted.example.com";
 
-      const options = {
+      const options: { headers: Record<string, any>; beforeRedirects: Record<string, any>; [key: string]: any } = {
         headers: {},
         beforeRedirects: {},
         hostname: "127.0.0.1",
@@ -3653,18 +3641,18 @@ describe("supports http with nodejs", () => {
       };
 
       try {
-        __setProxy(options, proxyConfig, "http://127.0.0.1:4000/");
+        __setProxy(options, proxyConfig, "http://127.0.0.1:4000/", undefined as any, undefined);
 
-        assert.strictEqual(options.headers.host, "127.0.0.1:4000");
+        assert.strictEqual((options.headers as any).host, "127.0.0.1:4000");
       } finally {
-        delete Object.prototype.host;
+        delete (Object.prototype as any).host;
       }
     });
   });
 
   describe("Proxy-Authorization header leak on redirect", () => {
     it("clears a stale Proxy-Authorization header when redirected request resolves to no proxy (configProxy=false)", () => {
-      const options = {
+      const options: { headers: Record<string, any>; beforeRedirects: Record<string, any>; [key: string]: any } = {
         headers: {},
         beforeRedirects: {},
         hostname: "initial.example.com",
@@ -3680,6 +3668,8 @@ describe("supports http with nodejs", () => {
           auth: { username: "user", password: "pass" },
         },
         "http://initial.example.com/start",
+      undefined as any,
+      undefined,
       );
       assert.strictEqual(
         options.headers["Proxy-Authorization"],
@@ -3689,7 +3679,7 @@ describe("supports http with nodejs", () => {
 
       // Simulate redirect re-invocation where the redirected request is resolved to no proxy.
       // This mirrors the beforeRedirects.proxy hook being called with configProxy=false.
-      const redirectOptions = {
+      const redirectOptions: { headers: Record<string, any>; beforeRedirects: Record<string, any>; [key: string]: any } = {
         headers: { ...options.headers },
         beforeRedirects: {},
         hostname: "attacker.example.com",
@@ -3701,6 +3691,7 @@ describe("supports http with nodejs", () => {
         false,
         "https://attacker.example.com/final",
         true,
+      undefined,
       );
 
       assert.strictEqual(
@@ -3720,7 +3711,7 @@ describe("supports http with nodejs", () => {
       process.env.no_proxy = "attacker.example.com";
 
       try {
-        const options = {
+        const options: { headers: Record<string, any>; beforeRedirects: Record<string, any>; [key: string]: any } = {
           headers: {},
           beforeRedirects: {},
           hostname: "initial.example.com",
@@ -3728,14 +3719,14 @@ describe("supports http with nodejs", () => {
           port: 80,
         };
 
-        __setProxy(options, undefined, "http://initial.example.com/start");
+        __setProxy(options, undefined, "http://initial.example.com/start", undefined as any, undefined);
         assert.strictEqual(
           options.headers["Proxy-Authorization"],
           "Basic " + Buffer.from("user:pass", "utf8").toString("base64"),
           "initial request should pick up proxy credentials from env",
         );
 
-        const redirectOptions = {
+        const redirectOptions: { headers: Record<string, any>; beforeRedirects: Record<string, any>; [key: string]: any } = {
           headers: { ...options.headers },
           beforeRedirects: {},
           hostname: "attacker.example.com",
@@ -3748,6 +3739,7 @@ describe("supports http with nodejs", () => {
           undefined,
           "https://attacker.example.com/final",
           true,
+        undefined,
         );
 
         assert.strictEqual(
@@ -3766,7 +3758,7 @@ describe("supports http with nodejs", () => {
     });
 
     it("replaces Proxy-Authorization when redirect target resolves to a different proxy without credentials", () => {
-      const options = {
+      const options: { headers: Record<string, any>; beforeRedirects: Record<string, any>; [key: string]: any } = {
         headers: {},
         beforeRedirects: {},
         hostname: "initial.example.com",
@@ -3782,13 +3774,15 @@ describe("supports http with nodejs", () => {
           auth: { username: "user", password: "pass" },
         },
         "http://initial.example.com/start",
+      undefined as any,
+      undefined,
       );
       assert.ok(
         options.headers["Proxy-Authorization"],
         "precondition: initial proxy auth header set",
       );
 
-      const redirectOptions = {
+      const redirectOptions: { headers: Record<string, any>; beforeRedirects: Record<string, any>; [key: string]: any } = {
         headers: { ...options.headers },
         beforeRedirects: {},
         hostname: "second.example.com",
@@ -3800,6 +3794,7 @@ describe("supports http with nodejs", () => {
         { host: "127.0.0.2", port: 8031 },
         "http://second.example.com/final",
         true,
+      undefined,
       );
 
       assert.strictEqual(
@@ -3821,14 +3816,14 @@ describe("supports http with nodejs", () => {
         port: 80,
       };
 
-      __setProxy(options, false, "http://initial.example.com/start");
+      __setProxy(options, false, "http://initial.example.com/start", undefined as any, undefined);
       assert.strictEqual(
-        typeof options.beforeRedirects.proxy,
+        typeof (options as any).beforeRedirects.proxy,
         "function",
         "initial setProxy must install redirect hook",
       );
 
-      const redirectOptions = {
+      const redirectOptions: { headers: Record<string, any>; beforeRedirects: Record<string, any>; [key: string]: any } = {
         headers: {
           "Proxy-Authorization":
             "Basic " + Buffer.from("user:pass", "utf8").toString("base64"),
@@ -3840,7 +3835,7 @@ describe("supports http with nodejs", () => {
         href: "https://attacker.example.com/final",
       };
 
-      options.beforeRedirects.proxy(redirectOptions);
+      (options as any).beforeRedirects.proxy(redirectOptions);
 
       assert.strictEqual(
         redirectOptions.headers["Proxy-Authorization"],
@@ -3860,7 +3855,7 @@ describe("supports http with nodejs", () => {
         port: 80,
       };
 
-      __setProxy(options, false, "http://example.com/start");
+      __setProxy(options, false, "http://example.com/start", undefined as any, undefined);
 
       assert.strictEqual(
         options.headers["Proxy-Authorization"],
@@ -3880,7 +3875,7 @@ describe("supports http with nodejs", () => {
       ];
 
       for (const casing of casings) {
-        const redirectOptions = {
+        const redirectOptions: { headers: Record<string, any>; beforeRedirects: Record<string, any>; [key: string]: any } = {
           headers: { [casing]: staleValue },
           beforeRedirects: {},
           hostname: "attacker.example.com",
@@ -3893,6 +3888,7 @@ describe("supports http with nodejs", () => {
           false,
           "https://attacker.example.com/final",
           true,
+        undefined,
         );
 
         const leaked = Object.keys(redirectOptions.headers).filter(
@@ -3911,21 +3907,21 @@ describe("supports http with nodejs", () => {
     // client to a target that NO_PROXY excludes, and the redirected request
     // must not carry the stale Proxy-Authorization to the direct target.
     it("does not forward Proxy-Authorization to a redirect target that resolves to no-proxy", async () => {
-      const startServer = async (handler) =>
+      const startServer = async (handler: any) =>
         new Promise((resolve) => {
           const s = http.createServer(handler);
           s.listen(0, "127.0.0.1", () => resolve(s));
         });
-      const stop = async (s) => new Promise((r) => s.close(r));
+      const stop = async (s: any) => new Promise((r) => s.close(r));
 
-      let attackerPort;
-      const proxySaw = [];
-      const attackerSaw = [];
+      let attackerPort: number;
+      const proxySaw: any[] = [];
+      const attackerSaw: any[] = [];
 
       // The proxy receives the absolute-form URL (`GET http://target/path`) on
       // the initial request, then forwards to the destination. We short-circuit
       // by responding directly with the redirect.
-      const corpProxy = await startServer((req, res) => {
+      const corpProxy = await startServer((req: any, res: any) => {
         proxySaw.push({
           url: req.url,
           proxyAuth: req.headers["proxy-authorization"],
@@ -3936,7 +3932,7 @@ describe("supports http with nodejs", () => {
         res.end();
       });
 
-      const attacker = await startServer((req, res) => {
+      const attacker = await startServer((req: any, res: any) => {
         attackerSaw.push({
           url: req.url,
           proxyAuth: req.headers["proxy-authorization"],
@@ -3945,9 +3941,9 @@ describe("supports http with nodejs", () => {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end('{"final":true}');
       });
-      attackerPort = attacker.address().port;
+      attackerPort = ((attacker as any).address() as AddressInfo).port;
 
-      const corpProxyPort = corpProxy.address().port;
+      const corpProxyPort = ((corpProxy as any).address() as AddressInfo).port;
       const originalHttpProxy = process.env.http_proxy;
       const originalNoProxy = process.env.no_proxy;
       process.env.http_proxy = `http://user:pass@127.0.0.1:${corpProxyPort}`;
@@ -3956,7 +3952,7 @@ describe("supports http with nodejs", () => {
       process.env.no_proxy = `127.0.0.1:${attackerPort}`;
 
       try {
-        await axios.get("http://example.com/start");
+        await (axios as unknown as TypedAxiosStatic).get("http://example.com/start");
 
         assert.ok(
           proxySaw.some((h) => h.proxyAuth),
@@ -3987,7 +3983,7 @@ describe("supports http with nodejs", () => {
     const source = axios.CancelToken.source();
 
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, _res: any) => {
         // Call cancel() when the request has been sent but no response received.
         source.cancel("Operation has been canceled.");
       },
@@ -3997,7 +3993,7 @@ describe("supports http with nodejs", () => {
     try {
       await assert.rejects(
         async function stackTraceTest() {
-          await axios.get(`http://localhost:${server.address().port}/`, {
+          await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
             cancelToken: source.token,
           });
         },
@@ -4018,20 +4014,20 @@ describe("supports http with nodejs", () => {
 
   it("should combine baseURL and url", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.end();
       },
       { port: SERVER_PORT },
     );
 
     try {
-      const response = await axios.get("/foo", {
-        baseURL: `http://localhost:${server.address().port}/`,
+      const response = await (axios as unknown as TypedAxiosStatic).get("/foo", {
+        baseURL: `http://localhost:${(server.address() as AddressInfo).port}/`,
       });
 
       assert.equal(
         response.config.baseURL,
-        `http://localhost:${server.address().port}/`,
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       assert.equal(response.config.url, "/foo");
     } finally {
@@ -4041,7 +4037,7 @@ describe("supports http with nodejs", () => {
 
   it("should support HTTP protocol", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         setTimeout(() => {
           res.end();
         }, 1000);
@@ -4050,8 +4046,8 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await axios.get(
-        `http://localhost:${server.address().port}`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `http://localhost:${(server.address() as AddressInfo).port}`,
       );
       assert.equal(response.request.agent.protocol, "http:");
     } finally {
@@ -4065,16 +4061,15 @@ describe("supports http with nodejs", () => {
       cert: fs.readFileSync(path.join(adaptersTestsDir, "cert.pem")),
     };
 
-    const server = await new Promise((resolve, reject) => {
+    const server: any = await new Promise<any>((resolve, reject) => {
       const httpsServer = https
         .createServer(
           tlsOptions,
-          (req, res) => {
+          (_req: any, res: any) => {
             setTimeout(() => {
               res.end();
             }, 1000);
           },
-          { port: SERVER_PORT },
         )
         .listen(SERVER_PORT, () => resolve(httpsServer));
 
@@ -4082,8 +4077,8 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      const response = await axios.get(
-        `https://localhost:${server.address().port}`,
+      const response = await (axios as unknown as TypedAxiosStatic).get(
+        `https://localhost:${(server.address() as AddressInfo).port}`,
         {
           httpsAgent: new https.Agent({
             rejectUnauthorized: false,
@@ -4092,8 +4087,8 @@ describe("supports http with nodejs", () => {
       );
       assert.equal(response.request.agent.protocol, "https:");
     } finally {
-      await new Promise((resolve, reject) => {
-        server.close((error) => {
+      await new Promise<void>((resolve, reject) => {
+        server.close((error: any) => {
           if (error) {
             reject(error);
             return;
@@ -4106,7 +4101,7 @@ describe("supports http with nodejs", () => {
   });
 
   describe("HTTPS CONNECT tunneling agent management", () => {
-    const buildOptions = () => ({
+    const buildOptions = (): { headers: Record<string, any>; beforeRedirects: Record<string, any>; hostname: string; host: string; port: number; path: string; protocol: string; [key: string]: any } => ({
       headers: {},
       beforeRedirects: {},
       hostname: "example.com",
@@ -4120,8 +4115,8 @@ describe("supports http with nodejs", () => {
     it("reuses the same tunneling agent for repeated requests through the same proxy", () => {
       const a = buildOptions();
       const b = buildOptions();
-      __setProxy(a, proxyConfig, "https://example.com/");
-      __setProxy(b, proxyConfig, "https://example.com/");
+      __setProxy(a, proxyConfig, "https://example.com/", undefined as any, undefined);
+      __setProxy(b, proxyConfig, "https://example.com/", undefined as any, undefined);
       assert.ok(a.agent, "first request must install a tunneling agent");
       assert.strictEqual(
         a.agent,
@@ -4171,7 +4166,7 @@ describe("supports http with nodejs", () => {
     });
 
     it("respects a user-supplied HttpsProxyAgent without installing its own", () => {
-      const userTunnel = new HttpsProxyAgent({
+      const userTunnel = new (HttpsProxyAgent as any)({
         protocol: "http:",
         hostname: "127.0.0.1",
         port: 9999,
@@ -4193,12 +4188,12 @@ describe("supports http with nodejs", () => {
     });
 
     it("does not strip a user-supplied HttpsProxyAgent on redirect", () => {
-      const userTunnel = new HttpsProxyAgent({
+      const userTunnel = new (HttpsProxyAgent as any)({
         protocol: "http:",
         hostname: "127.0.0.1",
         port: 9999,
       });
-      const redirectOptions = {
+      const redirectOptions: { headers: Record<string, any>; beforeRedirects: Record<string, any>; [key: string]: any } = {
         headers: {},
         beforeRedirects: {},
         hostname: "redirect.example.com",
@@ -4208,7 +4203,7 @@ describe("supports http with nodejs", () => {
         protocol: "https:",
         agent: userTunnel,
       };
-      __setProxy(redirectOptions, false, "https://redirect.example.com/", true);
+      __setProxy(redirectOptions, false, "https://redirect.example.com/", true, undefined);
       assert.strictEqual(
         redirectOptions.agent,
         userTunnel,
@@ -4218,13 +4213,13 @@ describe("supports http with nodejs", () => {
 
     it("strips its own tunneling agent on redirect when the redirect target has no proxy", () => {
       const initial = buildOptions();
-      __setProxy(initial, proxyConfig, "https://example.com/");
+      __setProxy(initial, proxyConfig, "https://example.com/", undefined as any, undefined);
       assert.ok(
         initial.agent instanceof HttpsProxyAgent,
         "precondition: tunneling agent installed",
       );
 
-      const redirectOptions = {
+      const redirectOptions: { headers: Record<string, any>; beforeRedirects: Record<string, any>; [key: string]: any } = {
         headers: {},
         beforeRedirects: {},
         hostname: "final.example.com",
@@ -4234,7 +4229,7 @@ describe("supports http with nodejs", () => {
         protocol: "https:",
         agent: initial.agent,
       };
-      __setProxy(redirectOptions, false, "https://final.example.com/", true);
+      __setProxy(redirectOptions, false, "https://final.example.com/", true, undefined);
       assert.strictEqual(
         redirectOptions.agent,
         undefined,
@@ -4248,6 +4243,8 @@ describe("supports http with nodejs", () => {
         options,
         { host: "::1", port: 8030, protocol: "http" },
         "https://example.com/",
+      undefined as any,
+      undefined,
       );
       assert.ok(
         options.agent instanceof HttpsProxyAgent,
@@ -4257,14 +4254,14 @@ describe("supports http with nodejs", () => {
   });
 
   it("should return malformed URL", async () => {
-    await assert.rejects(axios.get("tel:484-695-3408"), (error) => {
+    await assert.rejects((axios as unknown as TypedAxiosStatic).get("tel:484-695-3408"), (error: any) => {
       assert.equal(error.message, "Unsupported protocol tel:");
       return true;
     });
   });
 
   it("should return unsupported protocol", async () => {
-    await assert.rejects(axios.get("ftp:google.com"), (error) => {
+    await assert.rejects((axios as unknown as TypedAxiosStatic).get("ftp:google.com"), (error: any) => {
       assert.equal(error.message, "Unsupported protocol ftp:");
       return true;
     });
@@ -4277,21 +4274,21 @@ describe("supports http with nodejs", () => {
     ]) {
       await assert.rejects(
         () =>
-          axios.get(url, {
+          (axios as unknown as TypedAxiosStatic).get(url, {
             adapter: "http",
             headers: {
               "X-Test": "yes",
             },
           }),
-        (error) => {
+        (error: any) => {
           assert.ok(error instanceof AxiosError);
           assert.strictEqual(error.code, AxiosError.ERR_INVALID_URL);
           assert.strictEqual(
             error.message,
             'Invalid URL: missing "//" after protocol',
           );
-          assert.strictEqual(error.config.url, url);
-          assert.strictEqual(error.config.headers.get("X-Test"), "yes");
+          assert.strictEqual(error.config!.url, url);
+          assert.strictEqual(error.config!.headers.get("X-Test"), "yes");
           return true;
         },
       );
@@ -4308,7 +4305,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      await axios.get(`http://localhost:${server.address().port}/`);
+      await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`);
     } finally {
       await stopHTTPServer(server);
     }
@@ -4325,7 +4322,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      await axios.get(`http://localhost:${server.address().port}/`, {
+      await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
         headers: {
           "User-Agent": null,
         },
@@ -4337,7 +4334,7 @@ describe("supports http with nodejs", () => {
 
   it("should throw an error if http server that aborts a chunked request", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.writeHead(200, {
           "Content-Type": "text/plain",
           "X-Stream-Aborted": "yes",
@@ -4357,15 +4354,15 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        axios.get(`http://localhost:${server.address().port}/aborted`, {
+        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/aborted`, {
           timeout: 500,
         }),
-        (error) => {
+        (error: any) => {
           assert.strictEqual(error.code, "ERR_BAD_RESPONSE");
           assert.strictEqual(error.message, "stream has been aborted");
           assert.strictEqual(error.response.status, 200);
           assert.strictEqual(
-            error.response.headers.get("x-stream-aborted"),
+            (error.response.headers as any).get("x-stream-aborted"),
             "yes",
           );
           assert.strictEqual(error.status, 200);
@@ -4380,7 +4377,7 @@ describe("supports http with nodejs", () => {
 
   it("should able to cancel multiple requests with CancelToken", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.end("ok");
       },
       { port: SERVER_PORT },
@@ -4388,15 +4385,15 @@ describe("supports http with nodejs", () => {
 
     try {
       const source = axios.CancelToken.source();
-      const canceledStack = [];
+      const canceledStack: any[] = [];
 
       const requests = [1, 2, 3, 4, 5].map(async (id) => {
         try {
-          await axios.get("/foo/bar", {
-            baseURL: `http://localhost:${server.address().port}`,
+          await (axios as unknown as TypedAxiosStatic).get("/foo/bar", {
+            baseURL: `http://localhost:${(server.address() as AddressInfo).port}`,
             cancelToken: source.token,
           });
-        } catch (error) {
+        } catch (error: any) {
           if (!axios.isCancel(error)) {
             throw error;
           }
@@ -4460,8 +4457,8 @@ describe("supports http with nodejs", () => {
         );
 
         try {
-          const response = await axios.post(
-            `http://localhost:${server.address().port}/`,
+          const response = await (axios as unknown as TypedAxiosStatic).post(
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
             form,
             {
               headers: {
@@ -4528,10 +4525,10 @@ describe("supports http with nodejs", () => {
 
           form.append("foo1", "bar1");
           form.append("foo2", "bar2");
-          form.append("file1", blob);
+          form.append("file1", blob as any);
 
-          const { data } = await axios.post(
-            `http://localhost:${server.address().port}`,
+          const { data } = await (axios as unknown as TypedAxiosStatic).post(
+            `http://localhost:${(server.address() as AddressInfo).port}`,
             form,
             {
               maxRedirects: 0,
@@ -4570,14 +4567,14 @@ describe("supports http with nodejs", () => {
       it("should not use inherited Symbol.iterator for request or response headers", async () => {
         let capturedHeaders;
         const stubTransport = {
-          request(options, handleResponse) {
+          request(options: any, handleResponse: any) {
             capturedHeaders = { ...options.headers };
-            const req = new EventEmitter();
+            const req: any = new EventEmitter();
             req.write = () => true;
             req.setTimeout = () => {};
             req.destroy = () => {};
             req.end = () => {
-              const res = new stream.Readable({ read() {} });
+              const res: any = new stream.Readable({ read() {} });
               res.statusCode = 200;
               res.statusMessage = "OK";
               res.headers = { "x-server": "real" };
@@ -4593,12 +4590,12 @@ describe("supports http with nodejs", () => {
         };
 
         try {
-          Object.prototype[Symbol.iterator] = function* () {
+          (Object.prototype as any)[Symbol.iterator] = function* () {
             yield ["X-Injected", "yes"];
             yield ["Authorization", "Bearer CHANGED"];
           };
 
-          const response = await axios.get("http://stub.invalid/", {
+          const response = await (axios as unknown as TypedAxiosStatic).get("http://stub.invalid/", {
             headers: {
               Authorization: "Bearer VALID_USER_TOKEN",
               "X-App": "safe",
@@ -4608,44 +4605,43 @@ describe("supports http with nodejs", () => {
           });
 
           assert.ok(capturedHeaders, "transport was not invoked");
-          assert.strictEqual(capturedHeaders["X-App"], "safe");
-          assert.strictEqual(
-            capturedHeaders.Authorization || capturedHeaders.authorization,
+          assert.strictEqual((capturedHeaders as any)["X-App"], "safe");
+          assert.strictEqual((capturedHeaders as any).Authorization || (capturedHeaders as any).authorization,
             "Bearer VALID_USER_TOKEN",
           );
           assert.strictEqual(
-            capturedHeaders["X-Injected"] || capturedHeaders["x-injected"],
+            (capturedHeaders as any)["X-Injected"] || (capturedHeaders as any)["x-injected"],
             undefined,
           );
-          assert.strictEqual(response.headers.get("x-server"), "real");
-          assert.strictEqual(response.headers.get("x-injected"), undefined);
+          assert.strictEqual((response.headers as any).get("x-server"), "real");
+          assert.strictEqual((response.headers as any).get("x-injected"), undefined);
         } finally {
-          delete Object.prototype[Symbol.iterator];
+          delete (Object.prototype as any)[Symbol.iterator];
         }
       });
 
       function pollute() {
-        Object.prototype[toStringTagSym] = "FormData";
-        Object.prototype.append = () => {};
-        Object.prototype.getHeaders = () => ({
+        (Object.prototype as any)[toStringTagSym] = "FormData";
+        (Object.prototype as any).append = () => {};
+        (Object.prototype as any).getHeaders = () => ({
           "x-injected": "attacker",
           authorization: "Bearer ATTACKER_TOKEN",
         });
-        Object.prototype.pipe = function (d) {
+        (Object.prototype as any).pipe = function (d: any) {
           if (d && d.end) d.end();
           return d;
         };
-        Object.prototype.on = function () {
+        (Object.prototype as any).on = function () {
           return this;
         };
-        Object.prototype.once = function () {
+        (Object.prototype as any).once = function () {
           return this;
         };
       }
 
       function cleanup() {
-        for (const k of pollutedKeys) delete Object.prototype[k];
-        delete Object.prototype[toStringTagSym];
+        for (const k of pollutedKeys) delete (Object.prototype as any)[k];
+        delete (Object.prototype as any)[toStringTagSym];
       }
 
       it("should not merge prototype-polluted getHeaders into outgoing request", async () => {
@@ -4655,14 +4651,14 @@ describe("supports http with nodejs", () => {
         // outgoing headers axios constructs, which is what this test asserts on.
         let capturedHeaders;
         const stubTransport = {
-          request(options, handleResponse) {
+          request(options: any, handleResponse: any) {
             capturedHeaders = { ...options.headers };
-            const req = new EventEmitter();
+            const req: any = new EventEmitter();
             req.write = () => true;
             req.setTimeout = () => {};
             req.destroy = () => {};
             req.end = () => {
-              const res = new stream.Readable({ read() {} });
+              const res: any = new stream.Readable({ read() {} });
               res.statusCode = 200;
               res.statusMessage = "OK";
               res.headers = {};
@@ -4679,7 +4675,7 @@ describe("supports http with nodejs", () => {
 
         try {
           pollute();
-          await axios.post(
+          await (axios as unknown as TypedAxiosStatic).post(
             "http://stub.invalid/",
             { userId: 42 },
             {
@@ -4693,29 +4689,29 @@ describe("supports http with nodejs", () => {
         }
 
         assert.ok(capturedHeaders, "transport was not invoked");
-        assert.strictEqual(capturedHeaders["x-injected"], undefined);
+        assert.strictEqual((capturedHeaders as any)["x-injected"], undefined);
         assert.notStrictEqual(
-          capturedHeaders["Authorization"],
+          (capturedHeaders as any)["Authorization"],
           "Bearer ATTACKER_TOKEN",
         );
         assert.notStrictEqual(
-          capturedHeaders["authorization"],
+          (capturedHeaders as any)["authorization"],
           "Bearer ATTACKER_TOKEN",
         );
       });
     });
 
     describe("formDataHeaderPolicy", () => {
-      function createStubTransport(captureHeaders) {
+      function createStubTransport(captureHeaders: any) {
         return {
-          request(options, handleResponse) {
+          request(options: any, handleResponse: any) {
             captureHeaders({ ...options.headers });
-            const req = new EventEmitter();
+            const req: any = new EventEmitter();
             req.write = () => true;
             req.setTimeout = () => {};
             req.destroy = () => {};
             req.end = () => {
-              const res = new stream.Readable({ read() {} });
+              const res: any = new stream.Readable({ read() {} });
               res.statusCode = 200;
               res.statusMessage = "OK";
               res.headers = {};
@@ -4732,7 +4728,7 @@ describe("supports http with nodejs", () => {
       }
 
       class CustomFormData extends stream.Readable {
-        _read() {
+        override _read() {
           this.push(null);
         }
         append() {}
@@ -4753,8 +4749,8 @@ describe("supports http with nodejs", () => {
       it("preserves legacy getHeaders() propagation by default", async () => {
         let capturedHeaders;
 
-        await axios.post("http://stub.invalid/", new CustomFormData(), {
-          transport: createStubTransport((headers) => {
+        await (axios as unknown as TypedAxiosStatic).post("http://stub.invalid/", new CustomFormData(), {
+          transport: createStubTransport((headers: any) => {
             capturedHeaders = headers;
           }),
           maxRedirects: 0,
@@ -4762,16 +4758,14 @@ describe("supports http with nodejs", () => {
 
         assert.ok(capturedHeaders, "transport was not invoked");
         const ct =
-          capturedHeaders["Content-Type"] || capturedHeaders["content-type"];
+          (capturedHeaders as any)["Content-Type"] || (capturedHeaders as any)["content-type"];
         assert.match(ct, /multipart\/form-data/);
-        assert.strictEqual(capturedHeaders["x-injected"], "custom");
-        assert.strictEqual(capturedHeaders["x-forwarded-for"], "10.0.0.1");
-        assert.strictEqual(
-          capturedHeaders.Authorization || capturedHeaders.authorization,
+        assert.strictEqual((capturedHeaders as any)["x-injected"], "custom");
+        assert.strictEqual((capturedHeaders as any)["x-forwarded-for"], "10.0.0.1");
+        assert.strictEqual((capturedHeaders as any).Authorization || (capturedHeaders as any).authorization,
           "Bearer CUSTOM_TOKEN",
         );
-        assert.strictEqual(
-          capturedHeaders.Host || capturedHeaders.host,
+        assert.strictEqual((capturedHeaders as any).Host || (capturedHeaders as any).host,
           "custom.example.com",
         );
       });
@@ -4779,8 +4773,8 @@ describe("supports http with nodejs", () => {
       it("only copies content headers when formDataHeaderPolicy is content-only", async () => {
         let capturedHeaders;
 
-        await axios.post("http://stub.invalid/", new CustomFormData(), {
-          transport: createStubTransport((headers) => {
+        await (axios as unknown as TypedAxiosStatic).post("http://stub.invalid/", new CustomFormData(), {
+          transport: createStubTransport((headers: any) => {
             capturedHeaders = headers;
           }),
           maxRedirects: 0,
@@ -4789,16 +4783,14 @@ describe("supports http with nodejs", () => {
 
         assert.ok(capturedHeaders, "transport was not invoked");
         const ct =
-          capturedHeaders["Content-Type"] || capturedHeaders["content-type"];
+          (capturedHeaders as any)["Content-Type"] || (capturedHeaders as any)["content-type"];
         assert.match(ct, /multipart\/form-data/);
-        assert.strictEqual(capturedHeaders["x-injected"], undefined);
-        assert.strictEqual(capturedHeaders["x-forwarded-for"], undefined);
-        assert.strictEqual(
-          capturedHeaders.Authorization || capturedHeaders.authorization,
+        assert.strictEqual((capturedHeaders as any)["x-injected"], undefined);
+        assert.strictEqual((capturedHeaders as any)["x-forwarded-for"], undefined);
+        assert.strictEqual((capturedHeaders as any).Authorization || (capturedHeaders as any).authorization,
           undefined,
         );
-        assert.strictEqual(
-          capturedHeaders.Host || capturedHeaders.host,
+        assert.strictEqual((capturedHeaders as any).Host || (capturedHeaders as any).host,
           undefined,
         );
       });
@@ -4818,26 +4810,25 @@ describe("supports http with nodejs", () => {
         ],
       };
 
-      app.post("/", multer().none(), (req, res) => {
+      app.post("/", multer().none(), (req: any, res: any) => {
         res.send(JSON.stringify(req.body));
       });
 
-      const server = await new Promise(
+      const server: any = await new Promise(
         (resolve, reject) => {
-          const expressServer = app.listen(0, () => resolve(expressServer));
+          const expressServer = (app as any).listen(0, () => resolve(expressServer));
           expressServer.on("error", reject);
         },
-        { port: SERVER_PORT },
       );
 
       try {
         await Promise.all(
           [null, false, true].map((mode) =>
-            axios
-              .postForm(`http://localhost:${server.address().port}/`, obj, {
+            (axios as unknown as TypedAxiosStatic)
+              .postForm(`http://localhost:${(server.address() as AddressInfo).port}/`, obj, {
                 formSerializer: { indexes: mode },
               })
-              .then((response) => {
+              .then((response: any) => {
                 assert.deepStrictEqual(
                   response.data,
                   obj,
@@ -4847,8 +4838,8 @@ describe("supports http with nodejs", () => {
           ),
         );
       } finally {
-        await new Promise((resolve, reject) => {
-          server.close((error) => {
+        await new Promise<void>((resolve, reject) => {
+          server.close((error: any) => {
             if (error) {
               reject(error);
               return;
@@ -4863,26 +4854,25 @@ describe("supports http with nodejs", () => {
     it("should only match explicit routes for express 5 form handlers", async () => {
       const app = express();
 
-      app.post("/", multer().none(), (req, res) => {
+      app.post("/", multer().none(), (req: any, res: any) => {
         res.status(200).send(JSON.stringify({ route: "root", body: req.body }));
       });
 
-      app.post("/unexpected", multer().none(), (req, res) => {
+      app.post("/unexpected", multer().none(), (_req: any, res: any) => {
         res.status(418).send("wrong-route");
       });
 
-      const server = await new Promise(
+      const server: any = await new Promise(
         (resolve, reject) => {
-          const expressServer = app.listen(0, () => resolve(expressServer));
+          const expressServer = (app as any).listen(0, () => resolve(expressServer));
           expressServer.on("error", reject);
         },
-        { port: SERVER_PORT },
       );
 
-      const rootUrl = `http://localhost:${server.address().port}`;
+      const rootUrl = `http://localhost:${(server.address() as AddressInfo).port}`;
 
       try {
-        const rootResponse = await axios.postForm(rootUrl, { foo: "bar" });
+        const rootResponse = await (axios as unknown as TypedAxiosStatic).postForm(rootUrl, { foo: "bar" });
         assert.strictEqual(rootResponse.status, 200);
         assert.deepStrictEqual(rootResponse.data, {
           route: "root",
@@ -4890,16 +4880,16 @@ describe("supports http with nodejs", () => {
         });
 
         await assert.rejects(
-          () => axios.postForm(`${rootUrl}/unexpected`, { foo: "bar" }),
-          (error) => {
+          () => (axios as unknown as TypedAxiosStatic).postForm(`${rootUrl}/unexpected`, { foo: "bar" }),
+          (error: any) => {
             assert.strictEqual(error.response.status, 418);
             assert.strictEqual(error.response.data, "wrong-route");
             return true;
           },
         );
       } finally {
-        await new Promise((resolve, reject) => {
-          server.close((error) => {
+        await new Promise<void>((resolve, reject) => {
+          server.close((error: any) => {
             if (error) {
               reject(error);
               return;
@@ -4915,7 +4905,7 @@ describe("supports http with nodejs", () => {
   describe("Blob", () => {
     it("should support Blob", async () => {
       const server = await startHTTPServer(
-        async (req, res) => {
+        async (req: any, res: any) => {
           res.end(await getStream(req));
         },
         { port: SERVER_PORT },
@@ -4927,8 +4917,8 @@ describe("supports http with nodejs", () => {
           type: "image/jpeg",
         });
 
-        const { data } = await axios.post(
-          `http://localhost:${server.address().port}`,
+        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+          `http://localhost:${(server.address() as AddressInfo).port}`,
           blob,
           {
             maxRedirects: 0,
@@ -4957,22 +4947,21 @@ describe("supports http with nodejs", () => {
 
       app.use(bodyParser.urlencoded({ extended: true }));
 
-      app.post("/", (req, res) => {
+      app.post("/", (req: any, res: any) => {
         res.send(JSON.stringify(req.body));
       });
 
-      const server = await new Promise(
+      const server: any = await new Promise(
         (resolve, reject) => {
-          const expressServer = app.listen(0, () => resolve(expressServer));
+          const expressServer = (app as any).listen(0, () => resolve(expressServer));
           expressServer.on("error", reject);
         },
-        { port: SERVER_PORT },
       );
 
       try {
         for (const headerName of ["content-type", "Content-Type"]) {
-          const response = await axios.post(
-            `http://localhost:${server.address().port}/`,
+          const response = await (axios as unknown as TypedAxiosStatic).post(
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
             obj,
             {
               headers: {
@@ -4984,8 +4973,8 @@ describe("supports http with nodejs", () => {
           assert.deepStrictEqual(response.data, obj);
         }
       } finally {
-        await new Promise((resolve, reject) => {
-          server.close((error) => {
+        await new Promise<void>((resolve, reject) => {
+          server.close((error: any) => {
             if (error) {
               reject(error);
               return;
@@ -5019,8 +5008,8 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const response = await axios.post(
-          `http://localhost:${server.address().port}/`,
+        const response = await (axios as unknown as TypedAxiosStatic).post(
+          `http://localhost:${(server.address() as AddressInfo).port}/`,
           obj,
           {
             headers: {
@@ -5043,7 +5032,7 @@ describe("supports http with nodejs", () => {
 
       app.use(bodyParser.urlencoded({ extended: true }));
 
-      app.post("/", (req, res) => {
+      app.post("/", (req: any, res: any) => {
         const parserRanBeforeHandler = Boolean(
           req.body && Object.keys(req.body).length,
         );
@@ -5056,19 +5045,18 @@ describe("supports http with nodejs", () => {
         );
       });
 
-      const server = await new Promise(
+      const server: any = await new Promise(
         (resolve, reject) => {
-          const expressServer = app.listen(0, () => resolve(expressServer));
+          const expressServer = (app as any).listen(0, () => resolve(expressServer));
           expressServer.on("error", reject);
         },
-        { port: SERVER_PORT },
       );
 
-      const rootUrl = `http://localhost:${server.address().port}/`;
+      const rootUrl = `http://localhost:${(server.address() as AddressInfo).port}/`;
       const payload = "user[name]=Peter&tags[]=a&tags[]=b";
 
       try {
-        const parsedResponse = await axios.post(rootUrl, payload, {
+        const parsedResponse = await (axios as unknown as TypedAxiosStatic).post(rootUrl, payload, {
           headers: {
             "content-type": "application/x-www-form-urlencoded",
           },
@@ -5082,7 +5070,7 @@ describe("supports http with nodejs", () => {
           },
         });
 
-        const ignoredResponse = await axios.post(rootUrl, payload, {
+        const ignoredResponse = await (axios as unknown as TypedAxiosStatic).post(rootUrl, payload, {
           headers: {
             "content-type": "text/plain",
           },
@@ -5094,8 +5082,8 @@ describe("supports http with nodejs", () => {
           tags: ["a", "b"],
         });
       } finally {
-        await new Promise((resolve, reject) => {
-          server.close((error) => {
+        await new Promise<void>((resolve, reject) => {
+          server.close((error: any) => {
             if (error) {
               reject(error);
               return;
@@ -5113,7 +5101,7 @@ describe("supports http with nodejs", () => {
       const buffer = Buffer.from("123");
       const dataURI = `data:application/octet-stream;base64,${buffer.toString("base64")}`;
 
-      const { data } = await axios.get(dataURI);
+      const { data } = await (axios as unknown as TypedAxiosStatic).get(dataURI);
       assert.deepStrictEqual(data, buffer);
     });
 
@@ -5125,7 +5113,7 @@ describe("supports http with nodejs", () => {
       const buffer = Buffer.from("123");
       const dataURI = `data:application/octet-stream;base64,${buffer.toString("base64")}`;
 
-      const { data } = await axios.get(dataURI, { responseType: "blob" });
+      const { data } = await (axios as unknown as TypedAxiosStatic).get(dataURI, { responseType: "blob" });
       assert.strictEqual(data.type, "application/octet-stream");
       assert.deepStrictEqual(await data.text(), "123");
     });
@@ -5134,7 +5122,7 @@ describe("supports http with nodejs", () => {
       const buffer = Buffer.from("123", "utf-8");
       const dataURI = `data:application/octet-stream;base64,${buffer.toString("base64")}`;
 
-      const { data } = await axios.get(dataURI, { responseType: "text" });
+      const { data } = await (axios as unknown as TypedAxiosStatic).get(dataURI, { responseType: "text" });
       assert.deepStrictEqual(data, "123");
     });
 
@@ -5142,7 +5130,7 @@ describe("supports http with nodejs", () => {
       const buffer = Buffer.from("123", "utf-8");
       const dataURI = `data:application/octet-stream;base64,${buffer.toString("base64")}`;
 
-      const { data } = await axios.get(dataURI, { responseType: "stream" });
+      const { data } = await (axios as unknown as TypedAxiosStatic).get(dataURI, { responseType: "stream" });
       assert.strictEqual(await getStream(data), "123");
     });
   });
@@ -5176,19 +5164,13 @@ describe("supports http with nodejs", () => {
             })(),
           );
 
-          const samples = [];
+          const samples: any[] = [];
 
-          const { data } = await axios.post(
-            `http://localhost:${server.address().port}`,
+          const { data } = await (axios as unknown as TypedAxiosStatic).post(
+            `http://localhost:${(server.address() as AddressInfo).port}`,
             readable,
             {
-              onUploadProgress: ({
-                loaded,
-                total,
-                progress,
-                bytes,
-                upload,
-              }) => {
+              onUploadProgress: ({ loaded, total, progress, bytes, upload }: any) => {
                 samples.push({
                   loaded,
                   total,
@@ -5255,19 +5237,13 @@ describe("supports http with nodejs", () => {
             })(),
           );
 
-          const samples = [];
+          const samples: any[] = [];
 
-          const { data } = await axios.post(
-            `http://localhost:${server.address().port}`,
+          const { data } = await (axios as unknown as TypedAxiosStatic).post(
+            `http://localhost:${(server.address() as AddressInfo).port}`,
             readable,
             {
-              onDownloadProgress: ({
-                loaded,
-                total,
-                progress,
-                bytes,
-                download,
-              }) => {
+              onDownloadProgress: ({ loaded, total, progress, bytes, download }: any) => {
                 samples.push({
                   loaded,
                   total,
@@ -5313,19 +5289,19 @@ describe("supports http with nodejs", () => {
       const secs = 10;
       const configRate = 100000;
       const chunkLength = configRate * secs;
-      const server = await startHTTPServer();
+      const server = await startHTTPServer({});
 
       try {
         const buf = Buffer.alloc(chunkLength).fill("s");
-        const samples = [];
+        const samples: any[] = [];
         const skip = 4;
         const compareValues = toleranceRange(50, 50);
 
-        const { data } = await axios.post(
-          `http://localhost:${server.address().port}`,
+        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+          `http://localhost:${(server.address() as AddressInfo).port}`,
           buf,
           {
-            onUploadProgress: ({ loaded, total, progress, bytes, rate }) => {
+            onUploadProgress: ({ loaded, total, progress, bytes, rate }: any) => {
               samples.push({
                 loaded,
                 total,
@@ -5334,7 +5310,7 @@ describe("supports http with nodejs", () => {
                 rate,
               });
             },
-            maxRate: [configRate],
+            maxRate: [configRate] as any,
             responseType: "text",
             maxRedirects: 0,
           },
@@ -5369,19 +5345,19 @@ describe("supports http with nodejs", () => {
       const secs = 10;
       const configRate = 100000;
       const chunkLength = configRate * secs;
-      const server = await startHTTPServer();
+      const server = await startHTTPServer({});
 
       try {
         const buf = Buffer.alloc(chunkLength).fill("s");
-        const samples = [];
+        const samples: any[] = [];
         const skip = 4;
         const compareValues = toleranceRange(50, 50);
 
-        const { data } = await axios.post(
-          `http://localhost:${server.address().port}`,
+        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+          `http://localhost:${(server.address() as AddressInfo).port}`,
           buf,
           {
-            onDownloadProgress: ({ loaded, total, progress, bytes, rate }) => {
+            onDownloadProgress: ({ loaded, total, progress, bytes, rate }: any) => {
               samples.push({
                 loaded,
                 total,
@@ -5436,8 +5412,8 @@ describe("supports http with nodejs", () => {
         const buf = Buffer.alloc(1024 * 1024);
         const controller = new AbortController();
 
-        const { data } = await axios.post(
-          `http://localhost:${server.address().port}`,
+        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+          `http://localhost:${(server.address() as AddressInfo).port}`,
           buf,
           {
             responseType: "stream",
@@ -5450,14 +5426,14 @@ describe("supports http with nodejs", () => {
           controller.abort();
         }, 500);
 
-        let streamError;
-        data.on("error", (error) => {
+        let streamError: any;
+        data.on("error", (error: any) => {
           streamError = error;
         });
 
         await assert.rejects(
-          new Promise((resolve, reject) => {
-            stream.pipeline(data, devNull(), (error) => {
+          new Promise<void>((resolve, reject) => {
+            stream.pipeline(data, devNull(), (error: any) => {
               if (error) {
                 reject(error);
                 return;
@@ -5477,7 +5453,7 @@ describe("supports http with nodejs", () => {
 
   it("should properly handle synchronous errors inside the adapter", async () => {
     await assert.rejects(
-      () => axios.get("http://192.168.0.285"),
+      () => (axios as unknown as TypedAxiosStatic).get("http://192.168.0.285"),
       /Invalid URL/,
     );
   });
@@ -5488,8 +5464,8 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      const { data } = await axios.post(
-        `http://localhost:${server.address().port}`,
+      const { data } = await (axios as unknown as TypedAxiosStatic).post(
+        `http://localhost:${(server.address() as AddressInfo).port}`,
         "test",
         {
           params: {
@@ -5513,11 +5489,11 @@ describe("supports http with nodejs", () => {
       let isCalled = false;
 
       try {
-        const { data } = await axios.post(
-          `http://fake-name.axios:${server.address().port}`,
+        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+          `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
           payload,
           {
-            lookup: (hostname, opt, cb) => {
+            lookup: (_hostname: any, _opt: any, cb: any) => {
               isCalled = true;
               cb(null, "127.0.0.1", 4);
             },
@@ -5537,11 +5513,11 @@ describe("supports http with nodejs", () => {
       let isCalled = false;
 
       try {
-        const { data } = await axios.post(
-          `http://fake-name.axios:${server.address().port}`,
+        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+          `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
           payload,
           {
-            lookup: (hostname, opt, cb) => {
+            lookup: (_hostname: any, _opt: any, cb: any) => {
               isCalled = true;
               cb(null, { address: "127.0.0.1", family: 4 });
             },
@@ -5561,11 +5537,11 @@ describe("supports http with nodejs", () => {
       let isCalled = false;
 
       try {
-        const { data } = await axios.post(
-          `http://fake-name.axios:${server.address().port}`,
+        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+          `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
           payload,
           {
-            lookup: async (hostname, opt) => {
+            lookup: async (_hostname: any, _opt: any) => {
               isCalled = true;
               return ["127.0.0.1", 4];
             },
@@ -5585,11 +5561,11 @@ describe("supports http with nodejs", () => {
       let isCalled = false;
 
       try {
-        const { data } = await axios.post(
-          `http://fake-name.axios:${server.address().port}`,
+        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+          `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
           payload,
           {
-            lookup: async (hostname, opt) => {
+            lookup: async (_hostname: any, _opt: any) => {
               isCalled = true;
               return { address: "127.0.0.1", family: 4 };
             },
@@ -5609,11 +5585,11 @@ describe("supports http with nodejs", () => {
       let isCalled = false;
 
       try {
-        const { data } = await axios.post(
-          `http://fake-name.axios:${server.address().port}`,
+        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+          `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
           payload,
           {
-            lookup: async (hostname, opt) => {
+            lookup: async (_hostname: any, _opt: any) => {
               isCalled = true;
               return "127.0.0.1";
             },
@@ -5629,8 +5605,8 @@ describe("supports http with nodejs", () => {
 
     it("should handle errors", async () => {
       await assert.rejects(async () => {
-        await axios.get("https://no-such-domain-987654.com", {
-          lookup,
+        await (axios as unknown as TypedAxiosStatic).get("https://no-such-domain-987654.com", {
+          lookup: lookup as any as any,
         });
       }, /ENOTFOUND/);
     });
@@ -5650,8 +5626,8 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const { data } = await axios.get(
-          `http://localhost:${server.address().port}`,
+        const { data } = await (axios as unknown as TypedAxiosStatic).get(
+          `http://localhost:${(server.address() as AddressInfo).port}`,
           {
             parseReviver: (key, value) => (key === "foo" ? "success" : value),
           },
@@ -5665,7 +5641,7 @@ describe("supports http with nodejs", () => {
   });
 
   describe("HTTP2", () => {
-    const createHttp2Axios = (baseURL) =>
+    const createHttp2Axios = (baseURL: any) =>
       axios.create({
         baseURL,
         httpVersion: 2,
@@ -5677,13 +5653,11 @@ describe("supports http with nodejs", () => {
     it("should merge request http2Options with its instance config", async () => {
       const http2Axios = createHttp2Axios("https://localhost:8080");
 
-      const { data } = await http2Axios.get("/", {
+      const { data } = await (http2Axios as unknown as TypedAxiosInstance).get("/", {
         http2Options: {
           foo: "test",
         },
-        adapter: async (config) => ({
-          data: config.http2Options,
-        }),
+        adapter: (async (config: any) => ({ data: config.http2Options })) as any,
       });
 
       assert.deepStrictEqual(data, {
@@ -5694,7 +5668,7 @@ describe("supports http with nodejs", () => {
 
     it("should support http2 transport", async () => {
       const server = await startHTTPServer(
-        (req, res) => {
+        (_req: any, res: any) => {
           res.end("OK");
         },
         {
@@ -5704,9 +5678,9 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const localServerURL = `https://localhost:${server.address().port}`;
+        const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
         const http2Axios = createHttp2Axios(localServerURL);
-        const { data } = await http2Axios.get(localServerURL);
+        const { data } = await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL);
         assert.deepStrictEqual(data, "OK");
       } finally {
         await stopHTTPServer(server);
@@ -5714,16 +5688,16 @@ describe("supports http with nodejs", () => {
     });
 
     it("should support request payload", async () => {
-      const server = await startHTTPServer(null, {
+      const server = await startHTTPServer(null as any, {
         useHTTP2: true,
         port: SERVER_PORT,
       });
 
       try {
-        const localServerURL = `https://localhost:${server.address().port}`;
+        const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
         const http2Axios = createHttp2Axios(localServerURL);
         const payload = "DATA";
-        const { data } = await http2Axios.post(localServerURL, payload);
+        const { data } = await (http2Axios as unknown as TypedAxiosInstance).post(localServerURL, payload);
         assert.deepStrictEqual(data, payload);
       } finally {
         await stopHTTPServer(server);
@@ -5734,7 +5708,7 @@ describe("supports http with nodejs", () => {
       let bytesReceived = 0;
       const server = await startHTTPServer(
         (req, res) => {
-          req.on("data", (chunk) => {
+          req.on("data", (chunk: any) => {
             bytesReceived += chunk.length;
           });
           req.on("error", () => {});
@@ -5750,17 +5724,17 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const localServerURL = `https://localhost:${server.address().port}`;
+        const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
         const http2Axios = createHttp2Axios(localServerURL);
         const payload = Buffer.alloc(2 * 1024 * 1024, 0x63);
         const source = stream.Readable.from([payload]);
 
         await assert.rejects(
-          http2Axios.post(localServerURL, source, {
+          (http2Axios as unknown as TypedAxiosInstance).post(localServerURL, source, {
             maxBodyLength: 1024,
             headers: { "Content-Type": "application/octet-stream" },
           }),
-          (error) => {
+          (error: any) => {
             assert.strictEqual(
               error.message,
               "Request body larger than maxBodyLength limit",
@@ -5805,13 +5779,13 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const localServerURL = `https://localhost:${server.address().port}`;
+        const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
         const http2Axios = createHttp2Axios(localServerURL);
         const form = new FormData();
         form.append("x", "foo");
         form.append("y", "bar");
 
-        const { data } = await http2Axios.post(localServerURL, form);
+        const { data } = await (http2Axios as unknown as TypedAxiosInstance).post(localServerURL, form);
 
         assert.deepStrictEqual(data, {
           fields: {
@@ -5828,19 +5802,19 @@ describe("supports http with nodejs", () => {
     describe("response types", () => {
       const originalData = '{"test": "OK"}';
       const fixtures = {
-        text: (value) => assert.strictEqual(value, originalData),
-        arraybuffer: (value) =>
+        text: (value: any) => assert.strictEqual(value, originalData),
+        arraybuffer: (value: any) =>
           assert.deepStrictEqual(value, Buffer.from(originalData)),
-        stream: async (value) =>
+        stream: async (value: any) =>
           assert.deepStrictEqual(await getStream(value), originalData),
-        json: async (value) =>
+        json: async (value: any) =>
           assert.deepStrictEqual(value, JSON.parse(originalData)),
       };
 
       for (const [responseType, assertValue] of Object.entries(fixtures)) {
         it(`should support ${responseType} response type`, async () => {
           const server = await startHTTPServer(
-            (req, res) => {
+            (_req: any, res: any) => {
               res.end(originalData);
             },
             {
@@ -5850,10 +5824,10 @@ describe("supports http with nodejs", () => {
           );
 
           try {
-            const localServerURL = `https://localhost:${server.address().port}`;
+            const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
             const http2Axios = createHttp2Axios(localServerURL);
-            const { data } = await http2Axios.get(localServerURL, {
-              responseType,
+            const { data } = await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
+              responseType: responseType as any,
             });
             await assertValue(data);
           } finally {
@@ -5865,11 +5839,11 @@ describe("supports http with nodejs", () => {
 
     it("should support request timeout", async () => {
       let isAborted = false;
-      let aborted;
+      let aborted: any;
       const promise = new Promise((resolve) => (aborted = resolve));
 
       const server = await startHTTPServer(
-        (req, res) => {
+        (_req: any, res: any) => {
           setTimeout(() => {
             res.end("OK");
           }, 15000);
@@ -5881,7 +5855,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const localServerURL = `https://localhost:${server.address().port}`;
+        const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
         const http2Axios = createHttp2Axios(localServerURL);
 
         server.on("stream", (http2Stream) => {
@@ -5892,7 +5866,7 @@ describe("supports http with nodejs", () => {
         });
 
         await assert.rejects(async () => {
-          await http2Axios.get(localServerURL, {
+          await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
             timeout: 500,
           });
         }, /timeout/);
@@ -5910,11 +5884,11 @@ describe("supports http with nodejs", () => {
       }
 
       let isAborted = false;
-      let aborted;
+      let aborted: any;
       const promise = new Promise((resolve) => (aborted = resolve));
 
       const server = await startHTTPServer(
-        (req, res) => {
+        (_req: any, res: any) => {
           setTimeout(() => {
             res.end("OK");
           }, 15000);
@@ -5926,7 +5900,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const localServerURL = `https://localhost:${server.address().port}`;
+        const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
         const http2Axios = createHttp2Axios(localServerURL);
 
         server.on("stream", (http2Stream) => {
@@ -5937,7 +5911,7 @@ describe("supports http with nodejs", () => {
         });
 
         await assert.rejects(async () => {
-          await http2Axios.get(localServerURL, {
+          await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
             signal: AbortSignal.timeout(500),
           });
         }, /CanceledError: canceled/);
@@ -5953,11 +5927,11 @@ describe("supports http with nodejs", () => {
       let isAborted = false;
       const source = axios.CancelToken.source();
 
-      let aborted;
+      let aborted: any;
       const promise = new Promise((resolve) => (aborted = resolve));
 
       const server = await startHTTPServer(
-        (req, res) => {
+        (_req: any, res: any) => {
           generateReadable(10000, 100, 100).pipe(res);
         },
         {
@@ -5967,7 +5941,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const localServerURL = `https://localhost:${server.address().port}`;
+        const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
         const http2Axios = createHttp2Axios(localServerURL);
 
         server.on("stream", (http2Stream) => {
@@ -5977,7 +5951,7 @@ describe("supports http with nodejs", () => {
           });
         });
 
-        const { data } = await http2Axios.get(localServerURL, {
+        const { data } = await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
           cancelToken: source.token,
           responseType: "stream",
         });
@@ -5985,8 +5959,8 @@ describe("supports http with nodejs", () => {
         setTimeout(() => source.cancel());
 
         await assert.rejects(
-          new Promise((resolve, reject) => {
-            stream.pipeline(data, devNull(), (error) => {
+          new Promise<void>((resolve, reject) => {
+            stream.pipeline(data, devNull(), (error: any) => {
               if (error) {
                 reject(error);
                 return;
@@ -6016,7 +5990,7 @@ describe("supports http with nodejs", () => {
         { retry: 2 },
         async () => {
           const server = await startHTTPServer(
-            (req, res) => {
+            (_req: any, res: any) => {
               setTimeout(() => res.end("OK"), 1000);
             },
             {
@@ -6025,14 +5999,14 @@ describe("supports http with nodejs", () => {
           );
 
           try {
-            const localServerURL = `https://localhost:${server.address().port}`;
+            const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
             const http2Axios = createHttp2Axios(localServerURL);
 
             const [response1, response2] = await Promise.all([
-              http2Axios.get(localServerURL, {
+              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
                 responseType: "stream",
               }),
-              http2Axios.get(localServerURL, {
+              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
                 responseType: "stream",
               }),
             ]);
@@ -6057,7 +6031,7 @@ describe("supports http with nodejs", () => {
         { retry: 2 },
         async () => {
           const server = await startHTTPServer(
-            (req, res) => {
+            (_req: any, res: any) => {
               setTimeout(() => {
                 res.end("OK");
               }, 2000);
@@ -6068,7 +6042,7 @@ describe("supports http with nodejs", () => {
           );
 
           const server2 = await startHTTPServer(
-            (req, res) => {
+            (_req: any, res: any) => {
               setTimeout(() => {
                 res.end("OK");
               }, 2000);
@@ -6079,15 +6053,15 @@ describe("supports http with nodejs", () => {
           );
 
           try {
-            const localServerURL = `https://localhost:${server.address().port}`;
-            const localServerURL2 = `https://localhost:${server2.address().port}`;
+            const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
+            const localServerURL2 = `https://localhost:${(server2.address() as AddressInfo).port}`;
             const http2Axios = createHttp2Axios(localServerURL);
 
             const [response1, response2] = await Promise.all([
-              http2Axios.get(localServerURL, {
+              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
                 responseType: "stream",
               }),
-              http2Axios.get(localServerURL2, {
+              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL2, {
                 responseType: "stream",
               }),
             ]);
@@ -6118,7 +6092,7 @@ describe("supports http with nodejs", () => {
         { retry: 2 },
         async () => {
           const server = await startHTTPServer(
-            (req, res) => {
+            (_req: any, res: any) => {
               setTimeout(() => {
                 res.end("OK");
               }, 1000);
@@ -6129,16 +6103,16 @@ describe("supports http with nodejs", () => {
           );
 
           try {
-            const localServerURL = `https://localhost:${server.address().port}`;
+            const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
             const http2Axios = createHttp2Axios(localServerURL);
 
             const [response1, response2] = await Promise.all([
-              http2Axios.get(localServerURL, {
+              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
                 http2Options: {
                   sessionTimeout: 2000,
                 },
               }),
-              http2Axios.get(localServerURL, {
+              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
                 http2Options: {
                   sessionTimeout: 4000,
                 },
@@ -6164,7 +6138,7 @@ describe("supports http with nodejs", () => {
         { retry: 2 },
         async () => {
           const server = await startHTTPServer(
-            (req, res) => {
+            (_req: any, res: any) => {
               setTimeout(() => res.end("OK"), 1000);
             },
             {
@@ -6173,18 +6147,18 @@ describe("supports http with nodejs", () => {
           );
 
           try {
-            const localServerURL = `https://localhost:${server.address().port}`;
+            const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
             const http2Axios = createHttp2Axios(localServerURL);
 
             const responses = await Promise.all([
-              http2Axios.get(localServerURL, {
+              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
                 responseType: "stream",
               }),
-              http2Axios.get(localServerURL, {
+              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
                 responseType: "stream",
                 http2Options: undefined,
               }),
-              http2Axios.get(localServerURL, {
+              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
                 responseType: "stream",
                 http2Options: {},
               }),
@@ -6201,7 +6175,7 @@ describe("supports http with nodejs", () => {
 
             assert.deepStrictEqual(
               await Promise.all(
-                responses.map(async ({ data }) => getStream(data)),
+                responses.map(async ({ data }: any) => getStream(data)),
               ),
               ["OK", "OK", "OK"],
             );
@@ -6216,7 +6190,7 @@ describe("supports http with nodejs", () => {
         { retry: 2, timeout: 15000 },
         async () => {
           const server = await startHTTPServer(
-            (req, res) => {
+            (_req: any, res: any) => {
               setTimeout(() => res.end("OK"), 100);
             },
             {
@@ -6225,10 +6199,10 @@ describe("supports http with nodejs", () => {
           );
 
           try {
-            const localServerURL = `https://localhost:${server.address().port}`;
+            const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
             const http2Axios = createHttp2Axios(localServerURL);
 
-            const response1 = await http2Axios.get(localServerURL, {
+            const response1 = await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
               responseType: "stream",
               http2Options: {
                 sessionTimeout: 1000,
@@ -6240,7 +6214,7 @@ describe("supports http with nodejs", () => {
 
             await setTimeoutAsync(5000);
 
-            const response2 = await http2Axios.get(localServerURL, {
+            const response2 = await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
               responseType: "stream",
               http2Options: {
                 sessionTimeout: 1000,
@@ -6263,7 +6237,7 @@ describe("supports http with nodejs", () => {
 
   it("should not abort stream on settle rejection", async () => {
     const server = await startHTTPServer(
-      (req, res) => {
+      (_req: any, res: any) => {
         res.statusCode = 404;
         res.end("OK");
       },
@@ -6274,10 +6248,10 @@ describe("supports http with nodejs", () => {
       let error;
 
       try {
-        await axios.get(`http://localhost:${server.address().port}`, {
+        await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
           responseType: "stream",
         });
-      } catch (err) {
+      } catch (err: any) {
         error = err;
       }
 
@@ -6290,15 +6264,19 @@ describe("supports http with nodejs", () => {
 
   it("should reject when only the request socket emits an error", async () => {
     const noop = () => {};
-    const socket = new EventEmitter();
+    const socket: any = new EventEmitter();
     socket.setKeepAlive = noop;
     socket.on("error", noop);
 
     const transport = {
       request() {
         return new (class MockRequest extends EventEmitter {
+        destroyed: boolean = false;
+
           constructor() {
+
             super();
+
             this.destroyed = false;
           }
 
@@ -6317,7 +6295,7 @@ describe("supports http with nodejs", () => {
             });
           }
 
-          destroy(err) {
+          destroy(err?: any) {
             if (this.destroyed) {
               return;
             }
@@ -6331,14 +6309,14 @@ describe("supports http with nodejs", () => {
     };
 
     const error = await Promise.race([
-      axios.post("http://example.com/", "test", {
+      (axios as unknown as TypedAxiosStatic).post("http://example.com/", "test", {
         transport,
         maxRedirects: 0,
       }),
       setTimeoutAsync(200).then(() => {
         throw new Error("socket error did not reject the request");
       }),
-    ]).catch((err) => err);
+    ]).catch((err: any) => err);
 
     assert.ok(error instanceof AxiosError);
     assert.strictEqual(error.code, "EPIPE");
@@ -6348,7 +6326,7 @@ describe("supports http with nodejs", () => {
   describe("keep-alive", () => {
     it("should not emit MaxListenersExceededWarning under concurrent requests through a pooled keep-alive agent (regression #10780)", async () => {
       const server = await startHTTPServer(
-        (req, res) => {
+        (_req: any, res: any) => {
           // Small delay forces concurrent requests to queue on the single pooled socket.
           setTimeout(() => {
             res.writeHead(200, { "Content-Type": "text/plain" });
@@ -6358,8 +6336,8 @@ describe("supports http with nodejs", () => {
         { port: SERVER_PORT },
       );
 
-      const warnings = [];
-      const warningHandler = (warning) => {
+      const warnings: any[] = [];
+      const warningHandler = (warning: any) => {
         if (warning && warning.name === "MaxListenersExceededWarning") {
           warnings.push(warning);
         }
@@ -6369,12 +6347,12 @@ describe("supports http with nodejs", () => {
       const agent = new http.Agent({ keepAlive: true, maxSockets: 1 });
 
       try {
-        const baseURL = `http://localhost:${server.address().port}`;
+        const baseURL = `http://localhost:${(server.address() as AddressInfo).port}`;
         const CONCURRENCY = 30;
 
         const results = await Promise.all(
           Array.from({ length: CONCURRENCY }, (_, i) =>
-            axios.get(`/req-${i}`, { baseURL, httpAgent: agent }),
+            (axios as unknown as TypedAxiosStatic).get(`/req-${i}`, { baseURL, httpAgent: agent }),
           ),
         );
 
@@ -6395,7 +6373,7 @@ describe("supports http with nodejs", () => {
 
         // Inspect live sockets on the agent: none should have more than one
         // axios-installed error listener, regardless of how many requests ran.
-        const allSockets = []
+        const allSockets: any[] = ([] as any[])
           .concat(...Object.values(agent.sockets || {}))
           .concat(...Object.values(agent.freeSockets || {}));
         for (const sock of allSockets) {
@@ -6422,7 +6400,7 @@ describe("supports http with nodejs", () => {
       }
 
       const server = await startHTTPServer(
-        (req, res) => {
+        (_req: any, res: any) => {
           res.writeHead(200);
           res.end("ok");
         },
@@ -6432,11 +6410,11 @@ describe("supports http with nodejs", () => {
       const agent = new http.Agent({ keepAlive: true, maxSockets: 4 });
 
       try {
-        const baseURL = `http://localhost:${server.address().port}`;
+        const baseURL = `http://localhost:${(server.address() as AddressInfo).port}`;
 
         const refs = [];
         for (let i = 0; i < 200; i += 1) {
-          const response = await axios.get("/", { baseURL, httpAgent: agent });
+          const response = await (axios as unknown as TypedAxiosStatic).get("/", { baseURL, httpAgent: agent });
           refs.push(new WeakRef(response.request));
         }
 
@@ -6462,7 +6440,7 @@ describe("supports http with nodejs", () => {
     it('should not fail with "socket hang up" when using timeouts', async () => {
       const server = await startHTTPServer(
         async (req, res) => {
-          if (req.url === "/wait") {
+          if (req.url! === "/wait") {
             await new Promise((resolve) => setTimeout(resolve, 5000));
           }
 
@@ -6472,9 +6450,9 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const baseURL = `http://localhost:${server.address().port}`;
-        await axios.get("/1", { baseURL, timeout: 1000 });
-        await axios.get("/wait", { baseURL, timeout: 0 });
+        const baseURL = `http://localhost:${(server.address() as AddressInfo).port}`;
+        await (axios as unknown as TypedAxiosStatic).get("/1", { baseURL, timeout: 1000 });
+        await (axios as unknown as TypedAxiosStatic).get("/wait", { baseURL, timeout: 0 });
       } finally {
         await stopHTTPServer(server);
       }
@@ -6482,17 +6460,21 @@ describe("supports http with nodejs", () => {
 
     it("should install at most one socket error listener across reused keep-alive sockets", async () => {
       const noop = () => {};
-      const socket = new EventEmitter();
+      const socket: any = new EventEmitter();
       socket.setKeepAlive = noop;
       socket.on("error", noop);
 
       const baseErrorListenerCount = socket.listenerCount("error");
 
       const transport = {
-        request(_, cb) {
+        request(_: any, cb: any) {
           return new (class MockRequest extends EventEmitter {
+        destroyed: boolean = false;
+
             constructor() {
+
               super();
+
               this.destroyed = false;
             }
 
@@ -6505,15 +6487,15 @@ describe("supports http with nodejs", () => {
 
               setImmediate(() => {
                 const response = stream.Readable.from(["ok"]);
-                response.statusCode = 200;
-                response.headers = {};
+                (response as any).statusCode = 200;
+                (response as any).headers = {};
 
                 cb(response);
                 this.emit("close");
               });
             }
 
-            destroy(err) {
+            destroy(err?: any) {
               if (this.destroyed) {
                 return;
               }
@@ -6527,7 +6509,7 @@ describe("supports http with nodejs", () => {
       };
 
       // First request: axios installs its single per-socket listener.
-      await axios.get("http://example.com/first", {
+      await (axios as unknown as TypedAxiosStatic).get("http://example.com/first", {
         transport,
         maxRedirects: 0,
       });
@@ -6540,7 +6522,7 @@ describe("supports http with nodejs", () => {
 
       // Many subsequent requests reusing the same socket must not add more listeners.
       for (let i = 0; i < 20; i += 1) {
-        await axios.get(`http://example.com/next-${i}`, {
+        await (axios as unknown as TypedAxiosStatic).get(`http://example.com/next-${i}`, {
           transport,
           maxRedirects: 0,
         });
@@ -6556,7 +6538,7 @@ describe("supports http with nodejs", () => {
 
     it("should not accumulate socket error listeners when a pooled socket is reassigned before the previous request closes (regression #10780)", async () => {
       const noop = () => {};
-      const socket = new EventEmitter();
+      const socket: any = new EventEmitter();
       socket.setKeepAlive = noop;
       socket.on("error", noop);
 
@@ -6565,13 +6547,17 @@ describe("supports http with nodejs", () => {
       // Each request defers its 'close' emission so that the socket is
       // reassigned to the next request before the previous one closes.
       // This reproduces the race condition described in #10780.
-      const pendingRequests = [];
+      const pendingRequests: any[] = [];
 
       const transport = {
-        request(_, cb) {
+        request(_: any, cb: any) {
           const req = new (class MockRequest extends EventEmitter {
+        destroyed: boolean = false;
+
             constructor() {
+
               super();
+
               this.destroyed = false;
             }
 
@@ -6584,8 +6570,8 @@ describe("supports http with nodejs", () => {
 
               setImmediate(() => {
                 const response = stream.Readable.from(["ok"]);
-                response.statusCode = 200;
-                response.headers = {};
+                (response as any).statusCode = 200;
+                (response as any).headers = {};
                 cb(response);
                 // Intentionally do NOT emit 'close' yet. Collect the req
                 // so close can be emitted later, after other reqs have
@@ -6594,7 +6580,7 @@ describe("supports http with nodejs", () => {
               });
             }
 
-            destroy(err) {
+            destroy(err?: any) {
               if (this.destroyed) return;
               this.destroyed = true;
               err && this.emit("error", err);
@@ -6608,7 +6594,7 @@ describe("supports http with nodejs", () => {
 
       const results = await Promise.all(
         Array.from({ length: 20 }, (_, i) =>
-          axios.get(`http://example.com/concurrent-${i}`, {
+          (axios as unknown as TypedAxiosStatic).get(`http://example.com/concurrent-${i}`, {
             transport,
             maxRedirects: 0,
           }),
@@ -6642,18 +6628,22 @@ describe("supports http with nodejs", () => {
 
     it("should route a socket error to the currently-active request after the socket has been reassigned", async () => {
       const noop = () => {};
-      const socket = new EventEmitter();
+      const socket: any = new EventEmitter();
       socket.setKeepAlive = noop;
       socket.on("error", noop);
 
-      const createdReqs = [];
+      const createdReqs: any[] = [];
 
       // First transport: completes cleanly (emits response then close).
       const cleanTransport = {
-        request(_, cb) {
+        request(_: any, cb: any) {
           const emitter = new (class MockRequest extends EventEmitter {
+        destroyed: boolean = false;
+
             constructor() {
+
               super();
+
               this.destroyed = false;
               createdReqs.push(this);
             }
@@ -6663,13 +6653,13 @@ describe("supports http with nodejs", () => {
               this.emit("socket", socket);
               setImmediate(() => {
                 const response = stream.Readable.from(["ok"]);
-                response.statusCode = 200;
-                response.headers = {};
+                (response as any).statusCode = 200;
+                (response as any).headers = {};
                 cb(response);
                 this.emit("close");
               });
             }
-            destroy(err) {
+            destroy(err?: any) {
               if (this.destroyed) return;
               this.destroyed = true;
               err && this.emit("error", err);
@@ -6684,8 +6674,12 @@ describe("supports http with nodejs", () => {
       const errorTransport = {
         request() {
           const emitter = new (class MockRequest extends EventEmitter {
+        destroyed: boolean = false;
+
             constructor() {
+
               super();
+
               this.destroyed = false;
               createdReqs.push(this);
             }
@@ -6700,7 +6694,7 @@ describe("supports http with nodejs", () => {
                 );
               });
             }
-            destroy(err) {
+            destroy(err?: any) {
               if (this.destroyed) return;
               this.destroyed = true;
               err && this.emit("error", err);
@@ -6712,7 +6706,7 @@ describe("supports http with nodejs", () => {
       };
 
       // First request completes successfully; socket is released.
-      await axios.get("http://example.com/first", {
+      await (axios as unknown as TypedAxiosStatic).get("http://example.com/first", {
         transport: cleanTransport,
         maxRedirects: 0,
       });
@@ -6733,7 +6727,7 @@ describe("supports http with nodejs", () => {
       );
 
       // Second request claims the socket, then its socket errors. It should reject.
-      const err = await axios
+      const err = await (axios as unknown as TypedAxiosStatic)
         .get("http://example.com/second", {
           transport: errorTransport,
           maxRedirects: 0,
@@ -6761,7 +6755,7 @@ describe("supports http with nodejs", () => {
 
       const server = await startHTTPServer(
         (req, res) => {
-          const match = req.url.match(/^\/redirect\/(\d+)$/);
+          const match = req.url!.match(/^\/redirect\/(\d+)$/);
           if (match) {
             const n = Number(match[1]);
             if (n < REDIRECT_COUNT) {
@@ -6780,8 +6774,8 @@ describe("supports http with nodejs", () => {
         { port: SERVER_PORT },
       );
 
-      const warnings = [];
-      const warningHandler = (warning) => {
+      const warnings: any[] = [];
+      const warningHandler = (warning: any) => {
         if (warning && warning.name === "MaxListenersExceededWarning") {
           warnings.push(warning);
         }
@@ -6789,8 +6783,8 @@ describe("supports http with nodejs", () => {
       process.on("warning", warningHandler);
 
       try {
-        const baseURL = `http://localhost:${server.address().port}`;
-        const response = await axios.get("/start", {
+        const baseURL = `http://localhost:${(server.address() as AddressInfo).port}`;
+        const response = await (axios as unknown as TypedAxiosStatic).get("/start", {
           baseURL,
           maxRedirects: REDIRECT_COUNT + 5,
         });
@@ -6818,7 +6812,7 @@ describe("supports http with nodejs", () => {
 
       const server = await startHTTPServer(
         (req, res) => {
-          const match = req.url.match(/^\/r\/(\d+)$/);
+          const match = req.url!.match(/^\/r\/(\d+)$/);
           if (match) {
             const n = Number(match[1]);
             if (n < REDIRECT_COUNT) {
@@ -6838,7 +6832,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const baseURL = `http://localhost:${server.address().port}`;
+        const baseURL = `http://localhost:${(server.address() as AddressInfo).port}`;
 
         // Patch EventEmitter.prototype.on briefly to observe the peak close-listener
         // count on any emitter. The outer RedirectableRequest is the only target
@@ -6847,7 +6841,7 @@ describe("supports http with nodejs", () => {
         // as long as the peak stays within a small bound.
         const originalOn = EventEmitter.prototype.on;
         const originalOnce = EventEmitter.prototype.once;
-        function record(eventName) {
+        function record(this: any, eventName: string) {
           if (eventName === "close") {
             const count = this.listenerCount("close");
             if (count > maxObservedCloseListeners.value) {
@@ -6857,7 +6851,7 @@ describe("supports http with nodejs", () => {
         }
         EventEmitter.prototype.on = function patchedOn(eventName, listener) {
           const res = originalOn.call(this, eventName, listener);
-          record.call(this, eventName);
+          record.call(this, eventName as string);
           return res;
         };
         EventEmitter.prototype.once = function patchedOnce(
@@ -6865,12 +6859,12 @@ describe("supports http with nodejs", () => {
           listener,
         ) {
           const res = originalOnce.call(this, eventName, listener);
-          record.call(this, eventName);
+          record.call(this, eventName as string);
           return res;
         };
 
         try {
-          const response = await axios.get("/start", {
+          const response = await (axios as unknown as TypedAxiosStatic).get("/start", {
             baseURL,
             maxRedirects: REDIRECT_COUNT + 5,
           });
@@ -6905,9 +6899,9 @@ describe("supports http with nodejs", () => {
         : path.join(os.tmpdir(), `${pipe}.sock`);
     }
 
-    async function startUnixServer(socketPath) {
+    async function startUnixServer(socketPath: string) {
       return new Promise((resolveStart, rejectStart) => {
-        const server = http.createServer((req, res) => {
+        const server = http.createServer((req: any, res: any) => {
           res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ ok: true, url: req.url }));
         });
@@ -6921,8 +6915,8 @@ describe("supports http with nodejs", () => {
       });
     }
 
-    async function stopUnixServer(server, socketPath) {
-      return new Promise((done) => {
+    async function stopUnixServer(server: any, socketPath: string) {
+      return new Promise<void>((done) => {
         server.close(() => {
           try {
             fs.unlinkSync(socketPath);
@@ -6938,7 +6932,7 @@ describe("supports http with nodejs", () => {
       const socketPath = makeSocketPath();
       const server = await startUnixServer(socketPath);
       try {
-        const res = await axios.get("http://localhost/echo", { socketPath });
+        const res = await (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", { socketPath });
         assert.strictEqual(res.status, 200);
         assert.strictEqual(res.data.ok, true);
       } finally {
@@ -6950,7 +6944,7 @@ describe("supports http with nodejs", () => {
       const socketPath = makeSocketPath();
       const server = await startUnixServer(socketPath);
       try {
-        const res = await axios.get("http://localhost/echo", {
+        const res = await (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", {
           socketPath,
           allowedSocketPaths: socketPath,
         });
@@ -6964,7 +6958,7 @@ describe("supports http with nodejs", () => {
       const socketPath = makeSocketPath();
       const server = await startUnixServer(socketPath);
       try {
-        const res = await axios.get("http://localhost/echo", {
+        const res = await (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", {
           socketPath,
           allowedSocketPaths: ["/var/run/does-not-exist.sock", socketPath],
         });
@@ -6976,11 +6970,11 @@ describe("supports http with nodejs", () => {
 
     it("rejects socketPath not in allowedSocketPaths", async () => {
       await assert.rejects(
-        axios.get("http://localhost/echo", {
+        (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", {
           socketPath: "/var/run/docker.sock",
           allowedSocketPaths: ["/tmp/allowed.sock"],
         }),
-        (err) => {
+        (err: any) => {
           assert.ok(err instanceof AxiosError);
           assert.strictEqual(err.code, AxiosError.ERR_BAD_OPTION_VALUE);
           assert.match(err.message, /allowedSocketPaths/);
@@ -6993,11 +6987,11 @@ describe("supports http with nodejs", () => {
       const allowedDir = path.join(os.tmpdir(), "axios-allowed");
       const allowed = path.join(allowedDir, "app.sock");
       await assert.rejects(
-        axios.get("http://localhost/echo", {
+        (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", {
           socketPath: path.join(allowedDir, "..", "other.sock"),
           allowedSocketPaths: [allowed],
         }),
-        (err) => {
+        (err: any) => {
           assert.strictEqual(err.code, AxiosError.ERR_BAD_OPTION_VALUE);
           return true;
         },
@@ -7009,7 +7003,7 @@ describe("supports http with nodejs", () => {
       const server = await startUnixServer(socketPath);
       try {
         const relative = path.relative(process.cwd(), socketPath);
-        const res = await axios.get("http://localhost/echo", {
+        const res = await (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", {
           socketPath,
           allowedSocketPaths: [relative],
         });
@@ -7021,8 +7015,8 @@ describe("supports http with nodejs", () => {
 
     it("rejects non-string socketPath", async () => {
       await assert.rejects(
-        axios.get("http://localhost/echo", { socketPath: 12345 }),
-        (err) => {
+        (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", { socketPath: 12345 as unknown as string }),
+        (err: any) => {
           assert.ok(err instanceof AxiosError);
           assert.strictEqual(err.code, AxiosError.ERR_BAD_OPTION_VALUE);
           assert.match(err.message, /socketPath must be a string/);
@@ -7033,11 +7027,11 @@ describe("supports http with nodejs", () => {
 
     it("empty allowedSocketPaths array blocks all socketPath values", async () => {
       await assert.rejects(
-        axios.get("http://localhost/echo", {
+        (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", {
           socketPath: "/tmp/anything.sock",
           allowedSocketPaths: [],
         }),
-        (err) => {
+        (err: any) => {
           assert.strictEqual(err.code, AxiosError.ERR_BAD_OPTION_VALUE);
           return true;
         },
