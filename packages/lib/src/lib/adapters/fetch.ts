@@ -117,7 +117,7 @@ const maybeWithAuthCredentials = (url: string): boolean => {
 
 // eslint-disable-next-line sonarjs/function-return-type
 const factory = (env: Record<string, unknown>) => {
-  const globalObject: Record<string, unknown> = utils.global ?? globalThis as unknown as Record<string, unknown>;
+  const globalObject: Record<string, unknown> = utils.global;
   const ReadableStream = globalObject["ReadableStream"] as
     | (AnyConstructor & { prototype: AnyReadableStream; })
     | undefined;
