@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import axios from "../../src/index.js";
+import type { AxiosRequestTransformer, AxiosResponseTransformer } from "../../src/index.js";
+import type { HeadersDefaults } from "../../../lib/src/lib/types.js";
 import AxiosHeaders from "../../../lib/src/lib/core/AxiosHeaders.js";
 import defaults from "../../../lib/src/lib/defaults/index.js";
 
@@ -70,8 +72,11 @@ class MockXMLHttpRequest {
 
 const XSRF_COOKIE_NAME = "CUSTOM-XSRF-TOKEN";
 
-let requests = [];
-let OriginalXMLHttpRequest;
+const transformRequest = (defaults.transformRequest as AxiosRequestTransformer[]);
+const transformResponse = (defaults.transformResponse as AxiosResponseTransformer[]);
+
+let requests: MockXMLHttpRequest[] = [];
+let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const getLastRequest = () => {
   const request = requests.at(-1);
@@ -81,7 +86,7 @@ const getLastRequest = () => {
   return request;
 };
 
-const finishRequest = async (request, promise) => {
+const finishRequest = async (request: MockXMLHttpRequest, promise: Promise<unknown>) => {
   request.respondWith({ status: 200 });
   await promise;
 };
@@ -90,20 +95,20 @@ describe("defaults (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest;
+    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
     window.XMLHttpRequest = OriginalXMLHttpRequest;
     delete axios.defaults.baseURL;
-    delete axios.defaults.headers.get["X-CUSTOM-HEADER"];
-    delete axios.defaults.headers.post["X-CUSTOM-HEADER"];
+    delete (axios.defaults.headers as HeadersDefaults).get["X-CUSTOM-HEADER"];
+    delete (axios.defaults.headers as HeadersDefaults).post["X-CUSTOM-HEADER"];
     document.cookie = `${XSRF_COOKIE_NAME}=;expires=${new Date(Date.now() - 86400000).toUTCString()}`;
   });
 
   it("should transform request json", () => {
     expect(
-      defaults.transformRequest[0]({ foo: "bar" }, new AxiosHeaders()),
+      transformRequest[0]({ foo: "bar" }, new AxiosHeaders()),
     ).toBe('{"foo":"bar"}');
   });
 
@@ -113,14 +118,14 @@ describe("defaults (vitest browser)", () => {
     });
 
     expect(
-      defaults.transformRequest[0](JSON.stringify({ foo: "bar" }), headers),
+      transformRequest[0](JSON.stringify({ foo: "bar" }), headers),
     ).toBe('{"foo":"bar"}');
-    expect(defaults.transformRequest[0]([42, 43], headers)).toBe("[42,43]");
-    expect(defaults.transformRequest[0]("foo", headers)).toBe('"foo"');
-    expect(defaults.transformRequest[0](42, headers)).toBe("42");
-    expect(defaults.transformRequest[0](true, headers)).toBe("true");
-    expect(defaults.transformRequest[0](false, headers)).toBe("false");
-    expect(defaults.transformRequest[0](null, headers)).toBe("null");
+    expect(transformRequest[0]([42, 43], headers)).toBe("[42,43]");
+    expect(transformRequest[0]("foo", headers)).toBe('"foo"');
+    expect(transformRequest[0](42, headers)).toBe("42");
+    expect(transformRequest[0](true, headers)).toBe("true");
+    expect(transformRequest[0](false, headers)).toBe("false");
+    expect(transformRequest[0](null, headers)).toBe("null");
   });
 
   it("should transform the plain data object to a FormData instance when header is 'multipart/form-data'", () => {
@@ -128,26 +133,26 @@ describe("defaults (vitest browser)", () => {
       "Content-Type": "multipart/form-data",
     });
 
-    const transformed = defaults.transformRequest[0]({ x: 1 }, headers);
+    const transformed = transformRequest[0]({ x: 1 }, headers);
 
     expect(transformed).toBeInstanceOf(FormData);
   });
 
   it("should do nothing to request string", () => {
-    expect(defaults.transformRequest[0]("foo=bar", new AxiosHeaders())).toBe(
+    expect(transformRequest[0]("foo=bar", new AxiosHeaders())).toBe(
       "foo=bar",
     );
   });
 
   it("should transform response json", () => {
-    const data = defaults.transformResponse[0].call(defaults, '{"foo":"bar"}');
+    const data = transformResponse[0].call(defaults, '{"foo":"bar"}');
 
     expect(typeof data).toBe("object");
     expect(data.foo).toBe("bar");
   });
 
   it("should do nothing to response string", () => {
-    expect(defaults.transformResponse[0]("foo=bar")).toBe("foo=bar");
+    expect(transformResponse[0]("foo=bar")).toBe("foo=bar");
   });
 
   it("should use global defaults config", async () => {
@@ -191,7 +196,7 @@ describe("defaults (vitest browser)", () => {
     const promise = instance.get("/foo");
     const request = getLastRequest();
 
-    expect(request.requestHeaders[instance.defaults.xsrfHeaderName]).toBe(
+    expect(request.requestHeaders[instance.defaults.xsrfHeaderName as string]).toBe(
       "foobarbaz",
     );
 
@@ -199,7 +204,7 @@ describe("defaults (vitest browser)", () => {
   });
 
   it("should use GET headers", async () => {
-    axios.defaults.headers.get["X-CUSTOM-HEADER"] = "foo";
+    (axios.defaults.headers as HeadersDefaults).get["X-CUSTOM-HEADER"] = "foo";
 
     const promise = axios.get("/foo");
     const request = getLastRequest();
@@ -210,7 +215,7 @@ describe("defaults (vitest browser)", () => {
   });
 
   it("should use POST headers", async () => {
-    axios.defaults.headers.post["X-CUSTOM-HEADER"] = "foo";
+    (axios.defaults.headers as HeadersDefaults).post["X-CUSTOM-HEADER"] = "foo";
 
     const promise = axios.post("/foo", {});
     const request = getLastRequest();
