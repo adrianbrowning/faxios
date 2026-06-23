@@ -66,10 +66,10 @@ class MockXMLHttpRequest {
   abort() {}
 }
 
-let requests = [];
-let OriginalXMLHttpRequest;
+let requests: MockXMLHttpRequest[] = [];
+let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
-const startRequest = (...args) => {
+const startRequest = (...args: Parameters<typeof axios>) => {
   const promise = axios(...args);
   const request = requests.at(-1);
 
@@ -78,7 +78,7 @@ const startRequest = (...args) => {
   return { request, promise };
 };
 
-const flushSuccess = async (request, promise) => {
+const flushSuccess = async (request: MockXMLHttpRequest, promise: Promise<unknown>) => {
   request.respondWith({ status: 200 });
   await promise;
 };
@@ -87,7 +87,7 @@ describe("basicAuth (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest;
+    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -155,8 +155,8 @@ describe("basicAuth (vitest browser)", () => {
 
       await flushSuccess(request, promise);
     } finally {
-      delete Object.prototype.username;
-      delete Object.prototype.password;
+      delete (Object.prototype as Record<string, unknown>).username;
+      delete (Object.prototype as Record<string, unknown>).password;
     }
   });
 
