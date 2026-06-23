@@ -202,7 +202,7 @@ describe("supports http with nodejs", () => {
             "x-test": "\tok\r\nInjected: yes ",
           },
         },
-      );
+      ) as any;
 
       assert.strictEqual(data.xTest, "okInjected: yes");
       assert.strictEqual(data.injected, null);
@@ -227,7 +227,7 @@ describe("supports http with nodejs", () => {
     const instance = axios.create({ proxy: false });
 
     (instance as unknown as TypedAxiosInstance).interceptors.request.use((config) => {
-      config.headers.oprtName = encodeURIComponent(config.headers.oprtName);
+      config.headers.oprtName = encodeURIComponent(config.headers.oprtName as string);
       return config;
     });
 
@@ -239,7 +239,7 @@ describe("supports http with nodejs", () => {
             oprtName: "请求用户",
           },
         },
-      );
+      ) as any;
 
       assert.strictEqual(data.oprtName, encodeURIComponent("请求用户"));
     } finally {
@@ -269,7 +269,7 @@ describe("supports http with nodejs", () => {
             "x-test": "请求用户",
           },
         },
-      );
+      ) as any;
 
       assert.strictEqual(data.xTest, "");
     } finally {
@@ -496,7 +496,7 @@ describe("supports http with nodejs", () => {
         {
           maxRedirects: 1,
         },
-      );
+      ) as any;
 
       assert.strictEqual(response.data, expectedResponse);
       assert.strictEqual(response.request.path, "/two");
@@ -1102,7 +1102,7 @@ describe("supports http with nodejs", () => {
             decompress: false,
             responseType: "arraybuffer",
           },
-        );
+        ) as any;
         assert.strictEqual(
           response.data.toString("base64"),
           zipped.toString("base64"),
@@ -1667,7 +1667,7 @@ describe("supports http with nodejs", () => {
         `http://localhost:${(server.address() as AddressInfo).port}/login`,
         { hello: "world" },
         { auth, maxRedirects: 1 },
-      );
+      ) as any;
       const base64 = Buffer.from("foo:bar", "utf8").toString("base64");
       assert.strictEqual(response.data, `Basic ${base64}`);
       assert.strictEqual(response.request.path, "/profile");
@@ -1739,7 +1739,7 @@ describe("supports http with nodejs", () => {
           auth,
           maxRedirects: 5,
         },
-      );
+      ) as any;
       const base64 = Buffer.from("foo:bar", "utf8").toString("base64");
       assert.strictEqual(response.data, `Basic ${base64}`);
       assert.strictEqual(response.request.path, "/c");
@@ -1759,7 +1759,7 @@ describe("supports http with nodejs", () => {
     try {
       const response = await (axios as unknown as TypedAxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
-      );
+      ) as any;
       assert.ok(
         /^axios\/[\d.]+[-]?[a-z]*[.]?[\d]+$/.test(response.data),
         `User-Agent header does not match: ${response.data}`,
@@ -1919,7 +1919,7 @@ describe("supports http with nodejs", () => {
           responseType: "stream",
           maxContentLength: 1024,
         },
-      );
+      ) as any;
 
       let bytesRead = 0;
       const err = await new Promise((resolve) => {
@@ -1958,7 +1958,7 @@ describe("supports http with nodejs", () => {
           responseType: "stream",
           maxContentLength: 1024,
         },
-      );
+      ) as any;
 
       const chunks: any[] = [];
       await new Promise<void>((resolve, reject) => {
@@ -2044,7 +2044,7 @@ describe("supports http with nodejs", () => {
           maxRedirects: 0,
           headers: { "Content-Type": "application/octet-stream" },
         },
-      );
+      ) as any;
 
       assert.strictEqual(response.data.received, payload.length);
     } finally {
@@ -2171,7 +2171,7 @@ describe("supports http with nodejs", () => {
           {
             responseType: "stream",
           },
-        );
+        ) as any;
 
         const responseText = await new Promise((resolve, reject) => {
           const chunks: any[] = [];
@@ -2233,7 +2233,7 @@ describe("supports http with nodejs", () => {
         {
           responseType: "stream",
         },
-      );
+      ) as any;
 
       let streamError: any;
       data.on("error", (error: any) => {
@@ -2281,7 +2281,7 @@ describe("supports http with nodejs", () => {
         {
           responseType: "stream",
         },
-      );
+      ) as any;
 
       const responseText = await new Promise((resolve, reject) => {
         const chunks: any[] = [];
@@ -4048,7 +4048,7 @@ describe("supports http with nodejs", () => {
     try {
       const response = await (axios as unknown as TypedAxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}`,
-      );
+      ) as any;
       assert.equal(response.request.agent.protocol, "http:");
     } finally {
       await stopHTTPServer(server);
@@ -4084,7 +4084,7 @@ describe("supports http with nodejs", () => {
             rejectUnauthorized: false,
           }),
         },
-      );
+      ) as any;
       assert.equal(response.request.agent.protocol, "https:");
     } finally {
       await new Promise<void>((resolve, reject) => {
@@ -4465,7 +4465,7 @@ describe("supports http with nodejs", () => {
                 "Content-Type": "multipart/form-data",
               },
             },
-          );
+          ) as any;
 
           assert.deepStrictEqual(response.data.fields, { foo: ["bar"] });
 
@@ -4535,7 +4535,7 @@ describe("supports http with nodejs", () => {
               httpAgent: oneShotAgent,
               headers: { Connection: "close" },
             },
-          );
+          ) as any;
 
           assert.deepStrictEqual(data.fields, {
             foo1: ["bar1"],
@@ -5074,7 +5074,7 @@ describe("supports http with nodejs", () => {
           headers: {
             "content-type": "text/plain",
           },
-        });
+        }) as any;
 
         assert.strictEqual(ignoredResponse.data.parserRanBeforeHandler, false);
         assert.notDeepStrictEqual(ignoredResponse.data.body, {
@@ -5113,7 +5113,7 @@ describe("supports http with nodejs", () => {
       const buffer = Buffer.from("123");
       const dataURI = `data:application/octet-stream;base64,${buffer.toString("base64")}`;
 
-      const { data } = await (axios as unknown as TypedAxiosStatic).get(dataURI, { responseType: "blob" });
+      const { data } = await (axios as unknown as TypedAxiosStatic).get(dataURI, { responseType: "blob" }) as any;
       assert.strictEqual(data.type, "application/octet-stream");
       assert.deepStrictEqual(await data.text(), "123");
     });
@@ -5130,7 +5130,7 @@ describe("supports http with nodejs", () => {
       const buffer = Buffer.from("123", "utf-8");
       const dataURI = `data:application/octet-stream;base64,${buffer.toString("base64")}`;
 
-      const { data } = await (axios as unknown as TypedAxiosStatic).get(dataURI, { responseType: "stream" });
+      const { data } = await (axios as unknown as TypedAxiosStatic).get(dataURI, { responseType: "stream" }) as any;
       assert.strictEqual(await getStream(data), "123");
     });
   });
@@ -5420,7 +5420,7 @@ describe("supports http with nodejs", () => {
             signal: controller.signal,
             maxRedirects: 0,
           },
-        );
+        ) as any;
 
         setTimeout(() => {
           controller.abort();
@@ -5912,7 +5912,7 @@ describe("supports http with nodejs", () => {
 
         await assert.rejects(async () => {
           await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
-            signal: AbortSignal.timeout(500),
+            signal: AbortSignal.timeout(500) as any,
           });
         }, /CanceledError: canceled/);
 
@@ -5954,7 +5954,7 @@ describe("supports http with nodejs", () => {
         const { data } = await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
           cancelToken: source.token,
           responseType: "stream",
-        });
+        }) as any;
 
         setTimeout(() => source.cancel());
 
@@ -6009,7 +6009,7 @@ describe("supports http with nodejs", () => {
               (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
                 responseType: "stream",
               }),
-            ]);
+            ]) as any[];
 
             assert.strictEqual(response1.data.session, response2.data.session);
 
@@ -6064,7 +6064,7 @@ describe("supports http with nodejs", () => {
               (http2Axios as unknown as TypedAxiosInstance).get(localServerURL2, {
                 responseType: "stream",
               }),
-            ]);
+            ]) as any[];
 
             assert.notStrictEqual(
               response1.data.session,
@@ -6117,7 +6117,7 @@ describe("supports http with nodejs", () => {
                   sessionTimeout: 4000,
                 },
               }),
-            ]);
+            ]) as any[];
 
             assert.notStrictEqual(
               response1.request.session,
@@ -6162,7 +6162,7 @@ describe("supports http with nodejs", () => {
                 responseType: "stream",
                 http2Options: {},
               }),
-            ]);
+            ]) as any[];
 
             assert.strictEqual(
               responses[1].data.session,
@@ -6207,7 +6207,7 @@ describe("supports http with nodejs", () => {
               http2Options: {
                 sessionTimeout: 1000,
               },
-            });
+            }) as any;
 
             const session1 = response1.data.session;
             const data1 = await getStream(response1.data);
@@ -6219,7 +6219,7 @@ describe("supports http with nodejs", () => {
               http2Options: {
                 sessionTimeout: 1000,
               },
-            });
+            }) as any;
 
             const session2 = response2.data.session;
             const data2 = await getStream(response2.data);
@@ -6414,7 +6414,7 @@ describe("supports http with nodejs", () => {
 
         const refs = [];
         for (let i = 0; i < 200; i += 1) {
-          const response = await (axios as unknown as TypedAxiosStatic).get("/", { baseURL, httpAgent: agent });
+          const response = await (axios as unknown as TypedAxiosStatic).get("/", { baseURL, httpAgent: agent }) as any;
           refs.push(new WeakRef(response.request));
         }
 
@@ -6932,7 +6932,7 @@ describe("supports http with nodejs", () => {
       const socketPath = makeSocketPath();
       const server = await startUnixServer(socketPath);
       try {
-        const res = await (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", { socketPath });
+        const res = await (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", { socketPath }) as any;
         assert.strictEqual(res.status, 200);
         assert.strictEqual(res.data.ok, true);
       } finally {
