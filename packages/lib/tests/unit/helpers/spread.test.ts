@@ -4,15 +4,15 @@ import spread from "../../../src/lib/helpers/spread.js";
 describe("helpers::spread", () => {
   it("should spread array to arguments", () => {
     let value = 0;
-    spread((a: number, b: number) => {
+    spread(((a: number, b: number) => {
       value = a * b;
-    })([5, 10]);
+    }) as Parameters<typeof spread>[0])([5, 10]);
 
     expect(value).toEqual(50);
   });
 
   it("should return callback result", () => {
-    const value = spread((a: number, b: number) => a * b)([5, 10]);
+    const value = spread(((a: number, b: number) => a * b) as Parameters<typeof spread>[0])([5, 10]);
 
     expect(value).toEqual(50);
   });
