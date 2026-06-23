@@ -101,7 +101,7 @@ let requests: MockXMLHttpRequest[] = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const startRequest = (...args: [AxiosRequestConfig] | Parameters<typeof axios>) => {
-  const promise = axios(...args);
+  const promise = axios(...(args as Parameters<typeof axios>));
   const request = requests.at(-1);
   expect(request).toBeDefined();
 
