@@ -1,8 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import axios from "../../src/index.js";
-import type { AxiosRequestTransformer, AxiosResponseTransformer } from "../../src/index.js";
-import type { HeadersDefaults } from "../../../lib/src/lib/types.js";
+import type { AxiosRequestTransformer, AxiosResponseTransformer, HeadersDefaults } from "../../src/lib/types.js";
 import AxiosHeaders from "../../../lib/src/lib/core/AxiosHeaders.js";
 import defaults from "../../../lib/src/lib/defaults/index.js";
 
@@ -78,12 +77,12 @@ const transformResponse = (defaults.transformResponse as AxiosResponseTransforme
 let requests: MockXMLHttpRequest[] = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
-const getLastRequest = () => {
+const getLastRequest = (): MockXMLHttpRequest => {
   const request = requests.at(-1);
 
   expect(request).toBeDefined();
 
-  return request;
+  return request!;
 };
 
 const finishRequest = async (request: MockXMLHttpRequest, promise: Promise<unknown>) => {
@@ -101,8 +100,8 @@ describe("defaults (vitest browser)", () => {
   afterEach(() => {
     window.XMLHttpRequest = OriginalXMLHttpRequest;
     delete axios.defaults.baseURL;
-    delete (axios.defaults.headers as HeadersDefaults).get["X-CUSTOM-HEADER"];
-    delete (axios.defaults.headers as HeadersDefaults).post["X-CUSTOM-HEADER"];
+    delete (axios.defaults.headers as unknown as HeadersDefaults).get["X-CUSTOM-HEADER"];
+    delete (axios.defaults.headers as unknown as HeadersDefaults).post["X-CUSTOM-HEADER"];
     document.cookie = `${XSRF_COOKIE_NAME}=;expires=${new Date(Date.now() - 86400000).toUTCString()}`;
   });
 
@@ -204,7 +203,7 @@ describe("defaults (vitest browser)", () => {
   });
 
   it("should use GET headers", async () => {
-    (axios.defaults.headers as HeadersDefaults).get["X-CUSTOM-HEADER"] = "foo";
+    (axios.defaults.headers as unknown as HeadersDefaults).get["X-CUSTOM-HEADER"] = "foo";
 
     const promise = axios.get("/foo");
     const request = getLastRequest();
@@ -215,7 +214,7 @@ describe("defaults (vitest browser)", () => {
   });
 
   it("should use POST headers", async () => {
-    (axios.defaults.headers as HeadersDefaults).post["X-CUSTOM-HEADER"] = "foo";
+    (axios.defaults.headers as unknown as HeadersDefaults).post["X-CUSTOM-HEADER"] = "foo";
 
     const promise = axios.post("/foo", {});
     const request = getLastRequest();
