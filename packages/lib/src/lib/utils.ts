@@ -308,7 +308,7 @@ function getGlobal(): Record<string, unknown> {
   // @ts-expect-error window may not exist in all environments
    
   if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global as unknown as Record<string, unknown>;
+  if (typeof global !== "undefined") return global;
   return {};
 }
 
@@ -438,8 +438,6 @@ function findKey(obj: unknown, key: string): string | null {
 const _global = (() => {
   /*eslint no-undef:0*/
   if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
   return global;
 })() as Record<string, unknown> & { addEventListener?: (type: string, listener: (event: Record<string, unknown>) => void, capture?: boolean) => void; postMessage?: (message: unknown, targetOrigin: string) => void; };
 
