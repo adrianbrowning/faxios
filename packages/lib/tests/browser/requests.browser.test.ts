@@ -4,34 +4,34 @@ import axios from "../../src/index.js";
 import AxiosError from "../../../lib/src/lib/core/AxiosError.js";
 
 class MockXMLHttpRequest {
-  constructor() {
-    this.requestHeaders = {};
-    this.responseHeaders = {};
-    this.readyState = 0;
-    this.status = 0;
-    this.statusText = "";
-    this.responseText = "";
-    this.response = null;
-    this.responseURL = "";
-    this.timeout = 0;
-    this.withCredentials = false;
-    this.onreadystatechange = null;
-    this.onloadend = null;
-    this.onabort = null;
-    this.onerror = null;
-    this.ontimeout = null;
-    this.upload = {
-      addEventListener() {},
-    };
-  }
+  requestHeaders: Record<string, string> = {};
+  responseHeaders: Record<string, string> = {};
+  readyState = 0;
+  status = 0;
+  statusText = "";
+  responseText = "";
+  response: unknown = null;
+  responseURL = "";
+  timeout = 0;
+  withCredentials = false;
+  onreadystatechange: (() => void) | null = null;
+  onloadend: (() => void) | null = null;
+  onabort: (() => void) | null = null;
+  onerror: ((e: { message: string }) => void) | null = null;
+  ontimeout: (() => void) | null = null;
+  upload = { addEventListener() {} };
+  method = "";
+  url = "";
+  async = true;
+  params: unknown = null;
 
-  open(method, url, async = true) {
+  open(method: string, url: string, async = true) {
     this.method = method;
     this.url = url;
     this.async = async;
   }
 
-  setRequestHeader(key, value) {
+  setRequestHeader(key: string, value: string) {
     this.requestHeaders[key] = value;
   }
 
@@ -43,7 +43,7 @@ class MockXMLHttpRequest {
       .join("\n");
   }
 
-  send(data) {
+  send(data: unknown) {
     this.params = data;
     this.readyState = 1;
     requests.push(this);
@@ -96,18 +96,18 @@ class MockXMLHttpRequest {
   }
 }
 
-let requests = [];
-let OriginalXMLHttpRequest;
+let requests: MockXMLHttpRequest[] = [];
+let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
-const startRequest = (...args) => {
+const startRequest = (...args: Parameters<typeof axios>) => {
   const promise = axios(...args);
   const request = requests.at(-1);
   expect(request).toBeDefined();
 
-  return { request, promise };
+  return { request: request as MockXMLHttpRequest, promise };
 };
 
-const flushSuccess = async (request, promise) => {
+const flushSuccess = async (request: MockXMLHttpRequest, promise: Promise<unknown>) => {
   request.respondWith({ status: 200 });
   await promise;
 };
@@ -116,7 +116,7 @@ describe("requests (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest;
+    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -259,7 +259,7 @@ describe("requests (vitest browser)", () => {
 
   it("should reject when validateStatus returns false", async () => {
     const { request, promise } = startRequest("/foo", {
-      validateStatus(status) {
+      validateStatus(status: number) {
         return status !== 500;
       },
     });
@@ -276,7 +276,7 @@ describe("requests (vitest browser)", () => {
 
   it("should resolve when validateStatus returns true", async () => {
     const { request, promise } = startRequest("/foo", {
-      validateStatus(status) {
+      validateStatus(status: number) {
         return status === 500;
       },
     });
@@ -356,9 +356,10 @@ describe("requests (vitest browser)", () => {
     const error = await promise.catch((err) => err);
     const response = error.response;
 
-    expect(typeof response.data).toBe("object");
-    expect(response.data.error).toBe("BAD USERNAME");
-    expect(response.data.code).toBe(1);
+    const data = response.data as Record<string, unknown>;
+    expect(typeof data).toBe("object");
+    expect(data.error).toBe("BAD USERNAME");
+    expect(data.code).toBe(1);
   });
 
   it("should make cross domain http request", async () => {
@@ -377,7 +378,7 @@ describe("requests (vitest browser)", () => {
 
     const response = await promise;
 
-    expect(response.data.foo).toBe("bar");
+    expect((response.data as Record<string, unknown>).foo).toBe("bar");
     expect(response.status).toBe(200);
     expect(response.statusText).toBe("OK");
     expect(response.headers["content-type"]).toBe("application/json");
@@ -399,7 +400,7 @@ describe("requests (vitest browser)", () => {
 
     const response = await promise;
 
-    expect(response.data.foo).toBe("bar");
+    expect((response.data as Record<string, unknown>).foo).toBe("bar");
     expect(response.status).toBe(200);
     expect(response.statusText).toBe("OK");
     expect(response.headers["content-type"]).toBe("application/json");
@@ -468,7 +469,7 @@ describe("requests (vitest browser)", () => {
   });
 
   it("should support array buffer response", async () => {
-    const str2ab = (str) => {
+    const str2ab = (str: string) => {
       const buff = new ArrayBuffer(str.length * 2);
       const view = new Uint16Array(buff);
 
@@ -489,7 +490,7 @@ describe("requests (vitest browser)", () => {
     });
 
     const response = await promise;
-    expect(response.data.byteLength).toBe(22);
+    expect((response.data as ArrayBuffer).byteLength).toBe(22);
   });
 
   it("should support URLSearchParams", async () => {
