@@ -47,39 +47,39 @@ function createInstance(defaultConfig: AxiosRequestConfig): AxiosInstance {
 export type AxiosInstance = {
   (config: AxiosRequestConfig): Promise<AxiosResponse>;
   (url: string, config?: AxiosRequestConfig): Promise<AxiosResponse>;
-  request(config: AxiosRequestConfig): Promise<AxiosResponse>;
-  get(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse>;
-  delete(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse>;
-  head(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse>;
-  options(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse>;
-  post(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse>;
-  put(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse>;
-  patch(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse>;
-  query(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse>;
-  defaults: { headers: Record<string, unknown> } & Record<string, unknown>;
+  request: (config: AxiosRequestConfig) => Promise<AxiosResponse>;
+  get: (url: string, config?: AxiosRequestConfig) => Promise<AxiosResponse>;
+  delete: (url: string, config?: AxiosRequestConfig) => Promise<AxiosResponse>;
+  head: (url: string, config?: AxiosRequestConfig) => Promise<AxiosResponse>;
+  options: (url: string, config?: AxiosRequestConfig) => Promise<AxiosResponse>;
+  post: (url: string, data?: unknown, config?: AxiosRequestConfig) => Promise<AxiosResponse>;
+  put: (url: string, data?: unknown, config?: AxiosRequestConfig) => Promise<AxiosResponse>;
+  patch: (url: string, data?: unknown, config?: AxiosRequestConfig) => Promise<AxiosResponse>;
+  query: (url: string, data?: unknown, config?: AxiosRequestConfig) => Promise<AxiosResponse>;
+  defaults: { headers: Record<string, unknown>; } & Record<string, unknown>;
   interceptors: {
     request: {
-      use(
+      use: (
         fulfilled: (config: InternalAxiosRequestConfig) => InternalAxiosRequestConfig | Promise<InternalAxiosRequestConfig>,
         rejected?: AxiosInterceptorRejected | null,
-        options?: AxiosInterceptorOptions,
-      ): number;
-      eject(id: number): void;
-      clear(): void;
+        options?: AxiosInterceptorOptions
+      ) => number;
+      eject: (id: number) => void;
+      clear: () => void;
       handlers: Array<AxiosInterceptorHandler<InternalAxiosRequestConfig> | null>;
     };
     response: {
-      use(
+      use: (
         fulfilled: (response: AxiosResponse) => AxiosResponse | Promise<AxiosResponse> | unknown,
         rejected?: AxiosInterceptorRejected | null,
-        options?: AxiosInterceptorOptions,
-      ): number;
-      eject(id: number): void;
-      clear(): void;
+        options?: AxiosInterceptorOptions
+      ) => number;
+      eject: (id: number) => void;
+      clear: () => void;
       handlers: Array<AxiosInterceptorHandler<AxiosResponse> | null>;
     };
   };
-  getUri(config?: AxiosRequestConfig): string;
+  getUri: (config?: AxiosRequestConfig) => string;
   create: (instanceConfig?: AxiosRequestConfig) => AxiosInstance;
   Axios: typeof Axios;
   CanceledError: typeof CanceledError;

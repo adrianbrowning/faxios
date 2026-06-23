@@ -290,9 +290,9 @@ export interface TransitionalOptions {
 
 export interface GenericAbortSignal {
   readonly aborted: boolean;
-  onabort?: ((...args: unknown[]) => unknown) | null;
-  addEventListener?: (...args: unknown[]) => unknown;
-  removeEventListener?: (...args: unknown[]) => unknown;
+  onabort?: ((...args: Array<unknown>) => unknown) | null;
+  addEventListener?: (...args: Array<unknown>) => unknown;
+  removeEventListener?: (...args: Array<unknown>) => unknown;
 }
 
 export interface FormDataVisitorHelpers {

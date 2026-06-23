@@ -201,8 +201,9 @@ class AxiosHeaders {
       header = (header as string).trim();
       if (!isValidHeaderName(header)) {
         setHeaders(parseHeaders(header), valueOrRewrite);
-      } else {
-        setHeader(valueOrRewrite, header as string, rewrite);
+      }
+      else {
+        setHeader(valueOrRewrite, header, rewrite);
       }
     }
     else if (utils.isObject(header) && utils.isSafeIterable(header)) {

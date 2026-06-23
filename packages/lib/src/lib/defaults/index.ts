@@ -53,7 +53,7 @@ function throwOnStrictJSONError(
   config: InternalAxiosRequestConfig
 ): void {
   if (!strictJSONParsing) return;
-  if ((e as { name?: string }).name === "SyntaxError") {
+  if ((e as { name?: string; }).name === "SyntaxError") {
     throw AxiosError.from(
       e as Error,
       AxiosError.ERR_BAD_RESPONSE,
