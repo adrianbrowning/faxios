@@ -1,33 +1,35 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import axios from "../../src/index.js";
+import type { AxiosRequestConfig, InternalAxiosRequestConfig } from "../../src/lib/types.js";
 import cookies from "../../../lib/src/lib/helpers/cookies.js";
 
 class MockXMLHttpRequest {
-  constructor() {
-    this.requestHeaders = {};
-    this.readyState = 0;
-    this.status = 200;
-    this.statusText = "OK";
-    this.responseText = "";
-    this.timeout = 0;
-    this.onreadystatechange = null;
-    this.onloadend = null;
-    this.onabort = null;
-    this.onerror = null;
-    this.ontimeout = null;
-    this.upload = {
-      addEventListener() {},
-    };
-  }
+  requestHeaders: Record<string, string> = {};
+  readyState = 0;
+  status = 200;
+  statusText = "OK";
+  responseText = "";
+  timeout = 0;
+  onreadystatechange: (() => void) | null = null;
+  onloadend: (() => void) | null = null;
+  onabort: (() => void) | null = null;
+  onerror: (() => void) | null = null;
+  ontimeout: (() => void) | null = null;
+  upload = {
+    addEventListener() {},
+  };
+  method = "";
+  url = "";
+  async = true;
 
-  open(method, url, async = true) {
+  open(method: string, url: string, async = true) {
     this.method = method;
     this.url = url;
     this.async = async;
   }
 
-  setRequestHeader(key, value) {
+  setRequestHeader(key: string, value: string) {
     this.requestHeaders[key] = value;
   }
 
@@ -53,10 +55,10 @@ class MockXMLHttpRequest {
   abort() {}
 }
 
-let requests = [];
-let OriginalXMLHttpRequest;
+let requests: MockXMLHttpRequest[] = [];
+let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
-const setXsrfCookie = (value) => {
+const setXsrfCookie = (value: string) => {
   document.cookie = `${axios.defaults.xsrfCookieName}=${value}; path=/`;
 };
 
@@ -66,21 +68,21 @@ const clearXsrfCookie = () => {
   ).toUTCString()}; path=/`;
 };
 
-const sendRequest = async (url, config) => {
+const sendRequest = async (url: string, config?: AxiosRequestConfig) => {
   const responsePromise = axios(url, config);
   const request = requests.at(-1);
 
   expect(request).toBeDefined();
   await responsePromise;
 
-  return request;
+  return request as MockXMLHttpRequest;
 };
 
 describe("xsrf (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest;
+    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -93,7 +95,7 @@ describe("xsrf (vitest browser)", () => {
     const request = await sendRequest("/foo");
 
     expect(
-      request.requestHeaders[axios.defaults.xsrfHeaderName],
+      request.requestHeaders[axios.defaults.xsrfHeaderName as string],
     ).toBeUndefined();
   });
 
@@ -102,7 +104,7 @@ describe("xsrf (vitest browser)", () => {
 
     const request = await sendRequest("/foo");
 
-    expect(request.requestHeaders[axios.defaults.xsrfHeaderName]).toBe("12345");
+    expect(request.requestHeaders[axios.defaults.xsrfHeaderName as string]).toBe("12345");
   });
 
   it("should not set xsrf header if xsrfCookieName is null", async () => {
@@ -113,7 +115,7 @@ describe("xsrf (vitest browser)", () => {
     });
 
     expect(
-      request.requestHeaders[axios.defaults.xsrfHeaderName],
+      request.requestHeaders[axios.defaults.xsrfHeaderName as string],
     ).toBeUndefined();
   });
 
@@ -133,7 +135,7 @@ describe("xsrf (vitest browser)", () => {
     const request = await sendRequest("http://example.com/");
 
     expect(
-      request.requestHeaders[axios.defaults.xsrfHeaderName],
+      request.requestHeaders[axios.defaults.xsrfHeaderName as string],
     ).toBeUndefined();
   });
 
@@ -145,7 +147,7 @@ describe("xsrf (vitest browser)", () => {
     });
 
     expect(
-      request.requestHeaders[axios.defaults.xsrfHeaderName],
+      request.requestHeaders[axios.defaults.xsrfHeaderName as string],
     ).toBeUndefined();
   });
 
@@ -159,7 +161,7 @@ describe("xsrf (vitest browser)", () => {
         withXSRFToken: true,
       });
 
-      expect(request.requestHeaders[axios.defaults.xsrfHeaderName]).toBe(token);
+      expect(request.requestHeaders[axios.defaults.xsrfHeaderName as string]).toBe(token);
     });
 
     it("should not set xsrf header for the same origin when withXSRFToken = false", async () => {
@@ -172,7 +174,7 @@ describe("xsrf (vitest browser)", () => {
       });
 
       expect(
-        request.requestHeaders[axios.defaults.xsrfHeaderName],
+        request.requestHeaders[axios.defaults.xsrfHeaderName as string],
       ).toBeUndefined();
     });
 
@@ -182,11 +184,11 @@ describe("xsrf (vitest browser)", () => {
       setXsrfCookie(token);
 
       const request = await sendRequest("/foo", {
-        withXSRFToken: (config) => config.userFlag === "yes",
+        withXSRFToken: (config: InternalAxiosRequestConfig) => (config as InternalAxiosRequestConfig & { userFlag: string }).userFlag === "yes",
         userFlag: "yes",
-      });
+      } as AxiosRequestConfig);
 
-      expect(request.requestHeaders[axios.defaults.xsrfHeaderName]).toBe(token);
+      expect(request.requestHeaders[axios.defaults.xsrfHeaderName as string]).toBe(token);
     });
   });
 
@@ -194,7 +196,7 @@ describe("xsrf (vitest browser)", () => {
   // the same-origin check and leak the XSRF token cross-origin.
   describe("non-boolean withXSRFToken", () => {
     afterEach(() => {
-      delete Object.prototype.withXSRFToken;
+      delete (Object.prototype as Record<string, unknown>).withXSRFToken;
     });
 
     const leakCases = [
@@ -209,23 +211,23 @@ describe("xsrf (vitest browser)", () => {
         setXsrfCookie("12345");
 
         const request = await sendRequest("http://example.com/", {
-          withXSRFToken: value,
+          withXSRFToken: value as boolean,
         });
 
         expect(
-          request.requestHeaders[axios.defaults.xsrfHeaderName],
+          request.requestHeaders[axios.defaults.xsrfHeaderName as string],
         ).toBeUndefined();
       });
     });
 
     it("should not send xsrf header cross-origin when Object.prototype.withXSRFToken is polluted", async () => {
-      Object.prototype.withXSRFToken = 1;
+      (Object.prototype as Record<string, unknown>).withXSRFToken = 1;
       setXsrfCookie("12345");
 
       const request = await sendRequest("http://example.com/");
 
       expect(
-        request.requestHeaders[axios.defaults.xsrfHeaderName],
+        request.requestHeaders[axios.defaults.xsrfHeaderName as string],
       ).toBeUndefined();
     });
 
@@ -237,7 +239,7 @@ describe("xsrf (vitest browser)", () => {
         withXSRFToken: true,
       });
 
-      expect(request.requestHeaders[axios.defaults.xsrfHeaderName]).toBe(token);
+      expect(request.requestHeaders[axios.defaults.xsrfHeaderName as string]).toBe(token);
     });
 
     it("should still send xsrf header same-origin when withXSRFToken is undefined", async () => {
@@ -246,7 +248,7 @@ describe("xsrf (vitest browser)", () => {
 
       const request = await sendRequest("/foo");
 
-      expect(request.requestHeaders[axios.defaults.xsrfHeaderName]).toBe(token);
+      expect(request.requestHeaders[axios.defaults.xsrfHeaderName as string]).toBe(token);
     });
   });
 });
