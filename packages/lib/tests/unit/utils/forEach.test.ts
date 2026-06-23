@@ -7,7 +7,7 @@ describe("utils::forEach", () => {
   it("should loop over an array", () => {
     let sum = 0;
 
-    forEach([1, 2, 3, 4, 5], (val) => {
+    forEach([1, 2, 3, 4, 5], (val: number) => {
       sum += val;
     });
 
@@ -23,7 +23,7 @@ describe("utils::forEach", () => {
       r: 3,
     };
 
-    forEach(obj, (v, k) => {
+    forEach(obj, (v: number, k) => {
       keys += k;
       vals += v;
     });
