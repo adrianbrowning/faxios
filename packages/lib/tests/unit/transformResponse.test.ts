@@ -4,6 +4,8 @@ import AxiosError from "../../src/lib/core/AxiosError.js";
 import transformData from "../../src/lib/core/transformData.js";
 import defaults from "../../src/lib/defaults/index.js";
 
+const transformResponse = defaults.transformResponse as Parameters<typeof transformData>[0];
+
 describe("transformResponse", () => {
   describe("200 request", () => {
     it("parses json", () => {
@@ -16,9 +18,9 @@ describe("transformResponse", () => {
             status: 200,
           },
         },
-        defaults.transformResponse,
+        transformResponse,
       );
-      assert.strictEqual(result.message, "hello, world");
+      assert.strictEqual((result as { message: string }).message, "hello, world");
     });
 
     it("ignores XML", () => {
@@ -31,7 +33,7 @@ describe("transformResponse", () => {
             status: 200,
           },
         },
-        defaults.transformResponse,
+        transformResponse,
       );
       assert.strictEqual(result, data);
     });
@@ -47,7 +49,7 @@ describe("transformResponse", () => {
       };
 
       assert.throws(
-        () => transformData.call(config, defaults.transformResponse, response),
+        () => transformData.call(config, transformResponse, response),
         (e) =>
           e instanceof AxiosError && e.code === AxiosError.ERR_BAD_RESPONSE,
       );
@@ -67,7 +69,7 @@ describe("transformResponse", () => {
 
       let thrown;
       try {
-        transformData.call(config, defaults.transformResponse, response);
+        transformData.call(config, transformResponse, response);
       } catch (e) {
         thrown = e;
       }
@@ -97,7 +99,7 @@ describe("transformResponse", () => {
             status: 204,
           },
         },
-        defaults.transformResponse,
+        transformResponse,
       );
       assert.strictEqual(result, "");
     });
@@ -112,7 +114,7 @@ describe("transformResponse", () => {
             status: 200,
           },
         },
-        defaults.transformResponse,
+        transformResponse,
       );
       assert.strictEqual(result, data);
     });
