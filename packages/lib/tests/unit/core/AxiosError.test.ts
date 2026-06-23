@@ -6,11 +6,11 @@ import AxiosHeaders from "../../../src/lib/core/AxiosHeaders.js";
 describe("core::AxiosError", () => {
   it("creates an error with message, config, code, request, response, stack and isAxiosError", () => {
     const request = { path: "/foo" };
-    const response = { status: 200, data: { foo: "bar" } };
+    const response = { status: 200, data: { foo: "bar" } } as any;
     const error = new AxiosError(
       "Boom!",
       "ESOMETHING",
-      { foo: "bar" },
+      { foo: "bar" } as any,
       request,
       response,
     );
@@ -29,11 +29,11 @@ describe("core::AxiosError", () => {
     // request/response are intentionally omitted from the serialized shape
     // to avoid circular-reference problems.
     const request = { path: "/foo" };
-    const response = { status: 200, data: { foo: "bar" } };
+    const response = { status: 200, data: { foo: "bar" } } as any;
     const error = new AxiosError(
       "Boom!",
       "ESOMETHING",
-      { foo: "bar" },
+      { foo: "bar" } as any,
       request,
       response,
     );
@@ -43,20 +43,20 @@ describe("core::AxiosError", () => {
     expect(json.config).toEqual({ foo: "bar" });
     expect(json.code).toBe("ESOMETHING");
     expect(json.status).toBe(200);
-    expect(json.request).toBeUndefined();
-    expect(json.response).toBeUndefined();
+    expect((json as any).request).toBeUndefined();
+    expect((json as any).response).toBeUndefined();
   });
 
   describe("AxiosError.from", () => {
     it("adds config, code, request and response to the wrapped error", () => {
       const error = new Error("Boom!");
       const request = { path: "/foo" };
-      const response = { status: 200, data: { foo: "bar" } };
+      const response = { status: 200, data: { foo: "bar" } } as any;
 
       const axiosError = AxiosError.from(
         error,
         "ESOMETHING",
-        { foo: "bar" },
+        { foo: "bar" } as any,
         request,
         response,
       );
@@ -71,31 +71,31 @@ describe("core::AxiosError", () => {
     it("returns an AxiosError instance", () => {
       const axiosError = AxiosError.from(new Error("Boom!"), "ESOMETHING", {
         foo: "bar",
-      });
+      } as any);
 
       expect(axiosError).toBeInstanceOf(AxiosError);
     });
 
     it("preserves status from the original error when response is not provided", () => {
-      const error = new Error("Network Error");
+      const error = new Error("Network Error") as Error & { status?: number };
       error.status = 404;
 
-      const axiosError = AxiosError.from(error, "ERR_NETWORK", { foo: "bar" });
+      const axiosError = AxiosError.from(error, "ERR_NETWORK", { foo: "bar" } as any);
 
       expect(axiosError.status).toBe(404);
     });
 
     it("prefers response.status over error.status when response is provided", () => {
-      const error = new Error("Error");
+      const error = new Error("Error") as Error & { status?: number };
       error.status = 500;
       const response = { status: 404 };
 
       const axiosError = AxiosError.from(
         error,
         "ERR_BAD_REQUEST",
-        {},
+        {} as any,
         null,
-        response,
+        response as any,
       );
 
       expect(axiosError.status).toBe(404);
@@ -113,7 +113,7 @@ describe("core::AxiosError", () => {
   });
 
   it("sets status when response is passed to constructor", () => {
-    const error = new AxiosError("test", "foo", {}, {}, { status: 400 });
+    const error = new AxiosError("test", "foo", {} as any, {}, { status: 400 } as any);
 
     expect(error.status).toBe(400);
   });
@@ -125,22 +125,22 @@ describe("core::AxiosError", () => {
       const error = new AxiosError(
         "Request failed with status code 404",
         AxiosError.ERR_BAD_REQUEST,
+        {} as any,
         {},
-        {},
-        { status: 404, statusText: "Not Found" },
+        { status: 404, statusText: "Not Found" } as any,
       );
 
       expect(error.status).toBe(404);
-      expect(error.status).toBe(error.response.status);
+      expect(error.status).toBe(error.response!.status);
     });
 
     it("error.status equals response.status for 5xx errors", () => {
       const error = new AxiosError(
         "Request failed with status code 503",
         AxiosError.ERR_BAD_RESPONSE,
+        {} as any,
         {},
-        {},
-        { status: 503, statusText: "Service Unavailable" },
+        { status: 503, statusText: "Service Unavailable" } as any,
       );
 
       expect(error.status).toBe(503);
@@ -152,7 +152,7 @@ describe("core::AxiosError", () => {
       const error = new AxiosError(
         "Network Error",
         AxiosError.ERR_NETWORK,
-        {},
+        {} as any,
         {},
       );
 
@@ -164,9 +164,9 @@ describe("core::AxiosError", () => {
       const error = new AxiosError(
         "test",
         "ERR_BAD_REQUEST",
+        {} as any,
         {},
-        {},
-        { status: 401 },
+        { status: 401 } as any,
       );
 
       expect(error.toJSON().status).toBe(401);
@@ -176,7 +176,7 @@ describe("core::AxiosError", () => {
   it("keeps message enumerable for backward compatibility", () => {
     const error = new AxiosError("Test error message", "ERR_TEST", {
       foo: "bar",
-    });
+    } as any);
 
     expect(Object.keys(error)).toContain("message");
     expect(Object.entries(error).find(([key]) => key === "message")?.[1]).toBe(
@@ -198,12 +198,12 @@ describe("core::AxiosError", () => {
         url: "/api",
         auth: { username: "alice", password: "secret" },
       };
-      const error = new AxiosError("Boom", "ECODE", config);
+      const error = new AxiosError("Boom", "ECODE", config as any);
 
       const json = error.toJSON();
 
-      expect(json.config.auth.username).toBe("alice");
-      expect(json.config.auth.password).toBe("secret");
+      expect((json.config as any).auth.username).toBe("alice");
+      expect((json.config as any).auth.password).toBe("secret");
     });
 
     it("ignores inherited redact accessors", () => {
@@ -216,12 +216,12 @@ describe("core::AxiosError", () => {
 
       const config = Object.create(prototype);
       config.auth = { username: "alice", password: "secret" };
-      const error = new AxiosError("Boom", "ECODE", config);
+      const error = new AxiosError("Boom", "ECODE", config as any);
 
       const json = error.toJSON();
 
-      expect(json.config.auth.username).toBe("alice");
-      expect(json.config.auth.password).toBe("secret");
+      expect((json.config as any).auth.username).toBe("alice");
+      expect((json.config as any).auth.password).toBe("secret");
     });
 
     it("leaves config untouched when redact is an empty array", () => {
@@ -229,9 +229,9 @@ describe("core::AxiosError", () => {
         auth: { username: "alice", password: "secret" },
         redact: [],
       };
-      const error = new AxiosError("Boom", "ECODE", config);
+      const error = new AxiosError("Boom", "ECODE", config as any);
 
-      expect(error.toJSON().config.auth.password).toBe("secret");
+      expect((error.toJSON().config as any).auth.password).toBe("secret");
     });
 
     it("replaces top-level matching keys with the redaction marker", () => {
@@ -240,12 +240,12 @@ describe("core::AxiosError", () => {
         auth: { username: "alice", password: "secret" },
         redact: ["auth"],
       };
-      const error = new AxiosError("Boom", "ECODE", config);
+      const error = new AxiosError("Boom", "ECODE", config as any);
 
       const json = error.toJSON();
 
-      expect(json.config.url).toBe("/api");
-      expect(json.config.auth).toBe("[REDACTED ****]");
+      expect((json.config as any).url).toBe("/api");
+      expect((json.config as any).auth).toBe("[REDACTED ****]");
     });
 
     it("replaces matching keys at any nesting depth", () => {
@@ -254,14 +254,14 @@ describe("core::AxiosError", () => {
         proxy: { auth: { username: "pu", password: "pp" } },
         redact: ["password"],
       };
-      const error = new AxiosError("Boom", "ECODE", config);
+      const error = new AxiosError("Boom", "ECODE", config as any);
 
       const json = error.toJSON();
 
-      expect(json.config.auth.username).toBe("alice");
-      expect(json.config.auth.password).toBe("[REDACTED ****]");
-      expect(json.config.proxy.auth.password).toBe("[REDACTED ****]");
-      expect(json.config.proxy.auth.username).toBe("pu");
+      expect((json.config as any).auth.username).toBe("alice");
+      expect((json.config as any).auth.password).toBe("[REDACTED ****]");
+      expect((json.config as any).proxy.auth.password).toBe("[REDACTED ****]");
+      expect((json.config as any).proxy.auth.username).toBe("pu");
     });
 
     it("matches case-insensitively", () => {
@@ -269,9 +269,9 @@ describe("core::AxiosError", () => {
         headers: { Authorization: "Bearer abc" },
         redact: ["authorization"],
       };
-      const error = new AxiosError("Boom", "ECODE", config);
+      const error = new AxiosError("Boom", "ECODE", config as any);
 
-      expect(error.toJSON().config.headers.Authorization).toBe(
+      expect((error.toJSON().config as any).headers.Authorization).toBe(
         "[REDACTED ****]",
       );
     });
@@ -282,9 +282,9 @@ describe("core::AxiosError", () => {
       headers.set("X-Trace", "trace-id");
 
       const config = { headers, redact: ["Authorization"] };
-      const error = new AxiosError("Boom", "ECODE", config);
+      const error = new AxiosError("Boom", "ECODE", config as any);
 
-      const serialized = error.toJSON().config.headers;
+      const serialized = (error.toJSON().config as any).headers;
       expect(serialized.Authorization).toBe("[REDACTED ****]");
       expect(serialized["X-Trace"]).toBe("trace-id");
     });
@@ -294,22 +294,22 @@ describe("core::AxiosError", () => {
         items: [{ token: "t1" }, { token: "t2", name: "keep" }],
         redact: ["token"],
       };
-      const error = new AxiosError("Boom", "ECODE", config);
+      const error = new AxiosError("Boom", "ECODE", config as any);
 
       const json = error.toJSON();
-      expect(json.config.items[0].token).toBe("[REDACTED ****]");
-      expect(json.config.items[1].token).toBe("[REDACTED ****]");
-      expect(json.config.items[1].name).toBe("keep");
+      expect((json.config as any).items[0].token).toBe("[REDACTED ****]");
+      expect((json.config as any).items[1].token).toBe("[REDACTED ****]");
+      expect((json.config as any).items[1].name).toBe("keep");
     });
 
     it("does not crash on circular config references", () => {
-      const config = { auth: { password: "secret" }, redact: ["password"] };
+      const config: Record<string, any> = { auth: { password: "secret" }, redact: ["password"] };
       config.self = config;
 
-      const error = new AxiosError("Boom", "ECODE", config);
+      const error = new AxiosError("Boom", "ECODE", config as any);
 
       const json = error.toJSON();
-      expect(json.config.auth.password).toBe("[REDACTED ****]");
+      expect((json.config as any).auth.password).toBe("[REDACTED ****]");
       expect(Object.prototype.hasOwnProperty.call(json.config, "self")).toBe(
         false,
       );
@@ -324,23 +324,24 @@ describe("core::AxiosError", () => {
         auth: { password: "secret" },
         redact: ["password"],
       };
-      const error = new AxiosError("Boom", "ECODE", config);
+      const error = new AxiosError("Boom", "ECODE", config as any);
 
       const json = error.toJSON();
 
-      expect(json.config.issuedAt).toBe(issuedAt);
-      expect(json.config.endpoint).toBe(endpoint);
-      expect(json.config.auth.password).toBe("[REDACTED ****]");
+      expect((json.config as any).issuedAt).toBe(issuedAt);
+      expect((json.config as any).endpoint).toBe(endpoint);
+      expect((json.config as any).auth.password).toBe("[REDACTED ****]");
     });
 
     it("does not let a polluted Object.prototype.toJSON bypass redaction", () => {
       class Credentials {
+        password: string;
         constructor() {
           this.password = "secret";
         }
       }
 
-      Object.prototype.toJSON = function () {
+      (Object.prototype as any).toJSON = function () {
         return this;
       };
 
@@ -350,16 +351,16 @@ describe("core::AxiosError", () => {
         items: [{ token: "t1" }],
         redact: ["password", "token"],
       };
-      const error = new AxiosError("Boom", "ECODE", config);
+      const error = new AxiosError("Boom", "ECODE", config as any);
 
       try {
         const json = error.toJSON();
 
-        expect(json.config.auth.password).toBe("[REDACTED ****]");
-        expect(json.config.credentials.password).toBe("[REDACTED ****]");
-        expect(json.config.items[0].token).toBe("[REDACTED ****]");
+        expect((json.config as any).auth.password).toBe("[REDACTED ****]");
+        expect((json.config as any).credentials.password).toBe("[REDACTED ****]");
+        expect((json.config as any).items[0].token).toBe("[REDACTED ****]");
       } finally {
-        delete Object.prototype.toJSON;
+        delete (Object.prototype as any).toJSON;
       }
     });
 
@@ -371,14 +372,14 @@ describe("core::AxiosError", () => {
         configurable: true,
       });
 
-      const error = new AxiosError("Boom", "ECODE", config);
+      const error = new AxiosError("Boom", "ECODE", config as any);
       const json = error.toJSON();
 
       expect(Object.getPrototypeOf(json.config)).toBe(null);
       expect(
         Object.prototype.hasOwnProperty.call(json.config, "__proto__"),
       ).toBe(true);
-      expect(json.config.__proto__.password).toBe("[REDACTED ****]");
+      expect((json.config as any).__proto__.password).toBe("[REDACTED ****]");
     });
 
     it("does not mutate the original config or AxiosHeaders", () => {
@@ -390,7 +391,7 @@ describe("core::AxiosError", () => {
         headers,
         redact: ["password", "Authorization"],
       };
-      const error = new AxiosError("Boom", "ECODE", config);
+      const error = new AxiosError("Boom", "ECODE", config as any);
 
       error.toJSON();
 
@@ -403,10 +404,10 @@ describe("core::AxiosError", () => {
         auth: { password: "secret" },
         redact: ["password"],
       };
-      const error = new AxiosError("Boom", "ECODE", config);
+      const error = new AxiosError("Boom", "ECODE", config as any);
 
       // Useful for debugging — operators can see what was being redacted.
-      expect(error.toJSON().config.redact).toEqual(["password"]);
+      expect((error.toJSON().config as any).redact).toEqual(["password"]);
     });
   });
 });
