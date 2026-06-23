@@ -18,7 +18,7 @@ describe("utils", () => {
 
   describe("utils::isFormData", () => {
     it("should detect the FormData instance provided by the `form-data` package", () => {
-      [1, "str", {}, new RegExp()].forEach((thing) => {
+      [1, "str", {}, new RegExp("")].forEach((thing) => {
         assert.equal(utils.isFormData(thing), false);
       });
       assert.equal(utils.isFormData(new FormData()), true);
@@ -35,7 +35,7 @@ describe("utils", () => {
     it("should not call toString method on built-in objects instances, even if append method exists", () => {
       const buf = Buffer.from("123");
 
-      buf.append = () => {};
+      (buf as unknown as Record<string, unknown>).append = () => {};
 
       buf.toString = () => assert.fail("should not be called");
 
@@ -57,9 +57,9 @@ describe("utils", () => {
   describe("toJSON", () => {
     it("should convert to a plain object without circular references", () => {
       const obj = { a: [0] };
-      const source = { x: 1, y: 2, obj };
+      const source: Record<string, unknown> = { x: 1, y: 2, obj };
       source.circular1 = source;
-      obj.a[1] = obj;
+      (obj.a as unknown[])[1] = obj;
 
       assert.deepStrictEqual(utils.toJSONObject(source), {
         x: 1,
@@ -80,7 +80,7 @@ describe("utils", () => {
 
       const jsonObject = utils.toJSONObject(source);
 
-      assert.strictEqual(jsonObject.obj.objProp, objProp);
+      assert.strictEqual((jsonObject as Record<string, unknown> & { obj: typeof obj }).obj.objProp, objProp);
       assert.strictEqual(
         JSON.stringify(jsonObject),
         JSON.stringify({ x: 1, y: 2, obj: { ok: 1 } }),
@@ -108,7 +108,7 @@ describe("utils", () => {
       });
 
       it("should serialize shared sibling that itself contains a self-cycle", () => {
-        const shared = { v: 1 };
+        const shared: Record<string, unknown> = { v: 1 };
         shared.self = shared; // self-cycle inside the shared node
         const source = { x: shared, y: shared };
 
@@ -121,17 +121,17 @@ describe("utils", () => {
       it("should serialize non-cyclic structures deeper than the old Array(10) cap", () => {
         // The previous implementation used a fixed-size Array(10) for path tracking.
         // A non-cyclic chain deeper than 10 levels must serialise end-to-end.
-        let leaf = { v: "leaf" };
-        let source = leaf;
+        let leaf: Record<string, unknown> = { v: "leaf" };
+        let source: Record<string, unknown> = leaf;
         for (let i = 0; i < 25; i++) {
           source = { next: source };
         }
 
         const result = utils.toJSONObject(source);
 
-        let cursor = result;
+        let cursor = result as Record<string, unknown>;
         for (let i = 0; i < 25; i++) {
-          cursor = cursor.next;
+          cursor = cursor.next as Record<string, unknown>;
         }
         assert.deepStrictEqual(cursor, { v: "leaf" });
       });
