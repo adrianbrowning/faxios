@@ -111,14 +111,14 @@ describe("promise (vitest browser)", () => {
   });
 
   it("should support all", async () => {
-    const result = await axios.all([true, 123] as Promise<unknown>[]);
+    const result = await axios.all([true, 123] as unknown as Promise<unknown>[]);
 
     expect(result).toEqual([true, 123]);
   });
 
   it("should support spread", async () => {
     let fulfilled = false;
-    const result = await axios.all([123, 456] as Promise<unknown>[]).then(
+    const result = await axios.all([123, 456] as unknown as Promise<unknown>[]).then(
       axios.spread((...args: unknown[]) => {
         const [a, b] = args as [number, number];
         expect(a + b).toBe(123 + 456);
