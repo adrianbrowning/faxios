@@ -3,27 +3,27 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import axios, { AxiosHeaders } from "../../src/index.js";
 
 class MockXMLHttpRequest {
-  constructor() {
-    this.requestHeaders = {};
-    this.readyState = 0;
-    this.status = 0;
-    this.statusText = "";
-    this.responseText = "";
-    this.response = null;
-    this.onreadystatechange = null;
-    this.onloadend = null;
-    this.upload = {
-      addEventListener() {},
-    };
-  }
+  requestHeaders: Record<string, string> = {};
+  readyState: number = 0;
+  status: number = 0;
+  statusText: string = "";
+  responseText: string = "";
+  response: string | null = null;
+  onreadystatechange: (() => void) | null = null;
+  onloadend: (() => void) | null = null;
+  upload: { addEventListener(): void } = { addEventListener() {} };
+  method?: string;
+  url?: string;
+  async?: boolean;
+  params?: unknown;
 
-  open(method, url, async = true) {
+  open(method: string, url: string, async = true) {
     this.method = method;
     this.url = url;
     this.async = async;
   }
 
-  setRequestHeader(key, value) {
+  setRequestHeader(key: string, value: string) {
     this.requestHeaders[key] = value;
   }
 
@@ -33,7 +33,7 @@ class MockXMLHttpRequest {
     return "";
   }
 
-  send(data) {
+  send(data: unknown) {
     this.params = data;
     requests.push(this);
   }
@@ -57,23 +57,23 @@ class MockXMLHttpRequest {
   abort() {}
 }
 
-let requests = [];
-let OriginalXMLHttpRequest;
+let requests: MockXMLHttpRequest[] = [];
+let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const getLastRequest = () => {
   const request = requests.at(-1);
 
   expect(request).toBeDefined();
 
-  return request;
+  return request!;
 };
 
-const finishRequest = async (request, promise) => {
+const finishRequest = async (request: MockXMLHttpRequest, promise: Promise<unknown>) => {
   request.respondWith({ status: 200 });
   await promise;
 };
 
-function testHeaderValue(headers, key, val) {
+function testHeaderValue(headers: Record<string, unknown>, key: string, val?: unknown) {
   let found = false;
 
   for (const k in headers) {
@@ -97,7 +97,7 @@ describe("headers (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest;
+    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -105,7 +105,7 @@ describe("headers (vitest browser)", () => {
   });
 
   it("should default common headers", async () => {
-    const headers = axios.defaults.headers.common;
+    const headers = axios.defaults.headers.common as Record<string, unknown>;
     const promise = axios("/foo");
     const request = getLastRequest();
 
@@ -122,7 +122,7 @@ describe("headers (vitest browser)", () => {
     const instance = axios.create({ adapter: "xhr" });
 
     instance.interceptors.request.use((config) => {
-      config.headers.oprtName = encodeURIComponent(config.headers.oprtName);
+      config.headers!['oprtName'] = encodeURIComponent(config.headers!['oprtName'] as string);
       return config;
     });
 
@@ -157,7 +157,7 @@ describe("headers (vitest browser)", () => {
 
   it("should respect common Content-Type header", async () => {
     const instance = axios.create();
-    instance.defaults.headers.common["Content-Type"] = "application/custom";
+    (instance.defaults.headers.common as Record<string, string>)["Content-Type"] = "application/custom";
 
     const promise = instance.patch("/foo", "");
     const request = getLastRequest();
@@ -168,7 +168,7 @@ describe("headers (vitest browser)", () => {
   });
 
   it("should add extra headers for post", async () => {
-    const headers = AxiosHeaders.from(axios.defaults.headers.common).toJSON();
+    const headers = AxiosHeaders.from(axios.defaults.headers.common as Record<string, unknown>).toJSON();
     const promise = axios.post("/foo", "fizz=buzz");
     const request = getLastRequest();
 
