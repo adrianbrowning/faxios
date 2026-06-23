@@ -72,12 +72,12 @@ class MockXMLHttpRequest {
 let requests: MockXMLHttpRequest[] = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
-const getLastRequest = () => {
+const getLastRequest = (): MockXMLHttpRequest => {
   const request = requests.at(-1);
 
   expect(request).toBeDefined();
 
-  return request;
+  return request!;
 };
 
 describe("transform (vitest browser)", () => {
@@ -151,7 +151,7 @@ describe("transform (vitest browser)", () => {
 
     expect(response).toBeTruthy();
     expect(request.requestHeaders["Content-Type"]).toBe("application/json");
-    expect(JSON.parse(request.params)).toBe(123);
+    expect(JSON.parse(request.params as string)).toBe(123);
   });
 
   it("should not assume JSON if responseType is not `json`", async () => {
@@ -199,8 +199,8 @@ describe("transform (vitest browser)", () => {
       { foo: "bar" },
       {
         transformRequest: (axios.defaults.transformRequest as ((data: unknown) => unknown)[]).concat(
-          function (data: string) {
-            return data.replace("bar", "baz");
+          function (data: unknown) {
+            return (data as string).replace("bar", "baz");
           },
         ),
       },
