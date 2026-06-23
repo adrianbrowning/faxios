@@ -8,7 +8,6 @@ import stream from "node:stream";
 import zlib from "node:zlib";
 import path from "node:path";
 import type { AddressInfo } from "node:net";
-// @ts-expect-error no declaration file for abortcontroller-polyfill
 import { AbortController } from "abortcontroller-polyfill/dist/cjs-ponyfill.js";
 // @ts-expect-error no declaration file for body-parser
 import bodyParser from "body-parser";
@@ -52,7 +51,7 @@ const ALTERNATE_SERVER_PORT = 8040;
 
 describe("supports http with nodejs", () => {
   const adaptersTestsDir = path.join(process.cwd(), "tests/unit/adapters");
-  const thisTestFilePath = path.join(adaptersTestsDir, "http.test.js");
+  const thisTestFilePath = path.join(adaptersTestsDir, "http.test.ts");
   const FormDataSpecCompliant =
     typeof FormData !== "undefined" ? FormData : FormDataPolyfill;
   const BlobSpecCompliant = typeof Blob !== "undefined" ? Blob : BlobPolyfill;

@@ -4,7 +4,7 @@
   "description": "ESM smoke tests for faxios",
   "private": true,
   "scripts": {
-    "test:smoke:esm:vitest": "vitest run --config vitest.config.js --project smoke"
+    "test:smoke:esm:vitest": "vitest run --config vitest.config.ts --project smoke"
   },
   "keywords": [],
   "author": "faxios team",
@@ -13,6 +13,6 @@
     "vitest": "4.1.5"
   },
   "dependencies": {
-    "faxios": "file:../../../faxios-1.18.0.tgz"
+    "faxios": "file:/tmp/faxios-1.18.0.tgz"
   }
 }

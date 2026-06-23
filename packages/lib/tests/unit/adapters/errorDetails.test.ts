@@ -42,10 +42,7 @@ describe("adapters - network-error details", () => {
   });
 
   it("should expose self-signed TLS error and set error.cause", async () => {
-    const certsDir = path.resolve(
-      __dirname,
-      "../../../src/tests/unit/adapters/",
-    );
+    const certsDir = __dirname;
     const keyPath = path.join(certsDir, "key.pem");
     const certPath = path.join(certsDir, "cert.pem");
 

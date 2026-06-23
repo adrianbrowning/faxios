@@ -1,3 +1,8 @@
+declare module 'abortcontroller-polyfill/dist/cjs-ponyfill.js' {
+  export const AbortController: typeof globalThis.AbortController;
+  export const AbortSignal: typeof globalThis.AbortSignal;
+}
+
 declare module 'formidable' {
   import { IncomingMessage } from 'node:http';
   type Fields = Record<string, string | string[]>;

@@ -65,9 +65,13 @@ export default function mergeConfig(config1: AxiosRequestConfig | AxiosDefaults 
     return undefined;
   }
 
-  function defaultToConfig2(a: unknown, b: unknown): unknown {
+  function defaultToConfig2(a: unknown, b: unknown, prop?: unknown): unknown {
     if (!utils.isUndefined(b)) {
       return getMergedValue(undefined, b);
+    }
+    // ponytail: explicit undefined in config2 (e.g. xsrfCookieName: undefined) must win over config1's default
+    else if (utils.hasOwnProp(config2, prop as string)) {
+      return undefined;
     }
     else if (!utils.isUndefined(a)) {
       return getMergedValue(undefined, a);

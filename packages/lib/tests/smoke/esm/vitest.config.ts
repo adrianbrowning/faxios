@@ -8,7 +8,7 @@ export default defineConfig({
         test: {
           name: "smoke",
           environment: "node",
-          include: [ "tests/**/*.smoke.test.js" ],
+          include: [ "tests/**/*.smoke.test.ts" ],
           setupFiles: [],
         },
       },
