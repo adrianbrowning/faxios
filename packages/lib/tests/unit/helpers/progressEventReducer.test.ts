@@ -19,10 +19,10 @@ describe("helpers::progressEventReducer", () => {
     flush();
 
     expect(events.length).toBe(3);
-    expect(events[0].bytes).toBe(80);
-    expect(events[1].bytes).toBe(0);
+    expect(events[0]!.bytes).toBe(80);
+    expect(events[1]!.bytes).toBe(0);
 
-    const last = events[events.length - 1];
+    const last = events[events.length - 1]!;
     expect(last.loaded).toBe(100);
     expect(last.total).toBe(100);
     expect(last.progress).toBe(1);
@@ -53,7 +53,7 @@ describe("helpers::progressEventReducer", () => {
     flush();
 
     expect(events.length).toBe(1);
-    expect(events[0].loaded).toBe(50);
-    expect(events[0].bytes).toBe(50);
+    expect(events[0]!.loaded).toBe(50);
+    expect(events[0]!.bytes).toBe(50);
   });
 });
