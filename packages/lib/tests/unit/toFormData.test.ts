@@ -4,13 +4,21 @@ import { describe, it } from "vitest";
 import AxiosError from "../../src/lib/core/AxiosError.js";
 import AxiosURLSearchParams from "../../src/lib/helpers/AxiosURLSearchParams.js";
 import toFormData from "../../src/lib/helpers/toFormData.js";
+import type { GenericFormData } from "../../src/lib/types.js";
+
+const fd = () => new FormData() as unknown as GenericFormData;
+// ponytail: AxiosURLSearchParams is a function-constructor; cast once
+const URLSearchParamsCtor = AxiosURLSearchParams as unknown as new (
+  params?: unknown,
+  options?: unknown,
+) => { toString(): string };
 
 describe("helpers::toFormData", () => {
   const createRNFormDataSpy = () => {
-    const calls = [];
+    const calls: [string, unknown][] = [];
     return {
       calls,
-      append: (key, value) => {
+      append: (key: string, value: unknown) => {
         calls.push([key, value]);
       },
       getParts: () => [],
@@ -23,10 +31,10 @@ describe("helpers::toFormData", () => {
       baz: 123,
     };
 
-    const formData = toFormData(data, new FormData());
+    const formData = toFormData(data, fd());
 
     assert.ok(formData instanceof FormData);
-    assert.ok(formData._streams.length > 0);
+    assert.ok((formData as unknown as { _streams: unknown[] })._streams.length > 0);
   });
 
   it("should convert a nested object to FormData", () => {
@@ -36,22 +44,22 @@ describe("helpers::toFormData", () => {
       },
     };
 
-    const formData = toFormData(data, new FormData());
+    const formData = toFormData(data, fd());
 
     assert.ok(formData instanceof FormData);
   });
 
   it("should throw Error on circular reference", () => {
-    const data = {
+    const data: Record<string, unknown> = {
       foo: "bar",
     };
     data.self = data;
 
     try {
-      toFormData(data, new FormData());
+      toFormData(data, fd());
       assert.fail("Should have thrown an error");
     } catch (err) {
-      assert.strictEqual(err.message, "Circular reference detected in self");
+      assert.strictEqual((err as Error).message, "Circular reference detected in self");
     }
   });
 
@@ -60,7 +68,7 @@ describe("helpers::toFormData", () => {
       arr: [1, 2, 3],
     };
 
-    const formData = toFormData(data, new FormData());
+    const formData = toFormData(data, fd());
     assert.ok(formData instanceof FormData);
   });
 
@@ -76,8 +84,8 @@ describe("helpers::toFormData", () => {
     toFormData({ file: blob }, formData);
 
     assert.strictEqual(formData.calls.length, 1);
-    assert.strictEqual(formData.calls[0][0], "file");
-    assert.strictEqual(formData.calls[0][1], blob);
+    assert.strictEqual(formData.calls[0]![0], "file");
+    assert.strictEqual(formData.calls[0]![1], blob);
   });
 
   it("should append nested React Native blob without recursion", () => {
@@ -92,8 +100,8 @@ describe("helpers::toFormData", () => {
     toFormData({ nested: { file: blob } }, formData);
 
     assert.strictEqual(formData.calls.length, 1);
-    assert.strictEqual(formData.calls[0][0], "nested[file]");
-    assert.strictEqual(formData.calls[0][1], blob);
+    assert.strictEqual(formData.calls[0]![0], "nested[file]");
+    assert.strictEqual(formData.calls[0]![1], blob);
   });
 
   it("should append deeply nested React Native blob without recursion", () => {
@@ -107,14 +115,14 @@ describe("helpers::toFormData", () => {
     toFormData({ a: { b: { c: blob } } }, formData);
 
     assert.strictEqual(formData.calls.length, 1);
-    assert.strictEqual(formData.calls[0][0], "a[b][c]");
-    assert.strictEqual(formData.calls[0][1], blob);
+    assert.strictEqual(formData.calls[0]![0], "a[b][c]");
+    assert.strictEqual(formData.calls[0]![1], blob);
   });
 
   // --- Depth limit tests ---
 
-  function nest(depth) {
-    let o = { leaf: 1 };
+  function nest(depth: number): Record<string, unknown> {
+    let o: Record<string, unknown> = { leaf: 1 };
     for (let i = 0; i < depth; i++) o = { a: o };
     return o;
   }
@@ -122,7 +130,7 @@ describe("helpers::toFormData", () => {
   describe("maxDepth option", () => {
     it("should throw AxiosError when payload exceeds default depth limit (100)", () => {
       try {
-        toFormData(nest(101), new FormData());
+        toFormData(nest(101), fd());
         assert.fail("Should have thrown");
       } catch (err) {
         assert.ok(
@@ -135,23 +143,23 @@ describe("helpers::toFormData", () => {
     });
 
     it("should succeed when payload is exactly at the default depth limit (100)", () => {
-      const formData = toFormData(nest(100), new FormData());
+      const formData = toFormData(nest(100), fd());
       assert.ok(formData instanceof FormData);
     });
 
     it("should succeed for a shallow payload (no regression)", () => {
-      const formData = toFormData(nest(5), new FormData());
+      const formData = toFormData(nest(5), fd());
       assert.ok(formData instanceof FormData);
     });
 
     it("should allow deeper payloads when maxDepth is raised", () => {
-      const formData = toFormData(nest(150), new FormData(), { maxDepth: 200 });
+      const formData = toFormData(nest(150), fd(), { maxDepth: 200 });
       assert.ok(formData instanceof FormData);
     });
 
     it("should reject shallower payloads when maxDepth is lowered", () => {
       try {
-        toFormData(nest(10), new FormData(), { maxDepth: 5 });
+        toFormData(nest(10), fd(), { maxDepth: 5 });
         assert.fail("Should have thrown");
       } catch (err) {
         assert.ok(err instanceof AxiosError);
@@ -161,21 +169,21 @@ describe("helpers::toFormData", () => {
 
     it("should not throw for depth guard when maxDepth is Infinity (guard disabled)", () => {
       // Use 500 levels — deep enough to prove the guard is off, shallow enough not to overflow V8
-      const formData = toFormData(nest(500), new FormData(), {
+      const formData = toFormData(nest(500), fd(), {
         maxDepth: Infinity,
       });
       assert.ok(formData instanceof FormData);
     });
 
     it("should still detect circular references when depth guard is active", () => {
-      const data = { foo: "bar" };
+      const data: Record<string, unknown> = { foo: "bar" };
       data.self = data;
       try {
-        toFormData(data, new FormData());
+        toFormData(data, fd());
         assert.fail("Should have thrown");
       } catch (err) {
         assert.ok(
-          err.message.includes("Circular reference detected"),
+          (err as Error).message.includes("Circular reference detected"),
           "must be circular-ref error",
         );
         assert.ok(
@@ -188,7 +196,7 @@ describe("helpers::toFormData", () => {
     it("depth limit error is catchable as AxiosError with correct code", () => {
       let caught;
       try {
-        toFormData(nest(101), new FormData());
+        toFormData(nest(101), fd());
       } catch (err) {
         caught = err;
       }
@@ -199,7 +207,7 @@ describe("helpers::toFormData", () => {
 
     it("should reject deeply nested {} metatoken values before JSON.stringify overflows", () => {
       try {
-        toFormData({ "evil{}": nest(10000) }, new FormData());
+        toFormData({ "evil{}": nest(10000) }, fd());
         assert.fail("Should have thrown");
       } catch (err) {
         assert.ok(
@@ -212,13 +220,13 @@ describe("helpers::toFormData", () => {
     });
 
     it("should allow {} metatoken values at the same boundary as normal top-level properties", () => {
-      const formData = toFormData({ "safe{}": nest(99) }, new FormData());
+      const formData = toFormData({ "safe{}": nest(99) }, fd());
       assert.ok(formData instanceof FormData);
     });
 
     it("should reject {} metatoken values beyond the normal top-level property boundary", () => {
       try {
-        toFormData({ "evil{}": nest(100) }, new FormData());
+        toFormData({ "evil{}": nest(100) }, fd());
         assert.fail("Should have thrown");
       } catch (err) {
         assert.ok(err instanceof AxiosError);
@@ -230,7 +238,7 @@ describe("helpers::toFormData", () => {
   describe("maxDepth — params serialization via AxiosURLSearchParams", () => {
     it("should throw AxiosError for deeply nested params object (default limit)", () => {
       try {
-        new AxiosURLSearchParams(nest(101));
+        new URLSearchParamsCtor(nest(101));
         assert.fail("Should have thrown");
       } catch (err) {
         assert.ok(err instanceof AxiosError);
@@ -239,14 +247,14 @@ describe("helpers::toFormData", () => {
     });
 
     it("should build query string for deep params when maxDepth is raised", () => {
-      const params = new AxiosURLSearchParams(nest(150), { maxDepth: 200 });
+      const params = new URLSearchParamsCtor(nest(150), { maxDepth: 200 });
       const qs = params.toString();
       assert.ok(typeof qs === "string" && qs.length > 0);
     });
 
     it("should reject deeply nested {} metatoken params before JSON.stringify overflows", () => {
       try {
-        new AxiosURLSearchParams({ "evil{}": nest(10000) });
+        new URLSearchParamsCtor({ "evil{}": nest(10000) });
         assert.fail("Should have thrown");
       } catch (err) {
         assert.ok(
@@ -260,7 +268,7 @@ describe("helpers::toFormData", () => {
 
     it("should reject {} metatoken params beyond the normal property boundary", () => {
       try {
-        new AxiosURLSearchParams({ "evil{}": nest(100) });
+        new URLSearchParamsCtor({ "evil{}": nest(100) });
         assert.fail("Should have thrown");
       } catch (err) {
         assert.ok(err instanceof AxiosError);
