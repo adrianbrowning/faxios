@@ -93,8 +93,8 @@ describe("formDataToJSON", () => {
       },
     });
 
-    expect({}.x).toEqual(undefined);
-    expect({}.y).toEqual(undefined);
+    expect(({} as {x?: unknown}).x).toEqual(undefined);
+    expect(({} as {y?: unknown}).y).toEqual(undefined);
   });
 
   it("should not write through to inherited objects on Object.prototype", () => {
@@ -111,10 +111,10 @@ describe("formDataToJSON", () => {
 
       const result = formDataToJSON(formData);
 
-      expect(result.injected).toEqual({ hijack: "STOLEN" });
-      expect(Object.prototype.injected.hijack).toBe(true);
+      expect((result as {injected?: unknown}).injected).toEqual({ hijack: "STOLEN" });
+      expect((Object.prototype as {injected?: {hijack: unknown}}).injected?.hijack).toBe(true);
     } finally {
-      delete Object.prototype.injected;
+      delete (Object.prototype as {injected?: unknown}).injected;
     }
   });
 
@@ -128,7 +128,7 @@ describe("formDataToJSON", () => {
       throw new Error("Should have thrown");
     } catch (err) {
       expect(err).toBeInstanceOf(AxiosError);
-      expect(err.code).toBe(AxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
+      expect((err as AxiosError).code).toBe(AxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
       expect(err).not.toBeInstanceOf(RangeError);
     }
   });
@@ -143,7 +143,7 @@ describe("formDataToJSON", () => {
       throw new Error("Should have thrown");
     } catch (err) {
       expect(err).toBeInstanceOf(AxiosError);
-      expect(err.code).toBe(AxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
+      expect((err as AxiosError).code).toBe(AxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
       expect(err).not.toBeInstanceOf(RangeError);
     }
   });
@@ -153,7 +153,7 @@ describe("formDataToJSON", () => {
 
     formData.append("foo" + "[bar]".repeat(100), "123");
 
-    let value = formDataToJSON(formData).foo;
+    let value: any = formDataToJSON(formData)!.foo;
 
     for (let i = 0; i < 100; i++) {
       value = value.bar;
