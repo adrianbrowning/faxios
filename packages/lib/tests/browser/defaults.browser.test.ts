@@ -71,7 +71,7 @@ class MockXMLHttpRequest {
 
 const XSRF_COOKIE_NAME = "CUSTOM-XSRF-TOKEN";
 
-const transformRequest = (defaults.transformRequest as Array<(data: unknown, headers: AxiosHeaders) => unknown>);
+const transformRequest = (defaults.transformRequest as unknown as Array<(data: unknown, headers: AxiosHeaders) => unknown>);
 const transformResponse = (defaults.transformResponse as Array<(data: unknown, headers?: AxiosHeaders) => unknown>);
 
 let requests: MockXMLHttpRequest[] = [];
@@ -107,7 +107,7 @@ describe("defaults (vitest browser)", () => {
 
   it("should transform request json", () => {
     expect(
-      transformRequest[0]({ foo: "bar" }, new AxiosHeaders()),
+      transformRequest[0]!({ foo: "bar" }, new AxiosHeaders()),
     ).toBe('{"foo":"bar"}');
   });
 
@@ -117,14 +117,14 @@ describe("defaults (vitest browser)", () => {
     });
 
     expect(
-      transformRequest[0](JSON.stringify({ foo: "bar" }), headers),
+      transformRequest[0]!(JSON.stringify({ foo: "bar" }), headers),
     ).toBe('{"foo":"bar"}');
-    expect(transformRequest[0]([42, 43], headers)).toBe("[42,43]");
-    expect(transformRequest[0]("foo", headers)).toBe('"foo"');
-    expect(transformRequest[0](42, headers)).toBe("42");
-    expect(transformRequest[0](true, headers)).toBe("true");
-    expect(transformRequest[0](false, headers)).toBe("false");
-    expect(transformRequest[0](null, headers)).toBe("null");
+    expect(transformRequest[0]!([42, 43], headers)).toBe("[42,43]");
+    expect(transformRequest[0]!("foo", headers)).toBe('"foo"');
+    expect(transformRequest[0]!(42, headers)).toBe("42");
+    expect(transformRequest[0]!(true, headers)).toBe("true");
+    expect(transformRequest[0]!(false, headers)).toBe("false");
+    expect(transformRequest[0]!(null, headers)).toBe("null");
   });
 
   it("should transform the plain data object to a FormData instance when header is 'multipart/form-data'", () => {
@@ -132,26 +132,26 @@ describe("defaults (vitest browser)", () => {
       "Content-Type": "multipart/form-data",
     });
 
-    const transformed = transformRequest[0]({ x: 1 }, headers);
+    const transformed = transformRequest[0]!({ x: 1 }, headers);
 
     expect(transformed).toBeInstanceOf(FormData);
   });
 
   it("should do nothing to request string", () => {
-    expect(transformRequest[0]("foo=bar", new AxiosHeaders())).toBe(
+    expect(transformRequest[0]!("foo=bar", new AxiosHeaders())).toBe(
       "foo=bar",
     );
   });
 
   it("should transform response json", () => {
-    const data = transformResponse[0]('{"foo":"bar"}') as Record<string, unknown>;
+    const data = transformResponse[0]!('{"foo":"bar"}') as Record<string, unknown>;
 
     expect(typeof data).toBe("object");
     expect(data.foo).toBe("bar");
   });
 
   it("should do nothing to response string", () => {
-    expect(transformResponse[0]("foo=bar")).toBe("foo=bar");
+    expect(transformResponse[0]!("foo=bar")).toBe("foo=bar");
   });
 
   it("should use global defaults config", async () => {
