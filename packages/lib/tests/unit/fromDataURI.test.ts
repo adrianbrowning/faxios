@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
-import fromDataURI from "../../lib/helpers/fromDataURI.js";
+import fromDataURI from "../../src/lib/helpers/fromDataURI.js";
 
 describe("helpers::fromDataURI", () => {
   it("should return buffer from data uri", () => {
@@ -62,14 +62,14 @@ describe("helpers::fromDataURI", () => {
 
   it("should preserve full content type with parameters in Blob", () => {
     const dataURI = "data:text/plain;charset=utf-8;base64," + Buffer.from("hello").toString("base64");
-    const blob = fromDataURI(dataURI, true, { Blob });
+    const blob = fromDataURI(dataURI, true, { Blob: Blob as unknown as new (...args: unknown[]) => object }) as Blob;
 
     assert.strictEqual(blob.type, "text/plain;charset=utf-8");
   });
 
   it("should normalize omitted mediatype to text/plain per RFC 2397", () => {
     const dataURI = "data:;charset=UTF-8,hello";
-    const blob = fromDataURI(dataURI, true, { Blob });
+    const blob = fromDataURI(dataURI, true, { Blob: Blob as unknown as new (...args: unknown[]) => object }) as Blob;
 
     assert.strictEqual(blob.type, "text/plain;charset=utf-8");
   });
@@ -77,12 +77,12 @@ describe("helpers::fromDataURI", () => {
   it("should reject data URI with unsupported protocol prefix", () => {
     assert.throws(() => {
       fromDataURI("datax:,hi", false);
-    }, err => err.code === "ERR_NOT_SUPPORT" && err.message.includes("Unsupported protocol"));
+    }, (err: unknown) => err instanceof Error && (err as NodeJS.ErrnoException).code === "ERR_NOT_SUPPORT" && err.message.includes("Unsupported protocol"));
   });
 
   it("should reject data URI without comma separator", () => {
     assert.throws(() => {
       fromDataURI("data:hi", false);
-    }, err => err.code === "ERR_INVALID_URL");
+    }, (err: unknown) => (err as NodeJS.ErrnoException).code === "ERR_INVALID_URL");
   });
 });
