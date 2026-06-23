@@ -5,29 +5,29 @@ const { extend } = utils;
 
 describe("utils::extend", () => {
   it("should be mutable", () => {
-    const a = {};
+    const a: Record<string, unknown> = {};
     const b = { foo: 123 };
 
-    extend(a, b);
+    extend(a, b, undefined);
 
     expect(a.foo).toEqual(b.foo);
   });
 
   it("should extend properties", () => {
-    let a = { foo: 123, bar: 456 };
+    let a: Record<string, unknown> = { foo: 123, bar: 456 };
     const b = { bar: 789 };
 
-    a = extend(a, b);
+    a = extend(a, b, undefined);
 
     expect(a.foo).toEqual(123);
     expect(a.bar).toEqual(789);
   });
 
   it("should bind to thisArg", () => {
-    const a = {};
+    const a: Record<string, unknown> = {};
     const b = {
-      getFoo: function getFoo() {
-        return this.foo;
+      getFoo: function getFoo(): unknown {
+        return (this as unknown as { foo: unknown }).foo;
       },
     };
     const thisArg = { foo: "barbaz" };
@@ -35,6 +35,6 @@ describe("utils::extend", () => {
     extend(a, b, thisArg);
 
     expect(typeof a.getFoo).toEqual("function");
-    expect(a.getFoo()).toEqual(thisArg.foo);
+    expect((a.getFoo as () => unknown)()).toEqual(thisArg.foo);
   });
 });
