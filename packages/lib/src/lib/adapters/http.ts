@@ -924,7 +924,7 @@ function handleBufferedResponse(
     totalResponseBytes += chunk.length;
     if ((ctx.maxContentLength as number) > -1 && totalResponseBytes > (ctx.maxContentLength as number)) {
       ctx.rejected.value = true;
-      (responseStream as stream.Readable).destroy();
+      (responseStream).destroy();
       ctx.abort(new AxiosError(
         "maxContentLength size of " + String(ctx.maxContentLength) + " exceeded",
         AxiosError.ERR_BAD_RESPONSE,
@@ -937,7 +937,7 @@ function handleBufferedResponse(
   responseStream.on("aborted", function handlerStreamAborted() {
     if (ctx.rejected.value) return;
     const err = new AxiosError("stream has been aborted", AxiosError.ERR_BAD_RESPONSE, ctx.config, lastRequest, response);
-    (responseStream as stream.Readable).destroy(err);
+    (responseStream).destroy(err);
     ctx.reject(err);
   });
 
@@ -951,7 +951,7 @@ function handleBufferedResponse(
       let responseData: Buffer | string =
         responseBuffer.length === 1
           ? responseBuffer[0]!
-          : Buffer.concat(responseBuffer as unknown as Uint8Array[]);
+          : Buffer.concat(responseBuffer as Uint8Array[]);
       if (ctx.responseType !== "arraybuffer") {
         responseData = responseData.toString(ctx.responseEncoding as BufferEncoding);
         if (!ctx.responseEncoding || ctx.responseEncoding === "utf8") {
