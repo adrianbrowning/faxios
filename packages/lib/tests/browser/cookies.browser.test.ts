@@ -6,7 +6,7 @@ const clearAllCookies = () => {
   const expiry = new Date(Date.now() - 86400000).toUTCString();
 
   for (const cookie of document.cookie.split(";")) {
-    const name = cookie.split("=")[0].trim();
+    const name = (cookie.split("=")[0] ?? "").trim();
 
     if (!name) {
       continue;
@@ -57,7 +57,7 @@ describe("helpers::cookies (vitest browser)", () => {
       if (descriptor) {
         Object.defineProperty(document, "cookie", descriptor);
       } else {
-        delete document.cookie;
+        delete (document as { cookie?: string }).cookie;
       }
     }
   });
