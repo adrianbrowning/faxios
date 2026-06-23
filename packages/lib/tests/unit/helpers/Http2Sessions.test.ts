@@ -3,8 +3,9 @@ import http2 from "node:http2";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Http2Sessions from "../../../src/lib/helpers/Http2Sessions.js";
 
-function createFakeSession() {
-  const session = new EventEmitter();
+function createFakeSession(): http2.ClientHttp2Session {
+  // ponytail: cast to any to attach test-only props onto EventEmitter
+  const session = new EventEmitter() as any;
   session.destroyed = false;
   session.closed = false;
   session.close = vi.fn(() => {
@@ -12,7 +13,7 @@ function createFakeSession() {
     session.emit("close");
   });
   const originalRequest = vi.fn(() => {
-    const stream = new EventEmitter();
+    const stream = new EventEmitter() as any;
     stream.endStream = vi.fn();
     return stream;
   });
@@ -22,8 +23,8 @@ function createFakeSession() {
 }
 
 describe("helpers::Http2Sessions", () => {
-  let connectSpy;
-  let pool;
+  let connectSpy: ReturnType<typeof vi.spyOn>;
+  let pool: Http2Sessions;
 
   beforeEach(() => {
     connectSpy = vi
