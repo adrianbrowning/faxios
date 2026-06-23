@@ -4,32 +4,32 @@ import axios from "../../src/index.js";
 import AxiosError from "../../../lib/src/lib/core/AxiosError.js";
 
 class MockXMLHttpRequest {
-  constructor() {
-    this.requestHeaders = {};
-    this.responseHeaders = "";
-    this.readyState = 0;
-    this.status = 0;
-    this.statusText = "";
-    this.responseText = "";
-    this.response = null;
-    this.timeout = 0;
-    this.onreadystatechange = null;
-    this.onloadend = null;
-    this.onabort = null;
-    this.onerror = null;
-    this.ontimeout = null;
-    this.upload = {
-      addEventListener() {},
-    };
-  }
+  requestHeaders: Record<string, string> = {};
+  responseHeaders = "";
+  readyState = 0;
+  status = 0;
+  statusText = "";
+  responseText = "";
+  response: unknown = null;
+  timeout = 0;
+  onreadystatechange: (() => void) | null = null;
+  onloadend: (() => void) | null = null;
+  onabort: (() => void) | null = null;
+  onerror: (() => void) | null = null;
+  ontimeout: (() => void) | null = null;
+  upload = { addEventListener() {} };
+  method = "";
+  url = "";
+  async = true;
+  params: unknown = null;
 
-  open(method, url, async = true) {
+  open(method: string, url: string, async = true) {
     this.method = method;
     this.url = url;
     this.async = async;
   }
 
-  setRequestHeader(key, value) {
+  setRequestHeader(key: string, value: string) {
     this.requestHeaders[key] = value;
   }
 
@@ -39,7 +39,7 @@ class MockXMLHttpRequest {
     return this.responseHeaders;
   }
 
-  send(data) {
+  send(data: unknown) {
     this.params = data;
     requests.push(this);
   }
@@ -69,8 +69,8 @@ class MockXMLHttpRequest {
   abort() {}
 }
 
-let requests = [];
-let OriginalXMLHttpRequest;
+let requests: MockXMLHttpRequest[] = [];
+let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const getLastRequest = () => {
   const request = requests.at(-1);
@@ -84,7 +84,7 @@ describe("transform (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest;
+    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -113,7 +113,7 @@ describe("transform (vitest browser)", () => {
     const response = await responsePromise;
 
     expect(typeof response.data).toBe("object");
-    expect(response.data.foo).toBe("bar");
+    expect((response.data as Record<string, string>).foo).toBe("bar");
   });
 
   it('should throw a SyntaxError if JSON parsing failed and responseType is "json" if silentJSONParsing is false', async () => {
@@ -198,8 +198,8 @@ describe("transform (vitest browser)", () => {
       "/foo",
       { foo: "bar" },
       {
-        transformRequest: axios.defaults.transformRequest.concat(
-          function (data) {
+        transformRequest: (axios.defaults.transformRequest as ((data: unknown) => unknown)[]).concat(
+          function (data: string) {
             return data.replace("bar", "baz");
           },
         ),
