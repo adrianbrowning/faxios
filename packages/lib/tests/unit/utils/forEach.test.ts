@@ -7,8 +7,8 @@ describe("utils::forEach", () => {
   it("should loop over an array", () => {
     let sum = 0;
 
-    forEach([1, 2, 3, 4, 5], (val: number) => {
-      sum += val;
+    forEach([1, 2, 3, 4, 5], (val: unknown) => {
+      sum += val as number;
     });
 
     expect(sum).toEqual(15);
@@ -23,9 +23,9 @@ describe("utils::forEach", () => {
       r: 3,
     };
 
-    forEach(obj, (v: number, k) => {
+    forEach(obj, (v: unknown, k: unknown) => {
       keys += k;
-      vals += v;
+      vals += v as number;
     });
 
     expect(keys).toEqual("bar");
