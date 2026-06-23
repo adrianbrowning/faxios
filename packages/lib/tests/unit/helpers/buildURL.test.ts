@@ -109,7 +109,7 @@ describe("helpers::buildURL", () => {
     };
 
     const options = {
-      serialize: (thisParams, thisOptions) => {
+      serialize: (thisParams: unknown, thisOptions: unknown) => {
         expect(thisParams).toEqual(params);
         expect(thisOptions).toEqual(options);
         return "rendered";
@@ -118,7 +118,7 @@ describe("helpers::buildURL", () => {
 
     expect(buildURL("/foo", params, options)).toEqual("/foo?rendered");
 
-    const customSerializer = (thisParams) => {
+    const customSerializer = (thisParams: unknown) => {
       expect(thisParams).toEqual(params);
       return "rendered";
     };
@@ -150,8 +150,8 @@ describe("helpers::buildURL", () => {
       expect(serializeInvoked).toBe(false);
       expect(encodeInvoked).toBe(false);
     } finally {
-      delete Object.prototype.serialize;
-      delete Object.prototype.encode;
+      delete (Object.prototype as Record<string, unknown>).serialize;
+      delete (Object.prototype as Record<string, unknown>).encode;
     }
   });
 });
