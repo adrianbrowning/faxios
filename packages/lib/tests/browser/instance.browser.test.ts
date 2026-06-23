@@ -218,8 +218,8 @@ describe("instance (vitest browser)", () => {
 
       const response = await responsePromise as AxiosResponse;
 
-      expect((response.config as Record<string, unknown>).foo).toBeUndefined();
-      expect((response.config as Record<string, unknown>).bar).toBe(true);
+      expect((response.config as unknown as Record<string, unknown>).foo).toBeUndefined();
+      expect((response.config as unknown as Record<string, unknown>).bar).toBe(true);
     } finally {
       (axios.interceptors.request as unknown as InterceptorManager<InternalAxiosRequestConfig>).eject(requestInterceptorId);
       (instance.interceptors.request as unknown as InterceptorManager<InternalAxiosRequestConfig>).eject(instanceInterceptorId);
