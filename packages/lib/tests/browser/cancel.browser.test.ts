@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import axios from "../../src/index.js";
+import type { GenericAbortSignal } from "../../src/lib/types.js";
 
 class MockXMLHttpRequest {
   requestHeaders: Record<string, string> = {};
@@ -74,8 +75,8 @@ class MockXMLHttpRequest {
   }
 }
 
-let requests = [];
-let OriginalXMLHttpRequest;
+let requests: MockXMLHttpRequest[] = [];
+let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const waitForRequest = async (timeoutMs = 1000) => {
   const start = Date.now();
@@ -96,7 +97,7 @@ describe("cancel (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest;
+    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -115,7 +116,7 @@ describe("cancel (vitest browser)", () => {
         .catch((thrown) => thrown);
 
       expect(axios.isCancel(error)).toBe(true);
-      expect(error.message).toBe("Operation has been canceled.");
+      expect((error as Error).message).toBe("Operation has been canceled.");
       expect(requests).toHaveLength(0);
     });
   });
@@ -139,7 +140,7 @@ describe("cancel (vitest browser)", () => {
       const error = await promise.catch((thrown) => thrown);
 
       expect(axios.isCancel(error)).toBe(true);
-      expect(error.message).toBe("Operation has been canceled.");
+      expect((error as Error).message).toBe("Operation has been canceled.");
     });
 
     it("calls abort on request object", async () => {
@@ -162,7 +163,7 @@ describe("cancel (vitest browser)", () => {
   it("supports cancellation using AbortController signal", async () => {
     const controller = new AbortController();
     const promise = axios.get("/foo/bar", {
-      signal: controller.signal,
+      signal: controller.signal as GenericAbortSignal,
     });
 
     const request = await waitForRequest();
@@ -222,7 +223,7 @@ describe("cancel (vitest browser)", () => {
       };
 
       const promise = axios
-        .get("/foo/bar", { signal: controller.signal })
+        .get("/foo/bar", { signal: controller.signal as GenericAbortSignal })
         .catch((thrown) => thrown);
 
       const request = await waitForRequest();
