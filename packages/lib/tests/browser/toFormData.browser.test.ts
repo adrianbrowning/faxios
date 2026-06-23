@@ -11,7 +11,7 @@ describe("helpers::toFormData (vitest browser)", () => {
       },
     };
 
-    const form = toFormData(data, null, { dots: true });
+    const form = toFormData(data, null, { dots: true }) as FormData;
 
     expect(form).toBeInstanceOf(FormData);
     expect(Array.from(form.keys())).toHaveLength(3);
@@ -25,7 +25,7 @@ describe("helpers::toFormData (vitest browser)", () => {
     };
     const serialized = JSON.stringify(data["obj{}"]);
 
-    const form = toFormData(data, null, { metaTokens: false });
+    const form = toFormData(data, null, { metaTokens: false }) as FormData;
 
     expect(Array.from(form.keys())).toHaveLength(1);
     expect(form.getAll("obj")).toEqual([serialized]);
@@ -38,7 +38,7 @@ describe("helpers::toFormData (vitest browser)", () => {
         arr2: [1, [2], 3],
       };
 
-      const form = toFormData(data, null, { indexes: true });
+      const form = toFormData(data, null, { indexes: true }) as FormData;
 
       expect(Array.from(form.keys())).toHaveLength(6);
       expect(form.get("arr[0]")).toBe("1");
@@ -55,7 +55,7 @@ describe("helpers::toFormData (vitest browser)", () => {
         arr2: [1, [2], 3],
       };
 
-      const form = toFormData(data, null, { indexes: false });
+      const form = toFormData(data, null, { indexes: false }) as FormData;
 
       expect(Array.from(form.keys())).toHaveLength(6);
       expect(form.getAll("arr[]")).toEqual(["1", "2", "3"]);
@@ -70,7 +70,7 @@ describe("helpers::toFormData (vitest browser)", () => {
         arr2: [1, [2], 3],
       };
 
-      const form = toFormData(data, null, { indexes: null });
+      const form = toFormData(data, null, { indexes: null }) as FormData;
 
       expect(Array.from(form.keys())).toHaveLength(6);
       expect(form.getAll("arr")).toEqual(["1", "2", "3"]);
@@ -88,7 +88,7 @@ describe("helpers::toFormData (vitest browser)", () => {
       },
     };
 
-    const form = toFormData(data);
+    const form = toFormData(data) as FormData;
 
     expect(form).toBeInstanceOf(FormData);
     expect(Array.from(form.keys())).toHaveLength(3);
@@ -101,7 +101,7 @@ describe("helpers::toFormData (vitest browser)", () => {
       "arr[]": [1, 2, 3],
     };
 
-    const form = toFormData(data);
+    const form = toFormData(data) as FormData;
 
     expect(Array.from(form.keys())).toHaveLength(3);
     expect(form.getAll("arr[]")).toEqual(["1", "2", "3"]);
@@ -113,7 +113,7 @@ describe("helpers::toFormData (vitest browser)", () => {
     };
     const serialized = JSON.stringify(data["obj{}"]);
 
-    const form = toFormData(data);
+    const form = toFormData(data) as FormData;
 
     expect(Array.from(form.keys())).toHaveLength(1);
     expect(form.getAll("obj{}")).toEqual([serialized]);
