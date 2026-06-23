@@ -4,14 +4,14 @@ import isAxiosError from "../../../src/lib/helpers/isAxiosError.js";
 
 describe("helpers::isAxiosError", () => {
   it("should return true if the error is created by core::createError", () => {
-    expect(isAxiosError(new AxiosError("Boom!", null, { foo: "bar" }))).toBe(
+    expect(isAxiosError(new AxiosError("Boom!", undefined, { foo: "bar" }))).toBe(
       true,
     );
   });
 
   it("should return true if the error is enhanced by core::enhanceError", () => {
     expect(
-      isAxiosError(AxiosError.from(new Error("Boom!"), null, { foo: "bar" })),
+      isAxiosError(AxiosError.from(new Error("Boom!"), undefined, { foo: "bar" })),
     ).toBe(true);
   });
 
