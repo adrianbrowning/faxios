@@ -8,7 +8,7 @@
 import http2 from "node:http2";
 import util from "node:util";
 
-type SessionOptions = Record<string, unknown> & { sessionTimeout?: number; };
+type SessionOptions = Record<string, unknown> & { sessionTimeout?: number | null; };
 type SessionEntry = [http2.ClientHttp2Session, SessionOptions];
 
 class Http2Sessions {
@@ -18,7 +18,7 @@ class Http2Sessions {
     this.sessions = Object.create(null) as Record<string, Array<SessionEntry>>;
   }
 
-  getSession(authority: string, options: SessionOptions): http2.ClientHttp2Session {
+  getSession(authority: string, options: SessionOptions = {}): http2.ClientHttp2Session {
     options = Object.assign(
       {
         sessionTimeout: 1000,

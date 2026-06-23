@@ -62,7 +62,7 @@ describe("helpers::Http2Sessions", () => {
 
   it("does not reuse a destroyed session", () => {
     const first = pool.getSession("https://example.test");
-    first.destroyed = true;
+    (first as any).destroyed = true;
 
     const second = pool.getSession("https://example.test");
 
@@ -72,7 +72,7 @@ describe("helpers::Http2Sessions", () => {
 
   it("does not reuse a closed session", () => {
     const first = pool.getSession("https://example.test");
-    first.closed = true;
+    (first as any).closed = true;
 
     const second = pool.getSession("https://example.test");
 
@@ -177,7 +177,7 @@ describe("helpers::Http2Sessions", () => {
       sessionTimeout: 1000,
     });
 
-    expect(session.request).not.toBe(session._originalRequest);
+    expect(session.request).not.toBe((session as any)._originalRequest);
   });
 
   it("does not install the request wrapper when sessionTimeout is null", () => {
@@ -185,7 +185,7 @@ describe("helpers::Http2Sessions", () => {
       sessionTimeout: null,
     });
 
-    expect(session.request).toBe(session._originalRequest);
+    expect(session.request).toBe((session as any)._originalRequest);
   });
 
   it("cancels the pending idle timer when the session itself closes", () => {
