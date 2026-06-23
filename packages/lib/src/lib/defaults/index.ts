@@ -143,16 +143,13 @@ const defaults: AxiosDefaults = {
       const forcedJSONParsing = transitional && transitional.forcedJSONParsing;
       const responseType = this.responseType;
       const JSONRequested = responseType === "json";
+      const shouldParseJSON = (forcedJSONParsing && !responseType) || JSONRequested;
 
       if (utils.isResponse?.(data) || utils.isReadableStream?.(data)) {
         return data;
       }
 
-      if (
-        data &&
-        utils.isString(data) &&
-        ((forcedJSONParsing && !responseType) || JSONRequested)
-      ) {
+      if (data && utils.isString(data) && shouldParseJSON) {
         const silentJSONParsing =
           transitional && transitional.silentJSONParsing;
         const strictJSONParsing = !silentJSONParsing && JSONRequested;
