@@ -89,9 +89,9 @@ export interface TransitionalOptions {
 
 export interface GenericAbortSignal {
   readonly aborted: boolean;
-  onabort?: ((...args: Array<any>) => any) | null;
-  addEventListener?: (...args: Array<any>) => any;
-  removeEventListener?: (...args: Array<any>) => any;
+  onabort?: ((...args: Array<unknown>) => unknown) | null;
+  addEventListener?: (...args: Array<unknown>) => unknown;
+  removeEventListener?: (...args: Array<unknown>) => unknown;
 }
 
 export interface GenericFormData {
