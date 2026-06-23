@@ -236,7 +236,7 @@ class Axios {
     }
   }
 
-  _request(
+  async _request(
     configOrUrl: string | AxiosRequestConfig,
     config?: AxiosRequestConfig
   ): Promise<unknown> {
@@ -353,11 +353,7 @@ class Axios {
 
     const newConfig = runSyncInterceptors(requestInterceptorChain, config, this);
 
-    try {
-      promise = dispatchRequest.call(this, newConfig as InternalAxiosRequestConfig) as Promise<unknown>;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    promise = dispatchRequest.call(this, newConfig as InternalAxiosRequestConfig) as Promise<unknown>;
 
     len = responseInterceptorChain.length;
 
