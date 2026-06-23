@@ -3,6 +3,20 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import axios from "../../src/index.js";
 
 class MockXMLHttpRequest {
+  readyState: number;
+  status: number;
+  statusText: string;
+  responseText: string;
+  response: unknown;
+  onreadystatechange: (() => void) | null;
+  onloadend: (() => void) | null;
+  upload: { addEventListener(): void };
+  requestHeaders: Record<string, string>;
+  method?: string;
+  url?: string;
+  async?: boolean;
+  params?: unknown;
+
   constructor() {
     this.readyState = 0;
     this.status = 0;
@@ -17,13 +31,13 @@ class MockXMLHttpRequest {
     this.requestHeaders = {};
   }
 
-  open(method, url, async = true) {
+  open(method: string, url: string, async = true) {
     this.method = method;
     this.url = url;
     this.async = async;
   }
 
-  setRequestHeader(key, value) {
+  setRequestHeader(key: string, value: string) {
     this.requestHeaders[key] = value;
   }
 
@@ -33,7 +47,7 @@ class MockXMLHttpRequest {
     return "";
   }
 
-  send(data) {
+  send(data: unknown) {
     this.params = data;
     requests.push(this);
   }
@@ -57,8 +71,8 @@ class MockXMLHttpRequest {
   abort() {}
 }
 
-let requests = [];
-let OriginalXMLHttpRequest;
+let requests: MockXMLHttpRequest[] = [];
+let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const sleep = async (ms = 0) =>
   new Promise((resolve) => setTimeout(resolve, ms));
@@ -82,7 +96,7 @@ describe("adapter (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest;
+    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
