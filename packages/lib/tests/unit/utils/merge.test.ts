@@ -5,9 +5,9 @@ const { merge } = utils;
 
 describe("utils::merge", () => {
   it("should be immutable", () => {
-    const a = {};
-    const b = { foo: 123 };
-    const c = { bar: 456 };
+    const a: Record<string, unknown> = {};
+    const b: Record<string, unknown> = { foo: 123 };
+    const c: Record<string, unknown> = { bar: 456 };
 
     merge(a, b, c);
 
@@ -98,31 +98,31 @@ describe("utils::merge", () => {
   it("should merge enumerable symbol keys", () => {
     const key = Symbol("key");
     const nestedKey = Symbol("nested");
-    const first = { [key]: { first: true } };
-    const second = {
+    const first: Record<symbol, unknown> = { [key]: { first: true } };
+    const second: Record<symbol | string, unknown> = {
       [key]: { second: true },
       nested: {
         [nestedKey]: "value",
       },
     };
-    const merged = merge(first, second);
+    const merged: Record<symbol | string, unknown> = merge(first, second);
 
     expect(merged[key]).toEqual({ first: true, second: true });
     expect(merged[key]).not.toBe(first[key]);
-    expect(merged.nested[nestedKey]).toBe("value");
+    expect((merged.nested as Record<symbol, unknown>)[nestedKey]).toBe("value");
     expect(merged.nested).not.toBe(second.nested);
   });
 
   it("should skip non-enumerable symbol keys", () => {
     const key = Symbol("key");
-    const source = {};
+    const source: Record<symbol, unknown> = {};
 
     Object.defineProperty(source, key, {
       value: "hidden",
       enumerable: false,
     });
 
-    const merged = merge(source);
+    const merged: Record<symbol, unknown> = merge(source);
 
     expect(merged[key]).toBeUndefined();
     expect(Object.getOwnPropertySymbols(merged)).toEqual([]);
@@ -130,7 +130,7 @@ describe("utils::merge", () => {
 
   it("should support caseless string keys with symbol keys", () => {
     const key = Symbol("key");
-    const merged = merge.call(
+    const merged: Record<symbol | string, unknown> = merge.call(
       { caseless: true },
       { x: 1, [key]: "first" },
       { X: 2, [key]: "second" },
@@ -143,7 +143,7 @@ describe("utils::merge", () => {
 
   it("should ignore symbol keys on buffers", () => {
     const key = Symbol("key");
-    const buffer = Buffer.from("value");
+    const buffer = Buffer.from("value") as Buffer & Record<symbol, unknown>;
     buffer[key] = "symbol value";
 
     const merged = merge({ x: 1 }, buffer);
@@ -153,10 +153,10 @@ describe("utils::merge", () => {
 
   it("should ignore symbol keys on arrays", () => {
     const key = Symbol("key");
-    const array = ["value"];
+    const array = ["value"] as string[] & Record<symbol, unknown>;
     array[key] = "symbol value";
 
-    const merged = merge({ x: 1 }, array);
+    const merged: Record<symbol | string, unknown> = merge({ x: 1 }, array);
 
     expect(merged).toEqual({ 0: "value", x: 1 });
     expect(merged[key]).toBeUndefined();
@@ -164,7 +164,7 @@ describe("utils::merge", () => {
 
   it("should honor skipUndefined for symbol keys", () => {
     const key = Symbol("key");
-    const merged = merge.call(
+    const merged: Record<symbol, unknown> = merge.call(
       { skipUndefined: true },
       { [key]: "first" },
       { [key]: undefined },
