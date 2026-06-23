@@ -1,13 +1,14 @@
 import assert from "node:assert";
+import type { AddressInfo } from "node:net";
 import { describe, it } from "vitest";
-import axios from "../../../src/index.ts";
+import axios from "../../src/index.ts";
 import { startHTTPServer, stopHTTPServer } from "../setup/server.js";
 
 describe("QUERY method", () => {
   describe("static axios.query()", () => {
     it("should make a request with the QUERY HTTP method", async () => {
       const response = await axios.query("/test", null, {
-        adapter: async (config) => {
+        adapter: async (config: import("../../src/lib/types.ts").InternalAxiosRequestConfig) => {
           assert.strictEqual(config.method, "query");
           return Promise.resolve({
             data: null,
@@ -30,7 +31,7 @@ describe("QUERY method", () => {
       };
 
       await axios.query("/search", requestBody, {
-        adapter: async (config) => {
+        adapter: async (config: import("../../src/lib/types.ts").InternalAxiosRequestConfig) => {
           assert.deepStrictEqual(config.data, JSON.stringify(requestBody));
           return Promise.resolve({
             data: null,
@@ -50,7 +51,7 @@ describe("QUERY method", () => {
           "X-Custom-Header": "custom-value",
           Authorization: "Bearer token-abc",
         },
-        adapter: async (config) => {
+        adapter: async (config: import("../../src/lib/types.ts").InternalAxiosRequestConfig) => {
           assert.strictEqual(
             config.headers.get("X-Custom-Header"),
             "custom-value",
@@ -78,7 +79,7 @@ describe("QUERY method", () => {
         "/resources",
         { fields: ["name"] },
         {
-          adapter: async (config) => {
+          adapter: async (config: import("../../src/lib/types.ts").InternalAxiosRequestConfig) => {
             assert.strictEqual(config.baseURL, "http://example.com/api");
             assert.strictEqual(config.url, "/resources");
             assert.strictEqual(config.method, "query");
@@ -100,7 +101,7 @@ describe("QUERY method", () => {
         "/test",
         { key: "value" },
         {
-          adapter: async (config) => {
+          adapter: async (config: import("../../src/lib/types.ts").InternalAxiosRequestConfig) => {
             assert.ok(
               config.headers.get("Content-Type").includes("application/json"),
               "Expected Content-Type to include application/json",
@@ -124,7 +125,7 @@ describe("QUERY method", () => {
       const instance = axios.create();
 
       const response = await instance.query("/test", null, {
-        adapter: async (config) => {
+        adapter: async (config: import("../../src/lib/types.ts").InternalAxiosRequestConfig) => {
           assert.strictEqual(config.method, "query");
           return Promise.resolve({
             data: null,
@@ -147,7 +148,7 @@ describe("QUERY method", () => {
 
       await instance.query("/test", null, {
         headers: { "X-Request-Header": "from-request" },
-        adapter: async (config) => {
+        adapter: async (config: import("../../src/lib/types.ts").InternalAxiosRequestConfig) => {
           assert.strictEqual(
             config.headers.get("X-Instance-Header"),
             "from-instance",
@@ -175,7 +176,7 @@ describe("QUERY method", () => {
         method: "query",
         url: "/test",
         data: { selector: "*" },
-        adapter: async (config) => {
+        adapter: async (config: import("../../src/lib/types.ts").InternalAxiosRequestConfig) => {
           assert.strictEqual(config.method, "query");
           assert.deepStrictEqual(
             config.data,
@@ -221,7 +222,7 @@ describe("QUERY method", () => {
 
       try {
         const { data } = await axios.query(
-          `http://localhost:${server.address().port}/search`,
+          `http://localhost:${(server.address() as AddressInfo).port}/search`,
           { selector: "field1" },
         );
 
@@ -255,7 +256,7 @@ describe("QUERY method", () => {
 
       try {
         const { data } = await axios.query(
-          `http://localhost:${server.address().port}/test`,
+          `http://localhost:${(server.address() as AddressInfo).port}/test`,
           null,
           {
             headers: {
@@ -287,7 +288,7 @@ describe("QUERY method", () => {
 
       try {
         const instance = axios.create({
-          baseURL: `http://localhost:${server.address().port}/api`,
+          baseURL: `http://localhost:${(server.address() as AddressInfo).port}/api`,
         });
 
         const { data } = await instance.query("/resources", {
