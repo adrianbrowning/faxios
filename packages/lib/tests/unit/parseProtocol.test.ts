@@ -21,7 +21,7 @@ describe("helpers::parseProtocol", () => {
         "chrome-extension://1234/<pageName>.html": "chrome-extension",
       },
       (expectedProtocol, url) => {
-        assert.strictEqual(parseProtocol(url), expectedProtocol);
+        assert.strictEqual(parseProtocol(url as string), expectedProtocol);
       },
     );
   });
