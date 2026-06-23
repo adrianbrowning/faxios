@@ -106,8 +106,8 @@ describe("core::mergeConfig", () => {
       },
     );
 
-    expect(merged.nestedConfig.propertyOnDefaultConfig).toBe(true);
-    expect(merged.nestedConfig.propertyOnRequestConfig).toBe(true);
+    expect((merged.nestedConfig as Record<string, unknown>).propertyOnDefaultConfig).toBe(true);
+    expect((merged.nestedConfig as Record<string, unknown>).propertyOnRequestConfig).toBe(true);
   });
 
   describe("headers", () => {

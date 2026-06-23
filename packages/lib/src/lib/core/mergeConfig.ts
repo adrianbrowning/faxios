@@ -1,6 +1,6 @@
 "use strict";
 
-import type { AxiosRequestConfig } from "../types.js";
+import type { AxiosRequestConfig, AxiosDefaults } from "../types.js";
 import utils from "../utils.js";
 import AxiosHeaders from "./AxiosHeaders.js";
 
@@ -15,7 +15,7 @@ const headersToObject = (thing: unknown) => (thing instanceof AxiosHeaders ? { .
  *
  * @returns {Object} New object resulting from merging config2 to config1
  */
-export default function mergeConfig(config1: AxiosRequestConfig, config2?: AxiosRequestConfig): AxiosRequestConfig {
+export default function mergeConfig(config1: AxiosRequestConfig | AxiosDefaults | Record<string, unknown>, config2?: AxiosRequestConfig | AxiosDefaults | Record<string, unknown>): AxiosRequestConfig & Record<string, unknown> {
    
   config2 = config2 || {};
 
