@@ -440,7 +440,7 @@ const _global = (() => {
   if (typeof globalThis !== "undefined") return globalThis;
   if (typeof self !== "undefined") return self;
   if (typeof window !== "undefined") return window;
-  return global as unknown as Record<string, unknown>;
+  return global;
 })() as Record<string, unknown> & { addEventListener?: (type: string, listener: (event: Record<string, unknown>) => void, capture?: boolean) => void; postMessage?: (message: unknown, targetOrigin: string) => void; };
 
 const isContextDefined = (context: unknown) => !isUndefined(context) && context !== _global;
