@@ -3,18 +3,23 @@
  */
 import assert from "node:assert";
 import http from "node:http";
-import { describe, it, beforeEach, afterEach, vi } from "vitest";
-import axios from "../../../src/index.ts";
+import type { AddressInfo } from "node:net";
+import type { Server } from "node:http";
+import { describe, it, beforeEach, afterEach } from "vitest";
+import axios from "../../src/index.ts";
 import platform from "../../src/lib/platform/index.js";
+import type { AxiosResponse } from "../../src/lib/types.js";
+
+type AnyInterceptorManager = { use: (fn: (v: unknown) => unknown) => number };
 
 describe("regression", () => {
   describe("issues", () => {
     describe("4999", () => {
       // Depends on network: https://postman-echo.com
       it("should not fail with query parsing", async () => {
-        const { data } = await axios.get(
+        const { data } = (await axios.get(
           "https://postman-echo.com/get?foo1=bar1&foo2=bar2",
-        );
+        )) as AxiosResponse<{ args: Record<string, string> }>;
 
         assert.strictEqual(data.args.foo1, "bar1");
         assert.strictEqual(data.args.foo2, "bar2");
@@ -29,7 +34,7 @@ describe("regression", () => {
           "something-ssr.sig=n4MlwVAaxQAxhbdJO5XbUpDw-lA; path=/; expires=Wed, 12 Apr 2023 12:03:42 GMT; samesite=lax; secure; httponly";
 
         const server = http
-          .createServer((req, res) => {
+          .createServer((_req, res) => {
             res.setHeader("Set-Cookie", [cookie1, cookie2]);
             res.writeHead(200);
             res.write("Hi there");
@@ -39,12 +44,16 @@ describe("regression", () => {
 
         const request = axios.create();
 
-        request.interceptors.response.use((res) => {
-          assert.deepStrictEqual(res.headers["set-cookie"], [cookie1, cookie2]);
+        (request.interceptors.response as AnyInterceptorManager).use((res) => {
+          assert.deepStrictEqual(
+            (res as AxiosResponse).headers["set-cookie"],
+            [cookie1, cookie2],
+          );
+          return res;
         });
 
         try {
-          await request({ url: `http://localhost:${server.address().port}` });
+          await request({ url: `http://localhost:${(server.address() as AddressInfo).port}` });
         } finally {
           server.close();
         }
@@ -55,27 +64,27 @@ describe("regression", () => {
       it("fetch: should have status code in axios error", async () => {
         const isFetchSupported = typeof fetch === "function";
         if (!isFetchSupported) {
-          vi.skip();
+          return;
         }
 
         const server = http
-          .createServer((req, res) => {
+          .createServer((_req, res) => {
             res.statusCode = 400;
             res.end();
           })
           .listen(0);
 
         const instance = axios.create({
-          baseURL: `http://localhost:${server.address().port}`,
+          baseURL: `http://localhost:${(server.address() as AddressInfo).port}`,
           adapter: "fetch",
         });
 
         try {
           await instance.get("/status/400");
         } catch (error) {
-          assert.equal(error.name, "AxiosError");
-          assert.equal(error.isAxiosError, true);
-          assert.equal(error.status, 400);
+          assert.equal((error as { name: string }).name, "AxiosError");
+          assert.equal((error as { isAxiosError: boolean }).isAxiosError, true);
+          assert.equal((error as { status: number }).status, 400);
         } finally {
           server.close();
         }
@@ -83,23 +92,23 @@ describe("regression", () => {
 
       it("http: should have status code in axios error", async () => {
         const server = http
-          .createServer((req, res) => {
+          .createServer((_req, res) => {
             res.statusCode = 400;
             res.end();
           })
           .listen(0);
 
         const instance = axios.create({
-          baseURL: `http://localhost:${server.address().port}`,
+          baseURL: `http://localhost:${(server.address() as AddressInfo).port}`,
           adapter: "http",
         });
 
         try {
           await instance.get("/status/400");
         } catch (error) {
-          assert.equal(error.name, "AxiosError");
-          assert.equal(error.isAxiosError, true);
-          assert.equal(error.status, 400);
+          assert.equal((error as { name: string }).name, "AxiosError");
+          assert.equal((error as { isAxiosError: boolean }).isAxiosError, true);
+          assert.equal((error as { status: number }).status, 400);
         } finally {
           server.close();
         }
@@ -112,40 +121,41 @@ describe("regression", () => {
   // https://github.com/axios/axios/issues/3369
   describe("SSRF SNYK-JS-AXIOS-1038255", () => {
     let fail = false;
-    let proxy;
-    let server;
-    let location;
-    let evilPort;
-    let proxyPort;
+    let proxy: Server;
+    let server: Server;
+    let location: string;
+    let evilPort: number;
+    let proxyPort: number;
 
     beforeEach(() => {
       fail = false;
       server = http
-        .createServer((req, res) => {
+        .createServer((_req, res) => {
           fail = true;
           res.end("rm -rf /");
         })
         .listen(0);
-      evilPort = server.address().port;
+      evilPort = (server.address() as AddressInfo).port;
 
       proxy = http
         .createServer((req, res) => {
           if (
-            new URL(req.url, "http://" + req.headers.host).toString() ===
+            new URL(req.url!, "http://" + req.headers.host).toString() ===
             "http://localhost:" + evilPort + "/"
           ) {
-            return res.end(
+            res.end(
               JSON.stringify({
                 msg: "Protected",
                 headers: req.headers,
               }),
             );
+            return;
           }
           res.writeHead(302, { location });
           res.end();
         })
         .listen(0);
-      proxyPort = proxy.address().port;
+      proxyPort = (proxy.address() as AddressInfo).port;
       location = "http://localhost:" + evilPort;
     });
 
@@ -155,7 +165,7 @@ describe("regression", () => {
     });
 
     it("obeys proxy settings when following redirects", async () => {
-      const response = await axios({
+      const response = (await axios({
         method: "get",
         url: "http://www.google.com/",
         proxy: {
@@ -166,7 +176,7 @@ describe("regression", () => {
             password: "password",
           },
         },
-      });
+      })) as AxiosResponse<{ msg: string; headers: Record<string, string> }>;
 
       assert.strictEqual(fail, false);
       assert.strictEqual(response.data.msg, "Protected");
@@ -183,27 +193,27 @@ describe("regression", () => {
   // https://security.snyk.io/vuln/SNYK-JS-AXIOS-7361793
   // https://github.com/axios/axios/issues/6463
   describe("SSRF SNYK-JS-AXIOS-7361793", () => {
-    let goodServer;
-    let badServer;
-    let goodPort;
-    let badPort;
+    let goodServer: Server;
+    let badServer: Server;
+    let goodPort: number;
+    let badPort: number;
 
     beforeEach(() => {
       goodServer = http
-        .createServer((req, res) => {
+        .createServer((_req, res) => {
           res.write("good");
           res.end();
         })
         .listen(0);
-      goodPort = goodServer.address().port;
+      goodPort = (goodServer.address() as AddressInfo).port;
 
       badServer = http
-        .createServer((req, res) => {
+        .createServer((_req, res) => {
           res.write("bad");
           res.end();
         })
         .listen(0);
-      badPort = badServer.address().port;
+      badPort = (badServer.address() as AddressInfo).port;
     });
 
     afterEach(() => {
@@ -221,15 +231,15 @@ describe("regression", () => {
       try {
         await ssrfAxios.get(`/${userId}`);
       } catch (error) {
-        assert.ok(error.message.startsWith("Invalid URL"));
+        assert.ok((error as { message: string }).message.startsWith("Invalid URL"));
         return;
       }
       assert.fail("Expected an error to be thrown");
     });
 
     describe("client-side mode", () => {
-      let savedHasBrowserEnv;
-      let savedOrigin;
+      let savedHasBrowserEnv: boolean;
+      let savedOrigin: string;
 
       beforeEach(() => {
         assert.ok(platform.hasBrowserEnv !== undefined);
@@ -251,7 +261,10 @@ describe("regression", () => {
 
         const userId = "/localhost:" + String(badPort);
 
-        const response = await ssrfAxios.get(`/${userId}`);
+        const response = (await ssrfAxios.get(`/${userId}`)) as AxiosResponse<string> & {
+          config: { baseURL?: string; url?: string };
+          request: { res: { responseUrl: string } };
+        };
         assert.strictEqual(response.data, "bad");
         assert.strictEqual(
           response.config.baseURL,
