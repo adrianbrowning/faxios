@@ -4,7 +4,7 @@ import Axios from "../../src/lib/core/Axios.js";
 
 describe("Axios", () => {
   describe("handle un-writable error stack", () => {
-    const testUnwritableErrorStack = async (stackAttributes) => {
+    const testUnwritableErrorStack = async (stackAttributes: PropertyDescriptor) => {
       const axios = new Axios({});
       // Mock axios._request to return an Error with an un-writable stack property.
       axios._request = () => {
@@ -16,7 +16,7 @@ describe("Axios", () => {
       try {
         await axios.request("test-url", {});
       } catch (e) {
-        assert.strictEqual(e.message, "test-error");
+        assert.strictEqual((e as Error).message, "test-error");
       }
     };
 
