@@ -1,30 +1,33 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import axios from "../../src/index.js";
+import type { RawAxiosRequestHeaders } from "../../src/lib/types.js";
 
 class MockXMLHttpRequest {
-  constructor() {
-    this.requestHeaders = {};
-    this.responseHeaders = "";
-    this.readyState = 0;
-    this.status = 0;
-    this.statusText = "";
-    this.responseText = "";
-    this.response = null;
-    this.onreadystatechange = null;
-    this.onloadend = null;
-    this.upload = {
-      addEventListener() {},
-    };
-  }
+  requestHeaders: Record<string, string> = {};
+  responseHeaders = "";
+  readyState = 0;
+  status = 0;
+  statusText = "";
+  responseText = "";
+  response: string | null = null;
+  onreadystatechange: (() => void) | null = null;
+  onloadend: (() => void) | null = null;
+  upload = { addEventListener() {} };
+  method?: string;
+  url?: string;
+  async?: boolean;
+  params?: unknown;
 
-  open(method, url, async = true) {
+  constructor() {}
+
+  open(method: string, url: string, async = true) {
     this.method = method;
     this.url = url;
     this.async = async;
   }
 
-  setRequestHeader(key, value) {
+  setRequestHeader(key: string, value: string) {
     this.requestHeaders[key] = value;
   }
 
@@ -34,7 +37,7 @@ class MockXMLHttpRequest {
     return this.responseHeaders;
   }
 
-  send(data) {
+  send(data: unknown) {
     this.params = data;
     requests.push(this);
   }
@@ -44,7 +47,7 @@ class MockXMLHttpRequest {
     statusText = "OK",
     responseText = "",
     responseHeaders = "",
-  } = {}) {
+  }: { status?: number; statusText?: string; responseText?: string; responseHeaders?: string } = {}) {
     this.status = status;
     this.statusText = statusText;
     this.responseText = responseText;
@@ -62,19 +65,19 @@ class MockXMLHttpRequest {
   }
 }
 
-let requests = [];
-let OriginalXMLHttpRequest;
+let requests: MockXMLHttpRequest[] = [];
+let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
-const startRequest = (...args) => {
+const startRequest = (...args: Parameters<typeof axios>) => {
   const promise = axios(...args);
   const request = requests.at(-1);
 
   expect(request).toBeDefined();
 
-  return { request, promise };
+  return { request: request!, promise };
 };
 
-const flushSuccess = async (request, promise) => {
+const flushSuccess = async (request: MockXMLHttpRequest, promise: Promise<unknown>) => {
   request.respondWith({ status: 200 });
   await promise;
 };
@@ -83,7 +86,7 @@ describe("options (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest;
+    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -145,14 +148,15 @@ describe("options (vitest browser)", () => {
     const request = requests.at(-1);
 
     expect(request).toBeDefined();
-    expect(request.url).toBe("http://test.com/foo");
+    expect(request!.url).toBe("http://test.com/foo");
 
-    await flushSuccess(request, promise);
+    await flushSuccess(request!, promise);
   });
 
   it("should warn about baseUrl", async () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     const instance = axios.create({
+      // @ts-expect-error intentionally testing misspelled baseUrl to verify warning
       baseUrl: "http://example.com/",
     });
 
@@ -163,9 +167,9 @@ describe("options (vitest browser)", () => {
     expect(warnSpy).toHaveBeenCalledWith(
       "baseUrl is likely a misspelling of baseURL",
     );
-    expect(request.url).toBe("/foo");
+    expect(request!.url).toBe("/foo");
 
-    await flushSuccess(request, promise);
+    await flushSuccess(request!, promise);
   });
 
   it("should ignore base URL if request URL is absolute", async () => {
@@ -177,9 +181,9 @@ describe("options (vitest browser)", () => {
     const request = requests.at(-1);
 
     expect(request).toBeDefined();
-    expect(request.url).toBe("http://someotherurl.com/");
+    expect(request!.url).toBe("http://someotherurl.com/");
 
-    await flushSuccess(request, promise);
+    await flushSuccess(request!, promise);
   });
 
   it("should combine the URLs if base url and request url exist and allowAbsoluteUrls is false", async () => {
@@ -192,9 +196,9 @@ describe("options (vitest browser)", () => {
     const request = requests.at(-1);
 
     expect(request).toBeDefined();
-    expect(request.url).toBe("http://someurl.com/http://someotherurl.com/");
+    expect(request!.url).toBe("http://someurl.com/http://someotherurl.com/");
 
-    await flushSuccess(request, promise);
+    await flushSuccess(request!, promise);
   });
 
   it("should change only the baseURL of the specified instance", () => {
@@ -212,24 +216,24 @@ describe("options (vitest browser)", () => {
     const instance1 = axios.create();
     const instance2 = axios.create();
 
-    instance1.defaults.headers.common.Authorization = "faketoken";
-    instance2.defaults.headers.common.Authorization = "differentfaketoken";
+    (instance1.defaults.headers.common as RawAxiosRequestHeaders).Authorization = "faketoken";
+    (instance2.defaults.headers.common as RawAxiosRequestHeaders).Authorization = "differentfaketoken";
 
-    instance1.defaults.headers.common["Content-Type"] = "application/xml";
-    instance2.defaults.headers.common["Content-Type"] =
+    (instance1.defaults.headers.common as RawAxiosRequestHeaders)["Content-Type"] = "application/xml";
+    (instance2.defaults.headers.common as RawAxiosRequestHeaders)["Content-Type"] =
       "application/x-www-form-urlencoded";
 
-    expect(axios.defaults.headers.common.Authorization).toBeUndefined();
-    expect(instance1.defaults.headers.common.Authorization).toBe("faketoken");
-    expect(instance2.defaults.headers.common.Authorization).toBe(
+    expect((axios.defaults.headers.common as RawAxiosRequestHeaders).Authorization).toBeUndefined();
+    expect((instance1.defaults.headers.common as RawAxiosRequestHeaders).Authorization).toBe("faketoken");
+    expect((instance2.defaults.headers.common as RawAxiosRequestHeaders).Authorization).toBe(
       "differentfaketoken",
     );
 
-    expect(axios.defaults.headers.common["Content-Type"]).toBeUndefined();
-    expect(instance1.defaults.headers.common["Content-Type"]).toBe(
+    expect((axios.defaults.headers.common as RawAxiosRequestHeaders)["Content-Type"]).toBeUndefined();
+    expect((instance1.defaults.headers.common as RawAxiosRequestHeaders)["Content-Type"]).toBe(
       "application/xml",
     );
-    expect(instance2.defaults.headers.common["Content-Type"]).toBe(
+    expect((instance2.defaults.headers.common as RawAxiosRequestHeaders)["Content-Type"]).toBe(
       "application/x-www-form-urlencoded",
     );
   });
