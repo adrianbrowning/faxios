@@ -111,7 +111,7 @@ describe("xsrf (vitest browser)", () => {
     setXsrfCookie("12345");
 
     const request = await sendRequest("/foo", {
-      xsrfCookieName: null,
+      xsrfCookieName: undefined,
     });
 
     expect(
@@ -123,7 +123,7 @@ describe("xsrf (vitest browser)", () => {
     const readSpy = vi.spyOn(cookies, "read");
 
     await sendRequest("/foo", {
-      xsrfCookieName: null,
+      xsrfCookieName: undefined,
     });
 
     expect(readSpy).not.toHaveBeenCalled();
