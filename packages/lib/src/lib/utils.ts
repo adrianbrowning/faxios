@@ -308,7 +308,7 @@ function getGlobal(): Record<string, unknown> {
   // @ts-expect-error window may not exist in all environments
    
   if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
+  if (typeof global !== "undefined") return global as unknown as Record<string, unknown>;
   return {};
 }
 
