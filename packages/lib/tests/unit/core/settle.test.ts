@@ -1,16 +1,16 @@
 import { describe, it, expect, vi } from "vitest";
 import AxiosError from "../../../src/lib/core/AxiosError.js";
 import settle from "../../../src/lib/core/settle.js";
+import type { AxiosResponse } from "../../../src/lib/types.js";
 
-/**
- * Builds a minimal response object that settle() expects.
- * @param {number} status - HTTP status code
- * @param {Function} [validateStatus] - optional custom validator
- */
-function makeResponse(status, validateStatus = (s) => s >= 200 && s < 300) {
+function makeResponse(
+  status: number,
+  validateStatus: ((s: number) => boolean) | null = (s) => s >= 200 && s < 300,
+): AxiosResponse {
   return {
     status,
-    config: { validateStatus },
+    statusText: "",
+    config: { validateStatus } as AxiosResponse["config"],
     request: {},
     data: null,
     headers: {},
@@ -55,7 +55,7 @@ describe("core::settle", () => {
         makeResponse(400, () => false),
       );
       expect(reject).toHaveBeenCalledTimes(1);
-      const error = reject.mock.calls[0][0];
+      const error = reject.mock.calls[0]![0];
       expect(error).toBeInstanceOf(AxiosError);
       expect(error.code).toBe(AxiosError.ERR_BAD_REQUEST);
     });
@@ -68,7 +68,7 @@ describe("core::settle", () => {
         reject,
         makeResponse(404, () => false),
       );
-      const error = reject.mock.calls[0][0];
+      const error = reject.mock.calls[0]![0];
       expect(error.code).toBe(AxiosError.ERR_BAD_REQUEST);
     });
 
@@ -80,7 +80,7 @@ describe("core::settle", () => {
         reject,
         makeResponse(499, () => false),
       );
-      const error = reject.mock.calls[0][0];
+      const error = reject.mock.calls[0]![0];
       expect(error.code).toBe(AxiosError.ERR_BAD_REQUEST);
     });
 
@@ -92,7 +92,7 @@ describe("core::settle", () => {
         reject,
         makeResponse(500, () => false),
       );
-      const error = reject.mock.calls[0][0];
+      const error = reject.mock.calls[0]![0];
       expect(error.code).toBe(AxiosError.ERR_BAD_RESPONSE);
     });
 
@@ -104,7 +104,7 @@ describe("core::settle", () => {
         reject,
         makeResponse(503, () => false),
       );
-      const error = reject.mock.calls[0][0];
+      const error = reject.mock.calls[0]![0];
       expect(error.code).toBe(AxiosError.ERR_BAD_RESPONSE);
     });
 
@@ -118,7 +118,7 @@ describe("core::settle", () => {
         reject,
         makeResponse(301, () => false),
       );
-      const error = reject.mock.calls[0][0];
+      const error = reject.mock.calls[0]![0];
       expect(error.code).toBeDefined();
       expect(error.code).toBe(AxiosError.ERR_BAD_RESPONSE);
     });
@@ -131,7 +131,7 @@ describe("core::settle", () => {
         reject,
         makeResponse(200, () => false),
       );
-      const error = reject.mock.calls[0][0];
+      const error = reject.mock.calls[0]![0];
       expect(error.code).toBeDefined();
       expect(error.code).toBe(AxiosError.ERR_BAD_RESPONSE);
     });
@@ -144,7 +144,7 @@ describe("core::settle", () => {
         reject,
         makeResponse(600, () => false),
       );
-      const error = reject.mock.calls[0][0];
+      const error = reject.mock.calls[0]![0];
       expect(error.code).toBeDefined();
       expect(error.code).toBe(AxiosError.ERR_BAD_RESPONSE);
     });
@@ -159,7 +159,7 @@ describe("core::settle", () => {
         reject,
         makeResponse(404, () => false),
       );
-      const error = reject.mock.calls[0][0];
+      const error = reject.mock.calls[0]![0];
       expect(error.message).toBe("Request failed with status code 404");
     });
   });
