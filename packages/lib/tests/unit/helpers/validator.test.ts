@@ -13,13 +13,14 @@ describe("validator::assertOptions", () => {
         {
           y: validator.validators.boolean,
         },
+        false,
       );
     } catch (err) {
       error = err;
     }
     expect(error).toBeInstanceOf(AxiosError);
-    expect(error.message).toBe("Unknown option x");
-    expect(error.code).toBe(AxiosError.ERR_BAD_OPTION);
+    expect((error as AxiosError).message).toBe("Unknown option x");
+    expect((error as AxiosError).code).toBe(AxiosError.ERR_BAD_OPTION);
 
     expect(() => {
       validator.assertOptions(
@@ -30,6 +31,7 @@ describe("validator::assertOptions", () => {
           x: validator.validators.boolean,
           y: validator.validators.boolean,
         },
+        false,
       );
     }).not.toThrow(new Error("Unknown option x"));
   });
@@ -44,13 +46,14 @@ describe("validator::assertOptions", () => {
         {
           x: validator.validators.boolean,
         },
+        false,
       );
     } catch (err) {
       error = err;
     }
     expect(error).toBeInstanceOf(AxiosError);
-    expect(error.message).toBe("option x must be a boolean");
-    expect(error.code).toBe(AxiosError.ERR_BAD_OPTION_VALUE);
+    expect((error as AxiosError).message).toBe("option x must be a boolean");
+    expect((error as AxiosError).code).toBe(AxiosError.ERR_BAD_OPTION_VALUE);
 
     expect(() => {
       validator.assertOptions(
@@ -61,6 +64,7 @@ describe("validator::assertOptions", () => {
           x: validator.validators.boolean,
           y: validator.validators.boolean,
         },
+        false,
       );
     }).not.toThrow();
   });
