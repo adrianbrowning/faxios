@@ -50,6 +50,7 @@ const deprecatedWarnings: Record<string, boolean | undefined> = {};
     if (version && opt && !deprecatedWarnings[opt]) {
       deprecatedWarnings[opt] = true;
 
+      // eslint-disable-next-line no-console
       console.warn(
         formatMessage(
           opt,
@@ -66,6 +67,7 @@ const deprecatedWarnings: Record<string, boolean | undefined> = {};
   // eslint-disable-next-line sonarjs/function-return-type
   return (_value: unknown, opt?: string): boolean | string => {
 
+    // eslint-disable-next-line no-console
     console.warn(`${opt ?? ""} is likely a misspelling of ${correctSpelling}`);
     return true;
   };
