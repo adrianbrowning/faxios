@@ -31,7 +31,7 @@ describe("core::transformData", () => {
         data: "",
         headers,
       },
-      [(value, currentHeaders) => value + currentHeaders["content-type"]],
+      [(value, currentHeaders) => (value as string) + (currentHeaders as Record<string, string>)["content-type"]],
     );
 
     expect(data).toBe("foo/bar");
@@ -40,7 +40,7 @@ describe("core::transformData", () => {
   it("passes status code through to transformers", () => {
     const data = transformData.call(
       {},
-      [(value, _headers, status) => value + status],
+      [(value, _headers, status) => (value as string) + (status as number)],
       { data: "", status: 200 },
     );
 
