@@ -339,7 +339,7 @@ describe("supports http with nodejs", () => {
       httpAgent: agent,
       maxRedirects: 0,
       proxy: false,
-      signal: controller.signal,
+      signal: controller.signal as any,
       timeout,
     });
     const guard = new Promise((_resolve, reject) => {
@@ -375,7 +375,7 @@ describe("supports http with nodejs", () => {
         httpAgent: agent,
         maxRedirects: 0,
         proxy: false,
-        signal: controller.signal,
+        signal: controller.signal as any,
         timeout: "0" as any,
       })
       .then(
@@ -5416,7 +5416,7 @@ describe("supports http with nodejs", () => {
           buf,
           {
             responseType: "stream",
-            signal: controller.signal,
+            signal: controller.signal as any,
             maxRedirects: 0,
           },
         ) as any;
