@@ -47,6 +47,26 @@ function serializeObjectPayload(
   return undefined;
 }
 
+function throwOnStrictJSONError(
+  e: unknown,
+  strictJSONParsing: boolean,
+  config: InternalAxiosRequestConfig
+): void {
+  if (!strictJSONParsing) return;
+  if ((e as { name?: string }).name === "SyntaxError") {
+    throw AxiosError.from(
+      e as Error,
+      AxiosError.ERR_BAD_RESPONSE,
+      config,
+      null,
+      (config as unknown as Record<string, unknown>)["response"] as
+        | AxiosResponse
+        | undefined
+    );
+  }
+  throw e;
+}
+
 function stringifySafely(
   rawValue: unknown,
   parser?: ((s: string) => unknown) | null,
@@ -158,20 +178,7 @@ const defaults: AxiosDefaults = {
           return JSON.parse(data as string, utils.hasOwnProp(this, "parseReviver") ? this.parseReviver : undefined);
         }
         catch (e) {
-          if (strictJSONParsing) {
-            if ((e as { name?: string; }).name === "SyntaxError") {
-              throw AxiosError.from(
-                e as Error,
-                AxiosError.ERR_BAD_RESPONSE,
-                this,
-                null,
-                (this as unknown as Record<string, unknown>)["response"] as
-                  | AxiosResponse
-                  | undefined
-              );
-            }
-            throw e;
-          }
+          throwOnStrictJSONError(e, strictJSONParsing, this);
         }
       }
 
