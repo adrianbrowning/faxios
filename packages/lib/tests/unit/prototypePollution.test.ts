@@ -1,6 +1,7 @@
 /* eslint-disable no-prototype-builtins */
 import assert from "node:assert";
 import http from "node:http";
+import type { AddressInfo } from "node:net";
 import { afterEach, describe, it } from "vitest";
 import axios from "../../src/index.ts";
 import AxiosError from "../../src/lib/core/AxiosError.js";
@@ -10,56 +11,72 @@ import defaults from "../../src/lib/defaults/index.js";
 import resolveConfig from "../../src/lib/helpers/resolveConfig.js";
 import utils from "../../src/lib/utils.js";
 
+// ponytail: only augment Object.prototype with non-conflicting test-only keys.
+// All axios config keys overlap with AxiosRequestConfig and are accessed via ObjProto.
+declare global {
+  interface Object {
+    polluted?: unknown;
+    customNested?: unknown;
+  }
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ObjProto = Object.prototype as any;
+
+type ServerLike = http.Server;
+// ponytail: cast for test ergonomics — axios.get returns Promise<unknown> in this codebase
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ax = axios as any;
+
 describe("Prototype Pollution Protection", () => {
   afterEach(() => {
     // Clean up any pollution that might have occurred.
     delete Object.prototype.polluted;
-    delete Object.prototype.parseReviver;
-    delete Object.prototype.transport;
-    delete Object.prototype.transformRequest;
-    delete Object.prototype.transformResponse;
-    delete Object.prototype.formSerializer;
-    delete Object.prototype.httpVersion;
-    delete Object.prototype.lookup;
-    delete Object.prototype.family;
-    delete Object.prototype.http2Options;
-    delete Object.prototype.validateStatus;
-    delete Object.prototype.auth;
-    delete Object.prototype.baseURL;
-    delete Object.prototype.socketPath;
-    delete Object.prototype.beforeRedirect;
-    delete Object.prototype.sensitiveHeaders;
-    delete Object.prototype.insecureHTTPParser;
-    delete Object.prototype.adapter;
-    delete Object.prototype.httpAgent;
-    delete Object.prototype.httpsAgent;
-    delete Object.prototype.proxy;
-    delete Object.prototype.maxContentLength;
-    delete Object.prototype.maxBodyLength;
-    delete Object.prototype.maxRedirects;
-    delete Object.prototype.maxRate;
-    delete Object.prototype.timeout;
-    delete Object.prototype.transitional;
-    delete Object.prototype.timeoutErrorMessage;
-    delete Object.prototype.env;
-    delete Object.prototype.cancelToken;
-    delete Object.prototype.signal;
-    delete Object.prototype.decompress;
-    delete Object.prototype.params;
-    delete Object.prototype.paramsSerializer;
-    delete Object.prototype.method;
-    delete Object.prototype.withCredentials;
-    delete Object.prototype.responseType;
-    delete Object.prototype.fetchOptions;
-    delete Object.prototype.username;
-    delete Object.prototype.password;
-    delete Object.prototype.hostname;
-    delete Object.prototype.host;
-    delete Object.prototype.port;
-    delete Object.prototype.protocol;
-    delete Object.prototype.get;
-    delete Object.prototype.set;
-    delete Object.prototype.headers;
+    delete ObjProto.parseReviver;
+    delete ObjProto.transport;
+    delete ObjProto.transformRequest;
+    delete ObjProto.transformResponse;
+    delete ObjProto.formSerializer;
+    delete ObjProto.httpVersion;
+    delete ObjProto.lookup;
+    delete ObjProto.family;
+    delete ObjProto.http2Options;
+    delete ObjProto.validateStatus;
+    delete ObjProto.auth;
+    delete ObjProto.baseURL;
+    delete ObjProto.socketPath;
+    delete ObjProto.beforeRedirect;
+    delete ObjProto.sensitiveHeaders;
+    delete ObjProto.insecureHTTPParser;
+    delete ObjProto.adapter;
+    delete ObjProto.httpAgent;
+    delete ObjProto.httpsAgent;
+    delete ObjProto.proxy;
+    delete ObjProto.maxContentLength;
+    delete ObjProto.maxBodyLength;
+    delete ObjProto.maxRedirects;
+    delete ObjProto.maxRate;
+    delete ObjProto.timeout;
+    delete ObjProto.transitional;
+    delete ObjProto.timeoutErrorMessage;
+    delete ObjProto.env;
+    delete ObjProto.cancelToken;
+    delete ObjProto.signal;
+    delete ObjProto.decompress;
+    delete ObjProto.params;
+    delete ObjProto.paramsSerializer;
+    delete ObjProto.method;
+    delete ObjProto.withCredentials;
+    delete ObjProto.responseType;
+    delete ObjProto.fetchOptions;
+    delete ObjProto.username;
+    delete ObjProto.password;
+    delete ObjProto.hostname;
+    delete ObjProto.host;
+    delete ObjProto.port;
+    delete ObjProto.protocol;
+    delete ObjProto.get;
+    delete ObjProto.set;
+    delete ObjProto.headers;
     delete Object.prototype.customNested;
   });
 
@@ -96,7 +113,8 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter __proto__ key in nested objects", () => {
-      const result = utils.merge(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = utils.merge(
         {},
         {
           headers: {
@@ -112,7 +130,8 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter constructor key in nested objects", () => {
-      const result = utils.merge(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = utils.merge(
         {},
         {
           headers: {
@@ -128,7 +147,8 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter prototype key in nested objects", () => {
-      const result = utils.merge(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = utils.merge(
         {},
         {
           headers: {
@@ -143,7 +163,8 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter dangerous keys in deeply nested objects", () => {
-      const result = utils.merge(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = utils.merge(
         {},
         {
           level1: {
@@ -165,7 +186,8 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should still merge regular properties correctly", () => {
-      const result = utils.merge({ a: 1, b: { c: 2 } }, { b: { d: 3 }, e: 4 });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = utils.merge({ a: 1, b: { c: 2 } }, { b: { d: 3 }, e: 4 });
 
       assert.strictEqual(result.a, 1);
       assert.strictEqual(result.b.c, 2);
@@ -185,7 +207,8 @@ describe("Prototype Pollution Protection", () => {
       const malicious = JSON.parse(
         '{"headers": {"constructor": {"prototype": {"polluted": "yes"}}}}',
       );
-      const result = utils.merge({}, malicious);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = utils.merge({}, malicious);
 
       assert.strictEqual(Object.prototype.polluted, undefined);
       assert.strictEqual(result.headers.hasOwnProperty("constructor"), false);
@@ -212,7 +235,8 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter dangerous keys in headers", () => {
-      const result = mergeConfig(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = mergeConfig(
         {},
         {
           headers: {
@@ -228,7 +252,8 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter dangerous keys in custom config properties", () => {
-      const result = mergeConfig(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = mergeConfig(
         {},
         {
           customProp: {
@@ -264,7 +289,8 @@ describe("Prototype Pollution Protection", () => {
         },
       };
 
-      const result = mergeConfig(config1, config2);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = mergeConfig(config1, config2);
 
       assert.strictEqual(result.baseURL, "https://api.example.com");
       assert.strictEqual(result.url, "/users");
@@ -280,7 +306,7 @@ describe("Prototype Pollution Protection", () => {
     // replace the safe defaults through inherited reads during merge.
     it("should not inherit polluted transformRequest from Object.prototype", () => {
       const polluted = () => "attacker";
-      Object.prototype.transformRequest = polluted;
+      ObjProto.transformRequest = polluted;
 
       const result = mergeConfig(
         { transformRequest: [(d) => d] },
@@ -293,7 +319,7 @@ describe("Prototype Pollution Protection", () => {
 
     it("should not inherit polluted transformResponse from Object.prototype", () => {
       const polluted = () => "attacker";
-      Object.prototype.transformResponse = polluted;
+      ObjProto.transformResponse = polluted;
 
       const result = mergeConfig(
         { transformResponse: [(d) => d] },
@@ -309,17 +335,17 @@ describe("Prototype Pollution Protection", () => {
   describe("defaults.transformResponse parseReviver", () => {
     it("should ignore Object.prototype.parseReviver when parsing JSON", () => {
       let reviverCalled = false;
-      Object.prototype.parseReviver = function polluted(k, v) {
+      ObjProto.parseReviver = function polluted(k: unknown, v: unknown) {
         reviverCalled = true;
         if (k === "role") return "admin";
         return v;
       };
 
       const ctx = { transitional: defaults.transitional };
-      const result = defaults.transformResponse[0].call(
-        ctx,
-        '{"role":"user","balance":100}',
-      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const transformFn = (defaults.transformResponse as any[])[0];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = transformFn.call(ctx, '{"role":"user","balance":100}');
 
       assert.strictEqual(reviverCalled, false);
       assert.strictEqual(result.role, "user");
@@ -327,13 +353,14 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should ignore Object.prototype.responseType", () => {
-      Object.prototype.responseType = "json";
+      ObjProto.responseType = "json";
       const ctx = { transitional: defaults.transitional };
       // Non-JSON string body must be returned as-is; polluted responseType must
       // not force strict JSON parsing.
-      const result = defaults.transformResponse[0].call(ctx, "plain text");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = (defaults.transformResponse as any[])[0].call(ctx, "plain text");
       assert.strictEqual(result, "plain text");
-      delete Object.prototype.responseType;
+      delete ObjProto.responseType;
     });
   });
 
@@ -341,7 +368,7 @@ describe("Prototype Pollution Protection", () => {
   // Object.prototype (was using the `in` operator which traverses the chain).
   describe("validateStatus merge", () => {
     it("should not inherit a polluted validateStatus during mergeConfig", () => {
-      Object.prototype.validateStatus = () => true;
+      ObjProto.validateStatus = () => true;
 
       const merged = mergeConfig(defaults, { url: "/x" });
 
@@ -349,27 +376,27 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should keep 4xx/5xx responses rejected when Object.prototype.validateStatus is polluted", async () => {
-      Object.prototype.validateStatus = () => true;
+      ObjProto.validateStatus = () => true;
 
-      const server = http.createServer((req, res) => {
+      const server = http.createServer((_req, res) => {
         res.writeHead(401, { "Content-Type": "application/json" });
         res.end('{"error":"unauthorized"}');
       });
 
-      await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
-      const { port } = server.address();
+      await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", () => resolve()));
+      const { port } = (server.address() as AddressInfo);
 
       try {
         let threw = false;
         try {
-          await axios.get(`http://127.0.0.1:${port}/`);
+          await ax.get(`http://127.0.0.1:${port}/`);
         } catch (err) {
           threw = true;
-          assert.strictEqual(err.response.status, 401);
+          assert.strictEqual((err as { response: { status: number } }).response.status, 401);
         }
         assert.strictEqual(threw, true);
       } finally {
-        await new Promise((resolve) => server.close(resolve));
+        await new Promise<void>((resolve) => server.close(() => resolve()));
       }
     }, 10000);
   });
@@ -379,8 +406,8 @@ describe("Prototype Pollution Protection", () => {
   describe("parseReviver end-to-end", () => {
     it("should not let Object.prototype.parseReviver tamper with JSON responses", async () => {
       let reviverCalled = false;
-      const stolen = {};
-      Object.prototype.parseReviver = function polluted(key, value) {
+      const stolen: Record<string, unknown> = {};
+      ObjProto.parseReviver = function polluted(key: string, value: unknown) {
         reviverCalled = true;
         if (key && typeof value !== "object") stolen[key] = value;
         if (key === "isAdmin") return true;
@@ -397,22 +424,22 @@ describe("Prototype Pollution Protection", () => {
         apiKey: "sk-secret-internal-key",
       };
 
-      const server = http.createServer((req, res) => {
+      const server = http.createServer((_req, res) => {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify(payload));
       });
 
-      await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
-      const { port } = server.address();
+      await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", () => resolve()));
+      const { port } = (server.address() as AddressInfo);
 
       try {
-        const res = await axios.get(`http://127.0.0.1:${port}/`);
+        const res = await ax.get(`http://127.0.0.1:${port}/`);
 
         assert.strictEqual(reviverCalled, false);
         assert.deepStrictEqual(res.data, payload);
         assert.deepStrictEqual(stolen, {});
       } finally {
-        await new Promise((resolve) => server.close(resolve));
+        await new Promise<void>((resolve) => server.close(() => resolve()));
       }
     }, 10000);
   });
@@ -422,27 +449,27 @@ describe("Prototype Pollution Protection", () => {
   describe("http adapter prototype reads", () => {
     it("should not invoke Object.prototype.transport on a request", async () => {
       let hijackCalled = false;
-      Object.prototype.transport = {
-        request(options, handleResponse) {
+      ObjProto.transport = {
+        request(options: http.RequestOptions, handleResponse: (res: http.IncomingMessage) => void) {
           hijackCalled = true;
           return http.request(options, handleResponse);
         },
       };
 
-      const server = http.createServer((req, res) => {
+      const server = http.createServer((_req, res) => {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end('{"ok":true}');
       });
 
-      await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
-      const { port } = server.address();
+      await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", () => resolve()));
+      const { port } = (server.address() as AddressInfo);
 
       try {
-        const res = await axios.get(`http://127.0.0.1:${port}/`);
+        const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.data.ok, true);
         assert.strictEqual(hijackCalled, false);
       } finally {
-        await new Promise((resolve) => server.close(resolve));
+        await new Promise<void>((resolve) => server.close(() => resolve()));
       }
     }, 10000);
   });
@@ -452,7 +479,7 @@ describe("Prototype Pollution Protection", () => {
   // allowing prototype pollution gadgets (auth, baseURL, socketPath,
   // beforeRedirect, insecureHTTPParser).
   describe("http adapter gadgets", () => {
-    async function startServer(handler) {
+    async function startServer(handler?: http.RequestListener): Promise<ServerLike> {
       return new Promise((resolve) => {
         const server = http.createServer(
           handler ||
@@ -465,18 +492,18 @@ describe("Prototype Pollution Protection", () => {
       });
     }
 
-    async function stopServer(server) {
-      return new Promise((resolve) => server.close(resolve));
+    async function stopServer(server: ServerLike): Promise<void> {
+      return new Promise((resolve) => server.close(() => resolve()));
     }
 
     it("should not pick up Object.prototype.auth as an Authorization header", async () => {
-      Object.prototype.auth = { username: "attacker", password: "exfil" };
+      ObjProto.auth = { username: "attacker", password: "exfil" };
 
       const server = await startServer();
-      const { port } = server.address();
+      const { port } = (server.address() as AddressInfo);
 
       try {
-        const res = await axios.get(`http://127.0.0.1:${port}/api`);
+        const res = await ax.get(`http://127.0.0.1:${port}/api`);
         assert.strictEqual(res.data.headers.authorization, undefined);
       } finally {
         await stopServer(server);
@@ -484,13 +511,13 @@ describe("Prototype Pollution Protection", () => {
     }, 10000);
 
     it("should not pick up Object.prototype.socketPath and redirect the request", async () => {
-      Object.prototype.socketPath = "/tmp/axios-should-never-be-used.sock";
+      ObjProto.socketPath = "/tmp/axios-should-never-be-used.sock";
 
       const server = await startServer();
-      const { port } = server.address();
+      const { port } = (server.address() as AddressInfo);
 
       try {
-        const res = await axios.get(`http://127.0.0.1:${port}/api`);
+        const res = await ax.get(`http://127.0.0.1:${port}/api`);
         assert.strictEqual(res.status, 200);
         assert.strictEqual(res.data.url, "/api");
       } finally {
@@ -500,23 +527,23 @@ describe("Prototype Pollution Protection", () => {
 
     it("should not invoke Object.prototype.beforeRedirect during redirects", async () => {
       let hijackCalled = false;
-      Object.prototype.beforeRedirect = function polluted() {
+      ObjProto.beforeRedirect = function polluted() {
         hijackCalled = true;
       };
 
       const target = await startServer();
-      const { port: targetPort } = target.address();
+      const { port: targetPort } = (target.address() as AddressInfo);
 
-      const redirector = await startServer((req, res) => {
+      const redirector = await startServer((_req, res) => {
         res.writeHead(302, {
           Location: `http://127.0.0.1:${targetPort}/final`,
         });
         res.end();
       });
-      const { port: redirectorPort } = redirector.address();
+      const { port: redirectorPort } = (redirector.address() as AddressInfo);
 
       try {
-        const res = await axios.get(`http://127.0.0.1:${redirectorPort}/start`);
+        const res = await ax.get(`http://127.0.0.1:${redirectorPort}/start`);
         assert.strictEqual(res.status, 200);
         assert.strictEqual(hijackCalled, false);
       } finally {
@@ -526,29 +553,29 @@ describe("Prototype Pollution Protection", () => {
     }, 10000);
 
     it("should not pick up Object.prototype.sensitiveHeaders during redirects", async () => {
-      Object.prototype.sensitiveHeaders = ["X-Secret"];
-      let capturedHeaders;
+      ObjProto.sensitiveHeaders = ["X-Secret"];
+      let capturedHeaders: http.IncomingHttpHeaders | undefined;
 
       const target = await startServer((req, res) => {
         capturedHeaders = req.headers;
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end('{"ok":true}');
       });
-      const { port: targetPort } = target.address();
+      const { port: targetPort } = (target.address() as AddressInfo);
 
-      const redirector = await startServer((req, res) => {
+      const redirector = await startServer((_req, res) => {
         res.writeHead(302, {
           Location: `http://127.0.0.1:${targetPort}/final`,
         });
         res.end();
       });
-      const { port: redirectorPort } = redirector.address();
+      const { port: redirectorPort } = (redirector.address() as AddressInfo);
 
       try {
-        await axios.get(`http://127.0.0.1:${redirectorPort}/start`, {
+        await ax.get(`http://127.0.0.1:${redirectorPort}/start`, {
           headers: { "X-Secret": "keep" },
         });
-        assert.strictEqual(capturedHeaders["x-secret"], "keep");
+        assert.strictEqual(capturedHeaders!["x-secret"], "keep");
       } finally {
         await stopServer(redirector);
         await stopServer(target);
@@ -563,7 +590,7 @@ describe("Prototype Pollution Protection", () => {
       // payload is parsed successfully — so if Object.prototype.insecureHTTPParser
       // were picked up, the request would succeed. The request must fail when
       // the gadget is properly blocked.
-      Object.prototype.insecureHTTPParser = true;
+      ObjProto.insecureHTTPParser = true;
 
       const net = await import("node:net");
       const malformedPayload =
@@ -572,24 +599,24 @@ describe("Prototype Pollution Protection", () => {
         "Content-Length: 2\n" +
         "\n" +
         "{}";
-      const malformed = await new Promise((resolve) => {
+      const malformed = await new Promise<import("node:net").Server>((resolve) => {
         const srv = net.createServer((socket) => {
           socket.once("data", () => socket.end(malformedPayload));
         });
         srv.listen(0, "127.0.0.1", () => resolve(srv));
       });
-      const { port } = malformed.address();
+      const { port } = (malformed.address() as AddressInfo);
 
       try {
         let threw = false;
         let caughtCode = "";
         try {
-          await axios.get(`http://127.0.0.1:${port}/`, {
+          await ax.get(`http://127.0.0.1:${port}/`, {
             transitional: { clarifyTimeoutError: false },
           });
         } catch (err) {
           threw = true;
-          caughtCode = String(err && (err.code || err.message));
+          caughtCode = String(err && ((err as NodeJS.ErrnoException).code || (err as Error).message));
         }
         assert.strictEqual(
           threw,
@@ -607,7 +634,7 @@ describe("Prototype Pollution Protection", () => {
           `expected an HPE_* parser error, got: ${caughtCode}`,
         );
       } finally {
-        await new Promise((resolve) => malformed.close(resolve));
+        await new Promise<void>((resolve) => malformed.close(() => resolve()));
       }
     }, 10000);
 
@@ -616,16 +643,16 @@ describe("Prototype Pollution Protection", () => {
       // URL instance from the environment proxy or a plain object without an own `auth`,
       // a polluted Object.prototype.auth would otherwise be base64-encoded into the
       // Proxy-Authorization header, leaking attacker-controlled credentials.
-      Object.prototype.auth = { username: "attacker", password: "exfil" };
+      ObjProto.auth = { username: "attacker", password: "exfil" };
 
       const proxy = await startServer();
-      const { port: proxyPort } = proxy.address();
+      const { port: proxyPort } = (proxy.address() as AddressInfo);
 
       const target = await startServer();
-      const { port: targetPort } = target.address();
+      const { port: targetPort } = (target.address() as AddressInfo);
 
       try {
-        const res = await axios.get(`http://127.0.0.1:${targetPort}/api`, {
+        const res = await ax.get(`http://127.0.0.1:${targetPort}/api`, {
           proxy: { host: "127.0.0.1", port: proxyPort, protocol: "http" },
         });
         assert.strictEqual(res.status, 200);
@@ -644,17 +671,17 @@ describe("Prototype Pollution Protection", () => {
       // The setProxy username/password branch builds basic creds from `proxy.username`
       // and `proxy.password`. For a plain object proxy, both reads must be guarded
       // against prototype pollution.
-      Object.prototype.username = "attacker";
-      Object.prototype.password = "exfil";
+      ObjProto.username = "attacker";
+      ObjProto.password = "exfil";
 
       const proxy = await startServer();
-      const { port: proxyPort } = proxy.address();
+      const { port: proxyPort } = (proxy.address() as AddressInfo);
 
       const target = await startServer();
-      const { port: targetPort } = target.address();
+      const { port: targetPort } = (target.address() as AddressInfo);
 
       try {
-        const res = await axios.get(`http://127.0.0.1:${targetPort}/api`, {
+        const res = await ax.get(`http://127.0.0.1:${targetPort}/api`, {
           proxy: { host: "127.0.0.1", port: proxyPort, protocol: "http" },
         });
         assert.strictEqual(res.status, 200);
@@ -681,20 +708,20 @@ describe("Prototype Pollution Protection", () => {
     // Critically, hijackHit must always be false.
     it("should not hijack relative-URL requests via Object.prototype.baseURL", async () => {
       let hijackHit = false;
-      const hijacker = http.createServer((req, res) => {
+      const hijacker = http.createServer((_req, res) => {
         hijackHit = true;
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end('{"hijacked":true}');
       });
-      await new Promise((resolve) => hijacker.listen(0, "127.0.0.1", resolve));
-      const { port: hijackerPort } = hijacker.address();
+      await new Promise<void>((resolve) => hijacker.listen(0, "127.0.0.1", () => resolve()));
+      const { port: hijackerPort } = (hijacker.address() as AddressInfo);
 
-      Object.prototype.baseURL = `http://127.0.0.1:${hijackerPort}`;
+      ObjProto.baseURL = `http://127.0.0.1:${hijackerPort}`;
 
       try {
         let threw = false;
         try {
-          await axios.get("/api");
+          await ax.get("/api");
         } catch (_err) {
           threw = true;
         }
@@ -703,7 +730,7 @@ describe("Prototype Pollution Protection", () => {
         assert.strictEqual(hijackHit, false);
         assert.strictEqual(threw, true);
       } finally {
-        await new Promise((resolve) => hijacker.close(resolve));
+        await new Promise<void>((resolve) => hijacker.close(() => resolve()));
       }
     }, 10000);
 
@@ -711,29 +738,29 @@ describe("Prototype Pollution Protection", () => {
     // even for a fully-qualified requested URL.
     it("should not hijack requests via Object.prototype.baseURL with allowAbsoluteUrls:false", async () => {
       let hijackHit = false;
-      const hijacker = http.createServer((req, res) => {
+      const hijacker = http.createServer((_req, res) => {
         hijackHit = true;
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end('{"hijacked":true}');
       });
-      await new Promise((resolve) => hijacker.listen(0, "127.0.0.1", resolve));
-      const { port: hijackerPort } = hijacker.address();
+      await new Promise<void>((resolve) => hijacker.listen(0, "127.0.0.1", () => resolve()));
+      const { port: hijackerPort } = (hijacker.address() as AddressInfo);
 
-      const target = http.createServer((req, res) => {
+      const target = http.createServer((_req, res) => {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end('{"ok":true}');
       });
-      await new Promise((resolve) => target.listen(0, "127.0.0.1", resolve));
-      const { port: targetPort } = target.address();
+      await new Promise<void>((resolve) => target.listen(0, "127.0.0.1", () => resolve()));
+      const { port: targetPort } = (target.address() as AddressInfo);
 
-      Object.prototype.baseURL = `http://127.0.0.1:${hijackerPort}`;
+      ObjProto.baseURL = `http://127.0.0.1:${hijackerPort}`;
 
       try {
         // If the gadget were picked up, combineURLs(hijacker, `http://target`)
         // would route to the hijacker. It must not.
         let threw = false;
         try {
-          await axios.get(`http://127.0.0.1:${targetPort}/api`, {
+          await ax.get(`http://127.0.0.1:${targetPort}/api`, {
             allowAbsoluteUrls: false,
           });
         } catch (_err) {
@@ -746,32 +773,32 @@ describe("Prototype Pollution Protection", () => {
         // combineURLs would be invoked, routing to the hijacker.
         assert.strictEqual(threw, false);
       } finally {
-        await new Promise((resolve) => hijacker.close(resolve));
-        await new Promise((resolve) => target.close(resolve));
+        await new Promise<void>((resolve) => hijacker.close(() => resolve()));
+        await new Promise<void>((resolve) => target.close(() => resolve()));
       }
     }, 10000);
   });
 
   describe("resolveConfig params and paramsSerializer gadget", () => {
     it("should not inherit polluted params via resolveConfig", () => {
-      Object.prototype.params = { injected: "yes" };
+      ObjProto.params = { injected: "yes" };
 
       try {
         const resolved = resolveConfig({ url: "/api", method: "get" });
 
         assert.ok(
-          resolved.url.indexOf("injected") === -1,
+          resolved.url!.indexOf("injected") === -1,
           "polluted params must not appear in URL",
         );
         assert.strictEqual(resolved.url, "/api", "URL must remain unchanged");
       } finally {
-        delete Object.prototype.params;
+        delete ObjProto.params;
       }
     });
 
     it("should not invoke polluted paramsSerializer via resolveConfig", () => {
       let serializerInvoked = false;
-      Object.prototype.paramsSerializer = function polluted() {
+      ObjProto.paramsSerializer = function polluted() {
         serializerInvoked = true;
         return "injected=yes";
       };
@@ -790,11 +817,11 @@ describe("Prototype Pollution Protection", () => {
         );
         // The URL should have legit param serialized normally
         assert.ok(
-          resolved.url.indexOf("legit=true") !== -1,
+          resolved.url!.indexOf("legit=true") !== -1,
           "legitimate params must still be serialized",
         );
       } finally {
-        delete Object.prototype.paramsSerializer;
+        delete ObjProto.paramsSerializer;
       }
     });
   });
@@ -836,13 +863,13 @@ describe("Prototype Pollution Protection", () => {
   // Verify every gadget enumerated in the audit
   // is neutralized end-to-end by the null-prototype config.
   describe("Full gadget coverage via null-prototype config", () => {
-    async function startEcho(handler) {
+    async function startEcho(handler?: http.RequestListener): Promise<ServerLike> {
       return new Promise((resolve) => {
         const server = http.createServer(
           handler ||
             ((req, res) => {
               let body = "";
-              req.on("data", (c) => (body += c));
+              req.on("data", (c: Buffer) => (body += c));
               req.on("end", () => {
                 res.writeHead(200, { "Content-Type": "application/json" });
                 res.end(
@@ -859,19 +886,19 @@ describe("Prototype Pollution Protection", () => {
         server.listen(0, "127.0.0.1", () => resolve(server));
       });
     }
-    const stop = async (s) => new Promise((r) => s.close(r));
+    const stop = async (s: ServerLike): Promise<void> => new Promise((r) => s.close(() => r()));
 
     it("should ignore polluted transformRequest", async () => {
       let invoked = false;
-      Object.prototype.transformRequest = function polluted(data) {
+      ObjProto.transformRequest = function polluted(_data: unknown) {
         invoked = true;
         return "INJECTED";
       };
 
       const server = await startEcho();
-      const { port } = server.address();
+      const { port } = (server.address() as AddressInfo);
       try {
-        const res = await axios.post(`http://127.0.0.1:${port}/`, {
+        const res = await ax.post(`http://127.0.0.1:${port}/`, {
           hello: "world",
         });
         assert.strictEqual(invoked, false);
@@ -883,15 +910,15 @@ describe("Prototype Pollution Protection", () => {
 
     it("should ignore polluted transformResponse", async () => {
       let invoked = false;
-      Object.prototype.transformResponse = function polluted() {
+      ObjProto.transformResponse = function polluted() {
         invoked = true;
         return "HIJACKED";
       };
 
       const server = await startEcho();
-      const { port } = server.address();
+      const { port } = (server.address() as AddressInfo);
       try {
-        const res = await axios.get(`http://127.0.0.1:${port}/`);
+        const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(invoked, false);
         assert.notStrictEqual(res.data, "HIJACKED");
       } finally {
@@ -901,7 +928,7 @@ describe("Prototype Pollution Protection", () => {
 
     it("should ignore polluted adapter", async () => {
       let hijacked = false;
-      Object.prototype.adapter = async function pollutedAdapter() {
+      ObjProto.adapter = async function pollutedAdapter() {
         hijacked = true;
         return Promise.resolve({
           data: "pwned",
@@ -914,9 +941,9 @@ describe("Prototype Pollution Protection", () => {
       };
 
       const server = await startEcho();
-      const { port } = server.address();
+      const { port } = (server.address() as AddressInfo);
       try {
-        const res = await axios.get(`http://127.0.0.1:${port}/ok`);
+        const res = await ax.get(`http://127.0.0.1:${port}/ok`);
         assert.strictEqual(hijacked, false);
         assert.notStrictEqual(res.data, "pwned");
       } finally {
@@ -926,20 +953,20 @@ describe("Prototype Pollution Protection", () => {
 
     it("should ignore polluted httpAgent", async () => {
       let agentUsed = false;
-      Object.prototype.httpAgent = new http.Agent({
+      ObjProto.httpAgent = new http.Agent({
         keepAlive: false,
       });
       // Wrap createConnection to detect usage
-      const origCreate = Object.prototype.httpAgent.createConnection;
-      Object.prototype.httpAgent.createConnection = function (...args) {
+      const origCreate = (ObjProto.httpAgent as http.Agent).createConnection;
+      ObjProto.httpAgent.createConnection = function (...args: unknown[]) {
         agentUsed = true;
-        return origCreate.apply(this, args);
+        return origCreate.apply(this, args as Parameters<typeof origCreate>);
       };
 
       const server = await startEcho();
-      const { port } = server.address();
+      const { port } = (server.address() as AddressInfo);
       try {
-        const res = await axios.get(`http://127.0.0.1:${port}/`);
+        const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.status, 200);
         assert.strictEqual(agentUsed, false);
       } finally {
@@ -948,16 +975,16 @@ describe("Prototype Pollution Protection", () => {
     }, 10000);
 
     it("should ignore polluted proxy", async () => {
-      Object.prototype.proxy = {
+      ObjProto.proxy = {
         protocol: "http",
         host: "127.0.0.1",
         port: 1, // would fail if actually used
       };
 
       const server = await startEcho();
-      const { port } = server.address();
+      const { port } = (server.address() as AddressInfo);
       try {
-        const res = await axios.get(`http://127.0.0.1:${port}/`);
+        const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.status, 200);
       } finally {
         await stop(server);
@@ -966,12 +993,12 @@ describe("Prototype Pollution Protection", () => {
 
     it("should ignore polluted maxContentLength", async () => {
       // Polluted tiny limit would reject a normal response if applied.
-      Object.prototype.maxContentLength = 1;
+      ObjProto.maxContentLength = 1;
 
       const server = await startEcho();
-      const { port } = server.address();
+      const { port } = (server.address() as AddressInfo);
       try {
-        const res = await axios.get(`http://127.0.0.1:${port}/`);
+        const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.status, 200);
       } finally {
         await stop(server);
@@ -981,12 +1008,12 @@ describe("Prototype Pollution Protection", () => {
     it("should ignore polluted maxRedirects", async () => {
       // Pollute with 0 — if picked up, follow-redirects path would be skipped.
       // We make sure regular requests still succeed via the expected path.
-      Object.prototype.maxRedirects = 0;
+      ObjProto.maxRedirects = 0;
 
       const server = await startEcho();
-      const { port } = server.address();
+      const { port } = (server.address() as AddressInfo);
       try {
-        const res = await axios.get(`http://127.0.0.1:${port}/`);
+        const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.status, 200);
       } finally {
         await stop(server);
@@ -994,7 +1021,7 @@ describe("Prototype Pollution Protection", () => {
     }, 10000);
 
     it("should ignore polluted timeout at the merged config level", () => {
-      Object.prototype.timeout = 1;
+      ObjProto.timeout = 1;
       const merged = mergeConfig({}, { url: "/x" });
       assert.strictEqual(
         Object.prototype.hasOwnProperty.call(merged, "timeout"),
@@ -1004,13 +1031,13 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should ignore polluted timeoutErrorMessage", async () => {
-      Object.prototype.timeoutErrorMessage = "INJECTED_TIMEOUT";
+      ObjProto.timeoutErrorMessage = "INJECTED_TIMEOUT";
       // Not easy to assert without triggering a real timeout; just confirm
       // normal requests still succeed and do not read the polluted key.
       const server = await startEcho();
-      const { port } = server.address();
+      const { port } = (server.address() as AddressInfo);
       try {
-        const res = await axios.get(`http://127.0.0.1:${port}/`);
+        const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.status, 200);
       } finally {
         await stop(server);
@@ -1018,14 +1045,14 @@ describe("Prototype Pollution Protection", () => {
     }, 10000);
 
     it("should ignore polluted transitional", async () => {
-      Object.prototype.transitional = {
+      ObjProto.transitional = {
         forcedJSONParsing: true,
         silentJSONParsing: false,
       };
       const server = await startEcho();
-      const { port } = server.address();
+      const { port } = (server.address() as AddressInfo);
       try {
-        const res = await axios.get(`http://127.0.0.1:${port}/`);
+        const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.status, 200);
       } finally {
         await stop(server);
@@ -1034,16 +1061,16 @@ describe("Prototype Pollution Protection", () => {
 
     it("should ignore polluted params and paramsSerializer", async () => {
       let serializerInvoked = false;
-      Object.prototype.params = { injected: "yes" };
-      Object.prototype.paramsSerializer = function polluted() {
+      ObjProto.params = { injected: "yes" };
+      ObjProto.paramsSerializer = function polluted() {
         serializerInvoked = true;
         return "injected=yes";
       };
 
       const server = await startEcho();
-      const { port } = server.address();
+      const { port } = (server.address() as AddressInfo);
       try {
-        const res = await axios.get(`http://127.0.0.1:${port}/x`);
+        const res = await ax.get(`http://127.0.0.1:${port}/x`);
         assert.strictEqual(serializerInvoked, false);
         assert.strictEqual(res.data.url, "/x");
       } finally {
@@ -1052,12 +1079,12 @@ describe("Prototype Pollution Protection", () => {
     }, 10000);
 
     it("should ignore polluted method", async () => {
-      Object.prototype.method = "DELETE";
+      ObjProto.method = "DELETE";
       const server = await startEcho();
-      const { port } = server.address();
+      const { port } = (server.address() as AddressInfo);
       try {
         // axios.get should still send GET, not DELETE.
-        const res = await axios.get(`http://127.0.0.1:${port}/ok`);
+        const res = await ax.get(`http://127.0.0.1:${port}/ok`);
         assert.strictEqual(res.data.method, "GET");
       } finally {
         await stop(server);
@@ -1065,11 +1092,11 @@ describe("Prototype Pollution Protection", () => {
     }, 10000);
 
     it("should ignore polluted decompress", async () => {
-      Object.prototype.decompress = false;
+      ObjProto.decompress = false;
       const server = await startEcho();
-      const { port } = server.address();
+      const { port } = (server.address() as AddressInfo);
       try {
-        const res = await axios.get(`http://127.0.0.1:${port}/`);
+        const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.status, 200);
       } finally {
         await stop(server);
@@ -1077,11 +1104,11 @@ describe("Prototype Pollution Protection", () => {
     }, 10000);
 
     it("should ignore polluted responseType", async () => {
-      Object.prototype.responseType = "arraybuffer";
+      ObjProto.responseType = "arraybuffer";
       const server = await startEcho();
-      const { port } = server.address();
+      const { port } = (server.address() as AddressInfo);
       try {
-        const res = await axios.get(`http://127.0.0.1:${port}/`);
+        const res = await ax.get(`http://127.0.0.1:${port}/`);
         // When responseType is not set on config, json parsing should apply
         // and res.data should be an object, not an ArrayBuffer/Buffer.
         assert.strictEqual(typeof res.data, "object");
@@ -1097,9 +1124,10 @@ describe("Prototype Pollution Protection", () => {
   // the existing value and be merged into the result.
   describe("utils.merge prototype-chain read", () => {
     it("should not pick up polluted Object.prototype.<key> as the existing value", () => {
-      Object.prototype.headers = { evil: "yes" };
+      ObjProto.headers = { evil: "yes" };
 
-      const result = utils.merge(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = utils.merge(
         {},
         { headers: { "Content-Type": "application/json" } },
       );
@@ -1126,7 +1154,7 @@ describe("Prototype Pollution Protection", () => {
   // descriptor. Each fixed site should be shielded with `__proto__: null`.
   describe("Object.defineProperty descriptor literals", () => {
     it("should construct AxiosError when Object.prototype.get is polluted", () => {
-      Object.prototype.get = "attacker";
+      ObjProto.get = "attacker";
 
       const err = new AxiosError("hello", "ECODE");
 
@@ -1135,19 +1163,20 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should construct AxiosHeaders accessor methods when Object.prototype.get is polluted", () => {
-      Object.prototype.get = "attacker";
+      ObjProto.get = "attacker";
 
       // AxiosHeaders.accessor uses Object.defineProperty on the prototype.
       // Triggering a fresh accessor definition exercises the descriptor literal.
       AxiosHeaders.accessor("X-Pp-Test");
 
-      const h = new AxiosHeaders();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const h = new AxiosHeaders() as any;
       h.setXPpTest("value");
       assert.strictEqual(h.getXPpTest(), "value");
     });
 
     it("should not throw in mergeConfig when Object.prototype.get is polluted", () => {
-      Object.prototype.get = "attacker";
+      ObjProto.get = "attacker";
 
       const result = mergeConfig({}, { url: "/x", method: "get" });
 
@@ -1157,44 +1186,44 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should not throw in utils.extend when Object.prototype.get is polluted", () => {
-      Object.prototype.get = "attacker";
+      ObjProto.get = "attacker";
 
-      const a = {};
+      const a: Record<string, unknown> = {};
       const b = { x: 1, fn() {} };
-      utils.extend(a, b);
+      utils.extend(a, b, undefined);
 
       assert.strictEqual(a.x, 1);
       assert.strictEqual(typeof a.fn, "function");
     });
 
     it("should not throw in utils.extend with thisArg when Object.prototype.get is polluted", () => {
-      Object.prototype.get = "attacker";
+      ObjProto.get = "attacker";
 
-      const a = {};
+      const a: Record<string, unknown> = {};
       const ctx = { tag: "ctx" };
       const b = {
-        method() {
+        method(this: { tag: string }) {
           return this.tag;
         },
       };
       utils.extend(a, b, ctx);
 
-      assert.strictEqual(a.method(), "ctx");
+      assert.strictEqual((a.method as () => string)(), "ctx");
     });
 
     it("should not throw in utils.inherits when Object.prototype.get is polluted", () => {
-      Object.prototype.get = "attacker";
+      ObjProto.get = "attacker";
 
       function Parent() {}
       function Child() {}
       utils.inherits(Child, Parent);
 
       assert.strictEqual(Child.prototype.constructor, Child);
-      assert.strictEqual(Child.super, Parent.prototype);
+      assert.strictEqual((Child as unknown as { super: unknown }).super, Parent.prototype);
     });
 
     it("should also be shielded against a polluted Object.prototype.set", () => {
-      Object.prototype.set = "attacker";
+      ObjProto.set = "attacker";
 
       // Same surface as `get` — ToPropertyDescriptor checks both. One spot-check
       // covers them all since they share the same fix.
@@ -1207,13 +1236,13 @@ describe("Prototype Pollution Protection", () => {
   // request flow. Each test mirrors the exploit scenario from the advisory and
   // asserts the attack does not succeed.
   describe("advisory regression — full request flow", () => {
-    async function startServer(handler) {
+    async function startServer(handler: http.RequestListener): Promise<ServerLike> {
       return new Promise((resolve) => {
         const server = http.createServer(handler);
         server.listen(0, "127.0.0.1", () => resolve(server));
       });
     }
-    const stop = async (s) => new Promise((r) => s.close(r));
+    const stop = async (s: ServerLike): Promise<void> => new Promise((r) => s.close(() => r()));
 
     // Full MITM via prototype pollution gadget in
     // `config.proxy`. mergeConfig must not surface a polluted Object.prototype.proxy
@@ -1239,14 +1268,14 @@ describe("Prototype Pollution Protection", () => {
       });
 
       try {
-        Object.prototype.proxy = {
+        ObjProto.proxy = {
           protocol: "http",
           host: "127.0.0.1",
-          port: attackerProxy.address().port,
+          port: (attackerProxy.address() as AddressInfo).port,
         };
 
-        const realPort = realServer.address().port;
-        const res = await axios.get(
+        const realPort = (realServer.address() as AddressInfo).port;
+        const res = await ax.get(
           `http://127.0.0.1:${realPort}/api/secrets`,
           {
             auth: { username: "admin", password: "SuperSecret123!" },
@@ -1277,25 +1306,27 @@ describe("Prototype Pollution Protection", () => {
     it("polluted Object.prototype.transformResponse must not be invoked or leak request credentials", async () => {
       let invoked = false;
       let stolen = null;
-      Object.prototype.transformResponse = function pollutedTransform(data) {
+      ObjProto.transformResponse = function pollutedTransform(data: unknown) {
         invoked = true;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const ctx = this as any;
         stolen = {
-          url: this && this.url,
-          username: this && this.auth && this.auth.username,
-          password: this && this.auth && this.auth.password,
+          url: ctx && ctx.url,
+          username: ctx && ctx.auth && ctx.auth.username,
+          password: ctx && ctx.auth && ctx.auth.password,
           data,
         };
         return true;
       };
 
-      const server = await startServer((req, res) => {
+      const server = await startServer((_req, res) => {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end('{"secret":"keep-me"}');
       });
 
       try {
-        const { port } = server.address();
-        const res = await axios.get(`http://127.0.0.1:${port}/users`, {
+        const { port } = (server.address() as AddressInfo);
+        const res = await ax.get(`http://127.0.0.1:${port}/users`, {
           auth: { username: "svc-account", password: "prod-secret-key-123!" },
         });
 
