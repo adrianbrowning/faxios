@@ -95,20 +95,20 @@ class AxiosError extends Error {
   event?: unknown;
   override name: string;
 
-  static ERR_BAD_OPTION_VALUE = "ERR_BAD_OPTION_VALUE";
-  static ERR_BAD_OPTION = "ERR_BAD_OPTION";
-  static ECONNABORTED = "ECONNABORTED";
-  static ETIMEDOUT = "ETIMEDOUT";
-  static ECONNREFUSED = "ECONNREFUSED";
-  static ERR_NETWORK = "ERR_NETWORK";
-  static ERR_FR_TOO_MANY_REDIRECTS = "ERR_FR_TOO_MANY_REDIRECTS";
-  static ERR_DEPRECATED = "ERR_DEPRECATED";
-  static ERR_BAD_RESPONSE = "ERR_BAD_RESPONSE";
-  static ERR_BAD_REQUEST = "ERR_BAD_REQUEST";
-  static ERR_CANCELED = "ERR_CANCELED";
-  static ERR_NOT_SUPPORT = "ERR_NOT_SUPPORT";
-  static ERR_INVALID_URL = "ERR_INVALID_URL";
-  static ERR_FORM_DATA_DEPTH_EXCEEDED = "ERR_FORM_DATA_DEPTH_EXCEEDED";
+  static readonly ERR_BAD_OPTION_VALUE = "ERR_BAD_OPTION_VALUE";
+  static readonly ERR_BAD_OPTION = "ERR_BAD_OPTION";
+  static readonly ECONNABORTED = "ECONNABORTED";
+  static readonly ETIMEDOUT = "ETIMEDOUT";
+  static readonly ECONNREFUSED = "ECONNREFUSED";
+  static readonly ERR_NETWORK = "ERR_NETWORK";
+  static readonly ERR_FR_TOO_MANY_REDIRECTS = "ERR_FR_TOO_MANY_REDIRECTS";
+  static readonly ERR_DEPRECATED = "ERR_DEPRECATED";
+  static readonly ERR_BAD_RESPONSE = "ERR_BAD_RESPONSE";
+  static readonly ERR_BAD_REQUEST = "ERR_BAD_REQUEST";
+  static readonly ERR_CANCELED = "ERR_CANCELED";
+  static readonly ERR_NOT_SUPPORT = "ERR_NOT_SUPPORT";
+  static readonly ERR_INVALID_URL = "ERR_INVALID_URL";
+  static readonly ERR_FORM_DATA_DEPTH_EXCEEDED = "ERR_FORM_DATA_DEPTH_EXCEEDED";
 
   static from(
     error: Error & { code?: string; status?: number; },
@@ -214,6 +214,5 @@ class AxiosError extends Error {
     };
   }
 }
-
 
 export default AxiosError;
