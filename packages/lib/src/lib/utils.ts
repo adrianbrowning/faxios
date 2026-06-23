@@ -656,7 +656,7 @@ const endsWith = (str: string, searchString: string, position?: number) => {
  *
  * @returns {?Array}
  */
-const toArray = (thing: unknown): Array<unknown> | null => {
+const toArray = (thing?: unknown): Array<unknown> | null => {
   if (!thing) return null;
   if (isArray(thing)) return thing;
   let i = (thing as { length?: unknown; }).length;
