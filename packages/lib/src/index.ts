@@ -23,6 +23,8 @@ const {
   create,
 } = axios;
 
+export type { InternalAxiosRequestConfig } from "./lib/types.ts";
+
 export {
   axios as default,
   create,
