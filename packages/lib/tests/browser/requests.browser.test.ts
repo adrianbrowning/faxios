@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import axios from "../../src/index.js";
+import type { AxiosRequestConfig } from "../../src/lib/types.js";
 import AxiosError from "../../../lib/src/lib/core/AxiosError.js";
 
 class MockXMLHttpRequest {
@@ -53,8 +54,8 @@ class MockXMLHttpRequest {
     status = 200,
     statusText = "OK",
     responseText = "",
-    response = null,
-    headers = {},
+    response = null as unknown,
+    headers = {} as Record<string, string>,
     responseURL = "",
   } = {}) {
     this.status = status;
@@ -99,7 +100,7 @@ class MockXMLHttpRequest {
 let requests: MockXMLHttpRequest[] = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
-const startRequest = (...args: Parameters<typeof axios>) => {
+const startRequest = (...args: [AxiosRequestConfig] | Parameters<typeof axios>) => {
   const promise = axios(...args);
   const request = requests.at(-1);
   expect(request).toBeDefined();
@@ -333,19 +334,13 @@ describe("requests (vitest browser)", () => {
 
   // https://github.com/axios/axios/issues/378
   it("should return JSON when rejecting", async () => {
-    const { request, promise } = startRequest(
-      "/api/account/signup",
-      {
-        username: null,
-        password: null,
+    const { request, promise } = startRequest("/api/account/signup", {
+      method: "post",
+      data: { username: null, password: null },
+      headers: {
+        Accept: "application/json",
       },
-      {
-        method: "post",
-        headers: {
-          Accept: "application/json",
-        },
-      },
-    );
+    });
 
     request.respondWith({
       status: 400,
@@ -445,7 +440,7 @@ describe("requests (vitest browser)", () => {
       data: input.buffer,
     });
 
-    const output = new Int8Array(request.params);
+    const output = new Int8Array(request.params as ArrayBuffer);
     expect(output.length).toBe(2);
     expect(output[0]).toBe(1);
     expect(output[1]).toBe(2);
@@ -460,7 +455,7 @@ describe("requests (vitest browser)", () => {
       data: input,
     });
 
-    const output = new Int8Array(request.params);
+    const output = new Int8Array(request.params as ArrayBuffer);
     expect(output.length).toBe(2);
     expect(output[0]).toBe(1);
     expect(output[1]).toBe(2);
