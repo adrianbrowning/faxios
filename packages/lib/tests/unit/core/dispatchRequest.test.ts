@@ -1,9 +1,11 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
+import AxiosHeaders from "../../../src/lib/core/AxiosHeaders.js";
 import AxiosError from "../../../src/lib/core/AxiosError.js";
 import dispatchRequest from "../../../src/lib/core/dispatchRequest.js";
 import defaults from "../../../src/lib/defaults/index.js";
 import resolveConfig from "../../../src/lib/helpers/resolveConfig.js";
+import type { AxiosAdapter, AxiosResponse, InternalAxiosRequestConfig } from "../../../src/lib/types.js";
 
 class ReactNativeFormData {
   append() {}
@@ -17,11 +19,15 @@ class ReactNativeFormData {
   }
 }
 
-function baseConfig(overrides = {}) {
+function axiosHeaders(init?: Record<string, unknown>) {
+  return new AxiosHeaders(init) as unknown as InternalAxiosRequestConfig["headers"];
+}
+
+function baseConfig(overrides: Partial<InternalAxiosRequestConfig> = {}): InternalAxiosRequestConfig {
   return {
     method: "get",
     url: "/test",
-    headers: {},
+    headers: axiosHeaders(),
     transformRequest: defaults.transformRequest,
     transformResponse: defaults.transformResponse,
     transitional: { silentJSONParsing: false, forcedJSONParsing: true },
@@ -40,19 +46,19 @@ describe("core::dispatchRequest", () => {
 
       const config = baseConfig({
         data,
-        headers: { "Content-Type": "application/json" },
+        headers: axiosHeaders({ "Content-Type": "application/json" }),
         method: "post",
-        async adapter(adapterConfig) {
+        adapter: (async (adapterConfig: InternalAxiosRequestConfig) => {
           adapterCalled = true;
-          return Promise.resolve({
+          return {
             data: null,
             status: 200,
             statusText: "OK",
             headers: {},
             config: adapterConfig,
             request: {},
-          });
-        },
+          };
+        }) as unknown as AxiosAdapter,
       });
 
       let thrown;
@@ -79,7 +85,7 @@ describe("core::dispatchRequest", () => {
         request: {},
       };
       const config = baseConfig({
-        adapter: async () => Promise.resolve(response),
+        adapter: (async () => response) as unknown as AxiosAdapter,
       });
 
       let thrown;
@@ -113,7 +119,7 @@ describe("core::dispatchRequest", () => {
         request: {},
       };
       const config = baseConfig({
-        adapter: async () => Promise.resolve(response),
+        adapter: (async () => response) as unknown as AxiosAdapter,
       });
 
       try {
@@ -144,9 +150,9 @@ describe("core::dispatchRequest", () => {
         "Request failed",
         AxiosError.ERR_BAD_RESPONSE,
       );
-      reason.response = response;
+      reason.response = response as unknown as AxiosResponse;
       const config = baseConfig({
-        adapter: async () => Promise.reject(reason),
+        adapter: (async () => { throw reason; }) as unknown as AxiosAdapter,
       });
 
       let thrown;
@@ -182,9 +188,9 @@ describe("core::dispatchRequest", () => {
         "Request failed",
         AxiosError.ERR_BAD_RESPONSE,
       );
-      reason.response = response;
+      reason.response = response as unknown as AxiosResponse;
       const config = baseConfig({
-        adapter: async () => Promise.reject(reason),
+        adapter: (async () => { throw reason; }) as unknown as AxiosAdapter,
       });
 
       try {
@@ -215,31 +221,33 @@ describe("core::dispatchRequest", () => {
       const config = baseConfig({
         method: "post",
         data,
-        adapter: async (adapterConfig) => {
+        adapter: (async (adapterConfig: InternalAxiosRequestConfig) => {
+          type HeadersWithMethods = { getContentType(): unknown; toJSON(): Record<string, unknown> };
           assert.strictEqual(
-            adapterConfig.headers.getContentType(),
+            (adapterConfig.headers as unknown as HeadersWithMethods).getContentType(),
             "application/x-www-form-urlencoded",
             "dispatchRequest should apply the default POST Content-Type first",
           );
 
           const resolvedConfig = resolveConfig(adapterConfig);
+          const resolvedHeaders = resolvedConfig.headers as unknown as HeadersWithMethods;
 
           assert.strictEqual(resolvedConfig.data, data);
           assert.strictEqual(
-            resolvedConfig.headers.getContentType(),
+            resolvedHeaders.getContentType(),
             undefined,
           );
           assert.strictEqual(
             Object.prototype.hasOwnProperty.call(
-              resolvedConfig.headers.toJSON(),
+              resolvedHeaders.toJSON(),
               "Content-Type",
             ),
             false,
             "resolved adapter headers must omit Content-Type for React Native FormData",
           );
 
-          return Promise.resolve(response);
-        },
+          return response;
+        }) as unknown as AxiosAdapter,
       });
 
       const result = await dispatchRequest(config);
@@ -257,7 +265,7 @@ describe("core::dispatchRequest", () => {
         request: {},
       };
       const config = baseConfig({
-        adapter: async () => Promise.resolve(response),
+        adapter: (async () => response) as unknown as AxiosAdapter,
       });
 
       const result = await dispatchRequest(config);
