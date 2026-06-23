@@ -348,7 +348,7 @@ class AxiosHeaders {
     return deleted;
   }
 
-  normalize(format: boolean): this {
+  normalize(format: boolean = false): this {
     const self = this;
     const headers: Record<string, unknown> = {};
 

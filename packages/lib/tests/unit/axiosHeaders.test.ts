@@ -81,7 +81,7 @@ describe("AxiosHeaders", () => {
     it("should support iterables as a key-value source object", () => {
       const headers = new AxiosHeaders();
 
-      headers.set(new Map([["x", "123"]]));
+      headers.set(new Map([["x", "123"]]) as unknown as Record<string, unknown>);
 
       assert.strictEqual(headers.get("x"), "123");
     });
@@ -91,16 +91,16 @@ describe("AxiosHeaders", () => {
         Object.prototype,
         "Authorization",
       );
-      Object.prototype.Authorization = "polluted";
+      (Object.prototype as Record<string, unknown>)["Authorization"] = "polluted";
 
       try {
-        const headers = new AxiosHeaders(new Map([["Authorization", "real"]]));
+        const headers = new AxiosHeaders(new Map([["Authorization", "real"]]) as unknown as Record<string, unknown>);
 
         assert.strictEqual(headers.get("authorization"), "real");
       } finally {
         descriptor
           ? Object.defineProperty(Object.prototype, "Authorization", descriptor)
-          : delete Object.prototype.Authorization;
+          : delete (Object.prototype as Record<string, unknown>)["Authorization"];
       }
     });
 
@@ -118,7 +118,7 @@ describe("AxiosHeaders", () => {
 
     it("should not use inherited Symbol.iterator as a key-value source object", () => {
       try {
-        Object.prototype[Symbol.iterator] = function* () {
+        (Object.prototype as any)[Symbol.iterator] = function* () {
           yield ["x-app", "changed"];
           yield ["x-injected", "yes"];
         };
@@ -130,7 +130,7 @@ describe("AxiosHeaders", () => {
         assert.strictEqual(headers.get("x-app"), "safe");
         assert.strictEqual(headers.get("x-injected"), undefined);
       } finally {
-        delete Object.prototype[Symbol.iterator];
+        delete (Object.prototype as any)[Symbol.iterator];
       }
     });
 
@@ -153,13 +153,13 @@ describe("AxiosHeaders", () => {
         assert.strictEqual(headers.get("x-app"), "safe");
         assert.strictEqual(accessed, false);
       } finally {
-        delete Object.prototype[Symbol.iterator];
+        delete (Object.prototype as any)[Symbol.iterator];
       }
     });
 
     it("should not consume an inherited Symbol.iterator for non-plain header sources", () => {
       try {
-        Object.prototype[Symbol.iterator] = function* () {
+        (Object.prototype as any)[Symbol.iterator] = function* () {
           yield ["x-injected", "yes"];
           yield ["authorization", "Bearer CHANGED"];
         };
@@ -168,12 +168,13 @@ describe("AxiosHeaders", () => {
         // prototype other than Object.prototype, yet their only iterator comes
         // from the polluted Object.prototype — they must not be iterated.
         class HeaderBag {
+          [key: string]: unknown;
           constructor() {
             this["authorization"] = "Bearer VALID";
           }
         }
 
-        const fromClass = new AxiosHeaders(new HeaderBag());
+        const fromClass = new AxiosHeaders(new HeaderBag() as Record<string, unknown>);
         assert.strictEqual(fromClass.get("x-injected"), undefined);
         assert.notStrictEqual(fromClass.get("authorization"), "Bearer CHANGED");
 
@@ -186,11 +187,11 @@ describe("AxiosHeaders", () => {
           "Bearer CHANGED",
         );
       } finally {
-        delete Object.prototype[Symbol.iterator];
+        delete (Object.prototype as any)[Symbol.iterator];
       }
     });
 
-    const runIfNode18OrHigher = nodeMajorVersion >= 18 ? it : it.skip;
+    const runIfNode18OrHigher = nodeMajorVersion! >= 18 ? it : it.skip;
     runIfNode18OrHigher(
       "should support setting multiple header values from an iterable source",
       () => {
@@ -202,7 +203,7 @@ describe("AxiosHeaders", () => {
         nativeHeaders.append("set-cookie", "baz");
         nativeHeaders.append("y", "qux");
 
-        headers.set(nativeHeaders);
+        headers.set(nativeHeaders as unknown as Record<string, unknown>);
 
         assert.deepStrictEqual(headers.get("set-cookie"), [
           "foo",
@@ -279,7 +280,7 @@ describe("AxiosHeaders", () => {
             ["", "e"],
             ["   ", "f"],
             ["x", "y"],
-          ]),
+          ]) as unknown as Record<string, unknown>,
         ),
       );
 
@@ -308,7 +309,7 @@ describe("AxiosHeaders", () => {
 
         headers.set("foo", "bar=value1");
 
-        assert.strictEqual(headers.get("foo", /^bar=(\w+)/)[1], "value1");
+        assert.strictEqual((headers.get("foo", /^bar=(\w+)/) as RegExpMatchArray)[1], "value1");
         assert.strictEqual(headers.get("foo", /^foo=/), null);
       });
 
@@ -522,10 +523,10 @@ describe("AxiosHeaders", () => {
         foo: 1,
       });
 
-      headers.constructor.accessor("foo");
+      (headers.constructor as typeof AxiosHeaders).accessor("foo");
 
-      assert.strictEqual(typeof headers.getFoo, "function");
-      assert.strictEqual(headers.getFoo(), "1");
+      assert.strictEqual(typeof (headers as any).getFoo, "function");
+      assert.strictEqual((headers as any).getFoo(), "1");
     });
 
     it("should support set accessor", () => {
@@ -533,11 +534,11 @@ describe("AxiosHeaders", () => {
         foo: 1,
       });
 
-      headers.constructor.accessor("foo");
+      (headers.constructor as typeof AxiosHeaders).accessor("foo");
 
-      assert.strictEqual(typeof headers.setFoo, "function");
-      headers.setFoo(2);
-      assert.strictEqual(headers.getFoo(), "2");
+      assert.strictEqual(typeof (headers as any).setFoo, "function");
+      (headers as any).setFoo(2);
+      assert.strictEqual((headers as any).getFoo(), "2");
     });
 
     it("should support has accessor", () => {
@@ -545,10 +546,10 @@ describe("AxiosHeaders", () => {
         foo: 1,
       });
 
-      headers.constructor.accessor("foo");
+      (headers.constructor as typeof AxiosHeaders).accessor("foo");
 
-      assert.strictEqual(typeof headers.hasFoo, "function");
-      assert.strictEqual(headers.hasFoo(), true);
+      assert.strictEqual(typeof (headers as any).hasFoo, "function");
+      assert.strictEqual((headers as any).hasFoo(), true);
     });
   });
 
