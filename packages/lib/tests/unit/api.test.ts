@@ -80,9 +80,10 @@ describe("static api", () => {
         ["delete", "get", "head", "options"].map(async (method) => {
           let seenData = "unset";
 
-          await axios[method]("/test", {
-            async adapter(config) {
-              seenData = config.data;
+          const fn = (axios as unknown as Record<string, (url: string, config: unknown) => Promise<unknown>>)[method]!;
+          await fn("/test", {
+            async adapter(config: import("../../src/lib/types.ts").InternalAxiosRequestConfig) {
+              seenData = config.data as string;
 
               return Promise.resolve({
                 data: null,
@@ -99,7 +100,7 @@ describe("static api", () => {
         }),
       );
     } finally {
-      delete Object.prototype.data;
+      delete (Object.prototype as Record<string, unknown>).data;
     }
   });
 
@@ -125,7 +126,7 @@ describe("static api", () => {
       );
       assert.strictEqual(serializeInvoked, false);
     } finally {
-      delete Object.prototype.serialize;
+      delete (Object.prototype as Record<string, unknown>).serialize;
     }
   });
 
@@ -152,11 +153,11 @@ describe("static api", () => {
         stringKey: "value",
       },
       {
-        transformRequest(data) {
+        transformRequest(data: unknown) {
           transformedData = data;
           return "";
         },
-        adapter: async (config) =>
+        adapter: async (config: import("../../src/lib/types.ts").InternalAxiosRequestConfig) =>
           Promise.resolve({
             data: null,
             status: 200,
@@ -168,7 +169,7 @@ describe("static api", () => {
       },
     );
 
-    assert.strictEqual(transformedData[symbolKey], "value");
+    assert.strictEqual((transformedData as unknown as Record<symbol, unknown>)[symbolKey], "value");
   });
 });
 
@@ -219,7 +220,7 @@ describe("instance api", () => {
       stringKey: "value",
     });
 
-    assert.strictEqual(transformedData[symbolKey], "value");
-    assert.strictEqual(transformedData.stringKey, "value");
+    assert.strictEqual((transformedData as unknown as Record<symbol | string, unknown>)[symbolKey], "value");
+    assert.strictEqual((transformedData as unknown as Record<string, unknown>).stringKey, "value");
   });
 });

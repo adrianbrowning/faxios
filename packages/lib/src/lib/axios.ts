@@ -46,6 +46,18 @@ function createInstance(defaultConfig: AxiosRequestConfig): AxiosInstance {
 
 export type AxiosInstance = {
   (config: AxiosRequestConfig): Promise<unknown>;
+  request(config: AxiosRequestConfig): Promise<unknown>;
+  get(url: string, config?: AxiosRequestConfig): Promise<unknown>;
+  delete(url: string, config?: AxiosRequestConfig): Promise<unknown>;
+  head(url: string, config?: AxiosRequestConfig): Promise<unknown>;
+  options(url: string, config?: AxiosRequestConfig): Promise<unknown>;
+  post(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<unknown>;
+  put(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<unknown>;
+  patch(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<unknown>;
+  query(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<unknown>;
+  defaults: { headers: Record<string, unknown> } & Record<string, unknown>;
+  interceptors: { request: object; response: object };
+  getUri(config?: AxiosRequestConfig): string;
   create: (instanceConfig?: AxiosRequestConfig) => AxiosInstance;
   Axios: typeof Axios;
   CanceledError: typeof CanceledError;
