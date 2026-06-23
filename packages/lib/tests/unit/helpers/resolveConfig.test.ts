@@ -1,6 +1,7 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
 import resolveConfig from "../../../src/lib/helpers/resolveConfig.js";
+import type { AxiosBasicCredentials, AxiosRequestHeaders } from "../../../src/lib/types.js";
 
 class ReactNativeFormData {
   append() {}
@@ -25,11 +26,12 @@ describe("helpers::resolveConfig", () => {
       },
     });
 
+    const headers = config.headers as AxiosRequestHeaders;
     assert.strictEqual(config.data, data);
-    assert.strictEqual(config.headers.getContentType(), undefined);
+    assert.strictEqual(headers.getContentType() as string | undefined, undefined);
     assert.strictEqual(
       Object.prototype.hasOwnProperty.call(
-        config.headers.toJSON(),
+        headers.toJSON(),
         "Content-Type",
       ),
       false,
@@ -49,13 +51,13 @@ describe("helpers::resolveConfig", () => {
     try {
       const config = resolveConfig({
         url: "/foo",
-        auth: {},
+        auth: {} as AxiosBasicCredentials,
       });
 
-      assert.strictEqual(config.headers.get("Authorization"), "Basic Og==");
+      assert.strictEqual((config.headers as AxiosRequestHeaders).get("Authorization") as string | null, "Basic Og==");
     } finally {
-      delete Object.prototype.username;
-      delete Object.prototype.password;
+      delete (Object.prototype as Record<string, unknown>).username;
+      delete (Object.prototype as Record<string, unknown>).password;
     }
   });
 
@@ -89,8 +91,8 @@ describe("helpers::resolveConfig", () => {
       assert.strictEqual(serializeInvoked, false);
       assert.strictEqual(encodeInvoked, false);
     } finally {
-      delete Object.prototype.serialize;
-      delete Object.prototype.encode;
+      delete (Object.prototype as Record<string, unknown>).serialize;
+      delete (Object.prototype as Record<string, unknown>).encode;
     }
   });
 });
