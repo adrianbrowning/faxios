@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import axios, { InternalAxiosRequestConfig } from "../../src/index.js";
+import axios from "../../src/index.js";
+import type { InternalAxiosRequestConfig } from "../../src/index.js";
 
 class MockXMLHttpRequest {
   requestHeaders: Record<string, string> = {};
