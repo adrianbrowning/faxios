@@ -2,6 +2,7 @@ import assert from "node:assert";
 import type { AddressInfo } from "node:net";
 import { describe, it } from "vitest";
 import axios from "../../src/index.ts";
+import type { AxiosResponse } from "../../src/lib/types.ts";
 import { startHTTPServer, stopHTTPServer } from "../setup/server.js";
 
 describe("QUERY method", () => {
@@ -19,7 +20,7 @@ describe("QUERY method", () => {
             request: {},
           });
         },
-      });
+      }) as AxiosResponse<any>;
 
       assert.strictEqual(response.status, 200);
     });
@@ -103,7 +104,7 @@ describe("QUERY method", () => {
         {
           adapter: async (config: import("../../src/lib/types.ts").InternalAxiosRequestConfig) => {
             assert.ok(
-              config.headers.get("Content-Type").includes("application/json"),
+              (config.headers.get("Content-Type") as string).includes("application/json"),
               "Expected Content-Type to include application/json",
             );
             return Promise.resolve({
@@ -136,7 +137,7 @@ describe("QUERY method", () => {
             request: {},
           });
         },
-      });
+      }) as AxiosResponse<any>;
 
       assert.strictEqual(response.status, 200);
     });
@@ -191,7 +192,7 @@ describe("QUERY method", () => {
             request: {},
           });
         },
-      });
+      }) as AxiosResponse<any>;
 
       assert.deepStrictEqual(response.data, { result: "ok" });
     });
@@ -224,7 +225,7 @@ describe("QUERY method", () => {
         const { data } = await axios.query(
           `http://localhost:${(server.address() as AddressInfo).port}/search`,
           { selector: "field1" },
-        );
+        ) as AxiosResponse<any>;
 
         assert.strictEqual(data.method, "QUERY");
         assert.strictEqual(data.url, "/search");
@@ -263,7 +264,7 @@ describe("QUERY method", () => {
               "X-Custom": "test-value",
             },
           },
-        );
+        ) as AxiosResponse<any>;
 
         assert.strictEqual(data.method, "QUERY");
         assert.strictEqual(data.headers["x-custom"], "test-value");
@@ -293,7 +294,7 @@ describe("QUERY method", () => {
 
         const { data } = await instance.query("/resources", {
           fields: ["name"],
-        });
+        }) as AxiosResponse<any>;
 
         assert.strictEqual(data.method, "QUERY");
         assert.strictEqual(data.url, "/api/resources");
