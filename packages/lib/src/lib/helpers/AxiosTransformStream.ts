@@ -90,13 +90,13 @@ class AxiosTransformStream extends stream.Transform {
         : 0;
 
     const pushChunk = (_chunk: Buffer, _callback: () => void): void => {
-      const bytes = Buffer.byteLength(_chunk as unknown as ArrayBufferView);
+      const bytes = Buffer.byteLength(_chunk);
       internals.bytesSeen += bytes;
       internals.bytes += bytes;
 
       internals.isCaptured && this.emit("progress", internals.bytesSeen);
 
-      if (this.push(_chunk as unknown as ArrayBufferView)) {
+      if (this.push(_chunk)) {
         process.nextTick(_callback);
       }
       else {
@@ -108,7 +108,7 @@ class AxiosTransformStream extends stream.Transform {
     };
 
     const transformChunk = (_chunk: Buffer, _callback: (err: Error | null, chunk?: Buffer) => void): ReturnType<typeof setTimeout> | void => {
-      const chunkSize = Buffer.byteLength(_chunk as unknown as ArrayBufferView);
+      const chunkSize = Buffer.byteLength(_chunk);
       let chunkRemainder: Buffer | null = null;
       let maxChunkSize = readableHighWaterMark;
       let bytesLeft: number | undefined;
