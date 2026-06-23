@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import axios from "../../src/index.js";
-import type { AxiosRequestTransformer, AxiosResponseTransformer, HeadersDefaults } from "../../src/lib/types.js";
+import type { HeadersDefaults } from "../../src/lib/types.js";
 import AxiosHeaders from "../../../lib/src/lib/core/AxiosHeaders.js";
 import defaults from "../../../lib/src/lib/defaults/index.js";
 
@@ -71,8 +71,8 @@ class MockXMLHttpRequest {
 
 const XSRF_COOKIE_NAME = "CUSTOM-XSRF-TOKEN";
 
-const transformRequest = (defaults.transformRequest as AxiosRequestTransformer[]);
-const transformResponse = (defaults.transformResponse as AxiosResponseTransformer[]);
+const transformRequest = (defaults.transformRequest as Array<(data: unknown, headers: AxiosHeaders) => unknown>);
+const transformResponse = (defaults.transformResponse as Array<(data: unknown, headers?: AxiosHeaders) => unknown>);
 
 let requests: MockXMLHttpRequest[] = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
@@ -144,7 +144,7 @@ describe("defaults (vitest browser)", () => {
   });
 
   it("should transform response json", () => {
-    const data = transformResponse[0].call(defaults, '{"foo":"bar"}');
+    const data = transformResponse[0]('{"foo":"bar"}') as Record<string, unknown>;
 
     expect(typeof data).toBe("object");
     expect(data.foo).toBe("bar");
