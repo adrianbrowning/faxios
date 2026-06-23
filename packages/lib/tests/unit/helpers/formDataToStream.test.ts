@@ -2,11 +2,10 @@ import { describe, it, expect } from "vitest";
 import formDataToStream from "../../../src/lib/helpers/formDataToStream.js";
 
 class SpecFormData {
-  constructor() {
-    this._entries = [];
-    this[Symbol.toStringTag] = "FormData";
-  }
-  append(name, value) {
+  _entries: [string, unknown][] = [];
+  [Symbol.toStringTag]: string = "FormData";
+  constructor() {}
+  append(name: string, value: unknown) {
     this._entries.push([name, value]);
   }
   entries() {
@@ -17,7 +16,7 @@ class SpecFormData {
   }
 }
 
-const makeBlobLike = ({ type, name, size, payload }) => ({
+const makeBlobLike = ({ type, name, size, payload }: { type: string; name: string; size?: number; payload: Buffer }) => ({
   type,
   name,
   size: size ?? payload.byteLength,
@@ -26,7 +25,7 @@ const makeBlobLike = ({ type, name, size, payload }) => ({
   },
 });
 
-const collect = async (stream) => {
+const collect = async (stream: AsyncIterable<Uint8Array>) => {
   const chunks = [];
   for await (const chunk of stream) {
     chunks.push(Buffer.from(chunk));
