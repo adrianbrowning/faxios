@@ -16,7 +16,7 @@ import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isAxiosError from "./helpers/isAxiosError.js";
 import spread from "./helpers/spread.js";
 import toFormData from "./helpers/toFormData.js";
-import type { AxiosRequestConfig } from "./types.js";
+import type { AxiosInterceptorHandler, AxiosInterceptorOptions, AxiosInterceptorRejected, AxiosRequestConfig, InternalAxiosRequestConfig, AxiosResponse } from "./types.js";
 import utils from "./utils.js";
 
 /**
@@ -45,21 +45,39 @@ function createInstance(defaultConfig: AxiosRequestConfig): AxiosInstance {
 }
 
 export type AxiosInstance = {
-  (config: AxiosRequestConfig): Promise<unknown>;
-  (url: string, config?: AxiosRequestConfig): Promise<unknown>;
-  request(config: AxiosRequestConfig): Promise<unknown>;
-  get(url: string, config?: AxiosRequestConfig): Promise<unknown>;
-  delete(url: string, config?: AxiosRequestConfig): Promise<unknown>;
-  head(url: string, config?: AxiosRequestConfig): Promise<unknown>;
-  options(url: string, config?: AxiosRequestConfig): Promise<unknown>;
-  post(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<unknown>;
-  put(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<unknown>;
-  patch(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<unknown>;
-  query(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<unknown>;
+  (config: AxiosRequestConfig): Promise<AxiosResponse>;
+  (url: string, config?: AxiosRequestConfig): Promise<AxiosResponse>;
+  request(config: AxiosRequestConfig): Promise<AxiosResponse>;
+  get(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse>;
+  delete(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse>;
+  head(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse>;
+  options(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse>;
+  post(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse>;
+  put(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse>;
+  patch(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse>;
+  query(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse>;
   defaults: { headers: Record<string, unknown> } & Record<string, unknown>;
   interceptors: {
-    request: { use: (fulfilled: (config: AxiosRequestConfig) => AxiosRequestConfig) => number; handlers: unknown[] };
-    response: { use: (fulfilled: (response: unknown) => unknown) => number; handlers: unknown[] };
+    request: {
+      use(
+        fulfilled: (config: InternalAxiosRequestConfig) => InternalAxiosRequestConfig | Promise<InternalAxiosRequestConfig>,
+        rejected?: AxiosInterceptorRejected | null,
+        options?: AxiosInterceptorOptions,
+      ): number;
+      eject(id: number): void;
+      clear(): void;
+      handlers: Array<AxiosInterceptorHandler<InternalAxiosRequestConfig> | null>;
+    };
+    response: {
+      use(
+        fulfilled: (response: AxiosResponse) => AxiosResponse | Promise<AxiosResponse> | unknown,
+        rejected?: AxiosInterceptorRejected | null,
+        options?: AxiosInterceptorOptions,
+      ): number;
+      eject(id: number): void;
+      clear(): void;
+      handlers: Array<AxiosInterceptorHandler<AxiosResponse> | null>;
+    };
   };
   getUri(config?: AxiosRequestConfig): string;
   create: (instanceConfig?: AxiosRequestConfig) => AxiosInstance;

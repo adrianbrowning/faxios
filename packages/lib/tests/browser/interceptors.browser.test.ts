@@ -112,8 +112,8 @@ class MockXMLHttpRequest {
   }
 }
 
-let requests = [];
-let OriginalXMLHttpRequest;
+let requests: MockXMLHttpRequest[] = [];
+let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const sleep = async (ms = 0) =>
   new Promise((resolve) => setTimeout(resolve, ms));
@@ -137,7 +137,7 @@ describe("interceptors (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest;
+    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -416,7 +416,7 @@ describe("interceptors (vitest browser)", () => {
   it("should add a request interceptor that returns a promise", async () => {
     axios.interceptors.request.use(
       async (config) =>
-        new Promise((resolve) => {
+        new Promise<typeof config>((resolve) => {
           setTimeout(() => {
             config.headers.async = "promise";
             resolve(config);
@@ -569,8 +569,8 @@ describe("interceptors (vitest browser)", () => {
 
       await fireRequest();
 
-      expect(interceptor1.mock.invocationCallOrder[0]).toBeLessThan(
-        interceptor2.mock.invocationCallOrder[0],
+      expect(interceptor1.mock.invocationCallOrder[0]!).toBeLessThan(
+        interceptor2.mock.invocationCallOrder[0]!,
       );
     });
 
@@ -710,7 +710,7 @@ describe("interceptors (vitest browser)", () => {
 
   it("should execute interceptors before transformers", async () => {
     axios.interceptors.request.use((config) => {
-      config.data.baz = "qux";
+      (config.data as Record<string, unknown>).baz = "qux";
       return config;
     });
 
