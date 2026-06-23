@@ -114,6 +114,10 @@ describe("adapter (vitest browser)", () => {
 
           request.onreadystatechange = function onReadyStateChange() {
             resolve({
+              data: null,
+              status: request.status,
+              statusText: request.statusText,
+              headers: {},
               config,
               request,
             });
@@ -142,6 +146,10 @@ describe("adapter (vitest browser)", () => {
 
           request.onreadystatechange = function onReadyStateChange() {
             resolve({
+              data: null,
+              status: request.status,
+              statusText: request.statusText,
+              headers: {},
               config,
               request,
             });
@@ -164,7 +172,7 @@ describe("adapter (vitest browser)", () => {
     let asyncFlag = false;
 
     axios.interceptors.request.use((config) => {
-      config.headers.async = "async it!";
+      config.headers!.async = "async it!";
       return config;
     });
 
@@ -176,6 +184,10 @@ describe("adapter (vitest browser)", () => {
 
           request.onreadystatechange = function onReadyStateChange() {
             resolve({
+              data: null,
+              status: request.status,
+              statusText: request.statusText,
+              headers: {},
               config,
               request,
             });
