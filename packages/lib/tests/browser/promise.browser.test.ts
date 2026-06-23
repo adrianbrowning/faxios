@@ -3,28 +3,28 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import axios from "../../src/index.js";
 
 class MockXMLHttpRequest {
-  constructor() {
-    this.requestHeaders = {};
-    this.responseHeaders = "";
-    this.readyState = 0;
-    this.status = 0;
-    this.statusText = "";
-    this.responseText = "";
-    this.response = null;
-    this.onreadystatechange = null;
-    this.onloadend = null;
-    this.upload = {
-      addEventListener() {},
-    };
-  }
+  requestHeaders: Record<string, string> = {};
+  responseHeaders: string = "";
+  readyState = 0;
+  status = 0;
+  statusText = "";
+  responseText = "";
+  response: string | null = null;
+  onreadystatechange: (() => void) | null = null;
+  onloadend: (() => void) | null = null;
+  upload = { addEventListener() {} };
+  method?: string;
+  url?: string;
+  async?: boolean;
+  params?: unknown;
 
-  open(method, url, async = true) {
+  open(method: string, url: string, async = true) {
     this.method = method;
     this.url = url;
     this.async = async;
   }
 
-  setRequestHeader(key, value) {
+  setRequestHeader(key: string, value: string) {
     this.requestHeaders[key] = value;
   }
 
@@ -34,7 +34,7 @@ class MockXMLHttpRequest {
     return this.responseHeaders;
   }
 
-  send(data) {
+  send(data: unknown) {
     this.params = data;
     requests.push(this);
   }
@@ -44,6 +44,11 @@ class MockXMLHttpRequest {
     statusText = "OK",
     responseText = "",
     responseHeaders = "",
+  }: {
+    status?: number;
+    statusText?: string;
+    responseText?: string;
+    responseHeaders?: string;
   } = {}) {
     this.status = status;
     this.statusText = statusText;
@@ -64,8 +69,8 @@ class MockXMLHttpRequest {
   abort() {}
 }
 
-let requests = [];
-let OriginalXMLHttpRequest;
+let requests: MockXMLHttpRequest[] = [];
+let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const getLastRequest = () => {
   const request = requests.at(-1);
@@ -79,7 +84,7 @@ describe("promise (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest;
+    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -90,7 +95,7 @@ describe("promise (vitest browser)", () => {
     const responsePromise = axios("/foo");
     const request = getLastRequest();
 
-    request.respondWith({
+    request!.respondWith({
       status: 200,
       responseText: '{"hello":"world"}',
       responseHeaders: "Content-Type: application/json",
@@ -99,22 +104,22 @@ describe("promise (vitest browser)", () => {
     const response = await responsePromise;
 
     expect(typeof response).toBe("object");
-    expect(response.data.hello).toBe("world");
+    expect((response.data as Record<string, string>).hello).toBe("world");
     expect(response.status).toBe(200);
     expect(response.headers["content-type"]).toBe("application/json");
     expect(response.config.url).toBe("/foo");
   });
 
   it("should support all", async () => {
-    const result = await axios.all([true, 123]);
+    const result = await axios.all<boolean | number>([true, 123]);
 
     expect(result).toEqual([true, 123]);
   });
 
   it("should support spread", async () => {
     let fulfilled = false;
-    const result = await axios.all([123, 456]).then(
-      axios.spread((a, b) => {
+    const result = await axios.all<number>([123, 456]).then(
+      axios.spread((a: number, b: number) => {
         expect(a + b).toBe(123 + 456);
         fulfilled = true;
         return "hello world";
