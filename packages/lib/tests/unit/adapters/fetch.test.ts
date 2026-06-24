@@ -10,7 +10,7 @@ import { getFetch } from "../../../src/lib/adapters/fetch.js";
 import FaxiosError from "../../../src/lib/core/FaxiosError.js";
 import { VERSION } from "../../../src/lib/env/data.js";
 import utils from "../../../src/lib/utils.js";
-import type { FaxiosInstance as TypedFaxiosInstance, FaxiosStatic as TypedFaxiosStatic, FaxiosProgressEvent, FaxiosHeaders as TypedFaxiosHeaders } from "../../../src/index.old.js";
+import type { AxiosInstance as TypedFaxiosInstance, AxiosStatic as TypedFaxiosStatic, AxiosProgressEvent as FaxiosProgressEvent, AxiosHeaders as TypedFaxiosHeaders, InternalAxiosRequestConfig } from "../../../src/index.old.js";
 import type { GenericAbortSignal } from "../../../src/lib/types.js";
 import {
   startHTTPServer,
@@ -174,7 +174,7 @@ describe.runIf(typeof fetch === "function")(
         adapter: "fetch",
       }) as unknown as TypedFaxiosInstance;
 
-      instance.interceptors.request.use((config) => {
+      instance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
         config.headers.oprtName = encodeURIComponent(config.headers.oprtName as string);
         return config;
       });
