@@ -29,7 +29,7 @@ import assert from "node:assert";
 import HttpsProxyAgent from "https-proxy-agent";
 import { describe, it } from "vitest";
 import axios from "../../../src/index.js";
-import type { FaxiosInstance as TypedFaxiosInstance, FaxiosStatic as TypedFaxiosStatic } from "../../../src/index.old.js";
+import type { AxiosInstance as TypedFaxiosInstance, AxiosStatic as TypedFaxiosStatic } from "../../../src/index.old.js";
 import httpAdapter, {
   __isSameOriginRedirect,
   __setProxy,
@@ -225,7 +225,7 @@ describe("supports http with nodejs", () => {
 
     const instance = axios.create({ proxy: false });
 
-    (instance as unknown as TypedFaxiosInstance).interceptors.request.use((config) => {
+    (instance as unknown as TypedFaxiosInstance).interceptors.request.use((config: import("../../../src/index.old.js").InternalAxiosRequestConfig) => {
       config.headers.oprtName = encodeURIComponent(config.headers.oprtName as string);
       return config;
     });
@@ -570,7 +570,7 @@ describe("supports http with nodejs", () => {
     try {
       await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/one`, {
         maxRedirects: 3,
-        beforeRedirect: (options, responseDetails) => {
+        beforeRedirect: (options: Record<string, unknown>, responseDetails: { headers: Record<string, string> }) => {
           if (
             options.path === "/foo" &&
             responseDetails.headers.location === "/foo"
@@ -605,7 +605,7 @@ describe("supports http with nodejs", () => {
     try {
       await (axios as unknown as TypedFaxiosStatic).get(originalUrl, {
         maxRedirects: 3,
-        beforeRedirect: (options, responseDetails, requestDetails) => {
+        beforeRedirect: (options: Record<string, unknown>, responseDetails: { headers: Record<string, string> }, requestDetails: Record<string, unknown>) => {
           if (
             options.path === "/foo" &&
             responseDetails.headers.location === "/foo"
@@ -5628,7 +5628,7 @@ describe("supports http with nodejs", () => {
         const { data } = await (axios as unknown as TypedFaxiosStatic).get(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           {
-            parseReviver: (key, value) => (key === "foo" ? "success" : value),
+            parseReviver: (key: string, value: unknown) => (key === "foo" ? "success" : value),
           },
         );
 
@@ -6731,7 +6731,7 @@ describe("supports http with nodejs", () => {
           transport: errorTransport,
           maxRedirects: 0,
         })
-        .catch((e) => e);
+        .catch((e: unknown) => e);
 
       assert.ok(
         err instanceof FaxiosError,
