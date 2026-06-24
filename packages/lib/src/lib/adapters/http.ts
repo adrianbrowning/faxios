@@ -951,7 +951,7 @@ function handleBufferedResponse(
       let responseData: Buffer | string =
         responseBuffer.length === 1
           ? responseBuffer[0]!
-          : Buffer.concat(responseBuffer as Uint8Array[]);
+          : Buffer.concat(responseBuffer as unknown as Uint8Array[]);
       if (ctx.responseType !== "arraybuffer") {
         responseData = responseData.toString(ctx.responseEncoding as BufferEncoding);
         if (!ctx.responseEncoding || ctx.responseEncoding === "utf8") {
