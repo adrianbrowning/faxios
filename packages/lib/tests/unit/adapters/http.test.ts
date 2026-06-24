@@ -29,7 +29,7 @@ import assert from "node:assert";
 import HttpsProxyAgent from "https-proxy-agent";
 import { describe, it } from "vitest";
 import axios from "../../../src/index.js";
-import type { AxiosInstance as TypedFaxiosInstance, AxiosStatic as TypedFaxiosStatic } from "../../../src/index.old.js";
+import type { AxiosInstance as TypedFaxiosInstance, AxiosStatic as TypedFaxiosStatic, InternalAxiosRequestConfig } from "../../../src/index.old.js";
 import httpAdapter, {
   __isSameOriginRedirect,
   __setProxy,
@@ -225,7 +225,7 @@ describe("supports http with nodejs", () => {
 
     const instance = axios.create({ proxy: false });
 
-    (instance as unknown as TypedFaxiosInstance).interceptors.request.use((config: unknown) => {
+    (instance as unknown as TypedFaxiosInstance).interceptors.request.use((config: InternalAxiosRequestConfig) => {
       config.headers.oprtName = encodeURIComponent(config.headers.oprtName as string);
       return config;
     });
