@@ -47,7 +47,7 @@ function sanitizeValue(value: unknown, invalidChars: RegExp): string | Array<str
 export const sanitizeHeaderValue = (value: unknown) =>
   sanitizeValue(value, INVALID_UNICODE_HEADER_VALUE_CHARS);
 
-export const sanitizeByteStringHeaderValue = (value: unknown) =>
+const sanitizeByteStringHeaderValue = (value: unknown) =>
   sanitizeValue(value, INVALID_BYTE_STRING_HEADER_VALUE_CHARS);
 
 export function toByteStringHeaderObject(headers: { toJSON: () => Record<string, unknown>; }) {

@@ -2,7 +2,7 @@ import { PassThrough, Readable, Writable } from "node:stream";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
 
-const createCaptureTransport = (buildResponse) => ({
+const createCaptureTransport = buildResponse => ({
   request(options, onResponse) {
     const chunks = [];
 
@@ -54,7 +54,7 @@ describe("files compat (dist export only)", () => {
 
     const response = await faxios.post("http://example.com/upload", source, {
       proxy: false,
-      transport: createCaptureTransport((body) => ({
+      transport: createCaptureTransport(body => ({
         body: JSON.stringify({ echoed: body.toString("base64") }),
       })),
     });
@@ -63,20 +63,20 @@ describe("files compat (dist export only)", () => {
   });
 
   it("supports posting Uint8Array payloads", async () => {
-    const source = Uint8Array.from([1, 2, 3, 4, 255]);
+    const source = Uint8Array.from([ 1, 2, 3, 4, 255 ]);
 
     const response = await faxios.post("http://example.com/upload", source, {
       proxy: false,
-      transport: createCaptureTransport((body) => ({
+      transport: createCaptureTransport(body => ({
         body: JSON.stringify({ echoed: Array.from(body.values()) }),
       })),
     });
 
-    expect(response.data.echoed).toEqual([1, 2, 3, 4, 255]);
+    expect(response.data.echoed).toEqual([ 1, 2, 3, 4, 255 ]);
   });
 
   it("supports posting Readable stream payloads", async () => {
-    const streamData = ["hello ", "stream ", "world"];
+    const streamData = [ "hello ", "stream ", "world" ];
     const source = Readable.from(streamData);
 
     const response = await faxios.post("http://example.com/upload", source, {
@@ -98,7 +98,7 @@ describe("files compat (dist export only)", () => {
   });
 
   it("supports binary downloads with responseType=arraybuffer", async () => {
-    const binary = Buffer.from([0xde, 0xad, 0xbe, 0xef]);
+    const binary = Buffer.from([ 0xde, 0xad, 0xbe, 0xef ]);
 
     const response = await faxios.get("http://example.com/file.bin", {
       proxy: false,

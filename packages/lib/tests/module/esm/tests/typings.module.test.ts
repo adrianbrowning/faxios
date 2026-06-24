@@ -6,7 +6,7 @@ import { runCommand } from "./helpers/run-command.js";
 
 const suiteRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
-  "..",
+  ".."
 );
 const repoRoot = path.resolve(suiteRoot, "../../..");
 const tscBin = path.join(suiteRoot, "node_modules", "typescript", "bin", "tsc");
@@ -22,7 +22,7 @@ describe("module esm typings compatibility", () => {
   it("type-checks esm faxios typings", () => {
     const sourcePath = path.join(
       repoRoot,
-      "tests/module/esm/tests/helpers/esm-index.ts",
+      "tests/module/esm/tests/helpers/esm-index.ts"
     );
     const fixturePath = createTempFixture(
       suiteRoot,
@@ -31,14 +31,15 @@ describe("module esm typings compatibility", () => {
       tsconfig,
       {
         type: "module",
-      },
+      }
     );
 
     try {
-      runCommand("node", [tscBin, "--noEmit", "-p", "tsconfig.json"], {
+      runCommand("node", [ tscBin, "--noEmit", "-p", "tsconfig.json" ], {
         cwd: fixturePath,
       });
-    } finally {
+    }
+    finally {
       cleanupTempFixture(fixturePath);
     }
   });

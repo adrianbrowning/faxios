@@ -11,7 +11,7 @@ class MockXMLHttpRequest {
   response: string | null = null;
   onreadystatechange: (() => void) | null = null;
   onloadend: (() => void) | null = null;
-  upload: { addEventListener(): void } = { addEventListener() {} };
+  upload: { addEventListener: () => void; } = { addEventListener() {} };
   method?: string;
   url?: string;
   async?: boolean;
@@ -48,7 +48,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -57,7 +58,7 @@ class MockXMLHttpRequest {
   abort() {}
 }
 
-let requests: MockXMLHttpRequest[] = [];
+let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const getLastRequest = () => {
@@ -68,12 +69,19 @@ const getLastRequest = () => {
   return request!;
 };
 
-const finishRequest = async (request: MockXMLHttpRequest, promise: Promise<unknown>) => {
+const finishRequest = async (
+  request: MockXMLHttpRequest,
+  promise: Promise<unknown>
+) => {
   request.respondWith({ status: 200 });
   await promise;
 };
 
-function testHeaderValue(headers: Record<string, unknown>, key: string, val?: unknown) {
+function testHeaderValue(
+  headers: Record<string, unknown>,
+  key: string,
+  val?: unknown
+) {
   let found = false;
 
   for (const k in headers) {
@@ -87,7 +95,8 @@ function testHeaderValue(headers: Record<string, unknown>, key: string, val?: un
   if (!found) {
     if (typeof val === "undefined") {
       expect(Object.prototype.hasOwnProperty.call(headers, key)).toBe(false);
-    } else {
+    }
+    else {
       throw new Error(`${key} was not found in headers`);
     }
   }
@@ -97,7 +106,8 @@ describe("headers (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
+    window.XMLHttpRequest =
+      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -121,8 +131,10 @@ describe("headers (vitest browser)", () => {
   it("should allow request interceptors to encode Unicode header values before XHR sends them", async () => {
     const instance = axios.create({ adapter: "xhr" });
 
-    instance.interceptors.request.use((config) => {
-      config.headers!['oprtName'] = encodeURIComponent(config.headers!['oprtName'] as string);
+    instance.interceptors.request.use(config => {
+      config.headers["oprtName"] = encodeURIComponent(
+        config.headers["oprtName"] as string
+      );
       return config;
     });
 
@@ -131,11 +143,11 @@ describe("headers (vitest browser)", () => {
         oprtName: "请求用户",
       },
     });
-    await new Promise((resolve) => setTimeout(resolve));
+    await new Promise(resolve => setTimeout(resolve));
     const request = getLastRequest();
 
     expect(request.requestHeaders.oprtName).toBe(
-      encodeURIComponent("请求用户"),
+      encodeURIComponent("请求用户")
     );
 
     await finishRequest(request, promise);
@@ -157,7 +169,9 @@ describe("headers (vitest browser)", () => {
 
   it("should respect common Content-Type header", async () => {
     const instance = axios.create();
-    (instance.defaults.headers.common as Record<string, string>)["Content-Type"] = "application/custom";
+    (instance.defaults.headers.common as Record<string, string>)[
+      "Content-Type"
+    ] = "application/custom";
 
     const promise = instance.patch("/foo", "");
     const request = getLastRequest();
@@ -168,7 +182,9 @@ describe("headers (vitest browser)", () => {
   });
 
   it("should add extra headers for post", async () => {
-    const headers = FaxiosHeaders.from(axios.defaults.headers.common as Record<string, unknown>).toJSON();
+    const headers = FaxiosHeaders.from(
+      axios.defaults.headers.common as Record<string, unknown>
+    ).toJSON();
     const promise = axios.post("/foo", "fizz=buzz");
     const request = getLastRequest();
 
@@ -199,15 +215,15 @@ describe("headers (vitest browser)", () => {
             "x-header-a": null,
             "x-header-b": undefined,
           },
-        },
+        }
       );
     const request = getLastRequest();
-
-    testHeaderValue(request.requestHeaders, "Content-Type", undefined);
-    testHeaderValue(request.requestHeaders, "x-header-a", undefined);
-    testHeaderValue(request.requestHeaders, "x-header-b", undefined);
+     
+    testHeaderValue(request.requestHeaders, "Content-Type");
+    testHeaderValue(request.requestHeaders, "x-header-a");
+    testHeaderValue(request.requestHeaders, "x-header-b");
     testHeaderValue(request.requestHeaders, "x-header-c", "c");
-
+     
     await finishRequest(request, promise);
   });
 
@@ -227,7 +243,7 @@ describe("headers (vitest browser)", () => {
     const promise = axios.post("/foo");
     const request = getLastRequest();
 
-    testHeaderValue(request.requestHeaders, "Content-Type", undefined);
+    testHeaderValue(request.requestHeaders, "Content-Type");
 
     await finishRequest(request, promise);
   });
@@ -239,7 +255,7 @@ describe("headers (vitest browser)", () => {
     testHeaderValue(
       request.requestHeaders,
       "Content-Type",
-      "application/x-www-form-urlencoded",
+      "application/x-www-form-urlencoded"
     );
 
     await finishRequest(request, promise);

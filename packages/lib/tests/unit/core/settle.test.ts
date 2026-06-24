@@ -5,7 +5,7 @@ import type { FaxiosResponse } from "../../../src/lib/types.js";
 
 function makeResponse(
   status: number,
-  validateStatus: ((s: number) => boolean) | null = (s) => s >= 200 && s < 300,
+  validateStatus: ((s: number) => boolean) | null = s => s >= 200 && s < 300
 ): FaxiosResponse {
   return {
     status,
@@ -52,7 +52,7 @@ describe("core::settle", () => {
       settle(
         resolve,
         reject,
-        makeResponse(400, () => false),
+        makeResponse(400, () => false)
       );
       expect(reject).toHaveBeenCalledTimes(1);
       const error = reject.mock.calls[0]![0];
@@ -66,7 +66,7 @@ describe("core::settle", () => {
       settle(
         resolve,
         reject,
-        makeResponse(404, () => false),
+        makeResponse(404, () => false)
       );
       const error = reject.mock.calls[0]![0];
       expect(error.code).toBe(FaxiosError.ERR_BAD_REQUEST);
@@ -78,7 +78,7 @@ describe("core::settle", () => {
       settle(
         resolve,
         reject,
-        makeResponse(499, () => false),
+        makeResponse(499, () => false)
       );
       const error = reject.mock.calls[0]![0];
       expect(error.code).toBe(FaxiosError.ERR_BAD_REQUEST);
@@ -90,7 +90,7 @@ describe("core::settle", () => {
       settle(
         resolve,
         reject,
-        makeResponse(500, () => false),
+        makeResponse(500, () => false)
       );
       const error = reject.mock.calls[0]![0];
       expect(error.code).toBe(FaxiosError.ERR_BAD_RESPONSE);
@@ -102,7 +102,7 @@ describe("core::settle", () => {
       settle(
         resolve,
         reject,
-        makeResponse(503, () => false),
+        makeResponse(503, () => false)
       );
       const error = reject.mock.calls[0]![0];
       expect(error.code).toBe(FaxiosError.ERR_BAD_RESPONSE);
@@ -116,7 +116,7 @@ describe("core::settle", () => {
       settle(
         resolve,
         reject,
-        makeResponse(301, () => false),
+        makeResponse(301, () => false)
       );
       const error = reject.mock.calls[0]![0];
       expect(error.code).toBeDefined();
@@ -129,7 +129,7 @@ describe("core::settle", () => {
       settle(
         resolve,
         reject,
-        makeResponse(200, () => false),
+        makeResponse(200, () => false)
       );
       const error = reject.mock.calls[0]![0];
       expect(error.code).toBeDefined();
@@ -142,7 +142,7 @@ describe("core::settle", () => {
       settle(
         resolve,
         reject,
-        makeResponse(600, () => false),
+        makeResponse(600, () => false)
       );
       const error = reject.mock.calls[0]![0];
       expect(error.code).toBeDefined();
@@ -157,7 +157,7 @@ describe("core::settle", () => {
       settle(
         resolve,
         reject,
-        makeResponse(404, () => false),
+        makeResponse(404, () => false)
       );
       const error = reject.mock.calls[0]![0];
       expect(error.message).toBe("Request failed with status code 404");

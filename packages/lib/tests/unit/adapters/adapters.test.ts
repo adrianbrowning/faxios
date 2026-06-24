@@ -9,7 +9,7 @@ const config = {} as InternalFaxiosRequestConfig;
 
 describe("adapters", () => {
   beforeEach(() => {
-    Object.keys(adapterStore).forEach((name) => {
+    Object.keys(adapterStore).forEach(name => {
       delete adapterStore[name];
     });
 
@@ -31,7 +31,7 @@ describe("adapters", () => {
     adapterStore.testadapter = null;
     assert.throws(
       () => adapters.getAdapter("testAdapter", config),
-      /is not available in the build/,
+      /is not available in the build/
     );
   });
 
@@ -39,7 +39,7 @@ describe("adapters", () => {
     adapterStore.testadapter = false;
     assert.throws(
       () => adapters.getAdapter("testAdapter", config),
-      /is not supported by the environment/,
+      /is not supported by the environment/
     );
   });
 
@@ -52,6 +52,6 @@ describe("adapters", () => {
       baz: adapter,
     });
 
-    assert.strictEqual(adapters.getAdapter(["foo", "bar", "baz"], config), adapter);
+    assert.strictEqual(adapters.getAdapter([ "foo", "bar", "baz" ], config), adapter);
   });
 });

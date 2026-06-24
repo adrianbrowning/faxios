@@ -25,7 +25,7 @@ const createTransportCapture = () => {
         res.headers = { "content-type": "application/json" };
         res.req = req;
         onResponse(res);
-        res.end('{"ok":true}');
+        res.end("{\"ok\":true}");
       };
 
       return req;
@@ -42,7 +42,7 @@ describe("rateLimit compat (dist export only)", () => {
   it("accepts numeric maxRate config", async () => {
     const response = await faxios.get("http://example.com/rate", {
       maxRate: 1024,
-      adapter: async (config) => ({
+      adapter: async config => ({
         data: { maxRate: config.maxRate },
         status: 200,
         statusText: "OK",
@@ -56,8 +56,8 @@ describe("rateLimit compat (dist export only)", () => {
 
   it("accepts tuple maxRate config [upload, download]", async () => {
     const response = await faxios.get("http://example.com/rate", {
-      maxRate: [2048, 4096],
-      adapter: async (config) => ({
+      maxRate: [ 2048, 4096 ],
+      adapter: async config => ({
         data: { maxRate: config.maxRate },
         status: 200,
         statusText: "OK",
@@ -66,17 +66,17 @@ describe("rateLimit compat (dist export only)", () => {
       }),
     });
 
-    expect(response.data.maxRate).toEqual([2048, 4096]);
+    expect(response.data.maxRate).toEqual([ 2048, 4096 ]);
   });
 
   it("merges instance and request maxRate values", async () => {
     const client = faxios.create({
-      maxRate: [1000, 2000],
+      maxRate: [ 1000, 2000 ],
     });
 
     const response = await client.get("http://example.com/rate", {
-      maxRate: [3000, 4000],
-      adapter: async (config) => ({
+      maxRate: [ 3000, 4000 ],
+      adapter: async config => ({
         data: { maxRate: config.maxRate },
         status: 200,
         statusText: "OK",
@@ -85,7 +85,7 @@ describe("rateLimit compat (dist export only)", () => {
       }),
     });
 
-    expect(response.data.maxRate).toEqual([3000, 4000]);
+    expect(response.data.maxRate).toEqual([ 3000, 4000 ]);
   });
 
   it("supports maxRate in node transport flow without errors", async () => {
@@ -93,7 +93,7 @@ describe("rateLimit compat (dist export only)", () => {
 
     const response = await faxios.get("http://example.com/rate", {
       proxy: false,
-      maxRate: [1500, 2500],
+      maxRate: [ 1500, 2500 ],
       transport,
     });
 

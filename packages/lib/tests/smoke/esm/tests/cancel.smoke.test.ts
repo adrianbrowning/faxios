@@ -44,7 +44,8 @@ describe("cancel compat (dist export only)", () => {
 
       controller.abort();
       await request;
-    } catch (error) {
+    }
+    catch (error) {
       expect(error.code).toBe("ERR_CANCELED");
     }
 
@@ -64,7 +65,8 @@ describe("cancel compat (dist export only)", () => {
 
       controller.abort();
       await request;
-    } catch (error) {
+    }
+    catch (error) {
       expect(error.code).toBe("ERR_CANCELED");
     }
 
@@ -82,7 +84,7 @@ describe("cancel compat (dist export only)", () => {
         transport,
         proxy: false,
       })
-      .catch((err) => err);
+      .catch(err => err);
 
     expect(faxios.isCancel(error)).toBe(true);
     expect(error.code).toBe("ERR_CANCELED");
@@ -101,7 +103,7 @@ describe("cancel compat (dist export only)", () => {
 
     source.cancel("Operation canceled by the user.");
 
-    const error = await request.catch((err) => err);
+    const error = await request.catch(err => err);
 
     expect(faxios.isCancel(error)).toBe(true);
     expect(error.code).toBe("ERR_CANCELED");

@@ -8,7 +8,6 @@
   "types": "./dist/src/index.d.ts",
   "jsdelivr": "dist/faxios.min.js",
   "unpkg": "dist/faxios.min.js",
-  "typings": "./index.d.ts",
   "~browser": {
     "./dist/node/faxios.cjs": "./dist/browser/faxios.cjs",
     "./lib/adapters/http.js": "./lib/helpers/null.js",
@@ -100,6 +99,7 @@
     "proxy-from-env": "^2.1.0"
   },
   "devDependencies": {
+    "typescript-eslint": "^8.62.0",
     "@babel/core": "^7.29.0",
     "@babel/preset-env": "^7.29.5",
     "@gingacodemonkey/config": "^0.0.32",
@@ -109,15 +109,15 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^1.0.0",
+    "@types/express": "^5.0.6",
     "@types/follow-redirects": "^1.14.4",
+    "@types/multer": "^2.1.0",
     "@types/proxy-from-env": "^1.0.4",
     "@vitest/browser": "^4.1.7",
     "@vitest/browser-playwright": "^4.1.7",
     "abortcontroller-polyfill": "^1.7.8",
-    "acorn": "^8.16.0",
     "body-parser": "^2.2.2",
     "chalk": "^5.6.2",
-    "cross-env": "^10.1.0",
     "dev-null": "^0.1.1",
     "eslint": "^10.4.0",
     "express": "^5.2.1",

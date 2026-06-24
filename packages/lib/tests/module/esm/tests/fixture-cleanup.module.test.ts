@@ -7,7 +7,7 @@ import { cleanupTempFixture } from "./helpers/fixture.js";
 describe("module fixture cleanup helper", () => {
   it("removes fixture directories without shelling out to rm", () => {
     const fixturePath = fs.mkdtempSync(
-      path.join(os.tmpdir(), "faxios-esm-module-fixture-"),
+      path.join(os.tmpdir(), "faxios-esm-module-fixture-")
     );
     const nestedPath = path.join(fixturePath, "nested");
     const originalPath = process.env.PATH;
@@ -18,7 +18,8 @@ describe("module fixture cleanup helper", () => {
 
     try {
       cleanupTempFixture(fixturePath);
-    } finally {
+    }
+    finally {
       process.env.PATH = originalPath;
     }
 

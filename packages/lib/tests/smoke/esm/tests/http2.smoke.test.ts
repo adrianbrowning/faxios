@@ -12,7 +12,7 @@ describe("http2 compat (dist export only)", () => {
     });
 
     const response = await client.get("/resource", {
-      adapter: async (config) => ({
+      adapter: async config => ({
         data: {
           httpVersion: config.httpVersion,
           http2Options: config.http2Options,
@@ -45,7 +45,7 @@ describe("http2 compat (dist export only)", () => {
         sessionTimeout: 5000,
         customFlag: true,
       },
-      adapter: async (config) => ({
+      adapter: async config => ({
         data: config.http2Options,
         status: 200,
         statusText: "OK",
@@ -69,7 +69,7 @@ describe("http2 compat (dist export only)", () => {
 
     const response = await client.get("/resource", {
       httpVersion: 1,
-      adapter: async (config) => ({
+      adapter: async config => ({
         data: {
           httpVersion: config.httpVersion,
         },

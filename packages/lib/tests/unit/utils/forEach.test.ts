@@ -7,7 +7,7 @@ describe("utils::forEach", () => {
   it("should loop over an array", () => {
     let sum = 0;
 
-    forEach([1, 2, 3, 4, 5], (val: unknown) => {
+    forEach([ 1, 2, 3, 4, 5 ], (val: unknown) => {
       sum += val as number;
     });
 
@@ -49,7 +49,7 @@ describe("utils::forEach", () => {
       () => {},
       () => {
         count++;
-      },
+      }
     );
 
     expect(count).toEqual(1);

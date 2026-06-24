@@ -7,7 +7,7 @@ describe("helpers::toFormData (vitest browser)", () => {
     const data = {
       val: 123,
       nested: {
-        arr: ["hello", "world"],
+        arr: [ "hello", "world" ],
       },
     };
 
@@ -28,14 +28,14 @@ describe("helpers::toFormData (vitest browser)", () => {
     const form = toFormData(data, null, { metaTokens: false }) as FormData;
 
     expect(Array.from(form.keys())).toHaveLength(1);
-    expect(form.getAll("obj")).toEqual([serialized]);
+    expect(form.getAll("obj")).toEqual([ serialized ]);
   });
 
   describe("flat arrays serialization", () => {
     it("includes full indexes when indexes option is true", () => {
       const data = {
-        arr: [1, 2, 3],
-        arr2: [1, [2], 3],
+        arr: [ 1, 2, 3 ],
+        arr2: [ 1, [ 2 ], 3 ],
       };
 
       const form = toFormData(data, null, { indexes: true }) as FormData;
@@ -51,14 +51,14 @@ describe("helpers::toFormData (vitest browser)", () => {
 
     it("includes brackets only when indexes option is false", () => {
       const data = {
-        arr: [1, 2, 3],
-        arr2: [1, [2], 3],
+        arr: [ 1, 2, 3 ],
+        arr2: [ 1, [ 2 ], 3 ],
       };
 
       const form = toFormData(data, null, { indexes: false }) as FormData;
 
       expect(Array.from(form.keys())).toHaveLength(6);
-      expect(form.getAll("arr[]")).toEqual(["1", "2", "3"]);
+      expect(form.getAll("arr[]")).toEqual([ "1", "2", "3" ]);
       expect(form.get("arr2[0]")).toBe("1");
       expect(form.get("arr2[1][0]")).toBe("2");
       expect(form.get("arr2[2]")).toBe("3");
@@ -66,14 +66,14 @@ describe("helpers::toFormData (vitest browser)", () => {
 
     it("omits brackets when indexes option is null", () => {
       const data = {
-        arr: [1, 2, 3],
-        arr2: [1, [2], 3],
+        arr: [ 1, 2, 3 ],
+        arr2: [ 1, [ 2 ], 3 ],
       };
 
       const form = toFormData(data, null, { indexes: null }) as FormData;
 
       expect(Array.from(form.keys())).toHaveLength(6);
-      expect(form.getAll("arr")).toEqual(["1", "2", "3"]);
+      expect(form.getAll("arr")).toEqual([ "1", "2", "3" ]);
       expect(form.get("arr2[0]")).toBe("1");
       expect(form.get("arr2[1][0]")).toBe("2");
       expect(form.get("arr2[2]")).toBe("3");
@@ -84,7 +84,7 @@ describe("helpers::toFormData (vitest browser)", () => {
     const data = {
       val: 123,
       nested: {
-        arr: ["hello", "world"],
+        arr: [ "hello", "world" ],
       },
     };
 
@@ -98,13 +98,13 @@ describe("helpers::toFormData (vitest browser)", () => {
 
   it("appends value whose key ends with [] as separate values with the same key", () => {
     const data = {
-      "arr[]": [1, 2, 3],
+      "arr[]": [ 1, 2, 3 ],
     };
 
     const form = toFormData(data) as FormData;
 
     expect(Array.from(form.keys())).toHaveLength(3);
-    expect(form.getAll("arr[]")).toEqual(["1", "2", "3"]);
+    expect(form.getAll("arr[]")).toEqual([ "1", "2", "3" ]);
   });
 
   it("appends value whose key ends with {} as a JSON string", () => {
@@ -116,6 +116,6 @@ describe("helpers::toFormData (vitest browser)", () => {
     const form = toFormData(data) as FormData;
 
     expect(Array.from(form.keys())).toHaveLength(1);
-    expect(form.getAll("obj{}")).toEqual([serialized]);
+    expect(form.getAll("obj{}")).toEqual([ serialized ]);
   });
 });

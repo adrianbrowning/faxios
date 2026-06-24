@@ -18,7 +18,7 @@ const ReadableStreamGlobal = (globalThis as Record<string, unknown>)["ReadableSt
 
 type ByteChunk = { byteLength: number; slice: (start: number, end?: number) => ByteChunk; };
 
-export const streamChunk = function* (chunk: ByteChunk, chunkSize?: number): Generator<ByteChunk> {
+const streamChunk = function* (chunk: ByteChunk, chunkSize?: number): Generator<ByteChunk> {
   const len = chunk.byteLength;
 
   if (!chunkSize || len < chunkSize) {
@@ -36,7 +36,7 @@ export const streamChunk = function* (chunk: ByteChunk, chunkSize?: number): Gen
   }
 };
 
-export const readBytes = async function* (iterable: AsyncIterable<ByteChunk> | unknown, chunkSize?: number): AsyncGenerator<ByteChunk> {
+const readBytes = async function* (iterable: AsyncIterable<ByteChunk> | unknown, chunkSize?: number): AsyncGenerator<ByteChunk> {
   for await (const chunk of readStream(iterable)) {
     yield* streamChunk(chunk, chunkSize);
   }

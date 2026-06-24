@@ -12,13 +12,15 @@ const setNoProxy = (value: string) => {
 afterEach(() => {
   if (originalNoProxy === undefined) {
     delete process.env.no_proxy;
-  } else {
+  }
+  else {
     process.env.no_proxy = originalNoProxy;
   }
 
   if (originalNOProxy === undefined) {
     delete process.env.NO_PROXY;
-  } else {
+  }
+  else {
     process.env.NO_PROXY = originalNOProxy;
   }
 });
@@ -67,7 +69,7 @@ describe("helpers::shouldBypassProxy", () => {
   });
 
   it("should bypass proxy for 0.0.0.0 when no_proxy contains a local entry", () => {
-    for (const entry of ["localhost", "127.0.0.1", "::1"]) {
+    for (const entry of [ "localhost", "127.0.0.1", "::1" ]) {
       setNoProxy(entry);
 
       expect(shouldBypassProxy("http://0.0.0.0:7777/")).toBe(true);
@@ -82,7 +84,7 @@ describe("helpers::shouldBypassProxy", () => {
   });
 
   it("should bypass proxy for the IPv6 unspecified address symmetrically with 0.0.0.0", () => {
-    for (const entry of ["localhost", "127.0.0.1", "::1"]) {
+    for (const entry of [ "localhost", "127.0.0.1", "::1" ]) {
       setNoProxy(entry);
 
       expect(shouldBypassProxy("http://[::]:7777/")).toBe(true);
@@ -93,13 +95,13 @@ describe("helpers::shouldBypassProxy", () => {
   it("should bypass proxy for compressed IPv6 unspecified request forms", () => {
     setNoProxy("localhost,127.0.0.1,::1");
 
-    for (const host of ["0::", "::0", "0:0::", "::0:0", "0::0"]) {
+    for (const host of [ "0::", "::0", "0:0::", "::0:0", "0::0" ]) {
       expect(shouldBypassProxy(`http://[${host}]:7777/`)).toBe(true);
     }
   });
 
   it("should bypass proxy for compressed IPv6 unspecified no_proxy entries", () => {
-    for (const entry of ["0::", "::0", "0:0::", "::0:0", "0::0"]) {
+    for (const entry of [ "0::", "::0", "0:0::", "::0:0", "0::0" ]) {
       setNoProxy(entry);
 
       expect(shouldBypassProxy("http://[::]:7777/")).toBe(true);

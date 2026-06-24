@@ -14,7 +14,7 @@ describe("utils::isX", () => {
 
   it("should validate ArrayBufferView", () => {
     expect(utils.isArrayBufferView(new DataView(new ArrayBuffer(2)))).toEqual(
-      true,
+      true
     );
   });
 
@@ -33,7 +33,7 @@ describe("utils::isX", () => {
         toString: function () {
           return "";
         },
-      }),
+      })
     ).toEqual(false);
   });
 
@@ -64,7 +64,7 @@ describe("utils::isX", () => {
     const proto = Object.prototype as Record<symbol, unknown>;
     try {
       proto[Symbol.iterator] = function* () {
-        yield ["x-injected", "yes"];
+        yield [ "x-injected", "yes" ];
       };
       proto[Symbol.toStringTag] = "Custom";
 
@@ -73,16 +73,17 @@ describe("utils::isX", () => {
       expect(
         utils.isPlainObject({
           [Symbol.iterator]: function* () {
-            yield ["x-own", "yes"];
+            yield [ "x-own", "yes" ];
           },
-        }),
+        })
       ).toEqual(false);
       expect(
         utils.isPlainObject({
           [Symbol.toStringTag]: "Custom",
-        }),
+        })
       ).toEqual(false);
-    } finally {
+    }
+    finally {
       delete proto[Symbol.iterator];
       delete proto[Symbol.toStringTag];
     }
@@ -93,7 +94,7 @@ describe("utils::isX", () => {
     // real iterable, not prototype pollution, so it must not be classified plain.
     const proto = Object.create(null);
     proto[Symbol.iterator] = function* () {
-      yield ["x", "1"];
+      yield [ "x", "1" ];
     };
 
     expect(utils.isPlainObject(Object.create(proto))).toEqual(false);
@@ -113,7 +114,8 @@ describe("utils::isX", () => {
 
       expect(utils.isSafeIterable({})).toEqual(false);
       expect(accessed).toEqual(false);
-    } finally {
+    }
+    finally {
       delete (Object.prototype as Record<symbol, unknown>)[Symbol.iterator];
     }
   });
@@ -131,7 +133,7 @@ describe("utils::isX", () => {
           }
           return proxy;
         },
-      },
+      }
     );
 
     expect(utils.hasOwnInPrototypeChain(proxy, "missing")).toEqual(false);
@@ -155,7 +157,7 @@ describe("utils::isX", () => {
   });
 
   it("should validate TypedArray instance", () => {
-    expect(utils.isTypedArray(new Uint8Array([1, 2, 3]))).toEqual(true);
-    expect(utils.isTypedArray([1, 2, 3])).toEqual(false);
+    expect(utils.isTypedArray(new Uint8Array([ 1, 2, 3 ]))).toEqual(true);
+    expect(utils.isTypedArray([ 1, 2, 3 ])).toEqual(false);
   });
 });

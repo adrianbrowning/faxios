@@ -12,7 +12,7 @@ describe("helpers::composeSignals", () => {
     const controllerA = new AbortController();
     const controllerB = new AbortController();
 
-    const signal = composeSignals([controllerA.signal, controllerB.signal])!;
+    const signal = composeSignals([ controllerA.signal, controllerB.signal ])!;
 
     signal.addEventListener("abort", () => {
       called = true;
@@ -26,7 +26,7 @@ describe("helpers::composeSignals", () => {
   runIfAbortController("should abort on timeout", async () => {
     const signal = composeSignals([], 100)!;
 
-    await new Promise((resolve) => {
+    await new Promise(resolve => {
       signal.addEventListener("abort", resolve);
     });
 

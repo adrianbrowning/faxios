@@ -50,7 +50,12 @@ class MockXMLHttpRequest {
     statusText = "OK",
     responseText = "",
     responseHeaders = "",
-  }: { status?: number; statusText?: string; responseText?: string; responseHeaders?: string } = {}) {
+  }: {
+    status?: number;
+    statusText?: string;
+    responseText?: string;
+    responseHeaders?: string;
+  } = {}) {
     this.status = status;
     this.statusText = statusText;
     this.responseText = responseText;
@@ -61,7 +66,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -75,7 +81,7 @@ class MockXMLHttpRequest {
   }
 }
 
-let requests: MockXMLHttpRequest[] = [];
+let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const waitForRequest = async (timeoutMs = 1000) => {
@@ -97,7 +103,8 @@ describe("cancel (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
+    window.XMLHttpRequest =
+      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -113,7 +120,7 @@ describe("cancel (vitest browser)", () => {
         .get("/foo", {
           cancelToken: source.token,
         })
-        .catch((thrown) => thrown);
+        .catch((thrown: unknown) => thrown);
 
       expect(axios.isCancel(error)).toBe(true);
       expect((error as Error).message).toBe("Operation has been canceled.");
@@ -137,7 +144,7 @@ describe("cancel (vitest browser)", () => {
         responseText: "OK",
       });
 
-      const error = await promise.catch((thrown) => thrown);
+      const error = await promise.catch((thrown: unknown) => thrown);
 
       expect(axios.isCancel(error)).toBe(true);
       expect((error as Error).message).toBe("Operation has been canceled.");
@@ -177,7 +184,7 @@ describe("cancel (vitest browser)", () => {
       });
     }, 0);
 
-    const error = await promise.catch((thrown) => thrown);
+    const error = await promise.catch((thrown: unknown) => thrown);
     expect(axios.isCancel(error)).toBe(true);
   });
 
@@ -185,16 +192,20 @@ describe("cancel (vitest browser)", () => {
     for (const { label, trigger } of [
       {
         label: "network error",
-        trigger: (r: MockXMLHttpRequest) => r.onerror!(new Error("Network Error")),
+        trigger: (r: MockXMLHttpRequest) =>
+          r.onerror!(new Error("Network Error")),
       },
       { label: "timeout", trigger: (r: MockXMLHttpRequest) => r.ontimeout!() },
-      { label: "browser abort", trigger: (r: MockXMLHttpRequest) => r.onabort!() },
+      {
+        label: "browser abort",
+        trigger: (r: MockXMLHttpRequest) => r.onabort!(),
+      },
     ]) {
       it(`unsubscribes cancelToken listener after ${label}`, async () => {
         const source = axios.CancelToken.source();
         const promise = axios
           .get("/foo/bar", { cancelToken: source.token })
-          .catch((thrown) => thrown);
+          .catch((thrown: unknown) => thrown);
 
         const request = await waitForRequest();
         trigger(request);
@@ -208,23 +219,31 @@ describe("cancel (vitest browser)", () => {
       const controller = new AbortController();
       let listenerCount = 0;
       const nativeAdd = controller.signal.addEventListener.bind(
-        controller.signal,
+        controller.signal
       );
       const nativeRemove = controller.signal.removeEventListener.bind(
-        controller.signal,
+        controller.signal
       );
-      (controller.signal as any).addEventListener = (type: string, fn: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions) => {
+      controller.signal.addEventListener = (
+        type: string,
+        fn: EventListenerOrEventListenerObject,
+        options?: boolean | AddEventListenerOptions
+      ) => {
         if (type === "abort") listenerCount++;
         return nativeAdd(type, fn, options);
       };
-      (controller.signal as any).removeEventListener = (type: string, fn: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions) => {
+      controller.signal.removeEventListener = (
+        type: string,
+        fn: EventListenerOrEventListenerObject,
+        options?: boolean | EventListenerOptions
+      ) => {
         if (type === "abort") listenerCount--;
         return nativeRemove(type, fn, options);
       };
 
       const promise = axios
         .get("/foo/bar", { signal: controller.signal as GenericAbortSignal })
-        .catch((thrown) => thrown);
+        .catch((thrown: unknown) => thrown);
 
       const request = await waitForRequest();
       request.onerror!(new Error("Network Error"));

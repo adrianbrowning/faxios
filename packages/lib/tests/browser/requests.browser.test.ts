@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import FaxiosError from "../../../lib/src/lib/core/FaxiosError.js";
 import axios from "../../src/index.js";
 import type { FaxiosRequestConfig } from "../../src/lib/types.js";
-import FaxiosError from "../../../lib/src/lib/core/FaxiosError.js";
 
 class MockXMLHttpRequest {
   requestHeaders: Record<string, string> = {};
@@ -18,7 +18,7 @@ class MockXMLHttpRequest {
   onreadystatechange: (() => void) | null = null;
   onloadend: (() => void) | null = null;
   onabort: (() => void) | null = null;
-  onerror: ((e: { message: string }) => void) | null = null;
+  onerror: ((e: { message: string; }) => void) | null = null;
   ontimeout: (() => void) | null = null;
   upload = { addEventListener() {} };
   method = "";
@@ -40,7 +40,7 @@ class MockXMLHttpRequest {
 
   getAllResponseHeaders() {
     return Object.entries(this.responseHeaders)
-      .map(([key, value]) => `${key}: ${value}`)
+      .map(([ key, value ]) => `${key}: ${value}`)
       .join("\n");
   }
 
@@ -54,9 +54,18 @@ class MockXMLHttpRequest {
     status = 200,
     statusText = "OK",
     responseText = "",
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     response = null as unknown,
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     headers = {} as Record<string, string>,
     responseURL = "",
+  }: {
+    status?: number;
+    statusText?: string;
+    responseText?: string;
+    response?: unknown;
+    headers?: Record<string, string>;
+    responseURL?: string;
   } = {}) {
     this.status = status;
     this.statusText = statusText;
@@ -90,17 +99,20 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
   }
 }
 
-let requests: MockXMLHttpRequest[] = [];
+let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
-const startRequest = (...args: [FaxiosRequestConfig] | Parameters<typeof axios>) => {
+const startRequest = (
+  ...args: [FaxiosRequestConfig] | Parameters<typeof axios>
+) => {
   const promise = axios(...(args as Parameters<typeof axios>));
   const request = requests.at(-1);
   expect(request).toBeDefined();
@@ -108,7 +120,10 @@ const startRequest = (...args: [FaxiosRequestConfig] | Parameters<typeof axios>)
   return { request: request as MockXMLHttpRequest, promise };
 };
 
-const flushSuccess = async (request: MockXMLHttpRequest, promise: Promise<unknown>) => {
+const flushSuccess = async (
+  request: MockXMLHttpRequest,
+  promise: Promise<unknown>
+) => {
   request.respondWith({ status: 200 });
   await promise;
 };
@@ -117,7 +132,8 @@ describe("requests (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
+    window.XMLHttpRequest =
+      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -185,7 +201,7 @@ describe("requests (vitest browser)", () => {
 
       request.responseTimeout();
 
-      const err = await promise.catch((error) => error);
+      const err = await promise.catch(error => error);
 
       expect(err).toBeInstanceOf(Error);
       expect(err.code).toBe("ECONNABORTED");
@@ -203,7 +219,7 @@ describe("requests (vitest browser)", () => {
 
         request.responseTimeout();
 
-        const err = await promise.catch((error) => error);
+        const err = await promise.catch(error => error);
 
         expect(err).toBeInstanceOf(Error);
         expect(err.code).toBe("ETIMEDOUT");
@@ -216,7 +232,7 @@ describe("requests (vitest browser)", () => {
 
     request.failNetworkError();
 
-    const reason = await promise.catch((error) => error);
+    const reason = await promise.catch(error => error);
 
     expect(reason).toBeInstanceOf(Error);
     expect(reason.config.method).toBe("get");
@@ -234,11 +250,11 @@ describe("requests (vitest browser)", () => {
           "X-Test": "yes",
         },
       })
-      .catch((error) => error);
+      .catch(error => error);
 
     expect(reason).toBeInstanceOf(FaxiosError);
     expect(reason.code).toBe(FaxiosError.ERR_INVALID_URL);
-    expect(reason.message).toBe('Invalid URL: missing "//" after protocol');
+    expect(reason.message).toBe("Invalid URL: missing \"//\" after protocol");
     expect(reason.config.url).toBe("\u0000https:example.com/users");
     expect(reason.config.headers.get("X-Test")).toBe("yes");
     expect(openSpy).not.toHaveBeenCalled();
@@ -250,7 +266,7 @@ describe("requests (vitest browser)", () => {
 
     request.abort();
 
-    const reason = await promise.catch((error) => error);
+    const reason = await promise.catch(error => error);
 
     expect(reason).toBeInstanceOf(Error);
     expect(reason.config.method).toBe("get");
@@ -266,7 +282,7 @@ describe("requests (vitest browser)", () => {
     });
 
     request.respondWith({ status: 500 });
-    const reason = await promise.catch((error) => error);
+    const reason = await promise.catch(error => error);
 
     expect(reason).toBeInstanceOf(Error);
     expect(reason.message).toBe("Request failed with status code 500");
@@ -323,7 +339,7 @@ describe("requests (vitest browser)", () => {
     });
 
     request.respondWith({ status: 500 });
-    const reason = await promise.catch((error) => error);
+    const reason = await promise.catch(error => error);
 
     expect(reason).toBeInstanceOf(Error);
     expect(reason.message).toBe("Request failed with status code 500");
@@ -345,10 +361,10 @@ describe("requests (vitest browser)", () => {
     request.respondWith({
       status: 400,
       statusText: "Bad Request",
-      responseText: '{"error": "BAD USERNAME", "code": 1}',
+      responseText: "{\"error\": \"BAD USERNAME\", \"code\": 1}",
     });
 
-    const error = await promise.catch((err) => err);
+    const error = await promise.catch(err => err);
     const response = error.response;
 
     const data = response.data as Record<string, unknown>;
@@ -365,7 +381,7 @@ describe("requests (vitest browser)", () => {
     request.respondWith({
       status: 200,
       statusText: "OK",
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
       headers: {
         "Content-Type": "application/json",
       },
@@ -387,7 +403,7 @@ describe("requests (vitest browser)", () => {
     request.respondWith({
       status: 200,
       statusText: "OK",
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
       headers: {
         "Content-Type": "application/json",
       },
@@ -412,7 +428,7 @@ describe("requests (vitest browser)", () => {
       responseText: "Resource not found",
     });
 
-    const error = await promise.catch((err) => err);
+    const error = await promise.catch(err => err);
     const config = error.config;
 
     expect(config.baseURL).toBe("/api");
@@ -434,7 +450,7 @@ describe("requests (vitest browser)", () => {
   });
 
   it("should support binary data as array buffer", async () => {
-    const input = new Int8Array([1, 2]);
+    const input = new Int8Array([ 1, 2 ]);
     const { request, promise } = startRequest("/foo", {
       method: "post",
       data: input.buffer,
@@ -449,7 +465,7 @@ describe("requests (vitest browser)", () => {
   });
 
   it("should support binary data as array buffer view", async () => {
-    const input = new Int8Array([1, 2]);
+    const input = new Int8Array([ 1, 2 ]);
     const { request, promise } = startRequest("/foo", {
       method: "post",
       data: input,
@@ -499,7 +515,7 @@ describe("requests (vitest browser)", () => {
     });
 
     expect(request.requestHeaders["Content-Type"]).toBe(
-      "application/x-www-form-urlencoded;charset=utf-8",
+      "application/x-www-form-urlencoded;charset=utf-8"
     );
     expect(request.params).toBe("param1=value1&param2=value2");
 

@@ -12,7 +12,7 @@ describe("helpers::buildURL", () => {
         foo: "bar",
         isUndefined: undefined,
         isNull: null,
-      }),
+      })
     ).toEqual("/foo?foo=bar");
   });
 
@@ -28,8 +28,8 @@ describe("helpers::buildURL", () => {
         {
           foo: "bar",
         },
-        options,
-      ),
+        options
+      )
     ).toEqual("/foo?foo=bar");
     expect(serializer).toHaveBeenCalledTimes(1);
     expect(serializer).toHaveBeenCalledWith(params, options);
@@ -41,7 +41,7 @@ describe("helpers::buildURL", () => {
         foo: {
           bar: "baz",
         },
-      }),
+      })
     ).toEqual("/foo?foo%5Bbar%5D=baz");
   });
 
@@ -51,15 +51,15 @@ describe("helpers::buildURL", () => {
     expect(
       buildURL("/foo", {
         date,
-      }),
+      })
     ).toEqual("/foo?date=" + date.toISOString());
   });
 
   it("should support array params with encode", () => {
     expect(
       buildURL("/foo", {
-        foo: ["bar", "baz"],
-      }),
+        foo: [ "bar", "baz" ],
+      })
     ).toEqual("/foo?foo%5B%5D=bar&foo%5B%5D=baz");
   });
 
@@ -67,7 +67,7 @@ describe("helpers::buildURL", () => {
     expect(
       buildURL("/foo", {
         foo: ":$, ",
-      }),
+      })
     ).toEqual("/foo?foo=:$,+");
   });
 
@@ -75,17 +75,17 @@ describe("helpers::buildURL", () => {
     expect(
       buildURL("/foo?foo=bar", {
         bar: "baz",
-      }),
+      })
     ).toEqual("/foo?foo=bar&bar=baz");
   });
 
-  it('should support "length" parameter', () => {
+  it("should support \"length\" parameter", () => {
     expect(
       buildURL("/foo", {
         query: "bar",
         start: 0,
         length: 5,
-      }),
+      })
     ).toEqual("/foo?query=bar&start=0&length=5");
   });
 
@@ -93,13 +93,13 @@ describe("helpers::buildURL", () => {
     expect(
       buildURL("/foo?foo=bar#hash", {
         query: "baz",
-      }),
+      })
     ).toEqual("/foo?foo=bar&query=baz");
   });
 
   it("should support URLSearchParams", () => {
     expect(buildURL("/foo", new URLSearchParams("bar=baz"))).toEqual(
-      "/foo?bar=baz",
+      "/foo?bar=baz"
     );
   });
 
@@ -149,7 +149,8 @@ describe("helpers::buildURL", () => {
       expect(buildURL("/foo", { value: "a b" }, {})).toEqual("/foo?value=a+b");
       expect(serializeInvoked).toBe(false);
       expect(encodeInvoked).toBe(false);
-    } finally {
+    }
+    finally {
       delete (Object.prototype as Record<string, unknown>).serialize;
       delete (Object.prototype as Record<string, unknown>).encode;
     }

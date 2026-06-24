@@ -15,7 +15,8 @@ describe("Faxios", () => {
 
       try {
         await axios.request("test-url", {});
-      } catch (e) {
+      }
+      catch (e) {
         assert.strictEqual((e as Error).message, "test-error");
       }
     };

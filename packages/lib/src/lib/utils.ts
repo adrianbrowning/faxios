@@ -308,6 +308,7 @@ function getGlobal(): Record<string, unknown> {
   // @ts-expect-error window may not exist in all environments
    
   if (typeof window !== "undefined") return window;
+  // @ts-ignore -- global lacks index signature in TS6 strict mode
   if (typeof global !== "undefined") return global;
   return {};
 }

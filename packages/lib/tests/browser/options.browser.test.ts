@@ -47,7 +47,7 @@ class MockXMLHttpRequest {
     statusText = "OK",
     responseText = "",
     responseHeaders = "",
-  }: { status?: number; statusText?: string; responseText?: string; responseHeaders?: string } = {}) {
+  }: { status?: number; statusText?: string; responseText?: string; responseHeaders?: string; } = {}) {
     this.status = status;
     this.statusText = statusText;
     this.responseText = responseText;
@@ -58,14 +58,15 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
   }
 }
 
-let requests: MockXMLHttpRequest[] = [];
+let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const startRequest = (...args: Parameters<typeof axios>) => {
@@ -165,7 +166,7 @@ describe("options (vitest browser)", () => {
 
     expect(request).toBeDefined();
     expect(warnSpy).toHaveBeenCalledWith(
-      "baseUrl is likely a misspelling of baseURL",
+      "baseUrl is likely a misspelling of baseURL"
     );
     expect(request!.url).toBe("/foo");
 
@@ -208,7 +209,7 @@ describe("options (vitest browser)", () => {
     instance1.defaults.baseURL = "http://instance1.example.com/";
 
     expect(instance2.defaults.baseURL).not.toBe(
-      "http://instance1.example.com/",
+      "http://instance1.example.com/"
     );
   });
 
@@ -226,15 +227,15 @@ describe("options (vitest browser)", () => {
     expect((axios.defaults.headers.common as RawFaxiosRequestHeaders).Authorization).toBeUndefined();
     expect((instance1.defaults.headers.common as RawFaxiosRequestHeaders).Authorization).toBe("faketoken");
     expect((instance2.defaults.headers.common as RawFaxiosRequestHeaders).Authorization).toBe(
-      "differentfaketoken",
+      "differentfaketoken"
     );
 
     expect((axios.defaults.headers.common as RawFaxiosRequestHeaders)["Content-Type"]).toBeUndefined();
     expect((instance1.defaults.headers.common as RawFaxiosRequestHeaders)["Content-Type"]).toBe(
-      "application/xml",
+      "application/xml"
     );
     expect((instance2.defaults.headers.common as RawFaxiosRequestHeaders)["Content-Type"]).toBe(
-      "application/x-www-form-urlencoded",
+      "application/x-www-form-urlencoded"
     );
   });
 });

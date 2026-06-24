@@ -3,7 +3,7 @@ import { PassThrough } from "node:stream";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
 
-const createTransportCapture = (responseBody) => {
+const createTransportCapture = responseBody => {
   const calls = [];
 
   const transport = {
@@ -25,7 +25,7 @@ const createTransportCapture = (responseBody) => {
         res.headers = { "content-type": "application/json" };
         res.req = req;
         onResponse(res);
-        res.end(responseBody ? responseBody : '{"ok":true}');
+        res.end(responseBody ? responseBody : "{\"ok\":true}");
       };
 
       return req;
@@ -58,7 +58,7 @@ describe("instance compat (dist export only)", () => {
     await clientA.get("/users", { transport, proxy: false });
     await clientB.get("/users", { transport, proxy: false });
 
-    const [callA, callB] = getCalls();
+    const [ callA, callB ] = getCalls();
     expect(callA.path).toBe("/api-a/users");
     expect(callB.path).toBe("/api-b/users");
     expect(callA.headers["X-App"]).toBe("A");
@@ -89,7 +89,7 @@ describe("instance compat (dist export only)", () => {
       baseURL: "http://example.com",
     });
 
-    client.interceptors.request.use((config) => {
+    client.interceptors.request.use(config => {
       config.headers = config.headers || {};
       config.headers["X-From-Interceptor"] = "yes";
       return config;
@@ -102,12 +102,12 @@ describe("instance compat (dist export only)", () => {
   });
 
   it("applies instance response interceptors", async () => {
-    const { transport } = createTransportCapture('{"name":"faxios"}');
+    const { transport } = createTransportCapture("{\"name\":\"faxios\"}");
     const client = faxios.create({
       baseURL: "http://example.com",
     });
 
-    client.interceptors.response.use((response) => {
+    client.interceptors.response.use(response => {
       response.data = Object.assign({}, response.data, {
         intercepted: true,
       });

@@ -11,15 +11,15 @@ const fd = () => new FormData() as unknown as GenericFormData;
 const URLSearchParamsCtor = FaxiosURLSearchParams as unknown as new (
   params?: unknown,
   options?: unknown,
-) => { toString(): string };
+) => { toString: () => string; };
 
 describe("helpers::toFormData", () => {
   const createRNFormDataSpy = () => {
-    const calls: [string, unknown][] = [];
+    const calls: Array<[string, unknown]> = [];
     return {
       calls,
       append: (key: string, value: unknown) => {
-        calls.push([key, value]);
+        calls.push([ key, value ]);
       },
       getParts: () => [],
     };
@@ -34,7 +34,7 @@ describe("helpers::toFormData", () => {
     const formData = toFormData(data, fd());
 
     assert.ok(formData instanceof FormData);
-    assert.ok((formData as unknown as { _streams: unknown[] })._streams.length > 0);
+    assert.ok((formData as unknown as { _streams: Array<unknown>; })._streams.length > 0);
   });
 
   it("should convert a nested object to FormData", () => {
@@ -58,14 +58,15 @@ describe("helpers::toFormData", () => {
     try {
       toFormData(data, fd());
       assert.fail("Should have thrown an error");
-    } catch (err) {
+    }
+    catch (err) {
       assert.strictEqual((err as Error).message, "Circular reference detected in self");
     }
   });
 
   it("should handle arrays", () => {
     const data = {
-      arr: [1, 2, 3],
+      arr: [ 1, 2, 3 ],
     };
 
     const formData = toFormData(data, fd());
@@ -132,10 +133,11 @@ describe("helpers::toFormData", () => {
       try {
         toFormData(nest(101), fd());
         assert.fail("Should have thrown");
-      } catch (err) {
+      }
+      catch (err) {
         assert.ok(
           err instanceof FaxiosError,
-          "error must be FaxiosError, not RangeError",
+          "error must be FaxiosError, not RangeError"
         );
         assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
         assert.ok(!(err instanceof RangeError));
@@ -161,7 +163,8 @@ describe("helpers::toFormData", () => {
       try {
         toFormData(nest(10), fd(), { maxDepth: 5 });
         assert.fail("Should have thrown");
-      } catch (err) {
+      }
+      catch (err) {
         assert.ok(err instanceof FaxiosError);
         assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
       }
@@ -181,14 +184,15 @@ describe("helpers::toFormData", () => {
       try {
         toFormData(data, fd());
         assert.fail("Should have thrown");
-      } catch (err) {
+      }
+      catch (err) {
         assert.ok(
           (err as Error).message.includes("Circular reference detected"),
-          "must be circular-ref error",
+          "must be circular-ref error"
         );
         assert.ok(
           !(err instanceof FaxiosError) ||
-            err.code !== "ERR_FORM_DATA_DEPTH_EXCEEDED",
+            err.code !== "ERR_FORM_DATA_DEPTH_EXCEEDED"
         );
       }
     });
@@ -197,7 +201,8 @@ describe("helpers::toFormData", () => {
       let caught;
       try {
         toFormData(nest(101), fd());
-      } catch (err) {
+      }
+      catch (err) {
         caught = err;
       }
       assert.ok(caught instanceof FaxiosError);
@@ -209,10 +214,11 @@ describe("helpers::toFormData", () => {
       try {
         toFormData({ "evil{}": nest(10000) }, fd());
         assert.fail("Should have thrown");
-      } catch (err) {
+      }
+      catch (err) {
         assert.ok(
           err instanceof FaxiosError,
-          "error must be FaxiosError, not RangeError",
+          "error must be FaxiosError, not RangeError"
         );
         assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
         assert.ok(!(err instanceof RangeError));
@@ -228,7 +234,8 @@ describe("helpers::toFormData", () => {
       try {
         toFormData({ "evil{}": nest(100) }, fd());
         assert.fail("Should have thrown");
-      } catch (err) {
+      }
+      catch (err) {
         assert.ok(err instanceof FaxiosError);
         assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
       }
@@ -240,7 +247,8 @@ describe("helpers::toFormData", () => {
       try {
         new URLSearchParamsCtor(nest(101));
         assert.fail("Should have thrown");
-      } catch (err) {
+      }
+      catch (err) {
         assert.ok(err instanceof FaxiosError);
         assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
       }
@@ -256,10 +264,11 @@ describe("helpers::toFormData", () => {
       try {
         new URLSearchParamsCtor({ "evil{}": nest(10000) });
         assert.fail("Should have thrown");
-      } catch (err) {
+      }
+      catch (err) {
         assert.ok(
           err instanceof FaxiosError,
-          "error must be FaxiosError, not RangeError",
+          "error must be FaxiosError, not RangeError"
         );
         assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
         assert.ok(!(err instanceof RangeError));
@@ -270,7 +279,8 @@ describe("helpers::toFormData", () => {
       try {
         new URLSearchParamsCtor({ "evil{}": nest(100) });
         assert.fail("Should have thrown");
-      } catch (err) {
+      }
+      catch (err) {
         assert.ok(err instanceof FaxiosError);
         assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
       }
@@ -288,11 +298,11 @@ describe("helpers::toFormData", () => {
 
     toFormData({ file: blob }, formData);
 
-    const keys = formData.calls.map((call) => call[0]);
+    const keys = formData.calls.map(call => call[0]);
 
-    assert.deepStrictEqual(keys, ["file"]);
-    assert.ok(!keys.some((key) => key.includes("uri")));
-    assert.ok(!keys.some((key) => key.includes("type")));
-    assert.ok(!keys.some((key) => key.includes("name")));
+    assert.deepStrictEqual(keys, [ "file" ]);
+    assert.ok(!keys.some(key => key.includes("uri")));
+    assert.ok(!keys.some(key => key.includes("type")));
+    assert.ok(!keys.some(key => key.includes("name")));
   });
 });

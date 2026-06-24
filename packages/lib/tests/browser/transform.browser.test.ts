@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import axios from "../../src/index.js";
 import FaxiosError from "../../../lib/src/lib/core/FaxiosError.js";
+import axios from "../../src/index.js";
 
 class MockXMLHttpRequest {
   requestHeaders: Record<string, string> = {};
@@ -60,7 +60,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -69,7 +70,7 @@ class MockXMLHttpRequest {
   abort() {}
 }
 
-let requests: MockXMLHttpRequest[] = [];
+let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const getLastRequest = (): MockXMLHttpRequest => {
@@ -84,7 +85,8 @@ describe("transform (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
+    window.XMLHttpRequest =
+      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -95,7 +97,7 @@ describe("transform (vitest browser)", () => {
     const responsePromise = axios.post("/foo", { foo: "bar" });
     const request = getLastRequest();
 
-    expect(request.params).toBe('{"foo":"bar"}');
+    expect(request.params).toBe("{\"foo\":\"bar\"}");
 
     request.respondWith();
     await responsePromise;
@@ -107,7 +109,7 @@ describe("transform (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
 
     const response = await responsePromise;
@@ -116,7 +118,7 @@ describe("transform (vitest browser)", () => {
     expect((response.data as Record<string, string>).foo).toBe("bar");
   });
 
-  it('should throw a SyntaxError if JSON parsing failed and responseType is "json" if silentJSONParsing is false', async () => {
+  it("should throw a SyntaxError if JSON parsing failed and responseType is \"json\" if silentJSONParsing is false", async () => {
     const responsePromise = axios({
       url: "/foo",
       responseType: "json",
@@ -126,10 +128,10 @@ describe("transform (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{foo": "bar"}',
+      responseText: "{foo\": \"bar\"}",
     });
-
-    const thrown = await responsePromise.catch((error) => error);
+     
+    const thrown = await responsePromise.catch(error => error);
 
     expect(thrown).toBeTruthy();
     expect(thrown.name).toContain("SyntaxError");
@@ -162,7 +164,7 @@ describe("transform (vitest browser)", () => {
       },
     });
     const request = getLastRequest();
-    const rawData = '{"x":1}';
+    const rawData = "{\"x\":1}";
 
     request.respondWith({
       status: 200,
@@ -183,7 +185,7 @@ describe("transform (vitest browser)", () => {
         transformRequest(data) {
           return data;
         },
-      },
+      }
     );
     const request = getLastRequest();
 
@@ -198,16 +200,16 @@ describe("transform (vitest browser)", () => {
       "/foo",
       { foo: "bar" },
       {
-        transformRequest: (axios.defaults.transformRequest as ((data: unknown) => unknown)[]).concat(
-          function (data: unknown) {
-            return (data as string).replace("bar", "baz");
-          },
-        ),
-      },
+        transformRequest: (
+          axios.defaults.transformRequest as Array<(data: unknown) => unknown>
+        ).concat(function (data: unknown) {
+          return (data as string).replace("bar", "baz");
+        }),
+      }
     );
     const request = getLastRequest();
 
-    expect(request.params).toBe('{"foo":"baz"}');
+    expect(request.params).toBe("{\"foo\":\"baz\"}");
 
     request.respondWith();
     await responsePromise;
@@ -240,12 +242,12 @@ describe("transform (vitest browser)", () => {
             return "aa=44";
           },
         ],
-      },
+      }
     );
     const request = getLastRequest();
 
     expect(request.requestHeaders["Content-Type"]).toBe(
-      "application/x-www-form-urlencoded",
+      "application/x-www-form-urlencoded"
     );
 
     request.respondWith();
@@ -264,7 +266,7 @@ describe("transform (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"key1": "value1"}',
+      responseText: "{\"key1\": \"value1\"}",
       responseHeaders: "content-type: application/json",
     });
 

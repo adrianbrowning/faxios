@@ -13,9 +13,10 @@ describe("validator::assertOptions", () => {
         {
           y: validator.validators.boolean,
         },
-        false,
+        false
       );
-    } catch (err) {
+    }
+    catch (err) {
       error = err;
     }
     expect(error).toBeInstanceOf(FaxiosError);
@@ -31,7 +32,7 @@ describe("validator::assertOptions", () => {
           x: validator.validators.boolean,
           y: validator.validators.boolean,
         },
-        false,
+        false
       );
     }).not.toThrow(new Error("Unknown option x"));
   });
@@ -46,9 +47,10 @@ describe("validator::assertOptions", () => {
         {
           x: validator.validators.boolean,
         },
-        false,
+        false
       );
-    } catch (err) {
+    }
+    catch (err) {
       error = err;
     }
     expect(error).toBeInstanceOf(FaxiosError);
@@ -64,7 +66,7 @@ describe("validator::assertOptions", () => {
           x: validator.validators.boolean,
           y: validator.validators.boolean,
         },
-        false,
+        false
       );
     }).not.toThrow();
   });

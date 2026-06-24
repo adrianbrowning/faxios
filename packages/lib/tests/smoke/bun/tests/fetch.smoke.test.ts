@@ -1,5 +1,5 @@
-import { describe, expect, test } from 'bun:test';
-import axios from 'axios';
+import axios from "axios";
+import { describe, expect, test } from "bun:test";
 
 const createFetchMock = (
   responseFactory?: (input: unknown, init: RequestInit) => Response | Promise<Response>
@@ -15,7 +15,7 @@ const createFetchMock = (
 
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   };
 
@@ -32,7 +32,7 @@ const getRequestMeta = async (input: unknown, init: RequestInit = {}) => {
     url: request.url,
     method: request.method,
     body:
-      request.method === 'GET' || request.method === 'HEAD'
+      request.method === "GET" || request.method === "HEAD"
         ? undefined
         : await request.clone().text(),
   };
@@ -44,12 +44,12 @@ const env = (fetch: typeof globalThis.fetch) => ({
   Response,
 });
 
-describe('fetch adapter', () => {
-  test('GET resolves JSON response via fetch adapter', async () => {
+describe("fetch adapter", () => {
+  test("GET resolves JSON response via fetch adapter", async () => {
     const { mockFetch, getCalls } = createFetchMock();
 
-    const response = await axios.get('https://example.com/users', {
-      adapter: 'fetch',
+    const response = await axios.get("https://example.com/users", {
+      adapter: "fetch",
       env: env(mockFetch),
     });
 
@@ -58,43 +58,43 @@ describe('fetch adapter', () => {
     expect(getCalls()).toHaveLength(1);
   });
 
-  test('POST serializes JSON body via fetch adapter', async () => {
+  test("POST serializes JSON body via fetch adapter", async () => {
     const { mockFetch, getCalls } = createFetchMock();
 
     await axios.post(
-      'https://example.com/items',
-      { name: 'widget' },
+      "https://example.com/items",
+      { name: "widget" },
       {
-        adapter: 'fetch',
+        adapter: "fetch",
         env: env(mockFetch),
       }
     );
 
     const { input, init } = getCalls()[0];
     const meta = await getRequestMeta(input, init);
-    expect(meta.body).toBe(JSON.stringify({ name: 'widget' }));
+    expect(meta.body).toBe(JSON.stringify({ name: "widget" }));
   });
 
-  test('HTTP methods are forwarded correctly', async () => {
+  test("HTTP methods are forwarded correctly", async () => {
     const run = async (
-      method: 'delete' | 'head' | 'options' | 'put' | 'patch',
+      method: "delete" | "head" | "options" | "put" | "patch",
       expected: string
     ) => {
       const { mockFetch, getCalls } = createFetchMock();
 
-      if (method === 'put' || method === 'patch') {
+      if (method === "put" || method === "patch") {
         await axios[method](
-          'https://example.com/items',
-          { name: 'widget' },
+          "https://example.com/items",
+          { name: "widget" },
           {
-            adapter: 'fetch',
+            adapter: "fetch",
             env: env(mockFetch),
           }
         );
       }
       else {
-        await axios[method]('https://example.com/items', {
-          adapter: 'fetch',
+        await axios[method]("https://example.com/items", {
+          adapter: "fetch",
           env: env(mockFetch),
         });
       }
@@ -104,24 +104,24 @@ describe('fetch adapter', () => {
       expect(meta.method).toBe(expected);
     };
 
-    await run('delete', 'DELETE');
-    await run('head', 'HEAD');
-    await run('options', 'OPTIONS');
-    await run('put', 'PUT');
-    await run('patch', 'PATCH');
+    await run("delete", "DELETE");
+    await run("head", "HEAD");
+    await run("options", "OPTIONS");
+    await run("put", "PUT");
+    await run("patch", "PATCH");
   });
 
-  test('full URL is preserved in the fetch request', async () => {
+  test("full URL is preserved in the fetch request", async () => {
     const { mockFetch, getCalls } = createFetchMock();
 
-    await axios.get('https://example.com/users', {
-      adapter: 'fetch',
+    await axios.get("https://example.com/users", {
+      adapter: "fetch",
       env: env(mockFetch),
     });
 
     const { input, init } = getCalls()[0];
     const meta = await getRequestMeta(input, init);
 
-    expect(meta.url).toBe('https://example.com/users');
+    expect(meta.url).toBe("https://example.com/users");
   });
 });

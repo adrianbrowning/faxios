@@ -1,5 +1,5 @@
 // @ts-nocheck
-import assert from "assert";
+import assert from "node:assert";
 import faxios, {
   CanceledError,
   FaxiosError,
@@ -9,7 +9,7 @@ import faxios, {
   isFaxiosError,
   isCancel,
   all,
-  toFormData,
+  toFormData
 } from "faxios";
 
 assert.strictEqual(typeof faxios, "function");

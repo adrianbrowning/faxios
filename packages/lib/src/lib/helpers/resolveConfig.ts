@@ -1,5 +1,5 @@
-import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import buildFullPath from "../core/buildFullPath.js";
+import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import mergeConfig from "../core/mergeConfig.js";
 import platform from "../platform/index.js";
 import type { FaxiosRequestConfig } from "../types.js";

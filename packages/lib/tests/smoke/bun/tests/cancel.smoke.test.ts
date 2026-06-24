@@ -1,5 +1,5 @@
-import { describe, expect, test } from 'bun:test';
-import axios from 'axios';
+import axios from "axios";
+import { describe, expect, test } from "bun:test";
 
 const env = (fetch: typeof globalThis.fetch) => ({
   fetch,
@@ -7,8 +7,8 @@ const env = (fetch: typeof globalThis.fetch) => ({
   Response,
 });
 
-describe('cancellation', () => {
-  test('pre-aborted AbortController cancels before fetch is called', async () => {
+describe("cancellation", () => {
+  test("pre-aborted AbortController cancels before fetch is called", async () => {
     let fetchCallCount = 0;
 
     const fetch = async () => {
@@ -16,7 +16,7 @@ describe('cancellation', () => {
 
       return new Response(JSON.stringify({ ok: true }), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
       });
     };
 
@@ -24,23 +24,23 @@ describe('cancellation', () => {
     controller.abort();
 
     const err = await axios
-      .get('https://example.com/cancel', {
-        adapter: 'fetch',
+      .get("https://example.com/cancel", {
+        adapter: "fetch",
         signal: controller.signal,
         env: env(fetch),
       })
       .catch((e: any) => e);
 
     expect(axios.isCancel(err)).toBe(true);
-    expect(err.code).toBe('ERR_CANCELED');
+    expect(err.code).toBe("ERR_CANCELED");
     expect(fetchCallCount).toBe(0);
   });
 
-  test('in-flight AbortController abort cancels the request', async () => {
+  test("in-flight AbortController abort cancels the request", async () => {
     const fetch = async (_input: unknown, init?: RequestInit) =>
       new Promise<Response>((_resolve, reject) => {
         const abortError = () =>
-          reject(new DOMException('The operation was aborted', 'AbortError'));
+          reject(new DOMException("The operation was aborted", "AbortError"));
 
         const timeout = setTimeout(abortError, 20);
 
@@ -52,7 +52,7 @@ describe('cancellation', () => {
           }
 
           init.signal.addEventListener(
-            'abort',
+            "abort",
             () => {
               clearTimeout(timeout);
               abortError();
@@ -64,8 +64,8 @@ describe('cancellation', () => {
 
     const controller = new AbortController();
 
-    const request = axios.get('https://example.com/in-flight', {
-      adapter: 'fetch',
+    const request = axios.get("https://example.com/in-flight", {
+      adapter: "fetch",
       signal: controller.signal,
       env: env(fetch),
     });
@@ -75,10 +75,10 @@ describe('cancellation', () => {
     const err = await request.catch((e: any) => e);
 
     expect(axios.isCancel(err)).toBe(true);
-    expect(err.code).toBe('ERR_CANCELED');
+    expect(err.code).toBe("ERR_CANCELED");
   });
 
-  test('axios.isCancel returns false for a plain Error', () => {
-    expect(axios.isCancel(new Error('random'))).toBe(false);
+  test("axios.isCancel returns false for a plain Error", () => {
+    expect(axios.isCancel(new Error("random"))).toBe(false);
   });
 });

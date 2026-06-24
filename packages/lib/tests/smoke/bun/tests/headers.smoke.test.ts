@@ -1,5 +1,5 @@
-import { describe, expect, test } from 'bun:test';
-import axios from 'axios';
+import axios from "axios";
+import { describe, expect, test } from "bun:test";
 
 const createFetchCapture = () => {
   const calls: Array<Request> = [];
@@ -10,7 +10,7 @@ const createFetchCapture = () => {
 
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   };
 
@@ -26,37 +26,37 @@ const env = (fetch: typeof globalThis.fetch) => ({
   Response,
 });
 
-describe('headers', () => {
-  test('custom X-Custom header is forwarded to mock fetch (case-insensitive)', async () => {
+describe("headers", () => {
+  test("custom X-Custom header is forwarded to mock fetch (case-insensitive)", async () => {
     const { fetch, getCalls } = createFetchCapture();
 
-    await axios.get('https://example.com/custom-headers', {
-      adapter: 'fetch',
+    await axios.get("https://example.com/custom-headers", {
+      adapter: "fetch",
       headers: {
-        'X-Custom': 'trace-123',
+        "X-Custom": "trace-123",
       },
       env: env(fetch),
     });
 
     const request = getCalls()[0];
-    expect(request.headers.get('x-custom')).toBe('trace-123');
+    expect(request.headers.get("x-custom")).toBe("trace-123");
   });
 
-  test('content-type application/json is inferred for JSON POST body', async () => {
+  test("content-type application/json is inferred for JSON POST body", async () => {
     const { fetch, getCalls } = createFetchCapture();
 
     await axios.post(
-      'https://example.com/post-json',
-      { name: 'widget' },
+      "https://example.com/post-json",
+      { name: "widget" },
       {
-        adapter: 'fetch',
+        adapter: "fetch",
         env: env(fetch),
       }
     );
 
     const request = getCalls()[0];
-    const contentType = request.headers.get('content-type') || '';
+    const contentType = request.headers.get("content-type") || "";
 
-    expect(contentType.includes('application/json')).toBe(true);
+    expect(contentType.includes("application/json")).toBe(true);
   });
 });

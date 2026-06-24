@@ -9,7 +9,7 @@ const transformResponse = defaults.transformResponse as Parameters<typeof transf
 describe("transformResponse", () => {
   describe("200 request", () => {
     it("parses json", () => {
-      const data = '{"message": "hello, world"}';
+      const data = "{\"message\": \"hello, world\"}";
       const result = transformData.call(
         {
           data,
@@ -18,9 +18,9 @@ describe("transformResponse", () => {
             status: 200,
           },
         },
-        transformResponse,
+        transformResponse
       );
-      assert.strictEqual((result as { message: string }).message, "hello, world");
+      assert.strictEqual((result as { message: string; }).message, "hello, world");
     });
 
     it("ignores XML", () => {
@@ -33,7 +33,7 @@ describe("transformResponse", () => {
             status: 200,
           },
         },
-        transformResponse,
+        transformResponse
       );
       assert.strictEqual(result, data);
     });
@@ -50,8 +50,8 @@ describe("transformResponse", () => {
 
       assert.throws(
         () => transformData.call(config, transformResponse, response),
-        (e) =>
-          e instanceof FaxiosError && e.code === FaxiosError.ERR_BAD_RESPONSE,
+        e =>
+          e instanceof FaxiosError && e.code === FaxiosError.ERR_BAD_RESPONSE
       );
     });
 
@@ -70,7 +70,8 @@ describe("transformResponse", () => {
       let thrown;
       try {
         transformData.call(config, transformResponse, response);
-      } catch (e) {
+      }
+      catch (e) {
         thrown = e;
       }
 
@@ -78,12 +79,12 @@ describe("transformResponse", () => {
       assert.strictEqual(
         thrown.status,
         200,
-        "error.status must equal response status",
+        "error.status must equal response status"
       );
       assert.strictEqual(
         thrown.response,
         response,
-        "error.response must be the original response",
+        "error.response must be the original response"
       );
     });
   });
@@ -99,7 +100,7 @@ describe("transformResponse", () => {
             status: 204,
           },
         },
-        transformResponse,
+        transformResponse
       );
       assert.strictEqual(result, "");
     });
@@ -114,7 +115,7 @@ describe("transformResponse", () => {
             status: 200,
           },
         },
-        transformResponse,
+        transformResponse
       );
       assert.strictEqual(result, data);
     });

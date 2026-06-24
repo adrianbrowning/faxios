@@ -1,7 +1,7 @@
 import FaxiosError from "../core/FaxiosError.js";
 import type { FaxiosAdapter, InternalFaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
-import * as fetchAdapter from "./fetch.js";
+import { getFetch } from "./fetch.js";
 import httpAdapter from "./http.js";
 import xhrAdapter from "./xhr.js";
 
@@ -18,7 +18,7 @@ const knownAdapters = {
   http: httpAdapter,
   xhr: xhrAdapter,
   fetch: {
-    get: fetchAdapter.getFetch,
+    get: getFetch,
   },
 };
 

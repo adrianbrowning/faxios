@@ -2,9 +2,9 @@ import assert from "node:assert";
 import { describe, it } from "vitest";
 import FaxiosHeaders from "../../src/lib/core/FaxiosHeaders.js";
 
-const [nodeMajorVersion] = process.versions.node
+const [ nodeMajorVersion ] = process.versions.node
   .split(".")
-  .map((v) => parseInt(v, 10));
+  .map(v => parseInt(v, 10));
 
 describe("FaxiosHeaders", () => {
   it("should support headers argument", () => {
@@ -81,7 +81,7 @@ describe("FaxiosHeaders", () => {
     it("should support iterables as a key-value source object", () => {
       const headers = new FaxiosHeaders();
 
-      headers.set(new Map([["x", "123"]]) as unknown as Record<string, unknown>);
+      headers.set(new Map([[ "x", "123" ]]) as unknown as Record<string, unknown>);
 
       assert.strictEqual(headers.get("x"), "123");
     });
@@ -89,15 +89,16 @@ describe("FaxiosHeaders", () => {
     it("should not merge Object.prototype values into iterable headers", () => {
       const descriptor = Object.getOwnPropertyDescriptor(
         Object.prototype,
-        "Authorization",
+        "Authorization"
       );
       (Object.prototype as Record<string, unknown>)["Authorization"] = "polluted";
 
       try {
-        const headers = new FaxiosHeaders(new Map([["Authorization", "real"]]) as unknown as Record<string, unknown>);
+        const headers = new FaxiosHeaders(new Map([[ "Authorization", "real" ]]) as unknown as Record<string, unknown>);
 
         assert.strictEqual(headers.get("authorization"), "real");
-      } finally {
+      }
+      finally {
         descriptor
           ? Object.defineProperty(Object.prototype, "Authorization", descriptor)
           : delete (Object.prototype as Record<string, unknown>)["Authorization"];
@@ -109,7 +110,7 @@ describe("FaxiosHeaders", () => {
 
       headers.set({
         *[Symbol.iterator]() {
-          yield ["x", "123"];
+          yield [ "x", "123" ];
         },
       });
 
@@ -119,8 +120,8 @@ describe("FaxiosHeaders", () => {
     it("should not use inherited Symbol.iterator as a key-value source object", () => {
       try {
         (Object.prototype as any)[Symbol.iterator] = function* () {
-          yield ["x-app", "changed"];
-          yield ["x-injected", "yes"];
+          yield [ "x-app", "changed" ];
+          yield [ "x-injected", "yes" ];
         };
 
         const headers = new FaxiosHeaders({
@@ -129,7 +130,8 @@ describe("FaxiosHeaders", () => {
 
         assert.strictEqual(headers.get("x-app"), "safe");
         assert.strictEqual(headers.get("x-injected"), undefined);
-      } finally {
+      }
+      finally {
         delete (Object.prototype as any)[Symbol.iterator];
       }
     });
@@ -152,7 +154,8 @@ describe("FaxiosHeaders", () => {
 
         assert.strictEqual(headers.get("x-app"), "safe");
         assert.strictEqual(accessed, false);
-      } finally {
+      }
+      finally {
         delete (Object.prototype as any)[Symbol.iterator];
       }
     });
@@ -160,8 +163,8 @@ describe("FaxiosHeaders", () => {
     it("should not consume an inherited Symbol.iterator for non-plain header sources", () => {
       try {
         (Object.prototype as any)[Symbol.iterator] = function* () {
-          yield ["x-injected", "yes"];
-          yield ["authorization", "Bearer CHANGED"];
+          yield [ "x-injected", "yes" ];
+          yield [ "authorization", "Bearer CHANGED" ];
         };
 
         // A class instance and an Object.create(...) object both have a direct
@@ -174,7 +177,7 @@ describe("FaxiosHeaders", () => {
           }
         }
 
-        const fromClass = new FaxiosHeaders(new HeaderBag() as Record<string, unknown>);
+        const fromClass = new FaxiosHeaders(new HeaderBag());
         assert.strictEqual(fromClass.get("x-injected"), undefined);
         assert.notStrictEqual(fromClass.get("authorization"), "Bearer CHANGED");
 
@@ -184,9 +187,10 @@ describe("FaxiosHeaders", () => {
         assert.strictEqual(fromCreate.get("x-injected"), undefined);
         assert.notStrictEqual(
           fromCreate.get("authorization"),
-          "Bearer CHANGED",
+          "Bearer CHANGED"
         );
-      } finally {
+      }
+      finally {
         delete (Object.prototype as any)[Symbol.iterator];
       }
     });
@@ -211,7 +215,7 @@ describe("FaxiosHeaders", () => {
           "baz",
         ]);
         assert.strictEqual(headers.get("y"), "qux");
-      },
+      }
     );
 
     it("should sanitize invalid characters in header value", () => {
@@ -225,7 +229,7 @@ describe("FaxiosHeaders", () => {
     it("should sanitize invalid characters in any array header value", () => {
       const headers = new FaxiosHeaders();
 
-      headers.set("set-cookie", ["safe=1", " \tunsafe=1\nInjected: true\r\n "]);
+      headers.set("set-cookie", [ "safe=1", " \tunsafe=1\nInjected: true\r\n " ]);
 
       assert.deepStrictEqual(headers.get("set-cookie"), [
         "safe=1",
@@ -248,7 +252,7 @@ describe("FaxiosHeaders", () => {
     it("should preserve non-control Unicode characters in array header values", () => {
       const headers = new FaxiosHeaders();
 
-      headers.set("x-names", ["请求用户", "naïve", "プロジェクト"]);
+      headers.set("x-names", [ "请求用户", "naïve", "プロジェクト" ]);
 
       assert.deepStrictEqual(headers.get("x-names"), [
         "请求用户",
@@ -272,16 +276,16 @@ describe("FaxiosHeaders", () => {
       assert.doesNotThrow(() => headers.set("", "a"));
       assert.doesNotThrow(() => headers.set("   ", "b"));
       assert.doesNotThrow(() =>
-        headers.set({ "": "c", "   ": "d", foo: "bar" }),
+        headers.set({ "": "c", "   ": "d", foo: "bar" })
       );
       assert.doesNotThrow(() =>
         headers.set(
           new Map([
-            ["", "e"],
-            ["   ", "f"],
-            ["x", "y"],
-          ]) as unknown as Record<string, unknown>,
-        ),
+            [ "", "e" ],
+            [ "   ", "f" ],
+            [ "x", "y" ],
+          ]) as unknown as Record<string, unknown>
+        )
       );
 
       assert.strictEqual(headers.has(""), false);
@@ -324,11 +328,11 @@ describe("FaxiosHeaders", () => {
             assert.strictEqual(header, "foo");
             return value;
           }),
-          "bar=value1",
+          "bar=value1"
         );
         assert.strictEqual(
           headers.get("foo", () => false),
-          false,
+          false
         );
       });
     });
@@ -365,11 +369,11 @@ describe("FaxiosHeaders", () => {
             assert.strictEqual(header, "foo");
             return true;
           }),
-          true,
+          true
         );
         assert.strictEqual(
           headers.has("foo", () => false),
-          false,
+          false
         );
       });
 
@@ -414,7 +418,7 @@ describe("FaxiosHeaders", () => {
       headers.set("bar", "y");
       headers.set("baz", "z");
 
-      assert.strictEqual(headers.delete(["foo", "baz"]), true);
+      assert.strictEqual(headers.delete([ "foo", "baz" ]), true);
 
       assert.strictEqual(headers.has("foo"), false);
       assert.strictEqual(headers.has("bar"), true);
@@ -453,7 +457,7 @@ describe("FaxiosHeaders", () => {
 
         assert.strictEqual(
           headers.delete("foo", () => true),
-          true,
+          true
         );
 
         assert.strictEqual(headers.has("foo"), false);
@@ -491,7 +495,7 @@ describe("FaxiosHeaders", () => {
 
       assert.deepStrictEqual(
         { ...headers.toJSON() },
-        { foo: "1", "x-foo": "2", bar: "3" },
+        { foo: "1", "x-foo": "2", bar: "3" }
       );
 
       headers.clear(/^x-/);
@@ -512,7 +516,7 @@ describe("FaxiosHeaders", () => {
         {
           Foo: "x",
           bAr: "y",
-        },
+        }
       );
     });
   });
@@ -587,7 +591,7 @@ describe("FaxiosHeaders", () => {
           Foo: "1",
           "X-Foo": "2",
           "Y-Bar-Baz": "3",
-        },
+        }
       );
     });
 
@@ -604,20 +608,20 @@ describe("FaxiosHeaders", () => {
         {
           foo: "2",
           bar: "3",
-        },
+        }
       );
     });
 
     it("should support array values", () => {
       const headers = new FaxiosHeaders({
-        foo: [1, 2, 3],
+        foo: [ 1, 2, 3 ],
       });
 
       assert.deepStrictEqual(
         { ...headers.normalize().toJSON() },
         {
-          foo: ["1", "2", "3"],
-        },
+          foo: [ "1", "2", "3" ],
+        }
       );
     });
   });
@@ -635,7 +639,7 @@ describe("FaxiosHeaders", () => {
           a: "1",
           b: "2",
           c: "3",
-        },
+        }
       );
     });
 
@@ -651,7 +655,7 @@ describe("FaxiosHeaders", () => {
           b: "2",
           c: "3",
           x: "4",
-        },
+        }
       );
     });
 
@@ -665,7 +669,7 @@ describe("FaxiosHeaders", () => {
         {
           x: "1",
           y: "2",
-        },
+        }
       );
     });
   });
@@ -674,7 +678,7 @@ describe("FaxiosHeaders", () => {
     it("should serialize FaxiosHeader instance to a raw headers string", () => {
       assert.deepStrictEqual(
         new FaxiosHeaders({ x: 1, y: 2 }).toString(),
-        "x: 1\ny: 2",
+        "x: 1\ny: 2"
       );
     });
   });
@@ -682,7 +686,7 @@ describe("FaxiosHeaders", () => {
   describe("getSetCookie", () => {
     it("should return set-cookie", () => {
       const headers = new FaxiosHeaders(
-        "Set-Cookie: key=val;\n" + "Set-Cookie: key2=val2;\n",
+        "Set-Cookie: key=val;\n" + "Set-Cookie: key2=val2;\n"
       );
 
       assert.deepStrictEqual(headers.getSetCookie(), [

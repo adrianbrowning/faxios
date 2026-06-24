@@ -18,11 +18,11 @@ const createEchoTransport = () => {
         req.destroyed = true;
       };
       req.close = req.destroy;
-      req.write = (chunk) => {
+      req.write = chunk => {
         chunks.push(Buffer.from(chunk));
         return true;
       };
-      req.end = (chunk) => {
+      req.end = chunk => {
         if (chunk) {
           chunks.push(Buffer.from(chunk));
         }
@@ -41,7 +41,7 @@ const createEchoTransport = () => {
               options.headers &&
               (options.headers["Content-Type"] ||
                 options.headers["content-type"]),
-          }),
+          })
         );
       };
 
@@ -97,7 +97,7 @@ describe("urlencode compat (dist export only)", () => {
 
     expect(response.data.body).toBe("name=faxios&mode=compat");
     expect(response.data.contentType).toContain(
-      "application/x-www-form-urlencoded",
+      "application/x-www-form-urlencoded"
     );
   });
 
@@ -116,12 +116,12 @@ describe("urlencode compat (dist export only)", () => {
         headers: {
           "content-type": "application/x-www-form-urlencoded",
         },
-      },
+      }
     );
 
     expect(response.data.body).toBe("name=faxios&mode=compat");
     expect(response.data.contentType).toContain(
-      "application/x-www-form-urlencoded",
+      "application/x-www-form-urlencoded"
     );
   });
 
@@ -131,7 +131,7 @@ describe("urlencode compat (dist export only)", () => {
     const response = await faxios.post(
       "http://example.com/form",
       {
-        arr: ["1", "2"],
+        arr: [ "1", "2" ],
       },
       {
         proxy: false,
@@ -142,7 +142,7 @@ describe("urlencode compat (dist export only)", () => {
         formSerializer: {
           indexes: true,
         },
-      },
+      }
     );
 
     expect(response.data.body).toBe("arr%5B0%5D=1&arr%5B1%5D=2");

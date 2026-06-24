@@ -4,13 +4,13 @@ import type { FaxiosProgressEvent } from "../../../src/lib/types.js";
 
 describe("helpers::progressEventReducer", () => {
   it("should clamp loaded/progress and avoid negative bytes for out-of-order events", () => {
-    const events: FaxiosProgressEvent[] = [];
-    const [onProgress, flush] = progressEventReducer(
-      (data) => {
+    const events: Array<FaxiosProgressEvent> = [];
+    const [ onProgress, flush ] = progressEventReducer(
+      data => {
         events.push(data);
       },
       false,
-      Number.POSITIVE_INFINITY,
+      Number.POSITIVE_INFINITY
     );
 
     onProgress({ lengthComputable: true, loaded: 80, total: 100 });
@@ -31,13 +31,13 @@ describe("helpers::progressEventReducer", () => {
   });
 
   it("should ignore malformed events that lack a numeric loaded value", () => {
-    const events: FaxiosProgressEvent[] = [];
-    const [onProgress, flush] = progressEventReducer(
-      (data) => {
+    const events: Array<FaxiosProgressEvent> = [];
+    const [ onProgress, flush ] = progressEventReducer(
+      data => {
         events.push(data);
       },
       false,
-      Number.POSITIVE_INFINITY,
+      Number.POSITIVE_INFINITY
     );
 
     onProgress(undefined);

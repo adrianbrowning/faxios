@@ -1,11 +1,11 @@
-declare module 'abortcontroller-polyfill/dist/cjs-ponyfill.js' {
+declare module "abortcontroller-polyfill/dist/cjs-ponyfill.js" {
   export const AbortController: typeof globalThis.AbortController;
   export const AbortSignal: typeof globalThis.AbortSignal;
 }
 
-declare module 'formidable' {
-  import { IncomingMessage } from 'node:http';
-  type Fields = Record<string, string | string[]>;
+declare module "formidable" {
+  import type { IncomingMessage } from "node:http";
+  type Fields = Record<string, string | Array<string>>;
   type Files = Record<string, unknown>;
   class IncomingForm {
     parse(req: IncomingMessage, callback: (err: Error | null, fields: Fields, files: Files) => void): void;
@@ -14,10 +14,10 @@ declare module 'formidable' {
   export type { Fields, Files };
 }
 
-declare module 'stream-throttle' {
-  import { Transform } from 'node:stream';
+declare module "stream-throttle" {
+  import { Transform } from "node:stream";
   class Throttle extends Transform {
-    constructor(options: { rate: number });
+    constructor(options: { rate: number; });
   }
   export { Throttle };
 }

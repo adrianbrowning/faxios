@@ -18,7 +18,7 @@ describe("static api", () => {
   it("should have promise method helpers", async () => {
     const promise = axios.request({
       url: "/test",
-      adapter: async (config) =>
+      adapter: async config =>
         Promise.resolve({
           data: null,
           status: 200,
@@ -77,7 +77,7 @@ describe("static api", () => {
 
     try {
       await Promise.all(
-        ["delete", "get", "head", "options"].map(async (method) => {
+        [ "delete", "get", "head", "options" ].map(async method => {
           let seenData = "unset";
 
           const fn = (axios as unknown as Record<string, (url: string, config: unknown) => Promise<unknown>>)[method]!;
@@ -97,9 +97,10 @@ describe("static api", () => {
           });
 
           assert.strictEqual(seenData, undefined);
-        }),
+        })
       );
-    } finally {
+    }
+    finally {
       delete (Object.prototype as Record<string, unknown>).data;
     }
   });
@@ -122,10 +123,11 @@ describe("static api", () => {
           params: { value: "a b" },
           paramsSerializer: {},
         }),
-        "/foo?value=a+b",
+        "/foo?value=a+b"
       );
       assert.strictEqual(serializeInvoked, false);
-    } finally {
+    }
+    finally {
       delete (Object.prototype as Record<string, unknown>).serialize;
     }
   });
@@ -166,7 +168,7 @@ describe("static api", () => {
             config,
             request: {},
           }),
-      },
+      }
     );
 
     assert.strictEqual((transformedData as unknown as Record<symbol, unknown>)[symbolKey], "value");
@@ -199,12 +201,12 @@ describe("instance api", () => {
 
     const client = axios.create({
       transformRequest: [
-        (data) => {
+        data => {
           transformedData = data;
           return "";
         },
       ],
-      adapter: async (config) =>
+      adapter: async config =>
         Promise.resolve({
           data: null,
           status: 200,

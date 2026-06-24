@@ -1,7 +1,7 @@
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
 
-const createFetchMock = (responseFactory) => {
+const createFetchMock = responseFactory => {
   const calls = [];
 
   const mockFetch = async (input, init) => {
@@ -55,7 +55,8 @@ describe("fetch compat (dist export only)", () => {
       let contentType;
       if (isRequest && input.headers) {
         contentType = input.headers.get("content-type");
-      } else if (requestInit.headers) {
+      }
+      else if (requestInit.headers) {
         contentType =
           requestInit.headers["Content-Type"] ||
           requestInit.headers["content-type"];
@@ -71,7 +72,7 @@ describe("fetch compat (dist export only)", () => {
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
-        },
+        }
       );
     });
 
@@ -85,7 +86,7 @@ describe("fetch compat (dist export only)", () => {
           Request,
           Response,
         },
-      },
+      }
     );
 
     expect(getCalls()).toHaveLength(1);
@@ -102,7 +103,7 @@ describe("fetch compat (dist export only)", () => {
           status: 500,
           statusText: "Internal Server Error",
           headers: { "Content-Type": "application/json" },
-        }),
+        })
     );
 
     const err = await faxios
@@ -114,7 +115,7 @@ describe("fetch compat (dist export only)", () => {
           Response,
         },
       })
-      .catch((e) => e);
+      .catch(e => e);
 
     expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.response.status).toBe(500);
@@ -135,7 +136,7 @@ describe("fetch compat (dist export only)", () => {
           Response,
         },
       })
-      .catch((e) => e);
+      .catch(e => e);
 
     expect(faxios.isCancel(err)).toBe(true);
     expect(err.code).toBe("ERR_CANCELED");

@@ -6,7 +6,7 @@ import { runCommand } from "./helpers/run-command.js";
 
 const suiteRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
-  "..",
+  ".."
 );
 const repoRoot = path.resolve(suiteRoot, "../../..");
 const tscBin = path.join(suiteRoot, "node_modules", "typescript", "bin", "tsc");
@@ -25,7 +25,7 @@ describe("module ts compatibility", () => {
   it("compiles and executes import faxios syntax", () => {
     const sourcePath = path.join(
       repoRoot,
-      "tests/module/esm/tests/helpers/esm-functions.ts",
+      "tests/module/esm/tests/helpers/esm-functions.ts"
     );
     const fixturePath = createTempFixture(
       suiteRoot,
@@ -34,13 +34,14 @@ describe("module ts compatibility", () => {
       tsconfig,
       {
         type: "module",
-      },
+      }
     );
 
     try {
-      runCommand("node", [tscBin, "-p", "tsconfig.json"], { cwd: fixturePath });
-      runCommand("node", ["index.js"], { cwd: fixturePath });
-    } finally {
+      runCommand("node", [ tscBin, "-p", "tsconfig.json" ], { cwd: fixturePath });
+      runCommand("node", [ "index.js" ], { cwd: fixturePath });
+    }
+    finally {
       cleanupTempFixture(fixturePath);
     }
   });

@@ -3,19 +3,16 @@ import transformData from "../../../src/lib/core/transformData.js";
 
 describe("core::transformData", () => {
   it("supports a single transformer", () => {
-    const data = transformData.call({}, (value) => {
-      value = "foo";
-      return value;
-    });
+    const data = transformData.call({}, _value => "foo");
 
     expect(data).toBe("foo");
   });
 
   it("supports an array of transformers", () => {
     const data = transformData.call({ data: "" }, [
-      (value) => value + "f",
-      (value) => value + "o",
-      (value) => value + "o",
+      value => value + "f",
+      value => value + "o",
+      value => value + "o",
     ]);
 
     expect(data).toBe("foo");
@@ -31,7 +28,7 @@ describe("core::transformData", () => {
         data: "",
         headers,
       },
-      [(value, currentHeaders) => (value as string) + (currentHeaders as Record<string, string>)["content-type"]],
+      [ (value, currentHeaders) => (value as string) + (currentHeaders as Record<string, string>)["content-type"] ]
     );
 
     expect(data).toBe("foo/bar");
@@ -40,8 +37,8 @@ describe("core::transformData", () => {
   it("passes status code through to transformers", () => {
     const data = transformData.call(
       {},
-      [(value, _headers, status) => (value as string) + (status as number)],
-      { data: "", status: 200 },
+      [ (value, _headers, status) => (value as string) + (status as number) ],
+      { data: "", status: 200 }
     );
 
     expect(data).toBe("200");

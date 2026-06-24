@@ -2,7 +2,7 @@ import { Writable, PassThrough } from "node:stream";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
 
-const createCaptureTransport = (buildResponse) => ({
+const createCaptureTransport = buildResponse => ({
   request(options, onResponse) {
     const chunks = [];
 
@@ -48,7 +48,7 @@ const createCaptureTransport = (buildResponse) => ({
   },
 });
 
-const bodyAsUtf8 = (value) =>
+const bodyAsUtf8 = value =>
   Buffer.isBuffer(value) ? value.toString("utf8") : String(value);
 
 describe("formData compat (dist export only)", () => {
@@ -71,9 +71,9 @@ describe("formData compat (dist export only)", () => {
     });
 
     expect(response.data.contentType).toContain("multipart/form-data");
-    expect(response.data.payload).toContain('name="username"');
+    expect(response.data.payload).toContain("name=\"username\"");
     expect(response.data.payload).toContain("janedoe");
-    expect(response.data.payload).toContain('name="role"');
+    expect(response.data.payload).toContain("name=\"role\"");
     expect(response.data.payload).toContain("admin");
   });
 
@@ -95,13 +95,13 @@ describe("formData compat (dist export only)", () => {
             payload: bodyAsUtf8(body),
           }),
         })),
-      },
+      }
     );
 
     expect(response.data.contentType).toContain("multipart/form-data");
-    expect(response.data.payload).toContain('name="project"');
+    expect(response.data.payload).toContain("name=\"project\"");
     expect(response.data.payload).toContain("faxios");
-    expect(response.data.payload).toContain('name="mode"');
+    expect(response.data.payload).toContain("name=\"mode\"");
     expect(response.data.payload).toContain("compat");
   });
 });

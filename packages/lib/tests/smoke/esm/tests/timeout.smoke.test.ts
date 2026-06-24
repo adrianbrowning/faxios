@@ -3,7 +3,7 @@ import { PassThrough } from "node:stream";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
 
-const createTransport = (config) => {
+const createTransport = config => {
   const opts = config || {};
 
   return {
@@ -36,7 +36,7 @@ const createTransport = (config) => {
         res.req = req;
 
         onResponse(res);
-        res.end(opts.body === undefined ? '{"ok":true}' : opts.body);
+        res.end(opts.body === undefined ? "{\"ok\":true}" : opts.body);
       };
 
       return req;
@@ -52,7 +52,7 @@ describe("timeout compat (dist export only)", () => {
         timeout: 25,
         transport: createTransport({ triggerTimeout: true }),
       })
-      .catch((e) => e);
+      .catch(e => e);
 
     expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ECONNABORTED");
@@ -67,7 +67,7 @@ describe("timeout compat (dist export only)", () => {
         timeoutErrorMessage: "custom timeout",
         transport: createTransport({ triggerTimeout: true }),
       })
-      .catch((e) => e);
+      .catch(e => e);
 
     expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ECONNABORTED");
@@ -81,7 +81,7 @@ describe("timeout compat (dist export only)", () => {
         timeout: "30",
         transport: createTransport({ triggerTimeout: true }),
       })
-      .catch((e) => e);
+      .catch(e => e);
 
     expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ECONNABORTED");
@@ -95,7 +95,7 @@ describe("timeout compat (dist export only)", () => {
         timeout: { invalid: true },
         transport: createTransport(),
       })
-      .catch((e) => e);
+      .catch(e => e);
 
     expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ERR_BAD_OPTION_VALUE");
@@ -106,7 +106,7 @@ describe("timeout compat (dist export only)", () => {
     const response = await faxios.get("http://example.com/no-timeout", {
       proxy: false,
       timeout: 0,
-      transport: createTransport({ body: '{"ok":true}' }),
+      transport: createTransport({ body: "{\"ok\":true}" }),
     });
 
     expect(response.status).toBe(200);

@@ -3,7 +3,7 @@ import { PassThrough } from "node:stream";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
 
-const createTransport = (responseBody) => {
+const createTransport = responseBody => {
   const calls = [];
 
   const transport = {
@@ -25,7 +25,7 @@ const createTransport = (responseBody) => {
         res.headers = { "content-type": "application/json" };
         res.req = req;
         onResponse(res);
-        res.end(responseBody ? responseBody : '{"value":"ok"}');
+        res.end(responseBody ? responseBody : "{\"value\":\"ok\"}");
       };
 
       return req;
@@ -43,13 +43,13 @@ describe("interceptors compat (dist export only)", () => {
     const { transport, getCalls } = createTransport();
     const client = faxios.create();
 
-    client.interceptors.request.use((config) => {
+    client.interceptors.request.use(config => {
       config.headers = config.headers || {};
       config.headers["X-One"] = "1";
       return config;
     });
 
-    client.interceptors.request.use((config) => {
+    client.interceptors.request.use(config => {
       config.headers["X-Two"] = "2";
       return config;
     });
@@ -65,15 +65,15 @@ describe("interceptors compat (dist export only)", () => {
   });
 
   it("applies response interceptors in registration order", async () => {
-    const { transport } = createTransport('{"n":1}');
+    const { transport } = createTransport("{\"n\":1}");
     const client = faxios.create();
 
-    client.interceptors.response.use((response) => {
+    client.interceptors.response.use(response => {
       response.data.n += 1;
       return response;
     });
 
-    client.interceptors.response.use((response) => {
+    client.interceptors.response.use(response => {
       response.data.n *= 10;
       return response;
     });
@@ -90,7 +90,7 @@ describe("interceptors compat (dist export only)", () => {
     const { transport, getCalls } = createTransport();
     const client = faxios.create();
 
-    const id = client.interceptors.request.use((config) => {
+    const id = client.interceptors.request.use(config => {
       config.headers = config.headers || {};
       config.headers["X-Ejected"] = "yes";
       return config;
@@ -111,7 +111,7 @@ describe("interceptors compat (dist export only)", () => {
     const { transport, getCalls } = createTransport();
     const client = faxios.create();
 
-    client.interceptors.request.use(async (config) => {
+    client.interceptors.request.use(async config => {
       await Promise.resolve();
       config.headers = config.headers || {};
       config.headers["X-Async"] = "true";
@@ -139,7 +139,7 @@ describe("interceptors compat (dist export only)", () => {
         transport,
         proxy: false,
       })
-      .catch((e) => e);
+      .catch(e => e);
 
     expect(err).toBeInstanceOf(Error);
     expect(err.message).toContain("blocked-by-interceptor");

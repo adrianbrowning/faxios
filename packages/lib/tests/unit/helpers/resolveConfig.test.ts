@@ -28,13 +28,13 @@ describe("helpers::resolveConfig", () => {
 
     const headers = config.headers as FaxiosRequestHeaders;
     assert.strictEqual(config.data, data);
-    assert.strictEqual(headers.getContentType() as string | undefined, undefined);
+    assert.strictEqual(headers.getContentType(), undefined);
     assert.strictEqual(
       Object.prototype.hasOwnProperty.call(
         headers.toJSON(),
-        "Content-Type",
+        "Content-Type"
       ),
-      false,
+      false
     );
   });
 
@@ -54,8 +54,9 @@ describe("helpers::resolveConfig", () => {
         auth: {} as FaxiosBasicCredentials,
       });
 
-      assert.strictEqual((config.headers as FaxiosRequestHeaders).get("Authorization") as string | null, "Basic Og==");
-    } finally {
+      assert.strictEqual((config.headers as FaxiosRequestHeaders).get("Authorization"), "Basic Og==");
+    }
+    finally {
       delete (Object.prototype as Record<string, unknown>).username;
       delete (Object.prototype as Record<string, unknown>).password;
     }
@@ -90,7 +91,8 @@ describe("helpers::resolveConfig", () => {
       assert.strictEqual(config.url, "/foo?value=a+b");
       assert.strictEqual(serializeInvoked, false);
       assert.strictEqual(encodeInvoked, false);
-    } finally {
+    }
+    finally {
       delete (Object.prototype as Record<string, unknown>).serialize;
       delete (Object.prototype as Record<string, unknown>).encode;
     }

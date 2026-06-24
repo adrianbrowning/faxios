@@ -10,7 +10,7 @@ describe("helpers::parseHeaders", () => {
         "\n" +
         "Content-Type: application/json\n" +
         "Connection: keep-alive\n" +
-        "Transfer-Encoding: chunked",
+        "Transfer-Encoding: chunked"
     );
 
     expect(parsed.date).toEqual(date.toISOString());
@@ -23,17 +23,17 @@ describe("helpers::parseHeaders", () => {
     const parsedZero = parseHeaders("");
     const parsedSingle = parseHeaders("Set-Cookie: key=val;");
     const parsedMulti = parseHeaders(
-      "Set-Cookie: key=val;\n" + "Set-Cookie: key2=val2;\n",
+      "Set-Cookie: key=val;\n" + "Set-Cookie: key2=val2;\n"
     );
 
     expect(parsedZero["set-cookie"]).toBeUndefined();
-    expect(parsedSingle["set-cookie"]).toEqual(["key=val;"]);
-    expect(parsedMulti["set-cookie"]).toEqual(["key=val;", "key2=val2;"]);
+    expect(parsedSingle["set-cookie"]).toEqual([ "key=val;" ]);
+    expect(parsedMulti["set-cookie"]).toEqual([ "key=val;", "key2=val2;" ]);
   });
 
   it("should handle duplicates", () => {
     const parsed = parseHeaders(
-      "Age: age-a\n" + "Age: age-b\n" + "Foo: foo-a\n" + "Foo: foo-b\n",
+      "Age: age-a\n" + "Age: age-b\n" + "Foo: foo-a\n" + "Foo: foo-b\n"
     );
 
     expect(parsed.age).toEqual("age-a");

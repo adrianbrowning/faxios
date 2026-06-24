@@ -17,14 +17,19 @@ class MockXMLHttpRequest {
   onabort: (() => void) | null = null;
   onerror: (() => void) | null = null;
   ontimeout: (() => void) | null = null;
-  _listeners: Record<string, ((...args: unknown[]) => void)[]> = {};
-  _uploadListeners: Record<string, ((...args: unknown[]) => void)[]> = {};
+  _listeners: Record<string, Array<(...args: Array<unknown>) => void>> = {};
+  _uploadListeners: Record<string, Array<(...args: Array<unknown>) => void>> =
+    {};
   method: string = "";
   url: string = "";
   async: boolean = true;
   params: unknown = null;
   upload = {
-    addEventListener: (type: string, listener: (...args: unknown[]) => void) => {
+    addEventListener: (
+      type: string,
+      listener: (...args: Array<unknown>) => void
+    ) => {
+       
       this._uploadListeners[type] ||= [];
       this._uploadListeners[type].push(listener);
     },
@@ -40,14 +45,15 @@ class MockXMLHttpRequest {
     this.requestHeaders[key] = value;
   }
 
-  addEventListener(type: string, listener: (...args: unknown[]) => void) {
+  addEventListener(type: string, listener: (...args: Array<unknown>) => void) {
+     
     this._listeners[type] ||= [];
     this._listeners[type].push(listener);
   }
 
   getAllResponseHeaders() {
     return Object.entries(this.responseHeaders)
-      .map(([key, value]) => `${key}: ${value}`)
+      .map(([ key, value ]) => `${key}: ${value}`)
       .join("\n");
   }
 
@@ -66,7 +72,7 @@ class MockXMLHttpRequest {
   emit(type: string, target = "request", event = {}) {
     const listeners =
       target === "upload" ? this._uploadListeners : this._listeners;
-    (listeners[type] || []).forEach((listener) => listener(event));
+    (listeners[type] || []).forEach(listener => listener(event));
   }
 
   respondWith({
@@ -92,14 +98,15 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
   }
 }
 
-let requests: MockXMLHttpRequest[] = [];
+let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof window.XMLHttpRequest;
 
 const getLastRequest = (): MockXMLHttpRequest => {
@@ -114,7 +121,8 @@ describe("progress (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
+    window.XMLHttpRequest =
+      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -129,7 +137,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
 
@@ -145,7 +153,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
   });
@@ -165,7 +173,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
 
@@ -183,7 +191,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
 
@@ -203,7 +211,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
   });
@@ -225,7 +233,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
 

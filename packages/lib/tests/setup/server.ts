@@ -1,15 +1,21 @@
+/* disable-eslint promise/always-return */
+
 import http from "node:http";
+import type { IncomingMessage, ServerResponse } from "node:http";
 import http2 from "node:http2";
 import stream from "node:stream";
-import type { IncomingMessage, ServerResponse } from "node:http";
 import { IncomingForm } from "formidable";
 import getStream, { getStreamAsBuffer } from "get-stream";
 import selfsigned from "selfsigned";
 import { Throttle } from "stream-throttle";
 
-export const SERVER_HANDLER_STREAM_ECHO = (req: IncomingMessage, res: ServerResponse) => req.pipe(res);
+export const SERVER_HANDLER_STREAM_ECHO = (
+  req: IncomingMessage,
+  res: ServerResponse
+) => req.pipe(res);
 
-export const setTimeoutAsync = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+export const setTimeoutAsync = async (ms: number) =>
+  new Promise(resolve => setTimeout(resolve, ms));
 
 const certificatePromise = selfsigned.generate(undefined, { keySize: 2048 });
 const trackedServers = new Set<ExtendedServer>();
@@ -34,7 +40,12 @@ type ExtendedServer = (http.Server | http2.Http2SecureServer) & {
   closeAllConnections?: () => void;
 };
 
-export const startHTTPServer = async (handlerOrOptions: ((req: IncomingMessage, res: ServerResponse) => void) | ServerOptions, options?: ServerOptions): Promise<ExtendedServer> => {
+export const startHTTPServer = async (
+  handlerOrOptions:
+    | ((req: IncomingMessage, res: ServerResponse) => void)
+    | ServerOptions,
+  options?: ServerOptions
+): Promise<ExtendedServer> => {
   const certificate = await certificatePromise;
 
   const {
@@ -55,11 +66,11 @@ export const startHTTPServer = async (handlerOrOptions: ((req: IncomingMessage, 
       ? {
         handler: handlerOrOptions,
       }
-      : handlerOrOptions || {},
+      : handlerOrOptions,
     options
   );
 
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const serverHandler =
       handler ||
       async function (req: IncomingMessage, res: ServerResponse) {
@@ -73,13 +84,17 @@ export const startHTTPServer = async (handlerOrOptions: ((req: IncomingMessage, 
             dataStream = stream.Readable.from(await getStream(req));
           }
 
-          const streams: (NodeJS.ReadableStream | NodeJS.WritableStream | NodeJS.ReadWriteStream)[] = [ dataStream ];
+          const streams: Array<
+            | NodeJS.ReadableStream
+            | NodeJS.WritableStream
+            | NodeJS.ReadWriteStream
+          > = [ dataStream ];
 
           if (rate) {
             streams.push(new Throttle({ rate }));
           }
 
-          streams.push(res as unknown as stream.Writable);
+          streams.push(res);
 
           stream.pipeline(streams, (err: NodeJS.ErrnoException | null) => {
             err && console.log("Server warning: " + err.message);
@@ -91,19 +106,28 @@ export const startHTTPServer = async (handlerOrOptions: ((req: IncomingMessage, 
       };
 
     const server = useHTTP2
-      ? http2.createSecureServer({ key, cert }, serverHandler as unknown as (req: http2.Http2ServerRequest, res: http2.Http2ServerResponse) => void)
+      ? http2.createSecureServer(
+        { key, cert },
+        serverHandler as unknown as (
+          req: http2.Http2ServerRequest,
+          res: http2.Http2ServerResponse
+        ) => void
+      )
       : http.createServer(serverHandler);
 
     const sessions = new Set<http2.ServerHttp2Session>();
 
     if (useHTTP2) {
-      (server as http2.Http2SecureServer).on("session", (session: http2.ServerHttp2Session) => {
-        sessions.add(session);
+      (server as http2.Http2SecureServer).on(
+        "session",
+        (session: http2.ServerHttp2Session) => {
+          sessions.add(session);
 
-        session.once("close", () => {
-          sessions.delete(session);
-        });
-      });
+          session.once("close", () => {
+            sessions.delete(session);
+          });
+        }
+      );
 
       (server as ExtendedServer).closeAllSessions = () => {
         for (const session of sessions) {
@@ -122,7 +146,11 @@ export const startHTTPServer = async (handlerOrOptions: ((req: IncomingMessage, 
   });
 };
 
-export const stopHTTPServer = async (server: ExtendedServer, timeout = 10000) => {
+export const stopHTTPServer = async (
+  server: ExtendedServer,
+  timeout = 10000
+) => {
+   
   if (!server) return;
 
   // Try a graceful close first so in-flight requests can finish writing and
@@ -153,58 +181,75 @@ export const stopHTTPServer = async (server: ExtendedServer, timeout = 10000) =>
 
 export const stopAllTrackedHTTPServers = async (timeout = 10000) => {
   const servers = Array.from(trackedServers);
-  await Promise.all(servers.map(server => stopHTTPServer(server, timeout)));
+  await Promise.all(
+    servers.map(async server => stopHTTPServer(server, timeout))
+  );
 };
 
-export const handleFormData = (req: IncomingMessage) => new Promise<{ fields: Record<string, string | string[]>; files: Record<string, unknown> }>((resolve, reject) => {
-  const form = new IncomingForm();
+export const handleFormData = async (req: IncomingMessage) =>
+  new Promise<{
+    fields: Record<string, string | Array<string>>;
+    files: Record<string, unknown>;
+  }>((resolve, reject) => {
+     
+    const form = new IncomingForm();
 
-  form.parse(req, (err, fields, files) => {
-    if (err) {
-      // Drain any unread bytes so the kernel doesn't send an RST when the
-      // server closes the response. An unread request buffer is what causes
-      // the client write side to surface EPIPE on a subsequent test.
-      if (typeof req.resume === "function") req.resume();
-      return reject(err);
-    }
-
-    resolve({ fields, files });
-  });
-});
-
-export const nodeVersion = process.versions.node.split(".").map(v => parseInt(v, 10));
-
-export const generateReadable = (length = 1024 * 1024, chunkSize = 10 * 1024, sleep = 50) => stream.Readable.from(
-  (async function* () {
-    let dataLength = 0;
-
-    while (dataLength < length) {
-      const leftBytes = length - dataLength;
-
-      const chunk = Buffer.alloc(leftBytes > chunkSize ? chunkSize : leftBytes);
-
-      dataLength += chunk.length;
-
-      yield chunk;
-
-      if (sleep) {
-        await setTimeoutAsync(sleep);
+    form.parse(req, (err, fields, files) => {
+      if (err) {
+        // Drain any unread bytes so the kernel doesn't send an RST when the
+        // server closes the response. An unread request buffer is what causes
+        // the client write side to surface EPIPE on a subsequent test.
+        if (typeof req.resume === "function") req.resume();
+        return reject(err);
       }
-    }
-  })()
-);
 
-export const makeReadableStream = (chunk = "chunk", n = 10, timeout = 100) => new ReadableStream(
-  {
-    async pull(controller) {
-      await setTimeoutAsync(timeout);
-      n-- ? controller.enqueue(chunk) : controller.close();
+      resolve({ fields, files });
+    });
+  });
+
+export const nodeVersion = process.versions.node
+  .split(".")
+  .map(v => parseInt(v, 10));
+
+export const generateReadable = (
+  length = 1024 * 1024,
+  chunkSize = 10 * 1024,
+  sleep = 50
+) =>
+  stream.Readable.from(
+    (async function* () {
+      let dataLength = 0;
+
+      while (dataLength < length) {
+        const leftBytes = length - dataLength;
+
+        const chunk = Buffer.alloc(
+          leftBytes > chunkSize ? chunkSize : leftBytes
+        );
+
+        dataLength += chunk.length;
+
+        yield chunk;
+
+        if (sleep) {
+          await setTimeoutAsync(sleep);
+        }
+      }
+    })()
+  );
+
+export const makeReadableStream = (chunk = "chunk", n = 10, timeout = 100) =>
+  new ReadableStream(
+    {
+      async pull(controller) {
+        await setTimeoutAsync(timeout);
+        n-- ? controller.enqueue(chunk) : controller.close();
+      },
     },
-  },
-  {
-    highWaterMark: 1,
-  }
-);
+    {
+      highWaterMark: 1,
+    }
+  );
 
 export const makeEchoStream = (echo: boolean) =>
   new WritableStream({
@@ -235,28 +280,34 @@ export const startTestServer = async (port: number) => {
       await setTimeoutAsync(+delay);
     }
 
-    switch (parsed.pathname.replace(/\/$/, "")) {
-      case "/echo/json":
-      default:
-        if (contentType.startsWith("multipart/")) {
-          const { fields, files } = await handleFormData(req);
-          response.form = fields;
-          response.files = files;
-        }
-        else {
-          response.body = (await getStreamAsBuffer(req)).toString("hex");
-        }
+    if (parsed.pathname.replace(/\/$/, "")) {
+      // case "/echo/json":
+      // default:
+      if (contentType.startsWith("multipart/")) {
+        const { fields, files } = await handleFormData(req);
+        response.form = fields;
+        response.files = files;
+      }
+      else {
+        response.body = (await getStreamAsBuffer(req)).toString("hex");
+      }
 
-        return {
-          body: response,
-        };
+      return {
+        body: response,
+      };
     }
+
+    return undefined;
   };
 
-  return await startHTTPServer(
-    (req, res) => {
+  return startHTTPServer(
+     
+    async (req, res) => {
       res.setHeader("Access-Control-Allow-Origin", `*`);
-      res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+      res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET, POST, PUT, DELETE, OPTIONS"
+      );
       res.setHeader("Access-Control-Allow-Headers", "*");
       res.setHeader("Access-Control-Max-Age", "86400");
 
@@ -266,8 +317,17 @@ export const startTestServer = async (port: number) => {
         return;
       }
 
-      Promise.resolve(handler(req)).then(result => {
-        const { status = 200, headers = {}, body } = (result || {}) as { status?: number; headers?: Record<string, string>; body?: unknown };
+      await Promise.resolve(handler(req)).then(result => {  
+         
+        const {
+          status = 200,
+          headers = {},
+          body,
+        } = (result || {}) as {
+          status?: number;
+          headers?: Record<string, string>;
+          body?: unknown;
+        };
 
         res.statusCode = status;
 

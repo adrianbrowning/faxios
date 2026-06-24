@@ -10,7 +10,7 @@ class MockXMLHttpRequest {
   response: unknown;
   onreadystatechange: (() => void) | null;
   onloadend: (() => void) | null;
-  upload: { addEventListener(): void };
+  upload: { addEventListener: () => void; };
   requestHeaders: Record<string, string>;
   method?: string;
   url?: string;
@@ -62,7 +62,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -71,11 +72,11 @@ class MockXMLHttpRequest {
   abort() {}
 }
 
-let requests: MockXMLHttpRequest[] = [];
+let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const sleep = async (ms = 0) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+  new Promise(resolve => setTimeout(resolve, ms));
 
 const waitForRequest = async (timeoutMs = 1000) => {
   const start = Date.now();
@@ -108,7 +109,7 @@ describe("adapter (vitest browser)", () => {
   it("should support custom adapter", async () => {
     const responsePromise = axios("/foo", {
       async adapter(config) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           const request = new XMLHttpRequest();
           request.open("GET", "/bar");
 
@@ -140,7 +141,7 @@ describe("adapter (vitest browser)", () => {
 
     const responsePromise = axios("/foo", {
       async adapter(config) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           const request = new XMLHttpRequest();
           request.open("GET", "/bar");
 
@@ -171,14 +172,14 @@ describe("adapter (vitest browser)", () => {
   it("should execute adapter code asynchronously when interceptor is present", async () => {
     let asyncFlag = false;
 
-    axios.interceptors.request.use((config) => {
-      config.headers!.async = "async it!";
+    axios.interceptors.request.use(config => {
+      config.headers.async = "async it!";
       return config;
     });
 
     const responsePromise = axios("/foo", {
       async adapter(config) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
           const request = new XMLHttpRequest();
           request.open("GET", "/bar");
 

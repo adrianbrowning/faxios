@@ -24,7 +24,14 @@ const {
 } = axios;
 
 // eslint-disable-next-line no-barrel-files/no-barrel-files
-export type { InternalFaxiosRequestConfig } from "./lib/types.ts";
+export type {
+  InternalFaxiosRequestConfig,
+  GenericHTMLFormElement,
+  RawFaxiosRequestConfig,
+  FaxiosPromise,
+  CreateFaxiosDefaults,
+  CancelTokenStatic
+} from "./lib/types.ts";
 
 export {
   // eslint-disable-next-line no-barrel-files/no-barrel-files

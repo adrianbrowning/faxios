@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import axios from "../../src/index.js";
-import type { HeadersDefaults } from "../../src/lib/types.js";
 import FaxiosHeaders from "../../../lib/src/lib/core/FaxiosHeaders.js";
 import defaults from "../../../lib/src/lib/defaults/index.js";
+import axios from "../../src/index.js";
+import type { HeadersDefaults } from "../../src/lib/types.js";
 
 class MockXMLHttpRequest {
   requestHeaders: Record<string, string> = {};
@@ -49,7 +49,7 @@ class MockXMLHttpRequest {
     statusText = "OK",
     responseText = "",
     responseHeaders = "",
-  }: { status?: number; statusText?: string; responseText?: string; responseHeaders?: string } = {}) {
+  }: { status?: number; statusText?: string; responseText?: string; responseHeaders?: string; } = {}) {
     this.status = status;
     this.statusText = statusText;
     this.responseText = responseText;
@@ -60,7 +60,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -74,7 +75,7 @@ const XSRF_COOKIE_NAME = "CUSTOM-XSRF-TOKEN";
 const transformRequest = (defaults.transformRequest as unknown as Array<(data: unknown, headers: FaxiosHeaders) => unknown>);
 const transformResponse = (defaults.transformResponse as Array<(data: unknown, headers?: FaxiosHeaders) => unknown>);
 
-let requests: MockXMLHttpRequest[] = [];
+let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const getLastRequest = (): MockXMLHttpRequest => {
@@ -107,8 +108,8 @@ describe("defaults (vitest browser)", () => {
 
   it("should transform request json", () => {
     expect(
-      transformRequest[0]!({ foo: "bar" }, new FaxiosHeaders()),
-    ).toBe('{"foo":"bar"}');
+      transformRequest[0]!({ foo: "bar" }, new FaxiosHeaders())
+    ).toBe("{\"foo\":\"bar\"}");
   });
 
   it("should also transform request json when 'Content-Type' is 'application/json'", () => {
@@ -117,10 +118,10 @@ describe("defaults (vitest browser)", () => {
     });
 
     expect(
-      transformRequest[0]!(JSON.stringify({ foo: "bar" }), headers),
-    ).toBe('{"foo":"bar"}');
-    expect(transformRequest[0]!([42, 43], headers)).toBe("[42,43]");
-    expect(transformRequest[0]!("foo", headers)).toBe('"foo"');
+      transformRequest[0]!(JSON.stringify({ foo: "bar" }), headers)
+    ).toBe("{\"foo\":\"bar\"}");
+    expect(transformRequest[0]!([ 42, 43 ], headers)).toBe("[42,43]");
+    expect(transformRequest[0]!("foo", headers)).toBe("\"foo\"");
     expect(transformRequest[0]!(42, headers)).toBe("42");
     expect(transformRequest[0]!(true, headers)).toBe("true");
     expect(transformRequest[0]!(false, headers)).toBe("false");
@@ -139,12 +140,12 @@ describe("defaults (vitest browser)", () => {
 
   it("should do nothing to request string", () => {
     expect(transformRequest[0]!("foo=bar", new FaxiosHeaders())).toBe(
-      "foo=bar",
+      "foo=bar"
     );
   });
 
   it("should transform response json", () => {
-    const data = transformResponse[0]!('{"foo":"bar"}') as Record<string, unknown>;
+    const data = transformResponse[0]!("{\"foo\":\"bar\"}") as Record<string, unknown>;
 
     expect(typeof data).toBe("object");
     expect(data.foo).toBe("bar");
@@ -196,7 +197,7 @@ describe("defaults (vitest browser)", () => {
     const request = getLastRequest();
 
     expect(request.requestHeaders[instance.defaults.xsrfHeaderName as string]).toBe(
-      "foobarbaz",
+      "foobarbaz"
     );
 
     await finishRequest(request, promise);
@@ -253,7 +254,7 @@ describe("defaults (vitest browser)", () => {
         "X-GET-HEADER": "getHeaderValue",
         "X-FOO-HEADER": "fooHeaderValue",
         "X-BAR-HEADER": "barHeaderValue",
-      }).toJSON(),
+      }).toJSON()
     );
 
     await finishRequest(request, promise);

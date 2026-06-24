@@ -62,14 +62,14 @@ describe("helpers::fromDataURI", () => {
 
   it("should preserve full content type with parameters in Blob", () => {
     const dataURI = "data:text/plain;charset=utf-8;base64," + Buffer.from("hello").toString("base64");
-    const blob = fromDataURI(dataURI, true, { Blob: Blob as unknown as new (...args: unknown[]) => object }) as Blob;
+    const blob = fromDataURI(dataURI, true, { Blob: Blob as unknown as new (...args: Array<unknown>) => object }) as Blob;
 
     assert.strictEqual(blob.type, "text/plain;charset=utf-8");
   });
 
   it("should normalize omitted mediatype to text/plain per RFC 2397", () => {
     const dataURI = "data:;charset=UTF-8,hello";
-    const blob = fromDataURI(dataURI, true, { Blob: Blob as unknown as new (...args: unknown[]) => object }) as Blob;
+    const blob = fromDataURI(dataURI, true, { Blob: Blob as unknown as new (...args: Array<unknown>) => object }) as Blob;
 
     assert.strictEqual(blob.type, "text/plain;charset=utf-8");
   });

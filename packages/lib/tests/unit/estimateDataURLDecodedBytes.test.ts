@@ -11,7 +11,7 @@ describe("estimateDataURLDecodedBytes", () => {
     const url = "data:,Hello";
     assert.strictEqual(
       estimateDataURLDecodedBytes(url),
-      Buffer.byteLength("Hello", "utf8"),
+      Buffer.byteLength("Hello", "utf8")
     );
   });
 
@@ -19,7 +19,7 @@ describe("estimateDataURLDecodedBytes", () => {
     const url = "data:text/plain,%E2%82%AC";
     assert.strictEqual(
       estimateDataURLDecodedBytes(url),
-      Buffer.byteLength("\u20ac", "utf8"),
+      Buffer.byteLength("\u20ac", "utf8")
     );
   });
 
@@ -27,7 +27,7 @@ describe("estimateDataURLDecodedBytes", () => {
     const url = "data:text/plain,hello%20world";
     assert.strictEqual(
       estimateDataURLDecodedBytes(url),
-      Buffer.byteLength("hello world", "utf8"),
+      Buffer.byteLength("hello world", "utf8")
     );
   });
 

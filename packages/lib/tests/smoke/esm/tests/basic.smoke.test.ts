@@ -21,7 +21,7 @@ const createTransportCapture = () => {
         res.headers = { "content-type": "application/json" };
         res.req = req;
         onResponse(res);
-        res.end('{"ok":true}');
+        res.end("{\"ok\":true}");
       };
       req.destroy = () => {
         req.destroyed = true;
@@ -38,7 +38,7 @@ const createTransportCapture = () => {
   };
 };
 
-const runRequest = async (run) => {
+const runRequest = async run => {
   const { transport, getCapturedOptions } = createTransportCapture();
   await run(transport);
 
@@ -47,11 +47,11 @@ const runRequest = async (run) => {
 
 describe("basic compat (dist export only)", () => {
   it("supports the simplest faxios(url) request pattern", async () => {
-    const options = await runRequest((transport) =>
+    const options = await runRequest(transport =>
       faxios("http://example.com/users", {
         transport,
         proxy: false,
-      }),
+      })
     );
 
     expect(options.method).toBe("GET");
@@ -59,11 +59,11 @@ describe("basic compat (dist export only)", () => {
   });
 
   it("supports get()", async () => {
-    const options = await runRequest((transport) =>
+    const options = await runRequest(transport =>
       faxios.get("http://example.com/items?limit=10", {
         transport,
         proxy: false,
-      }),
+      })
     );
 
     expect(options.method).toBe("GET");
@@ -71,8 +71,8 @@ describe("basic compat (dist export only)", () => {
   });
 
   it("supports delete()", async () => {
-    const options = await runRequest((transport) =>
-      faxios.delete("http://example.com/items/1", { transport, proxy: false }),
+    const options = await runRequest(transport =>
+      faxios.delete("http://example.com/items/1", { transport, proxy: false })
     );
 
     expect(options.method).toBe("DELETE");
@@ -80,8 +80,8 @@ describe("basic compat (dist export only)", () => {
   });
 
   it("supports head()", async () => {
-    const options = await runRequest((transport) =>
-      faxios.head("http://example.com/health", { transport, proxy: false }),
+    const options = await runRequest(transport =>
+      faxios.head("http://example.com/health", { transport, proxy: false })
     );
 
     expect(options.method).toBe("HEAD");
@@ -89,8 +89,8 @@ describe("basic compat (dist export only)", () => {
   });
 
   it("supports options()", async () => {
-    const options = await runRequest((transport) =>
-      faxios.options("http://example.com/items", { transport, proxy: false }),
+    const options = await runRequest(transport =>
+      faxios.options("http://example.com/items", { transport, proxy: false })
     );
 
     expect(options.method).toBe("OPTIONS");
@@ -98,15 +98,15 @@ describe("basic compat (dist export only)", () => {
   });
 
   it("supports post()", async () => {
-    const options = await runRequest((transport) =>
+    const options = await runRequest(transport =>
       faxios.post(
         "http://example.com/items",
         { name: "widget" },
         {
           transport,
           proxy: false,
-        },
-      ),
+        }
+      )
     );
 
     expect(options.method).toBe("POST");
@@ -114,15 +114,15 @@ describe("basic compat (dist export only)", () => {
   });
 
   it("supports put()", async () => {
-    const options = await runRequest((transport) =>
+    const options = await runRequest(transport =>
       faxios.put(
         "http://example.com/items/1",
         { name: "updated-widget" },
         {
           transport,
           proxy: false,
-        },
-      ),
+        }
+      )
     );
 
     expect(options.method).toBe("PUT");
@@ -130,15 +130,15 @@ describe("basic compat (dist export only)", () => {
   });
 
   it("supports patch()", async () => {
-    const options = await runRequest((transport) =>
+    const options = await runRequest(transport =>
       faxios.patch(
         "http://example.com/items/1",
         { status: "active" },
         {
           transport,
           proxy: false,
-        },
-      ),
+        }
+      )
     );
 
     expect(options.method).toBe("PATCH");

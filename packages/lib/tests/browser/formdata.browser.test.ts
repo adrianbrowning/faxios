@@ -44,7 +44,7 @@ class MockXMLHttpRequest {
     statusText = "OK",
     responseText = "",
     responseHeaders = "",
-  }: { status?: number; statusText?: string; responseText?: string; responseHeaders?: string } = {}) {
+  }: { status?: number; statusText?: string; responseText?: string; responseHeaders?: string; } = {}) {
     this.status = status;
     this.statusText = statusText;
     this.responseText = responseText;
@@ -55,7 +55,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -64,7 +65,7 @@ class MockXMLHttpRequest {
   abort() {}
 }
 
-let requests: MockXMLHttpRequest[] = [];
+let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const getLastRequest = (): MockXMLHttpRequest => {
@@ -87,7 +88,7 @@ describe("formdata (vitest browser)", () => {
   });
 
   it("should allow FormData posting", async () => {
-    const responsePromise = (axios as unknown as { postForm: (url: string, data: unknown) => Promise<unknown> }).postForm("/foo", {
+    const responsePromise = (axios as unknown as { postForm: (url: string, data: unknown) => Promise<unknown>; }).postForm("/foo", {
       a: "foo",
       b: "bar",
     });

@@ -1,5 +1,5 @@
-import { assertEquals } from '@std/assert';
-import axios from 'axios';
+import { assertEquals } from "@std/assert";
+import axios from "axios";
 
 const createFetchCapture = () => {
   const calls: Array<Request> = [];
@@ -10,7 +10,7 @@ const createFetchCapture = () => {
 
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   };
 
@@ -26,60 +26,60 @@ const env = (fetch: any) => ({
   Response,
 });
 
-Deno.test('headers: default Accept header is sent', async () => {
+Deno.test("headers: default Accept header is sent", async () => {
   const { fetch, getCalls } = createFetchCapture();
 
-  await axios.get('https://example.com/default-headers', {
-    adapter: 'fetch',
+  await axios.get("https://example.com/default-headers", {
+    adapter: "fetch",
     env: env(fetch),
   });
 
   const request = getCalls()[0];
-  assertEquals(request.headers.get('accept'), 'application/json, text/plain, */*');
+  assertEquals(request.headers.get("accept"), "application/json, text/plain, */*");
 });
 
-Deno.test('headers: custom headers are forwarded', async () => {
+Deno.test("headers: custom headers are forwarded", async () => {
   const { fetch, getCalls } = createFetchCapture();
 
-  await axios.get('https://example.com/custom-headers', {
-    adapter: 'fetch',
+  await axios.get("https://example.com/custom-headers", {
+    adapter: "fetch",
     headers: {
-      'X-Trace-Id': 'trace-123',
-      Authorization: 'Bearer token-abc',
+      "X-Trace-Id": "trace-123",
+      Authorization: "Bearer token-abc",
     },
     env: env(fetch),
   });
 
   const request = getCalls()[0];
-  assertEquals(request.headers.get('x-trace-id'), 'trace-123');
-  assertEquals(request.headers.get('authorization'), 'Bearer token-abc');
+  assertEquals(request.headers.get("x-trace-id"), "trace-123");
+  assertEquals(request.headers.get("authorization"), "Bearer token-abc");
 });
 
-Deno.test('headers: content-type is set for JSON POST payload', async () => {
+Deno.test("headers: content-type is set for JSON POST payload", async () => {
   const { fetch, getCalls } = createFetchCapture();
 
   await axios.post(
-    'https://example.com/post-json',
-    { name: 'widget' },
+    "https://example.com/post-json",
+    { name: "widget" },
     {
-      adapter: 'fetch',
+      adapter: "fetch",
       env: env(fetch),
     }
   );
 
   const request = getCalls()[0];
-  const contentType = request.headers.get('content-type') || '';
-  assertEquals(contentType.includes('application/json'), true);
+  const contentType = request.headers.get("content-type") || "";
+  assertEquals(contentType.includes("application/json"), true);
 });
 
-Deno.test('headers: content-type is absent for bodyless GET', async () => {
+Deno.test("headers: content-type is absent for bodyless GET", async () => {
   const { fetch, getCalls } = createFetchCapture();
 
-  await axios.get('https://example.com/get-no-body', {
-    adapter: 'fetch',
+  await axios.get("https://example.com/get-no-body", {
+    adapter: "fetch",
     env: env(fetch),
   });
 
   const request = getCalls()[0];
-  assertEquals(request.headers.get('content-type'), null);
+  assertEquals(request.headers.get("content-type"), null);
 });

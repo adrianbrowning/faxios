@@ -60,7 +60,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -69,7 +70,7 @@ class MockXMLHttpRequest {
   abort() {}
 }
 
-let requests: MockXMLHttpRequest[] = [];
+let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const getLastRequest = () => {
@@ -97,7 +98,7 @@ describe("promise (vitest browser)", () => {
 
     request!.respondWith({
       status: 200,
-      responseText: '{"hello":"world"}',
+      responseText: "{\"hello\":\"world\"}",
       responseHeaders: "Content-Type: application/json",
     });
 
@@ -111,20 +112,20 @@ describe("promise (vitest browser)", () => {
   });
 
   it("should support all", async () => {
-    const result = await axios.all([true, 123] as unknown as Promise<unknown>[]);
+    const result = await axios.all([ true, 123 ] as unknown as Array<Promise<unknown>>);
 
-    expect(result).toEqual([true, 123]);
+    expect(result).toEqual([ true, 123 ]);
   });
 
   it("should support spread", async () => {
     let fulfilled = false;
-    const result = await axios.all([123, 456] as unknown as Promise<unknown>[]).then(
-      axios.spread((...args: unknown[]) => {
-        const [a, b] = args as [number, number];
+    const result = await axios.all([ 123, 456 ] as unknown as Array<Promise<unknown>>).then(
+      axios.spread((...args: Array<unknown>) => {
+        const [ a, b ] = args as [number, number];
         expect(a + b).toBe(123 + 456);
         fulfilled = true;
         return "hello world";
-      }),
+      })
     );
 
     expect(fulfilled).toBe(true);

@@ -53,11 +53,13 @@ describe("helpers::cookies (vitest browser)", () => {
 
     try {
       expect(cookies.read("bar")).toBe("def");
-    } finally {
+    }
+    finally {
       if (descriptor) {
         Object.defineProperty(document, "cookie", descriptor);
-      } else {
-        delete (document as { cookie?: string }).cookie;
+      }
+      else {
+        delete (document as { cookie?: string; }).cookie;
       }
     }
   });

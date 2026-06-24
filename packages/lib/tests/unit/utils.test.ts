@@ -18,7 +18,7 @@ describe("utils", () => {
 
   describe("utils::isFormData", () => {
     it("should detect the FormData instance provided by the `form-data` package", () => {
-      [1, "str", {}, new RegExp("")].forEach((thing) => {
+      [ 1, "str", {}, new RegExp("") ].forEach(thing => {
         assert.equal(utils.isFormData(thing), false);
       });
       assert.equal(utils.isFormData(new FormData()), true);
@@ -56,15 +56,15 @@ describe("utils", () => {
 
   describe("toJSON", () => {
     it("should convert to a plain object without circular references", () => {
-      const obj = { a: [0] };
+      const obj = { a: [ 0 ] };
       const source: Record<string, unknown> = { x: 1, y: 2, obj };
       source.circular1 = source;
-      (obj.a as unknown[])[1] = obj;
+      (obj.a as Array<unknown>)[1] = obj;
 
       assert.deepStrictEqual(utils.toJSONObject(source), {
         x: 1,
         y: 2,
-        obj: { a: [0] },
+        obj: { a: [ 0 ] },
       });
     });
 
@@ -80,10 +80,10 @@ describe("utils", () => {
 
       const jsonObject = utils.toJSONObject(source);
 
-      assert.strictEqual((jsonObject as Record<string, unknown> & { obj: typeof obj }).obj.objProp, objProp);
+      assert.strictEqual((jsonObject as Record<string, unknown> & { obj: typeof obj; }).obj.objProp, objProp);
       assert.strictEqual(
         JSON.stringify(jsonObject),
-        JSON.stringify({ x: 1, y: 2, obj: { ok: 1 } }),
+        JSON.stringify({ x: 1, y: 2, obj: { ok: 1 } })
       );
     });
 
@@ -99,12 +99,12 @@ describe("utils", () => {
       });
 
       it("should serialize a shared sibling array at every occurrence (DAG, not cycle)", () => {
-        const shared = [1, 2, 3];
+        const shared = [ 1, 2, 3 ];
         const source = { a: shared, b: shared };
 
         const result = utils.toJSONObject(source);
 
-        assert.deepStrictEqual(result, { a: [1, 2, 3], b: [1, 2, 3] });
+        assert.deepStrictEqual(result, { a: [ 1, 2, 3 ], b: [ 1, 2, 3 ] });
       });
 
       it("should serialize shared sibling that itself contains a self-cycle", () => {
@@ -169,11 +169,11 @@ describe("utils", () => {
     it("should return true for objects with uri property", () => {
       assert.strictEqual(
         utils.isReactNativeBlob({ uri: "file://path/to/file" }),
-        true,
+        true
       );
       assert.strictEqual(
         utils.isReactNativeBlob({ uri: "content://media/image" }),
-        true,
+        true
       );
     });
 
@@ -184,18 +184,18 @@ describe("utils", () => {
           name: "image.png",
           type: "image/png",
         }),
-        true,
+        true
       );
     });
 
     it("should return false for objects without uri property", () => {
       assert.strictEqual(
         utils.isReactNativeBlob({ path: "file://path" }),
-        false,
+        false
       );
       assert.strictEqual(
         utils.isReactNativeBlob({ url: "http://example.com" }),
-        false,
+        false
       );
       assert.strictEqual(utils.isReactNativeBlob({}), false);
     });

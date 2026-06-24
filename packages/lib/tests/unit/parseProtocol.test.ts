@@ -22,7 +22,7 @@ describe("helpers::parseProtocol", () => {
       },
       (expectedProtocol, url) => {
         assert.strictEqual(parseProtocol(url as string), expectedProtocol);
-      },
+      }
     );
   });
 

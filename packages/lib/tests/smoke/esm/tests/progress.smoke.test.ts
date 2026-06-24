@@ -2,9 +2,9 @@ import { Readable, Writable, PassThrough } from "node:stream";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
 
-const createProgressTransport = (config) => {
+const createProgressTransport = config => {
   const opts = config || {};
-  const responseChunks = opts.responseChunks || ["ok"];
+  const responseChunks = opts.responseChunks || [ "ok" ];
   const responseHeaders = opts.responseHeaders || {};
 
   return {
@@ -38,13 +38,13 @@ const createProgressTransport = (config) => {
           {
             "content-type": "text/plain",
           },
-          responseHeaders,
+          responseHeaders
         );
         res.req = req;
 
         onResponse(res);
 
-        responseChunks.forEach((chunk) => {
+        responseChunks.forEach(chunk => {
           res.write(chunk);
         });
         res.end();
@@ -58,7 +58,7 @@ const createProgressTransport = (config) => {
 describe("progress compat (dist export only)", () => {
   it("emits upload progress events for stream payloads", async () => {
     const samples = [];
-    const payload = ["abc", "def", "ghi"];
+    const payload = [ "abc", "def", "ghi" ];
     const total = payload.join("").length;
 
     await faxios.post("http://example.com/upload", Readable.from(payload), {
@@ -70,7 +70,7 @@ describe("progress compat (dist export only)", () => {
         samples.push({ loaded, total: reportedTotal, upload });
       },
       transport: createProgressTransport({
-        responseChunks: ["uploaded"],
+        responseChunks: [ "uploaded" ],
       }),
     });
 
@@ -84,7 +84,7 @@ describe("progress compat (dist export only)", () => {
 
   it("emits download progress events", async () => {
     const samples = [];
-    const chunks = ["ab", "cd", "ef"];
+    const chunks = [ "ab", "cd", "ef" ];
     const total = chunks.join("").length;
 
     const response = await faxios.get("http://example.com/download", {

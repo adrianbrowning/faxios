@@ -11,16 +11,16 @@ import followRedirects from "follow-redirects";
 import createHttpsProxyAgent from "https-proxy-agent";
 import { getProxyForUrl } from "proxy-from-env";
 import CanceledError from "../cancel/CanceledError.js";
+import buildFullPath from "../core/buildFullPath.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
-import buildFullPath from "../core/buildFullPath.js";
 import settle from "../core/settle.js";
 import transitionalDefaults from "../defaults/transitional.js";
 import { VERSION } from "../env/data.js";
-import FaxiosTransformStream from "../helpers/FaxiosTransformStream.js";
 import buildURL from "../helpers/buildURL.js";
 import callbackify from "../helpers/callbackify.js";
 import estimateDataURLDecodedBytes from "../helpers/estimateDataURLDecodedBytes.js";
+import FaxiosTransformStream from "../helpers/FaxiosTransformStream.js";
 import formDataToStream from "../helpers/formDataToStream.js";
 import fromDataURI from "../helpers/fromDataURI.js";
 import Http2Sessions from "../helpers/Http2Sessions.js";
@@ -328,9 +328,7 @@ function setupHttpsProxy(
   /* eslint-enable sonarjs/no-nested-conditional */
   const proxyHostStr = proxyHost ? String(proxyHost) : "";
   const proxyHostForURL =
-    proxyHostStr &&
-    proxyHostStr.includes(":") &&
-    !proxyHostStr.startsWith("[")
+    proxyHostStr && proxyHostStr.includes(":") && !proxyHostStr.startsWith("[")
       ? `[${proxyHostStr}]`
       : proxyHostStr;
   const proxyURL = new URL(
@@ -340,8 +338,7 @@ function setupHttpsProxy(
     protocol: proxyURL.protocol,
     hostname: proxyURL.hostname.replace(/^\[|\]$/g, ""),
     port: proxyURL.port,
-    auth:
-      proxyAuth && typeof proxyAuth === "string" ? proxyAuth : undefined,
+    auth: proxyAuth && typeof proxyAuth === "string" ? proxyAuth : undefined,
   };
   if (proxyURL.protocol === "https:") {
     agentOptions["ALPNProtocols"] = [ "http/1.1" ];
@@ -437,7 +434,10 @@ function setProxy(
 
   if (isRedirect) {
     stripProxyAuthHeaders(options);
-    if (options["agent"] && (options["agent"] as Record<symbol, unknown>)[kFaxiosInstalledTunnel]) {
+    if (
+      options["agent"] &&
+      (options["agent"] as Record<symbol, unknown>)[kFaxiosInstalledTunnel]
+    ) {
       options["agent"] = undefined;
     }
   }
@@ -640,17 +640,13 @@ function handleDataURI(
 
   let convertedData: unknown;
   try {
-    convertedData = fromDataURI(
-      own("url") as string,
-      responseType === "blob",
-      {
-        Blob:
-          config.env &&
-          ((config.env as Record<string, unknown>)["Blob"] as
-            | (new (...args: Array<unknown>) => object)
-            | undefined),
-      }
-    );
+    convertedData = fromDataURI(own("url") as string, responseType === "blob", {
+      Blob:
+        config.env &&
+        ((config.env as Record<string, unknown>)["Blob"] as
+          | (new (...args: Array<unknown>) => object)
+          | undefined),
+    });
   }
   catch (err) {
     throw FaxiosError.from(err as Error, FaxiosError.ERR_BAD_REQUEST, config);
@@ -688,20 +684,34 @@ async function applyFormDataHeaders(
     getHeaders: () => Record<string, unknown>;
     getLength: (cb: (err: Error | null, len: number) => void) => void;
   };
-  setFormDataHeaders(headers, dataWithHeaders.getHeaders(), own("formDataHeaderPolicy"));
+  setFormDataHeaders(
+    headers,
+    dataWithHeaders.getHeaders(),
+    own("formDataHeaderPolicy")
+  );
   if (!headers.hasContentLength()) {
     try {
-      const knownLength = await util.promisify(dataWithHeaders.getLength).call(data);
-      Number.isFinite(knownLength) && knownLength >= 0 && headers.setContentLength(knownLength);
+      const knownLength = await util
+        .promisify(dataWithHeaders.getLength)
+        .call(data);
+      Number.isFinite(knownLength) &&
+        knownLength >= 0 &&
+        headers.setContentLength(knownLength);
       /*eslint no-empty:0*/
     }
     catch {}
   }
 }
 
-function toBufferData(data: unknown): { data: Buffer | null; invalid: boolean; } {
+function toBufferData(data: unknown): {
+  data: Buffer | null;
+  invalid: boolean;
+} {
   if (Buffer.isBuffer(data)) return { data, invalid: false };
-  if (utils.isArrayBuffer(data)) return { data: Buffer.from(new Uint8Array(data as ArrayBuffer)), invalid: false };
+  if (utils.isArrayBuffer(data)) return {
+    data: Buffer.from(new Uint8Array(data as ArrayBuffer)),
+    invalid: false,
+  };
   if (utils.isString(data)) return { data: Buffer.from(data as string, "utf-8"), invalid: false };
   return { data: null, invalid: true };
 }
@@ -723,7 +733,8 @@ async function prepareRequestData(
       },
       {
         tag: `axios-${VERSION}-boundary`,
-        boundary: ((userBoundary && (userBoundary as RegExpMatchArray)[1]) || undefined) as string | undefined,
+        boundary: ((userBoundary && (userBoundary as RegExpMatchArray)[1]) ||
+          undefined) as string | undefined,
       }
     );
   }
@@ -735,9 +746,12 @@ async function prepareRequestData(
   }
   else if (utils.isBlob(data) || utils.isFile(data)) {
     const blobData = data as { size: number; type: string; };
-    blobData.size && headers.setContentType(blobData.type || "application/octet-stream");
+    blobData.size &&
+      headers.setContentType(blobData.type || "application/octet-stream");
     headers.setContentLength(blobData.size || 0);
-    data = stream.Readable.from(readBlob(data as Parameters<typeof readBlob>[0]));
+    data = stream.Readable.from(
+      readBlob(data as Parameters<typeof readBlob>[0])
+    );
   }
   else if (data && !utils.isStream(data)) {
     const { data: buf, invalid } = toBufferData(data);
@@ -783,31 +797,51 @@ function setupSensitiveHeaders(
   const sensitiveHeaders = own("sensitiveHeaders");
   if (sensitiveHeaders == null) return false;
   if (!utils.isArray(sensitiveHeaders)) {
-    reject(new FaxiosError("sensitiveHeaders must be an array of strings", FaxiosError.ERR_BAD_OPTION_VALUE, config));
+    reject(
+      new FaxiosError(
+        "sensitiveHeaders must be an array of strings",
+        FaxiosError.ERR_BAD_OPTION_VALUE,
+        config
+      )
+    );
     return true;
   }
   const sensitiveSet = new Set<string>();
   for (const header of sensitiveHeaders as Array<unknown>) {
     if (!utils.isString(header)) {
-      reject(new FaxiosError("sensitiveHeaders must be an array of strings", FaxiosError.ERR_BAD_OPTION_VALUE, config));
+      reject(
+        new FaxiosError(
+          "sensitiveHeaders must be an array of strings",
+          FaxiosError.ERR_BAD_OPTION_VALUE,
+          config
+        )
+      );
       return true;
     }
     sensitiveSet.add((header as string).toLowerCase());
   }
   if (sensitiveSet.size) {
     options["sensitiveHeaders"] = Array.from(sensitiveSet);
-    (options["beforeRedirects"] as Record<string, unknown>)["sensitiveHeaders"] =
-      function beforeRedirectSensitiveHeaders(redirectOptions: unknown, requestDetails: unknown) {
-        if (!isSameOriginRedirect(
+    (options["beforeRedirects"] as Record<string, unknown>)[
+      "sensitiveHeaders"
+    ] = function beforeRedirectSensitiveHeaders(
+      redirectOptions: unknown,
+      requestDetails: unknown
+    ) {
+      if (
+        !isSameOriginRedirect(
           redirectOptions as Record<string, unknown>,
           requestDetails as { url?: string; } | undefined
-        )) {
-          stripMatchingHeaders(
-            (redirectOptions as Record<string, unknown>)["headers"] as Record<string, unknown> | undefined,
-            sensitiveSet
-          );
-        }
-      };
+        )
+      ) {
+        stripMatchingHeaders(
+          (redirectOptions as Record<string, unknown>)["headers"] as
+            | Record<string, unknown>
+            | undefined,
+          sensitiveSet
+        );
+      }
+    };
   }
   return false;
 }
@@ -821,7 +855,10 @@ function setupAuthRedirect(
   (options["beforeRedirects"] as Record<string, unknown>)["auth"] =
     function beforeRedirectAuth(redirectOptions: unknown) {
       try {
-        if (new URL(String((redirectOptions as Record<string, unknown>)["href"])).origin === requestOrigin) {
+        if (
+          new URL(String((redirectOptions as Record<string, unknown>)["href"]))
+            .origin === requestOrigin
+        ) {
           (redirectOptions as Record<string, unknown>)["auth"] = authToRestore;
         }
       }
@@ -845,13 +882,17 @@ function setupFollowRedirectsTransport(
   if (maxRedirects) options["maxRedirects"] = maxRedirects;
   const configBeforeRedirect = own("beforeRedirect");
   if (configBeforeRedirect) {
-    (options["beforeRedirects"] as Record<string, unknown>)["config"] = configBeforeRedirect;
+    (options["beforeRedirects"] as Record<string, unknown>)["config"] =
+      configBeforeRedirect;
   }
   if (auth) setupAuthRedirect(options, auth, parsed.origin);
   if (setupSensitiveHeaders(options, own, reject, config)) {
     return { transport: http2Transport, rejected: true };
   }
-  return { transport: (isHttpsRequest ? httpsFollow : httpFollow) as TransportType, rejected: false };
+  return {
+    transport: (isHttpsRequest ? httpsFollow : httpFollow) as TransportType,
+    rejected: false,
+  };
 }
 
 function selectTransport(
@@ -871,12 +912,22 @@ function selectTransport(
   rejected: boolean;
 } {
   if (isHttp2) {
-    return { transport: http2Transport, isNativeTransport: false, transportEnforcesMaxBodyLength: false, rejected: false };
+    return {
+      transport: http2Transport,
+      isNativeTransport: false,
+      transportEnforcesMaxBodyLength: false,
+      rejected: false,
+    };
   }
 
   const configTransport = own("transport");
   if (configTransport) {
-    return { transport: configTransport as TransportType, isNativeTransport: false, transportEnforcesMaxBodyLength: false, rejected: false };
+    return {
+      transport: configTransport as TransportType,
+      isNativeTransport: false,
+      transportEnforcesMaxBodyLength: false,
+      rejected: false,
+    };
   }
 
   if (maxRedirects === 0) {
@@ -888,8 +939,22 @@ function selectTransport(
     };
   }
 
-  const { transport, rejected } = setupFollowRedirectsTransport(options, own, isHttpsRequest, maxRedirects, auth, parsed, reject, config);
-  return { transport, isNativeTransport: false, transportEnforcesMaxBodyLength: !rejected, rejected };
+  const { transport, rejected } = setupFollowRedirectsTransport(
+    options,
+    own,
+    isHttpsRequest,
+    maxRedirects,
+    auth,
+    parsed,
+    reject,
+    config
+  );
+  return {
+    transport,
+    isNativeTransport: false,
+    transportEnforcesMaxBodyLength: !rejected,
+    rejected,
+  };
 }
 
 interface ResponseContext {
@@ -913,7 +978,14 @@ interface ResponseContext {
 function handleBufferedResponse(
   responseStream: stream.Readable,
   ctx: ResponseContext,
-  response: { status: number; statusText: string; headers: FaxiosHeaders; config: InternalFaxiosRequestConfig; request: unknown; data: unknown; },
+  response: {
+    status: number;
+    statusText: string;
+    headers: FaxiosHeaders;
+    config: InternalFaxiosRequestConfig;
+    request: unknown;
+    data: unknown;
+  },
   lastRequest: unknown
 ): void {
   const responseBuffer: Array<Buffer> = [];
@@ -922,28 +994,43 @@ function handleBufferedResponse(
   responseStream.on("data", function handleStreamData(chunk: Buffer) {
     responseBuffer.push(chunk);
     totalResponseBytes += chunk.length;
-    if ((ctx.maxContentLength as number) > -1 && totalResponseBytes > (ctx.maxContentLength as number)) {
+    if (
+      (ctx.maxContentLength as number) > -1 &&
+      totalResponseBytes > (ctx.maxContentLength as number)
+    ) {
       ctx.rejected.value = true;
-      (responseStream).destroy();
-      ctx.abort(new FaxiosError(
-        "maxContentLength size of " + String(ctx.maxContentLength) + " exceeded",
-        FaxiosError.ERR_BAD_RESPONSE,
-        ctx.config,
-        lastRequest
-      ));
+      responseStream.destroy();
+      ctx.abort(
+        new FaxiosError(
+          "maxContentLength size of " +
+            String(ctx.maxContentLength) +
+            " exceeded",
+          FaxiosError.ERR_BAD_RESPONSE,
+          ctx.config,
+          lastRequest
+        )
+      );
     }
   });
 
   responseStream.on("aborted", function handlerStreamAborted() {
     if (ctx.rejected.value) return;
-    const err = new FaxiosError("stream has been aborted", FaxiosError.ERR_BAD_RESPONSE, ctx.config, lastRequest, response);
-    (responseStream).destroy(err);
+    const err = new FaxiosError(
+      "stream has been aborted",
+      FaxiosError.ERR_BAD_RESPONSE,
+      ctx.config,
+      lastRequest,
+      response
+    );
+    responseStream.destroy(err);
     ctx.reject(err);
   });
 
   responseStream.on("error", function handleStreamError(err: Error) {
     if (ctx.rejected.value) return;
-    ctx.reject(FaxiosError.from(err, undefined, ctx.config, lastRequest, response));
+    ctx.reject(
+      FaxiosError.from(err, undefined, ctx.config, lastRequest, response)
+    );
   });
 
   responseStream.on("end", function handleStreamEnd() {
@@ -951,9 +1038,12 @@ function handleBufferedResponse(
       let responseData: Buffer | string =
         responseBuffer.length === 1
           ? responseBuffer[0]!
+          // @ts-ignore -- Buffer[]→Uint8Array<ArrayBufferLike>[] iterator mismatch in @types/node TS6 strict mode
           : Buffer.concat(responseBuffer);
       if (ctx.responseType !== "arraybuffer") {
-        responseData = responseData.toString(ctx.responseEncoding as BufferEncoding);
+        responseData = responseData.toString(
+          ctx.responseEncoding as BufferEncoding
+        );
         if (!ctx.responseEncoding || ctx.responseEncoding === "utf8") {
           responseData = utils.stripBOM(responseData);
         }
@@ -961,7 +1051,15 @@ function handleBufferedResponse(
       response.data = responseData;
     }
     catch (err) {
-      return ctx.reject(FaxiosError.from(err as Error, undefined, ctx.config, response.request, response));
+      return ctx.reject(
+        FaxiosError.from(
+          err as Error,
+          undefined,
+          ctx.config,
+          response.request,
+          response
+        )
+      );
     }
     settle(ctx.resolve, ctx.reject, response);
   });
@@ -975,10 +1073,14 @@ function makeHandleResponse(ctx: ResponseContext): (res: unknown) => void {
     if ((ctx.req as http.ClientRequest).destroyed) return;
 
     const streams: Array<stream.Stream | stream.Readable> = [ resObj ];
-    const responseLength = utils.toFiniteNumber(resObj.headers["content-length"]);
+    const responseLength = utils.toFiniteNumber(
+      resObj.headers["content-length"]
+    );
 
     if (ctx.onDownloadProgress || ctx.maxDownloadRate) {
-      const transformStream = new FaxiosTransformStream({ maxRate: utils.toFiniteNumber(ctx.maxDownloadRate) });
+      const transformStream = new FaxiosTransformStream({
+        maxRate: utils.toFiniteNumber(ctx.maxDownloadRate),
+      });
       ctx.onDownloadProgress &&
         transformStream.on(
           "progress",
@@ -986,7 +1088,15 @@ function makeHandleResponse(ctx: ResponseContext): (res: unknown) => void {
             transformStream,
             progressEventDecorator(
               responseLength,
-              progressEventReducer(asyncDecorator(ctx.onDownloadProgress as (...args: Array<unknown>) => unknown), true, 3)
+              progressEventReducer(
+                asyncDecorator(
+                  ctx.onDownloadProgress as (
+                    ...args: Array<unknown>
+                  ) => unknown
+                ),
+                true,
+                3
+              )
             )
           ) as (...args: Array<unknown>) => void
         );
@@ -1000,9 +1110,15 @@ function makeHandleResponse(ctx: ResponseContext): (res: unknown) => void {
       applyDecompression(streams, resObj, ctx.method);
     }
 
-    responseStream = streams.length > 1
-      ? (stream.pipeline as unknown as (streams: Array<unknown>, cb: unknown) => stream.Readable)(streams, utils.noop)
-      : streams[0]!;
+    responseStream =
+      streams.length > 1
+        ? (
+          stream.pipeline as unknown as (
+            streams: Array<unknown>,
+            cb: unknown
+          ) => stream.Readable
+        )(streams, utils.noop)
+        : streams[0]!;
 
     const response = {
       status: resObj.statusCode ?? 0,
@@ -1032,13 +1148,20 @@ function makeHandleResponse(ctx: ResponseContext): (res: unknown) => void {
             yield chunk;
           }
         }
-        responseStream = stream.Readable.from(enforceMaxContentLength(), { objectMode: false });
+        responseStream = stream.Readable.from(enforceMaxContentLength(), {
+          objectMode: false,
+        });
       }
       response.data = responseStream;
       settle(ctx.resolve, ctx.reject, response);
     }
     else {
-      handleBufferedResponse(responseStream as stream.Readable, ctx, response, lastRequest);
+      handleBufferedResponse(
+        responseStream as stream.Readable,
+        ctx,
+        response,
+        lastRequest
+      );
     }
 
     ctx.abortEmitter.once("abort", (err: unknown) => {
@@ -1115,7 +1238,10 @@ function makeOnDoneHandler(
       return;
     }
     const responseData = (response as Record<string, unknown>)["data"];
-    if (responseData instanceof stream.Readable || responseData instanceof stream.Duplex) {
+    if (
+      responseData instanceof stream.Readable ||
+      responseData instanceof stream.Duplex
+    ) {
       const offListeners = stream.finished(responseData, () => {
         offListeners();
         onFinished();
@@ -1175,34 +1301,57 @@ function buildRequestOptions(
     setProxy(
       options,
       own("proxy"),
-      protocol + "//" + parsed.hostname + (parsed.port ? ":" + parsed.port : "") + String(options["path"]),
+      protocol +
+        "//" +
+        parsed.hostname +
+        (parsed.port ? ":" + parsed.port : "") +
+        String(options["path"]),
       false,
       httpsAgent
     );
   }
 
-  options["maxBodyLength"] = (maxBodyLength as number) > -1 ? maxBodyLength : Infinity;
+  options["maxBodyLength"] =
+    (maxBodyLength as number) > -1 ? maxBodyLength : Infinity;
   options["insecureHTTPParser"] = Boolean(own("insecureHTTPParser"));
 
   return { options };
 }
 
-function attachReqDestroyOnAbort(abortEmitter: EventEmitter, ctx: AbortContext): void {
+function attachReqDestroyOnAbort(
+  abortEmitter: EventEmitter,
+  ctx: AbortContext
+): void {
   abortEmitter.once("abort", (err: unknown) => {
-    const reqObj = ctx.req as { close?: () => void; destroy: (err?: unknown) => void; };
+    const reqObj = ctx.req as {
+      close?: () => void;
+      destroy: (err?: unknown) => void;
+    };
     if (reqObj.close) reqObj.close();
     else reqObj.destroy(err);
   });
 }
 
-function resolveMaxRates(maxRate: unknown): { maxUploadRate: number | undefined; maxDownloadRate: number | undefined; } {
+function resolveMaxRates(maxRate: unknown): {
+  maxUploadRate: number | undefined;
+  maxDownloadRate: number | undefined;
+} {
   if (utils.isArray(maxRate)) {
-    return { maxUploadRate: maxRate[0] as number, maxDownloadRate: maxRate[1] as number };
+    return {
+      maxUploadRate: maxRate[0] as number,
+      maxDownloadRate: maxRate[1] as number,
+    };
   }
-  return { maxUploadRate: maxRate as number, maxDownloadRate: maxRate as number };
+  return {
+    maxUploadRate: maxRate as number,
+    maxDownloadRate: maxRate as number,
+  };
 }
 
-function buildAuth(own: (key: string) => unknown, parsed: URL): string | undefined {
+function buildAuth(
+  own: (key: string) => unknown,
+  parsed: URL
+): string | undefined {
   const configAuth = own("auth");
   if (configAuth) {
     const username = String(utils.getSafeProp(configAuth, "username") || "");
@@ -1254,7 +1403,8 @@ function setupCancellation(
   if (config.signal) {
     config.signal.aborted
       ? abort()
-      : config.signal.addEventListener && config.signal.addEventListener("abort", abort);
+      : config.signal.addEventListener &&
+        config.signal.addEventListener("abort", abort);
   }
 }
 
@@ -1269,9 +1419,12 @@ function resolveDefaultAgent(
   }
 }
 
-function resolveAcceptEncoding(transitional: typeof transitionalDefaults): string {
+function resolveAcceptEncoding(
+  transitional: typeof transitionalDefaults
+): string {
   return utils.hasOwnProp(transitional, "advertiseZstdAcceptEncoding") &&
-    (transitional as Record<string, unknown>)["advertiseZstdAcceptEncoding"] === true
+    (transitional as Record<string, unknown>)["advertiseZstdAcceptEncoding"] ===
+      true
     ? ACCEPT_ENCODING_WITH_ZSTD
     : ACCEPT_ENCODING;
 }
@@ -1282,7 +1435,7 @@ function applyUploadProgressIfNeeded(
   maxUploadRate: number | undefined,
   contentLength: number | null
 ): unknown {
-  return (data && (onUploadProgress || maxUploadRate))
+  return data && (onUploadProgress || maxUploadRate)
     ? applyUploadProgress(data, onUploadProgress, maxUploadRate, contentLength)
     : data;
 }
@@ -1294,11 +1447,24 @@ function applyUploadProgress(
   contentLength: number | null
 ): unknown {
   if (!utils.isStream(data)) {
-    data = stream.Readable.from(data as Iterable<unknown>, { objectMode: false });
+    data = stream.Readable.from(data as Iterable<unknown>, {
+      objectMode: false,
+    });
   }
   data = (
-    stream.pipeline as unknown as (streams: Array<unknown>, cb: unknown) => stream.Readable
-  )([ data, new FaxiosTransformStream({ maxRate: utils.toFiniteNumber(maxUploadRate) }) ], utils.noop);
+    stream.pipeline as unknown as (
+      streams: Array<unknown>,
+      cb: unknown
+    ) => stream.Readable
+  )(
+    [
+      data,
+      new FaxiosTransformStream({
+        maxRate: utils.toFiniteNumber(maxUploadRate),
+      }),
+    ],
+    utils.noop
+  );
   onUploadProgress &&
     (data as stream.Stream).on(
       "progress",
@@ -1306,7 +1472,13 @@ function applyUploadProgress(
         data as stream.Stream,
         progressEventDecorator(
           contentLength ?? undefined,
-          progressEventReducer(asyncDecorator(onUploadProgress as (...args: Array<unknown>) => unknown), false, 3)
+          progressEventReducer(
+            asyncDecorator(
+              onUploadProgress as (...args: Array<unknown>) => unknown
+            ),
+            false,
+            3
+          )
         )
       ) as (...args: Array<unknown>) => void
     );
@@ -1320,7 +1492,13 @@ function validateSocketPath(
   config: InternalFaxiosRequestConfig
 ): boolean {
   if (typeof socketPath !== "string") {
-    reject(new FaxiosError("socketPath must be a string", FaxiosError.ERR_BAD_OPTION_VALUE, config));
+    reject(
+      new FaxiosError(
+        "socketPath must be a string",
+        FaxiosError.ERR_BAD_OPTION_VALUE,
+        config
+      )
+    );
     return true;
   }
   const allowedSocketPaths = own("allowedSocketPaths");
@@ -1330,16 +1508,26 @@ function validateSocketPath(
     : [ allowedSocketPaths as string ];
   const resolvedSocket = resolvePath(socketPath);
   const isAllowed = allowed.some(
-    (entry: unknown) => typeof entry === "string" && resolvePath(entry) === resolvedSocket
+    (entry: unknown) =>
+      typeof entry === "string" && resolvePath(entry) === resolvedSocket
   );
   if (!isAllowed) {
-    reject(new FaxiosError(`socketPath "${socketPath}" is not permitted by allowedSocketPaths`, FaxiosError.ERR_BAD_OPTION_VALUE, config));
+    reject(
+      new FaxiosError(
+        `socketPath "${socketPath}" is not permitted by allowedSocketPaths`,
+        FaxiosError.ERR_BAD_OPTION_VALUE,
+        config
+      )
+    );
     return true;
   }
   return false;
 }
 
-function resolveHttpVersion(own: (key: string) => unknown, config: InternalFaxiosRequestConfig): number {
+function resolveHttpVersion(
+  own: (key: string) => unknown,
+  config: InternalFaxiosRequestConfig
+): number {
   let httpVersion: unknown = own("httpVersion");
   if (httpVersion === undefined) httpVersion = 1;
   const v = Number(httpVersion);
@@ -1352,7 +1540,9 @@ function resolveHttpVersion(own: (key: string) => unknown, config: InternalFaxio
   return v;
 }
 
-function clearConnectPhaseTimerRef(ref: { value: ReturnType<typeof setTimeout> | undefined; }): void {
+function clearConnectPhaseTimerRef(ref: {
+  value: ReturnType<typeof setTimeout> | undefined;
+}): void {
   if (ref.value) {
     clearTimeout(ref.value);
     ref.value = undefined;
@@ -1372,7 +1562,9 @@ function makeTimeoutError(
   const customMsg = own("timeoutErrorMessage");
   return new FaxiosError(
     customMsg ? String(customMsg) : timeoutMsg,
-    transitional.clarifyTimeoutError ? FaxiosError.ETIMEDOUT : FaxiosError.ECONNABORTED,
+    transitional.clarifyTimeoutError
+      ? FaxiosError.ETIMEDOUT
+      : FaxiosError.ECONNABORTED,
     config,
     getReq()
   );
@@ -1387,7 +1579,10 @@ function setupRequestTimeout(
   isNativeTransport: boolean,
   config: InternalFaxiosRequestConfig,
   abortCtx: AbortContext
-): { connectPhaseTimer: ReturnType<typeof setTimeout> | undefined; aborted: boolean; } {
+): {
+  connectPhaseTimer: ReturnType<typeof setTimeout> | undefined;
+  aborted: boolean;
+} {
   const configTimeout = own("timeout");
   if (!configTimeout) {
     (req as http.ClientRequest).setTimeout(0);
@@ -1395,7 +1590,14 @@ function setupRequestTimeout(
   }
   const timeout = parseInt(String(configTimeout), 10);
   if (Number.isNaN(timeout)) {
-    abort(new FaxiosError("error trying to parse `config.timeout` to int", FaxiosError.ERR_BAD_OPTION_VALUE, config, req));
+    abort(
+      new FaxiosError(
+        "error trying to parse `config.timeout` to int",
+        FaxiosError.ERR_BAD_OPTION_VALUE,
+        config,
+        req
+      )
+    );
     return { connectPhaseTimer: undefined, aborted: true };
   }
   const handleTimeout = (): void => {
@@ -1422,13 +1624,21 @@ function wrapLookup(lookup: unknown): LookupFn {
     opt: Record<string, unknown>,
     cb: (err: Error | null, ...args: Array<unknown>) => void
   ) {
-    _lookup(hostname, opt, (err: Error | null, arg0: unknown, arg1: unknown) => {
-      if (err) return cb(err);
-      const addresses = utils.isArray(arg0)
-        ? (arg0 as Array<unknown>).map((addr: unknown) => buildAddressEntry(addr))
-        : [ buildAddressEntry(arg0, arg1) ];
-      opt["all"] ? cb(null, addresses) : cb(null, addresses[0]!.address, addresses[0]!.family);
-    });
+    _lookup(
+      hostname,
+      opt,
+      (err: Error | null, arg0: unknown, arg1: unknown) => {
+        if (err) return cb(err);
+        const addresses = utils.isArray(arg0)
+          ? (arg0 as Array<unknown>).map((addr: unknown) =>
+            buildAddressEntry(addr)
+          )
+          : [ buildAddressEntry(arg0, arg1) ];
+        opt["all"]
+          ? cb(null, addresses)
+          : cb(null, addresses[0]!.address, addresses[0]!.family);
+      }
+    );
   };
 }
 
@@ -1437,21 +1647,26 @@ function setupSocketTracking(
   boundSockets: Set<net.Socket & Record<symbol, unknown>>,
   clearConnectPhaseTimer: () => void
 ): void {
-  (req as http.ClientRequest).on("socket", function handleRequestSocket(socket: net.Socket) {
-    socket.setKeepAlive(true, 1000 * 60);
-    const s = socket as net.Socket & Record<symbol, unknown>;
-    if (!s[kFaxiosSocketListener]) {
-      socket.on("error", function handleSocketError(err: Error) {
-        const current = s[kFaxiosCurrentReq] as (http.ClientRequest & { destroyed: boolean; }) | null;
-        if (current && !current.destroyed) {
-          current.destroy(err);
-        }
-      });
-      s[kFaxiosSocketListener] = true;
+  (req as http.ClientRequest).on(
+    "socket",
+    function handleRequestSocket(socket: net.Socket) {
+      socket.setKeepAlive(true, 1000 * 60);
+      const s = socket as net.Socket & Record<symbol, unknown>;
+      if (!s[kFaxiosSocketListener]) {
+        socket.on("error", function handleSocketError(err: Error) {
+          const current = s[kFaxiosCurrentReq] as
+            | (http.ClientRequest & { destroyed: boolean; })
+            | null;
+          if (current && !current.destroyed) {
+            current.destroy(err);
+          }
+        });
+        s[kFaxiosSocketListener] = true;
+      }
+      s[kFaxiosCurrentReq] = req;
+      boundSockets.add(s);
     }
-    s[kFaxiosCurrentReq] = req;
-    boundSockets.add(s);
-  });
+  );
 
   (req as http.ClientRequest).once("close", function clearCurrentReq() {
     clearConnectPhaseTimer();
@@ -1475,7 +1690,9 @@ function pipeStreamData(
   let ended = false;
   let errored = false;
 
-  (data as stream.Readable).on("end", () => { ended = true; });
+  (data as stream.Readable).on("end", () => {
+    ended = true;
+  });
   (data as stream.Readable).once("error", (err: Error) => {
     errored = true;
     (req as http.ClientRequest).destroy(err);
@@ -1491,15 +1708,29 @@ function pipeStreamData(
     const limit = maxBodyLength as number;
     let bytesSent = 0;
     uploadStream = (
-      stream.pipeline as unknown as (streams: Array<unknown>, cb: unknown) => stream.Readable
+      stream.pipeline as unknown as (
+        streams: Array<unknown>,
+        cb: unknown
+      ) => stream.Readable
     )(
       [
         data,
         new stream.Transform({
-          transform(chunk: Buffer, _enc: BufferEncoding, cb: (err?: Error | null, data?: Buffer) => void) {
+          transform(
+            chunk: Buffer,
+            _enc: BufferEncoding,
+            cb: (err?: Error | null, data?: Buffer) => void
+          ) {
             bytesSent += chunk.length;
             if (bytesSent > limit) {
-              return cb(new FaxiosError("Request body larger than maxBodyLength limit", FaxiosError.ERR_BAD_REQUEST, config, req));
+              return cb(
+                new FaxiosError(
+                  "Request body larger than maxBodyLength limit",
+                  FaxiosError.ERR_BAD_REQUEST,
+                  config,
+                  req
+                )
+              );
             }
             cb(null, chunk);
           },
@@ -1571,7 +1802,8 @@ export default isHttpAdapterSupported &&
     const own = (key: string): unknown => utils.getSafeProp(config, key);
     return wrapAsync(
       async function dispatchHttpRequest(resolve, reject, onDone) {
-        const transitional = (own("transitional") || transitionalDefaults) as typeof transitionalDefaults;
+        const transitional = (own("transitional") ||
+          transitionalDefaults) as typeof transitionalDefaults;
         let data: unknown = own("data");
         let lookup: unknown = own("lookup");
         let family: unknown = own("family");
@@ -1588,7 +1820,9 @@ export default isHttpAdapterSupported &&
         const isDone = { value: undefined as boolean | undefined };
         const rejected = { value: false };
         let req: unknown;
-        const connectPhaseTimer = { value: undefined as ReturnType<typeof setTimeout> | undefined };
+        const connectPhaseTimer = {
+          value: undefined as ReturnType<typeof setTimeout> | undefined,
+        };
 
         const httpVersion = resolveHttpVersion(own, config);
         const isHttp2 = httpVersion === 2;
@@ -1602,13 +1836,26 @@ export default isHttpAdapterSupported &&
         const abortCtx: AbortContext = { abortEmitter, config, req };
         const abort = makeAbort(abortCtx);
 
-        const clearConnectPhaseTimer = (): void => clearConnectPhaseTimerRef(connectPhaseTimer);
+        const clearConnectPhaseTimer = (): void =>
+          clearConnectPhaseTimerRef(connectPhaseTimer);
 
         abortEmitter.once("abort", reject);
 
-        const onFinished = makeOnFinished({ clearConnectPhaseTimer, config, abort, abortEmitter });
+        const onFinished = makeOnFinished({
+          clearConnectPhaseTimer,
+          config,
+          abort,
+          abortEmitter,
+        });
         setupCancellation(config, abort);
-        onDone(makeOnDoneHandler(isDone, rejected, clearConnectPhaseTimer, onFinished));
+        onDone(
+          makeOnDoneHandler(
+            isDone,
+            rejected,
+            clearConnectPhaseTimer,
+            onFinished
+          )
+        );
 
         // Parse url
         const fullPath = buildFullPath(
@@ -1624,7 +1871,17 @@ export default isHttpAdapterSupported &&
         const protocol = parsed.protocol || supportedProtocols[0]!;
 
         if (protocol === "data:") {
-          handleDataURI(resolve, reject, config, own, method, maxContentLength, responseType, responseEncoding, fullPath);
+          handleDataURI(
+            resolve,
+            reject,
+            config,
+            own,
+            method,
+            maxContentLength,
+            responseType,
+            responseEncoding,
+            fullPath
+          );
           return;
         }
 
@@ -1650,7 +1907,14 @@ export default isHttpAdapterSupported &&
         let maxDownloadRate: number | undefined = undefined;
 
         {
-          const result = await prepareRequestData(data, headers, own, maxBodyLength, reject, config);
+          const result = await prepareRequestData(
+            data,
+            headers,
+            own,
+            maxBodyLength,
+            reject,
+            config
+          );
           if (result.rejected) return;
           data = result.data;
         }
@@ -1659,7 +1923,12 @@ export default isHttpAdapterSupported &&
 
         ({ maxUploadRate, maxDownloadRate } = resolveMaxRates(maxRate));
 
-        data = applyUploadProgressIfNeeded(data, onUploadProgress, maxUploadRate, contentLength ?? null);
+        data = applyUploadProgressIfNeeded(
+          data,
+          onUploadProgress,
+          maxUploadRate,
+          contentLength ?? null
+        );
 
         // HTTP basic authentication
         const auth = buildAuth(own, parsed);
@@ -1669,19 +1938,48 @@ export default isHttpAdapterSupported &&
         if (pathResult.rejected) return;
         const path = pathResult.path;
 
-        headers.set("Accept-Encoding", resolveAcceptEncoding(transitional), false);
+        headers.set(
+          "Accept-Encoding",
+          resolveAcceptEncoding(transitional),
+          false
+        );
 
-        const { options } = buildRequestOptions(own, path, method, headers, httpAgent, httpsAgent, auth, protocol, family, http2Options, lookup, maxBodyLength, parsed, reject, config);
+        const { options } = buildRequestOptions(
+          own,
+          path,
+          method,
+          headers,
+          httpAgent,
+          httpsAgent,
+          auth,
+          protocol,
+          family,
+          http2Options,
+          lookup,
+          maxBodyLength,
+          parsed,
+          reject,
+          config
+        );
         if (!options) return;
 
         const isHttpsRequest = isHttps.test(String(options["protocol"]));
         resolveDefaultAgent(options, isHttpsRequest, httpsAgent, httpAgent);
 
         const transportResult = selectTransport(
-          options, own, isHttp2, isHttpsRequest, maxRedirects, auth, parsed, reject, config
+          options,
+          own,
+          isHttp2,
+          isHttpsRequest,
+          maxRedirects,
+          auth,
+          parsed,
+          reject,
+          config
         );
         if (transportResult.rejected) return;
-        const { transport, isNativeTransport, transportEnforcesMaxBodyLength } = transportResult;
+        const { transport, isNativeTransport, transportEnforcesMaxBodyLength } =
+          transportResult;
 
         // Create the request
 
@@ -1710,21 +2008,39 @@ export default isHttpAdapterSupported &&
         attachReqDestroyOnAbort(abortEmitter, abortCtx);
 
         // Handle errors
-        (req as http.ClientRequest).on("error", (err: Error) => reject(FaxiosError.from(err, undefined, config, abortCtx.req)));
+        (req as http.ClientRequest).on("error", (err: Error) =>
+          reject(FaxiosError.from(err, undefined, config, abortCtx.req))
+        );
 
         const boundSockets = new Set<net.Socket & Record<symbol, unknown>>();
         setupSocketTracking(req, boundSockets, clearConnectPhaseTimer);
 
         // Handle request timeout
         {
-          const result = setupRequestTimeout(req, own, abort, transitional, isDone, isNativeTransport, config, abortCtx);
+          const result = setupRequestTimeout(
+            req,
+            own,
+            abort,
+            transitional,
+            isDone,
+            isNativeTransport,
+            config,
+            abortCtx
+          );
           if (result.aborted) return;
           connectPhaseTimer.value = result.connectPhaseTimer;
         }
 
         // Send the request
         if (utils.isStream(data)) {
-          pipeStreamData(data, req, abort, maxBodyLength, transportEnforcesMaxBodyLength, config);
+          pipeStreamData(
+            data,
+            req,
+            abort,
+            maxBodyLength,
+            transportEnforcesMaxBodyLength,
+            config
+          );
         }
         else {
           data && (req as http.ClientRequest).write(data);

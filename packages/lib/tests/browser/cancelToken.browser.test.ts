@@ -7,14 +7,14 @@ import type { Canceler } from "../../src/lib/types.js";
 describe("CancelToken (vitest browser)", () => {
   describe("constructor", () => {
     it("throws when executor is not specified", () => {
-      expect(() => new (CancelToken as any)()).toThrowError(
-        new TypeError("executor must be a function."),
-      );
+      expect(
+        () => new CancelToken(undefined as unknown as () => void)
+      ).toThrowError(new TypeError("executor must be a function."));
     });
 
     it("throws when executor is not a function", () => {
-      expect(() => new (CancelToken as any)(123)).toThrowError(
-        new TypeError("executor must be a function."),
+      expect(() => new CancelToken(123 as unknown as () => void)).toThrowError(
+        new TypeError("executor must be a function.")
       );
     });
   });
@@ -22,7 +22,7 @@ describe("CancelToken (vitest browser)", () => {
   describe("reason", () => {
     it("returns a CanceledError if cancellation has been requested", () => {
       let cancel!: Canceler;
-      const token = new CancelToken((c) => {
+      const token = new CancelToken(c => {
         cancel = c;
       });
 
@@ -42,7 +42,7 @@ describe("CancelToken (vitest browser)", () => {
   describe("promise", () => {
     it("resolves when cancellation is requested", async () => {
       let cancel!: Canceler;
-      const token = new CancelToken((c) => {
+      const token = new CancelToken(c => {
         cancel = c;
       });
 
@@ -57,7 +57,7 @@ describe("CancelToken (vitest browser)", () => {
   describe("throwIfRequested", () => {
     it("throws if cancellation has been requested", () => {
       let cancel!: Canceler;
-      const token = new CancelToken((c) => {
+      const token = new CancelToken(c => {
         cancel = c;
       });
 
@@ -65,7 +65,7 @@ describe("CancelToken (vitest browser)", () => {
 
       expect(() => token.throwIfRequested()).toThrow(CanceledError);
       expect(() => token.throwIfRequested()).toThrow(
-        "Operation has been canceled.",
+        "Operation has been canceled."
       );
     });
 

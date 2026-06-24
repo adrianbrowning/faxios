@@ -14,7 +14,7 @@ describe("cancel::CanceledError", () => {
       const cancel = new CanceledError("Operation has been canceled.");
 
       expect(cancel.toString()).toBe(
-        "CanceledError: Operation has been canceled.",
+        "CanceledError: Operation has been canceled."
       );
     });
   });

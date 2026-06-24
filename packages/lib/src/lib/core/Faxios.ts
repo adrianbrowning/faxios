@@ -9,9 +9,9 @@ import type {
   InternalFaxiosRequestConfig
 } from "../types.js";
 import utils from "../utils.js";
-import FaxiosHeaders from "./FaxiosHeaders.js";
 import buildFullPath from "./buildFullPath.js";
 import dispatchRequest from "./dispatchRequest.js";
+import FaxiosHeaders from "./FaxiosHeaders.js";
 import InterceptorManager from "./InterceptorManager.js";
 import mergeConfig from "./mergeConfig.js";
 

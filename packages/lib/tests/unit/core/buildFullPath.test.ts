@@ -1,17 +1,17 @@
 import { describe, it, expect } from "vitest";
-import FaxiosError from "../../../src/lib/core/FaxiosError.js";
 import buildFullPath from "../../../src/lib/core/buildFullPath.js";
+import FaxiosError from "../../../src/lib/core/FaxiosError.js";
 
 describe("core::buildFullPath", () => {
   it("combines URLs when the requested URL is relative", () => {
     expect(buildFullPath("https://api.github.com", "/users")).toBe(
-      "https://api.github.com/users",
+      "https://api.github.com/users"
     );
   });
 
   it("does not combine URLs when the requested URL is absolute", () => {
     expect(
-      buildFullPath("https://api.github.com", "https://api.example.com/users"),
+      buildFullPath("https://api.github.com", "https://api.example.com/users")
     ).toBe("https://api.example.com/users");
   });
 
@@ -20,14 +20,14 @@ describe("core::buildFullPath", () => {
       buildFullPath(
         "https://api.github.com",
         "https://api.example.com/users",
-        false,
-      ),
+        false
+      )
     ).toBe("https://api.github.com/https://api.example.com/users");
   });
 
   it("does not combine URLs when baseURL is missing and allowAbsoluteUrls is false", () => {
     expect(
-      buildFullPath(undefined, "https://api.example.com/users", false),
+      buildFullPath(undefined, "https://api.example.com/users", false)
     ).toBe("https://api.example.com/users");
   });
 
@@ -53,19 +53,20 @@ describe("core::buildFullPath", () => {
       let error;
       try {
         call();
-      } catch (err) {
+      }
+      catch (err) {
         error = err;
       }
 
       expect(error).toBeInstanceOf(FaxiosError);
       expect((error as FaxiosError).code).toBe(FaxiosError.ERR_INVALID_URL);
-      expect((error as FaxiosError).message).toBe('Invalid URL: missing "//" after protocol');
+      expect((error as FaxiosError).message).toBe("Invalid URL: missing \"//\" after protocol");
     }
   });
 
   it("does not reject an unused malformed baseURL for absolute requests", () => {
     expect(
-      buildFullPath("http:example.com/api", "https://api.example.com/users"),
+      buildFullPath("http:example.com/api", "https://api.example.com/users")
     ).toBe("https://api.example.com/users");
   });
 
@@ -76,14 +77,15 @@ describe("core::buildFullPath", () => {
       buildFullPath(
         "http:example.com/api",
         "https://api.example.com/users",
-        false,
+        false
       );
-    } catch (err) {
+    }
+    catch (err) {
       error = err;
     }
 
     expect(error).toBeInstanceOf(FaxiosError);
     expect((error as FaxiosError).code).toBe(FaxiosError.ERR_INVALID_URL);
-    expect((error as FaxiosError).message).toBe('Invalid URL: missing "//" after protocol');
+    expect((error as FaxiosError).message).toBe("Invalid URL: missing \"//\" after protocol");
   });
 });

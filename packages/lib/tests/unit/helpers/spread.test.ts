@@ -6,13 +6,13 @@ describe("helpers::spread", () => {
     let value = 0;
     spread(((a: number, b: number) => {
       value = a * b;
-    }) as Parameters<typeof spread>[0])([5, 10]);
+    }) as Parameters<typeof spread>[0])([ 5, 10 ]);
 
     expect(value).toEqual(50);
   });
 
   it("should return callback result", () => {
-    const value = spread(((a: number, b: number) => a * b) as Parameters<typeof spread>[0])([5, 10]);
+    const value = spread(((a: number, b: number) => a * b) as Parameters<typeof spread>[0])([ 5, 10 ]);
 
     expect(value).toEqual(50);
   });

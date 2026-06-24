@@ -2,11 +2,11 @@ import { describe, it, expect } from "vitest";
 import formDataToStream from "../../../src/lib/helpers/formDataToStream.js";
 
 class SpecFormData {
-  _entries: [string, unknown][] = [];
+  _entries: Array<[string, unknown]> = [];
   [Symbol.toStringTag]: string = "FormData";
   constructor() {}
   append(name: string, value: unknown) {
-    this._entries.push([name, value]);
+    this._entries.push([ name, value ]);
   }
   entries() {
     return this._entries[Symbol.iterator]();
@@ -16,7 +16,7 @@ class SpecFormData {
   }
 }
 
-const makeBlobLike = ({ type, name, size, payload }: { type: string; name: string; size?: number; payload: Buffer }) => ({
+const makeBlobLike = ({ type, name, size, payload }: { type: string; name: string; size?: number; payload: Buffer; }) => ({
   type,
   name,
   size: size ?? payload.byteLength,
@@ -42,7 +42,7 @@ describe("formDataToStream", () => {
         type: "image/jpeg\r\nX-Injected-Header: PWNED\r\nX-Evil: bad",
         name: "photo.jpg",
         payload: Buffer.from("PAYLOAD"),
-      }),
+      })
     );
 
     const body = await collect(formDataToStream(fd, () => {}));
@@ -50,7 +50,7 @@ describe("formDataToStream", () => {
     expect(body).not.toContain("\r\nX-Injected-Header");
     expect(body).not.toContain("\r\nX-Evil");
     expect(body).toContain(
-      "Content-Type: image/jpegX-Injected-Header: PWNEDX-Evil: bad\r\n",
+      "Content-Type: image/jpegX-Injected-Header: PWNEDX-Evil: bad\r\n"
     );
   });
 
@@ -62,7 +62,7 @@ describe("formDataToStream", () => {
         type: "text/plain\rX-A: 1\nX-B: 2",
         name: "f.txt",
         payload: Buffer.from("x"),
-      }),
+      })
     );
 
     const body = await collect(formDataToStream(fd, () => {}));
@@ -79,7 +79,7 @@ describe("formDataToStream", () => {
         type: "application/json; charset=utf-8",
         name: "doc.json",
         payload: Buffer.from("{}"),
-      }),
+      })
     );
 
     const body = await collect(formDataToStream(fd, () => {}));
@@ -94,8 +94,8 @@ describe("formDataToStream", () => {
       makeBlobLike({
         type: "",
         name: "bin",
-        payload: Buffer.from([0x00, 0x01]),
-      }),
+        payload: Buffer.from([ 0x00, 0x01 ]),
+      })
     );
 
     const body = await collect(formDataToStream(fd, () => {}));
@@ -109,15 +109,15 @@ describe("formDataToStream", () => {
       "up",
       makeBlobLike({
         type: "text/plain",
-        name: 'evil\r\nX-Bad: 1".jpg',
+        name: "evil\r\nX-Bad: 1\".jpg",
         payload: Buffer.from("x"),
-      }),
+      })
     );
 
     const body = await collect(formDataToStream(fd, () => {}));
 
     expect(body).not.toContain("\r\nX-Bad: 1");
-    expect(body).toContain('filename="evil%0D%0AX-Bad: 1%22.jpg"');
+    expect(body).toContain("filename=\"evil%0D%0AX-Bad: 1%22.jpg\"");
   });
 
   it("should report stable contentLength that matches emitted bytes", async () => {
@@ -128,16 +128,16 @@ describe("formDataToStream", () => {
         type: "image/jpeg\r\nX-Injected: PWNED",
         name: "photo.jpg",
         payload: Buffer.from("PAYLOAD"),
-      }),
+      })
     );
 
     let reportedLength;
     const stream = formDataToStream(
       fd,
-      (h) => {
+      h => {
         reportedLength = h["Content-Length"];
       },
-      { boundary: "test-boundary-abc" },
+      { boundary: "test-boundary-abc" }
     );
 
     const body = await collect(stream);

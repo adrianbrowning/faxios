@@ -72,16 +72,16 @@ describe("utils::merge", () => {
   });
 
   it("should replace properties with arrays", () => {
-    expect(merge({}, { a: [1, 2, 3] })).toEqual({ a: [1, 2, 3] });
-    expect(merge({ a: 2 }, { a: [1, 2, 3] })).toEqual({ a: [1, 2, 3] });
-    expect(merge({ a: { b: 2 } }, { a: [1, 2, 3] })).toEqual({ a: [1, 2, 3] });
+    expect(merge({}, { a: [ 1, 2, 3 ] })).toEqual({ a: [ 1, 2, 3 ] });
+    expect(merge({ a: 2 }, { a: [ 1, 2, 3 ] })).toEqual({ a: [ 1, 2, 3 ] });
+    expect(merge({ a: { b: 2 } }, { a: [ 1, 2, 3 ] })).toEqual({ a: [ 1, 2, 3 ] });
   });
 
   it("should replace properties with cloned arrays", () => {
-    const a = [1, 2, 3];
+    const a = [ 1, 2, 3 ];
     const d = merge({}, { a });
 
-    expect(d).toEqual({ a: [1, 2, 3] });
+    expect(d).toEqual({ a: [ 1, 2, 3 ] });
     expect(d.a).not.toBe(a);
   });
 
@@ -133,7 +133,7 @@ describe("utils::merge", () => {
     const merged: Record<symbol | string, unknown> = merge.call(
       { caseless: true },
       { x: 1, [key]: "first" },
-      { X: 2, [key]: "second" },
+      { X: 2, [key]: "second" }
     );
 
     expect(merged.x).toBe(2);
@@ -153,7 +153,7 @@ describe("utils::merge", () => {
 
   it("should ignore symbol keys on arrays", () => {
     const key = Symbol("key");
-    const array = ["value"] as string[] & Record<symbol, unknown>;
+    const array = [ "value" ] as Array<string> & Record<symbol, unknown>;
     array[key] = "symbol value";
 
     const merged: Record<symbol | string, unknown> = merge({ x: 1 }, array);
@@ -167,7 +167,7 @@ describe("utils::merge", () => {
     const merged: Record<symbol, unknown> = merge.call(
       { skipUndefined: true },
       { [key]: "first" },
-      { [key]: undefined },
+      { [key]: undefined }
     );
 
     expect(merged[key]).toBe("first");

@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import cookies from "../../../lib/src/lib/helpers/cookies.js";
 import axios from "../../src/index.js";
 import type { FaxiosRequestConfig, InternalFaxiosRequestConfig } from "../../src/lib/types.js";
-import cookies from "../../../lib/src/lib/helpers/cookies.js";
 
 class MockXMLHttpRequest {
   requestHeaders: Record<string, string> = {};
@@ -46,7 +46,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -55,7 +56,7 @@ class MockXMLHttpRequest {
   abort() {}
 }
 
-let requests: MockXMLHttpRequest[] = [];
+let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const setXsrfCookie = (value: string) => {
@@ -64,7 +65,7 @@ const setXsrfCookie = (value: string) => {
 
 const clearXsrfCookie = () => {
   document.cookie = `${axios.defaults.xsrfCookieName}=; expires=${new Date(
-    Date.now() - 86400000,
+    Date.now() - 86400000
   ).toUTCString()}; path=/`;
 };
 
@@ -95,7 +96,7 @@ describe("xsrf (vitest browser)", () => {
     const request = await sendRequest("/foo");
 
     expect(
-      request.requestHeaders[axios.defaults.xsrfHeaderName as string],
+      request.requestHeaders[axios.defaults.xsrfHeaderName as string]
     ).toBeUndefined();
   });
 
@@ -115,7 +116,7 @@ describe("xsrf (vitest browser)", () => {
     });
 
     expect(
-      request.requestHeaders[axios.defaults.xsrfHeaderName as string],
+      request.requestHeaders[axios.defaults.xsrfHeaderName as string]
     ).toBeUndefined();
   });
 
@@ -135,7 +136,7 @@ describe("xsrf (vitest browser)", () => {
     const request = await sendRequest("http://example.com/");
 
     expect(
-      request.requestHeaders[axios.defaults.xsrfHeaderName as string],
+      request.requestHeaders[axios.defaults.xsrfHeaderName as string]
     ).toBeUndefined();
   });
 
@@ -147,7 +148,7 @@ describe("xsrf (vitest browser)", () => {
     });
 
     expect(
-      request.requestHeaders[axios.defaults.xsrfHeaderName as string],
+      request.requestHeaders[axios.defaults.xsrfHeaderName as string]
     ).toBeUndefined();
   });
 
@@ -174,7 +175,7 @@ describe("xsrf (vitest browser)", () => {
       });
 
       expect(
-        request.requestHeaders[axios.defaults.xsrfHeaderName as string],
+        request.requestHeaders[axios.defaults.xsrfHeaderName as string]
       ).toBeUndefined();
     });
 
@@ -184,7 +185,7 @@ describe("xsrf (vitest browser)", () => {
       setXsrfCookie(token);
 
       const request = await sendRequest("/foo", {
-        withXSRFToken: (config: InternalFaxiosRequestConfig) => (config as InternalFaxiosRequestConfig & { userFlag: string }).userFlag === "yes",
+        withXSRFToken: (config: InternalFaxiosRequestConfig) => (config as InternalFaxiosRequestConfig & { userFlag: string; }).userFlag === "yes",
         userFlag: "yes",
       } as FaxiosRequestConfig);
 
@@ -200,13 +201,13 @@ describe("xsrf (vitest browser)", () => {
     });
 
     const leakCases = [
-      ["number 1", 1],
-      ['string "false"', "false"],
-      ["empty object", {}],
-      ["empty array", []],
+      [ "number 1", 1 ],
+      [ "string \"false\"", "false" ],
+      [ "empty object", {}],
+      [ "empty array", []],
     ];
 
-    leakCases.forEach(([label, value]) => {
+    leakCases.forEach(([ label, value ]) => {
       it(`should not send xsrf header cross-origin when withXSRFToken = ${label}`, async () => {
         setXsrfCookie("12345");
 
@@ -215,7 +216,7 @@ describe("xsrf (vitest browser)", () => {
         });
 
         expect(
-          request.requestHeaders[axios.defaults.xsrfHeaderName as string],
+          request.requestHeaders[axios.defaults.xsrfHeaderName as string]
         ).toBeUndefined();
       });
     });
@@ -227,7 +228,7 @@ describe("xsrf (vitest browser)", () => {
       const request = await sendRequest("http://example.com/");
 
       expect(
-        request.requestHeaders[axios.defaults.xsrfHeaderName as string],
+        request.requestHeaders[axios.defaults.xsrfHeaderName as string]
       ).toBeUndefined();
     });
 

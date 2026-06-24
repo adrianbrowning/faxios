@@ -5,13 +5,13 @@ import isFaxiosError from "../../../src/lib/helpers/isFaxiosError.js";
 describe("helpers::isFaxiosError", () => {
   it("should return true if the error is created by core::createError", () => {
     expect(isFaxiosError(new FaxiosError("Boom!", undefined, { foo: "bar" } as never))).toBe(
-      true,
+      true
     );
   });
 
   it("should return true if the error is enhanced by core::enhanceError", () => {
     expect(
-      isFaxiosError(FaxiosError.from(new Error("Boom!"), undefined, { foo: "bar" } as never)),
+      isFaxiosError(FaxiosError.from(new Error("Boom!"), undefined, { foo: "bar" } as never))
     ).toBe(true);
   });
 

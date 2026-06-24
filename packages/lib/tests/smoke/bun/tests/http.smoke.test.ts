@@ -1,7 +1,7 @@
-import { describe, expect, test } from 'bun:test';
-import { EventEmitter } from 'node:events';
-import { PassThrough } from 'node:stream';
-import axios from 'axios';
+import { EventEmitter } from "node:events";
+import { PassThrough } from "node:stream";
+import axios from "axios";
+import { describe, expect, test } from "bun:test";
 
 type TransportCall = {
   options: Record<string, any>;
@@ -41,8 +41,8 @@ const createTransportMock = (
         const response = responseFactory ? responseFactory(body, options) : {};
         const res = new PassThrough() as PassThrough & Record<string, any>;
         res.statusCode = response.statusCode ?? 200;
-        res.statusMessage = response.statusMessage ?? 'OK';
-        res.headers = response.headers ?? { 'content-type': 'application/json' };
+        res.statusMessage = response.statusMessage ?? "OK";
+        res.headers = response.headers ?? { "content-type": "application/json" };
         res.req = req;
 
         onResponse(res);
@@ -59,12 +59,12 @@ const createTransportMock = (
   };
 };
 
-describe('http adapter', () => {
-  test('GET via http adapter returns mocked response data', async () => {
+describe("http adapter", () => {
+  test("GET via http adapter returns mocked response data", async () => {
     const { transport, getCalls } = createTransportMock();
 
-    const response = await axios.get('http://example.com/users', {
-      adapter: 'http',
+    const response = await axios.get("http://example.com/users", {
+      adapter: "http",
       proxy: false,
       transport,
     });
@@ -74,27 +74,27 @@ describe('http adapter', () => {
     expect(getCalls()).toHaveLength(1);
   });
 
-  test('POST sends JSON-serialized body via http adapter', async () => {
+  test("POST sends JSON-serialized body via http adapter", async () => {
     const { transport, getCalls } = createTransportMock();
 
     await axios.post(
-      'http://example.com/items',
-      { name: 'widget' },
+      "http://example.com/items",
+      { name: "widget" },
       {
-        adapter: 'http',
+        adapter: "http",
         proxy: false,
         transport,
       }
     );
 
     const { body } = getCalls()[0];
-    expect(body.toString('utf8')).toBe(JSON.stringify({ name: 'widget' }));
+    expect(body.toString("utf8")).toBe(JSON.stringify({ name: "widget" }));
   });
 
-  test('default adapter selection in Bun routes through http adapter', async () => {
+  test("default adapter selection in Bun routes through http adapter", async () => {
     const { transport, getCalls } = createTransportMock();
 
-    await axios.get('http://example.com/default-adapter', {
+    await axios.get("http://example.com/default-adapter", {
       proxy: false,
       transport,
     });

@@ -3,7 +3,7 @@ import { PassThrough } from "node:stream";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
 
-const createTransport = (config) => {
+const createTransport = config => {
   const opts = config || {};
 
   return {
@@ -52,7 +52,7 @@ const createTransport = (config) => {
         res.end(
           opts.response && opts.response.body !== undefined
             ? opts.response.body
-            : '{"ok":true}',
+            : "{\"ok\":true}"
         );
       };
 
@@ -70,11 +70,11 @@ describe("error compat (dist export only)", () => {
           response: {
             statusCode: 500,
             statusMessage: "Internal Server Error",
-            body: '{"error":"boom"}',
+            body: "{\"error\":\"boom\"}",
           },
         }),
       })
-      .catch((e) => e);
+      .catch(e => e);
 
     expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.response.status).toBe(500);
@@ -89,7 +89,7 @@ describe("error compat (dist export only)", () => {
         response: {
           statusCode: 500,
           statusMessage: "Internal Server Error",
-          body: '{"ok":false}',
+          body: "{\"ok\":false}",
         },
       }),
     });
@@ -106,7 +106,7 @@ describe("error compat (dist export only)", () => {
           error: new Error("socket hang up"),
         }),
       })
-      .catch((e) => e);
+      .catch(e => e);
 
     expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.message).toContain("socket hang up");
@@ -120,7 +120,7 @@ describe("error compat (dist export only)", () => {
         timeout: 10,
         transport: createTransport({ timeout: true }),
       })
-      .catch((e) => e);
+      .catch(e => e);
 
     expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ECONNABORTED");
@@ -135,7 +135,7 @@ describe("error compat (dist export only)", () => {
         timeoutErrorMessage: "custom timeout message",
         transport: createTransport({ timeout: true }),
       })
-      .catch((e) => e);
+      .catch(e => e);
 
     expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ECONNABORTED");

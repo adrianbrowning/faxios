@@ -2,6 +2,7 @@
   "workspaces": {
     "packages/lib": {
       "entry": [
+        "src/index.ts",
         "gulpfile.js",
         "webpack.config.js",
         "scripts/**/*.js",
@@ -9,17 +10,30 @@
         "docs/**/*.{js,ts,mts}"
       ],
       "project": ["**/*.{js,ts,cjs,mjs,mts}"],
-      "ignore": ["tests/module/**", "tests/smoke/**", "docs/**"]
+      "ignore": [
+        "tests/module/**",
+        "tests/smoke/**",
+        "docs/**",
+        "src/lib/platform/browser/**",
+        "src/lib/platform/node/classes/**",
+        "src/lib/env/classes/**",
+        "src/lib/helpers/null.ts",
+        "src/lib/helpers/deprecatedMethod.ts"
+      ]
     },
     "packages/examples": {
-      "entry": ["*.js"],
+      "entry": ["**/*.js"],
       "project": ["**/*.{js,ts}"],
       "ignoreDependencies": ["axios"]
     },
     "packages/sandbox": {
-      "entry": ["server.js"],
       "project": ["**/*.{js,ts}"],
       "ignore": ["client.js"]
+    },
+    ".": {
+      "entry": [".sandcastle/*.ts"],
+      "project": [".sandcastle/*.ts"],
+      "ignore": [".sandcastle/worktrees/**"]
     }
   },
   "ignoreBinaries": ["playwright", "diff"],
@@ -28,5 +42,6 @@
     "prettier",
     "@babel/preset-env",
     "@vitest/browser"
-  ]
+  ],
+  "ignoreExportsUsedInFile": true
 }

@@ -27,7 +27,7 @@ describe("utils::extend", () => {
     const a: Record<string, unknown> = {};
     const b = {
       getFoo: function getFoo(): unknown {
-        return (this as unknown as { foo: unknown }).foo;
+        return (this as unknown as { foo: unknown; }).foo;
       },
     };
     const thisArg = { foo: "barbaz" };

@@ -2,10 +2,12 @@ import { EventEmitter } from "node:events";
 import http2 from "node:http2";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Http2Sessions from "../../../src/lib/helpers/Http2Sessions.js";
+ 
+type EE = any;
 
 function createFakeSession(): http2.ClientHttp2Session {
   // ponytail: cast to any to attach test-only props onto EventEmitter
-  const session = new EventEmitter() as any;
+  const session = new EventEmitter() as unknown as EE;
   session.destroyed = false;
   session.closed = false;
   session.close = vi.fn(() => {
@@ -13,7 +15,7 @@ function createFakeSession(): http2.ClientHttp2Session {
     session.emit("close");
   });
   const originalRequest = vi.fn(() => {
-    const stream = new EventEmitter() as any;
+    const stream = new EventEmitter() as unknown as EE;
     stream.endStream = vi.fn();
     return stream;
   });
@@ -62,7 +64,7 @@ describe("helpers::Http2Sessions", () => {
 
   it("does not reuse a destroyed session", () => {
     const first = pool.getSession("https://example.test");
-    (first as any).destroyed = true;
+    (first as EE).destroyed = true;
 
     const second = pool.getSession("https://example.test");
 
@@ -72,7 +74,7 @@ describe("helpers::Http2Sessions", () => {
 
   it("does not reuse a closed session", () => {
     const first = pool.getSession("https://example.test");
-    (first as any).closed = true;
+    (first as EE).closed = true;
 
     const second = pool.getSession("https://example.test");
 
@@ -177,7 +179,7 @@ describe("helpers::Http2Sessions", () => {
       sessionTimeout: 1000,
     });
 
-    expect(session.request).not.toBe((session as any)._originalRequest);
+    expect(session.request).not.toBe((session as EE)._originalRequest);
   });
 
   it("does not install the request wrapper when sessionTimeout is null", () => {
@@ -185,7 +187,7 @@ describe("helpers::Http2Sessions", () => {
       sessionTimeout: null,
     });
 
-    expect(session.request).toBe((session as any)._originalRequest);
+    expect(session.request).toBe((session as EE)._originalRequest);
   });
 
   it("cancels the pending idle timer when the session itself closes", () => {

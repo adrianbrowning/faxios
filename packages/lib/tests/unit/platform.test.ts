@@ -19,7 +19,7 @@ describe("generateString", () => {
     for (let char of str) {
       assert.ok(
         alphabet.includes(char),
-        `Character ${char} is not in the alphabet`,
+        `Character ${char} is not in the alphabet`
       );
     }
   });

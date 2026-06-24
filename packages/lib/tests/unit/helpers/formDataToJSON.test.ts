@@ -24,7 +24,7 @@ describe("formDataToJSON", () => {
     formData.append("foo", "2");
 
     expect(formDataToJSON(formData)).toEqual({
-      foo: ["1", "2"],
+      foo: [ "1", "2" ],
     });
   });
 
@@ -36,7 +36,7 @@ describe("formDataToJSON", () => {
     formData.append("select3", "303");
 
     expect(formDataToJSON(formData)).toEqual({
-      select3: ["301", "302", "303"],
+      select3: [ "301", "302", "303" ],
     });
   });
 
@@ -49,7 +49,7 @@ describe("formDataToJSON", () => {
 
     expect(formDataToJSON(formData)).toEqual({
       foo: {
-        bar: ["1", "2", "3"],
+        bar: [ "1", "2", "3" ],
       },
     });
   });
@@ -61,7 +61,7 @@ describe("formDataToJSON", () => {
     formData.append("foo[]", "2");
 
     expect(formDataToJSON(formData)).toEqual({
-      foo: ["1", "2"],
+      foo: [ "1", "2" ],
     });
   });
 
@@ -72,7 +72,7 @@ describe("formDataToJSON", () => {
     formData.append("foo[1]", "2");
 
     expect(formDataToJSON(formData)).toEqual({
-      foo: ["1", "2"],
+      foo: [ "1", "2" ],
     });
   });
 
@@ -85,7 +85,7 @@ describe("formDataToJSON", () => {
     formData.append("constructor.prototype.y", "value");
 
     expect(formDataToJSON(formData)).toEqual({
-      foo: ["1", "2"],
+      foo: [ "1", "2" ],
       constructor: {
         prototype: {
           y: "value",
@@ -93,8 +93,8 @@ describe("formDataToJSON", () => {
       },
     });
 
-    expect(({} as {x?: unknown}).x).toEqual(undefined);
-    expect(({} as {y?: unknown}).y).toEqual(undefined);
+    expect(({} as { x?: unknown; }).x).toEqual(undefined);
+    expect(({} as { y?: unknown; }).y).toEqual(undefined);
   });
 
   it("should not write through to inherited objects on Object.prototype", () => {
@@ -111,10 +111,11 @@ describe("formDataToJSON", () => {
 
       const result = formDataToJSON(formData);
 
-      expect((result as {injected?: unknown}).injected).toEqual({ hijack: "STOLEN" });
-      expect((Object.prototype as {injected?: {hijack: unknown}}).injected?.hijack).toBe(true);
-    } finally {
-      delete (Object.prototype as {injected?: unknown}).injected;
+      expect((result as { injected?: unknown; }).injected).toEqual({ hijack: "STOLEN" });
+      expect((Object.prototype as { injected?: { hijack: unknown; }; }).injected?.hijack).toBe(true);
+    }
+    finally {
+      delete (Object.prototype as { injected?: unknown; }).injected;
     }
   });
 
@@ -126,7 +127,8 @@ describe("formDataToJSON", () => {
     try {
       formDataToJSON(formData);
       throw new Error("Should have thrown");
-    } catch (err) {
+    }
+    catch (err) {
       expect(err).toBeInstanceOf(FaxiosError);
       expect((err as FaxiosError).code).toBe(FaxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
       expect(err).not.toBeInstanceOf(RangeError);
@@ -141,7 +143,8 @@ describe("formDataToJSON", () => {
     try {
       formDataToJSON(formData);
       throw new Error("Should have thrown");
-    } catch (err) {
+    }
+    catch (err) {
       expect(err).toBeInstanceOf(FaxiosError);
       expect((err as FaxiosError).code).toBe(FaxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
       expect(err).not.toBeInstanceOf(RangeError);

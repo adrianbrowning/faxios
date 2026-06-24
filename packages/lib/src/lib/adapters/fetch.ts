@@ -923,6 +923,4 @@ export const getFetch = (config?: { env?: Record<string, unknown>; }) => {
   return target;
 };
 
-const adapter = getFetch();
-
-export default adapter;
+getFetch();

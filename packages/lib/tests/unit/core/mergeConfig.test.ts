@@ -5,7 +5,7 @@ import defaults from "../../../src/lib/defaults/index.js";
 
 describe("core::mergeConfig", () => {
   it("accepts undefined for second argument", () => {
-    expect(mergeConfig(defaults, undefined)).toEqual(defaults);
+    expect(mergeConfig(defaults)).toEqual(defaults);
   });
 
   it("accepts an object for second argument", () => {
@@ -45,7 +45,7 @@ describe("core::mergeConfig", () => {
     expect(merged.data).toBeUndefined();
   });
 
-  for (const key of ["auth", "headers", "params", "proxy"]) {
+  for (const key of [ "auth", "headers", "params", "proxy" ]) {
     it(`sets new config for ${key} without default`, () => {
       const config1 = { [key]: undefined };
       const config2 = { [key]: { user: "foo", pass: "test" } };
@@ -62,15 +62,15 @@ describe("core::mergeConfig", () => {
       expect(mergeConfig(config1, config2)).toEqual(expected);
     });
 
-    it.each([false, null, 123])(
+    it.each([ false, null, 123 ])(
       `overwrites default ${key} with %p`,
-      (value) => {
+      value => {
         const config1 = { [key]: { user: "foo", pass: "test" } };
         const config2 = { [key]: value };
         const expected = { [key]: value };
 
         expect(mergeConfig(config1, config2)).toEqual(expected);
-      },
+      }
     );
   }
 
@@ -103,7 +103,7 @@ describe("core::mergeConfig", () => {
         nestedConfig: {
           propertyOnRequestConfig: true,
         },
-      },
+      }
     );
 
     expect((merged.nestedConfig as Record<string, unknown>).propertyOnDefaultConfig).toBe(true);
@@ -124,7 +124,7 @@ describe("core::mergeConfig", () => {
             X: 1,
             Y: 2,
           }),
-        },
+        }
       );
 
       expect(merged.headers).toEqual({
@@ -150,7 +150,7 @@ describe("core::mergeConfig", () => {
     });
 
     it("clones config2 when it is an array", () => {
-      const data = [1, 2, 3];
+      const data = [ 1, 2, 3 ];
       const merged = mergeConfig(config1, { data });
 
       expect(merged.data).toEqual(data);
@@ -170,20 +170,20 @@ describe("core::mergeConfig", () => {
   describe("mergeDeepPropertiesKeys", () => {
     it("skips when both config1 and config2 values are undefined", () => {
       expect(
-        mergeConfig({ headers: undefined }, { headers: undefined }),
+        mergeConfig({ headers: undefined }, { headers: undefined })
       ).toEqual({});
     });
 
     it("merges when both values are plain objects", () => {
       expect(
-        mergeConfig({ headers: { a: 1, b: 1 } }, { headers: { b: 2, c: 2 } }),
+        mergeConfig({ headers: { a: 1, b: 1 } }, { headers: { b: 2, c: 2 } })
       ).toEqual({
         headers: { a: 1, b: 2, c: 2 },
       });
     });
 
     it("clones config2 when it is a plain object", () => {
-      const config1 = { headers: [1, 2, 3] };
+      const config1 = { headers: [ 1, 2, 3 ] };
       const config2 = { headers: { a: 1, b: 2 } };
       const merged = mergeConfig(config1, config2);
 
@@ -193,7 +193,7 @@ describe("core::mergeConfig", () => {
 
     it("clones config2 when it is an array", () => {
       const config1 = { headers: { a: 1, b: 1 } };
-      const config2 = { headers: [1, 2, 3] };
+      const config2 = { headers: [ 1, 2, 3 ] };
       const merged = mergeConfig(config1, config2);
 
       expect(merged.headers).toEqual(config2.headers);
@@ -219,7 +219,7 @@ describe("core::mergeConfig", () => {
     });
 
     it("clones config1 when it is an array", () => {
-      const config1 = { headers: [1, 2, 3] };
+      const config1 = { headers: [ 1, 2, 3 ] };
       const merged = mergeConfig(config1, {});
 
       expect(merged.headers).toEqual(config1.headers);
@@ -241,8 +241,8 @@ describe("core::mergeConfig", () => {
       expect(
         mergeConfig(
           { transformRequest: undefined },
-          { transformRequest: undefined },
-        ),
+          { transformRequest: undefined }
+        )
       ).toEqual({});
     });
 
@@ -257,7 +257,7 @@ describe("core::mergeConfig", () => {
 
     it("clones config2 when it is an array", () => {
       const config1 = { transformRequest: { a: 1, b: 1 } };
-      const config2 = { transformRequest: [1, 2, 3] };
+      const config2 = { transformRequest: [ 1, 2, 3 ] };
       const merged = mergeConfig(config1, config2);
 
       expect(merged.transformRequest).toEqual(config2.transformRequest);
@@ -269,16 +269,16 @@ describe("core::mergeConfig", () => {
       const obj = Object.create({});
 
       expect(
-        mergeConfig(config1, { transformRequest: 1 }).transformRequest,
+        mergeConfig(config1, { transformRequest: 1 }).transformRequest
       ).toBe(1);
       expect(
-        mergeConfig(config1, { transformRequest: "str" }).transformRequest,
+        mergeConfig(config1, { transformRequest: "str" }).transformRequest
       ).toBe("str");
       expect(
-        mergeConfig(config1, { transformRequest: obj }).transformRequest,
+        mergeConfig(config1, { transformRequest: obj }).transformRequest
       ).toBe(obj);
       expect(
-        mergeConfig(config1, { transformRequest: null }).transformRequest,
+        mergeConfig(config1, { transformRequest: null }).transformRequest
       ).toBe(null);
     });
 
@@ -291,7 +291,7 @@ describe("core::mergeConfig", () => {
     });
 
     it("clones config1 when it is an array", () => {
-      const config1 = { transformRequest: [1, 2, 3] };
+      const config1 = { transformRequest: [ 1, 2, 3 ] };
       const merged = mergeConfig(config1, {});
 
       expect(merged.transformRequest).toEqual(config1.transformRequest);
@@ -303,13 +303,13 @@ describe("core::mergeConfig", () => {
 
       expect(mergeConfig({ transformRequest: 1 }, {}).transformRequest).toBe(1);
       expect(
-        mergeConfig({ transformRequest: "str" }, {}).transformRequest,
+        mergeConfig({ transformRequest: "str" }, {}).transformRequest
       ).toBe("str");
       expect(mergeConfig({ transformRequest: obj }, {}).transformRequest).toBe(
-        obj,
+        obj
       );
       expect(mergeConfig({ transformRequest: null }, {}).transformRequest).toBe(
-        null,
+        null
       );
     });
   });
@@ -325,13 +325,13 @@ describe("core::mergeConfig", () => {
       expect(
         mergeConfig(
           { validateStatus: { a: 1, b: 1 } },
-          { validateStatus: { b: 2, c: 2 } },
-        ),
+          { validateStatus: { b: 2, c: 2 } }
+        )
       ).toEqual({ validateStatus: { a: 1, b: 2, c: 2 } });
     });
 
     it("clones config2 when it is a plain object", () => {
-      const config1 = { validateStatus: [1, 2, 3] };
+      const config1 = { validateStatus: [ 1, 2, 3 ] };
       const config2 = { validateStatus: { a: 1, b: 2 } };
       const merged = mergeConfig(config1, config2);
 
@@ -341,7 +341,7 @@ describe("core::mergeConfig", () => {
 
     it("clones config2 when it is an array", () => {
       const config1 = { validateStatus: { a: 1, b: 2 } };
-      const config2 = { validateStatus: [1, 2, 3] };
+      const config2 = { validateStatus: [ 1, 2, 3 ] };
       const merged = mergeConfig(config1, config2);
 
       expect(merged.validateStatus).toEqual(config2.validateStatus);
@@ -353,16 +353,16 @@ describe("core::mergeConfig", () => {
       const obj = Object.create({});
 
       expect(mergeConfig(config1, { validateStatus: 1 }).validateStatus).toBe(
-        1,
+        1
       );
       expect(
-        mergeConfig(config1, { validateStatus: "str" }).validateStatus,
+        mergeConfig(config1, { validateStatus: "str" }).validateStatus
       ).toBe("str");
       expect(mergeConfig(config1, { validateStatus: obj }).validateStatus).toBe(
-        obj,
+        obj
       );
       expect(
-        mergeConfig(config1, { validateStatus: null }).validateStatus,
+        mergeConfig(config1, { validateStatus: null }).validateStatus
       ).toBe(null);
     });
 
@@ -375,7 +375,7 @@ describe("core::mergeConfig", () => {
     });
 
     it("clones config1 when it is an array", () => {
-      const config1 = { validateStatus: [1, 2, 3] };
+      const config1 = { validateStatus: [ 1, 2, 3 ] };
       const merged = mergeConfig(config1, {});
 
       expect(merged.validateStatus).toEqual(config1.validateStatus);
@@ -387,17 +387,17 @@ describe("core::mergeConfig", () => {
 
       expect(mergeConfig({ validateStatus: 1 }, {}).validateStatus).toBe(1);
       expect(mergeConfig({ validateStatus: "str" }, {}).validateStatus).toBe(
-        "str",
+        "str"
       );
       expect(mergeConfig({ validateStatus: obj }, {}).validateStatus).toBe(obj);
       expect(mergeConfig({ validateStatus: null }, {}).validateStatus).toBe(
-        null,
+        null
       );
     });
 
     it("keeps legacy undefined behavior by default", () => {
       expect(
-        mergeConfig(defaults, { validateStatus: undefined }).validateStatus,
+        mergeConfig(defaults, { validateStatus: undefined }).validateStatus
       ).toBeUndefined();
     });
 
@@ -410,12 +410,12 @@ describe("core::mergeConfig", () => {
           {
             validateStatus: undefined,
             transitional: { validateStatusUndefinedResolves: false },
-          },
-        ).validateStatus,
+          }
+        ).validateStatus
       ).toBe(validateStatus);
 
       expect(
-        mergeConfig(defaults, { validateStatus: null }).validateStatus,
+        mergeConfig(defaults, { validateStatus: null }).validateStatus
       ).toBe(null);
     });
   });

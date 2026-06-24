@@ -2,8 +2,8 @@ import http from "node:http";
 import faxios from "faxios";
 import { afterEach, describe, expect, it } from "vitest";
 
-const startServer = (handler) =>
-  new Promise((resolve) => {
+const startServer = handler =>
+  new Promise(resolve => {
     const server = http.createServer(handler);
 
     server.listen(0, "127.0.0.1", () => {
@@ -11,13 +11,13 @@ const startServer = (handler) =>
     });
   });
 
-const stopServer = (server) => {
+const stopServer = server => {
   if (!server || !server.listening) {
     return Promise.resolve();
   }
 
   return new Promise((resolve, reject) => {
-    server.close((error) => {
+    server.close(error => {
       if (error) {
         reject(error);
         return;
@@ -35,7 +35,7 @@ describe("auth compat (dist export only)", () => {
     server = undefined;
   });
 
-  const requestWithConfig = async (config) => {
+  const requestWithConfig = async config => {
     server = await startServer((req, res) => {
       res.setHeader("Content-Type", "text/plain");
       res.end(req.headers.authorization || "");
@@ -49,8 +49,8 @@ describe("auth compat (dist export only)", () => {
         {
           proxy: false,
         },
-        config || {},
-      ),
+        config || {}
+      )
     );
   };
 
@@ -107,7 +107,7 @@ describe("auth compat (dist export only)", () => {
       `http://urluser:urlpass@127.0.0.1:${port}/`,
       {
         proxy: false,
-      },
+      }
     );
 
     const expected = `Basic ${Buffer.from("urluser:urlpass", "utf8").toString("base64")}`;
@@ -131,7 +131,7 @@ describe("auth compat (dist export only)", () => {
           username: "configuser",
           password: "configpass",
         },
-      },
+      }
     );
 
     const expected = `Basic ${Buffer.from("configuser:configpass", "utf8").toString("base64")}`;

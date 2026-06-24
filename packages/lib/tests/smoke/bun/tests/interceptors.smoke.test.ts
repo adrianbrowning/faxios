@@ -1,5 +1,5 @@
-import { describe, expect, test } from 'bun:test';
-import axios from 'axios';
+import axios from "axios";
+import { describe, expect, test } from "bun:test";
 
 const createFetchCapture = () => {
   const calls: Array<Request> = [];
@@ -8,9 +8,9 @@ const createFetchCapture = () => {
     const request = input instanceof Request ? input : new Request(input as string, init);
     calls.push(request);
 
-    return new Response(JSON.stringify({ value: 'ok' }), {
+    return new Response(JSON.stringify({ value: "ok" }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   };
 
@@ -26,30 +26,30 @@ const env = (fetch: typeof globalThis.fetch) => ({
   Response,
 });
 
-describe('interceptors', () => {
-  test('request interceptor header is forwarded to fetch', async () => {
+describe("interceptors", () => {
+  test("request interceptor header is forwarded to fetch", async () => {
     const { fetch, getCalls } = createFetchCapture();
     const client = axios.create({
-      adapter: 'fetch',
+      adapter: "fetch",
       env: env(fetch),
     });
 
     client.interceptors.request.use((config: any) => {
       config.headers = config.headers || {};
-      config.headers['X-Added'] = 'yes';
+      config.headers["X-Added"] = "yes";
       return config;
     });
 
-    await client.get('https://example.com/interceptor-request');
+    await client.get("https://example.com/interceptor-request");
 
     expect(getCalls()).toHaveLength(1);
-    expect(getCalls()[0].headers.get('x-added')).toBe('yes');
+    expect(getCalls()[0].headers.get("x-added")).toBe("yes");
   });
 
-  test('response interceptor transform is reflected in resolved value', async () => {
+  test("response interceptor transform is reflected in resolved value", async () => {
     const { fetch } = createFetchCapture();
     const client = axios.create({
-      adapter: 'fetch',
+      adapter: "fetch",
       env: env(fetch),
     });
 
@@ -58,8 +58,8 @@ describe('interceptors', () => {
       return response;
     });
 
-    const response = await client.get('https://example.com/interceptor-response');
+    const response = await client.get("https://example.com/interceptor-response");
 
-    expect(response.data).toEqual({ value: 'OK' });
+    expect(response.data).toEqual({ value: "OK" });
   });
 });

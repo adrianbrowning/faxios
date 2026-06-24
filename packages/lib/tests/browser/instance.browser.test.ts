@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import axios from "../../src/index.js";
-import type { FaxiosResponse, InternalFaxiosRequestConfig } from "../../src/lib/types.js";
 import type InterceptorManager from "../../src/lib/core/InterceptorManager.js";
+import type { InternalFaxiosRequestConfig } from "../../src/lib/types.js";
 
 class MockXMLHttpRequest {
   requestHeaders: Record<string, string> = {};
@@ -49,7 +49,7 @@ class MockXMLHttpRequest {
     statusText = "OK",
     responseText = "",
     responseHeaders = "",
-  }: { status?: number; statusText?: string; responseText?: string; responseHeaders?: string } = {}) {
+  }: { status?: number; statusText?: string; responseText?: string; responseHeaders?: string; } = {}) {
     this.status = status;
     this.statusText = statusText;
     this.responseText = responseText;
@@ -60,14 +60,15 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
   }
 }
 
-let requests: MockXMLHttpRequest[] = [];
+let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const getLastRequest = (): MockXMLHttpRequest => {
@@ -195,17 +196,17 @@ describe("instance (vitest browser)", () => {
   });
 
   it("should have interceptors on the instance", async () => {
-    const requestInterceptorId = (axios.interceptors.request as unknown as InterceptorManager<InternalFaxiosRequestConfig>).use((config) => {
+    const requestInterceptorId = (axios.interceptors.request as unknown as InterceptorManager<InternalFaxiosRequestConfig>).use(config => {
       (config as InternalFaxiosRequestConfig & Record<string, unknown>).foo = true;
       return config;
     });
 
     const instance = axios.create();
     const instanceInterceptorId = (instance.interceptors.request as unknown as InterceptorManager<InternalFaxiosRequestConfig>).use(
-      (config) => {
+      config => {
         (config as InternalFaxiosRequestConfig & Record<string, unknown>).bar = true;
         return config;
-      },
+      }
     );
 
     try {
@@ -216,11 +217,12 @@ describe("instance (vitest browser)", () => {
         status: 200,
       });
 
-      const response = await responsePromise as FaxiosResponse;
+      const response = await responsePromise;
 
       expect((response.config as unknown as Record<string, unknown>).foo).toBeUndefined();
       expect((response.config as unknown as Record<string, unknown>).bar).toBe(true);
-    } finally {
+    }
+    finally {
       (axios.interceptors.request as unknown as InterceptorManager<InternalFaxiosRequestConfig>).eject(requestInterceptorId);
       (instance.interceptors.request as unknown as InterceptorManager<InternalFaxiosRequestConfig>).eject(instanceInterceptorId);
     }
@@ -238,7 +240,7 @@ describe("instance (vitest browser)", () => {
     };
 
     expect(instance.getUri(options)).toBe(
-      "https://api.example.com/foo/bar?name=axios",
+      "https://api.example.com/foo/bar?name=axios"
     );
   });
 
@@ -265,7 +267,7 @@ describe("instance (vitest browser)", () => {
     };
 
     expect(instance.getUri(options)).toBe(
-      "https://api.example.com/foo/bar?foo=bar&name=axios",
+      "https://api.example.com/foo/bar?foo=bar&name=axios"
     );
   });
 });

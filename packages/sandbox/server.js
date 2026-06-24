@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import http from 'http';
+import fs from "fs";
+import path from "path";
+import http from "http";
 
 let server;
 
@@ -14,7 +14,7 @@ let server;
 function pipeFileToResponse(res, file, type) {
   if (type) {
     res.writeHead(200, {
-      'Content-Type': type,
+      "Content-Type": type,
     });
   }
 
@@ -33,13 +33,13 @@ function pipeFileToResponse(res, file, type) {
 function handleApiRequest(req, res) {
   let status;
   let result;
-  let data = '';
+  let data = "";
 
-  req.on('data', (chunk) => {
+  req.on("data", (chunk) => {
     data += chunk;
   });
 
-  req.on('end', () => {
+  req.on("end", () => {
     try {
       status = 200;
       result = {
@@ -49,7 +49,7 @@ function handleApiRequest(req, res) {
         headers: req.headers,
       };
     } catch (e) {
-      console.error('Error:', e.message);
+      console.error("Error:", e.message);
       status = 400;
       result = {
         error: e.message,
@@ -57,7 +57,7 @@ function handleApiRequest(req, res) {
     }
 
     res.writeHead(status, {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     });
     res.end(JSON.stringify(result));
   });
@@ -73,37 +73,37 @@ function handleApiRequest(req, res) {
  * @param {http.ServerResponse} res - The HTTP response object.
  */
 function requestHandler(req, res) {
-  req.setEncoding('utf8');
+  req.setEncoding("utf8");
 
-  const parsed = new URL(req.url, 'http://localhost');
-  const pathname = parsed.pathname;
+  const parsed = new URL(req.url, "http://localhost");
+  let pathname = parsed.pathname;
 
-  console.log('[' + new Date() + ']', req.method, pathname);
+  console.log("[" + new Date() + "]", req.method, pathname);
 
-  if (pathname === '/') {
-    pathname = '/index.html';
+  if (pathname === "/") {
+    pathname = "/index.html";
   }
 
   switch (pathname) {
-    case '/index.html':
-      pipeFileToResponse(res, './client.html', 'text/html');
+    case "/index.html":
+      pipeFileToResponse(res, "./client.html", "text/html");
       break;
 
-    case '/axios.js':
-      pipeFileToResponse(res, '../dist/axios.js', 'text/javascript');
+    case "/axios.js":
+      pipeFileToResponse(res, "../dist/axios.js", "text/javascript");
       break;
 
-    case '/axios.js.map':
-      pipeFileToResponse(res, '../dist/axios.js.map', 'text/javascript');
+    case "/axios.js.map":
+      pipeFileToResponse(res, "../dist/axios.js.map", "text/javascript");
       break;
 
-    case '/api':
+    case "/api":
       handleApiRequest(req, res);
       break;
 
     default:
       res.writeHead(404);
-      res.end('<h1>404 Not Found</h1>');
+      res.end("<h1>404 Not Found</h1>");
       break;
   }
 }
@@ -122,9 +122,11 @@ server.listen(PORT, () => {
  *
  * @param {NodeJS.ErrnoException} error - The server error object.
  */
-server.on('error', (error) => {
-  if (error.code === 'EADDRINUSE') {
-    console.log(`Address localhost:${PORT} in use. Please retry when the port is available!`);
+server.on("error", (error) => {
+  if (error.code === "EADDRINUSE") {
+    console.log(
+      `Address localhost:${PORT} in use. Please retry when the port is available!`,
+    );
     server.close();
   }
 });

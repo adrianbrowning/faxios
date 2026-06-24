@@ -3,10 +3,10 @@ import { PassThrough } from "node:stream";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
 
-const normalizeHeaders = (headers) => {
+const normalizeHeaders = headers => {
   const result = {};
 
-  Object.entries(headers || {}).forEach(([key, value]) => {
+  Object.entries(headers || {}).forEach(([ key, value ]) => {
     result[key.toLowerCase()] = value;
   });
 
@@ -35,7 +35,7 @@ const createTransportCapture = () => {
         res.headers = { "content-type": "application/json" };
         res.req = req;
         onResponse(res);
-        res.end('{"ok":true}');
+        res.end("{\"ok\":true}");
       };
 
       return req;
@@ -103,7 +103,7 @@ describe("headers compat (dist export only)", () => {
       {
         transport,
         proxy: false,
-      },
+      }
     );
 
     const headers = normalizeHeaders(getCapturedOptions().headers);
