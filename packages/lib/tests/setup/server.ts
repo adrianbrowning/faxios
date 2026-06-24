@@ -63,10 +63,8 @@ export const startHTTPServer = async (
     cert = certificate.cert,
   } = Object.assign(
     typeof handlerOrOptions === "function"
-      ? {
-        handler: handlerOrOptions,
-      }
-      : handlerOrOptions,
+      ? { handler: handlerOrOptions }
+      : handlerOrOptions ?? {},
     options
   );
 
