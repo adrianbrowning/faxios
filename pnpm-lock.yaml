@@ -3229,7 +3229,7 @@ packages:
     resolution: {integrity: sha512-GGToxJ/w1x32s/D2EKND7kTil4n8OVk/9mycTc4VDza13lOvpUZTGX3mFSCtV9ksdGBVzvsyAVLM6mHFThxXxw==}
 
   faxios@file:../../../../../../../../tmp/faxios-1.18.0.tgz:
-    resolution: {integrity: sha512-4bZosiPpnsYmsCYE5X7luguIpvJhkenogor8qE2Kq2wsHZTpWLQuVs0BM7qPhuPqUZ2yt26B1WbvfjEQhFDZCA==, tarball: file:../../../../../../../../tmp/faxios-1.18.0.tgz}
+    resolution: {integrity: sha512-Ndh+l1+sqUcvBwYOjl08C5vYT1L7twnaUWXdUpfFTgk2z8H7rRiJ4fKR0YgFLQMfTYMADoDFKfajEHLex1Nk/Q==, tarball: file:../../../../../../../../tmp/faxios-1.18.0.tgz}
     version: 1.18.0
     engines: {node: '>=24.0.0', pnpm: '>=10.0.0'}
 

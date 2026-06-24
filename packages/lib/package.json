@@ -88,8 +88,8 @@
     "docs:dev": "cd docs && npm run docs:dev",
     "lint": "pnpm lint:ts; pnpm lint:fix",
     "lint:ts": "tsc --noEmit && tsc --noEmit -p tests/browser/tsconfig.json",
-    "lint:esl": "eslint --config eslint.config.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
-    "lint:s": "eslint --config eslint.config.style.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
+    "lint:esl": "eslint --config eslint.config.ts \"{src,tests}/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
+    "lint:s": "eslint --config eslint.config.style.ts \"{src,tests}/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
     "lint:fix": "pnpm lint:s --fix",
     "lint:e18e": "pnpm dlx @e18e/cli analyze"
   },
