@@ -1,10 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { progressEventReducer } from "../../../src/lib/helpers/progressEventReducer.js";
-import type { AxiosProgressEvent } from "../../../src/lib/types.js";
+import type { FaxiosProgressEvent } from "../../../src/lib/types.js";
 
 describe("helpers::progressEventReducer", () => {
   it("should clamp loaded/progress and avoid negative bytes for out-of-order events", () => {
-    const events: AxiosProgressEvent[] = [];
+    const events: FaxiosProgressEvent[] = [];
     const [onProgress, flush] = progressEventReducer(
       (data) => {
         events.push(data);
@@ -31,7 +31,7 @@ describe("helpers::progressEventReducer", () => {
   });
 
   it("should ignore malformed events that lack a numeric loaded value", () => {
-    const events: AxiosProgressEvent[] = [];
+    const events: FaxiosProgressEvent[] = [];
     const [onProgress, flush] = progressEventReducer(
       (data) => {
         events.push(data);

@@ -1,11 +1,11 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
-import AxiosHeaders from "../../../src/lib/core/AxiosHeaders.js";
-import AxiosError from "../../../src/lib/core/AxiosError.js";
+import FaxiosHeaders from "../../../src/lib/core/FaxiosHeaders.js";
+import FaxiosError from "../../../src/lib/core/FaxiosError.js";
 import dispatchRequest from "../../../src/lib/core/dispatchRequest.js";
 import defaults from "../../../src/lib/defaults/index.js";
 import resolveConfig from "../../../src/lib/helpers/resolveConfig.js";
-import type { AxiosAdapter, AxiosResponse, InternalAxiosRequestConfig } from "../../../src/lib/types.js";
+import type { FaxiosAdapter, FaxiosResponse, InternalFaxiosRequestConfig } from "../../../src/lib/types.js";
 
 class ReactNativeFormData {
   append() {}
@@ -20,10 +20,10 @@ class ReactNativeFormData {
 }
 
 function axiosHeaders(init?: Record<string, unknown>) {
-  return new AxiosHeaders(init) as unknown as InternalAxiosRequestConfig["headers"];
+  return new FaxiosHeaders(init) as unknown as InternalFaxiosRequestConfig["headers"];
 }
 
-function baseConfig(overrides: Partial<InternalAxiosRequestConfig> = {}): InternalAxiosRequestConfig {
+function baseConfig(overrides: Partial<InternalFaxiosRequestConfig> = {}): InternalFaxiosRequestConfig {
   return {
     method: "get",
     url: "/test",
@@ -48,7 +48,7 @@ describe("core::dispatchRequest", () => {
         data,
         headers: axiosHeaders({ "Content-Type": "application/json" }),
         method: "post",
-        adapter: (async (adapterConfig: InternalAxiosRequestConfig) => {
+        adapter: (async (adapterConfig: InternalFaxiosRequestConfig) => {
           adapterCalled = true;
           return {
             data: null,
@@ -58,7 +58,7 @@ describe("core::dispatchRequest", () => {
             config: adapterConfig,
             request: {},
           };
-        }) as unknown as AxiosAdapter,
+        }) as unknown as FaxiosAdapter,
       });
 
       let thrown;
@@ -68,14 +68,14 @@ describe("core::dispatchRequest", () => {
         thrown = e;
       }
 
-      assert.ok(thrown instanceof AxiosError, "must be AxiosError");
-      assert.strictEqual(thrown.code, AxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
+      assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
+      assert.strictEqual(thrown.code, FaxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
       assert.strictEqual(adapterCalled, false);
     });
   });
 
   describe("JSON parse failure on adapter resolution", () => {
-    it("rejects with AxiosError carrying response and status", async () => {
+    it("rejects with FaxiosError carrying response and status", async () => {
       const response = {
         data: "{bad json",
         status: 418,
@@ -85,7 +85,7 @@ describe("core::dispatchRequest", () => {
         request: {},
       };
       const config = baseConfig({
-        adapter: (async () => response) as unknown as AxiosAdapter,
+        adapter: (async () => response) as unknown as FaxiosAdapter,
       });
 
       let thrown;
@@ -95,8 +95,8 @@ describe("core::dispatchRequest", () => {
         thrown = e;
       }
 
-      assert.ok(thrown instanceof AxiosError, "must be AxiosError");
-      assert.strictEqual(thrown.code, AxiosError.ERR_BAD_RESPONSE);
+      assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
+      assert.strictEqual(thrown.code, FaxiosError.ERR_BAD_RESPONSE);
       assert.strictEqual(
         thrown.response,
         response,
@@ -119,7 +119,7 @@ describe("core::dispatchRequest", () => {
         request: {},
       };
       const config = baseConfig({
-        adapter: (async () => response) as unknown as AxiosAdapter,
+        adapter: (async () => response) as unknown as FaxiosAdapter,
       });
 
       try {
@@ -137,7 +137,7 @@ describe("core::dispatchRequest", () => {
   });
 
   describe("JSON parse failure on adapter rejection", () => {
-    it("rejects with AxiosError carrying response and status (rejection path)", async () => {
+    it("rejects with FaxiosError carrying response and status (rejection path)", async () => {
       const response = {
         data: "{bad json",
         status: 500,
@@ -146,13 +146,13 @@ describe("core::dispatchRequest", () => {
         config: null,
         request: {},
       };
-      const reason = new AxiosError(
+      const reason = new FaxiosError(
         "Request failed",
-        AxiosError.ERR_BAD_RESPONSE,
+        FaxiosError.ERR_BAD_RESPONSE,
       );
-      reason.response = response as unknown as AxiosResponse;
+      reason.response = response as unknown as FaxiosResponse;
       const config = baseConfig({
-        adapter: (async () => { throw reason; }) as unknown as AxiosAdapter,
+        adapter: (async () => { throw reason; }) as unknown as FaxiosAdapter,
       });
 
       let thrown;
@@ -162,7 +162,7 @@ describe("core::dispatchRequest", () => {
         thrown = e;
       }
 
-      assert.ok(thrown instanceof AxiosError, "must be AxiosError");
+      assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
       assert.strictEqual(
         thrown.response,
         response,
@@ -184,13 +184,13 @@ describe("core::dispatchRequest", () => {
         config: null,
         request: {},
       };
-      const reason = new AxiosError(
+      const reason = new FaxiosError(
         "Request failed",
-        AxiosError.ERR_BAD_RESPONSE,
+        FaxiosError.ERR_BAD_RESPONSE,
       );
-      reason.response = response as unknown as AxiosResponse;
+      reason.response = response as unknown as FaxiosResponse;
       const config = baseConfig({
-        adapter: (async () => { throw reason; }) as unknown as AxiosAdapter,
+        adapter: (async () => { throw reason; }) as unknown as FaxiosAdapter,
       });
 
       try {
@@ -221,7 +221,7 @@ describe("core::dispatchRequest", () => {
       const config = baseConfig({
         method: "post",
         data,
-        adapter: (async (adapterConfig: InternalAxiosRequestConfig) => {
+        adapter: (async (adapterConfig: InternalFaxiosRequestConfig) => {
           type HeadersWithMethods = { getContentType(): unknown; toJSON(): Record<string, unknown> };
           assert.strictEqual(
             (adapterConfig.headers as unknown as HeadersWithMethods).getContentType(),
@@ -247,7 +247,7 @@ describe("core::dispatchRequest", () => {
           );
 
           return response;
-        }) as unknown as AxiosAdapter,
+        }) as unknown as FaxiosAdapter,
       });
 
       const result = await dispatchRequest(config);
@@ -265,7 +265,7 @@ describe("core::dispatchRequest", () => {
         request: {},
       };
       const config = baseConfig({
-        adapter: (async () => response) as unknown as AxiosAdapter,
+        adapter: (async () => response) as unknown as FaxiosAdapter,
       });
 
       const result = await dispatchRequest(config);

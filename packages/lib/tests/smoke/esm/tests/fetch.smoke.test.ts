@@ -116,7 +116,7 @@ describe("fetch compat (dist export only)", () => {
       })
       .catch((e) => e);
 
-    expect(faxios.isAxiosError(err)).toBe(true);
+    expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.response.status).toBe(500);
   });
 

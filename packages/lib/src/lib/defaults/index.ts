@@ -1,17 +1,17 @@
 "use strict";
 
-import AxiosError from "../core/AxiosError.js";
+import FaxiosError from "../core/FaxiosError.js";
 import formDataToJSON from "../helpers/formDataToJSON.js";
 import toFormData from "../helpers/toFormData.js";
 import toURLEncodedForm from "../helpers/toURLEncodedForm.js";
 import platform from "../platform/index.js";
 import type {
-  AxiosAdapterName,
-  AxiosDefaults,
-  AxiosRequestHeaders,
-  AxiosResponse,
+  FaxiosAdapterName,
+  FaxiosDefaults,
+  FaxiosRequestHeaders,
+  FaxiosResponse,
   GenericFormData,
-  InternalAxiosRequestConfig
+  InternalFaxiosRequestConfig
 } from "../types.js";
 import utils from "../utils.js";
 import transitionalDefaults from "./transitional.js";
@@ -50,17 +50,17 @@ function serializeObjectPayload(
 function throwOnStrictJSONError(
   e: unknown,
   strictJSONParsing: boolean,
-  config: InternalAxiosRequestConfig
+  config: InternalFaxiosRequestConfig
 ): void {
   if (!strictJSONParsing) return;
   if ((e as { name?: string; }).name === "SyntaxError") {
-    throw AxiosError.from(
+    throw FaxiosError.from(
       e as Error,
-      AxiosError.ERR_BAD_RESPONSE,
+      FaxiosError.ERR_BAD_RESPONSE,
       config,
       null,
       (config as unknown as Record<string, unknown>)["response"] as
-        | AxiosResponse
+        | FaxiosResponse
         | undefined
     );
   }
@@ -87,16 +87,16 @@ function stringifySafely(
   return (encoder || JSON.stringify)(rawValue);
 }
 
-const defaults: AxiosDefaults = {
+const defaults: FaxiosDefaults = {
   transitional: transitionalDefaults,
 
-  adapter: [ "xhr", "http", "fetch" ] as Array<AxiosAdapterName>,
+  adapter: [ "xhr", "http", "fetch" ] as Array<FaxiosAdapterName>,
 
   transformRequest: [
     function transformRequest(
-      this: InternalAxiosRequestConfig,
+      this: InternalFaxiosRequestConfig,
       data: unknown,
-      headers: AxiosRequestHeaders
+      headers: FaxiosRequestHeaders
     ) {
       const contentType =
         (headers.getContentType() as string | null | undefined) || "";
@@ -156,7 +156,7 @@ const defaults: AxiosDefaults = {
 
   transformResponse: [
     function transformResponse(
-      this: InternalAxiosRequestConfig,
+      this: InternalFaxiosRequestConfig,
       data: unknown
     ) {
       const transitional = this.transitional || defaults.transitional;

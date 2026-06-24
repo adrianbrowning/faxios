@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
-import AxiosError from "../../src/lib/core/AxiosError.js";
+import FaxiosError from "../../src/lib/core/FaxiosError.js";
 import transformData from "../../src/lib/core/transformData.js";
 import defaults from "../../src/lib/defaults/index.js";
 
@@ -40,7 +40,7 @@ describe("transformResponse", () => {
   });
 
   describe("malformed JSON with responseType: json", () => {
-    it("throws AxiosError with ERR_BAD_RESPONSE code", () => {
+    it("throws FaxiosError with ERR_BAD_RESPONSE code", () => {
       const response = { status: 200, headers: {}, data: "{bad json" };
       const config = {
         responseType: "json",
@@ -51,13 +51,13 @@ describe("transformResponse", () => {
       assert.throws(
         () => transformData.call(config, transformResponse, response),
         (e) =>
-          e instanceof AxiosError && e.code === AxiosError.ERR_BAD_RESPONSE,
+          e instanceof FaxiosError && e.code === FaxiosError.ERR_BAD_RESPONSE,
       );
     });
 
-    it("attaches response to AxiosError so error.status and error.response are available", () => {
+    it("attaches response to FaxiosError so error.status and error.response are available", () => {
       // Regression test for https://github.com/axios/axios/issues/7224
-      // When JSON.parse fails in strict mode, the thrown AxiosError must carry
+      // When JSON.parse fails in strict mode, the thrown FaxiosError must carry
       // the original response so callers can inspect error.status and
       // error.response without having to re-examine the raw response.
       const response = { status: 200, headers: {}, data: "{bad json" };
@@ -74,7 +74,7 @@ describe("transformResponse", () => {
         thrown = e;
       }
 
-      assert.ok(thrown instanceof AxiosError, "must be AxiosError");
+      assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
       assert.strictEqual(
         thrown.status,
         200,

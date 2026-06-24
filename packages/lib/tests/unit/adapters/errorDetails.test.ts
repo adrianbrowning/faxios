@@ -28,9 +28,9 @@ describe("adapters - network-error details", () => {
       await (axios as unknown as { get: (url: string, config?: unknown) => Promise<unknown> }).get(`http://127.0.0.1:${port}`, { timeout: 500 });
       assert.fail("request unexpectedly succeeded");
     } catch (err) {
-      const e = err as Error & { isAxiosError: boolean; code: string };
+      const e = err as Error & { isFaxiosError: boolean; code: string };
       assert.ok(e instanceof Error, "should be an Error");
-      assert.strictEqual(e.isAxiosError, true, "isAxiosError should be true");
+      assert.strictEqual(e.isFaxiosError, true, "isFaxiosError should be true");
 
       assert.strictEqual(e.code, "ECONNREFUSED");
       assert.ok("cause" in e, "error.cause should exist");

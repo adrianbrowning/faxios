@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import axios from "../../src/index.js";
-import type { AxiosRequestConfig } from "../../src/lib/types.js";
-import AxiosError from "../../../lib/src/lib/core/AxiosError.js";
+import type { FaxiosRequestConfig } from "../../src/lib/types.js";
+import FaxiosError from "../../../lib/src/lib/core/FaxiosError.js";
 
 class MockXMLHttpRequest {
   requestHeaders: Record<string, string> = {};
@@ -100,7 +100,7 @@ class MockXMLHttpRequest {
 let requests: MockXMLHttpRequest[] = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
-const startRequest = (...args: [AxiosRequestConfig] | Parameters<typeof axios>) => {
+const startRequest = (...args: [FaxiosRequestConfig] | Parameters<typeof axios>) => {
   const promise = axios(...(args as Parameters<typeof axios>));
   const request = requests.at(-1);
   expect(request).toBeDefined();
@@ -236,8 +236,8 @@ describe("requests (vitest browser)", () => {
       })
       .catch((error) => error);
 
-    expect(reason).toBeInstanceOf(AxiosError);
-    expect(reason.code).toBe(AxiosError.ERR_INVALID_URL);
+    expect(reason).toBeInstanceOf(FaxiosError);
+    expect(reason.code).toBe(FaxiosError.ERR_INVALID_URL);
     expect(reason.message).toBe('Invalid URL: missing "//" after protocol');
     expect(reason.config.url).toBe("\u0000https:example.com/users");
     expect(reason.config.headers.get("X-Test")).toBe("yes");

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import axios from "../../src/index.js";
-import type { AxiosRequestConfig, InternalAxiosRequestConfig } from "../../src/lib/types.js";
+import type { FaxiosRequestConfig, InternalFaxiosRequestConfig } from "../../src/lib/types.js";
 import cookies from "../../../lib/src/lib/helpers/cookies.js";
 
 class MockXMLHttpRequest {
@@ -68,7 +68,7 @@ const clearXsrfCookie = () => {
   ).toUTCString()}; path=/`;
 };
 
-const sendRequest = async (url: string, config?: AxiosRequestConfig) => {
+const sendRequest = async (url: string, config?: FaxiosRequestConfig) => {
   const responsePromise = axios(url, config);
   const request = requests.at(-1);
 
@@ -184,9 +184,9 @@ describe("xsrf (vitest browser)", () => {
       setXsrfCookie(token);
 
       const request = await sendRequest("/foo", {
-        withXSRFToken: (config: InternalAxiosRequestConfig) => (config as InternalAxiosRequestConfig & { userFlag: string }).userFlag === "yes",
+        withXSRFToken: (config: InternalFaxiosRequestConfig) => (config as InternalFaxiosRequestConfig & { userFlag: string }).userFlag === "yes",
         userFlag: "yes",
-      } as AxiosRequestConfig);
+      } as FaxiosRequestConfig);
 
       expect(request.requestHeaders[axios.defaults.xsrfHeaderName as string]).toBe(token);
     });

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import AxiosError from "../../../src/lib/core/AxiosError.js";
+import FaxiosError from "../../../src/lib/core/FaxiosError.js";
 import validator from "../../../src/lib/helpers/validator.js";
 
 describe("validator::assertOptions", () => {
@@ -18,9 +18,9 @@ describe("validator::assertOptions", () => {
     } catch (err) {
       error = err;
     }
-    expect(error).toBeInstanceOf(AxiosError);
-    expect((error as AxiosError).message).toBe("Unknown option x");
-    expect((error as AxiosError).code).toBe(AxiosError.ERR_BAD_OPTION);
+    expect(error).toBeInstanceOf(FaxiosError);
+    expect((error as FaxiosError).message).toBe("Unknown option x");
+    expect((error as FaxiosError).code).toBe(FaxiosError.ERR_BAD_OPTION);
 
     expect(() => {
       validator.assertOptions(
@@ -51,9 +51,9 @@ describe("validator::assertOptions", () => {
     } catch (err) {
       error = err;
     }
-    expect(error).toBeInstanceOf(AxiosError);
-    expect((error as AxiosError).message).toBe("option x must be a boolean");
-    expect((error as AxiosError).code).toBe(AxiosError.ERR_BAD_OPTION_VALUE);
+    expect(error).toBeInstanceOf(FaxiosError);
+    expect((error as FaxiosError).message).toBe("option x must be a boolean");
+    expect((error as FaxiosError).code).toBe(FaxiosError.ERR_BAD_OPTION_VALUE);
 
     expect(() => {
       validator.assertOptions(

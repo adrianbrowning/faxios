@@ -1,333 +1,8 @@
-<h3 align="center">💎 Platinum sponsors <br /></h3>
-<table align="center">
-    <tr>
-        <td align="center" width="50%">
-            <a
-                href="https://thanks.dev/?utm_source&#x3D;axios&amp;utm_medium&#x3D;sponsorlist&amp;utm_campaign&#x3D;sponsorship"
-                style="padding: 10px; display: inline-block"
-                target="_blank"
-            >
-                <img
-                    width="90px"
-                    height="90px"
-                    src="https://images.opencollective.com/thanks-dev/360b917/logo/256.png?height=256"
-                    alt="Thanks.dev"
-                />
-            </a>
-            <p
-                align="center"
-            >
-                We're passionate about making open source sustainable. Scan your dependency tree to better understand which open source projects need funding.
-            </p>
-            <p align="center">
-                <a
-                    href="https://thanks.dev/?utm_source&#x3D;axios&amp;utm_medium&#x3D;readme_sponsorlist&amp;utm_campaign&#x3D;sponsorship"
-                    target="_blank"
-                    ><b>thanks.dev</b></a
-                >
-            </p>
-        </td>
-        <td align="center" width="50%">
-            <a
-                href="https://opencollective.com/axios/contribute"
-                target="_blank"
-                >💜 Become a sponsor</a
-            >
-        </td>
-    </tr>
-</table>
-<table align="center">
-    <tr>
-        <td align="center" width="50%">
-            <a
-                href="https://opencollective.com/axios/contribute"
-                target="_blank"
-                >💜 Become a sponsor</a
-            >
-        </td>
-        <td align="center" width="50%">
-            <a
-                href="https://opencollective.com/axios/contribute"
-                target="_blank"
-                >💜 Become a sponsor</a
-            >
-        </td>
-    </tr>
-</table>
-<h3 align="center">🥇 Gold sponsors <br /></h3>
-<table align="center" width="100%">
-    <tr width="33.333333333333336%">
-        <td align="center" width="33.333333333333336%">
-            <a
-                href="https://www.principal.com/about-us?utm_source&#x3D;axios&amp;utm_medium&#x3D;sponsorlist&amp;utm_campaign&#x3D;sponsorship"
-                style="padding: 10px; display: inline-block"
-                target="_blank"
-            >
-                <img
-                    width="90px"
-                    height="90px"
-                    src="https://images.opencollective.com/principal/431e690/logo.png"
-                    alt="Principal Financial Group"
-                />
-            </a>
-            <p
-                align="center"
-            >
-                Free tools to help with your financial planning needs!
-            </p>
-            <p align="center">
-                <a
-                    href="https://www.principal.com/about-us?utm_source&#x3D;axios&amp;utm_medium&#x3D;readme_sponsorlist&amp;utm_campaign&#x3D;sponsorship"
-                    target="_blank"
-                    ><b>principal.com</b></a
-                >
-            </p>
-        </td>
-        <td align="center" width="33.333333333333336%">
-            <a
-                href="https://opensource.sap.com?utm_source&#x3D;axios&amp;utm_medium&#x3D;sponsorlist&amp;utm_campaign&#x3D;sponsorship"
-                style="padding: 10px; display: inline-block"
-                target="_blank"
-            >
-                <img
-                    width="90px"
-                    height="90px"
-                    src="https://avatars.githubusercontent.com/u/2531208?s=200&v=4"
-                    alt="SAP"
-                />
-            </a>
-            <p
-                align="center"
-                title="SAP SE, a global software company, is one of the largest vendors of ERP and other enterprise applications."
-            >
-                BSAP SE, a global software company, is one of the largest vendors of ERP and other enterprise applications.
-            </p>
-            <p align="center">
-                <a
-                    href="https://opensource.sap.com?utm_source&#x3D;axios&amp;utm_medium&#x3D;readme_sponsorlist&amp;utm_campaign&#x3D;sponsorship"
-                    target="_blank"
-                    ><b>opensource.sap.com</b></a
-                >
-            </p>
-        </td>
-        <td align="center" width="33.333333333333336%">
-            <a
-                href="https://www.descope.com/?utm_source&#x3D;axios&amp;utm_medium&#x3D;referral&amp;utm_campaign&#x3D;axios-oss-sponsorship"
-                style="padding: 10px; display: inline-block"
-                target="_blank"
-            >
-               <img
-                    width="90px"
-                    height="90px"
-                    src="https://images.opencollective.com/descope/b53243e/logo.png"
-                    alt="Descope"
-                />
-            </a>
-            <p
-                align="center"
-                title="Hi, we&#x27;re Descope! We are building something in the authentication space for app developers and can't wait to place it in your hands."
-            >
-                Reduce user friction, prevent account takeover, and get a 360° view of your customer and agentic identities with the Descope External IAM platform.
-            </p>
-              <p align="center">
-                   <a
-                       href="https://www.descope.com/?utm_source&#x3D;axios&amp;utm_medium&#x3D;referral&amp;utm_campaign&#x3D;axios-oss-sponsorship"
-                       target="_blank"
-                       ><b>descope.com</b></a
-                   >
-              </p>
-        </td>
-    </tr>
-    <tr width="33.333333333333336%">
-        <td align="center" width="33.333333333333336%">
-            <a
-                href="https://stytch.com/"
-                style="padding: 10px; display: inline-block"
-                target="_blank"
-            >
-               <img
-                    width="90px"
-                    height="90px"
-                    src="https://images.opencollective.com/stytch/f84ce43/logo/256.png?height=256"
-                    alt="Stytch"
-                />
-            </a>
-            <p
-                align="center"
-            >
-                The identity platform for humans & AI agents
-            </p>
-            <p align="center">
-                   <a
-                       href="https://stytch.com"
-                       target="_blank"
-                       ><b>stytch.com</b></a
-                   >
-              </p>
-        </td>
-        <td align="center" width="33.333333333333336%">
-            <a
-                href="https://rxdb.info/?utm_source=axios_docs_website&utm_medium=website&utm_campaign=axios_open_collective_sponsorship&utm_content=logo"
-                style="padding: 10px; display: inline-block"
-                target="_blank"
-            >
-                <img
-                    width="90px"
-                    height="90px"
-                    src="https://rxdb.info/files/logo/logo_text_white.svg"
-                    alt="RxDB"
-                />
-            </a>
-            <p
-                align="center"
-            >
-                RxDB is a NoSQL database for JavaScript that runs directly in your app.
-            </p>
-            <p align="center">
-                <a
-                    href="https://rxdb.info/?utm_source=axios_docs_website&utm_medium=website&utm_campaign=axios_open_collective_sponsorship&utm_content=logo"
-                    target="_blank"
-                    ><b>rxdb.info</b></a
-                >
-            </p>
-        </td>
-        <td align="center" width="33.333333333333336%">
-            <a
-                href="https://poprey.com/?utm_source&#x3D;axios&amp;utm_medium&#x3D;sponsorlist&amp;utm_campaign&#x3D;sponsorship"
-                style="padding: 10px; display: inline-block"
-                target="_blank"
-            >
-                <img
-                    width="70px"
-                    height="70px"
-                    src="https://images.opencollective.com/instagram-likes/2a72a03/avatar.png"
-                    alt="Poprey"
-                />
-            </a>
-            <p align="center">
-                Buy Instagram Likes
-            </p>
-            <p align="center">
-                <a
-                    href="https://poprey.com/?utm_source&#x3D;axios&amp;utm_medium&#x3D;readme_sponsorlist&amp;utm_campaign&#x3D;sponsorship"
-                    target="_blank"
-                    ><b>poprey.com</b></a
-                >
-            </p>
-        </td>
-    </tr>
-    <tr width="33.333333333333336%">
-        <td align="center" width="33.333333333333336%">
-            <a
-                href="https://buzzoid.com/buy-instagram-followers/?utm_source=axios_docs_website&utm_medium=website&utm_campaign=axios_open_collective_sponsorship"
-                style="padding: 10px; display: inline-block"
-                target="_blank"
-            >
-                <img
-                    width="71px"
-                    height="70px"
-                    src="https://images.opencollective.com/buzzoid-buy-instagram-followers/56a09fe/logo.png"
-                    alt="Buzzoid - Buy Instagram Followers"
-                />
-            </a>
-            <p
-                align="center"
-            >
-                At Buzzoid, you can buy Instagram followers through a short checkout flow with safety controls. Rated world&#39;s #1 IG service since 2012.
-            </p>
-            <p align="center">
-                <a
-                    href="https://buzzoid.com/buy-instagram-followers/?utm_source=axios_docs_website&utm_medium=website&utm_campaign=axios_open_collective_sponsorship"
-                    target="_blank"
-                    ><b>buzzoid.com</b></a
-                >
-            </p>
-        </td>
-        <td align="center" width="33.333333333333336%">
-            <a
-                href="https://twicsy.com/buy-instagram-followers/?utm_source=axios_docs_website&utm_medium=website&utm_campaign=axios_open_collective_sponsorship"
-                style="padding: 10px; display: inline-block"
-                target="_blank"
-            >
-                <img
-                    width="71px"
-                    height="70px"
-                    src="https://images.opencollective.com/buy-instagram-followers-twicsy/b4c5d7f/logo/256.png?height=256"
-                    alt="Buy Instagram Followers Twicsy"
-                />
-            </a>
-            <p
-                align="center"
-            >
-                Buy real Instagram followers from Twicsy. Twicsy has been voted the best site to buy followers from the likes of US Magazine.
-            </p>
-            <p align="center">
-                <a
-                    href="https://twicsy.com/buy-instagram-followers/?utm_source=axios_docs_website&utm_medium=website&utm_campaign=axios_open_collective_sponsorship"
-                    target="_blank"
-                    ><b>twicsy.com</b></a
-                >
-            </p>
-        </td>
-        <td align="center" width="33.333333333333336%">
-            <a
-                href="https://global.fun88.com/?utm_source=axios_docs_website&utm_medium=website&utm_campaign=axios_open_collective_sponsorship"
-                style="padding: 10px; display: inline-block"
-                target="_blank"
-            >
-                <img
-                    width="71px"
-                    height="70px"
-                    src="https://images.opencollective.com/fun88-official/bf2843c/logo.png"
-                    alt="Fun 88"
-                />
-            </a>
-            <p
-                align="center"
-            >
-                Fun88 is a global online gambling and betting brand founded in 2009, offering a wide range of services including sports betting, live casino games, slots, and virtual gaming.
-            </p>
-            <p align="center">
-                <a
-                    href="https://global.fun88.com/?utm_source=axios_docs_website&utm_medium=website&utm_campaign=axios_open_collective_sponsorship"
-                    target="_blank"
-                    ><b>global.fun88.com</b></a
-                >
-            </p>
-        </td>
-    </tr>
-</table>
+# faxios
 
+> Promise based HTTP client for the browser and node.js — a TypeScript-first fork of [axios](https://github.com/axios/axios).
 
-<!--<div>marker</div>-->
-
-<br><br>
-
-<div align="center">
-   <a href="https://axios.rest"><img src="https://axios.rest/logo.svg" alt="Axios" /></a><br>
-</div>
-
-<p align="center">Promise based HTTP client for the browser and node.js</p>
-
-<p align="center">
-    <a href="https://axios.rest/"><b>Website</b></a> •
-    <a href="https://axios.rest/pages/getting-started/first-steps.html"><b>Documentation</b></a>
-</p>
-
-<div align="center">
-
-[![npm version](https://img.shields.io/npm/v/axios.svg?style=flat-square)](https://www.npmjs.org/package/axios)
-[![Build status](https://img.shields.io/github/actions/workflow/status/axios/axios/ci.yml?branch=v1.x&label=CI&logo=github&style=flat-square)](https://github.com/axios/axios/actions/workflows/ci.yml)
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod&style=flat-square)](https://gitpod.io/#https://github.com/axios/axios)
-[![install size](https://img.shields.io/badge/dynamic/json?url=https://packagephobia.com/v2/api.json?p=axios&query=$.install.pretty&label=install%20size&style=flat-square)](https://packagephobia.now.sh/result?p=axios)
-[![npm bundle size](https://img.shields.io/bundlephobia/minzip/axios?style=flat-square)](https://bundlephobia.com/package/axios@latest)
-[![npm downloads](https://img.shields.io/npm/dm/axios.svg?style=flat-square)](https://npm-stat.com/charts.html?package=axios)
-[![gitter chat](https://img.shields.io/gitter/room/mzabriskie/axios.svg?style=flat-square)](https://gitter.im/mzabriskie/axios)
-[![code helpers](https://www.codetriage.com/axios/axios/badges/users.svg)](https://www.codetriage.com/axios/axios)
-[![Contributors](https://img.shields.io/github/contributors/axios/axios.svg?style=flat-square)](CONTRIBUTORS.md)
-[![Agent Friendly](https://agentfriendlycode.com/api/badge/github/axios/axios.svg)](https://agentfriendlycode.com/repo/32)
-
-</div>
+[![npm version](https://img.shields.io/npm/v/faxios.svg?style=flat-square)](https://www.npmjs.org/package/faxios)
 
 ## Table of contents
 
@@ -337,7 +12,7 @@
   - [Package manager](#package-manager)
   - [CDN](#cdn)
 - [Example](#example)
-- [Axios API](#axios-api)
+- [Faxios API](#faxios-api)
 - [Request method aliases](#request-method-aliases)
 - [Concurrency](#concurrency-deprecated)
 - [Creating an instance](#creating-an-instance)
@@ -345,7 +20,7 @@
 - [Request config](#request-config)
 - [Response schema](#response-schema)
 - [Config defaults](#config-defaults)
-  - [Global axios defaults](#global-axios-defaults)
+  - [Global faxios defaults](#global-faxios-defaults)
   - [Custom instance defaults](#custom-instance-defaults)
   - [Config order of precedence](#config-order-of-precedence)
 - [Interceptors](#interceptors)
@@ -366,7 +41,7 @@
 - [HTML form posting](#html-form-posting-browser)
 - [Progress capturing](#progress-capturing)
 - [Rate limiting](#rate-limiting)
-- [AxiosHeaders](#axiosheaders)
+- [FaxiosHeaders](#Faxiosheaders)
 - [Fetch adapter](#fetch-adapter)
   - [Custom fetch](#custom-fetch)
     - [Using with Tauri](#using-with-tauri)
@@ -400,7 +75,7 @@
 | ![Chrome browser logo](https://raw.githubusercontent.com/alrra/browser-logos/main/src/chrome/chrome_48x48.png) | ![Firefox browser logo](https://raw.githubusercontent.com/alrra/browser-logos/main/src/firefox/firefox_48x48.png) | ![Safari browser logo](https://raw.githubusercontent.com/alrra/browser-logos/main/src/safari/safari_48x48.png) | ![Opera browser logo](https://raw.githubusercontent.com/alrra/browser-logos/main/src/opera/opera_48x48.png) | ![Edge browser logo](https://raw.githubusercontent.com/alrra/browser-logos/main/src/edge/edge_48x48.png) |
 |                                                    Latest ✔                                                    |                                                     Latest ✔                                                      |                                                    Latest ✔                                                    |                                                  Latest ✔                                                   |                                                 Latest ✔                                                 |
 
-[![Browser Matrix](https://saucelabs.com/open_sauce/build_matrix/axios.svg)](https://saucelabs.com/u/axios)
+[![Browser Matrix](https://saucelabs.com/open_sauce/build_matrix/faxios.svg)](https://saucelabs.com/u/faxios)
 
 ## Installing
 
@@ -409,60 +84,60 @@
 Using npm:
 
 ```bash
-$ npm install axios
+$ npm install faxios
 ```
 
 Using yarn:
 
 ```bash
-$ yarn add axios
+$ yarn add faxios
 ```
 
 Using pnpm:
 
 ```bash
-$ pnpm add axios
+$ pnpm add faxios
 ```
 
 Using bun:
 
 ```bash
-$ bun add axios
+$ bun add faxios
 ```
 
 Once the package is installed, import it with `import` or `require`:
 
 ```js
-import axios, { isCancel, AxiosError } from 'axios';
+import faxios, { isCancel, FaxiosError } from 'faxios';
 ```
 
-You can also use the default export, since the named export is just a re-export from the Axios factory:
+You can also use the default export, since the named export is just a re-export from the Faxios factory:
 
 ```js
-import axios from 'axios';
+import faxios from 'faxios';
 
-console.log(axios.isCancel('something'));
+console.log(faxios.isCancel('something'));
 ```
 
 If you use `require` for importing, **only the default export is available**:
 
 ```js
-const axios = require('axios');
+const faxios = require('faxios');
 
-console.log(axios.isCancel('something'));
+console.log(faxios.isCancel('something'));
 ```
 
 Some bundlers and ES6 linters need this form:
 
 ```js
-import { default as axios } from 'axios';
+import { default as faxios } from 'faxios';
 ```
 
 In custom or legacy environments, you can import the bundle directly:
 
 ```js
-const axios = require('axios/dist/browser/axios.cjs'); // browser commonJS bundle (ES2017)
-// const axios = require('axios/dist/node/axios.cjs'); // node commonJS bundle (ES2017)
+const faxios = require('faxios/dist/browser/faxios.cjs'); // browser commonJS bundle (ES2017)
+// const faxios = require('faxios/dist/node/faxios.cjs'); // node commonJS bundle (ES2017)
 ```
 
 ### CDN
@@ -470,30 +145,30 @@ const axios = require('axios/dist/browser/axios.cjs'); // browser commonJS bundl
 Using jsDelivr CDN (ES5 UMD browser module):
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/axios@1.13.2/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/faxios@1.13.2/dist/faxios.min.js"></script>
 ```
 
 Using unpkg CDN:
 
 ```html
-<script src="https://unpkg.com/axios@1.13.2/dist/axios.min.js"></script>
+<script src="https://unpkg.com/faxios@1.13.2/dist/faxios.min.js"></script>
 ```
 
 ## Example
 
 ```js
-import axios from 'axios';
-//const axios = require('axios'); // legacy way
+import faxios from 'faxios';
+//const faxios = require('faxios'); // legacy way
 
 try {
-  const response = await axios.get('/user?ID=12345');
+  const response = await faxios.get('/user?ID=12345');
   console.log(response);
 } catch (error) {
   console.error(error);
 }
 
 // Optionally the request above could also be done as
-axios
+faxios
   .get('/user', {
     params: {
       ID: 12345,
@@ -514,7 +189,7 @@ axios
 async function getUser() {
   try {
 // Example: GET request with query parameters
-const response = await axios.get('/user', {
+const response = await faxios.get('/user', {
   params: {
     ID: 12345
   }
@@ -538,7 +213,7 @@ console.log(response);
 Performing a `POST` request
 
 ```js
-const response = await axios.post('/user', {
+const response = await faxios.post('/user', {
   firstName: 'Fred',
   lastName: 'Flintstone',
 });
@@ -549,11 +224,11 @@ Performing multiple concurrent requests
 
 ```js
 function getUserAccount() {
-  return axios.get('/user/12345');
+  return faxios.get('/user/12345');
 }
 
 function getUserPermissions() {
-  return axios.get('/user/12345/permissions');
+  return faxios.get('/user/12345/permissions');
 }
 
 Promise.all([getUserAccount(), getUserPermissions()]).then(function (results) {
@@ -562,15 +237,15 @@ Promise.all([getUserAccount(), getUserPermissions()]).then(function (results) {
 });
 ```
 
-## axios API
+## faxios API
 
-Requests can be made by passing the relevant config to `axios`.
+Requests can be made by passing the relevant config to `faxios`.
 
-##### axios(config)
+##### faxios(config)
 
 ```js
 // Send a POST request
-axios({
+faxios({
   method: 'post',
   url: '/user/12345',
   data: {
@@ -582,7 +257,7 @@ axios({
 
 ```js
 // GET request for remote image in node.js
-const response = await axios({
+const response = await faxios({
   method: 'get',
   url: 'https://bit.ly/2mTM3nY',
   responseType: 'stream',
@@ -590,32 +265,32 @@ const response = await axios({
 response.data.pipe(fs.createWriteStream('ada_lovelace.jpg'));
 ```
 
-##### axios(url[, config])
+##### faxios(url[, config])
 
 ```js
 // Send a GET request (default method)
-axios('/user/12345');
+faxios('/user/12345');
 ```
 
 ### Request method aliases
 
 For convenience, aliases have been provided for all common request methods.
 
-##### axios.request(config)
+##### faxios.request(config)
 
-##### axios.get(url[, config])
+##### faxios.get(url[, config])
 
-##### axios.delete(url[, config])
+##### faxios.delete(url[, config])
 
-##### axios.head(url[, config])
+##### faxios.head(url[, config])
 
-##### axios.options(url[, config])
+##### faxios.options(url[, config])
 
-##### axios.post(url[, data[, config]])
+##### faxios.post(url[, data[, config]])
 
-##### axios.put(url[, data[, config]])
+##### faxios.put(url[, data[, config]])
 
-##### axios.patch(url[, data[, config]])
+##### faxios.patch(url[, data[, config]])
 
 ###### Note
 
@@ -627,17 +302,17 @@ Use `Promise.all` instead of these helpers.
 
 Helper functions for dealing with concurrent requests.
 
-axios.all(iterable)
-axios.spread(callback)
+faxios.all(iterable)
+faxios.spread(callback)
 
 ### Creating an instance
 
-You can create a new instance of axios with a custom config.
+You can create a new instance of faxios with a custom config.
 
-##### axios.create([config])
+##### faxios.create([config])
 
 ```js
-const instance = axios.create({
+const instance = faxios.create({
   baseURL: 'https://some-domain.com/api/',
   timeout: 1000,
   headers: { 'X-Custom-Header': 'foobar' },
@@ -646,25 +321,25 @@ const instance = axios.create({
 
 ### Instance methods
 
-The following instance methods are available. Axios merges the specified config with the instance config.
+The following instance methods are available. Faxios merges the specified config with the instance config.
 
-##### axios#request(config)
+##### faxios#request(config)
 
-##### axios#get(url[, config])
+##### faxios#get(url[, config])
 
-##### axios#delete(url[, config])
+##### faxios#delete(url[, config])
 
-##### axios#head(url[, config])
+##### faxios#head(url[, config])
 
-##### axios#options(url[, config])
+##### faxios#options(url[, config])
 
-##### axios#post(url[, data[, config]])
+##### faxios#post(url[, data[, config]])
 
-##### axios#put(url[, data[, config]])
+##### faxios#put(url[, data[, config]])
 
-##### axios#patch(url[, data[, config]])
+##### faxios#patch(url[, data[, config]])
 
-##### axios#getUri([config])
+##### faxios#getUri([config])
 
 ## Request config
 
@@ -675,11 +350,11 @@ By default `maxContentLength` and `maxBodyLength` are `-1` (unlimited). A malici
 If you call servers you do not fully trust, **set a cap**:
 
 ```js
-axios.defaults.maxContentLength = 10 * 1024 * 1024; // 10 MB
-axios.defaults.maxBodyLength = 10 * 1024 * 1024;
+faxios.defaults.maxContentLength = 10 * 1024 * 1024; // 10 MB
+faxios.defaults.maxBodyLength = 10 * 1024 * 1024;
 ```
 
-See the [security guide](https://axios.rest/pages/misc/security.html) for details.
+See the [security guide](https://faxios.rest/pages/misc/security.html) for details.
 
 These config options are available for requests. Only `url` is required. Requests default to `GET` when `method` is not set.
 
@@ -691,8 +366,8 @@ These config options are available for requests. Only `url` is required. Request
   // `method` is the request method to be used when making the request
   method: 'get', // default
 
-  // Axios prepends `baseURL` to `url` unless `url` is absolute and `allowAbsoluteUrls` is set to true.
-  // It can be convenient to set `baseURL` for an instance of axios to pass relative URLs
+  // Faxios prepends `baseURL` to `url` unless `url` is absolute and `allowAbsoluteUrls` is set to true.
+  // It can be convenient to set `baseURL` for an instance of faxios to pass relative URLs
   // to the methods of that instance.
   baseURL: 'https://some-domain.com/api/',
 
@@ -763,7 +438,7 @@ These config options are available for requests. Only `url` is required. Request
     indexes: false, // Three available options: (1) indexes: null (leads to no brackets), (2) (default) indexes: false (leads to empty brackets), (3) indexes: true (leads to brackets with indexes).
 
     // Maximum object nesting depth when serializing params. Payloads deeper than this throw an
-    // AxiosError with code ERR_FORM_DATA_DEPTH_EXCEEDED. Default: 100. Set to Infinity to disable.
+    // FaxiosError with code ERR_FORM_DATA_DEPTH_EXCEEDED. Default: 100. Set to Infinity to disable.
     maxDepth: 100
 
   },
@@ -790,7 +465,7 @@ These config options are available for requests. Only `url` is required. Request
   data: 'Country=Brasil&City=Belo Horizonte',
 
   // `timeout` specifies the number of milliseconds before the request times out.
-  // If the request takes longer than `timeout`, Axios aborts it.
+  // If the request takes longer than `timeout`, Faxios aborts it.
   timeout: 1000, // default is `0` (no timeout)
 
   // `withCredentials` indicates whether or not cross-site Access-Control requests
@@ -813,7 +488,7 @@ These config options are available for requests. Only `url` is required. Request
   // `Authorization` custom headers you have set using `headers`.
   // If `auth` is omitted, the Node.js HTTP and fetch adapters can read
   // HTTP Basic auth credentials from the request URL, for example
-  // `https://user:pass@example.com`. Axios decodes percent-encoded URL
+  // `https://user:pass@example.com`. Faxios decodes percent-encoded URL
   // credentials, and `auth` takes precedence over URL-embedded credentials.
   // The Node.js HTTP adapter preserves Basic auth on same-origin redirects
   // and strips it on cross-origin redirects.
@@ -847,9 +522,9 @@ These config options are available for requests. Only `url` is required. Request
   // `true` - always set XSRF header, including for cross-origin requests
   // `false` - never set XSRF header
   // function - resolve with custom logic; receives the internal config object
-  withXSRFToken: boolean | undefined | ((config: InternalAxiosRequestConfig) => boolean | undefined),
+  withXSRFToken: boolean | undefined | ((config: InternalFaxiosRequestConfig) => boolean | undefined),
 
-  // `withXSRFToken` controls whether Axios reads the XSRF cookie and sets the XSRF header.
+  // `withXSRFToken` controls whether Faxios reads the XSRF cookie and sets the XSRF header.
   // - `undefined` (default): the XSRF header is set only for same-origin requests.
   // - `true`: attempt to set the XSRF header for all requests (including cross-origin).
   // - `false`: never set the XSRF header.
@@ -857,25 +532,25 @@ These config options are available for requests. Only `url` is required. Request
   //   `false`, or `undefined` to decide per-request behavior.
   //
   // Note about `withCredentials`: `withCredentials` controls whether cross-site
-  // requests include credentials (cookies and HTTP auth). In older Axios versions,
-  // setting `withCredentials: true` implicitly caused Axios to set the XSRF header
-  // for cross-origin requests. Newer Axios separates these concerns: to allow the
+  // requests include credentials (cookies and HTTP auth). In older Faxios versions,
+  // setting `withCredentials: true` implicitly caused Faxios to set the XSRF header
+  // for cross-origin requests. Newer Faxios separates these concerns: to allow the
   // XSRF header to be sent for cross-origin requests you should set both
   // `withCredentials: true` and `withXSRFToken: true`.
   //
   // Example:
-  // axios.get('/user', { withCredentials: true, withXSRFToken: true });
+  // faxios.get('/user', { withCredentials: true, withXSRFToken: true });
 
   // `onUploadProgress` allows handling of progress events for uploads
   // browser & node.js
   onUploadProgress: function ({loaded, total, progress, bytes, estimated, rate, upload = true}) {
-    // Do whatever you want with the Axios progress event
+    // Do whatever you want with the Faxios progress event
   },
 
   // `onDownloadProgress` allows handling of progress events for downloads
   // browser & node.js
   onDownloadProgress: function ({loaded, total, progress, bytes, estimated, rate, download = true}) {
-    // Do whatever you want with the Axios progress event
+    // Do whatever you want with the Faxios progress event
   },
 
   // `maxContentLength` defines the max size of the response content in bytes.
@@ -886,19 +561,19 @@ These config options are available for requests. Only `url` is required. Request
   // It is enforced by the Node.js HTTP adapter and the fetch adapter when the body length can be determined.
   maxBodyLength: 2000,
 
-  // `redact` masks matching config keys when AxiosError#toJSON() is called.
+  // `redact` masks matching config keys when FaxiosError#toJSON() is called.
   // Matching is case-insensitive and recursive. It does not change the request.
   redact: ['authorization', 'password'],
 
   // `validateStatus` defines whether to resolve or reject the promise for a given
   // HTTP response status code. If `validateStatus` returns `true` (or is set to `null`
-  // or `undefined`), Axios resolves the promise; otherwise, Axios rejects it.
+  // or `undefined`), Faxios resolves the promise; otherwise, Faxios rejects it.
   validateStatus: function (status) {
     return status >= 200 && status < 300; // default
   },
 
   // `maxRedirects` defines the maximum number of redirects to follow in node.js.
-  // If set to 0, Axios follows no redirects.
+  // If set to 0, Faxios follows no redirects.
   maxRedirects: 21, // default
 
   // `sensitiveHeaders` (Node only option) lists custom secret-bearing headers
@@ -907,7 +582,7 @@ These config options are available for requests. Only `url` is required. Request
   // option is not used.
   sensitiveHeaders: ['X-API-Key'],
 
-  // `beforeRedirect` defines a function that Axios calls before redirect.
+  // `beforeRedirect` defines a function that Faxios calls before redirect.
   // Use this to adjust the request options upon redirecting,
   // to inspect the latest response headers,
   // or to cancel the request by throwing an error
@@ -941,14 +616,14 @@ These config options are available for requests. Only `url` is required. Request
 
   // `allowedSocketPaths` restricts which `socketPath` values are accepted.
   // Accepts a string or array of strings. Entries and the incoming socketPath
-  // are compared after path.resolve(). A mismatch throws AxiosError with code
+  // are compared after path.resolve(). A mismatch throws FaxiosError with code
   // `ERR_BAD_OPTION_VALUE`. When null/undefined, no restriction is applied.
   allowedSocketPaths: null, // default
 
   // `transport` determines the transport method for the request.
-  // If defined, Axios uses it. Otherwise, if `maxRedirects` is 0,
-  // Axios uses the default `http` or `https` library, depending on the protocol specified in `protocol`.
-  // Otherwise, Axios uses the `httpFollow` or `httpsFollow` library, again depending on the protocol,
+  // If defined, Faxios uses it. Otherwise, if `maxRedirects` is 0,
+  // Faxios uses the default `http` or `https` library, depending on the protocol specified in `protocol`.
+  // Otherwise, Faxios uses the `httpFollow` or `httpsFollow` library, again depending on the protocol,
   // which can handle redirects.
   transport: undefined, // default
 
@@ -968,23 +643,23 @@ These config options are available for requests. Only `url` is required. Request
   // Use `false` to disable proxies, ignoring environment variables.
   // `auth` indicates that HTTP Basic auth should be used to connect to the proxy, and
   // supplies credentials.
-  // For `http://` targets, axios sends the request to the proxy in
+  // For `http://` targets, faxios sends the request to the proxy in
   // forward-proxy mode and stamps `Proxy-Authorization` onto the request
   // headers (overwriting any user-supplied `Proxy-Authorization` header).
-  // For `https://` targets, axios establishes a CONNECT tunnel through the
+  // For `https://` targets, faxios establishes a CONNECT tunnel through the
   // proxy and performs TLS end-to-end with the origin; `Proxy-Authorization`
   // is sent on the CONNECT request only, never on the wrapped TLS request,
-  // so the proxy never sees the URL, headers, or body. Axios forwards
+  // so the proxy never sees the URL, headers, or body. Faxios forwards
   // `httpsAgent` TLS options such as `ca`, `cert`, `key`, and
   // `rejectUnauthorized` to the generated tunneling agent, so they still apply
   // to the origin TLS connection.
-  // If you supply an `HttpsProxyAgent`, axios leaves tunneling to that agent.
+  // If you supply an `HttpsProxyAgent`, faxios leaves tunneling to that agent.
   // If the proxy server uses HTTPS, then you must set the protocol to `https`.
   // A user-supplied `Host` header in `headers` is preserved when forwarding
   // through a proxy (case-insensitive match on `host`/`Host`/`HOST`); this
   // lets you target a virtual host that differs from the request URL, for
   // example, hitting `127.0.0.1:4000` while having the proxy treat the
-  // request as `example.com`. If no `Host` header is supplied, axios
+  // request as `example.com`. If no `Host` header is supplied, faxios
   // defaults it to the request URL's `hostname:port` as before. The Host
   // header is only set in forward-proxy mode (HTTP targets); for HTTPS
   // tunneling the Host header is sent inside the TLS connection, not seen
@@ -1005,13 +680,13 @@ These config options are available for requests. Only `url` is required. Request
   cancelToken: new CancelToken(function (cancel) {
   }),
 
-  // an alternative way to cancel Axios requests using AbortController
+  // an alternative way to cancel Faxios requests using AbortController
   signal: new AbortController().signal,
 
   // `decompress` indicates whether or not the response body should be decompressed
   // automatically. If set to `true` will also remove the 'content-encoding' header
   // from the responses objects of all decompressed responses
-  // Axios supports gzip, deflate, brotli, and zstd when the current Node.js
+  // Faxios supports gzip, deflate, brotli, and zstd when the current Node.js
   // runtime provides the corresponding zlib decompressor.
   // - Node only (XHR cannot turn off decompression)
   decompress: true, // default
@@ -1030,11 +705,11 @@ These config options are available for requests. Only `url` is required. Request
     // `true`  - ignore JSON parsing errors and set response.data to null if parsing failed (old behaviour)
     // `false` - throw SyntaxError if JSON parsing failed
     // Important: this option only takes effect when `responseType` is explicitly set to 'json'.
-    // When `responseType` is omitted (defaults to no value), axios uses `forcedJSONParsing`
+    // When `responseType` is omitted (defaults to no value), faxios uses `forcedJSONParsing`
     // to attempt JSON parsing, but will silently return the raw string on failure regardless
     // of this setting. To have invalid JSON throw errors, use:
     //   { responseType: 'json', transitional: { silentJSONParsing: false } }
-    silentJSONParsing: true, // default value for the current Axios version
+    silentJSONParsing: true, // default value for the current Faxios version
 
     // try to parse the response string as JSON even if `responseType` is not 'json'
     forcedJSONParsing: true,
@@ -1043,7 +718,7 @@ These config options are available for requests. Only `url` is required. Request
     clarifyTimeoutError: false,
 
     // advertise `zstd` in the default Accept-Encoding header when the current
-    // Node.js runtime supports zstd decompression. Axios still decompresses
+    // Node.js runtime supports zstd decompression. Faxios still decompresses
     // zstd responses when support exists and `decompress` is true.
     advertiseZstdAcceptEncoding: false,
 
@@ -1061,7 +736,7 @@ These config options are available for requests. Only `url` is required. Request
       dots: boolean; // use dots instead of brackets format
       metaTokens: boolean; // keep special endings like {} in parameter key
       indexes: boolean; // array indexes format null - no brackets, false - empty brackets, true - brackets with indexes
-      maxDepth: 100; // maximum object nesting depth; throws AxiosError (ERR_FORM_DATA_DEPTH_EXCEEDED) if exceeded. Set to Infinity to disable.
+      maxDepth: 100; // maximum object nesting depth; throws FaxiosError (ERR_FORM_DATA_DEPTH_EXCEEDED) if exceeded. Set to Infinity to disable.
   },
 
   // http adapter only (node.js)
@@ -1074,26 +749,26 @@ These config options are available for requests. Only `url` is required. Request
 
 ### Strict RFC 3986 percent-encoding for query params
 
-By default, axios decodes `%3A`, `%24`, `%2C` and `%20` back to `:`, `$`, `,` and `+` for readability (the `+` follows the `application/x-www-form-urlencoded` convention for spaces in query strings). These characters are valid in a query component under [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986#section-3.4), so the default output is correct, but some backends require strict percent-encoding and reject the readable form.
+By default, faxios decodes `%3A`, `%24`, `%2C` and `%20` back to `:`, `$`, `,` and `+` for readability (the `+` follows the `application/x-www-form-urlencoded` convention for spaces in query strings). These characters are valid in a query component under [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986#section-3.4), so the default output is correct, but some backends require strict percent-encoding and reject the readable form.
 
 Override the default encoder via `paramsSerializer.encode`:
 
 ```js
 // Per-request: emit strict RFC 3986 percent-encoding for query values
-axios.get('/foo', {
+faxios.get('/foo', {
   params: { filter: JSON.stringify({ startedAt: '2026-01-23' }) },
   paramsSerializer: { encode: encodeURIComponent }
 });
 
 // Or set it on the instance defaults
-const client = axios.create({
+const client = faxios.create({
   paramsSerializer: { encode: encodeURIComponent }
 });
 ```
 
 ## HTTP/2 support
 
-Axios has experimental HTTP/2 support in the Node.js HTTP adapter.
+Faxios has experimental HTTP/2 support in the Node.js HTTP adapter.
 
 Support depends on the runtime environment and Node.js version. Redirects and some adapter behavior may differ from HTTP/1.1.
 
@@ -1121,7 +796,7 @@ The response to a request contains the following information.
   // Example: `response.headers['content-type']`
   headers: {},
 
-  // `config` is the config that was provided to `axios` for the request
+  // `config` is the config that was provided to `faxios` for the request
   config: {},
 
   // `request` is the request that generated this response
@@ -1134,7 +809,7 @@ The response to a request contains the following information.
 When using `then`, you receive the response like this:
 
 ```js
-const response = await axios.get('/user/12345');
+const response = await faxios.get('/user/12345');
 console.log(response.data);
 console.log(response.status);
 console.log(response.statusText);
@@ -1148,23 +823,23 @@ When using `catch`, or passing a [rejection callback](https://developer.mozilla.
 
 Config defaults apply to every request.
 
-### Global axios defaults
+### Global faxios defaults
 
 ```js
-axios.defaults.baseURL = 'https://api.example.com';
+faxios.defaults.baseURL = 'https://api.example.com';
 
-// Important: If you use axios with multiple domains, Axios sends AUTH_TOKEN to all of them.
+// Important: If you use faxios with multiple domains, Faxios sends AUTH_TOKEN to all of them.
 // See below for an example using Custom instance defaults instead.
-axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+faxios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+faxios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 ```
 
 ### Custom instance defaults
 
 ```js
 // Set config defaults when creating the instance
-const instance = axios.create({
+const instance = faxios.create({
   baseURL: 'https://api.example.com',
 });
 
@@ -1174,12 +849,12 @@ instance.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
 ### Config order of precedence
 
-Axios merges config in this order: library defaults from [lib/defaults/index.js](https://github.com/axios/axios/blob/main/lib/defaults/index.js#L49), the instance `defaults` property, and the request `config` argument. Later values take precedence over earlier ones.
+Faxios merges config in this order: library defaults from [lib/defaults/index.js](https://github.com/faxios/faxios/blob/main/lib/defaults/index.js#L49), the instance `defaults` property, and the request `config` argument. Later values take precedence over earlier ones.
 
 ```js
 // Create an instance using the config defaults provided by the library
 // At this point the timeout config value is `0` as is the default for the library
-const instance = axios.create();
+const instance = faxios.create();
 
 // Override timeout default for the library
 // Now all requests using this instance will wait 2.5 seconds before timing out
@@ -1197,7 +872,7 @@ You can intercept requests or responses before methods like `.get()` or `.post()
 resolve their promises (before code inside `then` or `catch`, or after `await`)
 
 ```js
-const instance = axios.create();
+const instance = faxios.create();
 
 // Add a request interceptor
 instance.interceptors.request.use(
@@ -1229,7 +904,7 @@ instance.interceptors.response.use(
 If you need to remove an interceptor later you can.
 
 ```js
-const instance = axios.create();
+const instance = faxios.create();
 const myInterceptor = instance.interceptors.request.use(function () {
   /*...*/
 });
@@ -1239,7 +914,7 @@ instance.interceptors.request.eject(myInterceptor);
 You can also clear all interceptors for requests or responses.
 
 ```js
-const instance = axios.create();
+const instance = faxios.create();
 instance.interceptors.request.use(function () {
   /*...*/
 });
@@ -1250,22 +925,22 @@ instance.interceptors.response.use(function () {
 instance.interceptors.response.clear(); // Removes interceptors from responses
 ```
 
-You can add interceptors to a custom instance of axios.
+You can add interceptors to a custom instance of faxios.
 
 ```js
-const instance = axios.create();
+const instance = faxios.create();
 instance.interceptors.request.use(function () {
   /*...*/
 });
 ```
 
 When you add request interceptors, they are presumed to be asynchronous by default. This can cause a delay
-in the execution of your axios request when the main thread is blocked (a promise is created under the hood for
+in the execution of your faxios request when the main thread is blocked (a promise is created under the hood for
 the interceptor and your request gets put at the bottom of the call stack). If your request interceptors are synchronous you can add a flag
-to the options object that will tell axios to run the code synchronously and avoid any delays in request execution.
+to the options object that will tell faxios to run the code synchronously and avoid any delays in request execution.
 
 ```js
-axios.interceptors.request.use(
+faxios.interceptors.request.use(
   function (config) {
     config.headers.test = 'I am only a header!';
     return config;
@@ -1277,7 +952,7 @@ axios.interceptors.request.use(
 
 If you want to execute a particular interceptor based on a runtime check,
 you can add a `runWhen` function to the options object. The request interceptor will not run **if and only if** the return
-of `runWhen` is `false`. Axios calls the function with the config
+of `runWhen` is `false`. Faxios calls the function with the config
 object (don't forget that you can bind your own arguments to it as well.) This can be handy when you have an
 asynchronous request interceptor that only needs to run at certain times.
 
@@ -1285,7 +960,7 @@ asynchronous request interceptor that only needs to run at certain times.
 function onGetCall(config) {
   return config.method === 'get';
 }
-axios.interceptors.request.use(
+faxios.interceptors.request.use(
   function (config) {
     config.headers.test = 'special get headers';
     return config;
@@ -1308,7 +983,7 @@ Response interceptors run in the order they were added (FIFO: first in, first ou
 Example:
 
 ```js
-const instance = axios.create();
+const instance = faxios.create();
 
 const interceptor = (id) => (base) => {
   console.log(id);
@@ -1339,37 +1014,37 @@ When a response is fulfilled and multiple response interceptors are registered:
 - Each interceptor runs in registration order.
 - Each interceptor receives the result from the previous interceptor.
 - The chain returns the result from the last interceptor.
-- If a fulfillment interceptor throws, Axios skips the next fulfillment interceptor and calls the next rejection interceptor.
+- If a fulfillment interceptor throws, Faxios skips the next fulfillment interceptor and calls the next rejection interceptor.
 - After the error is caught, later fulfillment interceptors run again, just like in a promise chain.
 
 Read [the interceptor tests](./test/specs/interceptors.spec.js) to see all this in code.
 
 ## Error types
 
-Axios error messages include details that can help you debug the request.
+Faxios error messages include details that can help you debug the request.
 
-Axios errors use this structure:
+Faxios errors use this structure:
 | Property | Definition |
 | -------- | ---------- |
 | message | A quick summary of the error message and the status it failed with. |
-| name | This defines where the error originated from. For axios, it will always be an 'AxiosError'. |
+| name | This defines where the error originated from. For faxios, it will always be an 'FaxiosError'. |
 | stack | Stack trace for the error. |
-| config | An axios config object with specific instance configurations defined by the user from when the request was made |
-| code | Axios error code. The table below lists internal Axios error codes. |
+| config | An faxios config object with specific instance configurations defined by the user from when the request was made |
+| code | Faxios error code. The table below lists internal Faxios error codes. |
 | status | HTTP response status code. See [here](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes) for common HTTP response status code meanings.
 
-These are the internal Axios error codes:
+These are the internal Faxios error codes:
 
 | Code                      | Definition                                                                                                                                                                                                                                                                                                                                                                                     |
 | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ERR_BAD_OPTION_VALUE      | Invalid value provided in axios configuration.                                                                                                                                                                                                                                                                                                                                                 |
-| ERR_BAD_OPTION            | Invalid option provided in axios configuration.                                                                                                                                                                                                                                                                                                                                                |
-| ERR_NOT_SUPPORT           | Feature or method not supported in the current axios environment.                                                                                                                                                                                                                                                                                                                              |
-| ERR_DEPRECATED            | Deprecated feature or method used in axios.                                                                                                                                                                                                                                                                                                                                                    |
-| ERR_INVALID_URL           | Invalid URL provided for axios request.                                                                                                                                                                                                                                                                                                                                                        |
+| ERR_BAD_OPTION_VALUE      | Invalid value provided in faxios configuration.                                                                                                                                                                                                                                                                                                                                                 |
+| ERR_BAD_OPTION            | Invalid option provided in faxios configuration.                                                                                                                                                                                                                                                                                                                                                |
+| ERR_NOT_SUPPORT           | Feature or method not supported in the current faxios environment.                                                                                                                                                                                                                                                                                                                              |
+| ERR_DEPRECATED            | Deprecated feature or method used in faxios.                                                                                                                                                                                                                                                                                                                                                    |
+| ERR_INVALID_URL           | Invalid URL provided for faxios request.                                                                                                                                                                                                                                                                                                                                                        |
 | ECONNABORTED              | Typically indicates that the request has been timed out (unless `transitional.clarifyTimeoutError` is set) or aborted by the browser or its plugin.                                                                                                                                                                                                                                            |
 | ERR_CANCELED              | The user explicitly canceled the request with an AbortSignal or CancelToken.                                                                                                                                                                                                                                                                                                                   |
-| ETIMEDOUT                 | Request timed out after exceeding the configured Axios timeout. Set `transitional.clarifyTimeoutError` to `true`; otherwise Axios throws a generic `ECONNABORTED` error.                                                                                                                                                                                                                        |
+| ETIMEDOUT                 | Request timed out after exceeding the configured Faxios timeout. Set `transitional.clarifyTimeoutError` to `true`; otherwise Faxios throws a generic `ECONNABORTED` error.                                                                                                                                                                                                                        |
 | ERR_NETWORK               | Network-related issue. In the browser, this error can also be caused by a [CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/Guides/CORS) or [Mixed Content](https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content) policy violation. The browser does not allow the JS code to clarify the real reason for the error caused by security issues, so please check the console. |
 | ERR_FR_TOO_MANY_REDIRECTS | Request exceeded the configured maximum number of redirects.                                                                                                                                                                                                                                                                                                                                   |
 | ERR_BAD_RESPONSE          | Response cannot be parsed properly or is in an unexpected format. Usually related to a response with `5xx` status code.                                                                                                                                                                                                                                                                        |
@@ -1377,10 +1052,10 @@ These are the internal Axios error codes:
 
 ## Handling errors
 
-By default, Axios rejects responses with status codes outside the 2xx range.
+By default, Faxios rejects responses with status codes outside the 2xx range.
 
 ```js
-axios.get('/user/12345').catch(function (error) {
+faxios.get('/user/12345').catch(function (error) {
   if (error.response) {
     // The request was made and the server responded with a status code
     // that falls out of the range of 2xx
@@ -1403,7 +1078,7 @@ axios.get('/user/12345').catch(function (error) {
 Use `validateStatus` to override the default condition (`status >= 200 && status < 300`) and choose which HTTP status codes should reject.
 
 ```js
-axios.get('/user/12345', {
+faxios.get('/user/12345', {
   validateStatus: function (status) {
     return status < 500; // Resolve only if the status code is less than 500
   },
@@ -1413,15 +1088,15 @@ axios.get('/user/12345', {
 Use `toJSON` to get more information about the HTTP error.
 
 ```js
-axios.get('/user/12345').catch(function (error) {
+faxios.get('/user/12345').catch(function (error) {
   console.log(error.toJSON());
 });
 ```
 
-To avoid logging secrets from `error.config`, pass a `redact` array in the request config. Matching config keys are masked case-insensitively at any depth when `AxiosError#toJSON()` is called.
+To avoid logging secrets from `error.config`, pass a `redact` array in the request config. Matching config keys are masked case-insensitively at any depth when `FaxiosError#toJSON()` is called.
 
 ```js
-axios.get('/user/12345', {
+faxios.get('/user/12345', {
   headers: { Authorization: 'Bearer token' },
   redact: ['authorization']
 }).catch(function (error) {
@@ -1434,7 +1109,7 @@ axios.get('/user/12345', {
 ```js
 async function fetchWithTimeout() {
   try {
-    const response = await axios.get('https://example.com/data', {
+    const response = await faxios.get('https://example.com/data', {
       timeout: 5000, // 5 seconds
       transitional: {
         // set to true if you prefer ETIMEDOUT over ECONNABORTED
@@ -1444,13 +1119,13 @@ async function fetchWithTimeout() {
 
     console.log('Response:', response.data);
   } catch (error) {
-    if (axios.isAxiosError(error)) {
+    if (faxios.isFaxiosError(error)) {
       if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
         console.error('Request timed out. Please try again.');
         return;
       }
 
-      console.error('Axios error:', error.message);
+      console.error('Faxios error:', error.message);
       return;
     }
 
@@ -1463,12 +1138,12 @@ async function fetchWithTimeout() {
 
 ### AbortController
 
-Since `v0.22.0`, Axios supports AbortController:
+Since `v0.22.0`, Faxios supports AbortController:
 
 ```js
 const controller = new AbortController();
 
-axios
+faxios
   .get('/foo/bar', {
     signal: controller.signal,
   })
@@ -1483,29 +1158,29 @@ controller.abort();
 
 You can also cancel a request using a _CancelToken_.
 
-> The axios cancel token API is based on the withdrawn [cancellable promises proposal](https://github.com/tc39/proposal-cancelable-promises).
+> The faxios cancel token API is based on the withdrawn [cancellable promises proposal](https://github.com/tc39/proposal-cancelable-promises).
 
 > This API is deprecated since v0.22.0 and should not be used in new projects.
 
 Create a cancel token with the `CancelToken.source` factory:
 
 ```js
-const CancelToken = axios.CancelToken;
+const CancelToken = faxios.CancelToken;
 const source = CancelToken.source();
 
-axios
+faxios
   .get('/user/12345', {
     cancelToken: source.token,
   })
   .catch(function (thrown) {
-    if (axios.isCancel(thrown)) {
+    if (faxios.isCancel(thrown)) {
       console.log('Request canceled', thrown.message);
     } else {
       // handle error
     }
   });
 
-axios.post(
+faxios.post(
   '/user/12345',
   {
     name: 'new name',
@@ -1522,10 +1197,10 @@ source.cancel('Operation canceled by the user.');
 You can also pass an executor function to the `CancelToken` constructor:
 
 ```js
-const CancelToken = axios.CancelToken;
+const CancelToken = faxios.CancelToken;
 let cancel;
 
-axios.get('/user/12345', {
+faxios.get('/user/12345', {
   cancelToken: new CancelToken(function executor(c) {
     // An executor function receives a cancel function as a parameter
     cancel = c;
@@ -1537,7 +1212,7 @@ cancel();
 ```
 
 > Note: You can cancel several requests with the same cancel token or abort controller.
-> If a cancellation token is already cancelled when an Axios request starts, Axios cancels the request immediately without making a real request.
+> If a cancellation token is already cancelled when an Faxios request starts, Faxios cancels the request immediately without making a real request.
 
 > During the transition period, you can use both cancellation APIs, even for the same request:
 
@@ -1545,12 +1220,12 @@ cancel();
 
 ### URLSearchParams
 
-By default, axios serializes JavaScript objects to `JSON`. To send data as [`application/x-www-form-urlencoded`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST), use the [`URLSearchParams`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) API. It works in most browsers and in [Node](https://nodejs.org/api/url.html#url_class_urlsearchparams) v10 and later.
+By default, faxios serializes JavaScript objects to `JSON`. To send data as [`application/x-www-form-urlencoded`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST), use the [`URLSearchParams`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) API. It works in most browsers and in [Node](https://nodejs.org/api/url.html#url_class_urlsearchparams) v10 and later.
 
 ```js
 const params = new URLSearchParams({ foo: 'bar' });
 params.append('extraparam', 'value');
-axios.post('/foo', params);
+faxios.post('/foo', params);
 ```
 
 ### Query string (older browsers)
@@ -1561,7 +1236,7 @@ Alternatively, you can encode data using the [`qs`](https://github.com/ljharb/qs
 
 ```js
 const qs = require('qs');
-axios.post('/foo', qs.stringify({ bar: 123 }));
+faxios.post('/foo', qs.stringify({ bar: 123 }));
 ```
 
 With ES modules:
@@ -1575,7 +1250,7 @@ const options = {
   data: qs.stringify(data),
   url,
 };
-axios(options);
+faxios(options);
 ```
 
 ### Older Node.js versions
@@ -1584,7 +1259,7 @@ For older Node.js engines, use the [`querystring`](https://nodejs.org/api/querys
 
 ```js
 const querystring = require('querystring');
-axios.post('https://something.com/', querystring.stringify({ foo: 'bar' }));
+faxios.post('https://something.com/', querystring.stringify({ foo: 'bar' }));
 ```
 
 You can also use the [`qs`](https://github.com/ljharb/qs) library.
@@ -1593,7 +1268,7 @@ You can also use the [`qs`](https://github.com/ljharb/qs) library.
 
 ### Automatic serialization to URLSearchParams
 
-Axios automatically serializes the data object to urlencoded format if the content-type header is set to "application/x-www-form-urlencoded".
+Faxios automatically serializes the data object to urlencoded format if the content-type header is set to "application/x-www-form-urlencoded".
 
 ```js
 const data = {
@@ -1606,7 +1281,7 @@ const data = {
   ],
 };
 
-await axios.postForm('https://postman-echo.com/post', data, {
+await faxios.postForm('https://postman-echo.com/post', data, {
   headers: { 'content-type': 'application/x-www-form-urlencoded' },
 });
 ```
@@ -1648,14 +1323,14 @@ server = app.listen(3000);
 ### FormData
 
 To send data as `multipart/form-data`, pass a FormData instance as the payload.
-You do not need to set the `Content-Type` header. Axios detects it from the payload type.
+You do not need to set the `Content-Type` header. Faxios detects it from the payload type.
 For browser, web worker, and React Native `FormData`, leave `Content-Type` unset so the runtime can add the multipart boundary.
 
 ```js
 const formData = new FormData();
 formData.append('foo', 'bar');
 
-axios.post('https://httpbin.org/post', formData);
+faxios.post('https://httpbin.org/post', formData);
 ```
 
 In node.js, use the [`form-data`](https://github.com/form-data/form-data) library:
@@ -1668,22 +1343,22 @@ form.append('my_field', 'my value');
 form.append('my_buffer', Buffer.alloc(10));
 form.append('my_file', fs.createReadStream('/foo/bar.jpg'));
 
-axios.post('https://example.com', form);
+faxios.post('https://example.com', form);
 ```
 
-In node.js, when a `FormData` object provides `getHeaders()`, axios copies all returned headers by default for v1 compatibility. If the `FormData` object is custom or not fully trusted, set `formDataHeaderPolicy: 'content-only'` to copy only `Content-Type` and `Content-Length`, and set any other request headers explicitly with the request `headers` config.
+In node.js, when a `FormData` object provides `getHeaders()`, faxios copies all returned headers by default for v1 compatibility. If the `FormData` object is custom or not fully trusted, set `formDataHeaderPolicy: 'content-only'` to copy only `Content-Type` and `Content-Length`, and set any other request headers explicitly with the request `headers` config.
 
 ### Automatic serialization to FormData
 
-Since `v0.27.0`, Axios can serialize an object to FormData if the request `Content-Type`
+Since `v0.27.0`, Faxios can serialize an object to FormData if the request `Content-Type`
 header is set to `multipart/form-data`.
 
 This request submits data as FormData in browsers and Node.js:
 
 ```js
-import axios from 'axios';
+import faxios from 'faxios';
 
-axios
+faxios
   .post(
     'https://httpbin.org/post',
     { x: 1 },
@@ -1701,10 +1376,10 @@ The Node.js build uses the [`form-data`](https://github.com/form-data/form-data)
 You can override the FormData class with the `env.FormData` config option, but most applications do not need this:
 
 ```js
-const axios = require('axios');
+const faxios = require('faxios');
 var FormData = require('form-data');
 
-axios
+faxios
   .post(
     'https://httpbin.org/post',
     { x: 1, buf: Buffer.alloc(10) },
@@ -1717,7 +1392,7 @@ axios
   .then(({ data }) => console.log(data));
 ```
 
-The Axios FormData serializer supports these special endings:
+The Faxios FormData serializer supports these special endings:
 
 - `{}` - serialize the value with JSON.stringify
 - `[]` - unwrap the array-like object as separate fields with the same key
@@ -1726,7 +1401,7 @@ The Axios FormData serializer supports these special endings:
 
 FormData serializer supports additional options via `config.formSerializer: object` property to handle rare cases:
 
-- `visitor: Function` - user-defined visitor function that Axios calls recursively to serialize the data object
+- `visitor: Function` - user-defined visitor function that Faxios calls recursively to serialize the data object
   to a `FormData` object by following custom rules.
 
 - `dots: boolean = false` - use dot notation instead of brackets to serialize arrays and objects;
@@ -1734,21 +1409,21 @@ FormData serializer supports additional options via `config.formSerializer: obje
 - `metaTokens: boolean = true` - add the special ending (e.g `user{}: '{"name": "John"}'`) in the FormData key.
   A backend body parser can use this meta-information to parse the value as JSON.
 
-- `indexes: null|false|true = false` - controls how Axios adds indexes to unwrapped keys of `flat` array-like objects.
+- `indexes: null|false|true = false` - controls how Faxios adds indexes to unwrapped keys of `flat` array-like objects.
   - `null` - don't add brackets (`arr: 1`, `arr: 2`, `arr: 3`)
   - `false`(default) - add empty brackets (`arr[]: 1`, `arr[]: 2`, `arr[]: 3`)
   - `true` - add brackets with indexes (`arr[0]: 1`, `arr[1]: 2`, `arr[2]: 3`)
 - `maxDepth: number = 100` - maximum object nesting depth the serializer will recurse into. If the
-  input object exceeds this depth, an `AxiosError` with `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` is
+  input object exceeds this depth, an `FaxiosError` with `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` is
   thrown instead of overflowing the call stack. This protects server applications from DoS
   attacks via deeply nested payloads. Set to `Infinity` to disable the limit and restore pre-fix behaviour.
 
 ```js
 // Raise the limit for a schema that genuinely nests deeper than 100 levels:
-axios.postForm('/api', data, { formSerializer: { maxDepth: 200 } });
+faxios.postForm('/api', data, { formSerializer: { maxDepth: 200 } });
 
 // Same protection applies to params serialization:
-axios.get('/api', { params: data, paramsSerializer: { maxDepth: 200 } });
+faxios.get('/api', { params: data, paramsSerializer: { maxDepth: 200 } });
 ```
 
 Given this object:
@@ -1766,7 +1441,7 @@ const obj = {
 };
 ```
 
-The Axios serializer appends these fields:
+The Faxios serializer appends these fields:
 
 ```js
 const formData = new FormData();
@@ -1784,14 +1459,14 @@ formData.append('users[1][surname]', 'Anderson');
 formData.append('obj2{}', '[{"x":1}]');
 ```
 
-Axios supports `postForm`, `putForm`, and `patchForm` as shortcuts for the matching HTTP methods with the `Content-Type` header preset to `multipart/form-data`.
+Faxios supports `postForm`, `putForm`, and `patchForm` as shortcuts for the matching HTTP methods with the `Content-Type` header preset to `multipart/form-data`.
 
 ## Posting files
 
 Submit a single file:
 
 ```js
-await axios.postForm('https://httpbin.org/post', {
+await faxios.postForm('https://httpbin.org/post', {
   myVar: 'foo',
   file: document.querySelector('#fileInput').files[0],
 });
@@ -1800,7 +1475,7 @@ await axios.postForm('https://httpbin.org/post', {
 or multiple files as `multipart/form-data`:
 
 ```js
-await axios.postForm('https://httpbin.org/post', {
+await faxios.postForm('https://httpbin.org/post', {
   'files[]': document.querySelector('#fileInput').files,
 });
 ```
@@ -1808,23 +1483,23 @@ await axios.postForm('https://httpbin.org/post', {
 `FileList` object can be passed directly:
 
 ```js
-await axios.postForm('https://httpbin.org/post', document.querySelector('#fileInput').files);
+await faxios.postForm('https://httpbin.org/post', document.querySelector('#fileInput').files);
 ```
 
-Axios sends all files with the same field name: `files[]`.
+Faxios sends all files with the same field name: `files[]`.
 
 ## HTML form posting (browser)
 
 Pass an HTML Form element as a payload to submit it as `multipart/form-data` content.
 
 ```js
-await axios.postForm('https://httpbin.org/post', document.querySelector('#htmlForm'));
+await faxios.postForm('https://httpbin.org/post', document.querySelector('#htmlForm'));
 ```
 
 `FormData` and `HTMLForm` objects can also be posted as `JSON` by explicitly setting the `Content-Type` header to `application/json`:
 
 ```js
-await axios.post('https://httpbin.org/post', document.querySelector('#htmlForm'), {
+await faxios.post('https://httpbin.org/post', document.querySelector('#htmlForm'), {
   headers: {
     'Content-Type': 'application/json',
   },
@@ -1875,12 +1550,12 @@ Sending `Blobs`/`Files` as JSON (`base64`) is not currently supported.
 
 ## Progress capturing
 
-Axios can capture request upload and download progress in browsers and Node.js.
+Faxios can capture request upload and download progress in browsers and Node.js.
 Progress events are limited to `3` times per second.
 
 ```js
-await axios.post(url, data, {
-  onUploadProgress: function (axiosProgressEvent) {
+await faxios.post(url, data, {
+  onUploadProgress: function (faxiosProgressEvent) {
     /*{
       loaded: number;
       total?: number;
@@ -1892,7 +1567,7 @@ await axios.post(url, data, {
     }*/
   },
 
-  onDownloadProgress: function (axiosProgressEvent) {
+  onDownloadProgress: function (faxiosProgressEvent) {
     /*{
       loaded: number;
       total?: number;
@@ -1909,7 +1584,7 @@ await axios.post(url, data, {
 You can also track stream upload/download progress in node.js:
 
 ```js
-const { data } = await axios.post(SERVER_URL, readableStream, {
+const { data } = await faxios.post(SERVER_URL, readableStream, {
   onUploadProgress: ({ progress }) => {
     console.log((progress * 100).toFixed(2));
   },
@@ -1934,7 +1609,7 @@ const { data } = await axios.post(SERVER_URL, readableStream, {
 Download and upload rate limits can only be set for the http adapter (node.js):
 
 ```js
-const { data } = await axios.post(LOCAL_SERVER_URL, myBuffer, {
+const { data } = await faxios.post(LOCAL_SERVER_URL, myBuffer, {
   onUploadProgress: ({ progress, rate }) => {
     console.log(`Upload [${(progress * 100).toFixed(2)}%]: ${(rate / 1024).toFixed(2)}KB/s`);
   },
@@ -1943,16 +1618,16 @@ const { data } = await axios.post(LOCAL_SERVER_URL, myBuffer, {
 });
 ```
 
-## AxiosHeaders
+## FaxiosHeaders
 
-Axios includes an `AxiosHeaders` class for working with headers through a Map-like API.
-HTTP header names are case-insensitive, but Axios keeps the original header case for style and for servers that incorrectly depend on case.
+Faxios includes an `FaxiosHeaders` class for working with headers through a Map-like API.
+HTTP header names are case-insensitive, but Faxios keeps the original header case for style and for servers that incorrectly depend on case.
 Directly manipulating the headers object still works, but it is deprecated.
 
 ### Working with headers
 
-An `AxiosHeaders` instance can contain several internal value types that control setting and merging.
-Axios gets the final headers object with string values by calling `toJSON`.
+An `FaxiosHeaders` instance can contain several internal value types that control setting and merging.
+Faxios gets the final headers object with string values by calling `toJSON`.
 
 > Note: By JSON here we mean an object consisting only of string values intended to be sent over the network.
 
@@ -1961,7 +1636,7 @@ The header value can be one of the following types:
 - `string` - normal string value sent to the server
 - `null` - skip header when rendering to JSON
 - `false` - skip header when rendering to JSON. Also indicates that the `set` method must be called with `rewrite` set to `true`
-  to overwrite this value (Axios uses this internally to allow users to opt out of installing certain headers like `User-Agent` or `Content-Type`)
+  to overwrite this value (Faxios uses this internally to allow users to opt out of installing certain headers like `User-Agent` or `Content-Type`)
 - `undefined` - value is not set
 
 > Note: The header value is considered set if it is not equal to undefined.
@@ -1969,7 +1644,7 @@ The header value can be one of the following types:
 The headers object is always initialized inside interceptors and transformers:
 
 ```ts
-axios.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+faxios.interceptors.request.use((request: InternalFaxiosRequestConfig) => {
   request.headers.set('My-header', 'value');
 
   request.headers.set({
@@ -1977,7 +1652,7 @@ axios.interceptors.request.use((request: InternalAxiosRequestConfig) => {
     'My-set-header2': 'my-set-value2',
   });
 
-  request.headers.set('User-Agent', false); // prevent Axios from setting this header later
+  request.headers.set('User-Agent', false); // prevent Faxios from setting this header later
 
   request.headers.setContentType('text/plain');
 
@@ -1987,10 +1662,10 @@ axios.interceptors.request.use((request: InternalAxiosRequestConfig) => {
 });
 ```
 
-You can iterate over an `AxiosHeaders` instance using a `for...of` statement:
+You can iterate over an `FaxiosHeaders` instance using a `for...of` statement:
 
 ```js
-const headers = new AxiosHeaders({
+const headers = new FaxiosHeaders({
   foo: '1',
   bar: '2',
   baz: '3',
@@ -2007,11 +1682,11 @@ for (const [header, value] of headers) {
 
 ### Preserving a specific header case
 
-Header names are case-insensitive, but `AxiosHeaders` keeps the case of the first matching key it sees.
+Header names are case-insensitive, but `FaxiosHeaders` keeps the case of the first matching key it sees.
 If you need a specific case for non-standard case-sensitive servers, define a case preset with `undefined` and then set the value later:
 
 ```js
-const api = axios.create();
+const api = faxios.create();
 
 api.defaults.headers.common = {
   'content-type': undefined,
@@ -2026,48 +1701,48 @@ await api.put(url, data, {
 });
 ```
 
-You can also compose the same behavior with `AxiosHeaders.concat`:
+You can also compose the same behavior with `FaxiosHeaders.concat`:
 
 ```js
-const headers = axios.AxiosHeaders.concat(
+const headers = faxios.FaxiosHeaders.concat(
   { 'content-type': undefined },
   { 'Content-Type': 'application/octet-stream' }
 );
 
-await axios.put(url, data, { headers });
+await faxios.put(url, data, { headers });
 ```
 
-### new AxiosHeaders(headers?)
+### new FaxiosHeaders(headers?)
 
-Constructs a new `AxiosHeaders` instance.
+Constructs a new `FaxiosHeaders` instance.
 
 ```
-constructor(headers?: RawAxiosHeaders | AxiosHeaders | string);
+constructor(headers?: RawFaxiosHeaders | FaxiosHeaders | string);
 ```
 
-If the headers object is a string, Axios parses it as raw HTTP headers.
+If the headers object is a string, Faxios parses it as raw HTTP headers.
 
 ```js
-const headers = new AxiosHeaders(`
+const headers = new FaxiosHeaders(`
 Host: www.bing.com
 User-Agent: curl/7.54.0
 Accept: */*`);
 
 console.log(headers);
 
-// Object [AxiosHeaders] {
+// Object [FaxiosHeaders] {
 //   host: 'www.bing.com',
 //   'user-agent': 'curl/7.54.0',
 //   accept: '*/*'
 // }
 ```
 
-### AxiosHeaders#set
+### FaxiosHeaders#set
 
 ```ts
-set(headerName, value: Axios, rewrite?: boolean);
-set(headerName, value, rewrite?: (this: AxiosHeaders, value: string, name: string, headers: RawAxiosHeaders) => boolean);
-set(headers?: RawAxiosHeaders | AxiosHeaders | string, rewrite?: boolean);
+set(headerName, value: Faxios, rewrite?: boolean);
+set(headerName, value, rewrite?: (this: FaxiosHeaders, value: string, name: string, headers: RawFaxiosHeaders) => boolean);
+set(headers?: RawFaxiosHeaders | FaxiosHeaders | string, rewrite?: boolean);
 ```
 
 The `rewrite` argument controls the overwriting behavior:
@@ -2082,10 +1757,10 @@ Empty or whitespace-only header names are ignored.
 
 Returns `this`.
 
-### AxiosHeaders#get(header)
+### FaxiosHeaders#get(header)
 
 ```
-  get(headerName: string, matcher?: true | AxiosHeaderMatcher): AxiosHeaderValue;
+  get(headerName: string, matcher?: true | FaxiosHeaderMatcher): FaxiosHeaderValue;
   get(headerName: string, parser: RegExp): RegExpExecArray | null;
 ```
 
@@ -2093,7 +1768,7 @@ Returns the internal value of the header. It can take an extra argument to parse
 matcher function or internal key-value parser.
 
 ```ts
-const headers = new AxiosHeaders({
+const headers = new FaxiosHeaders({
   'Content-Type': 'multipart/form-data; boundary=Asrf456BGe4h',
 });
 
@@ -2119,33 +1794,33 @@ console.log(headers.get('Content-Type', /boundary=(\w+)/)?.[0]);
 
 Returns the value of the header.
 
-### AxiosHeaders#has(header, matcher?)
+### FaxiosHeaders#has(header, matcher?)
 
 ```
-has(header: string, matcher?: AxiosHeaderMatcher): boolean;
+has(header: string, matcher?: FaxiosHeaderMatcher): boolean;
 ```
 
 Returns `true` if the header is set (has no `undefined` value).
 
-### AxiosHeaders#delete(header, matcher?)
+### FaxiosHeaders#delete(header, matcher?)
 
 ```
-delete(header: string | string[], matcher?: AxiosHeaderMatcher): boolean;
+delete(header: string | string[], matcher?: FaxiosHeaderMatcher): boolean;
 ```
 
 Returns `true` if at least one header has been removed.
 
-### AxiosHeaders#clear(matcher?)
+### FaxiosHeaders#clear(matcher?)
 
 ```
-clear(matcher?: AxiosHeaderMatcher): boolean;
+clear(matcher?: FaxiosHeaderMatcher): boolean;
 ```
 
 Removes all headers.
 Unlike the `delete` method matcher, this optional matcher matches the header name rather than the value.
 
 ```ts
-const headers = new AxiosHeaders({
+const headers = new FaxiosHeaders({
   foo: '1',
   'x-foo': '2',
   'x-bar': '3',
@@ -2158,15 +1833,15 @@ console.log(headers.toJSON()); // [Object: null prototype] { foo: '1' }
 
 Returns `true` if at least one header has been cleared.
 
-### AxiosHeaders#normalize(format);
+### FaxiosHeaders#normalize(format);
 
 If the headers object was changed directly, it can have duplicates with the same name but in different cases.
 This method normalizes the headers object by combining duplicate keys into one.
-Axios uses this method internally after calling each interceptor.
+Faxios uses this method internally after calling each interceptor.
 Set `format` to true for converting header names to lowercase and capitalizing the initial letters (`cOntEnt-type` => `Content-Type`)
 
 ```js
-const headers = new AxiosHeaders({
+const headers = new FaxiosHeaders({
   foo: '1',
 });
 
@@ -2180,17 +1855,17 @@ console.log(headers.normalize(true).toJSON()); // [Object: null prototype] { Foo
 
 Returns `this`.
 
-### AxiosHeaders#concat(...targets)
+### FaxiosHeaders#concat(...targets)
 
 ```
-concat(...targets: Array<AxiosHeaders | RawAxiosHeaders | string | undefined | null>): AxiosHeaders;
+concat(...targets: Array<FaxiosHeaders | RawFaxiosHeaders | string | undefined | null>): FaxiosHeaders;
 ```
 
-Merges the instance with targets into a new `AxiosHeaders` instance. If the target is a string, Axios parses it as raw HTTP headers.
+Merges the instance with targets into a new `FaxiosHeaders` instance. If the target is a string, Faxios parses it as raw HTTP headers.
 
-Returns a new `AxiosHeaders` instance.
+Returns a new `FaxiosHeaders` instance.
 
-### AxiosHeaders#toJSON(asStrings?)
+### FaxiosHeaders#toJSON(asStrings?)
 
 ```
 toJSON(asStrings: true): Record<string, string>;
@@ -2200,22 +1875,22 @@ toJSON(asStrings?: false): Record<string, string | string[]>;
 Resolves all internal header values into a new null prototype object.
 Set `asStrings` to true to resolve arrays as a string containing all elements, separated by commas.
 
-### AxiosHeaders.from(thing?)
+### FaxiosHeaders.from(thing?)
 
 ```
-from(thing?: AxiosHeaders | RawAxiosHeaders | string): AxiosHeaders;
+from(thing?: FaxiosHeaders | RawFaxiosHeaders | string): FaxiosHeaders;
 ```
 
-Returns a new `AxiosHeaders` instance created from the raw headers passed in,
-or returns the given headers object if it's already an `AxiosHeaders` instance.
+Returns a new `FaxiosHeaders` instance created from the raw headers passed in,
+or returns the given headers object if it's already an `FaxiosHeaders` instance.
 
-### AxiosHeaders.concat(...targets)
+### FaxiosHeaders.concat(...targets)
 
 ```
-concat(...targets: Array<AxiosHeaders | RawAxiosHeaders | string | undefined | null>): AxiosHeaders;
+concat(...targets: Array<FaxiosHeaders | RawFaxiosHeaders | string | undefined | null>): FaxiosHeaders;
 ```
 
-Returns a new `AxiosHeaders` instance created by merging the target objects.
+Returns a new `FaxiosHeaders` instance created by merging the target objects.
 
 ### Shortcuts
 
@@ -2233,11 +1908,11 @@ The following shortcuts are available:
 
 ## Fetch adapter
 
-Axios introduced the fetch adapter in `v1.7.0`. By default, Axios uses it when the `xhr` and `http` adapters are not available in the build or not supported by the environment.
+Faxios introduced the fetch adapter in `v1.7.0`. By default, Faxios uses it when the `xhr` and `http` adapters are not available in the build or not supported by the environment.
 To use it by default, select it explicitly:
 
 ```js
-const { data } = axios.get(url, {
+const { data } = faxios.get(url, {
   adapter: 'fetch', // by default ['xhr', 'http', 'fetch']
 });
 ```
@@ -2245,7 +1920,7 @@ const { data } = axios.get(url, {
 You can create a separate instance for this:
 
 ```js
-const fetchAxios = axios.create({
+const fetchAxios = faxios.create({
   adapter: 'fetch',
 });
 
@@ -2263,7 +1938,7 @@ Since `v1.12.0`, you can configure the fetch adapter to use a custom fetch API i
 Pass a custom `fetch` function, `Request`, and `Response` constructors through `env` config.
 This helps in custom environments and app frameworks.
 
-When using a custom fetch, you may also need to set custom `Request` and `Response` constructors. If you do not set them, Axios uses the global objects.
+When using a custom fetch, you may also need to set custom `Request` and `Response` constructors. If you do not set them, Faxios uses the global objects.
 If your custom fetch API does not provide these objects and the globals are incompatible with it, pass `null` to disable them inside the fetch adapter.
 
 > Note: Setting `Request` and `Response` to `null` prevents the fetch adapter from capturing upload and download progress.
@@ -2273,7 +1948,7 @@ Basic example:
 ```js
 import customFetchFunction from 'customFetchModule';
 
-const instance = axios.create({
+const instance = faxios.create({
   adapter: 'fetch',
   onDownloadProgress(e) {
     console.log('downloadProgress', e);
@@ -2288,13 +1963,13 @@ const instance = axios.create({
 
 #### Using with Tauri
 
-A minimal example of setting up Axios for use in a [Tauri](https://tauri.app/plugin/http-client/) app with a platform fetch function that ignores CORS policy for requests.
+A minimal example of setting up Faxios for use in a [Tauri](https://tauri.app/plugin/http-client/) app with a platform fetch function that ignores CORS policy for requests.
 
 ```js
 import { fetch } from '@tauri-apps/plugin-http';
-import axios from 'axios';
+import faxios from 'faxios';
 
-const instance = axios.create({
+const instance = faxios.create({
   adapter: 'fetch',
   onDownloadProgress(e) {
     console.log('downloadProgress', e);
@@ -2309,11 +1984,11 @@ const { data } = await instance.get('https://google.com');
 
 #### Using with SvelteKit
 
-[SvelteKit](https://svelte.dev/docs/kit/web-standards#Fetch-APIs) uses a custom fetch function for server rendering in `load` functions. It also uses relative paths, which are incompatible with the standard URL API. Configure Axios to use SvelteKit's custom fetch API:
+[SvelteKit](https://svelte.dev/docs/kit/web-standards#Fetch-APIs) uses a custom fetch function for server rendering in `load` functions. It also uses relative paths, which are incompatible with the standard URL API. Configure Faxios to use SvelteKit's custom fetch API:
 
 ```js
 export async function load({ fetch }) {
-  const { data: post } = await axios.get('https://jsonplaceholder.typicode.com/posts/1', {
+  const { data: post } = await faxios.get('https://jsonplaceholder.typicode.com/posts/1', {
     adapter: 'fetch',
     env: {
       fetch,
@@ -2328,9 +2003,9 @@ export async function load({ fetch }) {
 
 #### HTTP/2 support
 
-Axios supports HTTP/2 through the Node.js `http` adapter, introduced in v1.13.0.
+Faxios supports HTTP/2 through the Node.js `http` adapter, introduced in v1.13.0.
 
-Support depends on the runtime environment. Axios relies on Node.js APIs, so HTTP/2 works in supported Node.js versions but may not work in other environments such as Bun or Deno.
+Support depends on the runtime environment. Faxios relies on Node.js APIs, so HTTP/2 works in supported Node.js versions but may not work in other environments such as Bun or Deno.
 
 Options like `httpVersion` and `http2Options` are adapter-specific and may not behave the same way in every environment.
 
@@ -2341,7 +2016,7 @@ const form = new FormData();
 
 form.append('foo', '123');
 
-const { data, headers, status } = await axios.post('https://httpbin.org/post', form, {
+const { data, headers, status } = await faxios.post('https://httpbin.org/post', form, {
   onUploadProgress(e) {
     console.log('upload progress', e);
   },
@@ -2354,46 +2029,46 @@ const { data, headers, status } = await axios.post('https://httpbin.org/post', f
 
 ## Semver
 
-Axios follows [semver](https://semver.org/) since `v1.0.0`.
+Faxios follows [semver](https://semver.org/) since `v1.0.0`.
 
 ## Promises
 
-axios depends on a native ES6 Promise implementation to be [supported](https://caniuse.com/promises).
+faxios depends on a native ES6 Promise implementation to be [supported](https://caniuse.com/promises).
 If your environment doesn't support ES6 Promises, you can [polyfill](https://github.com/jakearchibald/es6-promise).
 
 ## TypeScript
 
-axios includes [TypeScript](https://typescriptlang.org) definitions and a type guard for axios errors.
+faxios includes [TypeScript](https://typescriptlang.org) definitions and a type guard for faxios errors.
 
 ```typescript
 let user: User = null;
 try {
-  const { data } = await axios.get('/user?ID=12345');
+  const { data } = await faxios.get('/user?ID=12345');
   user = data.userDetails;
 } catch (error) {
-  if (axios.isAxiosError(error)) {
-    handleAxiosError(error);
+  if (faxios.isFaxiosError(error)) {
+    handleFaxiosError(error);
   } else {
     handleUnexpectedError(error);
   }
 }
 ```
 
-Use `axios.isCancel<T>()` to narrow cancellation errors to `CanceledError<T>`:
+Use `faxios.isCancel<T>()` to narrow cancellation errors to `CanceledError<T>`:
 
 ```typescript
 const controller = new AbortController();
 
 try {
-  await axios.get<User>('/user?ID=12345', { signal: controller.signal });
+  await faxios.get<User>('/user?ID=12345', { signal: controller.signal });
 } catch (error) {
-  if (axios.isCancel<User>(error)) {
+  if (faxios.isCancel<User>(error)) {
     handleCancellation(error);
   }
 }
 ```
 
-Because axios publishes an ESM default export and a CJS `module.exports`, TypeScript has a few caveats.
+Because faxios publishes an ESM default export and a CJS `module.exports`, TypeScript has a few caveats.
 The recommended setting is `"moduleResolution": "node16"`, which is implied by `"module": "node16"`. This requires TypeScript 4.7 or greater.
 If you use ESM, your settings should be fine.
 If you compile TypeScript to CJS and can't use `"moduleResolution": "node 16"`, enable `esModuleInterop`.
@@ -2402,14 +2077,14 @@ If you use TypeScript to type check CJS JavaScript code, your only option is to 
 You can also create a custom instance with typed interceptors:
 
 ```typescript
-import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import faxios, { FaxiosInstance, InternalFaxiosRequestConfig } from 'faxios';
 
-const apiClient: AxiosInstance = axios.create({
+const apiClient: FaxiosInstance = faxios.create({
   baseURL: 'https://api.example.com',
   timeout: 10000,
 });
 
-apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+apiClient.interceptors.request.use((config: InternalFaxiosRequestConfig) => {
   // Add auth token
   return config;
 });
@@ -2419,7 +2094,7 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
 You can use Gitpod, a free online IDE for open source projects, to contribute or run the examples online.
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/axios/axios/blob/main/examples/server.js)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/faxios/faxios/blob/main/examples/server.js)
 
 ## Contributing
 
@@ -2440,14 +2115,14 @@ Do not remove `ignore-scripts=true` from `.npmrc` to "fix" this. That reopens th
 
 ## Resources
 
-- [Changelog](https://github.com/axios/axios/blob/v1.x/CHANGELOG.md)
-- [Ecosystem](https://github.com/axios/axios/blob/v1.x/ECOSYSTEM.md)
-- [Contributing Guide](https://github.com/axios/axios/blob/v1.x/CONTRIBUTING.md)
-- [Code of Conduct](https://github.com/axios/axios/blob/v1.x/CODE_OF_CONDUCT.md)
+- [Changelog](https://github.com/faxios/faxios/blob/v1.x/CHANGELOG.md)
+- [Ecosystem](https://github.com/faxios/faxios/blob/v1.x/ECOSYSTEM.md)
+- [Contributing Guide](https://github.com/faxios/faxios/blob/v1.x/CONTRIBUTING.md)
+- [Code of Conduct](https://github.com/faxios/faxios/blob/v1.x/CODE_OF_CONDUCT.md)
 
 ## Credits
 
-axios is heavily inspired by the [$http service](https://docs.angularjs.org/api/ng/service/$http) in [AngularJS](https://angularjs.org/). It provides a standalone `$http`-like service for use outside AngularJS.
+faxios is heavily inspired by the [$http service](https://docs.angularjs.org/api/ng/service/$http) in [AngularJS](https://angularjs.org/). It provides a standalone `$http`-like service for use outside AngularJS.
 
 ## License
 

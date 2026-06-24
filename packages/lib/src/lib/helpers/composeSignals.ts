@@ -1,5 +1,5 @@
 import CanceledError from "../cancel/CanceledError.js";
-import AxiosError from "../core/AxiosError.js";
+import FaxiosError from "../core/FaxiosError.js";
 import utils from "../utils.js";
 
 type AbortHandler = (this: AbortSignal & { reason?: unknown; }, reason: unknown) => void;
@@ -30,7 +30,7 @@ const composeSignals = (signals: Array<unknown> | null | undefined, timeout?: nu
       unsubscribe();
       const err = reason instanceof Error ? reason : this.reason;
       const errMsg = err instanceof Error ? err.message : (err as string | undefined);
-      const abortErr = err instanceof AxiosError ? err : new CanceledError(errMsg, undefined, undefined);
+      const abortErr = err instanceof FaxiosError ? err : new CanceledError(errMsg, undefined, undefined);
       controller.abort(abortErr);
     }
   };
@@ -39,7 +39,7 @@ const composeSignals = (signals: Array<unknown> | null | undefined, timeout?: nu
     timeout
       ? setTimeout(() => {
         timer = null;
-        onabort.call(controller.signal, new AxiosError(`timeout of ${timeout}ms exceeded`, AxiosError.ETIMEDOUT));
+        onabort.call(controller.signal, new FaxiosError(`timeout of ${timeout}ms exceeded`, FaxiosError.ETIMEDOUT));
       }, timeout)
       : null;
 

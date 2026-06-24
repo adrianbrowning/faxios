@@ -1,5 +1,5 @@
-import AxiosError from "../core/AxiosError.js";
-import AxiosHeaders from "../core/AxiosHeaders.js";
+import FaxiosError from "../core/FaxiosError.js";
+import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import settle from "../core/settle.js";
 import { VERSION } from "../env/data.js";
 import composeSignals from "../helpers/composeSignals.js";
@@ -15,9 +15,9 @@ import { trackStream } from "../helpers/trackStream.js";
 import platform from "../platform/index.js";
 import type {
   CancelToken,
-  InternalAxiosRequestConfig,
-  AxiosRequestHeaders,
-  AxiosResponse
+  InternalFaxiosRequestConfig,
+  FaxiosRequestHeaders,
+  FaxiosResponse
 } from "../types.js";
 import utils from "../utils.js";
 
@@ -117,7 +117,7 @@ const maybeWithAuthCredentials = (url: string): boolean => {
 
 // eslint-disable-next-line sonarjs/function-return-type
 const factory = (env: Record<string, unknown>) => {
-  const globalObject: Record<string, unknown> = utils.global;
+  const globalObject: Record<string, unknown> = utils.global ?? globalThis as unknown as Record<string, unknown>;
   const ReadableStream = globalObject["ReadableStream"] as
     | (AnyConstructor & { prototype: AnyReadableStream; })
     | undefined;
@@ -226,10 +226,10 @@ const factory = (env: Record<string, unknown>) => {
               return (method as (this: AnyResponse) => unknown).call(res);
             }
 
-            throw new AxiosError(
+            throw new FaxiosError(
               `Response type '${type}' is not supported`,
-              AxiosError.ERR_NOT_SUPPORT,
-              config as InternalAxiosRequestConfig
+              FaxiosError.ERR_NOT_SUPPORT,
+              config as InternalFaxiosRequestConfig
             );
           });
       });
@@ -267,7 +267,7 @@ const factory = (env: Record<string, unknown>) => {
   };
 
   const resolveBodyLength = async (
-    headers: AxiosRequestHeaders,
+    headers: FaxiosRequestHeaders,
     body: unknown
   ): Promise<number | undefined> => {
     const length = utils.toFiniteNumber(headers.getContentLength());
@@ -275,7 +275,7 @@ const factory = (env: Record<string, unknown>) => {
     return length == null ? getBodyLength(body) : length;
   };
 
-  type PendingBodyErrorRef = { value: (AxiosError & { request?: unknown; }) | null; };
+  type PendingBodyErrorRef = { value: (FaxiosError & { request?: unknown; }) | null; };
 
   const normalizeCredentials = (wc: string | boolean): string => {
     if (utils.isString(wc)) return wc as string;
@@ -286,7 +286,7 @@ const factory = (env: Record<string, unknown>) => {
   // strip credentials from URL. Returns the (possibly updated) URL.
   const applyAuthToRequest = (
     url: string,
-    headers: AxiosRequestHeaders,
+    headers: FaxiosRequestHeaders,
     own: (key: string) => unknown
   ): string => {
     let auth: { username: unknown; password: unknown; } | undefined;
@@ -336,7 +336,7 @@ const factory = (env: Record<string, unknown>) => {
     maxContentLength: number,
     hasMaxBodyLength: boolean,
     maxBodyLength: number,
-    config: InternalAxiosRequestConfig,
+    config: InternalFaxiosRequestConfig,
     request: unknown
   ): Promise<number | undefined> => {
     // Enforce maxContentLength for data: URLs up-front so we never materialize
@@ -348,9 +348,9 @@ const factory = (env: Record<string, unknown>) => {
     ) {
       const estimated = estimateDataURLDecodedBytes(url);
       if (estimated > maxContentLength) {
-        throw new AxiosError(
+        throw new FaxiosError(
           "maxContentLength size of " + maxContentLength + " exceeded",
-          AxiosError.ERR_BAD_RESPONSE,
+          FaxiosError.ERR_BAD_RESPONSE,
           config,
           request
         );
@@ -362,9 +362,9 @@ const factory = (env: Record<string, unknown>) => {
       const outboundLength = await getBodyLength(data);
       if (typeof outboundLength === "number" && isFinite(outboundLength)) {
         if (outboundLength > maxBodyLength) {
-          throw new AxiosError(
+          throw new FaxiosError(
             "Request body larger than maxBodyLength limit",
-            AxiosError.ERR_BAD_REQUEST,
+            FaxiosError.ERR_BAD_REQUEST,
             config,
             request
           );
@@ -379,7 +379,7 @@ const factory = (env: Record<string, unknown>) => {
   const applyUploadProgress = (
     _request: AnyRequest,
     data: unknown,
-    headers: AxiosRequestHeaders,
+    headers: FaxiosRequestHeaders,
     requestContentLength: number | undefined,
     onUploadProgress: unknown,
     _trackStream: (stream: unknown, onProgress?: (bytes: number) => void, flush?: () => void) => unknown
@@ -413,20 +413,20 @@ const factory = (env: Record<string, unknown>) => {
     data: unknown,
     url: string,
     method: string,
-    headers: AxiosRequestHeaders,
+    headers: FaxiosRequestHeaders,
     onUploadProgress: unknown,
     mustEnforceStreamBody: boolean,
     requestContentLength: number | undefined,
     hasMaxBodyLength: boolean,
     maxBodyLength: number,
-    config: InternalAxiosRequestConfig,
+    config: InternalFaxiosRequestConfig,
     request: unknown,
     pendingBodyErrorRef: PendingBodyErrorRef
   ): Promise<{ data: unknown; requestContentLength: number | undefined; }> => {
     const _makeBodyLengthError = () =>
-      new AxiosError(
+      new FaxiosError(
         "Request body larger than maxBodyLength limit",
-        AxiosError.ERR_BAD_REQUEST,
+        FaxiosError.ERR_BAD_REQUEST,
         config,
         request
       );
@@ -487,9 +487,9 @@ const factory = (env: Record<string, unknown>) => {
       method !== "get" &&
       method !== "head"
     ) {
-      throw new AxiosError(
+      throw new FaxiosError(
         "Stream request bodies are not supported by the current fetch implementation",
-        AxiosError.ERR_NOT_SUPPORT,
+        FaxiosError.ERR_NOT_SUPPORT,
         config,
         request
       );
@@ -502,7 +502,7 @@ const factory = (env: Record<string, unknown>) => {
   // delete it so fetch can set it correctly with the boundary.
   const cleanFormDataContentType = (
     data: unknown,
-    headers: AxiosRequestHeaders
+    headers: FaxiosRequestHeaders
   ): void => {
     if (utils.isFormData(data)) {
       const contentType = headers.getContentType() as string | null | undefined;
@@ -518,10 +518,10 @@ const factory = (env: Record<string, unknown>) => {
 
   // Cheap pre-check: if the server declares a content-length exceeding the cap, reject early.
   const checkDeclaredContentLength = (
-    responseHeaders: AxiosHeaders,
+    responseHeaders: FaxiosHeaders,
     hasMaxContentLength: boolean,
     maxContentLength: number,
-    config: InternalAxiosRequestConfig,
+    config: InternalFaxiosRequestConfig,
     request: unknown
   ): void => {
     if (!hasMaxContentLength) return;
@@ -529,9 +529,9 @@ const factory = (env: Record<string, unknown>) => {
       (responseHeaders.getContentLength as () => unknown)()
     );
     if (declaredLength != null && declaredLength > maxContentLength) {
-      throw new AxiosError(
+      throw new FaxiosError(
         "maxContentLength size of " + maxContentLength + " exceeded",
-        AxiosError.ERR_BAD_RESPONSE,
+        FaxiosError.ERR_BAD_RESPONSE,
         config,
         request
       );
@@ -541,13 +541,13 @@ const factory = (env: Record<string, unknown>) => {
   // Wrap the response body stream with download progress tracking and maxContentLength enforcement.
   const buildDownloadStream = (
     response: AnyResponse,
-    responseHeaders: AxiosHeaders,
+    responseHeaders: FaxiosHeaders,
     onDownloadProgress: unknown,
     hasMaxContentLength: boolean,
     maxContentLength: number,
     isStreamResponse: boolean,
     unsubscribe: (() => void) | false | undefined,
-    config: InternalAxiosRequestConfig,
+    config: InternalFaxiosRequestConfig,
     request: unknown
   ): AnyResponse => {
     const needsWrapping = onDownloadProgress || hasMaxContentLength || (isStreamResponse && unsubscribe);
@@ -581,9 +581,9 @@ const factory = (env: Record<string, unknown>) => {
       if (hasMaxContentLength) {
         bytesRead = loadedBytes;
         if (bytesRead > maxContentLength) {
-          throw new AxiosError(
+          throw new FaxiosError(
             "maxContentLength size of " + maxContentLength + " exceeded",
-            AxiosError.ERR_BAD_RESPONSE,
+            FaxiosError.ERR_BAD_RESPONSE,
             config,
             request
           );
@@ -613,7 +613,7 @@ const factory = (env: Record<string, unknown>) => {
     hasMaxContentLength: boolean,
     maxContentLength: number,
     isStreamResponse: boolean,
-    config: InternalAxiosRequestConfig,
+    config: InternalFaxiosRequestConfig,
     request: unknown
   ): void => {
     if (!hasMaxContentLength || supportsResponseStream || isStreamResponse) return;
@@ -633,21 +633,21 @@ const factory = (env: Record<string, unknown>) => {
           : responseData.length;
     }
     if (typeof materializedSize === "number" && materializedSize > maxContentLength) {
-      throw new AxiosError(
+      throw new FaxiosError(
         "maxContentLength size of " + maxContentLength + " exceeded",
-        AxiosError.ERR_BAD_RESPONSE,
+        FaxiosError.ERR_BAD_RESPONSE,
         config,
         request
       );
     }
   };
 
-  // Handle errors caught from the fetch call, re-throwing as appropriate AxiosErrors.
+  // Handle errors caught from the fetch call, re-throwing as appropriate FaxiosErrors.
   const handleFetchCaughtError = (
     err: unknown,
     composedSignal: ComposedSignal | undefined,
     pendingBodyErrorRef: PendingBodyErrorRef,
-    config: InternalAxiosRequestConfig,
+    config: InternalFaxiosRequestConfig,
     request: unknown
   ): never => {
     // Safari can surface fetch aborts as a DOMException-like object whose
@@ -656,7 +656,7 @@ const factory = (env: Record<string, unknown>) => {
     if (
       composedSignal &&
       composedSignal.aborted &&
-      composedSignal.reason instanceof AxiosError
+      composedSignal.reason instanceof FaxiosError
     ) {
       const canceledError = composedSignal.reason;
       canceledError.config = config;
@@ -674,8 +674,8 @@ const factory = (env: Record<string, unknown>) => {
       throw _pbe;
     }
 
-    // Re-throw AxiosErrors we raised synchronously without re-wrapping them.
-    if (err instanceof AxiosError) {
+    // Re-throw FaxiosErrors we raised synchronously without re-wrapping them.
+    if (err instanceof FaxiosError) {
       request && !err.request && (err.request = request);
       throw err;
     }
@@ -686,12 +686,12 @@ const factory = (env: Record<string, unknown>) => {
       /Load failed|fetch/i.test(_err.message)
     ) {
       throw Object.assign(
-        new AxiosError(
+        new FaxiosError(
           "Network Error",
-          AxiosError.ERR_NETWORK,
+          FaxiosError.ERR_NETWORK,
           config,
           request,
-          _err["response"] as AxiosResponse | undefined
+          _err["response"] as FaxiosResponse | undefined
         ),
         {
           cause: _err["cause"] || _err,
@@ -699,17 +699,17 @@ const factory = (env: Record<string, unknown>) => {
       );
     }
 
-    throw AxiosError.from(
+    throw FaxiosError.from(
       _err,
       _err["code"] as string | undefined,
       config,
       request,
-      _err["response"] as AxiosResponse | undefined
+      _err["response"] as FaxiosResponse | undefined
     );
   };
 
-  return async (config: InternalAxiosRequestConfig) => {
-    const _resolved = resolveConfig(config) as InternalAxiosRequestConfig & {
+  return async (config: InternalFaxiosRequestConfig) => {
+    const _resolved = resolveConfig(config) as InternalFaxiosRequestConfig & {
       fetchOptions?: Record<string, unknown>;
       withCredentials?: string | boolean;
     };
@@ -820,7 +820,7 @@ const factory = (env: Record<string, unknown>) => {
         signal: composedSignal,
         method: (method as string).toUpperCase(),
         headers: toByteStringHeaderObject(
-          headers.normalize(false) as AxiosHeaders
+          headers.normalize(false) as FaxiosHeaders
         ),
         body: data,
         duplex: "half",
@@ -835,7 +835,7 @@ const factory = (env: Record<string, unknown>) => {
         ? _fetch(request, fetchOptions)
         : _fetch(url, resolvedOptions));
 
-      const responseHeaders = AxiosHeaders.from(response.headers);
+      const responseHeaders = FaxiosHeaders.from(response.headers);
 
       checkDeclaredContentLength(responseHeaders, hasMaxContentLength, maxContentLength!, config, request);
 
@@ -875,7 +875,7 @@ const factory = (env: Record<string, unknown>) => {
       return await new Promise((resolve, reject) => {
         settle(resolve, reject, {
           data: responseData,
-          headers: AxiosHeaders.from(response.headers),
+          headers: FaxiosHeaders.from(response.headers),
           status: response.status,
           statusText: response.statusText,
           config,

@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
-import AxiosError from "../../../lib/src/lib/core/AxiosError.js";
+import FaxiosError from "../../../lib/src/lib/core/FaxiosError.js";
 import settle from "../../../lib/src/lib/core/settle.js";
-import type { AxiosResponse } from "../../../lib/src/lib/types.js";
+import type { FaxiosResponse } from "../../../lib/src/lib/types.js";
 
 describe("core::settle (vitest browser)", () => {
   it("resolves when response status is missing", () => {
@@ -12,7 +12,7 @@ describe("core::settle (vitest browser)", () => {
       config: {
         validateStatus: () => true,
       },
-    } as unknown as AxiosResponse;
+    } as unknown as FaxiosResponse;
 
     settle(resolve, reject, response);
 
@@ -26,7 +26,7 @@ describe("core::settle (vitest browser)", () => {
     const response = {
       status: 500,
       config: {},
-    } as unknown as AxiosResponse;
+    } as unknown as FaxiosResponse;
 
     settle(resolve, reject, response);
 
@@ -42,7 +42,7 @@ describe("core::settle (vitest browser)", () => {
       config: {
         validateStatus: () => true,
       },
-    } as unknown as AxiosResponse;
+    } as unknown as FaxiosResponse;
 
     settle(resolve, reject, response);
 
@@ -50,7 +50,7 @@ describe("core::settle (vitest browser)", () => {
     expect(reject).not.toHaveBeenCalled();
   });
 
-  it("rejects with an AxiosError when validateStatus returns false", () => {
+  it("rejects with an FaxiosError when validateStatus returns false", () => {
     const resolve = vi.fn();
     const reject = vi.fn();
     const request = {
@@ -62,7 +62,7 @@ describe("core::settle (vitest browser)", () => {
         validateStatus: () => false,
       },
       request,
-    } as unknown as AxiosResponse;
+    } as unknown as FaxiosResponse;
 
     settle(resolve, reject, response);
 
@@ -70,9 +70,9 @@ describe("core::settle (vitest browser)", () => {
     expect(reject).toHaveBeenCalledOnce();
 
     const reason = reject.mock.calls[0]![0];
-    expect(reason).toBeInstanceOf(AxiosError);
+    expect(reason).toBeInstanceOf(FaxiosError);
     expect(reason.message).toBe("Request failed with status code 500");
-    expect(reason.code).toBe(AxiosError.ERR_BAD_RESPONSE);
+    expect(reason.code).toBe(FaxiosError.ERR_BAD_RESPONSE);
     expect(reason.config).toBe(response.config);
     expect(reason.request).toBe(request);
     expect(reason.response).toBe(response);
@@ -87,7 +87,7 @@ describe("core::settle (vitest browser)", () => {
       config: {
         validateStatus,
       },
-    } as unknown as AxiosResponse;
+    } as unknown as FaxiosResponse;
 
     settle(resolve, reject, response);
 

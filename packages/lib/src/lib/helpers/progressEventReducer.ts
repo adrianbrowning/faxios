@@ -1,9 +1,9 @@
-import type { AxiosProgressEvent } from "../types.js";
+import type { FaxiosProgressEvent } from "../types.js";
 import utils from "../utils.js";
 import speedometer from "./speedometer.js";
 import throttle from "./throttle.js";
 
-export const progressEventReducer = (listener: (data: AxiosProgressEvent) => void, isDownloadStream: boolean, freq = 3) => {
+export const progressEventReducer = (listener: (data: FaxiosProgressEvent) => void, isDownloadStream: boolean, freq = 3) => {
   let bytesNotified = 0;
   const _speedometer = speedometer(50, 250);
 
@@ -20,7 +20,7 @@ export const progressEventReducer = (listener: (data: AxiosProgressEvent) => voi
 
     bytesNotified = Math.max(bytesNotified, loaded);
 
-    const data: AxiosProgressEvent = {
+    const data: FaxiosProgressEvent = {
       loaded,
       total,
       progress: total ? loaded / total : undefined,

@@ -1,7 +1,7 @@
 "use strict";
 
 import utils from "../utils.js";
-import AxiosURLSearchParams from "./AxiosURLSearchParams.js";
+import FaxiosURLSearchParams from "./FaxiosURLSearchParams.js";
 
 /**
  * It replaces URL-encoded forms of `:`, `$`, `,`, and spaces with
@@ -53,7 +53,7 @@ export default function buildURL(url: string, params?: unknown, options?: unknow
   else {
     serializedParams = utils.isURLSearchParams(params)
       ? (params as { toString: () => string; }).toString()
-      : new (AxiosURLSearchParams as unknown as new (params: unknown, options: unknown) => { toString: (enc?: (val: string) => string) => string; })(params, _options).toString(_encode);
+      : new (FaxiosURLSearchParams as unknown as new (params: unknown, options: unknown) => { toString: (enc?: (val: string) => string) => string; })(params, _options).toString(_encode);
   }
 
   if (serializedParams) {

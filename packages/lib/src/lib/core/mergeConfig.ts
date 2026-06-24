@@ -1,10 +1,10 @@
 "use strict";
 
-import type { AxiosRequestConfig, AxiosDefaults } from "../types.js";
+import type { FaxiosRequestConfig, FaxiosDefaults } from "../types.js";
 import utils from "../utils.js";
-import AxiosHeaders from "./AxiosHeaders.js";
+import FaxiosHeaders from "./FaxiosHeaders.js";
 
-const headersToObject = (thing: unknown) => (thing instanceof AxiosHeaders ? { ...thing } : thing);
+const headersToObject = (thing: unknown) => (thing instanceof FaxiosHeaders ? { ...thing } : thing);
 
 /**
  * Config-specific merge-function which creates a new config-object
@@ -15,7 +15,7 @@ const headersToObject = (thing: unknown) => (thing instanceof AxiosHeaders ? { .
  *
  * @returns {Object} New object resulting from merging config2 to config1
  */
-export default function mergeConfig(config1: AxiosRequestConfig | AxiosDefaults | Record<string, unknown>, config2?: AxiosRequestConfig | AxiosDefaults | Record<string, unknown>): AxiosRequestConfig & Record<string, unknown> {
+export default function mergeConfig(config1: FaxiosRequestConfig | FaxiosDefaults | Record<string, unknown>, config2?: FaxiosRequestConfig | FaxiosDefaults | Record<string, unknown>): FaxiosRequestConfig & Record<string, unknown> {
    
   config2 = config2 || {};
 

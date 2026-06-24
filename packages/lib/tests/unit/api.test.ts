@@ -82,7 +82,7 @@ describe("static api", () => {
 
           const fn = (axios as unknown as Record<string, (url: string, config: unknown) => Promise<unknown>>)[method]!;
           await fn("/test", {
-            async adapter(config: import("../../src/lib/types.ts").InternalAxiosRequestConfig) {
+            async adapter(config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig) {
               seenData = config.data as string;
 
               return Promise.resolve({
@@ -130,8 +130,8 @@ describe("static api", () => {
     }
   });
 
-  it("should have isAxiosError properties", () => {
-    assert.strictEqual(typeof axios.isAxiosError, "function");
+  it("should have isFaxiosError properties", () => {
+    assert.strictEqual(typeof axios.isFaxiosError, "function");
   });
 
   it("should have mergeConfig properties", () => {
@@ -157,7 +157,7 @@ describe("static api", () => {
           transformedData = data;
           return "";
         },
-        adapter: async (config: import("../../src/lib/types.ts").InternalAxiosRequestConfig) =>
+        adapter: async (config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig) =>
           Promise.resolve({
             data: null,
             status: 200,

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import axios from "../../src/index.js";
-import type { AxiosBasicCredentials } from "../../src/lib/types.js";
+import type { FaxiosBasicCredentials } from "../../src/lib/types.js";
 
 class MockXMLHttpRequest {
   requestHeaders: Record<string, string> = {};
@@ -114,7 +114,7 @@ describe("basicAuth (vitest browser)", () => {
     const { request, promise } = startRequest("/foo", {
       auth: {
         username: "Aladdin",
-      } as AxiosBasicCredentials,
+      } as FaxiosBasicCredentials,
     });
 
     expect(request.requestHeaders.Authorization).toBe("Basic QWxhZGRpbjo=");
@@ -149,7 +149,7 @@ describe("basicAuth (vitest browser)", () => {
 
     try {
       const { request, promise } = startRequest("/foo", {
-        auth: {} as AxiosBasicCredentials,
+        auth: {} as FaxiosBasicCredentials,
       });
 
       expect(request.requestHeaders.Authorization).toBe("Basic Og==");

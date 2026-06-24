@@ -62,7 +62,7 @@ const createTransport = (config) => {
 };
 
 describe("error compat (dist export only)", () => {
-  it("rejects with AxiosError for non-2xx responses by default", async () => {
+  it("rejects with FaxiosError for non-2xx responses by default", async () => {
     const err = await faxios
       .get("http://example.com/fail", {
         proxy: false,
@@ -76,7 +76,7 @@ describe("error compat (dist export only)", () => {
       })
       .catch((e) => e);
 
-    expect(faxios.isAxiosError(err)).toBe(true);
+    expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.response.status).toBe(500);
     expect(err.message).toContain("500");
   });
@@ -98,7 +98,7 @@ describe("error compat (dist export only)", () => {
     expect(response.data).toEqual({ ok: false });
   });
 
-  it("wraps transport errors as AxiosError", async () => {
+  it("wraps transport errors as FaxiosError", async () => {
     const err = await faxios
       .get("http://example.com/network", {
         proxy: false,
@@ -108,7 +108,7 @@ describe("error compat (dist export only)", () => {
       })
       .catch((e) => e);
 
-    expect(faxios.isAxiosError(err)).toBe(true);
+    expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.message).toContain("socket hang up");
     expect(err.toJSON).toBeTypeOf("function");
   });
@@ -122,7 +122,7 @@ describe("error compat (dist export only)", () => {
       })
       .catch((e) => e);
 
-    expect(faxios.isAxiosError(err)).toBe(true);
+    expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ECONNABORTED");
     expect(err.message).toBe("timeout of 10ms exceeded");
   });
@@ -137,7 +137,7 @@ describe("error compat (dist export only)", () => {
       })
       .catch((e) => e);
 
-    expect(faxios.isAxiosError(err)).toBe(true);
+    expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ECONNABORTED");
     expect(err.message).toBe("custom timeout message");
   });

@@ -5,11 +5,11 @@ import buildURL from "../helpers/buildURL.js";
 import validator from "../helpers/validator.js";
 import type { ValidatorFn } from "../helpers/validator.js";
 import type {
-  AxiosRequestConfig,
-  InternalAxiosRequestConfig
+  FaxiosRequestConfig,
+  InternalFaxiosRequestConfig
 } from "../types.js";
 import utils from "../utils.js";
-import AxiosHeaders from "./AxiosHeaders.js";
+import FaxiosHeaders from "./FaxiosHeaders.js";
 import buildFullPath from "./buildFullPath.js";
 import dispatchRequest from "./dispatchRequest.js";
 import InterceptorManager from "./InterceptorManager.js";
@@ -30,7 +30,7 @@ const validators = validator.validators as Record<
 };
 
 type RequestInterceptorEntry = {
-  runWhen?: ((c: InternalAxiosRequestConfig) => boolean) | null;
+  runWhen?: ((c: InternalFaxiosRequestConfig) => boolean) | null;
   synchronous?: boolean;
   fulfilled?: (...args: Array<unknown>) => unknown;
   rejected?: (...args: Array<unknown>) => unknown;
@@ -77,7 +77,7 @@ function patchErrorStack(err: Error): void {
   }
 }
 
-function normalizeParamsSerializer(config: AxiosRequestConfig): void {
+function normalizeParamsSerializer(config: FaxiosRequestConfig): void {
   const { paramsSerializer } = config;
   if (paramsSerializer == null) return;
 
@@ -101,8 +101,8 @@ function normalizeParamsSerializer(config: AxiosRequestConfig): void {
 }
 
 function resolveAllowAbsoluteUrls(
-  config: AxiosRequestConfig,
-  defaults: AxiosRequestConfig
+  config: FaxiosRequestConfig,
+  defaults: FaxiosRequestConfig
 ): void {
   if (config.allowAbsoluteUrls === undefined) {
     config.allowAbsoluteUrls =
@@ -114,7 +114,7 @@ function resolveAllowAbsoluteUrls(
 
 function buildRequestInterceptorChain(
   interceptors: { forEach: (fn: (h: RequestInterceptorEntry) => void) => void; },
-  config: AxiosRequestConfig
+  config: FaxiosRequestConfig
 ): {
   chain: Array<((...args: Array<unknown>) => unknown) | undefined>;
   synchronous: boolean;
@@ -125,7 +125,7 @@ function buildRequestInterceptorChain(
   interceptors.forEach((interceptor: RequestInterceptorEntry) => {
     if (
       typeof interceptor.runWhen === "function" &&
-      interceptor.runWhen(config as InternalAxiosRequestConfig) === false
+      interceptor.runWhen(config as InternalFaxiosRequestConfig) === false
     ) {
       return;
     }
@@ -149,9 +149,9 @@ function buildRequestInterceptorChain(
 
 function runSyncInterceptors(
   interceptorChain: Array<((...args: Array<unknown>) => unknown) | undefined>,
-  config: AxiosRequestConfig,
+  config: FaxiosRequestConfig,
   context: unknown
-): AxiosRequestConfig {
+): FaxiosRequestConfig {
   let newConfig = config;
   let i = 0;
   const len = interceptorChain.length;
@@ -161,7 +161,7 @@ function runSyncInterceptors(
     const onRejected = interceptorChain[i++];
     try {
       newConfig = onFulfilled
-        ? (onFulfilled(newConfig) as AxiosRequestConfig)
+        ? (onFulfilled(newConfig) as FaxiosRequestConfig)
         : newConfig;
     }
     catch (error) {
@@ -174,19 +174,19 @@ function runSyncInterceptors(
 }
 
 /**
- * Create a new instance of Axios
+ * Create a new instance of Faxios
  *
  * @param {Object} instanceConfig The default config for the instance
  *
- * @return {Axios} A new instance of Axios
+ * @return {Faxios} A new instance of Faxios
  */
-class Axios {
-  defaults: AxiosRequestConfig;
+class Faxios {
+  defaults: FaxiosRequestConfig;
   interceptors: {
     request: {
       forEach: (
         fn: (h: {
-          runWhen?: ((c: InternalAxiosRequestConfig) => boolean) | null;
+          runWhen?: ((c: InternalFaxiosRequestConfig) => boolean) | null;
           synchronous?: boolean;
           fulfilled?: (...args: Array<unknown>) => unknown;
           rejected?: (...args: Array<unknown>) => unknown;
@@ -203,7 +203,7 @@ class Axios {
     };
   };
 
-  constructor(instanceConfig?: AxiosRequestConfig) {
+  constructor(instanceConfig?: FaxiosRequestConfig) {
     this.defaults = instanceConfig || {};
     this.interceptors = {
       request: new InterceptorManager(),
@@ -221,8 +221,8 @@ class Axios {
    */
 
   async request(
-    configOrUrl: string | AxiosRequestConfig,
-    config?: AxiosRequestConfig
+    configOrUrl: string | FaxiosRequestConfig,
+    config?: FaxiosRequestConfig
   ) {
     try {
       return await this._request(configOrUrl, config);
@@ -237,8 +237,8 @@ class Axios {
   }
 
   async _request(
-    configOrUrl: string | AxiosRequestConfig,
-    config?: AxiosRequestConfig
+    configOrUrl: string | FaxiosRequestConfig,
+    config?: FaxiosRequestConfig
   ): Promise<unknown> {
     /*eslint no-param-reassign:0*/
     // Allow for axios('example/url'[, config]) a la fetch API
@@ -304,7 +304,7 @@ class Axios {
         }
       );
 
-    config.headers = AxiosHeaders.concat(
+    config.headers = FaxiosHeaders.concat(
       contextHeaders,
       ...(h ? [ h as unknown as null ] : [])
     );
@@ -353,7 +353,7 @@ class Axios {
 
     const newConfig = runSyncInterceptors(requestInterceptorChain, config, this);
 
-    promise = dispatchRequest.call(this, newConfig as InternalAxiosRequestConfig) as Promise<unknown>;
+    promise = dispatchRequest.call(this, newConfig as InternalFaxiosRequestConfig) as Promise<unknown>;
 
     len = responseInterceptorChain.length;
 
@@ -367,7 +367,7 @@ class Axios {
     return promise;
   }
 
-  getUri(config?: AxiosRequestConfig) {
+  getUri(config?: FaxiosRequestConfig) {
     config = mergeConfig(this.defaults, config);
     const fullPath = buildFullPath(
       config.baseURL,
@@ -384,8 +384,8 @@ utils.forEach(
   [ "delete", "get", "head", "options" ],
   function forEachMethodNoData(method) {
     /*eslint func-names:0*/
-    (Axios.prototype as unknown as Record<string, unknown>)[method as string] =
-      async function (this: Axios, url: string, config?: AxiosRequestConfig) {
+    (Faxios.prototype as unknown as Record<string, unknown>)[method as string] =
+      async function (this: Faxios, url: string, config?: FaxiosRequestConfig) {
         return this.request(
           mergeConfig(config || {}, {
             method: method as string,
@@ -405,10 +405,10 @@ utils.forEach(
   function forEachMethodWithData(method) {
     function generateHTTPMethod(isForm?: boolean) {
       return async function httpMethod(
-        this: Axios,
+        this: Faxios,
         url: string,
         data?: unknown,
-        config?: AxiosRequestConfig
+        config?: FaxiosRequestConfig
       ) {
         return this.request(
           mergeConfig(config || {}, {
@@ -425,17 +425,17 @@ utils.forEach(
       };
     }
 
-    (Axios.prototype as unknown as Record<string, unknown>)[method as string] =
+    (Faxios.prototype as unknown as Record<string, unknown>)[method as string] =
       generateHTTPMethod();
 
     // QUERY is a safe/idempotent read method; multipart form bodies don't fit
     // its semantics, so no queryForm shorthand is generated.
     if (method !== "query") {
-      (Axios.prototype as unknown as Record<string, unknown>)[
+      (Faxios.prototype as unknown as Record<string, unknown>)[
         (method as string) + "Form"
       ] = generateHTTPMethod(true);
     }
   }
 );
 
-export default Axios;
+export default Faxios;

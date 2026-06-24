@@ -1,6 +1,6 @@
 import CanceledError from "../cancel/CanceledError.js";
-import AxiosError from "../core/AxiosError.js";
-import AxiosHeaders from "../core/AxiosHeaders.js";
+import FaxiosError from "../core/FaxiosError.js";
+import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import settle from "../core/settle.js";
 import transitionalDefaults from "../defaults/transitional.js";
 import parseProtocol from "../helpers/parseProtocol.js";
@@ -21,7 +21,7 @@ export default isXHRAdapterSupported &&
     return new Promise(function dispatchXhrRequest(resolve: (value: any) => void, reject: (reason?: any) => void) {
       const _config = resolveConfig(config);
       let requestData = _config.data;
-      const requestHeaders = AxiosHeaders.from(_config.headers).normalize(false);
+      const requestHeaders = FaxiosHeaders.from(_config.headers).normalize(false);
       let { responseType, onUploadProgress, onDownloadProgress } = _config;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let onCanceled: ((cancel?: any) => void) | undefined;
@@ -54,7 +54,7 @@ export default isXHRAdapterSupported &&
           return;
         }
         // Prepare the response
-        const responseHeaders = AxiosHeaders.from(
+        const responseHeaders = FaxiosHeaders.from(
           "getAllResponseHeaders" in request && request.getAllResponseHeaders()
         );
         const responseData =
@@ -119,7 +119,7 @@ export default isXHRAdapterSupported &&
           return;
         }
 
-        reject(new AxiosError("Request aborted", AxiosError.ECONNABORTED, config, request));
+        reject(new FaxiosError("Request aborted", FaxiosError.ECONNABORTED, config, request));
         done();
 
         // Clean up request
@@ -133,7 +133,7 @@ export default isXHRAdapterSupported &&
         // (message may be empty; when present, surface it)
         // See https://developer.mozilla.org/docs/Web/API/XMLHttpRequest/error_event
         const msg = event && event.message ? event.message : "Network Error";
-        const err = new AxiosError(msg, AxiosError.ERR_NETWORK, config, request);
+        const err = new FaxiosError(msg, FaxiosError.ERR_NETWORK, config, request);
         // attach the underlying event for consumers who want details
         err.event = event || null;
         reject(err);
@@ -151,9 +151,9 @@ export default isXHRAdapterSupported &&
           timeoutErrorMessage = _config.timeoutErrorMessage;
         }
         reject(
-          new AxiosError(
+          new FaxiosError(
             timeoutErrorMessage,
-            transitional.clarifyTimeoutError ? AxiosError.ETIMEDOUT : AxiosError.ECONNABORTED,
+            transitional.clarifyTimeoutError ? FaxiosError.ETIMEDOUT : FaxiosError.ECONNABORTED,
             config,
             request
           )
@@ -225,9 +225,9 @@ export default isXHRAdapterSupported &&
 
       if (protocol && !platform.protocols.includes(protocol)) {
         reject(
-          new AxiosError(
+          new FaxiosError(
             "Unsupported protocol " + protocol + ":",
-            AxiosError.ERR_BAD_REQUEST,
+            FaxiosError.ERR_BAD_REQUEST,
             config
           )
         );

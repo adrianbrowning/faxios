@@ -1,14 +1,14 @@
 import assert from "node:assert";
 import FormData from "form-data";
 import { describe, it } from "vitest";
-import AxiosError from "../../src/lib/core/AxiosError.js";
-import AxiosURLSearchParams from "../../src/lib/helpers/AxiosURLSearchParams.js";
+import FaxiosError from "../../src/lib/core/FaxiosError.js";
+import FaxiosURLSearchParams from "../../src/lib/helpers/FaxiosURLSearchParams.js";
 import toFormData from "../../src/lib/helpers/toFormData.js";
 import type { GenericFormData } from "../../src/lib/types.js";
 
 const fd = () => new FormData() as unknown as GenericFormData;
-// ponytail: AxiosURLSearchParams is a function-constructor; cast once
-const URLSearchParamsCtor = AxiosURLSearchParams as unknown as new (
+// ponytail: FaxiosURLSearchParams is a function-constructor; cast once
+const URLSearchParamsCtor = FaxiosURLSearchParams as unknown as new (
   params?: unknown,
   options?: unknown,
 ) => { toString(): string };
@@ -128,14 +128,14 @@ describe("helpers::toFormData", () => {
   }
 
   describe("maxDepth option", () => {
-    it("should throw AxiosError when payload exceeds default depth limit (100)", () => {
+    it("should throw FaxiosError when payload exceeds default depth limit (100)", () => {
       try {
         toFormData(nest(101), fd());
         assert.fail("Should have thrown");
       } catch (err) {
         assert.ok(
-          err instanceof AxiosError,
-          "error must be AxiosError, not RangeError",
+          err instanceof FaxiosError,
+          "error must be FaxiosError, not RangeError",
         );
         assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
         assert.ok(!(err instanceof RangeError));
@@ -162,7 +162,7 @@ describe("helpers::toFormData", () => {
         toFormData(nest(10), fd(), { maxDepth: 5 });
         assert.fail("Should have thrown");
       } catch (err) {
-        assert.ok(err instanceof AxiosError);
+        assert.ok(err instanceof FaxiosError);
         assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
       }
     });
@@ -187,20 +187,20 @@ describe("helpers::toFormData", () => {
           "must be circular-ref error",
         );
         assert.ok(
-          !(err instanceof AxiosError) ||
+          !(err instanceof FaxiosError) ||
             err.code !== "ERR_FORM_DATA_DEPTH_EXCEEDED",
         );
       }
     });
 
-    it("depth limit error is catchable as AxiosError with correct code", () => {
+    it("depth limit error is catchable as FaxiosError with correct code", () => {
       let caught;
       try {
         toFormData(nest(101), fd());
       } catch (err) {
         caught = err;
       }
-      assert.ok(caught instanceof AxiosError);
+      assert.ok(caught instanceof FaxiosError);
       assert.strictEqual(caught.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
       assert.ok(!(caught instanceof RangeError));
     });
@@ -211,8 +211,8 @@ describe("helpers::toFormData", () => {
         assert.fail("Should have thrown");
       } catch (err) {
         assert.ok(
-          err instanceof AxiosError,
-          "error must be AxiosError, not RangeError",
+          err instanceof FaxiosError,
+          "error must be FaxiosError, not RangeError",
         );
         assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
         assert.ok(!(err instanceof RangeError));
@@ -229,19 +229,19 @@ describe("helpers::toFormData", () => {
         toFormData({ "evil{}": nest(100) }, fd());
         assert.fail("Should have thrown");
       } catch (err) {
-        assert.ok(err instanceof AxiosError);
+        assert.ok(err instanceof FaxiosError);
         assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
       }
     });
   });
 
-  describe("maxDepth — params serialization via AxiosURLSearchParams", () => {
-    it("should throw AxiosError for deeply nested params object (default limit)", () => {
+  describe("maxDepth — params serialization via FaxiosURLSearchParams", () => {
+    it("should throw FaxiosError for deeply nested params object (default limit)", () => {
       try {
         new URLSearchParamsCtor(nest(101));
         assert.fail("Should have thrown");
       } catch (err) {
-        assert.ok(err instanceof AxiosError);
+        assert.ok(err instanceof FaxiosError);
         assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
       }
     });
@@ -258,8 +258,8 @@ describe("helpers::toFormData", () => {
         assert.fail("Should have thrown");
       } catch (err) {
         assert.ok(
-          err instanceof AxiosError,
-          "error must be AxiosError, not RangeError",
+          err instanceof FaxiosError,
+          "error must be FaxiosError, not RangeError",
         );
         assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
         assert.ok(!(err instanceof RangeError));
@@ -271,7 +271,7 @@ describe("helpers::toFormData", () => {
         new URLSearchParamsCtor({ "evil{}": nest(100) });
         assert.fail("Should have thrown");
       } catch (err) {
-        assert.ok(err instanceof AxiosError);
+        assert.ok(err instanceof FaxiosError);
         assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
       }
     });

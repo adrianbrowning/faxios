@@ -44,7 +44,7 @@ describe('timeout', () => {
       })
       .catch((e: any) => e);
 
-    expect(axios.isAxiosError(err)).toBe(true);
+    expect(axios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe('ETIMEDOUT');
   });
 });

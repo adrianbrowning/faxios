@@ -1,11 +1,11 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
-import Axios from "../../src/lib/core/Axios.js";
+import Faxios from "../../src/lib/core/Faxios.js";
 
-describe("Axios", () => {
+describe("Faxios", () => {
   describe("handle un-writable error stack", () => {
     const testUnwritableErrorStack = async (stackAttributes: PropertyDescriptor) => {
-      const axios = new Axios({});
+      const axios = new Faxios({});
       // Mock axios._request to return an Error with an un-writable stack property.
       axios._request = () => {
         const mockError = new Error("test-error");
@@ -48,7 +48,7 @@ describe("Axios", () => {
   });
 
   it("should not throw if the config argument is omitted", () => {
-    const axios = new Axios();
+    const axios = new Faxios();
 
     assert.deepStrictEqual(axios.defaults, {});
   });

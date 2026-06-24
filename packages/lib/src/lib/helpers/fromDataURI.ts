@@ -1,6 +1,6 @@
 "use strict";
 
-import AxiosError from "../core/AxiosError.js";
+import FaxiosError from "../core/FaxiosError.js";
 import platform from "../platform/index.js";
 import parseProtocol from "./parseProtocol.js";
 
@@ -38,9 +38,9 @@ export default function fromDataURI(
   }
 
   if (protocol !== "data") {
-    throw new AxiosError(
+    throw new FaxiosError(
       "Unsupported protocol " + protocol,
-      AxiosError.ERR_NOT_SUPPORT
+      FaxiosError.ERR_NOT_SUPPORT
     );
   }
 
@@ -48,7 +48,7 @@ export default function fromDataURI(
 
   const commaIdx = uri.indexOf(",");
   if (commaIdx < 0) {
-    throw new AxiosError("Invalid URL", AxiosError.ERR_INVALID_URL);
+    throw new FaxiosError("Invalid URL", FaxiosError.ERR_INVALID_URL);
   }
 
   const header = uri.slice(0, commaIdx);
@@ -65,7 +65,7 @@ export default function fromDataURI(
   if (!asBlob) return buffer;
 
   if (!_Blob) {
-    throw new AxiosError("Blob is not supported", AxiosError.ERR_NOT_SUPPORT);
+    throw new FaxiosError("Blob is not supported", FaxiosError.ERR_NOT_SUPPORT);
   }
 
   return new _Blob([ buffer ], { type: mime });

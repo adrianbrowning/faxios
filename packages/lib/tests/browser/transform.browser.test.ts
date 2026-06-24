@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import axios from "../../src/index.js";
-import AxiosError from "../../../lib/src/lib/core/AxiosError.js";
+import FaxiosError from "../../../lib/src/lib/core/FaxiosError.js";
 
 class MockXMLHttpRequest {
   requestHeaders: Record<string, string> = {};
@@ -133,7 +133,7 @@ describe("transform (vitest browser)", () => {
 
     expect(thrown).toBeTruthy();
     expect(thrown.name).toContain("SyntaxError");
-    expect(thrown.code).toBe(AxiosError.ERR_BAD_RESPONSE);
+    expect(thrown.code).toBe(FaxiosError.ERR_BAD_RESPONSE);
   });
 
   it("should send data as JSON if request content-type is application/json", async () => {

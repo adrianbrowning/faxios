@@ -1,25 +1,25 @@
 import { describe, it, expect } from "vitest";
-import AxiosError from "../../../src/lib/core/AxiosError.js";
-import isAxiosError from "../../../src/lib/helpers/isAxiosError.js";
+import FaxiosError from "../../../src/lib/core/FaxiosError.js";
+import isFaxiosError from "../../../src/lib/helpers/isFaxiosError.js";
 
-describe("helpers::isAxiosError", () => {
+describe("helpers::isFaxiosError", () => {
   it("should return true if the error is created by core::createError", () => {
-    expect(isAxiosError(new AxiosError("Boom!", undefined, { foo: "bar" } as never))).toBe(
+    expect(isFaxiosError(new FaxiosError("Boom!", undefined, { foo: "bar" } as never))).toBe(
       true,
     );
   });
 
   it("should return true if the error is enhanced by core::enhanceError", () => {
     expect(
-      isAxiosError(AxiosError.from(new Error("Boom!"), undefined, { foo: "bar" } as never)),
+      isFaxiosError(FaxiosError.from(new Error("Boom!"), undefined, { foo: "bar" } as never)),
     ).toBe(true);
   });
 
   it("should return false if the error is a normal Error instance", () => {
-    expect(isAxiosError(new Error("Boom!"))).toBe(false);
+    expect(isFaxiosError(new Error("Boom!"))).toBe(false);
   });
 
   it("should return false if the error is null", () => {
-    expect(isAxiosError(null)).toBe(false);
+    expect(isFaxiosError(null)).toBe(false);
   });
 });

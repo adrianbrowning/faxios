@@ -3,12 +3,12 @@
 import adapters from "../adapters/adapters.js";
 import CanceledError from "../cancel/CanceledError.js";
 import isCancel from "../cancel/isCancel.js";
-import AxiosHeaders from "../core/AxiosHeaders.js";
+import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import defaults from "../defaults/index.js";
-import type { InternalAxiosRequestConfig, AxiosResponse } from "../types.js";
+import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
 import transformData from "./transformData.js";
 
-function throwIfCancellationRequested(config: InternalAxiosRequestConfig): void {
+function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void {
   if (config.cancelToken) {
     config.cancelToken.throwIfRequested();
   }
@@ -18,10 +18,10 @@ function throwIfCancellationRequested(config: InternalAxiosRequestConfig): void 
   }
 }
 
-export default async function dispatchRequest(this: unknown, config: InternalAxiosRequestConfig): Promise<AxiosResponse> {
+export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig): Promise<FaxiosResponse> {
   throwIfCancellationRequested(config);
 
-  config.headers = AxiosHeaders.from(config.headers) as unknown as typeof config.headers;
+  config.headers = FaxiosHeaders.from(config.headers) as unknown as typeof config.headers;
 
   config.data = transformData.call(config, config.transformRequest as never);
 
@@ -33,14 +33,14 @@ export default async function dispatchRequest(this: unknown, config: InternalAxi
 
   /* eslint-disable promise/always-return */
   return (adapter(config)).then(
-    function onAdapterResolution(response: AxiosResponse) {
+    function onAdapterResolution(response: FaxiosResponse) {
       throwIfCancellationRequested(config);
 
       (config as unknown as Record<string, unknown>)["response"] = response;
 
       try {
         response.data = transformData.call(config, config.transformResponse as never, response);
-        response.headers = AxiosHeaders.from(response.headers);
+        response.headers = FaxiosHeaders.from(response.headers);
       }
       finally {
         delete (config as unknown as Record<string, unknown>)["response"];
@@ -61,7 +61,7 @@ export default async function dispatchRequest(this: unknown, config: InternalAxi
           finally {
             delete (config as unknown as Record<string, unknown>)["response"];
           }
-          r.response.headers = AxiosHeaders.from(r.response.headers as Record<string, unknown>);
+          r.response.headers = FaxiosHeaders.from(r.response.headers as Record<string, unknown>);
         }
       }
 

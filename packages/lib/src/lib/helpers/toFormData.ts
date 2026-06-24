@@ -1,8 +1,8 @@
 "use strict";
 
 import PlatformFormData from "form-data";
-import AxiosError from "../core/AxiosError.js";
-// temporary hotfix to avoid circular references until AxiosURLSearchParams is refactored
+import FaxiosError from "../core/FaxiosError.js";
+// temporary hotfix to avoid circular references until FaxiosURLSearchParams is refactored
 import type { GenericFormData, SerializerVisitor, FormDataVisitorHelpers } from "../types.js";
 import utils from "../utils.js";
 
@@ -142,7 +142,7 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
     }
 
     if (!useBlob && utils.isBlob(value)) {
-      throw new AxiosError("Blob is not supported. Use a Buffer instead.");
+      throw new FaxiosError("Blob is not supported. Use a Buffer instead.");
     }
 
     if (utils.isArrayBuffer(value) || utils.isTypedArray(value)) {
@@ -157,12 +157,12 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
 
   function throwIfMaxDepthExceeded(depth: number): void {
     if (depth > (maxDepth)) {
-      throw new AxiosError(
+      throw new FaxiosError(
         "Object is too deeply nested (" +
           depth +
           " levels). Max depth: " +
           maxDepth,
-        AxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED
+        FaxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED
       );
     }
   }

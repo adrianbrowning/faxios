@@ -12,7 +12,7 @@ describe('Bun importing', () => {
     expect(typeof (exports.axios ?? exports.default)).toBe('function');
     expect(typeof (exports.create ?? exports.default.create)).toBe('function');
     expect(typeof exports.isCancel).toBe('function');
-    expect(typeof exports.isAxiosError).toBe('function');
+    expect(typeof exports.isFaxiosError).toBe('function');
     expect(typeof exports.CancelToken).toBe('function');
     expect(typeof exports.VERSION).toBe('string');
   });

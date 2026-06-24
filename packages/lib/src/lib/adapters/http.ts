@@ -11,13 +11,13 @@ import followRedirects from "follow-redirects";
 import createHttpsProxyAgent from "https-proxy-agent";
 import { getProxyForUrl } from "proxy-from-env";
 import CanceledError from "../cancel/CanceledError.js";
-import AxiosError from "../core/AxiosError.js";
-import AxiosHeaders from "../core/AxiosHeaders.js";
+import FaxiosError from "../core/FaxiosError.js";
+import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import buildFullPath from "../core/buildFullPath.js";
 import settle from "../core/settle.js";
 import transitionalDefaults from "../defaults/transitional.js";
 import { VERSION } from "../env/data.js";
-import AxiosTransformStream from "../helpers/AxiosTransformStream.js";
+import FaxiosTransformStream from "../helpers/FaxiosTransformStream.js";
 import buildURL from "../helpers/buildURL.js";
 import callbackify from "../helpers/callbackify.js";
 import estimateDataURLDecodedBytes from "../helpers/estimateDataURLDecodedBytes.js";
@@ -34,7 +34,7 @@ import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import shouldBypassProxy from "../helpers/shouldBypassProxy.js";
 import ZlibHeaderTransformStream from "../helpers/ZlibHeaderTransformStream.js";
 import platform from "../platform/index.js";
-import type { InternalAxiosRequestConfig } from "../types.js";
+import type { InternalFaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
 
 const zlibOptions = {
@@ -67,7 +67,7 @@ const isHttps = /https:?/;
 const FORM_DATA_CONTENT_HEADERS = [ "content-type", "content-length" ];
 
 function setFormDataHeaders(
-  headers: AxiosHeaders,
+  headers: FaxiosHeaders,
   formHeaders: Record<string, unknown>,
   policy: unknown
 ): void {
@@ -85,13 +85,13 @@ function setFormDataHeaders(
 
 // Symbols used to bind a single 'error' listener to a pooled socket and track
 // the request currently owning that socket across keep-alive reuse (issue #10780).
-const kAxiosSocketListener = Symbol("axios.http.socketListener");
-const kAxiosCurrentReq = Symbol("axios.http.currentReq");
+const kFaxiosSocketListener = Symbol("axios.http.socketListener");
+const kFaxiosCurrentReq = Symbol("axios.http.currentReq");
 
 // Tags HttpsProxyAgent instances installed by setProxy() so the redirect path
 // can strip them without clobbering a user-supplied agent that happens to be
 // an HttpsProxyAgent.
-const kAxiosInstalledTunnel = Symbol("axios.http.installedTunnel");
+const kFaxiosInstalledTunnel = Symbol("axios.http.installedTunnel");
 
 // Cache of CONNECT-tunneling agents keyed by proxy config so repeat requests
 // through the same proxy reuse a single agent (and its socket pool). The
@@ -157,7 +157,7 @@ function getTunnelingAgent(
       });
     };
   }
-  (newAgent as unknown as Record<symbol, unknown>)[kAxiosInstalledTunnel] =
+  (newAgent as unknown as Record<symbol, unknown>)[kFaxiosInstalledTunnel] =
     true;
   cache?.set(key, newAgent);
   return newAgent;
@@ -294,10 +294,10 @@ function resolveProxyAuth(proxy: unknown): unknown {
       proxyAuth = (authUsername || "") + ":" + (authPassword || "");
     }
     else {
-      throw new AxiosError(
+      throw new FaxiosError(
         "Invalid proxy authorization",
-        AxiosError.ERR_BAD_OPTION,
-        { proxy } as unknown as InternalAxiosRequestConfig
+        FaxiosError.ERR_BAD_OPTION,
+        { proxy } as unknown as InternalFaxiosRequestConfig
       );
     }
   }
@@ -414,7 +414,7 @@ function stripProxyAuthHeaders(options: Record<string, unknown>): void {
  * If the proxy or config afterRedirects functions are defined, call them with the options
  *
  * @param {http.ClientRequestArgs} options
- * @param {AxiosProxyConfig} configProxy configuration from Axios options object
+ * @param {FaxiosProxyConfig} configProxy configuration from Faxios options object
  * @param {string} location
  *
  * @returns {http.ClientRequestArgs}
@@ -437,7 +437,7 @@ function setProxy(
 
   if (isRedirect) {
     stripProxyAuthHeaders(options);
-    if (options["agent"] && (options["agent"] as Record<symbol, unknown>)[kAxiosInstalledTunnel]) {
+    if (options["agent"] && (options["agent"] as Record<symbol, unknown>)[kFaxiosInstalledTunnel]) {
       options["agent"] = undefined;
     }
   }
@@ -592,7 +592,7 @@ const http2Transport = {
   },
 };
 
-type AxiosHeadersExtended = AxiosHeaders & {
+type FaxiosHeadersExtended = FaxiosHeaders & {
   setContentType: (value: unknown, rewrite?: unknown) => void;
   setContentLength: (value: unknown, rewrite?: unknown) => void;
   getContentLength: (matcher?: unknown) => unknown;
@@ -603,7 +603,7 @@ type AxiosHeadersExtended = AxiosHeaders & {
 function handleDataURI(
   resolve: (value: unknown) => void,
   reject: (reason?: unknown) => void,
-  config: InternalAxiosRequestConfig,
+  config: InternalFaxiosRequestConfig,
   own: (key: string) => unknown,
   method: string,
   maxContentLength: unknown,
@@ -616,9 +616,9 @@ function handleDataURI(
     const estimated = estimateDataURLDecodedBytes(dataUrl);
     if (estimated > (maxContentLength as number)) {
       reject(
-        new AxiosError(
+        new FaxiosError(
           "maxContentLength size of " + String(maxContentLength) + " exceeded",
-          AxiosError.ERR_BAD_RESPONSE,
+          FaxiosError.ERR_BAD_RESPONSE,
           config
         )
       );
@@ -653,7 +653,7 @@ function handleDataURI(
     );
   }
   catch (err) {
-    throw AxiosError.from(err as Error, AxiosError.ERR_BAD_REQUEST, config);
+    throw FaxiosError.from(err as Error, FaxiosError.ERR_BAD_REQUEST, config);
   }
 
   if (responseType === "text") {
@@ -672,7 +672,7 @@ function handleDataURI(
     data: convertedData,
     status: 200,
     statusText: "OK",
-    headers: new AxiosHeaders(),
+    headers: new FaxiosHeaders(),
     config,
     request: undefined,
   });
@@ -681,7 +681,7 @@ function handleDataURI(
 
 async function applyFormDataHeaders(
   data: unknown,
-  headers: AxiosHeadersExtended,
+  headers: FaxiosHeadersExtended,
   own: (key: string) => unknown
 ): Promise<void> {
   const dataWithHeaders = data as {
@@ -708,11 +708,11 @@ function toBufferData(data: unknown): { data: Buffer | null; invalid: boolean; }
 
 async function prepareRequestData(
   data: unknown,
-  headers: AxiosHeadersExtended,
+  headers: FaxiosHeadersExtended,
   own: (key: string) => unknown,
   maxBodyLength: unknown,
   reject: (reason?: unknown) => void,
-  config: InternalAxiosRequestConfig
+  config: InternalFaxiosRequestConfig
 ): Promise<{ data: unknown; rejected: boolean; }> {
   if (utils.isSpecCompliantForm(data)) {
     const userBoundary = headers.getContentType(/boundary=([-\w]{10,70})/i);
@@ -743,9 +743,9 @@ async function prepareRequestData(
     const { data: buf, invalid } = toBufferData(data);
     if (invalid) {
       reject(
-        new AxiosError(
+        new FaxiosError(
           "Data after transformation must be a string, an ArrayBuffer, a Buffer, or a Stream",
-          AxiosError.ERR_BAD_REQUEST,
+          FaxiosError.ERR_BAD_REQUEST,
           config
         )
       );
@@ -758,9 +758,9 @@ async function prepareRequestData(
       (data as Buffer).length > (maxBodyLength as number)
     ) {
       reject(
-        new AxiosError(
+        new FaxiosError(
           "Request body larger than maxBodyLength limit",
-          AxiosError.ERR_BAD_REQUEST,
+          FaxiosError.ERR_BAD_REQUEST,
           config
         )
       );
@@ -778,18 +778,18 @@ function setupSensitiveHeaders(
   options: Record<string, unknown>,
   own: (key: string) => unknown,
   reject: (reason?: unknown) => void,
-  config: InternalAxiosRequestConfig
+  config: InternalFaxiosRequestConfig
 ): boolean {
   const sensitiveHeaders = own("sensitiveHeaders");
   if (sensitiveHeaders == null) return false;
   if (!utils.isArray(sensitiveHeaders)) {
-    reject(new AxiosError("sensitiveHeaders must be an array of strings", AxiosError.ERR_BAD_OPTION_VALUE, config));
+    reject(new FaxiosError("sensitiveHeaders must be an array of strings", FaxiosError.ERR_BAD_OPTION_VALUE, config));
     return true;
   }
   const sensitiveSet = new Set<string>();
   for (const header of sensitiveHeaders as Array<unknown>) {
     if (!utils.isString(header)) {
-      reject(new AxiosError("sensitiveHeaders must be an array of strings", AxiosError.ERR_BAD_OPTION_VALUE, config));
+      reject(new FaxiosError("sensitiveHeaders must be an array of strings", FaxiosError.ERR_BAD_OPTION_VALUE, config));
       return true;
     }
     sensitiveSet.add((header as string).toLowerCase());
@@ -839,7 +839,7 @@ function setupFollowRedirectsTransport(
   auth: string | undefined,
   parsed: URL,
   reject: (reason?: unknown) => void,
-  config: InternalAxiosRequestConfig
+  config: InternalFaxiosRequestConfig
 ): { transport: TransportType; rejected: boolean; } {
   options["sensitiveHeaders"] = [];
   if (maxRedirects) options["maxRedirects"] = maxRedirects;
@@ -863,7 +863,7 @@ function selectTransport(
   auth: string | undefined,
   parsed: URL,
   reject: (reason?: unknown) => void,
-  config: InternalAxiosRequestConfig
+  config: InternalFaxiosRequestConfig
 ): {
   transport: TransportType;
   isNativeTransport: boolean;
@@ -897,7 +897,7 @@ interface ResponseContext {
   rejected: { value: boolean; };
   abort: (reason?: unknown) => void;
   abortEmitter: EventEmitter;
-  config: InternalAxiosRequestConfig;
+  config: InternalFaxiosRequestConfig;
   decompress: unknown;
   method: string;
   onDownloadProgress: unknown;
@@ -913,7 +913,7 @@ interface ResponseContext {
 function handleBufferedResponse(
   responseStream: stream.Readable,
   ctx: ResponseContext,
-  response: { status: number; statusText: string; headers: AxiosHeaders; config: InternalAxiosRequestConfig; request: unknown; data: unknown; },
+  response: { status: number; statusText: string; headers: FaxiosHeaders; config: InternalFaxiosRequestConfig; request: unknown; data: unknown; },
   lastRequest: unknown
 ): void {
   const responseBuffer: Array<Buffer> = [];
@@ -925,9 +925,9 @@ function handleBufferedResponse(
     if ((ctx.maxContentLength as number) > -1 && totalResponseBytes > (ctx.maxContentLength as number)) {
       ctx.rejected.value = true;
       (responseStream).destroy();
-      ctx.abort(new AxiosError(
+      ctx.abort(new FaxiosError(
         "maxContentLength size of " + String(ctx.maxContentLength) + " exceeded",
-        AxiosError.ERR_BAD_RESPONSE,
+        FaxiosError.ERR_BAD_RESPONSE,
         ctx.config,
         lastRequest
       ));
@@ -936,14 +936,14 @@ function handleBufferedResponse(
 
   responseStream.on("aborted", function handlerStreamAborted() {
     if (ctx.rejected.value) return;
-    const err = new AxiosError("stream has been aborted", AxiosError.ERR_BAD_RESPONSE, ctx.config, lastRequest, response);
+    const err = new FaxiosError("stream has been aborted", FaxiosError.ERR_BAD_RESPONSE, ctx.config, lastRequest, response);
     (responseStream).destroy(err);
     ctx.reject(err);
   });
 
   responseStream.on("error", function handleStreamError(err: Error) {
     if (ctx.rejected.value) return;
-    ctx.reject(AxiosError.from(err, undefined, ctx.config, lastRequest, response));
+    ctx.reject(FaxiosError.from(err, undefined, ctx.config, lastRequest, response));
   });
 
   responseStream.on("end", function handleStreamEnd() {
@@ -961,7 +961,7 @@ function handleBufferedResponse(
       response.data = responseData;
     }
     catch (err) {
-      return ctx.reject(AxiosError.from(err as Error, undefined, ctx.config, response.request, response));
+      return ctx.reject(FaxiosError.from(err as Error, undefined, ctx.config, response.request, response));
     }
     settle(ctx.resolve, ctx.reject, response);
   });
@@ -978,7 +978,7 @@ function makeHandleResponse(ctx: ResponseContext): (res: unknown) => void {
     const responseLength = utils.toFiniteNumber(resObj.headers["content-length"]);
 
     if (ctx.onDownloadProgress || ctx.maxDownloadRate) {
-      const transformStream = new AxiosTransformStream({ maxRate: utils.toFiniteNumber(ctx.maxDownloadRate) });
+      const transformStream = new FaxiosTransformStream({ maxRate: utils.toFiniteNumber(ctx.maxDownloadRate) });
       ctx.onDownloadProgress &&
         transformStream.on(
           "progress",
@@ -1007,7 +1007,7 @@ function makeHandleResponse(ctx: ResponseContext): (res: unknown) => void {
     const response = {
       status: resObj.statusCode ?? 0,
       statusText: resObj.statusMessage ?? "",
-      headers: new AxiosHeaders(resObj.headers),
+      headers: new FaxiosHeaders(resObj.headers),
       config: ctx.config,
       request: lastRequest,
       data: undefined as unknown,
@@ -1022,9 +1022,9 @@ function makeHandleResponse(ctx: ResponseContext): (res: unknown) => void {
           for await (const chunk of source as unknown as AsyncIterable<Buffer>) {
             totalResponseBytes += chunk.length;
             if (totalResponseBytes > limit) {
-              throw new AxiosError(
+              throw new FaxiosError(
                 "maxContentLength size of " + limit + " exceeded",
-                AxiosError.ERR_BAD_RESPONSE,
+                FaxiosError.ERR_BAD_RESPONSE,
                 ctx.config,
                 lastRequest
               );
@@ -1059,7 +1059,7 @@ type LookupFn = (
 
 interface AbortContext {
   abortEmitter: EventEmitter;
-  config: InternalAxiosRequestConfig;
+  config: InternalFaxiosRequestConfig;
   req: unknown;
 }
 
@@ -1081,7 +1081,7 @@ function makeAbort(ctx: AbortContext): (reason?: unknown) => void {
 
 interface OnFinishedContext {
   clearConnectPhaseTimer: () => void;
-  config: InternalAxiosRequestConfig;
+  config: InternalFaxiosRequestConfig;
   abort: (reason?: unknown) => void;
   abortEmitter: EventEmitter;
 }
@@ -1131,7 +1131,7 @@ function buildRequestOptions(
   own: (key: string) => unknown,
   path: string,
   method: string,
-  headers: AxiosHeadersExtended,
+  headers: FaxiosHeadersExtended,
   httpAgent: unknown,
   httpsAgent: unknown,
   auth: string | undefined,
@@ -1142,7 +1142,7 @@ function buildRequestOptions(
   maxBodyLength: unknown,
   parsed: URL,
   reject: (reason?: unknown) => void,
-  config: InternalAxiosRequestConfig
+  config: InternalFaxiosRequestConfig
 ): { options: Record<string, unknown> | null; } {
   const options: Record<string, unknown> = Object.assign(
     Object.create(null) as object,
@@ -1221,7 +1221,7 @@ function buildRequestPath(
   own: (key: string) => unknown,
   parsed: URL,
   reject: (reason?: unknown) => void,
-  config: InternalAxiosRequestConfig
+  config: InternalFaxiosRequestConfig
 ): { path: string; rejected: boolean; } {
   try {
     const path = buildURL(
@@ -1246,7 +1246,7 @@ function buildRequestPath(
 }
 
 function setupCancellation(
-  config: InternalAxiosRequestConfig,
+  config: InternalFaxiosRequestConfig,
   abort: (reason?: unknown) => void
 ): void {
   if (!config.cancelToken && !config.signal) return;
@@ -1298,7 +1298,7 @@ function applyUploadProgress(
   }
   data = (
     stream.pipeline as unknown as (streams: Array<unknown>, cb: unknown) => stream.Readable
-  )([ data, new AxiosTransformStream({ maxRate: utils.toFiniteNumber(maxUploadRate) }) ], utils.noop);
+  )([ data, new FaxiosTransformStream({ maxRate: utils.toFiniteNumber(maxUploadRate) }) ], utils.noop);
   onUploadProgress &&
     (data as stream.Stream).on(
       "progress",
@@ -1317,10 +1317,10 @@ function validateSocketPath(
   socketPath: unknown,
   own: (key: string) => unknown,
   reject: (reason?: unknown) => void,
-  config: InternalAxiosRequestConfig
+  config: InternalFaxiosRequestConfig
 ): boolean {
   if (typeof socketPath !== "string") {
-    reject(new AxiosError("socketPath must be a string", AxiosError.ERR_BAD_OPTION_VALUE, config));
+    reject(new FaxiosError("socketPath must be a string", FaxiosError.ERR_BAD_OPTION_VALUE, config));
     return true;
   }
   const allowedSocketPaths = own("allowedSocketPaths");
@@ -1333,13 +1333,13 @@ function validateSocketPath(
     (entry: unknown) => typeof entry === "string" && resolvePath(entry) === resolvedSocket
   );
   if (!isAllowed) {
-    reject(new AxiosError(`socketPath "${socketPath}" is not permitted by allowedSocketPaths`, AxiosError.ERR_BAD_OPTION_VALUE, config));
+    reject(new FaxiosError(`socketPath "${socketPath}" is not permitted by allowedSocketPaths`, FaxiosError.ERR_BAD_OPTION_VALUE, config));
     return true;
   }
   return false;
 }
 
-function resolveHttpVersion(own: (key: string) => unknown, config: InternalAxiosRequestConfig): number {
+function resolveHttpVersion(own: (key: string) => unknown, config: InternalFaxiosRequestConfig): number {
   let httpVersion: unknown = own("httpVersion");
   if (httpVersion === undefined) httpVersion = 1;
   const v = Number(httpVersion);
@@ -1362,17 +1362,17 @@ function clearConnectPhaseTimerRef(ref: { value: ReturnType<typeof setTimeout> |
 function makeTimeoutError(
   own: (key: string) => unknown,
   transitional: typeof transitionalDefaults,
-  config: InternalAxiosRequestConfig,
+  config: InternalFaxiosRequestConfig,
   getReq: () => unknown
-): AxiosError {
+): FaxiosError {
   const configTimeout = own("timeout");
   const timeoutMsg = configTimeout
     ? "timeout of " + String(configTimeout) + "ms exceeded"
     : "timeout exceeded";
   const customMsg = own("timeoutErrorMessage");
-  return new AxiosError(
+  return new FaxiosError(
     customMsg ? String(customMsg) : timeoutMsg,
-    transitional.clarifyTimeoutError ? AxiosError.ETIMEDOUT : AxiosError.ECONNABORTED,
+    transitional.clarifyTimeoutError ? FaxiosError.ETIMEDOUT : FaxiosError.ECONNABORTED,
     config,
     getReq()
   );
@@ -1385,7 +1385,7 @@ function setupRequestTimeout(
   transitional: typeof transitionalDefaults,
   isDone: { value: boolean | undefined; },
   isNativeTransport: boolean,
-  config: InternalAxiosRequestConfig,
+  config: InternalFaxiosRequestConfig,
   abortCtx: AbortContext
 ): { connectPhaseTimer: ReturnType<typeof setTimeout> | undefined; aborted: boolean; } {
   const configTimeout = own("timeout");
@@ -1395,7 +1395,7 @@ function setupRequestTimeout(
   }
   const timeout = parseInt(String(configTimeout), 10);
   if (Number.isNaN(timeout)) {
-    abort(new AxiosError("error trying to parse `config.timeout` to int", AxiosError.ERR_BAD_OPTION_VALUE, config, req));
+    abort(new FaxiosError("error trying to parse `config.timeout` to int", FaxiosError.ERR_BAD_OPTION_VALUE, config, req));
     return { connectPhaseTimer: undefined, aborted: true };
   }
   const handleTimeout = (): void => {
@@ -1440,24 +1440,24 @@ function setupSocketTracking(
   (req as http.ClientRequest).on("socket", function handleRequestSocket(socket: net.Socket) {
     socket.setKeepAlive(true, 1000 * 60);
     const s = socket as net.Socket & Record<symbol, unknown>;
-    if (!s[kAxiosSocketListener]) {
+    if (!s[kFaxiosSocketListener]) {
       socket.on("error", function handleSocketError(err: Error) {
-        const current = s[kAxiosCurrentReq] as (http.ClientRequest & { destroyed: boolean; }) | null;
+        const current = s[kFaxiosCurrentReq] as (http.ClientRequest & { destroyed: boolean; }) | null;
         if (current && !current.destroyed) {
           current.destroy(err);
         }
       });
-      s[kAxiosSocketListener] = true;
+      s[kFaxiosSocketListener] = true;
     }
-    s[kAxiosCurrentReq] = req;
+    s[kFaxiosCurrentReq] = req;
     boundSockets.add(s);
   });
 
   (req as http.ClientRequest).once("close", function clearCurrentReq() {
     clearConnectPhaseTimer();
     for (const socket of boundSockets) {
-      if (socket[kAxiosCurrentReq] === req) {
-        socket[kAxiosCurrentReq] = null;
+      if (socket[kFaxiosCurrentReq] === req) {
+        socket[kFaxiosCurrentReq] = null;
       }
     }
     boundSockets.clear();
@@ -1470,7 +1470,7 @@ function pipeStreamData(
   abort: (reason?: unknown) => void,
   maxBodyLength: unknown,
   transportEnforcesMaxBodyLength: boolean,
-  config: InternalAxiosRequestConfig
+  config: InternalFaxiosRequestConfig
 ): void {
   let ended = false;
   let errored = false;
@@ -1499,7 +1499,7 @@ function pipeStreamData(
           transform(chunk: Buffer, _enc: BufferEncoding, cb: (err?: Error | null, data?: Buffer) => void) {
             bytesSent += chunk.length;
             if (bytesSent > limit) {
-              return cb(new AxiosError("Request body larger than maxBodyLength limit", AxiosError.ERR_BAD_REQUEST, config, req));
+              return cb(new FaxiosError("Request body larger than maxBodyLength limit", FaxiosError.ERR_BAD_REQUEST, config, req));
             }
             cb(null, chunk);
           },
@@ -1562,7 +1562,7 @@ function applyDecompression(
 
 /*eslint consistent-return:0*/
 export default isHttpAdapterSupported &&
-  async function httpAdapter(config: InternalAxiosRequestConfig) {
+  async function httpAdapter(config: InternalFaxiosRequestConfig) {
     // Read config pollution-safely: own properties and members inherited from
     // a non-Object.prototype source (e.g. an Object.create(defaults) template)
     // are honored, but values injected onto a polluted Object.prototype are
@@ -1630,17 +1630,17 @@ export default isHttpAdapterSupported &&
 
         if (supportedProtocols.indexOf(protocol) === -1) {
           return reject(
-            new AxiosError(
+            new FaxiosError(
               "Unsupported protocol " + protocol,
-              AxiosError.ERR_BAD_REQUEST,
+              FaxiosError.ERR_BAD_REQUEST,
               config
             )
           );
         }
 
-        const headers = AxiosHeaders.from(config.headers).normalize(
+        const headers = FaxiosHeaders.from(config.headers).normalize(
           false
-        ) as AxiosHeadersExtended;
+        ) as FaxiosHeadersExtended;
 
         headers.set("User-Agent", "axios/" + VERSION, false);
 
@@ -1710,7 +1710,7 @@ export default isHttpAdapterSupported &&
         attachReqDestroyOnAbort(abortEmitter, abortCtx);
 
         // Handle errors
-        (req as http.ClientRequest).on("error", (err: Error) => reject(AxiosError.from(err, undefined, config, abortCtx.req)));
+        (req as http.ClientRequest).on("error", (err: Error) => reject(FaxiosError.from(err, undefined, config, abortCtx.req)));
 
         const boundSockets = new Set<net.Socket & Record<symbol, unknown>>();
         setupSocketTracking(req, boundSockets, clearConnectPhaseTimer);

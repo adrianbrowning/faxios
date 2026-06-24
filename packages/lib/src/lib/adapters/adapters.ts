@@ -1,5 +1,5 @@
-import AxiosError from "../core/AxiosError.js";
-import type { AxiosAdapter, InternalAxiosRequestConfig } from "../types.js";
+import FaxiosError from "../core/FaxiosError.js";
+import type { FaxiosAdapter, InternalFaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
 import * as fetchAdapter from "./fetch.js";
 import httpAdapter from "./http.js";
@@ -7,7 +7,7 @@ import xhrAdapter from "./xhr.js";
 
 /**
  * Known adapters mapping.
- * Provides environment-specific adapters for Axios:
+ * Provides environment-specific adapters for Faxios:
  * - `http` for Node.js
  * - `xhr` for browsers
  * - `fetch` for fetch API-based requests
@@ -71,18 +71,18 @@ const isResolvedHandle = (adapter: unknown) =>
 /**
  * Get the first suitable adapter from the provided list.
  * Tries each adapter in order until a supported one is found.
- * Throws an AxiosError if no adapter is suitable.
+ * Throws an FaxiosError if no adapter is suitable.
  *
  * @param {Array<string|Function>|string|Function} adapters - Adapter(s) by name or function.
- * @param {Object} config - Axios request configuration
- * @throws {AxiosError} If no suitable adapter is available
+ * @param {Object} config - Faxios request configuration
+ * @throws {FaxiosError} If no suitable adapter is available
  * @returns {Function} The resolved adapter function
  */
 
 function getAdapter(
   adapters: unknown,
-  config: InternalAxiosRequestConfig
-): AxiosAdapter {
+  config: InternalFaxiosRequestConfig
+): FaxiosAdapter {
   adapters = utils.isArray(adapters) ? adapters : [ adapters ];
 
   const { length } = adapters as Array<unknown>;
@@ -102,7 +102,7 @@ function getAdapter(
       adapter = (knownAdapters as Record<string, unknown>)[id.toLowerCase()];
 
       if (adapter === undefined) {
-        throw new AxiosError(`Unknown adapter '${id}'`);
+        throw new FaxiosError(`Unknown adapter '${id}'`);
       }
     }
 
@@ -125,17 +125,17 @@ function getAdapter(
           : "is not available in the build")
     );
 
-    throw new AxiosError(
+    throw new FaxiosError(
       `There is no suitable adapter to dispatch the request ` + buildNoAdapterMessage(length, reasons),
       "ERR_NOT_SUPPORT"
     );
   }
 
-  return adapter as AxiosAdapter;
+  return adapter as FaxiosAdapter;
 }
 
 /**
- * Exports Axios adapters and utility to resolve an adapter
+ * Exports Faxios adapters and utility to resolve an adapter
  */
 export default {
   /**

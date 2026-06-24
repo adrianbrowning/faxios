@@ -1,11 +1,11 @@
 import assert from "node:assert";
 import { beforeEach, describe, it } from "vitest";
 import adapters from "../../../src/lib/adapters/adapters.js";
-import type { InternalAxiosRequestConfig } from "../../../src/lib/types.js";
+import type { InternalFaxiosRequestConfig } from "../../../src/lib/types.js";
 
 const store = { ...adapters.adapters } as Record<string, unknown>;
 const adapterStore = adapters.adapters as Record<string, unknown>;
-const config = {} as InternalAxiosRequestConfig;
+const config = {} as InternalFaxiosRequestConfig;
 
 describe("adapters", () => {
   beforeEach(() => {

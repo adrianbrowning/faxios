@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
 import resolveConfig from "../../../src/lib/helpers/resolveConfig.js";
-import type { AxiosBasicCredentials, AxiosRequestHeaders } from "../../../src/lib/types.js";
+import type { FaxiosBasicCredentials, FaxiosRequestHeaders } from "../../../src/lib/types.js";
 
 class ReactNativeFormData {
   append() {}
@@ -26,7 +26,7 @@ describe("helpers::resolveConfig", () => {
       },
     });
 
-    const headers = config.headers as AxiosRequestHeaders;
+    const headers = config.headers as FaxiosRequestHeaders;
     assert.strictEqual(config.data, data);
     assert.strictEqual(headers.getContentType() as string | undefined, undefined);
     assert.strictEqual(
@@ -51,10 +51,10 @@ describe("helpers::resolveConfig", () => {
     try {
       const config = resolveConfig({
         url: "/foo",
-        auth: {} as AxiosBasicCredentials,
+        auth: {} as FaxiosBasicCredentials,
       });
 
-      assert.strictEqual((config.headers as AxiosRequestHeaders).get("Authorization") as string | null, "Basic Og==");
+      assert.strictEqual((config.headers as FaxiosRequestHeaders).get("Authorization") as string | null, "Basic Og==");
     } finally {
       delete (Object.prototype as Record<string, unknown>).username;
       delete (Object.prototype as Record<string, unknown>).password;

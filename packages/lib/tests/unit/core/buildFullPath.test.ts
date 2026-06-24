@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import AxiosError from "../../../src/lib/core/AxiosError.js";
+import FaxiosError from "../../../src/lib/core/FaxiosError.js";
 import buildFullPath from "../../../src/lib/core/buildFullPath.js";
 
 describe("core::buildFullPath", () => {
@@ -57,9 +57,9 @@ describe("core::buildFullPath", () => {
         error = err;
       }
 
-      expect(error).toBeInstanceOf(AxiosError);
-      expect((error as AxiosError).code).toBe(AxiosError.ERR_INVALID_URL);
-      expect((error as AxiosError).message).toBe('Invalid URL: missing "//" after protocol');
+      expect(error).toBeInstanceOf(FaxiosError);
+      expect((error as FaxiosError).code).toBe(FaxiosError.ERR_INVALID_URL);
+      expect((error as FaxiosError).message).toBe('Invalid URL: missing "//" after protocol');
     }
   });
 
@@ -82,8 +82,8 @@ describe("core::buildFullPath", () => {
       error = err;
     }
 
-    expect(error).toBeInstanceOf(AxiosError);
-    expect((error as AxiosError).code).toBe(AxiosError.ERR_INVALID_URL);
-    expect((error as AxiosError).message).toBe('Invalid URL: missing "//" after protocol');
+    expect(error).toBeInstanceOf(FaxiosError);
+    expect((error as FaxiosError).code).toBe(FaxiosError.ERR_INVALID_URL);
+    expect((error as FaxiosError).message).toBe('Invalid URL: missing "//" after protocol');
   });
 });

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { AxiosHeaders } from "../../../src/index.js";
+import { FaxiosHeaders } from "../../../src/index.js";
 import mergeConfig from "../../../src/lib/core/mergeConfig.js";
 import defaults from "../../../src/lib/defaults/index.js";
 
@@ -111,16 +111,16 @@ describe("core::mergeConfig", () => {
   });
 
   describe("headers", () => {
-    it("allows merging with AxiosHeaders instances", () => {
+    it("allows merging with FaxiosHeaders instances", () => {
       const merged = mergeConfig(
         {
-          headers: new AxiosHeaders({
+          headers: new FaxiosHeaders({
             x: 1,
             y: 2,
           }),
         },
         {
-          headers: new AxiosHeaders({
+          headers: new FaxiosHeaders({
             X: 1,
             Y: 2,
           }),

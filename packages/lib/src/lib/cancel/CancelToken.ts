@@ -1,6 +1,6 @@
 "use strict";
 
-import type { Cancel, Canceler, AxiosRequestConfig } from "../types.js";
+import type { Cancel, Canceler, FaxiosRequestConfig } from "../types.js";
 import CanceledError from "./CanceledError.js";
 
 type CancelListener = (cancel: Cancel) => void;
@@ -54,7 +54,7 @@ class CancelToken {
       return promise;
     };
 
-    executor(function cancel(message?: string, config?: AxiosRequestConfig, request?: unknown) {
+    executor(function cancel(message?: string, config?: FaxiosRequestConfig, request?: unknown) {
       if (token.reason) {
         // Cancellation has already been requested
         return;

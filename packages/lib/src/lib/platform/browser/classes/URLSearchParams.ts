@@ -1,4 +1,4 @@
 "use strict";
 
-import AxiosURLSearchParams from "../../../helpers/AxiosURLSearchParams.js";
-export default typeof URLSearchParams !== "undefined" ? URLSearchParams : AxiosURLSearchParams;
+import FaxiosURLSearchParams from "../../../helpers/FaxiosURLSearchParams.js";
+export default typeof URLSearchParams !== "undefined" ? URLSearchParams : FaxiosURLSearchParams;

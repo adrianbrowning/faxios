@@ -8,7 +8,7 @@ import type { Server } from "node:http";
 import { describe, it, beforeEach, afterEach } from "vitest";
 import axios from "../../src/index.ts";
 import platform from "../../src/lib/platform/index.js";
-import type { AxiosResponse } from "../../src/lib/types.js";
+import type { FaxiosResponse } from "../../src/lib/types.js";
 
 type AnyInterceptorManager = { use: (fn: (v: unknown) => unknown) => number };
 
@@ -19,7 +19,7 @@ describe("regression", () => {
       it("should not fail with query parsing", async () => {
         const { data } = (await axios.get(
           "https://postman-echo.com/get?foo1=bar1&foo2=bar2",
-        )) as AxiosResponse<{ args: Record<string, string> }>;
+        )) as FaxiosResponse<{ args: Record<string, string> }>;
 
         assert.strictEqual(data.args.foo1, "bar1");
         assert.strictEqual(data.args.foo2, "bar2");
@@ -46,7 +46,7 @@ describe("regression", () => {
 
         (request.interceptors.response as AnyInterceptorManager).use((res) => {
           assert.deepStrictEqual(
-            (res as AxiosResponse).headers["set-cookie"],
+            (res as FaxiosResponse).headers["set-cookie"],
             [cookie1, cookie2],
           );
           return res;
@@ -82,8 +82,8 @@ describe("regression", () => {
         try {
           await instance.get("/status/400");
         } catch (error) {
-          assert.equal((error as { name: string }).name, "AxiosError");
-          assert.equal((error as { isAxiosError: boolean }).isAxiosError, true);
+          assert.equal((error as { name: string }).name, "FaxiosError");
+          assert.equal((error as { isFaxiosError: boolean }).isFaxiosError, true);
           assert.equal((error as { status: number }).status, 400);
         } finally {
           server.close();
@@ -106,8 +106,8 @@ describe("regression", () => {
         try {
           await instance.get("/status/400");
         } catch (error) {
-          assert.equal((error as { name: string }).name, "AxiosError");
-          assert.equal((error as { isAxiosError: boolean }).isAxiosError, true);
+          assert.equal((error as { name: string }).name, "FaxiosError");
+          assert.equal((error as { isFaxiosError: boolean }).isFaxiosError, true);
           assert.equal((error as { status: number }).status, 400);
         } finally {
           server.close();
@@ -176,7 +176,7 @@ describe("regression", () => {
             password: "password",
           },
         },
-      })) as AxiosResponse<{ msg: string; headers: Record<string, string> }>;
+      })) as FaxiosResponse<{ msg: string; headers: Record<string, string> }>;
 
       assert.strictEqual(fail, false);
       assert.strictEqual(response.data.msg, "Protected");
@@ -222,14 +222,14 @@ describe("regression", () => {
     });
 
     it("should not fetch in server-side mode", async () => {
-      const ssrfAxios = axios.create({
+      const ssrfFaxios = axios.create({
         baseURL: "http://localhost:" + String(goodPort),
       });
 
       const userId = "/localhost:" + String(badPort);
 
       try {
-        await ssrfAxios.get(`/${userId}`);
+        await ssrfFaxios.get(`/${userId}`);
       } catch (error) {
         assert.ok((error as { message: string }).message.startsWith("Invalid URL"));
         return;
@@ -255,13 +255,13 @@ describe("regression", () => {
       });
 
       it("resolves URL relative to origin and returns bad server body", async () => {
-        const ssrfAxios = axios.create({
+        const ssrfFaxios = axios.create({
           baseURL: "http://localhost:" + String(goodPort),
         });
 
         const userId = "/localhost:" + String(badPort);
 
-        const response = (await ssrfAxios.get(`/${userId}`)) as AxiosResponse<string> & {
+        const response = (await ssrfFaxios.get(`/${userId}`)) as FaxiosResponse<string> & {
           config: { baseURL?: string; url?: string };
           request: { res: { responseUrl: string } };
         };

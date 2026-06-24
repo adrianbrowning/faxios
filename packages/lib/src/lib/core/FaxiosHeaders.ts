@@ -2,7 +2,7 @@
 
 import parseHeaders from "../helpers/parseHeaders.js";
 import { sanitizeHeaderValue } from "../helpers/sanitizeHeaderValue.js";
-import type { AxiosHeaderValue } from "../types.js";
+import type { FaxiosHeaderValue } from "../types.js";
 import utils from "../utils.js";
 
 const $internals = Symbol("internals");
@@ -10,15 +10,15 @@ const $internals = Symbol("internals");
 type HeaderMatcher =
   | string
   | RegExp
-  | ((this: AxiosHeaders, value: string, name: string) => boolean);
+  | ((this: FaxiosHeaders, value: string, name: string) => boolean);
 
 type RewriteOption =
   | boolean
-  | ((this: AxiosHeaders, value: string, name: string) => boolean);
+  | ((this: FaxiosHeaders, value: string, name: string) => boolean);
 
 type HeaderInput =
   | Record<string, unknown>
-  | AxiosHeaders
+  | FaxiosHeaders
   | string
   | undefined
   | null;
@@ -30,7 +30,7 @@ function normalizeHeader(header: string): string {
 
 // eslint-disable-next-line sonarjs/function-return-type
 function normalizeValue(
-  value: AxiosHeaderValue | undefined
+  value: FaxiosHeaderValue | undefined
 ): string | Array<string> | false | null | undefined {
   if (value == null) {
     return value;
@@ -39,7 +39,7 @@ function normalizeValue(
     return false;
   }
   if (utils.isArray(value)) {
-    return (value as Array<AxiosHeaderValue>).map(v =>
+    return (value as Array<FaxiosHeaderValue>).map(v =>
       sanitizeHeaderValue(String(v))
     ) as Array<string>;
   }
@@ -62,19 +62,19 @@ const isValidHeaderName = (str: string): boolean =>
   /^[-_a-zA-Z0-9^`|~,!#$%&'*+.]+$/.test(str.trim());
 
 function matchHeaderValue(
-  context: AxiosHeaders,
+  context: FaxiosHeaders,
   value: unknown,
   header: string,
   filter:
     | string
     | RegExp
-    | ((this: AxiosHeaders, value: string, name: string) => boolean)
+    | ((this: FaxiosHeaders, value: string, name: string) => boolean)
     | undefined,
   isHeaderNameFilter?: boolean
 ): boolean | undefined {
   if (utils.isFunction(filter)) {
     return (
-      filter as (this: AxiosHeaders, value: string, name: string) => boolean
+      filter as (this: FaxiosHeaders, value: string, name: string) => boolean
     ).call(context, value as string, header);
   }
 
@@ -129,7 +129,7 @@ function buildAccessors(obj: object, header: string): void {
       methodName + accessorName,
       Object.assign(Object.create(null) as PropertyDescriptor, {
         value: function (
-          this: AxiosHeaders,
+          this: FaxiosHeaders,
           arg1: unknown,
           arg2: unknown,
           arg3: unknown
@@ -147,11 +147,11 @@ function buildAccessors(obj: object, header: string): void {
   });
 }
 
-class AxiosHeaders {
+class FaxiosHeaders {
   [key: string]: unknown;
 
   constructor(
-    headers?: Record<string, unknown> | AxiosHeaders | string | null
+    headers?: Record<string, unknown> | FaxiosHeaders | string | null
   ) {
     headers && this.set(headers);
   }
@@ -184,7 +184,7 @@ class AxiosHeaders {
           (self as Record<string, unknown>)[key] !== false)
       ) {
         (self as Record<string, unknown>)[key || _header] = normalizeValue(
-          _value as AxiosHeaderValue
+          _value as FaxiosHeaderValue
         );
       }
     }
@@ -221,8 +221,8 @@ class AxiosHeaders {
     parser?:
       | RegExp
       | ((
-        this: AxiosHeaders,
-        value: AxiosHeaderValue,
+        this: FaxiosHeaders,
+        value: FaxiosHeaderValue,
         header: string
       ) => unknown)
       | true
@@ -235,7 +235,7 @@ class AxiosHeaders {
       if (key) {
         const value = (this as Record<string, unknown>)[
           key
-        ] as AxiosHeaderValue;
+        ] as FaxiosHeaderValue;
 
         if (!parser) {
           return value;
@@ -248,8 +248,8 @@ class AxiosHeaders {
         if (utils.isFunction(parser)) {
           return (
             parser as (
-              this: AxiosHeaders,
-              value: AxiosHeaderValue,
+              this: FaxiosHeaders,
+              value: FaxiosHeaderValue,
               header: string
             ) => unknown
           ).call(this, value, key);
@@ -359,7 +359,7 @@ class AxiosHeaders {
 
       if (key) {
         (self as Record<string, unknown>)[key] = normalizeValue(
-          value as AxiosHeaderValue
+          value as FaxiosHeaderValue
         );
         delete (self as Record<string, unknown>)[header];
         return;
@@ -372,7 +372,7 @@ class AxiosHeaders {
       }
 
       (self as Record<string, unknown>)[normalized] = normalizeValue(
-        value as AxiosHeaderValue
+        value as FaxiosHeaderValue
       );
 
       headers[normalized] = true;
@@ -381,8 +381,8 @@ class AxiosHeaders {
     return this;
   }
 
-  concat(...targets: Array<HeaderInput>): AxiosHeaders {
-    return (this.constructor as typeof AxiosHeaders).concat(this, ...targets);
+  concat(...targets: Array<HeaderInput>): FaxiosHeaders {
+    return (this.constructor as typeof FaxiosHeaders).concat(this, ...targets);
   }
 
   toJSON(asStrings?: boolean): Record<string, unknown> {
@@ -416,21 +416,21 @@ class AxiosHeaders {
   }
 
   get [Symbol.toStringTag](): string {
-    return "AxiosHeaders";
+    return "FaxiosHeaders";
   }
 
   static from(
-    thing?: Record<string, unknown> | AxiosHeaders | string | null
-  ): AxiosHeaders {
+    thing?: Record<string, unknown> | FaxiosHeaders | string | null
+  ): FaxiosHeaders {
     return thing instanceof this ? thing : new this(thing);
   }
 
   static concat(
-    first: Record<string, unknown> | AxiosHeaders | string | undefined | null,
+    first: Record<string, unknown> | FaxiosHeaders | string | undefined | null,
     ...targets: Array<
-      Record<string, unknown> | AxiosHeaders | string | undefined | null
+      Record<string, unknown> | FaxiosHeaders | string | undefined | null
     >
-  ): AxiosHeaders {
+  ): FaxiosHeaders {
     const computed = new this(first);
 
     targets.forEach(target => computed.set(target));
@@ -438,7 +438,7 @@ class AxiosHeaders {
     return computed;
   }
 
-  static accessor(header: string | Array<string>): typeof AxiosHeaders {
+  static accessor(header: string | Array<string>): typeof FaxiosHeaders {
     const self = this as unknown as Record<
       symbol,
       { accessors: Record<string, boolean>; }
@@ -471,7 +471,7 @@ class AxiosHeaders {
   }
 }
 
-AxiosHeaders.accessor([
+FaxiosHeaders.accessor([
   "Content-Type",
   "Content-Length",
   "Accept",
@@ -482,7 +482,7 @@ AxiosHeaders.accessor([
 
 // reserved names hotfix
 utils.reduceDescriptors(
-  AxiosHeaders.prototype,
+  FaxiosHeaders.prototype,
   ({ value }: PropertyDescriptor, key: string) => {
     let mapped = key[0]!.toUpperCase() + key.slice(1); // map `set` => `Set`
     return {
@@ -494,6 +494,6 @@ utils.reduceDescriptors(
   }
 );
 
-utils.freezeMethods(AxiosHeaders);
+utils.freezeMethods(FaxiosHeaders);
 
-export default AxiosHeaders;
+export default FaxiosHeaders;

@@ -1,24 +1,24 @@
 "use strict";
 
 import type {
-  AxiosInterceptorHandler,
-  AxiosInterceptorFulfilled,
-  AxiosInterceptorRejected,
-  AxiosInterceptorOptions
+  FaxiosInterceptorHandler,
+  FaxiosInterceptorFulfilled,
+  FaxiosInterceptorRejected,
+  FaxiosInterceptorOptions
 } from "../types.js";
 import utils from "../utils.js";
 
 class InterceptorManager<T> {
-  handlers: Array<AxiosInterceptorHandler<T> | null>;
+  handlers: Array<FaxiosInterceptorHandler<T> | null>;
 
   constructor() {
     this.handlers = [];
   }
 
   use(
-    fulfilled: AxiosInterceptorFulfilled<T>,
-    rejected?: AxiosInterceptorRejected,
-    options?: AxiosInterceptorOptions
+    fulfilled: FaxiosInterceptorFulfilled<T>,
+    rejected?: FaxiosInterceptorRejected,
+    options?: FaxiosInterceptorOptions
   ): number {
     this.handlers.push({
       fulfilled,
@@ -39,10 +39,10 @@ class InterceptorManager<T> {
     this.handlers = [];
   }
 
-  forEach(fn: (handler: AxiosInterceptorHandler<T>) => void): void {
+  forEach(fn: (handler: FaxiosInterceptorHandler<T>) => void): void {
     utils.forEach(this.handlers, function forEachHandler(h: unknown) {
       if (h !== null) {
-        fn(h as AxiosInterceptorHandler<T>);
+        fn(h as FaxiosInterceptorHandler<T>);
       }
     });
   }

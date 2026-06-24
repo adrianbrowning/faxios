@@ -1,8 +1,8 @@
-import AxiosHeaders from "../core/AxiosHeaders.js";
+import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import buildFullPath from "../core/buildFullPath.js";
 import mergeConfig from "../core/mergeConfig.js";
 import platform from "../platform/index.js";
-import type { AxiosRequestConfig } from "../types.js";
+import type { FaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
 import buildURL from "./buildURL.js";
 import cookies from "./cookies.js";
@@ -11,7 +11,7 @@ import isURLSameOrigin from "./isURLSameOrigin.js";
 const FORM_DATA_CONTENT_HEADERS = [ "content-type", "content-length" ];
 
 function setFormDataHeaders(
-  headers: AxiosHeaders,
+  headers: FaxiosHeaders,
   formHeaders: Record<string, unknown>,
   policy: unknown
 ): void {
@@ -42,11 +42,11 @@ const encodeUTF8 = (str: string): string =>
   );
 
 function applyXSRFToken(
-  headers: AxiosHeaders,
+  headers: FaxiosHeaders,
   withXSRFToken: ((cfg: unknown) => unknown) | boolean | null | undefined,
   xsrfHeaderName: string | undefined,
   xsrfCookieName: string | undefined,
-  config: AxiosRequestConfig
+  config: FaxiosRequestConfig
 ): void {
   if (utils.isFunction(withXSRFToken)) {
     withXSRFToken = (withXSRFToken as (cfg: unknown) => unknown)(
@@ -71,7 +71,7 @@ function applyXSRFToken(
   }
 }
 
-function resolveConfig(config: AxiosRequestConfig): AxiosRequestConfig {
+function resolveConfig(config: FaxiosRequestConfig): FaxiosRequestConfig {
   const newConfig = mergeConfig({}, config);
 
   // Read only own properties to prevent prototype pollution gadgets
@@ -94,7 +94,7 @@ function resolveConfig(config: AxiosRequestConfig): AxiosRequestConfig {
   const allowAbsoluteUrls = own("allowAbsoluteUrls");
   const url = own("url");
 
-  const headers: AxiosHeaders = AxiosHeaders.from(
+  const headers: FaxiosHeaders = FaxiosHeaders.from(
     own("headers") as Record<string, unknown> | null | undefined
   );
   newConfig.headers = headers;

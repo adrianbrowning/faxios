@@ -18,11 +18,11 @@ type Internals = {
   onReadCallback: (() => void) | null;
 };
 
-type AxiosTransformStreamWithInternals = AxiosTransformStream & {
+type FaxiosTransformStreamWithInternals = FaxiosTransformStream & {
   [kInternals]: Internals;
 };
 
-class AxiosTransformStream extends stream.Transform {
+class FaxiosTransformStream extends stream.Transform {
   constructor(options?: Record<string, unknown>) {
     const resolvedOptions = utils.toFlatObject(
       options,
@@ -42,7 +42,7 @@ class AxiosTransformStream extends stream.Transform {
       readableHighWaterMark: resolvedOptions["chunkSize"] as number,
     });
 
-    const internals: Internals = ((this as unknown as AxiosTransformStreamWithInternals)[kInternals] = {
+    const internals: Internals = ((this as unknown as FaxiosTransformStreamWithInternals)[kInternals] = {
       timeWindow: resolvedOptions["timeWindow"] as number,
       chunkSize: resolvedOptions["chunkSize"] as number,
       maxRate: resolvedOptions["maxRate"] as number,
@@ -65,7 +65,7 @@ class AxiosTransformStream extends stream.Transform {
   }
 
   override _read(size: number): void {
-    const internals = (this as unknown as AxiosTransformStreamWithInternals)[kInternals];
+    const internals = (this as unknown as FaxiosTransformStreamWithInternals)[kInternals];
 
     if (internals.onReadCallback) {
       internals.onReadCallback();
@@ -75,7 +75,7 @@ class AxiosTransformStream extends stream.Transform {
   }
 
   override _transform(chunk: Buffer, _encoding: BufferEncoding, callback: stream.TransformCallback): void {
-    const internals = (this as unknown as AxiosTransformStreamWithInternals)[kInternals];
+    const internals = (this as unknown as FaxiosTransformStreamWithInternals)[kInternals];
     const maxRate = internals.maxRate;
 
     const readableHighWaterMark = this.readableHighWaterMark;
@@ -170,4 +170,4 @@ class AxiosTransformStream extends stream.Transform {
   }
 }
 
-export default AxiosTransformStream;
+export default FaxiosTransformStream;

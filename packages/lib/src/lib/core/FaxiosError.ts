@@ -1,8 +1,8 @@
 "use strict";
 
-import type { InternalAxiosRequestConfig, AxiosResponse } from "../types.js";
+import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
 import utils from "../utils.js";
-import AxiosHeaders from "./AxiosHeaders.js";
+import FaxiosHeaders from "./FaxiosHeaders.js";
 
 const REDACTED = "[REDACTED ****]";
 
@@ -26,7 +26,7 @@ function hasOwnOrPrototypeToJSON(source: unknown): boolean {
 
 // Build a plain-object snapshot of `config` and replace the value of any key
 // (case-insensitive) listed in `redactKeys` with REDACTED. Walks through arrays
-// and AxiosHeaders, and short-circuits on circular references.
+// and FaxiosHeaders, and short-circuits on circular references.
 function redactConfig(config: unknown, redactKeys: Array<string>): unknown {
   const lowerKeys = new Set(redactKeys.map(k => String(k).toLowerCase()));
   const seen: Array<object> = [];
@@ -47,7 +47,7 @@ function redactConfig(config: unknown, redactKeys: Array<string>): unknown {
     if (utils.isBuffer(source)) return source;
     if (seen.indexOf(source) !== -1) return undefined;
 
-    if (source instanceof AxiosHeaders) {
+    if (source instanceof FaxiosHeaders) {
       source = source.toJSON();
     }
 
@@ -78,12 +78,12 @@ function redactConfig(config: unknown, redactKeys: Array<string>): unknown {
   return visit(config);
 }
 
-class AxiosError extends Error {
-  isAxiosError: boolean;
+class FaxiosError extends Error {
+  isFaxiosError: boolean;
   code?: string;
-  config?: InternalAxiosRequestConfig;
+  config?: InternalFaxiosRequestConfig;
   request?: unknown;
-  response?: AxiosResponse;
+  response?: FaxiosResponse;
   status?: number;
   override cause?: Error;
   // legacy/cross-browser optional props:
@@ -113,12 +113,12 @@ class AxiosError extends Error {
   static from(
     error: Error & { code?: string; status?: number; },
     code?: string,
-    config?: InternalAxiosRequestConfig,
+    config?: InternalFaxiosRequestConfig,
     request?: unknown,
-    response?: AxiosResponse,
+    response?: FaxiosResponse,
     customProps?: Record<string, unknown>
-  ): AxiosError {
-    const axiosError = new AxiosError(
+  ): FaxiosError {
+    const axiosError = new FaxiosError(
       error.message,
       code || error.code,
       config,
@@ -151,9 +151,9 @@ class AxiosError extends Error {
   constructor(
     message: string,
     code?: string,
-    config?: InternalAxiosRequestConfig,
+    config?: InternalFaxiosRequestConfig,
     request?: unknown,
-    response?: AxiosResponse
+    response?: FaxiosResponse
   ) {
     super(message);
 
@@ -171,8 +171,8 @@ class AxiosError extends Error {
       })
     );
 
-    this.name = "AxiosError";
-    this.isAxiosError = true;
+    this.name = "FaxiosError";
+    this.isFaxiosError = true;
     code && (this.code = code);
     config && (this.config = config);
     request && (this.request = request);
@@ -207,7 +207,7 @@ class AxiosError extends Error {
       lineNumber: this.lineNumber,
       columnNumber: this.columnNumber,
       stack: this.stack,
-      // Axios
+      // Faxios
       config: serializedConfig,
       code: this.code,
       status: this.status,
@@ -215,4 +215,4 @@ class AxiosError extends Error {
   }
 }
 
-export default AxiosError;
+export default FaxiosError;

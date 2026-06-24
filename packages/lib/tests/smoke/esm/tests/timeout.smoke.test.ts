@@ -54,7 +54,7 @@ describe("timeout compat (dist export only)", () => {
       })
       .catch((e) => e);
 
-    expect(faxios.isAxiosError(err)).toBe(true);
+    expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ECONNABORTED");
     expect(err.message).toBe("timeout of 25ms exceeded");
   });
@@ -69,7 +69,7 @@ describe("timeout compat (dist export only)", () => {
       })
       .catch((e) => e);
 
-    expect(faxios.isAxiosError(err)).toBe(true);
+    expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ECONNABORTED");
     expect(err.message).toBe("custom timeout");
   });
@@ -83,7 +83,7 @@ describe("timeout compat (dist export only)", () => {
       })
       .catch((e) => e);
 
-    expect(faxios.isAxiosError(err)).toBe(true);
+    expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ECONNABORTED");
     expect(err.message).toBe("timeout of 30ms exceeded");
   });
@@ -97,7 +97,7 @@ describe("timeout compat (dist export only)", () => {
       })
       .catch((e) => e);
 
-    expect(faxios.isAxiosError(err)).toBe(true);
+    expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ERR_BAD_OPTION_VALUE");
     expect(err.message).toBe("error trying to parse `config.timeout` to int");
   });

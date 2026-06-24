@@ -7,10 +7,10 @@ import NodeFormData from "form-data";
 import { describe, it, vi } from "vitest";
 import axios from "../../../src/index.js";
 import { getFetch } from "../../../src/lib/adapters/fetch.js";
-import AxiosError from "../../../src/lib/core/AxiosError.js";
+import FaxiosError from "../../../src/lib/core/FaxiosError.js";
 import { VERSION } from "../../../src/lib/env/data.js";
 import utils from "../../../src/lib/utils.js";
-import type { AxiosInstance as TypedAxiosInstance, AxiosStatic as TypedAxiosStatic, AxiosProgressEvent, AxiosHeaders as TypedAxiosHeaders } from "../../../src/index.old.js";
+import type { FaxiosInstance as TypedFaxiosInstance, FaxiosStatic as TypedFaxiosStatic, FaxiosProgressEvent, FaxiosHeaders as TypedFaxiosHeaders } from "../../../src/index.old.js";
 import type { GenericAbortSignal } from "../../../src/lib/types.js";
 import {
   startHTTPServer,
@@ -26,10 +26,10 @@ const LOCAL_SERVER_URL = `http://localhost:${SERVER_PORT}`;
 
 const pipelineAsync = util.promisify(stream.pipeline);
 
-const fetchAxios = axios.create({
+const fetchFaxios = axios.create({
   baseURL: LOCAL_SERVER_URL,
   adapter: "fetch",
-}) as unknown as TypedAxiosInstance;
+}) as unknown as TypedFaxiosInstance;
 
 const getFetchSignal = (input: RequestInfo | URL | {signal?: AbortSignal}, init?: RequestInit | {signal?: AbortSignal}) =>
   (init && init.signal) || (input && (input as {signal?: AbortSignal}).signal);
@@ -65,16 +65,16 @@ describe.runIf(typeof fetch === "function")(
       ]) {
         await assert.rejects(
           () =>
-            (axios as unknown as TypedAxiosStatic).get(url, {
+            (axios as unknown as TypedFaxiosStatic).get(url, {
               adapter: "fetch",
               headers: {
                 "X-Test": "yes",
               },
             }),
           (error) => {
-            assert.ok(error instanceof AxiosError);
-            const axiosError = error as AxiosError;
-            assert.strictEqual(axiosError.code, AxiosError.ERR_INVALID_URL);
+            assert.ok(error instanceof FaxiosError);
+            const axiosError = error as FaxiosError;
+            assert.strictEqual(axiosError.code, FaxiosError.ERR_INVALID_URL);
             assert.strictEqual(
               axiosError.message,
               'Invalid URL: missing "//" after protocol',
@@ -104,7 +104,7 @@ describe.runIf(typeof fetch === "function")(
       );
 
       try {
-        const { data } = await fetchAxios.get<Record<string, unknown>>(`${LOCAL_SERVER_URL}/`, {
+        const { data } = await fetchFaxios.get<Record<string, unknown>>(`${LOCAL_SERVER_URL}/`, {
           headers: {
             "x-test": "\tok\r\nInjected: yes ",
           },
@@ -135,7 +135,7 @@ describe.runIf(typeof fetch === "function")(
           yield ["Authorization", "Bearer CHANGED"];
         };
 
-        const { data } = await fetchAxios.get<Record<string, unknown>>(
+        const { data } = await fetchFaxios.get<Record<string, unknown>>(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             headers: {
@@ -172,7 +172,7 @@ describe.runIf(typeof fetch === "function")(
       const instance = axios.create({
         baseURL: LOCAL_SERVER_URL,
         adapter: "fetch",
-      }) as unknown as TypedAxiosInstance;
+      }) as unknown as TypedFaxiosInstance;
 
       instance.interceptors.request.use((config) => {
         config.headers.oprtName = encodeURIComponent(config.headers.oprtName as string);
@@ -208,7 +208,7 @@ describe.runIf(typeof fetch === "function")(
       );
 
       try {
-        const { data } = await fetchAxios.get<Record<string, unknown>>(`${LOCAL_SERVER_URL}/`, {
+        const { data } = await fetchFaxios.get<Record<string, unknown>>(`${LOCAL_SERVER_URL}/`, {
           headers: {
             "x-test": "请求用户",
           },
@@ -232,7 +232,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          const { data } = await fetchAxios.get(
+          const { data } = await fetchFaxios.get(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "text",
@@ -256,7 +256,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          const { data } = await fetchAxios.get(
+          const { data } = await fetchFaxios.get(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "arraybuffer",
@@ -284,7 +284,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          const { data } = await fetchAxios.get(
+          const { data } = await fetchFaxios.get(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "blob",
@@ -308,7 +308,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          const { data } = await fetchAxios.get(
+          const { data } = await fetchFaxios.get(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "stream",
@@ -345,7 +345,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          const { data } = await fetchAxios.get(
+          const { data } = await fetchFaxios.get(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "formdata",
@@ -377,7 +377,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          const { data } = await fetchAxios.get(
+          const { data } = await fetchFaxios.get(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "json",
@@ -420,9 +420,9 @@ describe.runIf(typeof fetch === "function")(
               })(),
             );
 
-            const samples: AxiosProgressEvent[] = [];
+            const samples: FaxiosProgressEvent[] = [];
 
-            const { data } = await fetchAxios.post(
+            const { data } = await fetchFaxios.post(
               `http://localhost:${(server.address() as AddressInfo).port}/`,
               readable,
               {
@@ -432,7 +432,7 @@ describe.runIf(typeof fetch === "function")(
                   progress,
                   bytes,
                   upload,
-                }: AxiosProgressEvent) => {
+                }: FaxiosProgressEvent) => {
                   console.log(
                     `Upload Progress ${loaded} from ${total} bytes (${((progress ?? 0) * 100).toFixed(1)}%)`,
                   );
@@ -443,7 +443,7 @@ describe.runIf(typeof fetch === "function")(
                     progress,
                     bytes,
                     upload,
-                  } as AxiosProgressEvent);
+                  } as FaxiosProgressEvent);
                 },
                 headers: {
                   "Content-Length": contentLength,
@@ -483,7 +483,7 @@ describe.runIf(typeof fetch === "function")(
           });
 
           try {
-            const { data } = await fetchAxios.get(
+            const { data } = await fetchFaxios.get(
               `http://localhost:${(server.address() as AddressInfo).port}/`,
               {
                 onUploadProgress() {},
@@ -527,9 +527,9 @@ describe.runIf(typeof fetch === "function")(
               })(),
             );
 
-            const samples: AxiosProgressEvent[] = [];
+            const samples: FaxiosProgressEvent[] = [];
 
-            const { data } = await fetchAxios.post(
+            const { data } = await fetchFaxios.post(
               `http://localhost:${(server.address() as AddressInfo).port}/`,
               readable,
               {
@@ -539,7 +539,7 @@ describe.runIf(typeof fetch === "function")(
                   progress,
                   bytes,
                   download,
-                }: AxiosProgressEvent) => {
+                }: FaxiosProgressEvent) => {
                   console.log(
                     `Download Progress ${loaded} from ${total} bytes (${((progress ?? 0) * 100).toFixed(1)}%)`,
                   );
@@ -550,7 +550,7 @@ describe.runIf(typeof fetch === "function")(
                     progress,
                     bytes,
                     download,
-                  } as AxiosProgressEvent);
+                  } as FaxiosProgressEvent);
                 },
                 headers: {
                   "Content-Length": contentLength,
@@ -598,7 +598,7 @@ describe.runIf(typeof fetch === "function")(
       try {
         const user = "foo";
         const headers = { Authorization: "Bearer 1234" };
-        const res = await fetchAxios.get(
+        const res = await fetchFaxios.get(
           `http://${user}@localhost:${(server.address() as AddressInfo).port}/`,
           {
             headers,
@@ -621,7 +621,7 @@ describe.runIf(typeof fetch === "function")(
       );
 
       try {
-        const response = await fetchAxios.get(
+        const response = await fetchFaxios.get(
           `http://my%40email.com:pa%24ss@localhost:${(server.address() as AddressInfo).port}/`,
         );
         const base64 = Buffer.from("my@email.com:pa$ss", "utf8").toString(
@@ -642,7 +642,7 @@ describe.runIf(typeof fetch === "function")(
       );
 
       try {
-        const response = await fetchAxios.get(
+        const response = await fetchFaxios.get(
           `http://%E7%94%A8%E6%88%B7:pa%C3%9F@localhost:${(server.address() as AddressInfo).port}/`,
         );
         const base64 = Buffer.from("\u7528\u6237:pa\u00df", "utf8").toString(
@@ -663,7 +663,7 @@ describe.runIf(typeof fetch === "function")(
       );
 
       try {
-        const response = await fetchAxios.get(
+        const response = await fetchFaxios.get(
           `http://user%:foo%zz@localhost:${(server.address() as AddressInfo).port}/`,
         );
         const base64 = Buffer.from("user%:foo%zz", "utf8").toString("base64");
@@ -682,7 +682,7 @@ describe.runIf(typeof fetch === "function")(
       );
 
       try {
-        const response = await fetchAxios.get(
+        const response = await fetchFaxios.get(
           `http://:secret@localhost:${(server.address() as AddressInfo).port}/`,
         );
         const base64 = Buffer.from(":secret", "utf8").toString("base64");
@@ -702,7 +702,7 @@ describe.runIf(typeof fetch === "function")(
 
       try {
         const auth = { username: "config-user", password: "config-pass" };
-        const response = await fetchAxios.get(
+        const response = await fetchFaxios.get(
           `http://url-user:url-pass@localhost:${(server.address() as AddressInfo).port}/`,
           { auth },
         );
@@ -726,7 +726,7 @@ describe.runIf(typeof fetch === "function")(
       try {
         const auth = { username: "foo", password: "bar" };
         const headers = { AuThOrIzAtIoN: "Bearer 1234" }; // wonky casing to ensure caseless comparison
-        const response = await fetchAxios.get(
+        const response = await fetchFaxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             auth,
@@ -758,7 +758,7 @@ describe.runIf(typeof fetch === "function")(
       });
 
       try {
-        const response = await fetchAxios.get(
+        const response = await fetchFaxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             auth: {} as { username: string; password: string },
@@ -779,7 +779,7 @@ describe.runIf(typeof fetch === "function")(
       });
 
       try {
-        const { data } = await fetchAxios.post(
+        const { data } = await fetchFaxios.post(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           stream.Readable.from("OK"),
         );
@@ -808,7 +808,7 @@ describe.runIf(typeof fetch === "function")(
           }, 500);
 
           await assert.rejects(async () => {
-            await fetchAxios.post(
+            await fetchFaxios.post(
               `http://localhost:${(server.address() as AddressInfo).port}/`,
               makeReadableStream(),
               {
@@ -839,7 +839,7 @@ describe.runIf(typeof fetch === "function")(
             controller.abort(new Error("test"));
           }, 800);
 
-          const { data } = await fetchAxios.get(
+          const { data } = await fetchFaxios.get(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "stream",
@@ -871,7 +871,7 @@ describe.runIf(typeof fetch === "function")(
         const ts = Date.now();
 
         await assert.rejects(async () => {
-          await fetchAxios(`http://localhost:${(server.address() as AddressInfo).port}/`, {
+          await fetchFaxios(`http://localhost:${(server.address() as AddressInfo).port}/`, {
             timeout,
           });
         }, /timeout/);
@@ -888,7 +888,7 @@ describe.runIf(typeof fetch === "function")(
     });
 
     describe("fetch adapter - timeout normalization", () => {
-      it("should reject with an AxiosError(ETIMEDOUT) on timeout", async () => {
+      it("should reject with an FaxiosError(ETIMEDOUT) on timeout", async () => {
         const server = await startHTTPServer(
           async (_req, res) => {
             await setTimeoutAsync(1000);
@@ -900,12 +900,12 @@ describe.runIf(typeof fetch === "function")(
         try {
           await assert.rejects(
             async () =>
-              fetchAxios(`http://localhost:${(server.address() as AddressInfo).port}/`, {
+              fetchFaxios(`http://localhost:${(server.address() as AddressInfo).port}/`, {
                 timeout: 200,
               }),
             (err) => {
               const e = err as { name: string; code: string; message: string };
-              assert.strictEqual(e.name, "AxiosError");
+              assert.strictEqual(e.name, "FaxiosError");
               assert.strictEqual(e.code, "ETIMEDOUT");
               assert.match(e.message, /timeout of 200ms exceeded/);
               return true;
@@ -933,7 +933,7 @@ describe.runIf(typeof fetch === "function")(
 
         const controller = new AbortController();
 
-        const request = fetchAxios.get("/", {
+        const request = fetchFaxios.get("/", {
           signal: controller.signal as GenericAbortSignal,
           env: { fetch: safariFetch as unknown as (input: string | Request | URL, init?: RequestInit) => Promise<Response> },
         });
@@ -975,13 +975,13 @@ describe.runIf(typeof fetch === "function")(
 
           await assert.rejects(
             () =>
-              fetchAxios.get("/", {
+              fetchFaxios.get("/", {
                 timeout: 50,
                 env: { fetch: safariFetch as unknown as (input: string | Request | URL, init?: RequestInit) => Promise<Response> },
               }),
             (err) => {
               const e = err as { name: string; code: string; message: string };
-              assert.strictEqual(e.name, "AxiosError");
+              assert.strictEqual(e.name, "FaxiosError");
               assert.strictEqual(e.code, "ETIMEDOUT");
               assert.match(e.message, /timeout of 50ms exceeded/);
               return true;
@@ -996,7 +996,7 @@ describe.runIf(typeof fetch === "function")(
         port: SERVER_PORT,
       });
       try {
-        const res = await fetchAxios("/foo");
+        const res = await fetchFaxios("/foo");
 
         assert.equal(res.config.baseURL, LOCAL_SERVER_URL);
         assert.equal(res.config.url, "/foo");
@@ -1021,7 +1021,7 @@ describe.runIf(typeof fetch === "function")(
       );
 
       try {
-        const { data } = await fetchAxios.query<Record<string, unknown>>(
+        const { data } = await fetchFaxios.query<Record<string, unknown>>(
           `http://localhost:${(server.address() as AddressInfo).port}/search`,
           {
             selector: "field1",
@@ -1041,7 +1041,7 @@ describe.runIf(typeof fetch === "function")(
         port: SERVER_PORT,
       });
       try {
-        const { data } = await fetchAxios.get(
+        const { data } = await fetchFaxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}/?test=1`,
           {
             params: {
@@ -1057,13 +1057,13 @@ describe.runIf(typeof fetch === "function")(
       }
     });
 
-    it("should handle fetch failed error as an AxiosError with ERR_NETWORK code", async () => {
+    it("should handle fetch failed error as an FaxiosError with ERR_NETWORK code", async () => {
       try {
-        await fetchAxios("http://notExistsUrl.in.nowhere");
+        await fetchFaxios("http://notExistsUrl.in.nowhere");
         assert.fail("should fail");
       } catch (err) {
-        const axiosErr = err as AxiosError;
-        assert.strictEqual(String(axiosErr), "AxiosError: Network Error");
+        const axiosErr = err as FaxiosError;
+        assert.strictEqual(String(axiosErr), "FaxiosError: Network Error");
         assert.strictEqual(axiosErr.cause && (axiosErr.cause as {code?: string}).code, "ENOTFOUND");
       }
     });
@@ -1078,14 +1078,14 @@ describe.runIf(typeof fetch === "function")(
       );
 
       try {
-        const { headers } = await fetchAxios.get(
+        const { headers } = await fetchFaxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             responseType: "stream",
           },
         );
 
-        assert.strictEqual((headers as unknown as TypedAxiosHeaders).get("foo"), "bar");
+        assert.strictEqual((headers as unknown as TypedFaxiosHeaders).get("foo"), "bar");
       } finally {
         await stopHTTPServer(server);
       }
@@ -1106,7 +1106,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          await fetchAxios.post(
+          await fetchFaxios.post(
             `http://localhost:${(server.address() as AddressInfo).port}/form`,
             form,
           );
@@ -1129,7 +1129,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          await fetchAxios.post(
+          await fetchFaxios.post(
             `http://localhost:${(server.address() as AddressInfo).port}/form`,
             form,
             {
@@ -1157,7 +1157,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          await fetchAxios.post(
+          await fetchFaxios.post(
             `http://localhost:${(server.address() as AddressInfo).port}/form`,
             form,
             {
@@ -1183,7 +1183,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          const { data } = await fetchAxios.post<Record<string, unknown>>(
+          const { data } = await fetchFaxios.post<Record<string, unknown>>(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               payload: "test",
@@ -1208,7 +1208,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          const { data } = await fetchAxios.post<Record<string, unknown>>(
+          const { data } = await fetchFaxios.post<Record<string, unknown>>(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             { payload: "test" },
             { headers: { "User-Agent": customUA } },
@@ -1241,7 +1241,7 @@ describe.runIf(typeof fetch === "function")(
       });
 
       it("should respect env fetch API configuration", async () => {
-        const { data, headers } = await fetchAxios.get("/", {
+        const { data, headers } = await fetchFaxios.get("/", {
           env: {
             fetch() {
               return {
@@ -1254,7 +1254,7 @@ describe.runIf(typeof fetch === "function")(
           } as unknown as { fetch?: typeof fetch },
         });
 
-        assert.strictEqual((headers as unknown as TypedAxiosHeaders).get("foo"), "1");
+        assert.strictEqual((headers as unknown as TypedFaxiosHeaders).get("foo"), "1");
         assert.strictEqual(data, "test");
       });
 
@@ -1263,7 +1263,7 @@ describe.runIf(typeof fetch === "function")(
 
         form.append("x", "1");
 
-        const { data, headers } = await fetchAxios.post("/", form, {
+        const { data, headers } = await fetchFaxios.post("/", form, {
           onUploadProgress() {
             // dummy listener to activate streaming
           },
@@ -1280,12 +1280,12 @@ describe.runIf(typeof fetch === "function")(
           } as unknown as { Request?: typeof Request; fetch?: typeof fetch },
         });
 
-        assert.strictEqual((headers as unknown as TypedAxiosHeaders).get("foo"), "1");
+        assert.strictEqual((headers as unknown as TypedFaxiosHeaders).get("foo"), "1");
         assert.strictEqual(data, "test");
       });
 
       it("should be able to handle response with lack of Response object", async () => {
-        const { data, headers } = await fetchAxios.get("/", {
+        const { data, headers } = await fetchFaxios.get("/", {
           onDownloadProgress() {
             // dummy listener to activate streaming
           },
@@ -1303,7 +1303,7 @@ describe.runIf(typeof fetch === "function")(
           } as unknown as { Request?: typeof Request; fetch?: typeof fetch },
         });
 
-        assert.strictEqual((headers as unknown as TypedAxiosHeaders).get("foo"), "1");
+        assert.strictEqual((headers as unknown as TypedFaxiosHeaders).get("foo"), "1");
         assert.strictEqual(data, "test");
       });
 
@@ -1313,7 +1313,7 @@ describe.runIf(typeof fetch === "function")(
         });
 
         try {
-          const { data } = await fetchAxios.get(
+          const { data } = await fetchFaxios.get(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               env: {
@@ -1343,7 +1343,7 @@ describe.runIf(typeof fetch === "function")(
         });
 
         try {
-          const { data } = await fetchAxios.get(
+          const { data } = await fetchFaxios.get(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               env: {
@@ -1388,7 +1388,7 @@ describe.runIf(typeof fetch === "function")(
 
         try {
           await assert.rejects(
-            fetchAxios.post(`${LOCAL_SERVER_URL}/`, "A".repeat(2048), {
+            fetchFaxios.post(`${LOCAL_SERVER_URL}/`, "A".repeat(2048), {
               maxBodyLength: 1024,
             }),
             (err) => {
@@ -1423,7 +1423,7 @@ describe.runIf(typeof fetch === "function")(
 
         try {
           await assert.rejects(
-            fetchAxios.post(`${LOCAL_SERVER_URL}/`, makeUploadStream(2048), {
+            fetchFaxios.post(`${LOCAL_SERVER_URL}/`, makeUploadStream(2048), {
               maxBodyLength: 1024,
               headers: { "Content-Type": "application/octet-stream" },
             }),
@@ -1466,7 +1466,7 @@ describe.runIf(typeof fetch === "function")(
           await assert.rejects(
             // A caller-declared Content-Length that under-reports the real body
             // must not let an oversized stream slip past the limit.
-            fetchAxios.post(`${LOCAL_SERVER_URL}/`, makeUploadStream(8192), {
+            fetchFaxios.post(`${LOCAL_SERVER_URL}/`, makeUploadStream(8192), {
               maxBodyLength: 1024,
               headers: {
                 "Content-Type": "application/octet-stream",
@@ -1497,7 +1497,7 @@ describe.runIf(typeof fetch === "function")(
         let bytesRead = 0;
 
         await assert.rejects(
-          fetchAxios.post("/", makeUploadStream(2048), {
+          fetchFaxios.post("/", makeUploadStream(2048), {
             maxBodyLength: 1024,
             headers: {
               "Content-Type": "application/octet-stream",
@@ -1549,7 +1549,7 @@ describe.runIf(typeof fetch === "function")(
         }
 
         await assert.rejects(
-          fetchAxios.post("/", stream.Readable.from([Buffer.alloc(2048)]), {
+          fetchFaxios.post("/", stream.Readable.from([Buffer.alloc(2048)]), {
             maxBodyLength: 1024,
             headers: {
               "Content-Type": "application/octet-stream",
@@ -1598,7 +1598,7 @@ describe.runIf(typeof fetch === "function")(
 
         try {
           await assert.rejects(
-            fetchAxios.get(`${LOCAL_SERVER_URL}/`, {
+            fetchFaxios.get(`${LOCAL_SERVER_URL}/`, {
               maxContentLength: 1024,
             }),
             (err) => {
@@ -1617,7 +1617,7 @@ describe.runIf(typeof fetch === "function")(
       });
 
       it("should handle plain object response headers while enforcing maxContentLength", async () => {
-        const { data, headers } = await fetchAxios.get("/", {
+        const { data, headers } = await fetchFaxios.get("/", {
           maxContentLength: 10,
           env: {
             async fetch() {
@@ -1640,7 +1640,7 @@ describe.runIf(typeof fetch === "function")(
         });
 
         assert.strictEqual(data, "test");
-        assert.strictEqual((headers as unknown as TypedAxiosHeaders).get("foo"), "bar");
+        assert.strictEqual((headers as unknown as TypedFaxiosHeaders).get("foo"), "bar");
       });
 
       it("should reject a chunked response that exceeds maxContentLength during streaming", async () => {
@@ -1666,7 +1666,7 @@ describe.runIf(typeof fetch === "function")(
 
         try {
           await assert.rejects(
-            fetchAxios.get(`${LOCAL_SERVER_URL}/`, {
+            fetchFaxios.get(`${LOCAL_SERVER_URL}/`, {
               maxContentLength: 512,
             }),
             (err) => {
@@ -1692,10 +1692,10 @@ describe.runIf(typeof fetch === "function")(
 
         // Use a dedicated instance without baseURL — combineURLs would otherwise
         // prepend baseURL to a data: URL and neutralise the pre-check.
-        const bareAxios = axios.create({ adapter: "fetch" }) as unknown as TypedAxiosInstance;
+        const bareFaxios = axios.create({ adapter: "fetch" }) as unknown as TypedFaxiosInstance;
 
         await assert.rejects(
-          bareAxios.get(dataUrl, { maxContentLength: 16 }),
+          bareFaxios.get(dataUrl, { maxContentLength: 16 }),
           (err) => {
             const e = err as { code: string; message: string };
             assert.strictEqual(e.code, "ERR_BAD_RESPONSE");
@@ -1708,10 +1708,10 @@ describe.runIf(typeof fetch === "function")(
       it("should reject a data: URL whose body size exceeds maxContentLength (non-base64)", async () => {
         const dataUrl = "data:text/plain," + "X".repeat(4096);
 
-        const bareAxios = axios.create({ adapter: "fetch" }) as unknown as TypedAxiosInstance;
+        const bareFaxios = axios.create({ adapter: "fetch" }) as unknown as TypedFaxiosInstance;
 
         await assert.rejects(
-          bareAxios.get(dataUrl, { maxContentLength: 16 }),
+          bareFaxios.get(dataUrl, { maxContentLength: 16 }),
           (err) => {
             const e = err as { code: string; message: string };
             assert.strictEqual(e.code, "ERR_BAD_RESPONSE");
@@ -1722,8 +1722,8 @@ describe.runIf(typeof fetch === "function")(
       });
 
       it("should allow a percent-encoded data: URL within decoded maxContentLength", async () => {
-        const bareAxios = axios.create({ adapter: "fetch" }) as unknown as TypedAxiosInstance;
-        const { data } = await bareAxios.get("data:text/plain,%E2%82%AC", {
+        const bareFaxios = axios.create({ adapter: "fetch" }) as unknown as TypedFaxiosInstance;
+        const { data } = await bareFaxios.get("data:text/plain,%E2%82%AC", {
           maxContentLength: 4,
         });
 
@@ -1740,7 +1740,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          const { data } = await fetchAxios.get(`${LOCAL_SERVER_URL}/`, {
+          const { data } = await fetchFaxios.get(`${LOCAL_SERVER_URL}/`, {
             maxContentLength: 1024,
           });
           assert.strictEqual(data, payload);
@@ -1766,7 +1766,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          const { data } = await fetchAxios.post<Record<string, unknown>>(
+          const { data } = await fetchFaxios.post<Record<string, unknown>>(
             `${LOCAL_SERVER_URL}/`,
             makeUploadStream(payloadLength),
             {
@@ -1797,7 +1797,7 @@ describe.runIf(typeof fetch === "function")(
         );
 
         try {
-          await fetchAxios.post(`${LOCAL_SERVER_URL}/`, payload, {
+          await fetchFaxios.post(`${LOCAL_SERVER_URL}/`, payload, {
             maxBodyLength: 1024,
           });
           assert.strictEqual(received, payload);

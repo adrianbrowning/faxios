@@ -1,9 +1,9 @@
 "use strict";
 
-import AxiosError from "../core/AxiosError.js";
-import type { AxiosRequestConfig, InternalAxiosRequestConfig } from "../types.js";
+import FaxiosError from "../core/FaxiosError.js";
+import type { FaxiosRequestConfig, InternalFaxiosRequestConfig } from "../types.js";
 
-class CanceledError extends AxiosError {
+class CanceledError extends FaxiosError {
   /**
    * A `CanceledError` is an object that is thrown when an operation is canceled.
    *
@@ -13,8 +13,8 @@ class CanceledError extends AxiosError {
    *
    * @returns {CanceledError} The created error.
    */
-  constructor(message?: string | null, config?: AxiosRequestConfig, request?: unknown) {
-    super(message == null ? "canceled" : message, AxiosError.ERR_CANCELED, config as InternalAxiosRequestConfig, request);
+  constructor(message?: string | null, config?: FaxiosRequestConfig, request?: unknown) {
+    super(message == null ? "canceled" : message, FaxiosError.ERR_CANCELED, config as InternalFaxiosRequestConfig, request);
     this.name = "CanceledError";
     (this as unknown as Record<string, unknown>)["__CANCEL__"] = true;
   }

@@ -2,8 +2,8 @@
 
 import combineURLs from "../helpers/combineURLs.js";
 import isAbsoluteURL from "../helpers/isAbsoluteURL.js";
-import type { InternalAxiosRequestConfig } from "../types.js";
-import AxiosError from "./AxiosError.js";
+import type { InternalFaxiosRequestConfig } from "../types.js";
+import FaxiosError from "./FaxiosError.js";
 
 const malformedHttpProtocol = /^https?:(?!\/\/)/i;
 const httpProtocolControlCharacters = /[\t\n\r]/g;
@@ -22,10 +22,10 @@ function normalizeURLForProtocolCheck(url: string): string {
 
 function assertValidHttpProtocolURL(url: unknown, config: unknown): void {
   if (typeof url === "string" && malformedHttpProtocol.test(normalizeURLForProtocolCheck(url))) {
-    throw new AxiosError(
+    throw new FaxiosError(
       "Invalid URL: missing \"//\" after protocol",
-      AxiosError.ERR_INVALID_URL,
-      config as InternalAxiosRequestConfig
+      FaxiosError.ERR_INVALID_URL,
+      config as InternalFaxiosRequestConfig
     );
   }
 }

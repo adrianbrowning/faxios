@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import axios, { AxiosHeaders } from "../../src/index.js";
+import axios, { FaxiosHeaders } from "../../src/index.js";
 
 class MockXMLHttpRequest {
   requestHeaders: Record<string, string> = {};
@@ -168,7 +168,7 @@ describe("headers (vitest browser)", () => {
   });
 
   it("should add extra headers for post", async () => {
-    const headers = AxiosHeaders.from(axios.defaults.headers.common as Record<string, unknown>).toJSON();
+    const headers = FaxiosHeaders.from(axios.defaults.headers.common as Record<string, unknown>).toJSON();
     const promise = axios.post("/foo", "fizz=buzz");
     const request = getLastRequest();
 
@@ -245,9 +245,9 @@ describe("headers (vitest browser)", () => {
     await finishRequest(request, promise);
   });
 
-  it("should allow an AxiosHeaders instance to be used as the value of the headers option", async () => {
+  it("should allow an FaxiosHeaders instance to be used as the value of the headers option", async () => {
     const instance = axios.create({
-      headers: new AxiosHeaders({
+      headers: new FaxiosHeaders({
         xFoo: "foo",
         xBar: "bar",
       }),

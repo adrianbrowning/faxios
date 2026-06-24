@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import axios from "../../src/index.js";
-import type { AxiosResponse, InternalAxiosRequestConfig } from "../../src/lib/types.js";
+import type { FaxiosResponse, InternalFaxiosRequestConfig } from "../../src/lib/types.js";
 import type InterceptorManager from "../../src/lib/core/InterceptorManager.js";
 
 class MockXMLHttpRequest {
@@ -115,8 +115,8 @@ describe("instance (vitest browser)", () => {
     for (const prop in axios) {
       if (
         [
-          "Axios",
-          "AxiosError",
+          "Faxios",
+          "FaxiosError",
           "create",
           "Cancel",
           "CanceledError",
@@ -125,14 +125,14 @@ describe("instance (vitest browser)", () => {
           "all",
           "spread",
           "getUri",
-          "isAxiosError",
+          "isFaxiosError",
           "mergeConfig",
           "getAdapter",
           "VERSION",
           "default",
           "toFormData",
           "formToJSON",
-          "AxiosHeaders",
+          "FaxiosHeaders",
           "HttpStatusCode",
         ].includes(prop)
       ) {
@@ -195,15 +195,15 @@ describe("instance (vitest browser)", () => {
   });
 
   it("should have interceptors on the instance", async () => {
-    const requestInterceptorId = (axios.interceptors.request as unknown as InterceptorManager<InternalAxiosRequestConfig>).use((config) => {
-      (config as InternalAxiosRequestConfig & Record<string, unknown>).foo = true;
+    const requestInterceptorId = (axios.interceptors.request as unknown as InterceptorManager<InternalFaxiosRequestConfig>).use((config) => {
+      (config as InternalFaxiosRequestConfig & Record<string, unknown>).foo = true;
       return config;
     });
 
     const instance = axios.create();
-    const instanceInterceptorId = (instance.interceptors.request as unknown as InterceptorManager<InternalAxiosRequestConfig>).use(
+    const instanceInterceptorId = (instance.interceptors.request as unknown as InterceptorManager<InternalFaxiosRequestConfig>).use(
       (config) => {
-        (config as InternalAxiosRequestConfig & Record<string, unknown>).bar = true;
+        (config as InternalFaxiosRequestConfig & Record<string, unknown>).bar = true;
         return config;
       },
     );
@@ -216,13 +216,13 @@ describe("instance (vitest browser)", () => {
         status: 200,
       });
 
-      const response = await responsePromise as AxiosResponse;
+      const response = await responsePromise as FaxiosResponse;
 
       expect((response.config as unknown as Record<string, unknown>).foo).toBeUndefined();
       expect((response.config as unknown as Record<string, unknown>).bar).toBe(true);
     } finally {
-      (axios.interceptors.request as unknown as InterceptorManager<InternalAxiosRequestConfig>).eject(requestInterceptorId);
-      (instance.interceptors.request as unknown as InterceptorManager<InternalAxiosRequestConfig>).eject(instanceInterceptorId);
+      (axios.interceptors.request as unknown as InterceptorManager<InternalFaxiosRequestConfig>).eject(requestInterceptorId);
+      (instance.interceptors.request as unknown as InterceptorManager<InternalFaxiosRequestConfig>).eject(instanceInterceptorId);
     }
   });
 

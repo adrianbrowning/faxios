@@ -1,16 +1,16 @@
 import { describe, it, expect, vi } from "vitest";
-import AxiosError from "../../../src/lib/core/AxiosError.js";
+import FaxiosError from "../../../src/lib/core/FaxiosError.js";
 import settle from "../../../src/lib/core/settle.js";
-import type { AxiosResponse } from "../../../src/lib/types.js";
+import type { FaxiosResponse } from "../../../src/lib/types.js";
 
 function makeResponse(
   status: number,
   validateStatus: ((s: number) => boolean) | null = (s) => s >= 200 && s < 300,
-): AxiosResponse {
+): FaxiosResponse {
   return {
     status,
     statusText: "",
-    config: { validateStatus } as AxiosResponse["config"],
+    config: { validateStatus } as FaxiosResponse["config"],
     request: {},
     data: null,
     headers: {},
@@ -56,8 +56,8 @@ describe("core::settle", () => {
       );
       expect(reject).toHaveBeenCalledTimes(1);
       const error = reject.mock.calls[0]![0];
-      expect(error).toBeInstanceOf(AxiosError);
-      expect(error.code).toBe(AxiosError.ERR_BAD_REQUEST);
+      expect(error).toBeInstanceOf(FaxiosError);
+      expect(error.code).toBe(FaxiosError.ERR_BAD_REQUEST);
     });
 
     it("assigns ERR_BAD_REQUEST for a 404 status", () => {
@@ -69,7 +69,7 @@ describe("core::settle", () => {
         makeResponse(404, () => false),
       );
       const error = reject.mock.calls[0]![0];
-      expect(error.code).toBe(AxiosError.ERR_BAD_REQUEST);
+      expect(error.code).toBe(FaxiosError.ERR_BAD_REQUEST);
     });
 
     it("assigns ERR_BAD_REQUEST for a 499 status (top of 4xx range)", () => {
@@ -81,7 +81,7 @@ describe("core::settle", () => {
         makeResponse(499, () => false),
       );
       const error = reject.mock.calls[0]![0];
-      expect(error.code).toBe(AxiosError.ERR_BAD_REQUEST);
+      expect(error.code).toBe(FaxiosError.ERR_BAD_REQUEST);
     });
 
     it("assigns ERR_BAD_RESPONSE for a 500 status", () => {
@@ -93,7 +93,7 @@ describe("core::settle", () => {
         makeResponse(500, () => false),
       );
       const error = reject.mock.calls[0]![0];
-      expect(error.code).toBe(AxiosError.ERR_BAD_RESPONSE);
+      expect(error.code).toBe(FaxiosError.ERR_BAD_RESPONSE);
     });
 
     it("assigns ERR_BAD_RESPONSE for a 503 status", () => {
@@ -105,11 +105,11 @@ describe("core::settle", () => {
         makeResponse(503, () => false),
       );
       const error = reject.mock.calls[0]![0];
-      expect(error.code).toBe(AxiosError.ERR_BAD_RESPONSE);
+      expect(error.code).toBe(FaxiosError.ERR_BAD_RESPONSE);
     });
 
     // A custom validateStatus can reject any status — including 1xx, 2xx, 3xx,
-    // or ≥ 600 — and the resulting AxiosError must always have a defined code.
+    // or ≥ 600 — and the resulting FaxiosError must always have a defined code.
     it("assigns ERR_BAD_RESPONSE for a 3xx status rejected via custom validateStatus", () => {
       const resolve = vi.fn();
       const reject = vi.fn();
@@ -120,7 +120,7 @@ describe("core::settle", () => {
       );
       const error = reject.mock.calls[0]![0];
       expect(error.code).toBeDefined();
-      expect(error.code).toBe(AxiosError.ERR_BAD_RESPONSE);
+      expect(error.code).toBe(FaxiosError.ERR_BAD_RESPONSE);
     });
 
     it("assigns ERR_BAD_RESPONSE for a 2xx status rejected via custom validateStatus", () => {
@@ -133,7 +133,7 @@ describe("core::settle", () => {
       );
       const error = reject.mock.calls[0]![0];
       expect(error.code).toBeDefined();
-      expect(error.code).toBe(AxiosError.ERR_BAD_RESPONSE);
+      expect(error.code).toBe(FaxiosError.ERR_BAD_RESPONSE);
     });
 
     it("assigns ERR_BAD_RESPONSE for a 6xx status rejected via custom validateStatus", () => {
@@ -146,7 +146,7 @@ describe("core::settle", () => {
       );
       const error = reject.mock.calls[0]![0];
       expect(error.code).toBeDefined();
-      expect(error.code).toBe(AxiosError.ERR_BAD_RESPONSE);
+      expect(error.code).toBe(FaxiosError.ERR_BAD_RESPONSE);
     });
   });
 

@@ -4,15 +4,15 @@ import http from "node:http";
 import type { AddressInfo } from "node:net";
 import { afterEach, describe, it } from "vitest";
 import axios from "../../src/index.ts";
-import AxiosError from "../../src/lib/core/AxiosError.js";
-import AxiosHeaders from "../../src/lib/core/AxiosHeaders.js";
+import FaxiosError from "../../src/lib/core/FaxiosError.js";
+import FaxiosHeaders from "../../src/lib/core/FaxiosHeaders.js";
 import mergeConfig from "../../src/lib/core/mergeConfig.js";
 import defaults from "../../src/lib/defaults/index.js";
 import resolveConfig from "../../src/lib/helpers/resolveConfig.js";
 import utils from "../../src/lib/utils.js";
 
 // ponytail: only augment Object.prototype with non-conflicting test-only keys.
-// All axios config keys overlap with AxiosRequestConfig and are accessed via ObjProto.
+// All axios config keys overlap with FaxiosRequestConfig and are accessed via ObjProto.
 declare global {
   interface Object {
     polluted?: unknown;
@@ -1153,24 +1153,24 @@ describe("Prototype Pollution Protection", () => {
   // throw TypeError at every defineProperty site that uses a plain literal
   // descriptor. Each fixed site should be shielded with `__proto__: null`.
   describe("Object.defineProperty descriptor literals", () => {
-    it("should construct AxiosError when Object.prototype.get is polluted", () => {
+    it("should construct FaxiosError when Object.prototype.get is polluted", () => {
       ObjProto.get = "attacker";
 
-      const err = new AxiosError("hello", "ECODE");
+      const err = new FaxiosError("hello", "ECODE");
 
       assert.strictEqual(err.message, "hello");
       assert.strictEqual(err.code, "ECODE");
     });
 
-    it("should construct AxiosHeaders accessor methods when Object.prototype.get is polluted", () => {
+    it("should construct FaxiosHeaders accessor methods when Object.prototype.get is polluted", () => {
       ObjProto.get = "attacker";
 
-      // AxiosHeaders.accessor uses Object.defineProperty on the prototype.
+      // FaxiosHeaders.accessor uses Object.defineProperty on the prototype.
       // Triggering a fresh accessor definition exercises the descriptor literal.
-      AxiosHeaders.accessor("X-Pp-Test");
+      FaxiosHeaders.accessor("X-Pp-Test");
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const h = new AxiosHeaders() as any;
+      const h = new FaxiosHeaders() as any;
       h.setXPpTest("value");
       assert.strictEqual(h.getXPpTest(), "value");
     });
@@ -1227,7 +1227,7 @@ describe("Prototype Pollution Protection", () => {
 
       // Same surface as `get` — ToPropertyDescriptor checks both. One spot-check
       // covers them all since they share the same fix.
-      const err = new AxiosError("hello");
+      const err = new FaxiosError("hello");
       assert.strictEqual(err.message, "hello");
     });
   });

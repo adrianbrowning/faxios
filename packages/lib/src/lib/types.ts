@@ -3,10 +3,10 @@
 
 export type StringLiteralsOrString<Literals extends string> = Literals | (string & {});
 
-export type AxiosHeaderValue = string | Array<string> | number | boolean | null;
+export type FaxiosHeaderValue = string | Array<string> | number | boolean | null;
 
-export interface RawAxiosHeaders {
-  [key: string]: AxiosHeaderValue;
+export interface RawFaxiosHeaders {
+  [key: string]: FaxiosHeaderValue;
 }
 
 type UppercaseMethod =
@@ -33,7 +33,7 @@ type CommonRequestHeadersList =
   | "Location";
 
 type ContentType =
-  | AxiosHeaderValue
+  | FaxiosHeaderValue
   | "text/html"
   | "text/plain"
   | "multipart/form-data"
@@ -41,9 +41,9 @@ type ContentType =
   | "application/x-www-form-urlencoded"
   | "application/octet-stream";
 
-export type RawAxiosRequestHeaders = Partial<
-  RawAxiosHeaders & {
-    [Key in CommonRequestHeadersList]: AxiosHeaderValue;
+export type RawFaxiosRequestHeaders = Partial<
+  RawFaxiosHeaders & {
+    [Key in CommonRequestHeadersList]: FaxiosHeaderValue;
   } & {
     "Content-Type": ContentType;
   }
@@ -148,7 +148,7 @@ type MaxDownloadRate = number;
 type BrowserProgressEvent = unknown;
 type Milliseconds = number;
 
-export interface AxiosProgressEvent {
+export interface FaxiosProgressEvent {
   loaded: number;
   total?: number;
   progress?: number;
@@ -170,21 +170,21 @@ export interface LookupAddressEntry {
 
 export type LookupAddress = string | LookupAddressEntry;
 
-export interface AxiosBasicCredentials {
+export interface FaxiosBasicCredentials {
   username: string;
   password: string;
 }
 
-export interface AxiosProxyConfig {
+export interface FaxiosProxyConfig {
   host: string;
   port: number;
-  auth?: AxiosBasicCredentials;
+  auth?: FaxiosBasicCredentials;
   protocol?: string;
 }
 
-// forward-declared; implemented in core/AxiosHeaders.ts
-// Using a structural type that matches AxiosHeaders class methods
-export type AxiosRequestHeaders = Record<string, unknown> & {
+// forward-declared; implemented in core/FaxiosHeaders.ts
+// Using a structural type that matches FaxiosHeaders class methods
+export type FaxiosRequestHeaders = Record<string, unknown> & {
   set: (header: string, value?: unknown, rewrite?: unknown) => unknown;
   get: (header: string, parser?: unknown) => unknown;
   has: (header: string, matcher?: unknown) => boolean;
@@ -213,34 +213,34 @@ export type AxiosRequestHeaders = Record<string, unknown> & {
   toJSON: (asStrings?: boolean) => Record<string, unknown>;
 };
 
-export type AxiosAdapterName = StringLiteralsOrString<"xhr" | "http" | "fetch">;
+export type FaxiosAdapterName = StringLiteralsOrString<"xhr" | "http" | "fetch">;
 
-export interface AxiosAdapter {
-  (config: InternalAxiosRequestConfig): Promise<AxiosResponse>;
+export interface FaxiosAdapter {
+  (config: InternalFaxiosRequestConfig): Promise<FaxiosResponse>;
 }
 
-export type AxiosAdapterConfig = AxiosAdapter | AxiosAdapterName;
+export type FaxiosAdapterConfig = FaxiosAdapter | FaxiosAdapterName;
 
-export interface AxiosRequestTransformer {
-  (this: InternalAxiosRequestConfig, data: unknown, headers: AxiosRequestHeaders): unknown;
+export interface FaxiosRequestTransformer {
+  (this: InternalFaxiosRequestConfig, data: unknown, headers: FaxiosRequestHeaders): unknown;
 }
 
-export interface AxiosResponseTransformer {
+export interface FaxiosResponseTransformer {
   (
-    this: InternalAxiosRequestConfig,
+    this: InternalFaxiosRequestConfig,
     data: unknown,
-    headers: RawAxiosHeaders,
+    headers: RawFaxiosHeaders,
     status?: number
   ): unknown;
 }
 
-export interface AxiosRequestConfig<D = unknown> {
+export interface FaxiosRequestConfig<D = unknown> {
   url?: string;
   method?: StringLiteralsOrString<Method>;
   baseURL?: string;
   allowAbsoluteUrls?: boolean;
-  transformRequest?: AxiosRequestTransformer | Array<AxiosRequestTransformer>;
-  transformResponse?: AxiosResponseTransformer | Array<AxiosResponseTransformer>;
+  transformRequest?: FaxiosRequestTransformer | Array<FaxiosRequestTransformer>;
+  transformResponse?: FaxiosResponseTransformer | Array<FaxiosResponseTransformer>;
   headers?: Record<string, unknown>;
   params?: unknown;
   paramsSerializer?: ParamsSerializerOptions | CustomParamsSerializer;
@@ -248,14 +248,14 @@ export interface AxiosRequestConfig<D = unknown> {
   timeout?: Milliseconds;
   timeoutErrorMessage?: string;
   withCredentials?: boolean;
-  adapter?: AxiosAdapterConfig | Array<AxiosAdapterConfig>;
-  auth?: AxiosBasicCredentials;
+  adapter?: FaxiosAdapterConfig | Array<FaxiosAdapterConfig>;
+  auth?: FaxiosBasicCredentials;
   responseType?: ResponseType;
   responseEncoding?: StringLiteralsOrString<responseEncoding>;
   xsrfCookieName?: string;
   xsrfHeaderName?: string;
-  onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
-  onDownloadProgress?: (progressEvent: AxiosProgressEvent) => void;
+  onUploadProgress?: (progressEvent: FaxiosProgressEvent) => void;
+  onDownloadProgress?: (progressEvent: FaxiosProgressEvent) => void;
   maxContentLength?: number;
   validateStatus?: ((status: number) => boolean) | null;
   maxBodyLength?: number;
@@ -278,7 +278,7 @@ export interface AxiosRequestConfig<D = unknown> {
   transport?: unknown;
   httpAgent?: unknown;
   httpsAgent?: unknown;
-  proxy?: AxiosProxyConfig | false;
+  proxy?: FaxiosProxyConfig | false;
   cancelToken?: CancelToken;
   decompress?: boolean;
   transitional?: TransitionalOptions;
@@ -308,7 +308,7 @@ export interface AxiosRequestConfig<D = unknown> {
     ) => Promise<
         [address: LookupAddressEntry | Array<LookupAddressEntry>, family?: AddressFamily] | LookupAddress
     >);
-  withXSRFToken?: boolean | ((config: InternalAxiosRequestConfig) => boolean | undefined);
+  withXSRFToken?: boolean | ((config: InternalFaxiosRequestConfig) => boolean | undefined);
   parseReviver?: (this: unknown, key: string, value: unknown, context?: { source?: string; }) => unknown;
   fetchOptions?: Record<string, unknown>;
   httpVersion?: 1 | 2;
@@ -320,13 +320,13 @@ export interface AxiosRequestConfig<D = unknown> {
   sensitiveHeaders?: Array<string>;
 }
 
-export type RawAxiosRequestConfig<D = unknown> = AxiosRequestConfig<D>;
+export type RawFaxiosRequestConfig<D = unknown> = FaxiosRequestConfig<D>;
 
-export interface InternalAxiosRequestConfig<D = unknown> extends AxiosRequestConfig<D> {
-  headers: AxiosRequestHeaders;
+export interface InternalFaxiosRequestConfig<D = unknown> extends FaxiosRequestConfig<D> {
+  headers: FaxiosRequestHeaders;
 }
 
-export type RawAxiosResponseHeaders = Partial<RawAxiosHeaders & {
+export type RawFaxiosResponseHeaders = Partial<RawFaxiosHeaders & {
   "set-cookie": Array<string>;
   "content-type": string;
   "content-length": string;
@@ -335,40 +335,40 @@ export type RawAxiosResponseHeaders = Partial<RawAxiosHeaders & {
   server: string;
 }>;
 
-export type AxiosResponseHeaders = RawAxiosResponseHeaders & Record<string, AxiosHeaderValue>;
+export type FaxiosResponseHeaders = RawFaxiosResponseHeaders & Record<string, FaxiosHeaderValue>;
 
-export interface AxiosResponse<T = unknown, D = unknown> {
+export interface FaxiosResponse<T = unknown, D = unknown> {
   data: T;
   status: number;
   statusText: string;
-  headers: RawAxiosResponseHeaders | AxiosResponseHeaders | Record<string, unknown>;
-  config: InternalAxiosRequestConfig<D>;
+  headers: RawFaxiosResponseHeaders | FaxiosResponseHeaders | Record<string, unknown>;
+  config: InternalFaxiosRequestConfig<D>;
   request?: unknown;
 }
 
-export type AxiosPromise<T = unknown> = Promise<AxiosResponse<T>>;
+export type FaxiosPromise<T = unknown> = Promise<FaxiosResponse<T>>;
 
 export interface HeadersDefaults {
-  common: RawAxiosRequestHeaders;
-  delete: RawAxiosRequestHeaders;
-  get: RawAxiosRequestHeaders;
-  head: RawAxiosRequestHeaders;
-  post: RawAxiosRequestHeaders;
-  put: RawAxiosRequestHeaders;
-  patch: RawAxiosRequestHeaders;
-  options?: RawAxiosRequestHeaders;
-  purge?: RawAxiosRequestHeaders;
-  link?: RawAxiosRequestHeaders;
-  unlink?: RawAxiosRequestHeaders;
-  query?: RawAxiosRequestHeaders;
+  common: RawFaxiosRequestHeaders;
+  delete: RawFaxiosRequestHeaders;
+  get: RawFaxiosRequestHeaders;
+  head: RawFaxiosRequestHeaders;
+  post: RawFaxiosRequestHeaders;
+  put: RawFaxiosRequestHeaders;
+  patch: RawFaxiosRequestHeaders;
+  options?: RawFaxiosRequestHeaders;
+  purge?: RawFaxiosRequestHeaders;
+  link?: RawFaxiosRequestHeaders;
+  unlink?: RawFaxiosRequestHeaders;
+  query?: RawFaxiosRequestHeaders;
 }
 
-export interface AxiosDefaults<D = unknown> extends Omit<AxiosRequestConfig<D>, "headers"> {
+export interface FaxiosDefaults<D = unknown> extends Omit<FaxiosRequestConfig<D>, "headers"> {
   headers: HeadersDefaults;
 }
 
-export interface CreateAxiosDefaults<D = unknown> extends Omit<AxiosRequestConfig<D>, "headers"> {
-  headers?: RawAxiosRequestHeaders | Partial<HeadersDefaults>;
+export interface CreateFaxiosDefaults<D = unknown> extends Omit<FaxiosRequestConfig<D>, "headers"> {
+  headers?: RawFaxiosRequestHeaders | Partial<HeadersDefaults>;
 }
 
 export interface Cancel {
@@ -376,7 +376,7 @@ export interface Cancel {
 }
 
 export interface Canceler {
-  (message?: string, config?: AxiosRequestConfig, request?: unknown): void;
+  (message?: string, config?: FaxiosRequestConfig, request?: unknown): void;
 }
 
 export interface CancelToken {
@@ -398,17 +398,17 @@ export interface CancelTokenStatic {
   source: () => CancelTokenSource;
 }
 
-export interface AxiosInterceptorOptions {
+export interface FaxiosInterceptorOptions {
   synchronous?: boolean;
-  runWhen?: ((config: InternalAxiosRequestConfig) => boolean) | null;
+  runWhen?: ((config: InternalFaxiosRequestConfig) => boolean) | null;
 }
 
-export type AxiosInterceptorFulfilled<T> = (value: T) => T | Promise<T>;
-export type AxiosInterceptorRejected = (error: unknown) => unknown;
+export type FaxiosInterceptorFulfilled<T> = (value: T) => T | Promise<T>;
+export type FaxiosInterceptorRejected = (error: unknown) => unknown;
 
-export interface AxiosInterceptorHandler<T> {
-  fulfilled: AxiosInterceptorFulfilled<T>;
-  rejected?: AxiosInterceptorRejected;
+export interface FaxiosInterceptorHandler<T> {
+  fulfilled: FaxiosInterceptorFulfilled<T>;
+  rejected?: FaxiosInterceptorRejected;
   synchronous: boolean;
-  runWhen?: ((config: InternalAxiosRequestConfig) => boolean) | null;
+  runWhen?: ((config: InternalFaxiosRequestConfig) => boolean) | null;
 }

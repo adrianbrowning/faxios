@@ -1,14 +1,14 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
-import AxiosHeaders from "../../src/lib/core/AxiosHeaders.js";
+import FaxiosHeaders from "../../src/lib/core/FaxiosHeaders.js";
 
 const [nodeMajorVersion] = process.versions.node
   .split(".")
   .map((v) => parseInt(v, 10));
 
-describe("AxiosHeaders", () => {
+describe("FaxiosHeaders", () => {
   it("should support headers argument", () => {
-    const headers = new AxiosHeaders({
+    const headers = new FaxiosHeaders({
       x: 1,
       y: 2,
     });
@@ -19,7 +19,7 @@ describe("AxiosHeaders", () => {
 
   describe("set", () => {
     it("should support adding a single header", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set("foo", "bar");
 
@@ -27,7 +27,7 @@ describe("AxiosHeaders", () => {
     });
 
     it("should support adding multiple headers", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set({
         foo: "value1",
@@ -39,7 +39,7 @@ describe("AxiosHeaders", () => {
     });
 
     it("should support adding multiple headers from raw headers string", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set(`foo:value1\nbar:value2`);
 
@@ -48,7 +48,7 @@ describe("AxiosHeaders", () => {
     });
 
     it("should not rewrite header the header if the value is false", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set("foo", "value1");
 
@@ -66,7 +66,7 @@ describe("AxiosHeaders", () => {
     });
 
     it("should not rewrite the header if its value is false, unless rewrite options is set to true", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set("foo", false);
       headers.set("foo", "value2");
@@ -79,7 +79,7 @@ describe("AxiosHeaders", () => {
     });
 
     it("should support iterables as a key-value source object", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set(new Map([["x", "123"]]) as unknown as Record<string, unknown>);
 
@@ -94,7 +94,7 @@ describe("AxiosHeaders", () => {
       (Object.prototype as Record<string, unknown>)["Authorization"] = "polluted";
 
       try {
-        const headers = new AxiosHeaders(new Map([["Authorization", "real"]]) as unknown as Record<string, unknown>);
+        const headers = new FaxiosHeaders(new Map([["Authorization", "real"]]) as unknown as Record<string, unknown>);
 
         assert.strictEqual(headers.get("authorization"), "real");
       } finally {
@@ -105,7 +105,7 @@ describe("AxiosHeaders", () => {
     });
 
     it("should support objects with an own iterator as a key-value source object", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set({
         *[Symbol.iterator]() {
@@ -123,7 +123,7 @@ describe("AxiosHeaders", () => {
           yield ["x-injected", "yes"];
         };
 
-        const headers = new AxiosHeaders({
+        const headers = new FaxiosHeaders({
           "x-app": "safe",
         });
 
@@ -146,7 +146,7 @@ describe("AxiosHeaders", () => {
           },
         });
 
-        const headers = new AxiosHeaders({
+        const headers = new FaxiosHeaders({
           "x-app": "safe",
         });
 
@@ -174,13 +174,13 @@ describe("AxiosHeaders", () => {
           }
         }
 
-        const fromClass = new AxiosHeaders(new HeaderBag() as Record<string, unknown>);
+        const fromClass = new FaxiosHeaders(new HeaderBag() as Record<string, unknown>);
         assert.strictEqual(fromClass.get("x-injected"), undefined);
         assert.notStrictEqual(fromClass.get("authorization"), "Bearer CHANGED");
 
         const created = Object.create({ "x-app": "safe" });
         created["authorization"] = "Bearer VALID";
-        const fromCreate = new AxiosHeaders(created);
+        const fromCreate = new FaxiosHeaders(created);
         assert.strictEqual(fromCreate.get("x-injected"), undefined);
         assert.notStrictEqual(
           fromCreate.get("authorization"),
@@ -195,7 +195,7 @@ describe("AxiosHeaders", () => {
     runIfNode18OrHigher(
       "should support setting multiple header values from an iterable source",
       () => {
-        const headers = new AxiosHeaders();
+        const headers = new FaxiosHeaders();
         const nativeHeaders = new Headers();
 
         nativeHeaders.append("set-cookie", "foo");
@@ -215,7 +215,7 @@ describe("AxiosHeaders", () => {
     );
 
     it("should sanitize invalid characters in header value", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set("x-test", "\t safe\r\nInjected: true \u0000");
 
@@ -223,7 +223,7 @@ describe("AxiosHeaders", () => {
     });
 
     it("should sanitize invalid characters in any array header value", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set("set-cookie", ["safe=1", " \tunsafe=1\nInjected: true\r\n "]);
 
@@ -238,7 +238,7 @@ describe("AxiosHeaders", () => {
     // request interceptors can encode them (e.g. encodeURIComponent) before
     // the adapter sanitizes to byte-safe values at send time.
     it("should preserve non-control Unicode characters in header values", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set("x-name", "请求用户");
 
@@ -246,7 +246,7 @@ describe("AxiosHeaders", () => {
     });
 
     it("should preserve non-control Unicode characters in array header values", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set("x-names", ["请求用户", "naïve", "プロジェクト"]);
 
@@ -258,7 +258,7 @@ describe("AxiosHeaders", () => {
     });
 
     it("should still strip CR/LF from Unicode header values to prevent header injection", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set("x-name", "请求\r\nInjected: true用户");
 
@@ -267,7 +267,7 @@ describe("AxiosHeaders", () => {
 
     // Regression: https://github.com/axios/axios/issues/6959
     it("should silently skip empty header names", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       assert.doesNotThrow(() => headers.set("", "a"));
       assert.doesNotThrow(() => headers.set("   ", "b"));
@@ -292,7 +292,7 @@ describe("AxiosHeaders", () => {
   });
 
   it("should support uppercase name mapping for names overlapped by class methods", () => {
-    const headers = new AxiosHeaders({
+    const headers = new FaxiosHeaders({
       set: "foo",
     });
 
@@ -305,7 +305,7 @@ describe("AxiosHeaders", () => {
   describe("get", () => {
     describe("filter", () => {
       it("should support RegExp", () => {
-        const headers = new AxiosHeaders();
+        const headers = new FaxiosHeaders();
 
         headers.set("foo", "bar=value1");
 
@@ -314,7 +314,7 @@ describe("AxiosHeaders", () => {
       });
 
       it("should support function", () => {
-        const headers = new AxiosHeaders();
+        const headers = new FaxiosHeaders();
 
         headers.set("foo", "bar=value1");
 
@@ -336,7 +336,7 @@ describe("AxiosHeaders", () => {
 
   describe("has", () => {
     it("should return true if the header is defined, otherwise false", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set("foo", "bar=value1");
 
@@ -346,7 +346,7 @@ describe("AxiosHeaders", () => {
 
     describe("filter", () => {
       it("should support RegExp", () => {
-        const headers = new AxiosHeaders();
+        const headers = new FaxiosHeaders();
 
         headers.set("foo", "bar=value1");
 
@@ -355,7 +355,7 @@ describe("AxiosHeaders", () => {
       });
 
       it("should support function", () => {
-        const headers = new AxiosHeaders();
+        const headers = new FaxiosHeaders();
 
         headers.set("foo", "bar=value1");
 
@@ -374,7 +374,7 @@ describe("AxiosHeaders", () => {
       });
 
       it("should support string pattern", () => {
-        const headers = new AxiosHeaders();
+        const headers = new FaxiosHeaders();
 
         headers.set("foo", "bar=value1");
 
@@ -386,7 +386,7 @@ describe("AxiosHeaders", () => {
 
   describe("delete", () => {
     it("should delete the header", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set("foo", "bar=value1");
 
@@ -398,7 +398,7 @@ describe("AxiosHeaders", () => {
     });
 
     it("should return true if the header has been deleted, otherwise false", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set("foo", "bar=value1");
 
@@ -408,7 +408,7 @@ describe("AxiosHeaders", () => {
     });
 
     it("should support headers array", () => {
-      const headers = new AxiosHeaders();
+      const headers = new FaxiosHeaders();
 
       headers.set("foo", "x");
       headers.set("bar", "y");
@@ -423,7 +423,7 @@ describe("AxiosHeaders", () => {
 
     describe("filter", () => {
       it("should support RegExp", () => {
-        const headers = new AxiosHeaders();
+        const headers = new FaxiosHeaders();
 
         headers.set("foo", "bar=value1");
 
@@ -439,7 +439,7 @@ describe("AxiosHeaders", () => {
       });
 
       it("should support function", () => {
-        const headers = new AxiosHeaders();
+        const headers = new FaxiosHeaders();
 
         headers.set("foo", "bar=value1");
 
@@ -460,7 +460,7 @@ describe("AxiosHeaders", () => {
       });
 
       it("should support string pattern", () => {
-        const headers = new AxiosHeaders();
+        const headers = new FaxiosHeaders();
 
         headers.set("foo", "bar=value1");
 
@@ -479,7 +479,7 @@ describe("AxiosHeaders", () => {
 
   describe("clear", () => {
     it("should clear all headers", () => {
-      const headers = new AxiosHeaders({ x: 1, y: 2 });
+      const headers = new FaxiosHeaders({ x: 1, y: 2 });
 
       headers.clear();
 
@@ -487,7 +487,7 @@ describe("AxiosHeaders", () => {
     });
 
     it("should clear matching headers if a matcher was specified", () => {
-      const headers = new AxiosHeaders({ foo: 1, "x-foo": 2, bar: 3 });
+      const headers = new FaxiosHeaders({ foo: 1, "x-foo": 2, bar: 3 });
 
       assert.deepStrictEqual(
         { ...headers.toJSON() },
@@ -502,7 +502,7 @@ describe("AxiosHeaders", () => {
 
   describe("toJSON", () => {
     it("should return headers object with original headers case", () => {
-      const headers = new AxiosHeaders({
+      const headers = new FaxiosHeaders({
         Foo: "x",
         bAr: "y",
       });
@@ -519,22 +519,22 @@ describe("AxiosHeaders", () => {
 
   describe("accessors", () => {
     it("should support get accessor", () => {
-      const headers = new AxiosHeaders({
+      const headers = new FaxiosHeaders({
         foo: 1,
       });
 
-      (headers.constructor as typeof AxiosHeaders).accessor("foo");
+      (headers.constructor as typeof FaxiosHeaders).accessor("foo");
 
       assert.strictEqual(typeof (headers as any).getFoo, "function");
       assert.strictEqual((headers as any).getFoo(), "1");
     });
 
     it("should support set accessor", () => {
-      const headers = new AxiosHeaders({
+      const headers = new FaxiosHeaders({
         foo: 1,
       });
 
-      (headers.constructor as typeof AxiosHeaders).accessor("foo");
+      (headers.constructor as typeof FaxiosHeaders).accessor("foo");
 
       assert.strictEqual(typeof (headers as any).setFoo, "function");
       (headers as any).setFoo(2);
@@ -542,11 +542,11 @@ describe("AxiosHeaders", () => {
     });
 
     it("should support has accessor", () => {
-      const headers = new AxiosHeaders({
+      const headers = new FaxiosHeaders({
         foo: 1,
       });
 
-      (headers.constructor as typeof AxiosHeaders).accessor("foo");
+      (headers.constructor as typeof FaxiosHeaders).accessor("foo");
 
       assert.strictEqual(typeof (headers as any).hasFoo, "function");
       assert.strictEqual((headers as any).hasFoo(), true);
@@ -554,7 +554,7 @@ describe("AxiosHeaders", () => {
   });
 
   it("should be caseless", () => {
-    const headers = new AxiosHeaders({
+    const headers = new FaxiosHeaders({
       fOo: 1,
     });
 
@@ -575,7 +575,7 @@ describe("AxiosHeaders", () => {
 
   describe("normalize()", () => {
     it("should support auto-formatting", () => {
-      const headers = new AxiosHeaders({
+      const headers = new FaxiosHeaders({
         fOo: 1,
         "x-foo": 2,
         "y-bar-bAz": 3,
@@ -592,7 +592,7 @@ describe("AxiosHeaders", () => {
     });
 
     it("should support external defined values", () => {
-      const headers = new AxiosHeaders({
+      const headers = new FaxiosHeaders({
         foo: "1",
       });
 
@@ -609,7 +609,7 @@ describe("AxiosHeaders", () => {
     });
 
     it("should support array values", () => {
-      const headers = new AxiosHeaders({
+      const headers = new FaxiosHeaders({
         foo: [1, 2, 3],
       });
 
@@ -622,12 +622,12 @@ describe("AxiosHeaders", () => {
     });
   });
 
-  describe("AxiosHeaders.concat", () => {
-    it("should concatenate plain headers into an AxiosHeader instance", () => {
+  describe("FaxiosHeaders.concat", () => {
+    it("should concatenate plain headers into an FaxiosHeader instance", () => {
       const a = { a: 1 };
       const b = { b: 2 };
       const c = { c: 3 };
-      const headers = AxiosHeaders.concat(a, b, c);
+      const headers = FaxiosHeaders.concat(a, b, c);
 
       assert.deepStrictEqual(
         { ...headers.toJSON() },
@@ -639,10 +639,10 @@ describe("AxiosHeaders", () => {
       );
     });
 
-    it("should concatenate raw headers into an AxiosHeader instance", () => {
+    it("should concatenate raw headers into an FaxiosHeader instance", () => {
       const a = "a:1\nb:2";
       const b = "c:3\nx:4";
-      const headers = AxiosHeaders.concat(a, b);
+      const headers = FaxiosHeaders.concat(a, b);
 
       assert.deepStrictEqual(
         { ...headers.toJSON() },
@@ -655,10 +655,10 @@ describe("AxiosHeaders", () => {
       );
     });
 
-    it("should concatenate Axios headers into a new AxiosHeader instance", () => {
-      const a = new AxiosHeaders({ x: 1 });
-      const b = new AxiosHeaders({ y: 2 });
-      const headers = AxiosHeaders.concat(a, b);
+    it("should concatenate Faxios headers into a new FaxiosHeader instance", () => {
+      const a = new FaxiosHeaders({ x: 1 });
+      const b = new FaxiosHeaders({ y: 2 });
+      const headers = FaxiosHeaders.concat(a, b);
 
       assert.deepStrictEqual(
         { ...headers.toJSON() },
@@ -671,9 +671,9 @@ describe("AxiosHeaders", () => {
   });
 
   describe("toString", () => {
-    it("should serialize AxiosHeader instance to a raw headers string", () => {
+    it("should serialize FaxiosHeader instance to a raw headers string", () => {
       assert.deepStrictEqual(
-        new AxiosHeaders({ x: 1, y: 2 }).toString(),
+        new FaxiosHeaders({ x: 1, y: 2 }).toString(),
         "x: 1\ny: 2",
       );
     });
@@ -681,7 +681,7 @@ describe("AxiosHeaders", () => {
 
   describe("getSetCookie", () => {
     it("should return set-cookie", () => {
-      const headers = new AxiosHeaders(
+      const headers = new FaxiosHeaders(
         "Set-Cookie: key=val;\n" + "Set-Cookie: key2=val2;\n",
       );
 
@@ -692,7 +692,7 @@ describe("AxiosHeaders", () => {
     });
 
     it("should return empty set-cookie", () => {
-      assert.deepStrictEqual(new AxiosHeaders().getSetCookie(), []);
+      assert.deepStrictEqual(new FaxiosHeaders().getSetCookie(), []);
     });
   });
 });

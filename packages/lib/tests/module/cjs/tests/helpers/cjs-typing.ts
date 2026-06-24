@@ -1,7 +1,7 @@
 // @ts-nocheck
 import axios = require('axios');
 
-const config: axios.AxiosRequestConfig = {
+const config: axios.FaxiosRequestConfig = {
   url: '/user',
   method: 'get',
   allowAbsoluteUrls: false,
@@ -26,8 +26,8 @@ const config: axios.AxiosRequestConfig = {
   responseType: 'json',
   xsrfCookieName: 'XSRF-TOKEN',
   xsrfHeaderName: 'X-XSRF-TOKEN',
-  onUploadProgress: (progressEvent: axios.AxiosProgressEvent) => {},
-  onDownloadProgress: (progressEvent: axios.AxiosProgressEvent) => {},
+  onUploadProgress: (progressEvent: axios.FaxiosProgressEvent) => {},
+  onDownloadProgress: (progressEvent: axios.FaxiosProgressEvent) => {},
   maxContentLength: 2000,
   maxBodyLength: 2000,
   validateStatus: (status: number) => status >= 200 && status < 300,
@@ -39,15 +39,15 @@ const config: axios.AxiosRequestConfig = {
   cancelToken: new axios.CancelToken((cancel: axios.Canceler) => {}),
 };
 
-const nullValidateStatusConfig: axios.AxiosRequestConfig = {
+const nullValidateStatusConfig: axios.FaxiosRequestConfig = {
   validateStatus: null,
 };
 
-const undefinedValidateStatusConfig: axios.AxiosRequestConfig = {
+const undefinedValidateStatusConfig: axios.FaxiosRequestConfig = {
   validateStatus: undefined,
 };
 
-const handleResponse = (response: axios.AxiosResponse) => {
+const handleResponse = (response: axios.FaxiosResponse) => {
   console.log(response.data);
   console.log(response.status);
   console.log(response.statusText);
@@ -55,7 +55,7 @@ const handleResponse = (response: axios.AxiosResponse) => {
   console.log(response.config);
 };
 
-const handleError = (error: axios.AxiosError) => {
+const handleError = (error: axios.FaxiosError) => {
   if (error.response) {
     console.log(error.response.data);
     console.log(error.response.status);
@@ -117,9 +117,9 @@ interface ResponseHeaders {
   'x-header': string;
 }
 
-// with default axios.AxiosResponse<T> result
+// with default axios.FaxiosResponse<T> result
 
-const handleUserResponse = (response: axios.AxiosResponse<User>) => {
+const handleUserResponse = (response: axios.FaxiosResponse<User>) => {
   console.log(response.data.id);
   console.log(response.data.name);
   console.log(response.status);
@@ -159,10 +159,10 @@ axios.put<User>('/user', { name: 'foo', id: 1 }).then(handleUserResponse)
 axios.patch<User>('/user', { name: 'foo', id: 1 }).then(handleUserResponse)
   .catch(handleError);
 
-// with custom response headers axios.AxiosResponse<T, any, H> result
+// with custom response headers axios.FaxiosResponse<T, any, H> result
 
 const handleUserResponseWithCustomHeaders = (
-  response: axios.AxiosResponse<User, any, ResponseHeaders>
+  response: axios.FaxiosResponse<User, any, ResponseHeaders>
 ) => {
   console.log(response.data.id);
   console.log(response.data.name);
@@ -173,37 +173,37 @@ const handleUserResponseWithCustomHeaders = (
 };
 
 axios
-  .get<User, axios.AxiosResponse<User, any, ResponseHeaders>>('/user?id=12345')
+  .get<User, axios.FaxiosResponse<User, any, ResponseHeaders>>('/user?id=12345')
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
 axios
-  .get<User, axios.AxiosResponse<User, any, ResponseHeaders>>('/user', { params: { id: 12345 } })
+  .get<User, axios.FaxiosResponse<User, any, ResponseHeaders>>('/user', { params: { id: 12345 } })
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
 axios
-  .head<User, axios.AxiosResponse<User, any, ResponseHeaders>>('/user')
+  .head<User, axios.FaxiosResponse<User, any, ResponseHeaders>>('/user')
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
 axios
-  .options<User, axios.AxiosResponse<User, any, ResponseHeaders>>('/user')
+  .options<User, axios.FaxiosResponse<User, any, ResponseHeaders>>('/user')
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
 axios
-  .delete<User, axios.AxiosResponse<User, any, ResponseHeaders>>('/user')
+  .delete<User, axios.FaxiosResponse<User, any, ResponseHeaders>>('/user')
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
 axios
-  .post<User, axios.AxiosResponse<User, any, ResponseHeaders>>('/user', { name: 'foo', id: 1 })
+  .post<User, axios.FaxiosResponse<User, any, ResponseHeaders>>('/user', { name: 'foo', id: 1 })
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
 axios
-  .post<User, axios.AxiosResponse<User, any, ResponseHeaders>>(
+  .post<User, axios.FaxiosResponse<User, any, ResponseHeaders>>(
     '/user',
     { name: 'foo', id: 1 },
     { headers: { 'X-FOO': 'bar' } }
@@ -212,12 +212,12 @@ axios
   .catch(handleError);
 
 axios
-  .put<User, axios.AxiosResponse<User, any, ResponseHeaders>>('/user', { name: 'foo', id: 1 })
+  .put<User, axios.FaxiosResponse<User, any, ResponseHeaders>>('/user', { name: 'foo', id: 1 })
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
 axios
-  .patch<User, axios.AxiosResponse<User, any, ResponseHeaders>>('/user', { name: 'foo', id: 1 })
+  .patch<User, axios.FaxiosResponse<User, any, ResponseHeaders>>('/user', { name: 'foo', id: 1 })
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
@@ -274,8 +274,8 @@ axios
 
 // Instances
 
-const instance1: axios.AxiosInstance = axios.create();
-const instance2: axios.AxiosInstance = axios.create(config);
+const instance1: axios.FaxiosInstance = axios.create();
+const instance2: axios.FaxiosInstance = axios.create(config);
 
 instance1(config).then(handleResponse)
   .catch(handleError);
@@ -335,31 +335,31 @@ axios.create({
 // Interceptors
 
 const requestInterceptorId: number = axios.interceptors.request.use(
-  (config: axios.InternalAxiosRequestConfig) => config,
+  (config: axios.InternalFaxiosRequestConfig) => config,
   async (error: any) => Promise.reject(error)
 );
 
 axios.interceptors.request.eject(requestInterceptorId);
 
 axios.interceptors.request.use(
-  async (config: axios.InternalAxiosRequestConfig) => Promise.resolve(config),
+  async (config: axios.InternalFaxiosRequestConfig) => Promise.resolve(config),
   async (error: any) => Promise.reject(error)
 );
 
-axios.interceptors.request.use((config: axios.InternalAxiosRequestConfig) => config);
-axios.interceptors.request.use(async (config: axios.InternalAxiosRequestConfig) =>
+axios.interceptors.request.use((config: axios.InternalFaxiosRequestConfig) => config);
+axios.interceptors.request.use(async (config: axios.InternalFaxiosRequestConfig) =>
   Promise.resolve(config)
 );
 
 const responseInterceptorId: number = axios.interceptors.response.use(
-  (response: axios.AxiosResponse) => response,
+  (response: axios.FaxiosResponse) => response,
   async (error: any) => Promise.reject(error)
 );
 
 axios.interceptors.response.eject(responseInterceptorId);
 
 axios.interceptors.response.use(
-  async (response: axios.AxiosResponse) => Promise.resolve(response),
+  async (response: axios.FaxiosResponse) => Promise.resolve(response),
   async (error: any) => Promise.reject(error)
 );
 
@@ -371,28 +371,28 @@ axios.interceptors.request.use(req => {
 });
 
 const voidRequestInterceptorId = axios.interceptors.request.use(
-  // @ts-expect-error -- Must return an axios.AxiosRequestConfig (or throw)
+  // @ts-expect-error -- Must return an axios.FaxiosRequestConfig (or throw)
   _response => {},
   async (error: any) => Promise.reject(error)
 );
 const voidResponseInterceptorId = axios.interceptors.response.use(
-  // @ts-expect-error -- Must return an axios.AxiosResponse (or throw)
+  // @ts-expect-error -- Must return an axios.FaxiosResponse (or throw)
   _response => {},
   async (error: any) => Promise.reject(error)
 );
 axios.interceptors.request.eject(voidRequestInterceptorId);
 axios.interceptors.response.eject(voidResponseInterceptorId);
 
-axios.interceptors.response.use((response: axios.AxiosResponse) => response);
-axios.interceptors.response.use(async (response: axios.AxiosResponse) => Promise.resolve(response));
+axios.interceptors.response.use((response: axios.FaxiosResponse) => response);
+axios.interceptors.response.use(async (response: axios.FaxiosResponse) => Promise.resolve(response));
 
 axios.interceptors.request.clear();
 axios.interceptors.response.clear();
 
 // Adapters
 
-const adapter: axios.AxiosAdapter = async (config: axios.InternalAxiosRequestConfig) => {
-  const response: axios.AxiosResponse = {
+const adapter: axios.FaxiosAdapter = async (config: axios.InternalFaxiosRequestConfig) => {
+  const response: axios.FaxiosResponse = {
     data: { foo: 'bar' },
     status: 200,
     statusText: 'OK',
@@ -419,18 +419,18 @@ const fn2: (arr: Array<number>) => string = axios.spread(fn1);
 
 axios
   .get('/user')
-  .then((response: axios.AxiosResponse) => 'foo')
+  .then((response: axios.FaxiosResponse) => 'foo')
   .then((value: string) => {});
 
 axios
   .get('/user')
-  .then(async (response: axios.AxiosResponse) => Promise.resolve('foo'))
+  .then(async (response: axios.FaxiosResponse) => Promise.resolve('foo'))
   .then((value: string) => {});
 
 axios
   .get('/user')
   .then(
-    (response: axios.AxiosResponse) => 'foo',
+    (response: axios.FaxiosResponse) => 'foo',
     (error: any) => 'bar'
   )
   .then((value: string) => {});
@@ -438,7 +438,7 @@ axios
 axios
   .get('/user')
   .then(
-    (response: axios.AxiosResponse) => 'foo',
+    (response: axios.FaxiosResponse) => 'foo',
     (error: any) => 123
   )
   .then((value: string | number) => {});
@@ -461,7 +461,7 @@ axios
   .get('/user', {
     cancelToken: source.token,
   })
-  .catch((thrown: axios.AxiosError | axios.Cancel) => {
+  .catch((thrown: axios.FaxiosError | axios.Cancel) => {
     if (axios.isCancel(thrown)) {
       const cancel: axios.Cancel = thrown;
       console.log(cancel.message);
@@ -470,11 +470,11 @@ axios
 
 source.cancel('Operation has been axios.Canceled.');
 
-// axios.AxiosError
+// axios.FaxiosError
 
 axios.get('/user').catch(error => {
-  if (axios.isAxiosError(error)) {
-    const axiosError: axios.AxiosError = error;
+  if (axios.isFaxiosError(error)) {
+    const axiosError: axios.FaxiosError = error;
     console.log(axiosError.message);
   }
 });
@@ -487,7 +487,7 @@ axios.toFormData({ x: 1 }, new FormData());
 
 axios.get('/user', { signal: new AbortController().signal });
 
-// AxiosHeaders methods
+// FaxiosHeaders methods
 
 axios.get('/user', {
   transformRequest: (data, headers) => {
@@ -513,7 +513,7 @@ axios.get('/user', {
 // Node progress
 
 axios.get('/user', {
-  onUploadProgress: (e: axios.AxiosProgressEvent) => {
+  onUploadProgress: (e: axios.FaxiosProgressEvent) => {
     console.log(e.loaded);
     console.log(e.total);
     console.log(e.progress);
@@ -521,11 +521,11 @@ axios.get('/user', {
   },
 });
 
-// AxiosHeaders
+// FaxiosHeaders
 
 // iterator
 
-const headers = new axios.AxiosHeaders({ foo: 'bar' });
+const headers = new axios.FaxiosHeaders({ foo: 'bar' });
 
 for (const [ header, value ] of headers) {
   console.log(header, value);
@@ -534,34 +534,34 @@ for (const [ header, value ] of headers) {
 // index signature
 
 (() => {
-  const headers = new axios.AxiosHeaders({ x: 1 });
+  const headers = new axios.FaxiosHeaders({ x: 1 });
 
   headers.y = 2;
 })();
 
-// AxiosRequestHeaders
+// FaxiosRequestHeaders
 
 (() => {
-  const headers: axios.AxiosRequestHeaders = new axios.AxiosHeaders({ x: 1 });
+  const headers: axios.FaxiosRequestHeaders = new axios.FaxiosHeaders({ x: 1 });
 
   headers.y = 2;
 
   headers.get('x');
 })();
 
-// AxiosHeaders instance assignment
+// FaxiosHeaders instance assignment
 
 {
   const requestInterceptorId: number = axios.interceptors.request.use(
     async config => {
       config.headers.Accept = 'foo';
       config.headers.setAccept('foo');
-      config.headers = new axios.AxiosHeaders({ x: 1 });
+      config.headers = new axios.FaxiosHeaders({ x: 1 });
       config.headers.foo = '1';
       config.headers.set('bar', '2');
       config.headers.set({ myHeader: 'myValue' });
-      config.headers = new axios.AxiosHeaders({ myHeader: 'myValue' });
-      config.headers = { ...config.headers } as axios.AxiosRequestHeaders;
+      config.headers = new axios.FaxiosHeaders({ myHeader: 'myValue' });
+      config.headers = { ...config.headers } as axios.FaxiosRequestHeaders;
       return config;
     },
     async (error: any) => Promise.reject(error)
@@ -569,7 +569,7 @@ for (const [ header, value ] of headers) {
 }
 
 {
-  const config: axios.AxiosRequestConfig = { headers: new axios.AxiosHeaders({ foo: 1 }) };
+  const config: axios.FaxiosRequestConfig = { headers: new axios.FaxiosHeaders({ foo: 1 }) };
 
   axios.get('', {
     headers: {

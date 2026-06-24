@@ -29,12 +29,12 @@ import assert from "node:assert";
 import HttpsProxyAgent from "https-proxy-agent";
 import { describe, it } from "vitest";
 import axios from "../../../src/index.js";
-import type { AxiosInstance as TypedAxiosInstance, AxiosStatic as TypedAxiosStatic } from "../../../src/index.old.js";
+import type { FaxiosInstance as TypedFaxiosInstance, FaxiosStatic as TypedFaxiosStatic } from "../../../src/index.old.js";
 import httpAdapter, {
   __isSameOriginRedirect,
   __setProxy,
 } from "../../../src/lib/adapters/http.js";
-import AxiosError from "../../../src/lib/core/AxiosError.js";
+import FaxiosError from "../../../src/lib/core/FaxiosError.js";
 import {
   startHTTPServer,
   stopHTTPServer,
@@ -113,7 +113,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data: responseData } = await (axios as unknown as TypedAxiosStatic).get(
+      const { data: responseData } = await (axios as unknown as TypedFaxiosStatic).get(
         `http://127.0.0.1:${(server.address() as AddressInfo).port}`,
       );
       assert.deepStrictEqual(responseData, data);
@@ -138,7 +138,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data: responseData } = await (axios as unknown as TypedAxiosStatic).get(
+      const { data: responseData } = await (axios as unknown as TypedFaxiosStatic).get(
         `http://[::1]:${(server.address() as AddressInfo).port}`,
         {
           proxy: false,
@@ -162,11 +162,11 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
+        (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
           timeout: { strangeTimeout: 250 } as any,
         }),
         (error: any) => {
-          assert.strictEqual(error.code, AxiosError.ERR_BAD_OPTION_VALUE);
+          assert.strictEqual(error.code, FaxiosError.ERR_BAD_OPTION_VALUE);
           assert.strictEqual(
             error.message,
             "error trying to parse `config.timeout` to int",
@@ -194,7 +194,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data } = await (axios as unknown as TypedAxiosStatic).get(
+      const { data } = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           headers: {
@@ -225,13 +225,13 @@ describe("supports http with nodejs", () => {
 
     const instance = axios.create({ proxy: false });
 
-    (instance as unknown as TypedAxiosInstance).interceptors.request.use((config) => {
+    (instance as unknown as TypedFaxiosInstance).interceptors.request.use((config) => {
       config.headers.oprtName = encodeURIComponent(config.headers.oprtName as string);
       return config;
     });
 
     try {
-      const { data } = await (instance as unknown as TypedAxiosInstance).get(
+      const { data } = await (instance as unknown as TypedFaxiosInstance).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           headers: {
@@ -260,7 +260,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data } = await (axios as unknown as TypedAxiosStatic).get(
+      const { data } = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           proxy: false,
@@ -288,7 +288,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
+        (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
           timeout: "250" as any,
         }),
         (error: any) => {
@@ -314,7 +314,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
+        (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
           timeout: 250,
         }),
         (error: any) => {
@@ -335,7 +335,7 @@ describe("supports http with nodejs", () => {
     const controller = new AbortController();
     const agent = new HangingConnectAgent();
     let guardTimer;
-    const request = (axios as unknown as TypedAxiosStatic).get("http://connect-timeout.test/", {
+    const request = (axios as unknown as TypedFaxiosStatic).get("http://connect-timeout.test/", {
       httpAgent: agent,
       maxRedirects: 0,
       proxy: false,
@@ -370,7 +370,7 @@ describe("supports http with nodejs", () => {
   it("should not time out immediately for timeout set to zero during TCP connect", async () => {
     const controller = new AbortController();
     const agent = new HangingConnectAgent();
-    const request = (axios as unknown as TypedAxiosStatic)
+    const request = (axios as unknown as TypedFaxiosStatic)
       .get("http://connect-timeout.test/", {
         httpAgent: agent,
         maxRedirects: 0,
@@ -387,7 +387,7 @@ describe("supports http with nodejs", () => {
       await setTimeoutAsync(50);
       controller.abort();
       const error = await request;
-      assert.strictEqual(error.code, AxiosError.ERR_CANCELED);
+      assert.strictEqual(error.code, FaxiosError.ERR_CANCELED);
     } finally {
       controller.abort();
       agent.destroy();
@@ -406,7 +406,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
+        (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
           timeout: 250,
           timeoutErrorMessage: "oops, timeout",
         }),
@@ -437,7 +437,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data: responseData } = await (axios as unknown as TypedAxiosStatic).get(
+      const { data: responseData } = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}`,
       );
       assert.deepStrictEqual(responseData, data);
@@ -464,7 +464,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data: responseData } = await (axios as unknown as TypedAxiosStatic).get(
+      const { data: responseData } = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}`,
       );
       assert.deepStrictEqual(responseData, data);
@@ -490,7 +490,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/one`,
         {
           maxRedirects: 1,
@@ -515,7 +515,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/one`,
         {
           maxRedirects: 0,
@@ -546,11 +546,11 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
+      await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
         maxRedirects: 3,
       });
     } catch (error: any) {
-      assert.strictEqual(error.code, AxiosError.ERR_FR_TOO_MANY_REDIRECTS);
+      assert.strictEqual(error.code, FaxiosError.ERR_FR_TOO_MANY_REDIRECTS);
       assert.strictEqual(error.message, "Maximum number of redirects exceeded");
     } finally {
       await stopHTTPServer(server);
@@ -568,7 +568,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/one`, {
+      await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/one`, {
         maxRedirects: 3,
         beforeRedirect: (options, responseDetails) => {
           if (
@@ -603,7 +603,7 @@ describe("supports http with nodejs", () => {
     let capturedUrl;
 
     try {
-      await (axios as unknown as TypedAxiosStatic).get(originalUrl, {
+      await (axios as unknown as TypedFaxiosStatic).get(originalUrl, {
         maxRedirects: 3,
         beforeRedirect: (options, responseDetails, requestDetails) => {
           if (
@@ -672,7 +672,7 @@ describe("supports http with nodejs", () => {
       { port: PROXY_PORT },
     );
 
-    await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
+    await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
       proxy: {
         host: "localhost",
         port: PROXY_PORT,
@@ -711,7 +711,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(origin.address() as AddressInfo).port}/src`, {
+      await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(origin.address() as AddressInfo).port}/src`, {
         maxRedirects: 5,
         headers: { "X-API-Key": "secret", "X-Other": "keep" },
         sensitiveHeaders: ["X-API-Key"],
@@ -751,7 +751,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/src`, {
+      await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/src`, {
         maxRedirects: 5,
         headers: { "X-API-Key": "secret" },
         sensitiveHeaders: ["X-API-Key"],
@@ -786,7 +786,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(origin.address() as AddressInfo).port}/src`, {
+      await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(origin.address() as AddressInfo).port}/src`, {
         maxRedirects: 5,
         // Header sent with mixed casing; sensitiveHeaders list uses different casing
         headers: { "X-Api-Key": "secret" },
@@ -828,7 +828,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      await (client as unknown as TypedAxiosInstance).get(`http://localhost:${(origin.address() as AddressInfo).port}/src`, {
+      await (client as unknown as TypedFaxiosInstance).get(`http://localhost:${(origin.address() as AddressInfo).port}/src`, {
         maxRedirects: 5,
       });
 
@@ -850,9 +850,9 @@ describe("supports http with nodejs", () => {
 
   it("should reject invalid sensitiveHeaders config", async () => {
     await assert.rejects(
-      (axios as unknown as TypedAxiosStatic).get("http://localhost:1/", { sensitiveHeaders: "X-API-Key" as any }),
+      (axios as unknown as TypedFaxiosStatic).get("http://localhost:1/", { sensitiveHeaders: "X-API-Key" as any }),
       (error: any) => {
-        assert.strictEqual(error.code, AxiosError.ERR_BAD_OPTION_VALUE);
+        assert.strictEqual(error.code, FaxiosError.ERR_BAD_OPTION_VALUE);
         assert.strictEqual(
           error.message,
           "sensitiveHeaders must be an array of strings",
@@ -862,9 +862,9 @@ describe("supports http with nodejs", () => {
     );
 
     await assert.rejects(
-      (axios as unknown as TypedAxiosStatic).get("http://localhost:1/", { sensitiveHeaders: [null as any] }),
+      (axios as unknown as TypedFaxiosStatic).get("http://localhost:1/", { sensitiveHeaders: [null as any] }),
       (error: any) => {
-        assert.strictEqual(error.code, AxiosError.ERR_BAD_OPTION_VALUE);
+        assert.strictEqual(error.code, FaxiosError.ERR_BAD_OPTION_VALUE);
         assert.strictEqual(
           error.message,
           "sensitiveHeaders must be an array of strings",
@@ -907,14 +907,14 @@ describe("supports http with nodejs", () => {
     try {
       await assert.rejects(
         async function stackTraceTest() {
-          await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`);
+          await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`);
         },
         (error: any) => {
           const matches = [...error.stack.matchAll(/stackTraceTest/g)];
 
-          assert.strictEqual(error.name, "AxiosError");
-          assert.strictEqual(error.isAxiosError, true);
-          assert.strictEqual(error.code, AxiosError.ERR_BAD_REQUEST);
+          assert.strictEqual(error.name, "FaxiosError");
+          assert.strictEqual(error.isFaxiosError, true);
+          assert.strictEqual(error.code, FaxiosError.ERR_BAD_REQUEST);
           assert.strictEqual(
             error.message,
             "Request failed with status code 400",
@@ -932,7 +932,7 @@ describe("supports http with nodejs", () => {
   it("should wrap interceptor errors and keep stack", async () => {
     const axiosInstance = axios.create();
 
-    (axiosInstance as unknown as TypedAxiosInstance).interceptors.request.use((_res: any) => {
+    (axiosInstance as unknown as TypedFaxiosInstance).interceptors.request.use((_res: any) => {
       throw new Error("from request interceptor");
     });
 
@@ -946,7 +946,7 @@ describe("supports http with nodejs", () => {
     try {
       await assert.rejects(
         async function stackTraceTest() {
-          await (axiosInstance as unknown as TypedAxiosInstance).get(
+          await (axiosInstance as unknown as TypedFaxiosInstance).get(
             `http://localhost:${(server.address() as AddressInfo).port}/one`,
           );
         },
@@ -987,7 +987,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).head(
+      const response = await (axios as unknown as TypedFaxiosStatic).head(
         `http://localhost:${(server.address() as AddressInfo).port}/one`,
       );
       assert.strictEqual(response.status, 200);
@@ -1029,7 +1029,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const { data: responseData } = await (axios as unknown as TypedAxiosStatic).get(
+        const { data: responseData } = await (axios as unknown as TypedFaxiosStatic).get(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
         );
         assert.deepStrictEqual(responseData, data);
@@ -1053,7 +1053,7 @@ describe("supports http with nodejs", () => {
       try {
         await assert.rejects(
           async () => {
-            await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`);
+            await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`);
           },
           (error: any) => {
             assert.strictEqual(error.response.status, 206);
@@ -1095,7 +1095,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const response = await (axios as unknown as TypedAxiosStatic).get(
+        const response = await (axios as unknown as TypedFaxiosStatic).get(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             decompress: false,
@@ -1123,7 +1123,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`);
+        await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`);
         assert.strictEqual(acceptEncoding!.includes("zstd"), false);
       } finally {
         await stopHTTPServer(server);
@@ -1146,7 +1146,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
+        await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
           transitional: {
             advertiseZstdAcceptEncoding: true,
           },
@@ -1242,7 +1242,7 @@ describe("supports http with nodejs", () => {
             );
 
             try {
-              const { data } = await (axios as unknown as TypedAxiosStatic).get(
+              const { data } = await (axios as unknown as TypedFaxiosStatic).get(
                 `http://localhost:${(server.address() as AddressInfo).port}`,
               );
               assert.strictEqual(data, responseBody);
@@ -1262,7 +1262,7 @@ describe("supports http with nodejs", () => {
             );
 
             try {
-              const { data } = await (axios as unknown as TypedAxiosStatic).get(
+              const { data } = await (axios as unknown as TypedFaxiosStatic).get(
                 `http://localhost:${(server.address() as AddressInfo).port}`,
               );
               assert.strictEqual(data, responseBody);
@@ -1284,7 +1284,7 @@ describe("supports http with nodejs", () => {
             );
 
             try {
-              const { data } = await (axios as unknown as TypedAxiosStatic).get(
+              const { data } = await (axios as unknown as TypedFaxiosStatic).get(
                 `http://localhost:${(server.address() as AddressInfo).port}`,
               );
               assert.strictEqual(data, responseBody);
@@ -1304,7 +1304,7 @@ describe("supports http with nodejs", () => {
             );
 
             try {
-              const { data } = await (axios as unknown as TypedAxiosStatic).get(
+              const { data } = await (axios as unknown as TypedFaxiosStatic).get(
                 `http://localhost:${(server.address() as AddressInfo).port}`,
               );
               assert.strictEqual(data, "");
@@ -1323,7 +1323,7 @@ describe("supports http with nodejs", () => {
             );
 
             try {
-              await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`);
+              await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`);
             } finally {
               await stopHTTPServer(server);
             }
@@ -1343,7 +1343,7 @@ describe("supports http with nodejs", () => {
 
             try {
               await assert.rejects(
-                (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
+                (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
                   maxRedirects: 0,
                 }),
                 (err: any) => err && err.code === "ECONNRESET",
@@ -1369,7 +1369,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       assert.strictEqual(response.data, str);
@@ -1389,7 +1389,7 @@ describe("supports http with nodejs", () => {
     try {
       const user = "foo";
       const headers = { Authorization: "Bearer 1234" };
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://${user}@localhost:${(server.address() as AddressInfo).port}/`,
         {
           headers,
@@ -1411,7 +1411,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://my%40email.com:pa%24ss@localhost:${(server.address() as AddressInfo).port}/`,
       );
       const base64 = Buffer.from("my@email.com:pa$ss", "utf8").toString(
@@ -1432,7 +1432,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://user%:foo%zz@localhost:${(server.address() as AddressInfo).port}/`,
       );
       const base64 = Buffer.from("user%:foo%zz", "utf8").toString("base64");
@@ -1451,7 +1451,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://:secret@localhost:${(server.address() as AddressInfo).port}/`,
       );
       const base64 = Buffer.from(":secret", "utf8").toString("base64");
@@ -1472,7 +1472,7 @@ describe("supports http with nodejs", () => {
     try {
       const auth = { username: "foo", password: "bar" };
       const headers = { AuThOrIzAtIoN: "Bearer 1234" }; // wonky casing to ensure caseless comparison
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           auth,
@@ -1516,7 +1516,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/demo`,
         {
           auth: {} as any,
@@ -1662,7 +1662,7 @@ describe("supports http with nodejs", () => {
 
     try {
       const auth = { username: "foo", password: "bar" };
-      const response = await (axios as unknown as TypedAxiosStatic).post(
+      const response = await (axios as unknown as TypedFaxiosStatic).post(
         `http://localhost:${(server.address() as AddressInfo).port}/login`,
         { hello: "world" },
         { auth, maxRedirects: 1 },
@@ -1696,7 +1696,7 @@ describe("supports http with nodejs", () => {
 
     try {
       const auth = { username: "foo", password: "bar" };
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(redirectServer.address() as AddressInfo).port}/start`,
         {
           auth,
@@ -1732,7 +1732,7 @@ describe("supports http with nodejs", () => {
 
     try {
       const auth = { username: "foo", password: "bar" };
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/a`,
         {
           auth,
@@ -1756,7 +1756,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
       ) as any;
       assert.ok(
@@ -1778,7 +1778,7 @@ describe("supports http with nodejs", () => {
 
     try {
       const headers = { "UsEr-AgEnT": "foo bar" }; // wonky casing to ensure caseless comparison
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         { headers },
       );
@@ -1799,7 +1799,7 @@ describe("supports http with nodejs", () => {
 
     try {
       const headers = { "CoNtEnT-lEnGtH": "42" }; // wonky casing to ensure caseless comparison
-      await (axios as unknown as TypedAxiosStatic).post(`http://localhost:${(server.address() as AddressInfo).port}/`, "foo", {
+      await (axios as unknown as TypedFaxiosStatic).post(`http://localhost:${(server.address() as AddressInfo).port}/`, "foo", {
         headers,
       });
     } finally {
@@ -1818,7 +1818,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
+        (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
           maxContentLength: 2000,
           maxRedirects: 0,
         }),
@@ -1850,7 +1850,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/one`, {
+        (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/one`, {
           maxContentLength: 2000,
         }),
         (error: any) => {
@@ -1878,7 +1878,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (axios as unknown as TypedAxiosStatic).post(
+        (axios as unknown as TypedFaxiosStatic).post(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             data,
@@ -1912,7 +1912,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           responseType: "stream",
@@ -1951,7 +1951,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           responseType: "stream",
@@ -1993,7 +1993,7 @@ describe("supports http with nodejs", () => {
       const source = stream.Readable.from([buf]);
 
       await assert.rejects(
-        (axios as unknown as TypedAxiosStatic).post(`http://localhost:${(server.address() as AddressInfo).port}/`, source, {
+        (axios as unknown as TypedFaxiosStatic).post(`http://localhost:${(server.address() as AddressInfo).port}/`, source, {
           maxBodyLength: 1024,
           maxRedirects: 0,
           headers: { "Content-Type": "application/octet-stream" },
@@ -2035,7 +2035,7 @@ describe("supports http with nodejs", () => {
       const payload = Buffer.alloc(512, 0x62);
       const source = stream.Readable.from([payload]);
 
-      const response = await (axios as unknown as TypedAxiosStatic).post(
+      const response = await (axios as unknown as TypedFaxiosStatic).post(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         source,
         {
@@ -2068,7 +2068,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).post(
+      const response = await (axios as unknown as TypedFaxiosStatic).post(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           data,
@@ -2085,7 +2085,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
+        (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
           params: {
             errorParam: new Date(undefined as any),
           },
@@ -2134,7 +2134,7 @@ describe("supports http with nodejs", () => {
     }
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic)({
+      const response = await (axios as unknown as TypedFaxiosStatic)({
         socketPath: socketName,
         url: "http://localhost:4444/socket",
       });
@@ -2164,7 +2164,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const response = await (axios as unknown as TypedAxiosStatic).post(
+        const response = await (axios as unknown as TypedFaxiosStatic).post(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           fs.createReadStream(thisTestFilePath),
           {
@@ -2201,7 +2201,7 @@ describe("supports http with nodejs", () => {
 
       try {
         await assert.rejects(
-          (axios as unknown as TypedAxiosStatic).post(
+          (axios as unknown as TypedFaxiosStatic).post(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             fs.createReadStream(notExistPath),
           ),
@@ -2226,7 +2226,7 @@ describe("supports http with nodejs", () => {
         requestStream.destroy();
       }, 1000);
 
-      const { data } = await (axios as unknown as TypedAxiosStatic).post(
+      const { data } = await (axios as unknown as TypedFaxiosStatic).post(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         requestStream,
         {
@@ -2274,7 +2274,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).post(
+      const response = await (axios as unknown as TypedFaxiosStatic).post(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         buf,
         {
@@ -2342,7 +2342,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           proxy: {
@@ -2421,7 +2421,7 @@ describe("supports http with nodejs", () => {
       rejectUnauthorized: false,
     });
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `https://localhost:${(server.address() as AddressInfo).port}/`,
         {
           httpsAgent: tunnelingAgent,
@@ -2520,7 +2520,7 @@ describe("supports http with nodejs", () => {
     const originalReject = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).post(
+      const response = await (axios as unknown as TypedFaxiosStatic).post(
         `https://localhost:${(origin.address() as AddressInfo).port}/path?token=abc123`,
         { sensitive: "leak-canary" },
         {
@@ -2630,7 +2630,7 @@ describe("supports http with nodejs", () => {
     const httpsAgent = new https.Agent({ ca: tlsOptions.cert });
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `https://localhost:${(origin.address() as AddressInfo).port}/`,
         {
           httpsAgent,
@@ -2671,7 +2671,7 @@ describe("supports http with nodejs", () => {
     }
   });
 
-  it("should surface a CONNECT 407 from the proxy as an AxiosError (issue #6320)", async () => {
+  it("should surface a CONNECT 407 from the proxy as an FaxiosError (issue #6320)", async () => {
     const proxy: any = await new Promise<any>((resolve, reject) => {
       const p = http.createServer();
       p.on("connect", (_req, clientSocket) => {
@@ -2690,7 +2690,7 @@ describe("supports http with nodejs", () => {
     try {
       await assert.rejects(
         async () => {
-          await (axios as unknown as TypedAxiosStatic).get("https://127.0.0.1:1/", {
+          await (axios as unknown as TypedFaxiosStatic).get("https://127.0.0.1:1/", {
             proxy: {
               host: "127.0.0.1",
               port: (proxy.address() as AddressInfo).port,
@@ -2701,8 +2701,8 @@ describe("supports http with nodejs", () => {
         },
         (err: any) => {
           assert.ok(
-            err instanceof AxiosError,
-            "rejection should be an AxiosError",
+            err instanceof FaxiosError,
+            "rejection should be an FaxiosError",
           );
           return true;
         },
@@ -2727,7 +2727,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           proxy: false,
@@ -2796,7 +2796,7 @@ describe("supports http with nodejs", () => {
     process.env.NO_PROXY = "";
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
 
@@ -2892,7 +2892,7 @@ describe("supports http with nodejs", () => {
     const originalReject = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `https://localhost:${(server.address() as AddressInfo).port}/`,
       );
 
@@ -3014,7 +3014,7 @@ describe("supports http with nodejs", () => {
     process.env.NO_PROXY = `localhost:${(proxy.address() as AddressInfo).port}`;
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       assert.equal(response.status, 200);
@@ -3096,7 +3096,7 @@ describe("supports http with nodejs", () => {
     process.env.NO_PROXY = noProxyValue;
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       assert.equal(
@@ -3157,7 +3157,7 @@ describe("supports http with nodejs", () => {
     process.env.NO_PROXY = noProxyValue;
 
     try {
-      await assert.rejects((axios as unknown as TypedAxiosStatic).get("http://localhost.:1/", { timeout: 100 }));
+      await assert.rejects((axios as unknown as TypedFaxiosStatic).get("http://localhost.:1/", { timeout: 100 }));
       assert.equal(
         proxyRequests,
         0,
@@ -3215,7 +3215,7 @@ describe("supports http with nodejs", () => {
     process.env.NO_PROXY = noProxyValue;
 
     try {
-      await assert.rejects((axios as unknown as TypedAxiosStatic).get("http://[::1]:1/", { timeout: 100 }));
+      await assert.rejects((axios as unknown as TypedFaxiosStatic).get("http://[::1]:1/", { timeout: 100 }));
       assert.equal(proxyRequests, 0, "should not use proxy for IPv6 loopback");
     } finally {
       await stopHTTPServer(proxy);
@@ -3293,7 +3293,7 @@ describe("supports http with nodejs", () => {
     process.env.NO_PROXY = noProxyValue;
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       assert.equal(
@@ -3362,7 +3362,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           proxy: {
@@ -3430,7 +3430,7 @@ describe("supports http with nodejs", () => {
     process.env.NO_PROXY = "";
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       const base64 = Buffer.from("user:pass", "utf8").toString("base64");
@@ -3482,7 +3482,7 @@ describe("supports http with nodejs", () => {
       };
 
       await assert.rejects(
-        (axios as unknown as TypedAxiosStatic).get("https://test-domain.abc", { proxy }),
+        (axios as unknown as TypedFaxiosStatic).get("https://test-domain.abc", { proxy }),
         (error: any) => {
           assert.strictEqual(error.message, "Invalid proxy authorization");
           assert.strictEqual(error.code, "ERR_BAD_OPTION");
@@ -3951,7 +3951,7 @@ describe("supports http with nodejs", () => {
       process.env.no_proxy = `127.0.0.1:${attackerPort}`;
 
       try {
-        await (axios as unknown as TypedAxiosStatic).get("http://example.com/start");
+        await (axios as unknown as TypedFaxiosStatic).get("http://example.com/start");
 
         assert.ok(
           proxySaw.some((h) => h.proxyAuth),
@@ -3992,7 +3992,7 @@ describe("supports http with nodejs", () => {
     try {
       await assert.rejects(
         async function stackTraceTest() {
-          await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
+          await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
             cancelToken: source.token,
           });
         },
@@ -4020,7 +4020,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get("/foo", {
+      const response = await (axios as unknown as TypedFaxiosStatic).get("/foo", {
         baseURL: `http://localhost:${(server.address() as AddressInfo).port}/`,
       });
 
@@ -4045,7 +4045,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `http://localhost:${(server.address() as AddressInfo).port}`,
       ) as any;
       assert.equal(response.request.agent.protocol, "http:");
@@ -4076,7 +4076,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      const response = await (axios as unknown as TypedAxiosStatic).get(
+      const response = await (axios as unknown as TypedFaxiosStatic).get(
         `https://localhost:${(server.address() as AddressInfo).port}`,
         {
           httpsAgent: new https.Agent({
@@ -4253,14 +4253,14 @@ describe("supports http with nodejs", () => {
   });
 
   it("should return malformed URL", async () => {
-    await assert.rejects((axios as unknown as TypedAxiosStatic).get("tel:484-695-3408"), (error: any) => {
+    await assert.rejects((axios as unknown as TypedFaxiosStatic).get("tel:484-695-3408"), (error: any) => {
       assert.equal(error.message, "Unsupported protocol tel:");
       return true;
     });
   });
 
   it("should return unsupported protocol", async () => {
-    await assert.rejects((axios as unknown as TypedAxiosStatic).get("ftp:google.com"), (error: any) => {
+    await assert.rejects((axios as unknown as TypedFaxiosStatic).get("ftp:google.com"), (error: any) => {
       assert.equal(error.message, "Unsupported protocol ftp:");
       return true;
     });
@@ -4273,15 +4273,15 @@ describe("supports http with nodejs", () => {
     ]) {
       await assert.rejects(
         () =>
-          (axios as unknown as TypedAxiosStatic).get(url, {
+          (axios as unknown as TypedFaxiosStatic).get(url, {
             adapter: "http",
             headers: {
               "X-Test": "yes",
             },
           }),
         (error: any) => {
-          assert.ok(error instanceof AxiosError);
-          assert.strictEqual(error.code, AxiosError.ERR_INVALID_URL);
+          assert.ok(error instanceof FaxiosError);
+          assert.strictEqual(error.code, FaxiosError.ERR_INVALID_URL);
           assert.strictEqual(
             error.message,
             'Invalid URL: missing "//" after protocol',
@@ -4304,7 +4304,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`);
+      await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`);
     } finally {
       await stopHTTPServer(server);
     }
@@ -4321,7 +4321,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
+      await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
         headers: {
           "User-Agent": null,
         },
@@ -4353,7 +4353,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/aborted`, {
+        (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}/aborted`, {
           timeout: 500,
         }),
         (error: any) => {
@@ -4388,7 +4388,7 @@ describe("supports http with nodejs", () => {
 
       const requests = [1, 2, 3, 4, 5].map(async (id) => {
         try {
-          await (axios as unknown as TypedAxiosStatic).get("/foo/bar", {
+          await (axios as unknown as TypedFaxiosStatic).get("/foo/bar", {
             baseURL: `http://localhost:${(server.address() as AddressInfo).port}`,
             cancelToken: source.token,
           });
@@ -4456,7 +4456,7 @@ describe("supports http with nodejs", () => {
         );
 
         try {
-          const response = await (axios as unknown as TypedAxiosStatic).post(
+          const response = await (axios as unknown as TypedFaxiosStatic).post(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             form,
             {
@@ -4526,7 +4526,7 @@ describe("supports http with nodejs", () => {
           form.append("foo2", "bar2");
           form.append("file1", blob as any);
 
-          const { data } = await (axios as unknown as TypedAxiosStatic).post(
+          const { data } = await (axios as unknown as TypedFaxiosStatic).post(
             `http://localhost:${(server.address() as AddressInfo).port}`,
             form,
             {
@@ -4594,7 +4594,7 @@ describe("supports http with nodejs", () => {
             yield ["Authorization", "Bearer CHANGED"];
           };
 
-          const response = await (axios as unknown as TypedAxiosStatic).get("http://stub.invalid/", {
+          const response = await (axios as unknown as TypedFaxiosStatic).get("http://stub.invalid/", {
             headers: {
               Authorization: "Bearer VALID_USER_TOKEN",
               "X-App": "safe",
@@ -4674,7 +4674,7 @@ describe("supports http with nodejs", () => {
 
         try {
           pollute();
-          await (axios as unknown as TypedAxiosStatic).post(
+          await (axios as unknown as TypedFaxiosStatic).post(
             "http://stub.invalid/",
             { userId: 42 },
             {
@@ -4748,7 +4748,7 @@ describe("supports http with nodejs", () => {
       it("preserves legacy getHeaders() propagation by default", async () => {
         let capturedHeaders;
 
-        await (axios as unknown as TypedAxiosStatic).post("http://stub.invalid/", new CustomFormData(), {
+        await (axios as unknown as TypedFaxiosStatic).post("http://stub.invalid/", new CustomFormData(), {
           transport: createStubTransport((headers: any) => {
             capturedHeaders = headers;
           }),
@@ -4772,7 +4772,7 @@ describe("supports http with nodejs", () => {
       it("only copies content headers when formDataHeaderPolicy is content-only", async () => {
         let capturedHeaders;
 
-        await (axios as unknown as TypedAxiosStatic).post("http://stub.invalid/", new CustomFormData(), {
+        await (axios as unknown as TypedFaxiosStatic).post("http://stub.invalid/", new CustomFormData(), {
           transport: createStubTransport((headers: any) => {
             capturedHeaders = headers;
           }),
@@ -4823,7 +4823,7 @@ describe("supports http with nodejs", () => {
       try {
         await Promise.all(
           [null, false, true].map((mode) =>
-            (axios as unknown as TypedAxiosStatic)
+            (axios as unknown as TypedFaxiosStatic)
               .postForm(`http://localhost:${(server.address() as AddressInfo).port}/`, obj, {
                 formSerializer: { indexes: mode },
               })
@@ -4871,7 +4871,7 @@ describe("supports http with nodejs", () => {
       const rootUrl = `http://localhost:${(server.address() as AddressInfo).port}`;
 
       try {
-        const rootResponse = await (axios as unknown as TypedAxiosStatic).postForm(rootUrl, { foo: "bar" });
+        const rootResponse = await (axios as unknown as TypedFaxiosStatic).postForm(rootUrl, { foo: "bar" });
         assert.strictEqual(rootResponse.status, 200);
         assert.deepStrictEqual(rootResponse.data, {
           route: "root",
@@ -4879,7 +4879,7 @@ describe("supports http with nodejs", () => {
         });
 
         await assert.rejects(
-          () => (axios as unknown as TypedAxiosStatic).postForm(`${rootUrl}/unexpected`, { foo: "bar" }),
+          () => (axios as unknown as TypedFaxiosStatic).postForm(`${rootUrl}/unexpected`, { foo: "bar" }),
           (error: any) => {
             assert.strictEqual(error.response.status, 418);
             assert.strictEqual(error.response.data, "wrong-route");
@@ -4916,7 +4916,7 @@ describe("supports http with nodejs", () => {
           type: "image/jpeg",
         });
 
-        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+        const { data } = await (axios as unknown as TypedFaxiosStatic).post(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           blob,
           {
@@ -4959,7 +4959,7 @@ describe("supports http with nodejs", () => {
 
       try {
         for (const headerName of ["content-type", "Content-Type"]) {
-          const response = await (axios as unknown as TypedAxiosStatic).post(
+          const response = await (axios as unknown as TypedFaxiosStatic).post(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             obj,
             {
@@ -5007,7 +5007,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const response = await (axios as unknown as TypedAxiosStatic).post(
+        const response = await (axios as unknown as TypedFaxiosStatic).post(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           obj,
           {
@@ -5055,7 +5055,7 @@ describe("supports http with nodejs", () => {
       const payload = "user[name]=Peter&tags[]=a&tags[]=b";
 
       try {
-        const parsedResponse = await (axios as unknown as TypedAxiosStatic).post(rootUrl, payload, {
+        const parsedResponse = await (axios as unknown as TypedFaxiosStatic).post(rootUrl, payload, {
           headers: {
             "content-type": "application/x-www-form-urlencoded",
           },
@@ -5069,7 +5069,7 @@ describe("supports http with nodejs", () => {
           },
         });
 
-        const ignoredResponse = await (axios as unknown as TypedAxiosStatic).post(rootUrl, payload, {
+        const ignoredResponse = await (axios as unknown as TypedFaxiosStatic).post(rootUrl, payload, {
           headers: {
             "content-type": "text/plain",
           },
@@ -5100,7 +5100,7 @@ describe("supports http with nodejs", () => {
       const buffer = Buffer.from("123");
       const dataURI = `data:application/octet-stream;base64,${buffer.toString("base64")}`;
 
-      const { data } = await (axios as unknown as TypedAxiosStatic).get(dataURI);
+      const { data } = await (axios as unknown as TypedFaxiosStatic).get(dataURI);
       assert.deepStrictEqual(data, buffer);
     });
 
@@ -5112,7 +5112,7 @@ describe("supports http with nodejs", () => {
       const buffer = Buffer.from("123");
       const dataURI = `data:application/octet-stream;base64,${buffer.toString("base64")}`;
 
-      const { data } = await (axios as unknown as TypedAxiosStatic).get(dataURI, { responseType: "blob" }) as any;
+      const { data } = await (axios as unknown as TypedFaxiosStatic).get(dataURI, { responseType: "blob" }) as any;
       assert.strictEqual(data.type, "application/octet-stream");
       assert.deepStrictEqual(await data.text(), "123");
     });
@@ -5121,7 +5121,7 @@ describe("supports http with nodejs", () => {
       const buffer = Buffer.from("123", "utf-8");
       const dataURI = `data:application/octet-stream;base64,${buffer.toString("base64")}`;
 
-      const { data } = await (axios as unknown as TypedAxiosStatic).get(dataURI, { responseType: "text" });
+      const { data } = await (axios as unknown as TypedFaxiosStatic).get(dataURI, { responseType: "text" });
       assert.deepStrictEqual(data, "123");
     });
 
@@ -5129,7 +5129,7 @@ describe("supports http with nodejs", () => {
       const buffer = Buffer.from("123", "utf-8");
       const dataURI = `data:application/octet-stream;base64,${buffer.toString("base64")}`;
 
-      const { data } = await (axios as unknown as TypedAxiosStatic).get(dataURI, { responseType: "stream" }) as any;
+      const { data } = await (axios as unknown as TypedFaxiosStatic).get(dataURI, { responseType: "stream" }) as any;
       assert.strictEqual(await getStream(data), "123");
     });
   });
@@ -5165,7 +5165,7 @@ describe("supports http with nodejs", () => {
 
           const samples: any[] = [];
 
-          const { data } = await (axios as unknown as TypedAxiosStatic).post(
+          const { data } = await (axios as unknown as TypedFaxiosStatic).post(
             `http://localhost:${(server.address() as AddressInfo).port}`,
             readable,
             {
@@ -5238,7 +5238,7 @@ describe("supports http with nodejs", () => {
 
           const samples: any[] = [];
 
-          const { data } = await (axios as unknown as TypedAxiosStatic).post(
+          const { data } = await (axios as unknown as TypedFaxiosStatic).post(
             `http://localhost:${(server.address() as AddressInfo).port}`,
             readable,
             {
@@ -5296,7 +5296,7 @@ describe("supports http with nodejs", () => {
         const skip = 4;
         const compareValues = toleranceRange(50, 50);
 
-        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+        const { data } = await (axios as unknown as TypedFaxiosStatic).post(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           buf,
           {
@@ -5352,7 +5352,7 @@ describe("supports http with nodejs", () => {
         const skip = 4;
         const compareValues = toleranceRange(50, 50);
 
-        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+        const { data } = await (axios as unknown as TypedFaxiosStatic).post(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           buf,
           {
@@ -5411,7 +5411,7 @@ describe("supports http with nodejs", () => {
         const buf = Buffer.alloc(1024 * 1024);
         const controller = new AbortController();
 
-        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+        const { data } = await (axios as unknown as TypedFaxiosStatic).post(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           buf,
           {
@@ -5452,7 +5452,7 @@ describe("supports http with nodejs", () => {
 
   it("should properly handle synchronous errors inside the adapter", async () => {
     await assert.rejects(
-      () => (axios as unknown as TypedAxiosStatic).get("http://192.168.0.285"),
+      () => (axios as unknown as TypedFaxiosStatic).get("http://192.168.0.285"),
       /Invalid URL/,
     );
   });
@@ -5463,7 +5463,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      const { data } = await (axios as unknown as TypedAxiosStatic).post(
+      const { data } = await (axios as unknown as TypedFaxiosStatic).post(
         `http://localhost:${(server.address() as AddressInfo).port}`,
         "test",
         {
@@ -5488,7 +5488,7 @@ describe("supports http with nodejs", () => {
       let isCalled = false;
 
       try {
-        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+        const { data } = await (axios as unknown as TypedFaxiosStatic).post(
           `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
           payload,
           {
@@ -5512,7 +5512,7 @@ describe("supports http with nodejs", () => {
       let isCalled = false;
 
       try {
-        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+        const { data } = await (axios as unknown as TypedFaxiosStatic).post(
           `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
           payload,
           {
@@ -5536,7 +5536,7 @@ describe("supports http with nodejs", () => {
       let isCalled = false;
 
       try {
-        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+        const { data } = await (axios as unknown as TypedFaxiosStatic).post(
           `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
           payload,
           {
@@ -5560,7 +5560,7 @@ describe("supports http with nodejs", () => {
       let isCalled = false;
 
       try {
-        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+        const { data } = await (axios as unknown as TypedFaxiosStatic).post(
           `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
           payload,
           {
@@ -5584,7 +5584,7 @@ describe("supports http with nodejs", () => {
       let isCalled = false;
 
       try {
-        const { data } = await (axios as unknown as TypedAxiosStatic).post(
+        const { data } = await (axios as unknown as TypedFaxiosStatic).post(
           `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
           payload,
           {
@@ -5604,7 +5604,7 @@ describe("supports http with nodejs", () => {
 
     it("should handle errors", async () => {
       await assert.rejects(async () => {
-        await (axios as unknown as TypedAxiosStatic).get("https://no-such-domain-987654.com", {
+        await (axios as unknown as TypedFaxiosStatic).get("https://no-such-domain-987654.com", {
           lookup: lookup as any as any,
         });
       }, /ENOTFOUND/);
@@ -5625,7 +5625,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const { data } = await (axios as unknown as TypedAxiosStatic).get(
+        const { data } = await (axios as unknown as TypedFaxiosStatic).get(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           {
             parseReviver: (key, value) => (key === "foo" ? "success" : value),
@@ -5640,7 +5640,7 @@ describe("supports http with nodejs", () => {
   });
 
   describe("HTTP2", () => {
-    const createHttp2Axios = (baseURL: any) =>
+    const createHttp2Faxios = (baseURL: any) =>
       axios.create({
         baseURL,
         httpVersion: 2,
@@ -5650,9 +5650,9 @@ describe("supports http with nodejs", () => {
       });
 
     it("should merge request http2Options with its instance config", async () => {
-      const http2Axios = createHttp2Axios("https://localhost:8080");
+      const http2Faxios = createHttp2Faxios("https://localhost:8080");
 
-      const { data } = await (http2Axios as unknown as TypedAxiosInstance).get("/", {
+      const { data } = await (http2Faxios as unknown as TypedFaxiosInstance).get("/", {
         http2Options: {
           foo: "test",
         },
@@ -5678,8 +5678,8 @@ describe("supports http with nodejs", () => {
 
       try {
         const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
-        const http2Axios = createHttp2Axios(localServerURL);
-        const { data } = await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL);
+        const http2Faxios = createHttp2Faxios(localServerURL);
+        const { data } = await (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL);
         assert.deepStrictEqual(data, "OK");
       } finally {
         await stopHTTPServer(server);
@@ -5694,9 +5694,9 @@ describe("supports http with nodejs", () => {
 
       try {
         const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
-        const http2Axios = createHttp2Axios(localServerURL);
+        const http2Faxios = createHttp2Faxios(localServerURL);
         const payload = "DATA";
-        const { data } = await (http2Axios as unknown as TypedAxiosInstance).post(localServerURL, payload);
+        const { data } = await (http2Faxios as unknown as TypedFaxiosInstance).post(localServerURL, payload);
         assert.deepStrictEqual(data, payload);
       } finally {
         await stopHTTPServer(server);
@@ -5724,12 +5724,12 @@ describe("supports http with nodejs", () => {
 
       try {
         const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
-        const http2Axios = createHttp2Axios(localServerURL);
+        const http2Faxios = createHttp2Faxios(localServerURL);
         const payload = Buffer.alloc(2 * 1024 * 1024, 0x63);
         const source = stream.Readable.from([payload]);
 
         await assert.rejects(
-          (http2Axios as unknown as TypedAxiosInstance).post(localServerURL, source, {
+          (http2Faxios as unknown as TypedFaxiosInstance).post(localServerURL, source, {
             maxBodyLength: 1024,
             headers: { "Content-Type": "application/octet-stream" },
           }),
@@ -5738,7 +5738,7 @@ describe("supports http with nodejs", () => {
               error.message,
               "Request body larger than maxBodyLength limit",
             );
-            assert.strictEqual(error.code, AxiosError.ERR_BAD_REQUEST);
+            assert.strictEqual(error.code, FaxiosError.ERR_BAD_REQUEST);
             return true;
           },
         );
@@ -5779,12 +5779,12 @@ describe("supports http with nodejs", () => {
 
       try {
         const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
-        const http2Axios = createHttp2Axios(localServerURL);
+        const http2Faxios = createHttp2Faxios(localServerURL);
         const form = new FormData();
         form.append("x", "foo");
         form.append("y", "bar");
 
-        const { data } = await (http2Axios as unknown as TypedAxiosInstance).post(localServerURL, form);
+        const { data } = await (http2Faxios as unknown as TypedFaxiosInstance).post(localServerURL, form);
 
         assert.deepStrictEqual(data, {
           fields: {
@@ -5824,8 +5824,8 @@ describe("supports http with nodejs", () => {
 
           try {
             const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
-            const http2Axios = createHttp2Axios(localServerURL);
-            const { data } = await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
+            const http2Faxios = createHttp2Faxios(localServerURL);
+            const { data } = await (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL, {
               responseType: responseType as any,
             });
             await assertValue(data);
@@ -5855,7 +5855,7 @@ describe("supports http with nodejs", () => {
 
       try {
         const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
-        const http2Axios = createHttp2Axios(localServerURL);
+        const http2Faxios = createHttp2Faxios(localServerURL);
 
         server.on("stream", (http2Stream) => {
           http2Stream.once("aborted", () => {
@@ -5865,7 +5865,7 @@ describe("supports http with nodejs", () => {
         });
 
         await assert.rejects(async () => {
-          await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
+          await (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL, {
             timeout: 500,
           });
         }, /timeout/);
@@ -5900,7 +5900,7 @@ describe("supports http with nodejs", () => {
 
       try {
         const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
-        const http2Axios = createHttp2Axios(localServerURL);
+        const http2Faxios = createHttp2Faxios(localServerURL);
 
         server.on("stream", (http2Stream) => {
           http2Stream.once("aborted", () => {
@@ -5910,7 +5910,7 @@ describe("supports http with nodejs", () => {
         });
 
         await assert.rejects(async () => {
-          await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
+          await (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL, {
             signal: AbortSignal.timeout(500) as any,
           });
         }, /CanceledError: canceled/);
@@ -5941,7 +5941,7 @@ describe("supports http with nodejs", () => {
 
       try {
         const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
-        const http2Axios = createHttp2Axios(localServerURL);
+        const http2Faxios = createHttp2Faxios(localServerURL);
 
         server.on("stream", (http2Stream) => {
           http2Stream.once("aborted", () => {
@@ -5950,7 +5950,7 @@ describe("supports http with nodejs", () => {
           });
         });
 
-        const { data } = await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
+        const { data } = await (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL, {
           cancelToken: source.token,
           responseType: "stream",
         }) as any;
@@ -5999,13 +5999,13 @@ describe("supports http with nodejs", () => {
 
           try {
             const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
-            const http2Axios = createHttp2Axios(localServerURL);
+            const http2Faxios = createHttp2Faxios(localServerURL);
 
             const [response1, response2] = await Promise.all([
-              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
+              (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL, {
                 responseType: "stream",
               }),
-              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
+              (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL, {
                 responseType: "stream",
               }),
             ]) as any[];
@@ -6054,13 +6054,13 @@ describe("supports http with nodejs", () => {
           try {
             const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
             const localServerURL2 = `https://localhost:${(server2.address() as AddressInfo).port}`;
-            const http2Axios = createHttp2Axios(localServerURL);
+            const http2Faxios = createHttp2Faxios(localServerURL);
 
             const [response1, response2] = await Promise.all([
-              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
+              (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL, {
                 responseType: "stream",
               }),
-              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL2, {
+              (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL2, {
                 responseType: "stream",
               }),
             ]) as any[];
@@ -6103,15 +6103,15 @@ describe("supports http with nodejs", () => {
 
           try {
             const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
-            const http2Axios = createHttp2Axios(localServerURL);
+            const http2Faxios = createHttp2Faxios(localServerURL);
 
             const [response1, response2] = await Promise.all([
-              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
+              (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL, {
                 http2Options: {
                   sessionTimeout: 2000,
                 },
               }),
-              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
+              (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL, {
                 http2Options: {
                   sessionTimeout: 4000,
                 },
@@ -6147,17 +6147,17 @@ describe("supports http with nodejs", () => {
 
           try {
             const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
-            const http2Axios = createHttp2Axios(localServerURL);
+            const http2Faxios = createHttp2Faxios(localServerURL);
 
             const responses = await Promise.all([
-              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
+              (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL, {
                 responseType: "stream",
               }),
-              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
+              (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL, {
                 responseType: "stream",
                 http2Options: undefined,
               }),
-              (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
+              (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL, {
                 responseType: "stream",
                 http2Options: {},
               }),
@@ -6199,9 +6199,9 @@ describe("supports http with nodejs", () => {
 
           try {
             const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
-            const http2Axios = createHttp2Axios(localServerURL);
+            const http2Faxios = createHttp2Faxios(localServerURL);
 
-            const response1 = await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
+            const response1 = await (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL, {
               responseType: "stream",
               http2Options: {
                 sessionTimeout: 1000,
@@ -6213,7 +6213,7 @@ describe("supports http with nodejs", () => {
 
             await setTimeoutAsync(5000);
 
-            const response2 = await (http2Axios as unknown as TypedAxiosInstance).get(localServerURL, {
+            const response2 = await (http2Faxios as unknown as TypedFaxiosInstance).get(localServerURL, {
               responseType: "stream",
               http2Options: {
                 sessionTimeout: 1000,
@@ -6247,7 +6247,7 @@ describe("supports http with nodejs", () => {
       let error;
 
       try {
-        await (axios as unknown as TypedAxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
+        await (axios as unknown as TypedFaxiosStatic).get(`http://localhost:${(server.address() as AddressInfo).port}`, {
           responseType: "stream",
         });
       } catch (err: any) {
@@ -6308,7 +6308,7 @@ describe("supports http with nodejs", () => {
     };
 
     const error = await Promise.race([
-      (axios as unknown as TypedAxiosStatic).post("http://example.com/", "test", {
+      (axios as unknown as TypedFaxiosStatic).post("http://example.com/", "test", {
         transport,
         maxRedirects: 0,
       }),
@@ -6317,7 +6317,7 @@ describe("supports http with nodejs", () => {
       }),
     ]).catch((err: any) => err);
 
-    assert.ok(error instanceof AxiosError);
+    assert.ok(error instanceof FaxiosError);
     assert.strictEqual(error.code, "EPIPE");
     assert.strictEqual(error.message, "write EPIPE");
   });
@@ -6351,7 +6351,7 @@ describe("supports http with nodejs", () => {
 
         const results = await Promise.all(
           Array.from({ length: CONCURRENCY }, (_, i) =>
-            (axios as unknown as TypedAxiosStatic).get(`/req-${i}`, { baseURL, httpAgent: agent }),
+            (axios as unknown as TypedFaxiosStatic).get(`/req-${i}`, { baseURL, httpAgent: agent }),
           ),
         );
 
@@ -6413,7 +6413,7 @@ describe("supports http with nodejs", () => {
 
         const refs = [];
         for (let i = 0; i < 200; i += 1) {
-          const response = await (axios as unknown as TypedAxiosStatic).get("/", { baseURL, httpAgent: agent }) as any;
+          const response = await (axios as unknown as TypedFaxiosStatic).get("/", { baseURL, httpAgent: agent }) as any;
           refs.push(new WeakRef(response.request));
         }
 
@@ -6450,8 +6450,8 @@ describe("supports http with nodejs", () => {
 
       try {
         const baseURL = `http://localhost:${(server.address() as AddressInfo).port}`;
-        await (axios as unknown as TypedAxiosStatic).get("/1", { baseURL, timeout: 1000 });
-        await (axios as unknown as TypedAxiosStatic).get("/wait", { baseURL, timeout: 0 });
+        await (axios as unknown as TypedFaxiosStatic).get("/1", { baseURL, timeout: 1000 });
+        await (axios as unknown as TypedFaxiosStatic).get("/wait", { baseURL, timeout: 0 });
       } finally {
         await stopHTTPServer(server);
       }
@@ -6508,7 +6508,7 @@ describe("supports http with nodejs", () => {
       };
 
       // First request: axios installs its single per-socket listener.
-      await (axios as unknown as TypedAxiosStatic).get("http://example.com/first", {
+      await (axios as unknown as TypedFaxiosStatic).get("http://example.com/first", {
         transport,
         maxRedirects: 0,
       });
@@ -6521,7 +6521,7 @@ describe("supports http with nodejs", () => {
 
       // Many subsequent requests reusing the same socket must not add more listeners.
       for (let i = 0; i < 20; i += 1) {
-        await (axios as unknown as TypedAxiosStatic).get(`http://example.com/next-${i}`, {
+        await (axios as unknown as TypedFaxiosStatic).get(`http://example.com/next-${i}`, {
           transport,
           maxRedirects: 0,
         });
@@ -6593,7 +6593,7 @@ describe("supports http with nodejs", () => {
 
       const results = await Promise.all(
         Array.from({ length: 20 }, (_, i) =>
-          (axios as unknown as TypedAxiosStatic).get(`http://example.com/concurrent-${i}`, {
+          (axios as unknown as TypedFaxiosStatic).get(`http://example.com/concurrent-${i}`, {
             transport,
             maxRedirects: 0,
           }),
@@ -6705,7 +6705,7 @@ describe("supports http with nodejs", () => {
       };
 
       // First request completes successfully; socket is released.
-      await (axios as unknown as TypedAxiosStatic).get("http://example.com/first", {
+      await (axios as unknown as TypedFaxiosStatic).get("http://example.com/first", {
         transport: cleanTransport,
         maxRedirects: 0,
       });
@@ -6726,7 +6726,7 @@ describe("supports http with nodejs", () => {
       );
 
       // Second request claims the socket, then its socket errors. It should reject.
-      const err = await (axios as unknown as TypedAxiosStatic)
+      const err = await (axios as unknown as TypedFaxiosStatic)
         .get("http://example.com/second", {
           transport: errorTransport,
           maxRedirects: 0,
@@ -6734,8 +6734,8 @@ describe("supports http with nodejs", () => {
         .catch((e) => e);
 
       assert.ok(
-        err instanceof AxiosError,
-        "second request should reject with an AxiosError",
+        err instanceof FaxiosError,
+        "second request should reject with an FaxiosError",
       );
       assert.strictEqual(err.code, "EPIPE");
 
@@ -6783,7 +6783,7 @@ describe("supports http with nodejs", () => {
 
       try {
         const baseURL = `http://localhost:${(server.address() as AddressInfo).port}`;
-        const response = await (axios as unknown as TypedAxiosStatic).get("/start", {
+        const response = await (axios as unknown as TypedFaxiosStatic).get("/start", {
           baseURL,
           maxRedirects: REDIRECT_COUNT + 5,
         });
@@ -6863,7 +6863,7 @@ describe("supports http with nodejs", () => {
         };
 
         try {
-          const response = await (axios as unknown as TypedAxiosStatic).get("/start", {
+          const response = await (axios as unknown as TypedFaxiosStatic).get("/start", {
             baseURL,
             maxRedirects: REDIRECT_COUNT + 5,
           });
@@ -6931,7 +6931,7 @@ describe("supports http with nodejs", () => {
       const socketPath = makeSocketPath();
       const server = await startUnixServer(socketPath);
       try {
-        const res = await (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", { socketPath }) as any;
+        const res = await (axios as unknown as TypedFaxiosStatic).get("http://localhost/echo", { socketPath }) as any;
         assert.strictEqual(res.status, 200);
         assert.strictEqual(res.data.ok, true);
       } finally {
@@ -6943,7 +6943,7 @@ describe("supports http with nodejs", () => {
       const socketPath = makeSocketPath();
       const server = await startUnixServer(socketPath);
       try {
-        const res = await (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", {
+        const res = await (axios as unknown as TypedFaxiosStatic).get("http://localhost/echo", {
           socketPath,
           allowedSocketPaths: socketPath,
         });
@@ -6957,7 +6957,7 @@ describe("supports http with nodejs", () => {
       const socketPath = makeSocketPath();
       const server = await startUnixServer(socketPath);
       try {
-        const res = await (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", {
+        const res = await (axios as unknown as TypedFaxiosStatic).get("http://localhost/echo", {
           socketPath,
           allowedSocketPaths: ["/var/run/does-not-exist.sock", socketPath],
         });
@@ -6969,13 +6969,13 @@ describe("supports http with nodejs", () => {
 
     it("rejects socketPath not in allowedSocketPaths", async () => {
       await assert.rejects(
-        (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", {
+        (axios as unknown as TypedFaxiosStatic).get("http://localhost/echo", {
           socketPath: "/var/run/docker.sock",
           allowedSocketPaths: ["/tmp/allowed.sock"],
         }),
         (err: any) => {
-          assert.ok(err instanceof AxiosError);
-          assert.strictEqual(err.code, AxiosError.ERR_BAD_OPTION_VALUE);
+          assert.ok(err instanceof FaxiosError);
+          assert.strictEqual(err.code, FaxiosError.ERR_BAD_OPTION_VALUE);
           assert.match(err.message, /allowedSocketPaths/);
           return true;
         },
@@ -6986,12 +6986,12 @@ describe("supports http with nodejs", () => {
       const allowedDir = path.join(os.tmpdir(), "axios-allowed");
       const allowed = path.join(allowedDir, "app.sock");
       await assert.rejects(
-        (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", {
+        (axios as unknown as TypedFaxiosStatic).get("http://localhost/echo", {
           socketPath: path.join(allowedDir, "..", "other.sock"),
           allowedSocketPaths: [allowed],
         }),
         (err: any) => {
-          assert.strictEqual(err.code, AxiosError.ERR_BAD_OPTION_VALUE);
+          assert.strictEqual(err.code, FaxiosError.ERR_BAD_OPTION_VALUE);
           return true;
         },
       );
@@ -7002,7 +7002,7 @@ describe("supports http with nodejs", () => {
       const server = await startUnixServer(socketPath);
       try {
         const relative = path.relative(process.cwd(), socketPath);
-        const res = await (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", {
+        const res = await (axios as unknown as TypedFaxiosStatic).get("http://localhost/echo", {
           socketPath,
           allowedSocketPaths: [relative],
         });
@@ -7014,10 +7014,10 @@ describe("supports http with nodejs", () => {
 
     it("rejects non-string socketPath", async () => {
       await assert.rejects(
-        (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", { socketPath: 12345 as unknown as string }),
+        (axios as unknown as TypedFaxiosStatic).get("http://localhost/echo", { socketPath: 12345 as unknown as string }),
         (err: any) => {
-          assert.ok(err instanceof AxiosError);
-          assert.strictEqual(err.code, AxiosError.ERR_BAD_OPTION_VALUE);
+          assert.ok(err instanceof FaxiosError);
+          assert.strictEqual(err.code, FaxiosError.ERR_BAD_OPTION_VALUE);
           assert.match(err.message, /socketPath must be a string/);
           return true;
         },
@@ -7026,12 +7026,12 @@ describe("supports http with nodejs", () => {
 
     it("empty allowedSocketPaths array blocks all socketPath values", async () => {
       await assert.rejects(
-        (axios as unknown as TypedAxiosStatic).get("http://localhost/echo", {
+        (axios as unknown as TypedFaxiosStatic).get("http://localhost/echo", {
           socketPath: "/tmp/anything.sock",
           allowedSocketPaths: [],
         }),
         (err: any) => {
-          assert.strictEqual(err.code, AxiosError.ERR_BAD_OPTION_VALUE);
+          assert.strictEqual(err.code, FaxiosError.ERR_BAD_OPTION_VALUE);
           return true;
         },
       );

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import axios from "../../src/index.js";
-import type { InternalAxiosRequestConfig } from "../../src/index.js";
+import type { InternalFaxiosRequestConfig } from "../../src/index.js";
 
 class MockXMLHttpRequest {
   requestHeaders: Record<string, string> = {};
@@ -307,7 +307,7 @@ describe("interceptors (vitest browser)", () => {
   });
 
   it("runs the interceptor if runWhen function is provided and resolves to true", async () => {
-    const onGetCall = (config: InternalAxiosRequestConfig) => config.method === "get";
+    const onGetCall = (config: InternalFaxiosRequestConfig) => config.method === "get";
 
     axios.interceptors.request.use(
       (config) => {
@@ -327,7 +327,7 @@ describe("interceptors (vitest browser)", () => {
   });
 
   it("does not run the interceptor if runWhen function is provided and resolves to false", async () => {
-    const onPostCall = (config: InternalAxiosRequestConfig) => config.method === "post";
+    const onPostCall = (config: InternalFaxiosRequestConfig) => config.method === "post";
 
     axios.interceptors.request.use(
       (config) => {
@@ -348,7 +348,7 @@ describe("interceptors (vitest browser)", () => {
 
   it("does not run async interceptor if runWhen resolves to false (and runs synchronously)", async () => {
     let asyncFlag = false;
-    const onPostCall = (config: InternalAxiosRequestConfig) => config.method === "post";
+    const onPostCall = (config: InternalFaxiosRequestConfig) => config.method === "post";
 
     axios.interceptors.request.use(
       (config) => {
@@ -403,7 +403,7 @@ describe("interceptors (vitest browser)", () => {
     axios.interceptors.request.use(() => ({
       url: "/bar",
       method: "post",
-    } as InternalAxiosRequestConfig));
+    } as InternalFaxiosRequestConfig));
 
     const responsePromise = axios("/foo");
     const request = await waitForRequest();

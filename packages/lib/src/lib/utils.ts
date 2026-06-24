@@ -898,7 +898,7 @@ const isThenable = (thing: unknown) =>
   isFunction((thing as Record<string, unknown>).catch);
 
 // original code
-// https://github.com/DigitalBrainJS/AxiosPromise/blob/16deab13710ec09779922131f3fa5954320f83ab/lib/utils.js#L11-L34
+// https://github.com/DigitalBrainJS/FaxiosPromise/blob/16deab13710ec09779922131f3fa5954320f83ab/lib/utils.js#L11-L34
 
 /**
  * Provides a cross-platform setImmediate implementation.

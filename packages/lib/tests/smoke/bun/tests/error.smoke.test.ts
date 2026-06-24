@@ -8,7 +8,7 @@ const env = (fetch: typeof globalThis.fetch) => ({
 });
 
 describe('errors', () => {
-  test('non-2xx response rejects with AxiosError and status 404', async () => {
+  test('non-2xx response rejects with FaxiosError and status 404', async () => {
     const fetch = async () =>
       new Response(JSON.stringify({ error: 'missing' }), {
         status: 404,
@@ -23,11 +23,11 @@ describe('errors', () => {
       })
       .catch((e: any) => e);
 
-    expect(axios.isAxiosError(err)).toBe(true);
+    expect(axios.isFaxiosError(err)).toBe(true);
     expect(err.response.status).toBe(404);
   });
 
-  test('axios.isAxiosError returns false for a plain Error', () => {
-    expect(axios.isAxiosError(new Error('plain'))).toBe(false);
+  test('axios.isFaxiosError returns false for a plain Error', () => {
+    expect(axios.isFaxiosError(new Error('plain'))).toBe(false);
   });
 });

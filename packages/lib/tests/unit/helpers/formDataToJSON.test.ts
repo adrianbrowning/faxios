@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import AxiosError from "../../../src/lib/core/AxiosError.js";
+import FaxiosError from "../../../src/lib/core/FaxiosError.js";
 import formDataToJSON from "../../../src/lib/helpers/formDataToJSON.js";
 
 describe("formDataToJSON", () => {
@@ -118,7 +118,7 @@ describe("formDataToJSON", () => {
     }
   });
 
-  it("should throw AxiosError when a field path exceeds the default depth limit", () => {
+  it("should throw FaxiosError when a field path exceeds the default depth limit", () => {
     const formData = new FormData();
 
     formData.append("foo" + "[bar]".repeat(101), "123");
@@ -127,13 +127,13 @@ describe("formDataToJSON", () => {
       formDataToJSON(formData);
       throw new Error("Should have thrown");
     } catch (err) {
-      expect(err).toBeInstanceOf(AxiosError);
-      expect((err as AxiosError).code).toBe(AxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
+      expect(err).toBeInstanceOf(FaxiosError);
+      expect((err as FaxiosError).code).toBe(FaxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
       expect(err).not.toBeInstanceOf(RangeError);
     }
   });
 
-  it("should throw AxiosError while tokenizing very deep field paths", () => {
+  it("should throw FaxiosError while tokenizing very deep field paths", () => {
     const formData = new FormData();
 
     formData.append("foo" + "[bar]".repeat(10000), "123");
@@ -142,8 +142,8 @@ describe("formDataToJSON", () => {
       formDataToJSON(formData);
       throw new Error("Should have thrown");
     } catch (err) {
-      expect(err).toBeInstanceOf(AxiosError);
-      expect((err as AxiosError).code).toBe(AxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
+      expect(err).toBeInstanceOf(FaxiosError);
+      expect((err as FaxiosError).code).toBe(FaxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
       expect(err).not.toBeInstanceOf(RangeError);
     }
   });

@@ -1,6 +1,6 @@
 "use strict";
 
-import AxiosError from "../core/AxiosError.js";
+import FaxiosError from "../core/FaxiosError.js";
 import utils from "../utils.js";
 import { DEFAULT_FORM_DATA_MAX_DEPTH } from "./toFormData.js";
 
@@ -8,9 +8,9 @@ const MAX_DEPTH = DEFAULT_FORM_DATA_MAX_DEPTH;
 
 function throwIfDepthExceeded(index: number): void {
   if (index > MAX_DEPTH) {
-    throw new AxiosError(
+    throw new FaxiosError(
       "FormData field is too deeply nested (" + index + " levels). Max depth: " + MAX_DEPTH,
-      AxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED
+      FaxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED
     );
   }
 }

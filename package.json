@@ -15,10 +15,9 @@
     "examples": "pnpm --filter @faxios/examples start",
     "lint:knip": "knip",
     "lint:ts": "tsc --noEmit",
-    "lint:esl": "eslint --config eslint.config.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
-    "lint:esl:fix": "pnpm lint:esl --fix",
-    "lint:s": "eslint --config eslint.config.style.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
-    "lint:fix": "pnpm lint:s --fix",
+    "lint:esl": "pnpm -r lint:esl",
+    "lint:s": "pnpm -r lint:s",
+    "lint:fix": "pnpm -r lint:fix",
     "lint:jscpd": "jscpd .",
     "lint:e18e": "pnpm dlx @e18e/cli analyze"
   },
