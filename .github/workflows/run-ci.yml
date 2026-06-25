@@ -42,6 +42,7 @@ jobs:
         run: pnpm run build
 
       - name: Install Playwright with deps
+        working-directory: packages/lib
         run: pnpm exec playwright install --with-deps
 
       - name: Run unit tests

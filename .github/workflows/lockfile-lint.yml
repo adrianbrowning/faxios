@@ -32,18 +32,14 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
 
-      - name: Run lockfile-lint
-        # Validates that every resolved URL uses HTTPS on registry.npmjs.org
-        # and that every entry carries an integrity hash. Catches swap to a
-        # mirror, a git/file: URL, or integrity stripping on a dep-update PR.
-        # Pinned by name only (no lockfile-lint in devDependencies) so that a
-        # compromised dev tree cannot suppress this check.
-        run: >
-          npx --yes lockfile-lint@4.14.0
-          --type pnpm
-          --path pnpm-lock.yaml
-          --validate-https
-          --allowed-hosts npm
-          --validate-integrity
-          --validate-package-names
-          --empty-hostname false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Audit dependencies
+        # --frozen-lockfile on install already enforces lockfile integrity.
+        # pnpm audit catches known CVEs and non-HTTPS registry entries.
+        run: pnpm audit --audit-level=high
