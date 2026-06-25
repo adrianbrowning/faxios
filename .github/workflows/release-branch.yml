@@ -36,29 +36,34 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Install dependencies
-        run: npm ci --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Build project
-        run: npm run build
+        run: pnpm run build
 
       - name: Install Playwright with deps
-        run: npx playwright install --with-deps
+        run: pnpm exec playwright install --with-deps
 
       - name: Run unit tests
-        run: npm run test:vitest:unit
+        run: pnpm run test:vitest:unit
 
       - name: Run browser tests
-        run: npm run test:vitest:browser:headless
+        run: pnpm run test:vitest:browser:headless
 
       - name: Pack npm tarball
-        run: npm pack
+        working-directory: packages/lib
+        run: pnpm pack
 
       - name: Upload npm pack artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: axios-tarball
-          path: axios-*.tgz
+          name: faxios-tarball
+          path: packages/lib/faxios-*.tgz
           if-no-files-found: error
           retention-days: 1
 
@@ -86,7 +91,7 @@ jobs:
       - name: Download npm pack artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: axios-tarball
+          name: faxios-tarball
           path: artifacts
 
       - name: Install CJS smoke test dependencies
@@ -95,7 +100,7 @@ jobs:
 
       - name: Install packed axios
         working-directory: tests/smoke/cjs
-        run: npm install --no-save ../../../artifacts/axios-*.tgz
+        run: npm install --no-save ../../../artifacts/faxios-*.tgz
 
       - name: Run CJS smoke tests
         working-directory: tests/smoke/cjs
@@ -125,7 +130,7 @@ jobs:
       - name: Download npm pack artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: axios-tarball
+          name: faxios-tarball
           path: artifacts
 
       - name: Install ESM smoke test dependencies
@@ -134,7 +139,7 @@ jobs:
 
       - name: Install packed axios
         working-directory: tests/smoke/esm
-        run: npm install --no-save ../../../artifacts/axios-*.tgz
+        run: npm install --no-save ../../../artifacts/faxios-*.tgz
 
       - name: Run ESM smoke tests
         working-directory: tests/smoke/esm
@@ -164,7 +169,7 @@ jobs:
       - name: Download npm pack artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: axios-tarball
+          name: faxios-tarball
           path: artifacts
 
       - name: Install CJS module test dependencies
@@ -173,7 +178,7 @@ jobs:
 
       - name: Install packed axios
         working-directory: tests/module/cjs
-        run: npm install --no-save ../../../artifacts/axios-*.tgz
+        run: npm install --no-save ../../../artifacts/faxios-*.tgz
 
       - name: Run CJS module tests
         working-directory: tests/module/cjs
@@ -203,7 +208,7 @@ jobs:
       - name: Download npm pack artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: axios-tarball
+          name: faxios-tarball
           path: artifacts
 
       - name: Install ESM module test dependencies
@@ -212,7 +217,7 @@ jobs:
 
       - name: Install packed axios
         working-directory: tests/module/esm
-        run: npm install --no-save ../../../artifacts/axios-*.tgz
+        run: npm install --no-save ../../../artifacts/faxios-*.tgz
 
       - name: Run ESM module tests
         working-directory: tests/module/esm
@@ -236,7 +241,7 @@ jobs:
       - name: Download npm pack artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: axios-tarball
+          name: faxios-tarball
           path: artifacts
 
       - name: Install packed axios
@@ -245,9 +250,9 @@ jobs:
           BUN_INSTALL_CACHE_DIR: ${{ runner.temp }}/bun-cache
         run: |
           mkdir -p "$BUN_INSTALL_CACHE_DIR"
-          mv artifacts/axios-*.tgz artifacts/axios.tgz
+          mv artifacts/faxios-*.tgz artifacts/faxios.tgz
           cd tests/smoke/bun
-          bun add file:../../../artifacts/axios.tgz
+          bun add file:../../../artifacts/faxios.tgz
 
       - name: Run Bun smoke tests
         working-directory: tests/smoke/bun
@@ -271,11 +276,11 @@ jobs:
       - name: Download npm pack artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: axios-tarball
+          name: faxios-tarball
           path: artifacts
 
       - name: Prepare packed axios dist
-        run: mkdir -p dist && tar -xzf artifacts/axios-*.tgz -C artifacts && cp -R artifacts/package/dist/. ./dist
+        run: mkdir -p packages/lib/dist && tar -xzf artifacts/faxios-*.tgz -C artifacts && cp -R artifacts/package/dist/. ./packages/lib/dist
 
       - name: Install Deno smoke test dependencies
         working-directory: tests/smoke/deno
@@ -306,8 +311,12 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Install dependencies
-        run: npm ci --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Configure git identity
         run: |
@@ -324,25 +333,25 @@ jobs:
           TYPE="${INPUT_TYPE}"
           BETA="${INPUT_BETA}"
           if [ "$TYPE" = "auto" ]; then
-            npm version $(npm version | grep -Eo 'patch|minor|major' | head -1)
+            pnpm version $(pnpm version | grep -Eo 'patch|minor|major' | head -1)
           else
             if [ "$BETA" = "true" ]; then
-              npm version $TYPE --preid=beta
+              pnpm version $TYPE --preid=beta
             else
-              npm version $TYPE
+              pnpm version $TYPE
             fi
           fi
-          VERSION=$(node -p "require('./package.json').version")
+          VERSION=$(node -p "require('./packages/lib/package.json').version")
           echo "newTag=$VERSION" >> "$GITHUB_OUTPUT"
           echo "newBranch=release-v1x/version-$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Run preversion
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run preversion
+        run: pnpm run preversion
 
       - name: Build project
-        run: npm run build
+        run: pnpm run build
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1

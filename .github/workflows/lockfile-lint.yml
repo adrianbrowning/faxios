@@ -3,14 +3,14 @@ name: Lockfile lint
 on:
   pull_request:
     paths:
-      - 'package.json'
-      - 'package-lock.json'
+      - 'packages/lib/package.json'
+      - 'pnpm-lock.yaml'
       - '.github/workflows/lockfile-lint.yml'
   push:
-    branches: [v1.x]
+    branches: [main]
     paths:
-      - 'package.json'
-      - 'package-lock.json'
+      - 'packages/lib/package.json'
+      - 'pnpm-lock.yaml'
 
 permissions:
   contents: read
@@ -40,8 +40,8 @@ jobs:
         # compromised dev tree cannot suppress this check.
         run: >
           npx --yes lockfile-lint@4.14.0
-          --type npm
-          --path package-lock.json
+          --type pnpm
+          --path pnpm-lock.yaml
           --validate-https
           --allowed-hosts npm
           --validate-integrity
