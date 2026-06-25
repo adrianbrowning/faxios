@@ -36,7 +36,10 @@
     "typescript": "^6.0.3"
   },
   "pnpm": {
-    "minimumReleaseAge": 4320
+    "minimumReleaseAge": 4320,
+    "overrides": {
+      "minimatch": ">=10.2.1"
+    }
   },
   "engines": {
     "node": ">=24.0.0",
