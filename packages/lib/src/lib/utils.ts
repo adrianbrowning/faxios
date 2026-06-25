@@ -909,7 +909,6 @@ const isThenable = (thing: unknown) =>
  * @param {boolean} postMessageSupported - Whether postMessage is supported.
  * @returns {Function} A function to schedule a callback asynchronously.
  */
-// eslint-disable-next-line sonarjs/function-return-type
 const _setImmediate = ((setImmediateSupported: boolean, postMessageSupported: boolean) => {
   if (setImmediateSupported) {
     return setImmediate;
