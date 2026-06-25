@@ -109,6 +109,7 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^1.0.0",
+    "@types/node": "^24.13.2",
     "@types/express": "^5.0.6",
     "@types/follow-redirects": "^1.14.4",
     "@types/multer": "^2.1.0",
