@@ -2,7 +2,7 @@
   "extends": "@gingacodemonkey/config/tsc/no-dom/library",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "./src",
     "incremental": false,
     "typeRoots": [
       "../../node_modules/.pnpm/@types+node@25.9.3/node_modules/@types",

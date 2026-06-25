@@ -31,9 +31,9 @@
       "ignore": ["client.js"]
     },
     ".": {
-      "entry": [".sandcastle/*.ts"],
-      "project": [".sandcastle/*.ts"],
-      "ignore": [".sandcastle/worktrees/**"]
+      "entry": [],
+      "project": [],
+      "ignore": [".sandcastle/**"]
     }
   },
   "ignoreBinaries": ["playwright", "diff"],
@@ -41,7 +41,8 @@
     "faxios",
     "prettier",
     "@babel/preset-env",
-    "@vitest/browser"
+    "@vitest/browser",
+    "@ai-hero/sandcastle"
   ],
   "ignoreExportsUsedInFile": true
 }
