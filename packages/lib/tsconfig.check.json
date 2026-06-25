@@ -4,6 +4,7 @@
     "rootDir": ".",
     "noEmit": true,
     "typeRoots": [
+      "../../node_modules/.pnpm/@types+node@25.9.3/node_modules/@types",
       "../../node_modules/@types",
       "./node_modules/@types"
     ]
