@@ -51,7 +51,7 @@ jobs:
       - name: Run browser tests
         run: pnpm run test:vitest:browser:headless
 
-      - name: Pack npm tarball
+      - name: Pack tarball
         working-directory: packages/lib
         run: pnpm pack
 
@@ -62,7 +62,7 @@ jobs:
           # dev server CVEs in private docs package (vite@5.x no patch; esbuild dev server)
           allow-ghsas: GHSA-fx2h-pf6j-xcff,GHSA-4w7w-66w2-5vf9,GHSA-v6wh-96g9-6wx3,GHSA-67mh-4wv8-2f99
 
-      - name: Upload npm pack artifact
+      - name: Upload tarball
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: faxios-tarball
@@ -70,44 +70,6 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  cjs-smoke-tests:
-    name: CJS smoke tests (Node ${{ matrix.node-version }})
-    needs: build-and-run-vitest
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [12, 14, 16, 18]
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          persist-credentials: false
-
-      - name: Setup node
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        with:
-          node-version: ${{ matrix.node-version }}
-          registry-url: 'https://registry.npmjs.org'
-          package-manager-cache: false
-
-      - name: Download npm pack artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: faxios-tarball
-          path: artifacts
-
-      - name: Install CJS smoke test dependencies
-        working-directory: tests/smoke/cjs
-        run: npm install --ignore-scripts
-
-      - name: Install packed axios
-        working-directory: tests/smoke/cjs
-        run: npm install --no-save ../../../artifacts/faxios-*.tgz
-
-      - name: Run CJS smoke tests
-        working-directory: tests/smoke/cjs
-        run: npm run test:smoke:cjs:mocha
 
   esm-smoke-tests:
     name: ESM smoke tests (Node ${{ matrix.node-version }})
@@ -116,21 +78,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [20, 22, 24, 26]
+        node-version: [24, 26]
     steps:
       - name: Checkout repo
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           persist-credentials: false
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup node
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
-          package-manager-cache: false
 
-      - name: Download npm pack artifact
+      - name: Download tarball
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: faxios-tarball
@@ -138,54 +102,15 @@ jobs:
 
       - name: Install ESM smoke test dependencies
         working-directory: tests/smoke/esm
-        run: npm install --ignore-scripts
+        run: pnpm install --ignore-scripts
 
-      - name: Install packed axios
+      - name: Install packed faxios
         working-directory: tests/smoke/esm
-        run: npm install --no-save ../../../artifacts/faxios-*.tgz
+        run: pnpm add --ignore-scripts ../../../artifacts/faxios-*.tgz
 
       - name: Run ESM smoke tests
         working-directory: tests/smoke/esm
-        run: npm run test:smoke:esm:vitest
-
-  cjs-module-tests:
-    name: CJS module tests (Node ${{ matrix.node-version }})
-    needs: build-and-run-vitest
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [12, 14, 16, 18]
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          persist-credentials: false
-
-      - name: Setup node
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        with:
-          node-version: ${{ matrix.node-version }}
-          registry-url: 'https://registry.npmjs.org'
-          package-manager-cache: false
-
-      - name: Download npm pack artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        with:
-          name: faxios-tarball
-          path: artifacts
-
-      - name: Install CJS module test dependencies
-        working-directory: tests/module/cjs
-        run: npm install --ignore-scripts
-
-      - name: Install packed axios
-        working-directory: tests/module/cjs
-        run: npm install --no-save ../../../artifacts/faxios-*.tgz
-
-      - name: Run CJS module tests
-        working-directory: tests/module/cjs
-        run: npm run test:module:cjs
+        run: pnpm run test:smoke:esm:vitest
 
   esm-module-tests:
     name: ESM module tests (Node ${{ matrix.node-version }})
@@ -194,21 +119,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [20, 22, 24, 26]
+        node-version: [24, 26]
     steps:
       - name: Checkout repo
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           persist-credentials: false
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup node
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
-          package-manager-cache: false
 
-      - name: Download npm pack artifact
+      - name: Download tarball
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: faxios-tarball
@@ -216,15 +143,15 @@ jobs:
 
       - name: Install ESM module test dependencies
         working-directory: tests/module/esm
-        run: npm install --ignore-scripts
+        run: pnpm install --ignore-scripts
 
-      - name: Install packed axios
+      - name: Install packed faxios
         working-directory: tests/module/esm
-        run: npm install --no-save ../../../artifacts/faxios-*.tgz
+        run: pnpm add --ignore-scripts ../../../artifacts/faxios-*.tgz
 
       - name: Run ESM module tests
         working-directory: tests/module/esm
-        run: npm run test:module:esm
+        run: pnpm run test:module:esm
 
   bun-smoke-tests:
     name: Bun smoke tests
@@ -241,13 +168,13 @@ jobs:
         with:
           no-cache: true
 
-      - name: Download npm pack artifact
+      - name: Download tarball
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: faxios-tarball
           path: artifacts
 
-      - name: Install packed axios
+      - name: Install packed faxios
         env:
           TMPDIR: ${{ runner.temp }}
           BUN_INSTALL_CACHE_DIR: ${{ runner.temp }}/bun-cache
@@ -276,7 +203,7 @@ jobs:
         with:
           cache: false
 
-      - name: Download npm pack artifact
+      - name: Download tarball
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: faxios-tarball
