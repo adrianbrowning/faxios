@@ -1,13 +1,13 @@
 {
   "name": "faxios",
-  "version": "1.18.0",
+  "version": "0.0.1",
   "description": "Promise based HTTP client for the browser and node.js",
-  "main": "./dist/node/faxios.cjs",
+  "main": "./dist/index.js",
   "module": "./dist/index.js",
   "type": "module",
   "types": "./dist/index.d.ts",
-  "jsdelivr": "dist/faxios.min.js",
-  "unpkg": "dist/faxios.min.js",
+  "~jsdelivr": "dist/faxios.min.js",
+  "~unpkg": "dist/faxios.min.js",
   "~browser": {
     "./dist/node/faxios.cjs": "./dist/browser/faxios.cjs",
     "./lib/adapters/http.js": "./lib/helpers/null.js",
