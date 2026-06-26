@@ -45,17 +45,17 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
 }
 
 export type FaxiosInstance = {
-  (config: FaxiosRequestConfig): Promise<FaxiosResponse>;
-  (url: string, config?: FaxiosRequestConfig): Promise<FaxiosResponse>;
-  request: (config: FaxiosRequestConfig) => Promise<FaxiosResponse>;
-  get: (url: string, config?: FaxiosRequestConfig) => Promise<FaxiosResponse>;
-  delete: (url: string, config?: FaxiosRequestConfig) => Promise<FaxiosResponse>;
-  head: (url: string, config?: FaxiosRequestConfig) => Promise<FaxiosResponse>;
-  options: (url: string, config?: FaxiosRequestConfig) => Promise<FaxiosResponse>;
-  post: (url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse>;
-  put: (url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse>;
-  patch: (url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse>;
-  query: (url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse>;
+  <T = unknown>(config: FaxiosRequestConfig): Promise<FaxiosResponse<T>>;
+  <T = unknown>(url: string, config?: FaxiosRequestConfig): Promise<FaxiosResponse<T>>;
+  request: <T = unknown>(config: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
+  get: <T = unknown>(url: string, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
+  delete: <T = unknown>(url: string, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
+  head: <T = unknown>(url: string, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
+  options: <T = unknown>(url: string, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
+  post: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
+  put: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
+  patch: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
+  query: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
   defaults: { headers: Record<string, unknown>; } & Record<string, unknown>;
   interceptors: {
     request: {

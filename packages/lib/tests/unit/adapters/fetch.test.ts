@@ -6,13 +6,6 @@ import { AbortController } from "abortcontroller-polyfill/dist/cjs-ponyfill.js";
 import NodeFormData from "form-data";
 import { describe, it, vi } from "vitest";
 import faxios from "../../../src/index.js";
-import type {
-  AxiosInstance as TypedFaxiosInstance,
-  AxiosStatic as TypedFaxiosStatic,
-  AxiosProgressEvent as FaxiosProgressEvent,
-  AxiosHeaders as TypedFaxiosHeaders,
-  InternalAxiosRequestConfig,
-} from "../../../src/index.old.js";
 import { getFetch } from "../../../src/lib/adapters/fetch.js";
 import FaxiosError from "../../../src/lib/core/FaxiosError.js";
 import { VERSION } from "../../../src/lib/env/data.js";
@@ -31,6 +24,7 @@ import {
   generateReadable,
   makeEchoStream,
 } from "../../setup/server.js";
+import type { FaxiosProgressEvent } from "../../../src/lib/types.js";
 
 const SERVER_PORT = 8010;
 const LOCAL_SERVER_URL = `http://localhost:${SERVER_PORT}`;
@@ -40,7 +34,7 @@ const pipelineAsync = util.promisify(stream.pipeline);
 const fetchFaxios = faxios.create({
   baseURL: LOCAL_SERVER_URL,
   adapter: "fetch",
-}) as unknown as TypedFaxiosInstance;
+});
 
 const getFetchSignal = (
   input: RequestInfo | URL | { signal?: AbortSignal },
@@ -80,7 +74,7 @@ describe.runIf(typeof fetch === "function")(
       ]) {
         await assert.rejects(
           async () =>
-            (faxios as unknown as TypedFaxiosStatic).get(url, {
+            faxios.get(url, {
               adapter: "fetch",
               headers: {
                 "X-Test": "yes",
@@ -194,16 +188,14 @@ describe.runIf(typeof fetch === "function")(
       const instance = faxios.create({
         baseURL: LOCAL_SERVER_URL,
         adapter: "fetch",
-      }) as unknown as TypedFaxiosInstance;
+      });
 
-      instance.interceptors.request.use(
-        (config: InternalAxiosRequestConfig) => {
-          config.headers.oprtName = encodeURIComponent(
-            config.headers.oprtName as string,
-          );
-          return config;
-        },
-      );
+      instance.interceptors.request.use((config) => {
+        config.headers.oprtName = encodeURIComponent(
+          config.headers.oprtName as string,
+        );
+        return config;
+      });
 
       try {
         const { data } = await instance.get<Record<string, unknown>>("/", {
@@ -1141,10 +1133,7 @@ describe.runIf(typeof fetch === "function")(
           },
         );
 
-        assert.strictEqual(
-          (headers as unknown as TypedFaxiosHeaders).get("foo"),
-          "bar",
-        );
+        assert.strictEqual(headers.get("foo"), "bar");
       } finally {
         await stopHTTPServer(server);
       }
@@ -1313,10 +1302,7 @@ describe.runIf(typeof fetch === "function")(
           } as unknown as { fetch?: typeof fetch },
         });
 
-        assert.strictEqual(
-          (headers as unknown as TypedFaxiosHeaders).get("foo"),
-          "1",
-        );
+        assert.strictEqual(headers.get("foo"), "1");
         assert.strictEqual(data, "test");
       });
 
@@ -1342,10 +1328,7 @@ describe.runIf(typeof fetch === "function")(
           } as unknown as { Request?: typeof Request; fetch?: typeof fetch },
         });
 
-        assert.strictEqual(
-          (headers as unknown as TypedFaxiosHeaders).get("foo"),
-          "1",
-        );
+        assert.strictEqual(headers.get("foo"), "1");
         assert.strictEqual(data, "test");
       });
 
@@ -1368,10 +1351,7 @@ describe.runIf(typeof fetch === "function")(
           } as unknown as { Request?: typeof Request; fetch?: typeof fetch },
         });
 
-        assert.strictEqual(
-          (headers as unknown as TypedFaxiosHeaders).get("foo"),
-          "1",
-        );
+        assert.strictEqual(headers.get("foo"), "1");
         assert.strictEqual(data, "test");
       });
 
@@ -1712,10 +1692,7 @@ describe.runIf(typeof fetch === "function")(
         });
 
         assert.strictEqual(data, "test");
-        assert.strictEqual(
-          (headers as unknown as TypedFaxiosHeaders).get("foo"),
-          "bar",
-        );
+        assert.strictEqual(headers.get("foo"), "bar");
       });
 
       it("should reject a chunked response that exceeds maxContentLength during streaming", async () => {
@@ -1766,7 +1743,7 @@ describe.runIf(typeof fetch === "function")(
         // prepend baseURL to a data: URL and neutralise the pre-check.
         const bareFaxios = faxios.create({
           adapter: "fetch",
-        }) as unknown as TypedFaxiosInstance;
+        });
 
         await assert.rejects(
           bareFaxios.get(dataUrl, { maxContentLength: 16 }),
@@ -1784,7 +1761,7 @@ describe.runIf(typeof fetch === "function")(
 
         const bareFaxios = faxios.create({
           adapter: "fetch",
-        }) as unknown as TypedFaxiosInstance;
+        });
 
         await assert.rejects(
           bareFaxios.get(dataUrl, { maxContentLength: 16 }),
@@ -1800,7 +1777,7 @@ describe.runIf(typeof fetch === "function")(
       it("should allow a percent-encoded data: URL within decoded maxContentLength", async () => {
         const bareFaxios = faxios.create({
           adapter: "fetch",
-        }) as unknown as TypedFaxiosInstance;
+        });
         const { data } = await bareFaxios.get("data:text/plain,%E2%82%AC", {
           maxContentLength: 4,
         });

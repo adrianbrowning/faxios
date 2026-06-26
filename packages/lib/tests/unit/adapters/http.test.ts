@@ -27,10 +27,6 @@ import HttpsProxyAgent from "https-proxy-agent";
 import multer from "multer";
 import { describe, it } from "vitest";
 import faxios from "../../../src/index.js";
-import type {
-  AxiosInstance as TypedFaxiosInstance,
-  AxiosStatic as TypedFaxiosStatic,
-} from "../../../src/index.old.js";
 import httpAdapter, {
   __isSameOriginRedirect,
   __setProxy,
@@ -114,9 +110,9 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data: responseData } = await (
-        faxios as unknown as TypedFaxiosStatic
-      ).get(`http://127.0.0.1:${(server.address() as AddressInfo).port}`);
+      const { data: responseData } = await faxios.get(
+        `http://127.0.0.1:${(server.address() as AddressInfo).port}`,
+      );
       assert.deepStrictEqual(responseData, data);
     } finally {
       await stopHTTPServer(server);
@@ -139,11 +135,12 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data: responseData } = await (
-        faxios as unknown as TypedFaxiosStatic
-      ).get(`http://[::1]:${(server.address() as AddressInfo).port}`, {
-        proxy: false,
-      });
+      const { data: responseData } = await faxios.get(
+        `http://[::1]:${(server.address() as AddressInfo).port}`,
+        {
+          proxy: false,
+        },
+      );
       assert.deepStrictEqual(responseData, data);
     } finally {
       await stopHTTPServer(server);
@@ -162,7 +159,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).get(
+        faxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           {
             timeout: { strangeTimeout: 250 } as any,
@@ -197,7 +194,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data } = (await (faxios as unknown as TypedFaxiosStatic).get(
+      const { data } = (await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           headers: {
@@ -228,19 +225,15 @@ describe("supports http with nodejs", () => {
 
     const instance = faxios.create({ proxy: false });
 
-    (instance as unknown as TypedFaxiosInstance).interceptors.request.use(
-      (
-        config: import("../../../src/index.old.js").InternalAxiosRequestConfig,
-      ) => {
-        config.headers.oprtName = encodeURIComponent(
-          config.headers.oprtName as string,
-        );
-        return config;
-      },
-    );
+    instance.interceptors.request.use((config) => {
+      config.headers.oprtName = encodeURIComponent(
+        config.headers.oprtName as string,
+      );
+      return config;
+    });
 
     try {
-      const { data } = (await (instance as unknown as TypedFaxiosInstance).get(
+      const { data } = (await instance.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           headers: {
@@ -269,7 +262,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data } = (await (faxios as unknown as TypedFaxiosStatic).get(
+      const { data } = (await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           proxy: false,
@@ -297,7 +290,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).get(
+        faxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           {
             timeout: "250" as any,
@@ -326,7 +319,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).get(
+        faxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           {
             timeout: 250,
@@ -350,16 +343,13 @@ describe("supports http with nodejs", () => {
     const controller = new AbortController();
     const agent = new HangingConnectAgent();
     let guardTimer;
-    const request = (faxios as unknown as TypedFaxiosStatic).get(
-      "http://connect-timeout.test/",
-      {
-        httpAgent: agent,
-        maxRedirects: 0,
-        proxy: false,
-        signal: controller.signal as any,
-        timeout,
-      },
-    );
+    const request = faxios.get("http://connect-timeout.test/", {
+      httpAgent: agent,
+      maxRedirects: 0,
+      proxy: false,
+      signal: controller.signal as any,
+      timeout,
+    });
     const guard = new Promise((_resolve, reject) => {
       guardTimer = setTimeout(() => {
         controller.abort();
@@ -388,7 +378,7 @@ describe("supports http with nodejs", () => {
   it("should not time out immediately for timeout set to zero during TCP connect", async () => {
     const controller = new AbortController();
     const agent = new HangingConnectAgent();
-    const request = (faxios as unknown as TypedFaxiosStatic)
+    const request = faxios
       .get("http://connect-timeout.test/", {
         httpAgent: agent,
         maxRedirects: 0,
@@ -424,7 +414,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).get(
+        faxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           {
             timeout: 250,
@@ -458,9 +448,9 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data: responseData } = await (
-        faxios as unknown as TypedFaxiosStatic
-      ).get(`http://localhost:${(server.address() as AddressInfo).port}`);
+      const { data: responseData } = await faxios.get(
+        `http://localhost:${(server.address() as AddressInfo).port}`,
+      );
       assert.deepStrictEqual(responseData, data);
     } finally {
       await stopHTTPServer(server);
@@ -485,9 +475,9 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const { data: responseData } = await (
-        faxios as unknown as TypedFaxiosStatic
-      ).get(`http://localhost:${(server.address() as AddressInfo).port}`);
+      const { data: responseData } = await faxios.get(
+        `http://localhost:${(server.address() as AddressInfo).port}`,
+      );
       assert.deepStrictEqual(responseData, data);
     } finally {
       await stopHTTPServer(server);
@@ -511,7 +501,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = (await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = (await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/one`,
         {
           maxRedirects: 1,
@@ -536,7 +526,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/one`,
         {
           maxRedirects: 0,
@@ -567,7 +557,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      await (faxios as unknown as TypedFaxiosStatic).get(
+      await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}`,
         {
           maxRedirects: 3,
@@ -592,7 +582,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      await (faxios as unknown as TypedFaxiosStatic).get(
+      await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/one`,
         {
           maxRedirects: 3,
@@ -633,7 +623,7 @@ describe("supports http with nodejs", () => {
     let capturedUrl;
 
     try {
-      await (faxios as unknown as TypedFaxiosStatic).get(originalUrl, {
+      await faxios.get(originalUrl, {
         maxRedirects: 3,
         beforeRedirect: (
           options: Record<string, unknown>,
@@ -706,7 +696,7 @@ describe("supports http with nodejs", () => {
       { port: PROXY_PORT },
     );
 
-    await (faxios as unknown as TypedFaxiosStatic).get(
+    await faxios.get(
       `http://localhost:${(server.address() as AddressInfo).port}/`,
       {
         proxy: {
@@ -748,7 +738,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      await (faxios as unknown as TypedFaxiosStatic).get(
+      await faxios.get(
         `http://localhost:${(origin.address() as AddressInfo).port}/src`,
         {
           maxRedirects: 5,
@@ -791,7 +781,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      await (faxios as unknown as TypedFaxiosStatic).get(
+      await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/src`,
         {
           maxRedirects: 5,
@@ -829,7 +819,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      await (faxios as unknown as TypedFaxiosStatic).get(
+      await faxios.get(
         `http://localhost:${(origin.address() as AddressInfo).port}/src`,
         {
           maxRedirects: 5,
@@ -874,7 +864,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      await (client as unknown as TypedFaxiosInstance).get(
+      await client.get(
         `http://localhost:${(origin.address() as AddressInfo).port}/src`,
         {
           maxRedirects: 5,
@@ -899,7 +889,7 @@ describe("supports http with nodejs", () => {
 
   it("should reject invalid sensitiveHeaders config", async () => {
     await assert.rejects(
-      (faxios as unknown as TypedFaxiosStatic).get("http://localhost:1/", {
+      faxios.get("http://localhost:1/", {
         sensitiveHeaders: "X-API-Key" as any,
       }),
       (error: any) => {
@@ -913,7 +903,7 @@ describe("supports http with nodejs", () => {
     );
 
     await assert.rejects(
-      (faxios as unknown as TypedFaxiosStatic).get("http://localhost:1/", {
+      faxios.get("http://localhost:1/", {
         sensitiveHeaders: [null as any],
       }),
       (error: any) => {
@@ -963,7 +953,7 @@ describe("supports http with nodejs", () => {
     try {
       await assert.rejects(
         async function stackTraceTest() {
-          await (faxios as unknown as TypedFaxiosStatic).get(
+          await faxios.get(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
           );
         },
@@ -990,11 +980,9 @@ describe("supports http with nodejs", () => {
   it("should wrap interceptor errors and keep stack", async () => {
     const axiosInstance = faxios.create();
 
-    (axiosInstance as unknown as TypedFaxiosInstance).interceptors.request.use(
-      (_res: any) => {
-        throw new Error("from request interceptor");
-      },
-    );
+    axiosInstance.interceptors.request.use((_res: any) => {
+      throw new Error("from request interceptor");
+    });
 
     const server = await startHTTPServer(
       (_req: any, res: any) => {
@@ -1006,7 +994,7 @@ describe("supports http with nodejs", () => {
     try {
       await assert.rejects(
         async function stackTraceTest() {
-          await (axiosInstance as unknown as TypedFaxiosInstance).get(
+          await axiosInstance.get(
             `http://localhost:${(server.address() as AddressInfo).port}/one`,
           );
         },
@@ -1047,7 +1035,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).head(
+      const response = await faxios.head(
         `http://localhost:${(server.address() as AddressInfo).port}/one`,
       );
       assert.strictEqual(response.status, 200);
@@ -1089,9 +1077,9 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const { data: responseData } = await (
-          faxios as unknown as TypedFaxiosStatic
-        ).get(`http://localhost:${(server.address() as AddressInfo).port}/`);
+        const { data: responseData } = await faxios.get(
+          `http://localhost:${(server.address() as AddressInfo).port}/`,
+        );
         assert.deepStrictEqual(responseData, data);
       } finally {
         await stopHTTPServer(server);
@@ -1113,7 +1101,7 @@ describe("supports http with nodejs", () => {
       try {
         await assert.rejects(
           async () => {
-            await (faxios as unknown as TypedFaxiosStatic).get(
+            await faxios.get(
               `http://localhost:${(server.address() as AddressInfo).port}/`,
             );
           },
@@ -1157,7 +1145,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const response = (await (faxios as unknown as TypedFaxiosStatic).get(
+        const response = (await faxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             decompress: false,
@@ -1185,7 +1173,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        await (faxios as unknown as TypedFaxiosStatic).get(
+        await faxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
         );
         assert.strictEqual(acceptEncoding!.includes("zstd"), false);
@@ -1210,7 +1198,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        await (faxios as unknown as TypedFaxiosStatic).get(
+        await faxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             transitional: {
@@ -1309,9 +1297,7 @@ describe("supports http with nodejs", () => {
             );
 
             try {
-              const { data } = await (
-                faxios as unknown as TypedFaxiosStatic
-              ).get(
+              const { data } = await faxios.get(
                 `http://localhost:${(server.address() as AddressInfo).port}`,
               );
               assert.strictEqual(data, responseBody);
@@ -1331,9 +1317,7 @@ describe("supports http with nodejs", () => {
             );
 
             try {
-              const { data } = await (
-                faxios as unknown as TypedFaxiosStatic
-              ).get(
+              const { data } = await faxios.get(
                 `http://localhost:${(server.address() as AddressInfo).port}`,
               );
               assert.strictEqual(data, responseBody);
@@ -1355,9 +1339,7 @@ describe("supports http with nodejs", () => {
             );
 
             try {
-              const { data } = await (
-                faxios as unknown as TypedFaxiosStatic
-              ).get(
+              const { data } = await faxios.get(
                 `http://localhost:${(server.address() as AddressInfo).port}`,
               );
               assert.strictEqual(data, responseBody);
@@ -1377,9 +1359,7 @@ describe("supports http with nodejs", () => {
             );
 
             try {
-              const { data } = await (
-                faxios as unknown as TypedFaxiosStatic
-              ).get(
+              const { data } = await faxios.get(
                 `http://localhost:${(server.address() as AddressInfo).port}`,
               );
               assert.strictEqual(data, "");
@@ -1398,7 +1378,7 @@ describe("supports http with nodejs", () => {
             );
 
             try {
-              await (faxios as unknown as TypedFaxiosStatic).get(
+              await faxios.get(
                 `http://localhost:${(server.address() as AddressInfo).port}`,
               );
             } finally {
@@ -1420,7 +1400,7 @@ describe("supports http with nodejs", () => {
 
             try {
               await assert.rejects(
-                (faxios as unknown as TypedFaxiosStatic).get(
+                faxios.get(
                   `http://localhost:${(server.address() as AddressInfo).port}`,
                   {
                     maxRedirects: 0,
@@ -1449,7 +1429,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       assert.strictEqual(response.data, str);
@@ -1469,7 +1449,7 @@ describe("supports http with nodejs", () => {
     try {
       const user = "foo";
       const headers = { Authorization: "Bearer 1234" };
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://${user}@localhost:${(server.address() as AddressInfo).port}/`,
         {
           headers,
@@ -1491,7 +1471,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://my%40email.com:pa%24ss@localhost:${(server.address() as AddressInfo).port}/`,
       );
       const base64 = Buffer.from("my@email.com:pa$ss", "utf8").toString(
@@ -1512,7 +1492,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://user%:foo%zz@localhost:${(server.address() as AddressInfo).port}/`,
       );
       const base64 = Buffer.from("user%:foo%zz", "utf8").toString("base64");
@@ -1531,7 +1511,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://:secret@localhost:${(server.address() as AddressInfo).port}/`,
       );
       const base64 = Buffer.from(":secret", "utf8").toString("base64");
@@ -1552,7 +1532,7 @@ describe("supports http with nodejs", () => {
     try {
       const auth = { username: "foo", password: "bar" };
       const headers = { AuThOrIzAtIoN: "Bearer 1234" }; // wonky casing to ensure caseless comparison
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           auth,
@@ -1596,7 +1576,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/demo`,
         {
           auth: {} as any,
@@ -1742,7 +1722,7 @@ describe("supports http with nodejs", () => {
 
     try {
       const auth = { username: "foo", password: "bar" };
-      const response = (await (faxios as unknown as TypedFaxiosStatic).post(
+      const response = (await faxios.post(
         `http://localhost:${(server.address() as AddressInfo).port}/login`,
         { hello: "world" },
         { auth, maxRedirects: 1 },
@@ -1776,7 +1756,7 @@ describe("supports http with nodejs", () => {
 
     try {
       const auth = { username: "foo", password: "bar" };
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://localhost:${(redirectServer.address() as AddressInfo).port}/start`,
         {
           auth,
@@ -1812,7 +1792,7 @@ describe("supports http with nodejs", () => {
 
     try {
       const auth = { username: "foo", password: "bar" };
-      const response = (await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = (await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/a`,
         {
           auth,
@@ -1836,7 +1816,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = (await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = (await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
       )) as any;
       assert.ok(
@@ -1858,7 +1838,7 @@ describe("supports http with nodejs", () => {
 
     try {
       const headers = { "UsEr-AgEnT": "foo bar" }; // wonky casing to ensure caseless comparison
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         { headers },
       );
@@ -1879,7 +1859,7 @@ describe("supports http with nodejs", () => {
 
     try {
       const headers = { "CoNtEnT-lEnGtH": "42" }; // wonky casing to ensure caseless comparison
-      await (faxios as unknown as TypedFaxiosStatic).post(
+      await faxios.post(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         "foo",
         {
@@ -1902,7 +1882,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).get(
+        faxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             maxContentLength: 2000,
@@ -1937,7 +1917,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).get(
+        faxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}/one`,
           {
             maxContentLength: 2000,
@@ -1968,7 +1948,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).post(
+        faxios.post(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             data,
@@ -2002,7 +1982,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = (await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = (await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           responseType: "stream",
@@ -2044,7 +2024,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = (await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = (await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           responseType: "stream",
@@ -2086,7 +2066,7 @@ describe("supports http with nodejs", () => {
       const source = stream.Readable.from([buf]);
 
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).post(
+        faxios.post(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           source,
           {
@@ -2132,7 +2112,7 @@ describe("supports http with nodejs", () => {
       const payload = Buffer.alloc(512, 0x62);
       const source = stream.Readable.from([payload]);
 
-      const response = (await (faxios as unknown as TypedFaxiosStatic).post(
+      const response = (await faxios.post(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         source,
         {
@@ -2165,7 +2145,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).post(
+      const response = await faxios.post(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           data,
@@ -2182,7 +2162,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).get(
+        faxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             params: {
@@ -2234,7 +2214,7 @@ describe("supports http with nodejs", () => {
     }
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic)({
+      const response = await faxios({
         socketPath: socketName,
         url: "http://localhost:4444/socket",
       });
@@ -2264,7 +2244,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const response = (await (faxios as unknown as TypedFaxiosStatic).post(
+        const response = (await faxios.post(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           fs.createReadStream(thisTestFilePath),
           {
@@ -2301,7 +2281,7 @@ describe("supports http with nodejs", () => {
 
       try {
         await assert.rejects(
-          (faxios as unknown as TypedFaxiosStatic).post(
+          faxios.post(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             fs.createReadStream(notExistPath),
           ),
@@ -2326,7 +2306,7 @@ describe("supports http with nodejs", () => {
         requestStream.destroy();
       }, 1000);
 
-      const { data } = (await (faxios as unknown as TypedFaxiosStatic).post(
+      const { data } = (await faxios.post(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         requestStream,
         {
@@ -2374,7 +2354,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = (await (faxios as unknown as TypedFaxiosStatic).post(
+      const response = (await faxios.post(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         buf,
         {
@@ -2442,7 +2422,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           proxy: {
@@ -2524,7 +2504,7 @@ describe("supports http with nodejs", () => {
       rejectUnauthorized: false,
     });
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `https://localhost:${(server.address() as AddressInfo).port}/`,
         {
           httpsAgent: tunnelingAgent,
@@ -2632,7 +2612,7 @@ describe("supports http with nodejs", () => {
     const originalReject = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).post(
+      const response = await faxios.post(
         `https://localhost:${(origin.address() as AddressInfo).port}/path?token=abc123`,
         { sensitive: "leak-canary" },
         {
@@ -2745,7 +2725,7 @@ describe("supports http with nodejs", () => {
     const httpsAgent = new https.Agent({ ca: tlsOptions.cert });
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `https://localhost:${(origin.address() as AddressInfo).port}/`,
         {
           httpsAgent,
@@ -2805,17 +2785,14 @@ describe("supports http with nodejs", () => {
     try {
       await assert.rejects(
         async () => {
-          await (faxios as unknown as TypedFaxiosStatic).get(
-            "https://127.0.0.1:1/",
-            {
-              proxy: {
-                host: "127.0.0.1",
-                port: (proxy.address() as AddressInfo).port,
-                protocol: "http",
-              },
-              timeout: 4000,
+          await faxios.get("https://127.0.0.1:1/", {
+            proxy: {
+              host: "127.0.0.1",
+              port: (proxy.address() as AddressInfo).port,
+              protocol: "http",
             },
-          );
+            timeout: 4000,
+          });
         },
         (err: any) => {
           assert.ok(
@@ -2845,7 +2822,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           proxy: false,
@@ -2914,7 +2891,7 @@ describe("supports http with nodejs", () => {
     process.env.NO_PROXY = "";
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
 
@@ -3013,7 +2990,7 @@ describe("supports http with nodejs", () => {
     const originalReject = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `https://localhost:${(server.address() as AddressInfo).port}/`,
       );
 
@@ -3135,7 +3112,7 @@ describe("supports http with nodejs", () => {
     process.env.NO_PROXY = `localhost:${(proxy.address() as AddressInfo).port}`;
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       assert.equal(response.status, 200);
@@ -3217,7 +3194,7 @@ describe("supports http with nodejs", () => {
     process.env.NO_PROXY = noProxyValue;
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       assert.equal(
@@ -3279,7 +3256,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).get("http://localhost.:1/", {
+        faxios.get("http://localhost.:1/", {
           timeout: 100,
         }),
       );
@@ -3341,7 +3318,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).get("http://[::1]:1/", {
+        faxios.get("http://[::1]:1/", {
           timeout: 100,
         }),
       );
@@ -3422,7 +3399,7 @@ describe("supports http with nodejs", () => {
     process.env.NO_PROXY = noProxyValue;
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       assert.equal(
@@ -3491,7 +3468,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           proxy: {
@@ -3559,7 +3536,7 @@ describe("supports http with nodejs", () => {
     process.env.NO_PROXY = "";
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
       const base64 = Buffer.from("user:pass", "utf8").toString("base64");
@@ -3611,12 +3588,9 @@ describe("supports http with nodejs", () => {
       };
 
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).get(
-          "https://test-domain.abc",
-          {
-            proxy,
-          },
-        ),
+        faxios.get("https://test-domain.abc", {
+          proxy,
+        }),
         (error: any) => {
           assert.strictEqual(error.message, "Invalid proxy authorization");
           assert.strictEqual(error.code, "ERR_BAD_OPTION");
@@ -4183,9 +4157,7 @@ describe("supports http with nodejs", () => {
       process.env.no_proxy = `127.0.0.1:${attackerPort}`;
 
       try {
-        await (faxios as unknown as TypedFaxiosStatic).get(
-          "http://example.com/start",
-        );
+        await faxios.get("http://example.com/start");
 
         assert.ok(
           proxySaw.some((h) => h.proxyAuth),
@@ -4226,7 +4198,7 @@ describe("supports http with nodejs", () => {
     try {
       await assert.rejects(
         async function stackTraceTest() {
-          await (faxios as unknown as TypedFaxiosStatic).get(
+          await faxios.get(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               cancelToken: source.token,
@@ -4257,12 +4229,9 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = await (faxios as unknown as TypedFaxiosStatic).get(
-        "/foo",
-        {
-          baseURL: `http://localhost:${(server.address() as AddressInfo).port}/`,
-        },
-      );
+      const response = await faxios.get("/foo", {
+        baseURL: `http://localhost:${(server.address() as AddressInfo).port}/`,
+      });
 
       assert.equal(
         response.config.baseURL,
@@ -4285,7 +4254,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      const response = (await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = (await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}`,
       )) as any;
       assert.equal(response.request.agent.protocol, "http:");
@@ -4313,7 +4282,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      const response = (await (faxios as unknown as TypedFaxiosStatic).get(
+      const response = (await faxios.get(
         `https://localhost:${(server.address() as AddressInfo).port}`,
         {
           httpsAgent: new https.Agent({
@@ -4537,23 +4506,17 @@ describe("supports http with nodejs", () => {
   });
 
   it("should return malformed URL", async () => {
-    await assert.rejects(
-      (faxios as unknown as TypedFaxiosStatic).get("tel:484-695-3408"),
-      (error: any) => {
-        assert.equal(error.message, "Unsupported protocol tel:");
-        return true;
-      },
-    );
+    await assert.rejects(faxios.get("tel:484-695-3408"), (error: any) => {
+      assert.equal(error.message, "Unsupported protocol tel:");
+      return true;
+    });
   });
 
   it("should return unsupported protocol", async () => {
-    await assert.rejects(
-      (faxios as unknown as TypedFaxiosStatic).get("ftp:google.com"),
-      (error: any) => {
-        assert.equal(error.message, "Unsupported protocol ftp:");
-        return true;
-      },
-    );
+    await assert.rejects(faxios.get("ftp:google.com"), (error: any) => {
+      assert.equal(error.message, "Unsupported protocol ftp:");
+      return true;
+    });
   });
 
   it("rejects malformed HTTP URLs before Node URL normalization and preserves config", async () => {
@@ -4563,7 +4526,7 @@ describe("supports http with nodejs", () => {
     ]) {
       await assert.rejects(
         async () =>
-          (faxios as unknown as TypedFaxiosStatic).get(url, {
+          faxios.get(url, {
             adapter: "http",
             headers: {
               "X-Test": "yes",
@@ -4594,7 +4557,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      await (faxios as unknown as TypedFaxiosStatic).get(
+      await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
       );
     } finally {
@@ -4613,7 +4576,7 @@ describe("supports http with nodejs", () => {
     );
 
     try {
-      await (faxios as unknown as TypedFaxiosStatic).get(
+      await faxios.get(
         `http://localhost:${(server.address() as AddressInfo).port}/`,
         {
           headers: {
@@ -4648,7 +4611,7 @@ describe("supports http with nodejs", () => {
 
     try {
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).get(
+        faxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}/aborted`,
           {
             timeout: 500,
@@ -4686,7 +4649,7 @@ describe("supports http with nodejs", () => {
 
       const requests = [1, 2, 3, 4, 5].map(async (id) => {
         try {
-          await (faxios as unknown as TypedFaxiosStatic).get("/foo/bar", {
+          await faxios.get("/foo/bar", {
             baseURL: `http://localhost:${(server.address() as AddressInfo).port}`,
             cancelToken: source.token,
           });
@@ -4754,7 +4717,7 @@ describe("supports http with nodejs", () => {
         );
 
         try {
-          const response = (await (faxios as unknown as TypedFaxiosStatic).post(
+          const response = (await faxios.post(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             form,
             {
@@ -4824,7 +4787,7 @@ describe("supports http with nodejs", () => {
           form.append("foo2", "bar2");
           form.append("file1", blob as any);
 
-          const { data } = (await (faxios as unknown as TypedFaxiosStatic).post(
+          const { data } = (await faxios.post(
             `http://localhost:${(server.address() as AddressInfo).port}`,
             form,
             {
@@ -4892,17 +4855,14 @@ describe("supports http with nodejs", () => {
             yield ["Authorization", "Bearer CHANGED"];
           };
 
-          const response = await (faxios as unknown as TypedFaxiosStatic).get(
-            "http://stub.invalid/",
-            {
-              headers: {
-                Authorization: "Bearer VALID_USER_TOKEN",
-                "X-App": "safe",
-              },
-              transport: stubTransport,
-              maxRedirects: 0,
+          const response = await faxios.get("http://stub.invalid/", {
+            headers: {
+              Authorization: "Bearer VALID_USER_TOKEN",
+              "X-App": "safe",
             },
-          );
+            transport: stubTransport,
+            maxRedirects: 0,
+          });
 
           assert.ok(capturedHeaders, "transport was not invoked");
           assert.strictEqual((capturedHeaders as any)["X-App"], "safe");
@@ -4981,7 +4941,7 @@ describe("supports http with nodejs", () => {
 
         try {
           pollute();
-          await (faxios as unknown as TypedFaxiosStatic).post(
+          await faxios.post(
             "http://stub.invalid/",
             { userId: 42 },
             {
@@ -5055,16 +5015,12 @@ describe("supports http with nodejs", () => {
       it("preserves legacy getHeaders() propagation by default", async () => {
         let capturedHeaders;
 
-        await (faxios as unknown as TypedFaxiosStatic).post(
-          "http://stub.invalid/",
-          new CustomFormData(),
-          {
-            transport: createStubTransport((headers: any) => {
-              capturedHeaders = headers;
-            }),
-            maxRedirects: 0,
-          },
-        );
+        await faxios.post("http://stub.invalid/", new CustomFormData(), {
+          transport: createStubTransport((headers: any) => {
+            capturedHeaders = headers;
+          }),
+          maxRedirects: 0,
+        });
 
         assert.ok(capturedHeaders, "transport was not invoked");
         const ct =
@@ -5090,17 +5046,13 @@ describe("supports http with nodejs", () => {
       it("only copies content headers when formDataHeaderPolicy is content-only", async () => {
         let capturedHeaders;
 
-        await (faxios as unknown as TypedFaxiosStatic).post(
-          "http://stub.invalid/",
-          new CustomFormData(),
-          {
-            transport: createStubTransport((headers: any) => {
-              capturedHeaders = headers;
-            }),
-            maxRedirects: 0,
-            formDataHeaderPolicy: "content-only",
-          },
-        );
+        await faxios.post("http://stub.invalid/", new CustomFormData(), {
+          transport: createStubTransport((headers: any) => {
+            capturedHeaders = headers;
+          }),
+          maxRedirects: 0,
+          formDataHeaderPolicy: "content-only",
+        });
 
         assert.ok(capturedHeaders, "transport was not invoked");
         const ct =
@@ -5152,7 +5104,7 @@ describe("supports http with nodejs", () => {
       try {
         await Promise.all(
           [null, false, true].map(async (mode) =>
-            (faxios as unknown as TypedFaxiosStatic)
+            faxios
               .postForm(
                 `http://localhost:${(server.address() as AddressInfo).port}/`,
                 obj,
@@ -5204,9 +5156,7 @@ describe("supports http with nodejs", () => {
       const rootUrl = `http://localhost:${(server.address() as AddressInfo).port}`;
 
       try {
-        const rootResponse = await (
-          faxios as unknown as TypedFaxiosStatic
-        ).postForm(rootUrl, { foo: "bar" });
+        const rootResponse = await faxios.postForm(rootUrl, { foo: "bar" });
         assert.strictEqual(rootResponse.status, 200);
         assert.deepStrictEqual(rootResponse.data, {
           route: "root",
@@ -5214,11 +5164,7 @@ describe("supports http with nodejs", () => {
         });
 
         await assert.rejects(
-          async () =>
-            (faxios as unknown as TypedFaxiosStatic).postForm(
-              `${rootUrl}/unexpected`,
-              { foo: "bar" },
-            ),
+          async () => faxios.postForm(`${rootUrl}/unexpected`, { foo: "bar" }),
           (error: any) => {
             assert.strictEqual(error.response.status, 418);
             assert.strictEqual(error.response.data, "wrong-route");
@@ -5255,7 +5201,7 @@ describe("supports http with nodejs", () => {
           type: "image/jpeg",
         });
 
-        const { data } = await (faxios as unknown as TypedFaxiosStatic).post(
+        const { data } = await faxios.post(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           blob,
           {
@@ -5298,7 +5244,7 @@ describe("supports http with nodejs", () => {
 
       try {
         for (const headerName of ["content-type", "Content-Type"]) {
-          const response = await (faxios as unknown as TypedFaxiosStatic).post(
+          const response = await faxios.post(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             obj,
             {
@@ -5346,7 +5292,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const response = await (faxios as unknown as TypedFaxiosStatic).post(
+        const response = await faxios.post(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           obj,
           {
@@ -5394,9 +5340,7 @@ describe("supports http with nodejs", () => {
       const payload = "user[name]=Peter&tags[]=a&tags[]=b";
 
       try {
-        const parsedResponse = await (
-          faxios as unknown as TypedFaxiosStatic
-        ).post(rootUrl, payload, {
+        const parsedResponse = await faxios.post(rootUrl, payload, {
           headers: {
             "content-type": "application/x-www-form-urlencoded",
           },
@@ -5410,9 +5354,7 @@ describe("supports http with nodejs", () => {
           },
         });
 
-        const ignoredResponse = (await (
-          faxios as unknown as TypedFaxiosStatic
-        ).post(rootUrl, payload, {
+        const ignoredResponse = (await faxios.post(rootUrl, payload, {
           headers: {
             "content-type": "text/plain",
           },
@@ -5443,9 +5385,7 @@ describe("supports http with nodejs", () => {
       const buffer = Buffer.from("123");
       const dataURI = `data:application/octet-stream;base64,${buffer.toString("base64")}`;
 
-      const { data } = await (faxios as unknown as TypedFaxiosStatic).get(
-        dataURI,
-      );
+      const { data } = await faxios.get(dataURI);
       assert.deepStrictEqual(data, buffer);
     });
 
@@ -5457,10 +5397,9 @@ describe("supports http with nodejs", () => {
       const buffer = Buffer.from("123");
       const dataURI = `data:application/octet-stream;base64,${buffer.toString("base64")}`;
 
-      const { data } = (await (faxios as unknown as TypedFaxiosStatic).get(
-        dataURI,
-        { responseType: "blob" },
-      )) as any;
+      const { data } = (await faxios.get(dataURI, {
+        responseType: "blob",
+      })) as any;
       assert.strictEqual(data.type, "application/octet-stream");
       assert.deepStrictEqual(await data.text(), "123");
     });
@@ -5469,10 +5408,7 @@ describe("supports http with nodejs", () => {
       const buffer = Buffer.from("123", "utf-8");
       const dataURI = `data:application/octet-stream;base64,${buffer.toString("base64")}`;
 
-      const { data } = await (faxios as unknown as TypedFaxiosStatic).get(
-        dataURI,
-        { responseType: "text" },
-      );
+      const { data } = await faxios.get(dataURI, { responseType: "text" });
       assert.deepStrictEqual(data, "123");
     });
 
@@ -5480,10 +5416,9 @@ describe("supports http with nodejs", () => {
       const buffer = Buffer.from("123", "utf-8");
       const dataURI = `data:application/octet-stream;base64,${buffer.toString("base64")}`;
 
-      const { data } = (await (faxios as unknown as TypedFaxiosStatic).get(
-        dataURI,
-        { responseType: "stream" },
-      )) as any;
+      const { data } = (await faxios.get(dataURI, {
+        responseType: "stream",
+      })) as any;
       assert.strictEqual(await getStream(data), "123");
     });
   });
@@ -5519,7 +5454,7 @@ describe("supports http with nodejs", () => {
 
           const samples: Array<any> = [];
 
-          const { data } = await (faxios as unknown as TypedFaxiosStatic).post(
+          const { data } = await faxios.post(
             `http://localhost:${(server.address() as AddressInfo).port}`,
             readable,
             {
@@ -5598,7 +5533,7 @@ describe("supports http with nodejs", () => {
 
           const samples: Array<any> = [];
 
-          const { data } = await (faxios as unknown as TypedFaxiosStatic).post(
+          const { data } = await faxios.post(
             `http://localhost:${(server.address() as AddressInfo).port}`,
             readable,
             {
@@ -5662,7 +5597,7 @@ describe("supports http with nodejs", () => {
         const skip = 4;
         const compareValues = toleranceRange(50, 50);
 
-        const { data } = await (faxios as unknown as TypedFaxiosStatic).post(
+        const { data } = await faxios.post(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           buf,
           {
@@ -5724,7 +5659,7 @@ describe("supports http with nodejs", () => {
         const skip = 4;
         const compareValues = toleranceRange(50, 50);
 
-        const { data } = await (faxios as unknown as TypedFaxiosStatic).post(
+        const { data } = await faxios.post(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           buf,
           {
@@ -5789,7 +5724,7 @@ describe("supports http with nodejs", () => {
         const buf = Buffer.alloc(1024 * 1024);
         const controller = new AbortController();
 
-        const { data } = (await (faxios as unknown as TypedFaxiosStatic).post(
+        const { data } = (await faxios.post(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           buf,
           {
@@ -5830,8 +5765,7 @@ describe("supports http with nodejs", () => {
 
   it("should properly handle synchronous errors inside the adapter", async () => {
     await assert.rejects(
-      async () =>
-        (faxios as unknown as TypedFaxiosStatic).get("http://192.168.0.285"),
+      async () => faxios.get("http://192.168.0.285"),
       /Invalid URL/,
     );
   });
@@ -5842,7 +5776,7 @@ describe("supports http with nodejs", () => {
     });
 
     try {
-      const { data } = await (faxios as unknown as TypedFaxiosStatic).post(
+      const { data } = await faxios.post(
         `http://localhost:${(server.address() as AddressInfo).port}`,
         "test",
         {
@@ -5867,7 +5801,7 @@ describe("supports http with nodejs", () => {
       let isCalled = false;
 
       try {
-        const { data } = await (faxios as unknown as TypedFaxiosStatic).post(
+        const { data } = await faxios.post(
           `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
           payload,
           {
@@ -5891,7 +5825,7 @@ describe("supports http with nodejs", () => {
       let isCalled = false;
 
       try {
-        const { data } = await (faxios as unknown as TypedFaxiosStatic).post(
+        const { data } = await faxios.post(
           `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
           payload,
           {
@@ -5915,7 +5849,7 @@ describe("supports http with nodejs", () => {
       let isCalled = false;
 
       try {
-        const { data } = await (faxios as unknown as TypedFaxiosStatic).post(
+        const { data } = await faxios.post(
           `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
           payload,
           {
@@ -5939,7 +5873,7 @@ describe("supports http with nodejs", () => {
       let isCalled = false;
 
       try {
-        const { data } = await (faxios as unknown as TypedFaxiosStatic).post(
+        const { data } = await faxios.post(
           `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
           payload,
           {
@@ -5963,7 +5897,7 @@ describe("supports http with nodejs", () => {
       let isCalled = false;
 
       try {
-        const { data } = await (faxios as unknown as TypedFaxiosStatic).post(
+        const { data } = await faxios.post(
           `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
           payload,
           {
@@ -5983,12 +5917,9 @@ describe("supports http with nodejs", () => {
 
     it("should handle errors", async () => {
       await assert.rejects(async () => {
-        await (faxios as unknown as TypedFaxiosStatic).get(
-          "https://no-such-domain-987654.com",
-          {
-            lookup: lookup as any,
-          },
-        );
+        await faxios.get("https://no-such-domain-987654.com", {
+          lookup: lookup as any,
+        });
       }, /ENOTFOUND/);
     });
   });
@@ -6007,7 +5938,7 @@ describe("supports http with nodejs", () => {
       );
 
       try {
-        const { data } = await (faxios as unknown as TypedFaxiosStatic).get(
+        const { data } = await faxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           {
             parseReviver: (key: string, value: unknown) =>
@@ -6035,9 +5966,7 @@ describe("supports http with nodejs", () => {
     it("should merge request http2Options with its instance config", async () => {
       const http2Faxios = createHttp2Faxios("https://localhost:8080");
 
-      const { data } = await (
-        http2Faxios as unknown as TypedFaxiosInstance
-      ).get("/", {
+      const { data } = await http2Faxios.get("/", {
         http2Options: {
           foo: "test",
         },
@@ -6066,9 +5995,7 @@ describe("supports http with nodejs", () => {
       try {
         const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
         const http2Faxios = createHttp2Faxios(localServerURL);
-        const { data } = await (
-          http2Faxios as unknown as TypedFaxiosInstance
-        ).get(localServerURL);
+        const { data } = await http2Faxios.get(localServerURL);
         assert.deepStrictEqual(data, "OK");
       } finally {
         await stopHTTPServer(server);
@@ -6085,9 +6012,7 @@ describe("supports http with nodejs", () => {
         const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
         const http2Faxios = createHttp2Faxios(localServerURL);
         const payload = "DATA";
-        const { data } = await (
-          http2Faxios as unknown as TypedFaxiosInstance
-        ).post(localServerURL, payload);
+        const { data } = await http2Faxios.post(localServerURL, payload);
         assert.deepStrictEqual(data, payload);
       } finally {
         await stopHTTPServer(server);
@@ -6120,14 +6045,10 @@ describe("supports http with nodejs", () => {
         const source = stream.Readable.from([payload]);
 
         await assert.rejects(
-          (http2Faxios as unknown as TypedFaxiosInstance).post(
-            localServerURL,
-            source,
-            {
-              maxBodyLength: 1024,
-              headers: { "Content-Type": "application/octet-stream" },
-            },
-          ),
+          http2Faxios.post(localServerURL, source, {
+            maxBodyLength: 1024,
+            headers: { "Content-Type": "application/octet-stream" },
+          }),
           (error: any) => {
             assert.strictEqual(
               error.message,
@@ -6179,9 +6100,7 @@ describe("supports http with nodejs", () => {
         form.append("x", "foo");
         form.append("y", "bar");
 
-        const { data } = await (
-          http2Faxios as unknown as TypedFaxiosInstance
-        ).post(localServerURL, form);
+        const { data } = await http2Faxios.post(localServerURL, form);
 
         assert.deepStrictEqual(data, {
           fields: {
@@ -6222,9 +6141,7 @@ describe("supports http with nodejs", () => {
           try {
             const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
             const http2Faxios = createHttp2Faxios(localServerURL);
-            const { data } = await (
-              http2Faxios as unknown as TypedFaxiosInstance
-            ).get(localServerURL, {
+            const { data } = await http2Faxios.get(localServerURL, {
               responseType: responseType as any,
             });
             await assertValue(data);
@@ -6264,12 +6181,9 @@ describe("supports http with nodejs", () => {
         });
 
         await assert.rejects(async () => {
-          await (http2Faxios as unknown as TypedFaxiosInstance).get(
-            localServerURL,
-            {
-              timeout: 500,
-            },
-          );
+          await http2Faxios.get(localServerURL, {
+            timeout: 500,
+          });
         }, /timeout/);
 
         await promise;
@@ -6312,12 +6226,9 @@ describe("supports http with nodejs", () => {
         });
 
         await assert.rejects(async () => {
-          await (http2Faxios as unknown as TypedFaxiosInstance).get(
-            localServerURL,
-            {
-              signal: AbortSignal.timeout(500) as any,
-            },
-          );
+          await http2Faxios.get(localServerURL, {
+            signal: AbortSignal.timeout(500) as any,
+          });
         }, /CanceledError: canceled/);
 
         await promise;
@@ -6355,9 +6266,7 @@ describe("supports http with nodejs", () => {
           });
         });
 
-        const { data } = (await (
-          http2Faxios as unknown as TypedFaxiosInstance
-        ).get(localServerURL, {
+        const { data } = (await http2Faxios.get(localServerURL, {
           cancelToken: source.token,
           responseType: "stream",
         })) as any;
@@ -6409,18 +6318,12 @@ describe("supports http with nodejs", () => {
             const http2Faxios = createHttp2Faxios(localServerURL);
 
             const [response1, response2] = (await Promise.all([
-              (http2Faxios as unknown as TypedFaxiosInstance).get(
-                localServerURL,
-                {
-                  responseType: "stream",
-                },
-              ),
-              (http2Faxios as unknown as TypedFaxiosInstance).get(
-                localServerURL,
-                {
-                  responseType: "stream",
-                },
-              ),
+              http2Faxios.get(localServerURL, {
+                responseType: "stream",
+              }),
+              http2Faxios.get(localServerURL, {
+                responseType: "stream",
+              }),
             ])) as Array<any>;
 
             assert.strictEqual(response1.data.session, response2.data.session);
@@ -6470,18 +6373,12 @@ describe("supports http with nodejs", () => {
             const http2Faxios = createHttp2Faxios(localServerURL);
 
             const [response1, response2] = (await Promise.all([
-              (http2Faxios as unknown as TypedFaxiosInstance).get(
-                localServerURL,
-                {
-                  responseType: "stream",
-                },
-              ),
-              (http2Faxios as unknown as TypedFaxiosInstance).get(
-                localServerURL2,
-                {
-                  responseType: "stream",
-                },
-              ),
+              http2Faxios.get(localServerURL, {
+                responseType: "stream",
+              }),
+              http2Faxios.get(localServerURL2, {
+                responseType: "stream",
+              }),
             ])) as Array<any>;
 
             assert.notStrictEqual(
@@ -6525,22 +6422,16 @@ describe("supports http with nodejs", () => {
             const http2Faxios = createHttp2Faxios(localServerURL);
 
             const [response1, response2] = (await Promise.all([
-              (http2Faxios as unknown as TypedFaxiosInstance).get(
-                localServerURL,
-                {
-                  http2Options: {
-                    sessionTimeout: 2000,
-                  },
+              http2Faxios.get(localServerURL, {
+                http2Options: {
+                  sessionTimeout: 2000,
                 },
-              ),
-              (http2Faxios as unknown as TypedFaxiosInstance).get(
-                localServerURL,
-                {
-                  http2Options: {
-                    sessionTimeout: 4000,
-                  },
+              }),
+              http2Faxios.get(localServerURL, {
+                http2Options: {
+                  sessionTimeout: 4000,
                 },
-              ),
+              }),
             ])) as Array<any>;
 
             assert.notStrictEqual(
@@ -6575,26 +6466,17 @@ describe("supports http with nodejs", () => {
             const http2Faxios = createHttp2Faxios(localServerURL);
 
             const responses = (await Promise.all([
-              (http2Faxios as unknown as TypedFaxiosInstance).get(
-                localServerURL,
-                {
-                  responseType: "stream",
-                },
-              ),
-              (http2Faxios as unknown as TypedFaxiosInstance).get(
-                localServerURL,
-                {
-                  responseType: "stream",
-                  http2Options: undefined,
-                },
-              ),
-              (http2Faxios as unknown as TypedFaxiosInstance).get(
-                localServerURL,
-                {
-                  responseType: "stream",
-                  http2Options: {},
-                },
-              ),
+              http2Faxios.get(localServerURL, {
+                responseType: "stream",
+              }),
+              http2Faxios.get(localServerURL, {
+                responseType: "stream",
+                http2Options: undefined,
+              }),
+              http2Faxios.get(localServerURL, {
+                responseType: "stream",
+                http2Options: {},
+              }),
             ])) as Array<any>;
 
             assert.strictEqual(
@@ -6635,9 +6517,7 @@ describe("supports http with nodejs", () => {
             const localServerURL = `https://localhost:${(server.address() as AddressInfo).port}`;
             const http2Faxios = createHttp2Faxios(localServerURL);
 
-            const response1 = (await (
-              http2Faxios as unknown as TypedFaxiosInstance
-            ).get(localServerURL, {
+            const response1 = (await http2Faxios.get(localServerURL, {
               responseType: "stream",
               http2Options: {
                 sessionTimeout: 1000,
@@ -6649,9 +6529,7 @@ describe("supports http with nodejs", () => {
 
             await setTimeoutAsync(5000);
 
-            const response2 = (await (
-              http2Faxios as unknown as TypedFaxiosInstance
-            ).get(localServerURL, {
+            const response2 = (await http2Faxios.get(localServerURL, {
               responseType: "stream",
               http2Options: {
                 sessionTimeout: 1000,
@@ -6685,7 +6563,7 @@ describe("supports http with nodejs", () => {
       let error;
 
       try {
-        await (faxios as unknown as TypedFaxiosStatic).get(
+        await faxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}`,
           {
             responseType: "stream",
@@ -6748,14 +6626,10 @@ describe("supports http with nodejs", () => {
     };
 
     const error = await Promise.race([
-      (faxios as unknown as TypedFaxiosStatic).post(
-        "http://example.com/",
-        "test",
-        {
-          transport,
-          maxRedirects: 0,
-        },
-      ),
+      faxios.post("http://example.com/", "test", {
+        transport,
+        maxRedirects: 0,
+      }),
       setTimeoutAsync(200).then(() => {
         throw new Error("socket error did not reject the request");
       }),
@@ -6795,7 +6669,7 @@ describe("supports http with nodejs", () => {
 
         const results = await Promise.all(
           Array.from({ length: CONCURRENCY }, async (_, i) =>
-            (faxios as unknown as TypedFaxiosStatic).get(`/req-${i}`, {
+            faxios.get(`/req-${i}`, {
               baseURL,
               httpAgent: agent,
             }),
@@ -6860,10 +6734,10 @@ describe("supports http with nodejs", () => {
 
         const refs = [];
         for (let i = 0; i < 200; i += 1) {
-          const response = (await (faxios as unknown as TypedFaxiosStatic).get(
-            "/",
-            { baseURL, httpAgent: agent },
-          )) as any;
+          const response = (await faxios.get("/", {
+            baseURL,
+            httpAgent: agent,
+          })) as any;
           refs.push(new WeakRef(response.request));
         }
 
@@ -6900,11 +6774,11 @@ describe("supports http with nodejs", () => {
 
       try {
         const baseURL = `http://localhost:${(server.address() as AddressInfo).port}`;
-        await (faxios as unknown as TypedFaxiosStatic).get("/1", {
+        await faxios.get("/1", {
           baseURL,
           timeout: 1000,
         });
-        await (faxios as unknown as TypedFaxiosStatic).get("/wait", {
+        await faxios.get("/wait", {
           baseURL,
           timeout: 0,
         });
@@ -6963,13 +6837,10 @@ describe("supports http with nodejs", () => {
       };
 
       // First request: axios installs its single per-socket listener.
-      await (faxios as unknown as TypedFaxiosStatic).get(
-        "http://example.com/first",
-        {
-          transport,
-          maxRedirects: 0,
-        },
-      );
+      await faxios.get("http://example.com/first", {
+        transport,
+        maxRedirects: 0,
+      });
       await setTimeoutAsync(0);
       assert.strictEqual(
         socket.listenerCount("error"),
@@ -6979,13 +6850,10 @@ describe("supports http with nodejs", () => {
 
       // Many subsequent requests reusing the same socket must not add more listeners.
       for (let i = 0; i < 20; i += 1) {
-        await (faxios as unknown as TypedFaxiosStatic).get(
-          `http://example.com/next-${i}`,
-          {
-            transport,
-            maxRedirects: 0,
-          },
-        );
+        await faxios.get(`http://example.com/next-${i}`, {
+          transport,
+          maxRedirects: 0,
+        });
 
         await setTimeoutAsync(0);
         assert.strictEqual(
@@ -7053,13 +6921,10 @@ describe("supports http with nodejs", () => {
 
       const results = await Promise.all(
         Array.from({ length: 20 }, async (_, i) =>
-          (faxios as unknown as TypedFaxiosStatic).get(
-            `http://example.com/concurrent-${i}`,
-            {
-              transport,
-              maxRedirects: 0,
-            },
-          ),
+          faxios.get(`http://example.com/concurrent-${i}`, {
+            transport,
+            maxRedirects: 0,
+          }),
         ),
       );
 
@@ -7166,13 +7031,10 @@ describe("supports http with nodejs", () => {
       };
 
       // First request completes successfully; socket is released.
-      await (faxios as unknown as TypedFaxiosStatic).get(
-        "http://example.com/first",
-        {
-          transport: cleanTransport,
-          maxRedirects: 0,
-        },
-      );
+      await faxios.get("http://example.com/first", {
+        transport: cleanTransport,
+        maxRedirects: 0,
+      });
       await setTimeoutAsync(0);
 
       const firstReq = createdReqs[0];
@@ -7190,7 +7052,7 @@ describe("supports http with nodejs", () => {
       );
 
       // Second request claims the socket, then its socket errors. It should reject.
-      const err = await (faxios as unknown as TypedFaxiosStatic)
+      const err = await faxios
         .get("http://example.com/second", {
           transport: errorTransport,
           maxRedirects: 0,
@@ -7247,13 +7109,10 @@ describe("supports http with nodejs", () => {
 
       try {
         const baseURL = `http://localhost:${(server.address() as AddressInfo).port}`;
-        const response = await (faxios as unknown as TypedFaxiosStatic).get(
-          "/start",
-          {
-            baseURL,
-            maxRedirects: REDIRECT_COUNT + 5,
-          },
-        );
+        const response = await faxios.get("/start", {
+          baseURL,
+          maxRedirects: REDIRECT_COUNT + 5,
+        });
 
         assert.strictEqual(response.status, 200);
         assert.deepStrictEqual(response.data, { redirects: REDIRECT_COUNT });
@@ -7330,13 +7189,10 @@ describe("supports http with nodejs", () => {
         };
 
         try {
-          const response = await (faxios as unknown as TypedFaxiosStatic).get(
-            "/start",
-            {
-              baseURL,
-              maxRedirects: REDIRECT_COUNT + 5,
-            },
-          );
+          const response = await faxios.get("/start", {
+            baseURL,
+            maxRedirects: REDIRECT_COUNT + 5,
+          });
           assert.strictEqual(response.status, 200);
         } finally {
           EventEmitter.prototype.on = originalOn;
@@ -7401,10 +7257,9 @@ describe("supports http with nodejs", () => {
       const socketPath = makeSocketPath();
       const server = await startUnixServer(socketPath);
       try {
-        const res = (await (faxios as unknown as TypedFaxiosStatic).get(
-          "http://localhost/echo",
-          { socketPath },
-        )) as any;
+        const res = (await faxios.get("http://localhost/echo", {
+          socketPath,
+        })) as any;
         assert.strictEqual(res.status, 200);
         assert.strictEqual(res.data.ok, true);
       } finally {
@@ -7416,13 +7271,10 @@ describe("supports http with nodejs", () => {
       const socketPath = makeSocketPath();
       const server = await startUnixServer(socketPath);
       try {
-        const res = await (faxios as unknown as TypedFaxiosStatic).get(
-          "http://localhost/echo",
-          {
-            socketPath,
-            allowedSocketPaths: socketPath,
-          },
-        );
+        const res = await faxios.get("http://localhost/echo", {
+          socketPath,
+          allowedSocketPaths: socketPath,
+        });
         assert.strictEqual(res.status, 200);
       } finally {
         await stopUnixServer(server, socketPath);
@@ -7433,13 +7285,10 @@ describe("supports http with nodejs", () => {
       const socketPath = makeSocketPath();
       const server = await startUnixServer(socketPath);
       try {
-        const res = await (faxios as unknown as TypedFaxiosStatic).get(
-          "http://localhost/echo",
-          {
-            socketPath,
-            allowedSocketPaths: ["/var/run/does-not-exist.sock", socketPath],
-          },
-        );
+        const res = await faxios.get("http://localhost/echo", {
+          socketPath,
+          allowedSocketPaths: ["/var/run/does-not-exist.sock", socketPath],
+        });
         assert.strictEqual(res.status, 200);
       } finally {
         await stopUnixServer(server, socketPath);
@@ -7448,7 +7297,7 @@ describe("supports http with nodejs", () => {
 
     it("rejects socketPath not in allowedSocketPaths", async () => {
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).get("http://localhost/echo", {
+        faxios.get("http://localhost/echo", {
           socketPath: "/var/run/docker.sock",
           allowedSocketPaths: ["/tmp/allowed.sock"],
         }),
@@ -7465,7 +7314,7 @@ describe("supports http with nodejs", () => {
       const allowedDir = path.join(os.tmpdir(), "axios-allowed");
       const allowed = path.join(allowedDir, "app.sock");
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).get("http://localhost/echo", {
+        faxios.get("http://localhost/echo", {
           socketPath: path.join(allowedDir, "..", "other.sock"),
           allowedSocketPaths: [allowed],
         }),
@@ -7481,13 +7330,10 @@ describe("supports http with nodejs", () => {
       const server = await startUnixServer(socketPath);
       try {
         const relative = path.relative(process.cwd(), socketPath);
-        const res = await (faxios as unknown as TypedFaxiosStatic).get(
-          "http://localhost/echo",
-          {
-            socketPath,
-            allowedSocketPaths: [relative],
-          },
-        );
+        const res = await faxios.get("http://localhost/echo", {
+          socketPath,
+          allowedSocketPaths: [relative],
+        });
         assert.strictEqual(res.status, 200);
       } finally {
         await stopUnixServer(server, socketPath);
@@ -7496,7 +7342,7 @@ describe("supports http with nodejs", () => {
 
     it("rejects non-string socketPath", async () => {
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).get("http://localhost/echo", {
+        faxios.get("http://localhost/echo", {
           socketPath: 12345 as unknown as string,
         }),
         (err: any) => {
@@ -7510,7 +7356,7 @@ describe("supports http with nodejs", () => {
 
     it("empty allowedSocketPaths array blocks all socketPath values", async () => {
       await assert.rejects(
-        (faxios as unknown as TypedFaxiosStatic).get("http://localhost/echo", {
+        faxios.get("http://localhost/echo", {
           socketPath: "/tmp/anything.sock",
           allowedSocketPaths: [],
         }),
