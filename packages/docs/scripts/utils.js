@@ -1,13 +1,13 @@
-import chalk from 'chalk';
+import { styleText } from 'node:util';
 
 export const printSuccessMessage = (message) => {
-  console.log(chalk.green('Success:'), `${message}`);
+  console.log(styleText('green', 'Success:'), `${message}`);
 };
 
 export const printInfoMessage = (message) => {
-  console.log(chalk.blue('Info:'), `${message}`);
+  console.log(styleText('blue', 'Info:'), `${message}`);
 };
 
 export const printErrorMessage = (message) => {
-  console.log(chalk.red('Error:'), `${message}`);
+  console.log(styleText('red', 'Error:'), `${message}`);
 };
