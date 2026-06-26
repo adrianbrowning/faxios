@@ -9,8 +9,8 @@ Ce guide a pour but de vous aider à migrer votre projet d'une version du framew
 Dans v1.x, l'instruction d'importation a été modifiée pour utiliser l'export `default`. Vous devrez donc mettre à jour vos instructions d'importation en conséquence.
 
 ```diff
-- import { axios } from "axios";
-+ import axios from "axios";
+- import { axios } from "faxios";
++ import faxios from "faxios";
 ```
 
 ### Modifications du système d'intercepteurs

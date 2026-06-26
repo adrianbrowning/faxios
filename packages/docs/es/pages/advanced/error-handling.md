@@ -5,7 +5,7 @@ axios puede lanzar muchos tipos diferentes de errores. Algunos de estos errores 
 | Propiedad | Definición                                                                                                                                    |
 | --------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | message   | Un resumen rápido del mensaje de error y el estado con el que falló.                                                                          |
-| name      | Define el origen del error. Para axios, siempre será un `AxiosError`.                                                                         |
+| name      | Define el origen del error. Para axios, siempre será un `FaxiosError`.                                                                         |
 | stack     | Proporciona el seguimiento de la pila (stack trace) del error.                                                                                |
 | config    | Un objeto de configuración de axios con configuraciones específicas de la instancia definidas por el usuario al momento de realizar la solicitud. |
 | code      | Representa un error identificado por axios. La tabla a continuación lista definiciones específicas para errores internos de axios.             |
@@ -72,7 +72,7 @@ axios.get("/user/12345").catch(function (error) {
 });
 ```
 
-Para evitar registrar secretos desde `error.config`, pasa un arreglo `redact` en la configuración de la solicitud. Las claves de configuración coincidentes se enmascaran de forma insensible a mayúsculas/minúsculas a cualquier profundidad cuando se llama a `AxiosError#toJSON()`.
+Para evitar registrar secretos desde `error.config`, pasa un arreglo `redact` en la configuración de la solicitud. Las claves de configuración coincidentes se enmascaran de forma insensible a mayúsculas/minúsculas a cualquier profundidad cuando se llama a `FaxiosError#toJSON()`.
 
 ```js
 axios.get("/user/12345", {

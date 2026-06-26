@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import axios from "../../src/index.js";
+import faxios from "../../src/index.js";
 import type { FaxiosBasicCredentials } from "../../src/lib/types.js";
 
 class MockXMLHttpRequest {
@@ -47,7 +47,12 @@ class MockXMLHttpRequest {
     statusText = "OK",
     responseText = "",
     responseHeaders = "",
-  }: { status?: number; statusText?: string; responseText?: string; responseHeaders?: string; } = {}) {
+  }: {
+    status?: number;
+    statusText?: string;
+    responseText?: string;
+    responseHeaders?: string;
+  } = {}) {
     this.status = status;
     this.statusText = statusText;
     this.responseText = responseText;
@@ -58,8 +63,7 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      }
-      else if (this.onreadystatechange) {
+      } else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -71,8 +75,8 @@ class MockXMLHttpRequest {
 let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
-const startRequest = (...args: Parameters<typeof axios>) => {
-  const promise = axios(...args);
+const startRequest = (...args: Parameters<typeof faxios>) => {
+  const promise = faxios(...args);
   const request = requests.at(-1);
 
   expect(request).toBeDefined();
@@ -80,7 +84,10 @@ const startRequest = (...args: Parameters<typeof axios>) => {
   return { request: request!, promise };
 };
 
-const flushSuccess = async (request: MockXMLHttpRequest, promise: Promise<unknown>) => {
+const flushSuccess = async (
+  request: MockXMLHttpRequest,
+  promise: Promise<unknown>,
+) => {
   request.respondWith({ status: 200 });
   await promise;
 };
@@ -89,7 +96,8 @@ describe("basicAuth (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
+    window.XMLHttpRequest =
+      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -105,7 +113,7 @@ describe("basicAuth (vitest browser)", () => {
     });
 
     expect(request.requestHeaders.Authorization).toBe(
-      "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=="
+      "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==",
     );
 
     await flushSuccess(request, promise);
@@ -132,7 +140,7 @@ describe("basicAuth (vitest browser)", () => {
     });
 
     expect(request.requestHeaders.Authorization).toBe(
-      "Basic QWxhZGRpbjpvcGVuIMOfw6fCo+KYg3Nlc2FtZQ=="
+      "Basic QWxhZGRpbjpvcGVuIMOfw6fCo+KYg3Nlc2FtZQ==",
     );
 
     await flushSuccess(request, promise);
@@ -156,8 +164,7 @@ describe("basicAuth (vitest browser)", () => {
       expect(request.requestHeaders.Authorization).toBe("Basic Og==");
 
       await flushSuccess(request, promise);
-    }
-    finally {
+    } finally {
       delete (Object.prototype as Record<string, unknown>).username;
       delete (Object.prototype as Record<string, unknown>).password;
     }
@@ -165,12 +172,12 @@ describe("basicAuth (vitest browser)", () => {
 
   it("should fail to encode HTTP Basic auth credentials with non-Latin1 characters in username", async () => {
     await expect(
-      axios("/foo", {
+      faxios("/foo", {
         auth: {
           username: "Aladßç£☃din",
           password: "open sesame",
         },
-      })
+      }),
     ).rejects.toThrow(/character/i);
   });
 });

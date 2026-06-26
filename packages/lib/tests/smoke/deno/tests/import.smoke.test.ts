@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import axios, { FaxiosError, FaxiosHeaders, CanceledError } from "axios";
+import faxios, { FaxiosError, FaxiosHeaders, CanceledError } from "faxios";
 
 Deno.test("Deno importing: default export is callable", () => {
   assertEquals(typeof axios, "function");
@@ -12,7 +12,7 @@ Deno.test("Deno importing: named exports are functions", () => {
 });
 
 Deno.test("Deno importing: named exports match axios properties", () => {
-  assertEquals(axios.FaxiosError, FaxiosError);
-  assertEquals(axios.CanceledError, CanceledError);
-  assertEquals(axios.FaxiosHeaders, FaxiosHeaders);
+  assertEquals(faxios.FaxiosError, FaxiosError);
+  assertEquals(faxios.CanceledError, CanceledError);
+  assertEquals(faxios.FaxiosHeaders, FaxiosHeaders);
 });

@@ -13,7 +13,7 @@ const axios = require("axios");
 #### 使用打包工具（webpack、rollup、vite 等）
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 ```
 
 ## 使用 then/catch/finally

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import FaxiosError from "../../../lib/src/lib/core/FaxiosError.js";
-import axios from "../../src/index.js";
+import faxios from "../../src/index.js";
 
 class MockXMLHttpRequest {
   requestHeaders: Record<string, string> = {};
@@ -60,8 +60,7 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      }
-      else if (this.onreadystatechange) {
+      } else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -94,22 +93,22 @@ describe("transform (vitest browser)", () => {
   });
 
   it("should transform JSON to string", async () => {
-    const responsePromise = axios.post("/foo", { foo: "bar" });
+    const responsePromise = faxios.post("/foo", { foo: "bar" });
     const request = getLastRequest();
 
-    expect(request.params).toBe("{\"foo\":\"bar\"}");
+    expect(request.params).toBe('{"foo":"bar"}');
 
     request.respondWith();
     await responsePromise;
   });
 
   it("should transform string to JSON", async () => {
-    const responsePromise = axios("/foo");
+    const responsePromise = faxios("/foo");
     const request = getLastRequest();
 
     request.respondWith({
       status: 200,
-      responseText: "{\"foo\": \"bar\"}",
+      responseText: '{"foo": "bar"}',
     });
 
     const response = await responsePromise;
@@ -118,8 +117,8 @@ describe("transform (vitest browser)", () => {
     expect((response.data as Record<string, string>).foo).toBe("bar");
   });
 
-  it("should throw a SyntaxError if JSON parsing failed and responseType is \"json\" if silentJSONParsing is false", async () => {
-    const responsePromise = axios({
+  it('should throw a SyntaxError if JSON parsing failed and responseType is "json" if silentJSONParsing is false', async () => {
+    const responsePromise = faxios({
       url: "/foo",
       responseType: "json",
       transitional: { silentJSONParsing: false },
@@ -128,10 +127,10 @@ describe("transform (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: "{foo\": \"bar\"}",
+      responseText: '{foo": "bar"}',
     });
-     
-    const thrown = await responsePromise.catch(error => error);
+
+    const thrown = await responsePromise.catch((error) => error);
 
     expect(thrown).toBeTruthy();
     expect(thrown.name).toContain("SyntaxError");
@@ -139,7 +138,7 @@ describe("transform (vitest browser)", () => {
   });
 
   it("should send data as JSON if request content-type is application/json", async () => {
-    const responsePromise = axios.post("/foo", 123, {
+    const responsePromise = faxios.post("/foo", 123, {
       headers: { "Content-Type": "application/json" },
     });
     const request = getLastRequest();
@@ -157,14 +156,14 @@ describe("transform (vitest browser)", () => {
   });
 
   it("should not assume JSON if responseType is not `json`", async () => {
-    const responsePromise = axios.get("/foo", {
+    const responsePromise = faxios.get("/foo", {
       responseType: "text",
       transitional: {
         forcedJSONParsing: false,
       },
     });
     const request = getLastRequest();
-    const rawData = "{\"x\":1}";
+    const rawData = '{"x":1}';
 
     request.respondWith({
       status: 200,
@@ -178,14 +177,14 @@ describe("transform (vitest browser)", () => {
   });
 
   it("should override default transform", async () => {
-    const responsePromise = axios.post(
+    const responsePromise = faxios.post(
       "/foo",
       { foo: "bar" },
       {
         transformRequest(data) {
           return data;
         },
-      }
+      },
     );
     const request = getLastRequest();
 
@@ -196,20 +195,20 @@ describe("transform (vitest browser)", () => {
   });
 
   it("should allow an Array of transformers", async () => {
-    const responsePromise = axios.post(
+    const responsePromise = faxios.post(
       "/foo",
       { foo: "bar" },
       {
         transformRequest: (
-          axios.defaults.transformRequest as Array<(data: unknown) => unknown>
+          faxios.defaults.transformRequest as Array<(data: unknown) => unknown>
         ).concat(function (data: unknown) {
           return (data as string).replace("bar", "baz");
         }),
-      }
+      },
     );
     const request = getLastRequest();
 
-    expect(request.params).toBe("{\"foo\":\"baz\"}");
+    expect(request.params).toBe('{"foo":"baz"}');
 
     request.respondWith();
     await responsePromise;
@@ -217,7 +216,7 @@ describe("transform (vitest browser)", () => {
 
   it("should allowing mutating headers", async () => {
     const token = Math.floor(Math.random() * Math.pow(2, 64)).toString(36);
-    const responsePromise = axios("/foo", {
+    const responsePromise = faxios("/foo", {
       transformRequest(data, headers) {
         headers["X-Authorization"] = token;
         return data;
@@ -232,7 +231,7 @@ describe("transform (vitest browser)", () => {
   });
 
   it("should normalize 'content-type' header when using a custom transformRequest", async () => {
-    const responsePromise = axios.post(
+    const responsePromise = faxios.post(
       "/foo",
       { foo: "bar" },
       {
@@ -242,12 +241,12 @@ describe("transform (vitest browser)", () => {
             return "aa=44";
           },
         ],
-      }
+      },
     );
     const request = getLastRequest();
 
     expect(request.requestHeaders["Content-Type"]).toBe(
-      "application/x-www-form-urlencoded"
+      "application/x-www-form-urlencoded",
     );
 
     request.respondWith();
@@ -255,7 +254,7 @@ describe("transform (vitest browser)", () => {
   });
 
   it("should return response.data as parsed JSON object when responseType is json", async () => {
-    const instance = axios.create({
+    const instance = faxios.create({
       baseURL: "/api",
       responseType: "json",
     });
@@ -266,7 +265,7 @@ describe("transform (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: "{\"key1\": \"value1\"}",
+      responseText: '{"key1": "value1"}',
       responseHeaders: "content-type: application/json",
     });
 

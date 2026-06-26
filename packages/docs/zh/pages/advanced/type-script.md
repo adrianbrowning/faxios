@@ -16,7 +16,7 @@
 使用 `axios.isAxiosError` 类型守卫可以在 `catch` 块中安全地收窄 `unknown` 错误。收窄之后，你便可以在完整的类型支持下访问 `error.response`、`error.config` 和 `error.code` 等 axios 专有属性。
 
 ```ts
-import axios from "axios";
+import faxios from "faxios";
 
 let user: User | null = null;
 try {
@@ -50,7 +50,7 @@ try {
 将 `axios.create` 的结果标注为 `AxiosInstance`，并将请求拦截器标注为 `InternalAxiosRequestConfig`，即可对自定义客户端实现端到端的类型检查：
 
 ```ts
-import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
+import faxios, { AxiosInstance, InternalAxiosRequestConfig } from "faxios";
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: "https://api.example.com",

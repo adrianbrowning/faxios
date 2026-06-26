@@ -7,7 +7,7 @@ La mayoría de las APIs requieren alguna forma de autenticación. Esta página c
 El enfoque más común es adjuntar un JWT en el encabezado `Authorization`. La forma más limpia de hacerlo es a través de un interceptor de solicitud en tu instancia de axios, de manera que el token se lea de nuevo en cada solicitud:
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 const api = axios.create({ baseURL: "https://api.example.com" });
 
@@ -61,7 +61,7 @@ const response = await axios.get("https://api.example.com/data", {
 Cuando los tokens de acceso expiran, es necesario renovarlos de forma silenciosa y reintentar la solicitud fallida. Un interceptor de respuesta es el lugar adecuado para implementar esto:
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 const api = axios.create({ baseURL: "https://api.example.com" });
 

@@ -1,18 +1,18 @@
 import assert from "node:assert";
 import type { AddressInfo } from "node:net";
 import { describe, it } from "vitest";
-import axios from "../../src/index.ts";
+import faxios from "../../src/index.ts";
 import type { FaxiosResponse } from "../../src/lib/types.ts";
 import { startHTTPServer, stopHTTPServer } from "../setup/server.js";
- 
+
 type YES_ANY = any;
 
 describe("QUERY method", () => {
-  describe("static axios.query()", () => {
+  describe("static faxios.query()", () => {
     it("should make a request with the QUERY HTTP method", async () => {
-      const response = (await axios.query("/test", null, {
+      const response = (await faxios.query("/test", null, {
         adapter: async (
-          config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig
+          config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig,
         ) => {
           assert.strictEqual(config.method, "query");
           return Promise.resolve({
@@ -35,9 +35,9 @@ describe("QUERY method", () => {
         filter: { active: true },
       };
 
-      await axios.query("/search", requestBody, {
+      await faxios.query("/search", requestBody, {
         adapter: async (
-          config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig
+          config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig,
         ) => {
           assert.deepStrictEqual(config.data, JSON.stringify(requestBody));
           return Promise.resolve({
@@ -53,21 +53,21 @@ describe("QUERY method", () => {
     });
 
     it("should support custom headers", async () => {
-      await axios.query("/test", null, {
+      await faxios.query("/test", null, {
         headers: {
           "X-Custom-Header": "custom-value",
           Authorization: "Bearer token-abc",
         },
         adapter: async (
-          config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig
+          config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig,
         ) => {
           assert.strictEqual(
             config.headers.get("X-Custom-Header"),
-            "custom-value"
+            "custom-value",
           );
           assert.strictEqual(
             config.headers.get("Authorization"),
-            "Bearer token-abc"
+            "Bearer token-abc",
           );
           return Promise.resolve({
             data: null,
@@ -82,14 +82,14 @@ describe("QUERY method", () => {
     });
 
     it("should work with baseURL configuration", async () => {
-      const instance = axios.create({ baseURL: "http://example.com/api" });
+      const instance = faxios.create({ baseURL: "http://example.com/api" });
 
       await instance.query(
         "/resources",
-        { fields: [ "name" ] },
+        { fields: ["name"] },
         {
           adapter: async (
-            config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig
+            config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig,
           ) => {
             assert.strictEqual(config.baseURL, "http://example.com/api");
             assert.strictEqual(config.url, "/resources");
@@ -103,23 +103,23 @@ describe("QUERY method", () => {
               request: {},
             });
           },
-        }
+        },
       );
     });
 
     it("should set Content-Type to application/json for object bodies", async () => {
-      await axios.query(
+      await faxios.query(
         "/test",
         { key: "value" },
         {
           adapter: async (
-            config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig
+            config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig,
           ) => {
             assert.ok(
               (config.headers.get("Content-Type") as string).includes(
-                "application/json"
+                "application/json",
               ),
-              "Expected Content-Type to include application/json"
+              "Expected Content-Type to include application/json",
             );
             return Promise.resolve({
               data: null,
@@ -130,18 +130,18 @@ describe("QUERY method", () => {
               request: {},
             });
           },
-        }
+        },
       );
     });
   });
 
   describe("instance.query()", () => {
     it("should make a request with the QUERY HTTP method on an instance", async () => {
-      const instance = axios.create();
+      const instance = faxios.create();
 
       const response = (await instance.query("/test", null, {
         adapter: async (
-          config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig
+          config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig,
         ) => {
           assert.strictEqual(config.method, "query");
           return Promise.resolve({
@@ -159,22 +159,22 @@ describe("QUERY method", () => {
     });
 
     it("should merge instance defaults with request config", async () => {
-      const instance = axios.create({
+      const instance = faxios.create({
         headers: { "X-Instance-Header": "from-instance" },
       });
 
       await instance.query("/test", null, {
         headers: { "X-Request-Header": "from-request" },
         adapter: async (
-          config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig
+          config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig,
         ) => {
           assert.strictEqual(
             config.headers.get("X-Instance-Header"),
-            "from-instance"
+            "from-instance",
           );
           assert.strictEqual(
             config.headers.get("X-Request-Header"),
-            "from-request"
+            "from-request",
           );
           return Promise.resolve({
             data: null,
@@ -189,19 +189,19 @@ describe("QUERY method", () => {
     });
   });
 
-  describe("axios({ method: \"query\" })", () => {
+  describe('faxios({ method: "query" })', () => {
     it("should support the generic request form", async () => {
-      const response = (await axios({
+      const response = (await faxios({
         method: "query",
         url: "/test",
         data: { selector: "*" },
         adapter: async (
-          config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig
+          config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig,
         ) => {
           assert.strictEqual(config.method, "query");
           assert.deepStrictEqual(
             config.data,
-            JSON.stringify({ selector: "*" })
+            JSON.stringify({ selector: "*" }),
           );
           return Promise.resolve({
             data: { result: "ok" },
@@ -223,7 +223,7 @@ describe("QUERY method", () => {
       const server = await startHTTPServer(
         (req, res) => {
           let body = "";
-          req.on("data", chunk => {
+          req.on("data", (chunk) => {
             body += chunk;
           });
           req.on("end", () => {
@@ -234,17 +234,17 @@ describe("QUERY method", () => {
                 url: req.url,
                 body,
                 headers: req.headers,
-              })
+              }),
             );
           });
         },
-        { port: 0 }
+        { port: 0 },
       );
 
       try {
-        const { data } = (await axios.query(
+        const { data } = (await faxios.query(
           `http://localhost:${(server.address() as AddressInfo).port}/search`,
-          { selector: "field1" }
+          { selector: "field1" },
         )) as FaxiosResponse<YES_ANY>;
 
         assert.strictEqual(data.method, "QUERY");
@@ -254,10 +254,9 @@ describe("QUERY method", () => {
         assert.deepStrictEqual(parsedBody, { selector: "field1" });
         assert.ok(
           data.headers["content-type"].includes("application/json"),
-          "Expected server to receive application/json content-type"
+          "Expected server to receive application/json content-type",
         );
-      }
-      finally {
+      } finally {
         await stopHTTPServer(server);
       }
     });
@@ -270,27 +269,26 @@ describe("QUERY method", () => {
             JSON.stringify({
               method: req.method,
               headers: req.headers,
-            })
+            }),
           );
         },
-        { port: 0 }
+        { port: 0 },
       );
 
       try {
-        const { data } = (await axios.query(
+        const { data } = (await faxios.query(
           `http://localhost:${(server.address() as AddressInfo).port}/test`,
           null,
           {
             headers: {
               "X-Custom": "test-value",
             },
-          }
+          },
         )) as FaxiosResponse<YES_ANY>;
 
         assert.strictEqual(data.method, "QUERY");
         assert.strictEqual(data.headers["x-custom"], "test-value");
-      }
-      finally {
+      } finally {
         await stopHTTPServer(server);
       }
     });
@@ -303,25 +301,24 @@ describe("QUERY method", () => {
             JSON.stringify({
               method: req.method,
               url: req.url,
-            })
+            }),
           );
         },
-        { port: 0 }
+        { port: 0 },
       );
 
       try {
-        const instance = axios.create({
+        const instance = faxios.create({
           baseURL: `http://localhost:${(server.address() as AddressInfo).port}/api`,
         });
 
         const { data } = (await instance.query("/resources", {
-          fields: [ "name" ],
+          fields: ["name"],
         })) as FaxiosResponse<YES_ANY>;
 
         assert.strictEqual(data.method, "QUERY");
         assert.strictEqual(data.url, "/api/resources");
-      }
-      finally {
+      } finally {
         await stopHTTPServer(server);
       }
     });

@@ -57,13 +57,13 @@ Lors de l'utilisation d'unpkg, nous recommandons d'utiliser la version minifiée
 Une fois installé, vous pouvez importer la bibliothèque en utilisant `import` ou `require` :
 
 ```js
-import axios, { isCancel, AxiosError } from "axios";
+import faxios, { isCancel, FaxiosError } from "faxios";
 ```
 
 Vous pouvez également utiliser l'export par défaut, puisque l'export nommé est juste une réexportation depuis la fabrique axios :
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 console.log(axios.isCancel("something"));
 ```
@@ -79,7 +79,7 @@ console.log(axios.isCancel("something"));
 Pour certains bundlers et linters ES6, vous pourriez avoir besoin de :
 
 ```js
-import { default as axios } from "axios";
+import { default as axios } from "faxios";
 ```
 
 Pour les environnements personnalisés ou hérités où la résolution de modules ne se comporte pas correctement, vous pouvez importer le bundle préconstruit directement :
@@ -94,7 +94,7 @@ const axios = require("axios/dist/browser/axios.cjs"); // bundle CommonJS naviga
 Une requête axios peut être effectuée en seulement deux lignes de code. Envoyer votre première requête avec axios est très simple. Vous pouvez interroger n'importe quelle API en fournissant l'URL et la méthode. Par exemple, pour effectuer une requête GET vers l'API JSONPlaceholder, vous pouvez utiliser le code suivant :
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 const response = await axios.get(
   "https://jsonplaceholder.typicode.com/posts/1"

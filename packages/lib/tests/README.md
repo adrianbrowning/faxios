@@ -95,7 +95,7 @@ Examples of colocated fixtures:
 
 - `tests/unit/adapters/cert.pem`
 - `tests/unit/adapters/key.pem`
-- `tests/unit/adapters/axios.png`
+- `tests/unit/adapters/faxios.png`
 
 ## Contributor Checklist
 

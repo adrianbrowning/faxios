@@ -16,7 +16,7 @@ Dado que axios publica de forma dual con una exportación por defecto ESM y un `
 Usa el type guard `axios.isAxiosError` para reducir de forma segura los errores `unknown` en bloques `catch`. Tras la reducción, puedes acceder a propiedades específicas de axios como `error.response`, `error.config` y `error.code` con seguridad de tipos completa.
 
 ```ts
-import axios from "axios";
+import faxios from "faxios";
 
 let user: User | null = null;
 try {
@@ -50,7 +50,7 @@ try {
 Anota el resultado de `axios.create` con `AxiosInstance`, y anota los interceptores de solicitud con `InternalAxiosRequestConfig` para obtener verificación de tipos de extremo a extremo en un cliente personalizado:
 
 ```ts
-import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
+import faxios, { AxiosInstance, InternalAxiosRequestConfig } from "faxios";
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: "https://api.example.com",

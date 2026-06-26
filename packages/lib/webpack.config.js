@@ -1,25 +1,25 @@
 var config = {};
 
 function generateConfig(name) {
-  var compress = name.indexOf('min') > -1;
+  var compress = name.indexOf("min") > -1;
   var config = {
-    entry: './index.js',
+    entry: "./index.js",
     output: {
-      path: __dirname + '/dist/',
-      filename: name + '.js',
-      sourceMapFilename: name + '.map',
-      library: 'axios',
-      libraryTarget: 'umd',
-      globalObject: 'this',
+      path: __dirname + "/dist/",
+      filename: name + ".js",
+      sourceMapFilename: name + ".map",
+      library: "axios",
+      libraryTarget: "umd",
+      globalObject: "this",
     },
     node: false,
-    devtool: 'source-map',
-    mode: compress ? 'production' : 'development',
+    devtool: "source-map",
+    mode: compress ? "production" : "development",
   };
   return config;
 }
 
-['axios', 'axios.min'].forEach(function (key) {
+[ "axios", "axios.min" ].forEach(function (key) {
   config[key] = generateConfig(key);
 });
 

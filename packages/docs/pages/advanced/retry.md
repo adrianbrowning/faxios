@@ -7,7 +7,7 @@ Network requests can fail for transient reasons — a server blip, a brief netwo
 The simplest approach is to catch specific error status codes and immediately re-send the original request a limited number of times:
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 const api = axios.create({ baseURL: "https://api.example.com" });
 

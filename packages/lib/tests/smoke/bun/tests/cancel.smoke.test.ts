@@ -1,4 +1,4 @@
-import axios from "axios";
+import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
 
 const env = (fetch: typeof globalThis.fetch) => ({
@@ -23,7 +23,7 @@ describe("cancellation", () => {
     const controller = new AbortController();
     controller.abort();
 
-    const err = await axios
+    const err = await faxios
       .get("https://example.com/cancel", {
         adapter: "fetch",
         signal: controller.signal,
@@ -31,7 +31,7 @@ describe("cancellation", () => {
       })
       .catch((e: any) => e);
 
-    expect(axios.isCancel(err)).toBe(true);
+    expect(faxios.isCancel(err)).toBe(true);
     expect(err.code).toBe("ERR_CANCELED");
     expect(fetchCallCount).toBe(0);
   });
@@ -57,14 +57,14 @@ describe("cancellation", () => {
               clearTimeout(timeout);
               abortError();
             },
-            { once: true }
+            { once: true },
           );
         }
       });
 
     const controller = new AbortController();
 
-    const request = axios.get("https://example.com/in-flight", {
+    const request = faxios.get("https://example.com/in-flight", {
       adapter: "fetch",
       signal: controller.signal,
       env: env(fetch),
@@ -74,11 +74,11 @@ describe("cancellation", () => {
 
     const err = await request.catch((e: any) => e);
 
-    expect(axios.isCancel(err)).toBe(true);
+    expect(faxios.isCancel(err)).toBe(true);
     expect(err.code).toBe("ERR_CANCELED");
   });
 
-  test("axios.isCancel returns false for a plain Error", () => {
-    expect(axios.isCancel(new Error("random"))).toBe(false);
+  test("faxios.isCancel returns false for a plain Error", () => {
+    expect(faxios.isCancel(new Error("random"))).toBe(false);
   });
 });

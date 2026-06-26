@@ -29,7 +29,7 @@ axios.post('https://example.com', form);
 从 v0.27.0 起，如果请求的 Content-Type 请求头设置为 `multipart/form-data`，axios 支持自动将对象序列化为 FormData 对象。这意味着你可以直接将 JavaScript 对象传入 axios 请求配置的 `data` 属性。例如，向 POST 请求传递数据时：
 
 ```js
-import axios from 'axios';
+import faxios from 'faxios';
 
 axios
   .post(
@@ -102,7 +102,7 @@ FormData 序列化器通过 `config.formSerializer` 对象属性支持以下额�
   - `null` - 不添加方括号（`arr: 1`，`arr: 2`，`arr: 3`）
   - `false`（默认）- 添加空方括号（`arr[]: 1`，`arr[]: 2`，`arr[]: 3`）
   - `true` - 添加带索引的方括号（`arr[0]: 1`，`arr[1]: 2`，`arr[2]: 3`）
-- `maxDepth: number = 100` - 序列化器递归的最大对象嵌套深度。如果输入超过此深度，将抛出 `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` 的 `AxiosError`。这可以保护服务端应用免受深层嵌套载荷的 DoS 攻击。设置为 `Infinity` 可禁用此限制。
+- `maxDepth: number = 100` - 序列化器递归的最大对象嵌套深度。如果输入超过此深度，将抛出 `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` 的 `FaxiosError`。这可以保护服务端应用免受深层嵌套载荷的 DoS 攻击。设置为 `Infinity` 可禁用此限制。
 
 ```js
 // 当 schema 确实需要超过 100 层嵌套时，可提高限制：

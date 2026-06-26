@@ -16,7 +16,7 @@ Because axios dual-publishes with an ESM default export and a CJS `module.export
 Use the `axios.isAxiosError` type guard to safely narrow `unknown` errors in `catch` blocks. After narrowing, you can access axios-specific properties like `error.response`, `error.config`, and `error.code` with full type safety.
 
 ```ts
-import axios from "axios";
+import faxios from "faxios";
 
 let user: User | null = null;
 try {
@@ -50,7 +50,7 @@ try {
 Annotate the result of `axios.create` with `AxiosInstance`, and annotate request interceptors with `InternalAxiosRequestConfig` to get end-to-end type checking on a custom client:
 
 ```ts
-import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
+import faxios, { AxiosInstance, InternalAxiosRequestConfig } from "faxios";
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: "https://api.example.com",

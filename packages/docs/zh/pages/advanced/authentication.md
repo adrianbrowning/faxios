@@ -7,7 +7,7 @@
 最常见的方式是在 `Authorization` 请求头中附加 JWT。最简洁的做法是通过 axios 实例上的请求拦截器实现，这样令牌会在每次请求时实时读取：
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 const api = axios.create({ baseURL: "https://api.example.com" });
 
@@ -61,7 +61,7 @@ const response = await axios.get("https://api.example.com/data", {
 当访问令牌过期时，你需要静默刷新它并重新发送失败的请求。响应拦截器是实现此逻辑的合适位置：
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 const api = axios.create({ baseURL: "https://api.example.com" });
 

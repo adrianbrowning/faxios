@@ -29,7 +29,7 @@ axios.post('https://example.com', form);
 Starting from v0.27.0, Axios supports automatic object serialization to a FormData object if the request Content-Type header is set to multipart/form-data. This means that you can pass a JavaScript object directly to the data property of the axios request config. For example when passing data to a POST request:
 
 ```js
-import axios from 'axios';
+import faxios from 'faxios';
 
 axios
   .post(
@@ -102,7 +102,7 @@ FormData serializer supports additional options via config.formSerializer: objec
   - `null` - don't add brackets (`arr: 1`, `arr: 2`, `arr: 3`)
   - `false` (default) - add empty brackets (`arr[]: 1`, `arr[]: 2`, `arr[]: 3`)
   - `true` - add brackets with indexes (`arr[0]: 1`, `arr[1]: 2`, `arr[2]: 3`)
-- `maxDepth: number = 100` - maximum object nesting depth the serializer will recurse into. If the input exceeds this depth, an `AxiosError` with `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` is thrown. This protects server-side applications from DoS attacks via deeply nested payloads. Set to `Infinity` to disable the limit.
+- `maxDepth: number = 100` - maximum object nesting depth the serializer will recurse into. If the input exceeds this depth, an `FaxiosError` with `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` is thrown. This protects server-side applications from DoS attacks via deeply nested payloads. Set to `Infinity` to disable the limit.
 
 ```js
 // Allow deeper nesting for schemas that legitimately exceed 100 levels:

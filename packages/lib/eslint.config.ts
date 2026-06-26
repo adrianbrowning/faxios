@@ -1,15 +1,15 @@
-import type { Linter } from "eslint";
 import { config as defaultConfig } from "@gingacodemonkey/config/eslint";
+import type { Linter } from "eslint";
 import tseslint from "typescript-eslint";
 
 // Files that live outside the main tsconfig and can't be added to it
 // (they run in different runtime environments: bun, deno, node-cjs)
-const EXTERNAL_TS_FILES = ["tests/smoke/**/*.ts", "tests/module/cjs/**/*.ts"];
+const EXTERNAL_TS_FILES = [ "tests/smoke/**/*.ts", "tests/module/cjs/**/*.ts" ];
 
 // Type-checking exercise files (esm-index.ts, cjs-typing.ts, etc.)
 // These files exist purely to exercise the public API types; they are not
 // runnable programs and intentionally contain unused vars, any types, etc.
-const MODULE_TYPING_FILES = ["tests/module/**/*.ts"];
+const MODULE_TYPING_FILES = [ "tests/module/**/*.ts" ];
 
 export const extraRules: Array<Linter.Config> = [
   // For files outside the tsconfig project, disable projectService-based linting
@@ -74,17 +74,17 @@ export const extraRules: Array<Linter.Config> = [
     rules: {
       "vitest/expect-expect": [
         "error",
-        { assertFunctionNames: ["expect", "testHeaderValue", "assert.*"] },
+        { assertFunctionNames: [ "expect", "testHeaderValue", "assert.*" ] },
       ],
       "vitest/no-conditional-expect": "off",
     },
   },
   // Test files: disable security/style rules that are intentionally violated
   {
-    files: ["tests/**/*.ts", "tests/**/*.tsx"],
+    files: [ "tests/**/*.ts", "tests/**/*.tsx" ],
     rules: {
       // Test fixtures legitimately use http:// and hardcoded credentials/IPs
-      "sonarjs/no-hardcoded-passwords": "off",
+      "sonarjs/no-hardcoded-passwords": "off", // eslint-disable-line sonarjs/no-hardcoded-passwords
       "sonarjs/no-clear-text-protocols": "off",
       "sonarjs/no-hardcoded-ip": "off",
       "sonarjs/publicly-writable-directories": "off",
@@ -144,6 +144,6 @@ export const extraRules: Array<Linter.Config> = [
   },
 ];
 
-const config: Array<Linter.Config> = [...defaultConfig, ...extraRules];
+const config: Array<Linter.Config> = [ ...defaultConfig, ...extraRules ];
 
 export default config;

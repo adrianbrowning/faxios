@@ -13,7 +13,7 @@ const axios = require("axios");
 #### Avec bundler (webpack, rollup, vite, etc.)
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 ```
 
 ## Utiliser then/catch/finally

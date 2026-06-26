@@ -9,33 +9,39 @@ type AxiosHeaderMatcher =
   | RegExp
   | ((this: AxiosHeaders, value: string, name: string) => boolean);
 
-type AxiosHeaderParser = (this: AxiosHeaders, value: axios.AxiosHeaderValue, header: string) => any;
+type AxiosHeaderParser = (
+  this: AxiosHeaders,
+  value: axios.AxiosHeaderValue,
+  header: string,
+) => any;
 
 type CommonRequestHeadersList =
-  | 'Accept'
-  | 'Content-Length'
-  | 'User-Agent'
-  | 'Content-Encoding'
-  | 'Authorization'
-  | 'Location';
+  | "Accept"
+  | "Content-Length"
+  | "User-Agent"
+  | "Content-Encoding"
+  | "Authorization"
+  | "Location";
 
 type ContentType =
   | axios.AxiosHeaderValue
-  | 'text/html'
-  | 'text/plain'
-  | 'multipart/form-data'
-  | 'application/json'
-  | 'application/x-www-form-urlencoded'
-  | 'application/octet-stream';
+  | "text/html"
+  | "text/plain"
+  | "multipart/form-data"
+  | "application/json"
+  | "application/x-www-form-urlencoded"
+  | "application/octet-stream";
 
 type CommonResponseHeadersList =
-  | 'Server'
-  | 'Content-Type'
-  | 'Content-Length'
-  | 'Cache-Control'
-  | 'Content-Encoding';
+  | "Server"
+  | "Content-Type"
+  | "Content-Length"
+  | "Cache-Control"
+  | "Content-Encoding";
 
-type CommonResponseHeaderKey = CommonResponseHeadersList | Lowercase<CommonResponseHeadersList>;
+type CommonResponseHeaderKey =
+  | CommonResponseHeadersList
+  | Lowercase<CommonResponseHeadersList>;
 
 type BrowserProgressEvent = any;
 
@@ -47,12 +53,18 @@ declare class AxiosHeaders {
   set(
     headerName?: string,
     value?: axios.AxiosHeaderValue,
-    rewrite?: boolean | AxiosHeaderMatcher
+    rewrite?: boolean | AxiosHeaderMatcher,
   ): AxiosHeaders;
-  set(headers?: axios.RawAxiosHeaders | AxiosHeaders | string, rewrite?: boolean): AxiosHeaders;
+  set(
+    headers?: axios.RawAxiosHeaders | AxiosHeaders | string,
+    rewrite?: boolean,
+  ): AxiosHeaders;
 
   get(headerName: string, parser: RegExp): RegExpExecArray | null;
-  get(headerName: string, matcher?: true | AxiosHeaderParser): axios.AxiosHeaderValue;
+  get(
+    headerName: string,
+    matcher?: true | AxiosHeaderParser,
+  ): axios.AxiosHeaderValue;
 
   has(header: string, matcher?: AxiosHeaderMatcher): boolean;
 
@@ -63,47 +75,62 @@ declare class AxiosHeaders {
   normalize(format: boolean): AxiosHeaders;
 
   concat(
-    ...targets: Array<AxiosHeaders | axios.RawAxiosHeaders | string | undefined | null>
+    ...targets: Array<
+      AxiosHeaders | axios.RawAxiosHeaders | string | undefined | null
+    >
   ): AxiosHeaders;
 
   toJSON(asStrings: true): Record<string, string>;
   toJSON(asStrings?: false): Record<string, string | string[]>;
   toJSON(asStrings?: boolean): Record<string, string | string[]>;
 
-  static from(thing?: AxiosHeaders | axios.RawAxiosHeaders | string): AxiosHeaders;
+  static from(
+    thing?: AxiosHeaders | axios.RawAxiosHeaders | string,
+  ): AxiosHeaders;
 
   static accessor(header: string | string[]): AxiosHeaders;
 
   static concat(
-    ...targets: Array<AxiosHeaders | axios.RawAxiosHeaders | string | undefined | null>
+    ...targets: Array<
+      AxiosHeaders | axios.RawAxiosHeaders | string | undefined | null
+    >
   ): AxiosHeaders;
 
-  setContentType(value: ContentType, rewrite?: boolean | AxiosHeaderMatcher): AxiosHeaders;
+  setContentType(
+    value: ContentType,
+    rewrite?: boolean | AxiosHeaderMatcher,
+  ): AxiosHeaders;
   getContentType(parser?: RegExp): RegExpExecArray | null;
   getContentType(matcher?: AxiosHeaderMatcher): axios.AxiosHeaderValue;
   hasContentType(matcher?: AxiosHeaderMatcher): boolean;
 
   setContentLength(
     value: axios.AxiosHeaderValue,
-    rewrite?: boolean | AxiosHeaderMatcher
+    rewrite?: boolean | AxiosHeaderMatcher,
   ): AxiosHeaders;
   getContentLength(parser?: RegExp): RegExpExecArray | null;
   getContentLength(matcher?: AxiosHeaderMatcher): axios.AxiosHeaderValue;
   hasContentLength(matcher?: AxiosHeaderMatcher): boolean;
 
-  setAccept(value: axios.AxiosHeaderValue, rewrite?: boolean | AxiosHeaderMatcher): AxiosHeaders;
+  setAccept(
+    value: axios.AxiosHeaderValue,
+    rewrite?: boolean | AxiosHeaderMatcher,
+  ): AxiosHeaders;
   getAccept(parser?: RegExp): RegExpExecArray | null;
   getAccept(matcher?: AxiosHeaderMatcher): axios.AxiosHeaderValue;
   hasAccept(matcher?: AxiosHeaderMatcher): boolean;
 
-  setUserAgent(value: axios.AxiosHeaderValue, rewrite?: boolean | AxiosHeaderMatcher): AxiosHeaders;
+  setUserAgent(
+    value: axios.AxiosHeaderValue,
+    rewrite?: boolean | AxiosHeaderMatcher,
+  ): AxiosHeaders;
   getUserAgent(parser?: RegExp): RegExpExecArray | null;
   getUserAgent(matcher?: AxiosHeaderMatcher): axios.AxiosHeaderValue;
   hasUserAgent(matcher?: AxiosHeaderMatcher): boolean;
 
   setContentEncoding(
     value: axios.AxiosHeaderValue,
-    rewrite?: boolean | AxiosHeaderMatcher
+    rewrite?: boolean | AxiosHeaderMatcher,
   ): AxiosHeaders;
   getContentEncoding(parser?: RegExp): RegExpExecArray | null;
   getContentEncoding(matcher?: AxiosHeaderMatcher): axios.AxiosHeaderValue;
@@ -111,7 +138,7 @@ declare class AxiosHeaders {
 
   setAuthorization(
     value: axios.AxiosHeaderValue,
-    rewrite?: boolean | AxiosHeaderMatcher
+    rewrite?: boolean | AxiosHeaderMatcher,
   ): AxiosHeaders;
   getAuthorization(parser?: RegExp): RegExpExecArray | null;
   getAuthorization(matcher?: AxiosHeaderMatcher): axios.AxiosHeaderValue;
@@ -122,13 +149,13 @@ declare class AxiosHeaders {
   [Symbol.iterator](): IterableIterator<[string, axios.AxiosHeaderValue]>;
 }
 
-declare class AxiosError<T = unknown, D = any> extends Error {
+declare class FaxiosError<T = unknown, D = any> extends Error {
   constructor(
     message?: string,
     code?: string,
     config?: axios.InternalAxiosRequestConfig<D>,
     request?: any,
-    response?: axios.AxiosResponse<T, D>
+    response?: axios.AxiosResponse<T, D>,
   );
 
   config?: axios.InternalAxiosRequestConfig<D>;
@@ -146,26 +173,26 @@ declare class AxiosError<T = unknown, D = any> extends Error {
     config?: axios.InternalAxiosRequestConfig<D>,
     request?: any,
     response?: axios.AxiosResponse<T, D>,
-    customProps?: object
-  ): AxiosError<T, D>;
-  static readonly ERR_FR_TOO_MANY_REDIRECTS = 'ERR_FR_TOO_MANY_REDIRECTS';
-  static readonly ERR_BAD_OPTION_VALUE = 'ERR_BAD_OPTION_VALUE';
-  static readonly ERR_BAD_OPTION = 'ERR_BAD_OPTION';
-  static readonly ERR_NETWORK = 'ERR_NETWORK';
-  static readonly ERR_DEPRECATED = 'ERR_DEPRECATED';
-  static readonly ERR_BAD_RESPONSE = 'ERR_BAD_RESPONSE';
-  static readonly ERR_BAD_REQUEST = 'ERR_BAD_REQUEST';
-  static readonly ERR_NOT_SUPPORT = 'ERR_NOT_SUPPORT';
-  static readonly ERR_INVALID_URL = 'ERR_INVALID_URL';
-  static readonly ERR_CANCELED = 'ERR_CANCELED';
-  static readonly ERR_FORM_DATA_DEPTH_EXCEEDED = 'ERR_FORM_DATA_DEPTH_EXCEEDED';
-  static readonly ECONNABORTED = 'ECONNABORTED';
-  static readonly ECONNREFUSED = 'ECONNREFUSED';
-  static readonly ETIMEDOUT = 'ETIMEDOUT';
+    customProps?: object,
+  ): FaxiosError<T, D>;
+  static readonly ERR_FR_TOO_MANY_REDIRECTS = "ERR_FR_TOO_MANY_REDIRECTS";
+  static readonly ERR_BAD_OPTION_VALUE = "ERR_BAD_OPTION_VALUE";
+  static readonly ERR_BAD_OPTION = "ERR_BAD_OPTION";
+  static readonly ERR_NETWORK = "ERR_NETWORK";
+  static readonly ERR_DEPRECATED = "ERR_DEPRECATED";
+  static readonly ERR_BAD_RESPONSE = "ERR_BAD_RESPONSE";
+  static readonly ERR_BAD_REQUEST = "ERR_BAD_REQUEST";
+  static readonly ERR_NOT_SUPPORT = "ERR_NOT_SUPPORT";
+  static readonly ERR_INVALID_URL = "ERR_INVALID_URL";
+  static readonly ERR_CANCELED = "ERR_CANCELED";
+  static readonly ERR_FORM_DATA_DEPTH_EXCEEDED = "ERR_FORM_DATA_DEPTH_EXCEEDED";
+  static readonly ECONNABORTED = "ECONNABORTED";
+  static readonly ECONNREFUSED = "ECONNREFUSED";
+  static readonly ETIMEDOUT = "ETIMEDOUT";
 }
 
-declare class CanceledError<T> extends AxiosError<T> {
-  readonly name: 'CanceledError';
+declare class CanceledError<T> extends FaxiosError<T> {
+  readonly name: "CanceledError";
 }
 
 declare class Axios {
@@ -177,58 +204,58 @@ declare class Axios {
   };
   getUri(config?: axios.AxiosRequestConfig): string;
   request<T = any, R = axios.AxiosResponse<T>, D = any>(
-    config: axios.AxiosRequestConfig<D>
+    config: axios.AxiosRequestConfig<D>,
   ): Promise<R>;
   get<T = any, R = axios.AxiosResponse<T>, D = any>(
     url: string,
-    config?: axios.AxiosRequestConfig<D>
+    config?: axios.AxiosRequestConfig<D>,
   ): Promise<R>;
   delete<T = any, R = axios.AxiosResponse<T>, D = any>(
     url: string,
-    config?: axios.AxiosRequestConfig<D>
+    config?: axios.AxiosRequestConfig<D>,
   ): Promise<R>;
   head<T = any, R = axios.AxiosResponse<T>, D = any>(
     url: string,
-    config?: axios.AxiosRequestConfig<D>
+    config?: axios.AxiosRequestConfig<D>,
   ): Promise<R>;
   options<T = any, R = axios.AxiosResponse<T>, D = any>(
     url: string,
-    config?: axios.AxiosRequestConfig<D>
+    config?: axios.AxiosRequestConfig<D>,
   ): Promise<R>;
   post<T = any, R = axios.AxiosResponse<T>, D = any>(
     url: string,
     data?: D,
-    config?: axios.AxiosRequestConfig<D>
+    config?: axios.AxiosRequestConfig<D>,
   ): Promise<R>;
   put<T = any, R = axios.AxiosResponse<T>, D = any>(
     url: string,
     data?: D,
-    config?: axios.AxiosRequestConfig<D>
+    config?: axios.AxiosRequestConfig<D>,
   ): Promise<R>;
   patch<T = any, R = axios.AxiosResponse<T>, D = any>(
     url: string,
     data?: D,
-    config?: axios.AxiosRequestConfig<D>
+    config?: axios.AxiosRequestConfig<D>,
   ): Promise<R>;
   postForm<T = any, R = axios.AxiosResponse<T>, D = any>(
     url: string,
     data?: D,
-    config?: axios.AxiosRequestConfig<D>
+    config?: axios.AxiosRequestConfig<D>,
   ): Promise<R>;
   putForm<T = any, R = axios.AxiosResponse<T>, D = any>(
     url: string,
     data?: D,
-    config?: axios.AxiosRequestConfig<D>
+    config?: axios.AxiosRequestConfig<D>,
   ): Promise<R>;
   patchForm<T = any, R = axios.AxiosResponse<T>, D = any>(
     url: string,
     data?: D,
-    config?: axios.AxiosRequestConfig<D>
+    config?: axios.AxiosRequestConfig<D>,
   ): Promise<R>;
   query<T = any, R = axios.AxiosResponse<T>, D = any>(
     url: string,
     data?: D,
-    config?: axios.AxiosRequestConfig<D>
+    config?: axios.AxiosRequestConfig<D>,
   ): Promise<R>;
 }
 
@@ -298,10 +325,10 @@ declare enum HttpStatusCode {
   NetworkAuthenticationRequired = 511,
 }
 
-type InternalAxiosError<T = unknown, D = any> = AxiosError<T, D>;
+type InternalAxiosError<T = unknown, D = any> = FaxiosError<T, D>;
 
 declare namespace axios {
-  type AxiosError<T = unknown, D = any> = InternalAxiosError<T, D>;
+  type FaxiosError<T = unknown, D = any> = InternalAxiosError<T, D>;
 
   interface RawAxiosHeaders {
     [key: string]: AxiosHeaderValue;
@@ -311,26 +338,38 @@ declare namespace axios {
     RawAxiosHeaders & {
       [Key in CommonRequestHeadersList]: AxiosHeaderValue;
     } & {
-      'Content-Type': ContentType;
+      "Content-Type": ContentType;
     }
   >;
 
   type AxiosRequestHeaders = RawAxiosRequestHeaders & AxiosHeaders;
 
-  type AxiosHeaderValue = AxiosHeaders | string | string[] | number | boolean | null;
+  type AxiosHeaderValue =
+    | AxiosHeaders
+    | string
+    | string[]
+    | number
+    | boolean
+    | null;
 
   type RawCommonResponseHeaders = {
     [Key in CommonResponseHeaderKey]: AxiosHeaderValue;
   } & {
-    'set-cookie': string[];
+    "set-cookie": string[];
   };
 
-  type RawAxiosResponseHeaders = Partial<RawAxiosHeaders & RawCommonResponseHeaders>;
+  type RawAxiosResponseHeaders = Partial<
+    RawAxiosHeaders & RawCommonResponseHeaders
+  >;
 
   type AxiosResponseHeaders = RawAxiosResponseHeaders & AxiosHeaders;
 
   interface AxiosRequestTransformer {
-    (this: InternalAxiosRequestConfig, data: any, headers: AxiosRequestHeaders): any;
+    (
+      this: InternalAxiosRequestConfig,
+      data: any,
+      headers: AxiosRequestHeaders,
+    ): any;
   }
 
   interface AxiosResponseTransformer {
@@ -338,7 +377,7 @@ declare namespace axios {
       this: InternalAxiosRequestConfig,
       data: any,
       headers: AxiosResponseHeaders,
-      status?: number
+      status?: number,
     ): any;
   }
 
@@ -359,37 +398,47 @@ declare namespace axios {
   }
 
   type UppercaseMethod =
-    | 'GET'
-    | 'DELETE'
-    | 'HEAD'
-    | 'OPTIONS'
-    | 'POST'
-    | 'PUT'
-    | 'PATCH'
-    | 'PURGE'
-    | 'LINK'
-    | 'UNLINK'
-    | 'QUERY';
+    | "GET"
+    | "DELETE"
+    | "HEAD"
+    | "OPTIONS"
+    | "POST"
+    | "PUT"
+    | "PATCH"
+    | "PURGE"
+    | "LINK"
+    | "UNLINK"
+    | "QUERY";
 
   type Method = (UppercaseMethod | Lowercase<UppercaseMethod>) & {};
 
-  type ResponseType = 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream' | 'formdata';
+  type ResponseType =
+    | "arraybuffer"
+    | "blob"
+    | "document"
+    | "json"
+    | "text"
+    | "stream"
+    | "formdata";
 
   type UppercaseResponseEncoding =
-    | 'ASCII'
-    | 'ANSI'
-    | 'BINARY'
-    | 'BASE64'
-    | 'BASE64URL'
-    | 'HEX'
-    | 'LATIN1'
-    | 'UCS-2'
-    | 'UCS2'
-    | 'UTF-8'
-    | 'UTF8'
-    | 'UTF16LE';
+    | "ASCII"
+    | "ANSI"
+    | "BINARY"
+    | "BASE64"
+    | "BASE64URL"
+    | "HEX"
+    | "LATIN1"
+    | "UCS-2"
+    | "UCS2"
+    | "UTF-8"
+    | "UTF8"
+    | "UTF16LE";
 
-  type responseEncoding = (UppercaseResponseEncoding | Lowercase<UppercaseResponseEncoding>) & {};
+  type responseEncoding = (
+    | UppercaseResponseEncoding
+    | Lowercase<UppercaseResponseEncoding>
+  ) & {};
 
   interface TransitionalOptions {
     silentJSONParsing?: boolean;
@@ -419,7 +468,7 @@ declare namespace axios {
       value: any,
       key: string | number,
       path: null | Array<string | number>,
-      helpers: FormDataVisitorHelpers
+      helpers: FormDataVisitorHelpers,
     ): boolean;
   }
 
@@ -465,7 +514,7 @@ declare namespace axios {
 
   type Milliseconds = number;
 
-  type AxiosAdapterName = 'fetch' | 'xhr' | 'http' | (string & {});
+  type AxiosAdapterName = "fetch" | "xhr" | "http" | (string & {});
 
   type AxiosAdapterConfig = AxiosAdapter | AxiosAdapterName;
 
@@ -507,8 +556,15 @@ declare namespace axios {
     maxRate?: number | [MaxUploadRate, MaxDownloadRate];
     beforeRedirect?: (
       options: Record<string, any>,
-      responseDetails: { headers: Record<string, string>; statusCode: HttpStatusCode },
-      requestDetails: { headers: Record<string, string>; url: string; method: string },
+      responseDetails: {
+        headers: Record<string, string>;
+        statusCode: HttpStatusCode;
+      },
+      requestDetails: {
+        headers: Record<string, string>;
+        url: string;
+        method: string;
+      },
     ) => void;
     socketPath?: string | null;
     allowedSocketPaths?: string | string[] | null;
@@ -523,11 +579,24 @@ declare namespace axios {
     insecureHTTPParser?: boolean;
     env?: {
       FormData?: new (...args: any[]) => object;
-      fetch?: (input: URL | Request | string, init?: RequestInit) => Promise<Response>;
-      Request?: new (input: URL | Request | string, init?: RequestInit) => Request;
+      fetch?: (
+        input: URL | Request | string,
+        init?: RequestInit,
+      ) => Promise<Response>;
+      Request?: new (
+        input: URL | Request | string,
+        init?: RequestInit,
+      ) => Request;
       Response?: new (
-        body?: ArrayBuffer | ArrayBufferView | Blob | FormData | URLSearchParams | string | null,
-        init?: ResponseInit
+        body?:
+          | ArrayBuffer
+          | ArrayBufferView
+          | Blob
+          | FormData
+          | URLSearchParams
+          | string
+          | null,
+        init?: ResponseInit,
       ) => Response;
     };
     formSerializer?: FormSerializerOptions;
@@ -539,26 +608,36 @@ declare namespace axios {
           cb: (
             err: Error | null,
             address: LookupAddress | LookupAddress[],
-            family?: AddressFamily
-          ) => void
+            family?: AddressFamily,
+          ) => void,
         ) => void)
       | ((
           hostname: string,
-          options: object
+          options: object,
         ) => Promise<
-          | [address: LookupAddressEntry | LookupAddressEntry[], family?: AddressFamily]
+          | [
+              address: LookupAddressEntry | LookupAddressEntry[],
+              family?: AddressFamily,
+            ]
           | LookupAddress
         >);
-    withXSRFToken?: boolean | ((config: InternalAxiosRequestConfig) => boolean | undefined);
-    parseReviver?: (this: any, key: string, value: any, context?: { source?: string }) => any;
+    withXSRFToken?:
+      | boolean
+      | ((config: InternalAxiosRequestConfig) => boolean | undefined);
+    parseReviver?: (
+      this: any,
+      key: string,
+      value: any,
+      context?: { source?: string },
+    ) => any;
     fetchOptions?:
-      | Omit<RequestInit, 'body' | 'headers' | 'method' | 'signal'>
+      | Omit<RequestInit, "body" | "headers" | "method" | "signal">
       | Record<string, any>;
     httpVersion?: 1 | 2;
     http2Options?: Record<string, any> & {
       sessionTimeout?: number;
     };
-    formDataHeaderPolicy?: 'legacy' | 'content-only';
+    formDataHeaderPolicy?: "legacy" | "content-only";
     redact?: string[];
     sensitiveHeaders?: string[];
   }
@@ -585,11 +664,17 @@ declare namespace axios {
     query?: RawAxiosRequestHeaders;
   }
 
-  interface AxiosDefaults<D = any> extends Omit<AxiosRequestConfig<D>, 'headers'> {
+  interface AxiosDefaults<D = any> extends Omit<
+    AxiosRequestConfig<D>,
+    "headers"
+  > {
     headers: HeadersDefaults;
   }
 
-  interface CreateAxiosDefaults<D = any> extends Omit<AxiosRequestConfig<D>, 'headers'> {
+  interface CreateAxiosDefaults<D = any> extends Omit<
+    AxiosRequestConfig<D>,
+    "headers"
+  > {
     headers?: RawAxiosRequestHeaders | AxiosHeaders | Partial<HeadersDefaults>;
   }
 
@@ -643,12 +728,12 @@ declare namespace axios {
   type AxiosRequestInterceptorUse<T> = (
     onFulfilled?: AxiosInterceptorFulfilled<T> | null,
     onRejected?: AxiosInterceptorRejected | null,
-    options?: AxiosInterceptorOptions
+    options?: AxiosInterceptorOptions,
   ) => number;
 
   type AxiosResponseInterceptorUse<T> = (
     onFulfilled?: AxiosInterceptorFulfilled<T> | null,
-    onRejected?: AxiosInterceptorRejected | null
+    onRejected?: AxiosInterceptorRejected | null,
   ) => number;
 
   interface AxiosInterceptorHandler<T> {
@@ -659,21 +744,25 @@ declare namespace axios {
   }
 
   interface AxiosInterceptorManager<V> {
-    use: V extends AxiosResponse ? AxiosResponseInterceptorUse<V> : AxiosRequestInterceptorUse<V>;
+    use: V extends AxiosResponse
+      ? AxiosResponseInterceptorUse<V>
+      : AxiosRequestInterceptorUse<V>;
     eject(id: number): void;
     clear(): void;
     handlers?: Array<AxiosInterceptorHandler<V>>;
   }
 
   interface AxiosInstance extends Axios {
-    <T = any, R = AxiosResponse<T>, D = any>(config: AxiosRequestConfig<D>): Promise<R>;
+    <T = any, R = AxiosResponse<T>, D = any>(
+      config: AxiosRequestConfig<D>,
+    ): Promise<R>;
     <T = any, R = AxiosResponse<T>, D = any>(
       url: string,
-      config?: AxiosRequestConfig<D>
+      config?: AxiosRequestConfig<D>,
     ): Promise<R>;
 
     create(config?: CreateAxiosDefaults): AxiosInstance;
-    defaults: Omit<AxiosDefaults, 'headers'> & {
+    defaults: Omit<AxiosDefaults, "headers"> & {
       headers: HeadersDefaults & {
         [key: string]: AxiosHeaderValue;
       };
@@ -694,25 +783,27 @@ declare namespace axios {
     Cancel: CancelStatic;
     CancelToken: CancelTokenStatic;
     Axios: typeof Axios;
-    AxiosError: typeof AxiosError;
+    FaxiosError: typeof FaxiosError;
     CanceledError: typeof CanceledError;
     HttpStatusCode: typeof HttpStatusCode;
     readonly VERSION: string;
     isCancel<T = any>(value: any): value is CanceledError<T>;
     all<T>(values: Array<T | Promise<T>>): Promise<T[]>;
     spread<T, R>(callback: (...args: T[]) => R): (array: T[]) => R;
-    isAxiosError<T = any, D = any>(payload: any): payload is AxiosError<T, D>;
+    isAxiosError<T = any, D = any>(payload: any): payload is FaxiosError<T, D>;
     toFormData(
       sourceObj: object,
       targetFormData?: GenericFormData,
-      options?: FormSerializerOptions
+      options?: FormSerializerOptions,
     ): GenericFormData;
     formToJSON(form: GenericFormData | GenericHTMLFormElement): object;
-    getAdapter(adapters: AxiosAdapterConfig | AxiosAdapterConfig[] | undefined): AxiosAdapter;
+    getAdapter(
+      adapters: AxiosAdapterConfig | AxiosAdapterConfig[] | undefined,
+    ): AxiosAdapter;
     AxiosHeaders: typeof AxiosHeaders;
     mergeConfig<D = any>(
       config1: AxiosRequestConfig<D>,
-      config2: AxiosRequestConfig<D>
+      config2: AxiosRequestConfig<D>,
     ): AxiosRequestConfig<D>;
   }
 }

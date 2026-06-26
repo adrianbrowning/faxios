@@ -102,7 +102,7 @@ await api.put(url, data, {
 También puedes hacerlo directamente con `AxiosHeaders` al componer encabezados:
 
 ```js
-import axios, { AxiosHeaders } from 'axios';
+import faxios, { AxiosHeaders } from 'faxios';
 
 const headers = AxiosHeaders.concat(
   { 'content-type': undefined },

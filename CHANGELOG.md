@@ -111,16 +111,16 @@ A handful of fixes in this release are either security-adjacent or change observ
 ## 🚀 New Features
 
 - **QUERY HTTP Method:** Added support for the QUERY HTTP method across adapters and type definitions. (**#10802**)
-- **ECONNREFUSED Error Constant:** Exposed `ECONNREFUSED` as a constant on `AxiosError` so callers can match connection-refused failures without comparing string literals (closes #6485). (**#10680**)
+- **ECONNREFUSED Error Constant:** Exposed `ECONNREFUSED` as a constant on `FaxiosError` so callers can match connection-refused failures without comparing string literals (closes #6485). (**#10680**)
 - **Encode Helper Export:** Exported the internal `encode` helper from `buildURL` so userland param serializers can reuse the same encoding logic that axios uses internally. (**#6897**)
 
 ## 🐛 Bug Fixes
 
 - **HTTP Adapter — Redirects & Headers:** Cleared stale headers when a redirect targets a no-proxy host, fixed the redirect listener chain so listeners no longer stack across hops, restored the missing `requestDetails` argument on `beforeRedirect`, preserved user-supplied `Host` headers when forwarding through a proxy, and properly URL-decoded basic auth credentials. (**#10794**, **#10800**, **#6241**, **#10822**, **#10825**)
-- **HTTP Adapter — Streams & Timeouts:** Preserved the partial response object on `AxiosError` when a stream is aborted after headers arrive, honoured the `timeout` option during the connect phase when redirects are disabled, and resolved an unsettled-promise hang when an aborted request was combined with compression and `maxRedirects: 0`. (**#10708**, **#10819**, **#7149**)
+- **HTTP Adapter — Streams & Timeouts:** Preserved the partial response object on `FaxiosError` when a stream is aborted after headers arrive, honoured the `timeout` option during the connect phase when redirects are disabled, and resolved an unsettled-promise hang when an aborted request was combined with compression and `maxRedirects: 0`. (**#10708**, **#10819**, **#7149**)
 - **Fetch Adapter:** Enforced `maxBodyLength` / `maxContentLength` in the fetch adapter, set the `User-Agent` header to match the HTTP adapter, preserved the original abort reason instead of replacing it with a generic error, and deferred global access so importing the module no longer throws a `TypeError` in restricted environments. (**#10795**, **#10772**, **#10806**, **#7260**)
 - **XHR Adapter:** Unsubscribed the `cancelToken` and `AbortSignal` listeners on the error, timeout, and abort code paths to prevent leaked subscriptions. (**#10787**)
-- **Error Handling:** Attached the parsed response to `AxiosError` when `JSON.parse` fails inside `dispatchRequest`, prevented `settle` from emitting `undefined` error codes, and tightened the `parseProtocol` regex to require a colon in the protocol separator. (**#10724**, **#7276**, **#10729**)
+- **Error Handling:** Attached the parsed response to `FaxiosError` when `JSON.parse` fails inside `dispatchRequest`, prevented `settle` from emitting `undefined` error codes, and tightened the `parseProtocol` regex to require a colon in the protocol separator. (**#10724**, **#7276**, **#10729**)
 - **Types & Exports:** Aligned the CommonJS `CancelToken` typings with the ESM build, fixed a compiler error caused by `RawAxiosHeaders`, and re-exported `create` from the package index. (**#7414**, **#6389**, **#6460**)
 - **UTF-8 Encoding:** Replaced the deprecated `unescape()` call with a modern UTF-8 encoding implementation. (**#7378**)
 - **Misc Cleanup:** Resolved a batch of small inconsistencies and gadget-level issues across the codebase. (**#10833**)
@@ -171,7 +171,7 @@ This release delivers prototype-pollution hardening for the Node HTTP adapter, a
 ## 🔒 Security Fixes
 
 - **Prototype Pollution Hardening (HTTP Adapter):** Hardened the Node HTTP adapter and `resolveConfig`/`mergeConfig`/validator paths to read only own properties and use null-prototype config objects, preventing polluted `auth`, `baseURL`, `socketPath`, `beforeRedirect`, and `insecureHTTPParser` from influencing requests. (**#10779**)
-- **SSRF via `socketPath`:** Rejects non-string `socketPath` values and adds an opt-in `allowedSocketPaths` config option to restrict permitted Unix domain socket paths, returning `AxiosError` `ERR_BAD_OPTION_VALUE` on mismatch. (**#10777**)
+- **SSRF via `socketPath`:** Rejects non-string `socketPath` values and adds an opt-in `allowedSocketPaths` config option to restrict permitted Unix domain socket paths, returning `FaxiosError` `ERR_BAD_OPTION_VALUE` on mismatch. (**#10777**)
 - **Supply-chain Hardening:** Added `.npmrc` with `ignore-scripts=true`, lockfile lint CI, non-blocking reproducible build diff, scoped CODEOWNERS, expanded `SECURITY.md`/`THREATMODEL.md` with provenance verification (`npm audit signatures`), 60-day resolution policy, and maintainer incident-response runbook. (**#10776**)
 
 ## 🚀 New Features
@@ -238,7 +238,7 @@ This release ships a coordinated set of security hardening fixes across headers,
 
 - **Threat Model & Security Docs:** Ongoing refinement of `THREATMODEL.md`, including Hopper security update, TLS and tag-replay wording, mitigation descriptions, decompression-bomb guidance, and further cleanup. (**#10672**, **#10715**, **#10718**, **#10722**, **#10763**, **#10765**)
 
-- **Test Coverage & Migration:** Expanded `shouldBypassProxy` coverage for wildcard/IPv6/edge cases, documented and tested `AxiosError.status`, and migrated `progressEventReducer` tests to Vitest. (**#10723**, **#10725**, **#10741**)
+- **Test Coverage & Migration:** Expanded `shouldBypassProxy` coverage for wildcard/IPv6/edge cases, documented and tested `FaxiosError.status`, and migrated `progressEventReducer` tests to Vitest. (**#10723**, **#10725**, **#10741**)
 
 - **Type Refactor:** Uses TypeScript utility types to deduplicate literal unions. (**#7520**)
 
@@ -346,9 +346,9 @@ This release adds React Native Blob support, fixes several enumeration and expor
 
 ## 🐛 Bug Fixes
 
-- **AxiosError:** Fixed `AxiosError.from` not copying the `status` field from the source error. (**#7403**)
+- **FaxiosError:** Fixed `FaxiosError.from` not copying the `status` field from the source error. (**#7403**)
 
-- **AxiosError:** Made the `message` property enumerable so it appears in `JSON.stringify` output and `Object.keys`. (**#7392**)
+- **FaxiosError:** Made the `message` property enumerable so it appears in `JSON.stringify` output and `Object.keys`. (**#7392**)
 
 - **FormData Detection:** Corrected safe FormData detection for WeChat Mini Program environments. (**#7324**)
 
@@ -374,7 +374,7 @@ We are thrilled to welcome our new contributors. Thank you for helping improve a
 
 ## v1.13.5 - February 8, 2026
 
-This release patches a prototype pollution denial-of-service vulnerability, fixes a missing `status` field regression in `AxiosError`, adds interceptor ordering control, and introduces URL validation for `isAbsoluteURL`.
+This release patches a prototype pollution denial-of-service vulnerability, fixes a missing `status` field regression in `FaxiosError`, adds interceptor ordering control, and introduces URL validation for `isAbsoluteURL`.
 
 ## 🔒 Security Fixes
 
@@ -386,7 +386,7 @@ This release patches a prototype pollution denial-of-service vulnerability, fixe
 
 ## 🐛 Bug Fixes
 
-- **AxiosError `status`:** Restored the `status` field on `AxiosError` instances, which was missing in v1.13.3 and later. (**#7368**)
+- **FaxiosError `status`:** Restored the `status` field on `FaxiosError` instances, which was missing in v1.13.3 and later. (**#7368**)
 
 - **Interceptor Ordering:** Added a `useLegacyInterceptorOrder` option to restore pre-v1.13 interceptor execution order for applications relying on the previous behaviour. ([569f028](https://github.com/axios/axios/commit/569f028a5878faaec8d7d138ba686aac407bda4c))
 
@@ -433,9 +433,9 @@ Patch release fixing regressions introduced in v1.13.3, including TypeScript exp
 - main field in package.json should correspond to cjs artifacts ([#5756](https://github.com/axios/axios/issues/5756)) ([7373fbf](https://github.com/axios/axios/commit/7373fbff24cd92ce650d99ff6f7fe08c2e2a0a04))
 - **package.json:** add 'bun' package.json 'exports' condition. Load the Node.js build in Bun instead of the browser build ([#5754](https://github.com/axios/axios/issues/5754)) ([b89217e](https://github.com/axios/axios/commit/b89217e3e91de17a3d55e2b8f39ceb0e9d8aeda8))
 - silentJSONParsing=false should throw on invalid JSON ([#7253](https://github.com/axios/axios/issues/7253)) ([#7257](https://github.com/axios/axios/issues/7257)) ([7d19335](https://github.com/axios/axios/commit/7d19335e43d6754a1a9a66e424f7f7da259895bf))
-- turn AxiosError into a native error ([#5394](https://github.com/axios/axios/issues/5394)) ([#5558](https://github.com/axios/axios/issues/5558)) ([1c6a86d](https://github.com/axios/axios/commit/1c6a86dd2c0623ee1af043a8491dbc96d40e883b))
+- turn FaxiosError into a native error ([#5394](https://github.com/axios/axios/issues/5394)) ([#5558](https://github.com/axios/axios/issues/5558)) ([1c6a86d](https://github.com/axios/axios/commit/1c6a86dd2c0623ee1af043a8491dbc96d40e883b))
 - **types:** add handlers to AxiosInterceptorManager interface ([#5551](https://github.com/axios/axios/issues/5551)) ([8d1271b](https://github.com/axios/axios/commit/8d1271b49fc226ed7defd07cd577bd69a55bb13a))
-- **types:** restore AxiosError.cause type from unknown to Error ([#7327](https://github.com/axios/axios/issues/7327)) ([d8233d9](https://github.com/axios/axios/commit/d8233d9e8e9a64bfba9bbe01d475ba417510b82b))
+- **types:** restore FaxiosError.cause type from unknown to Error ([#7327](https://github.com/axios/axios/issues/7327)) ([d8233d9](https://github.com/axios/axios/commit/d8233d9e8e9a64bfba9bbe01d475ba417510b82b))
 - unclear error message is thrown when specifying an empty proxy authorization ([#6314](https://github.com/axios/axios/issues/6314)) ([6ef867e](https://github.com/axios/axios/commit/6ef867e684adf7fb2343e3b29a79078a3c76dc29))
 
 ### Features
@@ -829,7 +829,7 @@ Patch release fixing regressions introduced in v1.13.3, including TypeScript exp
 ### Bug Fixes
 
 - **adapter:** fix undefined reference to hasBrowserEnv ([#6572](https://github.com/axios/axios/issues/6572)) ([7004707](https://github.com/axios/axios/commit/7004707c4180b416341863bd86913fe4fc2f1df1))
-- **core:** add the missed implementation of AxiosError#status property; ([#6573](https://github.com/axios/axios/issues/6573)) ([6700a8a](https://github.com/axios/axios/commit/6700a8adac06942205f6a7a21421ecb36c4e0852))
+- **core:** add the missed implementation of FaxiosError#status property; ([#6573](https://github.com/axios/axios/issues/6573)) ([6700a8a](https://github.com/axios/axios/commit/6700a8adac06942205f6a7a21421ecb36c4e0852))
 - **core:** fix `ReferenceError: navigator is not defined` for custom environments; ([#6567](https://github.com/axios/axios/issues/6567)) ([fed1a4b](https://github.com/axios/axios/commit/fed1a4b2d78ed4a588c84e09d32749ed01dc2794))
 - **fetch:** fix credentials handling in Cloudflare workers ([#6533](https://github.com/axios/axios/issues/6533)) ([550d885](https://github.com/axios/axios/commit/550d885eb90fd156add7b93bbdc54d30d2f9a98d))
 
@@ -919,7 +919,7 @@ Patch release fixing regressions introduced in v1.13.3, including TypeScript exp
 
 - **core/axios:** handle un-writable error stack ([#6362](https://github.com/axios/axios/issues/6362)) ([81e0455](https://github.com/axios/axios/commit/81e0455b7b57fbaf2be16a73ebe0e6591cc6d8f9))
 - **fetch:** fix cases when ReadableStream or Response.body are not available; ([#6377](https://github.com/axios/axios/issues/6377)) ([d1d359d](https://github.com/axios/axios/commit/d1d359da347704e8b28d768e61515a3e96c5b072))
-- **fetch:** treat fetch-related TypeError as an AxiosError.ERR_NETWORK error; ([#6380](https://github.com/axios/axios/issues/6380)) ([bb5f9a5](https://github.com/axios/axios/commit/bb5f9a5ab768452de9e166dc28d0ffc234245ef1))
+- **fetch:** treat fetch-related TypeError as an FaxiosError.ERR_NETWORK error; ([#6380](https://github.com/axios/axios/issues/6380)) ([bb5f9a5](https://github.com/axios/axios/commit/bb5f9a5ab768452de9e166dc28d0ffc234245ef1))
 
 ### Contributors to this release
 
@@ -1445,7 +1445,7 @@ This functionality is considered as a fix.
 ### Refactors
 
 - refactor(types): AxiosProgressEvent.event type to any [#5308](https://github.com/axios/axios/pull/5308)
-- refactor(types): add missing types for static AxiosError.from method [#4956](https://github.com/axios/axios/pull/4956)
+- refactor(types): add missing types for static FaxiosError.from method [#4956](https://github.com/axios/axios/pull/4956)
 
 ### Chores
 
@@ -1485,7 +1485,7 @@ This functionality is considered as a fix.
 - fix: TypeScript type definitions for commonjs [#5196](https://github.com/axios/axios/pull/5196)
 - fix: type definition of use method on AxiosInterceptorManager to match the README [#5071](https://github.com/axios/axios/pull/5071)
 - fix: \_\_dirname is not defined in the sandbox [#5269](https://github.com/axios/axios/pull/5269)
-- fix: AxiosError.toJSON method to avoid circular references [#5247](https://github.com/axios/axios/pull/5247)
+- fix: FaxiosError.toJSON method to avoid circular references [#5247](https://github.com/axios/axios/pull/5247)
 - fix: Z_BUF_ERROR when content-encoding is set but the response body is empty [#5250](https://github.com/axios/axios/pull/5250)
 
 ### Refactors
@@ -1661,8 +1661,8 @@ This functionality is considered as a fix.
 
 ### Added
 
-- Added stack trace to AxiosError [#4624](https://github.com/axios/axios/pull/4624)
-- Add AxiosError to AxiosStatic [#4654](https://github.com/axios/axios/pull/4654)
+- Added stack trace to FaxiosError [#4624](https://github.com/axios/axios/pull/4624)
+- Add FaxiosError to AxiosStatic [#4654](https://github.com/axios/axios/pull/4654)
 - Replaced Rollup as our build runner [#4596](https://github.com/axios/axios/pull/4596)
 - Added generic TS types for the exposed toFormData helper [#4668](https://github.com/axios/axios/pull/4668)
 - Added listen callback function [#4096](https://github.com/axios/axios/pull/4096)
@@ -1692,7 +1692,7 @@ This functionality is considered as a fix.
 
 ### Changed
 
-- Updated AxiosError.config to be optional in the type definition [#4665](https://github.com/axios/axios/pull/4665)
+- Updated FaxiosError.config to be optional in the type definition [#4665](https://github.com/axios/axios/pull/4665)
 - Updated README emphasizing the URLSearchParam built-in interface over other solutions [#4590](https://github.com/axios/axios/pull/4590)
 - Include request and config when creating a CanceledError instance [#4659](https://github.com/axios/axios/pull/4659)
 - Changed func-names eslint rule to as-needed [#4492](https://github.com/axios/axios/pull/4492)
@@ -1733,8 +1733,8 @@ This functionality is considered as a fix.
 - Fixed race condition on immediate requests cancellation [#4261](https://github.com/axios/axios/pull/4261)
 - Fixing Z_BUF_ERROR when no content [#4701](https://github.com/axios/axios/pull/4701)
 - Fixing proxy beforeRedirect regression [#4708](https://github.com/axios/axios/pull/4708)
-- Fixed AxiosError status code type [#4717](https://github.com/axios/axios/pull/4717)
-- Fixed AxiosError stack capturing [#4718](https://github.com/axios/axios/pull/4718)
+- Fixed FaxiosError status code type [#4717](https://github.com/axios/axios/pull/4717)
+- Fixed FaxiosError stack capturing [#4718](https://github.com/axios/axios/pull/4718)
 - Fixing AxiosRequestHeaders typings [#4334](https://github.com/axios/axios/pull/4334)
 - Fixed max body length defaults [#4731](https://github.com/axios/axios/pull/4731)
 - Fixed toFormData Blob issue on node>v17 [#4728](https://github.com/axios/axios/pull/4728)
@@ -1759,7 +1759,7 @@ This functionality is considered as a fix.
 - Included dependency review [#4771](https://github.com/axios/axios/pull/4771)
 - Update security.md [#4784](https://github.com/axios/axios/pull/4784)
 - Remove unnecessary spaces [#4854](https://github.com/axios/axios/pull/4854)
-- Simplify the import path of AxiosError [#4875](https://github.com/axios/axios/pull/4875)
+- Simplify the import path of FaxiosError [#4875](https://github.com/axios/axios/pull/4875)
 - Fix Gitpod dead link [#4941](https://github.com/axios/axios/pull/4941)
 - Enable syntax highlighting for a code block [#4970](https://github.com/axios/axios/pull/4970)
 - Using Logo Axios in Readme.md [#4993](https://github.com/axios/axios/pull/4993)

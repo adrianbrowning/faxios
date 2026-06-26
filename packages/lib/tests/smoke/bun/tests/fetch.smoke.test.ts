@@ -1,10 +1,13 @@
-import axios from "axios";
+import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
 
 const createFetchMock = (
-  responseFactory?: (input: unknown, init: RequestInit) => Response | Promise<Response>
+  responseFactory?: (
+    input: unknown,
+    init: RequestInit,
+  ) => Response | Promise<Response>,
 ) => {
-  const calls: Array<{ input: unknown; init: RequestInit; }> = [];
+  const calls: Array<{ input: unknown; init: RequestInit }> = [];
 
   const mockFetch = async (input: unknown, init: RequestInit = {}) => {
     calls.push({ input, init });
@@ -26,7 +29,8 @@ const createFetchMock = (
 };
 
 const getRequestMeta = async (input: unknown, init: RequestInit = {}) => {
-  const request = input instanceof Request ? input : new Request(input as string, init);
+  const request =
+    input instanceof Request ? input : new Request(input as string, init);
 
   return {
     url: request.url,
@@ -48,7 +52,7 @@ describe("fetch adapter", () => {
   test("GET resolves JSON response via fetch adapter", async () => {
     const { mockFetch, getCalls } = createFetchMock();
 
-    const response = await axios.get("https://example.com/users", {
+    const response = await faxios.get("https://example.com/users", {
       adapter: "fetch",
       env: env(mockFetch),
     });
@@ -61,13 +65,13 @@ describe("fetch adapter", () => {
   test("POST serializes JSON body via fetch adapter", async () => {
     const { mockFetch, getCalls } = createFetchMock();
 
-    await axios.post(
+    await faxios.post(
       "https://example.com/items",
       { name: "widget" },
       {
         adapter: "fetch",
         env: env(mockFetch),
-      }
+      },
     );
 
     const { input, init } = getCalls()[0];
@@ -78,22 +82,21 @@ describe("fetch adapter", () => {
   test("HTTP methods are forwarded correctly", async () => {
     const run = async (
       method: "delete" | "head" | "options" | "put" | "patch",
-      expected: string
+      expected: string,
     ) => {
       const { mockFetch, getCalls } = createFetchMock();
 
       if (method === "put" || method === "patch") {
-        await axios[method](
+        await faxios[method](
           "https://example.com/items",
           { name: "widget" },
           {
             adapter: "fetch",
             env: env(mockFetch),
-          }
+          },
         );
-      }
-      else {
-        await axios[method]("https://example.com/items", {
+      } else {
+        await faxios[method]("https://example.com/items", {
           adapter: "fetch",
           env: env(mockFetch),
         });
@@ -114,7 +117,7 @@ describe("fetch adapter", () => {
   test("full URL is preserved in the fetch request", async () => {
     const { mockFetch, getCalls } = createFetchMock();
 
-    await axios.get("https://example.com/users", {
+    await faxios.get("https://example.com/users", {
       adapter: "fetch",
       env: env(mockFetch),
     });

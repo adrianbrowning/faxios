@@ -8,7 +8,7 @@ Vitest 和 Jest 都支持通过 `vi.mock` / `jest.mock` 进行模块级 mock。�
 
 ```js
 // user-service.js
-import axios from "axios";
+import faxios from "faxios";
 
 export async function getUser(id) {
   const { data } = await axios.get(`/api/users/${id}`);
@@ -19,7 +19,7 @@ export async function getUser(id) {
 ```js
 // user-service.test.js
 import { describe, it, expect, vi } from "vitest";
-import axios from "axios";
+import faxios from "faxios";
 import { getUser } from "./user-service";
 
 vi.mock("axios");
@@ -45,15 +45,15 @@ describe("getUser", () => {
 });
 ```
 
-## Mock AxiosError
+## Mock FaxiosError
 
-要测试检查 `error.response` 的错误处理路径，可以直接创建一个 `AxiosError` 实例：
+要测试检查 `error.response` 的错误处理路径，可以直接创建一个 `FaxiosError` 实例：
 
 ```js
-import axios, { AxiosError } from "axios";
+import faxios, { FaxiosError } from "faxios";
 import { vi } from "vitest";
 
-const mockError = new AxiosError(
+const mockError = new FaxiosError(
   "Not Found",
   "ERR_BAD_REQUEST",
   {},       // config
@@ -79,7 +79,7 @@ npm install --save-dev axios-mock-adapter
 ```
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 import MockAdapter from "axios-mock-adapter";
 
 const mock = new MockAdapter(axios);
@@ -110,7 +110,7 @@ afterEach(() => {
 要单独测试拦截器，在测试中创建一个全新的 axios 实例：
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 import MockAdapter from "axios-mock-adapter";
 
 describe("auth interceptor", () => {

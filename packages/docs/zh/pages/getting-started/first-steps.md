@@ -57,13 +57,13 @@ deno install npm:axios
 安装完成后，你可以使用 `import` 或 `require` 来导入此库：
 
 ```js
-import axios, { isCancel, AxiosError } from "axios";
+import faxios, { isCancel, FaxiosError } from "faxios";
 ```
 
 也可以使用默认导出，因为命名导出只是从 axios 工厂的再导出：
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 console.log(axios.isCancel("something"));
 ```
@@ -79,7 +79,7 @@ console.log(axios.isCancel("something"));
 某些打包器和 ES6 lint 规则可能需要：
 
 ```js
-import { default as axios } from "axios";
+import { default as axios } from "faxios";
 ```
 
 对于自定义或较旧的环境，如果模块解析行为不正常，可以直接导入预构建包：
@@ -94,7 +94,7 @@ const axios = require("axios/dist/browser/axios.cjs"); // 浏览器 CommonJS 包
 使用 axios 发起请求最少只需要两行代码。你可以通过提供 URL 和请求方法向任意 API 发送请求。例如，向 JSONPlaceholder API 发起一个 GET 请求：
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 const response = await axios.get(
   "https://jsonplaceholder.typicode.com/posts/1"

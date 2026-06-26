@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import axios from "../../src/index.js";
+import faxios from "../../src/index.js";
 
 class MockXMLHttpRequest {
   readyState: number;
@@ -10,7 +10,7 @@ class MockXMLHttpRequest {
   response: unknown;
   onreadystatechange: (() => void) | null;
   onloadend: (() => void) | null;
-  upload: { addEventListener: () => void; };
+  upload: { addEventListener: () => void };
   requestHeaders: Record<string, string>;
   method?: string;
   url?: string;
@@ -62,8 +62,7 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      }
-      else if (this.onreadystatechange) {
+      } else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -76,7 +75,7 @@ let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const sleep = async (ms = 0) =>
-  new Promise(resolve => setTimeout(resolve, ms));
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 const waitForRequest = async (timeoutMs = 1000) => {
   const start = Date.now();
@@ -97,19 +96,20 @@ describe("adapter (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
+    window.XMLHttpRequest =
+      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
     window.XMLHttpRequest = OriginalXMLHttpRequest;
-    axios.interceptors.request.handlers = [];
-    axios.interceptors.response.handlers = [];
+    faxios.interceptors.request.handlers = [];
+    faxios.interceptors.response.handlers = [];
   });
 
   it("should support custom adapter", async () => {
-    const responsePromise = axios("/foo", {
+    const responsePromise = faxios("/foo", {
       async adapter(config) {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           const request = new XMLHttpRequest();
           request.open("GET", "/bar");
 
@@ -139,9 +139,9 @@ describe("adapter (vitest browser)", () => {
   it("should execute adapter code synchronously", async () => {
     let asyncFlag = false;
 
-    const responsePromise = axios("/foo", {
+    const responsePromise = faxios("/foo", {
       async adapter(config) {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           const request = new XMLHttpRequest();
           request.open("GET", "/bar");
 
@@ -172,14 +172,14 @@ describe("adapter (vitest browser)", () => {
   it("should execute adapter code asynchronously when interceptor is present", async () => {
     let asyncFlag = false;
 
-    axios.interceptors.request.use(config => {
+    faxios.interceptors.request.use((config) => {
       config.headers.async = "async it!";
       return config;
     });
 
-    const responsePromise = axios("/foo", {
+    const responsePromise = faxios("/foo", {
       async adapter(config) {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           const request = new XMLHttpRequest();
           request.open("GET", "/bar");
 
@@ -208,7 +208,7 @@ describe("adapter (vitest browser)", () => {
   });
 
   it("should sanitize request headers containing CRLF characters", async () => {
-    const responsePromise = axios("/foo", {
+    const responsePromise = faxios("/foo", {
       headers: {
         "x-test": "\tok\r\nInjected: yes ",
       },

@@ -1,11 +1,12 @@
-import axios from "axios";
+import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
 
 const createFetchCapture = () => {
   const calls: Array<Request> = [];
 
   const fetch = async (input: unknown, init?: RequestInit) => {
-    const request = input instanceof Request ? input : new Request(input as string, init);
+    const request =
+      input instanceof Request ? input : new Request(input as string, init);
     calls.push(request);
 
     return new Response(JSON.stringify({ ok: true }), {
@@ -30,7 +31,7 @@ describe("headers", () => {
   test("custom X-Custom header is forwarded to mock fetch (case-insensitive)", async () => {
     const { fetch, getCalls } = createFetchCapture();
 
-    await axios.get("https://example.com/custom-headers", {
+    await faxios.get("https://example.com/custom-headers", {
       adapter: "fetch",
       headers: {
         "X-Custom": "trace-123",
@@ -45,13 +46,13 @@ describe("headers", () => {
   test("content-type application/json is inferred for JSON POST body", async () => {
     const { fetch, getCalls } = createFetchCapture();
 
-    await axios.post(
+    await faxios.post(
       "https://example.com/post-json",
       { name: "widget" },
       {
         adapter: "fetch",
         env: env(fetch),
-      }
+      },
     );
 
     const request = getCalls()[0];

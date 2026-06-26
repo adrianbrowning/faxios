@@ -68,7 +68,7 @@ Dans Node.js, utilisez `fs.createReadStream` pour envoyer un fichier depuis le s
 ```js
 import fs from "fs";
 import FormData from "form-data";
-import axios from "axios";
+import faxios from "faxios";
 
 const form = new FormData();
 form.append("file", fs.createReadStream("/path/to/file.jpg"));

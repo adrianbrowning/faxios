@@ -247,7 +247,7 @@ La propiedad `maxBodyLength` define el tamaño máximo del cuerpo de la solicitu
 
 ### `redact`
 
-La propiedad `redact` es un arreglo opcional de nombres de claves de configuración que se enmascararán cuando un `AxiosError` se serialice con `toJSON()`. La coincidencia es insensible a mayúsculas/minúsculas y recursiva a lo largo de la configuración de la solicitud serializada. Los valores coincidentes se reemplazan por `[REDACTED ****]`.
+La propiedad `redact` es un arreglo opcional de nombres de claves de configuración que se enmascararán cuando un `FaxiosError` se serialice con `toJSON()`. La coincidencia es insensible a mayúsculas/minúsculas y recursiva a lo largo de la configuración de la solicitud serializada. Los valores coincidentes se reemplazan por `[REDACTED ****]`.
 
 `redact` solo afecta a la serialización del error. No modifica los datos de la solicitud, los encabezados ni el objeto de configuración original.
 
@@ -298,7 +298,7 @@ Cuando se establece `socketPath`, el hostname y el puerto de la URL se ignoran y
 
 ### `allowedSocketPaths` <Badge type="warning" text="Solo en Node.js" />
 
-Restringe qué rutas de socket pueden usarse a través de `socketPath`. Acepta un string o un array de strings. Cuando está definido, axios resuelve el `socketPath` y lo compara con cada entrada (también resuelta); la solicitud se rechaza con un `AxiosError` de código `ERR_BAD_OPTION_VALUE` si no hay coincidencia. Si no se define (valor por defecto), `socketPath` se comporta igual que antes.
+Restringe qué rutas de socket pueden usarse a través de `socketPath`. Acepta un string o un array de strings. Cuando está definido, axios resuelve el `socketPath` y lo compara con cada entrada (también resuelta); la solicitud se rechaza con un `FaxiosError` de código `ERR_BAD_OPTION_VALUE` si no hay coincidencia. Si no se define (valor por defecto), `socketPath` se comporta igual que antes.
 
 ```js
 const client = axios.create({
@@ -398,7 +398,7 @@ La opción `formSerializer` te permite configurar cómo se serializan los objeto
 - `dots` — usar notación de punto en lugar de notación de corchetes
 - `metaTokens` — preservar terminaciones especiales de clave como `{}`
 - `indexes` — controlar el formato de corchetes para claves de arreglo (`null` / `false` / `true`)
-- `maxDepth` _(predeterminado: `100`)_ — profundidad máxima de anidación antes de lanzar un `AxiosError` con código `ERR_FORM_DATA_DEPTH_EXCEEDED`. Establece en `Infinity` para desactivar.
+- `maxDepth` _(predeterminado: `100`)_ — profundidad máxima de anidación antes de lanzar un `FaxiosError` con código `ERR_FORM_DATA_DEPTH_EXCEEDED`. Establece en `Infinity` para desactivar.
 
 Consulta la página [multipart/form-data](/pages/advanced/multipart-form-data-format) para todos los detalles, y el ejemplo completo de configuración de solicitud al final de esta página.
 
@@ -438,7 +438,7 @@ La propiedad `maxRate` define el **ancho de banda** máximo (en bytes por segund
       // (3) indexes: true (leads to brackets with indexes).
     indexes: false,
 
-    // Profundidad máxima de anidación de objetos al serializar params. Lanza AxiosError
+    // Profundidad máxima de anidación de objetos al serializar params. Lanza FaxiosError
     // (ERR_FORM_DATA_DEPTH_EXCEEDED) si se excede. Predeterminado: 100. Establecer en Infinity para desactivar.
     maxDepth: 100
 
@@ -529,7 +529,7 @@ La propiedad `maxRate` define el **ancho de banda** máximo (en bytes por segund
         // true - corchetes con índices
       indexes: boolean;
 
-      // Profundidad máxima de anidación de objetos. Lanza AxiosError (ERR_FORM_DATA_DEPTH_EXCEEDED)
+      // Profundidad máxima de anidación de objetos. Lanza FaxiosError (ERR_FORM_DATA_DEPTH_EXCEEDED)
       // si se excede. Predeterminado: 100. Establecer en Infinity para desactivar.
       maxDepth: 100;
   },

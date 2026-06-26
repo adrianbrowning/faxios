@@ -7,7 +7,7 @@ Las solicitudes de red pueden fallar por razones transitorias — una falla mome
 El enfoque más sencillo es capturar códigos de estado de error específicos y reenviar inmediatamente la solicitud original un número limitado de veces:
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 const api = axios.create({ baseURL: "https://api.example.com" });
 

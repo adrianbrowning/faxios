@@ -3,7 +3,7 @@
 `axios.create()` vous permet de créer une instance axios préconfigurée. L'instance partage la même API de requête et de réponse que l'objet `axios` par défaut, mais utilise la configuration que vous fournissez comme base pour chaque requête. C'est la façon recommandée d'utiliser axios dans toute application dépassant un seul fichier.
 
 ```ts
-import axios from "axios";
+import faxios from "faxios";
 
 const instance = axios.create({
   baseURL: "https://api.example.com",

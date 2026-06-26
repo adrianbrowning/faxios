@@ -1,4 +1,4 @@
-import axios from "axios";
+import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
 
 const env = (fetch: typeof globalThis.fetch) => ({
@@ -8,7 +8,10 @@ const env = (fetch: typeof globalThis.fetch) => ({
 });
 
 const createAbortedError = () => {
-  const error = new Error("The operation was aborted") as Error & { code?: string; name: string; };
+  const error = new Error("The operation was aborted") as Error & {
+    code?: string;
+    name: string;
+  };
   error.name = "AbortError";
   error.code = "ECONNABORTED";
   return error;
@@ -18,7 +21,8 @@ describe("timeout", () => {
   test("timeout: 50 with never-resolving fetch mock rejects with ETIMEDOUT", async () => {
     const fetch = async (input: unknown, init?: RequestInit) =>
       new Promise<Response>((_resolve, reject) => {
-        const signal = init?.signal || (input instanceof Request ? input.signal : undefined);
+        const signal =
+          init?.signal || (input instanceof Request ? input.signal : undefined);
 
         if (signal) {
           if (signal.aborted) {
@@ -31,12 +35,12 @@ describe("timeout", () => {
             () => {
               reject(createAbortedError());
             },
-            { once: true }
+            { once: true },
           );
         }
       });
 
-    const err = await axios
+    const err = await faxios
       .get("https://example.com/timeout", {
         adapter: "fetch",
         timeout: 50,
@@ -44,7 +48,7 @@ describe("timeout", () => {
       })
       .catch((e: any) => e);
 
-    expect(axios.isFaxiosError(err)).toBe(true);
+    expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ETIMEDOUT");
   });
 });

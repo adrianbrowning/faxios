@@ -1,6 +1,6 @@
 import { EventEmitter } from "node:events";
 import { PassThrough } from "node:stream";
-import axios from "axios";
+import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
 
 type TransportCall = {
@@ -9,12 +9,18 @@ type TransportCall = {
 };
 
 const createTransportMock = (
-  responseFactory?: (body: Buffer, options: Record<string, any>) => Record<string, any>
+  responseFactory?: (
+    body: Buffer,
+    options: Record<string, any>,
+  ) => Record<string, any>,
 ) => {
   const calls: Array<TransportCall> = [];
 
   const transport = {
-    request(options: Record<string, any>, onResponse: (res: PassThrough) => void) {
+    request(
+      options: Record<string, any>,
+      onResponse: (res: PassThrough) => void,
+    ) {
       const req = new EventEmitter() as Record<string, any>;
       const chunks: Array<Buffer> = [];
 
@@ -42,7 +48,9 @@ const createTransportMock = (
         const res = new PassThrough() as PassThrough & Record<string, any>;
         res.statusCode = response.statusCode ?? 200;
         res.statusMessage = response.statusMessage ?? "OK";
-        res.headers = response.headers ?? { "content-type": "application/json" };
+        res.headers = response.headers ?? {
+          "content-type": "application/json",
+        };
         res.req = req;
 
         onResponse(res);
@@ -63,7 +71,7 @@ describe("http adapter", () => {
   test("GET via http adapter returns mocked response data", async () => {
     const { transport, getCalls } = createTransportMock();
 
-    const response = await axios.get("http://example.com/users", {
+    const response = await faxios.get("http://example.com/users", {
       adapter: "http",
       proxy: false,
       transport,
@@ -77,14 +85,14 @@ describe("http adapter", () => {
   test("POST sends JSON-serialized body via http adapter", async () => {
     const { transport, getCalls } = createTransportMock();
 
-    await axios.post(
+    await faxios.post(
       "http://example.com/items",
       { name: "widget" },
       {
         adapter: "http",
         proxy: false,
         transport,
-      }
+      },
     );
 
     const { body } = getCalls()[0];
@@ -94,7 +102,7 @@ describe("http adapter", () => {
   test("default adapter selection in Bun routes through http adapter", async () => {
     const { transport, getCalls } = createTransportMock();
 
-    await axios.get("http://example.com/default-adapter", {
+    await faxios.get("http://example.com/default-adapter", {
       proxy: false,
       transport,
     });

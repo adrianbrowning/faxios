@@ -5,7 +5,7 @@ axios may throw many different types of errors. Some of these errors are caused 
 | Property | Definition                                                                                                                                    |
 | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | message  | A quick summary of the error message and the status it failed with.                                                                           |
-| name     | This defines where the error originated from. For axios, it will always be an `AxiosError`.                                                   |
+| name     | This defines where the error originated from. For axios, it will always be an `FaxiosError`.                                                   |
 | stack    | Provides the stack trace of the error.                                                                                                        |
 | config   | An axios config object with specific instance configurations defined by the user from when the request was made.                              |
 | code     | Represents an axios identified error. The table below lists out specific definitions for internal axios error.                                |
@@ -72,7 +72,7 @@ axios.get("/user/12345").catch(function (error) {
 });
 ```
 
-To avoid logging secrets from `error.config`, pass a `redact` array in the request config. Matching config keys are masked case-insensitively at any depth when `AxiosError#toJSON()` is called.
+To avoid logging secrets from `error.config`, pass a `redact` array in the request config. Matching config keys are masked case-insensitively at any depth when `FaxiosError#toJSON()` is called.
 
 ```js
 axios.get("/user/12345", {

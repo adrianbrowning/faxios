@@ -29,7 +29,7 @@ axios.post('https://example.com', form);
 À partir de la version v0.27.0, Axios prend en charge la sérialisation automatique d'objets en objet FormData si l'en-tête Content-Type de la requête est défini à multipart/form-data. Cela signifie que vous pouvez passer directement un objet JavaScript à la propriété data de la configuration de requête axios. Par exemple lors de l'envoi de données vers une requête POST :
 
 ```js
-import axios from 'axios';
+import faxios from 'faxios';
 
 axios
   .post(
@@ -102,7 +102,7 @@ Le sérialiseur FormData supporte des options supplémentaires via la propriét�
   - `null` - ne pas ajouter de crochets (`arr: 1`, `arr: 2`, `arr: 3`)
   - `false` (défaut) - ajouter des crochets vides (`arr[]: 1`, `arr[]: 2`, `arr[]: 3`)
   - `true` - ajouter des crochets avec index (`arr[0]: 1`, `arr[1]: 2`, `arr[2]: 3`)
-- `maxDepth: number = 100` - profondeur maximale d'imbrication des objets dans laquelle le sérialiseur va récurser. Si l'entrée dépasse cette profondeur, une `AxiosError` avec `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` est levée. Cela protège les applications côté serveur contre les attaques DoS via des charges utiles profondément imbriquées. Définir à `Infinity` pour désactiver la limite.
+- `maxDepth: number = 100` - profondeur maximale d'imbrication des objets dans laquelle le sérialiseur va récurser. Si l'entrée dépasse cette profondeur, une `FaxiosError` avec `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` est levée. Cela protège les applications côté serveur contre les attaques DoS via des charges utiles profondément imbriquées. Définir à `Infinity` pour désactiver la limite.
 
 ```js
 // Autoriser une imbrication plus profonde pour les schémas qui dépassent légitimement 100 niveaux :

@@ -1,11 +1,12 @@
-import axios from "axios";
+import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
 
 const createFetchCapture = () => {
   const calls: Array<Request> = [];
 
   const fetch = async (input: unknown, init?: RequestInit) => {
-    const request = input instanceof Request ? input : new Request(input as string, init);
+    const request =
+      input instanceof Request ? input : new Request(input as string, init);
     calls.push(request);
 
     return new Response(JSON.stringify({ value: "ok" }), {
@@ -29,7 +30,7 @@ const env = (fetch: typeof globalThis.fetch) => ({
 describe("interceptors", () => {
   test("request interceptor header is forwarded to fetch", async () => {
     const { fetch, getCalls } = createFetchCapture();
-    const client = axios.create({
+    const client = faxios.create({
       adapter: "fetch",
       env: env(fetch),
     });
@@ -48,7 +49,7 @@ describe("interceptors", () => {
 
   test("response interceptor transform is reflected in resolved value", async () => {
     const { fetch } = createFetchCapture();
-    const client = axios.create({
+    const client = faxios.create({
       adapter: "fetch",
       env: env(fetch),
     });
@@ -58,7 +59,9 @@ describe("interceptors", () => {
       return response;
     });
 
-    const response = await client.get("https://example.com/interceptor-response");
+    const response = await client.get(
+      "https://example.com/interceptor-response",
+    );
 
     expect(response.data).toEqual({ value: "OK" });
   });

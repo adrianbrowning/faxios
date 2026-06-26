@@ -42,24 +42,24 @@ This file is the canonical contributor guide for both human and AI agents workin
 
 ## Architecture Boundaries
 
-- `lib/core/` is axios domain logic: request dispatch, config merge, interceptors, headers, errors. Key classes: `Axios` (request dispatch + interceptor chains), `AxiosError` (standardized error codes), `AxiosHeaders` (case-insensitive header normalization), `InterceptorManager` (sync/async interceptor registration).
+- `lib/core/` is axios domain logic: request dispatch, config merge, interceptors, headers, errors. Key classes: `Axios` (request dispatch + interceptor chains), `FaxiosError` (standardized error codes), `AxiosHeaders` (case-insensitive header normalization), `InterceptorManager` (sync/async interceptor registration).
 - `lib/adapters/` performs I/O; default adapter preference is `['xhr', 'http', 'fetch']`, with capability selection in `lib/adapters/adapters.js`. Detect by capability, not environment name.
 - `lib/platform/` selects Node by default; browser builds rely on package/rollup aliasing to `lib/platform/browser`.
 - `lib/helpers/` should stay generic and reusable outside axios; do not put axios-specific request lifecycle logic there.
-- New `lib/**/*.js` files should match existing source style: ESM imports with explicit `.js` extensions, `'use strict';` where current library files use it, and `AxiosError` for axios-originated failures.
+- New `lib/**/*.js` files should match existing source style: ESM imports with explicit `.js` extensions, `'use strict';` where current library files use it, and `FaxiosError` for axios-originated failures.
 
 ## Naming Conventions
 
-- Classes: PascalCase (`Axios`, `AxiosError`, `InterceptorManager`).
+- Classes: PascalCase (`Axios`, `FaxiosError`, `InterceptorManager`).
 - Functions: camelCase (`buildURL`, `mergeConfig`, `dispatchRequest`).
-- Error codes: UPPER_SNAKE_CASE constants on `AxiosError` (`ERR_NETWORK`, `ETIMEDOUT`).
+- Error codes: UPPER_SNAKE_CASE constants on `FaxiosError` (`ERR_NETWORK`, `ETIMEDOUT`).
 - Internal class slots: `Symbol`-keyed (e.g. `const $internals = Symbol('internals')` in `lib/core/AxiosHeaders.js`) rather than underscore-prefixed properties.
 
 ## Error Handling
 
-- Throw `AxiosError` for axios-originated failures; never raw `Error`. Pass `(message, code, config, request, response)` so consumers can introspect.
-- Wrap third-party errors with `AxiosError.from(error, code, config, request, response)`.
-- Canonical code list lives in `lib/core/AxiosError.js`; current codes include `ERR_BAD_OPTION_VALUE`, `ERR_BAD_OPTION`, `ECONNABORTED`, `ETIMEDOUT`, `ECONNREFUSED`, `ERR_NETWORK`, `ERR_FR_TOO_MANY_REDIRECTS`, `ERR_DEPRECATED`, `ERR_BAD_RESPONSE`, `ERR_BAD_REQUEST`, `ERR_CANCELED`, `ERR_NOT_SUPPORT`, `ERR_INVALID_URL`, `ERR_FORM_DATA_DEPTH_EXCEEDED`.
+- Throw `FaxiosError` for axios-originated failures; never raw `Error`. Pass `(message, code, config, request, response)` so consumers can introspect.
+- Wrap third-party errors with `FaxiosError.from(error, code, config, request, response)`.
+- Canonical code list lives in `lib/core/FaxiosError.js`; current codes include `ERR_BAD_OPTION_VALUE`, `ERR_BAD_OPTION`, `ECONNABORTED`, `ETIMEDOUT`, `ECONNREFUSED`, `ERR_NETWORK`, `ERR_FR_TOO_MANY_REDIRECTS`, `ERR_DEPRECATED`, `ERR_BAD_RESPONSE`, `ERR_BAD_REQUEST`, `ERR_CANCELED`, `ERR_NOT_SUPPORT`, `ERR_INVALID_URL`, `ERR_FORM_DATA_DEPTH_EXCEEDED`.
 - Validate config options through the `validator` helper; do not invent ad-hoc validation paths.
 
 ## Interceptor Execution Order
@@ -79,7 +79,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 6. Adapter performs the HTTP request.
 7. Apply `transformResponse` functions.
 8. Run response interceptors (FIFO).
-9. Resolve promise with `AxiosResponse` or reject with `AxiosError`.
+9. Resolve promise with `AxiosResponse` or reject with `FaxiosError`.
 
 ## Cancellation
 
@@ -92,7 +92,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 - Do not mutate config objects in-place; return new objects from merges/transforms.
 - Do not assume browser- or Node-specific globals exist; capability-check first.
 - Do not use `Function.prototype.bind` directly — use `lib/helpers/bind.js`, which forwards `arguments` via `apply` and is what the rest of the library relies on.
-- Do not throw raw `Error` from library code; use `AxiosError` with an appropriate code (see Error Handling).
+- Do not throw raw `Error` from library code; use `FaxiosError` with an appropriate code (see Error Handling).
 
 ## Tests
 

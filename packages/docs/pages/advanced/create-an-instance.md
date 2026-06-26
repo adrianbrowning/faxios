@@ -3,7 +3,7 @@
 `axios.create()` lets you create a pre-configured axios instance. The instance shares the same request and response API as the default `axios` object, but uses the config you provide as its baseline for every request. This is the recommended way to use axios in any application larger than a single file.
 
 ```ts
-import axios from "axios";
+import faxios from "faxios";
 
 const instance = axios.create({
   baseURL: "https://api.example.com",

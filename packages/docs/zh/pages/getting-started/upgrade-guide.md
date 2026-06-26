@@ -9,8 +9,8 @@
 在 v1.x 中，import 语句改为使用 `default` 导出，你需要将 import 语句更新为如下形式：
 
 ```diff
-- import { axios } from "axios";
-+ import axios from "axios";
+- import { axios } from "faxios";
++ import faxios from "faxios";
 ```
 
 ### 拦截器系统变更

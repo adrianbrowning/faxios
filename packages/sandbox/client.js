@@ -1,8 +1,8 @@
-import axios from '../index.js';
+import faxios from "../index.js";
 
-const URL = 'http://127.0.0.1:3000/api';
+const URL = "http://127.0.0.1:3000/api";
 const BODY = {
-  foo: 'bar',
+  foo: "bar",
   baz: 1234,
 };
 
@@ -10,7 +10,7 @@ function handleSuccess(data) {
   console.log(data);
 }
 function handleFailure(data) {
-  console.log('error', data);
+  console.log("error", data);
 }
 
 // GET

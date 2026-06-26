@@ -29,7 +29,7 @@ axios.post('https://example.com', form);
 A partir de la versión v0.27.0, Axios admite la serialización automática de objetos a un objeto FormData si el encabezado `Content-Type` de la solicitud está establecido en `multipart/form-data`. Esto significa que puedes pasar un objeto JavaScript directamente a la propiedad `data` de la configuración de solicitud de axios. Por ejemplo, al pasar datos a una solicitud POST:
 
 ```js
-import axios from 'axios';
+import faxios from 'faxios';
 
 axios
   .post(
@@ -102,7 +102,7 @@ El serializador de FormData admite opciones adicionales a través de la propieda
   - `null` - no añadir corchetes (`arr: 1`, `arr: 2`, `arr: 3`)
   - `false` (predeterminado) - añadir corchetes vacíos (`arr[]: 1`, `arr[]: 2`, `arr[]: 3`)
   - `true` - añadir corchetes con índices (`arr[0]: 1`, `arr[1]: 2`, `arr[2]: 3`)
-- `maxDepth: number = 100` - profundidad máxima de anidación de objetos en la que el serializador recursará. Si la entrada excede esta profundidad, se lanza un `AxiosError` con `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'`. Esto protege las aplicaciones del lado del servidor contra ataques DoS mediante cargas útiles profundamente anidadas. Establece en `Infinity` para desactivar el límite.
+- `maxDepth: number = 100` - profundidad máxima de anidación de objetos en la que el serializador recursará. Si la entrada excede esta profundidad, se lanza un `FaxiosError` con `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'`. Esto protege las aplicaciones del lado del servidor contra ataques DoS mediante cargas útiles profundamente anidadas. Establece en `Infinity` para desactivar el límite.
 
 ```js
 // Aumentar el límite para esquemas que legítimamente exceden 100 niveles:

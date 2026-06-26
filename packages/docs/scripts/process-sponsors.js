@@ -1,27 +1,32 @@
-import fs from 'node:fs';
-import axios from 'axios';
-import { printSuccessMessage, printErrorMessage, printInfoMessage } from './utils.js';
+import fs from "node:fs";
+import faxios from "faxios";
+import {
+  printSuccessMessage,
+  printErrorMessage,
+  printInfoMessage,
+} from "./utils.js";
 
 /**
  * Special configuration for processing sponsor data.
  */
 const config = {
   legacyAgreements: {
-    Stytch: 'gold',
-    Airbnb: 'silver',
-    Descope: 'gold',
-    'Principal Financial Group': 'gold',
+    Stytch: "gold",
+    Airbnb: "silver",
+    Descope: "gold",
+    "Principal Financial Group": "gold",
   },
-  sponsorsToIgnore: ['axios'],
+  sponsorsToIgnore: ["axios"],
   additionalSponsors: [
     {
-      name: 'superluxuryreps',
-      imageUrl: 'https://images.opencollective.com/superluxuryreps/378b62f/avatar.png',
-      description: 'super luxury reps',
-      tier: 'silver',
-      slug: 'superluxuryreps',
+      name: "superluxuryreps",
+      imageUrl:
+        "https://images.opencollective.com/superluxuryreps/378b62f/avatar.png",
+      description: "super luxury reps",
+      tier: "silver",
+      slug: "superluxuryreps",
       website:
-        'https://superluxuryreps.com/?utm_source=axios_docs_website&utm_medium=website&utm_campaign=axios_open_collective_sponsorship',
+        "https://superluxuryreps.com/?utm_source=axios_docs_website&utm_medium=website&utm_campaign=axios_open_collective_sponsorship",
       twitter: null,
       active: true,
     },
@@ -116,10 +121,13 @@ query Account {
  * @returns {Promise<any>} The sponsors.
  */
 const getAllSponsors = async () => {
-  printInfoMessage('getting all sponsors...');
-  const response = await axios.post('https://api.opencollective.com/graphql/v2', {
-    query: getAllSponsorsQuery,
-  });
+  printInfoMessage("getting all sponsors...");
+  const response = await axios.post(
+    "https://api.opencollective.com/graphql/v2",
+    {
+      query: getAllSponsorsQuery,
+    },
+  );
 
   return response.data.data;
 };
@@ -130,10 +138,13 @@ const getAllSponsors = async () => {
  * @returns {Promise<any>} The active sponsors.
  */
 const getActiveSponsors = async () => {
-  printInfoMessage('getting active sponsors...');
-  const response = await axios.post('https://api.opencollective.com/graphql/v2', {
-    query: getActiveSponsorsQuery,
-  });
+  printInfoMessage("getting active sponsors...");
+  const response = await axios.post(
+    "https://api.opencollective.com/graphql/v2",
+    {
+      query: getActiveSponsorsQuery,
+    },
+  );
 
   return response.data.data;
 };
@@ -155,9 +166,9 @@ const buildLinks = (url, bypass = false) => {
 
     const { searchParams } = urlObject;
 
-    searchParams.set('utm_source', 'axios_docs_website');
-    searchParams.set('utm_medium', 'website');
-    searchParams.set('utm_campaign', 'axios_open_collective_sponsorship');
+    searchParams.set("utm_source", "axios_docs_website");
+    searchParams.set("utm_medium", "website");
+    searchParams.set("utm_campaign", "axios_open_collective_sponsorship");
 
     return urlObject.toString();
   } catch {
@@ -177,16 +188,16 @@ const formatActiveSponsorData = (sponsorsData) => {
       return config.legacyAgreements[sponsor.fromAccount.name];
     }
 
-    if (sponsor.tier?.name.toLowerCase() === 'silver sponsor') {
-      return 'silver';
+    if (sponsor.tier?.name.toLowerCase() === "silver sponsor") {
+      return "silver";
     }
 
-    return sponsor.tier?.name.toLowerCase() || 'backer';
+    return sponsor.tier?.name.toLowerCase() || "backer";
   };
 
   const processedData = sponsorsData
     .map((sponsor) => ({
-      name: sponsor.fromAccount.name ?? 'Backer',
+      name: sponsor.fromAccount.name ?? "Backer",
       imageUrl: sponsor.fromAccount.imageUrl ?? null,
       description: sponsor.fromAccount.description ?? null,
       tier: getSponsorTier(sponsor),
@@ -194,11 +205,16 @@ const formatActiveSponsorData = (sponsorsData) => {
       website: sponsor.fromAccount.website
         ? buildLinks(sponsor.fromAccount.website)
         : (buildLinks(
-            sponsor.fromAccount.socialLinks.find((link) => link.type === 'WEBSITE')?.url
+            sponsor.fromAccount.socialLinks.find(
+              (link) => link.type === "WEBSITE",
+            )?.url,
           ) ?? null),
       twitter:
-        buildLinks(sponsor.fromAccount.socialLinks.find((link) => link.type === 'TWITTER')?.url) ??
-        null,
+        buildLinks(
+          sponsor.fromAccount.socialLinks.find(
+            (link) => link.type === "TWITTER",
+          )?.url,
+        ) ?? null,
     }))
     .filter((sponsor) => !config.sponsorsToIgnore.includes(sponsor.name));
 
@@ -217,27 +233,31 @@ const formatAllSponsorData = (sponsorsData) => {
       return config.legacyAgreements[sponsor.account.name];
     }
 
-    if (sponsor.tier?.name.toLowerCase() === 'silver sponsor') {
-      return 'silver';
+    if (sponsor.tier?.name.toLowerCase() === "silver sponsor") {
+      return "silver";
     }
 
-    return sponsor.tier?.name.toLowerCase() || 'backer';
+    return sponsor.tier?.name.toLowerCase() || "backer";
   };
 
   const processedData = sponsorsData
     .map((sponsor) => ({
-      name: sponsor.account.name ?? 'Backer',
+      name: sponsor.account.name ?? "Backer",
       imageUrl: sponsor.account.imageUrl ?? null,
       description: sponsor.account.description ?? null,
       tier: getSponsorTier(sponsor),
       slug: sponsor.account.slug,
       website: sponsor.account.website
         ? buildLinks(sponsor.account.website)
-        : (buildLinks(sponsor.account.socialLinks.find((link) => link.type === 'WEBSITE')?.url) ??
-          null),
+        : (buildLinks(
+            sponsor.account.socialLinks.find((link) => link.type === "WEBSITE")
+              ?.url,
+          ) ?? null),
       twitter:
-        buildLinks(sponsor.account.socialLinks.find((link) => link.type === 'TWITTER')?.url) ??
-        null,
+        buildLinks(
+          sponsor.account.socialLinks.find((link) => link.type === "TWITTER")
+            ?.url,
+        ) ?? null,
     }))
     .filter((sponsor) => !config.sponsorsToIgnore.includes(sponsor.name));
 
@@ -251,9 +271,11 @@ const mainProcess = async () => {
   try {
     const allSponsors = await getAllSponsors();
     const activeSponsors = await getActiveSponsors();
-    const allSponsorsProcessedData = formatAllSponsorData(allSponsors.account.members.nodes);
+    const allSponsorsProcessedData = formatAllSponsorData(
+      allSponsors.account.members.nodes,
+    );
     const activeSponsorsProcessedData = formatActiveSponsorData(
-      activeSponsors.account.orders.nodes
+      activeSponsors.account.orders.nodes,
     );
 
     const sponsorsByTier = {};
@@ -262,7 +284,7 @@ const mainProcess = async () => {
       sponsorsByTier[sponsor.tier] ||= [];
 
       const isActiveSponsor = activeSponsorsProcessedData.find(
-        (activeSponsor) => activeSponsor.slug === sponsor.slug
+        (activeSponsor) => activeSponsor.slug === sponsor.slug,
       );
 
       if (isActiveSponsor) {
@@ -280,7 +302,7 @@ const mainProcess = async () => {
 
     for (const sponsor of activeSponsorsProcessedData) {
       const isSponsorInAllSponsors = allSponsorsProcessedData.find(
-        (allSponsor) => allSponsor.slug === sponsor.slug
+        (allSponsor) => allSponsor.slug === sponsor.slug,
       );
 
       if (!isSponsorInAllSponsors) {
@@ -306,11 +328,14 @@ const mainProcess = async () => {
       });
     }
 
-    fs.writeFileSync('./data/sponsors.json', JSON.stringify(sponsorsByTier, null, 2));
+    fs.writeFileSync(
+      "./data/sponsors.json",
+      JSON.stringify(sponsorsByTier, null, 2),
+    );
 
-    printSuccessMessage('processed sponsors successfully!');
+    printSuccessMessage("processed sponsors successfully!");
   } catch (_) {
-    printErrorMessage('failed to process sponsors!');
+    printErrorMessage("failed to process sponsors!");
     console.error(_);
   }
 };

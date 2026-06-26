@@ -68,7 +68,7 @@ En Node.js, usa `fs.createReadStream` para subir un archivo desde el sistema de 
 ```js
 import fs from "fs";
 import FormData from "form-data";
-import axios from "axios";
+import faxios from "faxios";
 
 const form = new FormData();
 form.append("file", fs.createReadStream("/path/to/file.jpg"));

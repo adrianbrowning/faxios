@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import axios from "axios";
+import faxios from "faxios";
 
 const env = (fetch: any) => ({
   fetch,
@@ -22,7 +22,7 @@ Deno.test("cancel: pre-aborted AbortController cancels request", async () => {
   const controller = new AbortController();
   controller.abort();
 
-  const err = await axios
+  const err = await faxios
     .get("https://example.com/cancel", {
       adapter: "fetch",
       signal: controller.signal,
@@ -30,7 +30,7 @@ Deno.test("cancel: pre-aborted AbortController cancels request", async () => {
     })
     .catch((e: any) => e);
 
-  assertEquals(axios.isCancel(err), true);
+  assertEquals(faxios.isCancel(err), true);
   assertEquals(err.code, "ERR_CANCELED");
   assertEquals(fetchCallCount, 0);
 });
@@ -55,14 +55,14 @@ Deno.test("cancel: in-flight abort cancels request", async () => {
             clearTimeout(timeout);
             reject(new DOMException("The operation was aborted", "AbortError"));
           },
-          { once: true }
+          { once: true },
         );
       }
     });
 
   const controller = new AbortController();
 
-  const request = axios.get("https://example.com/in-flight", {
+  const request = faxios.get("https://example.com/in-flight", {
     adapter: "fetch",
     signal: controller.signal,
     env: env(fetch),
@@ -72,10 +72,10 @@ Deno.test("cancel: in-flight abort cancels request", async () => {
 
   const err = await request.catch((e: any) => e);
 
-  assertEquals(axios.isCancel(err), true);
+  assertEquals(faxios.isCancel(err), true);
   assertEquals(err.code, "ERR_CANCELED");
 });
 
 Deno.test("cancel: isCancel returns false for plain Error", () => {
-  assertEquals(axios.isCancel(new Error("random")), false);
+  assertEquals(faxios.isCancel(new Error("random")), false);
 });

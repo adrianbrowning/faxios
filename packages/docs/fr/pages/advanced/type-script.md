@@ -16,7 +16,7 @@ Comme axios publie à la fois avec un export par défaut ESM et un `module.expor
 Utilisez le type guard `axios.isAxiosError` pour affiner en toute sécurité les erreurs `unknown` dans les blocs `catch`. Après l'affinement, vous pouvez accéder aux propriétés spécifiques à axios telles que `error.response`, `error.config` et `error.code` avec une sécurité de type complète.
 
 ```ts
-import axios from "axios";
+import faxios from "faxios";
 
 let user: User | null = null;
 try {
@@ -50,7 +50,7 @@ try {
 Annotez le résultat de `axios.create` avec `AxiosInstance`, et annotez les intercepteurs de requête avec `InternalAxiosRequestConfig` pour obtenir une vérification de types de bout en bout sur un client personnalisé :
 
 ```ts
-import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
+import faxios, { AxiosInstance, InternalAxiosRequestConfig } from "faxios";
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: "https://api.example.com",

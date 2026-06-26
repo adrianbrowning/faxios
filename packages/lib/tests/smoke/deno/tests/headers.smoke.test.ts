@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import axios from "axios";
+import faxios from "faxios";
 
 const createFetchCapture = () => {
   const calls: Array<Request> = [];
@@ -29,19 +29,22 @@ const env = (fetch: any) => ({
 Deno.test("headers: default Accept header is sent", async () => {
   const { fetch, getCalls } = createFetchCapture();
 
-  await axios.get("https://example.com/default-headers", {
+  await faxios.get("https://example.com/default-headers", {
     adapter: "fetch",
     env: env(fetch),
   });
 
   const request = getCalls()[0];
-  assertEquals(request.headers.get("accept"), "application/json, text/plain, */*");
+  assertEquals(
+    request.headers.get("accept"),
+    "application/json, text/plain, */*",
+  );
 });
 
 Deno.test("headers: custom headers are forwarded", async () => {
   const { fetch, getCalls } = createFetchCapture();
 
-  await axios.get("https://example.com/custom-headers", {
+  await faxios.get("https://example.com/custom-headers", {
     adapter: "fetch",
     headers: {
       "X-Trace-Id": "trace-123",
@@ -58,13 +61,13 @@ Deno.test("headers: custom headers are forwarded", async () => {
 Deno.test("headers: content-type is set for JSON POST payload", async () => {
   const { fetch, getCalls } = createFetchCapture();
 
-  await axios.post(
+  await faxios.post(
     "https://example.com/post-json",
     { name: "widget" },
     {
       adapter: "fetch",
       env: env(fetch),
-    }
+    },
   );
 
   const request = getCalls()[0];
@@ -75,7 +78,7 @@ Deno.test("headers: content-type is set for JSON POST payload", async () => {
 Deno.test("headers: content-type is absent for bodyless GET", async () => {
   const { fetch, getCalls } = createFetchCapture();
 
-  await axios.get("https://example.com/get-no-body", {
+  await faxios.get("https://example.com/get-no-body", {
     adapter: "fetch",
     env: env(fetch),
   });

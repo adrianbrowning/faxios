@@ -247,7 +247,7 @@ La propriété `maxBodyLength` définit la taille maximale du corps de requête 
 
 ### `redact`
 
-La propriété `redact` est un tableau optionnel de noms de clés de configuration à masquer lorsqu'une `AxiosError` est sérialisée avec `toJSON()`. La correspondance est insensible à la casse et récursive sur l'ensemble de la configuration de requête sérialisée. Les valeurs correspondantes sont remplacées par `[REDACTED ****]`.
+La propriété `redact` est un tableau optionnel de noms de clés de configuration à masquer lorsqu'une `FaxiosError` est sérialisée avec `toJSON()`. La correspondance est insensible à la casse et récursive sur l'ensemble de la configuration de requête sérialisée. Les valeurs correspondantes sont remplacées par `[REDACTED ****]`.
 
 `redact` n'affecte que la sérialisation des erreurs. Elle ne modifie ni les données de la requête, ni les en-têtes, ni l'objet de configuration original.
 
@@ -298,7 +298,7 @@ Lorsque `socketPath` est défini, le hostname et le port de l'URL de la requête
 
 ### `allowedSocketPaths` <Badge type="warning" text="Node.js uniquement" />
 
-Restreint les chemins de socket pouvant être utilisés via `socketPath`. Accepte une chaîne ou un tableau de chaînes. Lorsqu'elle est définie, axios résout le `socketPath` et le compare à chaque entrée (également résolue) ; la requête est rejetée avec une `AxiosError` de code `ERR_BAD_OPTION_VALUE` s'il n'y a aucune correspondance. Lorsque non définie (par défaut), `socketPath` se comporte comme avant.
+Restreint les chemins de socket pouvant être utilisés via `socketPath`. Accepte une chaîne ou un tableau de chaînes. Lorsqu'elle est définie, axios résout le `socketPath` et le compare à chaque entrée (également résolue) ; la requête est rejetée avec une `FaxiosError` de code `ERR_BAD_OPTION_VALUE` s'il n'y a aucune correspondance. Lorsque non définie (par défaut), `socketPath` se comporte comme avant.
 
 ```js
 const client = axios.create({
@@ -398,7 +398,7 @@ L'option `formSerializer` vous permet de configurer comment les objets simples s
 - `dots` — utiliser la notation pointée au lieu de la notation entre crochets
 - `metaTokens` — conserver les terminaisons spéciales de clé telles que `{}`
 - `indexes` — contrôler le format des crochets pour les clés de tableau (`null` / `false` / `true`)
-- `maxDepth` _(par défaut : `100`)_ — profondeur maximale d'imbrication avant de lever une `AxiosError` avec le code `ERR_FORM_DATA_DEPTH_EXCEEDED`. Définir à `Infinity` pour désactiver.
+- `maxDepth` _(par défaut : `100`)_ — profondeur maximale d'imbrication avant de lever une `FaxiosError` avec le code `ERR_FORM_DATA_DEPTH_EXCEEDED`. Définir à `Infinity` pour désactiver.
 
 Consultez la page [multipart/form-data](/pages/advanced/multipart-form-data-format) pour tous les détails, et l'exemple de configuration complète en bas de cette page.
 
@@ -438,7 +438,7 @@ La propriété `maxRate` définit la **bande passante** maximale (en octets par 
       // (3) indexes: true (crochets avec index).
     indexes: false,
 
-    // Profondeur maximale d'imbrication des objets lors de la sérialisation des params. Lève une AxiosError
+    // Profondeur maximale d'imbrication des objets lors de la sérialisation des params. Lève une FaxiosError
     // (ERR_FORM_DATA_DEPTH_EXCEEDED) si dépassée. Par défaut : 100. Définir à Infinity pour désactiver.
     maxDepth: 100
 
@@ -529,7 +529,7 @@ La propriété `maxRate` définit la **bande passante** maximale (en octets par 
         // true - crochets avec index
       indexes: boolean;
 
-      // Profondeur maximale d'imbrication des objets. Lève une AxiosError (ERR_FORM_DATA_DEPTH_EXCEEDED)
+      // Profondeur maximale d'imbrication des objets. Lève une FaxiosError (ERR_FORM_DATA_DEPTH_EXCEEDED)
       // si dépassée. Par défaut : 100. Définir à Infinity pour désactiver.
       maxDepth: 100;
   },

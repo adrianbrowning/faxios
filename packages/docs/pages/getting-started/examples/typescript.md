@@ -5,8 +5,8 @@
 axios ships with TypeScript definitions out of the box. You can import the types you need directly from `"axios"`:
 
 ```ts
-import axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+import faxios from "faxios";
+import type { AxiosRequestConfig, AxiosResponse, FaxiosError } from "faxios";
 ```
 
 ## Typing a request
@@ -14,7 +14,7 @@ import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 Use a generic type parameter on the response to tell TypeScript what shape your data will have:
 
 ```ts
-import axios from "axios";
+import faxios from "faxios";
 
 type Post = {
   userId: number;
@@ -33,7 +33,7 @@ console.log(response.data.title); // TypeScript knows this is a string
 Wrap requests in functions with explicit return types for maximum type safety:
 
 ```ts
-import axios, { AxiosResponse } from "axios";
+import faxios, { AxiosResponse } from "faxios";
 
 type Post = {
   userId: number;
@@ -77,8 +77,8 @@ const createPost = async (data: CreatePostBody): Promise<CreatePostResponse> => 
 Create a typed instance so your base URL and headers are baked in:
 
 ```ts
-import axios from "axios";
-import type { AxiosInstance } from "axios";
+import faxios from "faxios";
+import type { AxiosInstance } from "faxios";
 
 const api: AxiosInstance = axios.create({
   baseURL: "https://api.example.com",
@@ -91,8 +91,8 @@ const api: AxiosInstance = axios.create({
 Use `InternalAxiosRequestConfig` (not `AxiosRequestConfig`) for request interceptors in v1.x:
 
 ```ts
-import axios from "axios";
-import type { InternalAxiosRequestConfig, AxiosResponse } from "axios";
+import faxios from "faxios";
+import type { InternalAxiosRequestConfig, AxiosResponse } from "faxios";
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   config.headers.set("Authorization", `Bearer ${getToken()}`);
@@ -110,7 +110,7 @@ api.interceptors.response.use(
 Use `axios.isAxiosError()` to narrow the type of a caught error:
 
 ```ts
-import axios, { AxiosError } from "axios";
+import faxios, { FaxiosError } from "faxios";
 
 type ApiError = {
   message: string;

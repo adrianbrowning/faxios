@@ -85,7 +85,7 @@ Si le body-parser de votre backend (comme `body-parser` d'`express.js`) prend en
 
 ## Limite de profondeur pour la sérialisation des paramètres
 
-Lorsqu'axios sérialise un objet `params` via `AxiosURLSearchParams`, le même parcours récursif utilisé par le sérialiseur FormData est appelé. Une option `maxDepth` (par défaut `100`) limite la profondeur de récursion. Les charges utiles dépassant la limite lèvent une `AxiosError` avec `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` au lieu de provoquer un débordement de pile d'appels.
+Lorsqu'axios sérialise un objet `params` via `AxiosURLSearchParams`, le même parcours récursif utilisé par le sérialiseur FormData est appelé. Une option `maxDepth` (par défaut `100`) limite la profondeur de récursion. Les charges utiles dépassant la limite lèvent une `FaxiosError` avec `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` au lieu de provoquer un débordement de pile d'appels.
 
 ```js
 // Augmenter la limite si votre objet params nécessite légitimement plus de 100 niveaux d'imbrication :

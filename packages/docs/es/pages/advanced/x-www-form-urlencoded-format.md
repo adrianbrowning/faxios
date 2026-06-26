@@ -85,7 +85,7 @@ Si el analizador de cuerpo de tu backend (como `body-parser` de `express.js`) ad
 
 ## Límite de profundidad para la serialización de parámetros
 
-Cuando axios serializa un objeto `params` mediante `AxiosURLSearchParams`, se llama al mismo recorrido recursivo utilizado por el serializador de FormData. Una opción `maxDepth` (predeterminado `100`) limita la profundidad de recursión. Las cargas útiles que exceden el límite lanzan un `AxiosError` con `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` en lugar de desbordar la pila de llamadas.
+Cuando axios serializa un objeto `params` mediante `AxiosURLSearchParams`, se llama al mismo recorrido recursivo utilizado por el serializador de FormData. Una opción `maxDepth` (predeterminado `100`) limita la profundidad de recursión. Las cargas útiles que exceden el límite lanzan un `FaxiosError` con `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` en lugar de desbordar la pila de llamadas.
 
 ```js
 // Aumentar el límite si tu objeto params legítimamente anida más de 100 niveles:

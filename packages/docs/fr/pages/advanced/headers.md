@@ -102,7 +102,7 @@ await api.put(url, data, {
 Vous pouvez également le faire avec `AxiosHeaders` directement lors de la composition d'en-têtes :
 
 ```js
-import axios, { AxiosHeaders } from 'axios';
+import faxios, { AxiosHeaders } from 'faxios';
 
 const headers = AxiosHeaders.concat(
   { 'content-type': undefined },

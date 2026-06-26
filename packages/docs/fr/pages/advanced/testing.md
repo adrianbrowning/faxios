@@ -8,7 +8,7 @@ Vitest et Jest supportent tous deux la simulation de modules avec `vi.mock` / `j
 
 ```js
 // user-service.js
-import axios from "axios";
+import faxios from "faxios";
 
 export async function getUser(id) {
   const { data } = await axios.get(`/api/users/${id}`);
@@ -19,7 +19,7 @@ export async function getUser(id) {
 ```js
 // user-service.test.js
 import { describe, it, expect, vi } from "vitest";
-import axios from "axios";
+import faxios from "faxios";
 import { getUser } from "./user-service";
 
 vi.mock("axios");
@@ -45,15 +45,15 @@ describe("getUser", () => {
 });
 ```
 
-## Simuler une AxiosError
+## Simuler une FaxiosError
 
-Pour tester les chemins de gestion d'erreurs qui inspectent `error.response`, créez directement une instance d'`AxiosError` :
+Pour tester les chemins de gestion d'erreurs qui inspectent `error.response`, créez directement une instance d'`FaxiosError` :
 
 ```js
-import axios, { AxiosError } from "axios";
+import faxios, { FaxiosError } from "faxios";
 import { vi } from "vitest";
 
-const mockError = new AxiosError(
+const mockError = new FaxiosError(
   "Not Found",
   "ERR_BAD_REQUEST",
   {},       // config
@@ -79,7 +79,7 @@ npm install --save-dev axios-mock-adapter
 ```
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 import MockAdapter from "axios-mock-adapter";
 
 const mock = new MockAdapter(axios);
@@ -110,7 +110,7 @@ afterEach(() => {
 Pour tester les intercepteurs de manière isolée, créez une nouvelle instance axios dans votre test :
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 import MockAdapter from "axios-mock-adapter";
 
 describe("auth interceptor", () => {

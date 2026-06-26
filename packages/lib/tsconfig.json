@@ -4,23 +4,16 @@
     "outDir": "dist",
     "rootDir": "./src",
     "incremental": false,
-    "typeRoots": [
-      "../../node_modules/@types",
-      "./node_modules/@types"
-    ]
+    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
   },
   "include": [
     "eslint.config.ts",
     "eslint.config.style.ts",
-    "./src/**/*.ts",
-    "./tests/unit/**/*.ts",
-    "./tests/setup/**/*.ts",
-    "./tests/module/esm/**/*.ts"
+    "./**/*.ts"
+    //    "./src/**/*.ts",
+    //    "./tests/unit/**/*.ts",
+    //    "./tests/setup/**/*.ts",
+    //    "./tests/module/esm/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "tests/smoke",
-    "tests/module/cjs"
-  ]
+  "exclude": ["node_modules", "dist", "tests/smoke", "tests/module/cjs"]
 }

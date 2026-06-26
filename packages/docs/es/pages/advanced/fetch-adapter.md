@@ -3,7 +3,7 @@
 El adaptador `fetch` es un nuevo adaptador que introdujimos a partir de la versión 1.7.0. Proporciona una forma de usar axios con la API `fetch`, dándote lo mejor de ambos mundos. De forma predeterminada, `fetch` se usará si los adaptadores `xhr` y `http` no están disponibles en la compilación o no son compatibles con el entorno. Para usarlo de forma predeterminada, debe seleccionarse explícitamente estableciendo la opción `adapter` en `fetch` al crear una instancia de axios.
 
 ```js
-import axios from 'axios';
+import faxios from 'faxios';
 
 const instance = axios.create({
   adapter: 'fetch',
@@ -48,7 +48,7 @@ const instance = axios.create({
 
 ```js
 import { fetch } from '@tauri-apps/plugin-http';
-import axios from 'axios';
+import faxios from 'faxios';
 
 const instance = axios.create({
   adapter: 'fetch',

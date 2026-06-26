@@ -4,19 +4,20 @@ import Faxios from "../../src/lib/core/Faxios.js";
 
 describe("Faxios", () => {
   describe("handle un-writable error stack", () => {
-    const testUnwritableErrorStack = async (stackAttributes: PropertyDescriptor) => {
-      const axios = new Faxios({});
-      // Mock axios._request to return an Error with an un-writable stack property.
-      axios._request = () => {
+    const testUnwritableErrorStack = async (
+      stackAttributes: PropertyDescriptor,
+    ) => {
+      const faxios = new Faxios({});
+      // Mock faxios._request to return an Error with an un-writable stack property.
+      faxios._request = () => {
         const mockError = new Error("test-error");
         Object.defineProperty(mockError, "stack", stackAttributes);
         throw mockError;
       };
 
       try {
-        await axios.request("test-url", {});
-      }
-      catch (e) {
+        await faxios.request("test-url", {});
+      } catch (e) {
         assert.strictEqual((e as Error).message, "test-error");
       }
     };
@@ -49,8 +50,8 @@ describe("Faxios", () => {
   });
 
   it("should not throw if the config argument is omitted", () => {
-    const axios = new Faxios();
+    const faxios = new Faxios();
 
-    assert.deepStrictEqual(axios.defaults, {});
+    assert.deepStrictEqual(faxios.defaults, {});
   });
 });

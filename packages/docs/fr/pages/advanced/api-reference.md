@@ -38,13 +38,13 @@ La classe est exportée principalement pour des raisons de rétrocompatibilité 
 
 ## Fonctions
 
-### `AxiosError`
+### `FaxiosError`
 
-La classe `AxiosError` est une classe d'erreur levée lorsqu'une requête HTTP échoue. Elle étend la classe `Error` et ajoute des propriétés supplémentaires à l'objet d'erreur.
+La classe `FaxiosError` est une classe d'erreur levée lorsqu'une requête HTTP échoue. Elle étend la classe `Error` et ajoute des propriétés supplémentaires à l'objet d'erreur.
 
 #### `constructor`
 
-Crée une nouvelle instance de la classe `AxiosError`. Le constructeur accepte en argument un message, un code, une configuration, une requête et une réponse optionnels.
+Crée une nouvelle instance de la classe `FaxiosError`. Le constructeur accepte en argument un message, un code, une configuration, une requête et une réponse optionnels.
 
 ```ts
 constructor(message?: string, code?: string, config?: InternalAxiosRequestConfig<D>, request?: any, response?: AxiosResponse<T, D>);
@@ -52,7 +52,7 @@ constructor(message?: string, code?: string, config?: InternalAxiosRequestConfig
 
 #### `properties`
 
-La classe `AxiosError` fournit les propriétés suivantes :
+La classe `FaxiosError` fournit les propriétés suivantes :
 
 ```ts
 // Instance de config.
@@ -67,7 +67,7 @@ request?: any;
 // Instance de réponse.
 response?: AxiosResponse<T, D>;
 
-// Booléen indiquant si l'erreur est une `AxiosError`.
+// Booléen indiquant si l'erreur est une `FaxiosError`.
 isAxiosError: boolean;
 
 // Code de statut HTTP de l'erreur.
@@ -162,9 +162,9 @@ toJSON(asStrings: true): Record<string, string>;
 toJSON(asStrings?: false): Record<string, string | string[]>;
 ```
 
-### `CanceledError` <Badge type="tip" text="Extension d'AxiosError" />
+### `CanceledError` <Badge type="tip" text="Extension d'FaxiosError" />
 
-La classe `CanceledError` est une classe d'erreur levée lorsqu'une requête HTTP est annulée. Elle étend la classe `AxiosError`.
+La classe `CanceledError` est une classe d'erreur levée lorsqu'une requête HTTP est annulée. Elle étend la classe `FaxiosError`.
 
 ### `Cancel` <Badge type="tip" text="Alias de CanceledError" />
 
@@ -179,7 +179,7 @@ isCancel<T = any>(value: any): value is CanceledError<T>;
 ```
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 const controller = new AbortController();
 
@@ -196,14 +196,14 @@ controller.abort("User navigated away");
 
 ### `isAxiosError`
 
-Une fonction qui vérifie si une erreur est une `AxiosError`. Utilisez-la dans les blocs `catch` pour accéder en toute sécurité aux propriétés spécifiques d'axios comme `error.response` et `error.config`.
+Une fonction qui vérifie si une erreur est une `FaxiosError`. Utilisez-la dans les blocs `catch` pour accéder en toute sécurité aux propriétés spécifiques d'axios comme `error.response` et `error.config`.
 
 ```ts
-isAxiosError(value: any): value is AxiosError;
+isAxiosError(value: any): value is FaxiosError;
 ```
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 try {
   await axios.get("/api/resource");
@@ -241,7 +241,7 @@ toFormData(sourceObj: object, formData?: FormData, options?: FormSerializerOptio
 ```
 
 ```js
-import { toFormData } from "axios";
+import { toFormData } from "faxios";
 
 const data = { name: "Jay", avatar: fileBlob };
 const form = toFormData(data);
@@ -258,7 +258,7 @@ formToJSON(form: FormData): object;
 ```
 
 ```js
-import { formToJSON } from "axios";
+import { formToJSON } from "faxios";
 
 const form = new FormData();
 form.append("name", "Jay");
@@ -277,7 +277,7 @@ getAdapter(adapters: string | string[]): AxiosAdapter;
 ```
 
 ```js
-import { getAdapter } from "axios";
+import { getAdapter } from "faxios";
 
 // Obtenir explicitement l'adaptateur fetch
 const fetchAdapter = getAdapter("fetch");
@@ -295,7 +295,7 @@ mergeConfig<T>(config1: AxiosRequestConfig<T>, config2: AxiosRequestConfig<T>): 
 ```
 
 ```js
-import { mergeConfig } from "axios";
+import { mergeConfig } from "faxios";
 
 const base = { baseURL: "https://api.example.com", timeout: 5000 };
 const override = { timeout: 10000, headers: { "X-Custom": "value" } };
@@ -311,7 +311,7 @@ const merged = mergeConfig(base, override);
 Un objet contenant une liste de codes de statut HTTP sous forme de constantes nommées. Utilisez-le pour écrire des conditions lisibles plutôt que des nombres bruts.
 
 ```js
-import axios, { HttpStatusCode } from "axios";
+import faxios, { HttpStatusCode } from "faxios";
 
 try {
   const response = await axios.get("/api/resource");

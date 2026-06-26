@@ -7,7 +7,7 @@ Les requêtes réseau peuvent échouer pour des raisons transitoires — une dé
 L'approche la plus simple consiste à intercepter des codes de statut d'erreur spécifiques et à renvoyer immédiatement la requête originale un nombre limité de fois :
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 const api = axios.create({ baseURL: "https://api.example.com" });
 

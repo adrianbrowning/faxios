@@ -9,8 +9,8 @@ Esta guía tiene como objetivo ayudarte a actualizar tu proyecto de una versión
 En v1.x, la declaración de importación fue modificada para usar la exportación `default`. Esto significa que deberás actualizar tus importaciones para usar la exportación `default`.
 
 ```diff
-- import { axios } from "axios";
-+ import axios from "axios";
+- import { axios } from "faxios";
++ import faxios from "faxios";
 ```
 
 ### Cambios en el sistema de interceptores

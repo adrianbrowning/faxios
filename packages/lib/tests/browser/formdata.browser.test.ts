@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import axios from "../../src/index.js";
+import faxios from "../../src/index.js";
 
 class MockXMLHttpRequest {
   requestHeaders: Record<string, string> = {};
@@ -44,7 +44,12 @@ class MockXMLHttpRequest {
     statusText = "OK",
     responseText = "",
     responseHeaders = "",
-  }: { status?: number; statusText?: string; responseText?: string; responseHeaders?: string; } = {}) {
+  }: {
+    status?: number;
+    statusText?: string;
+    responseText?: string;
+    responseHeaders?: string;
+  } = {}) {
     this.status = status;
     this.statusText = statusText;
     this.responseText = responseText;
@@ -55,8 +60,7 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      }
-      else if (this.onreadystatechange) {
+      } else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -80,7 +84,8 @@ describe("formdata (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
+    window.XMLHttpRequest =
+      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -88,7 +93,11 @@ describe("formdata (vitest browser)", () => {
   });
 
   it("should allow FormData posting", async () => {
-    const responsePromise = (axios as unknown as { postForm: (url: string, data: unknown) => Promise<unknown>; }).postForm("/foo", {
+    const responsePromise = (
+      faxios as unknown as {
+        postForm: (url: string, data: unknown) => Promise<unknown>;
+      }
+    ).postForm("/foo", {
       a: "foo",
       b: "bar",
     });

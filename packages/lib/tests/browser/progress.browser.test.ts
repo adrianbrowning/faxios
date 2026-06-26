@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import axios from "../../src/index.js";
+import faxios from "../../src/index.js";
 
 class MockXMLHttpRequest {
   requestHeaders: Record<string, string> = {};
@@ -27,9 +27,8 @@ class MockXMLHttpRequest {
   upload = {
     addEventListener: (
       type: string,
-      listener: (...args: Array<unknown>) => void
+      listener: (...args: Array<unknown>) => void,
     ) => {
-       
       this._uploadListeners[type] ||= [];
       this._uploadListeners[type].push(listener);
     },
@@ -46,14 +45,13 @@ class MockXMLHttpRequest {
   }
 
   addEventListener(type: string, listener: (...args: Array<unknown>) => void) {
-     
     this._listeners[type] ||= [];
     this._listeners[type].push(listener);
   }
 
   getAllResponseHeaders() {
     return Object.entries(this.responseHeaders)
-      .map(([ key, value ]) => `${key}: ${value}`)
+      .map(([key, value]) => `${key}: ${value}`)
       .join("\n");
   }
 
@@ -72,7 +70,7 @@ class MockXMLHttpRequest {
   emit(type: string, target = "request", event = {}) {
     const listeners =
       target === "upload" ? this._uploadListeners : this._listeners;
-    (listeners[type] || []).forEach(listener => listener(event));
+    (listeners[type] || []).forEach((listener) => listener(event));
   }
 
   respondWith({
@@ -98,8 +96,7 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      }
-      else if (this.onreadystatechange) {
+      } else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -132,12 +129,12 @@ describe("progress (vitest browser)", () => {
 
   it("should add a download progress handler", async () => {
     const progressSpy = vi.fn();
-    const responsePromise = axios("/foo", { onDownloadProgress: progressSpy });
+    const responsePromise = faxios("/foo", { onDownloadProgress: progressSpy });
     const request = getLastRequest();
 
     request.respondWith({
       status: 200,
-      responseText: "{\"foo\": \"bar\"}",
+      responseText: '{"foo": "bar"}',
     });
     await responsePromise;
 
@@ -146,14 +143,14 @@ describe("progress (vitest browser)", () => {
 
   it("should add an upload progress handler", async () => {
     const progressSpy = vi.fn();
-    const responsePromise = axios("/foo", { onUploadProgress: progressSpy });
+    const responsePromise = faxios("/foo", { onUploadProgress: progressSpy });
     const request = getLastRequest();
 
     expect(request.getListenerCount("progress", "upload")).toBe(1);
 
     request.respondWith({
       status: 200,
-      responseText: "{\"foo\": \"bar\"}",
+      responseText: '{"foo": "bar"}',
     });
     await responsePromise;
   });
@@ -161,7 +158,7 @@ describe("progress (vitest browser)", () => {
   it("should add both upload and download progress handlers", async () => {
     const downloadProgressSpy = vi.fn();
     const uploadProgressSpy = vi.fn();
-    const responsePromise = axios("/foo", {
+    const responsePromise = faxios("/foo", {
       onDownloadProgress: downloadProgressSpy,
       onUploadProgress: uploadProgressSpy,
     });
@@ -173,7 +170,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: "{\"foo\": \"bar\"}",
+      responseText: '{"foo": "bar"}',
     });
     await responsePromise;
 
@@ -182,7 +179,7 @@ describe("progress (vitest browser)", () => {
 
   it("should add a download progress handler from instance config", async () => {
     const progressSpy = vi.fn();
-    const instance = axios.create({
+    const instance = faxios.create({
       onDownloadProgress: progressSpy,
     });
 
@@ -191,7 +188,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: "{\"foo\": \"bar\"}",
+      responseText: '{"foo": "bar"}',
     });
     await responsePromise;
 
@@ -200,7 +197,7 @@ describe("progress (vitest browser)", () => {
 
   it("should add an upload progress handler from instance config", async () => {
     const progressSpy = vi.fn();
-    const instance = axios.create({
+    const instance = faxios.create({
       onUploadProgress: progressSpy,
     });
 
@@ -211,7 +208,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: "{\"foo\": \"bar\"}",
+      responseText: '{"foo": "bar"}',
     });
     await responsePromise;
   });
@@ -219,7 +216,7 @@ describe("progress (vitest browser)", () => {
   it("should add upload and download progress handlers from instance config", async () => {
     const downloadProgressSpy = vi.fn();
     const uploadProgressSpy = vi.fn();
-    const instance = axios.create({
+    const instance = faxios.create({
       onDownloadProgress: downloadProgressSpy,
       onUploadProgress: uploadProgressSpy,
     });
@@ -233,7 +230,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: "{\"foo\": \"bar\"}",
+      responseText: '{"foo": "bar"}',
     });
     await responsePromise;
 

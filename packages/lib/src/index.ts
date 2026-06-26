@@ -1,4 +1,4 @@
-import axios from "./lib/faxios.ts";
+import faxios from "./lib/faxios.ts";
 
 // This module is intended to unwrap Faxios default export as named.
 // Keep top-level export same with static properties
@@ -21,7 +21,7 @@ const {
   getAdapter,
   mergeConfig,
   create,
-} = axios;
+} = faxios;
 
 // eslint-disable-next-line no-barrel-files/no-barrel-files
 export type {
@@ -30,12 +30,12 @@ export type {
   RawFaxiosRequestConfig,
   FaxiosPromise,
   CreateFaxiosDefaults,
-  CancelTokenStatic
+  CancelTokenStatic,
 } from "./lib/types.ts";
 
 export {
   // eslint-disable-next-line no-barrel-files/no-barrel-files
-  axios as default,
+  faxios as default,
   create,
   Faxios,
   FaxiosError,
@@ -52,5 +52,5 @@ export {
   HttpStatusCode,
   formToJSON,
   getAdapter,
-  mergeConfig
+  mergeConfig,
 };

@@ -7,7 +7,7 @@
 最简单的方式是捕获特定错误状态码，并在有限次数内立即重新发送原始请求：
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 const api = axios.create({ baseURL: "https://api.example.com" });
 

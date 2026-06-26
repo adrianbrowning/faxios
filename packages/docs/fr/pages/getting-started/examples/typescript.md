@@ -5,8 +5,8 @@
 axios inclut des définitions TypeScript prêtes à l'emploi. Vous pouvez importer les types dont vous avez besoin directement depuis `"axios"` :
 
 ```ts
-import axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+import faxios from "faxios";
+import type { AxiosRequestConfig, AxiosResponse, FaxiosError } from "faxios";
 ```
 
 ## Typer une requête
@@ -14,7 +14,7 @@ import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 Utilisez un paramètre de type générique sur la réponse pour indiquer à TypeScript la forme que prendront vos données :
 
 ```ts
-import axios from "axios";
+import faxios from "faxios";
 
 type Post = {
   userId: number;
@@ -33,7 +33,7 @@ console.log(response.data.title); // TypeScript sait que c'est une string
 Encapsulez les requêtes dans des fonctions avec des types de retour explicites pour une sécurité de type maximale :
 
 ```ts
-import axios, { AxiosResponse } from "axios";
+import faxios, { AxiosResponse } from "faxios";
 
 type Post = {
   userId: number;
@@ -77,8 +77,8 @@ const createPost = async (data: CreatePostBody): Promise<CreatePostResponse> => 
 Créez une instance typée afin d'y intégrer votre URL de base et vos en-têtes :
 
 ```ts
-import axios from "axios";
-import type { AxiosInstance } from "axios";
+import faxios from "faxios";
+import type { AxiosInstance } from "faxios";
 
 const api: AxiosInstance = axios.create({
   baseURL: "https://api.example.com",
@@ -91,8 +91,8 @@ const api: AxiosInstance = axios.create({
 Utilisez `InternalAxiosRequestConfig` (et non `AxiosRequestConfig`) pour les intercepteurs de requête dans v1.x :
 
 ```ts
-import axios from "axios";
-import type { InternalAxiosRequestConfig, AxiosResponse } from "axios";
+import faxios from "faxios";
+import type { InternalAxiosRequestConfig, AxiosResponse } from "faxios";
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   config.headers.set("Authorization", `Bearer ${getToken()}`);
@@ -110,7 +110,7 @@ api.interceptors.response.use(
 Utilisez `axios.isAxiosError()` pour affiner le type d'une erreur capturée :
 
 ```ts
-import axios, { AxiosError } from "axios";
+import faxios, { FaxiosError } from "faxios";
 
 type ApiError = {
   message: string;

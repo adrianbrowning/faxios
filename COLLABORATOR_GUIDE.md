@@ -24,7 +24,7 @@ When opening a PR, make sure:
 - The change fits within axios. Decline features early and kindly when they belong in user code or a plugin.
 - Cover behavior across the XHR, Fetch, and Node HTTP adapters where relevant. Detect by capability, not environment name.
 - Update both `index.d.ts` (ESM) and `index.d.cts` (CJS) when the public API changes.
-- Make axios-originated failures throw `AxiosError` with an appropriate code, never raw `Error`. Wrap third-party errors with `AxiosError.from`.
+- Make axios-originated failures throw `FaxiosError` with an appropriate code, never raw `Error`. Wrap third-party errors with `FaxiosError.from`.
 - Cover the change with unit tests. Update browser, smoke, or module suites when packaging or runtime surface is affected.
 - Lint and tests pass before review. Do not merge red PRs.
 - Do not add runtime dependencies without discussion. `package-lock.json` changes must keep `lockfile-lint` happy (npm HTTPS hosts, integrity hashes).

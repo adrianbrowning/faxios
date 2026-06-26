@@ -1,24 +1,24 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
-import axios, { create } from "../../src/index.ts";
+import faxios, { create } from "../../src/index.ts";
 
 describe("static api", () => {
   it("should have request method helpers", () => {
-    assert.strictEqual(typeof axios.request, "function");
-    assert.strictEqual(typeof axios.get, "function");
-    assert.strictEqual(typeof axios.head, "function");
-    assert.strictEqual(typeof axios.options, "function");
-    assert.strictEqual(typeof axios.delete, "function");
-    assert.strictEqual(typeof axios.post, "function");
-    assert.strictEqual(typeof axios.put, "function");
-    assert.strictEqual(typeof axios.patch, "function");
-    assert.strictEqual(typeof axios.query, "function");
+    assert.strictEqual(typeof faxios.request, "function");
+    assert.strictEqual(typeof faxios.get, "function");
+    assert.strictEqual(typeof faxios.head, "function");
+    assert.strictEqual(typeof faxios.options, "function");
+    assert.strictEqual(typeof faxios.delete, "function");
+    assert.strictEqual(typeof faxios.post, "function");
+    assert.strictEqual(typeof faxios.put, "function");
+    assert.strictEqual(typeof faxios.patch, "function");
+    assert.strictEqual(typeof faxios.query, "function");
   });
 
   it("should have promise method helpers", async () => {
-    const promise = axios.request({
+    const promise = faxios.request({
       url: "/test",
-      adapter: async config =>
+      adapter: async (config) =>
         Promise.resolve({
           data: null,
           status: 200,
@@ -36,37 +36,37 @@ describe("static api", () => {
   });
 
   it("should have defaults", () => {
-    assert.strictEqual(typeof axios.defaults, "object");
-    assert.strictEqual(typeof axios.defaults.headers, "object");
+    assert.strictEqual(typeof faxios.defaults, "object");
+    assert.strictEqual(typeof faxios.defaults.headers, "object");
   });
 
   it("should have interceptors", () => {
-    assert.strictEqual(typeof axios.interceptors.request, "object");
-    assert.strictEqual(typeof axios.interceptors.response, "object");
+    assert.strictEqual(typeof faxios.interceptors.request, "object");
+    assert.strictEqual(typeof faxios.interceptors.response, "object");
   });
 
   it("should have all/spread helpers", () => {
-    assert.strictEqual(typeof axios.all, "function");
-    assert.strictEqual(typeof axios.spread, "function");
+    assert.strictEqual(typeof faxios.all, "function");
+    assert.strictEqual(typeof faxios.spread, "function");
   });
 
   it("should have factory method", () => {
-    assert.strictEqual(typeof axios.create, "function");
+    assert.strictEqual(typeof faxios.create, "function");
   });
 
   it("should expose create as a named export", () => {
     assert.strictEqual(typeof create, "function");
-    assert.strictEqual(create, axios.create);
+    assert.strictEqual(create, faxios.create);
   });
 
   it("should have CanceledError, CancelToken, and isCancel properties", () => {
-    assert.strictEqual(typeof axios.Cancel, "function");
-    assert.strictEqual(typeof axios.CancelToken, "function");
-    assert.strictEqual(typeof axios.isCancel, "function");
+    assert.strictEqual(typeof faxios.Cancel, "function");
+    assert.strictEqual(typeof faxios.CancelToken, "function");
+    assert.strictEqual(typeof faxios.isCancel, "function");
   });
 
   it("should have getUri method", () => {
-    assert.strictEqual(typeof axios.getUri, "function");
+    assert.strictEqual(typeof faxios.getUri, "function");
   });
 
   it("should ignore inherited data for bodyless method helpers", async () => {
@@ -77,12 +77,19 @@ describe("static api", () => {
 
     try {
       await Promise.all(
-        [ "delete", "get", "head", "options" ].map(async method => {
+        ["delete", "get", "head", "options"].map(async (method) => {
           let seenData = "unset";
 
-          const fn = (axios as unknown as Record<string, (url: string, config: unknown) => Promise<unknown>>)[method]!;
+          const fn = (
+            faxios as unknown as Record<
+              string,
+              (url: string, config: unknown) => Promise<unknown>
+            >
+          )[method]!;
           await fn("/test", {
-            async adapter(config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig) {
+            async adapter(
+              config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig,
+            ) {
               seenData = config.data as string;
 
               return Promise.resolve({
@@ -97,10 +104,9 @@ describe("static api", () => {
           });
 
           assert.strictEqual(seenData, undefined);
-        })
+        }),
       );
-    }
-    finally {
+    } finally {
       delete (Object.prototype as Record<string, unknown>).data;
     }
   });
@@ -118,37 +124,36 @@ describe("static api", () => {
 
     try {
       assert.strictEqual(
-        axios.getUri({
+        faxios.getUri({
           url: "/foo",
           params: { value: "a b" },
           paramsSerializer: {},
         }),
-        "/foo?value=a+b"
+        "/foo?value=a+b",
       );
       assert.strictEqual(serializeInvoked, false);
-    }
-    finally {
+    } finally {
       delete (Object.prototype as Record<string, unknown>).serialize;
     }
   });
 
   it("should have isFaxiosError properties", () => {
-    assert.strictEqual(typeof axios.isFaxiosError, "function");
+    assert.strictEqual(typeof faxios.isFaxiosError, "function");
   });
 
   it("should have mergeConfig properties", () => {
-    assert.strictEqual(typeof axios.mergeConfig, "function");
+    assert.strictEqual(typeof faxios.mergeConfig, "function");
   });
 
   it("should have getAdapter properties", () => {
-    assert.strictEqual(typeof axios.getAdapter, "function");
+    assert.strictEqual(typeof faxios.getAdapter, "function");
   });
 
   it("should pass symbol keys to transformRequest", async () => {
     const symbolKey = Symbol("example");
     let transformedData;
 
-    await axios.post(
+    await faxios.post(
       "/test",
       {
         [symbolKey]: "value",
@@ -159,7 +164,9 @@ describe("static api", () => {
           transformedData = data;
           return "";
         },
-        adapter: async (config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig) =>
+        adapter: async (
+          config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig,
+        ) =>
           Promise.resolve({
             data: null,
             status: 200,
@@ -168,15 +175,18 @@ describe("static api", () => {
             config,
             request: {},
           }),
-      }
+      },
     );
 
-    assert.strictEqual((transformedData as unknown as Record<symbol, unknown>)[symbolKey], "value");
+    assert.strictEqual(
+      (transformedData as unknown as Record<symbol, unknown>)[symbolKey],
+      "value",
+    );
   });
 });
 
 describe("instance api", () => {
-  const instance = axios.create();
+  const instance = faxios.create();
 
   it("should have request methods", () => {
     assert.strictEqual(typeof instance.request, "function");
@@ -195,18 +205,18 @@ describe("instance api", () => {
     assert.strictEqual(typeof instance.interceptors.response, "object");
   });
 
-  it("should pass symbol keys to transformRequest through axios.create", async () => {
+  it("should pass symbol keys to transformRequest through faxios.create", async () => {
     const symbolKey = Symbol("example");
     let transformedData;
 
-    const client = axios.create({
+    const client = faxios.create({
       transformRequest: [
-        data => {
+        (data) => {
           transformedData = data;
           return "";
         },
       ],
-      adapter: async config =>
+      adapter: async (config) =>
         Promise.resolve({
           data: null,
           status: 200,
@@ -222,7 +232,15 @@ describe("instance api", () => {
       stringKey: "value",
     });
 
-    assert.strictEqual((transformedData as unknown as Record<symbol | string, unknown>)[symbolKey], "value");
-    assert.strictEqual((transformedData as unknown as Record<string, unknown>).stringKey, "value");
+    assert.strictEqual(
+      (transformedData as unknown as Record<symbol | string, unknown>)[
+        symbolKey
+      ],
+      "value",
+    );
+    assert.strictEqual(
+      (transformedData as unknown as Record<string, unknown>).stringKey,
+      "value",
+    );
   });
 });

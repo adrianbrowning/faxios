@@ -12,7 +12,7 @@ describe("core::FaxiosError", () => {
       "ESOMETHING",
       { foo: "bar" } as any,
       request,
-      response
+      response,
     );
 
     expect(error).toBeInstanceOf(Error);
@@ -35,7 +35,7 @@ describe("core::FaxiosError", () => {
       "ESOMETHING",
       { foo: "bar" } as any,
       request,
-      response
+      response,
     );
     const json = error.toJSON();
 
@@ -53,52 +53,54 @@ describe("core::FaxiosError", () => {
       const request = { path: "/foo" };
       const response = { status: 200, data: { foo: "bar" } } as any;
 
-      const axiosError = FaxiosError.from(
+      const errorFrom = FaxiosError.from(
         error,
         "ESOMETHING",
         { foo: "bar" } as any,
         request,
-        response
+        response,
       );
 
-      expect(axiosError.config).toEqual({ foo: "bar" });
-      expect(axiosError.code).toBe("ESOMETHING");
-      expect(axiosError.request).toBe(request);
-      expect(axiosError.response).toBe(response);
-      expect(axiosError.isFaxiosError).toBe(true);
+      expect(errorFrom.config).toEqual({ foo: "bar" });
+      expect(errorFrom.code).toBe("ESOMETHING");
+      expect(errorFrom.request).toBe(request);
+      expect(errorFrom.response).toBe(response);
+      expect(errorFrom.isFaxiosError).toBe(true);
     });
 
     it("returns an FaxiosError instance", () => {
-      const axiosError = FaxiosError.from(new Error("Boom!"), "ESOMETHING", {
+      const errorFrom = FaxiosError.from(new Error("Boom!"), "ESOMETHING", {
         foo: "bar",
       } as any);
 
-      expect(axiosError).toBeInstanceOf(FaxiosError);
+      expect(errorFrom).toBeInstanceOf(FaxiosError);
     });
 
     it("preserves status from the original error when response is not provided", () => {
-      const error = new Error("Network Error") as Error & { status?: number; };
+      const error = new Error("Network Error") as Error & { status?: number };
       error.status = 404;
 
-      const axiosError = FaxiosError.from(error, "ERR_NETWORK", { foo: "bar" } as any);
+      const errorFrom = FaxiosError.from(error, "ERR_NETWORK", {
+        foo: "bar",
+      } as any);
 
-      expect(axiosError.status).toBe(404);
+      expect(errorFrom.status).toBe(404);
     });
 
     it("prefers response.status over error.status when response is provided", () => {
-      const error = new Error("Error") as Error & { status?: number; };
+      const error = new Error("Error") as Error & { status?: number };
       error.status = 500;
       const response = { status: 404 };
 
-      const axiosError = FaxiosError.from(
+      const errorFrom = FaxiosError.from(
         error,
         "ERR_BAD_REQUEST",
         {} as any,
         null,
-        response as any
+        response as any,
       );
 
-      expect(axiosError.status).toBe(404);
+      expect(errorFrom.status).toBe(404);
     });
   });
 
@@ -113,7 +115,9 @@ describe("core::FaxiosError", () => {
   });
 
   it("sets status when response is passed to constructor", () => {
-    const error = new FaxiosError("test", "foo", {} as any, {}, { status: 400 } as any);
+    const error = new FaxiosError("test", "foo", {} as any, {}, {
+      status: 400,
+    } as any);
 
     expect(error.status).toBe(400);
   });
@@ -127,7 +131,7 @@ describe("core::FaxiosError", () => {
         FaxiosError.ERR_BAD_REQUEST,
         {} as any,
         {},
-        { status: 404, statusText: "Not Found" } as any
+        { status: 404, statusText: "Not Found" } as any,
       );
 
       expect(error.status).toBe(404);
@@ -140,7 +144,7 @@ describe("core::FaxiosError", () => {
         FaxiosError.ERR_BAD_RESPONSE,
         {} as any,
         {},
-        { status: 503, statusText: "Service Unavailable" } as any
+        { status: 503, statusText: "Service Unavailable" } as any,
       );
 
       expect(error.status).toBe(503);
@@ -153,7 +157,7 @@ describe("core::FaxiosError", () => {
         "Network Error",
         FaxiosError.ERR_NETWORK,
         {} as any,
-        {}
+        {},
       );
 
       expect(error.status).toBeUndefined();
@@ -161,13 +165,9 @@ describe("core::FaxiosError", () => {
     });
 
     it("error.status is included in toJSON output", () => {
-      const error = new FaxiosError(
-        "test",
-        "ERR_BAD_REQUEST",
-        {} as any,
-        {},
-        { status: 401 } as any
-      );
+      const error = new FaxiosError("test", "ERR_BAD_REQUEST", {} as any, {}, {
+        status: 401,
+      } as any);
 
       expect(error.toJSON().status).toBe(401);
     });
@@ -179,12 +179,12 @@ describe("core::FaxiosError", () => {
     } as any);
 
     expect(Object.keys(error)).toContain("message");
-    expect(Object.entries(error).find(([ key ]) => key === "message")?.[1]).toBe(
-      "Test error message"
+    expect(Object.entries(error).find(([key]) => key === "message")?.[1]).toBe(
+      "Test error message",
     );
     expect({ ...error }.message).toBe("Test error message");
     expect(Object.getOwnPropertyDescriptor(error, "message")?.enumerable).toBe(
-      true
+      true,
     );
   });
 
@@ -238,7 +238,7 @@ describe("core::FaxiosError", () => {
       const config = {
         url: "/api",
         auth: { username: "alice", password: "secret" },
-        redact: [ "auth" ],
+        redact: ["auth"],
       };
       const error = new FaxiosError("Boom", "ECODE", config as any);
 
@@ -252,7 +252,7 @@ describe("core::FaxiosError", () => {
       const config = {
         auth: { username: "alice", password: "secret" },
         proxy: { auth: { username: "pu", password: "pp" } },
-        redact: [ "password" ],
+        redact: ["password"],
       };
       const error = new FaxiosError("Boom", "ECODE", config as any);
 
@@ -267,12 +267,12 @@ describe("core::FaxiosError", () => {
     it("matches case-insensitively", () => {
       const config = {
         headers: { Authorization: "Bearer abc" },
-        redact: [ "authorization" ],
+        redact: ["authorization"],
       };
       const error = new FaxiosError("Boom", "ECODE", config as any);
 
       expect((error.toJSON().config as any).headers.Authorization).toBe(
-        "[REDACTED ****]"
+        "[REDACTED ****]",
       );
     });
 
@@ -281,7 +281,7 @@ describe("core::FaxiosError", () => {
       headers.set("Authorization", "Bearer abc");
       headers.set("X-Trace", "trace-id");
 
-      const config = { headers, redact: [ "Authorization" ] };
+      const config = { headers, redact: ["Authorization"] };
       const error = new FaxiosError("Boom", "ECODE", config as any);
 
       const serialized = (error.toJSON().config as any).headers;
@@ -292,7 +292,7 @@ describe("core::FaxiosError", () => {
     it("redacts inside arrays of objects", () => {
       const config = {
         items: [{ token: "t1" }, { token: "t2", name: "keep" }],
-        redact: [ "token" ],
+        redact: ["token"],
       };
       const error = new FaxiosError("Boom", "ECODE", config as any);
 
@@ -303,7 +303,10 @@ describe("core::FaxiosError", () => {
     });
 
     it("does not crash on circular config references", () => {
-      const config: Record<string, any> = { auth: { password: "secret" }, redact: [ "password" ] };
+      const config: Record<string, any> = {
+        auth: { password: "secret" },
+        redact: ["password"],
+      };
       config.self = config;
 
       const error = new FaxiosError("Boom", "ECODE", config as any);
@@ -311,7 +314,7 @@ describe("core::FaxiosError", () => {
       const json = error.toJSON();
       expect((json.config as any).auth.password).toBe("[REDACTED ****]");
       expect(Object.prototype.hasOwnProperty.call(json.config, "self")).toBe(
-        false
+        false,
       );
     });
 
@@ -322,7 +325,7 @@ describe("core::FaxiosError", () => {
         issuedAt,
         endpoint,
         auth: { password: "secret" },
-        redact: [ "password" ],
+        redact: ["password"],
       };
       const error = new FaxiosError("Boom", "ECODE", config as any);
 
@@ -349,7 +352,7 @@ describe("core::FaxiosError", () => {
         auth: { password: "secret" },
         credentials: new Credentials(),
         items: [{ token: "t1" }],
-        redact: [ "password", "token" ],
+        redact: ["password", "token"],
       };
       const error = new FaxiosError("Boom", "ECODE", config as any);
 
@@ -357,16 +360,17 @@ describe("core::FaxiosError", () => {
         const json = error.toJSON();
 
         expect((json.config as any).auth.password).toBe("[REDACTED ****]");
-        expect((json.config as any).credentials.password).toBe("[REDACTED ****]");
+        expect((json.config as any).credentials.password).toBe(
+          "[REDACTED ****]",
+        );
         expect((json.config as any).items[0].token).toBe("[REDACTED ****]");
-      }
-      finally {
+      } finally {
         delete (Object.prototype as any).toJSON;
       }
     });
 
     it("copies __proto__ as data without changing the redaction output prototype", () => {
-      const config = { redact: [ "password" ] };
+      const config = { redact: ["password"] };
       Object.defineProperty(config, "__proto__", {
         value: { password: "secret" },
         enumerable: true,
@@ -378,7 +382,7 @@ describe("core::FaxiosError", () => {
 
       expect(Object.getPrototypeOf(json.config)).toBe(null);
       expect(
-        Object.prototype.hasOwnProperty.call(json.config, "__proto__")
+        Object.prototype.hasOwnProperty.call(json.config, "__proto__"),
       ).toBe(true);
       expect((json.config as any).__proto__.password).toBe("[REDACTED ****]");
     });
@@ -390,7 +394,7 @@ describe("core::FaxiosError", () => {
       const config = {
         auth: { username: "alice", password: "secret" },
         headers,
-        redact: [ "password", "Authorization" ],
+        redact: ["password", "Authorization"],
       };
       const error = new FaxiosError("Boom", "ECODE", config as any);
 
@@ -403,12 +407,12 @@ describe("core::FaxiosError", () => {
     it("keeps the redact array itself visible in the snapshot", () => {
       const config = {
         auth: { password: "secret" },
-        redact: [ "password" ],
+        redact: ["password"],
       };
       const error = new FaxiosError("Boom", "ECODE", config as any);
 
       // Useful for debugging — operators can see what was being redacted.
-      expect((error.toJSON().config as any).redact).toEqual([ "password" ]);
+      expect((error.toJSON().config as any).redact).toEqual(["password"]);
     });
   });
 });

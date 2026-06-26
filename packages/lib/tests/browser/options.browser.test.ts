@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import axios from "../../src/index.js";
+import faxios from "../../src/index.js";
 import type { RawFaxiosRequestHeaders } from "../../src/lib/types.js";
 
 class MockXMLHttpRequest {
@@ -47,7 +47,12 @@ class MockXMLHttpRequest {
     statusText = "OK",
     responseText = "",
     responseHeaders = "",
-  }: { status?: number; statusText?: string; responseText?: string; responseHeaders?: string; } = {}) {
+  }: {
+    status?: number;
+    statusText?: string;
+    responseText?: string;
+    responseHeaders?: string;
+  } = {}) {
     this.status = status;
     this.statusText = statusText;
     this.responseText = responseText;
@@ -58,8 +63,7 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      }
-      else if (this.onreadystatechange) {
+      } else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -69,8 +73,8 @@ class MockXMLHttpRequest {
 let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
-const startRequest = (...args: Parameters<typeof axios>) => {
-  const promise = axios(...args);
+const startRequest = (...args: Parameters<typeof faxios>) => {
+  const promise = faxios(...args);
   const request = requests.at(-1);
 
   expect(request).toBeDefined();
@@ -78,7 +82,10 @@ const startRequest = (...args: Parameters<typeof axios>) => {
   return { request: request!, promise };
 };
 
-const flushSuccess = async (request: MockXMLHttpRequest, promise: Promise<unknown>) => {
+const flushSuccess = async (
+  request: MockXMLHttpRequest,
+  promise: Promise<unknown>,
+) => {
   request.respondWith({ status: 200 });
   await promise;
 };
@@ -87,7 +94,8 @@ describe("options (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
+    window.XMLHttpRequest =
+      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
@@ -141,7 +149,7 @@ describe("options (vitest browser)", () => {
   });
 
   it("should accept base URL", async () => {
-    const instance = axios.create({
+    const instance = faxios.create({
       baseURL: "http://test.com/",
     });
 
@@ -156,7 +164,7 @@ describe("options (vitest browser)", () => {
 
   it("should warn about baseUrl", async () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-    const instance = axios.create({
+    const instance = faxios.create({
       // @ts-expect-error intentionally testing misspelled baseUrl to verify warning
       baseUrl: "http://example.com/",
     });
@@ -166,7 +174,7 @@ describe("options (vitest browser)", () => {
 
     expect(request).toBeDefined();
     expect(warnSpy).toHaveBeenCalledWith(
-      "baseUrl is likely a misspelling of baseURL"
+      "baseUrl is likely a misspelling of baseURL",
     );
     expect(request!.url).toBe("/foo");
 
@@ -174,7 +182,7 @@ describe("options (vitest browser)", () => {
   });
 
   it("should ignore base URL if request URL is absolute", async () => {
-    const instance = axios.create({
+    const instance = faxios.create({
       baseURL: "http://someurl.com/",
     });
 
@@ -188,7 +196,7 @@ describe("options (vitest browser)", () => {
   });
 
   it("should combine the URLs if base url and request url exist and allowAbsoluteUrls is false", async () => {
-    const instance = axios.create({
+    const instance = faxios.create({
       baseURL: "http://someurl.com/",
       allowAbsoluteUrls: false,
     });
@@ -203,39 +211,60 @@ describe("options (vitest browser)", () => {
   });
 
   it("should change only the baseURL of the specified instance", () => {
-    const instance1 = axios.create();
-    const instance2 = axios.create();
+    const instance1 = faxios.create();
+    const instance2 = faxios.create();
 
     instance1.defaults.baseURL = "http://instance1.example.com/";
 
     expect(instance2.defaults.baseURL).not.toBe(
-      "http://instance1.example.com/"
+      "http://instance1.example.com/",
     );
   });
 
   it("should change only the headers of the specified instance", () => {
-    const instance1 = axios.create();
-    const instance2 = axios.create();
+    const instance1 = faxios.create();
+    const instance2 = faxios.create();
 
-    (instance1.defaults.headers.common as RawFaxiosRequestHeaders).Authorization = "faketoken";
-    (instance2.defaults.headers.common as RawFaxiosRequestHeaders).Authorization = "differentfaketoken";
+    (
+      instance1.defaults.headers.common as RawFaxiosRequestHeaders
+    ).Authorization = "faketoken";
+    (
+      instance2.defaults.headers.common as RawFaxiosRequestHeaders
+    ).Authorization = "differentfaketoken";
 
-    (instance1.defaults.headers.common as RawFaxiosRequestHeaders)["Content-Type"] = "application/xml";
-    (instance2.defaults.headers.common as RawFaxiosRequestHeaders)["Content-Type"] =
-      "application/x-www-form-urlencoded";
+    (instance1.defaults.headers.common as RawFaxiosRequestHeaders)[
+      "Content-Type"
+    ] = "application/xml";
+    (instance2.defaults.headers.common as RawFaxiosRequestHeaders)[
+      "Content-Type"
+    ] = "application/x-www-form-urlencoded";
 
-    expect((axios.defaults.headers.common as RawFaxiosRequestHeaders).Authorization).toBeUndefined();
-    expect((instance1.defaults.headers.common as RawFaxiosRequestHeaders).Authorization).toBe("faketoken");
-    expect((instance2.defaults.headers.common as RawFaxiosRequestHeaders).Authorization).toBe(
-      "differentfaketoken"
-    );
+    expect(
+      (faxios.defaults.headers.common as RawFaxiosRequestHeaders).Authorization,
+    ).toBeUndefined();
+    expect(
+      (instance1.defaults.headers.common as RawFaxiosRequestHeaders)
+        .Authorization,
+    ).toBe("faketoken");
+    expect(
+      (instance2.defaults.headers.common as RawFaxiosRequestHeaders)
+        .Authorization,
+    ).toBe("differentfaketoken");
 
-    expect((axios.defaults.headers.common as RawFaxiosRequestHeaders)["Content-Type"]).toBeUndefined();
-    expect((instance1.defaults.headers.common as RawFaxiosRequestHeaders)["Content-Type"]).toBe(
-      "application/xml"
-    );
-    expect((instance2.defaults.headers.common as RawFaxiosRequestHeaders)["Content-Type"]).toBe(
-      "application/x-www-form-urlencoded"
-    );
+    expect(
+      (faxios.defaults.headers.common as RawFaxiosRequestHeaders)[
+        "Content-Type"
+      ],
+    ).toBeUndefined();
+    expect(
+      (instance1.defaults.headers.common as RawFaxiosRequestHeaders)[
+        "Content-Type"
+      ],
+    ).toBe("application/xml");
+    expect(
+      (instance2.defaults.headers.common as RawFaxiosRequestHeaders)[
+        "Content-Type"
+      ],
+    ).toBe("application/x-www-form-urlencoded");
   });
 });

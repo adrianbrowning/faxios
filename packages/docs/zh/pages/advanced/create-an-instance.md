@@ -3,7 +3,7 @@
 `axios.create()` 允许你创建一个预配置的 axios 实例。该实例与默认 `axios` 对象拥有相同的请求和响应 API，但会将你提供的配置作为每次请求的基础配置。对于任何超过单文件规模的应用，这是使用 axios 的推荐方式。
 
 ```ts
-import axios from "axios";
+import faxios from "faxios";
 
 const instance = axios.create({
   baseURL: "https://api.example.com",

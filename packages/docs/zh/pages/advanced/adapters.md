@@ -32,7 +32,7 @@ const instance = axios.create({ adapter: ["fetch", "xhr", "http"] });
 要创建自定义适配器，需要编写一个接受 `config` 对象并返回 Promise 的函数，该 Promise 需解析为有效的 axios 响应对象。
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 import { settle } from "axios/unsafe/core/settle.js";
 
 function myAdapter(config) {

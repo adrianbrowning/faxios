@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import FaxiosHeaders from "../../../lib/src/lib/core/FaxiosHeaders.js";
 import defaults from "../../../lib/src/lib/defaults/index.js";
-import axios from "../../src/index.js";
+import faxios from "../../src/index.js";
 import type { HeadersDefaults } from "../../src/lib/types.js";
 
 class MockXMLHttpRequest {
@@ -49,7 +49,12 @@ class MockXMLHttpRequest {
     statusText = "OK",
     responseText = "",
     responseHeaders = "",
-  }: { status?: number; statusText?: string; responseText?: string; responseHeaders?: string; } = {}) {
+  }: {
+    status?: number;
+    statusText?: string;
+    responseText?: string;
+    responseHeaders?: string;
+  } = {}) {
     this.status = status;
     this.statusText = statusText;
     this.responseText = responseText;
@@ -60,8 +65,7 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      }
-      else if (this.onreadystatechange) {
+      } else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -72,8 +76,12 @@ class MockXMLHttpRequest {
 
 const XSRF_COOKIE_NAME = "CUSTOM-XSRF-TOKEN";
 
-const transformRequest = (defaults.transformRequest as unknown as Array<(data: unknown, headers: FaxiosHeaders) => unknown>);
-const transformResponse = (defaults.transformResponse as Array<(data: unknown, headers?: FaxiosHeaders) => unknown>);
+const transformRequest = defaults.transformRequest as unknown as Array<
+  (data: unknown, headers: FaxiosHeaders) => unknown
+>;
+const transformResponse = defaults.transformResponse as Array<
+  (data: unknown, headers?: FaxiosHeaders) => unknown
+>;
 
 let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
@@ -86,7 +94,10 @@ const getLastRequest = (): MockXMLHttpRequest => {
   return request!;
 };
 
-const finishRequest = async (request: MockXMLHttpRequest, promise: Promise<unknown>) => {
+const finishRequest = async (
+  request: MockXMLHttpRequest,
+  promise: Promise<unknown>,
+) => {
   request.respondWith({ status: 200 });
   await promise;
 };
@@ -95,21 +106,26 @@ describe("defaults (vitest browser)", () => {
   beforeEach(() => {
     requests = [];
     OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest = MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
+    window.XMLHttpRequest =
+      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
   });
 
   afterEach(() => {
     window.XMLHttpRequest = OriginalXMLHttpRequest;
-    delete axios.defaults.baseURL;
-    delete (axios.defaults.headers as unknown as HeadersDefaults).get["X-CUSTOM-HEADER"];
-    delete (axios.defaults.headers as unknown as HeadersDefaults).post["X-CUSTOM-HEADER"];
+    delete faxios.defaults.baseURL;
+    delete (faxios.defaults.headers as unknown as HeadersDefaults).get[
+      "X-CUSTOM-HEADER"
+    ];
+    delete (faxios.defaults.headers as unknown as HeadersDefaults).post[
+      "X-CUSTOM-HEADER"
+    ];
     document.cookie = `${XSRF_COOKIE_NAME}=;expires=${new Date(Date.now() - 86400000).toUTCString()}`;
   });
 
   it("should transform request json", () => {
-    expect(
-      transformRequest[0]!({ foo: "bar" }, new FaxiosHeaders())
-    ).toBe("{\"foo\":\"bar\"}");
+    expect(transformRequest[0]!({ foo: "bar" }, new FaxiosHeaders())).toBe(
+      '{"foo":"bar"}',
+    );
   });
 
   it("should also transform request json when 'Content-Type' is 'application/json'", () => {
@@ -117,11 +133,11 @@ describe("defaults (vitest browser)", () => {
       "Content-Type": "application/json",
     });
 
-    expect(
-      transformRequest[0]!(JSON.stringify({ foo: "bar" }), headers)
-    ).toBe("{\"foo\":\"bar\"}");
-    expect(transformRequest[0]!([ 42, 43 ], headers)).toBe("[42,43]");
-    expect(transformRequest[0]!("foo", headers)).toBe("\"foo\"");
+    expect(transformRequest[0]!(JSON.stringify({ foo: "bar" }), headers)).toBe(
+      '{"foo":"bar"}',
+    );
+    expect(transformRequest[0]!([42, 43], headers)).toBe("[42,43]");
+    expect(transformRequest[0]!("foo", headers)).toBe('"foo"');
     expect(transformRequest[0]!(42, headers)).toBe("42");
     expect(transformRequest[0]!(true, headers)).toBe("true");
     expect(transformRequest[0]!(false, headers)).toBe("false");
@@ -140,12 +156,15 @@ describe("defaults (vitest browser)", () => {
 
   it("should do nothing to request string", () => {
     expect(transformRequest[0]!("foo=bar", new FaxiosHeaders())).toBe(
-      "foo=bar"
+      "foo=bar",
     );
   });
 
   it("should transform response json", () => {
-    const data = transformResponse[0]!("{\"foo\":\"bar\"}") as Record<string, unknown>;
+    const data = transformResponse[0]!('{"foo":"bar"}') as Record<
+      string,
+      unknown
+    >;
 
     expect(typeof data).toBe("object");
     expect(data.foo).toBe("bar");
@@ -156,7 +175,7 @@ describe("defaults (vitest browser)", () => {
   });
 
   it("should use global defaults config", async () => {
-    const promise = axios("/foo");
+    const promise = faxios("/foo");
     const request = getLastRequest();
 
     expect(request.url).toBe("/foo");
@@ -165,9 +184,9 @@ describe("defaults (vitest browser)", () => {
   });
 
   it("should use modified defaults config", async () => {
-    axios.defaults.baseURL = "http://example.com/";
+    faxios.defaults.baseURL = "http://example.com/";
 
-    const promise = axios("/foo");
+    const promise = faxios("/foo");
     const request = getLastRequest();
 
     expect(request.url).toBe("http://example.com/foo");
@@ -176,7 +195,7 @@ describe("defaults (vitest browser)", () => {
   });
 
   it("should use request config", async () => {
-    const promise = axios("/foo", {
+    const promise = faxios("/foo", {
       baseURL: "http://www.example.com",
     });
     const request = getLastRequest();
@@ -187,7 +206,7 @@ describe("defaults (vitest browser)", () => {
   });
 
   it("should use default config for custom instance", async () => {
-    const instance = axios.create({
+    const instance = faxios.create({
       xsrfCookieName: XSRF_COOKIE_NAME,
       xsrfHeaderName: "X-CUSTOM-XSRF-TOKEN",
     });
@@ -196,17 +215,19 @@ describe("defaults (vitest browser)", () => {
     const promise = instance.get("/foo");
     const request = getLastRequest();
 
-    expect(request.requestHeaders[instance.defaults.xsrfHeaderName as string]).toBe(
-      "foobarbaz"
-    );
+    expect(
+      request.requestHeaders[instance.defaults.xsrfHeaderName as string],
+    ).toBe("foobarbaz");
 
     await finishRequest(request, promise);
   });
 
   it("should use GET headers", async () => {
-    (axios.defaults.headers as unknown as HeadersDefaults).get["X-CUSTOM-HEADER"] = "foo";
+    (faxios.defaults.headers as unknown as HeadersDefaults).get[
+      "X-CUSTOM-HEADER"
+    ] = "foo";
 
-    const promise = axios.get("/foo");
+    const promise = faxios.get("/foo");
     const request = getLastRequest();
 
     expect(request.requestHeaders["X-CUSTOM-HEADER"]).toBe("foo");
@@ -215,9 +236,11 @@ describe("defaults (vitest browser)", () => {
   });
 
   it("should use POST headers", async () => {
-    (axios.defaults.headers as unknown as HeadersDefaults).post["X-CUSTOM-HEADER"] = "foo";
+    (faxios.defaults.headers as unknown as HeadersDefaults).post[
+      "X-CUSTOM-HEADER"
+    ] = "foo";
 
-    const promise = axios.post("/foo", {});
+    const promise = faxios.post("/foo", {});
     const request = getLastRequest();
 
     expect(request.requestHeaders["X-CUSTOM-HEADER"]).toBe("foo");
@@ -226,7 +249,7 @@ describe("defaults (vitest browser)", () => {
   });
 
   it("should use header config", async () => {
-    const instance = axios.create({
+    const instance = faxios.create({
       headers: {
         common: {
           "X-COMMON-HEADER": "commonHeaderValue",
@@ -254,15 +277,15 @@ describe("defaults (vitest browser)", () => {
         "X-GET-HEADER": "getHeaderValue",
         "X-FOO-HEADER": "fooHeaderValue",
         "X-BAR-HEADER": "barHeaderValue",
-      }).toJSON()
+      }).toJSON(),
     );
 
     await finishRequest(request, promise);
   });
 
   it("should be used by custom instance if set before instance created", async () => {
-    axios.defaults.baseURL = "http://example.org/";
-    const instance = axios.create();
+    faxios.defaults.baseURL = "http://example.org/";
+    const instance = faxios.create();
 
     const promise = instance.get("/foo");
     const request = getLastRequest();
@@ -273,8 +296,8 @@ describe("defaults (vitest browser)", () => {
   });
 
   it("should not be used by custom instance if set after instance created", async () => {
-    const instance = axios.create();
-    axios.defaults.baseURL = "http://example.org/";
+    const instance = faxios.create();
+    faxios.defaults.baseURL = "http://example.org/";
 
     const promise = instance.get("/foo/users");
     const request = getLastRequest();
@@ -285,7 +308,7 @@ describe("defaults (vitest browser)", () => {
   });
 
   it("should resistant to ReDoS attack", async () => {
-    const instance = axios.create();
+    const instance = faxios.create();
     const start = performance.now();
     const slashes = "/".repeat(100000);
     instance.defaults.baseURL = `/${slashes}bar/`;

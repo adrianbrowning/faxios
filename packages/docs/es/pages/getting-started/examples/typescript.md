@@ -5,8 +5,8 @@
 axios incluye definiciones de TypeScript de forma nativa. Puedes importar los tipos que necesites directamente desde `"axios"`:
 
 ```ts
-import axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+import faxios from "faxios";
+import type { AxiosRequestConfig, AxiosResponse, FaxiosError } from "faxios";
 ```
 
 ## Tipar una solicitud
@@ -14,7 +14,7 @@ import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 Usa un parámetro de tipo genérico en la respuesta para indicarle a TypeScript la forma que tendrán tus datos:
 
 ```ts
-import axios from "axios";
+import faxios from "faxios";
 
 type Post = {
   userId: number;
@@ -33,7 +33,7 @@ console.log(response.data.title); // TypeScript knows this is a string
 Envuelve las solicitudes en funciones con tipos de retorno explícitos para maximizar la seguridad de tipos:
 
 ```ts
-import axios, { AxiosResponse } from "axios";
+import faxios, { AxiosResponse } from "faxios";
 
 type Post = {
   userId: number;
@@ -77,8 +77,8 @@ const createPost = async (data: CreatePostBody): Promise<CreatePostResponse> => 
 Crea una instancia tipada para que la URL base y los encabezados queden definidos desde el inicio:
 
 ```ts
-import axios from "axios";
-import type { AxiosInstance } from "axios";
+import faxios from "faxios";
+import type { AxiosInstance } from "faxios";
 
 const api: AxiosInstance = axios.create({
   baseURL: "https://api.example.com",
@@ -91,8 +91,8 @@ const api: AxiosInstance = axios.create({
 Usa `InternalAxiosRequestConfig` (no `AxiosRequestConfig`) para los interceptores de solicitud en v1.x:
 
 ```ts
-import axios from "axios";
-import type { InternalAxiosRequestConfig, AxiosResponse } from "axios";
+import faxios from "faxios";
+import type { InternalAxiosRequestConfig, AxiosResponse } from "faxios";
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   config.headers.set("Authorization", `Bearer ${getToken()}`);
@@ -110,7 +110,7 @@ api.interceptors.response.use(
 Usa `axios.isAxiosError()` para acotar el tipo de un error capturado:
 
 ```ts
-import axios, { AxiosError } from "axios";
+import faxios, { FaxiosError } from "faxios";
 
 type ApiError = {
   message: string;

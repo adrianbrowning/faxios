@@ -247,7 +247,7 @@ The `maxBodyLength` property defines the maximum request body size in bytes. The
 
 ### `redact`
 
-The `redact` property is an optional array of config key names to mask when an `AxiosError` is serialized with `toJSON()`. Matching is case-insensitive and recursive across the serialized request config. Matching values are replaced with `[REDACTED ****]`.
+The `redact` property is an optional array of config key names to mask when an `FaxiosError` is serialized with `toJSON()`. Matching is case-insensitive and recursive across the serialized request config. Matching values are replaced with `[REDACTED ****]`.
 
 `redact` only affects error serialization. It does not change request data, headers, or the original config object.
 
@@ -298,7 +298,7 @@ When `socketPath` is set, the hostname and port of the request URL are ignored a
 
 ### `allowedSocketPaths` <Badge type="warning" text="Node.js only" />
 
-Restricts which socket paths may be used via `socketPath`. Accepts a string or an array of strings. When set, axios resolves the `socketPath` and compares it against each entry (also resolved); the request is rejected with `AxiosError` code `ERR_BAD_OPTION_VALUE` when there is no match. When unset (default), `socketPath` behaves as before.
+Restricts which socket paths may be used via `socketPath`. Accepts a string or an array of strings. When set, axios resolves the `socketPath` and compares it against each entry (also resolved); the request is rejected with `FaxiosError` code `ERR_BAD_OPTION_VALUE` when there is no match. When unset (default), `socketPath` behaves as before.
 
 ```js
 const client = axios.create({
@@ -398,7 +398,7 @@ The `formSerializer` option allows you to configure how plain objects are serial
 - `dots` — use dot notation instead of bracket notation
 - `metaTokens` — preserve special key endings such as `{}`
 - `indexes` — control bracket format for array keys (`null` / `false` / `true`)
-- `maxDepth` _(default: `100`)_ — maximum nesting depth before throwing `AxiosError` with code `ERR_FORM_DATA_DEPTH_EXCEEDED`. Set to `Infinity` to disable.
+- `maxDepth` _(default: `100`)_ — maximum nesting depth before throwing `FaxiosError` with code `ERR_FORM_DATA_DEPTH_EXCEEDED`. Set to `Infinity` to disable.
 
 See the [multipart/form-data](/pages/advanced/multipart-form-data-format) page for full details, and the full request config example at the end of this page.
 
@@ -438,7 +438,7 @@ The `maxRate` property defines the maximum **bandwidth** (in bytes per second) f
       // (3) indexes: true (leads to brackets with indexes).
     indexes: false,
 
-    // Maximum object nesting depth when serializing params. Throws AxiosError
+    // Maximum object nesting depth when serializing params. Throws FaxiosError
     // (ERR_FORM_DATA_DEPTH_EXCEEDED) if exceeded. Default: 100. Set to Infinity to disable.
     maxDepth: 100
 
@@ -529,7 +529,7 @@ The `maxRate` property defines the maximum **bandwidth** (in bytes per second) f
         // true - brackets with indexes
       indexes: boolean;
 
-      // Maximum object nesting depth. Throws AxiosError (ERR_FORM_DATA_DEPTH_EXCEEDED)
+      // Maximum object nesting depth. Throws FaxiosError (ERR_FORM_DATA_DEPTH_EXCEEDED)
       // if exceeded. Default: 100. Set to Infinity to disable.
       maxDepth: 100;
   },

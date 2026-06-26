@@ -102,7 +102,7 @@ await api.put(url, data, {
 也可以在组合请求头时直接使用 `AxiosHeaders` 实现：
 
 ```js
-import axios, { AxiosHeaders } from 'axios';
+import faxios, { AxiosHeaders } from 'faxios';
 
 const headers = AxiosHeaders.concat(
   { 'content-type': undefined },

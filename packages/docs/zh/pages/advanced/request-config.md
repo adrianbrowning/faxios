@@ -247,7 +247,7 @@ axios.get('/user', { withCredentials: true, withXSRFToken: true });
 
 ### `redact`
 
-`redact` 属性是一个可选的配置键名数组，用于在 `AxiosError` 通过 `toJSON()` 序列化时对匹配的键进行脱敏。匹配不区分大小写，并会在序列化后的请求配置中递归进行，命中的值会被替换为 `[REDACTED ****]`。
+`redact` 属性是一个可选的配置键名数组，用于在 `FaxiosError` 通过 `toJSON()` 序列化时对匹配的键进行脱敏。匹配不区分大小写，并会在序列化后的请求配置中递归进行，命中的值会被替换为 `[REDACTED ****]`。
 
 `redact` 仅影响错误序列化，不会修改请求数据、请求头或原始配置对象。
 
@@ -298,7 +298,7 @@ beforeRedirect: (options, { headers }) => {
 
 ### `allowedSocketPaths` <Badge type="warning" text="仅 Node.js" />
 
-限制可通过 `socketPath` 使用的套接字路径。接受一个字符串或字符串数组。设置后，axios 会解析 `socketPath` 并与每个条目（同样解析后）比较；若无匹配，请求将以 `ERR_BAD_OPTION_VALUE` 错误码的 `AxiosError` 被拒绝。未设置（默认）时，`socketPath` 行为与以往一致。
+限制可通过 `socketPath` 使用的套接字路径。接受一个字符串或字符串数组。设置后，axios 会解析 `socketPath` 并与每个条目（同样解析后）比较；若无匹配，请求将以 `ERR_BAD_OPTION_VALUE` 错误码的 `FaxiosError` 被拒绝。未设置（默认）时，`socketPath` 行为与以往一致。
 
 ```js
 const client = axios.create({
@@ -398,7 +398,7 @@ proxy: {
 - `dots` — 使用点号表示法代替方括号表示法
 - `metaTokens` — 保留特殊的键后缀（如 `{}`）
 - `indexes` — 控制数组键的方括号格式（`null` / `false` / `true`）
-- `maxDepth` _（默认：`100`）_ — 抛出 `AxiosError`（错误码 `ERR_FORM_DATA_DEPTH_EXCEEDED`）前的最大嵌套深度。设置为 `Infinity` 可禁用。
+- `maxDepth` _（默认：`100`）_ — 抛出 `FaxiosError`（错误码 `ERR_FORM_DATA_DEPTH_EXCEEDED`）前的最大嵌套深度。设置为 `Infinity` 可禁用。
 
 详见 [multipart/form-data](/pages/advanced/multipart-form-data-format) 页面以及本页末尾的完整请求配置示例。
 
@@ -438,7 +438,7 @@ proxy: {
       // (3) indexes: true（添加带索引的方括号）
     indexes: false,
 
-    // 序列化参数时的最大对象嵌套深度。超过时抛出 AxiosError
+    // 序列化参数时的最大对象嵌套深度。超过时抛出 FaxiosError
     // (ERR_FORM_DATA_DEPTH_EXCEEDED)。默认：100。设置为 Infinity 可禁用。
     maxDepth: 100
 
@@ -529,7 +529,7 @@ proxy: {
         // true - 添加带索引的方括号
       indexes: boolean;
 
-      // 最大对象嵌套深度。超过时抛出 AxiosError (ERR_FORM_DATA_DEPTH_EXCEEDED)。
+      // 最大对象嵌套深度。超过时抛出 FaxiosError (ERR_FORM_DATA_DEPTH_EXCEEDED)。
       // 默认：100。设置为 Infinity 可禁用。
       maxDepth: 100;
   },

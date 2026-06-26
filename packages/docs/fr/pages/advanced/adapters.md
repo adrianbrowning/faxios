@@ -32,7 +32,7 @@ Pour plus de détails sur l'adaptateur `fetch`, consultez la page [Adaptateur Fe
 Pour créer un adaptateur personnalisé, écrivez une fonction qui accepte un objet `config` et retourne une Promise qui se résout vers un objet de réponse axios valide.
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 import { settle } from "axios/unsafe/core/settle.js";
 
 function myAdapter(config) {

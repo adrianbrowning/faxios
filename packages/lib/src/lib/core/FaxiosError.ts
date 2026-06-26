@@ -28,13 +28,15 @@ function hasOwnOrPrototypeToJSON(source: unknown): boolean {
 // (case-insensitive) listed in `redactKeys` with REDACTED. Walks through arrays
 // and FaxiosHeaders, and short-circuits on circular references.
 function redactConfig(config: unknown, redactKeys: Array<string>): unknown {
-  const lowerKeys = new Set(redactKeys.map(k => String(k).toLowerCase()));
+  const lowerKeys = new Set(redactKeys.map((k) => String(k).toLowerCase()));
   const seen: Array<object> = [];
 
   const visitObject = (source: object): Record<string, unknown> => {
     const result: Record<string, unknown> = Object.create(null);
-    for (const [ key, value ] of Object.entries(source)) {
-      const reducedValue = lowerKeys.has(key.toLowerCase()) ? REDACTED : visit(value);
+    for (const [key, value] of Object.entries(source)) {
+      const reducedValue = lowerKeys.has(key.toLowerCase())
+        ? REDACTED
+        : visit(value);
       if (!utils.isUndefined(reducedValue)) {
         result[key] = reducedValue;
       }
@@ -62,8 +64,7 @@ function redactConfig(config: unknown, redactKeys: Array<string>): unknown {
           (result as Array<unknown>)[i] = reducedValue;
         }
       });
-    }
-    else {
+    } else {
       if (!utils.isPlainObject(source) && hasOwnOrPrototypeToJSON(source)) {
         seen.pop();
         return source;
@@ -111,30 +112,30 @@ class FaxiosError extends Error {
   static readonly ERR_FORM_DATA_DEPTH_EXCEEDED = "ERR_FORM_DATA_DEPTH_EXCEEDED";
 
   static from(
-    error: Error & { code?: string; status?: number; },
+    error: Error & { code?: string; status?: number },
     code?: string,
     config?: InternalFaxiosRequestConfig,
     request?: unknown,
     response?: FaxiosResponse,
-    customProps?: Record<string, unknown>
+    customProps?: Record<string, unknown>,
   ): FaxiosError {
-    const axiosError = new FaxiosError(
+    const faxiosError = new FaxiosError(
       error.message,
       code || error.code,
       config,
       request,
-      response
+      response,
     );
-    axiosError.cause = error;
-    axiosError.name = error.name;
+    faxiosError.cause = error;
+    faxiosError.name = error.name;
 
     // Preserve status from the original error if not already set from response
-    if (error.status != null && axiosError.status == null) {
-      axiosError.status = error.status;
+    if (error.status != null && faxiosError.status == null) {
+      faxiosError.status = error.status;
     }
 
-    customProps && Object.assign(axiosError, customProps);
-    return axiosError;
+    customProps && Object.assign(faxiosError, customProps);
+    return faxiosError;
   }
 
   /**
@@ -153,7 +154,7 @@ class FaxiosError extends Error {
     code?: string,
     config?: InternalFaxiosRequestConfig,
     request?: unknown,
-    response?: FaxiosResponse
+    response?: FaxiosResponse,
   ) {
     super(message);
 
@@ -168,7 +169,7 @@ class FaxiosError extends Error {
         enumerable: true,
         writable: true,
         configurable: true,
-      })
+      }),
     );
 
     this.name = "FaxiosError";

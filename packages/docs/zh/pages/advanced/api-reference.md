@@ -38,13 +38,13 @@ request(configOrUrl: string | AxiosRequestConfig<D>, config: AxiosRequestConfig<
 
 ## 函数
 
-### `AxiosError`
+### `FaxiosError`
 
-`AxiosError` 类是 HTTP 请求失败时抛出的错误类，继承自 `Error` 类并添加了额外属性。
+`FaxiosError` 类是 HTTP 请求失败时抛出的错误类，继承自 `Error` 类并添加了额外属性。
 
 #### `constructor`
 
-创建一个新的 `AxiosError` 实例，构造函数接受可选的 message、code、config、request 和 response 作为参数。
+创建一个新的 `FaxiosError` 实例，构造函数接受可选的 message、code、config、request 和 response 作为参数。
 
 ```ts
 constructor(message?: string, code?: string, config?: InternalAxiosRequestConfig<D>, request?: any, response?: AxiosResponse<T, D>);
@@ -52,7 +52,7 @@ constructor(message?: string, code?: string, config?: InternalAxiosRequestConfig
 
 #### `properties`
 
-`AxiosError` 类提供以下属性：
+`FaxiosError` 类提供以下属性：
 
 ```ts
 // 配置实例。
@@ -67,7 +67,7 @@ request?: any;
 // 响应实例。
 response?: AxiosResponse<T, D>;
 
-// 表示该错误是否为 AxiosError 的布尔值。
+// 表示该错误是否为 FaxiosError 的布尔值。
 isAxiosError: boolean;
 
 // 错误状态码。
@@ -162,9 +162,9 @@ toJSON(asStrings: true): Record<string, string>;
 toJSON(asStrings?: false): Record<string, string | string[]>;
 ```
 
-### `CanceledError` <Badge type="tip" text="继承自 AxiosError" />
+### `CanceledError` <Badge type="tip" text="继承自 FaxiosError" />
 
-`CanceledError` 类是 HTTP 请求被取消时抛出的错误类，继承自 `AxiosError` 类。
+`CanceledError` 类是 HTTP 请求被取消时抛出的错误类，继承自 `FaxiosError` 类。
 
 ### `Cancel` <Badge type="tip" text="CanceledError 的别名" />
 
@@ -179,7 +179,7 @@ isCancel<T = any>(value: any): value is CanceledError<T>;
 ```
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 const controller = new AbortController();
 
@@ -196,14 +196,14 @@ controller.abort("User navigated away");
 
 ### `isAxiosError`
 
-检查某个错误是否为 `AxiosError` 的函数。在 `catch` 块中使用此函数，可安全访问 axios 特有的错误属性，如 `error.response` 和 `error.config`。
+检查某个错误是否为 `FaxiosError` 的函数。在 `catch` 块中使用此函数，可安全访问 axios 特有的错误属性，如 `error.response` 和 `error.config`。
 
 ```ts
-isAxiosError(value: any): value is AxiosError;
+isAxiosError(value: any): value is FaxiosError;
 ```
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 
 try {
   await axios.get("/api/resource");
@@ -241,7 +241,7 @@ toFormData(sourceObj: object, formData?: FormData, options?: FormSerializerOptio
 ```
 
 ```js
-import { toFormData } from "axios";
+import { toFormData } from "faxios";
 
 const data = { name: "Jay", avatar: fileBlob };
 const form = toFormData(data);
@@ -258,7 +258,7 @@ formToJSON(form: FormData): object;
 ```
 
 ```js
-import { formToJSON } from "axios";
+import { formToJSON } from "faxios";
 
 const form = new FormData();
 form.append("name", "Jay");
@@ -277,7 +277,7 @@ getAdapter(adapters: string | string[]): AxiosAdapter;
 ```
 
 ```js
-import { getAdapter } from "axios";
+import { getAdapter } from "faxios";
 
 // 显式获取 fetch 适配器
 const fetchAdapter = getAdapter("fetch");
@@ -295,7 +295,7 @@ mergeConfig<T>(config1: AxiosRequestConfig<T>, config2: AxiosRequestConfig<T>): 
 ```
 
 ```js
-import { mergeConfig } from "axios";
+import { mergeConfig } from "faxios";
 
 const base = { baseURL: "https://api.example.com", timeout: 5000 };
 const override = { timeout: 10000, headers: { "X-Custom": "value" } };
@@ -311,7 +311,7 @@ const merged = mergeConfig(base, override);
 包含 HTTP 状态码命名常量的对象，可用于编写更具可读性的条件判断，避免直接使用数字字面量。
 
 ```js
-import axios, { HttpStatusCode } from "axios";
+import faxios, { HttpStatusCode } from "faxios";
 
 try {
   const response = await axios.get("/api/resource");

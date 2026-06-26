@@ -1,4 +1,4 @@
-import axios from "axios";
+import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
 
 const env = (fetch: typeof globalThis.fetch) => ({
@@ -16,18 +16,18 @@ describe("errors", () => {
         headers: { "Content-Type": "application/json" },
       });
 
-    const err = await axios
+    const err = await faxios
       .get("https://example.com/missing", {
         adapter: "fetch",
         env: env(fetch),
       })
       .catch((e: any) => e);
 
-    expect(axios.isFaxiosError(err)).toBe(true);
+    expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.response.status).toBe(404);
   });
 
-  test("axios.isFaxiosError returns false for a plain Error", () => {
-    expect(axios.isFaxiosError(new Error("plain"))).toBe(false);
+  test("faxios.isFaxiosError returns false for a plain Error", () => {
+    expect(faxios.isFaxiosError(new Error("plain"))).toBe(false);
   });
 });

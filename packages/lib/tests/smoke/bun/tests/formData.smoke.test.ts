@@ -1,13 +1,19 @@
 import { PassThrough, Writable } from "node:stream";
-import axios from "axios";
+import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
 import FormDataPackage from "form-data";
 
 const createTransportMock = (
-  responseFactory?: (body: Buffer, options: Record<string, any>) => Record<string, any>
+  responseFactory?: (
+    body: Buffer,
+    options: Record<string, any>,
+  ) => Record<string, any>,
 ) => {
   const transport = {
-    request(options: Record<string, any>, onResponse: (res: PassThrough) => void) {
+    request(
+      options: Record<string, any>,
+      onResponse: (res: PassThrough) => void,
+    ) {
       const chunks: Array<Buffer> = [];
 
       const req = new Writable({
@@ -35,7 +41,9 @@ const createTransportMock = (
         const res = new PassThrough() as PassThrough & Record<string, any>;
         res.statusCode = response.statusCode ?? 200;
         res.statusMessage = response.statusMessage ?? "OK";
-        res.headers = response.headers ?? { "content-type": "application/json" };
+        res.headers = response.headers ?? {
+          "content-type": "application/json",
+        };
         res.req = req;
 
         onResponse(res);
@@ -51,7 +59,8 @@ const createTransportMock = (
   return { transport };
 };
 
-const bodyAsUtf8 = (value: unknown) => Buffer.isBuffer(value) ? value.toString("utf8") : String(value);
+const bodyAsUtf8 = (value: unknown) =>
+  Buffer.isBuffer(value) ? value.toString("utf8") : String(value);
 
 describe("form data", () => {
   test("native Bun FormData body produces multipart/form-data content-type", async () => {
@@ -62,21 +71,22 @@ describe("form data", () => {
     const { transport } = createTransportMock((body, options) => ({
       body: JSON.stringify({
         contentType:
-          options.headers && (options.headers["Content-Type"] || options.headers["content-type"]),
+          options.headers &&
+          (options.headers["Content-Type"] || options.headers["content-type"]),
         payload: bodyAsUtf8(body),
       }),
     }));
 
-    const response = await axios.post("http://example.com/form", form, {
+    const response = await faxios.post("http://example.com/form", form, {
       adapter: "http",
       proxy: false,
       transport,
     });
 
     expect(response.data.contentType).toContain("multipart/form-data");
-    expect(response.data.payload).toContain("name=\"username\"");
+    expect(response.data.payload).toContain('name="username"');
     expect(response.data.payload).toContain("janedoe");
-    expect(response.data.payload).toContain("name=\"role\"");
+    expect(response.data.payload).toContain('name="role"');
     expect(response.data.payload).toContain("admin");
   });
 
@@ -88,21 +98,26 @@ describe("form data", () => {
     const { transport } = createTransportMock((body, options) => ({
       body: JSON.stringify({
         contentType:
-          options.headers && (options.headers["Content-Type"] || options.headers["content-type"]),
+          options.headers &&
+          (options.headers["Content-Type"] || options.headers["content-type"]),
         payload: bodyAsUtf8(body),
       }),
     }));
 
-    const response = await axios.post("http://example.com/npm-form-data", form as any, {
-      adapter: "http",
-      proxy: false,
-      transport,
-    });
+    const response = await faxios.post(
+      "http://example.com/npm-form-data",
+      form as any,
+      {
+        adapter: "http",
+        proxy: false,
+        transport,
+      },
+    );
 
     expect(response.data.contentType).toContain("multipart/form-data");
-    expect(response.data.payload).toContain("name=\"project\"");
+    expect(response.data.payload).toContain('name="project"');
     expect(response.data.payload).toContain("axios");
-    expect(response.data.payload).toContain("name=\"mode\"");
+    expect(response.data.payload).toContain('name="mode"');
     expect(response.data.payload).toContain("compat");
   });
 });

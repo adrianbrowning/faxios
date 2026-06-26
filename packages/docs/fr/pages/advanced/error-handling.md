@@ -5,7 +5,7 @@ axios peut lever de nombreux types d'erreurs différents. Certaines de ces erreu
 | Propriété | Définition                                                                                                                                    |
 | --------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | message   | Un résumé rapide du message d'erreur et du statut avec lequel elle a échoué.                                                                  |
-| name      | Définit l'origine de l'erreur. Pour axios, ce sera toujours une `AxiosError`.                                                                 |
+| name      | Définit l'origine de l'erreur. Pour axios, ce sera toujours une `FaxiosError`.                                                                 |
 | stack     | Fournit la trace de pile de l'erreur.                                                                                                         |
 | config    | Un objet de configuration axios avec les configurations d'instance spécifiques définies par l'utilisateur au moment de la requête.            |
 | code      | Représente une erreur identifiée par axios. Le tableau ci-dessous liste les définitions spécifiques des erreurs internes d'axios.             |
@@ -72,7 +72,7 @@ axios.get("/user/12345").catch(function (error) {
 });
 ```
 
-Pour éviter de journaliser des secrets depuis `error.config`, passez un tableau `redact` dans la configuration de la requête. Les clés de configuration correspondantes sont masquées de manière insensible à la casse à n'importe quelle profondeur lorsque `AxiosError#toJSON()` est appelée.
+Pour éviter de journaliser des secrets depuis `error.config`, passez un tableau `redact` dans la configuration de la requête. Les clés de configuration correspondantes sont masquées de manière insensible à la casse à n'importe quelle profondeur lorsque `FaxiosError#toJSON()` est appelée.
 
 ```js
 axios.get("/user/12345", {

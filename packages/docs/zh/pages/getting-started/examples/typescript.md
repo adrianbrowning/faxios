@@ -5,8 +5,8 @@
 axios 内置了 TypeScript 类型定义，你可以直接从 `"axios"` 导入所需的类型：
 
 ```ts
-import axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+import faxios from "faxios";
+import type { AxiosRequestConfig, AxiosResponse, FaxiosError } from "faxios";
 ```
 
 ## 为请求标注类型
@@ -14,7 +14,7 @@ import type { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 在响应上使用泛型参数，告知 TypeScript 数据的具体结构：
 
 ```ts
-import axios from "axios";
+import faxios from "faxios";
 
 type Post = {
   userId: number;
@@ -33,7 +33,7 @@ console.log(response.data.title); // TypeScript 知道这是一个字符串
 将请求封装在函数中，并明确声明返回类型，以获得最佳的类型安全性：
 
 ```ts
-import axios, { AxiosResponse } from "axios";
+import faxios, { AxiosResponse } from "faxios";
 
 type Post = {
   userId: number;
@@ -77,8 +77,8 @@ const createPost = async (data: CreatePostBody): Promise<CreatePostResponse> => 
 创建一个带类型的实例，将 baseURL 和请求头内置其中：
 
 ```ts
-import axios from "axios";
-import type { AxiosInstance } from "axios";
+import faxios from "faxios";
+import type { AxiosInstance } from "faxios";
 
 const api: AxiosInstance = axios.create({
   baseURL: "https://api.example.com",
@@ -91,8 +91,8 @@ const api: AxiosInstance = axios.create({
 在 v1.x 中，请求拦截器应使用 `InternalAxiosRequestConfig`（而非 `AxiosRequestConfig`）：
 
 ```ts
-import axios from "axios";
-import type { InternalAxiosRequestConfig, AxiosResponse } from "axios";
+import faxios from "faxios";
+import type { InternalAxiosRequestConfig, AxiosResponse } from "faxios";
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   config.headers.set("Authorization", `Bearer ${getToken()}`);
@@ -110,7 +110,7 @@ api.interceptors.response.use(
 使用 `axios.isAxiosError()` 对捕获的错误进行类型收窄：
 
 ```ts
-import axios, { AxiosError } from "axios";
+import faxios, { FaxiosError } from "faxios";
 
 type ApiError = {
   message: string;

@@ -26,7 +26,7 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Source:** `PRE_RELEASE_CHANGELOG.md` Bug Fixes, #10900, closes #7315.
 - **Status:** Skipped.
 - **Docs targets:** None beyond release notes.
-- **Required content:** No API documentation update is needed because this changes handling for invalid URL input without adding or changing request config, types, or public APIs. The release note should mention that axios now throws `AxiosError` with `ERR_INVALID_URL` for malformed HTTP(S) URLs such as `https:example.com` or `http:/example.com` instead of allowing platform URL normalization.
+- **Required content:** No API documentation update is needed because this changes handling for invalid URL input without adding or changing request config, types, or public APIs. The release note should mention that axios now throws `FaxiosError` with `ERR_INVALID_URL` for malformed HTTP(S) URLs such as `https:example.com` or `http:/example.com` instead of allowing platform URL normalization.
 - **Examples:** None.
 - **Notes:** Treat as a bug/security-hardening release note, not a request-config documentation change.
 

@@ -1,4 +1,4 @@
-import axios from "axios";
+import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
 
 const env = (fetch: typeof globalThis.fetch) => ({
@@ -29,10 +29,10 @@ describe("progress", () => {
       });
     };
 
-    const response = await axios.get("https://example.com/download", {
+    const response = await faxios.get("https://example.com/download", {
       adapter: "fetch",
       responseType: "text",
-      onDownloadProgress: ({ loaded }: { loaded: number; }) => {
+      onDownloadProgress: ({ loaded }: { loaded: number }) => {
         samples.push(loaded);
       },
       env: env(fetch),
@@ -40,6 +40,6 @@ describe("progress", () => {
 
     expect(response.data).toBe("abcd");
     expect(samples.length).toBeGreaterThan(0);
-    expect(samples.some(loaded => loaded > 0)).toBe(true);
+    expect(samples.some((loaded) => loaded > 0)).toBe(true);
   });
 });

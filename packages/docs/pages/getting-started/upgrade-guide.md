@@ -9,8 +9,8 @@ This guide is intended to help you upgrade your project from one version of the 
 In v1.x, the import statement has been changed to use the `default` export. This means that you will need to update your import statements to use the `default` export.
 
 ```diff
-- import { axios } from "axios";
-+ import axios from "axios";
+- import { axios } from "faxios";
++ import faxios from "faxios";
 ```
 
 ### Changes to the interceptor system

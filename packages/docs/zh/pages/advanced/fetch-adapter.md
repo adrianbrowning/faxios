@@ -3,7 +3,7 @@
 `fetch` 适配器是我们在 1.7.0 版本中引入的新适配器，使 axios 能够使用 `fetch` API，兼顾两者的优势。默认情况下，当构建中 `xhr` 和 `http` 适配器不可用，或当前环境不支持时，会使用 `fetch`。若要将其作为默认适配器，必须在创建 axios 实例时通过 `adapter` 选项显式指定。
 
 ```js
-import axios from 'axios';
+import faxios from 'faxios';
 
 const instance = axios.create({
   adapter: 'fetch',
@@ -48,7 +48,7 @@ const instance = axios.create({
 
 ```js
 import { fetch } from '@tauri-apps/plugin-http';
-import axios from 'axios';
+import faxios from 'faxios';
 
 const instance = axios.create({
   adapter: 'fetch',

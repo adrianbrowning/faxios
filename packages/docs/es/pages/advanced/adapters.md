@@ -32,7 +32,7 @@ Para más detalles sobre el adaptador `fetch`, consulta la página del [Adaptado
 Para crear un adaptador personalizado, escribe una función que acepte un objeto `config` y devuelva una Promise que se resuelva en un objeto de respuesta de axios válido.
 
 ```js
-import axios from "axios";
+import faxios from "faxios";
 import { settle } from "axios/unsafe/core/settle.js";
 
 function myAdapter(config) {
