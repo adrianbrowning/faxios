@@ -17,9 +17,9 @@ describe("regression", () => {
     describe("4999", () => {
       // Depends on network: https://postman-echo.com
       it("should not fail with query parsing", async () => {
-        const { data } = (await faxios.get(
-          "https://postman-echo.com/get?foo1=bar1&foo2=bar2"
-        ));
+        const { data } = await faxios.get<{
+          args: { foo1: string; foo2: string; };
+        }>("https://postman-echo.com/get?foo1=bar1&foo2=bar2");
 
         assert.strictEqual(data.args.foo1, "bar1");
         assert.strictEqual(data.args.foo2, "bar2");
@@ -178,7 +178,10 @@ describe("regression", () => {
     });
 
     it("obeys proxy settings when following redirects", async () => {
-      const response = (await faxios({
+      const response = await faxios<{
+        msg: string;
+        headers: Record<string, string>;
+      }>({
         method: "get",
         url: "http://www.google.com/",
         proxy: {
@@ -189,7 +192,7 @@ describe("regression", () => {
             password: "password",
           },
         },
-      }));
+      });
 
       assert.strictEqual(fail, false);
       assert.strictEqual(response.data.msg, "Protected");
