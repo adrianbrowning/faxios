@@ -16,7 +16,7 @@ The rules below are a Copilot-facing subset of the load-bearing safety guarantee
 
 ## Architecture in one screen
 
-- `lib/core/` — domain logic: `Axios`, `AxiosError`, `AxiosHeaders`, `InterceptorManager`, config merge, request dispatch.
+- `lib/core/` — domain logic: `Axios`, `FaxiosError`, `AxiosHeaders`, `InterceptorManager`, config merge, request dispatch.
 - `lib/adapters/` — I/O: `xhr.js`, `http.js`, `fetch.js`. Default preference `['xhr', 'http', 'fetch']`, picked by capability detection in `lib/adapters/adapters.js`. Never branch on environment name.
 - `lib/platform/` — Node by default; browser builds alias to `lib/platform/browser`.
 - `lib/helpers/` — generic, reusable utilities; no axios-specific lifecycle logic here.
@@ -24,9 +24,9 @@ The rules below are a Copilot-facing subset of the load-bearing safety guarantee
 
 ## Error handling
 
-- Throw `AxiosError(message, code, config, request, response)` for axios-originated failures; never raw `Error`.
-- Wrap third-party errors with `AxiosError.from(error, code, config, request, response)`.
-- Use a code from `lib/core/AxiosError.js` (`ERR_NETWORK`, `ETIMEDOUT`, `ECONNABORTED`, `ERR_CANCELED`, `ERR_BAD_REQUEST`, `ERR_BAD_RESPONSE`, `ERR_FR_TOO_MANY_REDIRECTS`, `ERR_FORM_DATA_DEPTH_EXCEEDED`, `ERR_INVALID_URL`, `ERR_BAD_OPTION`, `ERR_BAD_OPTION_VALUE`, `ERR_NOT_SUPPORT`, `ERR_DEPRECATED`, `ECONNREFUSED`).
+- Throw `FaxiosError(message, code, config, request, response)` for axios-originated failures; never raw `Error`.
+- Wrap third-party errors with `FaxiosError.from(error, code, config, request, response)`.
+- Use a code from `lib/core/FaxiosError.js` (`ERR_NETWORK`, `ETIMEDOUT`, `ECONNABORTED`, `ERR_CANCELED`, `ERR_BAD_REQUEST`, `ERR_BAD_RESPONSE`, `ERR_FR_TOO_MANY_REDIRECTS`, `ERR_FORM_DATA_DEPTH_EXCEEDED`, `ERR_INVALID_URL`, `ERR_BAD_OPTION`, `ERR_BAD_OPTION_VALUE`, `ERR_NOT_SUPPORT`, `ERR_DEPRECATED`, `ECONNREFUSED`).
 
 ## Interceptor order
 
