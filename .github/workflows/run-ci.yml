@@ -42,7 +42,7 @@ jobs:
         run: pnpm run build
 
       - name: Install Playwright with deps
-        working-directory: packages/lib
+        working-directory: packages/tests
         run: pnpm exec playwright install --with-deps
 
       - name: Run unit tests
@@ -103,15 +103,15 @@ jobs:
           path: artifacts
 
       - name: Install ESM smoke test dependencies
-        working-directory: tests/smoke/esm
-        run: pnpm install --ignore-scripts
+        working-directory: packages/tests/smoke/esm
+        run: pnpm install --ignore-workspace --ignore-scripts
 
       - name: Install packed faxios
-        working-directory: tests/smoke/esm
-        run: pnpm add --ignore-scripts ../../../artifacts/faxios-*.tgz
+        working-directory: packages/tests/smoke/esm
+        run: pnpm add --ignore-workspace --ignore-scripts ../../../../artifacts/faxios-*.tgz
 
       - name: Run ESM smoke tests
-        working-directory: tests/smoke/esm
+        working-directory: packages/tests/smoke/esm
         run: pnpm run test:smoke:esm:vitest
 
   esm-module-tests:
@@ -146,15 +146,15 @@ jobs:
           path: artifacts
 
       - name: Install ESM module test dependencies
-        working-directory: tests/module/esm
-        run: pnpm install --ignore-scripts
+        working-directory: packages/tests/module/esm
+        run: pnpm install --ignore-workspace --ignore-scripts
 
       - name: Install packed faxios
-        working-directory: tests/module/esm
-        run: pnpm add --ignore-scripts ../../../artifacts/faxios-*.tgz
+        working-directory: packages/tests/module/esm
+        run: pnpm add --ignore-workspace --ignore-scripts ../../../../artifacts/faxios-*.tgz
 
       - name: Run ESM module tests
-        working-directory: tests/module/esm
+        working-directory: packages/tests/module/esm
         run: pnpm run test:module:esm
 
   bun-smoke-tests:
@@ -185,11 +185,11 @@ jobs:
         run: |
           mkdir -p "$BUN_INSTALL_CACHE_DIR"
           mv artifacts/faxios-*.tgz artifacts/faxios.tgz
-          cd tests/smoke/bun
-          bun add file:../../../artifacts/faxios.tgz
+          cd packages/tests/smoke/bun
+          bun add file:../../../../artifacts/faxios.tgz
 
       - name: Run Bun smoke tests
-        working-directory: tests/smoke/bun
+        working-directory: packages/tests/smoke/bun
         run: bun test
 
   deno-smoke-tests:
@@ -217,9 +217,9 @@ jobs:
         run: mkdir -p packages/lib/dist && tar -xzf artifacts/faxios-*.tgz -C artifacts && cp -R artifacts/package/dist/. ./packages/lib/dist
 
       - name: Install Deno smoke test dependencies
-        working-directory: tests/smoke/deno
+        working-directory: packages/tests/smoke/deno
         run: deno install
 
       - name: Run Deno smoke tests
-        working-directory: tests/smoke/deno
+        working-directory: packages/tests/smoke/deno
         run: deno task test

@@ -1,0 +1,17 @@
+{
+  "extends": "@gingacodemonkey/config/tsc/no-dom/library",
+  "compilerOptions": {
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "noEmit": true,
+    "incremental": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": false,
+    "paths": {
+      "#src/*": ["../../lib/src/*"]
+    }
+  },
+  "include": ["./**/*.ts", "../setup/browser.setup.ts"],
+  "exclude": ["node_modules"]
+}

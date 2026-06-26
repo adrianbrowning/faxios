@@ -4,19 +4,26 @@
       "entry": [
         "gulpfile.js",
         "webpack.config.js",
-        "scripts/**/*.js",
-        "tests/**/*.{js,ts,cjs,mjs}"
+        "scripts/**/*.js"
       ],
       "project": ["**/*.{js,ts,cjs,mjs,mts}"],
       "ignore": [
-        "tests/module/**",
-        "tests/smoke/**",
         "docs/**",
         "src/lib/platform/browser/**",
         "src/lib/platform/node/classes/**",
         "src/lib/env/classes/**",
         "src/lib/helpers/null.ts",
         "src/lib/helpers/deprecatedMethod.ts"
+      ]
+    },
+    "packages/tests": {
+      "entry": [
+        "**/*.{js,ts,cjs,mjs}"
+      ],
+      "project": ["**/*.{js,ts,cjs,mjs,mts}"],
+      "ignore": [
+        "module/**",
+        "smoke/**"
       ]
     },
     "packages/docs": {
@@ -41,7 +48,7 @@
       "ignore": [".sandcastle/**"]
     }
   },
-  "ignoreBinaries": ["playwright", "diff"],
+  "ignoreBinaries": ["diff"],
   "ignoreDependencies": [
     "faxios",
     "@babel/preset-env",
