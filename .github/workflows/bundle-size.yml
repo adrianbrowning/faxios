@@ -36,7 +36,7 @@ jobs:
         run: pnpm --filter faxios run build
 
       - name: Compare bundle size
-        uses: axios/bundle-size@6940d767de28b002599d1ab36cc04748de2c49e7 # 0.2.0
+        uses: faxios/bundle-size@6940d767de28b002599d1ab36cc04748de2c49e7 # 0.2.0
         with:
           path: './packages/lib'
           package-name: faxios

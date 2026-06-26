@@ -2,12 +2,12 @@
 <html>
 
 <head>
-  <title>axios - post example</title>
+  <title>faxios - post example</title>
   <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
 </head>
 
 <body class="container">
-  <h1>axios.post</h1>
+  <h1>faxios.post</h1>
 
   <form role="form" class="form" onsubmit="return false;">
     <div class="form-group">
@@ -19,14 +19,14 @@
 
   <div id="output" class="container"></div>
 
-  <script src="/axios.min.js"></script>
+  <script src="/faxios.min.js"></script>
   <script>
     (function () {
       var output = document.getElementById('output');
       document.getElementById('post').onclick = function () {
         var data = document.getElementById('data').value;
 
-        axios.post('/post/server', JSON.parse(data))
+        faxios.post('/post/server', JSON.parse(data))
           .then(function (res) {
             output.className = 'container';
             output.innerHTML = res.data;

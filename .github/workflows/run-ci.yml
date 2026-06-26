@@ -213,7 +213,7 @@ jobs:
           name: faxios-tarball
           path: artifacts
 
-      - name: Prepare packed axios dist
+      - name: Prepare packed faxios dist
         run: mkdir -p packages/lib/dist && tar -xzf artifacts/faxios-*.tgz -C artifacts && cp -R artifacts/package/dist/. ./packages/lib/dist
 
       - name: Install Deno smoke test dependencies

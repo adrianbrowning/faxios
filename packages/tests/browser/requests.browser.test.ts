@@ -334,7 +334,7 @@ describe("requests (vitest browser)", () => {
     await expect(promise).resolves.toBeDefined();
   });
 
-  // https://github.com/axios/axios/issues/6688
+  // https://github.com/faxios/faxios/issues/6688
   it("should reject when validateStatus is undefined and the transitional option is disabled", async () => {
     const { request, promise } = startRequest("/foo", {
       validateStatus: undefined,
@@ -351,7 +351,7 @@ describe("requests (vitest browser)", () => {
     expect(reason.response.status).toBe(500);
   });
 
-  // https://github.com/axios/axios/issues/378
+  // https://github.com/faxios/faxios/issues/378
   it("should return JSON when rejecting", async () => {
     const { request, promise } = startRequest("/api/account/signup", {
       method: "post",

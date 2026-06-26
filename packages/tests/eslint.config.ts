@@ -69,7 +69,7 @@ export const extraRules: Array<Linter.Config> = [
   {
     files: [
       "browser/headers.browser.test.ts",
-      "unit/axios.test.ts",
+      "unit/faxios.test.ts",
     ],
     rules: {
       "vitest/expect-expect": [

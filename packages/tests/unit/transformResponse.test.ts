@@ -56,7 +56,7 @@ describe("transformResponse", () => {
     });
 
     it("attaches response to FaxiosError so error.status and error.response are available", () => {
-      // Regression test for https://github.com/axios/axios/issues/7224
+      // Regression test for https://github.com/faxios/faxios/issues/7224
       // When JSON.parse fails in strict mode, the thrown FaxiosError must carry
       // the original response so callers can inspect error.status and
       // error.response without having to re-examine the raw response.

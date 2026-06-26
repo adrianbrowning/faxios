@@ -92,7 +92,7 @@ describe("form data", () => {
 
   test("npm form-data package instance is serialized correctly", async () => {
     const form = new FormDataPackage();
-    form.append("project", "axios");
+    form.append("project", "faxios");
     form.append("mode", "compat");
 
     const { transport } = createTransportMock((body, options) => ({
@@ -116,7 +116,7 @@ describe("form data", () => {
 
     expect(response.data.contentType).toContain("multipart/form-data");
     expect(response.data.payload).toContain("name=\"project\"");
-    expect(response.data.payload).toContain("axios");
+    expect(response.data.payload).toContain("faxios");
     expect(response.data.payload).toContain("name=\"mode\"");
     expect(response.data.payload).toContain("compat");
   });

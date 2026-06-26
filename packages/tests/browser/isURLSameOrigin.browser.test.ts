@@ -8,6 +8,6 @@ describe("helpers::isURLSameOrigin (vitest browser)", () => {
   });
 
   it("detects different origin", () => {
-    expect(isURLSameOrigin("https://github.com/axios/axios")).toBe(false);
+    expect(isURLSameOrigin("https://github.com/faxios/faxios")).toBe(false);
   });
 });

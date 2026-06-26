@@ -7,14 +7,14 @@ else {
   console.warn(`[GITHUB_TOKEN is not defined]`);
 }
 
-const defaultTransform = axios.defaults.transformRequest;
+const defaultTransform = faxios.defaults.transformRequest;
 
-export default axios.create({
+export default faxios.create({
   transformRequest: [
     defaultTransform[0],
     function (data) {
       console.log(
-        `[${this.method.toUpperCase()}] Request [${new URL(axios.getUri(this)).pathname}]`
+        `[${this.method.toUpperCase()}] Request [${new URL(faxios.getUri(this)).pathname}]`
       );
 
       return data;

@@ -8,7 +8,7 @@ function generateConfig(name) {
       path: __dirname + "/dist/",
       filename: name + ".js",
       sourceMapFilename: name + ".map",
-      library: "axios",
+      library: "faxios",
       libraryTarget: "umd",
       globalObject: "this",
     },
@@ -19,7 +19,7 @@ function generateConfig(name) {
   return config;
 }
 
-[ "axios", "axios.min" ].forEach(function (key) {
+[ "faxios", "faxios.min" ].forEach(function (key) {
   config[key] = generateConfig(key);
 });
 

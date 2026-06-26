@@ -1,6 +1,6 @@
 <!--
-Before opening: please search existing issues to avoid duplicates, and confirm the bug reproduces on the latest axios release.
-For usage questions, please use Stack Overflow (https://stackoverflow.com/questions/tagged/axios) instead.
+Before opening: please search existing issues to avoid duplicates, and confirm the bug reproduces on the latest faxios release.
+For usage questions, please use Stack Overflow (https://stackoverflow.com/questions/tagged/faxios) instead.
 -->
 
 ## Describe the issue
@@ -25,7 +25,7 @@ What actually happened (include error messages or stack traces if relevant).
 
 ## Environment
 
-- Axios version:
+- faxios version:
 - Adapter: <!-- xhr | http | fetch -->
 - Runtime: <!-- e.g. Node 20.11, Chrome 124, React Native 0.74, Bun 1.1, Deno 1.44 -->
 - OS:

@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>axios - abort controller example</title>
+  <title>faxios - abort controller example</title>
   <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
   <style>
     .status {
@@ -12,7 +12,7 @@
 </head>
 
 <body class="container">
-  <h1>axios.AbortController</h1>
+  <h1>faxios.AbortController</h1>
 
   <div class="row" style="margin-top: 20px;">
     <div class="col-md-12">
@@ -38,7 +38,7 @@
     </div>
   </div>
 
-  <script src="/axios.min.js"></script>
+  <script src="/faxios.min.js"></script>
   <script>
     // -----------------------------------------------------------------------
     // 1. Single Request Cancellation
@@ -57,14 +57,14 @@
       cancelBtn.disabled = false;
       singleStatus.innerHTML = '<span class="text-info">Request pending... (3s delay)</span>';
 
-      axios.get('/abort-controller/server?delay=3000', {
+      faxios.get('/abort-controller/server?delay=3000', {
         signal: controller.signal
       })
         .then(function (response) {
           singleStatus.innerHTML = '<span class="text-success">' + response.data.message + '</span>';
         })
         .catch(function (err) {
-          if (axios.isCancel(err)) {
+          if (faxios.isCancel(err)) {
             singleStatus.innerHTML = '<span class="text-warning">Request canceled: ' + err.message + '</span>';
           } else {
             singleStatus.innerHTML = '<span class="text-danger">Error: ' + err.message + '</span>';
@@ -108,7 +108,7 @@
       log('New search for: "' + query + '"');
       searchStatus.innerHTML = '<span class="text-info">Searching...</span>';
 
-      axios.get('/abort-controller/server?delay=1000', {
+      faxios.get('/abort-controller/server?delay=1000', {
         signal: searchController.signal
       })
         .then(function (response) {
@@ -116,7 +116,7 @@
           log('Success: ' + query);
         })
         .catch(function (err) {
-          if (axios.isCancel(err)) {
+          if (faxios.isCancel(err)) {
             log('Cancelled: ' + query);
           } else {
             searchStatus.innerHTML = '<span class="text-danger">Error: ' + err.message + '</span>';

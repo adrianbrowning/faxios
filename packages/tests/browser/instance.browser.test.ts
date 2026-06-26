@@ -262,12 +262,12 @@ describe("instance (vitest browser)", () => {
     const options = {
       url: "foo/bar",
       params: {
-        name: "axios",
+        name: "faxios",
       },
     };
 
     expect(instance.getUri(options)).toBe(
-      "https://api.example.com/foo/bar?name=axios"
+      "https://api.example.com/foo/bar?name=faxios"
     );
   });
 
@@ -276,11 +276,11 @@ describe("instance (vitest browser)", () => {
     const options = {
       url: "foo/bar?foo=bar",
       params: {
-        name: "axios",
+        name: "faxios",
       },
     };
 
-    expect(instance.getUri(options)).toBe("foo/bar?foo=bar&name=axios");
+    expect(instance.getUri(options)).toBe("foo/bar?foo=bar&name=faxios");
   });
 
   it("should correctly discard url hash mark", () => {
@@ -289,12 +289,12 @@ describe("instance (vitest browser)", () => {
       baseURL: "https://api.example.com",
       url: "foo/bar?foo=bar#hash",
       params: {
-        name: "axios",
+        name: "faxios",
       },
     };
 
     expect(instance.getUri(options)).toBe(
-      "https://api.example.com/foo/bar?foo=bar&name=axios"
+      "https://api.example.com/foo/bar?foo=bar&name=faxios"
     );
   });
 });

@@ -1,3 +1,4 @@
+// @ts-self-types="./faxios.d.ts"
 "use strict";
 
 import adapters from "./adapters/adapters.js";
@@ -30,7 +31,7 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
   const context = new Faxios(defaultConfig);
   const instance = bind(Faxios.prototype.request as (...args: Array<unknown>) => unknown, context) as unknown as FaxiosInstance;
 
-  // Copy axios.prototype to instance
+  // Copy faxios.prototype to instance
   utils.extend(instance, Faxios.prototype, context, { allOwnKeys: true });
 
   // Copy context to instance
@@ -105,49 +106,49 @@ export type FaxiosInstance = {
 };
 
 // Create the default instance to be exported
-const axios = createInstance(defaults as unknown as FaxiosRequestConfig);
+const faxios = createInstance(defaults as unknown as FaxiosRequestConfig);
 
 // Expose Faxios class to allow class inheritance
-axios.Faxios = Faxios;
+faxios.Faxios = Faxios;
 
 // Expose Cancel & CancelToken
-axios.CanceledError = CanceledError;
-axios.CancelToken = CancelToken;
-axios.isCancel = isCancel;
-axios.VERSION = VERSION;
-axios.toFormData = toFormData;
+faxios.CanceledError = CanceledError;
+faxios.CancelToken = CancelToken;
+faxios.isCancel = isCancel;
+faxios.VERSION = VERSION;
+faxios.toFormData = toFormData;
 
 // Expose FaxiosError class
-axios.FaxiosError = FaxiosError;
+faxios.FaxiosError = FaxiosError;
 
 // alias for CanceledError for backward compatibility
-axios.Cancel = axios.CanceledError;
+faxios.Cancel = faxios.CanceledError;
 
 // Expose all/spread
-axios.all = async function all(promises: Array<Promise<unknown>>): Promise<Array<unknown>> {
+faxios.all = async function all(promises: Array<Promise<unknown>>): Promise<Array<unknown>> {
   return Promise.all(promises);
 };
 
-axios.spread = spread;
+faxios.spread = spread;
 
 // Expose isFaxiosError
-axios.isFaxiosError = isFaxiosError;
+faxios.isFaxiosError = isFaxiosError;
 
 // Expose mergeConfig
-axios.mergeConfig = mergeConfig;
+faxios.mergeConfig = mergeConfig;
 
-axios.FaxiosHeaders = FaxiosHeaders;
+faxios.FaxiosHeaders = FaxiosHeaders;
 
-axios.formToJSON = (thing: unknown): unknown => formDataToJSON(utils.isHTMLForm(thing) ? ((): unknown => {
+faxios.formToJSON = (thing: unknown): unknown => formDataToJSON(utils.isHTMLForm(thing) ? ((): unknown => {
   const GlobalFormData = (globalThis as Record<string, unknown>)["FormData"] as (new (el?: unknown) => unknown) | undefined;
   return GlobalFormData ? new GlobalFormData(thing) : thing;
 })() : thing);
 
-axios.getAdapter = adapters.getAdapter;
+faxios.getAdapter = adapters.getAdapter;
 
-axios.HttpStatusCode = HttpStatusCode;
+faxios.HttpStatusCode = HttpStatusCode;
 
-axios.default = axios;
+faxios.default = faxios;
 
 // this module should only have a default export
-export default axios;
+export default faxios;

@@ -161,7 +161,7 @@ class FaxiosError extends Error {
 
     // Make message enumerable to maintain backward compatibility
     // The native Error constructor sets message as non-enumerable,
-    // but axios < v1.13.3 had it as enumerable
+    // but faxios < v1.13.3 had it as enumerable
     Object.defineProperty(
       this,
       "message",

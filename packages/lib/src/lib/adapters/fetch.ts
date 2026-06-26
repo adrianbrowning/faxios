@@ -814,7 +814,7 @@ const factory = (env: Record<string, unknown>) => {
       cleanFormDataContentType(data, headers);
 
       // Set User-Agent header if not already set (fetch defaults to 'node' in Node.js)
-      headers.set("User-Agent", "axios/" + VERSION, false);
+      headers.set("User-Agent", "faxios/" + VERSION, false);
 
       const resolvedOptions = {
         ...fetchOptions,

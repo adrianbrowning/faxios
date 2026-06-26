@@ -85,13 +85,13 @@ function setFormDataHeaders(
 
 // Symbols used to bind a single 'error' listener to a pooled socket and track
 // the request currently owning that socket across keep-alive reuse (issue #10780).
-const kFaxiosSocketListener = Symbol("axios.http.socketListener");
-const kFaxiosCurrentReq = Symbol("axios.http.currentReq");
+const kFaxiosSocketListener = Symbol("faxios.http.socketListener");
+const kFaxiosCurrentReq = Symbol("faxios.http.currentReq");
 
 // Tags HttpsProxyAgent instances installed by setProxy() so the redirect path
 // can strip them without clobbering a user-supplied agent that happens to be
 // an HttpsProxyAgent.
-const kFaxiosInstalledTunnel = Symbol("axios.http.installedTunnel");
+const kFaxiosInstalledTunnel = Symbol("faxios.http.installedTunnel");
 
 // Cache of CONNECT-tunneling agents keyed by proxy config so repeat requests
 // through the same proxy reuse a single agent (and its socket pool). The
@@ -732,7 +732,7 @@ async function prepareRequestData(
         headers.set(formHeaders);
       },
       {
-        tag: `axios-${VERSION}-boundary`,
+        tag: `faxios-${VERSION}-boundary`,
         boundary: ((userBoundary && (userBoundary as RegExpMatchArray)[1]) ||
           undefined) as string | undefined,
       }
@@ -1899,7 +1899,7 @@ export default isHttpAdapterSupported &&
           false
         ) as FaxiosHeadersExtended;
 
-        headers.set("User-Agent", "axios/" + VERSION, false);
+        headers.set("User-Agent", "faxios/" + VERSION, false);
 
         const { onUploadProgress, onDownloadProgress } = config;
         const maxRate = config.maxRate;

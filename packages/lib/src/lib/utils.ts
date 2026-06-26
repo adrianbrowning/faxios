@@ -2,7 +2,7 @@
 
 import bind from "./helpers/bind.js";
 
-// utils is a library of generic helper functions non-specific to axios
+// utils is a library of generic helper functions non-specific to faxios
 
 const { toString } = Object.prototype;
 const { getPrototypeOf } = Object;
@@ -931,7 +931,7 @@ const _setImmediate = ((setImmediateSupported: boolean, postMessageSupported: bo
         _global.postMessage?.(token, "*");
       };
     // eslint-disable-next-line sonarjs/pseudo-random
-    })(`axios@${Math.random()}`, [])
+    })(`faxios@${Math.random()}`, [])
     : (cb: () => void) => setTimeout(cb);
 })(typeof setImmediate === "function", isFunction(_global["postMessage"]));
 

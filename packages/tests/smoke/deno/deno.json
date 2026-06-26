@@ -1,10 +1,14 @@
 {
   "imports": {
     "@std/assert": "jsr:@std/assert@1.0.19",
-    "faxios": "../../../lib/dist/index.js"
+    "faxios": "../../../lib/dist/index.js",
+    "form-data": "npm:form-data",
+    "proxy-from-env": "npm:proxy-from-env",
+    "follow-redirects": "npm:follow-redirects",
+    "https-proxy-agent": "npm:https-proxy-agent"
   },
   "tasks": {
-    "test": "deno test --allow-read tests/"
+    "test": "deno test --allow-read --allow-env tests/"
   },
   "test": {
     "include": ["tests/**/*.smoke.test.ts"]

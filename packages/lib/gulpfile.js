@@ -15,7 +15,7 @@ const clear = gulp.task("clear", async function () {
 
 async function getContributors(user, repo, maxCount = 1) {
   const contributors = (
-    await axios.get(
+    await faxios.get(
       `https://api.github.com/repos/${encodeURIComponent(user)}/${encodeURIComponent(repo)}/contributors`,
       { params: { per_page: maxCount } }
     )
@@ -25,7 +25,7 @@ async function getContributors(user, repo, maxCount = 1) {
     contributors.map(async contributor => ({
       ...contributor,
       ...(
-        await axios.get(
+        await faxios.get(
           `https://api.github.com/users/${encodeURIComponent(contributor.login)}`
         )
       ).data,
@@ -39,7 +39,7 @@ const packageJSON = gulp.task("package", async function () {
   const npm = JSON.parse(await fs.readFile("package.json", "utf8"));
 
   try {
-    const contributors = await getContributors("axios", "axios", 15);
+    const contributors = await getContributors("faxios", "faxios", 15);
 
     npm.contributors = contributors
       .filter(
@@ -56,7 +56,7 @@ const packageJSON = gulp.task("package", async function () {
   }
   catch (err) {
     if (
-      axios.isAxiosError(err) &&
+      faxios.isAxiosError(err) &&
       err.response &&
       err.response.status === 403
     ) {

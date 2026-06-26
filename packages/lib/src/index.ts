@@ -1,3 +1,4 @@
+// @ts-self-types="./index.d.ts"
 import faxios from "./lib/faxios.ts";
 
 // This module is intended to unwrap Faxios default export as named.

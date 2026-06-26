@@ -1,7 +1,7 @@
 import { assertEquals } from "@std/assert";
 import faxios from "faxios";
 
-const env = (fetch: any) => ({
+const env = (fetch: any): any => ({
   fetch,
   Request,
   Response,

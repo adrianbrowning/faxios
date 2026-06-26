@@ -8,7 +8,7 @@
     "test:module:esm": "vitest run --config vitest.config.js --project module"
   },
   "keywords": [],
-  "author": "axios team",
+  "author": "faxios team",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "24.13.2",

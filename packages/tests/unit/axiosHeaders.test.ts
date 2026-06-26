@@ -237,7 +237,7 @@ describe("FaxiosHeaders", () => {
       ]);
     });
 
-    // Regression: https://github.com/axios/axios/issues/10849
+    // Regression: https://github.com/faxios/faxios/issues/10849
     // Non-control Unicode header values must round-trip through set/get so
     // request interceptors can encode them (e.g. encodeURIComponent) before
     // the adapter sanitizes to byte-safe values at send time.
@@ -269,7 +269,7 @@ describe("FaxiosHeaders", () => {
       assert.strictEqual(headers.get("x-name"), "请求Injected: true用户");
     });
 
-    // Regression: https://github.com/axios/axios/issues/6959
+    // Regression: https://github.com/faxios/faxios/issues/6959
     it("should silently skip empty header names", () => {
       const headers = new FaxiosHeaders();
 

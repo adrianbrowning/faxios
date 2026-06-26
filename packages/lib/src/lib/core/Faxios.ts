@@ -241,7 +241,7 @@ class Faxios {
     config?: FaxiosRequestConfig
   ): Promise<unknown> {
     /*eslint no-param-reassign:0*/
-    // Allow for axios('example/url'[, config]) a la fetch API
+    // Allow for faxios('example/url'[, config]) a la fetch API
     if (typeof configOrUrl === "string") {
       config = config || {};
       config.url = configOrUrl;

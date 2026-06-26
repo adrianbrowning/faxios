@@ -1,8 +1,8 @@
-import fs from 'fs';
-import path from 'path';
-import http from 'http';
+import fs from 'node:fs';
+import path from 'node:path';
+import http from 'node:http';
 import minimist from 'minimist';
-import url from 'url';
+import url from 'node:url';
 
 const argv = minimist(process.argv.slice(2));
 let server;
@@ -40,7 +40,7 @@ function getIndexTemplate() {
     '<!doctype html>' +
     '<html>' +
     '<head>' +
-    '<title>axios examples</title>' +
+    '<title>faxios examples</title>' +
     '<style>' +
     'body {padding:25px;}' +
     'ul {margin:0; padding:0; list-style:none;}' +
@@ -122,21 +122,21 @@ dirs = listDirs(__dirname);
 server = http.createServer(function (req, res) {
   let url = req.url;
 
-  // Process axios itself
-  if (/axios\.min\.js$/.test(url)) {
-    pipeFileToResponse(res, '../dist/axios.min.js', 'text/javascript');
+  // Process faxios itself
+  if (/faxios\.min\.js$/.test(url)) {
+    pipeFileToResponse(res, '../dist/faxios.min.js', 'text/javascript');
     return;
   }
-  if (/axios\.min\.map$/.test(url)) {
-    pipeFileToResponse(res, '../dist/axios.min.map', 'text/javascript');
+  if (/faxios\.min\.map$/.test(url)) {
+    pipeFileToResponse(res, '../dist/faxios.min.map', 'text/javascript');
     return;
   }
-  if (/axios\.amd\.min\.js$/.test(url)) {
-    pipeFileToResponse(res, '../dist/axios.amd.min.js', 'text/javascript');
+  if (/faxios\.amd\.min\.js$/.test(url)) {
+    pipeFileToResponse(res, '../dist/faxios.amd.min.js', 'text/javascript');
     return;
   }
-  if (/axios\.amd\.min\.map$/.test(url)) {
-    pipeFileToResponse(res, '../dist/axios.amd.min.map', 'text/javascript');
+  if (/faxios\.amd\.min\.map$/.test(url)) {
+    pipeFileToResponse(res, '../dist/faxios.amd.min.map', 'text/javascript');
     return;
   }
 

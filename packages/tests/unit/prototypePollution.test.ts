@@ -12,7 +12,7 @@ import resolveConfig from "#src/lib/helpers/resolveConfig.js";
 import utils from "#src/lib/utils.js";
 
 // ponytail: only augment Object.prototype with non-conflicting test-only keys.
-// All axios config keys overlap with FaxiosRequestConfig and are accessed via ObjProto.
+// All faxios config keys overlap with FaxiosRequestConfig and are accessed via ObjProto.
 declare global {
   interface Object {
     polluted?: unknown;
@@ -531,7 +531,7 @@ describe("Prototype Pollution Protection", () => {
     }, 10000);
 
     it("should not pick up Object.prototype.socketPath and redirect the request", async () => {
-      ObjProto.socketPath = "/tmp/axios-should-never-be-used.sock";
+      ObjProto.socketPath = "/tmp/faxios-should-never-be-used.sock";
 
       const server = await startServer();
       const { port } = server.address() as AddressInfo;
@@ -1294,7 +1294,7 @@ describe("Prototype Pollution Protection", () => {
     });
   });
 
-  // End-to-end regressions covering published advisory PoCs against full axios
+  // End-to-end regressions covering published advisory PoCs against full faxios
   // request flow. Each test mirrors the exploit scenario from the advisory and
   // asserts the attack does not succeed.
   describe("advisory regression — full request flow", () => {

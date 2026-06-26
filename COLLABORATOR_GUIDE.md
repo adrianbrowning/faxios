@@ -1,6 +1,6 @@
 # Collaborator guide
 
-As a collaborator, you help administer axios. This guide covers the responsibilities that come with that access. For architecture, lifecycle, security-sensitive code, and conventions, use [AGENTS.md](./AGENTS.md), the canonical contributor guide.
+As a collaborator, you help administer faxios. This guide covers the responsibilities that come with that access. For architecture, lifecycle, security-sensitive code, and conventions, use [AGENTS.md](./AGENTS.md), the canonical contributor guide.
 
 ## Code of conduct
 
@@ -9,8 +9,8 @@ Read the [Code of Conduct](./CODE_OF_CONDUCT.md) and help enforce it. Keep the c
 ## Triage issues
 
 - Apply appropriate labels and respond as needed.
-- For bug reports, ask for a minimal reproduction (axios version, environment, request/response details) before deeper triage.
-- If an issue is not directly about axios, convert it to a discussion.
+- For bug reports, ask for a minimal reproduction (faxios version, environment, request/response details) before deeper triage.
+- If an issue is not directly about faxios, convert it to a discussion.
 - Close issues only when they are resolved, a fix is merged, the report lacks enough detail or a reproduction, or the reporter requests closure. Do not close issues for inactivity. We want to keep the history and respond if more information comes in later.
 
 ## Answer questions
@@ -21,10 +21,10 @@ Be helpful and patient. If a question comes from unclear docs, update the docs a
 
 When opening a PR, make sure:
 
-- The change fits within axios. Decline features early and kindly when they belong in user code or a plugin.
+- The change fits within faxios. Decline features early and kindly when they belong in user code or a plugin.
 - Cover behavior across the XHR, Fetch, and Node HTTP adapters where relevant. Detect by capability, not environment name.
 - Update both `index.d.ts` (ESM) and `index.d.cts` (CJS) when the public API changes.
-- Make axios-originated failures throw `FaxiosError` with an appropriate code, never raw `Error`. Wrap third-party errors with `FaxiosError.from`.
+- Make faxios-originated failures throw `FaxiosError` with an appropriate code, never raw `Error`. Wrap third-party errors with `FaxiosError.from`.
 - Cover the change with unit tests. Update browser, smoke, or module suites when packaging or runtime surface is affected.
 - Lint and tests pass before review. Do not merge red PRs.
 - Do not add runtime dependencies without discussion. `package-lock.json` changes must keep `lockfile-lint` happy (npm HTTPS hosts, integrity hashes).
@@ -56,4 +56,4 @@ If someone reports a suspected vulnerability in a public issue, do not discuss s
 
 ---
 
-Thanks for helping keep axios healthy. If you are unsure about a call, ask another collaborator before acting. We would rather move a little slower than ship a regression. If you have questions about your role or responsibilities, contact the maintainers.
+Thanks for helping keep faxios healthy. If you are unsure about a call, ask another collaborator before acting. We would rather move a little slower than ship a regression. If you have questions about your role or responsibilities, contact the maintainers.

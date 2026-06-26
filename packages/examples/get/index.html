@@ -2,17 +2,17 @@
 <html>
 
 <head>
-  <title>axios - get example</title>
+  <title>faxios - get example</title>
   <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
 </head>
 
 <body class="container">
-  <h1>axios.get</h1>
+  <h1>faxios.get</h1>
   <ul id="people" class="list-unstyled"></ul>
 
-  <script src="/axios.min.js"></script>
+  <script src="/faxios.min.js"></script>
   <script>
-    axios.get('/get/server')
+    faxios.get('/get/server')
       .then(function (response) {
         document.getElementById('people').innerHTML = response.data.map(function (person) {
           return (

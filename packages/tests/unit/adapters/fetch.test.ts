@@ -1255,7 +1255,7 @@ describe.runIf(typeof fetch === "function")(
     });
 
     describe("fetch adapter - User-Agent header", () => {
-      it("should set User-Agent header to axios/<version> by default", async () => {
+      it("should set User-Agent header to faxios/<version> by default", async () => {
         const server = await startHTTPServer(
           (req, res) => {
             res.setHeader("Content-Type", "application/json");
@@ -1272,7 +1272,7 @@ describe.runIf(typeof fetch === "function")(
             }
           );
 
-          assert.strictEqual(data.userAgent, `axios/${VERSION}`);
+          assert.strictEqual(data.userAgent, `faxios/${VERSION}`);
         }
         finally {
           await stopHTTPServer(server);

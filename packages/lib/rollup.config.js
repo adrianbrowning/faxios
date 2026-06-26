@@ -10,10 +10,10 @@ import bundleSize from "rollup-plugin-bundle-size";
 
 const require = createRequire(import.meta.url);
 const lib = require("./package.json");
-const outputFileName = "axios";
-const name = "axios";
+const outputFileName = "faxios";
+const name = "faxios";
 const namedInput = "./index.js";
-const defaultInput = "./lib/axios.js";
+const defaultInput = "./lib/faxios.js";
 
 const buildConfig = ({ es5, browser = true, minifiedVersion = true, alias, ...config }) => {
   const { file } = config.output;
@@ -77,7 +77,7 @@ const nodeCjsExternal = id => {
 
 export default async () => {
   const year = new Date().getFullYear();
-  const banner = `/*! Axios v${lib.version} Copyright (c) ${year} ${lib.author} and contributors */`;
+  const banner = `/*! faxios v${lib.version} Copyright (c) ${year} ${lib.author} and contributors */`;
 
   return [
     // browser ESM bundle for CDN

@@ -2,11 +2,11 @@
 <html>
 
 <head>
-  <title>AXIOS | Sandbox</title>
+  <title>faxios | Sandbox</title>
   <link rel="stylesheet" type="text/css"
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
   <style type="text/css">
-    /* 
+    /*
    :root & Dark Mode Variables
     */
     :root {
@@ -47,7 +47,7 @@
       --btn-hover-gradient: linear-gradient(135deg, #7d33ff, #00b7ff);
     }
 
-    /* 
+    /*
    Global Styles
     */
     * {
@@ -93,7 +93,7 @@
       /* Added space below the header */
     }
 
-    /* 
+    /*
    Input & Well Styles
     */
     .well,
@@ -143,7 +143,7 @@
       margin-bottom: 1.75rem;
     }
 
-    /* 
+    /*
    Header & Box Layout
     */
     .header {
@@ -161,7 +161,7 @@
       gap: 40px;
     }
 
-    /* 
+    /*
    Theme Toggle Button
     */
     #theme-toggle {
@@ -181,7 +181,7 @@
       box-shadow: 0 12px 25px -8px var(--shadow-color);
     }
 
-    /* 
+    /*
    Footer Styles
     */
     .footer {
@@ -204,7 +204,7 @@
       gap: 6px;
     }
 
-    .footer-left .footer-brand-axios,
+    .footer-left .footer-brand-faxios,
     .footer-left .footer-brand-sandbox {
       font-size: 1.2em;
       font-weight: 700;
@@ -241,7 +241,7 @@
       text-decoration: underline;
     }
 
-    /* 
+    /*
    Buttons
     */
     .btn {
@@ -262,7 +262,7 @@
       box-shadow: 0 14px 30px -10px var(--shadow-color);
     }
 
-    /* 
+    /*
    Code/Pre blocks
     */
     pre {
@@ -273,7 +273,7 @@
       overflow: auto;
     }
 
-    /* 
+    /*
    Responsive Layout
     */
     @media screen and (max-width: 1000px) {
@@ -300,7 +300,7 @@
 <body class="container">
   <div class="header">
     <div style="display: flex; align-items: center;">
-      <img src="https://axios-http.com/assets/logo.svg" alt="axios" width="100" height="60">
+      <img src="https://faxios-http.com/assets/logo.svg" alt="faxios" width="100" height="60">
       <h1> &nbsp;| Sandbox</h1>
     </div>
     <button id="theme-toggle">Toggle Theme</button>
@@ -361,20 +361,20 @@
 
   <footer class="footer">
     <div class="footer-left">
-      <p class="footer-brand-axios">AXIOS</p>
+      <p class="footer-brand-faxios">faxios</p>
       <p class="footer-brand-sandbox"> | Sandbox</p>
-      <p class="footer-copyright">© <span id="year">2025</span> Axios. All rights reserved.</p>
+      <p class="footer-copyright">© <span id="year">2025</span> faxios. All rights reserved.</p>
     </div>
     <nav class="footer-nav">
       <ul>
-        <li><a href="https://axios-http.com/docs/intro" target="_blank" rel="noopener noreferrer">Docs</a></li>
-        <li><a href="https://github.com/axios/axios" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-        <li><a href="https://axios-http.com/" target="_blank" rel="noopener noreferrer">Website</a></li>
+        <li><a href="https://faxios-http.com/docs/intro" target="_blank" rel="noopener noreferrer">Docs</a></li>
+        <li><a href="https://github.com/faxios/faxios" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://faxios-http.com/" target="_blank" rel="noopener noreferrer">Website</a></li>
       </ul>
     </nav>
   </footer>
 
-  <script src="/axios.js"></script>
+  <script src="/faxios.js"></script>
   <script>
     // Original sandbox script (untouched)
     (function () {
@@ -464,7 +464,7 @@
 
         request.textContent = JSON.stringify(options, null, 2);
 
-        axios(options)
+        faxios(options)
           .then(function (res) {
             response.innerHTML = JSON.stringify(res.data, null, 2);
             error.textContent = "None";

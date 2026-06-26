@@ -1,4 +1,4 @@
-# axios // adapters
+# faxios // adapters
 
 The modules under `adapters/` are modules that handle dispatching a request and settling a returned `Promise` once a response is received.
 

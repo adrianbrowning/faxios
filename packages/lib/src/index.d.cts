@@ -1,6 +1,6 @@
 type MethodsHeaders = Partial<
   {
-    [Key in axios.Method as Lowercase<Key>]: AxiosHeaders;
+    [Key in faxios.Method as Lowercase<Key>]: AxiosHeaders;
   } & { common: AxiosHeaders }
 >;
 
@@ -11,7 +11,7 @@ type AxiosHeaderMatcher =
 
 type AxiosHeaderParser = (
   this: AxiosHeaders,
-  value: axios.AxiosHeaderValue,
+  value: faxios.AxiosHeaderValue,
   header: string,
 ) => any;
 
@@ -24,7 +24,7 @@ type CommonRequestHeadersList =
   | "Location";
 
 type ContentType =
-  | axios.AxiosHeaderValue
+  | faxios.AxiosHeaderValue
   | "text/html"
   | "text/plain"
   | "multipart/form-data"
@@ -46,17 +46,17 @@ type CommonResponseHeaderKey =
 type BrowserProgressEvent = any;
 
 declare class AxiosHeaders {
-  constructor(headers?: axios.RawAxiosHeaders | AxiosHeaders | string);
+  constructor(headers?: faxios.RawAxiosHeaders | AxiosHeaders | string);
 
   [key: string]: any;
 
   set(
     headerName?: string,
-    value?: axios.AxiosHeaderValue,
+    value?: faxios.AxiosHeaderValue,
     rewrite?: boolean | AxiosHeaderMatcher,
   ): AxiosHeaders;
   set(
-    headers?: axios.RawAxiosHeaders | AxiosHeaders | string,
+    headers?: faxios.RawAxiosHeaders | AxiosHeaders | string,
     rewrite?: boolean,
   ): AxiosHeaders;
 
@@ -64,7 +64,7 @@ declare class AxiosHeaders {
   get(
     headerName: string,
     matcher?: true | AxiosHeaderParser,
-  ): axios.AxiosHeaderValue;
+  ): faxios.AxiosHeaderValue;
 
   has(header: string, matcher?: AxiosHeaderMatcher): boolean;
 
@@ -76,7 +76,7 @@ declare class AxiosHeaders {
 
   concat(
     ...targets: Array<
-      AxiosHeaders | axios.RawAxiosHeaders | string | undefined | null
+      AxiosHeaders | faxios.RawAxiosHeaders | string | undefined | null
     >
   ): AxiosHeaders;
 
@@ -85,14 +85,14 @@ declare class AxiosHeaders {
   toJSON(asStrings?: boolean): Record<string, string | string[]>;
 
   static from(
-    thing?: AxiosHeaders | axios.RawAxiosHeaders | string,
+    thing?: AxiosHeaders | faxios.RawAxiosHeaders | string,
   ): AxiosHeaders;
 
   static accessor(header: string | string[]): AxiosHeaders;
 
   static concat(
     ...targets: Array<
-      AxiosHeaders | axios.RawAxiosHeaders | string | undefined | null
+      AxiosHeaders | faxios.RawAxiosHeaders | string | undefined | null
     >
   ): AxiosHeaders;
 
@@ -101,67 +101,67 @@ declare class AxiosHeaders {
     rewrite?: boolean | AxiosHeaderMatcher,
   ): AxiosHeaders;
   getContentType(parser?: RegExp): RegExpExecArray | null;
-  getContentType(matcher?: AxiosHeaderMatcher): axios.AxiosHeaderValue;
+  getContentType(matcher?: AxiosHeaderMatcher): faxios.AxiosHeaderValue;
   hasContentType(matcher?: AxiosHeaderMatcher): boolean;
 
   setContentLength(
-    value: axios.AxiosHeaderValue,
+    value: faxios.AxiosHeaderValue,
     rewrite?: boolean | AxiosHeaderMatcher,
   ): AxiosHeaders;
   getContentLength(parser?: RegExp): RegExpExecArray | null;
-  getContentLength(matcher?: AxiosHeaderMatcher): axios.AxiosHeaderValue;
+  getContentLength(matcher?: AxiosHeaderMatcher): faxios.AxiosHeaderValue;
   hasContentLength(matcher?: AxiosHeaderMatcher): boolean;
 
   setAccept(
-    value: axios.AxiosHeaderValue,
+    value: faxios.AxiosHeaderValue,
     rewrite?: boolean | AxiosHeaderMatcher,
   ): AxiosHeaders;
   getAccept(parser?: RegExp): RegExpExecArray | null;
-  getAccept(matcher?: AxiosHeaderMatcher): axios.AxiosHeaderValue;
+  getAccept(matcher?: AxiosHeaderMatcher): faxios.AxiosHeaderValue;
   hasAccept(matcher?: AxiosHeaderMatcher): boolean;
 
   setUserAgent(
-    value: axios.AxiosHeaderValue,
+    value: faxios.AxiosHeaderValue,
     rewrite?: boolean | AxiosHeaderMatcher,
   ): AxiosHeaders;
   getUserAgent(parser?: RegExp): RegExpExecArray | null;
-  getUserAgent(matcher?: AxiosHeaderMatcher): axios.AxiosHeaderValue;
+  getUserAgent(matcher?: AxiosHeaderMatcher): faxios.AxiosHeaderValue;
   hasUserAgent(matcher?: AxiosHeaderMatcher): boolean;
 
   setContentEncoding(
-    value: axios.AxiosHeaderValue,
+    value: faxios.AxiosHeaderValue,
     rewrite?: boolean | AxiosHeaderMatcher,
   ): AxiosHeaders;
   getContentEncoding(parser?: RegExp): RegExpExecArray | null;
-  getContentEncoding(matcher?: AxiosHeaderMatcher): axios.AxiosHeaderValue;
+  getContentEncoding(matcher?: AxiosHeaderMatcher): faxios.AxiosHeaderValue;
   hasContentEncoding(matcher?: AxiosHeaderMatcher): boolean;
 
   setAuthorization(
-    value: axios.AxiosHeaderValue,
+    value: faxios.AxiosHeaderValue,
     rewrite?: boolean | AxiosHeaderMatcher,
   ): AxiosHeaders;
   getAuthorization(parser?: RegExp): RegExpExecArray | null;
-  getAuthorization(matcher?: AxiosHeaderMatcher): axios.AxiosHeaderValue;
+  getAuthorization(matcher?: AxiosHeaderMatcher): faxios.AxiosHeaderValue;
   hasAuthorization(matcher?: AxiosHeaderMatcher): boolean;
 
   getSetCookie(): string[];
 
-  [Symbol.iterator](): IterableIterator<[string, axios.AxiosHeaderValue]>;
+  [Symbol.iterator](): IterableIterator<[string, faxios.AxiosHeaderValue]>;
 }
 
 declare class FaxiosError<T = unknown, D = any> extends Error {
   constructor(
     message?: string,
     code?: string,
-    config?: axios.InternalAxiosRequestConfig<D>,
+    config?: faxios.InternalAxiosRequestConfig<D>,
     request?: any,
-    response?: axios.AxiosResponse<T, D>,
+    response?: faxios.AxiosResponse<T, D>,
   );
 
-  config?: axios.InternalAxiosRequestConfig<D>;
+  config?: faxios.InternalAxiosRequestConfig<D>;
   code?: string;
   request?: any;
-  response?: axios.AxiosResponse<T, D>;
+  response?: faxios.AxiosResponse<T, D>;
   isAxiosError: boolean;
   status?: number;
   toJSON: () => object;
@@ -170,9 +170,9 @@ declare class FaxiosError<T = unknown, D = any> extends Error {
   static from<T = unknown, D = any>(
     error: Error | unknown,
     code?: string,
-    config?: axios.InternalAxiosRequestConfig<D>,
+    config?: faxios.InternalAxiosRequestConfig<D>,
     request?: any,
-    response?: axios.AxiosResponse<T, D>,
+    response?: faxios.AxiosResponse<T, D>,
     customProps?: object,
   ): FaxiosError<T, D>;
   static readonly ERR_FR_TOO_MANY_REDIRECTS = "ERR_FR_TOO_MANY_REDIRECTS";
@@ -195,67 +195,67 @@ declare class CanceledError<T> extends FaxiosError<T> {
   readonly name: "CanceledError";
 }
 
-declare class Axios {
-  constructor(config?: axios.AxiosRequestConfig);
-  defaults: axios.AxiosDefaults;
+declare class faxios {
+  constructor(config?: faxios.AxiosRequestConfig);
+  defaults: faxios.AxiosDefaults;
   interceptors: {
-    request: axios.AxiosInterceptorManager<axios.InternalAxiosRequestConfig>;
-    response: axios.AxiosInterceptorManager<axios.AxiosResponse>;
+    request: faxios.AxiosInterceptorManager<faxios.InternalAxiosRequestConfig>;
+    response: faxios.AxiosInterceptorManager<faxios.AxiosResponse>;
   };
-  getUri(config?: axios.AxiosRequestConfig): string;
-  request<T = any, R = axios.AxiosResponse<T>, D = any>(
-    config: axios.AxiosRequestConfig<D>,
+  getUri(config?: faxios.AxiosRequestConfig): string;
+  request<T = any, R = faxios.AxiosResponse<T>, D = any>(
+    config: faxios.AxiosRequestConfig<D>,
   ): Promise<R>;
-  get<T = any, R = axios.AxiosResponse<T>, D = any>(
+  get<T = any, R = faxios.AxiosResponse<T>, D = any>(
     url: string,
-    config?: axios.AxiosRequestConfig<D>,
+    config?: faxios.AxiosRequestConfig<D>,
   ): Promise<R>;
-  delete<T = any, R = axios.AxiosResponse<T>, D = any>(
+  delete<T = any, R = faxios.AxiosResponse<T>, D = any>(
     url: string,
-    config?: axios.AxiosRequestConfig<D>,
+    config?: faxios.AxiosRequestConfig<D>,
   ): Promise<R>;
-  head<T = any, R = axios.AxiosResponse<T>, D = any>(
+  head<T = any, R = faxios.AxiosResponse<T>, D = any>(
     url: string,
-    config?: axios.AxiosRequestConfig<D>,
+    config?: faxios.AxiosRequestConfig<D>,
   ): Promise<R>;
-  options<T = any, R = axios.AxiosResponse<T>, D = any>(
+  options<T = any, R = faxios.AxiosResponse<T>, D = any>(
     url: string,
-    config?: axios.AxiosRequestConfig<D>,
+    config?: faxios.AxiosRequestConfig<D>,
   ): Promise<R>;
-  post<T = any, R = axios.AxiosResponse<T>, D = any>(
-    url: string,
-    data?: D,
-    config?: axios.AxiosRequestConfig<D>,
-  ): Promise<R>;
-  put<T = any, R = axios.AxiosResponse<T>, D = any>(
+  post<T = any, R = faxios.AxiosResponse<T>, D = any>(
     url: string,
     data?: D,
-    config?: axios.AxiosRequestConfig<D>,
+    config?: faxios.AxiosRequestConfig<D>,
   ): Promise<R>;
-  patch<T = any, R = axios.AxiosResponse<T>, D = any>(
+  put<T = any, R = faxios.AxiosResponse<T>, D = any>(
     url: string,
     data?: D,
-    config?: axios.AxiosRequestConfig<D>,
+    config?: faxios.AxiosRequestConfig<D>,
   ): Promise<R>;
-  postForm<T = any, R = axios.AxiosResponse<T>, D = any>(
+  patch<T = any, R = faxios.AxiosResponse<T>, D = any>(
     url: string,
     data?: D,
-    config?: axios.AxiosRequestConfig<D>,
+    config?: faxios.AxiosRequestConfig<D>,
   ): Promise<R>;
-  putForm<T = any, R = axios.AxiosResponse<T>, D = any>(
+  postForm<T = any, R = faxios.AxiosResponse<T>, D = any>(
     url: string,
     data?: D,
-    config?: axios.AxiosRequestConfig<D>,
+    config?: faxios.AxiosRequestConfig<D>,
   ): Promise<R>;
-  patchForm<T = any, R = axios.AxiosResponse<T>, D = any>(
+  putForm<T = any, R = faxios.AxiosResponse<T>, D = any>(
     url: string,
     data?: D,
-    config?: axios.AxiosRequestConfig<D>,
+    config?: faxios.AxiosRequestConfig<D>,
   ): Promise<R>;
-  query<T = any, R = axios.AxiosResponse<T>, D = any>(
+  patchForm<T = any, R = faxios.AxiosResponse<T>, D = any>(
     url: string,
     data?: D,
-    config?: axios.AxiosRequestConfig<D>,
+    config?: faxios.AxiosRequestConfig<D>,
+  ): Promise<R>;
+  query<T = any, R = faxios.AxiosResponse<T>, D = any>(
+    url: string,
+    data?: D,
+    config?: faxios.AxiosRequestConfig<D>,
   ): Promise<R>;
 }
 
@@ -327,7 +327,7 @@ declare enum HttpStatusCode {
 
 type InternalAxiosError<T = unknown, D = any> = FaxiosError<T, D>;
 
-declare namespace axios {
+declare namespace faxios {
   type FaxiosError<T = unknown, D = any> = InternalAxiosError<T, D>;
 
   interface RawAxiosHeaders {
@@ -752,7 +752,7 @@ declare namespace axios {
     handlers?: Array<AxiosInterceptorHandler<V>>;
   }
 
-  interface AxiosInstance extends Axios {
+  interface AxiosInstance extends faxios {
     <T = any, R = AxiosResponse<T>, D = any>(
       config: AxiosRequestConfig<D>,
     ): Promise<R>;
@@ -782,7 +782,7 @@ declare namespace axios {
   interface AxiosStatic extends AxiosInstance {
     Cancel: CancelStatic;
     CancelToken: CancelTokenStatic;
-    Axios: typeof Axios;
+    faxios: typeof faxios;
     FaxiosError: typeof FaxiosError;
     CanceledError: typeof CanceledError;
     HttpStatusCode: typeof HttpStatusCode;
@@ -808,6 +808,6 @@ declare namespace axios {
   }
 }
 
-declare const axios: axios.AxiosStatic;
+declare const faxios: faxios.AxiosStatic;
 
-export = axios;
+export = faxios;

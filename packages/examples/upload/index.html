@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>axios - file upload example</title>
+  <title>faxios - file upload example</title>
   <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
 </head>
 
@@ -19,7 +19,7 @@
 
   <div id="output" class="container"></div>
 
-  <script src="/axios.min.js"></script>
+  <script src="/faxios.min.js"></script>
   <script>
     (function () {
       var output = document.getElementById('output');
@@ -36,7 +36,7 @@
           }
         };
 
-        axios.put('/upload/server', data, config)
+        faxios.put('/upload/server', data, config)
           .then(function (res) {
             output.className = 'container';
             output.textContent = res.data;

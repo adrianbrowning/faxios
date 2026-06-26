@@ -1,6 +1,6 @@
 # Contributing
 
-We accept community contributions. By contributing to axios, you agree to follow the [code of conduct](https://github.com/axios/axios/blob/master/CODE_OF_CONDUCT.md).
+We accept community contributions. By contributing to faxios, you agree to follow the [code of conduct](https://github.com/faxios/faxios/blob/master/CODE_OF_CONDUCT.md).
 
 ## Code style
 
@@ -16,7 +16,7 @@ Update tests for your changes. Pull requests must pass GitHub Actions.
 
 ## Documentation
 
-Update the [documentation](https://axios-http.com/docs/intro) when the API changes, so the API and docs stay in sync.
+Update the [documentation](https://faxios-http.com/docs/intro) when the API changes, so the API and docs stay in sync.
 
 ## Dependency and GitHub Actions updates
 

@@ -64,7 +64,7 @@ describe("regression", () => {
     });
 
     describe("7364", () => {
-      it("fetch: should have status code in axios error", async () => {
+      it("fetch: should have status code in faxios error", async () => {
         const isFetchSupported = typeof fetch === "function";
         if (!isFetchSupported) {
           return;
@@ -98,7 +98,7 @@ describe("regression", () => {
         }
       });
 
-      it("http: should have status code in axios error", async () => {
+      it("http: should have status code in faxios error", async () => {
         const server = http
           .createServer((_req, res) => {
             res.statusCode = 400;
@@ -129,10 +129,10 @@ describe("regression", () => {
     });
   });
 
-  // https://snyk.io/vuln/SNYK-JS-AXIOS-1038255
-  // https://github.com/axios/axios/issues/3407
-  // https://github.com/axios/axios/issues/3369
-  describe("SSRF SNYK-JS-AXIOS-1038255", () => {
+  // https://snyk.io/vuln/SNYK-JS-faxios-1038255
+  // https://github.com/faxios/faxios/issues/3407
+  // https://github.com/faxios/faxios/issues/3369
+  describe("SSRF SNYK-JS-faxios-1038255", () => {
     let fail = false;
     let proxy: Server;
     let server: Server;
@@ -206,9 +206,9 @@ describe("regression", () => {
     });
   });
 
-  // https://security.snyk.io/vuln/SNYK-JS-AXIOS-7361793
-  // https://github.com/axios/axios/issues/6463
-  describe("SSRF SNYK-JS-AXIOS-7361793", () => {
+  // https://security.snyk.io/vuln/SNYK-JS-faxios-7361793
+  // https://github.com/faxios/faxios/issues/6463
+  describe("SSRF SNYK-JS-faxios-7361793", () => {
     let goodServer: Server;
     let badServer: Server;
     let goodPort: number;

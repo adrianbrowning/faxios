@@ -61,7 +61,7 @@ function enhanceNetworkError(error) {
 }
 
 export function createEnhancedClient(config = {}) {
-  const client = axios.create(config);
+  const client = faxios.create(config);
 
   client.interceptors.response.use(
     (response) => response,

@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>axios - transform response example</title>
+  <title>faxios - transform response example</title>
   <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
 </head>
 
@@ -18,15 +18,15 @@
     </div>
   </div>
 
-  <script src="/axios.min.js"></script>
+  <script src="/faxios.min.js"></script>
   <script>
     var ISO_8601 = /(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})Z/;
     function formatDate(d) {
       return (d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear();
     }
 
-    axios.get('https://api.github.com/users/mzabriskie', {
-      transformResponse: axios.defaults.transformResponse.concat(function (data, headers) {
+    faxios.get('https://api.github.com/users/mzabriskie', {
+      transformResponse: faxios.defaults.transformResponse.concat(function (data, headers) {
         Object.keys(data).forEach(function (k) {
           if (ISO_8601.test(data[k])) {
             data[k] = new Date(Date.parse(data[k]));

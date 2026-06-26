@@ -1,6 +1,6 @@
-import fs from "fs";
-import path from "path";
-import http from "http";
+import fs from "node:fs";
+import path from "node:path";
+import http from "node:http";
 
 let server;
 
@@ -66,7 +66,7 @@ function handleApiRequest(req, res) {
 /**
  * Handles incoming HTTP requests.
  *
- * Serves static files like index.html and axios.js, or routes API requests to
+ * Serves static files like index.html and faxios.js, or routes API requests to
  * handleApiRequest. Responds with 404 for unrecognized paths.
  *
  * @param {http.IncomingMessage} req - The HTTP request object.
@@ -89,12 +89,12 @@ function requestHandler(req, res) {
       pipeFileToResponse(res, "./client.html", "text/html");
       break;
 
-    case "/axios.js":
-      pipeFileToResponse(res, "../dist/axios.js", "text/javascript");
+    case "/faxios.js":
+      pipeFileToResponse(res, "../dist/faxios.js", "text/javascript");
       break;
 
-    case "/axios.js.map":
-      pipeFileToResponse(res, "../dist/axios.js.map", "text/javascript");
+    case "/faxios.js.map":
+      pipeFileToResponse(res, "../dist/faxios.js.map", "text/javascript");
       break;
 
     case "/api":

@@ -683,7 +683,7 @@
 //   handlers?: Array<AxiosInterceptorHandler<V>>;
 // }
 //
-// export class Axios {
+// export class faxios {
 //   constructor(config?: AxiosRequestConfig);
 //   defaults: AxiosDefaults;
 //   interceptors: {
@@ -747,7 +747,7 @@
 //   ): Promise<R>;
 // }
 //
-// export interface AxiosInstance extends Axios {
+// export interface AxiosInstance extends faxios {
 //   <T = unknown, R = AxiosResponse<T>, D = unknown>(
 //     config: AxiosRequestConfig<D>,
 //   ): Promise<R>;
@@ -812,7 +812,7 @@
 // export interface AxiosStatic extends AxiosInstance {
 //   Cancel: CancelStatic;
 //   CancelToken: CancelTokenStatic;
-//   Axios: typeof Axios;
+//   faxios: typeof faxios;
 //   FaxiosError: typeof FaxiosError;
 //   HttpStatusCode: typeof HttpStatusCode;
 //   readonly VERSION: string;
@@ -828,6 +828,6 @@
 //   mergeConfig: typeof mergeConfig;
 // }
 //
-// declare const axios: AxiosStatic;
+// declare const faxios: AxiosStatic;
 //
-// export default axios;
+// export default faxios;

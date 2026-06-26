@@ -1875,7 +1875,7 @@ describe("supports http with nodejs", () => {
         `http://localhost:${(server.address() as AddressInfo).port}/`
       )) as any;
       assert.ok(
-        /^axios\/[\d.]+[-]?[a-z]*[.]?[\d]+$/.test(response.data),
+        /^faxios\/[\d.]+[-]?[a-z]*[.]?[\d]+$/.test(response.data),
         `User-Agent header does not match: ${response.data}`
       );
     }
@@ -2250,7 +2250,7 @@ describe("supports http with nodejs", () => {
   it("should support sockets", async () => {
     let socketName = path.join(
       os.tmpdir(),
-      `axios-test-${process.pid}-${Date.now()}-${Math.random()
+      `faxios-test-${process.pid}-${Date.now()}-${Math.random()
         .toString(16)
         .slice(2)}.sock`
     );
@@ -2586,7 +2586,7 @@ describe("supports http with nodejs", () => {
         }
       );
 
-      // axios may auto-parse the body as JSON; compare as number to tolerate either form.
+      // faxios may auto-parse the body as JSON; compare as number to tolerate either form.
       assert.strictEqual(
         Number(response.data),
         12345,
@@ -4617,7 +4617,7 @@ describe("supports http with nodejs", () => {
       assert.strictEqual(
         redirectOptions.agent,
         undefined,
-        "axios-installed tunneling agent must be cleared when redirect drops the proxy"
+        "faxios-installed tunneling agent must be cleared when redirect drops the proxy"
       );
     });
 
@@ -4682,7 +4682,7 @@ describe("supports http with nodejs", () => {
   it("should supply a user-agent if one is not specified", async () => {
     const server = await startHTTPServer(
       (req, res) => {
-        assert.equal(req.headers["user-agent"], `axios/${faxios.VERSION}`);
+        assert.equal(req.headers["user-agent"], `faxios/${faxios.VERSION}`);
         res.end();
       },
       { port: SERVER_PORT }
@@ -5054,7 +5054,7 @@ describe("supports http with nodejs", () => {
         // Use a stub transport rather than a real HTTP server: polluting
         // Object.prototype in-process can destabilise Node's HTTP server
         // internals and cause spurious ECONNRESET. The stub captures the final
-        // outgoing headers axios constructs, which is what this test asserts on.
+        // outgoing headers faxios constructs, which is what this test asserts on.
         let capturedHeaders;
         const stubTransport = {
           request(options: any, handleResponse: any) {
@@ -5955,7 +5955,7 @@ describe("supports http with nodejs", () => {
 
       try {
         const { data } = await faxios.post(
-          `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
+          `http://fake-name.faxios:${(server.address() as AddressInfo).port}`,
           payload,
           {
             lookup: (_hostname: any, _opt: any, cb: any) => {
@@ -5980,7 +5980,7 @@ describe("supports http with nodejs", () => {
 
       try {
         const { data } = await faxios.post(
-          `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
+          `http://fake-name.faxios:${(server.address() as AddressInfo).port}`,
           payload,
           {
             lookup: (_hostname: any, _opt: any, cb: any) => {
@@ -6005,7 +6005,7 @@ describe("supports http with nodejs", () => {
 
       try {
         const { data } = await faxios.post(
-          `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
+          `http://fake-name.faxios:${(server.address() as AddressInfo).port}`,
           payload,
           {
             lookup: async (_hostname: any, _opt: any) => {
@@ -6030,7 +6030,7 @@ describe("supports http with nodejs", () => {
 
       try {
         const { data } = await faxios.post(
-          `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
+          `http://fake-name.faxios:${(server.address() as AddressInfo).port}`,
           payload,
           {
             lookup: async (_hostname: any, _opt: any) => {
@@ -6055,7 +6055,7 @@ describe("supports http with nodejs", () => {
 
       try {
         const { data } = await faxios.post(
-          `http://fake-name.axios:${(server.address() as AddressInfo).port}`,
+          `http://fake-name.faxios:${(server.address() as AddressInfo).port}`,
           payload,
           {
             lookup: async (_hostname: any, _opt: any) => {
@@ -6866,14 +6866,14 @@ describe("supports http with nodejs", () => {
         );
 
         // Inspect live sockets on the agent: none should have more than one
-        // axios-installed error listener, regardless of how many requests ran.
+        // faxios-installed error listener, regardless of how many requests ran.
         const allSockets: Array<any> = ([] as Array<any>)
           .concat(...Object.values(agent.sockets || {}))
           .concat(...Object.values(agent.freeSockets || {}));
         for (const sock of allSockets) {
           assert.ok(
             sock.listenerCount("error") <= 2,
-            `socket should have at most a couple of error listeners (agent + axios), got ${sock.listenerCount("error")}`
+            `socket should have at most a couple of error listeners (agent + faxios), got ${sock.listenerCount("error")}`
           );
         }
       }
@@ -7013,7 +7013,7 @@ describe("supports http with nodejs", () => {
         },
       };
 
-      // First request: axios installs its single per-socket listener.
+      // First request: faxios installs its single per-socket listener.
       await faxios.get("http://example.com/first", {
         transport,
         maxRedirects: 0,
@@ -7022,7 +7022,7 @@ describe("supports http with nodejs", () => {
       assert.strictEqual(
         socket.listenerCount("error"),
         baseErrorListenerCount + 1,
-        "axios should install exactly one socket error listener"
+        "faxios should install exactly one socket error listener"
       );
 
       // Many subsequent requests reusing the same socket must not add more listeners.
@@ -7108,13 +7108,13 @@ describe("supports http with nodejs", () => {
       assert.strictEqual(results.length, 20);
 
       // Critical assertion: despite 20 concurrent requests all claiming the
-      // same pooled socket before any emitted 'close', only ONE axios listener
+      // same pooled socket before any emitted 'close', only ONE faxios listener
       // must be attached. This is the difference between the pre-fix
       // behaviour (20 listeners, MaxListenersExceededWarning) and the fix.
       assert.strictEqual(
         socket.listenerCount("error"),
         baseErrorListenerCount + 1,
-        `expected a single axios socket error listener under concurrent reuse, got ${socket.listenerCount("error") - baseErrorListenerCount}`
+        `expected a single faxios socket error listener under concurrent reuse, got ${socket.listenerCount("error") - baseErrorListenerCount}`
       );
 
       // Now drain the queued close events. Listener count must still be 1.
@@ -7380,8 +7380,8 @@ describe("supports http with nodejs", () => {
           EventEmitter.prototype.once = originalOnce;
         }
 
-        // Pre-fix: peak would be >= REDIRECT_COUNT (one axios close listener per hop
-        // on the outer RedirectableRequest). Post-fix: axios attaches exactly one
+        // Pre-fix: peak would be >= REDIRECT_COUNT (one faxios close listener per hop
+        // on the outer RedirectableRequest). Post-fix: faxios attaches exactly one
         // close listener to the outer request; framework internals typically add
         // a couple more. A generous bound of 10 distinguishes the behaviours.
         assert.ok(
@@ -7397,7 +7397,7 @@ describe("supports http with nodejs", () => {
 
   describe("socketPath security", () => {
     function makeSocketPath() {
-      const pipe = `axios-socketpath-${process.pid}-${Date.now()}-${Math.random()
+      const pipe = `faxios-socketpath-${process.pid}-${Date.now()}-${Math.random()
         .toString(36)
         .slice(2)}`;
 
@@ -7498,7 +7498,7 @@ describe("supports http with nodejs", () => {
     });
 
     it("rejects socketPath attempting path traversal that escapes allowlist", async () => {
-      const allowedDir = path.join(os.tmpdir(), "axios-allowed");
+      const allowedDir = path.join(os.tmpdir(), "faxios-allowed");
       const allowed = path.join(allowedDir, "app.sock");
       await assert.rejects(
         faxios.get("http://localhost/echo", {

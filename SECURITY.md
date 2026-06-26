@@ -17,26 +17,26 @@ The maintainer incident-response runbook, including session revocation, key rota
 
 ## Verifying a release
 
-Every `axios` tarball on npm is published from GitHub Actions with an [npm provenance attestation](https://docs.npmjs.com/generating-provenance-statements) that cryptographically binds the package to the workflow and commit SHA that produced it.
+Every `faxios` tarball on npm is published from GitHub Actions with an [npm provenance attestation](https://docs.npmjs.com/generating-provenance-statements) that cryptographically binds the package to the workflow and commit SHA that produced it.
 
 Consumers can verify provenance locally:
 
 ```bash
-# Verify every package in your lockfile, including axios
+# Verify every package in your lockfile, including faxios
 npm audit signatures
 ```
 
-A successful verification proves the tarball was built in the `axios/axios` GitHub Actions environment on a known commit. It was not tampered with between build and registry. It does not prove the code in that commit is free of bugs.
+A successful verification proves the tarball was built in the `faxios/faxios` GitHub Actions environment on a known commit. It was not tampered with between build and registry. It does not prove the code in that commit is free of bugs.
 
-If `npm audit signatures` reports a missing or invalid attestation for a recent `axios` version, treat it as a potential supply-chain incident and report via the private channel below.
+If `npm audit signatures` reports a missing or invalid attestation for a recent `faxios` version, treat it as a potential supply-chain incident and report via the private channel below.
 
 ## Reporting a vulnerability
 
-If you believe you have found a security vulnerability in axios, report it through the private channel below. If the vulnerability is in a third-party library, report it to that library's maintainers.
+If you believe you have found a security vulnerability in faxios, report it through the private channel below. If the vulnerability is in a third-party library, report it to that library's maintainers.
 
 ## Reporting process
 
-Do not report security vulnerabilities through public GitHub issues. Use GitHub's private security channel by opening a [security advisory](https://github.com/axios/axios/security).
+Do not report security vulnerabilities through public GitHub issues. Use GitHub's private security channel by opening a [security advisory](https://github.com/faxios/faxios/security).
 
 ## Disclosure policy
 
@@ -44,7 +44,7 @@ When we receive a security vulnerability report, we assign it a primary handler.
 
 ### 60-day resolution and disclosure commitment
 
-We commit to resolving and publicly disclosing every valid security advisory within 60 calendar days of the initial report, measured from the moment a report is received through the [GitHub security advisory channel](https://github.com/axios/axios/security/advisories/new).
+We commit to resolving and publicly disclosing every valid security advisory within 60 calendar days of the initial report, measured from the moment a report is received through the [GitHub security advisory channel](https://github.com/faxios/faxios/security/advisories/new).
 
 The 60-day clock is a commitment to reporters and downstream consumers. It is a backstop, not an aspiration. If we cannot ship a fix in time, we still publish the advisory at day 60 with mitigation guidance so consumers can act. We then keep working on the fix and update the advisory with patch details when they are ready.
 

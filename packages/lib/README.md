@@ -1,6 +1,6 @@
 # faxios
 
-> Promise based HTTP client for the browser and node.js — a TypeScript-first fork of [axios](https://github.com/axios/axios).
+> Promise based HTTP client for the browser and node.js — a TypeScript-first fork of [faxios](https://github.com/faxios/faxios).
 
 [![npm version](https://img.shields.io/npm/v/faxios.svg?style=flat-square)](https://www.npmjs.org/package/faxios)
 

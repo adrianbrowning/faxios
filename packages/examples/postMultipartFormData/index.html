@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Axios - Multipart Form Example</title>
+  <title>faxios - Multipart Form Example</title>
   <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -397,11 +397,11 @@
           <div class="radio-group">
             <div class="radio-option">
               <input type="radio" name="format" value="formData" id="formData" checked>
-              <label for="formData">Pass to Axios as FormData</label>
+              <label for="formData">Pass to faxios as FormData</label>
             </div>
             <div class="radio-option">
               <input type="radio" name="format" value="json" id="json">
-              <label for="json">Pass to Axios as JSON. Let Axios convert to form data</label>
+              <label for="json">Pass to faxios as JSON. Let faxios convert to form data</label>
             </div>
           </div>
 
@@ -438,7 +438,7 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/faxios/dist/faxios.min.js"></script>
   <script>
     (function () {
       // Theme toggle functionality
@@ -498,7 +498,7 @@
         const errorOutput = document.getElementById("errorOutput");
         const resultContent = document.getElementById("resultContent");
 
-        axios({
+        faxios({
           url: 'https://httpbin.org/post', // Using a test endpoint
           data: data,
           method: "post",
