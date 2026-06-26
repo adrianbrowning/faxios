@@ -630,7 +630,7 @@ function handleDataURI(
     settle(resolve, reject, {
       status: 405,
       statusText: "method not allowed",
-      headers: {},
+      headers: new FaxiosHeaders(),
       config,
       data: undefined,
       request: undefined,

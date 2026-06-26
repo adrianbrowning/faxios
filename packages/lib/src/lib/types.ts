@@ -1,9 +1,16 @@
 // Internal shared types — imported by implementation files.
 // Public API types in index.d.ts re-export or extend these.
 
-export type StringLiteralsOrString<Literals extends string> = Literals | (string & {});
+export type StringLiteralsOrString<Literals extends string> =
+  | Literals
+  | (string & {});
 
-export type FaxiosHeaderValue = string | Array<string> | number | boolean | null;
+export type FaxiosHeaderValue =
+  | string
+  | Array<string>
+  | number
+  | boolean
+  | null;
 
 export interface RawFaxiosHeaders {
   [key: string]: FaxiosHeaderValue;
@@ -73,10 +80,9 @@ type UppercaseResponseEncoding =
   | "UTF8"
   | "UTF16LE";
 
-export type responseEncoding = (
+export type responseEncoding =
   | UppercaseResponseEncoding
-  | Lowercase<UppercaseResponseEncoding>
-);
+  | Lowercase<UppercaseResponseEncoding>;
 
 export interface TransitionalOptions {
   silentJSONParsing?: boolean;
@@ -116,7 +122,7 @@ export interface SerializerVisitor {
     value: unknown,
     key: string | number,
     path: null | Array<string | number>,
-    helpers: FormDataVisitorHelpers
+    helpers: FormDataVisitorHelpers,
   ): boolean;
 }
 
@@ -213,7 +219,9 @@ export type FaxiosRequestHeaders = Record<string, unknown> & {
   toJSON: (asStrings?: boolean) => Record<string, unknown>;
 };
 
-export type FaxiosAdapterName = StringLiteralsOrString<"xhr" | "http" | "fetch">;
+export type FaxiosAdapterName = StringLiteralsOrString<
+  "xhr" | "http" | "fetch"
+>;
 
 export interface FaxiosAdapter {
   (config: InternalFaxiosRequestConfig): Promise<FaxiosResponse>;
@@ -222,7 +230,11 @@ export interface FaxiosAdapter {
 export type FaxiosAdapterConfig = FaxiosAdapter | FaxiosAdapterName;
 
 export interface FaxiosRequestTransformer {
-  (this: InternalFaxiosRequestConfig, data: unknown, headers: FaxiosRequestHeaders): unknown;
+  (
+    this: InternalFaxiosRequestConfig,
+    data: unknown,
+    headers: FaxiosRequestHeaders,
+  ): unknown;
 }
 
 export interface FaxiosResponseTransformer {
@@ -230,7 +242,7 @@ export interface FaxiosResponseTransformer {
     this: InternalFaxiosRequestConfig,
     data: unknown,
     headers: RawFaxiosHeaders,
-    status?: number
+    status?: number,
   ): unknown;
 }
 
@@ -240,7 +252,9 @@ export interface FaxiosRequestConfig<D = unknown> {
   baseURL?: string;
   allowAbsoluteUrls?: boolean;
   transformRequest?: FaxiosRequestTransformer | Array<FaxiosRequestTransformer>;
-  transformResponse?: FaxiosResponseTransformer | Array<FaxiosResponseTransformer>;
+  transformResponse?:
+    | FaxiosResponseTransformer
+    | Array<FaxiosResponseTransformer>;
   headers?: Record<string, unknown>;
   params?: unknown;
   paramsSerializer?: ParamsSerializerOptions | CustomParamsSerializer;
@@ -271,7 +285,7 @@ export interface FaxiosRequestConfig<D = unknown> {
       headers: Record<string, string>;
       url: string;
       method: string;
-    }
+    },
   ) => void;
   socketPath?: string | null;
   allowedSocketPaths?: string | Array<string> | null;
@@ -286,30 +300,41 @@ export interface FaxiosRequestConfig<D = unknown> {
   insecureHTTPParser?: boolean;
   env?: {
     FormData?: new (...args: Array<unknown>) => object;
-    fetch?: (input: unknown, init?: unknown) => Promise<unknown>;
-    Request?: new (...args: Array<unknown>) => unknown;
+    fetch?: (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
+    Request?: new (input: string | URL | Request, init?: RequestInit) => unknown;
     Response?: new (...args: Array<unknown>) => unknown;
   };
   formSerializer?: FormSerializerOptions;
   family?: AddressFamily;
   lookup?:
     | ((
-      hostname: string,
-      options: object,
-      cb: (
-        err: Error | null,
-        address: LookupAddress | Array<LookupAddress>,
-        family?: AddressFamily
-      ) => void
-    ) => void)
+        hostname: string,
+        options: object,
+        cb: (
+          err: Error | null,
+          address: LookupAddress | Array<LookupAddress>,
+          family?: AddressFamily,
+        ) => void,
+      ) => void)
     | ((
-      hostname: string,
-      options: object
-    ) => Promise<
-        [address: LookupAddressEntry | Array<LookupAddressEntry>, family?: AddressFamily] | LookupAddress
-    >);
-  withXSRFToken?: boolean | ((config: InternalFaxiosRequestConfig) => boolean | undefined);
-  parseReviver?: (this: unknown, key: string, value: unknown, context?: { source?: string; }) => unknown;
+        hostname: string,
+        options: object,
+      ) => Promise<
+        | [
+            address: LookupAddressEntry | Array<LookupAddressEntry>,
+            family?: AddressFamily,
+          ]
+        | LookupAddress
+      >);
+  withXSRFToken?:
+    | boolean
+    | ((config: InternalFaxiosRequestConfig) => boolean | undefined);
+  parseReviver?: (
+    this: unknown,
+    key: string,
+    value: unknown,
+    context?: { source?: string },
+  ) => unknown;
   fetchOptions?: Record<string, unknown>;
   httpVersion?: 1 | 2;
   http2Options?: Record<string, unknown> & {
@@ -322,26 +347,36 @@ export interface FaxiosRequestConfig<D = unknown> {
 
 export type RawFaxiosRequestConfig<D = unknown> = FaxiosRequestConfig<D>;
 
-export interface InternalFaxiosRequestConfig<D = unknown> extends FaxiosRequestConfig<D> {
+export interface InternalFaxiosRequestConfig<
+  D = unknown,
+> extends FaxiosRequestConfig<D> {
   headers: FaxiosRequestHeaders;
 }
 
-export type RawFaxiosResponseHeaders = Partial<RawFaxiosHeaders & {
-  "set-cookie": Array<string>;
-  "content-type": string;
-  "content-length": string;
-  "cache-control": string;
-  "content-encoding": string;
-  server: string;
-}>;
+export type RawFaxiosResponseHeaders = Partial<
+  RawFaxiosHeaders & {
+    "set-cookie": Array<string>;
+    "content-type": string;
+    "content-length": string;
+    "cache-control": string;
+    "content-encoding": string;
+    server: string;
+  }
+>;
 
-export type FaxiosResponseHeaders = RawFaxiosResponseHeaders & Record<string, FaxiosHeaderValue>;
+export type FaxiosResponseHeaders = RawFaxiosResponseHeaders &
+  Record<string, FaxiosHeaderValue>;
+
+export interface FaxiosResponseHeadersLike {
+  [key: string]: unknown;
+  get: (header: string) => unknown;
+}
 
 export interface FaxiosResponse<T = unknown, D = unknown> {
   data: T;
   status: number;
   statusText: string;
-  headers: RawFaxiosResponseHeaders | FaxiosResponseHeaders | Record<string, unknown>;
+  headers: FaxiosResponseHeadersLike;
   config: InternalFaxiosRequestConfig<D>;
   request?: unknown;
 }
@@ -363,11 +398,17 @@ export interface HeadersDefaults {
   query?: RawFaxiosRequestHeaders;
 }
 
-export interface FaxiosDefaults<D = unknown> extends Omit<FaxiosRequestConfig<D>, "headers"> {
+export interface FaxiosDefaults<D = unknown> extends Omit<
+  FaxiosRequestConfig<D>,
+  "headers"
+> {
   headers: HeadersDefaults;
 }
 
-export interface CreateFaxiosDefaults<D = unknown> extends Omit<FaxiosRequestConfig<D>, "headers"> {
+export interface CreateFaxiosDefaults<D = unknown> extends Omit<
+  FaxiosRequestConfig<D>,
+  "headers"
+> {
   headers?: RawFaxiosRequestHeaders | Partial<HeadersDefaults>;
 }
 
@@ -385,7 +426,7 @@ export interface CancelToken {
   throwIfRequested: () => void;
   subscribe: (listener: (cancel: Cancel) => void) => void;
   unsubscribe: (listener: (cancel: Cancel) => void) => void;
-  toAbortSignal: () => AbortSignal & { unsubscribe?: () => void; };
+  toAbortSignal: () => AbortSignal & { unsubscribe?: () => void };
 }
 
 export interface CancelTokenSource {

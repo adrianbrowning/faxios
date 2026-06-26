@@ -118,7 +118,7 @@ describe("adapter (vitest browser)", () => {
               data: null,
               status: request.status,
               statusText: request.statusText,
-              headers: {},
+              headers: { get: () => null },
               config,
               request,
             });
@@ -150,7 +150,7 @@ describe("adapter (vitest browser)", () => {
               data: null,
               status: request.status,
               statusText: request.statusText,
-              headers: {},
+              headers: { get: () => null },
               config,
               request,
             });
@@ -188,7 +188,7 @@ describe("adapter (vitest browser)", () => {
               data: null,
               status: request.status,
               statusText: request.statusText,
-              headers: {},
+              headers: { get: () => null },
               config,
               request,
             });

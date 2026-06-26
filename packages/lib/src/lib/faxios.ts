@@ -56,6 +56,9 @@ export type FaxiosInstance = {
   put: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
   patch: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
   query: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
+  postForm: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
+  putForm: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
+  patchForm: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
   defaults: { headers: Record<string, unknown>; } & Record<string, unknown>;
   interceptors: {
     request: {

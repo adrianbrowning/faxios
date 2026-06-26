@@ -13,7 +13,7 @@ function makeResponse(
     config: { validateStatus } as FaxiosResponse["config"],
     request: {},
     data: null,
-    headers: {},
+    headers: { get: () => null },
   };
 }
 
