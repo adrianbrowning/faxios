@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import faxios, { FaxiosError, AxiosHeaders } from "faxios";
+import faxios, { FaxiosError, FaxiosHeaders } from "faxios";
 
 describe("faxios ESM module", () => {
   it("default export is callable", () => {
@@ -8,6 +8,6 @@ describe("faxios ESM module", () => {
 
   it("named exports are present", () => {
     expect(FaxiosError).toBeDefined();
-    expect(AxiosHeaders).toBeDefined();
+    expect(FaxiosHeaders).toBeDefined();
   });
 });
