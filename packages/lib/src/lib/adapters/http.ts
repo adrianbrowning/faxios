@@ -8,7 +8,16 @@ import stream from "node:stream";
 import util from "node:util";
 import zlib from "node:zlib";
 import followRedirects from "follow-redirects";
-import createHttpsProxyAgent from "https-proxy-agent";
+import * as httpsProxyAgentModule from "https-proxy-agent";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// ponytail: Node ESM CJS interop puts class on .default.HttpsProxyAgent; Deno npm: puts it on named export
+// ponytail: typeof gets constructor type; named import "HttpsProxyAgent" is the instance alias
+import type { HttpsProxyAgent as THttpsProxyAgent } from "https-proxy-agent";
+type HttpsProxyAgentCtor = typeof THttpsProxyAgent;
+const HttpsProxyAgent: HttpsProxyAgentCtor =
+  (httpsProxyAgentModule as any).HttpsProxyAgent ??
+  (httpsProxyAgentModule as any).default?.HttpsProxyAgent;
+/* eslint-enable @typescript-eslint/no-explicit-any */
 import { getProxyForUrl } from "proxy-from-env";
 import CanceledError from "../cancel/CanceledError.js";
 import buildFullPath from "../core/buildFullPath.js";
@@ -97,9 +106,7 @@ const kFaxiosInstalledTunnel = Symbol("faxios.http.installedTunnel");
 // through the same proxy reuse a single agent (and its socket pool). The
 // keyspace is bounded by the set of distinct proxy configs the process uses,
 // so unbounded growth is not a concern in practice.
-type HttpsProxyAgentInstance = InstanceType<
-  typeof createHttpsProxyAgent.HttpsProxyAgent
->;
+type HttpsProxyAgentInstance = InstanceType<HttpsProxyAgentCtor>;
 const tunnelingAgentCache = new Map<string, HttpsProxyAgentInstance>();
 const tunnelingAgentCacheUser = new WeakMap<
   object,
@@ -134,7 +141,7 @@ function getTunnelingAgent(
     userHttpsAgent && userHttpsAgent.options
       ? { ...userHttpsAgent.options, ...agentOptions }
       : agentOptions;
-  const newAgent = new createHttpsProxyAgent.HttpsProxyAgent(merged);
+  const newAgent = new HttpsProxyAgent(merged);
   if (userHttpsAgent && userHttpsAgent.options) {
     const originTLSOptions = { ...userHttpsAgent.options };
     const callback = (
@@ -269,7 +276,7 @@ function makeProxyFieldReader(proxy: unknown): (key: string) => unknown {
       : undefined;
 }
 
-function resolveProxyAuth(proxy: unknown): unknown {
+function resolveProxyAuth(proxy: unknown, config?: InternalFaxiosRequestConfig): unknown {
   const readField = makeProxyFieldReader(proxy);
 
   const proxyUsername = readField("username");
@@ -297,7 +304,7 @@ function resolveProxyAuth(proxy: unknown): unknown {
       throw new FaxiosError(
         "Invalid proxy authorization",
         FaxiosError.ERR_BAD_OPTION,
-        { proxy } as unknown as InternalFaxiosRequestConfig
+        config
       );
     }
   }
@@ -311,7 +318,7 @@ function setupHttpsProxy(
   proxyAuth: unknown,
   configHttpsAgent: unknown
 ): void {
-  if (configHttpsAgent instanceof createHttpsProxyAgent.HttpsProxyAgent) {
+  if (configHttpsAgent instanceof HttpsProxyAgent) {
     return;
   }
   const readField = makeProxyFieldReader(proxy);
@@ -345,9 +352,7 @@ function setupHttpsProxy(
   }
   const tunnelingAgent = getTunnelingAgent(
     agentOptions,
-    configHttpsAgent as
-      | (http.Agent & { options?: Record<string, unknown>; })
-      | undefined
+    configHttpsAgent as (http.Agent & { options?: Record<string, unknown>; }) | undefined
   );
   options["agent"] = tunnelingAgent;
   if (options["agents"]) {
@@ -422,7 +427,8 @@ function setProxy(
   configProxy: unknown,
   location: string,
   isRedirect: boolean,
-  configHttpsAgent: unknown
+  configHttpsAgent: unknown,
+  config?: InternalFaxiosRequestConfig
 ): void {
   let proxy: unknown = configProxy;
   if (!proxy && proxy !== false) {
@@ -443,7 +449,7 @@ function setProxy(
   }
 
   if (proxy) {
-    const proxyAuth = resolveProxyAuth(proxy);
+    const proxyAuth = resolveProxyAuth(proxy, config);
     const targetIsHttps = isHttps.test(String(options["protocol"]));
     if (targetIsHttps) {
       setupHttpsProxy(options, proxy, proxyAuth, configHttpsAgent);
@@ -460,7 +466,8 @@ function setProxy(
         configProxy,
         String((redirectOptions as Record<string, unknown>)["href"]),
         true,
-        configHttpsAgent
+        configHttpsAgent,
+        config
       );
     };
 }
@@ -547,7 +554,7 @@ const http2Transport = {
 
     const session = http2Sessions.getSession(
       authority,
-      http2Options as Record<string, unknown>
+      http2Options as Record<string, unknown> & { sessionTimeout?: number | null; }
     );
 
     const {
@@ -1090,9 +1097,7 @@ function makeHandleResponse(ctx: ResponseContext): (res: unknown) => void {
               responseLength,
               progressEventReducer(
                 asyncDecorator(
-                  ctx.onDownloadProgress as (
-                    ...args: Array<unknown>
-                  ) => unknown
+                  ctx.onDownloadProgress as (...args: Array<unknown>) => unknown
                 ),
                 true,
                 3
@@ -1307,7 +1312,8 @@ function buildRequestOptions(
         (parsed.port ? ":" + parsed.port : "") +
         String(options["path"]),
       false,
-      httpsAgent
+      httpsAgent,
+      config
     );
   }
 
