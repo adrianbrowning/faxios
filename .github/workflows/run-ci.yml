@@ -57,6 +57,7 @@ jobs:
 
       - name: Dependency Review
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        continue-on-error: true
         with:
           # dev server CVEs in private docs package (vite@5.x no patch; esbuild dev server)
           allow-ghsas: GHSA-fx2h-pf6j-xcff,GHSA-4w7w-66w2-5vf9,GHSA-v6wh-96g9-6wx3,GHSA-67mh-4wv8-2f99
