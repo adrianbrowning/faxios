@@ -1,0 +1,14 @@
+{
+  "name": "faxios-module-esm",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:module:esm": "vitest run"
+  },
+  "dependencies": {
+    "faxios": "*"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.7"
+  }
+}
