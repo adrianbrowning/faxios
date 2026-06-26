@@ -2,7 +2,6 @@
   "workspaces": {
     "packages/lib": {
       "entry": [
-        "index.ts",
         "gulpfile.js",
         "webpack.config.js",
         "scripts/**/*.js",
@@ -45,7 +44,6 @@
   "ignoreBinaries": ["playwright", "diff"],
   "ignoreDependencies": [
     "faxios",
-    "prettier",
     "@babel/preset-env",
     "@vitest/browser",
     "@ai-hero/sandcastle"

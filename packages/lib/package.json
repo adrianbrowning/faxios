@@ -70,6 +70,7 @@
   ],
   "scripts": {
     "build": "zshy",
+    "bp": "pnpm build && pnpm pack",
     "version": "npm run build && git add package.json",
     "preversion": "gulp version",
     "test": "pnpm test:vitest",

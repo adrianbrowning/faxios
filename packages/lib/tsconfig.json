@@ -6,14 +6,6 @@
     "incremental": false,
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
   },
-  "include": [
-    "eslint.config.ts",
-    "eslint.config.style.ts",
-    "./**/*.ts"
-    //    "./src/**/*.ts",
-    //    "./tests/unit/**/*.ts",
-    //    "./tests/setup/**/*.ts",
-    //    "./tests/module/esm/**/*.ts"
-  ],
-  "exclude": ["node_modules", "dist", "tests/smoke", "tests/module/cjs"]
+  "include": ["./src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }
