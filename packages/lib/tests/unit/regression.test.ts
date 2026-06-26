@@ -10,7 +10,7 @@ import faxios from "../../src/index.ts";
 import platform from "../../src/lib/platform/index.js";
 import type { FaxiosResponse } from "../../src/lib/types.js";
 
-type AnyInterceptorManager = { use: (fn: (v: unknown) => unknown) => number };
+type AnyInterceptorManager = { use: (fn: (v: unknown) => unknown) => number; };
 
 describe("regression", () => {
   describe("issues", () => {
@@ -18,8 +18,8 @@ describe("regression", () => {
       // Depends on network: https://postman-echo.com
       it("should not fail with query parsing", async () => {
         const { data } = (await faxios.get(
-          "https://postman-echo.com/get?foo1=bar1&foo2=bar2",
-        )) as FaxiosResponse<{ args: Record<string, string> }>;
+          "https://postman-echo.com/get?foo1=bar1&foo2=bar2"
+        ));
 
         assert.strictEqual(data.args.foo1, "bar1");
         assert.strictEqual(data.args.foo2, "bar2");
@@ -35,7 +35,7 @@ describe("regression", () => {
 
         const server = http
           .createServer((_req, res) => {
-            res.setHeader("Set-Cookie", [cookie1, cookie2]);
+            res.setHeader("Set-Cookie", [ cookie1, cookie2 ]);
             res.writeHead(200);
             res.write("Hi there");
             res.end();
@@ -44,10 +44,10 @@ describe("regression", () => {
 
         const request = faxios.create();
 
-        (request.interceptors.response as AnyInterceptorManager).use((res) => {
+        (request.interceptors.response as AnyInterceptorManager).use(res => {
           assert.deepStrictEqual(
             (res as FaxiosResponse).headers["set-cookie"],
-            [cookie1, cookie2],
+            [ cookie1, cookie2 ]
           );
           return res;
         });
@@ -56,7 +56,8 @@ describe("regression", () => {
           await request({
             url: `http://localhost:${(server.address() as AddressInfo).port}`,
           });
-        } finally {
+        }
+        finally {
           server.close();
         }
       });
@@ -83,14 +84,16 @@ describe("regression", () => {
 
         try {
           await instance.get("/status/400");
-        } catch (error) {
-          assert.equal((error as { name: string }).name, "FaxiosError");
+        }
+        catch (error) {
+          assert.equal((error as { name: string; }).name, "FaxiosError");
           assert.equal(
-            (error as { isFaxiosError: boolean }).isFaxiosError,
-            true,
+            (error as { isFaxiosError: boolean; }).isFaxiosError,
+            true
           );
-          assert.equal((error as { status: number }).status, 400);
-        } finally {
+          assert.equal((error as { status: number; }).status, 400);
+        }
+        finally {
           server.close();
         }
       });
@@ -110,14 +113,16 @@ describe("regression", () => {
 
         try {
           await instance.get("/status/400");
-        } catch (error) {
-          assert.equal((error as { name: string }).name, "FaxiosError");
+        }
+        catch (error) {
+          assert.equal((error as { name: string; }).name, "FaxiosError");
           assert.equal(
-            (error as { isFaxiosError: boolean }).isFaxiosError,
-            true,
+            (error as { isFaxiosError: boolean; }).isFaxiosError,
+            true
           );
-          assert.equal((error as { status: number }).status, 400);
-        } finally {
+          assert.equal((error as { status: number; }).status, 400);
+        }
+        finally {
           server.close();
         }
       });
@@ -155,7 +160,7 @@ describe("regression", () => {
               JSON.stringify({
                 msg: "Protected",
                 headers: req.headers,
-              }),
+              })
             );
             return;
           }
@@ -184,14 +189,14 @@ describe("regression", () => {
             password: "password",
           },
         },
-      })) as FaxiosResponse<{ msg: string; headers: Record<string, string> }>;
+      }));
 
       assert.strictEqual(fail, false);
       assert.strictEqual(response.data.msg, "Protected");
       assert.strictEqual(response.data.headers.host, "localhost:" + evilPort);
       assert.strictEqual(
         response.data.headers["proxy-authorization"],
-        "Basic " + Buffer.from("sam:password").toString("base64"),
+        "Basic " + Buffer.from("sam:password").toString("base64")
       );
 
       return response;
@@ -238,9 +243,10 @@ describe("regression", () => {
 
       try {
         await ssrfFaxios.get(`/${userId}`);
-      } catch (error) {
+      }
+      catch (error) {
         assert.ok(
-          (error as { message: string }).message.startsWith("Invalid URL"),
+          (error as { message: string; }).message.startsWith("Invalid URL")
         );
         return;
       }
@@ -272,23 +278,23 @@ describe("regression", () => {
         const userId = "/localhost:" + String(badPort);
 
         const response = (await ssrfFaxios.get(
-          `/${userId}`,
+          `/${userId}`
         )) as FaxiosResponse<string> & {
-          config: { baseURL?: string; url?: string };
-          request: { res: { responseUrl: string } };
+          config: { baseURL?: string; url?: string; };
+          request: { res: { responseUrl: string; }; };
         };
         assert.strictEqual(response.data, "bad");
         assert.strictEqual(
           response.config.baseURL,
-          "http://localhost:" + String(goodPort),
+          "http://localhost:" + String(goodPort)
         );
         assert.strictEqual(
           response.config.url,
-          "//localhost:" + String(badPort),
+          "//localhost:" + String(badPort)
         );
         assert.strictEqual(
           response.request.res.responseUrl,
-          "http://localhost:" + String(badPort) + "/",
+          "http://localhost:" + String(badPort) + "/"
         );
       });
     });

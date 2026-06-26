@@ -84,7 +84,7 @@ describe("Prototype Pollution Protection", () => {
     it("should filter __proto__ key at top level", () => {
       const result = utils.merge(
         {},
-        { __proto__: { polluted: "yes" }, safe: "value" },
+        { __proto__: { polluted: "yes" }, safe: "value" }
       );
 
       assert.strictEqual(Object.prototype.polluted, undefined);
@@ -95,7 +95,7 @@ describe("Prototype Pollution Protection", () => {
     it("should filter constructor key at top level", () => {
       const result = utils.merge(
         {},
-        { constructor: { polluted: "yes" }, safe: "value" },
+        { constructor: { polluted: "yes" }, safe: "value" }
       );
 
       assert.strictEqual(result.safe, "value");
@@ -105,7 +105,7 @@ describe("Prototype Pollution Protection", () => {
     it("should filter prototype key at top level", () => {
       const result = utils.merge(
         {},
-        { prototype: { polluted: "yes" }, safe: "value" },
+        { prototype: { polluted: "yes" }, safe: "value" }
       );
 
       assert.strictEqual(result.safe, "value");
@@ -120,7 +120,7 @@ describe("Prototype Pollution Protection", () => {
             __proto__: { polluted: "nested" },
             "Content-Type": "application/json",
           },
-        },
+        }
       );
 
       assert.strictEqual(Object.prototype.polluted, undefined);
@@ -136,7 +136,7 @@ describe("Prototype Pollution Protection", () => {
             constructor: { prototype: { polluted: "nested" } },
             "Content-Type": "application/json",
           },
-        },
+        }
       );
 
       assert.strictEqual(Object.prototype.polluted, undefined);
@@ -152,7 +152,7 @@ describe("Prototype Pollution Protection", () => {
             prototype: { polluted: "nested" },
             "Content-Type": "application/json",
           },
-        },
+        }
       );
 
       assert.strictEqual(result.headers["Content-Type"], "application/json");
@@ -170,21 +170,21 @@ describe("Prototype Pollution Protection", () => {
               safe: "value",
             },
           },
-        },
+        }
       );
 
       assert.strictEqual(Object.prototype.polluted, undefined);
       assert.strictEqual(result.level1.level2.safe, "value");
       assert.strictEqual(
         result.level1.level2.hasOwnProperty("__proto__"),
-        false,
+        false
       );
     });
 
     it("should still merge regular properties correctly", () => {
       const result: any = utils.merge(
         { a: 1, b: { c: 2 } },
-        { b: { d: 3 }, e: 4 },
+        { b: { d: 3 }, e: 4 }
       );
 
       assert.strictEqual(result.a, 1);
@@ -194,7 +194,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should handle JSON.parse payloads safely", () => {
-      const malicious = JSON.parse('{"__proto__": {"polluted": "yes"}}');
+      const malicious = JSON.parse("{\"__proto__\": {\"polluted\": \"yes\"}}");
       const result = utils.merge({}, malicious);
 
       assert.strictEqual(Object.prototype.polluted, undefined);
@@ -203,7 +203,7 @@ describe("Prototype Pollution Protection", () => {
 
     it("should handle nested JSON.parse payloads safely", () => {
       const malicious = JSON.parse(
-        '{"headers": {"constructor": {"prototype": {"polluted": "yes"}}}}',
+        "{\"headers\": {\"constructor\": {\"prototype\": {\"polluted\": \"yes\"}}}}"
       );
 
       const result: any = utils.merge({}, malicious);
@@ -222,7 +222,7 @@ describe("Prototype Pollution Protection", () => {
           constructor: { polluted: "yes" },
           prototype: { polluted: "yes" },
           url: "/api/test",
-        },
+        }
       );
 
       assert.strictEqual(Object.prototype.polluted, undefined);
@@ -240,7 +240,7 @@ describe("Prototype Pollution Protection", () => {
             __proto__: { polluted: "yes" },
             "Content-Type": "application/json",
           },
-        },
+        }
       );
 
       assert.strictEqual(Object.prototype.polluted, undefined);
@@ -256,7 +256,7 @@ describe("Prototype Pollution Protection", () => {
             __proto__: { polluted: "yes" },
             safe: "value",
           },
-        },
+        }
       );
 
       assert.strictEqual(Object.prototype.polluted, undefined);
@@ -293,7 +293,7 @@ describe("Prototype Pollution Protection", () => {
       assert.strictEqual(result.headers.common.Accept, "application/json");
       assert.strictEqual(
         result.headers.common["Content-Type"],
-        "application/json",
+        "application/json"
       );
     });
 
@@ -304,8 +304,8 @@ describe("Prototype Pollution Protection", () => {
       ObjProto.transformRequest = polluted;
 
       const result = mergeConfig(
-        { transformRequest: [(d) => d] },
-        { url: "/x" },
+        { transformRequest: [ d => d ] },
+        { url: "/x" }
       );
 
       assert.notStrictEqual(result.transformRequest, polluted);
@@ -317,8 +317,8 @@ describe("Prototype Pollution Protection", () => {
       ObjProto.transformResponse = polluted;
 
       const result = mergeConfig(
-        { transformResponse: [(d) => d] },
-        { url: "/x" },
+        { transformResponse: [ d => d ] },
+        { url: "/x" }
       );
 
       assert.notStrictEqual(result.transformResponse, polluted);
@@ -342,7 +342,7 @@ describe("Prototype Pollution Protection", () => {
 
       const result: any = transformFn.call(
         ctx,
-        '{"role":"user","balance":100}',
+        "{\"role\":\"user\",\"balance\":100}"
       );
 
       assert.strictEqual(reviverCalled, false);
@@ -358,7 +358,7 @@ describe("Prototype Pollution Protection", () => {
 
       const result = (defaults.transformResponse as Array<any>)[0].call(
         ctx,
-        "plain text",
+        "plain text"
       );
       assert.strictEqual(result, "plain text");
       delete ObjProto.responseType;
@@ -381,11 +381,11 @@ describe("Prototype Pollution Protection", () => {
 
       const server = http.createServer((_req, res) => {
         res.writeHead(401, { "Content-Type": "application/json" });
-        res.end('{"error":"unauthorized"}');
+        res.end("{\"error\":\"unauthorized\"}");
       });
 
-      await new Promise<void>((resolve) =>
-        server.listen(0, "127.0.0.1", () => resolve()),
+      await new Promise<void>(resolve =>
+        server.listen(0, "127.0.0.1", () => resolve())
       );
       const { port } = server.address() as AddressInfo;
 
@@ -393,16 +393,18 @@ describe("Prototype Pollution Protection", () => {
         let threw = false;
         try {
           await ax.get(`http://127.0.0.1:${port}/`);
-        } catch (err) {
+        }
+        catch (err) {
           threw = true;
           assert.strictEqual(
-            (err as { response: { status: number } }).response.status,
-            401,
+            (err as { response: { status: number; }; }).response.status,
+            401
           );
         }
         assert.strictEqual(threw, true);
-      } finally {
-        await new Promise<void>((resolve) => server.close(() => resolve()));
+      }
+      finally {
+        await new Promise<void>(resolve => server.close(() => resolve()));
       }
     }, 10000);
   });
@@ -435,8 +437,8 @@ describe("Prototype Pollution Protection", () => {
         res.end(JSON.stringify(payload));
       });
 
-      await new Promise<void>((resolve) =>
-        server.listen(0, "127.0.0.1", () => resolve()),
+      await new Promise<void>(resolve =>
+        server.listen(0, "127.0.0.1", () => resolve())
       );
       const { port } = server.address() as AddressInfo;
 
@@ -446,8 +448,9 @@ describe("Prototype Pollution Protection", () => {
         assert.strictEqual(reviverCalled, false);
         assert.deepStrictEqual(res.data, payload);
         assert.deepStrictEqual(stolen, {});
-      } finally {
-        await new Promise<void>((resolve) => server.close(() => resolve()));
+      }
+      finally {
+        await new Promise<void>(resolve => server.close(() => resolve()));
       }
     }, 10000);
   });
@@ -460,7 +463,7 @@ describe("Prototype Pollution Protection", () => {
       ObjProto.transport = {
         request(
           options: http.RequestOptions,
-          handleResponse: (res: http.IncomingMessage) => void,
+          handleResponse: (res: http.IncomingMessage) => void
         ) {
           hijackCalled = true;
           return http.request(options, handleResponse);
@@ -469,11 +472,11 @@ describe("Prototype Pollution Protection", () => {
 
       const server = http.createServer((_req, res) => {
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end('{"ok":true}');
+        res.end("{\"ok\":true}");
       });
 
-      await new Promise<void>((resolve) =>
-        server.listen(0, "127.0.0.1", () => resolve()),
+      await new Promise<void>(resolve =>
+        server.listen(0, "127.0.0.1", () => resolve())
       );
       const { port } = server.address() as AddressInfo;
 
@@ -481,8 +484,9 @@ describe("Prototype Pollution Protection", () => {
         const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.data.ok, true);
         assert.strictEqual(hijackCalled, false);
-      } finally {
-        await new Promise<void>((resolve) => server.close(() => resolve()));
+      }
+      finally {
+        await new Promise<void>(resolve => server.close(() => resolve()));
       }
     }, 10000);
   });
@@ -493,22 +497,22 @@ describe("Prototype Pollution Protection", () => {
   // beforeRedirect, insecureHTTPParser).
   describe("http adapter gadgets", () => {
     async function startServer(
-      handler?: http.RequestListener,
+      handler?: http.RequestListener
     ): Promise<ServerLike> {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const server = http.createServer(
           handler ||
             ((req, res) => {
               res.writeHead(200, { "Content-Type": "application/json" });
               res.end(JSON.stringify({ headers: req.headers, url: req.url }));
-            }),
+            })
         );
         server.listen(0, "127.0.0.1", () => resolve(server));
       });
     }
 
     async function stopServer(server: ServerLike): Promise<void> {
-      return new Promise((resolve) => server.close(() => resolve()));
+      return new Promise(resolve => server.close(() => resolve()));
     }
 
     it("should not pick up Object.prototype.auth as an Authorization header", async () => {
@@ -520,7 +524,8 @@ describe("Prototype Pollution Protection", () => {
       try {
         const res = await ax.get(`http://127.0.0.1:${port}/api`);
         assert.strictEqual(res.data.headers.authorization, undefined);
-      } finally {
+      }
+      finally {
         await stopServer(server);
       }
     }, 10000);
@@ -535,7 +540,8 @@ describe("Prototype Pollution Protection", () => {
         const res = await ax.get(`http://127.0.0.1:${port}/api`);
         assert.strictEqual(res.status, 200);
         assert.strictEqual(res.data.url, "/api");
-      } finally {
+      }
+      finally {
         await stopServer(server);
       }
     }, 10000);
@@ -561,20 +567,21 @@ describe("Prototype Pollution Protection", () => {
         const res = await ax.get(`http://127.0.0.1:${redirectorPort}/start`);
         assert.strictEqual(res.status, 200);
         assert.strictEqual(hijackCalled, false);
-      } finally {
+      }
+      finally {
         await stopServer(redirector);
         await stopServer(target);
       }
     }, 10000);
 
     it("should not pick up Object.prototype.sensitiveHeaders during redirects", async () => {
-      ObjProto.sensitiveHeaders = ["X-Secret"];
+      ObjProto.sensitiveHeaders = [ "X-Secret" ];
       let capturedHeaders: http.IncomingHttpHeaders | undefined;
 
       const target = await startServer((req, res) => {
         capturedHeaders = req.headers;
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end('{"ok":true}');
+        res.end("{\"ok\":true}");
       });
       const { port: targetPort } = target.address() as AddressInfo;
 
@@ -591,7 +598,8 @@ describe("Prototype Pollution Protection", () => {
           headers: { "X-Secret": "keep" },
         });
         assert.strictEqual(capturedHeaders!["x-secret"], "keep");
-      } finally {
+      }
+      finally {
         await stopServer(redirector);
         await stopServer(target);
       }
@@ -615,12 +623,12 @@ describe("Prototype Pollution Protection", () => {
         "\n" +
         "{}";
       const malformed = await new Promise<import("node:net").Server>(
-        (resolve) => {
-          const srv = net.createServer((socket) => {
+        resolve => {
+          const srv = net.createServer(socket => {
             socket.once("data", () => socket.end(malformedPayload));
           });
           srv.listen(0, "127.0.0.1", () => resolve(srv));
-        },
+        }
       );
       const { port } = malformed.address() as AddressInfo;
 
@@ -631,17 +639,18 @@ describe("Prototype Pollution Protection", () => {
           await ax.get(`http://127.0.0.1:${port}/`, {
             transitional: { clarifyTimeoutError: false },
           });
-        } catch (err) {
+        }
+        catch (err) {
           threw = true;
           caughtCode = String(
             err &&
-              ((err as NodeJS.ErrnoException).code || (err as Error).message),
+              ((err as NodeJS.ErrnoException).code || (err as Error).message)
           );
         }
         assert.strictEqual(
           threw,
           true,
-          `request should be rejected by the strict HTTP parser (got: ${caughtCode || "success"})`,
+          `request should be rejected by the strict HTTP parser (got: ${caughtCode || "success"})`
         );
         // The exact llhttp code for LF-only line terminators varies across
         // Node versions (historically HPE_LF_EXPECTED, more recently
@@ -651,10 +660,11 @@ describe("Prototype Pollution Protection", () => {
         assert.match(
           caughtCode,
           /^HPE_/,
-          `expected an HPE_* parser error, got: ${caughtCode}`,
+          `expected an HPE_* parser error, got: ${caughtCode}`
         );
-      } finally {
-        await new Promise<void>((resolve) => malformed.close(() => resolve()));
+      }
+      finally {
+        await new Promise<void>(resolve => malformed.close(() => resolve()));
       }
     }, 10000);
 
@@ -679,9 +689,10 @@ describe("Prototype Pollution Protection", () => {
         assert.strictEqual(
           res.data.headers["proxy-authorization"],
           undefined,
-          "polluted Object.prototype.auth must not produce a Proxy-Authorization header",
+          "polluted Object.prototype.auth must not produce a Proxy-Authorization header"
         );
-      } finally {
+      }
+      finally {
         await stopServer(target);
         await stopServer(proxy);
       }
@@ -708,9 +719,10 @@ describe("Prototype Pollution Protection", () => {
         assert.strictEqual(
           res.data.headers["proxy-authorization"],
           undefined,
-          "polluted Object.prototype.username must not produce a Proxy-Authorization header",
+          "polluted Object.prototype.username must not produce a Proxy-Authorization header"
         );
-      } finally {
+      }
+      finally {
         await stopServer(target);
         await stopServer(proxy);
       }
@@ -731,10 +743,10 @@ describe("Prototype Pollution Protection", () => {
       const hijacker = http.createServer((_req, res) => {
         hijackHit = true;
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end('{"hijacked":true}');
+        res.end("{\"hijacked\":true}");
       });
-      await new Promise<void>((resolve) =>
-        hijacker.listen(0, "127.0.0.1", () => resolve()),
+      await new Promise<void>(resolve =>
+        hijacker.listen(0, "127.0.0.1", () => resolve())
       );
       const { port: hijackerPort } = hijacker.address() as AddressInfo;
 
@@ -744,15 +756,17 @@ describe("Prototype Pollution Protection", () => {
         let threw = false;
         try {
           await ax.get("/api");
-        } catch (_err) {
+        }
+        catch (_err) {
           threw = true;
         }
         // Either the request fails (desired — no baseURL means no host) or it
         // resolves, but it must NOT hit the polluted hijacker.
         assert.strictEqual(hijackHit, false);
         assert.strictEqual(threw, true);
-      } finally {
-        await new Promise<void>((resolve) => hijacker.close(() => resolve()));
+      }
+      finally {
+        await new Promise<void>(resolve => hijacker.close(() => resolve()));
       }
     }, 10000);
 
@@ -763,19 +777,19 @@ describe("Prototype Pollution Protection", () => {
       const hijacker = http.createServer((_req, res) => {
         hijackHit = true;
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end('{"hijacked":true}');
+        res.end("{\"hijacked\":true}");
       });
-      await new Promise<void>((resolve) =>
-        hijacker.listen(0, "127.0.0.1", () => resolve()),
+      await new Promise<void>(resolve =>
+        hijacker.listen(0, "127.0.0.1", () => resolve())
       );
       const { port: hijackerPort } = hijacker.address() as AddressInfo;
 
       const target = http.createServer((_req, res) => {
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end('{"ok":true}');
+        res.end("{\"ok\":true}");
       });
-      await new Promise<void>((resolve) =>
-        target.listen(0, "127.0.0.1", () => resolve()),
+      await new Promise<void>(resolve =>
+        target.listen(0, "127.0.0.1", () => resolve())
       );
       const { port: targetPort } = target.address() as AddressInfo;
 
@@ -789,7 +803,8 @@ describe("Prototype Pollution Protection", () => {
           await ax.get(`http://127.0.0.1:${targetPort}/api`, {
             allowAbsoluteUrls: false,
           });
-        } catch (_err) {
+        }
+        catch (_err) {
           threw = true;
         }
         assert.strictEqual(hijackHit, false);
@@ -798,9 +813,10 @@ describe("Prototype Pollution Protection", () => {
         // If baseURL were inherited from prototype, it would be truthy and
         // combineURLs would be invoked, routing to the hijacker.
         assert.strictEqual(threw, false);
-      } finally {
-        await new Promise<void>((resolve) => hijacker.close(() => resolve()));
-        await new Promise<void>((resolve) => target.close(() => resolve()));
+      }
+      finally {
+        await new Promise<void>(resolve => hijacker.close(() => resolve()));
+        await new Promise<void>(resolve => target.close(() => resolve()));
       }
     }, 10000);
   });
@@ -814,10 +830,11 @@ describe("Prototype Pollution Protection", () => {
 
         assert.ok(
           resolved.url!.indexOf("injected") === -1,
-          "polluted params must not appear in URL",
+          "polluted params must not appear in URL"
         );
         assert.strictEqual(resolved.url, "/api", "URL must remain unchanged");
-      } finally {
+      }
+      finally {
         delete ObjProto.params;
       }
     });
@@ -839,14 +856,15 @@ describe("Prototype Pollution Protection", () => {
         assert.strictEqual(
           serializerInvoked,
           false,
-          "polluted paramsSerializer must not be called",
+          "polluted paramsSerializer must not be called"
         );
         // The URL should have legit param serialized normally
         assert.ok(
           resolved.url!.indexOf("legit=true") !== -1,
-          "legitimate params must still be serialized",
+          "legitimate params must still be serialized"
         );
-      } finally {
+      }
+      finally {
         delete ObjProto.paramsSerializer;
       }
     });
@@ -880,7 +898,8 @@ describe("Prototype Pollution Protection", () => {
       try {
         const merged = mergeConfig({ url: "/x" }, {});
         assert.strictEqual(merged.polluted, undefined);
-      } finally {
+      }
+      finally {
         delete Object.prototype.polluted;
       }
     });
@@ -890,9 +909,9 @@ describe("Prototype Pollution Protection", () => {
   // is neutralized end-to-end by the null-prototype config.
   describe("Full gadget coverage via null-prototype config", () => {
     async function startEcho(
-      handler?: http.RequestListener,
+      handler?: http.RequestListener
     ): Promise<ServerLike> {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const server = http.createServer(
           handler ||
             ((req, res) => {
@@ -906,16 +925,16 @@ describe("Prototype Pollution Protection", () => {
                     method: req.method,
                     headers: req.headers,
                     body,
-                  }),
+                  })
                 );
               });
-            }),
+            })
         );
         server.listen(0, "127.0.0.1", () => resolve(server));
       });
     }
     const stop = async (s: ServerLike): Promise<void> =>
-      new Promise((resolve) => s.close(() => resolve()));
+      new Promise(resolve => s.close(() => resolve()));
 
     it("should ignore polluted transformRequest", async () => {
       let invoked = false;
@@ -932,7 +951,8 @@ describe("Prototype Pollution Protection", () => {
         });
         assert.strictEqual(invoked, false);
         assert.notStrictEqual(res.data.body, "INJECTED");
-      } finally {
+      }
+      finally {
         await stop(server);
       }
     }, 10000);
@@ -950,7 +970,8 @@ describe("Prototype Pollution Protection", () => {
         const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(invoked, false);
         assert.notStrictEqual(res.data, "HIJACKED");
-      } finally {
+      }
+      finally {
         await stop(server);
       }
     }, 10000);
@@ -975,7 +996,8 @@ describe("Prototype Pollution Protection", () => {
         const res = await ax.get(`http://127.0.0.1:${port}/ok`);
         assert.strictEqual(hijacked, false);
         assert.notStrictEqual(res.data, "pwned");
-      } finally {
+      }
+      finally {
         await stop(server);
       }
     }, 10000);
@@ -998,7 +1020,8 @@ describe("Prototype Pollution Protection", () => {
         const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.status, 200);
         assert.strictEqual(agentUsed, false);
-      } finally {
+      }
+      finally {
         await stop(server);
       }
     }, 10000);
@@ -1015,7 +1038,8 @@ describe("Prototype Pollution Protection", () => {
       try {
         const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.status, 200);
-      } finally {
+      }
+      finally {
         await stop(server);
       }
     }, 10000);
@@ -1029,7 +1053,8 @@ describe("Prototype Pollution Protection", () => {
       try {
         const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.status, 200);
-      } finally {
+      }
+      finally {
         await stop(server);
       }
     }, 10000);
@@ -1044,7 +1069,8 @@ describe("Prototype Pollution Protection", () => {
       try {
         const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.status, 200);
-      } finally {
+      }
+      finally {
         await stop(server);
       }
     }, 10000);
@@ -1054,7 +1080,7 @@ describe("Prototype Pollution Protection", () => {
       const merged = mergeConfig({}, { url: "/x" });
       assert.strictEqual(
         Object.prototype.hasOwnProperty.call(merged, "timeout"),
-        false,
+        false
       );
       assert.strictEqual(merged.timeout, undefined);
     });
@@ -1068,7 +1094,8 @@ describe("Prototype Pollution Protection", () => {
       try {
         const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.status, 200);
-      } finally {
+      }
+      finally {
         await stop(server);
       }
     }, 10000);
@@ -1083,7 +1110,8 @@ describe("Prototype Pollution Protection", () => {
       try {
         const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.status, 200);
-      } finally {
+      }
+      finally {
         await stop(server);
       }
     }, 10000);
@@ -1102,7 +1130,8 @@ describe("Prototype Pollution Protection", () => {
         const res = await ax.get(`http://127.0.0.1:${port}/x`);
         assert.strictEqual(serializerInvoked, false);
         assert.strictEqual(res.data.url, "/x");
-      } finally {
+      }
+      finally {
         await stop(server);
       }
     }, 10000);
@@ -1115,7 +1144,8 @@ describe("Prototype Pollution Protection", () => {
         // faxios.get should still send GET, not DELETE.
         const res = await ax.get(`http://127.0.0.1:${port}/ok`);
         assert.strictEqual(res.data.method, "GET");
-      } finally {
+      }
+      finally {
         await stop(server);
       }
     }, 10000);
@@ -1127,7 +1157,8 @@ describe("Prototype Pollution Protection", () => {
       try {
         const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(res.status, 200);
-      } finally {
+      }
+      finally {
         await stop(server);
       }
     }, 10000);
@@ -1142,7 +1173,8 @@ describe("Prototype Pollution Protection", () => {
         // and res.data should be an object, not an ArrayBuffer/Buffer.
         assert.strictEqual(typeof res.data, "object");
         assert.ok(!Buffer.isBuffer(res.data));
-      } finally {
+      }
+      finally {
         await stop(server);
       }
     }, 10000);
@@ -1157,7 +1189,7 @@ describe("Prototype Pollution Protection", () => {
 
       const result: any = utils.merge(
         {},
-        { headers: { "Content-Type": "application/json" } },
+        { headers: { "Content-Type": "application/json" } }
       );
 
       assert.strictEqual(result.headers.evil, undefined);
@@ -1229,7 +1261,7 @@ describe("Prototype Pollution Protection", () => {
       const a: Record<string, unknown> = {};
       const ctx = { tag: "ctx" };
       const b = {
-        method(this: { tag: string }) {
+        method(this: { tag: string; }) {
           return this.tag;
         },
       };
@@ -1247,8 +1279,8 @@ describe("Prototype Pollution Protection", () => {
 
       assert.strictEqual(Child.prototype.constructor, Child);
       assert.strictEqual(
-        (Child as unknown as { super: unknown }).super,
-        Parent.prototype,
+        (Child as unknown as { super: unknown; }).super,
+        Parent.prototype
       );
     });
 
@@ -1267,15 +1299,15 @@ describe("Prototype Pollution Protection", () => {
   // asserts the attack does not succeed.
   describe("advisory regression — full request flow", () => {
     async function startServer(
-      handler: http.RequestListener,
+      handler: http.RequestListener
     ): Promise<ServerLike> {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const server = http.createServer(handler);
         server.listen(0, "127.0.0.1", () => resolve(server));
       });
     }
     const stop = async (s: ServerLike): Promise<void> =>
-      new Promise((resolve) => s.close(() => resolve()));
+      new Promise(resolve => s.close(() => resolve()));
 
     // Full MITM via prototype pollution gadget in
     // `config.proxy`. mergeConfig must not surface a polluted Object.prototype.proxy
@@ -1290,14 +1322,14 @@ describe("Prototype Pollution Protection", () => {
           host: req.headers.host,
         });
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end('{"hijacked":true}');
+        res.end("{\"hijacked\":true}");
       });
 
       const realHits = [];
       const realServer = await startServer((req, res) => {
         realHits.push({ url: req.url });
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end('{"data":"real"}');
+        res.end("{\"data\":\"real\"}");
       });
 
       try {
@@ -1315,15 +1347,16 @@ describe("Prototype Pollution Protection", () => {
         assert.strictEqual(
           proxyHits.length,
           0,
-          "attacker proxy must not receive any request",
+          "attacker proxy must not receive any request"
         );
         assert.strictEqual(
           realHits.length,
           1,
-          "request must reach the real target",
+          "request must reach the real target"
         );
         assert.deepStrictEqual(res.data, { data: "real" });
-      } finally {
+      }
+      finally {
         await stop(attackerProxy);
         await stop(realServer);
       }
@@ -1351,7 +1384,7 @@ describe("Prototype Pollution Protection", () => {
 
       const server = await startServer((_req, res) => {
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end('{"secret":"keep-me"}');
+        res.end("{\"secret\":\"keep-me\"}");
       });
 
       try {
@@ -1363,15 +1396,16 @@ describe("Prototype Pollution Protection", () => {
         assert.strictEqual(
           invoked,
           false,
-          "polluted transformResponse must not run",
+          "polluted transformResponse must not run"
         );
         assert.strictEqual(stolen, null, "no request context must be captured");
         assert.deepStrictEqual(
           res.data,
           { secret: "keep-me" },
-          "response data must reach the caller untampered",
+          "response data must reach the caller untampered"
         );
-      } finally {
+      }
+      finally {
         await stop(server);
       }
     }, 10000);

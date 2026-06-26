@@ -60,7 +60,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -96,7 +97,7 @@ describe("transform (vitest browser)", () => {
     const responsePromise = faxios.post("/foo", { foo: "bar" });
     const request = getLastRequest();
 
-    expect(request.params).toBe('{"foo":"bar"}');
+    expect(request.params).toBe("{\"foo\":\"bar\"}");
 
     request.respondWith();
     await responsePromise;
@@ -108,7 +109,7 @@ describe("transform (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
 
     const response = await responsePromise;
@@ -117,7 +118,7 @@ describe("transform (vitest browser)", () => {
     expect((response.data as Record<string, string>).foo).toBe("bar");
   });
 
-  it('should throw a SyntaxError if JSON parsing failed and responseType is "json" if silentJSONParsing is false', async () => {
+  it("should throw a SyntaxError if JSON parsing failed and responseType is \"json\" if silentJSONParsing is false", async () => {
     const responsePromise = faxios({
       url: "/foo",
       responseType: "json",
@@ -127,10 +128,10 @@ describe("transform (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{foo": "bar"}',
+      responseText: "{foo\": \"bar\"}",
     });
 
-    const thrown = await responsePromise.catch((error) => error);
+    const thrown = await responsePromise.catch(error => error);
 
     expect(thrown).toBeTruthy();
     expect(thrown.name).toContain("SyntaxError");
@@ -163,7 +164,7 @@ describe("transform (vitest browser)", () => {
       },
     });
     const request = getLastRequest();
-    const rawData = '{"x":1}';
+    const rawData = "{\"x\":1}";
 
     request.respondWith({
       status: 200,
@@ -184,7 +185,7 @@ describe("transform (vitest browser)", () => {
         transformRequest(data) {
           return data;
         },
-      },
+      }
     );
     const request = getLastRequest();
 
@@ -204,11 +205,11 @@ describe("transform (vitest browser)", () => {
         ).concat(function (data: unknown) {
           return (data as string).replace("bar", "baz");
         }),
-      },
+      }
     );
     const request = getLastRequest();
 
-    expect(request.params).toBe('{"foo":"baz"}');
+    expect(request.params).toBe("{\"foo\":\"baz\"}");
 
     request.respondWith();
     await responsePromise;
@@ -241,12 +242,12 @@ describe("transform (vitest browser)", () => {
             return "aa=44";
           },
         ],
-      },
+      }
     );
     const request = getLastRequest();
 
     expect(request.requestHeaders["Content-Type"]).toBe(
-      "application/x-www-form-urlencoded",
+      "application/x-www-form-urlencoded"
     );
 
     request.respondWith();
@@ -265,7 +266,7 @@ describe("transform (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"key1": "value1"}',
+      responseText: "{\"key1\": \"value1\"}",
       responseHeaders: "content-type: application/json",
     });
 

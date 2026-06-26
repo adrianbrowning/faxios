@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const getClosedPort = async () =>
-  new Promise((resolve) => {
+  new Promise(resolve => {
     const srv = net.createServer();
     srv.listen(0, "127.0.0.1", () => {
       const { port } = srv.address() as AddressInfo;
@@ -31,8 +31,9 @@ describe("adapters - network-error details", () => {
         }
       ).get(`http://127.0.0.1:${port}`, { timeout: 500 });
       assert.fail("request unexpectedly succeeded");
-    } catch (err) {
-      const e = err as Error & { isFaxiosError: boolean; code: string };
+    }
+    catch (err) {
+      const e = err as Error & { isFaxiosError: boolean; code: string; };
       assert.ok(e instanceof Error, "should be an Error");
       assert.strictEqual(e.isFaxiosError, true, "isFaxiosError should be true");
 
@@ -42,7 +43,7 @@ describe("adapters - network-error details", () => {
 
       assert.strictEqual(
         (e.cause as NodeJS.ErrnoException).code,
-        "ECONNREFUSED",
+        "ECONNREFUSED"
       );
 
       assert.strictEqual(typeof e.message, "string");
@@ -58,11 +59,11 @@ describe("adapters - network-error details", () => {
     const cert = fs.readFileSync(certPath);
 
     const httpsServer = https.createServer({ key, cert }, (_req, res) =>
-      res.end("ok"),
+      res.end("ok")
     );
 
-    await new Promise<void>((resolve) =>
-      httpsServer.listen(0, "127.0.0.1", resolve),
+    await new Promise<void>(resolve =>
+      httpsServer.listen(0, "127.0.0.1", resolve)
     );
     const { port } = httpsServer.address() as AddressInfo;
 
@@ -76,12 +77,13 @@ describe("adapters - network-error details", () => {
         httpsAgent: new https.Agent({ rejectUnauthorized: true }),
       });
       assert.fail("request unexpectedly succeeded");
-    } catch (err) {
-      const e = err as Error & { code: string };
+    }
+    catch (err) {
+      const e = err as Error & { code: string; };
       const codeStr = String(e.code);
       assert.ok(
         /SELF_SIGNED|UNABLE_TO_VERIFY_LEAF_SIGNATURE|DEPTH_ZERO/.test(codeStr),
-        `unexpected TLS code: ${codeStr}`,
+        `unexpected TLS code: ${codeStr}`
       );
 
       assert.ok("cause" in e, "error.cause should exist");
@@ -90,14 +92,15 @@ describe("adapters - network-error details", () => {
       const causeCode = String((e.cause as NodeJS.ErrnoException).code);
       assert.ok(
         /SELF_SIGNED|UNABLE_TO_VERIFY_LEAF_SIGNATURE|DEPTH_ZERO/.test(
-          causeCode,
+          causeCode
         ),
-        `unexpected cause code: ${causeCode}`,
+        `unexpected cause code: ${causeCode}`
       );
 
       assert.strictEqual(typeof e.message, "string");
-    } finally {
-      await new Promise<void>((resolve) => httpsServer.close(() => resolve()));
+    }
+    finally {
+      await new Promise<void>(resolve => httpsServer.close(() => resolve()));
     }
   });
 });

@@ -4,7 +4,7 @@ import cookies from "../../../lib/src/lib/helpers/cookies.js";
 import faxios from "../../src/index.js";
 import type {
   FaxiosRequestConfig,
-  InternalFaxiosRequestConfig,
+  InternalFaxiosRequestConfig
 } from "../../src/lib/types.js";
 
 class MockXMLHttpRequest {
@@ -49,7 +49,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -67,7 +68,7 @@ const setXsrfCookie = (value: string) => {
 
 const clearXsrfCookie = () => {
   document.cookie = `${faxios.defaults.xsrfCookieName}=; expires=${new Date(
-    Date.now() - 86400000,
+    Date.now() - 86400000
   ).toUTCString()}; path=/`;
 };
 
@@ -99,7 +100,7 @@ describe("xsrf (vitest browser)", () => {
     const request = await sendRequest("/foo");
 
     expect(
-      request.requestHeaders[faxios.defaults.xsrfHeaderName as string],
+      request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
     ).toBeUndefined();
   });
 
@@ -109,7 +110,7 @@ describe("xsrf (vitest browser)", () => {
     const request = await sendRequest("/foo");
 
     expect(
-      request.requestHeaders[faxios.defaults.xsrfHeaderName as string],
+      request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
     ).toBe("12345");
   });
 
@@ -121,7 +122,7 @@ describe("xsrf (vitest browser)", () => {
     });
 
     expect(
-      request.requestHeaders[faxios.defaults.xsrfHeaderName as string],
+      request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
     ).toBeUndefined();
   });
 
@@ -141,7 +142,7 @@ describe("xsrf (vitest browser)", () => {
     const request = await sendRequest("http://example.com/");
 
     expect(
-      request.requestHeaders[faxios.defaults.xsrfHeaderName as string],
+      request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
     ).toBeUndefined();
   });
 
@@ -153,7 +154,7 @@ describe("xsrf (vitest browser)", () => {
     });
 
     expect(
-      request.requestHeaders[faxios.defaults.xsrfHeaderName as string],
+      request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
     ).toBeUndefined();
   });
 
@@ -168,7 +169,7 @@ describe("xsrf (vitest browser)", () => {
       });
 
       expect(
-        request.requestHeaders[faxios.defaults.xsrfHeaderName as string],
+        request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
       ).toBe(token);
     });
 
@@ -182,7 +183,7 @@ describe("xsrf (vitest browser)", () => {
       });
 
       expect(
-        request.requestHeaders[faxios.defaults.xsrfHeaderName as string],
+        request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
       ).toBeUndefined();
     });
 
@@ -193,13 +194,13 @@ describe("xsrf (vitest browser)", () => {
 
       const request = await sendRequest("/foo", {
         withXSRFToken: (config: InternalFaxiosRequestConfig) =>
-          (config as InternalFaxiosRequestConfig & { userFlag: string })
+          (config as InternalFaxiosRequestConfig & { userFlag: string; })
             .userFlag === "yes",
         userFlag: "yes",
       } as FaxiosRequestConfig);
 
       expect(
-        request.requestHeaders[faxios.defaults.xsrfHeaderName as string],
+        request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
       ).toBe(token);
     });
   });
@@ -212,13 +213,13 @@ describe("xsrf (vitest browser)", () => {
     });
 
     const leakCases = [
-      ["number 1", 1],
-      ['string "false"', "false"],
-      ["empty object", {}],
-      ["empty array", []],
+      [ "number 1", 1 ],
+      [ "string \"false\"", "false" ],
+      [ "empty object", {}],
+      [ "empty array", []],
     ];
 
-    leakCases.forEach(([label, value]) => {
+    leakCases.forEach(([ label, value ]) => {
       it(`should not send xsrf header cross-origin when withXSRFToken = ${label}`, async () => {
         setXsrfCookie("12345");
 
@@ -227,7 +228,7 @@ describe("xsrf (vitest browser)", () => {
         });
 
         expect(
-          request.requestHeaders[faxios.defaults.xsrfHeaderName as string],
+          request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
         ).toBeUndefined();
       });
     });
@@ -239,7 +240,7 @@ describe("xsrf (vitest browser)", () => {
       const request = await sendRequest("http://example.com/");
 
       expect(
-        request.requestHeaders[faxios.defaults.xsrfHeaderName as string],
+        request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
       ).toBeUndefined();
     });
 
@@ -252,7 +253,7 @@ describe("xsrf (vitest browser)", () => {
       });
 
       expect(
-        request.requestHeaders[faxios.defaults.xsrfHeaderName as string],
+        request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
       ).toBe(token);
     });
 
@@ -263,7 +264,7 @@ describe("xsrf (vitest browser)", () => {
       const request = await sendRequest("/foo");
 
       expect(
-        request.requestHeaders[faxios.defaults.xsrfHeaderName as string],
+        request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
       ).toBe(token);
     });
   });

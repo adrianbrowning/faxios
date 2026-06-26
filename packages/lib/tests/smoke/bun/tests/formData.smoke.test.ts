@@ -1,18 +1,18 @@
 import { PassThrough, Writable } from "node:stream";
-import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
+import faxios from "faxios";
 import FormDataPackage from "form-data";
 
 const createTransportMock = (
   responseFactory?: (
     body: Buffer,
-    options: Record<string, any>,
-  ) => Record<string, any>,
+    options: Record<string, any>
+  ) => Record<string, any>
 ) => {
   const transport = {
     request(
       options: Record<string, any>,
-      onResponse: (res: PassThrough) => void,
+      onResponse: (res: PassThrough) => void
     ) {
       const chunks: Array<Buffer> = [];
 
@@ -84,9 +84,9 @@ describe("form data", () => {
     });
 
     expect(response.data.contentType).toContain("multipart/form-data");
-    expect(response.data.payload).toContain('name="username"');
+    expect(response.data.payload).toContain("name=\"username\"");
     expect(response.data.payload).toContain("janedoe");
-    expect(response.data.payload).toContain('name="role"');
+    expect(response.data.payload).toContain("name=\"role\"");
     expect(response.data.payload).toContain("admin");
   });
 
@@ -111,13 +111,13 @@ describe("form data", () => {
         adapter: "http",
         proxy: false,
         transport,
-      },
+      }
     );
 
     expect(response.data.contentType).toContain("multipart/form-data");
-    expect(response.data.payload).toContain('name="project"');
+    expect(response.data.payload).toContain("name=\"project\"");
     expect(response.data.payload).toContain("axios");
-    expect(response.data.payload).toContain('name="mode"');
+    expect(response.data.payload).toContain("name=\"mode\"");
     expect(response.data.payload).toContain("compat");
   });
 });

@@ -18,7 +18,7 @@ describe("static api", () => {
   it("should have promise method helpers", async () => {
     const promise = faxios.request({
       url: "/test",
-      adapter: async (config) =>
+      adapter: async config =>
         Promise.resolve({
           data: null,
           status: 200,
@@ -77,7 +77,7 @@ describe("static api", () => {
 
     try {
       await Promise.all(
-        ["delete", "get", "head", "options"].map(async (method) => {
+        [ "delete", "get", "head", "options" ].map(async method => {
           let seenData = "unset";
 
           const fn = (
@@ -88,7 +88,7 @@ describe("static api", () => {
           )[method]!;
           await fn("/test", {
             async adapter(
-              config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig,
+              config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig
             ) {
               seenData = config.data as string;
 
@@ -104,9 +104,10 @@ describe("static api", () => {
           });
 
           assert.strictEqual(seenData, undefined);
-        }),
+        })
       );
-    } finally {
+    }
+    finally {
       delete (Object.prototype as Record<string, unknown>).data;
     }
   });
@@ -129,10 +130,11 @@ describe("static api", () => {
           params: { value: "a b" },
           paramsSerializer: {},
         }),
-        "/foo?value=a+b",
+        "/foo?value=a+b"
       );
       assert.strictEqual(serializeInvoked, false);
-    } finally {
+    }
+    finally {
       delete (Object.prototype as Record<string, unknown>).serialize;
     }
   });
@@ -165,7 +167,7 @@ describe("static api", () => {
           return "";
         },
         adapter: async (
-          config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig,
+          config: import("../../src/lib/types.ts").InternalFaxiosRequestConfig
         ) =>
           Promise.resolve({
             data: null,
@@ -175,12 +177,12 @@ describe("static api", () => {
             config,
             request: {},
           }),
-      },
+      }
     );
 
     assert.strictEqual(
       (transformedData as unknown as Record<symbol, unknown>)[symbolKey],
-      "value",
+      "value"
     );
   });
 });
@@ -211,12 +213,12 @@ describe("instance api", () => {
 
     const client = faxios.create({
       transformRequest: [
-        (data) => {
+        data => {
           transformedData = data;
           return "";
         },
       ],
-      adapter: async (config) =>
+      adapter: async config =>
         Promise.resolve({
           data: null,
           status: 200,
@@ -236,11 +238,11 @@ describe("instance api", () => {
       (transformedData as unknown as Record<symbol | string, unknown>)[
         symbolKey
       ],
-      "value",
+      "value"
     );
     assert.strictEqual(
       (transformedData as unknown as Record<string, unknown>).stringKey,
-      "value",
+      "value"
     );
   });
 });

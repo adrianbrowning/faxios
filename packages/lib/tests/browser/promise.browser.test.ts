@@ -60,7 +60,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -98,7 +99,7 @@ describe("promise (vitest browser)", () => {
 
     request!.respondWith({
       status: 200,
-      responseText: '{"hello":"world"}',
+      responseText: "{\"hello\":\"world\"}",
       responseHeaders: "Content-Type: application/json",
     });
 
@@ -112,24 +113,24 @@ describe("promise (vitest browser)", () => {
   });
 
   it("should support all", async () => {
-    const result = await faxios.all([true, 123] as unknown as Array<
+    const result = await faxios.all([ true, 123 ] as unknown as Array<
       Promise<unknown>
     >);
 
-    expect(result).toEqual([true, 123]);
+    expect(result).toEqual([ true, 123 ]);
   });
 
   it("should support spread", async () => {
     let fulfilled = false;
     const result = await faxios
-      .all([123, 456] as unknown as Array<Promise<unknown>>)
+      .all([ 123, 456 ] as unknown as Array<Promise<unknown>>)
       .then(
         faxios.spread((...args: Array<unknown>) => {
-          const [a, b] = args as [number, number];
+          const [ a, b ] = args as [number, number];
           expect(a + b).toBe(123 + 456);
           fulfilled = true;
           return "hello world";
-        }),
+        })
       );
 
     expect(fulfilled).toBe(true);

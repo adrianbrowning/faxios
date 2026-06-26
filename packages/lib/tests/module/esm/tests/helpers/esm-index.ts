@@ -13,7 +13,7 @@ import type {
   Canceler,
   FaxiosProgressEvent,
   ParamsSerializerOptions,
-  AddressFamily,
+  AddressFamily
 } from "faxios";
 import faxios, {
   FaxiosHeaders,
@@ -23,7 +23,7 @@ import faxios, {
   all,
   isCancel,
   isFaxiosError,
-  spread,
+  spread
 } from "faxios";
 
 const config: FaxiosRequestConfig = {
@@ -31,8 +31,8 @@ const config: FaxiosRequestConfig = {
   method: "get",
   baseURL: "https://api.example.com/",
   allowAbsoluteUrls: false,
-  transformRequest: (data: any) => '{"foo":"bar"}',
-  transformResponse: [(data: any) => ({ baz: "qux" })],
+  transformRequest: (data: any) => "{\"foo\":\"bar\"}",
+  transformResponse: [ (data: any) => ({ baz: "qux" }) ],
   headers: { "X-FOO": "bar" },
   params: { id: 12345 },
   paramsSerializer: {
@@ -40,7 +40,7 @@ const config: FaxiosRequestConfig = {
     encode: (value: any) => value,
     serialize: (
       value: Record<string, any>,
-      options?: ParamsSerializerOptions,
+      options?: ParamsSerializerOptions
     ) => String(value),
   },
   data: { foo: "bar" },
@@ -87,38 +87,48 @@ const handleError = (error: FaxiosError) => {
     console.log(error.response.data);
     console.log(error.response.status);
     console.log(error.response.headers);
-  } else {
+  }
+  else {
     console.log(error.message);
   }
 };
 
-faxios(config).then(handleResponse).catch(handleError);
+faxios(config).then(handleResponse)
+  .catch(handleError);
 
-faxios.get("/user?id=12345").then(handleResponse).catch(handleError);
+faxios.get("/user?id=12345").then(handleResponse)
+  .catch(handleError);
 
 faxios
   .get("/user", { params: { id: 12345 } })
   .then(handleResponse)
   .catch(handleError);
 
-faxios.head("/user").then(handleResponse).catch(handleError);
+faxios.head("/user").then(handleResponse)
+  .catch(handleError);
 
-faxios.options("/user").then(handleResponse).catch(handleError);
+faxios.options("/user").then(handleResponse)
+  .catch(handleError);
 
-faxios.delete("/user").then(handleResponse).catch(handleError);
+faxios.delete("/user").then(handleResponse)
+  .catch(handleError);
 
-faxios.post("/user", { foo: "bar" }).then(handleResponse).catch(handleError);
+faxios.post("/user", { foo: "bar" }).then(handleResponse)
+  .catch(handleError);
 
 faxios
   .post("/user", { foo: "bar" }, { headers: { "X-FOO": "bar" } })
   .then(handleResponse)
   .catch(handleError);
 
-faxios.put("/user", { foo: "bar" }).then(handleResponse).catch(handleError);
+faxios.put("/user", { foo: "bar" }).then(handleResponse)
+  .catch(handleError);
 
-faxios.patch("/user", { foo: "bar" }).then(handleResponse).catch(handleError);
+faxios.patch("/user", { foo: "bar" }).then(handleResponse)
+  .catch(handleError);
 
-faxios.query("/user", { foo: "bar" }).then(handleResponse).catch(handleError);
+faxios.query("/user", { foo: "bar" }).then(handleResponse)
+  .catch(handleError);
 
 // Typed methods
 interface UserCreationDef {
@@ -145,18 +155,22 @@ const handleUserResponse = (response: FaxiosResponse<User>) => {
   console.log(response.config);
 };
 
-faxios.get<User>("/user?id=12345").then(handleUserResponse).catch(handleError);
+faxios.get<User>("/user?id=12345").then(handleUserResponse)
+  .catch(handleError);
 
 faxios
   .get<User>("/user", { params: { id: 12345 } })
   .then(handleUserResponse)
   .catch(handleError);
 
-faxios.head<User>("/user").then(handleUserResponse).catch(handleError);
+faxios.head<User>("/user").then(handleUserResponse)
+  .catch(handleError);
 
-faxios.options<User>("/user").then(handleUserResponse).catch(handleError);
+faxios.options<User>("/user").then(handleUserResponse)
+  .catch(handleError);
 
-faxios.delete<User>("/user").then(handleUserResponse).catch(handleError);
+faxios.delete<User>("/user").then(handleUserResponse)
+  .catch(handleError);
 
 faxios
   .post<User>("/user", { name: "foo", id: 1 })
@@ -181,7 +195,7 @@ faxios
 // with custom response headers FaxiosResponse<T, any, H> result
 
 const handleUserResponseWithCustomHeaders = (
-  response: FaxiosResponse<User, any, ResponseHeaders>,
+  response: FaxiosResponse<User, any, ResponseHeaders>
 ) => {
   console.log(response.data.id);
   console.log(response.data.name);
@@ -220,9 +234,9 @@ faxios
 
 faxios
   .post<
-    User,
-    FaxiosResponse<User, any, ResponseHeaders>
-  >("/user", { name: "foo", id: 1 })
+  User,
+  FaxiosResponse<User, any, ResponseHeaders>
+>("/user", { name: "foo", id: 1 })
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
@@ -230,24 +244,24 @@ faxios
   .post<User, FaxiosResponse<User, any, ResponseHeaders>>(
     "/user",
     { name: "foo", id: 1 },
-    { headers: { "X-FOO": "bar" } },
+    { headers: { "X-FOO": "bar" } }
   )
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
 faxios
   .put<
-    User,
-    FaxiosResponse<User, any, ResponseHeaders>
-  >("/user", { name: "foo", id: 1 })
+  User,
+  FaxiosResponse<User, any, ResponseHeaders>
+>("/user", { name: "foo", id: 1 })
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
 faxios
   .patch<
-    User,
-    FaxiosResponse<User, any, ResponseHeaders>
-  >("/user", { name: "foo", id: 1 })
+  User,
+  FaxiosResponse<User, any, ResponseHeaders>
+>("/user", { name: "foo", id: 1 })
   .then(handleUserResponseWithCustomHeaders)
   .catch(handleError);
 
@@ -291,7 +305,7 @@ faxios
   .post<Partial<UserCreationDef>, string>(
     "/user",
     { name: "foo" },
-    { headers: { "X-FOO": "bar" } },
+    { headers: { "X-FOO": "bar" } }
   )
   .then(handleStringResponse)
   .catch(handleError);
@@ -319,20 +333,25 @@ faxios
 const instance1: FaxiosInstance = faxios.create();
 const instance2: FaxiosInstance = instance1.create(config);
 
-instance1(config).then(handleResponse).catch(handleError);
+instance1(config).then(handleResponse)
+  .catch(handleError);
 
-instance1.request(config).then(handleResponse).catch(handleError);
+instance1.request(config).then(handleResponse)
+  .catch(handleError);
 
-instance1.get("/user?id=12345").then(handleResponse).catch(handleError);
+instance1.get("/user?id=12345").then(handleResponse)
+  .catch(handleError);
 
-instance1.options("/user").then(handleResponse).catch(handleError);
+instance1.options("/user").then(handleResponse)
+  .catch(handleError);
 
 instance1
   .get("/user", { params: { id: 12345 } })
   .then(handleResponse)
   .catch(handleError);
 
-instance1.post("/user", { foo: "bar" }).then(handleResponse).catch(handleError);
+instance1.post("/user", { foo: "bar" }).then(handleResponse)
+  .catch(handleError);
 
 instance1
   .post("/user", { foo: "bar" }, { headers: { "X-FOO": "bar" } })
@@ -372,39 +391,39 @@ faxios.create({
 // Interceptors
 
 const requestInterceptorId: number = faxios.interceptors.request.use(
-  async (config) => {
+  async config => {
     await faxios.get("/foo", {
       headers: config.headers,
     });
     return config;
   },
   async (error: any) => Promise.reject(error),
-  { synchronous: false },
+  { synchronous: false }
 );
 
 faxios.interceptors.request.eject(requestInterceptorId);
 
 faxios.interceptors.request.use(
-  async (config) => Promise.resolve(config),
-  async (error: any) => Promise.reject(error),
+  async config => Promise.resolve(config),
+  async (error: any) => Promise.reject(error)
 );
 
-faxios.interceptors.request.use((config) => config);
-faxios.interceptors.request.use(async (config) => Promise.resolve(config));
+faxios.interceptors.request.use(config => config);
+faxios.interceptors.request.use(async config => Promise.resolve(config));
 
 const responseInterceptorId: number = faxios.interceptors.response.use(
   (response: FaxiosResponse) => response,
-  async (error: any) => Promise.reject(error),
+  async (error: any) => Promise.reject(error)
 );
 
 faxios.interceptors.response.eject(responseInterceptorId);
 
 faxios.interceptors.response.use(
   async (response: FaxiosResponse) => Promise.resolve(response),
-  async (error: any) => Promise.reject(error),
+  async (error: any) => Promise.reject(error)
 );
 
-faxios.interceptors.request.use((req) => {
+faxios.interceptors.request.use(req => {
   // https://github.com/faxios/faxios/issues/5415
   req.headers.set("foo", "bar");
   req.headers["Content-Type"] = 123;
@@ -413,20 +432,20 @@ faxios.interceptors.request.use((req) => {
 
 const voidRequestInterceptorId = faxios.interceptors.request.use(
   // @ts-expect-error -- Must return an FaxiosRequestConfig (or throw)
-  (_response) => {},
-  async (error: any) => Promise.reject(error),
+  _response => {},
+  async (error: any) => Promise.reject(error)
 );
 const voidResponseInterceptorId = faxios.interceptors.response.use(
   // @ts-expect-error -- Must return an FaxiosResponse (or throw)
-  (_response) => {},
-  async (error: any) => Promise.reject(error),
+  _response => {},
+  async (error: any) => Promise.reject(error)
 );
 faxios.interceptors.request.eject(voidRequestInterceptorId);
 faxios.interceptors.response.eject(voidResponseInterceptorId);
 
 faxios.interceptors.response.use((response: FaxiosResponse) => response);
 faxios.interceptors.response.use(async (response: FaxiosResponse) =>
-  Promise.resolve(response),
+  Promise.resolve(response)
 );
 
 faxios.interceptors.request.clear();
@@ -434,7 +453,7 @@ faxios.interceptors.response.clear();
 
 // Adapters
 
-const adapter: FaxiosAdapter = async (config) => {
+const adapter: FaxiosAdapter = async config => {
   const response: FaxiosResponse = {
     data: { foo: "bar" },
     status: 200,
@@ -449,14 +468,14 @@ faxios.defaults.adapter = adapter;
 
 // faxios.all
 
-const promises = [Promise.resolve(1), Promise.resolve(2)];
+const promises = [ Promise.resolve(1), Promise.resolve(2) ];
 
 const promise: Promise<Array<number>> = faxios.all(promises);
 
 // faxios.all named export
 
 (() => {
-  const promises = [Promise.resolve(1), Promise.resolve(2)];
+  const promises = [ Promise.resolve(1), Promise.resolve(2) ];
 
   const promise: Promise<Array<number>> = all(promises);
 })();
@@ -488,7 +507,7 @@ faxios
   .get("/user")
   .then(
     (response: FaxiosResponse) => "foo",
-    (error: any) => "bar",
+    (error: any) => "bar"
   )
   .then((value: string) => {});
 
@@ -496,7 +515,7 @@ faxios
   .get("/user")
   .then(
     (response: FaxiosResponse) => "foo",
-    (error: any) => 123,
+    (error: any) => 123
   )
   .then((value: string | number) => {});
 
@@ -629,7 +648,7 @@ faxios.get("/user", {
 });
 
 faxios.get("/user", {
-  maxRate: [1000, 1000],
+  maxRate: [ 1000, 1000 ],
 });
 
 // Node progress
@@ -654,7 +673,7 @@ faxios.get("/user", {
 });
 
 faxios.get("/user", {
-  adapter: ["xhr", "http"],
+  adapter: [ "xhr", "http" ],
 });
 
 {
@@ -663,22 +682,22 @@ faxios.get("/user", {
   getAdapter(faxios.create().defaults.adapter);
   getAdapter(undefined);
   getAdapter([]);
-  getAdapter(["xhr"]);
-  getAdapter([adapter]);
-  getAdapter(["xhr", "http"]);
-  getAdapter([adapter, "xhr"]);
-  getAdapter([adapter, adapter]);
+  getAdapter([ "xhr" ]);
+  getAdapter([ adapter ]);
+  getAdapter([ "xhr", "http" ]);
+  getAdapter([ adapter, "xhr" ]);
+  getAdapter([ adapter, adapter ]);
   getAdapter("xhr");
   getAdapter(adapter);
   const _: FaxiosAdapter = getAdapter("xhr");
-  const __: FaxiosAdapter = getAdapter(["xhr"]);
+  const __: FaxiosAdapter = getAdapter([ "xhr" ]);
 
   // @ts-expect-error
   getAdapter();
   // @ts-expect-error
   getAdapter(123);
   // @ts-expect-error
-  getAdapter([123]);
+  getAdapter([ 123 ]);
   // @ts-expect-error
   getAdapter("xhr", "http");
 }
@@ -689,7 +708,7 @@ faxios.get("/user", {
 
 const headers = new FaxiosHeaders({ foo: "bar" });
 
-for (const [header, value] of headers) {
+for (const [ header, value ] of headers) {
   console.log(header, value);
 }
 
@@ -715,7 +734,7 @@ for (const [header, value] of headers) {
 
 {
   const requestInterceptorId: number = faxios.interceptors.request.use(
-    async (config) => {
+    async config => {
       config.headers.Accept = "foo";
       config.headers.setAccept("foo");
       config.headers = new FaxiosHeaders({ x: 1 });
@@ -726,7 +745,7 @@ for (const [header, value] of headers) {
       config.headers = { ...config.headers };
       return config;
     },
-    async (error: any) => Promise.reject(error),
+    async (error: any) => Promise.reject(error)
   );
 }
 
@@ -748,7 +767,7 @@ faxios.get("/user", {
   lookup: (
     hostname: string,
     opt: object,
-    cb: (err: Error | null, address: string, family: AddressFamily) => void,
+    cb: (err: Error | null, address: string, family: AddressFamily) => void
   ) => {
     cb(null, "127.0.0.1", 4);
   },
@@ -756,7 +775,7 @@ faxios.get("/user", {
 
 // lookup async
 faxios.get("/user", {
-  lookup: (hostname: string, opt: object) => ["127.0.0.1", 4],
+  lookup: (hostname: string, opt: object) => [ "127.0.0.1", 4 ],
 });
 
 // FaxiosError.cause should be typed as Error to allow accessing .message

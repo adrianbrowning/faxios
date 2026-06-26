@@ -27,7 +27,7 @@ class MockXMLHttpRequest {
   upload = {
     addEventListener: (
       type: string,
-      listener: (...args: Array<unknown>) => void,
+      listener: (...args: Array<unknown>) => void
     ) => {
       this._uploadListeners[type] ||= [];
       this._uploadListeners[type].push(listener);
@@ -51,7 +51,7 @@ class MockXMLHttpRequest {
 
   getAllResponseHeaders() {
     return Object.entries(this.responseHeaders)
-      .map(([key, value]) => `${key}: ${value}`)
+      .map(([ key, value ]) => `${key}: ${value}`)
       .join("\n");
   }
 
@@ -70,7 +70,7 @@ class MockXMLHttpRequest {
   emit(type: string, target = "request", event = {}) {
     const listeners =
       target === "upload" ? this._uploadListeners : this._listeners;
-    (listeners[type] || []).forEach((listener) => listener(event));
+    (listeners[type] || []).forEach(listener => listener(event));
   }
 
   respondWith({
@@ -96,7 +96,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -134,7 +135,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
 
@@ -150,7 +151,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
   });
@@ -170,7 +171,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
 
@@ -188,7 +189,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
 
@@ -208,7 +209,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
   });
@@ -230,7 +231,7 @@ describe("progress (vitest browser)", () => {
 
     request.respondWith({
       status: 200,
-      responseText: '{"foo": "bar"}',
+      responseText: "{\"foo\": \"bar\"}",
     });
     await responsePromise;
 

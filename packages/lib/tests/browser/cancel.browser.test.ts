@@ -66,7 +66,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -218,15 +219,15 @@ describe("cancel (vitest browser)", () => {
       const controller = new AbortController();
       let listenerCount = 0;
       const nativeAdd = controller.signal.addEventListener.bind(
-        controller.signal,
+        controller.signal
       );
       const nativeRemove = controller.signal.removeEventListener.bind(
-        controller.signal,
+        controller.signal
       );
       controller.signal.addEventListener = (
         type: string,
         fn: EventListenerOrEventListenerObject,
-        options?: boolean | AddEventListenerOptions,
+        options?: boolean | AddEventListenerOptions
       ) => {
         if (type === "abort") listenerCount++;
         return nativeAdd(type, fn, options);
@@ -234,7 +235,7 @@ describe("cancel (vitest browser)", () => {
       controller.signal.removeEventListener = (
         type: string,
         fn: EventListenerOrEventListenerObject,
-        options?: boolean | EventListenerOptions,
+        options?: boolean | EventListenerOptions
       ) => {
         if (type === "abort") listenerCount--;
         return nativeRemove(type, fn, options);

@@ -285,7 +285,7 @@ export interface FaxiosRequestConfig<D = unknown> {
       headers: Record<string, string>;
       url: string;
       method: string;
-    },
+    }
   ) => void;
   socketPath?: string | null;
   allowedSocketPaths?: string | Array<string> | null;
@@ -300,32 +300,38 @@ export interface FaxiosRequestConfig<D = unknown> {
   insecureHTTPParser?: boolean;
   env?: {
     FormData?: new (...args: Array<unknown>) => object;
-    fetch?: (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
-    Request?: new (input: string | URL | Request, init?: RequestInit) => unknown;
+    fetch?: (
+      input: string | URL | Request,
+      init?: RequestInit
+    ) => Promise<Response>;
+    Request?: new (
+      input: string | URL | Request,
+      init?: RequestInit,
+    ) => unknown;
     Response?: new (...args: Array<unknown>) => unknown;
   };
   formSerializer?: FormSerializerOptions;
   family?: AddressFamily;
   lookup?:
     | ((
-        hostname: string,
-        options: object,
-        cb: (
-          err: Error | null,
-          address: LookupAddress | Array<LookupAddress>,
-          family?: AddressFamily,
-        ) => void,
-      ) => void)
+      hostname: string,
+      options: object,
+      cb: (
+        err: Error | null,
+        address: LookupAddress | Array<LookupAddress>,
+        family?: AddressFamily
+      ) => void
+    ) => void)
     | ((
-        hostname: string,
-        options: object,
-      ) => Promise<
+      hostname: string,
+      options: object
+    ) => Promise<
         | [
             address: LookupAddressEntry | Array<LookupAddressEntry>,
-            family?: AddressFamily,
-          ]
+            family?: AddressFamily
+        ]
         | LookupAddress
-      >);
+    >);
   withXSRFToken?:
     | boolean
     | ((config: InternalFaxiosRequestConfig) => boolean | undefined);
@@ -333,7 +339,7 @@ export interface FaxiosRequestConfig<D = unknown> {
     this: unknown,
     key: string,
     value: unknown,
-    context?: { source?: string },
+    context?: { source?: string; }
   ) => unknown;
   fetchOptions?: Record<string, unknown>;
   httpVersion?: 1 | 2;
@@ -348,24 +354,24 @@ export interface FaxiosRequestConfig<D = unknown> {
 export type RawFaxiosRequestConfig<D = unknown> = FaxiosRequestConfig<D>;
 
 export interface InternalFaxiosRequestConfig<
-  D = unknown,
+  D = unknown
 > extends FaxiosRequestConfig<D> {
   headers: FaxiosRequestHeaders;
 }
 
-export type RawFaxiosResponseHeaders = Partial<
-  RawFaxiosHeaders & {
-    "set-cookie": Array<string>;
-    "content-type": string;
-    "content-length": string;
-    "cache-control": string;
-    "content-encoding": string;
-    server: string;
-  }
->;
+// export type RawFaxiosResponseHeaders = Partial<
+//   RawFaxiosHeaders & {
+//     "set-cookie": Array<string>;
+//     "content-type": string;
+//     "content-length": string;
+//     "cache-control": string;
+//     "content-encoding": string;
+//     server: string;
+//   }
+// >;
 
-export type FaxiosResponseHeaders = RawFaxiosResponseHeaders &
-  Record<string, FaxiosHeaderValue>;
+// export type FaxiosResponseHeaders = RawFaxiosResponseHeaders &
+//   Record<string, FaxiosHeaderValue>;
 
 export interface FaxiosResponseHeadersLike {
   [key: string]: unknown;
@@ -426,7 +432,7 @@ export interface CancelToken {
   throwIfRequested: () => void;
   subscribe: (listener: (cancel: Cancel) => void) => void;
   unsubscribe: (listener: (cancel: Cancel) => void) => void;
-  toAbortSignal: () => AbortSignal & { unsubscribe?: () => void };
+  toAbortSignal: () => AbortSignal & { unsubscribe?: () => void; };
 }
 
 export interface CancelTokenSource {

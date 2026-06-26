@@ -13,8 +13,9 @@ import type { GenericAbortSignal } from "../../../src/lib/types.js";
 
 type FetchFn = (
   input: string | Request | URL,
-  init?: RequestInit,
+  init?: RequestInit
 ) => Promise<Response>;
+import type { FaxiosProgressEvent } from "../../../src/lib/types.js";
 import utils from "../../../src/lib/utils.js";
 import {
   startHTTPServer,
@@ -22,9 +23,8 @@ import {
   setTimeoutAsync,
   makeReadableStream,
   generateReadable,
-  makeEchoStream,
+  makeEchoStream
 } from "../../setup/server.js";
-import type { FaxiosProgressEvent } from "../../../src/lib/types.js";
 
 const SERVER_PORT = 8010;
 const LOCAL_SERVER_URL = `http://localhost:${SERVER_PORT}`;
@@ -37,11 +37,11 @@ const fetchFaxios = faxios.create({
 });
 
 const getFetchSignal = (
-  input: RequestInfo | URL | { signal?: AbortSignal },
-  init?: RequestInit | { signal?: AbortSignal },
+  input: RequestInfo | URL | { signal?: AbortSignal; },
+  init?: RequestInit | { signal?: AbortSignal; }
 ) =>
   (init && init.signal) ||
-  (input && (input as { signal?: AbortSignal }).signal);
+  (input && (input as { signal?: AbortSignal; }).signal);
 
 const createBrokenDOMExceptionLikeError = () =>
   Object.defineProperties(
@@ -50,18 +50,18 @@ const createBrokenDOMExceptionLikeError = () =>
       name: {
         get() {
           throw new TypeError(
-            "The DOMException.name getter can only be used on instances of DOMException",
+            "The DOMException.name getter can only be used on instances of DOMException"
           );
         },
       },
       message: {
         get() {
           throw new TypeError(
-            "The DOMException.message getter can only be used on instances of DOMException",
+            "The DOMException.message getter can only be used on instances of DOMException"
           );
         },
       },
-    },
+    }
   );
 
 describe.runIf(typeof fetch === "function")(
@@ -80,21 +80,21 @@ describe.runIf(typeof fetch === "function")(
                 "X-Test": "yes",
               },
             }),
-          (error) => {
+          error => {
             assert.ok(error instanceof FaxiosError);
             const faxiosError = error;
             assert.strictEqual(faxiosError.code, FaxiosError.ERR_INVALID_URL);
             assert.strictEqual(
               faxiosError.message,
-              'Invalid URL: missing "//" after protocol',
+              "Invalid URL: missing \"//\" after protocol"
             );
             assert.strictEqual(faxiosError.config!.url, url);
             assert.strictEqual(
               faxiosError.config!.headers.get("X-Test"),
-              "yes",
+              "yes"
             );
             return true;
-          },
+          }
         );
       }
     });
@@ -107,12 +107,12 @@ describe.runIf(typeof fetch === "function")(
             JSON.stringify({
               xTest: req.headers["x-test"],
               injected: req.headers.injected ?? null,
-            }),
+            })
           );
         },
         {
           port: SERVER_PORT,
-        },
+        }
       );
 
       try {
@@ -122,12 +122,13 @@ describe.runIf(typeof fetch === "function")(
             headers: {
               "x-test": "\tok\r\nInjected: yes ",
             },
-          },
+          }
         );
 
         assert.strictEqual(data.xTest, "okInjected: yes");
         assert.strictEqual(data.injected, null);
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -140,15 +141,15 @@ describe.runIf(typeof fetch === "function")(
             authorization: req.headers.authorization,
             xApp: req.headers["x-app"],
             xInjected: req.headers["x-injected"] ?? null,
-          }),
+          })
         );
       });
 
       try {
         (Object.prototype as Record<symbol, unknown>)[Symbol.iterator] =
           function* () {
-            yield ["X-Injected", "yes"];
-            yield ["Authorization", "Bearer CHANGED"];
+            yield [ "X-Injected", "yes" ];
+            yield [ "Authorization", "Bearer CHANGED" ];
           };
 
         const { data } = await fetchFaxios.get<Record<string, unknown>>(
@@ -158,13 +159,14 @@ describe.runIf(typeof fetch === "function")(
               Authorization: "Bearer VALID_USER_TOKEN",
               "X-App": "safe",
             },
-          },
+          }
         );
 
         assert.strictEqual(data.authorization, "Bearer VALID_USER_TOKEN");
         assert.strictEqual(data.xApp, "safe");
         assert.strictEqual(data.xInjected, null);
-      } finally {
+      }
+      finally {
         delete (Object.prototype as Record<symbol, unknown>)[Symbol.iterator];
         await stopHTTPServer(server);
       }
@@ -177,12 +179,12 @@ describe.runIf(typeof fetch === "function")(
           res.end(
             JSON.stringify({
               oprtName: req.headers.oprtname,
-            }),
+            })
           );
         },
         {
           port: SERVER_PORT,
-        },
+        }
       );
 
       const instance = faxios.create({
@@ -190,9 +192,9 @@ describe.runIf(typeof fetch === "function")(
         adapter: "fetch",
       });
 
-      instance.interceptors.request.use((config) => {
+      instance.interceptors.request.use(config => {
         config.headers.oprtName = encodeURIComponent(
-          config.headers.oprtName as string,
+          config.headers.oprtName as string
         );
         return config;
       });
@@ -205,7 +207,8 @@ describe.runIf(typeof fetch === "function")(
         });
 
         assert.strictEqual(data.oprtName, encodeURIComponent("请求用户"));
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -217,12 +220,12 @@ describe.runIf(typeof fetch === "function")(
           res.end(
             JSON.stringify({
               xTest: req.headers["x-test"],
-            }),
+            })
           );
         },
         {
           port: SERVER_PORT,
-        },
+        }
       );
 
       try {
@@ -232,11 +235,12 @@ describe.runIf(typeof fetch === "function")(
             headers: {
               "x-test": "请求用户",
             },
-          },
+          }
         );
 
         assert.strictEqual(data.xTest, "");
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -249,7 +253,7 @@ describe.runIf(typeof fetch === "function")(
           (_req, res) => res.end(originalData),
           {
             port: SERVER_PORT,
-          },
+          }
         );
 
         try {
@@ -257,11 +261,12 @@ describe.runIf(typeof fetch === "function")(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "text",
-            },
+            }
           );
 
           assert.deepStrictEqual(data, originalData);
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -273,7 +278,7 @@ describe.runIf(typeof fetch === "function")(
           (_req, res) => res.end(originalData),
           {
             port: SERVER_PORT,
-          },
+          }
         );
 
         try {
@@ -281,14 +286,15 @@ describe.runIf(typeof fetch === "function")(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "arraybuffer",
-            },
+            }
           );
 
           assert.deepStrictEqual(
             data,
-            Uint8Array.from(new TextEncoder().encode(originalData)).buffer,
+            Uint8Array.from(new TextEncoder().encode(originalData)).buffer
           );
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -300,7 +306,7 @@ describe.runIf(typeof fetch === "function")(
           (_req, res) => res.end(originalData),
           {
             port: SERVER_PORT,
-          },
+          }
         );
 
         try {
@@ -308,11 +314,12 @@ describe.runIf(typeof fetch === "function")(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "blob",
-            },
+            }
           );
 
-          assert.deepStrictEqual(data, new Blob([originalData]));
-        } finally {
+          assert.deepStrictEqual(data, new Blob([ originalData ]));
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -324,7 +331,7 @@ describe.runIf(typeof fetch === "function")(
           (_req, res) => res.end(originalData),
           {
             port: SERVER_PORT,
-          },
+          }
         );
 
         try {
@@ -332,18 +339,19 @@ describe.runIf(typeof fetch === "function")(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "stream",
-            },
+            }
           );
 
           assert.ok(
             data instanceof ReadableStream,
-            "data is not instanceof ReadableStream",
+            "data is not instanceof ReadableStream"
           );
 
           const response = new Response(data);
 
           assert.deepStrictEqual(await response.text(), originalData);
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -359,12 +367,12 @@ describe.runIf(typeof fetch === "function")(
 
             res.setHeader(
               "Content-Type",
-              response.headers.get("Content-Type") ?? "",
+              response.headers.get("Content-Type") ?? ""
             );
 
             res.end(await response.text());
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
@@ -372,19 +380,20 @@ describe.runIf(typeof fetch === "function")(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "formdata",
-            },
+            }
           );
 
           assert.ok(
             data instanceof FormData,
-            "data is not instanceof FormData",
+            "data is not instanceof FormData"
           );
 
           assert.deepStrictEqual(
             Object.fromEntries(data.entries()),
-            Object.fromEntries(originalData.entries()),
+            Object.fromEntries(originalData.entries())
           );
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       }, 5000);
@@ -396,7 +405,7 @@ describe.runIf(typeof fetch === "function")(
           (_req, res) => res.end(JSON.stringify(originalData)),
           {
             port: SERVER_PORT,
-          },
+          }
         );
 
         try {
@@ -404,11 +413,12 @@ describe.runIf(typeof fetch === "function")(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               responseType: "json",
-            },
+            }
           );
 
           assert.deepStrictEqual(data, originalData);
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -421,7 +431,7 @@ describe.runIf(typeof fetch === "function")(
             {
               rate: 100 * 1024,
             },
-            { port: SERVER_PORT },
+            { port: SERVER_PORT }
           );
 
           try {
@@ -440,7 +450,7 @@ describe.runIf(typeof fetch === "function")(
                   content += chunk;
                   yield chunk;
                 }
-              })(),
+              })()
             );
 
             const samples: Array<FaxiosProgressEvent> = [];
@@ -457,7 +467,7 @@ describe.runIf(typeof fetch === "function")(
                   upload,
                 }: FaxiosProgressEvent) => {
                   console.log(
-                    `Upload Progress ${loaded} from ${total} bytes (${((progress ?? 0) * 100).toFixed(1)}%)`,
+                    `Upload Progress ${loaded} from ${total} bytes (${((progress ?? 0) * 100).toFixed(1)}%)`
                   );
 
                   samples.push({
@@ -472,7 +482,7 @@ describe.runIf(typeof fetch === "function")(
                   "Content-Length": contentLength,
                 },
                 responseType: "text",
-              },
+              }
             );
 
             await setTimeoutAsync(500);
@@ -492,10 +502,11 @@ describe.runIf(typeof fetch === "function")(
                       upload: true,
                     };
                   }
-                })(),
-              ),
+                })()
+              )
             );
-          } finally {
+          }
+          finally {
             await stopHTTPServer(server);
           }
         }, 15000);
@@ -510,11 +521,12 @@ describe.runIf(typeof fetch === "function")(
               `http://localhost:${(server.address() as AddressInfo).port}/`,
               {
                 onUploadProgress() {},
-              },
+              }
             );
 
             assert.strictEqual(data, "OK");
-          } finally {
+          }
+          finally {
             await stopHTTPServer(server);
           }
         });
@@ -528,7 +540,7 @@ describe.runIf(typeof fetch === "function")(
             },
             {
               port: SERVER_PORT,
-            },
+            }
           );
 
           try {
@@ -547,7 +559,7 @@ describe.runIf(typeof fetch === "function")(
                   content += chunk;
                   yield chunk;
                 }
-              })(),
+              })()
             );
 
             const samples: Array<FaxiosProgressEvent> = [];
@@ -564,7 +576,7 @@ describe.runIf(typeof fetch === "function")(
                   download,
                 }: FaxiosProgressEvent) => {
                   console.log(
-                    `Download Progress ${loaded} from ${total} bytes (${((progress ?? 0) * 100).toFixed(1)}%)`,
+                    `Download Progress ${loaded} from ${total} bytes (${((progress ?? 0) * 100).toFixed(1)}%)`
                   );
 
                   samples.push({
@@ -580,7 +592,7 @@ describe.runIf(typeof fetch === "function")(
                 },
                 responseType: "text",
                 maxRedirects: 0,
-              },
+              }
             );
 
             await setTimeoutAsync(500);
@@ -600,10 +612,11 @@ describe.runIf(typeof fetch === "function")(
                       download: true,
                     };
                   }
-                })(),
-              ),
+                })()
+              )
             );
-          } finally {
+          }
+          finally {
             await stopHTTPServer(server);
           }
         }, 15000);
@@ -615,7 +628,7 @@ describe.runIf(typeof fetch === "function")(
         (req, res) => res.end(req.headers.authorization),
         {
           port: SERVER_PORT,
-        },
+        }
       );
 
       try {
@@ -625,12 +638,13 @@ describe.runIf(typeof fetch === "function")(
           `http://${user}@localhost:${(server.address() as AddressInfo).port}/`,
           {
             headers,
-          },
+          }
         );
 
         const base64 = Buffer.from(`${user}:`, "utf8").toString("base64");
         assert.equal(res.data, `Basic ${base64}`);
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -640,18 +654,19 @@ describe.runIf(typeof fetch === "function")(
         (req, res) => {
           res.end(req.headers.authorization);
         },
-        { port: SERVER_PORT },
+        { port: SERVER_PORT }
       );
 
       try {
         const response = await fetchFaxios.get(
-          `http://my%40email.com:pa%24ss@localhost:${(server.address() as AddressInfo).port}/`,
+          `http://my%40email.com:pa%24ss@localhost:${(server.address() as AddressInfo).port}/`
         );
         const base64 = Buffer.from("my@email.com:pa$ss", "utf8").toString(
-          "base64",
+          "base64"
         );
         assert.strictEqual(response.data, `Basic ${base64}`);
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -661,18 +676,19 @@ describe.runIf(typeof fetch === "function")(
         (req, res) => {
           res.end(req.headers.authorization);
         },
-        { port: SERVER_PORT },
+        { port: SERVER_PORT }
       );
 
       try {
         const response = await fetchFaxios.get(
-          `http://%E7%94%A8%E6%88%B7:pa%C3%9F@localhost:${(server.address() as AddressInfo).port}/`,
+          `http://%E7%94%A8%E6%88%B7:pa%C3%9F@localhost:${(server.address() as AddressInfo).port}/`
         );
         const base64 = Buffer.from("\u7528\u6237:pa\u00df", "utf8").toString(
-          "base64",
+          "base64"
         );
         assert.strictEqual(response.data, `Basic ${base64}`);
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -682,16 +698,17 @@ describe.runIf(typeof fetch === "function")(
         (req, res) => {
           res.end(req.headers.authorization);
         },
-        { port: SERVER_PORT },
+        { port: SERVER_PORT }
       );
 
       try {
         const response = await fetchFaxios.get(
-          `http://user%:foo%zz@localhost:${(server.address() as AddressInfo).port}/`,
+          `http://user%:foo%zz@localhost:${(server.address() as AddressInfo).port}/`
         );
         const base64 = Buffer.from("user%:foo%zz", "utf8").toString("base64");
         assert.strictEqual(response.data, `Basic ${base64}`);
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -701,16 +718,17 @@ describe.runIf(typeof fetch === "function")(
         (req, res) => {
           res.end(req.headers.authorization);
         },
-        { port: SERVER_PORT },
+        { port: SERVER_PORT }
       );
 
       try {
         const response = await fetchFaxios.get(
-          `http://:secret@localhost:${(server.address() as AddressInfo).port}/`,
+          `http://:secret@localhost:${(server.address() as AddressInfo).port}/`
         );
         const base64 = Buffer.from(":secret", "utf8").toString("base64");
         assert.strictEqual(response.data, `Basic ${base64}`);
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -720,20 +738,21 @@ describe.runIf(typeof fetch === "function")(
         (req, res) => {
           res.end(req.headers.authorization);
         },
-        { port: SERVER_PORT },
+        { port: SERVER_PORT }
       );
 
       try {
         const auth = { username: "config-user", password: "config-pass" };
         const response = await fetchFaxios.get(
           `http://url-user:url-pass@localhost:${(server.address() as AddressInfo).port}/`,
-          { auth },
+          { auth }
         );
         const base64 = Buffer.from("config-user:config-pass", "utf8").toString(
-          "base64",
+          "base64"
         );
         assert.strictEqual(response.data, `Basic ${base64}`);
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -743,7 +762,7 @@ describe.runIf(typeof fetch === "function")(
         (req, res) => {
           res.end(req.headers.authorization);
         },
-        { port: SERVER_PORT },
+        { port: SERVER_PORT }
       );
 
       try {
@@ -754,11 +773,12 @@ describe.runIf(typeof fetch === "function")(
           {
             auth,
             headers,
-          },
+          }
         );
         const base64 = Buffer.from("foo:bar", "utf8").toString("base64");
         assert.strictEqual(response.data, `Basic ${base64}`);
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -768,7 +788,7 @@ describe.runIf(typeof fetch === "function")(
         (req, res) => res.end(req.headers.authorization),
         {
           port: SERVER_PORT,
-        },
+        }
       );
 
       Object.defineProperty(Object.prototype, "username", {
@@ -784,12 +804,13 @@ describe.runIf(typeof fetch === "function")(
         const response = await fetchFaxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
-            auth: {} as { username: string; password: string },
-          },
+            auth: {} as { username: string; password: string; },
+          }
         );
 
         assert.strictEqual(response.data, "Basic Og==");
-      } finally {
+      }
+      finally {
         delete (Object.prototype as Record<string, unknown>).username;
         delete (Object.prototype as Record<string, unknown>).password;
         await stopHTTPServer(server);
@@ -804,11 +825,12 @@ describe.runIf(typeof fetch === "function")(
       try {
         const { data } = await fetchFaxios.post(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
-          stream.Readable.from("OK"),
+          stream.Readable.from("OK")
         );
 
         assert.strictEqual(data, "OK");
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -820,7 +842,7 @@ describe.runIf(typeof fetch === "function")(
             rate: 100000,
             useBuffering: true,
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
@@ -837,10 +859,11 @@ describe.runIf(typeof fetch === "function")(
               {
                 responseType: "stream",
                 signal: controller.signal as GenericAbortSignal,
-              },
+              }
             );
           }, /CanceledError/);
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -852,7 +875,7 @@ describe.runIf(typeof fetch === "function")(
               // Client-side abort intentionally closes the stream early in this test.
             });
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
@@ -867,13 +890,14 @@ describe.runIf(typeof fetch === "function")(
             {
               responseType: "stream",
               signal: controller.signal as GenericAbortSignal,
-            },
+            }
           );
 
           await assert.rejects(async () => {
             await (data as ReadableStream).pipeTo(makeEchoStream(false));
           }, /^(AbortError|CanceledError):/);
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -885,7 +909,7 @@ describe.runIf(typeof fetch === "function")(
           await setTimeoutAsync(1000);
           res.end("OK");
         },
-        { port: 0 },
+        { port: 0 }
       );
 
       try {
@@ -898,7 +922,7 @@ describe.runIf(typeof fetch === "function")(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               timeout,
-            },
+            }
           );
         }, /timeout/);
 
@@ -906,9 +930,10 @@ describe.runIf(typeof fetch === "function")(
 
         assert.ok(
           passed >= timeout - 5,
-          `early cancellation detected (${passed} ms)`,
+          `early cancellation detected (${passed} ms)`
         );
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -920,7 +945,7 @@ describe.runIf(typeof fetch === "function")(
             await setTimeoutAsync(1000);
             res.end("OK");
           },
-          { port: 0 },
+          { port: 0 }
         );
 
         try {
@@ -930,17 +955,18 @@ describe.runIf(typeof fetch === "function")(
                 `http://localhost:${(server.address() as AddressInfo).port}/`,
                 {
                   timeout: 200,
-                },
+                }
               ),
-            (err) => {
-              const e = err as { name: string; code: string; message: string };
+            err => {
+              const e = err as { name: string; code: string; message: string; };
               assert.strictEqual(e.name, "FaxiosError");
               assert.strictEqual(e.code, "ETIMEDOUT");
               assert.match(e.message, /timeout of 200ms exceeded/);
               return true;
-            },
+            }
           );
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -948,7 +974,7 @@ describe.runIf(typeof fetch === "function")(
       it("should not classify a user-initiated abort as a timeout", async () => {
         const safariFetch = async (
           url: RequestInfo | URL,
-          init?: RequestInit,
+          init?: RequestInit
         ) => {
           const signal = getFetchSignal(url, init) as AbortSignal;
 
@@ -977,13 +1003,13 @@ describe.runIf(typeof fetch === "function")(
 
         await assert.rejects(
           async () => request,
-          (err) => {
-            const e = err as { name: string; code: string };
+          err => {
+            const e = err as { name: string; code: string; };
             assert.strictEqual(e.name, "CanceledError");
             assert.strictEqual(e.code, "ERR_CANCELED");
             assert.strictEqual(faxios.isCancel(err), true);
             return true;
-          },
+          }
         );
       });
 
@@ -996,7 +1022,7 @@ describe.runIf(typeof fetch === "function")(
         async () => {
           const safariFetch = async (
             url: RequestInfo | URL,
-            init?: RequestInit,
+            init?: RequestInit
           ) => {
             const signal = getFetchSignal(url, init) as AbortSignal;
 
@@ -1018,19 +1044,19 @@ describe.runIf(typeof fetch === "function")(
                 env: {
                   fetch: safariFetch as unknown as (
                     input: string | Request | URL,
-                    init?: RequestInit,
+                    init?: RequestInit
                   ) => Promise<Response>,
                 },
               }),
-            (err) => {
-              const e = err as { name: string; code: string; message: string };
+            err => {
+              const e = err as { name: string; code: string; message: string; };
               assert.strictEqual(e.name, "FaxiosError");
               assert.strictEqual(e.code, "ETIMEDOUT");
               assert.match(e.message, /timeout of 50ms exceeded/);
               return true;
-            },
+            }
           );
-        },
+        }
       );
     });
 
@@ -1043,7 +1069,8 @@ describe.runIf(typeof fetch === "function")(
 
         assert.equal(res.config.baseURL, LOCAL_SERVER_URL);
         assert.equal(res.config.url, "/foo");
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -1052,7 +1079,7 @@ describe.runIf(typeof fetch === "function")(
       const server = await startHTTPServer(
         (req, res) => {
           let body = "";
-          req.on("data", (chunk) => {
+          req.on("data", chunk => {
             body += chunk;
           });
           req.on("end", () => {
@@ -1060,7 +1087,7 @@ describe.runIf(typeof fetch === "function")(
             res.end(JSON.stringify({ method: req.method, url: req.url, body }));
           });
         },
-        { port: 0 },
+        { port: 0 }
       );
 
       try {
@@ -1068,7 +1095,7 @@ describe.runIf(typeof fetch === "function")(
           `http://localhost:${(server.address() as AddressInfo).port}/search`,
           {
             selector: "field1",
-          },
+          }
         );
 
         assert.strictEqual(data.method, "QUERY");
@@ -1076,7 +1103,8 @@ describe.runIf(typeof fetch === "function")(
         assert.deepStrictEqual(JSON.parse(data.body as string), {
           selector: "field1",
         });
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -1093,11 +1121,12 @@ describe.runIf(typeof fetch === "function")(
               foo: 1,
               bar: 2,
             },
-          },
+          }
         );
 
         assert.strictEqual(data, "/?test=1&foo=1&bar=2");
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -1106,12 +1135,13 @@ describe.runIf(typeof fetch === "function")(
       try {
         await fetchFaxios("http://notExistsUrl.in.nowhere");
         assert.fail("should fail");
-      } catch (err) {
+      }
+      catch (err) {
         const axiosErr = err as FaxiosError;
         assert.strictEqual(String(axiosErr), "FaxiosError: Network Error");
         assert.strictEqual(
-          axiosErr.cause && (axiosErr.cause as { code?: string }).code,
-          "ENOTFOUND",
+          axiosErr.cause && (axiosErr.cause as { code?: string; }).code,
+          "ENOTFOUND"
         );
       }
     });
@@ -1122,7 +1152,7 @@ describe.runIf(typeof fetch === "function")(
           res.setHeader("foo", "bar");
           res.end(req.url);
         },
-        { port: SERVER_PORT },
+        { port: SERVER_PORT }
       );
 
       try {
@@ -1130,11 +1160,12 @@ describe.runIf(typeof fetch === "function")(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
             responseType: "stream",
-          },
+          }
         );
 
         assert.strictEqual(headers.get("foo"), "bar");
-      } finally {
+      }
+      finally {
         await stopHTTPServer(server);
       }
     });
@@ -1150,15 +1181,16 @@ describe.runIf(typeof fetch === "function")(
             assert.match(contentType!, /^multipart\/form-data; boundary=/i);
             res.end("OK");
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
           await fetchFaxios.post(
             `http://localhost:${(server.address() as AddressInfo).port}/form`,
-            form,
+            form
           );
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -1173,7 +1205,7 @@ describe.runIf(typeof fetch === "function")(
             assert.match(contentType!, /^multipart\/form-data; boundary=/i);
             res.end("OK");
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
@@ -1182,9 +1214,10 @@ describe.runIf(typeof fetch === "function")(
             form,
             {
               headers: { "Content-Type": "multipart/form-data" },
-            },
+            }
           );
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -1201,7 +1234,7 @@ describe.runIf(typeof fetch === "function")(
             assert.ok(contentType!.includes(customBoundary));
             res.end("OK");
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
@@ -1212,9 +1245,10 @@ describe.runIf(typeof fetch === "function")(
               headers: {
                 "Content-Type": `multipart/form-data; boundary=${customBoundary}`,
               },
-            },
+            }
           );
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -1227,7 +1261,7 @@ describe.runIf(typeof fetch === "function")(
             res.setHeader("Content-Type", "application/json");
             res.end(JSON.stringify({ userAgent: req.headers["user-agent"] }));
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
@@ -1235,11 +1269,12 @@ describe.runIf(typeof fetch === "function")(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             {
               payload: "test",
-            },
+            }
           );
 
           assert.strictEqual(data.userAgent, `axios/${VERSION}`);
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -1252,18 +1287,19 @@ describe.runIf(typeof fetch === "function")(
             res.setHeader("Content-Type", "application/json");
             res.end(JSON.stringify({ userAgent: req.headers["user-agent"] }));
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
           const { data } = await fetchFaxios.post<Record<string, unknown>>(
             `http://localhost:${(server.address() as AddressInfo).port}/`,
             { payload: "test" },
-            { headers: { "User-Agent": customUA } },
+            { headers: { "User-Agent": customUA } }
           );
 
           assert.strictEqual(data.userAgent, customUA);
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -1274,16 +1310,17 @@ describe.runIf(typeof fetch === "function")(
         const originalGlobal = utils.global;
 
         try {
-          (utils as { global: unknown }).global = undefined;
+          (utils as { global: unknown; }).global = undefined;
 
           assert.doesNotThrow(() =>
             getFetch({
               env: {
                 fetch() {},
               },
-            }),
+            })
           );
-        } finally {
+        }
+        finally {
           utils.global = originalGlobal;
         }
       });
@@ -1299,7 +1336,7 @@ describe.runIf(typeof fetch === "function")(
                 text: async () => "test",
               };
             },
-          } as unknown as { fetch?: typeof fetch },
+          } as unknown as { fetch?: typeof fetch; },
         });
 
         assert.strictEqual(headers.get("foo"), "1");
@@ -1325,7 +1362,7 @@ describe.runIf(typeof fetch === "function")(
                 text: async () => "test",
               };
             },
-          } as unknown as { Request?: typeof Request; fetch?: typeof fetch },
+          } as unknown as { Request?: typeof Request; fetch?: typeof fetch; },
         });
 
         assert.strictEqual(headers.get("foo"), "1");
@@ -1348,7 +1385,7 @@ describe.runIf(typeof fetch === "function")(
                 text: async () => "test",
               };
             },
-          } as unknown as { Request?: typeof Request; fetch?: typeof fetch },
+          } as unknown as { Request?: typeof Request; fetch?: typeof fetch; },
         });
 
         assert.strictEqual(headers.get("foo"), "1");
@@ -1367,11 +1404,12 @@ describe.runIf(typeof fetch === "function")(
               env: {
                 fetch: undefined,
               },
-            },
+            }
           );
 
           assert.strictEqual(data, "OK");
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -1397,11 +1435,12 @@ describe.runIf(typeof fetch === "function")(
               env: {
                 fetch: undefined,
               },
-            },
+            }
           );
 
           assert.strictEqual(data, "global");
-        } finally {
+        }
+        finally {
           vi.stubGlobal("fetch", globalFetch);
           await stopHTTPServer(server);
         }
@@ -1431,7 +1470,7 @@ describe.runIf(typeof fetch === "function")(
           (_req, res) => {
             res.end("ok");
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
@@ -1439,17 +1478,18 @@ describe.runIf(typeof fetch === "function")(
             fetchFaxios.post(`${LOCAL_SERVER_URL}/`, "A".repeat(2048), {
               maxBodyLength: 1024,
             }),
-            (err) => {
-              const e = err as { code: string; message: string };
+            err => {
+              const e = err as { code: string; message: string; };
               assert.strictEqual(e.code, "ERR_BAD_REQUEST");
               assert.match(
                 e.message,
-                /Request body larger than maxBodyLength limit/,
+                /Request body larger than maxBodyLength limit/
               );
               return true;
-            },
+            }
           );
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -1458,7 +1498,7 @@ describe.runIf(typeof fetch === "function")(
         let bytesReceived = 0;
         const server = await startHTTPServer(
           (req, res) => {
-            req.on("data", (chunk) => {
+            req.on("data", chunk => {
               bytesReceived += chunk.length;
             });
             req.on("error", () => {});
@@ -1466,7 +1506,7 @@ describe.runIf(typeof fetch === "function")(
               res.end("ok");
             });
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
@@ -1475,22 +1515,23 @@ describe.runIf(typeof fetch === "function")(
               maxBodyLength: 1024,
               headers: { "Content-Type": "application/octet-stream" },
             }),
-            (err) => {
-              const e = err as { code: string; message: string };
+            err => {
+              const e = err as { code: string; message: string; };
               assert.strictEqual(e.code, "ERR_BAD_REQUEST");
               assert.strictEqual(
                 e.message,
-                "Request body larger than maxBodyLength limit",
+                "Request body larger than maxBodyLength limit"
               );
               return true;
-            },
+            }
           );
 
           assert.ok(
             bytesReceived <= 1024,
-            `server should not receive more than maxBodyLength; got ${bytesReceived}`,
+            `server should not receive more than maxBodyLength; got ${bytesReceived}`
           );
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -1499,7 +1540,7 @@ describe.runIf(typeof fetch === "function")(
         let bytesReceived = 0;
         const server = await startHTTPServer(
           (req, res) => {
-            req.on("data", (chunk) => {
+            req.on("data", chunk => {
               bytesReceived += chunk.length;
             });
             req.on("error", () => {});
@@ -1507,7 +1548,7 @@ describe.runIf(typeof fetch === "function")(
               res.end("ok");
             });
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
@@ -1521,22 +1562,23 @@ describe.runIf(typeof fetch === "function")(
                 "Content-Length": "500",
               },
             }),
-            (err) => {
-              const e = err as { code: string; message: string };
+            err => {
+              const e = err as { code: string; message: string; };
               assert.strictEqual(e.code, "ERR_BAD_REQUEST");
               assert.strictEqual(
                 e.message,
-                "Request body larger than maxBodyLength limit",
+                "Request body larger than maxBodyLength limit"
               );
               return true;
-            },
+            }
           );
 
           assert.ok(
             bytesReceived <= 1024,
-            `server should not receive more than maxBodyLength; got ${bytesReceived}`,
+            `server should not receive more than maxBodyLength; got ${bytesReceived}`
           );
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -1556,8 +1598,8 @@ describe.runIf(typeof fetch === "function")(
               async fetch(
                 _url: string | Request | URL,
                 options?: RequestInit & {
-                  body?: AsyncIterable<{ byteLength: number }>;
-                },
+                  body?: AsyncIterable<{ byteLength: number; }>;
+                }
               ) {
                 for await (const chunk of options!.body as AsyncIterable<{
                   byteLength: number;
@@ -1571,22 +1613,22 @@ describe.runIf(typeof fetch === "function")(
                   text: async () => "ok",
                 };
               },
-            } as unknown as { Request?: typeof Request; fetch?: typeof fetch },
+            } as unknown as { Request?: typeof Request; fetch?: typeof fetch; },
           }),
-          (err) => {
-            const e = err as { code: string; message: string };
+          err => {
+            const e = err as { code: string; message: string; };
             assert.strictEqual(e.code, "ERR_BAD_REQUEST");
             assert.strictEqual(
               e.message,
-              "Request body larger than maxBodyLength limit",
+              "Request body larger than maxBodyLength limit"
             );
             return true;
-          },
+          }
         );
 
         assert.ok(
           bytesRead <= 1024,
-          `custom fetch read too many bytes; got ${bytesRead}`,
+          `custom fetch read too many bytes; got ${bytesRead}`
         );
       });
 
@@ -1594,17 +1636,17 @@ describe.runIf(typeof fetch === "function")(
         let fetchCalled = false;
 
         class NoStreamRequest {
-          constructor(_url: string | Request | URL, init?: { body?: unknown }) {
+          constructor(_url: string | Request | URL, init?: { body?: unknown; }) {
             if (init && utils.isReadableStream!(init.body)) {
               throw new TypeError(
-                "ReadableStream request bodies are unsupported",
+                "ReadableStream request bodies are unsupported"
               );
             }
           }
         }
 
         await assert.rejects(
-          fetchFaxios.post("/", stream.Readable.from([Buffer.alloc(2048)]), {
+          fetchFaxios.post("/", stream.Readable.from([ Buffer.alloc(2048) ]), {
             maxBodyLength: 1024,
             headers: {
               "Content-Type": "application/octet-stream",
@@ -1621,23 +1663,23 @@ describe.runIf(typeof fetch === "function")(
                   text: async () => "ok",
                 };
               },
-            } as unknown as { Request?: typeof Request; fetch?: typeof fetch },
+            } as unknown as { Request?: typeof Request; fetch?: typeof fetch; },
           }),
-          (err) => {
-            const e = err as { code: string; message: string };
+          err => {
+            const e = err as { code: string; message: string; };
             assert.strictEqual(e.code, "ERR_NOT_SUPPORT");
             assert.strictEqual(
               e.message,
-              "Stream request bodies are not supported by the current fetch implementation",
+              "Stream request bodies are not supported by the current fetch implementation"
             );
             return true;
-          },
+          }
         );
 
         assert.strictEqual(
           fetchCalled,
           false,
-          "fetch must not receive a forced ReadableStream body",
+          "fetch must not receive a forced ReadableStream body"
         );
       });
 
@@ -1648,7 +1690,7 @@ describe.runIf(typeof fetch === "function")(
             res.setHeader("Content-Length", Buffer.byteLength(payload));
             res.end(payload);
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
@@ -1656,14 +1698,15 @@ describe.runIf(typeof fetch === "function")(
             fetchFaxios.get(`${LOCAL_SERVER_URL}/`, {
               maxContentLength: 1024,
             }),
-            (err) => {
-              const e = err as { code: string; message: string };
+            err => {
+              const e = err as { code: string; message: string; };
               assert.strictEqual(e.code, "ERR_BAD_RESPONSE");
               assert.match(e.message, /maxContentLength size of 1024 exceeded/);
               return true;
-            },
+            }
           );
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -1682,13 +1725,13 @@ describe.runIf(typeof fetch === "function")(
                 },
                 body: new ReadableStream({
                   start(controller) {
-                    controller.enqueue(new Uint8Array([116, 101, 115, 116]));
+                    controller.enqueue(new Uint8Array([ 116, 101, 115, 116 ]));
                     controller.close();
                   },
                 }),
               };
             },
-          } as unknown as { fetch?: typeof fetch },
+          } as unknown as { fetch?: typeof fetch; },
         });
 
         assert.strictEqual(data, "test");
@@ -1713,7 +1756,7 @@ describe.runIf(typeof fetch === "function")(
             };
             writeNext();
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
@@ -1721,14 +1764,15 @@ describe.runIf(typeof fetch === "function")(
             fetchFaxios.get(`${LOCAL_SERVER_URL}/`, {
               maxContentLength: 512,
             }),
-            (err) => {
-              const e = err as { code: string; message: string };
+            err => {
+              const e = err as { code: string; message: string; };
               assert.strictEqual(e.code, "ERR_BAD_RESPONSE");
               assert.match(e.message, /maxContentLength size of 512 exceeded/);
               return true;
-            },
+            }
           );
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -1747,12 +1791,12 @@ describe.runIf(typeof fetch === "function")(
 
         await assert.rejects(
           bareFaxios.get(dataUrl, { maxContentLength: 16 }),
-          (err) => {
-            const e = err as { code: string; message: string };
+          err => {
+            const e = err as { code: string; message: string; };
             assert.strictEqual(e.code, "ERR_BAD_RESPONSE");
             assert.match(e.message, /maxContentLength size of 16 exceeded/);
             return true;
-          },
+          }
         );
       });
 
@@ -1765,12 +1809,12 @@ describe.runIf(typeof fetch === "function")(
 
         await assert.rejects(
           bareFaxios.get(dataUrl, { maxContentLength: 16 }),
-          (err) => {
-            const e = err as { code: string; message: string };
+          err => {
+            const e = err as { code: string; message: string; };
             assert.strictEqual(e.code, "ERR_BAD_RESPONSE");
             assert.match(e.message, /maxContentLength size of 16 exceeded/);
             return true;
-          },
+          }
         );
       });
 
@@ -1791,7 +1835,7 @@ describe.runIf(typeof fetch === "function")(
           (_req, res) => {
             res.end(payload);
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
@@ -1799,7 +1843,8 @@ describe.runIf(typeof fetch === "function")(
             maxContentLength: 1024,
           });
           assert.strictEqual(data, payload);
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -1809,7 +1854,7 @@ describe.runIf(typeof fetch === "function")(
         let bytesReceived = 0;
         const server = await startHTTPServer(
           (req, res) => {
-            req.on("data", (chunk) => {
+            req.on("data", chunk => {
               bytesReceived += chunk.length;
             });
             req.on("end", () => {
@@ -1817,7 +1862,7 @@ describe.runIf(typeof fetch === "function")(
               res.end(JSON.stringify({ received: bytesReceived }));
             });
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
@@ -1827,11 +1872,12 @@ describe.runIf(typeof fetch === "function")(
             {
               maxBodyLength: 1024,
               headers: { "Content-Type": "application/octet-stream" },
-            },
+            }
           );
 
           assert.strictEqual(data.received, payloadLength);
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -1842,13 +1888,13 @@ describe.runIf(typeof fetch === "function")(
         const server = await startHTTPServer(
           (req, res) => {
             const chunks: Array<Buffer> = [];
-            req.on("data", (c) => chunks.push(c));
+            req.on("data", c => chunks.push(c));
             req.on("end", () => {
               received = Buffer.concat(chunks).toString();
               res.end("ok");
             });
           },
-          { port: SERVER_PORT },
+          { port: SERVER_PORT }
         );
 
         try {
@@ -1856,7 +1902,8 @@ describe.runIf(typeof fetch === "function")(
             maxBodyLength: 1024,
           });
           assert.strictEqual(received, payload);
-        } finally {
+        }
+        finally {
           await stopHTTPServer(server);
         }
       });
@@ -1882,12 +1929,13 @@ describe.runIf(typeof fetch === "function")(
 
           assert.ok(
             cancelSpy.mock.calls.length > 0,
-            "ReadableStream.prototype.cancel should be called during the capability probe",
+            "ReadableStream.prototype.cancel should be called during the capability probe"
           );
-        } finally {
+        }
+        finally {
           cancelSpy.mockRestore();
         }
       });
     });
-  },
+  }
 );

@@ -17,7 +17,7 @@ class MockXMLHttpRequest {
   onreadystatechange: (() => void) | null = null;
   onloadend: (() => void) | null = null;
   onabort: (() => void) | null = null;
-  onerror: ((e: { message: string }) => void) | null = null;
+  onerror: ((e: { message: string; }) => void) | null = null;
   ontimeout: (() => void) | null = null;
   upload = { addEventListener() {} };
   method?: string;
@@ -45,7 +45,7 @@ class MockXMLHttpRequest {
     }
 
     return Object.entries(this.responseHeaders)
-      .map(([key, value]) => `${key}: ${value}`)
+      .map(([ key, value ]) => `${key}: ${value}`)
       .join("\n");
   }
 
@@ -106,7 +106,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -117,7 +118,7 @@ let requests: Array<MockXMLHttpRequest> = [];
 let OriginalXMLHttpRequest: typeof XMLHttpRequest;
 
 const sleep = async (ms = 0) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+  new Promise(resolve => setTimeout(resolve, ms));
 
 const waitForRequest = async (timeoutMs = 1000) => {
   const start = Date.now();
@@ -152,7 +153,7 @@ describe("interceptors (vitest browser)", () => {
   it("should add a request interceptor (asynchronous by default)", async () => {
     let asyncFlag = false;
 
-    faxios.interceptors.request.use((config) => {
+    faxios.interceptors.request.use(config => {
       config.headers.test = "added by interceptor";
       expect(asyncFlag).toBe(true);
       return config;
@@ -171,13 +172,13 @@ describe("interceptors (vitest browser)", () => {
     let asyncFlag = false;
 
     faxios.interceptors.request.use(
-      (config) => {
+      config => {
         config.headers.test = "added by interceptor";
         expect(asyncFlag).toBe(true);
         return config;
       },
       null,
-      { synchronous: false },
+      { synchronous: false }
     );
 
     const responsePromise = faxios("/foo");
@@ -193,13 +194,13 @@ describe("interceptors (vitest browser)", () => {
     let asyncFlag = false;
 
     faxios.interceptors.request.use(
-      (config) => {
+      config => {
         config.headers.test = "added by synchronous interceptor";
         expect(asyncFlag).toBe(false);
         return config;
       },
       null,
-      { synchronous: true },
+      { synchronous: true }
     );
 
     const responsePromise = faxios("/foo");
@@ -207,7 +208,7 @@ describe("interceptors (vitest browser)", () => {
 
     const request = await waitForRequest();
     expect(request.requestHeaders.test).toBe(
-      "added by synchronous interceptor",
+      "added by synchronous interceptor"
     );
     request.respondWith();
     await responsePromise;
@@ -216,23 +217,23 @@ describe("interceptors (vitest browser)", () => {
   it("should execute asynchronously when not all interceptors are explicitly flagged as synchronous", async () => {
     let asyncFlag = false;
 
-    faxios.interceptors.request.use((config) => {
+    faxios.interceptors.request.use(config => {
       config.headers.foo = "uh oh, async";
       expect(asyncFlag).toBe(true);
       return config;
     });
 
     faxios.interceptors.request.use(
-      (config) => {
+      config => {
         config.headers.test = "added by synchronous interceptor";
         expect(asyncFlag).toBe(true);
         return config;
       },
       null,
-      { synchronous: true },
+      { synchronous: true }
     );
 
-    faxios.interceptors.request.use((config) => {
+    faxios.interceptors.request.use(config => {
       config.headers.test = "added by the async interceptor";
       expect(asyncFlag).toBe(true);
       return config;
@@ -244,7 +245,7 @@ describe("interceptors (vitest browser)", () => {
     const request = await waitForRequest();
     expect(request.requestHeaders.foo).toBe("uh oh, async");
     expect(request.requestHeaders.test).toBe(
-      "added by synchronous interceptor",
+      "added by synchronous interceptor"
     );
     request.respondWith();
     await responsePromise;
@@ -253,17 +254,17 @@ describe("interceptors (vitest browser)", () => {
   it("should execute request interceptor in legacy order", async () => {
     let sequence = "";
 
-    faxios.interceptors.request.use((config) => {
+    faxios.interceptors.request.use(config => {
       sequence += "1";
       return config;
     });
 
-    faxios.interceptors.request.use((config) => {
+    faxios.interceptors.request.use(config => {
       sequence += "2";
       return config;
     });
 
-    faxios.interceptors.request.use((config) => {
+    faxios.interceptors.request.use(config => {
       sequence += "3";
       return config;
     });
@@ -279,17 +280,17 @@ describe("interceptors (vitest browser)", () => {
   it("should execute request interceptor in order", async () => {
     let sequence = "";
 
-    faxios.interceptors.request.use((config) => {
+    faxios.interceptors.request.use(config => {
       sequence += "1";
       return config;
     });
 
-    faxios.interceptors.request.use((config) => {
+    faxios.interceptors.request.use(config => {
       sequence += "2";
       return config;
     });
 
-    faxios.interceptors.request.use((config) => {
+    faxios.interceptors.request.use(config => {
       sequence += "3";
       return config;
     });
@@ -312,12 +313,12 @@ describe("interceptors (vitest browser)", () => {
       config.method === "get";
 
     faxios.interceptors.request.use(
-      (config) => {
+      config => {
         config.headers.test = "special get headers";
         return config;
       },
       null,
-      { runWhen: onGetCall },
+      { runWhen: onGetCall }
     );
 
     const responsePromise = faxios("/foo");
@@ -333,12 +334,12 @@ describe("interceptors (vitest browser)", () => {
       config.method === "post";
 
     faxios.interceptors.request.use(
-      (config) => {
+      config => {
         config.headers.test = "special get headers";
         return config;
       },
       null,
-      { runWhen: onPostCall },
+      { runWhen: onPostCall }
     );
 
     const responsePromise = faxios("/foo");
@@ -355,22 +356,22 @@ describe("interceptors (vitest browser)", () => {
       config.method === "post";
 
     faxios.interceptors.request.use(
-      (config) => {
+      config => {
         config.headers.test = "special get headers";
         return config;
       },
       null,
-      { synchronous: false, runWhen: onPostCall },
+      { synchronous: false, runWhen: onPostCall }
     );
 
     faxios.interceptors.request.use(
-      (config) => {
+      config => {
         config.headers.sync = "hello world";
         expect(asyncFlag).toBe(false);
         return config;
       },
       null,
-      { synchronous: true },
+      { synchronous: true }
     );
 
     const responsePromise = faxios("/foo");
@@ -392,7 +393,7 @@ describe("interceptors (vitest browser)", () => {
         throw error;
       },
       rejectedSpy,
-      { synchronous: true },
+      { synchronous: true }
     );
 
     const responsePromise = faxios("/foo").catch(() => {});
@@ -409,7 +410,7 @@ describe("interceptors (vitest browser)", () => {
         ({
           url: "/bar",
           method: "post",
-        }) as InternalFaxiosRequestConfig,
+        }) as InternalFaxiosRequestConfig
     );
 
     const responsePromise = faxios("/foo");
@@ -423,13 +424,13 @@ describe("interceptors (vitest browser)", () => {
 
   it("should add a request interceptor that returns a promise", async () => {
     faxios.interceptors.request.use(
-      async (config) =>
-        new Promise<typeof config>((resolve) => {
+      async config =>
+        new Promise<typeof config>(resolve => {
           setTimeout(() => {
             config.headers.async = "promise";
             resolve(config);
           }, 100);
-        }),
+        })
     );
 
     const responsePromise = faxios("/foo");
@@ -441,15 +442,15 @@ describe("interceptors (vitest browser)", () => {
   });
 
   it("should add multiple request interceptors", async () => {
-    faxios.interceptors.request.use((config) => {
+    faxios.interceptors.request.use(config => {
       config.headers.test1 = "1";
       return config;
     });
-    faxios.interceptors.request.use((config) => {
+    faxios.interceptors.request.use(config => {
       config.headers.test2 = "2";
       return config;
     });
-    faxios.interceptors.request.use((config) => {
+    faxios.interceptors.request.use(config => {
       config.headers.test3 = "3";
       return config;
     });
@@ -465,7 +466,7 @@ describe("interceptors (vitest browser)", () => {
   });
 
   it("should add a response interceptor", async () => {
-    faxios.interceptors.response.use((data) => {
+    faxios.interceptors.response.use(data => {
       data.data = `${data.data} - modified by interceptor`;
       return data;
     });
@@ -483,9 +484,9 @@ describe("interceptors (vitest browser)", () => {
   });
 
   it("should add a response interceptor when request interceptor is defined", async () => {
-    faxios.interceptors.request.use((data) => data);
+    faxios.interceptors.request.use(data => data);
 
-    faxios.interceptors.response.use((data) => {
+    faxios.interceptors.response.use(data => {
       data.data = `${data.data} - modified by interceptor`;
       return data;
     });
@@ -521,13 +522,13 @@ describe("interceptors (vitest browser)", () => {
 
   it("should add a response interceptor that returns a promise", async () => {
     faxios.interceptors.response.use(
-      async (data) =>
-        new Promise((resolve) => {
+      async data =>
+        new Promise(resolve => {
           setTimeout(() => {
             data.data = "you have been promised!";
             resolve(data);
           }, 10);
-        }),
+        })
     );
 
     const responsePromise = faxios("/foo");
@@ -556,8 +557,8 @@ describe("interceptors (vitest browser)", () => {
     };
 
     it("then each interceptor is executed", async () => {
-      const interceptor1 = vi.fn((response) => response);
-      const interceptor2 = vi.fn((response) => response);
+      const interceptor1 = vi.fn(response => response);
+      const interceptor2 = vi.fn(response => response);
 
       faxios.interceptors.response.use(interceptor1);
       faxios.interceptors.response.use(interceptor2);
@@ -569,8 +570,8 @@ describe("interceptors (vitest browser)", () => {
     });
 
     it("then they are executed in the order they were added", async () => {
-      const interceptor1 = vi.fn((response) => response);
-      const interceptor2 = vi.fn((response) => response);
+      const interceptor1 = vi.fn(response => response);
+      const interceptor2 = vi.fn(response => response);
 
       faxios.interceptors.response.use(interceptor1);
       faxios.interceptors.response.use(interceptor2);
@@ -578,7 +579,7 @@ describe("interceptors (vitest browser)", () => {
       await fireRequest();
 
       expect(interceptor1.mock.invocationCallOrder[0]!).toBeLessThan(
-        interceptor2.mock.invocationCallOrder[0]!,
+        interceptor2.mock.invocationCallOrder[0]!
       );
     });
 
@@ -592,10 +593,10 @@ describe("interceptors (vitest browser)", () => {
 
     it("then every interceptor receives the result of its predecessor", async () => {
       faxios.interceptors.response.use(() => "response 1");
-      faxios.interceptors.response.use((response) => [response, "response 2"]);
+      faxios.interceptors.response.use(response => [ response, "response 2" ]);
 
       const response = await fireRequest();
-      expect(response).toEqual(["response 1", "response 2"]);
+      expect(response).toEqual([ "response 1", "response 2" ]);
     });
 
     describe("and when the fulfillment interceptor throws", () => {
@@ -616,7 +617,7 @@ describe("interceptors (vitest browser)", () => {
           throw new Error("throwing interceptor");
         });
 
-        const interceptor2 = vi.fn((response) => response);
+        const interceptor2 = vi.fn(response => response);
         faxios.interceptors.response.use(interceptor2);
 
         await fireRequestCatch();
@@ -629,7 +630,7 @@ describe("interceptors (vitest browser)", () => {
         });
 
         // eslint-disable-next-line promise/no-promise-in-callback
-        const rejectIntercept = vi.fn(async (error) => Promise.reject(error));
+        const rejectIntercept = vi.fn(async error => Promise.reject(error));
         faxios.interceptors.response.use(() => {}, rejectIntercept);
 
         await fireRequestCatch();
@@ -643,10 +644,10 @@ describe("interceptors (vitest browser)", () => {
 
         faxios.interceptors.response.use(
           () => {},
-          () => "recovered",
+          () => "recovered"
         );
 
-        const interceptor3 = vi.fn((response) => response);
+        const interceptor3 = vi.fn(response => response);
         faxios.interceptors.response.use(interceptor3);
 
         await fireRequestCatch();
@@ -656,15 +657,15 @@ describe("interceptors (vitest browser)", () => {
   });
 
   it("should allow removing interceptors", async () => {
-    faxios.interceptors.response.use((data) => {
+    faxios.interceptors.response.use(data => {
       data.data = `${data.data}1`;
       return data;
     });
-    const intercept = faxios.interceptors.response.use((data) => {
+    const intercept = faxios.interceptors.response.use(data => {
       data.data = `${data.data}2`;
       return data;
     });
-    faxios.interceptors.response.use((data) => {
+    faxios.interceptors.response.use(data => {
       data.data = `${data.data}3`;
       return data;
     });
@@ -687,22 +688,22 @@ describe("interceptors (vitest browser)", () => {
     let asyncFlag = false;
 
     const asyncIntercept = faxios.interceptors.request.use(
-      (config) => {
+      config => {
         config.headers.async = "async it!";
         return config;
       },
       null,
-      { synchronous: false },
+      { synchronous: false }
     );
 
     faxios.interceptors.request.use(
-      (config) => {
+      config => {
         config.headers.sync = "hello world";
         expect(asyncFlag).toBe(false);
         return config;
       },
       null,
-      { synchronous: true },
+      { synchronous: true }
     );
 
     faxios.interceptors.request.eject(asyncIntercept);
@@ -718,7 +719,7 @@ describe("interceptors (vitest browser)", () => {
   });
 
   it("should execute interceptors before transformers", async () => {
-    faxios.interceptors.request.use((config) => {
+    faxios.interceptors.request.use(config => {
       (config.data as Record<string, unknown>).baz = "qux";
       return config;
     });
@@ -728,7 +729,7 @@ describe("interceptors (vitest browser)", () => {
     });
 
     const request = await waitForRequest();
-    expect(request.params).toEqual('{"foo":"bar","baz":"qux"}');
+    expect(request.params).toEqual("{\"foo\":\"bar\",\"baz\":\"qux\"}");
     request.respondWith();
     await responsePromise;
   });
@@ -738,7 +739,7 @@ describe("interceptors (vitest browser)", () => {
       baseURL: "http://test.com/",
     });
 
-    instance.interceptors.request.use((config) => {
+    instance.interceptors.request.use(config => {
       config.baseURL = "http://rebase.com/";
       return config;
     });
@@ -756,7 +757,7 @@ describe("interceptors (vitest browser)", () => {
       baseURL: "http://test.com/",
     });
 
-    instance.interceptors.request.use((config) => config);
+    instance.interceptors.request.use(config => config);
     instance.interceptors.request.clear();
 
     expect(instance.interceptors.request.handlers.length).toBe(0);
@@ -767,7 +768,7 @@ describe("interceptors (vitest browser)", () => {
       baseURL: "http://test.com/",
     });
 
-    instance.interceptors.response.use((config) => config);
+    instance.interceptors.response.use(config => config);
     instance.interceptors.response.clear();
 
     expect(instance.interceptors.response.handlers.length).toBe(0);

@@ -37,7 +37,7 @@ Deno.test("headers: default Accept header is sent", async () => {
   const request = getCalls()[0];
   assertEquals(
     request.headers.get("accept"),
-    "application/json, text/plain, */*",
+    "application/json, text/plain, */*"
   );
 });
 
@@ -67,7 +67,7 @@ Deno.test("headers: content-type is set for JSON POST payload", async () => {
     {
       adapter: "fetch",
       env: env(fetch),
-    },
+    }
   );
 
   const request = getCalls()[0];

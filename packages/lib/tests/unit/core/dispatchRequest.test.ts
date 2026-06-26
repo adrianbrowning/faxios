@@ -8,7 +8,7 @@ import resolveConfig from "../../../src/lib/helpers/resolveConfig.js";
 import type {
   FaxiosAdapter,
   FaxiosResponse,
-  InternalFaxiosRequestConfig,
+  InternalFaxiosRequestConfig
 } from "../../../src/lib/types.js";
 
 class ReactNativeFormData {
@@ -25,12 +25,12 @@ class ReactNativeFormData {
 
 function faxiosHeaders(init?: Record<string, unknown>) {
   return new FaxiosHeaders(
-    init,
+    init
   ) as unknown as InternalFaxiosRequestConfig["headers"];
 }
 
 function baseConfig(
-  overrides: Partial<InternalFaxiosRequestConfig> = {},
+  overrides: Partial<InternalFaxiosRequestConfig> = {}
 ): InternalFaxiosRequestConfig {
   return {
     method: "get",
@@ -72,7 +72,8 @@ describe("core::dispatchRequest", () => {
       let thrown;
       try {
         await dispatchRequest(config);
-      } catch (e) {
+      }
+      catch (e) {
         thrown = e;
       }
 
@@ -99,7 +100,8 @@ describe("core::dispatchRequest", () => {
       let thrown;
       try {
         await dispatchRequest(config);
-      } catch (e) {
+      }
+      catch (e) {
         thrown = e;
       }
 
@@ -108,12 +110,12 @@ describe("core::dispatchRequest", () => {
       assert.strictEqual(
         thrown.response,
         response,
-        "error.response must be the original response",
+        "error.response must be the original response"
       );
       assert.strictEqual(
         thrown.status,
         418,
-        "error.status must equal response status",
+        "error.status must equal response status"
       );
     });
 
@@ -132,14 +134,15 @@ describe("core::dispatchRequest", () => {
 
       try {
         await dispatchRequest(config);
-      } catch (_) {
+      }
+      catch (_) {
         // expected
       }
 
       assert.strictEqual(
         Object.prototype.hasOwnProperty.call(config, "response"),
         false,
-        "config.response must be deleted in finally",
+        "config.response must be deleted in finally"
       );
     });
   });
@@ -156,7 +159,7 @@ describe("core::dispatchRequest", () => {
       };
       const reason = new FaxiosError(
         "Request failed",
-        FaxiosError.ERR_BAD_RESPONSE,
+        FaxiosError.ERR_BAD_RESPONSE
       );
       reason.response = response as unknown as FaxiosResponse;
       const config = baseConfig({
@@ -168,7 +171,8 @@ describe("core::dispatchRequest", () => {
       let thrown;
       try {
         await dispatchRequest(config);
-      } catch (e) {
+      }
+      catch (e) {
         thrown = e;
       }
 
@@ -176,12 +180,12 @@ describe("core::dispatchRequest", () => {
       assert.strictEqual(
         thrown.response,
         response,
-        "error.response must be the original response",
+        "error.response must be the original response"
       );
       assert.strictEqual(
         thrown.status,
         500,
-        "error.status must equal response status",
+        "error.status must equal response status"
       );
     });
 
@@ -196,7 +200,7 @@ describe("core::dispatchRequest", () => {
       };
       const reason = new FaxiosError(
         "Request failed",
-        FaxiosError.ERR_BAD_RESPONSE,
+        FaxiosError.ERR_BAD_RESPONSE
       );
       reason.response = response as unknown as FaxiosResponse;
       const config = baseConfig({
@@ -207,14 +211,15 @@ describe("core::dispatchRequest", () => {
 
       try {
         await dispatchRequest(config);
-      } catch (_) {
+      }
+      catch (_) {
         // expected
       }
 
       assert.strictEqual(
         Object.prototype.hasOwnProperty.call(config, "response"),
         false,
-        "config.response must be deleted in finally on the rejection path",
+        "config.response must be deleted in finally on the rejection path"
       );
     });
   });
@@ -223,7 +228,7 @@ describe("core::dispatchRequest", () => {
     it("clears default Content-Type for React Native FormData before adapter headers are sent", async () => {
       const data = new ReactNativeFormData();
       const response = {
-        data: '{"ok":true}',
+        data: "{\"ok\":true}",
         status: 200,
         statusText: "OK",
         headers: {},
@@ -243,7 +248,7 @@ describe("core::dispatchRequest", () => {
               adapterConfig.headers as unknown as HeadersWithMethods
             ).getContentType(),
             "application/x-www-form-urlencoded",
-            "dispatchRequest should apply the default POST Content-Type first",
+            "dispatchRequest should apply the default POST Content-Type first"
           );
 
           const resolvedConfig = resolveConfig(adapterConfig);
@@ -255,10 +260,10 @@ describe("core::dispatchRequest", () => {
           assert.strictEqual(
             Object.prototype.hasOwnProperty.call(
               resolvedHeaders.toJSON(),
-              "Content-Type",
+              "Content-Type"
             ),
             false,
-            "resolved adapter headers must omit Content-Type for React Native FormData",
+            "resolved adapter headers must omit Content-Type for React Native FormData"
           );
 
           return response;
@@ -272,7 +277,7 @@ describe("core::dispatchRequest", () => {
 
     it("cleans up config.response after a successful resolution", async () => {
       const response = {
-        data: '{"ok":true}',
+        data: "{\"ok\":true}",
         status: 200,
         statusText: "OK",
         headers: {},
@@ -289,7 +294,7 @@ describe("core::dispatchRequest", () => {
       assert.strictEqual(
         Object.prototype.hasOwnProperty.call(config, "response"),
         false,
-        "config.response must not be left set after a successful request",
+        "config.response must not be left set after a successful request"
       );
     });
   });

@@ -1,13 +1,13 @@
-import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
+import faxios from "faxios";
 
 const createFetchMock = (
   responseFactory?: (
     input: unknown,
-    init: RequestInit,
-  ) => Response | Promise<Response>,
+    init: RequestInit
+  ) => Response | Promise<Response>
 ) => {
-  const calls: Array<{ input: unknown; init: RequestInit }> = [];
+  const calls: Array<{ input: unknown; init: RequestInit; }> = [];
 
   const mockFetch = async (input: unknown, init: RequestInit = {}) => {
     calls.push({ input, init });
@@ -71,7 +71,7 @@ describe("fetch adapter", () => {
       {
         adapter: "fetch",
         env: env(mockFetch),
-      },
+      }
     );
 
     const { input, init } = getCalls()[0];
@@ -82,7 +82,7 @@ describe("fetch adapter", () => {
   test("HTTP methods are forwarded correctly", async () => {
     const run = async (
       method: "delete" | "head" | "options" | "put" | "patch",
-      expected: string,
+      expected: string
     ) => {
       const { mockFetch, getCalls } = createFetchMock();
 
@@ -93,9 +93,10 @@ describe("fetch adapter", () => {
           {
             adapter: "fetch",
             env: env(mockFetch),
-          },
+          }
         );
-      } else {
+      }
+      else {
         await faxios[method]("https://example.com/items", {
           adapter: "fetch",
           env: env(mockFetch),

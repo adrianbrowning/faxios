@@ -1,5 +1,5 @@
-import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
+import faxios from "faxios";
 
 const createFetchCapture = () => {
   const calls: Array<Request> = [];
@@ -60,7 +60,7 @@ describe("interceptors", () => {
     });
 
     const response = await client.get(
-      "https://example.com/interceptor-response",
+      "https://example.com/interceptor-response"
     );
 
     expect(response.data).toEqual({ value: "OK" });

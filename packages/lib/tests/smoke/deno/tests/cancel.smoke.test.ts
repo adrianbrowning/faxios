@@ -55,7 +55,7 @@ Deno.test("cancel: in-flight abort cancels request", async () => {
             clearTimeout(timeout);
             reject(new DOMException("The operation was aborted", "AbortError"));
           },
-          { once: true },
+          { once: true }
         );
       }
     });

@@ -11,7 +11,7 @@ class MockXMLHttpRequest {
   response: string | null = null;
   onreadystatechange: (() => void) | null = null;
   onloadend: (() => void) | null = null;
-  upload: { addEventListener: () => void } = { addEventListener() {} };
+  upload: { addEventListener: () => void; } = { addEventListener() {} };
   method?: string;
   url?: string;
   async?: boolean;
@@ -48,7 +48,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -70,7 +71,7 @@ const getLastRequest = () => {
 
 const finishRequest = async (
   request: MockXMLHttpRequest,
-  promise: Promise<unknown>,
+  promise: Promise<unknown>
 ) => {
   request.respondWith({ status: 200 });
   await promise;
@@ -79,7 +80,7 @@ const finishRequest = async (
 function testHeaderValue(
   headers: Record<string, unknown>,
   key: string,
-  val?: unknown,
+  val?: unknown
 ) {
   let found = false;
 
@@ -94,7 +95,8 @@ function testHeaderValue(
   if (!found) {
     if (typeof val === "undefined") {
       expect(Object.prototype.hasOwnProperty.call(headers, key)).toBe(false);
-    } else {
+    }
+    else {
       throw new Error(`${key} was not found in headers`);
     }
   }
@@ -129,9 +131,9 @@ describe("headers (vitest browser)", () => {
   it("should allow request interceptors to encode Unicode header values before XHR sends them", async () => {
     const instance = faxios.create({ adapter: "xhr" });
 
-    instance.interceptors.request.use((config) => {
+    instance.interceptors.request.use(config => {
       config.headers["oprtName"] = encodeURIComponent(
-        config.headers["oprtName"] as string,
+        config.headers["oprtName"] as string
       );
       return config;
     });
@@ -141,11 +143,11 @@ describe("headers (vitest browser)", () => {
         oprtName: "请求用户",
       },
     });
-    await new Promise((resolve) => setTimeout(resolve));
+    await new Promise(resolve => setTimeout(resolve));
     const request = getLastRequest();
 
     expect(request.requestHeaders.oprtName).toBe(
-      encodeURIComponent("请求用户"),
+      encodeURIComponent("请求用户")
     );
 
     await finishRequest(request, promise);
@@ -181,7 +183,7 @@ describe("headers (vitest browser)", () => {
 
   it("should add extra headers for post", async () => {
     const headers = FaxiosHeaders.from(
-      faxios.defaults.headers.common as Record<string, unknown>,
+      faxios.defaults.headers.common as Record<string, unknown>
     ).toJSON();
     const promise = faxios.post("/foo", "fizz=buzz");
     const request = getLastRequest();
@@ -213,7 +215,7 @@ describe("headers (vitest browser)", () => {
             "x-header-a": null,
             "x-header-b": undefined,
           },
-        },
+        }
       );
     const request = getLastRequest();
 
@@ -253,7 +255,7 @@ describe("headers (vitest browser)", () => {
     testHeaderValue(
       request.requestHeaders,
       "Content-Type",
-      "application/x-www-form-urlencoded",
+      "application/x-www-form-urlencoded"
     );
 
     await finishRequest(request, promise);

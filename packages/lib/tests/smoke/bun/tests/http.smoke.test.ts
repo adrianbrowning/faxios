@@ -1,7 +1,7 @@
 import { EventEmitter } from "node:events";
 import { PassThrough } from "node:stream";
-import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
+import faxios from "faxios";
 
 type TransportCall = {
   options: Record<string, any>;
@@ -11,15 +11,15 @@ type TransportCall = {
 const createTransportMock = (
   responseFactory?: (
     body: Buffer,
-    options: Record<string, any>,
-  ) => Record<string, any>,
+    options: Record<string, any>
+  ) => Record<string, any>
 ) => {
   const calls: Array<TransportCall> = [];
 
   const transport = {
     request(
       options: Record<string, any>,
-      onResponse: (res: PassThrough) => void,
+      onResponse: (res: PassThrough) => void
     ) {
       const req = new EventEmitter() as Record<string, any>;
       const chunks: Array<Buffer> = [];
@@ -92,7 +92,7 @@ describe("http adapter", () => {
         adapter: "http",
         proxy: false,
         transport,
-      },
+      }
     );
 
     const { body } = getCalls()[0];

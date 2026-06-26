@@ -1,5 +1,5 @@
-import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
+import faxios from "faxios";
 
 const env = (fetch: typeof globalThis.fetch) => ({
   fetch,
@@ -57,7 +57,7 @@ describe("cancellation", () => {
               clearTimeout(timeout);
               abortError();
             },
-            { once: true },
+            { once: true }
           );
         }
       });

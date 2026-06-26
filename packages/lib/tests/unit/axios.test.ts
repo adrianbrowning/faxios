@@ -5,7 +5,7 @@ import Faxios from "../../src/lib/core/Faxios.js";
 describe("Faxios", () => {
   describe("handle un-writable error stack", () => {
     const testUnwritableErrorStack = async (
-      stackAttributes: PropertyDescriptor,
+      stackAttributes: PropertyDescriptor
     ) => {
       const faxios = new Faxios({});
       // Mock faxios._request to return an Error with an un-writable stack property.
@@ -17,7 +17,8 @@ describe("Faxios", () => {
 
       try {
         await faxios.request("test-url", {});
-      } catch (e) {
+      }
+      catch (e) {
         assert.strictEqual((e as Error).message, "test-error");
       }
     };

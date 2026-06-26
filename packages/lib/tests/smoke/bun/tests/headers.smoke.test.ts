@@ -1,5 +1,5 @@
-import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
+import faxios from "faxios";
 
 const createFetchCapture = () => {
   const calls: Array<Request> = [];
@@ -52,7 +52,7 @@ describe("headers", () => {
       {
         adapter: "fetch",
         env: env(fetch),
-      },
+      }
     );
 
     const request = getCalls()[0];

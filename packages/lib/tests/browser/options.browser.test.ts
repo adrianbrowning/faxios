@@ -63,7 +63,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -84,7 +85,7 @@ const startRequest = (...args: Parameters<typeof faxios>) => {
 
 const flushSuccess = async (
   request: MockXMLHttpRequest,
-  promise: Promise<unknown>,
+  promise: Promise<unknown>
 ) => {
   request.respondWith({ status: 200 });
   await promise;
@@ -174,7 +175,7 @@ describe("options (vitest browser)", () => {
 
     expect(request).toBeDefined();
     expect(warnSpy).toHaveBeenCalledWith(
-      "baseUrl is likely a misspelling of baseURL",
+      "baseUrl is likely a misspelling of baseURL"
     );
     expect(request!.url).toBe("/foo");
 
@@ -217,7 +218,7 @@ describe("options (vitest browser)", () => {
     instance1.defaults.baseURL = "http://instance1.example.com/";
 
     expect(instance2.defaults.baseURL).not.toBe(
-      "http://instance1.example.com/",
+      "http://instance1.example.com/"
     );
   });
 
@@ -240,31 +241,31 @@ describe("options (vitest browser)", () => {
     ] = "application/x-www-form-urlencoded";
 
     expect(
-      (faxios.defaults.headers.common as RawFaxiosRequestHeaders).Authorization,
+      (faxios.defaults.headers.common as RawFaxiosRequestHeaders).Authorization
     ).toBeUndefined();
     expect(
       (instance1.defaults.headers.common as RawFaxiosRequestHeaders)
-        .Authorization,
+        .Authorization
     ).toBe("faketoken");
     expect(
       (instance2.defaults.headers.common as RawFaxiosRequestHeaders)
-        .Authorization,
+        .Authorization
     ).toBe("differentfaketoken");
 
     expect(
       (faxios.defaults.headers.common as RawFaxiosRequestHeaders)[
         "Content-Type"
-      ],
+      ]
     ).toBeUndefined();
     expect(
       (instance1.defaults.headers.common as RawFaxiosRequestHeaders)[
         "Content-Type"
-      ],
+      ]
     ).toBe("application/xml");
     expect(
       (instance2.defaults.headers.common as RawFaxiosRequestHeaders)[
         "Content-Type"
-      ],
+      ]
     ).toBe("application/x-www-form-urlencoded");
   });
 });

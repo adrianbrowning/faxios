@@ -65,7 +65,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -85,14 +86,14 @@ const getLastRequest = (): MockXMLHttpRequest => {
 
 const flushSuccess = async (
   request: MockXMLHttpRequest,
-  promise: Promise<unknown>,
+  promise: Promise<unknown>
 ) => {
   request.respondWith({ status: 200 });
   await promise;
 };
 
 const waitForRequest = async (
-  timeoutMs = 1000,
+  timeoutMs = 1000
 ): Promise<MockXMLHttpRequest> => {
   const start = Date.now();
 
@@ -209,7 +210,7 @@ describe("instance (vitest browser)", () => {
     const requestInterceptorId = (
       faxios.interceptors
         .request as unknown as InterceptorManager<InternalFaxiosRequestConfig>
-    ).use((config) => {
+    ).use(config => {
       (config as InternalFaxiosRequestConfig & Record<string, unknown>).foo =
         true;
       return config;
@@ -219,7 +220,7 @@ describe("instance (vitest browser)", () => {
     const instanceInterceptorId = (
       instance.interceptors
         .request as unknown as InterceptorManager<InternalFaxiosRequestConfig>
-    ).use((config) => {
+    ).use(config => {
       (config as InternalFaxiosRequestConfig & Record<string, unknown>).bar =
         true;
       return config;
@@ -236,12 +237,13 @@ describe("instance (vitest browser)", () => {
       const response = await responsePromise;
 
       expect(
-        (response.config as unknown as Record<string, unknown>).foo,
+        (response.config as unknown as Record<string, unknown>).foo
       ).toBeUndefined();
       expect((response.config as unknown as Record<string, unknown>).bar).toBe(
-        true,
+        true
       );
-    } finally {
+    }
+    finally {
       (
         faxios.interceptors
           .request as unknown as InterceptorManager<InternalFaxiosRequestConfig>
@@ -265,7 +267,7 @@ describe("instance (vitest browser)", () => {
     };
 
     expect(instance.getUri(options)).toBe(
-      "https://api.example.com/foo/bar?name=axios",
+      "https://api.example.com/foo/bar?name=axios"
     );
   });
 
@@ -292,7 +294,7 @@ describe("instance (vitest browser)", () => {
     };
 
     expect(instance.getUri(options)).toBe(
-      "https://api.example.com/foo/bar?foo=bar&name=axios",
+      "https://api.example.com/foo/bar?foo=bar&name=axios"
     );
   });
 });

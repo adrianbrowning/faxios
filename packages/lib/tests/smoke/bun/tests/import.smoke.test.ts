@@ -1,4 +1,3 @@
-import faxios from "faxios";
 import { describe, expect, test } from "bun:test";
 
 describe("Bun importing", () => {

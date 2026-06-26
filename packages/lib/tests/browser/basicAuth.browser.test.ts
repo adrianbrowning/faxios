@@ -63,7 +63,8 @@ class MockXMLHttpRequest {
     queueMicrotask(() => {
       if (this.onloadend) {
         this.onloadend();
-      } else if (this.onreadystatechange) {
+      }
+      else if (this.onreadystatechange) {
         this.onreadystatechange();
       }
     });
@@ -86,7 +87,7 @@ const startRequest = (...args: Parameters<typeof faxios>) => {
 
 const flushSuccess = async (
   request: MockXMLHttpRequest,
-  promise: Promise<unknown>,
+  promise: Promise<unknown>
 ) => {
   request.respondWith({ status: 200 });
   await promise;
@@ -113,7 +114,7 @@ describe("basicAuth (vitest browser)", () => {
     });
 
     expect(request.requestHeaders.Authorization).toBe(
-      "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==",
+      "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=="
     );
 
     await flushSuccess(request, promise);
@@ -140,7 +141,7 @@ describe("basicAuth (vitest browser)", () => {
     });
 
     expect(request.requestHeaders.Authorization).toBe(
-      "Basic QWxhZGRpbjpvcGVuIMOfw6fCo+KYg3Nlc2FtZQ==",
+      "Basic QWxhZGRpbjpvcGVuIMOfw6fCo+KYg3Nlc2FtZQ=="
     );
 
     await flushSuccess(request, promise);
@@ -164,7 +165,8 @@ describe("basicAuth (vitest browser)", () => {
       expect(request.requestHeaders.Authorization).toBe("Basic Og==");
 
       await flushSuccess(request, promise);
-    } finally {
+    }
+    finally {
       delete (Object.prototype as Record<string, unknown>).username;
       delete (Object.prototype as Record<string, unknown>).password;
     }
@@ -177,7 +179,7 @@ describe("basicAuth (vitest browser)", () => {
           username: "Aladßç£☃din",
           password: "open sesame",
         },
-      }),
+      })
     ).rejects.toThrow(/character/i);
   });
 });

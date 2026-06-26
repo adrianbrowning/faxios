@@ -30,7 +30,7 @@ export type {
   RawFaxiosRequestConfig,
   FaxiosPromise,
   CreateFaxiosDefaults,
-  CancelTokenStatic,
+  CancelTokenStatic
 } from "./lib/types.ts";
 
 export {
@@ -52,5 +52,5 @@ export {
   HttpStatusCode,
   formToJSON,
   getAdapter,
-  mergeConfig,
+  mergeConfig
 };
