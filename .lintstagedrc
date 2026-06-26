@@ -1,5 +1,5 @@
 {
-  "*.{js,ts,jsx,tsx}": [
+  "./packages/lib/**/*.{js,ts,jsx,tsx}": [
     "pnpm lint:fix"
   ]
 }
