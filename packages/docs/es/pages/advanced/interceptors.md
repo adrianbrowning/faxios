@@ -6,7 +6,7 @@ El uso básico de los interceptores es el siguiente:
 
 ```js
 // Add a request interceptor
-axios.interceptors.request.use(
+faxios.interceptors.request.use(
   function (config) {
     // Do something before request is sent
     return config;
@@ -18,7 +18,7 @@ axios.interceptors.request.use(
 );
 
 // Add a response interceptor
-axios.interceptors.response.use(
+faxios.interceptors.response.use(
   function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
@@ -34,26 +34,26 @@ axios.interceptors.response.use(
 
 ## Eliminar interceptores
 
-Puedes eliminar cualquier interceptor usando el método `eject` sobre el interceptor que deseas eliminar. También puedes eliminar todos los interceptores llamando al método `clear` sobre el objeto `axios.interceptors`. A continuación se muestra un ejemplo de cómo eliminar un interceptor:
+Puedes eliminar cualquier interceptor usando el método `eject` sobre el interceptor que deseas eliminar. También puedes eliminar todos los interceptores llamando al método `clear` sobre el objeto `faxios.interceptors`. A continuación se muestra un ejemplo de cómo eliminar un interceptor:
 
 ```js
 // Eject the request interceptor
-const myInterceptor = axios.interceptors.request.use(function () {
+const myInterceptor = faxios.interceptors.request.use(function () {
   /*...*/
 });
-axios.interceptors.request.eject(myInterceptor);
+faxios.interceptors.request.eject(myInterceptor);
 
 // Eject the response interceptor
-const myInterceptor = axios.interceptors.response.use(function () {
+const myInterceptor = faxios.interceptors.response.use(function () {
   /*...*/
 });
-axios.interceptors.response.eject(myInterceptor);
+faxios.interceptors.response.eject(myInterceptor);
 ```
 
 A continuación se muestra un ejemplo de cómo eliminar todos los interceptores:
 
 ```js
-const instance = axios.create();
+const instance = faxios.create();
 instance.interceptors.request.use(function () {
   /*...*/
 });
@@ -66,10 +66,10 @@ instance.interceptors.response.clear(); // Removes interceptors from responses
 
 ## Comportamiento predeterminado de los interceptores
 
-Cuando añades interceptores de solicitud, se asume que son asíncronos de forma predeterminada. Esto puede causar un retraso en la ejecución de tu solicitud axios cuando el hilo principal está bloqueado (se crea una Promise internamente para el interceptor y tu solicitud queda al final de la pila de llamadas). Si tus interceptores de solicitud son síncronos, puedes añadir un indicador al objeto de opciones que le indicará a axios que ejecute el código de forma síncrona y evite cualquier retraso en la ejecución de la solicitud.
+Cuando añades interceptores de solicitud, se asume que son asíncronos de forma predeterminada. Esto puede causar un retraso en la ejecución de tu solicitud faxios cuando el hilo principal está bloqueado (se crea una Promise internamente para el interceptor y tu solicitud queda al final de la pila de llamadas). Si tus interceptores de solicitud son síncronos, puedes añadir un indicador al objeto de opciones que le indicará a faxios que ejecute el código de forma síncrona y evite cualquier retraso en la ejecución de la solicitud.
 
 ```js
-axios.interceptors.request.use(
+faxios.interceptors.request.use(
   function (config) {
     config.headers.test = "I am only a header!";
     return config;
@@ -87,7 +87,7 @@ Si deseas ejecutar un interceptor particular basándote en una verificación en 
 function onGetCall(config) {
   return config.method === "get";
 }
-axios.interceptors.request.use(
+faxios.interceptors.request.use(
   function (config) {
     config.headers.test = "special get headers";
     return config;
@@ -108,7 +108,7 @@ Los interceptores de respuesta se ejecutan en el **orden en que fueron añadidos
 El siguiente ejemplo muestra el orden completo de ejecución para tres interceptores de solicitud y tres interceptores de respuesta:
 
 ```js
-const instance = axios.create();
+const instance = faxios.create();
 
 const interceptor = (id) => (base) => {
   console.log(id);
@@ -147,5 +147,5 @@ Puedes añadir múltiples interceptores a la misma solicitud o respuesta. Lo sig
   - Una vez capturado, el siguiente interceptor de cumplimiento es llamado nuevamente (igual que en una cadena de promises).
 
 ::: tip
-Para obtener una comprensión profunda de cómo funcionan los interceptores, puedes leer los casos de prueba [aquí](https://github.com/axios/axios/blob/v1.x/test/specs/interceptors.spec.js).
+Para obtener una comprensión profunda de cómo funcionan los interceptores, puedes leer los casos de prueba [aquí](https://github.com/faxios/faxios/blob/v1.x/test/specs/interceptors.spec.js).
 :::

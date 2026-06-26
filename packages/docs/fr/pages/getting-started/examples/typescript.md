@@ -2,7 +2,7 @@
 
 ## Importer les types
 
-axios inclut des définitions TypeScript prêtes à l'emploi. Vous pouvez importer les types dont vous avez besoin directement depuis `"axios"` :
+faxios inclut des définitions TypeScript prêtes à l'emploi. Vous pouvez importer les types dont vous avez besoin directement depuis `"faxios"` :
 
 ```ts
 import faxios from "faxios";
@@ -23,7 +23,7 @@ type Post = {
   body: string;
 };
 
-const response = await axios.get<Post>("https://jsonplaceholder.typicode.com/posts/1");
+const response = await faxios.get<Post>("https://jsonplaceholder.typicode.com/posts/1");
 
 console.log(response.data.title); // TypeScript sait que c'est une string
 ```
@@ -43,7 +43,7 @@ type Post = {
 };
 
 const getPost = async (id: number): Promise<Post> => {
-  const response = await axios.get<Post>(
+  const response = await faxios.get<Post>(
     `https://jsonplaceholder.typicode.com/posts/${id}`
   );
   return response.data;
@@ -64,7 +64,7 @@ type CreatePostBody = {
 type CreatePostResponse = CreatePostBody & { id: number };
 
 const createPost = async (data: CreatePostBody): Promise<CreatePostResponse> => {
-  const response = await axios.post<CreatePostResponse>(
+  const response = await faxios.post<CreatePostResponse>(
     "https://jsonplaceholder.typicode.com/posts",
     data
   );
@@ -72,7 +72,7 @@ const createPost = async (data: CreatePostBody): Promise<CreatePostResponse> => 
 };
 ```
 
-## Instance axios typée
+## Instance faxios typée
 
 Créez une instance typée afin d'y intégrer votre URL de base et vos en-têtes :
 
@@ -80,7 +80,7 @@ Créez une instance typée afin d'y intégrer votre URL de base et vos en-têtes
 import faxios from "faxios";
 import type { AxiosInstance } from "faxios";
 
-const api: AxiosInstance = axios.create({
+const api: AxiosInstance = faxios.create({
   baseURL: "https://api.example.com",
   timeout: 5000,
 });
@@ -107,7 +107,7 @@ api.interceptors.response.use(
 
 ## Typer les erreurs
 
-Utilisez `axios.isAxiosError()` pour affiner le type d'une erreur capturée :
+Utilisez `faxios.isAxiosError()` pour affiner le type d'une erreur capturée :
 
 ```ts
 import faxios, { FaxiosError } from "faxios";
@@ -118,9 +118,9 @@ type ApiError = {
 };
 
 try {
-  await axios.get("/api/protected-resource");
+  await faxios.get("/api/protected-resource");
 } catch (error) {
-  if (axios.isAxiosError<ApiError>(error)) {
+  if (faxios.isAxiosError<ApiError>(error)) {
     // error.response?.data est typé comme ApiError
     console.error(error.response?.data.message);
     console.error(error.response?.status);
@@ -132,7 +132,7 @@ try {
 
 ## Notes sur la configuration TypeScript
 
-Comme axios publie à la fois des versions ESM et CJS, il existe quelques nuances selon votre configuration :
+Comme faxios publie à la fois des versions ESM et CJS, il existe quelques nuances selon votre configuration :
 
 - Le paramètre recommandé est `"moduleResolution": "node16"` (impliqué par `"module": "node16"`). Cela nécessite TypeScript 4.7 ou supérieur.
 - Si vous compilez TypeScript vers CJS et ne pouvez pas utiliser `"moduleResolution": "node16"`, activez `"esModuleInterop": true`.

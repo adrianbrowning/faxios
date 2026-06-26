@@ -1,6 +1,6 @@
 # Esquema de respuesta
 
-Cada solicitud de axios se resuelve en un objeto de respuesta con la siguiente estructura. El esquema es consistente tanto en el entorno del navegador como en Node.js.
+Cada solicitud de faxios se resuelve en un objeto de respuesta con la siguiente estructura. El esquema es consistente tanto en el entorno del navegador como en Node.js.
 
 ```js
 {
@@ -18,7 +18,7 @@ Cada solicitud de axios se resuelve en un objeto de respuesta con la siguiente e
   // Los nombres de los encabezados están en minúsculas. Puedes acceder a ellos con notación de corchetes o de punto.
   headers: {},
 
-  // La configuración de axios que se usó para esta solicitud, incluyendo baseURL,
+  // La configuración de faxios que se usó para esta solicitud, incluyendo baseURL,
   // headers, timeout, params y cualquier otra opción que hayas proporcionado.
   config: {},
 
@@ -34,7 +34,7 @@ Cada solicitud de axios se resuelve en un objeto de respuesta con la siguiente e
 En la práctica, generalmente desestructurarás solo las partes que necesites:
 
 ```js
-const { data, status, headers } = await axios.get("/api/users/1");
+const { data, status, headers } = await faxios.get("/api/users/1");
 
 console.log(status);          // 200
 console.log(headers["content-type"]); // "application/json; charset=utf-8"
@@ -43,10 +43,10 @@ console.log(data);            // { id: 1, name: "Jay", email: "jay@example.com" 
 
 ## Verificar el código de estado
 
-axios resuelve la Promise para cualquier respuesta 2xx y la rechaza para cualquier cosa fuera de ese rango de forma predeterminada. Puedes personalizar esto con la opción de configuración `validateStatus`:
+faxios resuelve la Promise para cualquier respuesta 2xx y la rechaza para cualquier cosa fuera de ese rango de forma predeterminada. Puedes personalizar esto con la opción de configuración `validateStatus`:
 
 ```js
-const response = await axios.get("/api/resource", {
+const response = await faxios.get("/api/resource", {
   validateStatus: (status) => status < 500, // resolve for anything below 500
 });
 ```
@@ -56,7 +56,7 @@ const response = await axios.get("/api/resource", {
 Todos los nombres de encabezados de respuesta están en minúsculas, independientemente de cómo los haya enviado el servidor:
 
 ```js
-const response = await axios.get("/api/resource");
+const response = await faxios.get("/api/resource");
 
 // These are equivalent
 const contentType = response.headers["content-type"];

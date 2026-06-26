@@ -1,16 +1,16 @@
 # Headers <Badge type="tip" text="New" />
 
-Axios exposes its own AxiosHeaders class to manipulate headers using a Map-like API that guarantees case-insensitive keys. This class is used internally by Axios to manage headers, but it's also exposed to the user for convenience. Although HTTP headers are case-insensitive, Axios will retain the case of the original header for stylistic reasons and for a workaround when servers mistakenly consider the header's case. The old method of directly manipulating the headers object is still available, but deprecated and not recommended for future usage.
+faxios exposes its own AxiosHeaders class to manipulate headers using a Map-like API that guarantees case-insensitive keys. This class is used internally by faxios to manage headers, but it's also exposed to the user for convenience. Although HTTP headers are case-insensitive, faxios will retain the case of the original header for stylistic reasons and for a workaround when servers mistakenly consider the header's case. The old method of directly manipulating the headers object is still available, but deprecated and not recommended for future usage.
 
 ## Working with headers
 
-The AxiosHeaders object instance can contain different types of internal values that control the setting and merging logic. The final headers object is obtained by Axios by calling the toJSON method. The AxiosHeaders object is also iterable, so you can use it in loops or convert it to an array or object.
+The AxiosHeaders object instance can contain different types of internal values that control the setting and merging logic. The final headers object is obtained by faxios by calling the toJSON method. The AxiosHeaders object is also iterable, so you can use it in loops or convert it to an array or object.
 
 The header values can be one of the following types:
 
 - `string` - normal string value that will be sent to the server
 - `null` - skip header when converting to JSON
-- `false` - skip header when converting to JSON, additionally indicates that set method must be called with rewrite option set to true to overwrite this value (Axios uses this internally to allow users to opt out of installing certain headers like User-Agent or Content-Type)
+- `false` - skip header when converting to JSON, additionally indicates that set method must be called with rewrite option set to true to overwrite this value (faxios uses this internally to allow users to opt out of installing certain headers like User-Agent or Content-Type)
 - `undefined` - value is not set
 
 ::: warning
@@ -20,7 +20,7 @@ The header value is considered set if it is not undefined.
 The headers object is always initialized inside interceptors and transformers as seen in the following example:
 
 ```js
-axios.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+faxios.interceptors.request.use((request: InternalAxiosRequestConfig) => {
   request.headers.set("My-header", "value");
 
   request.headers.set({
@@ -28,7 +28,7 @@ axios.interceptors.request.use((request: InternalAxiosRequestConfig) => {
     "My-set-header2": "my-set-value2",
   });
 
-  // Disable subsequent setting of this header by Axios
+  // Disable subsequent setting of this header by faxios
   request.headers.set("User-Agent", false);
 
   request.headers.setContentType("text/plain");
@@ -64,7 +64,7 @@ The most common place to set headers is the `headers` option in your request con
 
 ```js
 // On a single request
-await axios.get('/api/data', {
+await faxios.get('/api/data', {
   headers: {
     'Accept-Language': 'en-US',
     'X-Request-ID': 'abc123',
@@ -72,7 +72,7 @@ await axios.get('/api/data', {
 });
 
 // On an instance (applied to every request)
-const api = axios.create({
+const api = faxios.create({
   headers: {
     'X-App-Version': '2.0.0',
   },
@@ -81,10 +81,10 @@ const api = axios.create({
 
 ## Preserving a specific header case
 
-Axios header names are case-insensitive, but `AxiosHeaders` keeps the case of the first matching key it sees. If you need a specific case for a server with non-standard case-sensitive behavior, define a case preset in defaults and then set values as usual.
+faxios header names are case-insensitive, but `AxiosHeaders` keeps the case of the first matching key it sees. If you need a specific case for a server with non-standard case-sensitive behavior, define a case preset in defaults and then set values as usual.
 
 ```js
-const api = axios.create();
+const api = faxios.create();
 
 api.defaults.headers.common = {
   'content-type': undefined,
@@ -109,7 +109,7 @@ const headers = AxiosHeaders.concat(
   { 'Content-Type': 'application/octet-stream' }
 );
 
-await axios.put(url, data, { headers });
+await faxios.put(url, data, { headers });
 ```
 
 ## Setting headers in an interceptor
@@ -153,7 +153,7 @@ await api.get('/api/data', {
 Response headers are available on `response.headers` as an `AxiosHeaders` instance. All header names are lower-cased:
 
 ```js
-const response = await axios.get('/api/data');
+const response = await faxios.get('/api/data');
 
 console.log(response.headers['content-type']);
 // application/json; charset=utf-8
@@ -164,10 +164,10 @@ console.log(response.headers.get('x-request-id'));
 
 ## Removing a default header
 
-To opt out of a header that axios sets by default (such as `Content-Type` or `User-Agent`), set its value to `false`:
+To opt out of a header that faxios sets by default (such as `Content-Type` or `User-Agent`), set its value to `false`:
 
 ```js
-await axios.post('/api/data', payload, {
+await faxios.post('/api/data', payload, {
   headers: {
     'Content-Type': false, // let the browser set it automatically (e.g. for FormData)
   },

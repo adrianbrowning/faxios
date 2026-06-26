@@ -1,15 +1,15 @@
 # Alias de solicitud
 
-axios proporciona un conjunto de alias para realizar solicitudes HTTP. Estos alias son atajos para hacer solicitudes usando el método `request`. Están diseñados para ser fáciles de usar y ofrecer una forma más conveniente de hacer solicitudes.
+faxios proporciona un conjunto de alias para realizar solicitudes HTTP. Estos alias son atajos para hacer solicitudes usando el método `request`. Están diseñados para ser fáciles de usar y ofrecer una forma más conveniente de hacer solicitudes.
 
-axios se esfuerza por seguir las RFC 7231 y RFC 5789 de la manera más fiel posible. Los alias están diseñados para ser consistentes con los métodos HTTP definidos en dichas RFC.
+faxios se esfuerza por seguir las RFC 7231 y RFC 5789 de la manera más fiel posible. Los alias están diseñados para ser consistentes con los métodos HTTP definidos en dichas RFC.
 
-### `axios`
+### `faxios`
 
-axios puede usarse para hacer una solicitud HTTP pasando únicamente el objeto de configuración. El objeto de configuración completo está documentado [aquí](/pages/advanced/request-config).
+faxios puede usarse para hacer una solicitud HTTP pasando únicamente el objeto de configuración. El objeto de configuración completo está documentado [aquí](/pages/advanced/request-config).
 
 ```ts
-axios(url: string | AxiosRequestConfig, config?: AxiosRequestConfig);
+faxios(url: string | AxiosRequestConfig, config?: AxiosRequestConfig);
 ```
 
 ## Alias de método
@@ -21,7 +21,7 @@ Los siguientes alias están disponibles para hacer solicitudes:
 El método `request` es el método principal que usarás para hacer solicitudes HTTP. Acepta un objeto de configuración como argumento y devuelve una Promise que se resuelve en el objeto de respuesta. Es un método genérico que puede usarse para cualquier tipo de solicitud HTTP.
 
 ```ts
-axios.request(config: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.request(config: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `get`
@@ -29,7 +29,7 @@ axios.request(config: AxiosRequestConfig<C>): AxiosResponse<R>;
 El método `get` se usa para hacer una solicitud GET. Acepta una URL y un objeto de configuración opcional como argumentos, y devuelve una Promise que se resuelve en el objeto de respuesta.
 
 ```ts
-axios.get(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.get(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `delete`
@@ -37,7 +37,7 @@ axios.get(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 El método `delete` se usa para hacer una solicitud DELETE. Acepta una URL y un objeto de configuración opcional como argumentos, y devuelve una Promise que se resuelve en el objeto de respuesta.
 
 ```ts
-axios.delete(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.delete(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `head`
@@ -45,7 +45,7 @@ axios.delete(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 El método `head` se usa para hacer una solicitud HEAD. Acepta una URL y un objeto de configuración opcional como argumentos, y devuelve una Promise que se resuelve en el objeto de respuesta.
 
 ```ts
-axios.head(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.head(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `options`
@@ -53,7 +53,7 @@ axios.head(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 El método `options` se usa para hacer una solicitud OPTIONS. Acepta una URL y un objeto de configuración opcional como argumentos, y devuelve una Promise que se resuelve en el objeto de respuesta.
 
 ```ts
-axios.options(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.options(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `post`
@@ -61,7 +61,7 @@ axios.options(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 El método `post` se usa para hacer una solicitud POST. Acepta una URL, un objeto de datos opcional y un objeto de configuración opcional como argumentos, y devuelve una Promise que se resuelve en el objeto de respuesta.
 
 ```ts
-axios.post(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.post(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `put`
@@ -69,7 +69,7 @@ axios.post(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse
 El método `put` se usa para hacer una solicitud PUT. Acepta una URL, un objeto de datos opcional y un objeto de configuración opcional como argumentos, y devuelve una Promise que se resuelve en el objeto de respuesta.
 
 ```ts
-axios.put(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.put(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `patch`
@@ -77,7 +77,7 @@ axios.put(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<
 El método `patch` se usa para hacer una solicitud PATCH. Acepta una URL, un objeto de datos opcional y un objeto de configuración opcional como argumentos, y devuelve una Promise que se resuelve en el objeto de respuesta.
 
 ```ts
-axios.patch(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.patch(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `query`
@@ -85,12 +85,12 @@ axios.patch(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosRespons
 El método `query` se usa para hacer una solicitud QUERY, un método seguro e idempotente que transporta un cuerpo. Acepta una URL, un objeto de datos opcional y un objeto de configuración opcional como argumentos, y devuelve una Promise que se resuelve en el objeto de respuesta. Úsalo para operaciones de tipo lectura cuyos parámetros sean demasiado complejos o sensibles para ir en la URL.
 
 ```ts
-axios.query(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.query(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ```js
 // Enviar un filtro de búsqueda complejo como cuerpo de la solicitud
-const { data } = await axios.query("/api/search", {
+const { data } = await faxios.query("/api/search", {
   selector: ["name", "email"],
   filter: { active: true, role: "admin" },
 });
@@ -102,14 +102,14 @@ El método QUERY está definido por un [Internet-Draft](https://datatracker.ietf
 
 ### `getUri`
 
-El método `getUri` devuelve la URL que se enviaría para una configuración dada sin realizar realmente la solicitud. Aplica `baseURL`, `paramsSerializer` y `params`, así que recibes la misma cadena que axios pondría en el cable. Útil para construir enlaces, depurar la serialización o reutilizar la URL resuelta en otra solicitud.
+El método `getUri` devuelve la URL que se enviaría para una configuración dada sin realizar realmente la solicitud. Aplica `baseURL`, `paramsSerializer` y `params`, así que recibes la misma cadena que faxios pondría en el cable. Útil para construir enlaces, depurar la serialización o reutilizar la URL resuelta en otra solicitud.
 
 ```ts
-axios.getUri(config?: AxiosRequestConfig): string;
+faxios.getUri(config?: AxiosRequestConfig): string;
 ```
 
 ```js
-const url = axios.getUri({
+const url = faxios.getUri({
   url: "/users",
   baseURL: "https://api.example.com",
   params: { active: true, role: "admin" },
@@ -128,12 +128,12 @@ Estos métodos son equivalentes a sus contrapartes anteriores, pero predefinen `
 ### `postForm`
 
 ```ts
-axios.postForm(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.postForm(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ```js
 // Upload a file from a browser file input
-await axios.postForm("/api/upload", {
+await faxios.postForm("/api/upload", {
   file: document.querySelector("#fileInput").files[0],
   description: "Profile photo",
 });
@@ -142,12 +142,12 @@ await axios.postForm("/api/upload", {
 ### `putForm`
 
 ```ts
-axios.putForm(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.putForm(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ```js
 // Replace a resource with form data
-await axios.putForm("/api/users/1/avatar", {
+await faxios.putForm("/api/users/1/avatar", {
   avatar: document.querySelector("#avatarInput").files[0],
 });
 ```
@@ -155,12 +155,12 @@ await axios.putForm("/api/users/1/avatar", {
 ### `patchForm`
 
 ```ts
-axios.patchForm(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.patchForm(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ```js
 // Update specific fields using form data
-await axios.patchForm("/api/users/1", {
+await faxios.patchForm("/api/users/1", {
   displayName: "New Name",
   avatar: document.querySelector("#avatarInput").files[0],
 });

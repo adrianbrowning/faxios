@@ -1,6 +1,6 @@
 # Response schema
 
-Every axios request resolves to a response object with the following shape. The schema is consistent across both browser and Node.js environments.
+Every faxios request resolves to a response object with the following shape. The schema is consistent across both browser and Node.js environments.
 
 ```js
 {
@@ -18,7 +18,7 @@ Every axios request resolves to a response object with the following shape. The 
   // Header names are lower-cased. You can access them using bracket or dot notation.
   headers: {},
 
-  // The axios config that was used for this request, including baseURL,
+  // The faxios config that was used for this request, including baseURL,
   // headers, timeout, params, and any other options you provided.
   config: {},
 
@@ -34,7 +34,7 @@ Every axios request resolves to a response object with the following shape. The 
 In practice you will usually destructure just the parts you need:
 
 ```js
-const { data, status, headers } = await axios.get("/api/users/1");
+const { data, status, headers } = await faxios.get("/api/users/1");
 
 console.log(status);          // 200
 console.log(headers["content-type"]); // "application/json; charset=utf-8"
@@ -43,10 +43,10 @@ console.log(data);            // { id: 1, name: "Jay", email: "jay@example.com" 
 
 ## Checking the status code
 
-axios resolves the promise for any 2xx response and rejects for anything outside that range by default. You can customise this with the `validateStatus` config option:
+faxios resolves the promise for any 2xx response and rejects for anything outside that range by default. You can customise this with the `validateStatus` config option:
 
 ```js
-const response = await axios.get("/api/resource", {
+const response = await faxios.get("/api/resource", {
   validateStatus: (status) => status < 500, // resolve for anything below 500
 });
 ```
@@ -56,7 +56,7 @@ const response = await axios.get("/api/resource", {
 All response header names are lower-cased, regardless of how the server sent them:
 
 ```js
-const response = await axios.get("/api/resource");
+const response = await faxios.get("/api/resource");
 
 // These are equivalent
 const contentType = response.headers["content-type"];

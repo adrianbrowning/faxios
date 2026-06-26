@@ -1,6 +1,6 @@
 # Limitation de débit <Badge type="tip" text="Nouveau" />
 
-axios prend en charge la limitation de bande passante dans l'environnement Node.js via l'adaptateur HTTP. Cela vous permet de plafonner la vitesse d'envoi ou de téléchargement des données, ce qui est utile pour les opérations en masse, les tâches en arrière-plan ou le scraping respectueux qui ne doit pas saturer une connexion.
+faxios prend en charge la limitation de bande passante dans l'environnement Node.js via l'adaptateur HTTP. Cela vous permet de plafonner la vitesse d'envoi ou de téléchargement des données, ce qui est utile pour les opérations en masse, les tâches en arrière-plan ou le scraping respectueux qui ne doit pas saturer une connexion.
 
 ## `maxRate`
 
@@ -8,10 +8,10 @@ L'option `maxRate` accepte soit un nombre (octets par seconde) soit un tableau o
 
 ```js
 // Limiter l'envoi et le téléchargement à 100 Ko/s
-await axios.get(URL, { maxRate: 100 * 1024 });
+await faxios.get(URL, { maxRate: 100 * 1024 });
 
 // Limiter l'envoi à 100 Ko/s, le téléchargement à 500 Ko/s
-await axios.get(URL, { maxRate: [100 * 1024, 500 * 1024] });
+await faxios.get(URL, { maxRate: [100 * 1024, 500 * 1024] });
 ```
 
 ::: warning
@@ -23,7 +23,7 @@ await axios.get(URL, { maxRate: [100 * 1024, 500 * 1024] });
 Plafonnez la vitesse d'envoi tout en journalisant la progression en même temps :
 
 ```js
-const { data } = await axios.post(SERVER_URL, myBuffer, {
+const { data } = await faxios.post(SERVER_URL, myBuffer, {
   onUploadProgress: ({ progress, rate }) => {
     const percent = (progress * 100).toFixed(1);
     const kbps = (rate / 1024).toFixed(1);
@@ -39,7 +39,7 @@ const { data } = await axios.post(SERVER_URL, myBuffer, {
 Plafonnez la vitesse de téléchargement pour les réponses volumineuses :
 
 ```js
-const { data } = await axios.get(FILE_URL, {
+const { data } = await faxios.get(FILE_URL, {
   onDownloadProgress: ({ progress, rate }) => {
     const percent = (progress * 100).toFixed(1);
     const kbps = (rate / 1024).toFixed(1);
@@ -56,7 +56,7 @@ const { data } = await axios.get(FILE_URL, {
 Passez les deux limites sous forme de tableau pour contrôler les deux sens simultanément :
 
 ```js
-await axios.post(SERVER_URL, largeBuffer, {
+await faxios.post(SERVER_URL, largeBuffer, {
   maxRate: [50 * 1024, 500 * 1024], // 50 Ko/s en envoi, 500 Ko/s en téléchargement
 });
 ```

@@ -3,12 +3,12 @@
 layout: home
 
 hero:
-  name: 'axios docs'
-  text: 'axios est un client HTTP simple pour le navigateur et Node.js'
+  name: 'faxios docs'
+  text: 'faxios est un client HTTP simple pour le navigateur et Node.js'
   image:
     dark: /logo.svg
     light: /logo-light.svg
-    alt: axios
+    alt: faxios
   actions:
     - theme: brand
       text: Démarrer
@@ -19,11 +19,11 @@ hero:
 
 features:
   - title: Implémentation simple
-    details: Démarrer avec axios est aussi simple qu'une seule ligne de code. Les requêtes API basiques peuvent être effectuées en 2 lignes de code.
+    details: Démarrer avec faxios est aussi simple qu'une seule ligne de code. Les requêtes API basiques peuvent être effectuées en 2 lignes de code.
   - title: Intercepteurs puissants
     details: Notre système d'intercepteurs innovant vous permet de contrôler le cycle de vie des requêtes et des réponses. Vous pouvez modifier les requêtes, les réponses et les erreurs.
   - title: Support TypeScript
-    details: axios déclare des types et supporte pleinement TypeScript. Vous pouvez utiliser axios en toute confiance dans vos projets TypeScript.
+    details: faxios déclare des types et supporte pleinement TypeScript. Vous pouvez utiliser faxios en toute confiance dans vos projets TypeScript.
 ---
 
 <script setup>

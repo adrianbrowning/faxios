@@ -16,7 +16,7 @@ const config = {
     Descope: "gold",
     "Principal Financial Group": "gold",
   },
-  sponsorsToIgnore: ["axios"],
+  sponsorsToIgnore: ["faxios"],
   additionalSponsors: [
     {
       name: "superluxuryreps",
@@ -40,7 +40,7 @@ const config = {
  */
 const getAllSponsorsQuery = `
 query Account {
-  account(githubHandle: "https://github.com/axios") {
+  account(githubHandle: "https://github.com/faxios") {
     name
     slug
     members(role: BACKER) {
@@ -81,7 +81,7 @@ query Account {
  */
 const getActiveSponsorsQuery = `
 query Account {
-  account(githubHandle: "https://github.com/axios") {
+  account(githubHandle: "https://github.com/faxios") {
     orders(onlyActiveSubscriptions: true, onlySubscriptions: true, frequency: MONTHLY, status: ACTIVE) {
       totalCount
       nodes {
@@ -122,7 +122,7 @@ query Account {
  */
 const getAllSponsors = async () => {
   printInfoMessage("getting all sponsors...");
-  const response = await axios.post(
+  const response = await faxios.post(
     "https://api.opencollective.com/graphql/v2",
     {
       query: getAllSponsorsQuery,
@@ -139,7 +139,7 @@ const getAllSponsors = async () => {
  */
 const getActiveSponsors = async () => {
   printInfoMessage("getting active sponsors...");
-  const response = await axios.post(
+  const response = await faxios.post(
     "https://api.opencollective.com/graphql/v2",
     {
       query: getActiveSponsorsQuery,

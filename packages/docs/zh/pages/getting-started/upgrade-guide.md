@@ -9,7 +9,7 @@
 在 v1.x 中，import 语句改为使用 `default` 导出，你需要将 import 语句更新为如下形式：
 
 ```diff
-- import { axios } from "faxios";
+- import { faxios } from "faxios";
 + import faxios from "faxios";
 ```
 
@@ -18,8 +18,8 @@
 在 v1.x 中，你需要使用 `InternalAxiosRequestConfig` 类型来为 `request` 拦截器的 `config` 参数标注类型。这是因为该参数现在的类型是 `InternalAxiosRequestConfig`，而不再是公开的 `AxiosRequestConfig`。
 
 ```diff
-- axios.interceptors.request.use((config: AxiosRequestConfig) => {
-+ axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+- faxios.interceptors.request.use((config: AxiosRequestConfig) => {
++ faxios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     return config;
   });
 ```
@@ -35,11 +35,11 @@
 +       request.headers.Authorization = ...
 ```
 
-原本位于 `common`、`get`、`post` 等属性下的默认请求头，现在直接设置在 `axios.defaults.headers` 上：
+原本位于 `common`、`get`、`post` 等属性下的默认请求头，现在直接设置在 `faxios.defaults.headers` 上：
 
 ```diff
-- axios.defaults.headers.common["Accept"] = "application/json";
-+ axios.defaults.headers["Accept"] = "application/json";
+- faxios.defaults.headers.common["Accept"] = "application/json";
++ faxios.defaults.headers["Accept"] = "application/json";
 ```
 
 ### Multipart 表单数据
@@ -47,13 +47,13 @@
 如果请求包含 `FormData` 数据，`Content-Type: multipart/form-data` 请求头现在会被自动设置，请移除手动设置以避免重复：
 
 ```diff
-- axios.post("/upload", formData, {
+- faxios.post("/upload", formData, {
 -   headers: { "Content-Type": "multipart/form-data" },
 - });
-+ axios.post("/upload", formData);
++ faxios.post("/upload", formData);
 ```
 
-如果你明确设置了 `Content-Type: application/json`，axios 现在会自动将数据序列化为 JSON。
+如果你明确设置了 `Content-Type: application/json`，faxios 现在会自动将数据序列化为 JSON。
 
 ### 参数序列化
 
@@ -64,7 +64,7 @@ v1.x 对 URL 参数的序列化方式进行了若干破坏性变更，主要包�
 ```js
 import qs from 'qs';
 
-axios.create({
+faxios.create({
   paramsSerializer: {
     serialize: (params) => qs.stringify(params, { arrayFormat: 'brackets' }),
   },
@@ -79,7 +79,7 @@ axios.create({
 
 ### 内部模块不再导出
 
-我们决定不再导出 axios 的内部模块，你需要将代码更新为仅使用 axios 的公开 API。此变更旨在简化 API，缩小 axios 的接口范围，使我们能够在不声明破坏性变更的情况下修改内部实现。
+我们决定不再导出 faxios 的内部模块，你需要将代码更新为仅使用 faxios 的公开 API。此变更旨在简化 API，缩小 faxios 的接口范围，使我们能够在不声明破坏性变更的情况下修改内部实现。
 
 请查阅本站的 [API 参考](/pages/advanced/api-reference)，获取最新的公开 API 信息。
 
@@ -89,4 +89,4 @@ axios.create({
 
 ### 遗漏的破坏性变更
 
-本指南并不详尽，可能未涵盖所有破坏性变更。如果你遇到任何问题，欢迎在 [docs GitHub 仓库](https://github.com/axios/docs)提交 issue，并添加 `breaking change` 标签。
+本指南并不详尽，可能未涵盖所有破坏性变更。如果你遇到任何问题，欢迎在 [docs GitHub 仓库](https://github.com/faxios/docs)提交 issue，并添加 `breaking change` 标签。

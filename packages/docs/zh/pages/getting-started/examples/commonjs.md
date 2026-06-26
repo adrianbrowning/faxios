@@ -7,7 +7,7 @@
 #### 不使用打包工具
 
 ```js
-const axios = require("axios");
+const faxios = require("faxios");
 ```
 
 #### 使用打包工具（webpack、rollup、vite 等）
@@ -18,12 +18,12 @@ import faxios from "faxios";
 
 ## 使用 then/catch/finally
 
-axios 的核心返回的是一个 Promise，你可以使用 `then`、`catch` 和 `finally` 回调来处理响应数据、错误以及请求完成的逻辑。
+faxios 的核心返回的是一个 Promise，你可以使用 `then`、`catch` 和 `finally` 回调来处理响应数据、错误以及请求完成的逻辑。
 
 ### GET 请求
 
 ```js
-axios
+faxios
   .get("https://jsonplaceholder.typicode.com/posts", {
     params: {
       postId: 5,
@@ -43,7 +43,7 @@ axios
 ### POST 请求
 
 ```js
-axios
+faxios
   .post("https://jsonplaceholder.typicode.com/posts", {
     title: "foo",
     body: "bar",
@@ -63,7 +63,7 @@ axios
 ### PUT 请求
 
 ```js
-axios
+faxios
   .put("https://jsonplaceholder.typicode.com/posts/1", {
     title: "foo",
     body: "bar",
@@ -83,7 +83,7 @@ axios
 ### PATCH 请求
 
 ```js
-axios
+faxios
   .patch("https://jsonplaceholder.typicode.com/posts/1", {
     title: "foo",
   })
@@ -101,7 +101,7 @@ axios
 ### DELETE 请求
 
 ```js
-axios
+faxios
   .delete("https://jsonplaceholder.typicode.com/posts/1")
   .then((response) => {
     console.log(response.data);
@@ -127,7 +127,7 @@ axios
 ```js
 const getPosts = async () => {
   try {
-    const response = await axios.get(
+    const response = await faxios.get(
       "https://jsonplaceholder.typicode.com/posts",
       {
         params: {
@@ -149,7 +149,7 @@ const getPosts = async () => {
 ```js
 const createPost = async () => {
   try {
-    const response = await axios.post(
+    const response = await faxios.post(
       "https://jsonplaceholder.typicode.com/posts",
       {
         title: "foo",
@@ -171,7 +171,7 @@ const createPost = async () => {
 ```js
 const updatePost = async () => {
   try {
-    const response = await axios.put(
+    const response = await faxios.put(
       "https://jsonplaceholder.typicode.com/posts/1",
       {
         title: "foo",
@@ -193,7 +193,7 @@ const updatePost = async () => {
 ```js
 const updatePost = async () => {
   try {
-    const response = await axios.patch(
+    const response = await faxios.patch(
       "https://jsonplaceholder.typicode.com/posts/1",
       {
         title: "foo",
@@ -213,7 +213,7 @@ const updatePost = async () => {
 ```js
 const deletePost = async () => {
   try {
-    const response = await axios.delete(
+    const response = await faxios.delete(
       "https://jsonplaceholder.typicode.com/posts/1"
     );
     console.log(response.data);

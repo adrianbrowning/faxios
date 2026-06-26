@@ -1,13 +1,13 @@
 # File posting
 
-axios makes file uploads straightforward. Use `postForm` or `FormData` when you need `multipart/form-data` uploads.
+faxios makes file uploads straightforward. Use `postForm` or `FormData` when you need `multipart/form-data` uploads.
 
 ## Single file (browser)
 
-Pass a `File` object directly as a field value — axios will detect it and use the correct content type automatically:
+Pass a `File` object directly as a field value — faxios will detect it and use the correct content type automatically:
 
 ```js
-await axios.postForm("https://httpbin.org/post", {
+await faxios.postForm("https://httpbin.org/post", {
   description: "My profile photo",
   file: document.querySelector("#fileInput").files[0],
 });
@@ -18,7 +18,7 @@ await axios.postForm("https://httpbin.org/post", {
 Pass a `FileList` to upload all selected files at once. They will all be sent under the same field name (`files[]`):
 
 ```js
-await axios.postForm(
+await faxios.postForm(
   "https://httpbin.org/post",
   document.querySelector("#fileInput").files
 );
@@ -27,7 +27,7 @@ await axios.postForm(
 You can also pass the `FileList` (or array of `File` objects) explicitly under a custom field name by appending `[]` to the key:
 
 ```js
-await axios.postForm("https://httpbin.org/post", {
+await faxios.postForm("https://httpbin.org/post", {
   "files[]": document.querySelector("#fileInput").files,
 });
 ```
@@ -39,7 +39,7 @@ const formData = new FormData();
 formData.append("avatar", avatarFile);
 formData.append("cover", coverFile);
 
-await axios.post("https://httpbin.org/post", formData);
+await faxios.post("https://httpbin.org/post", formData);
 ```
 
 ## Tracking upload progress (browser)
@@ -47,7 +47,7 @@ await axios.post("https://httpbin.org/post", formData);
 Use the `onUploadProgress` callback to show a progress bar or percentage to your users:
 
 ```js
-await axios.postForm("https://httpbin.org/post", {
+await faxios.postForm("https://httpbin.org/post", {
   file: document.querySelector("#fileInput").files[0],
 }, {
   onUploadProgress: (progressEvent) => {
@@ -74,7 +74,7 @@ const form = new FormData();
 form.append("file", fs.createReadStream("/path/to/file.jpg"));
 form.append("description", "My uploaded file");
 
-await axios.post("https://httpbin.org/post", form);
+await faxios.post("https://httpbin.org/post", form);
 ```
 
 ::: tip
@@ -95,7 +95,7 @@ form.append("file", buffer, {
   knownLength: buffer.length,
 });
 
-await axios.post("https://httpbin.org/post", form);
+await faxios.post("https://httpbin.org/post", form);
 ```
 
 ::: warning

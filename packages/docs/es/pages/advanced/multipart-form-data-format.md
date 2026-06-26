@@ -1,12 +1,12 @@
 # Formato multipart-form-data
 
-axios puede enviar solicitudes en el formato `multipart/form-data`. Este formato se usa comúnmente al subir archivos. Para enviar una solicitud en este formato, debes crear un objeto `FormData` y agregarle los datos. Luego puedes pasar el objeto `FormData` a la propiedad `data` de la configuración de solicitud de axios.
+faxios puede enviar solicitudes en el formato `multipart/form-data`. Este formato se usa comúnmente al subir archivos. Para enviar una solicitud en este formato, debes crear un objeto `FormData` y agregarle los datos. Luego puedes pasar el objeto `FormData` a la propiedad `data` de la configuración de solicitud de faxios.
 
 ```js
 const formData = new FormData();
 formData.append('foo', 'bar');
 
-axios.post('https://httpbin.org/post', formData);
+faxios.post('https://httpbin.org/post', formData);
 ```
 
 No establezcas manualmente el encabezado `Content-Type` para `FormData` en navegador, web worker o React Native; esos entornos agregan el boundary multipart por sí mismos.
@@ -21,17 +21,17 @@ form.append('my_field', 'my value');
 form.append('my_buffer', Buffer.alloc(10));
 form.append('my_file', fs.createReadStream('/foo/bar.jpg'));
 
-axios.post('https://example.com', form);
+faxios.post('https://example.com', form);
 ```
 
 ## Serialización automática a FormData <Badge type="tip" text="Nuevo" />
 
-A partir de la versión v0.27.0, Axios admite la serialización automática de objetos a un objeto FormData si el encabezado `Content-Type` de la solicitud está establecido en `multipart/form-data`. Esto significa que puedes pasar un objeto JavaScript directamente a la propiedad `data` de la configuración de solicitud de axios. Por ejemplo, al pasar datos a una solicitud POST:
+A partir de la versión v0.27.0, faxios admite la serialización automática de objetos a un objeto FormData si el encabezado `Content-Type` de la solicitud está establecido en `multipart/form-data`. Esto significa que puedes pasar un objeto JavaScript directamente a la propiedad `data` de la configuración de solicitud de faxios. Por ejemplo, al pasar datos a una solicitud POST:
 
 ```js
 import faxios from 'faxios';
 
-axios
+faxios
   .post(
     'https://httpbin.org/post',
     { x: 1 },
@@ -47,10 +47,10 @@ axios
 En el entorno de Node.js, el polyfill ([`form-data`](https://github.com/form-data/form-data)) se usa de forma predeterminada. Puedes sobrescribir la clase FormData estableciendo la variable de configuración `env.FormData`, aunque en la mayoría de los casos no lo necesitarás:
 
 ```js
-const axios = require('axios');
+const faxios = require('faxios');
 var FormData = require('form-data');
 
-axios
+faxios
   .post(
     'https://httpbin.org/post',
     { x: 1, buf: Buffer.alloc(10) },
@@ -65,12 +65,12 @@ axios
 
 ## Política de encabezados para `FormData` de Node.js <Badge type="warning" text="Solo en Node.js" />
 
-Cuando pasas un objeto `FormData` de Node.js que expone `getHeaders()` (como el paquete [`form-data`](https://github.com/form-data/form-data)), axios copia por defecto todos los encabezados que devuelve a la solicitud. Esto preserva la compatibilidad con v1, pero puede ser problemático cuando el objeto `FormData` proviene de una fuente no confiable — `getHeaders()` podría sobrescribir encabezados como `Authorization` o inyectar encabezados arbitrarios.
+Cuando pasas un objeto `FormData` de Node.js que expone `getHeaders()` (como el paquete [`form-data`](https://github.com/form-data/form-data)), faxios copia por defecto todos los encabezados que devuelve a la solicitud. Esto preserva la compatibilidad con v1, pero puede ser problemático cuando el objeto `FormData` proviene de una fuente no confiable — `getHeaders()` podría sobrescribir encabezados como `Authorization` o inyectar encabezados arbitrarios.
 
 Establece `formDataHeaderPolicy: 'content-only'` para copiar **únicamente** `Content-Type` y `Content-Length` desde `getHeaders()`, y luego define cualquier otro encabezado explícitamente a través de la configuración `headers` de la solicitud:
 
 ```js
-await axios.post("https://example.com/upload", form, {
+await faxios.post("https://example.com/upload", form, {
   formDataHeaderPolicy: "content-only",
   headers: {
     Authorization: "Bearer my-token",
@@ -82,7 +82,7 @@ El valor predeterminado es `'legacy'`. Consulta [`formDataHeaderPolicy`](/pages/
 
 ## Terminaciones admitidas
 
-El serializador de FormData de Axios admite algunas terminaciones especiales para realizar las siguientes operaciones:
+El serializador de FormData de faxios admite algunas terminaciones especiales para realizar las siguientes operaciones:
 
 - `{}` - serializa el valor con JSON.stringify
 - `[]` - desenvuelve el objeto tipo arreglo como campos separados con la misma clave
@@ -106,11 +106,11 @@ El serializador de FormData admite opciones adicionales a través de la propieda
 
 ```js
 // Aumentar el límite para esquemas que legítimamente exceden 100 niveles:
-axios.postForm('/api', data, { formSerializer: { maxDepth: 200 } });
+faxios.postForm('/api', data, { formSerializer: { maxDepth: 200 } });
 ```
 
 ::: warning Nota de seguridad
-El límite predeterminado de 100 es intencional. El código del lado del servidor que reenvía JSON controlado por el cliente a axios como `data` es vulnerable a un desbordamiento de pila de llamadas sin esta protección. Solo aumenta `maxDepth` si tu esquema realmente lo requiere.
+El límite predeterminado de 100 es intencional. El código del lado del servidor que reenvía JSON controlado por el cliente a faxios como `data` es vulnerable a un desbordamiento de pila de llamadas sin esta protección. Solo aumenta `maxDepth` si tu esquema realmente lo requiere.
 :::
 
 Por ejemplo, si tenemos un objeto como este:
@@ -128,7 +128,7 @@ const obj = {
 };
 ```
 
-El serializador de Axios ejecutará internamente los siguientes pasos:
+El serializador de faxios ejecutará internamente los siguientes pasos:
 
 ```js
 const formData = new FormData();
@@ -146,4 +146,4 @@ formData.append('users[1][surname]', 'Anderson');
 formData.append('obj2{}', '[{"x":1}]');
 ```
 
-Axios admite los siguientes métodos abreviados: `postForm`, `putForm`, `patchForm`, que son simplemente los métodos HTTP correspondientes con el encabezado `Content-Type` preestablecido en `multipart/form-data`.
+faxios admite los siguientes métodos abreviados: `postForm`, `putForm`, `patchForm`, que son simplemente los métodos HTTP correspondientes con el encabezado `Content-Type` preestablecido en `multipart/form-data`.

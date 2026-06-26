@@ -2,11 +2,11 @@
 
 El versionado semántico es un esquema de versionado que se usa para comunicar la naturaleza de los cambios en un paquete de software. Es un conjunto simple de reglas y requisitos que dictan cómo se asignan e incrementan los números de versión.
 
-## Versionado de axios
+## Versionado de faxios
 
-axios sigue el esquema de versionado semántico. Esto significa que cada versión de axios se asigna con un número de versión compuesto por tres partes: mayor, menor y parche. El número de versión se incrementa según la naturaleza de los cambios en la versión.
+faxios sigue el esquema de versionado semántico. Esto significa que cada versión de faxios se asigna con un número de versión compuesto por tres partes: mayor, menor y parche. El número de versión se incrementa según la naturaleza de los cambios en la versión.
 
-En el pasado, axios puede que no haya seguido estrictamente el versionado semántico en todo momento; sin embargo, de aquí en adelante se adoptará una adherencia mucho más estricta al esquema de versionado semántico para garantizar que los usuarios puedan confiar en los números de versión para comunicar la naturaleza de los cambios en la librería.
+En el pasado, faxios puede que no haya seguido estrictamente el versionado semántico en todo momento; sin embargo, de aquí en adelante se adoptará una adherencia mucho más estricta al esquema de versionado semántico para garantizar que los usuarios puedan confiar en los números de versión para comunicar la naturaleza de los cambios en la librería.
 
 A continuación se proporciona un breve resumen del esquema de versionado.
 

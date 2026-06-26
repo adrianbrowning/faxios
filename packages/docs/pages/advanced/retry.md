@@ -9,7 +9,7 @@ The simplest approach is to catch specific error status codes and immediately re
 ```js
 import faxios from "faxios";
 
-const api = axios.create({ baseURL: "https://api.example.com" });
+const api = faxios.create({ baseURL: "https://api.example.com" });
 
 const MAX_RETRIES = 3;
 
@@ -120,7 +120,7 @@ const controller = new AbortController();
 try {
   await api.get("/api/data", { signal: controller.signal });
 } catch (error) {
-  if (axios.isCancel(error)) {
+  if (faxios.isCancel(error)) {
     console.log("Request aborted by user");
   }
 }

@@ -1,6 +1,6 @@
 # Limitación de velocidad <Badge type="tip" text="Nuevo" />
 
-axios admite la limitación del ancho de banda en el entorno Node.js a través del adaptador HTTP. Esto te permite controlar la velocidad de carga o descarga de datos, lo que es útil para operaciones masivas, trabajos en segundo plano o scraping educado que no debe saturar una conexión.
+faxios admite la limitación del ancho de banda en el entorno Node.js a través del adaptador HTTP. Esto te permite controlar la velocidad de carga o descarga de datos, lo que es útil para operaciones masivas, trabajos en segundo plano o scraping educado que no debe saturar una conexión.
 
 ## `maxRate`
 
@@ -8,10 +8,10 @@ La opción `maxRate` acepta un número (bytes por segundo) o un arreglo donde el
 
 ```js
 // Limit both upload and download to 100 KB/s
-await axios.get(URL, { maxRate: 100 * 1024 });
+await faxios.get(URL, { maxRate: 100 * 1024 });
 
 // Limit upload to 100 KB/s, download to 500 KB/s
-await axios.get(URL, { maxRate: [100 * 1024, 500 * 1024] });
+await faxios.get(URL, { maxRate: [100 * 1024, 500 * 1024] });
 ```
 
 ::: warning
@@ -23,7 +23,7 @@ await axios.get(URL, { maxRate: [100 * 1024, 500 * 1024] });
 Limita la velocidad de carga y registra el progreso al mismo tiempo:
 
 ```js
-const { data } = await axios.post(SERVER_URL, myBuffer, {
+const { data } = await faxios.post(SERVER_URL, myBuffer, {
   onUploadProgress: ({ progress, rate }) => {
     const percent = (progress * 100).toFixed(1);
     const kbps = (rate / 1024).toFixed(1);
@@ -39,7 +39,7 @@ const { data } = await axios.post(SERVER_URL, myBuffer, {
 Limita la velocidad de descarga para respuestas de gran tamaño:
 
 ```js
-const { data } = await axios.get(FILE_URL, {
+const { data } = await faxios.get(FILE_URL, {
   onDownloadProgress: ({ progress, rate }) => {
     const percent = (progress * 100).toFixed(1);
     const kbps = (rate / 1024).toFixed(1);
@@ -56,7 +56,7 @@ const { data } = await axios.get(FILE_URL, {
 Pasa ambos límites como un arreglo para controlar ambas direcciones simultáneamente:
 
 ```js
-await axios.post(SERVER_URL, largeBuffer, {
+await faxios.post(SERVER_URL, largeBuffer, {
   maxRate: [50 * 1024, 500 * 1024], // 50 KB/s up, 500 KB/s down
 });
 ```

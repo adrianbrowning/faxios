@@ -7,7 +7,7 @@ Le support expérimental de HTTP/2 a été ajouté à l'adaptateur `http` dans l
 Utilisez l'option `httpVersion` pour sélectionner la version du protocole pour une requête. En la définissant à `2`, vous activez HTTP/2.
 
 ```js
-const { data, headers, status } = await axios.post(
+const { data, headers, status } = await faxios.post(
   "https://httpbin.org/post",
   form,
   {
@@ -46,7 +46,7 @@ L'exemple ci-dessous envoie une requête POST `multipart/form-data` via HTTP/2 e
 const form = new FormData();
 form.append("foo", "123");
 
-const { data, headers, status } = await axios.post(
+const { data, headers, status } = await faxios.post(
   "https://httpbin.org/post",
   form,
   {

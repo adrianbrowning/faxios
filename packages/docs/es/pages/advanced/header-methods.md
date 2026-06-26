@@ -1,6 +1,6 @@
 # Métodos de encabezados <Badge type="tip" text="Nuevo" />
 
-Con la introducción de la nueva clase `AxiosHeaders`, Axios ofrece un conjunto de métodos para manipular encabezados. Estos métodos se usan para establecer, obtener y eliminar encabezados de una forma más conveniente que manipular directamente el objeto de encabezados.
+Con la introducción de la nueva clase `AxiosHeaders`, faxios ofrece un conjunto de métodos para manipular encabezados. Estos métodos se usan para establecer, obtener y eliminar encabezados de una forma más conveniente que manipular directamente el objeto de encabezados.
 
 ## Constructor `new AxiosHeaders(headers?)`
 
@@ -123,7 +123,7 @@ Devuelve `true` si al menos un encabezado fue eliminado.
 
 ## Normalize (Normalizar)
 
-Si el objeto de encabezados fue modificado directamente, puede generar duplicados con el mismo nombre pero en diferentes formatos. Este método normaliza el objeto de encabezados combinando claves duplicadas en una sola. Axios usa este método internamente después de llamar a cada interceptor. Establece `format` en `true` para convertir los nombres de los encabezados a minúsculas y capitalizar las letras iniciales (`cOntEnt-type` => `Content-Type`) o en `false` para mantener el formato original.
+Si el objeto de encabezados fue modificado directamente, puede generar duplicados con el mismo nombre pero en diferentes formatos. Este método normaliza el objeto de encabezados combinando claves duplicadas en una sola. faxios usa este método internamente después de llamar a cada interceptor. Establece `format` en `true` para convertir los nombres de los encabezados a minúsculas y capitalizar las letras iniciales (`cOntEnt-type` => `Content-Type`) o en `false` para mantener el formato original.
 
 ```js
 const headers = new AxiosHeaders({

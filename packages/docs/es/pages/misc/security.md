@@ -7,14 +7,14 @@ Por defecto, `maxContentLength` y `maxBodyLength` están configurados en `-1` (s
 **Si realizas solicitudes a servidores en los que no confías plenamente, DEBES establecer un `maxContentLength` (y `maxBodyLength`) adecuado para tu carga de trabajo.** El límite se aplica chunk a chunk durante la descompresión en flujo, así que basta con configurarlo para neutralizar ataques de bomba de descompresión.
 
 ```js
-axios.get('https://example.com/data', {
+faxios.get('https://example.com/data', {
   maxContentLength: 10 * 1024 * 1024, // 10 MB
   maxBodyLength: 10 * 1024 * 1024,
 });
 
 // O globalmente:
-axios.defaults.maxContentLength = 10 * 1024 * 1024;
-axios.defaults.maxBodyLength = 10 * 1024 * 1024;
+faxios.defaults.maxContentLength = 10 * 1024 * 1024;
+faxios.defaults.maxBodyLength = 10 * 1024 * 1024;
 ```
 
 El valor por defecto no se ha endurecido porque hacerlo romperá silenciosamente cualquier descarga legítima mayor al límite elegido. La responsabilidad de escoger un tope seguro para fuentes no confiables recae en la aplicación.
@@ -27,13 +27,13 @@ Las siguientes opciones de configuración de solicitud tienen implicaciones dire
 | --- | --- | --- |
 | [`socketPath`](/pages/advanced/request-config#socketpath) | Si proviene de entrada no confiable, un atacante puede redirigir el tráfico a sockets locales privilegiados como `/var/run/docker.sock`, eludiendo las protecciones SSRF basadas en hostname (CWE-918). | Filtra o restringe con allowlist las claves de configuración provenientes de entradas no confiables. Usa [`allowedSocketPaths`](/pages/advanced/request-config#allowedsocketpaths) para restringir las rutas de socket aceptadas. |
 | [`beforeRedirect`](/pages/advanced/request-config#beforeredirect) | Se ejecuta después de que `follow-redirects` elimina las credenciales en una bajada de protocolo. Reinyectar credenciales sin verificar el protocolo de destino puede filtrarlas sobre HTTP en texto plano. | Reinyecta credenciales únicamente para destinos HTTPS de confianza. Verifica `options.protocol === "https:"` antes de asignar `auth`. |
-| [`withXSRFToken`](/pages/advanced/request-config#withxsrftoken) | Establecerlo en `true` fuerza el encabezado XSRF en solicitudes de origen cruzado. Versiones anteriores de axios lo habilitaban implícitamente con `withCredentials: true`; las versiones más recientes requieren ambos indicadores. | Déjalo en `undefined` (solo mismo origen) salvo que tu backend valide explícitamente XSRF en solicitudes de origen cruzado. |
+| [`withXSRFToken`](/pages/advanced/request-config#withxsrftoken) | Establecerlo en `true` fuerza el encabezado XSRF en solicitudes de origen cruzado. Versiones anteriores de faxios lo habilitaban implícitamente con `withCredentials: true`; las versiones más recientes requieren ambos indicadores. | Déjalo en `undefined` (solo mismo origen) salvo que tu backend valide explícitamente XSRF en solicitudes de origen cruzado. |
 | [`redact`](/pages/advanced/request-config#redact) | `FaxiosError#toJSON()` incluye la configuración de la solicitud por defecto, lo que puede filtrar encabezados `Authorization` o credenciales `auth` en logs y telemetría de errores. | Pasa un arreglo `redact` con los nombres de claves de configuración sensibles. La coincidencia es insensible a mayúsculas y recursiva. |
 | [`formDataHeaderPolicy`](/pages/advanced/request-config#formdataheaderpolicy) | Un `FormData` personalizado cuyo `getHeaders()` devuelve valores controlados por un atacante puede sobrescribir encabezados como `Authorization` o inyectar otros arbitrarios en Node.js. | Establece `'content-only'` para copiar únicamente `Content-Type` y `Content-Length`, y luego define los demás encabezados explícitamente a través de la configuración `headers` de la solicitud. |
 
 ## Endurecimiento de la cadena de suministro: `ignore-scripts` y scripts de ciclo de vida
 
-El repositorio incluye un `.npmrc` a nivel de proyecto que establece `ignore-scripts=true`. Esto bloquea los scripts de ciclo de vida de npm (`preinstall`, `install`, `postinstall`, `prepare`) de cualquier dependencia directa o transitiva al ejecutar `npm install` o `npm ci` dentro del repositorio. Consulta [THREATMODEL.md](https://github.com/axios/axios/blob/v1.x/THREATMODEL.md) (amenaza T-S2) para conocer la justificación.
+El repositorio incluye un `.npmrc` a nivel de proyecto que establece `ignore-scripts=true`. Esto bloquea los scripts de ciclo de vida de npm (`preinstall`, `install`, `postinstall`, `prepare`) de cualquier dependencia directa o transitiva al ejecutar `npm install` o `npm ci` dentro del repositorio. Consulta [THREATMODEL.md](https://github.com/faxios/faxios/blob/v1.x/THREATMODEL.md) (amenaza T-S2) para conocer la justificación.
 
 Una consecuencia: el propio hook `prepare` del repositorio (que instala los git hooks de Husky) **no** se ejecuta automáticamente. Tras tu primera instalación, habilita los git hooks manualmente:
 
@@ -48,22 +48,22 @@ Ejecuta esos dos comandos una vez por checkout limpio. **No** necesitas volver a
 Eliminar `ignore-scripts=true` de `.npmrc` para "arreglar" la configuración de husky reabre la superficie de ataque de los scripts de ciclo de vida para todos los demás paquetes del árbol. Todos los workflows de CI ya invocan npm con `--ignore-scripts`, así que el comportamiento local coincide con CI.
 :::
 
-Recomendamos el mismo ajuste `ignore-scripts=true` en cualquier proyecto consumidor que incorpore axios (o cualquier otra dependencia) en un entorno de compilación que maneje secretos.
+Recomendamos el mismo ajuste `ignore-scripts=true` en cualquier proyecto consumidor que incorpore faxios (o cualquier otra dependencia) en un entorno de compilación que maneje secretos.
 
 ## Verificar una publicación
 
-Cada tarball de `axios` publicado en npm proviene de GitHub Actions y lleva una [atestación de provenance de npm](https://docs.npmjs.com/generating-provenance-statements) que vincula criptográficamente el paquete al workflow y al SHA del commit que lo generó.
+Cada tarball de `faxios` publicado en npm proviene de GitHub Actions y lleva una [atestación de provenance de npm](https://docs.npmjs.com/generating-provenance-statements) que vincula criptográficamente el paquete al workflow y al SHA del commit que lo generó.
 
 Los consumidores pueden verificar la provenance localmente:
 
 ```bash
-# Verifica todos los paquetes de tu lockfile, incluido axios
+# Verifica todos los paquetes de tu lockfile, incluido faxios
 npm audit signatures
 ```
 
-Una verificación exitosa demuestra que el tarball fue construido en el entorno de GitHub Actions de `axios/axios` sobre un commit conocido — no fue alterado entre la compilación y el registro. **No** demuestra que el código de ese commit esté libre de bugs.
+Una verificación exitosa demuestra que el tarball fue construido en el entorno de GitHub Actions de `faxios/faxios` sobre un commit conocido — no fue alterado entre la compilación y el registro. **No** demuestra que el código de ese commit esté libre de bugs.
 
-Si `npm audit signatures` reporta una atestación ausente o inválida para una versión reciente de `axios`, trátalo como un posible incidente de cadena de suministro y repórtalo por el canal privado indicado abajo.
+Si `npm audit signatures` reporta una atestación ausente o inválida para una versión reciente de `faxios`, trátalo como un posible incidente de cadena de suministro y repórtalo por el canal privado indicado abajo.
 
 ## Reportar una vulnerabilidad
 
@@ -71,7 +71,7 @@ Si crees haber encontrado una vulnerabilidad de seguridad en el proyecto, por fa
 
 ## Proceso de reporte
 
-Por favor, no reportes vulnerabilidades de seguridad a través de los issues públicos de GitHub. Usa el canal oficial de seguridad en GitHub enviando un [aviso de seguridad](https://github.com/axios/axios/security/advisories/new).
+Por favor, no reportes vulnerabilidades de seguridad a través de los issues públicos de GitHub. Usa el canal oficial de seguridad en GitHub enviando un [aviso de seguridad](https://github.com/faxios/faxios/security/advisories/new).
 
 ## Política de divulgación
 
@@ -79,7 +79,7 @@ Cuando recibimos un reporte de vulnerabilidad, asignamos un responsable principa
 
 ### Compromiso de resolución y divulgación en 60 días
 
-Nos comprometemos a **resolver y divulgar públicamente cada aviso de seguridad válido dentro de los 60 días naturales posteriores al reporte inicial**, contados desde el momento en que se recibe el reporte a través del [canal de avisos de seguridad de GitHub](https://github.com/axios/axios/security/advisories/new).
+Nos comprometemos a **resolver y divulgar públicamente cada aviso de seguridad válido dentro de los 60 días naturales posteriores al reporte inicial**, contados desde el momento en que se recibe el reporte a través del [canal de avisos de seguridad de GitHub](https://github.com/faxios/faxios/security/advisories/new).
 
 El plazo de 60 días es un compromiso con quienes reportan y con los consumidores aguas abajo — es un mínimo exigible, no una meta. Si no podemos entregar una corrección a tiempo, publicamos de todos modos el aviso el día 60 con la mejor guía de mitigación disponible para que los consumidores puedan actuar.
 
@@ -97,7 +97,7 @@ El plazo de 60 días es un compromiso con quienes reportan y con los consumidore
 
 - Si quien reporta solicita un embargo más corto (por ejemplo, planea presentar los hallazgos en una conferencia), lo acomodamos cuando sea posible.
 - Si la corrección requiere un cambio disruptivo, coordinación con consumidores aguas abajo importantes, o una publicación upstream de `follow-redirects` / `form-data` / `proxy-from-env`, podemos extender más allá de los 60 días. Cualquier prórroga se divulga públicamente el día 60 vía el aviso, con un ETA revisado y el motivo.
-- Si un reporte está **fuera de alcance** (por ejemplo, cae bajo un non-goal explícito documentado en el [modelo de amenazas](https://github.com/axios/axios/blob/v1.x/THREATMODEL.md) del proyecto), lo cerramos con una explicación dentro de la ventana de triaje (≤ 3 días). Los reportes fuera de alcance no entran en la cola de 60 días.
+- Si un reporte está **fuera de alcance** (por ejemplo, cae bajo un non-goal explícito documentado en el [modelo de amenazas](https://github.com/faxios/faxios/blob/v1.x/THREATMODEL.md) del proyecto), lo cerramos con una explicación dentro de la ventana de triaje (≤ 3 días). Los reportes fuera de alcance no entran en la cola de 60 días.
 - Las **vulnerabilidades activamente explotadas** se tratan como incidentes: la corrección y el aviso salen tan pronto como se valide un parche, no según el calendario de 60 días.
 
 **Expectativas sobre quien reporta.**
@@ -110,7 +110,7 @@ Las actualizaciones de seguridad se publican tan pronto como sea posible despué
 
 ## Respuesta a incidentes del lado del mantenedor
 
-Para escenarios de compromiso que afecten cuentas de mantenedores, estaciones de trabajo o infraestructura de publicación (phishing, pérdida de llave hardware, tag o publicación inesperados), el proyecto mantiene un runbook interno de respuesta a incidentes en [THREATMODEL.md §3.7](https://github.com/axios/axios/blob/v1.x/THREATMODEL.md#37-incident-response-runbook). Cubre revocación de sesiones, rotación de llaves, notificación aguas abajo y procedimientos de unpublish/deprecate.
+Para escenarios de compromiso que afecten cuentas de mantenedores, estaciones de trabajo o infraestructura de publicación (phishing, pérdida de llave hardware, tag o publicación inesperados), el proyecto mantiene un runbook interno de respuesta a incidentes en [THREATMODEL.md §3.7](https://github.com/faxios/faxios/blob/v1.x/THREATMODEL.md#37-incident-response-runbook). Cubre revocación de sesiones, rotación de llaves, notificación aguas abajo y procedimientos de unpublish/deprecate.
 
 ## Colaboradores y reconocimientos de seguridad
 

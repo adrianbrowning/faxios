@@ -1,9 +1,9 @@
 # Capture de progression <Badge type="tip" text="Nouveau" />
 
-Axios prend en charge la capture de la progression des envois et téléchargements dans les environnements navigateur et Node.js. La fréquence des événements de progression est limitée à 3 fois par seconde. Cela permet d'éviter de surcharger le navigateur avec des événements de progression. Voici un exemple de capture d'événements de progression :
+faxios prend en charge la capture de la progression des envois et téléchargements dans les environnements navigateur et Node.js. La fréquence des événements de progression est limitée à 3 fois par seconde. Cela permet d'éviter de surcharger le navigateur avec des événements de progression. Voici un exemple de capture d'événements de progression :
 
 ```js
-await axios.post(url, data, {
+await faxios.post(url, data, {
   onUploadProgress: function (axiosProgressEvent) {
     /*{
       loaded: number;
@@ -33,7 +33,7 @@ await axios.post(url, data, {
 Vous pouvez également transmettre les événements de progression d'envoi et de téléchargement vers un stream lisible dans Node.js. Cela est utile lorsque vous souhaitez afficher la progression de manière personnalisée. Voici un exemple de transmission des événements de progression :
 
 ```js
-const { data } = await axios.post(SERVER_URL, readableStream, {
+const { data } = await faxios.post(SERVER_URL, readableStream, {
   onUploadProgress: ({ progress }) => {
     console.log((progress * 100).toFixed(2));
   },

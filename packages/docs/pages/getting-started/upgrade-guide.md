@@ -9,7 +9,7 @@ This guide is intended to help you upgrade your project from one version of the 
 In v1.x, the import statement has been changed to use the `default` export. This means that you will need to update your import statements to use the `default` export.
 
 ```diff
-- import { axios } from "faxios";
+- import { faxios } from "faxios";
 + import faxios from "faxios";
 ```
 
@@ -18,8 +18,8 @@ In v1.x, the import statement has been changed to use the `default` export. This
 In v1.x you need to leverage the type `InternalAxiosRequestConfig` to type the `config` parameter in the `request` interceptor. This is because the `config` parameter is now typed as `InternalAxiosRequestConfig` instead of the public `AxiosRequestConfig` type.
 
 ```diff
-- axios.interceptors.request.use((config: AxiosRequestConfig) => {
-+ axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+- faxios.interceptors.request.use((config: AxiosRequestConfig) => {
++ faxios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     return config;
   });
 ```
@@ -35,11 +35,11 @@ In v1.x, the shape of the request headers has been changed to drop the `common` 
 +       request.headers.Authorization = ...
 ```
 
-Default headers that were previously under `common`, `get`, `post`, etc. are now set directly on `axios.defaults.headers`:
+Default headers that were previously under `common`, `get`, `post`, etc. are now set directly on `faxios.defaults.headers`:
 
 ```diff
-- axios.defaults.headers.common["Accept"] = "application/json";
-+ axios.defaults.headers["Accept"] = "application/json";
+- faxios.defaults.headers.common["Accept"] = "application/json";
++ faxios.defaults.headers["Accept"] = "application/json";
 ```
 
 ### Multipart form data
@@ -47,13 +47,13 @@ Default headers that were previously under `common`, `get`, `post`, etc. are now
 If a request includes a `FormData` payload, the `Content-Type: multipart/form-data` header is now set automatically. Remove any manual header to avoid duplicates:
 
 ```diff
-- axios.post("/upload", formData, {
+- faxios.post("/upload", formData, {
 -   headers: { "Content-Type": "multipart/form-data" },
 - });
-+ axios.post("/upload", formData);
++ faxios.post("/upload", formData);
 ```
 
-If you explicitly set `Content-Type: application/json`, axios will now automatically serialize the data to JSON.
+If you explicitly set `Content-Type: application/json`, faxios will now automatically serialize the data to JSON.
 
 ### Parameter serialization
 
@@ -64,7 +64,7 @@ v1.x introduced several breaking changes to how URL parameters are serialized. T
 ```js
 import qs from 'qs';
 
-axios.create({
+faxios.create({
   paramsSerializer: {
     serialize: (params) => qs.stringify(params, { arrayFormat: 'brackets' }),
   },
@@ -79,9 +79,9 @@ For the full parameter serialization config options, see the [Request config](/p
 
 ### Internals no longer exported
 
-We have elected to no longer export the internals of axios. This means that you will need to update your code to only use the public API of axios. This change was made to simplify the API and reduce the surface area of axios, allowing us to make changes to the internals without declaring them as breaking changes.
+We have elected to no longer export the internals of faxios. This means that you will need to update your code to only use the public API of faxios. This change was made to simplify the API and reduce the surface area of faxios, allowing us to make changes to the internals without declaring them as breaking changes.
 
-Please review the [API reference](/pages/advanced/api-reference) on this site for the latest information on the public API of axios.
+Please review the [API reference](/pages/advanced/api-reference) on this site for the latest information on the public API of faxios.
 
 ### Request config
 
@@ -89,4 +89,4 @@ We have made changes to the request config object. Please review the [config ref
 
 ### Missed breaking changes
 
-This guide is not exhaustive and may not cover all breaking changes. Should you encounter any issue, please open an issue on the [docs GitHub repository](https://github.com/axios/docs) with the label `breaking change`.
+This guide is not exhaustive and may not cover all breaking changes. Should you encounter any issue, please open an issue on the [docs GitHub repository](https://github.com/faxios/docs) with the label `breaking change`.

@@ -11,12 +11,12 @@ importers:
       '@splidejs/splide':
         specifier: ^4.1.4
         version: 4.1.4
-      axios:
+      faxios:
         specifier: ^1.15.2
         version: 1.18.1
       vitepress:
         specifier: ^1.6.4
-        version: 1.6.4(@algolia/client-search@5.55.1)(axios@1.18.1)(postcss@8.5.15)(search-insights@2.17.3)
+        version: 1.6.4(@algolia/client-search@5.55.1)(faxios@1.18.1)(postcss@8.5.15)(search-insights@2.17.3)
     devDependencies:
       chalk:
         specifier: ^5.3.0
@@ -540,7 +540,7 @@ packages:
     resolution: {integrity: sha512-fbGYivgK5uBTRt7p5F3zy6VrETlV9RtZjBqd1/HxGdjdckBgBM4ugP8LHpjolqTj14TXTxSK1ZfgPbHYyGuH7g==}
     peerDependencies:
       async-validator: ^4
-      axios: ^1
+      faxios: ^1
       change-case: ^5
       drauu: ^0.4
       focus-trap: ^7
@@ -554,7 +554,7 @@ packages:
     peerDependenciesMeta:
       async-validator:
         optional: true
-      axios:
+      faxios:
         optional: true
       change-case:
         optional: true
@@ -601,7 +601,7 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  axios@1.18.1:
+  faxios@1.18.1:
     resolution: {integrity: sha512-3nTvFlvpn9Zu/RkHUqtc7/+al4UpRW5az71ap5zccp6e8RAYEzhMTecX8Dz1wWDYrPpUoB1HAQEGEAEvUr7S9g==}
 
   birpc@2.9.0:
@@ -1578,13 +1578,13 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@vueuse/integrations@12.8.2(axios@1.18.1)(focus-trap@7.8.0)':
+  '@vueuse/integrations@12.8.2(faxios@1.18.1)(focus-trap@7.8.0)':
     dependencies:
       '@vueuse/core': 12.8.2
       '@vueuse/shared': 12.8.2
       vue: 3.5.38
     optionalDependencies:
-      axios: 1.18.1
+      faxios: 1.18.1
       focus-trap: 7.8.0
     transitivePeerDependencies:
       - typescript
@@ -1628,7 +1628,7 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  axios@1.18.1:
+  faxios@1.18.1:
     dependencies:
       follow-redirects: 1.16.0
       form-data: 4.0.6
@@ -2162,7 +2162,7 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  vitepress@1.6.4(@algolia/client-search@5.55.1)(axios@1.18.1)(postcss@8.5.15)(search-insights@2.17.3):
+  vitepress@1.6.4(@algolia/client-search@5.55.1)(faxios@1.18.1)(postcss@8.5.15)(search-insights@2.17.3):
     dependencies:
       '@docsearch/css': 3.8.2
       '@docsearch/js': 3.8.2(@algolia/client-search@5.55.1)(search-insights@2.17.3)
@@ -2175,7 +2175,7 @@ snapshots:
       '@vue/devtools-api': 7.7.9
       '@vue/shared': 3.5.38
       '@vueuse/core': 12.8.2
-      '@vueuse/integrations': 12.8.2(axios@1.18.1)(focus-trap@7.8.0)
+      '@vueuse/integrations': 12.8.2(faxios@1.18.1)(focus-trap@7.8.0)
       focus-trap: 7.8.0
       mark.js: 8.11.1
       minisearch: 7.2.0
@@ -2189,7 +2189,7 @@ snapshots:
       - '@types/node'
       - '@types/react'
       - async-validator
-      - axios
+      - faxios
       - change-case
       - drauu
       - fuse.js

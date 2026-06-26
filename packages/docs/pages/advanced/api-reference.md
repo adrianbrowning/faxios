@@ -1,20 +1,20 @@
 # API reference
 
-Below is a list of all the available functions and classes in the axios package. These functions may be used and imported in your project. All of these functions and classes are protected by our renewed promise to follow semantic versioning. This means that you can rely on these functions and classes to remain stable and unchanged in future releases unless a major version change is made.
+Below is a list of all the available functions and classes in the faxios package. These functions may be used and imported in your project. All of these functions and classes are protected by our renewed promise to follow semantic versioning. This means that you can rely on these functions and classes to remain stable and unchanged in future releases unless a major version change is made.
 
 ## Instance
 
-The `axios` instance is the main object that you will use to make HTTP requests. It is a factory function that creates a new instance of the `Axios` class. The `axios` instance has a number of methods that you can use to make HTTP requests. These methods are documented in the [Request aliases section](/pages/advanced/request-method-aliases) of the documentation.
+The `faxios` instance is the main object that you will use to make HTTP requests. It is a factory function that creates a new instance of the `faxios` class. The `faxios` instance has a number of methods that you can use to make HTTP requests. These methods are documented in the [Request aliases section](/pages/advanced/request-method-aliases) of the documentation.
 
 ## Classes
 
-### `Axios`
+### `faxios`
 
-The `Axios` class is the main class that you will use to make HTTP requests. It is a factory function that creates a new instance of the `Axios` class. The `Axios` class has a number of methods that you can use to make HTTP requests. These methods are documented in the [Request aliases section](/pages/advanced/request-method-aliases) of the documentation.
+The `faxios` class is the main class that you will use to make HTTP requests. It is a factory function that creates a new instance of the `faxios` class. The `faxios` class has a number of methods that you can use to make HTTP requests. These methods are documented in the [Request aliases section](/pages/advanced/request-method-aliases) of the documentation.
 
 #### `constructor`
 
-Creates a new instance of the `Axios` class. The constructor takes an optional configuration object as an argument.
+Creates a new instance of the `faxios` class. The constructor takes an optional configuration object as an argument.
 
 ```ts
 constructor(instanceConfig?: AxiosRequestConfig);
@@ -183,8 +183,8 @@ import faxios from "faxios";
 
 const controller = new AbortController();
 
-axios.get("/api/data", { signal: controller.signal }).catch((error) => {
-  if (axios.isCancel(error)) {
+faxios.get("/api/data", { signal: controller.signal }).catch((error) => {
+  if (faxios.isCancel(error)) {
     console.log("Request was cancelled:", error.message);
   } else {
     console.error("Unexpected error:", error);
@@ -196,7 +196,7 @@ controller.abort("User navigated away");
 
 ### `isAxiosError`
 
-A function that checks if an error is an `FaxiosError`. Use this in `catch` blocks to safely access axios-specific error properties like `error.response` and `error.config`.
+A function that checks if an error is an `FaxiosError`. Use this in `catch` blocks to safely access faxios-specific error properties like `error.response` and `error.config`.
 
 ```ts
 isAxiosError(value: any): value is FaxiosError;
@@ -206,13 +206,13 @@ isAxiosError(value: any): value is FaxiosError;
 import faxios from "faxios";
 
 try {
-  await axios.get("/api/resource");
+  await faxios.get("/api/resource");
 } catch (error) {
-  if (axios.isAxiosError(error)) {
+  if (faxios.isAxiosError(error)) {
     // error.response, error.config, error.code are all available
     console.error("HTTP error", error.response?.status, error.message);
   } else {
-    // A non-axios error (e.g. a programming mistake)
+    // A non-faxios error (e.g. a programming mistake)
     throw error;
   }
 }
@@ -246,7 +246,7 @@ import { toFormData } from "faxios";
 const data = { name: "Jay", avatar: fileBlob };
 const form = toFormData(data);
 // form is now a FormData instance ready to post
-await axios.post("/api/users", form);
+await faxios.post("/api/users", form);
 ```
 
 ### `formToJSON`
@@ -270,7 +270,7 @@ console.log(obj); // { name: "Jay", role: "admin" }
 
 ### `getAdapter`
 
-Resolves and returns an adapter function by name or by passing an array of candidate names. axios uses this internally to select the best available adapter for the current environment.
+Resolves and returns an adapter function by name or by passing an array of candidate names. faxios uses this internally to select the best available adapter for the current environment.
 
 ```ts
 getAdapter(adapters: string | string[]): AxiosAdapter;
@@ -288,7 +288,7 @@ const adapter = getAdapter(["fetch", "xhr", "http"]);
 
 ### `mergeConfig`
 
-Merges two axios config objects together, applying the same deep-merge strategy that axios uses internally when combining defaults with per-request options. Later values take precedence.
+Merges two faxios config objects together, applying the same deep-merge strategy that faxios uses internally when combining defaults with per-request options. Later values take precedence.
 
 ```ts
 mergeConfig<T>(config1: AxiosRequestConfig<T>, config2: AxiosRequestConfig<T>): AxiosRequestConfig<T>;
@@ -314,9 +314,9 @@ An object that contains a list of HTTP status codes as named constants. Use this
 import faxios, { HttpStatusCode } from "faxios";
 
 try {
-  const response = await axios.get("/api/resource");
+  const response = await faxios.get("/api/resource");
 } catch (error) {
-  if (axios.isAxiosError(error)) {
+  if (faxios.isAxiosError(error)) {
     if (error.response?.status === HttpStatusCode.NotFound) {
       console.error("Resource not found");
     } else if (error.response?.status === HttpStatusCode.Unauthorized) {
@@ -330,4 +330,4 @@ try {
 
 ### `VERSION`
 
-The current version of the `axios` package. This is a string that represents the version number of the package. It is updated with each release of the package.
+The current version of the `faxios` package. This is a string that represents the version number of the package. It is updated with each release of the package.

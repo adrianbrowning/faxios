@@ -9,7 +9,7 @@ Esta guía tiene como objetivo ayudarte a actualizar tu proyecto de una versión
 En v1.x, la declaración de importación fue modificada para usar la exportación `default`. Esto significa que deberás actualizar tus importaciones para usar la exportación `default`.
 
 ```diff
-- import { axios } from "faxios";
+- import { faxios } from "faxios";
 + import faxios from "faxios";
 ```
 
@@ -18,8 +18,8 @@ En v1.x, la declaración de importación fue modificada para usar la exportació
 En v1.x debes usar el tipo `InternalAxiosRequestConfig` para tipar el parámetro `config` en el interceptor de `request`. Esto se debe a que el parámetro `config` ahora es del tipo `InternalAxiosRequestConfig` en lugar del tipo público `AxiosRequestConfig`.
 
 ```diff
-- axios.interceptors.request.use((config: AxiosRequestConfig) => {
-+ axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+- faxios.interceptors.request.use((config: AxiosRequestConfig) => {
++ faxios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     return config;
   });
 ```
@@ -35,11 +35,11 @@ En v1.x, la estructura de los encabezados de solicitud fue modificada para elimi
 +       request.headers.Authorization = ...
 ```
 
-Los encabezados predeterminados que antes estaban bajo `common`, `get`, `post`, etc., ahora se definen directamente en `axios.defaults.headers`:
+Los encabezados predeterminados que antes estaban bajo `common`, `get`, `post`, etc., ahora se definen directamente en `faxios.defaults.headers`:
 
 ```diff
-- axios.defaults.headers.common["Accept"] = "application/json";
-+ axios.defaults.headers["Accept"] = "application/json";
+- faxios.defaults.headers.common["Accept"] = "application/json";
++ faxios.defaults.headers["Accept"] = "application/json";
 ```
 
 ### Datos multipart en formularios
@@ -47,13 +47,13 @@ Los encabezados predeterminados que antes estaban bajo `common`, `get`, `post`, 
 Si una solicitud incluye un payload de tipo `FormData`, el encabezado `Content-Type: multipart/form-data` ahora se establece automáticamente. Elimina cualquier encabezado manual para evitar duplicados:
 
 ```diff
-- axios.post("/upload", formData, {
+- faxios.post("/upload", formData, {
 -   headers: { "Content-Type": "multipart/form-data" },
 - });
-+ axios.post("/upload", formData);
++ faxios.post("/upload", formData);
 ```
 
-Si defines explícitamente `Content-Type: application/json`, axios ahora serializará automáticamente los datos a JSON.
+Si defines explícitamente `Content-Type: application/json`, faxios ahora serializará automáticamente los datos a JSON.
 
 ### Serialización de parámetros
 
@@ -64,7 +64,7 @@ v1.x introdujo varios cambios que rompen la compatibilidad en la forma en que se
 ```js
 import qs from 'qs';
 
-axios.create({
+faxios.create({
   paramsSerializer: {
     serialize: (params) => qs.stringify(params, { arrayFormat: 'brackets' }),
   },
@@ -79,9 +79,9 @@ Para ver todas las opciones de configuración de serialización de parámetros, 
 
 ### Los internos ya no se exportan
 
-Hemos decidido dejar de exportar los internos de axios. Esto significa que deberás actualizar tu código para usar únicamente la API pública de axios. Este cambio se realizó para simplificar la API y reducir la superficie expuesta de axios, permitiéndonos modificar los internos sin declararlos como cambios que rompen la compatibilidad.
+Hemos decidido dejar de exportar los internos de faxios. Esto significa que deberás actualizar tu código para usar únicamente la API pública de faxios. Este cambio se realizó para simplificar la API y reducir la superficie expuesta de faxios, permitiéndonos modificar los internos sin declararlos como cambios que rompen la compatibilidad.
 
-Consulta la [Referencia de la API](/pages/advanced/api-reference) en este sitio para obtener la información más actualizada sobre la API pública de axios.
+Consulta la [Referencia de la API](/pages/advanced/api-reference) en este sitio para obtener la información más actualizada sobre la API pública de faxios.
 
 ### Configuración de solicitud
 
@@ -89,4 +89,4 @@ Hemos realizado cambios en el objeto de configuración de solicitud. Consulta la
 
 ### Cambios que rompen la compatibilidad no cubiertos
 
-Esta guía no es exhaustiva y puede no cubrir todos los cambios que rompen la compatibilidad. Si encuentras algún problema, por favor abre un issue en el [repositorio GitHub de la documentación](https://github.com/axios/docs) con la etiqueta `breaking change`.
+Esta guía no es exhaustiva y puede no cubrir todos los cambios que rompen la compatibilidad. Si encuentras algún problema, por favor abre un issue en el [repositorio GitHub de la documentación](https://github.com/faxios/docs) con la etiqueta `breaking change`.

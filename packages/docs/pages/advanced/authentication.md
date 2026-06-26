@@ -1,15 +1,15 @@
 # Authentication
 
-Most APIs require some form of authentication. This page covers the most common patterns for attaching credentials to axios requests.
+Most APIs require some form of authentication. This page covers the most common patterns for attaching credentials to faxios requests.
 
 ## Bearer tokens (JWT)
 
-The most common approach is to attach a JWT in the `Authorization` header. The cleanest way to do this is via a request interceptor on your axios instance, so the token is read fresh on every request:
+The most common approach is to attach a JWT in the `Authorization` header. The cleanest way to do this is via a request interceptor on your faxios instance, so the token is read fresh on every request:
 
 ```js
 import faxios from "faxios";
 
-const api = axios.create({ baseURL: "https://api.example.com" });
+const api = faxios.create({ baseURL: "https://api.example.com" });
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("access_token");
@@ -22,10 +22,10 @@ api.interceptors.request.use((config) => {
 
 ## HTTP Basic auth
 
-For APIs that use HTTP Basic authentication, pass the `auth` option. axios will encode the credentials and set the `Authorization` header automatically:
+For APIs that use HTTP Basic authentication, pass the `auth` option. faxios will encode the credentials and set the `Authorization` header automatically:
 
 ```js
-const response = await axios.get("https://api.example.com/data", {
+const response = await faxios.get("https://api.example.com/data", {
   auth: {
     username: "myUser",
     password: "myPassword",
@@ -45,13 +45,13 @@ API keys are typically passed as a header or a query parameter, depending on wha
 
 ```js
 // As a header
-const api = axios.create({
+const api = faxios.create({
   baseURL: "https://api.example.com",
   headers: { "X-API-Key": "your-api-key-here" },
 });
 
 // As a query parameter
-const response = await axios.get("https://api.example.com/data", {
+const response = await faxios.get("https://api.example.com/data", {
   params: { apiKey: "your-api-key-here" },
 });
 ```
@@ -63,7 +63,7 @@ When access tokens expire, you need to silently refresh them and retry the faile
 ```js
 import faxios from "faxios";
 
-const api = axios.create({ baseURL: "https://api.example.com" });
+const api = faxios.create({ baseURL: "https://api.example.com" });
 
 // Track whether a refresh is already in progress to avoid parallel refresh calls
 let isRefreshing = false;
@@ -102,7 +102,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { data } = await axios.post("/auth/refresh", {
+        const { data } = await faxios.post("/auth/refresh", {
           refreshToken: localStorage.getItem("refresh_token"),
         });
 
@@ -133,7 +133,7 @@ api.interceptors.response.use(
 For session-based APIs that rely on cookies, set `withCredentials: true` to include cookies in cross-origin requests:
 
 ```js
-const api = axios.create({
+const api = faxios.create({
   baseURL: "https://api.example.com",
   withCredentials: true, // send cookies with every request
 });

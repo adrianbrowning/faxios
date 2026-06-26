@@ -1,20 +1,20 @@
 # API 参考
 
-以下是 axios 包中所有可用函数和类的列表。这些函数可在你的项目中使用和导入。所有函数和类均受我们遵循语义化版本的承诺保护，即在未发布主版本变更的情况下，这些 API 将保持稳定不变。
+以下是 faxios 包中所有可用函数和类的列表。这些函数可在你的项目中使用和导入。所有函数和类均受我们遵循语义化版本的承诺保护，即在未发布主版本变更的情况下，这些 API 将保持稳定不变。
 
 ## 实例
 
-`axios` 实例是你用于发起 HTTP 请求的主要对象，它是一个创建 `Axios` 类新实例的工厂函数。`axios` 实例提供了多个请求方法，详见文档的[请求别名](/pages/advanced/request-method-aliases)章节。
+`faxios` 实例是你用于发起 HTTP 请求的主要对象，它是一个创建 `faxios` 类新实例的工厂函数。`faxios` 实例提供了多个请求方法，详见文档的[请求别名](/pages/advanced/request-method-aliases)章节。
 
 ## 类
 
-### `Axios`
+### `faxios`
 
-`Axios` 类是发起 HTTP 请求的核心类，是一个创建 `Axios` 类新实例的工厂函数。该类提供多个 HTTP 请求方法，详见文档的[请求别名](/pages/advanced/request-method-aliases)章节。
+`faxios` 类是发起 HTTP 请求的核心类，是一个创建 `faxios` 类新实例的工厂函数。该类提供多个 HTTP 请求方法，详见文档的[请求别名](/pages/advanced/request-method-aliases)章节。
 
 #### `constructor`
 
-创建一个新的 `Axios` 实例，构造函数接受一个可选的配置对象作为参数。
+创建一个新的 `faxios` 实例，构造函数接受一个可选的配置对象作为参数。
 
 ```ts
 constructor(instanceConfig?: AxiosRequestConfig);
@@ -183,8 +183,8 @@ import faxios from "faxios";
 
 const controller = new AbortController();
 
-axios.get("/api/data", { signal: controller.signal }).catch((error) => {
-  if (axios.isCancel(error)) {
+faxios.get("/api/data", { signal: controller.signal }).catch((error) => {
+  if (faxios.isCancel(error)) {
     console.log("Request was cancelled:", error.message);
   } else {
     console.error("Unexpected error:", error);
@@ -196,7 +196,7 @@ controller.abort("User navigated away");
 
 ### `isAxiosError`
 
-检查某个错误是否为 `FaxiosError` 的函数。在 `catch` 块中使用此函数，可安全访问 axios 特有的错误属性，如 `error.response` 和 `error.config`。
+检查某个错误是否为 `FaxiosError` 的函数。在 `catch` 块中使用此函数，可安全访问 faxios 特有的错误属性，如 `error.response` 和 `error.config`。
 
 ```ts
 isAxiosError(value: any): value is FaxiosError;
@@ -206,13 +206,13 @@ isAxiosError(value: any): value is FaxiosError;
 import faxios from "faxios";
 
 try {
-  await axios.get("/api/resource");
+  await faxios.get("/api/resource");
 } catch (error) {
-  if (axios.isAxiosError(error)) {
+  if (faxios.isAxiosError(error)) {
     // error.response、error.config、error.code 均可使用
     console.error("HTTP error", error.response?.status, error.message);
   } else {
-    // 非 axios 错误（例如编程错误）
+    // 非 faxios 错误（例如编程错误）
     throw error;
   }
 }
@@ -246,7 +246,7 @@ import { toFormData } from "faxios";
 const data = { name: "Jay", avatar: fileBlob };
 const form = toFormData(data);
 // form 现在是一个可直接发送的 FormData 实例
-await axios.post("/api/users", form);
+await faxios.post("/api/users", form);
 ```
 
 ### `formToJSON`
@@ -270,7 +270,7 @@ console.log(obj); // { name: "Jay", role: "admin" }
 
 ### `getAdapter`
 
-通过名称或名称数组解析并返回一个适配器函数。axios 在内部使用此函数为当前环境选择最合适的适配器。
+通过名称或名称数组解析并返回一个适配器函数。faxios 在内部使用此函数为当前环境选择最合适的适配器。
 
 ```ts
 getAdapter(adapters: string | string[]): AxiosAdapter;
@@ -288,7 +288,7 @@ const adapter = getAdapter(["fetch", "xhr", "http"]);
 
 ### `mergeConfig`
 
-合并两个 axios 配置对象，使用与 axios 内部合并默认配置和请求级选项相同的深度合并策略。后者的值优先级更高。
+合并两个 faxios 配置对象，使用与 faxios 内部合并默认配置和请求级选项相同的深度合并策略。后者的值优先级更高。
 
 ```ts
 mergeConfig<T>(config1: AxiosRequestConfig<T>, config2: AxiosRequestConfig<T>): AxiosRequestConfig<T>;
@@ -314,9 +314,9 @@ const merged = mergeConfig(base, override);
 import faxios, { HttpStatusCode } from "faxios";
 
 try {
-  const response = await axios.get("/api/resource");
+  const response = await faxios.get("/api/resource");
 } catch (error) {
-  if (axios.isAxiosError(error)) {
+  if (faxios.isAxiosError(error)) {
     if (error.response?.status === HttpStatusCode.NotFound) {
       console.error("Resource not found");
     } else if (error.response?.status === HttpStatusCode.Unauthorized) {
@@ -330,4 +330,4 @@ try {
 
 ### `VERSION`
 
-`axios` 包的当前版本号字符串，随每次发布更新。
+`faxios` 包的当前版本号字符串，随每次发布更新。

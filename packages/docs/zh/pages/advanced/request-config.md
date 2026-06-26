@@ -8,8 +8,8 @@
 如果你向不完全可信的服务器发起请求，**请设置上限**：
 
 ```js
-axios.defaults.maxContentLength = 10 * 1024 * 1024; // 10 MB
-axios.defaults.maxBodyLength = 10 * 1024 * 1024;
+faxios.defaults.maxContentLength = 10 * 1024 * 1024; // 10 MB
+faxios.defaults.maxBodyLength = 10 * 1024 * 1024;
 ```
 
 详见[安全指南](/pages/misc/security)。
@@ -50,7 +50,7 @@ axios.defaults.maxBodyLength = 10 * 1024 * 1024;
 > 注意：`Temporal` 尚未在所有环境中可用，必要时请考虑使用 polyfill。
 
 ```js
-const client = axios.create({
+const client = faxios.create({
   parseReviver: (key, value, context) => {
     // 示例：精度安全的 BigInt 解析
     if (typeof value === 'number' && context?.source) {
@@ -96,19 +96,19 @@ const client = axios.create({
 
 #### 严格的 RFC 3986 百分号编码
 
-axios 默认会将 `%3A`、`%24`、`%2C` 和 `%20` 解码回 `:`、`$`、`,` 和 `+`，以提升可读性（其中 `+` 遵循查询字符串中表示空格的 `application/x-www-form-urlencoded` 约定）。这些字符在 [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986#section-3.4) 中对查询组件而言都是合法的，因此默认输出是正确的。但部分后端要求严格的百分号编码，会拒绝这种可读形式。
+faxios 默认会将 `%3A`、`%24`、`%2C` 和 `%20` 解码回 `:`、`$`、`,` 和 `+`，以提升可读性（其中 `+` 遵循查询字符串中表示空格的 `application/x-www-form-urlencoded` 约定）。这些字符在 [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986#section-3.4) 中对查询组件而言都是合法的，因此默认输出是正确的。但部分后端要求严格的百分号编码，会拒绝这种可读形式。
 
 可通过 `encode` 选项覆盖默认编码器：
 
 ```js
 // 单次请求：对查询值使用严格的 RFC 3986 百分号编码
-axios.get('/foo', {
+faxios.get('/foo', {
   params: { filter: JSON.stringify({ startedAt: '2026-01-23' }) },
   paramsSerializer: { encode: encodeURIComponent }
 });
 
 // 也可在实例默认值中设置
-const client = axios.create({
+const client = faxios.create({
   paramsSerializer: { encode: encodeURIComponent }
 });
 ```
@@ -124,11 +124,11 @@ const client = axios.create({
 
 对于浏览器、Web Worker 和 React Native 的 `FormData`，不要手动设置 `Content-Type`；运行时会自行添加 multipart boundary。
 
-对于提供了 `getHeaders()` 方法的 Node.js `FormData` 对象，axios 默认会复制其返回的所有请求头，以保持 v1 兼容性。如果 `FormData` 对象是自定义的或不完全可信，可设置 `formDataHeaderPolicy: 'content-only'`，仅复制 `Content-Type` 和 `Content-Length`，其他请求头则通过请求 `headers` 配置显式设置。
+对于提供了 `getHeaders()` 方法的 Node.js `FormData` 对象，faxios 默认会复制其返回的所有请求头，以保持 v1 兼容性。如果 `FormData` 对象是自定义的或不完全可信，可设置 `formDataHeaderPolicy: 'content-only'`，仅复制 `Content-Type` 和 `Content-Length`，其他请求头则通过请求 `headers` 配置显式设置。
 
 ### `formDataHeaderPolicy` <Badge type="warning" text="仅 Node.js" />
 
-控制 axios 如何复制 Node.js `FormData#getHeaders()` 返回的请求头。默认值为 `'legacy'`，即复制所有返回的请求头以保留现有的 v1 行为。设置为 `'content-only'` 时，仅从 `getHeaders()` 复制 `Content-Type` 和 `Content-Length`。
+控制 faxios 如何复制 Node.js `FormData#getHeaders()` 返回的请求头。默认值为 `'legacy'`，即复制所有返回的请求头以保留现有的 v1 行为。设置为 `'content-only'` 时，仅从 `getHeaders()` 复制 `Content-Type` 和 `Content-Length`。
 
 ### `timeout`
 
@@ -146,7 +146,7 @@ const client = axios.create({
 - http
 - xhr
 
-你也可以传入一个适配器数组，axios 将使用当前环境支持的第一个适配器。
+你也可以传入一个适配器数组，faxios 将使用当前环境支持的第一个适配器。
 
 ### `auth`
 
@@ -207,7 +207,7 @@ const client = axios.create({
 
 ### `withXSRFToken`
 
-`withXSRFToken` 控制 axios 在浏览器请求中是否读取 XSRF cookie 并设置 XSRF 请求头。可选值如下：
+`withXSRFToken` 控制 faxios 在浏览器请求中是否读取 XSRF cookie 并设置 XSRF 请求头。可选值如下：
 
 - `undefined` _（默认）_ — 仅在同源请求时设置 XSRF 请求头。
 - `true` — 始终设置 XSRF 请求头，包括跨域请求。
@@ -219,10 +219,10 @@ withXSRFToken: boolean | undefined | ((config: InternalAxiosRequestConfig) => bo
 ```
 
 ::: warning 跨域 XSRF 与 `withCredentials`
-`withCredentials` 控制跨站请求是否携带凭据（cookie、HTTP 认证）。在较旧版本的 axios 中，设置 `withCredentials: true` 会隐式地让 axios 在跨域请求中设置 XSRF 请求头。新版本 axios 将这两个关注点分开：要在跨域请求中发送 XSRF 请求头，必须**同时**设置 `withCredentials: true` 和 `withXSRFToken: true`。
+`withCredentials` 控制跨站请求是否携带凭据（cookie、HTTP 认证）。在较旧版本的 faxios 中，设置 `withCredentials: true` 会隐式地让 faxios 在跨域请求中设置 XSRF 请求头。新版本 faxios 将这两个关注点分开：要在跨域请求中发送 XSRF 请求头，必须**同时**设置 `withCredentials: true` 和 `withXSRFToken: true`。
 
 ```js
-axios.get('/user', { withCredentials: true, withXSRFToken: true });
+faxios.get('/user', { withCredentials: true, withXSRFToken: true });
 ```
 :::
 
@@ -252,7 +252,7 @@ axios.get('/user', { withCredentials: true, withXSRFToken: true });
 `redact` 仅影响错误序列化，不会修改请求数据、请求头或原始配置对象。
 
 ```js
-axios.get('/user/12345', {
+faxios.get('/user/12345', {
   headers: { Authorization: 'Bearer token' },
   auth: { username: 'me', password: 'secret' },
   redact: ['authorization', 'password']
@@ -263,7 +263,7 @@ axios.get('/user/12345', {
 
 ### `validateStatus`
 
-`validateStatus` 函数允许你覆盖默认的状态码验证逻辑。默认情况下，axios 会在状态码不在 200-299 范围内时拒绝 Promise。你可以提供自定义的 `validateStatus` 函数来覆盖此行为，该函数应在状态码在你希望接受的范围内时返回 `true`。
+`validateStatus` 函数允许你覆盖默认的状态码验证逻辑。默认情况下，faxios 会在状态码不在 200-299 范围内时拒绝 Promise。你可以提供自定义的 `validateStatus` 函数来覆盖此行为，该函数应在状态码在你希望接受的范围内时返回 `true`。
 
 ### `maxRedirects` <Badge type="warning" text="仅 Node.js" />
 
@@ -293,15 +293,15 @@ beforeRedirect: (options, { headers }) => {
 `socketPath` 属性定义用于替代 TCP 连接的 UNIX 套接字路径，例如 `/var/run/docker.sock`，用于向 Docker 守护进程发送请求。`socketPath` 和 `proxy` 只能指定其中一个，如果两者都指定，则使用 `socketPath`。
 
 :::warning 安全提示
-设置 `socketPath` 后，请求 URL 中的主机名和端口将被忽略，axios 会直接与指定的 Unix 域套接字通信。如果请求配置中有任何部分来自用户输入（例如在转发或合并请求选项的代理/Webhook 处理程序中），攻击者可以注入 `socketPath` 将流量重定向到特权本地套接字，如 `/var/run/docker.sock`、`/run/containerd/containerd.sock` 或 `/run/systemd/private`，从而完全绕过基于主机名的 SSRF 防护（CWE-918）。应对来自不可信输入的配置进行过滤或仅允许特定键，并/或使用 `allowedSocketPaths`（见下文）限制接受的套接字路径。
+设置 `socketPath` 后，请求 URL 中的主机名和端口将被忽略，faxios 会直接与指定的 Unix 域套接字通信。如果请求配置中有任何部分来自用户输入（例如在转发或合并请求选项的代理/Webhook 处理程序中），攻击者可以注入 `socketPath` 将流量重定向到特权本地套接字，如 `/var/run/docker.sock`、`/run/containerd/containerd.sock` 或 `/run/systemd/private`，从而完全绕过基于主机名的 SSRF 防护（CWE-918）。应对来自不可信输入的配置进行过滤或仅允许特定键，并/或使用 `allowedSocketPaths`（见下文）限制接受的套接字路径。
 :::
 
 ### `allowedSocketPaths` <Badge type="warning" text="仅 Node.js" />
 
-限制可通过 `socketPath` 使用的套接字路径。接受一个字符串或字符串数组。设置后，axios 会解析 `socketPath` 并与每个条目（同样解析后）比较；若无匹配，请求将以 `ERR_BAD_OPTION_VALUE` 错误码的 `FaxiosError` 被拒绝。未设置（默认）时，`socketPath` 行为与以往一致。
+限制可通过 `socketPath` 使用的套接字路径。接受一个字符串或字符串数组。设置后，faxios 会解析 `socketPath` 并与每个条目（同样解析后）比较；若无匹配，请求将以 `ERR_BAD_OPTION_VALUE` 错误码的 `FaxiosError` 被拒绝。未设置（默认）时，`socketPath` 行为与以往一致。
 
 ```js
-const client = axios.create({
+const client = faxios.create({
   allowedSocketPaths: ['/var/run/docker.sock']
 });
 
@@ -330,9 +330,9 @@ await client.get('http://localhost/pods', { socketPath: '/var/run/kubelet.sock' 
 
 设置为 `false` 可禁用代理，忽略环境变量。`auth` 表示使用 HTTP Basic 认证连接代理并提供凭据，这将设置 `Proxy-Authorization` 请求头，覆盖任何通过 `headers` 自定义的 `Proxy-Authorization` 请求头。如果代理服务器使用 HTTPS，则必须将协议设置为 `https`。
 
-通过代理转发时，如果用户在 `headers` 中提供了 `Host` 请求头，axios 会保留它（不区分大小写匹配 `host` / `Host` / `HOST`）。这样你就可以指向一个与请求 URL 不同的虚拟主机——例如，访问 `127.0.0.1:4000`，但让代理将请求当作 `example.com` 处理。如果未提供 `Host` 请求头，axios 仍会像以前一样将其默认设为请求 URL 的 `hostname:port`。
+通过代理转发时，如果用户在 `headers` 中提供了 `Host` 请求头，faxios 会保留它（不区分大小写匹配 `host` / `Host` / `HOST`）。这样你就可以指向一个与请求 URL 不同的虚拟主机——例如，访问 `127.0.0.1:4000`，但让代理将请求当作 `example.com` 处理。如果未提供 `Host` 请求头，faxios 仍会像以前一样将其默认设为请求 URL 的 `hostname:port`。
 
-对于 `https://` 目标，axios 会通过代理建立 CONNECT 隧道，并与源站执行端到端 TLS。`Proxy-Authorization` 只会发送在 CONNECT 请求上，不会发送到被 TLS 包裹的源站请求中。`httpsAgent` 的 TLS 选项（如 `ca`、`cert`、`key` 和 `rejectUnauthorized`）会转发给生成的隧道代理，因此仍会应用到源站 TLS 连接。如果你提供的是 `HttpsProxyAgent`，axios 会让该代理自行处理隧道。
+对于 `https://` 目标，faxios 会通过代理建立 CONNECT 隧道，并与源站执行端到端 TLS。`Proxy-Authorization` 只会发送在 CONNECT 请求上，不会发送到被 TLS 包裹的源站请求中。`httpsAgent` 的 TLS 选项（如 `ca`、`cert`、`key` 和 `rejectUnauthorized`）会转发给生成的隧道代理，因此仍会应用到源站 TLS 连接。如果你提供的是 `HttpsProxyAgent`，faxios 会让该代理自行处理隧道。
 
 ```js
 proxy: {
@@ -369,19 +369,19 @@ proxy: {
 
 `transitional` 属性允许你启用或禁用某些过渡性功能，可用选项如下：
 
-- `silentJSONParsing`：若设置为 `true` _（默认）_，axios 会在 JSON 解析失败时静默忽略错误，并保留原始响应字符串。设置为 `false` 则会抛出 `SyntaxError`。
+- `silentJSONParsing`：若设置为 `true` _（默认）_，faxios 会在 JSON 解析失败时静默忽略错误，并保留原始响应字符串。设置为 `false` 则会抛出 `SyntaxError`。
 
   ::: tip 重要说明
-  此选项仅在 `responseType` **显式**设置为 `'json'` 时生效。当未指定 `responseType` 时，axios 会通过 `forcedJSONParsing` 尝试解析为 JSON，若失败则不论此设置如何，都会静默返回原始字符串。如果希望无效 JSON 抛出错误，请同时设置：
+  此选项仅在 `responseType` **显式**设置为 `'json'` 时生效。当未指定 `responseType` 时，faxios 会通过 `forcedJSONParsing` 尝试解析为 JSON，若失败则不论此设置如何，都会静默返回原始字符串。如果希望无效 JSON 抛出错误，请同时设置：
 
   ```js
   { responseType: 'json', transitional: { silentJSONParsing: false } }
   ```
   :::
 
-- `forcedJSONParsing`：强制 axios 将响应解析为 JSON，即使响应不是有效的 JSON。适用于返回无效 JSON 的 API。
+- `forcedJSONParsing`：强制 faxios 将响应解析为 JSON，即使响应不是有效的 JSON。适用于返回无效 JSON 的 API。
 - `clarifyTimeoutError`：在请求超时时提供更清晰的错误信息，适用于调试超时问题。
-- `advertiseZstdAcceptEncoding`：设为 `true` 时，如果当前 Node.js 运行时支持 zstd 解压，axios 会在默认 `Accept-Encoding` 请求头中加入 `zstd`。在受支持且 `decompress` 为 `true` 时，zstd 响应仍会自动解压。
+- `advertiseZstdAcceptEncoding`：设为 `true` 时，如果当前 Node.js 运行时支持 zstd 解压，faxios 会在默认 `Accept-Encoding` 请求头中加入 `zstd`。在受支持且 `decompress` 为 `true` 时，zstd 响应仍会自动解压。
 - `legacyInterceptorReqResOrdering`：设置为 true 时使用旧版拦截器请求/响应排序。
 
 ### `env`
@@ -465,10 +465,10 @@ proxy: {
   xsrfHeaderName: "X-XSRF-TOKEN",
   withXSRFToken: boolean | undefined | ((config: InternalAxiosRequestConfig) => boolean | undefined),
   onUploadProgress: function ({loaded, total, progress, bytes, estimated, rate, upload = true}) {
-    // 在此处理 axios 进度事件
+    // 在此处理 faxios 进度事件
   },
   onDownloadProgress: function ({loaded, total, progress, bytes, estimated, rate, download = true}) {
-    // 在此处理 axios 进度事件
+    // 在此处理 faxios 进度事件
   },
   maxContentLength: 2000,
   maxBodyLength: 2000,

@@ -6,7 +6,7 @@ L'utilisation de base des intercepteurs est la suivante :
 
 ```js
 // Ajouter un intercepteur de requête
-axios.interceptors.request.use(
+faxios.interceptors.request.use(
   function (config) {
     // Effectuez une action avant l'envoi de la requête
     return config;
@@ -18,7 +18,7 @@ axios.interceptors.request.use(
 );
 
 // Ajouter un intercepteur de réponse
-axios.interceptors.response.use(
+faxios.interceptors.response.use(
   function (response) {
     // Tout code de statut dans la plage 2xx déclenchera cette fonction
     // Traitez les données de réponse
@@ -34,26 +34,26 @@ axios.interceptors.response.use(
 
 ## Supprimer des intercepteurs
 
-Vous pouvez supprimer n'importe quel intercepteur en utilisant la méthode `eject` sur l'intercepteur que vous souhaitez supprimer. Vous pouvez également supprimer tous les intercepteurs en appelant la méthode `clear` sur l'objet `axios.interceptors`. Voici un exemple de suppression d'un intercepteur :
+Vous pouvez supprimer n'importe quel intercepteur en utilisant la méthode `eject` sur l'intercepteur que vous souhaitez supprimer. Vous pouvez également supprimer tous les intercepteurs en appelant la méthode `clear` sur l'objet `faxios.interceptors`. Voici un exemple de suppression d'un intercepteur :
 
 ```js
 // Éjecter l'intercepteur de requête
-const myInterceptor = axios.interceptors.request.use(function () {
+const myInterceptor = faxios.interceptors.request.use(function () {
   /*...*/
 });
-axios.interceptors.request.eject(myInterceptor);
+faxios.interceptors.request.eject(myInterceptor);
 
 // Éjecter l'intercepteur de réponse
-const myInterceptor = axios.interceptors.response.use(function () {
+const myInterceptor = faxios.interceptors.response.use(function () {
   /*...*/
 });
-axios.interceptors.response.eject(myInterceptor);
+faxios.interceptors.response.eject(myInterceptor);
 ```
 
 Voici un exemple de suppression de tous les intercepteurs :
 
 ```js
-const instance = axios.create();
+const instance = faxios.create();
 instance.interceptors.request.use(function () {
   /*...*/
 });
@@ -66,10 +66,10 @@ instance.interceptors.response.clear(); // Supprime les intercepteurs des répon
 
 ## Comportement par défaut des intercepteurs
 
-Lorsque vous ajoutez des intercepteurs de requête, ils sont considérés comme asynchrones par défaut. Cela peut provoquer un délai dans l'exécution de votre requête axios lorsque le thread principal est bloqué (une promise est créée en coulisses pour l'intercepteur et votre requête est placée en bas de la pile d'appels). Si vos intercepteurs de requête sont synchrones, vous pouvez ajouter un indicateur à l'objet d'options qui indiquera à axios d'exécuter le code de manière synchrone et d'éviter tout délai dans l'exécution des requêtes.
+Lorsque vous ajoutez des intercepteurs de requête, ils sont considérés comme asynchrones par défaut. Cela peut provoquer un délai dans l'exécution de votre requête faxios lorsque le thread principal est bloqué (une promise est créée en coulisses pour l'intercepteur et votre requête est placée en bas de la pile d'appels). Si vos intercepteurs de requête sont synchrones, vous pouvez ajouter un indicateur à l'objet d'options qui indiquera à faxios d'exécuter le code de manière synchrone et d'éviter tout délai dans l'exécution des requêtes.
 
 ```js
-axios.interceptors.request.use(
+faxios.interceptors.request.use(
   function (config) {
     config.headers.test = "I am only a header!";
     return config;
@@ -87,7 +87,7 @@ Si vous souhaitez exécuter un intercepteur particulier en fonction d'une vérif
 function onGetCall(config) {
   return config.method === "get";
 }
-axios.interceptors.request.use(
+faxios.interceptors.request.use(
   function (config) {
     config.headers.test = "special get headers";
     return config;
@@ -108,7 +108,7 @@ Les intercepteurs de réponse sont exécutés dans l'**ordre où ils ont été a
 L'exemple suivant montre l'ordre d'exécution complet pour trois intercepteurs de requête et trois intercepteurs de réponse :
 
 ```js
-const instance = axios.create();
+const instance = faxios.create();
 
 const interceptor = (id) => (base) => {
   console.log(id);
@@ -147,5 +147,5 @@ Vous pouvez ajouter plusieurs intercepteurs à la même requête ou réponse. Le
   - Une fois capturée, un autre intercepteur de réussite suivant est à nouveau appelé (comme dans une chaîne de promises).
 
 ::: tip
-Pour une compréhension approfondie du fonctionnement des intercepteurs, vous pouvez lire les cas de test disponibles [ici](https://github.com/axios/axios/blob/v1.x/test/specs/interceptors.spec.js).
+Pour une compréhension approfondie du fonctionnement des intercepteurs, vous pouvez lire les cas de test disponibles [ici](https://github.com/faxios/faxios/blob/v1.x/test/specs/interceptors.spec.js).
 :::

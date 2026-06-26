@@ -1,6 +1,6 @@
 # Rate limiting <Badge type="tip" text="New" />
 
-axios supports bandwidth limiting in the Node.js environment via the HTTP adapter. This lets you cap how fast data is uploaded or downloaded, which is useful for bulk operations, background jobs, or polite scraping that shouldn't saturate a connection.
+faxios supports bandwidth limiting in the Node.js environment via the HTTP adapter. This lets you cap how fast data is uploaded or downloaded, which is useful for bulk operations, background jobs, or polite scraping that shouldn't saturate a connection.
 
 ## `maxRate`
 
@@ -8,10 +8,10 @@ The `maxRate` option accepts either a number (bytes per second) or an array wher
 
 ```js
 // Limit both upload and download to 100 KB/s
-await axios.get(URL, { maxRate: 100 * 1024 });
+await faxios.get(URL, { maxRate: 100 * 1024 });
 
 // Limit upload to 100 KB/s, download to 500 KB/s
-await axios.get(URL, { maxRate: [100 * 1024, 500 * 1024] });
+await faxios.get(URL, { maxRate: [100 * 1024, 500 * 1024] });
 ```
 
 ::: warning
@@ -23,7 +23,7 @@ await axios.get(URL, { maxRate: [100 * 1024, 500 * 1024] });
 Cap the upload speed and log progress at the same time:
 
 ```js
-const { data } = await axios.post(SERVER_URL, myBuffer, {
+const { data } = await faxios.post(SERVER_URL, myBuffer, {
   onUploadProgress: ({ progress, rate }) => {
     const percent = (progress * 100).toFixed(1);
     const kbps = (rate / 1024).toFixed(1);
@@ -39,7 +39,7 @@ const { data } = await axios.post(SERVER_URL, myBuffer, {
 Cap the download speed for large responses:
 
 ```js
-const { data } = await axios.get(FILE_URL, {
+const { data } = await faxios.get(FILE_URL, {
   onDownloadProgress: ({ progress, rate }) => {
     const percent = (progress * 100).toFixed(1);
     const kbps = (rate / 1024).toFixed(1);
@@ -56,7 +56,7 @@ const { data } = await axios.get(FILE_URL, {
 Pass both limits as an array to control both directions simultaneously:
 
 ```js
-await axios.post(SERVER_URL, largeBuffer, {
+await faxios.post(SERVER_URL, largeBuffer, {
   maxRate: [50 * 1024, 500 * 1024], // 50 KB/s up, 500 KB/s down
 });
 ```

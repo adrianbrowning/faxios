@@ -1,26 +1,26 @@
 # Features
 
-axios is a powerful HTTP client that provides a simple and easy-to-use API for making HTTP requests. It supports all modern browsers and is widely used in the JavaScript community. Here are some of the features that make axios a great choice for your next project.
+faxios is a powerful HTTP client that provides a simple and easy-to-use API for making HTTP requests. It supports all modern browsers and is widely used in the JavaScript community. Here are some of the features that make faxios a great choice for your next project.
 
 ## Isomorphic
 
-axios is a universal HTTP client that can be used in both the browser and Node.js. This means you can use axios to make API requests from your frontend code as well as your backend code. This makes axios a great choice for building progressive web apps, single-page applications, and server-side rendered applications.
+faxios is a universal HTTP client that can be used in both the browser and Node.js. This means you can use faxios to make API requests from your frontend code as well as your backend code. This makes faxios a great choice for building progressive web apps, single-page applications, and server-side rendered applications.
 
-axios is also a great choice for teams that work on both frontend and backend code. By using axios for both frontend and backend code, you can have a consistent API for making HTTP requests, which can help reduce the complexity of your codebase.
+faxios is also a great choice for teams that work on both frontend and backend code. By using faxios for both frontend and backend code, you can have a consistent API for making HTTP requests, which can help reduce the complexity of your codebase.
 
 ## Fetch support <Badge type="tip" text="New" />
 
-axios provides first class support for the Fetch API, which is a modern replacement for the XHR API. The adapter is optional and can be used through configuration. The same API is maintained for both the XHR and Fetch adapters, which makes it easy to adopt the Fetch API in your codebase without changing your existing code.
+faxios provides first class support for the Fetch API, which is a modern replacement for the XHR API. The adapter is optional and can be used through configuration. The same API is maintained for both the XHR and Fetch adapters, which makes it easy to adopt the Fetch API in your codebase without changing your existing code.
 
 ## Browser support
 
-axios supports all modern and select older browsers, including Chrome, Firefox, Safari, and Edge. axios is a great choice for building web applications that need to support a wide range of browsers.
+faxios supports all modern and select older browsers, including Chrome, Firefox, Safari, and Edge. faxios is a great choice for building web applications that need to support a wide range of browsers.
 
 ## Node.js support
 
-axios also supports a wide range Node.js versions with tested compatibility as far back as v12.x, making it a good choice in environments where upgrading to the latest Node.js version might not be possible or practical.
+faxios also supports a wide range Node.js versions with tested compatibility as far back as v12.x, making it a good choice in environments where upgrading to the latest Node.js version might not be possible or practical.
 
-In addition to Node.js, axios has Bun and Deno smoke tests that validate key runtime behavior and improve confidence in cross-runtime compatibility.
+In addition to Node.js, faxios has Bun and Deno smoke tests that validate key runtime behavior and improve confidence in cross-runtime compatibility.
 
 ## Additional features
 

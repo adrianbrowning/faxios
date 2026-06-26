@@ -3,13 +3,13 @@
 Vous pouvez également envoyer un formulaire directement depuis un élément de formulaire HTML. Cela est utile lorsque vous avez un formulaire dans votre page et que vous souhaitez le soumettre sans aucun code JavaScript.
 
 ```js
-await axios.postForm('https://httpbin.org/post', document.querySelector('#htmlForm'));
+await faxios.postForm('https://httpbin.org/post', document.querySelector('#htmlForm'));
 ```
 
 Les objets `FormData` et `HTMLForm` peuvent également être envoyés en `JSON` en définissant explicitement l'en-tête `Content-Type` à `application/json` :
 
 ```js
-await axios.post('https://httpbin.org/post', document.querySelector('#htmlForm'), {
+await faxios.post('https://httpbin.org/post', document.querySelector('#htmlForm'), {
   headers: {
     'Content-Type': 'application/json',
   },

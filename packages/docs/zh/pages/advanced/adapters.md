@@ -1,8 +1,8 @@
 # 适配器
 
-适配器允许你自定义 axios 处理请求数据的方式。默认情况下，axios 使用 `['xhr', 'http', 'fetch']` 的有序优先级列表，并选择当前环境支持的第一个适配器。实际上，这意味着在浏览器中使用 `xhr`，在 Node.js 中使用 `http`，在两者均不可用的环境（如 Cloudflare Workers 或 Deno）中使用 `fetch`。
+适配器允许你自定义 faxios 处理请求数据的方式。默认情况下，faxios 使用 `['xhr', 'http', 'fetch']` 的有序优先级列表，并选择当前环境支持的第一个适配器。实际上，这意味着在浏览器中使用 `xhr`，在 Node.js 中使用 `http`，在两者均不可用的环境（如 Cloudflare Workers 或 Deno）中使用 `fetch`。
 
-编写自定义适配器可以让你完全掌控 axios 如何发起请求和处理响应，适用于测试、自定义传输或非标准环境等场景。
+编写自定义适配器可以让你完全掌控 faxios 如何发起请求和处理响应，适用于测试、自定义传输或非标准环境等场景。
 
 ## 内置适配器
 
@@ -10,30 +10,30 @@
 
 ```js
 // 使用 fetch 适配器
-const instance = axios.create({ adapter: "fetch" });
+const instance = faxios.create({ adapter: "fetch" });
 
 // 使用 XHR 适配器（浏览器默认）
-const instance = axios.create({ adapter: "xhr" });
+const instance = faxios.create({ adapter: "xhr" });
 
 // 使用 HTTP 适配器（Node.js 默认）
-const instance = axios.create({ adapter: "http" });
+const instance = faxios.create({ adapter: "http" });
 ```
 
-你也可以传入一个适配器名称数组，axios 将使用当前环境支持的第一个：
+你也可以传入一个适配器名称数组，faxios 将使用当前环境支持的第一个：
 
 ```js
-const instance = axios.create({ adapter: ["fetch", "xhr", "http"] });
+const instance = faxios.create({ adapter: ["fetch", "xhr", "http"] });
 ```
 
 关于 `fetch` 适配器的更多详情，请参阅 [Fetch 适配器](/pages/advanced/fetch-adapter)页面。
 
 ## 创建自定义适配器
 
-要创建自定义适配器，需要编写一个接受 `config` 对象并返回 Promise 的函数，该 Promise 需解析为有效的 axios 响应对象。
+要创建自定义适配器，需要编写一个接受 `config` 对象并返回 Promise 的函数，该 Promise 需解析为有效的 faxios 响应对象。
 
 ```js
 import faxios from "faxios";
-import { settle } from "axios/unsafe/core/settle.js";
+import { settle } from "faxios/unsafe/core/settle.js";
 
 function myAdapter(config) {
   /**
@@ -80,9 +80,9 @@ function myAdapter(config) {
   });
 }
 
-const instance = axios.create({ adapter: myAdapter });
+const instance = faxios.create({ adapter: myAdapter });
 ```
 
 ::: tip
-`settle` 辅助函数对 2xx 状态码 resolve Promise，对其他状态码 reject Promise，与 axios 的默认行为一致。如果需要自定义状态码验证，请改用 `validateStatus` 配置选项。
+`settle` 辅助函数对 2xx 状态码 resolve Promise，对其他状态码 reject Promise，与 faxios 的默认行为一致。如果需要自定义状态码验证，请改用 `validateStatus` 配置选项。
 :::

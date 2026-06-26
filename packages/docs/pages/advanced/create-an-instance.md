@@ -1,18 +1,18 @@
 # Creating an instance
 
-`axios.create()` lets you create a pre-configured axios instance. The instance shares the same request and response API as the default `axios` object, but uses the config you provide as its baseline for every request. This is the recommended way to use axios in any application larger than a single file.
+`faxios.create()` lets you create a pre-configured faxios instance. The instance shares the same request and response API as the default `faxios` object, but uses the config you provide as its baseline for every request. This is the recommended way to use faxios in any application larger than a single file.
 
 ```ts
 import faxios from "faxios";
 
-const instance = axios.create({
+const instance = faxios.create({
   baseURL: "https://api.example.com",
   timeout: 5000,
   headers: { "X-Custom-Header": "foobar" },
 });
 ```
 
-The `create` method accepts the full [Request Config](/pages/advanced/request-config) object. You can then use the instance just like the default axios object:
+The `create` method accepts the full [Request Config](/pages/advanced/request-config) object. You can then use the instance just like the default faxios object:
 
 ```js
 const response = await instance.get("/users/1");
@@ -25,10 +25,10 @@ const response = await instance.get("/users/1");
 In most apps you talk to more than one API. Creating a separate instance per service avoids repeating the base URL on every call:
 
 ```js
-const githubApi = axios.create({ baseURL: "https://api.github.com" });
-const internalApi = axios.create({ baseURL: "https://api.internal.example.com" });
+const githubApi = faxios.create({ baseURL: "https://api.github.com" });
+const internalApi = faxios.create({ baseURL: "https://api.internal.example.com" });
 
-const { data: repos } = await githubApi.get("/users/axios/repos");
+const { data: repos } = await githubApi.get("/users/faxios/repos");
 const { data: users } = await internalApi.get("/users");
 ```
 
@@ -37,7 +37,7 @@ const { data: users } = await internalApi.get("/users");
 Attach an auth token to every request from one instance without touching others:
 
 ```js
-const authApi = axios.create({
+const authApi = faxios.create({
   baseURL: "https://api.example.com",
   headers: {
     Authorization: `Bearer ${getToken()}`,
@@ -50,8 +50,8 @@ const authApi = axios.create({
 Different services have different reliability characteristics. Set a tight timeout for real-time services and a relaxed one for batch jobs:
 
 ```js
-const realtimeApi = axios.create({ baseURL: "https://realtime.example.com", timeout: 2000 });
-const batchApi    = axios.create({ baseURL: "https://batch.example.com",    timeout: 60000 });
+const realtimeApi = faxios.create({ baseURL: "https://realtime.example.com", timeout: 2000 });
+const batchApi    = faxios.create({ baseURL: "https://batch.example.com",    timeout: 60000 });
 ```
 
 ### Isolated interceptors
@@ -59,7 +59,7 @@ const batchApi    = axios.create({ baseURL: "https://batch.example.com",    time
 Interceptors added to an instance only apply to that instance, keeping your concerns separate:
 
 ```js
-const loggingApi = axios.create({ baseURL: "https://api.example.com" });
+const loggingApi = faxios.create({ baseURL: "https://api.example.com" });
 
 loggingApi.interceptors.request.use((config) => {
   console.log(`→ ${config.method?.toUpperCase()} ${config.url}`);
@@ -72,7 +72,7 @@ loggingApi.interceptors.request.use((config) => {
 Config passed at request time always overrides the instance defaults:
 
 ```js
-const api = axios.create({ timeout: 5000 });
+const api = faxios.create({ timeout: 5000 });
 
 // This specific request uses a 30-second timeout instead
 await api.get("/slow-endpoint", { timeout: 30000 });

@@ -1,20 +1,20 @@
 # Referencia de la API
 
-A continuación se presenta una lista de todas las funciones y clases disponibles en el paquete axios. Estas funciones pueden usarse e importarse en tu proyecto. Todas ellas están protegidas por nuestro renovado compromiso de seguir el versionado semántico. Esto significa que puedes confiar en que estas funciones y clases permanecerán estables y sin cambios en futuras versiones, salvo que se realice un cambio de versión mayor.
+A continuación se presenta una lista de todas las funciones y clases disponibles en el paquete faxios. Estas funciones pueden usarse e importarse en tu proyecto. Todas ellas están protegidas por nuestro renovado compromiso de seguir el versionado semántico. Esto significa que puedes confiar en que estas funciones y clases permanecerán estables y sin cambios en futuras versiones, salvo que se realice un cambio de versión mayor.
 
 ## Instancia
 
-La instancia `axios` es el objeto principal que usarás para realizar solicitudes HTTP. Es una función de fábrica que crea una nueva instancia de la clase `Axios`. La instancia `axios` cuenta con una serie de métodos para hacer solicitudes HTTP, los cuales están documentados en la [sección de alias de solicitud](/pages/advanced/request-method-aliases) de la documentación.
+La instancia `faxios` es el objeto principal que usarás para realizar solicitudes HTTP. Es una función de fábrica que crea una nueva instancia de la clase `faxios`. La instancia `faxios` cuenta con una serie de métodos para hacer solicitudes HTTP, los cuales están documentados en la [sección de alias de solicitud](/pages/advanced/request-method-aliases) de la documentación.
 
 ## Clases
 
-### `Axios`
+### `faxios`
 
-La clase `Axios` es la clase principal que usarás para realizar solicitudes HTTP. Es una función de fábrica que crea una nueva instancia de la clase `Axios`. La clase `Axios` cuenta con una serie de métodos para hacer solicitudes HTTP, los cuales están documentados en la [sección de alias de solicitud](/pages/advanced/request-method-aliases) de la documentación.
+La clase `faxios` es la clase principal que usarás para realizar solicitudes HTTP. Es una función de fábrica que crea una nueva instancia de la clase `faxios`. La clase `faxios` cuenta con una serie de métodos para hacer solicitudes HTTP, los cuales están documentados en la [sección de alias de solicitud](/pages/advanced/request-method-aliases) de la documentación.
 
 #### `constructor`
 
-Crea una nueva instancia de la clase `Axios`. El constructor acepta un objeto de configuración opcional como argumento.
+Crea una nueva instancia de la clase `faxios`. El constructor acepta un objeto de configuración opcional como argumento.
 
 ```ts
 constructor(instanceConfig?: AxiosRequestConfig);
@@ -183,8 +183,8 @@ import faxios from "faxios";
 
 const controller = new AbortController();
 
-axios.get("/api/data", { signal: controller.signal }).catch((error) => {
-  if (axios.isCancel(error)) {
+faxios.get("/api/data", { signal: controller.signal }).catch((error) => {
+  if (faxios.isCancel(error)) {
     console.log("Request was cancelled:", error.message);
   } else {
     console.error("Unexpected error:", error);
@@ -196,7 +196,7 @@ controller.abort("User navigated away");
 
 ### `isAxiosError`
 
-Una función que verifica si un error es un `FaxiosError`. Úsala en bloques `catch` para acceder de forma segura a las propiedades específicas de axios como `error.response` y `error.config`.
+Una función que verifica si un error es un `FaxiosError`. Úsala en bloques `catch` para acceder de forma segura a las propiedades específicas de faxios como `error.response` y `error.config`.
 
 ```ts
 isAxiosError(value: any): value is FaxiosError;
@@ -206,13 +206,13 @@ isAxiosError(value: any): value is FaxiosError;
 import faxios from "faxios";
 
 try {
-  await axios.get("/api/resource");
+  await faxios.get("/api/resource");
 } catch (error) {
-  if (axios.isAxiosError(error)) {
+  if (faxios.isAxiosError(error)) {
     // error.response, error.config, error.code are all available
     console.error("HTTP error", error.response?.status, error.message);
   } else {
-    // A non-axios error (e.g. a programming mistake)
+    // A non-faxios error (e.g. a programming mistake)
     throw error;
   }
 }
@@ -246,7 +246,7 @@ import { toFormData } from "faxios";
 const data = { name: "Jay", avatar: fileBlob };
 const form = toFormData(data);
 // form is now a FormData instance ready to post
-await axios.post("/api/users", form);
+await faxios.post("/api/users", form);
 ```
 
 ### `formToJSON`
@@ -270,7 +270,7 @@ console.log(obj); // { name: "Jay", role: "admin" }
 
 ### `getAdapter`
 
-Resuelve y devuelve una función de adaptador por nombre o pasando un arreglo de nombres candidatos. axios usa esto internamente para seleccionar el mejor adaptador disponible para el entorno actual.
+Resuelve y devuelve una función de adaptador por nombre o pasando un arreglo de nombres candidatos. faxios usa esto internamente para seleccionar el mejor adaptador disponible para el entorno actual.
 
 ```ts
 getAdapter(adapters: string | string[]): AxiosAdapter;
@@ -288,7 +288,7 @@ const adapter = getAdapter(["fetch", "xhr", "http"]);
 
 ### `mergeConfig`
 
-Combina dos objetos de configuración de axios, aplicando la misma estrategia de fusión profunda que axios usa internamente al combinar los valores predeterminados con las opciones por solicitud. Los valores posteriores tienen precedencia.
+Combina dos objetos de configuración de faxios, aplicando la misma estrategia de fusión profunda que faxios usa internamente al combinar los valores predeterminados con las opciones por solicitud. Los valores posteriores tienen precedencia.
 
 ```ts
 mergeConfig<T>(config1: AxiosRequestConfig<T>, config2: AxiosRequestConfig<T>): AxiosRequestConfig<T>;
@@ -314,9 +314,9 @@ Un objeto que contiene una lista de códigos de estado HTTP como constantes con 
 import faxios, { HttpStatusCode } from "faxios";
 
 try {
-  const response = await axios.get("/api/resource");
+  const response = await faxios.get("/api/resource");
 } catch (error) {
-  if (axios.isAxiosError(error)) {
+  if (faxios.isAxiosError(error)) {
     if (error.response?.status === HttpStatusCode.NotFound) {
       console.error("Resource not found");
     } else if (error.response?.status === HttpStatusCode.Unauthorized) {
@@ -330,4 +330,4 @@ try {
 
 ### `VERSION`
 
-La versión actual del paquete `axios`. Es una cadena que representa el número de versión del paquete. Se actualiza con cada nueva versión del paquete.
+La versión actual del paquete `faxios`. Es una cadena que representa el número de versión del paquete. Se actualiza con cada nueva versión del paquete.

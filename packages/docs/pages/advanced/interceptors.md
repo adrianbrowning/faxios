@@ -6,7 +6,7 @@ Basic usage of interceptors is as follows:
 
 ```js
 // Add a request interceptor
-axios.interceptors.request.use(
+faxios.interceptors.request.use(
   function (config) {
     // Do something before request is sent
     return config;
@@ -18,7 +18,7 @@ axios.interceptors.request.use(
 );
 
 // Add a response interceptor
-axios.interceptors.response.use(
+faxios.interceptors.response.use(
   function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
@@ -34,26 +34,26 @@ axios.interceptors.response.use(
 
 ## Removing Interceptors
 
-You can remove any interceptor by using the `eject` method on the interceptor you want to remove. You can also remove all interceptors by calling the `clear` method on the `axios.interceptors` object. Here is an example of how to remove an interceptor:
+You can remove any interceptor by using the `eject` method on the interceptor you want to remove. You can also remove all interceptors by calling the `clear` method on the `faxios.interceptors` object. Here is an example of how to remove an interceptor:
 
 ```js
 // Eject the request interceptor
-const myInterceptor = axios.interceptors.request.use(function () {
+const myInterceptor = faxios.interceptors.request.use(function () {
   /*...*/
 });
-axios.interceptors.request.eject(myInterceptor);
+faxios.interceptors.request.eject(myInterceptor);
 
 // Eject the response interceptor
-const myInterceptor = axios.interceptors.response.use(function () {
+const myInterceptor = faxios.interceptors.response.use(function () {
   /*...*/
 });
-axios.interceptors.response.eject(myInterceptor);
+faxios.interceptors.response.eject(myInterceptor);
 ```
 
 Here is an example of how to remove all interceptors:
 
 ```js
-const instance = axios.create();
+const instance = faxios.create();
 instance.interceptors.request.use(function () {
   /*...*/
 });
@@ -66,10 +66,10 @@ instance.interceptors.response.clear(); // Removes interceptors from responses
 
 ## Interceptors default behaviour
 
-When you add request interceptors, they are presumed to be asynchronous by default. This can cause a delay in the execution of your axios request when the main thread is blocked (a promise is created under the hood for the interceptor and your request gets put on the bottom of the call stack). If your request interceptors are synchronous you can add a flag to the options object that will tell axios to run the code synchronously and avoid any delays in request execution.
+When you add request interceptors, they are presumed to be asynchronous by default. This can cause a delay in the execution of your faxios request when the main thread is blocked (a promise is created under the hood for the interceptor and your request gets put on the bottom of the call stack). If your request interceptors are synchronous you can add a flag to the options object that will tell faxios to run the code synchronously and avoid any delays in request execution.
 
 ```js
-axios.interceptors.request.use(
+faxios.interceptors.request.use(
   function (config) {
     config.headers.test = "I am only a header!";
     return config;
@@ -87,7 +87,7 @@ If you want to execute a particular interceptor based on a runtime check, you ca
 function onGetCall(config) {
   return config.method === "get";
 }
-axios.interceptors.request.use(
+faxios.interceptors.request.use(
   function (config) {
     config.headers.test = "special get headers";
     return config;
@@ -108,7 +108,7 @@ Response interceptors are executed in the **order they were added** (FIFO — fi
 The following example shows the full execution order for three request interceptors and three response interceptors:
 
 ```js
-const instance = axios.create();
+const instance = faxios.create();
 
 const interceptor = (id) => (base) => {
   console.log(id);
@@ -147,5 +147,5 @@ You may add multiple interceptors to the same request or response. The following
   - once caught, another following fulfil-interceptor is called again (just like in a promise chain).
 
 ::: tip
-To gain an in-depth understanding of how interceptors work, you can read the test cases over [here](https://github.com/axios/axios/blob/v1.x/test/specs/interceptors.spec.js).
+To gain an in-depth understanding of how interceptors work, you can read the test cases over [here](https://github.com/faxios/faxios/blob/v1.x/test/specs/interceptors.spec.js).
 :::

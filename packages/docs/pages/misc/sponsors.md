@@ -14,7 +14,7 @@ const capitalizeFirstLetter = (word) => {
 
 <div style="margin: 1rem 7rem; max-width: 1200px;">
   <h1 style="line-height: 64px; font-size: 32px; letter-spacing: -0.4px; font-weight: 600; margin-top: 2rem;">Sponsors</h1>
-  <p>Axios is supported by the following organizations. If you'd like to sponsor Axios, please see our <a href="https://opencollective.com/axios" target="_blank" style="color: #007bff;">open collective page</a> for more information.</p>
+  <p>faxios is supported by the following organizations. If you'd like to sponsor faxios, please see our <a href="https://opencollective.com/faxios" target="_blank" style="color: #007bff;">open collective page</a> for more information.</p>
 
   <div :class="$style.sponsorCloudWrapper">
     <div :class="$style.sponsorCloudContainer">

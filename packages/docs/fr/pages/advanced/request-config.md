@@ -8,8 +8,8 @@ Par défaut, `maxContentLength` et `maxBodyLength` valent `-1` (illimité). Un s
 Si vous appelez des serveurs auxquels vous ne faites pas pleinement confiance, **définissez un plafond** :
 
 ```js
-axios.defaults.maxContentLength = 10 * 1024 * 1024; // 10 Mo
-axios.defaults.maxBodyLength = 10 * 1024 * 1024;
+faxios.defaults.maxContentLength = 10 * 1024 * 1024; // 10 Mo
+faxios.defaults.maxBodyLength = 10 * 1024 * 1024;
 ```
 
 Consultez le [guide de sécurité](/pages/misc/security) pour plus de détails.
@@ -50,7 +50,7 @@ Dans les environnements modernes (ES2023+), la fonction reviver reçoit un trois
 > Remarque : `Temporal` n'est pas encore disponible dans tous les environnements. Envisagez l'utilisation d'un polyfill si nécessaire.
 
 ```js
-const client = axios.create({
+const client = faxios.create({
   parseReviver: (key, value, context) => {
     // Exemple : analyse BigInt sans perte de précision
     if (typeof value === 'number' && context?.source) {
@@ -96,19 +96,19 @@ La fonction `paramsSerializer` vous permet de sérialiser l'objet `params` avant
 
 #### Encodage pour-cent strict RFC 3986
 
-Par défaut, axios redécode `%3A`, `%24`, `%2C` et `%20` vers `:`, `$`, `,` et `+` pour la lisibilité (le `+` suit la convention `application/x-www-form-urlencoded` pour représenter une espace dans une chaîne de requête). Ces caractères sont valides dans un composant de requête selon la [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986#section-3.4), donc la sortie par défaut est correcte. Cependant, certains backends exigent un encodage pour-cent strict et rejettent la forme lisible.
+Par défaut, faxios redécode `%3A`, `%24`, `%2C` et `%20` vers `:`, `$`, `,` et `+` pour la lisibilité (le `+` suit la convention `application/x-www-form-urlencoded` pour représenter une espace dans une chaîne de requête). Ces caractères sont valides dans un composant de requête selon la [RFC 3986](https://datatracker.ietf.org/doc/html/rfc3986#section-3.4), donc la sortie par défaut est correcte. Cependant, certains backends exigent un encodage pour-cent strict et rejettent la forme lisible.
 
 Utilisez l'option `encode` pour remplacer l'encodeur par défaut :
 
 ```js
 // Par requête : émettre un encodage pour-cent strict RFC 3986 pour les valeurs de requête
-axios.get('/foo', {
+faxios.get('/foo', {
   params: { filter: JSON.stringify({ startedAt: '2026-01-23' }) },
   paramsSerializer: { encode: encodeURIComponent }
 });
 
 // Ou définir cela sur les valeurs par défaut de l'instance
-const client = axios.create({
+const client = faxios.create({
   paramsSerializer: { encode: encodeURIComponent }
 });
 ```
@@ -124,11 +124,11 @@ Les `data` sont les données à envoyer comme corps de la requête. Il peut s'ag
 
 Pour les objets `FormData` de navigateur, web worker et React Native, ne définissez pas manuellement `Content-Type` ; l'environnement ajoute lui-même la boundary multipart.
 
-Pour les objets `FormData` Node.js qui fournissent une méthode `getHeaders()`, axios copie tous les en-têtes retournés par défaut pour assurer la compatibilité avec la v1. Si l'objet `FormData` est personnalisé ou n'est pas pleinement de confiance, définissez `formDataHeaderPolicy: 'content-only'` pour ne copier que `Content-Type` et `Content-Length`, et définissez explicitement tout autre en-tête de requête via la configuration `headers` de la requête.
+Pour les objets `FormData` Node.js qui fournissent une méthode `getHeaders()`, faxios copie tous les en-têtes retournés par défaut pour assurer la compatibilité avec la v1. Si l'objet `FormData` est personnalisé ou n'est pas pleinement de confiance, définissez `formDataHeaderPolicy: 'content-only'` pour ne copier que `Content-Type` et `Content-Length`, et définissez explicitement tout autre en-tête de requête via la configuration `headers` de la requête.
 
 ### `formDataHeaderPolicy` <Badge type="warning" text="Node.js uniquement" />
 
-Contrôle la manière dont axios copie les en-têtes retournés par `FormData#getHeaders()` de Node.js. La valeur par défaut est `'legacy'`, qui copie tous les en-têtes retournés afin de préserver le comportement existant de la v1. Définissez `'content-only'` pour ne copier que `Content-Type` et `Content-Length` depuis `getHeaders()`.
+Contrôle la manière dont faxios copie les en-têtes retournés par `FormData#getHeaders()` de Node.js. La valeur par défaut est `'legacy'`, qui copie tous les en-têtes retournés afin de préserver le comportement existant de la v1. Définissez `'content-only'` pour ne copier que `Content-Type` et `Content-Length` depuis `getHeaders()`.
 
 ### `timeout`
 
@@ -146,7 +146,7 @@ La propriété `withCredentials` indique si les requêtes Cross-site Access-Cont
 - http
 - xhr
 
-Vous pouvez également passer un tableau d'adaptateurs ; axios utilisera le premier pris en charge par l'environnement.
+Vous pouvez également passer un tableau d'adaptateurs ; faxios utilisera le premier pris en charge par l'environnement.
 
 ### `auth`
 
@@ -207,7 +207,7 @@ Le `xsrfHeaderName` est le nom de l'en-tête à utiliser comme valeur pour le to
 
 ### `withXSRFToken`
 
-`withXSRFToken` contrôle si axios lit le cookie XSRF et définit l'en-tête XSRF sur les requêtes du navigateur. Accepte :
+`withXSRFToken` contrôle si faxios lit le cookie XSRF et définit l'en-tête XSRF sur les requêtes du navigateur. Accepte :
 
 - `undefined` _(par défaut)_ — définit l'en-tête XSRF uniquement pour les requêtes du même site (same-origin).
 - `true` — définit toujours l'en-tête XSRF, y compris pour les requêtes cross-origin.
@@ -219,10 +219,10 @@ withXSRFToken: boolean | undefined | ((config: InternalAxiosRequestConfig) => bo
 ```
 
 ::: warning XSRF cross-origin et `withCredentials`
-`withCredentials` contrôle si les requêtes cross-site incluent des informations d'identification (cookies, authentification HTTP). Dans les anciennes versions d'axios, définir `withCredentials: true` provoquait implicitement l'envoi de l'en-tête XSRF pour les requêtes cross-origin. Les versions plus récentes d'axios séparent ces préoccupations : pour autoriser l'envoi de l'en-tête XSRF sur des requêtes cross-origin, vous devez définir **à la fois** `withCredentials: true` et `withXSRFToken: true`.
+`withCredentials` contrôle si les requêtes cross-site incluent des informations d'identification (cookies, authentification HTTP). Dans les anciennes versions d'faxios, définir `withCredentials: true` provoquait implicitement l'envoi de l'en-tête XSRF pour les requêtes cross-origin. Les versions plus récentes d'faxios séparent ces préoccupations : pour autoriser l'envoi de l'en-tête XSRF sur des requêtes cross-origin, vous devez définir **à la fois** `withCredentials: true` et `withXSRFToken: true`.
 
 ```js
-axios.get('/user', { withCredentials: true, withXSRFToken: true });
+faxios.get('/user', { withCredentials: true, withXSRFToken: true });
 ```
 :::
 
@@ -252,7 +252,7 @@ La propriété `redact` est un tableau optionnel de noms de clés de configurati
 `redact` n'affecte que la sérialisation des erreurs. Elle ne modifie ni les données de la requête, ni les en-têtes, ni l'objet de configuration original.
 
 ```js
-axios.get('/user/12345', {
+faxios.get('/user/12345', {
   headers: { Authorization: 'Bearer token' },
   auth: { username: 'me', password: 'secret' },
   redact: ['authorization', 'password']
@@ -263,7 +263,7 @@ axios.get('/user/12345', {
 
 ### `validateStatus`
 
-La fonction `validateStatus` vous permet de remplacer la validation du code de statut par défaut. Par défaut, axios rejette la promise si le code de statut n'est pas dans la plage 200-299. Vous pouvez remplacer ce comportement en fournissant une fonction `validateStatus` personnalisée. La fonction doit retourner `true` si le code de statut est dans la plage que vous souhaitez accepter.
+La fonction `validateStatus` vous permet de remplacer la validation du code de statut par défaut. Par défaut, faxios rejette la promise si le code de statut n'est pas dans la plage 200-299. Vous pouvez remplacer ce comportement en fournissant une fonction `validateStatus` personnalisée. La fonction doit retourner `true` si le code de statut est dans la plage que vous souhaitez accepter.
 
 ### `maxRedirects` <Badge type="warning" text="Node.js uniquement" />
 
@@ -293,15 +293,15 @@ Le hook `beforeRedirect` s'exécute **après** que les en-têtes sensibles aient
 La propriété `socketPath` définit un socket UNIX à utiliser à la place d'une connexion TCP. Par exemple `/var/run/docker.sock` pour envoyer des requêtes au daemon Docker. Seul `socketPath` ou `proxy` peut être spécifié. Si les deux sont spécifiés, `socketPath` est utilisé.
 
 :::warning Sécurité
-Lorsque `socketPath` est défini, le hostname et le port de l'URL de la requête sont ignorés et axios communique directement avec le socket Unix indiqué. Si une partie de la configuration de la requête provient d'une entrée utilisateur (par exemple dans un proxy ou un gestionnaire de webhooks qui transfère des options), un attaquant peut injecter `socketPath` pour rediriger le trafic vers des sockets locaux privilégiés tels que `/var/run/docker.sock`, `/run/containerd/containerd.sock` ou `/run/systemd/private`, contournant entièrement les protections SSRF basées sur le hostname (CWE-918). Filtrez la configuration provenant d'entrées non fiables et/ou restreignez les chemins de socket acceptés avec `allowedSocketPaths` (voir ci-dessous).
+Lorsque `socketPath` est défini, le hostname et le port de l'URL de la requête sont ignorés et faxios communique directement avec le socket Unix indiqué. Si une partie de la configuration de la requête provient d'une entrée utilisateur (par exemple dans un proxy ou un gestionnaire de webhooks qui transfère des options), un attaquant peut injecter `socketPath` pour rediriger le trafic vers des sockets locaux privilégiés tels que `/var/run/docker.sock`, `/run/containerd/containerd.sock` ou `/run/systemd/private`, contournant entièrement les protections SSRF basées sur le hostname (CWE-918). Filtrez la configuration provenant d'entrées non fiables et/ou restreignez les chemins de socket acceptés avec `allowedSocketPaths` (voir ci-dessous).
 :::
 
 ### `allowedSocketPaths` <Badge type="warning" text="Node.js uniquement" />
 
-Restreint les chemins de socket pouvant être utilisés via `socketPath`. Accepte une chaîne ou un tableau de chaînes. Lorsqu'elle est définie, axios résout le `socketPath` et le compare à chaque entrée (également résolue) ; la requête est rejetée avec une `FaxiosError` de code `ERR_BAD_OPTION_VALUE` s'il n'y a aucune correspondance. Lorsque non définie (par défaut), `socketPath` se comporte comme avant.
+Restreint les chemins de socket pouvant être utilisés via `socketPath`. Accepte une chaîne ou un tableau de chaînes. Lorsqu'elle est définie, faxios résout le `socketPath` et le compare à chaque entrée (également résolue) ; la requête est rejetée avec une `FaxiosError` de code `ERR_BAD_OPTION_VALUE` s'il n'y a aucune correspondance. Lorsque non définie (par défaut), `socketPath` se comporte comme avant.
 
 ```js
-const client = axios.create({
+const client = faxios.create({
   allowedSocketPaths: ['/var/run/docker.sock']
 });
 
@@ -330,9 +330,9 @@ Si vous utilisez des variables d'environnement pour la configuration de votre pr
 
 Utilisez `false` pour désactiver les proxies, en ignorant les variables d'environnement. `auth` indique que l'authentification HTTP Basic doit être utilisée pour se connecter au proxy, et fournit les identifiants. Cela définira un en-tête `Proxy-Authorization`, en écrasant tout en-tête `Proxy-Authorization` personnalisé que vous auriez défini via `headers`. Si le serveur proxy utilise HTTPS, vous devez définir le protocole à `https`.
 
-Un en-tête `Host` fourni par l'utilisateur dans `headers` est préservé lorsqu'il est transféré via un proxy (correspondance insensible à la casse sur `host` / `Host` / `HOST`). Cela vous permet de cibler un hôte virtuel différent de l'URL de la requête — par exemple, atteindre `127.0.0.1:4000` tout en faisant traiter la requête par le proxy comme provenant de `example.com`. Si aucun en-tête `Host` n'est fourni, axios utilise par défaut le `hostname:port` de l'URL de la requête comme auparavant.
+Un en-tête `Host` fourni par l'utilisateur dans `headers` est préservé lorsqu'il est transféré via un proxy (correspondance insensible à la casse sur `host` / `Host` / `HOST`). Cela vous permet de cibler un hôte virtuel différent de l'URL de la requête — par exemple, atteindre `127.0.0.1:4000` tout en faisant traiter la requête par le proxy comme provenant de `example.com`. Si aucun en-tête `Host` n'est fourni, faxios utilise par défaut le `hostname:port` de l'URL de la requête comme auparavant.
 
-Pour les cibles `https://`, axios établit un tunnel CONNECT via le proxy et effectue TLS de bout en bout avec l'origine. `Proxy-Authorization` est envoyé uniquement sur la requête CONNECT, jamais sur la requête TLS encapsulée. Les options TLS de `httpsAgent`, comme `ca`, `cert`, `key` et `rejectUnauthorized`, sont transmises à l'agent de tunnel généré afin qu'elles continuent de s'appliquer à la connexion TLS avec l'origine. Si vous fournissez un `HttpsProxyAgent`, axios laisse cet agent gérer le tunnel.
+Pour les cibles `https://`, faxios établit un tunnel CONNECT via le proxy et effectue TLS de bout en bout avec l'origine. `Proxy-Authorization` est envoyé uniquement sur la requête CONNECT, jamais sur la requête TLS encapsulée. Les options TLS de `httpsAgent`, comme `ca`, `cert`, `key` et `rejectUnauthorized`, sont transmises à l'agent de tunnel généré afin qu'elles continuent de s'appliquer à la connexion TLS avec l'origine. Si vous fournissez un `HttpsProxyAgent`, faxios laisse cet agent gérer le tunnel.
 
 ```js
 proxy: {
@@ -369,19 +369,19 @@ Notez que l'option `insecureHTTPParser` n'est disponible que dans Node.js 12.10.
 
 La propriété `transitional` vous permet d'activer ou de désactiver certaines fonctionnalités de transition. Les options suivantes sont disponibles :
 
-- `silentJSONParsing` : Si défini à `true` _(par défaut)_, axios ignore silencieusement les erreurs d'analyse JSON et définit `response.data` à `null` lorsque l'analyse échoue. Définissez à `false` pour lever une `SyntaxError` à la place.
+- `silentJSONParsing` : Si défini à `true` _(par défaut)_, faxios ignore silencieusement les erreurs d'analyse JSON et définit `response.data` à `null` lorsque l'analyse échoue. Définissez à `false` pour lever une `SyntaxError` à la place.
 
   ::: tip Important
-  Cette option ne prend effet que lorsque `responseType` est **explicitement** défini à `'json'`. Lorsque `responseType` est omis, axios utilise `forcedJSONParsing` pour tenter l'analyse JSON et retourne silencieusement la chaîne brute en cas d'échec, indépendamment de ce paramètre. Pour qu'un JSON invalide lève une erreur, définissez les deux :
+  Cette option ne prend effet que lorsque `responseType` est **explicitement** défini à `'json'`. Lorsque `responseType` est omis, faxios utilise `forcedJSONParsing` pour tenter l'analyse JSON et retourne silencieusement la chaîne brute en cas d'échec, indépendamment de ce paramètre. Pour qu'un JSON invalide lève une erreur, définissez les deux :
 
   ```js
   { responseType: 'json', transitional: { silentJSONParsing: false } }
   ```
   :::
 
-- `forcedJSONParsing` : Force axios à analyser la chaîne de réponse comme du JSON même si `responseType` n'est pas `'json'`.
+- `forcedJSONParsing` : Force faxios à analyser la chaîne de réponse comme du JSON même si `responseType` n'est pas `'json'`.
 - `clarifyTimeoutError` : Clarifie le message d'erreur lorsqu'une requête expire. Utile lors du débogage de problèmes de délai d'attente.
-- `advertiseZstdAcceptEncoding` : Lorsqu'elle vaut `true`, axios ajoute `zstd` à l'en-tête `Accept-Encoding` par défaut lorsque le runtime Node.js actuel prend en charge la décompression zstd. Les réponses zstd sont tout de même décompressées automatiquement lorsqu'elles sont prises en charge et que `decompress` vaut `true`.
+- `advertiseZstdAcceptEncoding` : Lorsqu'elle vaut `true`, faxios ajoute `zstd` à l'en-tête `Accept-Encoding` par défaut lorsque le runtime Node.js actuel prend en charge la décompression zstd. Les réponses zstd sont tout de même décompressées automatiquement lorsqu'elles sont prises en charge et que `decompress` vaut `true`.
 - `legacyInterceptorReqResOrdering` : Lorsque défini à true, l'ordre hérité de traitement requête/réponse des intercepteurs sera utilisé.
 
 ### `env`
@@ -465,10 +465,10 @@ La propriété `maxRate` définit la **bande passante** maximale (en octets par 
   xsrfHeaderName: "X-XSRF-TOKEN",
   withXSRFToken: boolean | undefined | ((config: InternalAxiosRequestConfig) => boolean | undefined),
   onUploadProgress: function ({loaded, total, progress, bytes, estimated, rate, upload = true}) {
-    // Faites ce que vous voulez avec l'événement de progression Axios
+    // Faites ce que vous voulez avec l'événement de progression faxios
   },
   onDownloadProgress: function ({loaded, total, progress, bytes, estimated, rate, download = true}) {
-    // Faites ce que vous voulez avec l'événement de progression Axios
+    // Faites ce que vous voulez avec l'événement de progression faxios
   },
   maxContentLength: 2000,
   maxBodyLength: 2000,

@@ -1,9 +1,9 @@
 # 进度捕获 <Badge type="tip" text="新特性" />
 
-axios 同时支持在浏览器和 Node.js 环境中捕获请求的上传/下载进度。进度事件的触发频率被限制为每秒最多 3 次，以避免浏览器被过多的进度事件压垮。以下是捕获进度事件的示例：
+faxios 同时支持在浏览器和 Node.js 环境中捕获请求的上传/下载进度。进度事件的触发频率被限制为每秒最多 3 次，以避免浏览器被过多的进度事件压垮。以下是捕获进度事件的示例：
 
 ```js
-await axios.post(url, data, {
+await faxios.post(url, data, {
   onUploadProgress: function (axiosProgressEvent) {
     /*{
       loaded: number;
@@ -33,7 +33,7 @@ await axios.post(url, data, {
 你也可以在 Node.js 中将上传和下载进度事件流式传输到可读流，以便以自定义方式显示进度。以下是流式传输进度事件的示例：
 
 ```js
-const { data } = await axios.post(SERVER_URL, readableStream, {
+const { data } = await faxios.post(SERVER_URL, readableStream, {
   onUploadProgress: ({ progress }) => {
     console.log((progress * 100).toFixed(2));
   },

@@ -1,12 +1,12 @@
 # multipart-form-data format
 
-axios can send requests in the `multipart/form-data` format. This format is commonly used when uploading files. To send a request in this format, you need to create a `FormData` object and append the data to it. Then you can pass the `FormData` object to the `data` property of the axios request config.
+faxios can send requests in the `multipart/form-data` format. This format is commonly used when uploading files. To send a request in this format, you need to create a `FormData` object and append the data to it. Then you can pass the `FormData` object to the `data` property of the faxios request config.
 
 ```js
 const formData = new FormData();
 formData.append('foo', 'bar');
 
-axios.post('https://httpbin.org/post', formData);
+faxios.post('https://httpbin.org/post', formData);
 ```
 
 Do not manually set the `Content-Type` header for browser, web worker, or React Native `FormData`; those runtimes add the multipart boundary themselves.
@@ -21,17 +21,17 @@ form.append('my_field', 'my value');
 form.append('my_buffer', Buffer.alloc(10));
 form.append('my_file', fs.createReadStream('/foo/bar.jpg'));
 
-axios.post('https://example.com', form);
+faxios.post('https://example.com', form);
 ```
 
 ## Automatic serialization to FormData <Badge type="tip" text="New" />
 
-Starting from v0.27.0, Axios supports automatic object serialization to a FormData object if the request Content-Type header is set to multipart/form-data. This means that you can pass a JavaScript object directly to the data property of the axios request config. For example when passing data to a POST request:
+Starting from v0.27.0, faxios supports automatic object serialization to a FormData object if the request Content-Type header is set to multipart/form-data. This means that you can pass a JavaScript object directly to the data property of the faxios request config. For example when passing data to a POST request:
 
 ```js
 import faxios from 'faxios';
 
-axios
+faxios
   .post(
     'https://httpbin.org/post',
     { x: 1 },
@@ -47,10 +47,10 @@ axios
 In the node.js build, the ([`form-data`](https://github.com/form-data/form-data)) polyfill is used by default. You can overload the FormData class by setting the env.FormData config variable, but you probably won't need it in most cases:
 
 ```js
-const axios = require('axios');
+const faxios = require('faxios');
 var FormData = require('form-data');
 
-axios
+faxios
   .post(
     'https://httpbin.org/post',
     { x: 1, buf: Buffer.alloc(10) },
@@ -65,12 +65,12 @@ axios
 
 ## Header policy for Node.js `FormData` <Badge type="warning" text="Node.js only" />
 
-When you pass a Node.js `FormData` object that exposes `getHeaders()` (such as the [`form-data`](https://github.com/form-data/form-data) package), axios copies all headers it returns onto the request by default. This preserves v1 compatibility but can be problematic when the `FormData` object comes from an untrusted source — `getHeaders()` could overwrite headers like `Authorization` or inject arbitrary ones.
+When you pass a Node.js `FormData` object that exposes `getHeaders()` (such as the [`form-data`](https://github.com/form-data/form-data) package), faxios copies all headers it returns onto the request by default. This preserves v1 compatibility but can be problematic when the `FormData` object comes from an untrusted source — `getHeaders()` could overwrite headers like `Authorization` or inject arbitrary ones.
 
 Set `formDataHeaderPolicy: 'content-only'` to copy **only** `Content-Type` and `Content-Length` from `getHeaders()`, then set any other headers explicitly via the request `headers` config:
 
 ```js
-await axios.post("https://example.com/upload", form, {
+await faxios.post("https://example.com/upload", form, {
   formDataHeaderPolicy: "content-only",
   headers: {
     Authorization: "Bearer my-token",
@@ -82,7 +82,7 @@ The default value is `'legacy'`. See [`formDataHeaderPolicy`](/pages/advanced/re
 
 ## Supported endings
 
-Axios FormData serializer supports some special endings to perform the following operations:
+faxios FormData serializer supports some special endings to perform the following operations:
 
 - `{}` - serialize the value with JSON.stringify
 - `[]` - unwrap the array-like object as separate fields with the same key
@@ -106,11 +106,11 @@ FormData serializer supports additional options via config.formSerializer: objec
 
 ```js
 // Allow deeper nesting for schemas that legitimately exceed 100 levels:
-axios.postForm('/api', data, { formSerializer: { maxDepth: 200 } });
+faxios.postForm('/api', data, { formSerializer: { maxDepth: 200 } });
 ```
 
 ::: warning Security note
-The default limit of 100 is intentional. Server-side code that forwards client-controlled JSON to axios as `data` is vulnerable to a call-stack overflow without this guard. Only raise `maxDepth` if your schema genuinely requires it.
+The default limit of 100 is intentional. Server-side code that forwards client-controlled JSON to faxios as `data` is vulnerable to a call-stack overflow without this guard. Only raise `maxDepth` if your schema genuinely requires it.
 :::
 
 For example, if we have an object like this:
@@ -128,7 +128,7 @@ const obj = {
 };
 ```
 
-The following steps will be executed by the Axios serializer internally:
+The following steps will be executed by the faxios serializer internally:
 
 ```js
 const formData = new FormData();
@@ -146,4 +146,4 @@ formData.append('users[1][surname]', 'Anderson');
 formData.append('obj2{}', '[{"x":1}]');
 ```
 
-Axios supports the following shortcut methods: `postForm`, `putForm`, `patchForm` which are just the corresponding http methods with the `Content-Type` header preset to `multipart/form-data`.
+faxios supports the following shortcut methods: `postForm`, `putForm`, `patchForm` which are just the corresponding http methods with the `Content-Type` header preset to `multipart/form-data`.

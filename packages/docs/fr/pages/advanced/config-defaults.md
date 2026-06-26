@@ -1,24 +1,24 @@
 # Valeurs par défaut de configuration
 
-axios vous permet de spécifier des valeurs par défaut de configuration qui seront appliquées à toutes les requêtes. Vous pouvez définir des valeurs par défaut pour `baseURL`, `headers`, `timeout` et d'autres propriétés. Voici un exemple d'utilisation des valeurs par défaut de configuration :
+faxios vous permet de spécifier des valeurs par défaut de configuration qui seront appliquées à toutes les requêtes. Vous pouvez définir des valeurs par défaut pour `baseURL`, `headers`, `timeout` et d'autres propriétés. Voici un exemple d'utilisation des valeurs par défaut de configuration :
 
 ```js
-axios.defaults.baseURL = "https://jsonplaceholder.typicode.com/posts";
-axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
-axios.defaults.headers.post["Content-Type"] =
+faxios.defaults.baseURL = "https://jsonplaceholder.typicode.com/posts";
+faxios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+faxios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded";
 ```
 
 ::: warning Les en-têtes globaux sont envoyés à chaque hôte
-Si votre application communique avec plus d'un domaine, définir `axios.defaults.headers.common["Authorization"]` enverra le token à **tous** ces domaines, y compris à des APIs tierces que vous ne contrôlez peut-être pas. Utilisez une [instance personnalisée](#valeurs-par-défaut-d-une-instance-personnalisée) avec une `baseURL` limitée pour tout client qui transporte des identifiants.
+Si votre application communique avec plus d'un domaine, définir `faxios.defaults.headers.common["Authorization"]` enverra le token à **tous** ces domaines, y compris à des APIs tierces que vous ne contrôlez peut-être pas. Utilisez une [instance personnalisée](#valeurs-par-défaut-d-une-instance-personnalisée) avec une `baseURL` limitée pour tout client qui transporte des identifiants.
 :::
 
 ## Valeurs par défaut d'une instance personnalisée
 
-Les instances axios sont déclarées avec leurs propres valeurs par défaut lors de leur création. Ces valeurs par défaut peuvent être remplacées en définissant la propriété `defaults` de l'instance. Voici un exemple d'utilisation des valeurs par défaut d'une instance personnalisée :
+Les instances faxios sont déclarées avec leurs propres valeurs par défaut lors de leur création. Ces valeurs par défaut peuvent être remplacées en définissant la propriété `defaults` de l'instance. Voici un exemple d'utilisation des valeurs par défaut d'une instance personnalisée :
 
 ```js
-var instance = axios.create({
+var instance = faxios.create({
   baseURL: "https://jsonplaceholder.typicode.com/posts",
   timeout: 1000,
   headers: { Authorization: "foobar" },
@@ -34,7 +34,7 @@ La configuration est fusionnée selon un ordre de priorité. L'ordre est le suiv
 Créons d'abord une instance avec les valeurs par défaut fournies par la bibliothèque. À ce stade, la valeur de configuration du timeout est `0`, valeur par défaut de la bibliothèque.
 
 ```js
-const instance = axios.create();
+const instance = faxios.create();
 ```
 
 Nous allons maintenant remplacer la valeur par défaut du timeout pour l'instance par `2500` millisecondes. Désormais, toutes les requêtes utilisant cette instance attendront 2,5 secondes avant d'expirer.

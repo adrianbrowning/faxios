@@ -1,6 +1,6 @@
 {
-  "name": "axios",
-  "short_name": "axios",
+  "name": "faxios",
+  "short_name": "faxios",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",

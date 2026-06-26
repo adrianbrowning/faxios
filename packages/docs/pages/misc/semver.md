@@ -2,11 +2,11 @@
 
 Semantic versioning is a versioning scheme that is used to communicate the nature of changes in a software package. It is a simple set of rules and requirements that dictate how version numbers are assigned and incremented.
 
-## axios versioning
+## faxios versioning
 
-axios follows the semantic versioning scheme. This means that each version of axios is assigned a version number that consists of three parts: major, minor, and patch. The version number is incremented based on the nature of the changes in the release.
+faxios follows the semantic versioning scheme. This means that each version of faxios is assigned a version number that consists of three parts: major, minor, and patch. The version number is incremented based on the nature of the changes in the release.
 
-In the past axios may have at times not strictly followed semantic versioning, however going forward there will be a much stricter adherence to the semantic versioning scheme to ensure that users can rely on the version numbers to communicate the nature of changes in the library.
+In the past faxios may have at times not strictly followed semantic versioning, however going forward there will be a much stricter adherence to the semantic versioning scheme to ensure that users can rely on the version numbers to communicate the nature of changes in the library.
 
 A brief overview of the versioning scheme is provided below.
 

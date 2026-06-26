@@ -1,24 +1,24 @@
 # 配置默认值
 
-axios 允许你指定应用于每个请求的配置默认值，包括 `baseURL`、`headers`、`timeout` 等属性。下面是使用配置默认值的示例：
+faxios 允许你指定应用于每个请求的配置默认值，包括 `baseURL`、`headers`、`timeout` 等属性。下面是使用配置默认值的示例：
 
 ```js
-axios.defaults.baseURL = "https://jsonplaceholder.typicode.com/posts";
-axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
-axios.defaults.headers.post["Content-Type"] =
+faxios.defaults.baseURL = "https://jsonplaceholder.typicode.com/posts";
+faxios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+faxios.defaults.headers.post["Content-Type"] =
   "application/x-www-form-urlencoded";
 ```
 
 ::: warning 全局请求头会被发送到所有主机
-如果你的应用会与多个域名通信，设置 `axios.defaults.headers.common["Authorization"]` 会将令牌发送到**所有**域名，包括你可能无法控制的第三方 API。对任何携带凭据的客户端，请使用带有限定 `baseURL` 的[自定义实例](#自定义实例默认值)。
+如果你的应用会与多个域名通信，设置 `faxios.defaults.headers.common["Authorization"]` 会将令牌发送到**所有**域名，包括你可能无法控制的第三方 API。对任何携带凭据的客户端，请使用带有限定 `baseURL` 的[自定义实例](#自定义实例默认值)。
 :::
 
 ## 自定义实例默认值
 
-axios 实例在创建时会有自己的默认配置，这些默认配置可以通过修改实例的 `defaults` 属性来覆盖。下面是使用自定义实例默认值的示例：
+faxios 实例在创建时会有自己的默认配置，这些默认配置可以通过修改实例的 `defaults` 属性来覆盖。下面是使用自定义实例默认值的示例：
 
 ```js
-var instance = axios.create({
+var instance = faxios.create({
   baseURL: "https://jsonplaceholder.typicode.com/posts",
   timeout: 1000,
   headers: { Authorization: "foobar" },
@@ -34,7 +34,7 @@ instance.defaults.headers.common["Authorization"] = AUTH_TOKEN;
 首先，创建一个使用库提供的默认值的实例。此时 timeout 配置值为 `0`，这是库的默认值。
 
 ```js
-const instance = axios.create();
+const instance = faxios.create();
 ```
 
 接下来，将实例的 timeout 默认值覆盖为 `2500` 毫秒。此后，使用该实例的所有请求都将在 2.5 秒后超时。

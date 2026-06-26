@@ -1,11 +1,11 @@
 # Fetch 适配器 <Badge type="tip" text="新特性" />
 
-`fetch` 适配器是我们在 1.7.0 版本中引入的新适配器，使 axios 能够使用 `fetch` API，兼顾两者的优势。默认情况下，当构建中 `xhr` 和 `http` 适配器不可用，或当前环境不支持时，会使用 `fetch`。若要将其作为默认适配器，必须在创建 axios 实例时通过 `adapter` 选项显式指定。
+`fetch` 适配器是我们在 1.7.0 版本中引入的新适配器，使 faxios 能够使用 `fetch` API，兼顾两者的优势。默认情况下，当构建中 `xhr` 和 `http` 适配器不可用，或当前环境不支持时，会使用 `fetch`。若要将其作为默认适配器，必须在创建 faxios 实例时通过 `adapter` 选项显式指定。
 
 ```js
 import faxios from 'faxios';
 
-const instance = axios.create({
+const instance = faxios.create({
   adapter: 'fetch',
 });
 ```
@@ -29,7 +29,7 @@ const instance = axios.create({
 ```js
 import customFetchFunction from 'customFetchModule';
 
-const instance = axios.create({
+const instance = faxios.create({
   adapter: 'fetch',
   onDownloadProgress(e) {
     console.log('downloadProgress', e);
@@ -44,13 +44,13 @@ const instance = axios.create({
 
 ### 与 Tauri 一起使用
 
-[Tauri](https://tauri.app/plugin/http-client/) 提供了一个平台 `fetch` 函数，可绕过浏览器对原生层请求的 CORS 限制。以下示例展示了在 Tauri 应用中使用该自定义 fetch 配置 axios 的最简设置。
+[Tauri](https://tauri.app/plugin/http-client/) 提供了一个平台 `fetch` 函数，可绕过浏览器对原生层请求的 CORS 限制。以下示例展示了在 Tauri 应用中使用该自定义 fetch 配置 faxios 的最简设置。
 
 ```js
 import { fetch } from '@tauri-apps/plugin-http';
 import faxios from 'faxios';
 
-const instance = axios.create({
+const instance = faxios.create({
   adapter: 'fetch',
   onDownloadProgress(e) {
     console.log('downloadProgress', e);
@@ -65,11 +65,11 @@ const { data } = await instance.get('https://google.com');
 
 ### 与 SvelteKit 一起使用
 
-[SvelteKit](https://svelte.dev/docs/kit/web-standards#Fetch-APIs) 为服务端 `load` 函数提供了自定义的 `fetch` 实现，用于处理 Cookie 转发和相对 URL。由于其 `fetch` 与标准 `URL` API 不兼容，必须明确配置 axios 使用它，并禁用全局 `Request` 和 `Response` 构造函数。
+[SvelteKit](https://svelte.dev/docs/kit/web-standards#Fetch-APIs) 为服务端 `load` 函数提供了自定义的 `fetch` 实现，用于处理 Cookie 转发和相对 URL。由于其 `fetch` 与标准 `URL` API 不兼容，必须明确配置 faxios 使用它，并禁用全局 `Request` 和 `Response` 构造函数。
 
 ```js
 export async function load({ fetch }) {
-  const { data: post } = await axios.get('https://jsonplaceholder.typicode.com/posts/1', {
+  const { data: post } = await faxios.get('https://jsonplaceholder.typicode.com/posts/1', {
     adapter: 'fetch',
     env: {
       fetch,

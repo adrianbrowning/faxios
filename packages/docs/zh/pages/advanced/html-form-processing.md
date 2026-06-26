@@ -3,13 +3,13 @@
 你也可以直接从 HTML 表单元素提交数据，无需任何额外的 JavaScript 代码即可提交页面中的表单。
 
 ```js
-await axios.postForm('https://httpbin.org/post', document.querySelector('#htmlForm'));
+await faxios.postForm('https://httpbin.org/post', document.querySelector('#htmlForm'));
 ```
 
 `FormData` 和 `HTMLForm` 对象也可以通过显式将 `Content-Type` 请求头设置为 `application/json` 来以 `JSON` 格式发送：
 
 ```js
-await axios.post('https://httpbin.org/post', document.querySelector('#htmlForm'), {
+await faxios.post('https://httpbin.org/post', document.querySelector('#htmlForm'), {
   headers: {
     'Content-Type': 'application/json',
   },

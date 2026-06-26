@@ -1,17 +1,17 @@
 # 测试
 
-测试使用 axios 发起 HTTP 请求的代码非常简单。推荐的方式是对 axios 本身进行 mock，让测试在不触及真实网络的情况下运行，从而完全控制代码收到的响应内容。
+测试使用 faxios 发起 HTTP 请求的代码非常简单。推荐的方式是对 faxios 本身进行 mock，让测试在不触及真实网络的情况下运行，从而完全控制代码收到的响应内容。
 
 ## 使用 Vitest 或 Jest 进行 Mock
 
-Vitest 和 Jest 都支持通过 `vi.mock` / `jest.mock` 进行模块级 mock。你可以 mock 整个 axios 模块，并控制每个方法的返回值：
+Vitest 和 Jest 都支持通过 `vi.mock` / `jest.mock` 进行模块级 mock。你可以 mock 整个 faxios 模块，并控制每个方法的返回值：
 
 ```js
 // user-service.js
 import faxios from "faxios";
 
 export async function getUser(id) {
-  const { data } = await axios.get(`/api/users/${id}`);
+  const { data } = await faxios.get(`/api/users/${id}`);
   return data;
 }
 ```
@@ -22,23 +22,23 @@ import { describe, it, expect, vi } from "vitest";
 import faxios from "faxios";
 import { getUser } from "./user-service";
 
-vi.mock("axios");
+vi.mock("faxios");
 
 describe("getUser", () => {
   it("returns user data on success", async () => {
     const mockUser = { id: 1, name: "Jay" };
 
-    // 让 axios.get 返回我们的假响应
-    axios.get.mockResolvedValueOnce({ data: mockUser });
+    // 让 faxios.get 返回我们的假响应
+    faxios.get.mockResolvedValueOnce({ data: mockUser });
 
     const result = await getUser(1);
 
     expect(result).toEqual(mockUser);
-    expect(axios.get).toHaveBeenCalledWith("/api/users/1");
+    expect(faxios.get).toHaveBeenCalledWith("/api/users/1");
   });
 
   it("throws when the request fails", async () => {
-    axios.get.mockRejectedValueOnce(new Error("Network error"));
+    faxios.get.mockRejectedValueOnce(new Error("Network error"));
 
     await expect(getUser(1)).rejects.toThrow("Network error");
   });
@@ -67,22 +67,22 @@ const mockError = new FaxiosError(
   }
 );
 
-axios.get.mockRejectedValueOnce(mockError);
+faxios.get.mockRejectedValueOnce(mockError);
 ```
 
-## 使用 axios-mock-adapter
+## 使用 faxios-mock-adapter
 
-[axios-mock-adapter](https://github.com/ctimmerm/axios-mock-adapter) 是一个在 axios 实例上安装自定义适配器的库，在适配器层面拦截请求。这意味着你的拦截器仍然会执行，因此更适合集成测试。
+[faxios-mock-adapter](https://github.com/ctimmerm/faxios-mock-adapter) 是一个在 faxios 实例上安装自定义适配器的库，在适配器层面拦截请求。这意味着你的拦截器仍然会执行，因此更适合集成测试。
 
 ```bash
-npm install --save-dev axios-mock-adapter
+npm install --save-dev faxios-mock-adapter
 ```
 
 ```js
 import faxios from "faxios";
-import MockAdapter from "axios-mock-adapter";
+import MockAdapter from "faxios-mock-adapter";
 
-const mock = new MockAdapter(axios);
+const mock = new MockAdapter(faxios);
 
 // Mock GET 请求
 mock.onGet("/api/users/1").reply(200, { id: 1, name: "Jay" });
@@ -107,15 +107,15 @@ afterEach(() => {
 
 ## 测试拦截器
 
-要单独测试拦截器，在测试中创建一个全新的 axios 实例：
+要单独测试拦截器，在测试中创建一个全新的 faxios 实例：
 
 ```js
 import faxios from "faxios";
-import MockAdapter from "axios-mock-adapter";
+import MockAdapter from "faxios-mock-adapter";
 
 describe("auth interceptor", () => {
   it("attaches a Bearer token to every request", async () => {
-    const instance = axios.create();
+    const instance = faxios.create();
     const mock = new MockAdapter(instance);
 
     // 添加你的拦截器

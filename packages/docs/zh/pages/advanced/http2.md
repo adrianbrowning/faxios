@@ -7,7 +7,7 @@
 使用 `httpVersion` 选项来选择请求使用的协议版本，将其设置为 `2` 可启用 HTTP/2。
 
 ```js
-const { data, headers, status } = await axios.post(
+const { data, headers, status } = await faxios.post(
   "https://httpbin.org/post",
   form,
   {
@@ -46,7 +46,7 @@ HTTP/2 适配器目前不会自动跟随重定向。如果使用 `httpVersion: 2
 const form = new FormData();
 form.append("foo", "123");
 
-const { data, headers, status } = await axios.post(
+const { data, headers, status } = await faxios.post(
   "https://httpbin.org/post",
   form,
   {

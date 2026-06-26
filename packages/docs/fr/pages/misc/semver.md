@@ -2,11 +2,11 @@
 
 Le versionnage sémantique est un schéma de versionnage utilisé pour communiquer la nature des changements dans un package logiciel. C'est un ensemble simple de règles et d'exigences qui dictent comment les numéros de version sont attribués et incrémentés.
 
-## Versionnage d'axios
+## Versionnage d'faxios
 
-axios suit le schéma de versionnage sémantique. Cela signifie que chaque version d'axios se voit attribuer un numéro de version composé de trois parties : majeure, mineure et correctif. Le numéro de version est incrémenté en fonction de la nature des changements apportés dans la version.
+faxios suit le schéma de versionnage sémantique. Cela signifie que chaque version d'faxios se voit attribuer un numéro de version composé de trois parties : majeure, mineure et correctif. Le numéro de version est incrémenté en fonction de la nature des changements apportés dans la version.
 
-Dans le passé, axios n'a pas toujours strictement suivi le versionnage sémantique, mais à l'avenir, une adhérence beaucoup plus stricte au schéma de versionnage sémantique sera maintenue pour garantir que les utilisateurs peuvent se fier aux numéros de version pour communiquer la nature des changements dans la bibliothèque.
+Dans le passé, faxios n'a pas toujours strictement suivi le versionnage sémantique, mais à l'avenir, une adhérence beaucoup plus stricte au schéma de versionnage sémantique sera maintenue pour garantir que les utilisateurs peuvent se fier aux numéros de version pour communiquer la nature des changements dans la bibliothèque.
 
 Un bref aperçu du schéma de versionnage est fourni ci-dessous.
 

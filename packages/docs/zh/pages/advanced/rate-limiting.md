@@ -1,6 +1,6 @@
 # 速率限制 <Badge type="tip" text="新特性" />
 
-axios 通过 HTTP 适配器在 Node.js 环境中支持带宽限制。你可以限制数据的上传或下载速度，适用于批量操作、后台任务或不希望占满带宽的礼貌抓取等场景。
+faxios 通过 HTTP 适配器在 Node.js 环境中支持带宽限制。你可以限制数据的上传或下载速度，适用于批量操作、后台任务或不希望占满带宽的礼貌抓取等场景。
 
 ## `maxRate`
 
@@ -8,10 +8,10 @@ axios 通过 HTTP 适配器在 Node.js 环境中支持带宽限制。你可以�
 
 ```js
 // 将上传和下载速度均限制为 100 KB/s
-await axios.get(URL, { maxRate: 100 * 1024 });
+await faxios.get(URL, { maxRate: 100 * 1024 });
 
 // 上传限制 100 KB/s，下载限制 500 KB/s
-await axios.get(URL, { maxRate: [100 * 1024, 500 * 1024] });
+await faxios.get(URL, { maxRate: [100 * 1024, 500 * 1024] });
 ```
 
 ::: warning
@@ -23,7 +23,7 @@ await axios.get(URL, { maxRate: [100 * 1024, 500 * 1024] });
 限制上传速度的同时记录进度：
 
 ```js
-const { data } = await axios.post(SERVER_URL, myBuffer, {
+const { data } = await faxios.post(SERVER_URL, myBuffer, {
   onUploadProgress: ({ progress, rate }) => {
     const percent = (progress * 100).toFixed(1);
     const kbps = (rate / 1024).toFixed(1);
@@ -39,7 +39,7 @@ const { data } = await axios.post(SERVER_URL, myBuffer, {
 限制大响应体的下载速度：
 
 ```js
-const { data } = await axios.get(FILE_URL, {
+const { data } = await faxios.get(FILE_URL, {
   onDownloadProgress: ({ progress, rate }) => {
     const percent = (progress * 100).toFixed(1);
     const kbps = (rate / 1024).toFixed(1);
@@ -56,7 +56,7 @@ const { data } = await axios.get(FILE_URL, {
 将两个限制作为数组传入，可同时控制两个方向：
 
 ```js
-await axios.post(SERVER_URL, largeBuffer, {
+await faxios.post(SERVER_URL, largeBuffer, {
   maxRate: [50 * 1024, 500 * 1024], // 上传 50 KB/s，下载 500 KB/s
 });
 ```

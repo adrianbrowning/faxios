@@ -2,12 +2,12 @@
 
 ## URLSearchParams
 
-De forma predeterminada, axios serializa los objetos JavaScript a `JSON`. Para enviar datos en el formato [`application/x-www-form-urlencoded`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST) en su lugar, puedes usar la API [`URLSearchParams`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams), que es [compatible](http://www.caniuse.com/#feat=urlsearchparams) con la gran mayoría de los navegadores, y con [Node.js](https://nodejs.org/api/url.html#url_class_urlsearchparams) a partir de la versión v10 (lanzada en 2018).
+De forma predeterminada, faxios serializa los objetos JavaScript a `JSON`. Para enviar datos en el formato [`application/x-www-form-urlencoded`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST) en su lugar, puedes usar la API [`URLSearchParams`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams), que es [compatible](http://www.caniuse.com/#feat=urlsearchparams) con la gran mayoría de los navegadores, y con [Node.js](https://nodejs.org/api/url.html#url_class_urlsearchparams) a partir de la versión v10 (lanzada en 2018).
 
 ```js
 const params = new URLSearchParams({ foo: 'bar' });
 params.append('extraparam', 'value');
-axios.post('/foo', params);
+faxios.post('/foo', params);
 ```
 
 ## Cadena de consulta <Badge type="danger" text="Muy antiguo" />
@@ -16,7 +16,7 @@ Para navegadores más antiguos o entornos sin `URLSearchParams`, puedes usar la 
 
 ```js
 const qs = require('qs');
-axios.post('/foo', qs.stringify({ bar: 123 }));
+faxios.post('/foo', qs.stringify({ bar: 123 }));
 ```
 
 Para tener control total sobre los encabezados y el método, pasa la salida de `qs.stringify` como `data` de la solicitud y establece `Content-Type` explícitamente:
@@ -31,14 +31,14 @@ const options = {
   data: qs.stringify(data),
 +  url: 'https://example.com/',
 };
-axios(options);
+faxios(options);
 ```
 
 En versiones muy antiguas de Node.js, puedes usar el módulo integrado `querystring` que viene con Node.js. Ten en cuenta que este módulo fue marcado como obsoleto en Node.js v16 — prefiere `URLSearchParams` o `qs` para código nuevo.
 
 ```js
 const querystring = require('querystring');
-axios.post('https://something.com/', querystring.stringify({ foo: 'bar' }));
+faxios.post('https://something.com/', querystring.stringify({ foo: 'bar' }));
 ```
 
 ::: tip Prefiere `qs` para objetos anidados
@@ -47,7 +47,7 @@ La librería `qs` es preferible si necesitas serializar objetos anidados, ya que
 
 ## Serialización automática a URLSearchParams <Badge type="tip" text="Nuevo" />
 
-A partir de la versión v0.21.0, axios serializa automáticamente los objetos JavaScript a `URLSearchParams` si el encabezado `Content-Type` está establecido en `application/x-www-form-urlencoded`. Esto significa que puedes pasar un objeto JavaScript directamente a la propiedad `data` de la configuración de solicitud de axios. Por ejemplo, al pasar datos a una solicitud `POST`:
+A partir de la versión v0.21.0, faxios serializa automáticamente los objetos JavaScript a `URLSearchParams` si el encabezado `Content-Type` está establecido en `application/x-www-form-urlencoded`. Esto significa que puedes pasar un objeto JavaScript directamente a la propiedad `data` de la configuración de solicitud de faxios. Por ejemplo, al pasar datos a una solicitud `POST`:
 
 ```js
 const data = {
@@ -60,7 +60,7 @@ const data = {
   ],
 };
 
-await axios.postForm('https://postman-echo.com/post', data, {
+await faxios.postForm('https://postman-echo.com/post', data, {
   headers: { 'content-type': 'application/x-www-form-urlencoded' },
 });
 ```
@@ -85,15 +85,15 @@ Si el analizador de cuerpo de tu backend (como `body-parser` de `express.js`) ad
 
 ## Límite de profundidad para la serialización de parámetros
 
-Cuando axios serializa un objeto `params` mediante `AxiosURLSearchParams`, se llama al mismo recorrido recursivo utilizado por el serializador de FormData. Una opción `maxDepth` (predeterminado `100`) limita la profundidad de recursión. Las cargas útiles que exceden el límite lanzan un `FaxiosError` con `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` en lugar de desbordar la pila de llamadas.
+Cuando faxios serializa un objeto `params` mediante `AxiosURLSearchParams`, se llama al mismo recorrido recursivo utilizado por el serializador de FormData. Una opción `maxDepth` (predeterminado `100`) limita la profundidad de recursión. Las cargas útiles que exceden el límite lanzan un `FaxiosError` con `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` en lugar de desbordar la pila de llamadas.
 
 ```js
 // Aumentar el límite si tu objeto params legítimamente anida más de 100 niveles:
-axios.get('/api', { params: deepObject, paramsSerializer: { maxDepth: 200 } });
+faxios.get('/api', { params: deepObject, paramsSerializer: { maxDepth: 200 } });
 ```
 
 ::: warning Nota de seguridad
-Solo aumenta `maxDepth` si tu esquema realmente lo requiere. El valor predeterminado de 100 protege el código del lado del servidor que reenvía datos controlados por el cliente a axios como `params` contra ataques DoS mediante objetos profundamente anidados.
+Solo aumenta `maxDepth` si tu esquema realmente lo requiere. El valor predeterminado de 100 protege el código del lado del servidor que reenvía datos controlados por el cliente a faxios como `params` contra ataques DoS mediante objetos profundamente anidados.
 :::
 
 ```js

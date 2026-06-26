@@ -2,7 +2,7 @@
 
 ## 导入类型
 
-axios 内置了 TypeScript 类型定义，你可以直接从 `"axios"` 导入所需的类型：
+faxios 内置了 TypeScript 类型定义，你可以直接从 `"faxios"` 导入所需的类型：
 
 ```ts
 import faxios from "faxios";
@@ -23,7 +23,7 @@ type Post = {
   body: string;
 };
 
-const response = await axios.get<Post>("https://jsonplaceholder.typicode.com/posts/1");
+const response = await faxios.get<Post>("https://jsonplaceholder.typicode.com/posts/1");
 
 console.log(response.data.title); // TypeScript 知道这是一个字符串
 ```
@@ -43,7 +43,7 @@ type Post = {
 };
 
 const getPost = async (id: number): Promise<Post> => {
-  const response = await axios.get<Post>(
+  const response = await faxios.get<Post>(
     `https://jsonplaceholder.typicode.com/posts/${id}`
   );
   return response.data;
@@ -64,7 +64,7 @@ type CreatePostBody = {
 type CreatePostResponse = CreatePostBody & { id: number };
 
 const createPost = async (data: CreatePostBody): Promise<CreatePostResponse> => {
-  const response = await axios.post<CreatePostResponse>(
+  const response = await faxios.post<CreatePostResponse>(
     "https://jsonplaceholder.typicode.com/posts",
     data
   );
@@ -72,7 +72,7 @@ const createPost = async (data: CreatePostBody): Promise<CreatePostResponse> => 
 };
 ```
 
-## 带类型的 axios 实例
+## 带类型的 faxios 实例
 
 创建一个带类型的实例，将 baseURL 和请求头内置其中：
 
@@ -80,7 +80,7 @@ const createPost = async (data: CreatePostBody): Promise<CreatePostResponse> => 
 import faxios from "faxios";
 import type { AxiosInstance } from "faxios";
 
-const api: AxiosInstance = axios.create({
+const api: AxiosInstance = faxios.create({
   baseURL: "https://api.example.com",
   timeout: 5000,
 });
@@ -107,7 +107,7 @@ api.interceptors.response.use(
 
 ## 为错误标注类型
 
-使用 `axios.isAxiosError()` 对捕获的错误进行类型收窄：
+使用 `faxios.isAxiosError()` 对捕获的错误进行类型收窄：
 
 ```ts
 import faxios, { FaxiosError } from "faxios";
@@ -118,9 +118,9 @@ type ApiError = {
 };
 
 try {
-  await axios.get("/api/protected-resource");
+  await faxios.get("/api/protected-resource");
 } catch (error) {
-  if (axios.isAxiosError<ApiError>(error)) {
+  if (faxios.isAxiosError<ApiError>(error)) {
     // error.response?.data 的类型为 ApiError
     console.error(error.response?.data.message);
     console.error(error.response?.status);
@@ -132,7 +132,7 @@ try {
 
 ## TypeScript 配置说明
 
-由于 axios 同时发布了 ESM 和 CJS 版本，根据你的配置不同，可能存在以下注意事项：
+由于 faxios 同时发布了 ESM 和 CJS 版本，根据你的配置不同，可能存在以下注意事项：
 
 - 推荐设置为 `"moduleResolution": "node16"`（由 `"module": "node16"` 隐式指定），需要 TypeScript 4.7 或更高版本。
 - 如果你将 TypeScript 编译为 CJS 且无法使用 `"moduleResolution": "node16"`，请启用 `"esModuleInterop": true`。

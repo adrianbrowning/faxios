@@ -1,12 +1,12 @@
 # multipart/form-data 格式
 
-axios 支持以 `multipart/form-data` 格式发送请求，这种格式常用于文件上传。要以该格式发送请求，需要创建一个 `FormData` 对象并向其追加数据，然后将 `FormData` 对象传入 axios 请求配置的 `data` 属性。
+faxios 支持以 `multipart/form-data` 格式发送请求，这种格式常用于文件上传。要以该格式发送请求，需要创建一个 `FormData` 对象并向其追加数据，然后将 `FormData` 对象传入 faxios 请求配置的 `data` 属性。
 
 ```js
 const formData = new FormData();
 formData.append('foo', 'bar');
 
-axios.post('https://httpbin.org/post', formData);
+faxios.post('https://httpbin.org/post', formData);
 ```
 
 对于浏览器、Web Worker 或 React Native 的 `FormData`，不要手动设置 `Content-Type` 请求头；这些运行时会自行添加 multipart boundary。
@@ -21,17 +21,17 @@ form.append('my_field', 'my value');
 form.append('my_buffer', Buffer.alloc(10));
 form.append('my_file', fs.createReadStream('/foo/bar.jpg'));
 
-axios.post('https://example.com', form);
+faxios.post('https://example.com', form);
 ```
 
 ## 自动序列化为 FormData <Badge type="tip" text="新特性" />
 
-从 v0.27.0 起，如果请求的 Content-Type 请求头设置为 `multipart/form-data`，axios 支持自动将对象序列化为 FormData 对象。这意味着你可以直接将 JavaScript 对象传入 axios 请求配置的 `data` 属性。例如，向 POST 请求传递数据时：
+从 v0.27.0 起，如果请求的 Content-Type 请求头设置为 `multipart/form-data`，faxios 支持自动将对象序列化为 FormData 对象。这意味着你可以直接将 JavaScript 对象传入 faxios 请求配置的 `data` 属性。例如，向 POST 请求传递数据时：
 
 ```js
 import faxios from 'faxios';
 
-axios
+faxios
   .post(
     'https://httpbin.org/post',
     { x: 1 },
@@ -47,10 +47,10 @@ axios
 在 Node.js 构建中，默认使用 ([`form-data`](https://github.com/form-data/form-data)) 作为 polyfill。你可以通过设置 `env.FormData` 配置变量来覆盖 FormData 类，但大多数情况下不需要这样做：
 
 ```js
-const axios = require('axios');
+const faxios = require('faxios');
 var FormData = require('form-data');
 
-axios
+faxios
   .post(
     'https://httpbin.org/post',
     { x: 1, buf: Buffer.alloc(10) },
@@ -65,12 +65,12 @@ axios
 
 ## Node.js `FormData` 的请求头策略 <Badge type="warning" text="仅 Node.js" />
 
-当你传入一个暴露 `getHeaders()` 的 Node.js `FormData` 对象（例如 [`form-data`](https://github.com/form-data/form-data) 包）时，axios 默认会将它返回的所有请求头复制到请求上。这保留了 v1 的兼容性，但如果 `FormData` 对象来自不可信来源，可能会出问题——`getHeaders()` 可能覆盖 `Authorization` 等请求头或注入任意请求头。
+当你传入一个暴露 `getHeaders()` 的 Node.js `FormData` 对象（例如 [`form-data`](https://github.com/form-data/form-data) 包）时，faxios 默认会将它返回的所有请求头复制到请求上。这保留了 v1 的兼容性，但如果 `FormData` 对象来自不可信来源，可能会出问题——`getHeaders()` 可能覆盖 `Authorization` 等请求头或注入任意请求头。
 
 设置 `formDataHeaderPolicy: 'content-only'` 可**只**从 `getHeaders()` 复制 `Content-Type` 和 `Content-Length`，再通过请求的 `headers` 配置显式设置其他请求头：
 
 ```js
-await axios.post("https://example.com/upload", form, {
+await faxios.post("https://example.com/upload", form, {
   formDataHeaderPolicy: "content-only",
   headers: {
     Authorization: "Bearer my-token",
@@ -82,7 +82,7 @@ await axios.post("https://example.com/upload", form, {
 
 ## 支持的特殊结尾
 
-axios FormData 序列化器支持以下特殊结尾，用于执行对应操作：
+faxios FormData 序列化器支持以下特殊结尾，用于执行对应操作：
 
 - `{}` - 使用 JSON.stringify 序列化该值
 - `[]` - 将类数组对象展开为具有相同键的独立字段
@@ -106,11 +106,11 @@ FormData 序列化器通过 `config.formSerializer` 对象属性支持以下额�
 
 ```js
 // 当 schema 确实需要超过 100 层嵌套时，可提高限制：
-axios.postForm('/api', data, { formSerializer: { maxDepth: 200 } });
+faxios.postForm('/api', data, { formSerializer: { maxDepth: 200 } });
 ```
 
 ::: warning 安全提示
-默认限制 100 是有意为之。将客户端控制的 JSON 作为 `data` 转发给 axios 的服务端代码，如果没有此保护，容易发生调用栈溢出。除非你的 schema 确实需要，否则不要提高 `maxDepth`。
+默认限制 100 是有意为之。将客户端控制的 JSON 作为 `data` 转发给 faxios 的服务端代码，如果没有此保护，容易发生调用栈溢出。除非你的 schema 确实需要，否则不要提高 `maxDepth`。
 :::
 
 例如，对于以下对象：
@@ -128,7 +128,7 @@ const obj = {
 };
 ```
 
-axios 序列化器内部将执行以下步骤：
+faxios 序列化器内部将执行以下步骤：
 
 ```js
 const formData = new FormData();
@@ -146,4 +146,4 @@ formData.append('users[1][surname]', 'Anderson');
 formData.append('obj2{}', '[{"x":1}]');
 ```
 
-axios 支持以下快捷方法：`postForm`、`putForm`、`patchForm`，它们分别对应相应的 HTTP 方法，并预设 `Content-Type` 请求头为 `multipart/form-data`。
+faxios 支持以下快捷方法：`postForm`、`putForm`、`patchForm`，它们分别对应相应的 HTTP 方法，并预设 `Content-Type` 请求头为 `multipart/form-data`。

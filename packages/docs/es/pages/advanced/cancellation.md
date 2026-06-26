@@ -1,11 +1,11 @@
 # Cancelación
 
-A partir de la versión v0.22.0, Axios es compatible con AbortController para cancelar solicitudes de forma limpia. Esta característica está disponible en el navegador y en Node.js cuando se usa una versión de Axios que admite AbortController. Para cancelar una solicitud, debes crear una instancia de `AbortController` y pasar su `signal` a la opción `signal` de la solicitud.
+A partir de la versión v0.22.0, faxios es compatible con AbortController para cancelar solicitudes de forma limpia. Esta característica está disponible en el navegador y en Node.js cuando se usa una versión de faxios que admite AbortController. Para cancelar una solicitud, debes crear una instancia de `AbortController` y pasar su `signal` a la opción `signal` de la solicitud.
 
 ```js
 const controller = new AbortController();
 
-axios
+faxios
   .get("/foo/bar", {
     signal: controller.signal,
   })
@@ -21,22 +21,22 @@ controller.abort();
 También puedes usar la API `CancelToken` para cancelar solicitudes. Esta API está obsoleta y será eliminada en la próxima versión mayor. Se recomienda usar `AbortController` en su lugar. Puedes crear un token de cancelación usando la fábrica `CancelToken.source` como se muestra a continuación:
 
 ```js
-const CancelToken = axios.CancelToken;
+const CancelToken = faxios.CancelToken;
 const source = CancelToken.source();
 
-axios
+faxios
   .get("/user/12345", {
     cancelToken: source.token,
   })
   .catch(function (thrown) {
-    if (axios.isCancel(thrown)) {
+    if (faxios.isCancel(thrown)) {
       console.log("Request canceled", thrown.message);
     } else {
       // handle error
     }
   });
 
-axios.post(
+faxios.post(
   "/user/12345",
   {
     name: "new name",
@@ -53,10 +53,10 @@ source.cancel("Operation canceled by the user.");
 También puedes crear un token de cancelación pasando una función ejecutora al constructor de `CancelToken`:
 
 ```js
-const CancelToken = axios.CancelToken;
+const CancelToken = faxios.CancelToken;
 let cancel;
 
-axios.get("/user/12345", {
+faxios.get("/user/12345", {
   cancelToken: new CancelToken(function executor(c) {
     // An executor function receives a cancel function as a parameter
     cancel = c;
@@ -67,4 +67,4 @@ axios.get("/user/12345", {
 cancel();
 ```
 
-Puedes cancelar varias solicitudes con el mismo token de cancelación o controlador de cancelación. Si un token de cancelación ya fue cancelado en el momento en que se inicia una solicitud de Axios, la solicitud se cancela inmediatamente, sin intentar realizar ninguna solicitud real.
+Puedes cancelar varias solicitudes con el mismo token de cancelación o controlador de cancelación. Si un token de cancelación ya fue cancelado en el momento en que se inicia una solicitud de faxios, la solicitud se cancela inmediatamente, sin intentar realizar ninguna solicitud real.

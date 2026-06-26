@@ -1,15 +1,15 @@
 # Authentification
 
-La plupart des APIs requièrent une forme d'authentification. Cette page couvre les schémas les plus courants pour attacher des identifiants aux requêtes axios.
+La plupart des APIs requièrent une forme d'authentification. Cette page couvre les schémas les plus courants pour attacher des identifiants aux requêtes faxios.
 
 ## Tokens Bearer (JWT)
 
-L'approche la plus courante consiste à attacher un JWT dans l'en-tête `Authorization`. La façon la plus propre de procéder est via un intercepteur de requête sur votre instance axios, afin que le token soit lu à jour à chaque requête :
+L'approche la plus courante consiste à attacher un JWT dans l'en-tête `Authorization`. La façon la plus propre de procéder est via un intercepteur de requête sur votre instance faxios, afin que le token soit lu à jour à chaque requête :
 
 ```js
 import faxios from "faxios";
 
-const api = axios.create({ baseURL: "https://api.example.com" });
+const api = faxios.create({ baseURL: "https://api.example.com" });
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("access_token");
@@ -22,10 +22,10 @@ api.interceptors.request.use((config) => {
 
 ## Authentification HTTP Basic
 
-Pour les APIs utilisant l'authentification HTTP Basic, passez l'option `auth`. axios encodera les identifiants et définira automatiquement l'en-tête `Authorization` :
+Pour les APIs utilisant l'authentification HTTP Basic, passez l'option `auth`. faxios encodera les identifiants et définira automatiquement l'en-tête `Authorization` :
 
 ```js
-const response = await axios.get("https://api.example.com/data", {
+const response = await faxios.get("https://api.example.com/data", {
   auth: {
     username: "myUser",
     password: "myPassword",
@@ -45,13 +45,13 @@ Les clés API sont généralement passées sous forme d'en-tête ou de paramètr
 
 ```js
 // En tant qu'en-tête
-const api = axios.create({
+const api = faxios.create({
   baseURL: "https://api.example.com",
   headers: { "X-API-Key": "your-api-key-here" },
 });
 
 // En tant que paramètre de requête
-const response = await axios.get("https://api.example.com/data", {
+const response = await faxios.get("https://api.example.com/data", {
   params: { apiKey: "your-api-key-here" },
 });
 ```
@@ -63,7 +63,7 @@ Lorsque les tokens d'accès expirent, vous devez les renouveler silencieusement 
 ```js
 import faxios from "faxios";
 
-const api = axios.create({ baseURL: "https://api.example.com" });
+const api = faxios.create({ baseURL: "https://api.example.com" });
 
 // Suivre si un renouvellement est déjà en cours pour éviter des appels parallèles
 let isRefreshing = false;
@@ -102,7 +102,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { data } = await axios.post("/auth/refresh", {
+        const { data } = await faxios.post("/auth/refresh", {
           refreshToken: localStorage.getItem("refresh_token"),
         });
 
@@ -133,7 +133,7 @@ api.interceptors.response.use(
 Pour les APIs basées sur les sessions qui s'appuient sur les cookies, définissez `withCredentials: true` pour inclure les cookies dans les requêtes cross-origin :
 
 ```js
-const api = axios.create({
+const api = faxios.create({
   baseURL: "https://api.example.com",
   withCredentials: true, // envoyer les cookies avec chaque requête
 });

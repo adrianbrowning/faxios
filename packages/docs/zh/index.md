@@ -3,12 +3,12 @@
 layout: home
 
 hero:
-  name: 'axios 文档'
-  text: 'axios 是一个基于 Promise 的简单 HTTP 客户端，适用于浏览器和 Node.js'
+  name: 'faxios 文档'
+  text: 'faxios 是一个基于 Promise 的简单 HTTP 客户端，适用于浏览器和 Node.js'
   image:
     dark: /logo.svg
     light: /logo-light.svg
-    alt: axios
+    alt: faxios
   actions:
     - theme: brand
       text: 快速开始
@@ -19,11 +19,11 @@ hero:
 
 features:
   - title: 简单易用
-    details: axios 上手极为简单，一行代码即可完成初始化。最基本的 API 请求仅需 2 行代码。
+    details: faxios 上手极为简单，一行代码即可完成初始化。最基本的 API 请求仅需 2 行代码。
   - title: 强大的拦截器
     details: 创新的拦截器系统让您可以完全掌控请求和响应的生命周期，支持修改请求、响应及错误。
   - title: TypeScript 支持
-    details: axios 提供完整的类型声明，全面支持 TypeScript，让您可以在 TypeScript 项目中放心使用。
+    details: faxios 提供完整的类型声明，全面支持 TypeScript，让您可以在 TypeScript 项目中放心使用。
 ---
 
 <script setup>

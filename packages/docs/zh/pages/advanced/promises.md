@@ -1,13 +1,13 @@
 # Promise
 
-axios 基于原生 ES6 Promise API 构建。每个 axios 请求都返回一个 Promise，该 Promise 解析为响应对象或以错误拒绝。如果你的环境不支持 ES6 Promise，需要使用 polyfill，例如 [es6-promise](https://github.com/stefanpenner/es6-promise)。
+faxios 基于原生 ES6 Promise API 构建。每个 faxios 请求都返回一个 Promise，该 Promise 解析为响应对象或以错误拒绝。如果你的环境不支持 ES6 Promise，需要使用 polyfill，例如 [es6-promise](https://github.com/stefanpenner/es6-promise)。
 
 ## then / catch / finally
 
-由于 axios 返回的是标准 Promise，你可以使用 `.then()`、`.catch()` 和 `.finally()` 来处理结果：
+由于 faxios 返回的是标准 Promise，你可以使用 `.then()`、`.catch()` 和 `.finally()` 来处理结果：
 
 ```js
-axios.get("/api/users")
+faxios.get("/api/users")
   .then((response) => {
     console.log(response.data);
   })
@@ -26,7 +26,7 @@ axios.get("/api/users")
 ```js
 async function fetchUser(id) {
   try {
-    const response = await axios.get(`/api/users/${id}`);
+    const response = await faxios.get(`/api/users/${id}`);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch user:", error.message);
@@ -37,12 +37,12 @@ async function fetchUser(id) {
 
 ## 并行请求
 
-由于 axios 返回标准 Promise，你可以使用 `Promise.all` 同时发起多个请求，并等待所有请求完成：
+由于 faxios 返回标准 Promise，你可以使用 `Promise.all` 同时发起多个请求，并等待所有请求完成：
 
 ```js
 const [users, posts] = await Promise.all([
-  axios.get("/api/users"),
-  axios.get("/api/posts"),
+  faxios.get("/api/users"),
+  faxios.get("/api/posts"),
 ]);
 
 console.log(users.data, posts.data);
@@ -54,8 +54,8 @@ console.log(users.data, posts.data);
 
 ```js
 const results = await Promise.allSettled([
-  axios.get("/api/users"),
-  axios.get("/api/posts"),
+  faxios.get("/api/users"),
+  faxios.get("/api/posts"),
 ]);
 
 results.forEach((result) => {
@@ -72,8 +72,8 @@ results.forEach((result) => {
 可以链式调用 `.then()` 来顺序执行请求，将上一个请求的数据传递给下一个：
 
 ```js
-axios.get("/api/user/1")
-  .then(({ data: user }) => axios.get(`/api/posts?userId=${user.id}`))
+faxios.get("/api/user/1")
+  .then(({ data: user }) => faxios.get(`/api/posts?userId=${user.id}`))
   .then(({ data: posts }) => {
     console.log("Posts for user:", posts);
   })

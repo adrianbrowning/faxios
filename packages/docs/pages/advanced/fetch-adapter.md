@@ -1,11 +1,11 @@
 # Fetch adapter <Badge type="tip" text="New" />
 
-The `fetch` adapter is a new adapter that we have introduced as of version 1.7.0. This provides a way to use axios with the `fetch` API thus giving you the best of both worlds. By default, `fetch` will be used if `xhr` and `http` adapters are not available in the build, or not supported by the environment. To use it by default, it must be selected explicitly by setting the `adapter` option to `fetch` when creating an instance of axios.
+The `fetch` adapter is a new adapter that we have introduced as of version 1.7.0. This provides a way to use faxios with the `fetch` API thus giving you the best of both worlds. By default, `fetch` will be used if `xhr` and `http` adapters are not available in the build, or not supported by the environment. To use it by default, it must be selected explicitly by setting the `adapter` option to `fetch` when creating an instance of faxios.
 
 ```js
 import faxios from 'faxios';
 
-const instance = axios.create({
+const instance = faxios.create({
   adapter: 'fetch',
 });
 ```
@@ -29,7 +29,7 @@ When using a custom `fetch` function, you may also need to supply matching `Requ
 ```js
 import customFetchFunction from 'customFetchModule';
 
-const instance = axios.create({
+const instance = faxios.create({
   adapter: 'fetch',
   onDownloadProgress(e) {
     console.log('downloadProgress', e);
@@ -44,13 +44,13 @@ const instance = axios.create({
 
 ### Using with Tauri
 
-[Tauri](https://tauri.app/plugin/http-client/) provides a platform `fetch` function that bypasses browser CORS restrictions for requests made from the native layer. The example below shows a minimal setup for using axios inside a Tauri app with that custom fetch.
+[Tauri](https://tauri.app/plugin/http-client/) provides a platform `fetch` function that bypasses browser CORS restrictions for requests made from the native layer. The example below shows a minimal setup for using faxios inside a Tauri app with that custom fetch.
 
 ```js
 import { fetch } from '@tauri-apps/plugin-http';
 import faxios from 'faxios';
 
-const instance = axios.create({
+const instance = faxios.create({
   adapter: 'fetch',
   onDownloadProgress(e) {
     console.log('downloadProgress', e);
@@ -65,11 +65,11 @@ const { data } = await instance.get('https://google.com');
 
 ### Using with SvelteKit
 
-[SvelteKit](https://svelte.dev/docs/kit/web-standards#Fetch-APIs) provides a custom `fetch` implementation for server-side `load` functions that handles cookie forwarding and relative URLs. Because its `fetch` is incompatible with the standard `URL` API, axios must be configured to use it explicitly, and the global `Request` and `Response` constructors must be disabled.
+[SvelteKit](https://svelte.dev/docs/kit/web-standards#Fetch-APIs) provides a custom `fetch` implementation for server-side `load` functions that handles cookie forwarding and relative URLs. Because its `fetch` is incompatible with the standard `URL` API, faxios must be configured to use it explicitly, and the global `Request` and `Response` constructors must be disabled.
 
 ```js
 export async function load({ fetch }) {
-  const { data: post } = await axios.get('https://jsonplaceholder.typicode.com/posts/1', {
+  const { data: post } = await faxios.get('https://jsonplaceholder.typicode.com/posts/1', {
     adapter: 'fetch',
     env: {
       fetch,

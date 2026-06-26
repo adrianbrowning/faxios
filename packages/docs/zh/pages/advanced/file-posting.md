@@ -1,13 +1,13 @@
 # 文件上传
 
-axios 让文件上传变得简单。需要 `multipart/form-data` 上传时，使用 `postForm` 或 `FormData` 即可。
+faxios 让文件上传变得简单。需要 `multipart/form-data` 上传时，使用 `postForm` 或 `FormData` 即可。
 
 ## 单文件上传（浏览器）
 
-直接将 `File` 对象作为字段值传入——axios 会自动检测并使用正确的内容类型：
+直接将 `File` 对象作为字段值传入——faxios 会自动检测并使用正确的内容类型：
 
 ```js
-await axios.postForm("https://httpbin.org/post", {
+await faxios.postForm("https://httpbin.org/post", {
   description: "My profile photo",
   file: document.querySelector("#fileInput").files[0],
 });
@@ -18,7 +18,7 @@ await axios.postForm("https://httpbin.org/post", {
 传入 `FileList` 可一次性上传所有选中的文件，所有文件将使用相同的字段名（`files[]`）发送：
 
 ```js
-await axios.postForm(
+await faxios.postForm(
   "https://httpbin.org/post",
   document.querySelector("#fileInput").files
 );
@@ -27,7 +27,7 @@ await axios.postForm(
 也可以通过在键名末尾追加 `[]` 来显式指定一个自定义字段名，传入 `FileList`（或 `File` 对象数组）：
 
 ```js
-await axios.postForm("https://httpbin.org/post", {
+await faxios.postForm("https://httpbin.org/post", {
   "files[]": document.querySelector("#fileInput").files,
 });
 ```
@@ -39,7 +39,7 @@ const formData = new FormData();
 formData.append("avatar", avatarFile);
 formData.append("cover", coverFile);
 
-await axios.post("https://httpbin.org/post", formData);
+await faxios.post("https://httpbin.org/post", formData);
 ```
 
 ## 跟踪上传进度（浏览器）
@@ -47,7 +47,7 @@ await axios.post("https://httpbin.org/post", formData);
 使用 `onUploadProgress` 回调向用户显示进度条或百分比：
 
 ```js
-await axios.postForm("https://httpbin.org/post", {
+await faxios.postForm("https://httpbin.org/post", {
   file: document.querySelector("#fileInput").files[0],
 }, {
   onUploadProgress: (progressEvent) => {
@@ -74,7 +74,7 @@ const form = new FormData();
 form.append("file", fs.createReadStream("/path/to/file.jpg"));
 form.append("description", "My uploaded file");
 
-await axios.post("https://httpbin.org/post", form);
+await faxios.post("https://httpbin.org/post", form);
 ```
 
 ::: tip
@@ -95,7 +95,7 @@ form.append("file", buffer, {
   knownLength: buffer.length,
 });
 
-await axios.post("https://httpbin.org/post", form);
+await faxios.post("https://httpbin.org/post", form);
 ```
 
 ::: warning

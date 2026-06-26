@@ -1,16 +1,16 @@
 # En-têtes <Badge type="tip" text="Nouveau" />
 
-Axios expose sa propre classe AxiosHeaders pour manipuler les en-têtes en utilisant une API de type Map qui garantit des clés insensibles à la casse. Cette classe est utilisée en interne par Axios pour gérer les en-têtes, mais elle est également exposée à l'utilisateur pour plus de commodité. Bien que les en-têtes HTTP soient insensibles à la casse, Axios conservera la casse de l'en-tête original pour des raisons stylistiques et comme solution de contournement lorsque des serveurs tiennent incorrectement compte de la casse des en-têtes. L'ancienne méthode de manipulation directe de l'objet d'en-têtes est toujours disponible, mais dépréciée et non recommandée pour un usage futur.
+faxios expose sa propre classe AxiosHeaders pour manipuler les en-têtes en utilisant une API de type Map qui garantit des clés insensibles à la casse. Cette classe est utilisée en interne par faxios pour gérer les en-têtes, mais elle est également exposée à l'utilisateur pour plus de commodité. Bien que les en-têtes HTTP soient insensibles à la casse, faxios conservera la casse de l'en-tête original pour des raisons stylistiques et comme solution de contournement lorsque des serveurs tiennent incorrectement compte de la casse des en-têtes. L'ancienne méthode de manipulation directe de l'objet d'en-têtes est toujours disponible, mais dépréciée et non recommandée pour un usage futur.
 
 ## Travailler avec les en-têtes
 
-L'instance d'objet AxiosHeaders peut contenir différents types de valeurs internes qui contrôlent la logique de définition et de fusion. L'objet d'en-têtes final est obtenu par Axios en appelant la méthode toJSON. L'objet AxiosHeaders est également itérable, vous pouvez donc l'utiliser dans des boucles ou le convertir en tableau ou en objet.
+L'instance d'objet AxiosHeaders peut contenir différents types de valeurs internes qui contrôlent la logique de définition et de fusion. L'objet d'en-têtes final est obtenu par faxios en appelant la méthode toJSON. L'objet AxiosHeaders est également itérable, vous pouvez donc l'utiliser dans des boucles ou le convertir en tableau ou en objet.
 
 Les valeurs d'en-tête peuvent être de l'un des types suivants :
 
 - `string` - valeur de chaîne normale qui sera envoyée au serveur
 - `null` - ignorer l'en-tête lors de la conversion en JSON
-- `false` - ignorer l'en-tête lors de la conversion en JSON, indique également que la méthode set doit être appelée avec l'option rewrite définie à true pour écraser cette valeur (Axios l'utilise en interne pour permettre aux utilisateurs de refuser l'installation de certains en-têtes comme User-Agent ou Content-Type)
+- `false` - ignorer l'en-tête lors de la conversion en JSON, indique également que la méthode set doit être appelée avec l'option rewrite définie à true pour écraser cette valeur (faxios l'utilise en interne pour permettre aux utilisateurs de refuser l'installation de certains en-têtes comme User-Agent ou Content-Type)
 - `undefined` - la valeur n'est pas définie
 
 ::: warning
@@ -20,7 +20,7 @@ La valeur de l'en-tête est considérée comme définie si elle n'est pas undefi
 L'objet d'en-têtes est toujours initialisé à l'intérieur des intercepteurs et des transformateurs, comme illustré dans l'exemple suivant :
 
 ```js
-axios.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+faxios.interceptors.request.use((request: InternalAxiosRequestConfig) => {
   request.headers.set("My-header", "value");
 
   request.headers.set({
@@ -28,7 +28,7 @@ axios.interceptors.request.use((request: InternalAxiosRequestConfig) => {
     "My-set-header2": "my-set-value2",
   });
 
-  // Désactiver la définition ultérieure de cet en-tête par Axios
+  // Désactiver la définition ultérieure de cet en-tête par faxios
   request.headers.set("User-Agent", false);
 
   request.headers.setContentType("text/plain");
@@ -64,7 +64,7 @@ L'endroit le plus courant pour définir des en-têtes est l'option `headers` dan
 
 ```js
 // Sur une seule requête
-await axios.get('/api/data', {
+await faxios.get('/api/data', {
   headers: {
     'Accept-Language': 'en-US',
     'X-Request-ID': 'abc123',
@@ -72,7 +72,7 @@ await axios.get('/api/data', {
 });
 
 // Sur une instance (appliqué à chaque requête)
-const api = axios.create({
+const api = faxios.create({
   headers: {
     'X-App-Version': '2.0.0',
   },
@@ -81,10 +81,10 @@ const api = axios.create({
 
 ## Préserver la casse d'un en-tête spécifique
 
-Les noms d'en-têtes Axios sont insensibles à la casse, mais `AxiosHeaders` conserve la casse de la première clé correspondante qu'il voit. Si vous avez besoin d'une casse spécifique pour un serveur avec un comportement non standard sensible à la casse, définissez un préréglage de casse dans les valeurs par défaut puis définissez les valeurs normalement.
+Les noms d'en-têtes faxios sont insensibles à la casse, mais `AxiosHeaders` conserve la casse de la première clé correspondante qu'il voit. Si vous avez besoin d'une casse spécifique pour un serveur avec un comportement non standard sensible à la casse, définissez un préréglage de casse dans les valeurs par défaut puis définissez les valeurs normalement.
 
 ```js
-const api = axios.create();
+const api = faxios.create();
 
 api.defaults.headers.common = {
   'content-type': undefined,
@@ -109,7 +109,7 @@ const headers = AxiosHeaders.concat(
   { 'Content-Type': 'application/octet-stream' }
 );
 
-await axios.put(url, data, { headers });
+await faxios.put(url, data, { headers });
 ```
 
 ## Définir des en-têtes dans un intercepteur
@@ -129,7 +129,7 @@ api.interceptors.request.use((config) => {
 Les en-têtes de réponse sont disponibles sur `response.headers` en tant qu'instance d'`AxiosHeaders`. Tous les noms d'en-têtes sont en minuscules :
 
 ```js
-const response = await axios.get('/api/data');
+const response = await faxios.get('/api/data');
 
 console.log(response.headers['content-type']);
 // application/json; charset=utf-8
@@ -140,10 +140,10 @@ console.log(response.headers.get('x-request-id'));
 
 ## Supprimer un en-tête par défaut
 
-Pour refuser un en-tête qu'axios définit par défaut (comme `Content-Type` ou `User-Agent`), définissez sa valeur à `false` :
+Pour refuser un en-tête qu'faxios définit par défaut (comme `Content-Type` ou `User-Agent`), définissez sa valeur à `false` :
 
 ```js
-await axios.post('/api/data', payload, {
+await faxios.post('/api/data', payload, {
   headers: {
     'Content-Type': false, // laisser le navigateur le définir automatiquement (ex. pour FormData)
   },

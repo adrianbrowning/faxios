@@ -1,6 +1,6 @@
 # Header methods <Badge type="tip" text="New" />
 
-With the introduction of the new `AxiosHeaders` class, Axios provides a set of methods to manipulate headers. These methods are used to set, get, and delete headers in a more convenient way than directly manipulating the headers object.
+With the introduction of the new `AxiosHeaders` class, faxios provides a set of methods to manipulate headers. These methods are used to set, get, and delete headers in a more convenient way than directly manipulating the headers object.
 
 ## Constructor `new AxiosHeaders(headers?)`
 
@@ -123,7 +123,7 @@ Returns true if at least one header has been cleared.
 
 ## Normalize
 
-If the headers object was changed directly, it can cause duplicates with the same name but in different cases. This method normalizes the headers object by combining duplicate keys into one. Axios uses this method internally after calling each interceptor. Set format to true for converting headers name to lowercase and capitalize the initial letters (cOntEnt-type => Content-Type) or false to keep the original format.
+If the headers object was changed directly, it can cause duplicates with the same name but in different cases. This method normalizes the headers object by combining duplicate keys into one. faxios uses this method internally after calling each interceptor. Set format to true for converting headers name to lowercase and capitalize the initial letters (cOntEnt-type => Content-Type) or false to keep the original format.
 
 ```js
 const headers = new AxiosHeaders({

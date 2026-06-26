@@ -1,11 +1,11 @@
 # Adaptador Fetch <Badge type="tip" text="Nuevo" />
 
-El adaptador `fetch` es un nuevo adaptador que introdujimos a partir de la versión 1.7.0. Proporciona una forma de usar axios con la API `fetch`, dándote lo mejor de ambos mundos. De forma predeterminada, `fetch` se usará si los adaptadores `xhr` y `http` no están disponibles en la compilación o no son compatibles con el entorno. Para usarlo de forma predeterminada, debe seleccionarse explícitamente estableciendo la opción `adapter` en `fetch` al crear una instancia de axios.
+El adaptador `fetch` es un nuevo adaptador que introdujimos a partir de la versión 1.7.0. Proporciona una forma de usar faxios con la API `fetch`, dándote lo mejor de ambos mundos. De forma predeterminada, `fetch` se usará si los adaptadores `xhr` y `http` no están disponibles en la compilación o no son compatibles con el entorno. Para usarlo de forma predeterminada, debe seleccionarse explícitamente estableciendo la opción `adapter` en `fetch` al crear una instancia de faxios.
 
 ```js
 import faxios from 'faxios';
 
-const instance = axios.create({
+const instance = faxios.create({
   adapter: 'fetch',
 });
 ```
@@ -29,7 +29,7 @@ Al usar una función `fetch` personalizada, es posible que también necesites pr
 ```js
 import customFetchFunction from 'customFetchModule';
 
-const instance = axios.create({
+const instance = faxios.create({
   adapter: 'fetch',
   onDownloadProgress(e) {
     console.log('downloadProgress', e);
@@ -44,13 +44,13 @@ const instance = axios.create({
 
 ### Usando con Tauri
 
-[Tauri](https://tauri.app/plugin/http-client/) proporciona una función `fetch` de plataforma que omite las restricciones CORS del navegador para las solicitudes realizadas desde la capa nativa. El ejemplo a continuación muestra una configuración mínima para usar axios dentro de una aplicación Tauri con ese fetch personalizado.
+[Tauri](https://tauri.app/plugin/http-client/) proporciona una función `fetch` de plataforma que omite las restricciones CORS del navegador para las solicitudes realizadas desde la capa nativa. El ejemplo a continuación muestra una configuración mínima para usar faxios dentro de una aplicación Tauri con ese fetch personalizado.
 
 ```js
 import { fetch } from '@tauri-apps/plugin-http';
 import faxios from 'faxios';
 
-const instance = axios.create({
+const instance = faxios.create({
   adapter: 'fetch',
   onDownloadProgress(e) {
     console.log('downloadProgress', e);
@@ -65,11 +65,11 @@ const { data } = await instance.get('https://google.com');
 
 ### Usando con SvelteKit
 
-[SvelteKit](https://svelte.dev/docs/kit/web-standards#Fetch-APIs) proporciona una implementación personalizada de `fetch` para las funciones `load` del lado del servidor que gestiona el reenvío de cookies y URLs relativas. Dado que su `fetch` es incompatible con la API estándar de `URL`, axios debe configurarse para usarlo explícitamente, y los constructores globales `Request` y `Response` deben deshabilitarse.
+[SvelteKit](https://svelte.dev/docs/kit/web-standards#Fetch-APIs) proporciona una implementación personalizada de `fetch` para las funciones `load` del lado del servidor que gestiona el reenvío de cookies y URLs relativas. Dado que su `fetch` es incompatible con la API estándar de `URL`, faxios debe configurarse para usarlo explícitamente, y los constructores globales `Request` y `Response` deben deshabilitarse.
 
 ```js
 export async function load({ fetch }) {
-  const { data: post } = await axios.get('https://jsonplaceholder.typicode.com/posts/1', {
+  const { data: post } = await faxios.get('https://jsonplaceholder.typicode.com/posts/1', {
     adapter: 'fetch',
     env: {
       fetch,

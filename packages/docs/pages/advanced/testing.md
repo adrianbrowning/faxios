@@ -1,17 +1,17 @@
 # Testing
 
-Testing code that makes HTTP requests with axios is straightforward. The recommended approach is to mock axios itself so that your tests run without hitting a real network, giving you full control over what responses your code receives.
+Testing code that makes HTTP requests with faxios is straightforward. The recommended approach is to mock faxios itself so that your tests run without hitting a real network, giving you full control over what responses your code receives.
 
 ## Mocking with Vitest or Jest
 
-Both Vitest and Jest support module mocking with `vi.mock` / `jest.mock`. You can mock the entire axios module and control what each method returns:
+Both Vitest and Jest support module mocking with `vi.mock` / `jest.mock`. You can mock the entire faxios module and control what each method returns:
 
 ```js
 // user-service.js
 import faxios from "faxios";
 
 export async function getUser(id) {
-  const { data } = await axios.get(`/api/users/${id}`);
+  const { data } = await faxios.get(`/api/users/${id}`);
   return data;
 }
 ```
@@ -22,23 +22,23 @@ import { describe, it, expect, vi } from "vitest";
 import faxios from "faxios";
 import { getUser } from "./user-service";
 
-vi.mock("axios");
+vi.mock("faxios");
 
 describe("getUser", () => {
   it("returns user data on success", async () => {
     const mockUser = { id: 1, name: "Jay" };
 
-    // Make axios.get resolve with our fake response
-    axios.get.mockResolvedValueOnce({ data: mockUser });
+    // Make faxios.get resolve with our fake response
+    faxios.get.mockResolvedValueOnce({ data: mockUser });
 
     const result = await getUser(1);
 
     expect(result).toEqual(mockUser);
-    expect(axios.get).toHaveBeenCalledWith("/api/users/1");
+    expect(faxios.get).toHaveBeenCalledWith("/api/users/1");
   });
 
   it("throws when the request fails", async () => {
-    axios.get.mockRejectedValueOnce(new Error("Network error"));
+    faxios.get.mockRejectedValueOnce(new Error("Network error"));
 
     await expect(getUser(1)).rejects.toThrow("Network error");
   });
@@ -67,22 +67,22 @@ const mockError = new FaxiosError(
   }
 );
 
-axios.get.mockRejectedValueOnce(mockError);
+faxios.get.mockRejectedValueOnce(mockError);
 ```
 
-## Using axios-mock-adapter
+## Using faxios-mock-adapter
 
-[axios-mock-adapter](https://github.com/ctimmerm/axios-mock-adapter) is a library that installs a custom adapter on your axios instance, intercepting requests at the adapter level. This means your interceptors still run, making it better for integration tests.
+[faxios-mock-adapter](https://github.com/ctimmerm/faxios-mock-adapter) is a library that installs a custom adapter on your faxios instance, intercepting requests at the adapter level. This means your interceptors still run, making it better for integration tests.
 
 ```bash
-npm install --save-dev axios-mock-adapter
+npm install --save-dev faxios-mock-adapter
 ```
 
 ```js
 import faxios from "faxios";
-import MockAdapter from "axios-mock-adapter";
+import MockAdapter from "faxios-mock-adapter";
 
-const mock = new MockAdapter(axios);
+const mock = new MockAdapter(faxios);
 
 // Mock a GET request
 mock.onGet("/api/users/1").reply(200, { id: 1, name: "Jay" });
@@ -107,15 +107,15 @@ afterEach(() => {
 
 ## Testing interceptors
 
-To test interceptors in isolation, create a fresh axios instance in your test:
+To test interceptors in isolation, create a fresh faxios instance in your test:
 
 ```js
 import faxios from "faxios";
-import MockAdapter from "axios-mock-adapter";
+import MockAdapter from "faxios-mock-adapter";
 
 describe("auth interceptor", () => {
   it("attaches a Bearer token to every request", async () => {
-    const instance = axios.create();
+    const instance = faxios.create();
     const mock = new MockAdapter(instance);
 
     // Add your interceptor

@@ -2,12 +2,11 @@
   "workspaces": {
     "packages/lib": {
       "entry": [
-        "src/index.ts",
+        "index.ts",
         "gulpfile.js",
         "webpack.config.js",
         "scripts/**/*.js",
-        "tests/**/*.{js,ts,cjs,mjs}",
-        "docs/**/*.{js,ts,mts}"
+        "tests/**/*.{js,ts,cjs,mjs}"
       ],
       "project": ["**/*.{js,ts,cjs,mjs,mts}"],
       "ignore": [
@@ -21,10 +20,17 @@
         "src/lib/helpers/deprecatedMethod.ts"
       ]
     },
+    "packages/docs": {
+      "entry": [
+        ".vitepress/config.mts",
+        ".vitepress/theme/index.ts",
+        "scripts/**/*.js"
+      ],
+      "project": ["**/*.{js,ts,mts,vue}"]
+    },
     "packages/examples": {
       "entry": ["**/*.js"],
-      "project": ["**/*.{js,ts}"],
-      "ignoreDependencies": ["axios"]
+      "project": ["**/*.{js,ts}"]
     },
     "packages/sandbox": {
       "project": ["**/*.{js,ts}"],

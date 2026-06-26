@@ -2,7 +2,7 @@
 
 ## Importing types
 
-axios ships with TypeScript definitions out of the box. You can import the types you need directly from `"axios"`:
+faxios ships with TypeScript definitions out of the box. You can import the types you need directly from `"faxios"`:
 
 ```ts
 import faxios from "faxios";
@@ -23,7 +23,7 @@ type Post = {
   body: string;
 };
 
-const response = await axios.get<Post>("https://jsonplaceholder.typicode.com/posts/1");
+const response = await faxios.get<Post>("https://jsonplaceholder.typicode.com/posts/1");
 
 console.log(response.data.title); // TypeScript knows this is a string
 ```
@@ -43,7 +43,7 @@ type Post = {
 };
 
 const getPost = async (id: number): Promise<Post> => {
-  const response = await axios.get<Post>(
+  const response = await faxios.get<Post>(
     `https://jsonplaceholder.typicode.com/posts/${id}`
   );
   return response.data;
@@ -64,7 +64,7 @@ type CreatePostBody = {
 type CreatePostResponse = CreatePostBody & { id: number };
 
 const createPost = async (data: CreatePostBody): Promise<CreatePostResponse> => {
-  const response = await axios.post<CreatePostResponse>(
+  const response = await faxios.post<CreatePostResponse>(
     "https://jsonplaceholder.typicode.com/posts",
     data
   );
@@ -72,7 +72,7 @@ const createPost = async (data: CreatePostBody): Promise<CreatePostResponse> => 
 };
 ```
 
-## Typed axios instance
+## Typed faxios instance
 
 Create a typed instance so your base URL and headers are baked in:
 
@@ -80,7 +80,7 @@ Create a typed instance so your base URL and headers are baked in:
 import faxios from "faxios";
 import type { AxiosInstance } from "faxios";
 
-const api: AxiosInstance = axios.create({
+const api: AxiosInstance = faxios.create({
   baseURL: "https://api.example.com",
   timeout: 5000,
 });
@@ -107,7 +107,7 @@ api.interceptors.response.use(
 
 ## Typing errors
 
-Use `axios.isAxiosError()` to narrow the type of a caught error:
+Use `faxios.isAxiosError()` to narrow the type of a caught error:
 
 ```ts
 import faxios, { FaxiosError } from "faxios";
@@ -118,9 +118,9 @@ type ApiError = {
 };
 
 try {
-  await axios.get("/api/protected-resource");
+  await faxios.get("/api/protected-resource");
 } catch (error) {
-  if (axios.isAxiosError<ApiError>(error)) {
+  if (faxios.isAxiosError<ApiError>(error)) {
     // error.response?.data is typed as ApiError
     console.error(error.response?.data.message);
     console.error(error.response?.status);
@@ -132,7 +132,7 @@ try {
 
 ## TypeScript configuration notes
 
-Because axios dual-publishes ESM and CJS, there are a few caveats depending on your setup:
+Because faxios dual-publishes ESM and CJS, there are a few caveats depending on your setup:
 
 - The recommended setting is `"moduleResolution": "node16"` (implied by `"module": "node16"`). This requires TypeScript 4.7 or greater.
 - If you compile TypeScript to CJS and cannot use `"moduleResolution": "node16"`, enable `"esModuleInterop": true`.

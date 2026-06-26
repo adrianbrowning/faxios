@@ -1,7 +1,7 @@
 {
-  "name": "axios",
+  "name": "faxios",
   "version": "1.0.0",
-  "description": "Documentation for the Axios HTTP client",
+  "description": "Documentation for the faxios HTTP client",
   "license": "MIT",
   "type": "module",
   "private": true,
@@ -14,13 +14,10 @@
     "postinstall": "patch-package --exclude nothing"
   },
   "dependencies": {
-    "@splidejs/splide": "^4.1.4",
-    "axios": "^1.15.2",
+    "faxios": "workspace:*",
     "vitepress": "^1.6.4"
   },
   "devDependencies": {
-    "chalk": "^5.3.0",
-    "dayjs": "^1.11.13",
     "patch-package": "^8.0.1",
     "vue": "^3.5.32"
   }

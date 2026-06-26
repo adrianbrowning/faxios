@@ -1,6 +1,6 @@
 # Méthodes d'en-têtes <Badge type="tip" text="Nouveau" />
 
-Avec l'introduction de la nouvelle classe `AxiosHeaders`, Axios fournit un ensemble de méthodes pour manipuler les en-têtes. Ces méthodes sont utilisées pour définir, récupérer et supprimer des en-têtes de manière plus pratique que la manipulation directe de l'objet d'en-têtes.
+Avec l'introduction de la nouvelle classe `AxiosHeaders`, faxios fournit un ensemble de méthodes pour manipuler les en-têtes. Ces méthodes sont utilisées pour définir, récupérer et supprimer des en-têtes de manière plus pratique que la manipulation directe de l'objet d'en-têtes.
 
 ## Constructeur `new AxiosHeaders(headers?)`
 
@@ -123,7 +123,7 @@ Retourne true si au moins un en-tête a été effacé.
 
 ## Normalize
 
-Si l'objet d'en-têtes a été modifié directement, cela peut créer des doublons avec le même nom mais dans des casses différentes. Cette méthode normalise l'objet d'en-têtes en combinant les clés dupliquées en une seule. Axios utilise cette méthode en interne après l'appel de chaque intercepteur. Définissez `format` à `true` pour convertir les noms d'en-têtes en minuscules et capitaliser les premières lettres (cOntEnt-type => Content-Type) ou `false` pour conserver le format original.
+Si l'objet d'en-têtes a été modifié directement, cela peut créer des doublons avec le même nom mais dans des casses différentes. Cette méthode normalise l'objet d'en-têtes en combinant les clés dupliquées en une seule. faxios utilise cette méthode en interne après l'appel de chaque intercepteur. Définissez `format` à `true` pour convertir les noms d'en-têtes en minuscules et capitaliser les premières lettres (cOntEnt-type => Content-Type) ou `false` pour conserver le format original.
 
 ```js
 const headers = new AxiosHeaders({

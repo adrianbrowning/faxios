@@ -6,7 +6,7 @@
 
 ```js
 // 添加请求拦截器
-axios.interceptors.request.use(
+faxios.interceptors.request.use(
   function (config) {
     // 在请求发送之前执行某些操作
     return config;
@@ -18,7 +18,7 @@ axios.interceptors.request.use(
 );
 
 // 添加响应拦截器
-axios.interceptors.response.use(
+faxios.interceptors.response.use(
   function (response) {
     // 状态码在 2xx 范围内的响应会触发此函数
     // 处理响应数据
@@ -34,26 +34,26 @@ axios.interceptors.response.use(
 
 ## 移除拦截器
 
-可以通过对要移除的拦截器调用 `eject` 方法来移除特定拦截器。也可以通过在 `axios.interceptors` 对象上调用 `clear` 方法来移除所有拦截器。以下是移除拦截器的示例：
+可以通过对要移除的拦截器调用 `eject` 方法来移除特定拦截器。也可以通过在 `faxios.interceptors` 对象上调用 `clear` 方法来移除所有拦截器。以下是移除拦截器的示例：
 
 ```js
 // 移除请求拦截器
-const myInterceptor = axios.interceptors.request.use(function () {
+const myInterceptor = faxios.interceptors.request.use(function () {
   /*...*/
 });
-axios.interceptors.request.eject(myInterceptor);
+faxios.interceptors.request.eject(myInterceptor);
 
 // 移除响应拦截器
-const myInterceptor = axios.interceptors.response.use(function () {
+const myInterceptor = faxios.interceptors.response.use(function () {
   /*...*/
 });
-axios.interceptors.response.eject(myInterceptor);
+faxios.interceptors.response.eject(myInterceptor);
 ```
 
 以下是移除所有拦截器的示例：
 
 ```js
-const instance = axios.create();
+const instance = faxios.create();
 instance.interceptors.request.use(function () {
   /*...*/
 });
@@ -66,10 +66,10 @@ instance.interceptors.response.clear(); // 移除所有响应拦截器
 
 ## 拦截器的默认行为
 
-添加请求拦截器时，默认被视为异步执行。当主线程被阻塞时（拦截器底层会创建一个 Promise，你的请求会被放到调用栈底部），这可能导致 axios 请求的执行出现延迟。如果你的请求拦截器是同步的，可以在选项对象中添加一个标志，告知 axios 同步运行该代码，从而避免请求执行的延迟。
+添加请求拦截器时，默认被视为异步执行。当主线程被阻塞时（拦截器底层会创建一个 Promise，你的请求会被放到调用栈底部），这可能导致 faxios 请求的执行出现延迟。如果你的请求拦截器是同步的，可以在选项对象中添加一个标志，告知 faxios 同步运行该代码，从而避免请求执行的延迟。
 
 ```js
-axios.interceptors.request.use(
+faxios.interceptors.request.use(
   function (config) {
     config.headers.test = "I am only a header!";
     return config;
@@ -87,7 +87,7 @@ axios.interceptors.request.use(
 function onGetCall(config) {
   return config.method === "get";
 }
-axios.interceptors.request.use(
+faxios.interceptors.request.use(
   function (config) {
     config.headers.test = "special get headers";
     return config;
@@ -108,7 +108,7 @@ axios.interceptors.request.use(
 下面的示例展示了三个请求拦截器和三个响应拦截器的完整执行顺序：
 
 ```js
-const instance = axios.create();
+const instance = faxios.create();
 
 const interceptor = (id) => (base) => {
   console.log(id);
@@ -147,5 +147,5 @@ instance.interceptors.response.use(interceptor("Response Interceptor 3"));
   - 一旦被捕获，后续的成功回调拦截器将再次被调用（与 Promise 链的行为一致）
 
 ::: tip
-要深入了解拦截器的工作原理，可以查阅[这里](https://github.com/axios/axios/blob/v1.x/test/specs/interceptors.spec.js)的测试用例。
+要深入了解拦截器的工作原理，可以查阅[这里](https://github.com/faxios/faxios/blob/v1.x/test/specs/interceptors.spec.js)的测试用例。
 :::

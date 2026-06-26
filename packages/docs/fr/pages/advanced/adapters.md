@@ -1,8 +1,8 @@
 # Adaptateurs
 
-Les adaptateurs vous permettent de personnaliser la façon dont axios gère les données de la requête. Par défaut, axios utilise une liste de priorité ordonnée `['xhr', 'http', 'fetch']` et sélectionne le premier adaptateur pris en charge par l'environnement actuel. En pratique, cela signifie que `xhr` est utilisé dans les navigateurs, `http` dans Node.js, et `fetch` dans les environnements où ni l'un ni l'autre n'est disponible (comme Cloudflare Workers ou Deno).
+Les adaptateurs vous permettent de personnaliser la façon dont faxios gère les données de la requête. Par défaut, faxios utilise une liste de priorité ordonnée `['xhr', 'http', 'fetch']` et sélectionne le premier adaptateur pris en charge par l'environnement actuel. En pratique, cela signifie que `xhr` est utilisé dans les navigateurs, `http` dans Node.js, et `fetch` dans les environnements où ni l'un ni l'autre n'est disponible (comme Cloudflare Workers ou Deno).
 
-Écrire votre propre adaptateur vous donne un contrôle total sur la façon dont axios effectue une requête et traite la réponse — utile pour les tests, les transports personnalisés ou les environnements non standard.
+Écrire votre propre adaptateur vous donne un contrôle total sur la façon dont faxios effectue une requête et traite la réponse — utile pour les tests, les transports personnalisés ou les environnements non standard.
 
 ## Adaptateurs intégrés
 
@@ -10,30 +10,30 @@ Vous pouvez sélectionner un adaptateur intégré par nom en utilisant l'option 
 
 ```js
 // Utiliser l'adaptateur fetch
-const instance = axios.create({ adapter: "fetch" });
+const instance = faxios.create({ adapter: "fetch" });
 
 // Utiliser l'adaptateur XHR (par défaut dans les navigateurs)
-const instance = axios.create({ adapter: "xhr" });
+const instance = faxios.create({ adapter: "xhr" });
 
 // Utiliser l'adaptateur HTTP (par défaut dans Node.js)
-const instance = axios.create({ adapter: "http" });
+const instance = faxios.create({ adapter: "http" });
 ```
 
-Vous pouvez également passer un tableau de noms d'adaptateurs. axios utilisera le premier pris en charge par l'environnement actuel :
+Vous pouvez également passer un tableau de noms d'adaptateurs. faxios utilisera le premier pris en charge par l'environnement actuel :
 
 ```js
-const instance = axios.create({ adapter: ["fetch", "xhr", "http"] });
+const instance = faxios.create({ adapter: ["fetch", "xhr", "http"] });
 ```
 
 Pour plus de détails sur l'adaptateur `fetch`, consultez la page [Adaptateur Fetch](/pages/advanced/fetch-adapter).
 
 ## Créer un adaptateur personnalisé
 
-Pour créer un adaptateur personnalisé, écrivez une fonction qui accepte un objet `config` et retourne une Promise qui se résout vers un objet de réponse axios valide.
+Pour créer un adaptateur personnalisé, écrivez une fonction qui accepte un objet `config` et retourne une Promise qui se résout vers un objet de réponse faxios valide.
 
 ```js
 import faxios from "faxios";
-import { settle } from "axios/unsafe/core/settle.js";
+import { settle } from "faxios/unsafe/core/settle.js";
 
 function myAdapter(config) {
   /**
@@ -80,9 +80,9 @@ function myAdapter(config) {
   });
 }
 
-const instance = axios.create({ adapter: myAdapter });
+const instance = faxios.create({ adapter: myAdapter });
 ```
 
 ::: tip
-Le helper `settle` résout la promise pour les codes de statut 2xx et la rejette pour tout le reste, conformément au comportement par défaut d'axios. Si vous souhaitez une validation de statut personnalisée, utilisez plutôt l'option de configuration `validateStatus`.
+Le helper `settle` résout la promise pour les codes de statut 2xx et la rejette pour tout le reste, conformément au comportement par défaut d'faxios. Si vous souhaitez une validation de statut personnalisée, utilisez plutôt l'option de configuration `validateStatus`.
 :::

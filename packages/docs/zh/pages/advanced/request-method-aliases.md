@@ -1,15 +1,15 @@
 # 请求别名
 
-axios 提供了一组发起 HTTP 请求的别名方法，这些别名是 `request` 方法的快捷方式，设计简洁、使用方便。
+faxios 提供了一组发起 HTTP 请求的别名方法，这些别名是 `request` 方法的快捷方式，设计简洁、使用方便。
 
-axios 尽量遵循 RFC 7231 和 RFC 5789 规范，别名方法与这些规范中定义的 HTTP 方法保持一致。
+faxios 尽量遵循 RFC 7231 和 RFC 5789 规范，别名方法与这些规范中定义的 HTTP 方法保持一致。
 
-### `axios`
+### `faxios`
 
-axios 可以通过仅传入配置对象来发起 HTTP 请求，完整的配置对象文档见[此处](/pages/advanced/request-config)。
+faxios 可以通过仅传入配置对象来发起 HTTP 请求，完整的配置对象文档见[此处](/pages/advanced/request-config)。
 
 ```ts
-axios(url: string | AxiosRequestConfig, config?: AxiosRequestConfig);
+faxios(url: string | AxiosRequestConfig, config?: AxiosRequestConfig);
 ```
 
 ## 方法别名
@@ -21,7 +21,7 @@ axios(url: string | AxiosRequestConfig, config?: AxiosRequestConfig);
 `request` 方法是发起 HTTP 请求的主方法，接受一个配置对象并返回解析为响应对象的 Promise，可用于发起任意类型的 HTTP 请求。
 
 ```ts
-axios.request(config: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.request(config: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `get`
@@ -29,7 +29,7 @@ axios.request(config: AxiosRequestConfig<C>): AxiosResponse<R>;
 `get` 方法用于发起 GET 请求，接受 URL 和可选配置对象，返回解析为响应对象的 Promise。
 
 ```ts
-axios.get(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.get(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `delete`
@@ -37,7 +37,7 @@ axios.get(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 `delete` 方法用于发起 DELETE 请求，接受 URL 和可选配置对象，返回解析为响应对象的 Promise。
 
 ```ts
-axios.delete(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.delete(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `head`
@@ -45,7 +45,7 @@ axios.delete(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 `head` 方法用于发起 HEAD 请求，接受 URL 和可选配置对象，返回解析为响应对象的 Promise。
 
 ```ts
-axios.head(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.head(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `options`
@@ -53,7 +53,7 @@ axios.head(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 `options` 方法用于发起 OPTIONS 请求，接受 URL 和可选配置对象，返回解析为响应对象的 Promise。
 
 ```ts
-axios.options(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.options(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `post`
@@ -61,7 +61,7 @@ axios.options(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 `post` 方法用于发起 POST 请求，接受 URL、可选数据对象和可选配置对象，返回解析为响应对象的 Promise。
 
 ```ts
-axios.post(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.post(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `put`
@@ -69,7 +69,7 @@ axios.post(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse
 `put` 方法用于发起 PUT 请求，接受 URL、可选数据对象和可选配置对象，返回解析为响应对象的 Promise。
 
 ```ts
-axios.put(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.put(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `patch`
@@ -77,7 +77,7 @@ axios.put(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<
 `patch` 方法用于发起 PATCH 请求，接受 URL、可选数据对象和可选配置对象，返回解析为响应对象的 Promise。
 
 ```ts
-axios.patch(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.patch(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ### `query`
@@ -85,12 +85,12 @@ axios.patch(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosRespons
 `query` 方法用于发起 QUERY 请求，这是一种安全且幂等的、可以携带请求体的方法。它接受 URL、可选数据对象和可选配置对象，返回解析为响应对象的 Promise。当读取类操作的参数过于复杂或敏感、不适合放在 URL 中时，可以使用该方法。
 
 ```ts
-axios.query(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.query(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ```js
 // 将复杂的搜索条件作为请求体发送
-const { data } = await axios.query("/api/search", {
+const { data } = await faxios.query("/api/search", {
   selector: ["name", "email"],
   filter: { active: true, role: "admin" },
 });
@@ -102,14 +102,14 @@ QUERY 方法目前由 IETF 的 [Internet-Draft](https://datatracker.ietf.org/doc
 
 ### `getUri`
 
-`getUri` 方法返回给定配置在不实际发起请求的情况下会发送的 URL。它会应用 `baseURL`、`paramsSerializer` 和 `params`，因此你拿到的字符串与 axios 实际发出的 URL 相同。可用于构建链接、调试序列化逻辑，或在另一个请求中复用解析后的 URL。
+`getUri` 方法返回给定配置在不实际发起请求的情况下会发送的 URL。它会应用 `baseURL`、`paramsSerializer` 和 `params`，因此你拿到的字符串与 faxios 实际发出的 URL 相同。可用于构建链接、调试序列化逻辑，或在另一个请求中复用解析后的 URL。
 
 ```ts
-axios.getUri(config?: AxiosRequestConfig): string;
+faxios.getUri(config?: AxiosRequestConfig): string;
 ```
 
 ```js
-const url = axios.getUri({
+const url = faxios.getUri({
   url: "/users",
   baseURL: "https://api.example.com",
   params: { active: true, role: "admin" },
@@ -128,12 +128,12 @@ const url = axios.getUri({
 ### `postForm`
 
 ```ts
-axios.postForm(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.postForm(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ```js
 // 从浏览器文件输入框上传文件
-await axios.postForm("/api/upload", {
+await faxios.postForm("/api/upload", {
   file: document.querySelector("#fileInput").files[0],
   description: "Profile photo",
 });
@@ -142,12 +142,12 @@ await axios.postForm("/api/upload", {
 ### `putForm`
 
 ```ts
-axios.putForm(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.putForm(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ```js
 // 用表单数据替换资源
-await axios.putForm("/api/users/1/avatar", {
+await faxios.putForm("/api/users/1/avatar", {
   avatar: document.querySelector("#avatarInput").files[0],
 });
 ```
@@ -155,12 +155,12 @@ await axios.putForm("/api/users/1/avatar", {
 ### `patchForm`
 
 ```ts
-axios.patchForm(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+faxios.patchForm(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
 ```
 
 ```js
 // 使用表单数据更新特定字段
-await axios.patchForm("/api/users/1", {
+await faxios.patchForm("/api/users/1", {
   displayName: "New Name",
   avatar: document.querySelector("#avatarInput").files[0],
 });

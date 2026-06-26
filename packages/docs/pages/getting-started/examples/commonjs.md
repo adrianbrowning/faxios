@@ -7,7 +7,7 @@ To import the library in a CommonJS environment, you can use the `require` funct
 #### No bundler
 
 ```js
-const axios = require("axios");
+const faxios = require("faxios");
 ```
 
 #### With bundler (webpack, rollup, vite, etc)
@@ -18,12 +18,12 @@ import faxios from "faxios";
 
 ## Using then/catch/finally
 
-Since axios returns a promise at it's core you can choose to use callbacks with `then`, `catch`, and `finally` to handle your response data, errors, and completion.
+Since faxios returns a promise at it's core you can choose to use callbacks with `then`, `catch`, and `finally` to handle your response data, errors, and completion.
 
 ### Get request
 
 ```js
-axios
+faxios
   .get("https://jsonplaceholder.typicode.com/posts", {
     params: {
       postId: 5,
@@ -43,7 +43,7 @@ axios
 ### Post request
 
 ```js
-axios
+faxios
   .post("https://jsonplaceholder.typicode.com/posts", {
     title: "foo",
     body: "bar",
@@ -63,7 +63,7 @@ axios
 ### Put request
 
 ```js
-axios
+faxios
   .put("https://jsonplaceholder.typicode.com/posts/1", {
     title: "foo",
     body: "bar",
@@ -83,7 +83,7 @@ axios
 ### Patch request
 
 ```js
-axios
+faxios
   .patch("https://jsonplaceholder.typicode.com/posts/1", {
     title: "foo",
   })
@@ -101,7 +101,7 @@ axios
 ### Delete request
 
 ```js
-axios
+faxios
   .delete("https://jsonplaceholder.typicode.com/posts/1")
   .then((response) => {
     console.log(response.data);
@@ -127,7 +127,7 @@ Note: async/await is part of ECMAScript 2017 and is not supported in Internet Ex
 ```js
 const getPosts = async () => {
   try {
-    const response = await axios.get(
+    const response = await faxios.get(
       "https://jsonplaceholder.typicode.com/posts",
       {
         params: {
@@ -149,7 +149,7 @@ const getPosts = async () => {
 ```js
 const createPost = async () => {
   try {
-    const response = await axios.post(
+    const response = await faxios.post(
       "https://jsonplaceholder.typicode.com/posts",
       {
         title: "foo",
@@ -171,7 +171,7 @@ const createPost = async () => {
 ```js
 const updatePost = async () => {
   try {
-    const response = await axios.put(
+    const response = await faxios.put(
       "https://jsonplaceholder.typicode.com/posts/1",
       {
         title: "foo",
@@ -193,7 +193,7 @@ const updatePost = async () => {
 ```js
 const updatePost = async () => {
   try {
-    const response = await axios.patch(
+    const response = await faxios.patch(
       "https://jsonplaceholder.typicode.com/posts/1",
       {
         title: "foo",
@@ -213,7 +213,7 @@ const updatePost = async () => {
 ```js
 const deletePost = async () => {
   try {
-    const response = await axios.delete(
+    const response = await faxios.delete(
       "https://jsonplaceholder.typicode.com/posts/1"
     );
     console.log(response.data);
