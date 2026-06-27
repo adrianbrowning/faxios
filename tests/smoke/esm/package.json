@@ -1,15 +1,14 @@
 {
-  "name": "@axios/esm-smoke-tests",
-  "version": "1.0.0",
-  "description": "ESM smoke tests for axios",
+  "name": "faxios-smoke-esm",
   "private": true,
+  "type": "module",
   "scripts": {
-    "test:smoke:esm:vitest": "vitest run --config vitest.config.js --project smoke"
+    "test:smoke:esm:vitest": "vitest run"
   },
-  "keywords": [],
-  "author": "axios team",
-  "license": "MIT",
+  "dependencies": {
+    "faxios": "*"
+  },
   "devDependencies": {
-    "vitest": "4.1.5"
+    "vitest": "^4.1.7"
   }
 }

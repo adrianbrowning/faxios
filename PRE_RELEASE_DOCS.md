@@ -26,7 +26,7 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Source:** `PRE_RELEASE_CHANGELOG.md` Bug Fixes, #10900, closes #7315.
 - **Status:** Skipped.
 - **Docs targets:** None beyond release notes.
-- **Required content:** No API documentation update is needed because this changes handling for invalid URL input without adding or changing request config, types, or public APIs. The release note should mention that axios now throws `AxiosError` with `ERR_INVALID_URL` for malformed HTTP(S) URLs such as `https:example.com` or `http:/example.com` instead of allowing platform URL normalization.
+- **Required content:** No API documentation update is needed because this changes handling for invalid URL input without adding or changing request config, types, or public APIs. The release note should mention that faxios now throws `FaxiosError` with `ERR_INVALID_URL` for malformed HTTP(S) URLs such as `https:example.com` or `http:/example.com` instead of allowing platform URL normalization.
 - **Examples:** None.
 - **Notes:** Treat as a bug/security-hardening release note, not a request-config documentation change.
 
@@ -36,11 +36,11 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Source:** `PRE_RELEASE_CHANGELOG.md` Security Fixes, #10892.
 - **Status:** Pending.
 - **Docs targets:** `docs/pages/misc/security.md`; `docs/pages/advanced/request-config.md`; README request config section if it lists all config options; translated docs after English docs are finalized.
-- **Required content:** Explain that `sensitiveHeaders` is an optional array of custom secret-bearing header names. Matching is case-insensitive. The Node.js HTTP adapter removes matching headers only when following a redirect to a different origin. Same-origin redirects keep these headers. If `maxRedirects` is `0`, axios does not follow redirects and `sensitiveHeaders` is not used. Mention common custom authentication headers such as `X-API-Key`.
+- **Required content:** Explain that `sensitiveHeaders` is an optional array of custom secret-bearing header names. Matching is case-insensitive. The Node.js HTTP adapter removes matching headers only when following a redirect to a different origin. Same-origin redirects keep these headers. If `maxRedirects` is `0`, faxios does not follow redirects and `sensitiveHeaders` is not used. Mention common custom authentication headers such as `X-API-Key`.
 - **Examples:** Include this request example.
 
 ```js
-axios.get('https://api.example.com/users', {
+faxios.get('https://api.example.com/users', {
   headers: { 'X-API-Key': 'secret' },
   sensitiveHeaders: ['X-API-Key']
 });
@@ -54,11 +54,11 @@ axios.get('https://api.example.com/users', {
 - **Source:** `PRE_RELEASE_CHANGELOG.md` Bug Fixes, #10899, closes #6688.
 - **Status:** Pending.
 - **Docs targets:** README request config section; `docs/pages/advanced/request-config.md` `validateStatus` section and request config example; translated request-config docs after English docs are finalized.
-- **Required content:** Explain that `validateStatus: undefined` keeps legacy behavior by default and resolves every response status because `transitional.validateStatusUndefinedResolves` defaults to `true`. Explain that setting `transitional.validateStatusUndefinedResolves` to `false` makes explicit `validateStatus: undefined` behave like the option was omitted, so axios uses the configured/default validator and rejects non-2xx responses by default. Mention that `validateStatus: null` still accepts every response status, and users who disable the transitional behavior should use `null` or `() => true` when they intentionally want all statuses to resolve.
+- **Required content:** Explain that `validateStatus: undefined` keeps legacy behavior by default and resolves every response status because `transitional.validateStatusUndefinedResolves` defaults to `true`. Explain that setting `transitional.validateStatusUndefinedResolves` to `false` makes explicit `validateStatus: undefined` behave like the option was omitted, so faxios uses the configured/default validator and rejects non-2xx responses by default. Mention that `validateStatus: null` still accepts every response status, and users who disable the transitional behavior should use `null` or `() => true` when they intentionally want all statuses to resolve.
 - **Examples:** Include a short opt-in example.
 
 ```js
-axios.get('/user/12345', {
+faxios.get('/user/12345', {
   validateStatus: undefined,
   transitional: {
     validateStatusUndefinedResolves: false

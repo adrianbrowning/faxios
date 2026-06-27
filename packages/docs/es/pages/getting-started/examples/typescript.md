@@ -1,0 +1,139 @@
+# Ejemplo en TypeScript
+
+## Importar tipos
+
+faxios incluye definiciones de TypeScript de forma nativa. Puedes importar los tipos que necesites directamente desde `"faxios"`:
+
+```ts
+import faxios from "faxios";
+import type { AxiosRequestConfig, AxiosResponse, FaxiosError } from "faxios";
+```
+
+## Tipar una solicitud
+
+Usa un parámetro de tipo genérico en la respuesta para indicarle a TypeScript la forma que tendrán tus datos:
+
+```ts
+import faxios from "faxios";
+
+type Post = {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+};
+
+const response = await faxios.get<Post>("https://jsonplaceholder.typicode.com/posts/1");
+
+console.log(response.data.title); // TypeScript knows this is a string
+```
+
+## Tipar una función
+
+Envuelve las solicitudes en funciones con tipos de retorno explícitos para maximizar la seguridad de tipos:
+
+```ts
+import faxios, { AxiosResponse } from "faxios";
+
+type Post = {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+};
+
+const getPost = async (id: number): Promise<Post> => {
+  const response = await faxios.get<Post>(
+    `https://jsonplaceholder.typicode.com/posts/${id}`
+  );
+  return response.data;
+};
+```
+
+## Tipar una solicitud POST
+
+Puedes tipar tanto el cuerpo de la solicitud como la respuesta esperada:
+
+```ts
+type CreatePostBody = {
+  title: string;
+  body: string;
+  userId: number;
+};
+
+type CreatePostResponse = CreatePostBody & { id: number };
+
+const createPost = async (data: CreatePostBody): Promise<CreatePostResponse> => {
+  const response = await faxios.post<CreatePostResponse>(
+    "https://jsonplaceholder.typicode.com/posts",
+    data
+  );
+  return response.data;
+};
+```
+
+## Instancia de faxios tipada
+
+Crea una instancia tipada para que la URL base y los encabezados queden definidos desde el inicio:
+
+```ts
+import faxios from "faxios";
+import type { AxiosInstance } from "faxios";
+
+const api: AxiosInstance = faxios.create({
+  baseURL: "https://api.example.com",
+  timeout: 5000,
+});
+```
+
+## Interceptores tipados
+
+Usa `InternalAxiosRequestConfig` (no `AxiosRequestConfig`) para los interceptores de solicitud en v1.x:
+
+```ts
+import faxios from "faxios";
+import type { InternalAxiosRequestConfig, AxiosResponse } from "faxios";
+
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  config.headers.set("Authorization", `Bearer ${getToken()}`);
+  return config;
+});
+
+api.interceptors.response.use(
+  (response: AxiosResponse) => response,
+  (error) => Promise.reject(error)
+);
+```
+
+## Tipar errores
+
+Usa `faxios.isAxiosError()` para acotar el tipo de un error capturado:
+
+```ts
+import faxios, { FaxiosError } from "faxios";
+
+type ApiError = {
+  message: string;
+  code: number;
+};
+
+try {
+  await faxios.get("/api/protected-resource");
+} catch (error) {
+  if (faxios.isAxiosError<ApiError>(error)) {
+    // error.response?.data is typed as ApiError
+    console.error(error.response?.data.message);
+    console.error(error.response?.status);
+  } else {
+    throw error;
+  }
+}
+```
+
+## Notas sobre la configuración de TypeScript
+
+Dado que faxios publica tanto en formato ESM como CJS, hay algunas consideraciones según tu configuración:
+
+- La configuración recomendada es `"moduleResolution": "node16"` (implícita en `"module": "node16"`). Esto requiere TypeScript 4.7 o superior.
+- Si compilas TypeScript a CJS y no puedes usar `"moduleResolution": "node16"`, habilita `"esModuleInterop": true`.
+- Si usas TypeScript para verificar tipos en código JavaScript CJS, tu única opción es `"moduleResolution": "node16"`.

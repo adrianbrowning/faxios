@@ -1,0 +1,14 @@
+{
+  "name": "@faxios/bun-smoke-tests",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "faxios": "file:/tmp/faxios-0.0.1.tgz"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

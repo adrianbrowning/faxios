@@ -5,7 +5,7 @@
 node_modules/
 coverage/
 temp/
-test/typescript/axios.js*
+test/typescript/faxios.js*
 sauce_connect.log
 test/module/**/package-lock.json
 backup/
@@ -14,3 +14,6 @@ dist/
 .vscode/
 docs/.vitepress/dist
 docs/.vitepress/cache
+/.eslintcache
+/packages/lib/.eslintcache
+.pnpm-store/

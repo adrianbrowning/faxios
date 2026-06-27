@@ -1,11 +1,8 @@
 {
-  "name": "@axios/bun-smoke-tests",
-  "type": "module",
+  "name": "faxios-smoke-bun",
   "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
+  "type": "module",
+  "dependencies": {
+    "faxios": "*"
   }
 }

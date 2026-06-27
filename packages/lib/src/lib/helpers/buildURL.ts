@@ -1,0 +1,69 @@
+"use strict";
+
+import utils from "../utils.js";
+import FaxiosURLSearchParams from "./FaxiosURLSearchParams.js";
+
+/**
+ * It replaces URL-encoded forms of `:`, `$`, `,`, and spaces with
+ * their plain counterparts (`:`, `$`, `,`, `+`).
+ *
+ * @param {string} val The value to be encoded.
+ *
+ * @returns {string} The encoded value.
+ */
+export function encode(val: string): string {
+  return encodeURIComponent(val)
+    .replace(/%3A/gi, ":")
+    .replace(/%24/g, "$")
+    .replace(/%2C/gi, ",")
+    .replace(/%20/g, "+");
+}
+
+/**
+ * Build a URL by appending params to the end
+ *
+ * @param {string} url The base of the url (e.g., http://www.google.com)
+ * @param {object} [params] The params to be appended
+ * @param {?(object|Function)} options
+ *
+ * @returns {string} The formatted url
+ */
+export default function buildURL(url: string, params?: unknown, options?: unknown): string {
+  if (!params) {
+    return url;
+  }
+
+  const _options = utils.isFunction(options)
+    ? {
+      serialize: options,
+    }
+    : options;
+
+  // Read serializer options pollution-safely: own properties and methods on a
+  // class/template prototype are honored, but values injected onto a polluted
+  // Object.prototype are ignored.
+  const _encode = (utils.getSafeProp(_options, "encode") as ((val: string) => string) | undefined) || encode;
+  const serializeFn = utils.getSafeProp(_options, "serialize") as ((params: unknown, options: unknown) => string) | undefined;
+
+  let serializedParams: string | undefined;
+
+  if (serializeFn) {
+    serializedParams = serializeFn(params, _options);
+  }
+  else {
+    serializedParams = utils.isURLSearchParams(params)
+      ? (params as { toString: () => string; }).toString()
+      : new (FaxiosURLSearchParams as unknown as new (params: unknown, options: unknown) => { toString: (enc?: (val: string) => string) => string; })(params, _options).toString(_encode);
+  }
+
+  if (serializedParams) {
+    const hashmarkIndex = url.indexOf("#");
+
+    if (hashmarkIndex !== -1) {
+      url = url.slice(0, hashmarkIndex);
+    }
+    url += (url.indexOf("?") === -1 ? "?" : "&") + serializedParams;
+  }
+
+  return url;
+}

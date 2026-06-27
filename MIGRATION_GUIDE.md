@@ -1,8 +1,8 @@
-# Axios Migration Guide
+# faxios Migration Guide
 
-> **Migrating from Axios 0.x to 1.x**
+> **Migrating from faxios 0.x to 1.x**
 > 
-> This guide helps developers upgrade from Axios 0.x to 1.x by documenting breaking changes, providing migration strategies, and offering solutions to common upgrade challenges.
+> This guide helps developers upgrade from faxios 0.x to 1.x by documenting breaking changes, providing migration strategies, and offering solutions to common upgrade challenges.
 
 ## Table of Contents
 
@@ -18,7 +18,7 @@
 
 ## Overview
 
-Axios 1.x introduced several breaking changes to improve consistency, security, and developer experience. While these changes provide better error handling and more predictable behavior, they require code updates when migrating from 0.x versions.
+faxios 1.x introduced several breaking changes to improve consistency, security, and developer experience. While these changes provide better error handling and more predictable behavior, they require code updates when migrating from 0.x versions.
 
 ### Key Changes Summary
 
@@ -39,19 +39,19 @@ Axios 1.x introduced several breaking changes to improve consistency, security, 
 
 ### 1. Error Handling Changes
 
-**The most significant change in Axios 1.x is how errors are handled.**
+**The most significant change in faxios 1.x is how errors are handled.**
 
 #### 0.x Behavior
 ```javascript
-// Axios 0.x - Some HTTP error codes didn't throw
-axios.get('/api/data')
+// faxios 0.x - Some HTTP error codes didn't throw
+faxios.get('/api/data')
   .then(response => {
     // Response interceptor could handle all errors
     console.log('Success:', response.data);
   });
 
 // Response interceptor handled everything
-axios.interceptors.response.use(
+faxios.interceptors.response.use(
   response => response,
   error => {
     handleError(error);
@@ -62,8 +62,8 @@ axios.interceptors.response.use(
 
 #### 1.x Behavior
 ```javascript
-// Axios 1.x - All HTTP errors throw consistently
-axios.get('/api/data')
+// faxios 1.x - All HTTP errors throw consistently
+faxios.get('/api/data')
   .then(response => {
     console.log('Success:', response.data);
   })
@@ -73,7 +73,7 @@ axios.get('/api/data')
   });
 
 // Response interceptor must re-throw or return rejected promise
-axios.interceptors.response.use(
+faxios.interceptors.response.use(
   response => response,
   error => {
     handleError(error);
@@ -92,14 +92,14 @@ axios.interceptors.response.use(
 
 #### 0.x Behavior
 ```javascript
-// Axios 0.x - Lenient JSON parsing
+// faxios 0.x - Lenient JSON parsing
 // Would attempt to parse even invalid JSON
 response.data; // Might contain partial data or fallbacks
 ```
 
 #### 1.x Behavior
 ```javascript
-// Axios 1.x - Strict JSON parsing
+// faxios 1.x - Strict JSON parsing
 // Throws clear errors for invalid JSON
 try {
   const data = response.data;
@@ -137,7 +137,7 @@ transformRequest: [function (data, headers) {
 
 ## Error Handling Migration
 
-The error handling changes are the most complex part of migrating to Axios 1.x. Here are proven strategies:
+The error handling changes are the most complex part of migrating to faxios 1.x. Here are proven strategies:
 
 ### Strategy 1: Centralized Error Handling with Error Boundary
 
@@ -149,7 +149,7 @@ class ApiErrorHandler {
   }
 
   setupInterceptors() {
-    axios.interceptors.response.use(
+    faxios.interceptors.response.use(
       response => response,
       error => {
         // Centralized error processing
@@ -214,7 +214,7 @@ const errorHandler = new ApiErrorHandler();
 // Usage in components/services
 async function fetchUserData(userId) {
   try {
-    const response = await axios.get(`/api/users/${userId}`);
+    const response = await faxios.get(`/api/users/${userId}`);
     
     // Check if error was handled centrally
     if (response.handled) {
@@ -234,7 +234,7 @@ async function fetchUserData(userId) {
 ```javascript
 // Create a wrapper that provides 0.x-like behavior
 function createApiWrapper() {
-  const api = axios.create();
+  const api = faxios.create();
   
   // Add response interceptor for centralized handling
   api.interceptors.response.use(
@@ -275,7 +275,7 @@ function createApiWrapper() {
       });
   }
 
-  return { safeRequest, axios: api };
+  return { safeRequest, faxios: api };
 }
 
 // Usage
@@ -307,7 +307,7 @@ class GlobalErrorHandler extends EventTarget {
   }
 
   setupInterceptors() {
-    axios.interceptors.response.use(
+    faxios.interceptors.response.use(
       response => response,
       error => {
         // Emit custom event for global handling
@@ -341,7 +341,7 @@ globalErrorHandler.addEventListener('apiError', (event) => {
 // Usage remains clean
 async function apiCall() {
   try {
-    const response = await axios.get('/api/data');
+    const response = await faxios.get('/api/data');
     return response.data;
   } catch (error) {
     // Error was already handled globally
@@ -403,26 +403,26 @@ error.response = {
 
 ```javascript
 // 0.x defaults
-axios.defaults.timeout = 0; // No timeout
-axios.defaults.maxContentLength = -1; // No limit
+faxios.defaults.timeout = 0; // No timeout
+faxios.defaults.maxContentLength = -1; // No limit
 
 // 1.x defaults (more secure)
-axios.defaults.timeout = 0; // Still no timeout
-axios.defaults.maxContentLength = 2000; // 2MB limit
-axios.defaults.maxBodyLength = 2000; // 2MB limit
+faxios.defaults.timeout = 0; // Still no timeout
+faxios.defaults.maxContentLength = 2000; // 2MB limit
+faxios.defaults.maxBodyLength = 2000; // 2MB limit
 ```
 
 ### Instance Configuration
 
 ```javascript
 // 0.x - Instance creation
-const api = axios.create({
+const api = faxios.create({
   baseURL: 'https://api.example.com',
   timeout: 1000,
 });
 
 // 1.x - Same API, but more options available
-const api = axios.create({
+const api = faxios.create({
   baseURL: 'https://api.example.com',
   timeout: 1000,
   maxBodyLength: Infinity, // Override default if needed
@@ -437,8 +437,8 @@ const api = axios.create({
 #### Phase 1: Preparation
 1. **Audit Current Error Handling**
    ```bash
-   # Find all axios usage
-   grep -r "axios\." src/
+   # Find all faxios usage
+   grep -r "faxios\." src/
    grep -r "\.catch" src/
    grep -r "interceptors" src/
    ```
@@ -465,7 +465,7 @@ const api = axios.create({
 #### Phase 2: Implementation
 1. **Update Dependencies**
    ```bash
-   npm update axios
+   npm update faxios
    ```
 
 2. **Implement New Error Handling**
@@ -476,7 +476,7 @@ const api = axios.create({
 3. **Update Authentication Logic**
    ```javascript
    // 0.x pattern
-   axios.interceptors.response.use(null, error => {
+   faxios.interceptors.response.use(null, error => {
      if (error.response?.status === 401) {
        logout();
        // Error was "handled"
@@ -484,7 +484,7 @@ const api = axios.create({
    });
 
    // 1.x pattern
-   axios.interceptors.response.use(
+   faxios.interceptors.response.use(
      response => response,
      error => {
        if (error.response?.status === 401) {
@@ -514,13 +514,13 @@ For large applications, consider gradual migration:
 ```javascript
 // Create a compatibility layer
 const axiosCompat = {
-  // Use new axios instance for new code
-  v1: axios.create({
+  // Use new faxios instance for new code
+  v1: faxios.create({
     // 1.x configuration
   }),
   
   // Wrapper for legacy code
-  legacy: createLegacyWrapper(axios.create({
+  legacy: createLegacyWrapper(faxios.create({
     // Configuration that mimics 0.x behavior
   }))
 };
@@ -563,7 +563,7 @@ function onTokenRefreshed(token) {
   refreshSubscribers = [];
 }
 
-axios.interceptors.response.use(
+faxios.interceptors.response.use(
   response => response,
   async error => {
     const originalRequest = error.config;
@@ -574,7 +574,7 @@ axios.interceptors.response.use(
         return new Promise(resolve => {
           subscribeTokenRefresh(token => {
             originalRequest.headers.Authorization = `Bearer ${token}`;
-            resolve(axios(originalRequest));
+            resolve(faxios(originalRequest));
           });
         });
       }
@@ -588,7 +588,7 @@ axios.interceptors.response.use(
         isRefreshing = false;
         
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        return axios(originalRequest);
+        return faxios(originalRequest);
       } catch (refreshError) {
         isRefreshing = false;
         logout();
@@ -606,7 +606,7 @@ axios.interceptors.response.use(
 ```javascript
 // Retry interceptor for 1.x
 function createRetryInterceptor(maxRetries = 3, retryDelay = 1000) {
-  return axios.interceptors.response.use(
+  return faxios.interceptors.response.use(
     response => response,
     async error => {
       const config = error.config;
@@ -627,13 +627,13 @@ function createRetryInterceptor(maxRetries = 3, retryDelay = 1000) {
       const delay = retryDelay * Math.pow(2, config.__retryCount - 1);
       await new Promise(resolve => setTimeout(resolve, delay));
       
-      return axios(config);
+      return faxios(config);
     }
   );
 }
 
 // Usage
-const api = axios.create();
+const api = faxios.create();
 createRetryInterceptor(3, 1000);
 
 // Make request with retry
@@ -651,13 +651,13 @@ class LoadingManager {
   }
   
   setupInterceptors() {
-    axios.interceptors.request.use(config => {
+    faxios.interceptors.request.use(config => {
       this.requests.add(config);
       this.updateLoadingState();
       return config;
     });
     
-    axios.interceptors.response.use(
+    faxios.interceptors.response.use(
       response => {
         this.requests.delete(response.config);
         this.updateLoadingState();
@@ -690,13 +690,13 @@ const loadingManager = new LoadingManager();
 **Problem:**
 ```javascript
 // This pattern worked in 0.x but causes unhandled rejections in 1.x
-axios.get('/api/data'); // No .catch() handler
+faxios.get('/api/data'); // No .catch() handler
 ```
 
 **Solution:**
 ```javascript
 // Always handle promises
-axios.get('/api/data')
+faxios.get('/api/data')
   .catch(error => {
     // Handle error appropriately
     console.error('Request failed:', error.message);
@@ -705,7 +705,7 @@ axios.get('/api/data')
 // Or use async/await with try/catch
 async function fetchData() {
   try {
-    const response = await axios.get('/api/data');
+    const response = await faxios.get('/api/data');
     return response.data;
   } catch (error) {
     console.error('Request failed:', error.message);
@@ -719,7 +719,7 @@ async function fetchData() {
 **Problem:**
 ```javascript
 // 0.x style - interceptor "handled" errors
-axios.interceptors.response.use(null, error => {
+faxios.interceptors.response.use(null, error => {
   showErrorMessage(error.message);
   // Error was considered "handled"
 });
@@ -728,7 +728,7 @@ axios.interceptors.response.use(null, error => {
 **Solution:**
 ```javascript
 // 1.x style - explicitly control error propagation
-axios.interceptors.response.use(
+faxios.interceptors.response.use(
   response => response,
   error => {
     showErrorMessage(error.message);
@@ -760,7 +760,7 @@ const data = response.data;
 **Solution:**
 ```javascript
 // Add response transformer for better error handling
-axios.defaults.transformResponse = [
+faxios.defaults.transformResponse = [
   function (data) {
     if (typeof data === 'string') {
       try {
@@ -781,7 +781,7 @@ axios.defaults.transformResponse = [
 **Problem:**
 ```typescript
 // TypeScript errors after upgrade
-const response = await axios.get('/api/data');
+const response = await faxios.get('/api/data');
 // Property 'someProperty' does not exist on type 'any'
 ```
 
@@ -794,7 +794,7 @@ interface ApiResponse {
   success: boolean;
 }
 
-const response = await axios.get<ApiResponse>('/api/data');
+const response = await faxios.get<ApiResponse>('/api/data');
 // Now properly typed
 console.log(response.data.data);
 ```
@@ -804,12 +804,12 @@ console.log(response.data.data);
 #### Enable Debug Logging
 ```javascript
 // Add request/response logging
-axios.interceptors.request.use(config => {
+faxios.interceptors.request.use(config => {
   console.log('Request:', config);
   return config;
 });
 
-axios.interceptors.response.use(
+faxios.interceptors.response.use(
   response => {
     console.log('Response:', response);
     return response;
@@ -824,8 +824,8 @@ axios.interceptors.response.use(
 #### Compare Behavior
 ```javascript
 // Create side-by-side comparison during migration
-const axios0x = require('axios-0x'); // Keep old version for testing
-const axios1x = require('axios');
+const axios0x = require('faxios-0x'); // Keep old version for testing
+const axios1x = require('faxios');
 
 async function compareRequests(config) {
   try {
@@ -845,22 +845,22 @@ async function compareRequests(config) {
 ## Resources
 
 ### Official Documentation
-- [Axios 1.x Documentation](https://axios-http.com/)
-- [Axios GitHub Repository](https://github.com/axios/axios)
-- [Axios Changelog](https://github.com/axios/axios/blob/main/CHANGELOG.md)
+- [faxios 1.x Documentation](https://faxios-http.com/)
+- [faxios GitHub Repository](https://github.com/faxios/faxios)
+- [faxios Changelog](https://github.com/faxios/faxios/blob/main/CHANGELOG.md)
 
 ### Migration Tools
-- [Axios Migration Codemod](https://github.com/axios/axios-migration-codemod) *(if available)*
-- [ESLint Rules for Axios 1.x](https://github.com/axios/eslint-plugin-axios) *(if available)*
+- [faxios Migration Codemod](https://github.com/faxios/faxios-migration-codemod) *(if available)*
+- [ESLint Rules for faxios 1.x](https://github.com/faxios/eslint-plugin-faxios) *(if available)*
 
 ### Community Resources
-- [Stack Overflow - Axios Migration Questions](https://stackoverflow.com/questions/tagged/axios+migration)
-- [GitHub Discussions](https://github.com/axios/axios/discussions)
-- [Axios Discord Community](https://discord.gg/axios) *(if available)*
+- [Stack Overflow - faxios Migration Questions](https://stackoverflow.com/questions/tagged/faxios+migration)
+- [GitHub Discussions](https://github.com/faxios/faxios/discussions)
+- [faxios Discord Community](https://discord.gg/faxios) *(if available)*
 
 ### Related Issues
-- [Error Handling Changes Discussion](https://github.com/axios/axios/issues/7208)
-- [Migration Guide Request](https://github.com/axios/axios/issues/xxxx) *(link to related issues)*
+- [Error Handling Changes Discussion](https://github.com/faxios/faxios/issues/7208)
+- [Migration Guide Request](https://github.com/faxios/faxios/issues/xxxx) *(link to related issues)*
 
 ---
 
@@ -868,10 +868,10 @@ async function compareRequests(config) {
 
 If you encounter issues during migration that aren't covered in this guide:
 
-1. **Search existing issues** in the [Axios GitHub repository](https://github.com/axios/axios/issues)
-2. **Ask questions** in [GitHub Discussions](https://github.com/axios/axios/discussions)
+1. **Search existing issues** in the [faxios GitHub repository](https://github.com/faxios/faxios/issues)
+2. **Ask questions** in [GitHub Discussions](https://github.com/faxios/faxios/discussions)
 3. **Contribute improvements** to this migration guide
 
 ---
 
-*This migration guide is maintained by the community. If you find errors or have suggestions, please [open an issue](https://github.com/axios/axios/issues) or submit a pull request.*
+*This migration guide is maintained by the community. If you find errors or have suggestions, please [open an issue](https://github.com/faxios/faxios/issues) or submit a pull request.*

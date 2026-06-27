@@ -3,13 +3,12 @@ name: Verify build reproducibility
 on:
   pull_request:
     paths:
-      - 'lib/**'
-      - 'rollup.config.js'
-      - 'package.json'
-      - 'package-lock.json'
+      - 'packages/lib/src/**'
+      - 'packages/lib/package.json'
+      - 'pnpm-lock.yaml'
       - '.github/workflows/verify-build-reproducibility.yml'
   push:
-    branches: [v1.x]
+    branches: [main]
 
 permissions:
   contents: read
@@ -35,30 +34,34 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Install (pass 1)
-        run: npm ci --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Build (pass 1)
-        run: npm run build
+        run: pnpm run build
 
       - name: Snapshot pass 1
         run: |
-          mv dist dist-pass1
+          mv packages/lib/dist dist-pass1
           find dist-pass1 -type f -exec sha256sum {} + | sort -k2 > pass1.sha256
           echo "--- pass 1 hashes ---"
           cat pass1.sha256
 
       - name: Clean and reinstall (pass 2)
         run: |
-          rm -rf node_modules
-          npm ci --ignore-scripts
+          rm -rf node_modules packages/lib/node_modules
+          pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Build (pass 2)
-        run: npm run build
+        run: pnpm run build
 
       - name: Snapshot pass 2 and diff
         run: |
-          find dist -type f -exec sha256sum {} + | sort -k2 | sed 's| dist/| dist-pass1/|' > pass2.sha256
+          find packages/lib/dist -type f -exec sha256sum {} + | sort -k2 | sed 's| packages/lib/dist/| dist-pass1/|' > pass2.sha256
           echo "--- pass 2 hashes (path-normalised) ---"
           cat pass2.sha256
           if ! diff -u pass1.sha256 pass2.sha256; then
@@ -78,5 +81,5 @@ jobs:
             pass1.sha256
             pass2.sha256
             dist-pass1
-            dist
+            packages/lib/dist
           retention-days: 7

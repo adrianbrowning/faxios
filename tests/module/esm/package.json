@@ -1,18 +1,14 @@
 {
-  "name": "@axios/esm-module-tests",
-  "version": "1.0.0",
-  "description": "ESM module compatibility tests for axios",
+  "name": "faxios-module-esm",
   "private": true,
   "type": "module",
   "scripts": {
-    "test:module:esm": "vitest run --config vitest.config.js --project module"
+    "test:module:esm": "vitest run"
   },
-  "keywords": [],
-  "author": "axios team",
-  "license": "MIT",
+  "dependencies": {
+    "faxios": "*"
+  },
   "devDependencies": {
-    "@types/node": "20.19.39",
-    "typescript": "5.9.3",
-    "vitest": "4.1.5"
+    "vitest": "^4.1.7"
   }
 }

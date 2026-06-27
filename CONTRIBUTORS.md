@@ -1,6 +1,6 @@
 # Contributors
 
-Thanks to everyone who has contributed to axios.
+Thanks to everyone who has contributed to faxios.
 
 ## Core team
 

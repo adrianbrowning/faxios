@@ -1,9 +1,16 @@
 {
+  "extends": "@gingacodemonkey/config/tsc/no-dom/library",
   "compilerOptions": {
-    "module": "node16",
-    "lib": ["dom", "es2015"],
-    "types": [],
-    "strict": true,
-    "noEmit": true
-  }
+    "outDir": "dist",
+    "rootDir": "."
+  },
+  "include": [
+    "eslint.config.ts",
+    "eslint.config.style.ts",
+    "./src/**.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

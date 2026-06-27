@@ -1,0 +1,21 @@
+{
+  "name": "@faxios/esm-module-tests",
+  "version": "1.0.0",
+  "description": "ESM module compatibility tests for faxios",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:module:esm": "vitest run --config vitest.config.js --project module"
+  },
+  "keywords": [],
+  "author": "faxios team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "24.13.2",
+    "typescript": "6.0.3",
+    "vitest": "4.1.9"
+  },
+  "dependencies": {
+    "faxios": "file:/tmp/faxios-0.0.1.tgz"
+  }
+}

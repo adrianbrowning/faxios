@@ -1,0 +1,59 @@
+{
+  "workspaces": {
+    "packages/lib": {
+      "entry": [
+        "gulpfile.js",
+        "webpack.config.js",
+        "scripts/**/*.js"
+      ],
+      "project": ["**/*.{js,ts,cjs,mjs,mts}"],
+      "ignore": [
+        "docs/**",
+        "src/lib/platform/browser/**",
+        "src/lib/platform/node/classes/**",
+        "src/lib/env/classes/**",
+        "src/lib/helpers/null.ts",
+        "src/lib/helpers/deprecatedMethod.ts"
+      ]
+    },
+    "packages/tests": {
+      "entry": [
+        "**/*.{js,ts,cjs,mjs}"
+      ],
+      "project": ["**/*.{js,ts,cjs,mjs,mts}"],
+      "ignore": [
+        "module/**",
+        "smoke/**"
+      ]
+    },
+    "packages/docs": {
+      "entry": [
+        ".vitepress/config.mts",
+        ".vitepress/theme/index.ts",
+        "scripts/**/*.js"
+      ],
+      "project": ["**/*.{js,ts,mts,vue}"]
+    },
+    "packages/examples": {
+      "entry": ["**/*.js"],
+      "project": ["**/*.{js,ts}"]
+    },
+    "packages/sandbox": {
+      "project": ["**/*.{js,ts}"],
+      "ignore": ["client.js"]
+    },
+    ".": {
+      "entry": [],
+      "project": [],
+      "ignore": [".sandcastle/**"]
+    }
+  },
+  "ignoreBinaries": ["diff"],
+  "ignoreDependencies": [
+    "faxios",
+    "@babel/preset-env",
+    "@vitest/browser",
+    "@ai-hero/sandcastle"
+  ],
+  "ignoreExportsUsedInFile": true
+}

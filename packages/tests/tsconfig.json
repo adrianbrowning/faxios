@@ -1,0 +1,15 @@
+{
+  "extends": "@gingacodemonkey/config/tsc/no-dom/library",
+  "compilerOptions": {
+    "noEmit": true,
+    "paths": {
+      "#src/*": ["../lib/src/*"]
+    },
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": false,
+    "erasableSyntaxOnly": true,
+    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
+  },
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules", "smoke", "module"]
+}
