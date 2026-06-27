@@ -185,6 +185,7 @@ jobs:
           mkdir -p "$BUN_INSTALL_CACHE_DIR"
           cp artifacts/faxios-*.tgz /tmp/faxios-0.0.1.tgz
           cd packages/tests/smoke/bun
+          rm -f bun.lock
           bun install
 
       - name: Run Bun smoke tests
