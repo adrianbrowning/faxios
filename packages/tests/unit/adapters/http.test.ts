@@ -1646,6 +1646,57 @@ describe("supports http with nodejs", () => {
     }
   });
 
+  it("should not invoke an inherited getHeaders gadget from Object.prototype on form-data-like bodies", async () => {
+    // Regression: form-data detection must not call a getHeaders inherited from
+    // a polluted Object.prototype. A spoofed form-data body that passes
+    // isFormData but has no own getHeaders must not trigger the polluted method.
+    let pollutedCalls = 0;
+
+    class FakeFormData {
+      append(): void {
+        // present so isFormData() accepts this object
+      }
+
+      toString(): string {
+        return "[object FormData]";
+      }
+    }
+
+    Object.defineProperty(Object.prototype, "getHeaders", {
+      value() {
+        pollutedCalls += 1;
+        return { "content-type": "multipart/form-data; boundary=evil" };
+      },
+      configurable: true,
+      writable: true,
+    });
+
+    const server = await startHTTPServer(
+      (req: any, res: any) => {
+        req.resume();
+        req.on("end", () => {
+          res.end("ok");
+        });
+      },
+      { port: SERVER_PORT }
+    );
+
+    try {
+      await faxios.post(
+        `http://localhost:${(server.address() as AddressInfo).port}/`,
+        new FakeFormData() as any
+      ).catch(() => {
+        // body serialization may fail; we only assert the gadget was not called
+      });
+
+      assert.strictEqual(pollutedCalls, 0);
+    }
+    finally {
+      delete (Object.prototype as any).getHeaders;
+      await stopHTTPServer(server);
+    }
+  });
+
   it("should ignore inherited proxy when http adapter receives a plain config", async () => {
     const proxyEnvKeys = [
       "http_proxy",

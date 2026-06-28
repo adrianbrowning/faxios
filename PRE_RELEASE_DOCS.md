@@ -20,6 +20,16 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 
 ## Unreleased
 
+### ESM-only package; CJS and CDN/UMD builds dropped (TypeScript migration)
+
+- **Change:** The TypeScript migration ships an ESM-only package built by `zshy`. The CommonJS (`require`) build, `index.d.cts` (`export = faxios`) types, and the browser/UMD/minified CDN bundles (`jsdelivr`/`unpkg`/`browser`/`react-native` entries) were removed.
+- **Source:** `feat/add_typescript` branch; review tasks A–C.
+- **Status:** Pending.
+- **Docs targets:** README install/usage (any `require('faxios')` or `<script src="cdn...">` snippets); docs site getting-started/CDN pages; examples that use CommonJS or CDN script tags; translated docs after English is finalized.
+- **Required content:** Document that faxios is now ESM-only (`import faxios from 'faxios'`). `require('faxios')` works only via Node's ESM interop; there is no dedicated CJS entry or `.d.cts`. Remove or rewrite any CDN/UMD `<script>` install instructions.
+- **Examples:** None yet.
+- **Notes:** CDN/UMD build restoration is deferred to a future release — if/when re-added, re-introduce a bundler step and the corresponding `exports` conditions, then update these docs. Do not document CJS or CDN usage as supported in the meantime.
+
 ### malformed HTTP URL rejection
 
 - **Change:** Note that malformed `http:` and `https:` URLs missing `//` are rejected before adapter normalization.

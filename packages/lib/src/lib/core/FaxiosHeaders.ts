@@ -39,9 +39,7 @@ function normalizeValue(
     return false;
   }
   if (utils.isArray(value)) {
-    return (value as Array<FaxiosHeaderValue>).map(v =>
-      sanitizeHeaderValue(String(v))
-    ) as Array<string>;
+    return (value as Array<FaxiosHeaderValue>).map(normalizeValue) as Array<string>;
   }
   return sanitizeHeaderValue(String(value));
 }
@@ -150,6 +148,27 @@ function buildAccessors(obj: object, header: string): void {
 class FaxiosHeaders {
   [key: string]: unknown;
 
+  // Accessors generated at runtime by FaxiosHeaders.accessor([...]) below.
+  // Declared here so consumers get real types instead of the index signature.
+  declare getContentType: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
+  declare setContentType: (value: FaxiosHeaderValue, rewrite?: RewriteOption) => this;
+  declare hasContentType: (matcher?: HeaderMatcher) => boolean;
+  declare getContentLength: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
+  declare setContentLength: (value: FaxiosHeaderValue, rewrite?: RewriteOption) => this;
+  declare hasContentLength: (matcher?: HeaderMatcher) => boolean;
+  declare getAccept: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
+  declare setAccept: (value: FaxiosHeaderValue, rewrite?: RewriteOption) => this;
+  declare hasAccept: (matcher?: HeaderMatcher) => boolean;
+  declare getAcceptEncoding: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
+  declare setAcceptEncoding: (value: FaxiosHeaderValue, rewrite?: RewriteOption) => this;
+  declare hasAcceptEncoding: (matcher?: HeaderMatcher) => boolean;
+  declare getUserAgent: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
+  declare setUserAgent: (value: FaxiosHeaderValue, rewrite?: RewriteOption) => this;
+  declare hasUserAgent: (matcher?: HeaderMatcher) => boolean;
+  declare getAuthorization: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
+  declare setAuthorization: (value: FaxiosHeaderValue, rewrite?: RewriteOption) => this;
+  declare hasAuthorization: (matcher?: HeaderMatcher) => boolean;
+
   constructor(
     headers?: Record<string, unknown> | FaxiosHeaders | string | null
   ) {
@@ -216,6 +235,10 @@ class FaxiosHeaders {
     return this;
   }
 
+  get(header: string): FaxiosHeaderValue | undefined;
+  get(header: string, parser: true): Record<string, string> | undefined;
+  get(header: string, parser: RegExp): RegExpExecArray | null | undefined;
+  get<R>(header: string, parser: (this: FaxiosHeaders, value: FaxiosHeaderValue, header: string) => R): R | undefined;
   get(
     header: string,
     parser?:

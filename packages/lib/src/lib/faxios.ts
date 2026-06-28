@@ -31,11 +31,13 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
   const context = new Faxios(defaultConfig);
   const instance = bind(Faxios.prototype.request as (...args: Array<unknown>) => unknown, context) as unknown as FaxiosInstance;
 
-  // Copy faxios.prototype to instance
-  utils.extend(instance, Faxios.prototype, context, { allOwnKeys: true });
+  // Copy faxios.prototype to instance. The instance is a callable populated
+  // dynamically here; extend mutates it via own-key copy.
+  const target = instance as unknown as Record<string, unknown>;
+  utils.extend(target, Faxios.prototype, context, { allOwnKeys: true });
 
   // Copy context to instance
-  utils.extend(instance, context, null, { allOwnKeys: true });
+  utils.extend(target, context, null, { allOwnKeys: true });
 
   // Factory for creating new instances
   instance.create = function create(instanceConfig?: FaxiosRequestConfig): FaxiosInstance {
@@ -46,20 +48,20 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
 }
 
 export type FaxiosInstance = {
-  <T = unknown>(config: FaxiosRequestConfig): Promise<FaxiosResponse<T>>;
-  <T = unknown>(url: string, config?: FaxiosRequestConfig): Promise<FaxiosResponse<T>>;
-  request: <T = unknown>(config: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
-  get: <T = unknown>(url: string, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
-  delete: <T = unknown>(url: string, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
-  head: <T = unknown>(url: string, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
-  options: <T = unknown>(url: string, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
-  post: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
-  put: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
-  patch: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
-  query: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
-  postForm: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
-  putForm: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
-  patchForm: <T = unknown>(url: string, data?: unknown, config?: FaxiosRequestConfig) => Promise<FaxiosResponse<T>>;
+  <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D>): Promise<R>;
+  <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
+  request: <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D>) => Promise<R>;
+  get: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>) => Promise<R>;
+  delete: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>) => Promise<R>;
+  head: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>) => Promise<R>;
+  options: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>) => Promise<R>;
+  post: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>) => Promise<R>;
+  put: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>) => Promise<R>;
+  patch: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>) => Promise<R>;
+  query: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>) => Promise<R>;
+  postForm: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>) => Promise<R>;
+  putForm: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>) => Promise<R>;
+  patchForm: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>) => Promise<R>;
   defaults: { headers: Record<string, unknown>; } & Record<string, unknown>;
   interceptors: {
     request: {
@@ -102,7 +104,6 @@ export type FaxiosInstance = {
   getAdapter: typeof adapters.getAdapter;
   HttpStatusCode: typeof HttpStatusCode;
   default: FaxiosInstance;
-  [key: string]: unknown;
 };
 
 // Create the default instance to be exported

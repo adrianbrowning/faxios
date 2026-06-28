@@ -821,7 +821,7 @@ const factory = (env: Record<string, unknown>) => {
         signal: composedSignal,
         method: (method as string).toUpperCase(),
         headers: toByteStringHeaderObject(
-          headers.normalize(false) as FaxiosHeaders
+          headers.normalize(false)
         ),
         body: data,
         duplex: "half",

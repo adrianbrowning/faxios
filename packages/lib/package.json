@@ -6,20 +6,6 @@
   "module": "./dist/index.js",
   "type": "module",
   "types": "./dist/index.d.ts",
-  "~jsdelivr": "dist/faxios.min.js",
-  "~unpkg": "dist/faxios.min.js",
-  "~browser": {
-    "./dist/node/faxios.cjs": "./dist/browser/faxios.cjs",
-    "./lib/adapters/http.js": "./lib/helpers/null.js",
-    "./lib/platform/node/index.js": "./lib/platform/browser/index.js",
-    "./lib/platform/node/classes/FormData.js": "./lib/helpers/null.js"
-  },
-  "~react-native": {
-    "./dist/node/faxios.cjs": "./dist/browser/faxios.cjs",
-    "./lib/adapters/http.js": "./lib/helpers/null.js",
-    "./lib/platform/node/index.js": "./lib/platform/browser/index.js",
-    "./lib/platform/node/classes/FormData.js": "./lib/helpers/null.js"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/adrianbrowning/faxios.git"
@@ -61,7 +47,6 @@
   "files": [
     "index.js",
     "index.d.ts",
-    "index.d.cts",
     "CHANGELOG.md",
     "MIGRATION_GUIDE.md",
     "lib/",
@@ -71,8 +56,7 @@
   "scripts": {
     "build": "zshy",
     "bp": "pnpm build && pnpm pack",
-    "version": "npm run build && git add package.json",
-    "preversion": "gulp version",
+    "version": "pnpm run build && git add package.json",
     "docs:dev": "cd docs && npm run docs:dev",
     "lint": "pnpm lint:ts; pnpm lint:fix",
     "lint:ts": "tsc --noEmit -p tsconfig.check.json",
@@ -101,7 +85,6 @@
     "@types/node": "^24.13.2",
     "@types/proxy-from-env": "^1.0.4",
     "eslint": "^10.4.0",
-    "gulp": "^5.0.1",
     "rollup": "^4.60.4",
     "rollup-plugin-bundle-size": "^1.0.3",
     "typescript": "^6.0.3",

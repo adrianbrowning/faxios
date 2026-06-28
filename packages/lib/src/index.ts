@@ -1,32 +1,38 @@
 // @ts-self-types="./index.d.ts"
+/* eslint-disable no-barrel-files/no-barrel-files */
 import faxios from "./lib/faxios.ts";
+import type { FaxiosInstance } from "./lib/faxios.ts";
+import type { FaxiosRequestConfig } from "./lib/types.ts";
 
-// This module is intended to unwrap Faxios default export as named.
-// Keep top-level export same with static properties
-// so that it can keep same with es module or cjs
-const {
-  Faxios,
-  FaxiosError,
-  CanceledError,
-  isCancel,
-  CancelToken,
-  VERSION,
-  all,
-  Cancel,
-  isFaxiosError,
-  spread,
-  toFormData,
-  FaxiosHeaders,
-  HttpStatusCode,
-  formToJSON,
-  getAdapter,
-  mergeConfig,
-  create,
-} = faxios;
+// Static re-exports so the emitted .d.ts references source modules.
+// zshy rewrites .ts -> .js for static import/export, but NOT for inline
+// import() type expressions (ImportTypeNode). Destructuring these off the
+// runtime instance forced TS to emit the broken inline `import("./x.ts")` form.
+export { default as Faxios } from "./lib/core/Faxios.ts";
+export { default as FaxiosError } from "./lib/core/FaxiosError.ts";
+export { default as CanceledError, default as Cancel } from "./lib/cancel/CanceledError.ts";
+export { default as isCancel } from "./lib/cancel/isCancel.ts";
+export { default as CancelToken } from "./lib/cancel/CancelToken.ts";
+export { default as isFaxiosError } from "./lib/helpers/isFaxiosError.ts";
+export { default as spread } from "./lib/helpers/spread.ts";
+export { default as toFormData } from "./lib/helpers/toFormData.ts";
+export { default as FaxiosHeaders } from "./lib/core/FaxiosHeaders.ts";
+export { default as HttpStatusCode } from "./lib/helpers/HttpStatusCode.ts";
+export { default as mergeConfig } from "./lib/core/mergeConfig.ts";
+export { VERSION } from "./lib/env/data.ts";
+export { getAdapter } from "./lib/adapters/adapters.ts";
 
-// eslint-disable-next-line no-barrel-files/no-barrel-files
 export type {
+  FaxiosRequestConfig,
   InternalFaxiosRequestConfig,
+  FaxiosResponse,
+  FaxiosRequestHeaders,
+  FaxiosResponseHeadersLike,
+  FaxiosHeaderValue,
+  Method,
+  ResponseType,
+  FaxiosAdapter,
+  FaxiosAdapterName,
   GenericHTMLFormElement,
   RawFaxiosRequestConfig,
   FaxiosPromise,
@@ -34,24 +40,11 @@ export type {
   CancelTokenStatic
 } from "./lib/types.ts";
 
-export {
-  // eslint-disable-next-line no-barrel-files/no-barrel-files
-  faxios as default,
-  create,
-  Faxios,
-  FaxiosError,
-  CanceledError,
-  isCancel,
-  CancelToken,
-  VERSION,
-  all,
-  Cancel,
-  isFaxiosError,
-  spread,
-  toFormData,
-  FaxiosHeaders,
-  HttpStatusCode,
-  formToJSON,
-  getAdapter,
-  mergeConfig
-};
+// Instance-synthesized members (no 1:1 source module). Types are self-contained
+// (all/formToJSON) or annotated with statically imported types (create), so no
+// inline import() is emitted. Runtime values are the same references as on the instance.
+export const all: FaxiosInstance["all"] = faxios.all;
+export const formToJSON: FaxiosInstance["formToJSON"] = faxios.formToJSON;
+export const create: (instanceConfig?: FaxiosRequestConfig) => FaxiosInstance = faxios.create;
+
+export { faxios as default };

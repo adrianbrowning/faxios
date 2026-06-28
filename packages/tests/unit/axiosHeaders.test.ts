@@ -237,6 +237,17 @@ describe("FaxiosHeaders", () => {
       ]);
     });
 
+    // Regression: array normalization must recurse per-element (matching the
+    // JS source), so falsey/non-string elements pass through instead of being
+    // stringified to "false"/"null".
+    it("should recursively normalize non-string array header elements", () => {
+      const headers = new FaxiosHeaders();
+
+      headers.set("x-multi", [ "a", false, null, 1 ] as unknown);
+
+      assert.deepStrictEqual(headers.get("x-multi"), [ "a", false, null, "1" ]);
+    });
+
     // Regression: https://github.com/faxios/faxios/issues/10849
     // Non-control Unicode header values must round-trip through set/get so
     // request interceptors can encode them (e.g. encodeURIComponent) before
