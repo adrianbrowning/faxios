@@ -8,27 +8,24 @@ import { progressEventReducer } from "../helpers/progressEventReducer.js";
 import resolveConfig from "../helpers/resolveConfig.js";
 import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import platform from "../platform/index.js";
-import type { Cancel } from "../types.js";
+import type { Cancel, FaxiosResponse, InternalFaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
 
 const isXHRAdapterSupported = typeof (globalThis as Record<string, unknown>).XMLHttpRequest !== "undefined";
 
 /* eslint-disable sonarjs/cognitive-complexity */
 export default isXHRAdapterSupported &&
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async function (config: any) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return new Promise(function dispatchXhrRequest(resolve: (value: any) => void, reject: (reason?: any) => void) {
+  async function (config: InternalFaxiosRequestConfig) {
+    return new Promise<FaxiosResponse>(function dispatchXhrRequest(resolve, reject) {
       const _config = resolveConfig(config);
       let requestData = _config.data;
       const requestHeaders = FaxiosHeaders.from(_config.headers).normalize(false);
       let { responseType, onUploadProgress, onDownloadProgress } = _config;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let onCanceled: ((cancel?: any) => void) | undefined;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let uploadThrottled: any, downloadThrottled: any;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let flushUpload: any, flushDownload: any;
+      let onCanceled: ((cancel?: Cancel) => void) | undefined;
+      let uploadThrottled: ((loaded: number) => void) | undefined;
+      let downloadThrottled: ((loaded: number) => void) | undefined;
+      let flushUpload: (() => void) | undefined;
+      let flushDownload: (() => void) | undefined;
 
       function done() {
         flushUpload && flushUpload(); // flush events
@@ -71,7 +68,7 @@ export default isXHRAdapterSupported &&
         };
 
         settle(
-          function _resolve(value: unknown) {
+          function _resolve(value: FaxiosResponse) {
             resolve(value);
             done();
           },
@@ -127,8 +124,7 @@ export default isXHRAdapterSupported &&
       };
 
       // Handle low level network errors
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      request.onerror = function handleError(event: any) {
+      request.onerror = function handleError(event: { message?: string; } | null | undefined) {
         // Browsers deliver a ProgressEvent in XHR onerror
         // (message may be empty; when present, surface it)
         // See https://developer.mozilla.org/docs/Web/API/XMLHttpRequest/error_event
@@ -202,8 +198,7 @@ export default isXHRAdapterSupported &&
       if (_config.cancelToken || _config.signal) {
         // Handle cancellation
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onCanceled = (cancel?: any) => {
+        onCanceled = (cancel?: Cancel & { type?: unknown; }) => {
           if (!request) {
             return;
           }

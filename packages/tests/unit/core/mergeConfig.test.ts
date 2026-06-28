@@ -246,6 +246,18 @@ describe("core::mergeConfig", () => {
       ).toEqual({});
     });
 
+    // Deliberate: an own explicit `undefined` in config2 overrides config1's
+    // value rather than falling back to it. The merged result drops the key
+    // (its value is undefined) instead of inheriting "FROM-DEFAULT".
+    it("lets an explicit undefined in config2 win over config1's value", () => {
+      const merged = mergeConfig(
+        { xsrfCookieName: "FROM-DEFAULT" },
+        { xsrfCookieName: undefined }
+      );
+
+      expect(merged.xsrfCookieName).toBe(undefined);
+    });
+
     it("clones config2 when both values are plain objects", () => {
       const config1 = { transformRequest: { a: 1, b: 1 } };
       const config2 = { transformRequest: { b: 2, c: 2 } };

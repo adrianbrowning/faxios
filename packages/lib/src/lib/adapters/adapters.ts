@@ -79,7 +79,7 @@ const isResolvedHandle = (adapter: unknown) =>
  * @returns {Function} The resolved adapter function
  */
 
-function getAdapter(
+export function getAdapter(
   adapters: unknown,
   config: InternalFaxiosRequestConfig
 ): FaxiosAdapter {

@@ -31,7 +31,6 @@
     "jscpd": "^4.2.5",
     "knip": "5.70.1",
     "lint-staged": "^17.0.5",
-    "minimist": "^1.2.8",
     "typescript": "^6.0.3"
   },
   "pnpm": {
