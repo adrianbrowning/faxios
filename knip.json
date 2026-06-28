@@ -49,7 +49,6 @@
   "ignoreBinaries": ["diff"],
   "ignoreDependencies": [
     "faxios",
-    "@babel/preset-env",
     "@vitest/browser",
     "@ai-hero/sandcastle"
   ],

@@ -72,21 +72,11 @@
     "proxy-from-env": "^2.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.0",
-    "@babel/preset-env": "^7.29.5",
     "@gingacodemonkey/config": "^0.0.32",
-    "@rollup/plugin-alias": "^6.0.0",
-    "@rollup/plugin-babel": "^7.0.0",
-    "@rollup/plugin-commonjs": "^29.0.2",
-    "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^16.0.3",
-    "@rollup/plugin-terser": "^1.0.0",
     "@types/follow-redirects": "^1.14.4",
     "@types/node": "^24.13.2",
     "@types/proxy-from-env": "^1.0.4",
     "eslint": "^10.4.0",
-    "rollup": "^4.60.4",
-    "rollup-plugin-bundle-size": "^1.0.3",
     "typescript": "^6.0.3",
     "zshy": "latest"
   },
