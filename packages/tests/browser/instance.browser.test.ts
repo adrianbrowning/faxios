@@ -123,8 +123,10 @@ describe("instance (vitest browser)", () => {
 
   it("should have the same methods as default instance", () => {
     const instance = faxios.create();
+    const defaultInstance = faxios as unknown as Record<string, unknown>;
+    const createdInstance = instance as unknown as Record<string, unknown>;
 
-    for (const prop in faxios) {
+    for (const prop in defaultInstance) {
       if (
         [
           "Faxios",
@@ -151,7 +153,7 @@ describe("instance (vitest browser)", () => {
         continue;
       }
 
-      expect(typeof instance[prop]).toBe(typeof faxios[prop]);
+      expect(typeof createdInstance[prop]).toBe(typeof defaultInstance[prop]);
     }
   });
 
