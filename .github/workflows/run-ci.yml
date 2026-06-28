@@ -41,10 +41,6 @@ jobs:
       - name: Build project
         run: pnpm run build
 
-      - name: Fix .ts extensions in dist/index.d.ts
-        working-directory: packages/lib
-        run: node --input-type=module -e "import fs from 'fs';const p='dist/index.d.ts';fs.writeFileSync(p,fs.readFileSync(p,'utf8').replaceAll('.ts\"','.js\"'))"
-
       - name: Install Playwright with deps
         working-directory: packages/tests
         run: pnpm exec playwright install --with-deps

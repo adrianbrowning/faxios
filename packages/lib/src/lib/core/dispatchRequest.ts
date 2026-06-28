@@ -23,7 +23,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
 
   config.headers = FaxiosHeaders.from(config.headers) as unknown as typeof config.headers;
 
-  config.data = transformData.call(config, config.transformRequest as never);
+  config.data = transformData.call(config, config.transformRequest);
 
   if ([ "post", "put", "patch" ].indexOf(config.method as string) !== -1) {
     (config.headers as unknown as { setContentType: (v: string, r: boolean) => void; }).setContentType("application/x-www-form-urlencoded", false);
@@ -39,7 +39,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
       (config as unknown as Record<string, unknown>)["response"] = response;
 
       try {
-        response.data = transformData.call(config, config.transformResponse as never, response);
+        response.data = transformData.call(config, config.transformResponse, response);
         response.headers = FaxiosHeaders.from(response.headers);
       }
       finally {
@@ -56,7 +56,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
         if (r?.response) {
           (config as unknown as Record<string, unknown>)["response"] = r.response;
           try {
-            r.response.data = transformData.call(config, config.transformResponse as never, r.response);
+            r.response.data = transformData.call(config, config.transformResponse, r.response);
           }
           finally {
             delete (config as unknown as Record<string, unknown>)["response"];

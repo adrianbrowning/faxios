@@ -191,33 +191,44 @@ export interface FaxiosProxyConfig {
 
 // forward-declared; implemented in core/FaxiosHeaders.ts
 // Using a structural type that matches FaxiosHeaders class methods
-export type FaxiosRequestHeaders = Record<string, unknown> & {
-  set: (header: string, value?: unknown, rewrite?: unknown) => unknown;
-  get: (header: string, parser?: unknown) => unknown;
-  has: (header: string, matcher?: unknown) => boolean;
-  delete: (header: string | Array<string>, matcher?: unknown) => boolean;
-  clear: (matcher?: unknown) => boolean;
-  normalize: (format?: boolean) => unknown;
-  concat: (...targets: Array<unknown>) => unknown;
-  getContentType: (matcher?: unknown) => unknown;
-  setContentType: (value: unknown, rewrite?: unknown) => unknown;
-  hasContentType: (matcher?: unknown) => boolean;
-  getContentLength: (matcher?: unknown) => unknown;
-  setContentLength: (value: unknown, rewrite?: unknown) => unknown;
-  hasContentLength: (matcher?: unknown) => boolean;
-  getAccept: (matcher?: unknown) => unknown;
-  setAccept: (value: unknown, rewrite?: unknown) => unknown;
-  hasAccept: (matcher?: unknown) => boolean;
-  getUserAgent: (matcher?: unknown) => unknown;
-  setUserAgent: (value: unknown, rewrite?: unknown) => unknown;
-  hasUserAgent: (matcher?: unknown) => boolean;
-  getContentEncoding: (matcher?: unknown) => unknown;
-  setContentEncoding: (value: unknown, rewrite?: unknown) => unknown;
-  hasContentEncoding: (matcher?: unknown) => boolean;
-  getAuthorization: (matcher?: unknown) => unknown;
-  setAuthorization: (value: unknown, rewrite?: unknown) => unknown;
-  hasAuthorization: (matcher?: unknown) => boolean;
-  toJSON: (asStrings?: boolean) => Record<string, unknown>;
+type HeaderMatcher =
+  | string
+  | RegExp
+  | ((value: string, name: string) => boolean);
+
+type HeaderRewrite =
+  | boolean
+  | ((value: string, name: string) => boolean);
+
+type HeaderGetResult = string | Array<string> | Record<string, string> | RegExpExecArray | true | null | undefined;
+
+export type FaxiosRequestHeaders = Record<string, FaxiosHeaderValue> & {
+  set: (header: string | Record<string, unknown>, value?: FaxiosHeaderValue, rewrite?: HeaderRewrite) => FaxiosRequestHeaders;
+  get: (header: string, parser?: boolean | RegExp) => HeaderGetResult;
+  has: (header: string, matcher?: HeaderMatcher) => boolean;
+  delete: (header: string | Array<string>, matcher?: HeaderMatcher) => boolean;
+  clear: (matcher?: HeaderMatcher) => boolean;
+  normalize: (format?: boolean) => FaxiosRequestHeaders;
+  concat: (...targets: Array<unknown>) => FaxiosRequestHeaders;
+  getContentType: (matcher?: HeaderMatcher) => HeaderGetResult;
+  setContentType: (value: FaxiosHeaderValue, rewrite?: HeaderRewrite) => FaxiosRequestHeaders;
+  hasContentType: (matcher?: HeaderMatcher) => boolean;
+  getContentLength: (matcher?: HeaderMatcher) => HeaderGetResult;
+  setContentLength: (value: FaxiosHeaderValue, rewrite?: HeaderRewrite) => FaxiosRequestHeaders;
+  hasContentLength: (matcher?: HeaderMatcher) => boolean;
+  getAccept: (matcher?: HeaderMatcher) => HeaderGetResult;
+  setAccept: (value: FaxiosHeaderValue, rewrite?: HeaderRewrite) => FaxiosRequestHeaders;
+  hasAccept: (matcher?: HeaderMatcher) => boolean;
+  getUserAgent: (matcher?: HeaderMatcher) => HeaderGetResult;
+  setUserAgent: (value: FaxiosHeaderValue, rewrite?: HeaderRewrite) => FaxiosRequestHeaders;
+  hasUserAgent: (matcher?: HeaderMatcher) => boolean;
+  getContentEncoding: (matcher?: HeaderMatcher) => HeaderGetResult;
+  setContentEncoding: (value: FaxiosHeaderValue, rewrite?: HeaderRewrite) => FaxiosRequestHeaders;
+  hasContentEncoding: (matcher?: HeaderMatcher) => boolean;
+  getAuthorization: (matcher?: HeaderMatcher) => HeaderGetResult;
+  setAuthorization: (value: FaxiosHeaderValue, rewrite?: HeaderRewrite) => FaxiosRequestHeaders;
+  hasAuthorization: (matcher?: HeaderMatcher) => boolean;
+  toJSON: (asStrings?: boolean) => Record<string, FaxiosHeaderValue>;
 };
 
 export type FaxiosAdapterName = StringLiteralsOrString<
@@ -375,8 +386,10 @@ export interface InternalFaxiosRequestConfig<
 //   Record<string, FaxiosHeaderValue>;
 
 export interface FaxiosResponseHeadersLike {
+  // Property access stays loose (matches the FaxiosHeaders runtime class), but
+  // get() is precisely typed so the common accessor isn't `unknown`.
   [key: string]: unknown;
-  get: (header: string) => unknown;
+  get: (header: string) => FaxiosHeaderValue | undefined;
 }
 
 export interface FaxiosResponse<T = unknown, D = unknown> {

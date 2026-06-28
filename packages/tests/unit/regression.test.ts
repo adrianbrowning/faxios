@@ -280,6 +280,7 @@ describe("regression", () => {
 
         const userId = "/localhost:" + String(badPort);
 
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- request.res.responseUrl is untyped on FaxiosResponse
         const response = (await ssrfFaxios.get(
           `/${userId}`
         )) as FaxiosResponse<string> & {

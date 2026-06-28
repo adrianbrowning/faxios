@@ -33,6 +33,9 @@ export default defineConfig({
           maxWorkers: 1,
           minWorkers: 1,
         },
+        // ponytail: workspace has two .pnpm copies of https-proxy-agent (lib + tests);
+        // without dedupe the lib and test load distinct class objects and instanceof fails
+        resolve: { dedupe: [ "https-proxy-agent" ] },
       },
       {
         test: {

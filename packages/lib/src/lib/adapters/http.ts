@@ -740,14 +740,15 @@ async function prepareRequestData(
       },
       {
         tag: `faxios-${VERSION}-boundary`,
-        boundary: ((userBoundary && (userBoundary as RegExpMatchArray)[1]) ||
-          undefined) as string | undefined,
+        boundary: (Array.isArray(userBoundary) && userBoundary[1]) ||
+          undefined,
       }
     );
   }
   else if (
     utils.isFormData(data) &&
-    utils.isFunction((data as Record<string, unknown>)["getHeaders"])
+    utils.isFunction((data as Record<string, unknown>)["getHeaders"]) &&
+    (data as Record<string, unknown>)["getHeaders"] !== (Object.prototype as Record<string, unknown>)["getHeaders"]
   ) {
     await applyFormDataHeaders(data, headers, own);
   }
