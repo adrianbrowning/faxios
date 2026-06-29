@@ -9,17 +9,14 @@ formData.append('foo', 'bar');
 faxios.post('https://httpbin.org/post', formData);
 ```
 
-对于浏览器、Web Worker 或 React Native 的 `FormData`，不要手动设置 `Content-Type` 请求头；这些运行时会自行添加 multipart boundary。
+不要手动设置 `Content-Type` 请求头；运行时在序列化 `FormData` 主体时会自行添加 multipart boundary。
 
-在 Node.js 中，可以使用 `form-data` 库，如下所示：
+全局 `FormData`（以及 `Blob`/`File`）在所有受支持的运行时中均可用——浏览器、Node.js 18+、Deno 和 Bun——因此同一份代码可在各处运行。faxios 不再内置 `form-data` 包：
 
 ```js
-const FormData = require('form-data');
-
 const form = new FormData();
 form.append('my_field', 'my value');
-form.append('my_buffer', Buffer.alloc(10));
-form.append('my_file', fs.createReadStream('/foo/bar.jpg'));
+form.append('my_file', new Blob([fileBytes]), 'bar.jpg');
 
 faxios.post('https://example.com', form);
 ```
@@ -44,16 +41,15 @@ faxios
   .then(({ data }) => console.log(data));
 ```
 
-在 Node.js 构建中，默认使用 ([`form-data`](https://github.com/form-data/form-data)) 作为 polyfill。你可以通过设置 `env.FormData` 配置变量来覆盖 FormData 类，但大多数情况下不需要这样做：
+faxios 使用运行时的全局 `FormData` 进行序列化。你可以通过 `env.FormData` 配置变量覆盖该类，但大多数情况下不需要这样做：
 
 ```js
-const faxios = require('faxios');
-var FormData = require('form-data');
+import faxios from 'faxios';
 
 faxios
   .post(
     'https://httpbin.org/post',
-    { x: 1, buf: Buffer.alloc(10) },
+    { x: 1 },
     {
       headers: {
         'Content-Type': 'multipart/form-data',

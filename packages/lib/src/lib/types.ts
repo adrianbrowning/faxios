@@ -150,8 +150,6 @@ export interface ParamsSerializerOptions extends SerializerOptions {
   serialize?: CustomParamsSerializer;
 }
 
-type MaxUploadRate = number;
-type MaxDownloadRate = number;
 type BrowserProgressEvent = unknown;
 type Milliseconds = number;
 
@@ -168,25 +166,9 @@ export interface FaxiosProgressEvent {
   lengthComputable: boolean;
 }
 
-export type AddressFamily = 4 | 6 | undefined;
-
-export interface LookupAddressEntry {
-  address: string;
-  family?: AddressFamily;
-}
-
-export type LookupAddress = string | LookupAddressEntry;
-
 export interface FaxiosBasicCredentials {
   username: string;
   password: string;
-}
-
-export interface FaxiosProxyConfig {
-  host: string;
-  port: number;
-  auth?: FaxiosBasicCredentials;
-  protocol?: string;
 }
 
 // forward-declared; implemented in core/FaxiosHeaders.ts
@@ -231,9 +213,7 @@ export type FaxiosRequestHeaders = Record<string, FaxiosHeaderValue> & {
   toJSON: (asStrings?: boolean) => Record<string, FaxiosHeaderValue>;
 };
 
-export type FaxiosAdapterName = StringLiteralsOrString<
-  "xhr" | "http" | "fetch"
->;
+export type FaxiosAdapterName = StringLiteralsOrString<"fetch">;
 
 export interface FaxiosAdapter {
   (config: InternalFaxiosRequestConfig): Promise<FaxiosResponse>;
@@ -285,31 +265,9 @@ export interface FaxiosRequestConfig<D = unknown> {
   maxContentLength?: number;
   validateStatus?: ((status: number) => boolean) | null;
   maxBodyLength?: number;
-  maxRedirects?: number;
-  maxRate?: number | [MaxUploadRate, MaxDownloadRate];
-  beforeRedirect?: (
-    options: Record<string, unknown>,
-    responseDetails: {
-      headers: Record<string, string>;
-      statusCode: number;
-    },
-    requestDetails: {
-      headers: Record<string, string>;
-      url: string;
-      method: string;
-    }
-  ) => void;
-  socketPath?: string | null;
-  allowedSocketPaths?: string | Array<string> | null;
-  transport?: unknown;
-  httpAgent?: unknown;
-  httpsAgent?: unknown;
-  proxy?: FaxiosProxyConfig | false;
   cancelToken?: CancelToken;
-  decompress?: boolean;
   transitional?: TransitionalOptions;
   signal?: GenericAbortSignal;
-  insecureHTTPParser?: boolean;
   env?: {
     FormData?: new (...args: Array<unknown>) => object;
     fetch?: (
@@ -323,27 +281,6 @@ export interface FaxiosRequestConfig<D = unknown> {
     Response?: new (...args: Array<unknown>) => unknown;
   };
   formSerializer?: FormSerializerOptions;
-  family?: AddressFamily;
-  lookup?:
-    | ((
-      hostname: string,
-      options: object,
-      cb: (
-        err: Error | null,
-        address: LookupAddress | Array<LookupAddress>,
-        family?: AddressFamily
-      ) => void
-    ) => void)
-    | ((
-      hostname: string,
-      options: object
-    ) => Promise<
-        | [
-            address: LookupAddressEntry | Array<LookupAddressEntry>,
-            family?: AddressFamily
-        ]
-        | LookupAddress
-    >);
   withXSRFToken?:
     | boolean
     | ((config: InternalFaxiosRequestConfig) => boolean | undefined);
@@ -354,13 +291,8 @@ export interface FaxiosRequestConfig<D = unknown> {
     context?: { source?: string; }
   ) => unknown;
   fetchOptions?: Record<string, unknown>;
-  httpVersion?: 1 | 2;
-  http2Options?: Record<string, unknown> & {
-    sessionTimeout?: number;
-  };
   formDataHeaderPolicy?: "legacy" | "content-only";
   redact?: Array<string>;
-  sensitiveHeaders?: Array<string>;
 }
 
 export type RawFaxiosRequestConfig<D = unknown> = FaxiosRequestConfig<D>;

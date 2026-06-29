@@ -1,6 +1,6 @@
-# Fetch adapter <Badge type="tip" text="New" />
+# Fetch adapter
 
-The `fetch` adapter is a new adapter that we have introduced as of version 1.7.0. This provides a way to use faxios with the `fetch` API thus giving you the best of both worlds. By default, `fetch` will be used if `xhr` and `http` adapters are not available in the build, or not supported by the environment. To use it by default, it must be selected explicitly by setting the `adapter` option to `fetch` when creating an instance of faxios.
+The `fetch` adapter is the only built-in adapter and is used in every supported runtime — the browser, Node.js 18+, Deno, and Bun. It is selected by default (`adapter: ['fetch']`), so you do not normally need to configure it. You can set it explicitly if you wish:
 
 ```js
 import faxios from 'faxios';
@@ -10,7 +10,13 @@ const instance = faxios.create({
 });
 ```
 
-The adapter supports the same functionality as the `xhr` adapter, including upload and download progress capturing. It also supports additional response types such as `stream` and `formdata` (if supported by the environment).
+The adapter supports response types such as `stream` and `formdata` (if supported by the environment).
+
+::: warning
+Because the `fetch` API cannot emit upload progress events, `onUploadProgress` is not supported. Download progress (`onDownloadProgress`) works as usual.
+:::
+
+To use a proxy or a custom agent/dispatcher, configure it on the underlying runtime (for example via `fetchOptions` or your runtime's `fetch` dispatcher) and pass a custom `fetch` function through the `env` option — see [Custom fetch](#custom-fetch) below.
 
 When `auth` is omitted, the fetch adapter can read HTTP Basic auth credentials from the request URL, for example `https://user:pass@example.com`. Percent-encoded URL credentials are decoded before the `Authorization` header is generated, and `auth` takes precedence over URL-embedded credentials.
 
@@ -21,7 +27,7 @@ Starting from `v1.12.0`, you can customise the fetch adapter to use a custom `fe
 ::: info
 When using a custom `fetch` function, you may also need to supply matching `Request` and `Response` constructors. If you omit them, the global constructors will be used. If your custom `fetch` is incompatible with the globals, pass `null` to disable them.
 
-**Note:** Setting `Request` and `Response` to `null` will make it impossible for the fetch adapter to capture upload and download progress.
+**Note:** Setting `Request` and `Response` to `null` will make it impossible for the fetch adapter to capture download progress.
 :::
 
 ### Basic example

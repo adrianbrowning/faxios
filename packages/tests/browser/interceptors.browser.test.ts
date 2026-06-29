@@ -1,156 +1,19 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import faxios from "#src/index.js";
 import type { InternalFaxiosRequestConfig } from "#src/index.js";
 
-class MockXMLHttpRequest {
-  requestHeaders: Record<string, string> = {};
-  responseHeaders: string | Record<string, string> = {};
-  readyState = 0;
-  status = 0;
-  statusText = "";
-  responseText = "";
-  response: string | null = null;
-  responseURL = "";
-  timeout = 0;
-  withCredentials = false;
-  onreadystatechange: (() => void) | null = null;
-  onloadend: (() => void) | null = null;
-  onabort: (() => void) | null = null;
-  onerror: ((e: { message: string; }) => void) | null = null;
-  ontimeout: (() => void) | null = null;
-  upload = { addEventListener() {} };
-  method?: string;
-  url?: string;
-  async?: boolean;
-  params?: unknown;
-
-  constructor() {}
-
-  open(method: string, url: string, async = true) {
-    this.method = method;
-    this.url = url;
-    this.async = async;
-  }
-
-  setRequestHeader(key: string, value: string) {
-    this.requestHeaders[key] = value;
-  }
-
-  addEventListener() {}
-
-  getAllResponseHeaders() {
-    if (typeof this.responseHeaders === "string") {
-      return this.responseHeaders;
-    }
-
-    return Object.entries(this.responseHeaders)
-      .map(([ key, value ]) => `${key}: ${value}`)
-      .join("\n");
-  }
-
-  send(data: unknown) {
-    this.params = data;
-    requests.push(this);
-    this.readyState = 1;
-  }
-
-  respondWith({
-    status = 200,
-    statusText = "OK",
-    responseText = "",
-    response = null,
-    responseHeaders = {},
-    headers = {},
-    responseURL = "",
-  }: {
-    status?: number;
-    statusText?: string;
-    responseText?: string;
-    response?: string | null;
-    responseHeaders?: Record<string, string>;
-    headers?: Record<string, string>;
-    responseURL?: string;
-  } = {}) {
-    this.status = status;
-    this.statusText = statusText;
-    this.responseText = responseText;
-    this.response = response === null ? responseText : response;
-    this.responseHeaders = Object.keys(headers).length
-      ? headers
-      : responseHeaders;
-    this.responseURL = responseURL;
-    this.readyState = 4;
-    this.finish();
-  }
-
-  responseTimeout() {
-    if (this.ontimeout) {
-      this.ontimeout();
-    }
-  }
-
-  failNetworkError(message = "Network Error") {
-    if (this.onerror) {
-      this.onerror({ message });
-    }
-  }
-
-  abort() {
-    if (this.onabort) {
-      this.onabort();
-    }
-  }
-
-  finish() {
-    queueMicrotask(() => {
-      if (this.onloadend) {
-        this.onloadend();
-      }
-      else if (this.onreadystatechange) {
-        this.onreadystatechange();
-      }
-    });
-  }
-}
-
-let requests: Array<MockXMLHttpRequest> = [];
-let OriginalXMLHttpRequest: typeof XMLHttpRequest;
-
-const sleep = async (ms = 0) =>
-  new Promise(resolve => setTimeout(resolve, ms));
-
-const waitForRequest = async (timeoutMs = 1000) => {
-  const start = Date.now();
-
-  while (Date.now() - start < timeoutMs) {
-    const request = requests.at(-1);
-    if (request) {
-      return request;
-    }
-
-    await sleep(0);
-  }
-
-  throw new Error("Expected an XHR request to be sent");
-};
+import { installFetchMock } from "./helpers/fetchMock.js";
 
 describe("interceptors (vitest browser)", () => {
-  beforeEach(() => {
-    requests = [];
-    OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest =
-      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
-  });
-
   afterEach(() => {
-    window.XMLHttpRequest = OriginalXMLHttpRequest;
     faxios.interceptors.request.handlers = [];
     faxios.interceptors.response.handlers = [];
     vi.restoreAllMocks();
   });
 
   it("should add a request interceptor (asynchronous by default)", async () => {
+    using mock = installFetchMock();
     let asyncFlag = false;
 
     faxios.interceptors.request.use(config => {
@@ -162,13 +25,12 @@ describe("interceptors (vitest browser)", () => {
     const responsePromise = faxios("/foo");
     asyncFlag = true;
 
-    const request = await waitForRequest();
-    expect(request.requestHeaders.test).toBe("added by interceptor");
-    request.respondWith();
     await responsePromise;
+    expect(mock.lastRequest!.headers.get("test")).toBe("added by interceptor");
   });
 
   it("should add a request interceptor (explicitly flagged as asynchronous)", async () => {
+    using mock = installFetchMock();
     let asyncFlag = false;
 
     faxios.interceptors.request.use(
@@ -184,13 +46,12 @@ describe("interceptors (vitest browser)", () => {
     const responsePromise = faxios("/foo");
     asyncFlag = true;
 
-    const request = await waitForRequest();
-    expect(request.requestHeaders.test).toBe("added by interceptor");
-    request.respondWith();
     await responsePromise;
+    expect(mock.lastRequest!.headers.get("test")).toBe("added by interceptor");
   });
 
   it("should add a request interceptor that is executed synchronously when flag is provided", async () => {
+    using mock = installFetchMock();
     let asyncFlag = false;
 
     faxios.interceptors.request.use(
@@ -206,15 +67,14 @@ describe("interceptors (vitest browser)", () => {
     const responsePromise = faxios("/foo");
     asyncFlag = true;
 
-    const request = await waitForRequest();
-    expect(request.requestHeaders.test).toBe(
+    await responsePromise;
+    expect(mock.lastRequest!.headers.get("test")).toBe(
       "added by synchronous interceptor"
     );
-    request.respondWith();
-    await responsePromise;
   });
 
   it("should execute asynchronously when not all interceptors are explicitly flagged as synchronous", async () => {
+    using mock = installFetchMock();
     let asyncFlag = false;
 
     faxios.interceptors.request.use(config => {
@@ -242,16 +102,15 @@ describe("interceptors (vitest browser)", () => {
     const responsePromise = faxios("/foo");
     asyncFlag = true;
 
-    const request = await waitForRequest();
-    expect(request.requestHeaders.foo).toBe("uh oh, async");
-    expect(request.requestHeaders.test).toBe(
+    await responsePromise;
+    expect(mock.lastRequest!.headers.get("foo")).toBe("uh oh, async");
+    expect(mock.lastRequest!.headers.get("test")).toBe(
       "added by synchronous interceptor"
     );
-    request.respondWith();
-    await responsePromise;
   });
 
   it("should execute request interceptor in legacy order", async () => {
+    using _mock = installFetchMock();
     let sequence = "";
 
     faxios.interceptors.request.use(config => {
@@ -269,15 +128,13 @@ describe("interceptors (vitest browser)", () => {
       return config;
     });
 
-    const responsePromise = faxios({ url: "/foo" });
-    const request = await waitForRequest();
+    await faxios({ url: "/foo" });
 
     expect(sequence).toBe("321");
-    request.respondWith();
-    await responsePromise;
   });
 
   it("should execute request interceptor in order", async () => {
+    using _mock = installFetchMock();
     let sequence = "";
 
     faxios.interceptors.request.use(config => {
@@ -295,20 +152,18 @@ describe("interceptors (vitest browser)", () => {
       return config;
     });
 
-    const responsePromise = faxios({
+    await faxios({
       url: "/foo",
       transitional: {
         legacyInterceptorReqResOrdering: false,
       },
     });
-    const request = await waitForRequest();
 
     expect(sequence).toBe("123");
-    request.respondWith();
-    await responsePromise;
   });
 
   it("runs the interceptor if runWhen function is provided and resolves to true", async () => {
+    using mock = installFetchMock();
     const onGetCall = (config: InternalFaxiosRequestConfig) =>
       config.method === "get";
 
@@ -321,15 +176,13 @@ describe("interceptors (vitest browser)", () => {
       { runWhen: onGetCall }
     );
 
-    const responsePromise = faxios("/foo");
-    const request = await waitForRequest();
+    await faxios("/foo");
 
-    expect(request.requestHeaders.test).toBe("special get headers");
-    request.respondWith();
-    await responsePromise;
+    expect(mock.lastRequest!.headers.get("test")).toBe("special get headers");
   });
 
   it("does not run the interceptor if runWhen function is provided and resolves to false", async () => {
+    using mock = installFetchMock();
     const onPostCall = (config: InternalFaxiosRequestConfig) =>
       config.method === "post";
 
@@ -342,15 +195,13 @@ describe("interceptors (vitest browser)", () => {
       { runWhen: onPostCall }
     );
 
-    const responsePromise = faxios("/foo");
-    const request = await waitForRequest();
+    await faxios("/foo");
 
-    expect(request.requestHeaders.test).toBeUndefined();
-    request.respondWith();
-    await responsePromise;
+    expect(mock.lastRequest!.headers.get("test")).toBeNull();
   });
 
   it("does not run async interceptor if runWhen resolves to false (and runs synchronously)", async () => {
+    using mock = installFetchMock();
     let asyncFlag = false;
     const onPostCall = (config: InternalFaxiosRequestConfig) =>
       config.method === "post";
@@ -377,14 +228,13 @@ describe("interceptors (vitest browser)", () => {
     const responsePromise = faxios("/foo");
     asyncFlag = true;
 
-    const request = await waitForRequest();
-    expect(request.requestHeaders.test).toBeUndefined();
-    expect(request.requestHeaders.sync).toBe("hello world");
-    request.respondWith();
     await responsePromise;
+    expect(mock.lastRequest!.headers.get("test")).toBeNull();
+    expect(mock.lastRequest!.headers.get("sync")).toBe("hello world");
   });
 
   it("should call request onRejected when interceptor throws", async () => {
+    using _mock = installFetchMock();
     const rejectedSpy = vi.fn();
     const error = new Error("deadly error");
 
@@ -396,15 +246,13 @@ describe("interceptors (vitest browser)", () => {
       { synchronous: true }
     );
 
-    const responsePromise = faxios("/foo").catch(() => {});
-    const request = await waitForRequest();
-    request.respondWith();
-    await responsePromise;
+    await faxios("/foo").catch(() => {});
 
     expect(rejectedSpy).toHaveBeenCalledWith(error);
   });
 
   it("should add a request interceptor that returns a new config object", async () => {
+    using mock = installFetchMock();
     faxios.interceptors.request.use(
       () =>
         ({
@@ -413,16 +261,14 @@ describe("interceptors (vitest browser)", () => {
         }) as InternalFaxiosRequestConfig
     );
 
-    const responsePromise = faxios("/foo");
-    const request = await waitForRequest();
+    await faxios("/foo");
 
-    expect(request.method).toBe("POST");
-    expect(request.url).toBe("/bar");
-    request.respondWith();
-    await responsePromise;
+    expect(mock.lastRequest!.method).toBe("POST");
+    expect(new URL(mock.lastRequest!.url).pathname).toBe("/bar");
   });
 
   it("should add a request interceptor that returns a promise", async () => {
+    using mock = installFetchMock();
     faxios.interceptors.request.use(
       async config =>
         new Promise<typeof config>(resolve => {
@@ -433,15 +279,13 @@ describe("interceptors (vitest browser)", () => {
         })
     );
 
-    const responsePromise = faxios("/foo");
-    const request = await waitForRequest(1500);
+    await faxios("/foo");
 
-    expect(request.requestHeaders.async).toBe("promise");
-    request.respondWith();
-    await responsePromise;
+    expect(mock.lastRequest!.headers.get("async")).toBe("promise");
   });
 
   it("should add multiple request interceptors", async () => {
+    using mock = installFetchMock();
     faxios.interceptors.request.use(config => {
       config.headers.test1 = "1";
       return config;
@@ -455,35 +299,30 @@ describe("interceptors (vitest browser)", () => {
       return config;
     });
 
-    const responsePromise = faxios("/foo");
-    const request = await waitForRequest();
+    await faxios("/foo");
 
-    expect(request.requestHeaders.test1).toBe("1");
-    expect(request.requestHeaders.test2).toBe("2");
-    expect(request.requestHeaders.test3).toBe("3");
-    request.respondWith();
-    await responsePromise;
+    expect(mock.lastRequest!.headers.get("test1")).toBe("1");
+    expect(mock.lastRequest!.headers.get("test2")).toBe("2");
+    expect(mock.lastRequest!.headers.get("test3")).toBe("3");
   });
 
   it("should add a response interceptor", async () => {
+    using mock = installFetchMock();
+    mock.respondWith({ body: "OK" });
+
     faxios.interceptors.response.use(data => {
       data.data = `${data.data} - modified by interceptor`;
       return data;
     });
 
-    const responsePromise = faxios("/foo");
-    const request = await waitForRequest();
-
-    request.respondWith({
-      status: 200,
-      responseText: "OK",
-    });
-
-    const response = await responsePromise;
+    const response = await faxios("/foo");
     expect(response.data).toBe("OK - modified by interceptor");
   });
 
   it("should add a response interceptor when request interceptor is defined", async () => {
+    using mock = installFetchMock();
+    mock.respondWith({ body: "OK" });
+
     faxios.interceptors.request.use(data => data);
 
     faxios.interceptors.response.use(data => {
@@ -491,36 +330,26 @@ describe("interceptors (vitest browser)", () => {
       return data;
     });
 
-    const responsePromise = faxios("/foo");
-    const request = await waitForRequest();
-
-    request.respondWith({
-      status: 200,
-      responseText: "OK",
-    });
-
-    const response = await responsePromise;
+    const response = await faxios("/foo");
     expect(response.data).toBe("OK - modified by interceptor");
   });
 
   it("should add a response interceptor that returns a new data object", async () => {
+    using mock = installFetchMock();
+    mock.respondWith({ body: "OK" });
+
     faxios.interceptors.response.use(() => ({
       data: "stuff",
     }));
 
-    const responsePromise = faxios("/foo");
-    const request = await waitForRequest();
-
-    request.respondWith({
-      status: 200,
-      responseText: "OK",
-    });
-
-    const response = await responsePromise;
+    const response = await faxios("/foo");
     expect(response.data).toBe("stuff");
   });
 
   it("should add a response interceptor that returns a promise", async () => {
+    using mock = installFetchMock();
+    mock.respondWith({ body: "OK" });
+
     faxios.interceptors.response.use(
       async data =>
         new Promise(resolve => {
@@ -531,32 +360,16 @@ describe("interceptors (vitest browser)", () => {
         })
     );
 
-    const responsePromise = faxios("/foo");
-    const request = await waitForRequest();
-
-    request.respondWith({
-      status: 200,
-      responseText: "OK",
-    });
-
-    const response = await responsePromise;
+    const response = await faxios("/foo");
     expect(response.data).toBe("you have been promised!");
   });
 
   describe("given multiple response interceptors", () => {
-    const fireRequest = async () => {
-      const responsePromise = faxios("/foo");
-      const request = await waitForRequest();
-
-      request.respondWith({
-        status: 200,
-        responseText: "OK",
-      });
-
-      return responsePromise;
-    };
+    const fireRequest = async () => faxios("/foo");
 
     it("then each interceptor is executed", async () => {
+      using mock = installFetchMock();
+      mock.respondWith({ body: "OK" });
       const interceptor1 = vi.fn(response => response);
       const interceptor2 = vi.fn(response => response);
 
@@ -570,6 +383,8 @@ describe("interceptors (vitest browser)", () => {
     });
 
     it("then they are executed in the order they were added", async () => {
+      using mock = installFetchMock();
+      mock.respondWith({ body: "OK" });
       const interceptor1 = vi.fn(response => response);
       const interceptor2 = vi.fn(response => response);
 
@@ -584,6 +399,8 @@ describe("interceptors (vitest browser)", () => {
     });
 
     it("then only the last interceptor's result is returned", async () => {
+      using mock = installFetchMock();
+      mock.respondWith({ body: "OK" });
       faxios.interceptors.response.use(() => "response 1");
       faxios.interceptors.response.use(() => "response 2");
 
@@ -592,6 +409,8 @@ describe("interceptors (vitest browser)", () => {
     });
 
     it("then every interceptor receives the result of its predecessor", async () => {
+      using mock = installFetchMock();
+      mock.respondWith({ body: "OK" });
       faxios.interceptors.response.use(() => "response 1");
       faxios.interceptors.response.use(response => [ response, "response 2" ]);
 
@@ -601,18 +420,12 @@ describe("interceptors (vitest browser)", () => {
 
     describe("and when the fulfillment interceptor throws", () => {
       const fireRequestCatch = async () => {
-        const responsePromise = faxios("/foo").catch(() => {});
-        const request = await waitForRequest();
-
-        request.respondWith({
-          status: 200,
-          responseText: "OK",
-        });
-
-        await responsePromise;
+        await faxios("/foo").catch(() => {});
       };
 
       it("then the following fulfillment interceptor is not called", async () => {
+        using mock = installFetchMock();
+        mock.respondWith({ body: "OK" });
         faxios.interceptors.response.use(() => {
           throw new Error("throwing interceptor");
         });
@@ -625,6 +438,8 @@ describe("interceptors (vitest browser)", () => {
       });
 
       it("then the following rejection interceptor is called", async () => {
+        using mock = installFetchMock();
+        mock.respondWith({ body: "OK" });
         faxios.interceptors.response.use(() => {
           throw new Error("throwing interceptor");
         });
@@ -638,6 +453,8 @@ describe("interceptors (vitest browser)", () => {
       });
 
       it("once caught, another following fulfillment interceptor is called again", async () => {
+        using mock = installFetchMock();
+        mock.respondWith({ body: "OK" });
         faxios.interceptors.response.use(() => {
           throw new Error("throwing interceptor");
         });
@@ -657,6 +474,9 @@ describe("interceptors (vitest browser)", () => {
   });
 
   it("should allow removing interceptors", async () => {
+    using mock = installFetchMock();
+    mock.respondWith({ body: "OK" });
+
     faxios.interceptors.response.use(data => {
       data.data = `${data.data}1`;
       return data;
@@ -672,19 +492,12 @@ describe("interceptors (vitest browser)", () => {
 
     faxios.interceptors.response.eject(intercept);
 
-    const responsePromise = faxios("/foo");
-    const request = await waitForRequest();
-
-    request.respondWith({
-      status: 200,
-      responseText: "OK",
-    });
-
-    const response = await responsePromise;
+    const response = await faxios("/foo");
     expect(response.data).toBe("OK13");
   });
 
   it("should remove async interceptor before making request and execute synchronously", async () => {
+    using mock = installFetchMock();
     let asyncFlag = false;
 
     const asyncIntercept = faxios.interceptors.request.use(
@@ -711,30 +524,27 @@ describe("interceptors (vitest browser)", () => {
     const responsePromise = faxios("/foo");
     asyncFlag = true;
 
-    const request = await waitForRequest();
-    expect(request.requestHeaders.async).toBeUndefined();
-    expect(request.requestHeaders.sync).toBe("hello world");
-    request.respondWith();
     await responsePromise;
+    expect(mock.lastRequest!.headers.get("async")).toBeNull();
+    expect(mock.lastRequest!.headers.get("sync")).toBe("hello world");
   });
 
   it("should execute interceptors before transformers", async () => {
+    using mock = installFetchMock();
     faxios.interceptors.request.use(config => {
       (config.data as Record<string, unknown>).baz = "qux";
       return config;
     });
 
-    const responsePromise = faxios.post("/foo", {
-      foo: "bar",
-    });
+    await faxios.post("/foo", { foo: "bar" });
 
-    const request = await waitForRequest();
-    expect(request.params).toEqual("{\"foo\":\"bar\",\"baz\":\"qux\"}");
-    request.respondWith();
-    await responsePromise;
+    expect(await mock.lastRequest!.clone().text()).toEqual(
+      "{\"foo\":\"bar\",\"baz\":\"qux\"}"
+    );
   });
 
   it("should modify base URL in request interceptor", async () => {
+    using mock = installFetchMock();
     const instance = faxios.create({
       baseURL: "http://test.com/",
     });
@@ -744,12 +554,9 @@ describe("interceptors (vitest browser)", () => {
       return config;
     });
 
-    const responsePromise = instance.get("/foo");
-    const request = await waitForRequest();
+    await instance.get("/foo");
 
-    expect(request.url).toBe("http://rebase.com/foo");
-    request.respondWith();
-    await responsePromise;
+    expect(mock.lastRequest!.url).toBe("http://rebase.com/foo");
   });
 
   it("should clear all request interceptors", () => {

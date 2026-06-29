@@ -1,6 +1,6 @@
 # Adaptador Fetch <Badge type="tip" text="Nuevo" />
 
-El adaptador `fetch` es un nuevo adaptador que introdujimos a partir de la versión 1.7.0. Proporciona una forma de usar faxios con la API `fetch`, dándote lo mejor de ambos mundos. De forma predeterminada, `fetch` se usará si los adaptadores `xhr` y `http` no están disponibles en la compilación o no son compatibles con el entorno. Para usarlo de forma predeterminada, debe seleccionarse explícitamente estableciendo la opción `adapter` en `fetch` al crear una instancia de faxios.
+El adaptador `fetch` está construido sobre la API web estándar `fetch` y es el único adaptador de transporte de faxios. Se usa en todos los entornos: navegadores, Node.js 18+, Deno y Bun. Es el adaptador predeterminado, por lo que normalmente no necesitas seleccionarlo, pero puedes hacerlo explícitamente:
 
 ```js
 import faxios from 'faxios';
@@ -10,7 +10,9 @@ const instance = faxios.create({
 });
 ```
 
-El adaptador admite la misma funcionalidad que el adaptador `xhr`, incluyendo la captura del progreso de carga y descarga. También admite tipos de respuesta adicionales como `stream` y `formdata` (si el entorno lo soporta).
+El adaptador admite la captura del progreso de descarga (`onDownloadProgress`). El progreso de carga (`onUploadProgress`) no está disponible, porque la API `fetch` no puede emitir eventos de progreso de carga. También admite tipos de respuesta adicionales como `stream` y `formdata` (si el entorno lo soporta).
+
+Para configurar proxies o agentes/dispatchers personalizados, usa `fetchOptions` o el dispatcher del entorno de ejecución (por ejemplo, `undici` en Node.js), ya que faxios ya no gestiona proxies ni agentes directamente.
 
 Cuando `auth` se omite, el adaptador fetch puede leer credenciales de autenticación HTTP Basic desde la URL de la solicitud, por ejemplo `https://user:pass@example.com`. Las credenciales de URL codificadas con porcentaje se decodifican antes de generar el encabezado `Authorization`, y `auth` tiene prioridad sobre las credenciales incluidas en la URL.
 

@@ -1,29 +1,25 @@
 # Adaptateurs
 
-Les adaptateurs vous permettent de personnaliser la façon dont faxios gère les données de la requête. Par défaut, faxios utilise une liste de priorité ordonnée `['xhr', 'http', 'fetch']` et sélectionne le premier adaptateur pris en charge par l'environnement actuel. En pratique, cela signifie que `xhr` est utilisé dans les navigateurs, `http` dans Node.js, et `fetch` dans les environnements où ni l'un ni l'autre n'est disponible (comme Cloudflare Workers ou Deno).
+Les adaptateurs vous permettent de personnaliser la façon dont faxios gère les données de la requête. Par défaut, faxios utilise la liste `['fetch']` : l'adaptateur `fetch`, basé sur l'API web standard, est le seul adaptateur intégré et fonctionne dans tous les environnements (navigateurs, Node.js 18+, Deno et Bun).
 
 Écrire votre propre adaptateur vous donne un contrôle total sur la façon dont faxios effectue une requête et traite la réponse — utile pour les tests, les transports personnalisés ou les environnements non standard.
 
 ## Adaptateurs intégrés
 
-Vous pouvez sélectionner un adaptateur intégré par nom en utilisant l'option de configuration `adapter` :
+Le seul adaptateur intégré est `fetch`. Vous pouvez le sélectionner explicitement par nom en utilisant l'option de configuration `adapter` :
 
 ```js
-// Utiliser l'adaptateur fetch
+// Utiliser l'adaptateur fetch (par défaut)
 const instance = faxios.create({ adapter: "fetch" });
-
-// Utiliser l'adaptateur XHR (par défaut dans les navigateurs)
-const instance = faxios.create({ adapter: "xhr" });
-
-// Utiliser l'adaptateur HTTP (par défaut dans Node.js)
-const instance = faxios.create({ adapter: "http" });
 ```
 
-Vous pouvez également passer un tableau de noms d'adaptateurs. faxios utilisera le premier pris en charge par l'environnement actuel :
+Vous pouvez également passer un tableau de noms d'adaptateurs. La valeur par défaut est `['fetch']` :
 
 ```js
-const instance = faxios.create({ adapter: ["fetch", "xhr", "http"] });
+const instance = faxios.create({ adapter: ["fetch"] });
 ```
+
+Les fonctions d'adaptateur personnalisées restent prises en charge (voir ci-dessous).
 
 Pour plus de détails sur l'adaptateur `fetch`, consultez la page [Adaptateur Fetch](/pages/advanced/fetch-adapter).
 

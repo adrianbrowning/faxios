@@ -1,140 +1,50 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import faxios from "#src/index.js";
 
-class MockXMLHttpRequest {
-  readyState: number;
-  status: number;
-  statusText: string;
-  responseText: string;
-  response: unknown;
-  onreadystatechange: (() => void) | null;
-  onloadend: (() => void) | null;
-  upload: { addEventListener: () => void; };
-  requestHeaders: Record<string, string>;
-  method?: string;
-  url?: string;
-  async?: boolean;
-  params?: unknown;
+let originalFetch: typeof globalThis.fetch;
+let lastRequest: Request | undefined;
 
-  constructor() {
-    this.readyState = 0;
-    this.status = 0;
-    this.statusText = "";
-    this.responseText = "";
-    this.response = null;
-    this.onreadystatechange = null;
-    this.onloadend = null;
-    this.upload = {
-      addEventListener() {},
-    };
-    this.requestHeaders = {};
-  }
-
-  open(method: string, url: string, async = true) {
-    this.method = method;
-    this.url = url;
-    this.async = async;
-  }
-
-  setRequestHeader(key: string, value: string) {
-    this.requestHeaders[key] = value;
-  }
-
-  addEventListener() {}
-
-  getAllResponseHeaders() {
-    return "";
-  }
-
-  send(data: unknown) {
-    this.params = data;
-    requests.push(this);
-  }
-
-  respondWith({ status = 200, statusText = "OK", responseText = "" } = {}) {
-    this.status = status;
-    this.statusText = statusText;
-    this.responseText = responseText;
-    this.response = responseText;
-    this.readyState = 4;
-
-    queueMicrotask(() => {
-      if (this.onloadend) {
-        this.onloadend();
-      }
-      else if (this.onreadystatechange) {
-        this.onreadystatechange();
-      }
-    });
-  }
-
-  abort() {}
-}
-
-let requests: Array<MockXMLHttpRequest> = [];
-let OriginalXMLHttpRequest: typeof XMLHttpRequest;
-
-const sleep = async (ms = 0) =>
-  new Promise(resolve => setTimeout(resolve, ms));
-
-const waitForRequest = async (timeoutMs = 1000) => {
-  const start = Date.now();
-
-  while (Date.now() - start < timeoutMs) {
-    const request = requests.at(-1);
-    if (request) {
-      return request;
-    }
-
-    await sleep(0);
-  }
-
-  throw new Error("Expected an XHR request to be sent");
-};
+const jsonResponse = (body: unknown = {}, init: ResponseInit = {}) =>
+  new Response(JSON.stringify(body), {
+    status: 200,
+    statusText: "OK",
+    headers: { "Content-Type": "application/json" },
+    ...init,
+  });
 
 describe("adapter (vitest browser)", () => {
   beforeEach(() => {
-    requests = [];
-    OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest =
-      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
+    lastRequest = undefined;
+    originalFetch = globalThis.fetch;
+    globalThis.fetch = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      lastRequest = new Request(input, init);
+      return jsonResponse();
+    });
   });
 
   afterEach(() => {
-    window.XMLHttpRequest = OriginalXMLHttpRequest;
+    globalThis.fetch = originalFetch;
     faxios.interceptors.request.handlers = [];
     faxios.interceptors.response.handlers = [];
   });
 
   it("should support custom adapter", async () => {
-    const responsePromise = faxios("/foo", {
+    const response = await faxios("/foo", {
       async adapter(config) {
-        return new Promise(resolve => {
-          const request = new XMLHttpRequest();
-          request.open("GET", "/bar");
-
-          request.onreadystatechange = function onReadyStateChange() {
-            resolve({
-              data: null,
-              status: request.status,
-              statusText: request.statusText,
-              headers: { get: () => null },
-              config,
-              request,
-            });
-          };
-
-          request.send(null);
-        });
+        return {
+          data: { adapter: "custom" },
+          status: 200,
+          statusText: "OK",
+          headers: { get: () => null },
+          config,
+          request: null,
+        };
       },
     });
 
-    const request = await waitForRequest();
-    expect(request.url).toBe("/bar");
-
-    request.respondWith();
-    await responsePromise;
+    expect(response.data).toEqual({ adapter: "custom" });
+    expect(globalThis.fetch).not.toHaveBeenCalled();
   });
 
   it("should execute adapter code synchronously", async () => {
@@ -142,31 +52,19 @@ describe("adapter (vitest browser)", () => {
 
     const responsePromise = faxios("/foo", {
       async adapter(config) {
-        return new Promise(resolve => {
-          const request = new XMLHttpRequest();
-          request.open("GET", "/bar");
-
-          request.onreadystatechange = function onReadyStateChange() {
-            resolve({
-              data: null,
-              status: request.status,
-              statusText: request.statusText,
-              headers: { get: () => null },
-              config,
-              request,
-            });
-          };
-
-          expect(asyncFlag).toBe(false);
-          request.send(null);
-        });
+        expect(asyncFlag).toBe(false);
+        return {
+          data: null,
+          status: 200,
+          statusText: "OK",
+          headers: { get: () => null },
+          config,
+          request: null,
+        };
       },
     });
 
     asyncFlag = true;
-
-    const request = await waitForRequest();
-    request.respondWith();
     await responsePromise;
   });
 
@@ -180,47 +78,31 @@ describe("adapter (vitest browser)", () => {
 
     const responsePromise = faxios("/foo", {
       async adapter(config) {
-        return new Promise(resolve => {
-          const request = new XMLHttpRequest();
-          request.open("GET", "/bar");
-
-          request.onreadystatechange = function onReadyStateChange() {
-            resolve({
-              data: null,
-              status: request.status,
-              statusText: request.statusText,
-              headers: { get: () => null },
-              config,
-              request,
-            });
-          };
-
-          expect(asyncFlag).toBe(true);
-          request.send(null);
-        });
+        expect(asyncFlag).toBe(true);
+        return {
+          data: null,
+          status: 200,
+          statusText: "OK",
+          headers: { get: () => null },
+          config,
+          request: null,
+        };
       },
     });
 
     asyncFlag = true;
-
-    const request = await waitForRequest();
-    request.respondWith();
     await responsePromise;
   });
 
   it("should sanitize request headers containing CRLF characters", async () => {
-    const responsePromise = faxios("/foo", {
+    await faxios("/foo", {
       headers: {
         "x-test": "\tok\r\nInjected: yes ",
       },
     });
 
-    const request = await waitForRequest();
-
-    expect(request.requestHeaders["x-test"]).toBe("okInjected: yes");
-    expect(request.requestHeaders.Injected).toBeUndefined();
-
-    request.respondWith();
-    await responsePromise;
+    expect(lastRequest).toBeDefined();
+    expect(lastRequest!.headers.get("x-test")).toBe("okInjected: yes");
+    expect(lastRequest!.headers.get("Injected")).toBeNull();
   });
 });

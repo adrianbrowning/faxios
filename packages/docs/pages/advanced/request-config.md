@@ -3,7 +3,7 @@
 The request config is used to configure the request. There is a wide range of options available, but the only required option is `url`. If the configuration object does not contain a `method` field, the default method is `GET`.
 
 ::: warning Security: decompression-bomb protection is opt-in
-By default `maxContentLength` and `maxBodyLength` are `-1` (unlimited). A malicious or compromised server can return a tiny gzip/deflate/brotli/zstd body that expands to gigabytes and exhaust the Node.js process.
+By default `maxContentLength` and `maxBodyLength` are `-1` (unlimited). A malicious or compromised server can return a tiny gzip/deflate/brotli/zstd body that expands to gigabytes and exhaust memory.
 
 If you call servers you do not fully trust, **set a cap**:
 
@@ -118,17 +118,16 @@ const client = faxios.create({
 The `data` is the data to be sent as the request body. This can be a string, a plain object, a Buffer, ArrayBuffer, FormData, Stream, or URLSearchParams. Only applicable for request methods `PUT`, `POST`, `DELETE` , and `PATCH`. When no `transformRequest` is set, must be of one of the following types:
 
 - string, plain object, ArrayBuffer, ArrayBufferView, URLSearchParams
-- Browser only: FormData, File, Blob
-- React Native: FormData
-- Node only: Stream, Buffer, FormData (form-data package)
+- FormData, File, Blob (available in all supported runtimes)
+- ReadableStream
 
-For browser, web worker, and React Native `FormData`, do not manually set `Content-Type`; the runtime adds the multipart boundary.
+For `FormData`, do not manually set `Content-Type`; the runtime adds the multipart boundary.
 
-For Node.js `FormData` objects that provide a `getHeaders()` method, faxios copies all returned headers by default for v1 compatibility. If the `FormData` object is custom or not fully trusted, set `formDataHeaderPolicy: 'content-only'` to copy only `Content-Type` and `Content-Length`, and set any other request headers explicitly via the request `headers` config.
+If a `FormData`-like object provides a `getHeaders()` method, faxios copies all returned headers by default for v1 compatibility. If the object is custom or not fully trusted, set `formDataHeaderPolicy: 'content-only'` to copy only `Content-Type` and `Content-Length`, and set any other request headers explicitly via the request `headers` config.
 
-### `formDataHeaderPolicy` <Badge type="warning" text="Node.js only" />
+### `formDataHeaderPolicy`
 
-Controls how faxios copies headers returned by Node.js `FormData#getHeaders()`. The default is `'legacy'`, which copies all returned headers to preserve existing v1 behavior. Set `'content-only'` to copy only `Content-Type` and `Content-Length` from `getHeaders()`.
+Controls how faxios copies headers returned by a `FormData`-like object's `getHeaders()` method. The default is `'legacy'`, which copies all returned headers to preserve existing v1 behavior. Set `'content-only'` to copy only `Content-Type` and `Content-Length` from `getHeaders()`.
 
 ### `timeout`
 
@@ -140,17 +139,11 @@ The `withCredentials` property indicates whether or not cross-site Access-Contro
 
 ### `adapter`
 
-`adapter` allows custom handling of requests which makes testing easier. Return a promise and supply a valid response see [adapters](/pages/advanced/adapters) for more information. We also provide a number of built-in adapters. The default adapter is `http` for node and `xhr` for browsers. The full list of built-in adapters as follows:
-
-- fetch
-- http
-- xhr
-
-You may also pass an array of adapters to be used, faxios will use the first adapter that is supported by the environment.
+`adapter` allows custom handling of requests which makes testing easier. Return a promise and supply a valid response — see [adapters](/pages/advanced/adapters) for more information. The only built-in adapter is `'fetch'`, which is the default (`adapter: ['fetch']`). You may pass the string `'fetch'`, an array such as `['fetch']`, or your own custom adapter function.
 
 ### `auth`
 
-`auth` indicates that HTTP Basic auth should be used, and supplies credentials. This will set an `Authorization` header, overwriting any existing `Authorization` custom headers you have set using `headers`. If `auth` is omitted, the Node.js HTTP and fetch adapters can derive Basic auth credentials from the request URL, for example `https://user:pass@example.com`; percent-encoded URL credentials are decoded, and `auth` always takes precedence over URL-embedded credentials. In the Node.js HTTP adapter, Basic auth is preserved on same-origin redirects and stripped on cross-origin redirects. Please note that only HTTP Basic auth is configurable through this parameter. For Bearer tokens and such, use `Authorization` custom headers instead.
+`auth` indicates that HTTP Basic auth should be used, and supplies credentials. This will set an `Authorization` header, overwriting any existing `Authorization` custom headers you have set using `headers`. If `auth` is omitted, the fetch adapter can derive Basic auth credentials from the request URL, for example `https://user:pass@example.com`; percent-encoded URL credentials are decoded, and `auth` always takes precedence over URL-embedded credentials. Please note that only HTTP Basic auth is configurable through this parameter. For Bearer tokens and such, use `Authorization` custom headers instead.
 
 ### `responseType`
 
@@ -226,24 +219,22 @@ faxios.get('/user', { withCredentials: true, withXSRFToken: true });
 ```
 :::
 
-### `onUploadProgress`
-
-The `onUploadProgress` function allows you to listen to the progress of an upload.
-
 ### `onDownloadProgress`
 
 The `onDownloadProgress` function allows you to listen to the progress of a download.
 
-### `maxContentLength` <Badge type="warning" text="Node.js HTTP/fetch adapter" />
+> Note: The `fetch` API cannot emit upload progress events, so upload progress is not supported.
 
-The `maxContentLength` property defines the maximum response size in bytes. The Node.js HTTP adapter enforces it for buffered and streamed responses. The fetch adapter enforces it when the response length is declared, the response stream can be tracked, or the response size can otherwise be determined.
+### `maxContentLength`
+
+The `maxContentLength` property defines the maximum response size in bytes. The fetch adapter enforces it when the response length is declared, the response stream can be tracked, or the response size can otherwise be determined.
 
 > ⚠️ **Security:** defaults to `-1` (unlimited). Unbounded responses combined with gzip/deflate/brotli/zstd decompression allow decompression-bomb DoS.
 > Set an explicit limit when requesting servers you do not fully trust.
 
-### `maxBodyLength` <Badge type="warning" text="Node.js HTTP/fetch adapter" />
+### `maxBodyLength`
 
-The `maxBodyLength` property defines the maximum request body size in bytes. The Node.js HTTP adapter enforces it, and the fetch adapter enforces it when the request body length can be determined.
+The `maxBodyLength` property defines the maximum request body size in bytes. The fetch adapter enforces it when the request body length can be determined.
 
 ### `redact`
 
@@ -265,88 +256,6 @@ faxios.get('/user/12345', {
 
 The `validateStatus` function allows you to override the default status code validation. By default, faxios will reject the promise if the status code is not in the range of 200-299. You can override this behavior by providing a custom `validateStatus` function. The function should return `true` if the status code is within the range you want to accept.
 
-### `maxRedirects` <Badge type="warning" text="Node.js only" />
-
-The `maxRedirects` property defines the maximum number of redirects to follow. If set to 0, no redirects will be followed.
-
-### `beforeRedirect`
-
-The `beforeRedirect` function allows you to modify the request before it is redirected. Use this to adjust the request options upon redirecting, to inspect the latest response headers, or to cancel the request by throwing an error. If maxRedirects is set to 0, `beforeRedirect` is not used.
-
-```js
-beforeRedirect: (options, { headers }) => {
-  if (
-    options.hostname === "example.com" &&
-    options.protocol === "https:"
-  ) {
-    options.auth = "user:password";
-  }
-}
-```
-
-::: warning Security: re-injecting credentials on redirect
-The `beforeRedirect` hook runs **after** sensitive headers are stripped during redirects. The `follow-redirects` library removes credentials on protocol downgrade (HTTPS → HTTP) for security. Since `beforeRedirect` runs after this, re-injecting credentials without checking the destination protocol can expose sensitive data. Only re-add credentials for trusted HTTPS destinations, and avoid re-adding them on downgraded redirects.
-:::
-
-### `socketPath` <Badge type="warning" text="Node.js only" />
-
-The `socketPath` property defines a UNIX socket to use instead of a TCP connection. e.g. `/var/run/docker.sock` to send requests to the docker daemon. Only `socketPath` or `proxy` can be specified. If both are specified, `socketPath` is used.
-
-:::warning Security
-When `socketPath` is set, the hostname and port of the request URL are ignored and faxios communicates directly with the specified Unix domain socket. If any part of the request config is derived from user input (for example, when forwarding or merging request options in a proxy/webhook handler), an attacker can inject `socketPath` to redirect traffic to privileged local sockets such as `/var/run/docker.sock`, `/run/containerd/containerd.sock`, or `/run/systemd/private` — bypassing hostname-based SSRF protections entirely (CWE-918). Strip or allowlist config keys from untrusted input, and/or restrict accepted socket paths with `allowedSocketPaths` (see below).
-:::
-
-### `allowedSocketPaths` <Badge type="warning" text="Node.js only" />
-
-Restricts which socket paths may be used via `socketPath`. Accepts a string or an array of strings. When set, faxios resolves the `socketPath` and compares it against each entry (also resolved); the request is rejected with `FaxiosError` code `ERR_BAD_OPTION_VALUE` when there is no match. When unset (default), `socketPath` behaves as before.
-
-```js
-const client = faxios.create({
-  allowedSocketPaths: ['/var/run/docker.sock'],
-});
-
-// allowed
-await client.get('http://localhost/v1.45/info', { socketPath: '/var/run/docker.sock' });
-
-// rejected — not in allowlist
-await client.get('http://localhost/pods', { socketPath: '/var/run/kubelet.sock' });
-```
-
-An empty array (`allowedSocketPaths: []`) blocks all socket paths.
-
-### `transport`
-
-The `transport` property defines the transport to use for the request. This is useful for making requests over a different protocol, such as `http2`.
-
-### `httpAgent` and `httpsAgent`
-
-The `httpAgent` and `httpsAgent` define a custom agent to be used when performing http and https requests, respectively, in node.js. This allows options to be added like `keepAlive` that are not enabled by default.
-
-### `proxy` <Badge type="warning" text="Node.js only" />
-
-The `proxy` defines the hostname, port, and protocol of a proxy server you would like to use. You can also define your proxy using the conventional `http_proxy` and `https_proxy` environment variables.
-
-If you are using environment variables for your proxy configuration, you can also define a `no_proxy` environment variable as a comma-separated list of domains that should not be proxied.
-
-Use `false` to disable proxies, ignoring environment variables. `auth` indicates that HTTP Basic auth should be used to connect to the proxy, and supplies credentials. This will set an `Proxy-Authorization` header, overwriting any existing `Proxy-Authorization` custom headers you have set using `headers`. If the proxy server uses HTTPS, then you must set the protocol to `https`.
-
-A user-supplied `Host` header in `headers` is preserved when forwarding through a proxy (case-insensitive match on `host` / `Host` / `HOST`). This lets you target a virtual host that differs from the request URL — for example, hitting `127.0.0.1:4000` while having the proxy treat the request as `example.com`. If no `Host` header is supplied, faxios defaults it to the request URL's `hostname:port` as before.
-
-For `https://` targets, faxios establishes a CONNECT tunnel through the proxy and performs TLS end-to-end with the origin. `Proxy-Authorization` is sent only on the CONNECT request, never on the wrapped TLS request. `httpsAgent` TLS options such as `ca`, `cert`, `key`, and `rejectUnauthorized` are forwarded to the generated tunneling agent so they still apply to the origin TLS connection. If you supply an `HttpsProxyAgent`, faxios leaves tunneling to that agent.
-
-```js
-proxy: {
-  protocol: "https",
-  host: "127.0.0.1",
-  hostname: "localhost", // Takes precedence over "host" if both are defined
-  port: 9000,
-  auth: {
-    username: "mikeymike",
-    password: "rapunz3l"
-  }
-},
-```
-
 ### `cancelToken`
 
 The `cancelToken` property allows you to create a cancel token that can be used to cancel the request. For more information, see the [cancellation](/pages/advanced/cancellation) documentation.
@@ -354,16 +263,6 @@ The `cancelToken` property allows you to create a cancel token that can be used 
 ### `signal`
 
 The `signal` property allows you to pass an instance of `AbortSignal` to the request. This allows you to cancel the request using the `AbortController` API.
-
-### `decompress` <Badge type="warning" text="Node.js only" />
-
-The `decompress` property indicates whether or not to automatically decompress the response data. The default value is `true`. The Node.js HTTP adapter supports gzip, deflate, brotli, and zstd when the current Node.js runtime provides the corresponding zlib decompressor.
-
-### `insecureHTTPParser`
-
-Indicates where to use an insecure HTTP parser that accepts invalid HTTP headers. This may allow interoperability with non-conformant HTTP implementations. Using the insecure parser should be avoided.
-
-Please note that the `insecureHTTPParser` option is only available in Node.js 12.10.0 and later. Please read the [Node.js documentation](https://nodejs.org/en/blog/vulnerability/february-2020-security-releases/#strict-http-header-parsing-none) for more information. See the full set of options [here](https://nodejs.org/dist/latest-v12.x/docs/api/http.html#http_http_request_url_options_callback)
 
 ### `transitional`
 
@@ -381,7 +280,7 @@ The `transitional` property allows you to enable or disable certain transitional
 
 - `forcedJSONParsing`: Forces faxios to parse the response string as JSON even if `responseType` is not `'json'`.
 - `clarifyTimeoutError`: Clarifies the error message when a request times out. This is useful when you are debugging timeout issues.
-- `advertiseZstdAcceptEncoding`: When set to `true`, faxios adds `zstd` to the default `Accept-Encoding` request header when the current Node.js runtime supports zstd decompression. zstd responses are still decompressed automatically when supported and `decompress` is `true`.
+- `advertiseZstdAcceptEncoding`: When set to `true`, faxios adds `zstd` to the default `Accept-Encoding` request header. Response decompression is handled by the runtime's `fetch` implementation.
 - `legacyInterceptorReqResOrdering`: When set to true we will use the legacy interceptor request/response ordering.
 
 ### `env`
@@ -401,10 +300,6 @@ The `formSerializer` option allows you to configure how plain objects are serial
 - `maxDepth` _(default: `100`)_ — maximum nesting depth before throwing `FaxiosError` with code `ERR_FORM_DATA_DEPTH_EXCEEDED`. Set to `Infinity` to disable.
 
 See the [multipart/form-data](/pages/advanced/multipart-form-data-format) page for full details, and the full request config example at the end of this page.
-
-### `maxRate` <Badge type="warning" text="Node.js only" />
-
-The `maxRate` property defines the maximum **bandwidth** (in bytes per second) for upload and/or download. It accepts either a single number (applied to both directions) or a two-element array `[uploadRate, downloadRate]` where each element is a byte-per-second limit. For example, `100 * 1024` means 100 KB/s. See [Rate limiting](/pages/advanced/rate-limiting) for examples.
 
 ## Full request config example
 
@@ -454,7 +349,7 @@ The `maxRate` property defines the maximum **bandwidth** (in bytes per second) f
   adapter: function (config) {
     // Do whatever you want
   },
-  adapter: "xhr",
+  adapter: "fetch",
   auth: {
     username: "janedoe",
     password: "s00pers3cret"
@@ -464,9 +359,6 @@ The `maxRate` property defines the maximum **bandwidth** (in bytes per second) f
   xsrfCookieName: "XSRF-TOKEN",
   xsrfHeaderName: "X-XSRF-TOKEN",
   withXSRFToken: boolean | undefined | ((config: InternalAxiosRequestConfig) => boolean | undefined),
-  onUploadProgress: function ({loaded, total, progress, bytes, estimated, rate, upload = true}) {
-    // Do whatever you want with the faxios progress event
-  },
   onDownloadProgress: function ({loaded, total, progress, bytes, estimated, rate, download = true}) {
     // Do whatever you want with the faxios progress event
   },
@@ -476,33 +368,10 @@ The `maxRate` property defines the maximum **bandwidth** (in bytes per second) f
   validateStatus: function (status) {
     return status >= 200 && status < 300;
   },
-  maxRedirects: 21,
-  beforeRedirect: (options, { headers }) => {
-    if (options.hostname === "typicode.com") {
-      options.auth = "user:password";
-    }
-  },
-  socketPath: null,
-  allowedSocketPaths: null,
-  transport: undefined,
-  httpAgent: new http.Agent({ keepAlive: true }),
-  httpsAgent: new https.Agent({ keepAlive: true }),
-  proxy: {
-    protocol: "https",
-    host: "127.0.0.1",
-    // hostname: "127.0.0.1" // Takes precedence over "host" if both are defined
-    port: 9000,
-    auth: {
-      username: "mikeymike",
-      password: "rapunz3l"
-    }
-  },
   cancelToken: new CancelToken(function (cancel) {
     cancel("Operation has been canceled.");
   }),
   signal: new AbortController().signal,
-  decompress: true,
-  insecureHTTPParser: undefined,
   transitional: {
     silentJSONParsing: true,
     forcedJSONParsing: true,
@@ -532,10 +401,6 @@ The `maxRate` property defines the maximum **bandwidth** (in bytes per second) f
       // Maximum object nesting depth. Throws FaxiosError (ERR_FORM_DATA_DEPTH_EXCEEDED)
       // if exceeded. Default: 100. Set to Infinity to disable.
       maxDepth: 100;
-  },
-  maxRate: [
-    100 * 1024, // 100KB/s upload limit,
-    100 * 1024  // 100KB/s download limit
-  ]
+  }
 }
 ```

@@ -6,6 +6,7 @@
 
 ## Table of Contents
 
+- [Fetch-Only Migration (next major)](#fetch-only-migration-next-major)
 - [Overview](#overview)
 - [Breaking Changes](#breaking-changes)
 - [Error Handling Migration](#error-handling-migration)
@@ -15,6 +16,98 @@
 - [Common Patterns](#common-patterns)
 - [Troubleshooting](#troubleshooting)
 - [Resources](#resources)
+
+## Fetch-Only Migration (next major)
+
+> **This is the next major release.** faxios now uses the web-standard `fetch` API as its **only** HTTP transport in every runtime (browser, Node 18+, Deno, Bun). The legacy adapters and their HTTP-stack dependencies were removed. If you used Node-specific transport options, you must change your code.
+
+### What changed at a glance
+
+| Area | Before | Now |
+|------|--------|-----|
+| Node transport | `http`/`https` adapter (`follow-redirects`, `form-data`, `proxy-from-env`, `https-proxy-agent`) | web-standard `fetch` |
+| Browser transport | `XMLHttpRequest` (xhr) adapter | web-standard `fetch` |
+| Package format | (see ESM-only note below) | ESM-only, no CJS / no UMD |
+| Upload progress | `onUploadProgress` | removed (fetch cannot emit it) |
+| Download progress | `onDownloadProgress` | still supported |
+| Connection-refused error code | `ECONNREFUSED` | `ERR_NETWORK` (OS error on `error.cause`) |
+
+### a) Node `http`/`https` adapter removed
+
+All requests in all runtimes now go through `fetch`. There is no `http`/`https` adapter and no `transport` selection. Node 18+ (which ships a global `fetch`) is required.
+
+### b) Browser XHR adapter removed
+
+The `XMLHttpRequest` adapter is gone. Browsers use `fetch`. The default adapter list is `['fetch']`; custom user-supplied adapters are still supported via `adapter`.
+
+### c) ESM-only — no CJS build, no UMD/CDN bundle
+
+faxios ships as ESM only, built by `zshy`. Use `import faxios from 'faxios'`. `require('faxios')` works only through Node's ESM interop; there is no dedicated CJS entry (`.d.cts`) and no UMD / minified CDN `<script>` bundle.
+
+### d) `onUploadProgress` no longer supported
+
+`fetch` cannot emit upload progress, so `onUploadProgress` was dropped. `onDownloadProgress` still works.
+
+```javascript
+// Before
+faxios.post('/upload', body, {
+  onUploadProgress: e => console.log(e.loaded),   // no longer called
+  onDownloadProgress: e => console.log(e.loaded), // still works
+});
+
+// Now — remove onUploadProgress; track upload progress at the app layer if needed.
+faxios.post('/upload', body, {
+  onDownloadProgress: e => console.log(e.loaded),
+});
+```
+
+### e) Removed config fields
+
+The following config fields were removed from the public type. Passing them is now a **type error** and they are **ignored at runtime**:
+
+`maxRedirects`, `maxRate`, `beforeRedirect`, `socketPath`, `allowedSocketPaths`, `transport`, `httpAgent`, `httpsAgent`, `proxy`, `decompress`, `insecureHTTPParser`, `httpVersion`, `http2Options`, `sensitiveHeaders`, `lookup`, `family`.
+
+`maxContentLength` and `maxBodyLength` are **kept** and enforced by the fetch adapter.
+
+### f) Connection / transport errors now surface as `ERR_NETWORK`
+
+A refused connection or other transport failure now rejects with `FaxiosError` code `ERR_NETWORK`, and the underlying OS error (e.g. `ECONNREFUSED`) is attached on `error.cause`. Previously the http adapter surfaced `ECONNREFUSED` as the error code itself.
+
+```javascript
+// Before
+catch (err) {
+  if (err.code === 'ECONNREFUSED') { /* ... */ }
+}
+
+// Now
+catch (err) {
+  if (err.code === 'ERR_NETWORK') {
+    const os = err.cause;            // e.g. Error with code 'ECONNREFUSED'
+  }
+}
+```
+
+### g) HTTP/2 and rate limiting removed
+
+`http2Options` (HTTP/2) and `maxRate` (download/upload throttling) are gone. The `fetch` runtime negotiates the HTTP version; throttle at the application or runtime layer if needed.
+
+### Proxy support
+
+faxios no longer manages proxies (`proxy`, `proxy-from-env`, `https-proxy-agent` were removed). Configure proxying at the `fetch` runtime level instead:
+
+- **Node (undici):** set a custom dispatcher/agent via `fetchOptions` (e.g. an undici `ProxyAgent`), or rely on runtime-level proxy environment variables that your `fetch` implementation honors.
+- **Browser / Deno / Bun:** use the platform's own proxy configuration.
+
+```javascript
+// Node example: proxy via an undici dispatcher passed through fetchOptions
+import { ProxyAgent } from 'undici';
+
+faxios.get('https://api.example.com', {
+  fetchOptions: { dispatcher: new ProxyAgent('http://proxy.local:8080') },
+});
+```
+
+---
 
 ## Overview
 

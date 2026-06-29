@@ -9,17 +9,14 @@ formData.append('foo', 'bar');
 faxios.post('https://httpbin.org/post', formData);
 ```
 
-No establezcas manualmente el encabezado `Content-Type` para `FormData` en navegador, web worker o React Native; esos entornos agregan el boundary multipart por sí mismos.
+No establezcas manualmente el encabezado `Content-Type`; el runtime agrega el boundary multipart por sí mismo cuando serializa un cuerpo `FormData`.
 
-En Node.js, puedes usar la librería `form-data` de la siguiente manera:
+El `FormData` global (junto con `Blob`/`File`) está disponible en todos los runtimes compatibles — navegadores, Node.js 18+, Deno y Bun — por lo que el mismo código funciona en todas partes. faxios ya no incluye el paquete `form-data`:
 
 ```js
-const FormData = require('form-data');
-
 const form = new FormData();
 form.append('my_field', 'my value');
-form.append('my_buffer', Buffer.alloc(10));
-form.append('my_file', fs.createReadStream('/foo/bar.jpg'));
+form.append('my_file', new Blob([fileBytes]), 'bar.jpg');
 
 faxios.post('https://example.com', form);
 ```
@@ -44,16 +41,15 @@ faxios
   .then(({ data }) => console.log(data));
 ```
 
-En el entorno de Node.js, el polyfill ([`form-data`](https://github.com/form-data/form-data)) se usa de forma predeterminada. Puedes sobrescribir la clase FormData estableciendo la variable de configuración `env.FormData`, aunque en la mayoría de los casos no lo necesitarás:
+faxios usa el `FormData` global del runtime para la serialización. Puedes sobrescribir la clase mediante la variable de configuración `env.FormData`, aunque en la mayoría de los casos no lo necesitarás:
 
 ```js
-const faxios = require('faxios');
-var FormData = require('form-data');
+import faxios from 'faxios';
 
 faxios
   .post(
     'https://httpbin.org/post',
-    { x: 1, buf: Buffer.alloc(10) },
+    { x: 1 },
     {
       headers: {
         'Content-Type': 'multipart/form-data',

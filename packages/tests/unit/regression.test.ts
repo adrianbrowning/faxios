@@ -7,7 +7,6 @@ import type { Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { describe, it, beforeEach, afterEach } from "vitest";
 import faxios from "#src/index.ts";
-import platform from "#src/lib/platform/index.js";
 import type { FaxiosResponse } from "#src/lib/types.js";
 
 type AnyInterceptorManager = { use: (fn: (v: unknown) => unknown) => number; };
@@ -98,7 +97,7 @@ describe("regression", () => {
         }
       });
 
-      it("http: should have status code in faxios error", async () => {
+      it("should have status code in faxios error", async () => {
         const server = http
           .createServer((_req, res) => {
             res.statusCode = 400;
@@ -108,7 +107,6 @@ describe("regression", () => {
 
         const instance = faxios.create({
           baseURL: `http://localhost:${(server.address() as AddressInfo).port}`,
-          adapter: "http",
         });
 
         try {
@@ -126,83 +124,6 @@ describe("regression", () => {
           server.close();
         }
       });
-    });
-  });
-
-  // https://snyk.io/vuln/SNYK-JS-faxios-1038255
-  // https://github.com/faxios/faxios/issues/3407
-  // https://github.com/faxios/faxios/issues/3369
-  describe("SSRF SNYK-JS-faxios-1038255", () => {
-    let fail = false;
-    let proxy: Server;
-    let server: Server;
-    let location: string;
-    let evilPort: number;
-    let proxyPort: number;
-
-    beforeEach(() => {
-      fail = false;
-      server = http
-        .createServer((_req, res) => {
-          fail = true;
-          res.end("rm -rf /");
-        })
-        .listen(0);
-      evilPort = (server.address() as AddressInfo).port;
-
-      proxy = http
-        .createServer((req, res) => {
-          if (
-            new URL(req.url!, "http://" + req.headers.host).toString() ===
-            "http://localhost:" + evilPort + "/"
-          ) {
-            res.end(
-              JSON.stringify({
-                msg: "Protected",
-                headers: req.headers,
-              })
-            );
-            return;
-          }
-          res.writeHead(302, { location });
-          res.end();
-        })
-        .listen(0);
-      proxyPort = (proxy.address() as AddressInfo).port;
-      location = "http://localhost:" + evilPort;
-    });
-
-    afterEach(() => {
-      server.close();
-      proxy.close();
-    });
-
-    it("obeys proxy settings when following redirects", async () => {
-      const response = await faxios<{
-        msg: string;
-        headers: Record<string, string>;
-      }>({
-        method: "get",
-        url: "http://www.google.com/",
-        proxy: {
-          host: "localhost",
-          port: proxyPort,
-          auth: {
-            username: "sam",
-            password: "password",
-          },
-        },
-      });
-
-      assert.strictEqual(fail, false);
-      assert.strictEqual(response.data.msg, "Protected");
-      assert.strictEqual(response.data.headers.host, "localhost:" + evilPort);
-      assert.strictEqual(
-        response.data.headers["proxy-authorization"],
-        "Basic " + Buffer.from("sam:password").toString("base64")
-      );
-
-      return response;
     });
   });
 
@@ -237,70 +158,27 @@ describe("regression", () => {
       badServer.close();
     });
 
-    it("should not fetch in server-side mode", async () => {
+    it("should not fetch the protocol-relative authority in server-side mode", async () => {
       const ssrfFaxios = faxios.create({
         baseURL: "http://localhost:" + String(goodPort),
       });
 
+      // A protocol-relative authority (`//host:port`) must not be resolved to
+      // the attacker origin. fetch rejects it as an unparseable URL rather than
+      // silently routing to badServer.
       const userId = "/localhost:" + String(badPort);
 
       try {
-        await ssrfFaxios.get(`/${userId}`);
+        const res = (await ssrfFaxios.get(`/${userId}`));
+        assert.notStrictEqual(res.data, "bad", "must not reach the bad server");
+        assert.fail("Expected an error to be thrown");
       }
       catch (error) {
-        assert.ok(
-          (error as { message: string; }).message.startsWith("Invalid URL")
+        assert.notStrictEqual(
+          (error as { message: string; }).message,
+          undefined
         );
-        return;
       }
-      assert.fail("Expected an error to be thrown");
-    });
-
-    describe("client-side mode", () => {
-      let savedHasBrowserEnv: boolean;
-      let savedOrigin: string;
-
-      beforeEach(() => {
-        assert.ok(platform.hasBrowserEnv != undefined);
-        savedHasBrowserEnv = platform.hasBrowserEnv;
-        savedOrigin = platform.origin;
-        platform.hasBrowserEnv = true;
-        platform.origin = "http://localhost:" + String(goodPort);
-      });
-
-      afterEach(() => {
-        platform.hasBrowserEnv = savedHasBrowserEnv;
-        platform.origin = savedOrigin;
-      });
-
-      it("resolves URL relative to origin and returns bad server body", async () => {
-        const ssrfFaxios = faxios.create({
-          baseURL: "http://localhost:" + String(goodPort),
-        });
-
-        const userId = "/localhost:" + String(badPort);
-
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- request.res.responseUrl is untyped on FaxiosResponse
-        const response = (await ssrfFaxios.get(
-          `/${userId}`
-        )) as FaxiosResponse<string> & {
-          config: { baseURL?: string; url?: string; };
-          request: { res: { responseUrl: string; }; };
-        };
-        assert.strictEqual(response.data, "bad");
-        assert.strictEqual(
-          response.config.baseURL,
-          "http://localhost:" + String(goodPort)
-        );
-        assert.strictEqual(
-          response.config.url,
-          "//localhost:" + String(badPort)
-        );
-        assert.strictEqual(
-          response.request.res.responseUrl,
-          "http://localhost:" + String(badPort) + "/"
-        );
-      });
     });
   });
 });

@@ -8,9 +8,7 @@
       "ignore": [
         "docs/**",
         "src/lib/platform/browser/**",
-        "src/lib/platform/node/classes/**",
         "src/lib/env/classes/**",
-        "src/lib/helpers/null.ts",
         "src/lib/helpers/deprecatedMethod.ts"
       ]
     },

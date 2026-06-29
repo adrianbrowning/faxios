@@ -1,137 +1,38 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import faxios from "#src/index.js";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 
-class MockXMLHttpRequest {
-  requestHeaders: Record<string, string> = {};
-  responseHeaders = "";
-  readyState = 0;
-  status = 0;
-  statusText = "";
-  responseText = "";
-  response: unknown = null;
-  timeout = 0;
-  onreadystatechange: (() => void) | null = null;
-  onloadend: (() => void) | null = null;
-  onabort: (() => void) | null = null;
-  onerror: (() => void) | null = null;
-  ontimeout: (() => void) | null = null;
-  upload = { addEventListener() {} };
-  method = "";
-  url = "";
-  async = true;
-  params: unknown = null;
-
-  open(method: string, url: string, async = true) {
-    this.method = method;
-    this.url = url;
-    this.async = async;
-  }
-
-  setRequestHeader(key: string, value: string) {
-    this.requestHeaders[key] = value;
-  }
-
-  addEventListener() {}
-
-  getAllResponseHeaders() {
-    return this.responseHeaders;
-  }
-
-  send(data: unknown) {
-    this.params = data;
-    requests.push(this);
-  }
-
-  respondWith({
-    status = 200,
-    statusText = "OK",
-    responseText = "",
-    responseHeaders = "",
-  } = {}) {
-    this.status = status;
-    this.statusText = statusText;
-    this.responseText = responseText;
-    this.response = responseText;
-    this.responseHeaders = responseHeaders;
-    this.readyState = 4;
-
-    queueMicrotask(() => {
-      if (this.onloadend) {
-        this.onloadend();
-      }
-      else if (this.onreadystatechange) {
-        this.onreadystatechange();
-      }
-    });
-  }
-
-  abort() {}
-}
-
-let requests: Array<MockXMLHttpRequest> = [];
-let OriginalXMLHttpRequest: typeof XMLHttpRequest;
-
-const getLastRequest = (): MockXMLHttpRequest => {
-  const request = requests.at(-1);
-
-  expect(request).toBeDefined();
-
-  return request!;
-};
+import { installFetchMock } from "./helpers/fetchMock.js";
 
 describe("transform (vitest browser)", () => {
-  beforeEach(() => {
-    requests = [];
-    OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest =
-      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
-  });
-
-  afterEach(() => {
-    window.XMLHttpRequest = OriginalXMLHttpRequest;
-  });
-
   it("should transform JSON to string", async () => {
-    const responsePromise = faxios.post("/foo", { foo: "bar" });
-    const request = getLastRequest();
+    using mock = installFetchMock();
 
-    expect(request.params).toBe("{\"foo\":\"bar\"}");
+    await faxios.post("/foo", { foo: "bar" });
 
-    request.respondWith();
-    await responsePromise;
+    expect(await mock.lastRequest!.clone().text()).toBe("{\"foo\":\"bar\"}");
   });
 
   it("should transform string to JSON", async () => {
-    const responsePromise = faxios("/foo");
-    const request = getLastRequest();
+    using mock = installFetchMock();
+    mock.respondWith({ body: "{\"foo\": \"bar\"}" });
 
-    request.respondWith({
-      status: 200,
-      responseText: "{\"foo\": \"bar\"}",
-    });
-
-    const response = await responsePromise;
+    const response = await faxios("/foo");
 
     expect(typeof response.data).toBe("object");
     expect((response.data as Record<string, string>).foo).toBe("bar");
   });
 
   it("should throw a SyntaxError if JSON parsing failed and responseType is \"json\" if silentJSONParsing is false", async () => {
-    const responsePromise = faxios({
+    using mock = installFetchMock();
+    mock.respondWith({ body: "{foo\": \"bar\"}" });
+
+    const thrown = await faxios({
       url: "/foo",
       responseType: "json",
       transitional: { silentJSONParsing: false },
-    });
-    const request = getLastRequest();
-
-    request.respondWith({
-      status: 200,
-      responseText: "{foo\": \"bar\"}",
-    });
-
-    const thrown = await responsePromise.catch(error => error);
+    }).catch(error => error);
 
     expect(thrown).toBeTruthy();
     expect(thrown.name).toContain("SyntaxError");
@@ -139,46 +40,40 @@ describe("transform (vitest browser)", () => {
   });
 
   it("should send data as JSON if request content-type is application/json", async () => {
-    const responsePromise = faxios.post("/foo", 123, {
+    using mock = installFetchMock();
+    mock.respondWith({ body: "" });
+
+    const response = await faxios.post("/foo", 123, {
       headers: { "Content-Type": "application/json" },
     });
-    const request = getLastRequest();
-
-    request.respondWith({
-      status: 200,
-      responseText: "",
-    });
-
-    const response = await responsePromise;
 
     expect(response).toBeTruthy();
-    expect(request.requestHeaders["Content-Type"]).toBe("application/json");
-    expect(JSON.parse(request.params as string)).toBe(123);
+    expect(mock.lastRequest!.headers.get("Content-Type")).toBe(
+      "application/json"
+    );
+    expect(JSON.parse(await mock.lastRequest!.clone().text())).toBe(123);
   });
 
   it("should not assume JSON if responseType is not `json`", async () => {
-    const responsePromise = faxios.get("/foo", {
+    using mock = installFetchMock();
+    const rawData = "{\"x\":1}";
+    mock.respondWith({ body: rawData });
+
+    const response = await faxios.get("/foo", {
       responseType: "text",
       transitional: {
         forcedJSONParsing: false,
       },
     });
-    const request = getLastRequest();
-    const rawData = "{\"x\":1}";
-
-    request.respondWith({
-      status: 200,
-      responseText: rawData,
-    });
-
-    const response = await responsePromise;
 
     expect(response).toBeTruthy();
     expect(response.data).toBe(rawData);
   });
 
   it("should override default transform", async () => {
-    const responsePromise = faxios.post(
+    using mock = installFetchMock();
+
+    await faxios.post(
       "/foo",
       { foo: "bar" },
       {
@@ -187,16 +82,16 @@ describe("transform (vitest browser)", () => {
         },
       }
     );
-    const request = getLastRequest();
 
-    expect(typeof request.params).toBe("object");
-
-    request.respondWith();
-    await responsePromise;
+    // With the default transform bypassed, the plain object is handed to the
+    // Request unchanged and coerced to its string form by the body init.
+    expect(await mock.lastRequest!.clone().text()).toBe("[object Object]");
   });
 
   it("should allow an Array of transformers", async () => {
-    const responsePromise = faxios.post(
+    using mock = installFetchMock();
+
+    await faxios.post(
       "/foo",
       { foo: "bar" },
       {
@@ -207,32 +102,28 @@ describe("transform (vitest browser)", () => {
         }),
       }
     );
-    const request = getLastRequest();
 
-    expect(request.params).toBe("{\"foo\":\"baz\"}");
-
-    request.respondWith();
-    await responsePromise;
+    expect(await mock.lastRequest!.clone().text()).toBe("{\"foo\":\"baz\"}");
   });
 
   it("should allowing mutating headers", async () => {
+    using mock = installFetchMock();
     const token = Math.floor(Math.random() * Math.pow(2, 64)).toString(36);
-    const responsePromise = faxios("/foo", {
+
+    await faxios("/foo", {
       transformRequest(data, headers) {
         headers["X-Authorization"] = token;
         return data;
       },
     });
-    const request = getLastRequest();
 
-    expect(request.requestHeaders["X-Authorization"]).toBe(token);
-
-    request.respondWith();
-    await responsePromise;
+    expect(mock.lastRequest!.headers.get("X-Authorization")).toBe(token);
   });
 
   it("should normalize 'content-type' header when using a custom transformRequest", async () => {
-    const responsePromise = faxios.post(
+    using mock = installFetchMock();
+
+    await faxios.post(
       "/foo",
       { foo: "bar" },
       {
@@ -244,33 +135,27 @@ describe("transform (vitest browser)", () => {
         ],
       }
     );
-    const request = getLastRequest();
 
-    expect(request.requestHeaders["Content-Type"]).toBe(
+    expect(mock.lastRequest!.headers.get("Content-Type")).toBe(
       "application/x-www-form-urlencoded"
     );
-
-    request.respondWith();
-    await responsePromise;
   });
 
   it("should return response.data as parsed JSON object when responseType is json", async () => {
+    using mock = installFetchMock();
+    mock.respondWith({
+      body: "{\"key1\": \"value1\"}",
+      headers: { "content-type": "application/json" },
+    });
+
     const instance = faxios.create({
       baseURL: "/api",
       responseType: "json",
     });
-    const responsePromise = instance.get("my/endpoint", {
+
+    const response = await instance.get("my/endpoint", {
       responseType: "json",
     });
-    const request = getLastRequest();
-
-    request.respondWith({
-      status: 200,
-      responseText: "{\"key1\": \"value1\"}",
-      responseHeaders: "content-type: application/json",
-    });
-
-    const response = await responsePromise;
 
     expect(response).toBeTruthy();
     expect(response.data).toEqual({ key1: "value1" });

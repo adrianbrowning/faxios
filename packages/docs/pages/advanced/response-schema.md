@@ -22,9 +22,7 @@ Every faxios request resolves to a response object with the following shape. The
   // headers, timeout, params, and any other options you provided.
   config: {},
 
-  // The underlying request object.
-  // In Node.js: the last `http.ClientRequest` instance (after any redirects).
-  // In the browser: the `XMLHttpRequest` instance.
+  // The underlying request object — the fetch `Request` instance used for this request.
   request: {},
 }
 ```

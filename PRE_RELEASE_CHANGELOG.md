@@ -2,9 +2,9 @@
 
 ## Unreleased
 
-## Security Fixes
+## Breaking Changes
 
-- **HTTP Adapter Redirects:** Added a Node.js `sensitiveHeaders` request config option that strips caller-selected custom secret headers from cross-origin redirects. (**#10892**)
+- **Fetch-only transport:** faxios now uses the web-standard `fetch` API as its only HTTP transport in every runtime (browser, Node 18+, Deno, Bun). The Node `http`/`https` adapter and the browser `XMLHttpRequest` adapter were removed, along with the `follow-redirects`, `form-data`, `proxy-from-env`, and `https-proxy-agent` runtime dependencies and the Node platform layer. The package is ESM-only (no CJS, no UMD/CDN bundle). `onUploadProgress` is no longer supported (`fetch` cannot emit upload progress); `onDownloadProgress` still works. The following config fields were removed (type error if passed, ignored at runtime): `maxRedirects`, `maxRate`, `beforeRedirect`, `socketPath`, `allowedSocketPaths`, `transport`, `httpAgent`, `httpsAgent`, `proxy`, `decompress`, `insecureHTTPParser`, `httpVersion`, `http2Options`, `sensitiveHeaders`, `lookup`, `family`. `maxContentLength` and `maxBodyLength` are kept and enforced by the fetch adapter. Connection and transport failures now reject with code `ERR_NETWORK`, carrying the underlying OS error (e.g. `ECONNREFUSED`) on `error.cause` instead of using it as the error code. Proxy support is now configured at the `fetch` runtime level (e.g. an undici dispatcher via `fetchOptions`); faxios no longer manages proxies. (**#5**)
 
 ## Bug Fixes
 

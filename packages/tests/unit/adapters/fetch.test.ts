@@ -591,7 +591,6 @@ describe.runIf(typeof fetch === "function")(
                   "Content-Length": contentLength,
                 },
                 responseType: "text",
-                maxRedirects: 0,
               }
             );
 

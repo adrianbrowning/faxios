@@ -42,66 +42,22 @@ formData.append("cover", coverFile);
 await faxios.post("https://httpbin.org/post", formData);
 ```
 
-## Seguimiento del progreso de la carga (navegador)
-
-Usa el callback `onUploadProgress` para mostrar una barra de progreso o un porcentaje a tus usuarios:
-
-```js
-await faxios.postForm("https://httpbin.org/post", {
-  file: document.querySelector("#fileInput").files[0],
-}, {
-  onUploadProgress: (progressEvent) => {
-    const percent = Math.round(
-      (progressEvent.loaded * 100) / progressEvent.total
-    );
-    console.log(`Upload progress: ${percent}%`);
-  },
-});
-```
-
-Consulta [Captura de progreso](/pages/advanced/progress-capturing) para ver la lista completa de campos disponibles en el evento de progreso.
-
 ## Archivos en Node.js
 
-En Node.js, usa `fs.createReadStream` para subir un archivo desde el sistema de archivos sin cargarlo completamente en memoria:
+faxios usa la API web estándar `fetch` en todos los entornos, así que el `FormData` global nativo funciona igual en navegadores, Node.js 18+, Deno y Bun — sin paquetes adicionales. Adjunta el contenido del archivo como un `Blob`:
 
 ```js
-import fs from "fs";
-import FormData from "form-data";
+import { readFile } from "node:fs/promises";
 import faxios from "faxios";
 
 const form = new FormData();
-form.append("file", fs.createReadStream("/path/to/file.jpg"));
+const fileData = await readFile("/path/to/file.jpg");
+form.append("file", new Blob([fileData]), "file.jpg");
 form.append("description", "My uploaded file");
 
 await faxios.post("https://httpbin.org/post", form);
 ```
 
-::: tip
-El paquete npm `form-data` es necesario en entornos Node.js para crear objetos `FormData`. En versiones modernas de Node.js (v18+), el `FormData` global está disponible de forma nativa.
-:::
-
-## Subir un Buffer (Node.js)
-
-También puedes subir un `Buffer` en memoria directamente:
-
-```js
-const buffer = Buffer.from("Hello, world!");
-
-const form = new FormData();
-form.append("file", buffer, {
-  filename: "hello.txt",
-  contentType: "text/plain",
-  knownLength: buffer.length,
-});
-
-await faxios.post("https://httpbin.org/post", form);
-```
-
-::: warning
-La captura del progreso de carga de `FormData` no está disponible actualmente en entornos Node.js.
-:::
-
-::: danger
-Al subir un stream legible en Node.js, establece `maxRedirects: 0` para evitar que el paquete `follow-redirects` almacene todo el stream en memoria RAM.
+::: info
+El progreso de carga (`onUploadProgress`) no está disponible, porque la API web estándar `fetch` no puede emitir eventos de progreso de carga. El progreso de descarga sigue funcionando — consulta [Captura de progreso](/pages/advanced/progress-capturing).
 :::

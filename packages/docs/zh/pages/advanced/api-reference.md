@@ -283,7 +283,7 @@ import { getAdapter } from "faxios";
 const fetchAdapter = getAdapter("fetch");
 
 // 按优先级列表获取最合适的适配器
-const adapter = getAdapter(["fetch", "xhr", "http"]);
+const adapter = getAdapter(["fetch"]);
 ```
 
 ### `mergeConfig`

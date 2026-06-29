@@ -530,22 +530,6 @@ describe("Prototype Pollution Protection", () => {
       }
     }, 10000);
 
-    it("should not pick up Object.prototype.socketPath and redirect the request", async () => {
-      ObjProto.socketPath = "/tmp/faxios-should-never-be-used.sock";
-
-      const server = await startServer();
-      const { port } = server.address() as AddressInfo;
-
-      try {
-        const res = await ax.get(`http://127.0.0.1:${port}/api`);
-        assert.strictEqual(res.status, 200);
-        assert.strictEqual(res.data.url, "/api");
-      }
-      finally {
-        await stopServer(server);
-      }
-    }, 10000);
-
     it("should not invoke Object.prototype.beforeRedirect during redirects", async () => {
       let hijackCalled = false;
       ObjProto.beforeRedirect = function polluted() {
@@ -602,69 +586,6 @@ describe("Prototype Pollution Protection", () => {
       finally {
         await stopServer(redirector);
         await stopServer(target);
-      }
-    }, 10000);
-
-    it("should not enable insecureHTTPParser via Object.prototype", async () => {
-      // A raw TCP server emits a response that uses LF-only line terminators
-      // instead of CRLF. Node's strict HTTP parser rejects this payload with
-      // HPE_CR_EXPECTED; the insecure parser accepts it. Verified: with an
-      // explicit `insecureHTTPParser: true` on the request config, this
-      // payload is parsed successfully — so if Object.prototype.insecureHTTPParser
-      // were picked up, the request would succeed. The request must fail when
-      // the gadget is properly blocked.
-      ObjProto.insecureHTTPParser = true;
-
-      const net = await import("node:net");
-      const malformedPayload =
-        "HTTP/1.1 200 OK\n" +
-        "Content-Type: application/json\n" +
-        "Content-Length: 2\n" +
-        "\n" +
-        "{}";
-      const malformed = await new Promise<import("node:net").Server>(
-        resolve => {
-          const srv = net.createServer(socket => {
-            socket.once("data", () => socket.end(malformedPayload));
-          });
-          srv.listen(0, "127.0.0.1", () => resolve(srv));
-        }
-      );
-      const { port } = malformed.address() as AddressInfo;
-
-      try {
-        let threw = false;
-        let caughtCode = "";
-        try {
-          await ax.get(`http://127.0.0.1:${port}/`, {
-            transitional: { clarifyTimeoutError: false },
-          });
-        }
-        catch (err) {
-          threw = true;
-          caughtCode = String(
-            err &&
-              ((err as NodeJS.ErrnoException).code || (err as Error).message)
-          );
-        }
-        assert.strictEqual(
-          threw,
-          true,
-          `request should be rejected by the strict HTTP parser (got: ${caughtCode || "success"})`
-        );
-        // The exact llhttp code for LF-only line terminators varies across
-        // Node versions (historically HPE_LF_EXPECTED, more recently
-        // HPE_CR_EXPECTED). Match any parser error to remain stable across
-        // Node releases while still confirming the strict parser rejected
-        // the payload.
-        assert.match(
-          caughtCode,
-          /^HPE_/,
-          `expected an HPE_* parser error, got: ${caughtCode}`
-        );
-      }
-      finally {
-        await new Promise<void>(resolve => malformed.close(() => resolve()));
       }
     }, 10000);
 

@@ -2,9 +2,9 @@
 
 ## ⚠️ Bomba de descompresión / almacenamiento de respuesta sin límites
 
-Por defecto, `maxContentLength` y `maxBodyLength` están configurados en `-1` (sin límite). Un servidor malicioso o comprometido puede devolver un cuerpo pequeño comprimido con gzip/deflate/brotli/zstd que se expande a gigabytes, agotando la memoria del proceso Node.js.
+Por defecto, `maxContentLength` y `maxBodyLength` están configurados en `-1` (sin límite). Un servidor malicioso o comprometido puede devolver un cuerpo pequeño comprimido con gzip/deflate/brotli/zstd que se expande a gigabytes, agotando la memoria del proceso. `maxContentLength` y `maxBodyLength` siguen disponibles y ahora los aplica el adaptador fetch.
 
-**Si realizas solicitudes a servidores en los que no confías plenamente, DEBES establecer un `maxContentLength` (y `maxBodyLength`) adecuado para tu carga de trabajo.** El límite se aplica chunk a chunk durante la descompresión en flujo, así que basta con configurarlo para neutralizar ataques de bomba de descompresión.
+**Si realizas solicitudes a servidores en los que no confías plenamente, DEBES establecer un `maxContentLength` (y `maxBodyLength`) adecuado para tu carga de trabajo.** El límite se aplica chunk a chunk a medida que se consume la respuesta, así que basta con configurarlo para neutralizar ataques de bomba de descompresión.
 
 ```js
 faxios.get('https://example.com/data', {
@@ -25,8 +25,6 @@ Las siguientes opciones de configuración de solicitud tienen implicaciones dire
 
 | Opción | Riesgo | Mitigación |
 | --- | --- | --- |
-| [`socketPath`](/pages/advanced/request-config#socketpath) | Si proviene de entrada no confiable, un atacante puede redirigir el tráfico a sockets locales privilegiados como `/var/run/docker.sock`, eludiendo las protecciones SSRF basadas en hostname (CWE-918). | Filtra o restringe con allowlist las claves de configuración provenientes de entradas no confiables. Usa [`allowedSocketPaths`](/pages/advanced/request-config#allowedsocketpaths) para restringir las rutas de socket aceptadas. |
-| [`beforeRedirect`](/pages/advanced/request-config#beforeredirect) | Se ejecuta después de que `follow-redirects` elimina las credenciales en una bajada de protocolo. Reinyectar credenciales sin verificar el protocolo de destino puede filtrarlas sobre HTTP en texto plano. | Reinyecta credenciales únicamente para destinos HTTPS de confianza. Verifica `options.protocol === "https:"` antes de asignar `auth`. |
 | [`withXSRFToken`](/pages/advanced/request-config#withxsrftoken) | Establecerlo en `true` fuerza el encabezado XSRF en solicitudes de origen cruzado. Versiones anteriores de faxios lo habilitaban implícitamente con `withCredentials: true`; las versiones más recientes requieren ambos indicadores. | Déjalo en `undefined` (solo mismo origen) salvo que tu backend valide explícitamente XSRF en solicitudes de origen cruzado. |
 | [`redact`](/pages/advanced/request-config#redact) | `FaxiosError#toJSON()` incluye la configuración de la solicitud por defecto, lo que puede filtrar encabezados `Authorization` o credenciales `auth` en logs y telemetría de errores. | Pasa un arreglo `redact` con los nombres de claves de configuración sensibles. La coincidencia es insensible a mayúsculas y recursiva. |
 | [`formDataHeaderPolicy`](/pages/advanced/request-config#formdataheaderpolicy) | Un `FormData` personalizado cuyo `getHeaders()` devuelve valores controlados por un atacante puede sobrescribir encabezados como `Authorization` o inyectar otros arbitrarios en Node.js. | Establece `'content-only'` para copiar únicamente `Content-Type` y `Content-Length`, y luego define los demás encabezados explícitamente a través de la configuración `headers` de la solicitud. |
@@ -96,7 +94,7 @@ El plazo de 60 días es un compromiso con quienes reportan y con los consumidore
 **Excepciones y prórrogas.**
 
 - Si quien reporta solicita un embargo más corto (por ejemplo, planea presentar los hallazgos en una conferencia), lo acomodamos cuando sea posible.
-- Si la corrección requiere un cambio disruptivo, coordinación con consumidores aguas abajo importantes, o una publicación upstream de `follow-redirects` / `form-data` / `proxy-from-env`, podemos extender más allá de los 60 días. Cualquier prórroga se divulga públicamente el día 60 vía el aviso, con un ETA revisado y el motivo.
+- Si la corrección requiere un cambio disruptivo o coordinación con consumidores aguas abajo importantes, podemos extender más allá de los 60 días. Cualquier prórroga se divulga públicamente el día 60 vía el aviso, con un ETA revisado y el motivo.
 - Si un reporte está **fuera de alcance** (por ejemplo, cae bajo un non-goal explícito documentado en el [modelo de amenazas](https://github.com/faxios/faxios/blob/v1.x/THREATMODEL.md) del proyecto), lo cerramos con una explicación dentro de la ventana de triaje (≤ 3 días). Los reportes fuera de alcance no entran en la cola de 60 días.
 - Las **vulnerabilidades activamente explotadas** se tratan como incidentes: la corrección y el aviso salen tan pronto como se valide un parche, no según el calendario de 60 días.
 

@@ -1,6 +1,5 @@
 "use strict";
 
-import PlatformFormData from "form-data";
 import FaxiosError from "../core/FaxiosError.js";
 // temporary hotfix to avoid circular references until FaxiosURLSearchParams is refactored
 import type { GenericFormData, SerializerVisitor, FormDataVisitorHelpers } from "../types.js";
@@ -95,9 +94,7 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
     throw new TypeError("target must be an object");
   }
 
-  const GlobalFormData = (globalThis as Record<string, unknown>)["FormData"] as (new () => GenericFormData) | undefined;
-   
-  const FormDataCtor = (PlatformFormData as unknown as (new () => GenericFormData) | undefined) || GlobalFormData;
+  const FormDataCtor = (globalThis as Record<string, unknown>)["FormData"] as (new () => GenericFormData) | undefined;
   formData = formData || new FormDataCtor!();
 
   options = utils.toFlatObject(
@@ -147,9 +144,8 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
 
     if (utils.isArrayBuffer(value) || utils.isTypedArray(value)) {
       const BlobCtor = (globalThis as Record<string, unknown>)["Blob"] as (new (parts: Array<unknown>) => unknown) | undefined;
-      return useBlob && typeof BlobCtor === "function"
-        ? new BlobCtor([ value ])
-        : Buffer.from(value as ArrayBuffer);
+      // ponytail: web-standard FormData always pairs with a global Blob
+      return useBlob && typeof BlobCtor === "function" ? new BlobCtor([ value ]) : value;
     }
 
     return value;

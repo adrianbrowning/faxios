@@ -1,6 +1,6 @@
 # Adaptateur Fetch <Badge type="tip" text="Nouveau" />
 
-L'adaptateur `fetch` est un nouvel adaptateur introduit à partir de la version 1.7.0. Il permet d'utiliser faxios avec l'API `fetch`, vous offrant ainsi le meilleur des deux mondes. Par défaut, `fetch` sera utilisé si les adaptateurs `xhr` et `http` ne sont pas disponibles dans le build, ou non supportés par l'environnement. Pour l'utiliser par défaut, il doit être sélectionné explicitement en définissant l'option `adapter` à `fetch` lors de la création d'une instance faxios.
+L'adaptateur `fetch`, basé sur l'API web standard `fetch`, est désormais le seul adaptateur de faxios. Il est utilisé dans tous les environnements pris en charge — navigateurs, Node.js 18+, Deno et Bun — et est sélectionné par défaut. Il n'est donc pas nécessaire de le définir explicitement, mais vous pouvez le faire :
 
 ```js
 import faxios from 'faxios';
@@ -10,7 +10,9 @@ const instance = faxios.create({
 });
 ```
 
-L'adaptateur supporte les mêmes fonctionnalités que l'adaptateur `xhr`, notamment la capture de la progression des envois et téléchargements. Il supporte également des types de réponse supplémentaires tels que `stream` et `formdata` (si l'environnement les prend en charge).
+L'adaptateur prend en charge la capture de la progression des **téléchargements** (`onDownloadProgress`) ainsi que des types de réponse supplémentaires tels que `stream` et `formdata` (si l'environnement les prend en charge). En revanche, l'API `fetch` ne peut pas émettre de progression d'**envoi**, donc `onUploadProgress` n'est pas disponible.
+
+La configuration d'un proxy ou d'un agent ne se fait plus via des options dédiées de faxios : utilisez `fetchOptions` ou le dispatcher fourni par votre environnement d'exécution (par exemple un `Agent`/`ProxyAgent` undici sous Node.js) transmis à `fetch`.
 
 Lorsque `auth` est omis, l'adaptateur fetch peut lire les identifiants HTTP Basic depuis l'URL de requête, par exemple `https://user:pass@example.com`. Les identifiants d'URL encodés en pourcentage sont décodés avant la génération de l'en-tête `Authorization`, et `auth` prend le dessus sur les identifiants intégrés à l'URL.
 
@@ -21,7 +23,7 @@ Lorsque `auth` est omis, l'adaptateur fetch peut lire les identifiants HTTP Basi
 ::: info
 Lorsque vous utilisez une fonction `fetch` personnalisée, vous devrez peut-être également fournir des constructeurs `Request` et `Response` correspondants. Si vous les omettez, les constructeurs globaux seront utilisés. Si votre `fetch` personnalisé est incompatible avec les constructeurs globaux, passez `null` pour les désactiver.
 
-**Remarque :** Définir `Request` et `Response` à `null` rendra impossible pour l'adaptateur fetch de capturer la progression des envois et téléchargements.
+**Remarque :** Définir `Request` et `Response` à `null` rendra impossible pour l'adaptateur fetch de capturer la progression des téléchargements.
 :::
 
 ### Exemple de base

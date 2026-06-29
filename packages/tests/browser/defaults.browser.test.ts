@@ -1,79 +1,11 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 
 import faxios from "#src/index.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import defaults from "#src/lib/defaults/index.js";
 import type { HeadersDefaults } from "#src/lib/types.js";
 
-class MockXMLHttpRequest {
-  requestHeaders: Record<string, string> = {};
-  responseHeaders = "";
-  readyState = 0;
-  status = 0;
-  statusText = "";
-  responseText = "";
-  response: string | null = null;
-  onreadystatechange: (() => void) | null = null;
-  onloadend: (() => void) | null = null;
-  upload = { addEventListener() {} };
-  method?: string;
-  url?: string;
-  async?: boolean;
-  params?: unknown;
-
-  constructor() {}
-
-  open(method: string, url: string, async = true) {
-    this.method = method;
-    this.url = url;
-    this.async = async;
-  }
-
-  setRequestHeader(key: string, value: string) {
-    this.requestHeaders[key] = value;
-  }
-
-  addEventListener() {}
-
-  getAllResponseHeaders() {
-    return this.responseHeaders;
-  }
-
-  send(data: unknown) {
-    this.params = data;
-    requests.push(this);
-  }
-
-  respondWith({
-    status = 200,
-    statusText = "OK",
-    responseText = "",
-    responseHeaders = "",
-  }: {
-    status?: number;
-    statusText?: string;
-    responseText?: string;
-    responseHeaders?: string;
-  } = {}) {
-    this.status = status;
-    this.statusText = statusText;
-    this.responseText = responseText;
-    this.response = responseText;
-    this.responseHeaders = responseHeaders;
-    this.readyState = 4;
-
-    queueMicrotask(() => {
-      if (this.onloadend) {
-        this.onloadend();
-      }
-      else if (this.onreadystatechange) {
-        this.onreadystatechange();
-      }
-    });
-  }
-
-  abort() {}
-}
+import { installFetchMock } from "./helpers/fetchMock.js";
 
 const XSRF_COOKIE_NAME = "CUSTOM-XSRF-TOKEN";
 
@@ -84,35 +16,8 @@ const transformResponse = defaults.transformResponse as Array<
   (data: unknown, headers?: FaxiosHeaders) => unknown
 >;
 
-let requests: Array<MockXMLHttpRequest> = [];
-let OriginalXMLHttpRequest: typeof XMLHttpRequest;
-
-const getLastRequest = (): MockXMLHttpRequest => {
-  const request = requests.at(-1);
-
-  expect(request).toBeDefined();
-
-  return request!;
-};
-
-const finishRequest = async (
-  request: MockXMLHttpRequest,
-  promise: Promise<unknown>
-) => {
-  request.respondWith({ status: 200 });
-  await promise;
-};
-
 describe("defaults (vitest browser)", () => {
-  beforeEach(() => {
-    requests = [];
-    OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest =
-      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
-  });
-
   afterEach(() => {
-    window.XMLHttpRequest = OriginalXMLHttpRequest;
     delete faxios.defaults.baseURL;
     delete (faxios.defaults.headers as unknown as HeadersDefaults).get[
       "X-CUSTOM-HEADER"
@@ -176,80 +81,71 @@ describe("defaults (vitest browser)", () => {
   });
 
   it("should use global defaults config", async () => {
-    const promise = faxios("/foo");
-    const request = getLastRequest();
+    using mock = installFetchMock();
 
-    expect(request.url).toBe("/foo");
+    await faxios("/foo");
 
-    await finishRequest(request, promise);
+    expect(new URL(mock.lastRequest!.url).pathname).toBe("/foo");
   });
 
   it("should use modified defaults config", async () => {
+    using mock = installFetchMock();
     faxios.defaults.baseURL = "http://example.com/";
 
-    const promise = faxios("/foo");
-    const request = getLastRequest();
+    await faxios("/foo");
 
-    expect(request.url).toBe("http://example.com/foo");
-
-    await finishRequest(request, promise);
+    expect(mock.lastRequest!.url).toBe("http://example.com/foo");
   });
 
   it("should use request config", async () => {
-    const promise = faxios("/foo", {
+    using mock = installFetchMock();
+
+    await faxios("/foo", {
       baseURL: "http://www.example.com",
     });
-    const request = getLastRequest();
 
-    expect(request.url).toBe("http://www.example.com/foo");
-
-    await finishRequest(request, promise);
+    expect(mock.lastRequest!.url).toBe("http://www.example.com/foo");
   });
 
   it("should use default config for custom instance", async () => {
+    using mock = installFetchMock();
     const instance = faxios.create({
       xsrfCookieName: XSRF_COOKIE_NAME,
       xsrfHeaderName: "X-CUSTOM-XSRF-TOKEN",
     });
     document.cookie = `${instance.defaults.xsrfCookieName}=foobarbaz`;
 
-    const promise = instance.get("/foo");
-    const request = getLastRequest();
+    await instance.get("/foo");
 
     expect(
-      request.requestHeaders[instance.defaults.xsrfHeaderName as string]
+      mock.lastRequest!.headers.get(instance.defaults.xsrfHeaderName as string)
     ).toBe("foobarbaz");
-
-    await finishRequest(request, promise);
   });
 
   it("should use GET headers", async () => {
+    using mock = installFetchMock();
     (faxios.defaults.headers as unknown as HeadersDefaults).get[
       "X-CUSTOM-HEADER"
     ] = "foo";
 
-    const promise = faxios.get("/foo");
-    const request = getLastRequest();
+    await faxios.get("/foo");
 
-    expect(request.requestHeaders["X-CUSTOM-HEADER"]).toBe("foo");
-
-    await finishRequest(request, promise);
+    expect(mock.lastRequest!.headers.get("X-CUSTOM-HEADER")).toBe("foo");
   });
 
   it("should use POST headers", async () => {
+    using mock = installFetchMock();
     (faxios.defaults.headers as unknown as HeadersDefaults).post[
       "X-CUSTOM-HEADER"
     ] = "foo";
 
-    const promise = faxios.post("/foo", {});
-    const request = getLastRequest();
+    await faxios.post("/foo", {});
 
-    expect(request.requestHeaders["X-CUSTOM-HEADER"]).toBe("foo");
-
-    await finishRequest(request, promise);
+    expect(mock.lastRequest!.headers.get("X-CUSTOM-HEADER")).toBe("foo");
   });
 
   it("should use header config", async () => {
+    using mock = installFetchMock();
     const instance = faxios.create({
       headers: {
         common: {
@@ -264,63 +160,54 @@ describe("defaults (vitest browser)", () => {
       },
     });
 
-    const promise = instance.get("/foo", {
+    await instance.get("/foo", {
       headers: {
         "X-FOO-HEADER": "fooHeaderValue",
         "X-BAR-HEADER": "barHeaderValue",
       },
     });
-    const request = getLastRequest();
 
-    expect(request.requestHeaders).toEqual(
-      FaxiosHeaders.concat(defaults.headers.common, defaults.headers.get, {
-        "X-COMMON-HEADER": "commonHeaderValue",
-        "X-GET-HEADER": "getHeaderValue",
-        "X-FOO-HEADER": "fooHeaderValue",
-        "X-BAR-HEADER": "barHeaderValue",
-      }).toJSON()
-    );
-
-    await finishRequest(request, promise);
+    // Lib lowercases header names on a Headers object, so assert each
+    // expected header individually rather than comparing whole objects.
+    const headers = mock.lastRequest!.headers;
+    expect(headers.get("X-COMMON-HEADER")).toBe("commonHeaderValue");
+    expect(headers.get("X-GET-HEADER")).toBe("getHeaderValue");
+    expect(headers.get("X-FOO-HEADER")).toBe("fooHeaderValue");
+    expect(headers.get("X-BAR-HEADER")).toBe("barHeaderValue");
+    expect(headers.get("X-POST-HEADER")).toBeNull();
   });
 
   it("should be used by custom instance if set before instance created", async () => {
+    using mock = installFetchMock();
     faxios.defaults.baseURL = "http://example.org/";
     const instance = faxios.create();
 
-    const promise = instance.get("/foo");
-    const request = getLastRequest();
+    await instance.get("/foo");
 
-    expect(request.url).toBe("http://example.org/foo");
-
-    await finishRequest(request, promise);
+    expect(mock.lastRequest!.url).toBe("http://example.org/foo");
   });
 
   it("should not be used by custom instance if set after instance created", async () => {
+    using mock = installFetchMock();
     const instance = faxios.create();
     faxios.defaults.baseURL = "http://example.org/";
 
-    const promise = instance.get("/foo/users");
-    const request = getLastRequest();
+    await instance.get("/foo/users");
 
-    expect(request.url).toBe("/foo/users");
-
-    await finishRequest(request, promise);
+    expect(new URL(mock.lastRequest!.url).pathname).toBe("/foo/users");
   });
 
   it("should resistant to ReDoS attack", async () => {
+    using mock = installFetchMock();
     const instance = faxios.create();
     const start = performance.now();
     const slashes = "/".repeat(100000);
     instance.defaults.baseURL = `/${slashes}bar/`;
 
-    const promise = instance.get("/foo");
-    const request = getLastRequest();
+    await instance.get("/foo");
     const elapsedTimeMs = performance.now() - start;
 
     expect(elapsedTimeMs).toBeLessThan(20);
-    expect(request.url).toBe(`/${slashes}bar/foo`);
-
-    await finishRequest(request, promise);
+    expect(mock.lastRequest!.url.endsWith("bar/foo")).toBe(true);
   });
 });

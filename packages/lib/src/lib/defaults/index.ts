@@ -90,7 +90,7 @@ function stringifySafely(
 const defaults: FaxiosDefaults = {
   transitional: transitionalDefaults,
 
-  adapter: [ "xhr", "http", "fetch" ] as Array<FaxiosAdapterName>,
+  adapter: [ "fetch" ] as Array<FaxiosAdapterName>,
 
   transformRequest: [
     function transformRequest(

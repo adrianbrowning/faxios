@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import faxios from "#src/index.js";
 import cookies from "#src/lib/helpers/cookies.js";
@@ -7,60 +7,7 @@ import type {
   InternalFaxiosRequestConfig
 } from "#src/lib/types.js";
 
-class MockXMLHttpRequest {
-  requestHeaders: Record<string, string> = {};
-  readyState = 0;
-  status = 200;
-  statusText = "OK";
-  responseText = "";
-  timeout = 0;
-  onreadystatechange: (() => void) | null = null;
-  onloadend: (() => void) | null = null;
-  onabort: (() => void) | null = null;
-  onerror: (() => void) | null = null;
-  ontimeout: (() => void) | null = null;
-  upload = {
-    addEventListener() {},
-  };
-  method = "";
-  url = "";
-  async = true;
-
-  open(method: string, url: string, async = true) {
-    this.method = method;
-    this.url = url;
-    this.async = async;
-  }
-
-  setRequestHeader(key: string, value: string) {
-    this.requestHeaders[key] = value;
-  }
-
-  addEventListener() {}
-
-  getAllResponseHeaders() {
-    return "";
-  }
-
-  send() {
-    requests.push(this);
-    this.readyState = 4;
-
-    queueMicrotask(() => {
-      if (this.onloadend) {
-        this.onloadend();
-      }
-      else if (this.onreadystatechange) {
-        this.onreadystatechange();
-      }
-    });
-  }
-
-  abort() {}
-}
-
-let requests: Array<MockXMLHttpRequest> = [];
-let OriginalXMLHttpRequest: typeof XMLHttpRequest;
+import { installFetchMock } from "./helpers/fetchMock.js";
 
 const setXsrfCookie = (value: string) => {
   document.cookie = `${faxios.defaults.xsrfCookieName}=${value}; path=/`;
@@ -72,136 +19,101 @@ const clearXsrfCookie = () => {
   ).toUTCString()}; path=/`;
 };
 
-const sendRequest = async (url: string, config?: FaxiosRequestConfig) => {
-  const responsePromise = faxios(url, config);
-  const request = requests.at(-1);
-
-  expect(request).toBeDefined();
-  await responsePromise;
-
-  return request as MockXMLHttpRequest;
-};
+const xsrfHeaderName = faxios.defaults.xsrfHeaderName as string;
 
 describe("xsrf (vitest browser)", () => {
-  beforeEach(() => {
-    requests = [];
-    OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest =
-      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
-  });
-
   afterEach(() => {
     clearXsrfCookie();
-    window.XMLHttpRequest = OriginalXMLHttpRequest;
     vi.restoreAllMocks();
   });
 
   it("should not set xsrf header if cookie is null", async () => {
-    const request = await sendRequest("/foo");
+    using mock = installFetchMock();
 
-    expect(
-      request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
-    ).toBeUndefined();
+    await faxios("/foo");
+
+    expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBeNull();
   });
 
   it("should set xsrf header if cookie is set", async () => {
+    using mock = installFetchMock();
     setXsrfCookie("12345");
 
-    const request = await sendRequest("/foo");
+    await faxios("/foo");
 
-    expect(
-      request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
-    ).toBe("12345");
+    expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe("12345");
   });
 
   it("should not set xsrf header if xsrfCookieName is null", async () => {
+    using mock = installFetchMock();
     setXsrfCookie("12345");
 
-    const request = await sendRequest("/foo", {
-      xsrfCookieName: undefined,
-    });
+    await faxios("/foo", { xsrfCookieName: undefined });
 
-    expect(
-      request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
-    ).toBeUndefined();
+    expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBeNull();
   });
 
   it("should not read cookies at all if xsrfCookieName is null", async () => {
+    using _mock = installFetchMock();
     const readSpy = vi.spyOn(cookies, "read");
 
-    await sendRequest("/foo", {
-      xsrfCookieName: undefined,
-    });
+    await faxios("/foo", { xsrfCookieName: undefined });
 
     expect(readSpy).not.toHaveBeenCalled();
   });
 
   it("should not set xsrf header for cross origin", async () => {
+    using mock = installFetchMock();
     setXsrfCookie("12345");
 
-    const request = await sendRequest("http://example.com/");
+    await faxios("http://example.com/");
 
-    expect(
-      request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
-    ).toBeUndefined();
+    expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBeNull();
   });
 
   it("should not set xsrf header for cross origin when using withCredentials", async () => {
+    using mock = installFetchMock();
     setXsrfCookie("12345");
 
-    const request = await sendRequest("http://example.com/", {
-      withCredentials: true,
-    });
+    await faxios("http://example.com/", { withCredentials: true });
 
-    expect(
-      request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
-    ).toBeUndefined();
+    expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBeNull();
   });
 
   describe("withXSRFToken option", () => {
     it("should set xsrf header for cross origin when withXSRFToken = true", async () => {
+      using mock = installFetchMock();
       const token = "12345";
-
       setXsrfCookie(token);
 
-      const request = await sendRequest("http://example.com/", {
-        withXSRFToken: true,
-      });
+      await faxios("http://example.com/", { withXSRFToken: true });
 
-      expect(
-        request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
-      ).toBe(token);
+      expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe(token);
     });
 
     it("should not set xsrf header for the same origin when withXSRFToken = false", async () => {
+      using mock = installFetchMock();
       const token = "12345";
-
       setXsrfCookie(token);
 
-      const request = await sendRequest("/foo", {
-        withXSRFToken: false,
-      });
+      await faxios("/foo", { withXSRFToken: false });
 
-      expect(
-        request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
-      ).toBeUndefined();
+      expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBeNull();
     });
 
     it("should support function resolver", async () => {
+      using mock = installFetchMock();
       const token = "12345";
-
       setXsrfCookie(token);
 
-      const request = await sendRequest("/foo", {
+      await faxios("/foo", {
         withXSRFToken: (config: InternalFaxiosRequestConfig) =>
           (config as InternalFaxiosRequestConfig & { userFlag: string; })
             .userFlag === "yes",
         userFlag: "yes",
       } as FaxiosRequestConfig);
 
-      expect(
-        request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
-      ).toBe(token);
+      expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe(token);
     });
   });
 
@@ -221,51 +133,45 @@ describe("xsrf (vitest browser)", () => {
 
     leakCases.forEach(([ label, value ]) => {
       it(`should not send xsrf header cross-origin when withXSRFToken = ${label}`, async () => {
+        using mock = installFetchMock();
         setXsrfCookie("12345");
 
-        const request = await sendRequest("http://example.com/", {
+        await faxios("http://example.com/", {
           withXSRFToken: value as boolean,
         });
 
-        expect(
-          request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
-        ).toBeUndefined();
+        expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBeNull();
       });
     });
 
     it("should not send xsrf header cross-origin when Object.prototype.withXSRFToken is polluted", async () => {
+      using mock = installFetchMock();
       (Object.prototype as Record<string, unknown>).withXSRFToken = 1;
       setXsrfCookie("12345");
 
-      const request = await sendRequest("http://example.com/");
+      await faxios("http://example.com/");
 
-      expect(
-        request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
-      ).toBeUndefined();
+      expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBeNull();
     });
 
     it("should still send xsrf header cross-origin when withXSRFToken === true (strict)", async () => {
+      using mock = installFetchMock();
       const token = "12345";
       setXsrfCookie(token);
 
-      const request = await sendRequest("http://example.com/", {
-        withXSRFToken: true,
-      });
+      await faxios("http://example.com/", { withXSRFToken: true });
 
-      expect(
-        request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
-      ).toBe(token);
+      expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe(token);
     });
 
     it("should still send xsrf header same-origin when withXSRFToken is undefined", async () => {
+      using mock = installFetchMock();
       const token = "12345";
       setXsrfCookie(token);
 
-      const request = await sendRequest("/foo");
+      await faxios("/foo");
 
-      expect(
-        request.requestHeaders[faxios.defaults.xsrfHeaderName as string]
-      ).toBe(token);
+      expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe(token);
     });
   });
 });

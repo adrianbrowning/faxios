@@ -2,7 +2,9 @@
 
 faxios simplifie l'envoi de fichiers. Utilisez `postForm` ou `FormData` lorsque vous avez besoin d'envois `multipart/form-data`.
 
-## Fichier unique (navigateur)
+`FormData` est une API web standard disponible dans tous les environnements pris en charge (navigateurs, Node.js 18+, Deno et Bun), donc les mêmes exemples fonctionnent partout.
+
+## Fichier unique
 
 Passez un objet `File` directement comme valeur de champ — faxios le détectera et utilisera automatiquement le type de contenu correct :
 
@@ -13,7 +15,7 @@ await faxios.postForm("https://httpbin.org/post", {
 });
 ```
 
-## Plusieurs fichiers (navigateur)
+## Plusieurs fichiers
 
 Passez une `FileList` pour envoyer tous les fichiers sélectionnés en une seule fois. Ils seront tous envoyés sous le même nom de champ (`files[]`) :
 
@@ -42,66 +44,23 @@ formData.append("cover", coverFile);
 await faxios.post("https://httpbin.org/post", formData);
 ```
 
-## Suivi de la progression de l'envoi (navigateur)
+## Fichiers en dehors du navigateur
 
-Utilisez le callback `onUploadProgress` pour afficher une barre de progression ou un pourcentage à vos utilisateurs :
-
-```js
-await faxios.postForm("https://httpbin.org/post", {
-  file: document.querySelector("#fileInput").files[0],
-}, {
-  onUploadProgress: (progressEvent) => {
-    const percent = Math.round(
-      (progressEvent.loaded * 100) / progressEvent.total
-    );
-    console.log(`Upload progress: ${percent}%`);
-  },
-});
-```
-
-Consultez [Capture de progression](/pages/advanced/progress-capturing) pour la liste complète des champs disponibles sur l'événement de progression.
-
-## Fichiers dans Node.js
-
-Dans Node.js, utilisez `fs.createReadStream` pour envoyer un fichier depuis le système de fichiers sans le charger entièrement en mémoire :
+Dans les environnements hors navigateur (Node.js 18+, Deno, Bun), construisez un `FormData` avec un `Blob` ou un `File` standard. Par exemple, dans Node.js vous pouvez lire un fichier puis l'ajouter au formulaire :
 
 ```js
-import fs from "fs";
-import FormData from "form-data";
+import { readFile } from "node:fs/promises";
 import faxios from "faxios";
 
+const bytes = await readFile("/path/to/file.jpg");
+
 const form = new FormData();
-form.append("file", fs.createReadStream("/path/to/file.jpg"));
+form.append("file", new Blob([bytes]), "file.jpg");
 form.append("description", "My uploaded file");
 
 await faxios.post("https://httpbin.org/post", form);
 ```
 
-::: tip
-Le package npm `form-data` est nécessaire dans les environnements Node.js pour créer des objets `FormData`. Dans Node.js moderne (v18+), le `FormData` global est disponible nativement.
-:::
-
-## Envoi d'un Buffer (Node.js)
-
-Vous pouvez également envoyer directement un `Buffer` en mémoire :
-
-```js
-const buffer = Buffer.from("Hello, world!");
-
-const form = new FormData();
-form.append("file", buffer, {
-  filename: "hello.txt",
-  contentType: "text/plain",
-  knownLength: buffer.length,
-});
-
-await faxios.post("https://httpbin.org/post", form);
-```
-
-::: warning
-La capture de la progression d'envoi de `FormData` n'est actuellement pas supportée dans les environnements Node.js.
-:::
-
-::: danger
-Lors de l'envoi d'un stream lisible dans Node.js, définissez `maxRedirects: 0` pour empêcher le package `follow-redirects` de buffériser l'intégralité du stream en RAM.
+::: info
+L'adaptateur `fetch` ne peut pas signaler la progression d'un envoi, donc `onUploadProgress` n'est pas pris en charge. Seule la progression des téléchargements (`onDownloadProgress`) est disponible — voir [Capture de progression](/pages/advanced/progress-capturing).
 :::

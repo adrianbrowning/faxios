@@ -436,11 +436,7 @@ function findKey(obj: unknown, key: string): string | null {
   return null;
 }
 
-const _global = (() => {
-  /*eslint no-undef:0*/
-  if (typeof globalThis !== "undefined") return globalThis;
-  return global;
-})() as Record<string, unknown> & { addEventListener?: (type: string, listener: (event: Record<string, unknown>) => void, capture?: boolean) => void; postMessage?: (message: unknown, targetOrigin: string) => void; };
+const _global = globalThis as unknown as Record<string, unknown> & { addEventListener?: (type: string, listener: (event: Record<string, unknown>) => void, capture?: boolean) => void; postMessage?: (message: unknown, targetOrigin: string) => void; };
 
 const isContextDefined = (context: unknown) => !isUndefined(context) && context !== _global;
 
@@ -911,7 +907,7 @@ const isThenable = (thing: unknown) =>
  */
 const _setImmediate = ((setImmediateSupported: boolean, postMessageSupported: boolean) => {
   if (setImmediateSupported) {
-    return setImmediate;
+    return (_global["setImmediate"] as (cb: () => void) => unknown);
   }
 
   return postMessageSupported
@@ -933,7 +929,7 @@ const _setImmediate = ((setImmediateSupported: boolean, postMessageSupported: bo
     // eslint-disable-next-line sonarjs/pseudo-random
     })(`faxios@${Math.random()}`, [])
     : (cb: () => void) => setTimeout(cb);
-})(typeof setImmediate === "function", isFunction(_global["postMessage"]));
+})(isFunction(_global["setImmediate"]), isFunction(_global["postMessage"]));
 
 /**
  * Schedules a microtask or asynchronous callback as soon as possible.
@@ -941,12 +937,12 @@ const _setImmediate = ((setImmediateSupported: boolean, postMessageSupported: bo
  *
  * @type {Function}
  */
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+ 
+const _process = _global["process"] as { nextTick?: (cb: () => void) => void; } | undefined;
 const asap =
   typeof queueMicrotask !== "undefined"
     ? queueMicrotask.bind(globalThis)
-    : (typeof process !== "undefined" && process.nextTick) || _setImmediate;
-/* eslint-enable @typescript-eslint/no-unnecessary-condition */
+    : (_process && _process.nextTick) || _setImmediate;
 
 // *********************
 

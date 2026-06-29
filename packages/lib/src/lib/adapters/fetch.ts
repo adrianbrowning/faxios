@@ -832,8 +832,13 @@ const factory = (env: Record<string, unknown>) => {
         isRequestSupported &&
         new (Request as AnyConstructor)(url, resolvedOptions);
 
+      // Pass resolvedOptions (all own-properties) as the fetch init even when a
+      // Request object is supplied: undici re-reads RequestInit fields (method,
+      // headers, body, credentials) off Object.prototype when init is absent,
+      // so a polluted Object.prototype.method would override the Request's verb.
+      // An explicit own-property init neutralizes every such gadget.
       let response = await (isRequestSupported
-        ? _fetch(request, fetchOptions)
+        ? _fetch(request, resolvedOptions)
         : _fetch(url, resolvedOptions));
 
       const responseHeaders = FaxiosHeaders.from(response.headers);

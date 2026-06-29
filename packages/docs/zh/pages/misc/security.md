@@ -2,9 +2,9 @@
 
 ## ⚠️ 解压炸弹 / 响应无限缓冲
 
-默认情况下，`maxContentLength` 与 `maxBodyLength` 均为 `-1`（不限制）。恶意或被攻陷的服务器可以返回一个很小的 gzip/deflate/brotli/zstd 压缩响应，解压后体积可达数 GB，耗尽 Node.js 进程的内存。
+默认情况下，`maxContentLength` 与 `maxBodyLength` 均为 `-1`（不限制）。恶意或被攻陷的服务器可以返回一个很小的 gzip/deflate/brotli/zstd 压缩响应，解压后体积可达数 GB，耗尽进程的内存。
 
-**如果你向不完全可信的服务器发起请求，必须根据你的业务场景设置合适的 `maxContentLength`（以及 `maxBodyLength`）。** 在流式解压过程中会按分块强制执行该限制，因此只需设置该值即可抵御解压炸弹攻击。
+**如果你向不完全可信的服务器发起请求，必须根据你的业务场景设置合适的 `maxContentLength`（以及 `maxBodyLength`）。** fetch 适配器会在解压过程中按分块强制执行该限制，因此只需设置该值即可抵御解压炸弹攻击。
 
 ```js
 faxios.get('https://example.com/data', {
@@ -25,8 +25,6 @@ faxios.defaults.maxBodyLength = 10 * 1024 * 1024;
 
 | 选项 | 风险 | 缓解措施 |
 | --- | --- | --- |
-| [`socketPath`](/pages/advanced/request-config#socketpath) | 如果取自不可信输入，攻击者可将流量重定向到 `/var/run/docker.sock` 等特权本地套接字，绕过基于主机名的 SSRF 防护（CWE-918）。 | 对来自不可信输入的配置进行过滤或仅允许特定键。使用 [`allowedSocketPaths`](/pages/advanced/request-config#allowedsocketpaths) 限制可接受的套接字路径。 |
-| [`beforeRedirect`](/pages/advanced/request-config#beforeredirect) | 在 `follow-redirects` 因协议降级剥离凭据**之后**运行。如果不检查目标协议就重新注入凭据，可能在明文 HTTP 上泄露凭据。 | 仅对可信的 HTTPS 目标重新添加凭据。在为 `auth` 赋值前检查 `options.protocol === "https:"`。 |
 | [`withXSRFToken`](/pages/advanced/request-config#withxsrftoken) | 设置为 `true` 会在跨域请求中强制设置 XSRF 请求头。较旧的 faxios 版本会在 `withCredentials: true` 时隐式启用此行为；新版本要求两个标志同时设置。 | 保持为 `undefined`（仅同源），除非你的后端确实在跨域请求中校验 XSRF。 |
 | [`redact`](/pages/advanced/request-config#redact) | `FaxiosError#toJSON()` 默认会包含请求配置，可能将 `Authorization` 请求头或 `auth` 凭据泄露到错误日志和遥测中。 | 通过 `redact` 数组传入需要遮蔽的配置键名。匹配不区分大小写，且会递归处理。 |
 | [`formDataHeaderPolicy`](/pages/advanced/request-config#formdataheaderpolicy) | 自定义 `FormData` 的 `getHeaders()` 若返回攻击者可控的值，可能在 Node.js 中覆盖 `Authorization` 等请求头或注入任意请求头。 | 设置为 `'content-only'` 仅复制 `Content-Type` 与 `Content-Length`，再通过请求 `headers` 配置显式设置其他请求头。 |
@@ -96,7 +94,7 @@ npm audit signatures
 **例外与延期。**
 
 - 如果报告人要求缩短禁运期（例如计划在会议上披露研究成果），我们会尽量配合。
-- 如果修复需要引入破坏性变更、需与主要下游使用者协调、或依赖 `follow-redirects` / `form-data` / `proxy-from-env` 的上游发布，我们可能将期限延长至 60 天以上。任何延期都会在第 60 天通过公告公开披露，并说明修订后的预期时间与原因。
+- 如果修复需要引入破坏性变更，或需与主要下游使用者协调，我们可能将期限延长至 60 天以上。任何延期都会在第 60 天通过公告公开披露，并说明修订后的预期时间与原因。
 - 如果报告**不在范围内**（例如属于项目 [威胁模型](https://github.com/faxios/faxios/blob/v1.x/THREATMODEL.md) 中明确列出的 non-goal），我们会在分流窗口内（≤ 3 天）向报告人说明并关闭。不在范围内的报告不会进入 60 天队列。
 - **正在被实际利用的漏洞** 按事件处理：修复与公告在补丁验证通过后立即发布，而非按 60 天时间表。
 

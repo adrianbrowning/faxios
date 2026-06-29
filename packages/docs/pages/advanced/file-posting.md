@@ -42,66 +42,35 @@ formData.append("cover", coverFile);
 await faxios.post("https://httpbin.org/post", formData);
 ```
 
-## Tracking upload progress (browser)
+::: warning
+The `fetch` API cannot emit upload progress events, so upload progress is not available. Download progress is captured via `onDownloadProgress` — see [Progress capturing](/pages/advanced/progress-capturing).
+:::
 
-Use the `onUploadProgress` callback to show a progress bar or percentage to your users:
+## Files in Node.js, Deno, and Bun
 
-```js
-await faxios.postForm("https://httpbin.org/post", {
-  file: document.querySelector("#fileInput").files[0],
-}, {
-  onUploadProgress: (progressEvent) => {
-    const percent = Math.round(
-      (progressEvent.loaded * 100) / progressEvent.total
-    );
-    console.log(`Upload progress: ${percent}%`);
-  },
-});
-```
-
-See [Progress capturing](/pages/advanced/progress-capturing) for the full list of fields available on the progress event.
-
-## Files in Node.js
-
-In Node.js, use `fs.createReadStream` to upload a file from the filesystem without loading it entirely into memory:
+`FormData`, `File`, and `Blob` are globally available in every supported runtime, so the same code works everywhere. Build a `FormData` object and post it directly:
 
 ```js
-import fs from "fs";
-import FormData from "form-data";
 import faxios from "faxios";
 
+const data = await fs.promises.readFile("/path/to/file.jpg");
+
 const form = new FormData();
-form.append("file", fs.createReadStream("/path/to/file.jpg"));
+form.append("file", new Blob([data]), "file.jpg");
 form.append("description", "My uploaded file");
 
 await faxios.post("https://httpbin.org/post", form);
 ```
 
-::: tip
-The `form-data` npm package is required in Node.js environments to create `FormData` objects. In modern Node.js (v18+), the global `FormData` is available natively.
-:::
+## Uploading a Blob
 
-## Uploading a Buffer (Node.js)
-
-You can also upload an in-memory `Buffer` directly:
+You can also upload an in-memory `Blob` directly:
 
 ```js
-const buffer = Buffer.from("Hello, world!");
+const blob = new Blob(["Hello, world!"], { type: "text/plain" });
 
 const form = new FormData();
-form.append("file", buffer, {
-  filename: "hello.txt",
-  contentType: "text/plain",
-  knownLength: buffer.length,
-});
+form.append("file", blob, "hello.txt");
 
 await faxios.post("https://httpbin.org/post", form);
 ```
-
-::: warning
-Capturing `FormData` upload progress is not currently supported in Node.js environments.
-:::
-
-::: danger
-When uploading a readable stream in Node.js, set `maxRedirects: 0` to prevent the `follow-redirects` package from buffering the entire stream in RAM.
-:::

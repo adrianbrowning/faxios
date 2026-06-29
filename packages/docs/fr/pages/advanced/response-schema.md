@@ -22,9 +22,7 @@ Chaque requête faxios se résout vers un objet de réponse ayant la structure s
   // headers, timeout, params, et toutes autres options que vous avez fournies.
   config: {},
 
-  // L'objet de requête sous-jacent.
-  // Dans Node.js : la dernière instance de `http.ClientRequest` (après toute redirection).
-  // Dans le navigateur : l'instance de `XMLHttpRequest`.
+  // L'objet de requête sous-jacent : l'instance `Request` de fetch utilisée pour la requête.
   request: {},
 }
 ```
