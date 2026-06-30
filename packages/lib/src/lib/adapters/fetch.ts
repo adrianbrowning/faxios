@@ -707,6 +707,20 @@ const factory = (env: Record<string, unknown>) => {
     );
   };
 
+  const unsubscribeOnComplete = (isStreamResponse: boolean, unsubscribe: (() => void) | undefined) => {
+    if (!isStreamResponse) unsubscribe?.();
+  };
+
+  const encodeBodyIfNeeded = (
+    data: unknown,
+    headers: Record<string, unknown>,
+    encode: (str: string) => Promise<Uint8Array> | Uint8Array
+  ): Promise<unknown> | unknown => {
+    if (!utils.isString(data) || utils.findKey(headers, "content-type")) return data;
+    // ponytail: skip await when TextEncoder is sync (avoids microtask hop on every string body)
+    return encode(data as string);
+  };
+
   return async (config: InternalFaxiosRequestConfig) => {
     const _resolved = resolveConfig(config) as InternalFaxiosRequestConfig & {
       fetchOptions?: Record<string, unknown>;
@@ -764,12 +778,7 @@ const factory = (env: Record<string, unknown>) => {
       timeoutErrorMessage
     ) as ComposedSignal | undefined;
 
-    const unsubscribe =
-      composedSignal &&
-      composedSignal.unsubscribe &&
-      (() => {
-        composedSignal.unsubscribe!();
-      });
+    const unsubscribe = composedSignal?.unsubscribe?.bind(composedSignal);
 
     let request: unknown = null;
     const pendingBodyErrorRef: PendingBodyErrorRef = { value: null };
@@ -791,9 +800,8 @@ const factory = (env: Record<string, unknown>) => {
 
       // A streamed body under maxBodyLength must be counted as fetch consumes
       // it; its size is never trusted from a caller-declared Content-Length.
-      const mustEnforceStreamBody =
-        hasMaxBodyLength &&
-        (utils.isReadableStream!(data) || utils.isStream(data));
+      const isStreamLike = utils.isReadableStream!(data) || utils.isStream(data);
+      const mustEnforceStreamBody = hasMaxBodyLength && isStreamLike;
 
       ({ data } = await buildUploadStream(
         data,
@@ -829,11 +837,7 @@ const factory = (env: Record<string, unknown>) => {
       // Browsers auto-add "text/plain;charset=UTF-8" for string bodies when no Content-Type is set.
       // Encoding as Uint8Array prevents the browser from injecting a content-type.
       // Case-insensitive check: toByteStringHeaderObject may normalize to lowercase.
-      if (utils.isString(data) && !utils.findKey(serializedHeaders, "content-type")) {
-        const encoded = encodeText(data as string);
-        // ponytail: skip await when TextEncoder is sync (avoids microtask hop on every string body)
-        data = encoded instanceof Uint8Array ? encoded : await encoded;
-      }
+      data = await encodeBodyIfNeeded(data, serializedHeaders, encodeText);
 
       const resolvedOptions = {
         ...fetchOptions,
@@ -893,7 +897,7 @@ const factory = (env: Record<string, unknown>) => {
         request
       );
 
-      !isStreamResponse && unsubscribe && unsubscribe();
+      unsubscribeOnComplete(isStreamResponse, unsubscribe);
 
       return await new Promise((resolve, reject) => {
         settle(resolve, reject, {

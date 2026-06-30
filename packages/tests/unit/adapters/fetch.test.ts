@@ -1922,8 +1922,9 @@ describe.runIf(typeof fetch === "function")(
         polluted["credentials"] = "include";
 
         try {
-          await fetchFaxios.get(`${LOCAL_SERVER_URL}/`, { env: { fetch: mockFetch as typeof fetch } });
-        } finally {
+          await fetchFaxios.get(`${LOCAL_SERVER_URL}/`, { env: { fetch: mockFetch } });
+        }
+        finally {
           delete polluted["method"];
           delete polluted["headers"];
           delete polluted["credentials"];

@@ -427,7 +427,7 @@ type GlobalWithEvents = typeof globalThis & {
   addEventListener?: (type: string, listener: (event: Record<string, unknown>) => void, capture?: boolean) => void;
   postMessage?: (message: unknown, targetOrigin: string) => void;
   setImmediate?: (cb: () => void) => void;
-  process?: { nextTick?: (cb: () => void) => void };
+  process?: { nextTick?: (cb: () => void) => void; };
 };
 const _global = globalThis as GlobalWithEvents;
 
@@ -905,7 +905,8 @@ const _setImmediate = ((setImmediateSupported: boolean, postMessageSupported: bo
 
   return postMessageSupported
     ? ((token: string, callbacks: Array<() => void>) => {
-      _global.addEventListener?.(
+      const _addEventListener = _global.addEventListener as NonNullable<GlobalWithEvents["addEventListener"]>;
+      _addEventListener(
         "message",
         (evt: Record<string, unknown>) => {
           if (evt["source"] === _global && evt["data"] === token) {
@@ -915,9 +916,11 @@ const _setImmediate = ((setImmediateSupported: boolean, postMessageSupported: bo
         false
       );
 
+      const _postMessage = _global.postMessage as NonNullable<GlobalWithEvents["postMessage"]>;
+
       return (cb: () => void) => {
         callbacks.push(cb);
-        _global.postMessage?.(token, "*");
+        _postMessage(token, "*");
       };
     // eslint-disable-next-line sonarjs/pseudo-random
     })(`faxios@${Math.random()}`, [])
@@ -931,7 +934,7 @@ const _setImmediate = ((setImmediateSupported: boolean, postMessageSupported: bo
  * @type {Function}
  */
  
-const _process = _global["process"] as { nextTick?: (cb: () => void) => void; } | undefined;
+const _process = _global["process"];
 const asap =
   typeof queueMicrotask !== "undefined"
     ? queueMicrotask.bind(globalThis)

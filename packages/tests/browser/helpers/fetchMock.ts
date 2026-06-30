@@ -20,13 +20,13 @@ export type FetchMockController = {
   readonly lastRequest: Request | undefined;
   readonly requests: Array<Request>;
   fetch: ReturnType<typeof vi.fn>;
-  respondWith(init: ResponseSpec): void;
-  failNetworkError(): void;
-  [Symbol.dispose](): void;
+  respondWith: (init: ResponseSpec) => void;
+  failNetworkError: () => void;
+  [Symbol.dispose]: () => void;
 };
 
 export const installFetchMock = (
-  options?: { defaultResponse?: ResponseInit & { body?: BodyInit } }
+  options?: { defaultResponse?: ResponseInit & { body?: BodyInit; }; }
 ): FetchMockController => {
   const originalFetch = globalThis.fetch;
   const requests: Array<Request> = [];
@@ -34,11 +34,11 @@ export const installFetchMock = (
   let networkError = false;
   let spec: ResponseSpec = options?.defaultResponse
     ? {
-        status: options.defaultResponse.status,
-        statusText: options.defaultResponse.statusText,
-        body: options.defaultResponse.body ?? null,
-        headers: options.defaultResponse.headers,
-      }
+      status: options.defaultResponse.status,
+      statusText: options.defaultResponse.statusText,
+      body: options.defaultResponse.body ?? null,
+      headers: options.defaultResponse.headers,
+    }
     : {};
 
   const buildResponse = (): Response => {
@@ -69,7 +69,7 @@ export const installFetchMock = (
     if (signal) {
       // Defer success so an abort dispatched after send (but before the
       // response settles) wins the race and rejects with signal.reason.
-      return await new Promise<Response>((resolve, reject) => {
+      return new Promise<Response>((resolve, reject) => {
         signal.addEventListener(
           "abort",
           () => reject(signal.reason),
@@ -82,7 +82,7 @@ export const installFetchMock = (
     return buildResponse();
   });
 
-  globalThis.fetch = fetch as unknown as typeof globalThis.fetch;
+  globalThis.fetch = fetch;
 
   return {
     get lastRequest() {
