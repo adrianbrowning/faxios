@@ -300,20 +300,7 @@ const isStream = (val: unknown) => isObject(val) && isFunction((val as Record<st
  *
  * @returns {boolean} True if value is an FormData, otherwise false
  */
-function getGlobal(): Record<string, unknown> {
-  if (typeof globalThis !== "undefined") return globalThis;
-  // @ts-expect-error self may not exist in all environments
-   
-  if (typeof self !== "undefined") return self;
-  // @ts-expect-error window may not exist in all environments
-   
-  if (typeof window !== "undefined") return window;
-  // @ts-expect-error -- global lacks index signature in TS strict mode
-  if (typeof global !== "undefined") return global;
-  return {};
-}
-
-const G = getGlobal();
+const G: Record<string, unknown> = globalThis;
 const FormDataCtor = typeof G["FormData"] !== "undefined" ? G["FormData"] as new () => object : undefined;
 
 const isFormData = (thing: unknown): boolean => {
