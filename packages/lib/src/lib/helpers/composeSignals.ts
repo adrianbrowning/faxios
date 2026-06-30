@@ -13,7 +13,7 @@ type SignalLike = {
 };
 export type ExtendedAbortSignal = AbortSignal & { unsubscribe?: (() => void) | ((handler: AbortHandler) => void); };
 
-const composeSignals = (signals: Array<unknown> | null | undefined, timeout?: number): ExtendedAbortSignal | undefined => {
+const composeSignals = (signals: Array<unknown> | null | undefined, timeout?: number, timeoutMessage?: string): ExtendedAbortSignal | undefined => {
   let activeSignals: Array<SignalLike> | null = signals ? (signals.filter(Boolean) as Array<SignalLike>) : [];
 
   if (!timeout && !activeSignals.length) {
@@ -39,7 +39,7 @@ const composeSignals = (signals: Array<unknown> | null | undefined, timeout?: nu
     timeout
       ? setTimeout(() => {
         timer = null;
-        onabort.call(controller.signal, new FaxiosError(`timeout of ${timeout}ms exceeded`, FaxiosError.ETIMEDOUT));
+        onabort.call(controller.signal, new FaxiosError(timeoutMessage || `timeout of ${timeout}ms exceeded`, FaxiosError.ETIMEDOUT));
       }, timeout)
       : null;
 

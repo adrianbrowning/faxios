@@ -200,7 +200,8 @@ class FaxiosHeaders {
         (self as Record<string, unknown>)[key] === undefined ||
         _rewrite === true ||
         (_rewrite === undefined &&
-          (self as Record<string, unknown>)[key] !== false)
+          (self as Record<string, unknown>)[key] !== false &&
+          (self as Record<string, unknown>)[key] !== null)
       ) {
         (self as Record<string, unknown>)[key || _header] = normalizeValue(
           _value as FaxiosHeaderValue

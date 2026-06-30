@@ -24,7 +24,9 @@ describe("headers (vitest browser)", () => {
 
     for (const key in headers) {
       if (Object.prototype.hasOwnProperty.call(headers, key)) {
-        expect(mock.lastRequest!.headers.get(key)).toBe(headers[key]);
+        // Headers.get() returns null for absent headers; undefined in defaults means not sent
+        const expected = headers[key] === undefined ? null : headers[key];
+        expect(mock.lastRequest!.headers.get(key)).toBe(expected);
       }
     }
   });

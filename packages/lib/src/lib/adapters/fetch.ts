@@ -721,6 +721,7 @@ const factory = (env: Record<string, unknown>) => {
       signal,
       cancelToken,
       timeout,
+      timeoutErrorMessage,
       onDownloadProgress,
       onUploadProgress,
       responseType,
@@ -743,6 +744,14 @@ const factory = (env: Record<string, unknown>) => {
 
     const _fetch: FetchFn = (envFetch || (globalThis as unknown as Record<string, unknown>)["fetch"]) as FetchFn;
 
+    if (timeout != null && !Number.isFinite(Number(timeout))) {
+      throw new FaxiosError(
+        "error trying to parse `config.timeout` to int",
+        FaxiosError.ERR_BAD_OPTION_VALUE,
+        config
+      );
+    }
+
     responseType = (
       responseType ? (responseType + "").toLowerCase() : "text"
     ) as typeof responseType;
@@ -753,7 +762,8 @@ const factory = (env: Record<string, unknown>) => {
         cancelToken &&
           (cancelToken as CancelTokenWithAbortSignal).toAbortSignal(),
       ],
-      timeout
+      timeout,
+      timeoutErrorMessage as string | undefined
     ) as ComposedSignal | undefined;
 
     const unsubscribe =
@@ -816,13 +826,19 @@ const factory = (env: Record<string, unknown>) => {
       // Set User-Agent header if not already set (fetch defaults to 'node' in Node.js)
       headers.set("User-Agent", "faxios/" + VERSION, false);
 
+      const serializedHeaders = toByteStringHeaderObject(headers.normalize(false));
+
+      // Browsers auto-add "text/plain;charset=UTF-8" for string bodies when no Content-Type is set.
+      // Encoding as Uint8Array prevents the browser from injecting a content-type.
+      if (utils.isString(data) && !("Content-Type" in serializedHeaders)) {
+        data = await encodeText(data as string);
+      }
+
       const resolvedOptions = {
         ...fetchOptions,
         signal: composedSignal,
         method: (method as string).toUpperCase(),
-        headers: toByteStringHeaderObject(
-          headers.normalize(false)
-        ),
+        headers: serializedHeaders,
         body: data,
         duplex: "half",
         credentials: isCredentialsSupported ? withCredentials : undefined,

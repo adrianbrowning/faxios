@@ -1,99 +1,59 @@
-import { EventEmitter } from "node:events";
-import { PassThrough } from "node:stream";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
 
-const createTransport = config => {
-  const opts = config || {};
-
-  return {
-    request(_options, onResponse) {
-      const req = new EventEmitter();
-      req.destroyed = false;
-      req._timeoutCallback = null;
-
-      req.setTimeout = (_ms, callback) => {
-        req._timeoutCallback = callback;
-      };
-
-      req.write = () => true;
-
-      req.destroy = () => {
-        req.destroyed = true;
-      };
-      req.close = req.destroy;
-
-      req.end = () => {
-        if (opts.triggerTimeout && req._timeoutCallback) {
-          req._timeoutCallback();
-          return;
-        }
-
-        const res = new PassThrough();
-        res.statusCode = 200;
-        res.statusMessage = "OK";
-        res.headers = { "content-type": "application/json" };
-        res.req = req;
-
-        onResponse(res);
-        res.end(opts.body === undefined ? "{\"ok\":true}" : opts.body);
-      };
-
-      return req;
-    },
-  };
-};
+const hangingFetch = async (_input, init) =>
+  new Promise((_resolve, reject) => {
+    const { signal } = init || {};
+    if (signal?.aborted) { reject(signal.reason); return; }
+    signal?.addEventListener("abort", () => reject(signal.reason), { once: true });
+  });
 
 describe("timeout compat (dist export only)", () => {
-  it("rejects with ECONNABORTED on timeout", async () => {
+  it("rejects with ETIMEDOUT on timeout", async () => {
     const err = await faxios
       .get("http://example.com/timeout", {
-        proxy: false,
         timeout: 25,
-        transport: createTransport({ triggerTimeout: true }),
+        env: { fetch: hangingFetch, Request, Response },
       })
       .catch(e => e);
 
     expect(faxios.isFaxiosError(err)).toBe(true);
-    expect(err.code).toBe("ECONNABORTED");
+    expect(err.code).toBe("ETIMEDOUT");
     expect(err.message).toBe("timeout of 25ms exceeded");
   });
 
   it("uses timeoutErrorMessage when provided", async () => {
     const err = await faxios
       .get("http://example.com/timeout", {
-        proxy: false,
         timeout: 25,
         timeoutErrorMessage: "custom timeout",
-        transport: createTransport({ triggerTimeout: true }),
+        env: { fetch: hangingFetch, Request, Response },
       })
       .catch(e => e);
 
     expect(faxios.isFaxiosError(err)).toBe(true);
-    expect(err.code).toBe("ECONNABORTED");
+    expect(err.code).toBe("ETIMEDOUT");
     expect(err.message).toBe("custom timeout");
   });
 
   it("accepts timeout as a numeric string", async () => {
     const err = await faxios
       .get("http://example.com/timeout", {
-        proxy: false,
         timeout: "30",
-        transport: createTransport({ triggerTimeout: true }),
+        env: { fetch: hangingFetch, Request, Response },
       })
       .catch(e => e);
 
     expect(faxios.isFaxiosError(err)).toBe(true);
-    expect(err.code).toBe("ECONNABORTED");
+    expect(err.code).toBe("ETIMEDOUT");
     expect(err.message).toBe("timeout of 30ms exceeded");
   });
 
   it("rejects with ERR_BAD_OPTION_VALUE when timeout is not parsable", async () => {
     const err = await faxios
       .get("http://example.com/timeout", {
-        proxy: false,
         timeout: { invalid: true },
-        transport: createTransport(),
+        env: { fetch: hangingFetch, Request, Response },
       })
       .catch(e => e);
 
@@ -103,10 +63,15 @@ describe("timeout compat (dist export only)", () => {
   });
 
   it("does not time out when timeout is 0", async () => {
+    const mockFetch = async () =>
+      new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+
     const response = await faxios.get("http://example.com/no-timeout", {
-      proxy: false,
       timeout: 0,
-      transport: createTransport({ body: "{\"ok\":true}" }),
+      env: { fetch: mockFetch, Request, Response },
     });
 
     expect(response.status).toBe(200);

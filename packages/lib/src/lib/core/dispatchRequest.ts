@@ -25,7 +25,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
 
   config.data = transformData.call(config, config.transformRequest);
 
-  if ([ "post", "put", "patch" ].indexOf(config.method as string) !== -1) {
+  if (config.data != null && !(config.data instanceof FormData) && [ "post", "put", "patch" ].indexOf(config.method as string) !== -1) {
     (config.headers as unknown as { setContentType: (v: string, r: boolean) => void; }).setContentType("application/x-www-form-urlencoded", false);
   }
 

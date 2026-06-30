@@ -1,55 +1,5 @@
-import { Writable, PassThrough } from "node:stream";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
-
-const createCaptureTransport = buildResponse => ({
-  request(options, onResponse) {
-    const chunks = [];
-
-    const req = new Writable({
-      write(chunk, _encoding, callback) {
-        chunks.push(Buffer.from(chunk));
-        callback();
-      },
-    });
-
-    req.destroyed = false;
-    req.setTimeout = () => {};
-    req.write = req.write.bind(req);
-    req.close = () => {
-      req.destroyed = true;
-    };
-
-    const originalDestroy = req.destroy.bind(req);
-    req.destroy = (...args) => {
-      req.destroyed = true;
-      return originalDestroy(...args);
-    };
-
-    const originalEnd = req.end.bind(req);
-    req.end = (...args) => {
-      originalEnd(...args);
-
-      const body = Buffer.concat(chunks);
-      const response = buildResponse ? buildResponse(body, options) : {};
-
-      const res = new PassThrough();
-      res.statusCode =
-        response.statusCode !== undefined ? response.statusCode : 200;
-      res.statusMessage = response.statusMessage || "OK";
-      res.headers = response.headers || { "content-type": "application/json" };
-      res.req = req;
-
-      onResponse(res);
-      res.end(response.body || JSON.stringify({ ok: true }));
-    };
-
-    return req;
-  },
-});
-
-const bodyAsUtf8 = value =>
-  Buffer.isBuffer(value) ? value.toString("utf8") : String(value);
 
 describe("formData compat (dist export only)", () => {
   it("supports posting FormData instances", async () => {
@@ -57,17 +7,17 @@ describe("formData compat (dist export only)", () => {
     form.append("username", "janedoe");
     form.append("role", "admin");
 
+    const mockFetch = async input => {
+      const contentType = input.headers.get("content-type") ?? "";
+      const payload = await input.text();
+      return new Response(JSON.stringify({ contentType, payload }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    };
+
     const response = await faxios.post("http://example.com/form", form, {
-      proxy: false,
-      transport: createCaptureTransport((body, options) => ({
-        body: JSON.stringify({
-          contentType:
-            options.headers &&
-            (options.headers["Content-Type"] ||
-              options.headers["content-type"]),
-          payload: bodyAsUtf8(body),
-        }),
-      })),
+      env: { fetch: mockFetch, Request, Response },
     });
 
     expect(response.data.contentType).toContain("multipart/form-data");
@@ -78,23 +28,20 @@ describe("formData compat (dist export only)", () => {
   });
 
   it("supports faxios.postForm helper", async () => {
+    const mockFetch = async input => {
+      const contentType = input.headers.get("content-type") ?? "";
+      const payload = await input.text();
+      return new Response(JSON.stringify({ contentType, payload }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    };
+
     const response = await faxios.postForm(
       "http://example.com/post-form",
+      { project: "faxios", mode: "compat" },
       {
-        project: "faxios",
-        mode: "compat",
-      },
-      {
-        proxy: false,
-        transport: createCaptureTransport((body, options) => ({
-          body: JSON.stringify({
-            contentType:
-              options.headers &&
-              (options.headers["Content-Type"] ||
-                options.headers["content-type"]),
-            payload: bodyAsUtf8(body),
-          }),
-        })),
+        env: { fetch: mockFetch, Request, Response },
       }
     );
 

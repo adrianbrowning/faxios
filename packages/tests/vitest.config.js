@@ -16,6 +16,8 @@ export default defineConfig({
         },
       },
       {
+        // ponytail: transpile `using` (explicit resource management) for webkit compat
+        oxc: { target: "es2022" },
         test: {
           name: "browser",
           include: [ "browser/**/*.browser.test.{js,ts}" ],
@@ -28,6 +30,8 @@ export default defineConfig({
         },
       },
       {
+        // ponytail: transpile `using` (explicit resource management) for webkit compat
+        oxc: { target: "es2022" },
         test: {
           name: "browser-headless",
           include: [ "browser/**/*.browser.test.{js,ts}" ],

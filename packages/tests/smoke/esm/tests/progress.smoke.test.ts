@@ -1,59 +1,6 @@
-import { Readable, Writable, PassThrough } from "node:stream";
+import { Readable } from "node:stream";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
-
-const createProgressTransport = config => {
-  const opts = config || {};
-  const responseChunks = opts.responseChunks || [ "ok" ];
-  const responseHeaders = opts.responseHeaders || {};
-
-  return {
-    request(_options, onResponse) {
-      const req = new Writable({
-        write(_chunk, _encoding, callback) {
-          callback();
-        },
-      });
-
-      req.destroyed = false;
-      req.setTimeout = () => {};
-      req.close = () => {
-        req.destroyed = true;
-      };
-
-      const originalDestroy = req.destroy.bind(req);
-      req.destroy = (...args) => {
-        req.destroyed = true;
-        return originalDestroy(...args);
-      };
-
-      const originalEnd = req.end.bind(req);
-      req.end = (...args) => {
-        originalEnd(...args);
-
-        const res = new PassThrough();
-        res.statusCode = 200;
-        res.statusMessage = "OK";
-        res.headers = Object.assign(
-          {
-            "content-type": "text/plain",
-          },
-          responseHeaders
-        );
-        res.req = req;
-
-        onResponse(res);
-
-        responseChunks.forEach(chunk => {
-          res.write(chunk);
-        });
-        res.end();
-      };
-
-      return req;
-    },
-  };
-};
 
 describe("progress compat (dist export only)", () => {
   it("emits upload progress events for stream payloads", async () => {
@@ -61,17 +8,22 @@ describe("progress compat (dist export only)", () => {
     const payload = [ "abc", "def", "ghi" ];
     const total = payload.join("").length;
 
+    // The adapter wraps the body in a tracked ReadableStream; consuming it triggers onUploadProgress.
+    const mockFetch = async input => {
+      // Drain the body so the tracked stream fires progress events
+      await input.arrayBuffer();
+      return new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    };
+
     await faxios.post("http://example.com/upload", Readable.from(payload), {
-      proxy: false,
-      headers: {
-        "Content-Length": String(total),
-      },
+      headers: { "Content-Length": String(total) },
       onUploadProgress: ({ loaded, total: reportedTotal, upload }) => {
         samples.push({ loaded, total: reportedTotal, upload });
       },
-      transport: createProgressTransport({
-        responseChunks: [ "uploaded" ],
-      }),
+      env: { fetch: mockFetch, Request, Response },
     });
 
     expect(samples.length).toBeGreaterThan(0);
@@ -87,18 +39,29 @@ describe("progress compat (dist export only)", () => {
     const chunks = [ "ab", "cd", "ef" ];
     const total = chunks.join("").length;
 
+    const mockFetch = async () => {
+      const enc = new TextEncoder();
+      const stream = new ReadableStream({
+        start(ctrl) {
+          chunks.forEach(c => ctrl.enqueue(enc.encode(c)));
+          ctrl.close();
+        },
+      });
+      return new Response(stream, {
+        status: 200,
+        headers: {
+          "Content-Type": "text/plain",
+          "Content-Length": String(total),
+        },
+      });
+    };
+
     const response = await faxios.get("http://example.com/download", {
-      proxy: false,
       responseType: "text",
       onDownloadProgress: ({ loaded, total: reportedTotal, download }) => {
         samples.push({ loaded, total: reportedTotal, download });
       },
-      transport: createProgressTransport({
-        responseChunks: chunks,
-        responseHeaders: {
-          "content-length": String(total),
-        },
-      }),
+      env: { fetch: mockFetch, Request, Response },
     });
 
     expect(response.data).toBe("abcdef");
