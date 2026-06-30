@@ -75,7 +75,6 @@ const enSidebar = [
         text: "Progress capturing 🔥",
         link: "/pages/advanced/progress-capturing",
       },
-      { text: "Rate limiting 🔥", link: "/pages/advanced/rate-limiting" },
       {
         text: "Headers 🔥",
         items: [
@@ -84,7 +83,6 @@ const enSidebar = [
         ],
       },
       { text: "Fetch adapter 🔥", link: "/pages/advanced/fetch-adapter" },
-      { text: "HTTP2 🔥", link: "/pages/advanced/http2" },
       { text: "Promises", link: "/pages/advanced/promises" },
       { text: "TypeScript", link: "/pages/advanced/type-script" },
     ],
@@ -165,7 +163,6 @@ const zhSidebar = [
         link: "/zh/pages/advanced/html-form-processing",
       },
       { text: "进度捕获 🔥", link: "/zh/pages/advanced/progress-capturing" },
-      { text: "速率限制 🔥", link: "/zh/pages/advanced/rate-limiting" },
       {
         text: "请求头 🔥",
         items: [
@@ -174,7 +171,6 @@ const zhSidebar = [
         ],
       },
       { text: "Fetch 适配器 🔥", link: "/zh/pages/advanced/fetch-adapter" },
-      { text: "HTTP2 🔥", link: "/zh/pages/advanced/http2" },
       { text: "Promises", link: "/zh/pages/advanced/promises" },
       { text: "TypeScript", link: "/zh/pages/advanced/type-script" },
     ],
@@ -277,10 +273,6 @@ const esSidebar = [
         link: "/es/pages/advanced/progress-capturing",
       },
       {
-        text: "Limitación de velocidad 🔥",
-        link: "/es/pages/advanced/rate-limiting",
-      },
-      {
         text: "Cabeceras 🔥",
         items: [
           { text: "Uso general", link: "/es/pages/advanced/headers" },
@@ -288,7 +280,6 @@ const esSidebar = [
         ],
       },
       { text: "Adaptador Fetch 🔥", link: "/es/pages/advanced/fetch-adapter" },
-      { text: "HTTP2 🔥", link: "/es/pages/advanced/http2" },
       { text: "Promesas", link: "/es/pages/advanced/promises" },
       { text: "TypeScript", link: "/es/pages/advanced/type-script" },
     ],
@@ -388,10 +379,6 @@ const frSidebar = [
         link: "/fr/pages/advanced/progress-capturing",
       },
       {
-        text: "Limitation du débit 🔥",
-        link: "/fr/pages/advanced/rate-limiting",
-      },
-      {
         text: "En-têtes 🔥",
         items: [
           { text: "Utilisation générale", link: "/fr/pages/advanced/headers" },
@@ -399,7 +386,6 @@ const frSidebar = [
         ],
       },
       { text: "Adaptateur Fetch 🔥", link: "/fr/pages/advanced/fetch-adapter" },
-      { text: "HTTP2 🔥", link: "/fr/pages/advanced/http2" },
       { text: "Promesses", link: "/fr/pages/advanced/promises" },
       { text: "TypeScript", link: "/fr/pages/advanced/type-script" },
     ],

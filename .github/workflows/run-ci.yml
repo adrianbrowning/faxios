@@ -7,6 +7,9 @@ on:
 permissions:
   contents: read
 
+env:
+  FAXIOS_TARBALL: /tmp/faxios-0.0.1.tgz
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -21,16 +24,16 @@ jobs:
         with:
           persist-credentials: false
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup node
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: 26.x
           registry-url: 'https://registry.npmjs.org'
-          package-manager-cache: false
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
@@ -104,7 +107,7 @@ jobs:
 
       - name: Install ESM smoke test dependencies
         run: |
-          cp artifacts/faxios-*.tgz /tmp/faxios-0.0.1.tgz
+          cp artifacts/faxios-*.tgz "$FAXIOS_TARBALL"
           cd packages/tests/smoke/esm
           pnpm install --no-frozen-lockfile --ignore-workspace --ignore-scripts
 
@@ -145,7 +148,7 @@ jobs:
 
       - name: Install ESM module test dependencies
         run: |
-          cp artifacts/faxios-*.tgz /tmp/faxios-0.0.1.tgz
+          cp artifacts/faxios-*.tgz "$FAXIOS_TARBALL"
           cd packages/tests/module/esm
           pnpm install --no-frozen-lockfile --ignore-workspace --ignore-scripts
 
@@ -179,7 +182,7 @@ jobs:
           BUN_INSTALL_CACHE_DIR: ${{ runner.temp }}/bun-cache
         run: |
           mkdir -p "$BUN_INSTALL_CACHE_DIR"
-          cp artifacts/faxios-*.tgz /tmp/faxios-0.0.1.tgz
+          cp artifacts/faxios-*.tgz "$FAXIOS_TARBALL"
           cd packages/tests/smoke/bun
           rm -f bun.lock
           bun install

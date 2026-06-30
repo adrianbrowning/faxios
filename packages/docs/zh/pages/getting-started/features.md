@@ -10,7 +10,7 @@ faxios 是一个通用 HTTP 客户端，可在浏览器和 Node.js 中同时使�
 
 ## Fetch 支持 <Badge type="tip" text="新特性" />
 
-faxios 对 Fetch API 提供了一流的支持。Fetch API 是 XHR API 的现代替代方案，可通过配置选项启用该适配器。XHR 适配器和 Fetch 适配器使用完全相同的 API，因此无需修改现有代码即可平滑迁移到 Fetch API。
+faxios 完全基于 Web 标准 Fetch API 构建，这是其在所有受支持环境（浏览器、Node.js 18+、Deno 和 Bun）中唯一的 HTTP 传输层。无需任何配置——默认即使用 `fetch` 适配器。
 
 ## 浏览器支持
 

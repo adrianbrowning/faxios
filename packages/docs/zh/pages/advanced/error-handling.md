@@ -19,7 +19,7 @@ faxios 可能会抛出多种不同类型的错误，有些来自 faxios 本身�
 | ERR_BAD_OPTION            | faxios 配置中提供了无效选项。                                                            |
 | ECONNABORTED              | 通常表示请求已超时（除非设置了 `transitional.clarifyTimeoutError`）或被浏览器或其插件中止。 |
 | ETIMEDOUT                 | 请求因超过 faxios 默认时限而超时。必须将 `transitional.clarifyTimeoutError` 设置为 `true`，否则会抛出通用的 `ECONNABORTED` 错误。 |
-| ERR_NETWORK               | 网络相关问题。在浏览器中，此错误也可能由 [CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/Guides/CORS) 或[混合内容](https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content)策略违规引起。出于安全考虑，浏览器不允许 JS 代码获知错误的真实原因，请检查控制台。 |
+| ERR_NETWORK               | 网络相关问题，包括连接失败（如 `ECONNREFUSED`）。底层操作系统错误会附加在 `error.cause` 上。在浏览器中，此错误也可能由 [CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/Guides/CORS) 或[混合内容](https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content)策略违规引起。出于安全考虑，浏览器不允许 JS 代码获知错误的真实原因，请检查控制台。 |
 | ERR_FR_TOO_MANY_REDIRECTS | 请求重定向次数过多，超过了 faxios 配置中指定的最大重定向次数。                           |
 | ERR_DEPRECATED            | 使用了 faxios 中已废弃的功能或方法。                                                     |
 | ERR_BAD_RESPONSE          | 响应无法正确解析或格式异常，通常与 `5xx` 状态码的响应有关。                             |
@@ -42,7 +42,7 @@ faxios.get("/user/12345").catch(function (error) {
     console.log(error.response.headers);
   } else if (error.request) {
     // 请求已发出，但未收到响应
-    // `error.request` 在浏览器中是 XMLHttpRequest 实例，在 node.js 中是 http.ClientRequest 实例
+    // `error.request` 是本次请求所用的 fetch `Request` 实例
     console.log(error.request);
   } else {
     // 在设置请求时触发了错误

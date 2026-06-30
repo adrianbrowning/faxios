@@ -10,6 +10,7 @@ echo "==> pack + install into smoke/module suites"
 TARBALL=$(pnpm --dir ../lib pack --pack-destination /tmp 2>/dev/null | tail -1)
 pnpm --dir smoke/esm install "$TARBALL"
 pnpm --dir module/esm install "$TARBALL"
+bun install --cwd smoke/bun
 
 echo "==> unit"
 pnpm test:vitest:unit

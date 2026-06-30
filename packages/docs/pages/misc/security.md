@@ -2,9 +2,9 @@
 
 ## ⚠️ Decompression bomb / unbounded response buffering
 
-By default, `maxContentLength` and `maxBodyLength` are set to `-1` (unlimited). A malicious or compromised server can return a small gzip/deflate/brotli/zstd-compressed body that expands to gigabytes, exhausting memory in the Node.js process.
+By default, `maxContentLength` and `maxBodyLength` are set to `-1` (unlimited). A malicious or compromised server can return a small gzip/deflate/brotli/zstd-compressed body that expands to gigabytes, exhausting memory.
 
-**If you make requests to servers you do not fully trust, you MUST set a `maxContentLength` (and `maxBodyLength`) suitable for your workload.** The limit is enforced chunk-by-chunk during streaming decompression, so setting it is sufficient to neutralize decompression-bomb attacks.
+**If you make requests to servers you do not fully trust, you MUST set a `maxContentLength` (and `maxBodyLength`) suitable for your workload.** The fetch adapter enforces the limit while the response is read, so setting it is sufficient to neutralize decompression-bomb attacks.
 
 ```js
 faxios.get('https://example.com/data', {
@@ -25,8 +25,6 @@ The following request-config options have direct security implications. They are
 
 | Option | Risk | Mitigation |
 | --- | --- | --- |
-| [`socketPath`](/pages/advanced/request-config#socketpath) | If derived from untrusted input, an attacker can redirect traffic to privileged local sockets like `/var/run/docker.sock`, bypassing hostname-based SSRF protections (CWE-918). | Strip or allowlist config keys from untrusted input. Use [`allowedSocketPaths`](/pages/advanced/request-config#allowedsocketpaths) to restrict accepted socket paths. |
-| [`beforeRedirect`](/pages/advanced/request-config#beforeredirect) | Runs after `follow-redirects` strips credentials on protocol downgrade. Re-injecting credentials without checking the destination protocol can leak them over plain HTTP. | Only re-add credentials for trusted HTTPS destinations. Check `options.protocol === "https:"` before assigning `auth`. |
 | [`withXSRFToken`](/pages/advanced/request-config#withxsrftoken) | Setting `true` forces the XSRF header on cross-origin requests. Older faxios versions implicitly enabled this with `withCredentials: true`; newer versions require both flags. | Leave at `undefined` (same-origin only) unless your backend explicitly validates XSRF on cross-origin requests. |
 | [`redact`](/pages/advanced/request-config#redact) | `FaxiosError#toJSON()` includes the request config by default, which can leak `Authorization` headers or `auth` credentials into error logs and telemetry. | Pass a `redact` array with sensitive config key names. Matching is case-insensitive and recursive. |
 | [`formDataHeaderPolicy`](/pages/advanced/request-config#formdataheaderpolicy) | A custom `FormData` whose `getHeaders()` returns attacker-controlled values can overwrite headers like `Authorization` or inject arbitrary ones in Node.js. | Set `'content-only'` to copy only `Content-Type` and `Content-Length`, then set other headers explicitly via the request `headers` config. |
@@ -96,7 +94,7 @@ The 60-day clock is a commitment to reporters and downstream consumers — a bac
 **Exceptions and extensions.**
 
 - If a reporter requests a shorter embargo (e.g. they plan to present findings at a conference), we accommodate where possible.
-- If a fix requires a breaking change, coordinating with major downstream consumers, or a `follow-redirects` / `form-data` / `proxy-from-env` upstream release, we may extend beyond 60 days. Any extension is disclosed publicly at day 60 via the advisory, with a revised ETA and the reason.
+- If a fix requires a breaking change or coordinating with major downstream consumers, we may extend beyond 60 days. Any extension is disclosed publicly at day 60 via the advisory, with a revised ETA and the reason.
 - If a report is **out of scope** (e.g. falls under an explicit non-goal documented in the project's [threat model](https://github.com/faxios/faxios/blob/v1.x/THREATMODEL.md)), we close it with an explanation to the reporter within the triage window (≤ 3 days). Out-of-scope reports do not enter the 60-day queue.
 - **Actively exploited vulnerabilities** are treated as incidents: fix and advisory ship as soon as a patch is validated, not on the 60-day schedule.
 

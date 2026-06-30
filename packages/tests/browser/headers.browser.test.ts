@@ -1,202 +1,67 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import faxios, { FaxiosHeaders } from "#src/index.js";
 
-class MockXMLHttpRequest {
-  requestHeaders: Record<string, string> = {};
-  readyState: number = 0;
-  status: number = 0;
-  statusText: string = "";
-  responseText: string = "";
-  response: string | null = null;
-  onreadystatechange: (() => void) | null = null;
-  onloadend: (() => void) | null = null;
-  upload: { addEventListener: () => void; } = { addEventListener() {} };
-  method?: string;
-  url?: string;
-  async?: boolean;
-  params?: unknown;
+import { installFetchMock } from "./helpers/fetchMock.js";
 
-  open(method: string, url: string, async = true) {
-    this.method = method;
-    this.url = url;
-    this.async = async;
+function testHeaderValue(headers: Headers, key: string, val?: unknown) {
+  const actual = headers.get(key);
+
+  if (typeof val === "undefined") {
+    expect(actual).toBeNull();
   }
-
-  setRequestHeader(key: string, value: string) {
-    this.requestHeaders[key] = value;
-  }
-
-  addEventListener() {}
-
-  getAllResponseHeaders() {
-    return "";
-  }
-
-  send(data: unknown) {
-    this.params = data;
-    requests.push(this);
-  }
-
-  respondWith({ status = 200, statusText = "OK", responseText = "" } = {}) {
-    this.status = status;
-    this.statusText = statusText;
-    this.responseText = responseText;
-    this.response = responseText;
-    this.readyState = 4;
-
-    queueMicrotask(() => {
-      if (this.onloadend) {
-        this.onloadend();
-      }
-      else if (this.onreadystatechange) {
-        this.onreadystatechange();
-      }
-    });
-  }
-
-  abort() {}
-}
-
-let requests: Array<MockXMLHttpRequest> = [];
-let OriginalXMLHttpRequest: typeof XMLHttpRequest;
-
-const getLastRequest = () => {
-  const request = requests.at(-1);
-
-  expect(request).toBeDefined();
-
-  return request!;
-};
-
-const finishRequest = async (
-  request: MockXMLHttpRequest,
-  promise: Promise<unknown>
-) => {
-  request.respondWith({ status: 200 });
-  await promise;
-};
-
-function testHeaderValue(
-  headers: Record<string, unknown>,
-  key: string,
-  val?: unknown
-) {
-  let found = false;
-
-  for (const k in headers) {
-    if (k.toLowerCase() === key.toLowerCase()) {
-      found = true;
-      expect(headers[k]).toBe(val);
-      break;
-    }
-  }
-
-  if (!found) {
-    if (typeof val === "undefined") {
-      expect(Object.prototype.hasOwnProperty.call(headers, key)).toBe(false);
-    }
-    else {
-      throw new Error(`${key} was not found in headers`);
-    }
+  else {
+    expect(actual).toBe(val);
   }
 }
 
 describe("headers (vitest browser)", () => {
-  beforeEach(() => {
-    requests = [];
-    OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest =
-      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
-  });
-
-  afterEach(() => {
-    window.XMLHttpRequest = OriginalXMLHttpRequest;
-  });
-
   it("should default common headers", async () => {
+    using mock = installFetchMock();
     const headers = faxios.defaults.headers.common as Record<string, unknown>;
-    const promise = faxios("/foo");
-    const request = getLastRequest();
+
+    await faxios("/foo");
 
     for (const key in headers) {
       if (Object.prototype.hasOwnProperty.call(headers, key)) {
-        expect(request.requestHeaders[key]).toBe(headers[key]);
+        // Headers.get() returns null for absent headers; undefined in defaults means not sent
+        const expected = headers[key] === undefined ? null : headers[key];
+        expect(mock.lastRequest!.headers.get(key)).toBe(expected);
       }
     }
-
-    await finishRequest(request, promise);
-  });
-
-  it("should allow request interceptors to encode Unicode header values before XHR sends them", async () => {
-    const instance = faxios.create({ adapter: "xhr" });
-
-    instance.interceptors.request.use(config => {
-      config.headers["oprtName"] = encodeURIComponent(
-        config.headers["oprtName"] as string
-      );
-      return config;
-    });
-
-    const promise = instance.get("/foo", {
-      headers: {
-        oprtName: "请求用户",
-      },
-    });
-    await new Promise(resolve => setTimeout(resolve));
-    const request = getLastRequest();
-
-    expect(request.requestHeaders.oprtName).toBe(
-      encodeURIComponent("请求用户")
-    );
-
-    await finishRequest(request, promise);
-  });
-
-  it("should sanitize unencoded Unicode headers before passing them to XHR", async () => {
-    const promise = faxios.get("/foo", {
-      adapter: "xhr",
-      headers: {
-        oprtName: "请求用户",
-      },
-    });
-    const request = getLastRequest();
-
-    expect(request.requestHeaders.oprtName).toBe("");
-
-    await finishRequest(request, promise);
   });
 
   it("should respect common Content-Type header", async () => {
+    using mock = installFetchMock();
     const instance = faxios.create();
     (instance.defaults.headers.common as Record<string, string>)[
       "Content-Type"
     ] = "application/custom";
 
-    const promise = instance.patch("/foo", "");
-    const request = getLastRequest();
+    await instance.patch("/foo", "");
 
-    expect(request.requestHeaders["Content-Type"]).toBe("application/custom");
-
-    await finishRequest(request, promise);
+    expect(mock.lastRequest!.headers.get("Content-Type")).toBe(
+      "application/custom"
+    );
   });
 
   it("should add extra headers for post", async () => {
+    using mock = installFetchMock();
     const headers = FaxiosHeaders.from(
       faxios.defaults.headers.common as Record<string, unknown>
     ).toJSON();
-    const promise = faxios.post("/foo", "fizz=buzz");
-    const request = getLastRequest();
+
+    await faxios.post("/foo", "fizz=buzz");
 
     for (const key in headers) {
-      expect(request.requestHeaders[key]).toBe(headers[key]);
+      expect(mock.lastRequest!.headers.get(key)).toBe(headers[key]);
     }
-
-    await finishRequest(request, promise);
   });
 
   it("should reset headers by null or explicit undefined", async () => {
-    const promise = faxios
+    using mock = installFetchMock();
+
+    await faxios
       .create({
         headers: {
           common: {
@@ -217,51 +82,47 @@ describe("headers (vitest browser)", () => {
           },
         }
       );
-    const request = getLastRequest();
 
-    testHeaderValue(request.requestHeaders, "Content-Type");
-    testHeaderValue(request.requestHeaders, "x-header-a");
-    testHeaderValue(request.requestHeaders, "x-header-b");
-    testHeaderValue(request.requestHeaders, "x-header-c", "c");
-
-    await finishRequest(request, promise);
+    const headers = mock.lastRequest!.headers;
+    testHeaderValue(headers, "Content-Type");
+    testHeaderValue(headers, "x-header-a");
+    testHeaderValue(headers, "x-header-b");
+    testHeaderValue(headers, "x-header-c", "c");
   });
 
   it("should use application/json when posting an object", async () => {
-    const promise = faxios.post("/foo/bar", {
+    using mock = installFetchMock();
+
+    await faxios.post("/foo/bar", {
       firstName: "foo",
       lastName: "bar",
     });
-    const request = getLastRequest();
 
-    testHeaderValue(request.requestHeaders, "Content-Type", "application/json");
-
-    await finishRequest(request, promise);
+    testHeaderValue(mock.lastRequest!.headers, "Content-Type", "application/json");
   });
 
   it("should remove content-type if data is empty", async () => {
-    const promise = faxios.post("/foo");
-    const request = getLastRequest();
+    using mock = installFetchMock();
 
-    testHeaderValue(request.requestHeaders, "Content-Type");
+    await faxios.post("/foo");
 
-    await finishRequest(request, promise);
+    testHeaderValue(mock.lastRequest!.headers, "Content-Type");
   });
 
   it("should preserve content-type if data is false", async () => {
-    const promise = faxios.post("/foo", false);
-    const request = getLastRequest();
+    using mock = installFetchMock();
+
+    await faxios.post("/foo", false);
 
     testHeaderValue(
-      request.requestHeaders,
+      mock.lastRequest!.headers,
       "Content-Type",
       "application/x-www-form-urlencoded"
     );
-
-    await finishRequest(request, promise);
   });
 
   it("should allow an FaxiosHeaders instance to be used as the value of the headers option", async () => {
+    using mock = installFetchMock();
     const instance = faxios.create({
       headers: new FaxiosHeaders({
         xFoo: "foo",
@@ -269,19 +130,16 @@ describe("headers (vitest browser)", () => {
       }),
     });
 
-    const promise = instance.get("/foo", {
+    await instance.get("/foo", {
       headers: {
         XFOO: "foo2",
         xBaz: "baz",
       },
     });
-    const request = getLastRequest();
 
-    expect(request.requestHeaders.xFoo).toBe("foo2");
-    expect(request.requestHeaders.xBar).toBe("bar");
-    expect(request.requestHeaders.xBaz).toBe("baz");
-    expect(request.requestHeaders.XFOO).toBeUndefined();
-
-    await finishRequest(request, promise);
+    const headers = mock.lastRequest!.headers;
+    expect(headers.get("xFoo")).toBe("foo2");
+    expect(headers.get("xBar")).toBe("bar");
+    expect(headers.get("xBaz")).toBe("baz");
   });
 });

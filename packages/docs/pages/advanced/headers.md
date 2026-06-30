@@ -128,7 +128,7 @@ api.interceptors.request.use((config) => {
 
 `AxiosHeaders` preserves non-control Unicode characters in header values so request interceptors can transform them before the request is sent. CR/LF and other C0 control bytes are still stripped at set time to prevent header injection.
 
-Adapters sanitize header values to byte-safe (HT, printable ASCII, and Latin-1 supplement) right before handing them to the platform — Node's `http.request`, the browser's `XMLHttpRequest.setRequestHeader`, and `fetch`'s `Headers`. If a header value contains characters outside that range and you have not encoded it, those characters are stripped, which can produce an empty value on the wire.
+The adapter sanitizes header values to byte-safe (HT, printable ASCII, and Latin-1 supplement) right before handing them to `fetch`'s `Headers`. If a header value contains characters outside that range and you have not encoded it, those characters are stripped, which can produce an empty value on the wire.
 
 If you need to send non-ASCII data in a header, encode it in a request interceptor:
 

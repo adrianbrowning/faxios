@@ -40,13 +40,11 @@
 - [Posting files](#posting-files)
 - [HTML form posting](#html-form-posting-browser)
 - [Progress capturing](#progress-capturing)
-- [Rate limiting](#rate-limiting)
 - [FaxiosHeaders](#Faxiosheaders)
 - [Fetch adapter](#fetch-adapter)
   - [Custom fetch](#custom-fetch)
     - [Using with Tauri](#using-with-tauri)
     - [Using with SvelteKit](#using-with-sveltekit)
-- [HTTP/2 support](#http2-support)
 - [Semver](#semver)
 - [Promises](#promises)
 - [TypeScript](#typescript)
@@ -58,8 +56,7 @@
 
 ## Features
 
-- Make [XMLHttpRequests](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) from the browser.
-- Make [http](https://nodejs.org/api/http.html) requests from Node.js.
+- Make HTTP requests with the web-standard [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) API in every runtime — browser, Node.js 18+, Deno, and Bun.
 - Use the [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) API for asynchronous request handling.
 - Intercept requests and responses to add custom logic or transform data.
 - Transform request and response data.
@@ -131,27 +128,6 @@ Some bundlers and ES6 linters need this form:
 
 ```js
 import { default as faxios } from 'faxios';
-```
-
-In custom or legacy environments, you can import the bundle directly:
-
-```js
-const faxios = require('faxios/dist/browser/faxios.cjs'); // browser commonJS bundle (ES2017)
-// const faxios = require('faxios/dist/node/faxios.cjs'); // node commonJS bundle (ES2017)
-```
-
-### CDN
-
-Using jsDelivr CDN (ES5 UMD browser module):
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/faxios@1.13.2/dist/faxios.min.js"></script>
-```
-
-Using unpkg CDN:
-
-```html
-<script src="https://unpkg.com/faxios@1.13.2/dist/faxios.min.js"></script>
 ```
 
 ## Example
@@ -345,7 +321,7 @@ The following instance methods are available. Faxios merges the specified config
 
 ### Security notice: decompression-bomb protection is opt-in
 
-By default `maxContentLength` and `maxBodyLength` are `-1` (unlimited). A malicious or compromised server can return a tiny gzip/deflate/brotli/zstd body that expands to gigabytes and exhaust the Node.js process.
+By default `maxContentLength` and `maxBodyLength` are `-1` (unlimited). A malicious or compromised server can return a tiny gzip/deflate/brotli/zstd body that expands to gigabytes and exhaust the process. The fetch adapter enforces these caps in every runtime.
 
 If you call servers you do not fully trust, **set a cap**:
 
@@ -479,19 +455,17 @@ These config options are available for requests. Only `url` is required. Request
   adapter: function (config) {
     /* ... */
   },
-  // Also, you can set the name of the built-in adapter, or provide an array with their names
-  // to choose the first available in the environment
-  adapter: 'xhr', // 'fetch' | 'http' | ['xhr', 'http', 'fetch']
+  // Also, you can set the name of the built-in adapter. `'fetch'` is the only
+  // built-in adapter and is used in every runtime (browser, Node.js, Deno, Bun).
+  adapter: ['fetch'], // default; equivalent to 'fetch'
 
   // `auth` indicates that HTTP Basic auth should be used, and supplies credentials.
   // This will set an `Authorization` header, overwriting any existing
   // `Authorization` custom headers you have set using `headers`.
-  // If `auth` is omitted, the Node.js HTTP and fetch adapters can read
+  // If `auth` is omitted, the fetch adapter can read
   // HTTP Basic auth credentials from the request URL, for example
   // `https://user:pass@example.com`. Faxios decodes percent-encoded URL
   // credentials, and `auth` takes precedence over URL-embedded credentials.
-  // The Node.js HTTP adapter preserves Basic auth on same-origin redirects
-  // and strips it on cross-origin redirects.
   // Please note that only HTTP Basic auth is configurable through this parameter.
   // For Bearer tokens and such, use `Authorization` custom headers instead.
   auth: {
@@ -541,24 +515,19 @@ These config options are available for requests. Only `url` is required. Request
   // Example:
   // faxios.get('/user', { withCredentials: true, withXSRFToken: true });
 
-  // `onUploadProgress` allows handling of progress events for uploads
-  // browser & node.js
-  onUploadProgress: function ({loaded, total, progress, bytes, estimated, rate, upload = true}) {
-    // Do whatever you want with the Faxios progress event
-  },
-
-  // `onDownloadProgress` allows handling of progress events for downloads
-  // browser & node.js
+  // `onDownloadProgress` allows handling of progress events for downloads.
+  // Upload progress (`onUploadProgress`) is not supported because the
+  // web-standard fetch API cannot emit upload progress events.
   onDownloadProgress: function ({loaded, total, progress, bytes, estimated, rate, download = true}) {
     // Do whatever you want with the Faxios progress event
   },
 
   // `maxContentLength` defines the max size of the response content in bytes.
-  // It is enforced by the Node.js HTTP adapter and the fetch adapter.
+  // It is enforced by the fetch adapter.
   maxContentLength: 2000,
 
   // `maxBodyLength` defines the max size of the request content in bytes.
-  // It is enforced by the Node.js HTTP adapter and the fetch adapter when the body length can be determined.
+  // It is enforced by the fetch adapter when the body length can be determined.
   maxBodyLength: 2000,
 
   // `redact` masks matching config keys when FaxiosError#toJSON() is called.
@@ -572,109 +541,6 @@ These config options are available for requests. Only `url` is required. Request
     return status >= 200 && status < 300; // default
   },
 
-  // `maxRedirects` defines the maximum number of redirects to follow in node.js.
-  // If set to 0, Faxios follows no redirects.
-  maxRedirects: 21, // default
-
-  // `sensitiveHeaders` (Node only option) lists custom secret-bearing headers
-  // to remove from cross-origin redirects. Matching is case-insensitive.
-  // Same-origin redirects keep these headers. If `maxRedirects` is 0, this
-  // option is not used.
-  sensitiveHeaders: ['X-API-Key'],
-
-  // `beforeRedirect` defines a function that Faxios calls before redirect.
-  // Use this to adjust the request options upon redirecting,
-  // to inspect the latest response headers,
-  // or to cancel the request by throwing an error
-  // If maxRedirects is set to 0, `beforeRedirect` is not used.
-
-  beforeRedirect: (options, { headers }) => {
-    if (
-      options.hostname === "example.com" &&
-      options.protocol === "https:"
-    ) {
-      options.auth = "user:password";
-    }
-  },
-  // Security note:
-  // The `beforeRedirect` hook runs after sensitive headers are stripped during redirects.
-  // `follow-redirects` removes credentials on protocol downgrades
-  // (HTTPS to HTTP). Because `beforeRedirect` runs after that step,
-  // re-injecting credentials without checking the destination can expose
-  // sensitive data. Only add credentials for trusted HTTPS destinations.
-
-  // `socketPath` defines a UNIX Socket to be used in node.js.
-  // e.g. '/var/run/docker.sock' to send requests to the docker daemon.
-  // Only either `socketPath` or `proxy` can be specified.
-  // If both are specified, `socketPath` is used.
-  //
-  // Security: when `socketPath` is set, hostname/port of the URL are ignored,
-  // which bypasses hostname-based SSRF protections. Never derive `socketPath`
-  // from untrusted input. Use `allowedSocketPaths` (below) to restrict accepted
-  // socket paths for defense-in-depth.
-  socketPath: null, // default
-
-  // `allowedSocketPaths` restricts which `socketPath` values are accepted.
-  // Accepts a string or array of strings. Entries and the incoming socketPath
-  // are compared after path.resolve(). A mismatch throws FaxiosError with code
-  // `ERR_BAD_OPTION_VALUE`. When null/undefined, no restriction is applied.
-  allowedSocketPaths: null, // default
-
-  // `transport` determines the transport method for the request.
-  // If defined, Faxios uses it. Otherwise, if `maxRedirects` is 0,
-  // Faxios uses the default `http` or `https` library, depending on the protocol specified in `protocol`.
-  // Otherwise, Faxios uses the `httpFollow` or `httpsFollow` library, again depending on the protocol,
-  // which can handle redirects.
-  transport: undefined, // default
-
-  // `httpAgent` and `httpsAgent` define a custom agent to be used when performing http
-  // and https requests, respectively, in node.js. This allows options to be added like
-  // `keepAlive` that are not enabled by default before Node.js v19.0.0. After Node.js
-  // v19.0.0, you no longer need to customize the agent to enable `keepAlive` because
-  // `http.globalAgent` has `keepAlive` enabled by default.
-  httpAgent: new http.Agent({ keepAlive: true }),
-  httpsAgent: new https.Agent({ keepAlive: true }),
-
-  // `proxy` defines the hostname, port, and protocol of the proxy server.
-  // You can also define your proxy using the conventional `http_proxy` and
-  // `https_proxy` environment variables. If you are using environment variables
-  // for your proxy configuration, you can also define a `no_proxy` environment
-  // variable as a comma-separated list of domains that should not be proxied.
-  // Use `false` to disable proxies, ignoring environment variables.
-  // `auth` indicates that HTTP Basic auth should be used to connect to the proxy, and
-  // supplies credentials.
-  // For `http://` targets, faxios sends the request to the proxy in
-  // forward-proxy mode and stamps `Proxy-Authorization` onto the request
-  // headers (overwriting any user-supplied `Proxy-Authorization` header).
-  // For `https://` targets, faxios establishes a CONNECT tunnel through the
-  // proxy and performs TLS end-to-end with the origin; `Proxy-Authorization`
-  // is sent on the CONNECT request only, never on the wrapped TLS request,
-  // so the proxy never sees the URL, headers, or body. Faxios forwards
-  // `httpsAgent` TLS options such as `ca`, `cert`, `key`, and
-  // `rejectUnauthorized` to the generated tunneling agent, so they still apply
-  // to the origin TLS connection.
-  // If you supply an `HttpsProxyAgent`, faxios leaves tunneling to that agent.
-  // If the proxy server uses HTTPS, then you must set the protocol to `https`.
-  // A user-supplied `Host` header in `headers` is preserved when forwarding
-  // through a proxy (case-insensitive match on `host`/`Host`/`HOST`); this
-  // lets you target a virtual host that differs from the request URL, for
-  // example, hitting `127.0.0.1:4000` while having the proxy treat the
-  // request as `example.com`. If no `Host` header is supplied, faxios
-  // defaults it to the request URL's `hostname:port` as before. The Host
-  // header is only set in forward-proxy mode (HTTP targets); for HTTPS
-  // tunneling the Host header is sent inside the TLS connection, not seen
-  // by the proxy.
-  proxy: {
-    protocol: 'https',
-    host: '127.0.0.1',
-    // hostname: '127.0.0.1' // Takes precedence over 'host' if both are defined
-    port: 9000,
-    auth: {
-      username: 'mikeymike',
-      password: 'rapunz3l'
-    }
-  },
-
   // `cancelToken` specifies a cancel token that can be used to cancel the request
   // (see Cancellation section below for details)
   cancelToken: new CancelToken(function (cancel) {
@@ -682,22 +548,6 @@ These config options are available for requests. Only `url` is required. Request
 
   // an alternative way to cancel Faxios requests using AbortController
   signal: new AbortController().signal,
-
-  // `decompress` indicates whether or not the response body should be decompressed
-  // automatically. If set to `true` will also remove the 'content-encoding' header
-  // from the responses objects of all decompressed responses
-  // Faxios supports gzip, deflate, brotli, and zstd when the current Node.js
-  // runtime provides the corresponding zlib decompressor.
-  // - Node only (XHR cannot turn off decompression)
-  decompress: true, // default
-
-  // `insecureHTTPParser` boolean.
-  // Indicates where to use an insecure HTTP parser that accepts invalid HTTP headers.
-  // This may allow interoperability with non-conformant HTTP implementations.
-  // Using the insecure parser should be avoided.
-  // see options https://nodejs.org/dist/latest-v12.x/docs/api/http.html#http_http_request_url_options_callback
-  // see also https://nodejs.org/en/blog/vulnerability/february-2020-security-releases/#strict-http-header-parsing-none
-  insecureHTTPParser: undefined, // default
 
   // transitional options for backward compatibility that may be removed in the newer versions
   transitional: {
@@ -718,8 +568,7 @@ These config options are available for requests. Only `url` is required. Request
     clarifyTimeoutError: false,
 
     // advertise `zstd` in the default Accept-Encoding header when the current
-    // Node.js runtime supports zstd decompression. Faxios still decompresses
-    // zstd responses when support exists and `decompress` is true.
+    // runtime's fetch implementation can decompress zstd responses.
     advertiseZstdAcceptEncoding: false,
 
     // use the legacy interceptor request/response ordering
@@ -737,13 +586,7 @@ These config options are available for requests. Only `url` is required. Request
       metaTokens: boolean; // keep special endings like {} in parameter key
       indexes: boolean; // array indexes format null - no brackets, false - empty brackets, true - brackets with indexes
       maxDepth: 100; // maximum object nesting depth; throws FaxiosError (ERR_FORM_DATA_DEPTH_EXCEEDED) if exceeded. Set to Infinity to disable.
-  },
-
-  // http adapter only (node.js)
-  maxRate: [
-    100 * 1024, // 100KB/s upload limit,
-    100 * 1024  // 100KB/s download limit
-  ]
+  }
 }
 ```
 
@@ -765,16 +608,6 @@ const client = faxios.create({
   paramsSerializer: { encode: encodeURIComponent }
 });
 ```
-
-## HTTP/2 support
-
-Faxios has experimental HTTP/2 support in the Node.js HTTP adapter.
-
-Support depends on the runtime environment and Node.js version. Redirects and some adapter behavior may differ from HTTP/1.1.
-
-Options like `httpVersion` and `http2Options` are adapter-specific and may not work the same way in every environment.
-
-If you need HTTP/2, check runtime support or use a custom adapter.
 
 ## Response schema
 
@@ -800,8 +633,7 @@ The response to a request contains the following information.
   config: {},
 
   // `request` is the request that generated this response
-  // It is the last ClientRequest instance in node.js (in redirects)
-  // and an XMLHttpRequest instance in the browser
+  // It is the fetch `Request` instance used for the request
   request: {}
 }
 ```
@@ -1064,8 +896,7 @@ faxios.get('/user/12345').catch(function (error) {
     console.log(error.response.headers);
   } else if (error.request) {
     // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
+    // `error.request` is the fetch `Request` instance used for the request
     console.log(error.request);
   } else {
     // Something happened in setting up the request that triggered an Error
@@ -1550,23 +1381,14 @@ Sending `Blobs`/`Files` as JSON (`base64`) is not currently supported.
 
 ## Progress capturing
 
-Faxios can capture request upload and download progress in browsers and Node.js.
+Faxios can capture response download progress in every runtime.
 Progress events are limited to `3` times per second.
+
+Upload progress (`onUploadProgress`) is not supported because the web-standard
+fetch API cannot emit upload progress events.
 
 ```js
 await faxios.post(url, data, {
-  onUploadProgress: function (faxiosProgressEvent) {
-    /*{
-      loaded: number;
-      total?: number;
-      progress?: number; // in range [0..1]
-      bytes: number; // how many bytes have been transferred since the last trigger (delta)
-      estimated?: number; // estimated time in seconds
-      rate?: number; // upload speed in bytes
-      upload: true; // upload sign
-    }*/
-  },
-
   onDownloadProgress: function (faxiosProgressEvent) {
     /*{
       loaded: number;
@@ -1578,43 +1400,6 @@ await faxios.post(url, data, {
       download: true; // download sign
     }*/
   },
-});
-```
-
-You can also track stream upload/download progress in node.js:
-
-```js
-const { data } = await faxios.post(SERVER_URL, readableStream, {
-  onUploadProgress: ({ progress }) => {
-    console.log((progress * 100).toFixed(2));
-  },
-
-  headers: {
-    'Content-Length': contentLength,
-  },
-
-  maxRedirects: 0, // avoid buffering the entire stream
-});
-```
-
-> Note:
-> Capturing FormData upload progress is not currently supported in node.js environments.
-
-> Warning:
-> Set `maxRedirects: 0` when uploading streams in node.js.
-> The follow-redirects package buffers the entire stream in RAM and does not follow the "backpressure" algorithm.
-
-## Rate limiting
-
-Download and upload rate limits can only be set for the http adapter (node.js):
-
-```js
-const { data } = await faxios.post(LOCAL_SERVER_URL, myBuffer, {
-  onUploadProgress: ({ progress, rate }) => {
-    console.log(`Upload [${(progress * 100).toFixed(2)}%]: ${(rate / 1024).toFixed(2)}KB/s`);
-  },
-
-  maxRate: [100 * 1024], // 100KB/s limit
 });
 ```
 
@@ -1908,27 +1693,17 @@ The following shortcuts are available:
 
 ## Fetch adapter
 
-Faxios introduced the fetch adapter in `v1.7.0`. By default, Faxios uses it when the `xhr` and `http` adapters are not available in the build or not supported by the environment.
-To use it by default, select it explicitly:
+The fetch adapter is the only adapter. It uses the web-standard [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) API and is used in every runtime — browser, Node.js 18+, Deno, and Bun. It is the default; you do not need to select it.
 
 ```js
-const { data } = faxios.get(url, {
-  adapter: 'fetch', // by default ['xhr', 'http', 'fetch']
-});
+const { data } = await faxios.get(url); // uses fetch in all runtimes
 ```
 
-You can create a separate instance for this:
+The default `adapter` is `['fetch']`. You can pass a custom adapter function, but `'fetch'` is the only built-in name.
 
-```js
-const fetchAxios = faxios.create({
-  adapter: 'fetch',
-});
+It supports download progress capturing and response types such as `stream` and `formdata` when the environment supports them. Upload progress is not supported because fetch cannot emit upload progress events.
 
-const { data } = fetchAxios.get(url);
-```
-
-The adapter supports the same features as the `xhr` adapter, including upload and download progress capturing.
-It also supports response types such as `stream` and `formdata` when the environment supports them.
+Proxies and connection agents are not configured through faxios options. Configure them at the runtime level instead — for example, by passing a custom dispatcher/agent via `fetchOptions`, or by setting the runtime's global proxy/dispatcher (Node's `undici` `ProxyAgent`, Deno/Bun proxy env vars, etc.).
 
 When `auth` is omitted, the fetch adapter can read HTTP Basic auth credentials from the request URL, for example `https://user:pass@example.com`. Percent-encoded URL credentials are decoded before the `Authorization` header is generated, and `auth` takes precedence over URL-embedded credentials.
 
@@ -1941,7 +1716,7 @@ This helps in custom environments and app frameworks.
 When using a custom fetch, you may also need to set custom `Request` and `Response` constructors. If you do not set them, Faxios uses the global objects.
 If your custom fetch API does not provide these objects and the globals are incompatible with it, pass `null` to disable them inside the fetch adapter.
 
-> Note: Setting `Request` and `Response` to `null` prevents the fetch adapter from capturing upload and download progress.
+> Note: Setting `Request` and `Response` to `null` prevents the fetch adapter from capturing download progress.
 
 Basic example:
 
@@ -1999,32 +1774,6 @@ export async function load({ fetch }) {
 
   return { post };
 }
-```
-
-#### HTTP/2 support
-
-Faxios supports HTTP/2 through the Node.js `http` adapter, introduced in v1.13.0.
-
-Support depends on the runtime environment. Faxios relies on Node.js APIs, so HTTP/2 works in supported Node.js versions but may not work in other environments such as Bun or Deno.
-
-Options like `httpVersion` and `http2Options` are adapter-specific and may not behave the same way in every environment.
-
-Note: HTTP/2 redirects are currently not supported by the HTTP/2 adapter.
-
-```js
-const form = new FormData();
-
-form.append('foo', '123');
-
-const { data, headers, status } = await faxios.post('https://httpbin.org/post', form, {
-  onUploadProgress(e) {
-    console.log('upload progress', e);
-  },
-  onDownloadProgress(e) {
-    console.log('download progress', e);
-  },
-  responseType: 'arraybuffer',
-});
 ```
 
 ## Semver

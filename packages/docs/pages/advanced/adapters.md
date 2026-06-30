@@ -1,28 +1,19 @@
 # Adapters
 
-Adapters allow you to customize the way faxios handles the request data. By default, faxios uses an ordered priority list of `['xhr', 'http', 'fetch']` and selects the first adapter that is supported by the current environment. In practice this means `xhr` is used in browsers, `http` in Node.js, and `fetch` in environments where neither is available (such as Cloudflare Workers or Deno).
+Adapters allow you to customize the way faxios handles the request data. The only built-in adapter is `fetch`, and the default is `adapter: ['fetch']`. The `fetch` adapter is used in every supported runtime — the browser, Node.js 18+, Deno, and Bun — using the web-standard `fetch` API.
 
 Writing your own adapter lets you fully control how faxios makes a request and processes the response — useful for testing, custom transports, or non-standard environments.
 
-## Built-in adapters
+## Built-in adapter
 
-You can select a built-in adapter by name using the `adapter` config option:
+The only built-in adapter is `fetch`. It is selected by default, so you do not normally need to set the `adapter` option. You can set it explicitly if you wish:
 
 ```js
-// Use the fetch adapter
+// Use the fetch adapter (this is the default)
 const instance = faxios.create({ adapter: "fetch" });
 
-// Use the XHR adapter (browser default)
-const instance = faxios.create({ adapter: "xhr" });
-
-// Use the HTTP adapter (Node.js default)
-const instance = faxios.create({ adapter: "http" });
-```
-
-You can also pass an array of adapter names. faxios will use the first one supported by the current environment:
-
-```js
-const instance = faxios.create({ adapter: ["fetch", "xhr", "http"] });
+// Equivalent, using array form
+const instance = faxios.create({ adapter: ["fetch"] });
 ```
 
 For more details on the `fetch` adapter, see the [Fetch adapter](/pages/advanced/fetch-adapter) page.

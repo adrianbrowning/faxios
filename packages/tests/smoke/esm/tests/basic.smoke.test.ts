@@ -1,147 +1,129 @@
-import { EventEmitter } from "node:events";
-import { PassThrough } from "node:stream";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
 
-const createTransportCapture = () => {
-  let capturedOptions;
+const createFetchMock = () => {
+  let capturedInput;
+  let capturedInit;
 
-  const transport = {
-    request(options, onResponse) {
-      capturedOptions = options;
-
-      const req = new EventEmitter();
-      req.destroyed = false;
-      req.setTimeout = () => {};
-      req.write = () => true;
-      req.end = () => {
-        const res = new PassThrough();
-        res.statusCode = 200;
-        res.statusMessage = "OK";
-        res.headers = { "content-type": "application/json" };
-        res.req = req;
-        onResponse(res);
-        res.end("{\"ok\":true}");
-      };
-      req.destroy = () => {
-        req.destroyed = true;
-      };
-      req.close = req.destroy;
-
-      return req;
-    },
+  const mockFetch = async (input, init) => {
+    capturedInput = input;
+    capturedInit = init || {};
+    return new Response(JSON.stringify({ ok: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   };
 
   return {
-    transport,
-    getCapturedOptions: () => capturedOptions,
+    mockFetch,
+    getCaptured: () => ({ input: capturedInput, init: capturedInit }),
   };
 };
 
 const runRequest = async run => {
-  const { transport, getCapturedOptions } = createTransportCapture();
-  await run(transport);
-
-  return getCapturedOptions();
+  const { mockFetch, getCaptured } = createFetchMock();
+  await run(mockFetch);
+  return getCaptured();
 };
 
 describe("basic compat (dist export only)", () => {
   it("supports the simplest faxios(url) request pattern", async () => {
-    const options = await runRequest(transport =>
+    const { input, init } = await runRequest(mockFetch =>
       faxios("http://example.com/users", {
-        transport,
-        proxy: false,
+        env: { fetch: mockFetch, Request, Response },
       })
     );
 
-    expect(options.method).toBe("GET");
-    expect(options.path).toBe("/users");
+    expect(init.method).toBe("GET");
+    expect(new URL(input.url).pathname).toBe("/users");
   });
 
   it("supports get()", async () => {
-    const options = await runRequest(transport =>
+    const { input, init } = await runRequest(mockFetch =>
       faxios.get("http://example.com/items?limit=10", {
-        transport,
-        proxy: false,
+        env: { fetch: mockFetch, Request, Response },
       })
     );
 
-    expect(options.method).toBe("GET");
-    expect(options.path).toBe("/items?limit=10");
+    expect(init.method).toBe("GET");
+    expect(new URL(input.url).pathname + new URL(input.url).search).toBe("/items?limit=10");
   });
 
   it("supports delete()", async () => {
-    const options = await runRequest(transport =>
-      faxios.delete("http://example.com/items/1", { transport, proxy: false })
+    const { input, init } = await runRequest(mockFetch =>
+      faxios.delete("http://example.com/items/1", {
+        env: { fetch: mockFetch, Request, Response },
+      })
     );
 
-    expect(options.method).toBe("DELETE");
-    expect(options.path).toBe("/items/1");
+    expect(init.method).toBe("DELETE");
+    expect(new URL(input.url).pathname).toBe("/items/1");
   });
 
   it("supports head()", async () => {
-    const options = await runRequest(transport =>
-      faxios.head("http://example.com/health", { transport, proxy: false })
+    const { input, init } = await runRequest(mockFetch =>
+      faxios.head("http://example.com/health", {
+        env: { fetch: mockFetch, Request, Response },
+      })
     );
 
-    expect(options.method).toBe("HEAD");
-    expect(options.path).toBe("/health");
+    expect(init.method).toBe("HEAD");
+    expect(new URL(input.url).pathname).toBe("/health");
   });
 
   it("supports options()", async () => {
-    const options = await runRequest(transport =>
-      faxios.options("http://example.com/items", { transport, proxy: false })
+    const { input, init } = await runRequest(mockFetch =>
+      faxios.options("http://example.com/items", {
+        env: { fetch: mockFetch, Request, Response },
+      })
     );
 
-    expect(options.method).toBe("OPTIONS");
-    expect(options.path).toBe("/items");
+    expect(init.method).toBe("OPTIONS");
+    expect(new URL(input.url).pathname).toBe("/items");
   });
 
   it("supports post()", async () => {
-    const options = await runRequest(transport =>
+    const { input, init } = await runRequest(mockFetch =>
       faxios.post(
         "http://example.com/items",
         { name: "widget" },
         {
-          transport,
-          proxy: false,
+          env: { fetch: mockFetch, Request, Response },
         }
       )
     );
 
-    expect(options.method).toBe("POST");
-    expect(options.path).toBe("/items");
+    expect(init.method).toBe("POST");
+    expect(new URL(input.url).pathname).toBe("/items");
   });
 
   it("supports put()", async () => {
-    const options = await runRequest(transport =>
+    const { input, init } = await runRequest(mockFetch =>
       faxios.put(
         "http://example.com/items/1",
         { name: "updated-widget" },
         {
-          transport,
-          proxy: false,
+          env: { fetch: mockFetch, Request, Response },
         }
       )
     );
 
-    expect(options.method).toBe("PUT");
-    expect(options.path).toBe("/items/1");
+    expect(init.method).toBe("PUT");
+    expect(new URL(input.url).pathname).toBe("/items/1");
   });
 
   it("supports patch()", async () => {
-    const options = await runRequest(transport =>
+    const { input, init } = await runRequest(mockFetch =>
       faxios.patch(
         "http://example.com/items/1",
         { status: "active" },
         {
-          transport,
-          proxy: false,
+          env: { fetch: mockFetch, Request, Response },
         }
       )
     );
 
-    expect(options.method).toBe("PATCH");
-    expect(options.path).toBe("/items/1");
+    expect(init.method).toBe("PATCH");
+    expect(new URL(input.url).pathname).toBe("/items/1");
   });
 });

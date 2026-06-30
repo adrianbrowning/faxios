@@ -2,21 +2,14 @@ import FaxiosError from "../core/FaxiosError.js";
 import type { FaxiosAdapter, InternalFaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
 import { getFetch } from "./fetch.js";
-import httpAdapter from "./http.js";
-import xhrAdapter from "./xhr.js";
 
 /**
  * Known adapters mapping.
- * Provides environment-specific adapters for Faxios:
- * - `http` for Node.js
- * - `xhr` for browsers
- * - `fetch` for fetch API-based requests
+ * Faxios uses the web-standard `fetch` adapter in every runtime.
  *
  * @type {Object<string, Function|Object>}
  */
 const knownAdapters = {
-  http: httpAdapter,
-  xhr: xhrAdapter,
   fetch: {
     get: getFetch,
   },

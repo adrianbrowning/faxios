@@ -22,9 +22,7 @@ Cada solicitud de faxios se resuelve en un objeto de respuesta con la siguiente 
   // headers, timeout, params y cualquier otra opción que hayas proporcionado.
   config: {},
 
-  // El objeto de solicitud subyacente.
-  // En Node.js: la última instancia de `http.ClientRequest` (después de cualquier redirección).
-  // En el navegador: la instancia de `XMLHttpRequest`.
+  // El objeto de solicitud subyacente: la instancia de `Request` de la API web estándar fetch.
   request: {},
 }
 ```

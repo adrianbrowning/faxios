@@ -19,7 +19,7 @@ A continuación se lista una relación de posibles errores identificados por fax
 | ERR_BAD_OPTION            | Opción inválida proporcionada en la configuración de faxios.                                   |
 | ECONNABORTED              | Generalmente indica que la solicitud ha expirado (salvo que `transitional.clarifyTimeoutError` esté activado) o fue abortada por el navegador o un complemento del mismo. |
 | ETIMEDOUT                 | La solicitud expiró al superar el límite de tiempo predeterminado de faxios. Se debe activar `transitional.clarifyTimeoutError` en `true`, de lo contrario se lanzará un error genérico `ECONNABORTED`. |
-| ERR_NETWORK               | Problema relacionado con la red. En el navegador, este error también puede ser causado por una violación de la política [CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/Guides/CORS) o [Mixed Content](https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content). El navegador no permite que el código JS aclare la razón real del error por motivos de seguridad; por eso, revisa la consola. |
+| ERR_NETWORK               | Problema relacionado con la red, incluidos los fallos de conexión (por ejemplo, conexión rechazada). El error subyacente del sistema operativo está disponible en `error.cause`. En el navegador, este error también puede ser causado por una violación de la política [CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/Guides/CORS) o [Mixed Content](https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content). El navegador no permite que el código JS aclare la razón real del error por motivos de seguridad; por eso, revisa la consola. |
 | ERR_FR_TOO_MANY_REDIRECTS | La solicitud fue redirigida demasiadas veces; supera el número máximo de redirecciones especificado en la configuración de faxios. |
 | ERR_DEPRECATED            | Se usó una característica o método obsoleto en faxios.                                         |
 | ERR_BAD_RESPONSE          | La respuesta no puede ser analizada correctamente o tiene un formato inesperado. Generalmente relacionado con una respuesta con código de estado `5xx`. |
@@ -43,8 +43,7 @@ faxios.get("/user/12345").catch(function (error) {
     console.log(error.response.headers);
   } else if (error.request) {
     // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
+    // `error.request` is an instance of the web-standard fetch `Request`
     console.log(error.request);
   } else {
     // Something happened in setting up the request that triggered an Error

@@ -1,62 +1,22 @@
-import { PassThrough, Readable, Writable } from "node:stream";
+import { Readable } from "node:stream";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
-
-const createCaptureTransport = buildResponse => ({
-  request(options, onResponse) {
-    const chunks = [];
-
-    const req = new Writable({
-      write(chunk, _encoding, callback) {
-        chunks.push(Buffer.from(chunk));
-        callback();
-      },
-    });
-
-    req.destroyed = false;
-    req.setTimeout = () => {};
-    req.close = () => {
-      req.destroyed = true;
-    };
-
-    const originalDestroy = req.destroy.bind(req);
-    req.destroy = (...args) => {
-      req.destroyed = true;
-      return originalDestroy(...args);
-    };
-
-    const originalEnd = req.end.bind(req);
-    req.end = (...args) => {
-      originalEnd(...args);
-
-      const body = Buffer.concat(chunks);
-      const response = buildResponse ? buildResponse(body, options) : {};
-
-      const res = new PassThrough();
-      res.statusCode =
-        response.statusCode !== undefined ? response.statusCode : 200;
-      res.statusMessage = response.statusMessage || "OK";
-      res.headers = response.headers || { "content-type": "application/json" };
-      res.req = req;
-
-      onResponse(res);
-      res.end(response.body || JSON.stringify({ size: body.length }));
-    };
-
-    req.on("error", () => {});
-    return req;
-  },
-});
 
 describe("files compat (dist export only)", () => {
   it("supports posting Buffer payloads", async () => {
     const source = Buffer.from("binary-\x00-data", "utf8");
+    let capturedBody;
+
+    const mockFetch = async input => {
+      capturedBody = Buffer.from(await input.arrayBuffer());
+      return new Response(JSON.stringify({ echoed: capturedBody.toString("base64") }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    };
 
     const response = await faxios.post("http://example.com/upload", source, {
-      proxy: false,
-      transport: createCaptureTransport(body => ({
-        body: JSON.stringify({ echoed: body.toString("base64") }),
-      })),
+      env: { fetch: mockFetch, Request, Response },
     });
 
     expect(response.data.echoed).toBe(source.toString("base64"));
@@ -64,12 +24,18 @@ describe("files compat (dist export only)", () => {
 
   it("supports posting Uint8Array payloads", async () => {
     const source = Uint8Array.from([ 1, 2, 3, 4, 255 ]);
+    let capturedBody;
+
+    const mockFetch = async input => {
+      capturedBody = new Uint8Array(await input.arrayBuffer());
+      return new Response(JSON.stringify({ echoed: Array.from(capturedBody.values()) }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    };
 
     const response = await faxios.post("http://example.com/upload", source, {
-      proxy: false,
-      transport: createCaptureTransport(body => ({
-        body: JSON.stringify({ echoed: Array.from(body.values()) }),
-      })),
+      env: { fetch: mockFetch, Request, Response },
     });
 
     expect(response.data.echoed).toEqual([ 1, 2, 3, 4, 255 ]);
@@ -79,18 +45,18 @@ describe("files compat (dist export only)", () => {
     const streamData = [ "hello ", "stream ", "world" ];
     const source = Readable.from(streamData);
 
+    const mockFetch = async input => {
+      const text = new TextDecoder().decode(await input.arrayBuffer());
+      const contentType = input.headers.get("content-type") ?? "";
+      return new Response(JSON.stringify({ text, contentType }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    };
+
     const response = await faxios.post("http://example.com/upload", source, {
-      proxy: false,
       headers: { "Content-Type": "application/octet-stream" },
-      transport: createCaptureTransport((body, options) => ({
-        body: JSON.stringify({
-          text: body.toString("utf8"),
-          contentType:
-            options.headers &&
-            (options.headers["Content-Type"] ||
-              options.headers["content-type"]),
-        }),
-      })),
+      env: { fetch: mockFetch, Request, Response },
     });
 
     expect(response.data.text).toBe("hello stream world");
@@ -98,18 +64,21 @@ describe("files compat (dist export only)", () => {
   });
 
   it("supports binary downloads with responseType=arraybuffer", async () => {
-    const binary = Buffer.from([ 0xde, 0xad, 0xbe, 0xef ]);
+    const bytes = [ 0xde, 0xad, 0xbe, 0xef ];
+    const binary = new Uint8Array(bytes);
+
+    const mockFetch = async () =>
+      new Response(binary, {
+        status: 200,
+        headers: { "Content-Type": "application/octet-stream" },
+      });
 
     const response = await faxios.get("http://example.com/file.bin", {
-      proxy: false,
       responseType: "arraybuffer",
-      transport: createCaptureTransport(() => ({
-        headers: { "content-type": "application/octet-stream" },
-        body: binary,
-      })),
+      env: { fetch: mockFetch, Request, Response },
     });
 
-    expect(Buffer.isBuffer(response.data)).toBe(true);
-    expect(response.data.equals(binary)).toBe(true);
+    expect(response.data).toBeInstanceOf(ArrayBuffer);
+    expect(Array.from(new Uint8Array(response.data))).toEqual(bytes);
   });
 });

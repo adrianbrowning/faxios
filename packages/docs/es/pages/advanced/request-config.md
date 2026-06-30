@@ -3,7 +3,7 @@
 La configuración de solicitud se usa para configurar la solicitud. Existe una amplia gama de opciones disponibles, pero la única opción requerida es `url`. Si el objeto de configuración no contiene un campo `method`, el método predeterminado es `GET`.
 
 ::: warning Seguridad: la protección contra bombas de descompresión es opcional
-Por defecto, `maxContentLength` y `maxBodyLength` están en `-1` (sin límite). Un servidor malicioso o comprometido puede devolver un cuerpo pequeño comprimido con gzip/deflate/brotli/zstd que se expande a gigabytes y agota el proceso de Node.js.
+Por defecto, `maxContentLength` y `maxBodyLength` están en `-1` (sin límite). Un servidor malicioso o comprometido puede devolver un cuerpo pequeño comprimido con gzip/deflate/brotli/zstd que se expande a gigabytes y agota el proceso.
 
 Si haces solicitudes a servidores en los que no confías plenamente, **establece un tope**:
 
@@ -118,13 +118,12 @@ const client = faxios.create({
 El `data` son los datos que se enviarán como cuerpo de la solicitud. Puede ser una cadena de texto, un objeto plano, un Buffer, ArrayBuffer, FormData, Stream o URLSearchParams. Solo aplica para los métodos de solicitud `PUT`, `POST`, `DELETE` y `PATCH`. Cuando no se establece `transformRequest`, debe ser de uno de los siguientes tipos:
 
 - cadena de texto, objeto plano, ArrayBuffer, ArrayBufferView, URLSearchParams
-- Solo en el navegador: FormData, File, Blob
-- React Native: FormData
-- Solo en Node.js: Stream, Buffer, FormData (paquete form-data)
+- FormData, File, Blob (disponibles en todos los entornos compatibles)
+- ReadableStream
 
-Para `FormData` en navegador, web worker y React Native, no establezcas manualmente `Content-Type`; el entorno agrega el boundary multipart.
+Para `FormData`, no establezcas manualmente `Content-Type`; el entorno agrega el boundary multipart.
 
-Para los objetos `FormData` de Node.js que proporcionan un método `getHeaders()`, faxios copia por defecto todos los encabezados devueltos para mantener la compatibilidad con v1. Si el objeto `FormData` es personalizado o no es de plena confianza, establece `formDataHeaderPolicy: 'content-only'` para copiar únicamente `Content-Type` y `Content-Length`, y define cualquier otro encabezado de la solicitud explícitamente mediante la configuración `headers`.
+Si un objeto similar a `FormData` proporciona un método `getHeaders()`, faxios copia por defecto todos los encabezados devueltos para mantener la compatibilidad con v1. Si el objeto es personalizado o no es de plena confianza, establece `formDataHeaderPolicy: 'content-only'` para copiar únicamente `Content-Type` y `Content-Length`, y define cualquier otro encabezado de la solicitud explícitamente mediante la configuración `headers`.
 
 ### `formDataHeaderPolicy` <Badge type="warning" text="Solo en Node.js" />
 
@@ -140,17 +139,11 @@ La propiedad `withCredentials` indica si las solicitudes de Access-Control entre
 
 ### `adapter`
 
-`adapter` permite el manejo personalizado de solicitudes, lo que facilita las pruebas. Devuelve una Promise y proporciona una respuesta válida; consulta los [adaptadores](/pages/advanced/adapters) para más información. También proporcionamos una serie de adaptadores integrados. El adaptador predeterminado es `http` para Node.js y `xhr` para navegadores. La lista completa de adaptadores integrados es la siguiente:
-
-- fetch
-- http
-- xhr
-
-También puedes pasar un arreglo de adaptadores. faxios usará el primero que sea compatible con el entorno.
+`adapter` permite el manejo personalizado de solicitudes, lo que facilita las pruebas. Devuelve una Promise y proporciona una respuesta válida; consulta los [adaptadores](/pages/advanced/adapters) para más información. El único adaptador integrado es `'fetch'`, y el valor predeterminado es `['fetch']`. También puedes pasar tu propia función adaptadora personalizada, o un arreglo de adaptadores: faxios usará el primero que sea compatible con el entorno.
 
 ### `auth`
 
-`auth` indica que se debe usar autenticación HTTP Basic y proporciona las credenciales. Esto establecerá un encabezado `Authorization`, sobrescribiendo cualquier encabezado `Authorization` personalizado que hayas definido usando `headers`. Si `auth` se omite, los adaptadores HTTP de Node.js y fetch pueden obtener credenciales Basic desde la URL de la solicitud, por ejemplo `https://user:pass@example.com`; las credenciales codificadas con porcentaje en la URL se decodifican, y `auth` siempre tiene prioridad sobre las credenciales incluidas en la URL. En el adaptador HTTP de Node.js, la autenticación Basic se conserva en redirecciones del mismo origen y se elimina en redirecciones de origen cruzado. Ten en cuenta que solo la autenticación HTTP Basic es configurable a través de este parámetro. Para tokens Bearer y similares, usa encabezados `Authorization` personalizados.
+`auth` indica que se debe usar autenticación HTTP Basic y proporciona las credenciales. Esto establecerá un encabezado `Authorization`, sobrescribiendo cualquier encabezado `Authorization` personalizado que hayas definido usando `headers`. Si `auth` se omite, el adaptador fetch puede obtener credenciales Basic desde la URL de la solicitud, por ejemplo `https://user:pass@example.com`; las credenciales codificadas con porcentaje en la URL se decodifican, y `auth` siempre tiene prioridad sobre las credenciales incluidas en la URL. Ten en cuenta que solo la autenticación HTTP Basic es configurable a través de este parámetro. Para tokens Bearer y similares, usa encabezados `Authorization` personalizados.
 
 ### `responseType`
 
@@ -226,24 +219,20 @@ faxios.get('/user', { withCredentials: true, withXSRFToken: true });
 ```
 :::
 
-### `onUploadProgress`
-
-La función `onUploadProgress` te permite escuchar el progreso de una carga.
-
 ### `onDownloadProgress`
 
 La función `onDownloadProgress` te permite escuchar el progreso de una descarga.
 
-### `maxContentLength` <Badge type="warning" text="HTTP Node.js/fetch" />
+### `maxContentLength`
 
-La propiedad `maxContentLength` define el tamaño máximo de la respuesta en bytes. El adaptador HTTP de Node.js lo aplica en respuestas almacenadas en búfer y en streaming. El adaptador fetch lo aplica cuando la longitud de la respuesta está declarada, se puede rastrear el stream de respuesta o se puede determinar el tamaño de la respuesta.
+La propiedad `maxContentLength` define el tamaño máximo de la respuesta en bytes. El adaptador fetch lo aplica cuando la longitud de la respuesta está declarada, se puede rastrear el stream de respuesta o se puede determinar el tamaño de la respuesta.
 
 > ⚠️ **Seguridad:** el valor por defecto es `-1` (sin límite). Las respuestas sin límite combinadas con la descompresión gzip/deflate/brotli/zstd permiten ataques de denegación de servicio por bomba de descompresión.
 > Establece un límite explícito al consumir servidores en los que no confíes plenamente.
 
-### `maxBodyLength` <Badge type="warning" text="HTTP Node.js/fetch" />
+### `maxBodyLength`
 
-La propiedad `maxBodyLength` define el tamaño máximo del cuerpo de la solicitud en bytes. El adaptador HTTP de Node.js lo aplica, y el adaptador fetch lo aplica cuando se puede determinar la longitud del cuerpo de la solicitud.
+La propiedad `maxBodyLength` define el tamaño máximo del cuerpo de la solicitud en bytes. El adaptador fetch lo aplica cuando se puede determinar la longitud del cuerpo de la solicitud.
 
 ### `redact`
 
@@ -265,88 +254,6 @@ faxios.get('/user/12345', {
 
 La función `validateStatus` te permite sobreescribir la validación predeterminada del código de estado. Por defecto, faxios rechazará la Promise si el código de estado no está en el rango 200-299. Puedes sobreescribir este comportamiento proporcionando una función `validateStatus` personalizada. La función debe devolver `true` si el código de estado está dentro del rango que deseas aceptar.
 
-### `maxRedirects` <Badge type="warning" text="Solo en Node.js" />
-
-La propiedad `maxRedirects` define el número máximo de redirecciones a seguir. Si se establece en 0, no se seguirá ninguna redirección.
-
-### `beforeRedirect`
-
-La función `beforeRedirect` te permite modificar la solicitud antes de que sea redirigida. Úsala para ajustar las opciones de la solicitud al redirigir, para inspeccionar los últimos encabezados de respuesta, o para cancelar la solicitud lanzando un error. Si `maxRedirects` se establece en 0, `beforeRedirect` no se usa.
-
-```js
-beforeRedirect: (options, { headers }) => {
-  if (
-    options.hostname === "example.com" &&
-    options.protocol === "https:"
-  ) {
-    options.auth = "user:password";
-  }
-}
-```
-
-::: warning Seguridad: reinyección de credenciales en redirecciones
-El hook `beforeRedirect` se ejecuta **después** de que se eliminan los encabezados sensibles durante las redirecciones. La librería `follow-redirects` elimina las credenciales en una bajada de protocolo (HTTPS → HTTP) por seguridad. Como `beforeRedirect` se ejecuta después, reinyectar credenciales sin verificar el protocolo de destino puede exponer datos sensibles. Reinyecta credenciales únicamente para destinos HTTPS de confianza, y evita reinyectarlas en redirecciones con bajada de protocolo.
-:::
-
-### `socketPath` <Badge type="warning" text="Solo en Node.js" />
-
-La propiedad `socketPath` define un socket UNIX que se usará en lugar de una conexión TCP. Por ejemplo, `/var/run/docker.sock` para enviar solicitudes al daemon de Docker. Solo se puede especificar `socketPath` o `proxy`. Si ambos se especifican, se usa `socketPath`.
-
-:::warning Seguridad
-Cuando se establece `socketPath`, el hostname y el puerto de la URL se ignoran y faxios se comunica directamente con el socket Unix indicado. Si cualquier parte de la configuración de la solicitud proviene de entrada del usuario (por ejemplo, en un proxy o manejador de webhooks que reenvía opciones), un atacante puede inyectar `socketPath` para redirigir el tráfico a sockets locales privilegiados como `/var/run/docker.sock`, `/run/containerd/containerd.sock` o `/run/systemd/private`, eludiendo por completo las protecciones SSRF basadas en hostname (CWE-918). Filtra la configuración recibida desde entradas no confiables y/o restringe las rutas de socket aceptadas con `allowedSocketPaths` (ver más abajo).
-:::
-
-### `allowedSocketPaths` <Badge type="warning" text="Solo en Node.js" />
-
-Restringe qué rutas de socket pueden usarse a través de `socketPath`. Acepta un string o un array de strings. Cuando está definido, faxios resuelve el `socketPath` y lo compara con cada entrada (también resuelta); la solicitud se rechaza con un `FaxiosError` de código `ERR_BAD_OPTION_VALUE` si no hay coincidencia. Si no se define (valor por defecto), `socketPath` se comporta igual que antes.
-
-```js
-const client = faxios.create({
-  allowedSocketPaths: ['/var/run/docker.sock']
-});
-
-// permitido
-await client.get('http://localhost/v1.45/info', { socketPath: '/var/run/docker.sock' });
-
-// rechazado — no está en la lista
-await client.get('http://localhost/pods', { socketPath: '/var/run/kubelet.sock' });
-```
-
-Un array vacío (`allowedSocketPaths: []`) bloquea todas las rutas de socket.
-
-### `transport`
-
-La propiedad `transport` define el transporte a usar para la solicitud. Es útil para hacer solicitudes sobre un protocolo diferente, como `http2`.
-
-### `httpAgent` y `httpsAgent`
-
-`httpAgent` y `httpsAgent` definen un agente personalizado para usar al realizar solicitudes http y https respectivamente en Node.js. Esto permite añadir opciones como `keepAlive` que no están habilitadas por defecto.
-
-### `proxy`
-
-`proxy` define el nombre de host, puerto y protocolo del servidor proxy que deseas usar. También puedes definir tu proxy usando las variables de entorno convencionales `http_proxy` y `https_proxy`.
-
-Si usas variables de entorno para tu configuración de proxy, también puedes definir una variable de entorno `no_proxy` como una lista separada por comas de dominios que no deben ser enviados a través del proxy.
-
-Usa `false` para deshabilitar los proxies, ignorando las variables de entorno. `auth` indica que se debe usar autenticación HTTP Basic para conectarse al proxy, y proporciona las credenciales. Esto establecerá un encabezado `Proxy-Authorization`, sobrescribiendo cualquier encabezado `Proxy-Authorization` personalizado que hayas definido usando `headers`. Si el servidor proxy usa HTTPS, debes establecer el protocolo en `https`.
-
-Un encabezado `Host` proporcionado por el usuario en `headers` se preserva al reenviar a través de un proxy (coincidencia insensible a mayúsculas en `host` / `Host` / `HOST`). Esto te permite apuntar a un host virtual distinto al de la URL de la solicitud — por ejemplo, llegar a `127.0.0.1:4000` mientras el proxy trata la solicitud como `example.com`. Si no se proporciona ningún encabezado `Host`, faxios lo establece por defecto al `hostname:port` de la URL de la solicitud, como antes.
-
-Para destinos `https://`, faxios establece un túnel CONNECT a través del proxy y realiza TLS de extremo a extremo con el origen. `Proxy-Authorization` se envía solo en la solicitud CONNECT, nunca en la solicitud TLS encapsulada. Las opciones TLS de `httpsAgent`, como `ca`, `cert`, `key` y `rejectUnauthorized`, se reenvían al agente de túnel generado para que sigan aplicándose a la conexión TLS con el origen. Si proporcionas un `HttpsProxyAgent`, faxios deja el túnel a cargo de ese agente.
-
-```js
-proxy: {
-  protocol: "https",
-  host: "127.0.0.1",
-  hostname: "localhost", // Takes precedence over "host" if both are defined
-  port: 9000,
-  auth: {
-    username: "mikeymike",
-    password: "rapunz3l"
-  }
-},
-```
-
 ### `cancelToken`
 
 La propiedad `cancelToken` te permite crear un token de cancelación que puede usarse para cancelar la solicitud. Para más información, consulta la documentación de [cancelación](/pages/advanced/cancellation).
@@ -354,16 +261,6 @@ La propiedad `cancelToken` te permite crear un token de cancelación que puede u
 ### `signal`
 
 La propiedad `signal` te permite pasar una instancia de `AbortSignal` a la solicitud. Esto te permite cancelar la solicitud usando la API `AbortController`.
-
-### `decompress` <Badge type="warning" text="Solo en Node.js" />
-
-La propiedad `decompress` indica si los datos de la respuesta deben descomprimirse automáticamente. El valor predeterminado es `true`. El adaptador HTTP de Node.js admite gzip, deflate, brotli y zstd cuando el runtime actual de Node.js proporciona el descompresor zlib correspondiente.
-
-### `insecureHTTPParser`
-
-Indica si se debe usar un parser HTTP inseguro que acepta encabezados HTTP inválidos. Esto puede permitir la interoperabilidad con implementaciones HTTP no conformes. Se debe evitar el uso del parser inseguro.
-
-Ten en cuenta que la opción `insecureHTTPParser` solo está disponible en Node.js 12.10.0 y versiones posteriores. Consulta la [documentación de Node.js](https://nodejs.org/en/blog/vulnerability/february-2020-security-releases/#strict-http-header-parsing-none) para más información. Consulta el conjunto completo de opciones [aquí](https://nodejs.org/dist/latest-v12.x/docs/api/http.html#http_http_request_url_options_callback).
 
 ### `transitional`
 
@@ -381,7 +278,7 @@ La propiedad `transitional` te permite habilitar o deshabilitar ciertas caracter
 
 - `forcedJSONParsing`: Fuerza a faxios a analizar la cadena de respuesta como JSON incluso si `responseType` no es `'json'`.
 - `clarifyTimeoutError`: Clarifica el mensaje de error cuando una solicitud expira. Es útil cuando depuras problemas de timeout.
-- `advertiseZstdAcceptEncoding`: Cuando se establece en `true`, faxios añade `zstd` al encabezado `Accept-Encoding` predeterminado cuando el runtime actual de Node.js soporta descompresión zstd. Las respuestas zstd se descomprimen automáticamente cuando son compatibles y `decompress` es `true`.
+- `advertiseZstdAcceptEncoding`: Cuando se establece en `true`, faxios añade `zstd` al encabezado `Accept-Encoding` predeterminado cuando el runtime actual soporta descompresión zstd.
 - `legacyInterceptorReqResOrdering`: Cuando se establece en `true`, se usará el orden de solicitud/respuesta de interceptores heredado.
 
 ### `env`
@@ -401,10 +298,6 @@ La opción `formSerializer` te permite configurar cómo se serializan los objeto
 - `maxDepth` _(predeterminado: `100`)_ — profundidad máxima de anidación antes de lanzar un `FaxiosError` con código `ERR_FORM_DATA_DEPTH_EXCEEDED`. Establece en `Infinity` para desactivar.
 
 Consulta la página [multipart/form-data](/pages/advanced/multipart-form-data-format) para todos los detalles, y el ejemplo completo de configuración de solicitud al final de esta página.
-
-### `maxRate` <Badge type="warning" text="Solo en Node.js" />
-
-La propiedad `maxRate` define el **ancho de banda** máximo (en bytes por segundo) para la carga y/o descarga. Acepta un número único (aplicado a ambas direcciones) o un arreglo de dos elementos `[uploadRate, downloadRate]` donde cada elemento es un límite en bytes por segundo. Por ejemplo, `100 * 1024` significa 100 KB/s. Consulta [Limitación de velocidad](/pages/advanced/rate-limiting) para ver ejemplos.
 
 ## Ejemplo completo de configuración de solicitud
 
@@ -454,7 +347,7 @@ La propiedad `maxRate` define el **ancho de banda** máximo (en bytes por segund
   adapter: function (config) {
     // Do whatever you want
   },
-  adapter: "xhr",
+  adapter: "fetch",
   auth: {
     username: "janedoe",
     password: "s00pers3cret"
@@ -464,9 +357,6 @@ La propiedad `maxRate` define el **ancho de banda** máximo (en bytes por segund
   xsrfCookieName: "XSRF-TOKEN",
   xsrfHeaderName: "X-XSRF-TOKEN",
   withXSRFToken: boolean | undefined | ((config: InternalAxiosRequestConfig) => boolean | undefined),
-  onUploadProgress: function ({loaded, total, progress, bytes, estimated, rate, upload = true}) {
-    // Do whatever you want with the faxios progress event
-  },
   onDownloadProgress: function ({loaded, total, progress, bytes, estimated, rate, download = true}) {
     // Do whatever you want with the faxios progress event
   },
@@ -476,33 +366,10 @@ La propiedad `maxRate` define el **ancho de banda** máximo (en bytes por segund
   validateStatus: function (status) {
     return status >= 200 && status < 300;
   },
-  maxRedirects: 21,
-  beforeRedirect: (options, { headers }) => {
-    if (options.hostname === "typicode.com") {
-      options.auth = "user:password";
-    }
-  },
-  socketPath: null,
-  allowedSocketPaths: null,
-  transport: undefined,
-  httpAgent: new http.Agent({ keepAlive: true }),
-  httpsAgent: new https.Agent({ keepAlive: true }),
-  proxy: {
-    protocol: "https",
-    host: "127.0.0.1",
-    // hostname: "127.0.0.1" // Takes precedence over "host" if both are defined
-    port: 9000,
-    auth: {
-      username: "mikeymike",
-      password: "rapunz3l"
-    }
-  },
   cancelToken: new CancelToken(function (cancel) {
     cancel("Operation has been canceled.");
   }),
   signal: new AbortController().signal,
-  decompress: true,
-  insecureHTTPParser: undefined,
   transitional: {
     silentJSONParsing: true,
     forcedJSONParsing: true,
@@ -532,10 +399,6 @@ La propiedad `maxRate` define el **ancho de banda** máximo (en bytes por segund
       // Profundidad máxima de anidación de objetos. Lanza FaxiosError (ERR_FORM_DATA_DEPTH_EXCEEDED)
       // si se excede. Predeterminado: 100. Establecer en Infinity para desactivar.
       maxDepth: 100;
-  },
-  maxRate: [
-    100 * 1024, // 100KB/s upload limit,
-    100 * 1024  // 100KB/s download limit
-  ]
+  }
 }
 ```

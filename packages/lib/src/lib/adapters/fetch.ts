@@ -108,11 +108,9 @@ const test = (
 
 const maybeWithAuthCredentials = (url: string): boolean => {
   const protocolIndex = url.indexOf("://");
-  let urlToCheck = url;
-  if (protocolIndex !== -1) {
-    urlToCheck = urlToCheck.slice(protocolIndex + 3);
-  }
-  return urlToCheck.includes("@") || urlToCheck.includes(":");
+  const urlToCheck = protocolIndex !== -1 ? url.slice(protocolIndex + 3) : url;
+  // Only `@` indicates credentials in the authority; `:` alone is a port separator.
+  return urlToCheck.includes("@");
 };
 
 // eslint-disable-next-line sonarjs/function-return-type
@@ -192,7 +190,7 @@ const factory = (env: Record<string, unknown>) => {
       const hasContentType = request.headers.has("Content-Type");
 
       if (request.body != null) {
-        void request.body.cancel();
+        request.body.cancel().catch(() => {});
       }
 
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -709,6 +707,20 @@ const factory = (env: Record<string, unknown>) => {
     );
   };
 
+  const unsubscribeOnComplete = (isStreamResponse: boolean, unsubscribe: (() => void) | undefined) => {
+    if (!isStreamResponse) unsubscribe?.();
+  };
+
+  const encodeBodyIfNeeded = (
+    data: unknown,
+    headers: Record<string, unknown>,
+    encode: (str: string) => Promise<Uint8Array> | Uint8Array
+  ): Promise<unknown> | unknown => {
+    if (!utils.isString(data) || utils.findKey(headers, "content-type")) return data;
+    // ponytail: skip await when TextEncoder is sync (avoids microtask hop on every string body)
+    return encode(data as string);
+  };
+
   return async (config: InternalFaxiosRequestConfig) => {
     const _resolved = resolveConfig(config) as InternalFaxiosRequestConfig & {
       fetchOptions?: Record<string, unknown>;
@@ -721,6 +733,7 @@ const factory = (env: Record<string, unknown>) => {
       signal,
       cancelToken,
       timeout,
+      timeoutErrorMessage,
       onDownloadProgress,
       onUploadProgress,
       responseType,
@@ -743,6 +756,14 @@ const factory = (env: Record<string, unknown>) => {
 
     const _fetch: FetchFn = (envFetch || (globalThis as unknown as Record<string, unknown>)["fetch"]) as FetchFn;
 
+    if (timeout != null && !Number.isFinite(Number(timeout))) {
+      throw new FaxiosError(
+        "error trying to parse `config.timeout` to int",
+        FaxiosError.ERR_BAD_OPTION_VALUE,
+        config
+      );
+    }
+
     responseType = (
       responseType ? (responseType + "").toLowerCase() : "text"
     ) as typeof responseType;
@@ -753,15 +774,11 @@ const factory = (env: Record<string, unknown>) => {
         cancelToken &&
           (cancelToken as CancelTokenWithAbortSignal).toAbortSignal(),
       ],
-      timeout
+      timeout,
+      timeoutErrorMessage
     ) as ComposedSignal | undefined;
 
-    const unsubscribe =
-      composedSignal &&
-      composedSignal.unsubscribe &&
-      (() => {
-        composedSignal.unsubscribe!();
-      });
+    const unsubscribe = composedSignal?.unsubscribe?.bind(composedSignal);
 
     let request: unknown = null;
     const pendingBodyErrorRef: PendingBodyErrorRef = { value: null };
@@ -783,9 +800,8 @@ const factory = (env: Record<string, unknown>) => {
 
       // A streamed body under maxBodyLength must be counted as fetch consumes
       // it; its size is never trusted from a caller-declared Content-Length.
-      const mustEnforceStreamBody =
-        hasMaxBodyLength &&
-        (utils.isReadableStream!(data) || utils.isStream(data));
+      const isStreamLike = utils.isReadableStream!(data) || utils.isStream(data);
+      const mustEnforceStreamBody = hasMaxBodyLength && isStreamLike;
 
       ({ data } = await buildUploadStream(
         data,
@@ -816,13 +832,18 @@ const factory = (env: Record<string, unknown>) => {
       // Set User-Agent header if not already set (fetch defaults to 'node' in Node.js)
       headers.set("User-Agent", "faxios/" + VERSION, false);
 
+      const serializedHeaders = toByteStringHeaderObject(headers.normalize(false));
+
+      // Browsers auto-add "text/plain;charset=UTF-8" for string bodies when no Content-Type is set.
+      // Encoding as Uint8Array prevents the browser from injecting a content-type.
+      // Case-insensitive check: toByteStringHeaderObject may normalize to lowercase.
+      data = await encodeBodyIfNeeded(data, serializedHeaders, encodeText);
+
       const resolvedOptions = {
         ...fetchOptions,
         signal: composedSignal,
         method: (method as string).toUpperCase(),
-        headers: toByteStringHeaderObject(
-          headers.normalize(false)
-        ),
+        headers: serializedHeaders,
         body: data,
         duplex: "half",
         credentials: isCredentialsSupported ? withCredentials : undefined,
@@ -832,8 +853,13 @@ const factory = (env: Record<string, unknown>) => {
         isRequestSupported &&
         new (Request as AnyConstructor)(url, resolvedOptions);
 
+      // Pass resolvedOptions (all own-properties) as the fetch init even when a
+      // Request object is supplied: undici re-reads RequestInit fields (method,
+      // headers, body, credentials) off Object.prototype when init is absent,
+      // so a polluted Object.prototype.method would override the Request's verb.
+      // An explicit own-property init neutralizes every such gadget.
       let response = await (isRequestSupported
-        ? _fetch(request, fetchOptions)
+        ? _fetch(request, resolvedOptions)
         : _fetch(url, resolvedOptions));
 
       const responseHeaders = FaxiosHeaders.from(response.headers);
@@ -871,7 +897,7 @@ const factory = (env: Record<string, unknown>) => {
         request
       );
 
-      !isStreamResponse && unsubscribe && unsubscribe();
+      unsubscribeOnComplete(isStreamResponse, unsubscribe);
 
       return await new Promise((resolve, reject) => {
         settle(resolve, reject, {

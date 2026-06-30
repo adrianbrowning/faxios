@@ -42,66 +42,14 @@ formData.append("cover", coverFile);
 await faxios.post("https://httpbin.org/post", formData);
 ```
 
-## 跟踪上传进度（浏览器）
+## 在所有运行时中使用 FormData
 
-使用 `onUploadProgress` 回调向用户显示进度条或百分比：
-
-```js
-await faxios.postForm("https://httpbin.org/post", {
-  file: document.querySelector("#fileInput").files[0],
-}, {
-  onUploadProgress: (progressEvent) => {
-    const percent = Math.round(
-      (progressEvent.loaded * 100) / progressEvent.total
-    );
-    console.log(`Upload progress: ${percent}%`);
-  },
-});
-```
-
-进度事件对象上可用的完整字段列表，请参阅[进度捕获](/pages/advanced/progress-capturing)。
-
-## Node.js 中的文件上传
-
-在 Node.js 中，使用 `fs.createReadStream` 上传文件系统中的文件，无需将整个文件加载到内存：
+`FormData` 通过原生 fetch 在所有运行时（浏览器、Node.js 18+、Deno、Bun）中工作，无需额外的依赖包。在现代 Node.js（v18+）中，全局 `FormData` 与 `Blob` 已原生可用，可用于以传输无关的方式构建上传内容：
 
 ```js
-import fs from "fs";
-import FormData from "form-data";
-import faxios from "faxios";
-
 const form = new FormData();
-form.append("file", fs.createReadStream("/path/to/file.jpg"));
+form.append("file", new Blob(["Hello, world!"], { type: "text/plain" }), "hello.txt");
 form.append("description", "My uploaded file");
 
 await faxios.post("https://httpbin.org/post", form);
 ```
-
-::: tip
-在 Node.js 环境中创建 `FormData` 对象需要 `form-data` npm 包。在现代 Node.js（v18+）中，全局 `FormData` 已原生可用。
-:::
-
-## 上传 Buffer（Node.js）
-
-也可以直接上传内存中的 `Buffer`：
-
-```js
-const buffer = Buffer.from("Hello, world!");
-
-const form = new FormData();
-form.append("file", buffer, {
-  filename: "hello.txt",
-  contentType: "text/plain",
-  knownLength: buffer.length,
-});
-
-await faxios.post("https://httpbin.org/post", form);
-```
-
-::: warning
-Node.js 环境目前不支持捕获 `FormData` 上传进度。
-:::
-
-::: danger
-在 Node.js 中上传可读流时，请设置 `maxRedirects: 0`，以防止 `follow-redirects` 包将整个流缓冲到内存中。
-:::

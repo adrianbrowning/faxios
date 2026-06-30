@@ -1,6 +1,6 @@
 # Fetch 适配器 <Badge type="tip" text="新特性" />
 
-`fetch` 适配器是我们在 1.7.0 版本中引入的新适配器，使 faxios 能够使用 `fetch` API，兼顾两者的优势。默认情况下，当构建中 `xhr` 和 `http` 适配器不可用，或当前环境不支持时，会使用 `fetch`。若要将其作为默认适配器，必须在创建 faxios 实例时通过 `adapter` 选项显式指定。
+`fetch` 适配器基于 Web 标准的 `fetch` API，是 faxios 在所有运行时（浏览器、Node.js、Deno、Bun）使用的唯一适配器。它会自动选用，无需额外配置，但你也可以在创建 faxios 实例时通过 `adapter` 选项显式指定。
 
 ```js
 import faxios from 'faxios';
@@ -10,7 +10,7 @@ const instance = faxios.create({
 });
 ```
 
-该适配器支持与 `xhr` 适配器相同的功能，包括上传和下载进度捕获，还支持额外的响应类型，如 `stream` 和 `formdata`（如果环境支持）。
+该适配器无法报告上传进度（fetch 不支持上传进度事件），仅支持通过 `onDownloadProgress` 捕获下载进度。它还支持额外的响应类型，如 `stream` 和 `formdata`（如果环境支持）。代理与自定义传输（dispatcher/agent）可通过 `fetchOptions` 或运行时层面的 dispatcher 配置。
 
 当省略 `auth` 时，fetch 适配器可以从请求 URL 中读取 HTTP Basic 认证凭据，例如 `https://user:pass@example.com`。生成 `Authorization` 请求头前会先解码 URL 中经过百分号编码的凭据，并且 `auth` 优先于 URL 中的凭据。
 
@@ -21,7 +21,7 @@ const instance = faxios.create({
 ::: info
 使用自定义 `fetch` 函数时，可能还需要提供匹配的 `Request` 和 `Response` 构造函数。如果省略，将使用全局构造函数。如果你的自定义 `fetch` 与全局构造函数不兼容，可以传入 `null` 来禁用它们。
 
-**注意：** 将 `Request` 和 `Response` 设置为 `null` 后，fetch 适配器将无法捕获上传和下载进度。
+**注意：** 将 `Request` 和 `Response` 设置为 `null` 后，fetch 适配器将无法捕获下载进度。
 :::
 
 ### 基本示例

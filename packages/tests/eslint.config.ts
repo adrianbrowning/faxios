@@ -83,8 +83,11 @@ export const extraRules: Array<Linter.Config> = [
   {
     files: [ "**/*.ts", "**/*.tsx" ],
     rules: {
+      // sonarjs doesn't recognise `using _x = ...` (TC39 explicit resource management)
+      // as a consumed variable; the dispose side-effect is the point.
+      "sonarjs/no-unused-vars": "off",
       // Test fixtures legitimately use http:// and hardcoded credentials/IPs
-      "sonarjs/no-hardcoded-passwords": "off",  
+      "sonarjs/no-hardcoded-passwords": "off",
       "sonarjs/no-clear-text-protocols": "off",
       "sonarjs/no-hardcoded-ip": "off",
       "sonarjs/publicly-writable-directories": "off",

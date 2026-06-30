@@ -283,7 +283,7 @@ import { getAdapter } from "faxios";
 const fetchAdapter = getAdapter("fetch");
 
 // Get the best available adapter from a priority list
-const adapter = getAdapter(["fetch", "xhr", "http"]);
+const adapter = getAdapter(["fetch"]);
 ```
 
 ### `mergeConfig`

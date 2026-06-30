@@ -1,46 +1,23 @@
-import { EventEmitter } from "node:events";
-import { PassThrough } from "node:stream";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
 
-const createTransport = responseBody => {
+const createFetchMock = responseBody => {
   const calls = [];
 
-  const transport = {
-    request(options, onResponse) {
-      calls.push(options);
-
-      const req = new EventEmitter();
-      req.destroyed = false;
-      req.setTimeout = () => {};
-      req.write = () => true;
-      req.destroy = () => {
-        req.destroyed = true;
-      };
-      req.close = req.destroy;
-      req.end = () => {
-        const res = new PassThrough();
-        res.statusCode = 200;
-        res.statusMessage = "OK";
-        res.headers = { "content-type": "application/json" };
-        res.req = req;
-        onResponse(res);
-        res.end(responseBody ? responseBody : "{\"value\":\"ok\"}");
-      };
-
-      return req;
-    },
+  const mockFetch = async (input, init) => {
+    calls.push({ input, init: init || {} });
+    return new Response(responseBody != null ? responseBody : JSON.stringify({ value: "ok" }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   };
 
-  return {
-    transport,
-    getCalls: () => calls,
-  };
+  return { mockFetch, getCalls: () => calls };
 };
 
 describe("interceptors compat (dist export only)", () => {
   it("applies request interceptors before dispatch", async () => {
-    const { transport, getCalls } = createTransport();
+    const { mockFetch, getCalls } = createFetchMock(null);
     const client = faxios.create();
 
     client.interceptors.request.use(config => {
@@ -55,17 +32,16 @@ describe("interceptors compat (dist export only)", () => {
     });
 
     await client.get("http://example.com/resource", {
-      transport,
-      proxy: false,
+      env: { fetch: mockFetch, Request, Response },
     });
 
     expect(getCalls()).toHaveLength(1);
-    expect(getCalls()[0].headers["X-One"]).toBe("1");
-    expect(getCalls()[0].headers["X-Two"]).toBe("2");
+    expect(new Headers(getCalls()[0].init.headers).get("x-one")).toBe("1");
+    expect(new Headers(getCalls()[0].init.headers).get("x-two")).toBe("2");
   });
 
   it("applies response interceptors in registration order", async () => {
-    const { transport } = createTransport("{\"n\":1}");
+    const { mockFetch } = createFetchMock(JSON.stringify({ n: 1 }));
     const client = faxios.create();
 
     client.interceptors.response.use(response => {
@@ -79,15 +55,14 @@ describe("interceptors compat (dist export only)", () => {
     });
 
     const response = await client.get("http://example.com/resource", {
-      transport,
-      proxy: false,
+      env: { fetch: mockFetch, Request, Response },
     });
 
     expect(response.data.n).toBe(20);
   });
 
   it("supports ejecting request interceptors", async () => {
-    const { transport, getCalls } = createTransport();
+    const { mockFetch, getCalls } = createFetchMock(null);
     const client = faxios.create();
 
     const id = client.interceptors.request.use(config => {
@@ -99,16 +74,15 @@ describe("interceptors compat (dist export only)", () => {
     client.interceptors.request.eject(id);
 
     await client.get("http://example.com/resource", {
-      transport,
-      proxy: false,
+      env: { fetch: mockFetch, Request, Response },
     });
 
     expect(getCalls()).toHaveLength(1);
-    expect(getCalls()[0].headers["X-Ejected"]).toBeUndefined();
+    expect(new Headers(getCalls()[0].init.headers).get("x-ejected")).toBeNull();
   });
 
   it("supports async request interceptors", async () => {
-    const { transport, getCalls } = createTransport();
+    const { mockFetch, getCalls } = createFetchMock(null);
     const client = faxios.create();
 
     client.interceptors.request.use(async config => {
@@ -119,15 +93,14 @@ describe("interceptors compat (dist export only)", () => {
     });
 
     await client.get("http://example.com/resource", {
-      transport,
-      proxy: false,
+      env: { fetch: mockFetch, Request, Response },
     });
 
-    expect(getCalls()[0].headers["X-Async"]).toBe("true");
+    expect(new Headers(getCalls()[0].init.headers).get("x-async")).toBe("true");
   });
 
   it("propagates errors thrown by request interceptors", async () => {
-    const { transport, getCalls } = createTransport();
+    const { mockFetch, getCalls } = createFetchMock(null);
     const client = faxios.create();
 
     client.interceptors.request.use(() => {
@@ -136,8 +109,7 @@ describe("interceptors compat (dist export only)", () => {
 
     const err = await client
       .get("http://example.com/resource", {
-        transport,
-        proxy: false,
+        env: { fetch: mockFetch, Request, Response },
       })
       .catch(e => e);
 

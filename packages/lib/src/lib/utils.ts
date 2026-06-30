@@ -300,20 +300,7 @@ const isStream = (val: unknown) => isObject(val) && isFunction((val as Record<st
  *
  * @returns {boolean} True if value is an FormData, otherwise false
  */
-function getGlobal(): Record<string, unknown> {
-  if (typeof globalThis !== "undefined") return globalThis;
-  // @ts-expect-error self may not exist in all environments
-   
-  if (typeof self !== "undefined") return self;
-  // @ts-expect-error window may not exist in all environments
-   
-  if (typeof window !== "undefined") return window;
-  // @ts-ignore -- global lacks index signature in TS6 strict mode
-  if (typeof global !== "undefined") return global;
-  return {};
-}
-
-const G = getGlobal();
+const G: Record<string, unknown> = globalThis;
 const FormDataCtor = typeof G["FormData"] !== "undefined" ? G["FormData"] as new () => object : undefined;
 
 const isFormData = (thing: unknown): boolean => {
@@ -436,11 +423,13 @@ function findKey(obj: unknown, key: string): string | null {
   return null;
 }
 
-const _global = (() => {
-  /*eslint no-undef:0*/
-  if (typeof globalThis !== "undefined") return globalThis;
-  return global;
-})() as Record<string, unknown> & { addEventListener?: (type: string, listener: (event: Record<string, unknown>) => void, capture?: boolean) => void; postMessage?: (message: unknown, targetOrigin: string) => void; };
+type GlobalWithEvents = typeof globalThis & {
+  addEventListener?: (type: string, listener: (event: Record<string, unknown>) => void, capture?: boolean) => void;
+  postMessage?: (message: unknown, targetOrigin: string) => void;
+  setImmediate?: (cb: () => void) => void;
+  process?: { nextTick?: (cb: () => void) => void; };
+};
+const _global = globalThis as GlobalWithEvents;
 
 const isContextDefined = (context: unknown) => !isUndefined(context) && context !== _global;
 
@@ -911,12 +900,13 @@ const isThenable = (thing: unknown) =>
  */
 const _setImmediate = ((setImmediateSupported: boolean, postMessageSupported: boolean) => {
   if (setImmediateSupported) {
-    return setImmediate;
+    return (_global["setImmediate"] as (cb: () => void) => unknown);
   }
 
   return postMessageSupported
     ? ((token: string, callbacks: Array<() => void>) => {
-      _global.addEventListener?.(
+      const _addEventListener = _global.addEventListener as NonNullable<GlobalWithEvents["addEventListener"]>;
+      _addEventListener(
         "message",
         (evt: Record<string, unknown>) => {
           if (evt["source"] === _global && evt["data"] === token) {
@@ -926,14 +916,16 @@ const _setImmediate = ((setImmediateSupported: boolean, postMessageSupported: bo
         false
       );
 
+      const _postMessage = _global.postMessage as NonNullable<GlobalWithEvents["postMessage"]>;
+
       return (cb: () => void) => {
         callbacks.push(cb);
-        _global.postMessage?.(token, "*");
+        _postMessage(token, "*");
       };
     // eslint-disable-next-line sonarjs/pseudo-random
     })(`faxios@${Math.random()}`, [])
     : (cb: () => void) => setTimeout(cb);
-})(typeof setImmediate === "function", isFunction(_global["postMessage"]));
+})(isFunction(_global["setImmediate"]), isFunction(_global["postMessage"]));
 
 /**
  * Schedules a microtask or asynchronous callback as soon as possible.
@@ -941,12 +933,12 @@ const _setImmediate = ((setImmediateSupported: boolean, postMessageSupported: bo
  *
  * @type {Function}
  */
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+ 
+const _process = _global["process"];
 const asap =
   typeof queueMicrotask !== "undefined"
     ? queueMicrotask.bind(globalThis)
-    : (typeof process !== "undefined" && process.nextTick) || _setImmediate;
-/* eslint-enable @typescript-eslint/no-unnecessary-condition */
+    : (_process && _process.nextTick) || _setImmediate;
 
 // *********************
 

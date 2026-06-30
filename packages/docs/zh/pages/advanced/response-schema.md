@@ -21,9 +21,7 @@
   // 本次请求使用的 faxios 配置，包括 baseURL、headers、timeout、params 及其他选项。
   config: {},
 
-  // 底层请求对象。
-  // 在 Node.js 中：最后一个 `http.ClientRequest` 实例（经过任何重定向后）。
-  // 在浏览器中：`XMLHttpRequest` 实例。
+  // 底层请求对象——本次请求所用的 fetch `Request` 实例。
   request: {},
 }
 ```

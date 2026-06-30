@@ -2,7 +2,7 @@
 
 ## ⚠️ Bombe de décompression / mise en tampon de réponse sans limite
 
-Par défaut, `maxContentLength` et `maxBodyLength` valent `-1` (illimité). Un serveur malveillant ou compromis peut renvoyer un petit corps compressé en gzip/deflate/brotli/zstd qui s'étend à plusieurs gigaoctets, épuisant la mémoire du processus Node.js.
+Par défaut, `maxContentLength` et `maxBodyLength` valent `-1` (illimité). Un serveur malveillant ou compromis peut renvoyer un petit corps compressé en gzip/deflate/brotli/zstd qui s'étend à plusieurs gigaoctets, épuisant la mémoire du processus.
 
 **Si vous effectuez des requêtes vers des serveurs que vous ne contrôlez pas totalement, vous DEVEZ définir `maxContentLength` en fonction de votre charge.** La limite est appliquée chunk par chunk pendant la décompression en flux, il suffit donc de la définir pour neutraliser les attaques de bombe de décompression.
 
@@ -25,11 +25,9 @@ Les options de configuration de requête suivantes ont des implications directes
 
 | Option | Risque | Atténuation |
 | --- | --- | --- |
-| [`socketPath`](/pages/advanced/request-config#socketpath) | Si dérivée d'une entrée non fiable, un attaquant peut rediriger le trafic vers des sockets locaux privilégiés tels que `/var/run/docker.sock`, contournant les protections SSRF basées sur le hostname (CWE-918). | Filtrez ou créez une liste blanche des clés de configuration provenant d'entrées non fiables. Utilisez [`allowedSocketPaths`](/pages/advanced/request-config#allowedsocketpaths) pour restreindre les chemins de socket acceptés. |
-| [`beforeRedirect`](/pages/advanced/request-config#beforeredirect) | S'exécute après que `follow-redirects` ait retiré les identifiants en cas de rétrogradation de protocole. Réinjecter des identifiants sans vérifier le protocole de destination peut les exposer en HTTP en clair. | Ne réinjectez les identifiants que pour des destinations HTTPS de confiance. Vérifiez `options.protocol === "https:"` avant d'assigner `auth`. |
 | [`withXSRFToken`](/pages/advanced/request-config#withxsrftoken) | La définir à `true` force l'en-tête XSRF sur les requêtes cross-origin. Les anciennes versions d'faxios l'activaient implicitement avec `withCredentials: true` ; les versions plus récentes nécessitent les deux indicateurs. | Laissez à `undefined` (same-origin uniquement) sauf si votre backend valide explicitement XSRF sur les requêtes cross-origin. |
 | [`redact`](/pages/advanced/request-config#redact) | `FaxiosError#toJSON()` inclut la configuration de requête par défaut, ce qui peut faire fuiter des en-têtes `Authorization` ou des identifiants `auth` dans les logs d'erreurs et la télémétrie. | Passez un tableau `redact` avec les noms de clés de configuration sensibles. La correspondance est insensible à la casse et récursive. |
-| [`formDataHeaderPolicy`](/pages/advanced/request-config#formdataheaderpolicy) | Un `FormData` personnalisé dont `getHeaders()` retourne des valeurs contrôlées par un attaquant peut écraser des en-têtes comme `Authorization` ou en injecter des arbitraires dans Node.js. | Définissez `'content-only'` pour ne copier que `Content-Type` et `Content-Length`, puis définissez les autres en-têtes explicitement via la configuration `headers` de la requête. |
+| [`formDataHeaderPolicy`](/pages/advanced/request-config#formdataheaderpolicy) | Un `FormData` personnalisé dont `getHeaders()` retourne des valeurs contrôlées par un attaquant peut écraser des en-têtes comme `Authorization` ou en injecter des arbitraires. | Définissez `'content-only'` pour ne copier que `Content-Type` et `Content-Length`, puis définissez les autres en-têtes explicitement via la configuration `headers` de la requête. |
 
 ## Durcissement de la chaîne d'approvisionnement : `ignore-scripts` et scripts de cycle de vie
 
@@ -96,7 +94,7 @@ L'horloge des 60 jours est un engagement envers les rapporteurs et les consommat
 **Exceptions et prolongations.**
 
 - Si un rapporteur demande un embargo plus court (par exemple pour présenter ses résultats à une conférence), nous nous adaptons dans la mesure du possible.
-- Si un correctif nécessite un changement cassant, la coordination avec des consommateurs en aval majeurs, ou une publication en amont de `follow-redirects` / `form-data` / `proxy-from-env`, nous pouvons prolonger au-delà de 60 jours. Toute prolongation est divulguée publiquement au jour 60 via l'avis, avec une ETA révisée et la raison.
+- Si un correctif nécessite un changement cassant ou la coordination avec des consommateurs en aval majeurs, nous pouvons prolonger au-delà de 60 jours. Toute prolongation est divulguée publiquement au jour 60 via l'avis, avec une ETA révisée et la raison.
 - Si un rapport est **hors du périmètre** (par exemple, il relève d'un non-objectif explicite documenté dans le [modèle de menaces](https://github.com/faxios/faxios/blob/v1.x/THREATMODEL.md) du projet), nous le clôturons avec une explication au rapporteur dans la fenêtre de triage (≤ 3 jours). Les rapports hors périmètre n'entrent pas dans la file des 60 jours.
 - Les **vulnérabilités activement exploitées** sont traitées comme des incidents : le correctif et l'avis sont publiés dès qu'un patch est validé, hors du calendrier des 60 jours.
 

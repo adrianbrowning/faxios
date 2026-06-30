@@ -1,6 +1,5 @@
 "use strict";
 
-import PlatformFormData from "form-data";
 import FaxiosError from "../core/FaxiosError.js";
 // temporary hotfix to avoid circular references until FaxiosURLSearchParams is refactored
 import type { GenericFormData, SerializerVisitor, FormDataVisitorHelpers } from "../types.js";
@@ -95,10 +94,11 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
     throw new TypeError("target must be an object");
   }
 
-  const GlobalFormData = (globalThis as Record<string, unknown>)["FormData"] as (new () => GenericFormData) | undefined;
-   
-  const FormDataCtor = (PlatformFormData as unknown as (new () => GenericFormData) | undefined) || GlobalFormData;
-  formData = formData || new FormDataCtor!();
+  const FormDataCtor = (globalThis as Record<string, unknown>)["FormData"] as (new () => GenericFormData) | undefined;
+  if (!formData) {
+    if (!FormDataCtor) throw new FaxiosError("FormData is not available in this environment", FaxiosError.ERR_NOT_SUPPORT);
+    formData = new FormDataCtor();
+  }
 
   options = utils.toFlatObject(
     options,
@@ -147,9 +147,10 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
 
     if (utils.isArrayBuffer(value) || utils.isTypedArray(value)) {
       const BlobCtor = (globalThis as Record<string, unknown>)["Blob"] as (new (parts: Array<unknown>) => unknown) | undefined;
-      return useBlob && typeof BlobCtor === "function"
-        ? new BlobCtor([ value ])
-        : Buffer.from(value as ArrayBuffer);
+      if (useBlob && typeof BlobCtor === "function") {
+        return new BlobCtor([ value ]);
+      }
+      throw new FaxiosError("Blob is required for binary FormData values in this environment", FaxiosError.ERR_NOT_SUPPORT);
     }
 
     return value;

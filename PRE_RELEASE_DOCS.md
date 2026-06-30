@@ -20,6 +20,15 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 
 ## Unreleased
 
+### Fetch-only migration — README + docs-site swept (issue #5)
+
+- **Change:** faxios now uses the web-standard `fetch` API as its only transport in all runtimes. The Node `http`/`https` adapter, browser XHR adapter, Node platform layer, and the `follow-redirects` / `form-data` / `proxy-from-env` / `https-proxy-agent` deps were removed. `onUploadProgress` dropped; many Node transport config fields removed (see `MIGRATION_GUIDE.md` "Fetch-Only Migration"). Connection failures standardize to `ERR_NETWORK` with the OS error on `error.cause`.
+- **Source:** Issue #5 (web standards / fetch-only migration).
+- **Status:** Pending (release prep applies final docs).
+- **Docs targets:** README (transport/adapter description, Node-specific config sections, proxy/redirect docs, install snippets); docs-site getting-started, adapter, request-config, security, and proxy pages; translated docs after English is finalized.
+- **Required content:** Document fetch-as-only-transport; remove docs for removed config fields (`maxRedirects`, `maxRate`, `beforeRedirect`, `socketPath`, `allowedSocketPaths`, `transport`, `httpAgent`, `httpsAgent`, `proxy`, `decompress`, `insecureHTTPParser`, `httpVersion`, `http2Options`, `sensitiveHeaders`, `lookup`, `family`); document `onUploadProgress` removal; document `ERR_NETWORK` + `error.cause`; document proxy via runtime/`fetchOptions` (undici dispatcher).
+- **Notes:** README and the docs site were **swept for fetch-only in this work** including all 4 locale translations (en, es, fr, zh); release prep covers final review only. `MIGRATION_GUIDE.md` already carries the user-facing breaking-change section.
+
 ### ESM-only package; CJS and CDN/UMD builds dropped (TypeScript migration)
 
 - **Change:** The TypeScript migration ships an ESM-only package built by `zshy`. The CommonJS (`require`) build, `index.d.cts` (`export = faxios`) types, and the browser/UMD/minified CDN bundles (`jsdelivr`/`unpkg`/`browser`/`react-native` entries) were removed.
@@ -40,23 +49,15 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Examples:** None.
 - **Notes:** Treat as a bug/security-hardening release note, not a request-config documentation change.
 
-### sensitiveHeaders request config
+### sensitiveHeaders request config — REMOVED
 
-- **Change:** Document the Node.js `sensitiveHeaders` request config option for stripping custom secret headers from cross-origin redirects.
-- **Source:** `PRE_RELEASE_CHANGELOG.md` Security Fixes, #10892.
+- **Change:** The `sensitiveHeaders` request config option has been **removed entirely** as part of the fetch-only migration. faxios no longer follows redirects itself (the Node `http`/`https` adapter and `follow-redirects` are gone), so there is no faxios-level redirect header-stripping option. Redirect handling and cross-origin credential stripping are now delegated to the underlying `fetch` runtime.
+- **Source:** Fetch-only migration (issue #5); supersedes #10892.
 - **Status:** Pending.
-- **Docs targets:** `docs/pages/misc/security.md`; `docs/pages/advanced/request-config.md`; README request config section if it lists all config options; translated docs after English docs are finalized.
-- **Required content:** Explain that `sensitiveHeaders` is an optional array of custom secret-bearing header names. Matching is case-insensitive. The Node.js HTTP adapter removes matching headers only when following a redirect to a different origin. Same-origin redirects keep these headers. If `maxRedirects` is `0`, faxios does not follow redirects and `sensitiveHeaders` is not used. Mention common custom authentication headers such as `X-API-Key`.
-- **Examples:** Include this request example.
-
-```js
-faxios.get('https://api.example.com/users', {
-  headers: { 'X-API-Key': 'secret' },
-  sensitiveHeaders: ['X-API-Key']
-});
-```
-
-- **Notes:** Add a security page row linking to the request-config section and add a `sensitiveHeaders` request-config entry marked Node.js only.
+- **Docs targets:** `docs/pages/misc/security.md`; `docs/pages/advanced/request-config.md`; README request config section; translated docs after English docs are finalized.
+- **Required content:** Do **not** document `sensitiveHeaders` as a supported option. Remove any reference to it. Where redirect credential handling is discussed, explain that faxios delegates redirects to the `fetch` runtime (which applies WHATWG Fetch cross-origin rules) and that callers needing manual control should set `redirect: 'manual'` via `fetchOptions` and reissue the request themselves.
+- **Examples:** None (the feature no longer exists).
+- **Notes:** This is a removal, not a doc tweak. Ensure no security-page row or request-config entry advertises `sensitiveHeaders`.
 
 ### validateStatus undefined transitional option
 
@@ -77,3 +78,13 @@ faxios.get('/user/12345', {
 ```
 
 - **Notes:** This is release-prep documentation only; do not update README or docs pages in the feature/fix PR.
+
+### docs/advanced/headers.md — translation tracking
+
+- **Change:** `docs/advanced/headers.md` was added/updated in the fetch-only sweep (English only). Translated versions have not been created.
+- **Source:** Issue #5 fetch-only migration docs sweep.
+- **Status:** Pending.
+- **Docs targets:** `docs/es/advanced/headers.md`, `docs/fr/advanced/headers.md`, `docs/zh/advanced/headers.md`.
+- **Required content:** Translate the English `docs/advanced/headers.md` into the three supported locales, keeping parity with the English content.
+- **Examples:** None beyond the English source.
+- **Notes:** English-only at time of writing; create translated siblings before release.

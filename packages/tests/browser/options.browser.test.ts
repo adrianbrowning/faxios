@@ -1,214 +1,112 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import faxios from "#src/index.js";
 import type { RawFaxiosRequestHeaders } from "#src/lib/types.js";
 
-class MockXMLHttpRequest {
-  requestHeaders: Record<string, string> = {};
-  responseHeaders = "";
-  readyState = 0;
-  status = 0;
-  statusText = "";
-  responseText = "";
-  response: string | null = null;
-  onreadystatechange: (() => void) | null = null;
-  onloadend: (() => void) | null = null;
-  upload = { addEventListener() {} };
-  method?: string;
-  url?: string;
-  async?: boolean;
-  params?: unknown;
-
-  constructor() {}
-
-  open(method: string, url: string, async = true) {
-    this.method = method;
-    this.url = url;
-    this.async = async;
-  }
-
-  setRequestHeader(key: string, value: string) {
-    this.requestHeaders[key] = value;
-  }
-
-  addEventListener() {}
-
-  getAllResponseHeaders() {
-    return this.responseHeaders;
-  }
-
-  send(data: unknown) {
-    this.params = data;
-    requests.push(this);
-  }
-
-  respondWith({
-    status = 200,
-    statusText = "OK",
-    responseText = "",
-    responseHeaders = "",
-  }: {
-    status?: number;
-    statusText?: string;
-    responseText?: string;
-    responseHeaders?: string;
-  } = {}) {
-    this.status = status;
-    this.statusText = statusText;
-    this.responseText = responseText;
-    this.response = responseText;
-    this.responseHeaders = responseHeaders;
-    this.readyState = 4;
-
-    queueMicrotask(() => {
-      if (this.onloadend) {
-        this.onloadend();
-      }
-      else if (this.onreadystatechange) {
-        this.onreadystatechange();
-      }
-    });
-  }
-}
-
-let requests: Array<MockXMLHttpRequest> = [];
-let OriginalXMLHttpRequest: typeof XMLHttpRequest;
-
-const startRequest = (...args: Parameters<typeof faxios>) => {
-  const promise = faxios(...args);
-  const request = requests.at(-1);
-
-  expect(request).toBeDefined();
-
-  return { request: request!, promise };
-};
-
-const flushSuccess = async (
-  request: MockXMLHttpRequest,
-  promise: Promise<unknown>
-) => {
-  request.respondWith({ status: 200 });
-  await promise;
-};
+import { installFetchMock } from "./helpers/fetchMock.js";
 
 describe("options (vitest browser)", () => {
-  beforeEach(() => {
-    requests = [];
-    OriginalXMLHttpRequest = window.XMLHttpRequest;
-    window.XMLHttpRequest =
-      MockXMLHttpRequest as unknown as typeof XMLHttpRequest;
-  });
-
   afterEach(() => {
-    window.XMLHttpRequest = OriginalXMLHttpRequest;
     vi.restoreAllMocks();
   });
 
   it("should default method to get", async () => {
-    const { request, promise } = startRequest("/foo");
+    using mock = installFetchMock();
 
-    expect(request.method).toBe("GET");
+    await faxios("/foo");
 
-    await flushSuccess(request, promise);
+    expect(mock.lastRequest!.method).toBe("GET");
   });
 
   it("should accept headers", async () => {
-    const { request, promise } = startRequest("/foo", {
+    using mock = installFetchMock();
+
+    await faxios("/foo", {
       headers: {
-        "X-Requested-With": "XMLHttpRequest",
+        "X-Requested-With": "fetch",
       },
     });
 
-    expect(request.requestHeaders["X-Requested-With"]).toBe("XMLHttpRequest");
-
-    await flushSuccess(request, promise);
+    expect(mock.lastRequest!.headers.get("X-Requested-With")).toBe("fetch");
   });
 
   it("should accept params", async () => {
-    const { request, promise } = startRequest("/foo", {
+    using mock = installFetchMock();
+
+    await faxios("/foo", {
       params: {
         foo: 123,
         bar: 456,
       },
     });
 
-    expect(request.url).toBe("/foo?foo=123&bar=456");
-
-    await flushSuccess(request, promise);
+    const url = new URL(mock.lastRequest!.url);
+    expect(url.pathname).toBe("/foo");
+    expect(url.search).toBe("?foo=123&bar=456");
   });
 
   it("should allow overriding default headers", async () => {
-    const { request, promise } = startRequest("/foo", {
+    using mock = installFetchMock();
+
+    await faxios("/foo", {
       headers: {
         Accept: "foo/bar",
       },
     });
 
-    expect(request.requestHeaders.Accept).toBe("foo/bar");
-
-    await flushSuccess(request, promise);
+    expect(mock.lastRequest!.headers.get("Accept")).toBe("foo/bar");
   });
 
   it("should accept base URL", async () => {
+    using mock = installFetchMock();
     const instance = faxios.create({
       baseURL: "http://test.com/",
     });
 
-    const promise = instance.get("/foo");
-    const request = requests.at(-1);
+    await instance.get("/foo");
 
-    expect(request).toBeDefined();
-    expect(request!.url).toBe("http://test.com/foo");
-
-    await flushSuccess(request!, promise);
+    expect(mock.lastRequest!.url).toBe("http://test.com/foo");
   });
 
   it("should warn about baseUrl", async () => {
+    using mock = installFetchMock();
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     const instance = faxios.create({
       // @ts-expect-error intentionally testing misspelled baseUrl to verify warning
       baseUrl: "http://example.com/",
     });
 
-    const promise = instance.get("/foo");
-    const request = requests.at(-1);
+    await instance.get("/foo");
 
-    expect(request).toBeDefined();
     expect(warnSpy).toHaveBeenCalledWith(
       "baseUrl is likely a misspelling of baseURL"
     );
-    expect(request!.url).toBe("/foo");
-
-    await flushSuccess(request!, promise);
+    expect(new URL(mock.lastRequest!.url).pathname).toBe("/foo");
   });
 
   it("should ignore base URL if request URL is absolute", async () => {
+    using mock = installFetchMock();
     const instance = faxios.create({
       baseURL: "http://someurl.com/",
     });
 
-    const promise = instance.get("http://someotherurl.com/");
-    const request = requests.at(-1);
+    await instance.get("http://someotherurl.com/");
 
-    expect(request).toBeDefined();
-    expect(request!.url).toBe("http://someotherurl.com/");
-
-    await flushSuccess(request!, promise);
+    expect(mock.lastRequest!.url).toBe("http://someotherurl.com/");
   });
 
   it("should combine the URLs if base url and request url exist and allowAbsoluteUrls is false", async () => {
+    using mock = installFetchMock();
     const instance = faxios.create({
       baseURL: "http://someurl.com/",
       allowAbsoluteUrls: false,
     });
 
-    const promise = instance.get("http://someotherurl.com/");
-    const request = requests.at(-1);
+    await instance.get("http://someotherurl.com/");
 
-    expect(request).toBeDefined();
-    expect(request!.url).toBe("http://someurl.com/http://someotherurl.com/");
-
-    await flushSuccess(request!, promise);
+    expect(mock.lastRequest!.url).toBe(
+      "http://someurl.com/http://someotherurl.com/"
+    );
   });
 
   it("should change only the baseURL of the specified instance", () => {

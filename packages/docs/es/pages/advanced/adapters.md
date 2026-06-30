@@ -1,28 +1,22 @@
 # Adaptadores
 
-Los adaptadores te permiten personalizar la forma en que faxios maneja los datos de la solicitud. De forma predeterminada, faxios usa una lista de prioridad ordenada de `['xhr', 'http', 'fetch']` y selecciona el primer adaptador que sea compatible con el entorno actual. En la práctica, esto significa que `xhr` se usa en los navegadores, `http` en Node.js y `fetch` en entornos donde ninguno de los dos está disponible (como Cloudflare Workers o Deno).
+Los adaptadores te permiten personalizar la forma en que faxios maneja los datos de la solicitud. De forma predeterminada, faxios usa la lista `['fetch']`. El único adaptador integrado es `fetch`, basado en la API web estándar `fetch`, que funciona en todos los entornos: navegadores, Node.js 18+, Deno y Bun.
 
 Escribir tu propio adaptador te permite controlar completamente cómo faxios realiza una solicitud y procesa la respuesta — útil para pruebas, transportes personalizados o entornos no estándar.
 
 ## Adaptadores integrados
 
-Puedes seleccionar un adaptador integrado por nombre usando la opción de configuración `adapter`:
+El único adaptador integrado es `fetch`. Puedes seleccionarlo por nombre usando la opción de configuración `adapter`:
 
 ```js
 // Use the fetch adapter
 const instance = faxios.create({ adapter: "fetch" });
-
-// Use the XHR adapter (browser default)
-const instance = faxios.create({ adapter: "xhr" });
-
-// Use the HTTP adapter (Node.js default)
-const instance = faxios.create({ adapter: "http" });
 ```
 
-También puedes pasar un arreglo de nombres de adaptadores. faxios usará el primero que sea compatible con el entorno actual:
+También puedes pasar un arreglo de nombres de adaptadores. faxios usará el primero que sea compatible con el entorno actual. El valor predeterminado es `['fetch']`:
 
 ```js
-const instance = faxios.create({ adapter: ["fetch", "xhr", "http"] });
+const instance = faxios.create({ adapter: ["fetch"] });
 ```
 
 Para más detalles sobre el adaptador `fetch`, consulta la página del [Adaptador Fetch](/pages/advanced/fetch-adapter).

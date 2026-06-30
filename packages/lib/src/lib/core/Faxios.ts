@@ -38,9 +38,10 @@ type RequestInterceptorEntry = {
 
 function patchErrorStack(err: Error): void {
   let dummy: { stack?: string; } = {};
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(dummy);
+  // captureStackTrace is V8-only (Node, Chromium); fall back elsewhere.
+  const captureStackTrace = (Error as { captureStackTrace?: (target: object) => void; }).captureStackTrace;
+  if (captureStackTrace) {
+    captureStackTrace(dummy);
   }
   else {
     dummy = new Error();

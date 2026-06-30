@@ -1,49 +1,32 @@
-import { EventEmitter } from "node:events";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
 
-const createPendingTransport = () => {
+const createPendingFetch = () => {
   let requestCount = 0;
 
-  const transport = {
-    request() {
-      requestCount += 1;
-
-      const req = new EventEmitter();
-      req.destroyed = false;
-      req.setTimeout = () => {};
-      req.write = () => true;
-      req.end = () => {};
-      req.destroy = () => {
-        req.destroyed = true;
-      };
-      req.close = req.destroy;
-
-      return req;
-    },
+  const mockFetch = async (_input, init) => {
+    requestCount++;
+    return new Promise((_resolve, reject) => {
+      const { signal } = init || {};
+      if (signal?.aborted) { reject(signal.reason); return; }
+      signal?.addEventListener("abort", () => reject(signal.reason), { once: true });
+    });
   };
 
-  return {
-    transport,
-    getRequestCount: () => requestCount,
-  };
+  return { mockFetch, getRequestCount: () => requestCount };
 };
 
 describe("cancel compat (dist export only)", () => {
   it("supports cancellation with AbortController (pre-aborted signal)", async () => {
-    const { transport, getRequestCount } = createPendingTransport();
+    const { mockFetch, getRequestCount } = createPendingFetch();
     const controller = new AbortController();
     controller.abort();
 
     try {
-      const request = faxios.get("http://example.com/resource", {
+      await faxios.get("http://example.com/resource", {
         signal: controller.signal,
-        transport,
-        proxy: false,
+        env: { fetch: mockFetch, Request, Response },
       });
-
-      controller.abort();
-      await request;
     }
     catch (error) {
       expect(error.code).toBe("ERR_CANCELED");
@@ -53,14 +36,13 @@ describe("cancel compat (dist export only)", () => {
   });
 
   it("supports cancellation with AbortController (in-flight)", async () => {
-    const { transport, getRequestCount } = createPendingTransport();
+    const { mockFetch, getRequestCount } = createPendingFetch();
     const controller = new AbortController();
 
     try {
       const request = faxios.get("http://example.com/resource", {
         signal: controller.signal,
-        transport,
-        proxy: false,
+        env: { fetch: mockFetch, Request, Response },
       });
 
       controller.abort();
@@ -74,15 +56,14 @@ describe("cancel compat (dist export only)", () => {
   });
 
   it("supports cancellation with CancelToken (pre-canceled token)", async () => {
-    const { transport, getRequestCount } = createPendingTransport();
+    const { mockFetch, getRequestCount } = createPendingFetch();
     const source = faxios.CancelToken.source();
     source.cancel("Operation canceled by the user.");
 
     const error = await faxios
       .get("http://example.com/resource", {
         cancelToken: source.token,
-        transport,
-        proxy: false,
+        env: { fetch: mockFetch, Request, Response },
       })
       .catch(err => err);
 
@@ -92,18 +73,19 @@ describe("cancel compat (dist export only)", () => {
   });
 
   it("supports cancellation with CancelToken (in-flight)", async () => {
-    const { transport, getRequestCount } = createPendingTransport();
+    const { mockFetch, getRequestCount } = createPendingFetch();
     const source = faxios.CancelToken.source();
 
-    const request = faxios.get("http://example.com/resource", {
-      cancelToken: source.token,
-      transport,
-      proxy: false,
-    });
+    const request = faxios
+      .get("http://example.com/resource", {
+        cancelToken: source.token,
+        env: { fetch: mockFetch, Request, Response },
+      })
+      .catch(err => err);
 
     source.cancel("Operation canceled by the user.");
 
-    const error = await request.catch(err => err);
+    const error = await request;
 
     expect(faxios.isCancel(error)).toBe(true);
     expect(error.code).toBe("ERR_CANCELED");
