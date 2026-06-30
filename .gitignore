@@ -16,4 +16,7 @@ docs/.vitepress/dist
 docs/.vitepress/cache
 /.eslintcache
 /packages/lib/.eslintcache
+**/.eslintcache
+**/*.tsbuildinfo
+packages/lib/faxios-*.tgz
 .pnpm-store/

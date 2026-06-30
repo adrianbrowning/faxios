@@ -108,11 +108,9 @@ const test = (
 
 const maybeWithAuthCredentials = (url: string): boolean => {
   const protocolIndex = url.indexOf("://");
-  let urlToCheck = url;
-  if (protocolIndex !== -1) {
-    urlToCheck = urlToCheck.slice(protocolIndex + 3);
-  }
-  return urlToCheck.includes("@") || urlToCheck.includes(":");
+  const urlToCheck = protocolIndex !== -1 ? url.slice(protocolIndex + 3) : url;
+  // Only `@` indicates credentials in the authority; `:` alone is a port separator.
+  return urlToCheck.includes("@");
 };
 
 // eslint-disable-next-line sonarjs/function-return-type
@@ -192,7 +190,7 @@ const factory = (env: Record<string, unknown>) => {
       const hasContentType = request.headers.has("Content-Type");
 
       if (request.body != null) {
-        void request.body.cancel();
+        request.body.cancel().catch(() => {});
       }
 
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -763,7 +761,7 @@ const factory = (env: Record<string, unknown>) => {
           (cancelToken as CancelTokenWithAbortSignal).toAbortSignal(),
       ],
       timeout,
-      timeoutErrorMessage as string | undefined
+      timeoutErrorMessage
     ) as ComposedSignal | undefined;
 
     const unsubscribe =
@@ -830,8 +828,11 @@ const factory = (env: Record<string, unknown>) => {
 
       // Browsers auto-add "text/plain;charset=UTF-8" for string bodies when no Content-Type is set.
       // Encoding as Uint8Array prevents the browser from injecting a content-type.
-      if (utils.isString(data) && !("Content-Type" in serializedHeaders)) {
-        data = await encodeText(data as string);
+      // Case-insensitive check: toByteStringHeaderObject may normalize to lowercase.
+      if (utils.isString(data) && !utils.findKey(serializedHeaders, "content-type")) {
+        const encoded = encodeText(data as string);
+        // ponytail: skip await when TextEncoder is sync (avoids microtask hop on every string body)
+        data = encoded instanceof Uint8Array ? encoded : await encoded;
       }
 
       const resolvedOptions = {

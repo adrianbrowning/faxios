@@ -10,7 +10,7 @@ faxios también es una excelente opción para equipos que trabajan tanto en fron
 
 ## Soporte para Fetch <Badge type="tip" text="Nuevo" />
 
-faxios ofrece soporte de primera clase para la Fetch API, que es un reemplazo moderno de la API XHR. El adaptador es opcional y puede habilitarse mediante configuración. Se mantiene la misma API tanto para el adaptador XHR como para el adaptador Fetch, lo que facilita adoptar la Fetch API en tu base de código sin necesidad de modificar el código existente.
+faxios está construido íntegramente sobre la Fetch API estándar web, que ahora es su único transporte HTTP en todos los entornos compatibles (navegadores, Node.js 18+, Deno y Bun). No se requiere ninguna configuración: el adaptador `fetch` se utiliza por defecto.
 
 ## Soporte de navegadores
 

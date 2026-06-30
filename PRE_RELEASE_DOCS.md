@@ -27,7 +27,7 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Status:** Pending (release prep applies final docs).
 - **Docs targets:** README (transport/adapter description, Node-specific config sections, proxy/redirect docs, install snippets); docs-site getting-started, adapter, request-config, security, and proxy pages; translated docs after English is finalized.
 - **Required content:** Document fetch-as-only-transport; remove docs for removed config fields (`maxRedirects`, `maxRate`, `beforeRedirect`, `socketPath`, `allowedSocketPaths`, `transport`, `httpAgent`, `httpsAgent`, `proxy`, `decompress`, `insecureHTTPParser`, `httpVersion`, `http2Options`, `sensitiveHeaders`, `lookup`, `family`); document `onUploadProgress` removal; document `ERR_NETWORK` + `error.cause`; document proxy via runtime/`fetchOptions` (undici dispatcher).
-- **Notes:** README and the docs site were **swept for fetch-only in this work** so release prep knows the sweep is done; this entry tracks final review/translation. `MIGRATION_GUIDE.md` already carries the user-facing breaking-change section.
+- **Notes:** README and the docs site were **swept for fetch-only in this work** including all 4 locale translations (en, es, fr, zh); release prep covers final review only. `MIGRATION_GUIDE.md` already carries the user-facing breaking-change section.
 
 ### ESM-only package; CJS and CDN/UMD builds dropped (TypeScript migration)
 
@@ -78,3 +78,13 @@ faxios.get('/user/12345', {
 ```
 
 - **Notes:** This is release-prep documentation only; do not update README or docs pages in the feature/fix PR.
+
+### docs/advanced/headers.md — translation tracking
+
+- **Change:** `docs/advanced/headers.md` was added/updated in the fetch-only sweep (English only). Translated versions have not been created.
+- **Source:** Issue #5 fetch-only migration docs sweep.
+- **Status:** Pending.
+- **Docs targets:** `docs/es/advanced/headers.md`, `docs/fr/advanced/headers.md`, `docs/zh/advanced/headers.md`.
+- **Required content:** Translate the English `docs/advanced/headers.md` into the three supported locales, keeping parity with the English content.
+- **Examples:** None beyond the English source.
+- **Notes:** English-only at time of writing; create translated siblings before release.

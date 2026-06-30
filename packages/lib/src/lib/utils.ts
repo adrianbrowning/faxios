@@ -308,7 +308,7 @@ function getGlobal(): Record<string, unknown> {
   // @ts-expect-error window may not exist in all environments
    
   if (typeof window !== "undefined") return window;
-  // @ts-ignore -- global lacks index signature in TS6 strict mode
+  // @ts-expect-error -- global lacks index signature in TS strict mode
   if (typeof global !== "undefined") return global;
   return {};
 }
@@ -436,7 +436,13 @@ function findKey(obj: unknown, key: string): string | null {
   return null;
 }
 
-const _global = globalThis as unknown as Record<string, unknown> & { addEventListener?: (type: string, listener: (event: Record<string, unknown>) => void, capture?: boolean) => void; postMessage?: (message: unknown, targetOrigin: string) => void; };
+type GlobalWithEvents = typeof globalThis & {
+  addEventListener?: (type: string, listener: (event: Record<string, unknown>) => void, capture?: boolean) => void;
+  postMessage?: (message: unknown, targetOrigin: string) => void;
+  setImmediate?: (cb: () => void) => void;
+  process?: { nextTick?: (cb: () => void) => void };
+};
+const _global = globalThis as GlobalWithEvents;
 
 const isContextDefined = (context: unknown) => !isUndefined(context) && context !== _global;
 

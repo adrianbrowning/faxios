@@ -6,6 +6,7 @@ import isCancel from "../cancel/isCancel.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import defaults from "../defaults/index.js";
 import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
+import utils from "../utils.js";
 import transformData from "./transformData.js";
 
 function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void {
@@ -25,7 +26,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
 
   config.data = transformData.call(config, config.transformRequest);
 
-  if (config.data != null && !(config.data instanceof FormData) && [ "post", "put", "patch" ].indexOf(config.method as string) !== -1) {
+  if (config.data != null && !utils.isFormData(config.data) && [ "post", "put", "patch" ].indexOf(config.method as string) !== -1) {
     (config.headers as unknown as { setContentType: (v: string, r: boolean) => void; }).setContentType("application/x-www-form-urlencoded", false);
   }
 

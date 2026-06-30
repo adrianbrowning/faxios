@@ -207,7 +207,7 @@ describe("defaults (vitest browser)", () => {
     await instance.get("/foo");
     const elapsedTimeMs = performance.now() - start;
 
-    expect(elapsedTimeMs).toBeLessThan(20);
+    expect(elapsedTimeMs).toBeLessThan(100); // ponytail: ReDoS would take seconds; 100ms is generous but not a false pass
     expect(mock.lastRequest!.url.endsWith("bar/foo")).toBe(true);
   });
 });

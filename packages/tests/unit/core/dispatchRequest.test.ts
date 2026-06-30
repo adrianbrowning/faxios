@@ -4,7 +4,6 @@ import dispatchRequest from "#src/lib/core/dispatchRequest.js";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import defaults from "#src/lib/defaults/index.js";
-import resolveConfig from "#src/lib/helpers/resolveConfig.js";
 import type {
   FaxiosAdapter,
   FaxiosResponse,
@@ -225,7 +224,9 @@ describe("core::dispatchRequest", () => {
   });
 
   describe("happy path", () => {
-    it("clears default Content-Type for React Native FormData before adapter headers are sent", async () => {
+    it("does not set Content-Type for React Native FormData (utils.isFormData detects it)", async () => {
+      // ReactNativeFormData has Symbol.toStringTag === "FormData" so utils.isFormData returns true.
+      // dispatchRequest must not inject application/x-www-form-urlencoded for any FormData-like object.
       const data = new ReactNativeFormData();
       const response = {
         data: "{\"ok\":true}",
@@ -243,27 +244,20 @@ describe("core::dispatchRequest", () => {
             getContentType: () => unknown;
             toJSON: () => Record<string, unknown>;
           };
+          // Content-Type must NOT be set — isFormData correctly recognised ReactNativeFormData
           assert.strictEqual(
-            (
-              adapterConfig.headers as unknown as HeadersWithMethods
-            ).getContentType(),
-            "application/x-www-form-urlencoded",
-            "dispatchRequest should apply the default POST Content-Type first"
+            (adapterConfig.headers as unknown as HeadersWithMethods).getContentType(),
+            undefined,
+            "dispatchRequest must not inject Content-Type for FormData-like objects"
           );
 
-          const resolvedConfig = resolveConfig(adapterConfig);
-          const resolvedHeaders =
-            resolvedConfig.headers as unknown as HeadersWithMethods;
-
-          assert.strictEqual(resolvedConfig.data, data);
-          assert.strictEqual(resolvedHeaders.getContentType(), undefined);
           assert.strictEqual(
             Object.prototype.hasOwnProperty.call(
-              resolvedHeaders.toJSON(),
+              (adapterConfig.headers as unknown as HeadersWithMethods).toJSON(),
               "Content-Type"
             ),
             false,
-            "resolved adapter headers must omit Content-Type for React Native FormData"
+            "Content-Type must be absent for React Native FormData"
           );
 
           return response;

@@ -95,7 +95,10 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
   }
 
   const FormDataCtor = (globalThis as Record<string, unknown>)["FormData"] as (new () => GenericFormData) | undefined;
-  formData = formData || new FormDataCtor!();
+  if (!formData) {
+    if (!FormDataCtor) throw new FaxiosError("FormData is not available in this environment", FaxiosError.ERR_NOT_SUPPORT);
+    formData = new FormDataCtor();
+  }
 
   options = utils.toFlatObject(
     options,
@@ -144,8 +147,10 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
 
     if (utils.isArrayBuffer(value) || utils.isTypedArray(value)) {
       const BlobCtor = (globalThis as Record<string, unknown>)["Blob"] as (new (parts: Array<unknown>) => unknown) | undefined;
-      // ponytail: web-standard FormData always pairs with a global Blob
-      return useBlob && typeof BlobCtor === "function" ? new BlobCtor([ value ]) : value;
+      if (useBlob && typeof BlobCtor === "function") {
+        return new BlobCtor([ value ]);
+      }
+      throw new FaxiosError("Blob is required for binary FormData values in this environment", FaxiosError.ERR_NOT_SUPPORT);
     }
 
     return value;

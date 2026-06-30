@@ -8,7 +8,6 @@
       "ignore": [
         "docs/**",
         "src/lib/platform/browser/**",
-        "src/lib/env/classes/**",
         "src/lib/helpers/deprecatedMethod.ts"
       ]
     },

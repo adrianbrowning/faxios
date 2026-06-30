@@ -4,6 +4,7 @@
     "outDir": "dist",
     "rootDir": "./src",
     "incremental": false,
+    "types": [],
     "lib": [
       "ES2023",
       "DOM",
