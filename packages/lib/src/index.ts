@@ -12,9 +12,7 @@ export { default as Faxios } from "./lib/core/Faxios.ts";
 export { default as FaxiosError } from "./lib/core/FaxiosError.ts";
 export { default as CanceledError, default as Cancel } from "./lib/cancel/CanceledError.ts";
 export { default as isCancel } from "./lib/cancel/isCancel.ts";
-export { default as CancelToken } from "./lib/cancel/CancelToken.ts";
 export { default as isFaxiosError } from "./lib/helpers/isFaxiosError.ts";
-export { default as spread } from "./lib/helpers/spread.ts";
 export { default as toFormData } from "./lib/helpers/toFormData.ts";
 export { default as FaxiosHeaders } from "./lib/core/FaxiosHeaders.ts";
 export { default as HttpStatusCode } from "./lib/helpers/HttpStatusCode.ts";
@@ -33,8 +31,7 @@ export type {
   GenericHTMLFormElement,
   RawFaxiosRequestConfig,
   FaxiosPromise,
-  CreateFaxiosDefaults,
-  CancelTokenStatic
+  CreateFaxiosDefaults
 } from "./lib/types.ts";
 
 // Instance-synthesized members (no 1:1 source module). Types are self-contained

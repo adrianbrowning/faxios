@@ -90,7 +90,8 @@ This file is the canonical contributor guide for both human and AI agents workin
 
 - Do not mutate config objects in-place; return new objects from merges/transforms.
 - Do not assume browser- or Node-specific globals exist; capability-check first.
-- Do not use `Function.prototype.bind` directly — use `lib/helpers/bind.js`, which forwards `arguments` via `apply` and is what the rest of the library relies on.
+- Use native `Function.prototype.bind` — `lib/helpers/bind.js` has been deleted.
+- Use `#` syntax for private fields in TypeScript class files (e.g. `#handlers`, `#idCounter`), not underscore prefixes or Symbol keys.
 - Do not throw raw `Error` from library code; use `FaxiosError` with an appropriate code (see Error Handling).
 
 ## Tests

@@ -96,7 +96,7 @@ export interface TransitionalOptions {
 
 export interface GenericAbortSignal {
   readonly aborted: boolean;
-  onabort?: ((...args: Array<unknown>) => unknown) | null;
+  onabort?: ((event: Event) => void) | null;
   addEventListener?: (...args: Array<unknown>) => unknown;
   removeEventListener?: (...args: Array<unknown>) => unknown;
 }
@@ -240,7 +240,7 @@ export interface FaxiosRequestConfig<D = unknown> {
     | FaxiosResponseTransformer
     | Array<FaxiosResponseTransformer>;
   headers?: Record<string, unknown>;
-  params?: unknown;
+  params?: Record<string, unknown> | URLSearchParams;
   paramsSerializer?: ParamsSerializerOptions | CustomParamsSerializer;
   data?: D;
   timeout?: Milliseconds;
@@ -256,9 +256,8 @@ export interface FaxiosRequestConfig<D = unknown> {
   maxContentLength?: number;
   validateStatus?: ((status: number) => boolean) | null;
   maxBodyLength?: number;
-  cancelToken?: CancelToken;
   transitional?: TransitionalOptions;
-  signal?: GenericAbortSignal;
+  signal?: AbortSignal | GenericAbortSignal;
   env?: {
     FormData?: new (...args: Array<unknown>) => object;
     fetch?: (
@@ -321,7 +320,7 @@ export interface FaxiosResponse<T = unknown, D = unknown> {
   statusText: string;
   headers: FaxiosResponseHeadersLike;
   config: InternalFaxiosRequestConfig<D>;
-  request?: unknown;
+  request?: Request | null;
 }
 
 export type FaxiosPromise<T = unknown> = Promise<FaxiosResponse<T>>;
@@ -357,29 +356,6 @@ export interface CreateFaxiosDefaults<D = unknown> extends Omit<
 
 export interface Cancel {
   message: string | undefined;
-}
-
-export interface Canceler {
-  (message?: string, config?: FaxiosRequestConfig, request?: unknown): void;
-}
-
-export interface CancelToken {
-  promise: Promise<Cancel>;
-  reason?: Cancel;
-  throwIfRequested: () => void;
-  subscribe: (listener: (cancel: Cancel) => void) => void;
-  unsubscribe: (listener: (cancel: Cancel) => void) => void;
-  toAbortSignal: () => AbortSignal & { unsubscribe?: () => void; };
-}
-
-export interface CancelTokenSource {
-  token: CancelToken;
-  cancel: Canceler;
-}
-
-export interface CancelTokenStatic {
-  new (executor: (cancel: Canceler) => void): CancelToken;
-  source: () => CancelTokenSource;
 }
 
 export interface FaxiosInterceptorOptions {

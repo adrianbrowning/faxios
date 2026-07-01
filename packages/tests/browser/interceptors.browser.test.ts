@@ -7,8 +7,8 @@ import { installFetchMock } from "./helpers/fetchMock.js";
 
 describe("interceptors (vitest browser)", () => {
   afterEach(() => {
-    faxios.interceptors.request.handlers = [];
-    faxios.interceptors.response.handlers = [];
+    faxios.interceptors.request.clear();
+    faxios.interceptors.response.clear();
     vi.restoreAllMocks();
   });
 
@@ -564,10 +564,11 @@ describe("interceptors (vitest browser)", () => {
       baseURL: "http://test.com/",
     });
 
-    instance.interceptors.request.use(config => config);
+    const id = instance.interceptors.request.use(config => config);
     instance.interceptors.request.clear();
 
-    expect(instance.interceptors.request.handlers.length).toBe(0);
+    // After clear(), eject on any prior id is a no-op (Map.delete returns false)
+    expect(instance.interceptors.request.eject(id)).toBeUndefined();
   });
 
   it("should clear all response interceptors", () => {
@@ -575,17 +576,17 @@ describe("interceptors (vitest browser)", () => {
       baseURL: "http://test.com/",
     });
 
-    instance.interceptors.response.use(config => config);
+    const id = instance.interceptors.response.use(config => config);
     instance.interceptors.response.clear();
 
-    expect(instance.interceptors.response.handlers.length).toBe(0);
+    expect(instance.interceptors.response.eject(id)).toBeUndefined();
   });
 });
 
 describe("prepareRequest regression: clone-swap guards", () => {
   afterEach(() => {
-    faxios.interceptors.request.handlers = [];
-    faxios.interceptors.response.handlers = [];
+    faxios.interceptors.request.clear();
+    faxios.interceptors.response.clear();
     vi.restoreAllMocks();
   });
 

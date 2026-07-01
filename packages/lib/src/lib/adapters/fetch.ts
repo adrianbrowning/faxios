@@ -13,7 +13,6 @@ import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import { trackStream } from "../helpers/trackStream.js";
 import platform from "../platform.js";
 import type {
-  CancelToken,
   InternalFaxiosRequestConfig,
   FaxiosRequestHeaders,
   FaxiosResponse
@@ -53,9 +52,6 @@ type AnyReadableStream = {
 };
 type AnyTextEncoder = { encode: (str: string) => Uint8Array; };
 
-type CancelTokenWithAbortSignal = CancelToken & {
-  toAbortSignal: () => unknown;
-};
 type ComposedSignal = AbortSignal & { unsubscribe?: () => void; };
 type PendingBodyErrorRef = { value: (FaxiosError & { request?: unknown; }) | null; };
 
@@ -63,7 +59,7 @@ const DEFAULT_CHUNK_SIZE = 64 * 1024;
 
 const { isFunction } = utils;
 
-function settle(resolve: (value: FaxiosResponse) => void, reject: (reason: unknown) => void, response: FaxiosResponse): void {
+export function settle(resolve: (value: FaxiosResponse) => void, reject: (reason: unknown) => void, response: FaxiosResponse): void {
   const validateStatus = response.config.validateStatus;
   if (!response.status || !validateStatus || validateStatus(response.status)) {
     resolve(response);
@@ -745,7 +741,6 @@ const factory = (env: Record<string, unknown>) => {
       method,
       data,
       signal,
-      cancelToken,
       timeout,
       timeoutErrorMessage,
       onDownloadProgress,
@@ -783,18 +778,14 @@ const factory = (env: Record<string, unknown>) => {
     ) as typeof responseType;
 
     const composedSignal = composeSignals(
-      [
-        signal,
-        cancelToken &&
-          (cancelToken as CancelTokenWithAbortSignal).toAbortSignal(),
-      ],
+      [ signal ],
       timeout,
       timeoutErrorMessage
     ) as ComposedSignal | undefined;
 
     const unsubscribe = composedSignal?.unsubscribe?.bind(composedSignal);
 
-    let request: unknown = null;
+    let request: Request | null = null;
     const pendingBodyErrorRef: PendingBodyErrorRef = { value: null };
 
     try {
@@ -863,9 +854,9 @@ const factory = (env: Record<string, unknown>) => {
         credentials: isCredentialsSupported ? withCredentials : undefined,
       };
 
-      request =
-        isRequestSupported &&
-        new (Request as AnyConstructor)(url, resolvedOptions);
+      request = isRequestSupported
+        ? new (Request as AnyConstructor)(url, resolvedOptions) as Request
+        : null;
 
       // Pass resolvedOptions (all own-properties) as the fetch init even when a
       // Request object is supplied: undici re-reads RequestInit fields (method,

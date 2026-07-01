@@ -9,10 +9,6 @@ import utils from "../utils.js";
 import transformData from "./transformData.js";
 
 function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void {
-  if (config.cancelToken) {
-    config.cancelToken.throwIfRequested();
-  }
-
   if (config.signal && config.signal.aborted) {
     throw new CanceledError(undefined, config);
   }

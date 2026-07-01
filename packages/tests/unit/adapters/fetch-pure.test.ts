@@ -5,11 +5,12 @@ import {
   checkMaterializedSize,
   cleanFormDataContentType,
   encodeBodyIfNeeded,
-  handleFetchCaughtError
+  handleFetchCaughtError,
+  settle
 } from "#src/lib/adapters/fetch.js";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
-import type { InternalFaxiosRequestConfig } from "#src/lib/types.js";
+import type { FaxiosResponse, InternalFaxiosRequestConfig } from "#src/lib/types.js";
 
 const config = {} as InternalFaxiosRequestConfig;
 const request = {};
@@ -258,5 +259,49 @@ describe("encodeBodyIfNeeded", () => {
     const obj = { foo: "bar" };
     const result = await encodeBodyIfNeeded(obj, {}, syncEncode);
     assert.strictEqual(result, obj);
+  });
+});
+
+describe("settle", () => {
+  function makeResponse(status: number, validateStatusFn?: ((s: number) => boolean) | null): FaxiosResponse {
+    return {
+      status,
+      config: { validateStatus: validateStatusFn ?? ((s: number) => s >= 200 && s < 300) } as InternalFaxiosRequestConfig,
+      request: {},
+    } as unknown as FaxiosResponse;
+  }
+
+  it("resolves a 200 response", () => {
+    let resolved: unknown;
+    settle(r => { resolved = r; }, () => {}, makeResponse(200));
+    assert.strictEqual((resolved as { status: number; }).status, 200);
+  });
+
+  it("rejects a 400 response with ERR_BAD_REQUEST", () => {
+    let rejected: unknown;
+    settle(() => {}, r => { rejected = r; }, makeResponse(400));
+    assert.ok(rejected instanceof FaxiosError);
+    assert.strictEqual((rejected).code, FaxiosError.ERR_BAD_REQUEST);
+  });
+
+  it("rejects a 500 response with ERR_BAD_RESPONSE", () => {
+    let rejected: unknown;
+    settle(() => {}, r => { rejected = r; }, makeResponse(500));
+    assert.ok(rejected instanceof FaxiosError);
+    assert.strictEqual((rejected).code, FaxiosError.ERR_BAD_RESPONSE);
+  });
+
+  it("uses ERR_BAD_REQUEST for 499, ERR_BAD_RESPONSE for 500 (boundary)", () => {
+    let r499: unknown, r500: unknown;
+    settle(() => {}, r => { r499 = r; }, makeResponse(499));
+    settle(() => {}, r => { r500 = r; }, makeResponse(500));
+    assert.strictEqual((r499 as FaxiosError).code, FaxiosError.ERR_BAD_REQUEST);
+    assert.strictEqual((r500 as FaxiosError).code, FaxiosError.ERR_BAD_RESPONSE);
+  });
+
+  it("resolves when custom validateStatus returns true for 500", () => {
+    let resolved: unknown;
+    settle(r => { resolved = r; }, () => {}, makeResponse(500, () => true));
+    assert.strictEqual((resolved as { status: number; }).status, 500);
   });
 });

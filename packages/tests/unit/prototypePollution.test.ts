@@ -2,7 +2,7 @@
 import assert from "node:assert";
 import http from "node:http";
 import type { AddressInfo } from "node:net";
-import { afterEach, describe, it } from "vitest";
+import { afterEach, describe, it, vi } from "vitest";
 import faxios from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
@@ -1164,20 +1164,6 @@ describe("Prototype Pollution Protection", () => {
       assert.strictEqual((a.method as () => string)(), "ctx");
     });
 
-    it("should not throw in utils.inherits when Object.prototype.get is polluted", () => {
-      ObjProto.get = "attacker";
-
-      function Parent() {}
-      function Child() {}
-      utils.inherits(Child, Parent);
-
-      assert.strictEqual(Child.prototype.constructor, Child);
-      assert.strictEqual(
-        (Child as unknown as { super: unknown; }).super,
-        Parent.prototype
-      );
-    });
-
     it("should also be shielded against a polluted Object.prototype.set", () => {
       ObjProto.set = "attacker";
 
@@ -1303,5 +1289,66 @@ describe("Prototype Pollution Protection", () => {
         await stop(server);
       }
     }, 10000);
+  });
+
+  // cloneConfig uses Object.defineProperty with a descriptor object.
+  // If Object.prototype.get is polluted with a function, a plain {} descriptor
+  // would result in a mixed accessor+data descriptor and throw a TypeError.
+  // The descriptor must be null-prototyped to be immune.
+  describe("cloneConfig Object.defineProperty descriptor pollution", () => {
+    it("should not throw when Object.prototype.get is polluted", () => {
+      ObjProto.get = function polluted() { return "attacker"; };
+
+      // prepareRequest calls cloneConfig internally — this must not throw
+      assert.doesNotThrow(() => {
+        prepareRequest({ url: "/api", method: "get" });
+      }, "cloneConfig must not throw when Object.prototype.get is polluted");
+    });
+  });
+
+  describe("clone-swap regression", () => {
+    it("interceptor config mutation reflected exactly once in outbound fetch args", async () => {
+      const mockFetch = vi.fn().mockResolvedValue(
+        new Response("{}", { status: 200, headers: { "Content-Type": "application/json" } })
+      );
+      const origFetch = globalThis.fetch;
+      globalThis.fetch = mockFetch;
+
+      const instance = faxios.create({ baseURL: "http://test.local" });
+      instance.interceptors.request.use(cfg => {
+        (cfg as any).headers["X-Custom"] = "once";
+        return cfg;
+      });
+
+      try {
+        await instance.get("/path");
+        assert.strictEqual(mockFetch.mock.calls.length, 1);
+        const [ , init ] = mockFetch.mock.calls[0] as [unknown, RequestInit];
+        const headers = new Headers(init.headers);
+        assert.strictEqual(headers.get("X-Custom"), "once");
+      }
+      finally {
+        globalThis.fetch = origFetch;
+      }
+    });
+
+    it("should not inherit Object.prototype.maxBodyLength from prototype chain", async () => {
+      ObjProto.maxBodyLength = 1; // if inherited, a >1-byte body would throw ERR_BAD_REQUEST
+
+      const mockFetch = vi.fn().mockResolvedValue(
+        new Response("{}", { status: 200, headers: { "Content-Type": "application/json" } })
+      );
+      const origFetch = globalThis.fetch;
+      globalThis.fetch = mockFetch;
+
+      try {
+        // body is >1 byte; should succeed because maxBodyLength=1 is not inherited
+        await ax.post("http://test.local/path", { value: "hello" });
+        assert.strictEqual(mockFetch.mock.calls.length, 1);
+      }
+      finally {
+        globalThis.fetch = origFetch;
+      }
+    });
   });
 });

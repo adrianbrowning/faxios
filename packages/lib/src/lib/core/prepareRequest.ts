@@ -15,12 +15,12 @@ const DANGEROUS_KEYS = new Set([ "__proto__", "constructor", "prototype" ]);
 // dangerous keys filtered to block prototype-pollution write paths.
 function cloneConfig(src: FaxiosRequestConfig): FaxiosRequestConfig & Record<string, unknown> {
   const dst = Object.create(null) as FaxiosRequestConfig & Record<string, unknown>;
-  Object.defineProperty(dst, "hasOwnProperty", {
+  Object.defineProperty(dst, "hasOwnProperty", Object.assign(Object.create(null) as PropertyDescriptor, {
     value: Object.prototype.hasOwnProperty,
     writable: true,
     configurable: true,
     enumerable: false,
-  });
+  }));
   for (const key of Object.keys(src)) {
     if (!DANGEROUS_KEYS.has(key)) {
       (dst as Record<string, unknown>)[key] = (src as Record<string, unknown>)[key];

@@ -7,9 +7,6 @@ import type {
   FaxiosResponse,
   FaxiosError,
   FaxiosInstance,
-  Cancel,
-  CancelTokenSource,
-  Canceler,
   FaxiosProgressEvent,
   ParamsSerializerOptions,
   AddressFamily
@@ -19,9 +16,7 @@ import faxios, {
   toFormData,
   formToJSON,
   all,
-  isCancel,
-  isFaxiosError,
-  spread
+  isFaxiosError
 } from "faxios";
 
 const config: FaxiosRequestConfig = {
@@ -61,7 +56,6 @@ const config: FaxiosRequestConfig = {
     host: "127.0.0.1",
     port: 9000,
   },
-  cancelToken: new faxios.CancelToken((cancel: Canceler) => {}),
 };
 
 const nullValidateStatusConfig: FaxiosRequestConfig = {
@@ -468,12 +462,6 @@ const promise: Promise<Array<number>> = faxios.all(promises);
 const fn1 = (a: number, b: number, c: number) => `${a}-${b}-${c}`;
 const fn2: (arr: Array<number>) => string = faxios.spread(fn1);
 
-// faxios.spread named export
-(() => {
-  const fn1 = (a: number, b: number, c: number) => `${a}-${b}-${c}`;
-  const fn2: (arr: Array<number>) => string = spread(fn1);
-})();
-
 // Promises
 
 faxios
@@ -511,29 +499,6 @@ faxios
   .get("/user")
   .catch(async (error: any) => Promise.resolve("foo"))
   .then((value: any) => {});
-
-// Cancellation
-
-const source: CancelTokenSource = faxios.CancelToken.source();
-
-faxios
-  .get("/user", {
-    cancelToken: source.token,
-  })
-  .catch((thrown: FaxiosError | Cancel) => {
-    if (faxios.isCancel(thrown)) {
-      const cancel: Cancel = thrown;
-      console.log(cancel.message);
-    }
-
-    // named export
-    if (isCancel(thrown)) {
-      const cancel: Cancel = thrown;
-      console.log(cancel.message);
-    }
-  });
-
-source.cancel("Operation has been canceled.");
 
 // FaxiosError
 

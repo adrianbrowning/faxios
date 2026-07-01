@@ -26,9 +26,18 @@ describe("helpers::combineURLs", () => {
     );
   });
 
-  it("should allow a single slash for relative url", () => {
+  it("should treat a single slash as an empty relative path", () => {
     expect(combineURLs("https://api.github.com/users", "/")).toBe(
       "https://api.github.com/users/"
     );
+  });
+
+  it("should not be susceptible to ReDoS on 100k-slash baseURL", () => {
+    const slashes = "/".repeat(100000);
+    const start = performance.now();
+    const result = combineURLs(`/${slashes}bar/`, "/foo");
+    const elapsed = performance.now() - start;
+    expect(elapsed).toBeLessThan(20);
+    expect(result.endsWith("bar/foo")).toBe(true);
   });
 });

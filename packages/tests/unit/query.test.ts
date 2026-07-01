@@ -53,10 +53,10 @@ describe("QUERY method", () => {
     });
 
     it("should work with baseURL configuration", async () => {
-      const instance = faxios.create({ baseURL: "http://example.com/api" });
+      const instance = faxios.create({ baseURL: "http://example.com/api/" });
 
       await instance.query(
-        "/resources",
+        "resources",
         { fields: [ "name" ] },
         {
           env: {
@@ -241,10 +241,10 @@ describe("QUERY method", () => {
 
       try {
         const instance = faxios.create({
-          baseURL: `http://localhost:${(server.address() as AddressInfo).port}/api`,
+          baseURL: `http://localhost:${(server.address() as AddressInfo).port}/api/`,
         });
 
-        const { data } = await instance.query<Record<string, unknown>>("/resources", {
+        const { data } = await instance.query<Record<string, unknown>>("resources", {
           fields: [ "name" ],
         });
 

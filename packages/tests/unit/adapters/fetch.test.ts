@@ -33,6 +33,7 @@ const pipelineAsync = util.promisify(stream.pipeline);
 
 const fetchFaxios = faxios.create({
   baseURL: LOCAL_SERVER_URL,
+  allowAbsoluteUrls: true, // tests spin up per-test servers at dynamic ports
 });
 
 const getFetchSignal = (

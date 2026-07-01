@@ -53,9 +53,8 @@ describe("static api", () => {
     assert.strictEqual(create, faxios.create);
   });
 
-  it("should have CanceledError, CancelToken, and isCancel properties", () => {
+  it("should have CanceledError and isCancel properties", () => {
     assert.strictEqual(typeof faxios.Cancel, "function");
-    assert.strictEqual(typeof faxios.CancelToken, "function");
     assert.strictEqual(typeof faxios.isCancel, "function");
   });
 

@@ -74,7 +74,7 @@ function stringifySafely(
   if (utils.isString(rawValue)) {
     try {
       (parser || JSON.parse)(rawValue as string);
-      return utils.trim(rawValue as string);
+      return (rawValue as string).trim();
     }
     catch (e) {
       if ((e as { name?: string; }).name !== "SyntaxError") {

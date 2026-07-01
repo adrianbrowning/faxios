@@ -133,7 +133,6 @@ export default function mergeConfig(config1: FaxiosRequestConfig | FaxiosDefault
     onDownloadProgress: defaultToConfig2,
     maxContentLength: defaultToConfig2,
     maxBodyLength: defaultToConfig2,
-    cancelToken: defaultToConfig2,
     responseEncoding: defaultToConfig2,
     validateStatus: mergeDirectKeys,
     headers: (a: unknown, b: unknown, prop?: unknown) =>
