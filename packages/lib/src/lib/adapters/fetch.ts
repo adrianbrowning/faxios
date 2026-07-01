@@ -11,7 +11,7 @@ import {
 } from "../helpers/progressEventReducer.js";
 import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import { trackStream } from "../helpers/trackStream.js";
-import platform from "../platform/index.js";
+import platform from "../platform.js";
 import type {
   CancelToken,
   InternalFaxiosRequestConfig,

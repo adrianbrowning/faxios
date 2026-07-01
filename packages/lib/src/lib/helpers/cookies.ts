@@ -1,4 +1,4 @@
-import platform from "../platform/index.js";
+import platform from "../platform.js";
 import utils from "../utils.js";
 
 type CookieManager = {

@@ -3,7 +3,7 @@ import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import buildURL from "../helpers/buildURL.js";
 import cookies from "../helpers/cookies.js";
 import isURLSameOrigin from "../helpers/isURLSameOrigin.js";
-import platform from "../platform/index.js";
+import platform from "../platform.js";
 import type { FaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
 

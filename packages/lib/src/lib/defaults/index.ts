@@ -4,7 +4,7 @@ import FaxiosError from "../core/FaxiosError.js";
 import formDataToJSON from "../helpers/formDataToJSON.js";
 import toFormData from "../helpers/toFormData.js";
 import toURLEncodedForm from "../helpers/toURLEncodedForm.js";
-import platform from "../platform/index.js";
+import platform from "../platform.js";
 import type {
   FaxiosDefaults,
   FaxiosRequestHeaders,

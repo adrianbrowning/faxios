@@ -1,6 +1,6 @@
 "use strict";
 
-import platform from "../platform/index.js";
+import platform from "../platform.js";
 import type { GenericFormData } from "../types.js";
 import toFormData from "./toFormData.js";
 
