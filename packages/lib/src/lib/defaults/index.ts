@@ -6,7 +6,6 @@ import toFormData from "../helpers/toFormData.js";
 import toURLEncodedForm from "../helpers/toURLEncodedForm.js";
 import platform from "../platform/index.js";
 import type {
-  FaxiosAdapterName,
   FaxiosDefaults,
   FaxiosRequestHeaders,
   FaxiosResponse,
@@ -89,8 +88,6 @@ function stringifySafely(
 
 const defaults: FaxiosDefaults = {
   transitional: transitionalDefaults,
-
-  adapter: [ "fetch" ] as Array<FaxiosAdapterName>,
 
   transformRequest: [
     function transformRequest(

@@ -71,7 +71,6 @@
   "zshy": {
     "exports": {
       ".": "./src/index.ts",
-      "./unsafe/core/settle.js": "./src/lib/core/settle.ts",
       "./unsafe/core/buildFullPath.js": "./src/lib/core/buildFullPath.ts",
       "./unsafe/helpers/isAbsoluteURL.js": "./src/lib/helpers/isAbsoluteURL.ts",
       "./unsafe/helpers/buildURL.js": "./src/lib/helpers/buildURL.ts",
@@ -90,10 +89,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    },
-    "./unsafe/core/settle.js": {
-      "types": "./dist/lib/core/settle.d.ts",
-      "default": "./dist/lib/core/settle.js"
     },
     "./unsafe/core/buildFullPath.js": {
       "types": "./dist/lib/core/buildFullPath.d.ts",

@@ -1,12 +1,33 @@
 import buildFullPath from "../core/buildFullPath.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
-import mergeConfig from "../core/mergeConfig.js";
+import buildURL from "../helpers/buildURL.js";
+import cookies from "../helpers/cookies.js";
+import isURLSameOrigin from "../helpers/isURLSameOrigin.js";
 import platform from "../platform/index.js";
 import type { FaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
-import buildURL from "./buildURL.js";
-import cookies from "./cookies.js";
-import isURLSameOrigin from "./isURLSameOrigin.js";
+
+const DANGEROUS_KEYS = new Set([ "__proto__", "constructor", "prototype" ]);
+
+// ponytail: null-proto shallow clone; replaces mergeConfig({}, config) which ran the full
+// two-config merge machinery just to get a defensive copy. Security invariants preserved:
+// null-proto so fetch.ts destructuring can't inherit Object.prototype gadgets, and
+// dangerous keys filtered to block prototype-pollution write paths.
+function cloneConfig(src: FaxiosRequestConfig): FaxiosRequestConfig & Record<string, unknown> {
+  const dst = Object.create(null) as FaxiosRequestConfig & Record<string, unknown>;
+  Object.defineProperty(dst, "hasOwnProperty", {
+    value: Object.prototype.hasOwnProperty,
+    writable: true,
+    configurable: true,
+    enumerable: false,
+  });
+  for (const key of Object.keys(src)) {
+    if (!DANGEROUS_KEYS.has(key)) {
+      (dst as Record<string, unknown>)[key] = (src as Record<string, unknown>)[key];
+    }
+  }
+  return dst;
+}
 
 const FORM_DATA_CONTENT_HEADERS = [ "content-type", "content-length" ];
 
@@ -71,8 +92,8 @@ function applyXSRFToken(
   }
 }
 
-function resolveConfig(config: FaxiosRequestConfig): FaxiosRequestConfig {
-  const newConfig = mergeConfig({}, config);
+function prepareRequest(config: FaxiosRequestConfig): FaxiosRequestConfig {
+  const newConfig = cloneConfig(config);
 
   // Read only own properties to prevent prototype pollution gadgets
   // (e.g. Object.prototype.baseURL = 'https://evil.com').
@@ -151,4 +172,4 @@ function resolveConfig(config: FaxiosRequestConfig): FaxiosRequestConfig {
   return newConfig;
 }
 
-export default resolveConfig;
+export default prepareRequest;

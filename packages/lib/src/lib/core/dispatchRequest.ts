@@ -1,10 +1,9 @@
 "use strict";
 
-import adapters from "../adapters/adapters.js";
+import { getFetch } from "../adapters/fetch.js";
 import CanceledError from "../cancel/CanceledError.js";
 import isCancel from "../cancel/isCancel.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
-import defaults from "../defaults/index.js";
 import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
 import utils from "../utils.js";
 import transformData from "./transformData.js";
@@ -30,7 +29,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
     (config.headers as unknown as { setContentType: (v: string, r: boolean) => void; }).setContentType("application/x-www-form-urlencoded", false);
   }
 
-  const adapter = adapters.getAdapter(config.adapter || defaults.adapter, config);
+  const adapter = getFetch(config) as (config: InternalFaxiosRequestConfig) => Promise<FaxiosResponse>;
 
   /* eslint-disable promise/always-return */
   return (adapter(config)).then(

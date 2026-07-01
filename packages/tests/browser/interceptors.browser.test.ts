@@ -581,3 +581,47 @@ describe("interceptors (vitest browser)", () => {
     expect(instance.interceptors.response.handlers.length).toBe(0);
   });
 });
+
+describe("prepareRequest regression: clone-swap guards", () => {
+  afterEach(() => {
+    faxios.interceptors.request.handlers = [];
+    faxios.interceptors.response.handlers = [];
+    vi.restoreAllMocks();
+  });
+
+  it("interceptor config mutation is reflected exactly once in the outbound request", async () => {
+    // Guards against a double-merge reintroducing the redundant mergeConfig clone.
+    // The interceptor sets a custom header; it must appear exactly once (not doubled
+    // or absent) in the final fetch call.
+    using mock = installFetchMock();
+
+    faxios.interceptors.request.use((config: InternalFaxiosRequestConfig) => {
+      config.headers.set("x-interceptor", "once");
+      return config;
+    });
+
+    await faxios.get("/regression/interceptor");
+
+    // Headers.get() joins duplicate values with ", " — "once, once" would mean double-merge.
+    expect(mock.lastRequest!.headers.get("x-interceptor")).toBe("once");
+  });
+
+  it("polluted Object.prototype field does not leak into the outbound fetch call", async () => {
+    // Guards the null-proto clone in prepareRequest: fetch.ts destructures config
+    // fields without hasOwnProp guards, relying on the prototype chain being empty.
+    using mock = installFetchMock();
+
+    (Object.prototype as Record<string, unknown>).maxBodyLength = 1;
+    try {
+      // A real request should succeed; if maxBodyLength=1 leaked, the body-size
+      // guard in fetch.ts would reject it (body is empty here, so success proves
+      // the polluted value was not read from the prototype chain as an own value).
+      const res = await faxios.post("/regression/pollution", { data: "hello" });
+      expect(res.status).toBe(200);
+      expect(mock.lastRequest).toBeDefined();
+    }
+    finally {
+      delete (Object.prototype as Record<string, unknown>).maxBodyLength;
+    }
+  });
+});

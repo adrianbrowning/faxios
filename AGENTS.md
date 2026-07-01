@@ -42,7 +42,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 ## Architecture Boundaries
 
 - `lib/core/` is faxios domain logic: request dispatch, config merge, interceptors, headers, errors. Key classes: `faxios` (request dispatch + interceptor chains), `FaxiosError` (standardized error codes), `AxiosHeaders` (case-insensitive header normalization), `InterceptorManager` (sync/async interceptor registration).
-- `lib/adapters/` performs I/O; there is only the web-standard `fetch` adapter now (`knownAdapters = { fetch: { get: getFetch } }`, default `adapter: ['fetch']`) in `lib/adapters/adapters.js`. Custom user-supplied adapters are still supported.
+- `lib/adapters/` performs I/O; the web-standard `fetch` adapter (`lib/adapters/fetch.ts`) is the only transport — it is called unconditionally from `dispatchRequest.ts`. Custom user-supplied adapters are not supported; `config.adapter` is not a valid config field.
 - `lib/platform/` selects the browser/web-standard implementation in all runtimes (browser, Node 18+, Deno, Bun).
 - `lib/helpers/` should stay generic and reusable outside faxios; do not put faxios-specific request lifecycle logic there.
 - New `lib/**/*.js` files should match existing source style: ESM imports with explicit `.js` extensions, `'use strict';` where current library files use it, and `FaxiosError` for faxios-originated failures.

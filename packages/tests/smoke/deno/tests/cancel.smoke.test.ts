@@ -24,7 +24,6 @@ Deno.test("cancel: pre-aborted AbortController cancels request", async () => {
 
   const err = await faxios
     .get("https://example.com/cancel", {
-      adapter: "fetch",
       signal: controller.signal as any,
       env: env(fetch) as any,
     })
@@ -63,7 +62,6 @@ Deno.test("cancel: in-flight abort cancels request", async () => {
   const controller = new AbortController();
 
   const request = faxios.get("https://example.com/in-flight", {
-    adapter: "fetch",
     signal: controller.signal as any,
     env: env(fetch) as any,
   });

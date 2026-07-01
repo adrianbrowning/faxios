@@ -126,7 +126,6 @@ export default function mergeConfig(config1: FaxiosRequestConfig | FaxiosDefault
     timeoutMessage: defaultToConfig2,
     withCredentials: defaultToConfig2,
     withXSRFToken: defaultToConfig2,
-    adapter: defaultToConfig2,
     responseType: defaultToConfig2,
     xsrfCookieName: defaultToConfig2,
     xsrfHeaderName: defaultToConfig2,

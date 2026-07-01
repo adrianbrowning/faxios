@@ -20,7 +20,6 @@ export { default as FaxiosHeaders } from "./lib/core/FaxiosHeaders.ts";
 export { default as HttpStatusCode } from "./lib/helpers/HttpStatusCode.ts";
 export { default as mergeConfig } from "./lib/core/mergeConfig.ts";
 export { VERSION } from "./lib/env/data.ts";
-export { getAdapter } from "./lib/adapters/adapters.ts";
 
 export type {
   FaxiosRequestConfig,
@@ -31,8 +30,6 @@ export type {
   FaxiosHeaderValue,
   Method,
   ResponseType,
-  FaxiosAdapter,
-  FaxiosAdapterName,
   GenericHTMLFormElement,
   RawFaxiosRequestConfig,
   FaxiosPromise,

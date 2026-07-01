@@ -1,6 +1,6 @@
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
-import settle from "../core/settle.js";
+import prepareRequest from "../core/prepareRequest.js";
 import { VERSION } from "../env/data.js";
 import composeSignals from "../helpers/composeSignals.js";
 import estimateDataURLDecodedBytes from "../helpers/estimateDataURLDecodedBytes.js";
@@ -9,7 +9,6 @@ import {
   progressEventDecorator,
   asyncDecorator
 } from "../helpers/progressEventReducer.js";
-import resolveConfig from "../helpers/resolveConfig.js";
 import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import { trackStream } from "../helpers/trackStream.js";
 import platform from "../platform/index.js";
@@ -62,6 +61,22 @@ type ComposedSignal = AbortSignal & { unsubscribe?: () => void; };
 const DEFAULT_CHUNK_SIZE = 64 * 1024;
 
 const { isFunction } = utils;
+
+function settle(resolve: (value: FaxiosResponse) => void, reject: (reason: unknown) => void, response: FaxiosResponse): void {
+  const validateStatus = response.config.validateStatus;
+  if (!response.status || !validateStatus || validateStatus(response.status)) {
+    resolve(response);
+  }
+  else {
+    reject(new FaxiosError(
+      "Request failed with status code " + response.status,
+      response.status >= 400 && response.status < 500 ? FaxiosError.ERR_BAD_REQUEST : FaxiosError.ERR_BAD_RESPONSE,
+      response.config,
+      response.request,
+      response
+    ));
+  }
+}
 
 /**
  * Encode a UTF-8 string to a Latin-1 byte string for use with btoa().
@@ -722,7 +737,7 @@ const factory = (env: Record<string, unknown>) => {
   };
 
   return async (config: InternalFaxiosRequestConfig) => {
-    const _resolved = resolveConfig(config) as InternalFaxiosRequestConfig & {
+    const _resolved = prepareRequest(config) as InternalFaxiosRequestConfig & {
       fetchOptions?: Record<string, unknown>;
       withCredentials?: string | boolean;
     };

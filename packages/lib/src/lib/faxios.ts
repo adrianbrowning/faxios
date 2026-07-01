@@ -1,7 +1,6 @@
 // @ts-self-types="./faxios.d.ts"
 "use strict";
 
-import adapters from "./adapters/adapters.js";
 import CanceledError from "./cancel/CanceledError.js";
 import CancelToken from "./cancel/CancelToken.js";
 import isCancel from "./cancel/isCancel.js";
@@ -101,7 +100,6 @@ export type FaxiosInstance = {
   mergeConfig: typeof mergeConfig;
   FaxiosHeaders: typeof FaxiosHeaders;
   formToJSON: (thing: unknown) => unknown;
-  getAdapter: typeof adapters.getAdapter;
   HttpStatusCode: typeof HttpStatusCode;
   default: FaxiosInstance;
 };
@@ -144,8 +142,6 @@ faxios.formToJSON = (thing: unknown): unknown => formDataToJSON(utils.isHTMLForm
   const GlobalFormData = (globalThis as Record<string, unknown>)["FormData"] as (new (el?: unknown) => unknown) | undefined;
   return GlobalFormData ? new GlobalFormData(thing) : thing;
 })() : thing);
-
-faxios.getAdapter = adapters.getAdapter;
 
 faxios.HttpStatusCode = HttpStatusCode;
 

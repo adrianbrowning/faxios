@@ -4,11 +4,7 @@ import dispatchRequest from "#src/lib/core/dispatchRequest.js";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import defaults from "#src/lib/defaults/index.js";
-import type {
-  FaxiosAdapter,
-  FaxiosResponse,
-  InternalFaxiosRequestConfig
-} from "#src/lib/types.js";
+import type { InternalFaxiosRequestConfig } from "#src/lib/types.js";
 
 class ReactNativeFormData {
   append() {}
@@ -33,7 +29,7 @@ function baseConfig(
 ): InternalFaxiosRequestConfig {
   return {
     method: "get",
-    url: "/test",
+    url: "http://localhost/test",
     headers: faxiosHeaders(),
     transformRequest: defaults.transformRequest,
     transformResponse: defaults.transformResponse,
@@ -47,7 +43,7 @@ describe("core::dispatchRequest", () => {
   describe("JSON FormData transform", () => {
     it("rejects deeply nested field paths before adapter dispatch", async () => {
       const data = new FormData();
-      let adapterCalled = false;
+      let fetchCalled = false;
 
       data.append("foo" + "[bar]".repeat(101), "123");
 
@@ -55,17 +51,12 @@ describe("core::dispatchRequest", () => {
         data,
         headers: faxiosHeaders({ "Content-Type": "application/json" }),
         method: "post",
-        adapter: (async (adapterConfig: InternalFaxiosRequestConfig) => {
-          adapterCalled = true;
-          return {
-            data: null,
-            status: 200,
-            statusText: "OK",
-            headers: {},
-            config: adapterConfig,
-            request: {},
-          };
-        }) as unknown as FaxiosAdapter,
+        env: {
+          fetch: async () => {
+            fetchCalled = true;
+            return new Response(null, { status: 200 });
+          },
+        },
       });
 
       let thrown;
@@ -78,22 +69,20 @@ describe("core::dispatchRequest", () => {
 
       assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
       assert.strictEqual(thrown.code, FaxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
-      assert.strictEqual(adapterCalled, false);
+      assert.strictEqual(fetchCalled, false);
     });
   });
 
   describe("JSON parse failure on adapter resolution", () => {
     it("rejects with FaxiosError carrying response and status", async () => {
-      const response = {
-        data: "{bad json",
-        status: 418,
-        statusText: "I'm a teapot",
-        headers: {},
-        config: null,
-        request: {},
-      };
       const config = baseConfig({
-        adapter: (async () => response) as unknown as FaxiosAdapter,
+        env: {
+          fetch: async () =>
+            new Response("{bad json", {
+              status: 418,
+              statusText: "I'm a teapot",
+            }),
+        },
       });
 
       let thrown;
@@ -107,9 +96,9 @@ describe("core::dispatchRequest", () => {
       assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
       assert.strictEqual(thrown.code, FaxiosError.ERR_BAD_RESPONSE);
       assert.strictEqual(
-        thrown.response,
-        response,
-        "error.response must be the original response"
+        thrown.response!.data,
+        "{bad json",
+        "error.response.data must be the unparsed body"
       );
       assert.strictEqual(
         thrown.status,
@@ -119,16 +108,10 @@ describe("core::dispatchRequest", () => {
     });
 
     it("cleans up config.response after the transform throws", async () => {
-      const response = {
-        data: "{bad json",
-        status: 200,
-        statusText: "OK",
-        headers: {},
-        config: null,
-        request: {},
-      };
       const config = baseConfig({
-        adapter: (async () => response) as unknown as FaxiosAdapter,
+        env: {
+          fetch: async () => new Response("{bad json", { status: 200 }),
+        },
       });
 
       try {
@@ -148,23 +131,14 @@ describe("core::dispatchRequest", () => {
 
   describe("JSON parse failure on adapter rejection", () => {
     it("rejects with FaxiosError carrying response and status (rejection path)", async () => {
-      const response = {
-        data: "{bad json",
-        status: 500,
-        statusText: "Internal Server Error",
-        headers: {},
-        config: null,
-        request: {},
-      };
-      const reason = new FaxiosError(
-        "Request failed",
-        FaxiosError.ERR_BAD_RESPONSE
-      );
-      reason.response = response as unknown as FaxiosResponse;
       const config = baseConfig({
-        adapter: (async () => {
-          throw reason;
-        }) as unknown as FaxiosAdapter,
+        env: {
+          fetch: async () =>
+            new Response("{bad json", {
+              status: 500,
+              statusText: "Internal Server Error",
+            }),
+        },
       });
 
       let thrown;
@@ -177,9 +151,9 @@ describe("core::dispatchRequest", () => {
 
       assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
       assert.strictEqual(
-        thrown.response,
-        response,
-        "error.response must be the original response"
+        thrown.response!.data,
+        "{bad json",
+        "error.response.data must be the unparsed body"
       );
       assert.strictEqual(
         thrown.status,
@@ -189,23 +163,14 @@ describe("core::dispatchRequest", () => {
     });
 
     it("cleans up config.response after the rejection-path transform", async () => {
-      const response = {
-        data: "{bad json",
-        status: 500,
-        statusText: "Internal Server Error",
-        headers: {},
-        config: null,
-        request: {},
-      };
-      const reason = new FaxiosError(
-        "Request failed",
-        FaxiosError.ERR_BAD_RESPONSE
-      );
-      reason.response = response as unknown as FaxiosResponse;
       const config = baseConfig({
-        adapter: (async () => {
-          throw reason;
-        }) as unknown as FaxiosAdapter,
+        env: {
+          fetch: async () =>
+            new Response("{bad json", {
+              status: 500,
+              statusText: "Internal Server Error",
+            }),
+        },
       });
 
       try {
@@ -228,58 +193,42 @@ describe("core::dispatchRequest", () => {
       // ReactNativeFormData has Symbol.toStringTag === "FormData" so utils.isFormData returns true.
       // dispatchRequest must not inject application/x-www-form-urlencoded for any FormData-like object.
       const data = new ReactNativeFormData();
-      const response = {
-        data: "{\"ok\":true}",
-        status: 200,
-        statusText: "OK",
-        headers: {},
-        config: null,
-        request: {},
-      };
+      let capturedInit: RequestInit | undefined;
+
       const config = baseConfig({
         method: "post",
         data,
-        adapter: (async (adapterConfig: InternalFaxiosRequestConfig) => {
-          type HeadersWithMethods = {
-            getContentType: () => unknown;
-            toJSON: () => Record<string, unknown>;
-          };
-          // Content-Type must NOT be set — isFormData correctly recognised ReactNativeFormData
-          assert.strictEqual(
-            (adapterConfig.headers as unknown as HeadersWithMethods).getContentType(),
-            undefined,
-            "dispatchRequest must not inject Content-Type for FormData-like objects"
-          );
-
-          assert.strictEqual(
-            Object.prototype.hasOwnProperty.call(
-              (adapterConfig.headers as unknown as HeadersWithMethods).toJSON(),
-              "Content-Type"
-            ),
-            false,
-            "Content-Type must be absent for React Native FormData"
-          );
-
-          return response;
-        }) as unknown as FaxiosAdapter,
+        env: {
+          fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+            capturedInit = init;
+            return new Response("{\"ok\":true}", {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            });
+          },
+        },
       });
 
       const result = await dispatchRequest(config);
 
+      const sentHeaders = capturedInit?.headers as Record<string, string>;
+      assert.strictEqual(
+        sentHeaders["Content-Type"],
+        undefined,
+        "dispatchRequest must not inject Content-Type for FormData-like objects"
+      );
       assert.deepStrictEqual(result.data, { ok: true });
     });
 
     it("cleans up config.response after a successful resolution", async () => {
-      const response = {
-        data: "{\"ok\":true}",
-        status: 200,
-        statusText: "OK",
-        headers: {},
-        config: null,
-        request: {},
-      };
       const config = baseConfig({
-        adapter: (async () => response) as unknown as FaxiosAdapter,
+        env: {
+          fetch: async () =>
+            new Response("{\"ok\":true}", {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            }),
+        },
       });
 
       const result = await dispatchRequest(config);

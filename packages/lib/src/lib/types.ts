@@ -213,14 +213,6 @@ export type FaxiosRequestHeaders = Record<string, FaxiosHeaderValue> & {
   toJSON: (asStrings?: boolean) => Record<string, FaxiosHeaderValue>;
 };
 
-export type FaxiosAdapterName = StringLiteralsOrString<"fetch">;
-
-export interface FaxiosAdapter {
-  (config: InternalFaxiosRequestConfig): Promise<FaxiosResponse>;
-}
-
-export type FaxiosAdapterConfig = FaxiosAdapter | FaxiosAdapterName;
-
 export interface FaxiosRequestTransformer {
   (
     this: InternalFaxiosRequestConfig,
@@ -254,7 +246,6 @@ export interface FaxiosRequestConfig<D = unknown> {
   timeout?: Milliseconds;
   timeoutErrorMessage?: string;
   withCredentials?: boolean;
-  adapter?: FaxiosAdapterConfig | Array<FaxiosAdapterConfig>;
   auth?: FaxiosBasicCredentials;
   responseType?: ResponseType;
   responseEncoding?: StringLiteralsOrString<responseEncoding>;

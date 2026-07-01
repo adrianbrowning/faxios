@@ -7,7 +7,6 @@ import type {
   FaxiosResponse,
   FaxiosError,
   FaxiosInstance,
-  FaxiosAdapter,
   Cancel,
   CancelTokenSource,
   Canceler,
@@ -19,7 +18,6 @@ import faxios, {
   FaxiosHeaders,
   toFormData,
   formToJSON,
-  getAdapter,
   all,
   isCancel,
   isFaxiosError,
@@ -451,21 +449,6 @@ faxios.interceptors.response.use(async (response: FaxiosResponse) =>
 faxios.interceptors.request.clear();
 faxios.interceptors.response.clear();
 
-// Adapters
-
-const adapter: FaxiosAdapter = async config => {
-  const response: FaxiosResponse = {
-    data: { foo: "bar" },
-    status: 200,
-    statusText: "OK",
-    headers: { "X-FOO": "bar" },
-    config,
-  };
-  return Promise.resolve(response);
-};
-
-faxios.defaults.adapter = adapter;
-
 // faxios.all
 
 const promises = [ Promise.resolve(1), Promise.resolve(2) ];
@@ -661,46 +644,6 @@ faxios.get("/user", {
     console.log(e.rate);
   },
 });
-
-// adapters
-
-faxios.get("/user", {
-  adapter: "xhr",
-});
-
-faxios.get("/user", {
-  adapter: "http",
-});
-
-faxios.get("/user", {
-  adapter: [ "xhr", "http" ],
-});
-
-{
-  // getAdapter
-
-  getAdapter(faxios.create().defaults.adapter);
-  getAdapter(undefined);
-  getAdapter([]);
-  getAdapter([ "xhr" ]);
-  getAdapter([ adapter ]);
-  getAdapter([ "xhr", "http" ]);
-  getAdapter([ adapter, "xhr" ]);
-  getAdapter([ adapter, adapter ]);
-  getAdapter("xhr");
-  getAdapter(adapter);
-  const _: FaxiosAdapter = getAdapter("xhr");
-  const __: FaxiosAdapter = getAdapter([ "xhr" ]);
-
-  // @ts-expect-error
-  getAdapter();
-  // @ts-expect-error
-  getAdapter(123);
-  // @ts-expect-error
-  getAdapter([ 123 ]);
-  // @ts-expect-error
-  getAdapter("xhr", "http");
-}
 
 // FaxiosHeaders
 

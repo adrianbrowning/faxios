@@ -78,7 +78,6 @@ describe("regression", () => {
 
         const instance = faxios.create({
           baseURL: `http://localhost:${(server.address() as AddressInfo).port}`,
-          adapter: "fetch",
         });
 
         try {

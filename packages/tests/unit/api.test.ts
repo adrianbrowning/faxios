@@ -17,16 +17,10 @@ describe("static api", () => {
 
   it("should have promise method helpers", async () => {
     const promise = faxios.request({
-      url: "/test",
-      adapter: async config =>
-        Promise.resolve({
-          data: null,
-          status: 200,
-          statusText: "OK",
-          headers: { get: () => null },
-          config,
-          request: {},
-        }),
+      url: "http://localhost/test",
+      env: {
+        fetch: async () => new Response(null, { status: 200 }),
+      },
     });
 
     assert.strictEqual(typeof promise.then, "function");
@@ -78,7 +72,7 @@ describe("static api", () => {
     try {
       await Promise.all(
         [ "delete", "get", "head", "options" ].map(async method => {
-          let seenData = "unset";
+          let seenBody: BodyInit | null | undefined = "unset";
 
           const fn = (
             faxios as unknown as Record<
@@ -86,24 +80,16 @@ describe("static api", () => {
               (url: string, config: unknown) => Promise<unknown>
             >
           )[method]!;
-          await fn("/test", {
-            async adapter(
-              config: import("#src/lib/types.ts").InternalFaxiosRequestConfig
-            ) {
-              seenData = config.data as string;
-
-              return Promise.resolve({
-                data: null,
-                status: 200,
-                statusText: "OK",
-                headers: { get: () => null },
-                config,
-                request: {},
-              });
+          await fn("http://localhost/test", {
+            env: {
+              fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+                seenBody = init?.body;
+                return new Response(null, { status: 200 });
+              },
             },
           });
 
-          assert.strictEqual(seenData, undefined);
+          assert.strictEqual(seenBody, undefined);
         })
       );
     }
@@ -147,16 +133,12 @@ describe("static api", () => {
     assert.strictEqual(typeof faxios.mergeConfig, "function");
   });
 
-  it("should have getAdapter properties", () => {
-    assert.strictEqual(typeof faxios.getAdapter, "function");
-  });
-
   it("should pass symbol keys to transformRequest", async () => {
     const symbolKey = Symbol("example");
     let transformedData;
 
     await faxios.post(
-      "/test",
+      "http://localhost/test",
       {
         [symbolKey]: "value",
         stringKey: "value",
@@ -166,17 +148,9 @@ describe("static api", () => {
           transformedData = data;
           return "";
         },
-        adapter: async (
-          config: import("#src/lib/types.ts").InternalFaxiosRequestConfig
-        ) =>
-          Promise.resolve({
-            data: null,
-            status: 200,
-            statusText: "OK",
-            headers: { get: () => null },
-            config,
-            request: {},
-          }),
+        env: {
+          fetch: async () => new Response(null, { status: 200 }),
+        },
       }
     );
 
@@ -218,18 +192,12 @@ describe("instance api", () => {
           return "";
         },
       ],
-      adapter: async config =>
-        Promise.resolve({
-          data: null,
-          status: 200,
-          statusText: "OK",
-          headers: { get: () => null },
-          config,
-          request: {},
-        }),
+      env: {
+        fetch: async () => new Response(null, { status: 200 }),
+      },
     });
 
-    await client.post("/test", {
+    await client.post("http://localhost/test", {
       [symbolKey]: "value",
       stringKey: "value",
     });

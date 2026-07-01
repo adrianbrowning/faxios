@@ -33,7 +33,6 @@ const pipelineAsync = util.promisify(stream.pipeline);
 
 const fetchFaxios = faxios.create({
   baseURL: LOCAL_SERVER_URL,
-  adapter: "fetch",
 });
 
 const getFetchSignal = (
@@ -75,7 +74,6 @@ describe.runIf(typeof fetch === "function")(
         await assert.rejects(
           async () =>
             faxios.get(url, {
-              adapter: "fetch",
               headers: {
                 "X-Test": "yes",
               },
@@ -189,7 +187,6 @@ describe.runIf(typeof fetch === "function")(
 
       const instance = faxios.create({
         baseURL: LOCAL_SERVER_URL,
-        adapter: "fetch",
       });
 
       instance.interceptors.request.use(config => {
@@ -1784,9 +1781,7 @@ describe.runIf(typeof fetch === "function")(
 
         // Use a dedicated instance without baseURL — combineURLs would otherwise
         // prepend baseURL to a data: URL and neutralise the pre-check.
-        const bareFaxios = faxios.create({
-          adapter: "fetch",
-        });
+        const bareFaxios = faxios.create();
 
         await assert.rejects(
           bareFaxios.get(dataUrl, { maxContentLength: 16 }),
@@ -1802,9 +1797,7 @@ describe.runIf(typeof fetch === "function")(
       it("should reject a data: URL whose body size exceeds maxContentLength (non-base64)", async () => {
         const dataUrl = "data:text/plain," + "X".repeat(4096);
 
-        const bareFaxios = faxios.create({
-          adapter: "fetch",
-        });
+        const bareFaxios = faxios.create();
 
         await assert.rejects(
           bareFaxios.get(dataUrl, { maxContentLength: 16 }),
@@ -1818,9 +1811,7 @@ describe.runIf(typeof fetch === "function")(
       });
 
       it("should allow a percent-encoded data: URL within decoded maxContentLength", async () => {
-        const bareFaxios = faxios.create({
-          adapter: "fetch",
-        });
+        const bareFaxios = faxios.create();
         const { data } = await bareFaxios.get("data:text/plain,%E2%82%AC", {
           maxContentLength: 4,
         });

@@ -8,7 +8,7 @@ import FaxiosError from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import mergeConfig from "#src/lib/core/mergeConfig.js";
 import defaults from "#src/lib/defaults/index.js";
-import resolveConfig from "#src/lib/helpers/resolveConfig.js";
+import prepareRequest from "#src/lib/core/prepareRequest.js";
 import utils from "#src/lib/utils.js";
 
 // ponytail: only augment Object.prototype with non-conflicting test-only keys.
@@ -47,7 +47,6 @@ describe("Prototype Pollution Protection", () => {
     delete ObjProto.beforeRedirect;
     delete ObjProto.sensitiveHeaders;
     delete ObjProto.insecureHTTPParser;
-    delete ObjProto.adapter;
     delete ObjProto.httpAgent;
     delete ObjProto.httpsAgent;
     delete ObjProto.proxy;
@@ -492,7 +491,7 @@ describe("Prototype Pollution Protection", () => {
   });
 
   // Five config properties were read via direct property
-  // access in the http adapter and resolveConfig, bypassing hasOwnProperty and
+  // access in the http adapter and prepareRequest, bypassing hasOwnProperty and
   // allowing prototype pollution gadgets (auth, baseURL, socketPath,
   // beforeRedirect, insecureHTTPParser).
   describe("http adapter gadgets", () => {
@@ -650,7 +649,7 @@ describe("Prototype Pollution Protection", () => {
     }, 10000);
   });
 
-  describe("resolveConfig baseURL gadget", () => {
+  describe("prepareRequest baseURL gadget", () => {
     // The baseURL branch in buildFullPath only runs when the requested URL is
     // relative (or allowAbsoluteUrls === false). An absolute URL would skip
     // baseURL regardless of pollution and would not exercise the gadget. We
@@ -742,12 +741,12 @@ describe("Prototype Pollution Protection", () => {
     }, 10000);
   });
 
-  describe("resolveConfig params and paramsSerializer gadget", () => {
-    it("should not inherit polluted params via resolveConfig", () => {
+  describe("prepareRequest params and paramsSerializer gadget", () => {
+    it("should not inherit polluted params via prepareRequest", () => {
       ObjProto.params = { injected: "yes" };
 
       try {
-        const resolved = resolveConfig({ url: "/api", method: "get" });
+        const resolved = prepareRequest({ url: "/api", method: "get" });
 
         assert.ok(
           resolved.url!.indexOf("injected") === -1,
@@ -760,7 +759,7 @@ describe("Prototype Pollution Protection", () => {
       }
     });
 
-    it("should not invoke polluted paramsSerializer via resolveConfig", () => {
+    it("should not invoke polluted paramsSerializer via prepareRequest", () => {
       let serializerInvoked = false;
       ObjProto.paramsSerializer = function polluted() {
         serializerInvoked = true;
@@ -768,7 +767,7 @@ describe("Prototype Pollution Protection", () => {
       };
 
       try {
-        const resolved = resolveConfig({
+        const resolved = prepareRequest({
           url: "/api",
           method: "get",
           params: { legit: "true" },
@@ -891,32 +890,6 @@ describe("Prototype Pollution Protection", () => {
         const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(invoked, false);
         assert.notStrictEqual(res.data, "HIJACKED");
-      }
-      finally {
-        await stop(server);
-      }
-    }, 10000);
-
-    it("should ignore polluted adapter", async () => {
-      let hijacked = false;
-      ObjProto.adapter = async function pollutedAdapter() {
-        hijacked = true;
-        return Promise.resolve({
-          data: "pwned",
-          status: 200,
-          statusText: "OK",
-          headers: {},
-          config: {},
-          request: {},
-        });
-      };
-
-      const server = await startEcho();
-      const { port } = server.address() as AddressInfo;
-      try {
-        const res = await ax.get(`http://127.0.0.1:${port}/ok`);
-        assert.strictEqual(hijacked, false);
-        assert.notStrictEqual(res.data, "pwned");
       }
       finally {
         await stop(server);
