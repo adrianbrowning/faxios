@@ -7,8 +7,8 @@ import faxios from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import mergeConfig from "#src/lib/core/mergeConfig.js";
-import defaults from "#src/lib/defaults/index.js";
 import prepareRequest from "#src/lib/core/prepareRequest.js";
+import defaults from "#src/lib/defaults/index.js";
 import utils from "#src/lib/utils.js";
 
 // ponytail: only augment Object.prototype with non-conflicting test-only keys.
