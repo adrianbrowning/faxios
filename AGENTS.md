@@ -73,7 +73,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 1. User calls `faxios()` or a method alias.
 2. Merge instance defaults with request config via `mergeConfig`.
 3. Run request interceptors (LIFO).
-4. Select adapter via `lib/adapters/adapters.js` capability check.
+4. Call the fetch adapter directly (`getFetch(config)` from `lib/adapters/fetch.ts`).
 5. Apply `transformRequest` functions.
 6. Adapter performs the HTTP request.
 7. Apply `transformResponse` functions.
