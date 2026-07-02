@@ -19,6 +19,9 @@ import type {
 } from "../types.js";
 import utils from "../utils.js";
 
+const _textEncoder: TextEncoder | undefined =
+  typeof globalThis.TextEncoder === "function" ? new globalThis.TextEncoder() : undefined;
+
 // btoa is a global in Node 16+ and browsers; accessed via globalThis for no-DOM lib compat
 const _btoa: (data: string) => string = (
   globalThis as unknown as Record<string, unknown>
@@ -168,10 +171,9 @@ export const checkMaterializedSize = (
     materializedSize = rd["size"];
   }
   else if (typeof responseData === "string") {
-    materializedSize =
-      typeof globalThis.TextEncoder === "function"
-        ? new globalThis.TextEncoder().encode(responseData).byteLength
-        : responseData.length;
+    materializedSize = _textEncoder
+      ? _textEncoder.encode(responseData).byteLength
+      : responseData.length;
   }
   if (typeof materializedSize === "number" && materializedSize > maxContentLength) {
     throw new FaxiosError(
