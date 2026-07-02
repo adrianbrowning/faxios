@@ -52,7 +52,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 - Classes: PascalCase (`faxios`, `FaxiosError`, `InterceptorManager`).
 - Functions: camelCase (`buildURL`, `mergeConfig`, `dispatchRequest`).
 - Error codes: UPPER_SNAKE_CASE constants on `FaxiosError` (`ERR_NETWORK`, `ETIMEDOUT`).
-- Internal class slots: `Symbol`-keyed (e.g. `const $internals = Symbol('internals')` in `lib/core/AxiosHeaders.js`) rather than underscore-prefixed properties.
+- Internal class slots: use `#` private field syntax in TypeScript class files (e.g. `#handlers`, `#idCounter` in `InterceptorManager`); use `Symbol`-keyed slots (e.g. `const $internals = Symbol('internals')`) in plain `.js` files where `#` syntax is unavailable. Never use underscore-prefixed properties for either.
 
 ## Error Handling
 
