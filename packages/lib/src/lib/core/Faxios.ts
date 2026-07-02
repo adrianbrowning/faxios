@@ -223,7 +223,7 @@ class Faxios {
     config?: FaxiosRequestConfig
   ) {
     try {
-      return await this._request(configOrUrl, config);
+      return await this.#request(configOrUrl, config);
     }
     catch (err) {
       if (err instanceof Error) {
@@ -234,7 +234,7 @@ class Faxios {
     }
   }
 
-  async _request(
+  async #request(
     configOrUrl: string | FaxiosRequestConfig,
     config?: FaxiosRequestConfig
   ): Promise<unknown> {
