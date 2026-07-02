@@ -82,7 +82,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 
 ## Cancellation
 
-- Both `CancelToken` (legacy) and `AbortSignal` (modern) are supported simultaneously; do not break either path.
+- Only `AbortSignal` is supported for cancellation; pass it via `config.signal`.
 - Cancellation must work at any lifecycle stage, including mid-flight body reads.
 - Always remove signal listeners on settlement or cancellation to prevent memory leaks.
 
