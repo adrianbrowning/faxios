@@ -264,4 +264,85 @@ describe("core::dispatchRequest", () => {
       );
     });
   });
+
+  describe("responseSchema validation", () => {
+    it("replaces response.data with validated value on success", async () => {
+      const transformed = { name: "alice", age: 30 };
+      const config = baseConfig({
+        responseSchema: {
+          "~standard": {
+            version: 1,
+            vendor: "test",
+            validate: (v: unknown) => ({ value: { ...v as object, validated: true } }),
+          },
+        },
+        env: {
+          fetch: async () =>
+            new Response(JSON.stringify(transformed), {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            }),
+        },
+      });
+
+      const result = await dispatchRequest(config);
+
+      assert.deepStrictEqual(result.data, { name: "alice", age: 30, validated: true });
+    });
+
+    it("throws FaxiosError with ERR_BAD_RESPONSE_SCHEMA on validation failure", async () => {
+      const issues = [{ message: "expected string, got number", path: ["name"] }];
+      const config = baseConfig({
+        responseSchema: {
+          "~standard": {
+            version: 1,
+            vendor: "test",
+            validate: () => ({ issues }),
+          },
+        },
+        env: {
+          fetch: async () =>
+            new Response(JSON.stringify({ name: 123 }), {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            }),
+        },
+      });
+
+      let thrown: FaxiosError | undefined;
+      try {
+        await dispatchRequest(config);
+      }
+      catch (e) {
+        thrown = e as FaxiosError;
+      }
+
+      assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
+      assert.strictEqual(thrown.code, FaxiosError.ERR_BAD_RESPONSE_SCHEMA);
+      assert.deepStrictEqual((thrown as unknown as { issues: unknown }).issues, issues);
+      assert.strictEqual(thrown.response!.status, 200);
+    });
+
+    it("supports async schema validation", async () => {
+      const config = baseConfig({
+        responseSchema: {
+          "~standard": {
+            version: 1,
+            vendor: "test",
+            validate: async (v: unknown) => ({ value: v }),
+          },
+        },
+        env: {
+          fetch: async () =>
+            new Response(JSON.stringify({ ok: true }), {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            }),
+        },
+      });
+
+      const result = await dispatchRequest(config);
+      assert.deepStrictEqual(result.data, { ok: true });
+    });
+  });
 });

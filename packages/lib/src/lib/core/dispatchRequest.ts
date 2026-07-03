@@ -38,7 +38,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
 
   /* eslint-disable promise/always-return */
   return (adapter(config)).then(
-    function onAdapterResolution(response: FaxiosResponse) {
+    async function onAdapterResolution(response: FaxiosResponse) {
       throwIfCancellationRequested(config);
 
       (config as unknown as Record<string, unknown>)["response"] = response;
@@ -49,6 +49,17 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
       }
       finally {
         delete (config as unknown as Record<string, unknown>)["response"];
+      }
+
+      // ponytail: extract to helper if request schema (#15) repeats this pattern
+      if (config.responseSchema) {
+        const result = await config.responseSchema["~standard"].validate(response.data);
+        if (result.issues) {
+          const error = new FaxiosError("Response validation failed", FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response);
+          (error as unknown as Record<string, unknown>).issues = result.issues;
+          throw error;
+        }
+        response.data = (result as { value: unknown }).value;
       }
 
       return response;
