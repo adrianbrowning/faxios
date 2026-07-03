@@ -13,7 +13,7 @@ await sandbox.run({
     maxIterations: 3,
 });
 
-const found = await sandbox.exec(`find ${sandbox.worktreePath}/.claude/reviews -name '*.md''`);
+const found = await sandbox.exec(`find ${sandbox.worktreePath}/.claude/reviews -name '*.md'`);
 
 await sandbox.run({
   agent: claudeCode("us.anthropic.claude-opus-4-6-v1"),
