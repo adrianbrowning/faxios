@@ -2,13 +2,13 @@
 import assert from "node:assert";
 import http from "node:http";
 import type { AddressInfo } from "node:net";
-import { afterEach, describe, it } from "vitest";
+import { afterEach, describe, it, vi } from "vitest";
 import faxios from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import mergeConfig from "#src/lib/core/mergeConfig.js";
+import prepareRequest from "#src/lib/core/prepareRequest.js";
 import defaults from "#src/lib/defaults/index.js";
-import resolveConfig from "#src/lib/helpers/resolveConfig.js";
 import utils from "#src/lib/utils.js";
 
 // ponytail: only augment Object.prototype with non-conflicting test-only keys.
@@ -47,7 +47,6 @@ describe("Prototype Pollution Protection", () => {
     delete ObjProto.beforeRedirect;
     delete ObjProto.sensitiveHeaders;
     delete ObjProto.insecureHTTPParser;
-    delete ObjProto.adapter;
     delete ObjProto.httpAgent;
     delete ObjProto.httpsAgent;
     delete ObjProto.proxy;
@@ -492,7 +491,7 @@ describe("Prototype Pollution Protection", () => {
   });
 
   // Five config properties were read via direct property
-  // access in the http adapter and resolveConfig, bypassing hasOwnProperty and
+  // access in the http adapter and prepareRequest, bypassing hasOwnProperty and
   // allowing prototype pollution gadgets (auth, baseURL, socketPath,
   // beforeRedirect, insecureHTTPParser).
   describe("http adapter gadgets", () => {
@@ -650,7 +649,7 @@ describe("Prototype Pollution Protection", () => {
     }, 10000);
   });
 
-  describe("resolveConfig baseURL gadget", () => {
+  describe("prepareRequest baseURL gadget", () => {
     // The baseURL branch in buildFullPath only runs when the requested URL is
     // relative (or allowAbsoluteUrls === false). An absolute URL would skip
     // baseURL regardless of pollution and would not exercise the gadget. We
@@ -742,12 +741,12 @@ describe("Prototype Pollution Protection", () => {
     }, 10000);
   });
 
-  describe("resolveConfig params and paramsSerializer gadget", () => {
-    it("should not inherit polluted params via resolveConfig", () => {
+  describe("prepareRequest params and paramsSerializer gadget", () => {
+    it("should not inherit polluted params via prepareRequest", () => {
       ObjProto.params = { injected: "yes" };
 
       try {
-        const resolved = resolveConfig({ url: "/api", method: "get" });
+        const resolved = prepareRequest({ url: "/api", method: "get" });
 
         assert.ok(
           resolved.url!.indexOf("injected") === -1,
@@ -760,7 +759,7 @@ describe("Prototype Pollution Protection", () => {
       }
     });
 
-    it("should not invoke polluted paramsSerializer via resolveConfig", () => {
+    it("should not invoke polluted paramsSerializer via prepareRequest", () => {
       let serializerInvoked = false;
       ObjProto.paramsSerializer = function polluted() {
         serializerInvoked = true;
@@ -768,7 +767,7 @@ describe("Prototype Pollution Protection", () => {
       };
 
       try {
-        const resolved = resolveConfig({
+        const resolved = prepareRequest({
           url: "/api",
           method: "get",
           params: { legit: "true" },
@@ -891,32 +890,6 @@ describe("Prototype Pollution Protection", () => {
         const res = await ax.get(`http://127.0.0.1:${port}/`);
         assert.strictEqual(invoked, false);
         assert.notStrictEqual(res.data, "HIJACKED");
-      }
-      finally {
-        await stop(server);
-      }
-    }, 10000);
-
-    it("should ignore polluted adapter", async () => {
-      let hijacked = false;
-      ObjProto.adapter = async function pollutedAdapter() {
-        hijacked = true;
-        return Promise.resolve({
-          data: "pwned",
-          status: 200,
-          statusText: "OK",
-          headers: {},
-          config: {},
-          request: {},
-        });
-      };
-
-      const server = await startEcho();
-      const { port } = server.address() as AddressInfo;
-      try {
-        const res = await ax.get(`http://127.0.0.1:${port}/ok`);
-        assert.strictEqual(hijacked, false);
-        assert.notStrictEqual(res.data, "pwned");
       }
       finally {
         await stop(server);
@@ -1191,20 +1164,6 @@ describe("Prototype Pollution Protection", () => {
       assert.strictEqual((a.method as () => string)(), "ctx");
     });
 
-    it("should not throw in utils.inherits when Object.prototype.get is polluted", () => {
-      ObjProto.get = "attacker";
-
-      function Parent() {}
-      function Child() {}
-      utils.inherits(Child, Parent);
-
-      assert.strictEqual(Child.prototype.constructor, Child);
-      assert.strictEqual(
-        (Child as unknown as { super: unknown; }).super,
-        Parent.prototype
-      );
-    });
-
     it("should also be shielded against a polluted Object.prototype.set", () => {
       ObjProto.set = "attacker";
 
@@ -1330,5 +1289,66 @@ describe("Prototype Pollution Protection", () => {
         await stop(server);
       }
     }, 10000);
+  });
+
+  // cloneConfig uses Object.defineProperty with a descriptor object.
+  // If Object.prototype.get is polluted with a function, a plain {} descriptor
+  // would result in a mixed accessor+data descriptor and throw a TypeError.
+  // The descriptor must be null-prototyped to be immune.
+  describe("cloneConfig Object.defineProperty descriptor pollution", () => {
+    it("should not throw when Object.prototype.get is polluted", () => {
+      ObjProto.get = function polluted() { return "attacker"; };
+
+      // prepareRequest calls cloneConfig internally — this must not throw
+      assert.doesNotThrow(() => {
+        prepareRequest({ url: "/api", method: "get" });
+      }, "cloneConfig must not throw when Object.prototype.get is polluted");
+    });
+  });
+
+  describe("clone-swap regression", () => {
+    it("interceptor config mutation reflected exactly once in outbound fetch args", async () => {
+      const mockFetch = vi.fn().mockResolvedValue(
+        new Response("{}", { status: 200, headers: { "Content-Type": "application/json" } })
+      );
+      const origFetch = globalThis.fetch;
+      globalThis.fetch = mockFetch;
+
+      const instance = faxios.create({ baseURL: "http://test.local" });
+      instance.interceptors.request.use(cfg => {
+        (cfg as any).headers["X-Custom"] = "once";
+        return cfg;
+      });
+
+      try {
+        await instance.get("/path");
+        assert.strictEqual(mockFetch.mock.calls.length, 1);
+        const [ , init ] = mockFetch.mock.calls[0] as [unknown, RequestInit];
+        const headers = new Headers(init.headers);
+        assert.strictEqual(headers.get("X-Custom"), "once");
+      }
+      finally {
+        globalThis.fetch = origFetch;
+      }
+    });
+
+    it("should not inherit Object.prototype.maxBodyLength from prototype chain", async () => {
+      ObjProto.maxBodyLength = 1; // if inherited, a >1-byte body would throw ERR_BAD_REQUEST
+
+      const mockFetch = vi.fn().mockResolvedValue(
+        new Response("{}", { status: 200, headers: { "Content-Type": "application/json" } })
+      );
+      const origFetch = globalThis.fetch;
+      globalThis.fetch = mockFetch;
+
+      try {
+        // body is >1 byte; should succeed because maxBodyLength=1 is not inherited
+        await ax.post("http://test.local/path", { value: "hello" });
+        assert.strictEqual(mockFetch.mock.calls.length, 1);
+      }
+      finally {
+        globalThis.fetch = origFetch;
+      }
+    });
   });
 });

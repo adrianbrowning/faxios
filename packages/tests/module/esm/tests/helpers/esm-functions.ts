@@ -5,7 +5,6 @@ import faxios, {
   FaxiosError,
   FaxiosHeaders,
   formToJSON,
-  spread,
   isFaxiosError,
   isCancel,
   all,
@@ -18,7 +17,6 @@ assert.strictEqual(typeof CanceledError, "function");
 assert.strictEqual(typeof FaxiosError, "function");
 assert.strictEqual(typeof FaxiosHeaders, "function");
 assert.strictEqual(typeof formToJSON, "function");
-assert.strictEqual(typeof spread, "function");
 assert.strictEqual(typeof isFaxiosError, "function");
 assert.strictEqual(typeof isCancel, "function");
 assert.strictEqual(typeof all, "function");

@@ -48,7 +48,6 @@ Deno.test("fetch adapter: GET resolves JSON response", async () => {
   const { mockFetch, getCalls } = createFetchMock();
 
   const response = await faxios.get("https://example.com/users", {
-    adapter: "fetch",
     env: env(mockFetch),
   });
 
@@ -69,14 +68,12 @@ Deno.test("fetch adapter: forwards HTTP methods", async () => {
         "https://example.com/items",
         { name: "widget" },
         {
-          adapter: "fetch",
           env: env(mockFetch),
         }
       );
     }
     else {
       await faxios[method]("https://example.com/items", {
-        adapter: "fetch",
         env: env(mockFetch),
       });
     }
@@ -101,7 +98,6 @@ Deno.test("fetch adapter: serializes JSON body for POST", async () => {
     "https://example.com/items",
     { name: "widget" },
     {
-      adapter: "fetch",
       env: env(mockFetch),
     }
   );
@@ -116,7 +112,6 @@ Deno.test("fetch adapter: forwards full URL", async () => {
   const { mockFetch, getCalls } = createFetchMock();
 
   await faxios.get("https://example.com/users", {
-    adapter: "fetch",
     env: env(mockFetch),
   });
 

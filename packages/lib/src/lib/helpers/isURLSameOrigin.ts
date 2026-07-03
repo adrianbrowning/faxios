@@ -1,4 +1,4 @@
-import platform from "../platform/index.js";
+import platform from "../platform.js";
 
 export default platform.hasStandardBrowserEnv
   ? ((origin, isMSIE) => (url: string) => {

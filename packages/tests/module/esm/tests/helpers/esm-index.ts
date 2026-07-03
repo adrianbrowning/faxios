@@ -7,10 +7,6 @@ import type {
   FaxiosResponse,
   FaxiosError,
   FaxiosInstance,
-  FaxiosAdapter,
-  Cancel,
-  CancelTokenSource,
-  Canceler,
   FaxiosProgressEvent,
   ParamsSerializerOptions,
   AddressFamily
@@ -19,11 +15,8 @@ import faxios, {
   FaxiosHeaders,
   toFormData,
   formToJSON,
-  getAdapter,
   all,
-  isCancel,
-  isFaxiosError,
-  spread
+  isFaxiosError
 } from "faxios";
 
 const config: FaxiosRequestConfig = {
@@ -63,7 +56,6 @@ const config: FaxiosRequestConfig = {
     host: "127.0.0.1",
     port: 9000,
   },
-  cancelToken: new faxios.CancelToken((cancel: Canceler) => {}),
 };
 
 const nullValidateStatusConfig: FaxiosRequestConfig = {
@@ -451,21 +443,6 @@ faxios.interceptors.response.use(async (response: FaxiosResponse) =>
 faxios.interceptors.request.clear();
 faxios.interceptors.response.clear();
 
-// Adapters
-
-const adapter: FaxiosAdapter = async config => {
-  const response: FaxiosResponse = {
-    data: { foo: "bar" },
-    status: 200,
-    statusText: "OK",
-    headers: { "X-FOO": "bar" },
-    config,
-  };
-  return Promise.resolve(response);
-};
-
-faxios.defaults.adapter = adapter;
-
 // faxios.all
 
 const promises = [ Promise.resolve(1), Promise.resolve(2) ];
@@ -484,12 +461,6 @@ const promise: Promise<Array<number>> = faxios.all(promises);
 
 const fn1 = (a: number, b: number, c: number) => `${a}-${b}-${c}`;
 const fn2: (arr: Array<number>) => string = faxios.spread(fn1);
-
-// faxios.spread named export
-(() => {
-  const fn1 = (a: number, b: number, c: number) => `${a}-${b}-${c}`;
-  const fn2: (arr: Array<number>) => string = spread(fn1);
-})();
 
 // Promises
 
@@ -528,29 +499,6 @@ faxios
   .get("/user")
   .catch(async (error: any) => Promise.resolve("foo"))
   .then((value: any) => {});
-
-// Cancellation
-
-const source: CancelTokenSource = faxios.CancelToken.source();
-
-faxios
-  .get("/user", {
-    cancelToken: source.token,
-  })
-  .catch((thrown: FaxiosError | Cancel) => {
-    if (faxios.isCancel(thrown)) {
-      const cancel: Cancel = thrown;
-      console.log(cancel.message);
-    }
-
-    // named export
-    if (isCancel(thrown)) {
-      const cancel: Cancel = thrown;
-      console.log(cancel.message);
-    }
-  });
-
-source.cancel("Operation has been canceled.");
 
 // FaxiosError
 
@@ -661,46 +609,6 @@ faxios.get("/user", {
     console.log(e.rate);
   },
 });
-
-// adapters
-
-faxios.get("/user", {
-  adapter: "xhr",
-});
-
-faxios.get("/user", {
-  adapter: "http",
-});
-
-faxios.get("/user", {
-  adapter: [ "xhr", "http" ],
-});
-
-{
-  // getAdapter
-
-  getAdapter(faxios.create().defaults.adapter);
-  getAdapter(undefined);
-  getAdapter([]);
-  getAdapter([ "xhr" ]);
-  getAdapter([ adapter ]);
-  getAdapter([ "xhr", "http" ]);
-  getAdapter([ adapter, "xhr" ]);
-  getAdapter([ adapter, adapter ]);
-  getAdapter("xhr");
-  getAdapter(adapter);
-  const _: FaxiosAdapter = getAdapter("xhr");
-  const __: FaxiosAdapter = getAdapter([ "xhr" ]);
-
-  // @ts-expect-error
-  getAdapter();
-  // @ts-expect-error
-  getAdapter(123);
-  // @ts-expect-error
-  getAdapter([ 123 ]);
-  // @ts-expect-error
-  getAdapter("xhr", "http");
-}
 
 // FaxiosHeaders
 

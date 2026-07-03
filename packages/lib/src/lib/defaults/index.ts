@@ -4,9 +4,8 @@ import FaxiosError from "../core/FaxiosError.js";
 import formDataToJSON from "../helpers/formDataToJSON.js";
 import toFormData from "../helpers/toFormData.js";
 import toURLEncodedForm from "../helpers/toURLEncodedForm.js";
-import platform from "../platform/index.js";
+import platform from "../platform.js";
 import type {
-  FaxiosAdapterName,
   FaxiosDefaults,
   FaxiosRequestHeaders,
   FaxiosResponse,
@@ -75,7 +74,7 @@ function stringifySafely(
   if (utils.isString(rawValue)) {
     try {
       (parser || JSON.parse)(rawValue as string);
-      return utils.trim(rawValue as string);
+      return (rawValue as string).trim();
     }
     catch (e) {
       if ((e as { name?: string; }).name !== "SyntaxError") {
@@ -89,8 +88,6 @@ function stringifySafely(
 
 const defaults: FaxiosDefaults = {
   transitional: transitionalDefaults,
-
-  adapter: [ "fetch" ] as Array<FaxiosAdapterName>,
 
   transformRequest: [
     function transformRequest(

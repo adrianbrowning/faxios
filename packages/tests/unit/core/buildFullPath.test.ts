@@ -16,6 +16,7 @@ describe("core::buildFullPath", () => {
   });
 
   it("combines URLs when requested URL is absolute and allowAbsoluteUrls is false", () => {
+    // allowAbsoluteUrls: false forces string concat — the absolute URL is treated as a literal path
     expect(
       buildFullPath(
         "https://api.github.com",

@@ -6,45 +6,38 @@ import type {
   FaxiosInterceptorRejected,
   FaxiosInterceptorOptions
 } from "../types.js";
-import utils from "../utils.js";
 
 class InterceptorManager<T> {
-  handlers: Array<FaxiosInterceptorHandler<T> | null>;
-
-  constructor() {
-    this.handlers = [];
-  }
+  #handlers: Map<number, FaxiosInterceptorHandler<T>> = new Map();
+  #idCounter = 0;
 
   use(
     fulfilled: FaxiosInterceptorFulfilled<T>,
     rejected?: FaxiosInterceptorRejected,
     options?: FaxiosInterceptorOptions
   ): number {
-    this.handlers.push({
+    const id = this.#idCounter++;
+    this.#handlers.set(id, {
       fulfilled,
       rejected,
       synchronous: options ? !!options.synchronous : false,
       runWhen: options ? options.runWhen : null,
     });
-    return this.handlers.length - 1;
+    return id;
   }
 
   eject(id: number): void {
-    if (this.handlers[id]) {
-      this.handlers[id] = null;
-    }
+    this.#handlers.delete(id);
   }
 
   clear(): void {
-    this.handlers = [];
+    this.#handlers.clear();
   }
 
   forEach(fn: (handler: FaxiosInterceptorHandler<T>) => void): void {
-    utils.forEach(this.handlers, function forEachHandler(h: unknown) {
-      if (h !== null) {
-        fn(h as FaxiosInterceptorHandler<T>);
-      }
-    });
+    for (const handler of this.#handlers.values()) {
+      fn(handler);
+    }
   }
 }
 

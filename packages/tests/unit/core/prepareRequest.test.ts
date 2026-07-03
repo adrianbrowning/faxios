@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
-import resolveConfig from "#src/lib/helpers/resolveConfig.js";
+import prepareRequest from "#src/lib/core/prepareRequest.js";
 import type { FaxiosBasicCredentials, FaxiosRequestHeaders } from "#src/lib/types.js";
 
 class ReactNativeFormData {
@@ -15,10 +15,10 @@ class ReactNativeFormData {
   }
 }
 
-describe("helpers::resolveConfig", () => {
+describe("core::prepareRequest", () => {
   it("clears Content-Type for React Native FormData", () => {
     const data = new ReactNativeFormData();
-    const config = resolveConfig({
+    const config = prepareRequest({
       url: "/upload",
       data,
       headers: {
@@ -49,7 +49,7 @@ describe("helpers::resolveConfig", () => {
     });
 
     try {
-      const config = resolveConfig({
+      const config = prepareRequest({
         url: "/foo",
         auth: {} as FaxiosBasicCredentials,
       });
@@ -82,7 +82,7 @@ describe("helpers::resolveConfig", () => {
     });
 
     try {
-      const config = resolveConfig({
+      const config = prepareRequest({
         url: "/foo",
         params: { value: "a b" },
         paramsSerializer: {},
@@ -95,6 +95,26 @@ describe("helpers::resolveConfig", () => {
     finally {
       delete (Object.prototype as Record<string, unknown>).serialize;
       delete (Object.prototype as Record<string, unknown>).encode;
+    }
+  });
+
+  it("returned config is null-prototype (no Object.prototype inheritance)", () => {
+    const config = prepareRequest({ url: "/test" });
+    assert.strictEqual(Object.getPrototypeOf(config), null);
+  });
+
+  it("polluted Object.prototype field does not leak into prepared config", () => {
+    (Object.prototype as Record<string, unknown>).maxBodyLength = 999;
+    try {
+      const config = prepareRequest({ url: "/test" });
+      // own-property check: maxBodyLength not set on config itself
+      assert.strictEqual(
+        Object.prototype.hasOwnProperty.call(config, "maxBodyLength"),
+        false
+      );
+    }
+    finally {
+      delete (Object.prototype as Record<string, unknown>).maxBodyLength;
     }
   });
 });
