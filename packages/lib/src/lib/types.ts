@@ -354,10 +354,6 @@ export interface CreateFaxiosDefaults<D = unknown> extends Omit<
   headers?: RawFaxiosRequestHeaders | Partial<HeadersDefaults>;
 }
 
-export interface Cancel {
-  message: string | undefined;
-}
-
 export interface FaxiosInterceptorOptions {
   synchronous?: boolean;
   runWhen?: ((config: InternalFaxiosRequestConfig) => boolean) | null;
