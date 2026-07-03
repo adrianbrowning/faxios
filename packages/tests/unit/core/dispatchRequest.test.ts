@@ -291,7 +291,7 @@ describe("core::dispatchRequest", () => {
     });
 
     it("throws FaxiosError with ERR_BAD_RESPONSE_SCHEMA on validation failure", async () => {
-      const issues = [{ message: "expected string, got number", path: ["name"] }];
+      const issues = [{ message: "expected string, got number", path: [ "name" ] }];
       const config = baseConfig({
         responseSchema: {
           "~standard": {
@@ -319,7 +319,7 @@ describe("core::dispatchRequest", () => {
 
       assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
       assert.strictEqual(thrown.code, FaxiosError.ERR_BAD_RESPONSE_SCHEMA);
-      assert.deepStrictEqual((thrown as unknown as { issues: unknown }).issues, issues);
+      assert.deepStrictEqual((thrown as unknown as { issues: unknown; }).issues, issues);
       assert.strictEqual(thrown.response!.status, 200);
     });
 
@@ -343,6 +343,40 @@ describe("core::dispatchRequest", () => {
 
       const result = await dispatchRequest(config);
       assert.deepStrictEqual(result.data, { ok: true });
+    });
+
+    it("does not call validate when validateStatus rejects (HTTP error path)", async () => {
+      const validate = vi.fn();
+      const config = baseConfig({
+        validateStatus: (status: number) => status >= 200 && status < 300,
+        responseSchema: {
+          "~standard": {
+            version: 1,
+            vendor: "test",
+            validate,
+          },
+        },
+        env: {
+          fetch: async () =>
+            new Response(JSON.stringify({ error: "not found" }), {
+              status: 404,
+              statusText: "Not Found",
+              headers: { "content-type": "application/json" },
+            }),
+        },
+      });
+
+      let thrown: FaxiosError | undefined;
+      try {
+        await dispatchRequest(config);
+      }
+      catch (e) {
+        thrown = e as FaxiosError;
+      }
+
+      assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
+      assert.strictEqual(thrown.code, FaxiosError.ERR_BAD_REQUEST);
+      assert.strictEqual(validate.mock.calls.length, 0, "validate must not be called on HTTP error");
     });
   });
 });
