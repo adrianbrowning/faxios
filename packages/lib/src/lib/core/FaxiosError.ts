@@ -111,6 +111,7 @@ class FaxiosError extends Error {
   static readonly ERR_NOT_SUPPORT = "ERR_NOT_SUPPORT";
   static readonly ERR_INVALID_URL = "ERR_INVALID_URL";
   static readonly ERR_FORM_DATA_DEPTH_EXCEEDED = "ERR_FORM_DATA_DEPTH_EXCEEDED";
+  static readonly ERR_BAD_RESPONSE_SCHEMA = "ERR_BAD_RESPONSE_SCHEMA";
 
   static from(
     error: Error & { code?: string; status?: number; },
