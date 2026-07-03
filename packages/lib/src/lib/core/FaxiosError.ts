@@ -1,5 +1,6 @@
 "use strict";
 
+import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
 import utils from "../utils.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
@@ -216,6 +217,17 @@ class FaxiosError extends Error {
       status: this.status,
     };
   }
+}
+
+export function isSchemaValidationError(
+  err: unknown
+): err is FaxiosError & { issues: ReadonlyArray<StandardSchemaV1.Issue>; } {
+  return (
+    utils.isObject(err) &&
+    (err as Record<string, unknown>).isFaxiosError === true &&
+    (err as FaxiosError).code === FaxiosError.ERR_BAD_RESPONSE_SCHEMA &&
+    Array.isArray((err as Record<string, unknown>).issues)
+  );
 }
 
 export default FaxiosError;
