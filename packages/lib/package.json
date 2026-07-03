@@ -63,7 +63,7 @@
     "lint:e18e": "pnpm dlx @e18e/cli analyze"
   },
   "devDependencies": {
-    "@gingacodemonkey/config": "^0.0.32",
+    "@gingacodemonkey/config": "^0.0.36",
     "eslint": "^9.39.4",
     "typescript": "^6.0.3",
     "zshy": "latest"

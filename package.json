@@ -25,11 +25,11 @@
     "@ai-hero/sandcastle": "^0.12.0",
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
-    "@gingacodemonkey/config": "^0.0.33",
+    "@gingacodemonkey/config": "^0.0.36",
     "eslint": "^9.39.4",
     "husky": "^9.1.7",
     "jscpd": "^4.2.5",
-    "knip": "5.70.1",
+    "knip": "5.88.1",
     "lint-staged": "^17.0.5",
     "typescript": "^6.0.3"
   },
