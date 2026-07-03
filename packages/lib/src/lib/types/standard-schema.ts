@@ -4,6 +4,8 @@
  * @see https://github.com/standard-schema/standard-schema
  */
 
+/* eslint-disable sonarjs/no-redundant-optional */
+
 export interface StandardSchemaV1<Input = unknown, Output = Input> {
   readonly "~standard": StandardSchemaV1.Props<Input, Output>;
 }
@@ -12,9 +14,9 @@ export declare namespace StandardSchemaV1 {
   interface Props<Input = unknown, Output = Input> {
     readonly version: 1;
     readonly vendor: string;
-    readonly types?: Types<Input, Output> | undefined;
+    readonly types?: Types<Input, Output>;
     readonly validate: (
-      value: unknown,
+      value: unknown
     ) => Result<Output> | Promise<Result<Output>>;
   }
 
