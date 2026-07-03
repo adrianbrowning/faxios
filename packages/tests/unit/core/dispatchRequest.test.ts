@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { describe, it } from "vitest";
+import { describe, it, vi } from "vitest";
 import dispatchRequest from "#src/lib/core/dispatchRequest.js";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
@@ -185,6 +185,29 @@ describe("core::dispatchRequest", () => {
         false,
         "config.response must be deleted in finally on the rejection path"
       );
+    });
+  });
+
+  describe("unsupported environment", () => {
+    it("throws ERR_NOT_SUPPORT when fetch is unavailable", async () => {
+      const fetchMod = await import("#src/lib/adapters/fetch.js");
+      const spy = vi.spyOn(fetchMod, "getFetch").mockReturnValue(false);
+
+      const config = baseConfig({});
+
+      let thrown;
+      try {
+        await dispatchRequest(config);
+      }
+      catch (e) {
+        thrown = e;
+      }
+      finally {
+        spy.mockRestore();
+      }
+
+      assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
+      assert.strictEqual(thrown.code, FaxiosError.ERR_NOT_SUPPORT);
     });
   });
 

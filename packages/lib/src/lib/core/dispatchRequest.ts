@@ -3,6 +3,7 @@
 import { getFetch } from "../adapters/fetch.js";
 import CanceledError from "../cancel/CanceledError.js";
 import isCancel from "../cancel/isCancel.js";
+import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
 import utils from "../utils.js";
@@ -25,7 +26,15 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
     (config.headers as unknown as { setContentType: (v: string, r: boolean) => void; }).setContentType("application/x-www-form-urlencoded", false);
   }
 
-  const adapter = getFetch(config) as (config: InternalFaxiosRequestConfig) => Promise<FaxiosResponse>;
+  const _adapter = getFetch(config);
+  if (!_adapter) {
+    throw new FaxiosError(
+      "Fetch API is not supported in this environment",
+      FaxiosError.ERR_NOT_SUPPORT,
+      config
+    );
+  }
+  const adapter = _adapter as (config: InternalFaxiosRequestConfig) => Promise<FaxiosResponse>;
 
   /* eslint-disable promise/always-return */
   return (adapter(config)).then(
