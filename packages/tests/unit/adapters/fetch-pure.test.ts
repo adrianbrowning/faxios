@@ -263,10 +263,13 @@ describe("encodeBodyIfNeeded", () => {
 });
 
 describe("settle", () => {
-  function makeResponse(status: number, validateStatusFn?: ((s: number) => boolean) | null): FaxiosResponse {
+  function makeResponse(status: number, validateStatusFn?: ((s: number) => boolean) | null | undefined): FaxiosResponse {
+    const validateStatus = validateStatusFn === undefined
+      ? (s: number) => s >= 200 && s < 300
+      : validateStatusFn;
     return {
       status,
-      config: { validateStatus: validateStatusFn ?? ((s: number) => s >= 200 && s < 300) } as InternalFaxiosRequestConfig,
+      config: { validateStatus } as InternalFaxiosRequestConfig,
       request: {},
     } as unknown as FaxiosResponse;
   }
@@ -303,5 +306,31 @@ describe("settle", () => {
     let resolved: unknown;
     settle(r => { resolved = r; }, () => {}, makeResponse(500, () => true));
     assert.strictEqual((resolved as { status: number; }).status, 500);
+  });
+
+  it("resolves when validateStatus is null (!validateStatus branch)", () => {
+    let resolved: unknown;
+    settle(r => { resolved = r; }, () => {}, makeResponse(400, null));
+    assert.strictEqual((resolved as { status: number; }).status, 400);
+  });
+
+  it("resolves when status is 0 (!response.status branch)", () => {
+    let resolved: unknown;
+    settle(r => { resolved = r; }, () => {}, makeResponse(0));
+    assert.strictEqual((resolved as { status: number; }).status, 0);
+  });
+
+  it("error message is 'Request failed with status code N'", () => {
+    let rejected: unknown;
+    settle(() => {}, r => { rejected = r; }, makeResponse(404));
+    assert.ok(rejected instanceof FaxiosError);
+    assert.strictEqual((rejected).message, "Request failed with status code 404");
+  });
+
+  it("rejects with ERR_BAD_RESPONSE when custom validateStatus returns false for 200", () => {
+    let rejected: unknown;
+    settle(() => {}, r => { rejected = r; }, makeResponse(200, () => false));
+    assert.ok(rejected instanceof FaxiosError);
+    assert.strictEqual((rejected).code, FaxiosError.ERR_BAD_RESPONSE);
   });
 });
