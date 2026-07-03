@@ -40,12 +40,13 @@ function setFormDataHeaders(
     headers.set(formHeaders);
     return;
   }
-
+  /* eslint-disable big-o/no-array-lookup-in-loop -- 2-element constant array */
   Object.entries(formHeaders).forEach(([ key, val ]) => {
     if (FORM_DATA_CONTENT_HEADERS.includes(key.toLowerCase())) {
       headers.set(key, val);
     }
   });
+  /* eslint-enable big-o/no-array-lookup-in-loop */
 }
 
 /**

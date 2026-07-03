@@ -32,7 +32,7 @@ function trimSPorHTAB(str: string): string {
 // The control-code ranges are intentional: header sanitization strips C0/DEL bytes.
 // eslint-disable-next-line no-control-regex
 const INVALID_UNICODE_HEADER_VALUE_CHARS = new RegExp("[\\u0000-\\u0008\\u000a-\\u001f\\u007f]+", "g");
-// eslint-disable-next-line no-control-regex
+// eslint-disable-next-line no-control-regex, sonarjs/no-control-regex
 const INVALID_BYTE_STRING_HEADER_VALUE_CHARS = new RegExp("[^\\u0009\\u0020-\\u007e\\u0080-\\u00ff]+", "g");
 
 // eslint-disable-next-line sonarjs/function-return-type

@@ -38,12 +38,13 @@ const ignoreDuplicateOf = utils.toObjectSet([
  *
  * @returns {Object} Headers parsed into an object
  */
-export default (rawHeaders: string): Record<string, string | Array<string>> => {
+export default function parseHeaders(rawHeaders: string): Record<string, string | Array<string>> {
   const parsed: Record<string, string | Array<string>> = {};
   let key: string;
   let val: string;
   let i: number;
 
+  /* eslint-disable big-o/no-array-lookup-in-loop -- String.indexOf, not array lookup */
   rawHeaders &&
     rawHeaders.split("\n").forEach(function parser(line) {
       i = line.indexOf(":");
@@ -69,6 +70,7 @@ export default (rawHeaders: string): Record<string, string | Array<string>> => {
         parsed[key] = existing ? existing + ", " + val : val;
       }
     });
+  /* eslint-enable big-o/no-array-lookup-in-loop */
 
   return parsed;
 };

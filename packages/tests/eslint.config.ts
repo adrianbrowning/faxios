@@ -145,10 +145,23 @@ export const extraRules: Array<Linter.Config> = [
       "sonarjs/single-char-in-character-classes": "off",
       // Test infrastructure intentionally throttles stream output
       "no-await-in-loop": "off",
+      // Tests use .toBe(null) / .toBe(undefined) intentionally
+      "sonarjs/prefer-specific-assertions": "off",
     },
   },
 ];
 
-const config: Array<Linter.Config> = [ ...defaultConfig, ...extraRules ];
+const config: Array<Linter.Config> = [
+  ...defaultConfig,
+  ...extraRules,
+  {
+    files: [ "**/*.js", "**/*.cjs", "**/*.mjs" ],
+    rules: {
+      "big-o/no-array-lookup-in-loop": "off",
+      "big-o/no-quadratic-dedup": "off",
+      "big-o/no-nested-array-spread": "off",
+    },
+  },
+];
 
 export default config;
