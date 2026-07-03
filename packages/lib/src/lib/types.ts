@@ -2,6 +2,8 @@
 // Internal shared types — imported by implementation files.
 // Public API types in index.d.ts re-export or extend these.
 
+import type { StandardSchemaV1 } from "./types/standard-schema.ts";
+
 export type StringLiteralsOrString<Literals extends string> =
   | Literals
   | (string & {});
@@ -283,6 +285,7 @@ export interface FaxiosRequestConfig<D = unknown> {
   fetchOptions?: Record<string, unknown>;
   formDataHeaderPolicy?: "legacy" | "content-only";
   redact?: Array<string>;
+  responseSchema?: StandardSchemaV1;
 }
 
 export type RawFaxiosRequestConfig<D = unknown> = FaxiosRequestConfig<D>;
