@@ -16,7 +16,7 @@ The rules below are a Copilot-facing subset of the load-bearing safety guarantee
 
 ## Architecture in one screen
 
-- `lib/core/` — domain logic: `faxios`, `FaxiosError`, `AxiosHeaders`, `InterceptorManager`, config merge, request dispatch.
+- `lib/core/` — domain logic: `faxios`, `FaxiosError`, `FaxiosHeaders`, `InterceptorManager`, config merge, request dispatch.
 - `lib/adapters/` — I/O: `fetch.ts` is the only transport, called unconditionally. No adapter selection, no `config.adapter`.
 - `lib/platform/` — consolidated into `lib/platform.ts`; selects browser/web-standard implementation in all runtimes.
 - `lib/helpers/` — generic, reusable utilities; no faxios-specific lifecycle logic here.
@@ -34,10 +34,9 @@ The rules below are a Copilot-facing subset of the load-bearing safety guarantee
 
 ## Naming and style
 
-- PascalCase classes (`faxios`, `AxiosHeaders`), camelCase functions (`buildURL`, `mergeConfig`), UPPER_SNAKE_CASE error codes.
-- Internal slots use `Symbol`-keyed properties (see `$internals` in `lib/core/AxiosHeaders.js`), not underscore-prefixed names.
+- PascalCase classes (`faxios`, `FaxiosHeaders`), camelCase functions (`buildURL`, `mergeConfig`), UPPER_SNAKE_CASE error codes.
+- Use `#` private field syntax in TypeScript class files (e.g. `#handlers`, `#idCounter`); use `Symbol`-keyed slots in plain `.js` files where `#` is unavailable. Never use underscore-prefixed names for either.
 - Use native `Function.prototype.bind` — `lib/helpers/bind.ts` has been deleted.
-- Use `#` syntax for private fields in TypeScript class files (e.g. `#handlers`, `#idCounter`), not underscore prefixes or Symbol keys.
 - `'use strict';` appears at the top of files that already use it; match the surrounding file rather than blanket-adding it.
 
 ## Security guarantees that must not regress
