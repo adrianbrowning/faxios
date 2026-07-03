@@ -17,7 +17,6 @@ Deno.test("errors: rejects with FaxiosError for 500", async () => {
 
   const err = await faxios
     .get("https://example.com/fail", {
-      adapter: "fetch",
       env: env(fetch),
     })
     .catch((e: any) => e);
@@ -37,7 +36,6 @@ Deno.test("errors: rejects with FaxiosError for 404", async () => {
 
   const err = await faxios
     .get("https://example.com/missing", {
-      adapter: "fetch",
       env: env(fetch),
     })
     .catch((e: any) => e);

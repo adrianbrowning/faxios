@@ -24,45 +24,28 @@ function encode(str: string): string {
   });
 }
 
-type FaxiosURLSearchParamsInstance = {
-  _pairs: Array<[string, unknown]>;
-  append: (name: string, value: unknown, options?: unknown) => unknown;
-  toString: (encoder?: (value: string, encode: (v: string) => string) => string) => string;
-};
+class FaxiosURLSearchParams {
+  #pairs: Array<[string, unknown]> = [];
 
-/**
- * It takes a params object and converts it to a FormData object
- *
- * @param {Object<string, any>} params - The parameters to be converted to a FormData object.
- * @param {Object<string, any>} options - The options object passed to the Faxios constructor.
- *
- * @returns {void}
- */
-function FaxiosURLSearchParams(this: FaxiosURLSearchParamsInstance, params?: unknown, options?: unknown) {
-  this._pairs = [];
+  constructor(params?: unknown, options?: unknown) {
+    params && toFormData(params, this, options as Record<string, unknown>);
+  }
 
-  params && toFormData(params, this, options as Record<string, unknown>);
+  append(name: string, value: unknown): void {
+    this.#pairs.push([ name, value ]);
+  }
+
+  toString(encoder?: (value: string, encode: (v: string) => string) => string): string {
+    const _encode = encoder
+      ? (value: string) => encoder.call(undefined, value, encode)
+      : encode;
+
+    return this.#pairs
+      .map(function each(pair: [string, unknown]) {
+        return _encode(String(pair[0])) + "=" + _encode(String(pair[1]!));
+      }, "")
+      .join("&");
+  }
 }
-
-const prototype = FaxiosURLSearchParams.prototype as FaxiosURLSearchParamsInstance;
-
-prototype.append = function append(this: FaxiosURLSearchParamsInstance, name: string, value: unknown) {
-  this._pairs.push([ name, value ]);
-};
-
-prototype.toString = function toString(
-  this: FaxiosURLSearchParamsInstance,
-  encoder?: (value: string, encode: (v: string) => string) => string
-): string {
-  const _encode = encoder
-    ? (value: string) => encoder.call(undefined, value, encode)
-    : encode;
-
-  return this._pairs
-    .map(function each(pair: [string, unknown]) {
-      return _encode(String(pair[0])) + "=" + _encode(String(pair[1]!));
-    }, "")
-    .join("&");
-};
 
 export default FaxiosURLSearchParams;

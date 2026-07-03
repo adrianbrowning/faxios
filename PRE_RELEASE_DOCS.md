@@ -20,6 +20,16 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 
 ## Unreleased
 
+### config.adapter removal (custom adapter support dropped)
+
+- **Change:** `config.adapter` removed from `FaxiosRequestConfig`. `FaxiosAdapter`, `FaxiosAdapterConfig`, `FaxiosAdapterName` types deleted. `getAdapter` removed from public exports. `fetch` is the only transport, unconditionally.
+- **Source:** Issue #12 (collapse request-config pipeline / adapter removal).
+- **Status:** Pending.
+- **Docs targets:** README request config table (remove `adapter` row); docs-site request-config page; any adapter authoring / custom transport guide; migration guide.
+- **Required content:** Document that `config.adapter` is no longer accepted (TypeScript error if passed, ignored at runtime). Remove any documentation that shows passing a string `'fetch'` or a custom function as `config.adapter`. In migration guide, tell consumers who used `config.adapter: 'fetch'` (no-op) to remove it, and consumers who used a custom adapter function that this pattern is no longer supported — they should wrap faxios via interceptors or a separate fetch call instead.
+- **Examples:** None.
+- **Notes:** This is a breaking API change requiring a migration guide entry. The internal clone-mechanism change (`mergeConfig` → dedicated null-proto clone in `prepareRequest`) is a pure internal change with no observable behavior difference and does **not** need a docs entry.
+
 ### Fetch-only migration — README + docs-site swept (issue #5)
 
 - **Change:** faxios now uses the web-standard `fetch` API as its only transport in all runtimes. The Node `http`/`https` adapter, browser XHR adapter, Node platform layer, and the `follow-redirects` / `form-data` / `proxy-from-env` / `https-proxy-agent` deps were removed. `onUploadProgress` dropped; many Node transport config fields removed (see `MIGRATION_GUIDE.md` "Fetch-Only Migration"). Connection failures standardize to `ERR_NETWORK` with the OS error on `error.cause`.

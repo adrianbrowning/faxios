@@ -126,7 +126,6 @@ export default function mergeConfig(config1: FaxiosRequestConfig | FaxiosDefault
     timeoutMessage: defaultToConfig2,
     withCredentials: defaultToConfig2,
     withXSRFToken: defaultToConfig2,
-    adapter: defaultToConfig2,
     responseType: defaultToConfig2,
     xsrfCookieName: defaultToConfig2,
     xsrfHeaderName: defaultToConfig2,
@@ -134,7 +133,6 @@ export default function mergeConfig(config1: FaxiosRequestConfig | FaxiosDefault
     onDownloadProgress: defaultToConfig2,
     maxContentLength: defaultToConfig2,
     maxBodyLength: defaultToConfig2,
-    cancelToken: defaultToConfig2,
     responseEncoding: defaultToConfig2,
     validateStatus: mergeDirectKeys,
     headers: (a: unknown, b: unknown, prop?: unknown) =>

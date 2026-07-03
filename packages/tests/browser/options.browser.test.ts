@@ -84,10 +84,11 @@ describe("options (vitest browser)", () => {
     expect(new URL(mock.lastRequest!.url).pathname).toBe("/foo");
   });
 
-  it("should ignore base URL if request URL is absolute", async () => {
+  it("should ignore base URL if request URL is absolute and allowAbsoluteUrls is true", async () => {
     using mock = installFetchMock();
     const instance = faxios.create({
       baseURL: "http://someurl.com/",
+      allowAbsoluteUrls: true,
     });
 
     await instance.get("http://someotherurl.com/");

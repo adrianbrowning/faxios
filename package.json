@@ -22,7 +22,7 @@
     "lint:e18e": "pnpm dlx @e18e/cli analyze"
   },
   "devDependencies": {
-    "@ai-hero/sandcastle": "^0.10.0",
+    "@ai-hero/sandcastle": "^0.12.0",
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
     "@gingacodemonkey/config": "^0.0.33",

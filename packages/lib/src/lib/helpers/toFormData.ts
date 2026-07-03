@@ -28,7 +28,7 @@ function isVisitable(thing: unknown): boolean {
  * @returns {string} the key without the brackets.
  */
 function removeBrackets(key: string): string {
-  return utils.endsWith(key, "[]") ? key.slice(0, -2) : key;
+  return key.endsWith("[]") ? key.slice(0, -2) : key;
 }
 
 /**
@@ -210,14 +210,14 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
     }
 
     if (value && !path && typeof value === "object") {
-      if (utils.endsWith(String(key), "{}")) {
+      if (String(key).endsWith("{}")) {
         key = metaTokens ? key : String(key).slice(0, -2);
 
         value = stringifyWithDepthLimit(value, 1);
       }
       else if (
         (utils.isArray(value) && isFlatArray(value)) ||
-        ((utils.isFileList(value) || utils.endsWith(String(key), "[]")) &&
+        ((utils.isFileList(value) || String(key).endsWith("[]")) &&
           (arr = utils.toArray(value)))
       ) {
         key = removeBrackets(String(key));

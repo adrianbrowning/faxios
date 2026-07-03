@@ -7,19 +7,12 @@ import { startHTTPServer, stopHTTPServer } from "../setup/server.js";
 describe("QUERY method", () => {
   describe("static faxios.query()", () => {
     it("should make a request with the QUERY HTTP method", async () => {
-      const response = await faxios.query("/test", null, {
-        adapter: async (
-          config: import("#src/lib/types.ts").InternalFaxiosRequestConfig
-        ) => {
-          assert.strictEqual(config.method, "query");
-          return Promise.resolve({
-            data: null,
-            status: 200,
-            statusText: "OK",
-            headers: { get: () => null },
-            config,
-            request: {},
-          });
+      const response = await faxios.query("http://localhost/test", null, {
+        env: {
+          fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+            assert.strictEqual(init?.method, "QUERY");
+            return new Response(null, { status: 200 });
+          },
         },
       });
 
@@ -32,73 +25,47 @@ describe("QUERY method", () => {
         filter: { active: true },
       };
 
-      await faxios.query("/search", requestBody, {
-        adapter: async (
-          config: import("#src/lib/types.ts").InternalFaxiosRequestConfig
-        ) => {
-          assert.deepStrictEqual(config.data, JSON.stringify(requestBody));
-          return Promise.resolve({
-            data: null,
-            status: 200,
-            statusText: "OK",
-            headers: { get: () => null },
-            config,
-            request: {},
-          });
+      await faxios.query("http://localhost/search", requestBody, {
+        env: {
+          fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+            assert.deepStrictEqual(init?.body, JSON.stringify(requestBody));
+            return new Response(null, { status: 200 });
+          },
         },
       });
     });
 
     it("should support custom headers", async () => {
-      await faxios.query("/test", null, {
+      await faxios.query("http://localhost/test", null, {
         headers: {
           "X-Custom-Header": "custom-value",
           Authorization: "Bearer token-abc",
         },
-        adapter: async (
-          config: import("#src/lib/types.ts").InternalFaxiosRequestConfig
-        ) => {
-          assert.strictEqual(
-            config.headers.get("X-Custom-Header"),
-            "custom-value"
-          );
-          assert.strictEqual(
-            config.headers.get("Authorization"),
-            "Bearer token-abc"
-          );
-          return Promise.resolve({
-            data: null,
-            status: 200,
-            statusText: "OK",
-            headers: { get: () => null },
-            config,
-            request: {},
-          });
+        env: {
+          fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+            const headers = init?.headers as Record<string, string>;
+            assert.strictEqual(headers["X-Custom-Header"], "custom-value");
+            assert.strictEqual(headers["Authorization"], "Bearer token-abc");
+            return new Response(null, { status: 200 });
+          },
         },
       });
     });
 
     it("should work with baseURL configuration", async () => {
-      const instance = faxios.create({ baseURL: "http://example.com/api" });
+      const instance = faxios.create({ baseURL: "http://example.com/api/" });
 
       await instance.query(
-        "/resources",
+        "resources",
         { fields: [ "name" ] },
         {
-          adapter: async (
-            config: import("#src/lib/types.ts").InternalFaxiosRequestConfig
-          ) => {
-            assert.strictEqual(config.baseURL, "http://example.com/api");
-            assert.strictEqual(config.url, "/resources");
-            assert.strictEqual(config.method, "query");
-            return Promise.resolve({
-              data: null,
-              status: 200,
-              statusText: "OK",
-              headers: { get: () => null },
-              config,
-              request: {},
-            });
+          env: {
+            fetch: async (input: string | Request | URL, init?: RequestInit) => {
+              const url = input instanceof Request ? input.url : String(input);
+              assert.strictEqual(url, "http://example.com/api/resources");
+              assert.strictEqual(init?.method, "QUERY");
+              return new Response(null, { status: 200 });
+            },
           },
         }
       );
@@ -106,26 +73,18 @@ describe("QUERY method", () => {
 
     it("should set Content-Type to application/json for object bodies", async () => {
       await faxios.query(
-        "/test",
+        "http://localhost/test",
         { key: "value" },
         {
-          adapter: async (
-            config: import("#src/lib/types.ts").InternalFaxiosRequestConfig
-          ) => {
-            assert.ok(
-              (config.headers.get("Content-Type") as string).includes(
-                "application/json"
-              ),
-              "Expected Content-Type to include application/json"
-            );
-            return Promise.resolve({
-              data: null,
-              status: 200,
-              statusText: "OK",
-              headers: { get: () => null },
-              config,
-              request: {},
-            });
+          env: {
+            fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+              const headers = init?.headers as Record<string, string>;
+              assert.ok(
+                headers["Content-Type"]?.includes("application/json"),
+                "Expected Content-Type to include application/json"
+              );
+              return new Response(null, { status: 200 });
+            },
           },
         }
       );
@@ -136,19 +95,12 @@ describe("QUERY method", () => {
     it("should make a request with the QUERY HTTP method on an instance", async () => {
       const instance = faxios.create();
 
-      const response = await instance.query("/test", null, {
-        adapter: async (
-          config: import("#src/lib/types.ts").InternalFaxiosRequestConfig
-        ) => {
-          assert.strictEqual(config.method, "query");
-          return Promise.resolve({
-            data: null,
-            status: 200,
-            statusText: "OK",
-            headers: { get: () => null },
-            config,
-            request: {},
-          });
+      const response = await instance.query("http://localhost/test", null, {
+        env: {
+          fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+            assert.strictEqual(init?.method, "QUERY");
+            return new Response(null, { status: 200 });
+          },
         },
       });
 
@@ -160,27 +112,15 @@ describe("QUERY method", () => {
         headers: { "X-Instance-Header": "from-instance" },
       });
 
-      await instance.query("/test", null, {
+      await instance.query("http://localhost/test", null, {
         headers: { "X-Request-Header": "from-request" },
-        adapter: async (
-          config: import("#src/lib/types.ts").InternalFaxiosRequestConfig
-        ) => {
-          assert.strictEqual(
-            config.headers.get("X-Instance-Header"),
-            "from-instance"
-          );
-          assert.strictEqual(
-            config.headers.get("X-Request-Header"),
-            "from-request"
-          );
-          return Promise.resolve({
-            data: null,
-            status: 200,
-            statusText: "OK",
-            headers: { get: () => null },
-            config,
-            request: {},
-          });
+        env: {
+          fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+            const headers = init?.headers as Record<string, string>;
+            assert.strictEqual(headers["X-Instance-Header"], "from-instance");
+            assert.strictEqual(headers["X-Request-Header"], "from-request");
+            return new Response(null, { status: 200 });
+          },
         },
       });
     });
@@ -190,24 +130,17 @@ describe("QUERY method", () => {
     it("should support the generic request form", async () => {
       const response = await faxios({
         method: "query",
-        url: "/test",
+        url: "http://localhost/test",
         data: { selector: "*" },
-        adapter: async (
-          config: import("#src/lib/types.ts").InternalFaxiosRequestConfig
-        ) => {
-          assert.strictEqual(config.method, "query");
-          assert.deepStrictEqual(
-            config.data,
-            JSON.stringify({ selector: "*" })
-          );
-          return Promise.resolve({
-            data: { result: "ok" },
-            status: 200,
-            statusText: "OK",
-            headers: { get: () => null },
-            config,
-            request: {},
-          });
+        env: {
+          fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+            assert.strictEqual(init?.method, "QUERY");
+            assert.deepStrictEqual(init?.body, JSON.stringify({ selector: "*" }));
+            return new Response(JSON.stringify({ result: "ok" }), {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            });
+          },
         },
       });
 
@@ -308,10 +241,10 @@ describe("QUERY method", () => {
 
       try {
         const instance = faxios.create({
-          baseURL: `http://localhost:${(server.address() as AddressInfo).port}/api`,
+          baseURL: `http://localhost:${(server.address() as AddressInfo).port}/api/`,
         });
 
-        const { data } = await instance.query<Record<string, unknown>>("/resources", {
+        const { data } = await instance.query<Record<string, unknown>>("resources", {
           fields: [ "name" ],
         });
 

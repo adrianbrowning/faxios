@@ -13,7 +13,6 @@ describe("Bun importing", () => {
     expect(typeof (exports.create ?? exports.default.create)).toBe("function");
     expect(typeof exports.isCancel).toBe("function");
     expect(typeof exports.isFaxiosError).toBe("function");
-    expect(typeof exports.CancelToken).toBe("function");
     expect(typeof exports.VERSION).toBe("string");
   });
 });

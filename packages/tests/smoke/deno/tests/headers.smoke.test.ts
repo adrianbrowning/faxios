@@ -30,7 +30,6 @@ Deno.test("headers: default Accept header is sent", async () => {
   const { fetch, getCalls } = createFetchCapture();
 
   await faxios.get("https://example.com/default-headers", {
-    adapter: "fetch",
     env: env(fetch),
   });
 
@@ -45,7 +44,6 @@ Deno.test("headers: custom headers are forwarded", async () => {
   const { fetch, getCalls } = createFetchCapture();
 
   await faxios.get("https://example.com/custom-headers", {
-    adapter: "fetch",
     headers: {
       "X-Trace-Id": "trace-123",
       Authorization: "Bearer token-abc",
@@ -65,7 +63,6 @@ Deno.test("headers: content-type is set for JSON POST payload", async () => {
     "https://example.com/post-json",
     { name: "widget" },
     {
-      adapter: "fetch",
       env: env(fetch),
     }
   );
@@ -79,7 +76,6 @@ Deno.test("headers: content-type is absent for bodyless GET", async () => {
   const { fetch, getCalls } = createFetchCapture();
 
   await faxios.get("https://example.com/get-no-body", {
-    adapter: "fetch",
     env: env(fetch),
   });
 

@@ -1,5 +1,4 @@
 import faxios, { CanceledError, FaxiosError, FaxiosHeaders } from "faxios";
-import settle from "faxios/unsafe/core/settle.js";
 import { describe, expect, it } from "vitest";
 
 describe("ESM importing", () => {
@@ -17,10 +16,6 @@ describe("ESM importing", () => {
 
   it("should import FaxiosHeaders", () => {
     expect(typeof FaxiosHeaders).toStrictEqual("function");
-  });
-
-  it("should import settle", () => {
-    expect(typeof settle).toStrictEqual("function");
   });
 
   it("should import CanceledError from faxios", () => {

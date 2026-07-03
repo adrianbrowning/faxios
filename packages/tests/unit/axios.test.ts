@@ -1,19 +1,21 @@
 import assert from "node:assert";
-import { describe, it } from "vitest";
+import { describe, it, vi } from "vitest";
 import Faxios from "#src/lib/core/Faxios.js";
+
+vi.mock("#src/lib/core/dispatchRequest.js", () => ({ default: vi.fn() }));
+
+const { default: dispatchRequest } = await import("#src/lib/core/dispatchRequest.js");
 
 describe("Faxios", () => {
   describe("handle un-writable error stack", () => {
     const testUnwritableErrorStack = async (
       stackAttributes: PropertyDescriptor
     ) => {
+      const mockError = new Error("test-error");
+      Object.defineProperty(mockError, "stack", stackAttributes);
+      vi.mocked(dispatchRequest).mockRejectedValueOnce(mockError);
+
       const faxios = new Faxios({});
-      // Mock faxios._request to return an Error with an un-writable stack property.
-      faxios._request = () => {
-        const mockError = new Error("test-error");
-        Object.defineProperty(mockError, "stack", stackAttributes);
-        throw mockError;
-      };
 
       try {
         await faxios.request("test-url", {});

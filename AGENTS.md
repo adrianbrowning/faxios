@@ -42,7 +42,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 ## Architecture Boundaries
 
 - `lib/core/` is faxios domain logic: request dispatch, config merge, interceptors, headers, errors. Key classes: `faxios` (request dispatch + interceptor chains), `FaxiosError` (standardized error codes), `AxiosHeaders` (case-insensitive header normalization), `InterceptorManager` (sync/async interceptor registration).
-- `lib/adapters/` performs I/O; there is only the web-standard `fetch` adapter now (`knownAdapters = { fetch: { get: getFetch } }`, default `adapter: ['fetch']`) in `lib/adapters/adapters.js`. Custom user-supplied adapters are still supported.
+- `lib/adapters/` performs I/O; the web-standard `fetch` adapter (`lib/adapters/fetch.ts`) is the only transport — it is called unconditionally from `dispatchRequest.ts`. Custom user-supplied adapters are not supported; `config.adapter` is not a valid config field.
 - `lib/platform/` selects the browser/web-standard implementation in all runtimes (browser, Node 18+, Deno, Bun).
 - `lib/helpers/` should stay generic and reusable outside faxios; do not put faxios-specific request lifecycle logic there.
 - New `lib/**/*.js` files should match existing source style: ESM imports with explicit `.js` extensions, `'use strict';` where current library files use it, and `FaxiosError` for faxios-originated failures.
@@ -52,7 +52,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 - Classes: PascalCase (`faxios`, `FaxiosError`, `InterceptorManager`).
 - Functions: camelCase (`buildURL`, `mergeConfig`, `dispatchRequest`).
 - Error codes: UPPER_SNAKE_CASE constants on `FaxiosError` (`ERR_NETWORK`, `ETIMEDOUT`).
-- Internal class slots: `Symbol`-keyed (e.g. `const $internals = Symbol('internals')` in `lib/core/AxiosHeaders.js`) rather than underscore-prefixed properties.
+- Internal class slots: use `#` private field syntax in TypeScript class files (e.g. `#handlers`, `#idCounter` in `InterceptorManager`); use `Symbol`-keyed slots (e.g. `const $internals = Symbol('internals')`) in plain `.js` files where `#` syntax is unavailable. Never use underscore-prefixed properties for either.
 
 ## Error Handling
 
@@ -73,7 +73,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 1. User calls `faxios()` or a method alias.
 2. Merge instance defaults with request config via `mergeConfig`.
 3. Run request interceptors (LIFO).
-4. Select adapter via `lib/adapters/adapters.js` capability check.
+4. Call the fetch adapter directly (`getFetch(config)` from `lib/adapters/fetch.ts`).
 5. Apply `transformRequest` functions.
 6. Adapter performs the HTTP request.
 7. Apply `transformResponse` functions.
@@ -82,7 +82,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 
 ## Cancellation
 
-- Both `CancelToken` (legacy) and `AbortSignal` (modern) are supported simultaneously; do not break either path.
+- Only `AbortSignal` is supported for cancellation; pass it via `config.signal`.
 - Cancellation must work at any lifecycle stage, including mid-flight body reads.
 - Always remove signal listeners on settlement or cancellation to prevent memory leaks.
 
@@ -90,7 +90,8 @@ This file is the canonical contributor guide for both human and AI agents workin
 
 - Do not mutate config objects in-place; return new objects from merges/transforms.
 - Do not assume browser- or Node-specific globals exist; capability-check first.
-- Do not use `Function.prototype.bind` directly — use `lib/helpers/bind.js`, which forwards `arguments` via `apply` and is what the rest of the library relies on.
+- Use native `Function.prototype.bind` — `lib/helpers/bind.js` has been deleted.
+- Use `#` syntax for private fields in TypeScript class files (e.g. `#handlers`, `#idCounter`), not underscore prefixes or Symbol keys.
 - Do not throw raw `Error` from library code; use `FaxiosError` with an appropriate code (see Error Handling).
 
 ## Tests

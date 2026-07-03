@@ -106,10 +106,7 @@ function resolveAllowAbsoluteUrls(
   defaults: FaxiosRequestConfig
 ): void {
   if (config.allowAbsoluteUrls === undefined) {
-    config.allowAbsoluteUrls =
-      defaults.allowAbsoluteUrls !== undefined
-        ? defaults.allowAbsoluteUrls
-        : true;
+    config.allowAbsoluteUrls = defaults.allowAbsoluteUrls ?? !defaults.baseURL;
   }
 }
 
@@ -226,7 +223,7 @@ class Faxios {
     config?: FaxiosRequestConfig
   ) {
     try {
-      return await this._request(configOrUrl, config);
+      return await this.#request(configOrUrl, config);
     }
     catch (err) {
       if (err instanceof Error) {
@@ -237,7 +234,7 @@ class Faxios {
     }
   }
 
-  async _request(
+  async #request(
     configOrUrl: string | FaxiosRequestConfig,
     config?: FaxiosRequestConfig
   ): Promise<unknown> {
@@ -368,6 +365,77 @@ class Faxios {
     return promise;
   }
 
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  get(url: string, config?: FaxiosRequestConfig) {
+    return this.request(mergeConfig(config || {}, {
+      method: "get",
+      url,
+      data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
+    }));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  delete(url: string, config?: FaxiosRequestConfig) {
+    return this.request(mergeConfig(config || {}, {
+      method: "delete",
+      url,
+      data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
+    }));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  head(url: string, config?: FaxiosRequestConfig) {
+    return this.request(mergeConfig(config || {}, {
+      method: "head",
+      url,
+      data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
+    }));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  options(url: string, config?: FaxiosRequestConfig) {
+    return this.request(mergeConfig(config || {}, {
+      method: "options",
+      url,
+      data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
+    }));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  post(url: string, data?: unknown, config?: FaxiosRequestConfig) {
+    return this.request(mergeConfig(config || {}, { method: "post", headers: {}, url, data }));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  postForm(url: string, data?: unknown, config?: FaxiosRequestConfig) {
+    return this.request(mergeConfig(config || {}, { method: "post", headers: { "Content-Type": "multipart/form-data" }, url, data }));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  put(url: string, data?: unknown, config?: FaxiosRequestConfig) {
+    return this.request(mergeConfig(config || {}, { method: "put", headers: {}, url, data }));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  putForm(url: string, data?: unknown, config?: FaxiosRequestConfig) {
+    return this.request(mergeConfig(config || {}, { method: "put", headers: { "Content-Type": "multipart/form-data" }, url, data }));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  patch(url: string, data?: unknown, config?: FaxiosRequestConfig) {
+    return this.request(mergeConfig(config || {}, { method: "patch", headers: {}, url, data }));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  patchForm(url: string, data?: unknown, config?: FaxiosRequestConfig) {
+    return this.request(mergeConfig(config || {}, { method: "patch", headers: { "Content-Type": "multipart/form-data" }, url, data }));
+  }
+
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  query(url: string, data?: unknown, config?: FaxiosRequestConfig) {
+    return this.request(mergeConfig(config || {}, { method: "query", headers: {}, url, data }));
+  }
+
   getUri(config?: FaxiosRequestConfig) {
     config = mergeConfig(this.defaults, config);
     const fullPath = buildFullPath(
@@ -379,64 +447,5 @@ class Faxios {
     return buildURL(fullPath, config.params, config.paramsSerializer);
   }
 }
-
-// Provide aliases for supported request methods
-utils.forEach(
-  [ "delete", "get", "head", "options" ],
-  function forEachMethodNoData(method) {
-    /*eslint func-names:0*/
-    (Faxios.prototype as unknown as Record<string, unknown>)[method as string] =
-      async function (this: Faxios, url: string, config?: FaxiosRequestConfig) {
-        return this.request(
-          mergeConfig(config || {}, {
-            method: method as string,
-            url,
-            data:
-              config && utils.hasOwnProp(config, "data")
-                ? config.data
-                : undefined,
-          })
-        );
-      };
-  }
-);
-
-utils.forEach(
-  [ "post", "put", "patch", "query" ],
-  function forEachMethodWithData(method) {
-    function generateHTTPMethod(isForm?: boolean) {
-      return async function httpMethod(
-        this: Faxios,
-        url: string,
-        data?: unknown,
-        config?: FaxiosRequestConfig
-      ) {
-        return this.request(
-          mergeConfig(config || {}, {
-            method: method as string,
-            headers: isForm
-              ? {
-                "Content-Type": "multipart/form-data",
-              }
-              : {},
-            url,
-            data,
-          })
-        );
-      };
-    }
-
-    (Faxios.prototype as unknown as Record<string, unknown>)[method as string] =
-      generateHTTPMethod();
-
-    // QUERY is a safe/idempotent read method; multipart form bodies don't fit
-    // its semantics, so no queryForm shorthand is generated.
-    if (method !== "query") {
-      (Faxios.prototype as unknown as Record<string, unknown>)[
-        (method as string) + "Form"
-      ] = generateHTTPMethod(true);
-    }
-  }
-);
 
 export default Faxios;

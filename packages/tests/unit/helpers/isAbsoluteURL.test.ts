@@ -13,8 +13,8 @@ describe("helpers::isAbsoluteURL", () => {
     expect(isAbsoluteURL("!valid://example.com/")).toBe(false);
   });
 
-  it("should return true if URL is protocol-relative", () => {
-    expect(isAbsoluteURL("//example.com/")).toBe(true);
+  it("should return false for protocol-relative URLs (not supported)", () => {
+    expect(isAbsoluteURL("//example.com/")).toBe(false);
   });
 
   it("should return false if URL is relative", () => {

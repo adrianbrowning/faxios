@@ -55,40 +55,4 @@ describe("cancel compat (dist export only)", () => {
     expect(getRequestCount()).toBe(1);
   });
 
-  it("supports cancellation with CancelToken (pre-canceled token)", async () => {
-    const { mockFetch, getRequestCount } = createPendingFetch();
-    const source = faxios.CancelToken.source();
-    source.cancel("Operation canceled by the user.");
-
-    const error = await faxios
-      .get("http://example.com/resource", {
-        cancelToken: source.token,
-        env: { fetch: mockFetch, Request, Response },
-      })
-      .catch(err => err);
-
-    expect(faxios.isCancel(error)).toBe(true);
-    expect(error.code).toBe("ERR_CANCELED");
-    expect(getRequestCount()).toBe(0);
-  });
-
-  it("supports cancellation with CancelToken (in-flight)", async () => {
-    const { mockFetch, getRequestCount } = createPendingFetch();
-    const source = faxios.CancelToken.source();
-
-    const request = faxios
-      .get("http://example.com/resource", {
-        cancelToken: source.token,
-        env: { fetch: mockFetch, Request, Response },
-      })
-      .catch(err => err);
-
-    source.cancel("Operation canceled by the user.");
-
-    const error = await request;
-
-    expect(faxios.isCancel(error)).toBe(true);
-    expect(error.code).toBe("ERR_CANCELED");
-    expect(getRequestCount()).toBe(1);
-  });
 });

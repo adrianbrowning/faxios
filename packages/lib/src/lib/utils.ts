@@ -1,19 +1,12 @@
 "use strict";
 
-import bind from "./helpers/bind.js";
-
 // utils is a library of generic helper functions non-specific to faxios
 
 const { toString } = Object.prototype;
 const { getPrototypeOf } = Object;
 const { iterator, toStringTag } = Symbol;
 
-/* Creating a function that will check if an object has a property. */
-const hasOwnProperty = (
-  ({ hasOwnProperty }) =>
-    (obj: unknown, prop: PropertyKey) =>
-      hasOwnProperty.call(obj, prop)
-)(Object.prototype);
+const hasOwnProperty = (obj: unknown, prop: PropertyKey) => Object.hasOwn(obj as object, prop);
 
 /**
  * Walk the prototype chain (excluding the shared Object.prototype) looking for
@@ -335,14 +328,6 @@ const [ isReadableStream, isRequest, isResponse, isHeaders ] = [
 ].map(kindOfTest);
 
 /**
- * Trim excess whitespace off the beginning and end of a string
- *
- * @param {String} str The String to trim
- *
- * @returns {String} The String freed of excess whitespace
- */
-const trim = (str: string) => str.trim();
-/**
  * Iterate over an Array or an Object invoking a function for each item.
  *
  * If `obj` is an Array callback will be called passing
@@ -524,7 +509,7 @@ const extend = (a: Record<string, unknown>, b: unknown, thisArg: unknown, { allO
     (val, key) => {
       if (thisArg && isFunction(val)) {
         Object.defineProperty(a, key as PropertyKey, Object.assign(Object.create(null) as PropertyDescriptor, {
-          value: bind(val as (...args: Array<unknown>) => unknown, thisArg),
+          value: (val as (...args: Array<unknown>) => unknown).bind(thisArg),
           writable: true,
           enumerable: true,
           configurable: true,
@@ -556,29 +541,6 @@ const stripBOM = (content: string) => {
     content = content.slice(1);
   }
   return content;
-};
-
-/**
- * Inherit the prototype methods from one constructor into another
- * @param {function} constructor
- * @param {function} superConstructor
- * @param {object} [props]
- * @param {object} [descriptors]
- *
- * @returns {void}
- */
-const inherits = (constructor: { prototype: object; super?: object; }, superConstructor: { prototype: object; }, props?: object, descriptors?: PropertyDescriptorMap) => {
-  constructor.prototype = Object.create(superConstructor.prototype, descriptors as PropertyDescriptorMap);
-  Object.defineProperty(constructor.prototype, "constructor", Object.assign(Object.create(null) as PropertyDescriptor, {
-    value: constructor,
-    writable: true,
-    enumerable: false,
-    configurable: true,
-  }));
-  Object.defineProperty(constructor, "super", Object.assign(Object.create(null) as PropertyDescriptor, {
-    value: superConstructor.prototype,
-  }));
-  props && Object.assign(constructor.prototype, props);
 };
 
 /**
@@ -618,44 +580,11 @@ const toFlatObject = (sourceObj: unknown, destObj?: Record<string, unknown>, fil
   return dest;
 };
 
-/**
- * Determines whether a string ends with the characters of a specified string
- *
- * @param {String} str
- * @param {String} searchString
- * @param {Number} [position= 0]
- *
- * @returns {boolean}
- */
-const endsWith = (str: string, searchString: string, position?: number) => {
-  str = String(str);
-  if (position === undefined || position > str.length) {
-    position = str.length;
-  }
-  position -= searchString.length;
-  const lastIndex = str.indexOf(searchString, position);
-  return lastIndex !== -1 && lastIndex === position;
-};
-
-/**
- * Returns new array from array like object or null if failed
- *
- * @param {*} [thing]
- *
- * @returns {?Array}
- */
 const toArray = (thing?: unknown): Array<unknown> | null => {
   if (!thing) return null;
   if (isArray(thing)) return thing;
-  let i = (thing as { length?: unknown; }).length;
-  if (!isNumber(i)) return null;
-  const len = i as number;
-  const arr = new Array(len) as Array<unknown>;
-  let idx = len;
-  while (idx-- > 0) {
-    arr[idx] = (thing as Record<number, unknown>)[idx];
-  }
-  return arr;
+  if (!isNumber((thing as { length?: unknown; }).length)) return null;
+  return Array.from(thing as ArrayLike<unknown>);
 };
 
 /**
@@ -672,27 +601,9 @@ const isTypedArray = ((TypedArray: false | (abstract new (...args: Array<unknown
   (thing: unknown) => TypedArray && thing instanceof TypedArray
 )(typeof Uint8Array !== "undefined" && getPrototypeOf(Uint8Array) as abstract new (...args: Array<unknown>) => unknown);
 
-/**
- * For each entry in the object, call the function with the key and value.
- *
- * @param {Object<any, any>} obj - The object to iterate over.
- * @param {Function} fn - The function to call for each entry.
- *
- * @returns {void}
- */
 const forEachEntry = (obj: unknown, fn: (key: unknown, value: unknown) => void) => {
-  const iterable = obj as Record<symbol, ((this: unknown) => Iterator<[unknown, unknown]>) | undefined>;
-  const generator = iterable[iterator];
-
-  const _iterator = generator!.call(obj);
-
-  let result: IteratorResult<[unknown, unknown]>;
-
-  result = _iterator.next();
-  while (!result.done) {
-    const pair = result.value;
-    fn.call(obj, pair[0], pair[1]);
-    result = _iterator.next();
+  for (const [ key, value ] of obj as Iterable<[unknown, unknown]>) {
+    fn.call(obj, key, value);
   }
 };
 
@@ -989,13 +900,10 @@ export default {
   forEach,
   merge,
   extend,
-  trim,
   stripBOM,
-  inherits,
   toFlatObject,
   kindOf,
   kindOfTest,
-  endsWith,
   toArray,
   forEachEntry,
   matchAll,
