@@ -5,11 +5,11 @@ import {
   checkMaterializedSize,
   cleanFormDataContentType,
   encodeBodyIfNeeded,
-  handleFetchCaughtError,
-  settle
-} from "#src/lib/adapters/fetch.js";
+  handleFetchCaughtError
+} from "#src/lib/adapters/fetch-helpers.js";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
+import { settle } from "#src/lib/core/settle.js";
 import type { FaxiosResponse, InternalFaxiosRequestConfig } from "#src/lib/types.js";
 
 const config = {} as InternalFaxiosRequestConfig;
