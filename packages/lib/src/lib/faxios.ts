@@ -13,6 +13,7 @@ import formDataToJSON from "./helpers/formDataToJSON.js";
 import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
+import type { StandardSchemaV1 } from "./types/standard-schema.js";
 import type { FaxiosInterceptorOptions, FaxiosInterceptorRejected, FaxiosRequestConfig, InternalFaxiosRequestConfig, FaxiosResponse } from "./types.js";
 import utils from "./utils.js";
 
@@ -43,21 +44,59 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
   return instance;
 }
 
+type SchemaConfig<O, D = unknown> = FaxiosRequestConfig<D> & { responseSchema: StandardSchemaV1<unknown, O>; };
+
 export type FaxiosInstance = {
   <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D>): Promise<R>;
   <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
-  request: <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D>) => Promise<R>;
-  get: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>) => Promise<R>;
-  delete: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>) => Promise<R>;
-  head: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>) => Promise<R>;
-  options: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>) => Promise<R>;
-  post: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>) => Promise<R>;
-  put: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>) => Promise<R>;
-  patch: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>) => Promise<R>;
-  query: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>) => Promise<R>;
-  postForm: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>) => Promise<R>;
-  putForm: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>) => Promise<R>;
-  patchForm: <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>) => Promise<R>;
+  request: {
+    <O, D = unknown>(config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D>): Promise<R>;
+  };
+  get: {
+    <O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
+  };
+  delete: {
+    <O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
+  };
+  head: {
+    <O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
+  };
+  options: {
+    <O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
+  };
+  post: {
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
+  };
+  put: {
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
+  };
+  patch: {
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
+  };
+  query: {
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
+  };
+  postForm: {
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
+  };
+  putForm: {
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
+  };
+  patchForm: {
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
+  };
   defaults: { headers: Record<string, unknown>; } & Record<string, unknown>;
   interceptors: {
     request: {
