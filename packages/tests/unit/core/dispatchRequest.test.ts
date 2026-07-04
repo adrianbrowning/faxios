@@ -459,7 +459,7 @@ describe("core::dispatchRequest", () => {
 
     it("validates schema against transformed data (transformResponse runs first)", async () => {
       const config = baseConfig({
-        transformResponse: [() => ({ transformed: true })],
+        transformResponse: [ () => ({ transformed: true }) ],
         responseSchema: {
           "~standard": {
             version: 1,

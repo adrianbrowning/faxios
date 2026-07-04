@@ -96,6 +96,7 @@ async function validateResponseSchema(
       FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
     );
   }
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!result) {
     return response;
   }
