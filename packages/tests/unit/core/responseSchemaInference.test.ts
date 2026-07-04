@@ -1,5 +1,6 @@
 import { describe, it, expectTypeOf } from "vitest";
 import type { StandardSchemaV1 } from "#src/index.ts";
+import { isSchemaValidationError } from "#src/index.ts";
 import type { FaxiosInstance } from "#src/lib/faxios.ts";
 
 type UserOutput = { name: string; age: number; };
@@ -34,6 +35,16 @@ describe("responseSchema type inference", () => {
     async function check(instance: FaxiosInstance) {
       const response = await instance.get("/url");
       expectTypeOf(response.data).toEqualTypeOf<unknown>();
+    }
+    expectTypeOf(check).toBeFunction();
+  });
+
+  it("isSchemaValidationError narrows to FaxiosError with issues", () => {
+    function check(err: unknown) {
+      if (isSchemaValidationError(err)) {
+        expectTypeOf(err.issues).toEqualTypeOf<ReadonlyArray<StandardSchemaV1.Issue>>();
+        expectTypeOf(err.code).toEqualTypeOf<string | undefined>();
+      }
     }
     expectTypeOf(check).toBeFunction();
   });
