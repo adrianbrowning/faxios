@@ -59,7 +59,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
           (error as unknown as Record<string, unknown>).issues = result.issues;
           throw error;
         }
-        response.data = (result as { value: unknown }).value;
+        response.data = (result as { value: unknown; }).value;
       }
 
       return response;
