@@ -73,7 +73,7 @@ RUN pnpm dlx skills add mattpocock/skills \
       -a claude-code -g --copy -y && \
     pnpm dlx skills add anivar/zod-skill \
       --skill zod \
-      -a claude-code -g --copy -y && \
+      -a claude-code -g --copy -y
 
 RUN claude plugin marketplace add mksglu/context-mode && \
     claude plugin install context-mode@context-mode
