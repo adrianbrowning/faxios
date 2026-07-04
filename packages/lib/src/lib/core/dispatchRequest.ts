@@ -5,6 +5,7 @@ import CanceledError from "../cancel/CanceledError.js";
 import isCancel from "../cancel/isCancel.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
+import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
 import utils from "../utils.js";
 import transformData from "./transformData.js";
@@ -51,20 +52,13 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
         delete (config as unknown as Record<string, unknown>)["response"];
       }
 
-      // ponytail: extract to helper if request schema (#15) repeats this pattern
       if (config.responseSchema) {
-        const result = await config.responseSchema["~standard"].validate(response.data);
-        if (result.issues) {
-          const error = new FaxiosError("Response validation failed", FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response);
-          (error as unknown as Record<string, unknown>).issues = result.issues;
-          throw error;
-        }
-        response.data = (result as { value: unknown; }).value;
+        return validateResponseSchema(config, response);
       }
 
       return response;
     },
-    async function onAdapterRejection(reason: unknown) {
+    function onAdapterRejection(reason: unknown) {
       if (!isCancel(reason)) {
         throwIfCancellationRequested(config);
 
@@ -85,4 +79,35 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
     }
   );
   /* eslint-enable promise/always-return */
+}
+
+async function validateResponseSchema(
+  config: InternalFaxiosRequestConfig,
+  response: FaxiosResponse
+): Promise<FaxiosResponse> {
+  let result: StandardSchemaV1.Result<unknown>;
+  try {
+    const raw = config.responseSchema!["~standard"].validate(response.data);
+    result = raw instanceof Promise ? await raw : raw;
+  }
+  catch (err) {
+    throw FaxiosError.from(
+      err instanceof Error ? err : new Error(String(err)),
+      FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
+    );
+  }
+  if (!result) {
+    return response;
+  }
+  if (result.issues?.length) {
+    const error = new FaxiosError(
+      "Response validation failed",
+      FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
+    );
+    // ponytail: strip to spec-only fields — runtime libs may attach sensitive data
+    error.issues = result.issues.map(({ message, path }) => path ? { message, path } : { message });
+    throw error;
+  }
+  response.data = (result as StandardSchemaV1.SuccessResult<unknown>).value;
+  return response;
 }

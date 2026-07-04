@@ -89,6 +89,7 @@ class FaxiosError extends Error {
   response?: FaxiosResponse;
   status?: number;
   override cause?: Error;
+  issues?: ReadonlyArray<StandardSchemaV1.Issue>;
   // legacy/cross-browser optional props:
   description?: unknown;
   number?: unknown;

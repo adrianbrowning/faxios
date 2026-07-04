@@ -20,3 +20,4 @@ docs/.vitepress/cache
 **/*.tsbuildinfo
 packages/lib/faxios-*.tgz
 .pnpm-store/
+.claude/settings.local.json

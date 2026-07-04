@@ -73,4 +73,4 @@ export default function parseHeaders(rawHeaders: string): Record<string, string 
   /* eslint-enable big-o/no-array-lookup-in-loop */
 
   return parsed;
-};
+}
