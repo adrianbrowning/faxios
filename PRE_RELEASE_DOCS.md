@@ -89,6 +89,38 @@ faxios.get('/user/12345', {
 
 - **Notes:** This is release-prep documentation only; do not update README or docs pages in the feature/fix PR.
 
+### responseSchema — Standard Schema response validation
+
+- **Change:** New `responseSchema` config field for automatic response data validation using any Standard Schema v1 compliant library. New `ERR_BAD_RESPONSE_SCHEMA` error code. New `isSchemaValidationError()` type guard export. TypeScript infers `response.data` type from schema output.
+- **Source:** Issue #4 (Standard Schema support — response side).
+- **Status:** Pending.
+- **Docs targets:** README request config table (add `responseSchema` row); docs-site request-config page; error handling page (new error code); TypeScript/generics page (inference behavior); getting-started examples.
+- **Required content:** Document `responseSchema` config option — accepts any object implementing `~standard` (Standard Schema v1 spec). Explain validation lifecycle: runs after `transformResponse`, before response interceptors, only on success path (skipped when `validateStatus` rejects). Document `isSchemaValidationError(err)` for narrowing. Document that `response.data` type is automatically inferred from the schema's output type when `responseSchema` is provided (no manual `<T>` needed). Mention supported libraries: Zod, Valibot, ArkType, or any Standard Schema v1 compliant library. Note that request-side validation is planned in #15.
+- **Examples:**
+
+```ts
+import faxios, { isSchemaValidationError } from 'faxios';
+import { z } from 'zod';
+
+const UserSchema = z.object({ name: z.string(), age: z.number() });
+
+const response = await faxios.get('/user/1', {
+  responseSchema: UserSchema,
+});
+// response.data is typed as { name: string; age: number }
+
+// Error handling
+try {
+  await faxios.get('/user/1', { responseSchema: UserSchema });
+} catch (err) {
+  if (isSchemaValidationError(err)) {
+    console.log(err.issues); // StandardSchemaV1.Issue[]
+  }
+}
+```
+
+- **Notes:** Request-side schema validation (validating request body before sending) is tracked in issue #15 and not part of this release.
+
 ### docs/advanced/headers.md — translation tracking
 
 - **Change:** `docs/advanced/headers.md` was added/updated in the fetch-only sweep (English only). Translated versions have not been created.
