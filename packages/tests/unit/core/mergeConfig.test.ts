@@ -326,6 +326,31 @@ describe("core::mergeConfig", () => {
     });
   });
 
+  describe("responseSchema", () => {
+    const schemaA = { "~standard": { version: 1 as const, vendor: "a", validate: (v: unknown) => ({ value: v }) } };
+    const schemaB = { "~standard": { version: 1 as const, vendor: "b", validate: (v: unknown) => ({ value: v }) } };
+
+    it("uses config2 schema when config1 has none", () => {
+      const merged = mergeConfig({}, { responseSchema: schemaB });
+      expect((merged as Record<string, unknown>).responseSchema).toStrictEqual(schemaB);
+    });
+
+    it("uses config1 schema when config2 has none", () => {
+      const merged = mergeConfig({ responseSchema: schemaA }, {});
+      expect((merged as Record<string, unknown>).responseSchema).toStrictEqual(schemaA);
+    });
+
+    it("config2 wins when both have responseSchema", () => {
+      const merged = mergeConfig({ responseSchema: schemaA }, { responseSchema: schemaB });
+      expect((merged as Record<string, unknown>).responseSchema).toStrictEqual(schemaB);
+    });
+
+    it("explicit undefined in config2 removes schema (opt-out)", () => {
+      const merged = mergeConfig({ responseSchema: schemaA }, { responseSchema: undefined });
+      expect((merged as Record<string, unknown>).responseSchema).toBeUndefined();
+    });
+  });
+
   describe("directMergeKeys", () => {
     it("merges when config2 defines the key", () => {
       expect(mergeConfig({}, { validateStatus: undefined })).toEqual({
