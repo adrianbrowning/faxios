@@ -16,7 +16,7 @@ function makeSchema<T>(validate: StandardSchemaV1<unknown, T>["~standard"]["vali
 
 describe("responseSchema integration", () => {
   it("instance-level responseSchema validates all responses", async () => {
-    const schema = makeSchema((v) => ({ value: v as { id: number; } }));
+    const schema = makeSchema(v => ({ value: v as { id: number; } }));
     const instance = faxios.create({ responseSchema: schema });
 
     const res1 = await instance.get("http://localhost/a", {
@@ -32,7 +32,7 @@ describe("responseSchema integration", () => {
 
   it("per-request responseSchema overrides instance default", async () => {
     const instanceSchema = makeSchema(() => ({ issues: [{ message: "instance rejects" }] }));
-    const requestSchema = makeSchema((v) => ({ value: v as { ok: boolean; } }));
+    const requestSchema = makeSchema(v => ({ value: v as { ok: boolean; } }));
     const instance = faxios.create({ responseSchema: instanceSchema });
 
     const res = await instance.get("http://localhost/test", {
@@ -44,14 +44,14 @@ describe("responseSchema integration", () => {
   });
 
   it("response interceptors receive validated data", async () => {
-    const schema = makeSchema((v) => {
+    const schema = makeSchema(v => {
       const parsed = v as { raw: string; };
       return { value: { transformed: parsed.raw.toUpperCase() } };
     });
     const instance = faxios.create({ responseSchema: schema });
 
-    const interceptedData: unknown[] = [];
-    instance.interceptors.response.use((response) => {
+    const interceptedData: Array<unknown> = [];
+    instance.interceptors.response.use(response => {
       interceptedData.push(response.data);
       return response;
     });

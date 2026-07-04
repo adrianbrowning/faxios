@@ -16,7 +16,7 @@ function makeSchema<T>(validate: StandardSchemaV1<unknown, T>["~standard"]["vali
 
 describe("responseSchema validation", () => {
   it("replaces response.data with result.value on success", async () => {
-    const schema = makeSchema((v) => ({ value: v as { id: number; name: string; } }));
+    const schema = makeSchema(v => ({ value: v as { id: number; name: string; } }));
     const data = { id: 1, name: "test" };
 
     const res = await faxios.get("http://localhost/test", {
@@ -45,7 +45,7 @@ describe("responseSchema validation", () => {
   });
 
   it("attaches issues array from schema result to the error", async () => {
-    const issues = [{ message: "invalid type" }, { message: "too short", path: ["name"] }];
+    const issues = [{ message: "invalid type" }, { message: "too short", path: [ "name" ] }];
     const schema = makeSchema(() => ({ issues }));
 
     try {
@@ -80,7 +80,7 @@ describe("responseSchema validation", () => {
   });
 
   it("supports async schemas returning Promise<Result>", async () => {
-    const schema = makeSchema(async (v) => ({ value: v as { ok: boolean; } }));
+    const schema = makeSchema(async v => ({ value: v as { ok: boolean; } }));
     const data = { ok: true };
 
     const res = await faxios.get("http://localhost/test", {
