@@ -6,8 +6,6 @@
       ],
       "project": ["**/*.{js,ts,cjs,mjs,mts}"],
       "ignore": [
-        "docs/**",
-        "src/lib/platform/browser/**",
         "src/lib/helpers/deprecatedMethod.ts"
       ]
     },
@@ -17,14 +15,11 @@
       ],
       "project": ["**/*.{js,ts,cjs,mjs,mts}"],
       "ignore": [
-        "module/**",
         "smoke/**"
       ]
     },
     "packages/docs": {
       "entry": [
-        ".vitepress/config.mts",
-        ".vitepress/theme/index.ts",
         "scripts/**/*.js"
       ],
       "project": ["**/*.{js,ts,mts,vue}"]
@@ -39,11 +34,10 @@
     },
     ".": {
       "entry": [],
-      "project": [],
-      "ignore": [".sandcastle/**"]
+      "project": []
     }
   },
-  "ignoreBinaries": ["diff"],
+  "ignoreBinaries": ["sha256sum"],
   "ignoreDependencies": [
     "faxios",
     "@vitest/browser",

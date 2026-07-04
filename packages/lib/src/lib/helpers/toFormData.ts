@@ -223,7 +223,7 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
         key = removeBrackets(String(key));
 
         (arr as Array<unknown>).forEach(function each(el: unknown, index: number) {
-          !(utils.isUndefined(el) || el === null) &&
+          !utils.isUndefined(el) && el !== null &&
             (formData as GenericFormData).append(
               /* eslint-disable sonarjs/no-nested-conditional */
               indexes === true
@@ -267,7 +267,7 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
 
     utils.forEach(value, function each(el: unknown, key: unknown) {
       const result =
-        !(utils.isUndefined(el) || el === null) &&
+        !utils.isUndefined(el) && el !== null &&
         visitor.call(
           formData as GenericFormData,
           el,

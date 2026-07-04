@@ -8,7 +8,6 @@ export type ValidatorFn = (value: unknown, opt?: string, opts?: unknown) => bool
 const validators: Record<string, ValidatorFn | undefined> = {};
 
 [ "object", "boolean", "number", "function", "string", "symbol" ].forEach((type, i) => {
-  // eslint-disable-next-line sonarjs/function-return-type
   validators[type] = function validator(thing: unknown): boolean | string {
     return typeof thing === type || "a" + (i < 1 ? "n " : " ") + type;
   };
@@ -38,7 +37,6 @@ const deprecatedWarnings: Record<string, boolean | undefined> = {};
     );
   }
 
-  // eslint-disable-next-line sonarjs/function-return-type
   return (value: unknown, opt?: string, opts?: unknown): boolean | string => {
     if (validator === false) {
       throw new FaxiosError(
@@ -64,7 +62,6 @@ const deprecatedWarnings: Record<string, boolean | undefined> = {};
 };
 
 (validators as Record<string, unknown>)["spelling"] = function spelling(correctSpelling: string): ValidatorFn {
-  // eslint-disable-next-line sonarjs/function-return-type
   return (_value: unknown, opt?: string): boolean | string => {
 
     // eslint-disable-next-line no-console
