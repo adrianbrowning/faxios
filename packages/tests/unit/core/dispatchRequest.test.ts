@@ -319,7 +319,7 @@ describe("core::dispatchRequest", () => {
 
       assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
       assert.strictEqual(thrown.code, FaxiosError.ERR_BAD_RESPONSE_SCHEMA);
-      assert.deepStrictEqual((thrown as unknown as { issues: unknown; }).issues, issues);
+      assert.deepStrictEqual(thrown.issues, issues);
       assert.strictEqual(thrown.response!.status, 200);
     });
 
@@ -343,6 +343,144 @@ describe("core::dispatchRequest", () => {
 
       const result = await dispatchRequest(config);
       assert.deepStrictEqual(result.data, { ok: true });
+    });
+
+    it("wraps throwing schemas in FaxiosError", async () => {
+      const config = baseConfig({
+        responseSchema: {
+          "~standard": {
+            version: 1,
+            vendor: "test",
+            validate: () => { throw new Error("boom"); },
+          },
+        },
+        env: {
+          fetch: async () =>
+            new Response(JSON.stringify({ ok: true }), {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            }),
+        },
+      });
+
+      let thrown: FaxiosError | undefined;
+      try {
+        await dispatchRequest(config);
+      }
+      catch (e) {
+        thrown = e as FaxiosError;
+      }
+
+      assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
+      assert.strictEqual(thrown.code, FaxiosError.ERR_BAD_RESPONSE_SCHEMA);
+      assert.strictEqual(thrown.cause!.message, "boom");
+    });
+
+    it("handles null result from validate without TypeError", async () => {
+      const config = baseConfig({
+        responseSchema: {
+          "~standard": {
+            version: 1,
+            vendor: "test",
+            validate: () => null as never,
+          },
+        },
+        env: {
+          fetch: async () =>
+            new Response(JSON.stringify({ ok: true }), {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            }),
+        },
+      });
+
+      const result = await dispatchRequest(config);
+      assert.deepStrictEqual(result.data, { ok: true });
+    });
+
+    it("strips extra properties from issues (security: no data leak)", async () => {
+      const issues = [
+        { message: "Expected string", path: [ "token" ], value: "Bearer sk-secret-123", input: { token: "Bearer sk-secret-123" } },
+      ];
+      const config = baseConfig({
+        responseSchema: {
+          "~standard": {
+            version: 1,
+            vendor: "zod-like",
+            validate: () => ({ issues }),
+          },
+        },
+        env: {
+          fetch: async () =>
+            new Response(JSON.stringify({ token: "Bearer sk-secret-123" }), {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            }),
+        },
+      });
+
+      let thrown: FaxiosError | undefined;
+      try {
+        await dispatchRequest(config);
+      }
+      catch (e) {
+        thrown = e as FaxiosError;
+      }
+
+      assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
+      assert.deepStrictEqual(thrown.issues, [
+        { message: "Expected string", path: [ "token" ] },
+      ]);
+      const serialized = JSON.stringify(thrown.issues);
+      assert.ok(!serialized.includes("sk-secret"), "sensitive data must not leak into issues");
+    });
+
+    it("does not throw on empty issues array (defensive)", async () => {
+      const config = baseConfig({
+        responseSchema: {
+          "~standard": {
+            version: 1,
+            vendor: "test",
+            validate: (v: unknown) => ({ value: v, issues: [] }),
+          },
+        },
+        env: {
+          fetch: async () =>
+            new Response(JSON.stringify({ ok: true }), {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            }),
+        },
+      });
+
+      const result = await dispatchRequest(config);
+      assert.deepStrictEqual(result.data, { ok: true });
+    });
+
+    it("validates schema against transformed data (transformResponse runs first)", async () => {
+      const config = baseConfig({
+        transformResponse: [() => ({ transformed: true })],
+        responseSchema: {
+          "~standard": {
+            version: 1,
+            vendor: "test",
+            validate: (v: unknown) => {
+              assert.deepStrictEqual(v, { transformed: true }, "schema must receive transformed data");
+              return { value: v };
+            },
+          },
+        },
+        env: {
+          fetch: async () =>
+            new Response(JSON.stringify({ raw: true }), {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            }),
+        },
+      });
+
+      const result = await dispatchRequest(config);
+      assert.deepStrictEqual(result.data, { transformed: true });
     });
 
     it("does not call validate when validateStatus rejects (HTTP error path)", async () => {
