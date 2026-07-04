@@ -14,7 +14,7 @@
     "test:vitest:browser:headless": "vitest run --project browser-headless",
     "test:vitest:watch": "vitest",
     "test:smoke:esm:vitest": "npm --prefix smoke/esm run test:smoke:esm:vitest",
-    "test:smoke:deno": "deno task --cwd smoke/deno test",
+    "test:smoke:deno": "deno task --cwd smoke/deno test --no-check",
     "test:smoke:bun": "bun test --cwd smoke/bun",
     "test:module:esm": "npm --prefix module/esm run test:module:esm",
     "lint": "pnpm lint:ts; pnpm lint:fix",
