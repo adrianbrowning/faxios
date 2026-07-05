@@ -39,7 +39,8 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
 
   /* eslint-disable promise/always-return */
   return (adapter(config)).then(
-    async function onAdapterResolution(response: FaxiosResponse) {
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
+    function onAdapterResolution(response: FaxiosResponse) {
       throwIfCancellationRequested(config);
 
       (config as unknown as Record<string, unknown>)["response"] = response;
@@ -53,7 +54,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
       }
 
       if (config.responseSchema) {
-        return validateResponseSchema(config, response);
+        return validateResponseSchema(config as typeof config & { responseSchema: StandardSchemaV1; }, response);
       }
 
       return response;
@@ -82,12 +83,12 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
 }
 
 async function validateResponseSchema(
-  config: InternalFaxiosRequestConfig,
+  config: InternalFaxiosRequestConfig & { responseSchema: StandardSchemaV1; },
   response: FaxiosResponse
 ): Promise<FaxiosResponse> {
   let result: StandardSchemaV1.Result<unknown>;
   try {
-    const raw = config.responseSchema!["~standard"].validate(response.data);
+    const raw = config.responseSchema["~standard"].validate(response.data);
     result = raw instanceof Promise ? await raw : raw;
   }
   catch (err) {
@@ -96,11 +97,12 @@ async function validateResponseSchema(
       FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
     );
   }
+  throwIfCancellationRequested(config);
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!result) {
     return response;
   }
-  if (result.issues?.length) {
+  if (result.issues !== undefined) {
     const error = new FaxiosError(
       "Response validation failed",
       FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
@@ -109,6 +111,6 @@ async function validateResponseSchema(
     error.issues = result.issues.map(({ message, path }) => path ? { message, path } : { message });
     throw error;
   }
-  response.data = (result as StandardSchemaV1.SuccessResult<unknown>).value;
+  response.data = result.value;
   return response;
 }

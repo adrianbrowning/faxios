@@ -435,7 +435,7 @@ describe("core::dispatchRequest", () => {
       assert.ok(!serialized.includes("sk-secret"), "sensitive data must not leak into issues");
     });
 
-    it("does not throw on empty issues array (defensive)", async () => {
+    it("throws on empty issues array (FailureResult per Standard Schema v1)", async () => {
       const config = baseConfig({
         responseSchema: {
           "~standard": {
@@ -453,8 +453,14 @@ describe("core::dispatchRequest", () => {
         },
       });
 
-      const result = await dispatchRequest(config);
-      assert.deepStrictEqual(result.data, { ok: true });
+      await assert.rejects(
+        async () => dispatchRequest(config),
+        (err: unknown) => {
+          assert.ok(err instanceof FaxiosError);
+          assert.strictEqual(err.code, FaxiosError.ERR_BAD_RESPONSE_SCHEMA);
+          return true;
+        }
+      );
     });
 
     it("validates schema against transformed data (transformResponse runs first)", async () => {

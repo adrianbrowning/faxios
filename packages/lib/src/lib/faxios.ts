@@ -47,6 +47,8 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
 type SchemaConfig<O, D = unknown> = FaxiosRequestConfig<D> & { responseSchema: StandardSchemaV1<unknown, O>; };
 
 export type FaxiosInstance = {
+  <O, D = unknown>(config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  <O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
   <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D>): Promise<R>;
   <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
   request: {
