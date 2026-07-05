@@ -364,8 +364,7 @@ class Faxios {
 
     return promise;
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
   get(url: string, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, {
       method: "get",
@@ -373,8 +372,7 @@ class Faxios {
       data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
     }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
   delete(url: string, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, {
       method: "delete",
@@ -382,8 +380,7 @@ class Faxios {
       data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
     }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
   head(url: string, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, {
       method: "head",
@@ -391,8 +388,7 @@ class Faxios {
       data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
     }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
   options(url: string, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, {
       method: "options",
@@ -400,38 +396,31 @@ class Faxios {
       data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
     }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
   post(url: string, data?: unknown, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, { method: "post", headers: {}, url, data }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
   postForm(url: string, data?: unknown, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, { method: "post", headers: { "Content-Type": "multipart/form-data" }, url, data }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
   put(url: string, data?: unknown, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, { method: "put", headers: {}, url, data }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
   putForm(url: string, data?: unknown, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, { method: "put", headers: { "Content-Type": "multipart/form-data" }, url, data }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
   patch(url: string, data?: unknown, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, { method: "patch", headers: {}, url, data }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
   patchForm(url: string, data?: unknown, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, { method: "patch", headers: { "Content-Type": "multipart/form-data" }, url, data }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
   query(url: string, data?: unknown, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, { method: "query", headers: {}, url, data }));
   }

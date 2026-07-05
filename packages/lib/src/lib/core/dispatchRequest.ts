@@ -39,7 +39,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
 
   /* eslint-disable promise/always-return */
   return (adapter(config)).then(
-    // eslint-disable-next-line @typescript-eslint/promise-function-async
+     
     function onAdapterResolution(response: FaxiosResponse) {
       throwIfCancellationRequested(config);
 
