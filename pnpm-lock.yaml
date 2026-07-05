@@ -79,6 +79,9 @@ importers:
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
+      typescript-eslint:
+        specifier: ^8.62.1
+        version: 8.62.1(eslint@9.39.4(jiti@2.7.0))(typescript@6.0.3)
       zshy:
         specifier: latest
         version: 0.7.3(typescript@6.0.3)
@@ -2619,7 +2622,7 @@ packages:
     resolution: {integrity: sha512-GGToxJ/w1x32s/D2EKND7kTil4n8OVk/9mycTc4VDza13lOvpUZTGX3mFSCtV9ksdGBVzvsyAVLM6mHFThxXxw==}
 
   faxios@file:../../../../../../../tmp/faxios-0.0.1.tgz:
-    resolution: {integrity: sha512-aaHlQOYuLcve0zyMUeeznqkfk250yK2F1J7o+N/51AMs5FFAuyrh+ktriiNzDwZg/scARCCgCteL9fnxhuvOtg==, tarball: file:../../../../../../../tmp/faxios-0.0.1.tgz}
+    resolution: {integrity: sha512-gB9ubxltPyiYRNrFZRK9+RntlHoF4jGAANRxyeff8MJ0TdUH0X2DLRViJn4T2V1B8576ehKF8/l5rkQOiEqIRg==, tarball: file:../../../../../../../tmp/faxios-0.0.1.tgz}
     version: 0.0.1
     engines: {node: '>=24.0.0', pnpm: '>=10.0.0'}
 
