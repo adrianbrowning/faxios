@@ -2,6 +2,7 @@ import assert from "node:assert";
 import { describe, it, vi } from "vitest";
 import dispatchRequest from "#src/lib/core/dispatchRequest.js";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
+import { isSchemaValidationError } from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import defaults from "#src/lib/defaults/index.js";
 import type { InternalFaxiosRequestConfig } from "#src/lib/types.js";
@@ -502,6 +503,60 @@ describe("core::dispatchRequest", () => {
       assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
       assert.strictEqual(thrown.code, FaxiosError.ERR_BAD_REQUEST);
       assert.strictEqual(validate.mock.calls.length, 0, "validate must not be called on HTTP error");
+    });
+
+    it("isSchemaValidationError returns true for throwing validators", async () => {
+      const config = baseConfig({
+        responseSchema: makeSchema(() => { throw new Error("kaboom"); }),
+        env: {
+          fetch: async () =>
+            new Response(JSON.stringify({ ok: true }), {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            }),
+        },
+      });
+
+      let thrown: unknown;
+      try {
+        await dispatchRequest(config);
+      }
+      catch (e) {
+        thrown = e;
+      }
+
+      assert.ok(isSchemaValidationError(thrown), "must pass isSchemaValidationError guard");
+      assert.ok(Array.isArray((thrown as FaxiosError).issues));
+    });
+
+    it("re-throws CanceledError when signal aborted during async schema validation", async () => {
+      const controller = new AbortController();
+      const config = baseConfig({
+        signal: controller.signal,
+        responseSchema: makeSchema(async () => {
+          controller.abort();
+          await new Promise(r => setTimeout(r, 0));
+          return { value: {} };
+        }),
+        env: {
+          fetch: async () =>
+            new Response(JSON.stringify({ ok: true }), {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            }),
+        },
+      });
+
+      let thrown: FaxiosError | undefined;
+      try {
+        await dispatchRequest(config);
+      }
+      catch (e) {
+        thrown = e as FaxiosError;
+      }
+
+      assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
+      assert.strictEqual(thrown.code, FaxiosError.ERR_CANCELED);
     });
   });
 });

@@ -418,6 +418,19 @@ describe("core::FaxiosError", () => {
     });
   });
 
+  it("toJSON includes issues when set", () => {
+    const error = new FaxiosError("fail", FaxiosError.ERR_BAD_RESPONSE_SCHEMA, {} as any);
+    error.issues = [{ message: "expected string" }, { message: "too short", path: [ "name" ] }];
+    const json = error.toJSON();
+    expect(json.issues).toEqual([{ message: "expected string" }, { message: "too short", path: [ "name" ] }]);
+  });
+
+  it("toJSON has issues as undefined when not set", () => {
+    const error = new FaxiosError("Boom", "ECODE", {} as any);
+    const json = error.toJSON();
+    expect(json.issues).toBeUndefined();
+  });
+
   describe("isSchemaValidationError", () => {
     it("returns true for FaxiosError with ERR_BAD_RESPONSE_SCHEMA and issues array", () => {
       const error = new FaxiosError(

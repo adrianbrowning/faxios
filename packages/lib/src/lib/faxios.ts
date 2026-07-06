@@ -13,8 +13,7 @@ import formDataToJSON from "./helpers/formDataToJSON.js";
 import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
-import type { StandardSchemaV1 } from "./types/standard-schema.js";
-import type { FaxiosInterceptorOptions, FaxiosInterceptorRejected, FaxiosRequestConfig, InternalFaxiosRequestConfig, FaxiosResponse } from "./types.js";
+import type { FaxiosInterceptorOptions, FaxiosInterceptorRejected, FaxiosRequestConfig, InternalFaxiosRequestConfig, FaxiosResponse, SchemaConfig } from "./types.js";
 import utils from "./utils.js";
 
 /**
@@ -43,8 +42,6 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
 
   return instance;
 }
-
-type SchemaConfig<O, D = unknown> = FaxiosRequestConfig<D> & { responseSchema: StandardSchemaV1<unknown, O>; };
 
 export type FaxiosInstance = {
   <O, D = unknown>(config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;

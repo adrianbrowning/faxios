@@ -92,10 +92,13 @@ async function validateResponseSchema(
     result = raw instanceof Promise ? await raw : raw;
   }
   catch (err) {
-    throw FaxiosError.from(
+    if (isCancel(err)) throw err;
+    const wrapped = FaxiosError.from(
       err instanceof Error ? err : new Error(String(err)),
       FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
     );
+    wrapped.issues = [{ message: wrapped.message }];
+    throw wrapped;
   }
   throwIfCancellationRequested(config);
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -110,7 +113,7 @@ async function validateResponseSchema(
       "Response validation failed",
       FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
     );
-    // ponytail: strip to spec-only fields — runtime libs may attach sensitive data
+    // Strip to spec-only fields — runtime libs may attach sensitive data
     error.issues = result.issues.map(({ message, path }) => path ? { message, path } : { message });
     throw error;
   }

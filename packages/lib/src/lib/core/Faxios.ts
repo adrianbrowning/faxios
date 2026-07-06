@@ -4,14 +4,12 @@ import transitionalDefaults from "../defaults/transitional.js";
 import buildURL from "../helpers/buildURL.js";
 import validator from "../helpers/validator.js";
 import type { ValidatorFn } from "../helpers/validator.js";
-import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type {
   FaxiosRequestConfig,
   FaxiosResponse,
-  InternalFaxiosRequestConfig
+  InternalFaxiosRequestConfig,
+  SchemaConfig
 } from "../types.js";
-
-type SchemaConfig<O, D = unknown> = FaxiosRequestConfig<D> & { responseSchema: StandardSchemaV1<unknown, O>; };
 import utils from "../utils.js";
 import buildFullPath from "./buildFullPath.js";
 import dispatchRequest from "./dispatchRequest.js";

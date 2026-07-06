@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:vitest": "vitest run",
     "test:vitest:unit": "vitest run --project unit",
+    "test:vitest:typecheck": "vitest typecheck --project unit",
     "test:vitest:browser": "vitest run --project browser",
     "test:vitest:browser:headless": "vitest run --project browser-headless",
     "test:vitest:watch": "vitest",

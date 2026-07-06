@@ -1,4 +1,3 @@
-// @ts-self-types="./types.d.ts"
 // Internal shared types — imported by implementation files.
 // Public API types in index.d.ts re-export or extend these.
 
@@ -287,6 +286,8 @@ export interface FaxiosRequestConfig<D = unknown> {
   redact?: Array<string>;
   responseSchema?: StandardSchemaV1;
 }
+
+export type SchemaConfig<O, D = unknown> = FaxiosRequestConfig<D> & { responseSchema: StandardSchemaV1<unknown, O>; };
 
 export type RawFaxiosRequestConfig<D = unknown> = FaxiosRequestConfig<D>;
 
