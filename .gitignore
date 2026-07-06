@@ -21,3 +21,4 @@ docs/.vitepress/cache
 packages/lib/faxios-*.tgz
 .pnpm-store/
 .claude/settings.local.json
+/plans/
