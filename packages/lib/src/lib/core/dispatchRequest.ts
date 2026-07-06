@@ -25,7 +25,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
   }
 
   if (config.requestSchema) {
-    config.data = await validateSchema(config.requestSchema, config.data, FaxiosError.ERR_BAD_REQUEST_SCHEMA, config) as typeof config.data;
+    config.data = await validateSchema(config.requestSchema, config.data, FaxiosError.ERR_BAD_REQUEST_SCHEMA, config);
   }
 
   config.headers = FaxiosHeaders.from(config.headers) as unknown as typeof config.headers;
