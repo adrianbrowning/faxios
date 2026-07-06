@@ -39,7 +39,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
 
   /* eslint-disable promise/always-return */
   return (adapter(config)).then(
-     
+
     function onAdapterResolution(response: FaxiosResponse) {
       throwIfCancellationRequested(config);
 
@@ -86,7 +86,7 @@ async function validateResponseSchema(
   config: InternalFaxiosRequestConfig & { responseSchema: StandardSchemaV1; },
   response: FaxiosResponse
 ): Promise<FaxiosResponse> {
-  let result: StandardSchemaV1.Result<unknown>;
+  let result: StandardSchemaV1.Result<unknown> | undefined = undefined;
   try {
     const raw = config.responseSchema["~standard"].validate(response.data);
     result = raw instanceof Promise ? await raw : raw;
@@ -100,7 +100,10 @@ async function validateResponseSchema(
   throwIfCancellationRequested(config);
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!result) {
-    return response;
+    throw new FaxiosError(
+      "responseSchema['~standard'].validate() returned a non-Result value",
+      FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
+    );
   }
   if (result.issues !== undefined) {
     const error = new FaxiosError(

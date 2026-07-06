@@ -2,7 +2,7 @@
 // Internal shared types — imported by implementation files.
 // Public API types in index.d.ts re-export or extend these.
 
-import type { StandardSchemaV1 } from "./types/standard-schema.ts";
+import type { StandardSchemaV1 } from "./types/standard-schema.js";
 
 export type StringLiteralsOrString<Literals extends string> =
   | Literals

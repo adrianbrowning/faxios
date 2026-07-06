@@ -2,17 +2,7 @@ import assert from "node:assert";
 import { describe, it } from "vitest";
 import faxios from "#src/index.ts";
 import { isSchemaValidationError } from "#src/index.ts";
-import type { StandardSchemaV1 } from "#src/lib/types/standard-schema.js";
-
-const mockFetch = (body: unknown, status = 200) =>
-  async () => new Response(JSON.stringify(body), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
-
-function makeSchema<T>(validate: StandardSchemaV1<unknown, T>["~standard"]["validate"]): StandardSchemaV1<unknown, T> {
-  return { "~standard": { version: 1, vendor: "test", validate } };
-}
+import { makeSchema, mockFetch } from "./_schemaTestHelpers.ts";
 
 describe("responseSchema integration", () => {
   it("instance-level responseSchema validates all responses", async () => {

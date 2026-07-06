@@ -216,6 +216,7 @@ class FaxiosError extends Error {
       config: serializedConfig,
       code: this.code,
       status: this.status,
+      issues: this.issues,
     };
   }
 }

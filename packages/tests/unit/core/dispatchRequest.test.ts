@@ -5,6 +5,7 @@ import FaxiosError from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import defaults from "#src/lib/defaults/index.js";
 import type { InternalFaxiosRequestConfig } from "#src/lib/types.js";
+import { makeSchema } from "./_schemaTestHelpers.ts";
 
 class ReactNativeFormData {
   append() {}
@@ -269,13 +270,7 @@ describe("core::dispatchRequest", () => {
     it("replaces response.data with validated value on success", async () => {
       const transformed = { name: "alice", age: 30 };
       const config = baseConfig({
-        responseSchema: {
-          "~standard": {
-            version: 1,
-            vendor: "test",
-            validate: (v: unknown) => ({ value: { ...v as object, validated: true } }),
-          },
-        },
+        responseSchema: makeSchema((v: unknown) => ({ value: { ...v as object, validated: true } })),
         env: {
           fetch: async () =>
             new Response(JSON.stringify(transformed), {
@@ -293,13 +288,7 @@ describe("core::dispatchRequest", () => {
     it("throws FaxiosError with ERR_BAD_RESPONSE_SCHEMA on validation failure", async () => {
       const issues = [{ message: "expected string, got number", path: [ "name" ] }];
       const config = baseConfig({
-        responseSchema: {
-          "~standard": {
-            version: 1,
-            vendor: "test",
-            validate: () => ({ issues }),
-          },
-        },
+        responseSchema: makeSchema(() => ({ issues })),
         env: {
           fetch: async () =>
             new Response(JSON.stringify({ name: 123 }), {
@@ -325,13 +314,7 @@ describe("core::dispatchRequest", () => {
 
     it("supports async schema validation", async () => {
       const config = baseConfig({
-        responseSchema: {
-          "~standard": {
-            version: 1,
-            vendor: "test",
-            validate: async (v: unknown) => ({ value: v }),
-          },
-        },
+        responseSchema: makeSchema(async (v: unknown) => ({ value: v })),
         env: {
           fetch: async () =>
             new Response(JSON.stringify({ ok: true }), {
@@ -347,13 +330,7 @@ describe("core::dispatchRequest", () => {
 
     it("wraps throwing schemas in FaxiosError", async () => {
       const config = baseConfig({
-        responseSchema: {
-          "~standard": {
-            version: 1,
-            vendor: "test",
-            validate: () => { throw new Error("boom"); },
-          },
-        },
+        responseSchema: makeSchema(() => { throw new Error("boom"); }),
         env: {
           fetch: async () =>
             new Response(JSON.stringify({ ok: true }), {
@@ -376,15 +353,9 @@ describe("core::dispatchRequest", () => {
       assert.strictEqual(thrown.cause!.message, "boom");
     });
 
-    it("handles null result from validate without TypeError", async () => {
+    it("wraps non-Error throws from validate in FaxiosError", async () => {
       const config = baseConfig({
-        responseSchema: {
-          "~standard": {
-            version: 1,
-            vendor: "test",
-            validate: () => null as never,
-          },
-        },
+        responseSchema: makeSchema(() => { throw "string error"; }),
         env: {
           fetch: async () =>
             new Response(JSON.stringify({ ok: true }), {
@@ -394,8 +365,42 @@ describe("core::dispatchRequest", () => {
         },
       });
 
-      const result = await dispatchRequest(config);
-      assert.deepStrictEqual(result.data, { ok: true });
+      let thrown: FaxiosError | undefined;
+      try {
+        await dispatchRequest(config);
+      }
+      catch (e) {
+        thrown = e as FaxiosError;
+      }
+
+      assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
+      assert.strictEqual(thrown.code, FaxiosError.ERR_BAD_RESPONSE_SCHEMA);
+      assert.strictEqual(thrown.cause!.message, "string error");
+    });
+
+    it("throws on null result from validate (non-compliant schema)", async () => {
+      const config = baseConfig({
+        responseSchema: makeSchema(() => null as never),
+        env: {
+          fetch: async () =>
+            new Response(JSON.stringify({ ok: true }), {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            }),
+        },
+      });
+
+      let thrown: FaxiosError | undefined;
+      try {
+        await dispatchRequest(config);
+      }
+      catch (e) {
+        thrown = e as FaxiosError;
+      }
+
+      assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
+      assert.strictEqual(thrown.code, FaxiosError.ERR_BAD_RESPONSE_SCHEMA);
+      assert.ok(thrown.message.includes("non-Result value"));
     });
 
     it("strips extra properties from issues (security: no data leak)", async () => {
@@ -403,13 +408,7 @@ describe("core::dispatchRequest", () => {
         { message: "Expected string", path: [ "token" ], value: "Bearer sk-secret-123", input: { token: "Bearer sk-secret-123" } },
       ];
       const config = baseConfig({
-        responseSchema: {
-          "~standard": {
-            version: 1,
-            vendor: "zod-like",
-            validate: () => ({ issues }),
-          },
-        },
+        responseSchema: makeSchema(() => ({ issues })),
         env: {
           fetch: async () =>
             new Response(JSON.stringify({ token: "Bearer sk-secret-123" }), {
@@ -437,13 +436,7 @@ describe("core::dispatchRequest", () => {
 
     it("throws on empty issues array (FailureResult per Standard Schema v1)", async () => {
       const config = baseConfig({
-        responseSchema: {
-          "~standard": {
-            version: 1,
-            vendor: "test",
-            validate: (v: unknown) => ({ value: v, issues: [] }),
-          },
-        },
+        responseSchema: makeSchema((v: unknown) => ({ value: v, issues: [] })),
         env: {
           fetch: async () =>
             new Response(JSON.stringify({ ok: true }), {
@@ -466,16 +459,10 @@ describe("core::dispatchRequest", () => {
     it("validates schema against transformed data (transformResponse runs first)", async () => {
       const config = baseConfig({
         transformResponse: [ () => ({ transformed: true }) ],
-        responseSchema: {
-          "~standard": {
-            version: 1,
-            vendor: "test",
-            validate: (v: unknown) => {
-              assert.deepStrictEqual(v, { transformed: true }, "schema must receive transformed data");
-              return { value: v };
-            },
-          },
-        },
+        responseSchema: makeSchema((v: unknown) => {
+          assert.deepStrictEqual(v, { transformed: true }, "schema must receive transformed data");
+          return { value: v };
+        }),
         env: {
           fetch: async () =>
             new Response(JSON.stringify({ raw: true }), {
@@ -493,13 +480,7 @@ describe("core::dispatchRequest", () => {
       const validate = vi.fn();
       const config = baseConfig({
         validateStatus: (status: number) => status >= 200 && status < 300,
-        responseSchema: {
-          "~standard": {
-            version: 1,
-            vendor: "test",
-            validate,
-          },
-        },
+        responseSchema: makeSchema(validate),
         env: {
           fetch: async () =>
             new Response(JSON.stringify({ error: "not found" }), {
