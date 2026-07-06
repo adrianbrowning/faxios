@@ -43,10 +43,36 @@ RUN pnpm dlx skills add mattpocock/skills \
       --skill tdd --skill code-review \
       -a claude-code -g --copy -y && \
     pnpm dlx skills add mcollina/skills \
-      --skill node \
+        --skill node-best-practices \
+        --skill typescript-magician \
+        --skill node \
       -a claude-code -g --copy -y && \
     pnpm dlx skills add DietrichGebert/ponytail \
       --skill ponytail \
+      -a claude-code -g --copy -y && \
+    pnpm dlx skills add adrianbrowning/agent-skills \
+      --skill jherr-dev-workflow \
+      --skill tdd-integration \
+      --skill typescript-patterns \
+    -a claude-code -g --copy -y && \
+    pnpm dlx skills add sergiodxa/agent-skills \
+      --skill frontend-accessibility-best-practices \
+      --skill frontend-async-best-practices \
+      --skill frontend-internationalization-best-practices \
+      --skill frontend-js-best-practices \
+      --skill frontend-react-best-practices \
+      --skill frontend-react-router-best-practices \
+      --skill frontend-testing-best-practices \
+    -a claude-code -g --copy -y && \
+    pnpm dlx skills add alejandrobailo/no-use-effect \
+      --skill no-use-effect \
+      -a claude-code -g --copy -y && \
+    pnpm dlx skills add Cst2989/react-tips-skill \
+      --skill no-unnecessary-effects \
+      --skill react-tips \
+      -a claude-code -g --copy -y && \
+    pnpm dlx skills add anivar/zod-skill \
+      --skill zod \
       -a claude-code -g --copy -y
 
 RUN claude plugin marketplace add mksglu/context-mode && \

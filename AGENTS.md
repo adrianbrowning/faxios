@@ -58,7 +58,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 
 - Throw `FaxiosError` for faxios-originated failures; never raw `Error`. Pass `(message, code, config, request, response)` so consumers can introspect.
 - Wrap third-party errors with `FaxiosError.from(error, code, config, request, response)`.
-- Canonical code list lives in `lib/core/FaxiosError.js`; current codes include `ERR_BAD_OPTION_VALUE`, `ERR_BAD_OPTION`, `ECONNABORTED`, `ETIMEDOUT`, `ECONNREFUSED`, `ERR_NETWORK`, `ERR_FR_TOO_MANY_REDIRECTS`, `ERR_DEPRECATED`, `ERR_BAD_RESPONSE`, `ERR_BAD_REQUEST`, `ERR_CANCELED`, `ERR_NOT_SUPPORT`, `ERR_INVALID_URL`, `ERR_FORM_DATA_DEPTH_EXCEEDED`.
+- Canonical code list lives in `lib/core/FaxiosError.js`; current codes include `ERR_BAD_OPTION_VALUE`, `ERR_BAD_OPTION`, `ECONNABORTED`, `ETIMEDOUT`, `ECONNREFUSED`, `ERR_NETWORK`, `ERR_FR_TOO_MANY_REDIRECTS`, `ERR_DEPRECATED`, `ERR_BAD_RESPONSE`, `ERR_BAD_REQUEST`, `ERR_CANCELED`, `ERR_NOT_SUPPORT`, `ERR_INVALID_URL`, `ERR_FORM_DATA_DEPTH_EXCEEDED`, `ERR_BAD_RESPONSE_SCHEMA`.
 - Validate config options through the `validator` helper; do not invent ad-hoc validation paths.
 
 ## Interceptor Execution Order

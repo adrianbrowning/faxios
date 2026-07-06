@@ -1,5 +1,6 @@
 "use strict";
 
+import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
 import utils from "../utils.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
@@ -88,6 +89,7 @@ class FaxiosError extends Error {
   response?: FaxiosResponse;
   status?: number;
   override cause?: Error;
+  issues?: ReadonlyArray<StandardSchemaV1.Issue>;
   // legacy/cross-browser optional props:
   description?: unknown;
   number?: unknown;
@@ -111,6 +113,7 @@ class FaxiosError extends Error {
   static readonly ERR_NOT_SUPPORT = "ERR_NOT_SUPPORT";
   static readonly ERR_INVALID_URL = "ERR_INVALID_URL";
   static readonly ERR_FORM_DATA_DEPTH_EXCEEDED = "ERR_FORM_DATA_DEPTH_EXCEEDED";
+  static readonly ERR_BAD_RESPONSE_SCHEMA = "ERR_BAD_RESPONSE_SCHEMA";
 
   static from(
     error: Error & { code?: string; status?: number; },
@@ -213,8 +216,21 @@ class FaxiosError extends Error {
       config: serializedConfig,
       code: this.code,
       status: this.status,
+      issues: this.issues,
     };
   }
+}
+
+export function isSchemaValidationError(
+  err: unknown
+): err is FaxiosError & { issues: ReadonlyArray<StandardSchemaV1.Issue>; } {
+  const e = err as Record<string, unknown>;
+  return (
+    utils.isObject(err) &&
+    e.isFaxiosError === true &&
+    e.code === FaxiosError.ERR_BAD_RESPONSE_SCHEMA &&
+    Array.isArray(e.issues)
+  );
 }
 
 export default FaxiosError;

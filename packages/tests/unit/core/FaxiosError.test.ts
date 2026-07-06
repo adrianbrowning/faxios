@@ -1,6 +1,7 @@
 import { isNativeError } from "node:util/types";
 import { describe, it, expect } from "vitest";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
+import { isSchemaValidationError } from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 
 describe("core::FaxiosError", () => {
@@ -414,6 +415,71 @@ describe("core::FaxiosError", () => {
 
       // Useful for debugging — operators can see what was being redacted.
       expect((error.toJSON().config as any).redact).toEqual([ "password" ]);
+    });
+  });
+
+  it("toJSON includes issues when set", () => {
+    const error = new FaxiosError("fail", FaxiosError.ERR_BAD_RESPONSE_SCHEMA, {} as any);
+    error.issues = [{ message: "expected string" }, { message: "too short", path: [ "name" ] }];
+    const json = error.toJSON();
+    expect(json.issues).toEqual([{ message: "expected string" }, { message: "too short", path: [ "name" ] }]);
+  });
+
+  it("toJSON has issues as undefined when not set", () => {
+    const error = new FaxiosError("Boom", "ECODE", {} as any);
+    const json = error.toJSON();
+    expect(json.issues).toBeUndefined();
+  });
+
+  describe("isSchemaValidationError", () => {
+    it("returns true for FaxiosError with ERR_BAD_RESPONSE_SCHEMA and issues array", () => {
+      const error = new FaxiosError(
+        "Response validation failed",
+        FaxiosError.ERR_BAD_RESPONSE_SCHEMA,
+        {} as any
+      );
+      (error as any).issues = [{ message: "bad" }];
+
+      expect(isSchemaValidationError(error)).toBe(true);
+    });
+
+    it("returns false for FaxiosError with different code", () => {
+      const error = new FaxiosError("Boom", FaxiosError.ERR_BAD_RESPONSE, {} as any);
+      (error as any).issues = [{ message: "bad" }];
+
+      expect(isSchemaValidationError(error)).toBe(false);
+    });
+
+    it("returns false for FaxiosError without issues array", () => {
+      const error = new FaxiosError(
+        "Response validation failed",
+        FaxiosError.ERR_BAD_RESPONSE_SCHEMA,
+        {} as any
+      );
+
+      expect(isSchemaValidationError(error)).toBe(false);
+    });
+
+    it("returns false for non-FaxiosError", () => {
+      expect(isSchemaValidationError(new Error("nope"))).toBe(false);
+      expect(isSchemaValidationError(null)).toBe(false);
+      expect(isSchemaValidationError("string")).toBe(false);
+    });
+
+    it("narrows type so issues is accessible", () => {
+      const error = new FaxiosError(
+        "Response validation failed",
+        FaxiosError.ERR_BAD_RESPONSE_SCHEMA,
+        {} as any
+      );
+      (error as any).issues = [{ message: "expected string" }];
+
+      if (isSchemaValidationError(error)) {
+        expect(error.issues[0]!.message).toBe("expected string");
+      }
+      else {
+        expect.fail("should have narrowed");
+      }
     });
   });
 });

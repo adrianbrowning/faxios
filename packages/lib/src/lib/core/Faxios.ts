@@ -6,7 +6,9 @@ import validator from "../helpers/validator.js";
 import type { ValidatorFn } from "../helpers/validator.js";
 import type {
   FaxiosRequestConfig,
-  InternalFaxiosRequestConfig
+  FaxiosResponse,
+  InternalFaxiosRequestConfig,
+  SchemaConfig
 } from "../types.js";
 import utils from "../utils.js";
 import buildFullPath from "./buildFullPath.js";
@@ -218,6 +220,8 @@ class Faxios {
    * @returns {Promise} The Promise to be fulfilled
    */
 
+  async request<O, D = unknown>(config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  async request<T = unknown, R = FaxiosResponse<T>, D = unknown>(configOrUrl: string | FaxiosRequestConfig<D>, config?: FaxiosRequestConfig<D>): Promise<R>;
   async request(
     configOrUrl: string | FaxiosRequestConfig,
     config?: FaxiosRequestConfig
@@ -364,8 +368,9 @@ class Faxios {
 
     return promise;
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
+  get<O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  get<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
   get(url: string, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, {
       method: "get",
@@ -373,8 +378,9 @@ class Faxios {
       data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
     }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
+  delete<O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  delete<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
   delete(url: string, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, {
       method: "delete",
@@ -382,8 +388,9 @@ class Faxios {
       data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
     }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
+  head<O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  head<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
   head(url: string, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, {
       method: "head",
@@ -391,8 +398,9 @@ class Faxios {
       data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
     }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
+  options<O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  options<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
   options(url: string, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, {
       method: "options",
@@ -400,38 +408,45 @@ class Faxios {
       data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
     }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
+  post<O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  post<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
   post(url: string, data?: unknown, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, { method: "post", headers: {}, url, data }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
+  postForm<O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  postForm<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
   postForm(url: string, data?: unknown, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, { method: "post", headers: { "Content-Type": "multipart/form-data" }, url, data }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
+  put<O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  put<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
   put(url: string, data?: unknown, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, { method: "put", headers: {}, url, data }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
+  putForm<O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  putForm<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
   putForm(url: string, data?: unknown, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, { method: "put", headers: { "Content-Type": "multipart/form-data" }, url, data }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
+  patch<O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  patch<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
   patch(url: string, data?: unknown, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, { method: "patch", headers: {}, url, data }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
+  patchForm<O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  patchForm<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
   patchForm(url: string, data?: unknown, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, { method: "patch", headers: { "Content-Type": "multipart/form-data" }, url, data }));
   }
-
-  // eslint-disable-next-line @typescript-eslint/promise-function-async
+   
+  query<O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  query<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
   query(url: string, data?: unknown, config?: FaxiosRequestConfig) {
     return this.request(mergeConfig(config || {}, { method: "query", headers: {}, url, data }));
   }

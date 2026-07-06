@@ -25,6 +25,10 @@
 
 - **`spread` and `bind` helpers removed:** `lib/helpers/spread.js` and `lib/helpers/bind.js` have been deleted and are no longer exported from the package entry point. Use native `Function.prototype.apply` / `Function.prototype.bind` directly.
 
+## Features
+
+- **Standard Schema response validation:** New `responseSchema` config field accepts any [Standard Schema v1](https://standardschema.dev) compliant schema (Zod, Valibot, ArkType, etc.). When set, `response.data` is validated after `transformResponse` — on success, `response.data` is replaced with the schema's parsed output; on failure, a `FaxiosError` with code `ERR_BAD_RESPONSE_SCHEMA` is thrown carrying the schema's `issues` array. New `isSchemaValidationError()` type guard exported for narrowing caught errors. TypeScript infers `response.data` from the schema's output type automatically. (**#4**)
+
 ## Bug Fixes
 
 - **URL Validation:** Reject malformed `http:` and `https:` URLs that omit `//` before adapter URL normalization, returning `ERR_INVALID_URL` instead of silently normalizing invalid input. (**#10900**, closes **#7315**)

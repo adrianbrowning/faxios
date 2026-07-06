@@ -9,7 +9,7 @@ import type { FaxiosRequestConfig } from "./lib/types.ts";
 // import() type expressions (ImportTypeNode). Destructuring these off the
 // runtime instance forced TS to emit the broken inline `import("./x.ts")` form.
 export { default as Faxios } from "./lib/core/Faxios.ts";
-export { default as FaxiosError } from "./lib/core/FaxiosError.ts";
+export { default as FaxiosError, isSchemaValidationError } from "./lib/core/FaxiosError.ts";
 export { default as CanceledError, default as Cancel } from "./lib/cancel/CanceledError.ts";
 export { default as isCancel } from "./lib/cancel/isCancel.ts";
 export { default as isFaxiosError } from "./lib/helpers/isFaxiosError.ts";
@@ -18,6 +18,8 @@ export { default as FaxiosHeaders } from "./lib/core/FaxiosHeaders.ts";
 export { default as HttpStatusCode } from "./lib/helpers/HttpStatusCode.ts";
 export { default as mergeConfig } from "./lib/core/mergeConfig.ts";
 export { VERSION } from "./lib/env/data.ts";
+
+export type { StandardSchemaV1 } from "./lib/types/standard-schema.ts";
 
 export type {
   FaxiosRequestConfig,

@@ -38,39 +38,39 @@ const ignoreDuplicateOf = utils.toObjectSet([
  *
  * @returns {Object} Headers parsed into an object
  */
-export default function parseHeaders(rawHeaders: string): Record<string, string | Array<string>> {
+export default (rawHeaders: string): Record<string, string | Array<string>> => {
   const parsed: Record<string, string | Array<string>> = {};
   let key: string;
   let val: string;
   let i: number;
 
-  /* eslint-disable big-o/no-array-lookup-in-loop -- String.indexOf, not array lookup */
   rawHeaders &&
-    rawHeaders.split("\n").forEach(function parser(line) {
-      i = line.indexOf(":");
-      key = line.substring(0, i).trim()
-        .toLowerCase();
-      val = line.substring(i + 1).trim();
+    rawHeaders.split("\n")
+      .forEach(function parser(line) {
+        // eslint-disable-next-line big-o/no-array-lookup-in-loop
+        i = line.indexOf(":");
+        key = line.substring(0, i).trim()
+          .toLowerCase();
+        val = line.substring(i + 1).trim();
 
-      if (!key || (parsed[key] !== undefined && ignoreDuplicateOf[key] !== undefined)) {
-        return;
-      }
+        if (!key || (parsed[key] !== undefined && ignoreDuplicateOf[key] !== undefined)) {
+          return;
+        }
 
-      if (key === "set-cookie") {
-        const existing = parsed[key];
-        if (existing) {
-          (existing as Array<string>).push(val);
+        if (key === "set-cookie") {
+          const existing = parsed[key];
+          if (existing) {
+            (existing as Array<string>).push(val);
+          }
+          else {
+            parsed[key] = [ val ];
+          }
         }
         else {
-          parsed[key] = [ val ];
+          const existing = parsed[key] as string | undefined;
+          parsed[key] = existing ? existing + ", " + val : val;
         }
-      }
-      else {
-        const existing = parsed[key] as string | undefined;
-        parsed[key] = existing ? existing + ", " + val : val;
-      }
-    });
-  /* eslint-enable big-o/no-array-lookup-in-loop */
+      });
 
   return parsed;
 };

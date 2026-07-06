@@ -5,6 +5,7 @@ import CanceledError from "../cancel/CanceledError.js";
 import isCancel from "../cancel/isCancel.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
+import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
 import utils from "../utils.js";
 import transformData from "./transformData.js";
@@ -37,41 +38,88 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
   const adapter = _adapter as (config: InternalFaxiosRequestConfig) => Promise<FaxiosResponse>;
 
   /* eslint-disable promise/always-return */
-  return (adapter(config)).then(
-    function onAdapterResolution(response: FaxiosResponse) {
-      throwIfCancellationRequested(config);
+  return (adapter(config))
+    .then(
 
-      (config as unknown as Record<string, unknown>)["response"] = response;
-
-      try {
-        response.data = transformData.call(config, config.transformResponse, response);
-        response.headers = FaxiosHeaders.from(response.headers);
-      }
-      finally {
-        delete (config as unknown as Record<string, unknown>)["response"];
-      }
-
-      return response;
-    },
-    async function onAdapterRejection(reason: unknown) {
-      if (!isCancel(reason)) {
+      function onAdapterResolution(response: FaxiosResponse) {
         throwIfCancellationRequested(config);
 
-        const r = reason as { response?: { data?: unknown; headers?: unknown; status?: number; [k: string]: unknown; }; } | null;
-        if (r?.response) {
-          (config as unknown as Record<string, unknown>)["response"] = r.response;
-          try {
-            r.response.data = transformData.call(config, config.transformResponse, r.response);
-          }
-          finally {
-            delete (config as unknown as Record<string, unknown>)["response"];
-          }
-          r.response.headers = FaxiosHeaders.from(r.response.headers as Record<string, unknown>);
-        }
-      }
+        (config as unknown as Record<string, unknown>)["response"] = response;
 
-      throw reason;
-    }
-  );
+        try {
+          response.data = transformData.call(config, config.transformResponse, response);
+          response.headers = FaxiosHeaders.from(response.headers);
+        }
+        finally {
+          delete (config as unknown as Record<string, unknown>)["response"];
+        }
+
+        if (config.responseSchema) {
+          return validateResponseSchema(config as typeof config & { responseSchema: StandardSchemaV1; }, response);
+        }
+
+        return response;
+      },
+      function onAdapterRejection(reason: unknown) {
+        if (!isCancel(reason)) {
+          throwIfCancellationRequested(config);
+
+          const r = reason as { response?: { data?: unknown; headers?: unknown; status?: number; [k: string]: unknown; }; } | null;
+          if (r?.response) {
+            (config as unknown as Record<string, unknown>)["response"] = r.response;
+            try {
+              r.response.data = transformData.call(config, config.transformResponse, r.response);
+            }
+            finally {
+              delete (config as unknown as Record<string, unknown>)["response"];
+            }
+            r.response.headers = FaxiosHeaders.from(r.response.headers as Record<string, unknown>);
+          }
+        }
+
+        throw reason;
+      }
+    );
   /* eslint-enable promise/always-return */
+}
+
+async function validateResponseSchema(
+  config: InternalFaxiosRequestConfig & { responseSchema: StandardSchemaV1; },
+  response: FaxiosResponse
+): Promise<FaxiosResponse> {
+  let result: StandardSchemaV1.Result<unknown> | undefined;
+  try {
+    const raw = config.responseSchema["~standard"].validate(response.data);
+    result = raw instanceof Promise ? await raw : raw;
+  }
+  catch (err) {
+    if (isCancel(err)) throw err;
+    const wrapped = FaxiosError.from(
+      err instanceof Error ? err : new Error(String(err)),
+      FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
+    );
+    wrapped.issues = [{ message: wrapped.message }];
+    throw wrapped;
+  }
+  throwIfCancellationRequested(config);
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!result) {
+    const error = new FaxiosError(
+      "responseSchema['~standard'].validate() returned a non-Result value",
+      FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
+    );
+    error.issues = [];
+    throw error;
+  }
+  if (result.issues !== undefined) {
+    const error = new FaxiosError(
+      "Response validation failed",
+      FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
+    );
+    // Strip to spec-only fields — runtime libs may attach sensitive data
+    error.issues = result.issues.map(({ message, path }) => path ? { message, path } : { message });
+    throw error;
+  }
+  response.data = result.value;
+  return response;
 }
