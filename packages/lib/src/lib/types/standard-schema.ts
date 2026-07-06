@@ -1,3 +1,4 @@
+// @ts-self-types="./standard-schema.d.ts"
 /**
  * Vendored Standard Schema v1 types.
  * @see https://standardschema.dev

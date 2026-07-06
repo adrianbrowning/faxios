@@ -1,3 +1,4 @@
+// @ts-self-types="./types.d.ts"
 // Internal shared types — imported by implementation files.
 // Public API types in index.d.ts re-export or extend these.
 
