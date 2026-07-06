@@ -135,6 +135,8 @@ export default function mergeConfig(config1: FaxiosRequestConfig | FaxiosDefault
     maxBodyLength: defaultToConfig2,
     responseEncoding: defaultToConfig2,
     responseSchema: defaultToConfig2,
+    requestSchema: defaultToConfig2,
+    paramsSchema: defaultToConfig2,
     validateStatus: mergeDirectKeys,
     headers: (a: unknown, b: unknown, prop?: unknown) =>
       mergeDeepProperties(headersToObject(a), headersToObject(b), prop, true),
