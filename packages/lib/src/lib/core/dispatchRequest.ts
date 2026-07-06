@@ -5,6 +5,7 @@ import CanceledError from "../cancel/CanceledError.js";
 import isCancel from "../cancel/isCancel.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
+import { validateSchema } from "../core/validateSchema.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
 import utils from "../utils.js";
@@ -18,6 +19,14 @@ function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void
 
 export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig): Promise<FaxiosResponse> {
   throwIfCancellationRequested(config);
+
+  if (config.paramsSchema) {
+    config.params = await validateSchema(config.paramsSchema, config.params, FaxiosError.ERR_BAD_PARAMS_SCHEMA, config) as typeof config.params;
+  }
+
+  if (config.requestSchema) {
+    config.data = await validateSchema(config.requestSchema, config.data, FaxiosError.ERR_BAD_REQUEST_SCHEMA, config) as typeof config.data;
+  }
 
   config.headers = FaxiosHeaders.from(config.headers) as unknown as typeof config.headers;
 
@@ -87,39 +96,7 @@ async function validateResponseSchema(
   config: InternalFaxiosRequestConfig & { responseSchema: StandardSchemaV1; },
   response: FaxiosResponse
 ): Promise<FaxiosResponse> {
-  let result: StandardSchemaV1.Result<unknown> | undefined;
-  try {
-    const raw = config.responseSchema["~standard"].validate(response.data);
-    result = raw instanceof Promise ? await raw : raw;
-  }
-  catch (err) {
-    if (isCancel(err)) throw err;
-    const wrapped = FaxiosError.from(
-      err instanceof Error ? err : new Error(String(err)),
-      FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
-    );
-    wrapped.issues = [{ message: wrapped.message }];
-    throw wrapped;
-  }
+  response.data = await validateSchema(config.responseSchema, response.data, FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, response);
   throwIfCancellationRequested(config);
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (!result) {
-    const error = new FaxiosError(
-      "responseSchema['~standard'].validate() returned a non-Result value",
-      FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
-    );
-    error.issues = [];
-    throw error;
-  }
-  if (result.issues !== undefined) {
-    const error = new FaxiosError(
-      "Response validation failed",
-      FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
-    );
-    // Strip to spec-only fields — runtime libs may attach sensitive data
-    error.issues = result.issues.map(({ message, path }) => path ? { message, path } : { message });
-    throw error;
-  }
-  response.data = result.value;
   return response;
 }
