@@ -2,7 +2,7 @@ import assert from "node:assert";
 import { describe, it } from "vitest";
 import faxios from "#src/index.ts";
 import { isSchemaValidationError } from "#src/index.ts";
-import { makeSchema, mockFetch } from "./_schemaTestHelpers.ts";
+import { makeSchema, mockFetch } from "./_schemaTestHelpers.js";
 
 describe("responseSchema integration", () => {
   it("instance-level responseSchema validates all responses", async () => {

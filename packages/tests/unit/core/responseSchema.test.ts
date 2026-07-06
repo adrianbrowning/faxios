@@ -2,7 +2,7 @@ import assert from "node:assert";
 import { describe, it, vi } from "vitest";
 import faxios from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
-import { makeSchema, mockFetch } from "./_schemaTestHelpers.ts";
+import { makeSchema, mockFetch } from "./_schemaTestHelpers.js";
 
 describe("responseSchema validation", () => {
   it("replaces response.data with result.value on success", async () => {

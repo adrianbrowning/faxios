@@ -38,47 +38,48 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
   const adapter = _adapter as (config: InternalFaxiosRequestConfig) => Promise<FaxiosResponse>;
 
   /* eslint-disable promise/always-return */
-  return (adapter(config)).then(
+  return (adapter(config))
+    .then(
 
-    function onAdapterResolution(response: FaxiosResponse) {
-      throwIfCancellationRequested(config);
-
-      (config as unknown as Record<string, unknown>)["response"] = response;
-
-      try {
-        response.data = transformData.call(config, config.transformResponse, response);
-        response.headers = FaxiosHeaders.from(response.headers);
-      }
-      finally {
-        delete (config as unknown as Record<string, unknown>)["response"];
-      }
-
-      if (config.responseSchema) {
-        return validateResponseSchema(config as typeof config & { responseSchema: StandardSchemaV1; }, response);
-      }
-
-      return response;
-    },
-    function onAdapterRejection(reason: unknown) {
-      if (!isCancel(reason)) {
+      function onAdapterResolution(response: FaxiosResponse) {
         throwIfCancellationRequested(config);
 
-        const r = reason as { response?: { data?: unknown; headers?: unknown; status?: number; [k: string]: unknown; }; } | null;
-        if (r?.response) {
-          (config as unknown as Record<string, unknown>)["response"] = r.response;
-          try {
-            r.response.data = transformData.call(config, config.transformResponse, r.response);
-          }
-          finally {
-            delete (config as unknown as Record<string, unknown>)["response"];
-          }
-          r.response.headers = FaxiosHeaders.from(r.response.headers as Record<string, unknown>);
-        }
-      }
+        (config as unknown as Record<string, unknown>)["response"] = response;
 
-      throw reason;
-    }
-  );
+        try {
+          response.data = transformData.call(config, config.transformResponse, response);
+          response.headers = FaxiosHeaders.from(response.headers);
+        }
+        finally {
+          delete (config as unknown as Record<string, unknown>)["response"];
+        }
+
+        if (config.responseSchema) {
+          return validateResponseSchema(config as typeof config & { responseSchema: StandardSchemaV1; }, response);
+        }
+
+        return response;
+      },
+      function onAdapterRejection(reason: unknown) {
+        if (!isCancel(reason)) {
+          throwIfCancellationRequested(config);
+
+          const r = reason as { response?: { data?: unknown; headers?: unknown; status?: number; [k: string]: unknown; }; } | null;
+          if (r?.response) {
+            (config as unknown as Record<string, unknown>)["response"] = r.response;
+            try {
+              r.response.data = transformData.call(config, config.transformResponse, r.response);
+            }
+            finally {
+              delete (config as unknown as Record<string, unknown>)["response"];
+            }
+            r.response.headers = FaxiosHeaders.from(r.response.headers as Record<string, unknown>);
+          }
+        }
+
+        throw reason;
+      }
+    );
   /* eslint-enable promise/always-return */
 }
 
@@ -86,7 +87,7 @@ async function validateResponseSchema(
   config: InternalFaxiosRequestConfig & { responseSchema: StandardSchemaV1; },
   response: FaxiosResponse
 ): Promise<FaxiosResponse> {
-  let result: StandardSchemaV1.Result<unknown> | undefined = undefined;
+  let result: StandardSchemaV1.Result<unknown> | undefined;
   try {
     const raw = config.responseSchema["~standard"].validate(response.data);
     result = raw instanceof Promise ? await raw : raw;
@@ -103,10 +104,12 @@ async function validateResponseSchema(
   throwIfCancellationRequested(config);
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!result) {
-    throw new FaxiosError(
+    const error = new FaxiosError(
       "responseSchema['~standard'].validate() returned a non-Result value",
       FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
     );
+    error.issues = [];
+    throw error;
   }
   if (result.issues !== undefined) {
     const error = new FaxiosError(

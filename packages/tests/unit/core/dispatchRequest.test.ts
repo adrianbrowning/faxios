@@ -1,12 +1,11 @@
 import assert from "node:assert";
 import { describe, it, vi } from "vitest";
 import dispatchRequest from "#src/lib/core/dispatchRequest.js";
-import FaxiosError from "#src/lib/core/FaxiosError.js";
-import { isSchemaValidationError } from "#src/lib/core/FaxiosError.js";
+import FaxiosError, { isSchemaValidationError } from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import defaults from "#src/lib/defaults/index.js";
 import type { InternalFaxiosRequestConfig } from "#src/lib/types.js";
-import { makeSchema } from "./_schemaTestHelpers.ts";
+import { makeSchema } from "./_schemaTestHelpers.js";
 
 class ReactNativeFormData {
   append() {}
