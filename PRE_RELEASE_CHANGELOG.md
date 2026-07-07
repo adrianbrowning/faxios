@@ -29,6 +29,14 @@
 
 - **Standard Schema response validation:** New `responseSchema` config field accepts any [Standard Schema v1](https://standardschema.dev) compliant schema (Zod, Valibot, ArkType, etc.). When set, `response.data` is validated after `transformResponse` — on success, `response.data` is replaced with the schema's parsed output; on failure, a `FaxiosError` with code `ERR_BAD_RESPONSE_SCHEMA` is thrown carrying the schema's `issues` array. New `isSchemaValidationError()` type guard exported for narrowing caught errors. TypeScript infers `response.data` from the schema's output type automatically. (**#4**)
 
+- **Standard Schema request validation:** New `requestSchema` config field validates `config.data` before sending. On failure, throws `FaxiosError` with code `ERR_BAD_REQUEST_SCHEMA`. (**#5**)
+
+- **Standard Schema params validation:** New `paramsSchema` config field validates `config.params` before URL construction. On failure, throws `FaxiosError` with code `ERR_BAD_PARAMS_SCHEMA`. Validates even when `params` is undefined (schemas may enforce required fields). (**#5**)
+
+- **Path params URL templating:** New `pathParams` config field substitutes `{key}` placeholders in URLs. New `pathParamsSchema` config field validates path params before substitution; throws `ERR_BAD_PATH_PARAMS_SCHEMA` on failure. When `pathParamsSchema` is configured, `pathParams` is required. (**#5**)
+
+- **`faxios.define()` typed endpoint builder:** New `faxios.define(method, url, config)` creates a reusable, fully-typed endpoint function. Schemas set at define-time cannot be overridden per-call (security by design). TypeScript infers required/optional call arguments from schema presence. (**#5**)
+
 ## Bug Fixes
 
 - **URL Validation:** Reject malformed `http:` and `https:` URLs that omit `//` before adapter URL normalization, returning `ERR_INVALID_URL` instead of silently normalizing invalid input. (**#10900**, closes **#7315**)

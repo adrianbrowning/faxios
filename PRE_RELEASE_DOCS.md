@@ -121,6 +121,61 @@ try {
 
 - **Notes:** Request-side schema validation (validating request body before sending) is tracked in issue #15 and not part of this release.
 
+### requestSchema, paramsSchema, pathParams — Standard Schema request-side validation
+
+- **Change:** New `requestSchema`, `paramsSchema`, `pathParams`, and `pathParamsSchema` config fields. Three new error codes: `ERR_BAD_REQUEST_SCHEMA`, `ERR_BAD_PARAMS_SCHEMA`, `ERR_BAD_PATH_PARAMS_SCHEMA`. Validation runs before network call in order: pathParams → params → requestSchema.
+- **Source:** Issue #5 (Standard Schema support — request side).
+- **Status:** Pending.
+- **Docs targets:** README request config table; docs-site request-config page; error handling page (new codes); TypeScript/generics page.
+- **Required content:** Document all four new config fields. Explain validation ordering and fail-fast behavior. Document that `pathParamsSchema` makes `pathParams` required. Note `paramsSchema` validates even when `params` is undefined.
+- **Examples:**
+
+```ts
+import faxios from 'faxios';
+import { z } from 'zod';
+
+await faxios.post('/users', {
+  requestSchema: z.object({ name: z.string() }),
+  data: { name: 'Alice' },
+});
+
+await faxios.get('/users', {
+  paramsSchema: z.object({ page: z.number() }),
+  params: { page: 1 },
+});
+
+await faxios.get('/users/{id}', {
+  pathParamsSchema: z.object({ id: z.string() }),
+  pathParams: { id: '123' },
+});
+```
+
+- **Notes:** Define-time schemas cannot be overridden per-call (intentional, security by design). JS callers who pass per-call schemas will have them silently dropped — this is documented behavior, not a bug.
+
+### faxios.define() — typed endpoint builder
+
+- **Change:** New `faxios.define(method, url, config?)` API returning a typed, reusable endpoint function. New exported types: `DefinedEndpoint`, `DefineConfig`, `PerCallConfig`, `BasePerCallConfig`.
+- **Source:** Issue #5 (Standard Schema support — define API).
+- **Status:** Pending.
+- **Docs targets:** README (new section); docs-site new page or section under advanced; TypeScript/generics page.
+- **Required content:** Document `define()` API and its type inference behavior. Explain that url/method/schemas are locked at define-time. Explain required vs optional call argument based on schema presence. Document `FaxiosLike` structural typing for testability.
+- **Examples:**
+
+```ts
+import faxios from 'faxios';
+import { z } from 'zod';
+
+const getUser = faxios.define('get', '/users/{id}', {
+  pathParamsSchema: z.object({ id: z.string() }),
+  responseSchema: z.object({ name: z.string(), age: z.number() }),
+});
+
+const response = await getUser({ pathParams: { id: '123' } });
+// response.data is typed as { name: string; age: number }
+```
+
+- **Notes:** Per-call config cannot override url, method, or schemas. This is intentional security hardening documented in code comments.
+
 ### docs/advanced/headers.md — translation tracking
 
 - **Change:** `docs/advanced/headers.md` was added/updated in the fetch-only sweep (English only). Translated versions have not been created.

@@ -1,6 +1,5 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
-import FaxiosError from "#src/lib/core/FaxiosError.js";
 import { substitutePathParams } from "#src/lib/helpers/substitutePathParams.js";
 
 describe("substitutePathParams", () => {
@@ -22,10 +21,24 @@ describe("substitutePathParams", () => {
     );
   });
 
-  it("throws ERR_BAD_OPTION_VALUE for missing placeholder key", () => {
+  it("throws Error for missing placeholder key", () => {
     assert.throws(
       () => substitutePathParams("/users/{id}", {}),
-      (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE
+      (err: unknown) => err instanceof Error && err.message.includes("not found")
+    );
+  });
+
+  it("throws Error for null path param value", () => {
+    assert.throws(
+      () => substitutePathParams("/users/{id}", { id: null }),
+      (err: unknown) => err instanceof Error && err.message.includes("null or undefined")
+    );
+  });
+
+  it("throws Error for undefined path param value", () => {
+    assert.throws(
+      () => substitutePathParams("/users/{id}", { id: undefined }),
+      (err: unknown) => err instanceof Error && err.message.includes("null or undefined")
     );
   });
 

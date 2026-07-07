@@ -21,6 +21,13 @@ function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void
 export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig): Promise<FaxiosResponse> {
   throwIfCancellationRequested(config);
 
+  if (config.pathParamsSchema && config.pathParams === undefined) {
+    throw new FaxiosError(
+      "pathParams is required when pathParamsSchema is configured",
+      FaxiosError.ERR_BAD_OPTION_VALUE, config
+    );
+  }
+
   if (config.pathParams !== undefined) {
     if (config.pathParamsSchema) {
       config.pathParams = await validateSchema(
@@ -28,9 +35,17 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
         FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
       ) as Record<string, unknown>;
     }
-    config.url = substitutePathParams(config.url ?? "", config.pathParams);
+    try {
+      config.url = substitutePathParams(config.url ?? "", config.pathParams);
+    } catch (err) {
+      throw FaxiosError.from(
+        err instanceof Error ? err : new Error(String(err)),
+        FaxiosError.ERR_BAD_OPTION_VALUE, config
+      );
+    }
   }
 
+  // ponytail: validates even when params is undefined — schemas may enforce required fields
   if (config.paramsSchema) {
     config.params = await validateSchema(config.paramsSchema, config.params, FaxiosError.ERR_BAD_PARAMS_SCHEMA, config) as typeof config.params;
   }

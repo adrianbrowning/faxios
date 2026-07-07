@@ -2,6 +2,7 @@ import assert from "node:assert";
 import { describe, it, vi } from "vitest";
 import faxios from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
+import mergeConfig from "#src/lib/core/mergeConfig.js";
 import { makeSchema, mockFetch } from "./_schemaTestHelpers.js";
 
 describe("paramsSchema validation", () => {
@@ -156,5 +157,26 @@ describe("paramsSchema validation", () => {
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PARAMS_SCHEMA);
       assert.strictEqual(requestValidate.mock.calls.length, 0);
     }
+  });
+});
+
+describe("mergeConfig paramsSchema", () => {
+  it("paramsSchema uses defaultToConfig2 — config2 wins", () => {
+    const s1 = makeSchema(() => ({ value: "s1" }));
+    const s2 = makeSchema(() => ({ value: "s2" }));
+    const merged = mergeConfig({ paramsSchema: s1 }, { paramsSchema: s2 });
+    assert.strictEqual(
+      (merged.paramsSchema as typeof s2)?.["~standard"]?.validate,
+      s2["~standard"].validate
+    );
+  });
+
+  it("paramsSchema falls back to config1 when config2 has none", () => {
+    const s1 = makeSchema(() => ({ value: "s1" }));
+    const merged = mergeConfig({ paramsSchema: s1 }, {});
+    assert.strictEqual(
+      (merged.paramsSchema as typeof s1)?.["~standard"]?.validate,
+      s1["~standard"].validate
+    );
   });
 });

@@ -36,9 +36,8 @@ describe("faxios.define()", () => {
       pathParamsSchema: ppSchema,
     });
 
-    // arg is required (type-level)
-    type Arg = Parameters<typeof getProfile>[0];
-    expectTypeOf<Arg>().not.toBeUndefined();
+    // arg is required — parameter tuple has length >= 1
+    expectTypeOf<Parameters<typeof getProfile>["length"]>().toEqualTypeOf<1>();
 
     let capturedUrl = "";
     await getProfile({
@@ -58,9 +57,8 @@ describe("faxios.define()", () => {
     const pSchema = makeSchema<P>(v => ({ value: v as P }));
     const search = faxios.define("GET", "http://localhost/search", { paramsSchema: pSchema });
 
-    // arg is required
-    type Arg = Parameters<typeof search>[0];
-    expectTypeOf<Arg>().not.toBeUndefined();
+    // arg is required — parameter tuple has length >= 1
+    expectTypeOf<Parameters<typeof search>["length"]>().toEqualTypeOf<1>();
 
     const res = await search({ params: { q: "hello" }, env: { fetch: mockFetch([]) } });
     assert.ok(res);
@@ -71,9 +69,8 @@ describe("faxios.define()", () => {
     const dSchema = makeSchema<D>(v => ({ value: v as D }));
     const createItem = faxios.define("POST", "http://localhost/items", { requestSchema: dSchema });
 
-    // arg is required
-    type Arg = Parameters<typeof createItem>[0];
-    expectTypeOf<Arg>().not.toBeUndefined();
+    // arg is required — parameter tuple has length >= 1
+    expectTypeOf<Parameters<typeof createItem>["length"]>().toEqualTypeOf<1>();
 
     const res = await createItem({ data: { name: "widget" }, env: { fetch: mockFetch({ id: 1 }) } });
     assert.ok(res);

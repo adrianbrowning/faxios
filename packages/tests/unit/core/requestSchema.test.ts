@@ -2,6 +2,7 @@ import assert from "node:assert";
 import { describe, it } from "vitest";
 import faxios from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
+import mergeConfig from "#src/lib/core/mergeConfig.js";
 import { makeSchema, mockFetch } from "./_schemaTestHelpers.js";
 
 describe("requestSchema validation", () => {
@@ -118,6 +119,23 @@ describe("requestSchema validation", () => {
     }
   });
 
+  it("throws when schema returns a falsy non-Result value", async () => {
+    const schema = makeSchema(() => undefined as never);
+
+    try {
+      await faxios.post("http://localhost/test", { x: 1 }, {
+        requestSchema: schema,
+        env: { fetch: mockFetch({}) },
+      });
+      assert.fail("should have thrown");
+    }
+    catch (err) {
+      assert.ok(err instanceof FaxiosError);
+      assert.strictEqual(err.code, FaxiosError.ERR_BAD_REQUEST_SCHEMA);
+      assert.ok(err.message.includes("non-Result"));
+    }
+  });
+
   it("per-request requestSchema overrides instance-level schema", async () => {
     const failSchema = makeSchema(() => ({ issues: [{ message: "fail" }] }));
     const passSchema = makeSchema(v => ({ value: v }));
@@ -128,5 +146,26 @@ describe("requestSchema validation", () => {
       env: { fetch: mockFetch({}) },
     });
     // no throw = per-request schema won
+  });
+});
+
+describe("mergeConfig requestSchema", () => {
+  it("requestSchema uses defaultToConfig2 — config2 wins", () => {
+    const s1 = makeSchema(() => ({ value: "s1" }));
+    const s2 = makeSchema(() => ({ value: "s2" }));
+    const merged = mergeConfig({ requestSchema: s1 }, { requestSchema: s2 });
+    assert.strictEqual(
+      (merged.requestSchema as typeof s2)?.["~standard"]?.validate,
+      s2["~standard"].validate
+    );
+  });
+
+  it("requestSchema falls back to config1 when config2 has none", () => {
+    const s1 = makeSchema(() => ({ value: "s1" }));
+    const merged = mergeConfig({ requestSchema: s1 }, {});
+    assert.strictEqual(
+      (merged.requestSchema as typeof s1)?.["~standard"]?.validate,
+      s1["~standard"].validate
+    );
   });
 });

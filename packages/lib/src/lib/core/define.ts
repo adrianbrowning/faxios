@@ -1,5 +1,4 @@
 // @ts-self-types="./define.d.ts"
-"use strict";
 
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type { FaxiosRequestConfig, FaxiosResponse, StringLiteralsOrString, Method } from "../types.js";
@@ -90,5 +89,6 @@ export function createDefinedEndpoint<
     return instance.request(merged);
   };
 
+  // ponytail: FaxiosLike is intentionally narrow (testability); cast bridges to full DefinedEndpoint
   return fn as unknown as DefinedEndpoint<PP, P, D, R>;
 }

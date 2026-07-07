@@ -1,14 +1,18 @@
-"use strict";
-
 import isCancel from "../cancel/isCancel.js";
-import FaxiosError from "../core/FaxiosError.js";
+import FaxiosError from "./FaxiosError.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
+
+type SchemaErrorCode =
+  | typeof FaxiosError.ERR_BAD_RESPONSE_SCHEMA
+  | typeof FaxiosError.ERR_BAD_REQUEST_SCHEMA
+  | typeof FaxiosError.ERR_BAD_PARAMS_SCHEMA
+  | typeof FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA;
 
 export async function validateSchema(
   schema: StandardSchemaV1,
   value: unknown,
-  errorCode: string,
+  errorCode: SchemaErrorCode,
   config: InternalFaxiosRequestConfig,
   response?: FaxiosResponse
 ): Promise<unknown> {
