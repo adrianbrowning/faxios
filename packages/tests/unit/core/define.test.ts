@@ -123,7 +123,7 @@ describe("faxios.define()", () => {
     }
     catch (err) {
       assert.ok(err instanceof FaxiosError);
-      assert.strictEqual((err as FaxiosError).code, FaxiosError.ERR_CANCELED);
+      assert.strictEqual((err).code, FaxiosError.ERR_CANCELED);
     }
   });
 

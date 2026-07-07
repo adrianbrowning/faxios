@@ -17,9 +17,8 @@ function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void
   }
 }
 
-export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig): Promise<FaxiosResponse> {
-  throwIfCancellationRequested(config);
-
+// ponytail: non-async — returns Promise only when schemas exist, preserving synchronous path to adapter
+function validatePreFlight(config: InternalFaxiosRequestConfig): Promise<void> | undefined {
   if (config.pathParamsSchema && config.pathParams === undefined) {
     throw new FaxiosError(
       "pathParams is required when pathParamsSchema is configured",
@@ -27,38 +26,50 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
     );
   }
 
-  if (config.pathParams !== undefined) {
-    if (config.pathParamsSchema) {
-      config.pathParams = await validateSchema(
-        config.pathParamsSchema, config.pathParams,
-        FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
-      ) as Record<string, unknown>;
-      if (config.pathParams == null) {
-        throw new FaxiosError(
-          "pathParamsSchema returned null/undefined",
+  const hasSchemas = config.pathParamsSchema || config.paramsSchema || config.requestSchema;
+  if (!hasSchemas && config.pathParams === undefined) return undefined;
+
+  return (async () => {
+    if (config.pathParams !== undefined) {
+      if (config.pathParamsSchema) {
+        const validated = await validateSchema(
+          config.pathParamsSchema, config.pathParams,
           FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
+        );
+        if (validated == null) {
+          throw new FaxiosError(
+            "pathParamsSchema returned null/undefined",
+            FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
+          );
+        }
+        config.pathParams = validated as Record<string, unknown>;
+      }
+      try {
+        config.url = substitutePathParams(config.url ?? "", config.pathParams);
+      }
+      catch (err) {
+        throw FaxiosError.from(
+          err instanceof Error ? err : new Error(String(err)),
+          FaxiosError.ERR_BAD_OPTION_VALUE, config
         );
       }
     }
-    try {
-      config.url = substitutePathParams(config.url ?? "", config.pathParams);
-    }
-    catch (err) {
-      throw FaxiosError.from(
-        err instanceof Error ? err : new Error(String(err)),
-        FaxiosError.ERR_BAD_OPTION_VALUE, config
-      );
-    }
-  }
 
-  // ponytail: validates even when params is undefined — schemas may enforce required fields
-  if (config.paramsSchema) {
-    config.params = await validateSchema(config.paramsSchema, config.params, FaxiosError.ERR_BAD_PARAMS_SCHEMA, config) as typeof config.params;
-  }
+    if (config.paramsSchema) {
+      config.params = await validateSchema(config.paramsSchema, config.params, FaxiosError.ERR_BAD_PARAMS_SCHEMA, config) as typeof config.params;
+    }
 
-  if (config.requestSchema) {
-    config.data = await validateSchema(config.requestSchema, config.data, FaxiosError.ERR_BAD_REQUEST_SCHEMA, config);
-  }
+    if (config.requestSchema) {
+      config.data = await validateSchema(config.requestSchema, config.data, FaxiosError.ERR_BAD_REQUEST_SCHEMA, config);
+    }
+  })();
+}
+
+export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig): Promise<FaxiosResponse> {
+  throwIfCancellationRequested(config);
+
+  const preFlight = validatePreFlight(config);
+  if (preFlight) await preFlight;
 
   config.headers = FaxiosHeaders.from(config.headers) as unknown as typeof config.headers;
 
@@ -82,7 +93,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
   return (adapter(config))
     .then(
 
-      async function onAdapterResolution(response: FaxiosResponse) {
+      function onAdapterResolution(response: FaxiosResponse) {
         throwIfCancellationRequested(config);
 
         (config as unknown as Record<string, unknown>)["response"] = response;
@@ -96,8 +107,8 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
         }
 
         if (config.responseSchema) {
-          response.data = await validateSchema(config.responseSchema, response.data, FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, response);
-          throwIfCancellationRequested(config);
+          return validateSchema(config.responseSchema, response.data, FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, response)
+            .then(data => { response.data = data; throwIfCancellationRequested(config); return response; });
         }
 
         return response;
