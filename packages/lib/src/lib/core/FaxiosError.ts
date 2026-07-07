@@ -116,6 +116,7 @@ class FaxiosError extends Error {
   static readonly ERR_BAD_RESPONSE_SCHEMA = "ERR_BAD_RESPONSE_SCHEMA";
   static readonly ERR_BAD_REQUEST_SCHEMA = "ERR_BAD_REQUEST_SCHEMA";
   static readonly ERR_BAD_PARAMS_SCHEMA = "ERR_BAD_PARAMS_SCHEMA";
+  static readonly ERR_BAD_PATH_PARAMS_SCHEMA = "ERR_BAD_PATH_PARAMS_SCHEMA";
 
   static from(
     error: Error & { code?: string; status?: number; },

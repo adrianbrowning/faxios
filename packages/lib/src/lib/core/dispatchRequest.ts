@@ -6,6 +6,7 @@ import isCancel from "../cancel/isCancel.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import { validateSchema } from "../core/validateSchema.js";
+import { substitutePathParams } from "../helpers/substitutePathParams.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
 import utils from "../utils.js";
@@ -19,6 +20,16 @@ function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void
 
 export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig): Promise<FaxiosResponse> {
   throwIfCancellationRequested(config);
+
+  if (config.pathParams !== undefined) {
+    if (config.pathParamsSchema) {
+      config.pathParams = await validateSchema(
+        config.pathParamsSchema, config.pathParams,
+        FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
+      ) as Record<string, unknown>;
+    }
+    config.url = substitutePathParams(config.url ?? "", config.pathParams);
+  }
 
   if (config.paramsSchema) {
     config.params = await validateSchema(config.paramsSchema, config.params, FaxiosError.ERR_BAD_PARAMS_SCHEMA, config) as typeof config.params;
