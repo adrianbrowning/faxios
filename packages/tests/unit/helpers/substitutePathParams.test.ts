@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
-import { substitutePathParams } from "#src/lib/helpers/substitutePathParams.js";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
+import { substitutePathParams } from "#src/lib/helpers/substitutePathParams.js";
 
 describe("substitutePathParams", () => {
   it("replaces a single placeholder", () => {

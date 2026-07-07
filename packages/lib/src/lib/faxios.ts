@@ -3,6 +3,7 @@
 
 import CanceledError from "./cancel/CanceledError.js";
 import isCancel from "./cancel/isCancel.js";
+import type { DefineConfig, DefinedEndpoint } from "./core/define.js";
 import Faxios from "./core/Faxios.js";
 import FaxiosError from "./core/FaxiosError.js";
 import FaxiosHeaders from "./core/FaxiosHeaders.js";
@@ -13,7 +14,8 @@ import formDataToJSON from "./helpers/formDataToJSON.js";
 import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
-import type { FaxiosInterceptorOptions, FaxiosInterceptorRejected, FaxiosRequestConfig, InternalFaxiosRequestConfig, FaxiosResponse, SchemaConfig } from "./types.js";
+import type { StandardSchemaV1 } from "./types/standard-schema.js";
+import type { FaxiosInterceptorOptions, FaxiosInterceptorRejected, FaxiosRequestConfig, InternalFaxiosRequestConfig, FaxiosResponse, Method, SchemaConfig, StringLiteralsOrString } from "./types.js";
 import utils from "./utils.js";
 
 /**
@@ -118,6 +120,16 @@ export type FaxiosInstance = {
     };
   };
   getUri: (config?: FaxiosRequestConfig) => string;
+  define: <
+    PP extends StandardSchemaV1 | undefined = undefined,
+    P extends StandardSchemaV1 | undefined = undefined,
+    D extends StandardSchemaV1 | undefined = undefined,
+    R extends StandardSchemaV1 | undefined = undefined
+  >(
+    method: StringLiteralsOrString<Method>,
+    url: string,
+    config?: DefineConfig<PP, P, D, R>
+  ) => DefinedEndpoint<PP, P, D, R>;
   create: (instanceConfig?: FaxiosRequestConfig) => FaxiosInstance;
   Faxios: typeof Faxios;
   CanceledError: typeof CanceledError;

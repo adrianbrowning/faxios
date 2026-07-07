@@ -4,14 +4,19 @@ import transitionalDefaults from "../defaults/transitional.js";
 import buildURL from "../helpers/buildURL.js";
 import validator from "../helpers/validator.js";
 import type { ValidatorFn } from "../helpers/validator.js";
+import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type {
   FaxiosRequestConfig,
   FaxiosResponse,
   InternalFaxiosRequestConfig,
-  SchemaConfig
+  Method,
+  SchemaConfig,
+  StringLiteralsOrString
 } from "../types.js";
 import utils from "../utils.js";
 import buildFullPath from "./buildFullPath.js";
+import { createDefinedEndpoint } from "./define.js";
+import type { DefineConfig, DefinedEndpoint } from "./define.js";
 import dispatchRequest from "./dispatchRequest.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
 import InterceptorManager from "./InterceptorManager.js";
@@ -460,6 +465,19 @@ class Faxios {
       config
     );
     return buildURL(fullPath, config.params, config.paramsSerializer);
+  }
+
+  define<
+    PP extends StandardSchemaV1 | undefined = undefined,
+    P extends StandardSchemaV1 | undefined = undefined,
+    D extends StandardSchemaV1 | undefined = undefined,
+    R extends StandardSchemaV1 | undefined = undefined
+  >(
+    method: StringLiteralsOrString<Method>,
+    url: string,
+    config?: DefineConfig<PP, P, D, R>
+  ): DefinedEndpoint<PP, P, D, R> {
+    return createDefinedEndpoint(this, method, url, config);
   }
 }
 
