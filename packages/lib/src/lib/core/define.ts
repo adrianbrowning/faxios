@@ -1,3 +1,4 @@
+// @ts-self-types="./define.d.ts"
 "use strict";
 
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
