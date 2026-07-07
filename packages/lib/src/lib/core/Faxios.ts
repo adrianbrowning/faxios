@@ -21,6 +21,8 @@ import dispatchRequest from "./dispatchRequest.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
 import InterceptorManager from "./InterceptorManager.js";
 import mergeConfig from "./mergeConfig.js";
+import type { RouteConfig, RouteBuilder } from "./route.js";
+import { createRouteBuilder } from "./route.js";
 
 type TransitionalFn = (
   validator: ValidatorFn | false | undefined,
@@ -478,6 +480,13 @@ class Faxios {
     config?: DefineConfig<PP, P, D, R>
   ): DefinedEndpoint<PP, P, D, R> {
     return createDefinedEndpoint(this, method, url, config);
+  }
+
+  route<PP extends StandardSchemaV1 | undefined = undefined>(
+    url: string,
+    config?: RouteConfig<PP>
+  ): RouteBuilder<PP> {
+    return createRouteBuilder(this, url, config);
   }
 }
 

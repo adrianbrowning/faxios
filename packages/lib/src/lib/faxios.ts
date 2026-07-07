@@ -8,6 +8,7 @@ import Faxios from "./core/Faxios.js";
 import FaxiosError from "./core/FaxiosError.js";
 import FaxiosHeaders from "./core/FaxiosHeaders.js";
 import mergeConfig from "./core/mergeConfig.js";
+import type { RouteConfig, RouteBuilder } from "./core/route.js";
 import defaults from "./defaults/index.js";
 import { VERSION } from "./env/data.js";
 import formDataToJSON from "./helpers/formDataToJSON.js";
@@ -130,6 +131,10 @@ export type FaxiosInstance = {
     url: string,
     config?: DefineConfig<PP, P, D, R>
   ) => DefinedEndpoint<PP, P, D, R>;
+  route: <PP extends StandardSchemaV1 | undefined = undefined>(
+    url: string,
+    config?: RouteConfig<PP>
+  ) => RouteBuilder<PP>;
   create: (instanceConfig?: FaxiosRequestConfig) => FaxiosInstance;
   Faxios: typeof Faxios;
   CanceledError: typeof CanceledError;
