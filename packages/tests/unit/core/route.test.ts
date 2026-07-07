@@ -15,7 +15,10 @@ describe("faxios.route()", () => {
     const captured: Array<{ method?: string; url?: string; }> = [];
     const env = {
       fetch: async (input: string | URL | Request) => {
-        captured.push({ url: input instanceof Request ? input.url : String(input) });
+        captured.push({
+          url: input instanceof Request ? input.url : String(input),
+          method: input instanceof Request ? input.method : undefined,
+        });
         return new Response(null, { status: 200 });
       },
     };
@@ -26,8 +29,11 @@ describe("faxios.route()", () => {
     await r.put()();
 
     assert.strictEqual(captured[0]?.url, "http://localhost/items");
+    assert.strictEqual(captured[0]?.method, "GET");
     assert.strictEqual(captured[1]?.url, "http://localhost/items");
+    assert.strictEqual(captured[1]?.method, "POST");
     assert.strictEqual(captured[2]?.url, "http://localhost/items");
+    assert.strictEqual(captured[2]?.method, "PUT");
   });
 
   it("pathParamsSchema flows through — required at call-time", async () => {

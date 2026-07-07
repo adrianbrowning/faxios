@@ -1,8 +1,7 @@
 // @ts-self-types="./route.d.ts"
 
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
-import type { FaxiosRequestConfig, FaxiosResponse } from "../types.js";
-import type { BasePerCallConfig, DefineConfig, DefinedEndpoint } from "./define.js";
+import type { BasePerCallConfig, DefineConfig, DefinedEndpoint, FaxiosLike } from "./define.js";
 import { createDefinedEndpoint } from "./define.js";
 
 export type RouteConfig<PP extends StandardSchemaV1 | undefined = undefined> =
@@ -26,10 +25,6 @@ export type RouteBuilder<PP extends StandardSchemaV1 | undefined> = {
   >(config?: RouteMethodConfig<P, D, R>) => DefinedEndpoint<PP, P, D, R>;
 };
 
-interface FaxiosLike {
-  request: (config: FaxiosRequestConfig) => Promise<FaxiosResponse<unknown>>;
-}
-
 const methods = [ "get", "post", "put", "patch", "delete", "head", "options" ] as const;
 
 export function createRouteBuilder<PP extends StandardSchemaV1 | undefined>(
@@ -49,7 +44,7 @@ export function createRouteBuilder<PP extends StandardSchemaV1 | undefined>(
       const defineConf = {
         ...routeDefaults,
         ...(methodConfig ?? {}),
-        pathParamsSchema,
+        ...(pathParamsSchema !== undefined ? { pathParamsSchema } : {}),
       } as DefineConfig<PP, P, D, R>;
       return createDefinedEndpoint<PP, P, D, R>(instance, method, url, defineConf);
     };

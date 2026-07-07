@@ -174,6 +174,31 @@ const response = await getUser({ pathParams: { id: '123' } });
 
 - **Notes:** Per-call config cannot override url, method, or schemas. This is intentional security hardening documented in code comments.
 
+### faxios.route() — shared route builder
+
+- **Change:** New `faxios.route(url, config?)` API returning a builder with typed HTTP method helpers. New exported types: `RouteConfig`, `RouteMethodConfig`, `RouteBuilder`.
+- **Source:** Issue #22.
+- **Status:** Pending.
+- **Docs targets:** README (new section after define()); docs-site advanced page; TypeScript/generics page.
+- **Required content:** Document `route()` API, route-level vs method-level config split, pathParamsSchema shared across all methods, per-method schema overrides. Explain that route() composes with define() internally.
+- **Examples:**
+
+```ts
+import faxios from 'faxios';
+import { z } from 'zod';
+
+const users = faxios.route('/users/{id}', {
+  pathParamsSchema: z.object({ id: z.string() }),
+});
+
+const getUser = users.get({ responseSchema: z.object({ name: z.string() }) });
+const updateUser = users.put({ requestSchema: z.object({ name: z.string() }) });
+
+const res = await getUser({ pathParams: { id: '123' } });
+```
+
+- **Notes:** Route-level config cannot be overridden per-call (inherits define() security model).
+
 ### docs/advanced/headers.md — translation tracking
 
 - **Change:** `docs/advanced/headers.md` was added/updated in the fetch-only sweep (English only). Translated versions have not been created.

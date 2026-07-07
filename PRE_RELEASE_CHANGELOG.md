@@ -37,6 +37,8 @@
 
 - **`faxios.define()` typed endpoint builder:** New `faxios.define(method, url, config)` creates a reusable, fully-typed endpoint function. Schemas set at define-time cannot be overridden per-call (security by design). TypeScript infers required/optional call arguments from schema presence. (**#5**)
 
+- **`faxios.route()` shared route builder:** New `faxios.route(url, config?)` creates a builder with typed HTTP method helpers (`get`, `post`, `put`, `patch`, `delete`, `head`, `options`). Route-level config (headers, `pathParamsSchema`) is shared across methods; per-method config adds `paramsSchema`, `requestSchema`, `responseSchema`. New exported types: `RouteConfig`, `RouteMethodConfig`, `RouteBuilder`. (**#22**)
+
 ## Bug Fixes
 
 - **URL Validation:** Reject malformed `http:` and `https:` URLs that omit `//` before adapter URL normalization, returning `ERR_INVALID_URL` instead of silently normalizing invalid input. (**#10900**, closes **#7315**)

@@ -52,13 +52,14 @@ export type DefinedEndpoint<
     ? (callConfig: PerCallConfig<PP, P, D>) => Promise<FaxiosResponse<R extends StandardSchemaV1 ? StandardSchemaV1.InferOutput<R> : unknown>>
     : (callConfig?: PerCallConfig<PP, P, D>) => Promise<FaxiosResponse<R extends StandardSchemaV1 ? StandardSchemaV1.InferOutput<R> : unknown>>;
 
-interface FaxiosLike {
+export interface FaxiosLike {
   request: (config: FaxiosRequestConfig) => Promise<FaxiosResponse<unknown>>;
 }
 
 type SchemaFields = Extract<StrippedFields, `${string}Schema`>;
 const schemaKeys = [ "pathParamsSchema", "paramsSchema", "requestSchema", "responseSchema" ] as const;
 void (schemaKeys satisfies ReadonlyArray<SchemaFields>);
+const strippedKeys = [ "url", "method", ...schemaKeys ] as const;
 
 export function createDefinedEndpoint<
   PP extends StandardSchemaV1 | undefined,
@@ -76,7 +77,7 @@ export function createDefinedEndpoint<
   const fn = (callConfig?: PerCallConfig<PP, P, D>) => {
     const safeCall: FaxiosRequestConfig = { ...(callConfig ?? {}) };
     // ponytail: runtime guard — strip identity + schemas so JS callers can't override
-    for (const k of [ "url", "method", ...schemaKeys ] as const) {
+    for (const k of strippedKeys) {
       delete (safeCall as Record<string, unknown>)[k];
     }
 
@@ -85,8 +86,14 @@ export function createDefinedEndpoint<
     // Lock url/method and re-lock schemas — perCall cannot override define-time identity
     (merged as Record<string, unknown>)["url"] = url;
     (merged as Record<string, unknown>)["method"] = method;
+    // ponytail: defense-in-depth — mergeConfig would fall through, but this makes the invariant explicit
     for (const k of schemaKeys) {
-      (merged as Record<string, unknown>)[k] = bakedConfig[k];
+      if (Object.prototype.hasOwnProperty.call(bakedConfig, k)) {
+        (merged as Record<string, unknown>)[k] = bakedConfig[k];
+      }
+      else {
+        delete (merged as Record<string, unknown>)[k];
+      }
     }
 
     return instance.request(merged);
