@@ -152,6 +152,23 @@ describe("pathParamsSchema validation", () => {
   });
 });
 
+describe("pathParams guard", () => {
+  it("throws ERR_BAD_OPTION_VALUE when pathParamsSchema set but pathParams undefined", async () => {
+    const schema = makeSchema(v => ({ value: v }));
+    try {
+      await faxios.get("http://localhost/users/{id}", {
+        pathParamsSchema: schema,
+        env: { fetch: mockFetch({}) },
+      });
+      assert.fail("should have thrown");
+    }
+    catch (err) {
+      assert.ok(err instanceof FaxiosError);
+      assert.strictEqual(err.code, FaxiosError.ERR_BAD_OPTION_VALUE);
+    }
+  });
+});
+
 describe("mergeConfig pathParams/pathParamsSchema", () => {
   it("pathParams uses defaultToConfig2 — config2 wins", () => {
     const merged = mergeConfig(

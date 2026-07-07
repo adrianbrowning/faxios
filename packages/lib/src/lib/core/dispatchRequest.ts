@@ -7,7 +7,6 @@ import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import { validateSchema } from "../core/validateSchema.js";
 import { substitutePathParams } from "../helpers/substitutePathParams.js";
-import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
 import utils from "../utils.js";
 import transformData from "./transformData.js";
@@ -37,7 +36,8 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
     }
     try {
       config.url = substitutePathParams(config.url ?? "", config.pathParams);
-    } catch (err) {
+    }
+    catch (err) {
       throw FaxiosError.from(
         err instanceof Error ? err : new Error(String(err)),
         FaxiosError.ERR_BAD_OPTION_VALUE, config
@@ -76,7 +76,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
   return (adapter(config))
     .then(
 
-      function onAdapterResolution(response: FaxiosResponse) {
+      async function onAdapterResolution(response: FaxiosResponse) {
         throwIfCancellationRequested(config);
 
         (config as unknown as Record<string, unknown>)["response"] = response;
@@ -90,7 +90,8 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
         }
 
         if (config.responseSchema) {
-          return validateResponseSchema(config as typeof config & { responseSchema: StandardSchemaV1; }, response);
+          response.data = await validateSchema(config.responseSchema, response.data, FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, response);
+          throwIfCancellationRequested(config);
         }
 
         return response;
@@ -116,13 +117,4 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
       }
     );
   /* eslint-enable promise/always-return */
-}
-
-async function validateResponseSchema(
-  config: InternalFaxiosRequestConfig & { responseSchema: StandardSchemaV1; },
-  response: FaxiosResponse
-): Promise<FaxiosResponse> {
-  response.data = await validateSchema(config.responseSchema, response.data, FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, response);
-  throwIfCancellationRequested(config);
-  return response;
 }

@@ -9,12 +9,18 @@ describe("requestSchema validation", () => {
   it("replaces config.data with parsed result on success", async () => {
     const parsed = { name: "coerced" };
     const schema = makeSchema(() => ({ value: parsed }));
+    let capturedBody: string | undefined;
 
     await faxios.post("http://localhost/test", { name: "raw" }, {
       requestSchema: schema,
-      env: { fetch: mockFetch({}) },
+      env: {
+        fetch: async (_input: string | URL | Request, init?: RequestInit) => {
+          capturedBody = init?.body as string;
+          return new Response(JSON.stringify({}), { status: 200, headers: { "content-type": "application/json" } });
+        },
+      },
     });
-    // fetch must have been called — no throw means schema passed
+    assert.ok(capturedBody?.includes("coerced"), `Expected coerced in body: ${capturedBody}`);
   });
 
   it("throws FaxiosError with ERR_BAD_REQUEST_SCHEMA on failure", async () => {

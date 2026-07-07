@@ -119,8 +119,6 @@ try {
 }
 ```
 
-- **Notes:** Request-side schema validation (validating request body before sending) is tracked in issue #15 and not part of this release.
-
 ### requestSchema, paramsSchema, pathParams — Standard Schema request-side validation
 
 - **Change:** New `requestSchema`, `paramsSchema`, `pathParams`, and `pathParamsSchema` config fields. Three new error codes: `ERR_BAD_REQUEST_SCHEMA`, `ERR_BAD_PARAMS_SCHEMA`, `ERR_BAD_PATH_PARAMS_SCHEMA`. Validation runs before network call in order: pathParams → params → requestSchema.

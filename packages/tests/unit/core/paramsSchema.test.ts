@@ -9,13 +9,19 @@ describe("paramsSchema validation", () => {
   it("replaces config.params with parsed result on success", async () => {
     const parsed = { q: "coerced" };
     const schema = makeSchema(() => ({ value: parsed }));
+    let capturedUrl = "";
 
     await faxios.get("http://localhost/test", {
       params: { q: "raw" },
       paramsSchema: schema,
-      env: { fetch: mockFetch({}) },
+      env: {
+        fetch: async (input: string | URL | Request) => {
+          capturedUrl = input instanceof Request ? input.url : String(input);
+          return new Response(JSON.stringify({}), { status: 200, headers: { "content-type": "application/json" } });
+        },
+      },
     });
-    // no throw = schema passed
+    assert.ok(capturedUrl.includes("q=coerced"), `Expected coerced in URL: ${capturedUrl}`);
   });
 
   it("throws FaxiosError with ERR_BAD_PARAMS_SCHEMA on failure", async () => {

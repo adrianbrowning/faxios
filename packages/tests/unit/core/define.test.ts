@@ -122,8 +122,23 @@ describe("faxios.define()", () => {
       assert.fail("should have thrown due to aborted signal");
     }
     catch (err) {
-      assert.ok(err instanceof Error);
+      assert.ok(err instanceof FaxiosError);
+      assert.strictEqual((err as FaxiosError).code, FaxiosError.ERR_CANCELED);
     }
+  });
+
+  it("per-call schemas are stripped — baked schema always wins", async () => {
+    const passSchema = makeSchema(v => ({ value: v }));
+    const failSchema = makeSchema(() => ({ issues: [{ message: "injected" }] }));
+    const getItem = faxios.define("GET", "http://localhost/item", {
+      responseSchema: passSchema,
+    });
+    // JS caller injects a failing responseSchema — must be ignored
+    const res = await (getItem as any)({
+      responseSchema: failSchema,
+      env: { fetch: mockFetch({ id: 1 }) },
+    });
+    assert.deepStrictEqual(res.data, { id: 1 });
   });
 
   it("define-time config merges with per-call — per-call headers win", async () => {

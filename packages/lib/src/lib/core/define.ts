@@ -53,9 +53,11 @@ export type DefinedEndpoint<
     : (callConfig?: PerCallConfig<PP, P, D>) => Promise<FaxiosResponse<R extends StandardSchemaV1 ? StandardSchemaV1.InferOutput<R> : unknown>>;
 
 interface FaxiosLike {
-  request: (config: FaxiosRequestConfig) => Promise<unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional: bridges to generic DefinedEndpoint
+  request: (config: FaxiosRequestConfig) => Promise<FaxiosResponse<any>>;
 }
 
+// ponytail: must stay in sync with schema members of StrippedFields
 const schemaKeys = [ "pathParamsSchema", "paramsSchema", "requestSchema", "responseSchema" ] as const;
 
 export function createDefinedEndpoint<
@@ -73,9 +75,10 @@ export function createDefinedEndpoint<
 
   const fn = (callConfig?: PerCallConfig<PP, P, D>) => {
     const safeCall: FaxiosRequestConfig = { ...(callConfig ?? {}) };
-    // ponytail: runtime guard — strip endpoint identity so JS callers can't override
-    delete (safeCall as Record<string, unknown>)["url"];
-    delete (safeCall as Record<string, unknown>)["method"];
+    // ponytail: runtime guard — strip identity + schemas so JS callers can't override
+    for (const k of [ "url", "method", ...schemaKeys ] as const) {
+      delete (safeCall as Record<string, unknown>)[k];
+    }
 
     // mergeConfig(baked, perCall): perCall wins for most fields (signal, headers, timeout, env)
     const merged = mergeConfig(bakedConfig, safeCall);
@@ -83,12 +86,11 @@ export function createDefinedEndpoint<
     (merged as Record<string, unknown>)["url"] = url;
     (merged as Record<string, unknown>)["method"] = method;
     for (const k of schemaKeys) {
-      if (bakedConfig[k] !== undefined) (merged as Record<string, unknown>)[k] = bakedConfig[k];
+      (merged as Record<string, unknown>)[k] = bakedConfig[k];
     }
 
     return instance.request(merged);
   };
 
-  // ponytail: FaxiosLike is intentionally narrow (testability); cast bridges to full DefinedEndpoint
-  return fn as unknown as DefinedEndpoint<PP, P, D, R>;
+  return fn as DefinedEndpoint<PP, P, D, R>;
 }
