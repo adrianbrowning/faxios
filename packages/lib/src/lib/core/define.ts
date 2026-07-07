@@ -53,12 +53,12 @@ export type DefinedEndpoint<
     : (callConfig?: PerCallConfig<PP, P, D>) => Promise<FaxiosResponse<R extends StandardSchemaV1 ? StandardSchemaV1.InferOutput<R> : unknown>>;
 
 interface FaxiosLike {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- intentional: bridges to generic DefinedEndpoint
-  request: (config: FaxiosRequestConfig) => Promise<FaxiosResponse<any>>;
+  request: (config: FaxiosRequestConfig) => Promise<FaxiosResponse<unknown>>;
 }
 
-// ponytail: must stay in sync with schema members of StrippedFields
+type SchemaFields = Extract<StrippedFields, `${string}Schema`>;
 const schemaKeys = [ "pathParamsSchema", "paramsSchema", "requestSchema", "responseSchema" ] as const;
+void (schemaKeys satisfies ReadonlyArray<SchemaFields>);
 
 export function createDefinedEndpoint<
   PP extends StandardSchemaV1 | undefined,

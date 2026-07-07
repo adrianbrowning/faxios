@@ -48,5 +48,6 @@ export async function validateSchema<S extends StandardSchemaV1>(
     error.issues = result.issues.map(({ message, path }) => path ? { message, path } : { message });
     throw error;
   }
-  return result.value as StandardSchemaV1.InferOutput<S>;
+  // Standard Schema spec guarantees Result.value aligns with InferOutput
+  return result.value;
 }

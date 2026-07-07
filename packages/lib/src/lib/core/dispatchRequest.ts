@@ -33,6 +33,12 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
         config.pathParamsSchema, config.pathParams,
         FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
       ) as Record<string, unknown>;
+      if (config.pathParams == null) {
+        throw new FaxiosError(
+          "pathParamsSchema returned null/undefined",
+          FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
+        );
+      }
     }
     try {
       config.url = substitutePathParams(config.url ?? "", config.pathParams);

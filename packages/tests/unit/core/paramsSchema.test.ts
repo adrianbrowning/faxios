@@ -130,6 +130,23 @@ describe("paramsSchema validation", () => {
     }
   });
 
+  it("throws when schema returns a falsy non-Result value", async () => {
+    const schema = makeSchema(() => undefined as never);
+    try {
+      await faxios.get("http://localhost/test", {
+        params: { q: "x" },
+        paramsSchema: schema,
+        env: { fetch: mockFetch({}) },
+      });
+      assert.fail("should have thrown");
+    }
+    catch (err) {
+      assert.ok(err instanceof FaxiosError);
+      assert.strictEqual(err.code, FaxiosError.ERR_BAD_PARAMS_SCHEMA);
+      assert.ok(err.message.includes("non-Result"));
+    }
+  });
+
   it("per-request paramsSchema overrides instance-level schema", async () => {
     const failSchema = makeSchema(() => ({ issues: [{ message: "fail" }] }));
     const passSchema = makeSchema(v => ({ value: v }));

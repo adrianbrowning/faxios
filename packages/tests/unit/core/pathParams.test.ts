@@ -130,6 +130,39 @@ describe("pathParamsSchema validation", () => {
     // no throw = per-request schema won
   });
 
+  it("wraps schema throws in FaxiosError with ERR_BAD_PATH_PARAMS_SCHEMA", async () => {
+    const schema = makeSchema(() => { throw new Error("schema exploded"); });
+    try {
+      await faxios.get("http://localhost/users/{id}", {
+        pathParams: { id: 1 },
+        pathParamsSchema: schema,
+        env: { fetch: mockFetch({}) },
+      });
+      assert.fail("should have thrown");
+    }
+    catch (err) {
+      assert.ok(err instanceof FaxiosError);
+      assert.strictEqual(err.code, FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA);
+    }
+  });
+
+  it("throws when schema returns a falsy non-Result value", async () => {
+    const schema = makeSchema(() => undefined as never);
+    try {
+      await faxios.get("http://localhost/users/{id}", {
+        pathParams: { id: 1 },
+        pathParamsSchema: schema,
+        env: { fetch: mockFetch({}) },
+      });
+      assert.fail("should have thrown");
+    }
+    catch (err) {
+      assert.ok(err instanceof FaxiosError);
+      assert.strictEqual(err.code, FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA);
+      assert.ok(err.message.includes("non-Result"));
+    }
+  });
+
   it("pathParamsSchema failure prevents paramsSchema from running (fail-fast)", async () => {
     const pathSchema = makeSchema(() => ({ issues: [{ message: "bad path" }] }));
     const paramsValidate = vi.fn(() => ({ value: {} }));
