@@ -1,8 +1,8 @@
 # faxios
 
-> Promise based HTTP client for the browser and node.js — a TypeScript-first fork of [faxios](https://github.com/faxios/faxios).
+> Promise based HTTP client for the browser and node.js — a TypeScript-first fork of [axios](https://github.com/axios/axios).
 
-[![npm version](https://img.shields.io/npm/v/faxios.svg?style=flat-square)](https://www.npmjs.org/package/faxios)
+[![npm version](https://img.shields.io/npm/v/@gcmdev/faxios.svg?style=flat-square)](https://www.npmjs.org/package/@gcmdev/faxios)
 
 ## Table of contents
 
@@ -81,60 +81,46 @@
 Using npm:
 
 ```bash
-$ npm install faxios
+$ npm install @gcmdev/faxios
 ```
 
 Using yarn:
 
 ```bash
-$ yarn add faxios
+$ yarn add @gcmdev/faxios
 ```
 
 Using pnpm:
 
 ```bash
-$ pnpm add faxios
+$ pnpm add @gcmdev/faxios
 ```
 
 Using bun:
 
 ```bash
-$ bun add faxios
+$ bun add @gcmdev/faxios
 ```
 
-Once the package is installed, import it with `import` or `require`:
+Once the package is installed, import it with `import`:
 
 ```js
-import faxios, { isCancel, FaxiosError } from 'faxios';
+import faxios, { isCancel, FaxiosError } from '@gcmdev/faxios';
 ```
 
 You can also use the default export, since the named export is just a re-export from the Faxios factory:
 
 ```js
-import faxios from 'faxios';
+import faxios from '@gcmdev/faxios';
 
 console.log(faxios.isCancel('something'));
 ```
 
-If you use `require` for importing, **only the default export is available**:
-
-```js
-const faxios = require('faxios');
-
-console.log(faxios.isCancel('something'));
-```
-
-Some bundlers and ES6 linters need this form:
-
-```js
-import { default as faxios } from 'faxios';
-```
 
 ## Example
 
 ```js
-import faxios from 'faxios';
-//const faxios = require('faxios'); // legacy way
+import faxios from '@gcmdev/faxios';
 
 try {
   const response = await faxios.get('/user?ID=12345');
@@ -1187,7 +1173,7 @@ header is set to `multipart/form-data`.
 This request submits data as FormData in browsers and Node.js:
 
 ```js
-import faxios from 'faxios';
+import faxios from '@gcmdev/faxios';
 
 faxios
   .post(
@@ -1207,20 +1193,14 @@ The Node.js build uses the [`form-data`](https://github.com/form-data/form-data)
 You can override the FormData class with the `env.FormData` config option, but most applications do not need this:
 
 ```js
-const faxios = require('faxios');
-var FormData = require('form-data');
+import faxios from '@gcmdev/faxios';
 
-faxios
-  .post(
-    'https://httpbin.org/post',
-    { x: 1, buf: Buffer.alloc(10) },
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
-  )
-  .then(({ data }) => console.log(data));
+const { data } = await faxios.post(
+  'https://httpbin.org/post',
+  { x: 1, buf: Buffer.alloc(10) },
+  { headers: { 'Content-Type': 'multipart/form-data' } }
+);
+console.log(data);
 ```
 
 The Faxios FormData serializer supports these special endings:
@@ -1742,7 +1722,7 @@ A minimal example of setting up Faxios for use in a [Tauri](https://tauri.app/pl
 
 ```js
 import { fetch } from '@tauri-apps/plugin-http';
-import faxios from 'faxios';
+import faxios from '@gcmdev/faxios';
 
 const instance = faxios.create({
   adapter: 'fetch',
@@ -1826,7 +1806,7 @@ If you use TypeScript to type check CJS JavaScript code, your only option is to 
 You can also create a custom instance with typed interceptors:
 
 ```typescript
-import faxios, { FaxiosInstance, InternalFaxiosRequestConfig } from 'faxios';
+import faxios, { FaxiosInstance, InternalFaxiosRequestConfig } from '@gcmdev/faxios';
 
 const apiClient: FaxiosInstance = faxios.create({
   baseURL: 'https://api.example.com',

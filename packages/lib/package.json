@@ -1,5 +1,5 @@
 {
-  "name": "faxios",
+  "name": "@gcmdev/faxios",
   "version": "0.0.1",
   "description": "Promise based, web-standard fetch HTTP client for the browser, Node.js, Deno and Bun",
   "main": "./dist/index.js",
