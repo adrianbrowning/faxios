@@ -42,12 +42,6 @@
   },
   "homepage": "https://faxios-http.com",
   "files": [
-    "index.js",
-    "index.d.ts",
-    "CHANGELOG.md",
-    "MIGRATION_GUIDE.md",
-    "lib/",
-    "src/",
     "dist/"
   ],
   "scripts": {
