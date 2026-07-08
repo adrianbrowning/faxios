@@ -10,13 +10,14 @@
 - [Browser support](#browser-support)
 - [Installing](#installing)
   - [Package manager](#package-manager)
-  - [CDN](#cdn)
 - [Example](#example)
 - [Faxios API](#faxios-api)
 - [Request method aliases](#request-method-aliases)
 - [Concurrency](#concurrency-deprecated)
 - [Creating an instance](#creating-an-instance)
 - [Instance methods](#instance-methods)
+- [Typed endpoint builder — `faxios.define()`](#typed-endpoint-builder--faxiosdefine)
+- [Shared route builder — `faxios.route()`](#shared-route-builder--faxiosroute)
 - [Request config](#request-config)
 - [Response schema](#response-schema)
 - [Config defaults](#config-defaults)
@@ -29,10 +30,8 @@
 - [Handling timeouts](#handling-timeouts)
 - [Cancellation](#cancellation)
   - [AbortController](#abortcontroller)
-  - [CancelToken](#canceltoken-deprecated)
 - [Using application/x-www-form-urlencoded format](#using-applicationx-www-form-urlencoded-format)
   - [URLSearchParams](#urlsearchparams)
-  - [Query string](#query-string-older-browsers)
   - [Automatic serialization](#automatic-serialization-to-urlsearchparams)
 - [Using multipart/form-data format](#using-multipartform-data-format)
   - [FormData](#formdata)
@@ -303,6 +302,43 @@ The following instance methods are available. Faxios merges the specified config
 
 ##### faxios#getUri([config])
 
+### Typed endpoint builder — `faxios.define()`
+
+Create reusable, fully-typed endpoint functions with schema enforcement locked at define-time:
+
+```ts
+import faxios from '@gcmdev/faxios';
+import { z } from 'zod';
+
+const getUser = faxios.define('get', '/users/{id}', {
+  pathParamsSchema: z.object({ id: z.string() }),
+  responseSchema: z.object({ name: z.string(), age: z.number() }),
+});
+
+const response = await getUser({ pathParams: { id: '123' } });
+// response.data is typed as { name: string; age: number }
+```
+
+Schemas set at define-time cannot be overridden per-call (security by design).
+
+### Shared route builder — `faxios.route()`
+
+Create a builder with typed HTTP method helpers and shared route-level config:
+
+```ts
+import faxios from '@gcmdev/faxios';
+import { z } from 'zod';
+
+const users = faxios.route('/users/{id}', {
+  pathParamsSchema: z.object({ id: z.string() }),
+});
+
+const getUser = users.get({ responseSchema: z.object({ name: z.string() }) });
+const updateUser = users.put({ requestSchema: z.object({ name: z.string() }) });
+
+const res = await getUser({ pathParams: { id: '123' } });
+```
+
 ## Request config
 
 ### Security notice: decompression-bomb protection is opt-in
@@ -333,9 +369,9 @@ These config options are available for requests. Only `url` is required. Request
   // to the methods of that instance.
   baseURL: 'https://some-domain.com/api/',
 
-  // `allowAbsoluteUrls` determines whether or not absolute URLs will override a configured `baseUrl`.
-  // When set to true (default), absolute values for `url` will override `baseUrl`.
-  // When set to false, absolute values for `url` will always be prepended by `baseUrl`.
+  // `allowAbsoluteUrls` determines whether absolute URLs override `baseURL`.
+  // Defaults to `false` when `baseURL` is set, `true` otherwise.
+  // When `false`, absolute values for `url` are prepended by `baseURL`.
   allowAbsoluteUrls: true,
 
   // `transformRequest` allows changes to the request data before it is sent to the server
@@ -436,15 +472,6 @@ These config options are available for requests. Only `url` is required. Request
   // It does not control whether the XSRF header is added.
   withCredentials: false, // default
 
-  // `adapter` allows custom handling of requests which makes testing easier.
-  // Return a promise and supply a valid response (see lib/adapters/README.md)
-  adapter: function (config) {
-    /* ... */
-  },
-  // Also, you can set the name of the built-in adapter. `'fetch'` is the only
-  // built-in adapter and is used in every runtime (browser, Node.js, Deno, Bun).
-  adapter: ['fetch'], // default; equivalent to 'fetch'
-
   // `auth` indicates that HTTP Basic auth should be used, and supplies credentials.
   // This will set an `Authorization` header, overwriting any existing
   // `Authorization` custom headers you have set using `headers`.
@@ -527,12 +554,7 @@ These config options are available for requests. Only `url` is required. Request
     return status >= 200 && status < 300; // default
   },
 
-  // `cancelToken` specifies a cancel token that can be used to cancel the request
-  // (see Cancellation section below for details)
-  cancelToken: new CancelToken(function (cancel) {
-  }),
-
-  // an alternative way to cancel Faxios requests using AbortController
+  // cancel Faxios requests using AbortController
   signal: new AbortController().signal,
 
   // transitional options for backward compatibility that may be removed in the newer versions
@@ -557,9 +579,32 @@ These config options are available for requests. Only `url` is required. Request
     // runtime's fetch implementation can decompress zstd responses.
     advertiseZstdAcceptEncoding: false,
 
+    // when true (default), `validateStatus: undefined` resolves every response status
+    // (legacy behavior). Set to false to make explicit undefined behave like omitted,
+    // using the configured/default validator (reject non-2xx).
+    validateStatusUndefinedResolves: true,
+
     // use the legacy interceptor request/response ordering
     legacyInterceptorReqResOrdering: true, // default
   },
+
+  // `responseSchema` accepts any Standard Schema v1 compliant schema (Zod, Valibot, ArkType).
+  // Validates response.data after transformResponse; throws ERR_BAD_RESPONSE_SCHEMA on failure.
+  // TypeScript infers response.data type from the schema's output type.
+  responseSchema: UserSchema,
+
+  // `requestSchema` validates config.data before sending; throws ERR_BAD_REQUEST_SCHEMA on failure.
+  requestSchema: CreateUserSchema,
+
+  // `paramsSchema` validates config.params before URL construction; throws ERR_BAD_PARAMS_SCHEMA.
+  paramsSchema: QuerySchema,
+
+  // `pathParams` substitutes {key} placeholders in the URL.
+  pathParams: { id: '123' },
+
+  // `pathParamsSchema` validates pathParams before substitution; throws ERR_BAD_PATH_PARAMS_SCHEMA.
+  // When set, pathParams is required.
+  pathParamsSchema: PathSchema,
 
   env: {
     // The FormData class to be used to automatically serialize the payload into a FormData object
@@ -971,62 +1016,6 @@ faxios
 controller.abort();
 ```
 
-### CancelToken (deprecated)
-
-You can also cancel a request using a _CancelToken_.
-
-> The faxios cancel token API is based on the withdrawn [cancellable promises proposal](https://github.com/tc39/proposal-cancelable-promises).
-
-> This API is deprecated since v0.22.0 and should not be used in new projects.
-
-Create a cancel token with the `CancelToken.source` factory:
-
-```js
-const CancelToken = faxios.CancelToken;
-const source = CancelToken.source();
-
-faxios
-  .get('/user/12345', {
-    cancelToken: source.token,
-  })
-  .catch(function (thrown) {
-    if (faxios.isCancel(thrown)) {
-      console.log('Request canceled', thrown.message);
-    } else {
-      // handle error
-    }
-  });
-
-faxios.post(
-  '/user/12345',
-  {
-    name: 'new name',
-  },
-  {
-    cancelToken: source.token,
-  }
-);
-
-// cancel the request (the message parameter is optional)
-source.cancel('Operation canceled by the user.');
-```
-
-You can also pass an executor function to the `CancelToken` constructor:
-
-```js
-const CancelToken = faxios.CancelToken;
-let cancel;
-
-faxios.get('/user/12345', {
-  cancelToken: new CancelToken(function executor(c) {
-    // An executor function receives a cancel function as a parameter
-    cancel = c;
-  }),
-});
-
-// cancel the request
-cancel();
-```
 
 > Note: You can cancel several requests with the same cancel token or abort controller.
 > If a cancellation token is already cancelled when an Faxios request starts, Faxios cancels the request immediately without making a real request.
@@ -1045,43 +1034,7 @@ params.append('extraparam', 'value');
 faxios.post('/foo', params);
 ```
 
-### Query string (older browsers)
 
-For very old browsers, use a [polyfill](https://github.com/WebReflection/url-search-params) and make sure it patches the global environment.
-
-Alternatively, you can encode data using the [`qs`](https://github.com/ljharb/qs) library:
-
-```js
-const qs = require('qs');
-faxios.post('/foo', qs.stringify({ bar: 123 }));
-```
-
-With ES modules:
-
-```js
-import qs from 'qs';
-const data = { bar: 123 };
-const options = {
-  method: 'POST',
-  headers: { 'content-type': 'application/x-www-form-urlencoded' },
-  data: qs.stringify(data),
-  url,
-};
-faxios(options);
-```
-
-### Older Node.js versions
-
-For older Node.js engines, use the [`querystring`](https://nodejs.org/api/querystring.html) module:
-
-```js
-const querystring = require('querystring');
-faxios.post('https://something.com/', querystring.stringify({ foo: 'bar' }));
-```
-
-You can also use the [`qs`](https://github.com/ljharb/qs) library.
-
-> Note: The `qs` library is preferable if you need to stringify nested objects, as the `querystring` method has [known issues](https://github.com/nodejs/node-v0.x-archive/issues/1665) with that use case.
 
 ### Automatic serialization to URLSearchParams
 
@@ -1797,11 +1750,17 @@ try {
 }
 ```
 
-Because faxios publishes an ESM default export and a CJS `module.exports`, TypeScript has a few caveats.
-The recommended setting is `"moduleResolution": "node16"`, which is implied by `"module": "node16"`. This requires TypeScript 4.7 or greater.
-If you use ESM, your settings should be fine.
-If you compile TypeScript to CJS and can't use `"moduleResolution": "node 16"`, enable `esModuleInterop`.
-If you use TypeScript to type check CJS JavaScript code, your only option is to use `"moduleResolution": "node16"`.
+faxios is ESM-only. Use `"moduleResolution": "node16"` or `"bundler"` in your `tsconfig.json`.
+
+When using `responseSchema`, TypeScript infers `response.data` from the schema's output type automatically — no manual generic needed:
+
+```typescript
+import { z } from 'zod';
+
+const UserSchema = z.object({ name: z.string(), age: z.number() });
+const { data } = await faxios.get('/user/1', { responseSchema: UserSchema });
+// data is typed as { name: string; age: number }
+```
 
 You can also create a custom instance with typed interceptors:
 

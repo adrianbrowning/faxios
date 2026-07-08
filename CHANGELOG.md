@@ -1,5 +1,43 @@
 # Changelog
 
+## v0.1.0 — July 8, 2026
+
+First public release of `@gcmdev/faxios` — a TypeScript-first, fetch-only fork of axios.
+
+### Breaking Changes
+
+- **Custom adapter support removed:** `config.adapter` is no longer a valid config field. `FaxiosAdapter`, `FaxiosAdapterConfig`, `FaxiosAdapterName` types and the `getAdapter` export are gone. `fetch` is the fixed, unconditional transport.
+
+- **Fetch-only transport:** faxios uses the web-standard `fetch` API as its only HTTP transport in every runtime (browser, Node 18+, Deno, Bun). The Node `http`/`https` adapter, browser `XMLHttpRequest` adapter, `follow-redirects`, `form-data`, `proxy-from-env`, and `https-proxy-agent` dependencies were removed. The package is ESM-only (no CJS, no UMD/CDN bundle). `onUploadProgress` is no longer supported; `onDownloadProgress` still works. Removed config fields: `maxRedirects`, `maxRate`, `beforeRedirect`, `socketPath`, `allowedSocketPaths`, `transport`, `httpAgent`, `httpsAgent`, `proxy`, `decompress`, `insecureHTTPParser`, `httpVersion`, `http2Options`, `sensitiveHeaders`, `lookup`, `family`. Connection failures reject with `ERR_NETWORK`, carrying the OS error on `error.cause`. (**#5**)
+
+- **`allowAbsoluteUrls` defaults to `false` when `baseURL` is set:** Instances with `baseURL` that pass absolute URLs will have them rejected unless `allowAbsoluteUrls: true` is explicitly set.
+
+- **`CancelToken` removed:** Use `AbortController` + `signal` instead.
+
+- **`spread` and `bind` helpers removed:** Use native `Function.prototype.apply` / `Function.prototype.bind`.
+
+### Features
+
+- **Standard Schema response validation:** `responseSchema` config field accepts any Standard Schema v1 compliant schema. Validates `response.data` after `transformResponse`; throws `ERR_BAD_RESPONSE_SCHEMA` on failure. TypeScript infers `response.data` from schema output type. (**#4**)
+
+- **Standard Schema request validation:** `requestSchema` validates `config.data` before sending; throws `ERR_BAD_REQUEST_SCHEMA` on failure. (**#5**)
+
+- **Standard Schema params validation:** `paramsSchema` validates `config.params` before URL construction; throws `ERR_BAD_PARAMS_SCHEMA` on failure. (**#5**)
+
+- **Path params URL templating:** `pathParams` substitutes `{key}` placeholders in URLs. `pathParamsSchema` validates before substitution; throws `ERR_BAD_PATH_PARAMS_SCHEMA`. (**#5**)
+
+- **`faxios.define()` typed endpoint builder:** Creates reusable, fully-typed endpoint functions with schema enforcement. (**#5**)
+
+- **`faxios.route()` shared route builder:** Creates a builder with typed HTTP method helpers and shared config. (**#22**)
+
+### Bug Fixes
+
+- **URL Validation:** Reject malformed `http:`/`https:` URLs that omit `//`, returning `ERR_INVALID_URL`. (**#10900**)
+- **Types:** Add missing `name: 'CanceledError'` declaration to CJS typings. (**#10922**)
+- **Config Merge:** Added `transitional.validateStatusUndefinedResolves` option. (**#10899**)
+
+---
+
 ## v1.17.0 — June 1, 2026
 
 This release adds Node HTTP zstd decompression, hardens config and release workflows, and fixes authentication, header, proxy, and type-handling regressions.

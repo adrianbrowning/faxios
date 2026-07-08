@@ -1,6 +1,6 @@
 {
   "name": "@gcmdev/faxios",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Promise based, web-standard fetch HTTP client for the browser, Node.js, Deno and Bun",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
