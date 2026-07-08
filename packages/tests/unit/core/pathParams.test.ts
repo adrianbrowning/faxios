@@ -3,7 +3,7 @@ import { describe, it, vi } from "vitest";
 import faxios from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import mergeConfig from "#src/lib/core/mergeConfig.js";
-import { makeSchema, mockFetch } from "./_schemaTestHelpers.js";
+import { makeSchema, makePathParamsSchema, mockFetch } from "./_schemaTestHelpers.js";
 
 describe("pathParams substitution", () => {
   it("substitutes path params into url", async () => {
@@ -54,7 +54,7 @@ describe("pathParams substitution", () => {
 
 describe("pathParamsSchema validation", () => {
   it("uses schema output for substitution on success", async () => {
-    const schema = makeSchema(() => ({ value: { id: "coerced-99" } }));
+    const schema = makePathParamsSchema(() => ({ value: { id: "coerced-99" } }));
     let capturedUrl = "";
     await faxios.get("http://localhost/users/{id}", {
       pathParams: { id: "raw" },
@@ -70,7 +70,7 @@ describe("pathParamsSchema validation", () => {
   });
 
   it("throws ERR_BAD_PATH_PARAMS_SCHEMA on validation failure", async () => {
-    const schema = makeSchema(() => ({ issues: [{ message: "bad path params" }] }));
+    const schema = makePathParamsSchema(() => ({ issues: [{ message: "bad path params" }] }));
     try {
       await faxios.get("http://localhost/users/{id}", {
         pathParams: { id: 1 },
@@ -87,7 +87,7 @@ describe("pathParamsSchema validation", () => {
 
   it("attaches issues from schema result to the error", async () => {
     const issues = [{ message: "invalid id" }];
-    const schema = makeSchema(() => ({ issues }));
+    const schema = makePathParamsSchema(() => ({ issues }));
     try {
       await faxios.get("http://localhost/users/{id}", {
         pathParams: { id: "bad" },
@@ -103,7 +103,7 @@ describe("pathParamsSchema validation", () => {
   });
 
   it("instance-level pathParamsSchema is used when no per-request schema", async () => {
-    const schema = makeSchema(() => ({ issues: [{ message: "bad" }] }));
+    const schema = makePathParamsSchema(() => ({ issues: [{ message: "bad" }] }));
     const instance = faxios.create({ pathParamsSchema: schema });
     try {
       await instance.get("http://localhost/users/{id}", {
@@ -119,8 +119,8 @@ describe("pathParamsSchema validation", () => {
   });
 
   it("per-request pathParamsSchema overrides instance-level", async () => {
-    const failSchema = makeSchema(() => ({ issues: [{ message: "fail" }] }));
-    const passSchema = makeSchema(v => ({ value: v }));
+    const failSchema = makePathParamsSchema(() => ({ issues: [{ message: "fail" }] }));
+    const passSchema = makePathParamsSchema(v => ({ value: v as Record<string, unknown> }));
     const instance = faxios.create({ pathParamsSchema: failSchema });
     await instance.get("http://localhost/users/{id}", {
       pathParams: { id: 1 },
@@ -131,7 +131,7 @@ describe("pathParamsSchema validation", () => {
   });
 
   it("wraps schema throws in FaxiosError with ERR_BAD_PATH_PARAMS_SCHEMA", async () => {
-    const schema = makeSchema(() => { throw new Error("schema exploded"); });
+    const schema = makePathParamsSchema(() => { throw new Error("schema exploded"); });
     try {
       await faxios.get("http://localhost/users/{id}", {
         pathParams: { id: 1 },
@@ -147,7 +147,7 @@ describe("pathParamsSchema validation", () => {
   });
 
   it("throws when schema returns a falsy non-Result value", async () => {
-    const schema = makeSchema(() => undefined as never);
+    const schema = makePathParamsSchema(() => undefined as never);
     try {
       await faxios.get("http://localhost/users/{id}", {
         pathParams: { id: 1 },
@@ -164,7 +164,7 @@ describe("pathParamsSchema validation", () => {
   });
 
   it("pathParamsSchema failure prevents paramsSchema from running (fail-fast)", async () => {
-    const pathSchema = makeSchema(() => ({ issues: [{ message: "bad path" }] }));
+    const pathSchema = makePathParamsSchema(() => ({ issues: [{ message: "bad path" }] }));
     const paramsValidate = vi.fn(() => ({ value: {} }));
     const paramsSchema = makeSchema(paramsValidate);
     try {
@@ -187,7 +187,7 @@ describe("pathParamsSchema validation", () => {
 
 describe("pathParams guard", () => {
   it("throws ERR_BAD_OPTION_VALUE when pathParamsSchema set but pathParams undefined", async () => {
-    const schema = makeSchema(v => ({ value: v }));
+    const schema = makePathParamsSchema(v => ({ value: v as Record<string, unknown> }));
     try {
       await faxios.get("http://localhost/users/{id}", {
         pathParamsSchema: schema,
@@ -199,6 +199,58 @@ describe("pathParams guard", () => {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_OPTION_VALUE);
     }
+  });
+});
+
+describe("pathParams encoding — no double-encoding through pipeline", () => {
+  const captureFetch = () => {
+    let url = "";
+    return {
+      get url() { return url; },
+      fetch: async (input: string | URL | Request) => {
+        url = input instanceof Request ? input.url : String(input);
+        return new Response(null, { status: 200 });
+      },
+    };
+  };
+
+  it("slash in value is encoded once (foo/bar → foo%2Fbar)", async () => {
+    const t = captureFetch();
+    await faxios.get("http://localhost/{seg}", {
+      pathParams: { seg: "foo/bar" },
+      env: { fetch: t.fetch },
+    });
+    assert.ok(t.url.includes("/foo%2Fbar"), `Expected foo%2Fbar in ${t.url}`);
+    assert.ok(!t.url.includes("%252F"), `Double-encoded %252F in ${t.url}`);
+  });
+
+  it("plus in value is encoded once (a+b → a%2Bb)", async () => {
+    const t = captureFetch();
+    await faxios.get("http://localhost/{seg}", {
+      pathParams: { seg: "a+b" },
+      env: { fetch: t.fetch },
+    });
+    assert.ok(t.url.includes("/a%2Bb"), `Expected a%2Bb in ${t.url}`);
+    assert.ok(!t.url.includes("%252B"), `Double-encoded %252B in ${t.url}`);
+  });
+
+  it("pre-encoded %20 is encoded again (correct: %2520 — input is literal %20)", async () => {
+    const t = captureFetch();
+    await faxios.get("http://localhost/{seg}", {
+      pathParams: { seg: "hello%20world" },
+      env: { fetch: t.fetch },
+    });
+    // encodeURIComponent encodes % → %25, so input "hello%20world" becomes "hello%2520world"
+    assert.ok(t.url.includes("/hello%2520world"), `Expected hello%2520world in ${t.url}`);
+  });
+
+  it("space in value is encoded as %20", async () => {
+    const t = captureFetch();
+    await faxios.get("http://localhost/{seg}", {
+      pathParams: { seg: "hello world" },
+      env: { fetch: t.fetch },
+    });
+    assert.ok(t.url.includes("/hello%20world"), `Expected hello%20world in ${t.url}`);
   });
 });
 
@@ -217,12 +269,12 @@ describe("mergeConfig pathParams/pathParamsSchema", () => {
   });
 
   it("pathParamsSchema uses defaultToConfig2 — config2 wins", () => {
-    const s1 = makeSchema(() => ({ value: "s1" }));
-    const s2 = makeSchema(() => ({ value: "s2" }));
+    const s1 = makePathParamsSchema(() => ({ value: { a: "s1" } }));
+    const s2 = makePathParamsSchema(() => ({ value: { a: "s2" } }));
     const merged = mergeConfig({ pathParamsSchema: s1 }, { pathParamsSchema: s2 });
     // mergeConfig copies plain objects; verify it chose s2's validate fn
     assert.strictEqual(
-      (merged.pathParamsSchema as typeof s2)?.["~standard"]?.validate,
+      merged.pathParamsSchema?.["~standard"]?.validate,
       s2["~standard"].validate
     );
   });

@@ -289,7 +289,7 @@ export interface FaxiosRequestConfig<D = unknown> {
   requestSchema?: StandardSchemaV1;
   paramsSchema?: StandardSchemaV1;
   pathParams?: Record<string, unknown>;
-  pathParamsSchema?: StandardSchemaV1;
+  pathParamsSchema?: StandardSchemaV1<unknown, Record<string, unknown>>;
 }
 
 export type SchemaConfig<O, D = unknown> = FaxiosRequestConfig<D> & { responseSchema: StandardSchemaV1<unknown, O>; };

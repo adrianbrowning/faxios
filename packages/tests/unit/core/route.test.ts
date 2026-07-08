@@ -1,6 +1,7 @@
 import assert from "node:assert";
 import { describe, it, expectTypeOf } from "vitest";
 import faxios from "#src/index.ts";
+import FaxiosError from "#src/lib/core/FaxiosError.js";
 import { makeSchema, mockFetch } from "./_schemaTestHelpers.js";
 
 describe("faxios.route()", () => {
@@ -98,5 +99,33 @@ describe("faxios.route()", () => {
     // callable with no args
     const res = await getHealth({ env: { fetch: mockFetch({ ok: true }) } });
     assert.deepStrictEqual(res.data, { ok: true });
+  });
+
+  it("method-level requestSchema validates request data", async () => {
+    const failSchema = makeSchema(() => ({ issues: [{ message: "bad body" }] }));
+    const r = faxios.route("http://localhost/items");
+    const createItem = r.post({ requestSchema: failSchema });
+    try {
+      await createItem({ data: { name: "x" }, env: { fetch: mockFetch({}) } });
+      assert.fail("should have thrown");
+    }
+    catch (err) {
+      assert.ok(err instanceof FaxiosError);
+      assert.strictEqual(err.code, FaxiosError.ERR_BAD_REQUEST_SCHEMA);
+    }
+  });
+
+  it("method-level paramsSchema validates query params", async () => {
+    const failSchema = makeSchema(() => ({ issues: [{ message: "bad params" }] }));
+    const r = faxios.route("http://localhost/search");
+    const search = r.get({ paramsSchema: failSchema });
+    try {
+      await search({ params: { q: "x" }, env: { fetch: mockFetch({}) } });
+      assert.fail("should have thrown");
+    }
+    catch (err) {
+      assert.ok(err instanceof FaxiosError);
+      assert.strictEqual(err.code, FaxiosError.ERR_BAD_PARAMS_SCHEMA);
+    }
   });
 });

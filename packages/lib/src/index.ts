@@ -20,7 +20,7 @@ export { default as mergeConfig } from "./lib/core/mergeConfig.ts";
 export { VERSION } from "./lib/env/data.ts";
 
 export type { StandardSchemaV1 } from "./lib/types/standard-schema.ts";
-export type { BasePerCallConfig, DefineConfig, DefinedEndpoint, PerCallConfig } from "./lib/core/define.ts";
+export type { BasePerCallConfig, DefineConfig, DefinedEndpoint, FaxiosLike, PerCallConfig } from "./lib/core/define.ts";
 export type { RouteConfig, RouteMethodConfig, RouteBuilder } from "./lib/core/route.ts";
 
 export type {

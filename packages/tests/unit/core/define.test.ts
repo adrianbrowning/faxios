@@ -158,4 +158,17 @@ describe("faxios.define()", () => {
     assert.strictEqual(capturedHeaders["x-source"], "call");
     assert.strictEqual(capturedHeaders["x-extra"], "yes");
   });
+
+  it("no baked schemas — injected schemas are silently dropped", async () => {
+    const failSchema = makeSchema(() => ({ issues: [{ message: "injected" }] }));
+    const getItem = faxios.define("GET", "http://localhost/item");
+    // JS caller injects schemas on a define() with no baked schemas — must be ignored
+    const res = await (getItem as any)({
+      requestSchema: failSchema,
+      paramsSchema: failSchema,
+      responseSchema: failSchema,
+      env: { fetch: mockFetch({ id: 1 }) },
+    });
+    assert.deepStrictEqual(res.data, { id: 1 });
+  });
 });

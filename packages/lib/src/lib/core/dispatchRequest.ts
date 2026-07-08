@@ -17,7 +17,42 @@ function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void
   }
 }
 
+async function validateAndSubstitutePathParams(config: InternalFaxiosRequestConfig): Promise<void> {
+  if (config.pathParamsSchema) {
+    const validated = await validateSchema(
+      config.pathParamsSchema, config.pathParams,
+      FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
+    );
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime guard: schema can return { value: null }
+    if (validated == null) {
+      throw new FaxiosError(
+        "pathParamsSchema returned null/undefined",
+        FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
+      );
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, sonarjs/different-types-comparison -- runtime guard: schema may transform to non-Record
+    if (typeof validated !== "object" || validated === null || Array.isArray(validated)) {
+      throw new FaxiosError(
+        "pathParamsSchema must return a plain object",
+        FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
+      );
+    }
+    config.pathParams = validated;
+  }
+  try {
+    config.url = substitutePathParams(config.url ?? "", config.pathParams!);
+  }
+  catch (err) {
+    throw FaxiosError.from(
+      err instanceof Error ? err : new Error(String(err)),
+      FaxiosError.ERR_BAD_OPTION_VALUE, config
+    );
+  }
+}
+
 // ponytail: non-async — returns Promise only when schemas exist, preserving synchronous path to adapter
+// Intentional mutation: config is the internal merged copy (post-mergeConfig), not the user's original.
+// Validation order (pathParams → params → data) is a fail-fast guarantee — do not reorder.
 function validatePreFlight(config: InternalFaxiosRequestConfig): Promise<void> | undefined {
   if (config.pathParamsSchema && config.pathParams === undefined) {
     throw new FaxiosError(
@@ -31,35 +66,16 @@ function validatePreFlight(config: InternalFaxiosRequestConfig): Promise<void> |
 
   return (async () => {
     if (config.pathParams !== undefined) {
-      if (config.pathParamsSchema) {
-        const validated = await validateSchema(
-          config.pathParamsSchema, config.pathParams,
-          FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
-        );
-        if (validated == null) {
-          throw new FaxiosError(
-            "pathParamsSchema returned null/undefined",
-            FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
-          );
-        }
-        config.pathParams = validated as Record<string, unknown>;
-      }
-      try {
-        config.url = substitutePathParams(config.url ?? "", config.pathParams);
-      }
-      catch (err) {
-        throw FaxiosError.from(
-          err instanceof Error ? err : new Error(String(err)),
-          FaxiosError.ERR_BAD_OPTION_VALUE, config
-        );
-      }
+      await validateAndSubstitutePathParams(config);
     }
 
     if (config.paramsSchema) {
+      throwIfCancellationRequested(config);
       config.params = await validateSchema(config.paramsSchema, config.params, FaxiosError.ERR_BAD_PARAMS_SCHEMA, config) as typeof config.params;
     }
 
     if (config.requestSchema) {
+      throwIfCancellationRequested(config);
       config.data = await validateSchema(config.requestSchema, config.data, FaxiosError.ERR_BAD_REQUEST_SCHEMA, config);
     }
   })();

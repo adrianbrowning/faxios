@@ -122,7 +122,7 @@ export type FaxiosInstance = {
   };
   getUri: (config?: FaxiosRequestConfig) => string;
   define: <
-    PP extends StandardSchemaV1 | undefined = undefined,
+    PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined,
     P extends StandardSchemaV1 | undefined = undefined,
     D extends StandardSchemaV1 | undefined = undefined,
     R extends StandardSchemaV1 | undefined = undefined
@@ -131,7 +131,7 @@ export type FaxiosInstance = {
     url: string,
     config?: DefineConfig<PP, P, D, R>
   ) => DefinedEndpoint<PP, P, D, R>;
-  route: <PP extends StandardSchemaV1 | undefined = undefined>(
+  route: <PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined>(
     url: string,
     config?: RouteConfig<PP>
   ) => RouteBuilder<PP>;

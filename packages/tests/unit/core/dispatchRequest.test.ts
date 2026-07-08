@@ -557,5 +557,36 @@ describe("core::dispatchRequest", () => {
       assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
       assert.strictEqual(thrown.code, FaxiosError.ERR_CANCELED);
     });
+
+    it("cancellation during responseSchema validation still rejects with ERR_CANCELED", async () => {
+      const controller = new AbortController();
+      const responseSchema = makeSchema(async v => {
+        // Schema is async — abort mid-validation
+        controller.abort();
+        return { value: v };
+      });
+      const config = baseConfig({
+        signal: controller.signal,
+        responseSchema,
+        env: {
+          fetch: async () =>
+            new Response(JSON.stringify({ ok: true }), {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            }),
+        },
+      });
+
+      let thrown: FaxiosError | undefined;
+      try {
+        await dispatchRequest(config);
+      }
+      catch (e) {
+        thrown = e as FaxiosError;
+      }
+
+      assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
+      assert.strictEqual(thrown.code, FaxiosError.ERR_CANCELED);
+    });
   });
 });

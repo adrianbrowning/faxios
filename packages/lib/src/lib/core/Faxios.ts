@@ -470,7 +470,7 @@ class Faxios {
   }
 
   define<
-    PP extends StandardSchemaV1 | undefined = undefined,
+    PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined,
     P extends StandardSchemaV1 | undefined = undefined,
     D extends StandardSchemaV1 | undefined = undefined,
     R extends StandardSchemaV1 | undefined = undefined
@@ -482,7 +482,7 @@ class Faxios {
     return createDefinedEndpoint(this, method, url, config);
   }
 
-  route<PP extends StandardSchemaV1 | undefined = undefined>(
+  route<PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined>(
     url: string,
     config?: RouteConfig<PP>
   ): RouteBuilder<PP> {
