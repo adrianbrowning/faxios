@@ -9,3 +9,4 @@ export const mockFetch = (body: unknown, status = 200) =>
 export function makeSchema<T>(validate: StandardSchemaV1<unknown, T>["~standard"]["validate"]): StandardSchemaV1<unknown, T> {
   return { "~standard": { version: 1, vendor: "test", validate } };
 }
+

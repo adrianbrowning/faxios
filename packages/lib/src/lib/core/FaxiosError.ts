@@ -114,6 +114,9 @@ class FaxiosError extends Error {
   static readonly ERR_INVALID_URL = "ERR_INVALID_URL";
   static readonly ERR_FORM_DATA_DEPTH_EXCEEDED = "ERR_FORM_DATA_DEPTH_EXCEEDED";
   static readonly ERR_BAD_RESPONSE_SCHEMA = "ERR_BAD_RESPONSE_SCHEMA";
+  static readonly ERR_BAD_REQUEST_SCHEMA = "ERR_BAD_REQUEST_SCHEMA";
+  static readonly ERR_BAD_PARAMS_SCHEMA = "ERR_BAD_PARAMS_SCHEMA";
+  static readonly ERR_BAD_PATH_PARAMS_SCHEMA = "ERR_BAD_PATH_PARAMS_SCHEMA";
 
   static from(
     error: Error & { code?: string; status?: number; },
@@ -221,6 +224,13 @@ class FaxiosError extends Error {
   }
 }
 
+const SCHEMA_ERROR_CODES: ReadonlySet<string> = new Set([
+  FaxiosError.ERR_BAD_RESPONSE_SCHEMA,
+  FaxiosError.ERR_BAD_REQUEST_SCHEMA,
+  FaxiosError.ERR_BAD_PARAMS_SCHEMA,
+  FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA,
+]);
+
 export function isSchemaValidationError(
   err: unknown
 ): err is FaxiosError & { issues: ReadonlyArray<StandardSchemaV1.Issue>; } {
@@ -228,7 +238,8 @@ export function isSchemaValidationError(
   return (
     utils.isObject(err) &&
     e.isFaxiosError === true &&
-    e.code === FaxiosError.ERR_BAD_RESPONSE_SCHEMA &&
+    typeof e.code === "string" &&
+    SCHEMA_ERROR_CODES.has(e.code) &&
     Array.isArray(e.issues)
   );
 }

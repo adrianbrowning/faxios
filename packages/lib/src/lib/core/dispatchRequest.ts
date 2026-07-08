@@ -5,7 +5,8 @@ import CanceledError from "../cancel/CanceledError.js";
 import isCancel from "../cancel/isCancel.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
-import type { StandardSchemaV1 } from "../types/standard-schema.js";
+import { validateSchema } from "../core/validateSchema.js";
+import { substitutePathParams } from "../helpers/substitutePathParams.js";
 import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
 import utils from "../utils.js";
 import transformData from "./transformData.js";
@@ -16,8 +17,88 @@ function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void
   }
 }
 
+async function validateAndSubstitutePathParams(config: InternalFaxiosRequestConfig): Promise<void> {
+  if (config.pathParamsSchema) {
+    const validated = await validateSchema(
+      config.pathParamsSchema, config.pathParams,
+      FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
+    );
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime guard: schema can return { value: null }
+    if (validated == null) {
+      throw new FaxiosError(
+        "pathParamsSchema returned null/undefined",
+        FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
+      );
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, sonarjs/different-types-comparison -- runtime guard: schema may transform to non-Record
+    if (typeof validated !== "object" || validated === null || Array.isArray(validated)) {
+      throw new FaxiosError(
+        "pathParamsSchema must return a plain object",
+        FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
+      );
+    }
+    config.pathParams = validated;
+  }
+  const params = config.pathParams ?? {};
+  try {
+    config.url = substitutePathParams(config.url ?? "", params);
+  }
+  catch (err) {
+    throw FaxiosError.from(
+      err instanceof Error ? err : new Error(String(err)),
+      FaxiosError.ERR_BAD_OPTION_VALUE, config
+    );
+  }
+}
+
+// Intentional mutation: config is the internal merged copy (post-mergeConfig), not the user's original.
+// Validation order (pathParams → params → data) is a fail-fast guarantee — do not reorder.
+// DO NOT make this function async. Returning undefined (not a Promise) on the fast path is a
+// microtask-ordering contract: dispatchRequest must reach the adapter in the same microtask so
+// that a synchronous controller.abort() after request creation is processed by the adapter's
+// signal listener, not before it registers. An async function always returns a Promise, inserting
+// a microtask boundary that breaks abort timing in fetch adapter tests and real-world usage.
+function validatePreFlight(config: InternalFaxiosRequestConfig): Promise<void> | undefined {
+  if (config.pathParamsSchema && config.pathParams === undefined) {
+    throw new FaxiosError(
+      "pathParams is required when pathParamsSchema is configured",
+      FaxiosError.ERR_BAD_OPTION_VALUE, config
+    );
+  }
+
+  const hasSchemas = config.pathParamsSchema || config.paramsSchema || config.requestSchema;
+  if (!hasSchemas && config.pathParams === undefined) return undefined;
+
+  // pathParams present but no schemas — substitute synchronously, no microtask boundary needed.
+  if (!hasSchemas) {
+    const params = config.pathParams ?? {};
+    try { config.url = substitutePathParams(config.url ?? "", params); }
+    catch (err) { throw FaxiosError.from(err instanceof Error ? err : new Error(String(err)), FaxiosError.ERR_BAD_OPTION_VALUE, config); }
+    return undefined;
+  }
+
+  return (async () => {
+    if (config.pathParams !== undefined) {
+      await validateAndSubstitutePathParams(config);
+    }
+
+    if (config.paramsSchema) {
+      throwIfCancellationRequested(config);
+      config.params = await validateSchema(config.paramsSchema, config.params, FaxiosError.ERR_BAD_PARAMS_SCHEMA, config) as typeof config.params;
+    }
+
+    if (config.requestSchema) {
+      throwIfCancellationRequested(config);
+      config.data = await validateSchema(config.requestSchema, config.data, FaxiosError.ERR_BAD_REQUEST_SCHEMA, config);
+    }
+  })();
+}
+
 export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig): Promise<FaxiosResponse> {
   throwIfCancellationRequested(config);
+
+  const preFlight = validatePreFlight(config);
+  if (preFlight) await preFlight;
 
   config.headers = FaxiosHeaders.from(config.headers) as unknown as typeof config.headers;
 
@@ -55,7 +136,8 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
         }
 
         if (config.responseSchema) {
-          return validateResponseSchema(config as typeof config & { responseSchema: StandardSchemaV1; }, response);
+          return validateSchema(config.responseSchema, response.data, FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, response)
+            .then(data => { response.data = data; throwIfCancellationRequested(config); return response; });
         }
 
         return response;
@@ -81,45 +163,4 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
       }
     );
   /* eslint-enable promise/always-return */
-}
-
-async function validateResponseSchema(
-  config: InternalFaxiosRequestConfig & { responseSchema: StandardSchemaV1; },
-  response: FaxiosResponse
-): Promise<FaxiosResponse> {
-  let result: StandardSchemaV1.Result<unknown> | undefined;
-  try {
-    const raw = config.responseSchema["~standard"].validate(response.data);
-    result = raw instanceof Promise ? await raw : raw;
-  }
-  catch (err) {
-    if (isCancel(err)) throw err;
-    const wrapped = FaxiosError.from(
-      err instanceof Error ? err : new Error(String(err)),
-      FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
-    );
-    wrapped.issues = [{ message: wrapped.message }];
-    throw wrapped;
-  }
-  throwIfCancellationRequested(config);
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (!result) {
-    const error = new FaxiosError(
-      "responseSchema['~standard'].validate() returned a non-Result value",
-      FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
-    );
-    error.issues = [];
-    throw error;
-  }
-  if (result.issues !== undefined) {
-    const error = new FaxiosError(
-      "Response validation failed",
-      FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response
-    );
-    // Strip to spec-only fields — runtime libs may attach sensitive data
-    error.issues = result.issues.map(({ message, path }) => path ? { message, path } : { message });
-    throw error;
-  }
-  response.data = result.value;
-  return response;
 }

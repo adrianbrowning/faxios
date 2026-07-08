@@ -443,6 +443,24 @@ describe("core::FaxiosError", () => {
       expect(isSchemaValidationError(error)).toBe(true);
     });
 
+    it("returns true for ERR_BAD_REQUEST_SCHEMA with issues", () => {
+      const error = new FaxiosError("fail", FaxiosError.ERR_BAD_REQUEST_SCHEMA, {} as any);
+      (error as any).issues = [{ message: "bad" }];
+      expect(isSchemaValidationError(error)).toBe(true);
+    });
+
+    it("returns true for ERR_BAD_PARAMS_SCHEMA with issues", () => {
+      const error = new FaxiosError("fail", FaxiosError.ERR_BAD_PARAMS_SCHEMA, {} as any);
+      (error as any).issues = [{ message: "bad" }];
+      expect(isSchemaValidationError(error)).toBe(true);
+    });
+
+    it("returns true for ERR_BAD_PATH_PARAMS_SCHEMA with issues", () => {
+      const error = new FaxiosError("fail", FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, {} as any);
+      (error as any).issues = [{ message: "bad" }];
+      expect(isSchemaValidationError(error)).toBe(true);
+    });
+
     it("returns false for FaxiosError with different code", () => {
       const error = new FaxiosError("Boom", FaxiosError.ERR_BAD_RESPONSE, {} as any);
       (error as any).issues = [{ message: "bad" }];

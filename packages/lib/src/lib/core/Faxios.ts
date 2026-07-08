@@ -4,18 +4,25 @@ import transitionalDefaults from "../defaults/transitional.js";
 import buildURL from "../helpers/buildURL.js";
 import validator from "../helpers/validator.js";
 import type { ValidatorFn } from "../helpers/validator.js";
+import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type {
   FaxiosRequestConfig,
   FaxiosResponse,
   InternalFaxiosRequestConfig,
-  SchemaConfig
+  Method,
+  SchemaConfig,
+  StringLiteralsOrString
 } from "../types.js";
 import utils from "../utils.js";
 import buildFullPath from "./buildFullPath.js";
+import { createDefinedEndpoint } from "./define.js";
+import type { DefineConfig, DefinedEndpoint } from "./define.js";
 import dispatchRequest from "./dispatchRequest.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
 import InterceptorManager from "./InterceptorManager.js";
 import mergeConfig from "./mergeConfig.js";
+import type { RouteConfig, RouteBuilder } from "./route.js";
+import { createRouteBuilder } from "./route.js";
 
 type TransitionalFn = (
   validator: ValidatorFn | false | undefined,
@@ -460,6 +467,26 @@ class Faxios {
       config
     );
     return buildURL(fullPath, config.params, config.paramsSerializer);
+  }
+
+  define<
+    PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined,
+    P extends StandardSchemaV1 | undefined = undefined,
+    D extends StandardSchemaV1 | undefined = undefined,
+    R extends StandardSchemaV1 | undefined = undefined
+  >(
+    method: StringLiteralsOrString<Method>,
+    url: string,
+    config?: DefineConfig<PP, P, D, R>
+  ): DefinedEndpoint<PP, P, D, R> {
+    return createDefinedEndpoint(this, method, url, config);
+  }
+
+  route<PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined>(
+    url: string,
+    config?: RouteConfig<PP>
+  ): RouteBuilder<PP> {
+    return createRouteBuilder(this, url, config);
   }
 }
 

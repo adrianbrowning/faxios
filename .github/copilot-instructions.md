@@ -26,7 +26,7 @@ The rules below are a Copilot-facing subset of the load-bearing safety guarantee
 
 - Throw `FaxiosError(message, code, config, request, response)` for faxios-originated failures; never raw `Error`.
 - Wrap third-party errors with `FaxiosError.from(error, code, config, request, response)`.
-- Use a code from `lib/core/FaxiosError.js` (`ERR_NETWORK`, `ETIMEDOUT`, `ECONNABORTED`, `ERR_CANCELED`, `ERR_BAD_REQUEST`, `ERR_BAD_RESPONSE`, `ERR_FR_TOO_MANY_REDIRECTS`, `ERR_FORM_DATA_DEPTH_EXCEEDED`, `ERR_INVALID_URL`, `ERR_BAD_OPTION`, `ERR_BAD_OPTION_VALUE`, `ERR_NOT_SUPPORT`, `ERR_DEPRECATED`, `ECONNREFUSED`).
+- Use a code from `packages/lib/src/lib/core/FaxiosError.ts` (`ERR_NETWORK`, `ETIMEDOUT`, `ECONNABORTED`, `ERR_CANCELED`, `ERR_BAD_REQUEST`, `ERR_BAD_RESPONSE`, `ERR_FR_TOO_MANY_REDIRECTS`, `ERR_FORM_DATA_DEPTH_EXCEEDED`, `ERR_INVALID_URL`, `ERR_BAD_OPTION`, `ERR_BAD_OPTION_VALUE`, `ERR_NOT_SUPPORT`, `ERR_DEPRECATED`, `ECONNREFUSED`, `ERR_BAD_RESPONSE_SCHEMA`, `ERR_BAD_REQUEST_SCHEMA`, `ERR_BAD_PARAMS_SCHEMA`, `ERR_BAD_PATH_PARAMS_SCHEMA`).
 
 ## Interceptor order
 

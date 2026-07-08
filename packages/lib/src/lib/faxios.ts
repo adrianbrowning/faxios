@@ -43,7 +43,7 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
   return instance;
 }
 
-export type FaxiosInstance = {
+export type FaxiosInstance = Pick<Faxios, "define" | "route"> & {
   <O, D = unknown>(config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
   <O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
   <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D>): Promise<R>;

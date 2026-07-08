@@ -286,6 +286,10 @@ export interface FaxiosRequestConfig<D = unknown> {
   formDataHeaderPolicy?: "legacy" | "content-only";
   redact?: Array<string>;
   responseSchema?: StandardSchemaV1;
+  requestSchema?: StandardSchemaV1;
+  paramsSchema?: StandardSchemaV1;
+  pathParams?: Record<string, unknown>;
+  pathParamsSchema?: StandardSchemaV1<unknown, Record<string, unknown>>;
 }
 
 export type SchemaConfig<O, D = unknown> = FaxiosRequestConfig<D> & { responseSchema: StandardSchemaV1<unknown, O>; };
