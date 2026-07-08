@@ -22,3 +22,4 @@ packages/lib/faxios-*.tgz
 .pnpm-store/
 .claude/settings.local.json
 /plans/
+tests/**/pnpm-lock.yaml
