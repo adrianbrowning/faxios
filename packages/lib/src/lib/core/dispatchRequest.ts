@@ -39,8 +39,9 @@ async function validateAndSubstitutePathParams(config: InternalFaxiosRequestConf
     }
     config.pathParams = validated;
   }
+  const params = config.pathParams ?? {};
   try {
-    config.url = substitutePathParams(config.url ?? "", config.pathParams!);
+    config.url = substitutePathParams(config.url ?? "", params);
   }
   catch (err) {
     throw FaxiosError.from(
@@ -50,9 +51,13 @@ async function validateAndSubstitutePathParams(config: InternalFaxiosRequestConf
   }
 }
 
-// ponytail: non-async — returns Promise only when schemas exist, preserving synchronous path to adapter
 // Intentional mutation: config is the internal merged copy (post-mergeConfig), not the user's original.
 // Validation order (pathParams → params → data) is a fail-fast guarantee — do not reorder.
+// DO NOT make this function async. Returning undefined (not a Promise) on the fast path is a
+// microtask-ordering contract: dispatchRequest must reach the adapter in the same microtask so
+// that a synchronous controller.abort() after request creation is processed by the adapter's
+// signal listener, not before it registers. An async function always returns a Promise, inserting
+// a microtask boundary that breaks abort timing in fetch adapter tests and real-world usage.
 function validatePreFlight(config: InternalFaxiosRequestConfig): Promise<void> | undefined {
   if (config.pathParamsSchema && config.pathParams === undefined) {
     throw new FaxiosError(
@@ -62,6 +67,8 @@ function validatePreFlight(config: InternalFaxiosRequestConfig): Promise<void> |
   }
 
   const hasSchemas = config.pathParamsSchema || config.paramsSchema || config.requestSchema;
+  // Both conditions required: no schemas AND no pathParams. If pathParams exists without a schema,
+  // we still need to run substitutePathParams for URL placeholder replacement.
   if (!hasSchemas && config.pathParams === undefined) return undefined;
 
   return (async () => {

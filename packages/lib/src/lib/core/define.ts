@@ -58,7 +58,10 @@ export interface FaxiosLike {
 
 type SchemaFields = Extract<StrippedFields, `${string}Schema`>;
 const schemaKeys = [ "pathParamsSchema", "paramsSchema", "requestSchema", "responseSchema" ] as const;
+// compile-time assertion: schemaKeys and SchemaFields must stay in sync
 void (schemaKeys satisfies ReadonlyArray<SchemaFields>);
+// strippedKeys strips url/method/schemas from per-call config; StrippedFields also omits pathParams/params/data
+// at the type level (those are still allowed at runtime — they're the validated data, not the schema definitions)
 const strippedKeys = [ "url", "method", ...schemaKeys ] as const;
 
 export function createDefinedEndpoint<

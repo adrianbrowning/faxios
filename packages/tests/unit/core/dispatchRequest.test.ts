@@ -558,6 +558,37 @@ describe("core::dispatchRequest", () => {
       assert.strictEqual(thrown.code, FaxiosError.ERR_CANCELED);
     });
 
+    it("mid-pre-flight cancellation — abort after paramsSchema prevents requestSchema from running", async () => {
+      const controller = new AbortController();
+      const requestSchemaValidate = vi.fn(() => ({ value: {} }));
+      const config = baseConfig({
+        signal: controller.signal,
+        paramsSchema: makeSchema(() => {
+          controller.abort();
+          return { value: { validated: true } };
+        }),
+        requestSchema: makeSchema(requestSchemaValidate),
+        data: { payload: true },
+        params: { q: "test" },
+        env: {
+          fetch: async () =>
+            new Response(null, { status: 200 }),
+        },
+      });
+
+      let thrown: FaxiosError | undefined;
+      try {
+        await dispatchRequest(config);
+      }
+      catch (e) {
+        thrown = e as FaxiosError;
+      }
+
+      assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
+      assert.strictEqual(thrown.code, FaxiosError.ERR_CANCELED);
+      assert.strictEqual(requestSchemaValidate.mock.calls.length, 0, "requestSchema must not run");
+    });
+
     it("cancellation during responseSchema validation still rejects with ERR_CANCELED", async () => {
       const controller = new AbortController();
       const responseSchema = makeSchema(async v => {

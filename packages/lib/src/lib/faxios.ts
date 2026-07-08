@@ -3,20 +3,17 @@
 
 import CanceledError from "./cancel/CanceledError.js";
 import isCancel from "./cancel/isCancel.js";
-import type { DefineConfig, DefinedEndpoint } from "./core/define.js";
 import Faxios from "./core/Faxios.js";
 import FaxiosError from "./core/FaxiosError.js";
 import FaxiosHeaders from "./core/FaxiosHeaders.js";
 import mergeConfig from "./core/mergeConfig.js";
-import type { RouteConfig, RouteBuilder } from "./core/route.js";
 import defaults from "./defaults/index.js";
 import { VERSION } from "./env/data.js";
 import formDataToJSON from "./helpers/formDataToJSON.js";
 import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
-import type { StandardSchemaV1 } from "./types/standard-schema.js";
-import type { FaxiosInterceptorOptions, FaxiosInterceptorRejected, FaxiosRequestConfig, InternalFaxiosRequestConfig, FaxiosResponse, Method, SchemaConfig, StringLiteralsOrString } from "./types.js";
+import type { FaxiosInterceptorOptions, FaxiosInterceptorRejected, FaxiosRequestConfig, InternalFaxiosRequestConfig, FaxiosResponse, SchemaConfig } from "./types.js";
 import utils from "./utils.js";
 
 /**
@@ -46,7 +43,7 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
   return instance;
 }
 
-export type FaxiosInstance = {
+export type FaxiosInstance = Pick<Faxios, "define" | "route"> & {
   <O, D = unknown>(config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
   <O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
   <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D>): Promise<R>;
@@ -121,20 +118,6 @@ export type FaxiosInstance = {
     };
   };
   getUri: (config?: FaxiosRequestConfig) => string;
-  define: <
-    PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined,
-    P extends StandardSchemaV1 | undefined = undefined,
-    D extends StandardSchemaV1 | undefined = undefined,
-    R extends StandardSchemaV1 | undefined = undefined
-  >(
-    method: StringLiteralsOrString<Method>,
-    url: string,
-    config?: DefineConfig<PP, P, D, R>
-  ) => DefinedEndpoint<PP, P, D, R>;
-  route: <PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined>(
-    url: string,
-    config?: RouteConfig<PP>
-  ) => RouteBuilder<PP>;
   create: (instanceConfig?: FaxiosRequestConfig) => FaxiosInstance;
   Faxios: typeof Faxios;
   CanceledError: typeof CanceledError;
