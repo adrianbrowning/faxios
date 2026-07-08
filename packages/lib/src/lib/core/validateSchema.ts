@@ -23,9 +23,9 @@ export async function validateSchema<S extends StandardSchemaV1>(
   }
   catch (err) {
     if (isCancel(err)) throw err;
+    const cause = err instanceof Error ? err : new Error(String(err), { cause: err });
     const wrapped = FaxiosError.from(
-      err instanceof Error ? err : new Error(String(err)),
-      errorCode, config, undefined, response
+      cause, errorCode, config, undefined, response
     );
     wrapped.issues = [{ message: wrapped.message }];
     throw wrapped;

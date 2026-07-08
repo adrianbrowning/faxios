@@ -185,6 +185,58 @@ describe("pathParamsSchema validation", () => {
   });
 });
 
+describe("pathParamsSchema runtime type guards", () => {
+  it("throws when schema returns { value: null }", async () => {
+    const schema = makeSchema<Record<string, unknown>>(() => ({ value: null as any }));
+    try {
+      await faxios.get("http://localhost/users/{id}", {
+        pathParams: { id: 1 },
+        pathParamsSchema: schema,
+        env: { fetch: mockFetch({}) },
+      });
+      assert.fail("should have thrown");
+    }
+    catch (err) {
+      assert.ok(err instanceof FaxiosError);
+      assert.strictEqual(err.code, FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA);
+    }
+  });
+
+  it("throws when schema returns { value: 'string' }", async () => {
+    const schema = makeSchema<Record<string, unknown>>(() => ({ value: "not-an-object" as any }));
+    try {
+      await faxios.get("http://localhost/users/{id}", {
+        pathParams: { id: 1 },
+        pathParamsSchema: schema,
+        env: { fetch: mockFetch({}) },
+      });
+      assert.fail("should have thrown");
+    }
+    catch (err) {
+      assert.ok(err instanceof FaxiosError);
+      assert.strictEqual(err.code, FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA);
+      assert.ok(err.message.includes("plain object"));
+    }
+  });
+
+  it("throws when schema returns { value: [] }", async () => {
+    const schema = makeSchema<Record<string, unknown>>(() => ({ value: [] as any }));
+    try {
+      await faxios.get("http://localhost/users/{id}", {
+        pathParams: { id: 1 },
+        pathParamsSchema: schema,
+        env: { fetch: mockFetch({}) },
+      });
+      assert.fail("should have thrown");
+    }
+    catch (err) {
+      assert.ok(err instanceof FaxiosError);
+      assert.strictEqual(err.code, FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA);
+      assert.ok(err.message.includes("plain object"));
+    }
+  });
+});
+
 describe("pathParams guard", () => {
   it("throws ERR_BAD_OPTION_VALUE when pathParamsSchema set but pathParams undefined", async () => {
     const schema = makeSchema<Record<string, unknown>>(v => ({ value: v as Record<string, unknown> }));

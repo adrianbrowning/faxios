@@ -1,5 +1,7 @@
 packages:
   - 'packages/*'
+  - '!packages/tests/smoke/**'
+  - '!packages/tests/module/**'
 pnpm:
   strictDepBuilds: true
   minimumReleaseAgeExclude:

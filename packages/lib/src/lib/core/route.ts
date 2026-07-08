@@ -25,7 +25,8 @@ export type RouteBuilder<PP extends StandardSchemaV1<unknown, Record<string, unk
   >(config?: RouteMethodConfig<P, D, R>) => DefinedEndpoint<PP, P, D, R>;
 };
 
-const methods = [ "get", "post", "put", "patch", "delete", "head", "options" ] as const;
+// ponytail: `query` excluded — non-standard HTTP method alias, not useful in route definitions
+const methods = [ "get", "post", "put", "patch", "delete", "head", "options" ] as const satisfies ReadonlyArray<keyof RouteBuilder<undefined>>;
 
 export function createRouteBuilder<PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined>(
   instance: FaxiosLike,
@@ -33,6 +34,9 @@ export function createRouteBuilder<PP extends StandardSchemaV1<unknown, Record<s
   routeConfig?: RouteConfig<PP>
 ): RouteBuilder<PP> {
   const raw = Object.assign(Object.create(null), routeConfig ?? {});
+  delete raw.__proto__;
+  delete raw.constructor;
+  delete raw.prototype;
   const { pathParamsSchema, ...routeDefaults } = raw;
 
   const builder = {} as RouteBuilder<PP>;

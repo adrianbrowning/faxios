@@ -1,3 +1,4 @@
+/** Expects raw (unencoded) param values — applies encodeURIComponent here. */
 export function substitutePathParams(url: string, params: Record<string, unknown>): string {
   return url.replace(/\{([^{}]+)\}/g, (_match, key: string) => {
     if (!Object.prototype.hasOwnProperty.call(params, key)) {

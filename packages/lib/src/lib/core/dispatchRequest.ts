@@ -67,9 +67,15 @@ function validatePreFlight(config: InternalFaxiosRequestConfig): Promise<void> |
   }
 
   const hasSchemas = config.pathParamsSchema || config.paramsSchema || config.requestSchema;
-  // Both conditions required: no schemas AND no pathParams. If pathParams exists without a schema,
-  // we still need to run substitutePathParams for URL placeholder replacement.
   if (!hasSchemas && config.pathParams === undefined) return undefined;
+
+  // pathParams present but no schemas — substitute synchronously, no microtask boundary needed.
+  if (!hasSchemas) {
+    const params = config.pathParams ?? {};
+    try { config.url = substitutePathParams(config.url ?? "", params); }
+    catch (err) { throw FaxiosError.from(err instanceof Error ? err : new Error(String(err)), FaxiosError.ERR_BAD_OPTION_VALUE, config); }
+    return undefined;
+  }
 
   return (async () => {
     if (config.pathParams !== undefined) {
