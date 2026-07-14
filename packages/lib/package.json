@@ -60,7 +60,7 @@
     "@gingacodemonkey/config": "^0.0.36",
     "eslint": "^9.39.4",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.62.1",
+    "typescript-eslint": "^8.63.0",
     "zshy": "latest"
   },
   "zshy": {
