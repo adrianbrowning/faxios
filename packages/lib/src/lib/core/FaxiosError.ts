@@ -81,6 +81,28 @@ function redactConfig(config: unknown, redactKeys: Array<string>): unknown {
   return visit(config);
 }
 
+// An AggregateError (dual-stack connect failures, Promise.any) carries no
+// message of its own — the detail lives in `errors`. Without this the wrapped
+// error reports nothing at all.
+function aggregatedMessage(
+  errors: ReadonlyArray<unknown>,
+  fallback: string
+): string {
+  const details: Array<string> = [];
+
+  for (const entry of errors) {
+    try {
+      const entryMessage = entry instanceof Error ? entry.message : String(entry);
+      if (entryMessage) details.push(entryMessage);
+    }
+    catch {
+      // a throwing toString/getter must not mask the original failure
+    }
+  }
+
+  return details.join("; ") || fallback;
+}
+
 class FaxiosError extends Error {
   isFaxiosError: boolean;
   code?: string;
@@ -119,21 +141,38 @@ class FaxiosError extends Error {
   static readonly ERR_BAD_PATH_PARAMS_SCHEMA = "ERR_BAD_PATH_PARAMS_SCHEMA";
 
   static from(
-    error: Error & { code?: string; status?: number; },
+    error: Error & {
+      code?: string;
+      status?: number;
+      errors?: ReadonlyArray<unknown>;
+    },
     code?: string,
     config?: InternalFaxiosRequestConfig,
     request?: unknown,
     response?: FaxiosResponse,
     customProps?: Record<string, unknown>
   ): FaxiosError {
+    const message =
+      error.message ||
+      (utils.isArray(error.errors)
+        ? aggregatedMessage(error.errors, error.name)
+        : error.message);
+
     const faxiosError = new FaxiosError(
-      error.message,
+      message,
       code || error.code,
       config,
       request,
       response
     );
-    faxiosError.cause = error;
+    // Non-enumerable so a nested (or cyclic) cause chain cannot break
+    // JSON.stringify of the error — matches native `new Error(msg, {cause})`.
+    Object.defineProperty(faxiosError, "cause", {
+      value: error,
+      enumerable: false,
+      writable: true,
+      configurable: true,
+    });
     faxiosError.name = error.name;
 
     // Preserve status from the original error if not already set from response

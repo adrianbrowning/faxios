@@ -56,4 +56,28 @@ describe("helpers::progressEventReducer", () => {
     expect(events[0]!.loaded).toBe(50);
     expect(events[0]!.bytes).toBe(50);
   });
+
+  it("should ignore a NaN loaded value instead of poisoning later progress", () => {
+    const events: Array<FaxiosProgressEvent> = [];
+    const [ onProgress, flush ] = progressEventReducer(
+      data => {
+        events.push(data);
+      },
+      false,
+      Number.POSITIVE_INFINITY
+    );
+
+    onProgress({ lengthComputable: true, loaded: Number.NaN, total: 100 });
+    flush();
+
+    expect(events.length).toBe(0);
+
+    onProgress({ lengthComputable: true, loaded: 40, total: 100 });
+    flush();
+
+    expect(events.length).toBe(1);
+    expect(events[0]!.loaded).toBe(40);
+    expect(events[0]!.bytes).toBe(40);
+    expect(events[0]!.progress).toBe(0.4);
+  });
 });

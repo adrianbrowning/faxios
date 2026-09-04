@@ -47,4 +47,39 @@ describe("estimateDataURLDecodedBytes", () => {
     const url = "data:text/plain;base64,TQ%3D%3D";
     assert.strictEqual(estimateDataURLDecodedBytes(url), 1);
   });
+
+  // The estimate gates maxContentLength before the body is materialized, so it
+  // must never come in UNDER the real decoded size. Node's Buffer is used as an
+  // independent oracle rather than restating the estimator's own arithmetic.
+  it("should never under-estimate an unpadded base64 body", () => {
+    const unpaddedBodies = [
+      "QUJDRA", // 6 significant chars -> 4 bytes
+      "QUJDRAV", // 7 significant chars -> 5 bytes
+      "QQ", // 2 significant chars -> 1 byte
+      "QUJ", // 3 significant chars -> 2 bytes
+    ];
+
+    for (const body of unpaddedBodies) {
+      const actual = Buffer.from(body, "base64").length;
+      const estimated = estimateDataURLDecodedBytes(
+        `data:application/octet-stream;base64,${body}`
+      );
+
+      assert.ok(
+        estimated >= actual,
+        `estimate ${estimated} under-counts ${actual} bytes for "${body}"`
+      );
+    }
+  });
+
+  it("should not let whitespace in a base64 body under-count the payload", () => {
+    const body = "QUJDRA==";
+    const spaced = "QU\n JD\tRA==";
+
+    assert.ok(
+      estimateDataURLDecodedBytes(
+        `data:application/octet-stream;base64,${spaced}`
+      ) >= Buffer.from(body, "base64").length
+    );
+  });
 });

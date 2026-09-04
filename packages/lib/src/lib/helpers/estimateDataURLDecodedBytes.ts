@@ -53,7 +53,14 @@ function estimateBase64DecodedBytes(body: string): number {
   }
 
   const pad = countBase64Padding(body, len);
-  const bytes = Math.floor(effectiveLen / 4) * 3 - pad;
+  const significant = effectiveLen - pad;
+
+  // Forgiving-base64 decodes a trailing group of 2 or 3 significant characters
+  // to 1 or 2 bytes. Flooring the group count would under-count those, and this
+  // estimate gates maxContentLength before the body is materialized — it must
+  // never come in under the real decoded size.
+  const groups = Math.ceil(significant / 4);
+  const bytes = groups * 3 - pad;
   return bytes > 0 ? bytes : 0;
 }
 
@@ -86,10 +93,15 @@ export default function estimateDataURLDecodedBytes(url: string): number {
   if (!url || typeof url !== "string") return 0;
   if (!url.startsWith("data:")) return 0;
 
-  const comma = url.indexOf(",");
+  // A #fragment is not part of the resource: fetch strips it before decoding,
+  // so counting it would reject legal URLs that carry a large fragment.
+  const hash = url.indexOf("#");
+  const resource = hash === -1 ? url : url.slice(0, hash);
+
+  const comma = resource.indexOf(",");
   if (comma < 0) return 0;
 
-  const meta = url.slice(5, comma);
-  const body = url.slice(comma + 1);
+  const meta = resource.slice(5, comma);
+  const body = resource.slice(comma + 1);
   return /;base64/i.test(meta) ? estimateBase64DecodedBytes(body) : estimateUtf8BodyBytes(body);
 }

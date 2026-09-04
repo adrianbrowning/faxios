@@ -6,6 +6,26 @@ import FaxiosHeaders from "./FaxiosHeaders.js";
 
 const headersToObject = (thing: unknown) => (thing instanceof FaxiosHeaders ? { ...thing } : thing);
 
+// Every key to merge, from both configs, symbols included. `Object.keys` alone
+// silently drops symbol-keyed config entries, so a deep merge would lose them.
+function unionOfOwnEnumerableKeys(...sources: Array<unknown>): Set<string | symbol> {
+  const keys = new Set<string | symbol>();
+
+  for (const source of sources) {
+    if (!source || typeof source !== "object") continue;
+
+    for (const key of Object.keys(source)) keys.add(key);
+
+    for (const symbolKey of Object.getOwnPropertySymbols(source)) {
+      if (Object.getOwnPropertyDescriptor(source, symbolKey)?.enumerable) {
+        keys.add(symbolKey);
+      }
+    }
+  }
+
+  return keys;
+}
+
 /**
  * Config-specific merge-function which creates a new config-object
  * by merging two configuration objects together.
@@ -123,7 +143,7 @@ export default function mergeConfig(config1: FaxiosRequestConfig | FaxiosDefault
     transformResponse: defaultToConfig2,
     paramsSerializer: defaultToConfig2,
     timeout: defaultToConfig2,
-    timeoutMessage: defaultToConfig2,
+    timeoutErrorMessage: defaultToConfig2,
     withCredentials: defaultToConfig2,
     withXSRFToken: defaultToConfig2,
     responseType: defaultToConfig2,
@@ -148,15 +168,16 @@ export default function mergeConfig(config1: FaxiosRequestConfig | FaxiosDefault
   const c2 = config2 as Record<string, unknown>;
   const out = config as Record<string, unknown>;
 
-  utils.forEach(Object.keys({ ...config1, ...config2 }), function computeConfigValue(_value: unknown, _prop: unknown) {
-    const key = _value as string;
-    if (key === "__proto__" || key === "constructor" || key === "prototype") return;
-    const mergeFn = (utils.hasOwnProp(mergeMap, key) ? (mergeMap as Record<string, typeof mergeDeepProperties>)[key] : mergeDeepProperties)!;
-    const a = utils.hasOwnProp(config1, key) ? c1[key] : undefined;
-    const b = utils.hasOwnProp(config2, key) ? c2[key] : undefined;
+  const mergedKeys = unionOfOwnEnumerableKeys(config1, config2);
+
+  for (const key of mergedKeys) {
+    if (key === "__proto__" || key === "constructor" || key === "prototype") continue;
+    const mergeFn = (utils.hasOwnProp(mergeMap, key) ? (mergeMap as Record<string, typeof mergeDeepProperties>)[key as string] : mergeDeepProperties)!;
+    const a = utils.hasOwnProp(config1, key) ? c1[key as string] : undefined;
+    const b = utils.hasOwnProp(config2, key) ? c2[key as string] : undefined;
     const configValue = mergeFn(a, b, key);
-    (utils.isUndefined(configValue) && mergeFn !== mergeDirectKeys) || (out[key] = configValue);
-  });
+    (utils.isUndefined(configValue) && mergeFn !== mergeDirectKeys) || (out[key as string] = configValue);
+  }
 
   if (
     utils.hasOwnProp(config2, "validateStatus") &&

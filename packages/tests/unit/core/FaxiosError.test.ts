@@ -500,4 +500,65 @@ describe("core::FaxiosError", () => {
       }
     });
   });
+
+  describe("cause", () => {
+    it("keeps cause non-enumerable so a cyclic cause chain stays serializable", () => {
+      const original = new Error("root cause");
+      const wrapped = FaxiosError.from(original, "ESOMETHING");
+      // A cause that points back at the wrapper is what real nested causes do
+      // (undici's fetch failures chain both ways).
+      (original as Error & { cause?: unknown; }).cause = wrapped;
+
+      expect(Object.keys(wrapped)).not.toContain("cause");
+      expect(wrapped.cause).toBe(original);
+      expect(() => JSON.stringify(wrapped)).not.toThrow();
+    });
+  });
+
+  describe("from with AggregateError", () => {
+    it("synthesizes a message from the aggregated errors", () => {
+      const aggregate = new AggregateError(
+        [ new Error("first"), new Error("second") ],
+        ""
+      );
+
+      const wrapped = FaxiosError.from(aggregate, "ERR_NETWORK");
+
+      expect(wrapped.message).toBe("first; second");
+    });
+
+    it("falls back to the error name when there are no aggregated errors", () => {
+      const aggregate = new AggregateError([], "");
+
+      const wrapped = FaxiosError.from(aggregate, "ERR_NETWORK");
+
+      expect(wrapped.message).toBe("AggregateError");
+    });
+
+    it("keeps an explicit message in preference to the aggregated errors", () => {
+      const aggregate = new AggregateError(
+        [ new Error("first") ],
+        "explicit summary"
+      );
+
+      const wrapped = FaxiosError.from(aggregate, "ERR_NETWORK");
+
+      expect(wrapped.message).toBe("explicit summary");
+    });
+  });
+
+  describe("toJSON config serialization", () => {
+    it("serializes a Set in the config as an array", () => {
+      const error = new FaxiosError("Boom!", "ESOMETHING", {
+        url: "/items",
+        params: { tags: new Set([ "a", "b" ]) },
+      } as unknown as FaxiosError["config"]);
+
+      const serialized = error.toJSON() as {
+        config: { params: { tags: unknown; }; };
+      };
+
+      expect(serialized.config.params.tags).toEqual([ "a", "b" ]);
+    });
+  });
 });

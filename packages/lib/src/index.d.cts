@@ -296,6 +296,10 @@ declare enum HttpStatusCode {
   Gone = 410,
   LengthRequired = 411,
   PreconditionFailed = 412,
+  ContentTooLarge = 413,
+  /**
+   * @deprecated Use `ContentTooLarge` instead.
+   */
   PayloadTooLarge = 413,
   UriTooLong = 414,
   UnsupportedMediaType = 415,
@@ -303,6 +307,10 @@ declare enum HttpStatusCode {
   ExpectationFailed = 417,
   ImATeapot = 418,
   MisdirectedRequest = 421,
+  UnprocessableContent = 422,
+  /**
+   * @deprecated Use `UnprocessableContent` instead.
+   */
   UnprocessableEntity = 422,
   Locked = 423,
   FailedDependency = 424,
@@ -323,6 +331,7 @@ declare enum HttpStatusCode {
   LoopDetected = 508,
   NotExtended = 510,
   NetworkAuthenticationRequired = 511,
+  WebServerReturnsAnUnknownError = 520,
 }
 
 type InternalAxiosError<T = unknown, D = any> = FaxiosError<T, D>;

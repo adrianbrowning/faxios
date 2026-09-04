@@ -91,7 +91,15 @@ export const handleFetchCaughtError = (
     const canceledError = composedSignal.reason;
     canceledError.config = config;
     request && (canceledError.request = request);
-    err !== canceledError && (canceledError.cause = err as Error);
+    // Non-enumerable, like native `new Error(msg, {cause})`: a cause chain must
+    // never make the error unserializable.
+    err !== canceledError &&
+      Object.defineProperty(canceledError, "cause", {
+        value: err,
+        enumerable: false,
+        writable: true,
+        configurable: true,
+      });
     throw canceledError;
   }
 

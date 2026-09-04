@@ -35,14 +35,22 @@ const HttpStatusCode = {
   Gone: 410,
   LengthRequired: 411,
   PreconditionFailed: 412,
+  /**
+   * @deprecated Use `ContentTooLarge` instead.
+   */
   PayloadTooLarge: 413,
+  ContentTooLarge: 413,
   UriTooLong: 414,
   UnsupportedMediaType: 415,
   RangeNotSatisfiable: 416,
   ExpectationFailed: 417,
   ImATeapot: 418,
   MisdirectedRequest: 421,
+  /**
+   * @deprecated Use `UnprocessableContent` instead.
+   */
   UnprocessableEntity: 422,
+  UnprocessableContent: 422,
   Locked: 423,
   FailedDependency: 424,
   TooEarly: 425,
@@ -62,6 +70,7 @@ const HttpStatusCode = {
   LoopDetected: 508,
   NotExtended: 510,
   NetworkAuthenticationRequired: 511,
+  WebServerReturnsAnUnknownError: 520,
   WebServerIsDown: 521,
   ConnectionTimedOut: 522,
   OriginIsUnreachable: 523,
@@ -70,8 +79,14 @@ const HttpStatusCode = {
   InvalidSslCertificate: 526,
 };
 
+const reverseLookup = HttpStatusCode as Record<string | number, string | number>;
+
 Object.entries(HttpStatusCode).forEach(([ key, value ]) => {
-  (HttpStatusCode as Record<string | number, string | number>)[value] = key;
+  // First name wins: a numeric reverse lookup must keep the original name
+  // rather than being overwritten by a later alias for the same code.
+  if (reverseLookup[value] === undefined) {
+    reverseLookup[value] = key;
+  }
 });
 
 export default HttpStatusCode;

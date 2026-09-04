@@ -1010,6 +1010,51 @@ describe.runIf(typeof fetch === "function")(
         );
       });
 
+      it("should keep cause non-enumerable on a canceled request error", async () => {
+        const underlying = new Error("underlying abort failure");
+
+        const abortRejectingFetch = async (
+          url: RequestInfo | URL,
+          init?: RequestInit
+        ) => {
+          const signal = getFetchSignal(url, init) as AbortSignal;
+          const { promise, reject } = Promise.withResolvers<never>();
+          const onAbort = () => {
+            signal.removeEventListener("abort", onAbort);
+            reject(underlying);
+          };
+
+          if (signal.aborted) onAbort();
+          else signal.addEventListener("abort", onAbort);
+
+          return promise;
+        };
+
+        const controller = new AbortController();
+
+        const request = fetchFaxios.get("/", {
+          signal: controller.signal as GenericAbortSignal,
+
+          env: {
+            fetch: abortRejectingFetch as unknown as FetchFn,
+          },
+        });
+
+        controller.abort();
+
+        await assert.rejects(
+          async () => request,
+          err => {
+            assert.strictEqual((err as Error).cause, underlying);
+            assert.ok(
+              !Object.keys(err as object).includes("cause"),
+              "cause must not be enumerable"
+            );
+            return true;
+          }
+        );
+      });
+
       // Timing-sensitive: a 50ms abort race observed by a fake fetch can flake
       // under CI runner load even though the production code is fine. Retry as
       // a backstop.
@@ -1818,6 +1863,23 @@ describe.runIf(typeof fetch === "function")(
         });
 
         assert.strictEqual(data, "\u20ac");
+      });
+
+      it("should not count a data: URL fragment toward maxContentLength", async () => {
+        // fetch strips #fragment before decoding, so only "ABC" is the body.
+        const dataUrl =
+          "data:text/plain;base64," +
+          Buffer.from("ABC").toString("base64") +
+          "#" +
+          "A".repeat(4096);
+
+        const bareFaxios = faxios.create();
+
+        const { data } = await bareFaxios.get(dataUrl, {
+          maxContentLength: 16,
+        });
+
+        assert.strictEqual(data, "ABC");
       });
 
       it("should allow a response at or below maxContentLength", async () => {

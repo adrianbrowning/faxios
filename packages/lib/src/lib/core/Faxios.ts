@@ -21,6 +21,7 @@ import dispatchRequest from "./dispatchRequest.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
 import InterceptorManager from "./InterceptorManager.js";
 import mergeConfig from "./mergeConfig.js";
+import { HEADER_BUCKET_KEYS } from "./methodList.js";
 import type { RouteConfig, RouteBuilder } from "./route.js";
 import { createRouteBuilder } from "./route.js";
 
@@ -45,28 +46,47 @@ type RequestInterceptorEntry = {
   rejected?: (...args: Array<unknown>) => unknown;
 };
 
-function patchErrorStack(err: Error): void {
-  let dummy: { stack?: string; } = {};
-  // captureStackTrace is V8-only (Node, Chromium); fall back elsewhere.
-  const captureStackTrace = (Error as { captureStackTrace?: (target: object) => void; }).captureStackTrace;
-  if (captureStackTrace) {
-    captureStackTrace(dummy);
-  }
-  else {
-    dummy = new Error();
-  }
+// The caller's stack, minus the "Error: ..." header line. Returns undefined
+// when it cannot be obtained: a userland `Error.prepareStackTrace` can make
+// `.stack` any type and materializing it can throw, and stack decoration must
+// never replace the error it was called to decorate.
+function captureCallerStack(): string | undefined {
+  try {
+    let dummy: { stack?: unknown; } = {};
+    // V8-only API (Node, Chromium), absent from the base lib types; the
+    // capability check below is the runtime guard.
+    const captureStackTrace = (
+      Error as unknown as { captureStackTrace?: (target: object) => void; }
+    ).captureStackTrace;
 
-  const rawStack = dummy.stack ?? "";
-  const firstNewline = rawStack.indexOf("\n");
-  // slice off the Error: ... line
-  const stack = firstNewline === -1 ? "" : rawStack.slice(firstNewline + 1);
+    if (typeof captureStackTrace === "function") {
+      captureStackTrace(dummy);
+    }
+    else {
+      dummy = new Error();
+    }
+
+    const rawStack = dummy.stack;
+    if (typeof rawStack !== "string") return "";
+
+    const firstNewline = rawStack.indexOf("\n");
+    return firstNewline === -1 ? "" : rawStack.slice(firstNewline + 1);
+  }
+  catch {
+    return undefined;
+  }
+}
+
+function patchErrorStack(err: Error): void {
+  const stack = captureCallerStack();
+  if (stack === undefined) return;
 
   try {
     if (!err.stack) {
       err.stack = stack;
       // match without the 2 top stack lines
     }
-    else if (stack) {
+    else if (stack && typeof err.stack === "string") {
       const firstNewlineIndex = stack.indexOf("\n");
       const secondNewlineIndex =
         firstNewlineIndex === -1
@@ -77,7 +97,7 @@ function patchErrorStack(err: Error): void {
           ? ""
           : stack.slice(secondNewlineIndex + 1);
 
-      if (!String(err.stack).endsWith(stackWithoutTwoTopLines)) {
+      if (!err.stack.endsWith(stackWithoutTwoTopLines)) {
         err.stack += "\n" + stack;
       }
     }
@@ -158,7 +178,7 @@ function runSyncInterceptors(
   interceptorChain: Array<((...args: Array<unknown>) => unknown) | undefined>,
   config: FaxiosRequestConfig,
   context: unknown
-): FaxiosRequestConfig {
+): { config: FaxiosRequestConfig; deferredConfig?: Promise<FaxiosRequestConfig>; } {
   let newConfig = config;
   let i = 0;
   const len = interceptorChain.length;
@@ -172,12 +192,23 @@ function runSyncInterceptors(
         : newConfig;
     }
     catch (error) {
-      if (onRejected) onRejected.call(context, error);
-      break;
+      // A throwing synchronous interceptor must be able to veto the request.
+      // Its own rejection handler decides what happens next — recover with a
+      // fresh config, or reject — so the last good config is never dispatched
+      // behind the interceptor's back. A rejected deferral short-circuits the
+      // dispatch step at the call site.
+      return {
+        config: newConfig,
+        deferredConfig: onRejected
+          ? Promise.resolve().then(
+            () => onRejected.call(context, error) as FaxiosRequestConfig
+          )
+          : Promise.reject(error),
+      };
     }
   }
 
-  return newConfig;
+  return { config: newConfig };
 }
 
 /**
@@ -306,12 +337,9 @@ class Faxios {
     let contextHeaders = h && utils.merge(h.common, h[config.method]);
 
     h &&
-      utils.forEach(
-        [ "delete", "get", "head", "post", "put", "patch", "query", "common" ],
-        method => {
-          delete h[method as string];
-        }
-      );
+      utils.forEach(HEADER_BUCKET_KEYS, method => {
+        delete h[method as string];
+      });
 
     config.headers = FaxiosHeaders.concat(
       contextHeaders,
@@ -360,9 +388,24 @@ class Faxios {
       return promise;
     }
 
-    const newConfig = runSyncInterceptors(requestInterceptorChain, config, this);
+    const { config: newConfig, deferredConfig } = runSyncInterceptors(
+      requestInterceptorChain,
+      config,
+      this
+    );
 
-    promise = dispatchRequest.call(this, newConfig as InternalFaxiosRequestConfig) as Promise<unknown>;
+    promise = deferredConfig
+      ? deferredConfig.then(
+        recovered =>
+          dispatchRequest.call(
+            this,
+            recovered as InternalFaxiosRequestConfig
+          ) as Promise<unknown>
+      )
+      : (dispatchRequest.call(
+        this,
+        newConfig as InternalFaxiosRequestConfig
+      ) as Promise<unknown>);
 
     len = responseInterceptorChain.length;
 

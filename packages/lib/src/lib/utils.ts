@@ -644,6 +644,15 @@ const { propertyIsEnumerable } = Object.prototype;
  */
 const isRegExp = kindOfTest("RegExp");
 
+/**
+ * Determine if a value is a Set
+ *
+ * @param {*} val The value to test
+ *
+ * @returns {boolean} True if value is a Set, otherwise false
+ */
+const isSet = kindOfTest("Set");
+
 const reduceDescriptors = (obj: object, reducer: (descriptor: PropertyDescriptor, name: string, obj: object) => PropertyDescriptor | false | undefined) => {
   const descriptors = Object.getOwnPropertyDescriptors(obj);
   const reducedDescriptors: PropertyDescriptorMap = {};
@@ -759,12 +768,25 @@ const toJSONObject = (obj: unknown): unknown => {
       if (!("toJSON" in source)) {
         // add-on descent / delete-on-ascent: preserves path semantics, so DAG nodes serialise at every occurrence (see #7230).
         visited.add(source);
-        const target: Record<string | number, unknown> = isArray(source) ? ([] as Record<number, unknown>) : {};
 
-        forEach(source, (value, key) => {
-          const reducedValue = visit(value);
-          !isUndefined(reducedValue) && (target[key as string] = reducedValue);
-        });
+        let target: unknown;
+        if (isSet(source)) {
+          // A Set has no enumerable own keys, so descending into it as a plain
+          // object would serialise it as {} and lose every member.
+          target = Array.from(source as Set<unknown>, visit).filter(
+            member => !isUndefined(member)
+          );
+        }
+        else {
+          const materialized: Record<string | number, unknown> = isArray(source) ? ([] as Record<number, unknown>) : {};
+
+          forEach(source, (value, key) => {
+            const reducedValue = visit(value);
+            !isUndefined(reducedValue) && (materialized[key as string] = reducedValue);
+          });
+
+          target = materialized;
+        }
 
         visited.delete(source);
 
@@ -892,6 +914,7 @@ export default {
   isReactNative,
   isBlob,
   isRegExp,
+  isSet,
   isFunction,
   isStream,
   isURLSearchParams,

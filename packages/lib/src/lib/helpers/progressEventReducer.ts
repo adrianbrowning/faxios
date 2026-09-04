@@ -8,7 +8,10 @@ export const progressEventReducer = (listener: (data: FaxiosProgressEvent) => vo
   const _speedometer = speedometer(50, 250);
 
   return throttle((e: unknown) => {
-    if (!e || typeof (e as Record<string, unknown>).loaded !== "number") {
+    // Finite, not merely `typeof "number"`: NaN or Infinity would propagate
+    // into `bytesNotified` through Math.max and poison every later event.
+    // (Upstream axios only checks the type here.)
+    if (!e || !Number.isFinite((e as Record<string, unknown>).loaded)) {
       return;
     }
     const ev = e as { loaded: number; total?: number; lengthComputable?: boolean; };

@@ -258,6 +258,31 @@ describe("core::mergeConfig", () => {
       expect(merged.xsrfCookieName).toBe(undefined);
     });
 
+    it("applies the defaultToConfig2 strategy to timeoutErrorMessage", () => {
+      const merged = mergeConfig(
+        { timeoutErrorMessage: "FROM-DEFAULT" },
+        { timeoutErrorMessage: undefined }
+      );
+
+      expect(merged.timeoutErrorMessage).toBe(undefined);
+    });
+
+    it("preserves symbol-keyed config entries from both inputs", () => {
+      const fromConfig1 = Symbol("fromConfig1");
+      const fromConfig2 = Symbol("fromConfig2");
+
+      // mergeConfig's public parameter type is a string-keyed record, so a
+      // symbol-keyed config has to be passed through a cast even though the
+      // runtime supports it.
+      const merged = mergeConfig(
+        { [fromConfig1]: "one" } as unknown as Record<string, unknown>,
+        { [fromConfig2]: "two" } as unknown as Record<string, unknown>
+      ) as unknown as Record<symbol, unknown>;
+
+      expect(merged[fromConfig1]).toBe("one");
+      expect(merged[fromConfig2]).toBe("two");
+    });
+
     it("clones config2 when both values are plain objects", () => {
       const config1 = { transformRequest: { a: 1, b: 1 } };
       const config2 = { transformRequest: { b: 2, c: 2 } };

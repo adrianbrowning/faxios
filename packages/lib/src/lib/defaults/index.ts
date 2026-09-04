@@ -1,6 +1,7 @@
 "use strict";
 
 import FaxiosError from "../core/FaxiosError.js";
+import { emptyMethodHeaderBuckets } from "../core/methodList.js";
 import formDataToJSON from "../helpers/formDataToJSON.js";
 import toFormData from "../helpers/toFormData.js";
 import toURLEncodedForm from "../helpers/toURLEncodedForm.js";
@@ -210,13 +211,7 @@ const defaults: FaxiosDefaults = {
       Accept: "application/json, text/plain, */*",
       "Content-Type": undefined,
     },
-    delete: {},
-    get: {},
-    head: {},
-    post: {},
-    put: {},
-    patch: {},
-    query: {},
+    ...emptyMethodHeaderBuckets(),
   },
 };
 
