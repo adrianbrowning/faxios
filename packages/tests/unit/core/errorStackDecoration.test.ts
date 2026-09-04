@@ -23,7 +23,7 @@ describe("core::errorStackDecoration", () => {
       // A userland prepareStackTrace returning a non-string makes every
       // lazily-materialized `.stack` non-string, including the throwaway one
       // used to decorate request errors.
-      Error.prepareStackTrace = () => 42 as unknown as string;
+      Error.prepareStackTrace = () => 42;
 
       try {
         await instance.get(`http://127.0.0.1:${port}/`);
@@ -78,7 +78,7 @@ describe("core::errorStackDecoration", () => {
       }
 
       assert.strictEqual(caught, thrown);
-      assert.strictEqual((caught as Error).stack, 42);
+      assert.strictEqual(caught.stack, 42);
     }
     finally {
       await stopHTTPServer(server);

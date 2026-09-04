@@ -82,4 +82,33 @@ describe("estimateDataURLDecodedBytes", () => {
       ) >= Buffer.from(body, "base64").length
     );
   });
+
+  // `;base64` only marks a base64 body when it terminates the metadata. When it
+  // appears mid-metadata the body is raw text, decoding 1:1 instead of 3:4, so
+  // scoring it as base64 under-counts by 25% and lets an oversized payload past
+  // the maxContentLength pre-check. `fetch` itself is the oracle here — the
+  // estimate must bound whatever the runtime actually decodes.
+  it("should not treat a mid-metadata `;base64` as a base64 body", async () => {
+    const raw = "A".repeat(4000);
+    const urls = [
+      `data:text/plain;base64;x,${raw}`,
+      `data:text/plain;base64=1,${raw}`,
+    ];
+
+    for (const url of urls) {
+      const actual = (await (await fetch(url)).arrayBuffer()).byteLength;
+      const estimated = estimateDataURLDecodedBytes(url);
+
+      assert.ok(
+        estimated >= actual,
+        `estimate ${estimated} under-counts ${actual} bytes for "${url.slice(0, 40)}…"`
+      );
+    }
+  });
+
+  it("should still recognize a terminating `;base64` marker", () => {
+    assert.strictEqual(estimateDataURLDecodedBytes("data:text/plain;base64,QUJDREVG"), 6);
+    assert.strictEqual(estimateDataURLDecodedBytes("data:;base64,QUJDREVG"), 6);
+    assert.strictEqual(estimateDataURLDecodedBytes("data:text/plain;charset=utf-8;base64,QUJDREVG"), 6);
+  });
 });

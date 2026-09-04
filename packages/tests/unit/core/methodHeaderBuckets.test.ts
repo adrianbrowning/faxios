@@ -20,7 +20,7 @@ describe("core::methodHeaderBuckets", () => {
       instance.defaults.headers = {
         ...instance.defaults.headers,
         options: { "X-Bucket": "applied" },
-      } as typeof instance.defaults.headers;
+      };
 
       const response = await instance.options(`http://127.0.0.1:${port}/`);
 

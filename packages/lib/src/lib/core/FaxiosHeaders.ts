@@ -2,7 +2,7 @@
 
 import parseHeaders from "../helpers/parseHeaders.js";
 import { sanitizeHeaderValue } from "../helpers/sanitizeHeaderValue.js";
-import type { FaxiosHeaderValue } from "../types.js";
+import type { FaxiosHeaderParameters, FaxiosHeaderValue } from "../types.js";
 import utils from "../utils.js";
 
 const $internals = Symbol("internals");
@@ -54,6 +54,114 @@ function parseTokens(str: string): Record<string, string> {
   }
 
   return tokens;
+}
+
+// RFC 7230 token characters — the only legal parameter-name characters.
+const parameterNameRE = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
+
+// RFC 7230 optional whitespace is HTAB and SP only. `String.prototype.trim`
+// would also eat newlines, NBSP and the rest of Unicode whitespace, which are
+// part of the value, not padding around it.
+function trimOWS(value: string): string {
+  let start = 0;
+  let end = value.length;
+
+  while (start < end) {
+    const code = value.charCodeAt(start);
+    if (code !== 0x09 && code !== 0x20) break;
+    start++;
+  }
+
+  while (end > start) {
+    const code = value.charCodeAt(end - 1);
+    if (code !== 0x09 && code !== 0x20) break;
+    end--;
+  }
+
+  return start === 0 && end === value.length ? value : value.slice(start, end);
+}
+
+// Unwraps a quoted-string and resolves its quoted-pairs. Malformed input is
+// returned verbatim rather than guessed at: a bare interior DQUOTE or a dangling
+// escape means this was never a quoted-string, and inventing a value for it
+// would let a crafted header smuggle a parameter past the caller.
+function decodeQuotedString(value: string): string {
+  const last = value.length - 1;
+
+  if (last < 1 || value.charCodeAt(0) !== 0x22 || value.charCodeAt(last) !== 0x22) {
+    return value;
+  }
+
+  let decoded = "";
+
+  for (let i = 1; i < last; i++) {
+    const code = value.charCodeAt(i);
+
+    if (code === 0x22) return value;
+
+    if (code === 0x5c) {
+      i++;
+      if (i >= last) return value;
+    }
+
+    decoded += value[i];
+  }
+
+  return decoded;
+}
+
+// Splits a header value on `,`/`;` that sit outside a quoted string, then
+// normalizes each `name=value` pair. Bare tokens (the media type itself, valueless
+// flags) and non-token names are dropped; later duplicates win.
+function parseParameters(value: FaxiosHeaderValue): Record<string, string> {
+  const parameters: Record<string, string> = Object.create(null);
+  const str = String(value);
+  let start = 0;
+  let quoted = false;
+  let escaped = false;
+
+  function parseParameter(end: number): void {
+    const part = trimOWS(str.slice(start, end));
+    const equals = part.indexOf("=");
+
+    if (equals < 1) return;
+
+    const name = trimOWS(part.slice(0, equals));
+
+    if (!parameterNameRE.test(name)) return;
+
+    const normalizedName = name.toLowerCase();
+
+    // Materializing these would corrupt the result object's prototype chain.
+    if (
+      normalizedName === "__proto__"
+      || normalizedName === "constructor"
+      || normalizedName === "prototype"
+    ) {
+      return;
+    }
+
+    parameters[normalizedName] = decodeQuotedString(trimOWS(part.slice(equals + 1)));
+  }
+
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+
+    if (quoted) {
+      if (escaped) escaped = false;
+      else if (code === 0x5c) escaped = true;
+      else if (code === 0x22) quoted = false;
+    }
+    else if (code === 0x22) quoted = true;
+    else if (code === 0x2c || code === 0x3b) {
+      parseParameter(i);
+      start = i + 1;
+    }
+  }
+
+  parseParameter(str.length);
+
+  return parameters;
 }
 
 const isValidHeaderName = (str: string): boolean =>
@@ -447,6 +555,12 @@ class FaxiosHeaders {
     thing?: Record<string, unknown> | FaxiosHeaders | string | null
   ): FaxiosHeaders {
     return thing instanceof this ? thing : new this(thing);
+  }
+
+  // Opt-in RFC-aware alternative to the legacy `get(name, true)` tokenizer.
+  // Pass it as the parser: `headers.get("content-type", FaxiosHeaders.parseParameters)`.
+  static parseParameters(value: FaxiosHeaderValue): FaxiosHeaderParameters {
+    return parseParameters(value);
   }
 
   static concat(

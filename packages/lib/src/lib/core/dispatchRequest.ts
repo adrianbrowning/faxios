@@ -94,13 +94,20 @@ function validatePreFlight(config: InternalFaxiosRequestConfig): Promise<void> |
   })();
 }
 
-export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig): Promise<FaxiosResponse> {
+export default async function dispatchRequest(this: unknown, rawConfig: InternalFaxiosRequestConfig): Promise<FaxiosResponse> {
+  // mergeConfig returns a null-prototype object, but a synchronous request
+  // interceptor may hand back a fresh plain one, putting Object.prototype back in
+  // the chain right before every read below. Re-establish the guarantee here so
+  // this boundary does not depend on who called it. A config that is already safe
+  // is returned by identity, so callers still observe the mutations made below.
+  const config = utils.toSafeFlatObject(rawConfig) as InternalFaxiosRequestConfig;
+
   throwIfCancellationRequested(config);
 
   const preFlight = validatePreFlight(config);
   if (preFlight) await preFlight;
 
-  config.headers = FaxiosHeaders.from(config.headers) as unknown as typeof config.headers;
+  config.headers = FaxiosHeaders.from(utils.getSafeProp(config, "headers") as Record<string, unknown>) as unknown as typeof config.headers;
 
   config.data = transformData.call(config, config.transformRequest);
 

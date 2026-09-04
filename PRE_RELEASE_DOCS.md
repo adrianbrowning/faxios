@@ -39,3 +39,23 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Required content:** The opening line must stop claiming `index.d.cts` (CJS) ships alongside `index.d.ts`. The whole "Module resolution caveats" section is predicated on dual-publish CJS and is false: there is no CJS build, no `module.exports`, and the `esModuleInterop` / CJS `moduleResolution` advice does not apply. Replace with ESM-only guidance.
 - **Examples:** None.
 - **Notes:** All four locales say the same thing; fix English first, then translate. `.github/CODEOWNERS`, `.github/PULL_REQUEST_TEMPLATE.md`, and `COLLABORATOR_GUIDE.md` references were already corrected in the same change since they instruct contributors to edit a now-deleted file.
+
+### docs/advanced/headers.md — document `FaxiosHeaders.parseParameters`
+
+- **Change:** New opt-in RFC 7230 header-parameter parser, exposed as the static `FaxiosHeaders.parseParameters` and usable as a `get` parser. New exported type `FaxiosHeaderParameters`.
+- **Source:** Issue #27 checklist item, ports [axios#11051](https://github.com/axios/axios/pull/11051).
+- **Status:** Pending.
+- **Docs targets:** `packages/docs/pages/advanced/headers.md` plus `es/`, `fr/`, `zh/` siblings.
+- **Required content:** Contrast the two parsers. `get(name, true)` is the legacy tokenizer: it keeps surrounding quotes, retains trailing whitespace, emits the bare media type with an `undefined` value, and mis-splits on `,`/`;` inside quoted strings. `headers.get(name, FaxiosHeaders.parseParameters)` is quote- and escape-aware, trims only HTAB/SP, lowercases names, drops bare tokens and non-token names, resolves quoted-pair escapes, and returns a null-prototype object. Document that malformed quoting yields the raw value rather than a guessed one, that later duplicate names win, and that `__proto__`/`constructor`/`prototype` are never materialized. State that the legacy parser is unchanged and not deprecated.
+- **Examples:** `headers.get("content-type", FaxiosHeaders.parseParameters)` returning `{ charset: "utf-8", boundary: "--x" }` from `multipart/form-data; charset=utf-8; boundary="--x"`; a `boundary="a,b;c"` case showing the legacy parser's mis-split.
+- **Notes:** English first, then the three locales.
+
+### docs — `params` typing and prototype-hardening behaviour changes
+
+- **Change:** (a) `paramsSchema`'s output type is constrained to `FaxiosParams`; (b) `utils.isPlainObject`/`isSafeIterable` no longer trust members inherited from a terminal null-prototype template.
+- **Source:** Issues #48 and #27, ports [axios#11081](https://github.com/axios/axios/pull/11081) (adapted) and [axios#11141](https://github.com/axios/axios/pull/11141).
+- **Status:** Pending.
+- **Docs targets:** `packages/docs/pages/advanced/type-script.md`, any Standard Schema / params page, and `THREATMODEL.md`.
+- **Required content:** For (a), document `FaxiosParams` and `ParamsSchema` and that a `paramsSchema` parsing to a non-params shape is now a compile error. For (b), record the fail-closed prototype boundary in `THREATMODEL.md`: the trusted chain walk stops at every terminal prototype, which covers cross-realm `Object.prototype` pollution, and note the deliberate trade-off that a legitimate null-prototype template's members are no longer honored.
+- **Examples:** None required.
+- **Notes:** (b) is a behavioural change worth calling out in release notes, not only docs.

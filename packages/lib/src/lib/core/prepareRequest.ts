@@ -144,6 +144,10 @@ function prepareRequest(config: FaxiosRequestConfig): FaxiosRequestConfig {
   }
 
   if (utils.isFormData(data)) {
+    // `data` is a user-supplied object, so `getHeaders` must not be discovered
+    // through a polluted prototype — it is looked up and then invoked.
+    const getHeaders = utils.getSafeProp(data, "getHeaders");
+
     if (
       platform.hasStandardBrowserEnv ||
       platform.hasStandardBrowserWebWorkerEnv ||
@@ -151,13 +155,11 @@ function prepareRequest(config: FaxiosRequestConfig): FaxiosRequestConfig {
     ) {
       (headers.setContentType as (v: unknown) => unknown)(undefined); // browser/web worker/RN handles it
     }
-    else if (
-      utils.isFunction((data as Record<string, unknown>)["getHeaders"])
-    ) {
+    else if (utils.isFunction(getHeaders)) {
       // Node.js FormData (like form-data package)
       setFormDataHeaders(
         headers,
-        (data as { getHeaders: () => Record<string, unknown>; }).getHeaders(),
+        (getHeaders as () => Record<string, unknown>).call(data),
         own("formDataHeaderPolicy")
       );
     }

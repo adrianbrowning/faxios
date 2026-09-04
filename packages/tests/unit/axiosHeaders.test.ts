@@ -347,6 +347,96 @@ describe("FaxiosHeaders", () => {
         );
       });
     });
+
+    describe("parameter parsing", () => {
+      const parse = (value: string) => {
+        const headers = new FaxiosHeaders();
+        headers.set("content-type", value);
+        return headers.get("content-type", FaxiosHeaders.parseParameters) as Record<string, string>;
+      };
+
+      it("leaves the legacy `true` parser untouched", () => {
+        const headers = new FaxiosHeaders();
+        headers.set("content-type", "multipart/form-data; charset=utf-8   ; boundary=\"--x\"");
+
+        // Legacy behaviour: bare media type kept with an undefined value, trailing
+        // whitespace retained, surrounding quotes retained. Regression guard so the
+        // documented `true` parser never silently becomes the RFC-aware one.
+        assert.deepStrictEqual({ ...headers.get("content-type", true) as object }, {
+          "multipart/form-data": undefined,
+          charset: "utf-8   ",
+          boundary: "\"--x\"",
+        });
+      });
+
+      it("drops the bare media type, trims OWS and unquotes values", () => {
+        assert.deepStrictEqual(
+          { ...parse("multipart/form-data; charset=\t utf-8 \t ; boundary=\"--x\"") },
+          { charset: "utf-8", boundary: "--x" }
+        );
+      });
+
+      it("does not split on a comma or semicolon inside a quoted string", () => {
+        assert.deepStrictEqual(
+          { ...parse("multipart/form-data; boundary=\"a,b;c\"; title=\"one; two, three\"") },
+          { boundary: "a,b;c", title: "one; two, three" }
+        );
+      });
+
+      it("resolves quoted-pair escapes", () => {
+        assert.deepStrictEqual(
+          { ...parse(String.raw`attachment; filename="a\"b\\c.txt"`) },
+          { filename: String.raw`a"b\c.txt` }
+        );
+      });
+
+      it("preserves whitespace and emptiness inside quotes", () => {
+        assert.deepStrictEqual(
+          { ...parse("text/plain; empty=\"\"; padded=\" value \"") },
+          { empty: "", padded: " value " }
+        );
+      });
+
+      it("returns the raw value rather than guessing when quoting is malformed", () => {
+        assert.deepStrictEqual(
+          { ...parse("text/plain; name=\"unterminated; charset=utf-8") },
+          { name: "\"unterminated; charset=utf-8" }
+        );
+        assert.deepStrictEqual(
+          { ...parse("text/plain; name=\"quoted\"junk; charset=utf-8") },
+          { name: "\"quoted\"junk", charset: "utf-8" }
+        );
+        assert.deepStrictEqual(
+          { ...parse(String.raw`text/plain; name="x\"`) },
+          { name: String.raw`"x\"` }
+        );
+      });
+
+      it("trims only OWS — HTAB and SP — never other whitespace", () => {
+        assert.deepStrictEqual({ ...parse("text/plain; charset=utf-8\u00a0") }, { charset: "utf-8\u00a0" });
+      });
+
+      it("lowercases names, drops non-token names and valueless tokens, last duplicate wins", () => {
+        assert.deepStrictEqual(
+          { ...parse("text/plain; flag; BAD NAME=ignored; BOUNDARY=first; boundary=second") },
+          { boundary: "second" }
+        );
+      });
+
+      it("never materializes __proto__, constructor or prototype", () => {
+        const parameters = parse("text/plain; __proto__=unsafe; Constructor=unsafe; PROTOTYPE=unsafe; boundary=safe");
+
+        assert.strictEqual(Object.getPrototypeOf(parameters), null);
+        assert.deepStrictEqual({ ...parameters }, { boundary: "safe" });
+        assert.strictEqual(Object.prototype.hasOwnProperty.call(parameters, "__proto__"), false);
+        assert.strictEqual(({} as Record<string, unknown>)["unsafe"], undefined);
+      });
+
+      it("is usable as a standalone static without a headers instance", () => {
+        assert.strictEqual(typeof FaxiosHeaders.parseParameters, "function");
+        assert.deepStrictEqual({ ...FaxiosHeaders.parseParameters("a; b=c") }, { b: "c" });
+      });
+    });
   });
 
   describe("has", () => {

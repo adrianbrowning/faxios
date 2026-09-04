@@ -8,35 +8,127 @@ const { iterator, toStringTag } = Symbol;
 
 const hasOwnProperty = (obj: unknown, prop: PropertyKey) => Object.hasOwn(obj as object, prop);
 
+const UNSAFE_OBJECT_KEYS = [ "__proto__", "constructor", "prototype" ];
+
 /**
- * Walk the prototype chain (excluding the shared Object.prototype) looking for
- * an own `prop`. This distinguishes genuine own/inherited members — including
- * class accessors and template prototypes — from members injected via
- * Object.prototype pollution (e.g. `Object.prototype.username = '...'`), which
- * live on Object.prototype itself and are therefore never matched.
+ * Keys that corrupt an object's prototype chain when materialized onto it.
+ */
+const isUnsafeObjectKey = (prop: PropertyKey): boolean =>
+  typeof prop === "string" && UNSAFE_OBJECT_KEYS.indexOf(prop) !== -1;
+
+/**
+ * Where a trusted prototype-chain walk must stop.
+ *
+ * `Object.prototype` is the obvious boundary, but an identity check against it
+ * only covers the current realm. Every terminal prototype — a foreign realm's
+ * `Object.prototype`, or any `Object.create(null)` template — has a null
+ * prototype, so treating an INHERITED null-prototype object as a boundary fails
+ * closed on both. The `source` flag keeps this from over-reaching: the object
+ * under inspection may itself be null-prototype, which is what `mergeConfig`
+ * hands to every one of these reads.
+ */
+const isPrototypeBoundary = (obj: object, prototype: object | null, source: boolean): boolean =>
+  obj === Object.prototype || (!source && prototype === null);
+
+/**
+ * Walk the prototype chain looking for an own `prop`, stopping at the first
+ * prototype boundary. This distinguishes genuine own/inherited members —
+ * including class accessors and template prototypes — from members injected via
+ * prototype pollution (e.g. `Object.prototype.username = '...'`), which live on
+ * a boundary object and are therefore never matched.
  *
  * @param {*} thing The value whose chain to inspect
  * @param {string|symbol} prop The property key to look for
  *
- * @returns {boolean} True when `prop` is owned below Object.prototype
+ * @returns {boolean} True when `prop` is owned below the prototype boundary
  */
 const hasOwnInPrototypeChain = (thing: unknown, prop: PropertyKey): boolean => {
   let obj: object | null = thing != null && typeof thing === "object" ? thing : null;
   if (obj === null) return false;
   const seen: Array<object> = [];
 
-  while (obj != null && obj !== Object.prototype) {
+  while (obj != null) {
     if (seen.indexOf(obj) !== -1) {
       return false;
     }
     seen.push(obj);
 
+    const prototype = getPrototypeOf(obj) as object | null;
+    if (isPrototypeBoundary(obj, prototype, obj === thing)) {
+      return false;
+    }
+
     if (hasOwnProperty(obj, prop)) {
       return true;
     }
-    obj = getPrototypeOf(obj) as object | null;
+    obj = prototype;
   }
   return false;
+};
+
+/**
+ * True when every own member of `obj` can be safely redefined by a caller: it is
+ * extensible, carries no prototype-corrupting key, and every property is a
+ * configurable, writable data property. Anything else has to be copied before a
+ * caller is allowed to mutate it.
+ */
+const isSafeAndFullyMutable = (obj: object): boolean => {
+  if (!Object.isExtensible(obj)) return false;
+
+  for (const prop of Reflect.ownKeys(obj)) {
+    if (isUnsafeObjectKey(prop)) return false;
+
+    const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+    if (!descriptor?.configurable || descriptor.writable !== true) return false;
+  }
+
+  return true;
+};
+
+/**
+ * Materialize `thing` as a null-prototype object the caller may freely mutate,
+ * carrying down every member owned below the prototype boundary. Prototype-
+ * corrupting keys are dropped and nearer members win over inherited ones.
+ *
+ * A value that is already a safe, fully mutable null-prototype object is
+ * returned BY IDENTITY — callers that mutate the result and expect the original
+ * to see it (the request config threaded through dispatch) depend on that.
+ *
+ * @param {*} thing The value to flatten
+ *
+ * @returns {*} A safe null-prototype object, or `thing` unchanged when it is not an object
+ */
+const toSafeFlatObject = (thing: unknown): unknown => {
+  if (thing == null || (typeof thing !== "object" && typeof thing !== "function")) {
+    return thing;
+  }
+
+  if (getPrototypeOf(thing) === null && isSafeAndFullyMutable(thing)) {
+    return thing;
+  }
+
+  const flat = Object.create(null) as Record<PropertyKey, unknown>;
+  const seen: Array<object> = [];
+  let obj: object | null = thing;
+
+  while (obj != null) {
+    if (seen.indexOf(obj) !== -1) break;
+    seen.push(obj);
+
+    const prototype = getPrototypeOf(obj) as object | null;
+    if (isPrototypeBoundary(obj, prototype, obj === thing)) break;
+
+    for (const prop of Reflect.ownKeys(obj)) {
+      // First writer wins: the nearest object in the chain shadows the rest.
+      if (isUnsafeObjectKey(prop) || hasOwnProperty(flat, prop)) continue;
+      // Read through the original so accessors resolve against the real receiver.
+      flat[prop] = (thing as Record<PropertyKey, unknown>)[prop];
+    }
+
+    obj = prototype;
+  }
+
+  return flat;
 };
 
 /**
@@ -935,6 +1027,8 @@ export default {
   hasOwnProp: hasOwnProperty, // an alias to avoid ESLint no-prototype-builtins detection
   hasOwnInPrototypeChain,
   getSafeProp,
+  isUnsafeObjectKey,
+  toSafeFlatObject,
   reduceDescriptors,
   freezeMethods,
   toObjectSet,

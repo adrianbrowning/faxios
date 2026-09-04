@@ -100,29 +100,22 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
     formData = new FormDataCtor();
   }
 
-  options = utils.toFlatObject(
-    options,
-    {
-      metaTokens: true,
-      dots: false,
-      indexes: false,
-    },
-    false,
-    function defined(option: string, source: unknown) {
-      return !utils.isUndefined((source as Record<string, unknown>)[option]);
-    }
-  );
+  /**
+   * Read a single option off the caller-supplied object, ignoring values that
+   * are only reachable through a polluted `Object.prototype`.
+   */
+  const option = (name: string, fallback?: unknown): unknown => {
+    const value = utils.getSafeProp(options, name);
+    return utils.isUndefined(value) ? fallback : value;
+  };
 
-  const metaTokens = options["metaTokens"];
+  const metaTokens = option("metaTokens", true);
 
-  const visitor = (options["visitor"] || defaultVisitor) as SerializerVisitor;
-  const dots = options["dots"];
-  const indexes = options["indexes"];
-  const _Blob = options["Blob"] || (typeof (globalThis as Record<string, unknown>)["Blob"] !== "undefined" && (globalThis as Record<string, unknown>)["Blob"]);
-  const maxDepth =
-    options["maxDepth"] === undefined
-      ? DEFAULT_FORM_DATA_MAX_DEPTH
-      : (options["maxDepth"] as number);
+  const visitor = (option("visitor") || defaultVisitor) as SerializerVisitor;
+  const dots = option("dots", false);
+  const indexes = option("indexes", false);
+  const _Blob = option("Blob") || (typeof (globalThis as Record<string, unknown>)["Blob"] !== "undefined" && (globalThis as Record<string, unknown>)["Blob"]);
+  const maxDepth = option("maxDepth", DEFAULT_FORM_DATA_MAX_DEPTH) as number;
   const useBlob = _Blob && utils.isSpecCompliantForm(formData);
   const stack: Array<unknown> = [];
 

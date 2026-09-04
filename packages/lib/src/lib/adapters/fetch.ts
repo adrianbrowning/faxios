@@ -56,6 +56,65 @@ type AnyTextEncoder = { encode: (str: string) => Uint8Array; };
 
 const DEFAULT_CHUNK_SIZE = 64 * 1024;
 
+// Platform `RequestInit` defaults, pinned so neither `config.fetchOptions` nor a
+// polluted `Object.prototype` can steer them. Own `fetchOptions` values still win;
+// only fields that would otherwise resolve to `undefined` are filled from here.
+const PINNED_FETCH_INIT = Object.freeze([
+  [ "cache", "default" ],
+  [ "redirect", "follow" ],
+  [ "referrer", "about:client" ],
+  [ "referrerPolicy", "" ],
+  [ "mode", "cors" ],
+  [ "integrity", "" ],
+  [ "keepalive", false ],
+  [ "priority", "auto" ],
+  [ "window", null ],
+] as const);
+
+type OwnedRequestInit = {
+  signal: AbortSignal | null | undefined;
+  method: string;
+  headers: Record<string, unknown>;
+  body: unknown;
+  credentials: unknown;
+};
+
+/**
+ * Build the `RequestInit` handed to the platform.
+ *
+ * The result has a null prototype because undici resolves every unset field with
+ * a plain property `Get`, so a polluted `Object.prototype` is reachable from any
+ * init that still inherits from it. The faxios-owned fields are written
+ * unconditionally, including when `undefined`: an own property shadows the
+ * prototype on lookup, so ownership is what neutralizes the gadget — coercing an
+ * absent value to `null` would change the observable init instead.
+ */
+function buildRequestInit(
+  fetchOptions: Record<string, unknown> | null | undefined,
+  owned: OwnedRequestInit
+): Record<string, unknown> {
+  const init = Object.create(null) as Record<string, unknown>;
+
+  if (fetchOptions != null) {
+    Object.assign(init, fetchOptions);
+  }
+
+  init["signal"] = owned.signal;
+  init["method"] = owned.method;
+  init["headers"] = owned.headers;
+  init["body"] = owned.body;
+  init["duplex"] = "half";
+  init["credentials"] = owned.credentials;
+
+  for (const [ key, value ] of PINNED_FETCH_INIT) {
+    if (init[key] === undefined) {
+      init[key] = value;
+    }
+  }
+
+  return init;
+}
+
 const { isFunction } = utils;
 
 /**
@@ -675,15 +734,13 @@ const factory = (env: Record<string, unknown>) => {
       // Case-insensitive check: toByteStringHeaderObject may normalize to lowercase.
       data = await encodeBodyIfNeeded(data, serializedHeaders, encodeText);
 
-      const resolvedOptions = {
-        ...fetchOptions,
+      const resolvedOptions = buildRequestInit(fetchOptions, {
         signal: composedSignal,
         method: (method as string).toUpperCase(),
         headers: serializedHeaders,
         body: data,
-        duplex: "half",
         credentials: isCredentialsSupported ? withCredentials : undefined,
-      };
+      });
 
       request = isRequestSupported
         ? new (Request as AnyConstructor)(url, resolvedOptions) as Request

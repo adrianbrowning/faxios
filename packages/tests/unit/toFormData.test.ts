@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import FormData from "form-data";
-import { describe, it } from "vitest";
+import { afterEach, describe, it, vi } from "vitest";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import FaxiosURLSearchParams from "#src/lib/helpers/FaxiosURLSearchParams.js";
 import toFormData from "#src/lib/helpers/toFormData.js";
@@ -304,5 +304,100 @@ describe("helpers::toFormData", () => {
     assert.ok(!keys.some(key => key.includes("uri")));
     assert.ok(!keys.some(key => key.includes("type")));
     assert.ok(!keys.some(key => key.includes("name")));
+  });
+
+  describe("prototype pollution hardening — options are read safely", () => {
+    const ObjProto = Object.prototype as unknown as Record<string, unknown>;
+
+    afterEach(() => {
+      delete ObjProto["visitor"];
+      delete ObjProto["maxDepth"];
+      delete ObjProto["metaTokens"];
+      delete ObjProto["dots"];
+      delete ObjProto["indexes"];
+    });
+
+    it("should never invoke a visitor reachable only through Object.prototype", () => {
+      const inherited = vi.fn(() => false);
+      ObjProto["visitor"] = inherited;
+
+      const formData = createRNFormDataSpy();
+      toFormData({ foo: "bar" }, formData);
+
+      assert.strictEqual(inherited.mock.calls.length, 0, "inherited visitor must not be called");
+      assert.deepStrictEqual(formData.calls.map(call => call[0]), [ "foo" ]);
+    });
+
+    it("should still invoke a visitor passed explicitly in options", () => {
+      const passed = vi.fn(() => false);
+
+      toFormData({ foo: "bar" }, createRNFormDataSpy(), { visitor: passed });
+
+      assert.strictEqual(passed.mock.calls.length, 1, "explicit visitor must be called");
+    });
+
+    it("should ignore a maxDepth reachable only through Object.prototype", () => {
+      ObjProto["maxDepth"] = 0;
+
+      const formData = createRNFormDataSpy();
+      toFormData({ a: { b: 1 } }, formData);
+
+      assert.deepStrictEqual(formData.calls.map(call => call[0]), [ "a[b]" ]);
+    });
+
+    it("should still honour a maxDepth passed explicitly in options", () => {
+      try {
+        toFormData({ a: { b: 1 } }, createRNFormDataSpy(), { maxDepth: 0 });
+        assert.fail("Should have thrown");
+      }
+      catch (err) {
+        assert.ok(err instanceof FaxiosError);
+        assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
+      }
+    });
+
+    it("should keep field names stable when metaTokens/dots/indexes are inherited only", () => {
+      const clean = createRNFormDataSpy();
+      toFormData({ "meta{}": { x: 1 }, a: { b: 1 }, list: [ 1, 2 ] }, clean);
+
+      ObjProto["metaTokens"] = false;
+      ObjProto["dots"] = true;
+      ObjProto["indexes"] = true;
+
+      const polluted = createRNFormDataSpy();
+      toFormData({ "meta{}": { x: 1 }, a: { b: 1 }, list: [ 1, 2 ] }, polluted);
+
+      assert.deepStrictEqual(
+        polluted.calls.map(call => call[0]),
+        clean.calls.map(call => call[0]),
+      );
+    });
+
+    it("should still honour an explicit dots option while Object.prototype.dots is polluted", () => {
+      ObjProto["dots"] = true;
+
+      const formData = createRNFormDataSpy();
+      toFormData({ a: { b: 1 } }, formData, { dots: true });
+
+      assert.deepStrictEqual(formData.calls.map(call => call[0]), [ "a.b" ]);
+    });
+
+    it("should still honour an explicit metaTokens option while Object.prototype.metaTokens is polluted", () => {
+      ObjProto["metaTokens"] = true;
+
+      const formData = createRNFormDataSpy();
+      toFormData({ "meta{}": { x: 1 } }, formData, { metaTokens: false });
+
+      assert.deepStrictEqual(formData.calls.map(call => call[0]), [ "meta" ]);
+    });
+
+    it("should still honour an explicit indexes option while Object.prototype.indexes is polluted", () => {
+      ObjProto["indexes"] = true;
+
+      const formData = createRNFormDataSpy();
+      toFormData({ list: [ 1, 2 ] }, formData, { indexes: true });
+
+      assert.deepStrictEqual(formData.calls.map(call => call[0]), [ "list[0]", "list[1]" ]);
+    });
   });
 });

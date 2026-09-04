@@ -15,6 +15,9 @@ export type FaxiosHeaderValue =
   | boolean
   | null;
 
+// Parsed `name=value` parameters from a structured header value.
+export type FaxiosHeaderParameters = Record<string, string>;
+
 export interface RawFaxiosHeaders {
   [key: string]: FaxiosHeaderValue;
 }

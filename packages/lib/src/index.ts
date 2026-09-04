@@ -30,6 +30,7 @@ export type {
   FaxiosRequestHeaders,
   FaxiosResponseHeadersLike,
   FaxiosHeaderValue,
+  FaxiosHeaderParameters,
   Method,
   FaxiosParams,
   ParamsSchema,

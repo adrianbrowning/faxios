@@ -77,6 +77,8 @@ describe("Prototype Pollution Protection", () => {
     delete ObjProto.set;
     delete ObjProto.headers;
     delete Object.prototype.customNested;
+    delete ObjProto.getHeaders;
+    delete ObjProto.data;
   });
 
   describe("utils.merge", () => {
@@ -1349,6 +1351,83 @@ describe("Prototype Pollution Protection", () => {
       finally {
         globalThis.fetch = origFetch;
       }
+    });
+  });
+
+  describe("dispatch boundary", () => {
+    it("should re-establish the null-prototype guarantee for an interceptor-replaced config", async () => {
+      // mergeConfig hands dispatch a null-prototype object, but a synchronous
+      // request interceptor may return a fresh plain object, which puts
+      // Object.prototype back in the chain right before dispatch reads it.
+      // `responseSchema` has no default, so nothing shadows a polluted one.
+      const validate = vi.fn(() => ({ value: "hijacked" }));
+      (ObjProto as Record<string, unknown>)["responseSchema"] = {
+        "~standard": { version: 1, vendor: "gadget", validate },
+      };
+
+      try {
+        const instance = faxios.create() as any;
+        instance.interceptors.request.use(
+          (config: Record<string, unknown>) => ({ ...config }),
+          null,
+          { synchronous: true }
+        );
+
+        const response = await instance.get("http://test.local/path", {
+          env: {
+            fetch: async () => new Response(
+              JSON.stringify({ real: true }),
+              { status: 200, headers: { "Content-Type": "application/json" } }
+            ),
+          },
+        });
+
+        assert.strictEqual(validate.mock.calls.length, 0);
+        assert.deepStrictEqual(response.data, { real: true });
+      }
+      finally {
+        delete (ObjProto as Record<string, unknown>)["responseSchema"];
+      }
+    });
+  });
+  describe("instance defaults", () => {
+    it("should not take the request method from a polluted Object.prototype", async () => {
+      // `this.defaults` is a user-supplied plain object, so a polluted `method`
+      // is reachable through it even when the merged config has no own method.
+      ObjProto.method = "delete";
+
+      let observed: Request | undefined;
+      await ax.request({
+        url: "http://test.local/path",
+        env: {
+          fetch: async (input: string | URL | Request) => {
+            observed = input as Request;
+            return new Response("{}", { status: 200, headers: { "Content-Type": "application/json" } });
+          },
+        },
+      });
+
+      assert.strictEqual(observed?.method, "GET");
+    });
+  });
+
+  describe("FormData getHeaders", () => {
+    it("should not call a getHeaders inherited only from Object.prototype", async () => {
+      const getHeaders = vi.fn(() => ({ "X-Injected": "gadget" }));
+      ObjProto.getHeaders = getHeaders;
+
+      let observed: Request | undefined;
+      await ax.post("http://test.local/path", new FormData(), {
+        env: {
+          fetch: async (input: string | URL | Request) => {
+            observed = input as Request;
+            return new Response("{}", { status: 200, headers: { "Content-Type": "application/json" } });
+          },
+        },
+      });
+
+      assert.strictEqual(getHeaders.mock.calls.length, 0);
+      assert.strictEqual(observed?.headers.get("X-Injected"), null);
     });
   });
 });

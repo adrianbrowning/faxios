@@ -103,5 +103,16 @@ export default function estimateDataURLDecodedBytes(url: string): number {
 
   const meta = resource.slice(5, comma);
   const body = resource.slice(comma + 1);
-  return /;base64/i.test(meta) ? estimateBase64DecodedBytes(body) : estimateUtf8BodyBytes(body);
+  // `;base64` marks a base64 body only when it TERMINATES the metadata — in
+  // `text/plain;base64;x` it is a parameter name and the body is raw text, which
+  // decodes 1:1 rather than 3:4. A substring test there under-counts by 25% and
+  // lets an oversized payload past the maxContentLength pre-check.
+  //
+  // Matched exactly, not case-insensitively and with no trailing-space tolerance,
+  // because runtimes disagree: Node accepts `;BASE64` and `;base64 ` as base64
+  // while Bun treats both as raw. Recognizing only the form every runtime agrees
+  // on keeps the estimate an upper bound everywhere — the looser spellings fall
+  // through to the raw count, which over-estimates a real base64 body rather
+  // than under-estimating a real raw one.
+  return meta.endsWith(";base64") ? estimateBase64DecodedBytes(body) : estimateUtf8BodyBytes(body);
 }

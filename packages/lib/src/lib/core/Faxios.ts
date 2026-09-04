@@ -328,9 +328,12 @@ class Faxios {
       true
     );
 
-    // Set config.method
+    // Set config.method. `this.defaults` is a user-supplied plain object, so a
+    // polluted `method` is reachable through it even though `config` is not.
     config.method = (
-      (config.method || this.defaults.method || "get") as string
+      (utils.getSafeProp(config, "method")
+        || utils.getSafeProp(this.defaults, "method")
+        || "get") as string
     ).toLowerCase();
 
     // Flatten headers
