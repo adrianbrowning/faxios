@@ -1,6 +1,7 @@
 // @ts-self-types="./route.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
+import type { ParamsSchema } from "../types.js";
 import type { BasePerCallConfig, DefineConfig, DefinedEndpoint, FaxiosLike } from "./define.js";
 import { createDefinedEndpoint } from "./define.js";
 
@@ -8,7 +9,7 @@ export type RouteConfig<PP extends StandardSchemaV1<unknown, Record<string, unkn
   BasePerCallConfig & { pathParamsSchema?: PP; };
 
 export type RouteMethodConfig<
-  P extends StandardSchemaV1 | undefined = undefined,
+  P extends ParamsSchema | undefined = undefined,
   D extends StandardSchemaV1 | undefined = undefined,
   R extends StandardSchemaV1 | undefined = undefined
 > = BasePerCallConfig & {
@@ -19,7 +20,7 @@ export type RouteMethodConfig<
 
 export type RouteBuilder<PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined> = {
   [M in "get" | "post" | "put" | "patch" | "delete" | "head" | "options"]: <
-    P extends StandardSchemaV1 | undefined = undefined,
+    P extends ParamsSchema | undefined = undefined,
     D extends StandardSchemaV1 | undefined = undefined,
     R extends StandardSchemaV1 | undefined = undefined
   >(config?: RouteMethodConfig<P, D, R>) => DefinedEndpoint<PP, P, D, R>;
@@ -42,7 +43,7 @@ export function createRouteBuilder<PP extends StandardSchemaV1<unknown, Record<s
   const builder = {} as RouteBuilder<PP>;
   for (const method of methods) {
     (builder as Record<string, unknown>)[method] = <
-      P extends StandardSchemaV1 | undefined,
+      P extends ParamsSchema | undefined,
       D extends StandardSchemaV1 | undefined,
       R extends StandardSchemaV1 | undefined
     >(methodConfig?: RouteMethodConfig<P, D, R>) => {

@@ -1,7 +1,7 @@
 // @ts-self-types="./define.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
-import type { FaxiosRequestConfig, FaxiosResponse, StringLiteralsOrString, Method } from "../types.js";
+import type { FaxiosRequestConfig, FaxiosResponse, ParamsSchema, StringLiteralsOrString, Method } from "../types.js";
 import mergeConfig from "./mergeConfig.js";
 
 type StrippedFields =
@@ -19,7 +19,7 @@ export type BasePerCallConfig = Omit<FaxiosRequestConfig, StrippedFields>;
 
 export type PerCallConfig<
   PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined,
-  P extends StandardSchemaV1 | undefined,
+  P extends ParamsSchema | undefined,
   D extends StandardSchemaV1 | undefined
 > =
   BasePerCallConfig
@@ -29,7 +29,7 @@ export type PerCallConfig<
 
 export type DefineConfig<
   PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined,
-  P extends StandardSchemaV1 | undefined = undefined,
+  P extends ParamsSchema | undefined = undefined,
   D extends StandardSchemaV1 | undefined = undefined,
   R extends StandardSchemaV1 | undefined = undefined
 > = BasePerCallConfig & {
@@ -44,7 +44,7 @@ type HasInputSchema<PP, P, D> =
 
 export type DefinedEndpoint<
   PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined,
-  P extends StandardSchemaV1 | undefined,
+  P extends ParamsSchema | undefined,
   D extends StandardSchemaV1 | undefined,
   R extends StandardSchemaV1 | undefined
 > =
@@ -66,7 +66,7 @@ const strippedKeys = [ "url", "method", ...schemaKeys ] as const;
 
 export function createDefinedEndpoint<
   PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined,
-  P extends StandardSchemaV1 | undefined,
+  P extends ParamsSchema | undefined,
   D extends StandardSchemaV1 | undefined,
   R extends StandardSchemaV1 | undefined
 >(

@@ -18,3 +18,11 @@
 ### Added
 
 - `HttpStatusCode` gains the RFC 9110 names `ContentTooLarge` (413) and `UnprocessableContent` (422), plus Cloudflare `WebServerReturnsAnUnknownError` (520). `PayloadTooLarge` and `UnprocessableEntity` remain as deprecated aliases, and the numeric reverse lookup keeps the legacy name. Ports [axios#11067](https://github.com/axios/axios/pull/11067) and [axios#11082](https://github.com/axios/axios/pull/11082).
+
+### Changed
+
+- `paramsSchema`'s output type is now constrained to what `params` accepts (`Record<string, unknown> | URLSearchParams`), mirroring `pathParamsSchema`. A schema that parses to something the params serializer cannot consume is now a compile error at `faxios.get(...)`, `define()`, and `route().get(...)`. Adapts [axios#11081](https://github.com/axios/axios/pull/11081) to faxios's Standard Schema params typing instead of copying upstream's positional `P` generic.
+
+### Removed
+
+- Deleted the vestigial `index.d.cts` and `index.old.d.ts` declaration files. Neither was built (`zshy.cjs: false`), exported, nor in sync with the real API; `index.d.cts` still carried a `params?: any` and a `maxRedirects?: number` with no runtime backing at all.

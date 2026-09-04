@@ -26,7 +26,7 @@ describe("paramsSchema validation", () => {
 
   it("throws FaxiosError with ERR_BAD_PARAMS_SCHEMA on failure", async () => {
     const issues = [{ message: "expected object, got string" }];
-    const schema = makeSchema(() => ({ issues }));
+    const schema = makeSchema<Record<string, unknown>>(() => ({ issues }));
 
     try {
       await faxios.get("http://localhost/test", {
@@ -44,7 +44,7 @@ describe("paramsSchema validation", () => {
 
   it("attaches issues array from schema result to the error", async () => {
     const issues = [{ message: "invalid type" }, { message: "too short", path: [ "q" ] }];
-    const schema = makeSchema(() => ({ issues }));
+    const schema = makeSchema<Record<string, unknown>>(() => ({ issues }));
 
     try {
       await faxios.get("http://localhost/test", {
@@ -72,7 +72,7 @@ describe("paramsSchema validation", () => {
 
   it("validates undefined params against schema", async () => {
     const issues = [{ message: "params are required" }];
-    const schema = makeSchema(v => v === undefined ? { issues } : { value: v });
+    const schema = makeSchema<Record<string, unknown>>(v => v === undefined ? { issues } : { value: v as Record<string, unknown> });
 
     try {
       await faxios.get("http://localhost/test", {
@@ -96,7 +96,7 @@ describe("paramsSchema validation", () => {
   });
 
   it("wraps schema throws in FaxiosError with ERR_BAD_PARAMS_SCHEMA", async () => {
-    const schema = makeSchema(() => { throw new Error("schema exploded"); });
+    const schema = makeSchema<Record<string, unknown>>(() => { throw new Error("schema exploded"); });
 
     try {
       await faxios.get("http://localhost/test", {
@@ -114,7 +114,7 @@ describe("paramsSchema validation", () => {
 
   it("instance-level paramsSchema is used when no per-request schema is set", async () => {
     const issues = [{ message: "bad params" }];
-    const schema = makeSchema(() => ({ issues }));
+    const schema = makeSchema<Record<string, unknown>>(() => ({ issues }));
     const instance = faxios.create({ paramsSchema: schema });
 
     try {
@@ -131,7 +131,7 @@ describe("paramsSchema validation", () => {
   });
 
   it("throws when schema returns a falsy non-Result value", async () => {
-    const schema = makeSchema(() => undefined as never);
+    const schema = makeSchema<Record<string, unknown>>(() => undefined as never);
     try {
       await faxios.get("http://localhost/test", {
         params: { q: "x" },
@@ -148,8 +148,8 @@ describe("paramsSchema validation", () => {
   });
 
   it("per-request paramsSchema overrides instance-level schema", async () => {
-    const failSchema = makeSchema(() => ({ issues: [{ message: "fail" }] }));
-    const passSchema = makeSchema(v => ({ value: v }));
+    const failSchema = makeSchema<Record<string, unknown>>(() => ({ issues: [{ message: "fail" }] }));
+    const passSchema = makeSchema<Record<string, unknown>>(v => ({ value: v as Record<string, unknown> }));
     const instance = faxios.create({ paramsSchema: failSchema });
 
     await instance.get("http://localhost/test", {
@@ -162,7 +162,7 @@ describe("paramsSchema validation", () => {
 
   it("paramsSchema failure prevents requestSchema from running (fail-fast)", async () => {
     const paramsIssues = [{ message: "bad params" }];
-    const paramsSchema = makeSchema(() => ({ issues: paramsIssues }));
+    const paramsSchema = makeSchema<Record<string, unknown>>(() => ({ issues: paramsIssues }));
     const requestValidate = vi.fn(() => ({ value: {} }));
     const requestSchema = makeSchema(requestValidate);
 
@@ -185,20 +185,20 @@ describe("paramsSchema validation", () => {
 
 describe("mergeConfig paramsSchema", () => {
   it("paramsSchema uses defaultToConfig2 — config2 wins", () => {
-    const s1 = makeSchema(() => ({ value: "s1" }));
-    const s2 = makeSchema(() => ({ value: "s2" }));
+    const s1 = makeSchema<Record<string, unknown>>(() => ({ value: { s: "s1" } }));
+    const s2 = makeSchema<Record<string, unknown>>(() => ({ value: { s: "s2" } }));
     const merged = mergeConfig({ paramsSchema: s1 }, { paramsSchema: s2 });
     assert.strictEqual(
-      (merged.paramsSchema as typeof s2)?.["~standard"]?.validate,
+      merged.paramsSchema?.["~standard"]?.validate,
       s2["~standard"].validate
     );
   });
 
   it("paramsSchema falls back to config1 when config2 has none", () => {
-    const s1 = makeSchema(() => ({ value: "s1" }));
+    const s1 = makeSchema<Record<string, unknown>>(() => ({ value: { s: "s1" } }));
     const merged = mergeConfig({ paramsSchema: s1 }, {});
     assert.strictEqual(
-      (merged.paramsSchema as typeof s1)?.["~standard"]?.validate,
+      merged.paramsSchema?.["~standard"]?.validate,
       s1["~standard"].validate
     );
   });

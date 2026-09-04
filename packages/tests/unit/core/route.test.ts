@@ -116,7 +116,7 @@ describe("faxios.route()", () => {
   });
 
   it("method-level paramsSchema validates query params", async () => {
-    const failSchema = makeSchema(() => ({ issues: [{ message: "bad params" }] }));
+    const failSchema = makeSchema<Record<string, unknown>>(() => ({ issues: [{ message: "bad params" }] }));
     const r = faxios.route("http://localhost/search");
     const search = r.get({ paramsSchema: failSchema });
     try {

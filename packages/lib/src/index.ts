@@ -31,6 +31,8 @@ export type {
   FaxiosResponseHeadersLike,
   FaxiosHeaderValue,
   Method,
+  FaxiosParams,
+  ParamsSchema,
   ResponseType,
   GenericHTMLFormElement,
   RawFaxiosRequestConfig,

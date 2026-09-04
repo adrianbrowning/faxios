@@ -84,7 +84,7 @@ function validatePreFlight(config: InternalFaxiosRequestConfig): Promise<void> |
 
     if (config.paramsSchema) {
       throwIfCancellationRequested(config);
-      config.params = await validateSchema(config.paramsSchema, config.params, FaxiosError.ERR_BAD_PARAMS_SCHEMA, config) as typeof config.params;
+      config.params = await validateSchema(config.paramsSchema, config.params, FaxiosError.ERR_BAD_PARAMS_SCHEMA, config);
     }
 
     if (config.requestSchema) {

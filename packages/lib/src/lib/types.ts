@@ -232,6 +232,12 @@ export interface FaxiosResponseTransformer {
   ): unknown;
 }
 
+// The shape `buildURL`/the params serializer can consume. `paramsSchema`'s output
+// is constrained to this so a schema can never produce something `params` rejects.
+export type FaxiosParams = Record<string, unknown> | URLSearchParams;
+
+export type ParamsSchema = StandardSchemaV1<unknown, FaxiosParams>;
+
 export interface FaxiosRequestConfig<D = unknown> {
   url?: string;
   method?: StringLiteralsOrString<Method>;
@@ -242,7 +248,7 @@ export interface FaxiosRequestConfig<D = unknown> {
     | FaxiosResponseTransformer
     | Array<FaxiosResponseTransformer>;
   headers?: Record<string, unknown>;
-  params?: Record<string, unknown> | URLSearchParams;
+  params?: FaxiosParams;
   paramsSerializer?: ParamsSerializerOptions | CustomParamsSerializer;
   data?: D;
   timeout?: Milliseconds;
@@ -287,7 +293,7 @@ export interface FaxiosRequestConfig<D = unknown> {
   redact?: Array<string>;
   responseSchema?: StandardSchemaV1;
   requestSchema?: StandardSchemaV1;
-  paramsSchema?: StandardSchemaV1;
+  paramsSchema?: ParamsSchema;
   pathParams?: Record<string, unknown>;
   pathParamsSchema?: StandardSchemaV1<unknown, Record<string, unknown>>;
 }

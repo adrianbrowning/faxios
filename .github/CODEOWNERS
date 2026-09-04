@@ -15,7 +15,6 @@
 /lib/                      @jasonsaayman
 /index.js                  @jasonsaayman
 /index.d.ts                @jasonsaayman
-/index.d.cts               @jasonsaayman
 
 # Build / release infrastructure
 /rollup.config.js          @jasonsaayman

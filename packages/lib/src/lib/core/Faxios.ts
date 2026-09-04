@@ -10,6 +10,7 @@ import type {
   FaxiosResponse,
   InternalFaxiosRequestConfig,
   Method,
+  ParamsSchema,
   SchemaConfig,
   StringLiteralsOrString
 } from "../types.js";
@@ -514,7 +515,7 @@ class Faxios {
 
   define<
     PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined,
-    P extends StandardSchemaV1 | undefined = undefined,
+    P extends ParamsSchema | undefined = undefined,
     D extends StandardSchemaV1 | undefined = undefined,
     R extends StandardSchemaV1 | undefined = undefined
   >(
