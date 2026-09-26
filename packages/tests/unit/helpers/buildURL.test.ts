@@ -1,5 +1,7 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, expectTypeOf, vi } from "vitest";
+import faxios from "#src/index.ts";
 import buildURL, { encode } from "#src/lib/helpers/buildURL.js";
+import type { FaxiosRequestConfig, ParamEncoder, ParamsSerializerOptions } from "#src/lib/types.ts";
 
 describe("helpers::buildURL", () => {
   it("should support null params", () => {
@@ -190,5 +192,32 @@ describe("helpers::encode", () => {
 
   it("should apply all substitutions together", () => {
     expect(encode("a:b$c,d e")).toEqual("a:b$c,d+e");
+  });
+});
+
+describe("types::ParamEncoder", () => {
+  it("accepts encodeURIComponent on a request config and on create defaults", () => {
+    const config: FaxiosRequestConfig = { paramsSerializer: { encode: encodeURIComponent } };
+    const instance = faxios.create({ paramsSerializer: { encode: encodeURIComponent } });
+    expect(buildURL("/foo", { a: "b c" }, config.paramsSerializer)).toEqual("/foo?a=b%20c");
+    expect(instance.getUri({ url: "/foo", params: { a: "b c" } })).toEqual("/foo?a=b%20c");
+  });
+
+  it("types the value and default encoder as string", () => {
+    const delegating: ParamEncoder = (v, d) => {
+      expectTypeOf(v).toEqualTypeOf<string>();
+      expectTypeOf(d(v)).toEqualTypeOf<string>();
+      return d(v);
+    };
+    expect(buildURL("/foo", { a: "b c" }, { encode: delegating })).toEqual("/foo?a=b+c");
+  });
+
+  it("rejects encoders that do not return a string", () => {
+    // @ts-expect-error -- encoders must return a string
+    const returnsNumber: ParamsSerializerOptions = { encode: () => 1 };
+    // @ts-expect-error -- encoders must return a string
+    const returnsUndefined: ParamsSerializerOptions = { encode: () => undefined };
+    expectTypeOf(returnsNumber).toEqualTypeOf<ParamsSerializerOptions>();
+    expectTypeOf(returnsUndefined).toEqualTypeOf<ParamsSerializerOptions>();
   });
 });

@@ -1,5 +1,6 @@
 "use strict";
 
+import type { ParamEncoder } from "../types.js";
 import toFormData from "./toFormData.js";
 
 /**
@@ -35,7 +36,7 @@ class FaxiosURLSearchParams {
     this.#pairs.push([ name, value ]);
   }
 
-  toString(encoder?: (value: string, encode: (v: string) => string) => string): string {
+  toString(encoder?: ParamEncoder): string {
     const _encode = encoder
       ? (value: string) => encoder.call(undefined, value, encode)
       : encode;

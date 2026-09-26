@@ -140,7 +140,7 @@ export interface SerializerOptions {
 export type FormSerializerOptions = SerializerOptions;
 
 export interface ParamEncoder {
-  (value: unknown, defaultEncoder: (value: unknown) => unknown): unknown;
+  (value: string, defaultEncoder: (value: string) => string): string;
 }
 
 export interface CustomParamsSerializer {

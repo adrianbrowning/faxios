@@ -1,5 +1,6 @@
 "use strict";
 
+import type { ParamEncoder } from "../types.js";
 import utils from "../utils.js";
 import FaxiosURLSearchParams from "./FaxiosURLSearchParams.js";
 
@@ -17,6 +18,12 @@ export function encode(val: string): string {
     .replace(/%24/g, "$")
     .replace(/%2C/gi, ",")
     .replace(/%20/g, "+");
+}
+
+// The request path validates `paramsSerializer.encode` as a function; this
+// guard narrows the untyped option to ParamEncoder without asserting it.
+function isParamEncoder(value: unknown): value is ParamEncoder {
+  return typeof value === "function";
 }
 
 /**
@@ -42,7 +49,8 @@ export default function buildURL(url: string, params?: unknown, options?: unknow
   // Read serializer options pollution-safely: own properties and methods on a
   // class/template prototype are honored, but values injected onto a polluted
   // Object.prototype are ignored.
-  const _encode = (utils.getSafeProp(_options, "encode") as ((val: string) => string) | undefined) || encode;
+  const customEncode = utils.getSafeProp(_options, "encode");
+  const _encode: ParamEncoder = isParamEncoder(customEncode) ? customEncode : encode;
   const serializeFn = utils.getSafeProp(_options, "serialize") as ((params: unknown, options: unknown) => string) | undefined;
 
   let serializedParams: string | undefined;
@@ -53,7 +61,7 @@ export default function buildURL(url: string, params?: unknown, options?: unknow
   else {
     serializedParams = utils.isURLSearchParams(params)
       ? (params as { toString: () => string; }).toString()
-      : new (FaxiosURLSearchParams as unknown as new (params: unknown, options: unknown) => { toString: (enc?: (val: string) => string) => string; })(params, _options).toString(_encode);
+      : new FaxiosURLSearchParams(params, _options).toString(_encode);
   }
 
   if (serializedParams) {
