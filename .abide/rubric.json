@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "compiledAt": "2026-09-26T12:00:00.000Z",
+  "compiledAt": "2026-09-26T15:15:31.000Z",
   "compiledBy": "claude",
   "sources": [
     {
@@ -10,7 +10,7 @@
     },
     {
       "path": "CLAUDE.md",
-      "sha": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49",
+      "sha": "9d1833e2d5fd4811095eefa27cc48349b820085343386e18944cb41264e8bb39",
       "scope": "**/*"
     },
     {
@@ -45,7 +45,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 0,
         "median": 0,
         "min": 0,
@@ -105,7 +105,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 0,
         "median": 0,
         "min": 0,
@@ -165,7 +165,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 0,
         "median": 0,
         "min": 0,
@@ -211,7 +211,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 1,
         "median": 0.5765,
         "min": 0.5765,
@@ -287,7 +287,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 1,
         "median": 0.699,
         "min": 0.699,
@@ -308,20 +308,20 @@
         "type": "model",
         "question": {
           "type": "boolean",
-          "instructions": "Does the diff add a config option, public export, or error code, or change a default, in a file under packages/lib/src/, while PRE_RELEASE_CHANGELOG.md is absent from the diff? Answer no if no file under packages/lib/src/ changed.",
+          "instructions": "Does the diff add an export to packages/lib/src/index.ts, a public type to index.d.ts, or a `static readonly ERR_` code to FaxiosError.ts, while no hunk touches PRE_RELEASE_CHANGELOG.md? If none of those three files gained lines, answer no.",
           "criteria": {
-            "true": "a new config option added in packages/lib/src; PRE_RELEASE_CHANGELOG.md untouched",
-            "false": "an internal refactor or test-only change, or a behavior change with a PRE_RELEASE_CHANGELOG.md entry"
+            "true": "index.ts gains `export { newHelper }` or FaxiosError.ts gains `static readonly ERR_FOO`; PRE_RELEASE_CHANGELOG.md not in the diff",
+            "false": "only tests or internal refactors changed, or PRE_RELEASE_CHANGELOG.md has an added line"
           }
         }
       },
       "status": "weak",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 8,
-        "median": 0.42710000000000004,
-        "min": 0.3594,
-        "max": 0.6303,
+        "median": 0.5883499999999999,
+        "min": 0.5327,
+        "max": 0.6577,
         "fired": 0,
         "verdict": "weak"
       }
@@ -350,7 +350,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 1,
         "median": 0.5129,
         "min": 0.5129,
@@ -384,7 +384,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 1,
         "median": 0.5319,
         "min": 0.5319,
@@ -419,7 +419,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 6,
         "median": 0.6691,
         "min": 0.5965,
@@ -452,7 +452,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 1,
         "median": 0.4756,
         "min": 0.4756,
@@ -599,7 +599,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 8,
         "median": 0.71875,
         "min": 0.5732,
@@ -632,7 +632,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 0,
         "median": 0,
         "min": 0,
@@ -682,7 +682,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 8,
         "median": 0.68275,
         "min": 0.5707,
@@ -715,7 +715,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 8,
         "median": 0.66605,
         "min": 0.5985,
@@ -752,22 +752,22 @@
         "type": "model",
         "question": {
           "type": "boolean",
-          "instructions": "Among the added lines, is there a throw or FaxiosError with code ERR_BAD_OPTION or ERR_BAD_OPTION_VALUE written outside the `validator` helper? Answer no if no added line throws for a bad option.",
+          "instructions": "First check whether any added line contains the literal text `ERR_BAD_OPTION`. If none does, answer no. If one does, answer yes only when that line is outside packages/lib/src/lib/helpers/validator.ts.",
           "criteria": {
-            "true": "if (typeof config.timeout !== 'number') throw new FaxiosError('timeout must be a number', FaxiosError.ERR_BAD_OPTION_VALUE);",
-            "false": "validator.assertOptions(config, { timeout: validators.number });"
+            "true": "+ throw new FaxiosError('timeout must be a number', FaxiosError.ERR_BAD_OPTION_VALUE, config);  in dispatchRequest.ts",
+            "false": "added lines without the text ERR_BAD_OPTION, or any change inside validator.ts"
           }
         }
       },
-      "status": "noisy",
+      "status": "weak",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 8,
-        "median": 0.9084,
-        "min": 0.8832,
-        "max": 0.9346,
-        "fired": 8,
-        "verdict": "noisy"
+        "median": 0.5134,
+        "min": 0.4027,
+        "max": 0.5656,
+        "fired": 0,
+        "verdict": "weak"
       }
     },
     {
@@ -794,7 +794,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 6,
         "median": 0.77725,
         "min": 0.7014,
@@ -827,7 +827,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 6,
         "median": 0.7401500000000001,
         "min": 0.6447,
@@ -851,20 +851,20 @@
         "type": "model",
         "question": {
           "type": "boolean",
-          "instructions": "Among the added lines, is there a call to `interceptors.request.use(` or `interceptors.response.use(` with no comment beside it stating where it runs in the execution order? Answer no if no added line calls interceptors.*.use(.",
+          "instructions": "First check whether any added line contains the literal text `interceptors.request.use(` or `interceptors.response.use(`. If none does, answer no. If one does, answer yes only when no nearby added comment says where it runs in the order (first, last, LIFO, FIFO).",
           "criteria": {
-            "true": "faxios constructor gains this.interceptors.request.use(addXsrf) with no comment or doc on its position",
-            "false": "no new built-in interceptor, or one added with a note that it runs first because it is registered last"
+            "true": "+ this.interceptors.request.use(addXsrfHeader);  (no comment about its position)",
+            "false": "no added line contains interceptors.request.use( or interceptors.response.use("
           }
         }
       },
       "status": "weak",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 8,
-        "median": 0.51515,
-        "min": 0.4937,
-        "max": 0.5255,
+        "median": 0.58605,
+        "min": 0.56,
+        "max": 0.6043,
         "fired": 0,
         "verdict": "weak"
       }
@@ -893,7 +893,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 8,
         "median": 0.7066,
         "min": 0.6295,
@@ -918,22 +918,22 @@
         "type": "model",
         "question": {
           "type": "boolean",
-          "instructions": "Among the added lines, is there a loop over `reader.read()` or `for await` over a response body that never references `signal` or `aborted` and never calls `reader.cancel`? Answer no if no added line reads a body stream.",
+          "instructions": "First check whether any added line contains `reader.read()` or `for await (` over a response body. If none does, answer no. If one does, answer yes only when the added lines never mention `signal`, `aborted`, or `reader.cancel`.",
           "criteria": {
-            "true": "while (true) { const { done, value } = await reader.read(); ... }  with no signal check or reader.cancel on abort",
-            "false": "a read loop that checks signal.aborted or cancels the reader from the abort listener"
+            "true": "+ while (true) { const { done, value } = await reader.read(); if (done) break; chunks.push(value); }",
+            "false": "no added line calls reader.read(); or the loop checks signal.aborted / calls reader.cancel()"
           }
         }
       },
-      "status": "weak",
+      "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 6,
-        "median": 0.5434000000000001,
-        "min": 0.5107,
-        "max": 0.5808,
+        "median": 0.7383,
+        "min": 0.6414,
+        "max": 0.7903,
         "fired": 0,
-        "verdict": "weak"
+        "verdict": "decisive"
       }
     },
     {
@@ -960,7 +960,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 8,
         "median": 0.7826,
         "min": 0.6609,
@@ -993,7 +993,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 8,
         "median": 0.7337,
         "min": 0.6332,
@@ -1026,7 +1026,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 8,
         "median": 0.79345,
         "min": 0.5453,
@@ -1126,13 +1126,13 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
-        "hunks": 5,
-        "median": 0.7687,
+        "at": "2026-09-26T15:16:51.223Z",
+        "hunks": 3,
+        "median": 0.7592,
         "min": 0.7575,
-        "max": 0.8204,
-        "fired": 1,
-        "verdict": "decisive"
+        "max": 0.7699,
+        "fired": 0,
+        "verdict": "skipped"
       }
     },
     {
@@ -1150,22 +1150,22 @@
         "type": "model",
         "question": {
           "type": "boolean",
-          "instructions": "Among the added lines, is a server started (startHTTPServer, createServer, .listen(, Bun.serve) with its stop/close call outside any `finally`, afterEach/afterAll, or `using` declaration? Answer no if no added line starts a server.",
+          "instructions": "Is there an added line calling `stopHTTPServer(` or `server.close(` as a plain statement after other awaited test steps, rather than inside `finally {`, `afterEach(`, or `afterAll(`? If no added line stops a server, answer no.",
           "criteria": {
-            "true": "const server = await startHTTPServer(); await faxios.get(url); await stopHTTPServer(server);",
-            "false": "const server = await startHTTPServer(); try { await faxios.get(url); } finally { await stopHTTPServer(server); }"
+            "true": "+ const server = await startHTTPServer(app);\n+ await faxios.get(url);\n+ await stopHTTPServer(server);",
+            "false": "stopHTTPServer(server) or server.close() inside `finally {`, afterEach, or afterAll; or no added line stops a server"
           }
         }
       },
-      "status": "noisy",
+      "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
-        "hunks": 5,
-        "median": 0.8006,
-        "min": 0.7444,
-        "max": 0.8668,
-        "fired": 3,
-        "verdict": "noisy"
+        "at": "2026-09-26T15:16:51.223Z",
+        "hunks": 3,
+        "median": 0.6263,
+        "min": 0.5904,
+        "max": 0.6723,
+        "fired": 0,
+        "verdict": "skipped"
       }
     },
     {
@@ -1205,7 +1205,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 0,
         "median": 0,
         "min": 0,
@@ -1238,7 +1238,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 8,
         "median": 0.78565,
         "min": 0.7383,
@@ -1271,7 +1271,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 8,
         "median": 0.7616499999999999,
         "min": 0.6482,
@@ -1305,20 +1305,20 @@
         "type": "model",
         "question": {
           "type": "boolean",
-          "instructions": "Does the diff change buildURL, XSRF handling (withXSRFToken, isURLSameOrigin, xsrfCookieName), or maxContentLength/maxBodyLength code under packages/lib/src/ while no file under packages/tests/ is in the diff? Answer no if none of that code changed.",
+          "instructions": "Does the diff change packages/lib/src/lib/helpers/buildURL.ts, isURLSameOrigin.ts, or cookies.ts, or change a line mentioning withXSRFToken, maxContentLength, or maxBodyLength, while no file path in the diff starts with packages/tests/? If none of those changed, answer no.",
           "criteria": {
-            "true": "buildURL.ts changes how params are encoded; no test file in the diff",
-            "false": "buildURL.ts changes and packages/tests/unit/helpers/buildURL.test.ts gains a case for it"
+            "true": "buildURL.ts changes param encoding; no path under packages/tests/ in the diff",
+            "false": "no change to buildURL.ts, isURLSameOrigin.ts, cookies.ts, or maxContentLength/maxBodyLength lines; or a packages/tests/ file is also changed"
           }
         }
       },
       "status": "weak",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 8,
-        "median": 0.49735,
-        "min": 0.4911,
-        "max": 0.52,
+        "median": 0.54855,
+        "min": 0.5228,
+        "max": 0.584,
         "fired": 0,
         "verdict": "weak"
       }
@@ -1347,7 +1347,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 6,
         "median": 0.80705,
         "min": 0.7069,
@@ -1416,9 +1416,9 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T14:05:43.348Z",
+        "at": "2026-09-26T15:16:51.223Z",
         "hunks": 8,
-        "median": 0.57985,
+        "median": 0.56675,
         "min": 0.5033,
         "max": 0.7066,
         "fired": 0,
@@ -1487,7 +1487,16 @@
           }
         }
       },
-      "status": "active"
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T15:16:51.223Z",
+        "hunks": 0,
+        "median": 0,
+        "min": 0,
+        "max": 0,
+        "fired": 0,
+        "verdict": "skipped"
+      }
     },
     {
       "id": "use-examples-for-manual-testing",
