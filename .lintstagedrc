@@ -1,6 +1,6 @@
 {
   "./packages/lib/**/*.{js,ts,jsx,tsx}": [
-    "pnpm --filter faxios lint:fix"
+    "pnpm --filter @gcmdev/faxios lint:fix"
   ],
   "./packages/tests/**/*.{js,ts,jsx,tsx}": [
     "pnpm --filter @faxios/tests lint:fix"

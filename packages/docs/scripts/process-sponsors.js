@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import faxios from "faxios";
+import faxios from "@gcmdev/faxios";
 import {
   printSuccessMessage,
   printErrorMessage,

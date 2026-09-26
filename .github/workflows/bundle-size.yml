@@ -33,7 +33,7 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Build project
-        run: pnpm --filter faxios run build
+        run: pnpm --filter @gcmdev/faxios run build
 
       - name: Compare bundle size
         uses: axios/bundle-size@6940d767de28b002599d1ab36cc04748de2c49e7 # 0.2.0

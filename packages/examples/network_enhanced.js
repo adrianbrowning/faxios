@@ -1,4 +1,4 @@
-import faxios from "faxios";
+import faxios from "@gcmdev/faxios";
 
 function enhanceNetworkError(error) {
   // when Offline (no internet)

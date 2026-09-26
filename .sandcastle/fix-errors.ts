@@ -11,9 +11,9 @@ const MAX_LINT_ROUNDS = 100;
 const MAX_BUILD_ROUNDS = 10;
 
 const ImageName = "sandcastle:add_typescript";
-const LintTS = "pnpm --filter faxios lint:ts";
-const LintESFix = "pnpm --filter faxios lint:fix";
-const BuildCmd = "pnpm --filter faxios build";
+const LintTS = "pnpm --filter @gcmdev/faxios lint:ts";
+const LintESFix = "pnpm --filter @gcmdev/faxios lint:fix";
+const BuildCmd = "pnpm --filter @gcmdev/faxios build";
 const getLogName = (_phase: string) => `.sandcastle/logs/fix-errors.log`;
 const getBranchName = (_phase: string) => "fix-errors"; //phase === "ts" ? "ts-fix-errors" : "lint-fix-errors"
 

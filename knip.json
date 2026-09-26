@@ -22,7 +22,8 @@
       "entry": [
         "scripts/**/*.js"
       ],
-      "project": ["**/*.{js,ts,mts,vue}"]
+      "project": ["**/*.{js,ts,mts,vue}"],
+      "ignoreDependencies": ["@splidejs/splide", "esbuild"]
     },
     "packages/examples": {
       "entry": ["**/*.js"],
@@ -39,7 +40,6 @@
   },
   "ignoreBinaries": ["sha256sum"],
   "ignoreDependencies": [
-    "faxios",
     "@vitest/browser",
     "@ai-hero/sandcastle"
   ],

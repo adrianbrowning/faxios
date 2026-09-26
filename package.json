@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm --filter faxios build",
+    "build": "pnpm --filter @gcmdev/faxios build",
     "test": "pnpm --filter @faxios/tests test",
     "test:vitest": "pnpm --filter @faxios/tests test:vitest",
     "test:vitest:unit": "pnpm --filter @faxios/tests test:vitest:unit",
