@@ -69,7 +69,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: faxios-tarball
-          path: packages/lib/faxios-*.tgz
+          path: packages/lib/*faxios-*.tgz
           if-no-files-found: error
           retention-days: 1
 
@@ -107,7 +107,7 @@ jobs:
 
       - name: Install ESM smoke test dependencies
         run: |
-          cp artifacts/faxios-*.tgz "$FAXIOS_TARBALL"
+          cp artifacts/*faxios-*.tgz "$FAXIOS_TARBALL"
           cd packages/tests/smoke/esm
           pnpm install --no-frozen-lockfile --ignore-workspace --ignore-scripts
 
@@ -148,7 +148,7 @@ jobs:
 
       - name: Install ESM module test dependencies
         run: |
-          cp artifacts/faxios-*.tgz "$FAXIOS_TARBALL"
+          cp artifacts/*faxios-*.tgz "$FAXIOS_TARBALL"
           cd packages/tests/module/esm
           pnpm install --no-frozen-lockfile --ignore-workspace --ignore-scripts
 
@@ -182,7 +182,7 @@ jobs:
           BUN_INSTALL_CACHE_DIR: ${{ runner.temp }}/bun-cache
         run: |
           mkdir -p "$BUN_INSTALL_CACHE_DIR"
-          cp artifacts/faxios-*.tgz "$FAXIOS_TARBALL"
+          cp artifacts/*faxios-*.tgz "$FAXIOS_TARBALL"
           cd packages/tests/smoke/bun
           rm -f bun.lock
           bun install
@@ -213,7 +213,7 @@ jobs:
           path: artifacts
 
       - name: Prepare packed faxios dist
-        run: mkdir -p packages/lib/dist && tar -xzf artifacts/faxios-*.tgz -C artifacts && cp -R artifacts/package/dist/. ./packages/lib/dist
+        run: mkdir -p packages/lib/dist && tar -xzf artifacts/*faxios-*.tgz -C artifacts && cp -R artifacts/package/dist/. ./packages/lib/dist
 
       - name: Install Deno smoke test dependencies
         working-directory: packages/tests/smoke/deno

@@ -7,9 +7,12 @@ echo "==> build faxios"
 pnpm --dir ../lib build
 
 echo "==> pack + install into smoke/module suites"
+# The suites pin "faxios": "file:/tmp/faxios-0.0.1.tgz"; stage the fresh
+# tarball there, as CI does with $FAXIOS_TARBALL.
 TARBALL=$(pnpm --dir ../lib pack --pack-destination /tmp 2>/dev/null | tail -1)
-pnpm --dir smoke/esm install "$TARBALL"
-pnpm --dir module/esm install "$TARBALL"
+cp "$TARBALL" /tmp/faxios-0.0.1.tgz
+pnpm --dir smoke/esm install --no-frozen-lockfile --ignore-workspace --ignore-scripts
+pnpm --dir module/esm install --no-frozen-lockfile --ignore-workspace --ignore-scripts
 bun install --cwd smoke/bun
 
 echo "==> unit"
