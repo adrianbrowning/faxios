@@ -1,0 +1,1506 @@
+{
+  "version": 1,
+  "compiledAt": "2026-09-26T12:00:00.000Z",
+  "compiledBy": "claude",
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "sha": "383e6f78b75800fcbe30766c892cdc353d29c1f5d1b8481533d387b093ef8ede",
+      "scope": "**/*"
+    },
+    {
+      "path": "CLAUDE.md",
+      "sha": "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49",
+      "scope": "**/*"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "sha": "09038576f4c6b91778d8d16e0e66e2a5b5925b8076ccb3ec3af5eeb64183cabf",
+      "scope": "**/*"
+    }
+  ],
+  "rules": [
+    {
+      "id": "copilot-instructions-sync",
+      "text": "`.github/copilot-instructions.md` is a thin stub that points back here — keep it in sync with the load-bearing safety rules below if you change them.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 5
+      },
+      "scope": [
+        "AGENTS.md",
+        ".github/copilot-instructions.md"
+      ],
+      "when": "turn",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change edit a safety rule in AGENTS.md (setup safety, error handling, interceptor order, naming, security, pitfalls, pre-release) without making the matching edit in .github/copilot-instructions.md?",
+          "criteria": {
+            "true": "AGENTS.md gains a new security bullet; .github/copilot-instructions.md is untouched",
+            "false": "both files get the same new bullet, or only non-safety prose in AGENTS.md changes"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 0,
+        "median": 0,
+        "min": 0,
+        "max": 0,
+        "fired": 0,
+        "verdict": "skipped"
+      }
+    },
+    {
+      "id": "ai-surfer-marker",
+      "text": "If you are an LLM or AI agent creating a GitHub issue, pull request, or comment for this repo, include the `:surfer:` emoji in the body so maintainers can identify AI-authored contributions.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 9
+      },
+      "check": {
+        "type": "unenforceable",
+        "reason": "about GitHub issues, PRs and comments, not the code diff"
+      },
+      "status": "active"
+    },
+    {
+      "id": "use-npm-ci",
+      "text": "Use `npm ci`; repo `.npmrc` sets `ignore-scripts=true`, and CI also uses `npm ci --ignore-scripts`.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 13
+      },
+      "check": {
+        "type": "unenforceable",
+        "reason": "about the commands the agent runs, not the code"
+      },
+      "status": "active"
+    },
+    {
+      "id": "keep-ignore-scripts",
+      "text": "Do not remove `ignore-scripts=true`; if git hooks are needed after a fresh install, run `npm rebuild husky && npx husky` once.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 14
+      },
+      "scope": [
+        ".npmrc",
+        "**/.npmrc"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change delete the `ignore-scripts=true` line, comment it out, or set `ignore-scripts` to false?",
+          "criteria": {
+            "true": "- ignore-scripts=true",
+            "false": "adding an unrelated registry setting while ignore-scripts=true stays"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 0,
+        "median": 0,
+        "min": 0,
+        "max": 0,
+        "fired": 0,
+        "verdict": "skipped"
+      }
+    },
+    {
+      "id": "husky-rebuild-after-install",
+      "text": "Do not remove `ignore-scripts=true`; if git hooks are needed after a fresh install, run `npm rebuild husky && npx husky` once.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 14
+      },
+      "check": {
+        "type": "unenforceable",
+        "reason": "about setup commands, not the code"
+      },
+      "status": "active"
+    },
+    {
+      "id": "dependency-update-prs-maintainer-only",
+      "text": "Package, lockfile, and GitHub Actions update PRs are maintainer/bot-only; close these PRs from outside collaborators.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 16
+      },
+      "check": {
+        "type": "unenforceable",
+        "reason": "about who opens and closes pull requests, not the code"
+      },
+      "status": "active"
+    },
+    {
+      "id": "keep-dependabot-delay",
+      "text": "Keep the 7-day Dependabot delay unless a critical vulnerability requires a maintainer-led manual update.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 16
+      },
+      "scope": [
+        ".github/dependabot.yml",
+        ".github/dependabot.yaml"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change remove a Dependabot `cooldown` block or lower `default-days` (or any cooldown days) below 7?",
+          "criteria": {
+            "true": "cooldown:\n  default-days: 1",
+            "false": "adding a new ecosystem entry that also has cooldown default-days: 7"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 0,
+        "median": 0,
+        "min": 0,
+        "max": 0,
+        "fired": 0,
+        "verdict": "skipped"
+      }
+    },
+    {
+      "id": "avoid-unneeded-full-builds",
+      "text": "Build/test/lint tools still execute dependency code despite `ignore-scripts`; avoid unnecessary full builds when a focused check proves the change.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 17
+      },
+      "check": {
+        "type": "unenforceable",
+        "reason": "about which commands the agent runs, not the code"
+      },
+      "status": "active"
+    },
+    {
+      "id": "no-new-runtime-deps",
+      "text": "Do not add new runtime dependencies without discussion; the dependency surface is intentionally tiny.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 18
+      },
+      "scope": [
+        "**/package.json"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change add a new package name under `dependencies` or `peerDependencies` (not `devDependencies`) in package.json?",
+          "criteria": {
+            "true": "\"dependencies\": { \"form-data\": \"^4.0.0\" } where form-data was not listed before",
+            "false": "a new entry under devDependencies, or a version bump of an existing dependency"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 1,
+        "median": 0.5765,
+        "min": 0.5765,
+        "max": 0.5765,
+        "fired": 0,
+        "verdict": "skipped"
+      }
+    },
+    {
+      "id": "test-packed-package-for-smoke",
+      "text": "Smoke/module compatibility suites test the packed package, not the source tree: run `npm run build`, `npm pack`, install the tarball into the relevant `tests/smoke/*` or `tests/module/*` package, then run that suite's npm script.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 26
+      },
+      "check": {
+        "type": "unenforceable",
+        "reason": "about how to run test suites, not the code"
+      },
+      "status": "active"
+    },
+    {
+      "id": "no-hand-edit-dist",
+      "text": "Do not edit `dist/` by hand; it is ignored and generated from `lib/` by `zshy`.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 32
+      },
+      "scope": [
+        "**/dist/**"
+      ],
+      "check": {
+        "type": "lint",
+        "how": "path check: reject any write to a file under packages/*/dist/** (file path, not content)"
+      },
+      "status": "active"
+    },
+    {
+      "id": "sync-index-dts",
+      "text": "Keep public runtime exports and `index.d.ts` (ESM types) in sync for API changes.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 34
+      },
+      "check": {
+        "type": "deferred",
+        "reason": "index.d.ts is not in the tree; zshy generates declarations, so checking sync needs the build output"
+      },
+      "status": "active"
+    },
+    {
+      "id": "no-edit-changelog",
+      "text": "Add user-visible unreleased changes to `PRE_RELEASE_CHANGELOG.md`, not `CHANGELOG.md`. `CHANGELOG.md` is release-owned and should only be updated as part of preparing an actual release.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 38
+      },
+      "scope": [
+        "CHANGELOG.md",
+        "**/CHANGELOG.md"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change add or edit a changelog entry in CHANGELOG.md (rather than PRE_RELEASE_CHANGELOG.md)?",
+          "criteria": {
+            "true": "+ - fix: retry on ECONNRESET  (added to CHANGELOG.md)",
+            "false": "the same entry added to PRE_RELEASE_CHANGELOG.md"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 1,
+        "median": 0.699,
+        "min": 0.699,
+        "max": 0.699,
+        "fired": 0,
+        "verdict": "skipped"
+      }
+    },
+    {
+      "id": "pre-release-changelog-entry",
+      "text": "Add user-visible unreleased changes to `PRE_RELEASE_CHANGELOG.md`, not `CHANGELOG.md`.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 38
+      },
+      "when": "turn",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does the diff add a config option, public export, or error code, or change a default, in a file under packages/lib/src/, while PRE_RELEASE_CHANGELOG.md is absent from the diff? Answer no if no file under packages/lib/src/ changed.",
+          "criteria": {
+            "true": "a new config option added in packages/lib/src; PRE_RELEASE_CHANGELOG.md untouched",
+            "false": "an internal refactor or test-only change, or a behavior change with a PRE_RELEASE_CHANGELOG.md entry"
+          }
+        }
+      },
+      "status": "weak",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 8,
+        "median": 0.42710000000000004,
+        "min": 0.3594,
+        "max": 0.6303,
+        "fired": 0,
+        "verdict": "weak"
+      }
+    },
+    {
+      "id": "pre-release-docs-no-brittle-notes",
+      "text": "Track deferred README, docs site, examples, migration guide, and translated docs updates in `PRE_RELEASE_DOCS.md`. Use enough context for release preparation; do not store brittle diffs or line-number-only notes.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 39
+      },
+      "scope": [
+        "PRE_RELEASE_DOCS.md"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Among the added lines, is there a raw diff hunk (+/- lines, @@ markers) or a note that only points at a line number (\"README.md:142 change this\") instead of saying what the docs must say?",
+          "criteria": {
+            "true": "- README.md line 212: update",
+            "false": "- README: document the new `retry.maxDelay` option, default 30s, and that it caps exponential backoff"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 1,
+        "median": 0.5129,
+        "min": 0.5129,
+        "max": 0.5129,
+        "fired": 0,
+        "verdict": "skipped"
+      }
+    },
+    {
+      "id": "no-readme-for-unreleased",
+      "text": "Do not update `README.md` or the docs site for unreleased runtime/API changes unless the task is explicitly release preparation. During feature/fix work, record what docs need to say in `PRE_RELEASE_DOCS.md` so it can be applied during release work.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 40
+      },
+      "scope": [
+        "packages/lib/README.md",
+        "README.md"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change add or rewrite README documentation of runtime or API behavior (options, methods, defaults, error codes, examples of usage)?",
+          "criteria": {
+            "true": "a new README section documenting a `retry` config option",
+            "false": "fixing a typo, a broken link, or a badge"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 1,
+        "median": 0.5319,
+        "min": 0.5319,
+        "max": 0.5319,
+        "fired": 0,
+        "verdict": "skipped"
+      }
+    },
+    {
+      "id": "no-adapter-selection",
+      "text": "`lib/adapters/` performs I/O; the web-standard `fetch` adapter (`lib/adapters/fetch.ts`) is the only transport — it is called unconditionally from `dispatchRequest.ts`. Custom user-supplied adapters are not supported; `config.adapter` is not a valid config field.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 45
+      },
+      "scope": [
+        "packages/lib/src/lib/core/**",
+        "packages/lib/src/lib/adapters/**",
+        "packages/lib/src/lib/defaults/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Among the added lines, is the word `adapter` used as a config field (`config.adapter`, `adapter:` in a config or type) or is there a branch that picks between transports? Answer no if no added line mentions `adapter`.",
+          "criteria": {
+            "true": "const adapter = config.adapter ?? getFetch(config);",
+            "false": "const response = await getFetch(config)(request);"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 6,
+        "median": 0.6691,
+        "min": 0.5965,
+        "max": 0.7054,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "helpers-stay-generic",
+      "text": "`lib/helpers/` should stay generic and reusable outside faxios; do not put faxios-specific request lifecycle logic there.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 47
+      },
+      "scope": [
+        "packages/lib/src/lib/helpers/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change add request lifecycle logic to a helper: running interceptors, calling dispatchRequest or the fetch adapter, applying transformRequest/transformResponse, or deciding how a faxios request is sent or settled?",
+          "criteria": {
+            "true": "a helper that loops over config.interceptors and calls dispatchRequest",
+            "false": "a pure function that joins URL segments or checks a value's type"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 1,
+        "median": 0.4756,
+        "min": 0.4756,
+        "max": 0.4756,
+        "fired": 0,
+        "verdict": "skipped"
+      }
+    },
+    {
+      "id": "explicit-js-import-extensions",
+      "text": "New `lib/**/*.js` files should match existing source style: ESM imports with explicit `.js` extensions, `'use strict';` where current library files use it, and `FaxiosError` for faxios-originated failures.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 48
+      },
+      "scope": [
+        "packages/lib/src/**/*.ts",
+        "packages/lib/src/**/*.js"
+      ],
+      "check": {
+        "type": "lint",
+        "how": "node/file-extension-in-import (\"always\")",
+        "pattern": "^\\s*(import|export)\\b[^'\"]*from\\s+['\"]\\.{1,2}/[^'\"]*(?<!\\.js)['\"]",
+        "overlaps": "node/file-extension-in-import"
+      },
+      "status": "active"
+    },
+    {
+      "id": "new-lib-files-use-faxios-error",
+      "text": "New `lib/**/*.js` files should match existing source style: ESM imports with explicit `.js` extensions, `'use strict';` where current library files use it, and `FaxiosError` for faxios-originated failures.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 48
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "check": {
+        "type": "lint",
+        "how": "no-restricted-syntax on ThrowStatement > NewExpression[callee.name=/^(Type|Range|Syntax)?Error$/] (same check as no-raw-error-throw)",
+        "pattern": "\\bthrow\\s+(new\\s+)?(Type|Range|Syntax)?Error\\s*\\("
+      },
+      "status": "active"
+    },
+    {
+      "id": "use-strict-where-existing",
+      "text": "New `lib/**/*.js` files should match existing source style: ESM imports with explicit `.js` extensions, `'use strict';` where current library files use it, and `FaxiosError` for faxios-originated failures.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 48
+      },
+      "check": {
+        "type": "deferred",
+        "reason": "needs to know which neighbouring library files already use 'use strict'"
+      },
+      "status": "active"
+    },
+    {
+      "id": "class-pascal-case",
+      "text": "Classes: PascalCase (`faxios`, `FaxiosError`, `InterceptorManager`).",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 52
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "check": {
+        "type": "lint",
+        "how": "@typescript-eslint/naming-convention with selector class, format PascalCase (allow the `faxios` exception)"
+      },
+      "status": "active"
+    },
+    {
+      "id": "function-camel-case",
+      "text": "Functions: camelCase (`buildURL`, `mergeConfig`, `dispatchRequest`).",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 53
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "check": {
+        "type": "lint",
+        "how": "@typescript-eslint/naming-convention with selector function, format camelCase"
+      },
+      "status": "active"
+    },
+    {
+      "id": "error-code-upper-snake",
+      "text": "Error codes: UPPER_SNAKE_CASE constants on `FaxiosError` (`ERR_NETWORK`, `ETIMEDOUT`).",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 54
+      },
+      "scope": [
+        "packages/lib/src/lib/core/FaxiosError.ts"
+      ],
+      "check": {
+        "type": "lint",
+        "how": "@typescript-eslint/naming-convention with selector classProperty, modifiers static readonly, format UPPER_CASE"
+      },
+      "status": "active"
+    },
+    {
+      "id": "no-underscore-private",
+      "text": "Internal class slots: use `#` private field syntax in TypeScript class files (e.g. `#handlers`, `#idCounter` in `InterceptorManager`); use `Symbol`-keyed slots (e.g. `const $internals = Symbol('internals')`) in plain `.js` files where `#` syntax is unavailable. Never use underscore-prefixed properties for either.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 55
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "check": {
+        "type": "lint",
+        "how": "no-underscore-dangle (allowAfterThis: false) or no-restricted-syntax on PropertyDefinition[key.name=/^_/]",
+        "pattern": "(this\\.|^\\s*(private\\s+|protected\\s+|static\\s+)*)_[A-Za-z]\\w*\\s*[=:;(]"
+      },
+      "status": "active"
+    },
+    {
+      "id": "ts-hash-private-fields",
+      "text": "Internal class slots: use `#` private field syntax in TypeScript class files (e.g. `#handlers`, `#idCounter` in `InterceptorManager`); use `Symbol`-keyed slots (e.g. `const $internals = Symbol('internals')`) in plain `.js` files where `#` syntax is unavailable. Never use underscore-prefixed properties for either.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 55
+      },
+      "scope": [
+        "packages/lib/src/**/*.ts"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change add internal class state in a TypeScript class using the `private` keyword, a Symbol-keyed property, or an underscore-prefixed name instead of a `#` private field?",
+          "criteria": {
+            "true": "private handlers = [];  or  this[$internals] = {}",
+            "false": "#handlers = [];"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 8,
+        "median": 0.71875,
+        "min": 0.5732,
+        "max": 0.7458,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "js-symbol-slots",
+      "text": "Internal class slots: use `#` private field syntax in TypeScript class files (e.g. `#handlers`, `#idCounter` in `InterceptorManager`); use `Symbol`-keyed slots (e.g. `const $internals = Symbol('internals')`) in plain `.js` files where `#` syntax is unavailable. Never use underscore-prefixed properties for either.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 55
+      },
+      "scope": [
+        "packages/lib/src/**/*.js"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change store internal class state in a plain .js file as an ordinary string-named property (this.handlers, this._state) instead of a Symbol-keyed slot?",
+          "criteria": {
+            "true": "this._handlers = [];",
+            "false": "const $internals = Symbol('internals'); this[$internals] = { handlers: [] };"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 0,
+        "median": 0,
+        "min": 0,
+        "max": 0,
+        "fired": 0,
+        "verdict": "skipped"
+      }
+    },
+    {
+      "id": "no-raw-error-throw",
+      "text": "Throw `FaxiosError` for faxios-originated failures; never raw `Error`. Pass `(message, code, config, request, response)` so consumers can introspect.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 59
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "check": {
+        "type": "lint",
+        "how": "no-restricted-syntax on ThrowStatement > NewExpression[callee.name=/^(Type|Range|Syntax)?Error$/]",
+        "pattern": "\\bthrow\\s+(new\\s+)?(Type|Range|Syntax)?Error\\s*\\("
+      },
+      "status": "active"
+    },
+    {
+      "id": "faxios-error-full-args",
+      "text": "Throw `FaxiosError` for faxios-originated failures; never raw `Error`. Pass `(message, code, config, request, response)` so consumers can introspect.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 59
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Among the added lines, is there `new FaxiosError(` called with only a message and no code argument? Answer no if no added line constructs a FaxiosError.",
+          "criteria": {
+            "true": "throw new FaxiosError('Request timed out');",
+            "false": "throw new FaxiosError('Request timed out', FaxiosError.ETIMEDOUT, config, request);"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 8,
+        "median": 0.68275,
+        "min": 0.5707,
+        "max": 0.7637,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "wrap-third-party-errors",
+      "text": "Wrap third-party errors with `FaxiosError.from(error, code, config, request, response)`.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 60
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change catch an error from fetch, a stream, JSON.parse or another third-party call and rethrow or reject with it unwrapped, instead of `FaxiosError.from(err, code, config, request, response)`?",
+          "criteria": {
+            "true": "catch (err) { throw err; }  or  .catch(err => reject(err))",
+            "false": "catch (err) { throw FaxiosError.from(err, FaxiosError.ERR_NETWORK, config, request); }"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 8,
+        "median": 0.66605,
+        "min": 0.5985,
+        "max": 0.7278,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "use-canonical-error-codes",
+      "text": "Canonical code list lives in `packages/lib/src/lib/core/FaxiosError.ts`.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 61
+      },
+      "check": {
+        "type": "deferred",
+        "reason": "needs the current code list in FaxiosError.ts to tell a reused code from an invented one"
+      },
+      "status": "active"
+    },
+    {
+      "id": "use-validator-helper",
+      "text": "Validate config options through the `validator` helper; do not invent ad-hoc validation paths.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 62
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Among the added lines, is there a throw or FaxiosError with code ERR_BAD_OPTION or ERR_BAD_OPTION_VALUE written outside the `validator` helper? Answer no if no added line throws for a bad option.",
+          "criteria": {
+            "true": "if (typeof config.timeout !== 'number') throw new FaxiosError('timeout must be a number', FaxiosError.ERR_BAD_OPTION_VALUE);",
+            "false": "validator.assertOptions(config, { timeout: validators.number });"
+          }
+        }
+      },
+      "status": "noisy",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 8,
+        "median": 0.9084,
+        "min": 0.8832,
+        "max": 0.9346,
+        "fired": 8,
+        "verdict": "noisy"
+      }
+    },
+    {
+      "id": "request-interceptors-lifo",
+      "text": "Request interceptors run **last-registered-first** (LIFO).",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 66
+      },
+      "scope": [
+        "packages/lib/src/lib/core/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change alter how request interceptors are collected or iterated so the last-registered one no longer runs first (e.g. push instead of unshift into the request chain, or reversing the loop)?",
+          "criteria": {
+            "true": "requestInterceptorChain.push(interceptor.fulfilled, interceptor.rejected);",
+            "false": "requestInterceptorChain.unshift(interceptor.fulfilled, interceptor.rejected);"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 6,
+        "median": 0.77725,
+        "min": 0.7014,
+        "max": 0.849,
+        "fired": 1,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "response-interceptors-fifo",
+      "text": "Response interceptors run **first-registered-first** (FIFO).",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 67
+      },
+      "scope": [
+        "packages/lib/src/lib/core/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change alter how response interceptors are collected or iterated so the first-registered one no longer runs first (e.g. unshift instead of push into the response chain, or reversing the loop)?",
+          "criteria": {
+            "true": "responseInterceptorChain.unshift(interceptor.fulfilled, interceptor.rejected);",
+            "false": "responseInterceptorChain.push(interceptor.fulfilled, interceptor.rejected);"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 6,
+        "median": 0.7401500000000001,
+        "min": 0.6447,
+        "max": 0.8106,
+        "fired": 1,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "document-builtin-interceptor-order",
+      "text": "Order matters for both behavior and tests; document it when adding new built-in interceptors.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 69
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Among the added lines, is there a call to `interceptors.request.use(` or `interceptors.response.use(` with no comment beside it stating where it runs in the execution order? Answer no if no added line calls interceptors.*.use(.",
+          "criteria": {
+            "true": "faxios constructor gains this.interceptors.request.use(addXsrf) with no comment or doc on its position",
+            "false": "no new built-in interceptor, or one added with a note that it runs first because it is registered last"
+          }
+        }
+      },
+      "status": "weak",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 8,
+        "median": 0.51515,
+        "min": 0.4937,
+        "max": 0.5255,
+        "fired": 0,
+        "verdict": "weak"
+      }
+    },
+    {
+      "id": "abort-signal-only",
+      "text": "Only `AbortSignal` is supported for cancellation; pass it via `config.signal`.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 85
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Among the added lines, is there a `cancelToken`, `CancelToken`, `onCancel`, or another cancellation option besides `signal`? Answer no if no added line adds any of these.",
+          "criteria": {
+            "true": "if (config.cancelToken) config.cancelToken.promise.then(abort);",
+            "false": "config.signal?.addEventListener('abort', onAbort);"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 8,
+        "median": 0.7066,
+        "min": 0.6295,
+        "max": 0.7397,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "cancel-mid-flight",
+      "text": "Cancellation must work at any lifecycle stage, including mid-flight body reads.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 86
+      },
+      "scope": [
+        "packages/lib/src/lib/adapters/**",
+        "packages/lib/src/lib/core/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Among the added lines, is there a loop over `reader.read()` or `for await` over a response body that never references `signal` or `aborted` and never calls `reader.cancel`? Answer no if no added line reads a body stream.",
+          "criteria": {
+            "true": "while (true) { const { done, value } = await reader.read(); ... }  with no signal check or reader.cancel on abort",
+            "false": "a read loop that checks signal.aborted or cancels the reader from the abort listener"
+          }
+        }
+      },
+      "status": "weak",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 6,
+        "median": 0.5434000000000001,
+        "min": 0.5107,
+        "max": 0.5808,
+        "fired": 0,
+        "verdict": "weak"
+      }
+    },
+    {
+      "id": "remove-signal-listeners",
+      "text": "Always remove signal listeners on settlement or cancellation to prevent memory leaks.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 87
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Among the added lines, is there `addEventListener('abort'` with no matching `removeEventListener('abort'` in the added lines? Answer no if no added line calls addEventListener.",
+          "criteria": {
+            "true": "signal.addEventListener('abort', onAbort); return fetch(req);",
+            "false": "signal.addEventListener('abort', onAbort); try { return await fetch(req); } finally { signal.removeEventListener('abort', onAbort); }"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 8,
+        "median": 0.7826,
+        "min": 0.6609,
+        "max": 0.8767,
+        "fired": 3,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "no-config-mutation",
+      "text": "Do not mutate config objects in-place; return new objects from merges/transforms.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 91
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Among the added lines, is there an assignment whose left side starts with `config.` (config.x = ..., config.x.y = ...), a `delete config.`, or `Object.assign(config,`? Answer no if no added line does any of these.",
+          "criteria": {
+            "true": "config.headers = normalize(config.headers); return config;",
+            "false": "return { ...config, headers: normalize(config.headers) };"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 8,
+        "median": 0.7337,
+        "min": 0.6332,
+        "max": 0.8194,
+        "fired": 2,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "capability-check-globals",
+      "text": "Do not assume browser- or Node-specific globals exist; capability-check first.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 92
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change use a browser- or Node-only global (window, document, navigator, XMLHttpRequest, process, Buffer, require, __dirname) without a `typeof` or similar existence check guarding it?",
+          "criteria": {
+            "true": "const origin = window.location.origin;",
+            "false": "const origin = typeof window !== 'undefined' ? window.location.origin : undefined;"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 8,
+        "median": 0.79345,
+        "min": 0.5453,
+        "max": 0.8434,
+        "fired": 3,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "native-bind",
+      "text": "Use native `Function.prototype.bind` — `lib/helpers/bind.js` has been deleted.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 93
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "check": {
+        "type": "lint",
+        "how": "no-restricted-imports with a pattern for **/helpers/bind",
+        "pattern": "from\\s+['\"][^'\"]*helpers/bind(\\.js|\\.ts)?['\"]"
+      },
+      "status": "active"
+    },
+    {
+      "id": "ts-private-fields-pitfall",
+      "text": "Use `#` syntax for private fields in TypeScript class files (e.g. `#handlers`, `#idCounter`), not underscore prefixes or Symbol keys.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 94
+      },
+      "scope": [
+        "packages/lib/src/**/*.ts"
+      ],
+      "check": {
+        "type": "lint",
+        "how": "no-restricted-syntax on TSPrivateKeyword-accessibility PropertyDefinition[accessibility='private'] and PropertyDefinition[computed=true]; no-underscore-dangle",
+        "pattern": "^\\s*(private|protected)\\s+[A-Za-z_$]|^\\s*\\[\\$?[A-Za-z_]\\w*\\]\\s*[:=]|this\\._[A-Za-z]"
+      },
+      "status": "active"
+    },
+    {
+      "id": "no-raw-error-pitfall",
+      "text": "Do not throw raw `Error` from library code; use `FaxiosError` with an appropriate code (see Error Handling).",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 95
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "check": {
+        "type": "lint",
+        "how": "no-restricted-syntax on ThrowStatement > NewExpression[callee.name=/^(Type|Range|Syntax)?Error$/] (same check as no-raw-error-throw)",
+        "pattern": "\\bthrow\\s+(new\\s+)?(Type|Range|Syntax)?Error\\s*\\("
+      },
+      "status": "active"
+    },
+    {
+      "id": "test-file-layout",
+      "text": "Test layout is runtime-first: `tests/unit/**/*.test.js`, `tests/browser/**/*.browser.test.js`, `tests/smoke/esm/**/*.smoke.test.js`.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 99
+      },
+      "scope": [
+        "packages/tests/**"
+      ],
+      "check": {
+        "type": "lint",
+        "how": "file path check (e.g. check-file/folder-match-with-fex): *.test.* files live under unit/, *.browser.test.* under browser/, *.smoke.test.* under smoke/<runtime>/"
+      },
+      "status": "active"
+    },
+    {
+      "id": "use-test-server-helper",
+      "text": "Use `tests/setup/server.js` for local HTTP servers and cleanup with `try/finally`; leaking servers causes Vitest hangs.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 100
+      },
+      "scope": [
+        "packages/tests/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Among the added lines, is there a direct call to `http.createServer`, `https.createServer`, `Bun.serve`, or `Deno.serve`? Answer no if no added line calls one of these.",
+          "criteria": {
+            "true": "const server = http.createServer(handler).listen(0);",
+            "false": "const server = await startHTTPServer(handler);  imported from '../setup/server.js'"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 5,
+        "median": 0.7687,
+        "min": 0.7575,
+        "max": 0.8204,
+        "fired": 1,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "test-server-cleanup",
+      "text": "Use `tests/setup/server.js` for local HTTP servers and cleanup with `try/finally`; leaking servers causes Vitest hangs.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 100
+      },
+      "scope": [
+        "packages/tests/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Among the added lines, is a server started (startHTTPServer, createServer, .listen(, Bun.serve) with its stop/close call outside any `finally`, afterEach/afterAll, or `using` declaration? Answer no if no added line starts a server.",
+          "criteria": {
+            "true": "const server = await startHTTPServer(); await faxios.get(url); await stopHTTPServer(server);",
+            "false": "const server = await startHTTPServer(); try { await faxios.get(url); } finally { await stopHTTPServer(server); }"
+          }
+        }
+      },
+      "status": "noisy",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 5,
+        "median": 0.8006,
+        "min": 0.7444,
+        "max": 0.8668,
+        "fired": 3,
+        "verdict": "noisy"
+      }
+    },
+    {
+      "id": "run-module-suite-for-declarations",
+      "text": "Type compatibility is exercised through `tests/module/esm` with TypeScript 5.x; run the module suite for declaration changes.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 101
+      },
+      "check": {
+        "type": "unenforceable",
+        "reason": "about which tests the agent runs, not the code"
+      },
+      "status": "active"
+    },
+    {
+      "id": "restore-fetch-mocks",
+      "text": "Browser tests mock `globalThis.fetch`; restore globals and reset spies in cleanup hooks.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 102
+      },
+      "scope": [
+        "packages/tests/browser/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change replace `globalThis.fetch` or another global, or create a spy, without restoring it in an afterEach/afterAll hook or `finally` block?",
+          "criteria": {
+            "true": "globalThis.fetch = vi.fn(async () => new Response('ok'));  with no restore",
+            "false": "const original = globalThis.fetch; afterEach(() => { globalThis.fetch = original; vi.restoreAllMocks(); });"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 0,
+        "median": 0,
+        "min": 0,
+        "max": 0,
+        "fired": 0,
+        "verdict": "skipped"
+      }
+    },
+    {
+      "id": "own-property-config-reads",
+      "text": "For config reads that affect behavior, do not use prototype-walking reads (`in`, destructuring, or direct `config.foo` on untrusted config); guard with own-property checks as in `utils.hasOwnProp` / local `own()` helpers.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 106
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change add a behavior-affecting read of a user config field using `'x' in config`, destructuring (`const { x } = config`), or a bare `config.x`, instead of an own-property check such as utils.hasOwnProp or own()?",
+          "criteria": {
+            "true": "const { withXSRFToken } = config;  or  if ('proxy' in config)",
+            "false": "const withXSRFToken = own(config, 'withXSRFToken');"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 8,
+        "median": 0.78565,
+        "min": 0.7383,
+        "max": 0.8356,
+        "fired": 3,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "filter-proto-keys",
+      "text": "New merge or object materialization code must continue filtering `__proto__`, `constructor`, and `prototype`; regressions here are security bugs.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 107
+      },
+      "scope": [
+        "packages/lib/src/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change add code that copies arbitrary keys into an object (for...in, Object.keys/entries loop, recursive merge, path-to-object builder) without skipping `__proto__`, `constructor`, and `prototype`?",
+          "criteria": {
+            "true": "for (const key of Object.keys(src)) target[key] = src[key];",
+            "false": "for (const key of Object.keys(src)) { if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue; target[key] = src[key]; }"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 8,
+        "median": 0.7616499999999999,
+        "min": 0.6482,
+        "max": 0.9009,
+        "fired": 3,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "consult-threatmodel",
+      "text": "Changes touching URL construction (CRLF/header injection), XSRF, or the `maxContentLength` / `maxBodyLength` size guards (now enforced in `lib/adapters/fetch.ts`) should consult `THREATMODEL.md` and add focused regression tests.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 108
+      },
+      "check": {
+        "type": "unenforceable",
+        "reason": "about what the agent reads before changing code"
+      },
+      "status": "active"
+    },
+    {
+      "id": "security-change-regression-tests",
+      "text": "Changes touching URL construction (CRLF/header injection), XSRF, or the `maxContentLength` / `maxBodyLength` size guards (now enforced in `lib/adapters/fetch.ts`) should consult `THREATMODEL.md` and add focused regression tests.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 108
+      },
+      "when": "turn",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does the diff change buildURL, XSRF handling (withXSRFToken, isURLSameOrigin, xsrfCookieName), or maxContentLength/maxBodyLength code under packages/lib/src/ while no file under packages/tests/ is in the diff? Answer no if none of that code changed.",
+          "criteria": {
+            "true": "buildURL.ts changes how params are encoded; no test file in the diff",
+            "false": "buildURL.ts changes and packages/tests/unit/helpers/buildURL.test.ts gains a case for it"
+          }
+        }
+      },
+      "status": "weak",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 8,
+        "median": 0.49735,
+        "min": 0.4911,
+        "max": 0.52,
+        "fired": 0,
+        "verdict": "weak"
+      }
+    },
+    {
+      "id": "xsrf-only-strict-true",
+      "text": "Keep `withXSRFToken` cross-origin behavior explicit: only `true` forces cross-origin XSRF header attachment.",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 109
+      },
+      "scope": [
+        "packages/lib/src/lib/core/**"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Among the added lines, is `withXSRFToken` tested for truthiness (`if (withXSRFToken`, `withXSRFToken ||`, `!!withXSRFToken`) instead of compared with `=== true`? Answer no if no added line mentions withXSRFToken.",
+          "criteria": {
+            "true": "if (withXSRFToken || isURLSameOrigin(url)) headers.set(xsrfHeaderName, token);",
+            "false": "if (withXSRFToken === true || (withXSRFToken !== false && isURLSameOrigin(url))) headers.set(xsrfHeaderName, token);"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 6,
+        "median": 0.80705,
+        "min": 0.7069,
+        "max": 0.8684,
+        "fired": 3,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "ai-surfer-marker-comment",
+      "text": "If you are an LLM please include the :surfer: emoji in comments, pull requests or issues you create",
+      "source": {
+        "path": "AGENTS.md",
+        "line": 111
+      },
+      "check": {
+        "type": "unenforceable",
+        "reason": "about GitHub issues, PRs and comments, not the code diff"
+      },
+      "status": "active"
+    },
+    {
+      "id": "node-style-guide",
+      "text": "Follow the [node style guide](https://github.com/felixge/node-style-guide).",
+      "source": {
+        "path": "CONTRIBUTING.md",
+        "line": 7
+      },
+      "check": {
+        "type": "lint",
+        "how": "the repo ESLint config (@gingacodemonkey/config/eslint) and formatter cover the lint-able parts of the node style guide"
+      },
+      "status": "active"
+    },
+    {
+      "id": "conventional-commits",
+      "text": "Follow [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/).",
+      "source": {
+        "path": "CONTRIBUTING.md",
+        "line": 11
+      },
+      "check": {
+        "type": "lint",
+        "how": "commitlint with @commitlint/config-conventional on the commit message, not the diff"
+      },
+      "status": "active"
+    },
+    {
+      "id": "update-tests-with-changes",
+      "text": "Update tests for your changes.",
+      "source": {
+        "path": "CONTRIBUTING.md",
+        "line": 15
+      },
+      "when": "turn",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does the diff change executable code (not only comments or types) in a file under packages/lib/src/ while no file under packages/tests/ is in the diff? Answer no if no file under packages/lib/src/ changed.",
+          "criteria": {
+            "true": "mergeConfig.ts changes how headers merge; no test file in the diff",
+            "false": "a behavior change with a matching test, or a comment/type-only edit"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-26T14:05:43.348Z",
+        "hunks": 8,
+        "median": 0.57985,
+        "min": 0.5033,
+        "max": 0.7066,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "pass-github-actions",
+      "text": "Pull requests must pass GitHub Actions.",
+      "source": {
+        "path": "CONTRIBUTING.md",
+        "line": 15
+      },
+      "check": {
+        "type": "unenforceable",
+        "reason": "about CI results, not a diff"
+      },
+      "status": "active"
+    },
+    {
+      "id": "update-docs-on-api-change",
+      "text": "Update the [documentation](https://faxios-http.com/docs/intro) when the API changes, so the API and docs stay in sync.",
+      "source": {
+        "path": "CONTRIBUTING.md",
+        "line": 19
+      },
+      "check": {
+        "type": "unenforceable",
+        "reason": "the docs site lives outside this repo, and AGENTS.md:40 defers docs to PRE_RELEASE_DOCS.md during unreleased work"
+      },
+      "status": "active"
+    },
+    {
+      "id": "no-dependency-only-prs",
+      "text": "Please do not open pull requests that only update npm packages, lockfiles, or GitHub Actions versions.",
+      "source": {
+        "path": "CONTRIBUTING.md",
+        "line": 23
+      },
+      "check": {
+        "type": "unenforceable",
+        "reason": "about which pull requests get opened, not the code"
+      },
+      "status": "active"
+    },
+    {
+      "id": "keep-dependabot-delay-contributing",
+      "text": "We keep the 7-day Dependabot delay for these updates unless a critical vulnerability requires a maintainer-led manual update.",
+      "source": {
+        "path": "CONTRIBUTING.md",
+        "line": 25
+      },
+      "scope": [
+        ".github/dependabot.yml",
+        ".github/dependabot.yaml"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change remove a Dependabot `cooldown` block or lower `default-days` (or any cooldown days) below 7?",
+          "criteria": {
+            "true": "cooldown:\n  default-days: 1",
+            "false": "adding a new ecosystem entry that also has cooldown default-days: 7"
+          }
+        }
+      },
+      "status": "active"
+    },
+    {
+      "id": "use-examples-for-manual-testing",
+      "text": "Use the examples for manual testing.",
+      "source": {
+        "path": "CONTRIBUTING.md",
+        "line": 35
+      },
+      "check": {
+        "type": "unenforceable",
+        "reason": "about how to test manually, not the code"
+      },
+      "status": "active"
+    }
+  ]
+}
