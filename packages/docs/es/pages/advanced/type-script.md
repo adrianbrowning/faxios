@@ -1,15 +1,14 @@
 # TypeScript
 
-`faxios` incluye definiciones de TypeScript en el paquete npm a través de `index.d.ts` (ESM) e `index.d.cts` (CJS), por lo que la verificación de tipos y el soporte del editor funcionan de manera nativa para ambos formatos de módulo.
+`faxios` incluye definiciones de TypeScript en el paquete npm a través de `index.d.ts`, por lo que la verificación de tipos y el soporte del editor funcionan de manera nativa.
 
 ## Consideraciones sobre la resolución de módulos
 
-Dado que faxios publica de forma dual con una exportación por defecto ESM y un `module.exports` CJS, hay algunas consideraciones de configuración:
+Dado que faxios se publica solo como ESM, hay algunas consideraciones de configuración:
 
 - La configuración recomendada es `"moduleResolution": "node16"` (implícita en `"module": "node16"`). Esto requiere TypeScript 4.7 o superior.
 - Si usas ESM, tu configuración debería estar bien.
-- Si compilas TypeScript a CJS y no puedes usar `"moduleResolution": "node16"`, debes habilitar `esModuleInterop`.
-- Si usas TypeScript para verificar tipos en código JavaScript CJS, tu única opción es `"moduleResolution": "node16"`.
+- No hay compilación CJS ni `index.d.cts`. `require('faxios')` solo funciona mediante la interoperabilidad ESM de Node.
 
 ## Type guards para errores de faxios
 

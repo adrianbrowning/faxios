@@ -1,15 +1,14 @@
 # TypeScript
 
-`faxios` 在 npm 包中通过 `index.d.ts`（ESM）和 `index.d.cts`（CJS）随包提供 TypeScript 类型定义，因此两种模块格式下的类型检查与编辑器支持都开箱即用。
+`faxios` 在 npm 包中通过 `index.d.ts` 随包提供 TypeScript 类型定义，因此类型检查与编辑器支持开箱即用。
 
 ## 模块解析注意事项
 
-由于 faxios 同时以 ESM 默认导出和 CJS `module.exports` 两种方式发布，存在以下配置注意事项：
+由于 faxios 仅以 ESM 形式发布，存在以下配置注意事项：
 
 - 推荐使用 `"moduleResolution": "node16"`（由 `"module": "node16"` 隐式指定），需要 TypeScript 4.7 或更高版本。
 - 如果你使用 ESM，现有配置应该没有问题。
-- 如果你将 TypeScript 编译为 CJS 且无法使用 `"moduleResolution": "node16"`，则必须启用 `esModuleInterop`。
-- 如果你使用 TypeScript 对 CJS JavaScript 代码进行类型检查，则只能使用 `"moduleResolution": "node16"`。
+- 不提供 CJS 构建，也没有 `index.d.cts`。`require('faxios')` 仅能通过 Node 的 ESM 互操作使用。
 
 ## faxios 错误的类型守卫
 

@@ -132,8 +132,7 @@ try {
 
 ## TypeScript 配置说明
 
-由于 faxios 同时发布了 ESM 和 CJS 版本，根据你的配置不同，可能存在以下注意事项：
+由于 faxios 仅以 ESM 形式发布，根据你的配置不同，可能存在以下注意事项：
 
 - 推荐设置为 `"moduleResolution": "node16"`（由 `"module": "node16"` 隐式指定），需要 TypeScript 4.7 或更高版本。
-- 如果你将 TypeScript 编译为 CJS 且无法使用 `"moduleResolution": "node16"`，请启用 `"esModuleInterop": true`。
-- 如果你使用 TypeScript 对 CJS JavaScript 代码进行类型检查，则只能使用 `"moduleResolution": "node16"`。
+- 不提供 CJS 构建，也没有 `index.d.cts`。`require('faxios')` 仅能通过 Node 的 ESM 互操作使用。

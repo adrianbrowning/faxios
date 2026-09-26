@@ -132,8 +132,7 @@ try {
 
 ## Notes sur la configuration TypeScript
 
-Comme faxios publie à la fois des versions ESM et CJS, il existe quelques nuances selon votre configuration :
+Comme faxios est publié uniquement en ESM, il existe quelques nuances selon votre configuration :
 
 - Le paramètre recommandé est `"moduleResolution": "node16"` (impliqué par `"module": "node16"`). Cela nécessite TypeScript 4.7 ou supérieur.
-- Si vous compilez TypeScript vers CJS et ne pouvez pas utiliser `"moduleResolution": "node16"`, activez `"esModuleInterop": true`.
-- Si vous utilisez TypeScript pour vérifier les types de code JavaScript CJS, votre seule option est `"moduleResolution": "node16"`.
+- Il n'y a ni build CJS ni `index.d.cts`. `require('faxios')` ne fonctionne que via l'interopérabilité ESM de Node.
