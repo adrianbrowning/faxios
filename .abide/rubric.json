@@ -45,7 +45,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 0,
         "median": 0,
         "min": 0,
@@ -105,7 +105,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 0,
         "median": 0,
         "min": 0,
@@ -165,7 +165,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 0,
         "median": 0,
         "min": 0,
@@ -211,7 +211,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 1,
         "median": 0.5765,
         "min": 0.5765,
@@ -287,7 +287,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 1,
         "median": 0.699,
         "min": 0.699,
@@ -308,22 +308,22 @@
         "type": "model",
         "question": {
           "type": "boolean",
-          "instructions": "Does the diff add an export to packages/lib/src/index.ts, a public type to index.d.ts, or a `static readonly ERR_` code to FaxiosError.ts, while no hunk touches PRE_RELEASE_CHANGELOG.md? If none of those three files gained lines, answer no.",
+          "instructions": "Does the diff change packages/lib/src/lib/types.ts or packages/lib/src/index.ts without adding any line to PRE_RELEASE_CHANGELOG.md?",
           "criteria": {
-            "true": "index.ts gains `export { newHelper }` or FaxiosError.ts gains `static readonly ERR_FOO`; PRE_RELEASE_CHANGELOG.md not in the diff",
-            "false": "only tests or internal refactors changed, or PRE_RELEASE_CHANGELOG.md has an added line"
+            "true": "types.ts: `encode?: ParamEncoder` signature changes; PRE_RELEASE_CHANGELOG.md absent from the diff",
+            "false": "only tests, docs or helpers changed; or PRE_RELEASE_CHANGELOG.md gains a line"
           }
         }
       },
-      "status": "weak",
+      "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 8,
-        "median": 0.5883499999999999,
-        "min": 0.5327,
-        "max": 0.6577,
+        "median": 0.55925,
+        "min": 0.5127,
+        "max": 0.7008,
         "fired": 0,
-        "verdict": "weak"
+        "verdict": "decisive"
       }
     },
     {
@@ -350,7 +350,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 1,
         "median": 0.5129,
         "min": 0.5129,
@@ -384,7 +384,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 1,
         "median": 0.5319,
         "min": 0.5319,
@@ -419,7 +419,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 6,
         "median": 0.6691,
         "min": 0.5965,
@@ -452,11 +452,11 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
-        "hunks": 1,
-        "median": 0.4756,
+        "at": "2026-09-26T15:59:34.848Z",
+        "hunks": 3,
+        "median": 0.5106,
         "min": 0.4756,
-        "max": 0.4756,
+        "max": 0.5416,
         "fired": 0,
         "verdict": "skipped"
       }
@@ -599,9 +599,9 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
-        "hunks": 8,
-        "median": 0.71875,
+        "at": "2026-09-26T15:59:34.848Z",
+        "hunks": 10,
+        "median": 0.71605,
         "min": 0.5732,
         "max": 0.7458,
         "fired": 0,
@@ -632,7 +632,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 0,
         "median": 0,
         "min": 0,
@@ -673,20 +673,20 @@
         "type": "model",
         "question": {
           "type": "boolean",
-          "instructions": "Among the added lines, is there `new FaxiosError(` called with only a message and no code argument? Answer no if no added line constructs a FaxiosError.",
+          "instructions": "First check whether any added line contains the literal text `new FaxiosError(`. If none does, answer no. If one does, answer yes only when that call passes a message but no error code argument.",
           "criteria": {
-            "true": "throw new FaxiosError('Request timed out');",
-            "false": "throw new FaxiosError('Request timed out', FaxiosError.ETIMEDOUT, config, request);"
+            "true": "+ throw new FaxiosError('Request timed out');",
+            "false": "no added line contains `new FaxiosError(` (e.g. a type or import change); or new FaxiosError('Timed out', FaxiosError.ETIMEDOUT, config, request)"
           }
         }
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
-        "hunks": 8,
-        "median": 0.68275,
-        "min": 0.5707,
-        "max": 0.7637,
+        "at": "2026-09-26T15:59:34.848Z",
+        "hunks": 10,
+        "median": 0.6830499999999999,
+        "min": 0.6563,
+        "max": 0.7388,
         "fired": 0,
         "verdict": "decisive"
       }
@@ -715,9 +715,9 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
-        "hunks": 8,
-        "median": 0.66605,
+        "at": "2026-09-26T15:59:34.848Z",
+        "hunks": 10,
+        "median": 0.66765,
         "min": 0.5985,
         "max": 0.7278,
         "fired": 0,
@@ -761,9 +761,9 @@
       },
       "status": "weak",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
-        "hunks": 8,
-        "median": 0.5134,
+        "at": "2026-09-26T15:59:34.848Z",
+        "hunks": 10,
+        "median": 0.48195,
         "min": 0.4027,
         "max": 0.5656,
         "fired": 0,
@@ -794,7 +794,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 6,
         "median": 0.77725,
         "min": 0.7014,
@@ -827,7 +827,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 6,
         "median": 0.7401500000000001,
         "min": 0.6447,
@@ -860,11 +860,11 @@
       },
       "status": "weak",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
-        "hunks": 8,
+        "at": "2026-09-26T15:59:34.848Z",
+        "hunks": 10,
         "median": 0.58605,
         "min": 0.56,
-        "max": 0.6043,
+        "max": 0.6469,
         "fired": 0,
         "verdict": "weak"
       }
@@ -893,9 +893,9 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
-        "hunks": 8,
-        "median": 0.7066,
+        "at": "2026-09-26T15:59:34.848Z",
+        "hunks": 10,
+        "median": 0.70905,
         "min": 0.6295,
         "max": 0.7397,
         "fired": 0,
@@ -927,7 +927,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 6,
         "median": 0.7383,
         "min": 0.6414,
@@ -951,22 +951,22 @@
         "type": "model",
         "question": {
           "type": "boolean",
-          "instructions": "Among the added lines, is there `addEventListener('abort'` with no matching `removeEventListener('abort'` in the added lines? Answer no if no added line calls addEventListener.",
+          "instructions": "Does an added line call `addEventListener(\"abort\"` or `addEventListener('abort'` while no added line calls `removeEventListener` for it?",
           "criteria": {
-            "true": "signal.addEventListener('abort', onAbort); return fetch(req);",
-            "false": "signal.addEventListener('abort', onAbort); try { return await fetch(req); } finally { signal.removeEventListener('abort', onAbort); }"
+            "true": "+ signal.addEventListener('abort', onAbort);\n+ return fetch(req);",
+            "false": "no added addEventListener call; or `finally { signal.removeEventListener('abort', onAbort); }`"
           }
         }
       },
-      "status": "active",
+      "status": "weak",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
-        "hunks": 8,
-        "median": 0.7826,
-        "min": 0.6609,
-        "max": 0.8767,
-        "fired": 3,
-        "verdict": "decisive"
+        "at": "2026-09-26T15:59:34.848Z",
+        "hunks": 10,
+        "median": 0.61365,
+        "min": 0.5524,
+        "max": 0.6979,
+        "fired": 0,
+        "verdict": "weak"
       }
     },
     {
@@ -984,21 +984,21 @@
         "type": "model",
         "question": {
           "type": "boolean",
-          "instructions": "Among the added lines, is there an assignment whose left side starts with `config.` (config.x = ..., config.x.y = ...), a `delete config.`, or `Object.assign(config,`? Answer no if no added line does any of these.",
+          "instructions": "Does an added line assign to a property of `config` (`config.headers = x`), call `delete config.x`, or call `Object.assign(config, …)`?",
           "criteria": {
-            "true": "config.headers = normalize(config.headers); return config;",
-            "false": "return { ...config, headers: normalize(config.headers) };"
+            "true": "+ config.headers = normalize(config.headers);",
+            "false": "an added line that only reads config, e.g. `const enc = getSafeProp(config, 'encode')`"
           }
         }
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
-        "hunks": 8,
-        "median": 0.7337,
-        "min": 0.6332,
-        "max": 0.8194,
-        "fired": 2,
+        "at": "2026-09-26T15:59:34.848Z",
+        "hunks": 10,
+        "median": 0.65175,
+        "min": 0.5341,
+        "max": 0.7375,
+        "fired": 0,
         "verdict": "decisive"
       }
     },
@@ -1017,21 +1017,21 @@
         "type": "model",
         "question": {
           "type": "boolean",
-          "instructions": "Does this change use a browser- or Node-only global (window, document, navigator, XMLHttpRequest, process, Buffer, require, __dirname) without a `typeof` or similar existence check guarding it?",
+          "instructions": "First check whether any added line contains one of these identifiers used as a global: `window`, `document`, `navigator`, `XMLHttpRequest`, `process`, `Buffer`, `require`, `__dirname`. Standard globals such as `fetch`, `URL`, `encodeURIComponent` do not count. If none, answer no. If one does, answer yes only when no `typeof` check guards it.",
           "criteria": {
-            "true": "const origin = window.location.origin;",
-            "false": "const origin = typeof window !== 'undefined' ? window.location.origin : undefined;"
+            "true": "+ const origin = window.location.origin;",
+            "false": "no listed identifier; or `typeof window !== 'undefined' ? window.location.origin : undefined`"
           }
         }
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
-        "hunks": 8,
-        "median": 0.79345,
-        "min": 0.5453,
-        "max": 0.8434,
-        "fired": 3,
+        "at": "2026-09-26T15:59:34.848Z",
+        "hunks": 10,
+        "median": 0.78175,
+        "min": 0.6991,
+        "max": 0.8331,
+        "fired": 2,
         "verdict": "decisive"
       }
     },
@@ -1126,12 +1126,12 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
-        "hunks": 3,
-        "median": 0.7592,
-        "min": 0.7575,
-        "max": 0.7699,
-        "fired": 0,
+        "at": "2026-09-26T15:59:34.848Z",
+        "hunks": 1,
+        "median": 0.8111,
+        "min": 0.8111,
+        "max": 0.8111,
+        "fired": 1,
         "verdict": "skipped"
       }
     },
@@ -1145,25 +1145,25 @@
       "scope": [
         "packages/tests/**"
       ],
-      "when": "edit",
+      "when": "turn",
       "check": {
         "type": "model",
         "question": {
           "type": "boolean",
-          "instructions": "Is there an added line calling `stopHTTPServer(` or `server.close(` as a plain statement after other awaited test steps, rather than inside `finally {`, `afterEach(`, or `afterAll(`? If no added line stops a server, answer no.",
+          "instructions": "First check whether any added line starts a server: `startHTTPServer(`, `createServer(`, `.listen(`, or `Bun.serve(`. If none does, answer no. If one does, answer yes only when the diff never closes that server inside `finally {`, `afterEach(`, or `afterAll(`.",
           "criteria": {
             "true": "+ const server = await startHTTPServer(app);\n+ await faxios.get(url);\n+ await stopHTTPServer(server);",
-            "false": "stopHTTPServer(server) or server.close() inside `finally {`, afterEach, or afterAll; or no added line stops a server"
+            "false": "no added server start; or a start with stopHTTPServer(server) in `finally {` or afterAll"
           }
         }
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 3,
-        "median": 0.6263,
-        "min": 0.5904,
-        "max": 0.6723,
+        "median": 0.5524,
+        "min": 0.5382,
+        "max": 0.5952,
         "fired": 0,
         "verdict": "skipped"
       }
@@ -1205,7 +1205,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 0,
         "median": 0,
         "min": 0,
@@ -1238,10 +1238,10 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
-        "hunks": 8,
-        "median": 0.78565,
-        "min": 0.7383,
+        "at": "2026-09-26T15:59:34.848Z",
+        "hunks": 10,
+        "median": 0.7767,
+        "min": 0.7164,
         "max": 0.8356,
         "fired": 3,
         "verdict": "decisive"
@@ -1262,21 +1262,21 @@
         "type": "model",
         "question": {
           "type": "boolean",
-          "instructions": "Does this change add code that copies arbitrary keys into an object (for...in, Object.keys/entries loop, recursive merge, path-to-object builder) without skipping `__proto__`, `constructor`, and `prototype`?",
+          "instructions": "First check whether any added line contains a loop that copies keys into an object: `for (… in …)`, or `Object.keys(`/`Object.entries(` iterated with `obj[key] = `. If none does, answer no. If one does, answer yes only when it never skips `__proto__`, `constructor`, and `prototype`.",
           "criteria": {
-            "true": "for (const key of Object.keys(src)) target[key] = src[key];",
-            "false": "for (const key of Object.keys(src)) { if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue; target[key] = src[key]; }"
+            "true": "+ for (const key of Object.keys(src)) target[key] = src[key];",
+            "false": "no added key-copy loop (e.g. a type signature change); or a loop that `continue`s on __proto__/constructor/prototype"
           }
         }
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
-        "hunks": 8,
-        "median": 0.7616499999999999,
-        "min": 0.6482,
-        "max": 0.9009,
-        "fired": 3,
+        "at": "2026-09-26T15:59:34.848Z",
+        "hunks": 10,
+        "median": 0.6409,
+        "min": 0.5826,
+        "max": 0.7223,
+        "fired": 0,
         "verdict": "decisive"
       }
     },
@@ -1314,11 +1314,11 @@
       },
       "status": "weak",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 8,
         "median": 0.54855,
         "min": 0.5228,
-        "max": 0.584,
+        "max": 0.5929,
         "fired": 0,
         "verdict": "weak"
       }
@@ -1347,7 +1347,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 6,
         "median": 0.80705,
         "min": 0.7069,
@@ -1416,9 +1416,9 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 8,
-        "median": 0.56675,
+        "median": 0.5797,
         "min": 0.5033,
         "max": 0.7066,
         "fired": 0,
@@ -1489,7 +1489,7 @@
       },
       "status": "active",
       "calibration": {
-        "at": "2026-09-26T15:16:51.223Z",
+        "at": "2026-09-26T15:59:34.848Z",
         "hunks": 0,
         "median": 0,
         "min": 0,
