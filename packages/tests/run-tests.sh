@@ -7,12 +7,14 @@ echo "==> build faxios"
 pnpm --dir ../lib build
 
 echo "==> pack + install into smoke/module suites"
-# The suites pin "faxios": "file:/tmp/faxios-0.0.1.tgz"; stage the fresh
-# tarball there, as CI does with $FAXIOS_TARBALL. Their lockfiles record a
-# tarball integrity that changes every build, so install without reading or
-# writing them.
-TARBALL=$(pnpm --dir ../lib pack --pack-destination /tmp 2>/dev/null | tail -1)
-cp "$TARBALL" /tmp/faxios-0.0.1.tgz
+# The suites depend on "faxios": "file:../../faxios.tgz"; stage the fresh
+# tarball at packages/tests/faxios.tgz, as CI does with $FAXIOS_TARBALL. Their
+# lockfiles record a tarball integrity that changes every build, so install
+# without reading or writing them.
+PACK_DIR=$(mktemp -d)
+TARBALL=$(pnpm --dir ../lib pack --pack-destination "$PACK_DIR" 2>/dev/null | tail -1)
+mv -f "$TARBALL" faxios.tgz
+rm -rf "$PACK_DIR"
 pnpm --dir smoke/esm install --no-lockfile --ignore-workspace --ignore-scripts
 pnpm --dir module/esm install --no-lockfile --ignore-workspace --ignore-scripts
 # Bun keeps reusing the tarball content pinned in bun.lock, so install

@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 env:
-  FAXIOS_TARBALL: /tmp/faxios-0.0.1.tgz
+  FAXIOS_TARBALL: packages/tests/faxios.tgz
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

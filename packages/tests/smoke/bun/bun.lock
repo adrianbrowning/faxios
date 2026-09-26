@@ -1,11 +1,11 @@
 {
-  "lockfileVersion": 1,
+  "lockfileVersion": 2,
   "configVersion": 1,
   "workspaces": {
     "": {
       "name": "@faxios/bun-smoke-tests",
       "dependencies": {
-        "faxios": "file:/tmp/faxios-0.0.1.tgz",
+        "faxios": "file:../../faxios.tgz",
       },
       "devDependencies": {
         "@types/bun": "latest",
@@ -22,7 +22,7 @@
 
     "bun-types": ["bun-types@1.3.14", "", { "dependencies": { "@types/node": "26.0.1" } }, "sha512-4N0ig0fEomHt5R0KCFWjovxow98rIoRwKolrYdCcknNwMekCXRnWEUvgu5soYV8QXtVsrUD8B95MBOZGPvr6KQ=="],
 
-    "faxios": ["faxios@/tmp/faxios-0.0.1.tgz", {}, "sha512-YUzJ02DUfItwXi2DGbVRmpx31ackb19z2lcj9v2f8XEgfaM6Gg1epjd5cQ5yKAa98JFI0xvU1tySuB1wABmkTg=="],
+    "faxios": ["@gcmdev/faxios@../../faxios.tgz", {}, "sha512-UHmLHJqCH/Y/ozqvbTbDRptNvw3bZA9Zz6M502r8DjG3+alC1cM667HB/2zy7mJ3IUrLfzUMq4K7FlPR18eT7Q=="],
 
     "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 

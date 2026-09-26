@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "dependencies": {
-    "faxios": "file:/tmp/faxios-0.0.1.tgz"
+    "faxios": "file:../../faxios.tgz"
   },
   "devDependencies": {
     "@types/bun": "latest"

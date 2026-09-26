@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      faxios:
+        specifier: file:../../faxios.tgz
+        version: '@gcmdev/faxios@file:../../faxios.tgz'
     devDependencies:
       vitest:
         specifier: 4.1.5
@@ -22,6 +26,11 @@ packages:
 
   '@emnapi/wasi-threads@1.2.2':
     resolution: {integrity: sha512-c95qOXkHdydNKhscBTebqEC1CVAZpyqOfVfBzQ1qgzyl3gfeldUjIggDbIZgDKsHLgnsM+igH7TJ/eAasaVuMA==}
+
+  '@gcmdev/faxios@file:../../faxios.tgz':
+    resolution: {integrity: sha512-UHmLHJqCH/Y/ozqvbTbDRptNvw3bZA9Zz6M502r8DjG3+alC1cM667HB/2zy7mJ3IUrLfzUMq4K7FlPR18eT7Q==, tarball: file:../../faxios.tgz}
+    version: 0.1.0
+    engines: {node: '>=24.0.0', pnpm: '>=10.0.0'}
 
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
@@ -458,6 +467,8 @@ snapshots:
     dependencies:
       tslib: 2.8.1
     optional: true
+
+  '@gcmdev/faxios@file:../../faxios.tgz': {}
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
 

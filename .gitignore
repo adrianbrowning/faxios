@@ -18,7 +18,8 @@ docs/.vitepress/cache
 /packages/lib/.eslintcache
 **/.eslintcache
 **/*.tsbuildinfo
-packages/lib/faxios-*.tgz
+packages/lib/*faxios-*.tgz
+packages/tests/faxios.tgz
 .pnpm-store/
 .claude/settings.local.json
 /plans/

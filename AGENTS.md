@@ -23,7 +23,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 - Lint source only: `npm run lint`; focused lint: `npx eslint lib/path/to/file.js`.
 - Unit tests: `npm run test:vitest:unit`; focused unit test: `npm run test:vitest:unit -- tests/unit/path.test.js`.
 - Browser tests need Playwright installed first (`npx playwright install` locally; CI uses `npx playwright install --with-deps`); run `npm run test:vitest:browser:headless` for CI parity.
-- Smoke/module compatibility suites test the packed package, not the source tree: run `npm run build`, `npm pack`, install the tarball into the relevant `tests/smoke/*` or `tests/module/*` package, then run that suite's npm script.
+- Smoke/module compatibility suites test the packed package, not the source tree. Run `packages/tests/run-tests.sh`: it builds `packages/lib`, packs it to `packages/tests/faxios.tgz` (the version-free path every harness depends on as `faxios`, and CI's `$FAXIOS_TARBALL`), installs `smoke/esm`, `module/esm` and `smoke/bun` outside the workspace without lifecycle scripts, then runs unit, browser headless, ESM smoke, ESM module, Deno and Bun suites.
 - CI order is install -> build -> Playwright install -> unit -> browser headless -> pack -> ESM module and smoke tests -> Bun/Deno smoke tests.
 
 ## Package Shape
@@ -98,7 +98,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 
 - Test layout is runtime-first: `tests/unit/**/*.test.js`, `tests/browser/**/*.browser.test.js`, `tests/smoke/esm/**/*.smoke.test.js`.
 - Use `tests/setup/server.js` for local HTTP servers and cleanup with `try/finally`; leaking servers causes Vitest hangs.
-- Type compatibility is exercised through `tests/module/esm` with TypeScript 5.x; run the module suite for declaration changes.
+- Type compatibility is exercised through `tests/module/esm` with TypeScript 6.x (the harness pins `typescript@6.0.3`); run the module suite for declaration changes.
 - Browser tests mock `globalThis.fetch`; restore globals and reset spies in cleanup hooks.
 
 ## Security-Sensitive Code

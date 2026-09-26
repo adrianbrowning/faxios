@@ -16,6 +16,6 @@
     "vitest": "4.1.9"
   },
   "dependencies": {
-    "faxios": "file:/tmp/faxios-0.0.1.tgz"
+    "faxios": "file:../../faxios.tgz"
   }
 }
