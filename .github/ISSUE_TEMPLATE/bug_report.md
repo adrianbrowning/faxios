@@ -1,3 +1,8 @@
+---
+name: Bug report or feature request
+about: Report a bug in faxios or suggest a feature.
+---
+
 <!--
 Before opening: please search existing issues to avoid duplicates, and confirm the bug reproduces on the latest faxios release.
 For usage questions, please use Stack Overflow (https://stackoverflow.com/questions/tagged/faxios) instead.

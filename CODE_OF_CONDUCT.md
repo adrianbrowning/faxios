@@ -23,12 +23,13 @@ Unacceptable behaviors include:
 
 ## Enforcement
 
-Report unacceptable behavior to the maintainers at [jasonsaayman@gmail.com](mailto:jasonsaayman@gmail.com).
-Maintainers will review reports promptly and handle them confidentially.
+Report unacceptable behavior by opening a [Conduct report](https://github.com/adrianbrowning/faxios/issues/new?template=conduct_report.md) issue.
+Issues are public, so don't include personal information about yourself or others that you don't want published.
+Maintainers will review reports promptly.
 
 ## Enforcement guidelines
 
-1. Correction: a private warning and an explanation of why the behavior was inappropriate.
+1. Correction: a warning and an explanation of why the behavior was inappropriate.
 2. Warning: a clear warning with consequences for continued behavior.
 3. Temporary ban: a temporary ban for repeated or severe violations.
 4. Permanent ban: permanent removal for repeated harassment or sustained inappropriate conduct.
