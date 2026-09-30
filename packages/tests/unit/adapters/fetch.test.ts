@@ -1736,6 +1736,8 @@ describe.runIf(typeof fetch === "function")(
       });
 
       it("should reject a chunked response that exceeds maxContentLength during streaming", async () => {
+        // Dynamic port: isolates this server from earlier tests on SERVER_PORT,
+        // which made this request fail with ERR_NETWORK on Linux CI.
         const server = await startHTTPServer(
           (_req, res) => {
             // Omit content-length so the cheap pre-check cannot fire; force
@@ -1752,13 +1754,12 @@ describe.runIf(typeof fetch === "function")(
               res.write(chunk, writeNext);
             };
             writeNext();
-          },
-          { port: SERVER_PORT }
+          }
         );
 
         try {
           await assert.rejects(
-            fetchFaxios.get(`${LOCAL_SERVER_URL}/`, {
+            fetchFaxios.get(`http://localhost:${(server.address() as AddressInfo).port}/`, {
               maxContentLength: 512,
             }),
             err => {
