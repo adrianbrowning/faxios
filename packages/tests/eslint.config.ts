@@ -1,6 +1,7 @@
 import { config as defaultConfig } from "@gingacodemonkey/config/eslint";
 import type { Linter } from "eslint";
 import tseslint from "typescript-eslint";
+import testServerCleanup from "./eslint-rules/test-server-cleanup.ts";
 
 // Files that live outside the main tsconfig and can't be added to it
 // (they run in different runtime environments: bun, deno, node-cjs)
@@ -147,6 +148,16 @@ export const extraRules: Array<Linter.Config> = [
       "no-await-in-loop": "off",
       // Tests use .toBe(null) / .toBe(undefined) intentionally
       "sonarjs/prefer-specific-assertions": "off",
+    },
+  },
+  // AGENTS.md: stop every test server in `finally` or afterEach/afterAll.
+  {
+    files: [ "**/*.test.ts", "**/*.test.js" ],
+    plugins: {
+      faxios: { rules: { "test-server-cleanup": testServerCleanup } },
+    },
+    rules: {
+      "faxios/test-server-cleanup": "error",
     },
   },
 ];

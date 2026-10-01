@@ -946,28 +946,11 @@
       "scope": [
         "packages/lib/src/**"
       ],
-      "when": "edit",
       "check": {
-        "type": "model",
-        "question": {
-          "type": "boolean",
-          "instructions": "Does an added line call `addEventListener(\"abort\"` or `addEventListener('abort'` while no added line calls `removeEventListener` for it?",
-          "criteria": {
-            "true": "+ signal.addEventListener('abort', onAbort);\n+ return fetch(req);",
-            "false": "no added addEventListener call; or `finally { signal.removeEventListener('abort', onAbort); }`"
-          }
-        }
+        "type": "lint",
+        "how": "faxios/remove-signal-listeners: local ESLint rule in packages/lib/eslint-rules/remove-signal-listeners.ts, enabled for src/** via localRules in packages/lib/eslint.config.ts (also spread into eslint.config.style.ts)"
       },
-      "status": "weak",
-      "calibration": {
-        "at": "2026-09-26T15:59:34.848Z",
-        "hunks": 10,
-        "median": 0.61365,
-        "min": 0.5524,
-        "max": 0.6979,
-        "fired": 0,
-        "verdict": "weak"
-      }
+      "status": "active"
     },
     {
       "id": "no-config-mutation",
@@ -1145,28 +1128,11 @@
       "scope": [
         "packages/tests/**"
       ],
-      "when": "turn",
       "check": {
-        "type": "model",
-        "question": {
-          "type": "boolean",
-          "instructions": "First check whether any added line starts a server: `startHTTPServer(`, `createServer(`, `.listen(`, or `Bun.serve(`. If none does, answer no. If one does, answer yes only when the diff never closes that server inside `finally {`, `afterEach(`, or `afterAll(`.",
-          "criteria": {
-            "true": "+ const server = await startHTTPServer(app);\n+ await faxios.get(url);\n+ await stopHTTPServer(server);",
-            "false": "no added server start; or a start with stopHTTPServer(server) in `finally {` or afterAll"
-          }
-        }
+        "type": "lint",
+        "how": "faxios/test-server-cleanup: local ESLint rule in packages/tests/eslint-rules/test-server-cleanup.ts, enabled for *.test.{ts,js} via extraRules in packages/tests/eslint.config.ts (also spread into eslint.config.style.ts)"
       },
-      "status": "active",
-      "calibration": {
-        "at": "2026-09-26T15:59:34.848Z",
-        "hunks": 3,
-        "median": 0.5524,
-        "min": 0.5382,
-        "max": 0.5952,
-        "fired": 0,
-        "verdict": "skipped"
-      }
+      "status": "active"
     },
     {
       "id": "run-module-suite-for-declarations",
