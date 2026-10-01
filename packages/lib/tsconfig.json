@@ -12,7 +12,6 @@
     ]
   },
   "include": ["./src/**/*.ts",
-  "./eslint-rules/**/*.ts",
   "./eslint.config.style.ts",
   "./eslint.config.ts"
   ],

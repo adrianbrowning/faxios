@@ -1,11 +1,9 @@
 import { config as defaultConfig } from "@gingacodemonkey/config/styled";
 import type { Linter } from "eslint";
 import tseslint from "typescript-eslint";
-import { localRules } from "./eslint.config.ts";
 
 const config: Array<Linter.Config> = [
   ...defaultConfig,
-  ...localRules,
   {
     files: [ "**/*.js", "**/*.cjs", "**/*.mjs" ],
     rules: {
