@@ -24,6 +24,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 - Unit tests: `npm run test:vitest:unit`; focused unit test: `npm run test:vitest:unit -- tests/unit/path.test.js`.
 - Browser tests need Playwright installed first (`npx playwright install` locally; CI uses `npx playwright install --with-deps`); run `npm run test:vitest:browser:headless` for CI parity.
 - Smoke/module compatibility suites test the packed package, not the source tree. Run `packages/tests/run-tests.sh`: it builds `packages/lib`, packs it to `packages/tests/faxios.tgz` (the version-free path every harness depends on as `faxios`, and CI's `$FAXIOS_TARBALL`), installs `smoke/esm`, `module/esm` and `smoke/bun` outside the workspace without lifecycle scripts, then runs unit, browser headless, ESM smoke, ESM module, Deno and Bun suites.
+- Harness installs are frozen. The lockfiles pin `faxios.tgz` by integrity, which changes every build, so `packages/tests/pin-tarball-integrity.ts` rewrites only that digest to match the staged tarball before `--frozen-lockfile`. Never switch harness installs to `--no-lockfile` or delete their lockfiles; that unpins every transitive dependency.
 - CI order is install -> build -> Playwright install -> unit -> browser headless -> pack -> ESM module and smoke tests -> Bun/Deno smoke tests.
 
 ## Package Shape
