@@ -2,11 +2,13 @@ packages:
   - 'packages/*'
   - '!packages/tests/smoke/**'
   - '!packages/tests/module/**'
-pnpm:
-  strictDepBuilds: true
-  minimumReleaseAgeExclude:
-    - '@gingacodemonkey/config'
-  trustPolicyIgnoreAfter: 43200
-  trustPolicy: no-downgrade
-  blockExoticSubdeps: true
-  minimumReleaseAge: 4320
+strictDepBuilds: true
+minimumReleaseAge: 4320
+minimumReleaseAgeExclude:
+  - '@gingacodemonkey/config'
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 43200
+blockExoticSubdeps: true
+overrides:
+  minimatch: '>=10.2.1'
+  vite: '>=6.4.3'
