@@ -61,5 +61,12 @@ ruleTester.run("remove-signal-listeners", rule, {
         signal.removeEventListener("abort", onTimeout);`,
       errors: [{ messageId: "leaked" }],
     },
+    {
+      name: "removing the handler from a different signal does not count",
+      code: `
+        a.addEventListener("abort", onAbort);
+        b.removeEventListener("abort", onAbort);`,
+      errors: [{ messageId: "leaked" }],
+    },
   ],
 });

@@ -6,8 +6,6 @@ const HTTP_MODULES = new Set([ "http", "https", "http2" ].flatMap(m => [ m, `nod
 const CREATE_METHODS = new Set([ "createServer", "createSecureServer" ]);
 const CLEANUP_HOOKS = new Set([ "afterEach", "afterAll", "onTestFinished" ]);
 const TEARDOWN_METHODS = new Set([ "close", "closeAllConnections", "stop", "shutdown" ]);
-// Helpers such as stopHTTPServer(server) or a local stopServer(server).
-const TEARDOWN_HELPER = /^(stop|close)/u;
 // Wrappers that evaluate to the server they wrap.
 const PASS_THROUGH = new Set([
   "AwaitExpression", "ConditionalExpression", "LogicalExpression",
@@ -30,11 +28,12 @@ const inCleanup = (node: Node) => {
   return false;
 };
 
-// `stopHTTPServer(server)`, `stopServer(server)`, `server.close()`, `server.stop()`, `server.shutdown()`.
+// `stopHTTPServer(server)`, `server.close()`, `server.stop()`, `server.shutdown()`. Any other
+// helper is unverified: it may log or inspect the server without stopping it.
 const isTeardown = (ref: Node) => {
   const { parent } = ref;
   if (parent === null) return false;
-  if (parent.type === "CallExpression") return !same(parent.callee, ref) && TEARDOWN_HELPER.test(calleeName(parent) ?? "");
+  if (parent.type === "CallExpression") return !same(parent.callee, ref) && calleeName(parent) === "stopHTTPServer";
   return parent.type === "MemberExpression" && same(parent.object, ref) &&
     parent.property.type === "Identifier" && TEARDOWN_METHODS.has(parent.property.name) &&
     parent.parent.type === "CallExpression" && same(parent.parent.callee, parent);

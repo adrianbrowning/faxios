@@ -5,9 +5,9 @@ type Call = Parameters<NonNullable<Rule.RuleListener["CallExpression"]>>[0];
 const isAbortEvent = (arg: Call["arguments"][number] | undefined) =>
   arg?.type === "Literal" && arg.value === "abort";
 
-const methodName = (node: Call) =>
+const listenerCall = (node: Call) =>
   node.callee.type === "MemberExpression" && node.callee.property.type === "Identifier"
-    ? node.callee.property.name
+    ? { method: node.callee.property.name, target: node.callee.object }
     : undefined;
 
 // An `{ signal }` option removes the listener when that signal aborts.
@@ -25,22 +25,26 @@ const rule: Rule.RuleModule = {
     schema: [],
     messages: {
       inline: "This abort listener is an inline function, so it can never be removed. Name it and call `removeEventListener(\"abort\", fn)` on settlement and cancellation.",
-      leaked: "Abort listener `{{handler}}` is never removed. Call `removeEventListener(\"abort\", {{handler}})` on settlement and cancellation.",
+      leaked: "Abort listener `{{handler}}` on `{{target}}` is never removed. Call `{{target}}.removeEventListener(\"abort\", {{handler}})` on settlement and cancellation.",
     },
   },
   create(context) {
-    const added: Array<{ node: Call; handler: string; }> = [];
+    const { sourceCode } = context;
+    const added: Array<{ node: Call; target: string; handler: string; }> = [];
+    // A removal only counts for the same target and handler: `a.remove(fn)` does not discharge `b.add(fn)`.
     const removed = new Set<string>();
+    const key = (target: string, handler: string) => `${target}\u0000${handler}`;
 
     return {
       CallExpression(node) {
-        const method = methodName(node);
-        if (method !== "addEventListener" && method !== "removeEventListener") return;
+        const call = listenerCall(node);
+        if (call?.method !== "addEventListener" && call?.method !== "removeEventListener") return;
         const [ type, handler, options ] = node.arguments;
         if (!isAbortEvent(type) || handler === undefined) return;
-        const handlerText = context.sourceCode.getText(handler);
-        if (method === "removeEventListener") {
-          removed.add(handlerText);
+        const target = sourceCode.getText(call.target);
+        const handlerText = sourceCode.getText(handler);
+        if (call.method === "removeEventListener") {
+          removed.add(key(target, handlerText));
           return;
         }
         if (removedBySignalOption(options)) return;
@@ -48,11 +52,11 @@ const rule: Rule.RuleModule = {
           context.report({ node, messageId: "inline" });
           return;
         }
-        added.push({ node, handler: handlerText });
+        added.push({ node, target, handler: handlerText });
       },
       "Program:exit"() {
-        for (const { node, handler } of added) {
-          if (!removed.has(handler)) context.report({ node, messageId: "leaked", data: { handler } });
+        for (const { node, target, handler } of added) {
+          if (!removed.has(key(target, handler))) context.report({ node, messageId: "leaked", data: { target, handler } });
         }
       },
     };

@@ -43,14 +43,6 @@ ruleTester.run("test-server-cleanup", rule, {
         });`,
     },
     {
-      name: "a local helper stops it in finally",
-      filename,
-      code: `
-        const server = await startHTTPServer(handler);
-        try { await faxios.get(url(server)); }
-        finally { await stopServer(server); }`,
-    },
-    {
       name: "a helper that resolves the server hands teardown to its caller",
       filename,
       code: `
@@ -123,6 +115,15 @@ ruleTester.run("test-server-cleanup", rule, {
       name: "Bun.serve never stopped",
       filename,
       code: `const server = Bun.serve({ port: 0, fetch: handler });`,
+      errors: [{ messageId: "unguarded" }],
+    },
+    {
+      name: "an unverified helper in finally does not count as teardown",
+      filename,
+      code: `
+        const server = await startHTTPServer(handler);
+        try { await faxios.get(url(server)); }
+        finally { log(server); }`,
       errors: [{ messageId: "unguarded" }],
     },
   ],
