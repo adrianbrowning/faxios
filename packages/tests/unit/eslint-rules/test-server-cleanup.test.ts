@@ -126,5 +126,14 @@ ruleTester.run("test-server-cleanup", rule, {
         finally { log(server); }`,
       errors: [{ messageId: "unguarded" }],
     },
+    {
+      name: "a look-alike stopServer helper in finally does not count as teardown",
+      filename,
+      code: `
+        const server = await startHTTPServer(handler);
+        try { await faxios.get(url(server)); }
+        finally { await stopServer(server); }`,
+      errors: [{ messageId: "unguarded" }],
+    },
   ],
 });
