@@ -8,7 +8,10 @@ import { basename } from "node:path";
 
 const testsDir = new URL("./", import.meta.url);
 const tarball = readFileSync(new URL("faxios.tgz", testsDir));
-const integrity = `sha512-${createHash("sha512").update(tarball).digest("base64")}`;
+const digest = createHash("sha512")
+  .update(tarball)
+  .digest("base64");
+const integrity = `sha512-${digest}`;
 
 const ENTRY_BY_LOCKFILE: Record<string, RegExp> = {
   "pnpm-lock.yaml": /(\{integrity: )sha512-[\w+/=]+(, tarball: file:\.\.\/\.\.\/faxios\.tgz\})/g,
