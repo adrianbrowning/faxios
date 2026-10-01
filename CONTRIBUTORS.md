@@ -2,11 +2,13 @@
 
 Thanks to everyone who has contributed to faxios.
 
-## Core team
+## Upstream axios team
 
-- [Jay](https://github.com/jasonsaayman) - Lead Maintainer
-- [Dmitriy Mozgovoy](https://github.com/DigitalBrainJS) - Core Contributor
-- [Matt Zabriskie](https://github.com/mzabriskie) - Creator
+faxios is a fork of [axios](https://github.com/axios/axios). The people below built and maintained axios and are credited here for that work.
+
+- [Jay](https://github.com/jasonsaayman) - axios lead maintainer
+- [Dmitriy Mozgovoy](https://github.com/DigitalBrainJS) - axios core contributor
+- [Matt Zabriskie](https://github.com/mzabriskie) - axios creator
 
 ## Notable contributors
 
