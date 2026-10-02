@@ -231,16 +231,51 @@ const SCHEMA_ERROR_CODES: ReadonlySet<string> = new Set([
   FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA,
 ]);
 
-export function isSchemaValidationError(
-  err: unknown
-): err is FaxiosError & { issues: ReadonlyArray<StandardSchemaV1.Issue>; } {
+type SchemaIssues = ReadonlyArray<StandardSchemaV1.Issue>;
+
+/**
+ * Error thrown when a schema rejects a value. Narrow on `code` to tell them apart.
+ * For `ERR_BAD_RESPONSE_SCHEMA`, `response` is always present and `response.data`
+ * holds the body as it was before validation (after `transformResponse`).
+ */
+export type SchemaValidationError =
+  | FaxiosError & {
+    code: typeof FaxiosError.ERR_BAD_RESPONSE_SCHEMA;
+    issues: SchemaIssues;
+    response: FaxiosResponse;
+  }
+  | FaxiosError & {
+    code:
+      | typeof FaxiosError.ERR_BAD_REQUEST_SCHEMA
+      | typeof FaxiosError.ERR_BAD_PARAMS_SCHEMA
+      | typeof FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA;
+    issues: SchemaIssues;
+  };
+
+function isFaxiosResponse(value: unknown): value is FaxiosResponse {
+  if (!utils.isObject(value)) return false;
+  const r = value as Record<string, unknown>;
+  return (
+    utils.hasOwnProp(r, "data") &&
+    typeof r.status === "number" &&
+    typeof r.statusText === "string" &&
+    utils.isObject(r.headers) &&
+    utils.isObject(r.config) &&
+    // headers is the only required field of InternalFaxiosRequestConfig.
+    utils.hasOwnProp(r.config, "headers") &&
+    utils.isObject((r.config as Record<string, unknown>).headers)
+  );
+}
+
+export function isSchemaValidationError(err: unknown): err is SchemaValidationError {
   const e = err as Record<string, unknown>;
   return (
     utils.isObject(err) &&
     e.isFaxiosError === true &&
     typeof e.code === "string" &&
     SCHEMA_ERROR_CODES.has(e.code) &&
-    Array.isArray(e.issues)
+    Array.isArray(e.issues) &&
+    (e.code !== FaxiosError.ERR_BAD_RESPONSE_SCHEMA || isFaxiosResponse(e.response))
   );
 }
 

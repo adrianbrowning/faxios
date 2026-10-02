@@ -10,6 +10,7 @@ import type { CreateFaxiosDefaults } from "./lib/types.ts";
 // runtime instance forced TS to emit the broken inline `import("./x.ts")` form.
 export { default as Faxios } from "./lib/core/Faxios.ts";
 export { default as FaxiosError, isSchemaValidationError } from "./lib/core/FaxiosError.ts";
+export type { SchemaValidationError } from "./lib/core/FaxiosError.ts";
 export { default as CanceledError, default as Cancel } from "./lib/cancel/CanceledError.ts";
 export { default as isCancel } from "./lib/cancel/isCancel.ts";
 export { default as isFaxiosError } from "./lib/helpers/isFaxiosError.ts";

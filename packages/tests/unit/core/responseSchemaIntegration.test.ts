@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
 import faxios from "#src/index.ts";
-import { isSchemaValidationError } from "#src/index.ts";
+import { FaxiosError, isSchemaValidationError } from "#src/index.ts";
 import { makeSchema, mockFetch } from "./_schemaTestHelpers.js";
 
 describe("responseSchema integration", () => {
@@ -68,6 +68,9 @@ describe("responseSchema integration", () => {
     catch (err) {
       assert.ok(isSchemaValidationError(err));
       assert.deepStrictEqual(err.issues, issues);
+      assert.ok(err.code === FaxiosError.ERR_BAD_RESPONSE_SCHEMA);
+      // Narrowed: response is required and carries the body the schema rejected.
+      assert.deepStrictEqual(err.response.data, { bad: true });
     }
   });
 });
