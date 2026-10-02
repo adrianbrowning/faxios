@@ -2,6 +2,7 @@
 // Internal shared types — imported by implementation files.
 // Public API types in index.d.ts re-export or extend these.
 
+import type { FaxiosHeadersInstance } from "./core/FaxiosHeaders.js";
 import type { StandardSchemaV1 } from "./types/standard-schema.js";
 
 export type StringLiteralsOrString<Literals extends string> =
@@ -36,28 +37,50 @@ export type Method = UppercaseMethod | Lowercase<UppercaseMethod>;
 
 type CommonRequestHeadersList =
   | "Accept"
-  | "Content-Length"
-  | "User-Agent"
-  | "Content-Encoding"
+  | "Accept-Encoding"
+  | "Accept-Language"
   | "Authorization"
-  | "Location";
+  | "Cache-Control"
+  | "Content-Encoding"
+  | "Content-Length"
+  | "If-Match"
+  | "If-Modified-Since"
+  | "If-None-Match"
+  | "Range"
+  | "User-Agent"
+  | "X-Requested-With";
 
 type ContentType =
-  | FaxiosHeaderValue
-  | "text/html"
-  | "text/plain"
-  | "multipart/form-data"
-  | "application/json"
-  | "application/x-www-form-urlencoded"
-  | "application/octet-stream";
+  | StringLiteralsOrString<
+    | "text/html"
+    | "text/plain"
+    | "multipart/form-data"
+    | "application/json"
+    | "application/x-www-form-urlencoded"
+    | "application/octet-stream"
+    | "application/problem+json"
+    | "application/ld+json"
+    | "text/event-stream"
+    | "application/graphql-response+json"
+    | "application/merge-patch+json"
+    | "application/json-patch+json"
+  >
+  | Exclude<FaxiosHeaderValue, string>;
 
-export type RawFaxiosRequestHeaders = Partial<
-  RawFaxiosHeaders & {
-    [Key in CommonRequestHeadersList]: FaxiosHeaderValue;
-  } & {
-    "Content-Type": ContentType;
-  }
->;
+/**
+ * A header bag: header names mapped to header values. Any header name is
+ * accepted in any casing; common names and `Content-Type` values are suggested.
+ *
+ * - Strings, numbers and string arrays are sent (numbers and `true` as strings).
+ * - `undefined` drops a value inherited from defaults or an outer config;
+ *   faxios may still set its own value (e.g. `Content-Type` for a JSON body).
+ * - `null` or `false` keeps the header off the request entirely; faxios does
+ *   not fill it in, and later merges keep it off unless they force an overwrite.
+ */
+export type RawFaxiosRequestHeaders =
+  & { [header: string]: FaxiosHeaderValue | undefined; }
+  & { [Header in CommonRequestHeadersList]?: FaxiosHeaderValue; }
+  & { "Content-Type"?: ContentType; };
 
 export type ResponseType =
   | "arraybuffer"
@@ -241,7 +264,7 @@ export interface FaxiosRequestConfig<D = unknown> {
   transformResponse?:
     | FaxiosResponseTransformer
     | Array<FaxiosResponseTransformer>;
-  headers?: Record<string, unknown>;
+  headers?: FaxiosConfigHeaders;
   params?: Record<string, unknown> | URLSearchParams;
   paramsSerializer?: ParamsSerializerOptions | CustomParamsSerializer;
   data?: D;
@@ -356,12 +379,19 @@ export interface FaxiosDefaults<D = unknown> extends Omit<
   headers: HeadersDefaults;
 }
 
-export interface CreateFaxiosDefaults<D = unknown> extends Omit<
-  FaxiosRequestConfig<D>,
-  "headers"
-> {
-  headers?: RawFaxiosRequestHeaders | Partial<HeadersDefaults>;
-}
+/**
+ * The `headers` option on every request config and on `create()`: a header
+ * bag, method header groups (a header bag under `common` or a method name,
+ * applied only to requests with that method), both mixed in one object, or a
+ * `FaxiosHeaders` instance.
+ */
+export type FaxiosConfigHeaders =
+  | RawFaxiosRequestHeaders
+  | Partial<HeadersDefaults>
+  | FaxiosHeadersInstance;
+
+/** Config accepted by `create()`; identical to a request config. */
+export type CreateFaxiosDefaults<D = unknown> = FaxiosRequestConfig<D>;
 
 export interface FaxiosInterceptorOptions {
   synchronous?: boolean;

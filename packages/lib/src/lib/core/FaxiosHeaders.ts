@@ -1,3 +1,4 @@
+// @ts-self-types="./FaxiosHeaders.d.ts" — required for Deno: types.d.ts imports FaxiosHeadersInstance from here
 "use strict";
 
 import parseHeaders from "../helpers/parseHeaders.js";
@@ -22,6 +23,9 @@ type HeaderInput =
   | string
   | undefined
   | null;
+
+/** Matches a `FaxiosHeaders` instance by its type-only brand. */
+export type FaxiosHeadersInstance = Pick<FaxiosHeaders, typeof faxiosHeadersBrand>;
 
 function normalizeHeader(header: string): string {
   return header && String(header).trim()
@@ -145,8 +149,14 @@ function buildAccessors(obj: object, header: string): void {
   });
 }
 
+declare const faxiosHeadersBrand: unique symbol;
+
 class FaxiosHeaders {
   [key: string]: unknown;
+
+  // Type-only brand (nothing at runtime): lets config types accept an instance
+  // without its index signature or method names leaking into header-name completions.
+  declare readonly [faxiosHeadersBrand]: true;
 
   // Accessors generated at runtime by FaxiosHeaders.accessor([...]) below.
   // Declared here so consumers get real types instead of the index signature.

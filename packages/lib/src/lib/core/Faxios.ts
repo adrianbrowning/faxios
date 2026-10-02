@@ -8,6 +8,7 @@ import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type {
   FaxiosRequestConfig,
   FaxiosResponse,
+  HeadersDefaults,
   InternalFaxiosRequestConfig,
   Method,
   SchemaConfig,
@@ -37,6 +38,23 @@ const validators = validator.validators as Record<
   transitional?: TransitionalFn;
   spelling?: SpellingFn;
 };
+
+// Every method header group declared on HeadersDefaults. `satisfies` keeps this
+// list exhaustive, so a group the types accept can never reach the wire.
+const METHOD_HEADER_GROUPS = Object.keys({
+  common: true,
+  delete: true,
+  get: true,
+  head: true,
+  options: true,
+  post: true,
+  put: true,
+  patch: true,
+  purge: true,
+  link: true,
+  unlink: true,
+  query: true,
+} satisfies Record<keyof HeadersDefaults, true>) as Array<keyof HeadersDefaults>;
 
 type RequestInterceptorEntry = {
   runWhen?: ((c: InternalFaxiosRequestConfig) => boolean) | null;
@@ -302,16 +320,17 @@ class Faxios {
     ).toLowerCase();
 
     // Flatten headers
-    const h = headers;
+    // Every FaxiosConfigHeaders member is a string-keyed object, so this is a
+    // checked widening, not an assertion: mergeConfig spreads a top-level
+    // FaxiosHeaders, and method header groups are typed as plain header bags.
+    const h: Record<string, unknown> | undefined = headers;
     let contextHeaders = h && utils.merge(h.common, h[config.method]);
 
-    h &&
-      utils.forEach(
-        [ "delete", "get", "head", "post", "put", "patch", "query", "common" ],
-        method => {
-          delete h[method as string];
-        }
-      );
+    if (h) {
+      for (const group of METHOD_HEADER_GROUPS) {
+        delete h[group];
+      }
+    }
 
     config.headers = FaxiosHeaders.concat(
       contextHeaders,
