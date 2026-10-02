@@ -9,24 +9,26 @@
 # for when additional maintainers are added.
 
 # Default owner
-*                          @jasonsaayman
+*                            @adrianbrowning
 
 # Runtime source — shipped to every consumer
-/lib/                      @jasonsaayman
-/index.js                  @jasonsaayman
-/index.d.ts                @jasonsaayman
+/packages/lib/src/           @adrianbrowning
 
-# Build / release infrastructure
-/rollup.config.js          @jasonsaayman
-/package.json              @jasonsaayman
-/package-lock.json         @jasonsaayman
-/.npmrc                    @jasonsaayman
+# Published manifest and build config (zshy reads packages/lib/package.json)
+/packages/lib/package.json   @adrianbrowning
+
+# Workspace, lockfile, and install hardening
+/package.json                @adrianbrowning
+/pnpm-lock.yaml              @adrianbrowning
+/pnpm-workspace.yaml         @adrianbrowning
+/.npmrc                      @adrianbrowning
+/.husky/                     @adrianbrowning
 
 # CI and repo automation
-/.github/workflows/        @jasonsaayman
-/.github/CODEOWNERS        @jasonsaayman
-/.github/dependabot.yml    @jasonsaayman
+/.github/workflows/          @adrianbrowning
+/.github/CODEOWNERS          @adrianbrowning
+/.github/dependabot.yml      @adrianbrowning
 
 # Security-critical docs
-/THREATMODEL.md            @jasonsaayman
-/SECURITY.md               @jasonsaayman
+/THREATMODEL.md              @adrianbrowning
+/SECURITY.md                 @adrianbrowning
