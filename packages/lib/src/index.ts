@@ -2,7 +2,7 @@
 /* eslint-disable no-barrel-files/no-barrel-files */
 import faxios from "./lib/faxios.ts";
 import type { FaxiosInstance } from "./lib/faxios.ts";
-import type { FaxiosRequestConfig } from "./lib/types.ts";
+import type { CreateFaxiosDefaults } from "./lib/types.ts";
 
 // Static re-exports so the emitted .d.ts references source modules.
 // zshy rewrites .ts -> .js for static import/export, but NOT for inline
@@ -36,7 +36,10 @@ export type {
   GenericHTMLFormElement,
   RawFaxiosRequestConfig,
   FaxiosPromise,
-  CreateFaxiosDefaults
+  CreateFaxiosDefaults,
+  FaxiosConfigHeaders,
+  RawFaxiosRequestHeaders,
+  HeadersDefaults
 } from "./lib/types.ts";
 
 // Instance-synthesized members (no 1:1 source module). Types are self-contained
@@ -44,6 +47,6 @@ export type {
 // inline import() is emitted. Runtime values are the same references as on the instance.
 export const all: FaxiosInstance["all"] = faxios.all;
 export const formToJSON: FaxiosInstance["formToJSON"] = faxios.formToJSON;
-export const create: (instanceConfig?: FaxiosRequestConfig) => FaxiosInstance = faxios.create;
+export const create: (instanceConfig?: CreateFaxiosDefaults) => FaxiosInstance = faxios.create;
 
 export { faxios as default };

@@ -13,7 +13,7 @@ import formDataToJSON from "./helpers/formDataToJSON.js";
 import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
-import type { FaxiosInterceptorOptions, FaxiosInterceptorRejected, FaxiosRequestConfig, InternalFaxiosRequestConfig, FaxiosResponse, SchemaConfig } from "./types.js";
+import type { CreateFaxiosDefaults, FaxiosInterceptorOptions, FaxiosInterceptorRejected, FaxiosRequestConfig, InternalFaxiosRequestConfig, FaxiosResponse, SchemaConfig } from "./types.js";
 import utils from "./utils.js";
 
 /**
@@ -36,7 +36,7 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
   utils.extend(target, context, null, { allOwnKeys: true });
 
   // Factory for creating new instances
-  instance.create = function create(instanceConfig?: FaxiosRequestConfig): FaxiosInstance {
+  instance.create = function create(instanceConfig?: CreateFaxiosDefaults): FaxiosInstance {
     return createInstance(mergeConfig(defaultConfig, instanceConfig));
   };
 
@@ -118,7 +118,7 @@ export type FaxiosInstance = Pick<Faxios, "define" | "route"> & {
     };
   };
   getUri: (config?: FaxiosRequestConfig) => string;
-  create: (instanceConfig?: FaxiosRequestConfig) => FaxiosInstance;
+  create: (instanceConfig?: CreateFaxiosDefaults) => FaxiosInstance;
   Faxios: typeof Faxios;
   CanceledError: typeof CanceledError;
   isCancel: typeof isCancel;
@@ -137,7 +137,7 @@ export type FaxiosInstance = Pick<Faxios, "define" | "route"> & {
 };
 
 // Create the default instance to be exported
-const faxios = createInstance(defaults as unknown as FaxiosRequestConfig);
+const faxios = createInstance(defaults);
 
 // Expose Faxios class to allow class inheritance
 faxios.Faxios = Faxios;
