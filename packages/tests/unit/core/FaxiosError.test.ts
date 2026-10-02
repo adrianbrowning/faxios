@@ -462,6 +462,8 @@ describe("core::FaxiosError", () => {
       [ "no headers", { ...response, headers: undefined }],
       [ "no config", { ...response, config: undefined }],
       [ "a config without headers", { ...response, config: {} }],
+      [ "a config whose headers are only inherited", { ...response, config: Object.create({ headers: {} }) as object }],
+      [ "data that is only inherited", Object.assign(Object.create({ data: 1 }) as object, responseWithoutData) ],
     ])("returns false for ERR_BAD_RESPONSE_SCHEMA whose response has %s", (_label, malformed) => {
       const error = new FaxiosError("Response validation failed", FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config);
       error.issues = [{ message: "bad" }];
