@@ -1,3 +1,4 @@
+// @ts-self-types="./FaxiosError.d.ts" — required for Deno: index.d.ts re-exports SchemaValidationError from here
 "use strict";
 
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
