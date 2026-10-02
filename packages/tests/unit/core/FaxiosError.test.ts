@@ -3,6 +3,7 @@ import { describe, it, expect } from "vitest";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import { isSchemaValidationError } from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
+import type { FaxiosResponse, InternalFaxiosRequestConfig } from "#src/lib/types.js";
 
 describe("core::FaxiosError", () => {
   it("creates an error with message, config, code, request, response, stack and isFaxiosError", () => {
@@ -432,15 +433,43 @@ describe("core::FaxiosError", () => {
   });
 
   describe("isSchemaValidationError", () => {
-    it("returns true for FaxiosError with ERR_BAD_RESPONSE_SCHEMA and issues array", () => {
-      const error = new FaxiosError(
-        "Response validation failed",
-        FaxiosError.ERR_BAD_RESPONSE_SCHEMA,
-        {} as any
-      );
-      (error as any).issues = [{ message: "bad" }];
+    // FaxiosHeaders' loose index signature doesn't unify with FaxiosRequestHeaders; same cast as dispatchRequest.test.ts.
+    const config: InternalFaxiosRequestConfig = { headers: new FaxiosHeaders() as unknown as InternalFaxiosRequestConfig["headers"] };
+    const response: FaxiosResponse = { data: { name: 123 }, status: 200, statusText: "OK", headers: new FaxiosHeaders(), config };
+
+    it("returns true for FaxiosError with ERR_BAD_RESPONSE_SCHEMA, issues and response", () => {
+      const error = new FaxiosError("Response validation failed", FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response);
+      error.issues = [{ message: "bad" }];
 
       expect(isSchemaValidationError(error)).toBe(true);
+    });
+
+    it("returns false for ERR_BAD_RESPONSE_SCHEMA without a response", () => {
+      const error = new FaxiosError("Response validation failed", FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config);
+      error.issues = [{ message: "bad" }];
+
+      expect(isSchemaValidationError(error)).toBe(false);
+    });
+
+    const { data: _data, ...responseWithoutData } = response;
+
+    it.each([
+      [ "an empty object", {}],
+      [ "only data", { data: 1 }],
+      [ "no data", responseWithoutData ],
+      [ "a non-number status", { ...response, status: "200" }],
+      [ "no statusText", { ...response, statusText: undefined }],
+      [ "no headers", { ...response, headers: undefined }],
+      [ "no config", { ...response, config: undefined }],
+      [ "a config without headers", { ...response, config: {} }],
+      [ "a config whose headers are only inherited", { ...response, config: Object.create({ headers: {} }) as object }],
+      [ "data that is only inherited", Object.assign(Object.create({ data: 1 }) as object, responseWithoutData) ],
+    ])("returns false for ERR_BAD_RESPONSE_SCHEMA whose response has %s", (_label, malformed) => {
+      const error = new FaxiosError("Response validation failed", FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config);
+      error.issues = [{ message: "bad" }];
+      Object.assign(error, { response: malformed });
+
+      expect(isSchemaValidationError(error)).toBe(false);
     });
 
     it("returns true for ERR_BAD_REQUEST_SCHEMA with issues", () => {
@@ -469,11 +498,7 @@ describe("core::FaxiosError", () => {
     });
 
     it("returns false for FaxiosError without issues array", () => {
-      const error = new FaxiosError(
-        "Response validation failed",
-        FaxiosError.ERR_BAD_RESPONSE_SCHEMA,
-        {} as any
-      );
+      const error = new FaxiosError("Response validation failed", FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response);
 
       expect(isSchemaValidationError(error)).toBe(false);
     });
@@ -484,16 +509,13 @@ describe("core::FaxiosError", () => {
       expect(isSchemaValidationError("string")).toBe(false);
     });
 
-    it("narrows type so issues is accessible", () => {
-      const error = new FaxiosError(
-        "Response validation failed",
-        FaxiosError.ERR_BAD_RESPONSE_SCHEMA,
-        {} as any
-      );
-      (error as any).issues = [{ message: "expected string" }];
+    it("narrows type so issues and the unvalidated response body are accessible", () => {
+      const error = new FaxiosError("Response validation failed", FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response);
+      error.issues = [{ message: "expected string" }];
 
-      if (isSchemaValidationError(error)) {
+      if (isSchemaValidationError(error) && error.code === FaxiosError.ERR_BAD_RESPONSE_SCHEMA) {
         expect(error.issues[0]!.message).toBe("expected string");
+        expect(error.response.data).toStrictEqual({ name: 123 });
       }
       else {
         expect.fail("should have narrowed");
