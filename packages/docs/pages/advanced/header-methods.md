@@ -180,6 +180,14 @@ Returns a new `AxiosHeaders` instance created from the raw headers passed in, or
 from(thing?: AxiosHeaders | RawAxiosHeaders | string): AxiosHeaders;
 ```
 
+## Static concat
+
+Returns a new `AxiosHeaders` instance created by merging the target objects.
+
+```js
+concat(...targets: Array<AxiosHeaders | RawAxiosHeaders | string | undefined | null>): AxiosHeaders;
+```
+
 ## Shortcuts
 
 The following shortcuts are available:

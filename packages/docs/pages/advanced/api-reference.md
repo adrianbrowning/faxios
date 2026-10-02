@@ -268,24 +268,6 @@ const obj = formToJSON(form);
 console.log(obj); // { name: "Jay", role: "admin" }
 ```
 
-### `getAdapter`
-
-Resolves and returns an adapter function by name or by passing an array of candidate names. faxios uses this internally to select the best available adapter for the current environment.
-
-```ts
-getAdapter(adapters: string | string[]): AxiosAdapter;
-```
-
-```js
-import { getAdapter } from "faxios";
-
-// Get the fetch adapter explicitly
-const fetchAdapter = getAdapter("fetch");
-
-// You can also pass an array; faxios uses the first supported adapter
-const adapter = getAdapter(["fetch"]);
-```
-
 ### `mergeConfig`
 
 Merges two faxios config objects together, applying the same deep-merge strategy that faxios uses internally when combining defaults with per-request options. Later values take precedence.

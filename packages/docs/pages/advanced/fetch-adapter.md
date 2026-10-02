@@ -1,14 +1,6 @@
 # Fetch adapter
 
-The `fetch` adapter is the only built-in adapter and is used in every supported runtime — the browser, Node.js 18+, Deno, and Bun. It is selected by default (`adapter: ['fetch']`), so you do not normally need to configure it. You can set it explicitly if you wish:
-
-```js
-import faxios from 'faxios';
-
-const instance = faxios.create({
-  adapter: 'fetch',
-});
-```
+faxios sends every request through the web-standard `fetch` API, in the browser, Node.js, Deno, and Bun. The fetch adapter is the only transport and there is no `adapter` option to configure. To change how requests are sent, pass your own `fetch` through the `env` option (see [Custom fetch](#custom-fetch)).
 
 The adapter supports response types such as `stream` and `formdata` (if supported by the environment).
 
@@ -16,13 +8,13 @@ The adapter supports response types such as `stream` and `formdata` (if supporte
 Because the `fetch` API cannot emit upload progress events, `onUploadProgress` is not supported. Download progress (`onDownloadProgress`) works as usual.
 :::
 
-To use a proxy or a custom agent/dispatcher, configure it on the underlying runtime (for example via `fetchOptions` or your runtime's `fetch` dispatcher) and pass a custom `fetch` function through the `env` option — see [Custom fetch](#custom-fetch) below.
+Proxies and connection agents are not configured through faxios options. Configure them at the runtime level instead: for example, pass a custom dispatcher/agent via `fetchOptions`, set the runtime's global proxy/dispatcher (Node's `undici` `ProxyAgent`, Deno/Bun proxy environment variables), or pass a custom `fetch` function through the `env` option — see [Custom fetch](#custom-fetch) below.
 
 When `auth` is omitted, the fetch adapter can read HTTP Basic auth credentials from the request URL, for example `https://user:pass@example.com`. Percent-encoded URL credentials are decoded before the `Authorization` header is generated, and `auth` takes precedence over URL-embedded credentials.
 
-## Custom fetch <Badge type="tip" text="v1.12.0+" />
+## Custom fetch
 
-Starting from `v1.12.0`, you can customise the fetch adapter to use a custom `fetch` function instead of the environment global. You can pass a custom `fetch` function, `Request`, and `Response` constructors via the `env` config option. This is useful when working with custom environments or app frameworks that provide their own `fetch` implementation.
+You can customise the fetch adapter to use a custom `fetch` function instead of the environment global. You can pass a custom `fetch` function, `Request`, and `Response` constructors via the `env` config option. This is useful when working with custom environments or app frameworks that provide their own `fetch` implementation.
 
 ::: info
 When using a custom `fetch` function, you may also need to supply matching `Request` and `Response` constructors. If you omit them, the global constructors will be used. If your custom `fetch` is incompatible with the globals, pass `null` to disable them.
@@ -36,7 +28,6 @@ When using a custom `fetch` function, you may also need to supply matching `Requ
 import customFetchFunction from 'customFetchModule';
 
 const instance = faxios.create({
-  adapter: 'fetch',
   onDownloadProgress(e) {
     console.log('downloadProgress', e);
   },
@@ -57,7 +48,6 @@ import { fetch } from '@tauri-apps/plugin-http';
 import faxios from 'faxios';
 
 const instance = faxios.create({
-  adapter: 'fetch',
   onDownloadProgress(e) {
     console.log('downloadProgress', e);
   },
@@ -76,8 +66,7 @@ const { data } = await instance.get('https://google.com');
 ```js
 export async function load({ fetch }) {
   const { data: post } = await faxios.get('https://jsonplaceholder.typicode.com/posts/1', {
-    adapter: 'fetch',
-    env: {
+      env: {
       fetch,
       Request: null,
       Response: null,

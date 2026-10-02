@@ -97,6 +97,10 @@ faxios.interceptors.request.use(
 );
 ```
 
+::: tip
+The options parameter (with `synchronous` and `runWhen` properties) is only supported for request interceptors at the moment. Response interceptors accept it but ignore both properties.
+:::
+
 ## Interceptor execution order
 
 ::: warning Request and response interceptors run in **opposite** orders
@@ -147,5 +151,5 @@ You may add multiple interceptors to the same request or response. The following
   - once caught, another following fulfil-interceptor is called again (just like in a promise chain).
 
 ::: tip
-To gain an in-depth understanding of how interceptors work, you can read the test cases over [here](https://github.com/faxios/faxios/blob/v1.x/test/specs/interceptors.spec.js).
+To gain an in-depth understanding of how interceptors work, you can read the test cases over [here](https://github.com/adrianbrowning/faxios/blob/main/packages/tests/browser/interceptors.browser.test.ts).
 :::

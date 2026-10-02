@@ -3,7 +3,7 @@
 The request config is used to configure the request. There is a wide range of options available, but the only required option is `url`. If the configuration object does not contain a `method` field, the default method is `GET`.
 
 ::: warning Security: decompression-bomb protection is opt-in
-By default `maxContentLength` and `maxBodyLength` are `-1` (unlimited). A malicious or compromised server can return a tiny gzip/deflate/brotli/zstd body that expands to gigabytes and exhaust memory.
+By default `maxContentLength` and `maxBodyLength` are `-1` (unlimited). A malicious or compromised server can return a tiny gzip/deflate/brotli/zstd body that expands to gigabytes and exhaust memory. The fetch adapter enforces these caps in every runtime.
 
 If you call servers you do not fully trust, **set a cap**:
 
@@ -29,11 +29,13 @@ The `baseURL` is the base URL to be prepended to the `url` unless the `url` is a
 
 ### `allowAbsoluteUrls`
 
-The `allowAbsoluteUrls` determines whether or not absolute URLs will override a configured `baseUrl`. When set to true (default), absolute values for `url` will override `baseUrl`. When set to false, absolute values for `url` will always be prepended by `baseUrl`.
+The `allowAbsoluteUrls` determines whether or not absolute URLs will override a configured `baseURL`. When `true`, absolute values for `url` override `baseURL`. When `false`, absolute values for `url` are always prepended by `baseURL`.
+
+If you do not set it, faxios uses the instance default. When the instance defaults set neither `allowAbsoluteUrls` nor `baseURL`, it is `true`; when the instance defaults set `baseURL`, it is `false`.
 
 ### `transformRequest`
 
-The `transformRequest` function allows you to modify the request data before it is sent to the server. This function is called with the request data as its only argument. This is only applicable for request methods `PUT`, `POST`, `PATCH` and `DELETE`. The last function in the array must return a string or an instance of Buffer, ArrayBuffer, FormData or Stream.
+The `transformRequest` function allows you to modify the request data before it is sent to the server. Each function is called with the request data and the request headers, and may modify the headers object. This is only applicable for request methods `PUT`, `POST`, `PATCH` and `DELETE`. The last function in the array must return a string or an instance of Buffer, ArrayBuffer, FormData or Stream.
 
 ### `transformResponse`
 
@@ -131,15 +133,11 @@ Controls how faxios copies headers returned by a `FormData`-like object's `getHe
 
 ### `timeout`
 
-The `timeout` is the number of milliseconds before the request times out. If the request takes longer than `timeout`, the request will be aborted.
+The `timeout` is the number of milliseconds before the request times out. If the request takes longer than `timeout`, the request will be aborted. The default is `0` (no timeout).
 
 ### `withCredentials`
 
-The `withCredentials` property indicates whether or not cross-site Access-Control requests should be made using credentials such as cookies, authorization headers, or TLS client certificates. Setting withCredentials has no effect on same-site requests.
-
-### `adapter`
-
-`adapter` allows custom handling of requests which makes testing easier. Return a promise and supply a valid response — see [adapters](/pages/advanced/adapters) for more information. The only built-in adapter is `'fetch'`, which is the default (`adapter: ['fetch']`). You may pass the string `'fetch'`, an array such as `['fetch']`, or your own custom adapter function.
+The `withCredentials` property indicates whether or not cross-site Access-Control requests should be made using credentials such as cookies, authorization headers, or TLS client certificates. Setting withCredentials has no effect on same-site requests. The default is `false`. It only controls whether the browser sends credentials; it does not control whether the XSRF header is added (see [`withXSRFToken`](#withxsrftoken)).
 
 ### `auth`
 
@@ -192,11 +190,11 @@ Note: Ignored for `responseType` of `stream` or client-side requests
 
 ### `xsrfCookieName`
 
-The `xsrfCookieName` is the name of the cookie to use as a value for `XSRF` token.
+The `xsrfCookieName` is the name of the cookie to use as a value for `XSRF` token. The default is `XSRF-TOKEN`.
 
 ### `xsrfHeaderName`
 
-The `xsrfHeaderName` is the name of the header to use as a value for `XSRF` token.
+The `xsrfHeaderName` is the name of the header to use as a value for `XSRF` token. The default is `X-XSRF-TOKEN`.
 
 ### `withXSRFToken`
 
@@ -256,6 +254,8 @@ faxios.get('/user/12345', {
 
 The `validateStatus` function allows you to override the default status code validation. By default, faxios will reject the promise if the status code is not in the range of 200-299. You can override this behavior by providing a custom `validateStatus` function. The function should return `true` if the status code is within the range you want to accept.
 
+If `validateStatus` is set to `null`, faxios resolves every response. An explicit `validateStatus: undefined` also resolves every response unless `transitional.validateStatusUndefinedResolves` is `false`.
+
 ### `cancelToken`
 
 The `cancelToken` property allows you to create a cancel token that can be used to cancel the request. For more information, see the [cancellation](/pages/advanced/cancellation) documentation.
@@ -279,15 +279,18 @@ The `transitional` property allows you to enable or disable certain transitional
   :::
 
 - `forcedJSONParsing`: Forces faxios to parse the response string as JSON even if `responseType` is not `'json'`.
-- `clarifyTimeoutError`: Clarifies the error message when a request times out. This is useful when you are debugging timeout issues.
+- `clarifyTimeoutError`: When set to `true`, faxios rejects timed-out requests with `ETIMEDOUT` instead of the generic `ECONNABORTED`. Defaults to `false`.
 - `advertiseZstdAcceptEncoding`: When set to `true`, faxios adds `zstd` to the default `Accept-Encoding` request header. Response decompression is handled by the runtime's `fetch` implementation.
-- `legacyInterceptorReqResOrdering`: When set to true we will use the legacy interceptor request/response ordering.
+- `validateStatusUndefinedResolves`: When `true` _(default)_, an explicit `validateStatus: undefined` resolves every response status (legacy behavior). Set to `false` to make an explicit `undefined` behave like an omitted option, so the configured or default validator applies (reject non-2xx).
+- `legacyInterceptorReqResOrdering`: When `true` _(default)_, request interceptors run last-registered-first (LIFO). Set to `false` to run request interceptors in registration order. Response interceptors always run in registration order. See [Interceptor execution order](/pages/advanced/interceptors#interceptor-execution-order).
 
 ### `env`
 
 The `env` property allows you to set some configuration options. For example the FormData class which is used to automatically serialize the payload into a FormData object.
 
 - FormData: window?.FormData || global?.FormData
+
+`env` also accepts custom `fetch`, `Request`, and `Response` implementations for the fetch adapter. See [Custom fetch](/pages/advanced/fetch-adapter#custom-fetch).
 
 ### `formSerializer`
 
@@ -300,6 +303,16 @@ The `formSerializer` option allows you to configure how plain objects are serial
 - `maxDepth` _(default: `100`)_ — maximum nesting depth before throwing `FaxiosError` with code `ERR_FORM_DATA_DEPTH_EXCEEDED`. Set to `Infinity` to disable.
 
 See the [multipart/form-data](/pages/advanced/multipart-form-data-format) page for full details, and the full request config example at the end of this page.
+
+### Schema options
+
+The following options validate request inputs and response data with any Standard Schema v1 compliant schema (Zod, Valibot, ArkType). See [Schema validation](/pages/advanced/schema-validation) for details.
+
+- `responseSchema` — validates `response.data` after `transformResponse`; rejects with `ERR_BAD_RESPONSE_SCHEMA` on failure. TypeScript infers the `response.data` type from the schema's output type.
+- `requestSchema` — validates `config.data` before sending; rejects with `ERR_BAD_REQUEST_SCHEMA`.
+- `paramsSchema` — validates `config.params` before URL construction; rejects with `ERR_BAD_PARAMS_SCHEMA`.
+- `pathParams` — substitutes `{key}` placeholders in the URL.
+- `pathParamsSchema` — validates `pathParams` before substitution; rejects with `ERR_BAD_PATH_PARAMS_SCHEMA`. When set, `pathParams` is required.
 
 ## Full request config example
 
@@ -346,10 +359,6 @@ See the [multipart/form-data](/pages/advanced/multipart-form-data-format) page f
   data: "Country=Brasil&City=Belo Horizonte",
   timeout: 1000,
   withCredentials: false,
-  adapter: function (config) {
-    // Do whatever you want
-  },
-  adapter: "fetch",
   auth: {
     username: "janedoe",
     password: "s00pers3cret"
@@ -377,8 +386,14 @@ See the [multipart/form-data](/pages/advanced/multipart-form-data-format) page f
     forcedJSONParsing: true,
     clarifyTimeoutError: false,
     advertiseZstdAcceptEncoding: false,
+    validateStatusUndefinedResolves: true,
     legacyInterceptorReqResOrdering: true,
   },
+  responseSchema: UserSchema,
+  requestSchema: CreateUserSchema,
+  paramsSchema: QuerySchema,
+  pathParams: { id: "123" },
+  pathParamsSchema: PathSchema,
   env: {
     FormData: window?.FormData || global?.FormData
   },

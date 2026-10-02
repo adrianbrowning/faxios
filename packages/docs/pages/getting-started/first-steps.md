@@ -105,6 +105,28 @@ console.log(response.data);
 
 faxios provides a simple API for making requests. You can use the `faxios.get` method to make a GET request, the `faxios.post` method to make a POST request, and so on. You can also use the `faxios.request` method to make a request with any method.
 
+The `params` option adds query parameters and formats the query string for you:
+
+```js
+// GET /user?ID=12345
+const response = await faxios.get("/user", {
+  params: {
+    ID: 12345,
+  },
+});
+```
+
+To send a `POST` request, pass the body as the second argument:
+
+```js
+const response = await faxios.post("/user", {
+  firstName: "Fred",
+  lastName: "Flintstone",
+});
+```
+
+To run several requests at once, use `Promise.all`. See [Promises](/pages/advanced/promises).
+
 ::: tip Set a timeout in production
 Without a `timeout`, a stalled request can hang indefinitely. Pass one via the request config:
 

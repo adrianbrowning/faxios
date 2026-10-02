@@ -27,6 +27,10 @@ Every faxios request resolves to a response object with the following shape. The
 }
 ```
 
+When using `catch`, or passing a [rejection callback](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then) as the second parameter of `then`, read the response from the `error` object. See [Error handling](/pages/advanced/error-handling).
+
+To validate `data` against a schema, see [Schema validation](/pages/advanced/schema-validation).
+
 ## Accessing response fields
 
 In practice you will usually destructure just the parts you need:

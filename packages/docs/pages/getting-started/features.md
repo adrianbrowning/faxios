@@ -14,7 +14,7 @@ faxios is built entirely on the web-standard Fetch API, which is now its sole HT
 
 ## Browser support
 
-faxios supports all modern and select older browsers, including Chrome, Firefox, Safari, and Edge. faxios is a great choice for building web applications that need to support a wide range of browsers.
+faxios supports the latest versions of Chrome, Firefox, Safari, Opera, and Edge. The browser test suite runs on Chromium, Firefox, and WebKit.
 
 ## Node.js support
 

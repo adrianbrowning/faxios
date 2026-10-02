@@ -28,6 +28,10 @@ Below is a list of potential faxios identified error
 | ERR_NOT_SUPPORT           | Feature or method not supported in the current faxios environment.                             |
 | ERR_INVALID_URL           | Invalid URL provided for faxios request.                                                       |
 | ERR_FORM_DATA_DEPTH_EXCEEDED | An object exceeds the configured `maxDepth` while serializing `params` or form data. Default limit is 100 levels. See [`paramsSerializer`](/pages/advanced/request-config#paramsserializer) and [`formSerializer`](/pages/advanced/request-config#formserializer). |
+| ERR_BAD_RESPONSE_SCHEMA   | `response.data` failed `responseSchema` validation. See [Schema validation](/pages/advanced/schema-validation). |
+| ERR_BAD_REQUEST_SCHEMA    | `config.data` failed `requestSchema` validation. |
+| ERR_BAD_PARAMS_SCHEMA     | `config.params` failed `paramsSchema` validation. |
+| ERR_BAD_PATH_PARAMS_SCHEMA | `config.pathParams` failed `pathParamsSchema` validation. |
 
 ## Handling errors
 

@@ -18,6 +18,22 @@ The `create` method accepts the full [Request Config](/pages/advanced/request-co
 const response = await instance.get("/users/1");
 ```
 
+## Instance methods
+
+Instances have the same methods as the default `faxios` object. faxios merges the config you pass to a method with the instance config.
+
+- `instance.request(config)`
+- `instance.get(url[, config])`
+- `instance.delete(url[, config])`
+- `instance.head(url[, config])`
+- `instance.options(url[, config])`
+- `instance.post(url[, data[, config]])`
+- `instance.put(url[, data[, config]])`
+- `instance.patch(url[, data[, config]])`
+- `instance.getUri([config])`
+
+See [Request aliases](/pages/advanced/request-method-aliases) for the full list, including the form shorthand methods. Instances also have [`define()`](/pages/advanced/define) and [`route()`](/pages/advanced/route).
+
 ## Why use an instance?
 
 ### Per-service base URL

@@ -29,7 +29,7 @@ instance.defaults.headers.common["Authorization"] = AUTH_TOKEN;
 
 ## Config order of precedence
 
-Config will be merged with an order of precedence. The order is as follows, first the library defaults are set, then default properties of the instance, and finally config argument for the request. An example of the order of precedence is shown below:
+Config will be merged with an order of precedence. The order is as follows, first the library defaults are set (see [`defaults/index.ts`](https://github.com/adrianbrowning/faxios/blob/main/packages/lib/src/lib/defaults/index.ts)), then default properties of the instance, and finally config argument for the request. Later values take precedence over earlier ones. An example of the order of precedence is shown below:
 
 First lets create an instance with the defaults provided by the library. At this point the timeout config value is `0` as is the default for the library.
 

@@ -14,3 +14,7 @@
 ### Fixes
 
 - **`options`, `purge`, `link` and `unlink` header groups no longer leak onto the wire:** these method header groups were applied correctly but never removed, so every request also sent a literal header such as `options: [object Object]`. All twelve method header groups are now stripped before the request is sent.
+
+### Documentation
+
+- **Docs site on GitHub Pages:** the documentation now lives at https://adrianbrowning.github.io/faxios/ and deploys when a release is published. The npm README is a short overview that links to it, and `homepage` in `package.json` points there. The site is English-only for now. It adds pages for `define()`, `route()` and schema validation, removes the Adapters page and `adapter` option (faxios has no adapter selection), and replaces the `axios-mock-adapter` testing guidance with mocking through `env.fetch`. (**#26**)

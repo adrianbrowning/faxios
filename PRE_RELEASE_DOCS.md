@@ -28,7 +28,27 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Docs targets:** `docs/es/advanced/headers.md`, `docs/fr/advanced/headers.md`, `docs/zh/advanced/headers.md`.
 - **Required content:** Translate the English `docs/advanced/headers.md` into the three supported locales.
 - **Examples:** None beyond the English source.
-- **Notes:** English-only at time of writing; create translated siblings before next release.
+- **Notes:** English-only at time of writing. Since #26 the es/fr/zh pages are excluded from the site build (see the next entry), so translate this together with the rest of each locale.
+
+### Translated docs hidden from the site
+
+- **Change:** The docs site (GitHub Pages, https://adrianbrowning.github.io/faxios/) ships English only. `packages/docs/.vitepress/config.mts` excludes `es/**`, `fr/**` and `zh/**` through `srcExclude`, and the per-locale nav/sidebar config was removed.
+- **Source:** Issue #26.
+- **Status:** Pending.
+- **Docs targets:** `packages/docs/es|fr|zh/**`, `packages/docs/.vitepress/config.mts` (`locales`, `srcExclude`).
+- **Required content:** Bring each locale in line with the English pages, including the pages added in #26 (`define`, `route`, `schema-validation`), the removal of the Adapters page, and the `env.fetch` testing guidance. Then drop the locale from `srcExclude` and add a `locales` entry with its own nav and sidebar.
+- **Examples:** None beyond the English source.
+- **Notes:** The translated home pages still embed axios's sponsor carousel (`data/sponsors.json` is axios's OpenCollective data). Remove it when re-enabling a locale. `pages/misc/sponsors.md` is excluded for the same reason.
+
+### English docs claims flagged during the #26 README migration
+
+- **Change:** The README-to-site migration checked moved README text against source and found claims in existing English pages that don't match the code. They were left as-is.
+- **Source:** Issue #26.
+- **Status:** Pending.
+- **Docs targets:** `pages/advanced/progress-capturing.md`, `fetch-adapter.md`, `request-config.md`, `file-posting.md`, `type-script.md`, `header-methods.md`, `headers.md`, `pages/getting-started/features.md`.
+- **Required content:** `onUploadProgress` is described as unsupported, but it is typed and wired to request-body stream tracking where the runtime supports request streams (`adapters/fetch.ts`). `isCancel()` is shown narrowing to `CanceledError<T>`, but it returns plain `boolean`. `paramsSerializer.maxDepth`/`formSerializer.maxDepth` work at runtime but are missing from `SerializerOptions`. `features.md` says Node.js back to v12 and other pages say Node.js 18+, but `engines` is `node >=24.0.0`. `header-methods.md` says normalize runs after each interceptor; it runs after each transform pass. The header shortcut list omits `Accept-Encoding` and `Authorization`. `transformResponse` receives `(data, headers, status)`, not only `data`.
+- **Examples:** None.
+- **Notes:** The `onUploadProgress` and `maxDepth` items need a decision: fix the docs, or fix the types/behaviour.
 
 ### Strict request header typing
 

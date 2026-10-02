@@ -16,7 +16,7 @@ Update tests for your changes. Pull requests must pass GitHub Actions.
 
 ## Documentation
 
-Update the [documentation](https://faxios-http.com/docs/intro) when the API changes, so the API and docs stay in sync.
+Update the [documentation](https://adrianbrowning.github.io/faxios/) when the API changes, so the API and docs stay in sync.
 
 ## Dependency and GitHub Actions updates
 

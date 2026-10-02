@@ -12,9 +12,26 @@ faxios can be used to make HTTP request by passing only the config object. The f
 faxios(url: string | AxiosRequestConfig, config?: AxiosRequestConfig);
 ```
 
+```js
+// Send a POST request
+faxios({
+  method: "post",
+  url: "/user/12345",
+  data: {
+    firstName: "Fred",
+    lastName: "Flintstone",
+  },
+});
+
+// Send a GET request (default method)
+faxios("/user/12345");
+```
+
 ## Method aliases
 
 The following aliases are available for making requests:
+
+When using the alias methods, the `url`, `method`, and `data` properties don't need to be specified in config.
 
 ### `request`
 
