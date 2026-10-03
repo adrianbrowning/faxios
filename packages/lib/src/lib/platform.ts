@@ -8,7 +8,7 @@ const _globalThis = globalThis as {
   navigator?: { product?: string; userAgent?: string; };
   WorkerGlobalScope?: unknown;
   self?: { importScripts?: unknown; };
-  FormData?: new (...args: Array<unknown>) => object;
+  FormData?: new () => object;
   Blob?: new (...args: Array<unknown>) => object;
 };
 

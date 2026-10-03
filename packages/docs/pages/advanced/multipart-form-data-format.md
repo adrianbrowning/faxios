@@ -52,11 +52,7 @@ faxios uses the runtime's global `FormData` for serialization. You can override 
 ```js
 import faxios from '@gcmdev/faxios';
 
-class CustomFormData extends FormData {
-  constructor() {
-    super();
-  }
-}
+class CustomFormData extends FormData {}
 
 faxios
   .post(

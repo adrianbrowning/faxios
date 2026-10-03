@@ -286,7 +286,8 @@ export interface FaxiosRequestConfig<D = unknown> {
   transitional?: TransitionalOptions;
   signal?: AbortSignal | GenericAbortSignal;
   env?: {
-    FormData?: new (...args: Array<unknown>) => object;
+    /** Constructed with no arguments to serialize `multipart/form-data` payloads; `null` falls back to the global `FormData`. */
+    FormData?: (new () => object) | null;
     fetch?: (
       input: string | URL | Request,
       init?: RequestInit
