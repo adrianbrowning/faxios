@@ -13,10 +13,6 @@ type HeaderMatcher =
   | RegExp
   | ((this: FaxiosHeaders, value: string, name: string) => boolean);
 
-type RewriteOption =
-  | boolean
-  | ((this: FaxiosHeaders, value: string, name: string) => boolean);
-
 type HeaderInput =
   | Record<string, unknown>
   | FaxiosHeaders
@@ -161,22 +157,22 @@ class FaxiosHeaders {
   // Accessors generated at runtime by FaxiosHeaders.accessor([...]) below.
   // Declared here so consumers get real types instead of the index signature.
   declare getContentType: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
-  declare setContentType: (value: FaxiosHeaderValue, rewrite?: RewriteOption) => this;
+  declare setContentType: (value: FaxiosHeaderValue, rewrite?: boolean) => this;
   declare hasContentType: (matcher?: HeaderMatcher) => boolean;
   declare getContentLength: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
-  declare setContentLength: (value: FaxiosHeaderValue, rewrite?: RewriteOption) => this;
+  declare setContentLength: (value: FaxiosHeaderValue, rewrite?: boolean) => this;
   declare hasContentLength: (matcher?: HeaderMatcher) => boolean;
   declare getAccept: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
-  declare setAccept: (value: FaxiosHeaderValue, rewrite?: RewriteOption) => this;
+  declare setAccept: (value: FaxiosHeaderValue, rewrite?: boolean) => this;
   declare hasAccept: (matcher?: HeaderMatcher) => boolean;
   declare getAcceptEncoding: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
-  declare setAcceptEncoding: (value: FaxiosHeaderValue, rewrite?: RewriteOption) => this;
+  declare setAcceptEncoding: (value: FaxiosHeaderValue, rewrite?: boolean) => this;
   declare hasAcceptEncoding: (matcher?: HeaderMatcher) => boolean;
   declare getUserAgent: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
-  declare setUserAgent: (value: FaxiosHeaderValue, rewrite?: RewriteOption) => this;
+  declare setUserAgent: (value: FaxiosHeaderValue, rewrite?: boolean) => this;
   declare hasUserAgent: (matcher?: HeaderMatcher) => boolean;
   declare getAuthorization: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
-  declare setAuthorization: (value: FaxiosHeaderValue, rewrite?: RewriteOption) => this;
+  declare setAuthorization: (value: FaxiosHeaderValue, rewrite?: boolean) => this;
   declare hasAuthorization: (matcher?: HeaderMatcher) => boolean;
 
   constructor(
@@ -188,7 +184,7 @@ class FaxiosHeaders {
   set(
     header: HeaderInput,
     valueOrRewrite?: unknown,
-    rewrite?: RewriteOption
+    rewrite?: boolean
   ): this {
     const self = this;
 
