@@ -14,9 +14,6 @@
         "**/*.{js,ts,cjs,mjs}"
       ],
       "project": ["**/*.{js,ts,cjs,mjs,mts}"],
-      "ignore": [
-        "smoke/**"
-      ],
       "ignoreDependencies": ["@gcmdev/faxios", "zod"]
     },
     "packages/docs": {
