@@ -29,7 +29,7 @@ function serializeObjectPayload(
   data: unknown,
   contentType: string,
   formSerializer: Record<string, unknown> | undefined,
-  FormDataCtor: (new (...args: Array<unknown>) => object) | undefined
+  FormDataCtor: (new () => object) | null | undefined
 ): unknown {
   if (contentType.indexOf("application/x-www-form-urlencoded") > -1) {
     return toURLEncodedForm(data, formSerializer).toString();
@@ -196,9 +196,7 @@ const defaults: FaxiosDefaults = {
   maxBodyLength: -1,
 
   env: {
-    FormData: platform.classes.FormData as unknown as
-      | (new (...args: Array<unknown>) => object)
-      | undefined,
+    FormData: platform.classes.FormData,
   },
 
   validateStatus: function validateStatus(status: number) {

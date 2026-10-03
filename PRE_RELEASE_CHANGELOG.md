@@ -17,6 +17,7 @@
 
 - **`maxDepth` and `env.Request: null` / `env.Response: null` type-check:** `formSerializer.maxDepth` and `paramsSerializer.maxDepth` were honoured at runtime but missing from `SerializerOptions`, and `env.Request`/`env.Response` rejected the documented `null` that disables a constructor for an incompatible custom `fetch`. Both are now in the public types. (**#25**)
 - **`options`, `purge`, `link` and `unlink` header groups no longer leak onto the wire:** these method header groups were applied correctly but never removed, so every request also sent a literal header such as `options: [object Object]`. All twelve method header groups are now stripped before the request is sent.
+- **`env.FormData` accepts the runtime's `FormData`:** `faxios.create({ env: { FormData } })` and per-request `env: { FormData }` failed strict TypeScript with the DOM lib, because `env.FormData` was typed `new (...args: unknown[]) => object` and the DOM constructor's typed parameters can't accept `unknown`. faxios only ever calls it with no arguments, so it is now typed `(new () => object) | null`. That accepts the DOM and Node/undici `FormData`, subclasses such as `class CustomFormData extends FormData {}`, and `null`, which falls back to the global `FormData` as it already did at runtime. A constructor with required parameters is now a type error, since faxios never passes any. (**#73**)
 
 ### Documentation
 

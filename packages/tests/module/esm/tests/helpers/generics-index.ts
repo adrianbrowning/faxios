@@ -6,6 +6,7 @@
 // - serializer maxDepth and nullable env.Request/env.Response
 // - instance defaults typed as header buckets plus request config
 // - isFaxiosError/isCancel narrow `unknown` as type predicates
+// - env.FormData accepts the runtime FormData constructor (and null)
 import faxios, { CanceledError, FaxiosHeaders, isCancel, isFaxiosError } from "faxios";
 import type { FaxiosHeaderValue, FaxiosResponse } from "faxios";
 
@@ -127,6 +128,16 @@ function typeGuardsNarrow(e: unknown): void {
   }
 }
 
+function envFormDataAcceptsRuntimeConstructor(): void {
+  faxios.create({ env: { FormData } });
+  void faxios.get("/x", { env: { FormData } });
+  class CustomFormData extends FormData {}
+  faxios.create({ env: { FormData: CustomFormData } });
+  faxios.create({ env: { FormData: null } });
+  // @ts-expect-error - env.FormData must be a constructor, not a factory
+  faxios.create({ env: { FormData: () => new FormData() } });
+}
+
 void generics;
 void headerAccessorsAreTyped;
 void indexSignatureRemoved;
@@ -134,3 +145,4 @@ void requestBodyIsTyped;
 void serializerAndEnvOptionsAreTyped;
 void defaultsAreTyped;
 void typeGuardsNarrow;
+void envFormDataAcceptsRuntimeConstructor;
