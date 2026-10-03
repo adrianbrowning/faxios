@@ -8,6 +8,7 @@
 // - isFaxiosError/isCancel narrow `unknown` as type predicates
 // - env.FormData accepts the runtime FormData constructor (and null)
 // - FaxiosRequestHeaders accessors match the ones FaxiosHeaders registers at runtime
+// - header `rewrite` is boolean only (a function was never honoured)
 import faxios, { CanceledError, FaxiosHeaders, isCancel, isFaxiosError } from "faxios";
 import type { FaxiosHeaderValue, FaxiosRequestHeaders, FaxiosResponse } from "faxios";
 
@@ -69,6 +70,29 @@ function requestHeaderAccessorsMatchRuntime(): void {
       return data;
     } ],
   });
+}
+
+function headerRewriteIsBoolean(requestHeaders: FaxiosRequestHeaders): void {
+  const h = new FaxiosHeaders({ "X-A": "old" });
+  h.set("X-A", "v", true);
+  h.set("X-A", "v", false);
+  h.set("X-A", "v");
+  h.setContentType("text/plain", true);
+  h.setAuthorization("Bearer t", false);
+  h.setAccept("*/*");
+  requestHeaders.set("X-A", "v", true);
+  requestHeaders.setContentType("text/plain", false);
+
+  // @ts-expect-error - rewrite is boolean; a function was never called
+  h.set("X-A", "v", () => true);
+  // @ts-expect-error - accessor rewrite is boolean; a function was never called
+  h.setContentType("text/plain", () => true);
+  // @ts-expect-error - FaxiosRequestHeaders rewrite is boolean
+  requestHeaders.set("X-A", "v", () => true);
+  // @ts-expect-error - FaxiosRequestHeaders accessor rewrite is boolean
+  requestHeaders.setAuthorization("Bearer t", () => true);
+  // @ts-expect-error - FaxiosRequestHeaders accessor rewrite is boolean
+  requestHeaders.setAcceptEncoding("gzip", () => true);
 }
 
 function indexSignatureRemoved(): void {
@@ -168,6 +192,7 @@ function envFormDataAcceptsRuntimeConstructor(): void {
 void generics;
 void headerAccessorsAreTyped;
 void requestHeaderAccessorsMatchRuntime;
+void headerRewriteIsBoolean;
 void indexSignatureRemoved;
 void requestBodyIsTyped;
 void serializerAndEnvOptionsAreTyped;
