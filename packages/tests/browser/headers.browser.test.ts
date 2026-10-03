@@ -18,7 +18,7 @@ function testHeaderValue(headers: Headers, key: string, val?: unknown) {
 describe("headers (vitest browser)", () => {
   it("should default common headers", async () => {
     using mock = installFetchMock();
-    const headers = faxios.defaults.headers.common as Record<string, unknown>;
+    const headers = faxios.defaults.headers.common;
 
     await faxios("/foo");
 
@@ -34,9 +34,7 @@ describe("headers (vitest browser)", () => {
   it("should respect common Content-Type header", async () => {
     using mock = installFetchMock();
     const instance = faxios.create();
-    (instance.defaults.headers.common as Record<string, string>)[
-      "Content-Type"
-    ] = "application/custom";
+    instance.defaults.headers.common["Content-Type"] = "application/custom";
 
     await instance.patch("/foo", "");
 
@@ -47,9 +45,7 @@ describe("headers (vitest browser)", () => {
 
   it("should add extra headers for post", async () => {
     using mock = installFetchMock();
-    const headers = FaxiosHeaders.from(
-      faxios.defaults.headers.common as Record<string, unknown>
-    ).toJSON();
+    const headers = FaxiosHeaders.from(faxios.defaults.headers.common).toJSON();
 
     await faxios.post("/foo", "fizz=buzz");
 

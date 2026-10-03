@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import faxios from "#src/index.js";
-import type { RawFaxiosRequestHeaders } from "#src/lib/types.js";
 
 import { installFetchMock } from "./helpers/fetchMock.js";
 
@@ -125,46 +124,25 @@ describe("options (vitest browser)", () => {
     const instance1 = faxios.create();
     const instance2 = faxios.create();
 
-    (
-      instance1.defaults.headers.common as RawFaxiosRequestHeaders
-    ).Authorization = "faketoken";
-    (
-      instance2.defaults.headers.common as RawFaxiosRequestHeaders
-    ).Authorization = "differentfaketoken";
+    instance1.defaults.headers.common.Authorization = "faketoken";
+    instance2.defaults.headers.common.Authorization = "differentfaketoken";
 
-    (instance1.defaults.headers.common as RawFaxiosRequestHeaders)[
-      "Content-Type"
-    ] = "application/xml";
-    (instance2.defaults.headers.common as RawFaxiosRequestHeaders)[
-      "Content-Type"
-    ] = "application/x-www-form-urlencoded";
+    instance1.defaults.headers.common["Content-Type"] = "application/xml";
+    instance2.defaults.headers.common["Content-Type"] =
+      "application/x-www-form-urlencoded";
 
-    expect(
-      (faxios.defaults.headers.common as RawFaxiosRequestHeaders).Authorization
-    ).toBeUndefined();
-    expect(
-      (instance1.defaults.headers.common as RawFaxiosRequestHeaders)
-        .Authorization
-    ).toBe("faketoken");
-    expect(
-      (instance2.defaults.headers.common as RawFaxiosRequestHeaders)
-        .Authorization
-    ).toBe("differentfaketoken");
+    expect(faxios.defaults.headers.common.Authorization).toBeUndefined();
+    expect(instance1.defaults.headers.common.Authorization).toBe("faketoken");
+    expect(instance2.defaults.headers.common.Authorization).toBe(
+      "differentfaketoken"
+    );
 
-    expect(
-      (faxios.defaults.headers.common as RawFaxiosRequestHeaders)[
-        "Content-Type"
-      ]
-    ).toBeUndefined();
-    expect(
-      (instance1.defaults.headers.common as RawFaxiosRequestHeaders)[
-        "Content-Type"
-      ]
-    ).toBe("application/xml");
-    expect(
-      (instance2.defaults.headers.common as RawFaxiosRequestHeaders)[
-        "Content-Type"
-      ]
-    ).toBe("application/x-www-form-urlencoded");
+    expect(faxios.defaults.headers.common["Content-Type"]).toBeUndefined();
+    expect(instance1.defaults.headers.common["Content-Type"]).toBe(
+      "application/xml"
+    );
+    expect(instance2.defaults.headers.common["Content-Type"]).toBe(
+      "application/x-www-form-urlencoded"
+    );
   });
 });

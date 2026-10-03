@@ -8,11 +8,13 @@ import faxios from "@gcmdev/faxios";
 const AUTH_TOKEN = "Bearer my-token";
 
 faxios.defaults.baseURL = "https://jsonplaceholder.typicode.com/posts";
-faxios.defaults.headers["Authorization"] = AUTH_TOKEN;
+faxios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+faxios.defaults.headers.post["Content-Type"] =
+  "application/x-www-form-urlencoded";
 ```
 
 ::: warning Global headers are sent to every host
-If your application talks to more than one domain, setting `faxios.defaults.headers["Authorization"]` will send the token to **all** of them, including third-party APIs you may not control. Use a [custom instance](#custom-instance-defaults) with a scoped `baseURL` for any client that carries credentials.
+If your application talks to more than one domain, setting `faxios.defaults.headers.common["Authorization"]` will send the token to **all** of them, including third-party APIs you may not control. Use a [custom instance](#custom-instance-defaults) with a scoped `baseURL` for any client that carries credentials.
 :::
 
 ## Custom instance defaults
@@ -30,7 +32,7 @@ const instance = faxios.create({
   headers: { Authorization: "foobar" },
 });
 
-instance.defaults.headers["Authorization"] = AUTH_TOKEN;
+instance.defaults.headers.common["Authorization"] = AUTH_TOKEN;
 ```
 
 ## Config order of precedence
