@@ -133,7 +133,7 @@ const response = await faxios.get("https://example.com/data", {
 });
 ```
 
-See [`timeout` in the request config](/pages/advanced/request-config#timeout) and [Error handling](/pages/advanced/error-handling) for the matching `ECONNABORTED` / `ETIMEDOUT` codes.
+A request that runs past its `timeout` rejects with an `ETIMEDOUT` error. See [`timeout` in the request config](/pages/advanced/request-config#timeout) and [Error handling](/pages/advanced/error-handling).
 :::
 
 ## Next steps
