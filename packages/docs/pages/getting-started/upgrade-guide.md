@@ -9,17 +9,17 @@ This guide is intended to help you upgrade your project from one version of the 
 In v1.x, the import statement has been changed to use the `default` export. This means that you will need to update your import statements to use the `default` export.
 
 ```diff
-- import { faxios } from "faxios";
-+ import faxios from "faxios";
+- import { faxios } from "@gcmdev/faxios";
++ import faxios from "@gcmdev/faxios";
 ```
 
 ### Changes to the interceptor system
 
-In v1.x you need to leverage the type `InternalAxiosRequestConfig` to type the `config` parameter in the `request` interceptor. This is because the `config` parameter is now typed as `InternalAxiosRequestConfig` instead of the public `AxiosRequestConfig` type.
+In v1.x you need to leverage the type `InternalFaxiosRequestConfig` to type the `config` parameter in the `request` interceptor. This is because the `config` parameter is now typed as `InternalFaxiosRequestConfig` instead of the public `FaxiosRequestConfig` type.
 
 ```diff
-- faxios.interceptors.request.use((config: AxiosRequestConfig) => {
-+ faxios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+- faxios.interceptors.request.use((config: FaxiosRequestConfig) => {
++ faxios.interceptors.request.use((config: InternalFaxiosRequestConfig) => {
     return config;
   });
 ```
@@ -35,11 +35,12 @@ In v1.x, the shape of the request headers has been changed to drop the `common` 
 +       request.headers.Authorization = ...
 ```
 
-Default headers that were previously under `common`, `get`, `post`, etc. are now set directly on `faxios.defaults.headers`:
+Default headers can be set directly on `faxios.defaults.headers` and apply to every method. The `common`, `get`, `post`, etc. groups are still supported for method-specific defaults; a key set directly on `faxios.defaults.headers` takes precedence over the same key in a group:
 
-```diff
-- faxios.defaults.headers.common["Accept"] = "application/json";
-+ faxios.defaults.headers["Accept"] = "application/json";
+```js
+import faxios from "@gcmdev/faxios";
+
+faxios.defaults.headers["Accept"] = "application/json";
 ```
 
 ### Multipart form data
@@ -61,7 +62,8 @@ v1.x introduced several breaking changes to how URL parameters are serialized. T
 
 **`params` are now percent-encoded by default.** If your backend expected raw brackets from qs-style encoding, you may need to configure a custom serializer:
 
-```js
+```js check=skip
+import faxios from "@gcmdev/faxios";
 import qs from 'qs';
 
 faxios.create({

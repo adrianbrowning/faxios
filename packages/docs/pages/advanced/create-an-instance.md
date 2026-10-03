@@ -3,7 +3,7 @@
 `faxios.create()` lets you create a pre-configured faxios instance. The instance shares the same request and response API as the default `faxios` object, but uses the config you provide as its baseline for every request. This is the recommended way to use faxios in any application larger than a single file.
 
 ```ts
-import faxios from "faxios";
+import faxios from "@gcmdev/faxios";
 
 const instance = faxios.create({
   baseURL: "https://api.example.com",
@@ -15,6 +15,10 @@ const instance = faxios.create({
 The `create` method accepts the full [Request Config](/pages/advanced/request-config) object. You can then use the instance just like the default faxios object:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
+const instance = faxios.create({ baseURL: "https://api.example.com" });
+
 const response = await instance.get("/users/1");
 ```
 
@@ -41,6 +45,8 @@ See [Request aliases](/pages/advanced/request-method-aliases) for the full list,
 In most apps you talk to more than one API. Creating a separate instance per service avoids repeating the base URL on every call:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const githubApi = faxios.create({ baseURL: "https://api.github.com" });
 const internalApi = faxios.create({ baseURL: "https://api.internal.example.com" });
 
@@ -53,6 +59,10 @@ const { data: users } = await internalApi.get("/users");
 Attach an auth token to every request from one instance without touching others:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
+const getToken = () => "my-token";
+
 const authApi = faxios.create({
   baseURL: "https://api.example.com",
   headers: {
@@ -66,6 +76,8 @@ const authApi = faxios.create({
 Different services have different reliability characteristics. Set a tight timeout for real-time services and a relaxed one for batch jobs:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const realtimeApi = faxios.create({ baseURL: "https://realtime.example.com", timeout: 2000 });
 const batchApi    = faxios.create({ baseURL: "https://batch.example.com",    timeout: 60000 });
 ```
@@ -75,6 +87,8 @@ const batchApi    = faxios.create({ baseURL: "https://batch.example.com",    tim
 Interceptors added to an instance only apply to that instance, keeping your concerns separate:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const loggingApi = faxios.create({ baseURL: "https://api.example.com" });
 
 loggingApi.interceptors.request.use((config) => {
@@ -88,6 +102,8 @@ loggingApi.interceptors.request.use((config) => {
 Config passed at request time always overrides the instance defaults:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const api = faxios.create({ timeout: 5000 });
 
 // This specific request uses a 30-second timeout instead
@@ -98,6 +114,11 @@ await api.get("/slow-endpoint", { timeout: 30000 });
 Instance defaults can also be changed after creation by writing to `instance.defaults`:
 
 ```js
-instance.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
+import faxios from "@gcmdev/faxios";
+
+const instance = faxios.create();
+const newToken = "new-token";
+
+instance.defaults.headers["Authorization"] = `Bearer ${newToken}`;
 ```
 :::

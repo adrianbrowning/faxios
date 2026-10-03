@@ -7,7 +7,9 @@ By default, `maxContentLength` and `maxBodyLength` are set to `-1` (unlimited). 
 **If you make requests to servers you do not fully trust, you MUST set a `maxContentLength` (and `maxBodyLength`) suitable for your workload.** The fetch adapter enforces the limit while the response is read, so setting it is sufficient to neutralize decompression-bomb attacks.
 
 ```js
-faxios.get('https://example.com/data', {
+import faxios from "@gcmdev/faxios";
+
+await faxios.get('https://example.com/data', {
   maxContentLength: 10 * 1024 * 1024, // 10 MB
   maxBodyLength: 10 * 1024 * 1024,
 });

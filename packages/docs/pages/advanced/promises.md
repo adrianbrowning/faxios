@@ -7,6 +7,8 @@ faxios is built on top of the native ES6 Promise API. Every faxios request retur
 Because faxios returns a standard Promise, you can use `.then()`, `.catch()`, and `.finally()` to handle the result:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 faxios.get("/api/users")
   .then((response) => {
     console.log(response.data);
@@ -24,15 +26,20 @@ faxios.get("/api/users")
 The recommended approach for most codebases is `async/await`, which makes asynchronous code read like synchronous code:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
+/** @param {number} id */
 async function fetchUser(id) {
   try {
     const response = await faxios.get(`/api/users/${id}`);
     return response.data;
   } catch (error) {
-    console.error("Failed to fetch user:", error.message);
+    console.error("Failed to fetch user:", error);
     throw error;
   }
 }
+
+const user = await fetchUser(1);
 ```
 
 ## Parallel requests
@@ -40,6 +47,8 @@ async function fetchUser(id) {
 Because faxios returns a standard Promise, you can use `Promise.all` to make multiple requests at the same time and wait for all of them to complete:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const [users, posts] = await Promise.all([
   faxios.get("/api/users"),
   faxios.get("/api/posts"),
@@ -53,6 +62,8 @@ console.log(users.data, posts.data);
 :::
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const results = await Promise.allSettled([
   faxios.get("/api/users"),
   faxios.get("/api/posts"),
@@ -71,8 +82,10 @@ results.forEach((result) => {
 
 You can chain `.then()` calls to run requests sequentially, passing data from one to the next:
 
-```js
-faxios.get("/api/user/1")
+```ts
+import faxios from "@gcmdev/faxios";
+
+faxios.get<{ id: number }>("/api/user/1")
   .then(({ data: user }) => faxios.get(`/api/posts?userId=${user.id}`))
   .then(({ data: posts }) => {
     console.log("Posts for user:", posts);

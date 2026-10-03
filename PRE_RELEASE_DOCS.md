@@ -42,13 +42,13 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 
 ### English docs claims flagged during the #26 README migration
 
-- **Change:** The README-to-site migration checked moved README text against source and found claims in existing English pages that don't match the code. They were left as-is.
-- **Source:** Issue #26.
-- **Status:** Pending.
-- **Docs targets:** `pages/advanced/progress-capturing.md`, `fetch-adapter.md`, `request-config.md`, `file-posting.md`, `type-script.md`, `header-methods.md`, `headers.md`, `pages/getting-started/features.md`.
-- **Required content:** `onUploadProgress` is described as unsupported, but it is typed and wired to request-body stream tracking where the runtime supports request streams (`adapters/fetch.ts`). `isCancel()` is shown narrowing to `CanceledError<T>`, but it returns plain `boolean`. `paramsSerializer.maxDepth`/`formSerializer.maxDepth` work at runtime but are missing from `SerializerOptions`. `features.md` says Node.js back to v12 and other pages say Node.js 18+, but `engines` is `node >=24.0.0`. `header-methods.md` says normalize runs after each interceptor; it runs after each transform pass. The header shortcut list omits `Accept-Encoding` and `Authorization`. `transformResponse` receives `(data, headers, status)`, not only `data`.
+- **Change:** The README-to-site migration checked moved README text against source and found claims in existing English pages that don't match the code.
+- **Source:** Issue #26; fixed in #25.
+- **Status:** Applied.
+- **Docs targets:** `pages/advanced/progress-capturing.md`, `fetch-adapter.md`, `request-config.md`, `file-posting.md`, `type-script.md`, `header-methods.md`, `multipart-form-data-format.md`, `pages/getting-started/features.md`.
+- **Required content:** `onUploadProgress` fires where the runtime's `fetch` supports streaming request bodies. `isCancel()` and `isFaxiosError()` return plain `boolean`, so the pages narrow with `instanceof`. `maxDepth` is now typed on both serializers. Node.js 24+ per `engines`. Normalize runs after the transform passes. The header shortcut list matches `FaxiosHeaders`. `transformResponse` receives `(data, headers, status)`.
 - **Examples:** None.
-- **Notes:** The `onUploadProgress` and `maxDepth` items need a decision: fix the docs, or fix the types/behaviour.
+- **Notes:** Translated pages still carry the old claims; fix them when re-enabling each locale.
 
 ### Strict request header typing
 

@@ -2,11 +2,11 @@
 
 ## Importing types
 
-faxios ships with TypeScript definitions out of the box. You can import the types you need directly from `"faxios"`:
+faxios ships with TypeScript definitions out of the box. You can import the types you need directly from `"@gcmdev/faxios"`:
 
 ```ts
-import faxios from "faxios";
-import type { AxiosRequestConfig, AxiosResponse, FaxiosError } from "faxios";
+import faxios, { FaxiosError } from "@gcmdev/faxios";
+import type { FaxiosRequestConfig, FaxiosResponse } from "@gcmdev/faxios";
 ```
 
 ## Typing a request
@@ -14,7 +14,7 @@ import type { AxiosRequestConfig, AxiosResponse, FaxiosError } from "faxios";
 Use a generic type parameter on the response to tell TypeScript what shape your data will have:
 
 ```ts
-import faxios from "faxios";
+import faxios from "@gcmdev/faxios";
 
 type Post = {
   userId: number;
@@ -33,7 +33,7 @@ console.log(response.data.title); // TypeScript knows this is a string
 Wrap requests in functions with explicit return types for maximum type safety:
 
 ```ts
-import faxios, { AxiosResponse } from "faxios";
+import faxios from "@gcmdev/faxios";
 
 type Post = {
   userId: number;
@@ -55,6 +55,8 @@ const getPost = async (id: number): Promise<Post> => {
 You can type both the request body and the expected response:
 
 ```ts
+import faxios from "@gcmdev/faxios";
+
 type CreatePostBody = {
   title: string;
   body: string;
@@ -77,10 +79,10 @@ const createPost = async (data: CreatePostBody): Promise<CreatePostResponse> => 
 Create a typed instance so your base URL and headers are baked in:
 
 ```ts
-import faxios from "faxios";
-import type { AxiosInstance } from "faxios";
+import faxios from "@gcmdev/faxios";
+import type { FaxiosInstance } from "@gcmdev/faxios";
 
-const api: AxiosInstance = faxios.create({
+const api: FaxiosInstance = faxios.create({
   baseURL: "https://api.example.com",
   timeout: 5000,
 });
@@ -88,29 +90,32 @@ const api: AxiosInstance = faxios.create({
 
 ## Typed interceptors
 
-Use `InternalAxiosRequestConfig` (not `AxiosRequestConfig`) for request interceptors in v1.x:
+Use `InternalFaxiosRequestConfig` (not `FaxiosRequestConfig`) for request interceptors:
 
 ```ts
-import faxios from "faxios";
-import type { InternalAxiosRequestConfig, AxiosResponse } from "faxios";
+import faxios from "@gcmdev/faxios";
+import type { InternalFaxiosRequestConfig, FaxiosResponse } from "@gcmdev/faxios";
 
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+const api = faxios.create({ baseURL: "https://api.example.com" });
+const getToken = () => "my-token";
+
+api.interceptors.request.use((config: InternalFaxiosRequestConfig) => {
   config.headers.set("Authorization", `Bearer ${getToken()}`);
   return config;
 });
 
 api.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  (error) => Promise.reject(error)
+  (response: FaxiosResponse) => response,
+  (error: unknown) => Promise.reject(error)
 );
 ```
 
 ## Typing errors
 
-Use `faxios.isAxiosError()` to narrow the type of a caught error:
+Use `instanceof FaxiosError` to narrow a caught error. `error.response.data` is typed as `unknown`, so assert (or validate) the shape your API returns:
 
-```ts
-import faxios, { FaxiosError } from "faxios";
+```ts status=401
+import faxios, { FaxiosError } from "@gcmdev/faxios";
 
 type ApiError = {
   message: string;
@@ -120,9 +125,9 @@ type ApiError = {
 try {
   await faxios.get("/api/protected-resource");
 } catch (error) {
-  if (faxios.isAxiosError<ApiError>(error)) {
-    // error.response?.data is typed as ApiError
-    console.error(error.response?.data.message);
+  if (error instanceof FaxiosError) {
+    const data = error.response?.data as ApiError | undefined;
+    console.error(data?.message);
     console.error(error.response?.status);
   } else {
     throw error;
@@ -135,4 +140,4 @@ try {
 faxios is published as ESM only, so there are a few caveats depending on your setup:
 
 - The recommended setting is `"moduleResolution": "node16"` (implied by `"module": "node16"`). This requires TypeScript 4.7 or greater.
-- There is no CJS build and no `index.d.cts`. `require('faxios')` works only through Node's ESM interop.
+- There is no CJS build and no `index.d.cts`; load faxios with `import`.

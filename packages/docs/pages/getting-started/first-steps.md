@@ -4,89 +4,80 @@ Welcome to the faxios documentation! This guide will help you get started with f
 
 ## Installing
 
-You can use faxios in your project in a few different ways. The most common way is to install it from npm and include it in your project. But we also support jsDelivr, unpkg, and more.
+You can use faxios in your project in a few different ways. The most common way is to install it from npm and include it in your project. You can also load it as an ES module from a CDN such as jsDelivr or unpkg.
 
 #### Using npm
 
 ```bash
-npm install faxios
+npm install @gcmdev/faxios
 ```
 
 #### Using pnpm
 
 ```bash
-pnpm install faxios
+pnpm add @gcmdev/faxios
 ```
 
 #### Using yarn
 
 ```bash
-yarn add faxios
+yarn add @gcmdev/faxios
 ```
 
 #### Using bun
 
 ```bash
-bun add faxios
+bun add @gcmdev/faxios
 ```
 
 #### Using deno
 
 ```bash
-deno install npm:faxios
+deno install npm:@gcmdev/faxios
 ```
 
 #### Using jsDelivr
 
-When using jsDelivr we recommend using the minified version as well as pinning the version number to avoid unexpected changes. If you would like to use the latest version you can do so by dropping the version number. This is strongly discouraged for production use as it can lead to unexpected changes in your application.
+faxios is ESM-only, so load it from a `<script type="module">`. jsDelivr's `+esm` endpoint serves the package as a single ES module. Pin the version number to avoid unexpected changes. If you would like to use the latest version you can do so by dropping the version number. This is strongly discouraged for production use as it can lead to unexpected changes in your application.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/faxios@<x.x.x>/dist/faxios.min.js"></script>
+<script type="module">
+  import faxios from "https://cdn.jsdelivr.net/npm/@gcmdev/faxios@<x.x.x>/+esm";
+</script>
 ```
 
 #### Using unpkg
 
-When using unpkg we recommend using the minified version as well as pinning the version number to avoid unexpected changes. If you would like to use the latest version you can do so by dropping the version number. This is strongly discouraged for production use as it can lead to unexpected changes in your application.
+unpkg serves the package files as published, so import the ES module entry point from a `<script type="module">`. Pin the version number to avoid unexpected changes. If you would like to use the latest version you can do so by dropping the version number. This is strongly discouraged for production use as it can lead to unexpected changes in your application.
 
 ```html
-<script src="https://unpkg.com/faxios@<x.x.x>/dist/faxios.min.js"></script>
+<script type="module">
+  import faxios from "https://unpkg.com/@gcmdev/faxios@<x.x.x>/dist/index.js";
+</script>
 ```
 
 ## Importing faxios
 
-Once installed, you can import the library using either `import` or `require`:
+Once installed, you can import the library with `import`:
 
 ```js
-import faxios, { isCancel, FaxiosError } from "faxios";
+import faxios, { isCancel, FaxiosError } from "@gcmdev/faxios";
 ```
 
 You can also use the default export, since the named export is just a re-export from the faxios factory:
 
 ```js
-import faxios from "faxios";
+import faxios from "@gcmdev/faxios";
 
 console.log(faxios.isCancel("something"));
 ```
 
-If you use `require` for importing, **only the default export is available**:
-
-```js
-const faxios = require("faxios");
-
-console.log(faxios.isCancel("something"));
-```
+faxios is ESM-only and ships no CommonJS build. From CommonJS code, load it with a dynamic `import()`.
 
 For some bundlers and ES6 linters you may need:
 
 ```js
-import { default as faxios } from "faxios";
-```
-
-For custom or legacy environments where module resolution misbehaves, you can import the prebuilt bundle directly:
-
-```js
-const faxios = require("faxios/dist/browser/faxios.cjs"); // browser CommonJS bundle (ES2017)
-// const faxios = require("faxios/dist/node/faxios.cjs"); // node CommonJS bundle (ES2017)
+import { default as faxios } from "@gcmdev/faxios";
 ```
 
 ## Making your first request
@@ -94,7 +85,7 @@ const faxios = require("faxios/dist/browser/faxios.cjs"); // browser CommonJS bu
 An faxios request can be made in as few as two lines of code. Making your first request with faxios is very simple. You can make a request to any API by providing the URL and method. For example, to make a GET request to the JSONPlaceholder API, you can use the following code:
 
 ```js
-import faxios from "faxios";
+import faxios from "@gcmdev/faxios";
 
 const response = await faxios.get(
   "https://jsonplaceholder.typicode.com/posts/1"
@@ -108,6 +99,8 @@ faxios provides a simple API for making requests. You can use the `faxios.get` m
 The `params` option adds query parameters and formats the query string for you:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 // GET /user?ID=12345
 const response = await faxios.get("/user", {
   params: {
@@ -119,6 +112,8 @@ const response = await faxios.get("/user", {
 To send a `POST` request, pass the body as the second argument:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const response = await faxios.post("/user", {
   firstName: "Fred",
   lastName: "Flintstone",
@@ -131,6 +126,8 @@ To run several requests at once, use `Promise.all`. See [Promises](/pages/advanc
 Without a `timeout`, a stalled request can hang indefinitely. Pass one via the request config:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const response = await faxios.get("https://example.com/data", {
   timeout: 5000, // 5 seconds
 });

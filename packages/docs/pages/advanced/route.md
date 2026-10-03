@@ -13,7 +13,7 @@ const users = faxios.route("/users/{id}", {
 const getUser = users.get({ responseSchema: z.object({ name: z.string() }) });
 const updateUser = users.put({ requestSchema: z.object({ name: z.string() }) });
 
-const res = await getUser({ pathParams: { id: "123" } });
+await updateUser({ pathParams: { id: "123" }, data: { name: "Fred" } });
 ```
 
 `route()` is available on the default export and on every instance created with `faxios.create()`.

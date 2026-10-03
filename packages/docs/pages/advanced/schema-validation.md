@@ -2,14 +2,14 @@
 
 faxios can validate request inputs and response data with any [Standard Schema v1](https://standardschema.dev) compliant schema, such as Zod, Valibot, or ArkType. Validation is opt-in: set a schema option on the request, the instance defaults, or a [typed endpoint](/pages/advanced/define).
 
-```ts
+```ts check=types
 import faxios from "@gcmdev/faxios";
 import { z } from "zod";
 
 const UserSchema = z.object({ name: z.string(), age: z.number() });
 
 const { data } = await faxios.get("/user/1", { responseSchema: UserSchema });
-// data is typed as { name: string; age: number }
+const user: { name: string; age: number } = data; // inferred from UserSchema
 ```
 
 ## Options
@@ -30,6 +30,9 @@ TypeScript infers `response.data` from the output type of `responseSchema`; you 
 `pathParams` substitutes `{key}` placeholders in the URL. Each value is converted to a string and encoded with `encodeURIComponent`.
 
 ```ts
+import faxios from "@gcmdev/faxios";
+import { z } from "zod";
+
 const PathSchema = z.object({ id: z.string() });
 
 await faxios.get("/users/{id}", {
@@ -61,6 +64,10 @@ Use the `isSchemaValidationError` type guard to narrow an unknown error:
 
 ```ts
 import faxios, { isSchemaValidationError } from "@gcmdev/faxios";
+import { z } from "zod";
+
+const CreateUserSchema = z.object({ name: z.string().min(1) });
+const body = { name: "" }; // fails CreateUserSchema
 
 try {
   await faxios.post("/users", body, { requestSchema: CreateUserSchema });

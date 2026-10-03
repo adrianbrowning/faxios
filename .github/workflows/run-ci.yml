@@ -51,6 +51,9 @@ jobs:
       - name: Run unit tests
         run: pnpm run test:vitest:unit
 
+      - name: Check docs examples
+        run: pnpm run test:docs-examples
+
       - name: Run browser tests
         run: pnpm run test:vitest:browser:headless
 
