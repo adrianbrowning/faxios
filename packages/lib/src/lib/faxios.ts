@@ -13,7 +13,7 @@ import formDataToJSON from "./helpers/formDataToJSON.js";
 import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
-import type { CreateFaxiosDefaults, FaxiosInterceptorOptions, FaxiosInterceptorRejected, FaxiosRequestConfig, InternalFaxiosRequestConfig, FaxiosResponse, SchemaConfig } from "./types.js";
+import type { CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosInterceptorOptions, FaxiosInterceptorRejected, FaxiosRequestConfig, HeadersDefaults, InternalFaxiosRequestConfig, FaxiosResponse, SchemaConfig } from "./types.js";
 import utils from "./utils.js";
 
 /**
@@ -96,7 +96,11 @@ export type FaxiosInstance = Pick<Faxios, "define" | "route"> & {
     <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
     <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
   };
-  defaults: { headers: Record<string, unknown>; } & Record<string, unknown>;
+  // `common` plus one header group per method; a key set directly on
+  // `headers` applies to every method.
+  defaults: Omit<FaxiosDefaults, "headers"> & {
+    headers: HeadersDefaults & { [key: string]: FaxiosHeaderValue | undefined; };
+  };
   interceptors: {
     request: {
       use: (

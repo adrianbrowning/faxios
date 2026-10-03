@@ -119,6 +119,6 @@ import faxios from "@gcmdev/faxios";
 const instance = faxios.create();
 const newToken = "new-token";
 
-instance.defaults.headers["Authorization"] = `Bearer ${newToken}`;
+instance.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
 ```
 :::

@@ -3,7 +3,6 @@ import { afterEach, describe, expect, it } from "vitest";
 import faxios from "#src/index.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import defaults from "#src/lib/defaults/index.js";
-import type { HeadersDefaults } from "#src/lib/types.js";
 
 import { installFetchMock } from "./helpers/fetchMock.js";
 
@@ -19,12 +18,8 @@ const transformResponse = defaults.transformResponse as Array<
 describe("defaults (vitest browser)", () => {
   afterEach(() => {
     delete faxios.defaults.baseURL;
-    delete (faxios.defaults.headers as unknown as HeadersDefaults).get[
-      "X-CUSTOM-HEADER"
-    ];
-    delete (faxios.defaults.headers as unknown as HeadersDefaults).post[
-      "X-CUSTOM-HEADER"
-    ];
+    delete faxios.defaults.headers.get["X-CUSTOM-HEADER"];
+    delete faxios.defaults.headers.post["X-CUSTOM-HEADER"];
     document.cookie = `${XSRF_COOKIE_NAME}=;expires=${new Date(Date.now() - 86400000).toUTCString()}`;
   });
 
@@ -124,9 +119,7 @@ describe("defaults (vitest browser)", () => {
 
   it("should use GET headers", async () => {
     using mock = installFetchMock();
-    (faxios.defaults.headers as unknown as HeadersDefaults).get[
-      "X-CUSTOM-HEADER"
-    ] = "foo";
+    faxios.defaults.headers.get["X-CUSTOM-HEADER"] = "foo";
 
     await faxios.get("/foo");
 
@@ -135,9 +128,7 @@ describe("defaults (vitest browser)", () => {
 
   it("should use POST headers", async () => {
     using mock = installFetchMock();
-    (faxios.defaults.headers as unknown as HeadersDefaults).post[
-      "X-CUSTOM-HEADER"
-    ] = "foo";
+    faxios.defaults.headers.post["X-CUSTOM-HEADER"] = "foo";
 
     await faxios.post("/foo", {});
 
