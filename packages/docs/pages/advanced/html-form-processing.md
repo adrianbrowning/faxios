@@ -2,13 +2,17 @@
 
 You can also post a form directly from a HTML form element. This is useful when you have a form in your page and you want to submit it without any JavaScript code.
 
-```js
+```js check=types
+import faxios from "@gcmdev/faxios";
+
 await faxios.postForm('https://httpbin.org/post', document.querySelector('#htmlForm'));
 ```
 
 `FormData` and `HTMLForm` objects can also be posted as `JSON` by explicitly setting the `Content-Type` header to `application/json`:
 
-```js
+```js check=types
+import faxios from "@gcmdev/faxios";
+
 await faxios.post('https://httpbin.org/post', document.querySelector('#htmlForm'), {
   headers: {
     'Content-Type': 'application/json',

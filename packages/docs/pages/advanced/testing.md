@@ -4,32 +4,33 @@ Testing code that makes HTTP requests with faxios is straightforward. The recomm
 
 ## Mocking with Vitest or Jest
 
-Both Vitest and Jest support module mocking with `vi.mock` / `jest.mock`. You can mock the entire faxios module and control what each method returns:
+Both Vitest and Jest support module mocking with `vi.mock` / `jest.mock`. You can mock the entire faxios module and control what each method returns (the examples use Vitest):
 
 ```js
 // user-service.js
-import faxios from "faxios";
+import faxios from "@gcmdev/faxios";
 
+/** @param {number} id */
 export async function getUser(id) {
   const { data } = await faxios.get(`/api/users/${id}`);
   return data;
 }
 ```
 
-```js
+```js check=skip
 // user-service.test.js
 import { describe, it, expect, vi } from "vitest";
-import faxios from "faxios";
-import { getUser } from "./user-service";
+import faxios from "@gcmdev/faxios";
+import { getUser } from "./user-service.js";
 
-vi.mock("faxios");
+vi.mock("@gcmdev/faxios");
 
 describe("getUser", () => {
   it("returns user data on success", async () => {
     const mockUser = { id: 1, name: "Jay" };
 
     // Make faxios.get resolve with our fake response
-    faxios.get.mockResolvedValueOnce({ data: mockUser });
+    vi.mocked(faxios.get).mockResolvedValueOnce({ data: mockUser });
 
     const result = await getUser(1);
 
@@ -38,7 +39,7 @@ describe("getUser", () => {
   });
 
   it("throws when the request fails", async () => {
-    faxios.get.mockRejectedValueOnce(new Error("Network error"));
+    vi.mocked(faxios.get).mockRejectedValueOnce(new Error("Network error"));
 
     await expect(getUser(1)).rejects.toThrow("Network error");
   });
@@ -47,27 +48,25 @@ describe("getUser", () => {
 
 ## Mocking an FaxiosError
 
-To test error-handling paths that inspect `error.response`, create an `FaxiosError` instance directly:
+To test error-handling paths that inspect `error.response`, create a `FaxiosError` instance and reject the mocked call with it. Pass `{ spy: true }` to `vi.mock` so the real `FaxiosError` class (and `isFaxiosError`) keep working while you override individual methods; a plain `vi.mock` replaces the `FaxiosError` constructor with an empty mock:
 
-```js
-import faxios, { FaxiosError } from "faxios";
+```js check=types
+import faxios, { FaxiosError } from "@gcmdev/faxios";
 import { vi } from "vitest";
 
-const mockError = new FaxiosError(
-  "Not Found",
-  "ERR_BAD_REQUEST",
-  {},       // config
-  {},       // request
-  {         // response
+vi.mock("@gcmdev/faxios", { spy: true });
+
+// Only the response fields your code reads are needed.
+const mockError = Object.assign(new FaxiosError("Not Found", "ERR_BAD_REQUEST"), {
+  response: {
     status: 404,
     statusText: "Not Found",
     data: { message: "User not found" },
     headers: {},
-    config: {},
-  }
-);
+  },
+});
 
-faxios.get.mockRejectedValueOnce(mockError);
+vi.mocked(faxios.get).mockRejectedValueOnce(mockError);
 ```
 
 ## Mocking the network with `env.fetch`
@@ -77,6 +76,7 @@ faxios sends every request through `fetch`, and the `env.fetch` option replaces 
 ```js
 import faxios from "@gcmdev/faxios";
 
+/** @param {unknown} body */
 const jsonResponse = (body, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
@@ -103,11 +103,13 @@ A non-2xx `Response` rejects with a `FaxiosError` whose `response.status` is the
 
 To test interceptors in isolation, create a fresh faxios instance in your test and capture what reaches `fetch`:
 
-```js
+```js check=types
+import { describe, it, expect } from "vitest";
 import faxios from "@gcmdev/faxios";
 
 describe("auth interceptor", () => {
   it("attaches a Bearer token to every request", async () => {
+    /** @type {Request | undefined} */
     let captured;
     const instance = faxios.create({
       env: {
@@ -125,7 +127,7 @@ describe("auth interceptor", () => {
 
     await instance.get("https://api.example.com/data");
 
-    expect(captured.headers.get("Authorization")).toBe("Bearer test-token");
+    expect(captured?.headers.get("Authorization")).toBe("Bearer test-token");
   });
 });
 ```

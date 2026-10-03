@@ -13,8 +13,10 @@
 
 ### Fixes
 
+- **`maxDepth` and `env.Request: null` / `env.Response: null` type-check:** `formSerializer.maxDepth` and `paramsSerializer.maxDepth` were honoured at runtime but missing from `SerializerOptions`, and `env.Request`/`env.Response` rejected the documented `null` that disables a constructor for an incompatible custom `fetch`. Both are now in the public types. (**#25**)
 - **`options`, `purge`, `link` and `unlink` header groups no longer leak onto the wire:** these method header groups were applied correctly but never removed, so every request also sent a literal header such as `options: [object Object]`. All twelve method header groups are now stripped before the request is sent.
 
 ### Documentation
 
 - **Docs site on GitHub Pages:** the documentation now lives at https://adrianbrowning.github.io/faxios/ and deploys when a release is published. The npm README is a short overview that links to it, and `homepage` in `package.json` points there. The site is English-only for now. It adds pages for `define()`, `route()` and schema validation, removes the Adapters page and `adapter` option (faxios has no adapter selection), and replaces the `axios-mock-adapter` testing guidance with mocking through `env.fetch`. (**#26**)
+- **Docs examples are type-checked and run in CI:** the js/ts blocks in the npm README and the English docs pages are extracted with `mdcode-ts`, type-checked under strict TypeScript against the built package, and run against a fake `fetch` (`pnpm run test:docs-examples`). Currently 139 blocks are type-checked and 125 of them run. Examples now import `@gcmdev/faxios`, use the Faxios type names, and no longer show APIs faxios doesn't have (`CancelToken`, `require()`, `isAxiosError`). Blocks opt out with `check=types` (type-check only) or `check=skip`. (**#25**)

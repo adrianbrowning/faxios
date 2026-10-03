@@ -10,7 +10,7 @@ faxios is also a great choice for teams that work on both frontend and backend c
 
 ## Fetch support <Badge type="tip" text="New" />
 
-faxios is built entirely on the web-standard Fetch API, which is now its sole HTTP transport across all supported environments (browsers, Node.js 18+, Deno, and Bun). No configuration is required — the `fetch` adapter is used by default.
+faxios is built entirely on the web-standard Fetch API, which is its sole HTTP transport across all supported environments (browsers, Node.js 24+, Deno, and Bun). No configuration is required, and there is no adapter to select.
 
 ## Browser support
 
@@ -18,7 +18,7 @@ faxios supports the latest versions of Chrome, Firefox, Safari, Opera, and Edge.
 
 ## Node.js support
 
-faxios also supports a wide range Node.js versions with tested compatibility as far back as v12.x, making it a good choice in environments where upgrading to the latest Node.js version might not be possible or practical.
+faxios requires Node.js 24 or later, and uses the `fetch` built into Node.js.
 
 In addition to Node.js, faxios has Bun and Deno smoke tests that validate key runtime behavior and improve confidence in cross-runtime compatibility.
 
@@ -37,6 +37,5 @@ In addition to Node.js, faxios has Bun and Deno smoke tests that validate key ru
 - Posting HTML forms as JSON
 - Automatic JSON data handling in response
 - Progress capturing for browsers and node.js with extra info (speed rate, remaining time)
-- Setting bandwidth limits for node.js
 - Compatible with spec-compliant FormData and Blob (including node.js)
 - Client side support for protecting against XSRF

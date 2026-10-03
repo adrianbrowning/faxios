@@ -13,6 +13,8 @@ const EXTERNAL_TS_FILES = [ "smoke/**/*.ts", "module/**/*.ts" ];
 const MODULE_TYPING_FILES = [ "module/**/*.ts" ];
 
 export const extraRules: Array<Linter.Config> = [
+  // Blocks extracted from markdown by docs-examples/extract.ts
+  { ignores: [ "docs-examples/.generated*/**" ] },
   // For files outside the tsconfig project, disable projectService-based linting
   {
     files: EXTERNAL_TS_FILES,

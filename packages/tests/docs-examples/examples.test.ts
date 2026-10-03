@@ -1,0 +1,56 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
+import { afterAll, beforeAll, beforeEach, describe, it, vi } from "vitest";
+import { defaultOutDir } from "./extract.ts";
+import type { ExtractedBlock } from "./extract.ts";
+
+// Run `node docs-examples/extract.ts` first; the test:docs-examples script does both.
+// DOCS_EXAMPLES_DIR selects a directory written with `extract.ts --out <dir>`.
+const outDir = process.env.DOCS_EXAMPLES_DIR ? join(import.meta.dirname, process.env.DOCS_EXAMPLES_DIR) : defaultOutDir;
+const blocks: Array<ExtractedBlock> = JSON.parse(readFileSync(join(outDir, "manifest.json"), "utf8"));
+
+// Examples are written for a page served from some origin, so relative URLs such as
+// `faxios.get("/user")` resolve against this base, as they would in a browser.
+const PAGE_URL = "https://example.test/";
+let status = 200;
+
+class PageRequest extends Request {
+  constructor(input: string | URL | Request, init?: RequestInit) {
+    super(typeof input === "string" ? new URL(input, PAGE_URL) : input, init);
+  }
+}
+
+// Every request gets a JSON `{}` body with the block's status (200 unless it sets status=).
+const fakeFetch = async (input: string | URL | Request, init?: RequestInit) => {
+  // Build and read the request as a real fetch would, so bad URLs and bodies still throw.
+  await new PageRequest(input, init).arrayBuffer();
+  return new Response("{}", { status, headers: { "Content-Type": "application/json" } });
+};
+
+describe("docs examples", () => {
+  beforeAll(() => {
+    vi.stubGlobal("Request", PageRequest);
+    vi.stubGlobal("fetch", fakeFetch);
+  });
+
+  beforeEach(() => {
+    for (const method of [ "log", "info", "warn", "error" ] as const) {
+      vi.spyOn(console, method).mockImplementation(() => {});
+    }
+  });
+
+  afterAll(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  for (const block of blocks.filter(entry => entry.run)) {
+    it(block.source, async () => {
+      status = block.status;
+      // A fresh module graph per block, so defaults and interceptors one example sets don't leak into the next.
+      vi.resetModules();
+      await import(pathToFileURL(join(outDir, block.file)).href);
+    });
+  }
+});

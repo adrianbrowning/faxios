@@ -4,8 +4,8 @@ faxios sends every request through the web-standard `fetch` API, in the browser,
 
 The adapter supports response types such as `stream` and `formdata` (if supported by the environment).
 
-::: warning
-Because the `fetch` API cannot emit upload progress events, `onUploadProgress` is not supported. Download progress (`onDownloadProgress`) works as usual.
+::: info
+faxios reports upload progress by streaming the request body, so `onUploadProgress` only fires where the runtime's `fetch` supports streaming request bodies (`duplex: "half"`), as Node.js does. Where it doesn't, the callback is not called. Download progress (`onDownloadProgress`) works everywhere.
 :::
 
 Proxies and connection agents are not configured through faxios options. Configure them at the runtime level instead: for example, pass a custom dispatcher/agent via `fetchOptions`, set the runtime's global proxy/dispatcher (Node's `undici` `ProxyAgent`, Deno/Bun proxy environment variables), or pass a custom `fetch` function through the `env` option — see [Custom fetch](#custom-fetch) below.
@@ -25,7 +25,14 @@ When using a custom `fetch` function, you may also need to supply matching `Requ
 ### Basic example
 
 ```js
-import customFetchFunction from 'customFetchModule';
+import faxios from '@gcmdev/faxios';
+
+// Any function with the `fetch(input, init)` signature works, e.g. a wrapper around the global one:
+/** @type {typeof fetch} */
+const customFetchFunction = (input, init) => {
+  console.log('fetching', input);
+  return fetch(input, init);
+};
 
 const instance = faxios.create({
   onDownloadProgress(e) {
@@ -33,19 +40,19 @@ const instance = faxios.create({
   },
   env: {
     fetch: customFetchFunction,
-    Request: null, // null -> disable the constructor
-    Response: null,
   },
 });
+
+const { data } = await instance.get('https://api.example.com/users');
 ```
 
 ### Using with Tauri
 
 [Tauri](https://tauri.app/plugin/http-client/) provides a platform `fetch` function that bypasses browser CORS restrictions for requests made from the native layer. The example below shows a minimal setup for using faxios inside a Tauri app with that custom fetch.
 
-```js
+```js check=skip
 import { fetch } from '@tauri-apps/plugin-http';
-import faxios from 'faxios';
+import faxios from '@gcmdev/faxios';
 
 const instance = faxios.create({
   onDownloadProgress(e) {
@@ -64,9 +71,12 @@ const { data } = await instance.get('https://google.com');
 [SvelteKit](https://svelte.dev/docs/kit/web-standards#Fetch-APIs) provides a custom `fetch` implementation for server-side `load` functions that handles cookie forwarding and relative URLs. Because its `fetch` is incompatible with the standard `URL` API, faxios must be configured to use it explicitly, and the global `Request` and `Response` constructors must be disabled.
 
 ```js
+import faxios from '@gcmdev/faxios';
+
+/** @param {{ fetch: typeof globalThis.fetch }} event */
 export async function load({ fetch }) {
   const { data: post } = await faxios.get('https://jsonplaceholder.typicode.com/posts/1', {
-      env: {
+    env: {
       fetch,
       Request: null,
       Response: null,

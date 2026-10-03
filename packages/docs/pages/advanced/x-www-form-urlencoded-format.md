@@ -5,40 +5,46 @@
 By default, faxios serializes JavaScript objects to `JSON`. To send data in the [`application/x-www-form-urlencoded` format](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST) instead, you can use the [`URLSearchParams`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) API, which is [supported](http://www.caniuse.com/#feat=urlsearchparams) in the vast majority of browsers, and [Node](https://nodejs.org/api/url.html#url_class_urlsearchparams) starting with v10 (released in 2018).
 
 ```js
+import faxios from '@gcmdev/faxios';
+
 const params = new URLSearchParams({ foo: 'bar' });
 params.append('extraparam', 'value');
-faxios.post('/foo', params);
+await faxios.post('/foo', params);
 ```
 
 ## Query string <Badge type="danger" text="Very old" />
 
 For older browsers or environments without `URLSearchParams`, you can use the [`qs`](https://github.com/ljharb/qs) library to serialize objects to the `application/x-www-form-urlencoded` format.
 
-```js
-const qs = require('qs');
-faxios.post('/foo', qs.stringify({ bar: 123 }));
+```js check=skip
+import faxios from '@gcmdev/faxios';
+import qs from 'qs';
+
+await faxios.post('/foo', qs.stringify({ bar: 123 }));
 ```
 
 For full control over headers and method, pass `qs.stringify` output as the request `data` and set `Content-Type` explicitly:
 
-```js
+```js check=skip
+import faxios from '@gcmdev/faxios';
 import qs from 'qs';
 
 const data = { bar: 123 };
-const options = {
+await faxios({
   method: 'POST',
   headers: { 'content-type': 'application/x-www-form-urlencoded' },
   data: qs.stringify(data),
   url: '/foo',
-};
-faxios(options);
+});
 ```
 
 In very old versions of Node.js, you can use the built-in `querystring` module that ships with Node.js. Note that this module has been deprecated in Node.js v16 — prefer `URLSearchParams` or `qs` for new code.
 
 ```js
-const querystring = require('querystring');
-faxios.post('https://something.com/', querystring.stringify({ foo: 'bar' }));
+import faxios from '@gcmdev/faxios';
+import querystring from 'node:querystring';
+
+await faxios.post('https://something.com/', querystring.stringify({ foo: 'bar' }));
 ```
 
 ::: tip Prefer `qs` for nested objects
@@ -50,6 +56,8 @@ The `qs` library is preferable if you need to stringify nested objects, as the `
 Starting from v0.21.0, faxios automatically serializes JavaScript objects to `URLSearchParams` if the `Content-Type` header is set to `application/x-www-form-urlencoded`. This means that you can pass a JavaScript object directly to the `data` property of the faxios request config. For example when passing data to a `POST` request:
 
 ```js
+import faxios from '@gcmdev/faxios';
+
 const data = {
   x: 1,
   arr: [1, 2, 3],
@@ -60,7 +68,7 @@ const data = {
   ],
 };
 
-await faxios.postForm('https://postman-echo.com/post', data, {
+await faxios.post('https://postman-echo.com/post', data, {
   headers: { 'content-type': 'application/x-www-form-urlencoded' },
 });
 ```
@@ -85,18 +93,22 @@ If your backend body-parser (like `body-parser` of `express.js`) supports nested
 
 ## Depth limit for params serialization
 
-When faxios serializes a `params` object via `AxiosURLSearchParams`, the same recursive walker used by the FormData serializer is called. A `maxDepth` option (default `100`) limits how deeply it will recurse. Payloads exceeding the limit throw an `FaxiosError` with `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` instead of overflowing the call stack.
+When faxios serializes a `params` object via `FaxiosURLSearchParams`, the same recursive walker used by the FormData serializer is called. A `maxDepth` option (default `100`) limits how deeply it will recurse. Payloads exceeding the limit throw an `FaxiosError` with `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` instead of overflowing the call stack.
 
 ```js
+import faxios from '@gcmdev/faxios';
+
+const deepObject = { level1: { level2: { level3: 'value' } } };
+
 // Raise the limit if your params object legitimately nests deeper than 100 levels:
-faxios.get('/api', { params: deepObject, paramsSerializer: { maxDepth: 200 } });
+await faxios.get('/api', { params: deepObject, paramsSerializer: { maxDepth: 200 } });
 ```
 
 ::: warning Security note
 Only raise `maxDepth` if your schema genuinely requires it. The default of 100 protects server-side code that forwards client-controlled data to faxios as `params` from DoS attacks via deeply nested objects.
 :::
 
-```js
+```js check=skip
 var app = express();
 
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies

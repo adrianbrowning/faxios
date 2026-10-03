@@ -2,7 +2,7 @@
 
 `faxios.define(method, url, config?)` creates a reusable, fully typed endpoint function. Schemas are locked at define time:
 
-```ts
+```ts check=types
 import faxios from "@gcmdev/faxios";
 import { z } from "zod";
 
@@ -12,7 +12,7 @@ const getUser = faxios.define("get", "/users/{id}", {
 });
 
 const response = await getUser({ pathParams: { id: "123" } });
-// response.data is typed as { name: string; age: number }
+const user: { name: string; age: number } = response.data; // inferred from responseSchema
 ```
 
 `define()` is available on the default export and on every instance created with `faxios.create()`. Calls go through that instance's `request()`, so its defaults and interceptors apply.
@@ -34,13 +34,15 @@ The endpoint function takes a per-call config:
 Schemas set at define time cannot be overridden per call (security by design).
 
 ```ts
+import faxios from "@gcmdev/faxios";
+import { z } from "zod";
+
 const createUser = faxios.define("post", "/users", {
   requestSchema: z.object({ name: z.string() }),
-  responseSchema: z.object({ id: z.string() }),
 });
 
 const controller = new AbortController();
-const { data } = await createUser({
+await createUser({
   data: { name: "Fred" },
   signal: controller.signal,
 });

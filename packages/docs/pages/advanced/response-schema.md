@@ -2,7 +2,7 @@
 
 Every faxios request resolves to a response object with the following shape. The schema is consistent across both browser and Node.js environments.
 
-```js
+```js check=skip
 {
   // The response data provided by the server.
   // When using `transformResponse`, this will be the result of the last transform.
@@ -36,6 +36,8 @@ To validate `data` against a schema, see [Schema validation](/pages/advanced/sch
 In practice you will usually destructure just the parts you need:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const { data, status, headers } = await faxios.get("/api/users/1");
 
 console.log(status);          // 200
@@ -47,7 +49,9 @@ console.log(data);            // { id: 1, name: "Jay", email: "jay@example.com" 
 
 faxios resolves the promise for any 2xx response and rejects for anything outside that range by default. You can customise this with the `validateStatus` config option:
 
-```js
+```js status=404
+import faxios from "@gcmdev/faxios";
+
 const response = await faxios.get("/api/resource", {
   validateStatus: (status) => status < 500, // resolve for anything below 500
 });
@@ -58,6 +62,8 @@ const response = await faxios.get("/api/resource", {
 All response header names are lower-cased, regardless of how the server sent them:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const response = await faxios.get("/api/resource");
 
 // These are equivalent

@@ -5,6 +5,8 @@ Interceptors are a powerful mechanism that can be used to intercept and modify H
 Basic usage of interceptors is as follows:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 // Add a request interceptor
 faxios.interceptors.request.use(
   function (config) {
@@ -34,32 +36,40 @@ faxios.interceptors.response.use(
 
 ## Removing Interceptors
 
-You can remove any interceptor by using the `eject` method on the interceptor you want to remove. You can also remove all interceptors by calling the `clear` method on the `faxios.interceptors` object. Here is an example of how to remove an interceptor:
+You can remove any interceptor by using the `eject` method on the interceptor you want to remove. You can also remove all interceptors by calling the `clear` method on `faxios.interceptors.request` or `faxios.interceptors.response`. Here is an example of how to remove an interceptor:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 // Eject the request interceptor
-const myInterceptor = faxios.interceptors.request.use(function () {
+const myRequestInterceptor = faxios.interceptors.request.use(function (config) {
   /*...*/
+  return config;
 });
-faxios.interceptors.request.eject(myInterceptor);
+faxios.interceptors.request.eject(myRequestInterceptor);
 
 // Eject the response interceptor
-const myInterceptor = faxios.interceptors.response.use(function () {
+const myResponseInterceptor = faxios.interceptors.response.use(function (response) {
   /*...*/
+  return response;
 });
-faxios.interceptors.response.eject(myInterceptor);
+faxios.interceptors.response.eject(myResponseInterceptor);
 ```
 
 Here is an example of how to remove all interceptors:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const instance = faxios.create();
-instance.interceptors.request.use(function () {
+instance.interceptors.request.use(function (config) {
   /*...*/
+  return config;
 });
 instance.interceptors.request.clear(); // Removes interceptors from requests
-instance.interceptors.response.use(function () {
+instance.interceptors.response.use(function (response) {
   /*...*/
+  return response;
 });
 instance.interceptors.response.clear(); // Removes interceptors from responses
 ```
@@ -69,9 +79,11 @@ instance.interceptors.response.clear(); // Removes interceptors from responses
 When you add request interceptors, they are presumed to be asynchronous by default. This can cause a delay in the execution of your faxios request when the main thread is blocked (a promise is created under the hood for the interceptor and your request gets put on the bottom of the call stack). If your request interceptors are synchronous you can add a flag to the options object that will tell faxios to run the code synchronously and avoid any delays in request execution.
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 faxios.interceptors.request.use(
   function (config) {
-    config.headers.test = "I am only a header!";
+    config.headers.set("X-Test", "I am only a header!");
     return config;
   },
   null,
@@ -83,13 +95,16 @@ faxios.interceptors.request.use(
 
 If you want to execute a particular interceptor based on a runtime check, you can add a runWhen function to the options object. The interceptor will not be executed if and only if the return of runWhen is false. The function will be called with the config object (don't forget that you can bind your own arguments to it as well.) This can be handy when you have an asynchronous request interceptor that only needs to run at certain times.
 
-```js
-function onGetCall(config) {
+```ts
+import faxios from "@gcmdev/faxios";
+import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
+
+function onGetCall(config: InternalFaxiosRequestConfig) {
   return config.method === "get";
 }
 faxios.interceptors.request.use(
   function (config) {
-    config.headers.test = "special get headers";
+    config.headers.set("X-Test", "special get headers");
     return config;
   },
   null,
@@ -111,10 +126,12 @@ Response interceptors are executed in the **order they were added** (FIFO — fi
 
 The following example shows the full execution order for three request interceptors and three response interceptors:
 
-```js
+```ts
+import faxios from "@gcmdev/faxios";
+
 const instance = faxios.create();
 
-const interceptor = (id) => (base) => {
+const interceptor = (id: string) => <T>(base: T): T => {
   console.log(id);
   return base;
 };
@@ -125,6 +142,8 @@ instance.interceptors.request.use(interceptor("Request Interceptor 3"));
 instance.interceptors.response.use(interceptor("Response Interceptor 1"));
 instance.interceptors.response.use(interceptor("Response Interceptor 2"));
 instance.interceptors.response.use(interceptor("Response Interceptor 3"));
+
+await instance.get("/users");
 
 // Console output:
 // Request Interceptor 3

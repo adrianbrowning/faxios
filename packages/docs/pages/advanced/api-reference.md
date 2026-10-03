@@ -8,33 +8,25 @@ The `faxios` instance is the main object that you will use to make HTTP requests
 
 ## Classes
 
-### `faxios`
+### `Faxios`
 
-The `faxios` class is the main class that you will use to make HTTP requests. It is a factory function that creates a new instance of the `faxios` class. The `faxios` class has a number of methods that you can use to make HTTP requests. These methods are documented in the [Request aliases section](/pages/advanced/request-method-aliases) of the documentation.
+The `Faxios` class is the class behind every faxios instance. The default export and `faxios.create()` both build a callable instance on top of it. The `Faxios` class has a number of methods that you can use to make HTTP requests. These methods are documented in the [Request aliases section](/pages/advanced/request-method-aliases) of the documentation.
 
 #### `constructor`
 
-Creates a new instance of the `faxios` class. The constructor takes an optional configuration object as an argument.
+Creates a new instance of the `Faxios` class. The constructor takes an optional configuration object as an argument.
 
-```ts
-constructor(instanceConfig?: AxiosRequestConfig);
+```ts check=skip
+constructor(instanceConfig?: FaxiosRequestConfig);
 ```
 
 #### `request`
 
 Handles request invocation and response resolution. This is the main method that you will use to make HTTP requests. It takes a configuration object as an argument and returns a promise that resolves to the response object.
 
-```ts
-request(configOrUrl: string | AxiosRequestConfig<D>, config: AxiosRequestConfig<D>): Promise<AxiosResponse<T>>;
+```ts check=skip
+request<T = unknown, R = FaxiosResponse<T>, D = unknown>(configOrUrl: string | FaxiosRequestConfig<D>, config?: FaxiosRequestConfig<D>): Promise<R>;
 ```
-
-### `CancelToken` <Badge type="danger" text="Deprecated in favour of AbortController" />
-
-The `CancelToken` class was based on the `tc39/proposal-cancelable-promises` proposal. It was used to create a token that could be used to cancel an HTTP request. The `CancelToken` class is now deprecated in favour of the `AbortController` API.
-
-As of version 0.22.0, the `CancelToken` class is deprecated and will be removed in a future release. It is recommended that you use the `AbortController` API instead.
-
-The class is exported mainly for backwards compatibility and will be removed in a future release. We also strongly discourage its use in new projects, we therefore are not documenting the API as use is discouraged.
 
 ## Functions
 
@@ -44,31 +36,31 @@ The `FaxiosError` class is an error class that is thrown when an HTTP request fa
 
 #### `constructor`
 
-Creates a new instance of the `FaxiosError` class. The constructor takes an optional message, code, config, request, and response as arguments.
+Creates a new instance of the `FaxiosError` class. The constructor takes a message and an optional code, config, request, and response as arguments.
 
-```ts
-constructor(message?: string, code?: string, config?: InternalAxiosRequestConfig<D>, request?: any, response?: AxiosResponse<T, D>);
+```ts check=skip
+constructor(message: string, code?: string, config?: InternalFaxiosRequestConfig, request?: unknown, response?: FaxiosResponse);
 ```
 
 #### `properties`
 
 The `FaxiosError` class provides the following properties:
 
-```ts
+```ts check=skip
 // Config instance.
-config?: InternalAxiosRequestConfig<D>;
+config?: InternalFaxiosRequestConfig;
 
 // Error code.
 code?: string;
 
 // Request instance.
-request?: any;
+request?: unknown;
 
 // Response instance.
-response?: AxiosResponse<T, D>;
+response?: FaxiosResponse;
 
-// Boolean indicating if the error is an `FaxiosError`.
-isAxiosError: boolean;
+// Boolean indicating if the error is a `FaxiosError`.
+isFaxiosError: boolean;
 
 // Error status code.
 status?: number;
@@ -80,18 +72,18 @@ toJSON: () => object;
 cause?: Error;
 ```
 
-### `AxiosHeaders`
+### `FaxiosHeaders`
 
-The `AxiosHeaders` class is a utility class that is used to manage HTTP headers. It provides methods for manipulating headers, such as adding, removing, and getting headers.
+The `FaxiosHeaders` class is a utility class that is used to manage HTTP headers. It provides methods for manipulating headers, such as adding, removing, and getting headers.
 
 Only the main methods are documented here. For a full list of methods, please refer to the type declaration file.
 
 #### `constructor`
 
-Creates a new instance of the `AxiosHeaders` class. The constructor takes an optional headers object as an argument.
+Creates a new instance of the `FaxiosHeaders` class. The constructor takes an optional headers object as an argument.
 
-```ts
-constructor(headers?: RawAxiosHeaders | AxiosHeaders | string);
+```ts check=skip
+constructor(headers?: Record<string, unknown> | FaxiosHeaders | string | null);
 ```
 
 #### `set`
@@ -99,67 +91,69 @@ constructor(headers?: RawAxiosHeaders | AxiosHeaders | string);
 Adds a header to the headers object.
 Empty or whitespace-only header names are ignored.
 
-```ts
-set(headerName?: string, value?: AxiosHeaderValue, rewrite?: boolean | AxiosHeaderMatcher): AxiosHeaders;
-set(headers?: RawAxiosHeaders | AxiosHeaders | string, rewrite?: boolean): AxiosHeaders;
+```ts check=skip
+set(headerName: string, value: FaxiosHeaderValue, rewrite?: boolean): FaxiosHeaders;
+set(headers: Record<string, unknown> | FaxiosHeaders | string, rewrite?: boolean): FaxiosHeaders;
 ```
 
 #### `get`
 
 Gets a header from the headers object.
 
-```ts
-get(headerName: string, parser: RegExp): RegExpExecArray | null;
-get(headerName: string, matcher?: true | AxiosHeaderParser): AxiosHeaderValue;
+```ts check=skip
+get(headerName: string): FaxiosHeaderValue | undefined;
+get(headerName: string, parser: true): Record<string, string> | undefined;
+get(headerName: string, parser: RegExp): RegExpExecArray | null | undefined;
+get<R>(headerName: string, parser: (value: FaxiosHeaderValue, header: string) => R): R | undefined;
 ```
 
 #### `has`
 
 Checks if a header exists in the headers object.
 
-```ts
-has(header: string, matcher?: AxiosHeaderMatcher): boolean;
+```ts check=skip
+has(header: string, matcher?: string | RegExp | ((value: string, name: string) => boolean)): boolean;
 ```
 
 #### `delete`
 
 Removes a header from the headers object.
 
-```ts
-delete(header: string | string[], matcher?: AxiosHeaderMatcher): boolean;
+```ts check=skip
+delete(header: string | string[], matcher?: string | RegExp | ((value: string, name: string) => boolean)): boolean;
 ```
 
 #### `clear`
 
 Removes all headers from the headers object.
 
-```ts
-clear(matcher?: AxiosHeaderMatcher): boolean;
+```ts check=skip
+clear(matcher?: string | RegExp | ((value: string, name: string) => boolean)): boolean;
 ```
 
 #### `normalize`
 
 Normalizes the headers object.
 
-```ts
-normalize(format: boolean): AxiosHeaders;
+```ts check=skip
+normalize(format?: boolean): FaxiosHeaders;
 ```
 
 #### `concat`
 
 Concatenates headers objects.
 
-```ts
-concat(...targets: Array<AxiosHeaders | RawAxiosHeaders | string | undefined | null>): AxiosHeaders;
+```ts check=skip
+concat(...targets: Array<FaxiosHeaders | Record<string, unknown> | string | undefined | null>): FaxiosHeaders;
 ```
 
 #### `toJSON`
 
 Converts the headers object to a JSON object.
 
-```ts
-toJSON(asStrings: true): Record<string, string>;
-toJSON(asStrings?: false): Record<string, string | string[]>;
+```ts check=skip
+// With asStrings: true, array values are joined with ", ".
+toJSON(asStrings?: boolean): Record<string, unknown>;
 ```
 
 ### `CanceledError` <Badge type="tip" text="Extended FaxiosError" />
@@ -174,12 +168,12 @@ The `Cancel` class is an alias for the `CanceledError` class. It is exported for
 
 A function that checks if an error is a `CanceledError`. Useful for distinguishing intentional cancellations from unexpected errors.
 
-```ts
-isCancel<T = any>(value: any): value is CanceledError<T>;
+```ts check=skip
+isCancel(value: unknown): boolean;
 ```
 
 ```js
-import faxios from "faxios";
+import faxios from "@gcmdev/faxios";
 
 const controller = new AbortController();
 
@@ -194,26 +188,27 @@ faxios.get("/api/data", { signal: controller.signal }).catch((error) => {
 controller.abort("User navigated away");
 ```
 
-### `isAxiosError`
+### `isFaxiosError`
 
-A function that checks if an error is an `FaxiosError`. Use this in `catch` blocks to safely access faxios-specific error properties like `error.response` and `error.config`.
+A function that checks if an error is a `FaxiosError`. Use this in `catch` blocks to tell faxios errors apart from other errors. It returns a plain `boolean` and does not narrow the type, so in TypeScript (or checked JavaScript) use `error instanceof FaxiosError` when you need to read faxios-specific properties like `error.response` and `error.config`.
 
-```ts
-isAxiosError(value: any): value is FaxiosError;
+```ts check=skip
+isFaxiosError(value: unknown): boolean;
 ```
 
-```js
-import faxios from "faxios";
+```js status=500
+import faxios, { FaxiosError } from "@gcmdev/faxios";
 
 try {
   await faxios.get("/api/resource");
 } catch (error) {
-  if (faxios.isAxiosError(error)) {
-    // error.response, error.config, error.code are all available
-    console.error("HTTP error", error.response?.status, error.message);
-  } else {
+  if (!faxios.isFaxiosError(error)) {
     // A non-faxios error (e.g. a programming mistake)
     throw error;
+  }
+  if (error instanceof FaxiosError) {
+    // error.response, error.config, error.code are all typed here
+    console.error("HTTP error", error.response?.status, error.message);
   }
 }
 ```
@@ -226,23 +221,24 @@ As of version 0.22.0, the `all` function is deprecated and will be removed in a 
 
 ### `spread`
 
-The `spread` function is a utility function that can be used to spread an array of arguments into a function call. This is useful when you have an array of arguments that you want to pass to a function that takes multiple arguments.
+The `spread` function is a utility function that can be used to spread an array of arguments into a function call. This is useful when you have an array of arguments that you want to pass to a function that takes multiple arguments. It is available on the instance as `faxios.spread` and is not a named export.
 
-```ts
-spread<T, R>(callback: (...args: T[]) => R): (array: T[]) => R;
+```ts check=skip
+spread(callback: (...args: unknown[]) => unknown): (array: unknown[]) => unknown;
 ```
 
 ### `toFormData`
 
 Converts a plain JavaScript object (or a nested one) to a `FormData` instance. Useful when you want to programmatically build multipart form data from an object.
 
-```ts
-toFormData(sourceObj: object, formData?: FormData, options?: FormSerializerOptions): FormData;
+```ts check=skip
+toFormData(sourceObj: unknown, formData?: FormData | null, options?: FormSerializerOptions): FormData;
 ```
 
 ```js
-import { toFormData } from "faxios";
+import faxios, { toFormData } from "@gcmdev/faxios";
 
+const fileBlob = new Blob(["avatar bytes"], { type: "image/png" });
 const data = { name: "Jay", avatar: fileBlob };
 const form = toFormData(data);
 // form is now a FormData instance ready to post
@@ -253,12 +249,12 @@ await faxios.post("/api/users", form);
 
 Converts a `FormData` instance back to a plain JavaScript object. Useful for reading form data in a structured format.
 
-```ts
-formToJSON(form: FormData): object;
+```ts check=skip
+formToJSON(form: FormData | HTMLFormElement): unknown;
 ```
 
 ```js
-import { formToJSON } from "faxios";
+import { formToJSON } from "@gcmdev/faxios";
 
 const form = new FormData();
 form.append("name", "Jay");
@@ -272,12 +268,12 @@ console.log(obj); // { name: "Jay", role: "admin" }
 
 Merges two faxios config objects together, applying the same deep-merge strategy that faxios uses internally when combining defaults with per-request options. Later values take precedence.
 
-```ts
-mergeConfig<T>(config1: AxiosRequestConfig<T>, config2: AxiosRequestConfig<T>): AxiosRequestConfig<T>;
+```ts check=skip
+mergeConfig(config1: FaxiosRequestConfig, config2?: FaxiosRequestConfig): FaxiosRequestConfig;
 ```
 
 ```js
-import { mergeConfig } from "faxios";
+import { mergeConfig } from "@gcmdev/faxios";
 
 const base = { baseURL: "https://api.example.com", timeout: 5000 };
 const override = { timeout: 10000, headers: { "X-Custom": "value" } };
@@ -292,13 +288,13 @@ const merged = mergeConfig(base, override);
 
 An object that contains a list of HTTP status codes as named constants. Use this to write readable conditionals instead of bare numbers.
 
-```js
-import faxios, { HttpStatusCode } from "faxios";
+```js status=404
+import faxios, { FaxiosError, HttpStatusCode } from "@gcmdev/faxios";
 
 try {
-  const response = await faxios.get("/api/resource");
+  await faxios.get("/api/resource");
 } catch (error) {
-  if (faxios.isAxiosError(error)) {
+  if (error instanceof FaxiosError) {
     if (error.response?.status === HttpStatusCode.NotFound) {
       console.error("Resource not found");
     } else if (error.response?.status === HttpStatusCode.Unauthorized) {
