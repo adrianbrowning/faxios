@@ -28,7 +28,27 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Docs targets:** `docs/es/advanced/headers.md`, `docs/fr/advanced/headers.md`, `docs/zh/advanced/headers.md`.
 - **Required content:** Translate the English `docs/advanced/headers.md` into the three supported locales.
 - **Examples:** None beyond the English source.
-- **Notes:** English-only at time of writing; create translated siblings before next release.
+- **Notes:** English-only at time of writing. Since #26 the es/fr/zh pages are excluded from the site build (see the next entry), so translate this together with the rest of each locale.
+
+### Translated docs hidden from the site
+
+- **Change:** The docs site (GitHub Pages, https://adrianbrowning.github.io/faxios/) ships English only. `packages/docs/.vitepress/config.mts` excludes `es/**`, `fr/**` and `zh/**` through `srcExclude`, and the per-locale nav/sidebar config was removed.
+- **Source:** Issue #26.
+- **Status:** Pending.
+- **Docs targets:** `packages/docs/es|fr|zh/**`, `packages/docs/.vitepress/config.mts` (`locales`, `srcExclude`).
+- **Required content:** Bring each locale in line with the English pages, including the pages added in #26 (`define`, `route`, `schema-validation`), the removal of the Adapters page, and the `env.fetch` testing guidance. Then drop the locale from `srcExclude` and add a `locales` entry with its own nav and sidebar.
+- **Examples:** None beyond the English source.
+- **Notes:** The translated home pages still embed axios's sponsor carousel (`data/sponsors.json` is axios's OpenCollective data). Remove it when re-enabling a locale. `pages/misc/sponsors.md` is excluded for the same reason.
+
+### English docs claims flagged during the #26 README migration
+
+- **Change:** The README-to-site migration checked moved README text against source and found claims in existing English pages that don't match the code.
+- **Source:** Issue #26; fixed in #25.
+- **Status:** Applied.
+- **Docs targets:** `pages/advanced/progress-capturing.md`, `fetch-adapter.md`, `request-config.md`, `file-posting.md`, `type-script.md`, `header-methods.md`, `multipart-form-data-format.md`, `pages/getting-started/features.md`.
+- **Required content:** `onUploadProgress` fires where the runtime's `fetch` supports streaming request bodies. `isCancel()` and `isFaxiosError()` return plain `boolean`, so the pages narrow with `instanceof`. `maxDepth` is now typed on both serializers. Node.js 24+ per `engines`. Normalize runs after the transform passes. The header shortcut list matches `FaxiosHeaders`. `transformResponse` receives `(data, headers, status)`.
+- **Examples:** None.
+- **Notes:** Translated pages still carry the old claims; fix them when re-enabling each locale.
 
 ### Strict request header typing
 

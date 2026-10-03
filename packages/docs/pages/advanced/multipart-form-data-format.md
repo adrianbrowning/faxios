@@ -3,22 +3,28 @@
 faxios can send requests in the `multipart/form-data` format. This format is commonly used when uploading files. To send a request in this format, you need to create a `FormData` object and append the data to it. Then you can pass the `FormData` object to the `data` property of the faxios request config.
 
 ```js
+import faxios from '@gcmdev/faxios';
+
 const formData = new FormData();
 formData.append('foo', 'bar');
 
-faxios.post('https://httpbin.org/post', formData);
+await faxios.post('https://httpbin.org/post', formData);
 ```
 
 Do not manually set the `Content-Type` header; the runtime adds the multipart boundary itself when it serializes a `FormData` body.
 
-The global `FormData` (and `Blob`/`File`) is available in every supported runtime — browsers, Node.js 18+, Deno, and Bun — so the same code works everywhere. faxios no longer bundles the `form-data` package:
+The global `FormData` (and `Blob`/`File`) is available in every supported runtime — browsers, Node.js, Deno, and Bun — so the same code works everywhere. faxios no longer bundles the `form-data` package:
 
 ```js
+import faxios from '@gcmdev/faxios';
+
+const fileBytes = new Uint8Array([0xff, 0xd8, 0xff]); // e.g. the contents of bar.jpg
+
 const form = new FormData();
 form.append('my_field', 'my value');
 form.append('my_file', new Blob([fileBytes]), 'bar.jpg');
 
-faxios.post('https://example.com', form);
+await faxios.post('https://example.com', form);
 ```
 
 ## Automatic serialization to FormData <Badge type="tip" text="New" />
@@ -26,7 +32,7 @@ faxios.post('https://example.com', form);
 Starting from v0.27.0, faxios supports automatic object serialization to a FormData object if the request Content-Type header is set to multipart/form-data. This means that you can pass a JavaScript object directly to the data property of the faxios request config. For example when passing data to a POST request:
 
 ```js
-import faxios from 'faxios';
+import faxios from '@gcmdev/faxios';
 
 faxios
   .post(
@@ -44,7 +50,13 @@ faxios
 faxios uses the runtime's global `FormData` for serialization. You can override the class via the `env.FormData` config variable, but you probably won't need it in most cases:
 
 ```js
-import faxios from 'faxios';
+import faxios from '@gcmdev/faxios';
+
+class CustomFormData extends FormData {
+  constructor() {
+    super();
+  }
+}
 
 faxios
   .post(
@@ -53,6 +65,9 @@ faxios
     {
       headers: {
         'Content-Type': 'multipart/form-data',
+      },
+      env: {
+        FormData: CustomFormData,
       },
     }
   )
@@ -66,6 +81,11 @@ When you pass a Node.js `FormData` object that exposes `getHeaders()` (such as t
 Set `formDataHeaderPolicy: 'content-only'` to copy **only** `Content-Type` and `Content-Length` from `getHeaders()`, then set any other headers explicitly via the request `headers` config:
 
 ```js
+import faxios from '@gcmdev/faxios';
+
+const form = new FormData(); // or a `form-data` instance that exposes getHeaders()
+form.append('file', new Blob(['hello']), 'hello.txt');
+
 await faxios.post("https://example.com/upload", form, {
   formDataHeaderPolicy: "content-only",
   headers: {
@@ -101,8 +121,12 @@ FormData serializer supports additional options via config.formSerializer: objec
 - `maxDepth: number = 100` - maximum object nesting depth the serializer will recurse into. If the input exceeds this depth, an `FaxiosError` with `code: 'ERR_FORM_DATA_DEPTH_EXCEEDED'` is thrown. This protects server-side applications from DoS attacks via deeply nested payloads. Set to `Infinity` to disable the limit.
 
 ```js
+import faxios from '@gcmdev/faxios';
+
+const data = { level1: { level2: { level3: 'value' } } };
+
 // Allow deeper nesting for schemas that legitimately exceed 100 levels:
-faxios.postForm('/api', data, { formSerializer: { maxDepth: 200 } });
+await faxios.postForm('/api', data, { formSerializer: { maxDepth: 200 } });
 ```
 
 ::: warning Security note

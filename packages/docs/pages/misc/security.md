@@ -7,7 +7,9 @@ By default, `maxContentLength` and `maxBodyLength` are set to `-1` (unlimited). 
 **If you make requests to servers you do not fully trust, you MUST set a `maxContentLength` (and `maxBodyLength`) suitable for your workload.** The fetch adapter enforces the limit while the response is read, so setting it is sufficient to neutralize decompression-bomb attacks.
 
 ```js
-faxios.get('https://example.com/data', {
+import faxios from "@gcmdev/faxios";
+
+await faxios.get('https://example.com/data', {
   maxContentLength: 10 * 1024 * 1024, // 10 MB
   maxBodyLength: 10 * 1024 * 1024,
 });
@@ -31,7 +33,7 @@ The following request-config options have direct security implications. They are
 
 ## Supply-chain hardening: `ignore-scripts` and lifecycle scripts
 
-The repository ships a project-level `.npmrc` that sets `ignore-scripts=true`. This blocks npm lifecycle scripts (`preinstall`, `install`, `postinstall`, `prepare`) from any direct or transitive dependency when running `npm install` or `npm ci` inside the repo. See [THREATMODEL.md](https://github.com/faxios/faxios/blob/v1.x/THREATMODEL.md) (threat T-S2) for the rationale.
+The repository ships a project-level `.npmrc` that sets `ignore-scripts=true`. This blocks npm lifecycle scripts (`preinstall`, `install`, `postinstall`, `prepare`) from any direct or transitive dependency when running `npm install` or `npm ci` inside the repo. See [THREATMODEL.md](https://github.com/adrianbrowning/faxios/blob/main/THREATMODEL.md) (threat T-S2) for the rationale.
 
 One consequence: the repository's own `prepare` hook (which installs Husky's git hooks) does **not** run automatically. After your first install, enable the git hooks manually:
 
@@ -69,7 +71,7 @@ If you believe you have found a security vulnerability in the project, please re
 
 ## Reporting Process
 
-Please do not report security vulnerabilities through public GitHub issues. Please use the official security channel on GitHub by logging a [security advisory](https://github.com/faxios/faxios/security/advisories/new).
+Please do not report security vulnerabilities through public GitHub issues. Please use the official security channel on GitHub by logging a [security advisory](https://github.com/adrianbrowning/faxios/security/advisories/new).
 
 ## Disclosure Policy
 
@@ -77,7 +79,7 @@ When we receive a security vulnerability report, we assign it a primary handler.
 
 ### 60-day resolution and disclosure commitment
 
-We commit to **resolving and publicly disclosing every valid security advisory within 60 calendar days of the initial report**, measured from the moment a report is received via the [GitHub security advisory channel](https://github.com/faxios/faxios/security/advisories/new).
+We commit to **resolving and publicly disclosing every valid security advisory within 60 calendar days of the initial report**, measured from the moment a report is received via the [GitHub security advisory channel](https://github.com/adrianbrowning/faxios/security/advisories/new).
 
 The 60-day clock is a commitment to reporters and downstream consumers — a backstop, not an aspiration. If we cannot ship a fix in time, we still publish the advisory at day 60 with the best available mitigation guidance so consumers can act.
 
@@ -95,7 +97,7 @@ The 60-day clock is a commitment to reporters and downstream consumers — a bac
 
 - If a reporter requests a shorter embargo (e.g. they plan to present findings at a conference), we accommodate where possible.
 - If a fix requires a breaking change or coordinating with major downstream consumers, we may extend beyond 60 days. Any extension is disclosed publicly at day 60 via the advisory, with a revised ETA and the reason.
-- If a report is **out of scope** (e.g. falls under an explicit non-goal documented in the project's [threat model](https://github.com/faxios/faxios/blob/v1.x/THREATMODEL.md)), we close it with an explanation to the reporter within the triage window (≤ 3 days). Out-of-scope reports do not enter the 60-day queue.
+- If a report is **out of scope** (e.g. falls under an explicit non-goal documented in the project's [threat model](https://github.com/adrianbrowning/faxios/blob/main/THREATMODEL.md)), we close it with an explanation to the reporter within the triage window (≤ 3 days). Out-of-scope reports do not enter the 60-day queue.
 - **Actively exploited vulnerabilities** are treated as incidents: fix and advisory ship as soon as a patch is validated, not on the 60-day schedule.
 
 **Reporter expectations.**
@@ -108,7 +110,7 @@ Security updates are released as soon as possible after the patch has been devel
 
 ## Maintainer-side incident response
 
-For compromise scenarios affecting maintainer accounts, workstations, or release infrastructure (phishing, stolen hardware key, unexpected tag/publish), the project maintains an internal incident-response runbook in [THREATMODEL.md §3.7](https://github.com/faxios/faxios/blob/v1.x/THREATMODEL.md#37-incident-response-runbook). It covers session revocation, key rotation, downstream notification, and unpublish/deprecate procedures.
+For compromise scenarios affecting maintainer accounts, workstations, or release infrastructure (phishing, stolen hardware key, unexpected tag/publish), the project maintains an internal incident-response runbook in [THREATMODEL.md §3.7](https://github.com/adrianbrowning/faxios/blob/main/THREATMODEL.md#37-incident-response-runbook). It covers session revocation, key rotation, downstream notification, and unpublish/deprecate procedures.
 
 ## Security Partners and Acknowledgements
 

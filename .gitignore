@@ -24,3 +24,4 @@ packages/tests/faxios.tgz
 .claude/settings.local.json
 /plans/
 tests/**/pnpm-lock.yaml
+packages/tests/docs-examples/.generated*/

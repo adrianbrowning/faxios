@@ -1,10 +1,10 @@
 # Headers <Badge type="tip" text="New" />
 
-faxios exposes its own AxiosHeaders class to manipulate headers using a Map-like API that guarantees case-insensitive keys. This class is used internally by faxios to manage headers, but it's also exposed to the user for convenience. Although HTTP headers are case-insensitive, faxios will retain the case of the original header for stylistic reasons and for a workaround when servers mistakenly consider the header's case. The old method of directly manipulating the headers object is still available, but deprecated and not recommended for future usage.
+faxios exposes its own FaxiosHeaders class to manipulate headers using a Map-like API that guarantees case-insensitive keys. This class is used internally by faxios to manage headers, but it's also exposed to the user for convenience. Although HTTP headers are case-insensitive, faxios will retain the case of the original header for stylistic reasons and for a workaround when servers mistakenly consider the header's case. The old method of directly manipulating the headers object is still available, but deprecated and not recommended for future usage.
 
 ## Working with headers
 
-The AxiosHeaders object instance can contain different types of internal values that control the setting and merging logic. The final headers object is obtained by faxios by calling the toJSON method. The AxiosHeaders object is also iterable, so you can use it in loops or convert it to an array or object.
+The FaxiosHeaders object instance can contain different types of internal values that control the setting and merging logic. The final headers object is obtained by faxios by calling the toJSON method. The FaxiosHeaders object is also iterable, so you can use it in loops or convert it to an array or object.
 
 The header values can be one of the following types:
 
@@ -19,8 +19,11 @@ The header value is considered set if it is not undefined.
 
 The headers object is always initialized inside interceptors and transformers as seen in the following example:
 
-```js
-faxios.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+```ts
+import faxios from "@gcmdev/faxios";
+import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
+
+faxios.interceptors.request.use((request: InternalFaxiosRequestConfig) => {
   request.headers.set("My-header", "value");
 
   request.headers.set({
@@ -40,10 +43,12 @@ faxios.interceptors.request.use((request: InternalAxiosRequestConfig) => {
 });
 ```
 
-You can iterate over an AxiosHeaders using any iterable method, like for-of loop, forEach, or spread operator:
+You can iterate over a FaxiosHeaders instance using any iterable method, like for-of loop, forEach, or spread operator:
 
 ```js
-const headers = new AxiosHeaders({
+import { FaxiosHeaders } from "@gcmdev/faxios";
+
+const headers = new FaxiosHeaders({
   foo: '1',
   bar: '2',
   baz: '3',
@@ -63,6 +68,8 @@ for (const [header, value] of headers) {
 The most common place to set headers is the `headers` option in your request config or instance config:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 // On a single request
 await faxios.get('/api/data', {
   headers: {
@@ -81,9 +88,14 @@ const api = faxios.create({
 
 ## Preserving a specific header case
 
-faxios header names are case-insensitive, but `AxiosHeaders` keeps the case of the first matching key it sees. If you need a specific case for a server with non-standard case-sensitive behavior, define a case preset in defaults and then set values as usual.
+faxios header names are case-insensitive, but `FaxiosHeaders` keeps the case of the first matching key it sees. If you need a specific case for a server with non-standard case-sensitive behavior, define a case preset in defaults and then set values as usual.
 
 ```js
+import faxios from "@gcmdev/faxios";
+
+const url = '/upload';
+const data = new Uint8Array([1, 2, 3]);
+
 const api = faxios.create();
 
 api.defaults.headers.common = {
@@ -99,12 +111,15 @@ await api.put(url, data, {
 });
 ```
 
-You can also do this with `AxiosHeaders` directly when composing headers:
+You can also do this with `FaxiosHeaders` directly when composing headers:
 
 ```js
-import faxios, { AxiosHeaders } from 'faxios';
+import faxios, { FaxiosHeaders } from "@gcmdev/faxios";
 
-const headers = AxiosHeaders.concat(
+const url = '/upload';
+const data = new Uint8Array([1, 2, 3]);
+
+const headers = FaxiosHeaders.concat(
   { 'content-type': undefined },
   { 'Content-Type': 'application/octet-stream' }
 );
@@ -117,6 +132,11 @@ await faxios.put(url, data, { headers });
 Interceptors are the right place to attach dynamic headers like auth tokens, because the token may not be available when the instance is first created:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
+const api = faxios.create();
+const getAuthToken = () => 'my-token'; // e.g. read from your auth store
+
 api.interceptors.request.use((config) => {
   const token = getAuthToken(); // read at request time
   config.headers.set('Authorization', `Bearer ${token}`);
@@ -126,16 +146,20 @@ api.interceptors.request.use((config) => {
 
 ## Unicode header values
 
-`AxiosHeaders` preserves non-control Unicode characters in header values so request interceptors can transform them before the request is sent. CR/LF and other C0 control bytes are still stripped at set time to prevent header injection.
+`FaxiosHeaders` preserves non-control Unicode characters in header values so request interceptors can transform them before the request is sent. CR/LF and other C0 control bytes are still stripped at set time to prevent header injection.
 
 The adapter sanitizes header values to byte-safe (HT, printable ASCII, and Latin-1 supplement) right before handing them to `fetch`'s `Headers`. If a header value contains characters outside that range and you have not encoded it, those characters are stripped, which can produce an empty value on the wire.
 
 If you need to send non-ASCII data in a header, encode it in a request interceptor:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
+const api = faxios.create();
+
 api.interceptors.request.use((config) => {
   if (config.headers.has('X-Name')) {
-    config.headers.set('X-Name', encodeURIComponent(config.headers.get('X-Name')));
+    config.headers.set('X-Name', encodeURIComponent(String(config.headers.get('X-Name'))));
   }
   return config;
 });
@@ -150,9 +174,11 @@ await api.get('/api/data', {
 
 ## Reading response headers
 
-Response headers are available on `response.headers` as an `AxiosHeaders` instance. All header names are lower-cased:
+Response headers are available on `response.headers` as a `FaxiosHeaders` instance. All header names are lower-cased:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const response = await faxios.get('/api/data');
 
 console.log(response.headers['content-type']);
@@ -167,6 +193,11 @@ console.log(response.headers.get('x-request-id'));
 To opt out of a header that faxios sets by default (such as `Content-Type` or `User-Agent`), set its value to `false`:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
+const payload = new FormData();
+payload.append('name', 'faxios');
+
 await faxios.post('/api/data', payload, {
   headers: {
     'Content-Type': false, // let the browser set it automatically (e.g. for FormData)
@@ -174,4 +205,4 @@ await faxios.post('/api/data', payload, {
 });
 ```
 
-For more detail on the full `AxiosHeaders` method API, see the [Header methods](/pages/advanced/header-methods) page.
+For more detail on the full `FaxiosHeaders` method API, see the [Header methods](/pages/advanced/header-methods) page.

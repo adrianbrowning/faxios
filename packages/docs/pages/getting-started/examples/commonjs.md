@@ -2,18 +2,10 @@
 
 ## Importing the library
 
-To import the library in a CommonJS environment, you can use the `require` function, or the `import` statement if you are using a bundler like Webpack or Rollup.
-
-#### No bundler
+faxios is published as an ES module only; there is no CommonJS build. Import it with an `import` statement, in Node.js (an `.mjs` file or a package with `"type": "module"`) or through a bundler such as webpack, Rollup or Vite:
 
 ```js
-const faxios = require("faxios");
-```
-
-#### With bundler (webpack, rollup, vite, etc)
-
-```js
-import faxios from "faxios";
+import faxios from "@gcmdev/faxios";
 ```
 
 ## Using then/catch/finally
@@ -23,6 +15,8 @@ Since faxios returns a promise at it's core you can choose to use callbacks with
 ### Get request
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 faxios
   .get("https://jsonplaceholder.typicode.com/posts", {
     params: {
@@ -43,6 +37,8 @@ faxios
 ### Post request
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 faxios
   .post("https://jsonplaceholder.typicode.com/posts", {
     title: "foo",
@@ -63,6 +59,8 @@ faxios
 ### Put request
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 faxios
   .put("https://jsonplaceholder.typicode.com/posts/1", {
     title: "foo",
@@ -83,6 +81,8 @@ faxios
 ### Patch request
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 faxios
   .patch("https://jsonplaceholder.typicode.com/posts/1", {
     title: "foo",
@@ -101,6 +101,8 @@ faxios
 ### Delete request
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 faxios
   .delete("https://jsonplaceholder.typicode.com/posts/1")
   .then((response) => {
@@ -125,6 +127,8 @@ Note: async/await is part of ECMAScript 2017 and is not supported in Internet Ex
 ### Get request
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const getPosts = async () => {
   try {
     const response = await faxios.get(
@@ -142,11 +146,15 @@ const getPosts = async () => {
     console.log("Request completed");
   }
 };
+
+await getPosts();
 ```
 
 ### Post request
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const createPost = async () => {
   try {
     const response = await faxios.post(
@@ -164,11 +172,15 @@ const createPost = async () => {
     console.log("Request completed");
   }
 };
+
+await createPost();
 ```
 
 ### Put request
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const updatePost = async () => {
   try {
     const response = await faxios.put(
@@ -186,11 +198,15 @@ const updatePost = async () => {
     console.log("Request completed");
   }
 };
+
+await updatePost();
 ```
 
 ### Patch request
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const updatePost = async () => {
   try {
     const response = await faxios.patch(
@@ -206,11 +222,15 @@ const updatePost = async () => {
     console.log("Request completed");
   }
 };
+
+await updatePost();
 ```
 
 ### Delete request
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const deletePost = async () => {
   try {
     const response = await faxios.delete(
@@ -223,4 +243,6 @@ const deletePost = async () => {
     console.log("Request completed");
   }
 };
+
+await deletePost();
 ```

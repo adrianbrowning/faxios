@@ -40,7 +40,7 @@
   "bugs": {
     "url": "https://github.com/adrianbrowning/faxios/issues"
   },
-  "homepage": "https://faxios-http.com",
+  "homepage": "https://adrianbrowning.github.io/faxios/",
   "files": [
     "dist/"
   ],

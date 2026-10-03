@@ -8,87 +8,108 @@ faxios endeavours to follow RFC 7231 and RFC 5789, as closely as possible. The a
 
 faxios can be used to make HTTP request by passing only the config object. The full config object is documented [here](/pages/advanced/request-config)
 
-```ts
-faxios(url: string | AxiosRequestConfig, config?: AxiosRequestConfig);
+```ts check=skip
+faxios(url: string | FaxiosRequestConfig<D>, config?: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T>>;
+```
+
+```js
+import faxios from "@gcmdev/faxios";
+
+// Send a POST request
+await faxios({
+  method: "post",
+  url: "/user/12345",
+  data: {
+    firstName: "Fred",
+    lastName: "Flintstone",
+  },
+});
+
+// Send a GET request (default method)
+await faxios("/user/12345");
 ```
 
 ## Method aliases
 
 The following aliases are available for making requests:
 
+When using the alias methods, the `url`, `method`, and `data` properties don't need to be specified in config.
+
 ### `request`
 
 The `request` method is the main method that you will use to make HTTP requests. It takes a configuration object as an argument and returns a promise that resolves to the response object. The `request` method is a generic method that can be used to make any type of HTTP request.
 
-```ts
-faxios.request(config: AxiosRequestConfig<C>): AxiosResponse<R>;
+```ts check=skip
+faxios.request(config: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T>>;
 ```
 
 ### `get`
 
 The `get` method is used to make a GET request. It takes a URL and an optional configuration object as arguments and returns a promise that resolves to the response object.
 
-```ts
-faxios.get(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+```ts check=skip
+faxios.get(url: string, config?: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T>>;
 ```
 
 ### `delete`
 
 The `delete` method is used to make a DELETE request. It takes a URL and an optional configuration object as arguments and returns a promise that resolves to the response object.
 
-```ts
-faxios.delete(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+```ts check=skip
+faxios.delete(url: string, config?: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T>>;
 ```
 
 ### `head`
 
 The `head` method is used to make a HEAD request. It takes a URL and an optional configuration object as arguments and returns a promise that resolves to the response object.
 
-```ts
-faxios.head(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+```ts check=skip
+faxios.head(url: string, config?: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T>>;
 ```
 
 ### `options`
 
 The `options` method is used to make an OPTIONS request. It takes a URL and an optional configuration object as arguments and returns a promise that resolves to the response object.
 
-```ts
-faxios.options(url: string, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+```ts check=skip
+faxios.options(url: string, config?: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T>>;
 ```
 
 ### `post`
 
 The `post` method is used to make a POST request. It takes a URL, an optional data object, and an optional configuration object as arguments and returns a promise that resolves to the response object.
 
-```ts
-faxios.post(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+```ts check=skip
+faxios.post(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T>>;
 ```
 
 ### `put`
 
 The `put` method is used to make a PUT request. It takes a URL, an optional data object, and an optional configuration object as arguments and returns a promise that resolves to the response object.
 
-```ts
-faxios.put(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+```ts check=skip
+faxios.put(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T>>;
 ```
 
 ### `patch`
 
 The `patch` method is used to make a PATCH request. It takes a URL, an optional data object, and an optional configuration object as arguments and returns a promise that resolves to the response object.
 
-```ts
-faxios.patch(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+```ts check=skip
+faxios.patch(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T>>;
 ```
 
 ### `query`
 
 The `query` method is used to make a QUERY request, a safe and idempotent method that carries a body. It takes a URL, an optional data object, and an optional configuration object as arguments and returns a promise that resolves to the response object. Use it for read-style operations whose parameters are too complex or sensitive to fit in the URL.
 
-```ts
-faxios.query(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+```ts check=skip
+faxios.query(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T>>;
 ```
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 // Send a complex search filter as a request body
 const { data } = await faxios.query("/api/search", {
   selector: ["name", "email"],
@@ -104,11 +125,13 @@ The QUERY method is defined by an IETF [Internet-Draft](https://datatracker.ietf
 
 The `getUri` method returns the URL that would be sent for a given config without actually making the request. It applies `baseURL`, `paramsSerializer`, and `params`, so you get back the same string faxios would put on the wire. Useful for building links, debugging serialization, or reusing the resolved URL in another request.
 
-```ts
-faxios.getUri(config?: AxiosRequestConfig): string;
+```ts check=skip
+faxios.getUri(config?: FaxiosRequestConfig): string;
 ```
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const url = faxios.getUri({
   url: "/users",
   baseURL: "https://api.example.com",
@@ -127,42 +150,51 @@ These methods are equivalent to their counterparts above, but preset `Content-Ty
 
 ### `postForm`
 
-```ts
-faxios.postForm(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+```ts check=skip
+faxios.postForm(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T>>;
 ```
 
-```js
+```ts check=types
+import faxios from "@gcmdev/faxios";
+
 // Upload a file from a browser file input
+const fileInput = document.querySelector<HTMLInputElement>("#fileInput");
 await faxios.postForm("/api/upload", {
-  file: document.querySelector("#fileInput").files[0],
+  file: fileInput?.files?.[0],
   description: "Profile photo",
 });
 ```
 
 ### `putForm`
 
-```ts
-faxios.putForm(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+```ts check=skip
+faxios.putForm(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T>>;
 ```
 
-```js
+```ts check=types
+import faxios from "@gcmdev/faxios";
+
 // Replace a resource with form data
+const avatarInput = document.querySelector<HTMLInputElement>("#avatarInput");
 await faxios.putForm("/api/users/1/avatar", {
-  avatar: document.querySelector("#avatarInput").files[0],
+  avatar: avatarInput?.files?.[0],
 });
 ```
 
 ### `patchForm`
 
-```ts
-faxios.patchForm(url: string, data?: D, config?: AxiosRequestConfig<C>): AxiosResponse<R>;
+```ts check=skip
+faxios.patchForm(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T>>;
 ```
 
-```js
+```ts check=types
+import faxios from "@gcmdev/faxios";
+
 // Update specific fields using form data
+const avatarInput = document.querySelector<HTMLInputElement>("#avatarInput");
 await faxios.patchForm("/api/users/1", {
   displayName: "New Name",
-  avatar: document.querySelector("#avatarInput").files[0],
+  avatar: avatarInput?.files?.[0],
 });
 ```
 

@@ -19,7 +19,8 @@
     "lint:s": "pnpm -r lint:s",
     "lint:fix": "pnpm -r lint:fix",
     "lint:jscpd": "jscpd .",
-    "lint:e18e": "pnpm dlx @e18e/cli analyze"
+    "lint:e18e": "pnpm dlx @e18e/cli analyze",
+    "test:docs-examples": "pnpm --filter @faxios/tests test:docs-examples"
   },
   "devDependencies": {
     "@ai-hero/sandcastle": "^0.12.0",

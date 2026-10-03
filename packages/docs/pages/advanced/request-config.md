@@ -3,11 +3,13 @@
 The request config is used to configure the request. There is a wide range of options available, but the only required option is `url`. If the configuration object does not contain a `method` field, the default method is `GET`.
 
 ::: warning Security: decompression-bomb protection is opt-in
-By default `maxContentLength` and `maxBodyLength` are `-1` (unlimited). A malicious or compromised server can return a tiny gzip/deflate/brotli/zstd body that expands to gigabytes and exhaust memory.
+By default `maxContentLength` and `maxBodyLength` are `-1` (unlimited). A malicious or compromised server can return a tiny gzip/deflate/brotli/zstd body that expands to gigabytes and exhaust memory. The fetch adapter enforces these caps in every runtime.
 
 If you call servers you do not fully trust, **set a cap**:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 faxios.defaults.maxContentLength = 10 * 1024 * 1024; // 10 MB
 faxios.defaults.maxBodyLength = 10 * 1024 * 1024;
 ```
@@ -29,15 +31,17 @@ The `baseURL` is the base URL to be prepended to the `url` unless the `url` is a
 
 ### `allowAbsoluteUrls`
 
-The `allowAbsoluteUrls` determines whether or not absolute URLs will override a configured `baseUrl`. When set to true (default), absolute values for `url` will override `baseUrl`. When set to false, absolute values for `url` will always be prepended by `baseUrl`.
+The `allowAbsoluteUrls` determines whether or not absolute URLs will override a configured `baseURL`. When `true`, absolute values for `url` override `baseURL`. When `false`, absolute values for `url` are always prepended by `baseURL`.
+
+If you do not set it, faxios uses the instance default. When the instance defaults set neither `allowAbsoluteUrls` nor `baseURL`, it is `true`; when the instance defaults set `baseURL`, it is `false`.
 
 ### `transformRequest`
 
-The `transformRequest` function allows you to modify the request data before it is sent to the server. This function is called with the request data as its only argument. This is only applicable for request methods `PUT`, `POST`, `PATCH` and `DELETE`. The last function in the array must return a string or an instance of Buffer, ArrayBuffer, FormData or Stream.
+The `transformRequest` function allows you to modify the request data before it is sent to the server. Each function is called with the request data and the request headers, and may modify the headers object. This is only applicable for request methods `PUT`, `POST`, `PATCH` and `DELETE`. The last function in the array must return a string or an instance of Buffer, ArrayBuffer, FormData or Stream.
 
 ### `transformResponse`
 
-The `transformResponse` function allows you to modify the response data before it is passed to the `then` or `catch` functions. This function is called with the response data as its only argument.
+The `transformResponse` function allows you to modify the response data before it is passed to the `then` or `catch` functions. Each function is called with the response data, the response headers and the HTTP status code, and returns the new data.
 
 ### `parseReviver`
 
@@ -50,6 +54,8 @@ In modern environments (ES2023+), the reviver function receives a third `context
 > Note: `Temporal` is not yet available in all environments. Consider using a polyfill if needed.
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const client = faxios.create({
   parseReviver: (key, value, context) => {
     // Example: Precision-safe BigInt parsing
@@ -101,6 +107,8 @@ By default, faxios decodes `%3A`, `%24`, `%2C` and `%20` back to `:`, `$`, `,` a
 Use the `encode` option to override the default encoder:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 // Per-request: emit strict RFC 3986 percent-encoding for query values
 faxios.get('/foo', {
   params: { filter: JSON.stringify({ startedAt: '2026-01-23' }) },
@@ -131,15 +139,11 @@ Controls how faxios copies headers returned by a `FormData`-like object's `getHe
 
 ### `timeout`
 
-The `timeout` is the number of milliseconds before the request times out. If the request takes longer than `timeout`, the request will be aborted.
+The `timeout` is the number of milliseconds before the request times out. If the request takes longer than `timeout`, the request will be aborted. The default is `0` (no timeout).
 
 ### `withCredentials`
 
-The `withCredentials` property indicates whether or not cross-site Access-Control requests should be made using credentials such as cookies, authorization headers, or TLS client certificates. Setting withCredentials has no effect on same-site requests.
-
-### `adapter`
-
-`adapter` allows custom handling of requests which makes testing easier. Return a promise and supply a valid response — see [adapters](/pages/advanced/adapters) for more information. The only built-in adapter is `'fetch'`, which is the default (`adapter: ['fetch']`). You may pass the string `'fetch'`, an array such as `['fetch']`, or your own custom adapter function.
+The `withCredentials` property indicates whether or not cross-site Access-Control requests should be made using credentials such as cookies, authorization headers, or TLS client certificates. Setting withCredentials has no effect on same-site requests. The default is `false`. It only controls whether the browser sends credentials; it does not control whether the XSRF header is added (see [`withXSRFToken`](#withxsrftoken)).
 
 ### `auth`
 
@@ -192,11 +196,11 @@ Note: Ignored for `responseType` of `stream` or client-side requests
 
 ### `xsrfCookieName`
 
-The `xsrfCookieName` is the name of the cookie to use as a value for `XSRF` token.
+The `xsrfCookieName` is the name of the cookie to use as a value for `XSRF` token. The default is `XSRF-TOKEN`.
 
 ### `xsrfHeaderName`
 
-The `xsrfHeaderName` is the name of the header to use as a value for `XSRF` token.
+The `xsrfHeaderName` is the name of the header to use as a value for `XSRF` token. The default is `X-XSRF-TOKEN`.
 
 ### `withXSRFToken`
 
@@ -205,16 +209,18 @@ The `xsrfHeaderName` is the name of the header to use as a value for `XSRF` toke
 - `undefined` _(default)_ — set the XSRF header only for same-origin requests.
 - `true` — always set the XSRF header, including for cross-origin requests.
 - `false` — never set the XSRF header.
-- `(config: InternalAxiosRequestConfig) => boolean | undefined` — a callback that decides per-request, receiving the internal config object.
+- `(config: InternalFaxiosRequestConfig) => boolean | undefined` — a callback that decides per-request, receiving the internal config object.
 
-```ts
-withXSRFToken: boolean | undefined | ((config: InternalAxiosRequestConfig) => boolean | undefined);
+```ts check=skip
+withXSRFToken: boolean | undefined | ((config: InternalFaxiosRequestConfig) => boolean | undefined);
 ```
 
 ::: warning Cross-origin XSRF and `withCredentials`
 `withCredentials` controls whether cross-site requests include credentials (cookies, HTTP auth). `withXSRFToken` controls whether faxios sets the XSRF header. For cross-origin requests, set `withXSRFToken: true` to force the header; additionally set `withCredentials: true` only when the request also needs credentials/cookies.
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 faxios.get('/user', { withCredentials: true, withXSRFToken: true });
 ```
 :::
@@ -223,7 +229,7 @@ faxios.get('/user', { withCredentials: true, withXSRFToken: true });
 
 The `onDownloadProgress` function allows you to listen to the progress of a download.
 
-> Note: The `fetch` API cannot emit upload progress events, so upload progress is not supported.
+`onUploadProgress` works the same way for the request body. faxios reports upload progress by streaming the request body, so `onUploadProgress` only fires where the runtime's `fetch` supports streaming request bodies (`duplex: "half"`), as Node.js does. Where it doesn't, the callback is not called.
 
 ### `maxContentLength`
 
@@ -242,7 +248,9 @@ The `redact` property is an optional array of config key names to mask when an `
 
 `redact` only affects error serialization. It does not change request data, headers, or the original config object.
 
-```js
+```js status=500
+import faxios from "@gcmdev/faxios";
+
 faxios.get('/user/12345', {
   headers: { Authorization: 'Bearer token' },
   auth: { username: 'me', password: 'secret' },
@@ -256,9 +264,7 @@ faxios.get('/user/12345', {
 
 The `validateStatus` function allows you to override the default status code validation. By default, faxios will reject the promise if the status code is not in the range of 200-299. You can override this behavior by providing a custom `validateStatus` function. The function should return `true` if the status code is within the range you want to accept.
 
-### `cancelToken`
-
-The `cancelToken` property allows you to create a cancel token that can be used to cancel the request. For more information, see the [cancellation](/pages/advanced/cancellation) documentation.
+If `validateStatus` is set to `null`, faxios resolves every response. An explicit `validateStatus: undefined` also resolves every response unless `transitional.validateStatusUndefinedResolves` is `false`.
 
 ### `signal`
 
@@ -274,20 +280,25 @@ The `transitional` property allows you to enable or disable certain transitional
   This option only takes effect when `responseType` is **explicitly** set to `'json'`. When `responseType` is omitted, faxios uses `forcedJSONParsing` to attempt JSON parsing and silently returns the raw string on failure regardless of this setting. To make invalid JSON throw, set both:
 
   ```js
-  { responseType: 'json', transitional: { silentJSONParsing: false } }
+  import faxios from "@gcmdev/faxios";
+
+  await faxios.get("/data", { responseType: "json", transitional: { silentJSONParsing: false } });
   ```
   :::
 
 - `forcedJSONParsing`: Forces faxios to parse the response string as JSON even if `responseType` is not `'json'`.
-- `clarifyTimeoutError`: Clarifies the error message when a request times out. This is useful when you are debugging timeout issues.
+- `clarifyTimeoutError`: Accepted for compatibility but has no effect. Timed-out requests always reject with `ETIMEDOUT`.
 - `advertiseZstdAcceptEncoding`: When set to `true`, faxios adds `zstd` to the default `Accept-Encoding` request header. Response decompression is handled by the runtime's `fetch` implementation.
-- `legacyInterceptorReqResOrdering`: When set to true we will use the legacy interceptor request/response ordering.
+- `validateStatusUndefinedResolves`: When `true` _(default)_, an explicit `validateStatus: undefined` resolves every response status (legacy behavior). Set to `false` to make an explicit `undefined` behave like an omitted option, so the configured or default validator applies (reject non-2xx).
+- `legacyInterceptorReqResOrdering`: When `true` _(default)_, request interceptors run last-registered-first (LIFO). Set to `false` to run request interceptors in registration order. Response interceptors always run in registration order. See [Interceptor execution order](/pages/advanced/interceptors#interceptor-execution-order).
 
 ### `env`
 
 The `env` property allows you to set some configuration options. For example the FormData class which is used to automatically serialize the payload into a FormData object.
 
-- FormData: window?.FormData || global?.FormData
+- FormData: the runtime's global `FormData`
+
+`env` also accepts custom `fetch`, `Request`, and `Response` implementations for the fetch adapter. See [Custom fetch](/pages/advanced/fetch-adapter#custom-fetch).
 
 ### `formSerializer`
 
@@ -301,11 +312,24 @@ The `formSerializer` option allows you to configure how plain objects are serial
 
 See the [multipart/form-data](/pages/advanced/multipart-form-data-format) page for full details, and the full request config example at the end of this page.
 
+### Schema options
+
+The following options validate request inputs and response data with any Standard Schema v1 compliant schema (Zod, Valibot, ArkType). See [Schema validation](/pages/advanced/schema-validation) for details.
+
+- `responseSchema` — validates `response.data` after `transformResponse`; rejects with `ERR_BAD_RESPONSE_SCHEMA` on failure. TypeScript infers the `response.data` type from the schema's output type.
+- `requestSchema` — validates `config.data` before sending; rejects with `ERR_BAD_REQUEST_SCHEMA`.
+- `paramsSchema` — validates `config.params` before URL construction; rejects with `ERR_BAD_PARAMS_SCHEMA`.
+- `pathParams` — substitutes `{key}` placeholders in the URL.
+- `pathParamsSchema` — validates `pathParams` before substitution; rejects with `ERR_BAD_PATH_PARAMS_SCHEMA`. When set, `pathParams` is required.
+
 ## Full request config example
 
-```js
-{
-  url: "/posts",
+```ts
+import type { FaxiosRequestConfig } from "@gcmdev/faxios";
+import { z } from "zod";
+
+const config: FaxiosRequestConfig = {
+  url: "/posts/{id}",
   method: "get",
   baseURL: "https://jsonplaceholder.typicode.com",
   allowAbsoluteUrls: true,
@@ -315,41 +339,35 @@ See the [multipart/form-data](/pages/advanced/multipart-form-data-format) page f
   transformResponse: [function (data) {
     return data;
   }],
-  headers: {"X-Requested-With": "XMLHttpRequest"},
+  headers: { "X-Requested-With": "XMLHttpRequest" },
   params: {
     postId: 5
   },
   paramsSerializer: {
     // Custom encoder function which sends key/value pairs in an iterative fashion.
-    encode?: (param: string): string => { /* Do custom operations here and return transformed string */ },
+    encode: (param, defaultEncoder) => defaultEncoder(param),
 
     // Custom serializer function for the entire parameter. Allows user to mimic pre 1.x behaviour.
-    serialize?: (params: Record<string, any>, options?: ParamsSerializerOptions ),
+    serialize: (params, options) => new URLSearchParams(params as Record<string, string>).toString(),
 
     // Configuration for formatting array indexes in the params.
     // Three available options:
-      // (1) indexes: null (leads to no brackets)
-      // (2) (default) indexes: false (leads to empty brackets)
-      // (3) indexes: true (leads to brackets with indexes).
+    //   (1) indexes: null (leads to no brackets)
+    //   (2) (default) indexes: false (leads to empty brackets)
+    //   (3) indexes: true (leads to brackets with indexes).
     indexes: false,
 
-    // Maximum object nesting depth when serializing params. Throws FaxiosError
-    // (ERR_FORM_DATA_DEPTH_EXCEEDED) if exceeded. Default: 100. Set to Infinity to disable.
-    maxDepth: 100
-
+    // Maximum nesting depth of `params` (default 100); deeper objects throw ERR_FORM_DATA_DEPTH_EXCEEDED.
+    maxDepth: 100,
   },
   data: {
     firstName: "Fred"
   },
-  formDataHeaderPolicy: "legacy",
   // Syntax alternative to send data into the body method post only the value is sent, not the key
-  data: "Country=Brasil&City=Belo Horizonte",
+  // data: "Country=Brasil&City=Belo Horizonte",
+  formDataHeaderPolicy: "legacy",
   timeout: 1000,
   withCredentials: false,
-  adapter: function (config) {
-    // Do whatever you want
-  },
-  adapter: "fetch",
   auth: {
     username: "janedoe",
     password: "s00pers3cret"
@@ -358,49 +376,54 @@ See the [multipart/form-data](/pages/advanced/multipart-form-data-format) page f
   responseEncoding: "utf8",
   xsrfCookieName: "XSRF-TOKEN",
   xsrfHeaderName: "X-XSRF-TOKEN",
-  withXSRFToken: boolean | undefined | ((config: InternalAxiosRequestConfig) => boolean | undefined),
-  onDownloadProgress: function ({loaded, total, progress, bytes, estimated, rate, download = true}) {
+  // boolean, or a function that decides per request
+  withXSRFToken: (config) => config.url?.startsWith("/") ?? false,
+  onDownloadProgress: function ({ loaded, total, progress, bytes, estimated, rate, download = true }) {
     // Do whatever you want with the faxios progress event
   },
   maxContentLength: 2000,
   maxBodyLength: 2000,
-  redact: ['authorization', 'password'],
+  redact: ["authorization", "password"],
   validateStatus: function (status) {
     return status >= 200 && status < 300;
   },
-  cancelToken: new CancelToken(function (cancel) {
-    cancel("Operation has been canceled.");
-  }),
   signal: new AbortController().signal,
   transitional: {
     silentJSONParsing: true,
     forcedJSONParsing: true,
     clarifyTimeoutError: false,
     advertiseZstdAcceptEncoding: false,
+    validateStatusUndefinedResolves: true,
     legacyInterceptorReqResOrdering: true,
   },
+  responseSchema: z.object({ id: z.number(), title: z.string() }),
+  requestSchema: z.object({ firstName: z.string() }),
+  paramsSchema: z.object({ postId: z.number() }),
+  pathParams: { id: "123" },
+  pathParamsSchema: z.object({ id: z.string() }),
   env: {
-    FormData: window?.FormData || global?.FormData
+    fetch: globalThis.fetch
   },
   formSerializer: {
-      // Custom visitor function to serialize form values
-      visitor: (value, key, path, helpers) => {};
+    // Custom visitor function to serialize form values
+    visitor: function (value, key, path, helpers) {
+      return helpers.defaultVisitor.call(this, value, key, path, helpers);
+    },
 
-      // Use dots instead of brackets format
-      dots: boolean;
+    // Use dots instead of brackets format
+    dots: false,
 
-      // Keep special endings like {} in parameter key
-      metaTokens: boolean;
+    // Keep special endings like {} in parameter key
+    metaTokens: true,
 
-      // Use array indexes format:
-        // null - no brackets
-        // false - empty brackets
-        // true - brackets with indexes
-      indexes: boolean;
+    // Use array indexes format:
+    //   null - no brackets
+    //   false - empty brackets
+    //   true - brackets with indexes
+    indexes: false,
 
-      // Maximum object nesting depth. Throws FaxiosError (ERR_FORM_DATA_DEPTH_EXCEEDED)
-      // if exceeded. Default: 100. Set to Infinity to disable.
-      maxDepth: 100;
+    // Maximum nesting depth of `data` (default 100); deeper objects throw ERR_FORM_DATA_DEPTH_EXCEEDED.
+    maxDepth: 100,
   }
-}
+};
 ```

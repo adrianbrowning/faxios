@@ -7,7 +7,7 @@ Most APIs require some form of authentication. This page covers the most common 
 The most common approach is to attach a JWT in the `Authorization` header. The cleanest way to do this is via a request interceptor on your faxios instance, so the token is read fresh on every request:
 
 ```js
-import faxios from "faxios";
+import faxios from "@gcmdev/faxios";
 
 const api = faxios.create({ baseURL: "https://api.example.com" });
 
@@ -25,6 +25,8 @@ api.interceptors.request.use((config) => {
 For APIs that use HTTP Basic authentication, pass the `auth` option. faxios will encode the credentials and set the `Authorization` header automatically:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const response = await faxios.get("https://api.example.com/data", {
   auth: {
     username: "myUser",
@@ -33,7 +35,7 @@ const response = await faxios.get("https://api.example.com/data", {
 });
 ```
 
-If `auth` is not supplied, the Node.js HTTP and fetch adapters can also derive Basic auth credentials from the request URL, for example `https://myUser:myPassword@api.example.com/data`. Percent-encoded URL credentials are decoded before the `Authorization` header is generated. Prefer the explicit `auth` option for new code; it takes precedence over URL-embedded credentials.
+If `auth` is not supplied, faxios can also derive Basic auth credentials from the request URL, for example `https://myUser:myPassword@api.example.com/data`. Percent-encoded URL credentials are decoded before the `Authorization` header is generated. Prefer the explicit `auth` option for new code; it takes precedence over URL-embedded credentials.
 
 ::: tip
 For Bearer tokens and API keys, use a custom `Authorization` header rather than the `auth` option — `auth` is only for HTTP Basic.
@@ -44,6 +46,8 @@ For Bearer tokens and API keys, use a custom `Authorization` header rather than 
 API keys are typically passed as a header or a query parameter, depending on what the API expects:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 // As a header
 const api = faxios.create({
   baseURL: "https://api.example.com",
@@ -60,16 +64,23 @@ const response = await faxios.get("https://api.example.com/data", {
 
 When access tokens expire, you need to silently refresh them and retry the failed request. A response interceptor is the right place to implement this:
 
-```js
-import faxios from "faxios";
+```ts
+import faxios, { FaxiosError } from "@gcmdev/faxios";
+import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
+
+type RetryConfig = InternalFaxiosRequestConfig & { _retry?: boolean };
+type QueuedRequest = {
+  resolve: (token: string | null) => void;
+  reject: (error: unknown) => void;
+};
 
 const api = faxios.create({ baseURL: "https://api.example.com" });
 
 // Track whether a refresh is already in progress to avoid parallel refresh calls
 let isRefreshing = false;
-let failedQueue = [];
+let failedQueue: Array<QueuedRequest> = [];
 
-const processQueue = (error, token = null) => {
+const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
@@ -83,16 +94,19 @@ const processQueue = (error, token = null) => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
+    if (!(error instanceof FaxiosError) || !error.config) {
+      return Promise.reject(error);
+    }
+    const originalRequest: RetryConfig = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         // Queue the request until the refresh completes
-        return new Promise((resolve, reject) => {
+        return new Promise<string | null>((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
           .then((token) => {
-            originalRequest.headers["Authorization"] = `Bearer ${token}`;
+            originalRequest.headers.set("Authorization", `Bearer ${token}`);
             return api(originalRequest);
           })
           .catch((err) => Promise.reject(err));
@@ -102,13 +116,13 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { data } = await faxios.post("/auth/refresh", {
+        const { data } = await faxios.post<{ access_token: string }>("/auth/refresh", {
           refreshToken: localStorage.getItem("refresh_token"),
         });
 
         const newToken = data.access_token;
         localStorage.setItem("access_token", newToken);
-        api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
+        originalRequest.headers.set("Authorization", `Bearer ${newToken}`);
 
         processQueue(null, newToken);
         return api(originalRequest);
@@ -133,6 +147,8 @@ api.interceptors.response.use(
 For session-based APIs that rely on cookies, set `withCredentials: true` to include cookies in cross-origin requests:
 
 ```js
+import faxios from "@gcmdev/faxios";
+
 const api = faxios.create({
   baseURL: "https://api.example.com",
   withCredentials: true, // send cookies with every request

@@ -3,6 +3,8 @@
 Starting from v0.22.0 faxios supports AbortController to cancel requests in a clean way. This feature is available in the browser and in Node.js when using a version of faxios that supports AbortController. To cancel a request, you need to create an instance of `AbortController` and pass its `signal` to the request's `signal` option.
 
 ```js
+import faxios, { isCancel } from "@gcmdev/faxios";
+
 const controller = new AbortController();
 
 faxios
@@ -11,60 +13,39 @@ faxios
   })
   .then(function (response) {
     //...
+  })
+  .catch(function (error) {
+    if (isCancel(error)) {
+      console.log("Request canceled");
+    }
   });
 // cancel the request
 controller.abort();
 ```
 
-## CancelToken <Badge type="danger" text="Deprecated" />
+## Cancelling several requests
 
-You can also use the `CancelToken` API to cancel requests. This API is deprecated and will be removed in the next major release. It is recommended to use `AbortController` instead. You can create a cancel token using the `CancelToken.source` factory as shown below:
+You can cancel several requests with the same abort controller. If its signal is already aborted at the moment of starting an faxios request, then the request is cancelled immediately, without any attempts to make a real request.
 
 ```js
-const CancelToken = faxios.CancelToken;
-const source = CancelToken.source();
+import faxios, { isCancel } from "@gcmdev/faxios";
 
-faxios
-  .get("/user/12345", {
-    cancelToken: source.token,
-  })
-  .catch(function (thrown) {
-    if (faxios.isCancel(thrown)) {
-      console.log("Request canceled", thrown.message);
-    } else {
-      // handle error
-    }
-  });
+const controller = new AbortController();
 
-faxios.post(
-  "/user/12345",
-  {
-    name: "new name",
-  },
-  {
-    cancelToken: source.token,
+/** @param {unknown} error */
+function handleError(error) {
+  if (isCancel(error)) {
+    console.log("Request canceled");
+  } else {
+    // handle error
   }
-);
+}
 
-// cancel the request (the message parameter is optional)
-source.cancel("Operation canceled by the user.");
+faxios.get("/user/12345", { signal: controller.signal }).catch(handleError);
+faxios
+  .post("/user/12345", { name: "new name" }, { signal: controller.signal })
+  .catch(handleError);
+
+// cancel both requests
+controller.abort();
 ```
-
-You can also create a cancel token by passing an executor function to the `CancelToken` constructor:
-
-```js
-const CancelToken = faxios.CancelToken;
-let cancel;
-
-faxios.get("/user/12345", {
-  cancelToken: new CancelToken(function executor(c) {
-    // An executor function receives a cancel function as a parameter
-    cancel = c;
-  }),
-});
-
-// cancel the request
-cancel();
-```
-
-You can cancel several requests with the same cancel token/abort controller. If a cancellation token is already cancelled at the moment of starting an faxios request, then the request is cancelled immediately, without any attempts to make a real request.
