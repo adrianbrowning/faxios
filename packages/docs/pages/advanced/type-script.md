@@ -12,10 +12,10 @@ faxios is published as ESM only, so there are a few configuration caveats:
 
 ## Type guards for faxios errors
 
-Use `instanceof FaxiosError` to safely narrow `unknown` errors in `catch` blocks. After narrowing, you can access faxios-specific properties like `error.response`, `error.config`, and `error.code` with full type safety. (`faxios.isFaxiosError()` also detects faxios errors, but it returns a plain `boolean`, so it does not narrow.)
+Use the `faxios.isFaxiosError` type guard to safely narrow `unknown` errors in `catch` blocks. After narrowing, you can access faxios-specific properties like `error.response`, `error.config`, and `error.code` with full type safety.
 
 ```ts
-import faxios, { FaxiosError } from "@gcmdev/faxios";
+import faxios from "@gcmdev/faxios";
 
 type User = { id: number; name: string };
 
@@ -24,7 +24,7 @@ try {
   const { data } = await faxios.get<{ userDetails: User }>("/user?ID=12345");
   user = data.userDetails;
 } catch (error) {
-  if (error instanceof FaxiosError) {
+  if (faxios.isFaxiosError(error)) {
     console.error(error.code, error.response?.status);
   } else {
     throw error;
@@ -32,10 +32,10 @@ try {
 }
 ```
 
-`faxios.isCancel()` returns a `boolean` that tells you the request was canceled. To narrow a cancellation to its class, use `instanceof CanceledError`:
+Use `faxios.isCancel()` to narrow cancellation errors to `CanceledError`:
 
 ```ts
-import faxios, { CanceledError } from "@gcmdev/faxios";
+import faxios from "@gcmdev/faxios";
 
 type User = { id: number; name: string };
 
@@ -44,7 +44,7 @@ const controller = new AbortController();
 try {
   await faxios.get<User>("/user?ID=12345", { signal: controller.signal });
 } catch (error) {
-  if (error instanceof CanceledError) {
+  if (faxios.isCancel(error)) {
     console.log("Request canceled:", error.message);
   }
 }

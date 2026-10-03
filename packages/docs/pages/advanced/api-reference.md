@@ -32,14 +32,14 @@ request<T = unknown, R = FaxiosResponse<T>, D = unknown>(configOrUrl: string | F
 
 ### `FaxiosError`
 
-The `FaxiosError` class is an error class that is thrown when an HTTP request fails. It extends the `Error` class and adds additional properties to the error object.
+The `FaxiosError` class is an error class that is thrown when an HTTP request fails. It extends the `Error` class and adds additional properties to the error object. Its type parameters `FaxiosError<T = unknown, D = unknown>` type the response data and the request data.
 
 #### `constructor`
 
 Creates a new instance of the `FaxiosError` class. The constructor takes a message and an optional code, config, request, and response as arguments.
 
 ```ts check=skip
-constructor(message: string, code?: string, config?: InternalFaxiosRequestConfig, request?: unknown, response?: FaxiosResponse);
+constructor(message: string, code?: string, config?: InternalFaxiosRequestConfig<D>, request?: unknown, response?: FaxiosResponse<T, D>);
 ```
 
 #### `properties`
@@ -48,7 +48,7 @@ The `FaxiosError` class provides the following properties:
 
 ```ts check=skip
 // Config instance.
-config?: InternalFaxiosRequestConfig;
+config?: InternalFaxiosRequestConfig<D>;
 
 // Error code.
 code?: string;
@@ -57,7 +57,7 @@ code?: string;
 request?: unknown;
 
 // Response instance.
-response?: FaxiosResponse;
+response?: FaxiosResponse<T, D>;
 
 // Boolean indicating if the error is a `FaxiosError`.
 isFaxiosError: boolean;
@@ -169,7 +169,7 @@ The `Cancel` class is an alias for the `CanceledError` class. It is exported for
 A function that checks if an error is a `CanceledError`. Useful for distinguishing intentional cancellations from unexpected errors.
 
 ```ts check=skip
-isCancel(value: unknown): boolean;
+isCancel(value: unknown): value is CanceledError;
 ```
 
 ```js
@@ -190,25 +190,24 @@ controller.abort("User navigated away");
 
 ### `isFaxiosError`
 
-A function that checks if an error is a `FaxiosError`. Use this in `catch` blocks to tell faxios errors apart from other errors. It returns a plain `boolean` and does not narrow the type, so in TypeScript (or checked JavaScript) use `error instanceof FaxiosError` when you need to read faxios-specific properties like `error.response` and `error.config`.
+A function that checks if an error is a `FaxiosError`. Use this in `catch` blocks to safely access faxios-specific error properties like `error.response` and `error.config`. It is a type guard, so in TypeScript (or checked JavaScript) it narrows the error to `FaxiosError`. Pass a type argument to type `error.response.data`; the shape is not checked at runtime.
 
 ```ts check=skip
-isFaxiosError(value: unknown): boolean;
+isFaxiosError<T = unknown, D = unknown>(value: unknown): value is FaxiosError<T, D>;
 ```
 
 ```js status=500
-import faxios, { FaxiosError } from "@gcmdev/faxios";
+import faxios from "@gcmdev/faxios";
 
 try {
   await faxios.get("/api/resource");
 } catch (error) {
-  if (!faxios.isFaxiosError(error)) {
-    // A non-faxios error (e.g. a programming mistake)
-    throw error;
-  }
-  if (error instanceof FaxiosError) {
+  if (faxios.isFaxiosError(error)) {
     // error.response, error.config, error.code are all typed here
     console.error("HTTP error", error.response?.status, error.message);
+  } else {
+    // A non-faxios error (e.g. a programming mistake)
+    throw error;
   }
 }
 ```
@@ -289,12 +288,12 @@ const merged = mergeConfig(base, override);
 An object that contains a list of HTTP status codes as named constants. Use this to write readable conditionals instead of bare numbers.
 
 ```js status=404
-import faxios, { FaxiosError, HttpStatusCode } from "@gcmdev/faxios";
+import faxios, { HttpStatusCode } from "@gcmdev/faxios";
 
 try {
   await faxios.get("/api/resource");
 } catch (error) {
-  if (error instanceof FaxiosError) {
+  if (faxios.isFaxiosError(error)) {
     if (error.response?.status === HttpStatusCode.NotFound) {
       console.error("Resource not found");
     } else if (error.response?.status === HttpStatusCode.Unauthorized) {

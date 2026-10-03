@@ -112,10 +112,10 @@ api.interceptors.response.use(
 
 ## Typing errors
 
-Use `instanceof FaxiosError` to narrow a caught error. `error.response.data` is typed as `unknown`, so assert (or validate) the shape your API returns:
+Use `faxios.isFaxiosError()` to narrow the type of a caught error. Pass the shape your API returns as a type argument to type `error.response.data`. faxios does not check that shape at runtime, so validate it if the server might send something else:
 
 ```ts status=401
-import faxios, { FaxiosError } from "@gcmdev/faxios";
+import faxios from "@gcmdev/faxios";
 
 type ApiError = {
   message: string;
@@ -125,9 +125,9 @@ type ApiError = {
 try {
   await faxios.get("/api/protected-resource");
 } catch (error) {
-  if (error instanceof FaxiosError) {
-    const data = error.response?.data as ApiError | undefined;
-    console.error(data?.message);
+  if (faxios.isFaxiosError<ApiError>(error)) {
+    // error.response?.data is typed as ApiError
+    console.error(error.response?.data.message);
     console.error(error.response?.status);
   } else {
     throw error;
