@@ -5,7 +5,8 @@
 // - typed FaxiosHeaders accessors (no longer `unknown`)
 // - serializer maxDepth and nullable env.Request/env.Response
 // - instance defaults typed as header buckets plus request config
-import faxios, { FaxiosHeaders } from "faxios";
+// - isFaxiosError/isCancel narrow `unknown` as type predicates
+import faxios, { CanceledError, FaxiosHeaders, isCancel, isFaxiosError } from "faxios";
 import type { FaxiosHeaderValue, FaxiosResponse } from "faxios";
 
 type User = { id: number; name: string; };
@@ -88,9 +89,48 @@ function defaultsAreTyped(): void {
   instance.defaults.headers = "x";
 }
 
+function typeGuardsNarrow(e: unknown): void {
+  if (isFaxiosError(e)) {
+    const code: string | undefined = e.code;
+    const status: number | undefined = e.response?.status;
+    const url: string | undefined = e.config?.url;
+    // @ts-expect-error - response data is unknown without a type argument
+    void e.response?.data.msg;
+    void code;
+    void status;
+    void url;
+  }
+
+  if (isFaxiosError<{ msg: string; }>(e)) {
+    const msg: string | undefined = e.response?.data.msg;
+    void msg;
+    // @ts-expect-error - msg is a string, not a number
+    const wrong: number | undefined = e.response?.data.msg;
+    void wrong;
+  }
+
+  if (faxios.isFaxiosError(e)) {
+    const code: string | undefined = e.code;
+    void code;
+  }
+
+  if (isCancel(e)) {
+    const canceled: CanceledError = e;
+    const message: string = e.message;
+    void canceled;
+    void message;
+  }
+
+  if (faxios.isCancel(e)) {
+    const canceled: CanceledError = e;
+    void canceled;
+  }
+}
+
 void generics;
 void headerAccessorsAreTyped;
 void indexSignatureRemoved;
 void requestBodyIsTyped;
 void serializerAndEnvOptionsAreTyped;
 void defaultsAreTyped;
+void typeGuardsNarrow;

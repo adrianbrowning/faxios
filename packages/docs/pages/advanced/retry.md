@@ -7,7 +7,7 @@ Network requests can fail for transient reasons — a server blip, a brief netwo
 The simplest approach is to catch specific error status codes and immediately re-send the original request a limited number of times:
 
 ```ts
-import faxios, { FaxiosError } from "@gcmdev/faxios";
+import faxios, { isFaxiosError } from "@gcmdev/faxios";
 import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
 
 // Extra fields on the config travel with the request, so they can count attempts.
@@ -20,7 +20,7 @@ const MAX_RETRIES = 3;
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (!(error instanceof FaxiosError) || !error.config) {
+    if (!isFaxiosError(error) || !error.config) {
       return Promise.reject(error);
     }
     const config: RetryConfig = error.config;
@@ -50,7 +50,7 @@ api.interceptors.response.use(
 Retrying immediately after a failure can overload an already-struggling server. Exponential backoff waits progressively longer between each attempt:
 
 ```ts
-import faxios, { FaxiosError } from "@gcmdev/faxios";
+import faxios, { isFaxiosError } from "@gcmdev/faxios";
 import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
 
 type RetryConfig = InternalFaxiosRequestConfig & { _retryCount?: number };
@@ -62,7 +62,7 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (!(error instanceof FaxiosError) || !error.config) return Promise.reject(error);
+    if (!isFaxiosError(error) || !error.config) return Promise.reject(error);
     const config: RetryConfig = error.config;
 
     const shouldRetry =
@@ -90,7 +90,7 @@ api.interceptors.response.use(
 When the server responds with `429 Too Many Requests`, it often includes a `Retry-After` header telling you exactly how long to wait:
 
 ```ts
-import faxios, { FaxiosError } from "@gcmdev/faxios";
+import faxios, { isFaxiosError } from "@gcmdev/faxios";
 import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
 
 type RetryConfig = InternalFaxiosRequestConfig & { _retryCount?: number };
@@ -100,7 +100,7 @@ const api = faxios.create({ baseURL: "https://api.example.com" });
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (!(error instanceof FaxiosError) || !error.config) return Promise.reject(error);
+    if (!isFaxiosError(error) || !error.config) return Promise.reject(error);
     const config: RetryConfig = error.config;
 
     if (error.response?.status !== 429) return Promise.reject(error);

@@ -99,7 +99,7 @@ faxios.get("/user/12345", {
 When a request exceeds its configured `timeout`, faxios rejects with a `FaxiosError` whose `code` is `ETIMEDOUT`. Aborting through an `AbortSignal` rejects with `ERR_CANCELED` instead, so the two are easy to tell apart.
 
 ```js
-import faxios, { FaxiosError } from "@gcmdev/faxios";
+import faxios from "@gcmdev/faxios";
 
 async function fetchWithTimeout() {
   try {
@@ -109,7 +109,7 @@ async function fetchWithTimeout() {
 
     console.log("Response:", response.data);
   } catch (error) {
-    if (error instanceof FaxiosError) {
+    if (faxios.isFaxiosError(error)) {
       if (error.code === "ETIMEDOUT") {
         console.error("Request timed out. Please try again.");
         return;

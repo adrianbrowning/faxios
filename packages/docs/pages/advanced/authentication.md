@@ -65,7 +65,7 @@ const response = await faxios.get("https://api.example.com/data", {
 When access tokens expire, you need to silently refresh them and retry the failed request. A response interceptor is the right place to implement this:
 
 ```ts
-import faxios, { FaxiosError } from "@gcmdev/faxios";
+import faxios, { isFaxiosError } from "@gcmdev/faxios";
 import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
 
 type RetryConfig = InternalFaxiosRequestConfig & { _retry?: boolean };
@@ -94,7 +94,7 @@ const processQueue = (error: unknown, token: string | null = null) => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (!(error instanceof FaxiosError) || !error.config) {
+    if (!isFaxiosError(error) || !error.config) {
       return Promise.reject(error);
     }
     const originalRequest: RetryConfig = error.config;

@@ -82,12 +82,12 @@ function redactConfig(config: unknown, redactKeys: Array<string>): unknown {
   return visit(config);
 }
 
-class FaxiosError extends Error {
+class FaxiosError<T = unknown, D = unknown> extends Error {
   isFaxiosError: boolean;
   code?: string;
-  config?: InternalFaxiosRequestConfig;
+  config?: InternalFaxiosRequestConfig<D>;
   request?: unknown;
-  response?: FaxiosResponse;
+  response?: FaxiosResponse<T, D>;
   status?: number;
   override cause?: Error;
   issues?: ReadonlyArray<StandardSchemaV1.Issue>;
@@ -160,9 +160,9 @@ class FaxiosError extends Error {
   constructor(
     message: string,
     code?: string,
-    config?: InternalFaxiosRequestConfig,
+    config?: InternalFaxiosRequestConfig<D>,
     request?: unknown,
-    response?: FaxiosResponse
+    response?: FaxiosResponse<T, D>
   ) {
     super(message);
 
