@@ -157,6 +157,8 @@ export interface SerializerOptions {
   dots?: boolean;
   metaTokens?: boolean;
   indexes?: boolean | null;
+  /** Maximum nesting depth to serialize; deeper objects throw `ERR_FORM_DATA_DEPTH_EXCEEDED`. `Infinity` disables the check. */
+  maxDepth?: number;
 }
 
 // tslint:disable-next-line
@@ -289,11 +291,12 @@ export interface FaxiosRequestConfig<D = unknown> {
       input: string | URL | Request,
       init?: RequestInit
     ) => Promise<Response>;
-    Request?: new (
+    /** `null` disables the constructor, e.g. when a custom `fetch` is incompatible with the global one. */
+    Request?: (new (
       input: string | URL | Request,
       init?: RequestInit,
-    ) => unknown;
-    Response?: new (...args: Array<unknown>) => unknown;
+    ) => unknown) | null;
+    Response?: (new (...args: Array<unknown>) => unknown) | null;
   };
   formSerializer?: FormSerializerOptions;
   withXSRFToken?:

@@ -3,6 +3,7 @@
 // - request-body D typing
 // - removal of the FaxiosInstance catch-all index signature
 // - typed FaxiosHeaders accessors (no longer `unknown`)
+// - serializer maxDepth and nullable env.Request/env.Response
 import faxios, { FaxiosHeaders } from "faxios";
 import type { FaxiosResponse } from "faxios";
 
@@ -50,7 +51,18 @@ function requestBodyIsTyped(): void {
   void faxios.post<User, FaxiosResponse<User>, { name: string; }>("/user", { wrong: 1 });
 }
 
+function serializerAndEnvOptionsAreTyped(): void {
+  faxios.create({
+    formSerializer: { maxDepth: 10 },
+    paramsSerializer: { maxDepth: Infinity },
+    env: { fetch: globalThis.fetch, Request: null, Response: null },
+  });
+  // @ts-expect-error - maxDepth is a number
+  faxios.create({ formSerializer: { maxDepth: "10" } });
+}
+
 void generics;
 void headerAccessorsAreTyped;
 void indexSignatureRemoved;
 void requestBodyIsTyped;
+void serializerAndEnvOptionsAreTyped;
