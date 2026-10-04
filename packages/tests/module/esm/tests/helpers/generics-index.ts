@@ -7,8 +7,11 @@
 // - instance defaults typed as header buckets plus request config
 // - isFaxiosError/isCancel narrow `unknown` as type predicates
 // - env.FormData accepts the runtime FormData constructor (and null)
+// - FaxiosRequestHeaders accessors match the ones FaxiosHeaders registers at runtime
 import faxios, { CanceledError, FaxiosHeaders, isCancel, isFaxiosError } from "faxios";
-import type { FaxiosHeaderValue, FaxiosResponse } from "faxios";
+import type { FaxiosHeaderValue, FaxiosRequestHeaders, FaxiosResponse } from "faxios";
+
+type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
 
 type User = { id: number; name: string; };
 
@@ -42,6 +45,30 @@ function headerAccessorsAreTyped(): void {
   }
   const has: boolean = h.hasContentType();
   void has;
+}
+
+function requestHeaderAccessorsMatchRuntime(): void {
+  faxios.create({
+    transformRequest: [ (data: unknown, headers) => {
+      // getAcceptEncoding() returns exactly what get("Accept-Encoding") returns
+      const encoding = headers.getAcceptEncoding();
+      const viaGet = headers.get("Accept-Encoding");
+      const sameAsGet: Equal<typeof encoding, typeof viaGet> = true;
+      const chained: FaxiosRequestHeaders = headers.setAcceptEncoding("gzip, br", true);
+      const has: boolean = headers.hasAcceptEncoding(/gzip/);
+      void sameAsGet;
+      void chained;
+      void has;
+
+      // @ts-expect-error - no Content-Encoding accessor is registered at runtime
+      headers.getContentEncoding();
+      // @ts-expect-error - no Content-Encoding accessor is registered at runtime
+      headers.setContentEncoding("gzip");
+      // @ts-expect-error - no Content-Encoding accessor is registered at runtime
+      headers.hasContentEncoding();
+      return data;
+    } ],
+  });
 }
 
 function indexSignatureRemoved(): void {
@@ -140,6 +167,7 @@ function envFormDataAcceptsRuntimeConstructor(): void {
 
 void generics;
 void headerAccessorsAreTyped;
+void requestHeaderAccessorsMatchRuntime;
 void indexSignatureRemoved;
 void requestBodyIsTyped;
 void serializerAndEnvOptionsAreTyped;

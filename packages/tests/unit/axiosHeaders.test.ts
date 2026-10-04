@@ -1,6 +1,14 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
+import type { FaxiosRequestHeaders } from "#src/lib/types.js";
+
+// The get/set/has<Header> shortcuts FaxiosRequestHeaders declares, without its index signature.
+type DeclaredRequestHeaderAccessor = keyof {
+  [K in keyof FaxiosRequestHeaders as K extends "get" | "set" | "has"
+    ? never
+    : K extends `${"get" | "set" | "has"}${string}` ? K : never]: true;
+};
 
 const [ nodeMajorVersion ] = process.versions.node
   .split(".")
@@ -565,6 +573,35 @@ describe("FaxiosHeaders", () => {
 
       assert.strictEqual(typeof (headers as any).hasFoo, "function");
       assert.strictEqual((headers as any).hasFoo(), true);
+    });
+
+    it("should register every shortcut FaxiosRequestHeaders declares", () => {
+      // `satisfies` makes tsc reject this object unless its keys are exactly the declared shortcuts.
+      const declared = {
+        getContentType: true,
+        setContentType: true,
+        hasContentType: true,
+        getContentLength: true,
+        setContentLength: true,
+        hasContentLength: true,
+        getAccept: true,
+        setAccept: true,
+        hasAccept: true,
+        getAcceptEncoding: true,
+        setAcceptEncoding: true,
+        hasAcceptEncoding: true,
+        getUserAgent: true,
+        setUserAgent: true,
+        hasUserAgent: true,
+        getAuthorization: true,
+        setAuthorization: true,
+        hasAuthorization: true,
+      } satisfies Record<DeclaredRequestHeaderAccessor, true>;
+      const headers = new FaxiosHeaders();
+
+      for (const name of Object.keys(declared)) {
+        assert.strictEqual(typeof headers[name], "function", `${name} is declared but not registered`);
+      }
     });
   });
 
