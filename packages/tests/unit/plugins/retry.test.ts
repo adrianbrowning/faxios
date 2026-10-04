@@ -205,4 +205,48 @@ describe("plugins::retry", () => {
     // The default 3 tries: neither the inherited attempts nor the inherited retry: false applied.
     assert.strictEqual(calls.length, 3);
   });
+
+  describe("option validation", () => {
+    const isBadValue = (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE;
+    const isUnknown = (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION;
+
+    it("rejects invalid options when the plugin is created", () => {
+      for (const attempts of [ Number.NaN, 0, -1, 1.5, Number.POSITIVE_INFINITY ]) {
+        assert.throws(() => retry({ attempts }), isBadValue, `attempts: ${attempts}`);
+      }
+      for (const delay of [ Number.NaN, -1, Number.POSITIVE_INFINITY ]) {
+        assert.throws(() => retry({ delay }), isBadValue, `delay: ${delay}`);
+      }
+      // @ts-expect-error -- retryOn must be a function
+      assert.throws(() => retry({ retryOn: true }), isBadValue);
+      // @ts-expect-error -- unknown option
+      assert.throws(() => retry({ retries: 3 }), isUnknown);
+      // @ts-expect-error -- null isn't an options object
+      assert.throws(() => retry(null), isBadValue);
+    });
+
+    it("rejects an invalid per-request override before sending anything", async () => {
+      const { fetch, calls } = scriptedFetch([ 503 ]);
+      const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }));
+
+      await assert.rejects(api.get(URL, { retry: { attempts: Number.NaN } }), isBadValue);
+      await assert.rejects(api.get(URL, { retry: { attempts: Number.POSITIVE_INFINITY } }), isBadValue);
+      await assert.rejects(api.get(URL, { retry: { delay: -5 } }), isBadValue);
+      // @ts-expect-error -- per-request retry must be false or an options object
+      await assert.rejects(api.get(URL, { retry: true }), isBadValue);
+      // @ts-expect-error -- null isn't an options object either
+      await assert.rejects(api.get(URL, { retry: null }), isBadValue);
+
+      assert.strictEqual(calls.length, 0);
+    });
+
+    it("rejects a delay function that returns an invalid wait", async () => {
+      const { fetch, calls } = scriptedFetch([ 503, 200 ]);
+      const api = faxios.create({ env: { fetch } }).use(retry({ delay: () => Number.NaN }));
+
+      await assert.rejects(api.get(URL), isBadValue);
+
+      assert.strictEqual(calls.length, 1);
+    });
+  });
 });

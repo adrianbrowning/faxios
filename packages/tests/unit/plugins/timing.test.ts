@@ -59,6 +59,17 @@ describe("plugins::timing", () => {
     await request;
   });
 
+  it("rejects with onTiming's error when it throws while reporting a success", async () => {
+    const observerError = new Error("metrics backend down");
+    const api = faxios.create({ env: { fetch: slowFetch(10) } }).use(timing(() => {
+      throw observerError;
+    }));
+
+    const request = assert.rejects(api.get(URL), observerError);
+    await vi.advanceTimersByTimeAsync(10);
+    await request;
+  });
+
   it("measures every try together when installed before retry", async () => {
     const events: Array<TimingEvent> = [];
     let calls = 0;

@@ -3,12 +3,29 @@
 import CanceledError from "../cancel/CanceledError.js";
 import isCancel from "../cancel/isCancel.js";
 import FaxiosError from "../core/FaxiosError.js";
-import type { FaxiosPlugin, FaxiosRequestConfig, GenericAbortSignal } from "../types.js";
+import validator from "../helpers/validator.js";
+import type { FaxiosPlugin, FaxiosRequestConfig, GenericAbortSignal, InternalFaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
 
 // Config values are read as own properties only (repo rule for possibly untrusted input).
-function ownValue<T extends object, K extends keyof T>(source: T, key: K): T[K] | undefined {
-  return Object.prototype.hasOwnProperty.call(source, key) ? source[key] : undefined;
+const ownValue = <T extends object, K extends keyof T>(source: T, key: K): T[K] | undefined =>
+  (utils.hasOwnProp(source, key) ? source[key] : undefined);
+
+const isWait = (ms: unknown): ms is number => typeof ms === "number" && Number.isFinite(ms) && ms >= 0;
+
+// Bounded on purpose: NaN or Infinity would make a failing request loop forever.
+const optionsSchema = {
+  attempts: (value: unknown) => (Number.isInteger(value) && (value as number) >= 1) || "an integer of at least 1",
+  retryOn: validator.validators["function"],
+  delay: (value: unknown) => isWait(value) || typeof value === "function" || "a finite number of at least 0 or a function",
+};
+
+// One check for both the factory argument and a per-request override.
+function assertRetryOptions(value: unknown, config?: InternalFaxiosRequestConfig): asserts value is RetryOptions {
+  if (value === null || typeof value !== "object") {
+    throw new FaxiosError("retry options must be an object", FaxiosError.ERR_BAD_OPTION_VALUE, config);
+  }
+  validator.assertOptions(value, optionsSchema, false);
 }
 
 export type RetryOptions = {
@@ -65,11 +82,13 @@ function wait(ms: number, signal: AbortSignal | GenericAbortSignal | undefined, 
  * once per request (for example `timing` installed first measures all tries together).
  */
 export default function retry(options: RetryOptions = {}): FaxiosPlugin<unknown, unknown, RetryRequestOptions> {
+  assertRetryOptions(options);
   return {
     name: "retry",
     middleware: async (ctx, next) => {
       const perRequest = ownValue(ctx.config, "retry");
       if (perRequest === false) return next(ctx);
+      if (perRequest !== undefined) assertRetryOptions(perRequest, ctx.config);
       // Per field, request first: no merged object, and only own properties count.
       const setting = <K extends keyof RetryOptions>(key: K) => (perRequest ? ownValue(perRequest, key) : undefined) ?? ownValue(options, key);
       const attempts = setting("attempts") ?? 3;
@@ -84,8 +103,12 @@ export default function retry(options: RetryOptions = {}): FaxiosPlugin<unknown,
         }
         catch (error) {
           if (attempt >= attempts || !canReplay(ownValue(ctx.config, "data")) || !retryOn(error, attempt)) throw error;
+          const ms: unknown = typeof delay === "function" ? delay(attempt, error) : delay;
+          if (!isWait(ms)) {
+            throw new FaxiosError(`retry: delay must give a finite number of at least 0, got ${String(ms)}`, FaxiosError.ERR_BAD_OPTION_VALUE, ctx.config);
+          }
           // eslint-disable-next-line no-await-in-loop -- see above
-          await wait(typeof delay === "function" ? delay(attempt, error) : delay, ownValue(ctx.config, "signal"), ctx.config);
+          await wait(ms, ownValue(ctx.config, "signal"), ctx.config);
         }
       }
     },

@@ -66,7 +66,7 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Source:** Issue #91; `PRE_RELEASE_CHANGELOG.md` Features entry "Built-in plugins".
 - **Status:** Pending.
 - **Docs targets:** Rewrite `pages/advanced/retry.md` around it, replacing its three `check=skip` interceptor blocks; plugins section of the middleware page.
-- **Required content:** `attempts` counts every try including the first (default 3). By default it retries `ERR_NETWORK`, `ETIMEDOUT` and 5xx responses, never a cancellation. `delay` is milliseconds or `(attempt, error) => ms`, default 100ms doubling. Per request, `retry: false` turns it off and `retry: { … }` overrides fields. An abort during the backoff rejects with `CanceledError` straight away. A stream body (web `ReadableStream` or a Node stream) is never retried, since the first try consumed it. It resends non-idempotent methods too; use `retryOn` to limit that.
+- **Required content:** `attempts` counts every try including the first (default 3) and must be an integer of at least 1; anything else (including `Infinity`) rejects with `ERR_BAD_OPTION_VALUE` before a request is sent. By default it retries `ERR_NETWORK`, `ETIMEDOUT` and 5xx responses, never a cancellation. `delay` is milliseconds or `(attempt, error) => ms`, default 100ms doubling. Per request, `retry: false` turns it off and `retry: { … }` overrides fields. An abort during the backoff rejects with `CanceledError` straight away. A stream body (web `ReadableStream` or a Node stream) is never retried, since the first try consumed it. It resends non-idempotent methods too; use `retryOn` to limit that.
 - **Examples:** `retry({ attempts: 5 })`; `retryOn` for 429; `api.post(url, data, { retry: false })`.
 - **Notes:** Install `timing` before `retry` to measure all tries together, after it to measure each try.
 
@@ -76,7 +76,7 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Source:** Issue #91; `PRE_RELEASE_CHANGELOG.md` Features entry "Built-in plugins".
 - **Status:** Pending.
 - **Docs targets:** Plugins section of the middleware page.
-- **Required content:** `onTiming({ config, durationMs, status })` on success, `onTiming({ config, durationMs, error })` on failure (the error is rethrown; if `onTiming` itself throws there, the request still rejects with its own error, while a throw on success rejects the request). Uses `performance.now()` where available. The response is unchanged. Order relative to `retry` decides whether retries are measured together or separately.
+- **Required content:** `onTiming({ config, durationMs, status })` on success, `onTiming({ config, durationMs, error })` on failure (the error is rethrown). If `onTiming` throws while reporting a failure, the request still rejects with its own error; if it throws while reporting a success, the request rejects with the observer's error. Uses `performance.now()` where available. The response is unchanged. Order relative to `retry` decides whether retries are measured together or separately.
 - **Examples:** Sending durations to a metrics client.
 - **Notes:** None.
 
