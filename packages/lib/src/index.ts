@@ -44,7 +44,9 @@ export type {
   FaxiosContext,
   FaxiosNext,
   FaxiosMiddleware,
-  FaxiosPlugin
+  FaxiosPlugin,
+  FaxiosPluginArgument,
+  FaxiosPluginBase
 } from "./lib/types.ts";
 
 // Instance-synthesized members (no 1:1 source module). Types are self-contained

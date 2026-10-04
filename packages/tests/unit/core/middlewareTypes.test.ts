@@ -1,11 +1,13 @@
 import { describe, expectTypeOf, it } from "vitest";
 import faxios, { FaxiosError } from "#src/index.ts";
-import type { FaxiosInstance, FaxiosPlugin } from "#src/index.ts";
+import type { FaxiosContext, FaxiosInstance, FaxiosNext, FaxiosPlugin } from "#src/index.ts";
 
 // These functions are type-checked by `lint:ts` and never called (except the plain
 // expectTypeOf assertions): each call site passes a fresh object literal so excess-property
 // checks apply.
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- the `{}` defaults of FaxiosInstance
+type NoPlugins = {};
 type CacheOptions = { cache?: { ttlMs?: number; key?: string; }; };
 type AuthCapability = { auth: { getToken: () => Promise<string>; }; };
 
@@ -65,8 +67,6 @@ describe("middleware types", () => {
   });
 
   it("starts with no plugin options or capabilities", () => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- asserting the `{}` defaults themselves
-    type NoPlugins = {};
     expectTypeOf(faxios).toEqualTypeOf<FaxiosInstance<NoPlugins, NoPlugins>>();
     expectTypeOf(faxios.create()).toEqualTypeOf<FaxiosInstance<NoPlugins, NoPlugins>>();
     faxios.create().use(async (ctx, next) => {
@@ -165,6 +165,33 @@ describe("middleware types", () => {
       withAuth.use(authBearer(getToken));
       // @ts-expect-error -- same name, different shape: still a duplicate
       withAuth.use(staticToken());
+    }
+    void surfaces;
+  });
+
+  it("requires provides when a plugin declares a capability", () => {
+    function surfaces(): void {
+      // @ts-expect-error -- claims auth but never supplies it, so ctx.capabilities.auth would be undefined
+      const claimsOnly: FaxiosPlugin<unknown, AuthCapability> = { name: "claimsOnly", middleware: async (ctx, next) => next(ctx) };
+      const requiresOnly: FaxiosPlugin<AuthCapability, unknown, CacheOptions> = { name: "requiresOnly", middleware: async (ctx, next) => next(ctx) };
+      void claimsOnly;
+      void requiresOnly;
+      // Inline provider with a real provides value: inferred exactly, and a consumer can follow.
+      const inline = faxios.create().use({ name: "inlineAuth",
+        provides: { auth: { getToken } },
+        middleware: async (ctx, next) => {
+          expectTypeOf(ctx.capabilities.auth.getToken).toEqualTypeOf<() => Promise<string>>();
+          return next(ctx);
+        } });
+      inline.use(async (ctx, next) => {
+        expectTypeOf(ctx.capabilities.auth.getToken).toEqualTypeOf<() => Promise<string>>();
+        return next(ctx);
+      });
+      inline.use(refreshOn401());
+      // Unannotated: middleware that expects auth can't conjure it without provides.
+      const expectsAuth = async (ctx: FaxiosContext<unknown, AuthCapability>, next: FaxiosNext) => next(ctx);
+      // @ts-expect-error -- nothing provides auth, so this middleware can't be installed
+      faxios.create().use({ name: "expectsAuth", middleware: expectsAuth });
     }
     void surfaces;
   });

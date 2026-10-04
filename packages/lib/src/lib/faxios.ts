@@ -16,7 +16,7 @@ import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
 import type { StandardSchemaV1 } from "./types/standard-schema.js";
-import type { Method, StringLiteralsOrString, CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosMiddleware, FaxiosPlugin, FaxiosRequestConfig, HeadersDefaults, FaxiosResponse, SchemaConfig } from "./types.js";
+import type { Method, StringLiteralsOrString, CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosMiddleware, FaxiosPluginArgument, FaxiosRequestConfig, HeadersDefaults, FaxiosResponse, SchemaConfig } from "./types.js";
 import utils from "./utils.js";
 
 /**
@@ -42,9 +42,9 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
   // value you can't call. Return the callable instance instead. Its parameter mirrors
   // FaxiosInstance's `{}` defaults; the class only needs the runtime shape.
   instance.use = function use<TReq = unknown, TProv = unknown, TOpt = unknown>(
-    middleware: FaxiosMiddleware<NoPlugins, NoPlugins> | (FaxiosPlugin<TReq, TProv, TOpt> & CheckPlugin<NoPlugins, TReq, TProv>)
+    middleware: FaxiosMiddleware<NoPlugins, NoPlugins> | (FaxiosPluginArgument<TReq, TProv, TOpt> & CheckPlugin<NoPlugins, TReq, TProv>)
   ): FaxiosInstance<NoPlugins & TOpt, NoPlugins & TProv> {
-    context.use(middleware as FaxiosMiddleware | FaxiosPlugin<TReq, TProv, TOpt>);
+    context.use(middleware as FaxiosMiddleware | FaxiosPluginArgument<TReq, TProv, TOpt>);
     // Same object either way: use() only refines the compile-time TOpts/TCaps.
     return instance as unknown as FaxiosInstance<NoPlugins & TOpt, NoPlugins & TProv>;
   };
@@ -96,7 +96,7 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = Pick<Faxios, "eject"> & {
    * that provides a capability another installed plugin already provides, is a type error.
    */
   use: <TReq = unknown, TProv = unknown, TOpt = unknown>(
-    middleware: FaxiosMiddleware<TOpts, TCaps> | (FaxiosPlugin<TReq, TProv, TOpt> & CheckPlugin<TCaps, TReq, TProv>)
+    middleware: FaxiosMiddleware<TOpts, TCaps> | (FaxiosPluginArgument<TReq, TProv, TOpt> & CheckPlugin<TCaps, TReq, TProv>)
   ) => FaxiosInstance<TOpts & TOpt, TCaps & TProv>;
   define: <
     PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined,
