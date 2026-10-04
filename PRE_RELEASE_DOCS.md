@@ -76,7 +76,7 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Source:** Issue #91; `PRE_RELEASE_CHANGELOG.md` Features entry "Built-in plugins".
 - **Status:** Pending.
 - **Docs targets:** Plugins section of the middleware page.
-- **Required content:** `onTiming({ config, durationMs, status })` on success, `onTiming({ config, durationMs, error })` on failure (the error is rethrown). Uses `performance.now()` where available. The response is unchanged. Order relative to `retry` decides whether retries are measured together or separately.
+- **Required content:** `onTiming({ config, durationMs, status })` on success, `onTiming({ config, durationMs, error })` on failure (the error is rethrown; if `onTiming` itself throws there, the request still rejects with its own error, while a throw on success rejects the request). Uses `performance.now()` where available. The response is unchanged. Order relative to `retry` decides whether retries are measured together or separately.
 - **Examples:** Sending durations to a metrics client.
 - **Notes:** None.
 

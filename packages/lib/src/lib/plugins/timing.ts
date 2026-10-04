@@ -12,7 +12,8 @@ const now = () => (typeof performance === "undefined" ? Date.now() : performance
 /**
  * Measures the time around `next` and calls `onTiming` once per request. Installed before
  * `retry`, the duration covers every try; installed after it, each try is reported. The
- * response is returned unchanged.
+ * response is returned unchanged. If `onTiming` throws while reporting a failure, the request
+ * still rejects with its own error; while reporting a success, its error rejects the request.
  */
 export default function timing(onTiming: (event: TimingEvent) => void): FaxiosPlugin {
   return {
@@ -24,7 +25,12 @@ export default function timing(onTiming: (event: TimingEvent) => void): FaxiosPl
         response = await next(ctx);
       }
       catch (error) {
-        onTiming({ config: ctx.config, durationMs: now() - start, error });
+        try {
+          onTiming({ config: ctx.config, durationMs: now() - start, error });
+        }
+        catch {
+          // The request's own error matters more than the observer's; keep it.
+        }
         throw error;
       }
       // Outside the try, so an onTiming that throws isn't reported as a failed request.

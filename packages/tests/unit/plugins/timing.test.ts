@@ -49,6 +49,16 @@ describe("plugins::timing", () => {
     assert.ok(events[0]!.error instanceof FaxiosError);
   });
 
+  it("rejects with the request's own error even when onTiming throws on a failure", async () => {
+    const api = faxios.create({ env: { fetch: slowFetch(10, 500) } }).use(timing(() => {
+      throw new Error("metrics backend down");
+    }));
+
+    const request = assert.rejects(api.get(URL), (err: unknown) => err instanceof FaxiosError && err.response?.status === 500);
+    await vi.advanceTimersByTimeAsync(10);
+    await request;
+  });
+
   it("measures every try together when installed before retry", async () => {
     const events: Array<TimingEvent> = [];
     let calls = 0;
