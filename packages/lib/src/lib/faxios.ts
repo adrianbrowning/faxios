@@ -39,15 +39,14 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
   utils.extend(target, context, null, { allOwnKeys: true });
 
   // extend() bound use() to the inner Faxios object, so its `return this` would hand back a
-  // value you can't call. Return the callable instance instead. Its parameter mirrors
-  // FaxiosInstance's `{}` defaults; the class only needs the runtime shape.
-  instance.use = function use<TReq = unknown, TProv = unknown, TOpt = unknown>(
-    middleware: FaxiosMiddleware<NoPlugins, NoPlugins> | (FaxiosPluginArgument<TReq, TProv, TOpt> & CheckPlugin<NoPlugins, TReq, TProv>)
-  ): FaxiosInstance<NoPlugins & TOpt, NoPlugins & TProv> {
-    context.use(middleware as FaxiosMiddleware | FaxiosPluginArgument<TReq, TProv, TOpt>);
-    // Same object either way: use() only refines the compile-time TOpts/TCaps.
-    return instance as unknown as FaxiosInstance<NoPlugins & TOpt, NoPlugins & TProv>;
+  // value you can't call. Return the callable instance instead. At runtime this only delegates
+  // to context.use(); the plugin rules live in FaxiosInstance["use"], so the cast is the single
+  // place the phantom TOpts/TCaps refinement meets the untyped registry.
+  const use = (middleware: Parameters<Faxios["use"]>[0]): FaxiosInstance => {
+    context.use(middleware);
+    return instance;
   };
+  instance.use = use as FaxiosInstance["use"];
 
   // Factory for creating new instances
   instance.create = function create(instanceConfig?: CreateFaxiosDefaults): FaxiosInstance {
@@ -56,9 +55,6 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
 
   return instance;
 }
-
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- the `{}` default of FaxiosInstance's TOpts/TCaps
-type NoPlugins = {};
 
 // Keys of TNeed that THave lacks, or provides with an incompatible type.
 type MissingCapabilities<THave, TNeed> = {
@@ -79,7 +75,14 @@ type RejectDuplicateCapabilities<THave, TProv> = [DuplicateCapabilities<THave, T
   ? unknown
   : { "faxios: another installed plugin already provides this capability": DuplicateCapabilities<THave, TProv>; };
 
-type CheckPlugin<THave, TReq, TProv> = RequireCapabilities<THave, TReq> & RejectDuplicateCapabilities<THave, TProv>;
+// A plugin that adds capabilities must carry them, however TProv was supplied (inferred, annotated
+// or as an explicit type argument), so use() can't record a capability ctx.capabilities lacks.
+// NoInfer: TypeScript infers into conditional branches, and this branch must stay a check only.
+type RequireProvidesValue<TProv> = [keyof TProv] extends [never] ? unknown : { provides: NoInfer<TProv>; };
+
+type CheckPlugin<THave, TReq, TProv> = RequireCapabilities<THave, TReq>
+  & RejectDuplicateCapabilities<THave, TProv>
+  & RequireProvidesValue<TProv>;
 
 /**
  * A faxios instance. `TOpts` holds the request options that installed plugins add to every

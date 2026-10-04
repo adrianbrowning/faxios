@@ -188,6 +188,8 @@ describe("middleware types", () => {
         return next(ctx);
       });
       inline.use(refreshOn401());
+      // @ts-expect-error -- explicit TProvides without a provides value
+      faxios.create().use<unknown, AuthCapability>({ name: "explicit", middleware: async (ctx, next) => next(ctx) });
       // Unannotated: middleware that expects auth can't conjure it without provides.
       const expectsAuth = async (ctx: FaxiosContext<unknown, AuthCapability>, next: FaxiosNext) => next(ctx);
       // @ts-expect-error -- nothing provides auth, so this middleware can't be installed
