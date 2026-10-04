@@ -193,7 +193,11 @@ class Faxios {
     return this;
   }
 
-  /** Remove middleware or a plugin registered with use(), by reference. In-flight requests are unaffected. */
+  /**
+   * Remove middleware or a plugin registered with use(), by reference. In-flight requests are
+   * unaffected. The instance type is not narrowed: request options and capabilities the ejected
+   * plugin added stay in its type.
+   */
   eject<TRequires = unknown, TProvides = unknown, TOptions = unknown>(
     middleware: FaxiosMiddleware<TOptions> | FaxiosPlugin<TRequires, TProvides, TOptions>
   ): void {
