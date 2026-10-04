@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
-import faxios, { create, FaxiosError } from "#src/index.ts";
+import faxios, { authBearer, create, FaxiosError, retry, timing } from "#src/index.ts";
 
 describe("static api", () => {
   it("should have request method helpers", () => {
@@ -37,6 +37,10 @@ describe("static api", () => {
   it("should have use/eject", () => {
     assert.strictEqual(typeof faxios.use, "function");
     assert.strictEqual(typeof faxios.eject, "function");
+  });
+
+  it("should expose the built-in plugins as faxios.plugins and named exports", () => {
+    assert.deepStrictEqual(faxios.plugins, { authBearer, retry, timing });
   });
 
   it("no longer has interceptors", () => {

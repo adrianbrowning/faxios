@@ -15,6 +15,9 @@ import formDataToJSON from "./helpers/formDataToJSON.js";
 import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
+import authBearer from "./plugins/authBearer.js";
+import retry from "./plugins/retry.js";
+import timing from "./plugins/timing.js";
 import type { StandardSchemaV1 } from "./types/standard-schema.js";
 import type { Method, StringLiteralsOrString, CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosMiddleware, FaxiosPluginArgument, FaxiosRequestConfig, HeadersDefaults, FaxiosResponse, SchemaConfig } from "./types.js";
 import utils from "./utils.js";
@@ -188,6 +191,8 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = Pick<Faxios, "eject"> & {
   FaxiosHeaders: typeof FaxiosHeaders;
   formToJSON: (thing: unknown) => unknown;
   HttpStatusCode: typeof HttpStatusCode;
+  /** Built-in plugins for `use()`; also available as named exports. */
+  plugins: { authBearer: typeof authBearer; retry: typeof retry; timing: typeof timing; };
   default: FaxiosInstance;
 };
 
@@ -222,6 +227,8 @@ faxios.isFaxiosError = isFaxiosError;
 faxios.mergeConfig = mergeConfig;
 
 faxios.FaxiosHeaders = FaxiosHeaders;
+
+faxios.plugins = { authBearer, retry, timing };
 
 faxios.formToJSON = (thing: unknown): unknown => formDataToJSON(utils.isHTMLForm(thing) ? ((): unknown => {
   const GlobalFormData = (globalThis as Record<string, unknown>)["FormData"] as (new (el?: unknown) => unknown) | undefined;

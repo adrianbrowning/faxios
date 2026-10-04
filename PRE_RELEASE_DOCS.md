@@ -40,6 +40,46 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Examples:** A `cache()` plugin with `CacheOptions`; `authBearer(getToken)` providing `auth`; `refreshOn401()` requiring `auth`, shown failing before `authBearer` and passing after it; the compiler message for the missing capability.
 - **Notes:** The built-in plugins (#91) are the natural examples once they exist.
 
+### Built-in plugin: `authBearer`
+
+- **Change:** `authBearer(getToken)` sets `Authorization: Bearer <token>` on every request and provides the `auth` capability.
+- **Source:** Issue #91 (part of #54); `PRE_RELEASE_CHANGELOG.md` Features entry "Built-in plugins".
+- **Status:** Pending.
+- **Docs targets:** A plugins section of the middleware page; rewrite `pages/advanced/authentication.md` ("Bearer tokens (JWT)") around it.
+- **Required content:** `getToken` may return a string or a promise and is called on every request. It overwrites any `Authorization` header already on the request. Later plugins call `ctx.capabilities.auth.getToken()`.
+- **Examples:** `faxios.create({ baseURL }).use(authBearer(() => store.token))`.
+- **Notes:** None.
+
+### `refreshOn401` example
+
+- **Change:** The documented way to refresh a token on 401, built on `authBearer`'s `auth` capability.
+- **Source:** Issue #91; the plugin is written out in `packages/tests/unit/plugins/authBearer.test.ts`.
+- **Status:** Pending.
+- **Docs targets:** `pages/advanced/authentication.md` ("Token refresh"), replacing the `check=skip` interceptor block; the "Writing a plugin" section of the middleware page.
+- **Required content:** A `FaxiosPlugin<AuthBearerCapability>` that catches a `FaxiosError` with `err.response?.status === 401` (a 401 arrives as a rejection because `validateStatus` rejects non-2xx, not as a response), refreshes, sets the header from `ctx.capabilities.auth.getToken()` and calls `next(ctx)` once more. Installing it before `authBearer` is a type error.
+- **Examples:** The test's `refreshOn401(refresh)` verbatim, installed as `.use(authBearer(getToken)).use(refreshOn401(refresh))`.
+- **Notes:** Calls `next` twice, which is safe because each `next()` dispatches its own config copy.
+
+### Built-in plugin: `retry`
+
+- **Change:** `retry({ attempts, retryOn, delay })` retries failed requests by calling `next` again, with a per-request `retry` option.
+- **Source:** Issue #91; `PRE_RELEASE_CHANGELOG.md` Features entry "Built-in plugins".
+- **Status:** Pending.
+- **Docs targets:** Rewrite `pages/advanced/retry.md` around it, replacing its three `check=skip` interceptor blocks; plugins section of the middleware page.
+- **Required content:** `attempts` counts every try including the first (default 3). By default it retries `ERR_NETWORK`, `ETIMEDOUT` and 5xx responses, never a cancellation. `delay` is milliseconds or `(attempt, error) => ms`, default 100ms doubling. Per request, `retry: false` turns it off and `retry: { … }` overrides fields. An abort during the backoff rejects with `CanceledError` straight away. A stream body (web `ReadableStream` or a Node stream) is never retried, since the first try consumed it. It resends non-idempotent methods too; use `retryOn` to limit that.
+- **Examples:** `retry({ attempts: 5 })`; `retryOn` for 429; `api.post(url, data, { retry: false })`.
+- **Notes:** Install `timing` before `retry` to measure all tries together, after it to measure each try.
+
+### Built-in plugin: `timing`
+
+- **Change:** `timing(onTiming)` reports each request's duration with its status or error.
+- **Source:** Issue #91; `PRE_RELEASE_CHANGELOG.md` Features entry "Built-in plugins".
+- **Status:** Pending.
+- **Docs targets:** Plugins section of the middleware page.
+- **Required content:** `onTiming({ config, durationMs, status })` on success, `onTiming({ config, durationMs, error })` on failure (the error is rethrown). Uses `performance.now()` where available. The response is unchanged. Order relative to `retry` decides whether retries are measured together or separately.
+- **Examples:** Sending durations to a metrics client.
+- **Notes:** None.
+
 ### Interceptors removed
 
 - **Change:** `interceptors.request`/`interceptors.response`, their types and `transitional.legacyInterceptorReqResOrdering` are gone; `.use()` middleware replaces them.
