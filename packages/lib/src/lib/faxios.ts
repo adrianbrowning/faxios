@@ -13,7 +13,10 @@ import formDataToJSON from "./helpers/formDataToJSON.js";
 import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
-import type { CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosMiddleware, FaxiosPlugin, FaxiosRequestConfig, HeadersDefaults, FaxiosResponse, SchemaConfig } from "./types.js";
+import type { DefineConfig, DefinedEndpoint } from "./core/define.js";
+import type { RouteBuilder, RouteConfig } from "./core/route.js";
+import type { StandardSchemaV1 } from "./types/standard-schema.js";
+import type { Method, StringLiteralsOrString, CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosMiddleware, FaxiosPlugin, FaxiosRequestConfig, HeadersDefaults, FaxiosResponse, SchemaConfig } from "./types.js";
 import utils from "./utils.js";
 
 /**
@@ -37,10 +40,10 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
 
   // extend() bound use() to the inner Faxios object, so its `return this` would hand back a
   // value you can't call. Return the callable instance instead.
-  instance.use = function use(middleware) {
+  instance.use = function use(middleware: Parameters<Faxios["use"]>[0]) {
     context.use(middleware);
     return instance;
-  };
+  } as FaxiosInstance["use"];
 
   // Factory for creating new instances
   instance.create = function create(instanceConfig?: CreateFaxiosDefaults): FaxiosInstance {
@@ -50,68 +53,90 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
   return instance;
 }
 
-export type FaxiosInstance = Pick<Faxios, "define" | "route" | "eject"> & {
-  use: <TRequires = unknown, TProvides = unknown, TOptions = unknown>(
-    middleware: FaxiosMiddleware<TOptions> | FaxiosPlugin<TRequires, TProvides, TOptions>
-  ) => FaxiosInstance;
-  <O, D = unknown>(config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-  <O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-  <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D>): Promise<R>;
-  <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
+// PROTOTYPE (#87): type-level spike for typed .use(); not for merge.
+type RequireCapabilities<THave, TNeed> = THave extends TNeed
+  ? unknown
+  : { "faxios: install a plugin that provides this capability first": Exclude<keyof TNeed, keyof THave>; };
+
+export type FaxiosInstance<TOpts = unknown, TCaps = unknown> = Pick<Faxios, "eject"> & {
+  use: {
+    (middleware: FaxiosMiddleware<TOpts, TCaps>): FaxiosInstance<TOpts, TCaps>;
+    <TReq = unknown, TProv = unknown, TOpt = unknown>(
+      plugin: FaxiosPlugin<TReq, TProv, TOpt> & RequireCapabilities<TCaps, TReq>
+    ): FaxiosInstance<TOpts & TOpt, TCaps & TProv>;
+  };
+  define: <
+    PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined,
+    P extends StandardSchemaV1 | undefined = undefined,
+    D extends StandardSchemaV1 | undefined = undefined,
+    R extends StandardSchemaV1 | undefined = undefined
+  >(
+    method: StringLiteralsOrString<Method>,
+    url: string,
+    config?: DefineConfig<PP, P, D, R> & TOpts
+  ) => DefinedEndpoint<PP, P, D, R, TOpts>;
+  route: <PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined>(
+    url: string,
+    config?: RouteConfig<PP> & TOpts
+  ) => RouteBuilder<PP, TOpts>;
+  <O, D = unknown>(config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+  <O, D = unknown>(url: string, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+  <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D> & TOpts): Promise<R>;
+  <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   request: {
-    <O, D = unknown>(config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D>): Promise<R>;
+    <O, D = unknown>(config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
   get: {
-    <O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
+    <O, D = unknown>(url: string, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
   delete: {
-    <O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
+    <O, D = unknown>(url: string, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
   head: {
-    <O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
+    <O, D = unknown>(url: string, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
   options: {
-    <O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
+    <O, D = unknown>(url: string, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
   post: {
-    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
   put: {
-    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
   patch: {
-    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
   query: {
-    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
   postForm: {
-    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
   putForm: {
-    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
   patchForm: {
-    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
   // `common` plus one header group per method; a key set directly on
   // `headers` applies to every method.
   defaults: Omit<FaxiosDefaults, "headers"> & {
     headers: HeadersDefaults & { [key: string]: FaxiosHeaderValue | undefined; };
-  };
-  getUri: (config?: FaxiosRequestConfig) => string;
+  } & Partial<TOpts>;
+  getUri: (config?: FaxiosRequestConfig & TOpts) => string;
   create: (instanceConfig?: CreateFaxiosDefaults) => FaxiosInstance;
   Faxios: typeof Faxios;
   CanceledError: typeof CanceledError;

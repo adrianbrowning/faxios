@@ -17,12 +17,12 @@ export type RouteMethodConfig<
   responseSchema?: R;
 };
 
-export type RouteBuilder<PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined> = {
+export type RouteBuilder<PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined, TOpts = unknown> = {
   [M in "get" | "post" | "put" | "patch" | "delete" | "head" | "options"]: <
     P extends StandardSchemaV1 | undefined = undefined,
     D extends StandardSchemaV1 | undefined = undefined,
     R extends StandardSchemaV1 | undefined = undefined
-  >(config?: RouteMethodConfig<P, D, R>) => DefinedEndpoint<PP, P, D, R>;
+  >(config?: RouteMethodConfig<P, D, R> & TOpts) => DefinedEndpoint<PP, P, D, R, TOpts>;
 };
 
 // ponytail: `query` excluded — non-standard HTTP method alias, not useful in route definitions
