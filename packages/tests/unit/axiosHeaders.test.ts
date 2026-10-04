@@ -258,7 +258,7 @@ describe("FaxiosHeaders", () => {
 
     // Regression: https://github.com/faxios/faxios/issues/10849
     // Non-control Unicode header values must round-trip through set/get so
-    // request interceptors can encode them (e.g. encodeURIComponent) before
+    // middleware can encode them (e.g. encodeURIComponent) before
     // the adapter sanitizes to byte-safe values at send time.
     it("should preserve non-control Unicode characters in header values", () => {
       const headers = new FaxiosHeaders();

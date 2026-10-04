@@ -32,7 +32,7 @@ The runtime model is general by design. faxios is a transport library and cannot
   └────────┬────────┘
            │ faxios(config)
   ┌────────▼────────┐
-  │  Interceptors   │  ← caller-supplied code, runs in-process
+  │  Middleware     │  ← caller-supplied code (.use()), runs in-process
   ├─────────────────┤
   │  Config merge   │  ← lib/core/mergeConfig.js
   │  URL build      │  ← lib/core/buildFullPath.js, lib/helpers/buildURL.js
@@ -62,7 +62,7 @@ The runtime model is general by design. faxios is a transport library and cannot
 
 1. Caller to faxios. The caller is fully trusted. Anything the caller passes in `config` is assumed intentional. faxios does not defend against a malicious caller; that is a non-goal.
 2. faxios to network. Everything past the socket is untrusted: response status, headers, body, redirect `Location`. faxios no longer follows redirects itself; the underlying `fetch` runtime handles redirects and applies its own cross-origin credential rules. Proxy handling is likewise delegated to the runtime (e.g. undici), not managed by faxios.
-3. Caller-supplied hooks to faxios internals. Interceptors, `transformRequest`, `transformResponse`, `paramsSerializer`, and custom adapters run with full process privilege. faxios does not sandbox them.
+3. Caller-supplied hooks to faxios internals. `.use()` middleware and plugins, `transformRequest`, `transformResponse`, `paramsSerializer`, and a custom `env.fetch` run with full process privilege. faxios does not sandbox them. A middleware sees and can change every request's config (including `Authorization`), can read every plugin's `ctx.capabilities`, can replace the response, and can call `next` more than once.
 
 ### 2.4 Threat actors
 
@@ -190,15 +190,16 @@ The runtime model is general by design. faxios is a transport library and cannot
 
 ---
 
-#### T-R10: Malicious interceptor / adapter
+#### T-R10: Malicious middleware / plugin
 
 |                   |                                                                                                                                                        |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Description**   | Caller installs a third-party "faxios plugin" from npm that registers an interceptor exfiltrating every `Authorization` header.                         |
+| **Description**   | Caller installs a third-party faxios plugin from npm whose middleware exfiltrates every `Authorization` header, or calls another plugin's capability (e.g. `ctx.capabilities.auth.getToken()`). |
 | **Likelihood**    | Low to Medium                                                                                                                                          |
 | **Impact**        | High                                                                                                                                                   |
-| **In scope?**     | **No.** Interceptors are caller-supplied code running in the caller's process. faxios provides the hook; vetting what goes into it is the caller's job. |
-| **Residual risk** | Out of scope, but worth documenting: there is no meaningful difference between `faxios.interceptors.request.use(evil)` and `require('evil')`.           |
+| **In scope?**     | **No.** Middleware is caller-supplied code running in the caller's process. faxios provides the hook; vetting what goes into it is the caller's job. |
+| **Residual risk** | Out of scope, but worth documenting: there is no meaningful difference between `api.use(evil)` and `require('evil')`. Two behaviours callers should know: a middleware that returns without calling `next` hands back a response that never went through `responseSchema`, and one that calls `next` again resends the request, including non-idempotent methods. |
+| **Guarantees**    | faxios still filters `__proto__`/`constructor`/`prototype` from plugin `provides`, keeps `ctx.config`, `ctx.state`, `ctx.capabilities` and every dispatched config copy null-prototype, and rejects an abort that lands before the adapter call without sending the request, however long a middleware awaits. Regressions here are security bugs. |
 
 ---
 
@@ -218,7 +219,7 @@ The runtime model is general by design. faxios is a transport library and cannot
 
 faxios will not:
 
-- Sandbox or validate caller-supplied functions (interceptors, transforms, adapters, serializers).
+- Sandbox or validate caller-supplied functions (middleware and plugins, transforms, a custom `env.fetch`, serializers).
 - Validate that `config.url` points somewhere "safe." We don't know what safe means for your application.
 - Warn when TLS validation is disabled via a custom agent.
 - Redact `config` from thrown errors. The caller may legitimately need it for retry logic.

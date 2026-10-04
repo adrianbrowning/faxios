@@ -4,7 +4,7 @@ Interceptors are a powerful mechanism that can be used to intercept and modify H
 
 Basic usage of interceptors is as follows:
 
-```js
+```js check=skip
 import faxios from "@gcmdev/faxios";
 
 // Add a request interceptor
@@ -38,7 +38,7 @@ faxios.interceptors.response.use(
 
 You can remove any interceptor by using the `eject` method on the interceptor you want to remove. You can also remove all interceptors by calling the `clear` method on `faxios.interceptors.request` or `faxios.interceptors.response`. Here is an example of how to remove an interceptor:
 
-```js
+```js check=skip
 import faxios from "@gcmdev/faxios";
 
 // Eject the request interceptor
@@ -58,7 +58,7 @@ faxios.interceptors.response.eject(myResponseInterceptor);
 
 Here is an example of how to remove all interceptors:
 
-```js
+```js check=skip
 import faxios from "@gcmdev/faxios";
 
 const instance = faxios.create();
@@ -78,7 +78,7 @@ instance.interceptors.response.clear(); // Removes interceptors from responses
 
 When you add request interceptors, they are presumed to be asynchronous by default. This can cause a delay in the execution of your faxios request when the main thread is blocked (a promise is created under the hood for the interceptor and your request gets put on the bottom of the call stack). If your request interceptors are synchronous you can add a flag to the options object that will tell faxios to run the code synchronously and avoid any delays in request execution.
 
-```js
+```js check=skip
 import faxios from "@gcmdev/faxios";
 
 faxios.interceptors.request.use(
@@ -95,7 +95,7 @@ faxios.interceptors.request.use(
 
 If you want to execute a particular interceptor based on a runtime check, you can add a runWhen function to the options object. The interceptor will not be executed if and only if the return of runWhen is false. The function will be called with the config object (don't forget that you can bind your own arguments to it as well.) This can be handy when you have an asynchronous request interceptor that only needs to run at certain times.
 
-```ts
+```ts check=skip
 import faxios from "@gcmdev/faxios";
 import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
 
@@ -126,7 +126,7 @@ Response interceptors are executed in the **order they were added** (FIFO — fi
 
 The following example shows the full execution order for three request interceptors and three response interceptors:
 
-```ts
+```ts check=skip
 import faxios from "@gcmdev/faxios";
 
 const instance = faxios.create();

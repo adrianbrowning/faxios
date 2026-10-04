@@ -86,7 +86,7 @@ const batchApi    = faxios.create({ baseURL: "https://batch.example.com",    tim
 
 Interceptors added to an instance only apply to that instance, keeping your concerns separate:
 
-```js
+```js check=skip
 import faxios from "@gcmdev/faxios";
 
 const loggingApi = faxios.create({ baseURL: "https://api.example.com" });

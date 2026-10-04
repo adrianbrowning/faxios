@@ -114,7 +114,6 @@ export interface TransitionalOptions {
   silentJSONParsing?: boolean;
   forcedJSONParsing?: boolean;
   clarifyTimeoutError?: boolean;
-  legacyInterceptorReqResOrdering?: boolean;
   advertiseZstdAcceptEncoding?: boolean;
   validateStatusUndefinedResolves?: boolean;
 }
@@ -424,19 +423,4 @@ export interface FaxiosPlugin<TRequires = unknown, TProvides = unknown, TOptions
   name: string;
   provides?: TProvides;
   middleware: FaxiosMiddleware<TOptions, TRequires & TProvides>;
-}
-
-export interface FaxiosInterceptorOptions {
-  synchronous?: boolean;
-  runWhen?: ((config: InternalFaxiosRequestConfig) => boolean) | null;
-}
-
-export type FaxiosInterceptorFulfilled<T> = (value: T) => T | Promise<T>;
-export type FaxiosInterceptorRejected = (error: unknown) => unknown;
-
-export interface FaxiosInterceptorHandler<T> {
-  fulfilled: FaxiosInterceptorFulfilled<T>;
-  rejected?: FaxiosInterceptorRejected;
-  synchronous: boolean;
-  runWhen?: ((config: InternalFaxiosRequestConfig) => boolean) | null;
 }

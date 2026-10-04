@@ -28,7 +28,27 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Docs targets:** A new `pages/advanced/middleware.md` (concept, ordering, plugins), `pages/advanced/create-an-instance.md`, the TypeScript section of `pages/advanced/api-reference.md`, and the package README feature list. The interceptor pages are rewritten later, when interceptors are removed (#89).
 - **Required content:** Ordering: registration order on the way in, reverse on the way out (`a before → b before → request → b after → a after`). `ctx.config` is the merged request config and `ctx.config.headers` is a `FaxiosHeaders`, so `.set()` works before `next`. Each `next()` sends a copy of the config, so changes dispatch makes (path-param substitution, `transformRequest`, schema output) never show up on `ctx.config`, and calling `next` again retries from the same input. Non-2xx responses reach middleware as a rejected `FaxiosError` (because of `validateStatus`), not as a response. Returning without `next` skips the request, including schema validation. `ctx.state` is per request; `ctx.capabilities` holds plugin `provides` values for every request, and duplicate keys throw `ERR_BAD_OPTION`. `use()` returns the instance; `eject()` removes by reference and leaves running requests alone. `create()` children start with no middleware. Aborting at any point before the request is sent rejects with `CanceledError` and sends nothing, even when a middleware awaits before `next`.
 - **Examples:** An auth-header middleware; a retry loop that calls `next` again on `ERR_NETWORK`; a cache that returns a stored response without calling `next`; a plugin with `provides`.
-- **Notes:** Typed plugin request options and capability requirements (#90) and the built-in plugins (#91) extend this page later. Until #89 lands, interceptors run inside the innermost `next()`; don't document that interim order.
+- **Notes:** Typed plugin request options and capability requirements (#90) and the built-in plugins (#91) extend this page later.
+
+### Interceptors removed
+
+- **Change:** `interceptors.request`/`interceptors.response`, their types and `transitional.legacyInterceptorReqResOrdering` are gone; `.use()` middleware replaces them.
+- **Source:** Issue #89 (part of #54); `PRE_RELEASE_CHANGELOG.md` Breaking Changes entry "Interceptors are removed".
+- **Status:** Pending.
+- **Docs targets:** These English blocks were marked `check=skip` so `test:docs-examples` keeps passing; rewrite each to `.use()` and remove the marker:
+  - `pages/advanced/interceptors.md`: every block (Interceptors, Removing Interceptors, Interceptors default behaviour, Interceptors using `runWhen`, Interceptor execution order). Replace the page with the middleware page, or turn it into "Migrating from interceptors", and update the sidebar in `packages/docs/.vitepress/config.mts`.
+  - `pages/advanced/retry.md`: "Basic retry with a response interceptor", "Exponential backoff", "Retrying on 429 (rate limit) with Retry-After".
+  - `pages/advanced/authentication.md`: "Bearer tokens (JWT)", "Token refresh".
+  - `pages/advanced/headers.md`: "Working with headers", "Setting headers in an interceptor", "Unicode header values".
+  - `pages/advanced/create-an-instance.md`: "Isolated interceptors".
+  - `pages/advanced/request-config.md`: "Full request config example" (drop `legacyInterceptorReqResOrdering`), and the `transitional` option list above it.
+  - `pages/advanced/testing.md`: "Testing interceptors" (was `check=types`).
+  - `pages/advanced/type-script.md`: "Typed instances and interceptors".
+  - `pages/getting-started/examples/typescript.md`: "Typed interceptors".
+  - Prose that still mentions interceptors: `pages/advanced/define.md`, `pages/advanced/schema-validation.md`, `pages/getting-started/upgrade-guide.md`, the package README, `MIGRATION_GUIDE.md`, `ECOSYSTEM.md`, `packages/examples/improved-network-errors.md` and `packages/examples/network_enhanced.js`, plus the es/fr/zh copies.
+- **Required content:** Interceptors don't exist; `.use()` is the lifecycle API. Migration: a request interceptor becomes code before `await next(ctx)` that changes `ctx.config`; a response interceptor becomes code after it; an `onRejected` handler becomes a `try`/`catch` around `next`. Request interceptors ran last-registered-first, middleware runs in registration order on the way in, so reverse the registration order of migrated request interceptors. `runWhen` becomes an `if` that calls `next` straight away; `synchronous` has no equivalent. `eject(id)` becomes `eject(middleware)` with the same function reference. Passing `transitional.legacyInterceptorReqResOrdering` now throws `ERR_BAD_OPTION` ("Unknown option").
+- **Examples:** Before/after for an auth-header request interceptor, a response interceptor that unwraps `data`, and a retry-on-401 response interceptor rewritten as `try { return await next(ctx) } catch (err) { … return next(ctx) }`.
+- **Notes:** Remove every `check=skip` marker added for this change once its block is rewritten.
 
 ### docs/advanced/headers.md — translation tracking
 

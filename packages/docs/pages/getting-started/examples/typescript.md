@@ -92,7 +92,7 @@ const api: FaxiosInstance = faxios.create({
 
 Use `InternalFaxiosRequestConfig` (not `FaxiosRequestConfig`) for request interceptors:
 
-```ts
+```ts check=skip
 import faxios from "@gcmdev/faxios";
 import type { InternalFaxiosRequestConfig, FaxiosResponse } from "@gcmdev/faxios";
 

@@ -54,7 +54,7 @@ try {
 
 Annotate the result of `faxios.create` with `FaxiosInstance`, and annotate request interceptors with `InternalFaxiosRequestConfig` to get end-to-end type checking on a custom client:
 
-```ts
+```ts check=skip
 import faxios from "@gcmdev/faxios";
 import type { FaxiosInstance, InternalFaxiosRequestConfig } from "@gcmdev/faxios";
 

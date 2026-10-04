@@ -6,7 +6,7 @@ Network requests can fail for transient reasons — a server blip, a brief netwo
 
 The simplest approach is to catch specific error status codes and immediately re-send the original request a limited number of times:
 
-```ts
+```ts check=skip
 import faxios, { isFaxiosError } from "@gcmdev/faxios";
 import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
 
@@ -49,7 +49,7 @@ api.interceptors.response.use(
 
 Retrying immediately after a failure can overload an already-struggling server. Exponential backoff waits progressively longer between each attempt:
 
-```ts
+```ts check=skip
 import faxios, { isFaxiosError } from "@gcmdev/faxios";
 import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
 
@@ -89,7 +89,7 @@ api.interceptors.response.use(
 
 When the server responds with `429 Too Many Requests`, it often includes a `Retry-After` header telling you exactly how long to wait:
 
-```ts
+```ts check=skip
 import faxios, { isFaxiosError } from "@gcmdev/faxios";
 import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
 

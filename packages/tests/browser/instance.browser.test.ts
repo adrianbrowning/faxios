@@ -1,8 +1,6 @@
 import { describe, expect, it } from "vitest";
 
 import faxios from "#src/index.js";
-import type InterceptorManager from "#src/lib/core/InterceptorManager.js";
-import type { InternalFaxiosRequestConfig } from "#src/lib/types.js";
 
 import { installFetchMock } from "./helpers/fetchMock.js";
 
@@ -89,49 +87,6 @@ describe("instance (vitest browser)", () => {
 
     expect(typeof instance.defaults.headers).toBe("object");
     expect(typeof instance.defaults.headers.common).toBe("object");
-  });
-
-  it("should have interceptors on the instance", async () => {
-    using _mock = installFetchMock();
-    const requestInterceptorId = (
-      faxios.interceptors
-        .request as unknown as InterceptorManager<InternalFaxiosRequestConfig>
-    ).use(config => {
-      (config as InternalFaxiosRequestConfig & Record<string, unknown>).foo =
-        true;
-      return config;
-    });
-
-    const instance = faxios.create();
-    const instanceInterceptorId = (
-      instance.interceptors
-        .request as unknown as InterceptorManager<InternalFaxiosRequestConfig>
-    ).use(config => {
-      (config as InternalFaxiosRequestConfig & Record<string, unknown>).bar =
-        true;
-      return config;
-    });
-
-    try {
-      const response = await instance.get("/foo");
-
-      expect(
-        (response.config as unknown as Record<string, unknown>).foo
-      ).toBeUndefined();
-      expect((response.config as unknown as Record<string, unknown>).bar).toBe(
-        true
-      );
-    }
-    finally {
-      (
-        faxios.interceptors
-          .request as unknown as InterceptorManager<InternalFaxiosRequestConfig>
-      ).eject(requestInterceptorId);
-      (
-        instance.interceptors
-          .request as unknown as InterceptorManager<InternalFaxiosRequestConfig>
-      ).eject(instanceInterceptorId);
-    }
   });
 
   it("should have getUri on the instance", () => {

@@ -171,7 +171,7 @@ describe.runIf(typeof fetch === "function")(
       }
     });
 
-    it("should allow request interceptors to encode Unicode header values before fetch sends them", async () => {
+    it("should allow middleware to encode Unicode header values before fetch sends them", async () => {
       const server = await startHTTPServer(
         (req, res) => {
           res.setHeader("Content-Type", "application/json");
@@ -188,13 +188,11 @@ describe.runIf(typeof fetch === "function")(
 
       const instance = faxios.create({
         baseURL: LOCAL_SERVER_URL,
-      });
-
-      instance.interceptors.request.use(config => {
-        config.headers.oprtName = encodeURIComponent(
-          config.headers.oprtName as string
+      }).use(async (ctx, next) => {
+        ctx.config.headers.oprtName = encodeURIComponent(
+          ctx.config.headers.oprtName as string
         );
-        return config;
+        return next(ctx);
       });
 
       try {

@@ -42,7 +42,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 
 ## Architecture Boundaries
 
-- `lib/core/` is faxios domain logic: request dispatch, config merge, interceptors, headers, errors. Key classes: `faxios` (request dispatch + interceptor chains), `FaxiosError` (standardized error codes), `AxiosHeaders` (case-insensitive header normalization), `InterceptorManager` (sync/async interceptor registration).
+- `lib/core/` is faxios domain logic: request dispatch, config merge, `.use()` middleware, headers, errors. Key classes: `faxios` (request dispatch + middleware composition), `FaxiosError` (standardized error codes), `AxiosHeaders` (case-insensitive header normalization).
 - `lib/adapters/` performs I/O; the web-standard `fetch` adapter (`lib/adapters/fetch.ts`) is the only transport — it is called unconditionally from `dispatchRequest.ts`. Custom user-supplied adapters are not supported; `config.adapter` is not a valid config field.
 - `lib/platform/` selects the browser/web-standard implementation in all runtimes (browser, Node 18+, Deno, Bun).
 - `lib/helpers/` should stay generic and reusable outside faxios; do not put faxios-specific request lifecycle logic there.
@@ -50,10 +50,10 @@ This file is the canonical contributor guide for both human and AI agents workin
 
 ## Naming Conventions
 
-- Classes: PascalCase (`faxios`, `FaxiosError`, `InterceptorManager`).
+- Classes: PascalCase (`faxios`, `FaxiosError`, `FaxiosHeaders`).
 - Functions: camelCase (`buildURL`, `mergeConfig`, `dispatchRequest`).
 - Error codes: UPPER_SNAKE_CASE constants on `FaxiosError` (`ERR_NETWORK`, `ETIMEDOUT`).
-- Internal class slots: use `#` private field syntax in TypeScript class files (e.g. `#handlers`, `#idCounter` in `InterceptorManager`); use `Symbol`-keyed slots (e.g. `const $internals = Symbol('internals')`) in plain `.js` files where `#` syntax is unavailable. Never use underscore-prefixed properties for either.
+- Internal class slots: use `#` private field syntax in TypeScript class files (e.g. `#middleware`, `#capabilities` in `Faxios`); use `Symbol`-keyed slots (e.g. `const $internals = Symbol('internals')`) in plain `.js` files where `#` syntax is unavailable. Never use underscore-prefixed properties for either.
 
 ## Error Handling
 
@@ -62,24 +62,24 @@ This file is the canonical contributor guide for both human and AI agents workin
 - Canonical code list lives in `packages/lib/src/lib/core/FaxiosError.ts`; current codes include `ERR_BAD_OPTION_VALUE`, `ERR_BAD_OPTION`, `ECONNABORTED`, `ETIMEDOUT`, `ECONNREFUSED`, `ERR_NETWORK`, `ERR_FR_TOO_MANY_REDIRECTS`, `ERR_DEPRECATED`, `ERR_BAD_RESPONSE`, `ERR_BAD_REQUEST`, `ERR_CANCELED`, `ERR_NOT_SUPPORT`, `ERR_INVALID_URL`, `ERR_FORM_DATA_DEPTH_EXCEEDED`, `ERR_BAD_RESPONSE_SCHEMA`, `ERR_BAD_REQUEST_SCHEMA`, `ERR_BAD_PARAMS_SCHEMA`, `ERR_BAD_PATH_PARAMS_SCHEMA`.
 - Validate config options through the `validator` helper; do not invent ad-hoc validation paths.
 
-## Interceptor Execution Order
+## Middleware Execution Order
 
-- Request interceptors run **last-registered-first** (LIFO).
-- Response interceptors run **first-registered-first** (FIFO).
-- Both support `synchronous: true` (avoids Promise wrapping when no async handler is in the chain) and `runWhen: (config) => boolean` for conditional execution.
-- Order matters for both behavior and tests; document it when adding new built-in interceptors.
+- `.use()` middleware runs in registration order before dispatch and in reverse order after it (onion). With no middleware, `Faxios#request` calls `dispatchRequest` directly.
+- Each `next(ctx)` dispatches its own copy of `ctx.config` (null-prototype clone with cloned headers); dispatch never writes back to `ctx.config`, so a middleware can call `next` again to retry.
+- `use()`/`eject()` replace the middleware list and the capabilities object instead of mutating them; a request in flight keeps the snapshot it started with.
+- Composition uses plain closures with no async wrapper, so a middleware that calls `next` before awaiting reaches the adapter in the same tick. Keep it that way.
+- Order matters for both behavior and tests; document it when adding built-in plugins.
 
 ## Request Lifecycle
 
 1. User calls `faxios()` or a method alias.
-2. Merge instance defaults with request config via `mergeConfig`.
-3. Run request interceptors (LIFO).
-4. Call the fetch adapter directly (`getFetch(config)` from `lib/adapters/fetch.ts`).
-5. Apply `transformRequest` functions.
-6. Adapter performs the HTTP request.
-7. Apply `transformResponse` functions.
-8. Run response interceptors (FIFO).
-9. Resolve promise with `AxiosResponse` or reject with `FaxiosError`.
+2. Merge instance defaults with request config via `mergeConfig`, validate options, and flatten method header groups into one `FaxiosHeaders`.
+3. Run `.use()` middleware in registration order; the innermost `next(ctx)` dispatches a copy of `ctx.config`.
+4. `dispatchRequest` checks cancellation, runs pre-flight schema validation and `transformRequest`, then checks cancellation again right before the adapter call.
+5. The fetch adapter (`getFetch(config)` from `lib/adapters/fetch.ts`) performs the HTTP request.
+6. Apply `transformResponse` functions and `responseSchema` validation.
+7. Middleware unwinds in reverse registration order.
+8. Resolve promise with `FaxiosResponse` or reject with `FaxiosError`.
 
 ## Cancellation
 
@@ -92,7 +92,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 - Do not mutate config objects in-place; return new objects from merges/transforms.
 - Do not assume browser- or Node-specific globals exist; capability-check first.
 - Use native `Function.prototype.bind` — `lib/helpers/bind.js` has been deleted.
-- Use `#` syntax for private fields in TypeScript class files (e.g. `#handlers`, `#idCounter`), not underscore prefixes or Symbol keys.
+- Use `#` syntax for private fields in TypeScript class files (e.g. `#middleware`, `#composed`), not underscore prefixes or Symbol keys.
 - Do not throw raw `Error` from library code; use `FaxiosError` with an appropriate code (see Error Handling).
 
 ## Tests
