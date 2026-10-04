@@ -205,14 +205,10 @@ type HeaderMatcher =
   | RegExp
   | ((value: string, name: string) => boolean);
 
-type HeaderRewrite =
-  | boolean
-  | ((value: string, name: string) => boolean);
-
 type HeaderGetResult = string | Array<string> | Record<string, string> | RegExpExecArray | true | null | undefined;
 
 export type FaxiosRequestHeaders = Record<string, FaxiosHeaderValue> & {
-  set: (header: string | Record<string, unknown>, value?: FaxiosHeaderValue, rewrite?: HeaderRewrite) => FaxiosRequestHeaders;
+  set: (header: string | Record<string, unknown>, value?: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
   get: (header: string, parser?: boolean | RegExp) => HeaderGetResult;
   has: (header: string, matcher?: HeaderMatcher) => boolean;
   delete: (header: string | Array<string>, matcher?: HeaderMatcher) => boolean;
@@ -220,22 +216,23 @@ export type FaxiosRequestHeaders = Record<string, FaxiosHeaderValue> & {
   normalize: (format?: boolean) => FaxiosRequestHeaders;
   concat: (...targets: Array<unknown>) => FaxiosRequestHeaders;
   getContentType: (matcher?: HeaderMatcher) => HeaderGetResult;
-  setContentType: (value: FaxiosHeaderValue, rewrite?: HeaderRewrite) => FaxiosRequestHeaders;
+  setContentType: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
   hasContentType: (matcher?: HeaderMatcher) => boolean;
   getContentLength: (matcher?: HeaderMatcher) => HeaderGetResult;
-  setContentLength: (value: FaxiosHeaderValue, rewrite?: HeaderRewrite) => FaxiosRequestHeaders;
+  setContentLength: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
   hasContentLength: (matcher?: HeaderMatcher) => boolean;
   getAccept: (matcher?: HeaderMatcher) => HeaderGetResult;
-  setAccept: (value: FaxiosHeaderValue, rewrite?: HeaderRewrite) => FaxiosRequestHeaders;
+  setAccept: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
   hasAccept: (matcher?: HeaderMatcher) => boolean;
   getAcceptEncoding: (matcher?: HeaderMatcher) => HeaderGetResult;
-  setAcceptEncoding: (value: FaxiosHeaderValue, rewrite?: HeaderRewrite) => FaxiosRequestHeaders;
+  setAcceptEncoding: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
   hasAcceptEncoding: (matcher?: HeaderMatcher) => boolean;
   getUserAgent: (matcher?: HeaderMatcher) => HeaderGetResult;
-  setUserAgent: (value: FaxiosHeaderValue, rewrite?: HeaderRewrite) => FaxiosRequestHeaders;
+  setUserAgent: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
   hasUserAgent: (matcher?: HeaderMatcher) => boolean;
+
   getAuthorization: (matcher?: HeaderMatcher) => HeaderGetResult;
-  setAuthorization: (value: FaxiosHeaderValue, rewrite?: HeaderRewrite) => FaxiosRequestHeaders;
+  setAuthorization: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
   hasAuthorization: (matcher?: HeaderMatcher) => boolean;
   toJSON: (asStrings?: boolean) => Record<string, FaxiosHeaderValue>;
 };
