@@ -20,6 +20,16 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 
 ## Unreleased
 
+### `.use()` middleware
+
+- **Change:** Instances take onion-style middleware and plugins through `use()`, removable with `eject()`.
+- **Source:** Issue #88 (part of #54); `PRE_RELEASE_CHANGELOG.md` Features entry "`.use()` middleware".
+- **Status:** Pending.
+- **Docs targets:** A new `pages/advanced/middleware.md` (concept, ordering, plugins), `pages/advanced/create-an-instance.md`, the TypeScript section of `pages/advanced/api-reference.md`, and the package README feature list. The interceptor pages are rewritten later, when interceptors are removed (#89).
+- **Required content:** Ordering: registration order on the way in, reverse on the way out (`a before → b before → request → b after → a after`). `ctx.config` is the merged request config and `ctx.config.headers` is a `FaxiosHeaders`, so `.set()` works before `next`. Each `next()` sends a copy of the config, so changes dispatch makes (path-param substitution, `transformRequest`, schema output) never show up on `ctx.config`, and calling `next` again retries from the same input. Non-2xx responses reach middleware as a rejected `FaxiosError` (because of `validateStatus`), not as a response. Returning without `next` skips the request, including schema validation. `ctx.state` is per request; `ctx.capabilities` holds plugin `provides` values for every request, and duplicate keys throw `ERR_BAD_OPTION`. `use()` returns the instance; `eject()` removes by reference and leaves running requests alone. `create()` children start with no middleware. Aborting at any point before the request is sent rejects with `CanceledError` and sends nothing, even when a middleware awaits before `next`.
+- **Examples:** An auth-header middleware; a retry loop that calls `next` again on `ERR_NETWORK`; a cache that returns a stored response without calling `next`; a plugin with `provides`.
+- **Notes:** Typed plugin request options and capability requirements (#90) and the built-in plugins (#91) extend this page later. Until #89 lands, interceptors run inside the innermost `next()`; don't document that interim order.
+
 ### docs/advanced/headers.md — translation tracking
 
 - **Change:** `docs/advanced/headers.md` was added/updated in the fetch-only sweep (English only). Translated versions have not been created.

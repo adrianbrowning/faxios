@@ -394,6 +394,38 @@ export type FaxiosConfigHeaders =
 /** Config accepted by `create()`; identical to a request config. */
 export type CreateFaxiosDefaults<D = unknown> = FaxiosRequestConfig<D>;
 
+/**
+ * Per-request state passed through `.use()` middleware. Created once per
+ * request, after the request config is merged with the instance defaults.
+ */
+export interface FaxiosContext<TOptions = unknown, TCapabilities = unknown> {
+  /** The merged request config. `headers` is a `FaxiosHeaders` instance. */
+  config: InternalFaxiosRequestConfig & TOptions;
+  /** Null-prototype scratch space shared by middleware for this request only. */
+  state: Record<PropertyKey, unknown>;
+  /** Values provided by installed plugins, shared by every request of the instance. */
+  capabilities: TCapabilities;
+}
+
+/** Runs the rest of the middleware chain, then dispatches a copy of `ctx.config`. */
+export type FaxiosNext = (ctx: FaxiosContext) => Promise<FaxiosResponse>;
+
+/**
+ * Onion-style lifecycle hook: code before `await next(ctx)` runs on the way in,
+ * code after it on the way out. Returning without calling `next` skips dispatch.
+ */
+export type FaxiosMiddleware<TOptions = unknown, TCapabilities = unknown> = (
+  ctx: FaxiosContext<TOptions, TCapabilities>,
+  next: FaxiosNext
+) => Promise<FaxiosResponse>;
+
+/** Middleware bundled with the capabilities it provides to other plugins. */
+export interface FaxiosPlugin<TRequires = unknown, TProvides = unknown, TOptions = unknown> {
+  name: string;
+  provides?: TProvides;
+  middleware: FaxiosMiddleware<TOptions, TRequires & TProvides>;
+}
+
 export interface FaxiosInterceptorOptions {
   synchronous?: boolean;
   runWhen?: ((config: InternalFaxiosRequestConfig) => boolean) | null;
