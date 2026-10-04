@@ -108,6 +108,11 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
     (config.headers as unknown as { setContentType: (v: string, r: boolean) => void; }).setContentType("application/x-www-form-urlencoded", false);
   }
 
+  // Last cancellation check: nothing between here and the adapter call may await. An abort that
+  // lands during pre-flight validation must not reach the adapter, which only listens for future
+  // abort events.
+  throwIfCancellationRequested(config);
+
   const _adapter = getFetch(config);
   if (!_adapter) {
     throw new FaxiosError(
