@@ -184,11 +184,16 @@ class Faxios {
     middleware: FaxiosMiddleware<TOptions> | FaxiosPluginArgument<TRequires, TProvides, TOptions>
   ): this {
     const plugin = typeof middleware === "function" ? null : middleware;
-    const run = plugin ? plugin.middleware : middleware;
+    // Plugins are caller objects: only their own fields count, so a polluted Object.prototype
+    // can't supply middleware or capabilities (THREATMODEL T-R4b).
+    const own = <K extends keyof FaxiosPluginArgument>(key: K) =>
+      (plugin && utils.hasOwnProp(plugin, key) ? plugin[key] : undefined);
+    const run = plugin ? own("middleware") : middleware;
     if (typeof run !== "function") {
       throw new FaxiosError("use() expects a middleware function or a plugin with a middleware function", FaxiosError.ERR_BAD_OPTION_VALUE);
     }
-    const provided = plugin?.provides == null ? [] : this.#addCapabilities(plugin.name, plugin.provides);
+    const provides = own("provides");
+    const provided = provides == null ? [] : this.#addCapabilities(String(own("name")), provides);
     this.#setMiddleware([ ...this.#middleware, { ref: middleware, run: run as FaxiosMiddleware, provided }]);
     return this;
   }
