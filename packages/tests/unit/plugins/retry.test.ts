@@ -1,4 +1,5 @@
 import assert from "node:assert";
+import { getEventListeners } from "node:events";
 import { Readable } from "node:stream";
 import { afterEach, beforeEach, describe, it, vi } from "vitest";
 import faxios, { CanceledError, FaxiosError, retry } from "#src/index.ts";
@@ -149,6 +150,20 @@ describe("plugins::retry", () => {
     await vi.runAllTimersAsync();
 
     assert.strictEqual(calls.length, 1);
+  });
+
+  it("leaves no abort listener on the caller's signal after an abort during the backoff", async () => {
+    const { fetch } = scriptedFetch([ 503, 200 ]);
+    const controller = new AbortController();
+    const api = faxios.create({ env: { fetch } }).use(retry({ delay: 1000 }));
+
+    const request = assert.rejects(api.get(URL, { signal: controller.signal }), (err: unknown) => err instanceof CanceledError);
+    await vi.advanceTimersByTimeAsync(10);
+    controller.abort();
+    await request;
+    await vi.runAllTimersAsync();
+
+    assert.strictEqual(getEventListeners(controller.signal, "abort").length, 0);
   });
 
   it("never retries a request the caller canceled", async () => {
