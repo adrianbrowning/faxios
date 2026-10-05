@@ -32,6 +32,7 @@ describe("instance (vitest browser)", () => {
           "formToJSON",
           "FaxiosHeaders",
           "HttpStatusCode",
+          "plugins",
         ].includes(prop)
       ) {
         continue;
