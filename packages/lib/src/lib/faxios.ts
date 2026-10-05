@@ -13,7 +13,7 @@ import formDataToJSON from "./helpers/formDataToJSON.js";
 import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
-import type { CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosInterceptorOptions, FaxiosInterceptorRejected, FaxiosRequestConfig, HeadersDefaults, InternalFaxiosRequestConfig, FaxiosResponse, SchemaConfig } from "./types.js";
+import type { CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosInterceptorOptions, FaxiosInterceptorRejected, FaxiosMiddleware, FaxiosPlugin, FaxiosRequestConfig, HeadersDefaults, InternalFaxiosRequestConfig, FaxiosResponse, SchemaConfig } from "./types.js";
 import utils from "./utils.js";
 
 /**
@@ -35,6 +35,13 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
   // Copy context to instance
   utils.extend(target, context, null, { allOwnKeys: true });
 
+  // extend() bound use() to the inner Faxios object, so its `return this` would hand back a
+  // value you can't call. Return the callable instance instead.
+  instance.use = function use(middleware) {
+    context.use(middleware);
+    return instance;
+  };
+
   // Factory for creating new instances
   instance.create = function create(instanceConfig?: CreateFaxiosDefaults): FaxiosInstance {
     return createInstance(mergeConfig(defaultConfig, instanceConfig));
@@ -43,7 +50,10 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
   return instance;
 }
 
-export type FaxiosInstance = Pick<Faxios, "define" | "route"> & {
+export type FaxiosInstance = Pick<Faxios, "define" | "route" | "eject"> & {
+  use: <TRequires = unknown, TProvides = unknown, TOptions = unknown>(
+    middleware: FaxiosMiddleware<TOptions> | FaxiosPlugin<TRequires, TProvides, TOptions>
+  ) => FaxiosInstance;
   <O, D = unknown>(config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
   <O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
   <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D>): Promise<R>;

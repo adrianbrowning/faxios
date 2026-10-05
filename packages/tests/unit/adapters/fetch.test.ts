@@ -968,24 +968,32 @@ describe.runIf(typeof fetch === "function")(
         }
       });
 
+      const safariFetch = async (
+        url: RequestInfo | URL,
+        init?: RequestInit
+      ) => {
+        const signal = getFetchSignal(url, init) as AbortSignal;
+
+        return new Promise((_resolve, reject) => {
+          const onAbort = () => {
+            signal.removeEventListener("abort", onAbort);
+            reject(createBrokenDOMExceptionLikeError());
+          };
+
+          if (signal.aborted) return onAbort();
+          signal.addEventListener("abort", onAbort);
+        });
+      };
+
+      const assertUserAbort = (err: unknown) => {
+        const e = err as { name: string; code: string; };
+        assert.strictEqual(e.name, "CanceledError");
+        assert.strictEqual(e.code, "ERR_CANCELED");
+        assert.strictEqual(faxios.isCancel(err), true);
+        return true;
+      };
+
       it("should not classify a user-initiated abort as a timeout", async () => {
-        const safariFetch = async (
-          url: RequestInfo | URL,
-          init?: RequestInit
-        ) => {
-          const signal = getFetchSignal(url, init) as AbortSignal;
-
-          return new Promise((_resolve, reject) => {
-            const onAbort = () => {
-              signal.removeEventListener("abort", onAbort);
-              reject(createBrokenDOMExceptionLikeError());
-            };
-
-            if (signal.aborted) return onAbort();
-            signal.addEventListener("abort", onAbort);
-          });
-        };
-
         const controller = new AbortController();
 
         const request = fetchFaxios.get("/", {
@@ -998,16 +1006,26 @@ describe.runIf(typeof fetch === "function")(
 
         controller.abort();
 
-        await assert.rejects(
-          async () => request,
-          err => {
-            const e = err as { name: string; code: string; };
-            assert.strictEqual(e.name, "CanceledError");
-            assert.strictEqual(e.code, "ERR_CANCELED");
-            assert.strictEqual(faxios.isCancel(err), true);
-            return true;
-          }
-        );
+        await assert.rejects(async () => request, assertUserAbort);
+      });
+
+      it("should not classify a user-initiated abort as a timeout through a middleware that awaits next()", async () => {
+        const controller = new AbortController();
+        const api = faxios.create({ baseURL: LOCAL_SERVER_URL, allowAbsoluteUrls: true }).use(async (ctx, next) => {
+          const response = await next(ctx);
+          return response;
+        });
+
+        const request = api.get("/", {
+          signal: controller.signal as GenericAbortSignal,
+          env: {
+            fetch: safariFetch as unknown as FetchFn,
+          },
+        });
+
+        controller.abort();
+
+        await assert.rejects(async () => request, assertUserAbort);
       });
 
       // Timing-sensitive: a 50ms abort race observed by a fake fetch can flake

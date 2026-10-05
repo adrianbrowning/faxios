@@ -1,33 +1,12 @@
 import buildFullPath from "../core/buildFullPath.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import buildURL from "../helpers/buildURL.js";
+import cloneConfig from "../helpers/cloneConfig.js";
 import cookies from "../helpers/cookies.js";
 import isURLSameOrigin from "../helpers/isURLSameOrigin.js";
 import platform from "../platform.js";
 import type { FaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
-
-const DANGEROUS_KEYS = new Set([ "__proto__", "constructor", "prototype" ]);
-
-// ponytail: null-proto shallow clone; replaces mergeConfig({}, config) which ran the full
-// two-config merge machinery just to get a defensive copy. Security invariants preserved:
-// null-proto so fetch.ts destructuring can't inherit Object.prototype gadgets, and
-// dangerous keys filtered to block prototype-pollution write paths.
-function cloneConfig(src: FaxiosRequestConfig): FaxiosRequestConfig & Record<string, unknown> {
-  const dst = Object.create(null) as FaxiosRequestConfig & Record<string, unknown>;
-  Object.defineProperty(dst, "hasOwnProperty", Object.assign(Object.create(null) as PropertyDescriptor, {
-    value: Object.prototype.hasOwnProperty,
-    writable: true,
-    configurable: true,
-    enumerable: false,
-  }));
-  for (const key of Object.keys(src)) {
-    if (!DANGEROUS_KEYS.has(key)) {
-      (dst as Record<string, unknown>)[key] = (src as Record<string, unknown>)[key];
-    }
-  }
-  return dst;
-}
 
 const FORM_DATA_CONTENT_HEADERS = [ "content-type", "content-length" ];
 

@@ -40,7 +40,11 @@ export type {
   CreateFaxiosDefaults,
   FaxiosConfigHeaders,
   RawFaxiosRequestHeaders,
-  HeadersDefaults
+  HeadersDefaults,
+  FaxiosContext,
+  FaxiosNext,
+  FaxiosMiddleware,
+  FaxiosPlugin
 } from "./lib/types.ts";
 
 // Instance-synthesized members (no 1:1 source module). Types are self-contained
