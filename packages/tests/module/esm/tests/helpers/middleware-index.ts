@@ -5,7 +5,7 @@
 // - a plugin that needs a capability can't be installed before its provider
 // - static helpers exist only on the default export
 // - the internal plugin helper types aren't importable from the package root
-import faxios, { authBearer, retry, timing } from "faxios";
+import faxios, { authBearer, FaxiosHeaders, retry, timing } from "faxios";
 import type { AuthBearerCapability, FaxiosContext, FaxiosInstance, FaxiosMiddleware, FaxiosNext, FaxiosPlugin, FaxiosResponse } from "faxios";
 
 type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
@@ -17,13 +17,15 @@ const addHeader: FaxiosMiddleware = async (ctx, next) => {
   return response;
 };
 
-// Header accessors a middleware commonly uses on ctx.config.headers.
+// Header accessors and assignments a middleware commonly uses on ctx.config.headers.
 const assignHeaders: FaxiosMiddleware = async (ctx, next) => {
   const { config } = ctx;
   config.headers.Accept = "foo";
   config.headers.setAccept("foo");
   config.headers.set("bar", "2");
   config.headers.set({ myHeader: "myValue" });
+  config.headers = new FaxiosHeaders({ myHeader: "myValue" });
+  config.headers.set("after", "assignment");
   return next(ctx);
 };
 
