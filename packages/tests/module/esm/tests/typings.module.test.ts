@@ -78,4 +78,29 @@ describe("module esm typings compatibility", () => {
       cleanupTempFixture(fixturePath);
     }
   });
+
+  it("type-checks the packaged middleware and plugin API strictly", () => {
+    const sourcePath = path.join(
+      repoRoot,
+      "tests/module/esm/tests/helpers/middleware-index.ts"
+    );
+    const fixturePath = createTempFixture(
+      suiteRoot,
+      "typings-middleware",
+      sourcePath,
+      strictTsconfig,
+      {
+        type: "module",
+      }
+    );
+
+    try {
+      runCommand("node", [ tscBin, "--noEmit", "-p", "tsconfig.json" ], {
+        cwd: fixturePath,
+      });
+    }
+    finally {
+      cleanupTempFixture(fixturePath);
+    }
+  });
 });
