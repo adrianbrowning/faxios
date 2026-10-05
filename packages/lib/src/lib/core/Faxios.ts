@@ -181,7 +181,7 @@ function settleOnAbort(
     // The executor calls run() right away and turns a synchronous throw into a rejection, which
     // Promise.resolve(run()) wouldn't, and .then(run) would delay dispatch by a tick.
     // eslint-disable-next-line sonarjs/prefer-promise-shorthand -- see above
-    const pending = new Promise<FaxiosResponse>((_resolve) => {
+    const pending = new Promise<FaxiosResponse>(_resolve => {
       _resolve(run());
     });
     // Once the abort has settled the request, this result has nowhere to go; the handlers below
