@@ -62,11 +62,11 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 
 ### Built-in plugin: `retry`
 
-- **Change:** `retry({ attempts, retryOn, delay })` retries failed requests by calling `next` again, with a per-request `retry` option.
+- **Change:** `retry({ attempts, retryOn, delay, methods })` retries failed requests by calling `next` again, with a per-request `retry` option.
 - **Source:** Issue #91; `PRE_RELEASE_CHANGELOG.md` Features entry "Built-in plugins".
 - **Status:** Pending.
 - **Docs targets:** Rewrite `pages/advanced/retry.md` around it, replacing its three `check=skip` interceptor blocks; plugins section of the middleware page.
-- **Required content:** `attempts` counts every try including the first (default 3) and must be an integer of at least 1; anything else (including `Infinity`) rejects with `ERR_BAD_OPTION_VALUE` before a request is sent. By default it retries `ERR_NETWORK`, `ETIMEDOUT` and 5xx responses, never a cancellation. `delay` is milliseconds or `(attempt, error) => ms`, default 100ms doubling. Per request, `retry: false` turns it off and `retry: { … }` overrides fields. An abort during the backoff rejects with `CanceledError` straight away. A stream body (web `ReadableStream` or a Node stream) is never retried, since the first try consumed it. It resends non-idempotent methods too; use `retryOn` to limit that.
+- **Required content:** `attempts` counts every try including the first (default 3) and must be an integer of at least 1; anything else (including `Infinity`) rejects with `ERR_BAD_OPTION_VALUE` before a request is sent. By default it retries `ERR_NETWORK`, `ETIMEDOUT` and 5xx responses, never a cancellation. `delay` is milliseconds or `(attempt, error) => ms`, default 100ms doubling. Per request, `retry: false` turns it off and `retry: { … }` overrides fields. An abort during the backoff rejects with `CanceledError` straight away. A stream body (web `ReadableStream` or a Node stream) is never retried, since the first try consumed it. Only idempotent methods are retried by default (GET, HEAD, OPTIONS, PUT, DELETE, QUERY). POST and PATCH are retried only when listed in `methods` (case-insensitive), which callers should do only if their API dedupes repeats.
 - **Examples:** `retry({ attempts: 5 })`; `retryOn` for 429; `api.post(url, data, { retry: false })`.
 - **Notes:** Install `timing` before `retry` to measure all tries together, after it to measure each try.
 
