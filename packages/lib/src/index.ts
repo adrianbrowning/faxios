@@ -1,7 +1,7 @@
 // @ts-self-types="./index.d.ts"
 /* eslint-disable no-barrel-files/no-barrel-files */
 import faxios from "./lib/faxios.ts";
-import type { FaxiosInstance } from "./lib/faxios.ts";
+import type { FaxiosInstance, FaxiosStatic } from "./lib/faxios.ts";
 import type { CreateFaxiosDefaults } from "./lib/types.ts";
 
 // Static re-exports so the emitted .d.ts references source modules.
@@ -26,7 +26,7 @@ export type { RetryOptions, RetryRequestOptions } from "./lib/plugins/retry.ts";
 export { default as timing } from "./lib/plugins/timing.ts";
 export type { TimingEvent } from "./lib/plugins/timing.ts";
 
-export type { FaxiosInstance } from "./lib/faxios.ts";
+export type { FaxiosInstance, FaxiosStatic } from "./lib/faxios.ts";
 export type { StandardSchemaV1 } from "./lib/types/standard-schema.ts";
 export type { BasePerCallConfig, DefineConfig, DefinedEndpoint, FaxiosLike, PerCallConfig } from "./lib/core/define.ts";
 export type { RouteConfig, RouteMethodConfig, RouteBuilder } from "./lib/core/route.ts";
@@ -58,8 +58,8 @@ export type {
 // Instance-synthesized members (no 1:1 source module). Types are self-contained
 // (all/formToJSON) or annotated with statically imported types (create), so no
 // inline import() is emitted. Runtime values are the same references as on the instance.
-export const all: FaxiosInstance["all"] = faxios.all;
-export const formToJSON: FaxiosInstance["formToJSON"] = faxios.formToJSON;
+export const all: FaxiosStatic["all"] = faxios.all;
+export const formToJSON: FaxiosStatic["formToJSON"] = faxios.formToJSON;
 export const create: (instanceConfig?: CreateFaxiosDefaults) => FaxiosInstance = faxios.create;
 
 export { faxios as default };
