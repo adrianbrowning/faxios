@@ -589,6 +589,37 @@ describe("core::dispatchRequest", () => {
       assert.strictEqual(requestSchemaValidate.mock.calls.length, 0, "requestSchema must not run");
     });
 
+    it("abort while requestSchema validation is pending never reaches the adapter", async () => {
+      const controller = new AbortController();
+      const { promise: validating, resolve: validationStarted } = Promise.withResolvers<void>();
+      const { promise: released, resolve: release } = Promise.withResolvers<void>();
+      let fetchCalled = false;
+      const config = baseConfig({
+        method: "post",
+        signal: controller.signal,
+        data: { payload: true },
+        requestSchema: makeSchema(async v => {
+          validationStarted();
+          await released;
+          return { value: v };
+        }),
+        env: {
+          fetch: async () => {
+            fetchCalled = true;
+            return new Response(null, { status: 200 });
+          },
+        },
+      });
+
+      const request = dispatchRequest(config);
+      await validating;
+      controller.abort();
+      release();
+
+      await assert.rejects(request, (e: unknown) => e instanceof FaxiosError && e.code === FaxiosError.ERR_CANCELED);
+      assert.strictEqual(fetchCalled, false, "fetch must not be called after the caller aborted");
+    });
+
     it("cancellation during responseSchema validation still rejects with ERR_CANCELED", async () => {
       const controller = new AbortController();
       const responseSchema = makeSchema(async v => {

@@ -55,7 +55,14 @@ const composeSignals = (signals: Array<unknown> | null | undefined, timeout?: nu
     activeSignals = null;
   };
 
-  activeSignals.forEach(signal => signal.addEventListener("abort", onabort));
+  // An already-aborted input never fires "abort" again, so propagate it now.
+  for (const signal of activeSignals) {
+    if (signal.aborted) {
+      onabort.call(signal as unknown as AbortSignal, signal.reason);
+      break;
+    }
+    signal.addEventListener("abort", onabort);
+  }
 
   const { signal } = controller;
 
