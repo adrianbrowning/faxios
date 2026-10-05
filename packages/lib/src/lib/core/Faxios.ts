@@ -9,7 +9,7 @@ import type {
   FaxiosContext,
   FaxiosMiddleware,
   FaxiosNext,
-  FaxiosPlugin,
+  FaxiosPluginArgument,
   FaxiosRequestConfig,
   FaxiosRequestHeaders,
   FaxiosResponse,
@@ -181,7 +181,7 @@ class Faxios {
    * reverse order after it. Returns the instance so calls can be chained.
    */
   use<TRequires = unknown, TProvides = unknown, TOptions = unknown>(
-    middleware: FaxiosMiddleware<TOptions> | FaxiosPlugin<TRequires, TProvides, TOptions>
+    middleware: FaxiosMiddleware<TOptions> | FaxiosPluginArgument<TRequires, TProvides, TOptions>
   ): this {
     const plugin = typeof middleware === "function" ? null : middleware;
     const run = plugin ? plugin.middleware : middleware;
@@ -193,9 +193,13 @@ class Faxios {
     return this;
   }
 
-  /** Remove middleware or a plugin registered with use(), by reference. In-flight requests are unaffected. */
+  /**
+   * Remove middleware or a plugin registered with use(), by reference. In-flight requests are
+   * unaffected. The instance type is not narrowed: request options and capabilities the ejected
+   * plugin added stay in its type.
+   */
   eject<TRequires = unknown, TProvides = unknown, TOptions = unknown>(
-    middleware: FaxiosMiddleware<TOptions> | FaxiosPlugin<TRequires, TProvides, TOptions>
+    middleware: FaxiosMiddleware<TOptions> | FaxiosPluginArgument<TRequires, TProvides, TOptions>
   ): void {
     const index = this.#middleware.findIndex(entry => entry.ref === middleware);
     if (index === -1) return;

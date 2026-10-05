@@ -418,9 +418,29 @@ export type FaxiosMiddleware<TOptions = unknown, TCapabilities = unknown> = (
   next: FaxiosNext
 ) => Promise<FaxiosResponse>;
 
-/** Middleware bundled with the capabilities it provides to other plugins. */
-export interface FaxiosPlugin<TRequires = unknown, TProvides = unknown, TOptions = unknown> {
+/**
+ * The parts of a plugin that `use()` reads its type parameters from. Build plugins as
+ * `FaxiosPlugin`; this exists so `use()` can infer `TRequires`, `TProvides` and `TOptions`.
+ */
+export interface FaxiosPluginBase<TRequires = unknown, TProvides = unknown, TOptions = unknown> {
   name: string;
-  provides?: TProvides;
   middleware: FaxiosMiddleware<TOptions, TRequires & TProvides>;
+  /** Type-only marker that carries the type parameters for inference. Never set it. */
+  readonly "~plugin"?: {
+    readonly requires: TRequires;
+    readonly provides: TProvides;
+    readonly options: TOptions;
+  };
 }
+
+/**
+ * Middleware bundled with the capabilities it requires and provides. Declaring a capability in
+ * `TProvides` makes `provides` required, so a plugin can't claim a capability it never supplies.
+ */
+export type FaxiosPlugin<TRequires = unknown, TProvides = unknown, TOptions = unknown> =
+  FaxiosPluginBase<TRequires, TProvides, TOptions>
+  & ([keyof TProvides] extends [never] ? { provides?: TProvides; } : { provides: TProvides; });
+
+/** What `use()` and `eject()` accept as a plugin: the base plus an optional `provides`. */
+export type FaxiosPluginArgument<TRequires = unknown, TProvides = unknown, TOptions = unknown> =
+  FaxiosPluginBase<TRequires, TProvides, TOptions> & { provides?: TProvides; };

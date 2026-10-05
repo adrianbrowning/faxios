@@ -30,6 +30,16 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Examples:** An auth-header middleware; a retry loop that calls `next` again on `ERR_NETWORK`; a cache that returns a stored response without calling `next`; a plugin with `provides`.
 - **Notes:** Typed plugin request options and capability requirements (#90) and the built-in plugins (#91) extend this page later.
 
+### Typed `.use()` plugins
+
+- **Change:** `use()` returns the instance typed with the plugin's request options and capabilities; plugins can require capabilities other plugins provide.
+- **Source:** Issue #90 (part of #54); `PRE_RELEASE_CHANGELOG.md` Features entry "Typed `.use()` plugins".
+- **Status:** Pending.
+- **Docs targets:** The middleware page from the `.use()` middleware entry (sections "Writing a plugin" and "Adding typed request options"), the TypeScript section of `pages/advanced/api-reference.md`, and `pages/advanced/type-script.md`.
+- **Required content:** `FaxiosPlugin<TRequires, TProvides, TOptions>` and what each parameter does. Chain `use()` and keep the returned instance: the same object at runtime, but only the returned type knows the plugin's options. Options appear on every config-taking member, including `defaults`, `define()` and `route()`. A plugin installed before what it requires is a type error naming the missing capability, as is a provider with an incompatible shape. `create()` children start untyped; `eject()` doesn't narrow the type. Declaring a capability in `TProvides` makes `provides` required. Known limit: excess-property checks only run on object literals, so a config held in a variable can carry a plugin option without the plugin installed.
+- **Examples:** A `cache()` plugin with `CacheOptions`; `authBearer(getToken)` providing `auth`; `refreshOn401()` requiring `auth`, shown failing before `authBearer` and passing after it; the compiler message for the missing capability.
+- **Notes:** The built-in plugins (#91) are the natural examples once they exist.
+
 ### Interceptors removed
 
 - **Change:** `interceptors.request`/`interceptors.response`, their types and `transitional.legacyInterceptorReqResOrdering` are gone; `.use()` middleware replaces them.

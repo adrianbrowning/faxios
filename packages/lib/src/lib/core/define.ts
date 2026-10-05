@@ -20,9 +20,11 @@ export type BasePerCallConfig = Omit<FaxiosRequestConfig, StrippedFields>;
 export type PerCallConfig<
   PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined,
   P extends StandardSchemaV1 | undefined,
-  D extends StandardSchemaV1 | undefined
+  D extends StandardSchemaV1 | undefined,
+  TOpts = unknown
 > =
   BasePerCallConfig
+  & TOpts
   & (PP extends StandardSchemaV1 ? { pathParams: StandardSchemaV1.InferInput<PP>; } : unknown)
   & (P extends StandardSchemaV1 ? { params: StandardSchemaV1.InferInput<P>; } : unknown)
   & (D extends StandardSchemaV1 ? { data: StandardSchemaV1.InferInput<D>; } : unknown);
@@ -46,11 +48,12 @@ export type DefinedEndpoint<
   PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined,
   P extends StandardSchemaV1 | undefined,
   D extends StandardSchemaV1 | undefined,
-  R extends StandardSchemaV1 | undefined
+  R extends StandardSchemaV1 | undefined,
+  TOpts = unknown
 > =
   HasInputSchema<PP, P, D> extends true
-    ? (callConfig: PerCallConfig<PP, P, D>) => Promise<FaxiosResponse<R extends StandardSchemaV1 ? StandardSchemaV1.InferOutput<R> : unknown>>
-    : (callConfig?: PerCallConfig<PP, P, D>) => Promise<FaxiosResponse<R extends StandardSchemaV1 ? StandardSchemaV1.InferOutput<R> : unknown>>;
+    ? (callConfig: PerCallConfig<PP, P, D, TOpts>) => Promise<FaxiosResponse<R extends StandardSchemaV1 ? StandardSchemaV1.InferOutput<R> : unknown>>
+    : (callConfig?: PerCallConfig<PP, P, D, TOpts>) => Promise<FaxiosResponse<R extends StandardSchemaV1 ? StandardSchemaV1.InferOutput<R> : unknown>>;
 
 export interface FaxiosLike {
   request: (config: FaxiosRequestConfig) => Promise<FaxiosResponse<unknown>>;

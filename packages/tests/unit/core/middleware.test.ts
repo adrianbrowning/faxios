@@ -21,7 +21,7 @@ const sentHeader = (sent: Sent, name: string) => new Headers(sent.init?.headers)
 
 const passthrough: FaxiosMiddleware = async (ctx, next) => next(ctx);
 
-function plugin(name: string, provides: Record<string, unknown>, middleware: FaxiosMiddleware = passthrough): FaxiosPlugin<unknown, Record<string, unknown>> {
+function plugin<TProvides extends Record<string, unknown>>(name: string, provides: TProvides, middleware: FaxiosMiddleware = passthrough): FaxiosPlugin<unknown, TProvides> {
   return { name, provides, middleware };
 }
 
@@ -232,8 +232,11 @@ describe("core::middleware", () => {
       assert.strictEqual(seen, auth);
     });
 
+    // These register without chaining, so `api` keeps its untyped view and the calls reach the
+    // runtime guard; the chained, typed form of the same mistakes is a type error (middlewareTypes.test.ts).
     it("rejects a second plugin that provides the same capability", () => {
-      const api = faxios.create().use(plugin("first", { auth: 1 }));
+      const api = faxios.create();
+      api.use(plugin("first", { auth: 1 }));
 
       assert.throws(
         () => api.use(plugin("second", { auth: 2 })),
@@ -243,7 +246,8 @@ describe("core::middleware", () => {
 
     it("frees a plugin's capabilities when it is ejected", () => {
       const first = plugin("first", { auth: 1 });
-      const api = faxios.create().use(first);
+      const api = faxios.create();
+      api.use(first);
 
       api.eject(first);
 
