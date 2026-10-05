@@ -7,9 +7,6 @@ import type { Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { describe, it, beforeEach, afterEach } from "vitest";
 import faxios from "#src/index.ts";
-import type { FaxiosResponse } from "#src/lib/types.js";
-
-type AnyInterceptorManager = { use: (fn: (v: unknown) => unknown) => number; };
 
 describe("regression", () => {
   describe("issues", () => {
@@ -41,13 +38,9 @@ describe("regression", () => {
           })
           .listen(0);
 
-        const request = faxios.create();
-
-        (request.interceptors.response as AnyInterceptorManager).use(res => {
-          assert.deepStrictEqual(
-            (res as FaxiosResponse).headers["set-cookie"],
-            [ cookie1, cookie2 ]
-          );
+        const request = faxios.create().use(async (ctx, next) => {
+          const res = await next(ctx);
+          assert.deepStrictEqual(res.headers["set-cookie"], [ cookie1, cookie2 ]);
           return res;
         });
 

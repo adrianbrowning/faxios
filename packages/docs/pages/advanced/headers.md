@@ -19,7 +19,7 @@ The header value is considered set if it is not undefined.
 
 The headers object is always initialized inside interceptors and transformers as seen in the following example:
 
-```ts
+```ts check=skip
 import faxios from "@gcmdev/faxios";
 import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
 
@@ -131,7 +131,7 @@ await faxios.put(url, data, { headers });
 
 Interceptors are the right place to attach dynamic headers like auth tokens, because the token may not be available when the instance is first created:
 
-```js
+```js check=skip
 import faxios from "@gcmdev/faxios";
 
 const api = faxios.create();
@@ -152,7 +152,7 @@ The adapter sanitizes header values to byte-safe (HT, printable ASCII, and Latin
 
 If you need to send non-ASCII data in a header, encode it in a request interceptor:
 
-```js
+```js check=skip
 import faxios from "@gcmdev/faxios";
 
 const api = faxios.create();

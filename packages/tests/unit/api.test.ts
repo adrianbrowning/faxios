@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
-import faxios, { create } from "#src/index.ts";
+import faxios, { create, FaxiosError } from "#src/index.ts";
 
 describe("static api", () => {
   it("should have request method helpers", () => {
@@ -34,9 +34,24 @@ describe("static api", () => {
     assert.strictEqual(typeof faxios.defaults.headers, "object");
   });
 
-  it("should have interceptors", () => {
-    assert.strictEqual(typeof faxios.interceptors.request, "object");
-    assert.strictEqual(typeof faxios.interceptors.response, "object");
+  it("should have use/eject", () => {
+    assert.strictEqual(typeof faxios.use, "function");
+    assert.strictEqual(typeof faxios.eject, "function");
+  });
+
+  it("no longer has interceptors", () => {
+    // @ts-expect-error -- interceptors were removed in favour of use()
+    const removed: unknown = faxios.interceptors;
+    assert.strictEqual(removed, undefined);
+  });
+
+  it("rejects the removed transitional.legacyInterceptorReqResOrdering option", async () => {
+    const fetch = async () => new Response(null, { status: 200 });
+    await assert.rejects(
+      // @ts-expect-error -- legacyInterceptorReqResOrdering was removed with interceptors
+      faxios.get("http://localhost/", { transitional: { legacyInterceptorReqResOrdering: true }, env: { fetch } }),
+      (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION
+    );
   });
 
   it("should have all/spread helpers", () => {
@@ -175,9 +190,9 @@ describe("instance api", () => {
     assert.strictEqual(typeof instance.query, "function");
   });
 
-  it("should have interceptors", () => {
-    assert.strictEqual(typeof instance.interceptors.request, "object");
-    assert.strictEqual(typeof instance.interceptors.response, "object");
+  it("should have use/eject", () => {
+    assert.strictEqual(typeof instance.use, "function");
+    assert.strictEqual(typeof instance.eject, "function");
   });
 
   it("should pass symbol keys to transformRequest through faxios.create", async () => {

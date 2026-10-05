@@ -127,31 +127,6 @@ describe("core::middleware", () => {
     assert.strictEqual(caught, boom);
   });
 
-  describe("interim nesting with interceptors", () => {
-    it("runs request interceptors, dispatch and response interceptors inside the innermost next()", async () => {
-      const log: Array<string> = [];
-      const api = faxios.create({ env: { fetch: jsonFetch() } });
-      api.interceptors.request.use(config => {
-        log.push(`request interceptor sees ${String(config.headers.get("X-From-Middleware"))}`);
-        return config;
-      });
-      api.interceptors.response.use(response => {
-        log.push("response interceptor");
-        return { ...response, data: "from interceptor" };
-      });
-      api.use(async (ctx, next) => {
-        ctx.config.headers.set("X-From-Middleware", "yes");
-        const response = await next(ctx);
-        log.push(`middleware after sees ${String(response.data)}`);
-        return response;
-      });
-
-      await api.get(URL);
-
-      assert.deepStrictEqual(log, [ "request interceptor sees yes", "response interceptor", "middleware after sees from interceptor" ]);
-    });
-  });
-
   describe("eject()", () => {
     it("stops running ejected middleware and plugins", async () => {
       const log: Array<string> = [];

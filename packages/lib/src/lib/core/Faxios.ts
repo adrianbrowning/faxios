@@ -1,6 +1,5 @@
 "use strict";
 
-import transitionalDefaults from "../defaults/transitional.js";
 import buildURL from "../helpers/buildURL.js";
 import cloneConfig, { DANGEROUS_KEYS } from "../helpers/cloneConfig.js";
 import validator from "../helpers/validator.js";
@@ -27,7 +26,6 @@ import type { DefineConfig, DefinedEndpoint } from "./define.js";
 import dispatchRequest from "./dispatchRequest.js";
 import FaxiosError from "./FaxiosError.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
-import InterceptorManager from "./InterceptorManager.js";
 import mergeConfig from "./mergeConfig.js";
 import type { RouteConfig, RouteBuilder } from "./route.js";
 import { createRouteBuilder } from "./route.js";
@@ -62,13 +60,6 @@ const METHOD_HEADER_GROUPS = Object.keys({
   unlink: true,
   query: true,
 } satisfies Record<keyof HeadersDefaults, true>) as Array<keyof HeadersDefaults>;
-
-type RequestInterceptorEntry = {
-  runWhen?: ((c: InternalFaxiosRequestConfig) => boolean) | null;
-  synchronous?: boolean;
-  fulfilled?: (...args: Array<unknown>) => unknown;
-  rejected?: (...args: Array<unknown>) => unknown;
-};
 
 function patchErrorStack(err: Error): void {
   let dummy: { stack?: string; } = {};
@@ -144,67 +135,6 @@ function resolveAllowAbsoluteUrls(
   }
 }
 
-function buildRequestInterceptorChain(
-  interceptors: { forEach: (fn: (h: RequestInterceptorEntry) => void) => void; },
-  config: FaxiosRequestConfig
-): {
-  chain: Array<((...args: Array<unknown>) => unknown) | undefined>;
-  synchronous: boolean;
-} {
-  const chain: Array<((...args: Array<unknown>) => unknown) | undefined> = [];
-  let synchronous = true;
-
-  interceptors.forEach((interceptor: RequestInterceptorEntry) => {
-    if (
-      typeof interceptor.runWhen === "function" &&
-      interceptor.runWhen(config as InternalFaxiosRequestConfig) === false
-    ) {
-      return;
-    }
-
-    synchronous = synchronous && !!interceptor.synchronous;
-
-    const transitional = config.transitional || transitionalDefaults;
-    const legacyInterceptorReqResOrdering =
-      transitional.legacyInterceptorReqResOrdering;
-
-    if (legacyInterceptorReqResOrdering) {
-      chain.unshift(interceptor.fulfilled, interceptor.rejected);
-    }
-    else {
-      chain.push(interceptor.fulfilled, interceptor.rejected);
-    }
-  });
-
-  return { chain, synchronous };
-}
-
-function runSyncInterceptors(
-  interceptorChain: Array<((...args: Array<unknown>) => unknown) | undefined>,
-  config: FaxiosRequestConfig,
-  context: unknown
-): FaxiosRequestConfig {
-  let newConfig = config;
-  let i = 0;
-  const len = interceptorChain.length;
-
-  while (i < len) {
-    const onFulfilled = interceptorChain[i++];
-    const onRejected = interceptorChain[i++];
-    try {
-      newConfig = onFulfilled
-        ? (onFulfilled(newConfig) as FaxiosRequestConfig)
-        : newConfig;
-    }
-    catch (error) {
-      if (onRejected) onRejected.call(context, error);
-      break;
-    }
-  }
-
-  return newConfig;
-}
-
 type MiddlewareEntry = {
   // The value passed to use(), kept only for eject()'s identity check.
   ref: unknown;
@@ -236,26 +166,6 @@ function copyForDispatch(config: InternalFaxiosRequestConfig): InternalFaxiosReq
  */
 class Faxios {
   defaults: FaxiosRequestConfig;
-  interceptors: {
-    request: {
-      forEach: (
-        fn: (h: {
-          runWhen?: ((c: InternalFaxiosRequestConfig) => boolean) | null;
-          synchronous?: boolean;
-          fulfilled?: (...args: Array<unknown>) => unknown;
-          rejected?: (...args: Array<unknown>) => unknown;
-        }) => void
-      ) => void;
-    };
-    response: {
-      forEach: (
-        fn: (h: {
-          fulfilled?: (...args: Array<unknown>) => unknown;
-          rejected?: (...args: Array<unknown>) => unknown;
-        }) => void
-      ) => void;
-    };
-  };
   #middleware: ReadonlyArray<MiddlewareEntry> = [];
   // Middleware and capabilities are replaced, never mutated, on use()/eject(): a request keeps the
   // snapshot it started with, and composes nothing per call.
@@ -264,10 +174,6 @@ class Faxios {
 
   constructor(instanceConfig?: FaxiosRequestConfig) {
     this.defaults = instanceConfig || {};
-    this.interceptors = {
-      request: new InterceptorManager(),
-      response: new InterceptorManager(),
-    };
   }
 
   /**
@@ -305,7 +211,7 @@ class Faxios {
     this.#middleware = entries;
     this.#composed = entries.length === 0
       ? null
-      : composeMiddleware(entries, ctx => this.#dispatch(copyForDispatch(ctx.config)) as Promise<FaxiosResponse>);
+      : composeMiddleware(entries, ctx => dispatchRequest(copyForDispatch(ctx.config)));
   }
 
   #addCapabilities(pluginName: string, provides: unknown): Array<string> {
@@ -375,9 +281,6 @@ class Faxios {
           silentJSONParsing: validators.transitional!(validators.boolean),
           forcedJSONParsing: validators.transitional!(validators.boolean),
           clarifyTimeoutError: validators.transitional!(validators.boolean),
-          legacyInterceptorReqResOrdering: validators.transitional!(
-            validators.boolean
-          ),
           advertiseZstdAcceptEncoding: validators.transitional!(
             validators.boolean
           ),
@@ -425,7 +328,7 @@ class Faxios {
     );
 
     const composed = this.#composed;
-    if (!composed) return this.#dispatch(config);
+    if (!composed) return dispatchRequest(config as InternalFaxiosRequestConfig);
 
     const ctx: FaxiosContext = {
       config: config as InternalFaxiosRequestConfig,
@@ -433,67 +336,6 @@ class Faxios {
       capabilities: this.#capabilities,
     };
     return composed(ctx);
-  }
-
-  // Until interceptors are removed (#89), they run inside the innermost next(): middleware wraps
-  // request interceptors, dispatch and response interceptors as one unit.
-  #dispatch(config: FaxiosRequestConfig): Promise<unknown> {
-    const {
-      chain: requestInterceptorChain,
-      synchronous: synchronousRequestInterceptors,
-    } = buildRequestInterceptorChain(this.interceptors.request, config);
-
-    const responseInterceptorChain: Array<
-      ((...args: Array<unknown>) => unknown) | undefined
-    > = [];
-    this.interceptors.response.forEach(
-      function pushResponseInterceptors(interceptor: {
-        fulfilled?: (...args: Array<unknown>) => unknown;
-        rejected?: (...args: Array<unknown>) => unknown;
-      }) {
-        responseInterceptorChain.push(
-          interceptor.fulfilled,
-          interceptor.rejected
-        );
-      }
-    );
-
-    let promise;
-    let i = 0;
-    let len;
-
-    if (!synchronousRequestInterceptors) {
-      const chain: Array<((...args: Array<unknown>) => unknown) | undefined> = [
-        dispatchRequest.bind(this) as (...args: Array<unknown>) => unknown,
-        undefined,
-      ];
-      chain.unshift(...requestInterceptorChain);
-      chain.push(...responseInterceptorChain);
-      len = chain.length;
-
-      promise = Promise.resolve(config) as Promise<unknown>;
-
-      while (i < len) {
-        promise = promise.then(chain[i++], chain[i++]);
-      }
-
-      return promise;
-    }
-
-    const newConfig = runSyncInterceptors(requestInterceptorChain, config, this);
-
-    promise = dispatchRequest.call(this, newConfig as InternalFaxiosRequestConfig) as Promise<unknown>;
-
-    len = responseInterceptorChain.length;
-
-    while (i < len) {
-      promise = promise.then(
-        responseInterceptorChain[i++],
-        responseInterceptorChain[i++]
-      );
-    }
-
-    return promise;
   }
    
   get<O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;

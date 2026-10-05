@@ -1,6 +1,6 @@
 # GitHub Copilot Instructions
 
-The canonical contributor guide for this repo is [`AGENTS.md`](../AGENTS.md). It covers setup, commands, package shape, architecture boundaries, naming, error handling, interceptor order, the request lifecycle, cancellation, common pitfalls, tests, and security-sensitive code.
+The canonical contributor guide for this repo is [`AGENTS.md`](../AGENTS.md). It covers setup, commands, package shape, architecture boundaries, naming, error handling, middleware order, the request lifecycle, cancellation, common pitfalls, tests, and security-sensitive code.
 
 The rules below are a Copilot-facing subset of the load-bearing safety guarantees from `AGENTS.md`. If they ever drift, `AGENTS.md` is authoritative — update both.
 
@@ -17,7 +17,7 @@ The rules below are a Copilot-facing subset of the load-bearing safety guarantee
 
 ## Architecture in one screen
 
-- `lib/core/` — domain logic: `faxios`, `FaxiosError`, `FaxiosHeaders`, `InterceptorManager`, config merge, request dispatch.
+- `lib/core/` — domain logic: `faxios`, `FaxiosError`, `FaxiosHeaders`, `.use()` middleware, config merge, request dispatch.
 - `lib/adapters/` — I/O: `fetch.ts` is the only transport, called unconditionally. No adapter selection, no `config.adapter`.
 - `lib/platform/` — consolidated into `lib/platform.ts`; selects browser/web-standard implementation in all runtimes.
 - `lib/helpers/` — generic, reusable utilities; no faxios-specific lifecycle logic here.
@@ -29,14 +29,14 @@ The rules below are a Copilot-facing subset of the load-bearing safety guarantee
 - Wrap third-party errors with `FaxiosError.from(error, code, config, request, response)`.
 - Use a code from `packages/lib/src/lib/core/FaxiosError.ts` (`ERR_NETWORK`, `ETIMEDOUT`, `ECONNABORTED`, `ERR_CANCELED`, `ERR_BAD_REQUEST`, `ERR_BAD_RESPONSE`, `ERR_FR_TOO_MANY_REDIRECTS`, `ERR_FORM_DATA_DEPTH_EXCEEDED`, `ERR_INVALID_URL`, `ERR_BAD_OPTION`, `ERR_BAD_OPTION_VALUE`, `ERR_NOT_SUPPORT`, `ERR_DEPRECATED`, `ECONNREFUSED`, `ERR_BAD_RESPONSE_SCHEMA`, `ERR_BAD_REQUEST_SCHEMA`, `ERR_BAD_PARAMS_SCHEMA`, `ERR_BAD_PATH_PARAMS_SCHEMA`).
 
-## Interceptor order
+## Middleware order
 
-- Request interceptors run **LIFO** (last-registered-first); response interceptors run **FIFO**. Both support `synchronous: true` and `runWhen(config)`.
+- `.use()` middleware runs in registration order before dispatch and in reverse order after it. Each `next(ctx)` dispatches its own copy of `ctx.config`; `use()`/`eject()` never change a request already in flight.
 
 ## Naming and style
 
 - PascalCase classes (`faxios`, `FaxiosHeaders`), camelCase functions (`buildURL`, `mergeConfig`), UPPER_SNAKE_CASE error codes.
-- Use `#` private field syntax in TypeScript class files (e.g. `#handlers`, `#idCounter`); use `Symbol`-keyed slots in plain `.js` files where `#` is unavailable. Never use underscore-prefixed names for either.
+- Use `#` private field syntax in TypeScript class files (e.g. `#middleware`, `#capabilities`); use `Symbol`-keyed slots in plain `.js` files where `#` is unavailable. Never use underscore-prefixed names for either.
 - Use native `Function.prototype.bind` — `lib/helpers/bind.ts` has been deleted.
 - `'use strict';` appears at the top of files that already use it; match the surrounding file rather than blanket-adding it.
 

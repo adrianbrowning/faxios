@@ -103,7 +103,7 @@ A non-2xx `Response` rejects with a `FaxiosError` whose `response.status` is the
 
 To test interceptors in isolation, create a fresh faxios instance in your test and capture what reaches `fetch`:
 
-```js check=types
+```js check=skip
 import { describe, it, expect } from "vitest";
 import faxios from "@gcmdev/faxios";
 

@@ -54,36 +54,31 @@ describe("instance compat (dist export only)", () => {
     expect(new URL(getCalls()[0].input.url).pathname).toBe("/status");
   });
 
-  it("applies instance request interceptors", async () => {
+  it("applies instance middleware before dispatch", async () => {
     const { mockFetch, getCalls } = createFetchMock(null);
     const env = { fetch: mockFetch, Request, Response };
-    const client = faxios.create({ baseURL: "http://example.com" });
-
-    client.interceptors.request.use(config => {
-      config.headers = config.headers || {};
-      config.headers["X-From-Interceptor"] = "yes";
-      return config;
+    const client = faxios.create({ baseURL: "http://example.com" }).use(async (ctx, next) => {
+      ctx.config.headers.set("X-From-Middleware", "yes");
+      return next(ctx);
     });
 
-    await client.get("/intercepted", { env });
+    await client.get("/middleware", { env });
 
     expect(getCalls()).toHaveLength(1);
-    expect(new Headers(getCalls()[0].init.headers).get("x-from-interceptor")).toBe("yes");
+    expect(new Headers(getCalls()[0].init.headers).get("x-from-middleware")).toBe("yes");
   });
 
-  it("applies instance response interceptors", async () => {
+  it("applies instance middleware after dispatch", async () => {
     const { mockFetch } = createFetchMock(JSON.stringify({ name: "faxios" }));
     const env = { fetch: mockFetch, Request, Response };
-    const client = faxios.create({ baseURL: "http://example.com" });
-
-    client.interceptors.response.use(response => {
-      response.data = Object.assign({}, response.data, { intercepted: true });
-      return response;
+    const client = faxios.create({ baseURL: "http://example.com" }).use(async (ctx, next) => {
+      const response = await next(ctx);
+      return { ...response, data: { ...response.data, wrapped: true } };
     });
 
-    const response = await client.get("/response-interceptor", { env });
+    const response = await client.get("/middleware-response", { env });
 
-    expect(response.data).toEqual({ name: "faxios", intercepted: true });
+    expect(response.data).toEqual({ name: "faxios", wrapped: true });
   });
 
   it("builds URLs with getUri from instance defaults and request params", () => {

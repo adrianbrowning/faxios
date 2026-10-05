@@ -4,5 +4,5 @@ The modules found in `core/` should be modules that are specific to the domain l
 
 - Dispatching requests
   - Requests sent via `adapters/` (see lib/adapters/README.md)
-- Managing interceptors
+- Running `.use()` middleware
 - Handling config

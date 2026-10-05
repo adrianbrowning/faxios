@@ -13,7 +13,7 @@ import formDataToJSON from "./helpers/formDataToJSON.js";
 import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
-import type { CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosInterceptorOptions, FaxiosInterceptorRejected, FaxiosMiddleware, FaxiosPlugin, FaxiosRequestConfig, HeadersDefaults, InternalFaxiosRequestConfig, FaxiosResponse, SchemaConfig } from "./types.js";
+import type { CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosMiddleware, FaxiosPlugin, FaxiosRequestConfig, HeadersDefaults, FaxiosResponse, SchemaConfig } from "./types.js";
 import utils from "./utils.js";
 
 /**
@@ -110,26 +110,6 @@ export type FaxiosInstance = Pick<Faxios, "define" | "route" | "eject"> & {
   // `headers` applies to every method.
   defaults: Omit<FaxiosDefaults, "headers"> & {
     headers: HeadersDefaults & { [key: string]: FaxiosHeaderValue | undefined; };
-  };
-  interceptors: {
-    request: {
-      use: (
-        fulfilled: (config: InternalFaxiosRequestConfig) => InternalFaxiosRequestConfig | Promise<InternalFaxiosRequestConfig>,
-        rejected?: FaxiosInterceptorRejected | null,
-        options?: FaxiosInterceptorOptions
-      ) => number;
-      eject: (id: number) => void;
-      clear: () => void;
-    };
-    response: {
-      use: (
-        fulfilled: (response: FaxiosResponse) => FaxiosResponse | Promise<FaxiosResponse> | unknown,
-        rejected?: FaxiosInterceptorRejected | null,
-        options?: FaxiosInterceptorOptions
-      ) => number;
-      eject: (id: number) => void;
-      clear: () => void;
-    };
   };
   getUri: (config?: FaxiosRequestConfig) => string;
   create: (instanceConfig?: CreateFaxiosDefaults) => FaxiosInstance;

@@ -48,7 +48,7 @@ describe("docs examples", () => {
   for (const block of blocks.filter(entry => entry.run)) {
     it(block.source, async () => {
       status = block.status;
-      // A fresh module graph per block, so defaults and interceptors one example sets don't leak into the next.
+      // A fresh module graph per block, so defaults and middleware one example sets don't leak into the next.
       vi.resetModules();
       await import(pathToFileURL(join(outDir, block.file)).href);
     });

@@ -380,68 +380,21 @@ faxios.create({
   },
 });
 
-// Interceptors
+// Middleware
 
-const requestInterceptorId: number = faxios.interceptors.request.use(
-  async config => {
-    await faxios.get("/foo", {
-      headers: config.headers,
-    });
-    return config;
-  },
-  async (error: any) => Promise.reject(error),
-  { synchronous: false }
-);
-
-faxios.interceptors.request.eject(requestInterceptorId);
-
-faxios.interceptors.request.use(
-  async config => Promise.resolve(config),
-  async (error: any) => Promise.reject(error)
-);
-
-faxios.interceptors.request.use(config => config);
-faxios.interceptors.request.use(async config => Promise.resolve(config));
-
-const responseInterceptorId: number = faxios.interceptors.response.use(
-  (response: FaxiosResponse) => response,
-  async (error: any) => Promise.reject(error)
-);
-
-faxios.interceptors.response.eject(responseInterceptorId);
-
-faxios.interceptors.response.use(
-  async (response: FaxiosResponse) => Promise.resolve(response),
-  async (error: any) => Promise.reject(error)
-);
-
-faxios.interceptors.request.use(req => {
+const addHeaders = async (ctx, next) => {
   // https://github.com/faxios/faxios/issues/5415
-  req.headers.set("foo", "bar");
-  req.headers["Content-Type"] = 123;
-  return req;
-});
+  ctx.config.headers.set("foo", "bar");
+  ctx.config.headers["Content-Type"] = 123;
+  const response: FaxiosResponse = await next(ctx);
+  return response;
+};
+faxios.use(addHeaders);
+faxios.eject(addHeaders);
 
-const voidRequestInterceptorId = faxios.interceptors.request.use(
-  // @ts-expect-error -- Must return an FaxiosRequestConfig (or throw)
-  _response => {},
-  async (error: any) => Promise.reject(error)
-);
-const voidResponseInterceptorId = faxios.interceptors.response.use(
-  // @ts-expect-error -- Must return an FaxiosResponse (or throw)
-  _response => {},
-  async (error: any) => Promise.reject(error)
-);
-faxios.interceptors.request.eject(voidRequestInterceptorId);
-faxios.interceptors.response.eject(voidResponseInterceptorId);
-
-faxios.interceptors.response.use((response: FaxiosResponse) => response);
-faxios.interceptors.response.use(async (response: FaxiosResponse) =>
-  Promise.resolve(response)
-);
-
-faxios.interceptors.request.clear();
-faxios.interceptors.response.clear();
+const noopPlugin = { name: "noop", provides: { noop: true }, middleware: async (ctx, next) => next(ctx) };
+faxios.use(noopPlugin).use(async (ctx, next) => next(ctx));
+faxios.eject(noopPlugin);
 
 // faxios.all
 
@@ -641,20 +594,20 @@ for (const [ header, value ] of headers) {
 // FaxiosHeaders instance assignment
 
 {
-  const requestInterceptorId: number = faxios.interceptors.request.use(
-    async config => {
-      config.headers.Accept = "foo";
-      config.headers.setAccept("foo");
-      config.headers = new FaxiosHeaders({ x: 1 });
-      config.headers.foo = "1";
-      config.headers.set("bar", "2");
-      config.headers.set({ myHeader: "myValue" });
-      config.headers = new FaxiosHeaders({ myHeader: "myValue" });
-      config.headers = { ...config.headers };
-      return config;
-    },
-    async (error: any) => Promise.reject(error)
-  );
+  const assignHeaders = async (ctx, next) => {
+    const { config } = ctx;
+    config.headers.Accept = "foo";
+    config.headers.setAccept("foo");
+    config.headers = new FaxiosHeaders({ x: 1 });
+    config.headers.foo = "1";
+    config.headers.set("bar", "2");
+    config.headers.set({ myHeader: "myValue" });
+    config.headers = new FaxiosHeaders({ myHeader: "myValue" });
+    config.headers = { ...config.headers };
+    return next(ctx);
+  };
+  faxios.use(assignHeaders);
+  faxios.eject(assignHeaders);
 }
 
 {

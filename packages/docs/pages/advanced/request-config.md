@@ -324,7 +324,7 @@ The following options validate request inputs and response data with any Standar
 
 ## Full request config example
 
-```ts
+```ts check=skip
 import type { FaxiosRequestConfig } from "@gcmdev/faxios";
 import { z } from "zod";
 

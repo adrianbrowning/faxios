@@ -27,41 +27,30 @@ const env = (fetch: typeof globalThis.fetch) => ({
   Response,
 });
 
-describe("interceptors", () => {
-  test("request interceptor header is forwarded to fetch", async () => {
+describe("middleware", () => {
+  test("middleware header is forwarded to fetch", async () => {
     const { fetch, getCalls } = createFetchCapture();
-    const client = faxios.create({
-      adapter: "fetch",
-      env: env(fetch),
+    const client = faxios.create({ env: env(fetch) }).use(async (ctx, next) => {
+      ctx.config.headers.set("X-Added", "yes");
+      return next(ctx);
     });
 
-    client.interceptors.request.use((config: any) => {
-      config.headers = config.headers || {};
-      config.headers["X-Added"] = "yes";
-      return config;
-    });
-
-    await client.get("https://example.com/interceptor-request");
+    await client.get("https://example.com/middleware-request");
 
     expect(getCalls()).toHaveLength(1);
     expect(getCalls()[0].headers.get("x-added")).toBe("yes");
   });
 
-  test("response interceptor transform is reflected in resolved value", async () => {
+  test("middleware change after next() is reflected in resolved value", async () => {
     const { fetch } = createFetchCapture();
-    const client = faxios.create({
-      adapter: "fetch",
-      env: env(fetch),
+    const client = faxios.create({ env: env(fetch) }).use(async (ctx, next) => {
+      const response = await next(ctx);
+      const { data } = response;
+      const value = data && typeof data === "object" && "value" in data ? String(data.value) : "";
+      return { ...response, data: { value: value.toUpperCase() } };
     });
 
-    client.interceptors.response.use((response: any) => {
-      response.data.value = String(response.data.value).toUpperCase();
-      return response;
-    });
-
-    const response = await client.get(
-      "https://example.com/interceptor-response"
-    );
+    const response = await client.get("https://example.com/middleware-response");
 
     expect(response.data).toEqual({ value: "OK" });
   });

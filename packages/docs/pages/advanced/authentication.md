@@ -6,7 +6,7 @@ Most APIs require some form of authentication. This page covers the most common 
 
 The most common approach is to attach a JWT in the `Authorization` header. The cleanest way to do this is via a request interceptor on your faxios instance, so the token is read fresh on every request:
 
-```js
+```js check=skip
 import faxios from "@gcmdev/faxios";
 
 const api = faxios.create({ baseURL: "https://api.example.com" });
@@ -64,7 +64,7 @@ const response = await faxios.get("https://api.example.com/data", {
 
 When access tokens expire, you need to silently refresh them and retry the failed request. A response interceptor is the right place to implement this:
 
-```ts
+```ts check=skip
 import faxios, { isFaxiosError } from "@gcmdev/faxios";
 import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
 

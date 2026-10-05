@@ -1307,17 +1307,16 @@ describe("Prototype Pollution Protection", () => {
   });
 
   describe("clone-swap regression", () => {
-    it("interceptor config mutation reflected exactly once in outbound fetch args", async () => {
+    it("middleware config mutation reflected exactly once in outbound fetch args", async () => {
       const mockFetch = vi.fn().mockResolvedValue(
         new Response("{}", { status: 200, headers: { "Content-Type": "application/json" } })
       );
       const origFetch = globalThis.fetch;
       globalThis.fetch = mockFetch;
 
-      const instance = faxios.create({ baseURL: "http://test.local" });
-      instance.interceptors.request.use(cfg => {
-        (cfg as any).headers["X-Custom"] = "once";
-        return cfg;
+      const instance = faxios.create({ baseURL: "http://test.local" }).use(async (ctx, next) => {
+        ctx.config.headers.set("X-Custom", "once");
+        return next(ctx);
       });
 
       try {

@@ -33,15 +33,14 @@ describe("responseSchema integration", () => {
     assert.deepStrictEqual(res.data, { ok: true });
   });
 
-  it("response interceptors receive validated data", async () => {
+  it("middleware receives validated data from next()", async () => {
     const schema = makeSchema(v => {
       const parsed = v as { raw: string; };
       return { value: { transformed: parsed.raw.toUpperCase() } };
     });
-    const instance = faxios.create({ responseSchema: schema });
-
     const interceptedData: Array<unknown> = [];
-    instance.interceptors.response.use(response => {
+    const instance = faxios.create({ responseSchema: schema }).use(async (ctx, next) => {
+      const response = await next(ctx);
       interceptedData.push(response.data);
       return response;
     });
