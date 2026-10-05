@@ -1,4 +1,5 @@
 import assert from "node:assert";
+import { getEventListeners } from "node:events";
 import { describe, expectTypeOf, it } from "vitest";
 import faxios, { CanceledError, FaxiosError, FaxiosHeaders } from "#src/index.js";
 import type { FaxiosInstance, FaxiosMiddleware, FaxiosPlugin, FaxiosResponse } from "#src/index.js";
@@ -396,6 +397,78 @@ describe("core::middleware", () => {
       controller.abort();
 
       await assert.rejects(request, (err: unknown) => err instanceof CanceledError);
+    });
+
+    it("rejects as soon as the caller aborts, even while a middleware never resumes", async () => {
+      const sent: Array<Sent> = [];
+      const controller = new AbortController();
+      const api = faxios.create({ env: { fetch: jsonFetch(sent) } }).use(async () => new Promise<never>(() => undefined));
+
+      const request = api.get(URL, { signal: controller.signal });
+      controller.abort();
+
+      await assert.rejects(request, (err: unknown) => err instanceof CanceledError);
+      assert.strictEqual(sent.length, 0);
+    });
+
+    it("does not let a middleware resolve the request after the caller aborted", async () => {
+      const controller = new AbortController();
+      const { promise: gate, resolve: open } = Promise.withResolvers<void>();
+      const cached = { data: "cached" } as unknown as FaxiosResponse;
+      const api = faxios.create({ env: { fetch: jsonFetch() } }).use(async () => {
+        await gate;
+        return cached;
+      });
+
+      const request = api.get(URL, { signal: controller.signal });
+      controller.abort();
+      open();
+
+      await assert.rejects(request, (err: unknown) => err instanceof CanceledError);
+    });
+
+    it("leaves no abort listener on the caller's signal once the request settles", async () => {
+      const controller = new AbortController();
+      const api = faxios.create({ env: { fetch: jsonFetch() } }).use(async (ctx, next) => next(ctx));
+
+      await api.get(URL, { signal: controller.signal });
+
+      assert.strictEqual(getEventListeners(controller.signal, "abort").length, 0);
+    });
+
+    it("runs no middleware for a request that is already aborted", async () => {
+      const controller = new AbortController();
+      controller.abort();
+      let ran = false;
+      const api = faxios.create({ env: { fetch: jsonFetch() } }).use(async (ctx, next) => {
+        ran = true;
+        return next(ctx);
+      });
+
+      await assert.rejects(api.get(URL, { signal: controller.signal }), (err: unknown) => err instanceof CanceledError);
+      assert.strictEqual(ran, false);
+    });
+
+    it("leaves no abort listener behind when the abort wins against a stuck middleware", async () => {
+      const controller = new AbortController();
+      const api = faxios.create({ env: { fetch: jsonFetch() } }).use(async () => new Promise<never>(() => undefined));
+
+      const request = api.get(URL, { signal: controller.signal });
+      controller.abort();
+      await assert.rejects(request, (err: unknown) => err instanceof CanceledError);
+
+      assert.strictEqual(getEventListeners(controller.signal, "abort").length, 0);
+    });
+
+    it("settles when a middleware aborts the signal itself before it starts waiting", async () => {
+      const controller = new AbortController();
+      const api = faxios.create({ env: { fetch: jsonFetch() } }).use(async () => {
+        controller.abort();
+        return new Promise<never>(() => undefined);
+      });
+
+      await assert.rejects(api.get(URL, { signal: controller.signal }), (err: unknown) => err instanceof CanceledError);
+      assert.strictEqual(getEventListeners(controller.signal, "abort").length, 0);
     });
   });
 });

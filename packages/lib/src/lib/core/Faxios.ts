@@ -1,5 +1,6 @@
 "use strict";
 
+import CanceledError from "../cancel/CanceledError.js";
 import buildURL from "../helpers/buildURL.js";
 import cloneConfig, { DANGEROUS_KEYS } from "../helpers/cloneConfig.js";
 import validator from "../helpers/validator.js";
@@ -13,6 +14,7 @@ import type {
   FaxiosRequestConfig,
   FaxiosRequestHeaders,
   FaxiosResponse,
+  GenericAbortSignal,
   HeadersDefaults,
   InternalFaxiosRequestConfig,
   Method,
@@ -155,6 +157,38 @@ function copyForDispatch(config: InternalFaxiosRequestConfig): InternalFaxiosReq
   const copy = cloneConfig(config);
   copy.headers = new FaxiosHeaders(config.headers) as unknown as FaxiosRequestHeaders;
   return copy;
+}
+
+// Middleware is caller code that may await anything, so the caller's abort settles the request
+// right away instead of waiting for it. Dispatch still checks the signal before the adapter call,
+// so nothing is sent after an abort either way. An already-aborted request runs no middleware.
+function settleOnAbort(
+  run: () => Promise<FaxiosResponse>,
+  signal: AbortSignal | GenericAbortSignal,
+  config: InternalFaxiosRequestConfig
+): Promise<FaxiosResponse> {
+  if (signal.aborted) return Promise.reject(new CanceledError(null, config));
+  const { addEventListener: add, removeEventListener: remove } = signal;
+  if (typeof add !== "function") return run();
+  return new Promise((resolve, reject) => {
+    const stop = () => remove?.call(signal, "abort", onAbort);
+    function onAbort() {
+      stop();
+      reject(new CanceledError(null, config));
+    }
+    // Listen before running: middleware may abort the signal before its first await.
+    add.call(signal, "abort", onAbort);
+    // The executor calls run() right away and turns a synchronous throw into a rejection, which
+    // Promise.resolve(run()) wouldn't, and .then(run) would delay dispatch by a tick.
+    // eslint-disable-next-line sonarjs/prefer-promise-shorthand -- see above
+    const pending = new Promise<FaxiosResponse>((_resolve) => {
+      _resolve(run());
+    });
+    // Once the abort has settled the request, this result has nowhere to go; the handlers below
+    // still consume it, so it never becomes an unhandled rejection.
+    pending.finally(stop).then(resolve)
+      .catch(reject);
+  });
 }
 
 /**
@@ -344,7 +378,8 @@ class Faxios {
       state: Object.create(null),
       capabilities: this.#capabilities,
     };
-    return composed(ctx);
+    const signal = utils.hasOwnProp(config, "signal") ? config.signal : undefined;
+    return signal ? settleOnAbort(() => composed(ctx), signal, ctx.config) : composed(ctx);
   }
    
   get<O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
