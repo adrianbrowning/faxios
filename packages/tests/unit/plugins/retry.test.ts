@@ -3,6 +3,7 @@ import { getEventListeners } from "node:events";
 import { Readable } from "node:stream";
 import { afterEach, beforeEach, describe, it, vi } from "vitest";
 import faxios, { CanceledError, FaxiosError } from "#src/index.ts";
+import type { Method } from "#src/index.ts";
 import { retry } from "#src/lib/plugins/retry.ts";
 
 const URL = "http://localhost/retry";
@@ -235,6 +236,23 @@ describe("plugins::retry", () => {
     assert.strictEqual(getOnly.calls.length, 1);
   });
 
+  it("asks retryOn only about methods in `methods`, so a POST needs both", async () => {
+    const retryOnOnly = scriptedFetch([ 503, 200 ]);
+    const withMethods = scriptedFetch([ 503, 200 ]);
+    const retryOn = vi.fn(() => true);
+
+    const a = assert.rejects(faxios.create({ env: { fetch: retryOnOnly.fetch } }).use(retry({ delay: 0, retryOn }))
+      .post(URL, {}), isStatus(503));
+    const b = faxios.create({ env: { fetch: withMethods.fetch } }).use(retry({ delay: 0, retryOn, methods: [ "post" ] }))
+      .post(URL, {});
+    await vi.runAllTimersAsync();
+    await Promise.all([ a, b ]);
+
+    assert.strictEqual(retryOnOnly.calls.length, 1);
+    assert.strictEqual(withMethods.calls.length, 2);
+    assert.strictEqual(retryOn.mock.calls.length, 1);
+  });
+
   it("ignores retry settings inherited from a polluted Object.prototype", async () => {
     const { fetch, calls } = scriptedFetch([ 503 ]);
     const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }));
@@ -274,6 +292,19 @@ describe("plugins::retry", () => {
       assert.throws(() => retry({ retries: 3 }), isUnknown);
       // @ts-expect-error TS2345 -- null isn't an options object
       assert.throws(() => retry(null), isBadValue);
+    });
+
+    it("rejects empty or non-token method names, from the plugin or per request", async () => {
+      const { fetch, calls } = scriptedFetch([ 503 ]);
+      const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }));
+
+      for (const method of [ "", "GET POST", "get\n", "pó", "(get)" ]) {
+        assert.throws(() => retry({ methods: [ method as Method ] }), isBadValue, `methods: ${JSON.stringify(method)}`);
+        await assert.rejects(api.get(URL, { retry: { methods: [ method as Method ] } }), isBadValue, `per request: ${JSON.stringify(method)}`);
+      }
+      assert.doesNotThrow(() => retry({ methods: [ "M-SEARCH", "x_custom!" ] as Array<string> as Array<Method> }));
+
+      assert.strictEqual(calls.length, 0);
     });
 
     it("rejects an invalid per-request override before sending anything", async () => {
