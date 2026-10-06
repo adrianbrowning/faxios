@@ -75,6 +75,7 @@ function wait(ms: number, signal: AbortSignal | GenericAbortSignal | undefined, 
     }
     const onAbort = () => {
       clearTimeout(timer);
+      signal?.removeEventListener?.("abort", onAbort);
       reject(new CanceledError(null, config));
     };
     const timer = setTimeout(() => {
