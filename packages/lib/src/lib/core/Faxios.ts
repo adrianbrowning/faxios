@@ -241,8 +241,12 @@ class Faxios {
     if (typeof run !== "function") {
       throw new FaxiosError("use() expects a middleware function or a plugin with a middleware function", FaxiosError.ERR_BAD_OPTION_VALUE);
     }
+    const name = own("name");
+    if (plugin && (typeof name !== "string" || name === "")) {
+      throw new FaxiosError("use() expects a plugin's own name to be a non-empty string", FaxiosError.ERR_BAD_OPTION_VALUE);
+    }
     const provides = own("provides");
-    const provided = provides == null ? [] : this.#addCapabilities(String(own("name")), provides);
+    const provided = provides == null ? [] : this.#addCapabilities(String(name), provides);
     this.#setMiddleware([ ...this.#middleware, { ref: middleware, run, provided }]);
   }
 

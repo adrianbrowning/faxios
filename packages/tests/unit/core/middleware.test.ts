@@ -259,6 +259,20 @@ describe("core::middleware", () => {
       assert.doesNotThrow(() => api.use(plugin("second", { auth: 2 })));
     });
 
+    it.each([
+      [ "no name", { middleware: passthrough }],
+      [ "a non-string name", { name: 1, middleware: passthrough }],
+      [ "an empty name", { name: "", middleware: passthrough }],
+      [ "a name only inherited from the prototype", Object.assign(Object.create({ name: "inherited" }) as object, { middleware: passthrough }) ],
+    ])("rejects a plugin with %s", (_, candidate) => {
+      const api = faxios.create();
+
+      assert.throws(
+        () => api.use(candidate as unknown as FaxiosPlugin),
+        (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE
+      );
+    });
+
     it("keeps a plugin's capabilities for a request that is already running when it is ejected", async () => {
       let seen: unknown;
       const { promise: gate, resolve: open } = Promise.withResolvers<void>();

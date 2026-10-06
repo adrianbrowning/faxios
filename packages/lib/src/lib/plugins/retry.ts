@@ -14,16 +14,19 @@ const ownValue = <T extends object, K extends keyof T>(source: T, key: K): T[K] 
 
 const isWait = (ms: unknown): ms is number => typeof ms === "number" && Number.isFinite(ms) && ms >= 0;
 
+// An HTTP method is a token (RFC 9110 §9.1, §5.6.2); anything else can never match a request.
+const TOKEN = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
+
 // Bounded on purpose: NaN or Infinity would make a failing request loop forever.
 const optionsSchema = {
   attempts: (value: unknown) => (Number.isInteger(value) && (value as number) >= 1) || "an integer of at least 1",
   retryOn: validator.validators["function"],
   delay: (value: unknown) => isWait(value) || typeof value === "function" || "a finite number of at least 0 or a function",
-  methods: (value: unknown) => (Array.isArray(value) && value.every(m => typeof m === "string")) || "an array of HTTP method names",
+  methods: (value: unknown) => (Array.isArray(value) && value.every(m => typeof m === "string" && TOKEN.test(m))) || "an array of HTTP method names",
 };
 
 // Methods whose repeat has the same effect as one request (RFC 9110 §9.2.2, plus QUERY).
-const IDEMPOTENT_METHODS: ReadonlyArray<Method> = [ "get", "head", "options", "put", "delete", "query" ];
+const IDEMPOTENT_METHODS: ReadonlyArray<string> = [ "get", "head", "options", "put", "delete", "query" ];
 
 // One check for both the factory argument and a per-request override.
 function assertRetryOptions(value: unknown, config?: InternalFaxiosRequestConfig): asserts value is RetryOptions {
@@ -38,14 +41,16 @@ export type RetryOptions = {
   attempts?: number;
   /**
    * Whether the try that just failed should be retried. `attempt` counts from 1.
-   * Default: network errors, timeouts and 5xx responses; never a cancellation.
+   * Default: network errors, timeouts and 5xx responses; never a cancellation. retryOn decides only
+   * within `methods`; to retry POST, list it in `methods`.
    */
   retryOn?: (error: unknown, attempt: number) => boolean;
   /** Milliseconds to wait before the next try, or a function of the try that failed. Default 100ms, doubling. */
   delay?: number | ((attempt: number, error: unknown) => number);
   /**
    * HTTP methods that may be retried, in any case. Default: GET, HEAD, OPTIONS, PUT, DELETE and
-   * QUERY. POST and PATCH aren't idempotent, so add them only if your API dedupes repeats.
+   * QUERY. POST and PATCH aren't idempotent, so add them only if your API dedupes repeats. A request
+   * whose method isn't listed is never retried, whatever `retryOn` says.
    */
   methods?: ReadonlyArray<Method>;
 };
@@ -87,6 +92,14 @@ function wait(ms: number, signal: AbortSignal | GenericAbortSignal | undefined, 
   });
 }
 
+// Each list is lower-cased right after it is validated: the plugin's once, a per-request override's
+// on the request that carries it.
+function retriesMethod(config: InternalFaxiosRequestConfig, perRequest: RetryOptions | undefined, pluginMethods: ReadonlyArray<string> | undefined): boolean {
+  const requestMethods = perRequest ? ownValue(perRequest, "methods")?.map(m => m.toLowerCase()) : undefined;
+  const methods = requestMethods ?? pluginMethods ?? IDEMPOTENT_METHODS;
+  return methods.includes(String(ownValue(config, "method") ?? "get").toLowerCase());
+}
+
 /**
  * Retries failed requests by calling `next` again. Each `next` dispatches its own copy of the
  * config, so every try starts from the same input. Install it inside middleware that should run
@@ -94,6 +107,8 @@ function wait(ms: number, signal: AbortSignal | GenericAbortSignal | undefined, 
  */
 export function retry(options: RetryOptions = {}): FaxiosPlugin<{ options: RetryRequestOptions; }> {
   assertRetryOptions(options);
+  // Lower-cased once here, so requests compare names without re-casing the list.
+  const pluginMethods = ownValue(options, "methods")?.map(m => m.toLowerCase());
   return definePlugin({
     name: "retry",
     middleware: async (ctx: FaxiosContext<RetryRequestOptions>, next) => {
@@ -105,9 +120,7 @@ export function retry(options: RetryOptions = {}): FaxiosPlugin<{ options: Retry
       const attempts = setting("attempts") ?? 3;
       const retryOn = setting("retryOn") ?? retryByDefault;
       const delay = setting("delay") ?? doublingDelay;
-      const methods = setting("methods") ?? IDEMPOTENT_METHODS;
-      const method = String(ownValue(ctx.config, "method") ?? "get").toLowerCase();
-      if (!methods.some(m => m.toLowerCase() === method)) return next(ctx);
+      if (!retriesMethod(ctx.config, perRequest, pluginMethods)) return next(ctx);
 
       // Tries run one after another on purpose: each must finish before deciding on the next.
       for (let attempt = 1; ; attempt++) {
