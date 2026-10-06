@@ -49,7 +49,7 @@
     "bp": "pnpm build && pnpm pack",
     "version": "pnpm run build && git add package.json",
     "docs:dev": "cd docs && npm run docs:dev",
-    "lint": "pnpm lint:ts; pnpm lint:fix",
+    "lint": "pnpm lint:ts && pnpm lint:esl && pnpm lint:fix",
     "lint:ts": "tsc --noEmit -p tsconfig.check.json",
     "lint:esl": "eslint --config eslint.config.ts \"**/*.{j,t}s{,x}\" --cache --cache-strategy content --max-warnings=0",
     "lint:s": "eslint --config eslint.config.style.ts \"**/*.{j,t}s{,x}\" --cache --cache-strategy content --max-warnings=0",

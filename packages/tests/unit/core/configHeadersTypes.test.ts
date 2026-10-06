@@ -45,39 +45,39 @@ describe("config headers types", () => {
 
   it("rejects object and function header values on every surface, alone or next to a method header group", () => {
     function surfaces(): void {
-      // @ts-expect-error object value
+      // @ts-expect-error TS2769 object value
       void faxios({ url, headers: { "X-Obj": { a: 1 } } });
-      // @ts-expect-error function value next to a group
+      // @ts-expect-error TS2769 function value next to a group
       void faxios({ url, headers: { "X-Fn": () => "v", common: {} } });
-      // @ts-expect-error object value
+      // @ts-expect-error TS2769 object value
       void faxios.request({ url, headers: { "X-Obj": { a: 1 } } });
-      // @ts-expect-error function value next to a group
+      // @ts-expect-error TS2769 function value next to a group
       void faxios.request({ url, headers: { "X-Fn": () => "v", common: {} } });
-      // @ts-expect-error object value
+      // @ts-expect-error TS2769 object value
       void faxios.get(url, { headers: { "X-Obj": { a: 1 } } });
-      // @ts-expect-error function value next to a group
+      // @ts-expect-error TS2769 function value next to a group
       void faxios.get(url, { headers: { "X-Fn": () => "v", common: {} } });
-      // @ts-expect-error object value
+      // @ts-expect-error TS2769 object value
       void faxios.post(url, {}, { headers: { "X-Obj": { a: 1 } } });
-      // @ts-expect-error function value next to a group
+      // @ts-expect-error TS2769 function value next to a group
       void faxios.post(url, {}, { headers: { "X-Fn": () => "v", common: {} } });
-      // @ts-expect-error object value
+      // @ts-expect-error TS2353 object value
       faxios.create({ headers: { "X-Obj": { a: 1 } } });
-      // @ts-expect-error function value next to a group
+      // @ts-expect-error TS2322 function value next to a group
       create({ headers: { "X-Fn": () => "v", common: {} } });
-      // @ts-expect-error object value
+      // @ts-expect-error TS2353 object value
       faxios.define("GET", url, { headers: { "X-Obj": { a: 1 } } });
-      // @ts-expect-error function value next to a group
+      // @ts-expect-error TS2322 function value next to a group
       faxios.define("GET", url, { headers: { "X-Fn": () => "v", common: {} } });
-      // @ts-expect-error object value
+      // @ts-expect-error TS2353 object value
       void faxios.define("GET", url)({ headers: { "X-Obj": { a: 1 } } });
-      // @ts-expect-error object value
+      // @ts-expect-error TS2353 object value
       faxios.route(url, { headers: { "X-Obj": { a: 1 } } });
-      // @ts-expect-error function value next to a group
+      // @ts-expect-error TS2322 function value next to a group
       faxios.route(url).get({ headers: { "X-Fn": () => "v", common: {} } });
-      // @ts-expect-error object value inside a method header group
+      // @ts-expect-error TS2769 object value inside a method header group
       void faxios.get(url, { headers: { post: { "X-Obj": { a: 1 } } } });
-      // @ts-expect-error a suggested header still rejects an object value
+      // @ts-expect-error TS2769 a suggested header still rejects an object value
       void faxios.get(url, { headers: { Authorization: { a: 1 }, common: {} } });
     }
     expectTypeOf(surfaces).toBeFunction();

@@ -4,9 +4,9 @@ import type { FaxiosContext, FaxiosInstance, FaxiosNext, FaxiosPlugin } from "#s
 
 // use() infers through these internal helper types; users write FaxiosPlugin, so neither is
 // importable from the package root.
-// @ts-expect-error -- internal: not exported from the package root
+// @ts-expect-error TS2694 -- internal: not exported from the package root
 export type RootPluginBase = import("#src/index.ts").FaxiosPluginBase;
-// @ts-expect-error -- internal: not exported from the package root
+// @ts-expect-error TS2694 -- internal: not exported from the package root
 export type RootPluginArgument = import("#src/index.ts").FaxiosPluginArgument;
 
 // These functions are type-checked by `lint:ts` and never called (except the plain
@@ -90,7 +90,7 @@ describe("middleware types", () => {
       faxios.create().use(async (ctx, next) => {
         ctx.config.headers = new FaxiosHeaders({ "X-From": "middleware" });
         expectTypeOf(ctx.config.headers.set).toBeFunction();
-        // @ts-expect-error -- reading it back as FaxiosRequestHeaders would lose the accessor methods
+        // @ts-expect-error TS2322 -- reading it back as FaxiosRequestHeaders would lose the accessor methods
         ctx.config.headers = { "X-From": "middleware" };
         return next(ctx);
       });
@@ -130,22 +130,22 @@ describe("middleware types", () => {
   it("rejects plugin options without the plugin", () => {
     function surfaces(): void {
       const api = faxios.create();
-      // @ts-expect-error -- cache() not installed
+      // @ts-expect-error TS2769 -- cache() not installed
       void api({ url, cache: { ttlMs: 1 } });
-      // @ts-expect-error -- cache() not installed
+      // @ts-expect-error TS2769 -- cache() not installed
       void api.request({ url, cache: { ttlMs: 1 } });
-      // @ts-expect-error -- cache() not installed
+      // @ts-expect-error TS2769 -- cache() not installed
       void api.get(url, { cache: { ttlMs: 1 } });
-      // @ts-expect-error -- cache() not installed
+      // @ts-expect-error TS2769 -- cache() not installed
       void api.post(url, {}, { cache: { ttlMs: 1 } });
-      // @ts-expect-error -- cache() not installed
+      // @ts-expect-error TS2353 -- cache() not installed
       void api.define("GET", url)({ cache: { ttlMs: 1 } });
-      // @ts-expect-error -- cache() not installed
+      // @ts-expect-error TS2353 -- cache() not installed
       void api.route(url).get()({ cache: { ttlMs: 1 } });
       const childOfTyped = api.use(cache()).create();
-      // @ts-expect-error -- create() children don't inherit plugin options
+      // @ts-expect-error TS2769 -- create() children don't inherit plugin options
       void childOfTyped.get(url, { cache: { ttlMs: 1 } });
-      // @ts-expect-error -- the option's type is still checked after install
+      // @ts-expect-error TS2769 -- the option's type is still checked after install
       void api.use(cache()).get(url, { cache: { ttlMs: "1" } });
     }
     void surfaces;
@@ -166,9 +166,9 @@ describe("middleware types", () => {
     function surfaces(): void {
       const bare = faxios.create();
       const tokenOnly = faxios.create().use(staticToken());
-      // @ts-expect-error -- refreshOn401 requires auth
+      // @ts-expect-error TS2345 -- refreshOn401 requires auth
       bare.use(refreshOn401());
-      // @ts-expect-error -- auth is installed, but with an incompatible shape
+      // @ts-expect-error TS2345 -- auth is installed, but with an incompatible shape
       tokenOnly.use(refreshOn401());
       faxios.create().use(authBearer(getToken))
         .use(refreshOn401());
@@ -182,9 +182,9 @@ describe("middleware types", () => {
   it("rejects a second plugin that provides an installed capability", () => {
     function surfaces(): void {
       const withAuth = faxios.create().use(authBearer(getToken));
-      // @ts-expect-error -- use() throws ERR_BAD_OPTION at runtime for a duplicate capability
+      // @ts-expect-error TS2345 -- use() throws ERR_BAD_OPTION at runtime for a duplicate capability
       withAuth.use(authBearer(getToken));
-      // @ts-expect-error -- same name, different shape: still a duplicate
+      // @ts-expect-error TS2345 -- same name, different shape: still a duplicate
       withAuth.use(staticToken());
     }
     void surfaces;
@@ -192,7 +192,7 @@ describe("middleware types", () => {
 
   it("requires provides when a plugin declares a capability", () => {
     function surfaces(): void {
-      // @ts-expect-error -- claims auth but never supplies it, so ctx.capabilities.auth would be undefined
+      // @ts-expect-error TS2322 -- claims auth but never supplies it, so ctx.capabilities.auth would be undefined
       const claimsOnly: FaxiosPlugin<unknown, AuthCapability> = { name: "claimsOnly", middleware: async (ctx, next) => next(ctx) };
       const requiresOnly: FaxiosPlugin<AuthCapability, unknown, CacheOptions> = { name: "requiresOnly", middleware: async (ctx, next) => next(ctx) };
       void claimsOnly;
@@ -209,11 +209,11 @@ describe("middleware types", () => {
         return next(ctx);
       });
       inline.use(refreshOn401());
-      // @ts-expect-error -- explicit TProvides without a provides value
+      // @ts-expect-error TS2345 -- explicit TProvides without a provides value
       faxios.create().use<unknown, AuthCapability>({ name: "explicit", middleware: async (ctx, next) => next(ctx) });
       // Unannotated: middleware that expects auth can't conjure it without provides.
       const expectsAuth = async (ctx: FaxiosContext<unknown, AuthCapability>, next: FaxiosNext) => next(ctx);
-      // @ts-expect-error -- nothing provides auth, so this middleware can't be installed
+      // @ts-expect-error TS2322 -- nothing provides auth, so this middleware can't be installed
       faxios.create().use({ name: "expectsAuth", middleware: expectsAuth });
     }
     void surfaces;

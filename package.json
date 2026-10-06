@@ -11,6 +11,7 @@
     "test:vitest:browser:headless": "pnpm --filter @faxios/tests test:vitest:browser:headless",
     "test:vitest:watch": "pnpm --filter @faxios/tests test:vitest:watch",
     "lint": "pnpm -r lint",
+    "check": "pnpm run lint && pnpm run lint:knip && pnpm --filter @faxios/tests exec ./run-tests.sh && pnpm run test:docs-examples",
     "start": "pnpm --filter @faxios/sandbox start",
     "examples": "pnpm --filter @faxios/examples start",
     "lint:knip": "knip",

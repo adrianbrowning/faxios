@@ -265,13 +265,13 @@ describe("plugins::retry", () => {
       for (const delay of [ Number.NaN, -1, Number.POSITIVE_INFINITY ]) {
         assert.throws(() => retry({ delay }), isBadValue, `delay: ${delay}`);
       }
-      // @ts-expect-error -- retryOn must be a function
+      // @ts-expect-error TS2322 -- retryOn must be a function
       assert.throws(() => retry({ retryOn: true }), isBadValue);
-      // @ts-expect-error -- methods must be an array of method names
+      // @ts-expect-error TS2322 -- methods must be an array of method names
       assert.throws(() => retry({ methods: "post" }), isBadValue);
-      // @ts-expect-error -- unknown option
+      // @ts-expect-error TS2353 -- unknown option
       assert.throws(() => retry({ retries: 3 }), isUnknown);
-      // @ts-expect-error -- null isn't an options object
+      // @ts-expect-error TS2345 -- null isn't an options object
       assert.throws(() => retry(null), isBadValue);
     });
 
@@ -282,9 +282,9 @@ describe("plugins::retry", () => {
       await assert.rejects(api.get(URL, { retry: { attempts: Number.NaN } }), isBadValue);
       await assert.rejects(api.get(URL, { retry: { attempts: Number.POSITIVE_INFINITY } }), isBadValue);
       await assert.rejects(api.get(URL, { retry: { delay: -5 } }), isBadValue);
-      // @ts-expect-error -- per-request retry must be false or an options object
+      // @ts-expect-error TS2769 -- per-request retry must be false or an options object
       await assert.rejects(api.get(URL, { retry: true }), isBadValue);
-      // @ts-expect-error -- null isn't an options object either
+      // @ts-expect-error TS2769 -- null isn't an options object either
       await assert.rejects(api.get(URL, { retry: null }), isBadValue);
 
       assert.strictEqual(calls.length, 0);

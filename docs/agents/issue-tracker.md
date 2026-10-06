@@ -13,6 +13,11 @@ Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all o
 
 Infer the repo from `git remote -v` — `gh` does this automatically when run inside a clone.
 
+## Known `gh` gotchas
+
+- **Editing a PR title or body:** `gh pr edit` fails on this repo with a Projects (classic) GraphQL deprecation error. Use the REST API instead: write `{"title": "...", "body": "..."}` to a file and run `gh api --method PATCH repos/<owner>/<repo>/pulls/<N> --input <file>`.
+- **Stacked PRs:** `gh stack init` branches from the *local* trunk. Run `git fetch origin` and fast-forward `main` first, or the stack is based on a stale commit.
+
 ## Pull requests as a triage surface
 
 **PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/triage` reads this flag.)_

@@ -46,16 +46,16 @@ describe("static api", () => {
   it("only types the static members on the default export", () => {
     const instance = create();
     // Created instances have none of the statics at runtime, so their type mustn't either.
-    // @ts-expect-error -- plugins exists only on the default export
+    // @ts-expect-error TS2339 -- plugins exists only on the default export
     assert.strictEqual(instance.plugins, undefined);
-    // @ts-expect-error -- isCancel exists only on the default export
+    // @ts-expect-error TS2339 -- isCancel exists only on the default export
     assert.strictEqual(instance.isCancel, undefined);
-    // @ts-expect-error -- HttpStatusCode exists only on the default export
+    // @ts-expect-error TS2339 -- HttpStatusCode exists only on the default export
     assert.strictEqual(instance.HttpStatusCode, undefined);
   });
 
   it("no longer has interceptors", () => {
-    // @ts-expect-error -- interceptors were removed in favour of use()
+    // @ts-expect-error TS2339 -- interceptors were removed in favour of use()
     const removed: unknown = faxios.interceptors;
     assert.strictEqual(removed, undefined);
   });
@@ -63,7 +63,7 @@ describe("static api", () => {
   it("rejects the removed transitional.legacyInterceptorReqResOrdering option", async () => {
     const fetch = async () => new Response(null, { status: 200 });
     await assert.rejects(
-      // @ts-expect-error -- legacyInterceptorReqResOrdering was removed with interceptors
+      // @ts-expect-error TS2769 -- legacyInterceptorReqResOrdering was removed with interceptors
       faxios.get("http://localhost/", { transitional: { legacyInterceptorReqResOrdering: true }, env: { fetch } }),
       (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION
     );
