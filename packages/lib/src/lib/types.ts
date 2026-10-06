@@ -405,7 +405,9 @@ interface ContextHeaders {
  * Per-request state passed through `.use()` middleware. Created once per
  * request, after the request config is merged with the instance defaults.
  */
-export interface FaxiosContext<TOptions = unknown, TCapabilities = unknown> {
+// `{}` defaults match a FaxiosInstance with no plugins, so a plain `FaxiosMiddleware` installs on one.
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- see above
+export interface FaxiosContext<TOptions = {}, TCapabilities = {}> {
   /** The merged request config. `headers` is a `FaxiosHeaders` instance. */
   config: Omit<InternalFaxiosRequestConfig, "headers"> & ContextHeaders & TOptions;
   /** Null-prototype scratch space shared by middleware for this request only. */
@@ -414,16 +416,23 @@ export interface FaxiosContext<TOptions = unknown, TCapabilities = unknown> {
   capabilities: TCapabilities;
 }
 
-/** Runs the rest of the middleware chain, then dispatches a copy of `ctx.config`. */
-export type FaxiosNext = (ctx: FaxiosContext) => Promise<FaxiosResponse>;
+/**
+ * Runs the rest of the middleware chain, then dispatches a copy of `ctx.config`. It takes the same
+ * context type the middleware received, so a middleware can't pass on fewer capabilities or
+ * options than later middleware expects.
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- the `{}` defaults of FaxiosContext
+export type FaxiosNext<TOptions = {}, TCapabilities = {}> =
+  (ctx: FaxiosContext<TOptions, TCapabilities>) => Promise<FaxiosResponse>;
 
 /**
  * Onion-style lifecycle hook: code before `await next(ctx)` runs on the way in,
  * code after it on the way out. Returning without calling `next` skips dispatch.
  */
-export type FaxiosMiddleware<TOptions = unknown, TCapabilities = unknown> = (
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- the `{}` defaults of FaxiosContext
+export type FaxiosMiddleware<TOptions = {}, TCapabilities = {}> = (
   ctx: FaxiosContext<TOptions, TCapabilities>,
-  next: FaxiosNext
+  next: FaxiosNext<TOptions, TCapabilities>
 ) => Promise<FaxiosResponse>;
 
 /**
