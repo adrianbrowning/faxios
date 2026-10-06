@@ -393,13 +393,21 @@ export type FaxiosConfigHeaders =
 /** Config accepted by `create()`; identical to a request config. */
 export type CreateFaxiosDefaults<D = unknown> = FaxiosRequestConfig<D>;
 
+// Reading ctx.config.headers gives the accessor-typed headers; middleware may also assign a new
+// FaxiosHeaders (dispatch normalizes it the same way). A plain object isn't accepted, because the
+// next middleware would read it back expecting set()/get().
+interface ContextHeaders {
+  get headers(): FaxiosRequestHeaders;
+  set headers(value: FaxiosRequestHeaders | FaxiosHeadersInstance);
+}
+
 /**
  * Per-request state passed through `.use()` middleware. Created once per
  * request, after the request config is merged with the instance defaults.
  */
 export interface FaxiosContext<TOptions = unknown, TCapabilities = unknown> {
   /** The merged request config. `headers` is a `FaxiosHeaders` instance. */
-  config: InternalFaxiosRequestConfig & TOptions;
+  config: Omit<InternalFaxiosRequestConfig, "headers"> & ContextHeaders & TOptions;
   /** Null-prototype scratch space shared by middleware for this request only. */
   state: Record<PropertyKey, unknown>;
   /** Values provided by installed plugins, shared by every request of the instance. */

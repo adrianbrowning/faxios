@@ -1,5 +1,5 @@
 import { describe, expectTypeOf, it } from "vitest";
-import faxios, { FaxiosError } from "#src/index.ts";
+import faxios, { FaxiosError, FaxiosHeaders } from "#src/index.ts";
 import type { FaxiosContext, FaxiosInstance, FaxiosNext, FaxiosPlugin } from "#src/index.ts";
 
 // use() infers through these internal helper types; users write FaxiosPlugin, so neither is
@@ -83,6 +83,19 @@ describe("middleware types", () => {
       expectTypeOf("auth" in ctx.capabilities).toEqualTypeOf<boolean>();
       return next(ctx);
     });
+  });
+
+  it("lets middleware replace ctx.config.headers with a FaxiosHeaders, but not a plain object", () => {
+    function surfaces(): void {
+      faxios.create().use(async (ctx, next) => {
+        ctx.config.headers = new FaxiosHeaders({ "X-From": "middleware" });
+        expectTypeOf(ctx.config.headers.set).toBeFunction();
+        // @ts-expect-error -- reading it back as FaxiosRequestHeaders would lose the accessor methods
+        ctx.config.headers = { "X-From": "middleware" };
+        return next(ctx);
+      });
+    }
+    void surfaces;
   });
 
   it("accepts plugin options on every config-taking member after use()", () => {
