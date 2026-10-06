@@ -6,6 +6,7 @@ import FaxiosError from "../core/FaxiosError.js";
 import validator from "../helpers/validator.js";
 import type { FaxiosContext, FaxiosPlugin, FaxiosRequestConfig, GenericAbortSignal, InternalFaxiosRequestConfig, Method } from "../types.js";
 import utils from "../utils.js";
+import { RETRY_ATTEMPT } from "./attempt.js";
 import { definePlugin } from "./definePlugin.js";
 
 // Config values are read as own properties only (repo rule for possibly untrusted input).
@@ -124,6 +125,8 @@ export function retry(options: RetryOptions = {}): FaxiosPlugin<{ options: Retry
 
       // Tries run one after another on purpose: each must finish before deciding on the next.
       for (let attempt = 1; ; attempt++) {
+        // For timing: the try number, read after next() settles.
+        ctx.state[RETRY_ATTEMPT] = attempt;
         try {
           // eslint-disable-next-line no-await-in-loop -- see above
           return await next(ctx);

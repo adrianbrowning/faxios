@@ -82,13 +82,13 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 
 ### Built-in plugin: `timing`
 
-- **Change:** `timing(onTiming)` reports each request's duration with its status or error.
-- **Source:** Issue #91; `PRE_RELEASE_CHANGELOG.md` Features entry "Built-in plugins".
+- **Change:** `timing(onTiming)` reports each request's method, URL, try number, duration and status or error, and nothing else.
+- **Source:** Issues #91 and #110; `PRE_RELEASE_CHANGELOG.md` Features entry "Built-in plugins" and Breaking Changes entry "`timing` reports a narrow, log-safe event".
 - **Status:** Pending.
 - **Docs targets:** Plugins section of the middleware page.
-- **Required content:** `onTiming({ config, durationMs, status })` on success, `onTiming({ config, durationMs, error })` on failure (the error is rethrown). If `onTiming` throws while reporting a failure, the request still rejects with its own error; if it throws while reporting a success, the request rejects with the observer's error. Uses `performance.now()` where available. The response is unchanged. Order relative to `retry` decides whether retries are measured together or separately.
-- **Examples:** Sending durations to a metrics client.
-- **Notes:** None.
+- **Required content:** `onTiming({ method, url, attempt?, durationMs, status })` on success, `onTiming({ method, url, attempt?, durationMs, error })` on failure (the error is rethrown). `method` is upper-cased; `url` is the full URL with `baseURL` applied and the query string and fragment stripped (a URL with `pathParams` reports its `:param` template, since path params are substituted at dispatch, which also keeps metric labels low-cardinality). No config, headers or body reach `onTiming`, so the event is safe to log. `attempt` comes from `retry`: installed after `retry`, each try is reported with its own number; installed before it, one event covers every try and carries the final try's number; without `retry` the key is absent. If `onTiming` throws while reporting a failure, the request still rejects with its own error; if it throws while reporting a success, the request rejects with the observer's error. Uses `performance.now()` where available. The response is unchanged.
+- **Examples:** Sending durations to a metrics client labelled by `method`, `url` and `status`.
+- **Notes:** Say explicitly that the event used to include `config` and why it was removed (credentials in logs).
 
 ### Interceptors removed
 
