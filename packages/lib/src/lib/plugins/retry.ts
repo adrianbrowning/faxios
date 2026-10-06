@@ -4,8 +4,9 @@ import CanceledError from "../cancel/CanceledError.js";
 import isCancel from "../cancel/isCancel.js";
 import FaxiosError from "../core/FaxiosError.js";
 import validator from "../helpers/validator.js";
-import type { FaxiosPlugin, FaxiosRequestConfig, GenericAbortSignal, InternalFaxiosRequestConfig, Method } from "../types.js";
+import type { FaxiosContext, FaxiosPlugin, FaxiosRequestConfig, GenericAbortSignal, InternalFaxiosRequestConfig, Method } from "../types.js";
 import utils from "../utils.js";
+import { definePlugin } from "./definePlugin.js";
 
 // Config values are read as own properties only (repo rule for possibly untrusted input).
 const ownValue = <T extends object, K extends keyof T>(source: T, key: K): T[K] | undefined =>
@@ -91,11 +92,11 @@ function wait(ms: number, signal: AbortSignal | GenericAbortSignal | undefined, 
  * config, so every try starts from the same input. Install it inside middleware that should run
  * once per request (for example `timing` installed first measures all tries together).
  */
-export default function retry(options: RetryOptions = {}): FaxiosPlugin<unknown, unknown, RetryRequestOptions> {
+export function retry(options: RetryOptions = {}): FaxiosPlugin<{ options: RetryRequestOptions; }> {
   assertRetryOptions(options);
-  return {
+  return definePlugin({
     name: "retry",
-    middleware: async (ctx, next) => {
+    middleware: async (ctx: FaxiosContext<RetryRequestOptions>, next) => {
       const perRequest = ownValue(ctx.config, "retry");
       if (perRequest === false) return next(ctx);
       if (perRequest !== undefined) assertRetryOptions(perRequest, ctx.config);
@@ -125,5 +126,5 @@ export default function retry(options: RetryOptions = {}): FaxiosPlugin<unknown,
         }
       }
     },
-  };
+  });
 }

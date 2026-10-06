@@ -436,13 +436,31 @@ export type FaxiosMiddleware<TOptions = {}, TCapabilities = {}> = (
 ) => Promise<FaxiosResponse>;
 
 /**
- * The parts of a plugin that `use()` reads its type parameters from. Build plugins as
- * `FaxiosPlugin`; this exists so `use()` can infer `TRequires`, `TProvides` and `TOptions`.
+ * The type slots of a `FaxiosPlugin`, all optional: `requires` holds the capabilities that must be
+ * installed before it, `provides` the capabilities it adds to `ctx.capabilities`, and `options`
+ * the request options it adds to every config-taking member.
+ */
+export interface FaxiosPluginSpec {
+  requires?: unknown;
+  provides?: unknown;
+  options?: unknown;
+}
+
+// A slot the spec leaves out is `unknown`: nothing required, provided or added.
+type PluginSlot<TSpec, K extends keyof FaxiosPluginSpec> = K extends keyof TSpec ? Required<TSpec>[K] : unknown;
+
+// Any other key is `never`, so a misspelt slot (`require`) is an error instead of being ignored.
+type OnlyPluginSlots<TSpec> = { [K in Exclude<keyof TSpec, keyof FaxiosPluginSpec>]: never; };
+
+/**
+ * The parts of a plugin that `use()` reads its type parameters from. Internal: build plugins with
+ * `definePlugin()` or annotate them as `FaxiosPlugin`; `use()` infers `TRequires`, `TProvides`
+ * and `TOptions` through this.
  */
 export interface FaxiosPluginBase<TRequires = unknown, TProvides = unknown, TOptions = unknown> {
   name: string;
   middleware: FaxiosMiddleware<TOptions, TRequires & TProvides>;
-  /** Type-only marker that carries the type parameters for inference. Never set it. */
+  /** Internal, type-only marker that carries the type parameters for inference. Never set it. */
   readonly "~plugin"?: {
     readonly requires: TRequires;
     readonly provides: TProvides;
@@ -451,13 +469,17 @@ export interface FaxiosPluginBase<TRequires = unknown, TProvides = unknown, TOpt
 }
 
 /**
- * Middleware bundled with the capabilities it requires and provides. Declaring a capability in
- * `TProvides` makes `provides` required, so a plugin can't claim a capability it never supplies.
+ * Middleware bundled with the capabilities it requires and provides, typed by one
+ * `FaxiosPluginSpec`: `FaxiosPlugin<{ requires?; provides?; options? }>`. Declaring `provides`
+ * makes the `provides` value required, so a plugin can't claim a capability it never supplies.
  */
-export type FaxiosPlugin<TRequires = unknown, TProvides = unknown, TOptions = unknown> =
-  FaxiosPluginBase<TRequires, TProvides, TOptions>
-  & ([keyof TProvides] extends [never] ? { provides?: TProvides; } : { provides: TProvides; });
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- `{}`: a plugin with no slots
+export type FaxiosPlugin<TSpec extends FaxiosPluginSpec & OnlyPluginSlots<TSpec> = {}> =
+  FaxiosPluginBase<PluginSlot<TSpec, "requires">, PluginSlot<TSpec, "provides">, PluginSlot<TSpec, "options">>
+  & ([keyof PluginSlot<TSpec, "provides">] extends [never]
+    ? { provides?: PluginSlot<TSpec, "provides">; }
+    : { provides: PluginSlot<TSpec, "provides">; });
 
-/** What `use()` and `eject()` accept as a plugin: the base plus an optional `provides`. */
+/** What `use()` and `eject()` accept as a plugin: the base plus an optional `provides`. Internal. */
 export type FaxiosPluginArgument<TRequires = unknown, TProvides = unknown, TOptions = unknown> =
   FaxiosPluginBase<TRequires, TProvides, TOptions> & { provides?: TProvides; };

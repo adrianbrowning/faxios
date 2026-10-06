@@ -1,6 +1,7 @@
 // @ts-self-types="./timing.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
 import type { FaxiosPlugin, InternalFaxiosRequestConfig } from "../types.js";
+import { definePlugin } from "./definePlugin.js";
 
 /** What `timing` reports once per request: `status` on success, `error` on failure. */
 export type TimingEvent =
@@ -15,8 +16,8 @@ const now = () => (typeof performance === "undefined" ? Date.now() : performance
  * response is returned unchanged. If `onTiming` throws while reporting a failure, the request
  * still rejects with its own error; while reporting a success, its error rejects the request.
  */
-export default function timing(onTiming: (event: TimingEvent) => void): FaxiosPlugin {
-  return {
+export function timing(onTiming: (event: TimingEvent) => void): FaxiosPlugin {
+  return definePlugin({
     name: "timing",
     middleware: async (ctx, next) => {
       const start = now();
@@ -37,5 +38,5 @@ export default function timing(onTiming: (event: TimingEvent) => void): FaxiosPl
       onTiming({ config: ctx.config, durationMs: now() - start, status: response.status });
       return response;
     },
-  };
+  });
 }

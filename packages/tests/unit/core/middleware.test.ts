@@ -26,7 +26,7 @@ function plugin<TProvides extends Record<string, unknown>>(
   name: string,
   provides: TProvides,
   middleware: FaxiosMiddleware<unknown, TProvides> = async (ctx, next) => next(ctx)
-): FaxiosPlugin<unknown, TProvides> {
+): FaxiosPlugin<{ provides: TProvides; }> {
   return { name, provides, middleware };
 }
 

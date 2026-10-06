@@ -1,7 +1,9 @@
 import assert from "node:assert";
 import { afterEach, beforeEach, describe, it, vi } from "vitest";
-import faxios, { FaxiosError, retry, timing } from "#src/index.ts";
-import type { TimingEvent } from "#src/index.ts";
+import faxios, { FaxiosError } from "#src/index.ts";
+import { retry } from "#src/lib/plugins/retry.ts";
+import { timing } from "#src/lib/plugins/timing.ts";
+import type { TimingEvent } from "#src/lib/plugins/timing.ts";
 
 const URL = "http://localhost/timing";
 

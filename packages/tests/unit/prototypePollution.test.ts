@@ -9,6 +9,8 @@ import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import mergeConfig from "#src/lib/core/mergeConfig.js";
 import prepareRequest from "#src/lib/core/prepareRequest.js";
 import defaults from "#src/lib/defaults/index.js";
+import { retry } from "#src/lib/plugins/retry.ts";
+import { timing } from "#src/lib/plugins/timing.ts";
 import utils from "#src/lib/utils.js";
 
 // ponytail: only augment Object.prototype with non-conflicting test-only keys.
@@ -1360,8 +1362,8 @@ describe("Prototype Pollution Protection", () => {
       let seen: unknown;
       try {
         const api = faxios.create({ env: { fetch: okFetch } })
-          .use(faxios.plugins.retry({ delay: 0 }))
-          .use(faxios.plugins.timing(() => undefined))
+          .use(retry({ delay: 0 }))
+          .use(timing(() => undefined))
           .use(async (ctx, next) => {
             seen = Object.keys(ctx.capabilities);
             return next(ctx);

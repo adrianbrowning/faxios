@@ -18,7 +18,7 @@ type NoPlugins = {};
 type CacheOptions = { cache?: { ttlMs?: number; key?: string; }; };
 type AuthCapability = { auth: { getToken: () => Promise<string>; }; };
 
-function cache(): FaxiosPlugin<unknown, unknown, CacheOptions> {
+function cache(): FaxiosPlugin<{ options: CacheOptions; }> {
   return {
     name: "cache",
     middleware: async (ctx, next) => {
@@ -28,7 +28,7 @@ function cache(): FaxiosPlugin<unknown, unknown, CacheOptions> {
   };
 }
 
-function authBearer(getToken: () => Promise<string>): FaxiosPlugin<unknown, AuthCapability> {
+function authBearer(getToken: () => Promise<string>): FaxiosPlugin<{ provides: AuthCapability; }> {
   return {
     name: "authBearer",
     provides: { auth: { getToken } },
@@ -39,7 +39,7 @@ function authBearer(getToken: () => Promise<string>): FaxiosPlugin<unknown, Auth
   };
 }
 
-function refreshOn401(): FaxiosPlugin<AuthCapability> {
+function refreshOn401(): FaxiosPlugin<{ requires: AuthCapability; }> {
   return {
     name: "refreshOn401",
     middleware: async (ctx, next) => {
@@ -56,7 +56,7 @@ function refreshOn401(): FaxiosPlugin<AuthCapability> {
   };
 }
 
-function staticToken(): FaxiosPlugin<unknown, { auth: { token: string; }; }> {
+function staticToken(): FaxiosPlugin<{ provides: { auth: { token: string; }; }; }> {
   return { name: "staticToken", provides: { auth: { token: "t" } }, middleware: async (ctx, next) => next(ctx) };
 }
 
@@ -193,8 +193,8 @@ describe("middleware types", () => {
   it("requires provides when a plugin declares a capability", () => {
     function surfaces(): void {
       // @ts-expect-error TS2322 -- claims auth but never supplies it, so ctx.capabilities.auth would be undefined
-      const claimsOnly: FaxiosPlugin<unknown, AuthCapability> = { name: "claimsOnly", middleware: async (ctx, next) => next(ctx) };
-      const requiresOnly: FaxiosPlugin<AuthCapability, unknown, CacheOptions> = { name: "requiresOnly", middleware: async (ctx, next) => next(ctx) };
+      const claimsOnly: FaxiosPlugin<{ provides: AuthCapability; }> = { name: "claimsOnly", middleware: async (ctx, next) => next(ctx) };
+      const requiresOnly: FaxiosPlugin<{ requires: AuthCapability; options: CacheOptions; }> = { name: "requiresOnly", middleware: async (ctx, next) => next(ctx) };
       void claimsOnly;
       void requiresOnly;
       // Inline provider with a real provides value: inferred exactly, and a consumer can follow.
@@ -231,10 +231,10 @@ describe("middleware types", () => {
 
   it("rejects a plugin with a required request option", () => {
     function surfaces(): void {
-      const tenant: FaxiosPlugin<unknown, unknown, { tenant: string; }> = { name: "tenant", middleware: async (ctx, next) => next(ctx) };
+      const tenant: FaxiosPlugin<{ options: { tenant: string; }; }> = { name: "tenant", middleware: async (ctx, next) => next(ctx) };
       // @ts-expect-error TS2345 -- requests that omit tenant would reach the middleware with it undefined
       faxios.create().use(tenant);
-      const optionalTenant: FaxiosPlugin<unknown, unknown, { tenant?: string; }> = { name: "tenant", middleware: async (ctx, next) => next(ctx) };
+      const optionalTenant: FaxiosPlugin<{ options: { tenant?: string; }; }> = { name: "tenant", middleware: async (ctx, next) => next(ctx) };
       faxios.create().use(optionalTenant);
     }
     void surfaces;
@@ -245,13 +245,13 @@ describe("middleware types", () => {
       const sym = Symbol("auth");
       // @ts-expect-error TS2345 -- Object.keys() skips symbol keys, so the capability is never set
       faxios.create().use({ name: "symbolCap", provides: { [sym]: { getToken } }, middleware: async (ctx, next) => next(ctx) });
-      const protoCap: FaxiosPlugin<unknown, { prototype: string; }> = { name: "protoCap", provides: { prototype: "p" }, middleware: async (ctx, next) => next(ctx) };
+      const protoCap: FaxiosPlugin<{ provides: { prototype: string; }; }> = { name: "protoCap", provides: { prototype: "p" }, middleware: async (ctx, next) => next(ctx) };
       // @ts-expect-error TS2345 -- use() drops prototype-polluting keys
       faxios.create().use(protoCap);
-      const needsSym: FaxiosPlugin<{ [sym]: string; }> = { name: "needsSym", middleware: async (ctx, next) => next(ctx) };
+      const needsSym: FaxiosPlugin<{ requires: { [sym]: string; }; }> = { name: "needsSym", middleware: async (ctx, next) => next(ctx) };
       // @ts-expect-error TS2345 -- no plugin can provide a symbol capability, so the requirement is invalid
       faxios.create().use(needsSym);
-      const numericCap: FaxiosPlugin<unknown, { 1: string; }> = { name: "numericCap", provides: { 1: "one" }, middleware: async (ctx, next) => next(ctx) };
+      const numericCap: FaxiosPlugin<{ provides: { 1: string; }; }> = { name: "numericCap", provides: { 1: "one" }, middleware: async (ctx, next) => next(ctx) };
       // @ts-expect-error TS2345 -- capability names are strings; a numeric key never matches one
       faxios.create().use(numericCap);
     }
@@ -269,7 +269,7 @@ describe("middleware types", () => {
 
   it("rejects a union of capability maps", () => {
     function surfaces(): void {
-      const either: FaxiosPlugin<AuthCapability | { cache: true; }> = { name: "either", middleware: async (ctx, next) => next(ctx) };
+      const either: FaxiosPlugin<{ requires: AuthCapability | { cache: true; }; }> = { name: "either", middleware: async (ctx, next) => next(ctx) };
       // @ts-expect-error TS2345 -- keyof the union is never, so nothing would be checked
       faxios.create().use(either);
     }
