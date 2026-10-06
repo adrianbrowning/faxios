@@ -58,7 +58,7 @@ pnpm check
 
 It runs `lint` (type-check plus the `@ts-self-types` and `@ts-expect-error` checks, `lint:esl`, then `lint:fix`), `lint:knip`, `packages/tests/run-tests.sh` (build, pack, unit, browser headless, ESM smoke/module, Deno, Bun) and `test:docs-examples`. Treat any failing stage as blocking. While iterating, a focused `pnpm --filter @faxios/tests exec vitest run --project unit <file>` is faster; finish on `pnpm check`.
 
-`run-tests.sh` allows one run at a time and refuses to start if a harness lockfile differs from `HEAD`; follow its message rather than deleting the lock or the lockfile changes by hand.
+`run-tests.sh` allows one run per checkout (its lock lives in that checkout's `packages/tests/`), so separate git worktrees can run `pnpm check` in parallel. It refuses to start if a harness lockfile differs from `HEAD`; follow its message rather than deleting the lock or the lockfile changes by hand.
 
 Iterate until all pass (or a step is skipped because it does not apply).
 

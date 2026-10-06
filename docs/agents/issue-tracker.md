@@ -5,7 +5,7 @@ Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all o
 ## Conventions
 
 - **Create an issue**: `gh issue create --title "..." --body "..."`. Use a heredoc for multi-line bodies.
-- **Read an issue**: `gh issue view <number> --comments`, filtering comments by `jq` and also fetching labels.
+- **Read an issue**: `gh issue view <number> --comments`, filtering comments by `jq` and also fetching labels. Neither `gh issue view` nor the issue body lists sub-issues; for an epic, list its children with `gh api repos/<owner>/<repo>/issues/<number>/sub_issues --jq '.[] | "\(.number) \(.state) \(.title)"'`.
 - **List issues**: `gh issue list --state open --json number,title,body,labels,comments --jq '[.[] | {number, title, body, labels: [.labels[].name], comments: [.comments[].body]}]'` with appropriate `--label` and `--state` filters.
 - **Comment on an issue**: `gh issue comment <number> --body "..."`
 - **Apply / remove labels**: `gh issue edit <number> --add-label "..."` / `--remove-label "..."`
@@ -17,6 +17,7 @@ Infer the repo from `git remote -v` — `gh` does this automatically when run in
 
 - **Editing a PR title or body:** `gh pr edit` fails on this repo with a Projects (classic) GraphQL deprecation error. Use the REST API instead: write `{"title": "...", "body": "..."}` to a file and run `gh api --method PATCH repos/<owner>/<repo>/pulls/<N> --input <file>`.
 - **Stacked PRs:** `gh stack init` branches from the *local* trunk. Run `git fetch origin` and fast-forward `main` first, or the stack is based on a stale commit.
+- **CI status of a PR:** run `scripts/pr-ci-status.sh <pr>` rather than reading `gh pr checks`. A push can start two runs of one workflow on the same commit, and the concurrency group cancels one; its matrix jobs never expand their names, so `gh pr checks` keeps listing them as failed (e.g. `ESM smoke tests (Node ${{ matrix.node-version }})`) after the other run passes. The script reports the newest run per workflow that wasn't cancelled and exits 0 green, 1 failed, 2 still running or no runs yet.
 
 ## Pull requests as a triage surface
 
