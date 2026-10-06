@@ -87,4 +87,28 @@ describe("plugins::timing", () => {
     assert.strictEqual(events.length, 1);
     assert.strictEqual(events[0]!.durationMs, 25);
   });
+
+  it("reports each try separately when installed after retry", async () => {
+    const events: Array<TimingEvent> = [];
+    let calls = 0;
+    const fetch = async () => {
+      calls++;
+      return slowFetch(10, calls === 1 ? 503 : 200)();
+    };
+    const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }))
+      .use(timing(event => events.push(event)));
+
+    const request = api.get(URL);
+    await vi.advanceTimersByTimeAsync(30);
+    await request;
+
+    assert.strictEqual(events.length, 2);
+    assert.ok(events[0]!.error instanceof FaxiosError);
+    assert.strictEqual(events[0]!.error.response?.status, 503);
+    assert.strictEqual(events[0]!.status, undefined);
+    assert.strictEqual(events[1]!.error, undefined);
+    assert.strictEqual(events[1]!.status, 200);
+    assert.strictEqual(events[0]!.durationMs, 10);
+    assert.strictEqual(events[1]!.durationMs, 10);
+  });
 });

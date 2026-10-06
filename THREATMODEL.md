@@ -32,12 +32,12 @@ The runtime model is general by design. faxios is a transport library and cannot
   └────────┬────────┘
            │ faxios(config)
   ┌────────▼────────┐
+  │  Config merge   │  ← lib/core/mergeConfig.ts
+  │  Header build   │  ← lib/core/FaxiosHeaders.ts
+  ├─────────────────┤
   │  Middleware     │  ← caller-supplied code (.use()), runs in-process
   ├─────────────────┤
-  │  Config merge   │  ← lib/core/mergeConfig.js
-  │  URL build      │  ← lib/core/buildFullPath.js, lib/helpers/buildURL.js
-  │  Header build   │  ← lib/core/AxiosHeaders.js
-  ├─────────────────┤
+  │  URL build      │  ← lib/core/buildFullPath.ts, lib/helpers/buildURL.ts
   │  Adapter        │  ← fetch.ts (web-standard fetch, all runtimes)
   └────────┬────────┘
            │
