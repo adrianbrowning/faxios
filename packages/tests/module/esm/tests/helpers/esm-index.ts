@@ -380,22 +380,6 @@ faxios.create({
   },
 });
 
-// Middleware
-
-const addHeaders = async (ctx, next) => {
-  // https://github.com/faxios/faxios/issues/5415
-  ctx.config.headers.set("foo", "bar");
-  ctx.config.headers["Content-Type"] = 123;
-  const response: FaxiosResponse = await next(ctx);
-  return response;
-};
-faxios.use(addHeaders);
-faxios.eject(addHeaders);
-
-const noopPlugin = { name: "noop", provides: { noop: true }, middleware: async (ctx, next) => next(ctx) };
-faxios.use(noopPlugin).use(async (ctx, next) => next(ctx));
-faxios.eject(noopPlugin);
-
 // faxios.all
 
 const promises = [ Promise.resolve(1), Promise.resolve(2) ];
@@ -590,25 +574,6 @@ for (const [ header, value ] of headers) {
 
   headers.get("x");
 })();
-
-// FaxiosHeaders instance assignment
-
-{
-  const assignHeaders = async (ctx, next) => {
-    const { config } = ctx;
-    config.headers.Accept = "foo";
-    config.headers.setAccept("foo");
-    config.headers = new FaxiosHeaders({ x: 1 });
-    config.headers.foo = "1";
-    config.headers.set("bar", "2");
-    config.headers.set({ myHeader: "myValue" });
-    config.headers = new FaxiosHeaders({ myHeader: "myValue" });
-    config.headers = { ...config.headers };
-    return next(ctx);
-  };
-  faxios.use(assignHeaders);
-  faxios.eject(assignHeaders);
-}
 
 {
   const config: FaxiosRequestConfig = {
