@@ -28,10 +28,10 @@ Below is a list of potential faxios identified error
 | ERR_NOT_SUPPORT           | Feature or method not supported in the current faxios environment.                             |
 | ERR_INVALID_URL           | Invalid URL provided for faxios request.                                                       |
 | ERR_FORM_DATA_DEPTH_EXCEEDED | An object exceeds the configured `maxDepth` while serializing `params` or form data. Default limit is 100 levels. See [`paramsSerializer`](/pages/advanced/request-config#paramsserializer) and [`formSerializer`](/pages/advanced/request-config#formserializer). |
-| ERR_BAD_RESPONSE_SCHEMA   | `response.data` failed `responseSchema` validation. See [Schema validation](/pages/advanced/schema-validation). |
-| ERR_BAD_REQUEST_SCHEMA    | `config.data` failed `requestSchema` validation. |
-| ERR_BAD_PARAMS_SCHEMA     | `config.params` failed `paramsSchema` validation. |
-| ERR_BAD_PATH_PARAMS_SCHEMA | `config.pathParams` failed `pathParamsSchema` validation. |
+| ERR_BAD_RESPONSE_SCHEMA   | The response body failed `responseSchema` validation. `error.response` is always set, and `error.response.data` is the rejected body (after `transformResponse`, typed `unknown`). `toJSON()` does not serialize it. See [Schema validation](/pages/advanced/schema-validation#the-unvalidated-body). |
+| ERR_BAD_REQUEST_SCHEMA    | `config.data` failed `requestSchema` validation. `error.config.data` is the original, unvalidated value. |
+| ERR_BAD_PARAMS_SCHEMA     | `config.params` failed `paramsSchema` validation. `error.config.params` is the original, unvalidated value. |
+| ERR_BAD_PATH_PARAMS_SCHEMA | `config.pathParams` failed `pathParamsSchema` validation. `error.config.pathParams` is the original, unvalidated value. |
 
 ## Handling errors
 

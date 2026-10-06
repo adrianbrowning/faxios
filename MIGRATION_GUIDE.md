@@ -107,6 +107,30 @@ faxios.get('https://api.example.com', {
 });
 ```
 
+### h) Interceptors replaced by `.use()` middleware
+
+`faxios.interceptors` is gone. Register middleware with `.use()`: code before `await next(ctx)` changes the request through `ctx.config`, code after it sees the response, and a `try`/`catch` around `next` replaces an `onRejected` handler. Request interceptors ran last-registered-first while middleware runs in registration order, so check the order when you convert several. `use()` returns the instance, typed with any plugin's request options: keep and use the chained result. Instances made with `create()` start with no middleware. Passing `transitional.legacyInterceptorReqResOrdering` now rejects with `ERR_BAD_OPTION`.
+
+```javascript
+// Before
+faxios.interceptors.request.use(config => {
+  config.headers.set('Authorization', `Bearer ${getToken()}`);
+  return config;
+});
+
+// Now
+const api = faxios.create().use(async (ctx, next) => {
+  ctx.config.headers.set('Authorization', `Bearer ${getToken()}`);
+  return next(ctx);
+});
+```
+
+See [Middleware](https://adrianbrowning.github.io/faxios/pages/advanced/middleware) and [Migrating from interceptors](https://adrianbrowning.github.io/faxios/pages/advanced/migrating-from-interceptors) for response interceptors, error handlers, `runWhen`, `eject` and ordering. The patterns below use middleware.
+
+### i) Request `headers` are strictly typed
+
+Request-config `headers` takes strings, numbers, booleans, `null` and `undefined`. Objects and functions are type errors, so convert other values first: `{ "X-Request-Id": String(id) }`. See [Headers](https://adrianbrowning.github.io/faxios/pages/advanced/headers#header-typing).
+
 ---
 
 ## Overview
@@ -165,19 +189,19 @@ faxios.get('/api/data')
     console.error('Request failed:', error);
   });
 
-// Response interceptor must re-throw or return rejected promise
-faxios.interceptors.response.use(
-  response => response,
-  error => {
+// Error-handling middleware must rethrow, or the caller gets whatever it returns
+const api = faxios.create().use(async (ctx, next) => {
+  try {
+    return await next(ctx);
+  } catch (error) {
     handleError(error);
-    // Must explicitly handle propagation
-    return Promise.reject(error); // or throw error;
+    throw error; // Must explicitly handle propagation
   }
-);
+});
 ```
 
 #### Impact
-- **Response interceptors** can no longer "swallow" errors silently
+- **Error handlers** (now middleware) must rethrow the error or return a response; nothing is "swallowed" by accident
 - **Every API call** must handle errors explicitly or they become unhandled promise rejections
 - **Centralized error handling** requires new patterns
 
@@ -238,29 +262,28 @@ The error handling changes are the most complex part of migrating to faxios 1.x.
 // Create a centralized error handler
 class ApiErrorHandler {
   constructor() {
-    this.setupInterceptors();
-  }
-
-  setupInterceptors() {
-    faxios.interceptors.response.use(
-      response => response,
-      error => {
+    this.api = faxios.create().use(async (ctx, next) => {
+      try {
+        return await next(ctx);
+      } catch (error) {
         // Centralized error processing
         this.processError(error);
-        
-        // Return a resolved promise with error info for handled errors
+
+        // Resolve with error info for handled errors. Middleware must resolve to a
+        // response, so keep the response fields and add the extra ones.
         if (this.isHandledError(error)) {
-          return Promise.resolve({
+          return {
+            ...error.response,
             data: null,
             error: this.normalizeError(error),
             handled: true
-          });
+          };
         }
-        
+
         // Re-throw unhandled errors
-        return Promise.reject(error);
+        throw error;
       }
-    );
+    });
   }
 
   processError(error) {
@@ -307,7 +330,7 @@ const errorHandler = new ApiErrorHandler();
 // Usage in components/services
 async function fetchUserData(userId) {
   try {
-    const response = await faxios.get(`/api/users/${userId}`);
+    const response = await errorHandler.api.get(`/api/users/${userId}`);
     
     // Check if error was handled centrally
     if (response.handled) {
@@ -327,27 +350,26 @@ async function fetchUserData(userId) {
 ```javascript
 // Create a wrapper that provides 0.x-like behavior
 function createApiWrapper() {
-  const api = faxios.create();
-  
-  // Add response interceptor for centralized handling
-  api.interceptors.response.use(
-    response => response,
-    error => {
+  // Add middleware for centralized handling
+  const api = faxios.create().use(async (ctx, next) => {
+    try {
+      return await next(ctx);
+    } catch (error) {
       // Handle common errors centrally
       if (error.response?.status === 401) {
         // Handle auth errors
         handleAuthError();
       }
-      
+
       if (error.response?.status >= 500) {
         // Handle server errors
         showServerErrorNotification();
       }
-      
-      // Always reject to maintain error propagation
-      return Promise.reject(error);
+
+      // Always rethrow to maintain error propagation
+      throw error;
     }
-  );
+  });
 
   // Wrapper function that mimics 0.x behavior
   function safeRequest(requestConfig, options = {}) {
@@ -396,22 +418,19 @@ if (result.error) {
 class GlobalErrorHandler extends EventTarget {
   constructor() {
     super();
-    this.setupInterceptors();
-  }
-
-  setupInterceptors() {
-    faxios.interceptors.response.use(
-      response => response,
-      error => {
+    this.api = faxios.create().use(async (ctx, next) => {
+      try {
+        return await next(ctx);
+      } catch (error) {
         // Emit custom event for global handling
         this.dispatchEvent(new CustomEvent('apiError', {
           detail: { error, timestamp: new Date() }
         }));
 
-        // Always reject to maintain proper error flow
-        return Promise.reject(error);
+        // Always rethrow to maintain proper error flow
+        throw error;
       }
-    );
+    });
   }
 }
 
@@ -434,7 +453,7 @@ globalErrorHandler.addEventListener('apiError', (event) => {
 // Usage remains clean
 async function apiCall() {
   try {
-    const response = await faxios.get('/api/data');
+    const response = await globalErrorHandler.api.get('/api/data');
     return response.data;
   } catch (error) {
     // Error was already handled globally
@@ -563,7 +582,7 @@ const api = faxios.create({
 
 2. **Implement New Error Handling**
    - Choose one of the strategies above
-   - Update response interceptors
+   - Convert response interceptors to middleware
    - Add error handling to API calls
 
 3. **Update Authentication Logic**
@@ -576,16 +595,17 @@ const api = faxios.create({
      }
    });
 
-   // 1.x pattern
-   faxios.interceptors.response.use(
-     response => response,
-     error => {
+   // Current pattern: middleware
+   const api = faxios.create().use(async (ctx, next) => {
+     try {
+       return await next(ctx);
+     } catch (error) {
        if (error.response?.status === 401) {
          logout();
        }
-       return Promise.reject(error); // Always propagate
+       throw error; // Always propagate
      }
-   );
+   });
    ```
 
 #### Phase 3: Testing and Validation
@@ -619,153 +639,102 @@ const axiosCompat = {
 };
 
 function createLegacyWrapper(axiosInstance) {
-  // Add interceptors that provide 0.x-like behavior
-  axiosInstance.interceptors.response.use(
-    response => response,
-    error => {
+  // Add middleware that provides 0.x-like behavior
+  return axiosInstance.use(async (ctx, next) => {
+    try {
+      return await next(ctx);
+    } catch (error) {
       // Handle errors in 0.x style for legacy code
       handleLegacyError(error);
       // Don't propagate certain errors
       if (shouldSuppressError(error)) {
-        return Promise.resolve({ data: null, error: true });
+        return { ...error.response, data: null, error: true };
       }
-      return Promise.reject(error);
+      throw error;
     }
-  );
-  
-  return axiosInstance;
+  });
 }
 ```
 
 ## Common Patterns
 
-### Authentication Interceptors
+### Authentication Middleware
 
-#### Updated Authentication Pattern
+For a plain bearer token, the built-in `authBearer` plugin (`@gcmdev/faxios/plugins/auth-bearer`) sets the header and only sends it to your API's origin. See [Authentication](https://adrianbrowning.github.io/faxios/pages/advanced/authentication).
+
+#### Token Refresh Pattern
 ```javascript
-// Token refresh interceptor for 1.x
-let isRefreshing = false;
-let refreshSubscribers = [];
+// Token refresh middleware: requests that fail with 401 while a refresh is
+// running wait for that refresh instead of starting another
+let refreshing = null;
 
-function subscribeTokenRefresh(cb) {
-  refreshSubscribers.push(cb);
-}
+const api = faxios.create().use(async (ctx, next) => {
+  try {
+    return await next(ctx);
+  } catch (error) {
+    if (error.response?.status !== 401) throw error;
 
-function onTokenRefreshed(token) {
-  refreshSubscribers.forEach(cb => cb(token));
-  refreshSubscribers = [];
-}
+    refreshing ??= refreshToken().finally(() => {
+      refreshing = null;
+    });
 
-faxios.interceptors.response.use(
-  response => response,
-  async error => {
-    const originalRequest = error.config;
-    
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      if (isRefreshing) {
-        // Wait for token refresh
-        return new Promise(resolve => {
-          subscribeTokenRefresh(token => {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-            resolve(faxios(originalRequest));
-          });
-        });
-      }
-      
-      originalRequest._retry = true;
-      isRefreshing = true;
-      
-      try {
-        const newToken = await refreshToken();
-        onTokenRefreshed(newToken);
-        isRefreshing = false;
-        
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        return faxios(originalRequest);
-      } catch (refreshError) {
-        isRefreshing = false;
-        logout();
-        return Promise.reject(refreshError);
-      }
+    let newToken;
+    try {
+      newToken = await refreshing;
+    } catch (refreshError) {
+      logout();
+      throw refreshError;
     }
-    
-    return Promise.reject(error);
+
+    ctx.config.headers.set('Authorization', `Bearer ${newToken}`);
+    // Outside the try, so a second 401 goes to the caller instead of looping
+    return next(ctx);
   }
-);
+});
 ```
 
 ### Retry Logic
 
 ```javascript
-// Retry interceptor for 1.x
-function createRetryInterceptor(maxRetries = 3, retryDelay = 1000) {
-  return faxios.interceptors.response.use(
-    response => response,
-    async error => {
-      const config = error.config;
-      
-      if (!config || !config.retry) {
-        return Promise.reject(error);
-      }
-      
-      config.__retryCount = config.__retryCount || 0;
-      
-      if (config.__retryCount >= maxRetries) {
-        return Promise.reject(error);
-      }
-      
-      config.__retryCount += 1;
-      
-      // Exponential backoff
-      const delay = retryDelay * Math.pow(2, config.__retryCount - 1);
-      await new Promise(resolve => setTimeout(resolve, delay));
-      
-      return faxios(config);
-    }
-  );
-}
+// The built-in retry plugin: 4 tries, waiting 1s, 2s, 4s between them
+import { retry } from '@gcmdev/faxios/plugins/retry';
 
-// Usage
-const api = faxios.create();
-createRetryInterceptor(3, 1000);
+const api = faxios.create().use(retry({
+  attempts: 4,
+  delay: attempt => 1000 * 2 ** (attempt - 1),
+  jitter: 'none',
+}));
 
-// Make request with retry
-api.get('/api/data', { retry: true });
+// Retried on network errors, timeouts and 408, 429, 500, 502, 503 and 504
+await api.get('/api/data');
+
+// Turn retries off for one request
+await api.get('/api/report', { retry: false });
 ```
+
+See [Retry and error recovery](https://adrianbrowning.github.io/faxios/pages/advanced/retry) for the full option list.
 
 ### Loading State Management
 
 ```javascript
-// Loading interceptor for 1.x
+// Loading middleware
 class LoadingManager {
   constructor() {
-    this.requests = new Set();
-    this.setupInterceptors();
-  }
-  
-  setupInterceptors() {
-    faxios.interceptors.request.use(config => {
-      this.requests.add(config);
+    this.pending = 0;
+    this.api = faxios.create().use(async (ctx, next) => {
+      this.pending += 1;
       this.updateLoadingState();
-      return config;
-    });
-    
-    faxios.interceptors.response.use(
-      response => {
-        this.requests.delete(response.config);
+      try {
+        return await next(ctx);
+      } finally {
+        this.pending -= 1;
         this.updateLoadingState();
-        return response;
-      },
-      error => {
-        this.requests.delete(error.config);
-        this.updateLoadingState();
-        return Promise.reject(error);
       }
-    );
+    });
   }
   
   updateLoadingState() {
-    const isLoading = this.requests.size > 0;
+    const isLoading = this.pending > 0;
     // Update your loading UI
     document.body.classList.toggle('loading', isLoading);
   }
@@ -807,7 +776,7 @@ async function fetchData() {
 }
 ```
 
-#### Issue 2: Response Interceptors Not "Handling" Errors
+#### Issue 2: Error Handlers Not "Handling" Errors
 
 **Problem:**
 ```javascript
@@ -820,25 +789,27 @@ faxios.interceptors.response.use(null, error => {
 
 **Solution:**
 ```javascript
-// 1.x style - explicitly control error propagation
-faxios.interceptors.response.use(
-  response => response,
-  error => {
+// Current style - middleware explicitly controls error propagation
+const api = faxios.create().use(async (ctx, next) => {
+  try {
+    return await next(ctx);
+  } catch (error) {
     showErrorMessage(error.message);
-    
+
     // Choose whether to propagate the error
     if (shouldPropagateError(error)) {
-      return Promise.reject(error);
+      throw error;
     }
-    
-    // Return success-like response for "handled" errors
-    return Promise.resolve({
+
+    // Return a response for "handled" errors
+    return {
+      ...error.response,
       data: null,
       handled: true,
       error: normalizeError(error)
-    });
+    };
   }
-);
+});
 ```
 
 #### Issue 3: JSON Parsing Errors
@@ -897,21 +868,17 @@ console.log(response.data.data);
 #### Enable Debug Logging
 ```javascript
 // Add request/response logging
-faxios.interceptors.request.use(config => {
-  console.log('Request:', config);
-  return config;
-});
-
-faxios.interceptors.response.use(
-  response => {
+const api = faxios.create().use(async (ctx, next) => {
+  console.log('Request:', ctx.config);
+  try {
+    const response = await next(ctx);
     console.log('Response:', response);
     return response;
-  },
-  error => {
+  } catch (error) {
     console.log('Error:', error);
-    return Promise.reject(error);
+    throw error;
   }
-);
+});
 ```
 
 #### Compare Behavior

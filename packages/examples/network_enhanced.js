@@ -61,16 +61,14 @@ function enhanceNetworkError(error) {
 }
 
 export function createEnhancedClient(config = {}) {
-  const client = faxios.create(config);
-
-  client.interceptors.response.use(
-    (response) => response,
-    (error) => {
+  return faxios.create(config).use(async (ctx, next) => {
+    try {
+      return await next(ctx);
+    }
+    catch (error) {
       throw enhanceNetworkError(error);
-    },
-  );
-
-  return client;
+    }
+  });
 }
 
 export default enhanceNetworkError;

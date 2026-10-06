@@ -48,19 +48,56 @@ A placeholder with no matching key in `pathParams`, or whose value is `null` or 
 
 ## When validation runs
 
-Input validation runs after the request interceptors and before `transformRequest`, in this order: `pathParams`, then `params`, then `data`. The first failure rejects the request and nothing is sent.
+Validation runs inside dispatch, so every [`.use()` middleware](/pages/advanced/middleware) sees the config before validation on the way in and the validated response on the way out.
 
-`responseSchema` runs after `transformResponse` and before the response interceptors. It only runs for responses that pass `validateStatus`; a rejected response is not validated.
+Input validation runs after the middleware has run its code before `next()`, and before `transformRequest`, in this order: `pathParams`, then `params`, then `data`. The first failure rejects the request and nothing is sent.
+
+`responseSchema` runs after `transformResponse` and before the response reaches the middleware. It only runs for responses that pass `validateStatus`; a rejected response is not validated.
 
 Schemas may validate asynchronously.
 
 ## Handling validation errors
 
-A validation failure rejects with a `FaxiosError` whose `code` is one of the four schema codes above and whose `issues` property lists the problems as `{ message, path? }` objects. `error.toJSON()` includes `issues`.
+A validation failure rejects with a `FaxiosError` whose `code` names the field that failed:
 
-For `ERR_BAD_RESPONSE_SCHEMA`, `error.response` is always present and `error.response.data` holds the body as it was before validation (after `transformResponse`).
+| Code | Raised by |
+| ---- | --------- |
+| `ERR_BAD_RESPONSE_SCHEMA` | `responseSchema` |
+| `ERR_BAD_REQUEST_SCHEMA` | `requestSchema` |
+| `ERR_BAD_PARAMS_SCHEMA` | `paramsSchema` |
+| `ERR_BAD_PATH_PARAMS_SCHEMA` | `pathParamsSchema` |
 
-Use the `isSchemaValidationError` type guard to narrow an unknown error:
+`error.issues` lists the problems as `{ message, path? }` objects. faxios copies only `message` and `path` from the schema result; any other fields your schema library adds are dropped.
+
+### The unvalidated body
+
+On `ERR_BAD_RESPONSE_SCHEMA`, `error.response` is always present. `error.response.data` is the body the schema rejected: the value after `transformResponse` and before validation, typed `unknown`. faxios replaces `response.data` only when validation passes. On success, `response.data` is the schema output and the pre-validation body is not kept.
+
+On the input codes, `error.config` still holds the caller's original `data`, `params` and `pathParams`, because faxios replaces them with the schema output only after validation passes.
+
+`error.toJSON()` includes `issues` but never serializes `response`, so the unvalidated body does not appear in logged or serialized errors. Read it from `error.response.data` if you need it.
+
+### Narrowing with `isSchemaValidationError`
+
+`isSchemaValidationError` narrows an unknown error to the exported `SchemaValidationError` type. It narrows on `code`, so after checking for `ERR_BAD_RESPONSE_SCHEMA`, `error.response` is typed as present:
+
+```ts
+import faxios, { FaxiosError, isSchemaValidationError } from "@gcmdev/faxios";
+import { z } from "zod";
+
+const User = z.object({ id: z.number(), name: z.string() });
+
+try {
+  await faxios.get("/users/1", { responseSchema: User });
+} catch (error) {
+  if (isSchemaValidationError(error) && error.code === FaxiosError.ERR_BAD_RESPONSE_SCHEMA) {
+    const body: unknown = error.response.data;
+    console.log(error.issues, body);
+  }
+}
+```
+
+The same guard covers the input codes:
 
 ```ts
 import faxios, { isSchemaValidationError } from "@gcmdev/faxios";
