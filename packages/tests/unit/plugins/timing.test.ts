@@ -94,7 +94,7 @@ describe("plugins::timing", () => {
   it("reports each try's number when installed after retry", async () => {
     const events: Array<TimingEvent> = [];
     const api = faxios.create({ baseURL: BASE, env: { fetch: flakyFetch(10, [ 503 ]) } })
-      .use(retry({ delay: 5 }))
+      .use(retry({ delay: 5, jitter: "none" }))
       .use(timing(event => events.push(event)));
 
     const request = api.get(URL);
@@ -111,7 +111,7 @@ describe("plugins::timing", () => {
     const events: Array<TimingEvent> = [];
     const api = faxios.create({ baseURL: BASE, env: { fetch: flakyFetch(10, [ 503 ]) } })
       .use(timing(event => events.push(event)))
-      .use(retry({ delay: 5 }));
+      .use(retry({ delay: 5, jitter: "none" }));
 
     const request = api.get(URL);
     await vi.advanceTimersByTimeAsync(25);

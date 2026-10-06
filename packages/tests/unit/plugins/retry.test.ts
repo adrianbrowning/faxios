@@ -8,16 +8,17 @@ import { retry } from "#src/lib/plugins/retry.ts";
 
 const URL = "http://localhost/retry";
 
-type Reply = number | "network";
+type Reply = number | "network" | { status: number; headers: Record<string, string>; };
 
 // A fetch that plays back one reply per call and records how many calls it saw.
 function scriptedFetch(replies: Array<Reply>) {
   const calls: Array<RequestInit | undefined> = [];
   const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
     calls.push(init);
-    const reply = replies[Math.min(calls.length, replies.length) - 1];
+    const reply = replies[Math.min(calls.length, replies.length) - 1]!;
     if (reply === "network") throw new TypeError("fetch failed");
-    return new Response(JSON.stringify({ attempt: calls.length }), { status: reply, headers: { "Content-Type": "application/json" } });
+    const { status, headers } = typeof reply === "number" ? { status: reply, headers: {} } : reply;
+    return new Response(JSON.stringify({ attempt: calls.length }), { status, headers: { "Content-Type": "application/json", ...headers } });
   };
   return { fetch, calls };
 }
@@ -27,13 +28,16 @@ const isStatus = (status: number) => (err: unknown) => err instanceof FaxiosErro
 describe("plugins::retry", () => {
   beforeEach(() => {
     vi.useFakeTimers();
+    // Full jitter waits random() × the backoff; half keeps every test's waits exact.
+    vi.spyOn(Math, "random").mockReturnValue(0.5);
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     vi.useRealTimers();
   });
 
-  it("retries network errors and 5xx responses until one succeeds", async () => {
+  it("retries network errors and the default statuses until one succeeds", async () => {
     const { fetch, calls } = scriptedFetch([ "network", 503, 200 ]);
     const api = faxios.create({ env: { fetch } }).use(retry({ attempts: 3, delay: 10 }));
 
@@ -48,7 +52,7 @@ describe("plugins::retry", () => {
 
   it("waits the delay before each retry, doubling by default", async () => {
     const { fetch, calls } = scriptedFetch([ 503, 503, 200 ]);
-    const api = faxios.create({ env: { fetch } }).use(retry());
+    const api = faxios.create({ env: { fetch } }).use(retry({ jitter: "none" }));
 
     const request = api.get(URL);
     await vi.advanceTimersByTimeAsync(0);
@@ -273,6 +277,185 @@ describe("plugins::retry", () => {
     assert.strictEqual(calls.length, 3);
   });
 
+  describe("policy", () => {
+    // Advances fake time by `ms` and reports how many tries fetch saw by then.
+    const callsAfter = async (calls: Array<unknown>, ms: number) => {
+      await vi.advanceTimersByTimeAsync(ms);
+      return calls.length;
+    };
+
+    it("retries 408, 429, 500, 502, 503 and 504 by default, and no other status", async () => {
+      for (const status of [ 408, 429, 500, 502, 503, 504 ]) {
+        const { fetch, calls } = scriptedFetch([ status, 200 ]);
+        const request = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }))
+          .get(URL);
+        await vi.runAllTimersAsync();
+        await request;
+        assert.strictEqual(calls.length, 2, `status ${status}`);
+      }
+      for (const status of [ 400, 404, 501, 505, 599 ]) {
+        const { fetch, calls } = scriptedFetch([ status, 200 ]);
+        await assert.rejects(faxios.create({ env: { fetch } }).use(retry({ delay: 0 }))
+          .get(URL), isStatus(status));
+        assert.strictEqual(calls.length, 1, `status ${status}`);
+      }
+    });
+
+    it("retries the statuses listed in `statuses` instead, from the plugin or per request", async () => {
+      const teapot = scriptedFetch([ 418, 200 ]);
+      const unavailable = scriptedFetch([ 503, 200 ]);
+      const perRequest = scriptedFetch([ 418, 200 ]);
+
+      const a = faxios.create({ env: { fetch: teapot.fetch } }).use(retry({ delay: 0, statuses: [ 418 ] }))
+        .get(URL);
+      const b = assert.rejects(faxios.create({ env: { fetch: unavailable.fetch } }).use(retry({ delay: 0, statuses: [ 418 ] }))
+        .get(URL), isStatus(503));
+      const c = faxios.create({ env: { fetch: perRequest.fetch } }).use(retry({ delay: 0 }))
+        .get(URL, { retry: { statuses: [ 418 ] } });
+      await vi.runAllTimersAsync();
+      await Promise.all([ a, b, c ]);
+
+      assert.strictEqual(teapot.calls.length, 2);
+      assert.strictEqual(unavailable.calls.length, 1);
+      assert.strictEqual(perRequest.calls.length, 2);
+    });
+
+    it("ignores `statuses` when a custom retryOn replaces the default predicate", async () => {
+      const { fetch, calls } = scriptedFetch([ 501, 200 ]);
+      const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0, statuses: [ 418 ], retryOn: () => true }));
+
+      const request = api.get(URL);
+      await vi.runAllTimersAsync();
+      await request;
+
+      assert.strictEqual(calls.length, 2);
+    });
+
+    it("waits Retry-After seconds on a 503 instead of the backoff, without jitter", async () => {
+      const { fetch, calls } = scriptedFetch([{ status: 503, headers: { "Retry-After": "2" } }, 200 ]);
+      const api = faxios.create({ env: { fetch } }).use(retry({ delay: 10 }));
+
+      const request = api.get(URL);
+      assert.strictEqual(await callsAfter(calls, 1999), 1);
+      assert.strictEqual(await callsAfter(calls, 1), 2);
+      await request;
+    });
+
+    it("waits until a Retry-After HTTP date on a 429", async () => {
+      vi.setSystemTime(new Date("2026-01-01T00:00:00Z"));
+      const { fetch, calls } = scriptedFetch([{ status: 429, headers: { "Retry-After": "Thu, 01 Jan 2026 00:00:03 GMT" } }, 200 ]);
+      const api = faxios.create({ env: { fetch } }).use(retry({ delay: 10 }));
+
+      const request = api.get(URL);
+      assert.strictEqual(await callsAfter(calls, 2999), 1);
+      assert.strictEqual(await callsAfter(calls, 1), 2);
+      await request;
+    });
+
+    it("uses the backoff when Retry-After is on another status or unparseable, and retries at once for a past date", async () => {
+      vi.setSystemTime(new Date("2026-01-01T00:00:00Z"));
+      const replies: Array<Reply> = [
+        { status: 500, headers: { "Retry-After": "60" } },
+        { status: 503, headers: { "Retry-After": "soon" } },
+        { status: 503, headers: { "Retry-After": "Wed, 31 Dec 2025 23:59:00 GMT" } },
+        200,
+      ];
+      const { fetch, calls } = scriptedFetch(replies);
+      const api = faxios.create({ env: { fetch } }).use(retry({ attempts: 4, delay: 100, jitter: "none" }));
+
+      const request = api.get(URL);
+      assert.strictEqual(await callsAfter(calls, 100), 2);
+      assert.strictEqual(await callsAfter(calls, 100), 3);
+      // A date in the past means "now", not the 100ms backoff.
+      assert.strictEqual(await callsAfter(calls, 1), 4);
+      await request;
+    });
+
+    it("rethrows without retrying when Retry-After is past maxRetryAfter (default 5 minutes)", async () => {
+      const tooLong = scriptedFetch([{ status: 503, headers: { "Retry-After": "301" } }, 200 ]);
+      const allowed = scriptedFetch([{ status: 503, headers: { "Retry-After": "301" } }, 200 ]);
+
+      await assert.rejects(faxios.create({ env: { fetch: tooLong.fetch } }).use(retry())
+        .get(URL), isStatus(503));
+      const request = faxios.create({ env: { fetch: allowed.fetch } }).use(retry({ maxRetryAfter: 301_000 }))
+        .get(URL);
+      assert.strictEqual(await callsAfter(allowed.calls, 300_999), 1);
+      assert.strictEqual(await callsAfter(allowed.calls, 1), 2);
+      await request;
+
+      assert.strictEqual(tooLong.calls.length, 1);
+    });
+
+    it("caps the computed backoff at maxDelay (default 30 seconds)", async () => {
+      const capped = scriptedFetch([ 503, 200 ]);
+      const byDefault = scriptedFetch([ 503, 200 ]);
+
+      const a = faxios.create({ env: { fetch: capped.fetch } }).use(retry({ delay: 10_000, maxDelay: 1000, jitter: "none" }))
+        .get(URL);
+      const b = faxios.create({ env: { fetch: byDefault.fetch } }).use(retry({ delay: () => 60_000, jitter: "none" }))
+        .get(URL);
+      assert.strictEqual(await callsAfter(capped.calls, 999), 1);
+      assert.strictEqual(await callsAfter(capped.calls, 1), 2);
+      assert.strictEqual(await callsAfter(byDefault.calls, 29_000 - 1), 1);
+      assert.strictEqual(await callsAfter(byDefault.calls, 1), 2);
+      await Promise.all([ a, b ]);
+    });
+
+    it("applies full jitter to the capped backoff by default", async () => {
+      vi.mocked(Math.random).mockReturnValue(0.25);
+      const { fetch, calls } = scriptedFetch([ 503, 200 ]);
+      const api = faxios.create({ env: { fetch } }).use(retry({ delay: 10_000, maxDelay: 1000 }));
+
+      const request = api.get(URL);
+      assert.strictEqual(await callsAfter(calls, 249), 1);
+      assert.strictEqual(await callsAfter(calls, 1), 2);
+      await request;
+    });
+
+    it("calls onRetry with the error, the try that failed and the wait, before waiting", async () => {
+      const { fetch, calls } = scriptedFetch([ 503, { status: 429, headers: { "Retry-After": "1" } }, 200 ]);
+      const seen: Array<[ number | undefined, number, number, number ]> = [];
+      const api = faxios.create({ env: { fetch } }).use(retry({
+        delay: 100,
+        onRetry: (error, attempt, delayMs) => {
+          seen.push([ error instanceof FaxiosError ? error.response?.status : undefined, attempt, delayMs, calls.length ]);
+        },
+      }));
+
+      const request = api.get(URL);
+      await vi.runAllTimersAsync();
+      await request;
+
+      assert.deepStrictEqual(seen, [[ 503, 1, 50, 1 ], [ 429, 2, 1000, 2 ]]);
+    });
+
+    it("rejects with onRetry's error and stops retrying when onRetry throws", async () => {
+      const { fetch, calls } = scriptedFetch([ 503, 200 ]);
+      const hookError = new Error("stop");
+      const api = faxios.create({ env: { fetch } }).use(retry({
+        delay: 0,
+        onRetry: () => {
+          throw hookError;
+        },
+      }));
+
+      const request = assert.rejects(api.get(URL), hookError);
+      await vi.runAllTimersAsync();
+      await request;
+
+      assert.strictEqual(calls.length, 1);
+    });
+
+    it("checks `methods` before the statuses", async () => {
+      const { fetch, calls } = scriptedFetch([ 503, 200 ]);
+      const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0, statuses: [ 503 ] }));
+
+      await assert.rejects(api.post(URL, {}), isStatus(503));
+
+      assert.strictEqual(calls.length, 1);
+    });
+  });
+
   describe("option validation", () => {
     const isBadValue = (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE;
     const isUnknown = (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION;
@@ -292,6 +475,31 @@ describe("plugins::retry", () => {
       assert.throws(() => retry({ retries: 3 }), isUnknown);
       // @ts-expect-error TS2345 -- null isn't an options object
       assert.throws(() => retry(null), isBadValue);
+      for (const statuses of [[ 99 ], [ 600 ], [ 503.5 ], [ Number.NaN ], [ "503" ], "503" ]) {
+        // @ts-expect-error TS2322 -- statuses must be an array of status codes
+        assert.throws(() => retry({ statuses }), isBadValue, `statuses: ${JSON.stringify(statuses)}`);
+      }
+      for (const ms of [ Number.NaN, -1, Number.POSITIVE_INFINITY ]) {
+        assert.throws(() => retry({ maxDelay: ms }), isBadValue, `maxDelay: ${ms}`);
+        assert.throws(() => retry({ maxRetryAfter: ms }), isBadValue, `maxRetryAfter: ${ms}`);
+      }
+      // @ts-expect-error TS2322 -- jitter is "full" or "none"
+      assert.throws(() => retry({ jitter: "half" }), isBadValue);
+      // @ts-expect-error TS2322 -- onRetry must be a function
+      assert.throws(() => retry({ onRetry: true }), isBadValue);
+    });
+
+    it("rejects invalid policy options per request before sending anything", async () => {
+      const { fetch, calls } = scriptedFetch([ 503 ]);
+      const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }));
+
+      await assert.rejects(api.get(URL, { retry: { statuses: [ 600 ] } }), isBadValue);
+      await assert.rejects(api.get(URL, { retry: { maxDelay: -1 } }), isBadValue);
+      await assert.rejects(api.get(URL, { retry: { maxRetryAfter: Number.NaN } }), isBadValue);
+      // @ts-expect-error TS2769 -- jitter is "full" or "none"
+      await assert.rejects(api.get(URL, { retry: { jitter: "some" } }), isBadValue);
+
+      assert.strictEqual(calls.length, 0);
     });
 
     it("rejects empty or non-token method names, from the plugin or per request", async () => {
