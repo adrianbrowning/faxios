@@ -218,22 +218,12 @@ const api = faxios
 
 ### Use the built-in plugins from their subpaths
 
-```ts
-import faxios from "@gcmdev/faxios";
-import { authBearer } from "@gcmdev/faxios/plugins/auth-bearer";
-import { retry } from "@gcmdev/faxios/plugins/retry";
-import { timing } from "@gcmdev/faxios/plugins/timing";
-
-const api = faxios
-  .create({ baseURL: "https://api.example.com" })
-  .use(timing(event => console.log(event.method, event.url, event.durationMs)))
-  .use(retry({ attempts: 3 }))
-  .use(authBearer(async () => "token-from-your-store"));
-
-await api.get("/reports", { retry: { attempts: 5 } }); // per-request override
-await api.post("/reports", { title: "Q3" });           // POST is not retried by default
-await api.get("/health", { retry: false });
-```
+Each built-in plugin has its own subpath and is not exported from the root:
+`authBearer` from `@gcmdev/faxios/plugins/auth-bearer`, `retry` from
+`@gcmdev/faxios/plugins/retry`, `timing` from `@gcmdev/faxios/plugins/timing`. Install them with
+`.use()` on the instance and keep the returned value, because it is the only value typed with the
+plugin's request options (such as `retry: false`). Before writing plugin code, read
+[plugins](references/plugins.md) for a complete installation example.
 
 - `authBearer(getToken, { scheme, header, origins, overwrite })` sends the token only to the
   instance's `baseURL` origin (or only to relative URLs without one). Use `origins` to allow more.
@@ -244,8 +234,8 @@ await api.get("/health", { retry: false });
   the API dedupes repeats. Stream bodies are never replayed. Cancellation never retries.
 - `timing(onTiming)` reports `{ method, url, durationMs, status | error }` with no headers or body.
   Install it before `retry` for one event per call, after it for one event per attempt.
-- Write your own plugin with `definePlugin` from `@gcmdev/faxios/plugins`; read
-  [plugin authoring](references/plugins.md) first.
+- To write your own plugin, use `definePlugin` from `@gcmdev/faxios/plugins`. The same
+  [plugins](references/plugins.md) reference covers authoring.
 
 ### Customise the transport through fetch, not adapters
 
@@ -330,4 +320,5 @@ export only. Instances from `create()` do not have them; import them by name ins
 
 - When porting an Axios codebase, read [Axios differences](references/axios-differences.md)
   before changing call sites.
-- When writing a reusable plugin or typed middleware, read [plugin authoring](references/plugins.md).
+- When installing `authBearer`, `retry` or `timing`, or writing a reusable plugin or typed
+  middleware, read [plugins](references/plugins.md).

@@ -152,6 +152,6 @@ gaps:
     context: 'The skill follows source and tests instead; docs rewrite is tracked in PRE_RELEASE_DOCS.md.'
     status: open
   - skill: configure-requests
-    question: 'How do SKILL.md examples importing @gcmdev/faxios/plugins/* pass intent validate?'
-    context: 'Intent 0.5.3 (and 0.5.4) map <package>/* to src/* and the package root, ignoring package.json exports, so the correct consumer subpath imports fail example type-checking and maintainer check.'
+    question: 'When can SKILL.md examples importing @gcmdev/faxios/plugins/* return from references/plugins.md?'
+    context: 'Intent 0.5.3 and 0.5.4 map <package>/* to src/* and the package root and ignore package.json exports, so correct consumer subpath imports fail SKILL.md example type-checking. The plugin example lives in references/plugins.md until Intent fixes this upstream.'
     status: open

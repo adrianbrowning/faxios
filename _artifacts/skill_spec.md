@@ -43,7 +43,7 @@ and stop generating Axios APIs it removed or never verified.
 
 | Skill | Subsystems | Reference candidates |
 | --- | --- | --- |
-| configure-requests | — (one fetch transport) | `references/plugins.md` (definePlugin type slots), `references/axios-differences.md` (porting table) |
+| configure-requests | — (one fetch transport) | `references/plugins.md` (built-in plugin installation, definePlugin type slots), `references/axios-differences.md` (porting table) |
 
 ## Remaining Gaps
 
@@ -52,6 +52,7 @@ and stop generating Axios APIs it removed or never verified.
 | configure-requests | Should `./unsafe/*` subpaths get a documented stability statement? | open |
 | configure-requests | Is Node proxying through `fetchOptions.dispatcher` a supported, tested path? | open |
 | configure-requests | `MIGRATION_GUIDE.md` and several docs pages still show interceptors, Node 18 and custom adapters | open |
+| configure-requests | Intent resolves `@gcmdev/faxios/*` to `src/*` and ignores `exports`, so subpath imports can't be type-checked in SKILL.md | open (upstream) |
 
 ## Recommended Skill File Structure
 
@@ -77,6 +78,12 @@ and stop generating Axios APIs it removed or never verified.
   tests.
 - **`unsafe/*` is out of scope for application code.** The skill lists those exports but tells
   agents not to use them.
+- **Built-in plugin example lives in `references/plugins.md`** (maintainer decision, 2026-10-06).
+  Intent 0.5.3 type-checks SKILL.md code blocks but resolves `@gcmdev/faxios/*` to `src/*`, which
+  doesn't match the published `exports`, so a block importing `@gcmdev/faxios/plugins/retry` can't
+  pass `maintainer check`. SKILL.md names each subpath in prose and links the reference. The
+  reference block type-checks against the built package, but Intent does not check reference
+  files. Move the example back into SKILL.md once Intent resolves subpath exports.
 
 ## Coverage and batch history
 
@@ -119,9 +126,17 @@ and stop generating Axios APIs it removed or never verified.
       - One run only. No reliability claim, and no run without the skill to compare against.
     - Discovery: the consumer loaded the skill from `intent list` without being told its name.
       Adjacent should-not-load prompts were not run.
-    - `intent validate` (0.5.3) reports 5 errors in the plugin-subpath block. Intent maps
-      `@gcmdev/faxios/*` to `packages/lib/src/*` and `packages/lib/*` and ignores the
-      package's `exports` map, so `@gcmdev/faxios/plugins/retry` (really
-      `src/lib/plugins/retry.ts`) does not resolve. Two of the errors follow from that. The
-      imports are correct for consumers (the same block type-checks against the built package).
-      `maintainer check` stays red until Intent resolves subpath exports. Open.
+    - Second fresh consumer, after the plugin example moved: the same fixture, repacked, with a
+      task to build a client with a bearer token, retries and a never-retried `/health`. The
+      agent loaded the skill, followed the link to `references/plugins.md` and passed all 5 checks
+      of a runtime grader (3 attempts, token sent, `/health` called once, URL, data returned).
+      - The grader passed a reference solution.
+      - It failed a control that never installs `retry`.
+      - One run only.
+    - `intent validate` (0.5.3) first reported 5 errors in a SKILL.md block that imported the
+      plugin subpaths. Intent maps `@gcmdev/faxios/*` to `packages/lib/src/*` and
+      `packages/lib/*` and ignores the package's `exports` map, so `@gcmdev/faxios/plugins/retry`
+      (really `src/lib/plugins/retry.ts`) does not resolve, and two errors followed from that.
+      The block moved to `references/plugins.md` (see Decisions). `intent validate` and
+      `maintainer check` now pass. All TS blocks in SKILL.md and `plugins.md` type-check against
+      the built package.

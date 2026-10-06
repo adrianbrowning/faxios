@@ -3,13 +3,13 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "13ce077bd3aa25d00151badcf3bae2295f26ff648f73d1bf893f0e5737f10eec",
+      "fingerprint": "86468936e373b5b59bbeb2b859597d05b7b7a17a664d573233733914b1d31cac",
       "snapshot": {
         "MIGRATION_GUIDE.md": "b9ca9bfaebf38d3415e6c7f9c81bc37cd0fdc08408e5a99d1e3d7e094e50aa15",
         "packages/lib/package.json": "f43c6ffeb19c945355f5c65529d79406440543b45aed6e536c5cfd975924c425",
-        "packages/lib/skills/configure-requests/SKILL.md": "cb4b3eabcdbdb7a737a906b9840d95a6e51cb93fa0c46551c769393fd027dc93",
+        "packages/lib/skills/configure-requests/SKILL.md": "48f730e8c628dbed2a8fa724dab44aeaaee24f101583efa2823a6e1d71a943c2",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "8e9777c8850e9f89fd5443b4c3948d75a78b060ed8980d01033e6613e9e02477",
-        "packages/lib/skills/configure-requests/references/plugins.md": "9397b79ad7af4a51b859cd59a5b10e136ee240d8977a2e68dc0ddc29e602023b",
+        "packages/lib/skills/configure-requests/references/plugins.md": "b0c64435f72ba538e6eaac024fefbb150b43daffdd8434a108cce21d49dbfdf5",
         "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
         "packages/lib/src/lib/adapters/fetch.ts": "b45d7f2c9492e142a7418a1c305fcceab65e03170c86f70ab33fca5583258dc9",
         "packages/lib/src/lib/core/Faxios.ts": "a75b8c1e309db8517d049093d8c39ee0f90e5c2be32a3d530f52da01ea14145f",
@@ -31,24 +31,24 @@
         "packages/tests/unit/plugins/retry.test.ts": "a668e53ecac9b1747a73bba29c3674dede68a8a46b3813b951c97ab4b998eb57",
         "packages/tests/unit/plugins/timing.test.ts": "a0cecdd2620fd5041cfd770ec51fa1ca5e8a71297feaa60129adc67822d84cb3"
       },
-      "head": "01316e1099c60976353ebc6db91a69d83bcfd807",
+      "head": "c3426b6e9d9f75c44b8f51d5f652f25e0228917f",
       "outcome": "updated",
-      "reason": "Authored configure-requests (batch 1) from faxios source and tests at 01316e10. intent validate is unresolved: 5 example errors from plugin-subpath resolution keep maintainer check failing.",
+      "reason": "Moved the built-in plugin installation example from SKILL.md to references/plugins.md, because Intent 0.5.3 cannot resolve @gcmdev/faxios/* subpath exports in SKILL.md examples. SKILL.md names each subpath in prose and links the reference.",
       "evidence": [
-        "A throwaway runtime script against the built package (injected env.fetch) confirmed the behavioural claims. Every TS block in SKILL.md and the references type-checks against the built package. In a fresh-consumer run, the Axios port passed 8/8 grader checks; the grader passed a reference port and failed a wrong port. intent validate 0.5.3 still reports 5 errors in the plugin-subpath block because Intent ignores package.json exports when resolving @gcmdev/faxios/*."
+        "intent validate passes. All TS blocks in SKILL.md and references/plugins.md type-check against the built package from packages/tests. A second fresh consumer followed the link to references/plugins.md and passed 5/5 runtime grader checks; the grader passed a reference solution and failed a control without retry."
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "5481124f894032f61e476475aac2171268767837811d85d47646ea7dd9e3b945",
+      "fingerprint": "41226769ab31507f72bce446f206ea9240a416284eed68c060aa99612bbe2a46",
       "snapshot": {
         "MIGRATION_GUIDE.md": "b9ca9bfaebf38d3415e6c7f9c81bc37cd0fdc08408e5a99d1e3d7e094e50aa15",
-        "_artifacts/domain_map.yaml": "2228d7a9a3d8baf60fdfa078e98a4045b0426f403bbc174cbf9133238f19ef33",
-        "_artifacts/skill_spec.md": "d5893e2ac68f7dbb900a144eafb874aea064c9572d158441b80fa3a12f074795",
+        "_artifacts/domain_map.yaml": "583a9b88216a4a135f0d47a9827997aaac253c04cc0fa6a037a7d0357946ed80",
+        "_artifacts/skill_spec.md": "88ff053e7ac6caaee15bec0866d493ed53af8c33b461bbde110f20c26ca34928",
         "_artifacts/skill_tree.yaml": "42d72e7212b31827fade121697efb94dd1751d179bd76315722e017e5e66538e",
         "packages/lib/package.json": "f43c6ffeb19c945355f5c65529d79406440543b45aed6e536c5cfd975924c425",
-        "packages/lib/skills/configure-requests/SKILL.md": "cb4b3eabcdbdb7a737a906b9840d95a6e51cb93fa0c46551c769393fd027dc93",
+        "packages/lib/skills/configure-requests/SKILL.md": "48f730e8c628dbed2a8fa724dab44aeaaee24f101583efa2823a6e1d71a943c2",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "8e9777c8850e9f89fd5443b4c3948d75a78b060ed8980d01033e6613e9e02477",
-        "packages/lib/skills/configure-requests/references/plugins.md": "9397b79ad7af4a51b859cd59a5b10e136ee240d8977a2e68dc0ddc29e602023b",
+        "packages/lib/skills/configure-requests/references/plugins.md": "b0c64435f72ba538e6eaac024fefbb150b43daffdd8434a108cce21d49dbfdf5",
         "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
         "packages/lib/src/lib/adapters/fetch.ts": "b45d7f2c9492e142a7418a1c305fcceab65e03170c86f70ab33fca5583258dc9",
         "packages/lib/src/lib/core/Faxios.ts": "a75b8c1e309db8517d049093d8c39ee0f90e5c2be32a3d530f52da01ea14145f",
@@ -70,11 +70,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "a668e53ecac9b1747a73bba29c3674dede68a8a46b3813b951c97ab4b998eb57",
         "packages/tests/unit/plugins/timing.test.ts": "a0cecdd2620fd5041cfd770ec51fa1ca5e8a71297feaa60129adc67822d84cb3"
       },
-      "head": "01316e1099c60976353ebc6db91a69d83bcfd807",
+      "head": "c3426b6e9d9f75c44b8f51d5f652f25e0228917f",
       "outcome": "updated",
-      "reason": "Created domain_map.yaml, skill_spec.md and skill_tree.yaml for batch 1.",
+      "reason": "Recorded the plugin-example move decision, the upstream Intent gap and the second fresh-consumer result.",
       "evidence": [
-        "The records cover configure-requests (packages/lib): its 4 tasks, 9 failure modes, the decisions (package-only distribution, root _artifacts, one skill) and 4 open gaps, including the Intent subpath-resolution defect."
+        "skill_spec.md has the new decision, gap row and check entries. The domain_map.yaml gap now says the example lives in references/plugins.md until Intent resolves subpath exports. skill_tree.yaml needed no change (maintainer sync: nothing to synchronize)."
       ]
     },
     "source:knip.json": {

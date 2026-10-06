@@ -1,7 +1,31 @@
-# Plugin authoring
+# Plugins
 
-Read this before writing a reusable faxios plugin, typing middleware options, or sharing a value
-between plugins. Plain one-off middleware (`api.use(async (ctx, next) => ...)`) does not need it.
+Read this before installing the built-in plugins (`authBearer`, `retry`, `timing`), writing a
+reusable faxios plugin, typing middleware options, or sharing a value between plugins. Plain
+one-off middleware (`api.use(async (ctx, next) => ...)`) does not need it.
+
+## Install the built-in plugins
+
+```ts
+import faxios from "@gcmdev/faxios";
+import { authBearer } from "@gcmdev/faxios/plugins/auth-bearer";
+import { retry } from "@gcmdev/faxios/plugins/retry";
+import { timing } from "@gcmdev/faxios/plugins/timing";
+
+const api = faxios
+  .create({ baseURL: "https://api.example.com" })
+  .use(timing(event => console.log(event.method, event.url, event.durationMs)))
+  .use(retry({ attempts: 3 }))
+  .use(authBearer(async () => "token-from-your-store"));
+
+await api.get("/reports", { retry: { attempts: 5 } }); // per-request override
+await api.post("/reports", { title: "Q3" });           // POST is not retried by default
+await api.get("/health", { retry: false });
+```
+
+Check: `faxios.get("/health", { retry: false })` on the default export (or any instance without
+`retry()` installed) is a type error. Use the value `.use()` returned. The option defaults and
+ordering rules are in the SKILL.md "Use the built-in plugins from their subpaths" section.
 
 ## Build a plugin with `definePlugin`
 
