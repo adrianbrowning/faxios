@@ -83,9 +83,43 @@ type RejectDuplicateCapabilities<THave, TProv> = [DuplicateCapabilities<THave, T
 // NoInfer: TypeScript infers into conditional branches, and this branch must stay a check only.
 type RequireProvidesValue<TProv> = [keyof TProv] extends [never] ? unknown : { provides: NoInfer<TProv>; };
 
-type CheckPlugin<THave, TReq, TProv> = RequireCapabilities<THave, TReq>
+// use() skips a nullish provides, so it adds no capabilities. Without this, `provides: undefined`
+// infers TProv as undefined and `TCaps & undefined` collapses to never, which satisfies every check.
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- no capabilities, as in FaxiosInstance
+type ProvidedCapabilities<TProv> = [TProv] extends [null | undefined] ? {} : TProv;
+
+// use() reads capability names with Object.keys() and skips the keys that could pollute a prototype,
+// so the registry only holds string names. A symbol, number or dangerous key would be typed on
+// ctx.capabilities without matching a registered name, and nothing could satisfy a requirement for one.
+type UnsupportedCapabilityKeys<TCaps> = Extract<keyof TCaps, symbol | number | "__proto__" | "constructor" | "prototype">;
+
+type RejectUnsupportedCapabilityKeys<TReq, TProv> = [UnsupportedCapabilityKeys<TReq> | UnsupportedCapabilityKeys<TProv>] extends [never]
+  ? unknown
+  : { "faxios: capability names must be strings other than __proto__, constructor and prototype": UnsupportedCapabilityKeys<TReq> | UnsupportedCapabilityKeys<TProv>; };
+
+// Nothing sets a plugin option for the caller, so a required one would be typed as present in the
+// plugin's middleware while every request that omits it leaves it undefined.
+type RequiredOptions<TOpt> = { [K in keyof TOpt]-?: object extends Pick<TOpt, K> ? never : K; }[keyof TOpt];
+
+type RequireOptionalOptions<TOpt> = [RequiredOptions<TOpt>] extends [never]
+  ? unknown
+  : { "faxios: plugin request options must be optional": RequiredOptions<TOpt>; };
+
+type UnionToIntersection<T> = (T extends unknown ? (value: T) => void : never) extends (value: infer I) => void ? I : never;
+type IsUnion<T> = [T] extends [UnionToIntersection<T>] ? false : true;
+
+// keyof a union holds only the keys every member shares, so a union of capability maps would check
+// nothing. Which member applies can't be known, so a union is rejected.
+type RejectUnionCapabilities<TReq, TProv> = IsUnion<TReq> extends true
+  ? { "faxios: a plugin's required capabilities can't be a union": TReq; }
+  : IsUnion<TProv> extends true ? { "faxios: a plugin's provided capabilities can't be a union": TProv; } : unknown;
+
+type CheckPlugin<THave, TReq, TProv, TOpt> = RequireCapabilities<THave, TReq>
   & RejectDuplicateCapabilities<THave, TProv>
-  & RequireProvidesValue<TProv>;
+  & RequireProvidesValue<TProv>
+  & RejectUnsupportedCapabilityKeys<TReq, TProv>
+  & RequireOptionalOptions<TOpt>
+  & RejectUnionCapabilities<TReq, TProv>;
 
 /**
  * A faxios instance. `TOpts` holds the request options that installed plugins add to every
@@ -102,8 +136,8 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = Pick<Faxios, "eject"> & {
    * that provides a capability another installed plugin already provides, is a type error.
    */
   use: <TReq = unknown, TProv = unknown, TOpt = unknown>(
-    middleware: FaxiosMiddleware<TOpts, TCaps> | (FaxiosPluginArgument<TReq, TProv, TOpt> & CheckPlugin<TCaps, TReq, TProv>)
-  ) => FaxiosInstance<TOpts & TOpt, TCaps & TProv>;
+    middleware: FaxiosMiddleware<TOpts, TCaps> | (FaxiosPluginArgument<TReq, TProv, TOpt> & CheckPlugin<TCaps, TReq, TProv, TOpt>)
+  ) => FaxiosInstance<TOpts & TOpt, TCaps & ProvidedCapabilities<TProv>>;
   define: <
     PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined,
     P extends StandardSchemaV1 | undefined = undefined,

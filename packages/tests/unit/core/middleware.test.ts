@@ -22,7 +22,11 @@ const sentHeader = (sent: Sent, name: string) => new Headers(sent.init?.headers)
 
 const passthrough: FaxiosMiddleware = async (ctx, next) => next(ctx);
 
-function plugin<TProvides extends Record<string, unknown>>(name: string, provides: TProvides, middleware: FaxiosMiddleware = passthrough): FaxiosPlugin<unknown, TProvides> {
+function plugin<TProvides extends Record<string, unknown>>(
+  name: string,
+  provides: TProvides,
+  middleware: FaxiosMiddleware<unknown, TProvides> = async (ctx, next) => next(ctx)
+): FaxiosPlugin<unknown, TProvides> {
   return { name, provides, middleware };
 }
 

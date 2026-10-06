@@ -137,17 +137,22 @@ function resolveAllowAbsoluteUrls(
   }
 }
 
+// The registry is untyped: each entry was checked against its instance's options and capabilities
+// when use() accepted it, and the runtime only forwards contexts between entries.
+type AnyContextMiddleware = FaxiosMiddleware<unknown, unknown>;
+type AnyContextNext = FaxiosNext<unknown, unknown>;
+
 type MiddlewareEntry = {
   // The value passed to use(), kept only for eject()'s identity check.
   ref: unknown;
-  run: FaxiosMiddleware;
+  run: AnyContextMiddleware;
   provided: Array<string>;
 };
 
-function composeMiddleware(entries: ReadonlyArray<MiddlewareEntry>, dispatch: FaxiosNext): FaxiosNext {
+function composeMiddleware(entries: ReadonlyArray<MiddlewareEntry>, dispatch: AnyContextNext): AnyContextNext {
   // Plain closures, no async wrapper: a middleware that calls next() before awaiting reaches the
   // adapter in the same tick, exactly as a request without middleware does.
-  return entries.reduceRight<FaxiosNext>((next, entry) => ctx => entry.run(ctx, next), dispatch);
+  return entries.reduceRight<AnyContextNext>((next, entry) => ctx => entry.run(ctx, next), dispatch);
 }
 
 // Each dispatch works on its own copy, so dispatch's in-place writes (path-param substitution,
@@ -203,7 +208,7 @@ class Faxios {
   #middleware: ReadonlyArray<MiddlewareEntry> = [];
   // Middleware and capabilities are replaced, never mutated, on use()/eject(): a request keeps the
   // snapshot it started with, and composes nothing per call.
-  #composed: FaxiosNext | null = null;
+  #composed: AnyContextNext | null = null;
   #capabilities: Record<string, unknown> = Object.create(null);
 
   constructor(instanceConfig?: FaxiosRequestConfig) {
@@ -228,7 +233,7 @@ class Faxios {
     }
     const provides = own("provides");
     const provided = provides == null ? [] : this.#addCapabilities(String(own("name")), provides);
-    this.#setMiddleware([ ...this.#middleware, { ref: middleware, run: run as FaxiosMiddleware, provided }]);
+    this.#setMiddleware([ ...this.#middleware, { ref: middleware, run: run as unknown as AnyContextMiddleware, provided }]);
     return this;
   }
 

@@ -31,7 +31,7 @@ const assignHeaders: FaxiosMiddleware = async (ctx, next) => {
 
 const refreshOn401: FaxiosPlugin<AuthBearerCapability> = {
   name: "refreshOn401",
-  middleware: async (ctx, next: FaxiosNext) => {
+  middleware: async (ctx, next: FaxiosNext<unknown, AuthBearerCapability>) => {
     const token: string = await ctx.capabilities.auth.getToken();
     ctx.config.headers.set("Authorization", `Bearer ${token}`);
     return next(ctx);

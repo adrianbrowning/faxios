@@ -212,9 +212,66 @@ describe("middleware types", () => {
       // @ts-expect-error TS2345 -- explicit TProvides without a provides value
       faxios.create().use<unknown, AuthCapability>({ name: "explicit", middleware: async (ctx, next) => next(ctx) });
       // Unannotated: middleware that expects auth can't conjure it without provides.
-      const expectsAuth = async (ctx: FaxiosContext<unknown, AuthCapability>, next: FaxiosNext) => next(ctx);
+      const expectsAuth = async (ctx: FaxiosContext<unknown, AuthCapability>, next: FaxiosNext<unknown, AuthCapability>) => next(ctx);
       // @ts-expect-error TS2322 -- nothing provides auth, so this middleware can't be installed
       faxios.create().use({ name: "expectsAuth", middleware: expectsAuth });
+    }
+    void surfaces;
+  });
+
+  it("treats a nullish provides as no capabilities", () => {
+    function surfaces(): void {
+      const nullish = faxios.create().use({ name: "nullish", provides: undefined, middleware: async (ctx, next) => next(ctx) });
+      expectTypeOf(nullish).toEqualTypeOf<FaxiosInstance<NoPlugins, NoPlugins>>();
+      // @ts-expect-error TS2345 -- use() skips a nullish provides, so auth is still missing
+      nullish.use(refreshOn401());
+    }
+    void surfaces;
+  });
+
+  it("rejects a plugin with a required request option", () => {
+    function surfaces(): void {
+      const tenant: FaxiosPlugin<unknown, unknown, { tenant: string; }> = { name: "tenant", middleware: async (ctx, next) => next(ctx) };
+      // @ts-expect-error TS2345 -- requests that omit tenant would reach the middleware with it undefined
+      faxios.create().use(tenant);
+      const optionalTenant: FaxiosPlugin<unknown, unknown, { tenant?: string; }> = { name: "tenant", middleware: async (ctx, next) => next(ctx) };
+      faxios.create().use(optionalTenant);
+    }
+    void surfaces;
+  });
+
+  it("rejects capability names use() can't copy", () => {
+    function surfaces(): void {
+      const sym = Symbol("auth");
+      // @ts-expect-error TS2345 -- Object.keys() skips symbol keys, so the capability is never set
+      faxios.create().use({ name: "symbolCap", provides: { [sym]: { getToken } }, middleware: async (ctx, next) => next(ctx) });
+      const protoCap: FaxiosPlugin<unknown, { prototype: string; }> = { name: "protoCap", provides: { prototype: "p" }, middleware: async (ctx, next) => next(ctx) };
+      // @ts-expect-error TS2345 -- use() drops prototype-polluting keys
+      faxios.create().use(protoCap);
+      const needsSym: FaxiosPlugin<{ [sym]: string; }> = { name: "needsSym", middleware: async (ctx, next) => next(ctx) };
+      // @ts-expect-error TS2345 -- no plugin can provide a symbol capability, so the requirement is invalid
+      faxios.create().use(needsSym);
+      const numericCap: FaxiosPlugin<unknown, { 1: string; }> = { name: "numericCap", provides: { 1: "one" }, middleware: async (ctx, next) => next(ctx) };
+      // @ts-expect-error TS2345 -- capability names are strings; a numeric key never matches one
+      faxios.create().use(numericCap);
+    }
+    void surfaces;
+  });
+
+  it("makes next() take the context the middleware received", () => {
+    function surfaces(): void {
+      faxios.create().use(authBearer(getToken))
+        // @ts-expect-error TS2741 -- dropping auth would break the middleware after this one
+        .use(async (ctx, next) => next({ ...ctx, capabilities: {} }));
+    }
+    void surfaces;
+  });
+
+  it("rejects a union of capability maps", () => {
+    function surfaces(): void {
+      const either: FaxiosPlugin<AuthCapability | { cache: true; }> = { name: "either", middleware: async (ctx, next) => next(ctx) };
+      // @ts-expect-error TS2345 -- keyof the union is never, so nothing would be checked
+      faxios.create().use(either);
     }
     void surfaces;
   });
