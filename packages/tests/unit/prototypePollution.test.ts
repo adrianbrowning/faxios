@@ -1350,4 +1350,42 @@ describe("Prototype Pollution Protection", () => {
       }
     });
   });
+
+  // use() registers plugins from caller objects; only their own fields may count.
+  describe("use() plugin field reads", () => {
+    const okFetch = async () => new Response(null, { status: 200 });
+
+    it("ignores an inherited provides on plugins that declare none", async () => {
+      ObjProto.provides = { auth: { getToken: async () => "stolen" } };
+      let seen: unknown;
+      try {
+        const api = faxios.create({ env: { fetch: okFetch } })
+          .use(faxios.plugins.retry({ delay: 0 }))
+          .use(faxios.plugins.timing(() => undefined))
+          .use(async (ctx, next) => {
+            seen = Object.keys(ctx.capabilities);
+            return next(ctx);
+          });
+        await api.get("http://test.local/x");
+      }
+      finally {
+        delete ObjProto.provides;
+      }
+
+      assert.deepStrictEqual(seen, []);
+    });
+
+    it("ignores an inherited middleware on a plugin object without one", () => {
+      ObjProto.middleware = async (ctx: unknown, next: (c: unknown) => unknown) => next(ctx);
+      try {
+        assert.throws(
+          () => faxios.create().use({ name: "empty" } as never),
+          (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE
+        );
+      }
+      finally {
+        delete ObjProto.middleware;
+      }
+    });
+  });
 });
