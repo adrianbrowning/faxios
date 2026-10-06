@@ -2,6 +2,13 @@ import { describe, expectTypeOf, it } from "vitest";
 import faxios, { FaxiosError } from "#src/index.ts";
 import type { FaxiosContext, FaxiosInstance, FaxiosNext, FaxiosPlugin } from "#src/index.ts";
 
+// use() infers through these internal helper types; users write FaxiosPlugin, so neither is
+// importable from the package root.
+// @ts-expect-error -- internal: not exported from the package root
+export type RootPluginBase = import("#src/index.ts").FaxiosPluginBase;
+// @ts-expect-error -- internal: not exported from the package root
+export type RootPluginArgument = import("#src/index.ts").FaxiosPluginArgument;
+
 // These functions are type-checked by `lint:ts` and never called (except the plain
 // expectTypeOf assertions): each call site passes a fresh object literal so excess-property
 // checks apply.
