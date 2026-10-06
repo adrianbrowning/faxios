@@ -71,7 +71,7 @@ vi.mocked(faxios.get).mockRejectedValueOnce(mockError);
 
 ## Mocking the network with `env.fetch`
 
-faxios sends every request through `fetch`, and the `env.fetch` option replaces the function it calls. Pass a fake `fetch` that returns a `Response` to test the full request pipeline (config merging, interceptors, transforms, schema validation and error handling) without a server:
+faxios sends every request through `fetch`, and the `env.fetch` option replaces the function it calls. Pass a fake `fetch` that returns a `Response` to test the full request pipeline (config merging, middleware, transforms, schema validation and error handling) without a server:
 
 ```js
 import faxios from "@gcmdev/faxios";
@@ -99,15 +99,21 @@ const { data } = await api.get("/users/1"); // { id: 1, name: "Jay" }
 
 A non-2xx `Response` rejects with a `FaxiosError` whose `response.status` is the mocked status. To simulate a network failure, make the fake `fetch` throw a `TypeError`, as the real `fetch` does.
 
-## Testing interceptors
+## Testing middleware
 
-To test interceptors in isolation, create a fresh faxios instance in your test and capture what reaches `fetch`:
+To test [middleware](/pages/advanced/middleware) or a plugin in isolation, install it on a fresh instance in your test with `.use()` and capture what reaches `fetch`:
 
-```js check=skip
+```js check=types
 import { describe, it, expect } from "vitest";
 import faxios from "@gcmdev/faxios";
 
-describe("auth interceptor", () => {
+/** @type {import("@gcmdev/faxios").FaxiosMiddleware} */
+const authHeader = async (ctx, next) => {
+  ctx.config.headers.set("Authorization", "Bearer test-token");
+  return next(ctx);
+};
+
+describe("auth middleware", () => {
   it("attaches a Bearer token to every request", async () => {
     /** @type {Request | undefined} */
     let captured;
@@ -118,12 +124,7 @@ describe("auth interceptor", () => {
           return new Response("{}", { headers: { "Content-Type": "application/json" } });
         },
       },
-    });
-
-    instance.interceptors.request.use((config) => {
-      config.headers.set("Authorization", "Bearer test-token");
-      return config;
-    });
+    }).use(authHeader);
 
     await instance.get("https://api.example.com/data");
 
@@ -132,8 +133,10 @@ describe("auth interceptor", () => {
 });
 ```
 
+Each `create()` starts with no middleware, so one test's middleware never reaches another's instance.
+
 ## Tips
 
 - Always mock at the module level (or pass a fake `env.fetch`): avoid mocking individual methods on a shared instance, as state can leak between tests.
 - Use `mockResolvedValueOnce` / `mockRejectedValueOnce` in preference to `mockResolvedValue` so that tests are isolated and don't affect one another.
-- When testing retry logic, use a fake `env.fetch` so that the interceptor under test actually runs on each attempt.
+- When testing retry logic, use a fake `env.fetch` so that the retry middleware under test actually runs on each attempt.

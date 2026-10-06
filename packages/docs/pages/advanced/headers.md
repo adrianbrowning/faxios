@@ -17,30 +17,28 @@ The header values can be one of the following types:
 The header value is considered set if it is not undefined.
 :::
 
-The headers object is always initialized inside interceptors and transformers as seen in the following example:
+Inside [`.use()` middleware](/pages/advanced/middleware) and transformers, the request headers are always a `FaxiosHeaders` instance, as in this example:
 
-```ts check=skip
+```ts
 import faxios from "@gcmdev/faxios";
-import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
 
-faxios.interceptors.request.use((request: InternalFaxiosRequestConfig) => {
-  request.headers.set("My-header", "value");
+const api = faxios.create().use(async (ctx, next) => {
+  ctx.config.headers.set("My-header", "value");
 
-  request.headers.set({
+  ctx.config.headers.set({
     "My-set-header1": "my-set-value1",
     "My-set-header2": "my-set-value2",
   });
 
   // Disable subsequent setting of this header by faxios
-  request.headers.set("User-Agent", false);
+  ctx.config.headers.set("User-Agent", false);
 
-  request.headers.setContentType("text/plain");
+  ctx.config.headers.setContentType("text/plain");
 
-  // Direct access like this is deprecated
-  request.headers["My-set-header2"] = "newValue";
-
-  return request;
+  return next(ctx);
 });
+
+await api.get("/api/data");
 ```
 
 You can iterate over a FaxiosHeaders instance using any iterable method, like for-of loop, forEach, or spread operator:
@@ -70,11 +68,13 @@ The most common place to set headers is the `headers` option in your request con
 ```js
 import faxios from "@gcmdev/faxios";
 
+const id = 42;
+
 // On a single request
 await faxios.get('/api/data', {
   headers: {
-    'Accept-Language': 'en-US',
-    'X-Request-ID': 'abc123',
+    Accept: 'application/json',
+    'X-Request-Id': String(id),
   },
 });
 
@@ -85,6 +85,50 @@ const api = faxios.create({
   },
 });
 ```
+
+### Header typing
+
+The `headers` option is typed as `FaxiosConfigHeaders`. Your editor suggests common header names and `Content-Type` values, and any other header name is still allowed. It accepts three shapes:
+
+- A header bag: `{ Accept: "application/json" }`.
+- Method header groups: headers under `common` apply to every method, headers under a method name (`get`, `post`, ...) apply only to that method.
+- A `FaxiosHeaders` instance.
+
+A bag and groups can be mixed in one object:
+
+```ts
+import faxios from "@gcmdev/faxios";
+
+const token = "my-token";
+
+const api = faxios.create({
+  headers: {
+    "X-App-Version": "2.0.0",
+    common: { Authorization: "Bearer " + token },
+    post: { "Content-Type": "application/json" },
+  },
+});
+
+await api.post("/api/data", { name: "faxios" });
+```
+
+Header values can be a string, an array of strings, a number, a boolean, `null` or `undefined`:
+
+- `undefined` drops a value inherited from the instance defaults, but faxios may still set its own value later (for example `Content-Type` for a JSON body).
+- `null` or `false` keeps the header off the request entirely.
+
+Objects and functions are rejected by the type checker. Convert other values with `String(...)` first.
+
+```ts
+import faxios from "@gcmdev/faxios";
+
+const api = faxios.create({ headers: { common: { Authorization: "Bearer my-token" } } });
+
+// Send this one request without the inherited Authorization header
+await api.get("/public", { headers: { Authorization: null } });
+```
+
+The types `FaxiosConfigHeaders`, `RawFaxiosRequestHeaders` (the header bag) and `HeadersDefaults` (the method groups) are exported from `@gcmdev/faxios`.
 
 ## Preserving a specific header case
 
@@ -127,41 +171,42 @@ const headers = FaxiosHeaders.concat(
 await faxios.put(url, data, { headers });
 ```
 
-## Setting headers in an interceptor
+## Setting headers in middleware
 
-Interceptors are the right place to attach dynamic headers like auth tokens, because the token may not be available when the instance is first created:
+[Middleware](/pages/advanced/middleware) is the right place to attach dynamic headers like auth tokens, because the token may not be available when the instance is first created. For bearer tokens, the built-in [`authBearer` plugin](/pages/advanced/authentication) does this for you.
 
-```js check=skip
+```js
 import faxios from "@gcmdev/faxios";
 
-const api = faxios.create();
 const getAuthToken = () => 'my-token'; // e.g. read from your auth store
 
-api.interceptors.request.use((config) => {
+const api = faxios.create().use(async (ctx, next) => {
   const token = getAuthToken(); // read at request time
-  config.headers.set('Authorization', `Bearer ${token}`);
-  return config;
+  ctx.config.headers.set('Authorization', `Bearer ${token}`);
+  return next(ctx);
 });
+
+await api.get('/api/data');
 ```
+
+Keep and use the value `use()` returns; see [Middleware](/pages/advanced/middleware).
 
 ## Unicode header values
 
-`FaxiosHeaders` preserves non-control Unicode characters in header values so request interceptors can transform them before the request is sent. CR/LF and other C0 control bytes are still stripped at set time to prevent header injection.
+`FaxiosHeaders` preserves non-control Unicode characters in header values so middleware can transform them before the request is sent. CR/LF and other C0 control bytes are still stripped at set time to prevent header injection.
 
 The adapter sanitizes header values to byte-safe (HT, printable ASCII, and Latin-1 supplement) right before handing them to `fetch`'s `Headers`. If a header value contains characters outside that range and you have not encoded it, those characters are stripped, which can produce an empty value on the wire.
 
-If you need to send non-ASCII data in a header, encode it in a request interceptor:
+If you need to send non-ASCII data in a header, encode it in middleware:
 
-```js check=skip
+```js
 import faxios from "@gcmdev/faxios";
 
-const api = faxios.create();
-
-api.interceptors.request.use((config) => {
-  if (config.headers.has('X-Name')) {
-    config.headers.set('X-Name', encodeURIComponent(String(config.headers.get('X-Name'))));
+const api = faxios.create().use(async (ctx, next) => {
+  if (ctx.config.headers.has('X-Name')) {
+    ctx.config.headers.set('X-Name', encodeURIComponent(String(ctx.config.headers.get('X-Name'))));
   }
-  return config;
+  return next(ctx);
 });
 
 await api.get('/api/data', {

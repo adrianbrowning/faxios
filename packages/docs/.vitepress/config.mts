@@ -55,7 +55,11 @@ const sidebar = [
       { text: "Response schema", link: "/pages/advanced/response-schema" },
       { text: "Schema validation", link: "/pages/advanced/schema-validation" },
       { text: "Config defaults", link: "/pages/advanced/config-defaults" },
-      { text: "Interceptors", link: "/pages/advanced/interceptors" },
+      { text: "Middleware and plugins", link: "/pages/advanced/middleware" },
+      {
+        text: "Migrating from interceptors",
+        link: "/pages/advanced/migrating-from-interceptors",
+      },
       { text: "Error handling", link: "/pages/advanced/error-handling" },
       { text: "Cancellation", link: "/pages/advanced/cancellation" },
       { text: "Authentication", link: "/pages/advanced/authentication" },

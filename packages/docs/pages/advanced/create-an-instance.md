@@ -35,8 +35,10 @@ Instances have the same methods as the default `faxios` object. faxios merges th
 - `instance.put(url[, data[, config]])`
 - `instance.patch(url[, data[, config]])`
 - `instance.getUri([config])`
+- `instance.use(middlewareOrPlugin)`
+- `instance.eject(middlewareOrPlugin)`
 
-See [Request aliases](/pages/advanced/request-method-aliases) for the full list, including the form shorthand methods. Instances also have [`define()`](/pages/advanced/define) and [`route()`](/pages/advanced/route).
+See [Request aliases](/pages/advanced/request-method-aliases) for the full list, including the form shorthand methods. Instances also have [`define()`](/pages/advanced/define) and [`route()`](/pages/advanced/route). `use()` and `eject()` add and remove [middleware and plugins](/pages/advanced/middleware).
 
 ## Why use an instance?
 
@@ -82,19 +84,35 @@ const realtimeApi = faxios.create({ baseURL: "https://realtime.example.com", tim
 const batchApi    = faxios.create({ baseURL: "https://batch.example.com",    timeout: 60000 });
 ```
 
-### Isolated interceptors
+### Isolated middleware
 
-Interceptors added to an instance only apply to that instance, keeping your concerns separate:
+[Middleware](/pages/advanced/middleware) installed with `use()` only runs for that instance, keeping your concerns separate:
 
-```js check=skip
+```js
 import faxios from "@gcmdev/faxios";
 
-const loggingApi = faxios.create({ baseURL: "https://api.example.com" });
-
-loggingApi.interceptors.request.use((config) => {
-  console.log(`→ ${config.method?.toUpperCase()} ${config.url}`);
-  return config;
+const loggingApi = faxios.create({ baseURL: "https://api.example.com" }).use(async (ctx, next) => {
+  console.log(`→ ${ctx.config.method?.toUpperCase()} ${ctx.config.url}`);
+  return next(ctx);
 });
+
+await loggingApi.get("/users");
+```
+
+`use()` returns the same instance with a new type, so keep and use the chained result: only that value's type knows the request options a plugin adds.
+
+Children made with `create()` start with no middleware, even when you call it on an instance that has some. They also start without the parent's plugin types, so call `use()` on the child for each plugin it needs:
+
+```ts
+import faxios from "@gcmdev/faxios";
+import { retry } from "@gcmdev/faxios/plugins/retry";
+
+const api = faxios.create({ baseURL: "https://api.example.com" }).use(retry());
+
+// Same baseURL as api, but no retry() until it is installed again.
+const reportsApi = api.create({ timeout: 60_000 }).use(retry({ attempts: 2 }));
+
+await reportsApi.get("/reports");
 ```
 
 ## Overriding defaults per request

@@ -88,27 +88,36 @@ const api: FaxiosInstance = faxios.create({
 });
 ```
 
-## Typed interceptors
+## Typed middleware
 
-Use `InternalFaxiosRequestConfig` (not `FaxiosRequestConfig`) for request interceptors:
+Annotate middleware written outside `use()` with `FaxiosMiddleware`. `ctx.config.headers` is a `FaxiosHeaders`, and a failed request reaches the middleware as a rejection from `next`:
 
-```ts check=skip
+```ts
 import faxios from "@gcmdev/faxios";
-import type { InternalFaxiosRequestConfig, FaxiosResponse } from "@gcmdev/faxios";
+import type { FaxiosMiddleware } from "@gcmdev/faxios";
 
-const api = faxios.create({ baseURL: "https://api.example.com" });
-const getToken = () => "my-token";
+const addClientHeader: FaxiosMiddleware = async (ctx, next) => {
+  ctx.config.headers.set("X-Client", "my-app");
+  return next(ctx);
+};
 
-api.interceptors.request.use((config: InternalFaxiosRequestConfig) => {
-  config.headers.set("Authorization", `Bearer ${getToken()}`);
-  return config;
-});
+const logErrors: FaxiosMiddleware = async (ctx, next) => {
+  try {
+    return await next(ctx);
+  } catch (error) {
+    console.error(`${ctx.config.method} ${ctx.config.url} failed`, error);
+    throw error;
+  }
+};
 
-api.interceptors.response.use(
-  (response: FaxiosResponse) => response,
-  (error: unknown) => Promise.reject(error)
-);
+const api = faxios.create({ baseURL: "https://api.example.com" })
+  .use(addClientHeader)
+  .use(logErrors);
+
+await api.get("/users");
 ```
+
+For bearer tokens, install the [`authBearer`](/pages/advanced/authentication) plugin instead of setting `Authorization` yourself. See [Middleware and plugins](/pages/advanced/middleware) for ordering, plugins and typed request options.
 
 ## Typing errors
 

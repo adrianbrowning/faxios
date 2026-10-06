@@ -290,7 +290,6 @@ The `transitional` property allows you to enable or disable certain transitional
 - `clarifyTimeoutError`: Accepted for compatibility but has no effect. Timed-out requests always reject with `ETIMEDOUT`.
 - `advertiseZstdAcceptEncoding`: When set to `true`, faxios adds `zstd` to the default `Accept-Encoding` request header. Response decompression is handled by the runtime's `fetch` implementation.
 - `validateStatusUndefinedResolves`: When `true` _(default)_, an explicit `validateStatus: undefined` resolves every response status (legacy behavior). Set to `false` to make an explicit `undefined` behave like an omitted option, so the configured or default validator applies (reject non-2xx).
-- `legacyInterceptorReqResOrdering`: When `true` _(default)_, request interceptors run last-registered-first (LIFO). Set to `false` to run request interceptors in registration order. Response interceptors always run in registration order. See [Interceptor execution order](/pages/advanced/interceptors#interceptor-execution-order).
 
 ### `env`
 
@@ -324,7 +323,7 @@ The following options validate request inputs and response data with any Standar
 
 ## Full request config example
 
-```ts check=skip
+```ts
 import type { FaxiosRequestConfig } from "@gcmdev/faxios";
 import { z } from "zod";
 
@@ -394,7 +393,6 @@ const config: FaxiosRequestConfig = {
     clarifyTimeoutError: false,
     advertiseZstdAcceptEncoding: false,
     validateStatusUndefinedResolves: true,
-    legacyInterceptorReqResOrdering: true,
   },
   responseSchema: z.object({ id: z.number(), title: z.string() }),
   requestSchema: z.object({ firstName: z.string() }),
