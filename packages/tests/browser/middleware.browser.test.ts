@@ -66,20 +66,18 @@ describe("middleware (vitest browser)", () => {
 });
 
 describe("prepareRequest regression: clone-swap guards", () => {
-  it("middleware config mutation is reflected exactly once in the outbound request", async () => {
-    // Guards against a double-merge reintroducing the redundant mergeConfig clone.
-    // The middleware sets a custom header; it must appear exactly once (not doubled
-    // or absent) in the final fetch call.
+  it("a default header deleted by middleware stays deleted in the outbound request", async () => {
+    // Guards against a double merge: merging the instance defaults again after middleware
+    // ran would bring back the header the middleware removed.
     using mock = installFetchMock();
-    const instance = faxios.create().use(async (ctx, next) => {
-      ctx.config.headers.set("x-middleware", "once");
+    const instance = faxios.create({ headers: { "x-default": "from-defaults" } }).use(async (ctx, next) => {
+      ctx.config.headers.delete("x-default");
       return next(ctx);
     });
 
     await instance.get("/regression/middleware");
 
-    // Headers.get() joins duplicate values with ", " — "once, once" would mean double-merge.
-    expect(mock.lastRequest!.headers.get("x-middleware")).toBe("once");
+    expect(mock.lastRequest!.headers.get("x-default")).toBeNull();
   });
 
   it("polluted Object.prototype field does not leak into the outbound fetch call", async () => {
