@@ -1,9 +1,13 @@
 import assert from "node:assert";
 import { describe, expectTypeOf, it } from "vitest";
-import faxios, { definePlugin, Faxios } from "#src/index.ts";
+import faxios, { Faxios } from "#src/index.ts";
 import type { FaxiosContext, FaxiosInstance, FaxiosMiddleware, FaxiosPlugin } from "#src/index.ts";
-import { authBearer, retry, timing } from "#src/lib/plugins/index.ts";
-import type { AuthBearerCapability, RetryRequestOptions } from "#src/lib/plugins/index.ts";
+import { authBearer } from "#src/lib/plugins/authBearer.ts";
+import type { AuthBearerCapability } from "#src/lib/plugins/authBearer.ts";
+import { definePlugin } from "#src/lib/plugins/definePlugin.ts";
+import { retry } from "#src/lib/plugins/retry.ts";
+import type { RetryRequestOptions } from "#src/lib/plugins/retry.ts";
+import { timing } from "#src/lib/plugins/timing.ts";
 
 // The type tests below are checked by `lint:ts`; functions named `surfaces` are never called.
 

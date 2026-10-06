@@ -2,11 +2,11 @@
 
 import CanceledError from "../cancel/CanceledError.js";
 import isCancel from "../cancel/isCancel.js";
-import { definePlugin } from "../core/definePlugin.js";
 import FaxiosError from "../core/FaxiosError.js";
 import validator from "../helpers/validator.js";
 import type { FaxiosContext, FaxiosPlugin, FaxiosRequestConfig, GenericAbortSignal, InternalFaxiosRequestConfig, Method } from "../types.js";
 import utils from "../utils.js";
+import { definePlugin } from "./definePlugin.js";
 
 // Config values are read as own properties only (repo rule for possibly untrusted input).
 const ownValue = <T extends object, K extends keyof T>(source: T, key: K): T[K] | undefined =>

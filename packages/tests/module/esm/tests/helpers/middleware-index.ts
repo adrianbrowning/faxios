@@ -4,18 +4,22 @@
 // - plugin options are rejected without their plugin
 // - a plugin that needs a capability can't be installed before its provider
 // - static helpers exist only on the default export
-// - the built-in plugins come from the plugin subpaths, not the root
+// - definePlugin comes from faxios/plugins, each built-in from its own subpath, nothing from the root
 // - definePlugin infers a plugin's slots, and the Faxios class has no use()
 // - the internal plugin helper types aren't importable from the package root
-import faxios, { definePlugin, Faxios, FaxiosHeaders } from "faxios";
+import faxios, { Faxios, FaxiosHeaders } from "faxios";
 // @ts-expect-error - the built-in plugins aren't root exports
 import { retry as rootRetry } from "faxios";
+// @ts-expect-error - definePlugin lives on faxios/plugins, not the root
+import { definePlugin as rootDefinePlugin } from "faxios";
 import type { FaxiosContext, FaxiosInstance, FaxiosMiddleware, FaxiosPlugin, FaxiosResponse } from "faxios";
-import { authBearer as authBearerFromBarrel, retry as retryFromBarrel, timing as timingFromBarrel } from "faxios/plugins";
-import type { RetryRequestOptions } from "faxios/plugins";
+import { definePlugin } from "faxios/plugins";
+// @ts-expect-error - faxios/plugins doesn't re-export the built-ins
+import { retry as pluginsEntryRetry } from "faxios/plugins";
 import { authBearer } from "faxios/plugins/auth-bearer";
 import type { AuthBearerCapability } from "faxios/plugins/auth-bearer";
 import { retry } from "faxios/plugins/retry";
+import type { RetryRequestOptions } from "faxios/plugins/retry";
 import { timing } from "faxios/plugins/timing";
 import type { TimingEvent } from "faxios/plugins/timing";
 
@@ -49,12 +53,12 @@ const refreshOn401 = definePlugin({
   },
 });
 const refreshType: Equal<typeof refreshOn401, FaxiosPlugin<{ requires: AuthBearerCapability; }>> = true;
-const barrelRetry = retryFromBarrel();
-const retryType: Equal<typeof barrelRetry, FaxiosPlugin<{ options: RetryRequestOptions; }>> = true;
-const sameModules: Equal<typeof authBearerFromBarrel | typeof timingFromBarrel, typeof authBearer | typeof timing> = true;
+const defaultRetry = retry();
+const retryType: Equal<typeof defaultRetry, FaxiosPlugin<{ options: RetryRequestOptions; }>> = true;
 void refreshType;
 void retryType;
-void sameModules;
+void rootDefinePlugin;
+void pluginsEntryRetry;
 
 async function middleware(): Promise<void> {
   const api = faxios.create({ baseURL: "https://example.test" })

@@ -1,9 +1,10 @@
 import assert from "node:assert";
 import { describe, expectTypeOf, it } from "vitest";
-import faxios, { definePlugin, FaxiosError } from "#src/index.ts";
+import faxios, { FaxiosError } from "#src/index.ts";
 import type { FaxiosContext } from "#src/index.ts";
 import { authBearer } from "#src/lib/plugins/authBearer.ts";
 import type { AuthBearerCapability } from "#src/lib/plugins/authBearer.ts";
+import { definePlugin } from "#src/lib/plugins/definePlugin.ts";
 
 const URL = "http://localhost/auth";
 

@@ -66,7 +66,7 @@
   "zshy": {
     "exports": {
       ".": "./src/index.ts",
-      "./plugins": "./src/lib/plugins/index.ts",
+      "./plugins": "./src/lib/plugins/definePlugin.ts",
       "./plugins/auth-bearer": "./src/lib/plugins/authBearer.ts",
       "./plugins/retry": "./src/lib/plugins/retry.ts",
       "./plugins/timing": "./src/lib/plugins/timing.ts",
@@ -90,8 +90,8 @@
       "default": "./dist/index.js"
     },
     "./plugins": {
-      "types": "./dist/lib/plugins/index.d.ts",
-      "default": "./dist/lib/plugins/index.js"
+      "types": "./dist/lib/plugins/definePlugin.d.ts",
+      "default": "./dist/lib/plugins/definePlugin.js"
     },
     "./plugins/auth-bearer": {
       "types": "./dist/lib/plugins/authBearer.d.ts",

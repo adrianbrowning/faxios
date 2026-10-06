@@ -19,7 +19,6 @@ export { default as FaxiosHeaders } from "./lib/core/FaxiosHeaders.ts";
 export { default as HttpStatusCode } from "./lib/helpers/HttpStatusCode.ts";
 export { default as mergeConfig } from "./lib/core/mergeConfig.ts";
 export { VERSION } from "./lib/env/data.ts";
-export { definePlugin } from "./lib/core/definePlugin.ts";
 
 export type { FaxiosInstance, FaxiosStatic } from "./lib/faxios.ts";
 export type { StandardSchemaV1 } from "./lib/types/standard-schema.ts";

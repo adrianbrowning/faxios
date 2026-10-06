@@ -2,7 +2,7 @@
   "imports": {
     "@std/assert": "jsr:@std/assert@1.0.19",
     "faxios": "../../../lib/dist/index.js",
-    "faxios/plugins": "../../../lib/dist/lib/plugins/index.js",
+    "faxios/plugins": "../../../lib/dist/lib/plugins/definePlugin.js",
     "faxios/plugins/auth-bearer": "../../../lib/dist/lib/plugins/authBearer.js",
     "faxios/plugins/retry": "../../../lib/dist/lib/plugins/retry.js",
     "faxios/plugins/timing": "../../../lib/dist/lib/plugins/timing.js",

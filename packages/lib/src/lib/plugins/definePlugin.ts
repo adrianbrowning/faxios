@@ -1,4 +1,5 @@
 // @ts-self-types="./definePlugin.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
+// The `@gcmdev/faxios/plugins` entry point. The built-in plugins have their own subpaths.
 
 import type { FaxiosMiddleware, FaxiosPlugin } from "../types.js";
 

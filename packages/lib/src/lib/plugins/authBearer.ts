@@ -1,7 +1,7 @@
 // @ts-self-types="./authBearer.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import { definePlugin } from "../core/definePlugin.js";
 import type { FaxiosPlugin } from "../types.js";
+import { definePlugin } from "./definePlugin.js";
 
 /** What `authBearer` provides to plugins installed after it. */
 export type AuthBearerCapability = { auth: { getToken: () => Promise<string>; }; };

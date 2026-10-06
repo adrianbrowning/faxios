@@ -42,11 +42,11 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 
 ### `definePlugin` and the plugin entry points
 
-- **Change:** `definePlugin({ name, provides?, middleware })`, a root export, builds a plugin and infers its `FaxiosPlugin` slots. The built-in plugins are imported from `@gcmdev/faxios/plugins` (or `/plugins/auth-bearer`, `/plugins/retry`, `/plugins/timing`), not the root, and `faxios.plugins` is gone.
-- **Source:** Issues #105 and #107 (part of #54); `PRE_RELEASE_CHANGELOG.md` Breaking Changes entry "Plugins are typed with one object, and the built-ins moved to subpaths".
+- **Change:** `definePlugin({ name, provides?, middleware })` builds a plugin and infers its `FaxiosPlugin` slots. It is the only export of `@gcmdev/faxios/plugins`. Each built-in plugin is imported from its own subpath (`@gcmdev/faxios/plugins/auth-bearer`, `/plugins/retry`, `/plugins/timing`); neither the root nor `@gcmdev/faxios/plugins` re-exports them, and `faxios.plugins` is gone.
+- **Source:** Issues #105 and #107 (part of #54), including the #107 decision amendment; `PRE_RELEASE_CHANGELOG.md` Breaking Changes entry "Plugins are typed with one object, and the plugin API moved to subpaths".
 - **Status:** Pending.
 - **Docs targets:** The "Writing a plugin" section of the middleware page, the plugins section of the middleware page, `pages/advanced/api-reference.md` (exports and subpaths), the package README feature list, and every page that imports a built-in plugin (`authentication.md`, `retry.md`).
-- **Required content:** `provides` is inferred from the value; `options` and `requires` from the middleware's `ctx: FaxiosContext<Options, Capabilities>` annotation (use `unknown` for no options). Capabilities the plugin provides itself are in that annotation but don't count as required. A `provides` value whose type contradicts the annotation is a type error. Unannotated middleware sees the plugin's own `provides` on `ctx.capabilities`. `definePlugin` returns the object it was given, so `eject()` takes the same reference. The `"~plugin"` property in the emitted types is an internal marker; never set or read it. Built-ins: `import { authBearer, retry, timing } from "@gcmdev/faxios/plugins"`; the per-plugin subpaths export the same functions and their types. Middleware registers only through `faxios.create()` instances and the default export: `new Faxios()` has no `use()`.
+- **Required content:** `import { definePlugin } from "@gcmdev/faxios/plugins"`. `provides` is inferred from the value; `options` and `requires` from the middleware's `ctx: FaxiosContext<Options, Capabilities>` annotation (use `unknown` for no options). Capabilities the plugin provides itself are in that annotation but don't count as required. A `provides` value whose type contradicts the annotation is a type error. Unannotated middleware sees the plugin's own `provides` on `ctx.capabilities`. `definePlugin` returns the object it was given, so `eject()` takes the same reference. The `"~plugin"` property in the emitted types is an internal marker; never set or read it. Built-ins: `import { retry } from "@gcmdev/faxios/plugins/retry"` and likewise for `auth-bearer` and `timing`; each subpath exports its plugin and its types. The root keeps only the plugin types (`FaxiosPlugin`, `FaxiosMiddleware`, `FaxiosContext`, `FaxiosNext`). Middleware registers only through `faxios.create()` instances and the default export: `new Faxios()` has no `use()`.
 - **Examples:** `refreshOn401` with `definePlugin`; a plugin that provides `cache` and requires `auth` in one context annotation; `import { retry } from "@gcmdev/faxios/plugins/retry"`.
 - **Notes:** Supersedes #124 part 3 (typing `faxios.use(mw).plugins`).
 
@@ -57,7 +57,7 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Status:** Pending.
 - **Docs targets:** A plugins section of the middleware page; rewrite `pages/advanced/authentication.md` ("Bearer tokens (JWT)") around it.
 - **Required content:** `getToken` may return a string or a promise and is called on every request. It overwrites any `Authorization` header already on the request. Later plugins call `ctx.capabilities.auth.getToken()`.
-- **Examples:** `import { authBearer } from "@gcmdev/faxios/plugins"; faxios.create({ baseURL }).use(authBearer(() => store.token))`.
+- **Examples:** `import { authBearer } from "@gcmdev/faxios/plugins/auth-bearer"; faxios.create({ baseURL }).use(authBearer(() => store.token))`.
 - **Notes:** None.
 
 ### `refreshOn401` example
@@ -77,7 +77,7 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Status:** Pending.
 - **Docs targets:** Rewrite `pages/advanced/retry.md` around it, replacing its three `check=skip` interceptor blocks; plugins section of the middleware page.
 - **Required content:** `attempts` counts every try including the first (default 3) and must be an integer of at least 1; anything else (including `Infinity`) rejects with `ERR_BAD_OPTION_VALUE` before a request is sent. By default it retries `ERR_NETWORK`, `ETIMEDOUT` and 5xx responses, never a cancellation. `delay` is milliseconds or `(attempt, error) => ms`, default 100ms doubling. Per request, `retry: false` turns it off and `retry: { … }` overrides fields. An abort during the backoff rejects with `CanceledError` straight away. A stream body (web `ReadableStream` or a Node stream) is never retried, since the first try consumed it. Only idempotent methods are retried by default (GET, HEAD, OPTIONS, PUT, DELETE, QUERY). POST and PATCH are retried only when listed in `methods` (case-insensitive), which callers should do only if their API dedupes repeats.
-- **Examples:** `import { retry } from "@gcmdev/faxios/plugins"`; `retry({ attempts: 5 })`; `retryOn` for 429; `api.post(url, data, { retry: false })`.
+- **Examples:** `import { retry } from "@gcmdev/faxios/plugins/retry"`; `retry({ attempts: 5 })`; `retryOn` for 429; `api.post(url, data, { retry: false })`.
 - **Notes:** Install `timing` before `retry` to measure all tries together, after it to measure each try.
 
 ### Built-in plugin: `timing`

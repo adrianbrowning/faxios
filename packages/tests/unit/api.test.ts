@@ -1,11 +1,8 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
 import * as root from "#src/index.ts";
-import faxios, { create, definePlugin, Faxios, FaxiosError } from "#src/index.ts";
-import { authBearer } from "#src/lib/plugins/authBearer.ts";
-import * as plugins from "#src/lib/plugins/index.ts";
-import { retry } from "#src/lib/plugins/retry.ts";
-import { timing } from "#src/lib/plugins/timing.ts";
+import faxios, { create, Faxios, FaxiosError } from "#src/index.ts";
+import * as pluginsEntry from "#src/lib/plugins/definePlugin.ts";
 
 describe("static api", () => {
   it("should have request method helpers", () => {
@@ -44,14 +41,14 @@ describe("static api", () => {
     assert.strictEqual(typeof faxios.eject, "function");
   });
 
-  it("exports the built-in plugins only from the plugin entry points", () => {
-    assert.deepStrictEqual({ ...plugins }, { authBearer, retry, timing });
-    for (const name of [ "authBearer", "retry", "timing", "plugins" ]) {
+  it("keeps plugin exports off the root: definePlugin on /plugins, each built-in on its own subpath", () => {
+    // @gcmdev/faxios/plugins exports definePlugin and nothing else, no built-ins.
+    assert.deepStrictEqual(Object.keys(pluginsEntry), [ "definePlugin" ]);
+    for (const name of [ "authBearer", "retry", "timing", "plugins", "definePlugin" ]) {
       assert.strictEqual(Object.hasOwn(root, name), false, `root exports ${name}`);
     }
-    // @ts-expect-error TS2339 -- the built-ins moved to @gcmdev/faxios/plugins
+    // @ts-expect-error TS2339 -- the built-ins moved to their own subpaths
     assert.strictEqual(faxios.plugins, undefined);
-    assert.strictEqual(typeof definePlugin, "function");
   });
 
   it("registers middleware only through the callable instance, not the Faxios class", () => {

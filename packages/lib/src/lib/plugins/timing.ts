@@ -1,7 +1,7 @@
 // @ts-self-types="./timing.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import { definePlugin } from "../core/definePlugin.js";
 import type { FaxiosPlugin, InternalFaxiosRequestConfig } from "../types.js";
+import { definePlugin } from "./definePlugin.js";
 
 /** What `timing` reports once per request: `status` on success, `error` on failure. */
 export type TimingEvent =
