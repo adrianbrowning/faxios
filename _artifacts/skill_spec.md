@@ -82,7 +82,7 @@ and stop generating Axios APIs it removed or never verified.
   Intent 0.5.3 type-checks SKILL.md code blocks but resolves `@gcmdev/faxios/*` to `src/*`, which
   doesn't match the published `exports`, so a block importing `@gcmdev/faxios/plugins/retry` can't
   pass `maintainer check`. SKILL.md names each subpath in prose and links the reference. The
-  reference block type-checks against the built package, but Intent does not check reference
+  reference block type-checks in the `packages/tests` workspace (workspace build of `packages/lib`), but Intent does not check reference
   files. Move the example back into SKILL.md once Intent resolves subpath exports.
 
 ## Coverage and batch history
@@ -99,7 +99,7 @@ and stop generating Axios APIs it removed or never verified.
     progress events, `define()`/`route()` typed endpoints beyond a pointer, and `transitional`
     flags.
   - Checks:
-    - A throwaway runtime script against the built package with an injected `env.fetch`
+    - A throwaway runtime script run from `packages/tests` against the workspace build of `packages/lib` (`pnpm build`), with an injected `env.fetch`,
       confirmed every behavioural claim, including:
       - absolute URL appended to `baseURL`
       - `ETIMEDOUT`, `ERR_NETWORK` with `cause`, `ERR_BAD_REQUEST`/`ERR_BAD_RESPONSE`
@@ -111,7 +111,7 @@ and stop generating Axios APIs it removed or never verified.
       - authBearer origin rule
       - `eject`
       - class-instance `fetchOptions` passthrough
-    - Every TypeScript block in the skill and references type-checks, and `@ts-expect-error` checks
+    - Every TypeScript block in the skill and references type-checks under strict `nodenext` in the `packages/tests` workspace. That workspace has `zod`, which one example imports, and resolves `@gcmdev/faxios` through its `exports` to the workspace build of `packages/lib`. The packed tarball was not type-checked this way. `@ts-expect-error` checks
       confirm that `adapter`, `proxy`, `httpAgent`, `cancelToken`, `interceptors`, instance statics,
       root plugin imports and plugin options without the plugin are type errors.
     - Fresh consumer: a disposable project ran `npm i` on the packed tarball and
@@ -138,5 +138,5 @@ and stop generating Axios APIs it removed or never verified.
       `packages/lib/*` and ignores the package's `exports` map, so `@gcmdev/faxios/plugins/retry`
       (really `src/lib/plugins/retry.ts`) does not resolve, and two errors followed from that.
       The block moved to `references/plugins.md` (see Decisions). `intent validate` and
-      `maintainer check` now pass. All TS blocks in SKILL.md and `plugins.md` type-check against
-      the built package.
+      `maintainer check` now pass. All TS blocks in SKILL.md and `plugins.md` type-check in the
+      `packages/tests` workspace against the workspace build of `packages/lib`.
