@@ -30,6 +30,7 @@ const optionsSchema = {
   maxRetryAfter: (value: unknown) => isWait(value) || "a finite number of milliseconds of at least 0",
   maxDelay: (value: unknown) => isWait(value) || "a finite number of milliseconds of at least 0",
   jitter: (value: unknown) => value === "full" || value === "none" || "\"full\" or \"none\"",
+  respectRetryAfter: validator.validators["boolean"],
   onRetry: validator.validators["function"],
 };
 
@@ -69,7 +70,7 @@ export type RetryOptions = {
   /**
    * Milliseconds to wait before the next try, or a function of the try that failed. Default 100ms,
    * doubling. Capped at `maxDelay`, then jittered. A 429 or 503 with a `Retry-After` header waits
-   * that long instead.
+   * that long instead, unless `respectRetryAfter` is `false`.
    */
   delay?: number | ((attempt: number, error: unknown) => number);
   /** The most the computed backoff waits, in milliseconds. Default 30 000. Doesn't apply to `Retry-After`. */
@@ -82,8 +83,15 @@ export type RetryOptions = {
   /**
    * The longest `Retry-After` (seconds or an HTTP date, on a 429 or 503) to wait, in milliseconds.
    * Default 300 000 (5 minutes). A longer one rejects with the response's error instead of retrying.
+   * Ignored when `respectRetryAfter` is `false`.
    */
   maxRetryAfter?: number;
+  /**
+   * Whether a 429 or 503's `Retry-After` header sets the wait. Default `true`. With `false`, every
+   * retry waits the computed backoff and `maxRetryAfter` doesn't apply; which requests retry doesn't
+   * change. Turn it off when another plugin, such as a queue throttle, honours `Retry-After` itself.
+   */
+  respectRetryAfter?: boolean;
   /**
    * Called before each wait with the error, the try that failed and the wait in milliseconds. If it
    * throws, the request rejects with that error and stops retrying.
@@ -161,6 +169,7 @@ type Policy = {
   maxDelay: number;
   jitter: "full" | "none";
   maxRetryAfter: number;
+  respectRetryAfter: boolean;
   onRetry: ((error: unknown, attempt: number, delayMs: number) => void) | undefined;
 };
 
@@ -175,6 +184,7 @@ function resolvePolicy(options: RetryOptions, perRequest: RetryOptions | undefin
     maxDelay: setting("maxDelay") ?? 30_000,
     jitter: setting("jitter") ?? "full",
     maxRetryAfter: setting("maxRetryAfter") ?? 300_000,
+    respectRetryAfter: setting("respectRetryAfter") ?? true,
     onRetry: setting("onRetry"),
   };
 }
@@ -182,7 +192,7 @@ function resolvePolicy(options: RetryOptions, perRequest: RetryOptions | undefin
 // How long to wait before the next try, or undefined when the server's Retry-After is longer
 // than the caller is willing to wait, so the error is rethrown.
 function waitBeforeRetry(error: unknown, attempt: number, policy: Policy, config: InternalFaxiosRequestConfig): number | undefined {
-  const retryAfter = retryAfterMs(error);
+  const retryAfter = policy.respectRetryAfter ? retryAfterMs(error) : undefined;
   if (retryAfter !== undefined) return retryAfter > policy.maxRetryAfter ? undefined : retryAfter;
   const computed: unknown = typeof policy.delay === "function" ? policy.delay(attempt, error) : policy.delay;
   if (!isWait(computed)) {
