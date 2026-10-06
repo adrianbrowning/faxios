@@ -43,6 +43,17 @@ describe("static api", () => {
     assert.deepStrictEqual(faxios.plugins, { authBearer, retry, timing });
   });
 
+  it("only types the static members on the default export", () => {
+    const instance = create();
+    // Created instances have none of the statics at runtime, so their type mustn't either.
+    // @ts-expect-error -- plugins exists only on the default export
+    assert.strictEqual(instance.plugins, undefined);
+    // @ts-expect-error -- isCancel exists only on the default export
+    assert.strictEqual(instance.isCancel, undefined);
+    // @ts-expect-error -- HttpStatusCode exists only on the default export
+    assert.strictEqual(instance.HttpStatusCode, undefined);
+  });
+
   it("no longer has interceptors", () => {
     // @ts-expect-error -- interceptors were removed in favour of use()
     const removed: unknown = faxios.interceptors;

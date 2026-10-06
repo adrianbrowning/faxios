@@ -338,9 +338,10 @@ describe("core::middleware", () => {
       try {
         await chained({ url: URL, env: { fetch: jsonFetch(sent) } });
 
+        // Before strictEqual, which narrows `chained` to the default export's type.
+        expectTypeOf(chained).toEqualTypeOf<FaxiosInstance>();
         assert.strictEqual(chained, faxios);
         assert.strictEqual(sent.length, 1);
-        expectTypeOf(chained).toEqualTypeOf<FaxiosInstance>();
       }
       finally {
         faxios.eject(passthrough);

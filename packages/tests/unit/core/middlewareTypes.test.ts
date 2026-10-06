@@ -67,7 +67,8 @@ describe("middleware types", () => {
   });
 
   it("starts with no plugin options or capabilities", () => {
-    expectTypeOf(faxios).toEqualTypeOf<FaxiosInstance<NoPlugins, NoPlugins>>();
+    // The default export is a FaxiosStatic: the same instance type plus its static helpers.
+    expectTypeOf(faxios).toExtend<FaxiosInstance<NoPlugins, NoPlugins>>();
     expectTypeOf(faxios.create()).toEqualTypeOf<FaxiosInstance<NoPlugins, NoPlugins>>();
     faxios.create().use(async (ctx, next) => {
       // `{}`, not `unknown`: inline middleware can inspect capabilities without narrowing.

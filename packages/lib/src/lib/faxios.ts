@@ -177,6 +177,10 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = Pick<Faxios, "eject"> & {
   } & Partial<TOpts>;
   getUri: (config?: FaxiosRequestConfig & TOpts) => string;
   create: (instanceConfig?: CreateFaxiosDefaults) => FaxiosInstance;
+};
+
+/** The default export: an instance plus the static helpers only it carries. */
+export type FaxiosStatic = FaxiosInstance & {
   Faxios: typeof Faxios;
   CanceledError: typeof CanceledError;
   isCancel: typeof isCancel;
@@ -193,11 +197,11 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = Pick<Faxios, "eject"> & {
   HttpStatusCode: typeof HttpStatusCode;
   /** Built-in plugins for `use()`; also available as named exports. */
   plugins: { authBearer: typeof authBearer; retry: typeof retry; timing: typeof timing; };
-  default: FaxiosInstance;
+  default: FaxiosStatic;
 };
 
-// Create the default instance to be exported
-const faxios = createInstance(defaults);
+// Create the default instance to be exported; the statics are attached below.
+const faxios = createInstance(defaults) as FaxiosStatic;
 
 // Expose Faxios class to allow class inheritance
 faxios.Faxios = Faxios;
