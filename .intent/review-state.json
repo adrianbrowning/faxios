@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
+  "items": {
+    "skill:packages/lib/skills/configure-requests/SKILL.md": {
+      "fingerprint": "13ce077bd3aa25d00151badcf3bae2295f26ff648f73d1bf893f0e5737f10eec",
+      "snapshot": {
+        "MIGRATION_GUIDE.md": "b9ca9bfaebf38d3415e6c7f9c81bc37cd0fdc08408e5a99d1e3d7e094e50aa15",
+        "packages/lib/package.json": "f43c6ffeb19c945355f5c65529d79406440543b45aed6e536c5cfd975924c425",
+        "packages/lib/skills/configure-requests/SKILL.md": "cb4b3eabcdbdb7a737a906b9840d95a6e51cb93fa0c46551c769393fd027dc93",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "8e9777c8850e9f89fd5443b4c3948d75a78b060ed8980d01033e6613e9e02477",
+        "packages/lib/skills/configure-requests/references/plugins.md": "9397b79ad7af4a51b859cd59a5b10e136ee240d8977a2e68dc0ddc29e602023b",
+        "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
+        "packages/lib/src/lib/adapters/fetch.ts": "b45d7f2c9492e142a7418a1c305fcceab65e03170c86f70ab33fca5583258dc9",
+        "packages/lib/src/lib/core/Faxios.ts": "a75b8c1e309db8517d049093d8c39ee0f90e5c2be32a3d530f52da01ea14145f",
+        "packages/lib/src/lib/core/FaxiosError.ts": "5dc4223e4936023e491b3ac02e674425149cec5961eb0b47972f7fd1c73d0d51",
+        "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "6546e1b5dba1777fa3928648ab3a683f05133b4bab7462a6b27afe77f3e52434",
+        "packages/lib/src/lib/core/mergeConfig.ts": "3a4924b40b818557561ff7534bb70b283595e3a0069ce439e1ac1a771842fcff",
+        "packages/lib/src/lib/faxios.ts": "28fad88b006fa92d298ea83111cd0ce910043b538b2f46d6d015708852088e67",
+        "packages/lib/src/lib/helpers/composeSignals.ts": "80edec1ecad4ceaa906c394ad8da36963a1279c20bf74f6a5ccf5654794a8a74",
+        "packages/lib/src/lib/plugins/authBearer.ts": "43780df44e161c7df77fa5fdc6427cad2dd25e27b7f7b2d2f5619cab6bdfb0de",
+        "packages/lib/src/lib/plugins/definePlugin.ts": "5ed83646b5e2b3267a36ed1bb230443b4a0bd8150c579a522e6f68c35ed55b54",
+        "packages/lib/src/lib/plugins/retry.ts": "401fcacee16b708b98718e9b3f66f48c5e73e14f54a0187d22c7e41d3d0c9b1f",
+        "packages/lib/src/lib/plugins/timing.ts": "0738baf01e0e9aa59926df9117637fba3c8a2cb292fe6931ec95f5af4fd6d701",
+        "packages/lib/src/lib/types.ts": "b3d2b8486c0cec6f16159f26acc6712a5c3543c003a97dcac359767417510511",
+        "packages/tests/unit/api.test.ts": "1301982880889f06462cdd43a1f5a84ac18d60bf72e2b393105a2d9737f58425",
+        "packages/tests/unit/core/middleware.test.ts": "1aa48e88f858dc4547aad7429ddca53792289f4ec0ea4ecfc784e48d651552d6",
+        "packages/tests/unit/plugins/authBearer.test.ts": "c2f59575debb9e64e11809bdf57d22d811e2abfb480d4a8a20f9af128a4ef7cd",
+        "packages/tests/unit/plugins/definePlugin.test.ts": "d85323c110f1d8d49620d3c066b71f04a3197eb27175f1b36f52406dbe257cc7",
+        "packages/tests/unit/plugins/retry.test.ts": "a668e53ecac9b1747a73bba29c3674dede68a8a46b3813b951c97ab4b998eb57",
+        "packages/tests/unit/plugins/timing.test.ts": "a0cecdd2620fd5041cfd770ec51fa1ca5e8a71297feaa60129adc67822d84cb3"
+      },
+      "head": "01316e1099c60976353ebc6db91a69d83bcfd807",
+      "outcome": "updated",
+      "reason": "Authored configure-requests (batch 1) from faxios source and tests at 01316e10. intent validate is unresolved: 5 example errors from plugin-subpath resolution keep maintainer check failing.",
+      "evidence": [
+        "A throwaway runtime script against the built package (injected env.fetch) confirmed the behavioural claims. Every TS block in SKILL.md and the references type-checks against the built package. In a fresh-consumer run, the Axios port passed 8/8 grader checks; the grader passed a reference port and failed a wrong port. intent validate 0.5.3 still reports 5 errors in the plugin-subpath block because Intent ignores package.json exports when resolving @gcmdev/faxios/*."
+      ]
+    },
+    "planning:_artifacts": {
+      "fingerprint": "5481124f894032f61e476475aac2171268767837811d85d47646ea7dd9e3b945",
+      "snapshot": {
+        "MIGRATION_GUIDE.md": "b9ca9bfaebf38d3415e6c7f9c81bc37cd0fdc08408e5a99d1e3d7e094e50aa15",
+        "_artifacts/domain_map.yaml": "2228d7a9a3d8baf60fdfa078e98a4045b0426f403bbc174cbf9133238f19ef33",
+        "_artifacts/skill_spec.md": "d5893e2ac68f7dbb900a144eafb874aea064c9572d158441b80fa3a12f074795",
+        "_artifacts/skill_tree.yaml": "42d72e7212b31827fade121697efb94dd1751d179bd76315722e017e5e66538e",
+        "packages/lib/package.json": "f43c6ffeb19c945355f5c65529d79406440543b45aed6e536c5cfd975924c425",
+        "packages/lib/skills/configure-requests/SKILL.md": "cb4b3eabcdbdb7a737a906b9840d95a6e51cb93fa0c46551c769393fd027dc93",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "8e9777c8850e9f89fd5443b4c3948d75a78b060ed8980d01033e6613e9e02477",
+        "packages/lib/skills/configure-requests/references/plugins.md": "9397b79ad7af4a51b859cd59a5b10e136ee240d8977a2e68dc0ddc29e602023b",
+        "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
+        "packages/lib/src/lib/adapters/fetch.ts": "b45d7f2c9492e142a7418a1c305fcceab65e03170c86f70ab33fca5583258dc9",
+        "packages/lib/src/lib/core/Faxios.ts": "a75b8c1e309db8517d049093d8c39ee0f90e5c2be32a3d530f52da01ea14145f",
+        "packages/lib/src/lib/core/FaxiosError.ts": "5dc4223e4936023e491b3ac02e674425149cec5961eb0b47972f7fd1c73d0d51",
+        "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "6546e1b5dba1777fa3928648ab3a683f05133b4bab7462a6b27afe77f3e52434",
+        "packages/lib/src/lib/core/mergeConfig.ts": "3a4924b40b818557561ff7534bb70b283595e3a0069ce439e1ac1a771842fcff",
+        "packages/lib/src/lib/faxios.ts": "28fad88b006fa92d298ea83111cd0ce910043b538b2f46d6d015708852088e67",
+        "packages/lib/src/lib/helpers/composeSignals.ts": "80edec1ecad4ceaa906c394ad8da36963a1279c20bf74f6a5ccf5654794a8a74",
+        "packages/lib/src/lib/plugins/authBearer.ts": "43780df44e161c7df77fa5fdc6427cad2dd25e27b7f7b2d2f5619cab6bdfb0de",
+        "packages/lib/src/lib/plugins/definePlugin.ts": "5ed83646b5e2b3267a36ed1bb230443b4a0bd8150c579a522e6f68c35ed55b54",
+        "packages/lib/src/lib/plugins/retry.ts": "401fcacee16b708b98718e9b3f66f48c5e73e14f54a0187d22c7e41d3d0c9b1f",
+        "packages/lib/src/lib/plugins/timing.ts": "0738baf01e0e9aa59926df9117637fba3c8a2cb292fe6931ec95f5af4fd6d701",
+        "packages/lib/src/lib/types.ts": "b3d2b8486c0cec6f16159f26acc6712a5c3543c003a97dcac359767417510511",
+        "packages/tests/unit/api.test.ts": "1301982880889f06462cdd43a1f5a84ac18d60bf72e2b393105a2d9737f58425",
+        "packages/tests/unit/core/middleware.test.ts": "1aa48e88f858dc4547aad7429ddca53792289f4ec0ea4ecfc784e48d651552d6",
+        "packages/tests/unit/plugins/authBearer.test.ts": "c2f59575debb9e64e11809bdf57d22d811e2abfb480d4a8a20f9af128a4ef7cd",
+        "packages/tests/unit/plugins/definePlugin.test.ts": "d85323c110f1d8d49620d3c066b71f04a3197eb27175f1b36f52406dbe257cc7",
+        "packages/tests/unit/plugins/retry.test.ts": "a668e53ecac9b1747a73bba29c3674dede68a8a46b3813b951c97ab4b998eb57",
+        "packages/tests/unit/plugins/timing.test.ts": "a0cecdd2620fd5041cfd770ec51fa1ca5e8a71297feaa60129adc67822d84cb3"
+      },
+      "head": "01316e1099c60976353ebc6db91a69d83bcfd807",
+      "outcome": "updated",
+      "reason": "Created domain_map.yaml, skill_spec.md and skill_tree.yaml for batch 1.",
+      "evidence": [
+        "The records cover configure-requests (packages/lib): its 4 tasks, 9 failure modes, the decisions (package-only distribution, root _artifacts, one skill) and 4 open gaps, including the Intent subpath-resolution defect."
+      ]
+    },
+    "source:knip.json": {
+      "fingerprint": "9e269a676ef519415ab5627bbfe4ae44b153f212dd987a8c668e00ef54075aa2",
+      "snapshot": {
+        "knip.json": "73c7e5ddcea4a8e759dd27b56946062fc1db4894987c4729ddf997117fe8537c"
+      },
+      "head": "01316e1099c60976353ebc6db91a69d83bcfd807",
+      "outcome": "out-of-scope",
+      "reason": "knip.json only adds @tanstack/intent to ignoreDependencies, because it is used through its CLI and the check-skills workflow.",
+      "evidence": [
+        "The knip.json diff is one entry in ignoreDependencies. No faxios runtime behaviour changes."
+      ]
+    },
+    "source:PRE_RELEASE_CHANGELOG.md": {
+      "fingerprint": "dbc0b0103df8fa0a901c6c1493ee3ef6b0cfac89671a7f75bbcd80606ca1aef5",
+      "snapshot": {
+        "PRE_RELEASE_CHANGELOG.md": "98dff5f6fffceea088baf63487c35a813fbebc0b1a7fa907ebcbd8d2a5b6d000"
+      },
+      "head": "01316e1099c60976353ebc6db91a69d83bcfd807",
+      "outcome": "no-change",
+      "reason": "PRE_RELEASE_CHANGELOG.md only adds the #85 release note about the skill shipping in the package. No skill guidance or planning record depends on it.",
+      "evidence": [
+        "Changed: PRE_RELEASE_CHANGELOG.md at 01316e1099c60976353ebc6db91a69d83bcfd807"
+      ]
+    }
+  }
+}

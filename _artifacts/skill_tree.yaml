@@ -1,0 +1,51 @@
+library:
+  name: faxios-workspace
+generated_from:
+  domain_map: _artifacts/domain_map.yaml
+  skill_spec: _artifacts/skill_spec.md
+skills:
+  [
+    {
+        name: configure-requests,
+        slug: configure-requests,
+        domain: requests,
+        package: packages/lib,
+        path: skills/configure-requests/SKILL.md,
+        description: "Use when writing, reviewing or porting code that sends HTTP
+          requests with @gcmdev/faxios: creating an instance with baseURL,
+          headers or timeout; cancelling requests; handling FaxiosError codes;
+          validating responses with a schema; adding auth, retry or timing with
+          .use() middleware and the built-in plugins; or replacing Axios
+          interceptors, CancelToken, adapters or proxy options. Not for Axios
+          itself or for other fetch wrappers.\n",
+        sources:
+          [
+            src/index.ts,
+            src/lib/faxios.ts,
+            src/lib/core/Faxios.ts,
+            src/lib/core/mergeConfig.ts,
+            src/lib/core/buildFullPath.ts,
+            src/lib/core/dispatchRequest.ts,
+            src/lib/core/FaxiosError.ts,
+            src/lib/types.ts,
+            src/lib/adapters/fetch.ts,
+            src/lib/helpers/composeSignals.ts,
+            src/lib/plugins/definePlugin.ts,
+            src/lib/plugins/authBearer.ts,
+            src/lib/plugins/retry.ts,
+            src/lib/plugins/timing.ts,
+            package.json,
+            adrianbrowning/faxios:packages/tests/unit/api.test.ts,
+            adrianbrowning/faxios:packages/tests/unit/core/middleware.test.ts,
+            adrianbrowning/faxios:packages/tests/unit/plugins/*.test.ts,
+            adrianbrowning/faxios:MIGRATION_GUIDE.md
+          ],
+        requires: [],
+        purpose: "Teach agents the request surface faxios actually implements (one
+          fetch transport, .use() middleware, AbortSignal cancellation, Standard
+          Schema validation) and stop them from generating Axios APIs that
+          faxios removed or never verified.\n"
+      }
+  ]
+distribution:
+  mode: none

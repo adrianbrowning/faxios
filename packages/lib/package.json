@@ -17,7 +17,8 @@
     "browser",
     "rest",
     "api",
-    "client"
+    "client",
+    "tanstack-intent"
   ],
   "author": "Adrian Elton-Browning",
   "contributors": [
@@ -42,7 +43,8 @@
   },
   "homepage": "https://adrianbrowning.github.io/faxios/",
   "files": [
-    "dist/"
+    "dist/",
+    "skills/configure-requests"
   ],
   "scripts": {
     "build": "zshy",

@@ -1,0 +1,157 @@
+# domain_map.yaml
+# Library: @gcmdev/faxios (workspace: faxios-workspace)
+# Version: 0.1.0 (source revision 01316e10, origin/main)
+# Date: 2026-10-06
+# Status: reviewed (first batch; not full-library coverage)
+
+library:
+  name: faxios-workspace
+  version: '0.1.0'
+  repository: 'https://github.com/adrianbrowning/faxios'
+  description: 'Promise-based HTTP client on the web-standard fetch API for browsers, Node 24+, Deno and Bun.'
+  primary_framework: framework-agnostic
+
+domains:
+  - name: Sending and configuring requests
+    slug: requests
+    description: 'Building instances and requests, handling their results and failures, and extending the request lifecycle with middleware.'
+
+skills:
+  - name: configure-requests
+    slug: configure-requests
+    domain: requests
+    description: Use when writing, reviewing or porting code that sends HTTP requests with @gcmdev/faxios.
+    type: core
+    packages: ['@gcmdev/faxios']
+    covers:
+      - 'faxios default export, create(), call forms and method aliases (incl. query, *Form)'
+      - 'mergeConfig rules, method header groups, undefined/null header semantics'
+      - 'baseURL and allowAbsoluteUrls resolution'
+      - 'pathParams and params'
+      - 'Standard Schema validation: requestSchema, responseSchema, paramsSchema, pathParamsSchema'
+      - 'AbortSignal cancellation, timeout, isCancel, CanceledError'
+      - 'FaxiosError codes, isFaxiosError, isSchemaValidationError, validateStatus'
+      - '.use() middleware, eject, ctx.config/state/capabilities'
+      - 'built-in plugins: auth-bearer, retry, timing; definePlugin'
+      - 'env.fetch and fetchOptions as the only transport customisation'
+      - 'stable root/plugin subpaths vs ./unsafe/* exports'
+      - 'Axios-to-faxios porting boundaries'
+    tasks:
+      - Create a configured faxios instance with baseURL, headers and timeout
+      - Cancel a request or apply a timeout and tell the failure codes apart
+      - Add auth, retry or timing behaviour with .use() middleware and the built-in plugins
+      - Port Axios-style code without assuming unverified Axios compatibility
+    reference_candidates:
+      - topic: plugin authoring with definePlugin
+        reason: 'Type-slot inference (options/requires/provides) is non-obvious and only needed when writing reusable plugins.'
+      - topic: Axios differences
+        reason: 'Long mapping table only needed when porting Axios code.'
+    failure_modes:
+      - mistake: Using Axios interceptors
+        mechanism: 'faxios has no interceptors property, so interceptors.request.use throws; middleware order also differs.'
+        wrong_pattern: |
+          api.interceptors.request.use(config => config);
+        correct_pattern: |
+          api.use(async (ctx, next) => next(ctx));
+        source: 'packages/tests/unit/api.test.ts; PRE_RELEASE_CHANGELOG.md'
+        priority: HIGH
+        status: removed
+        version_context: 'Removed before the first faxios release; agents trained on Axios still generate it.'
+      - mistake: Passing Axios transport options
+        mechanism: 'adapter, proxy, httpAgent and similar keys are not in FaxiosRequestConfig; untyped configs keep them and they are ignored at runtime.'
+        wrong_pattern: |
+          faxios.create({ adapter: "http", proxy: { host: "p", port: 8080 } });
+        correct_pattern: |
+          faxios.create({ env: { fetch: myFetch }, fetchOptions: { cache: "no-store" } });
+        source: 'src/lib/types.ts; MIGRATION_GUIDE.md (Fetch-Only Migration); AGENTS.md'
+        priority: HIGH
+        status: removed
+      - mistake: Using CancelToken
+        mechanism: 'CancelToken does not exist; cancellation is AbortSignal only.'
+        wrong_pattern: |
+          const source = faxios.CancelToken.source();
+        correct_pattern: |
+          const controller = new AbortController(); faxios.get(url, { signal: controller.signal });
+        source: 'src/lib/cancel/; packages/docs/pages/advanced/cancellation.md'
+        priority: HIGH
+        status: removed
+      - mistake: Checking ECONNABORTED for timeouts
+        mechanism: 'Timeouts reject with ETIMEDOUT; ECONNABORTED is never raised.'
+        wrong_pattern: |
+          if (error.code === "ECONNABORTED") retryLater();
+        correct_pattern: |
+          if (error.code === FaxiosError.ETIMEDOUT) retryLater();
+        source: 'src/lib/helpers/composeSignals.ts; packages/docs/pages/advanced/error-handling.md'
+        priority: HIGH
+        status: active
+      - mistake: Absolute URL on a baseURL instance
+        mechanism: 'With an instance baseURL and allowAbsoluteUrls unset, faxios appends the absolute URL to the base.'
+        wrong_pattern: |
+          faxios.create({ baseURL: "https://api.example.com" }).get("https://other.example/x");
+        correct_pattern: |
+          faxios.create({ baseURL: "https://api.example.com" }).get("https://other.example/x", { allowAbsoluteUrls: true });
+        source: 'src/lib/core/Faxios.ts (resolveAllowAbsoluteUrls); src/lib/core/buildFullPath.ts'
+        priority: HIGH
+        status: active
+      - mistake: Importing plugins from the package root
+        mechanism: 'Plugins are only exported from @gcmdev/faxios/plugins/<name>; faxios.plugins is undefined.'
+        wrong_pattern: |
+          import { retry } from "@gcmdev/faxios";
+        correct_pattern: |
+          import { retry } from "@gcmdev/faxios/plugins/retry";
+        source: 'packages/lib/package.json exports; packages/tests/unit/api.test.ts'
+        priority: MEDIUM
+        status: active
+      - mistake: Calling statics on create() instances
+        mechanism: 'isCancel, mergeConfig, HttpStatusCode and other statics exist only on the default export.'
+        wrong_pattern: |
+          api.isCancel(error);
+        correct_pattern: |
+          import { isCancel } from "@gcmdev/faxios"; isCancel(error);
+        source: 'src/lib/faxios.ts; packages/tests/unit/api.test.ts'
+        priority: MEDIUM
+        status: active
+      - mistake: Promising upload progress in browsers
+        mechanism: 'onUploadProgress fires only where fetch streams request bodies (duplex half), such as Node.'
+        wrong_pattern: |
+          faxios.post(url, file, { onUploadProgress: showBar }); // assumed to work in every browser
+        correct_pattern: |
+          // Use onUploadProgress only where fetch supports streaming request bodies.
+        source: 'packages/docs/pages/advanced/fetch-adapter.md; PRE_RELEASE_DOCS.md'
+        priority: MEDIUM
+        status: active
+      - mistake: Assuming POST is retried
+        mechanism: 'retry() only retries GET, HEAD, OPTIONS, PUT, DELETE and QUERY unless methods lists more; retryOn cannot override it.'
+        wrong_pattern: |
+          api.use(retry()).post("/charge", body); // expected to retry on 503
+        correct_pattern: |
+          api.use(retry({ methods: ["get", "post"] })); // only when the API dedupes repeats
+        source: 'src/lib/plugins/retry.ts'
+        priority: MEDIUM
+        status: active
+
+tensions:
+  - name: Axios-like call shape vs Axios-incompatible internals
+    skills: ['configure-requests']
+    description: 'faxios keeps the Axios call signature, which invites agents to assume every Axios option and extension point exists.'
+    implication: 'Generated code compiles in loose configs but silently loses proxies, adapters or interceptor behaviour.'
+
+cross_references: []
+
+gaps:
+  - skill: configure-requests
+    question: 'Should ./unsafe/* subpaths get a documented stability statement?'
+    context: 'The only stability signal is the unsafe/ prefix; the skill tells agents to avoid them in application code.'
+    status: open
+  - skill: configure-requests
+    question: 'Is proxying through fetchOptions.dispatcher in Node a supported, tested path?'
+    context: 'Project docs recommend it and faxios passes class instances through to fetch, but no faxios test exercises a proxy.'
+    status: open
+  - skill: configure-requests
+    question: 'MIGRATION_GUIDE.md and several docs pages still show interceptors, Node 18 and custom adapters.'
+    context: 'The skill follows source and tests instead; docs rewrite is tracked in PRE_RELEASE_DOCS.md.'
+    status: open
+  - skill: configure-requests
+    question: 'How do SKILL.md examples importing @gcmdev/faxios/plugins/* pass intent validate?'
+    context: 'Intent 0.5.3 (and 0.5.4) map <package>/* to src/* and the package root, ignoring package.json exports, so the correct consumer subpath imports fail example type-checking and maintainer check.'
+    status: open
