@@ -4,7 +4,7 @@ import CanceledError from "../cancel/CanceledError.js";
 import isCancel from "../cancel/isCancel.js";
 import FaxiosError from "../core/FaxiosError.js";
 import validator from "../helpers/validator.js";
-import type { FaxiosPlugin, FaxiosRequestConfig, GenericAbortSignal, InternalFaxiosRequestConfig } from "../types.js";
+import type { FaxiosPlugin, FaxiosRequestConfig, GenericAbortSignal, InternalFaxiosRequestConfig, Method } from "../types.js";
 import utils from "../utils.js";
 
 // Config values are read as own properties only (repo rule for possibly untrusted input).
@@ -18,7 +18,11 @@ const optionsSchema = {
   attempts: (value: unknown) => (Number.isInteger(value) && (value as number) >= 1) || "an integer of at least 1",
   retryOn: validator.validators["function"],
   delay: (value: unknown) => isWait(value) || typeof value === "function" || "a finite number of at least 0 or a function",
+  methods: (value: unknown) => (Array.isArray(value) && value.every(m => typeof m === "string")) || "an array of HTTP method names",
 };
+
+// Methods whose repeat has the same effect as one request (RFC 9110 §9.2.2, plus QUERY).
+const IDEMPOTENT_METHODS: ReadonlyArray<Method> = [ "get", "head", "options", "put", "delete", "query" ];
 
 // One check for both the factory argument and a per-request override.
 function assertRetryOptions(value: unknown, config?: InternalFaxiosRequestConfig): asserts value is RetryOptions {
@@ -38,6 +42,11 @@ export type RetryOptions = {
   retryOn?: (error: unknown, attempt: number) => boolean;
   /** Milliseconds to wait before the next try, or a function of the try that failed. Default 100ms, doubling. */
   delay?: number | ((attempt: number, error: unknown) => number);
+  /**
+   * HTTP methods that may be retried, in any case. Default: GET, HEAD, OPTIONS, PUT, DELETE and
+   * QUERY. POST and PATCH aren't idempotent, so add them only if your API dedupes repeats.
+   */
+  methods?: ReadonlyArray<Method>;
 };
 
 /** Per-request override: `false` turns retries off, an object overrides the plugin's options. */
@@ -94,6 +103,9 @@ export default function retry(options: RetryOptions = {}): FaxiosPlugin<unknown,
       const attempts = setting("attempts") ?? 3;
       const retryOn = setting("retryOn") ?? retryByDefault;
       const delay = setting("delay") ?? doublingDelay;
+      const methods = setting("methods") ?? IDEMPOTENT_METHODS;
+      const method = String(ownValue(ctx.config, "method") ?? "get").toLowerCase();
+      if (!methods.some(m => m.toLowerCase() === method)) return next(ctx);
 
       // Tries run one after another on purpose: each must finish before deciding on the next.
       for (let attempt = 1; ; attempt++) {

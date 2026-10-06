@@ -172,7 +172,8 @@ describe("plugins::retry", () => {
       },
     });
 
-    await assert.rejects(api.post(URL, body), isStatus(503));
+    // PUT is retried by default, so only the stream check can stop the second try.
+    await assert.rejects(api.put(URL, body), isStatus(503));
 
     assert.strictEqual(calls.length, 1);
   });
@@ -181,9 +182,41 @@ describe("plugins::retry", () => {
     const { fetch, calls } = scriptedFetch([ 503, 200 ]);
     const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }));
 
-    await assert.rejects(api.post(URL, Readable.from([ "chunk" ])), isStatus(503));
+    await assert.rejects(api.put(URL, Readable.from([ "chunk" ])), isStatus(503));
 
     assert.strictEqual(calls.length, 1);
+  });
+
+  it("does not retry a POST or PATCH by default", async () => {
+    const post = scriptedFetch([ 503, 200 ]);
+    const patch = scriptedFetch([ "network", 200 ]);
+
+    await assert.rejects(faxios.create({ env: { fetch: post.fetch } }).use(retry({ delay: 0 }))
+      .post(URL, { order: 1 }), isStatus(503));
+    await assert.rejects(faxios.create({ env: { fetch: patch.fetch } }).use(retry({ delay: 0 }))
+      .patch(URL, { order: 1 }), (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_NETWORK);
+
+    assert.strictEqual(post.calls.length, 1);
+    assert.strictEqual(patch.calls.length, 1);
+  });
+
+  it("retries the methods listed in `methods`, from the plugin or per request", async () => {
+    const fromPlugin = scriptedFetch([ 503, 200 ]);
+    const perRequest = scriptedFetch([ 503, 200 ]);
+    const getOnly = scriptedFetch([ 503, 200 ]);
+
+    const a = faxios.create({ env: { fetch: fromPlugin.fetch } }).use(retry({ delay: 0, methods: [ "post" ] }))
+      .post(URL, {});
+    const b = faxios.create({ env: { fetch: perRequest.fetch } }).use(retry({ delay: 0 }))
+      .post(URL, {}, { retry: { methods: [ "POST" ] } });
+    const c = assert.rejects(faxios.create({ env: { fetch: getOnly.fetch } }).use(retry({ delay: 0, methods: [ "get" ] }))
+      .put(URL, {}), isStatus(503));
+    await vi.runAllTimersAsync();
+    await Promise.all([ a, b, c ]);
+
+    assert.strictEqual(fromPlugin.calls.length, 2);
+    assert.strictEqual(perRequest.calls.length, 2);
+    assert.strictEqual(getOnly.calls.length, 1);
   });
 
   it("ignores retry settings inherited from a polluted Object.prototype", async () => {
@@ -219,6 +252,8 @@ describe("plugins::retry", () => {
       }
       // @ts-expect-error -- retryOn must be a function
       assert.throws(() => retry({ retryOn: true }), isBadValue);
+      // @ts-expect-error -- methods must be an array of method names
+      assert.throws(() => retry({ methods: "post" }), isBadValue);
       // @ts-expect-error -- unknown option
       assert.throws(() => retry({ retries: 3 }), isUnknown);
       // @ts-expect-error -- null isn't an options object
