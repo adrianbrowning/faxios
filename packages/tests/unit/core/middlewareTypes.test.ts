@@ -251,6 +251,9 @@ describe("middleware types", () => {
       const needsSym: FaxiosPlugin<{ [sym]: string; }> = { name: "needsSym", middleware: async (ctx, next) => next(ctx) };
       // @ts-expect-error TS2345 -- no plugin can provide a symbol capability, so the requirement is invalid
       faxios.create().use(needsSym);
+      const numericCap: FaxiosPlugin<unknown, { 1: string; }> = { name: "numericCap", provides: { 1: "one" }, middleware: async (ctx, next) => next(ctx) };
+      // @ts-expect-error TS2345 -- capability names are strings; a numeric key never matches one
+      faxios.create().use(numericCap);
     }
     void surfaces;
   });

@@ -88,10 +88,10 @@ type RequireProvidesValue<TProv> = [keyof TProv] extends [never] ? unknown : { p
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- no capabilities, as in FaxiosInstance
 type ProvidedCapabilities<TProv> = [TProv] extends [null | undefined] ? {} : TProv;
 
-// use() copies capabilities with Object.keys() and skips the keys that could pollute a prototype, so
-// a symbol or dangerous key would be typed on ctx.capabilities but never set, and nothing could
-// ever satisfy a requirement for one.
-type UnsupportedCapabilityKeys<TCaps> = Extract<keyof TCaps, symbol | "__proto__" | "constructor" | "prototype">;
+// use() reads capability names with Object.keys() and skips the keys that could pollute a prototype,
+// so the registry only holds string names. A symbol, number or dangerous key would be typed on
+// ctx.capabilities without matching a registered name, and nothing could satisfy a requirement for one.
+type UnsupportedCapabilityKeys<TCaps> = Extract<keyof TCaps, symbol | number | "__proto__" | "constructor" | "prototype">;
 
 type RejectUnsupportedCapabilityKeys<TReq, TProv> = [UnsupportedCapabilityKeys<TReq> | UnsupportedCapabilityKeys<TProv>] extends [never]
   ? unknown
