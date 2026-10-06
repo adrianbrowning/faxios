@@ -26,7 +26,7 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Source:** Issue #88 (part of #54); `PRE_RELEASE_CHANGELOG.md` Features entry "`.use()` middleware".
 - **Status:** Pending.
 - **Docs targets:** A new `pages/advanced/middleware.md` (concept, ordering, plugins), `pages/advanced/create-an-instance.md`, the TypeScript section of `pages/advanced/api-reference.md`, and the package README feature list. The interceptor pages are rewritten later, when interceptors are removed (#89).
-- **Required content:** Ordering: registration order on the way in, reverse on the way out (`a before → b before → request → b after → a after`). `ctx.config` is the merged request config and `ctx.config.headers` is a `FaxiosHeaders`, so `.set()` works before `next`. Each `next()` sends a copy of the config, so changes dispatch makes (path-param substitution, `transformRequest`, schema output) never show up on `ctx.config`, and calling `next` again retries from the same input. Non-2xx responses reach middleware as a rejected `FaxiosError` (because of `validateStatus`), not as a response. Returning without `next` skips the request, including schema validation. `ctx.state` is per request; `ctx.capabilities` holds plugin `provides` values for every request, and duplicate keys throw `ERR_BAD_OPTION`. `use()` returns the instance; `eject()` removes by reference and leaves running requests alone. `create()` children start with no middleware. Aborting at any point before the request is sent rejects with `CanceledError` and sends nothing, even when a middleware awaits before `next`.
+- **Required content:** Ordering: registration order on the way in, reverse on the way out (`a before → b before → request → b after → a after`). `ctx.config` is the merged request config and `ctx.config.headers` is a `FaxiosHeaders`, so `.set()` works before `next`. Each `next()` sends a copy of the config, so changes dispatch makes (path-param substitution, `transformRequest`, schema output) never show up on `ctx.config`, and calling `next` again retries from the same input. Non-2xx responses reach middleware as a rejected `FaxiosError` (because of `validateStatus`), not as a response. Returning without `next` skips the request, including schema validation. `ctx.state` is per request; `ctx.capabilities` holds plugin `provides` values for every request, and duplicate keys throw `ERR_BAD_OPTION`. `use()` returns the instance; `eject()` removes by reference and leaves running requests alone. `create()` children start with no middleware. Aborting at any point before the request is sent rejects with `CanceledError` and sends nothing, even when a middleware awaits before `next`. `use()` and `eject()` exist only on the default export and `faxios.create()` instances, not on `new Faxios()` (#105).
 - **Examples:** An auth-header middleware; a retry loop that calls `next` again on `ERR_NETWORK`; a cache that returns a stored response without calling `next`; a plugin with `provides`.
 - **Notes:** Typed plugin request options and capability requirements (#90) and the built-in plugins (#91) extend this page later.
 
@@ -36,9 +36,19 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Source:** Issue #90 (part of #54); `PRE_RELEASE_CHANGELOG.md` Features entry "Typed `.use()` plugins".
 - **Status:** Pending.
 - **Docs targets:** The middleware page from the `.use()` middleware entry (sections "Writing a plugin" and "Adding typed request options"), the TypeScript section of `pages/advanced/api-reference.md`, and `pages/advanced/type-script.md`.
-- **Required content:** `FaxiosPlugin<TRequires, TProvides, TOptions>` and what each parameter does. Chain `use()` and keep the returned instance: the same object at runtime, but only the returned type knows the plugin's options. Options appear on every config-taking member, including `defaults`, `define()` and `route()`. A plugin installed before what it requires is a type error naming the missing capability, as is a provider with an incompatible shape. `create()` children start untyped; `eject()` doesn't narrow the type. Declaring a capability in `TProvides` makes `provides` required. Known limit: excess-property checks only run on object literals, so a config held in a variable can carry a plugin option without the plugin installed.
+- **Required content:** `FaxiosPlugin<{ requires?; provides?; options? }>` and what each slot does; an omitted slot adds nothing, and an unknown key (`require`) is a type error. Chain `use()` and keep the returned instance: the same object at runtime, but only the returned type knows the plugin's options. Options appear on every config-taking member, including `defaults`, `define()` and `route()`. A plugin installed before what it requires is a type error naming the missing capability, as is a provider with an incompatible shape. `create()` children start untyped; `eject()` doesn't narrow the type. Declaring `provides` makes the `provides` value required. Known limit: excess-property checks only run on object literals, so a config held in a variable can carry a plugin option without the plugin installed.
 - **Examples:** A `cache()` plugin with `CacheOptions`; `authBearer(getToken)` providing `auth`; `refreshOn401()` requiring `auth`, shown failing before `authBearer` and passing after it; the compiler message for the missing capability.
-- **Notes:** The built-in plugins (#91) are the natural examples once they exist.
+- **Notes:** Show plugins written with `definePlugin` first (see "`definePlugin` and the plugin entry points") and `FaxiosPlugin<{ … }>` as the annotation for a factory's return type.
+
+### `definePlugin` and the plugin entry points
+
+- **Change:** `definePlugin({ name, provides?, middleware })`, a root export, builds a plugin and infers its `FaxiosPlugin` slots. The built-in plugins are imported from `@gcmdev/faxios/plugins` (or `/plugins/auth-bearer`, `/plugins/retry`, `/plugins/timing`), not the root, and `faxios.plugins` is gone.
+- **Source:** Issues #105 and #107 (part of #54); `PRE_RELEASE_CHANGELOG.md` Breaking Changes entry "Plugins are typed with one object, and the built-ins moved to subpaths".
+- **Status:** Pending.
+- **Docs targets:** The "Writing a plugin" section of the middleware page, the plugins section of the middleware page, `pages/advanced/api-reference.md` (exports and subpaths), the package README feature list, and every page that imports a built-in plugin (`authentication.md`, `retry.md`).
+- **Required content:** `provides` is inferred from the value; `options` and `requires` from the middleware's `ctx: FaxiosContext<Options, Capabilities>` annotation (use `unknown` for no options). Capabilities the plugin provides itself are in that annotation but don't count as required. A `provides` value whose type contradicts the annotation is a type error. Unannotated middleware sees the plugin's own `provides` on `ctx.capabilities`. `definePlugin` returns the object it was given, so `eject()` takes the same reference. The `"~plugin"` property in the emitted types is an internal marker; never set or read it. Built-ins: `import { authBearer, retry, timing } from "@gcmdev/faxios/plugins"`; the per-plugin subpaths export the same functions and their types. Middleware registers only through `faxios.create()` instances and the default export: `new Faxios()` has no `use()`.
+- **Examples:** `refreshOn401` with `definePlugin`; a plugin that provides `cache` and requires `auth` in one context annotation; `import { retry } from "@gcmdev/faxios/plugins/retry"`.
+- **Notes:** Supersedes #124 part 3 (typing `faxios.use(mw).plugins`).
 
 ### Built-in plugin: `authBearer`
 
@@ -47,7 +57,7 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Status:** Pending.
 - **Docs targets:** A plugins section of the middleware page; rewrite `pages/advanced/authentication.md` ("Bearer tokens (JWT)") around it.
 - **Required content:** `getToken` may return a string or a promise and is called on every request. It overwrites any `Authorization` header already on the request. Later plugins call `ctx.capabilities.auth.getToken()`.
-- **Examples:** `faxios.create({ baseURL }).use(authBearer(() => store.token))`.
+- **Examples:** `import { authBearer } from "@gcmdev/faxios/plugins"; faxios.create({ baseURL }).use(authBearer(() => store.token))`.
 - **Notes:** None.
 
 ### `refreshOn401` example
@@ -56,7 +66,7 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Source:** Issue #91; the plugin is written out in `packages/tests/unit/plugins/authBearer.test.ts`.
 - **Status:** Pending.
 - **Docs targets:** `pages/advanced/authentication.md` ("Token refresh"), replacing the `check=skip` interceptor block; the "Writing a plugin" section of the middleware page.
-- **Required content:** A `FaxiosPlugin<AuthBearerCapability>` that catches a `FaxiosError` with `err.response?.status === 401` (a 401 arrives as a rejection because `validateStatus` rejects non-2xx, not as a response), refreshes, sets the header from `ctx.capabilities.auth.getToken()` and calls `next(ctx)` once more. Installing it before `authBearer` is a type error.
+- **Required content:** A `definePlugin` plugin whose middleware is annotated `ctx: FaxiosContext<unknown, AuthBearerCapability>` (from `@gcmdev/faxios/plugins/auth-bearer`) and catches a `FaxiosError` with `err.response?.status === 401` (a 401 arrives as a rejection because `validateStatus` rejects non-2xx, not as a response), refreshes, sets the header from `ctx.capabilities.auth.getToken()` and calls `next(ctx)` once more. Installing it before `authBearer` is a type error.
 - **Examples:** The test's `refreshOn401(refresh)` verbatim, installed as `.use(authBearer(getToken)).use(refreshOn401(refresh))`.
 - **Notes:** Calls `next` twice, which is safe because each `next()` dispatches its own config copy.
 
@@ -67,7 +77,7 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 - **Status:** Pending.
 - **Docs targets:** Rewrite `pages/advanced/retry.md` around it, replacing its three `check=skip` interceptor blocks; plugins section of the middleware page.
 - **Required content:** `attempts` counts every try including the first (default 3) and must be an integer of at least 1; anything else (including `Infinity`) rejects with `ERR_BAD_OPTION_VALUE` before a request is sent. By default it retries `ERR_NETWORK`, `ETIMEDOUT` and 5xx responses, never a cancellation. `delay` is milliseconds or `(attempt, error) => ms`, default 100ms doubling. Per request, `retry: false` turns it off and `retry: { … }` overrides fields. An abort during the backoff rejects with `CanceledError` straight away. A stream body (web `ReadableStream` or a Node stream) is never retried, since the first try consumed it. Only idempotent methods are retried by default (GET, HEAD, OPTIONS, PUT, DELETE, QUERY). POST and PATCH are retried only when listed in `methods` (case-insensitive), which callers should do only if their API dedupes repeats.
-- **Examples:** `retry({ attempts: 5 })`; `retryOn` for 429; `api.post(url, data, { retry: false })`.
+- **Examples:** `import { retry } from "@gcmdev/faxios/plugins"`; `retry({ attempts: 5 })`; `retryOn` for 429; `api.post(url, data, { retry: false })`.
 - **Notes:** Install `timing` before `retry` to measure all tries together, after it to measure each try.
 
 ### Built-in plugin: `timing`

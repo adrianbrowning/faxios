@@ -1,6 +1,11 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
-import faxios, { authBearer, create, FaxiosError, retry, timing } from "#src/index.ts";
+import * as root from "#src/index.ts";
+import faxios, { create, definePlugin, Faxios, FaxiosError } from "#src/index.ts";
+import { authBearer } from "#src/lib/plugins/authBearer.ts";
+import * as plugins from "#src/lib/plugins/index.ts";
+import { retry } from "#src/lib/plugins/retry.ts";
+import { timing } from "#src/lib/plugins/timing.ts";
 
 describe("static api", () => {
   it("should have request method helpers", () => {
@@ -39,15 +44,29 @@ describe("static api", () => {
     assert.strictEqual(typeof faxios.eject, "function");
   });
 
-  it("should expose the built-in plugins as faxios.plugins and named exports", () => {
-    assert.deepStrictEqual(faxios.plugins, { authBearer, retry, timing });
+  it("exports the built-in plugins only from the plugin entry points", () => {
+    assert.deepStrictEqual({ ...plugins }, { authBearer, retry, timing });
+    for (const name of [ "authBearer", "retry", "timing", "plugins" ]) {
+      assert.strictEqual(Object.hasOwn(root, name), false, `root exports ${name}`);
+    }
+    // @ts-expect-error TS2339 -- the built-ins moved to @gcmdev/faxios/plugins
+    assert.strictEqual(faxios.plugins, undefined);
+    assert.strictEqual(typeof definePlugin, "function");
+  });
+
+  it("registers middleware only through the callable instance, not the Faxios class", () => {
+    const bare = new Faxios();
+    // @ts-expect-error TS2339 -- use() is typed only on the instance faxios.create() returns
+    assert.strictEqual(bare.use, undefined);
+    // @ts-expect-error TS2339 -- eject() is typed only on the instance faxios.create() returns
+    assert.strictEqual(bare.eject, undefined);
   });
 
   it("only types the static members on the default export", () => {
     const instance = create();
     // Created instances have none of the statics at runtime, so their type mustn't either.
-    // @ts-expect-error TS2339 -- plugins exists only on the default export
-    assert.strictEqual(instance.plugins, undefined);
+    // @ts-expect-error TS2339 -- mergeConfig exists only on the default export
+    assert.strictEqual(instance.mergeConfig, undefined);
     // @ts-expect-error TS2339 -- isCancel exists only on the default export
     assert.strictEqual(instance.isCancel, undefined);
     // @ts-expect-error TS2339 -- HttpStatusCode exists only on the default export

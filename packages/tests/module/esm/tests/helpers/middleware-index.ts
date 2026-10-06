@@ -4,9 +4,20 @@
 // - plugin options are rejected without their plugin
 // - a plugin that needs a capability can't be installed before its provider
 // - static helpers exist only on the default export
+// - the built-in plugins come from the plugin subpaths, not the root
+// - definePlugin infers a plugin's slots, and the Faxios class has no use()
 // - the internal plugin helper types aren't importable from the package root
-import faxios, { authBearer, FaxiosHeaders, retry, timing } from "faxios";
-import type { AuthBearerCapability, FaxiosContext, FaxiosInstance, FaxiosMiddleware, FaxiosNext, FaxiosPlugin, FaxiosResponse } from "faxios";
+import faxios, { definePlugin, Faxios, FaxiosHeaders } from "faxios";
+// @ts-expect-error - the built-in plugins aren't root exports
+import { retry as rootRetry } from "faxios";
+import type { FaxiosContext, FaxiosInstance, FaxiosMiddleware, FaxiosPlugin, FaxiosResponse } from "faxios";
+import { authBearer as authBearerFromBarrel, retry as retryFromBarrel, timing as timingFromBarrel } from "faxios/plugins";
+import type { RetryRequestOptions } from "faxios/plugins";
+import { authBearer } from "faxios/plugins/auth-bearer";
+import type { AuthBearerCapability } from "faxios/plugins/auth-bearer";
+import { retry } from "faxios/plugins/retry";
+import { timing } from "faxios/plugins/timing";
+import type { TimingEvent } from "faxios/plugins/timing";
 
 type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
 
@@ -29,14 +40,21 @@ const assignHeaders: FaxiosMiddleware = async (ctx, next) => {
   return next(ctx);
 };
 
-const refreshOn401: FaxiosPlugin<AuthBearerCapability> = {
+const refreshOn401 = definePlugin({
   name: "refreshOn401",
-  middleware: async (ctx, next: FaxiosNext<unknown, AuthBearerCapability>) => {
+  middleware: async (ctx: FaxiosContext<unknown, AuthBearerCapability>, next) => {
     const token: string = await ctx.capabilities.auth.getToken();
     ctx.config.headers.set("Authorization", `Bearer ${token}`);
     return next(ctx);
   },
-};
+});
+const refreshType: Equal<typeof refreshOn401, FaxiosPlugin<{ requires: AuthBearerCapability; }>> = true;
+const barrelRetry = retryFromBarrel();
+const retryType: Equal<typeof barrelRetry, FaxiosPlugin<{ options: RetryRequestOptions; }>> = true;
+const sameModules: Equal<typeof authBearerFromBarrel | typeof timingFromBarrel, typeof authBearer | typeof timing> = true;
+void refreshType;
+void retryType;
+void sameModules;
 
 async function middleware(): Promise<void> {
   const api = faxios.create({ baseURL: "https://example.test" })
@@ -44,7 +62,7 @@ async function middleware(): Promise<void> {
     .use(authBearer(() => "token"))
     .use(refreshOn401)
     .use(retry({ attempts: 2, methods: [ "get", "post" ] }))
-    .use(timing(({ durationMs }) => void durationMs));
+    .use(timing(({ durationMs }: TimingEvent) => void durationMs));
 
   await api.get("/items", { retry: false });
   await api.post("/items", {}, { retry: { attempts: 3 } });
@@ -61,10 +79,16 @@ async function middleware(): Promise<void> {
   faxios.create().use(refreshOn401);
 
   // @ts-expect-error - static helpers exist only on the default export
-  void faxios.create().plugins;
+  void faxios.create().mergeConfig;
 
-  void faxios.plugins.retry;
+  // @ts-expect-error - the built-in plugins moved to faxios/plugins
+  void faxios.plugins;
+
+  // @ts-expect-error - use() is typed only on the instance create() returns
+  new Faxios().use(addHeader);
 }
+
+void rootRetry;
 
 // @ts-expect-error - internal: use() infers through it, users write FaxiosPlugin
 export type RootPluginBase = import("faxios").FaxiosPluginBase;

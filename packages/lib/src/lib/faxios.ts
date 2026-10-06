@@ -4,7 +4,7 @@
 import CanceledError from "./cancel/CanceledError.js";
 import isCancel from "./cancel/isCancel.js";
 import type { DefineConfig, DefinedEndpoint } from "./core/define.js";
-import Faxios from "./core/Faxios.js";
+import Faxios, { ejectMiddleware, useMiddleware } from "./core/Faxios.js";
 import FaxiosError from "./core/FaxiosError.js";
 import FaxiosHeaders from "./core/FaxiosHeaders.js";
 import mergeConfig from "./core/mergeConfig.js";
@@ -15,9 +15,6 @@ import formDataToJSON from "./helpers/formDataToJSON.js";
 import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
-import authBearer from "./plugins/authBearer.js";
-import retry from "./plugins/retry.js";
-import timing from "./plugins/timing.js";
 import type { StandardSchemaV1 } from "./types/standard-schema.js";
 import type { Method, StringLiteralsOrString, CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosMiddleware, FaxiosPluginArgument, FaxiosRequestConfig, HeadersDefaults, FaxiosResponse, SchemaConfig } from "./types.js";
 import utils from "./utils.js";
@@ -41,15 +38,18 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
   // Copy context to instance
   utils.extend(target, context, null, { allOwnKeys: true });
 
-  // extend() bound use() to the inner Faxios object, so its `return this` would hand back a
-  // value you can't call. Return the callable instance instead. At runtime this only delegates
-  // to context.use(); the plugin rules live in FaxiosInstance["use"], so the cast is the single
-  // place the phantom TOpts/TCaps refinement meets the untyped registry.
-  const use = (middleware: Parameters<Faxios["use"]>[0]): FaxiosInstance => {
-    context.use(middleware);
+  // use() and eject() aren't Faxios members, so the instance gets them here. use() returns the
+  // callable instance for chaining. At runtime it only registers the middleware; the plugin rules
+  // live in FaxiosInstance["use"], so the cast is the single place the phantom TOpts/TCaps
+  // refinement meets the untyped registry.
+  const use = (middleware: Parameters<typeof useMiddleware>[1]): FaxiosInstance => {
+    useMiddleware(context, middleware);
     return instance;
   };
   instance.use = use as FaxiosInstance["use"];
+  instance.eject = (middleware: unknown) => {
+    ejectMiddleware(context, middleware);
+  };
 
   // Factory for creating new instances
   instance.create = function create(instanceConfig?: CreateFaxiosDefaults): FaxiosInstance {
@@ -129,7 +129,7 @@ type CheckPlugin<THave, TReq, TProv, TOpt> = RequireCapabilities<THave, TReq>
 // from these, so it can use `Object.keys(ctx.capabilities)` or `"name" in ctx.capabilities`
 // without narrowing first.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- see above
-export type FaxiosInstance<TOpts = {}, TCaps = {}> = Pick<Faxios, "eject"> & {
+export type FaxiosInstance<TOpts = {}, TCaps = {}> = {
   /**
    * Register middleware or a plugin and return this instance, typed with the plugin's request
    * options and capabilities added. A plugin whose required capabilities aren't installed yet, or
@@ -138,6 +138,15 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = Pick<Faxios, "eject"> & {
   use: <TReq = unknown, TProv = unknown, TOpt = unknown>(
     middleware: FaxiosMiddleware<TOpts, TCaps> | (FaxiosPluginArgument<TReq, TProv, TOpt> & CheckPlugin<TCaps, TReq, TProv, TOpt>)
   ) => FaxiosInstance<TOpts & TOpt, TCaps & ProvidedCapabilities<TProv>>;
+  /**
+   * Remove middleware or a plugin registered with use(), by reference. In-flight requests are
+   * unaffected. The instance type is not narrowed: request options and capabilities the ejected
+   * plugin added stay in its type.
+   */
+  // A method, so its parameter is checked bivariantly: middleware typed for this instance's
+  // options and capabilities is accepted.
+  // eslint-disable-next-line @typescript-eslint/method-signature-style -- see above
+  eject<TReq = unknown, TProv = unknown, TOpt = unknown>(middleware: FaxiosMiddleware<TOpt> | FaxiosPluginArgument<TReq, TProv, TOpt>): void;
   define: <
     PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined,
     P extends StandardSchemaV1 | undefined = undefined,
@@ -229,8 +238,6 @@ export type FaxiosStatic = FaxiosInstance & {
   FaxiosHeaders: typeof FaxiosHeaders;
   formToJSON: (thing: unknown) => unknown;
   HttpStatusCode: typeof HttpStatusCode;
-  /** Built-in plugins for `use()`; also available as named exports. */
-  plugins: { authBearer: typeof authBearer; retry: typeof retry; timing: typeof timing; };
   default: FaxiosStatic;
 };
 
@@ -265,8 +272,6 @@ faxios.isFaxiosError = isFaxiosError;
 faxios.mergeConfig = mergeConfig;
 
 faxios.FaxiosHeaders = FaxiosHeaders;
-
-faxios.plugins = { authBearer, retry, timing };
 
 faxios.formToJSON = (thing: unknown): unknown => formDataToJSON(utils.isHTMLForm(thing) ? ((): unknown => {
   const GlobalFormData = (globalThis as Record<string, unknown>)["FormData"] as (new (el?: unknown) => unknown) | undefined;

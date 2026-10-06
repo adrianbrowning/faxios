@@ -2,7 +2,8 @@ import assert from "node:assert";
 import { getEventListeners } from "node:events";
 import { Readable } from "node:stream";
 import { afterEach, beforeEach, describe, it, vi } from "vitest";
-import faxios, { CanceledError, FaxiosError, retry } from "#src/index.ts";
+import faxios, { CanceledError, FaxiosError } from "#src/index.ts";
+import { retry } from "#src/lib/plugins/retry.ts";
 
 const URL = "http://localhost/retry";
 

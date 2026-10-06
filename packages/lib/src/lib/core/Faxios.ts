@@ -196,6 +196,12 @@ function settleOnAbort(
   });
 }
 
+// Middleware registration isn't a Faxios member: the callable instance from create() reaches it
+// through these, and its FaxiosInstance["use"] is the one place plugins are typed and checked.
+// The registry itself is untyped, so the class has nothing to type-check against.
+let useMiddleware!: (faxios: Faxios, middleware: AnyContextMiddleware | FaxiosPluginArgument) => void;
+let ejectMiddleware!: (faxios: Faxios, middleware: unknown) => void;
+
 /**
  * Create a new instance of Faxios
  *
@@ -215,13 +221,17 @@ class Faxios {
     this.defaults = instanceConfig || {};
   }
 
-  /**
-   * Register middleware or a plugin. Middleware runs in registration order before dispatch and in
-   * reverse order after it. Returns the instance so calls can be chained.
-   */
-  use<TRequires = unknown, TProvides = unknown, TOptions = unknown>(
-    middleware: FaxiosMiddleware<TOptions> | FaxiosPluginArgument<TRequires, TProvides, TOptions>
-  ): this {
+  static {
+    useMiddleware = (faxios, middleware) => {
+      faxios.#use(middleware);
+    };
+    ejectMiddleware = (faxios, middleware) => {
+      faxios.#eject(middleware);
+    };
+  }
+
+  // Middleware runs in registration order before dispatch and in reverse order after it.
+  #use(middleware: AnyContextMiddleware | FaxiosPluginArgument): void {
     const plugin = typeof middleware === "function" ? null : middleware;
     // Plugins are caller objects: only their own fields count, so a polluted Object.prototype
     // can't supply middleware or capabilities (THREATMODEL T-R4b).
@@ -233,18 +243,12 @@ class Faxios {
     }
     const provides = own("provides");
     const provided = provides == null ? [] : this.#addCapabilities(String(own("name")), provides);
-    this.#setMiddleware([ ...this.#middleware, { ref: middleware, run: run as unknown as AnyContextMiddleware, provided }]);
-    return this;
+    this.#setMiddleware([ ...this.#middleware, { ref: middleware, run, provided }]);
   }
 
-  /**
-   * Remove middleware or a plugin registered with use(), by reference. In-flight requests are
-   * unaffected. The instance type is not narrowed: request options and capabilities the ejected
-   * plugin added stay in its type.
-   */
-  eject<TRequires = unknown, TProvides = unknown, TOptions = unknown>(
-    middleware: FaxiosMiddleware<TOptions> | FaxiosPluginArgument<TRequires, TProvides, TOptions>
-  ): void {
+  // Removes middleware or a plugin registered with use(), by reference. In-flight requests keep
+  // the snapshot they started with.
+  #eject(middleware: unknown): void {
     const index = this.#middleware.findIndex(entry => entry.ref === middleware);
     if (index === -1) return;
     const capabilities = Object.assign(Object.create(null) as Record<string, unknown>, this.#capabilities);
@@ -501,4 +505,5 @@ class Faxios {
   }
 }
 
+export { ejectMiddleware, useMiddleware };
 export default Faxios;

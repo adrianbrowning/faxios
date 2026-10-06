@@ -1,7 +1,9 @@
 import assert from "node:assert";
 import { describe, expectTypeOf, it } from "vitest";
-import faxios, { authBearer, FaxiosError } from "#src/index.ts";
-import type { AuthBearerCapability, FaxiosPlugin } from "#src/index.ts";
+import faxios, { definePlugin, FaxiosError } from "#src/index.ts";
+import type { FaxiosContext } from "#src/index.ts";
+import { authBearer } from "#src/lib/plugins/authBearer.ts";
+import type { AuthBearerCapability } from "#src/lib/plugins/authBearer.ts";
 
 const URL = "http://localhost/auth";
 
@@ -16,10 +18,10 @@ function recordingFetch(statusFor: (authorization: string | null) => number = ()
 }
 
 // The refresh plugin from the docs: retry once with a fresh token after a 401.
-function refreshOn401(refresh: () => Promise<void>): FaxiosPlugin<AuthBearerCapability> {
-  return {
+function refreshOn401(refresh: () => Promise<void>) {
+  return definePlugin({
     name: "refreshOn401",
-    middleware: async (ctx, next) => {
+    middleware: async (ctx: FaxiosContext<unknown, AuthBearerCapability>, next) => {
       try {
         return await next(ctx);
       }
@@ -30,7 +32,7 @@ function refreshOn401(refresh: () => Promise<void>): FaxiosPlugin<AuthBearerCapa
         return next(ctx);
       }
     },
-  };
+  });
 }
 
 describe("plugins::authBearer", () => {
