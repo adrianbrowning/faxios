@@ -52,13 +52,13 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 
 ### Built-in plugin: `authBearer`
 
-- **Change:** `authBearer(getToken)` sets `Authorization: Bearer <token>` on every request and provides the `auth` capability.
-- **Source:** Issue #91 (part of #54); `PRE_RELEASE_CHANGELOG.md` Features entry "Built-in plugins".
+- **Change:** `authBearer(getToken, { overwrite?, scheme?, header?, origins? })` sets `Authorization: Bearer <token>` on requests to the API's origin that don't already carry the header, and provides the `auth` capability.
+- **Source:** Issues #91 and #109 (part of #54); `PRE_RELEASE_CHANGELOG.md` Features entry "Built-in plugins" and Breaking Changes entry "`authBearer` keeps explicit headers and only sends the token to the API's origin".
 - **Status:** Pending.
 - **Docs targets:** A plugins section of the middleware page; rewrite `pages/advanced/authentication.md` ("Bearer tokens (JWT)") around it.
-- **Required content:** `getToken` may return a string or a promise and is called on every request. It overwrites any `Authorization` header already on the request. Later plugins call `ctx.capabilities.auth.getToken()`.
-- **Examples:** `import { authBearer } from "@gcmdev/faxios/plugins/auth-bearer"; faxios.create({ baseURL }).use(authBearer(() => store.token))`.
-- **Notes:** None.
+- **Required content:** `getToken` may return a string or a promise and is called on every request that gets the token (with `retry` installed before `authBearer`, on every try). A header the request already has, per request or from instance defaults, is kept and `getToken` isn't called; `overwrite: true` replaces it. `scheme` (default `"Bearer"`; `""` sends the bare token) and `header` (default `"Authorization"`) change what is sent. Origin rule, strict by default: with an absolute `baseURL` the token goes only to requests whose resolved origin equals the baseURL origin (this matters with `allowAbsoluteUrls: true`; with the default `false` an absolute URL is appended to the baseURL and stays on it); with a relative or missing `baseURL` it goes only to relative request URLs, never to an absolute or protocol-relative (`//host`, `/\host`) one. So the default export, which has no `baseURL`, never sends the token to an absolute URL. `origins: ["https://api.example.com"]` replaces that rule: only those exact origins (scheme, host, port) get it; entries must be bare origins, and a relative URL counts only in a browser, as the page origin. Invalid options throw `ERR_BAD_OPTION_VALUE`, unknown ones `ERR_BAD_OPTION`. Later plugins call `ctx.capabilities.auth.getToken()`; the capability ignores the origin rule.
+- **Examples:** `import { authBearer } from "@gcmdev/faxios/plugins/auth-bearer"; faxios.create({ baseURL }).use(authBearer(() => store.token))`; an API key with `{ scheme: "", header: "X-Api-Key" }`; a client for two hosts with `origins`.
+- **Notes:** Call out the security reason for the origin rule (a token on the default export used to follow any absolute URL).
 
 ### `refreshOn401` example
 

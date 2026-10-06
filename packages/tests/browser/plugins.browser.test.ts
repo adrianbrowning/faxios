@@ -30,4 +30,27 @@ describe("plugin entry points (vitest browser)", () => {
     expect(mock.lastRequest!.headers.get("authorization")).toBe("Bearer browser-token");
     expect(events).toHaveLength(1);
   });
+
+  it("sends authBearer's token only to the page origin or the listed origins", async () => {
+    using mock = installFetchMock();
+    const sameOrigin = faxios.create().use(authBearer(() => "page-token"));
+    const listed = faxios.create({ allowAbsoluteUrls: true })
+      .use(authBearer(() => "listed-token", { origins: [ location.origin ] }));
+
+    await sameOrigin.get("/relative");
+    await sameOrigin.get("https://evil.test/absolute");
+    await sameOrigin.get("//evil.test/protocol-relative");
+    await listed.get("/relative");
+    await listed.get(`${location.origin}/absolute`);
+    await listed.get("https://evil.test/absolute");
+
+    expect(mock.requests.map(request => [ new URL(request.url).host === location.host, request.headers.get("authorization") ])).toEqual([
+      [ true, "Bearer page-token" ],
+      [ false, null ],
+      [ false, null ],
+      [ true, "Bearer listed-token" ],
+      [ true, "Bearer listed-token" ],
+      [ false, null ],
+    ]);
+  });
 });
