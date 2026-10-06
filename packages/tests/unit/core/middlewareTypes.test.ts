@@ -249,10 +249,10 @@ describe("middleware types", () => {
       // @ts-expect-error TS2345 -- use() drops prototype-polluting keys
       faxios.create().use(protoCap);
       const needsSym: FaxiosPlugin<{ [sym]: string; }> = { name: "needsSym", middleware: async (ctx, next) => next(ctx) };
-      // @ts-expect-error TS2345 -- no plugin can provide a symbol capability, so the requirement is invalid
+      // @ts-expect-error TS2345 -- rejects a symbol capability requirement
       faxios.create().use(needsSym);
       const numericCap: FaxiosPlugin<unknown, { 1: string; }> = { name: "numericCap", provides: { 1: "one" }, middleware: async (ctx, next) => next(ctx) };
-      // @ts-expect-error TS2345 -- capability names are strings; a numeric key never matches one
+      // @ts-expect-error TS2345 -- capability maps are typed with string keys only
       faxios.create().use(numericCap);
     }
     void surfaces;

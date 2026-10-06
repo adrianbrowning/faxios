@@ -89,8 +89,9 @@ type RequireProvidesValue<TProv> = [keyof TProv] extends [never] ? unknown : { p
 type ProvidedCapabilities<TProv> = [TProv] extends [null | undefined] ? {} : TProv;
 
 // use() reads capability names with Object.keys() and skips the keys that could pollute a prototype,
-// so the registry only holds string names. A symbol, number or dangerous key would be typed on
-// ctx.capabilities without matching a registered name, and nothing could satisfy a requirement for one.
+// so the registry holds string names only: a symbol or dangerous key would be typed on
+// ctx.capabilities but never set. Numeric keys are stringified at runtime and would work, but are
+// rejected so a capability map's declared keys are the same strings the registry holds.
 type UnsupportedCapabilityKeys<TCaps> = Extract<keyof TCaps, symbol | number | "__proto__" | "constructor" | "prototype">;
 
 type RejectUnsupportedCapabilityKeys<TReq, TProv> = [UnsupportedCapabilityKeys<TReq> | UnsupportedCapabilityKeys<TProv>] extends [never]
