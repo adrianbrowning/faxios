@@ -12,6 +12,7 @@ Structured workflow for completing a unit of work in this repository.
 ### 1. Plan
 
 Before touching code:
+- Base the work on a fresh trunk: `git fetch origin`, then branch (or `gh stack init`) from `origin/main`. `gh stack init` uses the *local* `main`, so fast-forward it first if you stack.
 - Restate the task as a verifiable target ("done when X")
 - Identify affected packages (docs, examples, lib, sandbox, tests)
 - List files to create/modify
@@ -49,13 +50,15 @@ Skip TDD loop — implement directly, verify visually in browser. Run lint/type-
 
 ### 3. Feedback Loop
 
-Run in order, fix before proceeding to next:
+Run what CI runs:
 
 ```bash
-pnpm -r lint:ts && echo "---" && pnpm -r lint:fix && (cd packages/tests/ && ./run-tests.sh)
+pnpm check
 ```
 
-`lint:fix` autofixes style issues in place; re-run `lint:ts` after fixes touch typed code. `run-tests.sh` builds `faxios`, packs it into the smoke/module suites, then runs unit, browser-headless, ESM smoke/module, Deno, and Bun tests in sequence — treat any failing stage as blocking.
+It runs `lint` (type-check plus the `@ts-self-types` and `@ts-expect-error` checks, `lint:esl`, then `lint:fix`), `lint:knip`, `packages/tests/run-tests.sh` (build, pack, unit, browser headless, ESM smoke/module, Deno, Bun) and `test:docs-examples`. Treat any failing stage as blocking. While iterating, a focused `pnpm --filter @faxios/tests exec vitest run --project unit <file>` is faster; finish on `pnpm check`.
+
+`run-tests.sh` allows one run at a time and refuses to start if a harness lockfile differs from `HEAD`; follow its message rather than deleting the lock or the lockfile changes by hand.
 
 Iterate until all pass (or a step is skipped because it does not apply).
 

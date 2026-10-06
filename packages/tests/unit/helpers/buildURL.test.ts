@@ -213,9 +213,9 @@ describe("types::ParamEncoder", () => {
   });
 
   it("rejects encoders that do not return a string", () => {
-    // @ts-expect-error -- encoders must return a string
+    // @ts-expect-error TS2322 -- encoders must return a string
     const returnsNumber: ParamsSerializerOptions = { encode: () => 1 };
-    // @ts-expect-error -- encoders must return a string
+    // @ts-expect-error TS2322 -- encoders must return a string
     const returnsUndefined: ParamsSerializerOptions = { encode: () => undefined };
     expectTypeOf(returnsNumber).toEqualTypeOf<ParamsSerializerOptions>();
     expectTypeOf(returnsUndefined).toEqualTypeOf<ParamsSerializerOptions>();

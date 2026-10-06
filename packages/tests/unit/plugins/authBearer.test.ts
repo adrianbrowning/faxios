@@ -90,7 +90,7 @@ describe("plugins::authBearer", () => {
 
   it("is a type error to install refreshOn401 without authBearer", () => {
     function surfaces(): void {
-      // @ts-expect-error -- refreshOn401 requires the auth capability
+      // @ts-expect-error TS2345 -- refreshOn401 requires the auth capability
       faxios.create().use(refreshOn401(async () => undefined));
     }
     void surfaces;

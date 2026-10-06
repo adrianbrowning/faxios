@@ -30,7 +30,12 @@ Write all captured output to `/tmp/pr-review-data.md` in this format:
 
 ## CHANGED FILES
 <name-only output>
+
+## CODING STANDARDS
+<contents of CODING_STANDARDS.md at the repo root>
 ```
+
+Every reviewer applies the `## CODING STANDARDS` rules alongside its own checklist, and reports a violation as a finding in its domain.
 
 Note this file path as `{DATA_FILE}` — you'll embed it in each teammate's spawn prompt instead of a shell command.
 

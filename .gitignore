@@ -20,6 +20,7 @@ docs/.vitepress/cache
 **/*.tsbuildinfo
 packages/lib/*faxios-*.tgz
 packages/tests/faxios.tgz
+packages/tests/.run-tests.lock/
 .pnpm-store/
 .claude/settings.local.json
 /plans/
