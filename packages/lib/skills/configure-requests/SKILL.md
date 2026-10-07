@@ -93,7 +93,9 @@ const res = await faxios.get("https://api.example.com/users/{id}/posts", {
 
 - `url`, `method` and `data` never inherit; they come from the request only.
 - `headers` deep-merge case-insensitively. Group headers by method with `common`, `get`, `post`,
-  etc.; flat keys apply to every method.
+  etc. Flat keys apply to every method and win over the same key in a group. Header values must
+  be strings, numbers, string arrays, booleans, `null` or `undefined`; convert anything else with
+  `String(...)`.
 - Arrays such as `transformRequest` and `transformResponse` are replaced, not concatenated.
 - An explicit `undefined` in the request clears an inherited `baseURL`, `timeout` or schema.
 - `params`, `auth`, `env` and other plain objects deep-merge.
@@ -128,7 +130,9 @@ catch (error) {
   fail-fast, and nothing is sent when one fails. `responseSchema` runs after `transformResponse`,
   only for responses that pass `validateStatus`.
 - Error codes: `ERR_BAD_PATH_PARAMS_SCHEMA`, `ERR_BAD_PARAMS_SCHEMA`, `ERR_BAD_REQUEST_SCHEMA`,
-  `ERR_BAD_RESPONSE_SCHEMA`. `error.issues` holds `{ message, path? }` entries.
+  `ERR_BAD_RESPONSE_SCHEMA`. `error.issues` holds `{ message, path? }` entries. On
+  `ERR_BAD_RESPONSE_SCHEMA`, `error.response.data` is the body the schema rejected. Schemas run
+  inside dispatch, so middleware sees the unvalidated config before `next(ctx)`.
 - For reusable typed endpoints, use `api.define(method, url, config)` or `api.route(url, config)`
   rather than wrapping calls by hand.
 
@@ -212,8 +216,9 @@ const api = faxios
 - Return without calling `next` to short-circuit, for example from a cache. Each `next(ctx)` call
   dispatches a fresh copy of `ctx.config`, so calling it again retries from the same input.
 - `api.eject(sameMiddleware)` removes middleware by identity; requests in flight keep running it.
-- `ctx.config.headers` is a `FaxiosHeaders`. Mutate it with `.set()`/`.delete()`; do not assign a
-  plain object.
+- `ctx.config.headers` is a `FaxiosHeaders`. Mutate it with `.set()`/`.delete()`, or assign
+  another `FaxiosHeaders`; never assign a plain object.
+- `ctx.config.method` is always lower-case in middleware: compare with `"post"`, not `"POST"`.
 - Per-request scratch data goes on `ctx.state`.
 
 ### Use the built-in plugins from their subpaths
@@ -226,13 +231,19 @@ plugin's request options (such as `retry: false`). Before writing plugin code, r
 [plugins](references/plugins.md) for a complete installation example.
 
 - `authBearer(getToken, { scheme, header, origins, overwrite })` sends the token only to the
-  instance's `baseURL` origin (or only to relative URLs without one). Use `origins` to allow more.
-  It leaves an explicit `Authorization` header alone unless `overwrite: true`.
+  `baseURL` origin when `baseURL` is absolute; otherwise only to relative request URLs. Use
+  `origins` to allow more. It leaves an explicit `Authorization` header alone unless
+  `overwrite: true`. Install `retry` before it if each attempt should call `getToken` again.
 - `retry` defaults: 3 attempts, statuses 408/429/500/502/503/504 plus `ERR_NETWORK` and
-  `ETIMEDOUT`, exponential backoff from 100 ms with full jitter, `Retry-After` honoured on 429/503.
+  `ETIMEDOUT`, exponential backoff from 100 ms with full jitter. A 429/503 `Retry-After` sets the
+  wait unless `respectRetryAfter: false`. Turn that off when something else, such as a queue
+  throttle, already honours `Retry-After`.
   Only GET, HEAD, OPTIONS, PUT, DELETE and QUERY retry; list POST or PATCH in `methods` only when
-  the API dedupes repeats. Stream bodies are never replayed. Cancellation never retries.
-- `timing(onTiming)` reports `{ method, url, durationMs, status | error }` with no headers or body.
+  the API dedupes repeats. Stream bodies are never replayed. Cancellation never retries. A custom
+  `retryOn` replaces the whole default predicate (`statuses`, `ERR_NETWORK`, `ETIMEDOUT`), and a
+  `Retry-After` longer than `maxRetryAfter` (default 5 min) rejects without retrying.
+- `timing(onTiming)` reports `{ method, url, attempt?, durationMs, status | error }` with no
+  headers or body; `url` has no query string and keeps `{param}` placeholders.
   Install it before `retry` for one event per call, after it for one event per attempt.
 - To write your own plugin, use `definePlugin` from `@gcmdev/faxios/plugins`. The same
   [plugins](references/plugins.md) reference covers authoring.
@@ -273,6 +284,9 @@ await faxios.get("https://api.example.com/feed", { fetchOptions: { cache: "no-st
 | `@gcmdev/faxios/plugins` | Stable: `definePlugin` only |
 | `@gcmdev/faxios/plugins/auth-bearer`, `/retry`, `/timing` | Stable: one plugin each |
 | `@gcmdev/faxios/unsafe/*` | Internal helpers (`buildFullPath`, `buildURL`, `combineURLs`, `isAbsoluteURL`, `utils`). No stability promise; do not use them in application code, and say so if a task seems to need them |
+
+Use `faxios.create()` for instances. An instance made with `new Faxios()` has no `use()` or
+`eject()`.
 
 Statics such as `isCancel`, `mergeConfig`, `HttpStatusCode` and `spread` exist on the default
 export only. Instances from `create()` do not have them; import them by name instead.

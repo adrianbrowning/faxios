@@ -34,7 +34,8 @@
     "jscpd": "^4.3.0",
     "knip": "5.88.1",
     "lint-staged": "^17.6.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "zod": "4.6.5"
   },
   "engines": {
     "node": ">=24.0.0",

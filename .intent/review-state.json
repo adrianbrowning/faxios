@@ -3,12 +3,12 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "86468936e373b5b59bbeb2b859597d05b7b7a17a664d573233733914b1d31cac",
+      "fingerprint": "94cfcd28c996aae12c52a042be24421b4346211b4deea8b5e4c0e1a67c2097c4",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "b9ca9bfaebf38d3415e6c7f9c81bc37cd0fdc08408e5a99d1e3d7e094e50aa15",
+        "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
         "packages/lib/package.json": "f43c6ffeb19c945355f5c65529d79406440543b45aed6e536c5cfd975924c425",
-        "packages/lib/skills/configure-requests/SKILL.md": "48f730e8c628dbed2a8fa724dab44aeaaee24f101583efa2823a6e1d71a943c2",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "8e9777c8850e9f89fd5443b4c3948d75a78b060ed8980d01033e6613e9e02477",
+        "packages/lib/skills/configure-requests/SKILL.md": "d99e4f1b788a6f484df346b5f569b18e1fa4a7401b9004b2e28265bf655c9aa2",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b0c64435f72ba538e6eaac024fefbb150b43daffdd8434a108cce21d49dbfdf5",
         "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
         "packages/lib/src/lib/adapters/fetch.ts": "b45d7f2c9492e142a7418a1c305fcceab65e03170c86f70ab33fca5583258dc9",
@@ -21,33 +21,33 @@
         "packages/lib/src/lib/helpers/composeSignals.ts": "80edec1ecad4ceaa906c394ad8da36963a1279c20bf74f6a5ccf5654794a8a74",
         "packages/lib/src/lib/plugins/authBearer.ts": "43780df44e161c7df77fa5fdc6427cad2dd25e27b7f7b2d2f5619cab6bdfb0de",
         "packages/lib/src/lib/plugins/definePlugin.ts": "5ed83646b5e2b3267a36ed1bb230443b4a0bd8150c579a522e6f68c35ed55b54",
-        "packages/lib/src/lib/plugins/retry.ts": "401fcacee16b708b98718e9b3f66f48c5e73e14f54a0187d22c7e41d3d0c9b1f",
+        "packages/lib/src/lib/plugins/retry.ts": "bdbaa71762723547278d474eea9ba7fe7581a74153cba9a6d52cb29beb57e006",
         "packages/lib/src/lib/plugins/timing.ts": "0738baf01e0e9aa59926df9117637fba3c8a2cb292fe6931ec95f5af4fd6d701",
         "packages/lib/src/lib/types.ts": "b3d2b8486c0cec6f16159f26acc6712a5c3543c003a97dcac359767417510511",
         "packages/tests/unit/api.test.ts": "1301982880889f06462cdd43a1f5a84ac18d60bf72e2b393105a2d9737f58425",
         "packages/tests/unit/core/middleware.test.ts": "1aa48e88f858dc4547aad7429ddca53792289f4ec0ea4ecfc784e48d651552d6",
         "packages/tests/unit/plugins/authBearer.test.ts": "c2f59575debb9e64e11809bdf57d22d811e2abfb480d4a8a20f9af128a4ef7cd",
         "packages/tests/unit/plugins/definePlugin.test.ts": "d85323c110f1d8d49620d3c066b71f04a3197eb27175f1b36f52406dbe257cc7",
-        "packages/tests/unit/plugins/retry.test.ts": "a668e53ecac9b1747a73bba29c3674dede68a8a46b3813b951c97ab4b998eb57",
+        "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
         "packages/tests/unit/plugins/timing.test.ts": "a0cecdd2620fd5041cfd770ec51fa1ca5e8a71297feaa60129adc67822d84cb3"
       },
-      "head": "c3426b6e9d9f75c44b8f51d5f652f25e0228917f",
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
       "outcome": "updated",
-      "reason": "Moved the built-in plugin installation example from SKILL.md to references/plugins.md, because Intent 0.5.3 cannot resolve @gcmdev/faxios/* subpath exports in SKILL.md examples. SKILL.md names each subpath in prose and links the reference.",
+      "reason": "Merged main (#141, #142): respectRetryAfter; header typing and precedence; lower-case method; authBearer origin wording and retry ordering; timing event fields; schema rejected body; retryOn and maxRetryAfter; new Faxios() lacks use/eject; interceptor porting rows.",
       "evidence": [
-        "intent validate passes. All TS blocks in SKILL.md and references/plugins.md type-check against the built package from packages/tests. A second fresh consumer followed the link to references/plugins.md and passed 5/5 runtime grader checks; the grader passed a reference solution and failed a control without retry."
+        "intent validate passes. Each added behaviour checked with a runtime script against the workspace build (see skill_spec.md batch 1 follow-up); type-only and doc-sourced items are marked there as not run."
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "c175eae62e7a7c32ef5df0c715f3f68652f7d3752a1189bd4357ffffc128b876",
+      "fingerprint": "30f8ea0886134b2d5bbd67f81baa826f2e148e9ad0c1f2283e6849d83edce702",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "b9ca9bfaebf38d3415e6c7f9c81bc37cd0fdc08408e5a99d1e3d7e094e50aa15",
-        "_artifacts/domain_map.yaml": "583a9b88216a4a135f0d47a9827997aaac253c04cc0fa6a037a7d0357946ed80",
-        "_artifacts/skill_spec.md": "942bbf88dca6e3e74f6fcea8fca2be8910db0b038aab26bbd179fbec8f934d3c",
+        "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
+        "_artifacts/domain_map.yaml": "00958a5157f4c2130db1d605c37a3c026206865246f138b59b88e2237675efe0",
+        "_artifacts/skill_spec.md": "bc4c3dad196065c988398d5a799f4c3a523ac38ec296bc97ccf401bc0ad9633f",
         "_artifacts/skill_tree.yaml": "42d72e7212b31827fade121697efb94dd1751d179bd76315722e017e5e66538e",
         "packages/lib/package.json": "f43c6ffeb19c945355f5c65529d79406440543b45aed6e536c5cfd975924c425",
-        "packages/lib/skills/configure-requests/SKILL.md": "48f730e8c628dbed2a8fa724dab44aeaaee24f101583efa2823a6e1d71a943c2",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "8e9777c8850e9f89fd5443b4c3948d75a78b060ed8980d01033e6613e9e02477",
+        "packages/lib/skills/configure-requests/SKILL.md": "d99e4f1b788a6f484df346b5f569b18e1fa4a7401b9004b2e28265bf655c9aa2",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b0c64435f72ba538e6eaac024fefbb150b43daffdd8434a108cce21d49dbfdf5",
         "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
         "packages/lib/src/lib/adapters/fetch.ts": "b45d7f2c9492e142a7418a1c305fcceab65e03170c86f70ab33fca5583258dc9",
@@ -60,45 +60,357 @@
         "packages/lib/src/lib/helpers/composeSignals.ts": "80edec1ecad4ceaa906c394ad8da36963a1279c20bf74f6a5ccf5654794a8a74",
         "packages/lib/src/lib/plugins/authBearer.ts": "43780df44e161c7df77fa5fdc6427cad2dd25e27b7f7b2d2f5619cab6bdfb0de",
         "packages/lib/src/lib/plugins/definePlugin.ts": "5ed83646b5e2b3267a36ed1bb230443b4a0bd8150c579a522e6f68c35ed55b54",
-        "packages/lib/src/lib/plugins/retry.ts": "401fcacee16b708b98718e9b3f66f48c5e73e14f54a0187d22c7e41d3d0c9b1f",
+        "packages/lib/src/lib/plugins/retry.ts": "bdbaa71762723547278d474eea9ba7fe7581a74153cba9a6d52cb29beb57e006",
         "packages/lib/src/lib/plugins/timing.ts": "0738baf01e0e9aa59926df9117637fba3c8a2cb292fe6931ec95f5af4fd6d701",
         "packages/lib/src/lib/types.ts": "b3d2b8486c0cec6f16159f26acc6712a5c3543c003a97dcac359767417510511",
         "packages/tests/unit/api.test.ts": "1301982880889f06462cdd43a1f5a84ac18d60bf72e2b393105a2d9737f58425",
         "packages/tests/unit/core/middleware.test.ts": "1aa48e88f858dc4547aad7429ddca53792289f4ec0ea4ecfc784e48d651552d6",
         "packages/tests/unit/plugins/authBearer.test.ts": "c2f59575debb9e64e11809bdf57d22d811e2abfb480d4a8a20f9af128a4ef7cd",
         "packages/tests/unit/plugins/definePlugin.test.ts": "d85323c110f1d8d49620d3c066b71f04a3197eb27175f1b36f52406dbe257cc7",
-        "packages/tests/unit/plugins/retry.test.ts": "a668e53ecac9b1747a73bba29c3674dede68a8a46b3813b951c97ab4b998eb57",
+        "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
         "packages/tests/unit/plugins/timing.test.ts": "a0cecdd2620fd5041cfd770ec51fa1ca5e8a71297feaa60129adc67822d84cb3"
       },
-      "head": "6eee8e8636864e2f6d7219d990b6f81617b5cf7c",
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
       "outcome": "updated",
-      "reason": "skill_spec.md now names the type-check environment: packages/tests (has zod), which resolves the workspace build of packages/lib. The packed tarball was not type-checked this way.",
+      "reason": "Recorded batch 1 follow-up: per-file diff review, additions and how each was checked, gaps not added, doc bugs, CI zod root cause.",
       "evidence": [
-        "Changed: _artifacts/skill_spec.md at 6eee8e8636864e2f6d7219d990b6f81617b5cf7c"
+        "skill_spec.md follow-up entry; domain_map.yaml MIGRATION_GUIDE gap reworded; skill_tree.yaml unchanged (sync: nothing to synchronize)."
       ]
     },
     "source:knip.json": {
-      "fingerprint": "9e269a676ef519415ab5627bbfe4ae44b153f212dd987a8c668e00ef54075aa2",
+      "fingerprint": "03d6317d0725702527d0951b1aeb483e952cd91a4c13e9af30af2dacf1c9be9d",
       "snapshot": {
-        "knip.json": "73c7e5ddcea4a8e759dd27b56946062fc1db4894987c4729ddf997117fe8537c"
+        "knip.json": "535d5d67fe4148da87d7bb94b4ab5c380c2467e05c176f2a6902d7af046a0292"
       },
-      "head": "01316e1099c60976353ebc6db91a69d83bcfd807",
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
       "outcome": "out-of-scope",
-      "reason": "knip.json only adds @tanstack/intent to ignoreDependencies, because it is used through its CLI and the check-skills workflow.",
+      "reason": "Adds @tanstack/intent and zod to root knip ignoreDependencies; not library behaviour.",
       "evidence": [
-        "The knip.json diff is one entry in ignoreDependencies. No faxios runtime behaviour changes."
+        "git diff: two ignoreDependencies entries."
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
-      "fingerprint": "dbc0b0103df8fa0a901c6c1493ee3ef6b0cfac89671a7f75bbcd80606ca1aef5",
+      "fingerprint": "2ce298938074cf25fee5fcbbbbf9ed24cc7d9ba4ab36476b08aea0212f8def74",
       "snapshot": {
-        "PRE_RELEASE_CHANGELOG.md": "98dff5f6fffceea088baf63487c35a813fbebc0b1a7fa907ebcbd8d2a5b6d000"
+        "PRE_RELEASE_CHANGELOG.md": "1e9ebd613bae7650c0d0598d3e5649894a153455f594a3d3d0f132ca10a21cc8"
       },
-      "head": "01316e1099c60976353ebc6db91a69d83bcfd807",
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
       "outcome": "no-change",
-      "reason": "PRE_RELEASE_CHANGELOG.md only adds the #85 release note about the skill shipping in the package. No skill guidance or planning record depends on it.",
+      "reason": "Diff reviewed (M); consistent.",
       "evidence": [
-        "Changed: PRE_RELEASE_CHANGELOG.md at 01316e1099c60976353ebc6db91a69d83bcfd807"
+        "-L9/+L10 'Built-in plugins' entry: adds `respectRetryAfter` to the retry options list. Adds 'respectRetryAfter: false ignores Retry-After, so every retry waits the computed backoff and maxRetryAfter doesn't apply, for when another plugin, such as a queue throttle, honours the header itself' and the ref #140. SKILL.md L236-238 already covers this. +L13 is a blank line."
+      ]
+    },
+    "source:ECOSYSTEM.md": {
+      "fingerprint": "a6e4a320c199bad67d83baf7e64f6eb4c59409d3a82d69fe88c1da5873a4f597",
+      "snapshot": {
+        "ECOSYSTEM.md": "ad1f6c6ae6398b6a17be0966c2f14d36ea9a31734c5d8ec7de7b7131fa84fc2f"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (M); no-api-claims.",
+      "evidence": [
+        "-L14/-L28 lines say third-party libraries work 'through an faxios interceptor'. +lines drop that wording ('Unpacks HTTP responses', 'Adds URL template support', 'Logs responses'). These are listing edits only."
+      ]
+    },
+    "source:PRE_RELEASE_DOCS.md": {
+      "fingerprint": "718d64b267763a454f2dfd538047866ce53953bb93b8ab692e7823f1c61c0801",
+      "snapshot": {
+        "PRE_RELEASE_DOCS.md": "2c74f8ea620c967b4605d89f55abd1ce344d4e25de01cc0e1fa2d19870c5c360"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "updated",
+      "reason": "Skill updated from this diff.",
+      "evidence": [
+        "Added new Faxios() has no use/eject, maxRetryAfter rejects, custom retryOn replaces predicate, legacyInterceptorReqResOrdering ERR_BAD_OPTION, rejected body on error.response.data (all runtime-checked). Diff review: The deleted spec entries (-L23..-L112 and -L150..-L171) still state behaviour the skill lacks, all confirmed in src. (1) -L15/-L35: `use()`/`eject()` are absent on `new Faxios()`. faxios.ts:49-50 attaches them only in createInstance, and SKILL.md L279 lists `Faxios` with no warning. (2) -L65: past `maxRetryAfter` (5 min) retry rethrows without retrying (retry.ts:196). A custom `retryOn` replaces the whole default predicate, so `statuses` is ignored (retry.ts:182). An `onRetry` that throws stops retrying. (3) -L95: passing `transitional.legacyInterceptorReqResOrdering` throws `ERR_BAD_OPTION` ("
+      ]
+    },
+    "source:packages/docs/.vitepress/config.mts": {
+      "fingerprint": "80e31dd1316f40906810eb21159922d7113ce6777a884f2ff51680af8263dcd7",
+      "snapshot": {
+        "packages/docs/.vitepress/config.mts": "32840780df446e1b6d8e182692c9450aac1ab0d091d70e294d01bd2e80b8a346"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (M); no-api-claims.",
+      "evidence": [
+        "-L8 removes the sidebar entry 'Interceptors'. +L9..+L13 add 'Middleware and plugins' and 'Migrating from interceptors'."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/interceptors.md": {
+      "fingerprint": "f8024d1c351e4877669d023645b5f1553d52aaa9ff1ea81e6f6438d293fda7f8",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/interceptors.md": null
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (D); consistent.",
+      "evidence": [
+        "The whole Spanish interceptors page is removed (-L7..-L157): `interceptors.request/response.use`, `eject`, `clear`, `synchronous`, `runWhen`, LIFO request / FIFO response order. The removal agrees with SKILL L193 'faxios has no interceptors' and Common mistake 1. The order it described is the Axios order the skill notes in axios-differences L38-40."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/interceptors.md": {
+      "fingerprint": "102372690ca9da15e3a608420ecb3fbbbf980f3d070c703b600d39b2547ccbff",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/interceptors.md": null
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (D); consistent.",
+      "evidence": [
+        "French copy of the same page. The diff is identical in structure to es (152 differing lines, all translation). Same removal, and it agrees with SKILL L193 and mistake 1."
+      ]
+    },
+    "source:packages/docs/pages/advanced/api-reference.md": {
+      "fingerprint": "2ad0ee422e28932be34fd7e753b59f548395b19349715dfd3bb758ed3a535032",
+      "snapshot": {
+        "packages/docs/pages/advanced/api-reference.md": "be138c321825a1ebafa684b9c1237dc798b0b4ec21b4a662b0a2a941373c6b71"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "updated",
+      "reason": "Skill updated from this diff.",
+      "evidence": [
+        "Added new Faxios() has no use/eject to SKILL.md (runtime: typeof use undefined). Diff review: +L31: 'An instance built with `new Faxios()` has no `use()` or `eject()`; use `faxios.create()`'. Confirmed by faxios.ts:41-52. The skill exports `Faxios` (L279) but never says this. +L65 (eject frees provided capabilities; type not narrowed) is also not in plugins.md. Everything else is consistent: the +L5..+L15 entry-point table (only `definePlugin` from /plugins; built-ins only from their subpaths, matching SKILL L224-226, L280-281); +L63 duplicate capability → `ERR_BAD_OPTION`, bad value/name → `ERR_BAD_OPTION_VALUE` (plugins.md L101-102); `FaxiosError.issues` (+L86)."
+      ]
+    },
+    "source:packages/docs/pages/advanced/authentication.md": {
+      "fingerprint": "d161dd8823cc8797652eb199f2e53ca6f2260ae2a8d68d820626fa417b9e9125",
+      "snapshot": {
+        "packages/docs/pages/advanced/authentication.md": "c177e8185fd58f36b036c29640cae76d1640c3850af6385f35eea6f14877ce28"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (M); consistent.",
+      "evidence": [
+        "+L7..+L65: authBearer setup. `getToken` is called per request, and per try when `retry` is installed before it. An existing header is kept unless `overwrite: true`. Origin rule: absolute baseURL origin only, otherwise relative URLs only. `origins` replaces the rule. Invalid options → `ERR_BAD_OPTION_VALUE`, unknown → `ERR_BAD_OPTION`. These match SKILL L231-234 and plugins.md L103-105. +L100..+L153: the refreshOn401 plugin matches plugins.md L70-97. Minor details not in the skill: the `auth` capability ignores the origin rule (+L100); `origins` entries must be bare origins, and a relative URL counts only in a browser."
+      ]
+    },
+    "source:packages/docs/pages/advanced/create-an-instance.md": {
+      "fingerprint": "2d09be3b9dc8d2a9b36e44266449418ac9ea98502abdccbb7204c3eac6ca2f1e",
+      "snapshot": {
+        "packages/docs/pages/advanced/create-an-instance.md": "39e8bef14de6c939b87f422ad39fb20f0ba1561e7065c77418ce03df03b0380b"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (M); consistent.",
+      "evidence": [
+        "+L8/+L9 list `instance.use`/`instance.eject`. +L92..+L99: keep the chained `use()` result; `create()` children start with no middleware and no plugin types. Matches SKILL L102-103, L213, and plugins.md L106."
+      ]
+    },
+    "source:packages/docs/pages/advanced/define.md": {
+      "fingerprint": "c4b714e6d6918a8e8383ce27307c8cae91fcc1f2f856b782718025e5f9b1fdb8",
+      "snapshot": {
+        "packages/docs/pages/advanced/define.md": "546b4d10949b3eed67702fbc4e6186b423de40d73f07f8bd6c963ca265c4c53c"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (M); consistent.",
+      "evidence": [
+        "-L9/+L10: 'its defaults and interceptors apply' becomes 'its defaults and [middleware] apply'. This fits the skill's `.use()` model and the define/route mention at SKILL L134."
+      ]
+    },
+    "source:packages/docs/pages/advanced/error-handling.md": {
+      "fingerprint": "0742e8f7b56f66b63611755c55a9ac263220e74eb8de8fb15e04e17d42b73387",
+      "snapshot": {
+        "packages/docs/pages/advanced/error-handling.md": "826089bc5059f2e703c1376219aec60e79c47b541da04e3f11276ce938e4dbca"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "updated",
+      "reason": "Skill updated from this diff.",
+      "evidence": [
+        "Added error.response.data holds the rejected body on ERR_BAD_RESPONSE_SCHEMA (runtime-checked). Diff review: +L13: on ERR_BAD_RESPONSE_SCHEMA, `error.response` is always set and `error.response.data` is the rejected body (after transformResponse, typed unknown); toJSON doesn't serialize it. +L14..+L16: on the input codes, `error.config.data/params/pathParams` hold the original, unvalidated value. SKILL L132-133 lists the codes and `issues` only, so where to find the rejected body/input is missing. Nothing contradicts the skill."
+      ]
+    },
+    "source:packages/docs/pages/advanced/headers.md": {
+      "fingerprint": "78ca6addee9523ca92cb49c4125ab8ecf6b2a744c492b5d5a29857282a63cec9",
+      "snapshot": {
+        "packages/docs/pages/advanced/headers.md": "dac32590d9d9cf9a875857405de82d0ec492f5a494dc1cabd654db3931f4befb"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (M); consistent.",
+      "evidence": [
+        "+L23..+L41: in middleware, `ctx.config.headers.set(...)`, including `set('User-Agent', false)`. +L95..+L125 (Header typing): bag + `common`/method groups + FaxiosHeaders. `undefined` drops an inherited value; `null`/`false` keep the header off entirely; objects/functions are rejected, so use `String(...)`. +L131: `{ Authorization: null }` removes an inherited header. These match SKILL L95-98, L105-106, L217-218. The Unicode/middleware wording (+L156..) is only a rename."
+      ]
+    },
+    "source:packages/docs/pages/advanced/interceptors.md": {
+      "fingerprint": "79cd20b8aa630c25ee332c76527c651d7804c7e602aa7a3e261c397eed086853",
+      "snapshot": {
+        "packages/docs/pages/advanced/interceptors.md": null
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (D); consistent.",
+      "evidence": [
+        "The English interceptors page is removed (-L7..-L180): `faxios.interceptors.request/response.use`, `eject(id)`, `clear()`, `synchronous`, `runWhen`, LIFO request/FIFO response order. The removal agrees with SKILL L193 and mistake 1 (L289-291)."
+      ]
+    },
+    "source:packages/docs/pages/advanced/middleware.md": {
+      "fingerprint": "743e0685f9ead1a86f37bd358f5fffc19b2e95494f2e6609146704a1d294ba22",
+      "snapshot": {
+        "packages/docs/pages/advanced/middleware.md": "91ef6542a2cb12d2d1ec1cc12f67820d946e748f57b963d245450ab4d770f29c"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "updated",
+      "reason": "Skill updated from this diff.",
+      "evidence": [
+        "Added new Faxios() note; its :id placeholders contradict source ({key} only) and are recorded as a doc bug; skill keeps {id}. Diff review: +L153 (`console.log(ctx.config.url); // \\\"/users/:id\\\": the path params were substituted in the copy`), +L157 and +L534 (`api.get(\\\"/users/:id\\\", { pathParams: { id: \\\"7\\\" } })`), +L339 (`api.route(\\\"/users/:id\\\", …)`) and +L498/+L535 (timing 'A URL with `pathParams` is reported by its `:param` template'; labels `url: \\\".../users/:id\\\"`) all use `:param` placeholders. SKILL L80-81/L242 use `{id}` and say timing 'keeps `{param}` placeholders'. Src: substitutePathParams.ts:3 replaces only `/\\\\{([^{}]+)\\\\}/g`, and timing.ts:35 reports the pre-dispatch `config.url`. The skill is right; with `:id` "
+      ]
+    },
+    "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
+      "fingerprint": "9181781a0dafb955b3ebddedbd7f2a8d03df5386579a9698db7fcaf59ef6743f",
+      "snapshot": {
+        "packages/docs/pages/advanced/migrating-from-interceptors.md": "16be4f18cf86ec782545c1d3551e0a36f38ef3b5422fbb8c3898c7614d2f8fa8"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "updated",
+      "reason": "Skill updated from this diff.",
+      "evidence": [
+        "axios-differences.md: added clear(), synchronous/runWhen and legacyInterceptorReqResOrdering rows (runtime: ERR_BAD_OPTION). Diff review: +L24 and +L245: 'The `transitional.legacyInterceptorReqResOrdering` option is gone. Passing it rejects the request with a FaxiosError whose code is `ERR_BAD_OPTION` (\\\"Unknown option legacyInterceptorReqResOrdering\\\")'. Verified: Faxios.ts:333-346 allow-lists the transitional keys and validator.ts:106 throws `Unknown option`. The skill does not cover this, and SKILL L162-163 mentions only `clarifyTimeoutError`. +L21/+L217 (`synchronous` has no equivalent) and +L23/+L241 (no `clear()`) are also absent from axios-differences. The rest is consistent: the mapping table (+L13..+L22), the unwrap-to-"
+      ]
+    },
+    "source:packages/docs/pages/advanced/request-config.md": {
+      "fingerprint": "ae6ff40a9d81e41e4e19ea1417a37942f2a5e93c44e1c3232f4bb5ccfdc88413",
+      "snapshot": {
+        "packages/docs/pages/advanced/request-config.md": "f0233ab4569c29f4975433a53f91d2be108f6613310c43362b246401ad4d5d2b"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "updated",
+      "reason": "Skill updated from this diff.",
+      "evidence": [
+        "axios-differences.md now says legacyInterceptorReqResOrdering throws ERR_BAD_OPTION like any unknown transitional key. Diff review: -L9 removes the `legacyInterceptorReqResOrdering` transitional option, and -L29 removes it from the full example. The page doesn't say so, but passing it now throws `ERR_BAD_OPTION` (validator.ts:106), and the skill doesn't mention that unknown `transitional` keys throw. The unchanged context L8 (clarifyTimeoutError has no effect) matches SKILL L162-163. -L17/+L18 drops the `check=skip` marker, which makes no API claim."
+      ]
+    },
+    "source:packages/docs/pages/advanced/retry.md": {
+      "fingerprint": "79622988557022ded22f7cae518fbead44d3b6c6583b26c974ca3a464009ce1f",
+      "snapshot": {
+        "packages/docs/pages/advanced/retry.md": "87d674152bff9448e1408a7ace614e13a580220df262281acd27c29875b5ec11"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "updated",
+      "reason": "Skill updated from this diff.",
+      "evidence": [
+        "Added custom retryOn replaces the default predicate and long Retry-After rejects without retrying (both runtime-checked); onRetry-throws and attempts/methods validation recorded as not added. Diff review: +L82: 'retryOn replaces the entire default predicate… Network errors and timeouts are retried only if your function says so, and `statuses` is ignored when both are set' (retry.ts:60-61, 182). +L169: 'If the header asks for longer than `maxRetryAfter` (default 5 minutes), faxios doesn't wait: it rethrows… without retrying' (retry.ts:186, 196). +L215: an `onRetry` that throws rejects and stops (retry.ts:238). +L126: `attempts` must be an integer ≥1, including not Infinity, else `ERR_BAD_OPTION_VALUE`. +L253: each `methods` entry must be an RFC 9110 token. SKILL L235-240 covers none of these. Co"
+      ]
+    },
+    "source:packages/docs/pages/advanced/schema-validation.md": {
+      "fingerprint": "223dcf93c1e49839176b931de643a2800dbe89e0e14b8ab0206dbc6fdedd3ed8",
+      "snapshot": {
+        "packages/docs/pages/advanced/schema-validation.md": "7387a752c0cf88e4efd3c0c9d42f478e5bee1015ffec7bae7fb36d9ac61f233f"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "updated",
+      "reason": "Skill updated from this diff.",
+      "evidence": [
+        "Added rejected body location and that schemas run inside dispatch (runtime: middleware saw {\"n\":\"5\"}). Diff review: +L20..+L24: validation runs inside dispatch, so middleware sees the pre-validation config on the way in and the validated response on the way out. +L35 (The unvalidated body): on `ERR_BAD_RESPONSE_SCHEMA`, `error.response.data` is the rejected body; on the input codes, `error.config` holds the original input. +L39: toJSON includes `issues` but never `response`. +L32: only message/path are copied into issues. SKILL L129-133 states the order and codes but not where the rejected body/input lives, or that schemas run inside `next()`. The removed -L45 said the same thing as +L35. No contradiction."
+      ]
+    },
+    "source:packages/docs/pages/advanced/testing.md": {
+      "fingerprint": "4054cdd203bcd02db0f29b0ce3d046d2192d7fea860944fce4c5c284be3ae224",
+      "snapshot": {
+        "packages/docs/pages/advanced/testing.md": "a4c301e84bd5b5f3be80c1644bac681f6bff0ed412251f914837af05ab1a9848"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (M); consistent.",
+      "evidence": [
+        "+L19..+L37: `env.fetch` fake plus `.use(authHeader)` on a fresh instance. +L46: 'Each `create()` starts with no middleware'. Matches SKILL L102-103 and L249-258."
+      ]
+    },
+    "source:packages/docs/pages/advanced/type-script.md": {
+      "fingerprint": "eb96622d302d9ce91f715dabd0a09f89e0bab9d98ede7b68250a5967b8d6b11d",
+      "snapshot": {
+        "packages/docs/pages/advanced/type-script.md": "d15b7d48905237bd90f7a56e0215667bd31f1c6bba032c63dd674b995ebcb308"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (M); consistent.",
+      "evidence": [
+        "+L19..+L28: inline middleware is typed from the instance. +L45..+L55: keep the chained `use()` result, and annotating as plain `FaxiosInstance` throws plugin options away. +L56/+L58: options are typed on defaults/define/route; excess-property checks run only on literals; children start untyped; eject doesn't narrow. Matches SKILL L213 and plugins.md L26-39. The literal-only excess check and eject-doesn't-narrow notes are extra detail, not in the skill."
+      ]
+    },
+    "source:packages/docs/pages/getting-started/examples/typescript.md": {
+      "fingerprint": "a36400c7b9aa821cc2c6a03186f7bbea62f1c300023adaa47078166fc4432e49",
+      "snapshot": {
+        "packages/docs/pages/getting-started/examples/typescript.md": "554d206dfe717c8fca5caaa3c1d2a70a51d62339393ec30e6022fb70f7fee476"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (M); consistent.",
+      "evidence": [
+        "+L13..+L35: `FaxiosMiddleware`-annotated middleware, `ctx.config.headers.set`, and errors caught around `next`. +L39 recommends authBearer for bearer tokens. Matches SKILL L191-220."
+      ]
+    },
+    "source:packages/docs/pages/getting-started/features.md": {
+      "fingerprint": "44e46a1c8f257e7e44b7594fb2bdedf7a9402280d565588c58d79f6c021a5e9e",
+      "snapshot": {
+        "packages/docs/pages/getting-started/features.md": "66aec567c738cc3ff7c9a023f0a35c9d00294e959a53a7f883a4c5f2c1ba9776"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (M); consistent.",
+      "evidence": [
+        "-L9/+L10: 'Intercept request and response' becomes 'Middleware around every request, with built-in `retry` and `authBearer` plugins'. Agrees with SKILL L193 and L222-245."
+      ]
+    },
+    "source:packages/docs/pages/getting-started/upgrade-guide.md": {
+      "fingerprint": "b251c26499017d227ab04a5008b008c6f137a95bc94795d4b4d48ab9ce221bd1",
+      "snapshot": {
+        "packages/docs/pages/getting-started/upgrade-guide.md": "3b79ab68e39d0193b153eaf33f086b06e05aefe1f2f76c2c6665c060ac83972b"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (M); consistent.",
+      "evidence": [
+        "+L16 '`faxios.interceptors` is gone. Register middleware with `.use()`' and the +L21..+L28 diff example. +L30: 'Request interceptors ran in reverse registration order, so check the order'. Matches SKILL mistake 1 (L289-291) and axios-differences L38-40."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/interceptors.md": {
+      "fingerprint": "2ae1c51261291a8e58fae7fe27f33a1ff2471d90fe0f42b633902c1db8fff5e3",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/interceptors.md": null
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (D); consistent.",
+      "evidence": [
+        "Chinese copy of the removed interceptors page (-L7..-L157), with the same content as es/fr. The removal agrees with SKILL L193 and mistake 1."
+      ]
+    },
+    "source:packages/examples/improved-network-errors.md": {
+      "fingerprint": "c526c8a690744880bcd1ddd42ef6f1d338ed510c9405048261175bf7f62f5b71",
+      "snapshot": {
+        "packages/examples/improved-network-errors.md": "a587738e546e49135758a4b0f164295144185dfee0e2e4a67d6d9643736a4caf"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (M); consistent.",
+      "evidence": [
+        "-L9/+L11 and -L13/+L15: 'via a Response interceptor' becomes 'via `.use()` middleware… catches the error thrown by `next(ctx)`'. This matches the try/catch-around-next pattern at SKILL L203-209. The custom codes (`ERR_DNS_FAILURE` etc.) are the example's own and come from unchanged context."
+      ]
+    },
+    "source:packages/examples/network_enhanced.js": {
+      "fingerprint": "2b811c8dafbbc0aee34459cebb9737d85269676eac1a6fecc63436a10f86077e",
+      "snapshot": {
+        "packages/examples/network_enhanced.js": "8b05596f2798a1da44b8963aba7a3d7a8deed43f208455b46cf5734351b486ed"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "no-change",
+      "reason": "Diff reviewed (M); consistent.",
+      "evidence": [
+        "-L9..-L18/+L9..+L16: `client.interceptors.response.use(_, err => throw enhance(err))` becomes `faxios.create(config).use(async (ctx, next) => { try { return await next(ctx) } catch (error) { throw enhanceNetworkError(error) } })`, and the chained instance is returned. Matches SKILL L199-211 and L213."
+      ]
+    },
+    "source:packages/lib/README.md": {
+      "fingerprint": "6ebd2042e6afcfca4176261397c500d21e2a6bf24bd83fab37b2183d1853e5b2",
+      "snapshot": {
+        "packages/lib/README.md": "991cea6ac98e6ffa4154b41d6044b9a1fa336451495bf99495f9dcbe71b2ccb2"
+      },
+      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "outcome": "updated",
+      "reason": "Skill updated from this diff.",
+      "evidence": [
+        "Added rejected body on error.response.data for failed responseSchema. Diff review: +L15: 'A failed `responseSchema` keeps the rejected body on `error.response.data`'. The skill does not say where the rejected body lives (SKILL L129-133). The rest is consistent: +L11 onion `.use()` middleware plus built-in plugins; +L16 strictly typed headers; +L47..+L56 'Keep the instance it returns: only that value is typed with the plugin's options' with `import { retry } from \"@gcmdev/faxios/plugins/retry\"` (SKILL L213, L224-228)."
       ]
     }
   }

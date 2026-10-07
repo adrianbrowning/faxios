@@ -40,7 +40,8 @@
   "ignoreDependencies": [
     "@vitest/browser",
     "@ai-hero/sandcastle",
-    "@tanstack/intent"
+    "@tanstack/intent",
+    "zod"
   ],
   "ignoreExportsUsedInFile": true
 }

@@ -10,8 +10,11 @@ behaviour outside this list as unverified until the installed types and a test p
 | --- | --- | --- |
 | `import axios from "axios"` | `import faxios from "@gcmdev/faxios"` | ESM only; use `await import()` from CommonJS |
 | `axios.interceptors.request.use(fn)` | `api.use(async (ctx, next) => { ...; return next(ctx); })` | Registration order, not reverse |
-| `axios.interceptors.response.use(ok, fail)` | `try { const res = await next(ctx); ...; return res } catch (e) { ... }` inside `.use()` | Non-2xx arrives as a rejection |
+| `axios.interceptors.response.use(ok, fail)` | `try { const res = await next(ctx); ...; return res } catch (e) { ... }` inside `.use()` | Non-2xx arrives as a rejection. Middleware must return a response, so an interceptor that unwraps to `response.data` can't be ported; take `data` at the call site |
 | `interceptors.request.eject(id)` | `api.eject(sameFunctionOrPlugin)` | By identity, not numeric id |
+| `interceptors.request.clear()` | `eject()` each middleware, or a fresh `create()` | No `clear()` |
+| interceptor `synchronous` / `runWhen` options | `if` inside the middleware for `runWhen` | `synchronous` has no equivalent |
+| `transitional.legacyInterceptorReqResOrdering` | remove it | Throws `ERR_BAD_OPTION` ("Unknown option"), like any unknown `transitional` key |
 | `CancelToken.source()` / `cancelToken` | `AbortController` + `signal` | `isCancel(e)` or `e.code === "ERR_CANCELED"` |
 | `axios.isAxiosError(e)` | `isFaxiosError(e)` (named import) | Type guard |
 | `error.code === "ECONNABORTED"` (timeout) | `error.code === "ETIMEDOUT"` | `clarifyTimeoutError` is inert |
@@ -35,8 +38,9 @@ These ports compile and run but behave differently:
 2. **Untyped configs with removed keys.** A config built with spread or `any` keeps `proxy`,
    `adapter` or `httpAgent` and faxios ignores them. The request then goes direct, without the
    proxy or agent the code expected. Delete the keys and move the behaviour to `fetchOptions`.
-3. **Interceptor order.** Code that relied on Axios running request interceptors in reverse
-   registration order needs its `.use()` calls reordered.
+3. **Interceptor order.** Axios ran request interceptors last-registered-first and response
+   interceptors first-registered-first. Middleware runs in registration order on the way in and
+   in reverse on the way out, so both sides flip; reorder the `.use()` calls.
 4. **Timeout handling.** Branches that check `ECONNABORTED` never run.
 5. **Statics on instances.** `instance.isCancel`, `instance.mergeConfig` and similar are undefined
    on `create()` instances.
@@ -52,8 +56,11 @@ These ports compile and run but behave differently:
 - [ ] The project type-checks without casts on faxios configs.
 - [ ] One success and one failure path run against the ported client.
 
-Do not rely on `MIGRATION_GUIDE.md` sections after "Fetch-Only Migration": they describe the older
-Axios 0.x → 1.x upgrade and still use interceptors.
+`MIGRATION_GUIDE.md` section "h) Interceptors replaced by `.use()` middleware" and the docs pages
+`advanced/middleware.md` and `advanced/migrating-from-interceptors.md` show interceptor-to-middleware
+conversions; any `interceptors` code there is the "before" side. The guide's Fetch-Only section
+still says Node 18+ and that custom adapters work through `adapter`. Both are wrong: faxios needs
+Node 24+ and has no `adapter` option.
 
 Sources: `MIGRATION_GUIDE.md` (Fetch-Only Migration), `src/lib/types.ts`, `src/lib/core/Faxios.ts`,
 `src/lib/core/buildFullPath.ts`, `src/lib/helpers/composeSignals.ts`,

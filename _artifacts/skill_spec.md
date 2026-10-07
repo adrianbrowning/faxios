@@ -51,7 +51,7 @@ and stop generating Axios APIs it removed or never verified.
 | --- | --- | --- |
 | configure-requests | Should `./unsafe/*` subpaths get a documented stability statement? | open |
 | configure-requests | Is Node proxying through `fetchOptions.dispatcher` a supported, tested path? | open |
-| configure-requests | `MIGRATION_GUIDE.md` and several docs pages still show interceptors, Node 18 and custom adapters | open |
+| configure-requests | `MIGRATION_GUIDE.md` Fetch-Only section still says Node 18+ and that custom adapters work through `adapter` | open |
 | configure-requests | Intent resolves `@gcmdev/faxios/*` to `src/*` and ignores `exports`, so subpath imports can't be type-checked in SKILL.md | open (upstream) |
 
 ## Recommended Skill File Structure
@@ -140,3 +140,51 @@ and stop generating Axios APIs it removed or never verified.
       The block moved to `references/plugins.md` (see Decisions). `intent validate` and
       `maintainer check` now pass. All TS blocks in SKILL.md and `plugins.md` type-check in the
       `packages/tests` workspace against the workspace build of `packages/lib`.
+- **Batch 1 follow-up (2026-10-07, after merging `main` at `f1274733`).**
+  - `retry` gained `respectRetryAfter` (#141). SKILL.md's retry bullet now covers it.
+  - #142 rewrote `MIGRATION_GUIDE.md` and the docs to convert interceptors to middleware.
+    `references/axios-differences.md` now points to those pages instead of telling agents to
+    ignore the guide.
+  - The other 27 merged files (`git diff --name-status ff5f38c6 cf6f2410`, including four deleted
+    interceptors pages) were each reviewed from their diff:
+    - 16 consistent, 2 with no API claims, 8 with behaviour the skill lacked.
+    - One, `advanced/middleware.md`, contradicts source. It uses `:id` placeholders, but only
+      `{key}` is substituted. The skill is right, so no skill change.
+  - Gaps that were added, each confirmed by a runtime script against the workspace build:
+    - `new Faxios()` has no `use`/`eject`.
+    - On `ERR_BAD_RESPONSE_SCHEMA`, `error.response.data` is the rejected body.
+    - Middleware sees unvalidated params.
+    - A custom `retryOn` replaces the default predicate (1 call on `ERR_NETWORK`).
+    - A `Retry-After` longer than `maxRetryAfter` doesn't retry (1 call).
+    - `transitional.legacyInterceptorReqResOrdering` throws `ERR_BAD_OPTION`.
+    - No interceptor `clear()`; no `synchronous` equivalent.
+  - Gaps not added, as too minor for the skill:
+    - an `onRetry` that throws stops retrying
+    - `attempts` and `methods` validation
+    - `eject` frees provided capabilities
+    - the `auth` capability ignores the origin rule
+    - `error.config` keeps the original input on input-schema errors
+  - Skill additions, and how each was checked:
+    - Flat header keys win over group keys. Runtime script: `X-K` sent as `flat`. Allowed header
+      value types: from `types.ts` (`FaxiosHeaderValue`), not run.
+    - `ctx.config.method` is lower-case in middleware. Runtime script: `post`.
+    - `authBearer` with a relative or missing `baseURL` sends the token only to relative URLs.
+      Runtime script: relative `Bearer t`, absolute none.
+    - Installing `retry` before `authBearer` calls `getToken` on each attempt. Runtime script:
+      3 calls (`t1`–`t3`) vs 1 call in the other order.
+    - `TimingEvent` has `attempt?`: from `timing.ts`, not run with `retry`. `url` has no query
+      and keeps `{param}`. Runtime script: `https://a.example/v1/u/{id}`.
+    - Porting: response interceptor order flips too, and data-unwrapping interceptors can't be
+      ported. From `migrating-from-interceptors.md` and middleware's return type, not run.
+  - Doc bugs found, not skill changes:
+    - `advanced/middleware.md` uses `/users/:id` with `pathParams`, but only `{key}` is
+      substituted
+    - `PRE_RELEASE_CHANGELOG.md` says the type guards are "on the instance"
+    - `packages/examples/network_enhanced.js` checks `ECONNREFUSED`
+  - CI's first `check-skills` run failed with `TS18046: 'data' is of type 'unknown'` on the zod
+    schema example. Intent resolves example imports from the repository root, and the root had
+    no `zod`. Locally the example passed only because `zod` was installed in `~/node_modules`.
+    Reproduced in a clean checkout under `/tmp`. Fixed by adding `zod` (4.6.5, the
+    `packages/tests` version) as a root devDependency, ignored by knip.
+  - Earlier local `intent validate` results (Batch 1) ran with that home-directory `zod`.
+    Now checked from a clean checkout outside `~`.

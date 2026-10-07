@@ -148,8 +148,8 @@ gaps:
     context: 'Project docs recommend it and faxios passes class instances through to fetch, but no faxios test exercises a proxy.'
     status: open
   - skill: configure-requests
-    question: 'MIGRATION_GUIDE.md and several docs pages still show interceptors, Node 18 and custom adapters.'
-    context: 'The skill follows source and tests instead; docs rewrite is tracked in PRE_RELEASE_DOCS.md.'
+    question: 'MIGRATION_GUIDE.md Fetch-Only section still says Node 18+ and that custom adapters work through `adapter`.'
+    context: 'Since #142 the guide (section h) and docs middleware/migrating-from-interceptors pages convert interceptors to .use(); remaining interceptors code there is the before side. The Node 18 and adapter claims contradict AGENTS.md and engines; the skill follows source.'
     status: open
   - skill: configure-requests
     question: 'When can SKILL.md examples importing @gcmdev/faxios/plugins/* return from references/plugins.md?'
