@@ -13,16 +13,22 @@ In v1.x, the import statement has been changed to use the `default` export. This
 + import faxios from "@gcmdev/faxios";
 ```
 
-### Changes to the interceptor system
+### Interceptors are replaced by middleware
 
-In v1.x you need to leverage the type `InternalFaxiosRequestConfig` to type the `config` parameter in the `request` interceptor. This is because the `config` parameter is now typed as `InternalFaxiosRequestConfig` instead of the public `FaxiosRequestConfig` type.
+`faxios.interceptors` is gone. Register [middleware](/pages/advanced/middleware) with `.use()` instead: code before `await next(ctx)` changes the request through `ctx.config`, and code after it sees the response.
 
 ```diff
-- faxios.interceptors.request.use((config: FaxiosRequestConfig) => {
-+ faxios.interceptors.request.use((config: InternalFaxiosRequestConfig) => {
-    return config;
-  });
+- faxios.interceptors.request.use((config) => {
+-   config.headers.set("X-Request-Id", crypto.randomUUID());
+-   return config;
+- });
++ const api = faxios.create().use(async (ctx, next) => {
++   ctx.config.headers.set("X-Request-Id", crypto.randomUUID());
++   return next(ctx);
++ });
 ```
+
+Request interceptors ran in reverse registration order, so check the order when you convert more than one. See [Migrating from interceptors](/pages/advanced/migrating-from-interceptors) for response interceptors, error handlers, `runWhen`, `eject` and ordering.
 
 ### Changes to request headers shape
 

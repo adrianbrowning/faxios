@@ -386,6 +386,50 @@ describe("plugins::retry", () => {
       assert.strictEqual(tooLong.calls.length, 1);
     });
 
+    it("waits the computed backoff instead of Retry-After when respectRetryAfter is false", async () => {
+      vi.setSystemTime(new Date("2026-01-01T00:00:00Z"));
+      const replies: Array<Reply> = [
+        { status: 429, headers: { "Retry-After": "5" } },
+        { status: 503, headers: { "Retry-After": "Thu, 01 Jan 2026 00:00:10 GMT" } },
+        // Past maxRetryAfter: retried after the backoff, not rethrown.
+        { status: 503, headers: { "Retry-After": "86400" } },
+        200,
+      ];
+      const { fetch, calls } = scriptedFetch(replies);
+      const waits: Array<number> = [];
+      const api = faxios.create({ env: { fetch } }).use(retry({
+        attempts: 4,
+        delay: 100,
+        jitter: "none",
+        respectRetryAfter: false,
+        onRetry: (_error, _attempt, delayMs) => waits.push(delayMs),
+      }));
+
+      const request = api.get(URL);
+      assert.strictEqual(await callsAfter(calls, 99), 1);
+      assert.strictEqual(await callsAfter(calls, 1), 2);
+      assert.strictEqual(await callsAfter(calls, 100), 3);
+      assert.strictEqual(await callsAfter(calls, 100), 4);
+      await request;
+
+      assert.deepStrictEqual(waits, [ 100, 100, 100 ]);
+    });
+
+    it("lets a request override respectRetryAfter in either direction", async () => {
+      const reply = (): Reply => ({ status: 429, headers: { "Retry-After": "2" } });
+      const ignoring = scriptedFetch([ reply(), 200 ]);
+      const respecting = scriptedFetch([ reply(), 200 ]);
+
+      const a = faxios.create({ env: { fetch: ignoring.fetch } }).use(retry({ delay: 100, jitter: "none" }))
+        .get(URL, { retry: { respectRetryAfter: false } });
+      const b = faxios.create({ env: { fetch: respecting.fetch } }).use(retry({ delay: 100, jitter: "none", respectRetryAfter: false }))
+        .get(URL, { retry: { respectRetryAfter: true } });
+      assert.strictEqual(await callsAfter(ignoring.calls, 100), 2);
+      assert.strictEqual(await callsAfter(respecting.calls, 1899), 1);
+      assert.strictEqual(await callsAfter(respecting.calls, 1), 2);
+      await Promise.all([ a, b ]);
+    });
+
     it("caps the computed backoff at maxDelay (default 30 seconds)", async () => {
       const capped = scriptedFetch([ 503, 200 ]);
       const byDefault = scriptedFetch([ 503, 200 ]);
@@ -487,6 +531,8 @@ describe("plugins::retry", () => {
       assert.throws(() => retry({ jitter: "half" }), isBadValue);
       // @ts-expect-error TS2322 -- onRetry must be a function
       assert.throws(() => retry({ onRetry: true }), isBadValue);
+      // @ts-expect-error TS2322 -- respectRetryAfter must be a boolean
+      assert.throws(() => retry({ respectRetryAfter: "no" }), isBadValue);
     });
 
     it("rejects invalid policy options per request before sending anything", async () => {
@@ -498,6 +544,8 @@ describe("plugins::retry", () => {
       await assert.rejects(api.get(URL, { retry: { maxRetryAfter: Number.NaN } }), isBadValue);
       // @ts-expect-error TS2769 -- jitter is "full" or "none"
       await assert.rejects(api.get(URL, { retry: { jitter: "some" } }), isBadValue);
+      // @ts-expect-error TS2769 -- respectRetryAfter must be a boolean
+      await assert.rejects(api.get(URL, { retry: { respectRetryAfter: 0 } }), isBadValue);
 
       assert.strictEqual(calls.length, 0);
     });

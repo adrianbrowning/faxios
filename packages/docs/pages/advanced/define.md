@@ -15,7 +15,7 @@ const response = await getUser({ pathParams: { id: "123" } });
 const user: { name: string; age: number } = response.data; // inferred from responseSchema
 ```
 
-`define()` is available on the default export and on every instance created with `faxios.create()`. Calls go through that instance's `request()`, so its defaults and interceptors apply.
+`define()` is available on the default export and on every instance created with `faxios.create()`. Calls go through that instance's `request()`, so its defaults and [middleware](/pages/advanced/middleware) apply.
 
 ## Define-time config
 

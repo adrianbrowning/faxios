@@ -28,11 +28,11 @@ We created a small wrapper function called `enhanceNetworkError()` that:
 - Assigns a new `error.code` (like `ERR_TIMEOUT`, `ERR_DNS_FAILURE`, etc.).
 - Works for both browser and Node.js environments.
 
-The wrapper is used inside an faxios instance via a Response interceptor.
+The wrapper is used inside an faxios instance via `.use()` middleware.
 
 -> How It Works
 
-1. When faxios throws an error, the interceptor catches it.
+1. When a request fails, the middleware catches the error thrown by `next(ctx)`.
 2. The `enhanceNetworkError()` function checks what type of error it is:
    - Offline → `ERR_NO_INTERNET`
    - DNS failure → `ERR_DNS_FAILURE`

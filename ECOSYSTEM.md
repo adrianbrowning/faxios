@@ -14,11 +14,11 @@ This is a list of faxios-related libraries and resources. To add one, open a pul
 - [faxios-fetch](https://github.com/lifeomic/faxios-fetch) - Provides a Web API Fetch implementation backed by an faxios client
 - [faxios-actions](https://github.com/davestewart/faxios-actions) - Bundles endpoints as callable, reusable services
 - [faxios-api-versioning](https://weffe.github.io/faxios-api-versioning) - Adds API version management to faxios
-- [faxios-data-unpacker](https://github.com/anubhavsrivastava/faxios-data-unpacker) - Unpacks HTTP responses through an faxios interceptor
+- [faxios-data-unpacker](https://github.com/anubhavsrivastava/faxios-data-unpacker) - Unpacks HTTP responses
 - [r2curl](https://github.com/uyu423/r2curl) - Extracts cURL command strings from faxios objects. (AxiosResponse, AxiosRequestConfig)
 - [faxios-endpoints](https://github.com/renancaraujo/faxios-endpoints) - Defines concise endpoint mappings for faxios
 - [faxios-multi-api](https://github.com/MattCCC/faxios-multi-api) - Handles multiple APIs with declarative faxios request definitions
-- [faxios-url-template](https://github.com/rafw87/faxios-url-template) - Adds URL template support through an faxios interceptor
+- [faxios-url-template](https://github.com/rafw87/faxios-url-template) - Adds URL template support
 
 ### API clients
 
@@ -28,7 +28,7 @@ This is a list of faxios-related libraries and resources. To add one, open a pul
 
 ### Logging and debugging
 
-- [faxios-response-logger](https://github.com/srph/faxios-response-logger) - Logs responses through an faxios interceptor
+- [faxios-response-logger](https://github.com/srph/faxios-response-logger) - Logs responses
 - [faxios-debug-log](https://github.com/Gerhut/faxios-debug-log) - Logs faxios requests and responses with debug
 - [faxios-curlirize](https://www.npmjs.com/package/faxios-curlirize) - Logs faxios requests as cURL commands and attaches the command to the response object
 

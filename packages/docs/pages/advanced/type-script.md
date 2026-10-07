@@ -50,24 +50,52 @@ try {
 }
 ```
 
-## Typed instances and interceptors
+## Typed instances and middleware
 
-Annotate the result of `faxios.create` with `FaxiosInstance`, and annotate request interceptors with `InternalFaxiosRequestConfig` to get end-to-end type checking on a custom client:
+`faxios.create()` returns a `FaxiosInstance`. Middleware passed inline to `use()` is typed from the instance, so `ctx.config` and `next` need no annotations:
 
-```ts check=skip
+```ts
 import faxios from "@gcmdev/faxios";
-import type { FaxiosInstance, InternalFaxiosRequestConfig } from "@gcmdev/faxios";
+import type { FaxiosInstance } from "@gcmdev/faxios";
 
 const apiClient: FaxiosInstance = faxios.create({
   baseURL: "https://api.example.com",
   timeout: 10000,
+}).use(async (ctx, next) => {
+  // ctx.config.headers is a FaxiosHeaders
+  ctx.config.headers.set("X-Client", "docs-example");
+  return next(ctx);
 });
 
-apiClient.interceptors.request.use((config: InternalFaxiosRequestConfig) => {
-  // Add auth token, log, etc.
-  return config;
-});
+await apiClient.get("/users");
 ```
+
+Plain middleware adds nothing to the type, so `FaxiosInstance` still fits. To write middleware outside `use()`, annotate it with `FaxiosMiddleware`, or annotate its context with `FaxiosContext`.
+
+## Typed plugins
+
+Plugins add request options and capabilities to the instance type. `use()` returns the same instance with that new type, so keep the chained result and send requests through it. Annotating the variable as a plain `FaxiosInstance` would throw the plugin's options away:
+
+```ts
+import faxios from "@gcmdev/faxios";
+import { retry } from "@gcmdev/faxios/plugins/retry";
+
+// api's type includes RetryRequestOptions, so the `retry` option is accepted.
+const api = faxios.create({ baseURL: "https://api.example.com" }).use(retry());
+
+await api.get("/users", { retry: { attempts: 5 } });
+await api.post("/users", { name: "Fred" }, { retry: false });
+
+// Without retry() installed, the option is a type error.
+// @ts-expect-error TS2769 -- this instance has no retry option
+await faxios.create().get("/users", { retry: false });
+```
+
+Plugin options are typed on every config-taking member, including `defaults`, `define()` and `route()`. Excess-property checks only run on object literals, so a config held in a variable can still carry a plugin option the instance doesn't have.
+
+`create()` children start with no middleware and no plugin types. `eject()` doesn't narrow the type either: options a removed plugin added stay in it.
+
+A plugin that requires a capability, such as a token-refresh plugin that needs `auth` from `authBearer`, is a type error when installed before the plugin that provides it. To write your own typed plugins with `definePlugin` and `FaxiosPlugin<{ requires?; provides?; options? }>`, see [Writing a plugin](/pages/advanced/middleware#writing-a-plugin) and [Typed request options](/pages/advanced/middleware#typed-request-options).
 
 ## Typing response data
 
