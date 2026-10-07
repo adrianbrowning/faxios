@@ -39,11 +39,11 @@
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "30f8ea0886134b2d5bbd67f81baa826f2e148e9ad0c1f2283e6849d83edce702",
+      "fingerprint": "08cedc37d69256b3ad5d8008dfe2560a8fbb63bd322d544018d26de22bcca4d7",
       "snapshot": {
         "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
         "_artifacts/domain_map.yaml": "00958a5157f4c2130db1d605c37a3c026206865246f138b59b88e2237675efe0",
-        "_artifacts/skill_spec.md": "bc4c3dad196065c988398d5a799f4c3a523ac38ec296bc97ccf401bc0ad9633f",
+        "_artifacts/skill_spec.md": "62d8f121b8f5ed2d196ff095a17686fbdb205cd87bef7576845f8263b5905e70",
         "_artifacts/skill_tree.yaml": "42d72e7212b31827fade121697efb94dd1751d179bd76315722e017e5e66538e",
         "packages/lib/package.json": "f43c6ffeb19c945355f5c65529d79406440543b45aed6e536c5cfd975924c425",
         "packages/lib/skills/configure-requests/SKILL.md": "d99e4f1b788a6f484df346b5f569b18e1fa4a7401b9004b2e28265bf655c9aa2",
@@ -70,11 +70,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
         "packages/tests/unit/plugins/timing.test.ts": "a0cecdd2620fd5041cfd770ec51fa1ca5e8a71297feaa60129adc67822d84cb3"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "head": "a8e5535730e2341b35e440b30b4367602c3297ae",
       "outcome": "updated",
-      "reason": "Recorded batch 1 follow-up: per-file diff review, additions and how each was checked, gaps not added, doc bugs, CI zod root cause.",
+      "reason": "skill_spec.md: clear() and synchronous are now attributed to migrating-from-interceptors.md and the instance API, not to a runtime script.",
       "evidence": [
-        "skill_spec.md follow-up entry; domain_map.yaml MIGRATION_GUIDE gap reworded; skill_tree.yaml unchanged (sync: nothing to synchronize)."
+        "Changed: _artifacts/skill_spec.md at a8e5535730e2341b35e440b30b4367602c3297ae"
       ]
     },
     "source:knip.json": {

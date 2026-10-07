@@ -157,7 +157,8 @@ and stop generating Axios APIs it removed or never verified.
     - A custom `retryOn` replaces the default predicate (1 call on `ERR_NETWORK`).
     - A `Retry-After` longer than `maxRetryAfter` doesn't retry (1 call).
     - `transitional.legacyInterceptorReqResOrdering` throws `ERR_BAD_OPTION`.
-    - No interceptor `clear()`; no `synchronous` equivalent.
+  - Also added, from `migrating-from-interceptors.md` and the instance API, not run: no
+    interceptor `clear()`, and no `synchronous` equivalent.
   - Gaps not added, as too minor for the skill:
     - an `onRetry` that throws stops retrying
     - `attempts` and `methods` validation
