@@ -190,3 +190,13 @@ and stop generating Axios APIs it removed or never verified.
     `packages/tests` version) as a root devDependency, ignored by knip.
   - Earlier local `intent validate` results (Batch 1) ran with that home-directory `zod`.
     Now checked from a clean checkout outside `~`.
+- **Batch 2 (2026-10-08, source `1f5cc0c0`, #148).**
+  - `define()`/`route()` were not assessed beyond a pointer. They return plain functions with no
+    `.use()`, and agents chained `.define(...).use(retry())`.
+  - SKILL.md now states the wiring rule (call `define()`/`route()` on the value `.use()` returned)
+    with a root-only example (inline middleware, `pathParamsSchema`, call), checked by
+    `intent validate`. The `retry()` variant is in `references/plugins.md`, since SKILL.md can't
+    import plugin subpaths.
+  - Middleware is read per call (`define.ts` calls `instance.request()`), so registration order is
+    a typing rule, not a runtime one. Pinned by a `define.test.ts` unit test.
+  - Added `src/lib/core/define.ts` and `src/lib/core/route.ts` to `sources`.

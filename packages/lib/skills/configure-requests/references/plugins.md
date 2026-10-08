@@ -27,6 +27,23 @@ Check: `faxios.get("/health", { retry: false })` on the default export (or any i
 `retry()` installed) is a type error. Use the value `.use()` returned. The option defaults and
 ordering rules are in the SKILL.md "Use the built-in plugins from their subpaths" section.
 
+## Define endpoints on a plugin instance
+
+`define()` and `route()` return plain functions with no `.use()`. Install plugins first and call
+`define()` on the value `.use()` returned, so the endpoint's per-call config types `retry`:
+
+```ts
+import faxios from "@gcmdev/faxios";
+import { retry } from "@gcmdev/faxios/plugins/retry";
+import { z } from "zod";
+
+const api = faxios.create({ baseURL: "https://tags.tiqcdn.com" }).use(retry());
+const getDistro = api.define("get", "/utag/{account}/{profile}/prod/distro.zip", {
+  pathParamsSchema: z.object({ account: z.string(), profile: z.string() }),
+});
+await getDistro({ pathParams: { account: "acme", profile: "main" }, retry: { attempts: 2 } });
+```
+
 ## Build a plugin with `definePlugin`
 
 `definePlugin` comes from `@gcmdev/faxios/plugins`. It returns the same object and only changes the

@@ -27,6 +27,8 @@ skills:
             src/lib/core/buildFullPath.ts,
             src/lib/core/dispatchRequest.ts,
             src/lib/core/FaxiosError.ts,
+            src/lib/core/define.ts,
+            src/lib/core/route.ts,
             src/lib/types.ts,
             src/lib/adapters/fetch.ts,
             src/lib/helpers/composeSignals.ts,

@@ -16,7 +16,7 @@ const updateUser = users.put({ requestSchema: z.object({ name: z.string() }) });
 await updateUser({ pathParams: { id: "123" }, data: { name: "Fred" } });
 ```
 
-`route()` is available on the default export and on every instance created with `faxios.create()`.
+`route()` is available on the default export and on every instance created with `faxios.create()`. The builder and its endpoint functions have no `.use()`, so middleware goes on the instance. Call `route()` on the instance `.use()` returned, for example `faxios.create({ baseURL }).use(retry()).route("/users/{id}", config)`: only that value types plugin options such as `retry` on the endpoints.
 
 ## Method helpers
 

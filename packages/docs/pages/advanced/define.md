@@ -15,7 +15,19 @@ const response = await getUser({ pathParams: { id: "123" } });
 const user: { name: string; age: number } = response.data; // inferred from responseSchema
 ```
 
-`define()` is available on the default export and on every instance created with `faxios.create()`. Calls go through that instance's `request()`, so its defaults and [middleware](/pages/advanced/middleware) apply.
+`define()` is available on the default export and on every instance created with `faxios.create()`. It returns a plain function with no `.use()`, so middleware goes on the instance. Call `define()` on the instance `.use()` returned: each call goes through that instance's `request()`, so its defaults and [middleware](/pages/advanced/middleware) apply, and only that value types plugin options such as `retry`. Middleware added to the instance after `define()` still runs on later calls, but its options are not typed on the endpoint.
+
+```ts
+import faxios from "@gcmdev/faxios";
+import { retry } from "@gcmdev/faxios/plugins/retry";
+import { z } from "zod";
+
+const api = faxios.create({ baseURL: "https://tags.tiqcdn.com" }).use(retry());
+const getDistro = api.define("get", "/utag/{account}/{profile}/prod/distro.zip", {
+  pathParamsSchema: z.object({ account: z.string(), profile: z.string() }),
+});
+await getDistro({ pathParams: { account: "acme", profile: "main" }, retry: { attempts: 2 } });
+```
 
 ## Define-time config
 
