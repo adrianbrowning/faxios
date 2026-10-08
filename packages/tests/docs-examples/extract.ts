@@ -5,6 +5,8 @@
 //   check=skip    not extracted: fragments, pseudo-code, config listings
 //   check=types   type-checked but not run: browser-only code, real servers
 //   status=404    the fake fetch answers this block's requests with that status
+//   placeholders=literal  the block requests a literal `/:x` or `{x}` path on purpose,
+//                 so the fake fetch doesn't reject it as an unsubstituted placeholder
 // Any other js/ts block is type-checked and run.
 //
 // Usage: node docs-examples/extract.ts [--only <path substring>] [--out <dir name>]
@@ -33,6 +35,8 @@ export type ExtractedBlock = {
   file: string;
   run: boolean;
   status: number;
+  // The block requests literal `/:x` or `{x}` paths, so the placeholder guard is skipped.
+  literalPlaceholders: boolean;
 };
 
 function markdownFiles(dir: string): Array<string> {
@@ -61,6 +65,19 @@ function fenceLine(markdown: string, codeStart: number): number {
   return line - 1;
 }
 
+// Throws on an unknown marker value, so a typo can't silently run (or skip checks on) a block.
+function validateMarkers(source: string, { check, status, placeholders }: Record<string, string | undefined>): void {
+  if (check !== undefined && check !== "types") {
+    throw new Error(`${source}: unknown check=${check} (expected "skip" or "types")`);
+  }
+  if (status !== undefined && !/^[1-5]\d\d$/.test(status)) {
+    throw new Error(`${source}: status=${status} is not an HTTP status code`);
+  }
+  if (placeholders !== undefined && placeholders !== "literal") {
+    throw new Error(`${source}: unknown placeholders=${placeholders} (expected "literal")`);
+  }
+}
+
 export function extractBlocks(paths: Array<string>, outDir: string): Array<ExtractedBlock> {
   rmSync(outDir, { recursive: true, force: true });
   mkdirSync(outDir, { recursive: true });
@@ -71,22 +88,23 @@ export function extractBlocks(paths: Array<string>, outDir: string): Array<Extra
     const label = relative(repoRoot, path);
     for (const block of parse({ source: markdown })) {
       const ext = EXTENSIONS[block.lang];
-      const { check, status = "200" } = block.meta;
+      const { check, status = "200", placeholders } = block.meta;
       if (!ext || check === "skip") continue;
 
       const line = fenceLine(markdown, block.position?.start ?? 0);
       const source = `${label}:${line}`;
-      if (check !== undefined && check !== "types") {
-        throw new Error(`${source}: unknown check=${check} (expected "skip" or "types")`);
-      }
-      if (!/^[1-5]\d\d$/.test(status)) {
-        throw new Error(`${source}: status=${status} is not an HTTP status code`);
-      }
+      validateMarkers(source, block.meta);
 
       const file = `${label.replaceAll("/", "__")}__L${line}.${ext}`;
       // `export {}` keeps every block a module, so top-level await works and names don't clash.
       writeFileSync(join(outDir, file), `// ${source}\n${block.code}\nexport {};\n`);
-      blocks.push({ source, file, run: check !== "types", status: Number(status) });
+      blocks.push({
+        source,
+        file,
+        run: check !== "types",
+        status: Number(status),
+        literalPlaceholders: placeholders === "literal",
+      });
     }
   }
 

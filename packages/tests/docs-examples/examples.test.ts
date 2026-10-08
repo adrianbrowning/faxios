@@ -14,6 +14,17 @@ const blocks: Array<ExtractedBlock> = JSON.parse(readFileSync(join(outDir, "mani
 // `faxios.get("/user")` resolve against this base, as they would in a browser.
 const PAGE_URL = "https://example.test/";
 let status = 200;
+let checkPlaceholders = true;
+// Unsubstituted placeholder URLs the current block requested. Recorded as well as thrown,
+// because an example may catch the fetch error and carry on.
+let placeholderUrls: Array<string> = [];
+
+// faxios substitutes only `{key}` path params. A `/:id` segment or a leftover `{id}` means the
+// example sent its template as the literal path. `new Request()` percent-encodes braces, so decode first.
+function placeholderIn(url: string): boolean {
+  const pathname = decodeURI(new URL(url).pathname);
+  return /\/:[a-z]/i.test(pathname) || /\{[^/{}]+\}/.test(pathname);
+}
 
 class PageRequest extends Request {
   constructor(input: string | URL | Request, init?: RequestInit) {
@@ -24,7 +35,12 @@ class PageRequest extends Request {
 // Every request gets a JSON `{}` body with the block's status (200 unless it sets status=).
 const fakeFetch = async (input: string | URL | Request, init?: RequestInit) => {
   // Build and read the request as a real fetch would, so bad URLs and bodies still throw.
-  await new PageRequest(input, init).arrayBuffer();
+  const request = new PageRequest(input, init);
+  if (checkPlaceholders && placeholderIn(request.url)) {
+    placeholderUrls.push(request.url);
+    throw new Error(`docs example requested ${request.url} with an unsubstituted path placeholder (use {key} with pathParams, or mark the block placeholders=literal)`);
+  }
+  await request.arrayBuffer();
   return new Response("{}", { status, headers: { "Content-Type": "application/json" } });
 };
 
@@ -50,7 +66,12 @@ describe("docs examples", () => {
       status = block.status;
       // A fresh module graph per block, so defaults and middleware one example sets don't leak into the next.
       vi.resetModules();
+      checkPlaceholders = !block.literalPlaceholders;
+      placeholderUrls = [];
       await import(pathToFileURL(join(outDir, block.file)).href);
+      if (placeholderUrls.length > 0) {
+        throw new Error(`requested unsubstituted path placeholder URL(s): ${placeholderUrls.join(", ")}`);
+      }
     });
   }
 });

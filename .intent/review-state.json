@@ -3,7 +3,7 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "19e9a542ba9c51c4b39564d10222d32b74c012c6f1620dd83b92bc4aa4400b6c",
+      "fingerprint": "db6a1e77a2400171e591c02f01ad7303d60836b1617c92dee872ebe43cab908f",
       "snapshot": {
         "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
         "packages/lib/package.json": "bab9b7aa7e816e0b404f886de644b409e3ede4f2b5d96f678341938124801c1e",
@@ -29,21 +29,21 @@
         "packages/tests/unit/plugins/authBearer.test.ts": "c2f59575debb9e64e11809bdf57d22d811e2abfb480d4a8a20f9af128a4ef7cd",
         "packages/tests/unit/plugins/definePlugin.test.ts": "d85323c110f1d8d49620d3c066b71f04a3197eb27175f1b36f52406dbe257cc7",
         "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
-        "packages/tests/unit/plugins/timing.test.ts": "a0cecdd2620fd5041cfd770ec51fa1ca5e8a71297feaa60129adc67822d84cb3"
+        "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "492ee34ef92bec5f9570b66e6fe8af2713b61eb8",
+      "head": "a15418fe9ebc066d9f5379b3b7d2dc16167fa33f",
       "outcome": "no-change",
-      "reason": "Release 0.2.0: version bump, changelog move and a VERSION test. The skill only gets the new library_version; its guidance is unchanged.",
+      "reason": "timing.test.ts switched from /users/:id to /users/{id}; the skill already says timing keeps {param} placeholders.",
       "evidence": [
-        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md at 492ee34ef92bec5f9570b66e6fe8af2713b61eb8"
+        "SKILL.md timing bullet (url keeps {param} placeholders) matches the updated test expectation http://localhost/users/{id}."
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "ec1c0320c852fde7b1ae6c2c572e30f66cb7747dc2424b3970c7afeed9b6c556",
+      "fingerprint": "9c882584d6667eb3f5dbd099dcc84813a8196d09b664dd308b89c9201ac1e3d9",
       "snapshot": {
         "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
         "_artifacts/domain_map.yaml": "00958a5157f4c2130db1d605c37a3c026206865246f138b59b88e2237675efe0",
-        "_artifacts/skill_spec.md": "62d8f121b8f5ed2d196ff095a17686fbdb205cd87bef7576845f8263b5905e70",
+        "_artifacts/skill_spec.md": "93b4429da274e67a37ffbfd5312f7cc5a7b1057397aba8368d9c0b5b13685e3a",
         "_artifacts/skill_tree.yaml": "42d72e7212b31827fade121697efb94dd1751d179bd76315722e017e5e66538e",
         "packages/lib/package.json": "bab9b7aa7e816e0b404f886de644b409e3ede4f2b5d96f678341938124801c1e",
         "packages/lib/skills/configure-requests/SKILL.md": "990d89feab5303dc3ed4420bb562464654c6651f5dcf78c0c62a19eb2c2f03a1",
@@ -68,13 +68,13 @@
         "packages/tests/unit/plugins/authBearer.test.ts": "c2f59575debb9e64e11809bdf57d22d811e2abfb480d4a8a20f9af128a4ef7cd",
         "packages/tests/unit/plugins/definePlugin.test.ts": "d85323c110f1d8d49620d3c066b71f04a3197eb27175f1b36f52406dbe257cc7",
         "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
-        "packages/tests/unit/plugins/timing.test.ts": "a0cecdd2620fd5041cfd770ec51fa1ca5e8a71297feaa60129adc67822d84cb3"
+        "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "492ee34ef92bec5f9570b66e6fe8af2713b61eb8",
-      "outcome": "no-change",
-      "reason": "Release 0.2.0: version bump, changelog move and a VERSION test. The skill only gets the new library_version; its guidance is unchanged.",
+      "head": "a15418fe9ebc066d9f5379b3b7d2dc16167fa33f",
+      "outcome": "updated",
+      "reason": "Marked the middleware.md :id doc bug fixed in #146.",
       "evidence": [
-        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md at 492ee34ef92bec5f9570b66e6fe8af2713b61eb8"
+        "skill_spec.md doc-bug bullet says fixed in #146."
       ]
     },
     "source:knip.json": {
@@ -90,15 +90,15 @@
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
-      "fingerprint": "8e50ea75f465c431cdf745f3af1e30395434e1d4a62a06e1b780dee699a8aa67",
+      "fingerprint": "756ea67d848203029fdde2924708074dbbbdcbd2565446e71a975453d8597cd1",
       "snapshot": {
-        "PRE_RELEASE_CHANGELOG.md": "d772c08515335ac930b3575c968b00f31ee6459768b952137636619c7d3c2af5"
+        "PRE_RELEASE_CHANGELOG.md": "10fe5cba863bd814e50d87b95e9577c75943d1590b946fe6db6cfeb23040558e"
       },
-      "head": "a9398723da9fce39c0e36db164a98f742c0b2e9e",
+      "head": "a15418fe9ebc066d9f5379b3b7d2dc16167fa33f",
       "outcome": "no-change",
-      "reason": "Adds the #160 Fixes entry only.",
+      "reason": "Adds the #146 Documentation line below main's #160 Fixes entry.",
       "evidence": [
-        "One Fixes bullet about the missing LICENSE in 0.2.0."
+        "One Documentation bullet; rebased onto main after the 0.2.0 release."
       ]
     },
     "source:ECOSYSTEM.md": {
@@ -246,15 +246,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "743e0685f9ead1a86f37bd358f5fffc19b2e95494f2e6609146704a1d294ba22",
+      "fingerprint": "ab3e5a0c55f32b87e48252038f453c892365b38b8536d26d630374a394c17319",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "91ef6542a2cb12d2d1ec1cc12f67820d946e748f57b963d245450ab4d770f29c"
+        "packages/docs/pages/advanced/middleware.md": "da8e2ef9c90a780305ee97593baeeac5cfd0922dd441d93c5bb1c59824a2a34c"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
-      "outcome": "updated",
-      "reason": "Skill updated from this diff.",
+      "head": "a15418fe9ebc066d9f5379b3b7d2dc16167fa33f",
+      "outcome": "no-change",
+      "reason": "Docs now use {id} like the skill.",
       "evidence": [
-        "Added new Faxios() note; its :id placeholders contradict source ({key} only) and are recorded as a doc bug; skill keeps {id}. Diff review: +L153 (`console.log(ctx.config.url); // \\\"/users/:id\\\": the path params were substituted in the copy`), +L157 and +L534 (`api.get(\\\"/users/:id\\\", { pathParams: { id: \\\"7\\\" } })`), +L339 (`api.route(\\\"/users/:id\\\", …)`) and +L498/+L535 (timing 'A URL with `pathParams` is reported by its `:param` template'; labels `url: \\\".../users/:id\\\"`) all use `:param` placeholders. SKILL L80-81/L242 use `{id}` and say timing 'keeps `{param}` placeholders'. Src: substitutePathParams.ts:3 replaces only `/\\\\{([^{}]+)\\\\}/g`, and timing.ts:35 reports the pre-dispatch `config.url`. The skill is right; with `:id` "
+        "Six :id placeholders replaced with {id}; timing wording says it reports the template as written, matching SKILL.md."
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
@@ -555,6 +555,42 @@
       "reason": "check-license.ts packs with the npm on PATH, the same npm publish.yml runs; test tooling, no skill impact.",
       "evidence": [
         "Changed: packages/tests/scripts/check-license.ts at c76a2f606f7800c3d09cb1fdbbfc326ef049a7fd"
+      ]
+    },
+    "source:packages/tests/docs-examples/examples.test.ts": {
+      "fingerprint": "4dcf22cf91ba6d004d31db93adae2c3eac798dc44e68a8eea65e695d5137c014",
+      "snapshot": {
+        "packages/tests/docs-examples/examples.test.ts": "3bae708d1cca8652c9c4772b29c63a4978551bcc22b0127938b15915c4c1145f"
+      },
+      "head": "a15418fe9ebc066d9f5379b3b7d2dc16167fa33f",
+      "outcome": "out-of-scope",
+      "reason": "Docs-examples harness guard for unsubstituted placeholders; test tooling.",
+      "evidence": [
+        "fakeFetch rejects decoded pathnames with /:name or {name} unless the block sets placeholders=literal."
+      ]
+    },
+    "source:packages/tests/docs-examples/extract.test.ts": {
+      "fingerprint": "272f68d34f4ffa45c5e427ee1342a0d027d36f08cdb77a8c8d357975652fa020",
+      "snapshot": {
+        "packages/tests/docs-examples/extract.test.ts": "24249e9b08895859bd5855b0efb3de7aa816d441f3c2ab8d3d52880ba57b4a06"
+      },
+      "head": "a15418fe9ebc066d9f5379b3b7d2dc16167fa33f",
+      "outcome": "out-of-scope",
+      "reason": "Tests for the placeholders=literal fence marker.",
+      "evidence": [
+        "Marker carried to the manifest; invalid value throws."
+      ]
+    },
+    "source:packages/tests/docs-examples/extract.ts": {
+      "fingerprint": "73895d4d9986eb554c6580a092d3ddc5a12f6cb06ea352cf985a94d0bf25fd50",
+      "snapshot": {
+        "packages/tests/docs-examples/extract.ts": "ba3ca779978474fc5e1f010f1ee33b8562fafccaff89b1b492e983af8d8cb771"
+      },
+      "head": "a15418fe9ebc066d9f5379b3b7d2dc16167fa33f",
+      "outcome": "out-of-scope",
+      "reason": "Parses the placeholders=literal fence marker.",
+      "evidence": [
+        "Manifest gains literalPlaceholders; invalid marker values throw."
       ]
     }
   }
