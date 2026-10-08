@@ -3,11 +3,11 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "52aef397670a888ee944c3b49912d74b4917991ddcf3aab4c34d0aa9a78ca245",
+      "fingerprint": "238549d3971a653f544ab62196cb78eff8675305767bf662f3f36f8676514017",
       "snapshot": {
         "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
         "packages/lib/package.json": "bab9b7aa7e816e0b404f886de644b409e3ede4f2b5d96f678341938124801c1e",
-        "packages/lib/skills/configure-requests/SKILL.md": "ee104f23bdb5949b6032f2bc59117dd47735e278b0061df6d27a7329c359dd5e",
+        "packages/lib/skills/configure-requests/SKILL.md": "45efc1aab4f443e9b344336d7451b61cdead907d5c40ea08b127d9318bb53177",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b8f4ce801ac34ab1f808d35cbc667869d582721f3996a811fb2b035eefd6a2ca",
         "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
@@ -33,22 +33,22 @@
         "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "0d3c421862f3cab417d950f0075f471a9a99320a",
+      "head": "213d0244cb46ec572237eddf2a1bbef7db1e9579",
       "outcome": "updated",
-      "reason": "Added the define/route wiring rule, a root-only define example, a link to the retry variant in references/plugins.md, and define.ts/route.ts to sources (#148).",
+      "reason": "Added the binary download pattern (get<ArrayBuffer>, responseType arraybuffer, maxContentLength) and common mistake #10 (#149).",
       "evidence": [
-        "intent validate passes; define.test.ts 14 passed; test:docs-examples 165 passed with the #146 guard, rebased onto main after 0.2.0."
+        "intent validate passes; test:docs-examples 166 passed on this layer after rebasing onto main. #158's fetch.ts changes don't touch response resolution, so the per-value responseType check in skill_spec.md Batch 3 still holds."
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "a4107ba73d9c4c562e4991562af13704242f08aea022e03621d550d131f77fdf",
+      "fingerprint": "0617f66b5c21e4477c112a36081282ba0253d0002f088d6d3963de7434084ce7",
       "snapshot": {
         "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
-        "_artifacts/domain_map.yaml": "00958a5157f4c2130db1d605c37a3c026206865246f138b59b88e2237675efe0",
-        "_artifacts/skill_spec.md": "a0ebdef92ffe0f7e8683270b143f57659c4df7ab5b430111b92307f4fc36677d",
+        "_artifacts/domain_map.yaml": "13db30bd0c6322ccf6d26d5415d75e83df947d7c612cd189f821f94d1a033516",
+        "_artifacts/skill_spec.md": "312bcae6aa323ecac6dbd371fe7d5833412be0043d56727b6c12e70acbd939c3",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "bab9b7aa7e816e0b404f886de644b409e3ede4f2b5d96f678341938124801c1e",
-        "packages/lib/skills/configure-requests/SKILL.md": "ee104f23bdb5949b6032f2bc59117dd47735e278b0061df6d27a7329c359dd5e",
+        "packages/lib/skills/configure-requests/SKILL.md": "45efc1aab4f443e9b344336d7451b61cdead907d5c40ea08b127d9318bb53177",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b8f4ce801ac34ab1f808d35cbc667869d582721f3996a811fb2b035eefd6a2ca",
         "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "0d3c421862f3cab417d950f0075f471a9a99320a",
+      "head": "213d0244cb46ec572237eddf2a1bbef7db1e9579",
       "outcome": "updated",
-      "reason": "Batch history entry for define/route wiring; skill_tree.yaml sources gain define.ts and route.ts.",
+      "reason": "Failure mode #10 added to domain_map.yaml; skill_spec.md inventory 9 to 10 and Batch 3 entry.",
       "evidence": [
-        "skill_spec.md batch entry and skill_tree.yaml sources diff in this layer."
+        "domain_map.yaml failure_modes entry and skill_spec.md row 10 in this layer."
       ]
     },
     "source:knip.json": {
@@ -94,15 +94,15 @@
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
-      "fingerprint": "67f7aa948aee9a418696920b2a0fd4ad419e328a4f4cc5668cc9813724b3ffc0",
+      "fingerprint": "d415cc5eabc0d81d89b62181d1dd72e980b3a87a179c9d377bb0c4ad695a72f2",
       "snapshot": {
-        "PRE_RELEASE_CHANGELOG.md": "602be8f51733b38309ede022f50f8174a4ad11f25b811cfdc009b3734581b2f2"
+        "PRE_RELEASE_CHANGELOG.md": "042d7a29843281d762fd9372babefa677428a83539085cdc9e3341be79c50688"
       },
-      "head": "0d3c421862f3cab417d950f0075f471a9a99320a",
+      "head": "213d0244cb46ec572237eddf2a1bbef7db1e9579",
       "outcome": "no-change",
-      "reason": "Adds the #148 Documentation line only.",
+      "reason": "Adds the #149 Documentation line only.",
       "evidence": [
-        "One Documentation bullet under the #146 line."
+        "One Documentation bullet under the #146 and #148 lines."
       ]
     },
     "source:ECOSYSTEM.md": {
@@ -274,15 +274,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "ae6ff40a9d81e41e4e19ea1417a37942f2a5e93c44e1c3232f4bb5ccfdc88413",
+      "fingerprint": "a806e21446d05f18b3f19e9535af520e48ff93b8386d775518225a0620fe23bb",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "f0233ab4569c29f4975433a53f91d2be108f6613310c43362b246401ad4d5d2b"
+        "packages/docs/pages/advanced/request-config.md": "780c04f26eea90c693308afce3ca09ce0b6fe4179ac77d0b6b3c92d12076591b"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "head": "213d0244cb46ec572237eddf2a1bbef7db1e9579",
       "outcome": "updated",
-      "reason": "Skill updated from this diff.",
+      "reason": "Skill pattern and mistake #10 mirror the corrected responseType section.",
       "evidence": [
-        "axios-differences.md now says legacyInterceptorReqResOrdering throws ERR_BAD_OPTION like any unknown transitional key. Diff review: -L9 removes the `legacyInterceptorReqResOrdering` transitional option, and -L29 removes it from the full example. The page doesn't say so, but passing it now throws `ERR_BAD_OPTION` (validator.ts:106), and the skill doesn't mention that unknown `transitional` keys throw. The unchanged context L8 (clarifyTimeoutError has no effect) matches SKILL L162-163. -L17/+L18 drops the `check=skip` marker, which makes no API claim."
+        "request-config.md lists each responseType as the adapter resolves it and documents unset behaviour; SKILL.md says the same."
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {

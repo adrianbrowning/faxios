@@ -151,15 +151,32 @@ The `withCredentials` property indicates whether or not cross-site Access-Contro
 
 ### `responseType`
 
-The `responseType` indicates the type of data that the server will respond with. This can be one of the following:
+The `responseType` tells faxios how to read the response body. Values are matched case-insensitively:
 
-- arraybuffer
-- document
-- json
-- text
-- stream
-- blob (browser only)
-- formdata (fetch adapter only)
+- `arraybuffer`: `response.arrayBuffer()`, so `data` is an `ArrayBuffer`
+- `blob`: `response.blob()`, so `data` is a `Blob`
+- `formdata`: `response.formData()`, so `data` is a `FormData`
+- `text`: `response.text()`, so `data` is a string and is not JSON-parsed
+- `stream`: `data` is the `ReadableStream` from `response.body`
+- `json`: read as text, then JSON-parsed
+- `document`: read as text; faxios does not build a DOM document
+
+If `responseType` is unset, the body is read as text and then JSON-parsed if it parses; otherwise `data` is the string. Binary bodies such as images or zip files are decoded as UTF-8 text in that case and come back corrupted, so set `responseType: "arraybuffer"` (or `"blob"`/`"stream"`) for them.
+
+`responseType` doesn't change the TypeScript type of `data`, which is `unknown` unless you pass a type argument.
+
+#### Downloading a file
+
+```ts
+import faxios from "@gcmdev/faxios";
+
+const { data } = await faxios.get<ArrayBuffer>("https://example.com/report.zip", {
+  responseType: "arraybuffer",
+});
+console.log(data.byteLength);
+```
+
+The whole body is buffered in memory. When the server isn't trusted, set [`maxContentLength`](#maxcontentlength) to cap the download size.
 
 ### `responseEncoding` <Badge type="warning" text="Node.js only" />
 
