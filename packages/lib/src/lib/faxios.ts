@@ -147,6 +147,14 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = {
   // options and capabilities is accepted.
   // eslint-disable-next-line @typescript-eslint/method-signature-style -- see above
   eject<TReq = unknown, TProv = unknown, TOpt = unknown>(middleware: FaxiosMiddleware<TOpt> | FaxiosPluginArgument<TReq, TProv, TOpt>): void;
+  /**
+   * Define a typed endpoint for `method` and `url` (with optional `{key}` placeholders). `config`
+   * holds request defaults and the `pathParamsSchema`, `paramsSchema`, `requestSchema` and
+   * `responseSchema` to apply; schemas are locked at define time. Per-call `url`, `method` and
+   * schemas are ignored, and `pathParams`, `params` and `data` are required when their schema is set.
+   * The endpoint is a plain function that sends through this instance, so add middleware with
+   * `.use()` on the instance, not on the endpoint.
+   */
   define: <
     PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined,
     P extends StandardSchemaV1 | undefined = undefined,
@@ -157,6 +165,13 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = {
     url: string,
     config?: DefineConfig<PP, P, D, R> & TOpts
   ) => DefinedEndpoint<PP, P, D, R, TOpts>;
+  /**
+   * Group endpoints that share `url` and `config`. Returns one endpoint factory per method (`get`,
+   * `post`, `put`, `patch`, `delete`, `head`, `options`; no `query`), each taking `paramsSchema`,
+   * `requestSchema`, `responseSchema` and request defaults like `define()`. The route-level
+   * `pathParamsSchema` applies to every method and wins over a method's. Endpoints are plain
+   * functions that send through this instance, so add middleware with `.use()` on the instance.
+   */
   route: <PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined>(
     url: string,
     config?: RouteConfig<PP> & TOpts
@@ -218,6 +233,11 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = {
   defaults: Omit<FaxiosDefaults, "headers"> & {
     headers: HeadersDefaults & { [key: string]: FaxiosHeaderValue | undefined; };
   } & Partial<TOpts>;
+  /**
+   * Build the URL for `config` without sending a request. Applies `baseURL`, `params` and
+   * `paramsSerializer`, but does not substitute `pathParams` or run schemas, so `{key}`
+   * placeholders come back as written.
+   */
   getUri: (config?: FaxiosRequestConfig & TOpts) => string;
   create: (instanceConfig?: CreateFaxiosDefaults) => FaxiosInstance;
 };

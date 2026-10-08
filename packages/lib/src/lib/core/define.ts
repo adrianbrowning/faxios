@@ -15,8 +15,10 @@ type StrippedFields =
   | "requestSchema"
   | "responseSchema";
 
+/** Request config accepted by a defined endpoint call: everything except `url`, `method`, `pathParams`, `params`, `data` and the schemas. */
 export type BasePerCallConfig = Omit<FaxiosRequestConfig, StrippedFields>;
 
+/** Config for one call of a defined endpoint; `pathParams`, `params` and `data` are required when their schema is set. */
 export type PerCallConfig<
   PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined,
   P extends StandardSchemaV1 | undefined,
@@ -25,16 +27,30 @@ export type PerCallConfig<
 > =
   BasePerCallConfig
   & TOpts
-  & (PP extends StandardSchemaV1 ? { pathParams: StandardSchemaV1.InferInput<PP>; } : unknown)
+  & (PP extends StandardSchemaV1 ? {
+    /**
+     * Values for `{key}` placeholders in the endpoint URL (braces, not `:key`), validated by the
+     * endpoint's `pathParamsSchema` first. Each value goes through `String()` then
+     * `encodeURIComponent`; a missing, `null` or `undefined` value rejects with
+     * `ERR_BAD_OPTION_VALUE`, and a schema failure with `ERR_BAD_PATH_PARAMS_SCHEMA`.
+     * Keys with no matching placeholder are ignored.
+     */
+    pathParams: StandardSchemaV1.InferInput<PP>;
+  } : unknown)
   & (P extends StandardSchemaV1 ? { params: StandardSchemaV1.InferInput<P>; } : unknown)
   & (D extends StandardSchemaV1 ? { data: StandardSchemaV1.InferInput<D>; } : unknown);
 
+/** Config for `define()`: request defaults plus the schemas, which are locked at define time. */
 export type DefineConfig<
   PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined,
   P extends StandardSchemaV1 | undefined = undefined,
   D extends StandardSchemaV1 | undefined = undefined,
   R extends StandardSchemaV1 | undefined = undefined
 > = BasePerCallConfig & {
+  /**
+   * Standard Schema that validates `pathParams` on every call; its output fills the `{key}`
+   * placeholders. Makes `pathParams` required per call. A failure rejects with `ERR_BAD_PATH_PARAMS_SCHEMA`.
+   */
   pathParamsSchema?: PP;
   paramsSchema?: P;
   requestSchema?: D;
@@ -44,6 +60,7 @@ export type DefineConfig<
 type HasInputSchema<PP, P, D> =
   [PP, P, D] extends [undefined, undefined, undefined] ? false : true;
 
+/** The function `define()` returns: call it with per-call config to send the request. */
 export type DefinedEndpoint<
   PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined,
   P extends StandardSchemaV1 | undefined,
@@ -55,6 +72,7 @@ export type DefinedEndpoint<
     ? (callConfig: PerCallConfig<PP, P, D, TOpts>) => Promise<FaxiosResponse<R extends StandardSchemaV1 ? StandardSchemaV1.InferOutput<R> : unknown>>
     : (callConfig?: PerCallConfig<PP, P, D, TOpts>) => Promise<FaxiosResponse<R extends StandardSchemaV1 ? StandardSchemaV1.InferOutput<R> : unknown>>;
 
+/** The minimal instance shape `define()` and `route()` need: a `request` method. */
 export interface FaxiosLike {
   request: (config: FaxiosRequestConfig) => Promise<FaxiosResponse<unknown>>;
 }

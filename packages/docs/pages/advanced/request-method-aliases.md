@@ -123,7 +123,7 @@ The QUERY method is defined by an IETF [Internet-Draft](https://datatracker.ietf
 
 ### `getUri`
 
-The `getUri` method returns the URL that would be sent for a given config without actually making the request. It applies `baseURL`, `paramsSerializer`, and `params`, so you get back the same string faxios would put on the wire. Useful for building links, debugging serialization, or reusing the resolved URL in another request.
+The `getUri` method returns the URL that would be sent for a given config without actually making the request. It applies `baseURL`, `paramsSerializer`, and `params`. It does not substitute `pathParams` or run schemas, so `{key}` placeholders come back as written rather than as faxios would put them on the wire. Useful for building links, debugging serialization, or reusing the resolved URL in another request.
 
 ```ts check=skip
 faxios.getUri(config?: FaxiosRequestConfig): string;

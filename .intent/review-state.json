@@ -3,11 +3,11 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "238549d3971a653f544ab62196cb78eff8675305767bf662f3f36f8676514017",
+      "fingerprint": "ab5cdc7ac504a0d8512bd4467d2bfb013231b6d13b75d780301b9c5b9ea80fb1",
       "snapshot": {
         "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
-        "packages/lib/package.json": "bab9b7aa7e816e0b404f886de644b409e3ede4f2b5d96f678341938124801c1e",
-        "packages/lib/skills/configure-requests/SKILL.md": "45efc1aab4f443e9b344336d7451b61cdead907d5c40ea08b127d9318bb53177",
+        "packages/lib/package.json": "497b6c44285f1cb610bece5b0cea6a955089e0cc365429b4722f8b4b0077276f",
+        "packages/lib/skills/configure-requests/SKILL.md": "f567b7646eef0a2bff9329b90a380404554c46e80aae15b21657d965b350efa7",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b8f4ce801ac34ab1f808d35cbc667869d582721f3996a811fb2b035eefd6a2ca",
         "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
@@ -15,17 +15,17 @@
         "packages/lib/src/lib/core/Faxios.ts": "a75b8c1e309db8517d049093d8c39ee0f90e5c2be32a3d530f52da01ea14145f",
         "packages/lib/src/lib/core/FaxiosError.ts": "5dc4223e4936023e491b3ac02e674425149cec5961eb0b47972f7fd1c73d0d51",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
-        "packages/lib/src/lib/core/define.ts": "32084e7bff886ffcda8747e29759814c6cdaea64b65164e4ab954269a82786a6",
+        "packages/lib/src/lib/core/define.ts": "5704f63cdcb15a9e7a43bb17d96979018a26f794ea902c3dab4d01d09bf371ae",
         "packages/lib/src/lib/core/dispatchRequest.ts": "6546e1b5dba1777fa3928648ab3a683f05133b4bab7462a6b27afe77f3e52434",
         "packages/lib/src/lib/core/mergeConfig.ts": "3a4924b40b818557561ff7534bb70b283595e3a0069ce439e1ac1a771842fcff",
-        "packages/lib/src/lib/core/route.ts": "6389568e27e30f3e637d23cc0eea952c2dc90d2720fe77999a56585896635abc",
-        "packages/lib/src/lib/faxios.ts": "28fad88b006fa92d298ea83111cd0ce910043b538b2f46d6d015708852088e67",
+        "packages/lib/src/lib/core/route.ts": "aff89de9d5f6d2b6caf7b6a5f2dafcade7f37870908b7165b59de93e260ed92d",
+        "packages/lib/src/lib/faxios.ts": "e5df1fc176509a809c3cb38904296bb615c453b5503907286e2a8569ade075b4",
         "packages/lib/src/lib/helpers/composeSignals.ts": "80edec1ecad4ceaa906c394ad8da36963a1279c20bf74f6a5ccf5654794a8a74",
         "packages/lib/src/lib/plugins/authBearer.ts": "43780df44e161c7df77fa5fdc6427cad2dd25e27b7f7b2d2f5619cab6bdfb0de",
         "packages/lib/src/lib/plugins/definePlugin.ts": "5ed83646b5e2b3267a36ed1bb230443b4a0bd8150c579a522e6f68c35ed55b54",
         "packages/lib/src/lib/plugins/retry.ts": "bdbaa71762723547278d474eea9ba7fe7581a74153cba9a6d52cb29beb57e006",
         "packages/lib/src/lib/plugins/timing.ts": "0738baf01e0e9aa59926df9117637fba3c8a2cb292fe6931ec95f5af4fd6d701",
-        "packages/lib/src/lib/types.ts": "b3d2b8486c0cec6f16159f26acc6712a5c3543c003a97dcac359767417510511",
+        "packages/lib/src/lib/types.ts": "9f39c85e6706eb7cb19d766e1197e611a172ccdf67d16ed5cb53e58239254002",
         "packages/tests/unit/api.test.ts": "1301982880889f06462cdd43a1f5a84ac18d60bf72e2b393105a2d9737f58425",
         "packages/tests/unit/core/middleware.test.ts": "1aa48e88f858dc4547aad7429ddca53792289f4ec0ea4ecfc784e48d651552d6",
         "packages/tests/unit/plugins/authBearer.test.ts": "c2f59575debb9e64e11809bdf57d22d811e2abfb480d4a8a20f9af128a4ef7cd",
@@ -33,22 +33,22 @@
         "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "213d0244cb46ec572237eddf2a1bbef7db1e9579",
+      "head": "336e0938093c52368b413338e4102d88be95ba88",
       "outcome": "updated",
-      "reason": "Added the binary download pattern (get<ArrayBuffer>, responseType arraybuffer, maxContentLength) and common mistake #10 (#149).",
+      "reason": "SKILL.md:73 now says getUri builds the URL from baseURL, url and params and does not substitute pathParams (#147). The JSDoc states the same rules the skill already gives.",
       "evidence": [
-        "intent validate passes; test:docs-examples 166 passed on this layer after rebasing onto main. #158's fetch.ts changes don't touch response resolution, so the per-value responseType check in skill_spec.md Batch 3 still holds."
+        "Faxios.ts getUri runs only mergeConfig, buildFullPath and buildURL. JSDoc checked against substitutePathParams.ts and dispatchRequest.ts. intent validate passes after rebasing onto main."
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "0617f66b5c21e4477c112a36081282ba0253d0002f088d6d3963de7434084ce7",
+      "fingerprint": "53116428ad47cc8421d357d783c5a7508fc10ab42f2c07292cfaa87be02879d9",
       "snapshot": {
         "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
         "_artifacts/domain_map.yaml": "13db30bd0c6322ccf6d26d5415d75e83df947d7c612cd189f821f94d1a033516",
         "_artifacts/skill_spec.md": "312bcae6aa323ecac6dbd371fe7d5833412be0043d56727b6c12e70acbd939c3",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
-        "packages/lib/package.json": "bab9b7aa7e816e0b404f886de644b409e3ede4f2b5d96f678341938124801c1e",
-        "packages/lib/skills/configure-requests/SKILL.md": "45efc1aab4f443e9b344336d7451b61cdead907d5c40ea08b127d9318bb53177",
+        "packages/lib/package.json": "497b6c44285f1cb610bece5b0cea6a955089e0cc365429b4722f8b4b0077276f",
+        "packages/lib/skills/configure-requests/SKILL.md": "f567b7646eef0a2bff9329b90a380404554c46e80aae15b21657d965b350efa7",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b8f4ce801ac34ab1f808d35cbc667869d582721f3996a811fb2b035eefd6a2ca",
         "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
@@ -56,17 +56,17 @@
         "packages/lib/src/lib/core/Faxios.ts": "a75b8c1e309db8517d049093d8c39ee0f90e5c2be32a3d530f52da01ea14145f",
         "packages/lib/src/lib/core/FaxiosError.ts": "5dc4223e4936023e491b3ac02e674425149cec5961eb0b47972f7fd1c73d0d51",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
-        "packages/lib/src/lib/core/define.ts": "32084e7bff886ffcda8747e29759814c6cdaea64b65164e4ab954269a82786a6",
+        "packages/lib/src/lib/core/define.ts": "5704f63cdcb15a9e7a43bb17d96979018a26f794ea902c3dab4d01d09bf371ae",
         "packages/lib/src/lib/core/dispatchRequest.ts": "6546e1b5dba1777fa3928648ab3a683f05133b4bab7462a6b27afe77f3e52434",
         "packages/lib/src/lib/core/mergeConfig.ts": "3a4924b40b818557561ff7534bb70b283595e3a0069ce439e1ac1a771842fcff",
-        "packages/lib/src/lib/core/route.ts": "6389568e27e30f3e637d23cc0eea952c2dc90d2720fe77999a56585896635abc",
-        "packages/lib/src/lib/faxios.ts": "28fad88b006fa92d298ea83111cd0ce910043b538b2f46d6d015708852088e67",
+        "packages/lib/src/lib/core/route.ts": "aff89de9d5f6d2b6caf7b6a5f2dafcade7f37870908b7165b59de93e260ed92d",
+        "packages/lib/src/lib/faxios.ts": "e5df1fc176509a809c3cb38904296bb615c453b5503907286e2a8569ade075b4",
         "packages/lib/src/lib/helpers/composeSignals.ts": "80edec1ecad4ceaa906c394ad8da36963a1279c20bf74f6a5ccf5654794a8a74",
         "packages/lib/src/lib/plugins/authBearer.ts": "43780df44e161c7df77fa5fdc6427cad2dd25e27b7f7b2d2f5619cab6bdfb0de",
         "packages/lib/src/lib/plugins/definePlugin.ts": "5ed83646b5e2b3267a36ed1bb230443b4a0bd8150c579a522e6f68c35ed55b54",
         "packages/lib/src/lib/plugins/retry.ts": "bdbaa71762723547278d474eea9ba7fe7581a74153cba9a6d52cb29beb57e006",
         "packages/lib/src/lib/plugins/timing.ts": "0738baf01e0e9aa59926df9117637fba3c8a2cb292fe6931ec95f5af4fd6d701",
-        "packages/lib/src/lib/types.ts": "b3d2b8486c0cec6f16159f26acc6712a5c3543c003a97dcac359767417510511",
+        "packages/lib/src/lib/types.ts": "9f39c85e6706eb7cb19d766e1197e611a172ccdf67d16ed5cb53e58239254002",
         "packages/tests/unit/api.test.ts": "1301982880889f06462cdd43a1f5a84ac18d60bf72e2b393105a2d9737f58425",
         "packages/tests/unit/core/middleware.test.ts": "1aa48e88f858dc4547aad7429ddca53792289f4ec0ea4ecfc784e48d651552d6",
         "packages/tests/unit/plugins/authBearer.test.ts": "c2f59575debb9e64e11809bdf57d22d811e2abfb480d4a8a20f9af128a4ef7cd",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "213d0244cb46ec572237eddf2a1bbef7db1e9579",
-      "outcome": "updated",
-      "reason": "Failure mode #10 added to domain_map.yaml; skill_spec.md inventory 9 to 10 and Batch 3 entry.",
+      "head": "336e0938093c52368b413338e4102d88be95ba88",
+      "outcome": "no-change",
+      "reason": "JSDoc, packaging and the getUri correction need no planning record change.",
       "evidence": [
-        "domain_map.yaml failure_modes entry and skill_spec.md row 10 in this layer."
+        "The skill tree and spec don't cover package contents; the getUri line is a wording fix."
       ]
     },
     "source:knip.json": {
@@ -94,15 +94,15 @@
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
-      "fingerprint": "d415cc5eabc0d81d89b62181d1dd72e980b3a87a179c9d377bb0c4ad695a72f2",
+      "fingerprint": "cf120ecba9096ae9dd176488405b0cdc14de5547cd8e592b6adb6e8ce11a18d4",
       "snapshot": {
-        "PRE_RELEASE_CHANGELOG.md": "042d7a29843281d762fd9372babefa677428a83539085cdc9e3341be79c50688"
+        "PRE_RELEASE_CHANGELOG.md": "9abef4eb318f10a9550fee6ba047a9fec187e5e883e65bfbabb74f266fc0c0e7"
       },
-      "head": "213d0244cb46ec572237eddf2a1bbef7db1e9579",
+      "head": "336e0938093c52368b413338e4102d88be95ba88",
       "outcome": "no-change",
-      "reason": "Adds the #149 Documentation line only.",
+      "reason": "Adds the #147 Features entry above main's #160 Fixes entry.",
       "evidence": [
-        "One Documentation bullet under the #146 and #148 lines."
+        "One Features bullet."
       ]
     },
     "source:ECOSYSTEM.md": {
@@ -619,6 +619,42 @@
       "reason": "New runtime test for middleware registered after define(); confirms the SKILL.md statement.",
       "evidence": [
         "define.test.ts: 14 passed."
+      ]
+    },
+    "source:packages/docs/pages/advanced/request-method-aliases.md": {
+      "fingerprint": "0ce82886b160013461818666b838aef152cdfb46db581af3262553b3f603dfe3",
+      "snapshot": {
+        "packages/docs/pages/advanced/request-method-aliases.md": "26f82afb1b3c48f7ba8cbdd778b08b6d64d1219f5ddb016b2bc69812fd16301f"
+      },
+      "head": "336e0938093c52368b413338e4102d88be95ba88",
+      "outcome": "updated",
+      "reason": "Skill getUri line matches the corrected docs.",
+      "evidence": [
+        "request-method-aliases.md:126 and SKILL.md:73 both say pathParams are not substituted."
+      ]
+    },
+    "source:packages/lib/tsconfig.json": {
+      "fingerprint": "a78a70cabef4c9696cd44a2774865d4b92b99a1a8ee299d82376c9c8c374a592",
+      "snapshot": {
+        "packages/lib/tsconfig.json": "5caf44eec350cae8bd6106d634d41d29f3c3cb15fbff0e0c58acbb8f4cfc4478"
+      },
+      "head": "336e0938093c52368b413338e4102d88be95ba88",
+      "outcome": "out-of-scope",
+      "reason": "Adds declarationMap: true; build output, not request behaviour.",
+      "evidence": [
+        "One compilerOptions line."
+      ]
+    },
+    "source:packages/tests/module/esm/tests/source-maps.module.test.ts": {
+      "fingerprint": "f7e994915e41577c5efc475b5338b69d43e97eabdf1de5ce5b0c53623f7db0f9",
+      "snapshot": {
+        "packages/tests/module/esm/tests/source-maps.module.test.ts": "575ebec9f2c74080e5d258e61d63d687729158f4605dbc3b96d45a8600b06774"
+      },
+      "head": "336e0938093c52368b413338e4102d88be95ba88",
+      "outcome": "out-of-scope",
+      "reason": "Module-suite test that shipped maps resolve; packaging, not request behaviour.",
+      "evidence": [
+        "Asserts every .d.ts has a .d.ts.map, every map source resolves in the installed package, and JSDoc precedes pathParams."
       ]
     }
   }
