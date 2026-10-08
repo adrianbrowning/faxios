@@ -39,7 +39,9 @@
   "ignoreBinaries": ["sha256sum"],
   "ignoreDependencies": [
     "@vitest/browser",
-    "@ai-hero/sandcastle"
+    "@ai-hero/sandcastle",
+    "@tanstack/intent",
+    "zod"
   ],
   "ignoreExportsUsedInFile": true
 }
