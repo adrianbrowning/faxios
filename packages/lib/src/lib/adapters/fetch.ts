@@ -58,6 +58,14 @@ const DEFAULT_CHUNK_SIZE = 64 * 1024;
 
 const { isFunction } = utils;
 
+// Server runtimes default User-Agent to their own (e.g. "node"), so name faxios there.
+// Browsers send their own User-Agent; setting one makes every cross-origin request
+// need a CORS preflight that most APIs don't allow.
+const setsUserAgent = !platform.hasStandardBrowserEnv && !platform.hasStandardBrowserWebWorkerEnv;
+const applyDefaultUserAgent = (headers: FaxiosRequestHeaders): void => {
+  if (setsUserAgent) headers.set("User-Agent", "faxios/" + VERSION, false);
+};
+
 /**
  * Encode a UTF-8 string to a Latin-1 byte string for use with btoa().
  * This is a modern replacement for the deprecated unescape(encodeURIComponent(str)) pattern.
@@ -665,8 +673,7 @@ const factory = (env: Record<string, unknown>) => {
 
       cleanFormDataContentType(data, headers);
 
-      // Set User-Agent header if not already set (fetch defaults to 'node' in Node.js)
-      headers.set("User-Agent", "faxios/" + VERSION, false);
+      applyDefaultUserAgent(headers);
 
       const serializedHeaders = toByteStringHeaderObject(headers.normalize(false));
 

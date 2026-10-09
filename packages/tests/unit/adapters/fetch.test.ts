@@ -1267,6 +1267,38 @@ describe.runIf(typeof fetch === "function")(
       });
     });
 
+    describe("fetch adapter - typed-array bodies", () => {
+      const echoBody = async () => startHTTPServer(
+        async (req, res) => {
+          const chunks: Array<Buffer> = [];
+          for await (const chunk of req) chunks.push(chunk as Buffer);
+          res.setHeader("Content-Type", "application/json");
+          res.end(JSON.stringify({ body: Buffer.concat(chunks).toString() }));
+        },
+        { port: SERVER_PORT }
+      );
+      const backing = new TextEncoder().encode("HEADERpayloadTRAILER");
+
+      it.each([
+        [ "an offset subarray", backing.subarray(6, 13) ],
+        [ "a DataView", new DataView(backing.buffer, 6, 7) ],
+      ])("should send only the bytes of %s, not its whole buffer", async (_label, view) => {
+        const server = await echoBody();
+
+        try {
+          const { data } = await fetchFaxios.post<{ body: string; }>(
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
+            view
+          );
+
+          assert.strictEqual(data.body, "payload");
+        }
+        finally {
+          await stopHTTPServer(server);
+        }
+      });
+    });
+
     describe("fetch adapter - User-Agent header", () => {
       it("should set User-Agent header to faxios/<version> by default", async () => {
         const server = await startHTTPServer(

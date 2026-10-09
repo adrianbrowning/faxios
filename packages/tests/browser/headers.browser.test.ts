@@ -138,4 +138,15 @@ describe("headers (vitest browser)", () => {
     expect(headers.get("xBar")).toBe("bar");
     expect(headers.get("xBaz")).toBe("baz");
   });
+
+  it("should leave User-Agent to the browser", async () => {
+    using mock = installFetchMock();
+
+    await faxios.get("/foo");
+
+    // Read the init faxios passed, not the Request: some browsers drop User-Agent from a Request.
+    const init = mock.fetch.mock.calls[0]![1] as RequestInit;
+    const names = Object.keys(init.headers as Record<string, string>).map(name => name.toLowerCase());
+    expect(names).not.toContain("user-agent");
+  });
 });
