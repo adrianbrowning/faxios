@@ -18,7 +18,7 @@
     "test:smoke:bun": "bun test --cwd smoke/bun",
     "test:module:esm": "npm --prefix module/esm run test:module:esm",
     "lint": "pnpm lint:ts && pnpm lint:esl && pnpm lint:fix",
-    "lint:ts": "tsc --noEmit -p tsconfig.check.json && tsc --noEmit -p browser/tsconfig.json && node scripts/check-ts-self-types.ts && node scripts/check-expect-error.ts",
+    "lint:ts": "tsc --noEmit -p tsconfig.check.json && tsc --noEmit -p browser/tsconfig.json && node scripts/check-ts-self-types.ts && node scripts/check-expect-error.ts && node scripts/check-license.ts",
     "lint:esl": "eslint --config eslint.config.ts \"**/*.{j,t}s{,x}\" --cache --cache-strategy content --max-warnings=0",
     "lint:s": "eslint --config eslint.config.style.ts \"**/*.{j,t}s{,x}\" --cache --cache-strategy content --max-warnings=0",
     "lint:fix": "pnpm lint:s --fix",

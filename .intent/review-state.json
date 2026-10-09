@@ -90,15 +90,15 @@
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
-      "fingerprint": "e423223e70388b7765deb6052a3e65832eb67a28d029172215a68ea8d4c7f9c0",
+      "fingerprint": "8e50ea75f465c431cdf745f3af1e30395434e1d4a62a06e1b780dee699a8aa67",
       "snapshot": {
-        "PRE_RELEASE_CHANGELOG.md": "8e30ed4025ce66d88d9cd84769a2ea7d40474d6c6d6bae5af91627f4daa945ad"
+        "PRE_RELEASE_CHANGELOG.md": "d772c08515335ac930b3575c968b00f31ee6459768b952137636619c7d3c2af5"
       },
-      "head": "492ee34ef92bec5f9570b66e6fe8af2713b61eb8",
+      "head": "a9398723da9fce39c0e36db164a98f742c0b2e9e",
       "outcome": "no-change",
-      "reason": "Release 0.2.0: version bump, changelog move and a VERSION test. The skill only gets the new library_version; its guidance is unchanged.",
+      "reason": "Adds the #160 Fixes entry only.",
       "evidence": [
-        "Changed: PRE_RELEASE_CHANGELOG.md at 492ee34ef92bec5f9570b66e6fe8af2713b61eb8"
+        "One Fixes bullet about the missing LICENSE in 0.2.0."
       ]
     },
     "source:ECOSYSTEM.md": {
@@ -507,6 +507,54 @@
       "reason": "Release 0.2.0: version bump, changelog move and a VERSION test. The skill only gets the new library_version; its guidance is unchanged.",
       "evidence": [
         "Changed: packages/tests/unit/version.test.ts at 492ee34ef92bec5f9570b66e6fe8af2713b61eb8"
+      ]
+    },
+    "source:.github/workflows/publish.yml": {
+      "fingerprint": "7014ad51739681b76764c5a753e122bdc786dd4ac331d912780f2990b3fd0680",
+      "snapshot": {
+        ".github/workflows/publish.yml": "e4c84e2af5f588891fa83bfad393e027e483ba805bc38dba4c62acde65c5cad1"
+      },
+      "head": "a9398723da9fce39c0e36db164a98f742c0b2e9e",
+      "outcome": "out-of-scope",
+      "reason": "Adds a pre-publish LICENSE check step; release tooling, not request behaviour.",
+      "evidence": [
+        "One new step runs packages/tests/scripts/check-license.ts before npm stage publish."
+      ]
+    },
+    "source:LICENSE": {
+      "fingerprint": "d15b1e68c7d6217519e99811368d7b67b28b595ca809ad9aa9e35d98ed8f2300",
+      "snapshot": {
+        "LICENSE": "01b0df692dcf6458ef5c83bac4092067b92ea517a716c7f94884cf0bbb428be0"
+      },
+      "head": "a9398723da9fce39c0e36db164a98f742c0b2e9e",
+      "outcome": "out-of-scope",
+      "reason": "Adds the fork copyright line under the axios notice; licensing, not API guidance.",
+      "evidence": [
+        "One added line: Copyright (c) 2026-present Adrian Elton-Browning."
+      ]
+    },
+    "source:packages/lib/LICENSE": {
+      "fingerprint": "eff26c132cbb116ceb954d969cf01ac1ba487b92099b50dbe772465b358f46f8",
+      "snapshot": {
+        "packages/lib/LICENSE": "01b0df692dcf6458ef5c83bac4092067b92ea517a716c7f94884cf0bbb428be0"
+      },
+      "head": "a9398723da9fce39c0e36db164a98f742c0b2e9e",
+      "outcome": "out-of-scope",
+      "reason": "Committed copy of the root LICENSE so npm includes it in the tarball; no skill guidance depends on it.",
+      "evidence": [
+        "Byte-identical to the root LICENSE (cmp); npm pack lists package/LICENSE."
+      ]
+    },
+    "source:packages/tests/scripts/check-license.ts": {
+      "fingerprint": "3c171563e784b752932400478e9da451391f6dc342d8acc1852abc29d52133f0",
+      "snapshot": {
+        "packages/tests/scripts/check-license.ts": "e7ff8320dcb7e56ddbf04bfa565b57f993c100867fc6db77fb3f2ac8085f052f"
+      },
+      "head": "c76a2f606f7800c3d09cb1fdbbfc326ef049a7fd",
+      "outcome": "no-change",
+      "reason": "check-license.ts packs with the npm on PATH, the same npm publish.yml runs; test tooling, no skill impact.",
+      "evidence": [
+        "Changed: packages/tests/scripts/check-license.ts at c76a2f606f7800c3d09cb1fdbbfc326ef049a7fd"
       ]
     }
   }

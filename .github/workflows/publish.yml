@@ -41,6 +41,10 @@ jobs:
       - name: Build project
         run: pnpm run build
 
+      # npm adds LICENSE only from packages/lib, so 0.2.0 shipped without it (#160).
+      - name: Check the package includes LICENSE
+        run: node packages/tests/scripts/check-license.ts
+
       - name: Publish to NPM
         working-directory: packages/lib
         run: npm stage publish --provenance --access public
