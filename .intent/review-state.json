@@ -3,7 +3,7 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "94cfcd28c996aae12c52a042be24421b4346211b4deea8b5e4c0e1a67c2097c4",
+      "fingerprint": "ea8011f0ba941922bf25cf0331fa2c3e63226cd818e48bff286265f20c797f1d",
       "snapshot": {
         "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
         "packages/lib/package.json": "f43c6ffeb19c945355f5c65529d79406440543b45aed6e536c5cfd975924c425",
@@ -11,7 +11,7 @@
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b0c64435f72ba538e6eaac024fefbb150b43daffdd8434a108cce21d49dbfdf5",
         "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
-        "packages/lib/src/lib/adapters/fetch.ts": "b45d7f2c9492e142a7418a1c305fcceab65e03170c86f70ab33fca5583258dc9",
+        "packages/lib/src/lib/adapters/fetch.ts": "a42247b8e38e97ba6349d0f39b72f519a31cb8b5d7deb8a04bb1251bda5ed025",
         "packages/lib/src/lib/core/Faxios.ts": "a75b8c1e309db8517d049093d8c39ee0f90e5c2be32a3d530f52da01ea14145f",
         "packages/lib/src/lib/core/FaxiosError.ts": "5dc4223e4936023e491b3ac02e674425149cec5961eb0b47972f7fd1c73d0d51",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
@@ -31,15 +31,15 @@
         "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
         "packages/tests/unit/plugins/timing.test.ts": "a0cecdd2620fd5041cfd770ec51fa1ca5e8a71297feaa60129adc67822d84cb3"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
-      "outcome": "updated",
-      "reason": "Merged main (#141, #142): respectRetryAfter; header typing and precedence; lower-case method; authBearer origin wording and retry ordering; timing event fields; schema rejected body; retryOn and maxRetryAfter; new Faxios() lacks use/eject; interceptor porting rows.",
+      "head": "0c6a347b90800ae2b39744daedbc632b7976d762",
+      "outcome": "no-change",
+      "reason": "Fixes typed-array body bytes and drops User-Agent in browsers; the skill and planning records don't describe either, so their guidance is unchanged.",
       "evidence": [
-        "intent validate passes. Each added behaviour checked with a runtime script against the workspace build (see skill_spec.md batch 1 follow-up); type-only and doc-sourced items are marked there as not run."
+        "Changed: packages/lib/src/lib/adapters/fetch.ts at 0c6a347b90800ae2b39744daedbc632b7976d762"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "08cedc37d69256b3ad5d8008dfe2560a8fbb63bd322d544018d26de22bcca4d7",
+      "fingerprint": "d18430367cf7d131ef01d22ed55b362e9d32ec7479562a76f2d690238b79210f",
       "snapshot": {
         "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
         "_artifacts/domain_map.yaml": "00958a5157f4c2130db1d605c37a3c026206865246f138b59b88e2237675efe0",
@@ -50,7 +50,7 @@
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b0c64435f72ba538e6eaac024fefbb150b43daffdd8434a108cce21d49dbfdf5",
         "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
-        "packages/lib/src/lib/adapters/fetch.ts": "b45d7f2c9492e142a7418a1c305fcceab65e03170c86f70ab33fca5583258dc9",
+        "packages/lib/src/lib/adapters/fetch.ts": "a42247b8e38e97ba6349d0f39b72f519a31cb8b5d7deb8a04bb1251bda5ed025",
         "packages/lib/src/lib/core/Faxios.ts": "a75b8c1e309db8517d049093d8c39ee0f90e5c2be32a3d530f52da01ea14145f",
         "packages/lib/src/lib/core/FaxiosError.ts": "5dc4223e4936023e491b3ac02e674425149cec5961eb0b47972f7fd1c73d0d51",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
@@ -70,11 +70,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
         "packages/tests/unit/plugins/timing.test.ts": "a0cecdd2620fd5041cfd770ec51fa1ca5e8a71297feaa60129adc67822d84cb3"
       },
-      "head": "a8e5535730e2341b35e440b30b4367602c3297ae",
-      "outcome": "updated",
-      "reason": "skill_spec.md: clear() and synchronous are now attributed to migrating-from-interceptors.md and the instance API, not to a runtime script.",
+      "head": "0c6a347b90800ae2b39744daedbc632b7976d762",
+      "outcome": "no-change",
+      "reason": "Fixes typed-array body bytes and drops User-Agent in browsers; the skill and planning records don't describe either, so their guidance is unchanged.",
       "evidence": [
-        "Changed: _artifacts/skill_spec.md at a8e5535730e2341b35e440b30b4367602c3297ae"
+        "Changed: packages/lib/src/lib/adapters/fetch.ts at 0c6a347b90800ae2b39744daedbc632b7976d762"
       ]
     },
     "source:knip.json": {
@@ -90,15 +90,15 @@
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
-      "fingerprint": "2ce298938074cf25fee5fcbbbbf9ed24cc7d9ba4ab36476b08aea0212f8def74",
+      "fingerprint": "0a2a79d08dc1f2f259ed6a42212a6b6e5281e292ad191f1429c60ee18b8c2602",
       "snapshot": {
-        "PRE_RELEASE_CHANGELOG.md": "1e9ebd613bae7650c0d0598d3e5649894a153455f594a3d3d0f132ca10a21cc8"
+        "PRE_RELEASE_CHANGELOG.md": "4e7fd22535a982e996cf379682a1e4935dfdc3ff59305b710993267fb0149c18"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "head": "0c6a347b90800ae2b39744daedbc632b7976d762",
       "outcome": "no-change",
-      "reason": "Diff reviewed (M); consistent.",
+      "reason": "Fixes typed-array body bytes and drops User-Agent in browsers; the skill and planning records don't describe either, so their guidance is unchanged.",
       "evidence": [
-        "-L9/+L10 'Built-in plugins' entry: adds `respectRetryAfter` to the retry options list. Adds 'respectRetryAfter: false ignores Retry-After, so every retry waits the computed backoff and maxRetryAfter doesn't apply, for when another plugin, such as a queue throttle, honours the header itself' and the ref #140. SKILL.md L236-238 already covers this. +L13 is a blank line."
+        "Changed: PRE_RELEASE_CHANGELOG.md at 0c6a347b90800ae2b39744daedbc632b7976d762"
       ]
     },
     "source:ECOSYSTEM.md": {
@@ -411,6 +411,42 @@
       "reason": "Skill updated from this diff.",
       "evidence": [
         "Added rejected body on error.response.data for failed responseSchema. Diff review: +L15: 'A failed `responseSchema` keeps the rejected body on `error.response.data`'. The skill does not say where the rejected body lives (SKILL L129-133). The rest is consistent: +L11 onion `.use()` middleware plus built-in plugins; +L16 strictly typed headers; +L47..+L56 'Keep the instance it returns: only that value is typed with the plugin's options' with `import { retry } from \"@gcmdev/faxios/plugins/retry\"` (SKILL L213, L224-228)."
+      ]
+    },
+    "source:packages/lib/src/lib/defaults/index.ts": {
+      "fingerprint": "c19e5f39cc163909dde79b13935002d558839875181d268c60731d2428463aec",
+      "snapshot": {
+        "packages/lib/src/lib/defaults/index.ts": "2cc48e08a0223a34fafd96df8751ce30d4bd0fcdfa213ada966df063efe62b7c"
+      },
+      "head": "0c6a347b90800ae2b39744daedbc632b7976d762",
+      "outcome": "no-change",
+      "reason": "Fixes typed-array body bytes and drops User-Agent in browsers; the skill and planning records don't describe either, so their guidance is unchanged.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/defaults/index.ts at 0c6a347b90800ae2b39744daedbc632b7976d762"
+      ]
+    },
+    "source:packages/tests/browser/headers.browser.test.ts": {
+      "fingerprint": "9829d4f6bbfc714c56350d40145fca948e347e1a660ef4df47a1fc6a3c32416a",
+      "snapshot": {
+        "packages/tests/browser/headers.browser.test.ts": "ec56478293dd2e9f48121630e88f5fa77360d3efb1abf543e9cb554059f16d03"
+      },
+      "head": "0c6a347b90800ae2b39744daedbc632b7976d762",
+      "outcome": "no-change",
+      "reason": "Fixes typed-array body bytes and drops User-Agent in browsers; the skill and planning records don't describe either, so their guidance is unchanged.",
+      "evidence": [
+        "Changed: packages/tests/browser/headers.browser.test.ts at 0c6a347b90800ae2b39744daedbc632b7976d762"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch.test.ts": {
+      "fingerprint": "090f6c92ec99d44da3625c27b0a5c0943ed7c2a0595707a58023b5c30ef8cc14",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch.test.ts": "19c69bebebd28cd16aa2b5fa376be4156ae60128401925cf932d704963347442"
+      },
+      "head": "0c6a347b90800ae2b39744daedbc632b7976d762",
+      "outcome": "no-change",
+      "reason": "Fixes typed-array body bytes and drops User-Agent in browsers; the skill and planning records don't describe either, so their guidance is unchanged.",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch.test.ts at 0c6a347b90800ae2b39744daedbc632b7976d762"
       ]
     }
   }
