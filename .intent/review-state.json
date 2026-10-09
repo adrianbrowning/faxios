@@ -3,7 +3,7 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "ea8011f0ba941922bf25cf0331fa2c3e63226cd818e48bff286265f20c797f1d",
+      "fingerprint": "89b97eb49f6ff7409184910835f75bfd8f13befed4fee0599e261edf265360e2",
       "snapshot": {
         "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
         "packages/lib/package.json": "f43c6ffeb19c945355f5c65529d79406440543b45aed6e536c5cfd975924c425",
@@ -11,7 +11,7 @@
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b0c64435f72ba538e6eaac024fefbb150b43daffdd8434a108cce21d49dbfdf5",
         "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
-        "packages/lib/src/lib/adapters/fetch.ts": "a42247b8e38e97ba6349d0f39b72f519a31cb8b5d7deb8a04bb1251bda5ed025",
+        "packages/lib/src/lib/adapters/fetch.ts": "620e5aed56ce7f7891575317dbd17c306377d8a525787ab37c73172c6b16743a",
         "packages/lib/src/lib/core/Faxios.ts": "a75b8c1e309db8517d049093d8c39ee0f90e5c2be32a3d530f52da01ea14145f",
         "packages/lib/src/lib/core/FaxiosError.ts": "5dc4223e4936023e491b3ac02e674425149cec5961eb0b47972f7fd1c73d0d51",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
@@ -31,15 +31,15 @@
         "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
         "packages/tests/unit/plugins/timing.test.ts": "a0cecdd2620fd5041cfd770ec51fa1ca5e8a71297feaa60129adc67822d84cb3"
       },
-      "head": "0c6a347b90800ae2b39744daedbc632b7976d762",
+      "head": "a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab",
       "outcome": "no-change",
-      "reason": "Fixes typed-array body bytes and drops User-Agent in browsers; the skill and planning records don't describe either, so their guidance is unchanged.",
+      "reason": "Body-integrity fixes (typed-array views, Node stream chunks) and no User-Agent in browsers; the skill and planning records don't describe these, so guidance is unchanged.",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch.ts at 0c6a347b90800ae2b39744daedbc632b7976d762"
+        "Changed: packages/lib/src/lib/adapters/fetch.ts at a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "d18430367cf7d131ef01d22ed55b362e9d32ec7479562a76f2d690238b79210f",
+      "fingerprint": "cf98f43552096319c61dec0c244c822274bfcdbecf6932f730d8ad2d5e7e4a46",
       "snapshot": {
         "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
         "_artifacts/domain_map.yaml": "00958a5157f4c2130db1d605c37a3c026206865246f138b59b88e2237675efe0",
@@ -50,7 +50,7 @@
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b0c64435f72ba538e6eaac024fefbb150b43daffdd8434a108cce21d49dbfdf5",
         "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
-        "packages/lib/src/lib/adapters/fetch.ts": "a42247b8e38e97ba6349d0f39b72f519a31cb8b5d7deb8a04bb1251bda5ed025",
+        "packages/lib/src/lib/adapters/fetch.ts": "620e5aed56ce7f7891575317dbd17c306377d8a525787ab37c73172c6b16743a",
         "packages/lib/src/lib/core/Faxios.ts": "a75b8c1e309db8517d049093d8c39ee0f90e5c2be32a3d530f52da01ea14145f",
         "packages/lib/src/lib/core/FaxiosError.ts": "5dc4223e4936023e491b3ac02e674425149cec5961eb0b47972f7fd1c73d0d51",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
@@ -70,11 +70,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
         "packages/tests/unit/plugins/timing.test.ts": "a0cecdd2620fd5041cfd770ec51fa1ca5e8a71297feaa60129adc67822d84cb3"
       },
-      "head": "0c6a347b90800ae2b39744daedbc632b7976d762",
+      "head": "a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab",
       "outcome": "no-change",
-      "reason": "Fixes typed-array body bytes and drops User-Agent in browsers; the skill and planning records don't describe either, so their guidance is unchanged.",
+      "reason": "Body-integrity fixes (typed-array views, Node stream chunks) and no User-Agent in browsers; the skill and planning records don't describe these, so guidance is unchanged.",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch.ts at 0c6a347b90800ae2b39744daedbc632b7976d762"
+        "Changed: packages/lib/src/lib/adapters/fetch.ts at a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab"
       ]
     },
     "source:knip.json": {
@@ -90,15 +90,15 @@
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
-      "fingerprint": "0a2a79d08dc1f2f259ed6a42212a6b6e5281e292ad191f1429c60ee18b8c2602",
+      "fingerprint": "592c17e41b71c45a5d40aa0816c5323eecadf4ba548c53b6ee54c66022349066",
       "snapshot": {
-        "PRE_RELEASE_CHANGELOG.md": "4e7fd22535a982e996cf379682a1e4935dfdc3ff59305b710993267fb0149c18"
+        "PRE_RELEASE_CHANGELOG.md": "0f35b11e91395913de1db86700e3239e05a9e00188a61e9637cae64fe25500ac"
       },
-      "head": "0c6a347b90800ae2b39744daedbc632b7976d762",
+      "head": "a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab",
       "outcome": "no-change",
-      "reason": "Fixes typed-array body bytes and drops User-Agent in browsers; the skill and planning records don't describe either, so their guidance is unchanged.",
+      "reason": "Body-integrity fixes (typed-array views, Node stream chunks) and no User-Agent in browsers; the skill and planning records don't describe these, so guidance is unchanged.",
       "evidence": [
-        "Changed: PRE_RELEASE_CHANGELOG.md at 0c6a347b90800ae2b39744daedbc632b7976d762"
+        "Changed: PRE_RELEASE_CHANGELOG.md at a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab"
       ]
     },
     "source:ECOSYSTEM.md": {
@@ -438,15 +438,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch.test.ts": {
-      "fingerprint": "090f6c92ec99d44da3625c27b0a5c0943ed7c2a0595707a58023b5c30ef8cc14",
+      "fingerprint": "984b73b4535cd2172a2108651761e07b50d3129f1790b59942c001a5e0f73918",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch.test.ts": "19c69bebebd28cd16aa2b5fa376be4156ae60128401925cf932d704963347442"
+        "packages/tests/unit/adapters/fetch.test.ts": "a190caf1619e21225b69773b697a4226e8e2e4f63a6dca1475d18390cc9baf66"
       },
-      "head": "0c6a347b90800ae2b39744daedbc632b7976d762",
+      "head": "a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab",
       "outcome": "no-change",
-      "reason": "Fixes typed-array body bytes and drops User-Agent in browsers; the skill and planning records don't describe either, so their guidance is unchanged.",
+      "reason": "Body-integrity fixes (typed-array views, Node stream chunks) and no User-Agent in browsers; the skill and planning records don't describe these, so guidance is unchanged.",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch.test.ts at 0c6a347b90800ae2b39744daedbc632b7976d762"
+        "Changed: packages/tests/unit/adapters/fetch.test.ts at a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab"
       ]
     }
   }

@@ -1267,7 +1267,7 @@ describe.runIf(typeof fetch === "function")(
       });
     });
 
-    describe("fetch adapter - typed-array bodies", () => {
+    describe("fetch adapter - request body bytes", () => {
       const echoBody = async () => startHTTPServer(
         async (req, res) => {
           const chunks: Array<Buffer> = [];
@@ -1292,6 +1292,24 @@ describe.runIf(typeof fetch === "function")(
           );
 
           assert.strictEqual(data.body, "payload");
+        }
+        finally {
+          await stopHTTPServer(server);
+        }
+      });
+
+      it("should send every chunk of a Node stream body", async () => {
+        const server = await echoBody();
+        const chunks = [ "ab0", "ab1", "ab2" ];
+
+        try {
+          const { data } = await fetchFaxios.post<{ body: string; }>(
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
+            stream.Readable.from(chunks),
+            { headers: { "Content-Length": 9 } }
+          );
+
+          assert.strictEqual(data.body, "ab0ab1ab2");
         }
         finally {
           await stopHTTPServer(server);

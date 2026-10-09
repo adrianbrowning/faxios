@@ -175,6 +175,20 @@ const factory = (env: Record<string, unknown>) => {
           ).arrayBuffer()
         );
 
+  // A Node stream body reaches fetch twice: once in `new Request(url, init)` and again in
+  // `fetch(request, init)`. undici (Node 26.11+) starts reading an async iterable in both,
+  // so the first chunk goes to the discarded copy. One web stream is read only once.
+  // Web stream bodies must yield bytes, so string chunks (e.g. `Readable.from(["a"])`) are encoded.
+  const from = (ReadableStream as { from?: (source: unknown) => unknown; } | undefined)?.from;
+  const streamFrom = typeof from === "function" ? from.bind(ReadableStream) : undefined;
+  async function* toByteChunks(source: AsyncIterable<unknown>) {
+    for await (const chunk of source) yield typeof chunk === "string" ? await encodeText(chunk) : chunk;
+  }
+  const toWebStream = (body: unknown): unknown =>
+    (streamFrom && utils.isStream(body) && !utils.isFormData(body)
+      ? streamFrom(toByteChunks(body as AsyncIterable<unknown>))
+      : body);
+
   const supportsRequestStream =
     isRequestSupported &&
     isReadableStreamSupported &&
@@ -680,7 +694,7 @@ const factory = (env: Record<string, unknown>) => {
       // Browsers auto-add "text/plain;charset=UTF-8" for string bodies when no Content-Type is set.
       // Encoding as Uint8Array prevents the browser from injecting a content-type.
       // Case-insensitive check: toByteStringHeaderObject may normalize to lowercase.
-      data = await encodeBodyIfNeeded(data, serializedHeaders, encodeText);
+      data = toWebStream(await encodeBodyIfNeeded(data, serializedHeaders, encodeText));
 
       const resolvedOptions = {
         ...fetchOptions,
