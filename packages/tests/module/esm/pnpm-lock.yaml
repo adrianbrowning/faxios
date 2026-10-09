@@ -35,7 +35,7 @@ packages:
 
   '@gcmdev/faxios@file:../../faxios.tgz':
     resolution: {integrity: sha512-UHmLHJqCH/Y/ozqvbTbDRptNvw3bZA9Zz6M502r8DjG3+alC1cM667HB/2zy7mJ3IUrLfzUMq4K7FlPR18eT7Q==, tarball: file:../../faxios.tgz}
-    version: 0.1.0
+    version: 0.2.0
     engines: {node: '>=24.0.0', pnpm: '>=10.0.0'}
 
   '@jridgewell/sourcemap-codec@1.5.5':

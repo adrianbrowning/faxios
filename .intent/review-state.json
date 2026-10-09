@@ -3,11 +3,11 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "89b97eb49f6ff7409184910835f75bfd8f13befed4fee0599e261edf265360e2",
+      "fingerprint": "19e9a542ba9c51c4b39564d10222d32b74c012c6f1620dd83b92bc4aa4400b6c",
       "snapshot": {
         "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
-        "packages/lib/package.json": "f43c6ffeb19c945355f5c65529d79406440543b45aed6e536c5cfd975924c425",
-        "packages/lib/skills/configure-requests/SKILL.md": "d99e4f1b788a6f484df346b5f569b18e1fa4a7401b9004b2e28265bf655c9aa2",
+        "packages/lib/package.json": "bab9b7aa7e816e0b404f886de644b409e3ede4f2b5d96f678341938124801c1e",
+        "packages/lib/skills/configure-requests/SKILL.md": "990d89feab5303dc3ed4420bb562464654c6651f5dcf78c0c62a19eb2c2f03a1",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b0c64435f72ba538e6eaac024fefbb150b43daffdd8434a108cce21d49dbfdf5",
         "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
@@ -31,22 +31,22 @@
         "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
         "packages/tests/unit/plugins/timing.test.ts": "a0cecdd2620fd5041cfd770ec51fa1ca5e8a71297feaa60129adc67822d84cb3"
       },
-      "head": "a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab",
+      "head": "492ee34ef92bec5f9570b66e6fe8af2713b61eb8",
       "outcome": "no-change",
-      "reason": "Body-integrity fixes (typed-array views, Node stream chunks) and no User-Agent in browsers; the skill and planning records don't describe these, so guidance is unchanged.",
+      "reason": "Release 0.2.0: version bump, changelog move and a VERSION test. The skill only gets the new library_version; its guidance is unchanged.",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch.ts at a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab"
+        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md at 492ee34ef92bec5f9570b66e6fe8af2713b61eb8"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "cf98f43552096319c61dec0c244c822274bfcdbecf6932f730d8ad2d5e7e4a46",
+      "fingerprint": "ec1c0320c852fde7b1ae6c2c572e30f66cb7747dc2424b3970c7afeed9b6c556",
       "snapshot": {
         "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
         "_artifacts/domain_map.yaml": "00958a5157f4c2130db1d605c37a3c026206865246f138b59b88e2237675efe0",
         "_artifacts/skill_spec.md": "62d8f121b8f5ed2d196ff095a17686fbdb205cd87bef7576845f8263b5905e70",
         "_artifacts/skill_tree.yaml": "42d72e7212b31827fade121697efb94dd1751d179bd76315722e017e5e66538e",
-        "packages/lib/package.json": "f43c6ffeb19c945355f5c65529d79406440543b45aed6e536c5cfd975924c425",
-        "packages/lib/skills/configure-requests/SKILL.md": "d99e4f1b788a6f484df346b5f569b18e1fa4a7401b9004b2e28265bf655c9aa2",
+        "packages/lib/package.json": "bab9b7aa7e816e0b404f886de644b409e3ede4f2b5d96f678341938124801c1e",
+        "packages/lib/skills/configure-requests/SKILL.md": "990d89feab5303dc3ed4420bb562464654c6651f5dcf78c0c62a19eb2c2f03a1",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b0c64435f72ba538e6eaac024fefbb150b43daffdd8434a108cce21d49dbfdf5",
         "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
@@ -70,11 +70,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
         "packages/tests/unit/plugins/timing.test.ts": "a0cecdd2620fd5041cfd770ec51fa1ca5e8a71297feaa60129adc67822d84cb3"
       },
-      "head": "a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab",
+      "head": "492ee34ef92bec5f9570b66e6fe8af2713b61eb8",
       "outcome": "no-change",
-      "reason": "Body-integrity fixes (typed-array views, Node stream chunks) and no User-Agent in browsers; the skill and planning records don't describe these, so guidance is unchanged.",
+      "reason": "Release 0.2.0: version bump, changelog move and a VERSION test. The skill only gets the new library_version; its guidance is unchanged.",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch.ts at a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab"
+        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md at 492ee34ef92bec5f9570b66e6fe8af2713b61eb8"
       ]
     },
     "source:knip.json": {
@@ -90,15 +90,15 @@
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
-      "fingerprint": "592c17e41b71c45a5d40aa0816c5323eecadf4ba548c53b6ee54c66022349066",
+      "fingerprint": "e423223e70388b7765deb6052a3e65832eb67a28d029172215a68ea8d4c7f9c0",
       "snapshot": {
-        "PRE_RELEASE_CHANGELOG.md": "0f35b11e91395913de1db86700e3239e05a9e00188a61e9637cae64fe25500ac"
+        "PRE_RELEASE_CHANGELOG.md": "8e30ed4025ce66d88d9cd84769a2ea7d40474d6c6d6bae5af91627f4daa945ad"
       },
-      "head": "a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab",
+      "head": "492ee34ef92bec5f9570b66e6fe8af2713b61eb8",
       "outcome": "no-change",
-      "reason": "Body-integrity fixes (typed-array views, Node stream chunks) and no User-Agent in browsers; the skill and planning records don't describe these, so guidance is unchanged.",
+      "reason": "Release 0.2.0: version bump, changelog move and a VERSION test. The skill only gets the new library_version; its guidance is unchanged.",
       "evidence": [
-        "Changed: PRE_RELEASE_CHANGELOG.md at a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab"
+        "Changed: PRE_RELEASE_CHANGELOG.md at 492ee34ef92bec5f9570b66e6fe8af2713b61eb8"
       ]
     },
     "source:ECOSYSTEM.md": {
@@ -447,6 +447,66 @@
       "reason": "Body-integrity fixes (typed-array views, Node stream chunks) and no User-Agent in browsers; the skill and planning records don't describe these, so guidance is unchanged.",
       "evidence": [
         "Changed: packages/tests/unit/adapters/fetch.test.ts at a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab"
+      ]
+    },
+    "source:CHANGELOG.md": {
+      "fingerprint": "9df605a38288b8293930da74624c063cca007f44c7d0e8982a3e43e43000486a",
+      "snapshot": {
+        "CHANGELOG.md": "67a37fad43814b0a4dc11e447732fb881ac1042cb36d3d9af62c9103dfad93b2"
+      },
+      "head": "492ee34ef92bec5f9570b66e6fe8af2713b61eb8",
+      "outcome": "no-change",
+      "reason": "Release 0.2.0: version bump, changelog move and a VERSION test. The skill only gets the new library_version; its guidance is unchanged.",
+      "evidence": [
+        "Changed: CHANGELOG.md at 492ee34ef92bec5f9570b66e6fe8af2713b61eb8"
+      ]
+    },
+    "source:packages/lib/src/lib/env/data.ts": {
+      "fingerprint": "609cca0c77980032fc931aff7977b30dbff21b4c56e0a904c6d2fb141927e7cb",
+      "snapshot": {
+        "packages/lib/src/lib/env/data.ts": "eb467531d520dc51d0c1fbe2f6292bb5bcde7acc9d9bac09119d9d5b417e75a1"
+      },
+      "head": "492ee34ef92bec5f9570b66e6fe8af2713b61eb8",
+      "outcome": "no-change",
+      "reason": "Release 0.2.0: version bump, changelog move and a VERSION test. The skill only gets the new library_version; its guidance is unchanged.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/env/data.ts at 492ee34ef92bec5f9570b66e6fe8af2713b61eb8"
+      ]
+    },
+    "source:packages/tests/module/esm/pnpm-lock.yaml": {
+      "fingerprint": "006471299144830c2d5ef3400966c2c08d957107e3257883f7bfe76f8bdcb85b",
+      "snapshot": {
+        "packages/tests/module/esm/pnpm-lock.yaml": "e48d2fd1931bc9732cd70829002a1a4147624aec339de34474bbe24c26ea9167"
+      },
+      "head": "492ee34ef92bec5f9570b66e6fe8af2713b61eb8",
+      "outcome": "no-change",
+      "reason": "Release 0.2.0: version bump, changelog move and a VERSION test. The skill only gets the new library_version; its guidance is unchanged.",
+      "evidence": [
+        "Changed: packages/tests/module/esm/pnpm-lock.yaml at 492ee34ef92bec5f9570b66e6fe8af2713b61eb8"
+      ]
+    },
+    "source:packages/tests/smoke/esm/pnpm-lock.yaml": {
+      "fingerprint": "baef2da24a646fcb246ae76f1722bf9a8518e76ba1627a372de605d3baf69f2f",
+      "snapshot": {
+        "packages/tests/smoke/esm/pnpm-lock.yaml": "e5edf9af72c20ff74e20d7ff62425a9afb1a2148c96a4d7c2e15ecf86de42939"
+      },
+      "head": "492ee34ef92bec5f9570b66e6fe8af2713b61eb8",
+      "outcome": "no-change",
+      "reason": "Release 0.2.0: version bump, changelog move and a VERSION test. The skill only gets the new library_version; its guidance is unchanged.",
+      "evidence": [
+        "Changed: packages/tests/smoke/esm/pnpm-lock.yaml at 492ee34ef92bec5f9570b66e6fe8af2713b61eb8"
+      ]
+    },
+    "source:packages/tests/unit/version.test.ts": {
+      "fingerprint": "67bc26d22115131519852653abe70ba0ac9805041764d38d1adafda76274d3eb",
+      "snapshot": {
+        "packages/tests/unit/version.test.ts": "b0dde12ad8022b266d13bc492a202f5e075378778522613f4ca51efe503ca765"
+      },
+      "head": "492ee34ef92bec5f9570b66e6fe8af2713b61eb8",
+      "outcome": "no-change",
+      "reason": "Release 0.2.0: version bump, changelog move and a VERSION test. The skill only gets the new library_version; its guidance is unchanged.",
+      "evidence": [
+        "Changed: packages/tests/unit/version.test.ts at 492ee34ef92bec5f9570b66e6fe8af2713b61eb8"
       ]
     }
   }
