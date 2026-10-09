@@ -115,8 +115,11 @@ const defaults: FaxiosDefaults = {
         return hasJSONContentType ? JSON.stringify(formDataToJSON(data)) : data;
       }
 
+      // fetch takes any ArrayBufferView as a body and sends only the view's bytes.
+      // Never unwrap it to `.buffer`: a subarray or DataView would send the whole backing buffer.
       if (
         utils.isArrayBuffer(data) ||
+        utils.isArrayBufferView(data) ||
         utils.isBuffer(data) ||
         utils.isStream(data) ||
         utils.isFile(data) ||
@@ -124,9 +127,6 @@ const defaults: FaxiosDefaults = {
         utils.isReadableStream?.(data)
       ) {
         return data;
-      }
-      if (utils.isArrayBufferView(data)) {
-        return (data as ArrayBufferView).buffer;
       }
       if (utils.isURLSearchParams(data)) {
         headers.setContentType(
