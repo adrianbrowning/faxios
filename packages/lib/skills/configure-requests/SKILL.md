@@ -22,6 +22,8 @@ sources:
   - src/lib/core/buildFullPath.ts
   - src/lib/core/dispatchRequest.ts
   - src/lib/core/FaxiosError.ts
+  - src/lib/core/define.ts
+  - src/lib/core/route.ts
   - src/lib/types.ts
   - src/lib/adapters/fetch.ts
   - src/lib/helpers/composeSignals.ts
@@ -134,7 +136,29 @@ catch (error) {
   `ERR_BAD_RESPONSE_SCHEMA`, `error.response.data` is the body the schema rejected. Schemas run
   inside dispatch, so middleware sees the unvalidated config before `next(ctx)`.
 - For reusable typed endpoints, use `api.define(method, url, config)` or `api.route(url, config)`
-  rather than wrapping calls by hand.
+  rather than wrapping calls by hand. They return plain functions with no `.use()`
+  (`api.define(...).use(...)` is a TypeError), so put middleware on the instance and call
+  `define()`/`route()` on the value `.use()` returned. Middleware added later still runs (the
+  endpoint calls `api.request()` each time), but only that value types plugin options.
+  `pathParams` is accepted only when `pathParamsSchema` is set.
+
+```ts
+import faxios from "@gcmdev/faxios";
+import { z } from "zod";
+
+const api = faxios
+  .create({ baseURL: "https://api.example.com" })
+  .use(async (ctx, next) => next(ctx));
+const getUser = api.define("get", "/users/{id}", {
+  pathParamsSchema: z.object({ id: z.string() }),
+  responseSchema: z.object({ name: z.string() }),
+});
+const { data } = await getUser({ pathParams: { id: "123" } });
+console.log(data.name);
+```
+
+- With a plugin such as `retry()`, see "Define endpoints on a plugin instance" in
+  [references/plugins.md](references/plugins.md).
 
 ### Cancel requests and apply timeouts
 

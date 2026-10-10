@@ -171,4 +171,16 @@ describe("faxios.define()", () => {
     });
     assert.deepStrictEqual(res.data, { id: 1 });
   });
+
+  it("middleware registered after define() runs on the endpoint call", async () => {
+    const api = faxios.create({ env: { fetch: mockFetch({ ok: true }) } });
+    const getHealth = api.define("GET", "http://localhost/health");
+    let calls = 0;
+    api.use(async (ctx, next) => {
+      calls++;
+      return next(ctx);
+    });
+    await getHealth();
+    assert.strictEqual(calls, 1);
+  });
 });
