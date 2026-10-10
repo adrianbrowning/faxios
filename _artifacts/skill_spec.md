@@ -182,7 +182,7 @@ and stop generating Axios APIs it removed or never verified.
     - `advanced/middleware.md` uses `/users/:id` with `pathParams`, but only `{key}` is
       substituted (fixed in #146: the page uses `{id}`, and `test:docs-examples` now rejects
       unsubstituted placeholders)
-    - `PRE_RELEASE_CHANGELOG.md` says the type guards are "on the instance"
+    - the 0.2.0 entry in `packages/lib/CHANGELOG.md` says the type guards are "on the instance"
     - `packages/examples/network_enhanced.js` checks `ECONNREFUSED`
   - CI's first `check-skills` run failed with `TS18046: 'data' is of type 'unknown'` on the zod
     schema example. Intent resolves example imports from the repository root, and the root had

@@ -3,9 +3,9 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "779b55651986f31f79f6256011e607e7f6e9aa617a7f327fb47ed67cc74fbfc4",
+      "fingerprint": "1a54d9316fdde86a5b590fa00e90fbefe4e1b493565182c85e0a4786baf5232c",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
+        "MIGRATION_GUIDE.md": "8065e889c7370e8849272b8e85135ad971aa1ea3e2c1abb0de21fd7948bed8e5",
         "packages/lib/package.json": "c0f409e8d8ba34aa12521879c6e0cceeb7872b726957d26a5a9405a6fe381975",
         "packages/lib/skills/configure-requests/SKILL.md": "f93e196d10a9c8b300d9b35f18022ea51e6f019896cf5d8306da750f1b8f7396",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
@@ -33,19 +33,20 @@
         "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "8ace0b3b81a7bb208c2764629def6b0041131228",
-      "outcome": "updated",
-      "reason": "Release 0.2.1: the skill only gets the new library_version; its guidance is unchanged.",
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "MIGRATION_GUIDE.md only changes its changelog link to packages/lib/CHANGELOG.md. The skill covers request APIs, not releases, so its guidance is unchanged.",
       "evidence": [
-        "library_version 0.2.0 -> 0.2.1, matching packages/lib/package.json."
+        "git diff origin/main -- MIGRATION_GUIDE.md: one link on line 910",
+        "grep -i changelog|release packages/lib/skills/configure-requests: no release guidance"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "3843d50ba805bc29dd6cc1ac3772972985b45b1fa470f96f5c53e7b2ddcb91e6",
+      "fingerprint": "4496f027a25e97083e46aae0cccd4235bcee32e46f0c28033ed8a8a2e3dea865",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
-        "_artifacts/domain_map.yaml": "13db30bd0c6322ccf6d26d5415d75e83df947d7c612cd189f821f94d1a033516",
-        "_artifacts/skill_spec.md": "312bcae6aa323ecac6dbd371fe7d5833412be0043d56727b6c12e70acbd939c3",
+        "MIGRATION_GUIDE.md": "8065e889c7370e8849272b8e85135ad971aa1ea3e2c1abb0de21fd7948bed8e5",
+        "_artifacts/domain_map.yaml": "3003a5f8733af465e454fb045df53f600617866dbb7a290634b59ffe39b944db",
+        "_artifacts/skill_spec.md": "7b9ad148694239bfb5191cc10ceddd21ee6761266a36fe8339f69af46f9713d0",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "c0f409e8d8ba34aa12521879c6e0cceeb7872b726957d26a5a9405a6fe381975",
         "packages/lib/skills/configure-requests/SKILL.md": "f93e196d10a9c8b300d9b35f18022ea51e6f019896cf5d8306da750f1b8f7396",
@@ -74,11 +75,12 @@
         "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "8ace0b3b81a7bb208c2764629def6b0041131228",
-      "outcome": "no-change",
-      "reason": "Release 0.2.1: version bump and the Unreleased notes (#147, #160, #146, #148, #149) moved into CHANGELOG.md. No planning record depends on the version.",
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "updated",
+      "reason": "domain_map.yaml and skill_spec.md cited PRE_RELEASE_CHANGELOG.md, which this change deletes. They now cite the 0.2.0 entries in packages/lib/CHANGELOG.md.",
       "evidence": [
-        "Only package.json version and SKILL.md library_version changed."
+        "_artifacts/domain_map.yaml:56",
+        "_artifacts/skill_spec.md:185"
       ]
     },
     "source:knip.json": {
@@ -94,15 +96,16 @@
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
-      "fingerprint": "e423223e70388b7765deb6052a3e65832eb67a28d029172215a68ea8d4c7f9c0",
+      "fingerprint": "a58acb1e6e246d5334baf323a27652ca550315714dbb0a0708e61b7b3930e214",
       "snapshot": {
-        "PRE_RELEASE_CHANGELOG.md": "8e30ed4025ce66d88d9cd84769a2ea7d40474d6c6d6bae5af91627f4daa945ad"
+        "PRE_RELEASE_CHANGELOG.md": null
       },
-      "head": "8ace0b3b81a7bb208c2764629def6b0041131228",
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
       "outcome": "no-change",
-      "reason": "Release 0.2.1: version bump and the Unreleased notes (#147, #160, #146, #148, #149) moved into CHANGELOG.md.",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
       "evidence": [
-        "Unreleased section emptied after moving its entries to CHANGELOG.md."
+        "Changed file: PRE_RELEASE_CHANGELOG.md",
+        "packages/lib/src is unchanged by this branch"
       ]
     },
     "source:ECOSYSTEM.md": {
@@ -118,27 +121,29 @@
       ]
     },
     "source:PRE_RELEASE_DOCS.md": {
-      "fingerprint": "718d64b267763a454f2dfd538047866ce53953bb93b8ab692e7823f1c61c0801",
+      "fingerprint": "5ea9b10015c22fc91b790caeee8229d915702ad15ef81a15671013a8e0089d32",
       "snapshot": {
-        "PRE_RELEASE_DOCS.md": "2c74f8ea620c967b4605d89f55abd1ce344d4e25de01cc0e1fa2d19870c5c360"
+        "PRE_RELEASE_DOCS.md": "06a801f2b9b7d2e25328ffec2c559626b140c6bc90701980b2b2f587518b0827"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
-      "outcome": "updated",
-      "reason": "Skill updated from this diff.",
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
       "evidence": [
-        "Added new Faxios() has no use/eject, maxRetryAfter rejects, custom retryOn replaces predicate, legacyInterceptorReqResOrdering ERR_BAD_OPTION, rejected body on error.response.data (all runtime-checked). Diff review: The deleted spec entries (-L23..-L112 and -L150..-L171) still state behaviour the skill lacks, all confirmed in src. (1) -L15/-L35: `use()`/`eject()` are absent on `new Faxios()`. faxios.ts:49-50 attaches them only in createInstance, and SKILL.md L279 lists `Faxios` with no warning. (2) -L65: past `maxRetryAfter` (5 min) retry rethrows without retrying (retry.ts:196). A custom `retryOn` replaces the whole default predicate, so `statuses` is ignored (retry.ts:182). An `onRetry` that throws stops retrying. (3) -L95: passing `transitional.legacyInterceptorReqResOrdering` throws `ERR_BAD_OPTION` ("
+        "Changed file: PRE_RELEASE_DOCS.md",
+        "packages/lib/src is unchanged by this branch"
       ]
     },
     "source:packages/docs/.vitepress/config.mts": {
-      "fingerprint": "80e31dd1316f40906810eb21159922d7113ce6777a884f2ff51680af8263dcd7",
+      "fingerprint": "2eb8a476a9b169443d0b916f4c9c4b584eb07d4b255861eeaf71eea19df186fb",
       "snapshot": {
-        "packages/docs/.vitepress/config.mts": "32840780df446e1b6d8e182692c9450aac1ab0d091d70e294d01bd2e80b8a346"
+        "packages/docs/.vitepress/config.mts": "a8ec212ab1cbce2b782ed2250e6571dfbf5f94ffdc86129453c088cb72e348d3"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
       "outcome": "no-change",
-      "reason": "Diff reviewed (M); no-api-claims.",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
       "evidence": [
-        "-L8 removes the sidebar entry 'Interceptors'. +L9..+L13 add 'Middleware and plugins' and 'Migrating from interceptors'."
+        "Changed file: packages/docs/.vitepress/config.mts",
+        "packages/lib/src is unchanged by this branch"
       ]
     },
     "source:packages/docs/es/pages/advanced/interceptors.md": {
@@ -454,15 +459,16 @@
       ]
     },
     "source:CHANGELOG.md": {
-      "fingerprint": "e84d887f28593dded3ae7d204e234f88fc62cf70c8d286a98925c3bc0a901833",
+      "fingerprint": "b26b2229636767c19abc6da599a628fedd67e6686f2df98a526168cc15725cea",
       "snapshot": {
-        "CHANGELOG.md": "91a244748d3fde7cbe30faa51725cba522ceec3a77ef565e34f783007d28b509"
+        "CHANGELOG.md": null
       },
-      "head": "932d9fdf110339eaa143fd15f7ba5632ff639328",
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
       "outcome": "no-change",
-      "reason": "CHANGELOG.md v0.2.1 heading date corrected to October 10, 2026, the release day.",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
       "evidence": [
-        "Changed: CHANGELOG.md at 932d9fdf110339eaa143fd15f7ba5632ff639328"
+        "Changed file: CHANGELOG.md",
+        "packages/lib/src is unchanged by this branch"
       ]
     },
     "source:packages/lib/src/lib/env/data.ts": {
@@ -514,15 +520,16 @@
       ]
     },
     "source:.github/workflows/publish.yml": {
-      "fingerprint": "7014ad51739681b76764c5a753e122bdc786dd4ac331d912780f2990b3fd0680",
+      "fingerprint": "ca768694e3b58cadc2bfa54c7105da54c1b999aaba972165f37ba885c7ee1d48",
       "snapshot": {
-        ".github/workflows/publish.yml": "e4c84e2af5f588891fa83bfad393e027e483ba805bc38dba4c62acde65c5cad1"
+        ".github/workflows/publish.yml": null
       },
-      "head": "a9398723da9fce39c0e36db164a98f742c0b2e9e",
-      "outcome": "out-of-scope",
-      "reason": "Adds a pre-publish LICENSE check step; release tooling, not request behaviour.",
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
       "evidence": [
-        "One new step runs packages/tests/scripts/check-license.ts before npm stage publish."
+        "Changed file: .github/workflows/publish.yml",
+        "packages/lib/src is unchanged by this branch"
       ]
     },
     "source:LICENSE": {
@@ -655,6 +662,175 @@
       "reason": "Module-suite test that shipped maps resolve; packaging, not request behaviour.",
       "evidence": [
         "Asserts every .d.ts has a .d.ts.map, every map source resolves in the installed package, and JSDoc precedes pathParams."
+      ]
+    },
+    "source:.bumpy/README.md": {
+      "fingerprint": "c1e5c103b9123b5eaa2b8e5359fc91b7d10f386e3c10e224c690e7ca37b569a7",
+      "snapshot": {
+        ".bumpy/README.md": "ef279fd575fc01f993932e767a1372efc8eecc56649184e49782b34dc6531977"
+      },
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed file: .bumpy/README.md",
+        "packages/lib/src is unchanged by this branch"
+      ]
+    },
+    "source:.bumpy/_config.json": {
+      "fingerprint": "ee4f0b9cba2209022138c68a5170a654c937ef1c196164d62b18b5ce13ab51e7",
+      "snapshot": {
+        ".bumpy/_config.json": "ea0231965b6d165cf6f47a497ae058f0a62f103bbfa8ff1ce56b0add04b9a1eb"
+      },
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed file: .bumpy/_config.json",
+        "packages/lib/src is unchanged by this branch"
+      ]
+    },
+    "source:.bumpy/adopt-bumpy.md": {
+      "fingerprint": "65fc0995dc4bc4825ccbdf0b209be162ca9ec205d07fdcee8e00e8e6ecebd918",
+      "snapshot": {
+        ".bumpy/adopt-bumpy.md": "8451bde2f65873c62e3cdb0c4f3c29e7d0ad6753aeb00a8241eb1c41f510f741"
+      },
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed file: .bumpy/adopt-bumpy.md",
+        "packages/lib/src is unchanged by this branch"
+      ]
+    },
+    "source:.claude/skills/do-work/SKILL.md": {
+      "fingerprint": "32e3f952ffb29581c5c571c7d94f7c0ad1ff3b8522f737dd1354929ac26f21a6",
+      "snapshot": {
+        ".claude/skills/do-work/SKILL.md": "aa918ce0bddf6c1b543c218302898d07c7d9fa020296f2c797766ee3b0567a86"
+      },
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed file: .claude/skills/do-work/SKILL.md",
+        "packages/lib/src is unchanged by this branch"
+      ]
+    },
+    "source:.github/workflows/bumpy-check.yml": {
+      "fingerprint": "2d6870f432488d1a0876b91dd437099b0eaa68b5c2703194c7e6bd76a2f5bc03",
+      "snapshot": {
+        ".github/workflows/bumpy-check.yml": "58d945880ab1d0b1f6320ca8caa992f819bdb3f5a1d955956f85ca894cfb65be"
+      },
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed file: .github/workflows/bumpy-check.yml",
+        "packages/lib/src is unchanged by this branch"
+      ]
+    },
+    "source:.github/workflows/bumpy-release.yml": {
+      "fingerprint": "7f764b15257405b06fb627071a338b17e82bfc360fe0d7b0a5487ec8b1bd1da4",
+      "snapshot": {
+        ".github/workflows/bumpy-release.yml": "86fdd3bd0c4dc93f7044bb75a41e023541540419d13c719fceac9f3c102cefa9"
+      },
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed file: .github/workflows/bumpy-release.yml",
+        "packages/lib/src is unchanged by this branch"
+      ]
+    },
+    "source:.github/workflows/docs.yml": {
+      "fingerprint": "076e2cf4a42fa9ec5d0ba601d26d5ead79ef3922bad1535eb892c344a7c3c092",
+      "snapshot": {
+        ".github/workflows/docs.yml": "8b3527eb3f0185a1092757bc6ca8d7369f7655195066930b188c87ef948a128a"
+      },
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed file: .github/workflows/docs.yml",
+        "packages/lib/src is unchanged by this branch"
+      ]
+    },
+    "source:.github/workflows/run-ci.yml": {
+      "fingerprint": "4cf3ca7f1cd2fc30f21049aaf6630c8b99b365f2d5d0213434bec69888323e0d",
+      "snapshot": {
+        ".github/workflows/run-ci.yml": "79ba87f467f2c203fccdf37d27b674358c49777d83a8a23cf44268fe11371882"
+      },
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed file: .github/workflows/run-ci.yml",
+        "packages/lib/src is unchanged by this branch"
+      ]
+    },
+    "source:CONTRIBUTING.md": {
+      "fingerprint": "e348c794b063408be09c5d74d4aaf9a13859d5ce7d4f301cde4f2459ee57b3d5",
+      "snapshot": {
+        "CONTRIBUTING.md": "ef05ee43292afaf3ed7789c5894e429aba5036f8b8fed0a673f04b37fc5d2830"
+      },
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed file: CONTRIBUTING.md",
+        "packages/lib/src is unchanged by this branch"
+      ]
+    },
+    "source:THREATMODEL.md": {
+      "fingerprint": "1cb80b95d9896fe5b8e7f0c968028bdbd0a175e2c8c82ad913f06989164035e7",
+      "snapshot": {
+        "THREATMODEL.md": "6979c81f652e1d56a62539a3d2b9ec07eb07eb74f286331f8ab31c205502ad69"
+      },
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed file: THREATMODEL.md",
+        "packages/lib/src is unchanged by this branch"
+      ]
+    },
+    "source:packages/lib/CHANGELOG.md": {
+      "fingerprint": "8dcf9c1c09d5a9933c1c3d8b0e1216dcea27bac303653a6ab81f71e32e115f60",
+      "snapshot": {
+        "packages/lib/CHANGELOG.md": "ffb9c26c1a06d1656505e05820472c552aa916506200aeee630d225370fc2a83"
+      },
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed file: packages/lib/CHANGELOG.md",
+        "packages/lib/src is unchanged by this branch"
+      ]
+    },
+    "source:packages/tests/pin-tarball-integrity.ts": {
+      "fingerprint": "8407a5026a35c0b68e57882cc3456ac177571b536b4d984377d7aff0834aeef1",
+      "snapshot": {
+        "packages/tests/pin-tarball-integrity.ts": "b59da6ef3706ac7a8d37422439dfe78a5407aeaf87ceb2c76110a24b13eb2135"
+      },
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed file: packages/tests/pin-tarball-integrity.ts",
+        "packages/lib/src is unchanged by this branch"
+      ]
+    },
+    "source:packages/tests/scripts/sync-version.ts": {
+      "fingerprint": "f9c872c6a9c0ccfdd5a8440e2cccd1b435973806eb8cd85cbb859f551b259972",
+      "snapshot": {
+        "packages/tests/scripts/sync-version.ts": "b1bf17baa480d26eb5f0f6682cc82e0f151651d5613858bbe187aa52e49e3f81"
+      },
+      "head": "32e2070418937a845c1659f8397d24ec46e5f537",
+      "outcome": "no-change",
+      "reason": "Release tooling and contributor docs move to bumpy (#150): bump files, the release workflows, the changelog location and the VERSION sync. No request API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed file: packages/tests/scripts/sync-version.ts",
+        "packages/lib/src is unchanged by this branch"
       ]
     }
   }

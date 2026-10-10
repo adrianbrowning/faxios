@@ -62,6 +62,14 @@ It runs `lint` (type-check plus the `@ts-self-types` and `@ts-expect-error` chec
 
 Iterate until all pass (or a step is skipped because it does not apply).
 
+If the task changed anything in `packages/lib`, add or update this branch's bump file before committing (one per logical change):
+
+```bash
+pnpm exec bumpy add --packages "@gcmdev/faxios:patch" --message "Fixed <user-visible effect>." --name <slug>
+```
+
+Choose `major`, `minor`, `patch`, or `none` (add `$changelog: false` to its frontmatter for a change that ships nothing). The message becomes the changelog entry. Never edit `packages/lib/CHANGELOG.md` or the package version by hand.
+
 ### 4. Commit
 
 Stage only files changed by this task. Write a **Conventional Commits** message — a husky `commit-msg` hook runs `commitlint` to validate this format:
