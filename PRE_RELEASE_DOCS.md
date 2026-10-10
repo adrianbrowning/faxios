@@ -55,7 +55,7 @@ Do not store raw diffs or line-number-only instructions here; prefer stable sect
 ### `env.FormData` accepts the runtime's `FormData`
 
 - **Change:** `env.FormData` is typed `(new () => object) | null`, so the global DOM or Node/undici `FormData` and plain subclasses type-check.
-- **Source:** Issue #73; `PRE_RELEASE_CHANGELOG.md` Fixes entry "`env.FormData` accepts the runtime's `FormData`".
+- **Source:** Issue #73; the 0.2.0 Fixes entry "`env.FormData` accepts the runtime's `FormData`" in `packages/lib/CHANGELOG.md`.
 - **Status:** Applied (English).
 - **Docs targets:** `pages/advanced/multipart-form-data-format.md` ("Automatic serialization to FormData"), and its es/fr/zh siblings.
 - **Required content:** The override is constructed with no arguments. `null` falls back to the global `FormData`.

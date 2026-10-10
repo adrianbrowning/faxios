@@ -1,0 +1,18 @@
+{
+  "$schema": "../node_modules/@varlock/bumpy/config-schema.json",
+  "baseBranch": "main",
+  // Links each entry to its PR. The maintainer isn't thanked in every entry.
+  "changelog": ["github", { "repo": "adrianbrowning/faxios", "internalAuthors": ["adrianbrowning"] }],
+  // Conventional Commits, as commitlint and the PR title rules expect.
+  "versionCommitMessage": "chore(release): version packages",
+  "versionPr": {
+    "title": "chore(release): version packages",
+  },
+  "publish": {
+    // Pack with npm, the tool that publishes: scripts/check-license.ts checks npm's file list.
+    "packManager": "npm",
+    "provenance": true,
+    // `npm stage publish`: a release goes live only after 2FA approval on npmjs.com.
+    "npmStaged": true,
+  },
+}

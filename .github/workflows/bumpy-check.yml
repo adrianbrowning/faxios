@@ -1,0 +1,46 @@
+name: Bumpy Check
+
+# Comments the release plan on each PR and warns when a change to packages/lib has no
+# bump file. It never fails the PR: see "Changes And Releases" in AGENTS.md.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Bump file check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6
+        with:
+          version: 10
+
+      - name: Setup node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.x
+          cache: pnpm
+
+      # bumpy comes from the lockfile, like every other dev tool.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Check bump files and comment the release plan
+        run: pnpm exec bumpy ci check --no-fail
+        env:
+          GH_TOKEN: ${{ github.token }}

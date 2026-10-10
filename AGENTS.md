@@ -30,16 +30,18 @@ This file is the canonical contributor guide for both human and AI agents workin
 - Adding or updating dependencies is security-sensitive. Don't add runtime dependencies without discussion; the dependency surface is intentionally tiny.
 - Package, lockfile, and GitHub Actions update PRs are maintainer/bot-only; close these PRs from outside collaborators. Keep the 7-day Dependabot delay unless a critical vulnerability requires a maintainer-led manual update.
 - Build/test/lint tools still execute dependency code despite `ignore-scripts`; avoid unnecessary full builds when a focused check proves the change.
-- Smoke and module suites test the packed tarball (`packages/tests/faxios.tgz`), not the source tree. Their installs are frozen: `pin-tarball-integrity.ts` rewrites only the tarball digest in the harness lockfiles before `--frozen-lockfile`. Keep the harness lockfiles and frozen installs; `--no-lockfile` or deleting a lockfile unpins every transitive dependency.
+- Smoke and module suites test the packed tarball (`packages/tests/faxios.tgz`), not the source tree. Their installs are frozen: `pin-tarball-integrity.ts` rewrites only the tarball's digest (and, in pnpm lockfiles, its version) in the harness lockfiles before `--frozen-lockfile`. Keep the harness lockfiles and frozen installs; `--no-lockfile` or deleting a lockfile unpins every transitive dependency.
 
 ## Package Shape
 
 - ESM only: `zshy` builds `packages/lib/src` into `dist/` (ESM bundles plus `.d.ts`). There's no CJS build. `dist/` is generated; don't edit it.
 - A new public entry point goes in both `exports` maps in `packages/lib/package.json` (the `zshy` source map and the published dist map) and needs the `@ts-self-types` pragma that Deno uses to find its `.d.ts`.
 
-## Pre-Release Notes
+## Changes And Releases
 
-- Add user-visible unreleased changes to `PRE_RELEASE_CHANGELOG.md`, not `CHANGELOG.md`. `CHANGELOG.md` is release-owned and should only be updated as part of preparing an actual release.
+- [bumpy](https://bumpy.varlock.dev) versions and publishes `@gcmdev/faxios`. A PR that changes `packages/lib` adds a bump file in `.bumpy/`: `pnpm exec bumpy add --packages "@gcmdev/faxios:<major|minor|patch|none>" --message "<one-line summary>" --name <slug>`. The summary becomes the changelog entry, so describe the user-visible effect. Use `none` (with `$changelog: false`) for a change that ships nothing, such as tests or tooling inside `packages/lib`.
+- Don't edit `packages/lib/CHANGELOG.md`, the package `version`, or `VERSION` in `src/lib/env/data.ts` by hand. Merging to `main` keeps a "chore(release): version packages" PR up to date; that PR applies the bump files, and `.github/workflows/bumpy-release.yml` syncs `VERSION`. Merging it runs CI, then publishes with provenance through `npm stage publish` (a maintainer approves the staged version on npmjs.com), tags `@gcmdev/faxios@<version>`, creates the GitHub release, and deploys the docs.
+- After a release, review the skill against the new version and bump its `library_version` as part of that review (see Library Skill Maintenance above).
 - Track deferred README, docs site, examples, migration guide, and translated docs updates in `PRE_RELEASE_DOCS.md`. Use enough context for release preparation; do not store brittle diffs or line-number-only notes.
 - Do not update `README.md` or the docs site for unreleased runtime/API changes unless the task is explicitly release preparation. During feature/fix work, record what docs need to say in `PRE_RELEASE_DOCS.md` so it can be applied during release work.
 

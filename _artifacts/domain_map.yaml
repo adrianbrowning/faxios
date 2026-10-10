@@ -53,7 +53,7 @@ skills:
           api.interceptors.request.use(config => config);
         correct_pattern: |
           api.use(async (ctx, next) => next(ctx));
-        source: 'packages/tests/unit/api.test.ts; PRE_RELEASE_CHANGELOG.md'
+        source: 'packages/tests/unit/api.test.ts; packages/lib/CHANGELOG.md (0.2.0)'
         priority: HIGH
         status: removed
         version_context: 'Removed before the first faxios release; agents trained on Axios still generate it.'

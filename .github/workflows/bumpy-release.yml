@@ -1,0 +1,191 @@
+name: Bumpy Release
+
+# Release flow (see "Changes And Releases" in AGENTS.md):
+# - A push to main with pending bump files creates or updates the
+#   "chore(release): version packages" PR.
+# - Merging that PR runs CI, then publishes to npm with provenance through
+#   `npm stage publish` (approve the staged version on npmjs.com), tags
+#   `@gcmdev/faxios@<version>`, creates the GitHub release and deploys the docs.
+# Only the publish job gets id-token: write, inside the npm-publish environment
+# that the npm trusted publisher is bound to.
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  # Queue, never cancel: a cancelled run could skip a release.
+  group: bumpy-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    name: Plan release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      mode: ${{ steps.plan.outputs.mode }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6
+        with:
+          version: 10
+
+      - name: Setup node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.x
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      # mode: version-pr, publish or nothing.
+      - name: Plan
+        id: plan
+        run: pnpm exec bumpy ci plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  version-pr:
+    name: Update the Version Packages PR
+    needs: plan
+    if: needs.plan.outputs.mode == 'version-pr'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6
+        with:
+          version: 10
+
+      - name: Setup node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.x
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      # Without the optional BUMPY_GH_TOKEN secret, GitHub doesn't run other workflows on
+      # the PR this opens; the publish path below runs CI itself before it publishes.
+      - name: Create or update the Version Packages PR
+        run: pnpm exec bumpy ci release --expect-mode version-pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUMPY_GH_TOKEN: ${{ secrets.BUMPY_GH_TOKEN }}
+
+      # bumpy bumps package.json only. Fold the matching VERSION into its version commit.
+      - name: Sync VERSION into the Version Packages PR
+        run: |
+          # bumpy leaves its branch checked out when it pushed a version commit.
+          if [ "$(git branch --show-current)" != "bumpy/version-packages" ]; then
+            echo "No version commit to sync."
+            exit 0
+          fi
+          node packages/tests/scripts/sync-version.ts
+          if git diff --quiet; then
+            exit 0
+          fi
+          git commit --all --amend --no-edit --no-verify
+          git push --force --no-verify \
+            "https://x-access-token:${BUMPY_GH_TOKEN:-$GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            HEAD:refs/heads/bumpy/version-packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUMPY_GH_TOKEN: ${{ secrets.BUMPY_GH_TOKEN }}
+
+  ci:
+    name: CI
+    needs: plan
+    if: needs.plan.outputs.mode == 'publish'
+    permissions:
+      contents: read
+    uses: ./.github/workflows/run-ci.yml
+
+  publish:
+    name: Publish to npm
+    needs: [plan, ci]
+    if: needs.plan.outputs.mode == 'publish'
+    runs-on: ubuntu-latest
+    environment: npm-publish
+    permissions:
+      contents: write # tag and GitHub release
+      id-token: write # npm trusted publishing (OIDC) and provenance
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6
+        with:
+          version: 10
+
+      - name: Setup node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.x
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      # `npm stage publish` requires npm >= 11.15.0, newer than the npm bundled with
+      # this workflow's Node. Remove this step once Node bundles npm >= 11.15.0 by default.
+      - name: Pin npm with staged-publishing support
+        run: npm install -g npm@11.15.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Build project
+        run: pnpm run build
+
+      # npm adds LICENSE only from packages/lib, so 0.2.0 shipped without it (#160).
+      - name: Check the package includes LICENSE
+        run: node packages/tests/scripts/check-license.ts
+
+      - name: Publish, tag and create the GitHub release
+        run: pnpm exec bumpy ci release --expect-mode publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUMPY_GH_TOKEN: ${{ secrets.BUMPY_GH_TOKEN }}
+
+  # Runs from main, which the github-pages environment allows (#167).
+  docs:
+    name: Deploy docs
+    needs: publish
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/docs.yml
+
+  # A release made with the default token doesn't fire `release: published`, so start
+  # check-skills' post-release review directly. workflow_dispatch is exempt from that rule.
+  skills-review:
+    name: Start the skill review
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Dispatch check-skills
+        run: gh workflow run check-skills.yml --repo "$GITHUB_REPOSITORY" --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}

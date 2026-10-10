@@ -1,8 +1,10 @@
 name: Deploy docs to GitHub Pages
 
+# bumpy-release.yml calls this after each publish, from main, the only ref the
+# github-pages environment allows. A `release` trigger would run on the tag ref,
+# which the environment rejects (#167).
 on:
-  release:
-    types: [published]
+  workflow_call:
   workflow_dispatch:
 
 permissions: {}
@@ -18,11 +20,11 @@ jobs:
     permissions:
       contents: read
     steps:
+      # Checks out github.sha: the released commit when bumpy-release.yml calls this.
       - name: Checkout repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          ref: ${{ github.event.release.tag_name || github.sha }}
 
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6
         with:

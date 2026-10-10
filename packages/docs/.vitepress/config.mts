@@ -9,7 +9,7 @@ const repoURL = "https://github.com/adrianbrowning/faxios";
 const nav = [
   { text: "Guide", link: "/pages/getting-started/first-steps" },
   { text: "API", link: "/pages/advanced/api-reference" },
-  { text: "Changelog", link: `${repoURL}/blob/main/CHANGELOG.md` },
+  { text: "Changelog", link: `${repoURL}/blob/main/packages/lib/CHANGELOG.md` },
 ];
 
 const sidebar = [

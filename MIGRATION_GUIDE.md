@@ -907,7 +907,7 @@ async function compareRequests(config) {
 ### Official Documentation
 - [faxios documentation](https://adrianbrowning.github.io/faxios/)
 - [faxios GitHub Repository](https://github.com/faxios/faxios)
-- [faxios Changelog](https://github.com/faxios/faxios/blob/main/CHANGELOG.md)
+- [faxios Changelog](https://github.com/adrianbrowning/faxios/blob/main/packages/lib/CHANGELOG.md)
 
 ### Migration Tools
 - [faxios Migration Codemod](https://github.com/faxios/faxios-migration-codemod) *(if available)*

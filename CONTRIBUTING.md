@@ -18,6 +18,10 @@ Update tests for your changes. Pull requests must pass GitHub Actions.
 
 Update the [documentation](https://adrianbrowning.github.io/faxios/) when the API changes, so the API and docs stay in sync.
 
+## Changelog
+
+A pull request that changes `packages/lib` adds a bump file. Run `pnpm exec bumpy add` and pick `patch`, `minor`, `major` or `none` for `@gcmdev/faxios`. The summary you write becomes the changelog entry. A bot comment on the pull request shows the planned release. Don't edit `packages/lib/CHANGELOG.md` or the package version yourself: the release pull request does that. See [bumpy](https://bumpy.varlock.dev) for the details.
+
 ## Dependency and GitHub Actions updates
 
 Please do not open pull requests that only update npm packages, lockfiles, or GitHub Actions versions. We close these PRs from outside collaborators. Only maintainers and approved automated bots may create package and GitHub Actions update PRs.
@@ -28,7 +32,6 @@ We keep the 7-day Dependabot delay for these updates unless a critical vulnerabi
 
 - `npm run test` runs the Jasmine and Mocha tests
 - `npm run build` runs Rollup and bundles the source
-- `npm run version` prepares the code for release
 
 ## Running examples
 
