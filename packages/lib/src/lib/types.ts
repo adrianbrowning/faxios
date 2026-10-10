@@ -311,7 +311,18 @@ export interface FaxiosRequestConfig<D = unknown> {
   responseSchema?: StandardSchemaV1;
   requestSchema?: StandardSchemaV1;
   paramsSchema?: StandardSchemaV1;
+  /**
+   * Values for `{key}` placeholders in `url` (braces, not `:key`). Only own properties count.
+   * Each value goes through `String()` then `encodeURIComponent`. A placeholder whose key is
+   * missing, or whose value is `null` or `undefined`, rejects with `ERR_BAD_OPTION_VALUE`. Keys
+   * with no matching placeholder are ignored. Without `pathParams`, placeholders are sent literally.
+   */
   pathParams?: Record<string, unknown>;
+  /**
+   * Standard Schema that validates `pathParams` before substitution; its output replaces
+   * `pathParams`. Requires `pathParams`, or the request rejects with `ERR_BAD_OPTION_VALUE`.
+   * A validation failure, or output that isn't a plain object, rejects with `ERR_BAD_PATH_PARAMS_SCHEMA`.
+   */
   pathParamsSchema?: StandardSchemaV1<unknown, Record<string, unknown>>;
 }
 

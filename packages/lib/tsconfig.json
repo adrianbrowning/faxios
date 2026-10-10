@@ -4,6 +4,7 @@
     "outDir": "dist",
     "rootDir": "./src",
     "incremental": false,
+    "declarationMap": true,
     "types": [],
     "lib": [
       "ES2023",

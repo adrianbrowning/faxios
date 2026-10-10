@@ -72,7 +72,7 @@ const { data, status } = await api.get<{ id: number; name: string }>("/users/1")
 - `get`, `delete`, `head`, `options` take `(url, config?)`.
 - `post`, `put`, `patch`, `query` take `(url, data?, config?)`. `query` sends the HTTP QUERY method.
 - `postForm`, `putForm`, `patchForm` send `multipart/form-data`.
-- `api.getUri(config)` returns the URL faxios would request, without sending anything.
+- `api.getUri(config)` builds the URL from `baseURL`, `url` and `params` without sending anything. It doesn't substitute `pathParams`, so `{key}` placeholders stay as written.
 
 Path and query parameters:
 
