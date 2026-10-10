@@ -70,11 +70,11 @@ describe("plugins::timing", () => {
     const events: Array<TimingEvent> = [];
     const api = faxios.create({ baseURL: BASE, env: { fetch: slowFetch(0) } }).use(timing(event => events.push(event)));
 
-    const request = api.get("/users/:id", { pathParams: { id: "7" } });
+    const request = api.get("/users/{id}", { pathParams: { id: "7" } });
     await vi.runAllTimersAsync();
     await request;
 
-    assert.strictEqual(events[0]!.url, "http://localhost/users/:id");
+    assert.strictEqual(events[0]!.url, "http://localhost/users/{id}");
   });
 
   it("passes no config, headers or body to onTiming", async () => {

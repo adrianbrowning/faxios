@@ -58,8 +58,17 @@ describe("extractBlocks", () => {
     expect(readFileSync(join(outDir, blocks[0]!.file), "utf8")).toContain("const a: number = 1;\nexport {};");
   });
 
+  it("carries placeholders=literal in the manifest and defaults it off", () => {
+    const blocks = extract("```ts placeholders=literal\nawait fetch(\"/a/:b\");\n```\n\n```ts\nconst a = 1;\n```\n");
+
+    expect(blocks.map(block => block.literalPlaceholders)).toEqual([ true, false ]);
+    const manifest = JSON.parse(readFileSync(join(outDir, "manifest.json"), "utf8"));
+    expect(manifest.map((block: { literalPlaceholders: boolean; }) => block.literalPlaceholders)).toEqual([ true, false ]);
+  });
+
   it("rejects unknown markers instead of silently running the block", () => {
     expect(() => extract("```ts check=typo\nconst a = 1;\n```\n")).toThrow(/unknown check=typo/);
     expect(() => extract("```ts status=abc\nconst a = 1;\n```\n")).toThrow(/not an HTTP status code/);
+    expect(() => extract("```ts placeholders=typo\nconst a = 1;\n```\n")).toThrow(/unknown placeholders=typo/);
   });
 });

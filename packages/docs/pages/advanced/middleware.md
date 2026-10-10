@@ -144,11 +144,11 @@ import faxios from "@gcmdev/faxios";
 
 const api = faxios.create({ baseURL: "https://api.example.com" }).use(async (ctx, next) => {
   const response = await next(ctx);
-  console.log(ctx.config.url); // "/users/:id": the path params were substituted in the copy
+  console.log(ctx.config.url); // "/users/{id}": middleware sees the template; dispatch substitutes path params on its own copy
   return response;
 });
 
-await api.get("/users/:id", { pathParams: { id: "7" } });
+await api.get("/users/{id}", { pathParams: { id: "7" } });
 ```
 
 ### Calling `next` again retries
@@ -330,7 +330,7 @@ await api.get("/users", { cache: false }); // always sent
 // The option is typed on every config-taking member, including defaults, define() and route().
 api.defaults.cache = { ttlMs: 30_000 };
 const listUsers = api.define("get", "/users", { cache: false });
-const user = api.route("/users/:id", { cache: { ttlMs: 1_000 } });
+const user = api.route("/users/{id}", { cache: { ttlMs: 1_000 } });
 
 // @ts-expect-error TS2769 -- ttlMs must be a number
 await api.get("/users", { cache: { ttlMs: "5s" } });
@@ -489,7 +489,7 @@ See [Retry & error recovery](/pages/advanced/retry) for every option.
 - on success: `{ method, url, attempt?, durationMs, status }`
 - on failure: `{ method, url, attempt?, durationMs, error }`, and the error is then rethrown
 
-`method` is upper-cased. `url` is the full URL with `baseURL` applied, and with the query string and fragment stripped, since those often carry secrets. A URL with `pathParams` is reported by its `:param` template, because path params are substituted at dispatch; this also keeps metric labels low-cardinality. `durationMs` comes from `performance.now()` where available. The response is returned unchanged.
+`method` is upper-cased. `url` is the full URL with `baseURL` applied, and with the query string and fragment stripped, since those often carry secrets. A URL with `pathParams` is reported by its template as the caller wrote it (e.g. `/users/{id}`), because path params are substituted at dispatch; this also keeps metric labels low-cardinality. `durationMs` comes from `performance.now()` where available. The response is returned unchanged.
 
 The event used to include the request `config`. It was removed because the config carries credentials (`Authorization` headers, tokens in query strings, request bodies), which then ended up in logs. No config, headers or body reach `onTiming`, so the event is safe to log.
 
@@ -525,8 +525,8 @@ const api = faxios.create({ baseURL: "https://api.example.com" })
     });
   }));
 
-await api.get("/users/:id", { pathParams: { id: "7" } });
-// labels: { method: "GET", url: "https://api.example.com/users/:id", status: "200" }
+await api.get("/users/{id}", { pathParams: { id: "7" } });
+// labels: { method: "GET", url: "https://api.example.com/users/{id}", status: "200" }
 ```
 
 Here `timing` is installed after `retry`, so each try is measured on its own. Install it first to measure all tries together.

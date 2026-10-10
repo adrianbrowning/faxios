@@ -149,7 +149,7 @@ and stop generating Axios APIs it removed or never verified.
     interceptors pages) were each reviewed from their diff:
     - 16 consistent, 2 with no API claims, 8 with behaviour the skill lacked.
     - One, `advanced/middleware.md`, contradicts source. It uses `:id` placeholders, but only
-      `{key}` is substituted. The skill is right, so no skill change.
+      `{key}` is substituted. The skill is right, so no skill change. Fixed in #146.
   - Gaps that were added, each confirmed by a runtime script against the workspace build:
     - `new Faxios()` has no `use`/`eject`.
     - On `ERR_BAD_RESPONSE_SCHEMA`, `error.response.data` is the rejected body.
@@ -179,7 +179,8 @@ and stop generating Axios APIs it removed or never verified.
       ported. From `migrating-from-interceptors.md` and middleware's return type, not run.
   - Doc bugs found, not skill changes:
     - `advanced/middleware.md` uses `/users/:id` with `pathParams`, but only `{key}` is
-      substituted
+      substituted (fixed in #146: the page uses `{id}`, and `test:docs-examples` now rejects
+      unsubstituted placeholders)
     - `PRE_RELEASE_CHANGELOG.md` says the type guards are "on the instance"
     - `packages/examples/network_enhanced.js` checks `ECONNREFUSED`
   - CI's first `check-skills` run failed with `TS18046: 'data' is of type 'unknown'` on the zod
