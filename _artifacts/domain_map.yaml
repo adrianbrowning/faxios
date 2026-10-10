@@ -129,6 +129,15 @@ skills:
         source: 'src/lib/plugins/retry.ts'
         priority: MEDIUM
         status: active
+      - mistake: Downloading a binary body without responseType
+        mechanism: 'Unset responseType reads the body with response.text(), so binary bytes are decoded as UTF-8 and corrupted; data is also typed unknown.'
+        wrong_pattern: |
+          const { data } = await faxios.get("https://example.com/report.zip");
+        correct_pattern: |
+          const { data } = await faxios.get<ArrayBuffer>(url, { responseType: "arraybuffer" });
+        source: 'src/lib/adapters/fetch.ts'
+        priority: MEDIUM
+        status: active
 
 tensions:
   - name: Axios-like call shape vs Axios-incompatible internals

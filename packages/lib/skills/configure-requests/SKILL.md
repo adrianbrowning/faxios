@@ -89,6 +89,21 @@ const res = await faxios.get("https://api.example.com/users/{id}/posts", {
 `pathParams` values are `encodeURIComponent`-encoded. A missing or `null` value rejects with
 `ERR_BAD_OPTION_VALUE`.
 
+Binary downloads need `responseType`, and a type argument because `data` is `unknown`:
+
+```ts
+import faxios from "@gcmdev/faxios";
+
+const { data } = await faxios.get<ArrayBuffer>("https://example.com/report.zip", {
+  responseType: "arraybuffer",
+  maxContentLength: 50 * 1024 * 1024, // the body is buffered; cap it for untrusted servers
+});
+console.log(data.byteLength);
+```
+
+Unset `responseType` reads the body as text, then JSON-parses it if it parses. `"text"` skips the
+JSON parse; `"blob"`, `"formdata"` and `"stream"` (a `ReadableStream`) are also supported.
+
 ### Merge defaults the way faxios does
 
 `faxios.create(config)` merges `config` over the parent's defaults with `mergeConfig`:
@@ -343,6 +358,9 @@ export only. Instances from `create()` do not have them; import them by name ins
    progress through fetch; do not promise it there.
 9. **MEDIUM: Retrying POST by accident or by assumption.** The retry plugin skips POST and PATCH
    unless they are listed in `methods`; a custom `retryOn` cannot override that.
+10. **MEDIUM: Downloading a binary body without `responseType`.** The bytes are decoded as UTF-8
+    text and come back corrupted. Set `responseType: "arraybuffer"` and type the call with
+    `get<ArrayBuffer>`. Source: `src/lib/adapters/fetch.ts`.
 
 ## Completion
 

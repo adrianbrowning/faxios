@@ -15,11 +15,11 @@ and stop generating Axios APIs it removed or never verified.
 
 | Skill | Type | Domain | What it covers | Failure modes |
 | --- | --- | --- | --- | --- |
-| configure-requests | core | requests | instances, call forms, config merging, URL resolution, schemas, cancellation, timeouts, error codes, `.use()` middleware, built-in plugins, transport via `env.fetch`/`fetchOptions`, stable vs `unsafe/*` imports, Axios porting | 9 |
+| configure-requests | core | requests | instances, call forms, config merging, URL resolution, schemas, cancellation, timeouts, error codes, `.use()` middleware, built-in plugins, transport via `env.fetch`/`fetchOptions`, stable vs `unsafe/*` imports, Axios porting | 10 |
 
 ## Failure Mode Inventory
 
-### configure-requests (9 failure modes)
+### configure-requests (10 failure modes)
 
 | # | Mistake | Priority | Source | Cross-skill? |
 | --- | --- | --- | --- | --- |
@@ -32,6 +32,7 @@ and stop generating Axios APIs it removed or never verified.
 | 7 | Calling statics on `create()` instances | MEDIUM | `src/lib/faxios.ts` | — |
 | 8 | Promising upload progress in browsers | MEDIUM | `packages/docs/pages/advanced/fetch-adapter.md` | — |
 | 9 | Assuming POST is retried | MEDIUM | `src/lib/plugins/retry.ts` | — |
+| 10 | Downloading a binary body without `responseType` | MEDIUM | `src/lib/adapters/fetch.ts` | — |
 
 ## Tensions
 
@@ -200,3 +201,13 @@ and stop generating Axios APIs it removed or never verified.
   - Middleware is read per call (`define.ts` calls `instance.request()`), so registration order is
     a typing rule, not a runtime one. Pinned by a `define.test.ts` unit test.
   - Added `src/lib/core/define.ts` and `src/lib/core/route.ts` to `sources`.
+- **Batch 3 (2026-10-08, source `1f5cc0c0`, #149): binary downloads.**
+  - Added a `responseType: "arraybuffer"` download pattern under "Choose the right call form" and
+    common mistake #10 (binary body without `responseType`).
+  - Checks: a throwaway runtime script against the workspace build of `packages/lib`
+    (`pnpm build`, Node 26.8.1), with an injected `env.fetch`:
+    - `arraybuffer` (and `ArrayBuffer`) gives an `ArrayBuffer`, `blob` a `Blob`, `formdata` a
+      `FormData`, `stream` a `ReadableStream`.
+    - `text` returns the JSON string unparsed; `json` parses it; `document` returns text.
+    - Unset parses a JSON body and returns a binary body as a corrupted string.
+    - `response` returns text, not a stream, so it is left out of the docs list.

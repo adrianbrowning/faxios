@@ -10,3 +10,4 @@
 
 - Fixed middleware docs examples that used `:id` instead of `{id}` path placeholders. (**#146**)
 - **Documented wiring `define()`/`route()` on an instance with middleware.** (**#148**)
+- Documented downloading binary files with `responseType: "arraybuffer"` and corrected the `responseType` list. (**#149**)
