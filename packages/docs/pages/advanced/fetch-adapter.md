@@ -4,6 +4,8 @@ faxios sends every request through the web-standard `fetch` API, in the browser,
 
 The adapter supports response types such as `stream` and `formdata` (if supported by the environment).
 
+With `responseType: "stream"`, the [`timeout`](/pages/advanced/request-config#timeout) and the [`signal`](/pages/advanced/request-config#signal) stay active until the body is fully read or cancelled, so a stalled body still times out and an abort still stops it. faxios clears the timer and removes its listener from your `signal` when the body ends, errors or is cancelled. A response with no body is cleaned up when the promise resolves. If a request fails, for example because a response goes over `maxContentLength`, faxios aborts the `signal` it passed to `fetch`, which closes the connection and cancels any body still being sent or received.
+
 ::: info
 faxios reports upload progress by streaming the request body, so `onUploadProgress` only fires where the runtime's `fetch` supports streaming request bodies (`duplex: "half"`), as Node.js does. Where it doesn't, the callback is not called. Download progress (`onDownloadProgress`) works everywhere.
 :::
@@ -21,6 +23,8 @@ The init has a null prototype, and faxios writes the spec default for each membe
 ## Custom fetch
 
 You can customise the fetch adapter to use a custom `fetch` function instead of the environment global. You can pass a custom `fetch` function, `Request`, and `Response` constructors via the `env` config option. This is useful when working with custom environments or app frameworks that provide their own `fetch` implementation.
+
+faxios reads `env.fetch` for each request, so passing a new `fetch` on every request (as in the SvelteKit example below) costs nothing extra and doesn't grow memory. faxios checks what the `Request` and `Response` constructors support once per pair and reuses the result.
 
 ::: info
 When using a custom `fetch` function, you may also need to supply matching `Request` and `Response` constructors. If you omit them, the global constructors will be used. If your custom `fetch` is incompatible with the globals, pass `null` to disable them.

@@ -3,15 +3,15 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "7c4aa02513d488d5c41f0d4b3b535daf3829394fcc0a2e6bd72ee28d4c961f9a",
+      "fingerprint": "ad48019838c67eea6443f8b9c63176752c306f4272678795b2ecccdf2cdf86cd",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "301c6e77e898dcc3bf63a9eb2f27b216f5f3c2cb94673f0790260a00a7cab8cb",
-        "packages/lib/skills/configure-requests/SKILL.md": "91b1a82f96e75e6bac3c4937e7b2c5437aa9b68f465912e74d4305d4a04948d1",
+        "packages/lib/skills/configure-requests/SKILL.md": "c3459b305990a88bc5e1a012be19ecf00ab72d615491a6427b7db88e5cfed9a4",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "3e3e761e0a5d1dc8a98bc4e385ccbb23842077e64807065b7b2060316eadbb3a",
+        "packages/lib/src/lib/adapters/fetch.ts": "75b6f4774c0964f38c368b7e1834d973d64197af7bce3e64d21bd207588214af",
         "packages/lib/src/lib/core/Faxios.ts": "1697549ccacac943df349a8cba8e80ec028ef383e5f328f2950a91e7833dbbf0",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
@@ -33,26 +33,26 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
-      "outcome": "no-change",
-      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
+      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
+      "outcome": "updated",
+      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "6419fb36ff4bff758f55af9149e28546f371042418741ccad4d245d9475ec57e",
+      "fingerprint": "935c84609160cd1d0e95df09772a6f1372a0d20174b517de7e1c78fd544303ee",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "301c6e77e898dcc3bf63a9eb2f27b216f5f3c2cb94673f0790260a00a7cab8cb",
-        "packages/lib/skills/configure-requests/SKILL.md": "91b1a82f96e75e6bac3c4937e7b2c5437aa9b68f465912e74d4305d4a04948d1",
+        "packages/lib/skills/configure-requests/SKILL.md": "c3459b305990a88bc5e1a012be19ecf00ab72d615491a6427b7db88e5cfed9a4",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "3e3e761e0a5d1dc8a98bc4e385ccbb23842077e64807065b7b2060316eadbb3a",
+        "packages/lib/src/lib/adapters/fetch.ts": "75b6f4774c0964f38c368b7e1834d973d64197af7bce3e64d21bd207588214af",
         "packages/lib/src/lib/core/Faxios.ts": "1697549ccacac943df349a8cba8e80ec028ef383e5f328f2950a91e7833dbbf0",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
-      "outcome": "no-change",
-      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
+      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
+      "outcome": "updated",
+      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
       ]
     },
     "source:knip.json": {
@@ -278,15 +278,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "6e0d51dc1b6d11347462c228b45b81d1349691824fb33e69068e1acd644c4d46",
+      "fingerprint": "686bb9575a90ffc94698879b76f4cf3386505570e92790911cdcf96266e11d9c",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "9ff16527f719b5d6c5a1e6e14eba979330dfcc323f5833237d8c2948ef5489c7"
+        "packages/docs/pages/advanced/request-config.md": "fd52336bf199d34ebecd2004e24e8246152861c4d9594ebeefd6b845aec4a01f"
       },
-      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
-      "outcome": "no-change",
-      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
+      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
+      "outcome": "updated",
+      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/docs/pages/advanced/request-config.md at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -447,15 +447,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch.test.ts": {
-      "fingerprint": "2bb1188004697826103e9675aceeedc7e80c7ef7d5e8338b059352c2b5f0e235",
+      "fingerprint": "82bb0328d1c99307670efedd6a7ceba1c3af3db0cd8e91e23732ac3cbe78731c",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch.test.ts": "d3204f05c4ade11fd82e7d5a5aada7e09c58c6145867a5823b6d23c9d4017cb1"
+        "packages/tests/unit/adapters/fetch.test.ts": "8eff9a9135f9b658c4fc5c9e2ea04889dd8cff68ced60d65b0aa33b9530249ba"
       },
-      "head": "466184284f2ed349a4f774209812095d3e6b3647",
+      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
       "outcome": "updated",
-      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
+      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch.test.ts at 466184284f2ed349a4f774209812095d3e6b3647"
+        "Changed: packages/tests/unit/adapters/fetch.test.ts at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
       ]
     },
     "source:CHANGELOG.md": {
@@ -2389,15 +2389,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/trackStream.ts": {
-      "fingerprint": "d8753d99b4a60eed6a32f69698ca667930e101f44d30a23fbf93d3ef60702294",
+      "fingerprint": "1f3efef7063ac7bd8f485b619c0791a41a8923da210d52fe8bf8fc937e30d6f1",
       "snapshot": {
-        "packages/lib/src/lib/helpers/trackStream.ts": "20fd5bf38a8bbe21a8a94b5a3c9d355b6edb124ede7183cbf659ddbe54e93f33"
+        "packages/lib/src/lib/helpers/trackStream.ts": "8b3c37be367aa90e5d5ee7273f168d26f7c8f50343283f78df3ef42a6c0c911c"
       },
-      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
-      "outcome": "no-change",
-      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
+      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
+      "outcome": "updated",
+      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/trackStream.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/lib/src/lib/helpers/trackStream.ts at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
       ]
     },
     "source:packages/lib/src/lib/helpers/validator.ts": {
@@ -3584,15 +3584,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/fetch-adapter.md": {
-      "fingerprint": "d78becc86e2eef2168088b2250f937eae699cb883140022782c57a539bfd8186",
+      "fingerprint": "97fe1ba60f637dac515efb524283e87830edcf85e1025d2524536df96b8d6595",
       "snapshot": {
-        "packages/docs/pages/advanced/fetch-adapter.md": "ba3b346d3356a31c9e14105bb5c426a92953b8a397fb298c2668c7241b382207"
+        "packages/docs/pages/advanced/fetch-adapter.md": "73056b0c90633691a768ca39d26d53c0a2ccaa0863b6efb5da8cdfa040f8f7fa"
       },
-      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
+      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
       "outcome": "updated",
-      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
+      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/fetch-adapter.md at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
+        "Changed: packages/docs/pages/advanced/fetch-adapter.md at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
       ]
     },
     "source:packages/lib/src/lib/helpers/cloneConfig.ts": {
@@ -3761,6 +3761,42 @@
       "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
       "evidence": [
         "Changed: packages/tests/unit/helpers/trackStream.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+      ]
+    },
+    "source:.bumpy/adapter-resource-leaks.md": {
+      "fingerprint": "1b22c53b753197698e1919843d5ad622701167b3f21461683f9260cc5e090765",
+      "snapshot": {
+        ".bumpy/adapter-resource-leaks.md": "be9325619c03d702078c29250394c20ef8c86b11c32be6ee42cd5087bcc4c490"
+      },
+      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
+      "outcome": "updated",
+      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
+      "evidence": [
+        "Changed: .bumpy/adapter-resource-leaks.md at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
+      ]
+    },
+    "source:.bumpy/stream-timeout-lifetime.md": {
+      "fingerprint": "faacf61e53c8c2bb2e2bce0f1823bf2e8d42370d6cf41a85401f5305e082a055",
+      "snapshot": {
+        ".bumpy/stream-timeout-lifetime.md": "be5a33d415282fe0e17699f6026ad76cbc61a309486571726f1bfbe142ca5287"
+      },
+      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
+      "outcome": "updated",
+      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
+      "evidence": [
+        "Changed: .bumpy/stream-timeout-lifetime.md at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetchCleanup.test.ts": {
+      "fingerprint": "263c3c24d647c7ecdd67f4e14c112d900bdbd1dd4d24b369a6308823e248e967",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetchCleanup.test.ts": "5b9cd8cd3a4542940b4f2235a2e0de3a860e6e05d4d0131f7dbb22d89ccf4f0f"
+      },
+      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
+      "outcome": "updated",
+      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetchCleanup.test.ts at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
       ]
     }
   }

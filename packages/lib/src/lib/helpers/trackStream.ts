@@ -132,6 +132,9 @@ export const trackStream = (stream: unknown, chunkSize: number | undefined, onPr
           controller.enqueue(value);
         }
         catch (err) {
+          // Cancel the source so its lock and connection are released. The original error wins
+          // over a failure to cancel.
+          await iterator.return(undefined).catch(() => {});
           _onFinish(err);
           throw err;
         }

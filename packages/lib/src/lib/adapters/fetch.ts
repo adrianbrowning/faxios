@@ -171,8 +171,16 @@ type FetchEnv = {
   Response?: unknown;
 };
 
-// eslint-disable-next-line sonarjs/function-return-type
-const factory = (env: FetchEnv) => {
+type FetchAdapter = (config: InternalFaxiosRequestConfig) => Promise<unknown>;
+
+// Own reads only: a polluted Object.prototype.fetch must never become the transport.
+const readOwn = (obj: unknown, key: string): unknown =>
+  typeof obj === "object" && obj !== null && utils.hasOwnProp(obj, key) ? Reflect.get(obj, key) : undefined;
+const ownEnv = (config: unknown, key: keyof FetchEnv): unknown => readOwn(readOwn(config, "env"), key);
+
+// Feature detection depends only on the Request and Response constructors, so one adapter
+// serves every `env.fetch`. `env.fetch` is read for each request.
+const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const globalObject: Record<string, unknown> = utils.global ?? globalThis;
   const ReadableStream = globalObject["ReadableStream"] as
@@ -183,21 +191,10 @@ const factory = (env: FetchEnv) => {
     | undefined;
 
   // `undefined` falls back to the global constructor; `null` disables it.
-  const envFetch = env.fetch as FetchFn | undefined;
   const Request = (env.Request === undefined ? globalObject["Request"] : env.Request) as AnyConstructor | undefined;
   const Response = (env.Response === undefined ? globalObject["Response"] : env.Response) as AnyConstructor | undefined;
-  const _globalFetch = (globalThis as unknown as Record<string, unknown>)[
-    "fetch"
-  ];
-  const isFetchSupported = envFetch
-    ? isFunction(envFetch)
-    : isFunction(_globalFetch);
   const isRequestSupported = isFunction(Request);
   const isResponseSupported = isFunction(Response);
-
-  if (!isFetchSupported) {
-    return false;
-  }
 
   // Only members this runtime's Request exposes, so an engine that rejects members it doesn't
   // implement (Cloudflare Workers) is never sent one.
@@ -209,7 +206,7 @@ const factory = (env: FetchEnv) => {
   // .mode or undici .dispatcher apply to every request. Every own enumerable key of fetchOptions
   // is copied, so runtime extensions (Next.js `next`, Workers `cf`, Bun `tls`) still pass through;
   // inherited keys never do. The caller sets signal, method, headers, body, duplex, credentials.
-  const initFromFetchOptions = (fetchOptions: unknown): Record<string, unknown> => {
+  const initFromFetchOptions = (fetchOptions: unknown, envFetch: FetchFn | undefined): Record<string, unknown> => {
     const init: Record<string, unknown> = Object.create(null);
     for (const [ key, value ] of requestInitDefaults) init[key] = value;
     // Node's global fetch reads `dispatcher` the same way; pin it to undici's own global one.
@@ -294,26 +291,22 @@ const factory = (env: FetchEnv) => {
     stream: supportsResponseStream && ((res: AnyResponse) => res.body),
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  isFetchSupported &&
-    (() => {
-      [ "text", "arrayBuffer", "blob", "formData", "stream" ].forEach(type => {
-        !resolvers[type] &&
-          (resolvers[type] = (res: AnyResponse, config?: unknown) => {
-            const method = (res as Record<string, unknown>)[type];
+  [ "text", "arrayBuffer", "blob", "formData", "stream" ].forEach(type => {
+    !resolvers[type] &&
+      (resolvers[type] = (res: AnyResponse, config?: unknown) => {
+        const method = (res as Record<string, unknown>)[type];
 
-            if (method) {
-              return (method as (this: AnyResponse) => unknown).call(res);
-            }
+        if (method) {
+          return (method as (this: AnyResponse) => unknown).call(res);
+        }
 
-            throw new FaxiosError(
-              `Response type '${type}' is not supported`,
-              FaxiosError.ERR_NOT_SUPPORT,
-              config as InternalFaxiosRequestConfig
-            );
-          });
+        throw new FaxiosError(
+          `Response type '${type}' is not supported`,
+          FaxiosError.ERR_NOT_SUPPORT,
+          config as InternalFaxiosRequestConfig
+        );
       });
-    })();
+  });
 
   const getBodyLength = async (body: unknown): Promise<number | undefined> => {
     if (body == null) {
@@ -591,11 +584,11 @@ const factory = (env: FetchEnv) => {
     hasMaxContentLength: boolean,
     maxContentLength: number,
     isStreamResponse: boolean,
-    unsubscribe: (() => void) | false | undefined,
+    release: (err?: unknown) => void,
     config: InternalFaxiosRequestConfig,
     request: unknown
   ): AnyResponse => {
-    const needsWrapping = onDownloadProgress || hasMaxContentLength || (isStreamResponse && unsubscribe);
+    const needsWrapping = !!onDownloadProgress || hasMaxContentLength || isStreamResponse;
     if (!supportsResponseStream || !response.body || !needsWrapping) {
       return response;
     }
@@ -648,17 +641,18 @@ const factory = (env: FetchEnv) => {
         response.body,
         DEFAULT_CHUNK_SIZE,
         onChunkProgress,
-        () => {
+        (err?: unknown) => {
           flush && flush();
-          unsubscribe && unsubscribe();
+          release(err);
         }
       ),
       options
     ) as AnyResponse;
   };
 
-  const unsubscribeOnComplete = (isStreamResponse: boolean, unsubscribe: (() => void) | undefined) => {
-    if (!isStreamResponse) unsubscribe?.();
+  // A stream body releases the request when it ends; a response without a body has nothing to wait for.
+  const unsubscribeOnComplete = (isStreamResponse: boolean, response: AnyResponse, unsubscribe: () => void) => {
+    if (!isStreamResponse || response.body == null) unsubscribe();
   };
 
   return async (config: InternalFaxiosRequestConfig) => {
@@ -693,6 +687,7 @@ const factory = (env: FetchEnv) => {
         ? (config as unknown as Record<string, unknown>)[key]
         : undefined;
 
+    const envFetch = ownEnv(config, "fetch") as FetchFn | undefined;
     const _fetch: FetchFn = (envFetch || (globalThis as unknown as Record<string, unknown>)["fetch"]) as FetchFn;
 
     if (timeout != null && !Number.isFinite(Number(timeout))) {
@@ -707,13 +702,16 @@ const factory = (env: FetchEnv) => {
       responseType ? (responseType + "").toLowerCase() : "text"
     ) as typeof responseType;
 
+    // Owns the request's cleanup: aborting it on a failure aborts fetch, which releases the
+    // connection and any body still being sent or received.
+    const requestController = new AbortController();
     const composedSignal = composeSignals(
-      [ signal ],
+      [ signal, requestController.signal ],
       timeout,
       timeoutErrorMessage
-    ) as ComposedSignal | undefined;
+    ) as ComposedSignal;
 
-    const unsubscribe = composedSignal?.unsubscribe?.bind(composedSignal);
+    const unsubscribe = composedSignal.unsubscribe!.bind(composedSignal);
 
     let request: null | Request = null;
     const pendingBodyErrorRef: PendingBodyErrorRef = { value: null };
@@ -775,7 +773,7 @@ const factory = (env: FetchEnv) => {
       // Case-insensitive check: toByteStringHeaderObject may normalize to lowercase.
       data = toWebStream(await encodeBodyIfNeeded(data, serializedHeaders, encodeText));
 
-      const resolvedOptions = initFromFetchOptions(fetchOptions);
+      const resolvedOptions = initFromFetchOptions(fetchOptions, envFetch);
       resolvedOptions["signal"] = composedSignal;
       resolvedOptions["method"] = (method as string).toUpperCase();
       resolvedOptions["headers"] = serializedHeaders;
@@ -801,6 +799,14 @@ const factory = (env: FetchEnv) => {
         supportsResponseStream &&
         (responseType === "stream" || responseType === "response");
 
+      // A stream body outlives this call, so its end, error or cancel releases the request.
+      // A buffered body is released below, or by the catch on failure.
+      const releaseStreamBody = (bodyErr?: unknown): void => {
+        if (!isStreamResponse) return;
+        if (bodyErr !== undefined) requestController.abort(bodyErr);
+        unsubscribe();
+      };
+
       response = buildDownloadStream(
         response,
         responseHeaders,
@@ -808,7 +814,7 @@ const factory = (env: FetchEnv) => {
         hasMaxContentLength,
         maxContentLength!,
         isStreamResponse,
-        unsubscribe,
+        releaseStreamBody,
         config,
         request
       );
@@ -829,7 +835,7 @@ const factory = (env: FetchEnv) => {
         request
       );
 
-      unsubscribeOnComplete(isStreamResponse, unsubscribe);
+      unsubscribeOnComplete(isStreamResponse, response, unsubscribe);
 
       return await new Promise((resolve, reject) => {
         settle(resolve, reject, {
@@ -843,42 +849,57 @@ const factory = (env: FetchEnv) => {
       });
     }
     catch (err) {
-      unsubscribe && unsubscribe();
-      throw handleFetchCaughtError(err, composedSignal, pendingBodyErrorRef, config, request);
+      let error: unknown = err;
+      try {
+        handleFetchCaughtError(err, composedSignal, pendingBodyErrorRef, config, request);
+      }
+      catch (classified) {
+        error = classified;
+      }
+      // Classify first: the abort below sets the composed signal's reason.
+      requestController.abort(error);
+      unsubscribe();
+      throw error;
     }
   };
 };
 
-const seedCache = new Map<unknown, unknown>();
+// One adapter per Request/Response pair. Weak keys let a per-request `env.Request` or
+// `env.Response` be collected. `undefined` (use the global) and any non-function (disabled)
+// get stand-in keys.
+const GLOBAL_CTOR = {};
+const NO_CTOR = {};
+const adapters = new WeakMap<object, WeakMap<object, FetchAdapter>>();
 
-export const getFetch = (config?: { env?: Record<string, unknown>; }) => {
-  // Own reads only: a polluted Object.prototype.fetch must never become the transport.
-  const env = config && utils.hasOwnProp(config, "env") ? config.env : undefined;
-  const own = (key: keyof FetchEnv): unknown => (env && utils.hasOwnProp(env, key) ? env[key] : undefined);
-  const fetch = own("fetch");
-  const Request = own("Request");
-  const Response = own("Response");
-  const seeds: Array<unknown> = [ Request, Response, fetch ];
+const ctorKey = (ctor: unknown): object => {
+  if (ctor === undefined) return GLOBAL_CTOR;
+  return isFunction(ctor) ? (ctor as object) : NO_CTOR;
+};
 
-  const len = seeds.length;
-  let i = len;
-  let seed: unknown;
-  let target: unknown;
-  let map: Map<unknown, unknown> = seedCache;
-
-  while (i--) {
-    seed = seeds[i];
-    target = map.get(seed);
-
-    if (target === undefined) {
-      target = i ? new Map<unknown, unknown>() : factory({ fetch, Request, Response });
-      map.set(seed, target);
-    }
-
-    map = target as Map<unknown, unknown>;
+// `false` tells dispatchRequest that this runtime has no fetch.
+// eslint-disable-next-line sonarjs/function-return-type
+export const getFetch = (config?: { env?: Record<string, unknown>; }): false | FetchAdapter => {
+  const fetch = ownEnv(config, "fetch");
+  if (!isFunction(fetch || (globalThis as unknown as Record<string, unknown>)["fetch"])) {
+    return false;
   }
 
-  return target;
+  const Request = ownEnv(config, "Request");
+  const Response = ownEnv(config, "Response");
+  const requestKey = ctorKey(Request);
+  const responseKey = ctorKey(Response);
+
+  let byResponse = adapters.get(requestKey);
+  if (!byResponse) {
+    byResponse = new WeakMap();
+    adapters.set(requestKey, byResponse);
+  }
+  let adapter = byResponse.get(responseKey);
+  if (!adapter) {
+    adapter = factory({ Request, Response });
+    byResponse.set(responseKey, adapter);
+  }
+  return adapter;
 };
 
 getFetch();
