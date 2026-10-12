@@ -1,7 +1,7 @@
 "use strict";
 
 import { getFetch } from "../adapters/fetch.js";
-import CanceledError from "../cancel/CanceledError.js";
+import canceledFromSignal from "../cancel/canceledFromSignal.js";
 import isCancel from "../cancel/isCancel.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
@@ -13,8 +13,28 @@ import transformData from "./transformData.js";
 
 function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void {
   if (config.signal && config.signal.aborted) {
-    throw new CanceledError(undefined, config);
+    throw canceledFromSignal(config.signal, config);
   }
+}
+
+// An async schema is caller code that may take any time, so the caller's abort settles the request
+// right away instead of waiting for it. The final check before the adapter still runs either way.
+function settleOnAbort(preFlight: Promise<void>, config: InternalFaxiosRequestConfig): Promise<void> {
+  const signal = config.signal;
+  if (!signal || typeof signal.addEventListener !== "function") return preFlight;
+  // The executor form: the library's TypeScript lib target has no Promise.withResolvers.
+  return new Promise((resolve, reject) => {
+    const onAbort = () => {
+      signal.removeEventListener?.("abort", onAbort);
+      reject(canceledFromSignal(signal, config));
+    };
+    signal.addEventListener?.("abort", onAbort);
+    // Once the abort has settled the request, the schema's result has nowhere to go; this still
+    // consumes it, so it never becomes an unhandled rejection.
+    preFlight.finally(() => signal.removeEventListener?.("abort", onAbort)).then(resolve, reject);
+    // A schema may abort before its first await, which fires no event once we listen.
+    if (signal.aborted) onAbort();
+  });
 }
 
 async function validateAndSubstitutePathParams(config: InternalFaxiosRequestConfig): Promise<void> {
@@ -98,7 +118,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
   throwIfCancellationRequested(config);
 
   const preFlight = validatePreFlight(config);
-  if (preFlight) await preFlight;
+  if (preFlight) await settleOnAbort(preFlight, config);
 
   config.headers = FaxiosHeaders.from(config.headers) as unknown as typeof config.headers;
 

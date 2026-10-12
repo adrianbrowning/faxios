@@ -91,7 +91,8 @@ export const handleFetchCaughtError = (
     const canceledError = composedSignal.reason;
     canceledError.config = config;
     request && (canceledError.request = request);
-    err !== canceledError && (canceledError.cause = err as Error);
+    // A cancellation already carries the abort reason as its cause; keep it.
+    err !== canceledError && canceledError.cause === undefined && (canceledError.cause = err as Error);
     throw canceledError;
   }
 

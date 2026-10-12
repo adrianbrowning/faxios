@@ -76,7 +76,7 @@ await api.get("/users");
 
 ### Backoff
 
-`delay` is the wait before the next try, in milliseconds, or a function `(attempt, error) => ms`. The default starts at 100ms and doubles on each try. The wait is capped at `maxDelay` (default 30 seconds).
+`delay` is the wait before the next try, in milliseconds, or a function `(attempt, error) => ms`. The default starts at 100ms and doubles on each try. The wait is capped at `maxDelay` (default 30 seconds). `maxDelay` and `maxRetryAfter` must be from 0 to 2147483647 milliseconds (the longest delay `setTimeout` supports); a larger value rejects with `ERR_BAD_OPTION_VALUE`, so a wait can never overflow into an immediate retry.
 
 `jitter` then picks the actual wait:
 
@@ -203,7 +203,7 @@ await api.get("/users");
 
 ## Combining retry with cancellation
 
-An abort during a backoff wait rejects with `CanceledError` straight away, and a cancellation is never retried:
+An abort during a backoff wait rejects with `CanceledError` straight away, and a cancellation is never retried. As at every other stage, the error keeps the abort reason as its `cause`:
 
 ```js
 import faxios from "@gcmdev/faxios";

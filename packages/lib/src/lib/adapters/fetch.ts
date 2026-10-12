@@ -1,3 +1,4 @@
+import assertTimeout from "../core/assertTimeout.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import prepareRequest from "../core/prepareRequest.js";
@@ -715,13 +716,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     const envFetch = ownEnv(config, "fetch") as FetchFn | undefined;
     const _fetch: FetchFn = (envFetch || (globalThis as unknown as Record<string, unknown>)["fetch"]) as FetchFn;
 
-    if (timeout != null && !Number.isFinite(Number(timeout))) {
-      throw new FaxiosError(
-        "error trying to parse `config.timeout` to int",
-        FaxiosError.ERR_BAD_OPTION_VALUE,
-        config
-      );
-    }
+    assertTimeout(timeout, config);
 
     responseType = (
       responseType ? (responseType + "").toLowerCase() : "text"

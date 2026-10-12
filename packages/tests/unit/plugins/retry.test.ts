@@ -158,6 +158,19 @@ describe("plugins::retry", () => {
     assert.strictEqual(calls.length, 1);
   });
 
+  it("keeps the abort reason as the cause when the caller aborts during the backoff", async () => {
+    const { fetch } = scriptedFetch([ 503, 200 ]);
+    const controller = new AbortController();
+    const reason = new Error("user left");
+    const api = faxios.create({ env: { fetch } }).use(retry({ delay: 1000 }));
+
+    const request = assert.rejects(api.get(URL, { signal: controller.signal }), (err: unknown) =>
+      err instanceof CanceledError && err.message === "user left" && err.cause === reason);
+    await vi.advanceTimersByTimeAsync(10);
+    controller.abort(reason);
+    await request;
+  });
+
   it("leaves no abort listener on the caller's signal after an abort during the backoff", async () => {
     const { fetch } = scriptedFetch([ 503, 200 ]);
     const controller = new AbortController();
@@ -415,6 +428,26 @@ describe("plugins::retry", () => {
       assert.strictEqual(tooLong.calls.length, 1);
     });
 
+    it("never retries at once on a Retry-After too large for a timer", async () => {
+      const { fetch, calls } = scriptedFetch([{ status: 503, headers: { "Retry-After": "99999999999" } }, 200 ]);
+      const request = assert.rejects(faxios.create({ env: { fetch } }).use(retry())
+        .get(URL), isStatus(503));
+      await vi.advanceTimersByTimeAsync(1);
+      await request;
+
+      assert.strictEqual(calls.length, 1);
+    });
+
+    it("waits the whole Retry-After when maxRetryAfter is at the setTimeout limit", async () => {
+      const { fetch, calls } = scriptedFetch([{ status: 503, headers: { "Retry-After": "2147483" } }, 200 ]);
+      const request = faxios.create({ env: { fetch } }).use(retry({ maxRetryAfter: 2_147_483_647 }))
+        .get(URL);
+
+      assert.strictEqual(await callsAfter(calls, 2_147_482_999), 1);
+      assert.strictEqual(await callsAfter(calls, 1), 2);
+      await request;
+    });
+
     it("waits the computed backoff instead of Retry-After when respectRetryAfter is false", async () => {
       vi.setSystemTime(new Date("2026-01-01T00:00:00Z"));
       const replies: Array<Reply> = [
@@ -556,6 +589,11 @@ describe("plugins::retry", () => {
         assert.throws(() => retry({ maxDelay: ms }), isBadValue, `maxDelay: ${ms}`);
         assert.throws(() => retry({ maxRetryAfter: ms }), isBadValue, `maxRetryAfter: ${ms}`);
       }
+      for (const ms of [ 2 ** 31, 30 * 24 * 60 * 60 * 1000 ]) {
+        assert.throws(() => retry({ maxDelay: ms }), (err: unknown) => isBadValue(err) && (err as Error).message.includes("maxDelay"), `maxDelay: ${ms}`);
+        assert.throws(() => retry({ maxRetryAfter: ms }), (err: unknown) => isBadValue(err) && (err as Error).message.includes("maxRetryAfter"), `maxRetryAfter: ${ms}`);
+      }
+      assert.doesNotThrow(() => retry({ maxDelay: 2_147_483_647, maxRetryAfter: 2_147_483_647 }));
       // @ts-expect-error TS2322 -- jitter is "full" or "none"
       assert.throws(() => retry({ jitter: "half" }), isBadValue);
       // @ts-expect-error TS2322 -- onRetry must be a function
@@ -571,6 +609,7 @@ describe("plugins::retry", () => {
       await assert.rejects(api.get(URL, { retry: { statuses: [ 600 ] } }), isBadValue);
       await assert.rejects(api.get(URL, { retry: { maxDelay: -1 } }), isBadValue);
       await assert.rejects(api.get(URL, { retry: { maxRetryAfter: Number.NaN } }), isBadValue);
+      await assert.rejects(api.get(URL, { retry: { maxRetryAfter: 2 ** 31 } }), isBadValue);
       // @ts-expect-error TS2769 -- jitter is "full" or "none"
       await assert.rejects(api.get(URL, { retry: { jitter: "some" } }), isBadValue);
       // @ts-expect-error TS2769 -- respectRetryAfter must be a boolean
