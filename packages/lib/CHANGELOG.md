@@ -1,5 +1,18 @@
 # Changelog
 
+
+## 0.2.2
+<sub>2026-10-12</sub>
+
+- [#202](https://github.com/adrianbrowning/faxios/pull/202)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed authBearer sending `Bearer null` or an empty token: when getToken returns anything other than a non-empty string, the request is sent without the auth header.
+- [#202](https://github.com/adrianbrowning/faxios/pull/202)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed pathParams values `.` and `..` (including percent-encoded forms like `%2e%2e`) moving the request to another path; they now reject with ERR_BAD_OPTION_VALUE.
+- [#203](https://github.com/adrianbrowning/faxios/pull/203)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed sending a stream request body a second time, for example from middleware that calls next() again: it now rejects with a FaxiosError coded ERR_BAD_REQUEST instead of an uncoded TypeError or an empty body.
+- [#204](https://github.com/adrianbrowning/faxios/pull/204)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed request bodies and query params dropping keys named constructor, prototype or __proto__, and stopped a polluted Object.prototype from changing the fetch init, the transport, form serialization or the default method.
+
 ## v0.2.1 — October 10, 2026
 
 ### Features
