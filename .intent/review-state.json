@@ -3,7 +3,7 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "5933e451c59faab08bfa5e359ba9d4310f11cdf1121f60c51226ddcb219b138e",
+      "fingerprint": "1e0874e618668bfb5c13f043ba8be1d5beb6612a4026934281f23a3c689f84f0",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "301c6e77e898dcc3bf63a9eb2f27b216f5f3c2cb94673f0790260a00a7cab8cb",
@@ -11,7 +11,7 @@
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "394e2c0133021aae772972fe591f0b2ba8095ddcb6075c996015fc8640477a93",
+        "packages/lib/src/lib/adapters/fetch.ts": "fa919dd554eae28aa95f12d102d31808bafdeddb9ca4fcf8b9e6b9ccbda523a2",
         "packages/lib/src/lib/core/Faxios.ts": "1697549ccacac943df349a8cba8e80ec028ef383e5f328f2950a91e7833dbbf0",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
@@ -25,7 +25,7 @@
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
         "packages/lib/src/lib/plugins/retry.ts": "4e0ed48eeecbb246e66b046530c688265b2b987bdf4cf1cdb81148471090db3c",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
-        "packages/lib/src/lib/types.ts": "6314e9ebea2200c3ca4762cfd9dcdf40e2a06284ebbc76a4de9f7761578e5b7f",
+        "packages/lib/src/lib/types.ts": "40556e970e522dd343099d99674509ad2dee02a2d1b71c33309daf6cd4d9067a",
         "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
         "packages/tests/unit/core/middleware.test.ts": "106d605207a1e7754baedd1565a559e973bda954b6e3970fac54d0da69116e7f",
         "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
@@ -33,15 +33,15 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "51b9fecea630fa9b8b9405af26a48909b73a05a2",
+      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
       "outcome": "no-change",
-      "reason": "types.ts only adds the optional formSerializer.Blob field; the skill does not cover formSerializer options",
+      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
       "evidence": [
-        "Changed: packages/lib/src/lib/types.ts at 3bf86f21a6e783136a84768f55a9ce9ff8b7bf60"
+        "Changed: packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/types.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "509db036155c303b69ecdca2a6e9a11909599f49422402b025d52df8ee38e192",
+      "fingerprint": "c35609380a6f5dfe8e39ee18342cb3b90aa372166869b80d97510ea1afc9985b",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
@@ -52,7 +52,7 @@
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "394e2c0133021aae772972fe591f0b2ba8095ddcb6075c996015fc8640477a93",
+        "packages/lib/src/lib/adapters/fetch.ts": "fa919dd554eae28aa95f12d102d31808bafdeddb9ca4fcf8b9e6b9ccbda523a2",
         "packages/lib/src/lib/core/Faxios.ts": "1697549ccacac943df349a8cba8e80ec028ef383e5f328f2950a91e7833dbbf0",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
@@ -66,7 +66,7 @@
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
         "packages/lib/src/lib/plugins/retry.ts": "4e0ed48eeecbb246e66b046530c688265b2b987bdf4cf1cdb81148471090db3c",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
-        "packages/lib/src/lib/types.ts": "6314e9ebea2200c3ca4762cfd9dcdf40e2a06284ebbc76a4de9f7761578e5b7f",
+        "packages/lib/src/lib/types.ts": "40556e970e522dd343099d99674509ad2dee02a2d1b71c33309daf6cd4d9067a",
         "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
         "packages/tests/unit/core/middleware.test.ts": "106d605207a1e7754baedd1565a559e973bda954b6e3970fac54d0da69116e7f",
         "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "51b9fecea630fa9b8b9405af26a48909b73a05a2",
+      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
       "outcome": "no-change",
-      "reason": "types.ts only adds the optional formSerializer.Blob field; the skill does not cover formSerializer options",
+      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
       "evidence": [
-        "Changed: packages/lib/src/lib/types.ts at 3bf86f21a6e783136a84768f55a9ce9ff8b7bf60"
+        "Changed: packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/types.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "source:knip.json": {
@@ -278,13 +278,13 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "4f2c011deb1bd1822dd96452269bcd079bef2a0a610cef55885c21920f2f9675",
+      "fingerprint": "f7100730f3942479e49ce9c4172cfb08ad3b6d1d18d11880c7bd8539dd4e2a9a",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "49627480697b84d4be0acdcd2ce0ce2ea73a7eeb2bdc61b798b875e0d29ad29c"
+        "packages/docs/pages/advanced/request-config.md": "428ec31167134f546c73e9fa2c9a6b7f36c185b687150515bcae8ca6fb96854b"
       },
-      "head": "51b9fecea630fa9b8b9405af26a48909b73a05a2",
+      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
       "outcome": "no-change",
-      "reason": "configure-requests skill does not document toFormData internals, Blob option or its error codes",
+      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
       "evidence": [
         "Changed: packages/docs/pages/advanced/request-config.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
@@ -2340,16 +2340,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/progressEventReducer.ts": {
-      "fingerprint": "7a91a6f5551fe4076fbce726e1eec50a9f07dc8e61ca69b31097e2561bf9ff3f",
+      "fingerprint": "c2a8ad276c4f815d17745c866d90d3564c2de7c988e0b82636e731a127ea8c18",
       "snapshot": {
-        "packages/lib/src/lib/helpers/progressEventReducer.ts": "504dfea2a1fac6ccc90cd97fdf4f2fa41896fee3b0b0eb37b4b8c3c8e7764cec"
+        "packages/lib/src/lib/helpers/progressEventReducer.ts": "9d58a822018eb3c16e9e58c52c9b9f00ced7ae5df9c43a1fc211977def3fe12e"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
       "outcome": "no-change",
-      "reason": "Members of the `ev` cast type literal sorted (`lengthComputable`, `loaded`, `total`). Behaviour change: none. The `data` and `progressEventDecorator` object literals are unchanged.",
+      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/progressEventReducer.ts: Whole file compared. Only HEAD L14 differs.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/helpers/progressEventReducer.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "source:packages/lib/src/lib/helpers/sanitizeHeaderValue.ts": {
@@ -3680,6 +3679,54 @@
       "reason": "configure-requests skill does not document toFormData internals, Blob option or its error codes",
       "evidence": [
         "Changed: packages/tests/unit/toFormData.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+      ]
+    },
+    "source:.bumpy/progress-callback-errors.md": {
+      "fingerprint": "47218e99c98199852bee1cc2ff4efba3799284ad01b28463c535ad8d57912246",
+      "snapshot": {
+        ".bumpy/progress-callback-errors.md": "d6cecf94670282431e97e841b7787697166d1abdd49e395ee4b10688a4a03bad"
+      },
+      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
+      "outcome": "no-change",
+      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
+      "evidence": [
+        "Changed: .bumpy/progress-callback-errors.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+      ]
+    },
+    "source:.bumpy/progress-compressed-total.md": {
+      "fingerprint": "453ec02271b85e6bb5a2f0d5a8ad800e544ac4a030645e21003d1547d3a79085",
+      "snapshot": {
+        ".bumpy/progress-compressed-total.md": "b21364d5da0e9e5bd76af7eab538e37f44c38b6d8ec59dec327d8d050ed351c1"
+      },
+      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
+      "outcome": "no-change",
+      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
+      "evidence": [
+        "Changed: .bumpy/progress-compressed-total.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+      ]
+    },
+    "source:packages/docs/pages/advanced/progress-capturing.md": {
+      "fingerprint": "d694b3a0d51725e9055de29101ff133cbc45201552d8bd04dbb3c1046a9b088f",
+      "snapshot": {
+        "packages/docs/pages/advanced/progress-capturing.md": "6eec6ad3dec2a35e89bde9e5056c398ad63dbc5a28f2002585eae1147de132de"
+      },
+      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
+      "outcome": "no-change",
+      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
+      "evidence": [
+        "Changed: packages/docs/pages/advanced/progress-capturing.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch-progress.test.ts": {
+      "fingerprint": "a5819e70ebd4d81dfe09d286aefcc0e64c772d3b5c1f3af03293d878cd85d01c",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch-progress.test.ts": "b997b27d53a38d5ea868adb8d9c4039929aeefe7cfa4e027f8ecc4033d42eccb"
+      },
+      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
+      "outcome": "no-change",
+      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch-progress.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     }
   }

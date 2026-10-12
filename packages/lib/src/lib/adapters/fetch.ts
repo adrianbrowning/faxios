@@ -598,9 +598,15 @@ const factory = (env: FetchEnv) => {
       options[prop] = response[prop];
     });
 
-    const responseContentLength = utils.toFiniteNumber(
-      (responseHeaders.getContentLength as () => unknown)()
-    );
+    // Content-Length is the encoded size; the stream yields decoded bytes, so
+    // the total is unknown when the body is content-encoded.
+    const contentEncoding = String(responseHeaders.get("content-encoding") ?? "").trim()
+      .toLowerCase();
+    const responseContentLength = contentEncoding && contentEncoding !== "identity"
+      ? undefined
+      : utils.toFiniteNumber(
+        (responseHeaders.getContentLength as () => unknown)()
+      );
 
     const [ onProgress, flush ] = onDownloadProgress
       ? progressEventDecorator(

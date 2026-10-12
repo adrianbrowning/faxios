@@ -254,6 +254,10 @@ The `onDownloadProgress` function allows you to listen to the progress of a down
 
 `onUploadProgress` works the same way for the request body. faxios reports upload progress by streaming the request body, so `onUploadProgress` only fires where the runtime's `fetch` supports streaming request bodies (`duplex: "half"`), as Node.js does. Where it doesn't, the callback is not called.
 
+For a compressed response (any `Content-Encoding` other than `identity`), `total` is `undefined` and `lengthComputable` is `false`, because `Content-Length` is the compressed size.
+
+If either callback throws, or returns a promise that rejects, faxios catches and ignores the error. The request carries on and settles normally.
+
 ### `maxContentLength`
 
 The `maxContentLength` property defines the maximum response size in bytes. The fetch adapter enforces it when the response length is declared, the response stream can be tracked, or the response size can otherwise be determined.

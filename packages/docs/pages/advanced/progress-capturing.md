@@ -23,6 +23,10 @@ await faxios.get(url, {
 });
 ```
 
+For a compressed response (any `Content-Encoding` other than `identity`), `Content-Length` is the compressed size while `loaded` counts decoded bytes. faxios reports `total: undefined`, `progress: undefined` and `lengthComputable: false` for these responses.
+
+If a progress callback throws, or returns a promise that rejects, faxios catches and ignores the error. The request carries on and settles as if the callback had returned normally.
+
 ::: warning Upload progress needs request streams
 faxios reports upload progress by streaming the request body, so `onUploadProgress` only fires where the runtime's `fetch` supports streaming request bodies (`duplex: "half"`), as Node.js does. Where it doesn't, the callback is not called.
 :::
