@@ -3,16 +3,16 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "efdac616d303610d2511ef37bee41c54814d0e6e9a3e549e88e1c9d0d79a1470",
+      "fingerprint": "ea4af23865b97e7b97b202664025244e636f021a98fcc0087a8e2414b8f5a04c",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "c0bb05f55c5ab74840a93bc6f2674de07806acf5c33ce33afd34a4ac49492f07",
-        "packages/lib/skills/configure-requests/SKILL.md": "c1bafda54b8e9cb93ca4e7e2ccfd9efb7303683238bc8e1fa3977c64fe3ce994",
+        "packages/lib/skills/configure-requests/SKILL.md": "9ebce05ee93562003511dfbaa7e34fd86f07ec93097419922ce5c8f565d387c3",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "c401f87c236db2607f7b588aa84442bcc6e62954ea8efb3c4f6bb8c9ba60a2fd",
-        "packages/lib/src/lib/core/Faxios.ts": "7f2933029d77a5ccf806fcad97db4914b4c499038cda04e482794c3ce29e7fe9",
+        "packages/lib/src/lib/adapters/fetch.ts": "483f1d6a9f77ed2aba4ef73ab032125bfda9268711988c517c218fa1595c4130",
+        "packages/lib/src/lib/core/Faxios.ts": "e194fd3e6294c964fb0d6076bb786d3203355f437b9a73b304b4b86b4fed2293",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "97e25da79a42da871a80b630101563758ca5df332aee2320d13bcaf0ea8faee5",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
@@ -33,27 +33,27 @@
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
+      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
       "outcome": "updated",
-      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/helpers/composeSignals.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "4bfabd6718d8d70fb672f2c321ae0ea4b0169e760639ddc6cf2849aa4363256d",
+      "fingerprint": "12cbd095455f1a9e0320aaf724322d3e3068f34d1838898808b3c645f418eac8",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "c0bb05f55c5ab74840a93bc6f2674de07806acf5c33ce33afd34a4ac49492f07",
-        "packages/lib/skills/configure-requests/SKILL.md": "c1bafda54b8e9cb93ca4e7e2ccfd9efb7303683238bc8e1fa3977c64fe3ce994",
+        "packages/lib/skills/configure-requests/SKILL.md": "9ebce05ee93562003511dfbaa7e34fd86f07ec93097419922ce5c8f565d387c3",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "c401f87c236db2607f7b588aa84442bcc6e62954ea8efb3c4f6bb8c9ba60a2fd",
-        "packages/lib/src/lib/core/Faxios.ts": "7f2933029d77a5ccf806fcad97db4914b4c499038cda04e482794c3ce29e7fe9",
+        "packages/lib/src/lib/adapters/fetch.ts": "483f1d6a9f77ed2aba4ef73ab032125bfda9268711988c517c218fa1595c4130",
+        "packages/lib/src/lib/core/Faxios.ts": "e194fd3e6294c964fb0d6076bb786d3203355f437b9a73b304b4b86b4fed2293",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "97e25da79a42da871a80b630101563758ca5df332aee2320d13bcaf0ea8faee5",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
+      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
       "outcome": "updated",
-      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/helpers/composeSignals.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "source:knip.json": {
@@ -218,15 +218,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/error-handling.md": {
-      "fingerprint": "0742e8f7b56f66b63611755c55a9ac263220e74eb8de8fb15e04e17d42b73387",
+      "fingerprint": "6bb4f91d4d06ffdfbc935af5c938e60000b337c4fd35bef42a53bffb2a55a584",
       "snapshot": {
-        "packages/docs/pages/advanced/error-handling.md": "826089bc5059f2e703c1376219aec60e79c47b541da04e3f11276ce938e4dbca"
+        "packages/docs/pages/advanced/error-handling.md": "72acd8a33b05c4a63370873971a275272ca0926b508d42c9057f33c64913e1ff"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
       "outcome": "updated",
-      "reason": "Skill updated from this diff.",
+      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
       "evidence": [
-        "Added error.response.data holds the rejected body on ERR_BAD_RESPONSE_SCHEMA (runtime-checked). Diff review: +L13: on ERR_BAD_RESPONSE_SCHEMA, `error.response` is always set and `error.response.data` is the rejected body (after transformResponse, typed unknown); toJSON doesn't serialize it. +L14..+L16: on the input codes, `error.config.data/params/pathParams` hold the original, unvalidated value. SKILL L132-133 lists the codes and `issues` only, so where to find the rejected body/input is missing. Nothing contradicts the skill."
+        "Changed: packages/docs/pages/advanced/error-handling.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "source:packages/docs/pages/advanced/headers.md": {
@@ -278,13 +278,13 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "77de25e24d449da9bb4be079d2a813f29abef031770d855762b03d104bda483a",
+      "fingerprint": "6e1eab8c134f57d8faeb2bd7e6617c908895715b651c6303aaa686f28595105f",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "e0f2868d269066b74c4c57fac2642735379e80940c6bfccee4afed105a3740f6"
+        "packages/docs/pages/advanced/request-config.md": "46bfa19234848e6281c6d22cd848c340f77969eae51ed79ec9f8b3f466e3262f"
       },
-      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
+      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
       "outcome": "updated",
-      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
       "evidence": [
         "Changed: packages/docs/pages/advanced/request-config.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
@@ -447,15 +447,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch.test.ts": {
-      "fingerprint": "f806c05650a0424ae3174ff9aaae14b258d6c03bf9b17c1fe16bdbbaba3ec62d",
+      "fingerprint": "806cc5fcc40c29b90951245e9800197f31e2b1516a8c6371ab1206d98872a5ea",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch.test.ts": "d2ce772ca840538161a3bcbcf52849e912a24f804aa5ba6ba81f4ace975e8c68"
+        "packages/tests/unit/adapters/fetch.test.ts": "9751c164ed5906d28681d45a598a11a2a24a27001c1deb4b3dd8b781b29229aa"
       },
-      "head": "3f379a4c81c5a5f1a2456dcec19e8f6bcdbfd606",
+      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
+      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/tests/unit/adapters/fetch.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "source:CHANGELOG.md": {
@@ -2211,13 +2211,13 @@
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
-      "fingerprint": "0da89edf4548bf1fa46602f4197be9f31d92b602acaf4b515abe0c0820b87f89",
+      "fingerprint": "1cec8afe593f0d5abc3e5f2e2f9c470b6fc3ace8d95ecfe79f9a00e5da581121",
       "snapshot": {
-        "packages/lib/src/lib/adapters/fetch-helpers.ts": "cc7d601d9160fc45a3f29a88920404cc58a7873afed5af29273d6e08a865f420"
+        "packages/lib/src/lib/adapters/fetch-helpers.ts": "e96c9fadbede5d542b34bf0e9b599d0346ff0c630b0a22f3cf78527fd531395a"
       },
-      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
+      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
       "outcome": "updated",
-      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
       "evidence": [
         "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
@@ -2247,15 +2247,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
-      "fingerprint": "1b972d77074d47dac3d143acfe6d0884e7e1440965ea61a5fa74f8f57e466ddc",
+      "fingerprint": "bd71ef7926d677aac5ffc89bcd43a978f73c445caedd97ffeb6702bc0fddbf2a",
       "snapshot": {
-        "packages/lib/src/lib/core/prepareRequest.ts": "2de9a117192f36c0971fd46770cc65d554ffc3c5409a2e63827898a755a11bae"
+        "packages/lib/src/lib/core/prepareRequest.ts": "431100de298a57bf0875ec8679d5e750da2a800e81685e48a5c00832aac045ed"
       },
-      "head": "171fd2a68f53dbb058a5074bc17f64201dee09dd",
+      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
       "outcome": "updated",
-      "reason": "configure-requests skill now says getUri() applies allowAbsoluteUrls the way a request does; other changes are internal URL resolution, docs, tests and a bump file",
+      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/prepareRequest.ts at d8cbd4de61e82132702bf7f2751683bf4c27bded"
+        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "source:packages/lib/src/lib/core/transformData.ts": {
@@ -2397,16 +2397,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/validator.ts": {
-      "fingerprint": "9b3073151f61eb08a8be187678bcb58d07222fcba82de287383ad1d8e90100df",
+      "fingerprint": "a6d64a8e5de8969445043a585de1f45e71bebf000fb3190f54b3474f205241dc",
       "snapshot": {
-        "packages/lib/src/lib/helpers/validator.ts": "31e055e85520fb0e8fd5e20deee6d9c85c4c238d6f4dae92d0ff88b7d3246ef0"
+        "packages/lib/src/lib/helpers/validator.ts": "c25dca328eea7f32693123c32432a1172b6b695b65a3a349cdd69f6b97d2987b"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "`ValidatorFn | undefined` → `undefined | ValidatorFn` in the `validators` Record and the `assertOptions` schema param. `ValidatorFn | false | undefined` → `false | undefined | ValidatorFn` in `transitional`. Behaviour change: none. The type-name array and the default export `{ assertOptions, validators }` are unchanged.",
+      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
+      "outcome": "updated",
+      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/validator.ts: Whole file compared. Changed lines are HEAD L8, L27 and L83.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/helpers/validator.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "source:packages/lib/src/lib/platform.ts": {
@@ -2740,16 +2739,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/errorDetails.test.ts": {
-      "fingerprint": "2103052024f48e1adb263c2d46efe86685f7b1ac1d781654c94b4e4de137653b",
+      "fingerprint": "ebff92235ad636c146901d021c28e26201cd92d61d80d5f21f570f724bc1b36c",
       "snapshot": {
-        "packages/tests/unit/adapters/errorDetails.test.ts": "8e4d245fe03c6da8934b2711e420e675d3beacb7186a0b712c82dc89a543130a"
+        "packages/tests/unit/adapters/errorDetails.test.ts": "e6bfe0caee99c80d138d85a154beb3cd5fad906510bf99360b373c27f813efba"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Cast type `{ isFaxiosError; code }` became `{ code; isFaxiosError }`. Behaviour change: none",
+      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
+      "outcome": "updated",
+      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/adapters/errorDetails.test.ts: @@ -26,7 +26,7 @@ (diff/202)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/adapters/errorDetails.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "source:packages/tests/unit/axiosHeaders.test.ts": {
@@ -3059,16 +3057,15 @@
       ]
     },
     "source:packages/tests/unit/helpers/validator.test.ts": {
-      "fingerprint": "01930ee13b4652afec4b7d708b5425f9d871055369744282e05eae6ad538fc8f",
+      "fingerprint": "b23e9f456decd6f169d44a4d66863ffb30ec2a1b40924a5c53f42c52cdbef714",
       "snapshot": {
-        "packages/tests/unit/helpers/validator.test.ts": "ab9641ace5c73dd6b194622fcd76afaa4daceab33f495c0cd444f62153da0107"
+        "packages/tests/unit/helpers/validator.test.ts": "cc31eeea352727f773f6212da2c04bd07f155f256960c6084bd31e51a67da810"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
+      "outcome": "updated",
+      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/helpers/validator.test.ts: @@ -1,4 +1,4 @@ (diff/231)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/helpers/validator.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "source:packages/tests/unit/prototypePollution.test.ts": {
@@ -4139,6 +4136,66 @@
       "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
       "evidence": [
         "Changed: packages/tests/unit/core/cancellation.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:.bumpy/basic-auth-utf8-username.md": {
+      "fingerprint": "f8b9560dbab8ad0dd9676402d972741462949f1f3769809839950e60efa086d2",
+      "snapshot": {
+        ".bumpy/basic-auth-utf8-username.md": "4fae6b1c19165a7643b5732bc25dba5fcbfb632b969f3c711a9547fd87349618"
+      },
+      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
+      "outcome": "updated",
+      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "evidence": [
+        "Changed: .bumpy/basic-auth-utf8-username.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:.bumpy/coded-bad-request-input.md": {
+      "fingerprint": "a1b1cbbe1adb90ee77f01a37a6cc5fb13173d10028b1b8aed284cfb3d9ac80a9",
+      "snapshot": {
+        ".bumpy/coded-bad-request-input.md": "e8ec85f5fdbce61faac91699c7c189b8e9c6934aa8fa51721b15ea6f42758254"
+      },
+      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
+      "outcome": "updated",
+      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "evidence": [
+        "Changed: .bumpy/coded-bad-request-input.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:.bumpy/coded-transport-errors.md": {
+      "fingerprint": "61cc67de2ec4d78f4c6fbe2f3dabaea4d71fc38e480964754e031e6d3d6ae687",
+      "snapshot": {
+        ".bumpy/coded-transport-errors.md": "9db99a5e1b7e7d89cb414f94c85cd775a1546cee2393a81ea15c3fb0967e056d"
+      },
+      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
+      "outcome": "updated",
+      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "evidence": [
+        "Changed: .bumpy/coded-transport-errors.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:packages/tests/unit/core/prepareRequest.test.ts": {
+      "fingerprint": "5ad06af930febcd5cb3ca631490a6c44ae8de3e884d85463a5b53e7488f816f3",
+      "snapshot": {
+        "packages/tests/unit/core/prepareRequest.test.ts": "bb239583446b6ff6663b5981f02ef8e73f48272a2d9b7127d7c2a62607c91b52"
+      },
+      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
+      "outcome": "updated",
+      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "evidence": [
+        "Changed: packages/tests/unit/core/prepareRequest.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:packages/tests/unit/core/requestInput.test.ts": {
+      "fingerprint": "1963bb856e63e070dbffda611c7a3c2822023aaa5116faa1bb2d21295216f85f",
+      "snapshot": {
+        "packages/tests/unit/core/requestInput.test.ts": "59b3243414a0fcb6bbb775ba8e516a771280023215b652a04801dc3ca707b974"
+      },
+      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
+      "outcome": "updated",
+      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "evidence": [
+        "Changed: packages/tests/unit/core/requestInput.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     }
   }

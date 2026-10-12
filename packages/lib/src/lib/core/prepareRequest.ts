@@ -27,20 +27,6 @@ function setFormDataHeaders(
   /* eslint-enable big-o/no-array-lookup-in-loop */
 }
 
-/**
- * Encode a UTF-8 string to a Latin-1 byte string for use with btoa().
- * This is a modern replacement for the deprecated unescape(encodeURIComponent(str)) pattern.
- *
- * @param {string} str The string to encode
- *
- * @returns {string} UTF-8 bytes as a Latin-1 string
- */
-const encodeUTF8 = (str: string): string =>
-  encodeURIComponent(str).replace(
-    /%([0-9A-F]{2})/gi,
-    (_: string, hex: string) => String.fromCharCode(parseInt(hex, 16))
-  );
-
 function applyXSRFToken(
   headers: FaxiosHeaders,
   withXSRFToken: ((cfg: unknown) => unknown) | boolean | null | undefined,
@@ -89,7 +75,6 @@ function prepareRequest(config: FaxiosRequestConfig): FaxiosRequestConfig {
     | undefined;
   const xsrfHeaderName = own("xsrfHeaderName") as string | undefined;
   const xsrfCookieName = own("xsrfCookieName") as string | undefined;
-  const auth = own("auth");
 
   const headers: FaxiosHeaders = FaxiosHeaders.from(
     own("headers") as null | Record<string, unknown> | undefined
@@ -97,22 +82,6 @@ function prepareRequest(config: FaxiosRequestConfig): FaxiosRequestConfig {
   newConfig.headers = headers;
 
   newConfig.url = resolveRequestURL(newConfig);
-
-  // HTTP basic authentication
-  if (auth) {
-    const username = String(utils.getSafeProp(auth, "username") || "");
-    const password = String(utils.getSafeProp(auth, "password") || "");
-
-    headers.set(
-      "Authorization",
-      "Basic " +
-        (
-          (globalThis as Record<string, unknown>)["btoa"] as (
-            s: string
-          ) => string
-        )(username + ":" + (password ? encodeUTF8(password) : ""))
-    );
-  }
 
   if (utils.isFormData(data)) {
     if (

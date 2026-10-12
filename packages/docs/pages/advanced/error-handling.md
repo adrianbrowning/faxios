@@ -15,18 +15,18 @@ Below is a list of potential faxios identified error
 
 | Code                      | Definition                                                                                    |
 | ------------------------- | --------------------------------------------------------------------------------------------- |
-| ERR_BAD_OPTION_VALUE      | Invalid or unsupported value provided in faxios configuration.                                 |
+| ERR_BAD_OPTION_VALUE      | Invalid or unsupported value provided in faxios configuration. This includes a config that isn't an object (such as `null`), a `method` that isn't a string HTTP method name, and a `url` that isn't a string or `URL`. |
 | ERR_BAD_OPTION            | Invalid option provided in faxios configuration.                                               |
 | ECONNABORTED              | Exported as `FaxiosError.ECONNABORTED`, but faxios does not currently raise it. Timeouts reject with `ETIMEDOUT` and aborts with `ERR_CANCELED`. |
 | ETIMEDOUT                 | Request timed out because it exceeded its configured `timeout`. |
-| ERR_NETWORK               | Network-related issue, including connection failures such as `ECONNREFUSED`. The underlying transport error (e.g. the OS error) is available on `error.cause`. In the browser, this error can also be caused by a [CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/Guides/CORS) or [Mixed Content](https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content) policy violation. The browser does not allow the JS code to clarify the real reason for the error caused by security issues, so please check the console. |
+| ERR_NETWORK               | Network-related issue, including connection failures such as `ECONNREFUSED` and a response body that fails while it is being read (for example, the connection is reset mid-body). The underlying transport error (e.g. the OS error) is available on `error.cause`. In the browser, this error can also be caused by a [CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/Guides/CORS) or [Mixed Content](https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content) policy violation. The browser does not allow the JS code to clarify the real reason for the error caused by security issues, so please check the console. |
 | ERR_FR_TOO_MANY_REDIRECTS | Exported as `FaxiosError.ERR_FR_TOO_MANY_REDIRECTS`, but faxios does not currently raise it. Redirects are followed by `fetch`, which applies its own limit. |
 | ERR_DEPRECATED            | Deprecated feature or method used in faxios.                                                   |
 | ERR_BAD_RESPONSE          | Response cannot be parsed properly or is in an unexpected format. Usually related to a response with `5xx` status code. |
-| ERR_BAD_REQUEST           | The request has an unexpected format or is missing required parameters. Usually related to a response with `4xx` status code. |
+| ERR_BAD_REQUEST           | The request has an unexpected format or is missing required parameters, including a request the runtime refuses to build (for example, a `GET` with a body). Usually related to a response with `4xx` status code. |
 | ERR_CANCELED              | Feature or method is canceled explicitly by the user using an AbortSignal. |
 | ERR_NOT_SUPPORT           | Feature or method not supported in the current faxios environment.                             |
-| ERR_INVALID_URL           | Invalid URL provided for faxios request.                                                       |
+| ERR_INVALID_URL           | Invalid URL provided for faxios request, including a URL `fetch` can't parse. Outside the browser a relative `url` needs a `baseURL`. The parse error is on `error.cause`. |
 | ERR_FORM_DATA_DEPTH_EXCEEDED | An object exceeds the configured `maxDepth` while serializing `params` or form data. Default limit is 100 levels. See [`paramsSerializer`](/pages/advanced/request-config#paramsserializer) and [`formSerializer`](/pages/advanced/request-config#formserializer). |
 | ERR_BAD_RESPONSE_SCHEMA   | The response body failed `responseSchema` validation. `error.response` is always set, and `error.response.data` is the rejected body (after `transformResponse`, typed `unknown`). `toJSON()` does not serialize it. See [Schema validation](/pages/advanced/schema-validation#the-unvalidated-body). |
 | ERR_BAD_REQUEST_SCHEMA    | `config.data` failed `requestSchema` validation. `error.config.data` is the original, unvalidated value. |

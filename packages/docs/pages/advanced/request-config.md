@@ -19,11 +19,11 @@ See the [security guide](/pages/misc/security) for details.
 
 ### `url`
 
-The `url` is the URL to which the request is made. It can be a string or an instance of `URL`.
+The `url` is the URL to which the request is made. It can be a string or an instance of `URL`. Any other value rejects with `ERR_BAD_OPTION_VALUE`. Outside the browser a relative `url` needs a [`baseURL`](#baseurl), or the request rejects with `ERR_INVALID_URL`.
 
 ### `method`
 
-The `method` is the HTTP method to use for the request. The default method is `GET`.
+The `method` is the HTTP method to use for the request. The default method is `GET`. Any HTTP method name works, including extension methods such as `PROPFIND`. A value that isn't a string or isn't a valid method name rejects with `ERR_BAD_OPTION_VALUE`.
 
 ### `baseURL`
 
@@ -309,7 +309,7 @@ The `signal` property allows you to pass an instance of `AbortSignal` to the req
 
 The `transitional` property allows you to enable or disable certain transitional features. The following options are available:
 
-- `silentJSONParsing`: If set to `true` _(default)_, faxios silently ignores JSON parsing errors and sets `response.data` to `null` when parsing fails. Set to `false` to throw `SyntaxError` instead.
+- `silentJSONParsing`: If set to `true` _(default)_, faxios silently ignores JSON parsing errors and leaves `response.data` as the raw response string when parsing fails. Set to `false` to reject with a `FaxiosError` whose `code` is `ERR_BAD_RESPONSE` instead.
 
   ::: tip Important
   This option only takes effect when `responseType` is **explicitly** set to `'json'`. When `responseType` is omitted, faxios uses `forcedJSONParsing` to attempt JSON parsing and silently returns the raw string on failure regardless of this setting. To make invalid JSON throw, set both:

@@ -20,7 +20,7 @@ import type {
 } from "../types.js";
 import utils from "../utils.js";
 import { checkDeclaredContentLength, checkMaterializedSize, cleanFormDataContentType, encodeBodyIfNeeded, handleFetchCaughtError } from "./fetch-helpers.js";
-import type { ComposedSignal, PendingBodyErrorRef } from "./fetch-helpers.js";
+import type { ComposedSignal, FetchStage, PendingBodyErrorRef } from "./fetch-helpers.js";
 
 // btoa is a global in Node 16+ and browsers; accessed via globalThis for no-DOM lib compat
 const _btoa: (data: string) => string = (
@@ -735,6 +735,8 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
 
     let request: null | Request = null;
     const pendingBodyErrorRef: PendingBodyErrorRef = { value: null };
+    // Which step a code-less TypeError came from, so it can get a code.
+    let stage: FetchStage | undefined;
 
     try {
       rejectUsedStreamBody(data, config);
@@ -800,15 +802,18 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       resolvedOptions["duplex"] = "half";
       resolvedOptions["credentials"] = isCredentialsSupported ? withCredentials : undefined;
 
+      stage = "build";
       request = isRequestSupported
         ? new (Request as AnyConstructor)(url, resolvedOptions) as Request
         : null;
 
       // Pass resolvedOptions as the fetch init even when a Request object is supplied, so the
       // same null-prototype members apply to both calls.
+      stage = "send";
       let response = await (isRequestSupported
         ? _fetch(request, resolvedOptions)
         : _fetch(url, resolvedOptions));
+      stage = undefined;
 
       const responseHeaders = FaxiosHeaders.from(response.headers);
 
@@ -842,7 +847,9 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
 
       const resolverKey = utils.findKey(resolvers, responseType) || "text";
       const resolver = resolvers[resolverKey];
+      stage = "body";
       const responseData = await (resolver && resolver(response, config));
+      stage = undefined;
 
       checkMaterializedSize(
         responseData,
@@ -870,7 +877,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     catch (err) {
       let error: unknown = err;
       try {
-        handleFetchCaughtError(err, composedSignal, pendingBodyErrorRef, config, request);
+        handleFetchCaughtError(err, composedSignal, pendingBodyErrorRef, config, request, stage, url);
       }
       catch (classified) {
         error = classified;
