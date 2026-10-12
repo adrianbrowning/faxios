@@ -3,22 +3,22 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "2c0f08e7d397d96bcac2a20fcb00bea44d4057ace210bc02203758f2e9062141",
+      "fingerprint": "09b6b8aad36d7a424bccc9cf9586d155464c511af9e0f6c61bbb94a2f2ce4392",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "83c544af3edc82f47f5c57d14ae7ccb9fb19ff8b94add3b1b5fe8889363c1f3c",
-        "packages/lib/skills/configure-requests/SKILL.md": "2206f15b75c8c945e77f833b08065d89111e630b2a0239b5120297f4e1bc5382",
+        "packages/lib/skills/configure-requests/SKILL.md": "91b1a82f96e75e6bac3c4937e7b2c5437aa9b68f465912e74d4305d4a04948d1",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "c3a6d15d1fa5959379301ee475c4bac5803bf80c04a0bb3f4e3a77d16012e687",
-        "packages/lib/src/lib/core/Faxios.ts": "315d17499ed46870d832e72f4a1d405ce346caffe698cc0e04cb07b366a7ee65",
+        "packages/lib/src/lib/adapters/fetch.ts": "394e2c0133021aae772972fe591f0b2ba8095ddcb6075c996015fc8640477a93",
+        "packages/lib/src/lib/core/Faxios.ts": "1697549ccacac943df349a8cba8e80ec028ef383e5f328f2950a91e7833dbbf0",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
         "packages/lib/src/lib/core/dispatchRequest.ts": "fb10925870044b0bd5b446b0ac3937a316f57f899749221ba99edc74186df4cd",
-        "packages/lib/src/lib/core/mergeConfig.ts": "697e73c1924c8e199207a146ecc8beb3a747fcc41a2fab0d2897bde2bc912582",
-        "packages/lib/src/lib/core/route.ts": "5811e47a26477034dab294523e1a029b30738ed2f95cd57c6a90604acd993cd8",
+        "packages/lib/src/lib/core/mergeConfig.ts": "3cc9070fcedfc0f8f25a2d6274338aa70fb518cfbff16dc508548b5737a18e0e",
+        "packages/lib/src/lib/core/route.ts": "d73182172ee4a568a180cc3678080195eb1e630561284afc4074e6f10c29d795",
         "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
         "packages/lib/src/lib/helpers/composeSignals.ts": "9c09d5fe23395e8af8b9c62efd641405ea2832f224b3653f70ef3ee6b408f6f5",
         "packages/lib/src/lib/plugins/authBearer.ts": "6257fa773e865ed38ef7bdcc49c6fdb6034828aceaaea63e913a3e908172af8c",
@@ -33,33 +33,33 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "466184284f2ed349a4f774209812095d3e6b3647",
+      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
       "outcome": "updated",
-      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
+      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/adapters/fetch.ts, packages/tests/unit/plugins/authBearer.test.ts at 466184284f2ed349a4f774209812095d3e6b3647"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/core/route.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "efc7f0e3d6a9219300977636bcdb323469ed65fc0aea4319686ee72b45242f48",
+      "fingerprint": "661266140478cd61ff17b90e8b52d9d43ae530ac57296929eb6a9fea3fba763d",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "83c544af3edc82f47f5c57d14ae7ccb9fb19ff8b94add3b1b5fe8889363c1f3c",
-        "packages/lib/skills/configure-requests/SKILL.md": "2206f15b75c8c945e77f833b08065d89111e630b2a0239b5120297f4e1bc5382",
+        "packages/lib/skills/configure-requests/SKILL.md": "91b1a82f96e75e6bac3c4937e7b2c5437aa9b68f465912e74d4305d4a04948d1",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "c3a6d15d1fa5959379301ee475c4bac5803bf80c04a0bb3f4e3a77d16012e687",
-        "packages/lib/src/lib/core/Faxios.ts": "315d17499ed46870d832e72f4a1d405ce346caffe698cc0e04cb07b366a7ee65",
+        "packages/lib/src/lib/adapters/fetch.ts": "394e2c0133021aae772972fe591f0b2ba8095ddcb6075c996015fc8640477a93",
+        "packages/lib/src/lib/core/Faxios.ts": "1697549ccacac943df349a8cba8e80ec028ef383e5f328f2950a91e7833dbbf0",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
         "packages/lib/src/lib/core/dispatchRequest.ts": "fb10925870044b0bd5b446b0ac3937a316f57f899749221ba99edc74186df4cd",
-        "packages/lib/src/lib/core/mergeConfig.ts": "697e73c1924c8e199207a146ecc8beb3a747fcc41a2fab0d2897bde2bc912582",
-        "packages/lib/src/lib/core/route.ts": "5811e47a26477034dab294523e1a029b30738ed2f95cd57c6a90604acd993cd8",
+        "packages/lib/src/lib/core/mergeConfig.ts": "3cc9070fcedfc0f8f25a2d6274338aa70fb518cfbff16dc508548b5737a18e0e",
+        "packages/lib/src/lib/core/route.ts": "d73182172ee4a568a180cc3678080195eb1e630561284afc4074e6f10c29d795",
         "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
         "packages/lib/src/lib/helpers/composeSignals.ts": "9c09d5fe23395e8af8b9c62efd641405ea2832f224b3653f70ef3ee6b408f6f5",
         "packages/lib/src/lib/plugins/authBearer.ts": "6257fa773e865ed38ef7bdcc49c6fdb6034828aceaaea63e913a3e908172af8c",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "466184284f2ed349a4f774209812095d3e6b3647",
+      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
       "outcome": "updated",
-      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
+      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/adapters/fetch.ts, packages/tests/unit/plugins/authBearer.test.ts at 466184284f2ed349a4f774209812095d3e6b3647"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/core/route.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
       ]
     },
     "source:knip.json": {
@@ -2319,16 +2319,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/formDataToJSON.ts": {
-      "fingerprint": "3ac6f48c9a13f827d4b25b2218c2c2966ed90abb919cfa08802d1e19f68c5f78",
+      "fingerprint": "8ab3f4240d1da205779dd46855500d4ae820945bc3d499529f3a549e7fe0523e",
       "snapshot": {
-        "packages/lib/src/lib/helpers/formDataToJSON.ts": "05f6c3b652219971bab044a24528be48dd6df67cf1dcc9e8beee52d0ed6e8ddb"
+        "packages/lib/src/lib/helpers/formDataToJSON.ts": "c87348559558857da282b0599f54b6c4a47ad600b897d9b27c4511565c0e2a2e"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Union operands sorted: `match: null | RegExpExecArray`, the return type `null | Record<string, unknown>`, and `name: number | string`. Behaviour change: none",
+      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
+      "outcome": "updated",
+      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/formDataToJSON.ts: Whole file compared. Changed lines are HEAD L32, L69 and L73.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/helpers/formDataToJSON.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
       ]
     },
     "source:packages/lib/src/lib/helpers/parseHeaders.ts": {
@@ -2384,16 +2383,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/toFormData.ts": {
-      "fingerprint": "180ab10e4c38537f9f73545b43a07576e89b899b0af948933e73a6eed13e89c4",
+      "fingerprint": "861c334e01ccb5cf527171bf30b65451b0af7bdb0787e8d3efedd31f8c7c485c",
       "snapshot": {
-        "packages/lib/src/lib/helpers/toFormData.ts": "49e4a278b8c9e271e9ae9ce0eb9a72ffb3170215b2adc88b697d3c2f4d236a71"
+        "packages/lib/src/lib/helpers/toFormData.ts": "4ce5eeb9f16267ebe95bf28379c624d434842d0fc47429fab8a359ea72ae0404"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Type import specifiers sorted. `string | number` → `number | string` throughout (`renderKey` params and map callback, `defaultVisitor` key/path, `build` path, the `key as …` casts). `null | Array<…>` → `Array<…> | null`. Behaviour change: none. The `toFlatObject` defaults and `exposedHelpers` literals are unchanged.",
+      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
+      "outcome": "updated",
+      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/toFormData.ts: Whole file compared. Changed lines are HEAD L5, L43, L47, L204, L257, L274 and L280.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/helpers/toFormData.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
       ]
     },
     "source:packages/lib/src/lib/helpers/trackStream.ts": {
@@ -2449,16 +2447,15 @@
       ]
     },
     "source:packages/lib/src/lib/utils.ts": {
-      "fingerprint": "142bd20e5da80f873c6f21b2c43cdee435c09061b2df63978e80a8f40a602902",
+      "fingerprint": "fa47e438031245f64d2c13d44d083bd9356650cf52dcc50ebf8f7bf86b016878",
       "snapshot": {
-        "packages/lib/src/lib/utils.ts": "59dbb3057d752d8b0571b80853a491f52c54098b1a43b87bfe2a3d6999740882"
+        "packages/lib/src/lib/utils.ts": "49fa9b957770b27b2783eb8ef5ee6f25a3be99f1298a7695b530f9e124b4baa9"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Union operands sorted: `obj: null | object` and its cast, `findKey` → `null | string`, the `merge` ctx cast `false | {…}`, the `isTypedArray` param `(abstract new …) | false`, `matches: null | RegExpExecArray`, the `reduceDescriptors` reducer return `false | PropertyDescriptor | undefined`, the `freezeMethods` reducer return, and `Record<number | string, unknown>`. Members of `GlobalWithEvents` sorted (`process` before `setImmediate`). Behaviour change: none. The `[\"ReadableStream\",…].map(kindOfTest)` destructuring, the merge/extend logic and the default-export object key order are unchanged.",
+      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
+      "outcome": "updated",
+      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/utils.ts: Whole file (933 lines) compared. Changed lines are HEAD L24, L37, L393, L414-415, L440, L599, L619, L647, L668 and L762.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/utils.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
       ]
     },
     "source:packages/sandbox/client.js": {
@@ -2870,16 +2867,15 @@
       ]
     },
     "source:packages/tests/unit/core/mergeConfig.test.ts": {
-      "fingerprint": "ae8ba2344f5d28c10c54cc65f978f5796c86f2c56793b43f911963fb9741da64",
+      "fingerprint": "607cb9e20f884b43187911e3b0ed01518fabad08ed9d9729fdd1869eb121acbf",
       "snapshot": {
-        "packages/tests/unit/core/mergeConfig.test.ts": "c688a7cc5c4bb871ddff487331c09c22c61d0c692401cb01ed5d807ad55ab668"
+        "packages/tests/unit/core/mergeConfig.test.ts": "19c0c44e281867d460fb4e7608472bb12bfc7403cf8ec7577a1f37e6ee4ac379"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
+      "outcome": "updated",
+      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/core/mergeConfig.test.ts: @@ -1,4 +1,4 @@ (diff/214)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/core/mergeConfig.test.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
       ]
     },
     "source:packages/tests/unit/core/methodHeaderGroups.test.ts": {
@@ -3012,16 +3008,15 @@
       ]
     },
     "source:packages/tests/unit/helpers/formDataToJSON.test.ts": {
-      "fingerprint": "3d9f868da5d22ed5b96c424b8729911b7c3823bf179edfe46f112718853af6fc",
+      "fingerprint": "269989a5934420f08e86ffabe811a4bfab68c121c6f19cd7acbe06e3384a0a90",
       "snapshot": {
-        "packages/tests/unit/helpers/formDataToJSON.test.ts": "dea3e794e3d75e99add926881b29da218ed488e4a63facffdc6653b55876171e"
+        "packages/tests/unit/helpers/formDataToJSON.test.ts": "74ecf50da5e40f452eaecd6d0997bf9810fef9052f5f168bbc10536d1214567c"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
+      "outcome": "updated",
+      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/helpers/formDataToJSON.test.ts: @@ -1,4 +1,4 @@ (diff/226)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/helpers/formDataToJSON.test.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
       ]
     },
     "source:packages/tests/unit/helpers/isAbsoluteURL.test.ts": {
@@ -3090,16 +3085,15 @@
       ]
     },
     "source:packages/tests/unit/prototypePollution.test.ts": {
-      "fingerprint": "b9baf61b0f124232bd9f3d590e642d1cbf6927b1c35aa8168c9ecb89bc659802",
+      "fingerprint": "2340b1e4e2bdd27c4268ee830e7bf2f4add9394a6a5722741b555b8eb30e02e2",
       "snapshot": {
-        "packages/tests/unit/prototypePollution.test.ts": "d30fc2bbec1eb33e5afd3f538b6b44bf73d6742465264606861248bc913461e5"
+        "packages/tests/unit/prototypePollution.test.ts": "b3c39f8a8e0862acdb76a4f011a224448e64da773f1f16a341a1357beed0842f"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "In the `declare global interface Object` augmentation, `polluted?` and `customNested?` swapped places. Behaviour change: none (declaration merging is order-independent)",
+      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
+      "outcome": "updated",
+      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/prototypePollution.test.ts: @@ -17,8 +17,8 @@ (diff/235)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/prototypePollution.test.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
       ]
     },
     "source:packages/tests/unit/query.test.ts": {
@@ -3582,6 +3576,42 @@
       "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
       "evidence": [
         "Changed: .bumpy/reject-used-stream-body.md at 466184284f2ed349a4f774209812095d3e6b3647"
+      ]
+    },
+    "source:.bumpy/prototype-reads.md": {
+      "fingerprint": "49f8d6fc42d444b11c4fd8a27e30869a6361ff0779b909cb2b86d078e5eb1f52",
+      "snapshot": {
+        ".bumpy/prototype-reads.md": "8276c91d9ba064745a45d3c12836f8f5c914ffe305997f162f1cd0d3bffae7de"
+      },
+      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
+      "outcome": "updated",
+      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
+      "evidence": [
+        "Changed: .bumpy/prototype-reads.md at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
+      ]
+    },
+    "source:packages/docs/pages/advanced/fetch-adapter.md": {
+      "fingerprint": "d78becc86e2eef2168088b2250f937eae699cb883140022782c57a539bfd8186",
+      "snapshot": {
+        "packages/docs/pages/advanced/fetch-adapter.md": "ba3b346d3356a31c9e14105bb5c426a92953b8a397fb298c2668c7241b382207"
+      },
+      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
+      "outcome": "updated",
+      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
+      "evidence": [
+        "Changed: packages/docs/pages/advanced/fetch-adapter.md at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/cloneConfig.ts": {
+      "fingerprint": "175438d1c1dc64c82aae01d29d7a499fcb3caf60cb1e9f1128320b65c6624497",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/cloneConfig.ts": "c113c926243050da65fdb79cc4945de4f0ae584807c29a10900b5c3ccb80e761"
+      },
+      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
+      "outcome": "updated",
+      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/cloneConfig.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
       ]
     }
   }

@@ -100,13 +100,15 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
     formData = new FormDataCtor();
   }
 
+  // Null-prototype destination: `visitor`, `maxDepth` and `Blob` are read below, and a polluted
+  // Object.prototype must not supply them.
   options = utils.toFlatObject(
     options,
-    {
+    Object.assign(Object.create(null) as Record<string, unknown>, {
       metaTokens: true,
       dots: false,
       indexes: false,
-    },
+    }),
     false,
     function defined(option: string, source: unknown) {
       return !utils.isUndefined((source as Record<string, unknown>)[option]);

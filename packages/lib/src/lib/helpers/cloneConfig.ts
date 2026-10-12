@@ -1,6 +1,5 @@
 import type { FaxiosRequestConfig } from "../types.js";
-
-export const DANGEROUS_KEYS = new Set([ "__proto__", "constructor", "prototype" ]);
+import utils from "../utils.js";
 
 // ponytail: null-proto shallow clone; replaces mergeConfig({}, config) which ran the full
 // two-config merge machinery just to get a defensive copy. Security invariants preserved:
@@ -15,7 +14,7 @@ export default function cloneConfig<T extends FaxiosRequestConfig>(src: T): T & 
     enumerable: false,
   }));
   for (const key of Object.keys(src)) {
-    if (!DANGEROUS_KEYS.has(key)) {
+    if (!utils.isDangerousKey(key)) {
       (dst as Record<string, unknown>)[key] = (src as Record<string, unknown>)[key];
     }
   }

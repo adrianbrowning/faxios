@@ -141,20 +141,18 @@ describe("core::mergeConfig", () => {
       expect(mergeConfig(config1, {})).toEqual({});
     });
 
-    it("clones config2 when it is a plain object", () => {
+    it("passes a plain-object body by reference", () => {
       const data = { a: 1, b: 2 };
       const merged = mergeConfig(config1, { data });
 
-      expect(merged.data).toEqual(data);
-      expect(merged.data).not.toBe(data);
+      expect(merged.data).toBe(data);
     });
 
-    it("clones config2 when it is an array", () => {
+    it("passes an array body by reference", () => {
       const data = [ 1, 2, 3 ];
       const merged = mergeConfig(config1, { data });
 
-      expect(merged.data).toEqual(data);
-      expect(merged.data).not.toBe(data);
+      expect(merged.data).toBe(data);
     });
 
     it("sets config2 value directly for non-mergeable values", () => {

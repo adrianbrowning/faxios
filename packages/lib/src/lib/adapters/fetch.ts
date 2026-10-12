@@ -139,8 +139,40 @@ const maybeWithAuthCredentials = (url: string): boolean => {
   return urlToCheck.includes("@");
 };
 
+// RequestInit members faxios sets itself; the same keys in `fetchOptions` are ignored.
+const FAXIOS_INIT_KEYS: Record<string, true> = {
+  body: true,
+  credentials: true,
+  duplex: true,
+  headers: true,
+  method: true,
+  signal: true,
+};
+
+// Spec defaults written as own init members when the caller sets none. undici converts the init
+// into a plain dictionary and reads absent members from it, so an absent member still picks up a
+// polluted Object.prototype value; an own default leaves nothing to inherit.
+const REQUEST_INIT_DEFAULTS: Record<string, unknown> = {
+  cache: "default",
+  integrity: "",
+  keepalive: false,
+  mode: "cors",
+  redirect: "follow",
+  referrer: "about:client",
+  referrerPolicy: "",
+};
+
+// Where undici (Node's fetch) keeps its global dispatcher.
+const UNDICI_GLOBAL_DISPATCHER = Symbol.for("undici.globalDispatcher.1");
+
+type FetchEnv = {
+  fetch?: unknown;
+  Request?: unknown;
+  Response?: unknown;
+};
+
 // eslint-disable-next-line sonarjs/function-return-type
-const factory = (env: Record<string, unknown>) => {
+const factory = (env: FetchEnv) => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const globalObject: Record<string, unknown> = utils.global ?? globalThis;
   const ReadableStream = globalObject["ReadableStream"] as
@@ -150,26 +182,10 @@ const factory = (env: Record<string, unknown>) => {
     | (new () => AnyTextEncoder)
     | undefined;
 
-  env = utils.merge.call(
-    {
-      skipUndefined: true,
-    },
-    {
-      Request: globalObject["Request"],
-      Response: globalObject["Response"],
-    },
-    env
-  );
-
-  const {
-    fetch: envFetch,
-    Request,
-    Response,
-  } = env as {
-    fetch?: FetchFn;
-    Request?: AnyConstructor;
-    Response?: AnyConstructor;
-  };
+  // `undefined` falls back to the global constructor; `null` disables it.
+  const envFetch = env.fetch as FetchFn | undefined;
+  const Request = (env.Request === undefined ? globalObject["Request"] : env.Request) as AnyConstructor | undefined;
+  const Response = (env.Response === undefined ? globalObject["Response"] : env.Response) as AnyConstructor | undefined;
   const _globalFetch = (globalThis as unknown as Record<string, unknown>)[
     "fetch"
   ];
@@ -182,6 +198,31 @@ const factory = (env: Record<string, unknown>) => {
   if (!isFetchSupported) {
     return false;
   }
+
+  // Only members this runtime's Request exposes, so an engine that rejects members it doesn't
+  // implement (Cloudflare Workers) is never sent one.
+  const requestInitDefaults = Object.entries(REQUEST_INIT_DEFAULTS).filter(([ key ]) =>
+    isRequestSupported && utils.hasOwnInPrototypeChain((Request as AnyConstructor).prototype, key));
+
+  // Null prototype: WebIDL reads every RequestInit member with Get, which walks the prototype
+  // chain, so a plain object literal would let a polluted Object.prototype.redirect, .integrity,
+  // .mode or undici .dispatcher apply to every request. Every own enumerable key of fetchOptions
+  // is copied, so runtime extensions (Next.js `next`, Workers `cf`, Bun `tls`) still pass through;
+  // inherited keys never do. The caller sets signal, method, headers, body, duplex, credentials.
+  const initFromFetchOptions = (fetchOptions: unknown): Record<string, unknown> => {
+    const init: Record<string, unknown> = Object.create(null);
+    for (const [ key, value ] of requestInitDefaults) init[key] = value;
+    // Node's global fetch reads `dispatcher` the same way; pin it to undici's own global one.
+    if (!envFetch && utils.hasOwnProp(globalThis, UNDICI_GLOBAL_DISPATCHER)) {
+      init["dispatcher"] = (globalThis as Record<PropertyKey, unknown>)[UNDICI_GLOBAL_DISPATCHER];
+    }
+    if (utils.isObject(fetchOptions)) {
+      for (const key of Object.keys(fetchOptions)) {
+        if (!utils.hasOwnProp(FAXIOS_INIT_KEYS, key)) init[key] = (fetchOptions as Record<string, unknown>)[key];
+      }
+    }
+    return init;
+  };
 
   const isReadableStreamSupported = isFunction(ReadableStream);
 
@@ -721,25 +762,20 @@ const factory = (env: Record<string, unknown>) => {
       // Case-insensitive check: toByteStringHeaderObject may normalize to lowercase.
       data = toWebStream(await encodeBodyIfNeeded(data, serializedHeaders, encodeText));
 
-      const resolvedOptions = {
-        ...fetchOptions,
-        signal: composedSignal,
-        method: (method as string).toUpperCase(),
-        headers: serializedHeaders,
-        body: data,
-        duplex: "half",
-        credentials: isCredentialsSupported ? withCredentials : undefined,
-      };
+      const resolvedOptions = initFromFetchOptions(fetchOptions);
+      resolvedOptions["signal"] = composedSignal;
+      resolvedOptions["method"] = (method as string).toUpperCase();
+      resolvedOptions["headers"] = serializedHeaders;
+      resolvedOptions["body"] = data;
+      resolvedOptions["duplex"] = "half";
+      resolvedOptions["credentials"] = isCredentialsSupported ? withCredentials : undefined;
 
       request = isRequestSupported
         ? new (Request as AnyConstructor)(url, resolvedOptions) as Request
         : null;
 
-      // Pass resolvedOptions (all own-properties) as the fetch init even when a
-      // Request object is supplied: undici re-reads RequestInit fields (method,
-      // headers, body, credentials) off Object.prototype when init is absent,
-      // so a polluted Object.prototype.method would override the Request's verb.
-      // An explicit own-property init neutralizes every such gadget.
+      // Pass resolvedOptions as the fetch init even when a Request object is supplied, so the
+      // same null-prototype members apply to both calls.
       let response = await (isRequestSupported
         ? _fetch(request, resolvedOptions)
         : _fetch(url, resolvedOptions));
@@ -803,12 +839,12 @@ const factory = (env: Record<string, unknown>) => {
 const seedCache = new Map<unknown, unknown>();
 
 export const getFetch = (config?: { env?: Record<string, unknown>; }) => {
-  const env: Record<string, unknown> = (config && config.env) || {};
-  const { fetch, Request, Response } = env as {
-    fetch?: unknown;
-    Request?: unknown;
-    Response?: unknown;
-  };
+  // Own reads only: a polluted Object.prototype.fetch must never become the transport.
+  const env = config && utils.hasOwnProp(config, "env") ? config.env : undefined;
+  const own = (key: keyof FetchEnv): unknown => (env && utils.hasOwnProp(env, key) ? env[key] : undefined);
+  const fetch = own("fetch");
+  const Request = own("Request");
+  const Response = own("Response");
   const seeds: Array<unknown> = [ Request, Response, fetch ];
 
   const len = seeds.length;
@@ -822,7 +858,7 @@ export const getFetch = (config?: { env?: Record<string, unknown>; }) => {
     target = map.get(seed);
 
     if (target === undefined) {
-      target = i ? new Map<unknown, unknown>() : factory(env);
+      target = i ? new Map<unknown, unknown>() : factory({ fetch, Request, Response });
       map.set(seed, target);
     }
 

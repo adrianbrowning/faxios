@@ -79,6 +79,40 @@ export default function mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfi
     return undefined;
   }
 
+  // Shallow own-key copy into a null-prototype object, later sources winning. Every own key is
+  // kept, including `constructor`, `prototype` and `__proto__`: `params` are caller data that
+  // reach the query string, and defineProperty stores them as plain data slots.
+  function ownCopy(...sources: Array<unknown>): Record<string, unknown> {
+    const out: Record<string, unknown> = Object.create(null);
+    for (const source of sources) {
+      if (!utils.isPlainObject(source)) continue;
+      const record = source as Record<string, unknown>;
+      for (const key of Object.keys(record)) {
+        Object.defineProperty(out, key, Object.assign(Object.create(null) as PropertyDescriptor, {
+          value: record[key],
+          enumerable: true,
+          writable: true,
+          configurable: true,
+        }));
+      }
+    }
+    return out;
+  }
+
+  // `params`: a plain object is copied with every own key; anything else (URLSearchParams,
+  // a custom serializer's input) passes through as given.
+  function mergeParams(a: unknown, b: unknown): unknown {
+    const source = utils.isUndefined(b) ? a : b;
+    if (!utils.isPlainObject(source)) return source;
+    return utils.isUndefined(b) ? ownCopy(a) : ownCopy(a, b);
+  }
+
+  // `env`: shallow, null-prototype, so `fetch`, `Request` and `Response` can only be own values.
+  function mergeEnv(a: unknown, b: unknown): unknown {
+    if (utils.isUndefined(a) && utils.isUndefined(b)) return undefined;
+    return ownCopy(a, b);
+  }
+
   function getMergedTransitionalOption(prop: string): unknown {
     const c2 = config2 as Record<string, unknown>;
     const c1 = config1 as Record<string, unknown>;
@@ -117,7 +151,11 @@ export default function mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfi
   const mergeMap = {
     url: valueFromConfig2,
     method: valueFromConfig2,
-    data: valueFromConfig2,
+    // The body is passed by reference: faxios never mutates it, and copying would drop keys such
+    // as `constructor` and cost a deep clone per request.
+    data: (_a: unknown, b: unknown) => b,
+    params: mergeParams,
+    env: mergeEnv,
     baseURL: defaultToConfig2,
     transformRequest: defaultToConfig2,
     transformResponse: defaultToConfig2,
@@ -150,7 +188,7 @@ export default function mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfi
 
   utils.forEach(Object.keys({ ...config1, ...config2 }), function computeConfigValue(_value: unknown, _prop: unknown) {
     const key = _value as string;
-    if (key === "__proto__" || key === "constructor" || key === "prototype") return;
+    if (utils.isDangerousKey(key)) return;
     const mergeFn = (utils.hasOwnProp(mergeMap, key) ? (mergeMap as Record<string, typeof mergeDeepProperties>)[key] : mergeDeepProperties)!;
     const a = utils.hasOwnProp(config1, key) ? c1[key] : undefined;
     const b = utils.hasOwnProp(config2, key) ? c2[key] : undefined;

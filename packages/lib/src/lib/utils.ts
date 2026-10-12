@@ -9,6 +9,13 @@ const { iterator, toStringTag } = Symbol;
 const hasOwnProperty = (obj: unknown, prop: PropertyKey) => Object.hasOwn(obj as object, prop);
 
 /**
+ * The one dangerous-key check: `__proto__`, `constructor` and `prototype` are skipped wherever
+ * config, route or form data keys are materialized into objects, to block prototype-pollution writes.
+ */
+const isDangerousKey = (key: PropertyKey): boolean =>
+  key === "__proto__" || key === "constructor" || key === "prototype";
+
+/**
  * Walk the prototype chain (excluding the shared Object.prototype) looking for
  * an own `prop`. This distinguishes genuine own/inherited members — including
  * class accessors and template prototypes — from members injected via
@@ -444,7 +451,7 @@ function merge(this: unknown, ...objs: Array<unknown>): Record<string, unknown> 
   const assignValue = (val: unknown, key: unknown) => {
     const keyStr = key as string | symbol;
     // Skip dangerous property names to prevent prototype pollution
-    if (keyStr === "__proto__" || keyStr === "constructor" || keyStr === "prototype") {
+    if (isDangerousKey(keyStr)) {
       return;
     }
 
@@ -556,7 +563,8 @@ const toFlatObject = (sourceObj: unknown, destObj?: Record<string, unknown>, fil
   let props: Array<string>;
   let i: number;
   let prop: string | undefined;
-  const merged: Record<string, boolean> = {};
+  // Null prototype: a polluted Object.prototype[prop] must not mark an own prop as already copied.
+  const merged: Record<string, boolean> = Object.create(null);
 
   const dest: Record<string, unknown> = destObj ?? {};
 
@@ -910,6 +918,7 @@ export default {
   isHTMLForm,
   hasOwnProperty,
   hasOwnProp: hasOwnProperty, // an alias to avoid ESLint no-prototype-builtins detection
+  isDangerousKey,
   hasOwnInPrototypeChain,
   getSafeProp,
   reduceDescriptors,
