@@ -3,15 +3,15 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "ad48019838c67eea6443f8b9c63176752c306f4272678795b2ecccdf2cdf86cd",
+      "fingerprint": "5588b88cc103278cf1025b9a04b1dc8314390e7ba962662492f38049dcd5644d",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "301c6e77e898dcc3bf63a9eb2f27b216f5f3c2cb94673f0790260a00a7cab8cb",
-        "packages/lib/skills/configure-requests/SKILL.md": "c3459b305990a88bc5e1a012be19ecf00ab72d615491a6427b7db88e5cfed9a4",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
+        "packages/lib/skills/configure-requests/SKILL.md": "4655fd00f15876c0bd9af80202950a8f2565ed57171fcb5cbba3f7f9a0cb7916",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "75b6f4774c0964f38c368b7e1834d973d64197af7bce3e64d21bd207588214af",
+        "packages/lib/src/lib/adapters/fetch.ts": "7df1044dbd292343c796162d3a26822df85dda3b032998cfa6c852ab47d3d99d",
         "packages/lib/src/lib/core/Faxios.ts": "1697549ccacac943df349a8cba8e80ec028ef383e5f328f2950a91e7833dbbf0",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
@@ -25,7 +25,7 @@
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
         "packages/lib/src/lib/plugins/retry.ts": "4e0ed48eeecbb246e66b046530c688265b2b987bdf4cf1cdb81148471090db3c",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
-        "packages/lib/src/lib/types.ts": "40556e970e522dd343099d99674509ad2dee02a2d1b71c33309daf6cd4d9067a",
+        "packages/lib/src/lib/types.ts": "e9f9fe1c8e31f5f9008f8d2fed18de12dea7273f846dd7d392ed90c5ceafedb7",
         "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
         "packages/tests/unit/core/middleware.test.ts": "106d605207a1e7754baedd1565a559e973bda954b6e3970fac54d0da69116e7f",
         "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
@@ -33,26 +33,26 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
+      "head": "d16dee579c8cca748c02756b9686c97f57547bdd",
       "outcome": "updated",
-      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
+      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/adapters/fetch.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "935c84609160cd1d0e95df09772a6f1372a0d20174b517de7e1c78fd544303ee",
+      "fingerprint": "fdd65c600150b0150c76cacec8d076d99193c0bdfa1d832e912bae918c31fc1a",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "301c6e77e898dcc3bf63a9eb2f27b216f5f3c2cb94673f0790260a00a7cab8cb",
-        "packages/lib/skills/configure-requests/SKILL.md": "c3459b305990a88bc5e1a012be19ecf00ab72d615491a6427b7db88e5cfed9a4",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
+        "packages/lib/skills/configure-requests/SKILL.md": "4655fd00f15876c0bd9af80202950a8f2565ed57171fcb5cbba3f7f9a0cb7916",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "75b6f4774c0964f38c368b7e1834d973d64197af7bce3e64d21bd207588214af",
+        "packages/lib/src/lib/adapters/fetch.ts": "7df1044dbd292343c796162d3a26822df85dda3b032998cfa6c852ab47d3d99d",
         "packages/lib/src/lib/core/Faxios.ts": "1697549ccacac943df349a8cba8e80ec028ef383e5f328f2950a91e7833dbbf0",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
@@ -66,7 +66,7 @@
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
         "packages/lib/src/lib/plugins/retry.ts": "4e0ed48eeecbb246e66b046530c688265b2b987bdf4cf1cdb81148471090db3c",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
-        "packages/lib/src/lib/types.ts": "40556e970e522dd343099d99674509ad2dee02a2d1b71c33309daf6cd4d9067a",
+        "packages/lib/src/lib/types.ts": "e9f9fe1c8e31f5f9008f8d2fed18de12dea7273f846dd7d392ed90c5ceafedb7",
         "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
         "packages/tests/unit/core/middleware.test.ts": "106d605207a1e7754baedd1565a559e973bda954b6e3970fac54d0da69116e7f",
         "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
+      "head": "d16dee579c8cca748c02756b9686c97f57547bdd",
       "outcome": "updated",
-      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
+      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/adapters/fetch.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "source:knip.json": {
@@ -278,15 +278,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "686bb9575a90ffc94698879b76f4cf3386505570e92790911cdcf96266e11d9c",
+      "fingerprint": "93859d8a7350762f53df44e59b4771a98ee77e17c195f64bca6b4d39e3c5389d",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "fd52336bf199d34ebecd2004e24e8246152861c4d9594ebeefd6b845aec4a01f"
+        "packages/docs/pages/advanced/request-config.md": "a19b2714b5b2e22f2aaa599a0b09bce021a5903233506813f5383de78afd2456"
       },
-      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
+      "head": "3f379a4c81c5a5f1a2456dcec19e8f6bcdbfd606",
       "outcome": "updated",
-      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
+      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
+        "Changed: packages/docs/pages/advanced/request-config.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -447,15 +447,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch.test.ts": {
-      "fingerprint": "82bb0328d1c99307670efedd6a7ceba1c3af3db0cd8e91e23732ac3cbe78731c",
+      "fingerprint": "f806c05650a0424ae3174ff9aaae14b258d6c03bf9b17c1fe16bdbbaba3ec62d",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch.test.ts": "8eff9a9135f9b658c4fc5c9e2ea04889dd8cff68ced60d65b0aa33b9530249ba"
+        "packages/tests/unit/adapters/fetch.test.ts": "d2ce772ca840538161a3bcbcf52849e912a24f804aa5ba6ba81f4ace975e8c68"
       },
-      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
+      "head": "3f379a4c81c5a5f1a2456dcec19e8f6bcdbfd606",
       "outcome": "updated",
-      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
+      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch.test.ts at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
+        "Changed: packages/tests/unit/adapters/fetch.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "source:CHANGELOG.md": {
@@ -3584,15 +3584,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/fetch-adapter.md": {
-      "fingerprint": "97fe1ba60f637dac515efb524283e87830edcf85e1025d2524536df96b8d6595",
+      "fingerprint": "0d23c6ba53c56dfb4a5f44dfd4b7108ec933d4d56bd39cc35194a12a65465ff8",
       "snapshot": {
-        "packages/docs/pages/advanced/fetch-adapter.md": "73056b0c90633691a768ca39d26d53c0a2ccaa0863b6efb5da8cdfa040f8f7fa"
+        "packages/docs/pages/advanced/fetch-adapter.md": "7431ccff06777d07f59330d244c1e895fe6b2342bb73bc814b447af31772a3d2"
       },
-      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
+      "head": "3f379a4c81c5a5f1a2456dcec19e8f6bcdbfd606",
       "outcome": "updated",
-      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
+      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/fetch-adapter.md at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
+        "Changed: packages/docs/pages/advanced/fetch-adapter.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "source:packages/lib/src/lib/helpers/cloneConfig.ts": {
@@ -3632,13 +3632,13 @@
       ]
     },
     "source:packages/docs/pages/advanced/file-posting.md": {
-      "fingerprint": "2e7c4c7d9bc320d6ff6f945898692cbcab2fe5659234ea819e832e3c4d4a1bf4",
+      "fingerprint": "c2b628f0e57ed07bf9776eba16cca2857871b5c4d3e0fbf4b73ef19407053125",
       "snapshot": {
-        "packages/docs/pages/advanced/file-posting.md": "a76883d5ebaa5b54e78a4e2fedf9efd17cca0934d64af0793d6fabafd5be7199"
+        "packages/docs/pages/advanced/file-posting.md": "4b2294c9bfadb87e4722457fe953e21be9ce6d928f2eca43290b89e972ab9701"
       },
-      "head": "7acdc6538be649cd270d8fc61781c7f0b1caac78",
-      "outcome": "no-change",
-      "reason": "Skill does not document request-body Content-Type defaults; change only stops the urlencoded fallback for binary and stream bodies",
+      "head": "3f379a4c81c5a5f1a2456dcec19e8f6bcdbfd606",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
       "evidence": [
         "Changed: packages/docs/pages/advanced/file-posting.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
@@ -3704,13 +3704,13 @@
       ]
     },
     "source:packages/docs/pages/advanced/progress-capturing.md": {
-      "fingerprint": "d694b3a0d51725e9055de29101ff133cbc45201552d8bd04dbb3c1046a9b088f",
+      "fingerprint": "ffd8e383831b2778c8df46b170f7661af8851ecb4c82f8b65486e18df38761e0",
       "snapshot": {
-        "packages/docs/pages/advanced/progress-capturing.md": "6eec6ad3dec2a35e89bde9e5056c398ad63dbc5a28f2002585eae1147de132de"
+        "packages/docs/pages/advanced/progress-capturing.md": "9819805ea9894ffbce29ba32a2423a214ea27f21d3f1dffff746c9c3b7154634"
       },
-      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
-      "outcome": "no-change",
-      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
+      "head": "3f379a4c81c5a5f1a2456dcec19e8f6bcdbfd606",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
       "evidence": [
         "Changed: packages/docs/pages/advanced/progress-capturing.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
@@ -3797,6 +3797,42 @@
       "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
       "evidence": [
         "Changed: packages/tests/unit/adapters/fetchCleanup.test.ts at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
+      ]
+    },
+    "source:.bumpy/browser-upload-progress.md": {
+      "fingerprint": "eb950b2b8cf834cf60ff63aac00b9887d91f5544b6bed07fa937fa2e48480186",
+      "snapshot": {
+        ".bumpy/browser-upload-progress.md": "7cd2f4c6be72a0079481a01b56e3b44cb54ca0c8b485e580d7b69fab96a242ab"
+      },
+      "head": "3f379a4c81c5a5f1a2456dcec19e8f6bcdbfd606",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
+      "evidence": [
+        "Changed: .bumpy/browser-upload-progress.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+      ]
+    },
+    "source:packages/tests/browser/upload.browser.test.ts": {
+      "fingerprint": "84525d897f412a09369c7be80bba1cc06e504a8235125cd768c4b87352e74564",
+      "snapshot": {
+        "packages/tests/browser/upload.browser.test.ts": "a06ea1b2ef0bf972d6f726a58ef6ed9109736caa28ddb576c6d01865c49194d7"
+      },
+      "head": "3f379a4c81c5a5f1a2456dcec19e8f6bcdbfd606",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
+      "evidence": [
+        "Changed: packages/tests/browser/upload.browser.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+      ]
+    },
+    "source:packages/tests/vitest.config.js": {
+      "fingerprint": "2cf5ba284f1013863c8c196040dd2c0d8aba4fac92e449e7023de3b56bd1654d",
+      "snapshot": {
+        "packages/tests/vitest.config.js": "c2d7bb14fb24913b363bb4cca4daf47c59d1b040b8760774e806ee8f785f575e"
+      },
+      "head": "3f379a4c81c5a5f1a2456dcec19e8f6bcdbfd606",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
+      "evidence": [
+        "Changed: packages/tests/vitest.config.js at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     }
   }

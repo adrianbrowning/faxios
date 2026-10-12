@@ -57,7 +57,7 @@ await faxios.post("https://httpbin.org/post", formData);
 ```
 
 ::: warning
-faxios reports upload progress by streaming the request body, so `onUploadProgress` only fires where the runtime's `fetch` supports streaming request bodies (`duplex: "half"`), as Node.js does. Where it doesn't, the callback is not called. See [Progress capturing](/pages/advanced/progress-capturing).
+`onUploadProgress` is called only where faxios can stream the request body, which today is Node.js. In browsers and web workers faxios never streams the body for progress, so the callback is not called. See [Fetch adapter](/pages/advanced/fetch-adapter) for details and [#209](https://github.com/adrianbrowning/faxios/issues/209) for upload progress in browsers.
 :::
 
 ## Files in Node.js, Deno, and Bun

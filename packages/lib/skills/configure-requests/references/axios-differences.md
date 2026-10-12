@@ -23,7 +23,7 @@ behaviour outside this list as unverified until the installed types and a test p
 | `proxy: {...}` / `httpAgent` / `httpsAgent` | Runtime-level proxy config. In Node the project docs pass an `undici` `ProxyAgent` as `fetchOptions.dispatcher`, using the app's own `undici` dependency | Not faxios options; faxios passes the dispatcher to `fetch` but does not test proxying |
 | `maxRedirects`, `beforeRedirect` | fetch follows redirects; `fetchOptions: { redirect: "manual" }` to stop | `ERR_FR_TOO_MANY_REDIRECTS` is never raised |
 | `maxRate`, `socketPath`, `decompress`, `insecureHTTPParser`, `httpVersion`, HTTP/2 options, `lookup`, `family` | none | Removed; ignored at runtime when untyped |
-| `onUploadProgress` | same option | Fires only where fetch streams request bodies (Node); not a browser guarantee |
+| `onUploadProgress` | same option | Fires only where fetch streams request bodies (Node); never called in browsers or web workers |
 | `responseType: "document"` | none in practice | Falls back to text |
 | retry via `axios-retry` | `retry()` from `@gcmdev/faxios/plugins/retry` | POST/PATCH excluded by default |
 | auth header interceptor | `authBearer()` from `@gcmdev/faxios/plugins/auth-bearer` | Sends only to the baseURL origin by default |

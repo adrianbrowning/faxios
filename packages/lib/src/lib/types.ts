@@ -289,7 +289,8 @@ export interface FaxiosRequestConfig<D = unknown> {
    */
   onDownloadProgress?: (progressEvent: FaxiosProgressEvent) => void;
   /**
-   * Called with upload progress where the runtime supports streaming request bodies.
+   * Called with upload progress where faxios can stream the request body, which today is
+   * Node.js. It is not called in browsers or web workers (see #209).
    * An error thrown (or a rejected promise returned) by the callback is caught and ignored;
    * the request settles normally.
    */
