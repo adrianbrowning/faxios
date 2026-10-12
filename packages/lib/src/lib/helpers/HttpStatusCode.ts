@@ -1,3 +1,4 @@
+// @ts-self-types="./HttpStatusCode.d.ts" — required for Deno: index.ts re-exports HttpStatusCode
 const HttpStatusCode = {
   Continue: 100,
   SwitchingProtocols: 101,

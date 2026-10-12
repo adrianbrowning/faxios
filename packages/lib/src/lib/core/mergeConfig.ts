@@ -1,3 +1,4 @@
+// @ts-self-types="./mergeConfig.d.ts" — required for Deno: index.ts re-exports mergeConfig
 "use strict";
 
 import type { FaxiosDefaults, FaxiosRequestConfig } from "../types.js";

@@ -6,10 +6,15 @@
     "faxios/plugins/auth-bearer": "../../../lib/dist/lib/plugins/authBearer.js",
     "faxios/plugins/retry": "../../../lib/dist/lib/plugins/retry.js",
     "faxios/plugins/timing": "../../../lib/dist/lib/plugins/timing.js",
+    "faxios/unsafe/core/buildFullPath.js": "../../../lib/dist/lib/core/buildFullPath.js",
+    "faxios/unsafe/helpers/isAbsoluteURL.js": "../../../lib/dist/lib/helpers/isAbsoluteURL.js",
+    "faxios/unsafe/helpers/buildURL.js": "../../../lib/dist/lib/helpers/buildURL.js",
+    "faxios/unsafe/helpers/combineURLs.js": "../../../lib/dist/lib/helpers/combineURLs.js",
+    "faxios/unsafe/utils.js": "../../../lib/dist/lib/utils.js",
     "form-data": "npm:form-data"
   },
   "tasks": {
-    "test": "deno test --allow-read --allow-env tests/"
+    "test": "deno check types/ && deno test --allow-read --allow-env tests/"
   },
   "test": {
     "include": ["tests/**/*.smoke.test.ts"]

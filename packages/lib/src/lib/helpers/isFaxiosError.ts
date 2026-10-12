@@ -1,3 +1,4 @@
+// @ts-self-types="./isFaxiosError.d.ts" — required for Deno: index.ts re-exports isFaxiosError
 "use strict";
 
 import type FaxiosError from "../core/FaxiosError.js";

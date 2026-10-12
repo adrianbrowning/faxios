@@ -1,3 +1,4 @@
+// @ts-self-types="./utils.d.ts" — required for Deno: published as an unsafe/* export
 "use strict";
 
 // utils is a library of generic helper functions non-specific to faxios

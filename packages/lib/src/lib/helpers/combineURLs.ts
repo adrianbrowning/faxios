@@ -1,3 +1,4 @@
+// @ts-self-types="./combineURLs.d.ts" — required for Deno: published as an unsafe/* export
 "use strict";
 
 export default function combineURLs(baseURL: string, relativeURL?: string): string {
