@@ -20,6 +20,8 @@ await api.get("/me");
 
 `getToken` may return a string or a promise. It is called on every request that gets the token, so a token you update in your store is picked up on the next request. With `retry` installed before `authBearer`, it is called on every try.
 
+If `getToken` gives anything other than a non-empty string (`null`, `undefined`, `""`, a number, an object), the request is sent without the header. A signed-out user never sends `Bearer null`.
+
 A header the request already has, set per request or in the instance defaults, is kept and `getToken` isn't called. Pass `overwrite: true` to replace it.
 
 ### Which requests get the token

@@ -91,6 +91,10 @@ function sendsTokenTo(config: InternalFaxiosRequestConfig, origins: null | Reado
  * can ask for a token too. A header the request already has is kept unless `overwrite` is set.
  * The token goes only to the `baseURL` origin when `baseURL` is absolute, otherwise only to
  * relative request URLs; `origins` replaces that rule.
+ *
+ * When `getToken` gives anything other than a non-empty string (`null`, `undefined`, `""`, a
+ * number, an object), the request is sent without the header, so a signed-out state never sends
+ * `Bearer null`. The parameter type stays `string`: the guard is for JavaScript callers and casts.
  */
 export function authBearer(getToken: () => Promise<string> | string, options: AuthBearerOptions = {}): FaxiosPlugin<{ provides: AuthBearerCapability; }> {
   if (typeof getToken !== "function") {
@@ -112,7 +116,8 @@ export function authBearer(getToken: () => Promise<string> | string, options: Au
     provides: { auth },
     middleware: async (ctx, next) => {
       if ((!overwrite && ctx.config.headers.has(header)) || !sendsTokenTo(ctx.config, origins)) return next(ctx);
-      const token = await auth.getToken();
+      const token: unknown = await auth.getToken();
+      if (typeof token !== "string" || token === "") return next(ctx);
       // On a copy: middleware that calls next() again (retry installed before this plugin) comes
       // back through here without the header, so every try asks for a fresh token.
       const headers = new FaxiosHeaders(ctx.config.headers).set(header, scheme ? `${scheme} ${token}` : token, true);

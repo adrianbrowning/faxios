@@ -3,11 +3,11 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "cd315fb0f731269777d4ddc77d21dece49a7f544e5146dff0a4e498a8fbad99f",
+      "fingerprint": "e3beb151e5763f5cef443442545def308d3fe7460d02c7567ff1bd6dd5e0bbf2",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "83c544af3edc82f47f5c57d14ae7ccb9fb19ff8b94add3b1b5fe8889363c1f3c",
-        "packages/lib/skills/configure-requests/SKILL.md": "f93e196d10a9c8b300d9b35f18022ea51e6f019896cf5d8306da750f1b8f7396",
+        "packages/lib/skills/configure-requests/SKILL.md": "2206f15b75c8c945e77f833b08065d89111e630b2a0239b5120297f4e1bc5382",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b8f4ce801ac34ab1f808d35cbc667869d582721f3996a811fb2b035eefd6a2ca",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
@@ -21,34 +21,34 @@
         "packages/lib/src/lib/core/route.ts": "5811e47a26477034dab294523e1a029b30738ed2f95cd57c6a90604acd993cd8",
         "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
         "packages/lib/src/lib/helpers/composeSignals.ts": "9c09d5fe23395e8af8b9c62efd641405ea2832f224b3653f70ef3ee6b408f6f5",
-        "packages/lib/src/lib/plugins/authBearer.ts": "80e44445bb576339a4e4d5bca4f48a0f338772754930e737f9a1a495182080fe",
+        "packages/lib/src/lib/plugins/authBearer.ts": "6257fa773e865ed38ef7bdcc49c6fdb6034828aceaaea63e913a3e908172af8c",
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
         "packages/lib/src/lib/plugins/retry.ts": "4e0ed48eeecbb246e66b046530c688265b2b987bdf4cf1cdb81148471090db3c",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
         "packages/lib/src/lib/types.ts": "aa73aeb0be7bed6789fc1416eff74969e289d0bfc69674ba2f6c1b1d135b38ee",
         "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
         "packages/tests/unit/core/middleware.test.ts": "106d605207a1e7754baedd1565a559e973bda954b6e3970fac54d0da69116e7f",
-        "packages/tests/unit/plugins/authBearer.test.ts": "44eb2a04dbb12908597378b4f91452b68774ebf30cf3afaa64f2c9e3087d7960",
+        "packages/tests/unit/plugins/authBearer.test.ts": "0ca8d4a4be7fa807a584b3b4a853c833d1ae8c7655755c06b43afd38cac7ef16",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "280f7e791c50e367a025fddc617941296f15f52a",
-      "outcome": "no-change",
-      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
+      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
       "evidence": [
-        "Changed: packages/lib/package.json at 280f7e791c50e367a025fddc617941296f15f52a"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/plugins/authBearer.ts, packages/tests/unit/plugins/authBearer.test.ts at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "3198e66930c88ac638d2d5188bb7dc43bd97fb968fe1b68f35813780287dc9f8",
+      "fingerprint": "03c58021c7e0cf0d5e5676c44b8237fab5bf0e520c460e39322af5ebe7a305b3",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "83c544af3edc82f47f5c57d14ae7ccb9fb19ff8b94add3b1b5fe8889363c1f3c",
-        "packages/lib/skills/configure-requests/SKILL.md": "f93e196d10a9c8b300d9b35f18022ea51e6f019896cf5d8306da750f1b8f7396",
+        "packages/lib/skills/configure-requests/SKILL.md": "2206f15b75c8c945e77f833b08065d89111e630b2a0239b5120297f4e1bc5382",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b8f4ce801ac34ab1f808d35cbc667869d582721f3996a811fb2b035eefd6a2ca",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
@@ -62,23 +62,23 @@
         "packages/lib/src/lib/core/route.ts": "5811e47a26477034dab294523e1a029b30738ed2f95cd57c6a90604acd993cd8",
         "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
         "packages/lib/src/lib/helpers/composeSignals.ts": "9c09d5fe23395e8af8b9c62efd641405ea2832f224b3653f70ef3ee6b408f6f5",
-        "packages/lib/src/lib/plugins/authBearer.ts": "80e44445bb576339a4e4d5bca4f48a0f338772754930e737f9a1a495182080fe",
+        "packages/lib/src/lib/plugins/authBearer.ts": "6257fa773e865ed38ef7bdcc49c6fdb6034828aceaaea63e913a3e908172af8c",
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
         "packages/lib/src/lib/plugins/retry.ts": "4e0ed48eeecbb246e66b046530c688265b2b987bdf4cf1cdb81148471090db3c",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
         "packages/lib/src/lib/types.ts": "aa73aeb0be7bed6789fc1416eff74969e289d0bfc69674ba2f6c1b1d135b38ee",
         "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
         "packages/tests/unit/core/middleware.test.ts": "106d605207a1e7754baedd1565a559e973bda954b6e3970fac54d0da69116e7f",
-        "packages/tests/unit/plugins/authBearer.test.ts": "44eb2a04dbb12908597378b4f91452b68774ebf30cf3afaa64f2c9e3087d7960",
+        "packages/tests/unit/plugins/authBearer.test.ts": "0ca8d4a4be7fa807a584b3b4a853c833d1ae8c7655755c06b43afd38cac7ef16",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "280f7e791c50e367a025fddc617941296f15f52a",
-      "outcome": "no-change",
-      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
+      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
       "evidence": [
-        "Changed: packages/lib/package.json at 280f7e791c50e367a025fddc617941296f15f52a"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/plugins/authBearer.ts, packages/tests/unit/plugins/authBearer.test.ts at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
       ]
     },
     "source:knip.json": {
@@ -182,15 +182,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
-      "fingerprint": "d161dd8823cc8797652eb199f2e53ca6f2260ae2a8d68d820626fa417b9e9125",
+      "fingerprint": "b3fe516a483cd84dd007a09641cf448e2e0f98505acd649997dfd529aa34f581",
       "snapshot": {
-        "packages/docs/pages/advanced/authentication.md": "c177e8185fd58f36b036c29640cae76d1640c3850af6385f35eea6f14877ce28"
+        "packages/docs/pages/advanced/authentication.md": "3f703c7bdfb7e942884048f672b3fff873832303fca7b21ad8cee3edeec324bb"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
-      "outcome": "no-change",
-      "reason": "Diff reviewed (M); consistent.",
+      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
       "evidence": [
-        "+L7..+L65: authBearer setup. `getToken` is called per request, and per try when `retry` is installed before it. An existing header is kept unless `overwrite: true`. Origin rule: absolute baseURL origin only, otherwise relative URLs only. `origins` replaces the rule. Invalid options → `ERR_BAD_OPTION_VALUE`, unknown → `ERR_BAD_OPTION`. These match SKILL L231-234 and plugins.md L103-105. +L100..+L153: the refreshOn401 plugin matches plugins.md L70-97. Minor details not in the skill: the `auth` capability ignores the origin rule (+L100); `origins` entries must be bare origins, and a relative URL counts only in a browser."
+        "Changed: packages/docs/pages/advanced/authentication.md at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
       ]
     },
     "source:packages/docs/pages/advanced/create-an-instance.md": {
@@ -302,15 +302,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/schema-validation.md": {
-      "fingerprint": "223dcf93c1e49839176b931de643a2800dbe89e0e14b8ab0206dbc6fdedd3ed8",
+      "fingerprint": "406be6edd6db97d15ab532b0273eb8d58b14a2da8a60e256f0aebba8bb1bb006",
       "snapshot": {
-        "packages/docs/pages/advanced/schema-validation.md": "7387a752c0cf88e4efd3c0c9d42f478e5bee1015ffec7bae7fb36d9ac61f233f"
+        "packages/docs/pages/advanced/schema-validation.md": "d3960a9b89bba521e7d6849278b87fa5679ae5b890d5749ebda1388eab882005"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
       "outcome": "updated",
-      "reason": "Skill updated from this diff.",
+      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
       "evidence": [
-        "Added rejected body location and that schemas run inside dispatch (runtime: middleware saw {\"n\":\"5\"}). Diff review: +L20..+L24: validation runs inside dispatch, so middleware sees the pre-validation config on the way in and the validated response on the way out. +L35 (The unvalidated body): on `ERR_BAD_RESPONSE_SCHEMA`, `error.response.data` is the rejected body; on the input codes, `error.config` holds the original input. +L39: toJSON includes `issues` but never `response`. +L32: only message/path are copied into issues. SKILL L129-133 states the order and codes but not where the rejected body/input lives, or that schemas run inside `next()`. The removed -L45 said the same thing as +L35. No contradiction."
+        "Changed: packages/docs/pages/advanced/schema-validation.md at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
       ]
     },
     "source:packages/docs/pages/advanced/testing.md": {
@@ -2924,16 +2924,15 @@
       ]
     },
     "source:packages/tests/unit/core/pathParams.test.ts": {
-      "fingerprint": "f6dc74d2c9979eb0d09f1ed4aed4be635fd4cf3967799778f42501ae95fc5c36",
+      "fingerprint": "de3250e02d62cae9b549b51e1683609cb8b262e10f279b027a3615f749e82c76",
       "snapshot": {
-        "packages/tests/unit/core/pathParams.test.ts": "7f66ad53e20ac502094b9a48f5668a97c039c6099e1cc4c69c2b2bf523c527cb"
+        "packages/tests/unit/core/pathParams.test.ts": "5f68b53f934a7ba9d0fb9c75de5eec9aad62270355fe0a4078c75dfc22122100"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Four fetch-param unions changed from `string | URL | Request` to `Request | string | URL`. Behaviour change: none",
+      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/core/pathParams.test.ts: @@ -11,7 +11,7 @@, @@ -24,7 +24,7 @@, @@ -60,7 +60,7 @@, @@ -259,7 +259,7 @@ (diff/219)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/core/pathParams.test.ts at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
       ]
     },
     "source:packages/tests/unit/core/requestSchema.test.ts": {
@@ -3537,6 +3536,42 @@
       "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
       "evidence": [
         "Changed: .lintstagedrc at 280f7e791c50e367a025fddc617941296f15f52a"
+      ]
+    },
+    "source:.bumpy/authbearer-skip-empty-token.md": {
+      "fingerprint": "20e9b7f25a4911058b1910dd78939f7d5e61e5c722782c735cf41b3afd2c9589",
+      "snapshot": {
+        ".bumpy/authbearer-skip-empty-token.md": "f3c842bae59cdd8ba84a0e179fe7564707f51957fbaa59c2b7a0597936796d56"
+      },
+      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
+      "evidence": [
+        "Changed: .bumpy/authbearer-skip-empty-token.md at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
+      ]
+    },
+    "source:.bumpy/path-params-reject-dot-segments.md": {
+      "fingerprint": "0194ee557ac92b9bbc53f6e35a46b5785e5991efa259f927c0f871edd2ad8c81",
+      "snapshot": {
+        ".bumpy/path-params-reject-dot-segments.md": "bb32155ded04655a044e5c9ac40a7aba45453f230b6f613b6a6259eaf19af72d"
+      },
+      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
+      "evidence": [
+        "Changed: .bumpy/path-params-reject-dot-segments.md at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/substitutePathParams.ts": {
+      "fingerprint": "d2b3ae9726b7ca390adf4b71d2b20bf707a94ea2b3e2411cfbdef160566995a3",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/substitutePathParams.ts": "46af49a5a4e2edcc48c9c7378feb849ebb86a7696f898e3c3dae95c3c9451a37"
+      },
+      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/substitutePathParams.ts at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
       ]
     }
   }

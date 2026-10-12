@@ -50,6 +50,32 @@ describe("pathParams substitution", () => {
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_OPTION_VALUE);
     }
   });
+
+  it("rejects dot segments, plain or percent-encoded, before fetch is called", async () => {
+    for (const id of [ ".", "..", "%2e", "%2e%2e", "%2E%2e", ".%2e", "%2E." ]) {
+      const fetch = vi.fn(async () => new Response(null, { status: 200 }));
+      await assert.rejects(
+        faxios.get("http://localhost/users/{id}", { pathParams: { id }, env: { fetch } }),
+        (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE && err.message.includes("\"id\""),
+        `id=${id}`
+      );
+      assert.strictEqual(fetch.mock.calls.length, 0, `id=${id}`);
+    }
+  });
+
+  it("still accepts values that only contain dots", async () => {
+    let capturedUrl = "";
+    await faxios.get("http://localhost/files/{name}", {
+      pathParams: { name: "..." },
+      env: {
+        fetch: async (input: Request | string | URL) => {
+          capturedUrl = input instanceof Request ? input.url : String(input);
+          return new Response(null, { status: 200 });
+        },
+      },
+    });
+    assert.ok(capturedUrl.endsWith("/files/..."), capturedUrl);
+  });
 });
 
 describe("pathParamsSchema validation", () => {

@@ -27,7 +27,7 @@ TypeScript infers `response.data` from the output type of `responseSchema`; you 
 
 ## Path parameters
 
-`pathParams` substitutes `{key}` placeholders in the URL. Each value is converted to a string and encoded with `encodeURIComponent`.
+`pathParams` substitutes `{key}` placeholders in the URL. Each value is converted to a string and encoded with `encodeURIComponent`. A missing or `null` value, or a value of `.` or `..` (also percent-encoded, such as `%2e%2e`), rejects with `ERR_BAD_OPTION_VALUE` before the request is sent, because a dot segment would move the request to another path.
 
 ```ts
 import faxios from "@gcmdev/faxios";
