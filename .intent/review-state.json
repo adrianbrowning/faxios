@@ -2237,15 +2237,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/FaxiosHeaders.ts": {
-      "fingerprint": "e6c1d3260d423deab0a5c2721c85173d9bcc73235cd6fc1fb74d071c67e62213",
+      "fingerprint": "bc749e400ff6468e1ceeeafad97ed9d83767127a4a3adc81c86acd56c1b1c646",
       "snapshot": {
-        "packages/lib/src/lib/core/FaxiosHeaders.ts": "87ac66bb36c138066d0db908764bc71a739c65712798c329d63853beb72cd4a5"
+        "packages/lib/src/lib/core/FaxiosHeaders.ts": "2cc184d78a851af8c3029fcebe7f6758f070afe3403918ef75eb31b408ec28b4"
       },
-      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
+      "head": "e26c1ab7e3e9ec0704c84a23dead8868970e1f04",
       "outcome": "no-change",
-      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
+      "reason": "getSetCookie bug fix; configure-requests skill does not document getSetCookie",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at 507ee20348e63b7dd80ede3c38d05aef74f7369d"
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
@@ -3869,6 +3869,30 @@
       "reason": "formDataToJSON field-name tokenizing is not documented by the configure-requests skill",
       "evidence": [
         "Changed: packages/docs/pages/advanced/html-form-processing.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:.bumpy/getsetcookie-always-array.md": {
+      "fingerprint": "c56a9440635802a9b4ac2b1fdddaf191dc61189e3b6c9273aa67ffd1eb8a2df5",
+      "snapshot": {
+        ".bumpy/getsetcookie-always-array.md": "2876451422eaa1f31f19c36ef918df06a816dd3697697f83014e935209ba7d78"
+      },
+      "head": "e26c1ab7e3e9ec0704c84a23dead8868970e1f04",
+      "outcome": "no-change",
+      "reason": "getSetCookie bug fix; configure-requests skill does not document getSetCookie",
+      "evidence": [
+        "Changed: .bumpy/getsetcookie-always-array.md at 507ee20348e63b7dd80ede3c38d05aef74f7369d"
+      ]
+    },
+    "source:packages/tests/unit/core/getSetCookie.test.ts": {
+      "fingerprint": "c90f4797c4a41d06267cb28b17983c442aa13e8ae993e23414ea75d664fb6850",
+      "snapshot": {
+        "packages/tests/unit/core/getSetCookie.test.ts": "8dde7b4d98b98a3ebd0a3c65b92c3c29c3e1e286c83f387f3afbe348233a47db"
+      },
+      "head": "e26c1ab7e3e9ec0704c84a23dead8868970e1f04",
+      "outcome": "no-change",
+      "reason": "getSetCookie bug fix; configure-requests skill does not document getSetCookie",
+      "evidence": [
+        "Changed: packages/tests/unit/core/getSetCookie.test.ts at 507ee20348e63b7dd80ede3c38d05aef74f7369d"
       ]
     }
   }

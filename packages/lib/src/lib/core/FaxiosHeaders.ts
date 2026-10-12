@@ -469,7 +469,11 @@ class FaxiosHeaders {
   }
 
   getSetCookie(): Array<string> {
-    return (this.get("set-cookie") as Array<string> | null) ?? [];
+    const value = this.get("set-cookie");
+    if (value == null) {
+      return [];
+    }
+    return Array.isArray(value) ? value.map(String) : [ String(value) ];
   }
 
   get [Symbol.toStringTag](): string {
