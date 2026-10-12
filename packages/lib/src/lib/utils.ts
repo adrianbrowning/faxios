@@ -448,6 +448,9 @@ function merge(this: unknown, ...objs: Array<unknown>): Record<string, unknown> 
   const caseless = ctx && ctx.caseless;
   const skipUndefined = ctx && ctx.skipUndefined;
   const result: Record<string | symbol, unknown> = {};
+  // Caseless mode: lowercased key -> the key already written to `result`. Only assignValue
+  // writes to `result`, so this index is complete.
+  const caselessKeys = new Map<string, string>();
   const assignValue = (val: unknown, key: unknown) => {
     const keyStr = key as string | symbol;
     // Skip dangerous property names to prevent prototype pollution
@@ -455,9 +458,9 @@ function merge(this: unknown, ...objs: Array<unknown>): Record<string, unknown> 
       return;
     }
 
-    // findKey lowercases the key, so caseless lookup only applies to strings —
-    // symbol keys are identity-matched.
-    const targetKey: string | symbol = (caseless && typeof keyStr === "string" ? (findKey(result, keyStr) ?? (keyStr)) : (keyStr));
+    // Caseless lookup only applies to strings — symbol keys are identity-matched.
+    const lowerKey = caseless && typeof keyStr === "string" ? keyStr.toLowerCase() : undefined;
+    const targetKey: string | symbol = (lowerKey === undefined ? keyStr : (caselessKeys.get(lowerKey) ?? keyStr));
     // Read via own-prop only — a bare `result[targetKey]` walks the prototype
     // chain, so a polluted Object.prototype value could surface here and get
     // copied into the merged result.
@@ -473,6 +476,9 @@ function merge(this: unknown, ...objs: Array<unknown>): Record<string, unknown> 
     }
     else if (!skipUndefined || !isUndefined(val)) {
       result[targetKey] = val;
+    }
+    if (lowerKey !== undefined && hasOwnProperty(result, targetKey)) {
+      caselessKeys.set(lowerKey, targetKey as string);
     }
   };
 

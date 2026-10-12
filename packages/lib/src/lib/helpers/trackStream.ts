@@ -1,3 +1,6 @@
+import FaxiosError from "../core/FaxiosError.js";
+import utils from "../utils.js";
+
 type ReadableStreamController = {
   close: () => void;
   enqueue: (chunk: Uint8Array) => void;
@@ -16,9 +19,31 @@ type ReadableStreamCtor = new (source: ReadableStreamSource, init?: ReadableStre
 
 const ReadableStreamGlobal = (globalThis as Record<string, unknown>)["ReadableStream"] as ReadableStreamCtor | undefined;
 
-type ByteChunk = { byteLength: number; slice: (start: number, end?: number) => ByteChunk; };
+const textEncoder = typeof TextEncoder === "function" ? new TextEncoder() : undefined;
 
-const streamChunk = function* (chunk: ByteChunk, chunkSize?: number): Generator<ByteChunk> {
+// View the chunk's bytes without copying them. Strings are UTF-8 encoded; anything else is not
+// a byte chunk and is rejected rather than silently converted.
+const toBytes = (chunk: unknown): Uint8Array => {
+  if (chunk instanceof Uint8Array) {
+    return chunk;
+  }
+  if (utils.isArrayBufferView(chunk)) {
+    const view = chunk as ArrayBufferView;
+    return new Uint8Array(view.buffer, view.byteOffset, view.byteLength);
+  }
+  if (utils.isArrayBuffer(chunk)) {
+    return new Uint8Array(chunk as ArrayBuffer);
+  }
+  if (utils.isString(chunk) && textEncoder) {
+    return textEncoder.encode(chunk as string);
+  }
+  throw new FaxiosError(
+    "Stream chunk must be a Uint8Array, another ArrayBufferView, an ArrayBuffer or a string, got " + utils.kindOf(chunk),
+    FaxiosError.ERR_BAD_REQUEST
+  );
+};
+
+const streamChunk = function* (chunk: Uint8Array, chunkSize?: number): Generator<Uint8Array> {
   const len = chunk.byteLength;
 
   if (!chunkSize || len < chunkSize) {
@@ -31,31 +56,31 @@ const streamChunk = function* (chunk: ByteChunk, chunkSize?: number): Generator<
 
   while (pos < len) {
     end = pos + chunkSize;
-    yield chunk.slice(pos, end);
+    yield chunk.subarray(pos, end);
     pos = end;
   }
 };
 
-const readBytes = async function* (iterable: AsyncIterable<ByteChunk> | unknown, chunkSize?: number): AsyncGenerator<ByteChunk> {
+const readBytes = async function* (iterable: unknown, chunkSize?: number): AsyncGenerator<Uint8Array> {
   for await (const chunk of readStream(iterable)) {
-    yield* streamChunk(chunk, chunkSize);
+    yield* streamChunk(toBytes(chunk), chunkSize);
   }
 };
 
 type ReaderLike = {
   cancel: () => Promise<void>;
-  read: () => Promise<{ done: boolean; value: ByteChunk; }>;
+  read: () => Promise<{ done: boolean; value: unknown; }>;
 };
 
 type StreamLike = {
-  [Symbol.asyncIterator]?: () => AsyncIterator<ByteChunk>;
+  [Symbol.asyncIterator]?: () => AsyncIterator<unknown>;
   getReader?: () => ReaderLike;
 };
 
-const readStream = async function* (stream: unknown): AsyncGenerator<ByteChunk> {
+const readStream = async function* (stream: unknown): AsyncGenerator<unknown> {
   const s = stream as StreamLike;
   if (s[Symbol.asyncIterator]) {
-    yield* s as AsyncIterable<ByteChunk>;
+    yield* s as AsyncIterable<unknown>;
     return;
   }
 
@@ -104,7 +129,7 @@ export const trackStream = (stream: unknown, chunkSize: number | undefined, onPr
             const loadedBytes = (bytes += len);
             onProgress(loadedBytes);
           }
-          controller.enqueue(new Uint8Array(value as unknown as ArrayBuffer));
+          controller.enqueue(value);
         }
         catch (err) {
           _onFinish(err);

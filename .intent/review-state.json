@@ -3,7 +3,7 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "1e0874e618668bfb5c13f043ba8be1d5beb6612a4026934281f23a3c689f84f0",
+      "fingerprint": "7c4aa02513d488d5c41f0d4b3b535daf3829394fcc0a2e6bd72ee28d4c961f9a",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "301c6e77e898dcc3bf63a9eb2f27b216f5f3c2cb94673f0790260a00a7cab8cb",
@@ -11,7 +11,7 @@
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "fa919dd554eae28aa95f12d102d31808bafdeddb9ca4fcf8b9e6b9ccbda523a2",
+        "packages/lib/src/lib/adapters/fetch.ts": "3e3e761e0a5d1dc8a98bc4e385ccbb23842077e64807065b7b2060316eadbb3a",
         "packages/lib/src/lib/core/Faxios.ts": "1697549ccacac943df349a8cba8e80ec028ef383e5f328f2950a91e7833dbbf0",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
@@ -33,15 +33,15 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
+      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
       "outcome": "no-change",
-      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
+      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/types.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/lib/src/lib/adapters/fetch.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "c35609380a6f5dfe8e39ee18342cb3b90aa372166869b80d97510ea1afc9985b",
+      "fingerprint": "6419fb36ff4bff758f55af9149e28546f371042418741ccad4d245d9475ec57e",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
@@ -52,7 +52,7 @@
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "fa919dd554eae28aa95f12d102d31808bafdeddb9ca4fcf8b9e6b9ccbda523a2",
+        "packages/lib/src/lib/adapters/fetch.ts": "3e3e761e0a5d1dc8a98bc4e385ccbb23842077e64807065b7b2060316eadbb3a",
         "packages/lib/src/lib/core/Faxios.ts": "1697549ccacac943df349a8cba8e80ec028ef383e5f328f2950a91e7833dbbf0",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
+      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
       "outcome": "no-change",
-      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
+      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/types.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/lib/src/lib/adapters/fetch.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "source:knip.json": {
@@ -278,13 +278,13 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "f7100730f3942479e49ce9c4172cfb08ad3b6d1d18d11880c7bd8539dd4e2a9a",
+      "fingerprint": "6e0d51dc1b6d11347462c228b45b81d1349691824fb33e69068e1acd644c4d46",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "428ec31167134f546c73e9fa2c9a6b7f36c185b687150515bcae8ca6fb96854b"
+        "packages/docs/pages/advanced/request-config.md": "9ff16527f719b5d6c5a1e6e14eba979330dfcc323f5833237d8c2948ef5489c7"
       },
-      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
+      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
       "outcome": "no-change",
-      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
+      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
       "evidence": [
         "Changed: packages/docs/pages/advanced/request-config.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
@@ -2237,16 +2237,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/FaxiosHeaders.ts": {
-      "fingerprint": "f2721353f59b29d0fb4900143d50177f1b1f3397344877db7e95177a4b3a17fb",
+      "fingerprint": "e6c1d3260d423deab0a5c2721c85173d9bcc73235cd6fc1fb74d071c67e62213",
       "snapshot": {
-        "packages/lib/src/lib/core/FaxiosHeaders.ts": "ad22092c6983c48d9a4d6c856a94723b528900612c03f9dca9e922858f44c4be"
+        "packages/lib/src/lib/core/FaxiosHeaders.ts": "87ac66bb36c138066d0db908764bc71a739c65712798c329d63853beb72cd4a5"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
       "outcome": "no-change",
-      "reason": "Members of the `HeaderMatcher` and `HeaderInput` unions sorted. Union operands sorted in the `normalizeValue` return type, the `matchHeaderValue` filter, the constructor parameter, the `get` RegExp overload return, the `get` implementation's parser union, `delete(header)`, `static from`, `static concat` and `static accessor`. Behaviour change: none. Overload order of `get` is unchanged (`string`, `true`, `RegExp`, function). All runtime code, including the `accessor([...])` list and `reduceDescriptors`, is identical.",
+      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/core/FaxiosHeaders.ts: Whole file (530 lines) compared. Changed lines are HEAD L11-21, L34, L66-70, L179, L247, L251-257, L320, L453, L459-461 and L471.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
@@ -2390,16 +2389,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/trackStream.ts": {
-      "fingerprint": "6d506907a7e869aecf4222e24714ffcc29c906822bfbb4c8841ef5e9118188f7",
+      "fingerprint": "d8753d99b4a60eed6a32f69698ca667930e101f44d30a23fbf93d3ef60702294",
       "snapshot": {
-        "packages/lib/src/lib/helpers/trackStream.ts": "e946f3e69a917c9667420106d0615282762faeb10f5ca743e191023207a7bdbe"
+        "packages/lib/src/lib/helpers/trackStream.ts": "20fd5bf38a8bbe21a8a94b5a3c9d355b6edb124ede7183cbf659ddbe54e93f33"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
       "outcome": "no-change",
-      "reason": "Members sorted in the type literals `ReadableStreamController` (`close`, `enqueue`), `ReadableStreamSource` (`cancel`, `pull`) and `ReaderLike` (`cancel`, `read`). Behaviour change: none. The runtime source object passed to `new ReadableStreamGlobal({ pull, cancel }, { highWaterMark: 2 })` is unchanged.",
+      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/trackStream.ts: Whole file compared. Changed lines are HEAD L1-9 and L45-48.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/helpers/trackStream.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "source:packages/lib/src/lib/helpers/validator.ts": {
@@ -2442,15 +2440,15 @@
       ]
     },
     "source:packages/lib/src/lib/utils.ts": {
-      "fingerprint": "fa47e438031245f64d2c13d44d083bd9356650cf52dcc50ebf8f7bf86b016878",
+      "fingerprint": "1d102b98a566ffcaf040c7ff1054396508e7a4b5af73b221900642b47c5c27f7",
       "snapshot": {
-        "packages/lib/src/lib/utils.ts": "49fa9b957770b27b2783eb8ef5ee6f25a3be99f1298a7695b530f9e124b4baa9"
+        "packages/lib/src/lib/utils.ts": "7aafbdb297e4ba646060c254a094eab6a6ac0c343cf00b87863ec26793312443"
       },
-      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
-      "outcome": "updated",
-      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
+      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
+      "outcome": "no-change",
+      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
       "evidence": [
-        "Changed: packages/lib/src/lib/utils.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
+        "Changed: packages/lib/src/lib/utils.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "source:packages/sandbox/client.js": {
@@ -3727,6 +3725,42 @@
       "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
       "evidence": [
         "Changed: packages/tests/unit/adapters/fetch-progress.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+      ]
+    },
+    "source:.bumpy/stream-chunks-and-headers.md": {
+      "fingerprint": "e665aa39f55a40dccbb306ce40ce8a25340b600aee0e538b48436e967ae6d1a0",
+      "snapshot": {
+        ".bumpy/stream-chunks-and-headers.md": "52dfa7d47a92f55afc064e23282a0a7a652a4213f7176bdc1d541456e1c37cb4"
+      },
+      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
+      "outcome": "no-change",
+      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
+      "evidence": [
+        "Changed: .bumpy/stream-chunks-and-headers.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+      ]
+    },
+    "source:packages/tests/unit/core/FaxiosHeadersIndex.test.ts": {
+      "fingerprint": "273fd21f7c4473895049607967d245336a5b462ad7e1df638e9b226bd63b3b56",
+      "snapshot": {
+        "packages/tests/unit/core/FaxiosHeadersIndex.test.ts": "5346173ac90ed085b2cc690e58759f1a6c3f4abf996dbc237b555f950842df60"
+      },
+      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
+      "outcome": "no-change",
+      "reason": "Test-only change: removed two implementation-detail tests; no skill-documented behaviour changed.",
+      "evidence": [
+        "Changed: packages/tests/unit/core/FaxiosHeadersIndex.test.ts at cea57cd56e56dbb8291f9c48967a049a33673729"
+      ]
+    },
+    "source:packages/tests/unit/helpers/trackStream.test.ts": {
+      "fingerprint": "94a18f5cc41d3a0b4681fd947f165d1c54ad59c72afb672f3ee4a2517c5bce59",
+      "snapshot": {
+        "packages/tests/unit/helpers/trackStream.test.ts": "750f2c507cf118ae3903e5646446ecaf0b41a9725ce28e2f80bda6fa5600467a"
+      },
+      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
+      "outcome": "no-change",
+      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
+      "evidence": [
+        "Changed: packages/tests/unit/helpers/trackStream.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     }
   }

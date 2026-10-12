@@ -135,6 +135,8 @@ The `data` is the data to be sent as the request body. This can be a string, a p
 - FormData, File, Blob (available in all supported runtimes)
 - ReadableStream
 
+When faxios wraps a `ReadableStream` body to report `onUploadProgress` or enforce `maxBodyLength`, it sends every byte of each chunk: a typed array or `DataView` keeps all its bytes, an `ArrayBuffer` is sent whole and a string is UTF-8 encoded. Any other chunk rejects the request with a `FaxiosError` whose code is `ERR_BAD_REQUEST`.
+
 For `FormData`, do not manually set `Content-Type`; the runtime adds the multipart boundary.
 
 If a `FormData`-like object provides a `getHeaders()` method, faxios copies all returned headers by default for v1 compatibility. If the object is custom or not fully trusted, set `formDataHeaderPolicy: 'content-only'` to copy only `Content-Type` and `Content-Length`, and set any other request headers explicitly via the request `headers` config.

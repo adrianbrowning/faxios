@@ -28,6 +28,25 @@ function normalizeHeader(header: string): string {
     .toLowerCase();
 }
 
+// Per instance: lowercased own key -> own key. Callers may also write and delete headers as plain
+// properties, so an entry is only trusted while its key is still own, and a miss rebuilds the index.
+const keyIndexes = new WeakMap<object, Map<string, string>>();
+
+function indexKeys(headers: object): Map<string, string> {
+  const index = new Map<string, string>();
+  // Later keys overwrite earlier ones, matching utils.findKey, which scans from the end.
+  for (const key of Object.keys(headers)) {
+    index.set(key.toLowerCase(), key);
+  }
+  keyIndexes.set(headers, index);
+  return index;
+}
+
+function findHeaderKey(headers: object, lHeader: string): string | undefined {
+  const key = keyIndexes.get(headers)?.get(lHeader);
+  return key !== undefined && utils.hasOwnProp(headers, key) ? key : indexKeys(headers).get(lHeader);
+}
+
 // eslint-disable-next-line sonarjs/function-return-type
 function normalizeValue(
   value: FaxiosHeaderValue | undefined
@@ -187,6 +206,9 @@ class FaxiosHeaders {
     rewrite?: boolean
   ): this {
     const self = this;
+    // Set once a lookup misses, which rebuilds the index from the own keys. Only setHeader writes
+    // to self until this call returns, so from then on the index is complete and a miss is final.
+    let index: Map<string, string> | undefined;
 
     function setHeader(
       _value: unknown,
@@ -199,7 +221,11 @@ class FaxiosHeaders {
         return;
       }
 
-      const key = utils.findKey(self, lHeader) as string | undefined;
+      const key = index ? index.get(lHeader) : findHeaderKey(self, lHeader);
+      if (key === undefined) {
+        index ??= keyIndexes.get(self)!;
+        index.set(String(_header).toLowerCase(), _header);
+      }
 
       if (
         !key ||
@@ -260,7 +286,7 @@ class FaxiosHeaders {
     header = normalizeHeader(header);
 
     if (header) {
-      const key = utils.findKey(this, header) as string | undefined;
+      const key = findHeaderKey(this, header);
 
       if (key) {
         const value = (this as Record<string, unknown>)[
@@ -299,7 +325,7 @@ class FaxiosHeaders {
     header = normalizeHeader(header);
 
     if (header) {
-      const key = utils.findKey(this, header) as string | undefined;
+      const key = findHeaderKey(this, header);
 
       return !!(
         key &&
@@ -325,7 +351,7 @@ class FaxiosHeaders {
       _header = normalizeHeader(_header);
 
       if (_header) {
-        const key = utils.findKey(self, _header) as string | undefined;
+        const key = findHeaderKey(self, _header);
 
         if (
           key &&
@@ -381,11 +407,12 @@ class FaxiosHeaders {
 
   normalize(format: boolean = false): this {
     const self = this;
-    const headers: Record<string, unknown> = {};
+    // Lowercased normalized name -> normalized name, for names already kept.
+    const kept = new Map<string, string>();
 
     utils.forEach(this, (value: unknown, _header: unknown) => {
       const header = _header as string;
-      const key = utils.findKey(headers, header) as string | undefined;
+      const key = kept.get(header.toLowerCase());
 
       if (key) {
         (self as Record<string, unknown>)[key] = normalizeValue(
@@ -405,7 +432,7 @@ class FaxiosHeaders {
         value as FaxiosHeaderValue
       );
 
-      headers[normalized] = true;
+      kept.set(normalized.toLowerCase(), normalized);
     });
 
     return this;
