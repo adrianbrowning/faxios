@@ -1,11 +1,12 @@
 {
+  "$schema": "../node_modules/@varlock/bumpy/config-schema.json",
   "baseBranch": "main",
   "changelog": "github",
-  "include": [
-    "faxios-workspace"
-  ],
   "access": "public",
+  "include": ["@gcmdev/faxios"],
   "publish": {
-    "provenance": true
+    "packManager": "npm",
+    "provenance": true,
+    "npmStaged": true
   }
 }

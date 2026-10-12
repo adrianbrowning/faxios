@@ -1,22 +1,40 @@
 name: Bumpy PR Comment
 
+# Posts the comment that bumpy-check.yml rendered, for fork PRs whose own token
+# is read-only. Runs default-branch code only: it never checks out the PR, never
+# installs dependencies, and uses the artifact only as comment text. bumpy takes
+# the PR number from the trusted workflow_run event, not from the artifact.
+
 on:
-  workflow_run:
+  workflow_run: # zizmor: ignore[dangerous-triggers] -- no PR code runs; see above
     workflows: ['Bumpy Check']
     types: [completed]
 
-permissions:
-  pull-requests: write
+permissions: {}
 
 jobs:
   comment:
+    if: github.event.workflow_run.event == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v7
+      # Default branch: read the pinned bumpy version from package.json
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          sparse-checkout: package.json
+          sparse-checkout-cone-mode: false
 
-      - uses: ./.github/actions/setup
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.x
+          package-manager-cache: false
 
-      - uses: actions/download-artifact@v4
+      # Outside the checkout, so the untrusted artifact can't overwrite trusted files
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         continue-on-error: true
         with:
           name: bumpy-comment
@@ -24,6 +42,9 @@ jobs:
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ github.token }}
 
-      - run: pnpm exec bumpy ci comment --body-file "$RUNNER_TEMP/bumpy-comment/comment.md"
+      - name: Post comment
+        run: |
+          BUMPY_VERSION=$(jq -r '.devDependencies["@varlock/bumpy"]' package.json)
+          npx --yes "@varlock/bumpy@${BUMPY_VERSION}" ci comment --body-file "$RUNNER_TEMP/bumpy-comment/comment.md"
         env:
           GH_TOKEN: ${{ github.token }}

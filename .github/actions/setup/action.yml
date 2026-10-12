@@ -1,57 +1,42 @@
 name: Setup
-description: Checkout, install pnpm + Node.js, cache pnpm store, install dependencies
+description: Install pnpm and Node.js, then install workspace dependencies. Check out the repo first.
 
 inputs:
   node-version:
     description: Node.js version
-    default: '24'
-  checkout-ref:
-    description: Git ref to checkout (e.g. github.head_ref for PRs)
-    default: ''
-  checkout-fetch-depth:
-    description: Fetch depth for checkout
-    default: '1'
+    default: '26.x'
   registry-url:
     description: npm registry URL for setup-node (e.g. https://registry.npmjs.org)
     default: ''
+  cache:
+    description: Cache the pnpm store. Turn off in jobs that publish.
+    default: 'true'
+  ignore-scripts:
+    description: Install without running dependency lifecycle scripts
+    default: 'false'
 
 runs:
   using: composite
   steps:
-    - name: Check if commit is made by bot
-      if: github.actor == 'github-actions[bot]'
-      shell: bash
-      run: echo "Commit made by bot. Exiting workflow." && exit 0
-
-    - name: Checkout repository
-      uses: actions/checkout@v7
-      with:
-        token: ${{ github.token }}
-        fetch-depth: ${{ inputs.checkout-fetch-depth }}
-        ref: ${{ inputs.checkout-ref }}
-
+    # The version comes from `packageManager` in the root package.json
     - name: Setup pnpm
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6
 
     - name: Setup Node.js ${{ inputs.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
       with:
         node-version: ${{ inputs.node-version }}
         registry-url: ${{ inputs.registry-url }}
-
-    - name: Get pnpm store path
-      id: pnpm-store
-      shell: bash
-      run: echo "path=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-    - name: Cache pnpm store
-      uses: actions/cache@v4
-      with:
-        path: ${{ steps.pnpm-store.outputs.path }}
-        key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pnpm-
+        cache: ${{ inputs.cache == 'true' && 'pnpm' || '' }}
+        package-manager-cache: ${{ inputs.cache == 'true' }}
 
     - name: Install dependencies
       shell: bash
-      run: pnpm install --frozen-lockfile
+      env:
+        IGNORE_SCRIPTS: ${{ inputs.ignore-scripts }}
+      run: |
+        if [[ "$IGNORE_SCRIPTS" == "true" ]]; then
+          pnpm install --frozen-lockfile --ignore-scripts
+        else
+          pnpm install --frozen-lockfile
+        fi

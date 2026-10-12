@@ -9,7 +9,7 @@ const repoURL = "https://github.com/adrianbrowning/faxios";
 const nav = [
   { text: "Guide", link: "/pages/getting-started/first-steps" },
   { text: "API", link: "/pages/advanced/api-reference" },
-  { text: "Changelog", link: `${repoURL}/blob/main/CHANGELOG.md` },
+  { text: "Changelog", link: `${repoURL}/blob/main/packages/lib/CHANGELOG.md` },
 ];
 
 const sidebar = [
@@ -109,9 +109,8 @@ export default defineConfig({
   lang: "en-US",
   title: "faxios | Promise based HTTP client",
   description: "Documentation for the faxios HTTP client",
-  // The es/fr/zh translations are axios-era and behind the English pages, and
-  // the sponsors data is axios's. Keep them out of the site until updated.
-  srcExclude: ["es/**", "fr/**", "zh/**", "pages/misc/sponsors.md"],
+  // The sponsors data is axios's. Keep the page out of the site until updated.
+  srcExclude: ["pages/misc/sponsors.md"],
   head: [
     ["link", { rel: "icon", href: `${base}favicon.ico` }],
     [

@@ -53,7 +53,7 @@ skills:
           api.interceptors.request.use(config => config);
         correct_pattern: |
           api.use(async (ctx, next) => next(ctx));
-        source: 'packages/tests/unit/api.test.ts; PRE_RELEASE_CHANGELOG.md'
+        source: 'packages/tests/unit/api.test.ts'
         priority: HIGH
         status: removed
         version_context: 'Removed before the first faxios release; agents trained on Axios still generate it.'
@@ -117,7 +117,7 @@ skills:
           faxios.post(url, file, { onUploadProgress: showBar }); // assumed to work in every browser
         correct_pattern: |
           // Use onUploadProgress only where fetch supports streaming request bodies.
-        source: 'packages/docs/pages/advanced/fetch-adapter.md; PRE_RELEASE_DOCS.md'
+        source: 'packages/docs/pages/advanced/fetch-adapter.md'
         priority: MEDIUM
         status: active
       - mistake: Assuming POST is retried

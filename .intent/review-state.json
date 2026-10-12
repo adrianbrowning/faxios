@@ -82,15 +82,15 @@
       ]
     },
     "source:knip.json": {
-      "fingerprint": "03d6317d0725702527d0951b1aeb483e952cd91a4c13e9af30af2dacf1c9be9d",
+      "fingerprint": "238662daeb4f1b7f25f044ed1be308337ea4fc2662e34727604ce527e2b04a8d",
       "snapshot": {
-        "knip.json": "535d5d67fe4148da87d7bb94b4ab5c380c2467e05c176f2a6902d7af046a0292"
+        "knip.json": "53415bb7d47f06ab8b4e71deee1f5bfdafab9cb971839b905c299edb4d45619e"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
       "outcome": "out-of-scope",
-      "reason": "Adds @tanstack/intent and zod to root knip ignoreDependencies; not library behaviour.",
+      "reason": "Tooling config: dropped the @splidejs/splide ignore after removing the dependency.",
       "evidence": [
-        "git diff: two ignoreDependencies entries."
+        "@splidejs/splide was only imported by the deleted es/fr/zh home pages."
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
@@ -118,15 +118,15 @@
       ]
     },
     "source:PRE_RELEASE_DOCS.md": {
-      "fingerprint": "718d64b267763a454f2dfd538047866ce53953bb93b8ab692e7823f1c61c0801",
+      "fingerprint": "3b8cef9015bb155b2c0722313a20749e2f2434e38c99b34b600be098fc090ad6",
       "snapshot": {
-        "PRE_RELEASE_DOCS.md": "2c74f8ea620c967b4605d89f55abd1ce344d4e25de01cc0e1fa2d19870c5c360"
+        "PRE_RELEASE_DOCS.md": null
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
-      "outcome": "updated",
-      "reason": "Skill updated from this diff.",
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: PRE_RELEASE_DOCS.md retired; docs now change in the same PR as the code.",
       "evidence": [
-        "Added new Faxios() has no use/eject, maxRetryAfter rejects, custom retryOn replaces predicate, legacyInterceptorReqResOrdering ERR_BAD_OPTION, rejected body on error.response.data (all runtime-checked). Diff review: The deleted spec entries (-L23..-L112 and -L150..-L171) still state behaviour the skill lacks, all confirmed in src. (1) -L15/-L35: `use()`/`eject()` are absent on `new Faxios()`. faxios.ts:49-50 attaches them only in createInstance, and SKILL.md L279 lists `Faxios` with no warning. (2) -L65: past `maxRetryAfter` (5 min) retry rethrows without retrying (retry.ts:196). A custom `retryOn` replaces the whole default predicate, so `statuses` is ignored (retry.ts:182). An `onRetry` that throws stops retrying. (3) -L95: passing `transitional.legacyInterceptorReqResOrdering` throws `ERR_BAD_OPTION` ("
+        "File deleted; domain_map.yaml no longer cites it; AGENTS.md rule replaced."
       ]
     },
     "source:packages/docs/.vitepress/config.mts": {
@@ -174,7 +174,7 @@
       "outcome": "updated",
       "reason": "Skill updated from this diff.",
       "evidence": [
-        "Added new Faxios() has no use/eject to SKILL.md (runtime: typeof use undefined). Diff review: +L31: 'An instance built with `new Faxios()` has no `use()` or `eject()`; use `faxios.create()`'. Confirmed by faxios.ts:41-52. The skill exports `Faxios` (L279) but never says this. +L65 (eject frees provided capabilities; type not narrowed) is also not in plugins.md. Everything else is consistent: the +L5..+L15 entry-point table (only `definePlugin` from /plugins; built-ins only from their subpaths, matching SKILL L224-226, L280-281); +L63 duplicate capability → `ERR_BAD_OPTION`, bad value/name → `ERR_BAD_OPTION_VALUE` (plugins.md L101-102); `FaxiosError.issues` (+L86)."
+        "Added new Faxios() has no use/eject to SKILL.md (runtime: typeof use undefined). Diff review: +L31: 'An instance built with `new Faxios()` has no `use()` or `eject()`; use `faxios.create()`'. Confirmed by faxios.ts:41-52. The skill exports `Faxios` (L279) but never says this. +L65 (eject frees provided capabilities; type not narrowed) is also not in plugins.md. Everything else is consistent: the +L5..+L15 entry-point table (only `definePlugin` from /plugins; built-ins only from their subpaths, matching SKILL L224-226, L280-281); +L63 duplicate capability \u2192 `ERR_BAD_OPTION`, bad value/name \u2192 `ERR_BAD_OPTION_VALUE` (plugins.md L101-102); `FaxiosError.issues` (+L86)."
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
@@ -186,7 +186,7 @@
       "outcome": "no-change",
       "reason": "Diff reviewed (M); consistent.",
       "evidence": [
-        "+L7..+L65: authBearer setup. `getToken` is called per request, and per try when `retry` is installed before it. An existing header is kept unless `overwrite: true`. Origin rule: absolute baseURL origin only, otherwise relative URLs only. `origins` replaces the rule. Invalid options → `ERR_BAD_OPTION_VALUE`, unknown → `ERR_BAD_OPTION`. These match SKILL L231-234 and plugins.md L103-105. +L100..+L153: the refreshOn401 plugin matches plugins.md L70-97. Minor details not in the skill: the `auth` capability ignores the origin rule (+L100); `origins` entries must be bare origins, and a relative URL counts only in a browser."
+        "+L7..+L65: authBearer setup. `getToken` is called per request, and per try when `retry` is installed before it. An existing header is kept unless `overwrite: true`. Origin rule: absolute baseURL origin only, otherwise relative URLs only. `origins` replaces the rule. Invalid options \u2192 `ERR_BAD_OPTION_VALUE`, unknown \u2192 `ERR_BAD_OPTION`. These match SKILL L231-234 and plugins.md L103-105. +L100..+L153: the refreshOn401 plugin matches plugins.md L70-97. Minor details not in the skill: the `auth` capability ignores the origin rule (+L100); `origins` entries must be bare origins, and a relative URL counts only in a browser."
       ]
     },
     "source:packages/docs/pages/advanced/create-an-instance.md": {
@@ -294,7 +294,7 @@
       "outcome": "updated",
       "reason": "Skill updated from this diff.",
       "evidence": [
-        "Added custom retryOn replaces the default predicate and long Retry-After rejects without retrying (both runtime-checked); onRetry-throws and attempts/methods validation recorded as not added. Diff review: +L82: 'retryOn replaces the entire default predicate… Network errors and timeouts are retried only if your function says so, and `statuses` is ignored when both are set' (retry.ts:60-61, 182). +L169: 'If the header asks for longer than `maxRetryAfter` (default 5 minutes), faxios doesn't wait: it rethrows… without retrying' (retry.ts:186, 196). +L215: an `onRetry` that throws rejects and stops (retry.ts:238). +L126: `attempts` must be an integer ≥1, including not Infinity, else `ERR_BAD_OPTION_VALUE`. +L253: each `methods` entry must be an RFC 9110 token. SKILL L235-240 covers none of these. Co"
+        "Added custom retryOn replaces the default predicate and long Retry-After rejects without retrying (both runtime-checked); onRetry-throws and attempts/methods validation recorded as not added. Diff review: +L82: 'retryOn replaces the entire default predicate\u2026 Network errors and timeouts are retried only if your function says so, and `statuses` is ignored when both are set' (retry.ts:60-61, 182). +L169: 'If the header asks for longer than `maxRetryAfter` (default 5 minutes), faxios doesn't wait: it rethrows\u2026 without retrying' (retry.ts:186, 196). +L215: an `onRetry` that throws rejects and stops (retry.ts:238). +L126: `attempts` must be an integer \u22651, including not Infinity, else `ERR_BAD_OPTION_VALUE`. +L253: each `methods` entry must be an RFC 9110 token. SKILL L235-240 covers none of these. Co"
       ]
     },
     "source:packages/docs/pages/advanced/schema-validation.md": {
@@ -390,7 +390,7 @@
       "outcome": "no-change",
       "reason": "Diff reviewed (M); consistent.",
       "evidence": [
-        "-L9/+L11 and -L13/+L15: 'via a Response interceptor' becomes 'via `.use()` middleware… catches the error thrown by `next(ctx)`'. This matches the try/catch-around-next pattern at SKILL L203-209. The custom codes (`ERR_DNS_FAILURE` etc.) are the example's own and come from unchanged context."
+        "-L9/+L11 and -L13/+L15: 'via a Response interceptor' becomes 'via `.use()` middleware\u2026 catches the error thrown by `next(ctx)`'. This matches the try/catch-around-next pattern at SKILL L203-209. The custom codes (`ERR_DNS_FAILURE` etc.) are the example's own and come from unchanged context."
       ]
     },
     "source:packages/examples/network_enhanced.js": {
@@ -655,6 +655,1134 @@
       "reason": "Module-suite test that shipped maps resolve; packaging, not request behaviour.",
       "evidence": [
         "Asserts every .d.ts has a .d.ts.map, every map source resolves in the installed package, and JSDoc precedes pathParams."
+      ]
+    },
+    "source:packages/docs/es/index.md": {
+      "fingerprint": "3d34f13405d3af25feb99a482a270bd6ea4e295e790c0c75eae41f5c9d2d9d01",
+      "snapshot": {
+        "packages/docs/es/index.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/index.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/adapters.md": {
+      "fingerprint": "e32280be9976dbd508410979ae219cbfc802c3f97a65d4b0ed071879f78fb626",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/adapters.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/adapters.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/api-reference.md": {
+      "fingerprint": "aa3d3bda69d2e47a430da2f1462b8ca24e0bbe99c73be00cb51ffa9633263886",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/api-reference.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/api-reference.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/authentication.md": {
+      "fingerprint": "9266a76feecc4ca5c644e6182d9f3eddb103c0f77c0bcb590a59b879d6edb6e9",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/authentication.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/authentication.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/cancellation.md": {
+      "fingerprint": "31b25834b5dccf4b10203b6a3eb2840dbff9b75ac8a9461e07c26b4c3b5d39c1",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/cancellation.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/cancellation.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/config-defaults.md": {
+      "fingerprint": "bc85d2621e828d90e5ef7d0acb593ef119859bc0d8f2914d568e906e643fb648",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/config-defaults.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/config-defaults.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/create-an-instance.md": {
+      "fingerprint": "192e21f9adad1cdefda8c3f3b85e1464f1bb36e495b0f0746e58e3099437bbb4",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/create-an-instance.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/create-an-instance.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/error-handling.md": {
+      "fingerprint": "11e0dfb353889af44bf8554d7f2b195e81c5a24fcf350bb1430960699deadd29",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/error-handling.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/error-handling.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/fetch-adapter.md": {
+      "fingerprint": "687348f62aaa03039ec39af2c884ffa1a9ea0b8eae2e646606fd1fb34b9e010e",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/fetch-adapter.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/fetch-adapter.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/file-posting.md": {
+      "fingerprint": "06447345c20b786f5a921c980358aca33fb50548e7e63c7fcb5be3d154bea697",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/file-posting.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/file-posting.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/header-methods.md": {
+      "fingerprint": "2e38814e1d82cfd5b3d67d2cb483024ed9609b5b31e7591e3fbe91e313ca4806",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/header-methods.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/header-methods.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/headers.md": {
+      "fingerprint": "4be1fed56ed7d5de1f55c57164a01242545cf573264681a1e44b79a852675ffb",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/headers.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/headers.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/html-form-processing.md": {
+      "fingerprint": "438db8ad7353453578f35c9989238e12d360bb6b012ce0c5cc52fd477e3b03e9",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/html-form-processing.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/html-form-processing.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/multipart-form-data-format.md": {
+      "fingerprint": "c34a835bba23504457d189e6b18878cf942b76fe333514286abd451fa7f42ebf",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/multipart-form-data-format.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/multipart-form-data-format.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/progress-capturing.md": {
+      "fingerprint": "57116c6659ed2ddd0d750b0e2d884722a8804b50002c6ca71d194c34cfe6368b",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/progress-capturing.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/progress-capturing.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/promises.md": {
+      "fingerprint": "d38395990e0af2d2af6b3cfc15f2abd29c95a9fb850c109faeab9b0b22c9b50f",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/promises.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/promises.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/request-config.md": {
+      "fingerprint": "7b5b80d960b794d8b6d693af5f040e6bac047dc53d33d0aa310d5bcafc70053e",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/request-config.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/request-config.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/request-method-aliases.md": {
+      "fingerprint": "13d834e26f47be3d04cf7ffffa76bae91e10eaeb880768c12700c05a89e8baa7",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/request-method-aliases.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/request-method-aliases.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/response-schema.md": {
+      "fingerprint": "28532f8c0fcd13a66e7d3297784255972f99e9d54cb6d04fce970ee52c228cd3",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/response-schema.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/response-schema.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/retry.md": {
+      "fingerprint": "d7c02a22ed3848915e672128d4429a185f2633c45dcc278a64d15bdb1d89550f",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/retry.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/retry.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/testing.md": {
+      "fingerprint": "e2e686ff2ed04a1699527df6c413f13327ca2959e42e767bc112f69544de0057",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/testing.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/testing.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/type-script.md": {
+      "fingerprint": "c8587f37cea563b09731cd283634b1904c65fac374a928730e53020f8a089d60",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/type-script.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/type-script.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/advanced/x-www-form-urlencoded-format.md": {
+      "fingerprint": "9d2695deea2d31fad56a8031205d571924c88da2cb0c34e4b5b024899174d800",
+      "snapshot": {
+        "packages/docs/es/pages/advanced/x-www-form-urlencoded-format.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/advanced/x-www-form-urlencoded-format.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/getting-started/examples/commonjs.md": {
+      "fingerprint": "45340868f9b6d1f359f6093bc4141577ae2d238132079ee37cf9fb30af68c8e4",
+      "snapshot": {
+        "packages/docs/es/pages/getting-started/examples/commonjs.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/getting-started/examples/commonjs.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/getting-started/examples/typescript.md": {
+      "fingerprint": "21872ec40e6cf6deb1ccac9f22e39918c360a56094c4d1d26484b3823a3a8a81",
+      "snapshot": {
+        "packages/docs/es/pages/getting-started/examples/typescript.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/getting-started/examples/typescript.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/getting-started/features.md": {
+      "fingerprint": "2eb9217628a103476785451a6c4f2c5bf4aa4cda5e6d2024418ff748ad2c917b",
+      "snapshot": {
+        "packages/docs/es/pages/getting-started/features.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/getting-started/features.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/getting-started/first-steps.md": {
+      "fingerprint": "8eb5ec1dce682afc384d9fb824cf1f91688d9b04a3a4e5fa34f2b989336f0306",
+      "snapshot": {
+        "packages/docs/es/pages/getting-started/first-steps.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/getting-started/first-steps.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/getting-started/upgrade-guide.md": {
+      "fingerprint": "b2a7e541a56688af7e658aa76b477208b71beefb865edab9ee87f6e1d2f582a2",
+      "snapshot": {
+        "packages/docs/es/pages/getting-started/upgrade-guide.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/getting-started/upgrade-guide.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/misc/security.md": {
+      "fingerprint": "575086575de8e860597cbb937cca0a26c20a88a46ed539a28b68bb1cef60578f",
+      "snapshot": {
+        "packages/docs/es/pages/misc/security.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/misc/security.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/misc/semver.md": {
+      "fingerprint": "ec053c20e43fcc146d684c7c696693d64f6184ed6b028b7e6909b53964dce8e7",
+      "snapshot": {
+        "packages/docs/es/pages/misc/semver.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/misc/semver.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/es/pages/misc/sponsors.md": {
+      "fingerprint": "0b1ed9f8982f156dc7b3d1af893b4e7272a9656bf83b161e49d0e16901bd30c9",
+      "snapshot": {
+        "packages/docs/es/pages/misc/sponsors.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/es/pages/misc/sponsors.md removed with packages/docs/es/."
+      ]
+    },
+    "source:packages/docs/fr/index.md": {
+      "fingerprint": "d078c2ea8a8302703587f317b034aca4276a8f412087fbfe51b0dbac4e336573",
+      "snapshot": {
+        "packages/docs/fr/index.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/index.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/adapters.md": {
+      "fingerprint": "04c5ff52ba09c463382b2301a970dd674d1fc1fd132610af05bd61e20fe45346",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/adapters.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/adapters.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/api-reference.md": {
+      "fingerprint": "207573070a921abd090471fb398ff9c9d11a1fa6300e7c34bcefe73d69451b89",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/api-reference.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/api-reference.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/authentication.md": {
+      "fingerprint": "1b9524b42dbfe9eb68774439ebea34a4d9fd5f0b49bb6fe9dd4c7caeebe500ed",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/authentication.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/authentication.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/cancellation.md": {
+      "fingerprint": "e18920ae64d7bcd24c7db4a8883c444ce01ea268da2043308edc8d54b36d5a2a",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/cancellation.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/cancellation.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/config-defaults.md": {
+      "fingerprint": "99d914a0f60b23bf5b408b92aa47d8e2f09b238d34b027b582c837547c357c25",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/config-defaults.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/config-defaults.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/create-an-instance.md": {
+      "fingerprint": "b8ac2a3de3e36ee92e7e48ab475f3b42534b938b9388e5448677c327144fcd13",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/create-an-instance.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/create-an-instance.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/error-handling.md": {
+      "fingerprint": "6fb0b26904819338cc8a89628e297d370d55e09b4e71f5b7b1665aa85a31b939",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/error-handling.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/error-handling.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/fetch-adapter.md": {
+      "fingerprint": "de443d1aecfa46d18eff116a990ad34a19f588f3bd73b09f51bacf119d794e25",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/fetch-adapter.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/fetch-adapter.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/file-posting.md": {
+      "fingerprint": "0dd072c2168293395037968afeec26cf54665a2de08d90671c3e518dde3bd2fe",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/file-posting.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/file-posting.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/header-methods.md": {
+      "fingerprint": "5405a9e36ee32e5b5f6492a8b350c681a1f49aa2f98e9def8784203063eb2f59",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/header-methods.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/header-methods.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/headers.md": {
+      "fingerprint": "35717789e892fb55446c874880220b5f8efeaa9757ac3c61992b4414f7ea89f6",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/headers.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/headers.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/html-form-processing.md": {
+      "fingerprint": "2e288e9ae0edea0be34363d2d7b1be36ae80b89ec2a83d014c5b7c5460487faf",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/html-form-processing.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/html-form-processing.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/multipart-form-data-format.md": {
+      "fingerprint": "58724009a71538d789babfb202e39b2d8d86b18de2f2d612b4cf5118d87ba22a",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/multipart-form-data-format.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/multipart-form-data-format.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/progress-capturing.md": {
+      "fingerprint": "7c32553ae30bf93398ff49f6fa713f0a9459b50a736d8a3bf212e8393a2f43ff",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/progress-capturing.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/progress-capturing.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/promises.md": {
+      "fingerprint": "6ea10211e2e3bdced0e0c985d4e3575083d0d650c5ad27ad0caef82454ee74fb",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/promises.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/promises.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/request-config.md": {
+      "fingerprint": "309982f059d2cd5f880bd01b41df2cc2d8b4612897a3032e86f83a1876749c8c",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/request-config.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/request-config.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/request-method-aliases.md": {
+      "fingerprint": "503903a0b23f8b9df9239a6c917b6bd0b7d76f8f3a7f8a43eb212ee940aeb44d",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/request-method-aliases.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/request-method-aliases.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/response-schema.md": {
+      "fingerprint": "a5c357058a56de5ceed9bf1dff378570322736f993104a5103e1b3f64b6d0885",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/response-schema.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/response-schema.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/retry.md": {
+      "fingerprint": "72b2fda9c9797dacd374970210858994f81fa6b47316cee82d5bcec2f53dc327",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/retry.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/retry.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/testing.md": {
+      "fingerprint": "adbb87489127d966e0c533f220756aa4204306b746e4168c28209db34c792fde",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/testing.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/testing.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/type-script.md": {
+      "fingerprint": "c1d081347c52d7f5a7a6138765ab41991852e05e35ced10a1b6e240ac79798a5",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/type-script.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/type-script.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/advanced/x-www-form-urlencoded-format.md": {
+      "fingerprint": "643419111961c19a35de957a62d57c23c96a920365dcf1277123b9d7e623d3c5",
+      "snapshot": {
+        "packages/docs/fr/pages/advanced/x-www-form-urlencoded-format.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/advanced/x-www-form-urlencoded-format.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/getting-started/examples/commonjs.md": {
+      "fingerprint": "9ad3e85aef2c6bc9f2e10c56fa4019e4c8f13932746c1883f0916ff50b291900",
+      "snapshot": {
+        "packages/docs/fr/pages/getting-started/examples/commonjs.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/getting-started/examples/commonjs.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/getting-started/examples/typescript.md": {
+      "fingerprint": "e84bd4a4c7cefe37522c70d091241b16157e83027035f9b735e01445aae5c4bd",
+      "snapshot": {
+        "packages/docs/fr/pages/getting-started/examples/typescript.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/getting-started/examples/typescript.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/getting-started/features.md": {
+      "fingerprint": "8fdf6bbbeb211474fbc1e135ecb395ed1d45d338e15226058db0f8fd65c1bebf",
+      "snapshot": {
+        "packages/docs/fr/pages/getting-started/features.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/getting-started/features.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/getting-started/first-steps.md": {
+      "fingerprint": "c2bf67799eaff633ebe532142c8434e676ec92c93b7a8cc0bd12c891a7c0f3f5",
+      "snapshot": {
+        "packages/docs/fr/pages/getting-started/first-steps.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/getting-started/first-steps.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/getting-started/upgrade-guide.md": {
+      "fingerprint": "ed6a8f85e9246feb0f765b846edf68189e70ba25e56b38db6d2285b17bb59117",
+      "snapshot": {
+        "packages/docs/fr/pages/getting-started/upgrade-guide.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/getting-started/upgrade-guide.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/misc/security.md": {
+      "fingerprint": "e021e839d95d96206577ae228a0ab3341240d4c5d310a42e5c008a66457513d5",
+      "snapshot": {
+        "packages/docs/fr/pages/misc/security.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/misc/security.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/misc/semver.md": {
+      "fingerprint": "32701359cafc9527c26155c04d0e3698248d8603588691c7a2570c43af1efc12",
+      "snapshot": {
+        "packages/docs/fr/pages/misc/semver.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/misc/semver.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/fr/pages/misc/sponsors.md": {
+      "fingerprint": "10cbbec163ea34b26a8922ea404787ec0c98d3436b1fa371849f158250dd7e08",
+      "snapshot": {
+        "packages/docs/fr/pages/misc/sponsors.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/fr/pages/misc/sponsors.md removed with packages/docs/fr/."
+      ]
+    },
+    "source:packages/docs/patches/@splidejs+splide+4.1.4.patch": {
+      "fingerprint": "86e32ebbcd81ac3d92ca8cc212f83e6f7b198e8c6c13d09cb9fa4e67519bb50e",
+      "snapshot": {
+        "packages/docs/patches/@splidejs+splide+4.1.4.patch": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Removed the splide patch along with the dependency.",
+      "evidence": [
+        "@splidejs/splide removed from packages/docs/package.json; only the deleted locale home pages used it."
+      ]
+    },
+    "source:packages/docs/zh/index.md": {
+      "fingerprint": "f767c6fff6e395d30b8f60878307970dd2d4324251077a6039d71ecb465a3979",
+      "snapshot": {
+        "packages/docs/zh/index.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/index.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/adapters.md": {
+      "fingerprint": "e391153905ac1ab545d44b4f4bda479085cc203827ffc955bc2bf90486da76f2",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/adapters.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/adapters.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/api-reference.md": {
+      "fingerprint": "9160885dbe411206f5d3b3b558eadc8ca425f4a63359d7a6f2e16a2579ed4f75",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/api-reference.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/api-reference.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/authentication.md": {
+      "fingerprint": "5f0b91070e3f5147105e16b99f84c623d46943a70f41192a8d83730485cfe978",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/authentication.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/authentication.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/cancellation.md": {
+      "fingerprint": "dea5f2a786414058daa65dbc35a9b4109a5aaa54b5b758d818f2c11ed68a8b2f",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/cancellation.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/cancellation.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/config-defaults.md": {
+      "fingerprint": "dcea34e178f4b925b718f42fde82f54a43e569eb9008095d138033dcd79bc596",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/config-defaults.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/config-defaults.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/create-an-instance.md": {
+      "fingerprint": "a975c1ed5b9384b3355e709685c7e579a8c5d79371de6ab243393f16cb0bf590",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/create-an-instance.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/create-an-instance.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/error-handling.md": {
+      "fingerprint": "0ed529a8a2b49903a8caed8f48df9e2f6bb16f661fc5eebe66a4d9657fa76985",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/error-handling.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/error-handling.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/fetch-adapter.md": {
+      "fingerprint": "aad371231cb673f9a86b2e9c357cfbe117bc427519058b6e3fceffbff76970a0",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/fetch-adapter.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/fetch-adapter.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/file-posting.md": {
+      "fingerprint": "dd4b4c7cc99ca25ce8adcc3362e4bbfc34d4b47f3b1d0780a3c9c64699fdf14a",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/file-posting.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/file-posting.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/header-methods.md": {
+      "fingerprint": "c4165ee1478aefe7c8b45aa3f693c3a7746da3d4f358ddd0174eeb17e2e861a4",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/header-methods.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/header-methods.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/headers.md": {
+      "fingerprint": "ba3e6c3c4c38da80d73b003275cad1da640c4880417dc517eacd4766f5e7685e",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/headers.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/headers.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/html-form-processing.md": {
+      "fingerprint": "187f18ceee032a694d585de6f3087f2844c51888effe430f4fe4d45259dae0cb",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/html-form-processing.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/html-form-processing.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/multipart-form-data-format.md": {
+      "fingerprint": "8fb2076685ad0c093da792bb424fe9280c082e6f2b015e7112fba1efc2d8b3da",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/multipart-form-data-format.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/multipart-form-data-format.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/progress-capturing.md": {
+      "fingerprint": "f54ce9d96f0fc52f2ceacd67f3b9991797d5c8fed3d7a79017c8bfe5384b841a",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/progress-capturing.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/progress-capturing.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/promises.md": {
+      "fingerprint": "54597841fd2f53e1f290a3556b7abeb5f99cbb53c7c81a584ab42cd5d06275b1",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/promises.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/promises.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/request-config.md": {
+      "fingerprint": "4099b10fd9bc4aa39796805719aceef64628f3c0474d553a5e2900cb1ed6798e",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/request-config.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/request-config.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/request-method-aliases.md": {
+      "fingerprint": "24196648dc3b7ed77377bffa24d0a2ef31169c97983a5c3fc2c0d38eea11313a",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/request-method-aliases.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/request-method-aliases.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/response-schema.md": {
+      "fingerprint": "de2e12effaa8f6dceeb36670dce647e9596676a5383fa87e451ecd606e09ec54",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/response-schema.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/response-schema.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/retry.md": {
+      "fingerprint": "1ff2d8da8db1a8c6c51c414d14bb24de1db036e394d1dd78fd4e0e34b80caf0a",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/retry.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/retry.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/testing.md": {
+      "fingerprint": "3ff721ff64d987790c6f297659f896f382e29ba5caa025af18a9e585283fb434",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/testing.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/testing.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/type-script.md": {
+      "fingerprint": "8a7eab65e51fa75f4065c53f4e43bc1f4b8803618a2a631c5f726a94dcdd5f24",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/type-script.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/type-script.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/advanced/x-www-form-urlencoded-format.md": {
+      "fingerprint": "1da4ad12c8583d241e76bec9dcbcd36824cf4953ee1eef7e6be74c2e708198ce",
+      "snapshot": {
+        "packages/docs/zh/pages/advanced/x-www-form-urlencoded-format.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/advanced/x-www-form-urlencoded-format.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/getting-started/examples/commonjs.md": {
+      "fingerprint": "a396709090a89ccc017b21f81e1b96c3024819a3e98dd8d755df6ff2531fdd11",
+      "snapshot": {
+        "packages/docs/zh/pages/getting-started/examples/commonjs.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/getting-started/examples/commonjs.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/getting-started/examples/typescript.md": {
+      "fingerprint": "4cf6b28f6295b246bb853e6787df754eccef035aad0d4867d233908bc1bd6d4c",
+      "snapshot": {
+        "packages/docs/zh/pages/getting-started/examples/typescript.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/getting-started/examples/typescript.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/getting-started/features.md": {
+      "fingerprint": "260cf627f7618a276d4c7da68f2f6e5e5f5a818230bad00f31353b19bb10967e",
+      "snapshot": {
+        "packages/docs/zh/pages/getting-started/features.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/getting-started/features.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/getting-started/first-steps.md": {
+      "fingerprint": "d4da842a52f44d4e204adf397cc203de257a5b0b58a106f411f816ab8cf1c915",
+      "snapshot": {
+        "packages/docs/zh/pages/getting-started/first-steps.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/getting-started/first-steps.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/getting-started/upgrade-guide.md": {
+      "fingerprint": "5db53894cb5e8853ecd06d3e127f37c956823d477f55d7dcf806813d3a85f129",
+      "snapshot": {
+        "packages/docs/zh/pages/getting-started/upgrade-guide.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/getting-started/upgrade-guide.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/misc/security.md": {
+      "fingerprint": "5db6614627830354811eb801bcd255e7820fff9efefc5531c3b3d307cee2fa55",
+      "snapshot": {
+        "packages/docs/zh/pages/misc/security.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/misc/security.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/misc/semver.md": {
+      "fingerprint": "43d61531b841c1bd9ed79328790c520ec80331cb640ea61a8f590b4f0466d946",
+      "snapshot": {
+        "packages/docs/zh/pages/misc/semver.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/misc/semver.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:packages/docs/zh/pages/misc/sponsors.md": {
+      "fingerprint": "74d93d735c9936782c179a183e35f046c37b0e590a792cbc90210b1bd5a370d4",
+      "snapshot": {
+        "packages/docs/zh/pages/misc/sponsors.md": null
+      },
+      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
+      "outcome": "out-of-scope",
+      "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
+      "evidence": [
+        "packages/docs/zh/pages/misc/sponsors.md removed with packages/docs/zh/."
       ]
     }
   }

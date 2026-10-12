@@ -1,43 +1,44 @@
 name: Bumpy Check
 
+# Renders the release plan for each PR, and warns (never fails) when a change
+# to @gcmdev/faxios has no bump file. bumpy-comment.yml posts the rendered
+# comment, so this job needs no write token and works the same for forks.
+
 on:
   pull_request:
-    types: [opened, synchronize, reopened, labeled, unlabeled]
+    types: [opened, synchronize, reopened]
 
-permissions:
-  contents: read
-  pull-requests: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions: {}
 
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - uses: ./.github/actions/setup
         with:
-          checkout-fetch-depth: '0'
+          ignore-scripts: 'true'
 
-      - name: Check for bump file or exemption
+      # bumpy skips the Version Packages PR branch by itself.
+      # `--comment false`: bumpy reads the next argument as the value.
+      - name: Check bump files
+        run: pnpm exec bumpy ci check --comment false --no-fail --emit-comment ./bumpy-comment
         env:
           GH_TOKEN: ${{ github.token }}
-          LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
-        run: |
-          set -euo pipefail
 
-          # Exempt the release PR branch
-          if [[ "${{ github.head_ref }}" == "bumpy/version-packages" ]]; then
-            exit 0
-          fi
-
-          # Exempt if no-bump label is applied
-          if jq -e 'index("no-bump") != null' <<< "$LABELS" >/dev/null; then
-            exit 0
-          fi
-
-          pnpm exec bumpy ci check --emit-comment ./bumpy-comment
-
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
           name: bumpy-comment

@@ -2,7 +2,7 @@
 
 This repo keeps each rule in one place:
 
-- [`AGENTS.md`](../AGENTS.md): setup, commands, package shape, architecture, the request lifecycle, tests and pre-release tracking.
+- [`AGENTS.md`](../AGENTS.md): setup, commands, package shape, architecture, the request lifecycle, tests, bump files and releases.
 - [`CODING_STANDARDS.md`](../CODING_STANDARDS.md): the rules for writing and reviewing library code (untrusted caller input, options and errors, cancellation, middleware, style, tests).
 
 Read both before changing code or reviewing a pull request.
