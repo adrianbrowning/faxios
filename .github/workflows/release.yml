@@ -4,16 +4,17 @@ name: Release
 #
 # - A push to main with pending bump files opens or updates the Version
 #   Packages PR (bumpy/version-packages).
-# - Merging that PR publishes: `npm stage publish` with provenance (approve the
-#   staged version on npmjs.com with 2FA), then the git tag and GitHub release.
-#   docs.yml deploys the site when that release is published.
+# - Merging that PR publishes: run-ci.yml must pass on the merged commit, then
+#   `npm publish --provenance`, the git tag and the GitHub release. Then
+#   docs.yml deploys the site and check-skills.yml reviews the skill.
 # - The `release-rc` label on the Version Packages PR publishes a snapshot of
 #   main's pending release to the `next` dist-tag. Snapshots make no tags,
 #   releases or commits.
 #
 # Publishing runs in the `npm-publish` environment, which npm trusted
-# publishing (OIDC) is bound to. BUMPY_GH_TOKEN (a PAT or app token) lets the
-# version PR trigger CI and the GitHub release trigger docs.yml.
+# publishing (OIDC) is bound to. BUMPY_GH_TOKEN (a PAT or app token) lets
+# bumpy open the Version Packages PR with CI running on it; without it, bumpy
+# needs "Allow GitHub Actions to create and approve pull requests".
 
 on:
   push:
@@ -107,8 +108,16 @@ jobs:
             commit -m "chore(release): sync VERSION with package.json" -- packages/lib/src/lib/env/data.ts
           git push origin "HEAD:refs/heads/$BRANCH"
 
-  publish:
+  # The publish gate (#162): the full PR suite on the commit that publishes.
+  ci:
     needs: plan
+    if: needs.plan.outputs.mode == 'publish'
+    permissions:
+      contents: read
+    uses: ./.github/workflows/run-ci.yml
+
+  publish:
+    needs: [plan, ci]
     if: needs.plan.outputs.mode == 'publish'
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -139,6 +148,29 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           BUMPY_GH_TOKEN: ${{ secrets.BUMPY_GH_TOKEN }}
+
+  # On the push to main, which the github-pages environment admits (#167).
+  docs:
+    needs: publish
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/docs.yml
+
+  # A release created with the default token doesn't fire `release: published`,
+  # so start check-skills' post-release review directly.
+  skills-review:
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      - name: Dispatch check-skills
+        run: gh workflow run check-skills.yml --repo "$GITHUB_REPOSITORY" --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}
 
   # The version PR has already consumed the bump files, so the snapshot is
   # built from main (the PR's base), where they are still pending.

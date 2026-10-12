@@ -1,8 +1,11 @@
 name: Deploy docs to GitHub Pages
 
+# release.yml calls this after each publish, on the push to main. The
+# github-pages environment only admits main, and a `release` event would run
+# on the tag ref instead (#167). It would also not fire for a release created
+# with the default GITHUB_TOKEN.
 on:
-  release:
-    types: [published]
+  workflow_call:
   workflow_dispatch:
 
 permissions: {}
@@ -22,7 +25,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          ref: ${{ github.event.release.tag_name || github.sha }}
+          # The released commit when release.yml calls this; main's tip on a manual run.
+          ref: ${{ github.sha }}
 
       # The pnpm version comes from `packageManager` in the root package.json
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
