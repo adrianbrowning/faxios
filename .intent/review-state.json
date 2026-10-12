@@ -1915,15 +1915,15 @@
       ]
     },
     "source:.github/workflows/release.yml": {
-      "fingerprint": "057d2d910e0c3a773a32d376630c8d4f8eaf95f7a59623c4920b131ca1519290",
+      "fingerprint": "dc990c021c19472e0883df239398e5930091b5538f9df86a83fa2d994a29d14c",
       "snapshot": {
-        ".github/workflows/release.yml": "94a12ca58370e4d46793a26fa57459111a438ac73d5b846383b92a451ca0714d"
+        ".github/workflows/release.yml": "47d50a45fa8fff5e48d178bef0d85f3d37812797fc0fcd03fe56b23b5646bb04"
       },
-      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "head": "cfbda2b2c64667f803d29692960c88da00926654",
       "outcome": "no-change",
-      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
+      "reason": "release.yml: the version job also records the Intent review on the Version Packages PR. No API or skill guidance changes.",
       "evidence": [
-        "Changed: .github/workflows/release.yml at 280f7e791c50e367a025fddc617941296f15f52a"
+        "Changed: .github/workflows/release.yml at cfbda2b2c64667f803d29692960c88da00926654"
       ]
     },
     "source:COLLABORATOR_GUIDE.md": {
