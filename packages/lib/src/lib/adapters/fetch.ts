@@ -139,20 +139,15 @@ const maybeWithAuthCredentials = (url: string): boolean => {
   return urlToCheck.includes("@");
 };
 
-// RequestInit members a caller may set through `fetchOptions`, plus undici's `dispatcher`.
-// faxios sets `signal`, `method`, `headers`, `body`, `duplex` and `credentials` itself.
-const FETCH_OPTION_KEYS = [
-  "cache",
-  "dispatcher",
-  "integrity",
-  "keepalive",
-  "mode",
-  "priority",
-  "redirect",
-  "referrer",
-  "referrerPolicy",
-  "window",
-] as const;
+// RequestInit members faxios sets itself; the same keys in `fetchOptions` are ignored.
+const FAXIOS_INIT_KEYS: Record<string, true> = {
+  body: true,
+  credentials: true,
+  duplex: true,
+  headers: true,
+  method: true,
+  signal: true,
+};
 
 // Spec defaults written as own init members when the caller sets none. undici converts the init
 // into a plain dictionary and reads absent members from it, so an absent member still picks up a
@@ -211,8 +206,9 @@ const factory = (env: FetchEnv) => {
 
   // Null prototype: WebIDL reads every RequestInit member with Get, which walks the prototype
   // chain, so a plain object literal would let a polluted Object.prototype.redirect, .integrity,
-  // .mode or undici .dispatcher apply to every request. Only own, allow-listed keys of
-  // fetchOptions are copied; the caller sets signal, method, headers, body, duplex, credentials.
+  // .mode or undici .dispatcher apply to every request. Every own enumerable key of fetchOptions
+  // is copied, so runtime extensions (Next.js `next`, Workers `cf`, Bun `tls`) still pass through;
+  // inherited keys never do. The caller sets signal, method, headers, body, duplex, credentials.
   const initFromFetchOptions = (fetchOptions: unknown): Record<string, unknown> => {
     const init: Record<string, unknown> = Object.create(null);
     for (const [ key, value ] of requestInitDefaults) init[key] = value;
@@ -221,8 +217,8 @@ const factory = (env: FetchEnv) => {
       init["dispatcher"] = (globalThis as Record<PropertyKey, unknown>)[UNDICI_GLOBAL_DISPATCHER];
     }
     if (utils.isObject(fetchOptions)) {
-      for (const key of FETCH_OPTION_KEYS) {
-        if (utils.hasOwnProp(fetchOptions, key)) init[key] = (fetchOptions as Record<string, unknown>)[key];
+      for (const key of Object.keys(fetchOptions)) {
+        if (!utils.hasOwnProp(FAXIOS_INIT_KEYS, key)) init[key] = (fetchOptions as Record<string, unknown>)[key];
       }
     }
     return init;

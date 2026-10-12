@@ -305,10 +305,10 @@ const { data } = await testApi.get("https://api.example.com/feed"); // { ok: tru
 await faxios.get("https://api.example.com/feed", { fetchOptions: { cache: "no-store" } });
 ```
 
-- `fetchOptions` keys are copied into a null-prototype init passed to `fetch`, and only these:
-  `cache`, `dispatcher`, `integrity`, `keepalive`, `mode`, `priority`, `redirect`, `referrer`,
-  `referrerPolicy`, `window`. Other keys are ignored. faxios sets `signal`, `method`, `headers`,
-  `body`, `duplex` and `credentials` itself.
+- Every own enumerable key of `fetchOptions` is copied into a null-prototype init passed to
+  `fetch`, including runtime extensions (Next.js `next`, Workers `cf`, undici `dispatcher`).
+  Inherited keys are ignored. faxios sets `signal`, `method`, `headers`, `body`, `duplex` and
+  `credentials` itself and ignores those keys in `fetchOptions`.
 - `env.fetch`, `env.Request` and `env.Response` count only as own properties of `env`.
 - Plain-object values inside `fetchOptions` are copied when configs merge; class instances are
   passed by reference.

@@ -14,7 +14,7 @@ When `auth` is omitted, the fetch adapter can read HTTP Basic auth credentials f
 
 ## Fetch options
 
-`fetchOptions` sets extra `RequestInit` members for a request. faxios copies only these own keys into the init it passes to `fetch`: `cache`, `dispatcher` (Node's `undici`), `integrity`, `keepalive`, `mode`, `priority`, `redirect`, `referrer`, `referrerPolicy` and `window`. Other keys are ignored. faxios sets `signal`, `method`, `headers`, `body`, `duplex` and `credentials` itself.
+`fetchOptions` sets extra init members for a request. faxios copies every own enumerable key of `fetchOptions` into the init it passes to `fetch`. That covers spec `RequestInit` members such as `cache` or `redirect`, and runtime or framework extensions such as Next.js `next`, Cloudflare Workers `cf`, Node's `undici` `dispatcher`, or any key a custom `env.fetch` reads. Inherited keys are ignored. faxios sets `signal`, `method`, `headers`, `body`, `duplex` and `credentials` itself, and ignores those keys in `fetchOptions`.
 
 The init has a null prototype, and faxios writes the spec default for each member the caller doesn't set. So a polluted `Object.prototype.redirect`, `integrity` or `mode` can't change a request. The same holds for `env`: faxios uses `fetch`, `Request` and `Response` only when they are own properties of `env`.
 

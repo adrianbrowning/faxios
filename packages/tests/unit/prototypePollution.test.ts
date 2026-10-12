@@ -1578,5 +1578,27 @@ describe("Prototype Pollution Protection", () => {
         await stop(server);
       }
     });
+
+    it("passes own fetchOptions extension keys to fetch, but not inherited ones", async () => {
+      const inits: Array<Record<string, unknown>> = [];
+      const fetch = async (_input: unknown, init?: RequestInit) => {
+        inits.push(init as Record<string, unknown>);
+        return new Response("{}", { headers: { "Content-Type": "application/json" } });
+      };
+      const api = faxios.create({ env: { fetch } });
+      ObjProto.cf = { cacheTtl: 1 };
+      try {
+        await api.get("http://test.local/n", { fetchOptions: { method: "DELETE", next: { revalidate: 60 } } });
+      }
+      finally {
+        delete ObjProto.cf;
+      }
+
+      const init = inits[0]!;
+      assert.deepStrictEqual(init["next"], { revalidate: 60 });
+      assert.strictEqual(init["method"], "GET");
+      assert.strictEqual(Object.hasOwn(init, "cf"), false);
+      assert.strictEqual(Object.getPrototypeOf(init), null);
+    });
   });
 });
