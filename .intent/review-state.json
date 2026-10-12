@@ -3609,6 +3609,18 @@
       "evidence": [
         "Changed: packages/lib/src/lib/helpers/cloneConfig.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
       ]
+    },
+    "source:packages/tests/pin-tarball-integrity.ts": {
+      "fingerprint": "0adb6beabed11c54cee844bf61f8e58479a65114aa3c4f95335d60e9c13a2971",
+      "snapshot": {
+        "packages/tests/pin-tarball-integrity.ts": "34072db4241cd0d5e252eef72c3d8bc06ac9220f9e31b1322ee92cfffafb54b0"
+      },
+      "head": "05ac94d71a2674b93106fda774dfeedc8f3cccc1",
+      "outcome": "no-change",
+      "reason": "Test harness only: pin-tarball-integrity.ts also rewrites the faxios tarball version in the pnpm harness lockfiles, and AGENTS.md says so. No API or skill guidance changes.",
+      "evidence": [
+        "Changed: packages/tests/pin-tarball-integrity.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+      ]
     }
   }
 }

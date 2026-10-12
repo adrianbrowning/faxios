@@ -30,7 +30,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 - Adding or updating dependencies is security-sensitive. Don't add runtime dependencies without discussion; the dependency surface is intentionally tiny.
 - Package, lockfile, and GitHub Actions update PRs are maintainer/bot-only; close these PRs from outside collaborators. Keep the 7-day Dependabot delay unless a critical vulnerability requires a maintainer-led manual update.
 - Build/test/lint tools still execute dependency code despite `ignore-scripts`; avoid unnecessary full builds when a focused check proves the change.
-- Smoke and module suites test the packed tarball (`packages/tests/faxios.tgz`), not the source tree. Their installs are frozen: `pin-tarball-integrity.ts` rewrites only the tarball digest in the harness lockfiles before `--frozen-lockfile`. Keep the harness lockfiles and frozen installs; `--no-lockfile` or deleting a lockfile unpins every transitive dependency.
+- Smoke and module suites test the packed tarball (`packages/tests/faxios.tgz`), not the source tree. Their installs are frozen: `pin-tarball-integrity.ts` rewrites only the tarball's digest (and, in pnpm lockfiles, its version) in the harness lockfiles before `--frozen-lockfile`, so a release doesn't have to edit them. Keep the harness lockfiles and frozen installs; `--no-lockfile` or deleting a lockfile unpins every transitive dependency.
 
 ## Package Shape
 
