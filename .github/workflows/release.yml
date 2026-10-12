@@ -82,6 +82,31 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           BUMPY_GH_TOKEN: ${{ secrets.BUMPY_GH_TOKEN }}
 
+      # `bumpy version` only bumps package.json. Put the same version into the
+      # hard-coded VERSION (User-Agent, error messages) on the PR branch.
+      - name: Sync VERSION on the Version Packages PR
+        env:
+          PUSH_TOKEN: ${{ secrets.BUMPY_GH_TOKEN || github.token }}
+          BRANCH: bumpy/version-packages
+        run: |
+          set -euo pipefail
+          # Credentials only in this step's environment: not in argv, not in .git/config
+          auth=$(printf 'x-access-token:%s' "$PUSH_TOKEN" | base64 -w0)
+          echo "::add-mask::$auth"
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0="http.${GITHUB_SERVER_URL}/.extraheader"
+          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth"
+          git fetch origin "$BRANCH"
+          git checkout -B "$BRANCH" FETCH_HEAD
+          node packages/tests/scripts/sync-version.ts
+          if git diff --quiet -- packages/lib/src/lib/env/data.ts; then
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" \
+            -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "chore(release): sync VERSION with package.json" -- packages/lib/src/lib/env/data.ts
+          git push origin "HEAD:refs/heads/$BRANCH"
+
   publish:
     needs: plan
     if: needs.plan.outputs.mode == 'publish'
