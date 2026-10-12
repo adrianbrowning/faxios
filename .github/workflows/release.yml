@@ -114,7 +114,7 @@ jobs:
     if: needs.plan.outputs.mode == 'publish'
     permissions:
       contents: read
-    uses: ./.github/workflows/run-ci.yml
+    uses: $/.github/workflows/run-ci.yml
 
   publish:
     needs: [plan, ci]
@@ -156,7 +156,7 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    uses: ./.github/workflows/docs.yml
+    uses: $/.github/workflows/docs.yml
 
   # A release created with the default token doesn't fire `release: published`,
   # so start check-skills' post-release review directly.
