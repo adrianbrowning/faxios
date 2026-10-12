@@ -3,10 +3,10 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "09b6b8aad36d7a424bccc9cf9586d155464c511af9e0f6c61bbb94a2f2ce4392",
+      "fingerprint": "1d7e6f9f43fa89ff730d15114fcb72ae03aa97864bdf52e6da0771d87417e9fd",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
-        "packages/lib/package.json": "83c544af3edc82f47f5c57d14ae7ccb9fb19ff8b94add3b1b5fe8889363c1f3c",
+        "packages/lib/package.json": "301c6e77e898dcc3bf63a9eb2f27b216f5f3c2cb94673f0790260a00a7cab8cb",
         "packages/lib/skills/configure-requests/SKILL.md": "91b1a82f96e75e6bac3c4937e7b2c5437aa9b68f465912e74d4305d4a04948d1",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
@@ -33,21 +33,21 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
-      "outcome": "updated",
-      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
+      "head": "997e6ed62506730eb257b380570d7a7ddc578ce1",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/core/route.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
+        "Changed: packages/lib/package.json at 997e6ed62506730eb257b380570d7a7ddc578ce1"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "661266140478cd61ff17b90e8b52d9d43ae530ac57296929eb6a9fea3fba763d",
+      "fingerprint": "e1b9f4447d4292ea279ad5ba6d0bde2775009f073d0b8cb13b574aca01173939",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
-        "packages/lib/package.json": "83c544af3edc82f47f5c57d14ae7ccb9fb19ff8b94add3b1b5fe8889363c1f3c",
+        "packages/lib/package.json": "301c6e77e898dcc3bf63a9eb2f27b216f5f3c2cb94673f0790260a00a7cab8cb",
         "packages/lib/skills/configure-requests/SKILL.md": "91b1a82f96e75e6bac3c4937e7b2c5437aa9b68f465912e74d4305d4a04948d1",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
-      "outcome": "updated",
-      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
+      "head": "997e6ed62506730eb257b380570d7a7ddc578ce1",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/core/route.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
+        "Changed: packages/lib/package.json at 997e6ed62506730eb257b380570d7a7ddc578ce1"
       ]
     },
     "source:knip.json": {
@@ -473,15 +473,15 @@
       ]
     },
     "source:packages/lib/src/lib/env/data.ts": {
-      "fingerprint": "29f0002014313a935bd2f7aceda3d9eaabc02387afdb306f20a52a51942c2cf7",
+      "fingerprint": "9208d441a0be1cae7185a89f2b15059478d1a64430ae03cb7e25692b9fce3a3e",
       "snapshot": {
-        "packages/lib/src/lib/env/data.ts": "f3e07218b43506ace4857f9e29f608b5c54a7fa5f327fe9aea698c78848e46bd"
+        "packages/lib/src/lib/env/data.ts": "12245af0fc66a71e3b0c6f5b1d82b6121328520252b97893f680c9b5b1338609"
       },
-      "head": "8ace0b3b81a7bb208c2764629def6b0041131228",
+      "head": "997e6ed62506730eb257b380570d7a7ddc578ce1",
       "outcome": "no-change",
-      "reason": "Release 0.2.1: version bump and the Unreleased notes (#147, #160, #146, #148, #149) moved into CHANGELOG.md.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "VERSION 0.2.0 -> 0.2.1; version.test.ts keeps it in step with package.json."
+        "Changed: packages/lib/src/lib/env/data.ts at 997e6ed62506730eb257b380570d7a7ddc578ce1"
       ]
     },
     "source:packages/tests/module/esm/pnpm-lock.yaml": {
@@ -1818,17 +1818,15 @@
       ]
     },
     "source:.bumpy/bumpy-release-tooling.md": {
-      "fingerprint": "db6416ce53e7525d3b71bfcf0e86ef0621f78b6a6105da49d48e584bc38d58cf",
+      "fingerprint": "67c7709aa65974d454733934f7888d3899cba6b49dd5ff9cc07b7efe16c2ca94",
       "snapshot": {
-        ".bumpy/bumpy-release-tooling.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+        ".bumpy/bumpy-release-tooling.md": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Empty bump file: this PR changes packages/lib (CHANGELOG move, lint ordering) but releases nothing. Release tooling, not library API; the configure-requests skill does not mention it.",
+      "head": "997e6ed62506730eb257b380570d7a7ddc578ce1",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "git diff 01316e10..HEAD -- .bumpy/bumpy-release-tooling.md",
-        "`bumpy check`: 'Empty bump file found — uncovered packages acknowledged.'",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: .bumpy/bumpy-release-tooling.md at 997e6ed62506730eb257b380570d7a7ddc578ce1"
       ]
     },
     "source:.claude/skills/do-work/SKILL.md": {
@@ -2160,17 +2158,15 @@
       ]
     },
     "source:packages/lib/CHANGELOG.md": {
-      "fingerprint": "8dcf9c1c09d5a9933c1c3d8b0e1216dcea27bac303653a6ab81f71e32e115f60",
+      "fingerprint": "004655d4c5d5ddcfe610eb094e1fc5d1ba4d5799807e5b21dd6dd29a7114cbee",
       "snapshot": {
-        "packages/lib/CHANGELOG.md": "ffb9c26c1a06d1656505e05820472c552aa916506200aeee630d225370fc2a83"
+        "packages/lib/CHANGELOG.md": "960d759b257edcdc23cb2f001722f741380842f723143ba187b396554dbc08ae"
       },
-      "head": "6a61218663b6541722069056588c8653ce579634",
-      "outcome": "out-of-scope",
-      "reason": "Root CHANGELOG.md moved here so bumpy prepends new versions above the history; content unchanged. Release tooling, not library API; the configure-requests skill does not mention it.",
+      "head": "997e6ed62506730eb257b380570d7a7ddc578ce1",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "git log --follow: renamed from CHANGELOG.md in 47d3547f with no content change.",
-        "Disposable-worktree `bumpy version`: '## 0.2.2' inserted above '## v0.2.1'.",
-        "npm pack --dry-run from packages/lib lists LICENSE but no CHANGELOG."
+        "Changed: packages/lib/CHANGELOG.md at 997e6ed62506730eb257b380570d7a7ddc578ce1"
       ]
     },
     "source:packages/lib/eslint-rules/remove-signal-listeners.ts": {
@@ -3495,15 +3491,15 @@
       ]
     },
     "source:.bumpy/release-gates.md": {
-      "fingerprint": "80321522d7c41633de87104ee7463fc408085b6069300cdf470b94a4b5e691fe",
+      "fingerprint": "af2ef7efb3c7674a63646224ae572a6f054d9184910f5a21ee683d932eed41f6",
       "snapshot": {
-        ".bumpy/release-gates.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+        ".bumpy/release-gates.md": null
       },
-      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "head": "997e6ed62506730eb257b380570d7a7ddc578ce1",
       "outcome": "no-change",
-      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/release-gates.md at 280f7e791c50e367a025fddc617941296f15f52a"
+        "Changed: .bumpy/release-gates.md at 997e6ed62506730eb257b380570d7a7ddc578ce1"
       ]
     },
     "source:.github/workflows/zizmor.yml": {
@@ -3531,27 +3527,27 @@
       ]
     },
     "source:.bumpy/authbearer-skip-empty-token.md": {
-      "fingerprint": "20e9b7f25a4911058b1910dd78939f7d5e61e5c722782c735cf41b3afd2c9589",
+      "fingerprint": "539fc1483a9b8af916913a525be33bbc1c2367b569143cf1c8b19f93b7d5fecc",
       "snapshot": {
-        ".bumpy/authbearer-skip-empty-token.md": "f3c842bae59cdd8ba84a0e179fe7564707f51957fbaa59c2b7a0597936796d56"
+        ".bumpy/authbearer-skip-empty-token.md": null
       },
-      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
-      "outcome": "updated",
-      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
+      "head": "997e6ed62506730eb257b380570d7a7ddc578ce1",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/authbearer-skip-empty-token.md at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
+        "Changed: .bumpy/authbearer-skip-empty-token.md at 997e6ed62506730eb257b380570d7a7ddc578ce1"
       ]
     },
     "source:.bumpy/path-params-reject-dot-segments.md": {
-      "fingerprint": "0194ee557ac92b9bbc53f6e35a46b5785e5991efa259f927c0f871edd2ad8c81",
+      "fingerprint": "fad466e373641ccea10f6c2c203af3c199ec2ff2d6f9851f6e016f629cf0dbb1",
       "snapshot": {
-        ".bumpy/path-params-reject-dot-segments.md": "bb32155ded04655a044e5c9ac40a7aba45453f230b6f613b6a6259eaf19af72d"
+        ".bumpy/path-params-reject-dot-segments.md": null
       },
-      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
-      "outcome": "updated",
-      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
+      "head": "997e6ed62506730eb257b380570d7a7ddc578ce1",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/path-params-reject-dot-segments.md at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
+        "Changed: .bumpy/path-params-reject-dot-segments.md at 997e6ed62506730eb257b380570d7a7ddc578ce1"
       ]
     },
     "source:packages/lib/src/lib/helpers/substitutePathParams.ts": {
@@ -3567,27 +3563,27 @@
       ]
     },
     "source:.bumpy/reject-used-stream-body.md": {
-      "fingerprint": "1e9c091e4c703d09781ab9776e1787d79dd1136d82ead09673d2735b067a2079",
+      "fingerprint": "4620f1e912b2a846e69e4a4baf8637f81eee140262514a716e7020fe88a086aa",
       "snapshot": {
-        ".bumpy/reject-used-stream-body.md": "f06bf1c22a2f1ff83ad1f2d35fcc96993f4d98ac595a76828c9ecdb1e4c51f60"
+        ".bumpy/reject-used-stream-body.md": null
       },
-      "head": "466184284f2ed349a4f774209812095d3e6b3647",
-      "outcome": "updated",
-      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
+      "head": "997e6ed62506730eb257b380570d7a7ddc578ce1",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/reject-used-stream-body.md at 466184284f2ed349a4f774209812095d3e6b3647"
+        "Changed: .bumpy/reject-used-stream-body.md at 997e6ed62506730eb257b380570d7a7ddc578ce1"
       ]
     },
     "source:.bumpy/prototype-reads.md": {
-      "fingerprint": "49f8d6fc42d444b11c4fd8a27e30869a6361ff0779b909cb2b86d078e5eb1f52",
+      "fingerprint": "d84d0e5be715950b6e4bc66f227a1a1925a8ec232c604edbc17ff7973ccc7e06",
       "snapshot": {
-        ".bumpy/prototype-reads.md": "8276c91d9ba064745a45d3c12836f8f5c914ffe305997f162f1cd0d3bffae7de"
+        ".bumpy/prototype-reads.md": null
       },
-      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
-      "outcome": "updated",
-      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
+      "head": "997e6ed62506730eb257b380570d7a7ddc578ce1",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/prototype-reads.md at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
+        "Changed: .bumpy/prototype-reads.md at 997e6ed62506730eb257b380570d7a7ddc578ce1"
       ]
     },
     "source:packages/docs/pages/advanced/fetch-adapter.md": {
