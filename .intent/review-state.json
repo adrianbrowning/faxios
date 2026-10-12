@@ -3,15 +3,15 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "e3beb151e5763f5cef443442545def308d3fe7460d02c7567ff1bd6dd5e0bbf2",
+      "fingerprint": "2c0f08e7d397d96bcac2a20fcb00bea44d4057ace210bc02203758f2e9062141",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "83c544af3edc82f47f5c57d14ae7ccb9fb19ff8b94add3b1b5fe8889363c1f3c",
         "packages/lib/skills/configure-requests/SKILL.md": "2206f15b75c8c945e77f833b08065d89111e630b2a0239b5120297f4e1bc5382",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
-        "packages/lib/skills/configure-requests/references/plugins.md": "b8f4ce801ac34ab1f808d35cbc667869d582721f3996a811fb2b035eefd6a2ca",
+        "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "fa412ab88f704d96e3b427366044acb90421a27bc4ec6be8ce04eac0b6a7f0fd",
+        "packages/lib/src/lib/adapters/fetch.ts": "c3a6d15d1fa5959379301ee475c4bac5803bf80c04a0bb3f4e3a77d16012e687",
         "packages/lib/src/lib/core/Faxios.ts": "315d17499ed46870d832e72f4a1d405ce346caffe698cc0e04cb07b366a7ee65",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
@@ -28,20 +28,20 @@
         "packages/lib/src/lib/types.ts": "aa73aeb0be7bed6789fc1416eff74969e289d0bfc69674ba2f6c1b1d135b38ee",
         "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
         "packages/tests/unit/core/middleware.test.ts": "106d605207a1e7754baedd1565a559e973bda954b6e3970fac54d0da69116e7f",
-        "packages/tests/unit/plugins/authBearer.test.ts": "0ca8d4a4be7fa807a584b3b4a853c833d1ae8c7655755c06b43afd38cac7ef16",
+        "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
+      "head": "466184284f2ed349a4f774209812095d3e6b3647",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
+      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/plugins/authBearer.ts, packages/tests/unit/plugins/authBearer.test.ts at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
+        "Changed: packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/adapters/fetch.ts, packages/tests/unit/plugins/authBearer.test.ts at 466184284f2ed349a4f774209812095d3e6b3647"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "03c58021c7e0cf0d5e5676c44b8237fab5bf0e520c460e39322af5ebe7a305b3",
+      "fingerprint": "efc7f0e3d6a9219300977636bcdb323469ed65fc0aea4319686ee72b45242f48",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
@@ -50,9 +50,9 @@
         "packages/lib/package.json": "83c544af3edc82f47f5c57d14ae7ccb9fb19ff8b94add3b1b5fe8889363c1f3c",
         "packages/lib/skills/configure-requests/SKILL.md": "2206f15b75c8c945e77f833b08065d89111e630b2a0239b5120297f4e1bc5382",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
-        "packages/lib/skills/configure-requests/references/plugins.md": "b8f4ce801ac34ab1f808d35cbc667869d582721f3996a811fb2b035eefd6a2ca",
+        "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "fa412ab88f704d96e3b427366044acb90421a27bc4ec6be8ce04eac0b6a7f0fd",
+        "packages/lib/src/lib/adapters/fetch.ts": "c3a6d15d1fa5959379301ee475c4bac5803bf80c04a0bb3f4e3a77d16012e687",
         "packages/lib/src/lib/core/Faxios.ts": "315d17499ed46870d832e72f4a1d405ce346caffe698cc0e04cb07b366a7ee65",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
@@ -69,16 +69,16 @@
         "packages/lib/src/lib/types.ts": "aa73aeb0be7bed6789fc1416eff74969e289d0bfc69674ba2f6c1b1d135b38ee",
         "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
         "packages/tests/unit/core/middleware.test.ts": "106d605207a1e7754baedd1565a559e973bda954b6e3970fac54d0da69116e7f",
-        "packages/tests/unit/plugins/authBearer.test.ts": "0ca8d4a4be7fa807a584b3b4a853c833d1ae8c7655755c06b43afd38cac7ef16",
+        "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
+      "head": "466184284f2ed349a4f774209812095d3e6b3647",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
+      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/plugins/authBearer.ts, packages/tests/unit/plugins/authBearer.test.ts at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
+        "Changed: packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/adapters/fetch.ts, packages/tests/unit/plugins/authBearer.test.ts at 466184284f2ed349a4f774209812095d3e6b3647"
       ]
     },
     "source:knip.json": {
@@ -182,15 +182,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
-      "fingerprint": "b3fe516a483cd84dd007a09641cf448e2e0f98505acd649997dfd529aa34f581",
+      "fingerprint": "56853a5ba780b435b777c6fa79c2604bc4b20a5310c96aeae5bc731039487480",
       "snapshot": {
-        "packages/docs/pages/advanced/authentication.md": "3f703c7bdfb7e942884048f672b3fff873832303fca7b21ad8cee3edeec324bb"
+        "packages/docs/pages/advanced/authentication.md": "3502e5ce47f363274bbdad0e5b6e21d22eed0173bcb3d2bd85ea3f1646830fb2"
       },
-      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
+      "head": "466184284f2ed349a4f774209812095d3e6b3647",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
+      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/authentication.md at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
+        "Changed: packages/docs/pages/advanced/authentication.md at 466184284f2ed349a4f774209812095d3e6b3647"
       ]
     },
     "source:packages/docs/pages/advanced/create-an-instance.md": {
@@ -254,27 +254,27 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "ab3e5a0c55f32b87e48252038f453c892365b38b8536d26d630374a394c17319",
+      "fingerprint": "6e217c2923121975787f55b6d93b02fe8aaedc18f8f4e45df7395f636e837fb7",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "da8e2ef9c90a780305ee97593baeeac5cfd0922dd441d93c5bb1c59824a2a34c"
+        "packages/docs/pages/advanced/middleware.md": "bf9412e7099f57e7332f7d2c61f07837f9f707876be08a0e21806de882a6c43f"
       },
-      "head": "a15418fe9ebc066d9f5379b3b7d2dc16167fa33f",
-      "outcome": "no-change",
-      "reason": "Docs now use {id} like the skill.",
+      "head": "466184284f2ed349a4f774209812095d3e6b3647",
+      "outcome": "updated",
+      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
       "evidence": [
-        "Six :id placeholders replaced with {id}; timing wording says it reports the template as written, matching SKILL.md."
+        "Changed: packages/docs/pages/advanced/middleware.md at 466184284f2ed349a4f774209812095d3e6b3647"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
-      "fingerprint": "9181781a0dafb955b3ebddedbd7f2a8d03df5386579a9698db7fcaf59ef6743f",
+      "fingerprint": "e0f521d3a66a1a8ff8eb8fbd3c4c727f7bf94329f51b9df45b6d282843466b87",
       "snapshot": {
-        "packages/docs/pages/advanced/migrating-from-interceptors.md": "16be4f18cf86ec782545c1d3551e0a36f38ef3b5422fbb8c3898c7614d2f8fa8"
+        "packages/docs/pages/advanced/migrating-from-interceptors.md": "fc19a36f932d130ed5a232e6307f623c3a66ecf56ea81bddda04c108b4cd43c1"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "head": "466184284f2ed349a4f774209812095d3e6b3647",
       "outcome": "updated",
-      "reason": "Skill updated from this diff.",
+      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
       "evidence": [
-        "axios-differences.md: added clear(), synchronous/runWhen and legacyInterceptorReqResOrdering rows (runtime: ERR_BAD_OPTION). Diff review: +L24 and +L245: 'The `transitional.legacyInterceptorReqResOrdering` option is gone. Passing it rejects the request with a FaxiosError whose code is `ERR_BAD_OPTION` (\\\"Unknown option legacyInterceptorReqResOrdering\\\")'. Verified: Faxios.ts:333-346 allow-lists the transitional keys and validator.ts:106 throws `Unknown option`. The skill does not cover this, and SKILL L162-163 mentions only `clarifyTimeoutError`. +L21/+L217 (`synchronous` has no equivalent) and +L23/+L241 (no `clear()`) are also absent from axios-differences. The rest is consistent: the mapping table (+L13..+L22), the unwrap-to-"
+        "Changed: packages/docs/pages/advanced/migrating-from-interceptors.md at 466184284f2ed349a4f774209812095d3e6b3647"
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
@@ -290,15 +290,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
-      "fingerprint": "79622988557022ded22f7cae518fbead44d3b6c6583b26c974ca3a464009ce1f",
+      "fingerprint": "0ea677c2ed7a35857a57b4ba2cb5deefaf949ebb939b9fb48412de0579d65057",
       "snapshot": {
-        "packages/docs/pages/advanced/retry.md": "87d674152bff9448e1408a7ace614e13a580220df262281acd27c29875b5ec11"
+        "packages/docs/pages/advanced/retry.md": "4b9e63814a774a7c8c588c41c7d05064a8a1b6c4d7cbf773df362be1004376be"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "head": "466184284f2ed349a4f774209812095d3e6b3647",
       "outcome": "updated",
-      "reason": "Skill updated from this diff.",
+      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
       "evidence": [
-        "Added custom retryOn replaces the default predicate and long Retry-After rejects without retrying (both runtime-checked); onRetry-throws and attempts/methods validation recorded as not added. Diff review: +L82: 'retryOn replaces the entire default predicate… Network errors and timeouts are retried only if your function says so, and `statuses` is ignored when both are set' (retry.ts:60-61, 182). +L169: 'If the header asks for longer than `maxRetryAfter` (default 5 minutes), faxios doesn't wait: it rethrows… without retrying' (retry.ts:186, 196). +L215: an `onRetry` that throws rejects and stops (retry.ts:238). +L126: `attempts` must be an integer ≥1, including not Infinity, else `ERR_BAD_OPTION_VALUE`. +L253: each `methods` entry must be an RFC 9110 token. SKILL L235-240 covers none of these. Co"
+        "Changed: packages/docs/pages/advanced/retry.md at 466184284f2ed349a4f774209812095d3e6b3647"
       ]
     },
     "source:packages/docs/pages/advanced/schema-validation.md": {
@@ -447,17 +447,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch.test.ts": {
-      "fingerprint": "4794793b4b96e33a576583fd29b1d2d7196817da44ae042a0106e79537f64137",
+      "fingerprint": "2bb1188004697826103e9675aceeedc7e80c7ef7d5e8338b059352c2b5f0e235",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch.test.ts": "0df299a6f645cb48e1651c4a8ab36401bb73c4e5ff768a14f7e16ae4577c522b"
+        "packages/tests/unit/adapters/fetch.test.ts": "d3204f05c4ade11fd82e7d5a5aada7e09c58c6145867a5823b6d23c9d4017cb1"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Since a8bbe824: lint ordering (import specifiers, union and type-literal members) plus main's new 'should send every chunk of a Node stream body' test and renamed describe. Tests only; no skill-visible behaviour change.",
+      "head": "466184284f2ed349a4f774209812095d3e6b3647",
+      "outcome": "updated",
+      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
       "evidence": [
-        "git diff a8bbe824..HEAD -- packages/tests/unit/adapters/fetch.test.ts",
-        "pnpm check unit project passed.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/adapters/fetch.test.ts at 466184284f2ed349a4f774209812095d3e6b3647"
       ]
     },
     "source:CHANGELOG.md": {
@@ -3572,6 +3570,18 @@
       "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
       "evidence": [
         "Changed: packages/lib/src/lib/helpers/substitutePathParams.ts at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
+      ]
+    },
+    "source:.bumpy/reject-used-stream-body.md": {
+      "fingerprint": "1e9c091e4c703d09781ab9776e1787d79dd1136d82ead09673d2735b067a2079",
+      "snapshot": {
+        ".bumpy/reject-used-stream-body.md": "f06bf1c22a2f1ff83ad1f2d35fcc96993f4d98ac595a76828c9ecdb1e4c51f60"
+      },
+      "head": "466184284f2ed349a4f774209812095d3e6b3647",
+      "outcome": "updated",
+      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
+      "evidence": [
+        "Changed: .bumpy/reject-used-stream-body.md at 466184284f2ed349a4f774209812095d3e6b3647"
       ]
     }
   }
