@@ -45,7 +45,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: ./.github/actions/setup
+      - uses: $/.github/actions/setup
         with:
           cache: 'false'
           ignore-scripts: 'true'
@@ -72,7 +72,7 @@ jobs:
           persist-credentials: false
 
       # bumpy runs `pnpm install --lockfile-only` after it bumps the version
-      - uses: ./.github/actions/setup
+      - uses: $/.github/actions/setup
         with:
           cache: 'false'
           ignore-scripts: 'true'
@@ -122,16 +122,11 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: ./.github/actions/setup
+      - uses: $/.github/actions/setup
         with:
           registry-url: https://registry.npmjs.org
           cache: 'false'
           ignore-scripts: 'true'
-
-      # `npm stage publish` requires npm >= 11.15.0, newer than the npm bundled with
-      # this workflow's Node. Remove this step once Node bundles npm >= 11.15.0 by default.
-      - name: Pin npm with staged-publishing support
-        run: npm install -g npm@11.15.0
 
       - name: Build project
         run: pnpm run build
@@ -167,14 +162,11 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: ./.github/actions/setup
+      - uses: $/.github/actions/setup
         with:
           registry-url: https://registry.npmjs.org
           cache: 'false'
           ignore-scripts: 'true'
-
-      - name: Pin npm with staged-publishing support
-        run: npm install -g npm@11.15.0
 
       - name: Build project
         run: pnpm run build

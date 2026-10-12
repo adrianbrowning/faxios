@@ -1894,32 +1894,31 @@
       ]
     },
     "source:.github/actions/setup/action.yml": {
-      "fingerprint": "a383bc4138fa55f6b4e163b98384aca03279f2826815612b65aa46484e50e757",
+      "fingerprint": "34387c5cc68281b9577ec845aad8bf4d7a2a61c937bb38c5b7ce4b7d71beb268",
       "snapshot": {
-        ".github/actions/setup/action.yml": "5e8229dd3480e32bd2bcc8bd6762b3855b688177472a758337a472a19d9b5a41"
+        ".github/actions/setup/action.yml": "779b6c8d76c6fe1ee11aa1213f1ba21b2bd6df0765a4e811114485b98b6a781e"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
       "outcome": "out-of-scope",
-      "reason": "Composite setup action: actions pinned to SHAs, no checkout inside (callers check out), node 26.x, cache and ignore-scripts inputs. CI only.",
+      "reason": "Pin comment for pnpm/action-setup ea17c68 corrected from `# v6` to `# v6.1.0` (GitHub code scanning: v6 points to 0977fd99725f). CI only; not library API.",
       "evidence": [
-        "git diff 01316e10..HEAD -- .github/actions/setup/action.yml",
-        "zizmor --offline: no unpinned-uses or artipacked findings for this file.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "git diff HEAD -- .github/actions/setup/action.yml",
+        "gh api pnpm/action-setup tags: v6.1.0 = ea17c68df891, v6 = 0977fd99725f.",
+        "zizmor 1.30.1 --offline: no new findings for this file."
       ]
     },
     "source:.github/workflows/bumpy-check.yml": {
-      "fingerprint": "236cc3e1747a35dcda26e17fc62179b12290f39c29edb5e8c7303ad5dbe4ffaa",
+      "fingerprint": "a0f4474c62fb42673488087ac2d80c960b03e19b1394cb996a7152f3b168d447",
       "snapshot": {
-        ".github/workflows/bumpy-check.yml": "f3bf1a78637132374c4082b7c36e42b35dce8f10e5e6eb3941102b71a9fae415"
+        ".github/workflows/bumpy-check.yml": "46ad8f2787dd552632f0fb77c72c8d22e90d2b34afd1a53b9068272033b210ad"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
       "outcome": "out-of-scope",
-      "reason": "PR job runs `bumpy ci check --comment false --no-fail --emit-comment` (warn only) with read-only permissions and uploads the comment artifact. Release tooling, not library API; the configure-requests skill does not mention it.",
+      "reason": "Local setup action referenced with the self-repository form `$/.github/actions/setup` (GitHub, July 2026) instead of `./`, so it resolves at the running commit. CI only; not library API.",
       "evidence": [
-        "git diff 01316e10..HEAD -- .github/workflows/bumpy-check.yml",
-        "zizmor --offline: no findings at high/medium.",
-        "bumpy cli.mjs parseFlags: `--comment false` parses to comment=false.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "git diff HEAD -- .github/workflows/bumpy-check.yml",
+        "GitHub changelog 2026-07-30 'Reference same-repository actions with self-repository syntax'.",
+        "zizmor 1.30.1 --offline: no new findings for this file. (self-repository finding gone)"
       ]
     },
     "source:.github/workflows/bumpy-comment.yml": {
@@ -1937,47 +1936,45 @@
       ]
     },
     "source:.github/workflows/ci.yml": {
-      "fingerprint": "6aaef5cb9cdab2f033eab3d889c7d3b1484e2566850ab7ea6b2fc9a7f235af28",
+      "fingerprint": "eebd46df369578212ee9f7536a2e755d919a763816b026f32f4096158aeebcf7",
       "snapshot": {
-        ".github/workflows/ci.yml": "f3b0913c26a52ca0dc9dca7ef9a20c778ef216143347ea0acf31cfd3e993ca5c"
+        ".github/workflows/ci.yml": "70baaa56c36380f48946a128747f7da02d01cf184637b1a450b9d427a8204702"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
       "outcome": "out-of-scope",
-      "reason": "Workspace CI workflow: checkout pinned to v7.0.1 SHA with persist-credentials: false, then the shared setup action. CI only.",
+      "reason": "Self-repository `$/.github/actions/setup`, and a new 'Install Playwright with deps' step (chromium) before `pnpm test`, because the browser project needs headless Chromium. CI only; not library API.",
       "evidence": [
-        "git diff 01316e10..HEAD -- .github/workflows/ci.yml",
-        "zizmor --offline: no findings for this file.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "git diff HEAD -- .github/workflows/ci.yml",
+        "PR #196 CI log for this job: 'browserType.launch: Executable doesn't exist at …/chrome-headless-shell'.",
+        "run-ci.yml uses the same `pnpm exec playwright install --with-deps` step.",
+        "zizmor 1.30.1 --offline: no new findings for this file."
       ]
     },
     "source:.github/workflows/knip.yml": {
-      "fingerprint": "04b88cd2ec8a1830d9014cf9e9a723e3c454db7760d3e257f7a2a5b81b02f413",
+      "fingerprint": "894a80d60ce339f22ee57ef9b7eb902f268e5ea6df239372b4e3dccd900df7ba",
       "snapshot": {
-        ".github/workflows/knip.yml": "550b6f72adcf679a2e23a07268ad6f0d85174e498b1588bb73a2ba3df3a24c41"
+        ".github/workflows/knip.yml": "e0e4b19e7d1ca53b5ac9984166bfca6387684aaae07f1076e7b67caa4945e47a"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
       "outcome": "out-of-scope",
-      "reason": "Knip workflow uses the shared setup action (checkout pinned, persist-credentials: false) and prints the findings in the failing step. CI only.",
+      "reason": "Self-repository `$/.github/actions/setup` instead of `./`. CI only; not library API.",
       "evidence": [
-        "git diff 01316e10..HEAD -- .github/workflows/knip.yml",
-        "pnpm run lint:knip passes inside pnpm check.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "git diff HEAD -- .github/workflows/knip.yml",
+        "zizmor 1.30.1 --offline: no new findings for this file. (self-repository finding gone)"
       ]
     },
     "source:.github/workflows/release.yml": {
-      "fingerprint": "1495b89285e3116a7fdb30135ca2e54dc4038e876522ec8ddd3d2027842ed576",
+      "fingerprint": "578637e816d06760ee88f71d903cd319ee8744b94a34e4b22524dd39df68b13b",
       "snapshot": {
-        ".github/workflows/release.yml": "5fecde161fe81d5df169145e57b19f385514bc250d88b31086b9d7167b05e317"
+        ".github/workflows/release.yml": "98dcd43f4b4e23c4fcd170e8b773676ed3d4778969aff3414025013c4d54e5f0"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
       "outcome": "out-of-scope",
-      "reason": "bumpy split release: plan, version (Version Packages PR plus VERSION sync commit), publish (npm-publish env, build, LICENSE check, npm stage publish), rc snapshot. Release tooling, not library API; the configure-requests skill does not mention it.",
+      "reason": "Self-repository `$/.github/actions/setup` in all four jobs; the `npm install -g npm@11.15.0` steps are removed from publish and rc, because Node 26.x now bundles npm 11.20.0 (>= 11.15.0 for `npm stage publish`), as the removed comment asked. CI only; not library API.",
       "evidence": [
-        "git diff 01316e10..HEAD -- .github/workflows/release.yml",
-        "Smoke: bumpy version then sync-version.ts set VERSION to 0.2.2 and version.test.ts passed.",
-        "Smoke: the sync step's git sequence against a local bare remote pushed a one-file data.ts commit and left no extraheader in .git/config.",
-        "zizmor --offline: no high/medium findings for this file.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "git diff HEAD -- .github/workflows/release.yml",
+        "nodejs.org/dist/index.json: v26.11.1 ships npm 11.20.0; local Node v26.8.1 has npm 11.19.0.",
+        "zizmor 1.30.1 --offline: no new findings for this file. (adhoc-packages and self-repository findings gone)"
       ]
     },
     "source:COLLABORATOR_GUIDE.md": {
@@ -3375,6 +3372,118 @@
         "git diff 01316e10..HEAD -- tsconfig.json",
         "pnpm -r --if-present lint:ts passes.",
         "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:.github/workflows/bundle-size.yml": {
+      "fingerprint": "4c6996de580612f8c21374daa23a811c6c195104ed1c7728eab55c43dbf8bb33",
+      "snapshot": {
+        ".github/workflows/bundle-size.yml": "da2c7951d69f9aa5d84df2a8cd042040788ffbf09b82d699039697d4f360b022"
+      },
+      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
+      "outcome": "out-of-scope",
+      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "evidence": [
+        "git diff HEAD -- .github/workflows/bundle-size.yml",
+        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
+        "zizmor 1.30.1 --offline: no new findings for this file."
+      ]
+    },
+    "source:.github/workflows/cache.yml": {
+      "fingerprint": "a1b830e156a0e9efb087c4727d64529c9f46e8b3725836394231eea1ea558059",
+      "snapshot": {
+        ".github/workflows/cache.yml": "17af1472bbe1c856bf4725f4700fdab8e22a8f4ba4fad8bc6c030603d3f04e27"
+      },
+      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
+      "outcome": "out-of-scope",
+      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "evidence": [
+        "git diff HEAD -- .github/workflows/cache.yml",
+        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
+        "zizmor 1.30.1 --offline: no new findings for this file."
+      ]
+    },
+    "source:.github/workflows/docs.yml": {
+      "fingerprint": "7f111970eefd825a3a55144c3328a3d2d6cac919e17f0ca0c579f5fa1e7bc076",
+      "snapshot": {
+        ".github/workflows/docs.yml": "28920b5cfc8cc1c86f7d4582781d75dccdf3e1d85b837869f8a46561860b127c"
+      },
+      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
+      "outcome": "out-of-scope",
+      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "evidence": [
+        "git diff HEAD -- .github/workflows/docs.yml",
+        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
+        "zizmor 1.30.1 --offline: no new findings for this file."
+      ]
+    },
+    "source:.github/workflows/lint.yml": {
+      "fingerprint": "6ab0b70a86ee9cdb5e002032c08db0e0dbf269ba56d75bed7362541797b078cd",
+      "snapshot": {
+        ".github/workflows/lint.yml": "297ffe5477fdeee321ec16e95e3a9bc70a7524745d33a1958699abf8bd325901"
+      },
+      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
+      "outcome": "out-of-scope",
+      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "evidence": [
+        "git diff HEAD -- .github/workflows/lint.yml",
+        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
+        "zizmor 1.30.1 --offline: no new findings for this file."
+      ]
+    },
+    "source:.github/workflows/lockfile-lint.yml": {
+      "fingerprint": "f12c9446e90c2907c33e9b2cc8089a9177d75eeb9f75424c9ce7816157b15d68",
+      "snapshot": {
+        ".github/workflows/lockfile-lint.yml": "fd6d92af9ec8b3002e40510660231ed311d199ae8fdb32dc5458ef291fce9113"
+      },
+      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
+      "outcome": "out-of-scope",
+      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "evidence": [
+        "git diff HEAD -- .github/workflows/lockfile-lint.yml",
+        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
+        "zizmor 1.30.1 --offline: no new findings for this file."
+      ]
+    },
+    "source:.github/workflows/run-ci.yml": {
+      "fingerprint": "0afc496caa6dd32355d54e43ffdbd1f87ebfa3f4985f4f9ca92fc3f2115c975b",
+      "snapshot": {
+        ".github/workflows/run-ci.yml": "1664c98d8046cd30803935b45706bc7afde1bf69d06f1dc2a7937dc3201e38f5"
+      },
+      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
+      "outcome": "out-of-scope",
+      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "evidence": [
+        "git diff HEAD -- .github/workflows/run-ci.yml",
+        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
+        "zizmor 1.30.1 --offline: no new findings for this file."
+      ]
+    },
+    "source:.github/workflows/ts-check.yml": {
+      "fingerprint": "8d4f67787766085bbb050f983f9cf3bfa661669d664fe7496a9c8bc40a7d271e",
+      "snapshot": {
+        ".github/workflows/ts-check.yml": "070958ebf106721cdb6393862b12c9293a1e9ba92ec61667fad6f881d8492d6b"
+      },
+      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
+      "outcome": "out-of-scope",
+      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "evidence": [
+        "git diff HEAD -- .github/workflows/ts-check.yml",
+        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
+        "zizmor 1.30.1 --offline: no new findings for this file."
+      ]
+    },
+    "source:.github/workflows/verify-build-reproducibility.yml": {
+      "fingerprint": "8325ffb1309cd1c993a44a20e2c51b7e2b8847f0ccc0353e2fd446ee610d9b49",
+      "snapshot": {
+        ".github/workflows/verify-build-reproducibility.yml": "a0fd816f59d047e8e615712e32b38422d9c891f3bb0538610f2f4c0c2ce1edd7"
+      },
+      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
+      "outcome": "out-of-scope",
+      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "evidence": [
+        "git diff HEAD -- .github/workflows/verify-build-reproducibility.yml",
+        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
+        "zizmor 1.30.1 --offline: no new findings for this file."
       ]
     }
   }
