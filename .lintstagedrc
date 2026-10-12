@@ -1,8 +1,8 @@
 {
   "./packages/lib/**/*.{js,ts,jsx,tsx}": [
-    "pnpm --filter @gcmdev/faxios lint:fix"
+    "pnpm --filter @gcmdev/faxios exec eslint --config eslint.config.style.ts --max-warnings=0 --fix"
   ],
   "./packages/tests/**/*.{js,ts,jsx,tsx}": [
-    "pnpm --filter @faxios/tests lint:fix"
+    "pnpm --filter @faxios/tests exec eslint --config eslint.config.style.ts --max-warnings=0 --fix"
   ]
 }

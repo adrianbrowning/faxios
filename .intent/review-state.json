@@ -3,10 +3,10 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "d97ba6d2777c93c1f7762b392ab19ab84f3862df2ca3f3149e0d3137530b5288",
+      "fingerprint": "cd315fb0f731269777d4ddc77d21dece49a7f544e5146dff0a4e498a8fbad99f",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
-        "packages/lib/package.json": "da23ef046ec6b34f9f3d3e0b9e6dda0ddacf1a87abecf8ae718c1af07117d0df",
+        "packages/lib/package.json": "83c544af3edc82f47f5c57d14ae7ccb9fb19ff8b94add3b1b5fe8889363c1f3c",
         "packages/lib/skills/configure-requests/SKILL.md": "f93e196d10a9c8b300d9b35f18022ea51e6f019896cf5d8306da750f1b8f7396",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b8f4ce801ac34ab1f808d35cbc667869d582721f3996a811fb2b035eefd6a2ca",
@@ -33,21 +33,21 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "head": "280f7e791c50e367a025fddc617941296f15f52a",
       "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: packages/lib/package.json at 280f7e791c50e367a025fddc617941296f15f52a"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "7f51d070ec1b1877bea7d97cbf5f495a53396093d8bcd5b98c2008f8fc742976",
+      "fingerprint": "3198e66930c88ac638d2d5188bb7dc43bd97fb968fe1b68f35813780287dc9f8",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
-        "packages/lib/package.json": "da23ef046ec6b34f9f3d3e0b9e6dda0ddacf1a87abecf8ae718c1af07117d0df",
+        "packages/lib/package.json": "83c544af3edc82f47f5c57d14ae7ccb9fb19ff8b94add3b1b5fe8889363c1f3c",
         "packages/lib/skills/configure-requests/SKILL.md": "f93e196d10a9c8b300d9b35f18022ea51e6f019896cf5d8306da750f1b8f7396",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b8f4ce801ac34ab1f808d35cbc667869d582721f3996a811fb2b035eefd6a2ca",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "head": "280f7e791c50e367a025fddc617941296f15f52a",
       "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: packages/lib/package.json at 280f7e791c50e367a025fddc617941296f15f52a"
       ]
     },
     "source:knip.json": {
@@ -1808,17 +1808,15 @@
       ]
     },
     "source:.bumpy/_config.json": {
-      "fingerprint": "502359ed1d5c7ea54592b74cf8b4288a7fd19f20f6539cc35f94a98bdf85105c",
+      "fingerprint": "9a5b557af079aab6b3c03f99c0dd55a07dbbf28569efd01d418c0d2aa9ac480f",
       "snapshot": {
-        ".bumpy/_config.json": "d2d2ad56c696cc3469c434c87f7c11fbb004d257d8120f9af0d2ddd968473e16"
+        ".bumpy/_config.json": "ae157640b35ff62aa622777851f4f4271a5dc7715e15c5c5e0d83762c58972b4"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "New bumpy config: versions only @gcmdev/faxios, github changelog, packs with npm, provenance and npm staged publishing. Release tooling, not library API; the configure-requests skill does not mention it.",
+      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "outcome": "no-change",
+      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "git diff 01316e10..HEAD -- .bumpy/_config.json",
-        "bumpy status --json read the config; a disposable-worktree `bumpy version` bumped only packages/lib (0.2.1 -> 0.2.2).",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: .bumpy/_config.json at 280f7e791c50e367a025fddc617941296f15f52a"
       ]
     },
     "source:.bumpy/bumpy-release-tooling.md": {
@@ -1919,31 +1917,27 @@
       ]
     },
     "source:.github/workflows/release.yml": {
-      "fingerprint": "578637e816d06760ee88f71d903cd319ee8744b94a34e4b22524dd39df68b13b",
+      "fingerprint": "057d2d910e0c3a773a32d376630c8d4f8eaf95f7a59623c4920b131ca1519290",
       "snapshot": {
-        ".github/workflows/release.yml": "98dcd43f4b4e23c4fcd170e8b773676ed3d4778969aff3414025013c4d54e5f0"
+        ".github/workflows/release.yml": "94a12ca58370e4d46793a26fa57459111a438ac73d5b846383b92a451ca0714d"
       },
-      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
-      "outcome": "out-of-scope",
-      "reason": "Self-repository `$/.github/actions/setup` in all four jobs; the `npm install -g npm@11.15.0` steps are removed from publish and rc, because Node 26.x now bundles npm 11.20.0 (>= 11.15.0 for `npm stage publish`), as the removed comment asked. CI only; not library API.",
+      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "outcome": "no-change",
+      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "git diff HEAD -- .github/workflows/release.yml",
-        "nodejs.org/dist/index.json: v26.11.1 ships npm 11.20.0; local Node v26.8.1 has npm 11.19.0.",
-        "zizmor 1.30.1 --offline: no new findings for this file. (adhoc-packages and self-repository findings gone)"
+        "Changed: .github/workflows/release.yml at 280f7e791c50e367a025fddc617941296f15f52a"
       ]
     },
     "source:COLLABORATOR_GUIDE.md": {
-      "fingerprint": "abba597e753af0d2e01f6532f095eaa328f3048a142b01b7b91b0119ed507435",
+      "fingerprint": "35f768601793b30254acc4e0424e43220e24818acc59e54b0eb8325b66dda0d1",
       "snapshot": {
-        "COLLABORATOR_GUIDE.md": "eaf3a573511f83080eb34c011bbc9456375d5fe7ce1ee821ca161e11ffec4498"
+        "COLLABORATOR_GUIDE.md": "72f37ee4e1ee696fb137167214dcdcc2c6752fa7c7e6adeafa95bbe34002b1cf"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "PR checklist now asks for a bump file with the right level and says how to release (merge Version Packages PR, approve staged version). Contributor process only.",
+      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "outcome": "no-change",
+      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "git diff 01316e10..HEAD -- COLLABORATOR_GUIDE.md",
-        "git diff: +3 -2 lines in 'Submit PRs'.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: COLLABORATOR_GUIDE.md at 280f7e791c50e367a025fddc617941296f15f52a"
       ]
     },
     "source:CONTRIBUTING.md": {
@@ -1959,15 +1953,15 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "e7f99d93d4d477094355f4b8fcc96f551a25e6f083426cae521e016b983634ab",
+      "fingerprint": "4d13175763493db8484953406d81807528b407ae3df39a876d0fa83b7c377855",
       "snapshot": {
-        "THREATMODEL.md": "fd46e5b56cb4d1e24be8fb7a62d392f1b531179172126a3ab9f824218cea2dc4"
+        "THREATMODEL.md": "52bef246b2c225bf5230976a85e8c1942eda87d90f9b2578feea17f7925bfc19"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "head": "280f7e791c50e367a025fddc617941296f15f52a",
       "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "Changed: THREATMODEL.md at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: THREATMODEL.md at 280f7e791c50e367a025fddc617941296f15f52a"
       ]
     },
     "source:packages/docs/.vitepress/theme/index.ts": {
@@ -3338,45 +3332,39 @@
       ]
     },
     "source:.github/workflows/cache.yml": {
-      "fingerprint": "a1b830e156a0e9efb087c4727d64529c9f46e8b3725836394231eea1ea558059",
+      "fingerprint": "e5b542935fa5c545519caff13aa3a637ed4e16e0f8524d527d06645fc405de7b",
       "snapshot": {
-        ".github/workflows/cache.yml": "17af1472bbe1c856bf4725f4700fdab8e22a8f4ba4fad8bc6c030603d3f04e27"
+        ".github/workflows/cache.yml": null
       },
-      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
-      "outcome": "out-of-scope",
-      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "outcome": "no-change",
+      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "git diff HEAD -- .github/workflows/cache.yml",
-        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
-        "zizmor 1.30.1 --offline: no new findings for this file."
+        "Changed: .github/workflows/cache.yml at 280f7e791c50e367a025fddc617941296f15f52a"
       ]
     },
     "source:.github/workflows/docs.yml": {
-      "fingerprint": "7f111970eefd825a3a55144c3328a3d2d6cac919e17f0ca0c579f5fa1e7bc076",
+      "fingerprint": "1b348c609419ab482fcd173334429fd38fe13bd8853395c108d9a20098d98658",
       "snapshot": {
-        ".github/workflows/docs.yml": "28920b5cfc8cc1c86f7d4582781d75dccdf3e1d85b837869f8a46561860b127c"
+        ".github/workflows/docs.yml": "79f7abe4a881788d3851e3a534278b845fd348d556adc4985b715fa728657b1e"
       },
-      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
-      "outcome": "out-of-scope",
-      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "outcome": "no-change",
+      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "git diff HEAD -- .github/workflows/docs.yml",
-        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
-        "zizmor 1.30.1 --offline: no new findings for this file."
+        "Changed: .github/workflows/docs.yml at 280f7e791c50e367a025fddc617941296f15f52a"
       ]
     },
     "source:.github/workflows/lint.yml": {
-      "fingerprint": "6ab0b70a86ee9cdb5e002032c08db0e0dbf269ba56d75bed7362541797b078cd",
+      "fingerprint": "052051b425c0f916ea72c052e4a2678b5a98ff0d27d45ddb288f5066aad3c39d",
       "snapshot": {
-        ".github/workflows/lint.yml": "297ffe5477fdeee321ec16e95e3a9bc70a7524745d33a1958699abf8bd325901"
+        ".github/workflows/lint.yml": null
       },
-      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
-      "outcome": "out-of-scope",
-      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "outcome": "no-change",
+      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "git diff HEAD -- .github/workflows/lint.yml",
-        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
-        "zizmor 1.30.1 --offline: no new findings for this file."
+        "Changed: .github/workflows/lint.yml at 280f7e791c50e367a025fddc617941296f15f52a"
       ]
     },
     "source:.github/workflows/lockfile-lint.yml": {
@@ -3394,31 +3382,27 @@
       ]
     },
     "source:.github/workflows/run-ci.yml": {
-      "fingerprint": "0afc496caa6dd32355d54e43ffdbd1f87ebfa3f4985f4f9ca92fc3f2115c975b",
+      "fingerprint": "4b7426dd80163664d3d228ccd8cb9588e0cdb6d21105217aac91d0d8b5a1c739",
       "snapshot": {
-        ".github/workflows/run-ci.yml": "1664c98d8046cd30803935b45706bc7afde1bf69d06f1dc2a7937dc3201e38f5"
+        ".github/workflows/run-ci.yml": "4c64fa3bba56ee678729e629214f771e06201ce35e44fc37b1e1b0b40f775f56"
       },
-      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
-      "outcome": "out-of-scope",
-      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "outcome": "no-change",
+      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "git diff HEAD -- .github/workflows/run-ci.yml",
-        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
-        "zizmor 1.30.1 --offline: no new findings for this file."
+        "Changed: .github/workflows/run-ci.yml at 280f7e791c50e367a025fddc617941296f15f52a"
       ]
     },
     "source:.github/workflows/ts-check.yml": {
-      "fingerprint": "8d4f67787766085bbb050f983f9cf3bfa661669d664fe7496a9c8bc40a7d271e",
+      "fingerprint": "55768ecd55c3f99164d9b7d6f9052cc48590425668b588ff46d506c497f0fe6b",
       "snapshot": {
-        ".github/workflows/ts-check.yml": "070958ebf106721cdb6393862b12c9293a1e9ba92ec61667fad6f881d8492d6b"
+        ".github/workflows/ts-check.yml": null
       },
-      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
-      "outcome": "out-of-scope",
-      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "outcome": "no-change",
+      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "git diff HEAD -- .github/workflows/ts-check.yml",
-        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
-        "zizmor 1.30.1 --offline: no new findings for this file."
+        "Changed: .github/workflows/ts-check.yml at 280f7e791c50e367a025fddc617941296f15f52a"
       ]
     },
     "source:.github/workflows/verify-build-reproducibility.yml": {
@@ -3517,6 +3501,42 @@
       "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
       "evidence": [
         "Changed: packages/tests/unit/transformResponse.test.ts at d99d0823130e376a804170960262841265d5d84e"
+      ]
+    },
+    "source:.bumpy/release-gates.md": {
+      "fingerprint": "80321522d7c41633de87104ee7463fc408085b6069300cdf470b94a4b5e691fe",
+      "snapshot": {
+        ".bumpy/release-gates.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+      },
+      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "outcome": "no-change",
+      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed: .bumpy/release-gates.md at 280f7e791c50e367a025fddc617941296f15f52a"
+      ]
+    },
+    "source:.github/workflows/zizmor.yml": {
+      "fingerprint": "ad9918510686cd16ab35010da37eaec55ad6e4e27d3f8247e37218bdf2340adb",
+      "snapshot": {
+        ".github/workflows/zizmor.yml": "00e640e9d982f545092737e9e0d3a3446555d7362c01b3a4ff7b5157cf03f1bf"
+      },
+      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "outcome": "no-change",
+      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed: .github/workflows/zizmor.yml at 280f7e791c50e367a025fddc617941296f15f52a"
+      ]
+    },
+    "source:.lintstagedrc": {
+      "fingerprint": "1245cbba64cfe40b88fc149910e3e6dad2f41fda5d762d978f0e39b846834ead",
+      "snapshot": {
+        ".lintstagedrc": "13d18ec6d95090a581d5dc542168d4300f67741ebf5469696909216dd634040a"
+      },
+      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "outcome": "no-change",
+      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed: .lintstagedrc at 280f7e791c50e367a025fddc617941296f15f52a"
       ]
     }
   }

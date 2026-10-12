@@ -34,8 +34,8 @@ When opening a PR, make sure:
 - Warn before removing functionality.
 - New public API surface is predictable, consistent with existing options, and documented.
 - PR titles use [Conventional Commits](https://www.conventionalcommits.org/) (`fix:`, `feat:`, `chore:`, `docs:`, etc.).
-- A user-visible change to `packages/lib` has a bump file in `.bumpy/` with the right level (patch, minor or major). bumpy writes the changelog from it. Target the right branch (`v1.x` for the current maintenance line; breaking work goes elsewhere).
-- To release, merge the Version Packages PR that bumpy keeps up to date on `main`. Then approve the staged version on npmjs.com.
+- A user-visible change to `packages/lib` has a bump file in `.bumpy/` with the right level (patch, minor or major). bumpy writes the changelog from it. Target `main`; in 0.x, breaking changes ship as a minor.
+- To release, merge the Version Packages PR that bumpy keeps up to date on `main`. `release.yml` runs CI on the merged commit, then publishes to npm, tags the release, creates the GitHub release and deploys the docs. Nothing waits for approval on npm, so review the Version Packages PR like any other.
 
 At least one maintainer must review and approve a PR before merge. If you are unsure about the impact of a change, ask for a second opinion. Call out breaking changes in the PR description and send them to the appropriate branch. Bug fixes need a test that reproduces the issue and verifies the fix.
 
