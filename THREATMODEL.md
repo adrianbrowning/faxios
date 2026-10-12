@@ -230,7 +230,7 @@ faxios will not:
 
 ## 3. Project / supply chain threat model
 
-This model protects what gets published as `faxios` on npm. A successful attack here compromises every downstream consumer at once. Given faxios' install base, this is the higher-risk half of the document.
+This model protects what gets published as `@gcmdev/faxios` on npm. A successful attack here compromises every downstream consumer at once. Given faxios' install base, this is the higher-risk half of the document.
 
 ### 3.1 System overview
 
@@ -265,7 +265,7 @@ This model protects what gets published as `faxios` on npm. A successful attack 
                                                            │
                                             ═══════════════▼═══════════════
                                                   registry.npmjs.org
-                                                    faxios@1.x.y
+                                                 @gcmdev/faxios@x.y.z
                                                   + provenance attestation
 ```
 
@@ -273,9 +273,9 @@ This model protects what gets published as `faxios` on npm. A successful attack 
 
 | Asset                                 | Compromise means…                                                                                                                        |
 | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| **The npm `faxios` package name**      | Attacker can publish malware as `faxios@1.x.y+1`. Game over for the ecosystem.                                                            |
+| **The npm `@gcmdev/faxios` package name** | Attacker can publish malware as the next `@gcmdev/faxios` version. Game over for the ecosystem.                                       |
 | **npm publish capability**            | Whether via token, OIDC trust, or account takeover.                                                                                      |
-| **GitHub `faxios/faxios` write access** | Attacker can merge a Version Packages PR, which triggers publish. Or modify `release.yml` itself.                                         |
+| **GitHub `adrianbrowning/faxios` write access** | Attacker can merge a Version Packages PR, which triggers publish. Or modify `release.yml` itself.                                 |
 | **Maintainer GitHub accounts**        | Transitively grants the above.                                                                                                           |
 | **Maintainer workstation secrets**    | SSH keys (GitHub push), `~/.npmrc` token if present (direct publish), GPG keys (signed commits), cloud creds (lateral movement).         |
 | **Build determinism**                 | If `dist/` doesn't match `lib/`, a backdoor can hide in the minified bundle.                                                             |
@@ -293,7 +293,7 @@ This model protects what gets published as `faxios` on npm. A successful attack 
 | Actor                                           | Capability                                                                                                       | Motivation                              |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
 | Drive-by contributor                            | Open a PR. No secrets, no write.                                                                                 | Sneak a backdoor past review.           |
-| Compromised dependency                          | Attempt to run code on `npm install` via lifecycle scripts. Blocked on maintainer workstations (project `.npmrc`) and in CI (`--ignore-scripts` on every job). Residual execution path: plugin code under `npm run build` / `test` / `lint`. | Steal tokens, inject into build.        |
+| Compromised dependency                          | Attempt to run code on `pnpm install` via lifecycle scripts. Blocked on maintainer workstations and in CI by the project `.npmrc` (`ignore-scripts=true`). Residual execution path: plugin code under `pnpm run build` / `test` / `lint`. | Steal tokens, inject into build.        |
 | Phisher                                         | Send convincing emails/DMs. No technical access.                                                                 | Maintainer GitHub/npm credential theft. |
 | Compromised maintainer account                  | Full write. Can push tags. Can edit workflows.                                                                   | Direct publish of malware.              |
 | GitHub / npm insider or platform compromise     | Out of scope. We trust the platforms.                                                                            | -                                       |
@@ -324,18 +324,18 @@ This model protects what gets published as `faxios` on npm. A successful attack 
 | **Likelihood**             | Medium and rising. This exact pattern has hit `event-stream`, `ua-parser-js`, `coa`, `rc`, `node-ipc`, `@solana/web3.js`, the Ledger connect-kit, the 2024 polyfill.io incident, and dozens more. faxios' dev tree includes `zshy`, ESLint, Vitest, and Playwright, each pulling hundreds of transitives. The attack surface is enormous and refreshes on every `npm install`.                                                                                                                                                                                   |
 | **Impact**                 | Critical. A stolen npm token with publish rights means direct malware publish. A stolen SSH key with GitHub push rights means a change on `main`, then publish via CI. Either path ends the same way.                                                                                                                                                                                                                                                                                                                                                                     |
 | **Current mitigations**    | • CI is protected: `release.yml` installs with `pnpm install --frozen-lockfile --ignore-scripts`, so a malicious lifecycle script cannot execute during the release build. <br>• CI uses OIDC, not a stored token. There is no `NPM_TOKEN` secret in GitHub for a malicious workflow step to steal. <br>• `pnpm-lock.yaml` pins versions and integrity hashes. A new malicious version won't arrive silently, only on explicit update. <br>• Project-local `.npmrc` sets `ignore-scripts=true`, so `pnpm install` in a contributor or maintainer checkout does not execute lifecycle scripts (`preinstall`, `install`, `postinstall`, `prepare`) from any direct or transitive dependency. <br>• `husky` is the only `prepare` hook faxios itself declares, and only writes `.git/hooks/`. With `ignore-scripts=true` it must be run manually (`pnpm exec husky`).                                                                     |
-| **Gaps: workstation**      | `ignore-scripts=true` neutralizes the lifecycle-script path, but it does not neutralize build-time code execution. A malicious `zshy` / ESLint / Vitest plugin still runs when a maintainer executes `npm run build` / `npm test` / `npm run lint`. Those are not lifecycle scripts; they are tools the maintainer explicitly invoked. <br><br>The lockfile pins which packages install, but if one of those pinned packages was already malicious when the lock was generated, or the maintainer runs `npm update` / `npm install <new-pkg>` without re-setting `ignore-scripts`, fresh lifecycle scripts can land. <br><br>The development environment still has full read access to every credential the maintainer's user can read once a build tool runs. Isolation (devcontainer / VM) remains the strongest control.                                                                                                                                      |
+| **Gaps: workstation**      | `ignore-scripts=true` neutralizes the lifecycle-script path, but it does not neutralize build-time code execution. A malicious `zshy` / ESLint / Vitest plugin still runs when a maintainer executes `pnpm run build` / `pnpm test` / `pnpm run lint`. Those are not lifecycle scripts; they are tools the maintainer explicitly invoked. <br><br>The lockfile pins which packages install, but if one of those pinned packages was already malicious when the lock was generated, or the maintainer runs `pnpm update` / `pnpm add <new-pkg>` without re-setting `ignore-scripts`, fresh lifecycle scripts can land. <br><br>The development environment still has full read access to every credential the maintainer's user can read once a build tool runs. Isolation (devcontainer / VM) remains the strongest control.                                                                                                                                      |
 
 Mitigations adopted and recommended. Adopted items are enforced via the repo; others depend on per-maintainer discipline.
 
 1. Don't keep a publish-capable npm token on your workstation.
    Publishing happens via GitHub Actions OIDC. There is no workflow that requires `npm publish` from a laptop. If `~/.npmrc` has a token, it should be read-only or scoped to unrelated packages. If there is nothing to steal, this attack path is defanged.
 
-2. Run `npm install` / `npm ci` with `--ignore-scripts` locally. Adopted: project ships a `.npmrc` with `ignore-scripts=true`.
-   All `npm install` / `npm ci` runs in a contributor or maintainer checkout skip lifecycle scripts by default. To set up git hooks after install, run the one trusted script manually:
+2. Run `pnpm install` with lifecycle scripts off locally. Adopted: project ships a `.npmrc` with `ignore-scripts=true`.
+   Every `pnpm install` in a contributor or maintainer checkout skips lifecycle scripts by default. To set up git hooks after install, run the one trusted script manually:
 
    ```
-   npm rebuild husky && npx husky
+   pnpm exec husky
    ```
 
    The minor inconvenience of manually running known-good post-install steps is the price of not running thousands of unknown ones. Contributors adding a new dev dependency must not override this flag.
@@ -367,7 +367,7 @@ Mitigations adopted and recommended. Adopted items are enforced via the repo; ot
 | **Description** | Maintainer receives a convincing email: <br>• "npm security alert: your faxios package has been flagged, log in to verify ownership" links to a fake npm login; password + TOTP are captured and replayed in real time. <br>• "GitHub: @faxios has been added to a new organization, review access" links to a fake GitHub OAuth consent screen; the attacker app gets `repo` scope. <br>• Social: a "recruiter" asks the maintainer to clone and `npm install` a "take-home assignment" repo. <br><br>npm and GitHub credentials for faxios maintainers have been specifically targeted by these campaigns in the past. This is not theoretical. |
 | **Likelihood**  | High. These campaigns are continuous.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | **Impact**      | Critical. GitHub account to push tag to publish. npm account to publish directly.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| **Mitigations** | • npm 2FA is required for publish on the `faxios` package. <br>• OIDC publishing means there is no maintainer npm session involved in a normal release. This narrows the attack to GitHub. <br>• All maintainers authenticate to GitHub with hardware-backed WebAuthn/passkeys (FIDO2 security keys / platform authenticators). Origin-bound credentials cannot be relayed by a phishing proxy (Evilginx, Modlishka). TOTP alone is not permitted for maintainer accounts. <br>• Git push uses `sk-ssh-ed25519@openssh.com` hardware-resident SSH keys where supported. A stolen key file is useless without the physical device.                                                                                                                           |
+| **Mitigations** | • npm 2FA is required for publish on the `@gcmdev/faxios` package. <br>• OIDC publishing means there is no maintainer npm session involved in a normal release. This narrows the attack to GitHub. <br>• All maintainers authenticate to GitHub with hardware-backed WebAuthn/passkeys (FIDO2 security keys / platform authenticators). Origin-bound credentials cannot be relayed by a phishing proxy (Evilginx, Modlishka). TOTP alone is not permitted for maintainer accounts. <br>• Git push uses `sk-ssh-ed25519@openssh.com` hardware-resident SSH keys where supported. A stolen key file is useless without the physical device.                                                                                                                           |
 | **Gaps**        | • Enforcement is per-account policy, not verifiable from the repo itself. Onboarding/offboarding checklist should confirm hardware-key status. <br>• Incident-response runbook is documented in §3.7 and needs periodic rehearsal to stay useful. <br>• Each maintainer should register at least 2 hardware keys (primary + backup stored separately) to avoid lockout-driven fallback to weaker recovery methods.                                                                                                                                                                                                                                                                                                                                                             |
 
 ---
@@ -461,9 +461,9 @@ If a maintainer suspects credential compromise (phish clicked, lost hardware key
 
 #### 2. Assess, minutes 15 to 60
 
-- Check `https://github.com/faxios/faxios/settings/security-log` and `https://github.com/<maintainer>/security/log` for unrecognised events (key adds, org changes, force-pushes, new tags).
-- Verify recent tags match intent: `git log --tags --oneline -n 20`. Compare with `https://www.npmjs.com/package/faxios?activeTab=versions`.
-- For each recent publish, verify provenance: `npm audit signatures faxios@<version>` and cross-check the `sourceCommit` in the provenance attestation against the tag's SHA. Divergence = investigate.
+- Check `https://github.com/settings/security-log` for each maintainer account, and the repository's collaborators, deploy keys, rulesets and environments (`https://github.com/adrianbrowning/faxios/settings`), for unrecognised events (key adds, permission changes, force-pushes, new tags).
+- Verify recent tags match intent: `git log --tags --oneline -n 20`. Compare with `https://www.npmjs.com/package/@gcmdev/faxios?activeTab=versions`.
+- For each recent publish, verify provenance: `npm view @gcmdev/faxios@<version> dist.attestations` and `npm audit signatures` in a project that installs it, and cross-check the `sourceCommit` in the provenance attestation against the tag's SHA. Divergence = investigate.
 - Review `~/.npmrc`, `~/.ssh/`, `~/.config/gh/hosts.yml`, `~/.gnupg/` for tampering and unexpected files.
 
 #### 3. Rotate, hour 1 to 4
@@ -477,7 +477,7 @@ If a maintainer suspects credential compromise (phish clicked, lost hardware key
 
 - npm security: `security@npmjs.com`. Include package name, suspected versions, timeline.
 - GitHub security: `https://github.com/contact`, Security category. Request an investigation of the account.
-- Downstream: open a GitHub security advisory (`https://github.com/faxios/faxios/security/advisories/new`) as soon as a malicious version is confirmed published. Do not wait for a fix. Users need to pin away from the bad version.
+- Downstream: open a GitHub security advisory (`https://github.com/adrianbrowning/faxios/security/advisories/new`) as soon as a malicious version is confirmed published. Do not wait for a fix. Users need to pin away from the bad version.
 - Co-maintainers (when present): notify via out-of-band channel (phone/Signal), not through the compromised channel.
 
 #### 5. Unpublish / deprecate, hour 1 to 24

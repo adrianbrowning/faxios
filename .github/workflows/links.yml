@@ -1,0 +1,50 @@
+name: Links
+
+# Fails a PR that adds a dead link to the repository's Markdown (#175).
+# Settings, excluded files and accepted status codes are in lychee.toml.
+on:
+  pull_request:
+    branches:
+      - main
+    types: [ opened, synchronize, reopened ]
+    paths:
+      - '**/*.md'
+      - 'lychee.toml'
+      - '.github/workflows/links.yml'
+  # Catches links that rot without a change in this repo.
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  links:
+    name: Check links
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check links with lychee
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: >-
+            --config lychee.toml
+            --root-dir ${{ github.workspace }}
+            '*.md' '.github/**/*.md' 'docs/**/*.md'
+            'packages/docs/index.md' 'packages/docs/pages/**/*.md'
+            'packages/lib/README.md' 'packages/lib/skills/**/*.md'
+            'packages/examples/*.md'
+          fail: true
+        env:
+          # Raises the GitHub rate limit for github.com links.
+          GITHUB_TOKEN: ${{ github.token }}

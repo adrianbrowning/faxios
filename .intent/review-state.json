@@ -3,9 +3,9 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "034a3a52744a82c3e2010e35d2062c85916dbccdadfb315fcb989a64716913fe",
+      "fingerprint": "d97ba6d2777c93c1f7762b392ab19ab84f3862df2ca3f3149e0d3137530b5288",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
+        "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "da23ef046ec6b34f9f3d3e0b9e6dda0ddacf1a87abecf8ae718c1af07117d0df",
         "packages/lib/skills/configure-requests/SKILL.md": "f93e196d10a9c8b300d9b35f18022ea51e6f019896cf5d8306da750f1b8f7396",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
@@ -33,38 +33,17 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "d99d0823130e376a804170960262841265d5d84e",
       "outcome": "no-change",
-      "reason": "Every changed source file is lint reordering (imports, union members, type-literal keys) or main's already-reviewed changes; no option, default, error code, export or call shape that SKILL.md documents changed. package.json gains the #src imports map and devDependency bumps only.",
+      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "packages/lib/package.json: see git diff 8ace0b3b..HEAD",
-        "packages/lib/src/index.ts: Specifiers reordered in `export { default as Cancel, default as CanceledError }`. `RouteBuilder, RouteConfig, RouteMethodConfig` sorted. The 19-name `export type {…} from \"./lib/types.ts\"` list sorted alphabetically. Behaviour: none. Re-export specifier order has no runtime or type effect, and the same names are still exported.",
-        "packages/lib/src/lib/adapters/fetch.ts: Named imports from progressEventReducer and fetch-helpers sorted. Members of the `AnyResponse`, `AnyRequest` (incl. nested `headers`) and `AnyReadableStream` type literals sorted, with index signatures moved first. Union operands sorted in: the `ReadableStream as undefined | {from?}` cast, `ArrayBuffer | ArrayBufferView`, `normalizeCredentials(wc: boolean | string)`, `auth: undefined | {password; username}`, `contentTypeHeader: null | string`, `withCredentials?: boolean | string` (two places), and `request: null | Request`. Behaviour: none. Every change is in a type position. The runtime object literals (`resolvedOptions` with `...fetchOptions` spread first, `auth = { username, password }`, the `settle` payload) and the arrays `[\"text\",\"arrayBuffer\",…]` and `[Request, Response, fetch]` are byte-identical.",
-        "packages/lib/src/lib/core/Faxios.ts: The type-only import of standard-schema moved after the `../types.js` import. `RouteBuilder, RouteConfig` sorted. Union types sorted in `TransitionalFn`, the `validators` Record, and the `configOrUrl` types of the `request`/`#request` signatures (`FaxiosRequestConfig | string`). Members of the `validators` intersection (`spelling`, `transitional`) and `MiddlewareEntry` (`provided`, `ref`, `run`) sorted. Behaviour: none. The moved import is `import type`, so it is erased and has no side effects. The `// The value passed to use()…` comment still sits directly above `ref`. Overload order is unchanged. The `METHOD_HEADER_GROUPS` keys and the `{ ref: middleware, run, provided }` literal are unchanged.",
-        "packages/lib/src/lib/core/FaxiosError.ts: The type-only imports of `../types.js` and `../types/standard-schema.js` swapped, and their specifiers sorted. The code union in the second `SchemaValidationError` member sorted (PARAMS, PATH_PARAMS, REQUEST). Behaviour: none. Static fields, the constructor and the `toJSON` key order are unchanged.",
-        "packages/lib/src/lib/core/define.ts: Type-only imports swapped and specifiers sorted; `StrippedFields` union members sorted; `DefineConfig` members sorted (paramsSchema, pathParamsSchema, requestSchema, responseSchema). The sort first left the pathParamsSchema JSDoc above paramsSchema; this PR moves it back onto pathParamsSchema (commit a9e6c2df). No runtime or type behaviour change.",
-        "packages/lib/src/lib/core/dispatchRequest.ts: Type import specifiers sorted (`FaxiosResponse, InternalFaxiosRequestConfig`). The `r` cast `{…} | null` → `null | {…}`, with the index signature moved first in the inner `response` type literal. Behaviour: none. The validation order, the `[\"post\",\"put\",\"patch\"]` array and the then-handlers are identical.",
-        "packages/lib/src/lib/core/mergeConfig.ts: Type import specifiers sorted. Parameter unions `FaxiosRequestConfig | FaxiosDefaults | Record` → `FaxiosDefaults | FaxiosRequestConfig | Record` for config1 and config2. Behaviour: none. `mergeMap` key order and all merge logic are identical.",
-        "packages/lib/src/lib/core/route.ts: Mapped-type key union in `RouteBuilder` sorted: `\"get\" | \"post\" | \"put\" | \"patch\" | \"delete\" | \"head\" | \"options\"` → `\"delete\" | \"get\" | \"head\" | \"options\" | \"patch\" | \"post\" | \"put\"`. Behaviour: none. Same key set. The runtime `methods` array keeps its order (`get, post, put, patch, delete, head, options`), and the `defineConf` spread order is unchanged.",
-        "packages/lib/src/lib/faxios.ts: `import type` from `./types.js` moved before standard-schema, and its specifiers sorted. Union members in `UnsupportedCapabilityKeys` and both operands of `RejectUnsupportedCapabilityKeys` sorted. Named members of the `FaxiosInstance` type literal sorted (`define`, `eject`, `route`, `use`, then call signatures, then `create`, `defaults`, `delete`, `get`, `getUri`, `head`…`request`). Members of the `FaxiosStatic` type literal sorted. Behaviour: none. Everything changed is a type. The four call signatures keep their relative order, so overload resolution is unchanged. Each JSDoc and line comment (`use`, `eject`, `define`, `route`, `defaults`, `getUri`) moved with its member. The runtime static assignments `faxios.X = …` are unchanged.",
-        "packages/lib/src/lib/helpers/composeSignals.ts: Members of the `SignalLike` type literal sorted (`aborted`, `addEventListener`, `reason`, `removeEventListener`, `unsubscribe`). `timer: ReturnType<…> | null` → `null | ReturnType<…>`. Behaviour: none",
-        "packages/lib/src/lib/plugins/authBearer.ts: Members of `AuthBearerOptions` sorted (`header`, `origins`, `overwrite`, `scheme`). Union operands sorted in `originOf` and `resolvedOrigin` (`null | string`), `sendsTokenTo` origins (`null | ReadonlyArray<string>`) and `getToken` (`() => Promise<string> | string`). Behaviour: none. Each JSDoc moved with its member. The `optionsSchema` runtime literal and the `definePlugin({ name, provides, middleware })` literal are unchanged.",
-        "packages/lib/src/lib/plugins/definePlugin.ts: Members of the `plugin` parameter type literal sorted (`middleware`, `name`, `provides`). Members of the `FaxiosPlugin<{…}>` spec in the return type sorted (`options`, `provides`, `requires`). Behaviour: none. Object-type member order does not affect assignability. Under my reading of tsc's inference rules (not tested), it does not affect inference here either: TProvides comes only from `provides`, and TCapabilities is NoInfer-blocked there, so it comes only from `middleware`. The comment still sits above `provides`, and the runtime body is still `return plugin as never`.",
-        "packages/lib/src/lib/plugins/retry.ts: Members of `RetryOptions` sorted (`attempts`, `delay`, `jitter`, `maxDelay`, `maxRetryAfter`, `methods`, `onRetry`, `respectRetryAfter`, `retryOn`, `statuses`). Members of `Policy` sorted. `delay` union → `((…) => number) | number`. `RetryRequestOptions.retry` → `false | RetryOptions`. Behaviour: none. Every JSDoc moved with its member. The runtime literals `optionsSchema` and the `resolvePolicy` return are unchanged. `assertOptions` iterates the option keys, not the schema order.",
-        "packages/lib/src/lib/plugins/timing.ts: Members of the `TimingEvent` base object sorted (`attempt`, `durationMs`, `method`, `url`). Discriminated-union members reordered (`{ error: unknown; status?: undefined }` first), and the keys inside each sorted. Behaviour: none. JSDoc moved with its member. The union is still discriminated by `status` and `error`. The `describe()` return and `onTiming({...})` spread order are unchanged.",
-        "packages/lib/src/lib/types.ts: These unions sorted: `FaxiosHeaderValue`, `UppercaseMethod`, `Method`, `ContentType` (outer and inner literal list), `ResponseType`, `UppercaseResponseEncoding`, `responseEncoding`, `HeaderMatcher`, `HeaderGetResult`, `FaxiosConfigHeaders`, and the `ContextHeaders` setter param. These interface and type-literal members sorted: `TransitionalOptions`, `GenericAbortSignal`, `GenericHTMLFormElement`, `FormDataVisitorHelpers`, `SerializerOptions`, `FaxiosProgressEvent`, `FaxiosBasicCredentials`, `FaxiosRequestHeaders` (a blank line moved from before `getAuthorization` to before `setContentLength`), `FaxiosRequestConfig` (all members incl. `env`), `FaxiosResponse`, `HeadersDefaults`, `FaxiosContext`, `FaxiosPluginSpec`, `FaxiosPluginBase` and its `~plugin` literal. `SerializerVisitor` key/path unions sorted. Behaviour: none. The file has no runtime code. Each union is the same set (`StringLiteralsOrString` still wraps `(string & {})`). Every JSDoc (maxDepth, env.FormData, env.Request, pathParams, pathParamsSchema, the FaxiosContext members, `~plugin`) moved with its member. No overloads or call signatures were reordered.",
-        "packages/tests/unit/api.test.ts: `string | Request | URL` became `Request | string | URL`. `Record<symbol | string, unknown>` became `Record<string | symbol, unknown>`. Behaviour: none",
-        "packages/tests/unit/core/middleware.test.ts: Type `Sent = { url; init }` became `{ init; url }`. Behaviour: none",
-        "packages/tests/unit/plugins/authBearer.test.ts: `string | null` became `null | string` in three places: the statusFor param, `authorizations`, and `sent`. Behaviour: none",
-        "packages/tests/unit/plugins/definePlugin.test.ts: `toEqualTypeOf<{ttlMs?} | undefined>` became `<undefined | {ttlMs?}>`. The `FaxiosPlugin<{requires; provides; options}>` generic arg became `{options; provides; requires}`. Behaviour: none. The structural types are identical.",
-        "packages/tests/unit/plugins/retry.test.ts: `Reply = number | \"network\" | {status; headers}` became `\"network\" | number | {headers; status}`. Behaviour: none",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: MIGRATION_GUIDE.md at d99d0823130e376a804170960262841265d5d84e"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "7d39387abc351b9229523d22c1a15d65a7aacc750ab8450054622a9570181982",
+      "fingerprint": "7f51d070ec1b1877bea7d97cbf5f495a53396093d8bcd5b98c2008f8fc742976",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
+        "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
@@ -95,34 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "updated",
-      "reason": "domain_map.yaml drops PRE_RELEASE_CHANGELOG.md from the interceptors failure-mode sources, and skill_spec.md rewords its mention as 'the pre-release changelog', because #150 retires that file. Other inputs are lint reordering with no domain change.",
+      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "outcome": "no-change",
+      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "_artifacts/domain_map.yaml: see git diff 8ace0b3b..HEAD",
-        "_artifacts/skill_spec.md: see git diff 8ace0b3b..HEAD",
-        "packages/lib/package.json: see git diff 8ace0b3b..HEAD",
-        "packages/lib/src/index.ts: Specifiers reordered in `export { default as Cancel, default as CanceledError }`. `RouteBuilder, RouteConfig, RouteMethodConfig` sorted. The 19-name `export type {…} from \"./lib/types.ts\"` list sorted alphabetically. Behaviour: none. Re-export specifier order has no runtime or type effect, and the same names are still exported.",
-        "packages/lib/src/lib/adapters/fetch.ts: Named imports from progressEventReducer and fetch-helpers sorted. Members of the `AnyResponse`, `AnyRequest` (incl. nested `headers`) and `AnyReadableStream` type literals sorted, with index signatures moved first. Union operands sorted in: the `ReadableStream as undefined | {from?}` cast, `ArrayBuffer | ArrayBufferView`, `normalizeCredentials(wc: boolean | string)`, `auth: undefined | {password; username}`, `contentTypeHeader: null | string`, `withCredentials?: boolean | string` (two places), and `request: null | Request`. Behaviour: none. Every change is in a type position. The runtime object literals (`resolvedOptions` with `...fetchOptions` spread first, `auth = { username, password }`, the `settle` payload) and the arrays `[\"text\",\"arrayBuffer\",…]` and `[Request, Response, fetch]` are byte-identical.",
-        "packages/lib/src/lib/core/Faxios.ts: The type-only import of standard-schema moved after the `../types.js` import. `RouteBuilder, RouteConfig` sorted. Union types sorted in `TransitionalFn`, the `validators` Record, and the `configOrUrl` types of the `request`/`#request` signatures (`FaxiosRequestConfig | string`). Members of the `validators` intersection (`spelling`, `transitional`) and `MiddlewareEntry` (`provided`, `ref`, `run`) sorted. Behaviour: none. The moved import is `import type`, so it is erased and has no side effects. The `// The value passed to use()…` comment still sits directly above `ref`. Overload order is unchanged. The `METHOD_HEADER_GROUPS` keys and the `{ ref: middleware, run, provided }` literal are unchanged.",
-        "packages/lib/src/lib/core/FaxiosError.ts: The type-only imports of `../types.js` and `../types/standard-schema.js` swapped, and their specifiers sorted. The code union in the second `SchemaValidationError` member sorted (PARAMS, PATH_PARAMS, REQUEST). Behaviour: none. Static fields, the constructor and the `toJSON` key order are unchanged.",
-        "packages/lib/src/lib/core/define.ts: Type-only imports swapped and specifiers sorted; `StrippedFields` union members sorted; `DefineConfig` members sorted (paramsSchema, pathParamsSchema, requestSchema, responseSchema). The sort first left the pathParamsSchema JSDoc above paramsSchema; this PR moves it back onto pathParamsSchema (commit a9e6c2df). No runtime or type behaviour change.",
-        "packages/lib/src/lib/core/dispatchRequest.ts: Type import specifiers sorted (`FaxiosResponse, InternalFaxiosRequestConfig`). The `r` cast `{…} | null` → `null | {…}`, with the index signature moved first in the inner `response` type literal. Behaviour: none. The validation order, the `[\"post\",\"put\",\"patch\"]` array and the then-handlers are identical.",
-        "packages/lib/src/lib/core/mergeConfig.ts: Type import specifiers sorted. Parameter unions `FaxiosRequestConfig | FaxiosDefaults | Record` → `FaxiosDefaults | FaxiosRequestConfig | Record` for config1 and config2. Behaviour: none. `mergeMap` key order and all merge logic are identical.",
-        "packages/lib/src/lib/core/route.ts: Mapped-type key union in `RouteBuilder` sorted: `\"get\" | \"post\" | \"put\" | \"patch\" | \"delete\" | \"head\" | \"options\"` → `\"delete\" | \"get\" | \"head\" | \"options\" | \"patch\" | \"post\" | \"put\"`. Behaviour: none. Same key set. The runtime `methods` array keeps its order (`get, post, put, patch, delete, head, options`), and the `defineConf` spread order is unchanged.",
-        "packages/lib/src/lib/faxios.ts: `import type` from `./types.js` moved before standard-schema, and its specifiers sorted. Union members in `UnsupportedCapabilityKeys` and both operands of `RejectUnsupportedCapabilityKeys` sorted. Named members of the `FaxiosInstance` type literal sorted (`define`, `eject`, `route`, `use`, then call signatures, then `create`, `defaults`, `delete`, `get`, `getUri`, `head`…`request`). Members of the `FaxiosStatic` type literal sorted. Behaviour: none. Everything changed is a type. The four call signatures keep their relative order, so overload resolution is unchanged. Each JSDoc and line comment (`use`, `eject`, `define`, `route`, `defaults`, `getUri`) moved with its member. The runtime static assignments `faxios.X = …` are unchanged.",
-        "packages/lib/src/lib/helpers/composeSignals.ts: Members of the `SignalLike` type literal sorted (`aborted`, `addEventListener`, `reason`, `removeEventListener`, `unsubscribe`). `timer: ReturnType<…> | null` → `null | ReturnType<…>`. Behaviour: none",
-        "packages/lib/src/lib/plugins/authBearer.ts: Members of `AuthBearerOptions` sorted (`header`, `origins`, `overwrite`, `scheme`). Union operands sorted in `originOf` and `resolvedOrigin` (`null | string`), `sendsTokenTo` origins (`null | ReadonlyArray<string>`) and `getToken` (`() => Promise<string> | string`). Behaviour: none. Each JSDoc moved with its member. The `optionsSchema` runtime literal and the `definePlugin({ name, provides, middleware })` literal are unchanged.",
-        "packages/lib/src/lib/plugins/definePlugin.ts: Members of the `plugin` parameter type literal sorted (`middleware`, `name`, `provides`). Members of the `FaxiosPlugin<{…}>` spec in the return type sorted (`options`, `provides`, `requires`). Behaviour: none. Object-type member order does not affect assignability. Under my reading of tsc's inference rules (not tested), it does not affect inference here either: TProvides comes only from `provides`, and TCapabilities is NoInfer-blocked there, so it comes only from `middleware`. The comment still sits above `provides`, and the runtime body is still `return plugin as never`.",
-        "packages/lib/src/lib/plugins/retry.ts: Members of `RetryOptions` sorted (`attempts`, `delay`, `jitter`, `maxDelay`, `maxRetryAfter`, `methods`, `onRetry`, `respectRetryAfter`, `retryOn`, `statuses`). Members of `Policy` sorted. `delay` union → `((…) => number) | number`. `RetryRequestOptions.retry` → `false | RetryOptions`. Behaviour: none. Every JSDoc moved with its member. The runtime literals `optionsSchema` and the `resolvePolicy` return are unchanged. `assertOptions` iterates the option keys, not the schema order.",
-        "packages/lib/src/lib/plugins/timing.ts: Members of the `TimingEvent` base object sorted (`attempt`, `durationMs`, `method`, `url`). Discriminated-union members reordered (`{ error: unknown; status?: undefined }` first), and the keys inside each sorted. Behaviour: none. JSDoc moved with its member. The union is still discriminated by `status` and `error`. The `describe()` return and `onTiming({...})` spread order are unchanged.",
-        "packages/lib/src/lib/types.ts: These unions sorted: `FaxiosHeaderValue`, `UppercaseMethod`, `Method`, `ContentType` (outer and inner literal list), `ResponseType`, `UppercaseResponseEncoding`, `responseEncoding`, `HeaderMatcher`, `HeaderGetResult`, `FaxiosConfigHeaders`, and the `ContextHeaders` setter param. These interface and type-literal members sorted: `TransitionalOptions`, `GenericAbortSignal`, `GenericHTMLFormElement`, `FormDataVisitorHelpers`, `SerializerOptions`, `FaxiosProgressEvent`, `FaxiosBasicCredentials`, `FaxiosRequestHeaders` (a blank line moved from before `getAuthorization` to before `setContentLength`), `FaxiosRequestConfig` (all members incl. `env`), `FaxiosResponse`, `HeadersDefaults`, `FaxiosContext`, `FaxiosPluginSpec`, `FaxiosPluginBase` and its `~plugin` literal. `SerializerVisitor` key/path unions sorted. Behaviour: none. The file has no runtime code. Each union is the same set (`StringLiteralsOrString` still wraps `(string & {})`). Every JSDoc (maxDepth, env.FormData, env.Request, pathParams, pathParamsSchema, the FaxiosContext members, `~plugin`) moved with its member. No overloads or call signatures were reordered.",
-        "packages/tests/unit/api.test.ts: `string | Request | URL` became `Request | string | URL`. `Record<symbol | string, unknown>` became `Record<string | symbol, unknown>`. Behaviour: none",
-        "packages/tests/unit/core/middleware.test.ts: Type `Sent = { url; init }` became `{ init; url }`. Behaviour: none",
-        "packages/tests/unit/plugins/authBearer.test.ts: `string | null` became `null | string` in three places: the statusFor param, `authorizations`, and `sent`. Behaviour: none",
-        "packages/tests/unit/plugins/definePlugin.test.ts: `toEqualTypeOf<{ttlMs?} | undefined>` became `<undefined | {ttlMs?}>`. The `FaxiosPlugin<{requires; provides; options}>` generic arg became `{options; provides; requires}`. Behaviour: none. The structural types are identical.",
-        "packages/tests/unit/plugins/retry.test.ts: `Reply = number | \"network\" | {status; headers}` became `\"network\" | number | {headers; status}`. Behaviour: none",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: MIGRATION_GUIDE.md at d99d0823130e376a804170960262841265d5d84e"
       ]
     },
     "source:knip.json": {
@@ -152,15 +108,15 @@
       ]
     },
     "source:ECOSYSTEM.md": {
-      "fingerprint": "a6e4a320c199bad67d83baf7e64f6eb4c59409d3a82d69fe88c1da5873a4f597",
+      "fingerprint": "d25f484ec71ed15e301b91c7a281bfcc5f839ce0c85f133af76251cc298e8117",
       "snapshot": {
-        "ECOSYSTEM.md": "ad1f6c6ae6398b6a17be0966c2f14d36ea9a31734c5d8ec7de7b7131fa84fc2f"
+        "ECOSYSTEM.md": "b40bd7693d283e36b56950d71b23a891402fc9d4d59bfc00a78bc6e0981dab98"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "head": "d99d0823130e376a804170960262841265d5d84e",
       "outcome": "no-change",
-      "reason": "Diff reviewed (M); no-api-claims.",
+      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "-L14/-L28 lines say third-party libraries work 'through an faxios interceptor'. +lines drop that wording ('Unpacks HTTP responses', 'Adds URL template support', 'Logs responses'). These are listing edits only."
+        "Changed: ECOSYSTEM.md at d99d0823130e376a804170960262841265d5d84e"
       ]
     },
     "source:PRE_RELEASE_DOCS.md": {
@@ -406,15 +362,15 @@
       ]
     },
     "source:packages/docs/pages/getting-started/upgrade-guide.md": {
-      "fingerprint": "b251c26499017d227ab04a5008b008c6f137a95bc94795d4b4d48ab9ce221bd1",
+      "fingerprint": "a35bf3a4685422885c3d854f78559d9c2d8401b7448aa65eacef1c18095a4cee",
       "snapshot": {
-        "packages/docs/pages/getting-started/upgrade-guide.md": "3b79ab68e39d0193b153eaf33f086b06e05aefe1f2f76c2c6665c060ac83972b"
+        "packages/docs/pages/getting-started/upgrade-guide.md": "e24b564fb84efd7f6e6719160b0ac00a5bad21ee09b476d0a996a7b38b3c2700"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "head": "d99d0823130e376a804170960262841265d5d84e",
       "outcome": "no-change",
-      "reason": "Diff reviewed (M); consistent.",
+      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "+L16 '`faxios.interceptors` is gone. Register middleware with `.use()`' and the +L21..+L28 diff example. +L30: 'Request interceptors ran in reverse registration order, so check the order'. Matches SKILL mistake 1 (L289-291) and axios-differences L38-40."
+        "Changed: packages/docs/pages/getting-started/upgrade-guide.md at d99d0823130e376a804170960262841265d5d84e"
       ]
     },
     "source:packages/docs/zh/pages/advanced/interceptors.md": {
@@ -1991,31 +1947,27 @@
       ]
     },
     "source:CONTRIBUTING.md": {
-      "fingerprint": "24f2bee340201364f857020bd9a99f89d92e6459b396cf4ad3243807fc319c52",
+      "fingerprint": "e0eaa4497f3f4e711908b83d695909513219b80fbe00b31ecd6eea51a51f980a",
       "snapshot": {
-        "CONTRIBUTING.md": "a68ddf4c43be959069fa160234ba5903d3cbf4fe8dc7c559213a4b7ac9d4fb62"
+        "CONTRIBUTING.md": "19c3901f1bfd8f096b2b1ad93adbf934a79737ca343f33b133d7d13c766527f0"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "New 'Changelog' section (bump file via pnpm bump; don't edit packages/lib/CHANGELOG.md); stale `npm run version` line replaced by `pnpm bump:status`. Contributor process only.",
+      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "outcome": "no-change",
+      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "git diff 01316e10..HEAD -- CONTRIBUTING.md",
-        "git diff: +7 -1 lines.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: CONTRIBUTING.md at d99d0823130e376a804170960262841265d5d84e"
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "1816065c6bb9c0ef8daebcf49482429cbc03d3bcb66f0abbb2b7eb3b32fe6772",
+      "fingerprint": "e7f99d93d4d477094355f4b8fcc96f551a25e6f083426cae521e016b983634ab",
       "snapshot": {
-        "THREATMODEL.md": "b37e84b360626b4d95543ce024e0c91a5debd2edb2d1ca121500e9a0afd687e2"
+        "THREATMODEL.md": "fd46e5b56cb4d1e24be8fb7a62d392f1b531179172126a3ab9f824218cea2dc4"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Supply-chain sections now describe release.yml/bumpy (merge-triggered publish, pnpm --ignore-scripts, staged publish), the rc PR-ref OIDC gap (T-S6) and @gcmdev/faxios@* tags; locale wording dropped. Not library API.",
+      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "outcome": "no-change",
+      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "git diff 01316e10..HEAD -- THREATMODEL.md",
-        "git diff: +16 -15 lines in T-R11, 3.1, 3.2, T-S2, T-S5, T-S6, T-S7.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: THREATMODEL.md at d99d0823130e376a804170960262841265d5d84e"
       ]
     },
     "source:packages/docs/.vitepress/theme/index.ts": {
@@ -2823,16 +2775,15 @@
       ]
     },
     "source:packages/tests/unit/axiosHeaders.test.ts": {
-      "fingerprint": "62c06c2925867113fd09eb03e5bfc926fdd2bd2c8373b18a7cbfc460b0026bd4",
+      "fingerprint": "4edb1880d092c26655f8800351690257d0b108190c7326e0f486165647109746",
       "snapshot": {
-        "packages/tests/unit/axiosHeaders.test.ts": "a18bb0b8aa92c9422812a82ae6fa038013fc56832b30cdd0be2f5b8610848d7e"
+        "packages/tests/unit/axiosHeaders.test.ts": "c3ea96d11ae62f91650897851197df3bd8ef04f9e4b5e28181c676676de2ea28"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "d99d0823130e376a804170960262841265d5d84e",
       "outcome": "no-change",
-      "reason": "In the mapped-type key filter, `\"get\" | \"set\" | \"has\"` became `\"get\" | \"has\" | \"set\"` in both the plain union and the template-literal union. Behaviour change: none",
+      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/axiosHeaders.test.ts: @@ -5,9 +5,9 @@ (diff/205)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/axiosHeaders.test.ts at d99d0823130e376a804170960262841265d5d84e"
       ]
     },
     "source:packages/tests/unit/cancel/canceledError.test.ts": {
@@ -3174,16 +3125,15 @@
       ]
     },
     "source:packages/tests/unit/regression.test.ts": {
-      "fingerprint": "ea2a4c4f24f1574c0a088792e4b9c454ecb6b681de6ff21281d9ed1a7d5a432a",
+      "fingerprint": "bebf4769b09ec35f4b17ed2fd546e2e90b8a23cc25f3d35f84c93abf889d72e5",
       "snapshot": {
-        "packages/tests/unit/regression.test.ts": "10ba6824ae89bd2bad797681d3e28ae7ab65d1168f221fde0a5213881fd7209a"
+        "packages/tests/unit/regression.test.ts": "21ad96cf34e1cedf8c26d187c778c5a7e53f91fa9c053f4a1ec4bee0b40a4861"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "d99d0823130e376a804170960262841265d5d84e",
       "outcome": "no-change",
-      "reason": "vitest import `describe, it, beforeEach, afterEach` became `afterEach, beforeEach, describe, it`. Behaviour change: none",
+      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/regression.test.ts: @@ -5,7 +5,7 @@ (diff/237)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/regression.test.ts at d99d0823130e376a804170960262841265d5d84e"
       ]
     },
     "source:packages/tests/unit/utils/endsWith.test.ts": {
@@ -3483,6 +3433,90 @@
         "git diff HEAD -- .github/workflows/verify-build-reproducibility.yml",
         "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
         "zizmor 1.30.1 --offline: no new findings for this file."
+      ]
+    },
+    "source:.github/workflows/links.yml": {
+      "fingerprint": "41e9e15b012f2af09d97e19106c141d9a077336202dfbcc5550290a3de584a1a",
+      "snapshot": {
+        ".github/workflows/links.yml": "d322b8cc65c3199c638681a21bb6907d48dd8021ea7c627e7c21e2838e189deb"
+      },
+      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "outcome": "no-change",
+      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed: .github/workflows/links.yml at d99d0823130e376a804170960262841265d5d84e"
+      ]
+    },
+    "source:SECURITY.md": {
+      "fingerprint": "70bfa6ffb217f6637670027d5431681e49686269b52adcc4f29461e0475d09e9",
+      "snapshot": {
+        "SECURITY.md": "67218497d2752f1fe589268d59ab8adcf75e9d18e9661f36b9aa67e71dca2571"
+      },
+      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "outcome": "no-change",
+      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed: SECURITY.md at d99d0823130e376a804170960262841265d5d84e"
+      ]
+    },
+    "source:lychee.toml": {
+      "fingerprint": "4cd6edeea2c382711983cbcb1213e87488ac3a13dab2c69e81ee85643a3d0cca",
+      "snapshot": {
+        "lychee.toml": "d565b22949beda04ba528362c31f391ae3653a8454ed057e9f60b5d26f637832"
+      },
+      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "outcome": "no-change",
+      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed: lychee.toml at d99d0823130e376a804170960262841265d5d84e"
+      ]
+    },
+    "source:packages/docs/pages/misc/security.md": {
+      "fingerprint": "6e6ef148c208835dd08428ef573c248c629603f50aac7c0ac1ed4058e9f984d3",
+      "snapshot": {
+        "packages/docs/pages/misc/security.md": "72fb6b5d70bf441ea7193e01147fdba6f3eb299ff8a121c9303d90c2944a10b4"
+      },
+      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "outcome": "no-change",
+      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed: packages/docs/pages/misc/security.md at d99d0823130e376a804170960262841265d5d84e"
+      ]
+    },
+    "source:packages/examples/README.md": {
+      "fingerprint": "2fe352ef195f4b1425f6d082aa8e63a03b13781629977e737407bf2c0e70b999",
+      "snapshot": {
+        "packages/examples/README.md": "35a16731d0dc01ae379ba3e230ce7099e9ab8729e1e1664c2eaa8cf4b48afd88"
+      },
+      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "outcome": "no-change",
+      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed: packages/examples/README.md at d99d0823130e376a804170960262841265d5d84e"
+      ]
+    },
+    "source:packages/sandbox/client.html": {
+      "fingerprint": "37f2a16e59a9cd6786f575c94d8ca062b27fa5f00ba544f3ad421d40946aa108",
+      "snapshot": {
+        "packages/sandbox/client.html": "5b0828ddab5d10c03959abfb0094cd65720e8b6a9af108e09e4f46e529f69f90"
+      },
+      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "outcome": "no-change",
+      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed: packages/sandbox/client.html at d99d0823130e376a804170960262841265d5d84e"
+      ]
+    },
+    "source:packages/tests/unit/transformResponse.test.ts": {
+      "fingerprint": "17bd427acc126a9cb34334314ad0347aa563c0f2f4db1f1c917eba4ae08c2767",
+      "snapshot": {
+        "packages/tests/unit/transformResponse.test.ts": "b1233fb8617d655c1eab0a3654b57cd62aedafd6b5894ee9ff4fd0dc16c5d4d0"
+      },
+      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "outcome": "no-change",
+      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "evidence": [
+        "Changed: packages/tests/unit/transformResponse.test.ts at d99d0823130e376a804170960262841265d5d84e"
       ]
     }
   }
