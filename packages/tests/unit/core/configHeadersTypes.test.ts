@@ -1,4 +1,4 @@
-import { describe, it, expectTypeOf } from "vitest";
+import { describe, expectTypeOf, it } from "vitest";
 import faxios, { create, FaxiosHeaders } from "#src/index.ts";
 import type { CreateFaxiosDefaults, FaxiosConfigHeaders, FaxiosRequestConfig, HeadersDefaults, RawFaxiosRequestHeaders } from "#src/index.ts";
 
@@ -11,7 +11,7 @@ describe("config headers types", () => {
     expectTypeOf<FaxiosRequestConfig["headers"]>().toEqualTypeOf<FaxiosConfigHeaders | undefined>();
     expectTypeOf<CreateFaxiosDefaults["headers"]>().toEqualTypeOf<FaxiosConfigHeaders | undefined>();
     expectTypeOf<keyof HeadersDefaults>().toEqualTypeOf<
-      "common" | "delete" | "get" | "head" | "options" | "post" | "put" | "patch" | "purge" | "link" | "unlink" | "query"
+      "common" | "delete" | "get" | "head" | "link" | "options" | "patch" | "post" | "purge" | "put" | "query" | "unlink"
     >();
   });
 

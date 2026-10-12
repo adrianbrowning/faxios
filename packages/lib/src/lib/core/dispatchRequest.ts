@@ -7,7 +7,7 @@ import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import { validateSchema } from "../core/validateSchema.js";
 import { substitutePathParams } from "../helpers/substitutePathParams.js";
-import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
+import type { FaxiosResponse, InternalFaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
 import transformData from "./transformData.js";
 
@@ -151,7 +151,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
         if (!isCancel(reason)) {
           throwIfCancellationRequested(config);
 
-          const r = reason as { response?: { data?: unknown; headers?: unknown; status?: number; [k: string]: unknown; }; } | null;
+          const r = reason as null | { response?: { [k: string]: unknown; data?: unknown; headers?: unknown; status?: number; }; };
           if (r?.response) {
             (config as unknown as Record<string, unknown>)["response"] = r.response;
             try {

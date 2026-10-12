@@ -33,8 +33,9 @@ When opening a PR, make sure:
 - Security-sensitive changes get extra scrutiny and focused regression tests. This includes URL construction, redirects, proxy/env handling, XSRF, socket paths, decompression limits, prototype walking, and adapters. Consult [THREATMODEL.md](./THREATMODEL.md).
 - Warn before removing functionality.
 - New public API surface is predictable, consistent with existing options, and documented.
-- PR titles use [Conventional Commits](https://www.conventionalcommits.org/) (`fix:`, `feat:`, `chore:`, `docs:`, etc.). Release tooling depends on this.
-- Call out whether the change is patch, minor, or breaking, and target the right branch (`v1.x` for the current maintenance line; breaking work goes elsewhere).
+- PR titles use [Conventional Commits](https://www.conventionalcommits.org/) (`fix:`, `feat:`, `chore:`, `docs:`, etc.).
+- A user-visible change to `packages/lib` has a bump file in `.bumpy/` with the right level (patch, minor or major). bumpy writes the changelog from it. Target the right branch (`v1.x` for the current maintenance line; breaking work goes elsewhere).
+- To release, merge the Version Packages PR that bumpy keeps up to date on `main`. Then approve the staged version on npmjs.com.
 
 At least one maintainer must review and approve a PR before merge. If you are unsure about the impact of a change, ask for a second opinion. Call out breaking changes in the PR description and send them to the appropriate branch. Bug fixes need a test that reproduces the issue and verifies the fix.
 

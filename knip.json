@@ -10,9 +10,9 @@
       ]
     },
     "packages/tests": {
-      "entry": [
+  "entry": [
         "**/*.{js,ts,cjs,mjs}"
-      ],
+  ],
       "project": ["**/*.{js,ts,cjs,mjs,mts}"],
       "ignoreDependencies": ["@gcmdev/faxios", "zod"]
     },
@@ -21,7 +21,7 @@
         "scripts/**/*.js"
       ],
       "project": ["**/*.{js,ts,mts,vue}"],
-      "ignoreDependencies": ["@splidejs/splide", "esbuild"]
+      "ignoreDependencies": ["esbuild"]
     },
     "packages/examples": {
       "entry": ["**/*.js"],

@@ -1,13 +1,13 @@
 // @ts-nocheck
 import assert from "node:assert";
 import faxios, {
+  all,
   CanceledError,
   FaxiosError,
   FaxiosHeaders,
   formToJSON,
-  isFaxiosError,
   isCancel,
-  all,
+  isFaxiosError,
   toFormData
 } from "faxios";
 

@@ -10,30 +10,30 @@ export type StringLiteralsOrString<Literals extends string> =
   | (string & {});
 
 export type FaxiosHeaderValue =
-  | string
   | Array<string>
-  | number
   | boolean
-  | null;
+  | null
+  | number
+  | string;
 
 export interface RawFaxiosHeaders {
   [key: string]: FaxiosHeaderValue;
 }
 
 type UppercaseMethod =
-  | "GET"
   | "DELETE"
+  | "GET"
   | "HEAD"
-  | "OPTIONS"
-  | "POST"
-  | "PUT"
-  | "PATCH"
-  | "PURGE"
   | "LINK"
-  | "UNLINK"
-  | "QUERY";
+  | "OPTIONS"
+  | "PATCH"
+  | "POST"
+  | "PURGE"
+  | "PUT"
+  | "QUERY"
+  | "UNLINK";
 
-export type Method = UppercaseMethod | Lowercase<UppercaseMethod>;
+export type Method = Lowercase<UppercaseMethod> | UppercaseMethod;
 
 type CommonRequestHeadersList =
   | "Accept"
@@ -51,21 +51,21 @@ type CommonRequestHeadersList =
   | "X-Requested-With";
 
 type ContentType =
+  | Exclude<FaxiosHeaderValue, string>
   | StringLiteralsOrString<
-    | "text/html"
-    | "text/plain"
-    | "multipart/form-data"
+    | "application/graphql-response+json"
     | "application/json"
-    | "application/x-www-form-urlencoded"
+    | "application/json-patch+json"
+    | "application/ld+json"
+    | "application/merge-patch+json"
     | "application/octet-stream"
     | "application/problem+json"
-    | "application/ld+json"
+    | "application/x-www-form-urlencoded"
+    | "multipart/form-data"
     | "text/event-stream"
-    | "application/graphql-response+json"
-    | "application/merge-patch+json"
-    | "application/json-patch+json"
-  >
-  | Exclude<FaxiosHeaderValue, string>;
+    | "text/html"
+    | "text/plain"
+  >;
 
 /**
  * A header bag: header names mapped to header values. Any header name is
@@ -86,42 +86,42 @@ export type ResponseType =
   | "arraybuffer"
   | "blob"
   | "document"
-  | "json"
-  | "text"
-  | "stream"
   | "formdata"
-  | "response";
+  | "json"
+  | "response"
+  | "stream"
+  | "text";
 
 type UppercaseResponseEncoding =
-  | "ASCII"
   | "ANSI"
-  | "BINARY"
+  | "ASCII"
   | "BASE64"
   | "BASE64URL"
+  | "BINARY"
   | "HEX"
   | "LATIN1"
-  | "UCS-2"
   | "UCS2"
-  | "UTF-8"
+  | "UCS-2"
   | "UTF8"
-  | "UTF16LE";
+  | "UTF16LE"
+  | "UTF-8";
 
 export type responseEncoding =
-  | UppercaseResponseEncoding
-  | Lowercase<UppercaseResponseEncoding>;
+  | Lowercase<UppercaseResponseEncoding>
+  | UppercaseResponseEncoding;
 
 export interface TransitionalOptions {
-  silentJSONParsing?: boolean;
-  forcedJSONParsing?: boolean;
-  clarifyTimeoutError?: boolean;
   advertiseZstdAcceptEncoding?: boolean;
+  clarifyTimeoutError?: boolean;
+  forcedJSONParsing?: boolean;
+  silentJSONParsing?: boolean;
   validateStatusUndefinedResolves?: boolean;
 }
 
 export interface GenericAbortSignal {
   readonly aborted: boolean;
-  onabort?: ((event: Event) => void) | null;
   addEventListener?: (...args: Array<unknown>) => unknown;
+  onabort?: ((event: Event) => void) | null;
   removeEventListener?: (...args: Array<unknown>) => unknown;
 }
 
@@ -130,14 +130,14 @@ export interface GenericFormData {
 }
 
 export interface GenericHTMLFormElement {
-  name: string;
   method: string;
+  name: string;
   submit: () => void;
 }
 
 export interface FormDataVisitorHelpers {
-  defaultVisitor: SerializerVisitor;
   convertValue: (value: unknown) => unknown;
+  defaultVisitor: SerializerVisitor;
   isVisitable: (value: unknown) => boolean;
 }
 
@@ -145,19 +145,19 @@ export interface SerializerVisitor {
   (
     this: GenericFormData,
     value: unknown,
-    key: string | number,
-    path: null | Array<string | number>,
+    key: number | string,
+    path: Array<number | string> | null,
     helpers: FormDataVisitorHelpers,
   ): boolean;
 }
 
 export interface SerializerOptions {
-  visitor?: SerializerVisitor;
   dots?: boolean;
-  metaTokens?: boolean;
   indexes?: boolean | null;
   /** Maximum nesting depth to serialize; deeper objects throw `ERR_FORM_DATA_DEPTH_EXCEEDED`. `Infinity` disables the check. */
   maxDepth?: number;
+  metaTokens?: boolean;
+  visitor?: SerializerVisitor;
 }
 
 // tslint:disable-next-line
@@ -180,59 +180,59 @@ type BrowserProgressEvent = unknown;
 type Milliseconds = number;
 
 export interface FaxiosProgressEvent {
-  loaded: number;
-  total?: number;
-  progress?: number;
   bytes: number;
-  rate?: number;
-  estimated?: number;
-  upload?: boolean;
   download?: boolean;
+  estimated?: number;
   event?: BrowserProgressEvent;
   lengthComputable: boolean;
+  loaded: number;
+  progress?: number;
+  rate?: number;
+  total?: number;
+  upload?: boolean;
 }
 
 export interface FaxiosBasicCredentials {
-  username: string;
   password: string;
+  username: string;
 }
 
 // forward-declared; implemented in core/FaxiosHeaders.ts
 // Using a structural type that matches FaxiosHeaders class methods
 type HeaderMatcher =
-  | string
+  | ((value: string, name: string) => boolean)
   | RegExp
-  | ((value: string, name: string) => boolean);
+  | string;
 
-type HeaderGetResult = string | Array<string> | Record<string, string> | RegExpExecArray | true | null | undefined;
+type HeaderGetResult = Array<string> | null | Record<string, string> | RegExpExecArray | string | true | undefined;
 
 export type FaxiosRequestHeaders = Record<string, FaxiosHeaderValue> & {
-  set: (header: string | Record<string, unknown>, value?: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
-  get: (header: string, parser?: boolean | RegExp) => HeaderGetResult;
-  has: (header: string, matcher?: HeaderMatcher) => boolean;
-  delete: (header: string | Array<string>, matcher?: HeaderMatcher) => boolean;
   clear: (matcher?: HeaderMatcher) => boolean;
-  normalize: (format?: boolean) => FaxiosRequestHeaders;
   concat: (...targets: Array<unknown>) => FaxiosRequestHeaders;
-  getContentType: (matcher?: HeaderMatcher) => HeaderGetResult;
-  setContentType: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
-  hasContentType: (matcher?: HeaderMatcher) => boolean;
-  getContentLength: (matcher?: HeaderMatcher) => HeaderGetResult;
-  setContentLength: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
-  hasContentLength: (matcher?: HeaderMatcher) => boolean;
+  delete: (header: Array<string> | string, matcher?: HeaderMatcher) => boolean;
+  get: (header: string, parser?: boolean | RegExp) => HeaderGetResult;
   getAccept: (matcher?: HeaderMatcher) => HeaderGetResult;
-  setAccept: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
-  hasAccept: (matcher?: HeaderMatcher) => boolean;
   getAcceptEncoding: (matcher?: HeaderMatcher) => HeaderGetResult;
-  setAcceptEncoding: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
-  hasAcceptEncoding: (matcher?: HeaderMatcher) => boolean;
-  getUserAgent: (matcher?: HeaderMatcher) => HeaderGetResult;
-  setUserAgent: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
-  hasUserAgent: (matcher?: HeaderMatcher) => boolean;
-
   getAuthorization: (matcher?: HeaderMatcher) => HeaderGetResult;
-  setAuthorization: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
+  getContentLength: (matcher?: HeaderMatcher) => HeaderGetResult;
+  getContentType: (matcher?: HeaderMatcher) => HeaderGetResult;
+  getUserAgent: (matcher?: HeaderMatcher) => HeaderGetResult;
+  has: (header: string, matcher?: HeaderMatcher) => boolean;
+  hasAccept: (matcher?: HeaderMatcher) => boolean;
+  hasAcceptEncoding: (matcher?: HeaderMatcher) => boolean;
   hasAuthorization: (matcher?: HeaderMatcher) => boolean;
+  hasContentLength: (matcher?: HeaderMatcher) => boolean;
+  hasContentType: (matcher?: HeaderMatcher) => boolean;
+  hasUserAgent: (matcher?: HeaderMatcher) => boolean;
+  normalize: (format?: boolean) => FaxiosRequestHeaders;
+  set: (header: Record<string, unknown> | string, value?: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
+  setAccept: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
+  setAcceptEncoding: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
+  setAuthorization: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
+
+  setContentLength: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
+  setContentType: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
+  setUserAgent: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
   toJSON: (asStrings?: boolean) => Record<string, FaxiosHeaderValue>;
 };
 
@@ -254,63 +254,42 @@ export interface FaxiosResponseTransformer {
 }
 
 export interface FaxiosRequestConfig<D = unknown> {
-  url?: string;
-  method?: StringLiteralsOrString<Method>;
-  baseURL?: string;
   allowAbsoluteUrls?: boolean;
-  transformRequest?: FaxiosRequestTransformer | Array<FaxiosRequestTransformer>;
-  transformResponse?:
-    | FaxiosResponseTransformer
-    | Array<FaxiosResponseTransformer>;
-  headers?: FaxiosConfigHeaders;
-  params?: Record<string, unknown> | URLSearchParams;
-  paramsSerializer?: ParamsSerializerOptions | CustomParamsSerializer;
-  data?: D;
-  timeout?: Milliseconds;
-  timeoutErrorMessage?: string;
-  withCredentials?: boolean;
   auth?: FaxiosBasicCredentials;
-  responseType?: ResponseType;
-  responseEncoding?: StringLiteralsOrString<responseEncoding>;
-  xsrfCookieName?: string;
-  xsrfHeaderName?: string;
-  onUploadProgress?: (progressEvent: FaxiosProgressEvent) => void;
-  onDownloadProgress?: (progressEvent: FaxiosProgressEvent) => void;
-  maxContentLength?: number;
-  validateStatus?: ((status: number) => boolean) | null;
-  maxBodyLength?: number;
-  transitional?: TransitionalOptions;
-  signal?: AbortSignal | GenericAbortSignal;
+  baseURL?: string;
+  data?: D;
   env?: {
-    /** Constructed with no arguments to serialize `multipart/form-data` payloads; `null` falls back to the global `FormData`. */
-    FormData?: (new () => object) | null;
     fetch?: (
-      input: string | URL | Request,
+      input: Request | string | URL,
       init?: RequestInit
     ) => Promise<Response>;
+    /** Constructed with no arguments to serialize `multipart/form-data` payloads; `null` falls back to the global `FormData`. */
+    FormData?: (new () => object) | null;
     /** `null` disables the constructor, e.g. when a custom `fetch` is incompatible with the global one. */
     Request?: (new (
-      input: string | URL | Request,
+      input: Request | string | URL,
       init?: RequestInit,
     ) => unknown) | null;
     Response?: (new (...args: Array<unknown>) => unknown) | null;
   };
+  fetchOptions?: Record<string, unknown>;
+  formDataHeaderPolicy?: "content-only" | "legacy";
   formSerializer?: FormSerializerOptions;
-  withXSRFToken?:
-    | boolean
-    | ((config: InternalFaxiosRequestConfig) => boolean | undefined);
+  headers?: FaxiosConfigHeaders;
+  maxBodyLength?: number;
+  maxContentLength?: number;
+  method?: StringLiteralsOrString<Method>;
+  onDownloadProgress?: (progressEvent: FaxiosProgressEvent) => void;
+  onUploadProgress?: (progressEvent: FaxiosProgressEvent) => void;
+  params?: Record<string, unknown> | URLSearchParams;
+  paramsSchema?: StandardSchemaV1;
+  paramsSerializer?: CustomParamsSerializer | ParamsSerializerOptions;
   parseReviver?: (
     this: unknown,
     key: string,
     value: unknown,
     context?: { source?: string; }
   ) => unknown;
-  fetchOptions?: Record<string, unknown>;
-  formDataHeaderPolicy?: "legacy" | "content-only";
-  redact?: Array<string>;
-  responseSchema?: StandardSchemaV1;
-  requestSchema?: StandardSchemaV1;
-  paramsSchema?: StandardSchemaV1;
   /**
    * Values for `{key}` placeholders in `url` (braces, not `:key`). Only own properties count.
    * Each value goes through `String()` then `encodeURIComponent`. A placeholder whose key is
@@ -324,6 +303,27 @@ export interface FaxiosRequestConfig<D = unknown> {
    * A validation failure, or output that isn't a plain object, rejects with `ERR_BAD_PATH_PARAMS_SCHEMA`.
    */
   pathParamsSchema?: StandardSchemaV1<unknown, Record<string, unknown>>;
+  redact?: Array<string>;
+  requestSchema?: StandardSchemaV1;
+  responseEncoding?: StringLiteralsOrString<responseEncoding>;
+  responseSchema?: StandardSchemaV1;
+  responseType?: ResponseType;
+  signal?: AbortSignal | GenericAbortSignal;
+  timeout?: Milliseconds;
+  timeoutErrorMessage?: string;
+  transformRequest?: Array<FaxiosRequestTransformer> | FaxiosRequestTransformer;
+  transformResponse?:
+    | Array<FaxiosResponseTransformer>
+    | FaxiosResponseTransformer;
+  transitional?: TransitionalOptions;
+  url?: string;
+  validateStatus?: ((status: number) => boolean) | null;
+  withCredentials?: boolean;
+  withXSRFToken?:
+    | ((config: InternalFaxiosRequestConfig) => boolean | undefined)
+    | boolean;
+  xsrfCookieName?: string;
+  xsrfHeaderName?: string;
 }
 
 export type SchemaConfig<O, D = unknown> = FaxiosRequestConfig<D> & { responseSchema: StandardSchemaV1<unknown, O>; };
@@ -358,12 +358,12 @@ export interface FaxiosResponseHeadersLike {
 }
 
 export interface FaxiosResponse<T = unknown, D = unknown> {
+  config: InternalFaxiosRequestConfig<D>;
   data: T;
+  headers: FaxiosResponseHeadersLike;
+  request?: null | Request;
   status: number;
   statusText: string;
-  headers: FaxiosResponseHeadersLike;
-  config: InternalFaxiosRequestConfig<D>;
-  request?: Request | null;
 }
 
 export type FaxiosPromise<T = unknown> = Promise<FaxiosResponse<T>>;
@@ -373,14 +373,14 @@ export interface HeadersDefaults {
   delete: RawFaxiosRequestHeaders;
   get: RawFaxiosRequestHeaders;
   head: RawFaxiosRequestHeaders;
-  post: RawFaxiosRequestHeaders;
-  put: RawFaxiosRequestHeaders;
-  patch: RawFaxiosRequestHeaders;
-  options?: RawFaxiosRequestHeaders;
-  purge?: RawFaxiosRequestHeaders;
   link?: RawFaxiosRequestHeaders;
-  unlink?: RawFaxiosRequestHeaders;
+  options?: RawFaxiosRequestHeaders;
+  patch: RawFaxiosRequestHeaders;
+  post: RawFaxiosRequestHeaders;
+  purge?: RawFaxiosRequestHeaders;
+  put: RawFaxiosRequestHeaders;
   query?: RawFaxiosRequestHeaders;
+  unlink?: RawFaxiosRequestHeaders;
 }
 
 export interface FaxiosDefaults<D = unknown> extends Omit<
@@ -397,9 +397,9 @@ export interface FaxiosDefaults<D = unknown> extends Omit<
  * `FaxiosHeaders` instance.
  */
 export type FaxiosConfigHeaders =
-  | RawFaxiosRequestHeaders
+  | FaxiosHeadersInstance
   | Partial<HeadersDefaults>
-  | FaxiosHeadersInstance;
+  | RawFaxiosRequestHeaders;
 
 /** Config accepted by `create()`; identical to a request config. */
 export type CreateFaxiosDefaults<D = unknown> = FaxiosRequestConfig<D>;
@@ -409,7 +409,7 @@ export type CreateFaxiosDefaults<D = unknown> = FaxiosRequestConfig<D>;
 // next middleware would read it back expecting set()/get().
 interface ContextHeaders {
   get headers(): FaxiosRequestHeaders;
-  set headers(value: FaxiosRequestHeaders | FaxiosHeadersInstance);
+  set headers(value: FaxiosHeadersInstance | FaxiosRequestHeaders);
 }
 
 /**
@@ -419,12 +419,12 @@ interface ContextHeaders {
 // `{}` defaults match a FaxiosInstance with no plugins, so a plain `FaxiosMiddleware` installs on one.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- see above
 export interface FaxiosContext<TOptions = {}, TCapabilities = {}> {
+  /** Values provided by installed plugins, shared by every request of the instance. */
+  capabilities: TCapabilities;
   /** The merged request config. `headers` is a `FaxiosHeaders` instance. */
   config: Omit<InternalFaxiosRequestConfig, "headers"> & ContextHeaders & TOptions;
   /** Null-prototype scratch space shared by middleware for this request only. */
   state: Record<PropertyKey, unknown>;
-  /** Values provided by installed plugins, shared by every request of the instance. */
-  capabilities: TCapabilities;
 }
 
 /**
@@ -452,9 +452,9 @@ export type FaxiosMiddleware<TOptions = {}, TCapabilities = {}> = (
  * the request options it adds to every config-taking member.
  */
 export interface FaxiosPluginSpec {
-  requires?: unknown;
-  provides?: unknown;
   options?: unknown;
+  provides?: unknown;
+  requires?: unknown;
 }
 
 // A slot the spec leaves out is `unknown`: nothing required, provided or added.
@@ -469,13 +469,13 @@ type OnlyPluginSlots<TSpec> = { [K in Exclude<keyof TSpec, keyof FaxiosPluginSpe
  * and `TOptions` through this.
  */
 export interface FaxiosPluginBase<TRequires = unknown, TProvides = unknown, TOptions = unknown> {
-  name: string;
   middleware: FaxiosMiddleware<TOptions, TRequires & TProvides>;
+  name: string;
   /** Internal, type-only marker that carries the type parameters for inference. Never set it. */
   readonly "~plugin"?: {
-    readonly requires: TRequires;
-    readonly provides: TProvides;
     readonly options: TOptions;
+    readonly provides: TProvides;
+    readonly requires: TRequires;
   };
 }
 

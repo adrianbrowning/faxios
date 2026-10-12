@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import parseHeaders from "#src/lib/helpers/parseHeaders.js";
 
 describe("helpers::parseHeaders", () => {

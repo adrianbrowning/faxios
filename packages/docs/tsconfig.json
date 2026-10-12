@@ -1,0 +1,12 @@
+{
+  "extends": "@gingacodemonkey/config/bundler/dom/app",
+  "compilerOptions": {
+    "types": ["vitepress/client"]
+  },
+  "include": [
+    ".vitepress/**/*.ts",
+    ".vitepress/**/*.mts",
+    "eslint.config.ts",
+    "eslint.config.style.ts"
+  ]
+}

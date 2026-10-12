@@ -19,15 +19,15 @@ type RequiredCapabilities<TCapabilities, TProvides> = [keyof TProvides] extends 
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- `{}`: no capabilities or options, as in FaxiosContext
 export function definePlugin<TProvides = {}, TOptions = {}, TCapabilities = TProvides>(plugin: {
+  middleware: FaxiosMiddleware<TOptions, TCapabilities>;
   name: string;
   // The middleware reads the capabilities it provides from ctx too, so they must have the types
   // its context declares. NoInfer: TProvides is inferred from the value alone.
   provides?: TProvides & NoInfer<Pick<TCapabilities, keyof TProvides & keyof TCapabilities>>;
-  middleware: FaxiosMiddleware<TOptions, TCapabilities>;
 }): FaxiosPlugin<{
-  requires: RequiredCapabilities<TCapabilities, TProvides>;
-  provides: Slot<TProvides>;
   options: Slot<TOptions>;
+  provides: Slot<TProvides>;
+  requires: RequiredCapabilities<TCapabilities, TProvides>;
 }> {
   // Only the types change: use() reads the fields at install time, as it does for any plugin.
   return plugin as never;

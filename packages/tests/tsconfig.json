@@ -3,13 +3,24 @@
   "compilerOptions": {
     "noEmit": true,
     "paths": {
-      "#src/*": ["../lib/src/*"]
+      "#src/*": [
+        "../lib/src/*"
+      ]
     },
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": false,
     "erasableSyntaxOnly": true,
-    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"]
+    "typeRoots": [
+      "../../node_modules/@types",
+      "./node_modules/@types"
+    ]
   },
-  "include": ["./**/*.ts"],
-  "exclude": ["node_modules", "smoke", "module"]
+  "include": [
+    "./**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "smoke",
+    "module"
+  ]
 }

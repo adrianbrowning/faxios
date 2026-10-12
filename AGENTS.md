@@ -37,11 +37,11 @@ This file is the canonical contributor guide for both human and AI agents workin
 - ESM only: `zshy` builds `packages/lib/src` into `dist/` (ESM bundles plus `.d.ts`). There's no CJS build. `dist/` is generated; don't edit it.
 - A new public entry point goes in both `exports` maps in `packages/lib/package.json` (the `zshy` source map and the published dist map) and needs the `@ts-self-types` pragma that Deno uses to find its `.d.ts`.
 
-## Pre-Release Notes
+## Changes And Releases
 
-- Add user-visible unreleased changes to `PRE_RELEASE_CHANGELOG.md`, not `CHANGELOG.md`. `CHANGELOG.md` is release-owned and should only be updated as part of preparing an actual release.
-- Track deferred README, docs site, examples, migration guide, and translated docs updates in `PRE_RELEASE_DOCS.md`. Use enough context for release preparation; do not store brittle diffs or line-number-only notes.
-- Do not update `README.md` or the docs site for unreleased runtime/API changes unless the task is explicitly release preparation. During feature/fix work, record what docs need to say in `PRE_RELEASE_DOCS.md` so it can be applied during release work.
+- A user-visible change to `packages/lib` needs a bump file in `.bumpy/` in the same PR. Create it with `pnpm bump` (`bumpy add`), or with the bumpy `add-change` skill (`node_modules/@varlock/bumpy/skills/add-change/SKILL.md`). Its text becomes the changelog entry. For a PR that changes `packages/lib` but needs no release, add an empty one with `pnpm exec bumpy add --empty`.
+- Don't edit `packages/lib/CHANGELOG.md` by hand. bumpy writes it in the Version Packages PR, and merging that PR publishes the release.
+- Update `README.md`, the docs site and examples in the same PR as the change they describe. The docs are English-only. The site deploys only when a release is published, so editing pages on `main` publishes nothing early.
 
 ## Architecture Boundaries
 

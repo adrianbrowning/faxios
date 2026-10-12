@@ -62,7 +62,11 @@ It runs `lint` (type-check plus the `@ts-self-types` and `@ts-expect-error` chec
 
 Iterate until all pass (or a step is skipped because it does not apply).
 
-### 4. Commit
+### 4. Bump file
+
+If the change is user-visible in `packages/lib`, add a bump file in `.bumpy/` before you commit: `pnpm bump` (`bumpy add`), or the bumpy `add-change` skill at `node_modules/@varlock/bumpy/skills/add-change/SKILL.md`. The summary becomes the changelog entry. Don't edit `packages/lib/CHANGELOG.md`; bumpy generates it. If `packages/lib` changed but needs no release, add `pnpm exec bumpy add --empty`.
+
+### 5. Commit
 
 Stage only files changed by this task. Write a **Conventional Commits** message — a husky `commit-msg` hook runs `commitlint` to validate this format:
 

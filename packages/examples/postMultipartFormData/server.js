@@ -1,10 +1,10 @@
 export default function (req, res) {
-  req.on('data', function (chunk) {});
+  req.on("data", function (chunk) {});
 
-  req.on('end', function () {
-    console.log('POST  received');
+  req.on("end", function () {
+    console.log("POST  received");
     res.writeHead(200, {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     });
     res.end();
   });

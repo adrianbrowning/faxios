@@ -5,9 +5,9 @@ import type { FaxiosRequestHeaders } from "#src/lib/types.js";
 
 // The get/set/has<Header> shortcuts FaxiosRequestHeaders declares, without its index signature.
 type DeclaredRequestHeaderAccessor = keyof {
-  [K in keyof FaxiosRequestHeaders as K extends "get" | "set" | "has"
+  [K in keyof FaxiosRequestHeaders as K extends "get" | "has" | "set"
     ? never
-    : K extends `${"get" | "set" | "has"}${string}` ? K : never]: true;
+    : K extends `${"get" | "has" | "set"}${string}` ? K : never]: true;
 };
 
 const [ nodeMajorVersion ] = process.versions.node

@@ -15,14 +15,14 @@ export type RootPluginArgument = import("#src/index.ts").FaxiosPluginArgument;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- the `{}` defaults of FaxiosInstance
 type NoPlugins = {};
-type CacheOptions = { cache?: { ttlMs?: number; key?: string; }; };
+type CacheOptions = { cache?: { key?: string; ttlMs?: number; }; };
 type AuthCapability = { auth: { getToken: () => Promise<string>; }; };
 
 function cache(): FaxiosPlugin<{ options: CacheOptions; }> {
   return {
     name: "cache",
     middleware: async (ctx, next) => {
-      expectTypeOf(ctx.config.cache).toEqualTypeOf<{ ttlMs?: number; key?: string; } | undefined>();
+      expectTypeOf(ctx.config.cache).toEqualTypeOf<undefined | { key?: string; ttlMs?: number; }>();
       return next(ctx);
     },
   };
@@ -120,7 +120,7 @@ describe("middleware types", () => {
       void api.define("GET", url, { cache: { ttlMs: 1 } })({ cache: { ttlMs: 2 } });
       void api.route(url, { cache: { ttlMs: 1 } }).get({ cache: { ttlMs: 1 } })({ cache: { ttlMs: 2 } });
       api.use(async (ctx, next) => {
-        expectTypeOf(ctx.config.cache).toEqualTypeOf<{ ttlMs?: number; key?: string; } | undefined>();
+        expectTypeOf(ctx.config.cache).toEqualTypeOf<undefined | { key?: string; ttlMs?: number; }>();
         return next(ctx);
       });
     }
@@ -194,7 +194,7 @@ describe("middleware types", () => {
     function surfaces(): void {
       // @ts-expect-error TS2322 -- claims auth but never supplies it, so ctx.capabilities.auth would be undefined
       const claimsOnly: FaxiosPlugin<{ provides: AuthCapability; }> = { name: "claimsOnly", middleware: async (ctx, next) => next(ctx) };
-      const requiresOnly: FaxiosPlugin<{ requires: AuthCapability; options: CacheOptions; }> = { name: "requiresOnly", middleware: async (ctx, next) => next(ctx) };
+      const requiresOnly: FaxiosPlugin<{ options: CacheOptions; requires: AuthCapability; }> = { name: "requiresOnly", middleware: async (ctx, next) => next(ctx) };
       void claimsOnly;
       void requiresOnly;
       // Inline provider with a real provides value: inferred exactly, and a consumer can follow.

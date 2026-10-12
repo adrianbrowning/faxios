@@ -21,7 +21,7 @@ const hasOwnProperty = (obj: unknown, prop: PropertyKey) => Object.hasOwn(obj as
  * @returns {boolean} True when `prop` is owned below Object.prototype
  */
 const hasOwnInPrototypeChain = (thing: unknown, prop: PropertyKey): boolean => {
-  let obj: object | null = thing != null && typeof thing === "object" ? thing : null;
+  let obj: null | object = thing != null && typeof thing === "object" ? thing : null;
   if (obj === null) return false;
   const seen: Array<object> = [];
 
@@ -34,7 +34,7 @@ const hasOwnInPrototypeChain = (thing: unknown, prop: PropertyKey): boolean => {
     if (hasOwnProperty(obj, prop)) {
       return true;
     }
-    obj = getPrototypeOf(obj) as object | null;
+    obj = getPrototypeOf(obj) as null | object;
   }
   return false;
 };
@@ -390,7 +390,7 @@ function forEach(obj: unknown, fn: (value: unknown, key: unknown, obj: unknown) 
  * @param {string} key - The key to find (case-insensitive).
  * @returns {?string} The actual key name if found, otherwise null.
  */
-function findKey(obj: unknown, key: string): string | null {
+function findKey(obj: unknown, key: string): null | string {
   if (isBuffer(obj)) {
     return null;
   }
@@ -411,8 +411,8 @@ function findKey(obj: unknown, key: string): string | null {
 type GlobalWithEvents = typeof globalThis & {
   addEventListener?: (type: string, listener: (event: Record<string, unknown>) => void, capture?: boolean) => void;
   postMessage?: (message: unknown, targetOrigin: string) => void;
-  setImmediate?: (cb: () => void) => void;
   process?: { nextTick?: (cb: () => void) => void; };
+  setImmediate?: (cb: () => void) => void;
 };
 const _global = globalThis as GlobalWithEvents;
 
@@ -437,7 +437,7 @@ const isContextDefined = (context: unknown) => !isUndefined(context) && context 
  * @returns {Object} Result of all merge properties
  */
 function merge(this: unknown, ...objs: Array<unknown>): Record<string, unknown> {
-  const ctx = (isContextDefined(this) && this) as { caseless?: unknown; skipUndefined?: unknown; } | false;
+  const ctx = (isContextDefined(this) && this) as false | { caseless?: unknown; skipUndefined?: unknown; };
   const caseless = ctx && ctx.caseless;
   const skipUndefined = ctx && ctx.skipUndefined;
   const result: Record<string | symbol, unknown> = {};
@@ -596,7 +596,7 @@ const toArray = (thing?: unknown): Array<unknown> | null => {
  * @returns {Array}
  */
 
-const isTypedArray = ((TypedArray: false | (abstract new (...args: Array<unknown>) => unknown)) =>
+const isTypedArray = ((TypedArray: (abstract new (...args: Array<unknown>) => unknown) | false) =>
 
   (thing: unknown) => TypedArray && thing instanceof TypedArray
 )(typeof Uint8Array !== "undefined" && getPrototypeOf(Uint8Array) as abstract new (...args: Array<unknown>) => unknown);
@@ -616,7 +616,7 @@ const forEachEntry = (obj: unknown, fn: (key: unknown, value: unknown) => void) 
  * @returns {Array<boolean>}
  */
 const matchAll = (regExp: RegExp, str: string) => {
-  let matches: RegExpExecArray | null;
+  let matches: null | RegExpExecArray;
   const arr: Array<RegExpExecArray> = [];
 
   while ((matches = regExp.exec(str)) !== null) {
@@ -644,7 +644,7 @@ const { propertyIsEnumerable } = Object.prototype;
  */
 const isRegExp = kindOfTest("RegExp");
 
-const reduceDescriptors = (obj: object, reducer: (descriptor: PropertyDescriptor, name: string, obj: object) => PropertyDescriptor | false | undefined) => {
+const reduceDescriptors = (obj: object, reducer: (descriptor: PropertyDescriptor, name: string, obj: object) => false | PropertyDescriptor | undefined) => {
   const descriptors = Object.getOwnPropertyDescriptors(obj);
   const reducedDescriptors: PropertyDescriptorMap = {};
 
@@ -665,7 +665,7 @@ const reduceDescriptors = (obj: object, reducer: (descriptor: PropertyDescriptor
 
 const freezeMethods = (obj: object) => {
   // eslint-disable-next-line sonarjs/function-return-type
-  reduceDescriptors(obj, (descriptor, name): PropertyDescriptor | false => {
+  reduceDescriptors(obj, (descriptor, name): false | PropertyDescriptor => {
     // skip restricted props in strict mode
     if (isFunction(obj) && [ "arguments", "caller", "callee" ].includes(name)) {
       return false;
@@ -759,7 +759,7 @@ const toJSONObject = (obj: unknown): unknown => {
       if (!("toJSON" in source)) {
         // add-on descent / delete-on-ascent: preserves path semantics, so DAG nodes serialise at every occurrence (see #7230).
         visited.add(source);
-        const target: Record<string | number, unknown> = isArray(source) ? ([] as Record<number, unknown>) : {};
+        const target: Record<number | string, unknown> = isArray(source) ? ([] as Record<number, unknown>) : {};
 
         forEach(source, (value, key) => {
           const reducedValue = visit(value);

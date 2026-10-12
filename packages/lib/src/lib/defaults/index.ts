@@ -96,7 +96,7 @@ const defaults: FaxiosDefaults = {
       headers: FaxiosRequestHeaders
     ) {
       const contentType =
-        (headers.getContentType() as string | null | undefined) || "";
+        (headers.getContentType() as null | string | undefined) || "";
       const hasJSONContentType = contentType.indexOf("application/json") > -1;
       const isObjectPayload = utils.isObject(data);
 

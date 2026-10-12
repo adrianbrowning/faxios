@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import faxios from "@gcmdev/faxios";
 import {
-  printSuccessMessage,
   printErrorMessage,
   printInfoMessage,
+  printSuccessMessage
 } from "./utils.js";
 
 /**
@@ -16,7 +16,7 @@ const config = {
     Descope: "gold",
     "Principal Financial Group": "gold",
   },
-  sponsorsToIgnore: ["faxios"],
+  sponsorsToIgnore: [ "faxios" ],
   additionalSponsors: [
     {
       name: "superluxuryreps",
@@ -126,7 +126,7 @@ const getAllSponsors = async () => {
     "https://api.opencollective.com/graphql/v2",
     {
       query: getAllSponsorsQuery,
-    },
+    }
   );
 
   return response.data.data;
@@ -143,7 +143,7 @@ const getActiveSponsors = async () => {
     "https://api.opencollective.com/graphql/v2",
     {
       query: getActiveSponsorsQuery,
-    },
+    }
   );
 
   return response.data.data;
@@ -171,7 +171,8 @@ const buildLinks = (url, bypass = false) => {
     searchParams.set("utm_campaign", "axios_open_collective_sponsorship");
 
     return urlObject.toString();
-  } catch {
+  }
+  catch {
     return url;
   }
 };
@@ -182,8 +183,8 @@ const buildLinks = (url, bypass = false) => {
  * @param {any} sponsorsData - The sponsors data.
  * @returns {any} The formatted sponsor data.
  */
-const formatActiveSponsorData = (sponsorsData) => {
-  const getSponsorTier = (sponsor) => {
+const formatActiveSponsorData = sponsorsData => {
+  const getSponsorTier = sponsor => {
     if (config.legacyAgreements[sponsor.fromAccount.name]) {
       return config.legacyAgreements[sponsor.fromAccount.name];
     }
@@ -196,7 +197,7 @@ const formatActiveSponsorData = (sponsorsData) => {
   };
 
   const processedData = sponsorsData
-    .map((sponsor) => ({
+    .map(sponsor => ({
       name: sponsor.fromAccount.name ?? "Backer",
       imageUrl: sponsor.fromAccount.imageUrl ?? null,
       description: sponsor.fromAccount.description ?? null,
@@ -205,18 +206,18 @@ const formatActiveSponsorData = (sponsorsData) => {
       website: sponsor.fromAccount.website
         ? buildLinks(sponsor.fromAccount.website)
         : (buildLinks(
-            sponsor.fromAccount.socialLinks.find(
-              (link) => link.type === "WEBSITE",
-            )?.url,
-          ) ?? null),
+          sponsor.fromAccount.socialLinks.find(
+            link => link.type === "WEBSITE"
+          )?.url
+        ) ?? null),
       twitter:
         buildLinks(
           sponsor.fromAccount.socialLinks.find(
-            (link) => link.type === "TWITTER",
-          )?.url,
+            link => link.type === "TWITTER"
+          )?.url
         ) ?? null,
     }))
-    .filter((sponsor) => !config.sponsorsToIgnore.includes(sponsor.name));
+    .filter(sponsor => !config.sponsorsToIgnore.includes(sponsor.name));
 
   return processedData;
 };
@@ -227,8 +228,8 @@ const formatActiveSponsorData = (sponsorsData) => {
  * @param {any} sponsorsData - The sponsors data.
  * @returns {any} The formatted sponsor data.
  */
-const formatAllSponsorData = (sponsorsData) => {
-  const getSponsorTier = (sponsor) => {
+const formatAllSponsorData = sponsorsData => {
+  const getSponsorTier = sponsor => {
     if (config.legacyAgreements[sponsor.account.name]) {
       return config.legacyAgreements[sponsor.account.name];
     }
@@ -241,7 +242,7 @@ const formatAllSponsorData = (sponsorsData) => {
   };
 
   const processedData = sponsorsData
-    .map((sponsor) => ({
+    .map(sponsor => ({
       name: sponsor.account.name ?? "Backer",
       imageUrl: sponsor.account.imageUrl ?? null,
       description: sponsor.account.description ?? null,
@@ -250,16 +251,16 @@ const formatAllSponsorData = (sponsorsData) => {
       website: sponsor.account.website
         ? buildLinks(sponsor.account.website)
         : (buildLinks(
-            sponsor.account.socialLinks.find((link) => link.type === "WEBSITE")
-              ?.url,
-          ) ?? null),
+          sponsor.account.socialLinks.find(link => link.type === "WEBSITE")
+            ?.url
+        ) ?? null),
       twitter:
         buildLinks(
-          sponsor.account.socialLinks.find((link) => link.type === "TWITTER")
-            ?.url,
+          sponsor.account.socialLinks.find(link => link.type === "TWITTER")
+            ?.url
         ) ?? null,
     }))
-    .filter((sponsor) => !config.sponsorsToIgnore.includes(sponsor.name));
+    .filter(sponsor => !config.sponsorsToIgnore.includes(sponsor.name));
 
   return processedData;
 };
@@ -272,10 +273,10 @@ const mainProcess = async () => {
     const allSponsors = await getAllSponsors();
     const activeSponsors = await getActiveSponsors();
     const allSponsorsProcessedData = formatAllSponsorData(
-      allSponsors.account.members.nodes,
+      allSponsors.account.members.nodes
     );
     const activeSponsorsProcessedData = formatActiveSponsorData(
-      activeSponsors.account.orders.nodes,
+      activeSponsors.account.orders.nodes
     );
 
     const sponsorsByTier = {};
@@ -284,7 +285,7 @@ const mainProcess = async () => {
       sponsorsByTier[sponsor.tier] ||= [];
 
       const isActiveSponsor = activeSponsorsProcessedData.find(
-        (activeSponsor) => activeSponsor.slug === sponsor.slug,
+        activeSponsor => activeSponsor.slug === sponsor.slug
       );
 
       if (isActiveSponsor) {
@@ -292,7 +293,8 @@ const mainProcess = async () => {
           ...sponsor,
           active: true,
         });
-      } else {
+      }
+      else {
         sponsorsByTier[sponsor.tier].push({
           ...sponsor,
           active: false,
@@ -302,7 +304,7 @@ const mainProcess = async () => {
 
     for (const sponsor of activeSponsorsProcessedData) {
       const isSponsorInAllSponsors = allSponsorsProcessedData.find(
-        (allSponsor) => allSponsor.slug === sponsor.slug,
+        allSponsor => allSponsor.slug === sponsor.slug
       );
 
       if (!isSponsorInAllSponsors) {
@@ -330,11 +332,12 @@ const mainProcess = async () => {
 
     fs.writeFileSync(
       "./data/sponsors.json",
-      JSON.stringify(sponsorsByTier, null, 2),
+      JSON.stringify(sponsorsByTier, null, 2)
     );
 
     printSuccessMessage("processed sponsors successfully!");
-  } catch (_) {
+  }
+  catch (_) {
     printErrorMessage("failed to process sponsors!");
     console.error(_);
   }

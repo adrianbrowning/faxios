@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import faxios from "#src/index.ts";
 
 function captureBody() {
   const seen: { body: unknown; } = { body: undefined };
-  const fetch = async (_input: string | URL | Request, init?: RequestInit) => {
+  const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
     seen.body = init?.body;
     return new Response("{}", { headers: { "Content-Type": "application/json" } });
   };

@@ -2,12 +2,12 @@
 
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import defaults from "../defaults/index.js";
-import type { InternalFaxiosRequestConfig, FaxiosRequestHeaders, FaxiosRequestTransformer, FaxiosResponseTransformer } from "../types.js";
+import type { FaxiosRequestHeaders, FaxiosRequestTransformer, FaxiosResponseTransformer, InternalFaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
 
 type TransformFn = FaxiosRequestTransformer | FaxiosResponseTransformer;
 
-export default function transformData(this: unknown, fns: TransformFn | Array<TransformFn> | undefined, response?: { data?: unknown; headers?: unknown; status?: number; } | null): unknown {
+export default function transformData(this: unknown, fns: Array<TransformFn> | TransformFn | undefined, response?: null | { data?: unknown; headers?: unknown; status?: number; }): unknown {
   const config = (this || defaults) as InternalFaxiosRequestConfig;
   const context = response || config;
   const headers = FaxiosHeaders.from(context.headers as Record<string, unknown> | undefined);

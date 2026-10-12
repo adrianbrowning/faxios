@@ -30,13 +30,13 @@ const EXTENSIONS: Record<string, "js" | "ts"> = {
 };
 
 export type ExtractedBlock = {
-  // `path:line` of the opening fence, relative to the repo root.
-  source: string;
   file: string;
-  run: boolean;
-  status: number;
   // The block requests literal `/:x` or `{x}` paths, so the placeholder guard is skipped.
   literalPlaceholders: boolean;
+  run: boolean;
+  // `path:line` of the opening fence, relative to the repo root.
+  source: string;
+  status: number;
 };
 
 function markdownFiles(dir: string): Array<string> {
@@ -47,8 +47,7 @@ function markdownFiles(dir: string): Array<string> {
   });
 }
 
-// The npm README plus the English docs pages. The es/fr/zh translations live
-// outside packages/docs/pages and are not part of the site yet.
+// The npm README plus the docs pages. The docs are English-only.
 export function docsSources(): Array<string> {
   return [
     join(repoRoot, "packages/lib/README.md"),

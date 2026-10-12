@@ -1,13 +1,13 @@
 import isCancel from "../cancel/isCancel.js";
+import type { FaxiosResponse, InternalFaxiosRequestConfig } from "../types.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
-import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
 import FaxiosError from "./FaxiosError.js";
 
 type SchemaErrorCode =
-  | typeof FaxiosError.ERR_BAD_RESPONSE_SCHEMA
-  | typeof FaxiosError.ERR_BAD_REQUEST_SCHEMA
   | typeof FaxiosError.ERR_BAD_PARAMS_SCHEMA
-  | typeof FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA;
+  | typeof FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA
+  | typeof FaxiosError.ERR_BAD_REQUEST_SCHEMA
+  | typeof FaxiosError.ERR_BAD_RESPONSE_SCHEMA;
 
 export async function validateSchema<S extends StandardSchemaV1>(
   schema: S,

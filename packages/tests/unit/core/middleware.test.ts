@@ -6,7 +6,7 @@ import type { FaxiosInstance, FaxiosMiddleware, FaxiosPlugin, FaxiosResponse } f
 
 const URL = "http://localhost/test";
 
-type Sent = { url: string; init: RequestInit | undefined; };
+type Sent = { init: RequestInit | undefined; url: string; };
 
 function jsonFetch(sent: Array<Sent> = [], status = 200) {
   return async (input: Request | string | URL, init?: RequestInit) => {

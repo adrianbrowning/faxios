@@ -6,19 +6,19 @@ import { VERSION } from "../env/data.js";
 import composeSignals from "../helpers/composeSignals.js";
 import estimateDataURLDecodedBytes from "../helpers/estimateDataURLDecodedBytes.js";
 import {
-  progressEventReducer,
+  asyncDecorator,
   progressEventDecorator,
-  asyncDecorator
+  progressEventReducer
 } from "../helpers/progressEventReducer.js";
 import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import { trackStream } from "../helpers/trackStream.js";
 import platform from "../platform.js";
 import type {
-  InternalFaxiosRequestConfig,
-  FaxiosRequestHeaders
+  FaxiosRequestHeaders,
+  InternalFaxiosRequestConfig
 } from "../types.js";
 import utils from "../utils.js";
-import { checkDeclaredContentLength, checkMaterializedSize, handleFetchCaughtError, cleanFormDataContentType, encodeBodyIfNeeded } from "./fetch-helpers.js";
+import { checkDeclaredContentLength, checkMaterializedSize, cleanFormDataContentType, encodeBodyIfNeeded, handleFetchCaughtError } from "./fetch-helpers.js";
 import type { ComposedSignal, PendingBodyErrorRef } from "./fetch-helpers.js";
 
 // btoa is a global in Node 16+ and browsers; accessed via globalThis for no-DOM lib compat
@@ -28,29 +28,29 @@ const _btoa: (data: string) => string = (
 type AnyConstructor = new (...args: Array<unknown>) => unknown;
 type FetchFn = (input: unknown, init?: unknown) => Promise<AnyResponse>;
 type AnyResponse = {
+  [key: string]: unknown;
+  arrayBuffer: () => Promise<ArrayBuffer>;
   body: unknown;
   headers: {
-    has: (name: string) => boolean;
-    get: (name: string) => string | null;
     [key: string]: unknown;
+    get: (name: string) => null | string;
+    has: (name: string) => boolean;
   };
   status: number;
   statusText: string;
-  arrayBuffer: () => Promise<ArrayBuffer>;
-  [key: string]: unknown;
 };
 type AnyRequest = {
-  headers: {
-    has: (name: string) => boolean;
-    get: (name: string) => string | null;
-  };
-  body: { cancel: () => Promise<void>; } | null;
-  arrayBuffer: () => Promise<ArrayBuffer>;
   [key: string]: unknown;
+  arrayBuffer: () => Promise<ArrayBuffer>;
+  body: null | { cancel: () => Promise<void>; };
+  headers: {
+    get: (name: string) => null | string;
+    has: (name: string) => boolean;
+  };
 };
 type AnyReadableStream = {
-  cancel: () => Promise<void>;
   [key: string]: unknown;
+  cancel: () => Promise<void>;
 };
 type AnyTextEncoder = { encode: (str: string) => Uint8Array; };
 
@@ -179,7 +179,7 @@ const factory = (env: Record<string, unknown>) => {
   // `fetch(request, init)`. undici (Node 26.11+) starts reading an async iterable in both,
   // so the first chunk goes to the discarded copy. One web stream is read only once.
   // Web stream bodies must yield bytes, so string chunks (e.g. `Readable.from(["a"])`) are encoded.
-  const from = (ReadableStream as { from?: (source: unknown) => unknown; } | undefined)?.from;
+  const from = (ReadableStream as undefined | { from?: (source: unknown) => unknown; })?.from;
   const streamFrom = typeof from === "function" ? from.bind(ReadableStream) : undefined;
   async function* toByteChunks(source: AsyncIterable<unknown>) {
     for await (const chunk of source) yield typeof chunk === "string" ? await encodeText(chunk) : chunk;
@@ -269,7 +269,7 @@ const factory = (env: Record<string, unknown>) => {
     }
 
     if (utils.isArrayBufferView(body) || utils.isArrayBuffer(body)) {
-      return (body as ArrayBufferView | ArrayBuffer).byteLength;
+      return (body as ArrayBuffer | ArrayBufferView).byteLength;
     }
 
     if (utils.isURLSearchParams(body)) {
@@ -291,7 +291,7 @@ const factory = (env: Record<string, unknown>) => {
     return length == null ? getBodyLength(body) : length;
   };
 
-  const normalizeCredentials = (wc: string | boolean): string => {
+  const normalizeCredentials = (wc: boolean | string): string => {
     if (utils.isString(wc)) return wc as string;
     return wc ? "include" : "omit";
   };
@@ -303,7 +303,7 @@ const factory = (env: Record<string, unknown>) => {
     headers: FaxiosRequestHeaders,
     own: (key: string) => unknown
   ): string => {
-    let auth: { username: unknown; password: unknown; } | undefined;
+    let auth: undefined | { password: unknown; username: unknown; };
     const configAuth = own("auth");
     if (configAuth) {
       auth = {
@@ -398,7 +398,7 @@ const factory = (env: Record<string, unknown>) => {
     onUploadProgress: unknown,
     _trackStream: (stream: unknown, onProgress?: (bytes: number) => void, flush?: () => void) => unknown
   ): unknown => {
-    let contentTypeHeader: string | null;
+    let contentTypeHeader: null | string;
     if (
       utils.isFormData(data) &&
       (contentTypeHeader = _request.headers.get("content-type"))
@@ -587,7 +587,7 @@ const factory = (env: Record<string, unknown>) => {
   return async (config: InternalFaxiosRequestConfig) => {
     const _resolved = prepareRequest(config) as InternalFaxiosRequestConfig & {
       fetchOptions?: Record<string, unknown>;
-      withCredentials?: string | boolean;
+      withCredentials?: boolean | string;
     };
     let {
       url,
@@ -604,7 +604,7 @@ const factory = (env: Record<string, unknown>) => {
       maxBodyLength,
     } = _resolved;
     let headers = _resolved.headers;
-    let withCredentials: string | boolean =
+    let withCredentials: boolean | string =
       _resolved.withCredentials ?? "same-origin";
 
     const hasMaxContentLength =
@@ -638,7 +638,7 @@ const factory = (env: Record<string, unknown>) => {
 
     const unsubscribe = composedSignal?.unsubscribe?.bind(composedSignal);
 
-    let request: Request | null = null;
+    let request: null | Request = null;
     const pendingBodyErrorRef: PendingBodyErrorRef = { value: null };
 
     try {

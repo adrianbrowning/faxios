@@ -13,10 +13,6 @@ import { definePlugin } from "./definePlugin.js";
 export type AuthBearerCapability = { auth: { getToken: () => Promise<string>; }; };
 
 export type AuthBearerOptions = {
-  /** Replace a header the request already has. Default `false`: an explicit header is kept. */
-  overwrite?: boolean;
-  /** Put before the token, separated by a space. Default `"Bearer"`; `""` sends the bare token. */
-  scheme?: string;
   /** The header to set. Default `"Authorization"`. */
   header?: string;
   /**
@@ -24,6 +20,10 @@ export type AuthBearerOptions = {
    * with an absolute `baseURL`, only its origin; otherwise only relative request URLs.
    */
   origins?: Array<string>;
+  /** Replace a header the request already has. Default `false`: an explicit header is kept. */
+  overwrite?: boolean;
+  /** Put before the token, separated by a space. Default `"Bearer"`; `""` sends the bare token. */
+  scheme?: string;
 };
 
 // A header name is a token (RFC 9110 §5.6.2).
@@ -31,7 +31,7 @@ const TOKEN = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
 
 // A bare origin, optionally with a trailing slash. A path would look like a narrower limit than
 // the origin the token is really sent to.
-function originOf(value: unknown): string | null {
+function originOf(value: unknown): null | string {
   if (typeof value !== "string") return null;
   try {
     const { origin } = new URL(value);
@@ -56,7 +56,7 @@ const own = <T extends object, K extends keyof T>(source: T, key: K): T[K] | und
 // that leaves the page (`//host`, `/\host`) is told apart from one that stays on it.
 const SAME_ORIGIN = "https://same-origin.invalid";
 
-function resolvedOrigin(url: string, base: string | undefined): string | null {
+function resolvedOrigin(url: string, base: string | undefined): null | string {
   try {
     return new URL(url, base).origin;
   }
@@ -72,7 +72,7 @@ function pageHref(): string | undefined {
   return undefined;
 }
 
-function sendsTokenTo(config: InternalFaxiosRequestConfig, origins: ReadonlyArray<string> | null): boolean {
+function sendsTokenTo(config: InternalFaxiosRequestConfig, origins: null | ReadonlyArray<string>): boolean {
   const baseURL = own(config, "baseURL");
   const url = buildFullPath(baseURL, own(config, "url"), own(config, "allowAbsoluteUrls"), config);
   if (origins) {
@@ -92,7 +92,7 @@ function sendsTokenTo(config: InternalFaxiosRequestConfig, origins: ReadonlyArra
  * The token goes only to the `baseURL` origin when `baseURL` is absolute, otherwise only to
  * relative request URLs; `origins` replaces that rule.
  */
-export function authBearer(getToken: () => string | Promise<string>, options: AuthBearerOptions = {}): FaxiosPlugin<{ provides: AuthBearerCapability; }> {
+export function authBearer(getToken: () => Promise<string> | string, options: AuthBearerOptions = {}): FaxiosPlugin<{ provides: AuthBearerCapability; }> {
   if (typeof getToken !== "function") {
     throw new FaxiosError("authBearer: getToken must be a function", FaxiosError.ERR_BAD_OPTION_VALUE);
   }

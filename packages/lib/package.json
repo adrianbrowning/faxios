@@ -60,8 +60,8 @@
     "lint:e18e": "pnpm dlx @e18e/cli analyze"
   },
   "devDependencies": {
-    "@gingacodemonkey/config": "^0.0.38",
-    "eslint": "^9.39.4",
+    "@gingacodemonkey/config": "^0.1.0",
+    "eslint": "^9.39.5",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.0",
     "zshy": "latest"
@@ -129,5 +129,8 @@
       "default": "./dist/lib/utils.js"
     },
     "./package.json": "./package.json"
+  },
+  "imports": {
+    "#src/*.ts": "./src/*.ts"
   }
 }

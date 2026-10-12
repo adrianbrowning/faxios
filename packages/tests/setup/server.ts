@@ -20,24 +20,24 @@ export const setTimeoutAsync = async (ms: number) =>
 const certificatePromise = selfsigned.generate(undefined, { keySize: 2048 });
 const trackedServers = new Set<ExtendedServer>();
 
-const untrackServer = (server: http.Server | http2.Http2SecureServer) => {
+const untrackServer = (server: http2.Http2SecureServer | http.Server) => {
   trackedServers.delete(server);
 };
 
 type ServerOptions = {
-  handler?: (req: IncomingMessage, res: ServerResponse) => void;
-  useBuffering?: boolean;
-  rate?: number;
-  port?: number;
-  keepAlive?: number;
-  useHTTP2?: boolean;
-  key?: string;
   cert?: string;
+  handler?: (req: IncomingMessage, res: ServerResponse) => void;
+  keepAlive?: number;
+  key?: string;
+  port?: number;
+  rate?: number;
+  useBuffering?: boolean;
+  useHTTP2?: boolean;
 };
 
-type ExtendedServer = (http.Server | http2.Http2SecureServer) & {
-  closeAllSessions?: () => void;
+type ExtendedServer = (http2.Http2SecureServer | http.Server) & {
   closeAllConnections?: () => void;
+  closeAllSessions?: () => void;
 };
 
 export const startHTTPServer = async (
@@ -84,8 +84,8 @@ export const startHTTPServer = async (
 
           const streams: Array<
             | NodeJS.ReadableStream
-            | NodeJS.WritableStream
             | NodeJS.ReadWriteStream
+            | NodeJS.WritableStream
           > = [ dataStream ];
 
           if (rate) {
@@ -186,7 +186,7 @@ export const stopAllTrackedHTTPServers = async (timeout = 10000) => {
 
 export const handleFormData = async (req: IncomingMessage) =>
   new Promise<{
-    fields: Record<string, string | Array<string>>;
+    fields: Record<string, Array<string> | string>;
     files: Record<string, unknown>;
   }>((resolve, reject) => {
      
@@ -322,9 +322,9 @@ export const startTestServer = async (port: number) => {
           headers = {},
           body,
         } = (result || {}) as {
-          status?: number;
-          headers?: Record<string, string>;
           body?: unknown;
+          headers?: Record<string, string>;
+          status?: number;
         };
 
         res.statusCode = status;

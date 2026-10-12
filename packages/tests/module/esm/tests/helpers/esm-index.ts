@@ -1,22 +1,22 @@
 // @ts-nocheck
 import type {
-  FaxiosRequestConfig,
-  FaxiosRequestHeaders,
-  FaxiosResponseHeaders,
-  RawFaxiosRequestHeaders,
-  FaxiosResponse,
+  AddressFamily,
   FaxiosError,
   FaxiosInstance,
   FaxiosProgressEvent,
+  FaxiosRequestConfig,
+  FaxiosRequestHeaders,
+  FaxiosResponse,
+  FaxiosResponseHeaders,
   ParamsSerializerOptions,
-  AddressFamily
+  RawFaxiosRequestHeaders
 } from "faxios";
 import faxios, {
-  FaxiosHeaders,
-  toFormData,
-  formToJSON,
   all,
-  isFaxiosError
+  FaxiosHeaders,
+  formToJSON,
+  isFaxiosError,
+  toFormData
 } from "faxios";
 
 const config: FaxiosRequestConfig = {
@@ -425,7 +425,7 @@ faxios
     (response: FaxiosResponse) => "foo",
     (error: any) => 123
   )
-  .then((value: string | number) => {});
+  .then((value: number | string) => {});
 
 faxios
   .get("/user")

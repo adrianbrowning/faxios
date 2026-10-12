@@ -56,6 +56,42 @@ export type RetryOptions = {
   /** Total tries, counting the first request. Default 3. */
   attempts?: number;
   /**
+   * Milliseconds to wait before the next try, or a function of the try that failed. Default 100ms,
+   * doubling. Capped at `maxDelay`, then jittered. A 429 or 503 with a `Retry-After` header waits
+   * that long instead, unless `respectRetryAfter` is `false`.
+   */
+  delay?: ((attempt: number, error: unknown) => number) | number;
+  /**
+   * `"full"` (default) waits a random time between 0 and the capped backoff, so clients that failed
+   * together don't retry together; `"none"` waits the capped backoff. Doesn't apply to `Retry-After`.
+   */
+  jitter?: "full" | "none";
+  /** The most the computed backoff waits, in milliseconds. Default 30 000. Doesn't apply to `Retry-After`. */
+  maxDelay?: number;
+  /**
+   * The longest `Retry-After` (seconds or an HTTP date, on a 429 or 503) to wait, in milliseconds.
+   * Default 300 000 (5 minutes). A longer one rejects with the response's error instead of retrying.
+   * Ignored when `respectRetryAfter` is `false`.
+   */
+  maxRetryAfter?: number;
+  /**
+   * HTTP methods that may be retried, in any case. Default: GET, HEAD, OPTIONS, PUT, DELETE and
+   * QUERY. POST and PATCH aren't idempotent, so add them only if your API dedupes repeats. A request
+   * whose method isn't listed is never retried, whatever `retryOn` or `statuses` say.
+   */
+  methods?: ReadonlyArray<Method>;
+  /**
+   * Called before each wait with the error, the try that failed and the wait in milliseconds. If it
+   * throws, the request rejects with that error and stops retrying.
+   */
+  onRetry?: (error: unknown, attempt: number, delayMs: number) => void;
+  /**
+   * Whether a 429 or 503's `Retry-After` header sets the wait. Default `true`. With `false`, every
+   * retry waits the computed backoff and `maxRetryAfter` doesn't apply; which requests retry doesn't
+   * change. Turn it off when another plugin, such as a queue throttle, honours `Retry-After` itself.
+   */
+  respectRetryAfter?: boolean;
+  /**
    * Whether the try that just failed should be retried. `attempt` counts from 1.
    * Default: network errors, timeouts and the `statuses`; never a cancellation. A custom `retryOn`
    * replaces that whole predicate, so `statuses` is ignored when both are set. retryOn decides
@@ -67,46 +103,10 @@ export type RetryOptions = {
    * Ignored when `retryOn` is set.
    */
   statuses?: ReadonlyArray<number>;
-  /**
-   * Milliseconds to wait before the next try, or a function of the try that failed. Default 100ms,
-   * doubling. Capped at `maxDelay`, then jittered. A 429 or 503 with a `Retry-After` header waits
-   * that long instead, unless `respectRetryAfter` is `false`.
-   */
-  delay?: number | ((attempt: number, error: unknown) => number);
-  /** The most the computed backoff waits, in milliseconds. Default 30 000. Doesn't apply to `Retry-After`. */
-  maxDelay?: number;
-  /**
-   * `"full"` (default) waits a random time between 0 and the capped backoff, so clients that failed
-   * together don't retry together; `"none"` waits the capped backoff. Doesn't apply to `Retry-After`.
-   */
-  jitter?: "full" | "none";
-  /**
-   * The longest `Retry-After` (seconds or an HTTP date, on a 429 or 503) to wait, in milliseconds.
-   * Default 300 000 (5 minutes). A longer one rejects with the response's error instead of retrying.
-   * Ignored when `respectRetryAfter` is `false`.
-   */
-  maxRetryAfter?: number;
-  /**
-   * Whether a 429 or 503's `Retry-After` header sets the wait. Default `true`. With `false`, every
-   * retry waits the computed backoff and `maxRetryAfter` doesn't apply; which requests retry doesn't
-   * change. Turn it off when another plugin, such as a queue throttle, honours `Retry-After` itself.
-   */
-  respectRetryAfter?: boolean;
-  /**
-   * Called before each wait with the error, the try that failed and the wait in milliseconds. If it
-   * throws, the request rejects with that error and stops retrying.
-   */
-  onRetry?: (error: unknown, attempt: number, delayMs: number) => void;
-  /**
-   * HTTP methods that may be retried, in any case. Default: GET, HEAD, OPTIONS, PUT, DELETE and
-   * QUERY. POST and PATCH aren't idempotent, so add them only if your API dedupes repeats. A request
-   * whose method isn't listed is never retried, whatever `retryOn` or `statuses` say.
-   */
-  methods?: ReadonlyArray<Method>;
 };
 
 /** Per-request override: `false` turns retries off, an object overrides the plugin's options. */
-export type RetryRequestOptions = { retry?: RetryOptions | false; };
+export type RetryRequestOptions = { retry?: false | RetryOptions; };
 
 function retryByDefault(error: unknown, statuses: ReadonlyArray<number>): boolean {
   if (isCancel(error) || !(error instanceof FaxiosError)) return false;
@@ -164,13 +164,13 @@ function retriesMethod(config: InternalFaxiosRequestConfig, perRequest: RetryOpt
 
 type Policy = {
   attempts: number;
-  retryOn: (error: unknown, attempt: number) => boolean;
-  delay: number | ((attempt: number, error: unknown) => number);
-  maxDelay: number;
+  delay: ((attempt: number, error: unknown) => number) | number;
   jitter: "full" | "none";
+  maxDelay: number;
   maxRetryAfter: number;
-  respectRetryAfter: boolean;
   onRetry: ((error: unknown, attempt: number, delayMs: number) => void) | undefined;
+  respectRetryAfter: boolean;
+  retryOn: (error: unknown, attempt: number) => boolean;
 };
 
 // Per field, request first: no merged object, and only own properties count.

@@ -5,7 +5,7 @@ import assert from "node:assert";
 import http from "node:http";
 import type { Server } from "node:http";
 import type { AddressInfo } from "node:net";
-import { describe, it, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, it } from "vitest";
 import faxios from "#src/index.ts";
 
 describe("regression", () => {

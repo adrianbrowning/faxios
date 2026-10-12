@@ -38,8 +38,8 @@ const ignoreDuplicateOf = utils.toObjectSet([
  *
  * @returns {Object} Headers parsed into an object
  */
-export default (rawHeaders: string): Record<string, string | Array<string>> => {
-  const parsed: Record<string, string | Array<string>> = {};
+export default (rawHeaders: string): Record<string, Array<string> | string> => {
+  const parsed: Record<string, Array<string> | string> = {};
   let key: string;
   let val: string;
   let i: number;

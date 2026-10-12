@@ -29,7 +29,7 @@ function parsePropPath(name: string): Array<string> {
   // foo x y z
   const path: Array<string> = [];
   const pattern = /\w+|\[(\w*)]/g;
-  let match: RegExpExecArray | null;
+  let match: null | RegExpExecArray;
 
   while ((match = pattern.exec(name)) !== null) {
     throwIfDepthExceeded(path.length);
@@ -66,11 +66,11 @@ function arrayToObject(arr: Array<unknown>): Record<string, unknown> {
  *
  * @returns {Object<string, any> | null} The converted object.
  */
-function formDataToJSON(formData: unknown): Record<string, unknown> | null {
+function formDataToJSON(formData: unknown): null | Record<string, unknown> {
   function buildPath(path: Array<string>, value: unknown, target: Record<string, unknown>, index: number): boolean {
     throwIfDepthExceeded(index);
 
-    let name: string | number = path[index++]!;
+    let name: number | string = path[index++]!;
 
     if (name === "__proto__") return true;
 

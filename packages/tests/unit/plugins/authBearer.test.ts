@@ -10,8 +10,8 @@ import { retry } from "#src/lib/plugins/retry.ts";
 const BASE = "http://localhost";
 const URL = "/auth";
 
-function recordingFetch(statusFor: (authorization: string | null) => number = () => 200) {
-  const authorizations: Array<string | null> = [];
+function recordingFetch(statusFor: (authorization: null | string) => number = () => 200) {
+  const authorizations: Array<null | string> = [];
   const headers: Array<Headers> = [];
   const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
     const sent = new Headers(init?.headers);
@@ -25,7 +25,7 @@ function recordingFetch(statusFor: (authorization: string | null) => number = ()
 // Stands in for dispatch, so request URLs that fetch can't resolve in Node (relative,
 // protocol-relative) still show which headers would have been sent.
 function capture() {
-  const sent: Array<string | null> = [];
+  const sent: Array<null | string> = [];
   const middleware = definePlugin({
     name: "capture",
     middleware: async ctx => {

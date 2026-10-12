@@ -1,11 +1,11 @@
 type ReadableStreamController = {
-  enqueue: (chunk: Uint8Array) => void;
   close: () => void;
+  enqueue: (chunk: Uint8Array) => void;
 };
 
 type ReadableStreamSource = {
-  pull?: (controller: ReadableStreamController) => Promise<void>;
   cancel?: (reason?: unknown) => Promise<unknown>;
+  pull?: (controller: ReadableStreamController) => Promise<void>;
 };
 
 type ReadableStreamInit = {
@@ -43,8 +43,8 @@ const readBytes = async function* (iterable: AsyncIterable<ByteChunk> | unknown,
 };
 
 type ReaderLike = {
-  read: () => Promise<{ done: boolean; value: ByteChunk; }>;
   cancel: () => Promise<void>;
+  read: () => Promise<{ done: boolean; value: ByteChunk; }>;
 };
 
 type StreamLike = {

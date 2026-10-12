@@ -5,7 +5,7 @@ import { VERSION } from "../env/data.js";
 
 export type ValidatorFn = (value: unknown, opt?: string, opts?: unknown) => boolean | string;
 
-const validators: Record<string, ValidatorFn | undefined> = {};
+const validators: Record<string, undefined | ValidatorFn> = {};
 
 [ "object", "boolean", "number", "function", "string", "symbol" ].forEach((type, i) => {
   validators[type] = function validator(thing: unknown): boolean | string {
@@ -24,7 +24,7 @@ const deprecatedWarnings: Record<string, boolean | undefined> = {};
  *
  * @returns {function}
  */
-(validators as Record<string, unknown>)["transitional"] = function transitional(validator: ValidatorFn | false | undefined, version?: string, message?: string): ValidatorFn {
+(validators as Record<string, unknown>)["transitional"] = function transitional(validator: false | undefined | ValidatorFn, version?: string, message?: string): ValidatorFn {
   function formatMessage(opt: string, desc: string): string {
     return (
       "[Faxios v" +
@@ -80,7 +80,7 @@ const deprecatedWarnings: Record<string, boolean | undefined> = {};
  * @returns {object}
  */
 
-function assertOptions(options: unknown, schema: Record<string, ValidatorFn | undefined>, allowUnknown: boolean): void {
+function assertOptions(options: unknown, schema: Record<string, undefined | ValidatorFn>, allowUnknown: boolean): void {
   if (typeof options !== "object") {
     throw new FaxiosError("options must be an object", FaxiosError.ERR_BAD_OPTION_VALUE);
   }

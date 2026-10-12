@@ -11,7 +11,7 @@ export const progressEventReducer = (listener: (data: FaxiosProgressEvent) => vo
     if (!e || typeof (e as Record<string, unknown>).loaded !== "number") {
       return;
     }
-    const ev = e as { loaded: number; total?: number; lengthComputable?: boolean; };
+    const ev = e as { lengthComputable?: boolean; loaded: number; total?: number; };
     const rawLoaded = ev.loaded;
     const total = ev.lengthComputable ? ev.total : undefined;
     const loaded = total != null ? Math.min(rawLoaded, total) : rawLoaded;

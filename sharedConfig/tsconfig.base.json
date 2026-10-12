@@ -1,0 +1,29 @@
+{
+  "extends": "@gingacodemonkey/config/bundler/no-dom/library",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "."
+  },
+  "include": [
+    "eslint.config.ts",
+    "eslint.config.style.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "references": [
+    {
+      "path": "packages/docs"
+    },
+    {
+      "path": "packages/examples"
+    },
+    {
+      "path": "packages/lib"
+    },
+    {
+      "path": "packages/sandbox"
+    }
+  ]
+}

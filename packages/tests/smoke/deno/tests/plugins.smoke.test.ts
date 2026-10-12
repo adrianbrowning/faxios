@@ -15,7 +15,7 @@ Deno.test("Deno plugins: faxios/plugins exports only definePlugin, the root no p
 
 Deno.test("Deno plugins: a definePlugin plugin runs with authBearer, retry and timing", async () => {
   const calls: Array<Request> = [];
-  const fetch = async (input: string | URL | Request, init?: RequestInit) => {
+  const fetch = async (input: Request | string | URL, init?: RequestInit) => {
     calls.push(new Request(input, init));
     return new Response(null, { status: calls.length === 1 ? 503 : 200 });
   };

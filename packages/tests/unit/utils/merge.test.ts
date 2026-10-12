@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import utils from "#src/lib/utils.js";
 
 const { merge } = utils;
@@ -99,13 +99,13 @@ describe("utils::merge", () => {
     const key = Symbol("key");
     const nestedKey = Symbol("nested");
     const first: Record<symbol, unknown> = { [key]: { first: true } };
-    const second: Record<symbol | string, unknown> = {
+    const second: Record<string | symbol, unknown> = {
       [key]: { second: true },
       nested: {
         [nestedKey]: "value",
       },
     };
-    const merged: Record<symbol | string, unknown> = merge(first, second);
+    const merged: Record<string | symbol, unknown> = merge(first, second);
 
     expect(merged[key]).toEqual({ first: true, second: true });
     expect(merged[key]).not.toBe(first[key]);
@@ -130,7 +130,7 @@ describe("utils::merge", () => {
 
   it("should support caseless string keys with symbol keys", () => {
     const key = Symbol("key");
-    const merged: Record<symbol | string, unknown> = merge.call(
+    const merged: Record<string | symbol, unknown> = merge.call(
       { caseless: true },
       { x: 1, [key]: "first" },
       { X: 2, [key]: "second" }
@@ -156,7 +156,7 @@ describe("utils::merge", () => {
     const array = [ "value" ] as Array<string> & Record<symbol, unknown>;
     array[key] = "symbol value";
 
-    const merged: Record<symbol | string, unknown> = merge({ x: 1 }, array);
+    const merged: Record<string | symbol, unknown> = merge({ x: 1 }, array);
 
     expect(merged).toEqual({ 0: "value", x: 1 });
     expect(merged[key]).toBeUndefined();

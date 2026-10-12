@@ -8,7 +8,7 @@ function throttle(fn: (...args: Array<unknown>) => void, freq: number): [(...arg
   let timestamp = 0;
   const threshold = 1000 / freq;
   let lastArgs: Array<unknown> | null = null;
-  let timer: ReturnType<typeof setTimeout> | null = null;
+  let timer: null | ReturnType<typeof setTimeout> = null;
 
   const invoke = (args: Array<unknown>, now: number = Date.now()) => {
     timestamp = now;

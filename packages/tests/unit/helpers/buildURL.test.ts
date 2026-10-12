@@ -1,4 +1,4 @@
-import { describe, it, expect, expectTypeOf, vi } from "vitest";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import faxios from "#src/index.ts";
 import buildURL, { encode } from "#src/lib/helpers/buildURL.js";
 import type { FaxiosRequestConfig, ParamEncoder, ParamsSerializerOptions } from "#src/lib/types.ts";

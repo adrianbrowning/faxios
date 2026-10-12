@@ -1,6 +1,6 @@
-import { config as defaultConfig } from "@gingacodemonkey/config/eslint";
 import type { Linter } from "eslint";
 import tseslint from "typescript-eslint";
+import sharedConfig from "../../sharedConfig/eslint.config.ts";
 import removeSignalListeners from "./eslint-rules/remove-signal-listeners.ts";
 
 // AGENTS.md: remove every abort listener on settlement or cancellation.
@@ -15,12 +15,6 @@ export const localRules: Array<Linter.Config> = [
       "faxios/remove-signal-listeners": "error",
     },
   },
-];
-
-const config: Array<Linter.Config> = [
-  ...defaultConfig,
-  ...localRules,
-
   {
     files: [ "**/*.js", "**/*.cjs", "**/*.mjs" ],
     rules: {
@@ -44,6 +38,11 @@ const config: Array<Linter.Config> = [
       "@typescript-eslint/require-await": "error",
     },
   },
+];
+
+const config: Array<Linter.Config> = [
+  ...sharedConfig,
+  ...localRules,
 ];
 
 export default config;

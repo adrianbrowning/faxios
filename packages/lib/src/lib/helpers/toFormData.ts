@@ -2,7 +2,7 @@
 
 import FaxiosError from "../core/FaxiosError.js";
 // temporary hotfix to avoid circular references until FaxiosURLSearchParams is refactored
-import type { GenericFormData, SerializerVisitor, FormDataVisitorHelpers } from "../types.js";
+import type { FormDataVisitorHelpers, GenericFormData, SerializerVisitor } from "../types.js";
 import utils from "../utils.js";
 
 // Default nesting limit shared with the inverse transform (formDataToJSON) so
@@ -40,11 +40,11 @@ function removeBrackets(key: string): string {
  *
  * @returns {string} The path to the current key.
  */
-function renderKey(path: Array<string | number> | null | undefined, key: string | number, dots: unknown): string {
+function renderKey(path: Array<number | string> | null | undefined, key: number | string, dots: unknown): string {
   if (!path) return String(key);
   return path
     .concat(key)
-    .map(function each(token: string | number, i: number) {
+    .map(function each(token: number | string, i: number) {
       token = removeBrackets(String(token));
       return !dots && i ? "[" + token + "]" : token;
     })
@@ -201,7 +201,7 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
    *
    * @returns {boolean} return true to visit the each prop of the value recursively
    */
-  function defaultVisitor(this: GenericFormData, value: unknown, key: string | number, path: null | Array<string | number>, _helpers?: FormDataVisitorHelpers): boolean {
+  function defaultVisitor(this: GenericFormData, value: unknown, key: number | string, path: Array<number | string> | null, _helpers?: FormDataVisitorHelpers): boolean {
     let arr: unknown = value;
 
     if (utils.isReactNative(formData) && utils.isReactNativeBlob(value)) {
@@ -254,7 +254,7 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
     isVisitable,
   });
 
-  function build(value: unknown, path?: Array<string | number>, depth = 0): void {
+  function build(value: unknown, path?: Array<number | string>, depth = 0): void {
     if (utils.isUndefined(value)) return;
 
     throwIfMaxDepthExceeded(depth);
@@ -271,13 +271,13 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
         visitor.call(
           formData as GenericFormData,
           el,
-          utils.isString(key) ? (key as string).trim() : key as string | number,
+          utils.isString(key) ? (key as string).trim() : key as number | string,
           path ?? null,
           exposedHelpers
         );
 
       if (result === true) {
-        build(el, path ? path.concat(key as string | number) : [ key as string | number ], depth + 1);
+        build(el, path ? path.concat(key as number | string) : [ key as number | string ], depth + 1);
       }
     });
 

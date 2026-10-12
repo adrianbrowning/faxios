@@ -1,6 +1,6 @@
-import { config as defaultConfig } from "@gingacodemonkey/config/eslint";
 import type { Linter } from "eslint";
 import tseslint from "typescript-eslint";
+import sharedConfig from "../../sharedConfig/eslint.config.ts";
 import testServerCleanup from "./eslint-rules/test-server-cleanup.ts";
 
 // Files that live outside the main tsconfig and can't be added to it
@@ -162,11 +162,6 @@ export const extraRules: Array<Linter.Config> = [
       "faxios/test-server-cleanup": "error",
     },
   },
-];
-
-const config: Array<Linter.Config> = [
-  ...defaultConfig,
-  ...extraRules,
   {
     files: [ "**/*.js", "**/*.cjs", "**/*.mjs" ],
     rules: {
@@ -175,6 +170,13 @@ const config: Array<Linter.Config> = [
       "big-o/no-nested-array-spread": "off",
     },
   },
+  // Tests import lib internals through `#src/*` (tsconfig paths -> ../lib/src/*) on purpose.
+  { rules: { "gingacodemonkey/workspace-boundaries": "off" } },
+];
+
+const config: Array<Linter.Config> = [
+  ...sharedConfig,
+  ...extraRules,
 ];
 
 export default config;

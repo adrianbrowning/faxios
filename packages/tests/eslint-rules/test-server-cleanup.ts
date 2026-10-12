@@ -17,7 +17,7 @@ const calleeName = (node: Node) =>
 
 // ESLint types child properties as plain ESTree nodes but `.parent` as Rule.Node, so the
 // type checker sees one runtime object as two unrelated types. Compare identity here.
-const same = (a: object | null | undefined, b: object) => a === b;
+const same = (a: null | object | undefined, b: object) => a === b;
 
 // Inside a `finally` block, or inside a callback passed to afterEach/afterAll/onTestFinished.
 const inCleanup = (node: Node) => {
@@ -90,7 +90,7 @@ const rule: Rule.RuleModule = {
     };
 
     const findVariable = (node: Node, name: string) => {
-      for (let scope: Scope.Scope | null = sourceCode.getScope(node); scope; scope = scope.upper) {
+      for (let scope: null | Scope.Scope = sourceCode.getScope(node); scope; scope = scope.upper) {
         const found = scope.set.get(name);
         if (found) return found;
       }

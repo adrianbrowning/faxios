@@ -15,8 +15,8 @@ import formDataToJSON from "./helpers/formDataToJSON.js";
 import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
+import type { CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosMiddleware, FaxiosPluginArgument, FaxiosRequestConfig, FaxiosResponse, HeadersDefaults, Method, SchemaConfig, StringLiteralsOrString } from "./types.js";
 import type { StandardSchemaV1 } from "./types/standard-schema.js";
-import type { Method, StringLiteralsOrString, CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosMiddleware, FaxiosPluginArgument, FaxiosRequestConfig, HeadersDefaults, FaxiosResponse, SchemaConfig } from "./types.js";
 import utils from "./utils.js";
 
 /**
@@ -91,11 +91,11 @@ type ProvidedCapabilities<TProv> = [TProv] extends [null | undefined] ? {} : TPr
 // use() reads capability names with Object.keys() and skips the keys that could pollute a prototype,
 // so the registry only holds string names. A symbol, number or dangerous key would be typed on
 // ctx.capabilities without matching a registered name, and nothing could satisfy a requirement for one.
-type UnsupportedCapabilityKeys<TCaps> = Extract<keyof TCaps, symbol | number | "__proto__" | "constructor" | "prototype">;
+type UnsupportedCapabilityKeys<TCaps> = Extract<keyof TCaps, "__proto__" | "constructor" | "prototype" | number | symbol>;
 
-type RejectUnsupportedCapabilityKeys<TReq, TProv> = [UnsupportedCapabilityKeys<TReq> | UnsupportedCapabilityKeys<TProv>] extends [never]
+type RejectUnsupportedCapabilityKeys<TReq, TProv> = [UnsupportedCapabilityKeys<TProv> | UnsupportedCapabilityKeys<TReq>] extends [never]
   ? unknown
-  : { "faxios: capability names must be strings other than __proto__, constructor and prototype": UnsupportedCapabilityKeys<TReq> | UnsupportedCapabilityKeys<TProv>; };
+  : { "faxios: capability names must be strings other than __proto__, constructor and prototype": UnsupportedCapabilityKeys<TProv> | UnsupportedCapabilityKeys<TReq>; };
 
 // Nothing sets a plugin option for the caller, so a required one would be typed as present in the
 // plugin's middleware while every request that omits it leaves it undefined.
@@ -131,23 +131,6 @@ type CheckPlugin<THave, TReq, TProv, TOpt> = RequireCapabilities<THave, TReq>
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- see above
 export type FaxiosInstance<TOpts = {}, TCaps = {}> = {
   /**
-   * Register middleware or a plugin and return this instance, typed with the plugin's request
-   * options and capabilities added. A plugin whose required capabilities aren't installed yet, or
-   * that provides a capability another installed plugin already provides, is a type error.
-   */
-  use: <TReq = unknown, TProv = unknown, TOpt = unknown>(
-    middleware: FaxiosMiddleware<TOpts, TCaps> | (FaxiosPluginArgument<TReq, TProv, TOpt> & CheckPlugin<TCaps, TReq, TProv, TOpt>)
-  ) => FaxiosInstance<TOpts & TOpt, TCaps & ProvidedCapabilities<TProv>>;
-  /**
-   * Remove middleware or a plugin registered with use(), by reference. In-flight requests are
-   * unaffected. The instance type is not narrowed: request options and capabilities the ejected
-   * plugin added stay in its type.
-   */
-  // A method, so its parameter is checked bivariantly: middleware typed for this instance's
-  // options and capabilities is accepted.
-  // eslint-disable-next-line @typescript-eslint/method-signature-style -- see above
-  eject<TReq = unknown, TProv = unknown, TOpt = unknown>(middleware: FaxiosMiddleware<TOpt> | FaxiosPluginArgument<TReq, TProv, TOpt>): void;
-  /**
    * Define a typed endpoint for `method` and `url` (with optional `{key}` placeholders). `config`
    * holds request defaults and the `pathParamsSchema`, `paramsSchema`, `requestSchema` and
    * `responseSchema` to apply; schemas are locked at define time. Per-call `url`, `method` and
@@ -166,6 +149,15 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = {
     config?: DefineConfig<PP, P, D, R> & TOpts
   ) => DefinedEndpoint<PP, P, D, R, TOpts>;
   /**
+   * Remove middleware or a plugin registered with use(), by reference. In-flight requests are
+   * unaffected. The instance type is not narrowed: request options and capabilities the ejected
+   * plugin added stay in its type.
+   */
+  // A method, so its parameter is checked bivariantly: middleware typed for this instance's
+  // options and capabilities is accepted.
+  // eslint-disable-next-line @typescript-eslint/method-signature-style -- see above
+  eject<TReq = unknown, TProv = unknown, TOpt = unknown>(middleware: FaxiosMiddleware<TOpt> | FaxiosPluginArgument<TReq, TProv, TOpt>): void;
+  /**
    * Group endpoints that share `url` and `config`. Returns one endpoint factory per method (`get`,
    * `post`, `put`, `patch`, `delete`, `head`, `options`; no `query`), each taking `paramsSchema`,
    * `requestSchema`, `responseSchema` and request defaults like `define()`. The route-level
@@ -176,22 +168,38 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = {
     url: string,
     config?: RouteConfig<PP> & TOpts
   ) => RouteBuilder<PP, TOpts>;
+  /**
+   * Register middleware or a plugin and return this instance, typed with the plugin's request
+   * options and capabilities added. A plugin whose required capabilities aren't installed yet, or
+   * that provides a capability another installed plugin already provides, is a type error.
+   */
+  use: <TReq = unknown, TProv = unknown, TOpt = unknown>(
+    middleware: FaxiosMiddleware<TOpts, TCaps> | (FaxiosPluginArgument<TReq, TProv, TOpt> & CheckPlugin<TCaps, TReq, TProv, TOpt>)
+  ) => FaxiosInstance<TOpts & TOpt, TCaps & ProvidedCapabilities<TProv>>;
   <O, D = unknown>(config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
   <O, D = unknown>(url: string, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
   <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
-  request: {
-    <O, D = unknown>(config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D> & TOpts): Promise<R>;
+  create: (instanceConfig?: CreateFaxiosDefaults) => FaxiosInstance;
+  // `common` plus one header group per method; a key set directly on
+  // `headers` applies to every method.
+  defaults: Omit<FaxiosDefaults, "headers"> & {
+    headers: HeadersDefaults & { [key: string]: FaxiosHeaderValue | undefined; };
+  } & Partial<TOpts>;
+  delete: {
+    <O, D = unknown>(url: string, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
   get: {
     <O, D = unknown>(url: string, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
     <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
-  delete: {
-    <O, D = unknown>(url: string, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
-  };
+  /**
+   * Build the URL for `config` without sending a request. Applies `baseURL`, `params` and
+   * `paramsSerializer`, but does not substitute `pathParams` or run schemas, so `{key}`
+   * placeholders come back as written.
+   */
+  getUri: (config?: FaxiosRequestConfig & TOpts) => string;
   head: {
     <O, D = unknown>(url: string, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
     <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
@@ -200,27 +208,7 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = {
     <O, D = unknown>(url: string, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
     <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
-  post: {
-    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
-  };
-  put: {
-    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
-  };
   patch: {
-    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
-  };
-  query: {
-    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
-  };
-  postForm: {
-    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
-  };
-  putForm: {
     <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
     <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
@@ -228,37 +216,49 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = {
     <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
     <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
-  // `common` plus one header group per method; a key set directly on
-  // `headers` applies to every method.
-  defaults: Omit<FaxiosDefaults, "headers"> & {
-    headers: HeadersDefaults & { [key: string]: FaxiosHeaderValue | undefined; };
-  } & Partial<TOpts>;
-  /**
-   * Build the URL for `config` without sending a request. Applies `baseURL`, `params` and
-   * `paramsSerializer`, but does not substitute `pathParams` or run schemas, so `{key}`
-   * placeholders come back as written.
-   */
-  getUri: (config?: FaxiosRequestConfig & TOpts) => string;
-  create: (instanceConfig?: CreateFaxiosDefaults) => FaxiosInstance;
+  post: {
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
+  };
+  postForm: {
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
+  };
+  put: {
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
+  };
+  putForm: {
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
+  };
+  query: {
+    <O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
+  };
+  request: {
+    <O, D = unknown>(config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: FaxiosRequestConfig<D> & TOpts): Promise<R>;
+  };
 };
 
 /** The default export: an instance plus the static helpers only it carries. */
 export type FaxiosStatic = FaxiosInstance & {
-  Faxios: typeof Faxios;
-  CanceledError: typeof CanceledError;
-  isCancel: typeof isCancel;
-  VERSION: typeof VERSION;
-  toFormData: typeof toFormData;
-  FaxiosError: typeof FaxiosError;
-  Cancel: typeof CanceledError;
   all: (promises: Array<Promise<unknown>>) => Promise<Array<unknown>>;
-  spread: (fn: (...args: Array<unknown>) => unknown) => (arr: Array<unknown>) => unknown;
-  isFaxiosError: typeof isFaxiosError;
-  mergeConfig: typeof mergeConfig;
+  Cancel: typeof CanceledError;
+  CanceledError: typeof CanceledError;
+  default: FaxiosStatic;
+  Faxios: typeof Faxios;
+  FaxiosError: typeof FaxiosError;
   FaxiosHeaders: typeof FaxiosHeaders;
   formToJSON: (thing: unknown) => unknown;
   HttpStatusCode: typeof HttpStatusCode;
-  default: FaxiosStatic;
+  isCancel: typeof isCancel;
+  isFaxiosError: typeof isFaxiosError;
+  mergeConfig: typeof mergeConfig;
+  spread: (fn: (...args: Array<unknown>) => unknown) => (arr: Array<unknown>) => unknown;
+  toFormData: typeof toFormData;
+  VERSION: typeof VERSION;
 };
 
 // Create the default instance to be exported; the statics are attached below.
