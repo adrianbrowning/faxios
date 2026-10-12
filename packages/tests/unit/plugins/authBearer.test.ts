@@ -73,6 +73,21 @@ describe("plugins::authBearer", () => {
     assert.deepStrictEqual(async_.authorizations, [ "Bearer async-token" ]);
   });
 
+  it("sends no header when getToken gives something other than a non-empty string", async () => {
+    const values: Array<unknown> = [ null, undefined, "", 42, { token: "x" }];
+    for (const value of values) {
+      const { fetch, authorizations } = recordingFetch();
+      // Callers without TypeScript (or with a cast) can return anything.
+      await faxios.create({ baseURL: BASE, env: { fetch } }).use(authBearer(async () => value as string))
+        .get(URL);
+      assert.deepStrictEqual(authorizations, [ null ], `getToken returned ${String(value)}`);
+    }
+    const { fetch, authorizations } = recordingFetch();
+    await faxios.create({ baseURL: BASE, env: { fetch } }).use(authBearer(() => "x"))
+      .get(URL);
+    assert.deepStrictEqual(authorizations, [ "Bearer x" ]);
+  });
+
   it("asks for the token on every request", async () => {
     let n = 0;
     const { fetch, authorizations } = recordingFetch();

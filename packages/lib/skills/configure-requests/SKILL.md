@@ -86,8 +86,8 @@ const res = await faxios.get("https://api.example.com/users/{id}/posts", {
 // GET https://api.example.com/users/42/posts?page=2&tag=news
 ```
 
-`pathParams` values are `encodeURIComponent`-encoded. A missing or `null` value rejects with
-`ERR_BAD_OPTION_VALUE`.
+`pathParams` values are `encodeURIComponent`-encoded. A missing or `null` value, or `.`/`..`
+(also percent-encoded, such as `%2e%2e`), rejects with `ERR_BAD_OPTION_VALUE`.
 
 Binary downloads need `responseType`, and a type argument because `data` is `unknown`:
 
@@ -273,6 +273,7 @@ plugin's request options (such as `retry: false`). Before writing plugin code, r
   `baseURL` origin when `baseURL` is absolute; otherwise only to relative request URLs. Use
   `origins` to allow more. It leaves an explicit `Authorization` header alone unless
   `overwrite: true`. Install `retry` before it if each attempt should call `getToken` again.
+  A `getToken` result that isn't a non-empty string sends the request without the header.
 - `retry` defaults: 3 attempts, statuses 408/429/500/502/503/504 plus `ERR_NETWORK` and
   `ETIMEDOUT`, exponential backoff from 100 ms with full jitter. A 429/503 `Retry-After` sets the
   wait unless `respectRetryAfter: false`. Turn that off when something else, such as a queue
