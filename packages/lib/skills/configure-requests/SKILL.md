@@ -110,9 +110,10 @@ JSON parse; `"blob"`, `"formdata"` and `"stream"` (a `ReadableStream`) are also 
 
 - `url`, `method` and `data` never inherit; they come from the request only.
 - `headers` deep-merge case-insensitively. Group headers by method with `common`, `get`, `post`,
-  etc. Flat keys apply to every method and win over the same key in a group. Header values must
-  be strings, numbers, string arrays, booleans, `null` or `undefined`; convert anything else with
-  `String(...)`.
+  etc. A group is an object; a string under a group name (a header literally named `get`) is a
+  plain header. Flat keys apply to every method and win over the same key in a group. Header
+  values must be strings, numbers, string arrays, booleans, `null` or `undefined`; convert
+  anything else with `String(...)`.
 - Arrays such as `transformRequest` and `transformResponse` are replaced, not concatenated.
 - An explicit `undefined` in the request clears an inherited `baseURL`, `timeout` or schema.
 - `params`, `auth`, `env` and other plain objects deep-merge.
@@ -155,7 +156,8 @@ catch (error) {
   (`api.define(...).use(...)` is a TypeError), so put middleware on the instance and call
   `define()`/`route()` on the value `.use()` returned. Middleware added later still runs (the
   endpoint calls `api.request()` each time), but only that value types plugin options.
-  `pathParams` is accepted only when `pathParamsSchema` is set.
+  `pathParams` is accepted only when `pathParamsSchema` is set. A `route()` method config merges
+  over the route config like any other config, so headers combine.
 
 ```ts
 import faxios from "@gcmdev/faxios";

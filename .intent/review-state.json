@@ -3,22 +3,22 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "fbb8a6e4542573d48ad80a2ee3a1e9c8bc865ffde4ab67f4283371dd02cd178a",
+      "fingerprint": "97439db0064eab0c4407518883d5b94e85931c7d7a549a7de964f39bd62a908b",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "c0bb05f55c5ab74840a93bc6f2674de07806acf5c33ce33afd34a4ac49492f07",
-        "packages/lib/skills/configure-requests/SKILL.md": "4655fd00f15876c0bd9af80202950a8f2565ed57171fcb5cbba3f7f9a0cb7916",
+        "packages/lib/skills/configure-requests/SKILL.md": "b3d7b7f9e39b6741b60e01e5271c58a835e6bac6579cdcd76aca06c7032ebc90",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
         "packages/lib/src/lib/adapters/fetch.ts": "7df1044dbd292343c796162d3a26822df85dda3b032998cfa6c852ab47d3d99d",
-        "packages/lib/src/lib/core/Faxios.ts": "f2439a53486213e0556706e620dc7112c4d2f528d7b5dce3d422a1f98f8df322",
+        "packages/lib/src/lib/core/Faxios.ts": "3b53fc1e3fc622411ecc4b905e3c7e814fcd983d9331c6400e74e44e83661f63",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "97e25da79a42da871a80b630101563758ca5df332aee2320d13bcaf0ea8faee5",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
         "packages/lib/src/lib/core/dispatchRequest.ts": "cb6d7169f0838a9d2de49be8dccd3eef23b71a62f8e3d3c26e606453aea5a89b",
         "packages/lib/src/lib/core/mergeConfig.ts": "11a4ce46f0cff00c06e89c5eed86c5751ccd80a15a6eb589c35eda685899caea",
-        "packages/lib/src/lib/core/route.ts": "d73182172ee4a568a180cc3678080195eb1e630561284afc4074e6f10c29d795",
+        "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
         "packages/lib/src/lib/helpers/composeSignals.ts": "9c09d5fe23395e8af8b9c62efd641405ea2832f224b3653f70ef3ee6b408f6f5",
         "packages/lib/src/lib/plugins/authBearer.ts": "6257fa773e865ed38ef7bdcc49c6fdb6034828aceaaea63e913a3e908172af8c",
@@ -26,40 +26,40 @@
         "packages/lib/src/lib/plugins/retry.ts": "364be9bf5faabee17b87fbdc3ebec9f6c2074fc14335c1d6c352c63f97d799df",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
         "packages/lib/src/lib/types.ts": "e9f9fe1c8e31f5f9008f8d2fed18de12dea7273f846dd7d392ed90c5ceafedb7",
-        "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
+        "packages/tests/unit/api.test.ts": "811a57cac8863ef6c8c3c502e7507c71d498c725e21a2cdc5988f1c6237ee549",
         "packages/tests/unit/core/middleware.test.ts": "5022de5703b06d9e3ff6dced4fac3876e0ffd61ea06d75c4b16a6dbde2f22f88",
         "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
         "packages/tests/unit/plugins/retry.test.ts": "34b0ff543162db94d4c4628381ef80492c4d6ca0a5bc2b04cfe9b235a9d577cc",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "90ed9eece075db8a379599d1faaeb20bc93f941b",
-      "outcome": "no-change",
-      "reason": "Skill describes Retry-After and next(ctx) at a level these patch fixes don't change; malformed headers and missing returns were bugs.",
+      "head": "1dc59b343071b3f6a6ef069fb4aacfc9f603de98",
+      "outcome": "updated",
+      "reason": "Skill now describes route() merging and string headers under group names",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/core/middleware.test.ts, packages/tests/unit/plugins/retry.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/route.ts, packages/tests/unit/api.test.ts at fea06afc49b9161235087252789c1626cab7179c"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "60ef6759e113d8c54ece89ffd1e562f7e44cd0952d99d595afbd54a491153d1e",
+      "fingerprint": "8bc2799ec9a4ffc5159a19b14ff6c5def365675d28a4c1bfcaf38ae9821fc807",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "c0bb05f55c5ab74840a93bc6f2674de07806acf5c33ce33afd34a4ac49492f07",
-        "packages/lib/skills/configure-requests/SKILL.md": "4655fd00f15876c0bd9af80202950a8f2565ed57171fcb5cbba3f7f9a0cb7916",
+        "packages/lib/skills/configure-requests/SKILL.md": "b3d7b7f9e39b6741b60e01e5271c58a835e6bac6579cdcd76aca06c7032ebc90",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
         "packages/lib/src/lib/adapters/fetch.ts": "7df1044dbd292343c796162d3a26822df85dda3b032998cfa6c852ab47d3d99d",
-        "packages/lib/src/lib/core/Faxios.ts": "f2439a53486213e0556706e620dc7112c4d2f528d7b5dce3d422a1f98f8df322",
+        "packages/lib/src/lib/core/Faxios.ts": "3b53fc1e3fc622411ecc4b905e3c7e814fcd983d9331c6400e74e44e83661f63",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "97e25da79a42da871a80b630101563758ca5df332aee2320d13bcaf0ea8faee5",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
         "packages/lib/src/lib/core/dispatchRequest.ts": "cb6d7169f0838a9d2de49be8dccd3eef23b71a62f8e3d3c26e606453aea5a89b",
         "packages/lib/src/lib/core/mergeConfig.ts": "11a4ce46f0cff00c06e89c5eed86c5751ccd80a15a6eb589c35eda685899caea",
-        "packages/lib/src/lib/core/route.ts": "d73182172ee4a568a180cc3678080195eb1e630561284afc4074e6f10c29d795",
+        "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
         "packages/lib/src/lib/helpers/composeSignals.ts": "9c09d5fe23395e8af8b9c62efd641405ea2832f224b3653f70ef3ee6b408f6f5",
         "packages/lib/src/lib/plugins/authBearer.ts": "6257fa773e865ed38ef7bdcc49c6fdb6034828aceaaea63e913a3e908172af8c",
@@ -67,18 +67,18 @@
         "packages/lib/src/lib/plugins/retry.ts": "364be9bf5faabee17b87fbdc3ebec9f6c2074fc14335c1d6c352c63f97d799df",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
         "packages/lib/src/lib/types.ts": "e9f9fe1c8e31f5f9008f8d2fed18de12dea7273f846dd7d392ed90c5ceafedb7",
-        "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
+        "packages/tests/unit/api.test.ts": "811a57cac8863ef6c8c3c502e7507c71d498c725e21a2cdc5988f1c6237ee549",
         "packages/tests/unit/core/middleware.test.ts": "5022de5703b06d9e3ff6dced4fac3876e0ffd61ea06d75c4b16a6dbde2f22f88",
         "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
         "packages/tests/unit/plugins/retry.test.ts": "34b0ff543162db94d4c4628381ef80492c4d6ca0a5bc2b04cfe9b235a9d577cc",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "90ed9eece075db8a379599d1faaeb20bc93f941b",
-      "outcome": "no-change",
-      "reason": "Skill describes Retry-After and next(ctx) at a level these patch fixes don't change; malformed headers and missing returns were bugs.",
+      "head": "1dc59b343071b3f6a6ef069fb4aacfc9f603de98",
+      "outcome": "updated",
+      "reason": "Skill now describes route() merging and string headers under group names",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/core/middleware.test.ts, packages/tests/unit/plugins/retry.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/route.ts, packages/tests/unit/api.test.ts at fea06afc49b9161235087252789c1626cab7179c"
       ]
     },
     "source:knip.json": {
@@ -2870,16 +2870,15 @@
       ]
     },
     "source:packages/tests/unit/core/methodHeaderGroups.test.ts": {
-      "fingerprint": "920e107c3506183a7d9f359be0b9815ad9482572b46677b17346865413b7673a",
+      "fingerprint": "9b81b2206048e760c9b37c5b1937284c110b1f6c01cc95683ad28056d0a761e4",
       "snapshot": {
-        "packages/tests/unit/core/methodHeaderGroups.test.ts": "93ee080ea9aab0f731a6377693be3349977c28a79db484d1bd8995eb8f2e5e68"
+        "packages/tests/unit/core/methodHeaderGroups.test.ts": "5be668a5cff6d8c11f5676e47a8f97bfd26e84af5eba2ee9ca0c4c27fa354a45"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest imports sorted. Fetch input union reordered to `Request | string | URL`. The runtime `GROUPS` array (line 6) is only hunk-header context and was not changed. Behaviour change: none",
+      "head": "1dc59b343071b3f6a6ef069fb4aacfc9f603de98",
+      "outcome": "updated",
+      "reason": "Skill now describes route() merging and string headers under group names",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/core/methodHeaderGroups.test.ts: @@ -1,4 +1,4 @@ and @@ -6,7 +6,7 @@ (diff/215)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/core/methodHeaderGroups.test.ts at fea06afc49b9161235087252789c1626cab7179c"
       ]
     },
     "source:packages/tests/unit/core/middlewareTypes.test.ts": {
@@ -2947,16 +2946,15 @@
       ]
     },
     "source:packages/tests/unit/core/route.test.ts": {
-      "fingerprint": "c840556dd44fb07dc11d87b0c8ab3d1b609523a181b68be3d1f106f5074a8020",
+      "fingerprint": "904915fd84e6349b21f954594d32a3292ba8784e33e263851cc4a108d950e99a",
       "snapshot": {
-        "packages/tests/unit/core/route.test.ts": "19070506829673308c5488df832b308f4ce8eb62cae80aea4fe02a8e8d3aab6c"
+        "packages/tests/unit/core/route.test.ts": "fb3ecab1913ccbe73ad92487ea9f4c9f81e064ab7e5bdbc445e6b71f8be2b217"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest imports sorted. Three fetch-param unions changed to `Request | string | URL`. The runtime `captured.push({ url, method })` object order was not touched. Behaviour change: none",
+      "head": "1dc59b343071b3f6a6ef069fb4aacfc9f603de98",
+      "outcome": "updated",
+      "reason": "Skill now describes route() merging and string headers under group names",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/core/route.test.ts: @@ -1,5 +1,5 @@, @@ -15,7 +15,7 @@, @@ -51,7 +51,7 @@, @@ -75,7 +75,7 @@ (diff/222)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/core/route.test.ts at fea06afc49b9161235087252789c1626cab7179c"
       ]
     },
     "source:packages/tests/unit/core/transformData.test.ts": {
@@ -4023,6 +4021,18 @@
       "reason": "Skill describes Retry-After and next(ctx) at a level these patch fixes don't change; malformed headers and missing returns were bugs.",
       "evidence": [
         "Changed: .bumpy/retry-after-strict-parsing.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:.bumpy/config-merge-fixes.md": {
+      "fingerprint": "7c0c4287dbe427a8e0a9da8e9f75f51cf49775bf3147e8d7b08260fabfdafb61",
+      "snapshot": {
+        ".bumpy/config-merge-fixes.md": "147949773b861cb058a2c36a147fbeed6afe47e947ad89587b21ba2181540355"
+      },
+      "head": "1dc59b343071b3f6a6ef069fb4aacfc9f603de98",
+      "outcome": "updated",
+      "reason": "Skill now describes route() merging and string headers under group names",
+      "evidence": [
+        "Changed: .bumpy/config-merge-fixes.md at fea06afc49b9161235087252789c1626cab7179c"
       ]
     }
   }
