@@ -3460,15 +3460,15 @@
       ]
     },
     "source:lychee.toml": {
-      "fingerprint": "4cd6edeea2c382711983cbcb1213e87488ac3a13dab2c69e81ee85643a3d0cca",
+      "fingerprint": "88ebd1481b4cbeee1fa2d736b215e593717e1b5af0eb9db6ce51f48479a38ca8",
       "snapshot": {
-        "lychee.toml": "d565b22949beda04ba528362c31f391ae3653a8454ed057e9f60b5d26f637832"
+        "lychee.toml": "c9cb01dd6e390c016e7c68ef0a82da4f3602208f386166ed7e654ddd52e78924"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "head": "a0a3b06b80784d89957eb5ce8ab4a0ac92212a54",
       "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "reason": "Link-check config only: lychee skips npm's website, which answers 403 to GitHub Actions runners. No API or skill guidance changes.",
       "evidence": [
-        "Changed: lychee.toml at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: lychee.toml at a0a3b06b80784d89957eb5ce8ab4a0ac92212a54"
       ]
     },
     "source:packages/docs/pages/misc/security.md": {
