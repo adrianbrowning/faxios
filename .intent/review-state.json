@@ -1936,18 +1936,17 @@
       ]
     },
     "source:.github/workflows/ci.yml": {
-      "fingerprint": "eebd46df369578212ee9f7536a2e755d919a763816b026f32f4096158aeebcf7",
+      "fingerprint": "6fe11ca7856ba3951d3099433b86a7959270ce5c6b40d8b33fb784c4cdd5fad9",
       "snapshot": {
-        ".github/workflows/ci.yml": "70baaa56c36380f48946a128747f7da02d01cf184637b1a450b9d427a8204702"
+        ".github/workflows/ci.yml": "a09409c55e4112bd4831c3d6abdf225a108d40d8d446669965849277104fb5ac"
       },
-      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
+      "head": "46af769a8f669f8c5f7715a14689ed4453dfeb25",
       "outcome": "out-of-scope",
-      "reason": "Self-repository `$/.github/actions/setup`, and a new 'Install Playwright with deps' step (chromium) before `pnpm test`, because the browser project needs headless Chromium. CI only; not library API.",
+      "reason": "Workspace CI installs all Playwright browsers (`playwright install --with-deps`) before `pnpm test`, because the headless browser project runs chromium, firefox and webkit. CI only; not library API.",
       "evidence": [
-        "git diff HEAD -- .github/workflows/ci.yml",
-        "PR #196 CI log for this job: 'browserType.launch: Executable doesn't exist at …/chrome-headless-shell'.",
-        "run-ci.yml uses the same `pnpm exec playwright install --with-deps` step.",
-        "zizmor 1.30.1 --offline: no new findings for this file."
+        "packages/tests/vitest.config.js lines 41-44: instances chromium, firefox, webkit (headless).",
+        "PR #196 CI after the chromium-only install: 'browserType.launch: Executable doesn't exist at …/firefox-1543/firefox/firefox'.",
+        "run-ci.yml uses the same command."
       ]
     },
     "source:.github/workflows/knip.yml": {

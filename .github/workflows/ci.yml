@@ -38,10 +38,10 @@ jobs:
       - name: Type-check
         run: pnpm lint:ts
 
-      # The browser project runs headless Chromium
+      # The browser project runs headless Chromium, Firefox and WebKit
       - name: Install Playwright with deps
         working-directory: packages/tests
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps
 
       - name: Test
         run: pnpm test
