@@ -4,10 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node ./server.js"
+    "start": "node ./server.js",
+    "lint": "eslint --config eslint.config.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
+    "lint:fix": "eslint --config eslint.config.style.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0 --fix"
   },
   "dependencies": {
     "@gcmdev/faxios": "workspace:*",
     "minimist": "^1.2.8"
+  },
+  "imports": {
+    "#src/*.ts": "./src/*.ts"
   }
 }

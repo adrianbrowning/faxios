@@ -8,77 +8,38 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   knip:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
+      contents: read
       pull-requests: write
 
     steps:
+      - uses: actions/checkout@v7
 
-      # 1. Checkout the repository with credentials persisted for push
-      - name: Checkout repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: ./.github/actions/setup
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-          ref: ${{ github.head_ref }}
+          checkout-ref: ${{ github.head_ref || github.ref_name }}
 
-      # 2. Set up pnpm
-      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6
-        with:
-          version: 10
-
-      # 2.1. Cache pnpm store
-      - name: Get pnpm store
-        id: pnpm-cache-store
-        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      # 2.2. Cache pnpm store
-      - name: Cache pnpm store
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ${{ steps.pnpm-cache-store.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-
-      # 3. Set up Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version: '24'
-
-      # 4. Install dependencies using pnpm
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      # 5. Run Knip
       - name: Run knip
         id: knip-check
         continue-on-error: true
         run: |
-          # Disable immediate exit on error
           set +e
-
-          # Enable pipefail to capture exit code from piped commands
           set -o pipefail
-
           pnpm knip 2>&1 | tee knip-output.txt
           KNIP_EXIT_CODE=$?
-
-          # Save exit code for later steps
           echo "exit_code=$KNIP_EXIT_CODE" >> $GITHUB_OUTPUT
-
           if [ $KNIP_EXIT_CODE -ne 0 ]; then
             echo "Knip checks failed. KNIP_EXIT_CODE=$KNIP_EXIT_CODE"
             exit 1
           fi
 
-      # 6. Post knip results to PR on failure
       - name: Comment knip results on PR
         if: github.event_name == 'pull_request' && steps.knip-check.outputs.exit_code != '0'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
@@ -106,7 +67,9 @@ jobs:
               body: comment
             });
 
-      # 7. Fail the workflow if knip failed
       - name: Fail if knip failed
         if: steps.knip-check.outputs.exit_code != '0'
-        run: exit 1
+        # Repeat the findings here: this is the step `gh run view --log-failed` shows
+        run: |
+          cat knip-output.txt
+          exit 1

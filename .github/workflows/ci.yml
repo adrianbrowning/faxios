@@ -1,0 +1,43 @@
+name: Workspace CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+# A newer push to the same PR or branch cancels the run it supersedes
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+# Read-only: pull_request runs from forks get no secrets and no write token either way
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      # Installs once at the workspace root: frozen lockfile, pnpm store cached by the lockfile hash
+      - uses: ./.github/actions/setup
+
+      # The root scripts run each package's script (`pnpm -r --if-present …`); a failure in any package fails the step
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type-check
+        run: pnpm lint:ts
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build

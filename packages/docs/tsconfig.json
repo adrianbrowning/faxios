@@ -1,0 +1,10 @@
+{
+  "extends": "@gingacodemonkey/config/bundler/dom/app",
+  "compilerOptions": {
+    "types": ["vitepress/client"]
+  },
+  "include": [
+    ".vitepress/**/*.ts",
+    ".vitepress/**/*.mts"
+  ]
+}

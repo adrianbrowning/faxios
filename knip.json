@@ -10,9 +10,9 @@
       ]
     },
     "packages/tests": {
-      "entry": [
+  "entry": [
         "**/*.{js,ts,cjs,mjs}"
-      ],
+  ],
       "project": ["**/*.{js,ts,cjs,mjs,mts}"],
       "ignoreDependencies": ["@gcmdev/faxios", "zod"]
     },

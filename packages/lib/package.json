@@ -129,5 +129,8 @@
       "default": "./dist/lib/utils.js"
     },
     "./package.json": "./package.json"
+  },
+  "imports": {
+    "#src/*.ts": "./src/*.ts"
   }
 }

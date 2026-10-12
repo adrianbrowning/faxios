@@ -1,0 +1,11 @@
+{
+  "baseBranch": "main",
+  "changelog": "github",
+  "include": [
+    "faxios-workspace"
+  ],
+  "access": "public",
+  "publish": {
+    "provenance": true
+  }
+}

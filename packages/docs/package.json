@@ -11,7 +11,10 @@
     "docs:preview": "vitepress preview",
     "docs:update:sponsors": "node ./scripts/process-sponsors.js",
     "prod:build": "npm run docs:update:sponsors && npm run docs:build",
-    "postinstall": "patch-package --exclude nothing"
+    "postinstall": "patch-package --exclude nothing",
+    "lint": "eslint --config eslint.config.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
+    "lint:fix": "eslint --config eslint.config.style.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0 --fix",
+    "lint:ts": "tsc --noEmit -p ."
   },
   "dependencies": {
     "@gcmdev/faxios": "workspace:*",
@@ -22,5 +25,8 @@
     "esbuild": "^0.28.2",
     "patch-package": "^8.0.1",
     "vue": "^3.5.32"
+  },
+  "imports": {
+    "#src/*.ts": "./src/*.ts"
   }
 }

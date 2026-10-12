@@ -31,3 +31,5 @@ auditConfig:
     # Only reachable through semantic-release-unsquash's commit analyzer (release tooling),
     # which matches repo-controlled patterns, not untrusted input.
     - GHSA-vfj7-8cjw-p6xm
+allowBuilds:
+  'unrs-resolver': true
