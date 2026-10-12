@@ -27,6 +27,6 @@ For a compressed response (any `Content-Encoding` other than `identity`), `Conte
 
 If a progress callback throws, or returns a promise that rejects, faxios catches and ignores the error. The request carries on and settles as if the callback had returned normally.
 
-::: warning Upload progress needs request streams
-faxios reports upload progress by streaming the request body, so `onUploadProgress` only fires where the runtime's `fetch` supports streaming request bodies (`duplex: "half"`), as Node.js does. Where it doesn't, the callback is not called.
+::: warning Upload progress is not reported in browsers
+`onUploadProgress` is called only where faxios can stream the request body, which today is Node.js. In browsers and web workers faxios never streams the body for progress, so the callback is not called. See [Fetch adapter](/pages/advanced/fetch-adapter) for details and [#209](https://github.com/adrianbrowning/faxios/issues/209) for upload progress in browsers.
 :::

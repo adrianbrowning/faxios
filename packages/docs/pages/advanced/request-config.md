@@ -256,7 +256,7 @@ faxios.get('/user', { withCredentials: true, withXSRFToken: true });
 
 The `onDownloadProgress` function allows you to listen to the progress of a download.
 
-`onUploadProgress` works the same way for the request body. faxios reports upload progress by streaming the request body, so `onUploadProgress` only fires where the runtime's `fetch` supports streaming request bodies (`duplex: "half"`), as Node.js does. Where it doesn't, the callback is not called.
+`onUploadProgress` works the same way for the request body. `onUploadProgress` is called only where faxios can stream the request body, which today is Node.js. In browsers and web workers faxios never streams the body for progress, so the callback is not called. See [Fetch adapter](/pages/advanced/fetch-adapter) for details and [#209](https://github.com/adrianbrowning/faxios/issues/209) for upload progress in browsers.
 
 For a compressed response (any `Content-Encoding` other than `identity`), `total` is `undefined` and `lengthComputable` is `false`, because `Content-Length` is the compressed size.
 
@@ -271,7 +271,11 @@ The `maxContentLength` property defines the maximum response size in bytes. The 
 
 ### `maxBodyLength`
 
-The `maxBodyLength` property defines the maximum request body size in bytes. The fetch adapter enforces it when the request body length can be determined.
+The `maxBodyLength` property defines the maximum request body size in bytes. faxios checks the body's real size, never a `Content-Length` header you set:
+
+- A string, `URLSearchParams`, `Blob`, `ArrayBuffer` or typed array body is measured before the request is sent.
+- A stream body is counted as it is sent, and the request fails once it passes the limit. Where the runtime's `fetch` can't stream a request body, a stream body with `maxBodyLength` set is rejected with `ERR_NOT_SUPPORT`.
+- A `FormData` body is not read into memory to measure it. Before sending, faxios adds up the sizes of its string values and files and rejects the request if they alone pass the limit. In Node.js the body is then streamed and counted as it is sent, so the multipart boundaries and part headers count too. In browsers, Deno and Bun it isn't streamed (see [Fetch adapter](/pages/advanced/fetch-adapter)), so the boundaries and part headers are not counted: a `FormData` body whose values fit under the limit is sent even when the whole multipart body is slightly larger.
 
 ### `redact`
 

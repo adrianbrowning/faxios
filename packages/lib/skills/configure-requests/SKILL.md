@@ -359,9 +359,9 @@ export only. Instances from `create()` do not have them; import them by name ins
    `faxios.plugins` is undefined. Import from `@gcmdev/faxios/plugins/<name>`.
 7. **MEDIUM: Calling statics on an instance.** `api.isCancel(e)` is undefined on a `create()`
    instance. Use the named import.
-8. **MEDIUM: Expecting `onUploadProgress` everywhere.** It fires only where `fetch` can stream a
-   request body (`duplex: "half"`, for example Node). Browsers generally do not report upload
-   progress through fetch; do not promise it there.
+8. **MEDIUM: Expecting `onUploadProgress` everywhere.** It fires only where faxios can stream
+   the request body (Node; not Deno or Bun). In browsers and web workers faxios never streams the
+   body for progress, so the callback is not called; do not promise it there. Source: `src/lib/adapters/fetch.ts` (`isBrowserRuntime`).
 9. **MEDIUM: Retrying POST by accident or by assumption.** The retry plugin skips POST and PATCH
    unless they are listed in `methods`; a custom `retryOn` cannot override that.
 10. **MEDIUM: Downloading a binary body without `responseType`.** The bytes are decoded as UTF-8

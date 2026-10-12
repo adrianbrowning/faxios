@@ -526,6 +526,44 @@ describe.runIf(typeof fetch === "function")(
             await stopHTTPServer(server);
           }
         });
+
+        it("should report FormData upload progress without buffering the body first", async () => {
+          const server = await startHTTPServer(
+            (req, res) => {
+              let received = 0;
+              req.on("data", chunk => {
+                received += chunk.length;
+              });
+              req.on("end", () => {
+                res.end(String(received));
+              });
+            }
+          );
+          const arrayBuffer = vi.spyOn(Request.prototype, "arrayBuffer");
+
+          try {
+            const form = new FormData();
+            form.append("file", new Blob([ new Uint8Array(200_000) ]), "file.bin");
+            const samples: Array<FaxiosProgressEvent> = [];
+
+            const { data } = await fetchFaxios.post(`http://localhost:${(server.address() as AddressInfo).port}/`, form, {
+              onUploadProgress: event => samples.push(event),
+              responseType: "text",
+            });
+
+            assert.strictEqual(arrayBuffer.mock.calls.length, 0);
+            assert.ok(samples.length > 0, "onUploadProgress was not called");
+            assert.strictEqual(samples.at(-1)!.loaded, Number(data));
+            for (const sample of samples) {
+              assert.strictEqual(sample.lengthComputable, false);
+              assert.strictEqual(sample.total, undefined);
+            }
+          }
+          finally {
+            arrayBuffer.mockRestore();
+            await stopHTTPServer(server);
+          }
+        });
       });
 
       describe("download", () => {
@@ -1686,6 +1724,78 @@ describe.runIf(typeof fetch === "function")(
         }
         finally {
           await stopHTTPServer(server);
+        }
+      });
+
+      // The fields total 1000 bytes; the multipart framing takes the body past 1024.
+      it.each([
+        [ "without onUploadProgress", {}],
+        [ "with onUploadProgress", { onUploadProgress() {} }],
+      ])("should count a FormData body against maxBodyLength as it streams, %s", async (_label, options) => {
+        let bytesReceived = 0;
+        const server = await startHTTPServer(
+          (req, res) => {
+            req.on("data", chunk => {
+              bytesReceived += chunk.length;
+            });
+            req.on("error", () => {});
+            req.on("end", () => {
+              res.end("ok");
+            });
+          }
+        );
+        const arrayBuffer = vi.spyOn(Request.prototype, "arrayBuffer");
+
+        try {
+          const form = new FormData();
+          form.append("field", "a".repeat(1000));
+
+          await assert.rejects(
+            fetchFaxios.post(`http://localhost:${(server.address() as AddressInfo).port}/`, form, { ...options, maxBodyLength: 1024 }),
+            err => {
+              const e = err as { code: string; message: string; };
+              assert.strictEqual(e.code, "ERR_BAD_REQUEST");
+              assert.strictEqual(e.message, "Request body larger than maxBodyLength limit");
+              return true;
+            }
+          );
+
+          assert.strictEqual(arrayBuffer.mock.calls.length, 0);
+          assert.ok(
+            bytesReceived <= 1024,
+            `server should not receive more than maxBodyLength; got ${bytesReceived}`
+          );
+        }
+        finally {
+          arrayBuffer.mockRestore();
+          await stopHTTPServer(server);
+        }
+      });
+
+      it("should reject a FormData body whose fields alone exceed maxBodyLength before sending it", async () => {
+        const fetchSpy = vi.spyOn(globalThis, "fetch");
+        const arrayBuffer = vi.spyOn(Request.prototype, "arrayBuffer");
+
+        try {
+          const form = new FormData();
+          form.append("file", new Blob([ new Uint8Array(4096) ]), "file.bin");
+
+          await assert.rejects(
+            fetchFaxios.post(`${LOCAL_SERVER_URL}/`, form, { maxBodyLength: 1024 }),
+            err => {
+              const e = err as { code: string; message: string; };
+              assert.strictEqual(e.code, "ERR_BAD_REQUEST");
+              assert.strictEqual(e.message, "Request body larger than maxBodyLength limit");
+              return true;
+            }
+          );
+
+          assert.strictEqual(arrayBuffer.mock.calls.length, 0);
+          assert.strictEqual(fetchSpy.mock.calls.length, 0);
+        }
+        finally {
+          arrayBuffer.mockRestore();
+          fetchSpy.mockRestore();
         }
       });
 

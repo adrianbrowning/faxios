@@ -81,10 +81,12 @@ const rejectUsedStreamBody = (data: unknown, config: InternalFaxiosRequestConfig
   if (isWebStream) sentStreamBodies.add(body);
 };
 
+const isBrowserRuntime = platform.hasStandardBrowserEnv || platform.hasStandardBrowserWebWorkerEnv;
+
 // Server runtimes default User-Agent to their own (e.g. "node"), so name faxios there.
 // Browsers send their own User-Agent; setting one makes every cross-origin request
 // need a CORS preflight that most APIs don't allow.
-const setsUserAgent = !platform.hasStandardBrowserEnv && !platform.hasStandardBrowserWebWorkerEnv;
+const setsUserAgent = !isBrowserRuntime;
 const applyDefaultUserAgent = (headers: FaxiosRequestHeaders): void => {
   if (setsUserAgent) headers.set("User-Agent", "faxios/" + VERSION, false);
 };
@@ -275,6 +277,13 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       return duplexAccessed && !hasContentType;
     });
 
+  // Outside browsers a FormData body under maxBodyLength is streamed and counted as fetch reads it;
+  // browsers can't send a stream body (see buildUploadStream).
+  const countsFormDataWhileSent = !isBrowserRuntime && supportsRequestStream;
+  // Bodies counted as fetch reads them when maxBodyLength is set.
+  const isCountedWhileSent = (body: unknown): boolean =>
+    utils.isReadableStream!(body) || utils.isStream(body) || (countsFormDataWhileSent && utils.isSpecCompliantForm(body));
+
   const supportsResponseStream =
     isResponseSupported &&
     isReadableStreamSupported &&
@@ -317,14 +326,6 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       return (body as { size: number; }).size;
     }
 
-    if (utils.isSpecCompliantForm(body)) {
-      const _request = new (Request as AnyConstructor)(platform.origin, {
-        method: "POST",
-        body,
-      }) as AnyRequest;
-      return (await _request.arrayBuffer()).byteLength;
-    }
-
     if (utils.isArrayBufferView(body) || utils.isArrayBuffer(body)) {
       return (body as ArrayBuffer | ArrayBufferView).byteLength;
     }
@@ -337,6 +338,23 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       return (await encodeText(body as string)).byteLength;
     }
     return undefined;
+  };
+
+  // The bytes of a FormData body's field values and files, from their sizes, without reading the
+  // body. A lower bound: the multipart body adds boundaries and part headers. Undefined for any
+  // other body.
+  const getFormDataFieldsLength = async (body: unknown): Promise<number | undefined> => {
+    if (!utils.isSpecCompliantForm(body)) {
+      return undefined;
+    }
+    let length = 0;
+    for (const [ , value ] of body as Iterable<[string, unknown]>) {
+      // A FormData value is a string or a File.
+      const size = utils.isString(value) ? undefined : utils.getSafeProp(value, "size");
+      // eslint-disable-next-line no-await-in-loop
+      length += typeof size === "number" ? size : (await encodeText(String(value))).byteLength;
+    }
+    return length;
   };
 
   const resolveBodyLength = async (
@@ -429,10 +447,13 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     }
     // Enforce maxBodyLength against known-size bodies before dispatch using
     // the body's actual size — never a caller-declared Content-Length.
+    // A FormData body isn't measured, since that buffers it whole: its values alone over the limit
+    // reject it here, and where it's streamed the byte counter covers the multipart framing too.
     if (hasMaxBodyLength && method !== "get" && method !== "head") {
       const outboundLength = await getBodyLength(data);
-      if (typeof outboundLength === "number" && isFinite(outboundLength)) {
-        if (outboundLength > maxBodyLength) {
+      const checkedLength = outboundLength ?? await getFormDataFieldsLength(data);
+      if (typeof checkedLength === "number" && isFinite(checkedLength)) {
+        if (checkedLength > maxBodyLength) {
           throw new FaxiosError(
             "Request body larger than maxBodyLength limit",
             FaxiosError.ERR_BAD_REQUEST,
@@ -494,6 +515,10 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     request: unknown,
     pendingBodyErrorRef: PendingBodyErrorRef
   ): Promise<{ data: unknown; requestContentLength: number | undefined; }> => {
+    // Browsers can't be given a stream body for upload progress: Chromium sends one only over
+    // HTTP/2 or later and WebKit not at all, so the upload would fail. onUploadProgress isn't
+    // called there (#209).
+    const uploadProgress = isBrowserRuntime ? undefined : onUploadProgress;
     const _makeBodyLengthError = () =>
       new FaxiosError(
         "Request body larger than maxBodyLength limit",
@@ -531,7 +556,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       supportsRequestStream &&
       method !== "get" &&
       method !== "head" &&
-      (onUploadProgress || mustEnforceStreamBody)
+      (uploadProgress || mustEnforceStreamBody)
     ) {
       requestContentLength =
         requestContentLength == null
@@ -546,7 +571,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
           body: data,
           duplex: "half",
         }) as AnyRequest;
-        data = applyUploadProgress(_request, data, headers, requestContentLength, onUploadProgress, _trackStream);
+        data = applyUploadProgress(_request, data, headers, requestContentLength, uploadProgress, _trackStream);
       }
     }
     else if (
@@ -735,8 +760,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
 
       // A streamed body under maxBodyLength must be counted as fetch consumes
       // it; its size is never trusted from a caller-declared Content-Length.
-      const isStreamLike = utils.isReadableStream!(data) || utils.isStream(data);
-      const mustEnforceStreamBody = hasMaxBodyLength && isStreamLike;
+      const mustEnforceStreamBody = hasMaxBodyLength && isCountedWhileSent(data);
 
       ({ data } = await buildUploadStream(
         data,
