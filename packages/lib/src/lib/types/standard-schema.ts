@@ -13,12 +13,12 @@ export interface StandardSchemaV1<Input = unknown, Output = Input> {
 
 export declare namespace StandardSchemaV1 {
   interface Props<Input = unknown, Output = Input> {
-    readonly version: 1;
-    readonly vendor: string;
     readonly types?: Types<Input, Output>;
     readonly validate: (
       value: unknown
-    ) => Result<Output> | Promise<Result<Output>>;
+    ) => Promise<Result<Output>> | Result<Output>;
+    readonly vendor: string;
+    readonly version: 1;
   }
 
   interface Types<Input = unknown, Output = Input> {
@@ -26,11 +26,11 @@ export declare namespace StandardSchemaV1 {
     readonly output: Output;
   }
 
-  type Result<Output> = SuccessResult<Output> | FailureResult;
+  type Result<Output> = FailureResult | SuccessResult<Output>;
 
   interface SuccessResult<Output> {
-    readonly value: Output;
     readonly issues?: undefined;
+    readonly value: Output;
   }
 
   interface FailureResult {
@@ -40,7 +40,7 @@ export declare namespace StandardSchemaV1 {
   interface Issue {
     readonly message: string;
     readonly path?:
-      | ReadonlyArray<PropertyKey | PathSegment>
+      | ReadonlyArray<PathSegment | PropertyKey>
       | undefined;
   }
 

@@ -36,7 +36,7 @@ const INVALID_UNICODE_HEADER_VALUE_CHARS = new RegExp("[\\u0000-\\u0008\\u000a-\
 const INVALID_BYTE_STRING_HEADER_VALUE_CHARS = new RegExp("[^\\u0009\\u0020-\\u007e\\u0080-\\u00ff]+", "g");
 
 // eslint-disable-next-line sonarjs/function-return-type
-function sanitizeValue(value: unknown, invalidChars: RegExp): string | Array<string> {
+function sanitizeValue(value: unknown, invalidChars: RegExp): Array<string> | string {
   if (utils.isArray(value)) {
     return (value as Array<unknown>).map(item => sanitizeValue(item, invalidChars) as string);
   }

@@ -96,7 +96,7 @@ function prepareRequest(config: FaxiosRequestConfig): FaxiosRequestConfig {
   const url = own("url");
 
   const headers: FaxiosHeaders = FaxiosHeaders.from(
-    own("headers") as Record<string, unknown> | null | undefined
+    own("headers") as null | Record<string, unknown> | undefined
   );
   newConfig.headers = headers;
 

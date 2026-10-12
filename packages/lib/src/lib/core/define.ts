@@ -1,19 +1,19 @@
 // @ts-self-types="./define.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
+import type { FaxiosRequestConfig, FaxiosResponse, Method, StringLiteralsOrString } from "../types.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
-import type { FaxiosRequestConfig, FaxiosResponse, StringLiteralsOrString, Method } from "../types.js";
 import mergeConfig from "./mergeConfig.js";
 
 type StrippedFields =
-  | "url"
-  | "method"
-  | "pathParams"
-  | "params"
   | "data"
-  | "pathParamsSchema"
+  | "method"
+  | "params"
   | "paramsSchema"
+  | "pathParams"
+  | "pathParamsSchema"
   | "requestSchema"
-  | "responseSchema";
+  | "responseSchema"
+  | "url";
 
 /** Request config accepted by a defined endpoint call: everything except `url`, `method`, `pathParams`, `params`, `data` and the schemas. */
 export type BasePerCallConfig = Omit<FaxiosRequestConfig, StrippedFields>;
@@ -51,8 +51,8 @@ export type DefineConfig<
    * Standard Schema that validates `pathParams` on every call; its output fills the `{key}`
    * placeholders. Makes `pathParams` required per call. A failure rejects with `ERR_BAD_PATH_PARAMS_SCHEMA`.
    */
-  pathParamsSchema?: PP;
   paramsSchema?: P;
+  pathParamsSchema?: PP;
   requestSchema?: D;
   responseSchema?: R;
 };

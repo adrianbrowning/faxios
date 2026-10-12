@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import faxios, { FaxiosError, FaxiosHeaders, CanceledError } from "faxios";
+import faxios, { CanceledError, FaxiosError, FaxiosHeaders } from "faxios";
 
 Deno.test("Deno importing: default export is callable", () => {
   assertEquals(typeof faxios, "function");

@@ -11,7 +11,7 @@ import type { CreateFaxiosDefaults } from "./lib/types.ts";
 export { default as Faxios } from "./lib/core/Faxios.ts";
 export { default as FaxiosError, isSchemaValidationError } from "./lib/core/FaxiosError.ts";
 export type { SchemaValidationError } from "./lib/core/FaxiosError.ts";
-export { default as CanceledError, default as Cancel } from "./lib/cancel/CanceledError.ts";
+export { default as Cancel, default as CanceledError } from "./lib/cancel/CanceledError.ts";
 export { default as isCancel } from "./lib/cancel/isCancel.ts";
 export { default as isFaxiosError } from "./lib/helpers/isFaxiosError.ts";
 export { default as toFormData } from "./lib/helpers/toFormData.ts";
@@ -23,28 +23,28 @@ export { VERSION } from "./lib/env/data.ts";
 export type { FaxiosInstance, FaxiosStatic } from "./lib/faxios.ts";
 export type { StandardSchemaV1 } from "./lib/types/standard-schema.ts";
 export type { BasePerCallConfig, DefineConfig, DefinedEndpoint, FaxiosLike, PerCallConfig } from "./lib/core/define.ts";
-export type { RouteConfig, RouteMethodConfig, RouteBuilder } from "./lib/core/route.ts";
+export type { RouteBuilder, RouteConfig, RouteMethodConfig } from "./lib/core/route.ts";
 
 export type {
-  FaxiosRequestConfig,
-  InternalFaxiosRequestConfig,
-  FaxiosResponse,
-  FaxiosRequestHeaders,
-  FaxiosResponseHeadersLike,
-  FaxiosHeaderValue,
-  Method,
-  ResponseType,
-  GenericHTMLFormElement,
-  RawFaxiosRequestConfig,
-  FaxiosPromise,
   CreateFaxiosDefaults,
   FaxiosConfigHeaders,
-  RawFaxiosRequestHeaders,
-  HeadersDefaults,
   FaxiosContext,
-  FaxiosNext,
+  FaxiosHeaderValue,
   FaxiosMiddleware,
-  FaxiosPlugin
+  FaxiosNext,
+  FaxiosPlugin,
+  FaxiosPromise,
+  FaxiosRequestConfig,
+  FaxiosRequestHeaders,
+  FaxiosResponse,
+  FaxiosResponseHeadersLike,
+  GenericHTMLFormElement,
+  HeadersDefaults,
+  InternalFaxiosRequestConfig,
+  Method,
+  RawFaxiosRequestConfig,
+  RawFaxiosRequestHeaders,
+  ResponseType
 } from "./lib/types.ts";
 
 // Instance-synthesized members (no 1:1 source module). Types are self-contained

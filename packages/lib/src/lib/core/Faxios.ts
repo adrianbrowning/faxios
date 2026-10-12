@@ -5,7 +5,6 @@ import buildURL from "../helpers/buildURL.js";
 import cloneConfig, { DANGEROUS_KEYS } from "../helpers/cloneConfig.js";
 import validator from "../helpers/validator.js";
 import type { ValidatorFn } from "../helpers/validator.js";
-import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type {
   FaxiosContext,
   FaxiosMiddleware,
@@ -21,6 +20,7 @@ import type {
   SchemaConfig,
   StringLiteralsOrString
 } from "../types.js";
+import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import utils from "../utils.js";
 import buildFullPath from "./buildFullPath.js";
 import { createDefinedEndpoint } from "./define.js";
@@ -29,21 +29,21 @@ import dispatchRequest from "./dispatchRequest.js";
 import FaxiosError from "./FaxiosError.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
 import mergeConfig from "./mergeConfig.js";
-import type { RouteConfig, RouteBuilder } from "./route.js";
+import type { RouteBuilder, RouteConfig } from "./route.js";
 import { createRouteBuilder } from "./route.js";
 
 type TransitionalFn = (
-  validator: ValidatorFn | false | undefined,
+  validator: false | undefined | ValidatorFn,
   version?: string,
   message?: string
 ) => ValidatorFn;
 type SpellingFn = (correctSpelling: string) => ValidatorFn;
 const validators = validator.validators as Record<
   string,
-  ValidatorFn | undefined
+  undefined | ValidatorFn
 > & {
-  transitional?: TransitionalFn;
   spelling?: SpellingFn;
+  transitional?: TransitionalFn;
 };
 
 // Every method header group declared on HeadersDefaults. `satisfies` keeps this
@@ -143,10 +143,10 @@ type AnyContextMiddleware = FaxiosMiddleware<unknown, unknown>;
 type AnyContextNext = FaxiosNext<unknown, unknown>;
 
 type MiddlewareEntry = {
+  provided: Array<string>;
   // The value passed to use(), kept only for eject()'s identity check.
   ref: unknown;
   run: AnyContextMiddleware;
-  provided: Array<string>;
 };
 
 function composeMiddleware(entries: ReadonlyArray<MiddlewareEntry>, dispatch: AnyContextNext): AnyContextNext {
@@ -295,9 +295,9 @@ class Faxios {
    */
 
   async request<O, D = unknown>(config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-  async request<T = unknown, R = FaxiosResponse<T>, D = unknown>(configOrUrl: string | FaxiosRequestConfig<D>, config?: FaxiosRequestConfig<D>): Promise<R>;
+  async request<T = unknown, R = FaxiosResponse<T>, D = unknown>(configOrUrl: FaxiosRequestConfig<D> | string, config?: FaxiosRequestConfig<D>): Promise<R>;
   async request(
-    configOrUrl: string | FaxiosRequestConfig,
+    configOrUrl: FaxiosRequestConfig | string,
     config?: FaxiosRequestConfig
   ) {
     try {
@@ -313,7 +313,7 @@ class Faxios {
   }
 
   async #request(
-    configOrUrl: string | FaxiosRequestConfig,
+    configOrUrl: FaxiosRequestConfig | string,
     config?: FaxiosRequestConfig
   ): Promise<unknown> {
     /*eslint no-param-reassign:0*/

@@ -1,8 +1,8 @@
 // @ts-self-types="./FaxiosError.d.ts" — required for Deno: index.d.ts re-exports SchemaValidationError from here
 "use strict";
 
+import type { FaxiosResponse, InternalFaxiosRequestConfig } from "../types.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
-import type { InternalFaxiosRequestConfig, FaxiosResponse } from "../types.js";
 import utils from "../utils.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
 
@@ -247,9 +247,9 @@ export type SchemaValidationError =
   }
   | FaxiosError & {
     code:
-      | typeof FaxiosError.ERR_BAD_REQUEST_SCHEMA
       | typeof FaxiosError.ERR_BAD_PARAMS_SCHEMA
-      | typeof FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA;
+      | typeof FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA
+      | typeof FaxiosError.ERR_BAD_REQUEST_SCHEMA;
     issues: SchemaIssues;
   };
 

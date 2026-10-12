@@ -11,17 +11,17 @@ import { definePlugin } from "./definePlugin.js";
  * headers or body, so an event is safe to log.
  */
 export type TimingEvent = {
-  /** The request method, upper-cased (`"GET"`). */
-  method: string;
-  /** The full request URL without its query string and fragment. */
-  url: string;
   /**
    * The try number from `retry`: each try's when installed after it, the final try's when
    * installed before it. Absent without `retry`.
    */
   attempt?: number;
   durationMs: number;
-} & ({ status: number; error?: undefined; } | { status?: undefined; error: unknown; });
+  /** The request method, upper-cased (`"GET"`). */
+  method: string;
+  /** The full request URL without its query string and fragment. */
+  url: string;
+} & ({ error: unknown; status?: undefined; } | { error?: undefined; status: number; });
 
 const now = () => (typeof performance === "undefined" ? Date.now() : performance.now());
 

@@ -1,5 +1,5 @@
 import { isNativeError } from "node:util/types";
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import { isSchemaValidationError } from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";

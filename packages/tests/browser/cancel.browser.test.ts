@@ -35,7 +35,7 @@ describe("cancel (vitest browser)", () => {
       controller.signal.addEventListener = (
         type: string,
         fn: EventListenerOrEventListenerObject,
-        options?: boolean | AddEventListenerOptions
+        options?: AddEventListenerOptions | boolean
       ) => {
         if (type === "abort") listenerCount++;
         return nativeAdd(type, fn, options);

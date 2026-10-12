@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { describe, it, expectTypeOf } from "vitest";
+import { describe, expectTypeOf, it } from "vitest";
 import faxios from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import { makeSchema, mockFetch } from "./_schemaTestHelpers.js";
@@ -15,7 +15,7 @@ describe("faxios.route()", () => {
   it("each method dispatches with correct method and url", async () => {
     const captured: Array<{ method?: string; url?: string; }> = [];
     const env = {
-      fetch: async (input: string | URL | Request) => {
+      fetch: async (input: Request | string | URL) => {
         captured.push({
           url: input instanceof Request ? input.url : String(input),
           method: input instanceof Request ? input.method : undefined,
@@ -51,7 +51,7 @@ describe("faxios.route()", () => {
     await getProfile({
       pathParams: { account: "abc" },
       env: {
-        fetch: async (input: string | URL | Request) => {
+        fetch: async (input: Request | string | URL) => {
           capturedUrl = input instanceof Request ? input.url : String(input);
           return new Response(null, { status: 200 });
         },
@@ -75,7 +75,7 @@ describe("faxios.route()", () => {
   it("route-level defaults merge with method-level config", async () => {
     let capturedHeaders: Record<string, string> = {};
     const env = {
-      fetch: async (input: string | URL | Request) => {
+      fetch: async (input: Request | string | URL) => {
         if (input instanceof Request) {
           input.headers.forEach((v, k) => { capturedHeaders[k] = v; });
         }

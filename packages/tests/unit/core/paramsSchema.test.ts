@@ -15,7 +15,7 @@ describe("paramsSchema validation", () => {
       params: { q: "raw" },
       paramsSchema: schema,
       env: {
-        fetch: async (input: string | URL | Request) => {
+        fetch: async (input: Request | string | URL) => {
           capturedUrl = input instanceof Request ? input.url : String(input);
           return new Response(JSON.stringify({}), { status: 200, headers: { "content-type": "application/json" } });
         },

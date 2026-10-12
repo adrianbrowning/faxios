@@ -5,11 +5,11 @@ import utils from "../utils.js";
 type AbortHandler = (this: AbortSignal & { reason?: unknown; }, reason: unknown) => void;
 type EventListenerFn = (event: unknown) => void;
 type SignalLike = {
-  unsubscribe?: (() => void) | ((handler: AbortHandler) => void);
-  addEventListener: (type: string, listener: EventListenerFn) => void;
-  removeEventListener: (type: string, listener: EventListenerFn) => void;
   aborted: boolean;
+  addEventListener: (type: string, listener: EventListenerFn) => void;
   reason?: unknown;
+  removeEventListener: (type: string, listener: EventListenerFn) => void;
+  unsubscribe?: (() => void) | ((handler: AbortHandler) => void);
 };
 export type ExtendedAbortSignal = AbortSignal & { unsubscribe?: (() => void) | ((handler: AbortHandler) => void); };
 
@@ -35,7 +35,7 @@ const composeSignals = (signals: Array<unknown> | null | undefined, timeout?: nu
     }
   };
 
-  let timer: ReturnType<typeof setTimeout> | null =
+  let timer: null | ReturnType<typeof setTimeout> =
     timeout
       ? setTimeout(() => {
         timer = null;

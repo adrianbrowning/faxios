@@ -30,13 +30,13 @@ const EXTENSIONS: Record<string, "js" | "ts"> = {
 };
 
 export type ExtractedBlock = {
-  // `path:line` of the opening fence, relative to the repo root.
-  source: string;
   file: string;
-  run: boolean;
-  status: number;
   // The block requests literal `/:x` or `{x}` paths, so the placeholder guard is skipped.
   literalPlaceholders: boolean;
+  run: boolean;
+  // `path:line` of the opening fence, relative to the repo root.
+  source: string;
+  status: number;
 };
 
 function markdownFiles(dir: string): Array<string> {

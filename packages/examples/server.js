@@ -1,8 +1,8 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import http from 'node:http';
-import minimist from 'minimist';
-import url from 'node:url';
+import fs from "node:fs";
+import http from "node:http";
+import path from "node:path";
+import url from "node:url";
+import minimist from "minimist";
 
 const argv = minimist(process.argv.slice(2));
 let server;
@@ -17,7 +17,7 @@ function listDirs(root) {
 
   for (let i = 0, l = files.length; i < l; i++) {
     const file = files[i];
-    if (file[0] !== '.') {
+    if (file[0] !== ".") {
       const stat = fs.statSync(path.join(root, file));
       if (stat.isDirectory()) {
         dirs.push(file);
@@ -30,28 +30,28 @@ function listDirs(root) {
 
 function getIndexTemplate() {
   const links = dirs.map(function (dir) {
-    const url = '/' + dir;
+    const url = "/" + dir;
     return (
-      '<li onclick="document.location=\'' + url + '\'"><a href="' + url + '">' + url + '</a></li>'
+      "<li onclick=\"document.location='" + url + "'\"><a href=\"" + url + "\">" + url + "</a></li>"
     );
   });
 
   return (
-    '<!doctype html>' +
-    '<html>' +
-    '<head>' +
-    '<title>faxios examples</title>' +
-    '<style>' +
-    'body {padding:25px;}' +
-    'ul {margin:0; padding:0; list-style:none;}' +
-    'li {padding:5px 10px;}' +
-    'li:hover {background:#eee; cursor:pointer;}' +
-    'a {text-decoration:none; color:#0080ff;}' +
-    '</style>' +
-    '<body>' +
-    '<ul>' +
-    links.join('') +
-    '</ul>'
+    "<!doctype html>" +
+    "<html>" +
+    "<head>" +
+    "<title>faxios examples</title>" +
+    "<style>" +
+    "body {padding:25px;}" +
+    "ul {margin:0; padding:0; list-style:none;}" +
+    "li {padding:5px 10px;}" +
+    "li:hover {background:#eee; cursor:pointer;}" +
+    "a {text-decoration:none; color:#0080ff;}" +
+    "</style>" +
+    "<body>" +
+    "<ul>" +
+    links.join("") +
+    "</ul>"
   );
 }
 
@@ -62,127 +62,121 @@ function sendResponse(res, statusCode, body) {
 }
 
 function send200(res, body) {
-  sendResponse(res, 200, body || '<h1>OK</h1>');
+  sendResponse(res, 200, body || "<h1>OK</h1>");
 }
 
 function send404(res, body) {
-  sendResponse(res, 404, body || '<h1>Not Found</h1>');
+  sendResponse(res, 404, body || "<h1>Not Found</h1>");
 }
 
 function pipeFileToResponse(res, file, type) {
   try {
     // Validate file path - prevent directory traversal
-    const safeBasePath = path.join(__dirname, 'examples');
+    const safeBasePath = path.join(__dirname, "examples");
     const resolvedPath = path.resolve(path.join(safeBasePath, file));
 
     // Ensure the resolved path is within intended directory
     if (!resolvedPath.startsWith(safeBasePath)) {
       res.writeHead(400);
-      res.end('Invalid file path');
+      res.end("Invalid file path");
       return;
     }
 
     // Check if file exists
     if (!fs.existsSync(resolvedPath)) {
       res.writeHead(404);
-      res.end('File not found');
+      res.end("File not found");
       return;
     }
 
     if (type) {
       res.writeHead(200, {
-        'Content-Type': type,
+        "Content-Type": type,
       });
-    } else {
+    }
+    else {
       res.writeHead(200);
     }
 
     const stream = fs.createReadStream(resolvedPath);
 
-    stream.on('error', (err) => {
-      console.error('Error while reading file:', err.message);
+    stream.on("error", err => {
+      console.error("Error while reading file:", err.message);
       if (!res.headersSent) {
-        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.writeHead(500, { "Content-Type": "text/plain" });
       }
-      res.end('File read error');
+      res.end("File read error");
     });
 
     stream.pipe(res);
-  } catch (err) {
-    console.error('Unexpected error:', err.message);
+  }
+  catch (err) {
+    console.error("Unexpected error:", err.message);
     if (!res.headersSent) {
-      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.writeHead(500, { "Content-Type": "text/plain" });
     }
-    res.end('Internal server error');
+    res.end("Internal server error");
   }
 }
 
 dirs = listDirs(__dirname);
 
+const FAXIOS_ASSETS = [ "faxios.min.js", "faxios.min.map", "faxios.amd.min.js", "faxios.amd.min.map" ];
+
 server = http.createServer(function (req, res) {
   let url = req.url;
 
   // Process faxios itself
-  if (/faxios\.min\.js$/.test(url)) {
-    pipeFileToResponse(res, '../dist/faxios.min.js', 'text/javascript');
-    return;
-  }
-  if (/faxios\.min\.map$/.test(url)) {
-    pipeFileToResponse(res, '../dist/faxios.min.map', 'text/javascript');
-    return;
-  }
-  if (/faxios\.amd\.min\.js$/.test(url)) {
-    pipeFileToResponse(res, '../dist/faxios.amd.min.js', 'text/javascript');
-    return;
-  }
-  if (/faxios\.amd\.min\.map$/.test(url)) {
-    pipeFileToResponse(res, '../dist/faxios.amd.min.map', 'text/javascript');
+  const asset = FAXIOS_ASSETS.find(name => url.endsWith(name));
+  if (asset) {
+    pipeFileToResponse(res, "../dist/" + asset, "text/javascript");
     return;
   }
 
   // Process /
-  if (url === '/' || url === '/index.html') {
+  if (url === "/" || url === "/index.html") {
     send200(res, getIndexTemplate());
     return;
   }
 
   // Format request */ -> */index.html
   if (/\/$/.test(url)) {
-    url += 'index.html';
+    url += "index.html";
   }
 
   // Format request /get -> /get/index.html
-  const parts = url.split('/');
+  const parts = url.split("/");
   if (dirs.indexOf(parts[parts.length - 1]) > -1) {
-    url += '/index.html';
+    url += "/index.html";
   }
 
   // Process index.html request
   if (/index\.html$/.test(url)) {
     if (fs.existsSync(path.join(__dirname, url))) {
-      pipeFileToResponse(res, url, 'text/html');
-    } else {
+      pipeFileToResponse(res, url, "text/html");
+    }
+    else {
       send404(res);
     }
     return;
   }
 
   // Process server request
-  else if (new RegExp('(' + dirs.join('|') + ')\/server').test(url)) {
-    if (fs.existsSync(path.join(__dirname, url + '.js'))) {
-      import('file://' + path.join(__dirname, url + '.js'))
-        .then((server) => {
-          server.default(req, res);
-        })
-        .catch((err) => {
-          console.error('Error importing server:', err);
+  else if (new RegExp("(" + dirs.join("|") + ")/server").test(url)) {
+    if (fs.existsSync(path.join(__dirname, url + ".js"))) {
+      import("file://" + path.join(__dirname, url + ".js"))
+        .then(server => server.default(req, res))
+        .catch(err => {
+          console.error("Error importing server:", err);
           send404(res);
         });
-    } else {
+    }
+    else {
       send404(res);
     }
     return;
-  } else {
+  }
+  else {
     send404(res);
   }
 });

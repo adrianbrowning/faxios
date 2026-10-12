@@ -30,7 +30,7 @@ const rule: Rule.RuleModule = {
   },
   create(context) {
     const { sourceCode } = context;
-    const added: Array<{ node: Call; target: string; handler: string; }> = [];
+    const added: Array<{ handler: string; node: Call; target: string; }> = [];
     // A removal only counts for the same target and handler: `a.remove(fn)` does not discharge `b.add(fn)`.
     const removed = new Set<string>();
     const key = (target: string, handler: string) => `${target}\u0000${handler}`;

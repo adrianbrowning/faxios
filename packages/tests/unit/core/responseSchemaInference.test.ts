@@ -1,9 +1,9 @@
-import { describe, it, expectTypeOf } from "vitest";
+import { describe, expectTypeOf, it } from "vitest";
 import type { FaxiosResponse, StandardSchemaV1 } from "#src/index.ts";
 import { FaxiosError, isSchemaValidationError } from "#src/index.ts";
 import type { FaxiosInstance } from "#src/lib/faxios.ts";
 
-type UserOutput = { name: string; age: number; };
+type UserOutput = { age: number; name: string; };
 type UserSchema = StandardSchemaV1<unknown, UserOutput>;
 
 describe("responseSchema type inference", () => {
@@ -44,7 +44,7 @@ describe("responseSchema type inference", () => {
       if (isSchemaValidationError(err)) {
         expectTypeOf(err.issues).toEqualTypeOf<ReadonlyArray<StandardSchemaV1.Issue>>();
         expectTypeOf(err.code).toEqualTypeOf<
-          "ERR_BAD_RESPONSE_SCHEMA" | "ERR_BAD_REQUEST_SCHEMA" | "ERR_BAD_PARAMS_SCHEMA" | "ERR_BAD_PATH_PARAMS_SCHEMA"
+          "ERR_BAD_PARAMS_SCHEMA" | "ERR_BAD_PATH_PARAMS_SCHEMA" | "ERR_BAD_REQUEST_SCHEMA" | "ERR_BAD_RESPONSE_SCHEMA"
         >();
       }
     }

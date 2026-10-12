@@ -28,7 +28,7 @@ export type RouteMethodConfig<
 
 /** The object `route()` returns: one endpoint factory per HTTP method (no `query`). */
 export type RouteBuilder<PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined, TOpts = unknown> = {
-  [M in "get" | "post" | "put" | "patch" | "delete" | "head" | "options"]: <
+  [M in "delete" | "get" | "head" | "options" | "patch" | "post" | "put"]: <
     P extends StandardSchemaV1 | undefined = undefined,
     D extends StandardSchemaV1 | undefined = undefined,
     R extends StandardSchemaV1 | undefined = undefined

@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { describe, it, expectTypeOf } from "vitest";
+import { describe, expectTypeOf, it } from "vitest";
 import faxios from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import { makeSchema, mockFetch } from "./_schemaTestHelpers.js";
@@ -43,7 +43,7 @@ describe("faxios.define()", () => {
     await getProfile({
       pathParams: { account: "abc" },
       env: {
-        fetch: async (input: string | URL | Request) => {
+        fetch: async (input: Request | string | URL) => {
           capturedUrl = input instanceof Request ? input.url : String(input);
           return new Response(null, { status: 200 });
         },
@@ -82,7 +82,7 @@ describe("faxios.define()", () => {
     const getUser = faxios.define("GET", "http://localhost/users/1");
     await getUser({
       env: {
-        fetch: async (input: string | URL | Request, init?: RequestInit) => {
+        fetch: async (input: Request | string | URL, init?: RequestInit) => {
           capturedUrl = input instanceof Request ? input.url : String(input);
           capturedMethod = (init?.method ?? "GET").toUpperCase();
           return new Response(null, { status: 200 });
@@ -149,7 +149,7 @@ describe("faxios.define()", () => {
     await getItem({
       headers: { "x-source": "call", "x-extra": "yes" },
       env: {
-        fetch: async (_input: string | URL | Request, init?: RequestInit) => {
+        fetch: async (_input: Request | string | URL, init?: RequestInit) => {
           capturedHeaders = Object.fromEntries(new Headers(init?.headers as HeadersInit).entries());
           return new Response(null, { status: 200 });
         },

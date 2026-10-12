@@ -127,7 +127,7 @@ describe("static api", () => {
           )[method]!;
           await fn("http://localhost/test", {
             env: {
-              fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+              fetch: async (_input: Request | string | URL, init?: RequestInit) => {
                 seenBody = init?.body;
                 return new Response(null, { status: 200 });
               },
@@ -248,7 +248,7 @@ describe("instance api", () => {
     });
 
     assert.strictEqual(
-      (transformedData as unknown as Record<symbol | string, unknown>)[
+      (transformedData as unknown as Record<string | symbol, unknown>)[
         symbolKey
       ],
       "value"

@@ -5,9 +5,9 @@ const createFetchMock = (
   responseFactory?: (
     input: unknown,
     init: RequestInit
-  ) => Response | Promise<Response>
+  ) => Promise<Response> | Response
 ) => {
-  const calls: Array<{ input: unknown; init: RequestInit; }> = [];
+  const calls: Array<{ init: RequestInit; input: unknown; }> = [];
 
   const mockFetch = async (input: unknown, init: RequestInit = {}) => {
     calls.push({ input, init });
@@ -81,7 +81,7 @@ describe("fetch adapter", () => {
 
   test("HTTP methods are forwarded correctly", async () => {
     const run = async (
-      method: "delete" | "head" | "options" | "put" | "patch",
+      method: "delete" | "head" | "options" | "patch" | "put",
       expected: string
     ) => {
       const { mockFetch, getCalls } = createFetchMock();

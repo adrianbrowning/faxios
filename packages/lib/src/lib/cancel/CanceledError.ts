@@ -13,7 +13,7 @@ class CanceledError extends FaxiosError {
    *
    * @returns {CanceledError} The created error.
    */
-  constructor(message?: string | null, config?: FaxiosRequestConfig, request?: unknown) {
+  constructor(message?: null | string, config?: FaxiosRequestConfig, request?: unknown) {
     super(message == null ? "canceled" : message, FaxiosError.ERR_CANCELED, config as InternalFaxiosRequestConfig, request);
     this.name = "CanceledError";
     (this as unknown as Record<string, unknown>)["__CANCEL__"] = true;

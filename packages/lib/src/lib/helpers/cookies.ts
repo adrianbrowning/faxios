@@ -2,9 +2,9 @@ import platform from "../platform.js";
 import utils from "../utils.js";
 
 type CookieManager = {
-  write: (name: string, value: string, expires?: number, path?: string, domain?: string, secure?: boolean, sameSite?: string) => void;
-  read: (name: string) => string | null;
+  read: (name: string) => null | string;
   remove: (name: string) => void;
+  write: (name: string, value: string, expires?: number, path?: string, domain?: string, secure?: boolean, sameSite?: string) => void;
 };
 
 const _globalThis = globalThis as { document?: { cookie?: string; }; };
@@ -36,7 +36,7 @@ export default platform.hasStandardBrowserEnv
       _globalThis.document.cookie = cookie.join("; ");
     },
 
-    read(name: string): string | null {
+    read(name: string): null | string {
       if (!_globalThis.document) return null;
       // Match name=value by splitting on the semicolon separator instead of building a
       // RegExp from `name` — interpolating an unescaped string into a RegExp would let

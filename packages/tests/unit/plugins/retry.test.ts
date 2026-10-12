@@ -8,7 +8,7 @@ import { retry } from "#src/lib/plugins/retry.ts";
 
 const URL = "http://localhost/retry";
 
-type Reply = number | "network" | { status: number; headers: Record<string, string>; };
+type Reply = "network" | number | { headers: Record<string, string>; status: number; };
 
 // A fetch that plays back one reply per call and records how many calls it saw.
 function scriptedFetch(replies: Array<Reply>) {

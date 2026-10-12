@@ -9,16 +9,16 @@ import utils from "../utils.js";
 const $internals = Symbol("internals");
 
 type HeaderMatcher =
-  | string
+  | ((this: FaxiosHeaders, value: string, name: string) => boolean)
   | RegExp
-  | ((this: FaxiosHeaders, value: string, name: string) => boolean);
+  | string;
 
 type HeaderInput =
-  | Record<string, unknown>
   | FaxiosHeaders
+  | null
+  | Record<string, unknown>
   | string
-  | undefined
-  | null;
+  | undefined;
 
 /** Matches a `FaxiosHeaders` instance by its type-only brand. */
 export type FaxiosHeadersInstance = Pick<FaxiosHeaders, typeof faxiosHeadersBrand>;
@@ -31,7 +31,7 @@ function normalizeHeader(header: string): string {
 // eslint-disable-next-line sonarjs/function-return-type
 function normalizeValue(
   value: FaxiosHeaderValue | undefined
-): string | Array<string> | false | null | undefined {
+): Array<string> | false | null | string | undefined {
   if (value == null) {
     return value;
   }
@@ -64,9 +64,9 @@ function matchHeaderValue(
   value: unknown,
   header: string,
   filter:
-    | string
-    | RegExp
     | ((this: FaxiosHeaders, value: string, name: string) => boolean)
+    | RegExp
+    | string
     | undefined,
   isHeaderNameFilter?: boolean
 ): boolean | undefined {
@@ -176,7 +176,7 @@ class FaxiosHeaders {
   declare hasAuthorization: (matcher?: HeaderMatcher) => boolean;
 
   constructor(
-    headers?: Record<string, unknown> | FaxiosHeaders | string | null
+    headers?: FaxiosHeaders | null | Record<string, unknown> | string
   ) {
     headers && this.set(headers);
   }
@@ -244,17 +244,17 @@ class FaxiosHeaders {
 
   get(header: string): FaxiosHeaderValue | undefined;
   get(header: string, parser: true): Record<string, string> | undefined;
-  get(header: string, parser: RegExp): RegExpExecArray | null | undefined;
+  get(header: string, parser: RegExp): null | RegExpExecArray | undefined;
   get<R>(header: string, parser: (this: FaxiosHeaders, value: FaxiosHeaderValue, header: string) => R): R | undefined;
   get(
     header: string,
     parser?:
-      | RegExp
       | ((
         this: FaxiosHeaders,
         value: FaxiosHeaderValue,
         header: string
       ) => unknown)
+      | RegExp
       | true
   ): unknown {
     header = normalizeHeader(header);
@@ -317,7 +317,7 @@ class FaxiosHeaders {
     return false;
   }
 
-  delete(header: string | Array<string>, matcher?: HeaderMatcher): boolean {
+  delete(header: Array<string> | string, matcher?: HeaderMatcher): boolean {
     const self = this;
     let deleted = false;
 
@@ -450,15 +450,15 @@ class FaxiosHeaders {
   }
 
   static from(
-    thing?: Record<string, unknown> | FaxiosHeaders | string | null
+    thing?: FaxiosHeaders | null | Record<string, unknown> | string
   ): FaxiosHeaders {
     return thing instanceof this ? thing : new this(thing);
   }
 
   static concat(
-    first: Record<string, unknown> | FaxiosHeaders | string | undefined | null,
+    first: FaxiosHeaders | null | Record<string, unknown> | string | undefined,
     ...targets: Array<
-      Record<string, unknown> | FaxiosHeaders | string | undefined | null
+      FaxiosHeaders | null | Record<string, unknown> | string | undefined
     >
   ): FaxiosHeaders {
     const computed = new this(first);
@@ -468,7 +468,7 @@ class FaxiosHeaders {
     return computed;
   }
 
-  static accessor(header: string | Array<string>): typeof FaxiosHeaders {
+  static accessor(header: Array<string> | string): typeof FaxiosHeaders {
     const self = this as unknown as Record<
       symbol,
       { accessors: Record<string, boolean>; }

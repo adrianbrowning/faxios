@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import CanceledError from "#src/lib/cancel/CanceledError.js";
 import isCancel from "#src/lib/cancel/isCancel.js";
 

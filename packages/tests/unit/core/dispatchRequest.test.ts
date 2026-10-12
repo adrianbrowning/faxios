@@ -223,7 +223,7 @@ describe("core::dispatchRequest", () => {
         method: "post",
         data,
         env: {
-          fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+          fetch: async (_input: Request | string | URL, init?: RequestInit) => {
             capturedInit = init;
             return new Response("{\"ok\":true}", {
               status: 200,

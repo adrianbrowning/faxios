@@ -10,19 +10,19 @@ export const jsonResponse = (body: unknown = {}, init: ResponseInit = {}): Respo
   });
 
 type ResponseSpec = {
-  status?: number;
-  statusText?: string;
   body?: BodyInit | null;
   headers?: HeadersInit;
+  status?: number;
+  statusText?: string;
 };
 
 export type FetchMockController = {
+  [Symbol.dispose]: () => void;
+  failNetworkError: () => void;
+  fetch: ReturnType<typeof vi.fn>;
   readonly lastRequest: Request | undefined;
   readonly requests: Array<Request>;
-  fetch: ReturnType<typeof vi.fn>;
   respondWith: (init: ResponseSpec) => void;
-  failNetworkError: () => void;
-  [Symbol.dispose]: () => void;
 };
 
 export const installFetchMock = (

@@ -12,18 +12,18 @@ import { VERSION } from "#src/lib/env/data.js";
 import type { GenericAbortSignal } from "#src/lib/types.js";
 
 type FetchFn = (
-  input: string | Request | URL,
+  input: Request | string | URL,
   init?: RequestInit
 ) => Promise<Response>;
 import type { FaxiosProgressEvent } from "#src/lib/types.js";
 import utils from "#src/lib/utils.js";
 import {
-  startHTTPServer,
-  stopHTTPServer,
-  setTimeoutAsync,
-  makeReadableStream,
   generateReadable,
-  makeEchoStream
+  makeEchoStream,
+  makeReadableStream,
+  setTimeoutAsync,
+  startHTTPServer,
+  stopHTTPServer
 } from "../../setup/server.js";
 
 const SERVER_PORT = 8010;
@@ -799,7 +799,7 @@ describe.runIf(typeof fetch === "function")(
         const response = await fetchFaxios.get(
           `http://localhost:${(server.address() as AddressInfo).port}/`,
           {
-            auth: {} as { username: string; password: string; },
+            auth: {} as { password: string; username: string; },
           }
         );
 
@@ -953,7 +953,7 @@ describe.runIf(typeof fetch === "function")(
                 }
               ),
             err => {
-              const e = err as { name: string; code: string; message: string; };
+              const e = err as { code: string; message: string; name: string; };
               assert.strictEqual(e.name, "FaxiosError");
               assert.strictEqual(e.code, "ETIMEDOUT");
               assert.match(e.message, /timeout of 200ms exceeded/);
@@ -984,7 +984,7 @@ describe.runIf(typeof fetch === "function")(
       };
 
       const assertUserAbort = (err: unknown) => {
-        const e = err as { name: string; code: string; };
+        const e = err as { code: string; name: string; };
         assert.strictEqual(e.name, "CanceledError");
         assert.strictEqual(e.code, "ERR_CANCELED");
         assert.strictEqual(faxios.isCancel(err), true);
@@ -1056,13 +1056,13 @@ describe.runIf(typeof fetch === "function")(
                 timeout: 50,
                 env: {
                   fetch: safariFetch as unknown as (
-                    input: string | Request | URL,
+                    input: Request | string | URL,
                     init?: RequestInit
                   ) => Promise<Response>,
                 },
               }),
             err => {
-              const e = err as { name: string; code: string; message: string; };
+              const e = err as { code: string; message: string; name: string; };
               assert.strictEqual(e.name, "FaxiosError");
               assert.strictEqual(e.code, "ETIMEDOUT");
               assert.match(e.message, /timeout of 50ms exceeded/);
@@ -1425,7 +1425,7 @@ describe.runIf(typeof fetch === "function")(
                 text: async () => "test",
               };
             },
-          } as unknown as { Request?: typeof Request; fetch?: typeof fetch; },
+          } as unknown as { fetch?: typeof fetch; Request?: typeof Request; },
         });
 
         assert.strictEqual(headers.get("foo"), "1");
@@ -1448,7 +1448,7 @@ describe.runIf(typeof fetch === "function")(
                 text: async () => "test",
               };
             },
-          } as unknown as { Request?: typeof Request; fetch?: typeof fetch; },
+          } as unknown as { fetch?: typeof fetch; Request?: typeof Request; },
         });
 
         assert.strictEqual(headers.get("foo"), "1");
@@ -1659,7 +1659,7 @@ describe.runIf(typeof fetch === "function")(
             env: {
               Request: null,
               async fetch(
-                _url: string | Request | URL,
+                _url: Request | string | URL,
                 options?: RequestInit & {
                   body?: AsyncIterable<{ byteLength: number; }>;
                 }
@@ -1676,7 +1676,7 @@ describe.runIf(typeof fetch === "function")(
                   text: async () => "ok",
                 };
               },
-            } as unknown as { Request?: typeof Request; fetch?: typeof fetch; },
+            } as unknown as { fetch?: typeof fetch; Request?: typeof Request; },
           }),
           err => {
             const e = err as { code: string; message: string; };
@@ -1699,7 +1699,7 @@ describe.runIf(typeof fetch === "function")(
         let fetchCalled = false;
 
         class NoStreamRequest {
-          constructor(_url: string | Request | URL, init?: { body?: unknown; }) {
+          constructor(_url: Request | string | URL, init?: { body?: unknown; }) {
             if (init && utils.isReadableStream!(init.body)) {
               throw new TypeError(
                 "ReadableStream request bodies are unsupported"
@@ -1726,7 +1726,7 @@ describe.runIf(typeof fetch === "function")(
                   text: async () => "ok",
                 };
               },
-            } as unknown as { Request?: typeof Request; fetch?: typeof fetch; },
+            } as unknown as { fetch?: typeof fetch; Request?: typeof Request; },
           }),
           err => {
             const e = err as { code: string; message: string; };

@@ -1,7 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "vitest";
-import { createTempFixture, cleanupTempFixture } from "./helpers/fixture.js";
+import { cleanupTempFixture, createTempFixture } from "./helpers/fixture.js";
 import { runCommand } from "./helpers/run-command.js";
 
 const suiteRoot = path.resolve(

@@ -71,7 +71,7 @@ const HttpStatusCode = {
 };
 
 Object.entries(HttpStatusCode).forEach(([ key, value ]) => {
-  (HttpStatusCode as Record<string | number, string | number>)[value] = key;
+  (HttpStatusCode as Record<number | string, number | string>)[value] = key;
 });
 
 export default HttpStatusCode;

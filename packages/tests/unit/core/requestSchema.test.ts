@@ -14,7 +14,7 @@ describe("requestSchema validation", () => {
     await faxios.post("http://localhost/test", { name: "raw" }, {
       requestSchema: schema,
       env: {
-        fetch: async (_input: string | URL | Request, init?: RequestInit) => {
+        fetch: async (_input: Request | string | URL, init?: RequestInit) => {
           capturedBody = init?.body as string;
           return new Response(JSON.stringify({}), { status: 200, headers: { "content-type": "application/json" } });
         },

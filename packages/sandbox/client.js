@@ -14,7 +14,9 @@ function handleFailure(data) {
 }
 
 // GET
-faxios.get(URL, { params: BODY }).then(handleSuccess).catch(handleFailure);
+faxios.get(URL, { params: BODY }).then(handleSuccess)
+  .catch(handleFailure);
 
 // POST
-faxios.post(URL, BODY).then(handleSuccess).catch(handleFailure);
+faxios.post(URL, BODY).then(handleSuccess)
+  .catch(handleFailure);

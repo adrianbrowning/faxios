@@ -3,9 +3,9 @@
 import FaxiosError from "../core/FaxiosError.js";
 import type FaxiosHeaders from "../core/FaxiosHeaders.js";
 import type {
-  InternalFaxiosRequestConfig,
   FaxiosRequestHeaders,
-  FaxiosResponse
+  FaxiosResponse,
+  InternalFaxiosRequestConfig
 } from "../types.js";
 import utils from "../utils.js";
 
@@ -144,7 +144,7 @@ export const cleanFormDataContentType = (
   headers: FaxiosRequestHeaders
 ): void => {
   if (utils.isFormData(data)) {
-    const contentType = headers.getContentType() as string | null | undefined;
+    const contentType = headers.getContentType() as null | string | undefined;
     if (
       contentType &&
       /^multipart\/form-data/i.test(contentType) &&

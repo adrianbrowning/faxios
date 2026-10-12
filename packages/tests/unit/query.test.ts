@@ -9,7 +9,7 @@ describe("QUERY method", () => {
     it("should make a request with the QUERY HTTP method", async () => {
       const response = await faxios.query("http://localhost/test", null, {
         env: {
-          fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+          fetch: async (_input: Request | string | URL, init?: RequestInit) => {
             assert.strictEqual(init?.method, "QUERY");
             return new Response(null, { status: 200 });
           },
@@ -27,7 +27,7 @@ describe("QUERY method", () => {
 
       await faxios.query("http://localhost/search", requestBody, {
         env: {
-          fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+          fetch: async (_input: Request | string | URL, init?: RequestInit) => {
             assert.deepStrictEqual(init?.body, JSON.stringify(requestBody));
             return new Response(null, { status: 200 });
           },
@@ -42,7 +42,7 @@ describe("QUERY method", () => {
           Authorization: "Bearer token-abc",
         },
         env: {
-          fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+          fetch: async (_input: Request | string | URL, init?: RequestInit) => {
             const headers = init?.headers as Record<string, string>;
             assert.strictEqual(headers["X-Custom-Header"], "custom-value");
             assert.strictEqual(headers["Authorization"], "Bearer token-abc");
@@ -60,7 +60,7 @@ describe("QUERY method", () => {
         { fields: [ "name" ] },
         {
           env: {
-            fetch: async (input: string | Request | URL, init?: RequestInit) => {
+            fetch: async (input: Request | string | URL, init?: RequestInit) => {
               const url = input instanceof Request ? input.url : String(input);
               assert.strictEqual(url, "http://example.com/api/resources");
               assert.strictEqual(init?.method, "QUERY");
@@ -77,7 +77,7 @@ describe("QUERY method", () => {
         { key: "value" },
         {
           env: {
-            fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+            fetch: async (_input: Request | string | URL, init?: RequestInit) => {
               const headers = init?.headers as Record<string, string>;
               assert.ok(
                 headers["Content-Type"]?.includes("application/json"),
@@ -97,7 +97,7 @@ describe("QUERY method", () => {
 
       const response = await instance.query("http://localhost/test", null, {
         env: {
-          fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+          fetch: async (_input: Request | string | URL, init?: RequestInit) => {
             assert.strictEqual(init?.method, "QUERY");
             return new Response(null, { status: 200 });
           },
@@ -115,7 +115,7 @@ describe("QUERY method", () => {
       await instance.query("http://localhost/test", null, {
         headers: { "X-Request-Header": "from-request" },
         env: {
-          fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+          fetch: async (_input: Request | string | URL, init?: RequestInit) => {
             const headers = init?.headers as Record<string, string>;
             assert.strictEqual(headers["X-Instance-Header"], "from-instance");
             assert.strictEqual(headers["X-Request-Header"], "from-request");
@@ -133,7 +133,7 @@ describe("QUERY method", () => {
         url: "http://localhost/test",
         data: { selector: "*" },
         env: {
-          fetch: async (_input: string | Request | URL, init?: RequestInit) => {
+          fetch: async (_input: Request | string | URL, init?: RequestInit) => {
             assert.strictEqual(init?.method, "QUERY");
             assert.deepStrictEqual(init?.body, JSON.stringify({ selector: "*" }));
             return new Response(JSON.stringify({ result: "ok" }), {
@@ -172,7 +172,7 @@ describe("QUERY method", () => {
       );
 
       try {
-        const { data } = await faxios.query<{ method: string; url: string; body: string; headers: Record<string, string>; }>(
+        const { data } = await faxios.query<{ body: string; headers: Record<string, string>; method: string; url: string; }>(
           `http://localhost:${(server.address() as AddressInfo).port}/search`,
           { selector: "field1" }
         );
@@ -207,7 +207,7 @@ describe("QUERY method", () => {
       );
 
       try {
-        const { data } = await faxios.query<{ method: string; headers: Record<string, string>; }>(
+        const { data } = await faxios.query<{ headers: Record<string, string>; method: string; }>(
           `http://localhost:${(server.address() as AddressInfo).port}/test`,
           null,
           {

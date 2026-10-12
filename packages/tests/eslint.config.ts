@@ -170,6 +170,8 @@ export const extraRules: Array<Linter.Config> = [
       "big-o/no-nested-array-spread": "off",
     },
   },
+  // Tests import lib internals through `#src/*` (tsconfig paths -> ../lib/src/*) on purpose.
+  { rules: { "gingacodemonkey/workspace-boundaries": "off" } },
 ];
 
 const config: Array<Linter.Config> = [

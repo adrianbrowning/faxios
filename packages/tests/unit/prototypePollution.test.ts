@@ -17,8 +17,8 @@ import utils from "#src/lib/utils.js";
 // All faxios config keys overlap with FaxiosRequestConfig and are accessed via ObjProto.
 declare global {
   interface Object {
-    polluted?: unknown;
     customNested?: unknown;
+    polluted?: unknown;
   }
 }
 

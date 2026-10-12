@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import isAbsoluteURL from "#src/lib/helpers/isAbsoluteURL.js";
 
 describe("helpers::isAbsoluteURL", () => {

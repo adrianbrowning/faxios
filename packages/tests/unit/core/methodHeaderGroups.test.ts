@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import faxios from "#src/index.ts";
 import type { FaxiosConfigHeaders } from "#src/index.ts";
 
@@ -6,7 +6,7 @@ const GROUPS = [ "common", "delete", "get", "head", "options", "post", "put", "p
 
 function captureHeaders() {
   const seen: { headers: Headers | undefined; } = { headers: undefined };
-  const fetch = async (input: string | URL | Request, init?: RequestInit) => {
+  const fetch = async (input: Request | string | URL, init?: RequestInit) => {
     seen.headers = input instanceof Request ? input.headers : new Headers(init?.headers);
     return new Response("{}", { headers: { "Content-Type": "application/json" } });
   };

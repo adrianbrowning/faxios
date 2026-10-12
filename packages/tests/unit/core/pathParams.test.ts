@@ -11,7 +11,7 @@ describe("pathParams substitution", () => {
     await faxios.get("http://localhost/users/{id}", {
       pathParams: { id: 42 },
       env: {
-        fetch: async (input: string | URL | Request) => {
+        fetch: async (input: Request | string | URL) => {
           capturedUrl = input instanceof Request ? input.url : String(input);
           return new Response(null, { status: 200 });
         },
@@ -24,7 +24,7 @@ describe("pathParams substitution", () => {
     let capturedUrl = "";
     await faxios.get("http://localhost/users/{id}", {
       env: {
-        fetch: async (input: string | URL | Request) => {
+        fetch: async (input: Request | string | URL) => {
           capturedUrl = input instanceof Request ? input.url : String(input);
           return new Response(null, { status: 200 });
         },
@@ -60,7 +60,7 @@ describe("pathParamsSchema validation", () => {
       pathParams: { id: "raw" },
       pathParamsSchema: schema,
       env: {
-        fetch: async (input: string | URL | Request) => {
+        fetch: async (input: Request | string | URL) => {
           capturedUrl = input instanceof Request ? input.url : String(input);
           return new Response(null, { status: 200 });
         },
@@ -259,7 +259,7 @@ describe("pathParams encoding — no double-encoding through pipeline", () => {
     let url = "";
     return {
       get url() { return url; },
-      fetch: async (input: string | URL | Request) => {
+      fetch: async (input: Request | string | URL) => {
         url = input instanceof Request ? input.url : String(input);
         return new Response(null, { status: 200 });
       },

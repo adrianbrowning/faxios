@@ -2,9 +2,9 @@ import { assertEquals } from "@std/assert";
 import faxios from "faxios";
 
 const createFetchMock = (
-  responseFactory?: (input: any, init: any) => Response | Promise<Response>
+  responseFactory?: (input: any, init: any) => Promise<Response> | Response
 ) => {
-  const calls: Array<{ input: any; init: any; }> = [];
+  const calls: Array<{ init: any; input: any; }> = [];
 
   const mockFetch = async (input: any, init: any = {}) => {
     calls.push({ input, init });
@@ -58,7 +58,7 @@ Deno.test("fetch adapter: GET resolves JSON response", async () => {
 
 Deno.test("fetch adapter: forwards HTTP methods", async () => {
   const run = async (
-    method: "delete" | "head" | "options" | "post" | "put" | "patch",
+    method: "delete" | "head" | "options" | "patch" | "post" | "put",
     expected: string
   ) => {
     const { mockFetch, getCalls } = createFetchMock();

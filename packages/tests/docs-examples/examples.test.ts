@@ -27,13 +27,13 @@ function placeholderIn(url: string): boolean {
 }
 
 class PageRequest extends Request {
-  constructor(input: string | URL | Request, init?: RequestInit) {
+  constructor(input: Request | string | URL, init?: RequestInit) {
     super(typeof input === "string" ? new URL(input, PAGE_URL) : input, init);
   }
 }
 
 // Every request gets a JSON `{}` body with the block's status (200 unless it sets status=).
-const fakeFetch = async (input: string | URL | Request, init?: RequestInit) => {
+const fakeFetch = async (input: Request | string | URL, init?: RequestInit) => {
   // Build and read the request as a real fetch would, so bad URLs and bodies still throw.
   const request = new PageRequest(input, init);
   if (checkPlaceholders && placeholderIn(request.url)) {

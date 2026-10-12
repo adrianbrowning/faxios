@@ -1,6 +1,6 @@
 import fs from "node:fs";
-import path from "node:path";
 import http from "node:http";
+import path from "node:path";
 
 let server;
 
@@ -35,7 +35,7 @@ function handleApiRequest(req, res) {
   let result;
   let data = "";
 
-  req.on("data", (chunk) => {
+  req.on("data", chunk => {
     data += chunk;
   });
 
@@ -48,7 +48,8 @@ function handleApiRequest(req, res) {
         method: req.method,
         headers: req.headers,
       };
-    } catch (e) {
+    }
+    catch (e) {
       console.error("Error:", e.message);
       status = 400;
       result = {
@@ -122,10 +123,10 @@ server.listen(PORT, () => {
  *
  * @param {NodeJS.ErrnoException} error - The server error object.
  */
-server.on("error", (error) => {
+server.on("error", error => {
   if (error.code === "EADDRINUSE") {
     console.log(
-      `Address localhost:${PORT} in use. Please retry when the port is available!`,
+      `Address localhost:${PORT} in use. Please retry when the port is available!`
     );
     server.close();
   }

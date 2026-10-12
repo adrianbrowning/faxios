@@ -3,13 +3,13 @@
 import FaxiosURLSearchParams from "./helpers/FaxiosURLSearchParams.js";
 
 const _globalThis = globalThis as {
-  window?: { location?: { href?: string; }; };
-  document?: unknown;
-  navigator?: { product?: string; userAgent?: string; };
-  WorkerGlobalScope?: unknown;
-  self?: { importScripts?: unknown; };
-  FormData?: new () => object;
   Blob?: new (...args: Array<unknown>) => object;
+  document?: unknown;
+  FormData?: new () => object;
+  navigator?: { product?: string; userAgent?: string; };
+  self?: { importScripts?: unknown; };
+  window?: { location?: { href?: string; }; };
+  WorkerGlobalScope?: unknown;
 };
 
 const hasBrowserEnv = typeof _globalThis.window !== "undefined" && typeof _globalThis.document !== "undefined";

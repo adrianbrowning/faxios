@@ -26,7 +26,7 @@ describe("adapters - network-error details", () => {
       assert.fail("request unexpectedly succeeded");
     }
     catch (err) {
-      const e = err as Error & { isFaxiosError: boolean; code: string; };
+      const e = err as Error & { code: string; isFaxiosError: boolean; };
       assert.ok(e instanceof Error, "should be an Error");
       assert.strictEqual(e.isFaxiosError, true, "isFaxiosError should be true");
 

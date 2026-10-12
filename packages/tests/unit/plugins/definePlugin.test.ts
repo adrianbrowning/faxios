@@ -30,7 +30,7 @@ const provider = definePlugin({
 const withOptions = definePlugin({
   name: "withOptions",
   middleware: async (ctx: FaxiosContext<CacheOptions>, next) => {
-    expectTypeOf(ctx.config.cache).toEqualTypeOf<{ ttlMs?: number; } | undefined>();
+    expectTypeOf(ctx.config.cache).toEqualTypeOf<undefined | { ttlMs?: number; }>();
     return next(ctx);
   },
 });
@@ -71,7 +71,7 @@ describe("definePlugin", () => {
     expectTypeOf(withOptions).toEqualTypeOf<FaxiosPlugin<{ options: CacheOptions; }>>();
     expectTypeOf(consumer).toEqualTypeOf<FaxiosPlugin<{ requires: AuthCapability; }>>();
     // Capabilities the plugin provides itself aren't required.
-    expectTypeOf(everySlot).toEqualTypeOf<FaxiosPlugin<{ requires: AuthCapability; provides: CacheCapability; options: CacheOptions; }>>();
+    expectTypeOf(everySlot).toEqualTypeOf<FaxiosPlugin<{ options: CacheOptions; provides: CacheCapability; requires: AuthCapability; }>>();
     expectTypeOf(definePlugin({ name: "bare", middleware: async (ctx, next) => next(ctx) })).toEqualTypeOf<FaxiosPlugin>();
     expectTypeOf(definePlugin({ name: "nullish", provides: undefined, middleware: async (ctx, next) => next(ctx) })).toEqualTypeOf<FaxiosPlugin>();
   });

@@ -25,7 +25,7 @@
     "test:docs-examples": "node docs-examples/extract.ts && tsc -p docs-examples/tsconfig.json && vitest run --config docs-examples/vitest.config.ts"
   },
   "devDependencies": {
-    "@gcmdev/faxios": "workspace:*",
+    "@gcmdev/faxios": "workspace:@gcmdev/faxios",
     "@gingacodemonkey/config": "^0.0.38",
     "@types/node": "^24.19.0",
     "@vitest/browser": "^4.1.11",

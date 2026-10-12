@@ -5,7 +5,7 @@ declare module "abortcontroller-polyfill/dist/cjs-ponyfill.js" {
 
 declare module "formidable" {
   import type { IncomingMessage } from "node:http";
-  type Fields = Record<string, string | Array<string>>;
+  type Fields = Record<string, Array<string> | string>;
   type Files = Record<string, unknown>;
   class IncomingForm {
     parse(req: IncomingMessage, callback: (err: Error | null, fields: Fields, files: Files) => void): void;

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { FaxiosHeaders } from "#src/index.js";
 import mergeConfig from "#src/lib/core/mergeConfig.js";
 import defaults from "#src/lib/defaults/index.js";

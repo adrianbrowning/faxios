@@ -14,8 +14,8 @@ const DIRECTIVE = "// @ts-expect-error";
 const SUFFIX = ".expect-error-check.ts";
 const write = process.argv.includes("--write");
 
-type Directive = { index: number; code: string | undefined; };
-type Copy = { source: string; copy: string; lines: Array<string>; directives: Array<Directive>; };
+type Directive = { code: string | undefined; index: number; };
+type Copy = { copy: string; directives: Array<Directive>; lines: Array<string>; source: string; };
 const copies: Array<Copy> = [];
 
 function walk(dir: string): void {
