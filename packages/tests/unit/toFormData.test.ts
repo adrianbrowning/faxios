@@ -306,3 +306,59 @@ describe("helpers::toFormData", () => {
     assert.ok(!keys.some(key => key.includes("name")));
   });
 });
+
+describe("helpers::toFormData per-call state (#172)", () => {
+  const entries = (form: globalThis.FormData) => [ ...form.entries() ].map(([ k, v ]) => [ k, String(v) ]);
+
+  it("isolates a re-entrant visitor's inner call from the outer FormData", () => {
+    const inner = new globalThis.FormData();
+    const outer = toFormData({ a: 1, b: 2 }, new globalThis.FormData() as unknown as GenericFormData, {
+      visitor(this: GenericFormData, value: unknown, key: number | string, path: Array<number | string> | null, helpers: { defaultVisitor: (...args: Array<unknown>) => boolean; }) {
+        if (key === "a") toFormData({ x: 9 }, inner as unknown as GenericFormData);
+        return helpers.defaultVisitor.call(this, value, key, path, helpers);
+      },
+    }) as unknown as globalThis.FormData;
+    assert.deepStrictEqual(entries(outer), [[ "a", "1" ], [ "b", "2" ]]);
+    assert.deepStrictEqual(entries(inner), [[ "x", "9" ]]);
+  });
+
+  it("dots/indexes options on one call don't change a later default call", () => {
+    toFormData({ arr: [ 1 ], o: { k: 1 } }, new globalThis.FormData() as unknown as GenericFormData, { dots: true, indexes: true });
+    const form = toFormData({ arr: [ 1 ], o: { k: 1 } }, new globalThis.FormData() as unknown as GenericFormData) as unknown as globalThis.FormData;
+    assert.deepStrictEqual(entries(form), [[ "arr[]", "1" ], [ "o[k]", "1" ]]);
+  });
+
+  it("uses the configured Blob option for binary values", () => {
+    const made: Array<unknown> = [];
+    class MyBlob extends globalThis.Blob {
+      constructor(parts: Array<BlobPart>) {
+        super(parts);
+        made.push(this);
+      }
+    }
+    const form = toFormData({ bin: new Uint8Array([ 1 ]) }, new globalThis.FormData() as unknown as GenericFormData, { Blob: MyBlob }) as unknown as globalThis.FormData;
+    assert.strictEqual(made.length, 1);
+    assert.ok(form.get("bin") instanceof globalThis.Blob);
+  });
+
+  const code = (fn: () => unknown) => {
+    try {
+      fn();
+    }
+    catch (err) {
+      assert.ok(err instanceof FaxiosError);
+      return err.code;
+    }
+    assert.fail("expected a throw");
+  };
+
+  it("gives each throw a FaxiosError code", () => {
+    assert.strictEqual(code(() => toFormData("x", fd())), FaxiosError.ERR_BAD_REQUEST);
+    assert.strictEqual(code(() => toFormData({}, fd(), { visitor: 1 })), FaxiosError.ERR_BAD_OPTION_VALUE);
+    const self: Record<string, unknown> = {};
+    self["self"] = self;
+    assert.strictEqual(code(() => toFormData(self, fd())), FaxiosError.ERR_BAD_REQUEST);
+    assert.strictEqual(code(() => toFormData({ b: new globalThis.Blob([ "x" ]) }, fd())), FaxiosError.ERR_NOT_SUPPORT);
+    assert.strictEqual(code(() => toFormData({ b: Buffer.from("x") }, fd())), FaxiosError.ERR_NOT_SUPPORT);
+  });
+});

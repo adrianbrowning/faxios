@@ -152,6 +152,8 @@ export interface SerializerVisitor {
 }
 
 export interface SerializerOptions {
+  /** FormData only: Blob constructor used to wrap `ArrayBuffer` and typed-array values. Defaults to `globalThis.Blob`. */
+  Blob?: new (parts: Array<BlobPart>) => Blob;
   dots?: boolean;
   indexes?: boolean | null;
   /** Maximum nesting depth to serialize; deeper objects throw `ERR_FORM_DATA_DEPTH_EXCEEDED`. `Infinity` disables the check. */

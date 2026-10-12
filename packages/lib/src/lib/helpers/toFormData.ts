@@ -91,7 +91,7 @@ const predicates = utils.toFlatObject(utils, {}, null as unknown as false, funct
  */
 function toFormData(obj: unknown, formData?: GenericFormData | null, options?: Record<string, unknown>): GenericFormData {
   if (!utils.isObject(obj)) {
-    throw new TypeError("target must be an object");
+    throw new FaxiosError("target must be an object", FaxiosError.ERR_BAD_REQUEST);
   }
 
   const FormDataCtor = (globalThis as Record<string, unknown>)["FormData"] as (new () => GenericFormData) | undefined;
@@ -120,16 +120,16 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
   const visitor = (options["visitor"] || defaultVisitor) as SerializerVisitor;
   const dots = options["dots"];
   const indexes = options["indexes"];
-  const _Blob = options["Blob"] || (typeof (globalThis as Record<string, unknown>)["Blob"] !== "undefined" && (globalThis as Record<string, unknown>)["Blob"]);
+  const _Blob = (options["Blob"] || (globalThis as Record<string, unknown>)["Blob"]) as (new (parts: Array<unknown>) => unknown) | undefined;
   const maxDepth =
     options["maxDepth"] === undefined
       ? DEFAULT_FORM_DATA_MAX_DEPTH
       : (options["maxDepth"] as number);
-  const useBlob = _Blob && utils.isSpecCompliantForm(formData);
+  const useBlob = typeof _Blob === "function" && utils.isSpecCompliantForm(formData);
   const stack: Array<unknown> = [];
 
   if (!utils.isFunction(visitor)) {
-    throw new TypeError("visitor must be a function");
+    throw new FaxiosError("visitor must be a function", FaxiosError.ERR_BAD_OPTION_VALUE);
   }
 
   function convertValue(value: unknown): unknown {
@@ -143,16 +143,15 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
       return String(value);
     }
 
-    if (!useBlob && utils.isBlob(value)) {
-      throw new FaxiosError("Blob is not supported. Use a Buffer instead.");
+    if (!useBlob && (utils.isBlob(value) || utils.isArrayBuffer(value) || utils.isTypedArray(value))) {
+      throw new FaxiosError(
+        "Binary FormData values need a spec-compliant FormData and a Blob constructor (set the `Blob` option)",
+        FaxiosError.ERR_NOT_SUPPORT
+      );
     }
 
     if (utils.isArrayBuffer(value) || utils.isTypedArray(value)) {
-      const BlobCtor = (globalThis as Record<string, unknown>)["Blob"] as (new (parts: Array<unknown>) => unknown) | undefined;
-      if (useBlob && typeof BlobCtor === "function") {
-        return new BlobCtor([ value ]);
-      }
-      throw new FaxiosError("Blob is required for binary FormData values in this environment", FaxiosError.ERR_NOT_SUPPORT);
+      return new (_Blob as new (parts: Array<unknown>) => unknown)([ value ]);
     }
 
     return value;
@@ -250,11 +249,12 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
     return false;
   }
 
-  const exposedHelpers: FormDataVisitorHelpers = Object.assign(predicates, {
-    defaultVisitor: defaultVisitor,
+  const exposedHelpers: FormDataVisitorHelpers = {
+    ...predicates,
+    defaultVisitor,
     convertValue,
     isVisitable,
-  });
+  };
 
   function build(value: unknown, path?: Array<number | string>, depth = 0): void {
     if (utils.isUndefined(value)) return;
@@ -262,7 +262,7 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
     throwIfMaxDepthExceeded(depth);
 
     if (stack.indexOf(value) !== -1) {
-      throw new Error("Circular reference detected in " + (path ?? []).join("."));
+      throw new FaxiosError("Circular reference detected in " + (path ?? []).join("."), FaxiosError.ERR_BAD_REQUEST);
     }
 
     stack.push(value);
@@ -284,10 +284,6 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
     });
 
     stack.pop();
-  }
-
-  if (!utils.isObject(obj)) {
-    throw new TypeError("data must be an object");
   }
 
   build(obj);
