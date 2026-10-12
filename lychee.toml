@@ -1,10 +1,11 @@
 # Link check for the repository's Markdown (.github/workflows/links.yml).
 # Docs-site routes (/pages/...) are checked by the VitePress build instead.
 no_progress = true
-max_concurrency = 8
-max_retries = 3
-retry_wait_time = 5
-accept = ["200..=299", "429"]
+max_concurrency = 4
+max_retries = 5
+retry_wait_time = 10
+# 429 and 503 are rate limits (github.com answers 503 to busy runners), not dead links.
+accept = ["200..=299", "429", "503"]
 include_mail = false
 exclude = [
   '^https?://(localhost|127\.0\.0\.1)',
