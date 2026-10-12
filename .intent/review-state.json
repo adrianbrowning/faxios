@@ -3834,6 +3834,18 @@
       "evidence": [
         "Changed: packages/tests/vitest.config.js at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
+    },
+    "source:packages/docs/pages/advanced/multipart-form-data-format.md": {
+      "fingerprint": "5d8a38384a07705d1deb03815555e2cbb7ab932f48a48e932c1d6c094fb3c644",
+      "snapshot": {
+        "packages/docs/pages/advanced/multipart-form-data-format.md": "08f7c7c94e55e158fb2e87c97e7529bf872341b05a4298fb3dbb3e3ba2ed014d"
+      },
+      "head": "7809b9509ae1813a2eda607ce7d0593d742517cd",
+      "outcome": "no-change",
+      "reason": "Docs-only fix; the skill does not suggest the form-data package as a body",
+      "evidence": [
+        "Changed: packages/docs/pages/advanced/multipart-form-data-format.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
     }
   }
 }
