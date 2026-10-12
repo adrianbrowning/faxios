@@ -47,11 +47,11 @@ export type DefineConfig<
   D extends StandardSchemaV1 | undefined = undefined,
   R extends StandardSchemaV1 | undefined = undefined
 > = BasePerCallConfig & {
+  paramsSchema?: P;
   /**
    * Standard Schema that validates `pathParams` on every call; its output fills the `{key}`
    * placeholders. Makes `pathParams` required per call. A failure rejects with `ERR_BAD_PATH_PARAMS_SCHEMA`.
    */
-  paramsSchema?: P;
   pathParamsSchema?: PP;
   requestSchema?: D;
   responseSchema?: R;
