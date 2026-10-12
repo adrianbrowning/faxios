@@ -33,37 +33,37 @@ The following request-config options have direct security implications. They are
 
 ## Supply-chain hardening: `ignore-scripts` and lifecycle scripts
 
-The repository ships a project-level `.npmrc` that sets `ignore-scripts=true`. This blocks npm lifecycle scripts (`preinstall`, `install`, `postinstall`, `prepare`) from any direct or transitive dependency when running `npm install` or `npm ci` inside the repo. See [THREATMODEL.md](https://github.com/adrianbrowning/faxios/blob/main/THREATMODEL.md) (threat T-S2) for the rationale.
+The repository ships a project-level `.npmrc` that sets `ignore-scripts=true`. This blocks lifecycle scripts (`preinstall`, `install`, `postinstall`, `prepare`) from any direct or transitive dependency when you run `pnpm install` inside the repo. See [THREATMODEL.md](https://github.com/adrianbrowning/faxios/blob/main/THREATMODEL.md) (threat T-S2) for the rationale.
 
-One consequence: the repository's own `prepare` hook (which installs Husky's git hooks) does **not** run automatically. After your first install, enable the git hooks manually:
+One consequence: Husky's git hooks are not installed automatically. After your first install, enable them manually:
 
 ```bash
-npm ci
-npm rebuild husky && npx husky
+pnpm install --frozen-lockfile
+pnpm exec husky
 ```
 
-Run those two commands once per fresh checkout. You do **not** need to re-run them after every subsequent `npm install`.
+Run those two commands once per fresh checkout. You do **not** need to re-run them after later installs.
 
 ::: danger Do not remove `ignore-scripts=true`
-Removing `ignore-scripts=true` from `.npmrc` to "fix" the husky setup re-opens the lifecycle-script attack surface for every other package in the tree. All CI workflows already invoke npm with `--ignore-scripts`, so local behaviour matches CI.
+Removing `ignore-scripts=true` from `.npmrc` to "fix" the husky setup re-opens the lifecycle-script attack surface for every other package in the tree. CI installs with the same `.npmrc`, so local behaviour matches CI.
 :::
 
 We recommend the same `ignore-scripts=true` setting in any consumer project that pulls faxios (or any other dependency) into a build environment that handles secrets.
 
 ## Verifying a Release
 
-Every `faxios` tarball on npm is published from GitHub Actions with an [npm provenance attestation](https://docs.npmjs.com/generating-provenance-statements) that cryptographically binds the package to the workflow and commit SHA that produced it.
+Releases of `@gcmdev/faxios` published by the release workflow carry an [npm provenance attestation](https://docs.npmjs.com/generating-provenance-statements) that cryptographically binds the package to the workflow and commit SHA that produced it. Versions 0.1.0 to 0.2.1 were published by hand and have no attestation.
 
 Consumers can verify provenance locally:
 
 ```bash
-# Verify every package in your lockfile, including faxios
+# Verify every package in your lockfile, including @gcmdev/faxios
 npm audit signatures
 ```
 
-A successful verification proves the tarball was built in `faxios/faxios`' GitHub Actions environment on a known commit — it was not tampered with between build and registry. It does **not** prove the code in that commit is free of bugs.
+A successful verification proves the tarball was built in the `adrianbrowning/faxios` GitHub Actions environment on a known commit — it was not tampered with between build and registry. It does **not** prove the code in that commit is free of bugs.
 
-If `npm audit signatures` reports a missing or invalid attestation for a recent `faxios` version, treat it as a potential supply-chain incident and report via the private channel below.
+If `npm audit signatures` reports a missing or invalid attestation for a `@gcmdev/faxios` version newer than 0.2.1, treat it as a potential supply-chain incident and report via the private channel below.
 
 ## Reporting a Vulnerability
 

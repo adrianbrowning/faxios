@@ -1,6 +1,6 @@
 # Contributing
 
-We accept community contributions. By contributing to faxios, you agree to follow the [code of conduct](https://github.com/faxios/faxios/blob/master/CODE_OF_CONDUCT.md).
+We accept community contributions. By contributing to faxios, you agree to follow the [code of conduct](CODE_OF_CONDUCT.md).
 
 ## Code style
 

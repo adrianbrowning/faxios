@@ -45,5 +45,5 @@ This is a list of faxios-related libraries and resources. To add one, open a pul
 - [axiosist](https://github.com/Gerhut/axiosist) - Converts Node.js request handlers into faxios adapters for server unit tests
 - [faxios-mock-adapter](https://github.com/ctimmerm/faxios-mock-adapter) - Mocks faxios requests through a custom adapter
 - [faxios-test-instance](https://github.com/remcohaszing/faxios-test-instance) - Tests Node.js backends with faxios
-- [moxios](https://github.com/faxios/moxios) - Mocks faxios requests for testing
+- [moxios](https://github.com/axios/moxios) - Mocks axios requests for testing
 - [mocha-faxios](https://github.com/jdrydn/mocha-faxios) - Streamlines integration testing with Mocha and faxios

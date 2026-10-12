@@ -906,21 +906,11 @@ async function compareRequests(config) {
 
 ### Official Documentation
 - [faxios documentation](https://adrianbrowning.github.io/faxios/)
-- [faxios GitHub Repository](https://github.com/faxios/faxios)
-- [faxios Changelog](https://github.com/faxios/faxios/blob/main/CHANGELOG.md)
-
-### Migration Tools
-- [faxios Migration Codemod](https://github.com/faxios/faxios-migration-codemod) *(if available)*
-- [ESLint Rules for faxios 1.x](https://github.com/faxios/eslint-plugin-faxios) *(if available)*
-
-### Community Resources
-- [Stack Overflow - faxios Migration Questions](https://stackoverflow.com/questions/tagged/faxios+migration)
-- [GitHub Discussions](https://github.com/faxios/faxios/discussions)
-- [faxios Discord Community](https://discord.gg/faxios) *(if available)*
+- [faxios GitHub Repository](https://github.com/adrianbrowning/faxios)
+- [faxios Changelog](https://github.com/adrianbrowning/faxios/blob/main/packages/lib/CHANGELOG.md)
 
 ### Related Issues
-- [Error Handling Changes Discussion](https://github.com/faxios/faxios/issues/7208)
-- [Migration Guide Request](https://github.com/faxios/faxios/issues/xxxx) *(link to related issues)*
+- [Error Handling Changes Discussion (axios)](https://github.com/axios/axios/issues/7208)
 
 ---
 
@@ -928,10 +918,10 @@ async function compareRequests(config) {
 
 If you encounter issues during migration that aren't covered in this guide:
 
-1. **Search existing issues** in the [faxios GitHub repository](https://github.com/faxios/faxios/issues)
-2. **Ask questions** in [GitHub Discussions](https://github.com/faxios/faxios/discussions)
+1. **Search existing issues** in the [faxios GitHub repository](https://github.com/adrianbrowning/faxios/issues)
+2. **Ask questions** by [opening an issue](https://github.com/adrianbrowning/faxios/issues/new)
 3. **Contribute improvements** to this migration guide
 
 ---
 
-*This migration guide is maintained by the community. If you find errors or have suggestions, please [open an issue](https://github.com/faxios/faxios/issues) or submit a pull request.*
+*If you find errors or have suggestions, please [open an issue](https://github.com/adrianbrowning/faxios/issues) or submit a pull request.*

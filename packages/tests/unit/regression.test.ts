@@ -119,8 +119,8 @@ describe("regression", () => {
     });
   });
 
-  // https://security.snyk.io/vuln/SNYK-JS-faxios-7361793
-  // https://github.com/faxios/faxios/issues/6463
+  // https://security.snyk.io/vuln/SNYK-JS-AXIOS-7361793
+  // https://github.com/axios/axios/issues/6463
   describe("SSRF SNYK-JS-faxios-7361793", () => {
     let goodServer: Server;
     let badServer: Server;
