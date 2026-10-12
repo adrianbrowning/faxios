@@ -3,82 +3,126 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "779b55651986f31f79f6256011e607e7f6e9aa617a7f327fb47ed67cc74fbfc4",
+      "fingerprint": "034a3a52744a82c3e2010e35d2062c85916dbccdadfb315fcb989a64716913fe",
       "snapshot": {
         "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
-        "packages/lib/package.json": "c0f409e8d8ba34aa12521879c6e0cceeb7872b726957d26a5a9405a6fe381975",
+        "packages/lib/package.json": "da23ef046ec6b34f9f3d3e0b9e6dda0ddacf1a87abecf8ae718c1af07117d0df",
         "packages/lib/skills/configure-requests/SKILL.md": "f93e196d10a9c8b300d9b35f18022ea51e6f019896cf5d8306da750f1b8f7396",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b8f4ce801ac34ab1f808d35cbc667869d582721f3996a811fb2b035eefd6a2ca",
-        "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
-        "packages/lib/src/lib/adapters/fetch.ts": "620e5aed56ce7f7891575317dbd17c306377d8a525787ab37c73172c6b16743a",
-        "packages/lib/src/lib/core/Faxios.ts": "a75b8c1e309db8517d049093d8c39ee0f90e5c2be32a3d530f52da01ea14145f",
-        "packages/lib/src/lib/core/FaxiosError.ts": "5dc4223e4936023e491b3ac02e674425149cec5961eb0b47972f7fd1c73d0d51",
+        "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
+        "packages/lib/src/lib/adapters/fetch.ts": "fa412ab88f704d96e3b427366044acb90421a27bc4ec6be8ce04eac0b6a7f0fd",
+        "packages/lib/src/lib/core/Faxios.ts": "315d17499ed46870d832e72f4a1d405ce346caffe698cc0e04cb07b366a7ee65",
+        "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
-        "packages/lib/src/lib/core/define.ts": "5704f63cdcb15a9e7a43bb17d96979018a26f794ea902c3dab4d01d09bf371ae",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "6546e1b5dba1777fa3928648ab3a683f05133b4bab7462a6b27afe77f3e52434",
-        "packages/lib/src/lib/core/mergeConfig.ts": "3a4924b40b818557561ff7534bb70b283595e3a0069ce439e1ac1a771842fcff",
-        "packages/lib/src/lib/core/route.ts": "aff89de9d5f6d2b6caf7b6a5f2dafcade7f37870908b7165b59de93e260ed92d",
-        "packages/lib/src/lib/faxios.ts": "e5df1fc176509a809c3cb38904296bb615c453b5503907286e2a8569ade075b4",
-        "packages/lib/src/lib/helpers/composeSignals.ts": "80edec1ecad4ceaa906c394ad8da36963a1279c20bf74f6a5ccf5654794a8a74",
-        "packages/lib/src/lib/plugins/authBearer.ts": "43780df44e161c7df77fa5fdc6427cad2dd25e27b7f7b2d2f5619cab6bdfb0de",
-        "packages/lib/src/lib/plugins/definePlugin.ts": "5ed83646b5e2b3267a36ed1bb230443b4a0bd8150c579a522e6f68c35ed55b54",
-        "packages/lib/src/lib/plugins/retry.ts": "bdbaa71762723547278d474eea9ba7fe7581a74153cba9a6d52cb29beb57e006",
-        "packages/lib/src/lib/plugins/timing.ts": "0738baf01e0e9aa59926df9117637fba3c8a2cb292fe6931ec95f5af4fd6d701",
-        "packages/lib/src/lib/types.ts": "9f39c85e6706eb7cb19d766e1197e611a172ccdf67d16ed5cb53e58239254002",
-        "packages/tests/unit/api.test.ts": "1301982880889f06462cdd43a1f5a84ac18d60bf72e2b393105a2d9737f58425",
-        "packages/tests/unit/core/middleware.test.ts": "1aa48e88f858dc4547aad7429ddca53792289f4ec0ea4ecfc784e48d651552d6",
-        "packages/tests/unit/plugins/authBearer.test.ts": "c2f59575debb9e64e11809bdf57d22d811e2abfb480d4a8a20f9af128a4ef7cd",
-        "packages/tests/unit/plugins/definePlugin.test.ts": "d85323c110f1d8d49620d3c066b71f04a3197eb27175f1b36f52406dbe257cc7",
-        "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
+        "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "fb10925870044b0bd5b446b0ac3937a316f57f899749221ba99edc74186df4cd",
+        "packages/lib/src/lib/core/mergeConfig.ts": "697e73c1924c8e199207a146ecc8beb3a747fcc41a2fab0d2897bde2bc912582",
+        "packages/lib/src/lib/core/route.ts": "5811e47a26477034dab294523e1a029b30738ed2f95cd57c6a90604acd993cd8",
+        "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
+        "packages/lib/src/lib/helpers/composeSignals.ts": "9c09d5fe23395e8af8b9c62efd641405ea2832f224b3653f70ef3ee6b408f6f5",
+        "packages/lib/src/lib/plugins/authBearer.ts": "80e44445bb576339a4e4d5bca4f48a0f338772754930e737f9a1a495182080fe",
+        "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
+        "packages/lib/src/lib/plugins/retry.ts": "4e0ed48eeecbb246e66b046530c688265b2b987bdf4cf1cdb81148471090db3c",
+        "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
+        "packages/lib/src/lib/types.ts": "aa73aeb0be7bed6789fc1416eff74969e289d0bfc69674ba2f6c1b1d135b38ee",
+        "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
+        "packages/tests/unit/core/middleware.test.ts": "106d605207a1e7754baedd1565a559e973bda954b6e3970fac54d0da69116e7f",
+        "packages/tests/unit/plugins/authBearer.test.ts": "44eb2a04dbb12908597378b4f91452b68774ebf30cf3afaa64f2c9e3087d7960",
+        "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
+        "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "8ace0b3b81a7bb208c2764629def6b0041131228",
-      "outcome": "updated",
-      "reason": "Release 0.2.1: the skill only gets the new library_version; its guidance is unchanged.",
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Every changed source file is lint reordering (imports, union members, type-literal keys) or main's already-reviewed changes; no option, default, error code, export or call shape that SKILL.md documents changed. package.json gains the #src imports map and devDependency bumps only.",
       "evidence": [
-        "library_version 0.2.0 -> 0.2.1, matching packages/lib/package.json."
+        "packages/lib/package.json: see git diff 8ace0b3b..HEAD",
+        "packages/lib/src/index.ts: Specifiers reordered in `export { default as Cancel, default as CanceledError }`. `RouteBuilder, RouteConfig, RouteMethodConfig` sorted. The 19-name `export type {…} from \"./lib/types.ts\"` list sorted alphabetically. Behaviour: none. Re-export specifier order has no runtime or type effect, and the same names are still exported.",
+        "packages/lib/src/lib/adapters/fetch.ts: Named imports from progressEventReducer and fetch-helpers sorted. Members of the `AnyResponse`, `AnyRequest` (incl. nested `headers`) and `AnyReadableStream` type literals sorted, with index signatures moved first. Union operands sorted in: the `ReadableStream as undefined | {from?}` cast, `ArrayBuffer | ArrayBufferView`, `normalizeCredentials(wc: boolean | string)`, `auth: undefined | {password; username}`, `contentTypeHeader: null | string`, `withCredentials?: boolean | string` (two places), and `request: null | Request`. Behaviour: none. Every change is in a type position. The runtime object literals (`resolvedOptions` with `...fetchOptions` spread first, `auth = { username, password }`, the `settle` payload) and the arrays `[\"text\",\"arrayBuffer\",…]` and `[Request, Response, fetch]` are byte-identical.",
+        "packages/lib/src/lib/core/Faxios.ts: The type-only import of standard-schema moved after the `../types.js` import. `RouteBuilder, RouteConfig` sorted. Union types sorted in `TransitionalFn`, the `validators` Record, and the `configOrUrl` types of the `request`/`#request` signatures (`FaxiosRequestConfig | string`). Members of the `validators` intersection (`spelling`, `transitional`) and `MiddlewareEntry` (`provided`, `ref`, `run`) sorted. Behaviour: none. The moved import is `import type`, so it is erased and has no side effects. The `// The value passed to use()…` comment still sits directly above `ref`. Overload order is unchanged. The `METHOD_HEADER_GROUPS` keys and the `{ ref: middleware, run, provided }` literal are unchanged.",
+        "packages/lib/src/lib/core/FaxiosError.ts: The type-only imports of `../types.js` and `../types/standard-schema.js` swapped, and their specifiers sorted. The code union in the second `SchemaValidationError` member sorted (PARAMS, PATH_PARAMS, REQUEST). Behaviour: none. Static fields, the constructor and the `toJSON` key order are unchanged.",
+        "packages/lib/src/lib/core/define.ts: Type-only imports swapped and specifiers sorted; `StrippedFields` union members sorted; `DefineConfig` members sorted (paramsSchema, pathParamsSchema, requestSchema, responseSchema). The sort first left the pathParamsSchema JSDoc above paramsSchema; this PR moves it back onto pathParamsSchema (commit a9e6c2df). No runtime or type behaviour change.",
+        "packages/lib/src/lib/core/dispatchRequest.ts: Type import specifiers sorted (`FaxiosResponse, InternalFaxiosRequestConfig`). The `r` cast `{…} | null` → `null | {…}`, with the index signature moved first in the inner `response` type literal. Behaviour: none. The validation order, the `[\"post\",\"put\",\"patch\"]` array and the then-handlers are identical.",
+        "packages/lib/src/lib/core/mergeConfig.ts: Type import specifiers sorted. Parameter unions `FaxiosRequestConfig | FaxiosDefaults | Record` → `FaxiosDefaults | FaxiosRequestConfig | Record` for config1 and config2. Behaviour: none. `mergeMap` key order and all merge logic are identical.",
+        "packages/lib/src/lib/core/route.ts: Mapped-type key union in `RouteBuilder` sorted: `\"get\" | \"post\" | \"put\" | \"patch\" | \"delete\" | \"head\" | \"options\"` → `\"delete\" | \"get\" | \"head\" | \"options\" | \"patch\" | \"post\" | \"put\"`. Behaviour: none. Same key set. The runtime `methods` array keeps its order (`get, post, put, patch, delete, head, options`), and the `defineConf` spread order is unchanged.",
+        "packages/lib/src/lib/faxios.ts: `import type` from `./types.js` moved before standard-schema, and its specifiers sorted. Union members in `UnsupportedCapabilityKeys` and both operands of `RejectUnsupportedCapabilityKeys` sorted. Named members of the `FaxiosInstance` type literal sorted (`define`, `eject`, `route`, `use`, then call signatures, then `create`, `defaults`, `delete`, `get`, `getUri`, `head`…`request`). Members of the `FaxiosStatic` type literal sorted. Behaviour: none. Everything changed is a type. The four call signatures keep their relative order, so overload resolution is unchanged. Each JSDoc and line comment (`use`, `eject`, `define`, `route`, `defaults`, `getUri`) moved with its member. The runtime static assignments `faxios.X = …` are unchanged.",
+        "packages/lib/src/lib/helpers/composeSignals.ts: Members of the `SignalLike` type literal sorted (`aborted`, `addEventListener`, `reason`, `removeEventListener`, `unsubscribe`). `timer: ReturnType<…> | null` → `null | ReturnType<…>`. Behaviour: none",
+        "packages/lib/src/lib/plugins/authBearer.ts: Members of `AuthBearerOptions` sorted (`header`, `origins`, `overwrite`, `scheme`). Union operands sorted in `originOf` and `resolvedOrigin` (`null | string`), `sendsTokenTo` origins (`null | ReadonlyArray<string>`) and `getToken` (`() => Promise<string> | string`). Behaviour: none. Each JSDoc moved with its member. The `optionsSchema` runtime literal and the `definePlugin({ name, provides, middleware })` literal are unchanged.",
+        "packages/lib/src/lib/plugins/definePlugin.ts: Members of the `plugin` parameter type literal sorted (`middleware`, `name`, `provides`). Members of the `FaxiosPlugin<{…}>` spec in the return type sorted (`options`, `provides`, `requires`). Behaviour: none. Object-type member order does not affect assignability. Under my reading of tsc's inference rules (not tested), it does not affect inference here either: TProvides comes only from `provides`, and TCapabilities is NoInfer-blocked there, so it comes only from `middleware`. The comment still sits above `provides`, and the runtime body is still `return plugin as never`.",
+        "packages/lib/src/lib/plugins/retry.ts: Members of `RetryOptions` sorted (`attempts`, `delay`, `jitter`, `maxDelay`, `maxRetryAfter`, `methods`, `onRetry`, `respectRetryAfter`, `retryOn`, `statuses`). Members of `Policy` sorted. `delay` union → `((…) => number) | number`. `RetryRequestOptions.retry` → `false | RetryOptions`. Behaviour: none. Every JSDoc moved with its member. The runtime literals `optionsSchema` and the `resolvePolicy` return are unchanged. `assertOptions` iterates the option keys, not the schema order.",
+        "packages/lib/src/lib/plugins/timing.ts: Members of the `TimingEvent` base object sorted (`attempt`, `durationMs`, `method`, `url`). Discriminated-union members reordered (`{ error: unknown; status?: undefined }` first), and the keys inside each sorted. Behaviour: none. JSDoc moved with its member. The union is still discriminated by `status` and `error`. The `describe()` return and `onTiming({...})` spread order are unchanged.",
+        "packages/lib/src/lib/types.ts: These unions sorted: `FaxiosHeaderValue`, `UppercaseMethod`, `Method`, `ContentType` (outer and inner literal list), `ResponseType`, `UppercaseResponseEncoding`, `responseEncoding`, `HeaderMatcher`, `HeaderGetResult`, `FaxiosConfigHeaders`, and the `ContextHeaders` setter param. These interface and type-literal members sorted: `TransitionalOptions`, `GenericAbortSignal`, `GenericHTMLFormElement`, `FormDataVisitorHelpers`, `SerializerOptions`, `FaxiosProgressEvent`, `FaxiosBasicCredentials`, `FaxiosRequestHeaders` (a blank line moved from before `getAuthorization` to before `setContentLength`), `FaxiosRequestConfig` (all members incl. `env`), `FaxiosResponse`, `HeadersDefaults`, `FaxiosContext`, `FaxiosPluginSpec`, `FaxiosPluginBase` and its `~plugin` literal. `SerializerVisitor` key/path unions sorted. Behaviour: none. The file has no runtime code. Each union is the same set (`StringLiteralsOrString` still wraps `(string & {})`). Every JSDoc (maxDepth, env.FormData, env.Request, pathParams, pathParamsSchema, the FaxiosContext members, `~plugin`) moved with its member. No overloads or call signatures were reordered.",
+        "packages/tests/unit/api.test.ts: `string | Request | URL` became `Request | string | URL`. `Record<symbol | string, unknown>` became `Record<string | symbol, unknown>`. Behaviour: none",
+        "packages/tests/unit/core/middleware.test.ts: Type `Sent = { url; init }` became `{ init; url }`. Behaviour: none",
+        "packages/tests/unit/plugins/authBearer.test.ts: `string | null` became `null | string` in three places: the statusFor param, `authorizations`, and `sent`. Behaviour: none",
+        "packages/tests/unit/plugins/definePlugin.test.ts: `toEqualTypeOf<{ttlMs?} | undefined>` became `<undefined | {ttlMs?}>`. The `FaxiosPlugin<{requires; provides; options}>` generic arg became `{options; provides; requires}`. Behaviour: none. The structural types are identical.",
+        "packages/tests/unit/plugins/retry.test.ts: `Reply = number | \"network\" | {status; headers}` became `\"network\" | number | {headers; status}`. Behaviour: none",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "3843d50ba805bc29dd6cc1ac3772972985b45b1fa470f96f5c53e7b2ddcb91e6",
+      "fingerprint": "7d39387abc351b9229523d22c1a15d65a7aacc750ab8450054622a9570181982",
       "snapshot": {
         "MIGRATION_GUIDE.md": "a0c7acf4a2fe9ec93999a1d0108d12b19340df54c60a6927bd4e68377598a65c",
-        "_artifacts/domain_map.yaml": "13db30bd0c6322ccf6d26d5415d75e83df947d7c612cd189f821f94d1a033516",
-        "_artifacts/skill_spec.md": "312bcae6aa323ecac6dbd371fe7d5833412be0043d56727b6c12e70acbd939c3",
+        "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
+        "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
-        "packages/lib/package.json": "c0f409e8d8ba34aa12521879c6e0cceeb7872b726957d26a5a9405a6fe381975",
+        "packages/lib/package.json": "da23ef046ec6b34f9f3d3e0b9e6dda0ddacf1a87abecf8ae718c1af07117d0df",
         "packages/lib/skills/configure-requests/SKILL.md": "f93e196d10a9c8b300d9b35f18022ea51e6f019896cf5d8306da750f1b8f7396",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "0ba7477d6651f43bff5aa0650080f9680d0b5d09646db2ac274fd3ececfe890a",
         "packages/lib/skills/configure-requests/references/plugins.md": "b8f4ce801ac34ab1f808d35cbc667869d582721f3996a811fb2b035eefd6a2ca",
-        "packages/lib/src/index.ts": "f63ebd356245f32ae583e98c4c56434f3444a6dda12680704b6842b96dd4256c",
-        "packages/lib/src/lib/adapters/fetch.ts": "620e5aed56ce7f7891575317dbd17c306377d8a525787ab37c73172c6b16743a",
-        "packages/lib/src/lib/core/Faxios.ts": "a75b8c1e309db8517d049093d8c39ee0f90e5c2be32a3d530f52da01ea14145f",
-        "packages/lib/src/lib/core/FaxiosError.ts": "5dc4223e4936023e491b3ac02e674425149cec5961eb0b47972f7fd1c73d0d51",
+        "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
+        "packages/lib/src/lib/adapters/fetch.ts": "fa412ab88f704d96e3b427366044acb90421a27bc4ec6be8ce04eac0b6a7f0fd",
+        "packages/lib/src/lib/core/Faxios.ts": "315d17499ed46870d832e72f4a1d405ce346caffe698cc0e04cb07b366a7ee65",
+        "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
-        "packages/lib/src/lib/core/define.ts": "5704f63cdcb15a9e7a43bb17d96979018a26f794ea902c3dab4d01d09bf371ae",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "6546e1b5dba1777fa3928648ab3a683f05133b4bab7462a6b27afe77f3e52434",
-        "packages/lib/src/lib/core/mergeConfig.ts": "3a4924b40b818557561ff7534bb70b283595e3a0069ce439e1ac1a771842fcff",
-        "packages/lib/src/lib/core/route.ts": "aff89de9d5f6d2b6caf7b6a5f2dafcade7f37870908b7165b59de93e260ed92d",
-        "packages/lib/src/lib/faxios.ts": "e5df1fc176509a809c3cb38904296bb615c453b5503907286e2a8569ade075b4",
-        "packages/lib/src/lib/helpers/composeSignals.ts": "80edec1ecad4ceaa906c394ad8da36963a1279c20bf74f6a5ccf5654794a8a74",
-        "packages/lib/src/lib/plugins/authBearer.ts": "43780df44e161c7df77fa5fdc6427cad2dd25e27b7f7b2d2f5619cab6bdfb0de",
-        "packages/lib/src/lib/plugins/definePlugin.ts": "5ed83646b5e2b3267a36ed1bb230443b4a0bd8150c579a522e6f68c35ed55b54",
-        "packages/lib/src/lib/plugins/retry.ts": "bdbaa71762723547278d474eea9ba7fe7581a74153cba9a6d52cb29beb57e006",
-        "packages/lib/src/lib/plugins/timing.ts": "0738baf01e0e9aa59926df9117637fba3c8a2cb292fe6931ec95f5af4fd6d701",
-        "packages/lib/src/lib/types.ts": "9f39c85e6706eb7cb19d766e1197e611a172ccdf67d16ed5cb53e58239254002",
-        "packages/tests/unit/api.test.ts": "1301982880889f06462cdd43a1f5a84ac18d60bf72e2b393105a2d9737f58425",
-        "packages/tests/unit/core/middleware.test.ts": "1aa48e88f858dc4547aad7429ddca53792289f4ec0ea4ecfc784e48d651552d6",
-        "packages/tests/unit/plugins/authBearer.test.ts": "c2f59575debb9e64e11809bdf57d22d811e2abfb480d4a8a20f9af128a4ef7cd",
-        "packages/tests/unit/plugins/definePlugin.test.ts": "d85323c110f1d8d49620d3c066b71f04a3197eb27175f1b36f52406dbe257cc7",
-        "packages/tests/unit/plugins/retry.test.ts": "dcc6f5242a4d217beeba9898c83eab499b5827158b2b33b914d677a5cb5f0d51",
+        "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "fb10925870044b0bd5b446b0ac3937a316f57f899749221ba99edc74186df4cd",
+        "packages/lib/src/lib/core/mergeConfig.ts": "697e73c1924c8e199207a146ecc8beb3a747fcc41a2fab0d2897bde2bc912582",
+        "packages/lib/src/lib/core/route.ts": "5811e47a26477034dab294523e1a029b30738ed2f95cd57c6a90604acd993cd8",
+        "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
+        "packages/lib/src/lib/helpers/composeSignals.ts": "9c09d5fe23395e8af8b9c62efd641405ea2832f224b3653f70ef3ee6b408f6f5",
+        "packages/lib/src/lib/plugins/authBearer.ts": "80e44445bb576339a4e4d5bca4f48a0f338772754930e737f9a1a495182080fe",
+        "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
+        "packages/lib/src/lib/plugins/retry.ts": "4e0ed48eeecbb246e66b046530c688265b2b987bdf4cf1cdb81148471090db3c",
+        "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
+        "packages/lib/src/lib/types.ts": "aa73aeb0be7bed6789fc1416eff74969e289d0bfc69674ba2f6c1b1d135b38ee",
+        "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
+        "packages/tests/unit/core/middleware.test.ts": "106d605207a1e7754baedd1565a559e973bda954b6e3970fac54d0da69116e7f",
+        "packages/tests/unit/plugins/authBearer.test.ts": "44eb2a04dbb12908597378b4f91452b68774ebf30cf3afaa64f2c9e3087d7960",
+        "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
+        "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "8ace0b3b81a7bb208c2764629def6b0041131228",
-      "outcome": "no-change",
-      "reason": "Release 0.2.1: version bump and the Unreleased notes (#147, #160, #146, #148, #149) moved into CHANGELOG.md. No planning record depends on the version.",
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "updated",
+      "reason": "domain_map.yaml drops PRE_RELEASE_CHANGELOG.md from the interceptors failure-mode sources, and skill_spec.md rewords its mention as 'the pre-release changelog', because #150 retires that file. Other inputs are lint reordering with no domain change.",
       "evidence": [
-        "Only package.json version and SKILL.md library_version changed."
+        "_artifacts/domain_map.yaml: see git diff 8ace0b3b..HEAD",
+        "_artifacts/skill_spec.md: see git diff 8ace0b3b..HEAD",
+        "packages/lib/package.json: see git diff 8ace0b3b..HEAD",
+        "packages/lib/src/index.ts: Specifiers reordered in `export { default as Cancel, default as CanceledError }`. `RouteBuilder, RouteConfig, RouteMethodConfig` sorted. The 19-name `export type {…} from \"./lib/types.ts\"` list sorted alphabetically. Behaviour: none. Re-export specifier order has no runtime or type effect, and the same names are still exported.",
+        "packages/lib/src/lib/adapters/fetch.ts: Named imports from progressEventReducer and fetch-helpers sorted. Members of the `AnyResponse`, `AnyRequest` (incl. nested `headers`) and `AnyReadableStream` type literals sorted, with index signatures moved first. Union operands sorted in: the `ReadableStream as undefined | {from?}` cast, `ArrayBuffer | ArrayBufferView`, `normalizeCredentials(wc: boolean | string)`, `auth: undefined | {password; username}`, `contentTypeHeader: null | string`, `withCredentials?: boolean | string` (two places), and `request: null | Request`. Behaviour: none. Every change is in a type position. The runtime object literals (`resolvedOptions` with `...fetchOptions` spread first, `auth = { username, password }`, the `settle` payload) and the arrays `[\"text\",\"arrayBuffer\",…]` and `[Request, Response, fetch]` are byte-identical.",
+        "packages/lib/src/lib/core/Faxios.ts: The type-only import of standard-schema moved after the `../types.js` import. `RouteBuilder, RouteConfig` sorted. Union types sorted in `TransitionalFn`, the `validators` Record, and the `configOrUrl` types of the `request`/`#request` signatures (`FaxiosRequestConfig | string`). Members of the `validators` intersection (`spelling`, `transitional`) and `MiddlewareEntry` (`provided`, `ref`, `run`) sorted. Behaviour: none. The moved import is `import type`, so it is erased and has no side effects. The `// The value passed to use()…` comment still sits directly above `ref`. Overload order is unchanged. The `METHOD_HEADER_GROUPS` keys and the `{ ref: middleware, run, provided }` literal are unchanged.",
+        "packages/lib/src/lib/core/FaxiosError.ts: The type-only imports of `../types.js` and `../types/standard-schema.js` swapped, and their specifiers sorted. The code union in the second `SchemaValidationError` member sorted (PARAMS, PATH_PARAMS, REQUEST). Behaviour: none. Static fields, the constructor and the `toJSON` key order are unchanged.",
+        "packages/lib/src/lib/core/define.ts: Type-only imports swapped and specifiers sorted; `StrippedFields` union members sorted; `DefineConfig` members sorted (paramsSchema, pathParamsSchema, requestSchema, responseSchema). The sort first left the pathParamsSchema JSDoc above paramsSchema; this PR moves it back onto pathParamsSchema (commit a9e6c2df). No runtime or type behaviour change.",
+        "packages/lib/src/lib/core/dispatchRequest.ts: Type import specifiers sorted (`FaxiosResponse, InternalFaxiosRequestConfig`). The `r` cast `{…} | null` → `null | {…}`, with the index signature moved first in the inner `response` type literal. Behaviour: none. The validation order, the `[\"post\",\"put\",\"patch\"]` array and the then-handlers are identical.",
+        "packages/lib/src/lib/core/mergeConfig.ts: Type import specifiers sorted. Parameter unions `FaxiosRequestConfig | FaxiosDefaults | Record` → `FaxiosDefaults | FaxiosRequestConfig | Record` for config1 and config2. Behaviour: none. `mergeMap` key order and all merge logic are identical.",
+        "packages/lib/src/lib/core/route.ts: Mapped-type key union in `RouteBuilder` sorted: `\"get\" | \"post\" | \"put\" | \"patch\" | \"delete\" | \"head\" | \"options\"` → `\"delete\" | \"get\" | \"head\" | \"options\" | \"patch\" | \"post\" | \"put\"`. Behaviour: none. Same key set. The runtime `methods` array keeps its order (`get, post, put, patch, delete, head, options`), and the `defineConf` spread order is unchanged.",
+        "packages/lib/src/lib/faxios.ts: `import type` from `./types.js` moved before standard-schema, and its specifiers sorted. Union members in `UnsupportedCapabilityKeys` and both operands of `RejectUnsupportedCapabilityKeys` sorted. Named members of the `FaxiosInstance` type literal sorted (`define`, `eject`, `route`, `use`, then call signatures, then `create`, `defaults`, `delete`, `get`, `getUri`, `head`…`request`). Members of the `FaxiosStatic` type literal sorted. Behaviour: none. Everything changed is a type. The four call signatures keep their relative order, so overload resolution is unchanged. Each JSDoc and line comment (`use`, `eject`, `define`, `route`, `defaults`, `getUri`) moved with its member. The runtime static assignments `faxios.X = …` are unchanged.",
+        "packages/lib/src/lib/helpers/composeSignals.ts: Members of the `SignalLike` type literal sorted (`aborted`, `addEventListener`, `reason`, `removeEventListener`, `unsubscribe`). `timer: ReturnType<…> | null` → `null | ReturnType<…>`. Behaviour: none",
+        "packages/lib/src/lib/plugins/authBearer.ts: Members of `AuthBearerOptions` sorted (`header`, `origins`, `overwrite`, `scheme`). Union operands sorted in `originOf` and `resolvedOrigin` (`null | string`), `sendsTokenTo` origins (`null | ReadonlyArray<string>`) and `getToken` (`() => Promise<string> | string`). Behaviour: none. Each JSDoc moved with its member. The `optionsSchema` runtime literal and the `definePlugin({ name, provides, middleware })` literal are unchanged.",
+        "packages/lib/src/lib/plugins/definePlugin.ts: Members of the `plugin` parameter type literal sorted (`middleware`, `name`, `provides`). Members of the `FaxiosPlugin<{…}>` spec in the return type sorted (`options`, `provides`, `requires`). Behaviour: none. Object-type member order does not affect assignability. Under my reading of tsc's inference rules (not tested), it does not affect inference here either: TProvides comes only from `provides`, and TCapabilities is NoInfer-blocked there, so it comes only from `middleware`. The comment still sits above `provides`, and the runtime body is still `return plugin as never`.",
+        "packages/lib/src/lib/plugins/retry.ts: Members of `RetryOptions` sorted (`attempts`, `delay`, `jitter`, `maxDelay`, `maxRetryAfter`, `methods`, `onRetry`, `respectRetryAfter`, `retryOn`, `statuses`). Members of `Policy` sorted. `delay` union → `((…) => number) | number`. `RetryRequestOptions.retry` → `false | RetryOptions`. Behaviour: none. Every JSDoc moved with its member. The runtime literals `optionsSchema` and the `resolvePolicy` return are unchanged. `assertOptions` iterates the option keys, not the schema order.",
+        "packages/lib/src/lib/plugins/timing.ts: Members of the `TimingEvent` base object sorted (`attempt`, `durationMs`, `method`, `url`). Discriminated-union members reordered (`{ error: unknown; status?: undefined }` first), and the keys inside each sorted. Behaviour: none. JSDoc moved with its member. The union is still discriminated by `status` and `error`. The `describe()` return and `onTiming({...})` spread order are unchanged.",
+        "packages/lib/src/lib/types.ts: These unions sorted: `FaxiosHeaderValue`, `UppercaseMethod`, `Method`, `ContentType` (outer and inner literal list), `ResponseType`, `UppercaseResponseEncoding`, `responseEncoding`, `HeaderMatcher`, `HeaderGetResult`, `FaxiosConfigHeaders`, and the `ContextHeaders` setter param. These interface and type-literal members sorted: `TransitionalOptions`, `GenericAbortSignal`, `GenericHTMLFormElement`, `FormDataVisitorHelpers`, `SerializerOptions`, `FaxiosProgressEvent`, `FaxiosBasicCredentials`, `FaxiosRequestHeaders` (a blank line moved from before `getAuthorization` to before `setContentLength`), `FaxiosRequestConfig` (all members incl. `env`), `FaxiosResponse`, `HeadersDefaults`, `FaxiosContext`, `FaxiosPluginSpec`, `FaxiosPluginBase` and its `~plugin` literal. `SerializerVisitor` key/path unions sorted. Behaviour: none. The file has no runtime code. Each union is the same set (`StringLiteralsOrString` still wraps `(string & {})`). Every JSDoc (maxDepth, env.FormData, env.Request, pathParams, pathParamsSchema, the FaxiosContext members, `~plugin`) moved with its member. No overloads or call signatures were reordered.",
+        "packages/tests/unit/api.test.ts: `string | Request | URL` became `Request | string | URL`. `Record<symbol | string, unknown>` became `Record<string | symbol, unknown>`. Behaviour: none",
+        "packages/tests/unit/core/middleware.test.ts: Type `Sent = { url; init }` became `{ init; url }`. Behaviour: none",
+        "packages/tests/unit/plugins/authBearer.test.ts: `string | null` became `null | string` in three places: the statusFor param, `authorizations`, and `sent`. Behaviour: none",
+        "packages/tests/unit/plugins/definePlugin.test.ts: `toEqualTypeOf<{ttlMs?} | undefined>` became `<undefined | {ttlMs?}>`. The `FaxiosPlugin<{requires; provides; options}>` generic arg became `{options; provides; requires}`. Behaviour: none. The structural types are identical.",
+        "packages/tests/unit/plugins/retry.test.ts: `Reply = number | \"network\" | {status; headers}` became `\"network\" | number | {headers; status}`. Behaviour: none",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
       ]
     },
     "source:knip.json": {
@@ -94,15 +138,17 @@
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
-      "fingerprint": "e423223e70388b7765deb6052a3e65832eb67a28d029172215a68ea8d4c7f9c0",
+      "fingerprint": "a58acb1e6e246d5334baf323a27652ca550315714dbb0a0708e61b7b3930e214",
       "snapshot": {
-        "PRE_RELEASE_CHANGELOG.md": "8e30ed4025ce66d88d9cd84769a2ea7d40474d6c6d6bae5af91627f4daa945ad"
+        "PRE_RELEASE_CHANGELOG.md": null
       },
-      "head": "8ace0b3b81a7bb208c2764629def6b0041131228",
-      "outcome": "no-change",
-      "reason": "Release 0.2.1: version bump and the Unreleased notes (#147, #160, #146, #148, #149) moved into CHANGELOG.md.",
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Retired by #150; its Unreleased section was already empty after 0.2.1. Release tooling, not library API; the configure-requests skill does not mention it.",
       "evidence": [
-        "Unreleased section emptied after moving its entries to CHANGELOG.md."
+        "git diff 8ace0b3b..HEAD -- PRE_RELEASE_CHANGELOG.md",
+        "git grep PRE_RELEASE_CHANGELOG outside history: no matches.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
       ]
     },
     "source:ECOSYSTEM.md": {
@@ -130,15 +176,17 @@
       ]
     },
     "source:packages/docs/.vitepress/config.mts": {
-      "fingerprint": "80e31dd1316f40906810eb21159922d7113ce6777a884f2ff51680af8263dcd7",
+      "fingerprint": "d26a8a7bafc9f165354e981f50596eeb88aeb2f69fbe444b1827b94bfc725fb2",
       "snapshot": {
-        "packages/docs/.vitepress/config.mts": "32840780df446e1b6d8e182692c9450aac1ab0d091d70e294d01bd2e80b8a346"
+        "packages/docs/.vitepress/config.mts": "3773cf4200e9235a128acaf72bc751b3796f5638c6be702bea0867736393695a"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
-      "outcome": "no-change",
-      "reason": "Diff reviewed (M); no-api-claims.",
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Docs site config: Changelog nav link points at packages/lib/CHANGELOG.md; srcExclude drops the deleted es/fr/zh dirs. Not library API.",
       "evidence": [
-        "-L8 removes the sidebar entry 'Interceptors'. +L9..+L13 add 'Middleware and plugins' and 'Migrating from interceptors'."
+        "git diff cf6f2410..HEAD -- packages/docs/.vitepress/config.mts",
+        "pnpm --filter @faxios/docs run docs:build passed.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
       ]
     },
     "source:packages/docs/es/pages/advanced/interceptors.md": {
@@ -174,7 +222,7 @@
       "outcome": "updated",
       "reason": "Skill updated from this diff.",
       "evidence": [
-        "Added new Faxios() has no use/eject to SKILL.md (runtime: typeof use undefined). Diff review: +L31: 'An instance built with `new Faxios()` has no `use()` or `eject()`; use `faxios.create()`'. Confirmed by faxios.ts:41-52. The skill exports `Faxios` (L279) but never says this. +L65 (eject frees provided capabilities; type not narrowed) is also not in plugins.md. Everything else is consistent: the +L5..+L15 entry-point table (only `definePlugin` from /plugins; built-ins only from their subpaths, matching SKILL L224-226, L280-281); +L63 duplicate capability \u2192 `ERR_BAD_OPTION`, bad value/name \u2192 `ERR_BAD_OPTION_VALUE` (plugins.md L101-102); `FaxiosError.issues` (+L86)."
+        "Added new Faxios() has no use/eject to SKILL.md (runtime: typeof use undefined). Diff review: +L31: 'An instance built with `new Faxios()` has no `use()` or `eject()`; use `faxios.create()`'. Confirmed by faxios.ts:41-52. The skill exports `Faxios` (L279) but never says this. +L65 (eject frees provided capabilities; type not narrowed) is also not in plugins.md. Everything else is consistent: the +L5..+L15 entry-point table (only `definePlugin` from /plugins; built-ins only from their subpaths, matching SKILL L224-226, L280-281); +L63 duplicate capability → `ERR_BAD_OPTION`, bad value/name → `ERR_BAD_OPTION_VALUE` (plugins.md L101-102); `FaxiosError.issues` (+L86)."
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
@@ -186,7 +234,7 @@
       "outcome": "no-change",
       "reason": "Diff reviewed (M); consistent.",
       "evidence": [
-        "+L7..+L65: authBearer setup. `getToken` is called per request, and per try when `retry` is installed before it. An existing header is kept unless `overwrite: true`. Origin rule: absolute baseURL origin only, otherwise relative URLs only. `origins` replaces the rule. Invalid options \u2192 `ERR_BAD_OPTION_VALUE`, unknown \u2192 `ERR_BAD_OPTION`. These match SKILL L231-234 and plugins.md L103-105. +L100..+L153: the refreshOn401 plugin matches plugins.md L70-97. Minor details not in the skill: the `auth` capability ignores the origin rule (+L100); `origins` entries must be bare origins, and a relative URL counts only in a browser."
+        "+L7..+L65: authBearer setup. `getToken` is called per request, and per try when `retry` is installed before it. An existing header is kept unless `overwrite: true`. Origin rule: absolute baseURL origin only, otherwise relative URLs only. `origins` replaces the rule. Invalid options → `ERR_BAD_OPTION_VALUE`, unknown → `ERR_BAD_OPTION`. These match SKILL L231-234 and plugins.md L103-105. +L100..+L153: the refreshOn401 plugin matches plugins.md L70-97. Minor details not in the skill: the `auth` capability ignores the origin rule (+L100); `origins` entries must be bare origins, and a relative URL counts only in a browser."
       ]
     },
     "source:packages/docs/pages/advanced/create-an-instance.md": {
@@ -294,7 +342,7 @@
       "outcome": "updated",
       "reason": "Skill updated from this diff.",
       "evidence": [
-        "Added custom retryOn replaces the default predicate and long Retry-After rejects without retrying (both runtime-checked); onRetry-throws and attempts/methods validation recorded as not added. Diff review: +L82: 'retryOn replaces the entire default predicate\u2026 Network errors and timeouts are retried only if your function says so, and `statuses` is ignored when both are set' (retry.ts:60-61, 182). +L169: 'If the header asks for longer than `maxRetryAfter` (default 5 minutes), faxios doesn't wait: it rethrows\u2026 without retrying' (retry.ts:186, 196). +L215: an `onRetry` that throws rejects and stops (retry.ts:238). +L126: `attempts` must be an integer \u22651, including not Infinity, else `ERR_BAD_OPTION_VALUE`. +L253: each `methods` entry must be an RFC 9110 token. SKILL L235-240 covers none of these. Co"
+        "Added custom retryOn replaces the default predicate and long Retry-After rejects without retrying (both runtime-checked); onRetry-throws and attempts/methods validation recorded as not added. Diff review: +L82: 'retryOn replaces the entire default predicate… Network errors and timeouts are retried only if your function says so, and `statuses` is ignored when both are set' (retry.ts:60-61, 182). +L169: 'If the header asks for longer than `maxRetryAfter` (default 5 minutes), faxios doesn't wait: it rethrows… without retrying' (retry.ts:186, 196). +L215: an `onRetry` that throws rejects and stops (retry.ts:238). +L126: `attempts` must be an integer ≥1, including not Infinity, else `ERR_BAD_OPTION_VALUE`. +L253: each `methods` entry must be an RFC 9110 token. SKILL L235-240 covers none of these. Co"
       ]
     },
     "source:packages/docs/pages/advanced/schema-validation.md": {
@@ -390,7 +438,7 @@
       "outcome": "no-change",
       "reason": "Diff reviewed (M); consistent.",
       "evidence": [
-        "-L9/+L11 and -L13/+L15: 'via a Response interceptor' becomes 'via `.use()` middleware\u2026 catches the error thrown by `next(ctx)`'. This matches the try/catch-around-next pattern at SKILL L203-209. The custom codes (`ERR_DNS_FAILURE` etc.) are the example's own and come from unchanged context."
+        "-L9/+L11 and -L13/+L15: 'via a Response interceptor' becomes 'via `.use()` middleware… catches the error thrown by `next(ctx)`'. This matches the try/catch-around-next pattern at SKILL L203-209. The custom codes (`ERR_DNS_FAILURE` etc.) are the example's own and come from unchanged context."
       ]
     },
     "source:packages/examples/network_enhanced.js": {
@@ -418,15 +466,16 @@
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
-      "fingerprint": "c19e5f39cc163909dde79b13935002d558839875181d268c60731d2428463aec",
+      "fingerprint": "e70998f689c36f3a3fcc77034b649fb1fb57d75aca064f7544457feb7d9ba4c0",
       "snapshot": {
-        "packages/lib/src/lib/defaults/index.ts": "2cc48e08a0223a34fafd96df8751ce30d4bd0fcdfa213ada966df063efe62b7c"
+        "packages/lib/src/lib/defaults/index.ts": "d18a048452ab57a8cf2fdc996f84b7292a1e309545da60f7e41eee7fd481aa3b"
       },
-      "head": "0c6a347b90800ae2b39744daedbc632b7976d762",
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
       "outcome": "no-change",
-      "reason": "Fixes typed-array body bytes and drops User-Agent in browsers; the skill and planning records don't describe either, so their guidance is unchanged.",
+      "reason": "Cast union in `transformRequest` `string | null | undefined` → `null | string | undefined`. Behaviour change: none. The `defaults` object key order, including the `headers` groups, is unchanged.",
       "evidence": [
-        "Changed: packages/lib/src/lib/defaults/index.ts at 0c6a347b90800ae2b39744daedbc632b7976d762"
+        "git diff 0c6a347b..HEAD -- packages/lib/src/lib/defaults/index.ts: Whole file compared against prev 0c6a347b content. Only HEAD L99 differs.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
       ]
     },
     "source:packages/tests/browser/headers.browser.test.ts": {
@@ -442,27 +491,31 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch.test.ts": {
-      "fingerprint": "984b73b4535cd2172a2108651761e07b50d3129f1790b59942c001a5e0f73918",
+      "fingerprint": "4794793b4b96e33a576583fd29b1d2d7196817da44ae042a0106e79537f64137",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch.test.ts": "a190caf1619e21225b69773b697a4226e8e2e4f63a6dca1475d18390cc9baf66"
+        "packages/tests/unit/adapters/fetch.test.ts": "0df299a6f645cb48e1651c4a8ab36401bb73c4e5ff768a14f7e16ae4577c522b"
       },
-      "head": "a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab",
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
       "outcome": "no-change",
-      "reason": "Body-integrity fixes (typed-array views, Node stream chunks) and no User-Agent in browsers; the skill and planning records don't describe these, so guidance is unchanged.",
+      "reason": "Since a8bbe824: lint ordering (import specifiers, union and type-literal members) plus main's new 'should send every chunk of a Node stream body' test and renamed describe. Tests only; no skill-visible behaviour change.",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch.test.ts at a8bbe824ffaf80f4f6d3c1171bb3f8a7b022b1ab"
+        "git diff a8bbe824..HEAD -- packages/tests/unit/adapters/fetch.test.ts",
+        "pnpm check unit project passed.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
       ]
     },
     "source:CHANGELOG.md": {
-      "fingerprint": "e84d887f28593dded3ae7d204e234f88fc62cf70c8d286a98925c3bc0a901833",
+      "fingerprint": "b26b2229636767c19abc6da599a628fedd67e6686f2df98a526168cc15725cea",
       "snapshot": {
-        "CHANGELOG.md": "91a244748d3fde7cbe30faa51725cba522ceec3a77ef565e34f783007d28b509"
+        "CHANGELOG.md": null
       },
-      "head": "932d9fdf110339eaa143fd15f7ba5632ff639328",
-      "outcome": "no-change",
-      "reason": "CHANGELOG.md v0.2.1 heading date corrected to October 10, 2026, the release day.",
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Moved to packages/lib/CHANGELOG.md, where bumpy writes per-package changelogs; content unchanged. Release tooling, not library API; the configure-requests skill does not mention it.",
       "evidence": [
-        "Changed: CHANGELOG.md at 932d9fdf110339eaa143fd15f7ba5632ff639328"
+        "git diff 932d9fdf..HEAD -- CHANGELOG.md",
+        "git: R100-style rename CHANGELOG.md -> packages/lib/CHANGELOG.md; bumpy version smoke prepended '## 0.2.2' above '## v0.2.1'.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
       ]
     },
     "source:packages/lib/src/lib/env/data.ts": {
@@ -514,15 +567,17 @@
       ]
     },
     "source:.github/workflows/publish.yml": {
-      "fingerprint": "7014ad51739681b76764c5a753e122bdc786dd4ac331d912780f2990b3fd0680",
+      "fingerprint": "ca768694e3b58cadc2bfa54c7105da54c1b999aaba972165f37ba885c7ee1d48",
       "snapshot": {
-        ".github/workflows/publish.yml": "e4c84e2af5f588891fa83bfad393e027e483ba805bc38dba4c62acde65c5cad1"
+        ".github/workflows/publish.yml": null
       },
-      "head": "a9398723da9fce39c0e36db164a98f742c0b2e9e",
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
       "outcome": "out-of-scope",
-      "reason": "Adds a pre-publish LICENSE check step; release tooling, not request behaviour.",
+      "reason": "Deleted: the tag-triggered publish is replaced by release.yml's publish job (same npm 11.15.0 pin, build, LICENSE check, staged publish with provenance in npm-publish). Release tooling, not library API; the configure-requests skill does not mention it.",
       "evidence": [
-        "One new step runs packages/tests/scripts/check-license.ts before npm stage publish."
+        "git diff a9398723..HEAD -- .github/workflows/publish.yml",
+        "git grep publish.yml: only THREATMODEL history references were updated to release.yml.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
       ]
     },
     "source:LICENSE": {
@@ -550,27 +605,32 @@
       ]
     },
     "source:packages/tests/scripts/check-license.ts": {
-      "fingerprint": "3c171563e784b752932400478e9da451391f6dc342d8acc1852abc29d52133f0",
+      "fingerprint": "990a2b9b2a42b9e331658f13338aab5f2f58ef19df5f8b7c8e15adc5a48eed85",
       "snapshot": {
-        "packages/tests/scripts/check-license.ts": "e7ff8320dcb7e56ddbf04bfa565b57f993c100867fc6db77fb3f2ac8085f052f"
+        "packages/tests/scripts/check-license.ts": "3d8a3213a7cd2b8b4bbe4e1701cdf43a19ef7427ee95871af1d1283836b3cf52"
       },
-      "head": "c76a2f606f7800c3d09cb1fdbbfc326ef049a7fd",
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
       "outcome": "no-change",
-      "reason": "check-license.ts packs with the npm on PATH, the same npm publish.yml runs; test tooling, no skill impact.",
+      "reason": "Matches main's a15418fe logic (npm on PATH); this PR only rewrites comments to name release.yml and bumpy's npm packing. Packaging check, no skill impact.",
       "evidence": [
-        "Changed: packages/tests/scripts/check-license.ts at c76a2f606f7800c3d09cb1fdbbfc326ef049a7fd"
+        "git diff c76a2f60..HEAD -- packages/tests/scripts/check-license.ts",
+        "git diff origin/main..HEAD: comment lines only (+5 -4).",
+        "node packages/tests/scripts/check-license.ts passes after build.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
       ]
     },
     "source:packages/tests/docs-examples/examples.test.ts": {
-      "fingerprint": "4dcf22cf91ba6d004d31db93adae2c3eac798dc44e68a8eea65e695d5137c014",
+      "fingerprint": "f1f4fa453c096e55e204bf9c766be994ba6c19c90a88c2c75f0ee6b8e6583222",
       "snapshot": {
-        "packages/tests/docs-examples/examples.test.ts": "3bae708d1cca8652c9c4772b29c63a4978551bcc22b0127938b15915c4c1145f"
+        "packages/tests/docs-examples/examples.test.ts": "188dbbc389fc6a582be7a0df608c72cf927661d10aa6a9af8c946a22dd636eb3"
       },
-      "head": "a15418fe9ebc066d9f5379b3b7d2dc16167fa33f",
-      "outcome": "out-of-scope",
-      "reason": "Docs-examples harness guard for unsubstituted placeholders; test tooling.",
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Since a15418fe (main, #146): the docs-example harness rejects unsubstituted `/:x` / `{x}` path placeholders unless the block is marked placeholders=literal; union order sorted. Test harness; the skill already teaches `{key}` placeholders.",
       "evidence": [
-        "fakeFetch rejects decoded pathnames with /:name or {name} unless the block sets placeholders=literal."
+        "git diff a15418fe..HEAD -- packages/tests/docs-examples/examples.test.ts",
+        "pnpm test:docs-examples: 166/166 passed.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
       ]
     },
     "source:packages/tests/docs-examples/extract.test.ts": {
@@ -586,15 +646,17 @@
       ]
     },
     "source:packages/tests/docs-examples/extract.ts": {
-      "fingerprint": "73895d4d9986eb554c6580a092d3ddc5a12f6cb06ea352cf985a94d0bf25fd50",
+      "fingerprint": "16e41f73c149ef6248fdd4f1c9edbc382c7270a50a384b7607a93801a631c8ca",
       "snapshot": {
-        "packages/tests/docs-examples/extract.ts": "ba3ca779978474fc5e1f010f1ee33b8562fafccaff89b1b492e983af8d8cb771"
+        "packages/tests/docs-examples/extract.ts": "8111ca5716f27a3090112b7a430168e6b4de56defe65cac36edc85f73fa5fcc7"
       },
-      "head": "a15418fe9ebc066d9f5379b3b7d2dc16167fa33f",
-      "outcome": "out-of-scope",
-      "reason": "Parses the placeholders=literal fence marker.",
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Since a15418fe: placeholders=literal marker and validateMarkers(); this PR only rewrites the locale comment ('The docs are English-only'). Test harness, no skill impact.",
       "evidence": [
-        "Manifest gains literalPlaceholders; invalid marker values throw."
+        "git diff a15418fe..HEAD -- packages/tests/docs-examples/extract.ts",
+        "pnpm test:docs-examples: 177 blocks extracted, 166 tests passed.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
       ]
     },
     "source:packages/docs/pages/advanced/route.md": {
@@ -610,15 +672,17 @@
       ]
     },
     "source:packages/tests/unit/core/define.test.ts": {
-      "fingerprint": "74c91a0fbab9e65e7a8e4f0d63b0739ceff553197a563e216987bba4e0dd679c",
+      "fingerprint": "d68720443709cfde94e5cb971154c01141ca2214aef8c415af07e308f8adcf4f",
       "snapshot": {
-        "packages/tests/unit/core/define.test.ts": "de736b418a3d7f3ca240ea493c1dd02b00d2f0e7dfd8f90ebe7aff88a18eabfb"
+        "packages/tests/unit/core/define.test.ts": "6de1ef42f25355a1a8bd3054ec791084d349e1a642bdaa0c90f5df7262056b3e"
       },
-      "head": "0d3c421862f3cab417d950f0075f471a9a99320a",
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
       "outcome": "no-change",
-      "reason": "New runtime test for middleware registered after define(); confirms the SKILL.md statement.",
+      "reason": "Since 0d3c4218: lint ordering (vitest imports, `Request | string | URL`) plus main's test that middleware registered after define() runs on the endpoint call. The skill's define()/use() guidance already matches.",
       "evidence": [
-        "define.test.ts: 14 passed."
+        "git diff 0d3c4218..HEAD -- packages/tests/unit/core/define.test.ts",
+        "pnpm check unit project passed.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
       ]
     },
     "source:packages/docs/pages/advanced/request-method-aliases.md": {
@@ -634,15 +698,17 @@
       ]
     },
     "source:packages/lib/tsconfig.json": {
-      "fingerprint": "a78a70cabef4c9696cd44a2774865d4b92b99a1a8ee299d82376c9c8c374a592",
+      "fingerprint": "baf67e5e7c8e4989ea941e655d13049e390ee55e66388c8fbc0a2ea3f6202d35",
       "snapshot": {
-        "packages/lib/tsconfig.json": "5caf44eec350cae8bd6106d634d41d29f3c3cb15fbff0e0c58acbb8f4cfc4478"
+        "packages/lib/tsconfig.json": "f8334aba90c9eecd5c4b4462cae515fc43b86da64800808c6c0953e54d4a8b7d"
       },
-      "head": "336e0938093c52368b413338e4102d88be95ba88",
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
       "outcome": "out-of-scope",
-      "reason": "Adds declarationMap: true; build output, not request behaviour.",
+      "reason": "Single extends of @gingacodemonkey/config/tsc/no-dom/library, declarationMap kept, include/exclude reformatted; composite/emit options from an earlier draft removed. Type-check config, not API.",
       "evidence": [
-        "One compilerOptions line."
+        "git diff 336e0938..HEAD -- packages/lib/tsconfig.json",
+        "pnpm --filter @gcmdev/faxios lint:ts passes; build emits the same dist layout (check-license passes).",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
       ]
     },
     "source:packages/tests/module/esm/tests/source-maps.module.test.ts": {
@@ -1783,6 +1849,1532 @@
       "reason": "Issue #151: es/fr/zh translations deleted; docs are English-only and the skill does not cite them.",
       "evidence": [
         "packages/docs/zh/pages/misc/sponsors.md removed with packages/docs/zh/."
+      ]
+    },
+    "source:.bumpy/_config.json": {
+      "fingerprint": "502359ed1d5c7ea54592b74cf8b4288a7fd19f20f6539cc35f94a98bdf85105c",
+      "snapshot": {
+        ".bumpy/_config.json": "d2d2ad56c696cc3469c434c87f7c11fbb004d257d8120f9af0d2ddd968473e16"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "New bumpy config: versions only @gcmdev/faxios, github changelog, packs with npm, provenance and npm staged publishing. Release tooling, not library API; the configure-requests skill does not mention it.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- .bumpy/_config.json",
+        "bumpy status --json read the config; a disposable-worktree `bumpy version` bumped only packages/lib (0.2.1 -> 0.2.2).",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:.bumpy/bumpy-release-tooling.md": {
+      "fingerprint": "db6416ce53e7525d3b71bfcf0e86ef0621f78b6a6105da49d48e584bc38d58cf",
+      "snapshot": {
+        ".bumpy/bumpy-release-tooling.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Empty bump file: this PR changes packages/lib (CHANGELOG move, lint ordering) but releases nothing. Release tooling, not library API; the configure-requests skill does not mention it.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- .bumpy/bumpy-release-tooling.md",
+        "`bumpy check`: 'Empty bump file found — uncovered packages acknowledged.'",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:.claude/skills/do-work/SKILL.md": {
+      "fingerprint": "b62eb9c59c3ad40b80249d19f40b77a0597f9f0a8b0b40e960c0e127eeb6164b",
+      "snapshot": {
+        ".claude/skills/do-work/SKILL.md": "126d485a613a4fa67f8d250c5fc36a6b6b670d89e814ce971304b9875ab884f1"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Contributor workflow skill gains a 'Bump file' step (pnpm bump / add-change skill, don't edit packages/lib/CHANGELOG.md); later steps renumbered. Agent process only, not the library skill.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- .claude/skills/do-work/SKILL.md",
+        "git diff: +5 -1 lines, new section 4 and '### 5. Commit'.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:.github/actions/setup/action.yml": {
+      "fingerprint": "a383bc4138fa55f6b4e163b98384aca03279f2826815612b65aa46484e50e757",
+      "snapshot": {
+        ".github/actions/setup/action.yml": "5e8229dd3480e32bd2bcc8bd6762b3855b688177472a758337a472a19d9b5a41"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Composite setup action: actions pinned to SHAs, no checkout inside (callers check out), node 26.x, cache and ignore-scripts inputs. CI only.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- .github/actions/setup/action.yml",
+        "zizmor --offline: no unpinned-uses or artipacked findings for this file.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:.github/workflows/bumpy-check.yml": {
+      "fingerprint": "236cc3e1747a35dcda26e17fc62179b12290f39c29edb5e8c7303ad5dbe4ffaa",
+      "snapshot": {
+        ".github/workflows/bumpy-check.yml": "f3bf1a78637132374c4082b7c36e42b35dce8f10e5e6eb3941102b71a9fae415"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "PR job runs `bumpy ci check --comment false --no-fail --emit-comment` (warn only) with read-only permissions and uploads the comment artifact. Release tooling, not library API; the configure-requests skill does not mention it.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- .github/workflows/bumpy-check.yml",
+        "zizmor --offline: no findings at high/medium.",
+        "bumpy cli.mjs parseFlags: `--comment false` parses to comment=false.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:.github/workflows/bumpy-comment.yml": {
+      "fingerprint": "7a684b572fddeeae6e3b65dfb11fd262dec9ce7ad047364b097631c7535fff19",
+      "snapshot": {
+        ".github/workflows/bumpy-comment.yml": "89465cae0ec295a6ff87ab0ba474075378ab43708534c13e7c76d5c0a42e21a8"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "workflow_run poster: default-branch sparse checkout of package.json, artifact to runner.temp, `npx @varlock/bumpy@<pinned> ci comment`; no install, no PR code. Release tooling, not library API; the configure-requests skill does not mention it.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- .github/workflows/bumpy-comment.yml",
+        "zizmor --offline: dangerous-triggers suppressed inline with reason; no other high/medium findings.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:.github/workflows/ci.yml": {
+      "fingerprint": "6aaef5cb9cdab2f033eab3d889c7d3b1484e2566850ab7ea6b2fc9a7f235af28",
+      "snapshot": {
+        ".github/workflows/ci.yml": "f3b0913c26a52ca0dc9dca7ef9a20c778ef216143347ea0acf31cfd3e993ca5c"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Workspace CI workflow: checkout pinned to v7.0.1 SHA with persist-credentials: false, then the shared setup action. CI only.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- .github/workflows/ci.yml",
+        "zizmor --offline: no findings for this file.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:.github/workflows/knip.yml": {
+      "fingerprint": "04b88cd2ec8a1830d9014cf9e9a723e3c454db7760d3e257f7a2a5b81b02f413",
+      "snapshot": {
+        ".github/workflows/knip.yml": "550b6f72adcf679a2e23a07268ad6f0d85174e498b1588bb73a2ba3df3a24c41"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Knip workflow uses the shared setup action (checkout pinned, persist-credentials: false) and prints the findings in the failing step. CI only.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- .github/workflows/knip.yml",
+        "pnpm run lint:knip passes inside pnpm check.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:.github/workflows/release.yml": {
+      "fingerprint": "1495b89285e3116a7fdb30135ca2e54dc4038e876522ec8ddd3d2027842ed576",
+      "snapshot": {
+        ".github/workflows/release.yml": "5fecde161fe81d5df169145e57b19f385514bc250d88b31086b9d7167b05e317"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "bumpy split release: plan, version (Version Packages PR plus VERSION sync commit), publish (npm-publish env, build, LICENSE check, npm stage publish), rc snapshot. Release tooling, not library API; the configure-requests skill does not mention it.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- .github/workflows/release.yml",
+        "Smoke: bumpy version then sync-version.ts set VERSION to 0.2.2 and version.test.ts passed.",
+        "Smoke: the sync step's git sequence against a local bare remote pushed a one-file data.ts commit and left no extraheader in .git/config.",
+        "zizmor --offline: no high/medium findings for this file.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:COLLABORATOR_GUIDE.md": {
+      "fingerprint": "abba597e753af0d2e01f6532f095eaa328f3048a142b01b7b91b0119ed507435",
+      "snapshot": {
+        "COLLABORATOR_GUIDE.md": "eaf3a573511f83080eb34c011bbc9456375d5fe7ce1ee821ca161e11ffec4498"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "PR checklist now asks for a bump file with the right level and says how to release (merge Version Packages PR, approve staged version). Contributor process only.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- COLLABORATOR_GUIDE.md",
+        "git diff: +3 -2 lines in 'Submit PRs'.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:CONTRIBUTING.md": {
+      "fingerprint": "24f2bee340201364f857020bd9a99f89d92e6459b396cf4ad3243807fc319c52",
+      "snapshot": {
+        "CONTRIBUTING.md": "a68ddf4c43be959069fa160234ba5903d3cbf4fe8dc7c559213a4b7ac9d4fb62"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "New 'Changelog' section (bump file via pnpm bump; don't edit packages/lib/CHANGELOG.md); stale `npm run version` line replaced by `pnpm bump:status`. Contributor process only.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- CONTRIBUTING.md",
+        "git diff: +7 -1 lines.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:THREATMODEL.md": {
+      "fingerprint": "1816065c6bb9c0ef8daebcf49482429cbc03d3bcb66f0abbb2b7eb3b32fe6772",
+      "snapshot": {
+        "THREATMODEL.md": "b37e84b360626b4d95543ce024e0c91a5debd2edb2d1ca121500e9a0afd687e2"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Supply-chain sections now describe release.yml/bumpy (merge-triggered publish, pnpm --ignore-scripts, staged publish), the rc PR-ref OIDC gap (T-S6) and @gcmdev/faxios@* tags; locale wording dropped. Not library API.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- THREATMODEL.md",
+        "git diff: +16 -15 lines in T-R11, 3.1, 3.2, T-S2, T-S5, T-S6, T-S7.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/docs/.vitepress/theme/index.ts": {
+      "fingerprint": "1b6e0943749ada31fdd304f8d1428df0ecc02e210d4b2882e7bdbc66ec66c323",
+      "snapshot": {
+        "packages/docs/.vitepress/theme/index.ts": "5d146055650ee4d40beec9d278abd9ea9f62690b16ac670563a93f1481059baf"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "VitePress theme: lint style (quotes, semicolons) and the empty starter enhanceApp stub removed (TS6198). Not library API.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/docs/.vitepress/theme/index.ts",
+        "docs lint:ts (tsc --noEmit) and docs:build pass.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/docs/eslint.config.style.ts": {
+      "fingerprint": "1ab8b5f27ee6013bef3cb066527b38ec52c5d4078762811b68c1019356d0afb7",
+      "snapshot": {
+        "packages/docs/eslint.config.style.ts": "474a757230ada17ddd8de517e12e7d1f21e805976adc6773f09b557be84a6c55"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "New docs ESLint style config re-exporting sharedConfig as `[...config]` (no-barrel-files). Lint tooling.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/docs/eslint.config.style.ts",
+        "pnpm --filter @faxios/docs lint passes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/docs/eslint.config.ts": {
+      "fingerprint": "518d8d4e19803ec2040e1c866ba935ec3b6b7f567aa44d838db1b70975be5fa4",
+      "snapshot": {
+        "packages/docs/eslint.config.ts": "92aec7ccf3cc61eb3e29f3c9c18251aa019ce33d742dd77082d7609f1840ec81"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "New docs ESLint config re-exporting sharedConfig as `[...config]`. Lint tooling.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/docs/eslint.config.ts",
+        "pnpm --filter @faxios/docs lint passes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/docs/scripts/process-sponsors.js": {
+      "fingerprint": "3406fb569bce049de84d50ab0640e66e8fc139e06ea6d15d3e0a839cf30060da",
+      "snapshot": {
+        "packages/docs/scripts/process-sponsors.js": "70ebf281cbd502f3a421d65a0235a5d50b98441f6026796ffa1589cba18d6c71"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Sponsor data script: lint style only (arrow parens, trailing commas, brace style, import order); same logic. Not library API.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/docs/scripts/process-sponsors.js",
+        "git diff 01316e10..HEAD: every hunk is punctuation/formatting or import-specifier order.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/docs/scripts/utils.js": {
+      "fingerprint": "685f4f25e118320678e5680d5c8df6c78690113516ff57712b1e82b41c909eba",
+      "snapshot": {
+        "packages/docs/scripts/utils.js": "5d42ce52b29c8f7223251f5d9eb72ecb91a17a402f18a51a93911c7c2f92e818"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Console helpers: single to double quotes and arrow-param parens only. Not library API.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/docs/scripts/utils.js",
+        "git diff 01316e10..HEAD: 7 lines, quotes and parens only.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/docs/tsconfig.json": {
+      "fingerprint": "a4969731937adbe2932d32ab85e0350718c17f77f8622a40dc5544c161f4ba23",
+      "snapshot": {
+        "packages/docs/tsconfig.json": "3af04b50708d36cc30a421b08ca31e4cbe564a1708d0c2ebfc6f2c0d98703af7"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "New docs tsconfig: bundler/dom/app profile, vitepress/client types, includes .vitepress and the eslint configs. Tooling.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/docs/tsconfig.json",
+        "pnpm --filter @faxios/docs lint:ts passes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/examples/abort-controller/server.js": {
+      "fingerprint": "df2d47ca7d844642699a68760e54bd8b16bab1cc56d408e45c26862008ce0937",
+      "snapshot": {
+        "packages/examples/abort-controller/server.js": "86a56eeb3f03df01dd78719fcf845c1745b0b4ab0f5c5775bdd3269f87d759f5"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Example server: quotes and brace style only. Not library API.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/examples/abort-controller/server.js",
+        "git diff 01316e10..HEAD: quote and `} catch` -> `}\\ncatch` changes only.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/examples/eslint.config.style.ts": {
+      "fingerprint": "09187af73708e4dacc598ae2905d814f3529f6f5c1785f426c25bfba70bebf9d",
+      "snapshot": {
+        "packages/examples/eslint.config.style.ts": "6419aaea12c934c349af2fff2c4410008dd00e9c04dc4c1aced771af17c5f436"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "New examples ESLint style config re-exporting sharedConfig. Lint tooling.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/examples/eslint.config.style.ts",
+        "pnpm --filter @faxios/examples lint passes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/examples/eslint.config.ts": {
+      "fingerprint": "43a080aa257c5c4cba73b4f9c3f2e13fbe8b406cca786dc81b03644737e7b1bb",
+      "snapshot": {
+        "packages/examples/eslint.config.ts": "0922d9925365b90e225d1c0b4c8abbac4d64de9bf648d032d6114aadc1377014"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "New examples ESLint config re-exporting sharedConfig. Lint tooling.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/examples/eslint.config.ts",
+        "pnpm --filter @faxios/examples lint passes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/examples/get/server.js": {
+      "fingerprint": "449d2cb0c0895fd4b6b95a51c9438bd019b538e3bd7b7b25ec42cb3d126e2f00",
+      "snapshot": {
+        "packages/examples/get/server.js": "6bac6ad690a9c68155532937afe5cbc653cca776886511a18a9cc58a0cc81c81"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Example server: single to double quotes only. Not library API.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/examples/get/server.js",
+        "git diff 01316e10..HEAD: 17 quote-only line changes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/examples/post/server.js": {
+      "fingerprint": "1781e30909fd5d01558e7d79acc0f80994024d197b69996873fb5e973a18d61e",
+      "snapshot": {
+        "packages/examples/post/server.js": "d6751683a73c8921bad841c7415287af895da609affce428f2633ce85034dbc9"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Example server: quotes only. Not library API.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/examples/post/server.js",
+        "git diff 01316e10..HEAD: 5 quote-only line changes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/examples/postMultipartFormData/server.js": {
+      "fingerprint": "61e6af08e6c9c59555788660e9fc2d2894a43565fa5895361a13b5c82e84b4b8",
+      "snapshot": {
+        "packages/examples/postMultipartFormData/server.js": "df6a29428a5c5ebe578f4f2fc27c3980298212a72c64a00246f8963c5800aa14"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Example server: quotes only. Not library API.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/examples/postMultipartFormData/server.js",
+        "git diff 01316e10..HEAD: 4 quote-only line changes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/examples/server.js": {
+      "fingerprint": "42ef131fbe5f2d864a43da195c4cf27942ea7c4b631e45841ef9a1b05681f76f",
+      "snapshot": {
+        "packages/examples/server.js": "630c90c80fd9ce299918738c681a1730ca7662bfc37b1750874e4cb253abd90d"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Examples dev server: lint style, and three rule fixes: asset regexes replaced by a FAXIOS_ASSETS endsWith lookup, useless `\\/` escape removed, `.then` returns the handler result. Not library API.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/examples/server.js",
+        "Throwaway check: the lookup picks the same asset as the old regexes for all four asset URLs, a non-asset URL and a nested path.",
+        "node --check passes; pnpm --filter @faxios/examples lint passes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/examples/upload/server.js": {
+      "fingerprint": "9d4b55a1e5a7c8371d34fe18235823ed6ef7a8ab51f83ad06a1cc96e59e23b88",
+      "snapshot": {
+        "packages/examples/upload/server.js": "a0835fec44fb442c547f8efb7ebef34e68feb33834950586e979b325a3acf6d4"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Example server: quotes only. Not library API.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/examples/upload/server.js",
+        "git diff 01316e10..HEAD: 4 quote-only line changes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/CHANGELOG.md": {
+      "fingerprint": "8dcf9c1c09d5a9933c1c3d8b0e1216dcea27bac303653a6ab81f71e32e115f60",
+      "snapshot": {
+        "packages/lib/CHANGELOG.md": "ffb9c26c1a06d1656505e05820472c552aa916506200aeee630d225370fc2a83"
+      },
+      "head": "6a61218663b6541722069056588c8653ce579634",
+      "outcome": "out-of-scope",
+      "reason": "Root CHANGELOG.md moved here so bumpy prepends new versions above the history; content unchanged. Release tooling, not library API; the configure-requests skill does not mention it.",
+      "evidence": [
+        "git log --follow: renamed from CHANGELOG.md in 47d3547f with no content change.",
+        "Disposable-worktree `bumpy version`: '## 0.2.2' inserted above '## v0.2.1'.",
+        "npm pack --dry-run from packages/lib lists LICENSE but no CHANGELOG."
+      ]
+    },
+    "source:packages/lib/eslint-rules/remove-signal-listeners.ts": {
+      "fingerprint": "1f26ef8cbe429af80af574f815cbef22a45295807b73ba8d6a40c7dc421f7680",
+      "snapshot": {
+        "packages/lib/eslint-rules/remove-signal-listeners.ts": "9f9f560b2e7dd18d9e3b8839b068d6f0901f29aa8bca6ab2fbb44187c14ae01c"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Members of the inline `added` element type literal sorted: `{ node; target; handler }` → `{ handler; node; target }`. The `added.push({ node, target, handler: handlerText })` call is unchanged. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/eslint-rules/remove-signal-listeners.ts: Whole file compared old vs HEAD. Only HEAD L33 differs.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/eslint.config.style.ts": {
+      "fingerprint": "516af498a3feae7db79a442076cc9651d423e83ac846058a79b21c59b19143ac",
+      "snapshot": {
+        "packages/lib/eslint.config.style.ts": "4db437647999fe79f5ba586bc5d36a9bf1c19765e4c23ba029e3a1ae721ed931"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Lib ESLint style config spreads sharedConfig (the inline big-o and require-await overrides moved there) and imports localRules from './eslint.config.ts' with an explicit extension (fixed in this review). Lint tooling, no runtime code.",
+      "evidence": [
+        "git diff 1b0379cd..HEAD -- packages/lib/eslint.config.style.ts plus the working-tree import fix",
+        "pnpm --filter @gcmdev/faxios lint:s: exit 0",
+        "pnpm --filter @gcmdev/faxios lint:ts: exit 0"
+      ]
+    },
+    "source:packages/lib/eslint.config.ts": {
+      "fingerprint": "78729eaa16a052079cc10a8e0bb4c07b098c5e70301c544883993fef175f90b7",
+      "snapshot": {
+        "packages/lib/eslint.config.ts": "1670446f6bf375b1a9621ca619b431a3322ad04548b02f42a73403c61deaffb6"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Lib ESLint config now builds on sharedConfig. Lint tooling, no runtime code.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/eslint.config.ts",
+        "pnpm --filter @gcmdev/faxios lint:esl passes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
+      "fingerprint": "bc45043181f774cc4fb77cfcdafc0c9251a4c51aee2b75250bf2674f4e46a5ee",
+      "snapshot": {
+        "packages/lib/src/lib/adapters/fetch-helpers.ts": "65525a836e1612a50febda905a49f3a61272a536e5524be226d050e1dbebed5d"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "`import type { … } from \"../types.js\"` specifiers sorted. Cast union `string | null | undefined` → `null | string | undefined`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/adapters/fetch-helpers.ts: Whole file compared. Changed lines are HEAD L6-8 and L147.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/cancel/CanceledError.ts": {
+      "fingerprint": "85df59670fd92cb13f301eae26d51297202de588204b0d1302789260bfcf650f",
+      "snapshot": {
+        "packages/lib/src/lib/cancel/CanceledError.ts": "5497327570001f0e5dba81f0c4e269443fb32369013aae899aa8014cf79453fb"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Constructor parameter type `string | null` → `null | string`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/cancel/CanceledError.ts: Whole file compared. Only HEAD L16 differs.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/core/FaxiosHeaders.ts": {
+      "fingerprint": "f2721353f59b29d0fb4900143d50177f1b1f3397344877db7e95177a4b3a17fb",
+      "snapshot": {
+        "packages/lib/src/lib/core/FaxiosHeaders.ts": "ad22092c6983c48d9a4d6c856a94723b528900612c03f9dca9e922858f44c4be"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Members of the `HeaderMatcher` and `HeaderInput` unions sorted. Union operands sorted in the `normalizeValue` return type, the `matchHeaderValue` filter, the constructor parameter, the `get` RegExp overload return, the `get` implementation's parser union, `delete(header)`, `static from`, `static concat` and `static accessor`. Behaviour change: none. Overload order of `get` is unchanged (`string`, `true`, `RegExp`, function). All runtime code, including the `accessor([...])` list and `reduceDescriptors`, is identical.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/core/FaxiosHeaders.ts: Whole file (530 lines) compared. Changed lines are HEAD L11-21, L34, L66-70, L179, L247, L251-257, L320, L453, L459-461 and L471.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/core/prepareRequest.ts": {
+      "fingerprint": "681f90c4996a9d74be0094bb0f32da448031e3ed8118d3e61d1ad22f11cdc006",
+      "snapshot": {
+        "packages/lib/src/lib/core/prepareRequest.ts": "7ff961021122fc8117e3cefe110238eb9d981147587acd0ba337d7c3bbcea2ad"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Cast union `Record<string, unknown> | null | undefined` → `null | Record<string, unknown> | undefined`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/core/prepareRequest.ts: Whole file compared. Only HEAD L99 differs.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/core/transformData.ts": {
+      "fingerprint": "3d2dd7258ad37f34c7dc2d0fee30277e2bce3815496b6b79e23fa789a836237b",
+      "snapshot": {
+        "packages/lib/src/lib/core/transformData.ts": "4616302b82eb663eae39466daa732e182da436fe958b80dea2eae411b4a8bb6a"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Type import specifiers sorted. Parameter unions `TransformFn | Array<TransformFn> | undefined` → `Array<TransformFn> | TransformFn | undefined`, and `{…} | null` → `null | {…}`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/core/transformData.ts: Whole file compared. Changed lines are HEAD L5 and L10.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/core/validateSchema.ts": {
+      "fingerprint": "1c8cc391115ea5e3b7fcb0a54dc75c4c4823df35b6c95c0a12216436a3afd666",
+      "snapshot": {
+        "packages/lib/src/lib/core/validateSchema.ts": "ae78a117b6a41436f1278c8426272f659a8e8257e1f5f17aa986585f63a8df48"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Type-only imports swapped and specifiers sorted. Members of the `SchemaErrorCode` union sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/core/validateSchema.ts: Whole file compared. Changed lines are HEAD L2-3 and L6-10.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/HttpStatusCode.ts": {
+      "fingerprint": "beae452d92669ae4d0e5792564f0acd222f51acc5e10bd00fb681028df3be98f",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/HttpStatusCode.ts": "37fd8cf07edd9b2d942a8df6b005cbdade663a74bbfac94d4de082099c3dd1db"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Cast `Record<string | number, string | number>` → `Record<number | string, number | string>`. Behaviour change: none. The object literal key and value order is unchanged, so the reverse mapping is the same.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/HttpStatusCode.ts: Whole file compared. Only HEAD L74 differs.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/cookies.ts": {
+      "fingerprint": "204e790c484b845b4d605226d508132630c47757d4c291d67825ef83cd09f29a",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/cookies.ts": "4c0a2b0d05a2af3b2b33c0c5b822f59ac089a9780d0c55be5e26a255fa978e26"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Members of the `CookieManager` type sorted (`read`, `remove`, `write`). `string | null` → `null | string` in the `read` type and in the `read()` return annotation. Behaviour change: none. The runtime object literals (`write`, `read`, `remove`) keep their order.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/cookies.ts: Whole file compared. Changed lines are HEAD L4-8 and L39.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/formDataToJSON.ts": {
+      "fingerprint": "3ac6f48c9a13f827d4b25b2218c2c2966ed90abb919cfa08802d1e19f68c5f78",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/formDataToJSON.ts": "05f6c3b652219971bab044a24528be48dd6df67cf1dcc9e8beee52d0ed6e8ddb"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Union operands sorted: `match: null | RegExpExecArray`, the return type `null | Record<string, unknown>`, and `name: number | string`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/formDataToJSON.ts: Whole file compared. Changed lines are HEAD L32, L69 and L73.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/parseHeaders.ts": {
+      "fingerprint": "a258a4a0f470bf63c0483d280b83196bf1f4596d03c26f18f95884fddd1e5386",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/parseHeaders.ts": "d101520212340811b3e299e3658f1fa3d7575b84ae821b38f802a3a0549311c8"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "`Record<string, string | Array<string>>` → `Record<string, Array<string> | string>` in the return type and on `parsed`. Behaviour change: none. The `ignoreDuplicateOf` list is unchanged.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/parseHeaders.ts: Whole file compared. Changed lines are HEAD L41-42.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/progressEventReducer.ts": {
+      "fingerprint": "7a91a6f5551fe4076fbce726e1eec50a9f07dc8e61ca69b31097e2561bf9ff3f",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/progressEventReducer.ts": "504dfea2a1fac6ccc90cd97fdf4f2fa41896fee3b0b0eb37b4b8c3c8e7764cec"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Members of the `ev` cast type literal sorted (`lengthComputable`, `loaded`, `total`). Behaviour change: none. The `data` and `progressEventDecorator` object literals are unchanged.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/progressEventReducer.ts: Whole file compared. Only HEAD L14 differs.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/sanitizeHeaderValue.ts": {
+      "fingerprint": "2676a766635afae613f05264a5707653448b45cebecd9b655298b7c1ed83185b",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/sanitizeHeaderValue.ts": "ae38283a2092f19d32bd7b91ebba549afdcee38dcad6e71bd4421cf4cfab3e64"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Return type `string | Array<string>` → `Array<string> | string`. Behaviour change: none. The regex string literals are unchanged.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/sanitizeHeaderValue.ts: Whole file compared. Only HEAD L39 differs.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/throttle.ts": {
+      "fingerprint": "f431b4f491c6401015b45e904e6a960ce0aea4734060fc49754a3722eb080e09",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/throttle.ts": "3313e0aa8b05f21907c1f705174ea6e25c04cb05b3d5ead10309916845d2eb4e"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "`timer: ReturnType<typeof setTimeout> | null` → `null | ReturnType<…>`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/throttle.ts: Whole file compared. Only HEAD L11 differs.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/toFormData.ts": {
+      "fingerprint": "180ab10e4c38537f9f73545b43a07576e89b899b0af948933e73a6eed13e89c4",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/toFormData.ts": "49e4a278b8c9e271e9ae9ce0eb9a72ffb3170215b2adc88b697d3c2f4d236a71"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Type import specifiers sorted. `string | number` → `number | string` throughout (`renderKey` params and map callback, `defaultVisitor` key/path, `build` path, the `key as …` casts). `null | Array<…>` → `Array<…> | null`. Behaviour change: none. The `toFlatObject` defaults and `exposedHelpers` literals are unchanged.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/toFormData.ts: Whole file compared. Changed lines are HEAD L5, L43, L47, L204, L257, L274 and L280.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/trackStream.ts": {
+      "fingerprint": "6d506907a7e869aecf4222e24714ffcc29c906822bfbb4c8841ef5e9118188f7",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/trackStream.ts": "e946f3e69a917c9667420106d0615282762faeb10f5ca743e191023207a7bdbe"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Members sorted in the type literals `ReadableStreamController` (`close`, `enqueue`), `ReadableStreamSource` (`cancel`, `pull`) and `ReaderLike` (`cancel`, `read`). Behaviour change: none. The runtime source object passed to `new ReadableStreamGlobal({ pull, cancel }, { highWaterMark: 2 })` is unchanged.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/trackStream.ts: Whole file compared. Changed lines are HEAD L1-9 and L45-48.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/validator.ts": {
+      "fingerprint": "9b3073151f61eb08a8be187678bcb58d07222fcba82de287383ad1d8e90100df",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/validator.ts": "31e055e85520fb0e8fd5e20deee6d9c85c4c238d6f4dae92d0ff88b7d3246ef0"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "`ValidatorFn | undefined` → `undefined | ValidatorFn` in the `validators` Record and the `assertOptions` schema param. `ValidatorFn | false | undefined` → `false | undefined | ValidatorFn` in `transitional`. Behaviour change: none. The type-name array and the default export `{ assertOptions, validators }` are unchanged.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/validator.ts: Whole file compared. Changed lines are HEAD L8, L27 and L83.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/platform.ts": {
+      "fingerprint": "8bc7df58aa33cc7599ea188e4ced891c7cecf81eb05b4a6121c7e140ce7db5b9",
+      "snapshot": {
+        "packages/lib/src/lib/platform.ts": "39e7a3bc4ad403b73e23cefeb238b4728ecd6adc461036198036d1d4e3b6fcce"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Members of the `_globalThis` cast type literal sorted (`Blob`, `document`, `FormData`, `navigator`, `self`, `window`, `WorkerGlobalScope`). Behaviour change: none. The exported runtime object (including the `classes` and `protocols` order) is unchanged.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/platform.ts: Whole file compared. Changed lines are HEAD L5-13.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/types/standard-schema.ts": {
+      "fingerprint": "ead8a9b272f1eaec424e77a2d2a1c41f3461649cfbf94110cc5936feb100a423",
+      "snapshot": {
+        "packages/lib/src/lib/types/standard-schema.ts": "2dc8b9f4f43477be25fa4f8e46311d453dabc3df4449af95c888b7c40a51f868"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Members of `Props` sorted (`types`, `validate`, `vendor`, `version`). `validate` return → `Promise<Result<Output>> | Result<Output>`. `Result` → `FailureResult | SuccessResult<Output>`. Members of `SuccessResult` sorted (`issues`, `value`). `Issue.path` → `ReadonlyArray<PathSegment | PropertyKey>`. Behaviour change: none. This is a type-only vendored file. (Not a behaviour change: the vendored copy no longer matches upstream Standard Schema's ordering, which makes future re-syncs noisier.)",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/types/standard-schema.ts: Whole file compared. Changed lines are HEAD L16-21, L29, L32-33 and L43.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/lib/src/lib/utils.ts": {
+      "fingerprint": "142bd20e5da80f873c6f21b2c43cdee435c09061b2df63978e80a8f40a602902",
+      "snapshot": {
+        "packages/lib/src/lib/utils.ts": "59dbb3057d752d8b0571b80853a491f52c54098b1a43b87bfe2a3d6999740882"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Union operands sorted: `obj: null | object` and its cast, `findKey` → `null | string`, the `merge` ctx cast `false | {…}`, the `isTypedArray` param `(abstract new …) | false`, `matches: null | RegExpExecArray`, the `reduceDescriptors` reducer return `false | PropertyDescriptor | undefined`, the `freezeMethods` reducer return, and `Record<number | string, unknown>`. Members of `GlobalWithEvents` sorted (`process` before `setImmediate`). Behaviour change: none. The `[\"ReadableStream\",…].map(kindOfTest)` destructuring, the merge/extend logic and the default-export object key order are unchanged.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/lib/src/lib/utils.ts: Whole file (933 lines) compared. Changed lines are HEAD L24, L37, L393, L414-415, L440, L599, L619, L647, L668 and L762.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/sandbox/client.js": {
+      "fingerprint": "ae09a3b903229fd827286ae3c2aec2d0f9cd394f6431a1e9d3aa3d02971bdefe",
+      "snapshot": {
+        "packages/sandbox/client.js": "1fba87d333622827bb4521fccf1b3691201732bdbe5d2ec1c3bc6ec6b9e3329b"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "`.then(handleSuccess).catch(handleFailure)` chains on the GET and POST calls split across two lines (@stylistic newline-per-chained-call). The tokens are unchanged. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/sandbox/client.js: @@ -14,7 +14,9 @@. Method of checking: no shell or git was available, so I read PR #196 `pr://196/diff/175` (merge-base..HEAD 1b0379cd) instead of `git diff 01316e1 HEAD`",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/sandbox/eslint.config.style.ts": {
+      "fingerprint": "d77aa1746d0d747075030525a560a0cc106e205949343c0a5a97035a54fcbc59",
+      "snapshot": {
+        "packages/sandbox/eslint.config.style.ts": "6419aaea12c934c349af2fff2c4410008dd00e9c04dc4c1aced771af17c5f436"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "New sandbox ESLint style config re-exporting sharedConfig. Lint tooling.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/sandbox/eslint.config.style.ts",
+        "pnpm --filter @faxios/sandbox lint passes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/sandbox/eslint.config.ts": {
+      "fingerprint": "7f5b95e980106e97df3f64f3758321cc6207db008bd014ad268fcbf05b236650",
+      "snapshot": {
+        "packages/sandbox/eslint.config.ts": "0922d9925365b90e225d1c0b4c8abbac4d64de9bf648d032d6114aadc1377014"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "New sandbox ESLint config re-exporting sharedConfig. Lint tooling.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/sandbox/eslint.config.ts",
+        "pnpm --filter @faxios/sandbox lint passes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/sandbox/server.js": {
+      "fingerprint": "0f3f5a8fa057aae00a7f444e3fd6389e7541efc329d71bb25ec485bbe0ba9d7f",
+      "snapshot": {
+        "packages/sandbox/server.js": "93af6e5e79095b04da2b2a2e9c84d90adec0955c048fafb84b2db0090d3473bc"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Sandbox server: node:path import moved after node:http, arrow parens, brace style. Not library API.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/sandbox/server.js",
+        "git diff 01316e10..HEAD: import order and formatting only.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/browser/cancel.browser.test.ts": {
+      "fingerprint": "b8517f6f669bf53b72a3bc990858b524a4b31c48332cf82dfdba1bc2a0f804a6",
+      "snapshot": {
+        "packages/tests/browser/cancel.browser.test.ts": "e9decbe3a16046d3c4a367b623dc7ae3c176475070e19b0e78c7301464419913"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Param type `boolean | AddEventListenerOptions` became `AddEventListenerOptions | boolean`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/browser/cancel.browser.test.ts: @@ -35,7 +35,7 @@ (PR #196 diff/180)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/browser/helpers/fetchMock.ts": {
+      "fingerprint": "ced0ff6ad3f5f8538fe1d44887e221c1676d94f9017bfc6682ce7f62863fbc74",
+      "snapshot": {
+        "packages/tests/browser/helpers/fetchMock.ts": "c05212efdd2e99439a1f448ac2fd31078047648c16b0a8e0319bd55f4430953d"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Property signatures sorted in `ResponseSpec` (body, headers, status, statusText) and in `FetchMockController` ([Symbol.dispose], failNetworkError, fetch, lastRequest, requests, respondWith). Both are type-only. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/browser/helpers/fetchMock.ts: @@ -10,19 +10,19 @@ (diff/181)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/eslint-rules/test-server-cleanup.ts": {
+      "fingerprint": "ad54997d68ce9739ece4a7ff9814628dde534b673031262bac2e7631e5540892",
+      "snapshot": {
+        "packages/tests/eslint-rules/test-server-cleanup.ts": "3dc812bc3eabd7e180fac14c55b6f2ccc017f766bb814b0c8d56c73908caebb8"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Union `object | null | undefined` became `null | object | undefined`. `Scope.Scope | null` became `null | Scope.Scope`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/eslint-rules/test-server-cleanup.ts: @@ -17,7 +17,7 @@ and @@ -90,7 +90,7 @@ (diff/184)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/eslint.config.style.ts": {
+      "fingerprint": "520cce460af55feb2f8e320b2dfe9d21ad53cbe34eaae212cf35e8990b511542",
+      "snapshot": {
+        "packages/tests/eslint.config.style.ts": "f9f98dd11f0ec78b2fdcfa3d3a40badb432bda25bababd00aa1e0dd192368e1e"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Tests ESLint style config now spreads sharedConfig. Lint tooling.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/eslint.config.style.ts",
+        "pnpm --filter @faxios/tests lint:s passes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/eslint.config.ts": {
+      "fingerprint": "7294f8234ab8653d3b43165ce923e3bcc527cf51372b31b651bf575bd63d76ed",
+      "snapshot": {
+        "packages/tests/eslint.config.ts": "de1b7e67a2538dc4fc6616788d0f26b9a3b5d5d00524fe11ca50d9e9e83b6222"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Tests ESLint config builds on sharedConfig and turns off gingacodemonkey/workspace-boundaries (tests import lib internals via #src/* on purpose). Lint tooling.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/eslint.config.ts",
+        "pnpm --filter @faxios/tests lint:esl passes (177 workspace-boundaries errors before).",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/module/esm/tests/helpers/esm-functions.ts": {
+      "fingerprint": "a7e6d378b427879a6366e88a4d6e63c8be21bd0be3e0a4b8c9e6151bf4dace4a",
+      "snapshot": {
+        "packages/tests/module/esm/tests/helpers/esm-functions.ts": "cf1a84e64c659d15966ac8f11cb44c6a0a2a2c42276fc443728d550fec592c6e"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Named imports from \"faxios\" sorted: `all` moved first, and `isCancel` now comes before `isFaxiosError`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/module/esm/tests/helpers/esm-functions.ts: @@ -1,13 +1,13 @@ (diff/187)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/module/esm/tests/helpers/esm-index.ts": {
+      "fingerprint": "23cbf79fed7a00bda59f3ad278da8c22906a58f6d85b0a892a2b804c3b7a70e8",
+      "snapshot": {
+        "packages/tests/module/esm/tests/helpers/esm-index.ts": "3ef84708f9d4e7f2bf0e87a76ed53847c603ba87e1b6e43516bab9fe987aa7d2"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "`import type {…}` specifiers sorted (AddressFamily … RawFaxiosRequestHeaders). Value-import specifiers sorted (all, FaxiosHeaders, formToJSON, isFaxiosError, toFormData). `.then` param type `string | number` became `number | string`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/module/esm/tests/helpers/esm-index.ts: @@ -1,22 +1,22 @@ and @@ -425,7 +425,7 @@ (diff/188)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/module/esm/tests/ts.module.test.ts": {
+      "fingerprint": "75225ada8d38c42b915aaae848e990a1007bceef2132f55caa65de75c71c00d2",
+      "snapshot": {
+        "packages/tests/module/esm/tests/ts.module.test.ts": "5886e8f179467ebe96ff9b9462f1369cf4baa979deb96d24cb565b6dc415b017"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "`{ createTempFixture, cleanupTempFixture }` became `{ cleanupTempFixture, createTempFixture }`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/module/esm/tests/ts.module.test.ts: @@ -1,7 +1,7 @@ (diff/189)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/module/esm/tests/typings.module.test.ts": {
+      "fingerprint": "66fa30d59791062075d93ba6a8315ffd5f9456fea961184cd0e1f2c063037ba6",
+      "snapshot": {
+        "packages/tests/module/esm/tests/typings.module.test.ts": "0e03c6c6bde7fd82cde8005b79c342b0a3043d22a5b5b0a56d24de96b714920d"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Same import-specifier swap: cleanupTempFixture now comes before createTempFixture. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/module/esm/tests/typings.module.test.ts: @@ -1,7 +1,7 @@ (diff/190)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/scripts/check-expect-error.ts": {
+      "fingerprint": "a22e8c3611be2897aa4de93df8ba335a471454c62079baec2e6c681dbb0da7c7",
+      "snapshot": {
+        "packages/tests/scripts/check-expect-error.ts": "d1131e8f4f3a1c515ef0c72f1f2909a5008876e78f265da2d7fc18a078b15269"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Keys sorted in the `Directive` type literal (code, index) and the `Copy` type literal (copy, directives, lines, source). Both are type-only. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/scripts/check-expect-error.ts: @@ -14,8 +14,8 @@ (diff/192)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/scripts/sync-version.ts": {
+      "fingerprint": "d54a9237a241291280fd74c60c0288e1d948ad48fbd16540491f278f7937d0db",
+      "snapshot": {
+        "packages/tests/scripts/sync-version.ts": "63265d433f582de41e0d1e1aec6a6a2f999d2494f9eec5934c9c5a1033b88be7"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "New release script: writes packages/lib/package.json's version into `export const VERSION` in src/lib/env/data.ts; exits 1 if the line is missing. VERSION's meaning is unchanged. Release tooling, not library API; the configure-requests skill does not mention it.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/scripts/sync-version.ts",
+        "Smoke: after bumpy version 0.2.2 it set VERSION to 0.2.2; a second run printed 'VERSION is already 0.2.2'; version.test.ts passed.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/setup/server.ts": {
+      "fingerprint": "d50404cd69d3089179fece00dcd0f02f781d830abed5064f7b794fe9e8dacebc",
+      "snapshot": {
+        "packages/tests/setup/server.ts": "699fb28cd07dc62c7718836a8549347a48bfbe3c7bbc110d37306f563086cc62"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Unions `http.Server | http2.Http2SecureServer` reversed (in untrackServer and ExtendedServer). `ServerOptions` keys sorted. `ExtendedServer` keys closeAllConnections and closeAllSessions swapped. Stream union members sorted. `Record<string, string | Array<string>>` became `Array<string> | string`. Keys of the inline `{status, headers, body}` type assertion sorted. The object-destructuring pattern itself did not move. Behaviour change: none (all type-level). The destructuring `{ status = 200?, headers = {}, body }` is outside the moved lines.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/setup/server.ts: @@ -20,24 +20,24 @@, @@ -84,8 +84,8 @@, @@ -186,7 +186,7 @@, @@ -322,9 +322,9 @@ (diff/195)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/setup/vendor.d.ts": {
+      "fingerprint": "74af40a677a195453f8d710344375193373ba23d937d9f7ab3782cb37805c68d",
+      "snapshot": {
+        "packages/tests/setup/vendor.d.ts": "c44689ee9deab236a5022b31da70dfb8fc095f1bf5a563120a4b521602fff518"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "`Fields = Record<string, string | Array<string>>` became `Array<string> | string`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/setup/vendor.d.ts: @@ -5,7 +5,7 @@ (diff/196)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/smoke/bun/tests/fetch.smoke.test.ts": {
+      "fingerprint": "0cd02da2a0c35db9d898714dfbc1c15b73d6bdd0faf5dd261702802e67f8afb5",
+      "snapshot": {
+        "packages/tests/smoke/bun/tests/fetch.smoke.test.ts": "93151a16e44ae38e9a39b056736a0de822aebbb6cbbf8b2444f7992992d41f32"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Return type `Response | Promise<Response>` became `Promise<Response> | Response`. Type `{ input; init }` became `{ init; input }`. Method literal union now ends `\"patch\" | \"put\"`. The runtime `calls.push({ input, init })` was not touched. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/smoke/bun/tests/fetch.smoke.test.ts: @@ -5,9 +5,9 @@ and @@ -81,7 +81,7 @@ (diff/197)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/smoke/deno/tests/fetch.smoke.test.ts": {
+      "fingerprint": "0bdb5c7ae493f45c3499b6c47f7cb58b2e600c29d9dd892eb220bb076ca6bfbb",
+      "snapshot": {
+        "packages/tests/smoke/deno/tests/fetch.smoke.test.ts": "379c7874b6e20f8ccc641556ba12fa9949d803ccaa0a91295432551a7b86181a"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Same changes as the bun file: return-type union order, `{init; input}` type-literal key order, and method union sorted (`patch | post | put`, same 6 members). Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/smoke/deno/tests/fetch.smoke.test.ts: @@ -2,9 +2,9 @@ and @@ -58,7 +58,7 @@ (diff/198)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/smoke/deno/tests/import.smoke.test.ts": {
+      "fingerprint": "99bc1f15e71901784f2cd378f3e8299b0da0d834cfb62d306bc37561bc5f4eee",
+      "snapshot": {
+        "packages/tests/smoke/deno/tests/import.smoke.test.ts": "1fadc5a327b8a0548b624b47b060733732184ddbd6921d422b682b3dc4bbf164"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Named imports `FaxiosError, FaxiosHeaders, CanceledError` became `CanceledError, FaxiosError, FaxiosHeaders`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/smoke/deno/tests/import.smoke.test.ts: @@ -1,5 +1,5 @@ (diff/199)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/smoke/deno/tests/plugins.smoke.test.ts": {
+      "fingerprint": "54d660931b0c9baba9783ca14282bbeed2ebf3f2cce00317733a1c6b4c5b531b",
+      "snapshot": {
+        "packages/tests/smoke/deno/tests/plugins.smoke.test.ts": "5d3ac8ec786d01cbbb308773047630b461adf6fe15ee4b3b6cce3b03e97bb9e4"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Param union `string | URL | Request` became `Request | string | URL`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/smoke/deno/tests/plugins.smoke.test.ts: @@ -15,7 +15,7 @@ (diff/200)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/tsconfig.json": {
+      "fingerprint": "8cb71ca0841586dac2d50b404b2b9a255ec057fb5a9a6fcaa078df4395fff1d9",
+      "snapshot": {
+        "packages/tests/tsconfig.json": "8382992cb55d11966d7b8fc59afcb705e63de07680c9fab33a0ca1d7df6871f9"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Single-line arrays (`paths[\"#src/*\"]`, `typeRoots`, `include`, `exclude`) expanded to one element per line. Element order and values are unchanged. `extends` (line 2) is not in the hunk. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/tsconfig.json: @@ -3,13 +3,24 @@ (diff/201). Current file read to confirm `extends: @gingacodemonkey/config/tsc/no-dom/library` and the array contents.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/adapters/errorDetails.test.ts": {
+      "fingerprint": "2103052024f48e1adb263c2d46efe86685f7b1ac1d781654c94b4e4de137653b",
+      "snapshot": {
+        "packages/tests/unit/adapters/errorDetails.test.ts": "8e4d245fe03c6da8934b2711e420e675d3beacb7186a0b712c82dc89a543130a"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Cast type `{ isFaxiosError; code }` became `{ code; isFaxiosError }`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/adapters/errorDetails.test.ts: @@ -26,7 +26,7 @@ (diff/202)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/axiosHeaders.test.ts": {
+      "fingerprint": "62c06c2925867113fd09eb03e5bfc926fdd2bd2c8373b18a7cbfc460b0026bd4",
+      "snapshot": {
+        "packages/tests/unit/axiosHeaders.test.ts": "a18bb0b8aa92c9422812a82ae6fa038013fc56832b30cdd0be2f5b8610848d7e"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "In the mapped-type key filter, `\"get\" | \"set\" | \"has\"` became `\"get\" | \"has\" | \"set\"` in both the plain union and the template-literal union. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/axiosHeaders.test.ts: @@ -5,9 +5,9 @@ (diff/205)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/cancel/canceledError.test.ts": {
+      "fingerprint": "28ec1157d2ddf174d8185b450fe5acf9e180640fd3630056883f9b939272a0a7",
+      "snapshot": {
+        "packages/tests/unit/cancel/canceledError.test.ts": "62d020a6aa459d93efc8bdef3b2f472e7085f78fcd0c84fd148f7cefc4953b4a"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import `describe, it, expect` became `describe, expect, it`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/cancel/canceledError.test.ts: @@ -1,5 +1,5 @@ (diff/206)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/cancel/isCancel.test.ts": {
+      "fingerprint": "d9abfcad3e075d31fba54139f079adbd42b68b6d59878a601f2d2ab47851e2c4",
+      "snapshot": {
+        "packages/tests/unit/cancel/isCancel.test.ts": "64dd92ea21fe3c312d0ff15f540a4ea0494a59c6a726961965a442b06bb17fb1"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/cancel/isCancel.test.ts: @@ -1,4 +1,4 @@ (diff/207)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/core/FaxiosError.test.ts": {
+      "fingerprint": "fa49cf554f9e5ea36004b002c0451e1cccb729b2658d65a3d90e23e1821c692e",
+      "snapshot": {
+        "packages/tests/unit/core/FaxiosError.test.ts": "9fb6bd1a51c8b4fafe484c11693f989bacb68815a7c8b86d16ccfe9ef9b6b94f"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/core/FaxiosError.test.ts: @@ -1,5 +1,5 @@ (diff/208)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/core/buildFullPath.test.ts": {
+      "fingerprint": "6109b7cfadc97329adb9514d10b1774e3fa1cdd5007253b83afc5a62155eca2f",
+      "snapshot": {
+        "packages/tests/unit/core/buildFullPath.test.ts": "9a84ba6c116489787666badd9225f2f99720c219f0d6a02368b2d0c1105554e3"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/core/buildFullPath.test.ts: @@ -1,4 +1,4 @@ (diff/209)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/core/configHeadersTypes.test.ts": {
+      "fingerprint": "89413975ecac1ccb36bd59601927734ff82a8d54ebdc6c77b49eafb738df98ff",
+      "snapshot": {
+        "packages/tests/unit/core/configHeadersTypes.test.ts": "051ba889a52ccc2d93be4a7c30f84a58e79ff7d1e26cf0a1ae904ccf3a8aa5cd"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import sorted (describe, expectTypeOf, it). The expected `keyof HeadersDefaults` literal union is sorted alphabetically. It has the same 12 members before and after (common, delete, get, head, link, options, patch, post, purge, put, query, unlink). Behaviour change: none. `toEqualTypeOf` compares the same union.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/core/configHeadersTypes.test.ts: @@ -1,4 +1,4 @@ and @@ -11,7 +11,7 @@ (diff/210)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/core/dispatchRequest.test.ts": {
+      "fingerprint": "89b1706307bf7819352ee8e6cab6e6c4a7d53f2aa39c9e180186a3e60b7a443b",
+      "snapshot": {
+        "packages/tests/unit/core/dispatchRequest.test.ts": "f143e654480ac3dd653a82145bdca3c9c0e88dbe2465c4f7717fb00294c23a77"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "`string | Request | URL` became `Request | string | URL`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/core/dispatchRequest.test.ts: @@ -223,7 +223,7 @@ (diff/212)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/core/envFormData.test.ts": {
+      "fingerprint": "d5813dffe23f8560d0fe7c03dc1c5faef1287c92459d00b0e59627c5c0f8fb9e",
+      "snapshot": {
+        "packages/tests/unit/core/envFormData.test.ts": "9ed3947d002b2a38dfb696852ed2d6a1fd98b6fe24c181b4cf7bc4557a16a332"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest imports sorted. `string | URL | Request` became `Request | string | URL`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/core/envFormData.test.ts: @@ -1,9 +1,9 @@ (diff/213)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/core/mergeConfig.test.ts": {
+      "fingerprint": "ae8ba2344f5d28c10c54cc65f978f5796c86f2c56793b43f911963fb9741da64",
+      "snapshot": {
+        "packages/tests/unit/core/mergeConfig.test.ts": "c688a7cc5c4bb871ddff487331c09c22c61d0c692401cb01ed5d807ad55ab668"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/core/mergeConfig.test.ts: @@ -1,4 +1,4 @@ (diff/214)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/core/methodHeaderGroups.test.ts": {
+      "fingerprint": "920e107c3506183a7d9f359be0b9815ad9482572b46677b17346865413b7673a",
+      "snapshot": {
+        "packages/tests/unit/core/methodHeaderGroups.test.ts": "93ee080ea9aab0f731a6377693be3349977c28a79db484d1bd8995eb8f2e5e68"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest imports sorted. Fetch input union reordered to `Request | string | URL`. The runtime `GROUPS` array (line 6) is only hunk-header context and was not changed. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/core/methodHeaderGroups.test.ts: @@ -1,4 +1,4 @@ and @@ -6,7 +6,7 @@ (diff/215)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/core/middlewareTypes.test.ts": {
+      "fingerprint": "e2cf5ba45038031df2ccb4aa2a12b09010682d95573f3b0a586110441d534620",
+      "snapshot": {
+        "packages/tests/unit/core/middlewareTypes.test.ts": "1436d6e769e40990b8b6199b2eaeab32099773826d6ca5c988a7f8e1b045f91c"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "`CacheOptions` inner keys sorted (key, ttlMs). Two `toEqualTypeOf<{ttlMs?;key?} | undefined>` assertions became `<undefined | {key?; ttlMs?}>`. The `FaxiosPlugin<{requires; options}>` generic arg became `{options; requires}`. Behaviour change: none. The structural types are identical, so the assertions are unchanged.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/core/middlewareTypes.test.ts: @@ -15,14 +15,14 @@, @@ -120,7 +120,7 @@, @@ -194,7 +194,7 @@ (diff/217)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/core/paramsSchema.test.ts": {
+      "fingerprint": "be06d1abcaaee58878bc0b884efe4d0ef0dc55a9c6c92a0425545068ef8acd2e",
+      "snapshot": {
+        "packages/tests/unit/core/paramsSchema.test.ts": "ff3b19e5e97948094d05d16185c2ff2a2d14689df5f98a626a8ba5473e44e25f"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "`string | URL | Request` became `Request | string | URL`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/core/paramsSchema.test.ts: @@ -15,7 +15,7 @@ (diff/218)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/core/pathParams.test.ts": {
+      "fingerprint": "f6dc74d2c9979eb0d09f1ed4aed4be635fd4cf3967799778f42501ae95fc5c36",
+      "snapshot": {
+        "packages/tests/unit/core/pathParams.test.ts": "7f66ad53e20ac502094b9a48f5668a97c039c6099e1cc4c69c2b2bf523c527cb"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Four fetch-param unions changed from `string | URL | Request` to `Request | string | URL`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/core/pathParams.test.ts: @@ -11,7 +11,7 @@, @@ -24,7 +24,7 @@, @@ -60,7 +60,7 @@, @@ -259,7 +259,7 @@ (diff/219)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/core/requestSchema.test.ts": {
+      "fingerprint": "23a923ef9056add1cda1bcbb54445a8f66d79d42d40a7f14b9bafd20efeb9f21",
+      "snapshot": {
+        "packages/tests/unit/core/requestSchema.test.ts": "f11bff350dd55b448ad7d06b8ce36963015b83ad7447aa2fe3c02e7c7795f5be"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Fetch-param union reordered. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/core/requestSchema.test.ts: @@ -14,7 +14,7 @@ (diff/220)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/core/responseSchemaInference.test.ts": {
+      "fingerprint": "873a202c28e78b3698c537a6a4a70d99cbfc943f872331d884ec63a73d55c0f6",
+      "snapshot": {
+        "packages/tests/unit/core/responseSchemaInference.test.ts": "6b814b47d5624f9de0654d3be401540e5016ab89c4cb40e22f0456ae79c0f527"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest imports sorted. `UserOutput` keys sorted (age, name). The expected `err.code` literal union is sorted, with the same 4 members. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/core/responseSchemaInference.test.ts: @@ -1,9 +1,9 @@ and @@ -44,7 +44,7 @@ (diff/221)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/core/route.test.ts": {
+      "fingerprint": "c840556dd44fb07dc11d87b0c8ab3d1b609523a181b68be3d1f106f5074a8020",
+      "snapshot": {
+        "packages/tests/unit/core/route.test.ts": "19070506829673308c5488df832b308f4ce8eb62cae80aea4fe02a8e8d3aab6c"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest imports sorted. Three fetch-param unions changed to `Request | string | URL`. The runtime `captured.push({ url, method })` object order was not touched. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/core/route.test.ts: @@ -1,5 +1,5 @@, @@ -15,7 +15,7 @@, @@ -51,7 +51,7 @@, @@ -75,7 +75,7 @@ (diff/222)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/core/transformData.test.ts": {
+      "fingerprint": "fd34451a9d6eba3da0f1988ea0b01b5716f79da3d426b92f655d3726181abb64",
+      "snapshot": {
+        "packages/tests/unit/core/transformData.test.ts": "367870ba5830011f318695491d4ec789ccc32b17f0c252343b322919d46a1d95"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/core/transformData.test.ts: @@ -1,4 +1,4 @@ (diff/223)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/helpers/buildURL.test.ts": {
+      "fingerprint": "ff12bd20a2c8226f672dba2af8d5da9f7cc52bef898630330fdf04b98551482d",
+      "snapshot": {
+        "packages/tests/unit/helpers/buildURL.test.ts": "fb98ecfd247c6019cc8cced8f0bfd8fff216c7c9ec0213f904e924fe1265668f"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import `describe, it, expect, expectTypeOf, vi` became `describe, expect, expectTypeOf, it, vi`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/helpers/buildURL.test.ts: @@ -1,4 +1,4 @@ (diff/224)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/helpers/combineURLs.test.ts": {
+      "fingerprint": "23a963c73a400d7bdacd5c0156fa76b2cf27997ad4f0f5ea201270858ea2babf",
+      "snapshot": {
+        "packages/tests/unit/helpers/combineURLs.test.ts": "71e83d65dc433d10af26e2d4911918f619f8be5848424efa66d1a0bb7b697759"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/helpers/combineURLs.test.ts: @@ -1,4 +1,4 @@ (diff/225)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/helpers/formDataToJSON.test.ts": {
+      "fingerprint": "3d9f868da5d22ed5b96c424b8729911b7c3823bf179edfe46f112718853af6fc",
+      "snapshot": {
+        "packages/tests/unit/helpers/formDataToJSON.test.ts": "dea3e794e3d75e99add926881b29da218ed488e4a63facffdc6653b55876171e"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/helpers/formDataToJSON.test.ts: @@ -1,4 +1,4 @@ (diff/226)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/helpers/isAbsoluteURL.test.ts": {
+      "fingerprint": "3db95d3b93fc7b335486fde0ba351beb131981920a270998b510a0d2d44e7f1c",
+      "snapshot": {
+        "packages/tests/unit/helpers/isAbsoluteURL.test.ts": "92a9f6edbb818a15b6b452430d963d75070f8cf2b30fc5a5b043b605c826a401"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/helpers/isAbsoluteURL.test.ts: @@ -1,4 +1,4 @@ (diff/227)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/helpers/isAxiosError.test.ts": {
+      "fingerprint": "13a1d086d8a4191f1d1750bb5d0f56ea7200f5a40c47e36672ed53abad7643ea",
+      "snapshot": {
+        "packages/tests/unit/helpers/isAxiosError.test.ts": "a48e245b1c5178de4a1d773f18d29719a45a80dd0065de778792fa465651d219"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/helpers/isAxiosError.test.ts: @@ -1,4 +1,4 @@ (diff/228)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/helpers/parseHeaders.test.ts": {
+      "fingerprint": "34b9485cac4c492e724b64b2fc78b009518cbe1b1d813b9c7373f06673dd054d",
+      "snapshot": {
+        "packages/tests/unit/helpers/parseHeaders.test.ts": "f51215727f8843dce18c4a3d62a9ea4b1f36bf404cf0d017b7b932a6be9f412c"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/helpers/parseHeaders.test.ts: @@ -1,4 +1,4 @@ (diff/229)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/helpers/progressEventReducer.test.ts": {
+      "fingerprint": "d8138d154459df4894dc7dc4a1799d659270caa4f8d16c7c6678cc228e5b7a60",
+      "snapshot": {
+        "packages/tests/unit/helpers/progressEventReducer.test.ts": "64b8901cdea38dba5e05cabe07e4497234a10bc0c65a39efa0b24d10e1345829"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/helpers/progressEventReducer.test.ts: @@ -1,4 +1,4 @@ (diff/230)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/helpers/validator.test.ts": {
+      "fingerprint": "01930ee13b4652afec4b7d708b5425f9d871055369744282e05eae6ad538fc8f",
+      "snapshot": {
+        "packages/tests/unit/helpers/validator.test.ts": "ab9641ace5c73dd6b194622fcd76afaa4daceab33f495c0cd444f62153da0107"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/helpers/validator.test.ts: @@ -1,4 +1,4 @@ (diff/231)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/prototypePollution.test.ts": {
+      "fingerprint": "b9baf61b0f124232bd9f3d590e642d1cbf6927b1c35aa8168c9ecb89bc659802",
+      "snapshot": {
+        "packages/tests/unit/prototypePollution.test.ts": "d30fc2bbec1eb33e5afd3f538b6b44bf73d6742465264606861248bc913461e5"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "In the `declare global interface Object` augmentation, `polluted?` and `customNested?` swapped places. Behaviour change: none (declaration merging is order-independent)",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/prototypePollution.test.ts: @@ -17,8 +17,8 @@ (diff/235)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/query.test.ts": {
+      "fingerprint": "67070b0000fe304a4f44aa8cf70ab60e57652d360f04dd9fd1583a923c4163ec",
+      "snapshot": {
+        "packages/tests/unit/query.test.ts": "e9f667a151d43e51516e0981dac7ec2108c6aeea39069919b1269a13f1bd3e67"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "Eight fetch-param unions changed from `string | Request | URL` to `Request | string | URL`. Keys sorted in two `faxios.query<{…}>` response-type generic args. Behaviour change: none. Only type arguments changed; the runtime assertions are unchanged.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/query.test.ts: @@ -9,7 @@, -27, -42, -60, -77, -97, -115, -133, -172, -207 (10 hunks, diff/236)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/regression.test.ts": {
+      "fingerprint": "ea2a4c4f24f1574c0a088792e4b9c454ecb6b681de6ff21281d9ed1a7d5a432a",
+      "snapshot": {
+        "packages/tests/unit/regression.test.ts": "10ba6824ae89bd2bad797681d3e28ae7ab65d1168f221fde0a5213881fd7209a"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import `describe, it, beforeEach, afterEach` became `afterEach, beforeEach, describe, it`. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/regression.test.ts: @@ -5,7 +5,7 @@ (diff/237)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/utils/endsWith.test.ts": {
+      "fingerprint": "18ab791207eecde5d4078bbcfed1fd048b63a28c13a19bcbcc5bc76bf782b684",
+      "snapshot": {
+        "packages/tests/unit/utils/endsWith.test.ts": "dfab1f4b0fb97d250dd4f26d7d70197d90babe4b03ed531d402d7e027a303390"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/utils/endsWith.test.ts: @@ -1,4 +1,4 @@ (diff/238)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/utils/extend.test.ts": {
+      "fingerprint": "08c0330d9f84130fe63bceabe9dba1b6d8a497b196fb6131a7ea73172171c13b",
+      "snapshot": {
+        "packages/tests/unit/utils/extend.test.ts": "921815cfe49c391f47ceba8bfa9cdb2e266a8b8091500f88cda5511cf5d073f6"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/utils/extend.test.ts: @@ -1,4 +1,4 @@ (diff/239)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/utils/forEach.test.ts": {
+      "fingerprint": "b0fccb6f001facbb06c5a8e1338a760426413e50e0eb164daaeb63ccbca5022c",
+      "snapshot": {
+        "packages/tests/unit/utils/forEach.test.ts": "91baa077ea7c7822007729a173dae2f1c74051b479dc90d69231eedea07e8985"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/utils/forEach.test.ts: @@ -1,4 +1,4 @@ (diff/240)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/utils/isX.test.ts": {
+      "fingerprint": "84ddf810478ccca8e6d58585b06fa08f69159c1f9a8b82b6c4803d1aa28280e7",
+      "snapshot": {
+        "packages/tests/unit/utils/isX.test.ts": "5ce45539ff4dcdf7387501f10298db69fa26e5d90a8b5a07b629b73aabdc2901"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/utils/isX.test.ts: @@ -1,4 +1,4 @@ (diff/241)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/utils/kindOf.test.ts": {
+      "fingerprint": "4df0f06821e11a30d9b931d2da4fb037baa516f65c98d83843b2d3ad459fa39a",
+      "snapshot": {
+        "packages/tests/unit/utils/kindOf.test.ts": "dfab1f4b0fb97d250dd4f26d7d70197d90babe4b03ed531d402d7e027a303390"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/utils/kindOf.test.ts: @@ -1,4 +1,4 @@ (diff/242)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/utils/kindOfTest.test.ts": {
+      "fingerprint": "f03954092aa4e46e51b2117a0b13a1699845120088f2132ba5cd85c0b1f4efc7",
+      "snapshot": {
+        "packages/tests/unit/utils/kindOfTest.test.ts": "511a2eb11941aeb7760f02e129ebf63ebdd7d7bca707bb8114cef03e2afecb19"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/utils/kindOfTest.test.ts: @@ -1,4 +1,4 @@ (diff/243)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/utils/merge.test.ts": {
+      "fingerprint": "d3811a658b3a9648a34cb6b03fc14c2fc9d1004559a27b60fd42307d7e567ea0",
+      "snapshot": {
+        "packages/tests/unit/utils/merge.test.ts": "7dc051cb8c18b5ce9259ccc274f9fd8eacfbf4840deef54fa4254a039c2b0e75"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest imports sorted. Four `Record<symbol | string, unknown>` annotations became `Record<string | symbol, unknown>`. The object literals passed to merge (`{ x: 1, [key]: … }`) were not touched. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/utils/merge.test.ts: @@ -1,4 +1,4 @@, @@ -99,13 +99,13 @@, @@ -130,7 +130,7 @@, @@ -156,7 +156,7 @@ (diff/244)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/utils/toArray.test.ts": {
+      "fingerprint": "a84f1d99c49a6f9895ac95d6ea34ed3e921ba8bb03b4808adb8456da81223519",
+      "snapshot": {
+        "packages/tests/unit/utils/toArray.test.ts": "edfed1bd8c0413331556bd2d7b045b9bf5d64fcf3dd76d400bf34af24f8f6744"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/utils/toArray.test.ts: @@ -1,4 +1,4 @@ (diff/245)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:packages/tests/unit/utils/toFlatObject.test.ts": {
+      "fingerprint": "fe6f7beab09da490aea3632992202a9ae47efdaa10683c41a35c427029ab5e22",
+      "snapshot": {
+        "packages/tests/unit/utils/toFlatObject.test.ts": "3530494839bca5f8dd67a1b2b70896d5d049d29339e67f9a9a05f4c9b6478817"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "no-change",
+      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "evidence": [
+        "git diff 01316e10..HEAD -- packages/tests/unit/utils/toFlatObject.test.ts: @@ -1,4 +1,4 @@ (diff/246)",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:pnpm-workspace.yaml": {
+      "fingerprint": "7368b2e61a5b45e78c216f1bf3c3f843421e85cc3c1b4df03cb22631ec88308c",
+      "snapshot": {
+        "pnpm-workspace.yaml": "824965ca54f20ffea1391dfe1f34bb435f1fb28114566daacd5d6db29c95d8a9"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "allowBuilds for unrs-resolver (pnpm 10 build approval for the ESLint resolver). Workspace tooling.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- pnpm-workspace.yaml",
+        "pnpm install --frozen-lockfile succeeds.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:sharedConfig/eslint.config.style.ts": {
+      "fingerprint": "4537ee5383511145a436352854fb5d8e14c38f7c178409ed53118f5740d8fd4a",
+      "snapshot": {
+        "sharedConfig/eslint.config.style.ts": "aab9fafa819d1d5fc8e66e990f670baf343f398e30a2abc5a84a7e6a16d6872b"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "New shared ESLint style config used by every package. Lint tooling.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- sharedConfig/eslint.config.style.ts",
+        "pnpm lint passes in all 5 packages.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:sharedConfig/eslint.config.ts": {
+      "fingerprint": "05734e98fbaea31bf1fd9f79864fcc9991e276ce4e02ee06576a0d764ffe3aa8",
+      "snapshot": {
+        "sharedConfig/eslint.config.ts": "234e4556e5f5fa1d5355bf95243b0bd76d2187aaeea48e451f3bdc9289fc4ba9"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "New shared ESLint config (config 0.1.0 base). Lint tooling.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- sharedConfig/eslint.config.ts",
+        "pnpm lint passes in all 5 packages.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:sharedConfig/tsconfig.base.json": {
+      "fingerprint": "6bf9d673df66e94ae56352cd66a730040b13bf55b0cb2f49f70968e4b312e9d0",
+      "snapshot": {
+        "sharedConfig/tsconfig.base.json": "35a7ddb268e7f3addb8085b472c6754a575dcd00183f3b098eef82abafe33539"
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "New shared tsconfig base (not extended by lib, tests or docs). Tooling.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- sharedConfig/tsconfig.base.json",
+        "pnpm -r lint:ts passes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+      ]
+    },
+    "source:tsconfig.json": {
+      "fingerprint": "e8faf70251f2f0b2339dc5edc77f9d1786cc66d307f2a52b6298e0247e57c068",
+      "snapshot": {
+        "tsconfig.json": null
+      },
+      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "outcome": "out-of-scope",
+      "reason": "Root tsconfig removed (its project references are gone; each package type-checks itself). Tooling.",
+      "evidence": [
+        "git diff 01316e10..HEAD -- tsconfig.json",
+        "pnpm -r --if-present lint:ts passes.",
+        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
       ]
     }
   }
