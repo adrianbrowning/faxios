@@ -445,6 +445,10 @@ const config: FaxiosRequestConfig = {
 
     // Maximum nesting depth of `data` (default 100); deeper objects throw ERR_FORM_DATA_DEPTH_EXCEEDED.
     maxDepth: 100,
+
+    // Blob constructor used to wrap ArrayBuffer and typed-array values (default: globalThis.Blob).
+    // Binary values on a FormData that isn't spec-compliant throw ERR_NOT_SUPPORT.
+    Blob: globalThis.Blob,
   }
 };
 ```
