@@ -3,7 +3,7 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "e6efb78931f30705e3e59959fcbb14c118b6baf89a02331e9cba721c6a402d3a",
+      "fingerprint": "5933e451c59faab08bfa5e359ba9d4310f11cdf1121f60c51226ddcb219b138e",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "301c6e77e898dcc3bf63a9eb2f27b216f5f3c2cb94673f0790260a00a7cab8cb",
@@ -25,7 +25,7 @@
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
         "packages/lib/src/lib/plugins/retry.ts": "4e0ed48eeecbb246e66b046530c688265b2b987bdf4cf1cdb81148471090db3c",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
-        "packages/lib/src/lib/types.ts": "aa73aeb0be7bed6789fc1416eff74969e289d0bfc69674ba2f6c1b1d135b38ee",
+        "packages/lib/src/lib/types.ts": "6314e9ebea2200c3ca4762cfd9dcdf40e2a06284ebbc76a4de9f7761578e5b7f",
         "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
         "packages/tests/unit/core/middleware.test.ts": "106d605207a1e7754baedd1565a559e973bda954b6e3970fac54d0da69116e7f",
         "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
@@ -33,15 +33,15 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "7acdc6538be649cd270d8fc61781c7f0b1caac78",
+      "head": "51b9fecea630fa9b8b9405af26a48909b73a05a2",
       "outcome": "no-change",
-      "reason": "Skill does not document request-body Content-Type defaults; change only stops the urlencoded fallback for binary and stream bodies",
+      "reason": "types.ts only adds the optional formSerializer.Blob field; the skill does not cover formSerializer options",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/dispatchRequest.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/lib/src/lib/types.ts at 3bf86f21a6e783136a84768f55a9ce9ff8b7bf60"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "6fb9ed8e7246dc5cb8149384c453e1df73aaee9a4ecc51e678c21569262fd73e",
+      "fingerprint": "509db036155c303b69ecdca2a6e9a11909599f49422402b025d52df8ee38e192",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
@@ -66,7 +66,7 @@
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
         "packages/lib/src/lib/plugins/retry.ts": "4e0ed48eeecbb246e66b046530c688265b2b987bdf4cf1cdb81148471090db3c",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
-        "packages/lib/src/lib/types.ts": "aa73aeb0be7bed6789fc1416eff74969e289d0bfc69674ba2f6c1b1d135b38ee",
+        "packages/lib/src/lib/types.ts": "6314e9ebea2200c3ca4762cfd9dcdf40e2a06284ebbc76a4de9f7761578e5b7f",
         "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
         "packages/tests/unit/core/middleware.test.ts": "106d605207a1e7754baedd1565a559e973bda954b6e3970fac54d0da69116e7f",
         "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "7acdc6538be649cd270d8fc61781c7f0b1caac78",
+      "head": "51b9fecea630fa9b8b9405af26a48909b73a05a2",
       "outcome": "no-change",
-      "reason": "Skill does not document request-body Content-Type defaults; change only stops the urlencoded fallback for binary and stream bodies",
+      "reason": "types.ts only adds the optional formSerializer.Blob field; the skill does not cover formSerializer options",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/dispatchRequest.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/lib/src/lib/types.ts at 3bf86f21a6e783136a84768f55a9ce9ff8b7bf60"
       ]
     },
     "source:knip.json": {
@@ -278,13 +278,13 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "8910b55303983fd7697d40768a04e4ad583a3836fa4d5995698848f4d227d694",
+      "fingerprint": "4f2c011deb1bd1822dd96452269bcd079bef2a0a610cef55885c21920f2f9675",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "ba11938fc7b355c45e847e2c1a0dce3d8a5a73b74bec9b4f77b25fe2883664d3"
+        "packages/docs/pages/advanced/request-config.md": "49627480697b84d4be0acdcd2ce0ce2ea73a7eeb2bdc61b798b875e0d29ad29c"
       },
-      "head": "7acdc6538be649cd270d8fc61781c7f0b1caac78",
+      "head": "51b9fecea630fa9b8b9405af26a48909b73a05a2",
       "outcome": "no-change",
-      "reason": "Skill does not document request-body Content-Type defaults; change only stops the urlencoded fallback for binary and stream bodies",
+      "reason": "configure-requests skill does not document toFormData internals, Blob option or its error codes",
       "evidence": [
         "Changed: packages/docs/pages/advanced/request-config.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
@@ -2379,15 +2379,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/toFormData.ts": {
-      "fingerprint": "861c334e01ccb5cf527171bf30b65451b0af7bdb0787e8d3efedd31f8c7c485c",
+      "fingerprint": "852423d28ff29c0f63cd2a50fec5837a5b552044a702c9849746fed875352dc3",
       "snapshot": {
-        "packages/lib/src/lib/helpers/toFormData.ts": "4ce5eeb9f16267ebe95bf28379c624d434842d0fc47429fab8a359ea72ae0404"
+        "packages/lib/src/lib/helpers/toFormData.ts": "4b2871b2ff62051ddcc3b8bf993872395282c9bf9a8becef2a5ecdf1110399f4"
       },
-      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
-      "outcome": "updated",
-      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
+      "head": "51b9fecea630fa9b8b9405af26a48909b73a05a2",
+      "outcome": "no-change",
+      "reason": "configure-requests skill does not document toFormData internals, Blob option or its error codes",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/toFormData.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
+        "Changed: packages/lib/src/lib/helpers/toFormData.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "source:packages/lib/src/lib/helpers/trackStream.ts": {
@@ -3656,6 +3656,30 @@
       "reason": "Skill does not document request-body Content-Type defaults; change only stops the urlencoded fallback for binary and stream bodies",
       "evidence": [
         "Changed: packages/tests/unit/requestBodyContentType.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+      ]
+    },
+    "source:.bumpy/toformdata-per-call-state.md": {
+      "fingerprint": "4345df0aedf957caab51b826b47fefdfb36bc22bb8d5266fd33f1d776b73263b",
+      "snapshot": {
+        ".bumpy/toformdata-per-call-state.md": "487506f6237f90f993ca7da9fbd96f6a2672b0e7260dbfadee6b3a8f2b123e34"
+      },
+      "head": "51b9fecea630fa9b8b9405af26a48909b73a05a2",
+      "outcome": "no-change",
+      "reason": "configure-requests skill does not document toFormData internals, Blob option or its error codes",
+      "evidence": [
+        "Changed: .bumpy/toformdata-per-call-state.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+      ]
+    },
+    "source:packages/tests/unit/toFormData.test.ts": {
+      "fingerprint": "d890a537706dceb7c3b90401e86241b91266cb9c4f8ec705af7c0071ebfa55f9",
+      "snapshot": {
+        "packages/tests/unit/toFormData.test.ts": "f99d51bb7a078db0a6f4fba0c158fa15323cc129a5d8adbfeb2c7d619e7ddd3d"
+      },
+      "head": "51b9fecea630fa9b8b9405af26a48909b73a05a2",
+      "outcome": "no-change",
+      "reason": "configure-requests skill does not document toFormData internals, Blob option or its error codes",
+      "evidence": [
+        "Changed: packages/tests/unit/toFormData.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     }
   }
