@@ -11,19 +11,16 @@
     "docs:preview": "vitepress preview",
     "docs:update:sponsors": "node ./scripts/process-sponsors.js",
     "prod:build": "npm run docs:update:sponsors && npm run docs:build",
-    "postinstall": "patch-package --exclude nothing",
     "lint": "eslint --config eslint.config.ts \"**/*.{j,t}s{,x}\" --cache --max-warnings=0",
     "lint:fix": "eslint --config eslint.config.style.ts \"**/*.{j,t}s{,x}\" --cache --max-warnings=0 --fix",
     "lint:ts": "tsc --noEmit -p ."
   },
   "dependencies": {
     "@gcmdev/faxios": "workspace:*",
-    "@splidejs/splide": "4.1.4",
     "vitepress": "2.0.0-alpha.20"
   },
   "devDependencies": {
     "esbuild": "^0.28.2",
-    "patch-package": "^8.0.1",
     "vue": "^3.5.32"
   },
   "imports": {

@@ -47,8 +47,7 @@ function markdownFiles(dir: string): Array<string> {
   });
 }
 
-// The npm README plus the English docs pages. The es/fr/zh translations live
-// outside packages/docs/pages and are not part of the site yet.
+// The npm README plus the docs pages. The docs are English-only.
 export function docsSources(): Array<string> {
   return [
     join(repoRoot, "packages/lib/README.md"),

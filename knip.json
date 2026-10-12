@@ -21,7 +21,7 @@
         "scripts/**/*.js"
       ],
       "project": ["**/*.{js,ts,mts,vue}"],
-      "ignoreDependencies": ["@splidejs/splide", "esbuild"]
+      "ignoreDependencies": ["esbuild"]
     },
     "packages/examples": {
       "entry": ["**/*.js"],
