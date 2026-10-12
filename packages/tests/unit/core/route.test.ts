@@ -128,4 +128,21 @@ describe("faxios.route()", () => {
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PARAMS_SCHEMA);
     }
   });
+
+  it("merges route and method headers instead of replacing them", async () => {
+    let sent: Headers | undefined;
+    const env = {
+      fetch: async (input: Request | string | URL, init?: RequestInit) => {
+        sent = input instanceof Request ? input.headers : new Headers(init?.headers);
+        return new Response(null, { status: 200 });
+      },
+    };
+
+    const r = faxios.route("http://localhost/items", { env, headers: { "X-Route": "r", "X-Both": "route" } });
+    await r.get({ headers: { "X-Method": "m", "X-Both": "method" } })();
+
+    assert.strictEqual(sent?.get("X-Route"), "r");
+    assert.strictEqual(sent?.get("X-Method"), "m");
+    assert.strictEqual(sent?.get("X-Both"), "method");
+  });
 });

@@ -43,4 +43,15 @@ describe("method header groups", () => {
     expect(seen.headers!.has("link")).toBe(false);
     expect(seen.headers!.has("X-Opt")).toBe(false);
   });
+
+  it("keeps string headers whose names match a group", async () => {
+    const { seen, fetch } = captureHeaders();
+    const headers: Record<string, string> = { get: "g-value", common: "c-value", post: "p-value" };
+
+    await faxios.request({ url: "http://example.test/", method: "get", headers, env: { fetch } });
+
+    expect(seen.headers!.get("get")).toBe("g-value");
+    expect(seen.headers!.get("common")).toBe("c-value");
+    expect(seen.headers!.get("post")).toBe("p-value");
+  });
 });

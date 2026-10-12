@@ -4,6 +4,7 @@ import cloneConfig from "../helpers/cloneConfig.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type { BasePerCallConfig, DefineConfig, DefinedEndpoint, FaxiosLike } from "./define.js";
 import { createDefinedEndpoint } from "./define.js";
+import mergeConfig from "./mergeConfig.js";
 
 /** Config for `route()`: request defaults shared by every method, plus an optional `pathParamsSchema`. */
 export type RouteConfig<PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined> =
@@ -54,8 +55,7 @@ export function createRouteBuilder<PP extends StandardSchemaV1<unknown, Record<s
       R extends StandardSchemaV1 | undefined
     >(methodConfig?: RouteMethodConfig<P, D, R>) => {
       const defineConf = {
-        ...routeDefaults,
-        ...(methodConfig ?? {}),
+        ...mergeConfig(routeDefaults, methodConfig ?? {}),
         ...(pathParamsSchema !== undefined ? { pathParamsSchema } : {}),
       } as DefineConfig<PP, P, D, R>;
       return createDefinedEndpoint<PP, P, D, R>(instance, method, url, defineConf);

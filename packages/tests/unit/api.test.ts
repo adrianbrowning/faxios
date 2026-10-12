@@ -259,3 +259,13 @@ describe("instance api", () => {
     );
   });
 });
+
+describe("request(url, config)", () => {
+  it("does not write url into the caller's config", async () => {
+    const config = { env: { fetch: async () => new Response(null, { status: 200 }) } };
+
+    await faxios.request("http://example.test/a", config);
+
+    assert.strictEqual(Object.hasOwn(config, "url"), false);
+  });
+});
