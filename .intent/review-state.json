@@ -3,10 +3,10 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "5588b88cc103278cf1025b9a04b1dc8314390e7ba962662492f38049dcd5644d",
+      "fingerprint": "29a254b026d05eb001396923dde077ccfc38ce1f00d09d7cc6d01d4688ea8253",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
-        "packages/lib/package.json": "301c6e77e898dcc3bf63a9eb2f27b216f5f3c2cb94673f0790260a00a7cab8cb",
+        "packages/lib/package.json": "c0bb05f55c5ab74840a93bc6f2674de07806acf5c33ce33afd34a4ac49492f07",
         "packages/lib/skills/configure-requests/SKILL.md": "4655fd00f15876c0bd9af80202950a8f2565ed57171fcb5cbba3f7f9a0cb7916",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
@@ -33,21 +33,21 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "d16dee579c8cca748c02756b9686c97f57547bdd",
-      "outcome": "updated",
-      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
+      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/adapters/fetch.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/lib/package.json at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "fdd65c600150b0150c76cacec8d076d99193c0bdfa1d832e912bae918c31fc1a",
+      "fingerprint": "e1aee298e5870fd0535166ebb0febd6213304e2beb31027b22e4db98ca2c948f",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
-        "packages/lib/package.json": "301c6e77e898dcc3bf63a9eb2f27b216f5f3c2cb94673f0790260a00a7cab8cb",
+        "packages/lib/package.json": "c0bb05f55c5ab74840a93bc6f2674de07806acf5c33ce33afd34a4ac49492f07",
         "packages/lib/skills/configure-requests/SKILL.md": "4655fd00f15876c0bd9af80202950a8f2565ed57171fcb5cbba3f7f9a0cb7916",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "d16dee579c8cca748c02756b9686c97f57547bdd",
-      "outcome": "updated",
-      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
+      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/adapters/fetch.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/lib/package.json at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
       ]
     },
     "source:knip.json": {
@@ -473,15 +473,15 @@
       ]
     },
     "source:packages/lib/src/lib/env/data.ts": {
-      "fingerprint": "9208d441a0be1cae7185a89f2b15059478d1a64430ae03cb7e25692b9fce3a3e",
+      "fingerprint": "28a5dfb15cedfeed66e354ad11d17e2db8dd0ebe7fd3c3aca5dd76ba02740282",
       "snapshot": {
-        "packages/lib/src/lib/env/data.ts": "12245af0fc66a71e3b0c6f5b1d82b6121328520252b97893f680c9b5b1338609"
+        "packages/lib/src/lib/env/data.ts": "17668f6981d55bdd585592bb8209677b0249289c6e2c39055bb29f03fdb720bd"
       },
-      "head": "997e6ed62506730eb257b380570d7a7ddc578ce1",
+      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
       "outcome": "no-change",
       "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: packages/lib/src/lib/env/data.ts at 997e6ed62506730eb257b380570d7a7ddc578ce1"
+        "Changed: packages/lib/src/lib/env/data.ts at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
       ]
     },
     "source:packages/tests/module/esm/pnpm-lock.yaml": {
@@ -2158,15 +2158,15 @@
       ]
     },
     "source:packages/lib/CHANGELOG.md": {
-      "fingerprint": "004655d4c5d5ddcfe610eb094e1fc5d1ba4d5799807e5b21dd6dd29a7114cbee",
+      "fingerprint": "8b3826aed0f1b95e6379990a9ccfc7ab58fd70c4f4d11f2cf6d909ac0cd04621",
       "snapshot": {
-        "packages/lib/CHANGELOG.md": "960d759b257edcdc23cb2f001722f741380842f723143ba187b396554dbc08ae"
+        "packages/lib/CHANGELOG.md": "7ec92897efc8bba59d38e6893201aaa4c4ba80237aa0fda741a2eb4b72c06518"
       },
-      "head": "997e6ed62506730eb257b380570d7a7ddc578ce1",
+      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
       "outcome": "no-change",
       "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: packages/lib/CHANGELOG.md at 997e6ed62506730eb257b380570d7a7ddc578ce1"
+        "Changed: packages/lib/CHANGELOG.md at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
       ]
     },
     "source:packages/lib/eslint-rules/remove-signal-listeners.ts": {
@@ -3620,15 +3620,15 @@
       ]
     },
     "source:.bumpy/binary-body-content-type.md": {
-      "fingerprint": "47c861a8128400417291fc4f377c699c1d30c1059f068beec602b8cb303dbed6",
+      "fingerprint": "990fa9ed29623ca013ed1ef3c0b28b18de7f2deadb6d8d0aebbcd79fa1b8522e",
       "snapshot": {
-        ".bumpy/binary-body-content-type.md": "16ef61aaac5a46f76c5364f16a062a71c334128305ac21d16fb618687b6d3cbc"
+        ".bumpy/binary-body-content-type.md": null
       },
-      "head": "7acdc6538be649cd270d8fc61781c7f0b1caac78",
+      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
       "outcome": "no-change",
-      "reason": "Skill does not document request-body Content-Type defaults; change only stops the urlencoded fallback for binary and stream bodies",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/binary-body-content-type.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: .bumpy/binary-body-content-type.md at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
       ]
     },
     "source:packages/docs/pages/advanced/file-posting.md": {
@@ -3656,15 +3656,15 @@
       ]
     },
     "source:.bumpy/toformdata-per-call-state.md": {
-      "fingerprint": "4345df0aedf957caab51b826b47fefdfb36bc22bb8d5266fd33f1d776b73263b",
+      "fingerprint": "e77108f46e5612c8daf523d737e9df7e0f3d84b7b092535f19f7d0874a1030ac",
       "snapshot": {
-        ".bumpy/toformdata-per-call-state.md": "487506f6237f90f993ca7da9fbd96f6a2672b0e7260dbfadee6b3a8f2b123e34"
+        ".bumpy/toformdata-per-call-state.md": null
       },
-      "head": "51b9fecea630fa9b8b9405af26a48909b73a05a2",
+      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
       "outcome": "no-change",
-      "reason": "configure-requests skill does not document toFormData internals, Blob option or its error codes",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/toformdata-per-call-state.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: .bumpy/toformdata-per-call-state.md at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
       ]
     },
     "source:packages/tests/unit/toFormData.test.ts": {
@@ -3680,27 +3680,27 @@
       ]
     },
     "source:.bumpy/progress-callback-errors.md": {
-      "fingerprint": "47218e99c98199852bee1cc2ff4efba3799284ad01b28463c535ad8d57912246",
+      "fingerprint": "cac5d20314dc7ca41f17ddb9de5d966891148eac50a5b106e8b13918d92e5a21",
       "snapshot": {
-        ".bumpy/progress-callback-errors.md": "d6cecf94670282431e97e841b7787697166d1abdd49e395ee4b10688a4a03bad"
+        ".bumpy/progress-callback-errors.md": null
       },
-      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
+      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
       "outcome": "no-change",
-      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/progress-callback-errors.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: .bumpy/progress-callback-errors.md at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
       ]
     },
     "source:.bumpy/progress-compressed-total.md": {
-      "fingerprint": "453ec02271b85e6bb5a2f0d5a8ad800e544ac4a030645e21003d1547d3a79085",
+      "fingerprint": "70e7434977797b5610ff749c4bfd4e6b9784c9bf683342c7d03a5e11738ffe35",
       "snapshot": {
-        ".bumpy/progress-compressed-total.md": "b21364d5da0e9e5bd76af7eab538e37f44c38b6d8ec59dec327d8d050ed351c1"
+        ".bumpy/progress-compressed-total.md": null
       },
-      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
+      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
       "outcome": "no-change",
-      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/progress-compressed-total.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: .bumpy/progress-compressed-total.md at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
       ]
     },
     "source:packages/docs/pages/advanced/progress-capturing.md": {
@@ -3728,15 +3728,15 @@
       ]
     },
     "source:.bumpy/stream-chunks-and-headers.md": {
-      "fingerprint": "e665aa39f55a40dccbb306ce40ce8a25340b600aee0e538b48436e967ae6d1a0",
+      "fingerprint": "fdf8f52931b43314591ede62bb2a059095446f077bdd19607d355cf1018c0662",
       "snapshot": {
-        ".bumpy/stream-chunks-and-headers.md": "52dfa7d47a92f55afc064e23282a0a7a652a4213f7176bdc1d541456e1c37cb4"
+        ".bumpy/stream-chunks-and-headers.md": null
       },
-      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
+      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
       "outcome": "no-change",
-      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/stream-chunks-and-headers.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: .bumpy/stream-chunks-and-headers.md at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
       ]
     },
     "source:packages/tests/unit/core/FaxiosHeadersIndex.test.ts": {
@@ -3764,27 +3764,27 @@
       ]
     },
     "source:.bumpy/adapter-resource-leaks.md": {
-      "fingerprint": "1b22c53b753197698e1919843d5ad622701167b3f21461683f9260cc5e090765",
+      "fingerprint": "f5b5da3f81fbdc0aa2b38acfe43c8075cee2402852c5aa17165ac828f265b828",
       "snapshot": {
-        ".bumpy/adapter-resource-leaks.md": "be9325619c03d702078c29250394c20ef8c86b11c32be6ee42cd5087bcc4c490"
+        ".bumpy/adapter-resource-leaks.md": null
       },
-      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
-      "outcome": "updated",
-      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
+      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/adapter-resource-leaks.md at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
+        "Changed: .bumpy/adapter-resource-leaks.md at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
       ]
     },
     "source:.bumpy/stream-timeout-lifetime.md": {
-      "fingerprint": "faacf61e53c8c2bb2e2bce0f1823bf2e8d42370d6cf41a85401f5305e082a055",
+      "fingerprint": "0dc491192af7f91efe6c037477ffcca8d311a21721527dfa61852f73a8bb3e4d",
       "snapshot": {
-        ".bumpy/stream-timeout-lifetime.md": "be5a33d415282fe0e17699f6026ad76cbc61a309486571726f1bfbe142ca5287"
+        ".bumpy/stream-timeout-lifetime.md": null
       },
-      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
-      "outcome": "updated",
-      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
+      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/stream-timeout-lifetime.md at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
+        "Changed: .bumpy/stream-timeout-lifetime.md at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
       ]
     },
     "source:packages/tests/unit/adapters/fetchCleanup.test.ts": {
@@ -3800,15 +3800,15 @@
       ]
     },
     "source:.bumpy/browser-upload-progress.md": {
-      "fingerprint": "eb950b2b8cf834cf60ff63aac00b9887d91f5544b6bed07fa937fa2e48480186",
+      "fingerprint": "d6a7651f1270587976ccf92f335aef675949ec43f8b4fd657209556294dd449f",
       "snapshot": {
-        ".bumpy/browser-upload-progress.md": "7cd2f4c6be72a0079481a01b56e3b44cb54ca0c8b485e580d7b69fab96a242ab"
+        ".bumpy/browser-upload-progress.md": null
       },
-      "head": "3f379a4c81c5a5f1a2456dcec19e8f6bcdbfd606",
-      "outcome": "updated",
-      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
+      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/browser-upload-progress.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: .bumpy/browser-upload-progress.md at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
       ]
     },
     "source:packages/tests/browser/upload.browser.test.ts": {

@@ -1,6 +1,27 @@
 # Changelog
 
 
+
+## 0.2.3
+<sub>2026-10-12</sub>
+
+- [#212](https://github.com/adrianbrowning/faxios/pull/212)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed Blob, File, ArrayBuffer, typed-array and stream request bodies being sent with Content-Type application/x-www-form-urlencoded; the runtime now uses Blob.type or sends no Content-Type.
+- [#211](https://github.com/adrianbrowning/faxios/pull/211)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed toFormData leaking helpers between calls, ignoring the formSerializer Blob option, and throwing uncoded errors; every toFormData failure is now a FaxiosError with a code.
+- [#213](https://github.com/adrianbrowning/faxios/pull/213)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed the fetch adapter leaking resources: a response over maxContentLength now closes its connection, an upload stream over maxBodyLength is cancelled and unlocked, a stream response with no body (204, 304, HEAD) releases its signal listener and timer, and passing a new env.fetch on every request (as in SvelteKit) no longer grows memory.
+- [#210](https://github.com/adrianbrowning/faxios/pull/210)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed an error thrown by onUploadProgress or onDownloadProgress becoming an uncaught exception; it is now caught and ignored and the request settles normally.
+- [#210](https://github.com/adrianbrowning/faxios/pull/210)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed onDownloadProgress reporting 100% after the first chunk of a compressed response; total is now undefined and lengthComputable false when Content-Encoding is set.
+- [#214](https://github.com/adrianbrowning/faxios/pull/214)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed web `ReadableStream` request bodies wrapped for `onUploadProgress` or `maxBodyLength`: typed-array chunks such as `Uint16Array` now send all their bytes and string chunks are UTF-8 encoded instead of arriving empty; other chunk types reject with `ERR_BAD_REQUEST`. Tracked streams also stop copying each chunk, and response headers are parsed once with constant-time header lookups.
+- [#213](https://github.com/adrianbrowning/faxios/pull/213)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed `responseType: "stream"` so an errored or cancelled body aborts the request and releases its connection, while `timeout` and `signal` keep applying until the body is fully read or cancelled.
+- [#215](https://github.com/adrianbrowning/faxios/pull/215)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed uploads with onUploadProgress failing with ERR_NETWORK in Chromium and WebKit: browsers now send the body unwrapped and don't call onUploadProgress, and a FormData body is no longer read into memory to measure it.
+
 ## 0.2.2
 <sub>2026-10-12</sub>
 
