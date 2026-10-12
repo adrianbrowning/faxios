@@ -160,4 +160,38 @@ describe("formDataToJSON", () => {
 
     expect(value).toBe("123");
   });
+
+  it("should keep non-ASCII field names as their own keys", () => {
+    const formData = new FormData();
+
+    formData.append("名前", "x");
+    formData.append("姓", "y");
+    formData.append("user[名前]", "z");
+
+    expect(formDataToJSON(formData)).toEqual({
+      名前: "x",
+      姓: "y",
+      user: { 名前: "z" },
+    });
+  });
+
+  it("should keep today's output for ASCII names and separators", () => {
+    const formData = new FormData();
+
+    formData.append("first-name", "Ada");
+    formData.append("user[email]", "a@b");
+    formData.append("a[]", "1");
+    formData.append("a[]", "2");
+    formData.append("b[0]", "x");
+    formData.append("b[1]", "y");
+    formData.append("c.d.e", "z");
+
+    expect(formDataToJSON(formData)).toEqual({
+      first: { name: "Ada" },
+      user: { email: "a@b" },
+      a: [ "1", "2" ],
+      b: [ "x", "y" ],
+      c: { d: { e: "z" } },
+    });
+  });
 });

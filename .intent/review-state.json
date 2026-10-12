@@ -2314,15 +2314,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/formDataToJSON.ts": {
-      "fingerprint": "8ab3f4240d1da205779dd46855500d4ae820945bc3d499529f3a549e7fe0523e",
+      "fingerprint": "830d793f5f2dce8941120af1b807d8e9ee832e882b601131ee64f9ce0b900583",
       "snapshot": {
-        "packages/lib/src/lib/helpers/formDataToJSON.ts": "c87348559558857da282b0599f54b6c4a47ad600b897d9b27c4511565c0e2a2e"
+        "packages/lib/src/lib/helpers/formDataToJSON.ts": "aa796d271703d093115043021bf91da12f0d3d419960f51663dc9cab0f3bedad"
       },
-      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
-      "outcome": "updated",
-      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
+      "head": "0d843fe0905888352e41d7ba60865740164da2e3",
+      "outcome": "no-change",
+      "reason": "formDataToJSON field-name tokenizing is not documented by the configure-requests skill",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/formDataToJSON.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
+        "Changed: packages/lib/src/lib/helpers/formDataToJSON.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "source:packages/lib/src/lib/helpers/parseHeaders.ts": {
@@ -3001,15 +3001,15 @@
       ]
     },
     "source:packages/tests/unit/helpers/formDataToJSON.test.ts": {
-      "fingerprint": "269989a5934420f08e86ffabe811a4bfab68c121c6f19cd7acbe06e3384a0a90",
+      "fingerprint": "e2be3c396be386208790beb565145a9360b72ab7f9a91be864c76e6abb3e4d3d",
       "snapshot": {
-        "packages/tests/unit/helpers/formDataToJSON.test.ts": "74ecf50da5e40f452eaecd6d0997bf9810fef9052f5f168bbc10536d1214567c"
+        "packages/tests/unit/helpers/formDataToJSON.test.ts": "f05b09f3c1a91b4cace4103f7e995917c9865602b349a9df0e49ca54f5057d5a"
       },
-      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
-      "outcome": "updated",
-      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
+      "head": "0d843fe0905888352e41d7ba60865740164da2e3",
+      "outcome": "no-change",
+      "reason": "formDataToJSON field-name tokenizing is not documented by the configure-requests skill",
       "evidence": [
-        "Changed: packages/tests/unit/helpers/formDataToJSON.test.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
+        "Changed: packages/tests/unit/helpers/formDataToJSON.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "source:packages/tests/unit/helpers/isAbsoluteURL.test.ts": {
@@ -3845,6 +3845,30 @@
       "reason": "Docs-only fix; the skill does not suggest the form-data package as a body",
       "evidence": [
         "Changed: packages/docs/pages/advanced/multipart-form-data-format.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:.bumpy/formdatatojson-unicode-names.md": {
+      "fingerprint": "14f187255e0c8e16d9c3ce70dcc3a0becb5af6cbb1554f1f23c685700ccdaff4",
+      "snapshot": {
+        ".bumpy/formdatatojson-unicode-names.md": "e90ba823bb30f5dffeaa82dd58ab60d90d6e1bb48917dece32279cfb78db3100"
+      },
+      "head": "0d843fe0905888352e41d7ba60865740164da2e3",
+      "outcome": "no-change",
+      "reason": "formDataToJSON field-name tokenizing is not documented by the configure-requests skill",
+      "evidence": [
+        "Changed: .bumpy/formdatatojson-unicode-names.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:packages/docs/pages/advanced/html-form-processing.md": {
+      "fingerprint": "dad5d13c1c3ec70b845b0e55691b0bddcac6ca50e4bf6fafe42a1b60d7c9dab2",
+      "snapshot": {
+        "packages/docs/pages/advanced/html-form-processing.md": "ad55218b6fad0226f89dd61c5199d9bfdfb71a9e9df663c535bf262b1cb058bf"
+      },
+      "head": "0d843fe0905888352e41d7ba60865740164da2e3",
+      "outcome": "no-change",
+      "reason": "formDataToJSON field-name tokenizing is not documented by the configure-requests skill",
+      "evidence": [
+        "Changed: packages/docs/pages/advanced/html-form-processing.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     }
   }
