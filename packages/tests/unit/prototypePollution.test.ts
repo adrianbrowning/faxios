@@ -1390,4 +1390,193 @@ describe("Prototype Pollution Protection", () => {
       }
     });
   });
+
+  // #177: payload keys named like prototype members are caller data, not config, so they reach the wire.
+  // #178: no RequestInit member, env constructor, toFormData option or default-instance field is
+  // read through Object.prototype.
+  describe("payload keys and inherited request reads", () => {
+    type Hit = { body: string; method: string | undefined; url: string | undefined; };
+
+    async function startEchoServer(hits: Array<Hit>): Promise<ServerLike> {
+      const server = http.createServer((req, res) => {
+        let body = "";
+        req.setEncoding("utf8");
+        req.on("data", (chunk: string) => { body += chunk; });
+        req.on("end", () => {
+          hits.push({ method: req.method, url: req.url, body });
+          if (req.url === "/start") {
+            res.writeHead(302, { Location: "/final" });
+            res.end();
+            return;
+          }
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end("{\"real\":true}");
+        });
+      });
+      const { promise, resolve } = Promise.withResolvers<ServerLike>();
+      server.listen(0, "127.0.0.1", () => resolve(server));
+      return promise;
+    }
+    const urlOf = (s: ServerLike): string => `http://127.0.0.1:${(s.address() as AddressInfo).port}`;
+    const stop = async (s: ServerLike): Promise<void> => {
+      const { promise, resolve } = Promise.withResolvers<void>();
+      s.close(() => resolve());
+      return promise;
+    };
+
+    it("sends body keys constructor, prototype and __proto__ unchanged", async () => {
+      const hits: Array<Hit> = [];
+      const server = await startEchoServer(hits);
+      const url = urlOf(server);
+      try {
+        await ax.post(`${url}/a`, { constructor: "Bob", prototype: 1, name: "n", nested: { constructor: 1 } });
+        await ax.post(`${url}/b`, JSON.parse("{\"__proto__\":{\"x\":1},\"ok\":1}"));
+
+        assert.strictEqual(hits[0]!.body, "{\"constructor\":\"Bob\",\"prototype\":1,\"name\":\"n\",\"nested\":{\"constructor\":1}}");
+        assert.strictEqual(hits[1]!.body, "{\"__proto__\":{\"x\":1},\"ok\":1}");
+        assert.strictEqual(Object.prototype.hasOwnProperty("x"), false);
+      }
+      finally {
+        await stop(server);
+      }
+    });
+
+    it("passes the request body to the transport by reference", () => {
+      const data = { constructor: "Bob" };
+      assert.strictEqual(mergeConfig({}, { data }).data, data);
+    });
+
+    it("sends a params key named constructor in the query string", async () => {
+      const hits: Array<Hit> = [];
+      const server = await startEchoServer(hits);
+      const url = urlOf(server);
+      try {
+        await ax.get(`${url}/p`, { params: { constructor: "c", q: 1 } });
+        assert.strictEqual(hits[0]!.url, "/p?constructor=c&q=1");
+      }
+      finally {
+        await stop(server);
+      }
+    });
+
+    it.each([
+      [ "redirect", "manual" ],
+      [ "redirect", "error" ],
+      [ "integrity", "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=" ],
+      [ "referrerPolicy", "bogus" ],
+      [ "mode", "navigate" ],
+      [ "cache", "only-if-cached" ],
+    ])("ignores an inherited RequestInit member %s=%s", async (key, value) => {
+      const hits: Array<Hit> = [];
+      const server = await startEchoServer(hits);
+      const url = urlOf(server);
+      ObjProto[key] = value;
+      try {
+        const res = await ax.get(`${url}/start`);
+        assert.strictEqual(res.status, 200);
+        assert.deepStrictEqual(res.data, { real: true });
+        assert.deepStrictEqual(hits.map(h => h.url), [ "/start", "/final" ]);
+      }
+      finally {
+        delete ObjProto[key];
+        await stop(server);
+      }
+    });
+
+    // undici still reads an inherited `dispatcher` from options objects it builds itself, and
+    // rejects the request with UND_ERR_INVALID_ARG. faxios can't reach those objects; what it
+    // guarantees is that the polluted dispatcher never receives the request.
+    it("never hands the request to an inherited undici dispatcher", async () => {
+      const server = await startEchoServer([]);
+      const url = urlOf(server);
+      const seen: Array<unknown> = [];
+      ObjProto.dispatcher = {
+        dispatch(opts: unknown) {
+          seen.push(opts);
+          throw new Error("hijacked");
+        },
+      };
+      try {
+        await ax.get(`${url}/d`, { headers: { Authorization: "Bearer s3cret" } }).catch(() => undefined);
+        assert.deepStrictEqual(seen, []);
+      }
+      finally {
+        delete ObjProto.dispatcher;
+        await stop(server);
+      }
+    });
+
+    it("never calls an inherited fetch, Request or Response", async () => {
+      const hits: Array<Hit> = [];
+      const server = await startEchoServer(hits);
+      const url = urlOf(server);
+      const called: Array<string> = [];
+      ObjProto.fetch = async () => {
+        called.push("fetch");
+        return new Response("{\"forged\":true}", { headers: { "Content-Type": "application/json" } });
+      };
+      ObjProto.Request = function Request() { called.push("Request"); };
+      ObjProto.Response = function Response() { called.push("Response"); };
+      try {
+        const res = await ax.get(`${url}/f`, { headers: { Authorization: "Bearer s3cret" } });
+        assert.deepStrictEqual(res.data, { real: true });
+        assert.deepStrictEqual(called, []);
+        assert.strictEqual(hits.length, 1);
+      }
+      finally {
+        delete ObjProto.fetch;
+        delete ObjProto.Request;
+        delete ObjProto.Response;
+        await stop(server);
+      }
+    });
+
+    it("sends GET when Object.prototype.method is polluted", async () => {
+      const hits: Array<Hit> = [];
+      const server = await startEchoServer(hits);
+      const url = urlOf(server);
+      ObjProto.method = "delete";
+      try {
+        await ax(`${url}/m1`);
+        await ax({ url: `${url}/m2` });
+        assert.deepStrictEqual(hits.map(h => h.method), [ "GET", "GET" ]);
+      }
+      finally {
+        delete ObjProto.method;
+        await stop(server);
+      }
+    });
+
+    it("ignores an inherited allowAbsoluteUrls on the default instance", async () => {
+      const hits: Array<Hit> = [];
+      const server = await startEchoServer(hits);
+      const url = urlOf(server);
+      ObjProto.allowAbsoluteUrls = false;
+      try {
+        await ax.get(`${url}/abs`, { baseURL: `${url}/base` });
+        assert.strictEqual(hits[0]!.url, "/abs");
+      }
+      finally {
+        delete ObjProto.allowAbsoluteUrls;
+        await stop(server);
+      }
+    });
+
+    it("ignores inherited toFormData options when serializing params", async () => {
+      const hits: Array<Hit> = [];
+      const server = await startEchoServer(hits);
+      const url = urlOf(server);
+      ObjProto.visitor = () => false;
+      ObjProto.maxDepth = -1;
+      try {
+        await ax.get(`${url}/v`, { params: { apiKey: "K", nested: { a: 1 } } });
+        assert.strictEqual(hits[0]!.url, "/v?apiKey=K&nested%5Ba%5D=1");
+      }
+      finally {
+        delete ObjProto.visitor;
+        delete ObjProto.maxDepth;
+        await stop(server);
+      }
+    });
+  });
 });

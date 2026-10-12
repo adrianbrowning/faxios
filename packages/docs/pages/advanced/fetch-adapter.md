@@ -12,6 +12,12 @@ Proxies and connection agents are not configured through faxios options. Configu
 
 When `auth` is omitted, the fetch adapter can read HTTP Basic auth credentials from the request URL, for example `https://user:pass@example.com`. Percent-encoded URL credentials are decoded before the `Authorization` header is generated, and `auth` takes precedence over URL-embedded credentials.
 
+## Fetch options
+
+`fetchOptions` sets extra `RequestInit` members for a request. faxios copies only these own keys into the init it passes to `fetch`: `cache`, `dispatcher` (Node's `undici`), `integrity`, `keepalive`, `mode`, `priority`, `redirect`, `referrer`, `referrerPolicy` and `window`. Other keys are ignored. faxios sets `signal`, `method`, `headers`, `body`, `duplex` and `credentials` itself.
+
+The init has a null prototype, and faxios writes the spec default for each member the caller doesn't set. So a polluted `Object.prototype.redirect`, `integrity` or `mode` can't change a request. The same holds for `env`: faxios uses `fetch`, `Request` and `Response` only when they are own properties of `env`.
+
 ## Custom fetch
 
 You can customise the fetch adapter to use a custom `fetch` function instead of the environment global. You can pass a custom `fetch` function, `Request`, and `Response` constructors via the `env` config option. This is useful when working with custom environments or app frameworks that provide their own `fetch` implementation.

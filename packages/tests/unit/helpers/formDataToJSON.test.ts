@@ -84,13 +84,9 @@ describe("formDataToJSON", () => {
     formData.append("__proto__.x", "hack");
     formData.append("constructor.prototype.y", "value");
 
+    // `__proto__`, `constructor` and `prototype` path segments are all skipped (utils.isDangerousKey).
     expect(formDataToJSON(formData)).toEqual({
       foo: [ "1", "2" ],
-      constructor: {
-        prototype: {
-          y: "value",
-        },
-      },
     });
 
     expect(({} as { x?: unknown; }).x).toEqual(undefined);

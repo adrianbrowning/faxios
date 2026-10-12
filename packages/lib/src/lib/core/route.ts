@@ -1,5 +1,6 @@
 // @ts-self-types="./route.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
+import cloneConfig from "../helpers/cloneConfig.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type { BasePerCallConfig, DefineConfig, DefinedEndpoint, FaxiosLike } from "./define.js";
 import { createDefinedEndpoint } from "./define.js";
@@ -43,11 +44,7 @@ export function createRouteBuilder<PP extends StandardSchemaV1<unknown, Record<s
   url: string,
   routeConfig?: RouteConfig<PP>
 ): RouteBuilder<PP> {
-  const raw = Object.assign(Object.create(null), routeConfig ?? {});
-  delete raw.__proto__;
-  delete raw.constructor;
-  delete raw.prototype;
-  const { pathParamsSchema, ...routeDefaults } = raw;
+  const { pathParamsSchema, ...routeDefaults } = cloneConfig(routeConfig ?? {});
 
   const builder = {} as RouteBuilder<PP>;
   for (const method of methods) {

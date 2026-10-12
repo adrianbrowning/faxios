@@ -2,7 +2,7 @@
 
 import CanceledError from "../cancel/CanceledError.js";
 import buildURL from "../helpers/buildURL.js";
-import cloneConfig, { DANGEROUS_KEYS } from "../helpers/cloneConfig.js";
+import cloneConfig from "../helpers/cloneConfig.js";
 import validator from "../helpers/validator.js";
 import type { ValidatorFn } from "../helpers/validator.js";
 import type {
@@ -133,7 +133,10 @@ function resolveAllowAbsoluteUrls(
   defaults: FaxiosRequestConfig
 ): void {
   if (config.allowAbsoluteUrls === undefined) {
-    config.allowAbsoluteUrls = defaults.allowAbsoluteUrls ?? !defaults.baseURL;
+    // Own reads only: instance defaults may be a plain object (the default instance's are).
+    const allowAbsoluteUrls = utils.hasOwnProp(defaults, "allowAbsoluteUrls") ? defaults.allowAbsoluteUrls : undefined;
+    const baseURL = utils.hasOwnProp(defaults, "baseURL") ? defaults.baseURL : undefined;
+    config.allowAbsoluteUrls = allowAbsoluteUrls ?? !baseURL;
   }
 }
 
@@ -272,7 +275,7 @@ class Faxios {
 
   #addCapabilities(pluginName: string, provides: unknown): Array<string> {
     const source = provides as Record<string, unknown>;
-    const keys = Object.keys(source).filter(key => !DANGEROUS_KEYS.has(key));
+    const keys = Object.keys(source).filter(key => !utils.isDangerousKey(key));
     for (const key of keys) {
       if (utils.hasOwnProp(this.#capabilities, key)) {
         throw new FaxiosError(`Plugin "${pluginName}" provides capability "${key}", which another plugin already provides`, FaxiosError.ERR_BAD_OPTION);
@@ -361,8 +364,9 @@ class Faxios {
     );
 
     // Set config.method
+    const defaultMethod = utils.hasOwnProp(this.defaults, "method") ? this.defaults.method : undefined;
     config.method = (
-      (config.method || this.defaults.method || "get") as string
+      (config.method || defaultMethod || "get") as string
     ).toLowerCase();
 
     // Flatten headers

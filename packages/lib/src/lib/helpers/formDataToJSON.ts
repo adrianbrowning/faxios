@@ -72,7 +72,7 @@ function formDataToJSON(formData: unknown): null | Record<string, unknown> {
 
     let name: number | string = path[index++]!;
 
-    if (name === "__proto__") return true;
+    if (utils.isDangerousKey(name)) return true;
 
     const isNumericKey = Number.isFinite(+name);
     const isLast = index >= path.length;
