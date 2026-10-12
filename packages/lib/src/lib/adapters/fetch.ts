@@ -524,7 +524,14 @@ const factory = (env: FetchEnv) => {
           }
           onProgress && onProgress(loadedBytes);
         },
-        flush
+        (err?: unknown) => {
+          // A chunk trackStream rejected (not bytes) surfaces as the coded error, not ERR_NETWORK.
+          if (err instanceof FaxiosError && !pendingBodyErrorRef.value) {
+            err.config = config;
+            pendingBodyErrorRef.value = err;
+          }
+          flush && flush();
+        }
       );
 
     if (
@@ -827,7 +834,7 @@ const factory = (env: FetchEnv) => {
       return await new Promise((resolve, reject) => {
         settle(resolve, reject, {
           data: responseData,
-          headers: FaxiosHeaders.from(response.headers),
+          headers: responseHeaders,
           status: response.status,
           statusText: response.statusText,
           config,
