@@ -85,21 +85,49 @@ Check: `faxios.get("/orders", { trace: "x" })` on an instance without the plugin
 installing it before `authBearer`:
 
 ```ts
-import faxios, { FaxiosError, type FaxiosContext } from "@gcmdev/faxios";
+import faxios, { type FaxiosContext } from "@gcmdev/faxios";
 import { definePlugin } from "@gcmdev/faxios/plugins";
 import { authBearer, type AuthBearerCapability } from "@gcmdev/faxios/plugins/auth-bearer";
 
+function requireSignIn() {
+  return definePlugin({
+    name: "requireSignIn",
+    middleware: async (ctx: FaxiosContext<unknown, AuthBearerCapability>, next) => {
+      if (!(await ctx.capabilities.auth.getToken())) throw new Error("Sign in first");
+      return next(ctx);
+    },
+  });
+}
+
+const api = faxios
+  .create({ baseURL: "https://api.example.com" })
+  .use(authBearer(() => "token"))
+  .use(requireSignIn());
+```
+
+## Refresh a token after a 401
+
+Install the refresh plugin before `authBearer` and never set `Authorization` in it. The retry
+runs `authBearer` again, which calls `getToken` and applies its origin rule, so a third-party 401
+is retried without the token. Share one in-flight refresh so rotating refresh tokens aren't spent twice:
+
+```ts
+import faxios, { FaxiosError } from "@gcmdev/faxios";
+import { definePlugin } from "@gcmdev/faxios/plugins";
+import { authBearer } from "@gcmdev/faxios/plugins/auth-bearer";
+
 function refreshOn401(refresh: () => Promise<void>) {
+  let refreshing: Promise<void> | undefined;
   return definePlugin({
     name: "refreshOn401",
-    middleware: async (ctx: FaxiosContext<unknown, AuthBearerCapability>, next) => {
+    middleware: async (ctx, next) => {
       try {
         return await next(ctx);
       }
       catch (error) {
         if (!(error instanceof FaxiosError) || error.response?.status !== 401) throw error;
-        await refresh();
-        ctx.config.headers.set("Authorization", `Bearer ${await ctx.capabilities.auth.getToken()}`);
+        refreshing ??= refresh().finally(() => { refreshing = undefined; });
+        await refreshing;
         return next(ctx);
       }
     },
@@ -109,9 +137,12 @@ function refreshOn401(refresh: () => Promise<void>) {
 let token = "old";
 const api = faxios
   .create({ baseURL: "https://api.example.com" })
-  .use(authBearer(() => token))
-  .use(refreshOn401(async () => { token = "new"; }));
+  .use(refreshOn401(async () => { token = "new"; }))
+  .use(authBearer(() => token));
 ```
+
+Calling `next` again re-sends the body. A stream body is used up by the first try; sending it
+again rejects with `ERR_BAD_REQUEST`.
 
 ## Rules `.use()` enforces at runtime
 

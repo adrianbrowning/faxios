@@ -1,9 +1,7 @@
 import assert from "node:assert";
 import { afterEach, describe, expectTypeOf, it, vi } from "vitest";
 import faxios, { FaxiosError, FaxiosHeaders } from "#src/index.ts";
-import type { FaxiosContext } from "#src/index.ts";
 import { authBearer } from "#src/lib/plugins/authBearer.ts";
-import type { AuthBearerCapability } from "#src/lib/plugins/authBearer.ts";
 import { definePlugin } from "#src/lib/plugins/definePlugin.ts";
 import { retry } from "#src/lib/plugins/retry.ts";
 
@@ -37,18 +35,22 @@ function capture() {
   return { middleware, sent };
 }
 
-// The refresh plugin from the docs: retry once with a fresh token after a 401.
+// The refresh plugin from the docs: installed before authBearer, it never sets Authorization.
+// On a 401 it waits for one shared refresh and calls next again, so authBearer reapplies its origin rule.
 function refreshOn401(refresh: () => Promise<void>) {
+  let refreshing: Promise<void> | undefined;
   return definePlugin({
     name: "refreshOn401",
-    middleware: async (ctx: FaxiosContext<unknown, AuthBearerCapability>, next) => {
+    middleware: async (ctx, next) => {
       try {
         return await next(ctx);
       }
       catch (err) {
         if (!(err instanceof FaxiosError) || err.response?.status !== 401) throw err;
-        await refresh();
-        ctx.config.headers.set("Authorization", `Bearer ${await ctx.capabilities.auth.getToken()}`);
+        refreshing ??= refresh().finally(() => {
+          refreshing = undefined;
+        });
+        await refreshing;
         return next(ctx);
       }
     },
@@ -133,10 +135,10 @@ describe("plugins::authBearer", () => {
     let token = "expired";
     const { fetch, authorizations } = recordingFetch(authorization => authorization === "Bearer fresh" ? 200 : 401);
     const api = faxios.create({ baseURL: BASE, env: { fetch } })
-      .use(authBearer(() => token))
       .use(refreshOn401(async () => {
         token = "fresh";
-      }));
+      }))
+      .use(authBearer(() => token));
 
     const response = await api.get(URL);
 
@@ -144,12 +146,49 @@ describe("plugins::authBearer", () => {
     assert.deepStrictEqual(authorizations, [ "Bearer expired", "Bearer fresh" ]);
   });
 
-  it("is a type error to install refreshOn401 without authBearer", () => {
-    function surfaces(): void {
-      // @ts-expect-error TS2345 -- refreshOn401 requires the auth capability
-      faxios.create().use(refreshOn401(async () => undefined));
-    }
-    void surfaces;
+  it("retries a third-party 401 through refreshOn401 without a token", async () => {
+    let token = "expired";
+    const { fetch, authorizations } = recordingFetch(() => 401);
+    const api = faxios.create({ baseURL: "https://api.test", allowAbsoluteUrls: true, env: { fetch } })
+      .use(refreshOn401(async () => {
+        token = "fresh";
+      }))
+      .use(authBearer(() => token));
+
+    const err = await api.get("https://third-party.test/hook").catch((e: unknown) => e);
+
+    assert.ok(err instanceof FaxiosError);
+    assert.strictEqual(err.response?.status, 401);
+    assert.deepStrictEqual(authorizations, [ null, null ]);
+  });
+
+  it("shares one refresh between concurrent 401s", async () => {
+    let token = "expired";
+    let refreshCalls = 0;
+    let markAllSent!: () => void;
+    const allSent = new Promise<void>(resolve => {
+      markAllSent = resolve;
+    });
+    let expiredSeen = 0;
+    const { fetch, authorizations } = recordingFetch(authorization => {
+      if (authorization === "Bearer fresh") return 200;
+      expiredSeen += 1;
+      if (expiredSeen === 5) markAllSent();
+      return 401;
+    });
+    const api = faxios.create({ baseURL: BASE, env: { fetch } })
+      .use(refreshOn401(async () => {
+        refreshCalls += 1;
+        await allSent;
+        token = "fresh";
+      }))
+      .use(authBearer(() => token));
+
+    const responses = await Promise.all(Array.from({ length: 5 }, async () => api.get(URL)));
+
+    assert.deepStrictEqual(responses.map(r => r.status), [ 200, 200, 200, 200, 200 ]);
+    assert.strictEqual(refreshCalls, 1);
+    assert.strictEqual(authorizations.filter(a => a === "Bearer fresh").length, 5);
   });
 
   describe("an explicit header", () => {
