@@ -281,7 +281,18 @@ export interface FaxiosRequestConfig<D = unknown> {
   maxBodyLength?: number;
   maxContentLength?: number;
   method?: StringLiteralsOrString<Method>;
+  /**
+   * Called with download progress. For a content-encoded response (any `Content-Encoding`
+   * other than `identity`) `total` is `undefined` and `lengthComputable` is `false`.
+   * An error thrown (or a rejected promise returned) by the callback is caught and ignored;
+   * the request settles normally.
+   */
   onDownloadProgress?: (progressEvent: FaxiosProgressEvent) => void;
+  /**
+   * Called with upload progress where the runtime supports streaming request bodies.
+   * An error thrown (or a rejected promise returned) by the callback is caught and ignored;
+   * the request settles normally.
+   */
   onUploadProgress?: (progressEvent: FaxiosProgressEvent) => void;
   params?: Record<string, unknown> | URLSearchParams;
   paramsSchema?: StandardSchemaV1;

@@ -51,7 +51,20 @@ export const progressEventDecorator = (total: number | undefined, throttled: Ret
   ];
 };
 
+// Progress listeners are caller code: any error they throw (or a promise they
+// reject) is caught and ignored so it can't become an uncaught exception or
+// change how the request settles.
 export const asyncDecorator =
   (fn: (...args: Array<unknown>) => unknown) =>
     (...args: Array<unknown>) =>
-      utils.asap(() => fn(...args));
+      utils.asap(() => {
+        try {
+          const result = fn(...args);
+          if (utils.isThenable(result)) {
+            (result as PromiseLike<unknown>).then(undefined, () => {});
+          }
+        }
+        catch {
+          // Ignored by design: see the onUploadProgress/onDownloadProgress docs.
+        }
+      });
