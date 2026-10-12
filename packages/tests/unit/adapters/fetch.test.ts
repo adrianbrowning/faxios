@@ -2049,16 +2049,15 @@ describe.runIf(typeof fetch === "function")(
         // cancelled, leaving a dangling pull-algorithm promise (async resource leak
         // visible via `--detect-async-leaks` or Node.js async_hooks).
         //
-        // Calling getFetch with a unique env triggers a fresh factory() execution
+        // Calling getFetch with a new Request constructor triggers a fresh factory() execution
         // (including the probe).  We spy on ReadableStream.prototype.cancel to
         // verify it is invoked during the probe.
 
         const cancelSpy = vi.spyOn(ReadableStream.prototype, "cancel");
 
         try {
-          // Unique fetch function ensures cache miss → factory() re-runs the probe.
-          const uniqueFetch = async () => new Response("ok");
-          getFetch({ env: { fetch: uniqueFetch } });
+          // Adapters are cached per Request/Response pair, so a new Request misses the cache.
+          getFetch({ env: { Request: class extends Request {} } });
 
           assert.ok(
             cancelSpy.mock.calls.length > 0,

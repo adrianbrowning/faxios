@@ -202,6 +202,9 @@ catch (error) {
   schema step and right before `fetch`, so an abort during pre-flight work sends nothing.
 - A timeout always rejects with `ETIMEDOUT`. `ECONNABORTED` is never raised, and
   `transitional.clarifyTimeoutError` has no effect.
+- With `responseType: "stream"`, `timeout` and `signal` stay active until the body is fully
+  read or cancelled. Reading a stalled body rejects with `ETIMEDOUT` or `ERR_CANCELED`.
+  Cancel a body you don't read so the timer and signal listener are released.
 
 ### Handle errors by code
 

@@ -149,6 +149,8 @@ Controls how faxios copies headers returned by a `FormData`-like object's `getHe
 
 The `timeout` is the number of milliseconds before the request times out. If the request takes longer than `timeout`, the request will be aborted. The default is `0` (no timeout).
 
+With `responseType: "stream"`, the request isn't over when the promise resolves. The `timeout` and the [`signal`](#signal) stay active until you have read the whole body or cancelled it, so a slow or stalled body still times out, and aborting the signal stops it. Reading the stream then fails with the `ETIMEDOUT` or `ERR_CANCELED` error. faxios releases the timer and the signal listener when the body ends, errors or is cancelled. If the response has no body (a `204`, `304` or `HEAD` response), it releases them when the promise resolves.
+
 ### `withCredentials`
 
 The `withCredentials` property indicates whether or not cross-site Access-Control requests should be made using credentials such as cookies, authorization headers, or TLS client certificates. Setting withCredentials has no effect on same-site requests. The default is `false`. It only controls whether the browser sends credentials; it does not control whether the XSRF header is added (see [`withXSRFToken`](#withxsrftoken)).
@@ -262,7 +264,7 @@ If either callback throws, or returns a promise that rejects, faxios catches and
 
 ### `maxContentLength`
 
-The `maxContentLength` property defines the maximum response size in bytes. The fetch adapter enforces it when the response length is declared, the response stream can be tracked, or the response size can otherwise be determined.
+The `maxContentLength` property defines the maximum response size in bytes. The fetch adapter enforces it when the response length is declared, the response stream can be tracked, or the response size can otherwise be determined. When a response goes over the limit, faxios rejects with `ERR_BAD_RESPONSE` and aborts the request, so the connection is closed instead of left downloading.
 
 > ⚠️ **Security:** defaults to `-1` (unlimited). Unbounded responses combined with gzip/deflate/brotli/zstd decompression allow decompression-bomb DoS.
 > Set an explicit limit when requesting servers you do not fully trust.
@@ -297,7 +299,7 @@ If `validateStatus` is set to `null`, faxios resolves every response. An explici
 
 ### `signal`
 
-The `signal` property allows you to pass an instance of `AbortSignal` to the request. This allows you to cancel the request using the `AbortController` API.
+The `signal` property allows you to pass an instance of `AbortSignal` to the request. This allows you to cancel the request using the `AbortController` API. For `responseType: "stream"`, the signal can also cancel the body while you read it (see [`timeout`](#timeout)).
 
 ### `transitional`
 
