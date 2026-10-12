@@ -830,6 +830,49 @@ describe.runIf(typeof fetch === "function")(
       }
     });
 
+    for (const [ kind, makeBody ] of [
+      [ "stream.Readable", () => stream.Readable.from([ "hello world" ]) ],
+      [ "ReadableStream", () => new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode("hello world"));
+          controller.close();
+        },
+      }) ],
+    ] as const) {
+      it(`rejects with a coded error when middleware sends a used ${kind} body again`, async () => {
+        const server = await startHTTPServer((req, res) => {
+          req.resume();
+          req.on("end", () => {
+            res.statusCode = 503;
+            res.end();
+          });
+        }, { port: SERVER_PORT });
+
+        try {
+          const api = faxios.create({ allowAbsoluteUrls: true }).use(async (ctx, next) => {
+            try {
+              return await next(ctx);
+            }
+            catch {
+              return next(ctx);
+            }
+          });
+
+          const err = await api.post(
+            `http://localhost:${(server.address() as AddressInfo).port}/`,
+            makeBody()
+          ).catch((e: unknown) => e);
+
+          assert.ok(err instanceof FaxiosError, `expected a FaxiosError, got ${String(err)}`);
+          assert.strictEqual(err.code, FaxiosError.ERR_BAD_REQUEST);
+          assert.match(err.message, /body stream was already used/);
+        }
+        finally {
+          await stopHTTPServer(server);
+        }
+      });
+    }
+
     describe("request aborting", () => {
       it("should be able to abort the request stream", async () => {
         const server = await startHTTPServer(

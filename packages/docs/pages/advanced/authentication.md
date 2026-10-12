@@ -108,26 +108,29 @@ const response = await faxios.get("https://api.example.com/data", {
 
 ## Token refresh
 
-`authBearer` provides an `auth` capability: plugins installed after it can call `ctx.capabilities.auth.getToken()` to get the current token. The capability ignores the origin rule. A refresh plugin uses it to retry a request once with a fresh token:
+A refresh plugin retries a request once after a 401. Install it before `authBearer`, and let `authBearer` set the header:
 
 ```ts
 import faxios, { FaxiosError } from "@gcmdev/faxios";
-import type { FaxiosContext } from "@gcmdev/faxios";
 import { definePlugin } from "@gcmdev/faxios/plugins";
 import { authBearer } from "@gcmdev/faxios/plugins/auth-bearer";
-import type { AuthBearerCapability } from "@gcmdev/faxios/plugins/auth-bearer";
 
 function refreshOn401(refresh: () => Promise<void>) {
+  let refreshing: Promise<void> | undefined;
   return definePlugin({
     name: "refreshOn401",
-    middleware: async (ctx: FaxiosContext<unknown, AuthBearerCapability>, next) => {
+    middleware: async (ctx, next) => {
       try {
         return await next(ctx);
       }
       catch (err) {
         if (!(err instanceof FaxiosError) || err.response?.status !== 401) throw err;
-        await refresh();
-        ctx.config.headers.set("Authorization", `Bearer ${await ctx.capabilities.auth.getToken()}`);
+        // Concurrent 401s wait for the same refresh.
+        refreshing ??= refresh().finally(() => {
+          refreshing = undefined;
+        });
+        await refreshing;
+        // authBearer runs again inside next, so the retry gets the new token.
         return next(ctx);
       }
     },
@@ -142,17 +145,17 @@ const refresh = async () => {
 };
 
 const api = faxios.create({ baseURL: "https://api.example.com" })
-  .use(authBearer(getToken))
-  .use(refreshOn401(refresh));
+  .use(refreshOn401(refresh))
+  .use(authBearer(getToken));
 
 await api.get("/me");
 ```
 
 A 401 arrives as a rejection, not a response, because the default `validateStatus` rejects non-2xx statuses. That's why the plugin catches a `FaxiosError` and checks `err.response?.status`.
 
-Calling `next` twice is safe: each `next()` dispatches its own copy of the config.
+The plugin never sets `Authorization` itself. On the retry `authBearer` calls `getToken` again and applies its origin rule, so a 401 from a third-party URL is retried without your token. All 401s share one in-flight refresh: with rotating refresh tokens, a second refresh would send a token the first one already spent, and the server would log the user out.
 
-The middleware's `ctx` annotation declares that the plugin requires `auth`. Installing `refreshOn401` before `authBearer`, or without it, is a type error. See [Writing a plugin](/pages/advanced/middleware#writing-a-plugin) for how capabilities and typed options work.
+Calling `next` twice is safe when the body can be read again, such as a string, an object, a `Blob` or `FormData`. A stream body is used up by the first try, so sending it again rejects with a `FaxiosError` whose code is `ERR_BAD_REQUEST`.
 
 ## Cookie-based authentication
 

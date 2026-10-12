@@ -212,21 +212,24 @@ import { retry } from "@gcmdev/faxios/plugins/retry";
 const api = faxios.create({ baseURL: "https://api.example.com" }).use(retry());
 const controller = new AbortController();
 
+const request = api.get("/api/data", { signal: controller.signal });
+
+// Cancel the request (and any pending retry wait) while it is in flight,
+// for example when the user leaves the page:
+controller.abort();
+
 try {
-  await api.get("/api/data", { signal: controller.signal });
+  await request;
 } catch (error) {
   if (faxios.isCancel(error)) {
     console.log("Request aborted by user");
   }
 }
-
-// Cancel the request (and any pending retry wait) from elsewhere:
-controller.abort();
 ```
 
 ## Writing your own retry middleware
 
-If the plugin's policy doesn't fit, a middleware can call `next` again itself. Each `next()` dispatches its own copy of the config, so calling it twice is safe:
+If the plugin's policy doesn't fit, a middleware can call `next` again itself. Each `next()` dispatches its own copy of the config, so calling it twice is safe when the body can be read again, such as a string, an object, a `Blob` or `FormData`. A stream body is used up by the first try, so sending it again rejects with a `FaxiosError` whose code is `ERR_BAD_REQUEST`:
 
 ```ts
 import faxios, { FaxiosError } from "@gcmdev/faxios";

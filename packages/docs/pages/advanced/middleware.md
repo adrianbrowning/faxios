@@ -173,6 +173,8 @@ await api.get("/users");
 
 For real use, install the built-in [`retry`](#retry) plugin, which adds backoff, `Retry-After` support and a per-request option.
 
+Calling `next` again is safe when the body can be read again, such as a string, an object, a `Blob` or `FormData`. A stream body is used up by the first try, so sending it again rejects with a `FaxiosError` whose code is `ERR_BAD_REQUEST`.
+
 ### Error statuses arrive as rejections
 
 `validateStatus` rejects non-2xx responses by default, so middleware sees a 404 or 500 as a rejected `FaxiosError`, not as a response. Catch it around `next`; the response is on `err.response`. This middleware turns a 404 back into a response:
@@ -191,6 +193,47 @@ const api = faxios.create({ baseURL: "https://api.example.com" }).use(async (ctx
 
 const { status } = await api.get("/users/7");
 console.log(status); // 404
+```
+
+### Refreshing a token after a 401
+
+This plugin refreshes the token once after a 401 and retries. Install it before [`authBearer`](#authbearer). It never sets `Authorization` itself: `authBearer` runs again inside the second `next`, calls `getToken` again and applies its origin rule, so a 401 from a third-party URL is retried without your token. All 401s wait for one shared refresh, because with rotating refresh tokens a second refresh sends a token the first one already spent.
+
+```ts
+import faxios, { FaxiosError } from "@gcmdev/faxios";
+import { definePlugin } from "@gcmdev/faxios/plugins";
+import { authBearer } from "@gcmdev/faxios/plugins/auth-bearer";
+
+function refreshOn401(refresh: () => Promise<void>) {
+  let refreshing: Promise<void> | undefined;
+  return definePlugin({
+    name: "refreshOn401",
+    middleware: async (ctx, next) => {
+      try {
+        return await next(ctx);
+      }
+      catch (err) {
+        if (!(err instanceof FaxiosError) || err.response?.status !== 401) throw err;
+        refreshing ??= refresh().finally(() => {
+          refreshing = undefined;
+        });
+        await refreshing;
+        return next(ctx);
+      }
+    },
+  });
+}
+
+let token = "expired";
+const refreshToken = async () => {
+  token = "fresh";
+};
+
+const api = faxios.create({ baseURL: "https://api.example.com" })
+  .use(refreshOn401(refreshToken))
+  .use(authBearer(() => token));
+
+await api.get("/me");
 ```
 
 ### Returning without `next` skips the request
@@ -342,50 +385,38 @@ On an instance without `cache()`, `{ cache: { ttlMs: 5_000 } }` is a type error.
 
 ## Capabilities
 
-A capability is a value one plugin provides for plugins installed after it. The built-in `authBearer` plugin provides `auth`, whose `getToken()` returns the current token. A plugin that refreshes the token on a 401 requires it:
+A capability is a value one plugin provides for plugins installed after it. The built-in `authBearer` plugin provides `auth`, whose `getToken()` returns the current token. A plugin that stops a request before it is sent when nobody is signed in requires it:
 
 ```ts
-import faxios, { FaxiosError } from "@gcmdev/faxios";
+import faxios from "@gcmdev/faxios";
 import type { FaxiosContext } from "@gcmdev/faxios";
 import { definePlugin } from "@gcmdev/faxios/plugins";
 import { authBearer } from "@gcmdev/faxios/plugins/auth-bearer";
 import type { AuthBearerCapability } from "@gcmdev/faxios/plugins/auth-bearer";
 
-function refreshOn401(refresh: () => Promise<void>) {
+function requireSignIn() {
   return definePlugin({
-    name: "refreshOn401",
+    name: "requireSignIn",
     middleware: async (ctx: FaxiosContext<unknown, AuthBearerCapability>, next) => {
-      try {
-        return await next(ctx);
-      }
-      catch (err) {
-        if (!(err instanceof FaxiosError) || err.response?.status !== 401) throw err;
-        await refresh();
-        ctx.config.headers.set("Authorization", `Bearer ${await ctx.capabilities.auth.getToken()}`);
-        return next(ctx);
-      }
+      if (!(await ctx.capabilities.auth.getToken())) throw new Error("Sign in first");
+      return next(ctx);
     },
   });
 }
 
-let token = "expired";
-const refreshToken = async () => {
-  token = "fresh";
-};
+let token = "my-token";
 
 const api = faxios.create({ baseURL: "https://api.example.com" })
   .use(authBearer(() => token))
-  .use(refreshOn401(refreshToken));
+  .use(requireSignIn());
 
 await api.get("/me");
 
-// @ts-expect-error TS2345 -- refreshOn401 requires the auth capability, which nothing installed provides
-faxios.create({ baseURL: "https://api.example.com" }).use(refreshOn401(refreshToken)).use(authBearer(() => token));
+// @ts-expect-error TS2345 -- requireSignIn requires the auth capability, which nothing installed provides
+faxios.create({ baseURL: "https://api.example.com" }).use(requireSignIn()).use(authBearer(() => token));
 ```
 
-The 401 arrives as a rejection, as described in [Error statuses arrive as rejections](#error-statuses-arrive-as-rejections). Calling `next` a second time is safe because each call dispatches its own copy of the config.
-
-Installing `refreshOn401` before `authBearer` fails to compile. The error names the missing capability:
+Installing `requireSignIn` before `authBearer` fails to compile. The error names the missing capability:
 
 ```text
 Property '"faxios: install a plugin that provides this capability first"' is missing in type
@@ -452,7 +483,7 @@ faxios ships three plugins. Each one has its own entry point, which exports the 
 
 ### `authBearer`
 
-`authBearer(getToken, options?)` sets `Authorization: Bearer <token>` on requests to your API, calling `getToken` (which may return a string or a promise) on each of them. A header the request already has is kept unless you pass `overwrite: true`. By default the token goes only to the `baseURL` origin when `baseURL` is absolute, and only to relative URLs otherwise; `origins` replaces that rule. It provides the `auth` capability, which `refreshOn401` above uses.
+`authBearer(getToken, options?)` sets `Authorization: Bearer <token>` on requests to your API, calling `getToken` (which may return a string or a promise) on each of them. A header the request already has is kept unless you pass `overwrite: true`. By default the token goes only to the `baseURL` origin when `baseURL` is absolute, and only to relative URLs otherwise; `origins` replaces that rule. It provides the `auth` capability, which `requireSignIn` above uses. Install [`refreshOn401`](#refreshing-a-token-after-a-401) before it, so a retry gets a fresh header.
 
 ```ts
 import faxios from "@gcmdev/faxios";

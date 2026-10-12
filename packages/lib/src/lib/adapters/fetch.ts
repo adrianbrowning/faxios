@@ -58,6 +58,29 @@ const DEFAULT_CHUNK_SIZE = 64 * 1024;
 
 const { isFunction } = utils;
 
+// Web stream bodies this adapter has sent. fetch can read a stream without leaving it locked,
+// and there's no portable "disturbed" check, so a second send is caught here.
+const sentStreamBodies = new WeakSet<object>();
+
+// A stream body can be read once. Middleware that calls next() again after a try read it
+// would send an empty body (Node stream) or get an uncoded TypeError from fetch (web stream).
+const rejectUsedStreamBody = (data: unknown, config: InternalFaxiosRequestConfig): void => {
+  const body = data as { bodyUsed?: unknown; destroyed?: unknown; locked?: unknown; readableDidRead?: unknown; readableEnded?: unknown; };
+  const isWebStream = utils.isReadableStream!(data);
+  if (
+    (isWebStream && (body.locked === true || sentStreamBodies.has(body))) ||
+    ((utils.isRequest!(data) || utils.isResponse!(data)) && body.bodyUsed === true) ||
+    (utils.isStream(data) && (body.readableDidRead === true || body.readableEnded === true || body.destroyed === true))
+  ) {
+    throw new FaxiosError(
+      "Request body stream was already used and can't be sent again; pass a new body for each try",
+      FaxiosError.ERR_BAD_REQUEST,
+      config
+    );
+  }
+  if (isWebStream) sentStreamBodies.add(body);
+};
+
 // Server runtimes default User-Agent to their own (e.g. "node"), so name faxios there.
 // Browsers send their own User-Agent; setting one makes every cross-origin request
 // need a CORS preflight that most APIs don't allow.
@@ -642,6 +665,8 @@ const factory = (env: Record<string, unknown>) => {
     const pendingBodyErrorRef: PendingBodyErrorRef = { value: null };
 
     try {
+      rejectUsedStreamBody(data, config);
+
       url = applyAuthToRequest(url!, headers, own);
 
       const preflightContentLength = await checkPreflightLimits(
