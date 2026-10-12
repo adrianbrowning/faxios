@@ -91,3 +91,19 @@ form.append("file", blob, "hello.txt");
 
 await faxios.post("https://httpbin.org/post", form);
 ```
+
+## Uploading raw bytes
+
+To send a file as the whole request body (no multipart), pass the `File`, `Blob`, `ArrayBuffer`, typed array or stream as `data`. faxios does not set `Content-Type` for these bodies. The runtime uses the `Blob.type` (here `image/png`), or sends no `Content-Type` when there is none. Set the header yourself for an untyped `Blob`, an `ArrayBuffer`, a typed array or a stream if the server needs one.
+
+```js
+import faxios from "@gcmdev/faxios";
+
+const file = new File(["png bytes"], "avatar.png", { type: "image/png" });
+await faxios.put("https://httpbin.org/put", file);
+
+const bytes = new Uint8Array([1, 2, 3]);
+await faxios.put("https://httpbin.org/put", bytes, {
+  headers: { "Content-Type": "application/octet-stream" },
+});
+```

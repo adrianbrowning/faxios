@@ -90,7 +90,13 @@ const client = faxios.create({
 
 ### `headers`
 
-The `headers` are the HTTP headers to be sent with the request. The `Content-Type` header is set to `application/json` by default.
+The `headers` are the HTTP headers to be sent with the request. When you don't set `Content-Type`, faxios picks it from the body:
+
+- Plain objects are sent as JSON with `application/json`.
+- `URLSearchParams` is sent as `application/x-www-form-urlencoded;charset=utf-8`.
+- `FormData` gets `multipart/form-data` with a boundary from the runtime.
+- `Blob`, `File`, `ArrayBuffer`, typed arrays, `DataView` and streams get no `Content-Type` from faxios. The runtime uses `Blob.type` (for example `image/png` for a `File`) or sends none.
+- Other bodies, such as plain strings, sent with `post`, `put` or `patch` get `application/x-www-form-urlencoded`, as in axios.
 
 ### `params`
 

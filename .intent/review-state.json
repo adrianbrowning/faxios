@@ -3,7 +3,7 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "1d7e6f9f43fa89ff730d15114fcb72ae03aa97864bdf52e6da0771d87417e9fd",
+      "fingerprint": "e6efb78931f30705e3e59959fcbb14c118b6baf89a02331e9cba721c6a402d3a",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "301c6e77e898dcc3bf63a9eb2f27b216f5f3c2cb94673f0790260a00a7cab8cb",
@@ -16,7 +16,7 @@
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "fb10925870044b0bd5b446b0ac3937a316f57f899749221ba99edc74186df4cd",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "cb6d7169f0838a9d2de49be8dccd3eef23b71a62f8e3d3c26e606453aea5a89b",
         "packages/lib/src/lib/core/mergeConfig.ts": "3cc9070fcedfc0f8f25a2d6274338aa70fb518cfbff16dc508548b5737a18e0e",
         "packages/lib/src/lib/core/route.ts": "d73182172ee4a568a180cc3678080195eb1e630561284afc4074e6f10c29d795",
         "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
@@ -33,15 +33,15 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "997e6ed62506730eb257b380570d7a7ddc578ce1",
+      "head": "7acdc6538be649cd270d8fc61781c7f0b1caac78",
       "outcome": "no-change",
-      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
+      "reason": "Skill does not document request-body Content-Type defaults; change only stops the urlencoded fallback for binary and stream bodies",
       "evidence": [
-        "Changed: packages/lib/package.json at 997e6ed62506730eb257b380570d7a7ddc578ce1"
+        "Changed: packages/lib/src/lib/core/dispatchRequest.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "e1b9f4447d4292ea279ad5ba6d0bde2775009f073d0b8cb13b574aca01173939",
+      "fingerprint": "6fb9ed8e7246dc5cb8149384c453e1df73aaee9a4ecc51e678c21569262fd73e",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
@@ -57,7 +57,7 @@
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "fb10925870044b0bd5b446b0ac3937a316f57f899749221ba99edc74186df4cd",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "cb6d7169f0838a9d2de49be8dccd3eef23b71a62f8e3d3c26e606453aea5a89b",
         "packages/lib/src/lib/core/mergeConfig.ts": "3cc9070fcedfc0f8f25a2d6274338aa70fb518cfbff16dc508548b5737a18e0e",
         "packages/lib/src/lib/core/route.ts": "d73182172ee4a568a180cc3678080195eb1e630561284afc4074e6f10c29d795",
         "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "997e6ed62506730eb257b380570d7a7ddc578ce1",
+      "head": "7acdc6538be649cd270d8fc61781c7f0b1caac78",
       "outcome": "no-change",
-      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
+      "reason": "Skill does not document request-body Content-Type defaults; change only stops the urlencoded fallback for binary and stream bodies",
       "evidence": [
-        "Changed: packages/lib/package.json at 997e6ed62506730eb257b380570d7a7ddc578ce1"
+        "Changed: packages/lib/src/lib/core/dispatchRequest.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "source:knip.json": {
@@ -278,15 +278,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "a806e21446d05f18b3f19e9535af520e48ff93b8386d775518225a0620fe23bb",
+      "fingerprint": "8910b55303983fd7697d40768a04e4ad583a3836fa4d5995698848f4d227d694",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "780c04f26eea90c693308afce3ca09ce0b6fe4179ac77d0b6b3c92d12076591b"
+        "packages/docs/pages/advanced/request-config.md": "ba11938fc7b355c45e847e2c1a0dce3d8a5a73b74bec9b4f77b25fe2883664d3"
       },
-      "head": "213d0244cb46ec572237eddf2a1bbef7db1e9579",
-      "outcome": "updated",
-      "reason": "Skill pattern and mistake #10 mirror the corrected responseType section.",
+      "head": "7acdc6538be649cd270d8fc61781c7f0b1caac78",
+      "outcome": "no-change",
+      "reason": "Skill does not document request-body Content-Type defaults; change only stops the urlencoded fallback for binary and stream bodies",
       "evidence": [
-        "request-config.md lists each responseType as the adapter resolves it and documents unset behaviour; SKILL.md says the same."
+        "Changed: packages/docs/pages/advanced/request-config.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -3620,6 +3620,42 @@
       "reason": "Test harness only: pin-tarball-integrity.ts also rewrites the faxios tarball version in the pnpm harness lockfiles, and AGENTS.md says so. No API or skill guidance changes.",
       "evidence": [
         "Changed: packages/tests/pin-tarball-integrity.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+      ]
+    },
+    "source:.bumpy/binary-body-content-type.md": {
+      "fingerprint": "47c861a8128400417291fc4f377c699c1d30c1059f068beec602b8cb303dbed6",
+      "snapshot": {
+        ".bumpy/binary-body-content-type.md": "16ef61aaac5a46f76c5364f16a062a71c334128305ac21d16fb618687b6d3cbc"
+      },
+      "head": "7acdc6538be649cd270d8fc61781c7f0b1caac78",
+      "outcome": "no-change",
+      "reason": "Skill does not document request-body Content-Type defaults; change only stops the urlencoded fallback for binary and stream bodies",
+      "evidence": [
+        "Changed: .bumpy/binary-body-content-type.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+      ]
+    },
+    "source:packages/docs/pages/advanced/file-posting.md": {
+      "fingerprint": "2e7c4c7d9bc320d6ff6f945898692cbcab2fe5659234ea819e832e3c4d4a1bf4",
+      "snapshot": {
+        "packages/docs/pages/advanced/file-posting.md": "a76883d5ebaa5b54e78a4e2fedf9efd17cca0934d64af0793d6fabafd5be7199"
+      },
+      "head": "7acdc6538be649cd270d8fc61781c7f0b1caac78",
+      "outcome": "no-change",
+      "reason": "Skill does not document request-body Content-Type defaults; change only stops the urlencoded fallback for binary and stream bodies",
+      "evidence": [
+        "Changed: packages/docs/pages/advanced/file-posting.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+      ]
+    },
+    "source:packages/tests/unit/requestBodyContentType.test.ts": {
+      "fingerprint": "6db984565f0ae19ee1dfccea35d4a3fafb056c1bf5e37450e0cd22391c7e99d0",
+      "snapshot": {
+        "packages/tests/unit/requestBodyContentType.test.ts": "4836324d17eee1dcf7f7e6242af222f062e5580e3f1f93621fe61dd54efd462d"
+      },
+      "head": "7acdc6538be649cd270d8fc61781c7f0b1caac78",
+      "outcome": "no-change",
+      "reason": "Skill does not document request-body Content-Type defaults; change only stops the urlencoded fallback for binary and stream bodies",
+      "evidence": [
+        "Changed: packages/tests/unit/requestBodyContentType.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
       ]
     }
   }
