@@ -5,6 +5,8 @@
   },
   "include": [
     ".vitepress/**/*.ts",
-    ".vitepress/**/*.mts"
+    ".vitepress/**/*.mts",
+    "eslint.config.ts",
+    "eslint.config.style.ts"
   ]
 }

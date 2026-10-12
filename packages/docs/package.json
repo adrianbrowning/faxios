@@ -12,8 +12,8 @@
     "docs:update:sponsors": "node ./scripts/process-sponsors.js",
     "prod:build": "npm run docs:update:sponsors && npm run docs:build",
     "postinstall": "patch-package --exclude nothing",
-    "lint": "eslint --config eslint.config.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
-    "lint:fix": "eslint --config eslint.config.style.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0 --fix",
+    "lint": "eslint --config eslint.config.ts \"**/*.{j,t}s{,x}\" --cache --max-warnings=0",
+    "lint:fix": "eslint --config eslint.config.style.ts \"**/*.{j,t}s{,x}\" --cache --max-warnings=0 --fix",
     "lint:ts": "tsc --noEmit -p ."
   },
   "dependencies": {

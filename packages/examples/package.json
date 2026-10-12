@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node ./server.js",
-    "lint": "eslint --config eslint.config.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0",
-    "lint:fix": "eslint --config eslint.config.style.ts \"src/**/*.{j,t}s{,x}\" --cache --max-warnings=0 --fix"
+    "lint": "eslint --config eslint.config.ts \"**/*.js\" --cache --max-warnings=0",
+    "lint:fix": "eslint --config eslint.config.style.ts \"**/*.js\" --cache --max-warnings=0 --fix"
   },
   "dependencies": {
     "@gcmdev/faxios": "workspace:*",
