@@ -10,6 +10,8 @@ exclude = [
   '^https?://(localhost|127\.0\.0\.1)',
   '^https?://([a-z0-9-]+\.)?example\.(com|org|net)',
   '^file://.*/pages/',
+  # npm's website answers 403 to GitHub Actions runners.
+  '^https?://(www\.)?npmjs\.(com|org)/',
 ]
 exclude_path = [
   # Copied from the axios ecosystem; rewrite or delete it in #188.
