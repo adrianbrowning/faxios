@@ -3,6 +3,7 @@ import { getEventListeners } from "node:events";
 import { describe, expectTypeOf, it } from "vitest";
 import faxios, { CanceledError, FaxiosError, FaxiosHeaders } from "#src/index.js";
 import type { FaxiosInstance, FaxiosMiddleware, FaxiosPlugin, FaxiosResponse } from "#src/index.js";
+import { timing } from "#src/lib/plugins/timing.js";
 
 const URL = "http://localhost/test";
 
@@ -377,6 +378,31 @@ describe("core::middleware", () => {
     await parent.create().get(URL);
 
     assert.deepStrictEqual(log, []);
+  });
+
+  describe("middleware that resolves without a response", () => {
+    const forgetsReturn: FaxiosMiddleware = async (ctx, next) => {
+      await next(ctx);
+      return undefined as unknown as FaxiosResponse;
+    };
+    const isMissingResponse = (err: unknown) => err instanceof FaxiosError
+      && err.code === FaxiosError.ERR_BAD_RESPONSE
+      && /forget to return next\(ctx\)/.test(err.message);
+
+    it("rejects with ERR_BAD_RESPONSE", async () => {
+      const api = faxios.create({ env: { fetch: jsonFetch() } }).use(forgetsReturn);
+      await assert.rejects(api.get(URL), isMissingResponse);
+    });
+
+    it("rejects with ERR_BAD_RESPONSE before an outer timing plugin reads the response", async () => {
+      const events: Array<{ error?: unknown; }> = [];
+      const api = faxios.create({ env: { fetch: jsonFetch() } })
+        .use(timing(event => events.push(event)))
+        .use(forgetsReturn);
+      await assert.rejects(api.get(URL), isMissingResponse);
+      assert.strictEqual(events.length, 1);
+      assert.ok(isMissingResponse(events[0]!.error));
+    });
   });
 
   describe("cancellation", () => {

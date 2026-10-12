@@ -3,7 +3,7 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "c1093830d80c1b40b09affb5ef87222fab305f4e70313490852ae088d0caaadc",
+      "fingerprint": "fbb8a6e4542573d48ad80a2ee3a1e9c8bc865ffde4ab67f4283371dd02cd178a",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "c0bb05f55c5ab74840a93bc6f2674de07806acf5c33ce33afd34a4ac49492f07",
@@ -12,7 +12,7 @@
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
         "packages/lib/src/lib/adapters/fetch.ts": "7df1044dbd292343c796162d3a26822df85dda3b032998cfa6c852ab47d3d99d",
-        "packages/lib/src/lib/core/Faxios.ts": "9dfdeb2e83366a0c1b38cea2d8c0090dcf2ed0054d5abcc0c224805ba5270357",
+        "packages/lib/src/lib/core/Faxios.ts": "f2439a53486213e0556706e620dc7112c4d2f528d7b5dce3d422a1f98f8df322",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "97e25da79a42da871a80b630101563758ca5df332aee2320d13bcaf0ea8faee5",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
@@ -23,25 +23,25 @@
         "packages/lib/src/lib/helpers/composeSignals.ts": "9c09d5fe23395e8af8b9c62efd641405ea2832f224b3653f70ef3ee6b408f6f5",
         "packages/lib/src/lib/plugins/authBearer.ts": "6257fa773e865ed38ef7bdcc49c6fdb6034828aceaaea63e913a3e908172af8c",
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
-        "packages/lib/src/lib/plugins/retry.ts": "4e0ed48eeecbb246e66b046530c688265b2b987bdf4cf1cdb81148471090db3c",
+        "packages/lib/src/lib/plugins/retry.ts": "364be9bf5faabee17b87fbdc3ebec9f6c2074fc14335c1d6c352c63f97d799df",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
         "packages/lib/src/lib/types.ts": "e9f9fe1c8e31f5f9008f8d2fed18de12dea7273f846dd7d392ed90c5ceafedb7",
         "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
-        "packages/tests/unit/core/middleware.test.ts": "106d605207a1e7754baedd1565a559e973bda954b6e3970fac54d0da69116e7f",
+        "packages/tests/unit/core/middleware.test.ts": "5022de5703b06d9e3ff6dced4fac3876e0ffd61ea06d75c4b16a6dbde2f22f88",
         "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
-        "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
+        "packages/tests/unit/plugins/retry.test.ts": "34b0ff543162db94d4c4628381ef80492c4d6ca0a5bc2b04cfe9b235a9d577cc",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
+      "head": "90ed9eece075db8a379599d1faaeb20bc93f941b",
       "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "reason": "Skill describes Retry-After and next(ctx) at a level these patch fixes don't change; malformed headers and missing returns were bugs.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/buildFullPath.ts, packages/lib/src/lib/core/mergeConfig.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/core/middleware.test.ts, packages/tests/unit/plugins/retry.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "dde881739838812f0f6758ab4e8211db66995da95bc8d04dd1c83595f3be3ef3",
+      "fingerprint": "60ef6759e113d8c54ece89ffd1e562f7e44cd0952d99d595afbd54a491153d1e",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
@@ -53,7 +53,7 @@
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
         "packages/lib/src/lib/adapters/fetch.ts": "7df1044dbd292343c796162d3a26822df85dda3b032998cfa6c852ab47d3d99d",
-        "packages/lib/src/lib/core/Faxios.ts": "9dfdeb2e83366a0c1b38cea2d8c0090dcf2ed0054d5abcc0c224805ba5270357",
+        "packages/lib/src/lib/core/Faxios.ts": "f2439a53486213e0556706e620dc7112c4d2f528d7b5dce3d422a1f98f8df322",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "97e25da79a42da871a80b630101563758ca5df332aee2320d13bcaf0ea8faee5",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
@@ -64,21 +64,21 @@
         "packages/lib/src/lib/helpers/composeSignals.ts": "9c09d5fe23395e8af8b9c62efd641405ea2832f224b3653f70ef3ee6b408f6f5",
         "packages/lib/src/lib/plugins/authBearer.ts": "6257fa773e865ed38ef7bdcc49c6fdb6034828aceaaea63e913a3e908172af8c",
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
-        "packages/lib/src/lib/plugins/retry.ts": "4e0ed48eeecbb246e66b046530c688265b2b987bdf4cf1cdb81148471090db3c",
+        "packages/lib/src/lib/plugins/retry.ts": "364be9bf5faabee17b87fbdc3ebec9f6c2074fc14335c1d6c352c63f97d799df",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
         "packages/lib/src/lib/types.ts": "e9f9fe1c8e31f5f9008f8d2fed18de12dea7273f846dd7d392ed90c5ceafedb7",
         "packages/tests/unit/api.test.ts": "f9f36b8d6ee859fc99bc0653d4d8cf6c8158c3fcff488ec503954222f077176e",
-        "packages/tests/unit/core/middleware.test.ts": "106d605207a1e7754baedd1565a559e973bda954b6e3970fac54d0da69116e7f",
+        "packages/tests/unit/core/middleware.test.ts": "5022de5703b06d9e3ff6dced4fac3876e0ffd61ea06d75c4b16a6dbde2f22f88",
         "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
-        "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
+        "packages/tests/unit/plugins/retry.test.ts": "34b0ff543162db94d4c4628381ef80492c4d6ca0a5bc2b04cfe9b235a9d577cc",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
+      "head": "90ed9eece075db8a379599d1faaeb20bc93f941b",
       "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "reason": "Skill describes Retry-After and next(ctx) at a level these patch fixes don't change; malformed headers and missing returns were bugs.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/buildFullPath.ts, packages/lib/src/lib/core/mergeConfig.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/core/middleware.test.ts, packages/tests/unit/plugins/retry.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "source:knip.json": {
@@ -254,15 +254,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "6e217c2923121975787f55b6d93b02fe8aaedc18f8f4e45df7395f636e837fb7",
+      "fingerprint": "b824854f8b151ccdea16205a5d8ee0967affacff1243f66e900d2ebcafa2bcc5",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "bf9412e7099f57e7332f7d2c61f07837f9f707876be08a0e21806de882a6c43f"
+        "packages/docs/pages/advanced/middleware.md": "85360a1947dabbb5d479261f4b28a7930989aa2c3e104dafda8cca41c916da7b"
       },
-      "head": "466184284f2ed349a4f774209812095d3e6b3647",
-      "outcome": "updated",
-      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
+      "head": "90ed9eece075db8a379599d1faaeb20bc93f941b",
+      "outcome": "no-change",
+      "reason": "Skill describes Retry-After and next(ctx) at a level these patch fixes don't change; malformed headers and missing returns were bugs.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at 466184284f2ed349a4f774209812095d3e6b3647"
+        "Changed: packages/docs/pages/advanced/middleware.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
@@ -290,15 +290,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
-      "fingerprint": "0ea677c2ed7a35857a57b4ba2cb5deefaf949ebb939b9fb48412de0579d65057",
+      "fingerprint": "0fc64291d7304ee8e19c34506e35a4cd2d4f72bd40f4ef97ea72b0b93a268456",
       "snapshot": {
-        "packages/docs/pages/advanced/retry.md": "4b9e63814a774a7c8c588c41c7d05064a8a1b6c4d7cbf773df362be1004376be"
+        "packages/docs/pages/advanced/retry.md": "7a47e5d65f7bda4f3db478ec23a78579895e564b731de14e2c4f4cca4a0ce311"
       },
-      "head": "466184284f2ed349a4f774209812095d3e6b3647",
-      "outcome": "updated",
-      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
+      "head": "90ed9eece075db8a379599d1faaeb20bc93f941b",
+      "outcome": "no-change",
+      "reason": "Skill describes Retry-After and next(ctx) at a level these patch fixes don't change; malformed headers and missing returns were bugs.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/retry.md at 466184284f2ed349a4f774209812095d3e6b3647"
+        "Changed: packages/docs/pages/advanced/retry.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "source:packages/docs/pages/advanced/schema-validation.md": {
@@ -3999,6 +3999,30 @@
       "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
       "evidence": [
         "Changed: packages/tests/smoke/deno/types/consumer.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+      ]
+    },
+    "source:.bumpy/middleware-missing-response.md": {
+      "fingerprint": "72e55f0f685719894391b0e0d80de64cd8e6e81b91522e4f9d3979a2562a64fe",
+      "snapshot": {
+        ".bumpy/middleware-missing-response.md": "ec9ca6625dd27e63ac4b178a38eddb88a2631ff7853b114dbbb3cfdc709e340c"
+      },
+      "head": "90ed9eece075db8a379599d1faaeb20bc93f941b",
+      "outcome": "no-change",
+      "reason": "Skill describes Retry-After and next(ctx) at a level these patch fixes don't change; malformed headers and missing returns were bugs.",
+      "evidence": [
+        "Changed: .bumpy/middleware-missing-response.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:.bumpy/retry-after-strict-parsing.md": {
+      "fingerprint": "5d95e693cc19a5761a446013c8f5bc630d8edcd8a20c8120624edf76fd2a53f7",
+      "snapshot": {
+        ".bumpy/retry-after-strict-parsing.md": "d5409d41bc235563854662689271cc558c41dfc2155dc10f11ac17c6c9193ac7"
+      },
+      "head": "90ed9eece075db8a379599d1faaeb20bc93f941b",
+      "outcome": "no-change",
+      "reason": "Skill describes Retry-After and next(ctx) at a level these patch fixes don't change; malformed headers and missing returns were bugs.",
+      "evidence": [
+        "Changed: .bumpy/retry-after-strict-parsing.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     }
   }

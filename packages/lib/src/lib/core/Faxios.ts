@@ -156,7 +156,22 @@ type MiddlewareEntry = {
 function composeMiddleware(entries: ReadonlyArray<MiddlewareEntry>, dispatch: AnyContextNext): AnyContextNext {
   // Plain closures, no async wrapper: a middleware that calls next() before awaiting reaches the
   // adapter in the same tick, exactly as a request without middleware does.
-  return entries.reduceRight<AnyContextNext>((next, entry) => ctx => entry.run(ctx, next), dispatch);
+  // Each middleware's result is checked before the one outside it sees it, so a middleware that
+  // forgets `return next(ctx)` fails with a coded error instead of crashing the next one out.
+  return entries.reduceRight<AnyContextNext>(
+    (next, entry) => ctx => Promise.resolve(entry.run(ctx, next)).then(response => checkMiddlewareResponse(response, ctx.config)),
+    dispatch
+  );
+}
+
+function checkMiddlewareResponse(response: unknown, config: InternalFaxiosRequestConfig): FaxiosResponse {
+  // Only a missing result is rejected: a middleware may return its own response-shaped object.
+  if (utils.isObject(response)) return response as FaxiosResponse;
+  throw new FaxiosError(
+    "Middleware resolved without a response; did you forget to return next(ctx)?",
+    FaxiosError.ERR_BAD_RESPONSE,
+    config
+  );
 }
 
 // Each dispatch works on its own copy, so dispatch's in-place writes (path-param substitution,

@@ -98,7 +98,7 @@ await api.get("/users");
 
 ### `Retry-After`
 
-On a 429 or 503 with a `Retry-After` header, faxios waits exactly what the header asks for. The header may be delay-seconds or an HTTP date; a date in the past retries at once. Neither jitter nor `maxDelay` applies to this wait.
+On a 429 or 503 with a `Retry-After` header, faxios waits exactly what the header asks for. The header may be delay-seconds (digits only) or an HTTP date in one of the three RFC 9110 forms (`Sun, 06 Nov 1994 08:49:37 GMT`, `Sunday, 06-Nov-94 08:49:37 GMT` or `Sun Nov  6 08:49:37 1994`); a date in the past retries at once. Any other value, such as `1.5`, `-1` or `12/25`, is ignored and the computed backoff applies. Neither jitter nor `maxDelay` applies to this wait.
 
 If the header asks for longer than `maxRetryAfter` (default 5 minutes), faxios doesn't wait: it rethrows the response's error without retrying.
 

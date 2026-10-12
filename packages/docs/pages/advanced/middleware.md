@@ -238,6 +238,8 @@ await api.get("/me");
 
 ### Returning without `next` skips the request
 
+A middleware must resolve to a response. One that awaits `next(ctx)` but forgets to return the result rejects with a `FaxiosError` with code `ERR_BAD_RESPONSE`, so the middleware outside it never sees `undefined`.
+
 A middleware that returns a response without calling `next` sends nothing. Dispatch doesn't run at all, so neither do the schema checks. The [`cache()` example](#typed-request-options) below works this way.
 
 ### Cancellation
