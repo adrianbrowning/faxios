@@ -1,12 +1,12 @@
 # TypeScript
 
-`faxios` ships TypeScript definitions in the npm package via `index.d.ts`, so type checking and editor support work out of the box.
+`faxios` ships TypeScript definitions in the npm package via `index.d.ts`, so type checking and editor support work out of the box. They require TypeScript 5.4 or greater, because they use `NoInfer`; CI type-checks a consumer project against the published declarations with TypeScript 5.4.
 
 ## Module resolution caveats
 
 faxios is published as ESM only, so there are a few configuration caveats:
 
-- The recommended setting is `"moduleResolution": "node16"` (implied by `"module": "node16"`) or `"bundler"`. `node16` requires TypeScript 4.7 or greater.
+- The recommended setting is `"moduleResolution": "node16"` (implied by `"module": "node16"`) or `"bundler"`.
 - If you use ESM, your settings should be fine.
 - There is no CJS build and no `index.d.cts`; load faxios with `import`.
 

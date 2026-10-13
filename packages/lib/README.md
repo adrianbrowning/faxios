@@ -16,7 +16,7 @@
 - Strictly typed request `headers`, with suggestions for common header names and `Content-Type` values.
 - Typed endpoint builders: `faxios.define()` and `faxios.route()`.
 - Client-side protection against Cross-Site Request Forgery.
-- ESM-only, with TypeScript definitions included.
+- ESM-only, with TypeScript definitions included (TypeScript 5.4 or greater).
 
 ## Installing
 

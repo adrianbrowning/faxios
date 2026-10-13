@@ -184,6 +184,10 @@ The `get<Header>` shortcuts take the parsers `get()` takes (`true`, a `RegExp` o
 
 `define()` and `route()` endpoints without a schema now accept `pathParams`, `params` and `data` per call, `env.Response` accepts the global `Response`, and `define()`/`route()` infer `response.data` from a schema with no `~standard.types` field. These only remove type errors.
 
+### o) TypeScript 5.4 or greater
+
+The type declarations use `NoInfer`, which TypeScript 5.4 added, so faxios needs TypeScript 5.4 or greater. The docs used to say 4.7; on 4.7 to 5.3 the compiler reports `Cannot find name 'NoInfer'` in faxios's own `.d.ts` files. Upgrade TypeScript to 5.4 or later.
+
 ---
 
 ## Overview

@@ -148,5 +148,6 @@ try {
 
 faxios is published as ESM only, so there are a few caveats depending on your setup:
 
-- The recommended setting is `"moduleResolution": "node16"` (implied by `"module": "node16"`). This requires TypeScript 4.7 or greater.
+- faxios requires TypeScript 5.4 or greater: its type declarations use `NoInfer`, which TypeScript 5.4 added. Older compilers report `Cannot find name 'NoInfer'` in faxios's own `.d.ts` files.
+- The recommended setting is `"moduleResolution": "node16"` (implied by `"module": "node16"`).
 - There is no CJS build and no `index.d.cts`; load faxios with `import`.
