@@ -106,6 +106,7 @@ Every request gets a fresh `ctx`, built after the request config has been merged
 - `ctx.config` is the merged request config. `ctx.config.headers` is a `FaxiosHeaders`, so `.set()`, `.has()` and `.delete()` work before you call `next`. You can also assign a new `FaxiosHeaders` to it, but not a plain object.
 - `ctx.state` is a null-prototype object for this request only. Middleware can use it to pass values to each other.
 - `ctx.capabilities` holds the values plugins [provide](#capabilities). It is shared by every request of the instance.
+- `ctx.attempt` is the try the context leads to, counting from 1. It starts at 1 for every request; [`retry`](#retry) sets it before each try, and a retry middleware of your own [can too](#calling-next-again-retries).
 
 ```ts
 import faxios from "@gcmdev/faxios";
@@ -153,13 +154,14 @@ await api.get("/users/{id}", { pathParams: { id: "7" } });
 
 ### Calling `next` again retries
 
-Because every call starts from the same input, calling `next` again sends the request again. This middleware retries network errors up to two more times:
+Because every call starts from the same input, calling `next` again sends the request again. This middleware retries network errors up to two more times, and sets `ctx.attempt` before each try so middleware after it, such as [`timing`](#timing), knows which try it is on:
 
 ```ts
 import faxios, { FaxiosError, isFaxiosError } from "@gcmdev/faxios";
 
 const api = faxios.create({ baseURL: "https://api.example.com" }).use(async (ctx, next) => {
   for (let attempt = 1; ; attempt++) {
+    ctx.attempt = attempt;
     try {
       return await next(ctx);
     } catch (err) {
@@ -170,6 +172,8 @@ const api = faxios.create({ baseURL: "https://api.example.com" }).use(async (ctx
 
 await api.get("/users");
 ```
+
+Set `ctx.attempt` on the context you pass to `next`. Middleware installed before yours reads the same object, so after `next` settles it sees the last try's number, unless a middleware between you passes `next` a copy of the context.
 
 For real use, install the built-in [`retry`](#retry) plugin, which adds backoff, `Retry-After` support and a per-request option.
 
@@ -270,7 +274,7 @@ Requests that are already running keep the middleware and capabilities they star
 
 ## Writing a plugin
 
-A plugin is middleware with a name, plus optional capabilities it provides to other plugins. Build one with `definePlugin`, the only export of `@gcmdev/faxios/plugins`:
+A plugin is middleware with a name, plus optional capabilities it provides to other plugins. Build one with `definePlugin`, the only export of `@gcmdev/faxios/plugins`. The built-in plugins import only `@gcmdev/faxios` and `@gcmdev/faxios/plugins`, so a plugin of your own can do anything they do:
 
 ```ts
 import faxios from "@gcmdev/faxios";
@@ -520,18 +524,18 @@ See [Retry & error recovery](/pages/advanced/retry) for every option.
 
 `timing(onTiming)` measures the time around `next` and calls `onTiming` once per request with a `TimingEvent`:
 
-- on success: `{ method, url, attempt?, durationMs, status }`
-- on failure: `{ method, url, attempt?, durationMs, error }`, where `error` is `{ code, message, status }`, and the request's error is then rethrown
+- on success: `{ method, url, attempt, durationMs, status }`
+- on failure: `{ method, url, attempt, durationMs, error }`, where `error` is `{ code, message, status }`, and the request's error is then rethrown
 
 `method` is upper-cased. `url` is the full URL with `baseURL` applied, and with any `user:pass@`, the query string and the fragment stripped, since those often carry secrets. A URL with `pathParams` is reported by its template as the caller wrote it (e.g. `/users/{id}`), because path params are substituted at dispatch; this also keeps metric labels low-cardinality. `durationMs` comes from `performance.now()` where available. The response is returned unchanged.
 
 `error.code` is the `FaxiosError` code (such as `"ERR_NETWORK"` or `"ECONNABORTED"`), or the thrown error's own string `code`; `error.status` is the HTTP status when a response arrived. Each is `undefined` otherwise. The event carries no config, headers or body, not even inside `error`: the error a request rejects with holds its config, and so its credentials (`Authorization` headers, tokens in query strings, request bodies), which would then end up in logs. So the event is safe to log. To inspect the full error, catch the request's rejection instead.
 
-`attempt` comes from `retry`:
+`attempt` is the context's [`ctx.attempt`](#the-context) once the request settles:
 
 - installed after `retry`, `timing` reports each try with its own number;
-- installed before `retry`, one event covers every try and carries the final try's number;
-- without `retry`, the key is absent.
+- installed before `retry`, one event covers every try and carries the final try's number, as long as no middleware between them passes `next` a copy of the context (`authBearer` does, so install it after `retry`);
+- without `retry`, it is 1.
 
 If `onTiming` throws while reporting a failure, the request still rejects with its own error. If it throws while reporting a success, the request rejects with `onTiming`'s error.
 

@@ -1,13 +1,9 @@
 // @ts-self-types="./authBearer.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import buildFullPath from "../core/buildFullPath.js";
-import FaxiosError from "../core/FaxiosError.js";
-import FaxiosHeaders from "../core/FaxiosHeaders.js";
-import isAbsoluteURL from "../helpers/isAbsoluteURL.js";
-import validator from "../helpers/validator.js";
-import type { FaxiosPlugin, InternalFaxiosRequestConfig } from "../types.js";
-import utils from "../utils.js";
+import { FaxiosError, FaxiosHeaders } from "../../index.js";
+import type { FaxiosPlugin, InternalFaxiosRequestConfig } from "../../index.js";
 import { definePlugin } from "./definePlugin.js";
+import { assertOptions, fullPath, isAbsoluteURL, isBoolean, own } from "./shared.js";
 
 /** What `authBearer` provides to plugins installed after it. */
 export type AuthBearerCapability = { auth: { getToken: () => Promise<string>; }; };
@@ -43,14 +39,11 @@ function originOf(value: unknown): null | string {
 }
 
 const optionsSchema = {
-  overwrite: validator.validators["boolean"],
+  overwrite: isBoolean,
   scheme: (value: unknown) => (typeof value === "string" && !/[\r\n]/.test(value)) || "a string without line breaks",
   header: (value: unknown) => (typeof value === "string" && TOKEN.test(value)) || "a header name",
   origins: (value: unknown) => (Array.isArray(value) && value.every(o => originOf(o) !== null)) || "an array of origins such as \"https://api.example.com\"",
 };
-
-const own = <T extends object, K extends keyof T>(source: T, key: K): T[K] | undefined =>
-  (utils.hasOwnProp(source, key) ? source[key] : undefined);
 
 // Resolves a relative URL the way a page would, without ever matching a real origin, so a URL
 // that leaves the page (`//host`, `/\host`) is told apart from one that stays on it.
@@ -74,7 +67,7 @@ function pageHref(): string | undefined {
 
 function sendsTokenTo(config: InternalFaxiosRequestConfig, origins: null | ReadonlyArray<string>): boolean {
   const baseURL = own(config, "baseURL");
-  const url = buildFullPath(baseURL, own(config, "url"), own(config, "allowAbsoluteUrls"), config);
+  const url = fullPath(config);
   if (origins) {
     const origin = resolvedOrigin(url, isAbsoluteURL(url) ? undefined : pageHref());
     return origin !== null && origins.includes(origin);
@@ -104,12 +97,7 @@ export function authBearer(getToken: () => Promise<string> | string, options: Au
   if (typeof getToken !== "function") {
     throw new FaxiosError("authBearer: getToken must be a function", FaxiosError.ERR_BAD_OPTION_VALUE);
   }
-  // Callers without TypeScript can pass anything.
-  const given: unknown = options;
-  if (given === null || typeof given !== "object") {
-    throw new FaxiosError("authBearer options must be an object", FaxiosError.ERR_BAD_OPTION_VALUE);
-  }
-  validator.assertOptions(options, optionsSchema, false);
+  assertOptions(options, optionsSchema, "authBearer");
   const overwrite = own(options, "overwrite") ?? false;
   const scheme = own(options, "scheme") ?? "Bearer";
   const header = own(options, "header") ?? "Authorization";
@@ -129,7 +117,7 @@ export function authBearer(getToken: () => Promise<string> | string, options: Au
       const config = { ...ctx.config };
       config.headers = headers;
       const fetchOptions = own(config, "fetchOptions");
-      if (customHeader && (!fetchOptions || !utils.hasOwnProp(fetchOptions, "redirect"))) {
+      if (customHeader && (!fetchOptions || !Object.hasOwn(fetchOptions, "redirect"))) {
         config.fetchOptions = { ...fetchOptions, redirect: "error" };
       }
       return next({ ...ctx, config });

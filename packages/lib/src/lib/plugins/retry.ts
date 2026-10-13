@@ -1,18 +1,12 @@
 // @ts-self-types="./retry.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import canceledFromSignal from "../cancel/canceledFromSignal.js";
-import isCancel from "../cancel/isCancel.js";
-import { MAX_TIMER_MS } from "../core/assertTimeout.js";
-import FaxiosError from "../core/FaxiosError.js";
-import validator from "../helpers/validator.js";
-import type { FaxiosContext, FaxiosPlugin, FaxiosRequestConfig, GenericAbortSignal, InternalFaxiosRequestConfig, Method } from "../types.js";
-import utils from "../utils.js";
-import { RETRY_ATTEMPT } from "./attempt.js";
+import { CanceledError, FaxiosError, isCancel } from "../../index.js";
+import type { FaxiosContext, FaxiosPlugin, FaxiosRequestConfig, InternalFaxiosRequestConfig, Method } from "../../index.js";
 import { definePlugin } from "./definePlugin.js";
+import { assertOptions, isBoolean, isFunction, own } from "./shared.js";
 
-// Config values are read as own properties only (repo rule for possibly untrusted input).
-const ownValue = <T extends object, K extends keyof T>(source: T, key: K): T[K] | undefined =>
-  (utils.hasOwnProp(source, key) ? source[key] : undefined);
+// setTimeout fires at once for anything longer: it keeps the delay as a signed 32-bit integer.
+const MAX_TIMER_MS = 2_147_483_647;
 
 const isWait = (ms: unknown): ms is number => typeof ms === "number" && Number.isFinite(ms) && ms >= 0;
 
@@ -27,15 +21,15 @@ const isStatus = (value: unknown) => Number.isInteger(value) && (value as number
 // Bounded on purpose: NaN or Infinity would make a failing request loop forever.
 const optionsSchema = {
   attempts: (value: unknown) => (Number.isInteger(value) && (value as number) >= 1) || "an integer of at least 1",
-  retryOn: validator.validators["function"],
+  retryOn: isFunction,
   delay: (value: unknown) => isWait(value) || typeof value === "function" || "a finite number of at least 0 or a function",
   methods: (value: unknown) => (Array.isArray(value) && value.every(m => typeof m === "string" && TOKEN.test(m))) || "an array of HTTP method names",
   statuses: (value: unknown) => (Array.isArray(value) && value.every(isStatus)) || "an array of HTTP status codes (100-599)",
   maxRetryAfter: (value: unknown) => isTimerWait(value) || `a number of milliseconds from 0 to ${MAX_TIMER_MS}`,
   maxDelay: (value: unknown) => isTimerWait(value) || `a number of milliseconds from 0 to ${MAX_TIMER_MS}`,
   jitter: (value: unknown) => value === "full" || value === "none" || "\"full\" or \"none\"",
-  respectRetryAfter: validator.validators["boolean"],
-  onRetry: validator.validators["function"],
+  respectRetryAfter: isBoolean,
+  onRetry: isFunction,
 };
 
 // Transient failures: timeout, rate limit, and server errors that may clear on their own. 501 and
@@ -50,10 +44,7 @@ const IDEMPOTENT_METHODS: ReadonlyArray<string> = [ "get", "head", "options", "p
 
 // One check for both the factory argument and a per-request override.
 function assertRetryOptions(value: unknown, config?: InternalFaxiosRequestConfig): asserts value is RetryOptions {
-  if (value === null || typeof value !== "object") {
-    throw new FaxiosError("retry options must be an object", FaxiosError.ERR_BAD_OPTION_VALUE, config);
-  }
-  validator.assertOptions(value, optionsSchema, false);
+  assertOptions(value, optionsSchema, "retry", config);
 }
 
 export type RetryOptions = {
@@ -154,19 +145,29 @@ const doublingDelay = (attempt: number) => 100 * 2 ** (attempt - 1);
 // A stream is consumed by the first try, so sending it again would send nothing.
 // The same stream checks the fetch adapter uses: web ReadableStreams and Node-style pipe streams.
 function canReplay(data: unknown): boolean {
-  return !utils.isReadableStream?.(data) && !utils.isStream(data);
+  if (Object.prototype.toString.call(data) === "[object ReadableStream]") return false;
+  return typeof data !== "object" || data === null || !("pipe" in data) || typeof data.pipe !== "function";
 }
 
-function wait(ms: number, signal: AbortSignal | GenericAbortSignal | undefined, config: FaxiosRequestConfig): Promise<void> {
+// The error dispatch rejects an aborted request with: the reason's message, the reason as cause.
+function canceledFrom(signal: { readonly aborted: boolean; reason?: unknown; }, config: FaxiosRequestConfig): CanceledError {
+  const reason: unknown = signal.reason;
+  if (!(reason instanceof Error)) return new CanceledError(typeof reason === "string" ? reason : null, config);
+  const error = new CanceledError(reason.message, config);
+  error.cause = reason;
+  return error;
+}
+
+function wait(ms: number, signal: FaxiosRequestConfig["signal"], config: FaxiosRequestConfig): Promise<void> {
   return new Promise((resolve, reject) => {
     if (signal?.aborted) {
-      reject(canceledFromSignal(signal, config));
+      reject(canceledFrom(signal, config));
       return;
     }
     const onAbort = () => {
       clearTimeout(timer);
       signal?.removeEventListener?.("abort", onAbort);
-      reject(canceledFromSignal(signal!, config));
+      reject(canceledFrom(signal!, config));
     };
     const timer = setTimeout(() => {
       signal?.removeEventListener?.("abort", onAbort);
@@ -179,9 +180,9 @@ function wait(ms: number, signal: AbortSignal | GenericAbortSignal | undefined, 
 // Each list is lower-cased right after it is validated: the plugin's once, a per-request override's
 // on the request that carries it.
 function retriesMethod(config: InternalFaxiosRequestConfig, perRequest: RetryOptions | undefined, pluginMethods: ReadonlyArray<string> | undefined): boolean {
-  const requestMethods = perRequest ? ownValue(perRequest, "methods")?.map(m => m.toLowerCase()) : undefined;
+  const requestMethods = perRequest ? own(perRequest, "methods")?.map(m => m.toLowerCase()) : undefined;
   const methods = requestMethods ?? pluginMethods ?? IDEMPOTENT_METHODS;
-  return methods.includes(String(ownValue(config, "method") ?? "get").toLowerCase());
+  return methods.includes(String(own(config, "method") ?? "get").toLowerCase());
 }
 
 type Policy = {
@@ -197,7 +198,7 @@ type Policy = {
 
 // Per field, request first: no merged object, and only own properties count.
 function resolvePolicy(options: RetryOptions, perRequest: RetryOptions | undefined): Policy {
-  const setting = <K extends keyof RetryOptions>(key: K) => (perRequest ? ownValue(perRequest, key) : undefined) ?? ownValue(options, key);
+  const setting = <K extends keyof RetryOptions>(key: K) => (perRequest ? own(perRequest, key) : undefined) ?? own(options, key);
   const statuses = setting("statuses") ?? DEFAULT_STATUSES;
   return {
     attempts: setting("attempts") ?? 3,
@@ -234,12 +235,12 @@ function waitBeforeRetry(error: unknown, attempt: number, policy: Policy, config
 export function retry(options: RetryOptions = {}): FaxiosPlugin<{ options: RetryRequestOptions; }> {
   assertRetryOptions(options);
   // Lower-cased once here, so requests compare names without re-casing the list.
-  const pluginMethods = ownValue(options, "methods")?.map(m => m.toLowerCase());
+  const pluginMethods = own(options, "methods")?.map(m => m.toLowerCase());
   return definePlugin({
     name: "retry",
     options: { retry: true },
     middleware: async (ctx: FaxiosContext<RetryRequestOptions>, next) => {
-      const perRequest = ownValue(ctx.config, "retry");
+      const perRequest = own(ctx.config, "retry");
       if (perRequest === false) return next(ctx);
       if (perRequest !== undefined) assertRetryOptions(perRequest, ctx.config);
       const policy = resolvePolicy(options, perRequest);
@@ -247,20 +248,20 @@ export function retry(options: RetryOptions = {}): FaxiosPlugin<{ options: Retry
 
       // Tries run one after another on purpose: each must finish before deciding on the next.
       for (let attempt = 1; ; attempt++) {
-        // For timing: the try number, read after next() settles.
-        ctx.state[RETRY_ATTEMPT] = attempt;
+        // Read by middleware on either side of this one, such as timing.
+        ctx.attempt = attempt;
         try {
           // eslint-disable-next-line no-await-in-loop -- see above
           return await next(ctx);
         }
         catch (error) {
-          if (attempt >= policy.attempts || !canReplay(ownValue(ctx.config, "data")) || !policy.retryOn(error, attempt)) throw error;
+          if (attempt >= policy.attempts || !canReplay(own(ctx.config, "data")) || !policy.retryOn(error, attempt)) throw error;
           const ms = waitBeforeRetry(error, attempt, policy, ctx.config);
           if (ms === undefined) throw error;
           // A throwing hook rejects the request with its own error, before any wait.
           policy.onRetry?.(error, attempt, ms);
           // eslint-disable-next-line no-await-in-loop -- see above
-          await wait(ms, ownValue(ctx.config, "signal"), ctx.config);
+          await wait(ms, own(ctx.config, "signal"), ctx.config);
         }
       }
     },

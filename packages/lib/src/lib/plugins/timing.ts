@@ -1,10 +1,8 @@
 // @ts-self-types="./timing.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import buildFullPath from "../core/buildFullPath.js";
-import type { FaxiosContext, FaxiosPlugin } from "../types.js";
-import utils from "../utils.js";
-import { RETRY_ATTEMPT } from "./attempt.js";
+import type { FaxiosContext, FaxiosPlugin } from "../../index.js";
 import { definePlugin } from "./definePlugin.js";
+import { fullPath, own } from "./shared.js";
 
 /**
  * What `timing` reports once per request: `status` on success, `error` on failure. No config,
@@ -12,10 +10,10 @@ import { definePlugin } from "./definePlugin.js";
  */
 export type TimingEvent = {
   /**
-   * The try number from `retry`: each try's when installed after it, the final try's when
-   * installed before it. Absent without `retry`.
+   * The try number, `ctx.attempt`: 1 without `retry`. Installed after `retry`, each try's;
+   * installed before it, the last try's.
    */
-  attempt?: number;
+  attempt: number;
   durationMs: number;
   /** The request method, upper-cased (`"GET"`). */
   method: string;
@@ -31,32 +29,35 @@ type TimingError = { code: string | undefined; message: string; status: number |
 
 const now = () => (typeof performance === "undefined" ? Date.now() : performance.now());
 
-const own = <T extends object, K extends keyof T>(source: T, key: K): T[K] | undefined =>
-  (utils.hasOwnProp(source, key) ? source[key] : undefined);
-
 // Up to the `@` of a URL's user info: after the scheme (`http:`, with any slashes) or after `//`.
 // Backslashes count as slashes, as they do in the WHATWG URL parser.
 const USER_INFO = /^([a-z][a-z\d+\-.]*:[/\\]*|[/\\]{2})[^/\\?#]*@/i;
 
+// A property the error or its class defines, never one only Object.prototype supplies.
+function errorProp(error: unknown, key: "code" | "status"): unknown {
+  if (typeof error !== "object" || error === null) return undefined;
+  for (let o: null | object = error; o !== null && o !== Object.prototype; o = Object.getPrototypeOf(o) as null | object) {
+    if (Object.hasOwn(o, key)) return Reflect.get(error, key);
+  }
+  return undefined;
+}
+
 // Read once the request settles, so a later middleware's changes to the config count. The user
 // info, query and fragment often carry secrets, and they'd make every URL a different metric label.
-function describe({ config, state }: FaxiosContext) {
-  // Typed string, but undefined when the request has neither url nor baseURL.
-  const full: unknown = buildFullPath(own(config, "baseURL"), own(config, "url"), own(config, "allowAbsoluteUrls"));
-  const url = typeof full === "string" ? full : "";
+function describe({ attempt, config }: FaxiosContext) {
+  const url = fullPath(config);
   const end = url.search(/[?#]/);
-  const attempt = state[RETRY_ATTEMPT];
   return {
     method: String(own(config, "method") ?? "get").toUpperCase(),
     url: (end === -1 ? url : url.slice(0, end)).replace(USER_INFO, "$1"),
-    ...(typeof attempt === "number" ? { attempt } : {}),
+    attempt,
   };
 }
 
 // Only the code, message and status: a FaxiosError carries the config, so its headers too.
 function summarize(error: unknown): TimingError {
-  const code = utils.getSafeProp(error, "code");
-  const status = utils.getSafeProp(error, "status");
+  const code = errorProp(error, "code");
+  const status = errorProp(error, "status");
   return {
     code: typeof code === "string" ? code : undefined,
     message: error instanceof Error ? error.message : String(error),

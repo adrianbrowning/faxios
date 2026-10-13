@@ -49,7 +49,7 @@ Paths are relative to `packages/lib/src/lib/`.
 
 - `core/` is faxios domain logic: request dispatch, config merge, `.use()` middleware, headers, errors (`Faxios`, `FaxiosError`, `FaxiosHeaders`).
 - `adapters/fetch.ts` is the only transport, called unconditionally from `core/dispatchRequest.ts`. Custom adapters aren't supported; `config.adapter` is not a valid config field.
-- `plugins/` holds the built-in plugins, each published as its own subpath (`@gcmdev/faxios/plugins/<name>`); `@gcmdev/faxios/plugins` exports `definePlugin` only.
+- `plugins/` holds the built-in plugins, each published as its own subpath (`@gcmdev/faxios/plugins/<name>`); `@gcmdev/faxios/plugins` exports `definePlugin` only. Files in `plugins/` import only the package root (`src/index.ts`) and each other, so a third-party plugin can do anything a built-in one does; `lint:esl` rejects other imports.
 - `helpers/` stays generic and reusable outside faxios; keep request-lifecycle logic out of it.
 
 ## Request Lifecycle

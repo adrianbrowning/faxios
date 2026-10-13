@@ -1,7 +1,7 @@
 // @ts-self-types="./definePlugin.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 // The `@gcmdev/faxios/plugins` entry point. The built-in plugins have their own subpaths.
 
-import type { FaxiosMiddleware, FaxiosPlugin, FaxiosPluginOptionNames } from "../types.js";
+import type { FaxiosMiddleware, FaxiosPlugin, FaxiosPluginOptionNames } from "../../index.js";
 
 // An empty capability or option map adds nothing, so it's the `unknown` an absent slot is.
 type Slot<T> = [keyof T] extends [never] ? unknown : T;

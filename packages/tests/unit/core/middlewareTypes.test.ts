@@ -99,6 +99,20 @@ describe("middleware types", () => {
     void surfaces;
   });
 
+  it("types ctx.attempt as a number middleware can set, and requires it on a context passed to next()", () => {
+    expectTypeOf<FaxiosContext["attempt"]>().toEqualTypeOf<number>();
+    function surfaces(): void {
+      faxios.create().use(async (ctx, next) => {
+        ctx.attempt = ctx.attempt + 1;
+        // @ts-expect-error TS2322 -- the try number is a number
+        ctx.attempt = "2";
+        // @ts-expect-error TS2345 -- a context without attempt isn't a FaxiosContext
+        return next({ config: ctx.config, state: ctx.state, capabilities: ctx.capabilities });
+      });
+    }
+    void surfaces;
+  });
+
   it("accepts plugin options on every config-taking member after use()", () => {
     function surfaces(): void {
       const api = faxios.create().use(cache());

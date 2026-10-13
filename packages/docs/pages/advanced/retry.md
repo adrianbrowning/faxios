@@ -191,6 +191,8 @@ Middleware runs in the order it is installed, so where `retry` sits matters:
 - Install `timing` before `retry` to measure all tries together, or after it to measure each try.
 - Install `retry` before `authBearer` and the token is fetched again on every try.
 
+Before each try, `retry` sets [`ctx.attempt`](/pages/advanced/middleware#the-context) to the try's number, counting from 1. Middleware installed after `retry` reads the current try's number there; `timing` reports it as `event.attempt`.
+
 ```ts
 import faxios from "@gcmdev/faxios";
 import { retry } from "@gcmdev/faxios/plugins/retry";
@@ -232,7 +234,7 @@ try {
 
 ## Writing your own retry middleware
 
-If the plugin's policy doesn't fit, a middleware can call `next` again itself. Each `next()` dispatches its own copy of the config, so calling it twice is safe when the body can be read again, such as a string, an object, a `Blob` or `FormData`. A stream body is used up by the first try, so sending it again rejects with a `FaxiosError` whose code is `ERR_BAD_REQUEST`:
+If the plugin's policy doesn't fit, a middleware can call `next` again itself. Each `next()` dispatches its own copy of the config, so calling it twice is safe when the body can be read again, such as a string, an object, a `Blob` or `FormData`. A stream body is used up by the first try, so sending it again rejects with a `FaxiosError` whose code is `ERR_BAD_REQUEST`. Set `ctx.attempt` before each try, as `retry` does, so `timing` and other middleware see the try number:
 
 ```ts
 import faxios, { FaxiosError } from "@gcmdev/faxios";
@@ -243,6 +245,7 @@ const api = faxios.create({ baseURL: "https://api.example.com" }).use(async (ctx
   } catch (err) {
     // Retry once on a network error
     if (!(err instanceof FaxiosError) || err.code !== FaxiosError.ERR_NETWORK) throw err;
+    ctx.attempt = 2;
     return next(ctx);
   }
 });

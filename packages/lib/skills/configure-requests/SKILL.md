@@ -285,7 +285,8 @@ const api = faxios
 - `ctx.config.headers` is a `FaxiosHeaders`. Mutate it with `.set()`/`.delete()`, or assign
   another `FaxiosHeaders`; never assign a plain object.
 - `ctx.config.method` is always lower-case in middleware: compare with `"post"`, not `"POST"`.
-- Per-request scratch data goes on `ctx.state`.
+- Per-request scratch data goes on `ctx.state`. `ctx.attempt` is the try number (1 unless a
+  retry middleware sets it); a hand-written retry loop sets `ctx.attempt` before each `next(ctx)`.
 
 ### Use the built-in plugins from their subpaths
 
@@ -312,11 +313,12 @@ plugin's request options (such as `retry: false`). Before writing plugin code, r
   `retryOn` replaces the whole default predicate (`statuses`, `ERR_NETWORK`, `ETIMEDOUT`), and a
   `Retry-After` longer than `maxRetryAfter` (default 5 min) rejects without retrying.
   `maxDelay` and `maxRetryAfter` are capped at 2147483647 ms (`ERR_BAD_OPTION_VALUE` above).
-- `timing(onTiming)` reports `{ method, url, attempt?, durationMs, status | error }` with no
+- `timing(onTiming)` reports `{ method, url, attempt, durationMs, status | error }` with no
   config, headers or body; `error` is `{ code, message, status }`, and `url` has no user info or
-  query string and keeps `{param}` placeholders.
+  query string and keeps `{param}` placeholders. `attempt` is `ctx.attempt`: 1 without `retry`.
   Install it before `retry` for one event per call, after it for one event per attempt.
-- To write your own plugin, use `definePlugin` from `@gcmdev/faxios/plugins`. The same
+- To write your own plugin, use `definePlugin` from `@gcmdev/faxios/plugins`. The built-in plugins
+  import only `@gcmdev/faxios` and `@gcmdev/faxios/plugins`, so yours can do what they do. The same
   [plugins](references/plugins.md) reference covers authoring.
 
 ### Customise the transport through fetch, not adapters

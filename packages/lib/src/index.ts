@@ -33,6 +33,7 @@ export type {
   FaxiosMiddleware,
   FaxiosNext,
   FaxiosPlugin,
+  FaxiosPluginOptionNames,
   FaxiosPromise,
   FaxiosRequestConfig,
   FaxiosRequestHeaders,
