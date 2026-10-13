@@ -131,6 +131,10 @@ See [Middleware](https://adrianbrowning.github.io/faxios/pages/advanced/middlewa
 
 Request-config `headers` takes strings, numbers, booleans, `null` and `undefined`. Objects and functions are type errors, so convert other values first: `{ "X-Request-Id": String(id) }`. See [Headers](https://adrianbrowning.github.io/faxios/pages/advanced/headers#header-typing).
 
+### j) Absolute URLs on a `baseURL` instance reject
+
+An instance with a `baseURL` defaults `allowAbsoluteUrls` to `false`. An absolute request `url` on it used to be appended to the base (`https://api.example.com/v1/https://other.example/x`); it now rejects with `ERR_INVALID_URL` before fetch is called, and `getUri()` throws the same error. Set `allowAbsoluteUrls: true` on the instance or the request when the absolute URL is trusted (for example `next`/`Link` URLs from your API), or use an instance without `baseURL`. See [`allowAbsoluteUrls`](https://adrianbrowning.github.io/faxios/pages/advanced/request-config#allowabsoluteurls).
+
 ---
 
 ## Overview

@@ -33,8 +33,8 @@ behaviour outside this list as unverified until the installed types and a test p
 These ports compile and run but behave differently:
 
 1. **Absolute URL on a `baseURL` instance.** Axios sends an absolute request URL as-is. faxios
-   appends it to the instance `baseURL` unless `allowAbsoluteUrls: true` is set on the instance or
-   request. Search ports for instance calls with `http://` or `https://` URLs.
+   rejects it with `ERR_INVALID_URL` when the instance has a `baseURL`, unless
+   `allowAbsoluteUrls: true` is set on the instance or request. Search ports for instance calls with `http://` or `https://` URLs.
 2. **Untyped configs with removed keys.** A config built with spread or `any` keeps `proxy`,
    `adapter` or `httpAgent` and faxios ignores them. The request then goes direct, without the
    proxy or agent the code expected. Delete the keys and move the behaviour to `fetchOptions`.

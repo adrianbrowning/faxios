@@ -362,9 +362,9 @@ export only. Instances from `create()` do not have them; import them by name ins
 4. **HIGH: Checking for `ECONNABORTED` on timeout.** faxios raises `ETIMEDOUT`. Code that checks
    `ECONNABORTED` never matches. Source: `src/lib/helpers/composeSignals.ts`.
 5. **HIGH: Sending an absolute URL through an instance with `baseURL`.** When an instance has a
-   `baseURL` and `allowAbsoluteUrls` is unset, faxios appends even an absolute request URL to the
-   base: `api.get("https://other.example/x")` requests
-   `https://api.example.com/v1/https://other.example/x`. Use a separate instance, or set
+   `baseURL` and `allowAbsoluteUrls` is unset, an absolute request URL rejects with
+   `ERR_INVALID_URL` before fetch: `api.get("https://other.example/x")` fails, and so does
+   `api.getUri({ url: "https://other.example/x" })`. Use a separate instance, or set
    `allowAbsoluteUrls: true` when the absolute URL is trusted. Source:
    `src/lib/core/Faxios.ts` (`resolveAllowAbsoluteUrls`), `src/lib/core/buildFullPath.ts`.
 6. **MEDIUM: Importing plugins from the root.** `import { retry } from "@gcmdev/faxios"` fails and

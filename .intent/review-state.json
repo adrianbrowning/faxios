@@ -3,18 +3,18 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "12709d0c2a2af2d84650e8c44d19f7d287a4d7d9773fbb2b065a8607ed38b646",
+      "fingerprint": "8ad261f6089be313e8c52c727a59d2529c817f769b97a93e3bbceec6b7ded90b",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
+        "MIGRATION_GUIDE.md": "3baba9ea3fee10c0847952dd29c4eba292b18fb26c249d948cd38bff0b93dc6a",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "9ebce05ee93562003511dfbaa7e34fd86f07ec93097419922ce5c8f565d387c3",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
+        "packages/lib/skills/configure-requests/SKILL.md": "d1e8735271b8d12ab9b28a7b4e530f9311528f516f617d8146bcee7b1adcf2fe",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "25f57c39b1a80789f43986053be1ad9ec874224d9fac643728b2e44b0d06102c",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
         "packages/lib/src/lib/adapters/fetch.ts": "483f1d6a9f77ed2aba4ef73ab032125bfda9268711988c517c218fa1595c4130",
         "packages/lib/src/lib/core/Faxios.ts": "e194fd3e6294c964fb0d6076bb786d3203355f437b9a73b304b4b86b4fed2293",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
-        "packages/lib/src/lib/core/buildFullPath.ts": "97e25da79a42da871a80b630101563758ca5df332aee2320d13bcaf0ea8faee5",
+        "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
         "packages/lib/src/lib/core/dispatchRequest.ts": "d932638959b9c35d830ef6a7e01f9fe29d5ae37c365a07fd1af715bc755b87ef",
         "packages/lib/src/lib/core/mergeConfig.ts": "11a4ce46f0cff00c06e89c5eed86c5751ccd80a15a6eb589c35eda685899caea",
@@ -28,34 +28,34 @@
         "packages/lib/src/lib/types.ts": "e9f9fe1c8e31f5f9008f8d2fed18de12dea7273f846dd7d392ed90c5ceafedb7",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "5022de5703b06d9e3ff6dced4fac3876e0ffd61ea06d75c4b16a6dbde2f22f88",
-        "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
+        "packages/tests/unit/plugins/authBearer.test.ts": "b05e819aaec1ac05801f341218357e7a55563dd5ce8662f0a3df8df034fe1308",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
-      "outcome": "no-change",
-      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
+      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
+      "outcome": "updated",
+      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
       "evidence": [
-        "Changed: packages/tests/unit/api.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/core/buildFullPath.ts, packages/tests/unit/plugins/authBearer.test.ts at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "6d20b798a92fa9884367f66e376e01f76a1cd34f1c9de9ab8b3ed10cbcc34af0",
+      "fingerprint": "439428125eff240fb06cdad0514661aed268ad1e7aade442ff07124c70470db1",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
+        "MIGRATION_GUIDE.md": "3baba9ea3fee10c0847952dd29c4eba292b18fb26c249d948cd38bff0b93dc6a",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "9ebce05ee93562003511dfbaa7e34fd86f07ec93097419922ce5c8f565d387c3",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
+        "packages/lib/skills/configure-requests/SKILL.md": "d1e8735271b8d12ab9b28a7b4e530f9311528f516f617d8146bcee7b1adcf2fe",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "25f57c39b1a80789f43986053be1ad9ec874224d9fac643728b2e44b0d06102c",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
         "packages/lib/src/lib/adapters/fetch.ts": "483f1d6a9f77ed2aba4ef73ab032125bfda9268711988c517c218fa1595c4130",
         "packages/lib/src/lib/core/Faxios.ts": "e194fd3e6294c964fb0d6076bb786d3203355f437b9a73b304b4b86b4fed2293",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
-        "packages/lib/src/lib/core/buildFullPath.ts": "97e25da79a42da871a80b630101563758ca5df332aee2320d13bcaf0ea8faee5",
+        "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
         "packages/lib/src/lib/core/dispatchRequest.ts": "d932638959b9c35d830ef6a7e01f9fe29d5ae37c365a07fd1af715bc755b87ef",
         "packages/lib/src/lib/core/mergeConfig.ts": "11a4ce46f0cff00c06e89c5eed86c5751ccd80a15a6eb589c35eda685899caea",
@@ -69,16 +69,16 @@
         "packages/lib/src/lib/types.ts": "e9f9fe1c8e31f5f9008f8d2fed18de12dea7273f846dd7d392ed90c5ceafedb7",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "5022de5703b06d9e3ff6dced4fac3876e0ffd61ea06d75c4b16a6dbde2f22f88",
-        "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
+        "packages/tests/unit/plugins/authBearer.test.ts": "b05e819aaec1ac05801f341218357e7a55563dd5ce8662f0a3df8df034fe1308",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
-      "outcome": "no-change",
-      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
+      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
+      "outcome": "updated",
+      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
       "evidence": [
-        "Changed: packages/tests/unit/api.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/core/buildFullPath.ts, packages/tests/unit/plugins/authBearer.test.ts at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
       ]
     },
     "source:knip.json": {
@@ -182,15 +182,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
-      "fingerprint": "56853a5ba780b435b777c6fa79c2604bc4b20a5310c96aeae5bc731039487480",
+      "fingerprint": "8557852beb6d334abec9f5ccdbf6b6991908d044dc0b4016de59d3e0998f2e29",
       "snapshot": {
-        "packages/docs/pages/advanced/authentication.md": "3502e5ce47f363274bbdad0e5b6e21d22eed0173bcb3d2bd85ea3f1646830fb2"
+        "packages/docs/pages/advanced/authentication.md": "636c5fab6f401b878d5eb494767094a5873ac3719943b4af307a355724859cd9"
       },
-      "head": "466184284f2ed349a4f774209812095d3e6b3647",
+      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
       "outcome": "updated",
-      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
+      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/authentication.md at 466184284f2ed349a4f774209812095d3e6b3647"
+        "Changed: packages/docs/pages/advanced/authentication.md at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
       ]
     },
     "source:packages/docs/pages/advanced/create-an-instance.md": {
@@ -278,15 +278,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "6e1eab8c134f57d8faeb2bd7e6617c908895715b651c6303aaa686f28595105f",
+      "fingerprint": "e83a37b271aadee31828143b99fefc86b9a7c4f3ab63a8b76e7c34dc059b0c8f",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "46bfa19234848e6281c6d22cd848c340f77969eae51ed79ec9f8b3f466e3262f"
+        "packages/docs/pages/advanced/request-config.md": "7faa7bf0d592d3570d44f7cb494257f1360f3a173fae52de5f717177a040971f"
       },
-      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
+      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
       "outcome": "updated",
-      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/docs/pages/advanced/request-config.md at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -1947,15 +1947,15 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "4d13175763493db8484953406d81807528b407ae3df39a876d0fa83b7c377855",
+      "fingerprint": "92c9418c5b8ec14c6a4687e29d7a52d87e844a2b6062a7f8148b213117f115fc",
       "snapshot": {
-        "THREATMODEL.md": "52bef246b2c225bf5230976a85e8c1942eda87d90f9b2578feea17f7925bfc19"
+        "THREATMODEL.md": "7a0555d23b84c7511504f29bc4002983ea056e319121ab6014dfaa54e7f0b489"
       },
-      "head": "280f7e791c50e367a025fddc617941296f15f52a",
-      "outcome": "no-change",
-      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
+      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
+      "outcome": "updated",
+      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
       "evidence": [
-        "Changed: THREATMODEL.md at 280f7e791c50e367a025fddc617941296f15f52a"
+        "Changed: THREATMODEL.md at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
       ]
     },
     "source:packages/docs/.vitepress/theme/index.ts": {
@@ -2798,16 +2798,15 @@
       ]
     },
     "source:packages/tests/unit/core/buildFullPath.test.ts": {
-      "fingerprint": "6109b7cfadc97329adb9514d10b1774e3fa1cdd5007253b83afc5a62155eca2f",
+      "fingerprint": "3f860b5f403361e2563ad34657b9609ffd6b3c5a5fe711ebc42ac3ff45b51aca",
       "snapshot": {
-        "packages/tests/unit/core/buildFullPath.test.ts": "9a84ba6c116489787666badd9225f2f99720c219f0d6a02368b2d0c1105554e3"
+        "packages/tests/unit/core/buildFullPath.test.ts": "b928ddd2bc57034fe1e33230bce963303525ef888c9f11aa44224617eec05207"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
+      "outcome": "updated",
+      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/core/buildFullPath.test.ts: @@ -1,4 +1,4 @@ (diff/209)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/core/buildFullPath.test.ts at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
       ]
     },
     "source:packages/tests/unit/core/configHeadersTypes.test.ts": {
@@ -3064,15 +3063,15 @@
       ]
     },
     "source:packages/tests/unit/prototypePollution.test.ts": {
-      "fingerprint": "434a83e111a2aa7a460135da77ec3397042a5530fba177535d23f1f3f54e3565",
+      "fingerprint": "660064a1b9247686878c65e1565228ecf92a36c875b9257f47e0748cf4ef6850",
       "snapshot": {
-        "packages/tests/unit/prototypePollution.test.ts": "222f15b3eb910a9ae5087206498d1696fc2de1a5adcd1a15681c994ca02a701b"
+        "packages/tests/unit/prototypePollution.test.ts": "9cd6d6d9308cf31945fc17ae736ffd77acebc880f1c63a6434c008e4fb41cd0b"
       },
-      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
-      "outcome": "no-change",
-      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
+      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
+      "outcome": "updated",
+      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
       "evidence": [
-        "Changed: packages/tests/unit/prototypePollution.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
+        "Changed: packages/tests/unit/prototypePollution.test.ts at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
       ]
     },
     "source:packages/tests/unit/query.test.ts": {
@@ -4049,15 +4048,15 @@
       ]
     },
     "source:packages/tests/unit/core/getUri.test.ts": {
-      "fingerprint": "13ee5026fc64dab19c11e06795386234a7c3405da2832fb07216c68fbb4e55ca",
+      "fingerprint": "6df80156fdc5b1e1c2ce710725e5c8ecc3ac7bdfe9e69f348ae59b4ea709f70d",
       "snapshot": {
-        "packages/tests/unit/core/getUri.test.ts": "c409b0c634841a3f6b3e506db5611a98b5109f42eadceeff8ec32e848be730ac"
+        "packages/tests/unit/core/getUri.test.ts": "6246661d7862ed6c280319d3a25f8369117704d62c637c733751354cdef2629a"
       },
-      "head": "171fd2a68f53dbb058a5074bc17f64201dee09dd",
+      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
       "outcome": "updated",
-      "reason": "configure-requests skill now says getUri() applies allowAbsoluteUrls the way a request does; other changes are internal URL resolution, docs, tests and a bump file",
+      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
       "evidence": [
-        "Changed: packages/tests/unit/core/getUri.test.ts at d8cbd4de61e82132702bf7f2751683bf4c27bded"
+        "Changed: packages/tests/unit/core/getUri.test.ts at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
       ]
     },
     "source:.bumpy/abort-during-async-schema.md": {
@@ -4250,6 +4249,30 @@
       "reason": "Contributor tooling and review rules only: scripts/intent-restack.sh, the do-work hand-off steps, the gh gotchas and two CODING_STANDARDS reviewer rules. No library API or skill guidance changes.",
       "evidence": [
         "Changed: scripts/intent-restack.sh at 465e8cdf20055c7da0786b97229d7d41d8bf030a"
+      ]
+    },
+    "source:.bumpy/reject-absolute-url-with-base-url.md": {
+      "fingerprint": "3ba386f7cb4c3687db7d3d13597a4a5bdd8c35f813f7e88b1179743929d8831b",
+      "snapshot": {
+        ".bumpy/reject-absolute-url-with-base-url.md": "870d0f323d969693249b8c7b69fcb21e7859e738808579dc46e15a4447672d74"
+      },
+      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
+      "outcome": "updated",
+      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
+      "evidence": [
+        "Changed: .bumpy/reject-absolute-url-with-base-url.md at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
+      ]
+    },
+    "source:packages/tests/browser/options.browser.test.ts": {
+      "fingerprint": "de50ba0759c0e073d2b9a3fd072f150c380b07509c2733435172e9071029f33d",
+      "snapshot": {
+        "packages/tests/browser/options.browser.test.ts": "487c167ce836a1cc357a8dd229c57d6f9ca3370e7aa07a3b5693b48663a670c0"
+      },
+      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
+      "outcome": "updated",
+      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
+      "evidence": [
+        "Changed: packages/tests/browser/options.browser.test.ts at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
       ]
     }
   }

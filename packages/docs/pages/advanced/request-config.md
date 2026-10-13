@@ -31,7 +31,7 @@ The `baseURL` is the base URL to be prepended to the `url` unless the `url` is a
 
 ### `allowAbsoluteUrls`
 
-The `allowAbsoluteUrls` determines whether or not absolute URLs will override a configured `baseURL`. When `true`, absolute values for `url` override `baseURL`. When `false`, absolute values for `url` are always prepended by `baseURL`.
+The `allowAbsoluteUrls` determines whether or not absolute URLs will override a configured `baseURL`. When `true`, absolute values for `url` override `baseURL`. When `false` and a `baseURL` is set, an absolute `url` rejects with `ERR_INVALID_URL` ("absolute URL with baseURL; set allowAbsoluteUrls: true") before the request is sent, and `getUri()` throws the same error. Without a `baseURL`, an absolute `url` is used as-is.
 
 If you do not set it, faxios uses the instance default. When the instance defaults set neither `allowAbsoluteUrls` nor `baseURL`, it is `true`; when the instance defaults set `baseURL`, it is `false`.
 
