@@ -29,6 +29,7 @@ const provider = definePlugin({
 
 const withOptions = definePlugin({
   name: "withOptions",
+  options: { cache: true },
   middleware: async (ctx: FaxiosContext<CacheOptions>, next) => {
     expectTypeOf(ctx.config.cache).toEqualTypeOf<undefined | { ttlMs?: number; }>();
     return next(ctx);
@@ -52,6 +53,7 @@ const consumer = definePlugin({
 const everySlot = definePlugin({
   name: "everySlot",
   provides: { cache: { clear } },
+  options: { cache: true },
   middleware: async (ctx: FaxiosContext<CacheOptions, AuthCapability & CacheCapability>, next) => {
     ctx.capabilities.cache.clear();
     await ctx.capabilities.auth.getToken();
@@ -120,6 +122,17 @@ describe("definePlugin", () => {
         provide: { auth: { getToken } },
         middleware: async (ctx, next) => next(ctx),
       });
+      // @ts-expect-error TS2345 -- the middleware reads a cache option, so `options` must name it
+      definePlugin({
+        name: "unnamedOptions",
+        middleware: async (ctx: FaxiosContext<CacheOptions>, next) => next(ctx),
+      });
+      definePlugin({
+        name: "partialOptions",
+        // @ts-expect-error TS2741 -- every request option the context declares must be named
+        options: {},
+        middleware: async (ctx: FaxiosContext<CacheOptions>, next) => next(ctx),
+      });
     }
     void surfaces;
   });
@@ -129,10 +142,13 @@ describe("FaxiosPlugin", () => {
   it("takes one object of named slots", () => {
     function surfaces(): void {
       const requiresOnly: FaxiosPlugin<{ requires: AuthCapability; }> = { name: "r", middleware: async (ctx, next) => next(ctx) };
-      const optionsOnly: FaxiosPlugin<{ options: CacheOptions; }> = { name: "o", middleware: async (ctx, next) => next(ctx) };
+      const optionsOnly: FaxiosPlugin<{ options: CacheOptions; }> = { name: "o", options: { cache: true }, middleware: async (ctx, next) => next(ctx) };
+      // @ts-expect-error TS2322 -- a plugin with request options must name them, or requests carrying them reject
+      const unnamedOptions: FaxiosPlugin<{ options: CacheOptions; }> = { name: "o", middleware: async (ctx, next) => next(ctx) };
       const providesOnly: FaxiosPlugin<{ provides: CacheCapability; }> = { name: "p", provides: { cache: { clear } }, middleware: async (ctx, next) => next(ctx) };
       void requiresOnly;
       void optionsOnly;
+      void unnamedOptions;
       void providesOnly;
     }
     void surfaces;

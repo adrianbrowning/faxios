@@ -2,6 +2,8 @@
 
 The request config is used to configure the request. There is a wide range of options available, but the only required option is `url`. If the configuration object does not contain a `method` field, the default method is `GET`.
 
+Every key must be an option on this page or a request option an installed [plugin](/pages/advanced/middleware#typed-request-options) declares. Any other key rejects the request with a `FaxiosError` whose `code` is `ERR_BAD_OPTION` and whose message names the key, so a typo such as `timout` fails instead of being ignored. Options removed from axios, such as `adapter`, `proxy` or `maxRedirects`, reject the same way, and the message says what to use instead. A key that differs from an option only by case, such as `baseUrl`, names the option it differs from.
+
 ::: warning Security: decompression-bomb protection is opt-in
 By default `maxContentLength` and `maxBodyLength` are `-1` (unlimited). A malicious or compromised server can return a tiny gzip/deflate/brotli/zstd body that expands to gigabytes and exhaust memory. The fetch adapter enforces these caps in every runtime.
 
@@ -169,7 +171,8 @@ The `responseType` tells faxios how to read the response body. Values are matche
 - `text`: `response.text()`, so `data` is a string and is not JSON-parsed
 - `stream`: `data` is the `ReadableStream` from `response.body`
 - `json`: read as text, then JSON-parsed. A body that isn't valid JSON rejects with a `FaxiosError` whose `code` is `ERR_BAD_RESPONSE`; the `SyntaxError` is on `error.cause` and the raw body on `error.response.data`
-- `document`: read as text; faxios does not build a DOM document
+
+Any other value, including the `document` and `response` values faxios used to accept, rejects with `ERR_BAD_OPTION_VALUE`.
 
 If `responseType` is unset, the body is read as text and then JSON-parsed if it parses; otherwise `data` is the raw string and the request still resolves. Binary bodies such as images or zip files are decoded as UTF-8 text in that case and come back corrupted, so set `responseType: "arraybuffer"` (or `"blob"`/`"stream"`) for them.
 
@@ -188,38 +191,16 @@ console.log(data.byteLength);
 
 The whole body is buffered in memory. When the server isn't trusted, set [`maxContentLength`](#maxcontentlength) to cap the download size.
 
-### `responseEncoding` <Badge type="warning" text="Node.js only" />
+Text is always decoded as UTF-8. For another encoding, read the body with `responseType: "arraybuffer"` and decode it with a `TextDecoder`:
 
-The `responseEncoding` indicates encoding to use for decoding responses. The following options are supported:
+```ts
+import faxios from "@gcmdev/faxios";
 
-- ascii
-- ASCII
-- ansi
-- ANSI
-- binary
-- BINARY
-- base64
-- BASE64
-- base64url
-- BASE64URL
-- hex
-- HEX
-- latin1
-- LATIN1
-- ucs-2
-- UCS-2
-- ucs2
-- UCS2
-- utf-8
-- UTF-8
-- utf8
-- UTF8
-- utf16le
-- UTF16LE
-
-::: tip
-Note: Ignored for `responseType` of `stream` or client-side requests
-:::
+const { data } = await faxios.get<ArrayBuffer>("https://example.com/legacy.txt", {
+  responseType: "arraybuffer",
+});
+console.log(new TextDecoder("latin1").decode(data));
+```
 
 ### `xsrfCookieName`
 
@@ -307,11 +288,10 @@ The `signal` property allows you to pass an instance of `AbortSignal` to the req
 
 ### `transitional`
 
-The `transitional` property allows you to enable or disable certain transitional features. The following options are available:
+The `transitional` property allows you to enable or disable certain transitional features. Any key not listed here rejects with `ERR_BAD_OPTION`. The following options are available:
 
 - `forcedJSONParsing`: Forces faxios to parse the response string as JSON even if `responseType` is not `'json'`.
 - `clarifyTimeoutError`: Accepted for compatibility but has no effect. Timed-out requests always reject with `ETIMEDOUT`.
-- `advertiseZstdAcceptEncoding`: When set to `true`, faxios adds `zstd` to the default `Accept-Encoding` request header. Response decompression is handled by the runtime's `fetch` implementation.
 - `validateStatusUndefinedResolves`: When `true` _(default)_, an explicit `validateStatus: undefined` resolves every response status (legacy behavior). Set to `false` to make an explicit `undefined` behave like an omitted option, so the configured or default validator applies (reject non-2xx).
 
 There is no `silentJSONParsing` option any more, and passing it rejects with `ERR_BAD_OPTION`. An explicit `responseType: "json"` always rejects a body that isn't valid JSON (see [`responseType`](#responsetype)); leave `responseType` unset to get the raw string instead.
@@ -397,7 +377,6 @@ const config: FaxiosRequestConfig = {
     password: "s00pers3cret"
   },
   responseType: "json",
-  responseEncoding: "utf8",
   xsrfCookieName: "XSRF-TOKEN",
   xsrfHeaderName: "X-XSRF-TOKEN",
   // boolean, or a function that decides per request
@@ -415,7 +394,6 @@ const config: FaxiosRequestConfig = {
   transitional: {
     forcedJSONParsing: true,
     clarifyTimeoutError: false,
-    advertiseZstdAcceptEncoding: false,
     validateStatusUndefinedResolves: true,
   },
   responseSchema: z.object({ id: z.number(), title: z.string() }),

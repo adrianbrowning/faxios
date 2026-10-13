@@ -589,66 +589,6 @@ describe("Prototype Pollution Protection", () => {
         await stopServer(target);
       }
     }, 10000);
-
-    it("should not inject Proxy-Authorization from polluted Object.prototype.auth", async () => {
-      // setProxy reads `proxy.auth` directly. When `proxy` is a
-      // URL instance from the environment proxy or a plain object without an own `auth`,
-      // a polluted Object.prototype.auth would otherwise be base64-encoded into the
-      // Proxy-Authorization header, leaking attacker-controlled credentials.
-      ObjProto.auth = { username: "attacker", password: "exfil" };
-
-      const proxy = await startServer();
-      const { port: proxyPort } = proxy.address() as AddressInfo;
-
-      const target = await startServer();
-      const { port: targetPort } = target.address() as AddressInfo;
-
-      try {
-        const res = await ax.get(`http://127.0.0.1:${targetPort}/api`, {
-          proxy: { host: "127.0.0.1", port: proxyPort, protocol: "http" },
-        });
-        assert.strictEqual(res.status, 200);
-        assert.strictEqual(
-          res.data.headers["proxy-authorization"],
-          undefined,
-          "polluted Object.prototype.auth must not produce a Proxy-Authorization header"
-        );
-      }
-      finally {
-        await stopServer(target);
-        await stopServer(proxy);
-      }
-    }, 10000);
-
-    it("should not inject Proxy-Authorization from polluted Object.prototype.username", async () => {
-      // The setProxy username/password branch builds basic creds from `proxy.username`
-      // and `proxy.password`. For a plain object proxy, both reads must be guarded
-      // against prototype pollution.
-      ObjProto.username = "attacker";
-      ObjProto.password = "exfil";
-
-      const proxy = await startServer();
-      const { port: proxyPort } = proxy.address() as AddressInfo;
-
-      const target = await startServer();
-      const { port: targetPort } = target.address() as AddressInfo;
-
-      try {
-        const res = await ax.get(`http://127.0.0.1:${targetPort}/api`, {
-          proxy: { host: "127.0.0.1", port: proxyPort, protocol: "http" },
-        });
-        assert.strictEqual(res.status, 200);
-        assert.strictEqual(
-          res.data.headers["proxy-authorization"],
-          undefined,
-          "polluted Object.prototype.username must not produce a Proxy-Authorization header"
-        );
-      }
-      finally {
-        await stopServer(target);
-        await stopServer(proxy);
-      }
-    }, 10000);
   });
 
   describe("prepareRequest baseURL gadget", () => {

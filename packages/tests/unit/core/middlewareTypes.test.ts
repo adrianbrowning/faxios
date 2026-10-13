@@ -21,6 +21,7 @@ type AuthCapability = { auth: { getToken: () => Promise<string>; }; };
 function cache(): FaxiosPlugin<{ options: CacheOptions; }> {
   return {
     name: "cache",
+    options: { cache: true },
     middleware: async (ctx, next) => {
       expectTypeOf(ctx.config.cache).toEqualTypeOf<undefined | { key?: string; ttlMs?: number; }>();
       return next(ctx);
@@ -194,7 +195,7 @@ describe("middleware types", () => {
     function surfaces(): void {
       // @ts-expect-error TS2322 -- claims auth but never supplies it, so ctx.capabilities.auth would be undefined
       const claimsOnly: FaxiosPlugin<{ provides: AuthCapability; }> = { name: "claimsOnly", middleware: async (ctx, next) => next(ctx) };
-      const requiresOnly: FaxiosPlugin<{ options: CacheOptions; requires: AuthCapability; }> = { name: "requiresOnly", middleware: async (ctx, next) => next(ctx) };
+      const requiresOnly: FaxiosPlugin<{ options: CacheOptions; requires: AuthCapability; }> = { name: "requiresOnly", options: { cache: true }, middleware: async (ctx, next) => next(ctx) };
       void claimsOnly;
       void requiresOnly;
       // Inline provider with a real provides value: inferred exactly, and a consumer can follow.
@@ -231,10 +232,10 @@ describe("middleware types", () => {
 
   it("rejects a plugin with a required request option", () => {
     function surfaces(): void {
-      const tenant: FaxiosPlugin<{ options: { tenant: string; }; }> = { name: "tenant", middleware: async (ctx, next) => next(ctx) };
+      const tenant: FaxiosPlugin<{ options: { tenant: string; }; }> = { name: "tenant", options: { tenant: true }, middleware: async (ctx, next) => next(ctx) };
       // @ts-expect-error TS2345 -- requests that omit tenant would reach the middleware with it undefined
       faxios.create().use(tenant);
-      const optionalTenant: FaxiosPlugin<{ options: { tenant?: string; }; }> = { name: "tenant", middleware: async (ctx, next) => next(ctx) };
+      const optionalTenant: FaxiosPlugin<{ options: { tenant?: string; }; }> = { name: "tenant", options: { tenant: true }, middleware: async (ctx, next) => next(ctx) };
       faxios.create().use(optionalTenant);
     }
     void surfaces;

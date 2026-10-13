@@ -85,33 +85,12 @@ export type RawFaxiosRequestHeaders =
 export type ResponseType =
   | "arraybuffer"
   | "blob"
-  | "document"
   | "formdata"
   | "json"
-  | "response"
   | "stream"
   | "text";
 
-type UppercaseResponseEncoding =
-  | "ANSI"
-  | "ASCII"
-  | "BASE64"
-  | "BASE64URL"
-  | "BINARY"
-  | "HEX"
-  | "LATIN1"
-  | "UCS2"
-  | "UCS-2"
-  | "UTF8"
-  | "UTF16LE"
-  | "UTF-8";
-
-export type responseEncoding =
-  | Lowercase<UppercaseResponseEncoding>
-  | UppercaseResponseEncoding;
-
 export interface TransitionalOptions {
-  advertiseZstdAcceptEncoding?: boolean;
   clarifyTimeoutError?: boolean;
   forcedJSONParsing?: boolean;
   validateStatusUndefinedResolves?: boolean;
@@ -318,7 +297,6 @@ export interface FaxiosRequestConfig<D = unknown> {
   pathParamsSchema?: StandardSchemaV1<unknown, Record<string, unknown>>;
   redact?: Array<string>;
   requestSchema?: StandardSchemaV1;
-  responseEncoding?: StringLiteralsOrString<responseEncoding>;
   responseSchema?: StandardSchemaV1;
   responseType?: ResponseType;
   signal?: AbortSignal | GenericAbortSignal;
@@ -493,17 +471,27 @@ export interface FaxiosPluginBase<TRequires = unknown, TProvides = unknown, TOpt
 }
 
 /**
+ * The runtime list of a plugin's request options: every option name mapped to `true`. Request
+ * config keys that neither faxios nor an installed plugin declares reject with `ERR_BAD_OPTION`.
+ */
+export type FaxiosPluginOptionNames<TOptions> = { readonly [K in keyof TOptions]-?: true; };
+
+/**
  * Middleware bundled with the capabilities it requires and provides, typed by one
  * `FaxiosPluginSpec`: `FaxiosPlugin<{ requires?; provides?; options? }>`. Declaring `provides`
  * makes the `provides` value required, so a plugin can't claim a capability it never supplies.
+ * Declaring `options` makes the `options` names required, so every request option is accepted.
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- `{}`: a plugin with no slots
 export type FaxiosPlugin<TSpec extends FaxiosPluginSpec & OnlyPluginSlots<TSpec> = {}> =
   FaxiosPluginBase<PluginSlot<TSpec, "requires">, PluginSlot<TSpec, "provides">, PluginSlot<TSpec, "options">>
   & ([keyof PluginSlot<TSpec, "provides">] extends [never]
     ? { provides?: PluginSlot<TSpec, "provides">; }
-    : { provides: PluginSlot<TSpec, "provides">; });
+    : { provides: PluginSlot<TSpec, "provides">; })
+  & ([keyof PluginSlot<TSpec, "options">] extends [never]
+    ? { options?: FaxiosPluginOptionNames<PluginSlot<TSpec, "options">>; }
+    : { options: FaxiosPluginOptionNames<PluginSlot<TSpec, "options">>; });
 
-/** What `use()` and `eject()` accept as a plugin: the base plus an optional `provides`. Internal. */
+/** What `use()` and `eject()` accept as a plugin: the base plus optional `provides` and `options`. Internal. */
 export type FaxiosPluginArgument<TRequires = unknown, TProvides = unknown, TOptions = unknown> =
-  FaxiosPluginBase<TRequires, TProvides, TOptions> & { provides?: TProvides; };
+  FaxiosPluginBase<TRequires, TProvides, TOptions> & { options?: Readonly<Record<string, true>>; provides?: TProvides; };

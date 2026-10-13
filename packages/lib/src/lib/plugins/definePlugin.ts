@@ -1,7 +1,7 @@
 // @ts-self-types="./definePlugin.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 // The `@gcmdev/faxios/plugins` entry point. The built-in plugins have their own subpaths.
 
-import type { FaxiosMiddleware, FaxiosPlugin } from "../types.js";
+import type { FaxiosMiddleware, FaxiosPlugin, FaxiosPluginOptionNames } from "../types.js";
 
 // An empty capability or option map adds nothing, so it's the `unknown` an absent slot is.
 type Slot<T> = [keyof T] extends [never] ? unknown : T;
@@ -15,7 +15,8 @@ type RequiredCapabilities<TCapabilities, TProvides> = [keyof TProvides] extends 
  * Builds a plugin for `use()` and infers its `FaxiosPlugin` slots from the object: `provides` from
  * the `provides` value, `options` and `requires` from the context type the middleware annotates
  * (`ctx: FaxiosContext<Options, Capabilities>`). Capabilities the plugin provides itself don't
- * count as required. Returns the same object.
+ * count as required. A plugin with request options lists their names in `options`, so requests
+ * may carry them. Returns the same object.
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- `{}`: no capabilities or options, as in FaxiosContext
 export function definePlugin<TProvides = {}, TOptions = {}, TCapabilities = TProvides>(plugin: {
@@ -24,7 +25,10 @@ export function definePlugin<TProvides = {}, TOptions = {}, TCapabilities = TPro
   // The middleware reads the capabilities it provides from ctx too, so they must have the types
   // its context declares. NoInfer: TProvides is inferred from the value alone.
   provides?: TProvides & NoInfer<Pick<TCapabilities, keyof TProvides & keyof TCapabilities>>;
-}): FaxiosPlugin<{
+} & ([keyof TOptions] extends [never]
+  ? { options?: FaxiosPluginOptionNames<NoInfer<TOptions>>; }
+  // Every request option the context declares must be named, or requests carrying it reject.
+  : { options: FaxiosPluginOptionNames<NoInfer<TOptions>>; })): FaxiosPlugin<{
   options: Slot<TOptions>;
   provides: Slot<TProvides>;
   requires: RequiredCapabilities<TCapabilities, TProvides>;

@@ -172,7 +172,6 @@ export default function mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfi
     onDownloadProgress: defaultToConfig2,
     maxContentLength: defaultToConfig2,
     maxBodyLength: defaultToConfig2,
-    responseEncoding: defaultToConfig2,
     responseSchema: defaultToConfig2,
     requestSchema: defaultToConfig2,
     paramsSchema: defaultToConfig2,

@@ -43,15 +43,7 @@ describe("auth compat (dist export only)", () => {
 
     const { port } = server.address();
 
-    return faxios.get(
-      `http://127.0.0.1:${port}/`,
-      Object.assign(
-        {
-          proxy: false,
-        },
-        config || {}
-      )
-    );
+    return faxios.get(`http://127.0.0.1:${port}/`, config);
   };
 
   it("sets Basic Authorization header from auth credentials", async () => {
@@ -103,12 +95,7 @@ describe("auth compat (dist export only)", () => {
 
     const { port } = server.address();
 
-    const response = await faxios.get(
-      `http://urluser:urlpass@127.0.0.1:${port}/`,
-      {
-        proxy: false,
-      }
-    );
+    const response = await faxios.get(`http://urluser:urlpass@127.0.0.1:${port}/`);
 
     const expected = `Basic ${Buffer.from("urluser:urlpass", "utf8").toString("base64")}`;
 
@@ -126,7 +113,6 @@ describe("auth compat (dist export only)", () => {
     const response = await faxios.get(
       `http://urluser:urlpass@127.0.0.1:${port}/`,
       {
-        proxy: false,
         auth: {
           username: "configuser",
           password: "configpass",

@@ -3,82 +3,82 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "9ecb896b6ad471ecb3a8a997fc4bc531d5a6361c1015ffb54abb69fbad52eef6",
+      "fingerprint": "bbc825f4aa44da8e91b8947a2a13986f91bf5e9133dbaee95d282ca80e91eb32",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "3baba9ea3fee10c0847952dd29c4eba292b18fb26c249d948cd38bff0b93dc6a",
+        "MIGRATION_GUIDE.md": "8c8fc260db577953a1c2124c57298e1c40d88e46737a54ae499af97fa04645a4",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "5caf3b1ed7bad7b4ec485850bdba48646ccc4206c6d63958a85591b7f2c0e3ce",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "25f57c39b1a80789f43986053be1ad9ec874224d9fac643728b2e44b0d06102c",
-        "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
+        "packages/lib/skills/configure-requests/SKILL.md": "16cbb6e44bd2ef7ae6b91fdb7db9773a938536889c651e865ea69a67e730e53f",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "1cd413182f1603fc615a3c0e0dbc32043723545450a2d70281030e812516ba16",
+        "packages/lib/skills/configure-requests/references/plugins.md": "914e94cc6d724c16a4d752c8168a342cca82dffa12a087253558ab6c929ee5b0",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "483f1d6a9f77ed2aba4ef73ab032125bfda9268711988c517c218fa1595c4130",
-        "packages/lib/src/lib/core/Faxios.ts": "b7a529c729226942d28156d56ab66c618ac061dfab8c5851ddbac6e2f1ef55c3",
-        "packages/lib/src/lib/core/FaxiosError.ts": "35d72420ab7e6235399fe71a220c90d56cca75e9670acf6fd99aa123275d2c56",
+        "packages/lib/src/lib/adapters/fetch.ts": "82181ff21c458c30cb00bb80b71c1afa22e117aa761613c396a6896709a58c77",
+        "packages/lib/src/lib/core/Faxios.ts": "e74378c1f5192eb0cd26caef49aa57cc8a081840408f0752272a9062351e64db",
+        "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
         "packages/lib/src/lib/core/dispatchRequest.ts": "d932638959b9c35d830ef6a7e01f9fe29d5ae37c365a07fd1af715bc755b87ef",
-        "packages/lib/src/lib/core/mergeConfig.ts": "11a4ce46f0cff00c06e89c5eed86c5751ccd80a15a6eb589c35eda685899caea",
+        "packages/lib/src/lib/core/mergeConfig.ts": "fa64a0fc0e21ee947287d400fa4dace0d58a783c963544754cc45819020558b1",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
         "packages/lib/src/lib/helpers/composeSignals.ts": "82087ee7bf3628d9e5d98c1611d14e6ce76df5ddcdde2db8298dfebc1d16f2ab",
         "packages/lib/src/lib/plugins/authBearer.ts": "46347f96efcc4e1f29245cf21835671cdfa3fe7d9e76c9c36d5b85fc697a2b0b",
-        "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
-        "packages/lib/src/lib/plugins/retry.ts": "e9b96b36455e38c3e16944542c9a8905a408f7495171e941cf52a07a429d53d3",
+        "packages/lib/src/lib/plugins/definePlugin.ts": "115bfafc88f311a53f58c0b41262b591e7005c66ab73173d1a3312b06a51823c",
+        "packages/lib/src/lib/plugins/retry.ts": "1b3b817cc2fe27c05173ecd3643e48ca538bcd1bac5d0a29f3c0431388f9c1a4",
         "packages/lib/src/lib/plugins/timing.ts": "621b09295c3cbfd49e981c33458fd74fe068aec58829c52cd94f6dadf3e8a1ee",
-        "packages/lib/src/lib/types.ts": "fc46d234015edc27581c8c1a6412fea44582a5b0b992f0c98333cddca72cb940",
+        "packages/lib/src/lib/types.ts": "bc12f73ad9b7f628e3e61a74090f2236401d2cd6409d5dad9c60bbb36900bb3d",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "f5886d5962182e662a08fc96bbf896fbaa27dc750182d41b122dfe2ffe94985e",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
-        "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
+        "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "2c8801466e565b919c13e48e8993cb664458c3e9ac17cc1fdcbce8c0574de720"
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
       "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/types.ts at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/plugins/definePlugin.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/types.ts, packages/tests/unit/plugins/definePlugin.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "6a63442e9db132613d3b51c6ee5e89535c8e3fbf74b49ad880aa8036e94952ea",
+      "fingerprint": "db0d6b1690c1fce7923dfa14d8e7f5caf0a627fd200518def3191980ef125327",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "3baba9ea3fee10c0847952dd29c4eba292b18fb26c249d948cd38bff0b93dc6a",
+        "MIGRATION_GUIDE.md": "8c8fc260db577953a1c2124c57298e1c40d88e46737a54ae499af97fa04645a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "5caf3b1ed7bad7b4ec485850bdba48646ccc4206c6d63958a85591b7f2c0e3ce",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "25f57c39b1a80789f43986053be1ad9ec874224d9fac643728b2e44b0d06102c",
-        "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
+        "packages/lib/skills/configure-requests/SKILL.md": "16cbb6e44bd2ef7ae6b91fdb7db9773a938536889c651e865ea69a67e730e53f",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "1cd413182f1603fc615a3c0e0dbc32043723545450a2d70281030e812516ba16",
+        "packages/lib/skills/configure-requests/references/plugins.md": "914e94cc6d724c16a4d752c8168a342cca82dffa12a087253558ab6c929ee5b0",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "483f1d6a9f77ed2aba4ef73ab032125bfda9268711988c517c218fa1595c4130",
-        "packages/lib/src/lib/core/Faxios.ts": "b7a529c729226942d28156d56ab66c618ac061dfab8c5851ddbac6e2f1ef55c3",
-        "packages/lib/src/lib/core/FaxiosError.ts": "35d72420ab7e6235399fe71a220c90d56cca75e9670acf6fd99aa123275d2c56",
+        "packages/lib/src/lib/adapters/fetch.ts": "82181ff21c458c30cb00bb80b71c1afa22e117aa761613c396a6896709a58c77",
+        "packages/lib/src/lib/core/Faxios.ts": "e74378c1f5192eb0cd26caef49aa57cc8a081840408f0752272a9062351e64db",
+        "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
         "packages/lib/src/lib/core/dispatchRequest.ts": "d932638959b9c35d830ef6a7e01f9fe29d5ae37c365a07fd1af715bc755b87ef",
-        "packages/lib/src/lib/core/mergeConfig.ts": "11a4ce46f0cff00c06e89c5eed86c5751ccd80a15a6eb589c35eda685899caea",
+        "packages/lib/src/lib/core/mergeConfig.ts": "fa64a0fc0e21ee947287d400fa4dace0d58a783c963544754cc45819020558b1",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
         "packages/lib/src/lib/helpers/composeSignals.ts": "82087ee7bf3628d9e5d98c1611d14e6ce76df5ddcdde2db8298dfebc1d16f2ab",
         "packages/lib/src/lib/plugins/authBearer.ts": "46347f96efcc4e1f29245cf21835671cdfa3fe7d9e76c9c36d5b85fc697a2b0b",
-        "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
-        "packages/lib/src/lib/plugins/retry.ts": "e9b96b36455e38c3e16944542c9a8905a408f7495171e941cf52a07a429d53d3",
+        "packages/lib/src/lib/plugins/definePlugin.ts": "115bfafc88f311a53f58c0b41262b591e7005c66ab73173d1a3312b06a51823c",
+        "packages/lib/src/lib/plugins/retry.ts": "1b3b817cc2fe27c05173ecd3643e48ca538bcd1bac5d0a29f3c0431388f9c1a4",
         "packages/lib/src/lib/plugins/timing.ts": "621b09295c3cbfd49e981c33458fd74fe068aec58829c52cd94f6dadf3e8a1ee",
-        "packages/lib/src/lib/types.ts": "fc46d234015edc27581c8c1a6412fea44582a5b0b992f0c98333cddca72cb940",
+        "packages/lib/src/lib/types.ts": "bc12f73ad9b7f628e3e61a74090f2236401d2cd6409d5dad9c60bbb36900bb3d",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "f5886d5962182e662a08fc96bbf896fbaa27dc750182d41b122dfe2ffe94985e",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
-        "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
+        "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "2c8801466e565b919c13e48e8993cb664458c3e9ac17cc1fdcbce8c0574de720"
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
       "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/types.ts at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/plugins/definePlugin.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/types.ts, packages/tests/unit/plugins/definePlugin.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
       ]
     },
     "source:knip.json": {
@@ -170,15 +170,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "2ad0ee422e28932be34fd7e753b59f548395b19349715dfd3bb758ed3a535032",
+      "fingerprint": "7bda8fe0f88c52e0026eb0587408309cc7e77b9c39aed7567f16a87d7f829314",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "be138c321825a1ebafa684b9c1237dc798b0b4ec21b4a662b0a2a941373c6b71"
+        "packages/docs/pages/advanced/api-reference.md": "ab976b07258de80dddb299f137568fddc5304503262b6b53eb5cc5e13ae48cf6"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
       "outcome": "updated",
-      "reason": "Skill updated from this diff.",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
-        "Added new Faxios() has no use/eject to SKILL.md (runtime: typeof use undefined). Diff review: +L31: 'An instance built with `new Faxios()` has no `use()` or `eject()`; use `faxios.create()`'. Confirmed by faxios.ts:41-52. The skill exports `Faxios` (L279) but never says this. +L65 (eject frees provided capabilities; type not narrowed) is also not in plugins.md. Everything else is consistent: the +L5..+L15 entry-point table (only `definePlugin` from /plugins; built-ins only from their subpaths, matching SKILL L224-226, L280-281); +L63 duplicate capability → `ERR_BAD_OPTION`, bad value/name → `ERR_BAD_OPTION_VALUE` (plugins.md L101-102); `FaxiosError.issues` (+L86)."
+        "Changed: packages/docs/pages/advanced/api-reference.md at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
@@ -218,15 +218,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/error-handling.md": {
-      "fingerprint": "5c41e5130193b07569848d7b4460e1e736839ff7b5c8353debc42e650020368f",
+      "fingerprint": "368bed469713d64919b09827e8e83fe7ebc5f3acdcd6fbd9f1cc42440c6392e0",
       "snapshot": {
-        "packages/docs/pages/advanced/error-handling.md": "92091e33830c6dc47c706feac374271e1c2b6b76c735c8b9645ee8bce6e6f307"
+        "packages/docs/pages/advanced/error-handling.md": "4de6bee4f5c76523e8c23b16ed6172f727b6f7587166ad4e11d9eb084a28b665"
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
       "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/error-handling.md at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: packages/docs/pages/advanced/error-handling.md at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
       ]
     },
     "source:packages/docs/pages/advanced/headers.md": {
@@ -254,15 +254,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "6362979fdebca976fb226511014c8bc591f401a8aba6fc34d1bfafdf7b9e0860",
+      "fingerprint": "293556adcfb808366c75925b6ec272ff482ef6ab8214819add46822cbef3ffab",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "e92466ed658fb873a3e1ce04c3f35fe98bcc1d9ba401bf13adc7ab103efcf9e5"
+        "packages/docs/pages/advanced/middleware.md": "0d3c9f3ae8ea7a9a719e32bf5cf5d3500e39e3d262f3e09cb1ab06c0139c4370"
       },
-      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
       "outcome": "updated",
-      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at f8e65308b747dbb46d674597caabd55029175fd4"
+        "Changed: packages/docs/pages/advanced/middleware.md at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
@@ -278,15 +278,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "70d5f7c1334c299c183d17f750c846d765bfafeb57303b0674d87e1fe73a20ab",
+      "fingerprint": "230442ceb45e50a24dbcca4848a4bae8c24ca614c9cb37b7061d40ebc1c70f24",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "922eca994522f018fb94b66a6b91be7a0b6fdd9d93712ecca07e938998dc0fc5"
+        "packages/docs/pages/advanced/request-config.md": "47953778b32c7f4b5dee99a98ba0ae85660215fef5062e266173919c8fbb1917"
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
       "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: packages/docs/pages/advanced/request-config.md at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -326,15 +326,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/type-script.md": {
-      "fingerprint": "eb96622d302d9ce91f715dabd0a09f89e0bab9d98ede7b68250a5967b8d6b11d",
+      "fingerprint": "d4643f4c9c44e93b4411164635601bc68e090b8ef78218a68645dfd55c83c11a",
       "snapshot": {
-        "packages/docs/pages/advanced/type-script.md": "d15b7d48905237bd90f7a56e0215667bd31f1c6bba032c63dd674b995ebcb308"
+        "packages/docs/pages/advanced/type-script.md": "46f26e183862cd3a235b784c7db8a5ea2be4e82efc68e42bf178d71b5328ee09"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
-      "outcome": "no-change",
-      "reason": "Diff reviewed (M); consistent.",
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
-        "+L19..+L28: inline middleware is typed from the instance. +L45..+L55: keep the chained `use()` result, and annotating as plain `FaxiosInstance` throws plugin options away. +L56/+L58: options are typed on defaults/define/route; excess-property checks run only on literals; children start untyped; eject doesn't narrow. Matches SKILL L213 and plugins.md L26-39. The literal-only excess check and eject-doesn't-narrow notes are extra detail, not in the skill."
+        "Changed: packages/docs/pages/advanced/type-script.md at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
       ]
     },
     "source:packages/docs/pages/getting-started/examples/typescript.md": {
@@ -2394,15 +2394,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/validator.ts": {
-      "fingerprint": "a6d64a8e5de8969445043a585de1f45e71bebf000fb3190f54b3474f205241dc",
+      "fingerprint": "002910db71e9ea32c6c7989391f719e654105d44e696ddaf714472662f60fe22",
       "snapshot": {
-        "packages/lib/src/lib/helpers/validator.ts": "c25dca328eea7f32693123c32432a1172b6b695b65a3a349cdd69f6b97d2987b"
+        "packages/lib/src/lib/helpers/validator.ts": "ffc37a0425481d5789b2fa3d8bd202252ee606a5c345eb7b0f64eab2b5fb94d9"
       },
-      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
       "outcome": "updated",
-      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/validator.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/lib/src/lib/helpers/validator.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
       ]
     },
     "source:packages/lib/src/lib/platform.ts": {
@@ -2577,16 +2577,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/esm-index.ts": {
-      "fingerprint": "23cbf79fed7a00bda59f3ad278da8c22906a58f6d85b0a892a2b804c3b7a70e8",
+      "fingerprint": "4373bfec7486fb28eb7f598d94a29147804474775a3ffdd6fbcf9d65edc52273",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/esm-index.ts": "3ef84708f9d4e7f2bf0e87a76ed53847c603ba87e1b6e43516bab9fe987aa7d2"
+        "packages/tests/module/esm/tests/helpers/esm-index.ts": "caf70e636744bec276c92ed4495cd3309dd8d582fee86fdf45b42948a72f8aee"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "`import type {…}` specifiers sorted (AddressFamily … RawFaxiosRequestHeaders). Value-import specifiers sorted (all, FaxiosHeaders, formToJSON, isFaxiosError, toFormData). `.then` param type `string | number` became `number | string`. Behaviour change: none",
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/module/esm/tests/helpers/esm-index.ts: @@ -1,22 +1,22 @@ and @@ -425,7 +425,7 @@ (diff/188)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/module/esm/tests/helpers/esm-index.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
       ]
     },
     "source:packages/tests/module/esm/tests/ts.module.test.ts": {
@@ -2669,16 +2668,15 @@
       ]
     },
     "source:packages/tests/smoke/bun/tests/fetch.smoke.test.ts": {
-      "fingerprint": "0cd02da2a0c35db9d898714dfbc1c15b73d6bdd0faf5dd261702802e67f8afb5",
+      "fingerprint": "88c80acc88d380f682be903306a7eca226ea037b4bb9c4061de591b52e455315",
       "snapshot": {
-        "packages/tests/smoke/bun/tests/fetch.smoke.test.ts": "93151a16e44ae38e9a39b056736a0de822aebbb6cbbf8b2444f7992992d41f32"
+        "packages/tests/smoke/bun/tests/fetch.smoke.test.ts": "103b3b4ca963a71c31531dba584ac0ca9f7b4709d9ae17838b9389a8209d53cc"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Return type `Response | Promise<Response>` became `Promise<Response> | Response`. Type `{ input; init }` became `{ init; input }`. Method literal union now ends `\"patch\" | \"put\"`. The runtime `calls.push({ input, init })` was not touched. Behaviour change: none",
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/smoke/bun/tests/fetch.smoke.test.ts: @@ -5,9 +5,9 @@ and @@ -81,7 +81,7 @@ (diff/197)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/smoke/bun/tests/fetch.smoke.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
       ]
     },
     "source:packages/tests/smoke/deno/tests/fetch.smoke.test.ts": {
@@ -2870,16 +2868,15 @@
       ]
     },
     "source:packages/tests/unit/core/middlewareTypes.test.ts": {
-      "fingerprint": "e2cf5ba45038031df2ccb4aa2a12b09010682d95573f3b0a586110441d534620",
+      "fingerprint": "04bd48ae554aa4a8dbc874e9d6bad4942c8094cbdc02da40e95d3deab76f8454",
       "snapshot": {
-        "packages/tests/unit/core/middlewareTypes.test.ts": "1436d6e769e40990b8b6199b2eaeab32099773826d6ca5c988a7f8e1b045f91c"
+        "packages/tests/unit/core/middlewareTypes.test.ts": "51a8fd944d2f378e090204517db6732590deaa68da33f879acafa73ee4d6f786"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "`CacheOptions` inner keys sorted (key, ttlMs). Two `toEqualTypeOf<{ttlMs?;key?} | undefined>` assertions became `<undefined | {key?; ttlMs?}>`. The `FaxiosPlugin<{requires; options}>` generic arg became `{options; requires}`. Behaviour change: none. The structural types are identical, so the assertions are unchanged.",
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/core/middlewareTypes.test.ts: @@ -15,14 +15,14 @@, @@ -120,7 +120,7 @@, @@ -194,7 +194,7 @@ (diff/217)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/core/middlewareTypes.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
       ]
     },
     "source:packages/tests/unit/core/paramsSchema.test.ts": {
@@ -3060,15 +3057,15 @@
       ]
     },
     "source:packages/tests/unit/prototypePollution.test.ts": {
-      "fingerprint": "ea0dd9a857f7a56b40b5934ef7811c1b54f357a7782495235bdff801d810ddd6",
+      "fingerprint": "805989c16c71e0dbc49ce973e8b3f94798c42617256e9782c312ba30cab8900e",
       "snapshot": {
-        "packages/tests/unit/prototypePollution.test.ts": "0b4d868fd57245e3c294d78e47b1e25e4c9525838f68aec5c3fee8244c0b4c19"
+        "packages/tests/unit/prototypePollution.test.ts": "6c2a28686d97d962cb65ade534a48671cb05d832a681b39c972450594369d973"
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
       "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
-        "Changed: packages/tests/unit/prototypePollution.test.ts at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: packages/tests/unit/prototypePollution.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
       ]
     },
     "source:packages/tests/unit/query.test.ts": {
@@ -4261,15 +4258,15 @@
       ]
     },
     "source:packages/tests/browser/options.browser.test.ts": {
-      "fingerprint": "de50ba0759c0e073d2b9a3fd072f150c380b07509c2733435172e9071029f33d",
+      "fingerprint": "45797c81775da99c1110ec7d3d4951c4bfa0be5bac4a7fb8ff6b9bd9f65a1fca",
       "snapshot": {
-        "packages/tests/browser/options.browser.test.ts": "487c167ce836a1cc357a8dd229c57d6f9ca3370e7aa07a3b5693b48663a670c0"
+        "packages/tests/browser/options.browser.test.ts": "3dbb15cb120f93003a6073337824b853215b442156ca2322b30186b6cfd311b1"
       },
-      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
       "outcome": "updated",
-      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
-        "Changed: packages/tests/browser/options.browser.test.ts at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
+        "Changed: packages/tests/browser/options.browser.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
       ]
     },
     "source:.bumpy/geturi-path-params.md": {
@@ -4381,15 +4378,15 @@
       ]
     },
     "source:packages/lib/src/lib/defaults/transitional.ts": {
-      "fingerprint": "5ff39efb1ec36934c7e08d6883746eafb76432cffe9c9c4e13fe81d9e0e7d937",
+      "fingerprint": "2550cd4d90ae953a87154f424c262f78f48db815f7026423c19e4daa3a5d9fd4",
       "snapshot": {
-        "packages/lib/src/lib/defaults/transitional.ts": "b079e8fc9dedd87a080b6c8695634a55d6cc58cabd458757b7e0213a30169366"
+        "packages/lib/src/lib/defaults/transitional.ts": "05a5d497dcdd9924883767b335e01a666d6b8f0e8ade22f60c72f1f47885a79d"
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
       "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
-        "Changed: packages/lib/src/lib/defaults/transitional.ts at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: packages/lib/src/lib/defaults/transitional.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
       ]
     },
     "source:packages/lib/src/lib/helpers/stripUserInfo.ts": {
@@ -4414,6 +4411,150 @@
       "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
       "evidence": [
         "Changed: packages/tests/browser/transform.browser.test.ts at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+      ]
+    },
+    "source:.bumpy/reject-unknown-config-keys.md": {
+      "fingerprint": "00b6be52370e145f4a5a47dc17aee2a289cbe428a29e6303e274bb03d0869982",
+      "snapshot": {
+        ".bumpy/reject-unknown-config-keys.md": "5c26950fba4a044498cdad2e70837c8d7df3e9618218d56b0c57d55bf5d00194"
+      },
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "evidence": [
+        "Changed: .bumpy/reject-unknown-config-keys.md at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+      ]
+    },
+    "source:packages/lib/src/lib/core/assertRequestConfig.ts": {
+      "fingerprint": "7bb1a74293187cb61eae0468ff2b3d58e804457d0220a2c9e7cdae6cd0ac5ae5",
+      "snapshot": {
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "fb50b98e058180e50b717cc6e88a32092cea2af2566b022ce3a9b85270ce3d8b"
+      },
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/core/assertRequestConfig.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+      ]
+    },
+    "source:packages/tests/browser/xsrf.browser.test.ts": {
+      "fingerprint": "d5825bde8bcb5563eb16832444322d179a632ebb31686e59786bea1b027f2da0",
+      "snapshot": {
+        "packages/tests/browser/xsrf.browser.test.ts": "cc459198d26183ddb7df6c652e5c73ce718b3d06e57510544e461604260df9e6"
+      },
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "evidence": [
+        "Changed: packages/tests/browser/xsrf.browser.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+      ]
+    },
+    "source:packages/tests/smoke/bun/tests/cancel.smoke.test.ts": {
+      "fingerprint": "1c8b9c7885b67bbb1974b0d766b1f52b4dd2c9f78c2e2624032a9de5033a8e1c",
+      "snapshot": {
+        "packages/tests/smoke/bun/tests/cancel.smoke.test.ts": "0504cc6deb0c3b2009c4bf37c3abd2af6ea3a455473c1dc2f2430dcd36a62b44"
+      },
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "evidence": [
+        "Changed: packages/tests/smoke/bun/tests/cancel.smoke.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+      ]
+    },
+    "source:packages/tests/smoke/bun/tests/error.smoke.test.ts": {
+      "fingerprint": "77c50b74e69690cc049cb861e59c209dbef9d6825fb360549172f9001df0615e",
+      "snapshot": {
+        "packages/tests/smoke/bun/tests/error.smoke.test.ts": "ff4eb0d98f43aced64699e32b61ca425095d846e793ef8983c1de8b8437a18b7"
+      },
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "evidence": [
+        "Changed: packages/tests/smoke/bun/tests/error.smoke.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+      ]
+    },
+    "source:packages/tests/smoke/bun/tests/formData.smoke.test.ts": {
+      "fingerprint": "42695a555e858970d9d056c07309fd3400a48d9bcdb704f27b7c3f45cae60880",
+      "snapshot": {
+        "packages/tests/smoke/bun/tests/formData.smoke.test.ts": "4eeac61a3fa9f44e2131849aed151ebc7cfea1773ef4810d62e82a69373bda2b"
+      },
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "evidence": [
+        "Changed: packages/tests/smoke/bun/tests/formData.smoke.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+      ]
+    },
+    "source:packages/tests/smoke/bun/tests/headers.smoke.test.ts": {
+      "fingerprint": "6d59bd466ade3b1eb68ccb757adf947b167eafd5b847305bbfbdcc058759556c",
+      "snapshot": {
+        "packages/tests/smoke/bun/tests/headers.smoke.test.ts": "3fd6bcaf12fe05855bf8d01d95315a2b03896dd894504ea5b8ad4cea59b05806"
+      },
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "evidence": [
+        "Changed: packages/tests/smoke/bun/tests/headers.smoke.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+      ]
+    },
+    "source:packages/tests/smoke/bun/tests/progress.smoke.test.ts": {
+      "fingerprint": "b1c23fe63c9d9a0f68df93a540276425b73d5a03278708084f6deb52757b9a99",
+      "snapshot": {
+        "packages/tests/smoke/bun/tests/progress.smoke.test.ts": "bccdba7a34230a49ec3568fd7fce1201b9c9ac4962efc17a9a404f0e553268ee"
+      },
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "evidence": [
+        "Changed: packages/tests/smoke/bun/tests/progress.smoke.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+      ]
+    },
+    "source:packages/tests/smoke/bun/tests/timeout.smoke.test.ts": {
+      "fingerprint": "f20c0530be7e6c7ad6ad910cc9a0c48340ee1b844803109766f84d899b31f4c4",
+      "snapshot": {
+        "packages/tests/smoke/bun/tests/timeout.smoke.test.ts": "9b73fad96ebc6b35c7c9a80084f167cd09d85cd2b18bf5009d1d398d1c31a735"
+      },
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "evidence": [
+        "Changed: packages/tests/smoke/bun/tests/timeout.smoke.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/auth.smoke.test.ts": {
+      "fingerprint": "d2909fad82c5fc353b74fe8b55a03744af214b073e15a14e4b3b14e7d4a0e621",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/auth.smoke.test.ts": "eb083f26335c855fc12639944ff2e3b6684dd9a5d50f42db2f3ffaa45cabf8d9"
+      },
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "evidence": [
+        "Changed: packages/tests/smoke/esm/tests/auth.smoke.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/fetch.smoke.test.ts": {
+      "fingerprint": "0063033b05151a343d8b3c7488aa778a66813b025c393a956fe64ad86067593c",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/fetch.smoke.test.ts": "79dc27551f5e6605acc561881681f112d02cb7c52086033d5ea8757acb3066bf"
+      },
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "evidence": [
+        "Changed: packages/tests/smoke/esm/tests/fetch.smoke.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+      ]
+    },
+    "source:packages/tests/unit/core/unknownConfigKeys.test.ts": {
+      "fingerprint": "75716e7cb6e3924894cbdee274c544f0798bc31c78f6f526c4ec3f4faaf9dce3",
+      "snapshot": {
+        "packages/tests/unit/core/unknownConfigKeys.test.ts": "b62c321c067466aacb0a77dd5c4d723375cd3606daa13ab21e19e4f8916849df"
+      },
+      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "outcome": "updated",
+      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "evidence": [
+        "Changed: packages/tests/unit/core/unknownConfigKeys.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
       ]
     }
   }

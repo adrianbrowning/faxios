@@ -17,7 +17,6 @@ describe("form data", () => {
     };
 
     const response = await faxios.post("http://example.com/form", form, {
-      adapter: "fetch",
       env: { fetch: mockFetch, Request, Response },
     });
 
@@ -41,7 +40,7 @@ describe("form data", () => {
     const response = await faxios.postForm(
       "http://example.com/post-form",
       { project: "faxios", mode: "compat" },
-      { adapter: "fetch", env: { fetch: mockFetch, Request, Response } }
+      { env: { fetch: mockFetch, Request, Response } }
     );
 
     expect(response.data.contentType).toContain("multipart/form-data");

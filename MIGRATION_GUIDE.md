@@ -38,7 +38,7 @@ All requests in all runtimes now go through `fetch`. There is no `http`/`https` 
 
 ### b) Browser XHR adapter removed
 
-The `XMLHttpRequest` adapter is gone. Browsers use `fetch`. The default adapter list is `['fetch']`; custom user-supplied adapters are still supported via `adapter`.
+The `XMLHttpRequest` adapter is gone. Browsers use `fetch`. There is no `adapter` option: passing one rejects with `ERR_BAD_OPTION`. To replace the transport, pass a custom `fetch` as `env.fetch`.
 
 ### c) ESM-only — no CJS build, no UMD/CDN bundle
 
@@ -63,9 +63,11 @@ faxios.post('/upload', body, {
 
 ### e) Removed config fields
 
-The following config fields were removed from the public type. Passing them is now a **type error** and they are **ignored at runtime**:
+The following config fields were removed from the public type. Passing them is a **type error**, and at runtime the request **rejects** with a `FaxiosError` whose `code` is `ERR_BAD_OPTION`; the message names the field and what to use instead:
 
-`maxRedirects`, `maxRate`, `beforeRedirect`, `socketPath`, `allowedSocketPaths`, `transport`, `httpAgent`, `httpsAgent`, `proxy`, `decompress`, `insecureHTTPParser`, `httpVersion`, `http2Options`, `sensitiveHeaders`, `lookup`, `family`.
+`adapter`, `cancelToken`, `maxRedirects`, `maxRate`, `beforeRedirect`, `socketPath`, `allowedSocketPaths`, `transport`, `httpAgent`, `httpsAgent`, `proxy`, `decompress`, `insecureHTTPParser`, `httpVersion`, `http2Options`, `sensitiveHeaders`, `lookup`, `family`, `responseEncoding`.
+
+Any other unknown request config key rejects the same way, so a typo such as `timout` fails instead of silently dropping the timeout. Keys a plugin adds, such as `retry`, are accepted while the plugin is installed. `responseType: "document"` and `responseType: "response"` reject with `ERR_BAD_OPTION_VALUE`, and `transitional.advertiseZstdAcceptEncoding` rejects with `ERR_BAD_OPTION`; none of them ever changed what faxios did. Text is always decoded as UTF-8: read other encodings with `responseType: "arraybuffer"` and a `TextDecoder`.
 
 `maxContentLength` and `maxBodyLength` are **kept** and enforced by the fetch adapter.
 

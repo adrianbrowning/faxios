@@ -4,7 +4,6 @@
 import canceledFromSignal from "../cancel/canceledFromSignal.js";
 import cloneConfig from "../helpers/cloneConfig.js";
 import validator from "../helpers/validator.js";
-import type { ValidatorFn } from "../helpers/validator.js";
 import type {
   FaxiosContext,
   FaxiosMiddleware,
@@ -22,6 +21,7 @@ import type {
 } from "../types.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import utils from "../utils.js";
+import assertRequestConfig from "./assertRequestConfig.js";
 import assertTimeout from "./assertTimeout.js";
 import { createDefinedEndpoint } from "./define.js";
 import type { DefineConfig, DefinedEndpoint } from "./define.js";
@@ -32,20 +32,6 @@ import mergeConfig from "./mergeConfig.js";
 import resolveRequestURL from "./resolveRequestURL.js";
 import type { RouteBuilder, RouteConfig } from "./route.js";
 import { createRouteBuilder } from "./route.js";
-
-type TransitionalFn = (
-  validator: false | undefined | ValidatorFn,
-  version?: string,
-  message?: string
-) => ValidatorFn;
-type SpellingFn = (correctSpelling: string) => ValidatorFn;
-const validators = validator.validators as Record<
-  string,
-  undefined | ValidatorFn
-> & {
-  spelling?: SpellingFn;
-  transitional?: TransitionalFn;
-};
 
 // Every method header group declared on HeadersDefaults. `satisfies` keeps this
 // list exhaustive, so a group the types accept can never reach the wire.
@@ -124,8 +110,8 @@ function normalizeParamsSerializer(config: FaxiosRequestConfig): void {
     validator.assertOptions(
       paramsSerializer,
       {
-        encode: validators.function!,
-        serialize: validators.function!,
+        encode: validator.validators.function,
+        serialize: validator.validators.function,
       },
       true
     );
@@ -181,6 +167,8 @@ type AnyContextMiddleware = FaxiosMiddleware<unknown, unknown>;
 type AnyContextNext = FaxiosNext<unknown, unknown>;
 
 type MiddlewareEntry = {
+  // Request option names the plugin declared, accepted in request config while it's installed.
+  options: ReadonlyArray<string>;
   provided: Array<string>;
   // The value passed to use(), kept only for eject()'s identity check.
   ref: unknown;
@@ -291,6 +279,8 @@ class Faxios {
   // snapshot it started with, and composes nothing per call.
   #composed: AnyContextNext | null = null;
   #capabilities: Record<string, unknown> = Object.create(null);
+  // Request options the installed plugins declared; any other unknown config key is rejected.
+  #pluginOptions: ReadonlySet<string> = new Set();
 
   constructor(instanceConfig?: FaxiosRequestConfig) {
     this.defaults = instanceConfig || {};
@@ -320,9 +310,14 @@ class Faxios {
     if (plugin && (typeof name !== "string" || name === "")) {
       throw new FaxiosError("use() expects a plugin's own name to be a non-empty string", FaxiosError.ERR_BAD_OPTION_VALUE);
     }
+    const declared = own("options");
+    if (declared != null && !utils.isPlainObject(declared)) {
+      throw new FaxiosError("use() expects a plugin's own options to be an object of request option names", FaxiosError.ERR_BAD_OPTION_VALUE);
+    }
+    const options = declared == null ? [] : Object.keys(declared).filter(key => !utils.isDangerousKey(key));
     const provides = own("provides");
     const provided = provides == null ? [] : this.#addCapabilities(String(name), provides);
-    this.#setMiddleware([ ...this.#middleware, { ref: middleware, run, provided }]);
+    this.#setMiddleware([ ...this.#middleware, { ref: middleware, run, provided, options }]);
   }
 
   // Removes middleware or a plugin registered with use(), by reference. In-flight requests keep
@@ -340,6 +335,7 @@ class Faxios {
 
   #setMiddleware(entries: ReadonlyArray<MiddlewareEntry>): void {
     this.#middleware = entries;
+    this.#pluginOptions = new Set(entries.flatMap(entry => entry.options));
     this.#composed = entries.length === 0
       ? null
       : composeMiddleware(entries, ctx => dispatchRequest(copyForDispatch(ctx.config)));
@@ -404,37 +400,12 @@ class Faxios {
     }
 
     config = mergeConfig(this.defaults, config);
+    assertRequestConfig(config, this.#pluginOptions);
 
-    const { transitional, headers } = config;
-
-    if (transitional !== undefined) {
-      validator.assertOptions(
-        transitional,
-        {
-          forcedJSONParsing: validators.transitional!(validators.boolean),
-          clarifyTimeoutError: validators.transitional!(validators.boolean),
-          advertiseZstdAcceptEncoding: validators.transitional!(
-            validators.boolean
-          ),
-          validateStatusUndefinedResolves: validators.transitional!(
-            validators.boolean
-          ),
-        },
-        false
-      );
-    }
+    const { headers } = config;
 
     normalizeParamsSerializer(config);
     resolveAllowAbsoluteUrls(config, this.defaults);
-
-    validator.assertOptions(
-      config,
-      {
-        baseUrl: validators.spelling!("baseURL"),
-        withXsrfToken: validators.spelling!("withXSRFToken"),
-      },
-      true
-    );
 
     config.method = resolveMethod(config, this.defaults);
     normalizeURL(config);

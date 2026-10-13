@@ -18,7 +18,6 @@ describe("errors", () => {
 
     const err = await faxios
       .get("https://example.com/missing", {
-        adapter: "fetch",
         env: env(fetch),
       })
       .catch((e: any) => e);

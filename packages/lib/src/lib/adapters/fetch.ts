@@ -819,9 +819,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
 
       checkDeclaredContentLength(responseHeaders, hasMaxContentLength, maxContentLength!, config, request);
 
-      const isStreamResponse =
-        supportsResponseStream &&
-        (responseType === "stream" || responseType === "response");
+      const isStreamResponse = supportsResponseStream && responseType === "stream";
 
       // A stream body outlives this call, so its end, error or cancel releases the request.
       // A buffered body is released below, or by the catch on failure.

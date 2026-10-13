@@ -138,7 +138,6 @@ class FaxiosError<T = unknown, D = unknown> extends Error {
   static readonly ECONNREFUSED = "ECONNREFUSED";
   static readonly ERR_NETWORK = "ERR_NETWORK";
   static readonly ERR_FR_TOO_MANY_REDIRECTS = "ERR_FR_TOO_MANY_REDIRECTS";
-  static readonly ERR_DEPRECATED = "ERR_DEPRECATED";
   static readonly ERR_BAD_RESPONSE = "ERR_BAD_RESPONSE";
   static readonly ERR_BAD_REQUEST = "ERR_BAD_REQUEST";
   static readonly ERR_CANCELED = "ERR_CANCELED";

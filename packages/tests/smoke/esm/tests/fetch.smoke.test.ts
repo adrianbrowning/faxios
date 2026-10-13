@@ -28,7 +28,6 @@ describe("fetch compat (dist export only)", () => {
     const { mockFetch, getCalls } = createFetchMock();
 
     const response = await faxios.get("https://example.com/users", {
-      adapter: "fetch",
       env: {
         fetch: mockFetch,
         Request,
@@ -80,7 +79,6 @@ describe("fetch compat (dist export only)", () => {
       "https://example.com/items",
       { name: "widget" },
       {
-        adapter: "fetch",
         env: {
           fetch: mockFetch,
           Request,
@@ -108,7 +106,6 @@ describe("fetch compat (dist export only)", () => {
 
     const err = await faxios
       .get("https://example.com/fail", {
-        adapter: "fetch",
         env: {
           fetch: mockFetch,
           Request,
@@ -128,7 +125,6 @@ describe("fetch compat (dist export only)", () => {
 
     const err = await faxios
       .get("https://example.com/cancel", {
-        adapter: "fetch",
         signal: controller.signal,
         env: {
           fetch: mockFetch,

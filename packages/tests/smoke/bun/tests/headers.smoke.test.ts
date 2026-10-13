@@ -32,7 +32,6 @@ describe("headers", () => {
     const { fetch, getCalls } = createFetchCapture();
 
     await faxios.get("https://example.com/custom-headers", {
-      adapter: "fetch",
       headers: {
         "X-Custom": "trace-123",
       },
@@ -50,7 +49,6 @@ describe("headers", () => {
       "https://example.com/post-json",
       { name: "widget" },
       {
-        adapter: "fetch",
         env: env(fetch),
       }
     );

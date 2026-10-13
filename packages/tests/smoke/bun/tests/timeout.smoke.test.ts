@@ -42,7 +42,6 @@ describe("timeout", () => {
 
     const err = await faxios
       .get("https://example.com/timeout", {
-        adapter: "fetch",
         timeout: 50,
         env: env(fetch),
       })
