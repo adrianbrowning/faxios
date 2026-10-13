@@ -66,13 +66,10 @@ export default function mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfi
     return undefined;
   }
 
-  function defaultToConfig2(a: unknown, b: unknown, prop?: unknown): unknown {
+  // An own `undefined` in config2 is treated as unset, so config1's value applies.
+  function defaultToConfig2(a: unknown, b: unknown): unknown {
     if (!utils.isUndefined(b)) {
       return getMergedValue(undefined, b);
-    }
-    // ponytail: explicit undefined in config2 (e.g. xsrfCookieName: undefined) must win over config1's default
-    else if (utils.hasOwnProp(config2, prop as string)) {
-      return undefined;
     }
     else if (!utils.isUndefined(a)) {
       return getMergedValue(undefined, a);
@@ -162,12 +159,14 @@ export default function mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfi
     transformResponse: defaultToConfig2,
     paramsSerializer: defaultToConfig2,
     timeout: defaultToConfig2,
-    timeoutMessage: defaultToConfig2,
+    timeoutErrorMessage: defaultToConfig2,
     withCredentials: defaultToConfig2,
     withXSRFToken: defaultToConfig2,
     responseType: defaultToConfig2,
-    xsrfCookieName: defaultToConfig2,
-    xsrfHeaderName: defaultToConfig2,
+    // Clearing the XSRF names is meaningful (no cookie read, no header sent), so an own undefined
+    // wins over config1 here; everywhere else it falls back.
+    xsrfCookieName: mergeDirectKeys,
+    xsrfHeaderName: mergeDirectKeys,
     onUploadProgress: defaultToConfig2,
     onDownloadProgress: defaultToConfig2,
     maxContentLength: defaultToConfig2,
@@ -196,10 +195,13 @@ export default function mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfi
     (utils.isUndefined(configValue) && mergeFn !== mergeDirectKeys) || (out[key] = configValue);
   });
 
+  // An own `validateStatus: undefined` falls back to config1's validator like any other own
+  // undefined, unless `transitional.validateStatusUndefinedResolves` opts back in to resolving
+  // every status. `validateStatus: null` is the explicit way to resolve every status.
   if (
     utils.hasOwnProp(config2, "validateStatus") &&
     utils.isUndefined((config2).validateStatus) &&
-    getMergedTransitionalOption("validateStatusUndefinedResolves") === false
+    getMergedTransitionalOption("validateStatusUndefinedResolves") !== true
   ) {
     if (utils.hasOwnProp(config1, "validateStatus")) {
       out["validateStatus"] = getMergedValue(undefined, (config1).validateStatus);

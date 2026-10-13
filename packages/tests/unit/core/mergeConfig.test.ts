@@ -343,9 +343,9 @@ describe("core::mergeConfig", () => {
       expect((merged as Record<string, unknown>).responseSchema).toStrictEqual(schemaB);
     });
 
-    it("explicit undefined in config2 removes schema (opt-out)", () => {
+    it("explicit undefined in config2 keeps config1's schema", () => {
       const merged = mergeConfig({ responseSchema: schemaA }, { responseSchema: undefined });
-      expect((merged as Record<string, unknown>).responseSchema).toBeUndefined();
+      expect((merged as Record<string, unknown>).responseSchema).toStrictEqual(schemaA);
     });
   });
 
@@ -430,9 +430,18 @@ describe("core::mergeConfig", () => {
       );
     });
 
-    it("keeps legacy undefined behavior by default", () => {
+    it("falls back to config1's validator for an explicit undefined by default", () => {
       expect(
         mergeConfig(defaults, { validateStatus: undefined }).validateStatus
+      ).toBe(defaults.validateStatus);
+    });
+
+    it("keeps an explicit undefined when validateStatusUndefinedResolves opts in", () => {
+      expect(
+        mergeConfig(defaults, {
+          validateStatus: undefined,
+          transitional: { validateStatusUndefinedResolves: true },
+        }).validateStatus
       ).toBeUndefined();
     });
 
