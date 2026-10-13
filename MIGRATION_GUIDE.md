@@ -172,6 +172,12 @@ import { retry } from '@gcmdev/faxios/plugins/retry';
 const api = faxios.create({ timeout: 20_000 }).use(retry({ attempts: 3, attemptTimeout: 5000 }));
 ```
 
+### m) `response.headers` and request headers are typed `FaxiosHeaders`
+
+`response.headers`, `ctx.config.headers` in middleware and the `headers` argument of `transformRequest` and `transformResponse` are typed as the `FaxiosHeaders` class, which is what they are at runtime. `has()`, `getSetCookie()`, the shortcuts and `for...of` work without a cast. The `FaxiosResponseHeadersLike` and `FaxiosRequestHeaders` types are removed: import `FaxiosHeaders` instead.
+
+The `get<Header>` shortcuts take the parsers `get()` takes (`true`, a `RegExp` or a function), so `getContentType(/charset=(\S+)/)` is typed `RegExpExecArray | null | undefined`. Passing a string, such as `getContentType("application/json")`, is now a type error; it always threw `TypeError` at runtime. Use `hasContentType("application/json")` to test a value.
+
 ---
 
 ## Overview

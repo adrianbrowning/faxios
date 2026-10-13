@@ -7,10 +7,10 @@
 // - instance defaults typed as header buckets plus request config
 // - isFaxiosError/isCancel narrow `unknown` as type predicates
 // - env.FormData accepts the runtime FormData constructor (and null)
-// - FaxiosRequestHeaders accessors match the ones FaxiosHeaders registers at runtime
+// - request and response headers are FaxiosHeaders; accessors match the ones registered at runtime
 // - header `rewrite` is boolean only (a function was never honoured)
 import faxios, { CanceledError, FaxiosHeaders, isCancel, isFaxiosError } from "faxios";
-import type { FaxiosHeaderValue, FaxiosRequestHeaders, FaxiosResponse } from "faxios";
+import type { FaxiosHeaderValue, FaxiosResponse } from "faxios";
 
 type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
 
@@ -55,7 +55,7 @@ function requestHeaderAccessorsMatchRuntime(): void {
       const encoding = headers.getAcceptEncoding();
       const viaGet = headers.get("Accept-Encoding");
       const sameAsGet: Equal<typeof encoding, typeof viaGet> = true;
-      const chained: FaxiosRequestHeaders = headers.setAcceptEncoding("gzip, br", true);
+      const chained: FaxiosHeaders = headers.setAcceptEncoding("gzip, br", true);
       const has: boolean = headers.hasAcceptEncoding(/gzip/);
       void sameAsGet;
       void chained;
@@ -72,7 +72,28 @@ function requestHeaderAccessorsMatchRuntime(): void {
   });
 }
 
-function headerRewriteIsBoolean(requestHeaders: FaxiosRequestHeaders): void {
+async function responseHeadersAreFaxiosHeaders(): Promise<void> {
+  const { headers } = await faxios.get("/user");
+  const has: boolean = headers.has("x-request-id");
+  const cookies: Array<string> = headers.getSetCookie();
+  const tokens: Record<string, string> | undefined = headers.getContentType(true);
+  const match: null | RegExpExecArray | undefined = headers.getContentType(/charset=(\S+)/);
+  const length: number | undefined = headers.getContentType(value => String(value).length);
+  for (const [ name ] of headers) {
+    const key: string = name;
+    void key;
+  }
+  void has;
+  void cookies;
+  void tokens;
+  void match;
+  void length;
+
+  // @ts-expect-error - get accessors take a parser, not a matcher string
+  headers.getContentType("application/json");
+}
+
+function headerRewriteIsBoolean(requestHeaders: FaxiosHeaders): void {
   const h = new FaxiosHeaders({ "X-A": "old" });
   h.set("X-A", "v", true);
   h.set("X-A", "v", false);
@@ -87,11 +108,11 @@ function headerRewriteIsBoolean(requestHeaders: FaxiosRequestHeaders): void {
   h.set("X-A", "v", () => true);
   // @ts-expect-error - accessor rewrite is boolean; a function was never called
   h.setContentType("text/plain", () => true);
-  // @ts-expect-error - FaxiosRequestHeaders rewrite is boolean
+  // @ts-expect-error - request headers rewrite is boolean
   requestHeaders.set("X-A", "v", () => true);
-  // @ts-expect-error - FaxiosRequestHeaders accessor rewrite is boolean
+  // @ts-expect-error - request headers accessor rewrite is boolean
   requestHeaders.setAuthorization("Bearer t", () => true);
-  // @ts-expect-error - FaxiosRequestHeaders accessor rewrite is boolean
+  // @ts-expect-error - request headers accessor rewrite is boolean
   requestHeaders.setAcceptEncoding("gzip", () => true);
 }
 
@@ -193,6 +214,7 @@ void generics;
 void headerAccessorsAreTyped;
 void requestHeaderAccessorsMatchRuntime;
 void headerRewriteIsBoolean;
+void responseHeadersAreFaxiosHeaders;
 void indexSignatureRemoved;
 void requestBodyIsTyped;
 void serializerAndEnvOptionsAreTyped;

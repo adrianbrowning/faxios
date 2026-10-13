@@ -120,7 +120,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
   const preFlight = validatePreFlight(config);
   if (preFlight) await settleOnAbort(preFlight, config);
 
-  config.headers = FaxiosHeaders.from(config.headers) as unknown as typeof config.headers;
+  config.headers = FaxiosHeaders.from(config.headers);
 
   config.data = transformData.call(config, config.transformRequest);
 

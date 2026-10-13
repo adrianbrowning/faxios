@@ -16,7 +16,6 @@ import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import { trackStream } from "../helpers/trackStream.js";
 import platform from "../platform.js";
 import type {
-  FaxiosRequestHeaders,
   InternalFaxiosRequestConfig
 } from "../types.js";
 import utils from "../utils.js";
@@ -89,7 +88,7 @@ const isBrowserRuntime = platform.hasStandardBrowserEnv || platform.hasStandardB
 // Browsers send their own User-Agent; setting one makes every cross-origin request
 // need a CORS preflight that most APIs don't allow.
 const setsUserAgent = !isBrowserRuntime;
-const applyDefaultUserAgent = (headers: FaxiosRequestHeaders): void => {
+const applyDefaultUserAgent = (headers: FaxiosHeaders): void => {
   if (setsUserAgent) headers.set("User-Agent", "faxios/" + VERSION, false);
 };
 
@@ -360,7 +359,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
   };
 
   const resolveBodyLength = async (
-    headers: FaxiosRequestHeaders,
+    headers: FaxiosHeaders,
     body: unknown
   ): Promise<number | undefined> => {
     const length = utils.toFiniteNumber(headers.getContentLength());
@@ -377,7 +376,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
   // strip credentials from URL. Returns the (possibly updated) URL.
   const applyAuthToRequest = (
     url: string,
-    headers: FaxiosRequestHeaders,
+    headers: FaxiosHeaders,
     own: (key: string) => unknown
   ): string => {
     let auth: undefined | { password: unknown; username: unknown; };
@@ -499,7 +498,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     data: unknown,
     url: string,
     method: string,
-    headers: FaxiosRequestHeaders,
+    headers: FaxiosHeaders,
     onUploadProgress: unknown,
     mustEnforceStreamBody: boolean,
     requestContentLength: number | undefined,

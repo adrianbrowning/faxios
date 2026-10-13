@@ -119,7 +119,7 @@ Gets a header from the headers object.
 get(headerName: string): FaxiosHeaderValue | undefined;
 get(headerName: string, parser: true): Record<string, string> | undefined;
 get(headerName: string, parser: RegExp): RegExpExecArray | null | undefined;
-get<R>(headerName: string, parser: (value: FaxiosHeaderValue, header: string) => R): R | undefined;
+get<R>(headerName: string, parser: (this: FaxiosHeaders, value: FaxiosHeaderValue, header: string) => R): R | undefined;
 ```
 
 #### `has`

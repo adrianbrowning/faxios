@@ -2,7 +2,7 @@
 
 import utils from "../utils.js";
 
-// RawFaxiosHeaders whose duplicates are ignored by node
+// Headers whose duplicates are ignored by node
 // c.f. https://nodejs.org/api/http.html#http_message_headers
 const ignoreDuplicateOf = utils.toObjectSet([
   "age",

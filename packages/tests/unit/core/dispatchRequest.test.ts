@@ -20,9 +20,7 @@ class ReactNativeFormData {
 }
 
 function faxiosHeaders(init?: Record<string, unknown>) {
-  return new FaxiosHeaders(
-    init
-  ) as unknown as InternalFaxiosRequestConfig["headers"];
+  return new FaxiosHeaders(init);
 }
 
 function baseConfig(

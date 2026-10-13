@@ -219,7 +219,7 @@ await api.get('/api/data', {
 
 ## Reading response headers
 
-Response headers are available on `response.headers` as a `FaxiosHeaders` instance. All header names are lower-cased:
+Response headers are available on `response.headers` as a `FaxiosHeaders` instance, and are typed as `FaxiosHeaders`, so every method below works in TypeScript without a cast. All header names are lower-cased:
 
 ```js
 import faxios from "@gcmdev/faxios";
@@ -231,6 +231,20 @@ console.log(response.headers['content-type']);
 
 console.log(response.headers.get('x-request-id'));
 // abc123
+
+console.log(response.headers.has('x-request-id'));
+// true
+
+console.log(response.headers.getContentType(/charset=([^;]+)/)?.[1]);
+// utf-8
+
+for (const cookie of response.headers.getSetCookie()) {
+  console.log(cookie); // one entry per Set-Cookie header
+}
+
+for (const [ name, value ] of response.headers) {
+  console.log(name, value);
+}
 ```
 
 ## Removing a default header

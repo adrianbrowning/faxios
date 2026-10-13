@@ -206,3 +206,16 @@ The following shortcuts are available:
 - `setAcceptEncoding`, `getAcceptEncoding`, `hasAcceptEncoding`
 - `setUserAgent`, `getUserAgent`, `hasUserAgent`
 - `setAuthorization`, `getAuthorization`, `hasAuthorization`
+
+Each `get<Header>` shortcut takes the same parsers as `get()`, without the header name. Each `has<Header>` shortcut takes the same matcher as `has()`:
+
+```ts check=skip
+getContentType(): FaxiosHeaderValue | undefined;
+getContentType(parser: true): Record<string, string> | undefined;
+getContentType(parser: RegExp): RegExpExecArray | null | undefined;
+getContentType<R>(parser: (this: FaxiosHeaders, value: FaxiosHeaderValue, header: string) => R): R | undefined;
+hasContentType(matcher?: string | RegExp | ((this: FaxiosHeaders, value: string, name: string) => boolean)): boolean;
+setContentType(value: FaxiosHeaderValue, rewrite?: boolean): FaxiosHeaders;
+```
+
+`getContentType("application/json")` is a type error. To test a value, use `hasContentType("application/json")` or `hasContentType(/json/)`.

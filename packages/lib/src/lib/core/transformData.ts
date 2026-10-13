@@ -2,7 +2,7 @@
 
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import defaults from "../defaults/index.js";
-import type { FaxiosRequestHeaders, FaxiosRequestTransformer, FaxiosResponseTransformer, InternalFaxiosRequestConfig } from "../types.js";
+import type { FaxiosRequestTransformer, FaxiosResponseTransformer, InternalFaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
 
 type TransformFn = FaxiosRequestTransformer | FaxiosResponseTransformer;
@@ -14,7 +14,7 @@ export default function transformData(this: unknown, fns: Array<TransformFn> | T
   let data: unknown = (context as { data?: unknown; }).data;
 
   utils.forEach(fns, function transform(fn: unknown) {
-    data = (fn as TransformFn).call(config, data, headers as unknown as FaxiosRequestHeaders, response?.status);
+    data = (fn as TransformFn).call(config, data, headers, response?.status);
   });
 
   headers.normalize(false);

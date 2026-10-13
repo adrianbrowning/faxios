@@ -3,20 +3,20 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "88f423416ad35a2ba3a4335e9e52affcfa5fd2fbbb7e004a56b414bd160471d7",
+      "fingerprint": "c9192ddd6c72b2d365e147fc94f059353a23db6252a4d0034cdbcca4061f1522",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "b0ce6d57daa49ad35f89cfe352c0b4136e4a721c33abc5993284a299d2800549",
+        "MIGRATION_GUIDE.md": "e9b7b3e73eedf178ac3a56c7baef5d90efe4e35d9012b174172847d360e366f3",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
         "packages/lib/skills/configure-requests/SKILL.md": "d0adecf7743d3eb68b7464847f2e3be3e1a9eff17ae5f68b443562e8d562c0fa",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
         "packages/lib/skills/configure-requests/references/plugins.md": "e05e13099aa48813cc16bd96588852d01188cf65f648b606342aea39710aa4c9",
-        "packages/lib/src/index.ts": "edd330b5bfd7f3bc0066ae038c0f802be6634c68080482031db7780df21d286f",
-        "packages/lib/src/lib/adapters/fetch.ts": "a5eec64d1166a730747b87667e5c3d5d64794e8175c63068871595dc46e8f204",
-        "packages/lib/src/lib/core/Faxios.ts": "eeaff0c5bd167ce5158679b43556ba55f295a887c97a27633a54a66cbc55a3c3",
+        "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
+        "packages/lib/src/lib/adapters/fetch.ts": "dac730893928ede80b3a1b31b1064053a41555a2a13d340326fb3b78927c99b5",
+        "packages/lib/src/lib/core/Faxios.ts": "7d77d83175a3f2df158bf4fad8c92217e4cc7b1323e0834999d5428707be2d28",
         "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "6698a4baef5c1beaf8f819fd02ff0419e58be3cb1299e6bd44d5b95c6fb24181",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "a40f986939a248c3184081537c46caac2da8fe1759c4637ea72b5370b7e64ba2",
         "packages/lib/src/lib/core/mergeConfig.ts": "44c5417867eca00b465e1cbfbcee2104162d5e82705b15082b9be8ba28930f8a",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
@@ -25,7 +25,7 @@
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/retry.ts": "83aac25415efa7c0135b7ab4733632b3cb265a9ab11266a125eb2541c2af7d12",
         "packages/lib/src/lib/plugins/timing.ts": "718ad5f2c23e3ee0e39ef8632b223da5ad46e556d4d5d0e5f54369708eaaee5d",
-        "packages/lib/src/lib/types.ts": "c2c5d5dfdf2544244ba68079f413a6f5d0463652ca18834de7a42689aeb549fc",
+        "packages/lib/src/lib/types.ts": "ec87f84d8d62a616eb4bd68d4221db38e891736b12ff1364489f572a478f9937",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
@@ -33,17 +33,17 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
-      "outcome": "updated",
-      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "outcome": "no-change",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/helpers/composeSignals.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/types.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "5056d884c40b4a60886bc217f10b31d52bf02431e8860fec681c2992503a7372",
+      "fingerprint": "56eac8abbbc06a57761f473a4b6ac17a52d1c1cf4485d7d11441a6d0d493e38f",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "b0ce6d57daa49ad35f89cfe352c0b4136e4a721c33abc5993284a299d2800549",
+        "MIGRATION_GUIDE.md": "e9b7b3e73eedf178ac3a56c7baef5d90efe4e35d9012b174172847d360e366f3",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
@@ -51,13 +51,13 @@
         "packages/lib/skills/configure-requests/SKILL.md": "d0adecf7743d3eb68b7464847f2e3be3e1a9eff17ae5f68b443562e8d562c0fa",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
         "packages/lib/skills/configure-requests/references/plugins.md": "e05e13099aa48813cc16bd96588852d01188cf65f648b606342aea39710aa4c9",
-        "packages/lib/src/index.ts": "edd330b5bfd7f3bc0066ae038c0f802be6634c68080482031db7780df21d286f",
-        "packages/lib/src/lib/adapters/fetch.ts": "a5eec64d1166a730747b87667e5c3d5d64794e8175c63068871595dc46e8f204",
-        "packages/lib/src/lib/core/Faxios.ts": "eeaff0c5bd167ce5158679b43556ba55f295a887c97a27633a54a66cbc55a3c3",
+        "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
+        "packages/lib/src/lib/adapters/fetch.ts": "dac730893928ede80b3a1b31b1064053a41555a2a13d340326fb3b78927c99b5",
+        "packages/lib/src/lib/core/Faxios.ts": "7d77d83175a3f2df158bf4fad8c92217e4cc7b1323e0834999d5428707be2d28",
         "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "6698a4baef5c1beaf8f819fd02ff0419e58be3cb1299e6bd44d5b95c6fb24181",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "a40f986939a248c3184081537c46caac2da8fe1759c4637ea72b5370b7e64ba2",
         "packages/lib/src/lib/core/mergeConfig.ts": "44c5417867eca00b465e1cbfbcee2104162d5e82705b15082b9be8ba28930f8a",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
@@ -66,7 +66,7 @@
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/retry.ts": "83aac25415efa7c0135b7ab4733632b3cb265a9ab11266a125eb2541c2af7d12",
         "packages/lib/src/lib/plugins/timing.ts": "718ad5f2c23e3ee0e39ef8632b223da5ad46e556d4d5d0e5f54369708eaaee5d",
-        "packages/lib/src/lib/types.ts": "c2c5d5dfdf2544244ba68079f413a6f5d0463652ca18834de7a42689aeb549fc",
+        "packages/lib/src/lib/types.ts": "ec87f84d8d62a616eb4bd68d4221db38e891736b12ff1364489f572a478f9937",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
-      "outcome": "updated",
-      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "outcome": "no-change",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/helpers/composeSignals.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/types.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:knip.json": {
@@ -170,15 +170,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "0e32b899fab03f2f2639458bd210a0af30614ce5798e7088a49d9021a7b6a5d5",
+      "fingerprint": "f8041410dcf55ba36b677f2cfae3bfc54244af6d8cd3790fb8d2054b26177a5c",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "5b1580ec769386fad1bf140b6a676ee09702d30689c1908d10da2a58892131f9"
+        "packages/docs/pages/advanced/api-reference.md": "833bc455ffa9f4fe01d94149680c1ac31fdad500847001c4258070e68880446d"
       },
-      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
-      "outcome": "updated",
-      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "outcome": "no-change",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/api-reference.md at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+        "Changed: packages/docs/pages/advanced/api-reference.md at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
@@ -230,15 +230,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/headers.md": {
-      "fingerprint": "78ca6addee9523ca92cb49c4125ab8ecf6b2a744c492b5d5a29857282a63cec9",
+      "fingerprint": "aef6a489104632a63cd7f3b373963a3e4bca537568e0a64c76a65027d1e3f81b",
       "snapshot": {
-        "packages/docs/pages/advanced/headers.md": "dac32590d9d9cf9a875857405de82d0ec492f5a494dc1cabd654db3931f4befb"
+        "packages/docs/pages/advanced/headers.md": "05c1b3ef27caaf9749e8e58d5a756a9bac6e2de74f0291e52fe4c9220f232501"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
       "outcome": "no-change",
-      "reason": "Diff reviewed (M); consistent.",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "+L23..+L41: in middleware, `ctx.config.headers.set(...)`, including `set('User-Agent', false)`. +L95..+L125 (Header typing): bag + `common`/method groups + FaxiosHeaders. `undefined` drops an inherited value; `null`/`false` keep the header off entirely; objects/functions are rejected, so use `String(...)`. +L131: `{ Authorization: null }` removes an inherited header. These match SKILL L95-98, L105-106, L217-218. The Unicode/middleware wording (+L156..) is only a rename."
+        "Changed: packages/docs/pages/advanced/headers.md at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:packages/docs/pages/advanced/interceptors.md": {
@@ -422,15 +422,15 @@
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
-      "fingerprint": "7251aee6241a753ad245b18738612ba0eedae37c2af65ccf17db8e83b9adb3af",
+      "fingerprint": "e4852e045e98a139398c95d2759104f5e804c3a9c186740fcb25f0d8e510cb41",
       "snapshot": {
-        "packages/lib/src/lib/defaults/index.ts": "54be0a4a630e2cce7db3bb665ed7b091e2ffc9c7d08fed16d43681f5993266aa"
+        "packages/lib/src/lib/defaults/index.ts": "2d4e8757b56382272657889b1eb48526c3748d0afb2abeca62e9fd9697dfc6da"
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
-      "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "outcome": "no-change",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "Changed: packages/lib/src/lib/defaults/index.ts at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: packages/lib/src/lib/defaults/index.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:packages/tests/browser/headers.browser.test.ts": {
@@ -2206,15 +2206,15 @@
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
-      "fingerprint": "2abaf99547cb2fc8b06262eef8b278cca07cca0a377871445a9746293a0b548b",
+      "fingerprint": "de1344c56f4ed1b91a7edb9d5b481c8502b9cf701f3b8ecf6ede3ac0f0aad22e",
       "snapshot": {
-        "packages/lib/src/lib/adapters/fetch-helpers.ts": "f151553efa20cc8bc54a6b8d7e4e0e695c45be057f6174a99f5a4d3d1fea2546"
+        "packages/lib/src/lib/adapters/fetch-helpers.ts": "85fc57685598177df9c127d46f69e3ec73a5023b4f7ace7163a163d656594c6a"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
       "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:packages/lib/src/lib/cancel/CanceledError.ts": {
@@ -2230,15 +2230,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/FaxiosHeaders.ts": {
-      "fingerprint": "bc749e400ff6468e1ceeeafad97ed9d83767127a4a3adc81c86acd56c1b1c646",
+      "fingerprint": "4baa3632cee725d17d6d69f8820d55bdb983f20c3b45df813d5b28a244cae877",
       "snapshot": {
-        "packages/lib/src/lib/core/FaxiosHeaders.ts": "2cc184d78a851af8c3029fcebe7f6758f070afe3403918ef75eb31b408ec28b4"
+        "packages/lib/src/lib/core/FaxiosHeaders.ts": "401b5a73146437b667239454455f208def95825d41e5af3f3e2560acc673e3a6"
       },
-      "head": "e26c1ab7e3e9ec0704c84a23dead8868970e1f04",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
       "outcome": "no-change",
-      "reason": "getSetCookie bug fix; configure-requests skill does not document getSetCookie",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at 507ee20348e63b7dd80ede3c38d05aef74f7369d"
+        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
@@ -2254,16 +2254,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/transformData.ts": {
-      "fingerprint": "3d2dd7258ad37f34c7dc2d0fee30277e2bce3815496b6b79e23fa789a836237b",
+      "fingerprint": "9cf44eef17578a9157d0d938b5395d281e4cc440aad99055a76481c7a08842a7",
       "snapshot": {
-        "packages/lib/src/lib/core/transformData.ts": "4616302b82eb663eae39466daa732e182da436fe958b80dea2eae411b4a8bb6a"
+        "packages/lib/src/lib/core/transformData.ts": "446436ac144601f4f96947708c54b6b6372b8881cc00dbd4d1ed5475c4ebe0a1"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
       "outcome": "no-change",
-      "reason": "Type import specifiers sorted. Parameter unions `TransformFn | Array<TransformFn> | undefined` → `Array<TransformFn> | TransformFn | undefined`, and `{…} | null` → `null | {…}`. Behaviour change: none",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/core/transformData.ts: Whole file compared. Changed lines are HEAD L5 and L10.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/core/transformData.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:packages/lib/src/lib/core/validateSchema.ts": {
@@ -2317,16 +2316,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/parseHeaders.ts": {
-      "fingerprint": "a258a4a0f470bf63c0483d280b83196bf1f4596d03c26f18f95884fddd1e5386",
+      "fingerprint": "92c04eeb1e609aee2ee8a4976581ef9b56195df29b7ab4c8bcf963b11423f6b5",
       "snapshot": {
-        "packages/lib/src/lib/helpers/parseHeaders.ts": "d101520212340811b3e299e3658f1fa3d7575b84ae821b38f802a3a0549311c8"
+        "packages/lib/src/lib/helpers/parseHeaders.ts": "3984e9feedab3f155d1b079420137ffec9d8ed5c6e7f15be098754de42b58a46"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
       "outcome": "no-change",
-      "reason": "`Record<string, string | Array<string>>` → `Record<string, Array<string> | string>` in the return type and on `parsed`. Behaviour change: none. The `ignoreDuplicateOf` list is unchanged.",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/parseHeaders.ts: Whole file compared. Changed lines are HEAD L41-42.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/helpers/parseHeaders.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:packages/lib/src/lib/helpers/progressEventReducer.ts": {
@@ -2575,15 +2573,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/esm-index.ts": {
-      "fingerprint": "4373bfec7486fb28eb7f598d94a29147804474775a3ffdd6fbcf9d65edc52273",
+      "fingerprint": "165e8986958b2f2841f56c2fc9208edf5de915ceff2c69a0c8285be063002080",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/esm-index.ts": "caf70e636744bec276c92ed4495cd3309dd8d582fee86fdf45b42948a72f8aee"
+        "packages/tests/module/esm/tests/helpers/esm-index.ts": "1902e68c5c5a89d92e1b3bf5e24c5fa9f55523d98571efc997406bd434871abf"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
-      "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "outcome": "no-change",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "Changed: packages/tests/module/esm/tests/helpers/esm-index.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: packages/tests/module/esm/tests/helpers/esm-index.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:packages/tests/module/esm/tests/ts.module.test.ts": {
@@ -2742,15 +2740,15 @@
       ]
     },
     "source:packages/tests/unit/axiosHeaders.test.ts": {
-      "fingerprint": "6ffc3b7d3276e0a9dc18795483a2f99498e9eaa3e478e91e67e41e3b76d083bd",
+      "fingerprint": "087cd702160ef99b12f2fe676bd7521d2256980ad4073c91b64fdf04b1cb237b",
       "snapshot": {
-        "packages/tests/unit/axiosHeaders.test.ts": "3b75fa5c0f3522cd5db651bdc0b01461dc193f4a1f235309bf3bf209ec66cf8a"
+        "packages/tests/unit/axiosHeaders.test.ts": "79372aa2395ab08f0e35b0333112099c11a0ab592570da8afb0a164a02f682e0"
       },
-      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
       "outcome": "no-change",
-      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "Changed: packages/tests/unit/axiosHeaders.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
+        "Changed: packages/tests/unit/axiosHeaders.test.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:packages/tests/unit/cancel/canceledError.test.ts": {
@@ -2780,15 +2778,15 @@
       ]
     },
     "source:packages/tests/unit/core/FaxiosError.test.ts": {
-      "fingerprint": "e083972060da144afcae5f628cdc26ddefa81f6ed9e272a3234063ef3618bd3d",
+      "fingerprint": "6141c915238725d9aa145f924e7f7ae1e610c4ee69afb1ed06bd855ec224b671",
       "snapshot": {
-        "packages/tests/unit/core/FaxiosError.test.ts": "edab06085f348a52744e91efc4be32f6a5e0d5324dfba3fdaaaaee6a41c61418"
+        "packages/tests/unit/core/FaxiosError.test.ts": "54abc73be2c36dd540b6b01e54707ad7aeeb7e8c9bd3b130539c0274176cbfb3"
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
-      "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "outcome": "no-change",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "Changed: packages/tests/unit/core/FaxiosError.test.ts at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: packages/tests/unit/core/FaxiosError.test.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:packages/tests/unit/core/buildFullPath.test.ts": {
@@ -2817,15 +2815,15 @@
       ]
     },
     "source:packages/tests/unit/core/dispatchRequest.test.ts": {
-      "fingerprint": "30ab1536075147da6e82a61e5c540c162367c75da029328060184b780071d102",
+      "fingerprint": "e04e065f55157a2aab477899224d26a3f50846ac6fad9aaf05ec1502ef1027b2",
       "snapshot": {
-        "packages/tests/unit/core/dispatchRequest.test.ts": "7542816775fed3481096f7a025b9f557d1cb48e753bf6422ba524543ed231ae8"
+        "packages/tests/unit/core/dispatchRequest.test.ts": "575cb857d90ef722f041069e3e903e9a5732119c9913f1cfb8d27b2a252d279c"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
       "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "Changed: packages/tests/unit/core/dispatchRequest.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/tests/unit/core/dispatchRequest.test.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:packages/tests/unit/core/envFormData.test.ts": {
@@ -2866,15 +2864,15 @@
       ]
     },
     "source:packages/tests/unit/core/middlewareTypes.test.ts": {
-      "fingerprint": "0c03881977615d807a3f4f9a528320786cfcb40ca3ccac3b120065ecb130e3ea",
+      "fingerprint": "95dc7d7e33d4372db6d4c9dd67b6b8a26400b73d61f253bc2ac156fd94a370d6",
       "snapshot": {
-        "packages/tests/unit/core/middlewareTypes.test.ts": "5d1ccc4182e2c9c96e699411098cc002363424feec1f301e5c26201099081031"
+        "packages/tests/unit/core/middlewareTypes.test.ts": "49ac25b8cc9eef17ac7b8783ca7640baad583f183905388b4b31dfc90d965506"
       },
-      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
-      "outcome": "updated",
-      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "outcome": "no-change",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "Changed: packages/tests/unit/core/middlewareTypes.test.ts at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+        "Changed: packages/tests/unit/core/middlewareTypes.test.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:packages/tests/unit/core/paramsSchema.test.ts": {
@@ -3452,15 +3450,15 @@
       ]
     },
     "source:packages/tests/unit/transformResponse.test.ts": {
-      "fingerprint": "0a4302591adfbeee650ec3d98e1fd61618391addd499f5f41defbe0b8238edb5",
+      "fingerprint": "be1a1152a03642eda63ab8be7286726ddf9146f27c99dcf4f0ba3fe2af583d13",
       "snapshot": {
-        "packages/tests/unit/transformResponse.test.ts": "dddd16bb535e3751ed22f77e0c5b45bd66110975474772f11187e4a3faefad36"
+        "packages/tests/unit/transformResponse.test.ts": "c12c7a80c854d106da67e0e6e65242124f92de60da1cf4c808fc92dc11b02a66"
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
-      "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "outcome": "no-change",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "Changed: packages/tests/unit/transformResponse.test.ts at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: packages/tests/unit/transformResponse.test.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:.bumpy/release-gates.md": {
@@ -4160,15 +4158,15 @@
       ]
     },
     "source:packages/tests/unit/core/prepareRequest.test.ts": {
-      "fingerprint": "2c9a4a48581e9e98d230257ac9aeb24cd60345ed4cf1e8f09e214f2be407835b",
+      "fingerprint": "2f1935da9641a1d410bf597c880faf1f24401ee54d5e98c62e85a5539122a5f5",
       "snapshot": {
-        "packages/tests/unit/core/prepareRequest.test.ts": "c3b128b6e6c213f01777c40db77b4f819f2bb851f49c949d82e75664b8cc86e0"
+        "packages/tests/unit/core/prepareRequest.test.ts": "a4bd873c08d39567c171b51eeec75fb0e9d16bae69a4845cbc82fc32a81b1f4b"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
       "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "Changed: packages/tests/unit/core/prepareRequest.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/tests/unit/core/prepareRequest.test.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:packages/tests/unit/core/requestInput.test.ts": {
@@ -4640,15 +4638,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/resolveBodyContentType.ts": {
-      "fingerprint": "239ec05edd2b95f45311ecb1b67220da28921cb304f5feb9eb285570828e7feb",
+      "fingerprint": "e4b297bdd45c4de1be86b6b835a62d783d3265645451b5d104a933963e08c574",
       "snapshot": {
-        "packages/lib/src/lib/core/resolveBodyContentType.ts": "61f6f745aae71bd0bbe797d1572c8d7a75d0510891c53fbbe974c3e14a612f98"
+        "packages/lib/src/lib/core/resolveBodyContentType.ts": "811892a7c5f5bf32a32d3a67e1fc8d2cf2204ffacecbb16b68ba630da7fae808"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
       "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/resolveBodyContentType.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/lib/src/lib/core/resolveBodyContentType.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     },
     "source:packages/tests/unit/adapters/fetch-pure.test.ts": {
@@ -4745,6 +4743,54 @@
       "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
       "evidence": [
         "Changed: packages/tests/unit/composeSignals.test.ts at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
+      ]
+    },
+    "source:.bumpy/response-headers-faxios-headers.md": {
+      "fingerprint": "6651f67513d24591f71361f3a17cf09b255d8aedb4a00f1fce6496fb3070ebb0",
+      "snapshot": {
+        ".bumpy/response-headers-faxios-headers.md": "094a643d40e3de72c63cecee287481db959d4b3d81aad1ab8464d59a184c91b6"
+      },
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "outcome": "no-change",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "evidence": [
+        "Changed: .bumpy/response-headers-faxios-headers.md at ec60180715be2fc29e78189587b246ad36d7e69b"
+      ]
+    },
+    "source:packages/docs/pages/advanced/header-methods.md": {
+      "fingerprint": "0d3afeaaf70e221fd6130be7110586b7ee5253b99ac7c8a1d301d7c0d961f611",
+      "snapshot": {
+        "packages/docs/pages/advanced/header-methods.md": "681a8b686cae0027a76da88355894af090a0caaf29b461bebbfb842a9b4be5ef"
+      },
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "outcome": "no-change",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "evidence": [
+        "Changed: packages/docs/pages/advanced/header-methods.md at ec60180715be2fc29e78189587b246ad36d7e69b"
+      ]
+    },
+    "source:packages/tests/module/esm/tests/helpers/generics-index.ts": {
+      "fingerprint": "8aa8c0e48bf7af6ceb94b722732c55671b7e19c3a075d1ade2874db46f20f6f9",
+      "snapshot": {
+        "packages/tests/module/esm/tests/helpers/generics-index.ts": "1152de730ee2870a2f73178bd7b48b9b642860c34215a995aa53dbb6744621e9"
+      },
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "outcome": "no-change",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "evidence": [
+        "Changed: packages/tests/module/esm/tests/helpers/generics-index.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+      ]
+    },
+    "source:packages/tests/unit/core/headersTypes.test.ts": {
+      "fingerprint": "5cfb152cb7f47ea14983f71e019457ac2d8c3826a14cfd8e97a9bb0f3bfd0e30",
+      "snapshot": {
+        "packages/tests/unit/core/headersTypes.test.ts": "961974a6bbe1eb3ca0ac68300ac5185622743ad54455fc73a5968d774880ec0b"
+      },
+      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "outcome": "no-change",
+      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "evidence": [
+        "Changed: packages/tests/unit/core/headersTypes.test.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
       ]
     }
   }
