@@ -1,3 +1,4 @@
+// @ts-self-types="./buildURL.d.ts" — required for Deno: published as an unsafe/* export
 "use strict";
 
 import type { ParamEncoder } from "../types.js";

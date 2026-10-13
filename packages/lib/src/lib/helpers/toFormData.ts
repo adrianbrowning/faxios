@@ -1,3 +1,4 @@
+// @ts-self-types="./toFormData.d.ts" — required for Deno: index.ts re-exports toFormData
 "use strict";
 
 import FaxiosError from "../core/FaxiosError.js";

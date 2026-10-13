@@ -3,7 +3,7 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "29a254b026d05eb001396923dde077ccfc38ce1f00d09d7cc6d01d4688ea8253",
+      "fingerprint": "c1093830d80c1b40b09affb5ef87222fab305f4e70313490852ae088d0caaadc",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "c0bb05f55c5ab74840a93bc6f2674de07806acf5c33ce33afd34a4ac49492f07",
@@ -12,12 +12,12 @@
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
         "packages/lib/src/lib/adapters/fetch.ts": "7df1044dbd292343c796162d3a26822df85dda3b032998cfa6c852ab47d3d99d",
-        "packages/lib/src/lib/core/Faxios.ts": "1697549ccacac943df349a8cba8e80ec028ef383e5f328f2950a91e7833dbbf0",
+        "packages/lib/src/lib/core/Faxios.ts": "9dfdeb2e83366a0c1b38cea2d8c0090dcf2ed0054d5abcc0c224805ba5270357",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
-        "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
+        "packages/lib/src/lib/core/buildFullPath.ts": "97e25da79a42da871a80b630101563758ca5df332aee2320d13bcaf0ea8faee5",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
         "packages/lib/src/lib/core/dispatchRequest.ts": "cb6d7169f0838a9d2de49be8dccd3eef23b71a62f8e3d3c26e606453aea5a89b",
-        "packages/lib/src/lib/core/mergeConfig.ts": "3cc9070fcedfc0f8f25a2d6274338aa70fb518cfbff16dc508548b5737a18e0e",
+        "packages/lib/src/lib/core/mergeConfig.ts": "11a4ce46f0cff00c06e89c5eed86c5751ccd80a15a6eb589c35eda685899caea",
         "packages/lib/src/lib/core/route.ts": "d73182172ee4a568a180cc3678080195eb1e630561284afc4074e6f10c29d795",
         "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
         "packages/lib/src/lib/helpers/composeSignals.ts": "9c09d5fe23395e8af8b9c62efd641405ea2832f224b3653f70ef3ee6b408f6f5",
@@ -33,15 +33,15 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
       "outcome": "no-change",
-      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
       "evidence": [
-        "Changed: packages/lib/package.json at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
+        "Changed: packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/buildFullPath.ts, packages/lib/src/lib/core/mergeConfig.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "e1aee298e5870fd0535166ebb0febd6213304e2beb31027b22e4db98ca2c948f",
+      "fingerprint": "dde881739838812f0f6758ab4e8211db66995da95bc8d04dd1c83595f3be3ef3",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
@@ -53,12 +53,12 @@
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
         "packages/lib/src/lib/adapters/fetch.ts": "7df1044dbd292343c796162d3a26822df85dda3b032998cfa6c852ab47d3d99d",
-        "packages/lib/src/lib/core/Faxios.ts": "1697549ccacac943df349a8cba8e80ec028ef383e5f328f2950a91e7833dbbf0",
+        "packages/lib/src/lib/core/Faxios.ts": "9dfdeb2e83366a0c1b38cea2d8c0090dcf2ed0054d5abcc0c224805ba5270357",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
-        "packages/lib/src/lib/core/buildFullPath.ts": "b951a5d11685392f78c75841e8ad6cc15ea852d975b143818d4615a2f351bb5c",
+        "packages/lib/src/lib/core/buildFullPath.ts": "97e25da79a42da871a80b630101563758ca5df332aee2320d13bcaf0ea8faee5",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
         "packages/lib/src/lib/core/dispatchRequest.ts": "cb6d7169f0838a9d2de49be8dccd3eef23b71a62f8e3d3c26e606453aea5a89b",
-        "packages/lib/src/lib/core/mergeConfig.ts": "3cc9070fcedfc0f8f25a2d6274338aa70fb518cfbff16dc508548b5737a18e0e",
+        "packages/lib/src/lib/core/mergeConfig.ts": "11a4ce46f0cff00c06e89c5eed86c5751ccd80a15a6eb589c35eda685899caea",
         "packages/lib/src/lib/core/route.ts": "d73182172ee4a568a180cc3678080195eb1e630561284afc4074e6f10c29d795",
         "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
         "packages/lib/src/lib/helpers/composeSignals.ts": "9c09d5fe23395e8af8b9c62efd641405ea2832f224b3653f70ef3ee6b408f6f5",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "5a3353d94b055b866e1fedb33af416e5d26a957f90222c1c5c67413f5276844b",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
       "outcome": "no-change",
-      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
       "evidence": [
-        "Changed: packages/lib/package.json at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
+        "Changed: packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/buildFullPath.ts, packages/lib/src/lib/core/mergeConfig.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
       ]
     },
     "source:knip.json": {
@@ -473,15 +473,15 @@
       ]
     },
     "source:packages/lib/src/lib/env/data.ts": {
-      "fingerprint": "28a5dfb15cedfeed66e354ad11d17e2db8dd0ebe7fd3c3aca5dd76ba02740282",
+      "fingerprint": "f0b774f66b5082983ea2986ce83eec7cd2fa297a583363990cb786de9c35c65f",
       "snapshot": {
-        "packages/lib/src/lib/env/data.ts": "17668f6981d55bdd585592bb8209677b0249289c6e2c39055bb29f03fdb720bd"
+        "packages/lib/src/lib/env/data.ts": "beae67415eef47f84ae24f4c6055d6a7e4abf976c04713e33fa5bebf450a4260"
       },
-      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
       "outcome": "no-change",
-      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
       "evidence": [
-        "Changed: packages/lib/src/lib/env/data.ts at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
+        "Changed: packages/lib/src/lib/env/data.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
       ]
     },
     "source:packages/tests/module/esm/pnpm-lock.yaml": {
@@ -2224,16 +2224,15 @@
       ]
     },
     "source:packages/lib/src/lib/cancel/CanceledError.ts": {
-      "fingerprint": "85df59670fd92cb13f301eae26d51297202de588204b0d1302789260bfcf650f",
+      "fingerprint": "5c1f947aec6253ab11e97e3d3e467df726bfc6586ca880d17978d6923751cb72",
       "snapshot": {
-        "packages/lib/src/lib/cancel/CanceledError.ts": "5497327570001f0e5dba81f0c4e269443fb32369013aae899aa8014cf79453fb"
+        "packages/lib/src/lib/cancel/CanceledError.ts": "dcaea2d3dcd6689ee8337df011202dea48ab9972f78a48ba48cefeffd8f2f24e"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
       "outcome": "no-change",
-      "reason": "Constructor parameter type `string | null` → `null | string`. Behaviour change: none",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/cancel/CanceledError.ts: Whole file compared. Only HEAD L16 differs.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/cancel/CanceledError.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
       ]
     },
     "source:packages/lib/src/lib/core/FaxiosHeaders.ts": {
@@ -2288,16 +2287,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/HttpStatusCode.ts": {
-      "fingerprint": "beae452d92669ae4d0e5792564f0acd222f51acc5e10bd00fb681028df3be98f",
+      "fingerprint": "f876df977b5f74794b9d7ac139c5cda751f42f5ccc17bc6841179255ce034d5a",
       "snapshot": {
-        "packages/lib/src/lib/helpers/HttpStatusCode.ts": "37fd8cf07edd9b2d942a8df6b005cbdade663a74bbfac94d4de082099c3dd1db"
+        "packages/lib/src/lib/helpers/HttpStatusCode.ts": "8ef45554313582b6b3425e3842d0cf08685f88d674f8e254744f356fab29880b"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
       "outcome": "no-change",
-      "reason": "Cast `Record<string | number, string | number>` → `Record<number | string, number | string>`. Behaviour change: none. The object literal key and value order is unchanged, so the reverse mapping is the same.",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/HttpStatusCode.ts: Whole file compared. Only HEAD L74 differs.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/helpers/HttpStatusCode.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
       ]
     },
     "source:packages/lib/src/lib/helpers/cookies.ts": {
@@ -2377,15 +2375,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/toFormData.ts": {
-      "fingerprint": "852423d28ff29c0f63cd2a50fec5837a5b552044a702c9849746fed875352dc3",
+      "fingerprint": "b18d1c34424d69d105537d315036611becd3675769477e0a41a1517114e6b3da",
       "snapshot": {
-        "packages/lib/src/lib/helpers/toFormData.ts": "4b2871b2ff62051ddcc3b8bf993872395282c9bf9a8becef2a5ecdf1110399f4"
+        "packages/lib/src/lib/helpers/toFormData.ts": "339c769af48c381a7928fd2fb9c681c5d97183a89ca6a12285692dbf8065f9c6"
       },
-      "head": "51b9fecea630fa9b8b9405af26a48909b73a05a2",
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
       "outcome": "no-change",
-      "reason": "configure-requests skill does not document toFormData internals, Blob option or its error codes",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/toFormData.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/lib/src/lib/helpers/toFormData.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
       ]
     },
     "source:packages/lib/src/lib/helpers/trackStream.ts": {
@@ -2440,15 +2438,15 @@
       ]
     },
     "source:packages/lib/src/lib/utils.ts": {
-      "fingerprint": "1d102b98a566ffcaf040c7ff1054396508e7a4b5af73b221900642b47c5c27f7",
+      "fingerprint": "585091400dbeafb6f78f97a28e6728d54693b40c84c8c646871af47e3863cb90",
       "snapshot": {
-        "packages/lib/src/lib/utils.ts": "7aafbdb297e4ba646060c254a094eab6a6ac0c343cf00b87863ec26793312443"
+        "packages/lib/src/lib/utils.ts": "80b8ace2f745d414c1bc13deed7d91181c93b284a4072bb6127baf8c01fa4d6b"
       },
-      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
       "outcome": "no-change",
-      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
       "evidence": [
-        "Changed: packages/lib/src/lib/utils.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/lib/src/lib/utils.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
       ]
     },
     "source:packages/sandbox/client.js": {
@@ -3893,6 +3891,114 @@
       "reason": "getSetCookie bug fix; configure-requests skill does not document getSetCookie",
       "evidence": [
         "Changed: packages/tests/unit/core/getSetCookie.test.ts at 507ee20348e63b7dd80ede3c38d05aef74f7369d"
+      ]
+    },
+    "source:.bumpy/deno-self-types.md": {
+      "fingerprint": "091c9a2be8f023394c27c3b2c60b1332b3748a3b3ebf835e43f4733e4032048e",
+      "snapshot": {
+        ".bumpy/deno-self-types.md": "f1a72d9614e6540a87e9ab244266e0f520e719c51787d806a83366a58f823fb1"
+      },
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
+      "outcome": "no-change",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "evidence": [
+        "Changed: .bumpy/deno-self-types.md at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+      ]
+    },
+    "source:packages/lib/src/lib/cancel/isCancel.ts": {
+      "fingerprint": "8d87354b6293e0234425294c28fceb6a7de77837b647cccbeb2d13d28d459de2",
+      "snapshot": {
+        "packages/lib/src/lib/cancel/isCancel.ts": "c09b258ea9229fb165d61aa94f858e79b737bd9331260b6bd0341aea8eafe4f6"
+      },
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
+      "outcome": "no-change",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/cancel/isCancel.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/buildURL.ts": {
+      "fingerprint": "5779b384b8efeee66d5a5e0d133ff5e3b1e2e03c87a87d9d1de6ca1b94be4f97",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/buildURL.ts": "1d930533c706ae6ddc1802c72b639e72c7705a91b08a82585a1a9a0e8710489d"
+      },
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
+      "outcome": "no-change",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/buildURL.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/combineURLs.ts": {
+      "fingerprint": "9a98f648bb6994f680b4d4f27d49be5461b77784ed80d345cb0bce92f1f3697e",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/combineURLs.ts": "a1f702bef724d397828516663498092e60923ca003eca142676d7615c3d53c48"
+      },
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
+      "outcome": "no-change",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/combineURLs.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/isAbsoluteURL.ts": {
+      "fingerprint": "b3062e75cb3bc034ab298de738a27fa7ecf38b97ea3f8b732fb0fa89e147a9e3",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/isAbsoluteURL.ts": "9700f209692f849c2e1cb3620969faf5fc4db70413f3f9a002deeb7670e8d742"
+      },
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
+      "outcome": "no-change",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/isAbsoluteURL.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/isFaxiosError.ts": {
+      "fingerprint": "5ad918731077424d4f06e98c18478e74f3fb74eda67fa5028fa8c2927b63bf33",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/isFaxiosError.ts": "5fe0082d35479efb562fe086cf20b16c35769f14f8da81c2a255523e3476fc58"
+      },
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
+      "outcome": "no-change",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/isFaxiosError.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+      ]
+    },
+    "source:packages/tests/scripts/check-ts-self-types.ts": {
+      "fingerprint": "4f08096648912fdfba3d8c65a5929c2bad682cf0d10a6e574c64e41ba60300ee",
+      "snapshot": {
+        "packages/tests/scripts/check-ts-self-types.ts": "f4cb2bb735f82bd4268d4b5a49b512bccfc4c98c91dc66ef1878996e8374a628"
+      },
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
+      "outcome": "no-change",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "evidence": [
+        "Changed: packages/tests/scripts/check-ts-self-types.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+      ]
+    },
+    "source:packages/tests/smoke/deno/deno.json": {
+      "fingerprint": "732804d1e2046d3ba985f26f28e19391e71bb01335be47fc4a18ff034b2206e1",
+      "snapshot": {
+        "packages/tests/smoke/deno/deno.json": "e448b67156d753624c3a989e52e04e6302e7f1997e43e1bbf6bad188dc32f7c8"
+      },
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
+      "outcome": "no-change",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "evidence": [
+        "Changed: packages/tests/smoke/deno/deno.json at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+      ]
+    },
+    "source:packages/tests/smoke/deno/types/consumer.ts": {
+      "fingerprint": "eed9faf6fb89fca9b60229565c4c361aff5721cc78f482eae7a2941821a003f1",
+      "snapshot": {
+        "packages/tests/smoke/deno/types/consumer.ts": "04d78d9bf8992516034842a7834b1b7b251dc5a7dbb317a6a2ec66755196f221"
+      },
+      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
+      "outcome": "no-change",
+      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "evidence": [
+        "Changed: packages/tests/smoke/deno/types/consumer.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
       ]
     }
   }

@@ -1,3 +1,4 @@
+// @ts-self-types="./Faxios.d.ts" — required for Deno: index.ts re-exports Faxios
 "use strict";
 
 import CanceledError from "../cancel/CanceledError.js";

@@ -1,3 +1,4 @@
+// @ts-self-types="./isCancel.d.ts" — required for Deno: index.ts re-exports isCancel
 "use strict";
 
 import type CanceledError from "./CanceledError.js";

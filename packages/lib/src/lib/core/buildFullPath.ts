@@ -1,3 +1,4 @@
+// @ts-self-types="./buildFullPath.d.ts" — required for Deno: published as an unsafe/* export
 "use strict";
 
 import combineURLs from "../helpers/combineURLs.js";
