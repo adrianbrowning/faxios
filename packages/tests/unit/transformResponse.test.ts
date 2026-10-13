@@ -1,5 +1,6 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
+import faxios from "#src/index.js";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import transformData from "#src/lib/core/transformData.js";
 import defaults from "#src/lib/defaults/index.js";
@@ -39,12 +40,38 @@ describe("transformResponse", () => {
     });
   });
 
+  describe("an invalid JSON body on the wire", () => {
+    const api = faxios.create({ env: { fetch: async () => new Response("{bad json", { status: 200 }) } });
+
+    it("rejects with ERR_BAD_RESPONSE when responseType is explicitly json", async () => {
+      await assert.rejects(api.get("http://localhost/x", { responseType: "json" }), (err: unknown) =>
+        err instanceof FaxiosError &&
+        err.code === FaxiosError.ERR_BAD_RESPONSE &&
+        err.name === "FaxiosError" &&
+        err.cause instanceof SyntaxError &&
+        err.response?.status === 200);
+    });
+
+    it("resolves with the raw string when responseType is omitted", async () => {
+      const response = await api.get("http://localhost/x");
+
+      assert.strictEqual(response.data, "{bad json");
+    });
+
+    it("rejects the removed transitional.silentJSONParsing option", async () => {
+      const config: Record<string, unknown> = { responseType: "json", transitional: { silentJSONParsing: true } };
+
+      await assert.rejects(api.get("http://localhost/x", config), (err: unknown) =>
+        err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION);
+    });
+  });
+
   describe("malformed JSON with responseType: json", () => {
     it("throws FaxiosError with ERR_BAD_RESPONSE code", () => {
       const response = { status: 200, headers: {}, data: "{bad json" };
       const config = {
         responseType: "json",
-        transitional: { silentJSONParsing: false, forcedJSONParsing: true },
+        transitional: { forcedJSONParsing: true },
         response,
       };
 
@@ -63,7 +90,7 @@ describe("transformResponse", () => {
       const response = { status: 200, headers: {}, data: "{bad json" };
       const config = {
         responseType: "json",
-        transitional: { silentJSONParsing: false, forcedJSONParsing: true },
+        transitional: { forcedJSONParsing: true },
         response,
       };
 

@@ -5,7 +5,8 @@ faxios may throw many different types of errors. Some of these errors are caused
 | Property | Definition                                                                                                                                    |
 | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | message  | A quick summary of the error message and the status it failed with.                                                                           |
-| name     | This defines where the error originated from. For faxios, it will always be an `FaxiosError`.                                                   |
+| name     | Always `FaxiosError`, including when faxios wraps another error (a `TypeError` from `fetch`, a `SyntaxError` from `JSON.parse`). The wrapped error, with its own `name`, is on `error.cause`. |
+| cause    | The error faxios wrapped, when there is one: the runtime's transport error for `ERR_NETWORK`, the `SyntaxError` for invalid JSON, the parse error for `ERR_INVALID_URL`. |
 | stack    | Provides the stack trace of the error.                                                                                                        |
 | config   | An faxios config object with specific instance configurations defined by the user from when the request was made.                              |
 | code     | Represents an faxios identified error. The table below lists out specific definitions for internal faxios error.                                |
@@ -19,10 +20,10 @@ Below is a list of potential faxios identified error
 | ERR_BAD_OPTION            | Invalid option provided in faxios configuration.                                               |
 | ECONNABORTED              | Exported as `FaxiosError.ECONNABORTED`, but faxios does not currently raise it. Timeouts reject with `ETIMEDOUT` and aborts with `ERR_CANCELED`. |
 | ETIMEDOUT                 | Request timed out because it exceeded its configured `timeout`. |
-| ERR_NETWORK               | Network-related issue, including connection failures such as `ECONNREFUSED` and a response body that fails while it is being read (for example, the connection is reset mid-body). The underlying transport error (e.g. the OS error) is available on `error.cause`. In the browser, this error can also be caused by a [CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/Guides/CORS) or [Mixed Content](https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content) policy violation. The browser does not allow the JS code to clarify the real reason for the error caused by security issues, so please check the console. |
+| ERR_NETWORK               | Network-related issue, including connection failures such as `ECONNREFUSED` and a response body that fails while it is being read (for example, the connection is reset mid-body). The message names the underlying reason and the request, such as `Network Error: ECONNREFUSED (GET https://api.example.com/users)`; the URL is shown without its user info, query string and fragment. The underlying transport error (e.g. the OS error) is available on `error.cause`. In the browser, this error can also be caused by a [CORS](https://developer.mozilla.org/ru/docs/Web/HTTP/Guides/CORS) or [Mixed Content](https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content) policy violation. The browser does not allow the JS code to clarify the real reason for the error caused by security issues, so the message carries only the browser's text (`Failed to fetch`); check the console. |
 | ERR_FR_TOO_MANY_REDIRECTS | Exported as `FaxiosError.ERR_FR_TOO_MANY_REDIRECTS`, but faxios does not currently raise it. Redirects are followed by `fetch`, which applies its own limit. |
 | ERR_DEPRECATED            | Deprecated feature or method used in faxios.                                                   |
-| ERR_BAD_RESPONSE          | Response cannot be parsed properly or is in an unexpected format. Usually related to a response with `5xx` status code. |
+| ERR_BAD_RESPONSE          | Response cannot be parsed properly or is in an unexpected format, including a body that isn't valid JSON when `responseType` is `"json"` (the `SyntaxError` is on `error.cause`, the raw body on `error.response.data`). Usually related to a response with `5xx` status code. |
 | ERR_BAD_REQUEST           | The request has an unexpected format or is missing required parameters, including a request the runtime refuses to build (for example, a `GET` with a body). Usually related to a response with `4xx` status code. |
 | ERR_CANCELED              | Feature or method is canceled explicitly by the user using an AbortSignal. |
 | ERR_NOT_SUPPORT           | Feature or method not supported in the current faxios environment.                             |
@@ -82,6 +83,8 @@ faxios.get("/user/12345").catch(function (error) {
 ```
 
 `toJSON()` never includes the request or the response, and it masks credentials so the result is safe to log: the values of the `authorization`, `proxy-authorization`, `cookie` and `auth` config keys (case-insensitive, at any depth) become `[REDACTED ****]`, and `user:pass@` is stripped from `url` and `baseURL`. To mask other secrets, such as an API key header or a token in `params`, list their keys in a `redact` array in the request config; they're masked the same way.
+
+`toJSON()` also includes `cause`, the chain of wrapped errors as `{ name, code, message, cause }`, so a logged network failure still names the underlying error (for example `{ name: "Error", code: "ECONNREFUSED", message: "connect ECONNREFUSED 127.0.0.1:443" }`). Each entry holds only those fields, never a wrapped error's config, and user info is stripped from URLs in the messages and the stack.
 
 ```js status=404
 import faxios from "@gcmdev/faxios";

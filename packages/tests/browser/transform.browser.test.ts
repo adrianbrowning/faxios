@@ -24,19 +24,17 @@ describe("transform (vitest browser)", () => {
     expect((response.data as Record<string, string>).foo).toBe("bar");
   });
 
-  it("should throw a SyntaxError if JSON parsing failed and responseType is \"json\" if silentJSONParsing is false", async () => {
+  it("rejects with ERR_BAD_RESPONSE, named FaxiosError, if JSON parsing failed and responseType is \"json\"", async () => {
     using mock = installFetchMock();
     mock.respondWith({ body: "{foo\": \"bar\"}" });
 
     const thrown = await faxios({
       url: "/foo",
       responseType: "json",
-      transitional: { silentJSONParsing: false },
-    }).catch(error => error);
+    }).catch((error: unknown) => error);
 
-    expect(thrown).toBeTruthy();
-    expect(thrown.name).toContain("SyntaxError");
-    expect(thrown.code).toBe(FaxiosError.ERR_BAD_RESPONSE);
+    expect(thrown).toBeInstanceOf(FaxiosError);
+    expect(thrown).toMatchObject({ name: "FaxiosError", code: FaxiosError.ERR_BAD_RESPONSE, cause: expect.any(SyntaxError) });
   });
 
   it("should send data as JSON if request content-type is application/json", async () => {

@@ -999,8 +999,7 @@ describe("Prototype Pollution Protection", () => {
 
     it("should ignore polluted transitional", async () => {
       ObjProto.transitional = {
-        forcedJSONParsing: true,
-        silentJSONParsing: false,
+        forcedJSONParsing: false,
       };
       const server = await startEcho();
       const { port } = server.address() as AddressInfo;

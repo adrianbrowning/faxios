@@ -34,7 +34,7 @@ function baseConfig(
     headers: faxiosHeaders(),
     transformRequest: defaults.transformRequest,
     transformResponse: defaults.transformResponse,
-    transitional: { silentJSONParsing: false, forcedJSONParsing: true },
+    transitional: { forcedJSONParsing: true },
     responseType: "json",
     ...overrides,
   };

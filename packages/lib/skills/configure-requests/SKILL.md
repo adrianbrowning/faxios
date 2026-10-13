@@ -103,7 +103,8 @@ const { data } = await faxios.get<ArrayBuffer>("https://example.com/report.zip",
 console.log(data.byteLength);
 ```
 
-Unset `responseType` reads the body as text, then JSON-parses it if it parses. `"text"` skips the
+Unset `responseType` reads the body as text, then JSON-parses it if it parses, else keeps the raw
+string. `"json"` is strict: a body that isn't JSON rejects with `ERR_BAD_RESPONSE`. `"text"` skips the
 JSON parse; `"blob"`, `"formdata"` and `"stream"` (a `ReadableStream`) are also supported.
 
 ### Merge defaults the way faxios does
@@ -236,14 +237,19 @@ catch (error) {
 - Non-2xx statuses reject because of the default `validateStatus`. Pass your own `validateStatus`
   to change which statuses resolve.
 - Transport failures (DNS, refused connection, CORS, a body that fails mid-read) reject with
-  `ERR_NETWORK`; the runtime's original error is on `error.cause`. `ECONNREFUSED` is not raised
-  as the error's own code. A URL `fetch` can't parse (outside the browser, a relative `url` with
-  no `baseURL`) rejects with `ERR_INVALID_URL`; a bad `method`, a `url` that isn't a string or
-  `URL`, or a non-object config rejects with `ERR_BAD_OPTION_VALUE`.
+  `ERR_NETWORK` and a message naming the reason and request
+  (`Network Error: ECONNREFUSED (GET https://host/path)`); the runtime's original error is on
+  `error.cause`. `ECONNREFUSED` is not raised as the error's own code. A URL `fetch` can't parse
+  (outside the browser, a relative `url` with no `baseURL`) rejects with `ERR_INVALID_URL`; a bad
+  `method`, a `url` that isn't a string or `URL`, or a non-object config rejects with
+  `ERR_BAD_OPTION_VALUE`.
+- `error.name` is always `"FaxiosError"`; branch on `error.code`, and read a wrapped error's own
+  name (`TypeError`, `SyntaxError`) from `error.cause`.
 - `error.toJSON()` never includes the response, masks `authorization`, `proxy-authorization`,
   `cookie` and `auth` at any depth and strips `user:pass@` from `url`/`baseURL`; list other
-  sensitive config keys in `redact` to mask them too. Log `error.toJSON()`, not `error`: the
-  error object still holds the full config.
+  sensitive config keys in `redact` to mask them too. Its `cause` is the wrapped error chain as
+  `{ name, code, message, cause }`. Log `error.toJSON()`, not `error`: the error object still
+  holds the full config.
 
 ### Add behaviour with `.use()` middleware
 

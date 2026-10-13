@@ -1199,12 +1199,32 @@ describe.runIf(typeof fetch === "function")(
       }
       catch (err) {
         const axiosErr = err as FaxiosError;
-        assert.strictEqual(String(axiosErr), "FaxiosError: Network Error");
+        assert.strictEqual(axiosErr.code, FaxiosError.ERR_NETWORK);
+        assert.strictEqual(String(axiosErr), "FaxiosError: Network Error: ENOTFOUND (GET http://notExistsUrl.in.nowhere)");
         assert.strictEqual(
           axiosErr.cause && (axiosErr.cause as { code?: string; }).code,
           "ENOTFOUND"
         );
       }
+    });
+
+    it("names the underlying reason of a refused connection, without the URL's user info or query", async () => {
+      // A port that was just free and now refuses connections.
+      const server = await startHTTPServer((_req, res) => res.end());
+      let port: number;
+      try {
+        ({ port } = server.address() as AddressInfo);
+      }
+      finally {
+        await stopHTTPServer(server);
+      }
+
+      const err = await fetchFaxios.get(`http://user:secret@127.0.0.1:${port}/items?token=secret#frag`).catch((e: unknown) => e);
+
+      assert.ok(err instanceof FaxiosError);
+      assert.strictEqual(err.code, FaxiosError.ERR_NETWORK);
+      assert.strictEqual(err.message, `Network Error: ECONNREFUSED (GET http://127.0.0.1:${port}/items)`);
+      assert.strictEqual(err.toJSON().cause?.code, "ECONNREFUSED");
     });
 
     it("should get response headers", async () => {
