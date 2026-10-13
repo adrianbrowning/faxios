@@ -653,7 +653,7 @@ describe("Prototype Pollution Protection", () => {
 
   describe("prepareRequest baseURL gadget", () => {
     // The baseURL branch in buildFullPath only runs when the requested URL is
-    // relative (or allowAbsoluteUrls === false). An absolute URL would skip
+    // relative (with allowAbsoluteUrls === false an absolute URL throws). An absolute URL would skip
     // baseURL regardless of pollution and would not exercise the gadget. We
     // therefore issue a relative GET and assert that either:
     //   - the request fails (no host to resolve) because baseURL is correctly

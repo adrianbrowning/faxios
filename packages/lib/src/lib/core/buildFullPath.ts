@@ -32,9 +32,10 @@ function assertValidHttpProtocolURL(url: unknown, config: unknown): void {
 }
 
 /**
- * Creates a new URL by combining the baseURL with the requestedURL,
- * only when the requestedURL is not already an absolute URL.
- * If the requestURL is absolute, this function returns the requestedURL untouched.
+ * Creates a new URL by combining the baseURL with the requestedURL when the requestedURL is
+ * relative. An absolute requestedURL is returned untouched, unless a baseURL is set and
+ * `allowAbsoluteUrls` is `false`: then it throws `ERR_INVALID_URL` rather than send the
+ * request somewhere the caller didn't mean.
  *
  * @param {string} baseURL The base URL
  * @param {string} requestedURL Absolute or relative URL to combine
@@ -43,10 +44,17 @@ function assertValidHttpProtocolURL(url: unknown, config: unknown): void {
  */
 export default function buildFullPath(baseURL: unknown, requestedURL: unknown, allowAbsoluteUrls?: unknown, config?: unknown): string {
   assertValidHttpProtocolURL(requestedURL, config);
-  let isRelativeUrl = !isAbsoluteURL(requestedURL);
-  if (baseURL && (isRelativeUrl || allowAbsoluteUrls === false)) {
-    assertValidHttpProtocolURL(baseURL, config);
-    return combineURLs(baseURL as string, requestedURL as string);
+  if (!baseURL) return requestedURL as string;
+  if (isAbsoluteURL(requestedURL)) {
+    if (allowAbsoluteUrls === false) {
+      throw new FaxiosError(
+        "absolute URL with baseURL; set allowAbsoluteUrls: true",
+        FaxiosError.ERR_INVALID_URL,
+        config as InternalFaxiosRequestConfig
+      );
+    }
+    return requestedURL as string;
   }
-  return requestedURL as string;
+  assertValidHttpProtocolURL(baseURL, config);
+  return combineURLs(baseURL as string, requestedURL as string);
 }

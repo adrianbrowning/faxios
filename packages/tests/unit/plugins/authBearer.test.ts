@@ -236,16 +236,16 @@ describe("plugins::authBearer", () => {
       const { fetch, authorizations } = recordingFetch();
       const api = faxios.create({ baseURL: "https://api.test/v1", allowAbsoluteUrls: true, env: { fetch } })
         .use(authBearer(() => "token"));
-      // allowAbsoluteUrls: false (the default) appends an absolute URL to the baseURL, so it stays on it.
-      const appended = faxios.create({ baseURL: "https://api.test/v1", env: { fetch } }).use(authBearer(() => "token"));
+      // allowAbsoluteUrls: false (the default) rejects an absolute URL before any token is read.
+      const strict = faxios.create({ baseURL: "https://api.test/v1", env: { fetch } }).use(authBearer(() => "token"));
 
       await api.get("/items");
       await api.get("https://api.test/other");
       await api.get("https://evil.test/items");
       await api.get("http://api.test/items");
-      await appended.get("https://evil.test/items");
+      await assert.rejects(strict.get("https://evil.test/items"), { code: "ERR_INVALID_URL" });
 
-      assert.deepStrictEqual(authorizations, [ "Bearer token", "Bearer token", null, null, "Bearer token" ]);
+      assert.deepStrictEqual(authorizations, [ "Bearer token", "Bearer token", null, null ]);
     });
 
     it("on the default singleton, sends no token to an absolute URL", async () => {

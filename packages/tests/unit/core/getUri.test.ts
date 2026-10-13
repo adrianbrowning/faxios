@@ -46,16 +46,38 @@ describe("getUri() matches the URL the request sends", () => {
         config.baseURL = requestBaseURL;
       }
 
-      const expected = await sentURL(instance, config);
-      assert.strictEqual(instance.getUri(config), expected);
+      const sent = await sentURL(instance, config).then(url => ({ url }), (error: unknown) => ({ error }));
+      if ("error" in sent) {
+        assert.throws(() => instance.getUri(config), { code: "ERR_INVALID_URL" });
+        assert.deepStrictEqual((sent.error as { code?: unknown; }).code, "ERR_INVALID_URL");
+      }
+      else {
+        assert.strictEqual(instance.getUri(config), sent.url);
+      }
     }
   );
 
-  it("instance with baseURL: getUri() appends an absolute url to baseURL when allowAbsoluteUrls is unset", () => {
+  it("instance with baseURL: getUri() rejects an absolute url when allowAbsoluteUrls is unset", () => {
     const instance = faxios.create({ baseURL: "https://api.example.com/v1" });
-    assert.strictEqual(
-      instance.getUri({ url: "https://other.example.com/x" }),
-      "https://api.example.com/v1/https://other.example.com/x"
+    assert.throws(
+      () => instance.getUri({ url: "https://other.example.com/x" }),
+      { code: "ERR_INVALID_URL", message: "absolute URL with baseURL; set allowAbsoluteUrls: true" }
     );
+  });
+
+  it("instance with baseURL: an absolute url rejects before fetch unless allowAbsoluteUrls is true", async () => {
+    const seen: Array<string> = [];
+    const fetch = async (input: Request | string | URL) => {
+      seen.push(input instanceof Request ? input.url : String(input));
+      return new Response(null, { status: 200 });
+    };
+    const instance = faxios.create({ baseURL: "https://api.example.com/v1", env: { fetch } });
+    await assert.rejects(instance.get("https://other.example.com/x"), {
+      code: "ERR_INVALID_URL",
+      message: "absolute URL with baseURL; set allowAbsoluteUrls: true",
+    });
+    assert.deepStrictEqual(seen, []);
+    await instance.get("https://other.example.com/x", { allowAbsoluteUrls: true });
+    assert.deepStrictEqual(seen, [ "https://other.example.com/x" ]);
   });
 });

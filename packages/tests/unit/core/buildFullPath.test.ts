@@ -15,15 +15,17 @@ describe("core::buildFullPath", () => {
     ).toBe("https://api.example.com/users");
   });
 
-  it("combines URLs when requested URL is absolute and allowAbsoluteUrls is false", () => {
-    // allowAbsoluteUrls: false forces string concat — the absolute URL is treated as a literal path
-    expect(
-      buildFullPath(
-        "https://api.github.com",
-        "https://api.example.com/users",
-        false
-      )
-    ).toBe("https://api.github.com/https://api.example.com/users");
+  it("rejects an absolute requested URL with a baseURL when allowAbsoluteUrls is false", () => {
+    let error;
+    try {
+      buildFullPath("https://api.github.com", "https://api.example.com/users", false);
+    }
+    catch (err) {
+      error = err;
+    }
+    expect(error).toBeInstanceOf(FaxiosError);
+    expect((error as FaxiosError).code).toBe(FaxiosError.ERR_INVALID_URL);
+    expect((error as FaxiosError).message).toBe("absolute URL with baseURL; set allowAbsoluteUrls: true");
   });
 
   it("does not combine URLs when baseURL is missing and allowAbsoluteUrls is false", () => {
@@ -71,22 +73,4 @@ describe("core::buildFullPath", () => {
     ).toBe("https://api.example.com/users");
   });
 
-  it("rejects a malformed baseURL when absolute requests are forced through baseURL", () => {
-    let error;
-
-    try {
-      buildFullPath(
-        "http:example.com/api",
-        "https://api.example.com/users",
-        false
-      );
-    }
-    catch (err) {
-      error = err;
-    }
-
-    expect(error).toBeInstanceOf(FaxiosError);
-    expect((error as FaxiosError).code).toBe(FaxiosError.ERR_INVALID_URL);
-    expect((error as FaxiosError).message).toBe("Invalid URL: missing \"//\" after protocol");
-  });
 });

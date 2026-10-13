@@ -95,18 +95,18 @@ describe("options (vitest browser)", () => {
     expect(mock.lastRequest!.url).toBe("http://someotherurl.com/");
   });
 
-  it("should combine the URLs if base url and request url exist and allowAbsoluteUrls is false", async () => {
+  it("should reject an absolute request URL with ERR_INVALID_URL if base url exists and allowAbsoluteUrls is false", async () => {
     using mock = installFetchMock();
     const instance = faxios.create({
       baseURL: "http://someurl.com/",
       allowAbsoluteUrls: false,
     });
 
-    await instance.get("http://someotherurl.com/");
-
-    expect(mock.lastRequest!.url).toBe(
-      "http://someurl.com/http://someotherurl.com/"
-    );
+    await expect(instance.get("http://someotherurl.com/")).rejects.toMatchObject({
+      code: "ERR_INVALID_URL",
+      message: "absolute URL with baseURL; set allowAbsoluteUrls: true",
+    });
+    expect(mock.lastRequest).toBeUndefined();
   });
 
   it("should change only the baseURL of the specified instance", () => {
