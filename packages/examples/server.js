@@ -69,34 +69,34 @@ function send404(res, body) {
   sendResponse(res, 404, body || "<h1>Not Found</h1>");
 }
 
-function pipeFileToResponse(res, file, type) {
-  try {
-    // Validate file path - prevent directory traversal
-    const safeBasePath = path.join(__dirname, "examples");
-    const resolvedPath = path.resolve(path.join(safeBasePath, file));
+const LIB_DIST = path.resolve(__dirname, "../lib/dist");
+const LIB_PREFIX = "/faxios/";
+const MIME_TYPES = {
+  ".html": "text/html",
+  ".js": "text/javascript",
+  ".map": "application/json",
+};
 
-    // Ensure the resolved path is within intended directory
-    if (!resolvedPath.startsWith(safeBasePath)) {
+/**
+ * Streams `file` if it resolves inside `root`, so a request can never reach outside it.
+ */
+function pipeFileToResponse(res, root, file) {
+  try {
+    const resolvedPath = path.resolve(root, "." + path.sep + file);
+
+    if (resolvedPath !== root && !resolvedPath.startsWith(root + path.sep)) {
       res.writeHead(400);
       res.end("Invalid file path");
       return;
     }
 
-    // Check if file exists
-    if (!fs.existsSync(resolvedPath)) {
-      res.writeHead(404);
-      res.end("File not found");
+    if (!fs.existsSync(resolvedPath) || !fs.statSync(resolvedPath).isFile()) {
+      send404(res);
       return;
     }
 
-    if (type) {
-      res.writeHead(200, {
-        "Content-Type": type,
-      });
-    }
-    else {
-      res.writeHead(200);
-    }
+    const type = MIME_TYPES[path.extname(resolvedPath)];
+    res.writeHead(200, type ? { "Content-Type": type } : {});
 
     const stream = fs.createReadStream(resolvedPath);
 
@@ -119,66 +119,53 @@ function pipeFileToResponse(res, file, type) {
   }
 }
 
-dirs = listDirs(__dirname);
-
-const FAXIOS_ASSETS = [ "faxios.min.js", "faxios.min.map", "faxios.amd.min.js", "faxios.amd.min.map" ];
+dirs = listDirs(__dirname).filter(dir => fs.existsSync(path.join(__dirname, dir, "index.html")));
 
 server = http.createServer(function (req, res) {
-  let url = req.url;
-
-  // Process faxios itself
-  const asset = FAXIOS_ASSETS.find(name => url.endsWith(name));
-  if (asset) {
-    pipeFileToResponse(res, "../dist/" + asset, "text/javascript");
+  let pathname;
+  try {
+    pathname = decodeURIComponent(new URL(req.url, "http://localhost").pathname);
+  }
+  catch {
+    sendResponse(res, 400, "Invalid URL");
     return;
   }
 
-  // Process /
-  if (url === "/" || url === "/index.html") {
+  // The local faxios build, imported by the pages through their import map
+  if (pathname.startsWith(LIB_PREFIX)) {
+    pipeFileToResponse(res, LIB_DIST, pathname.slice(LIB_PREFIX.length));
+    return;
+  }
+
+  if (pathname === "/" || pathname === "/index.html") {
     send200(res, getIndexTemplate());
     return;
   }
 
-  // Format request */ -> */index.html
-  if (/\/$/.test(url)) {
-    url += "index.html";
-  }
-
-  // Format request /get -> /get/index.html
-  const parts = url.split("/");
-  if (dirs.indexOf(parts[parts.length - 1]) > -1) {
-    url += "/index.html";
-  }
-
-  // Process index.html request
-  if (/index\.html$/.test(url)) {
-    if (fs.existsSync(path.join(__dirname, url))) {
-      pipeFileToResponse(res, url, "text/html");
-    }
-    else {
-      send404(res);
-    }
-    return;
-  }
-
-  // Process server request
-  else if (new RegExp("(" + dirs.join("|") + ")/server").test(url)) {
-    if (fs.existsSync(path.join(__dirname, url + ".js"))) {
-      import("file://" + path.join(__dirname, url + ".js"))
-        .then(server => server.default(req, res))
-        .catch(err => {
-          console.error("Error importing server:", err);
-          send404(res);
-        });
-    }
-    else {
-      send404(res);
-    }
-    return;
-  }
-  else {
+  // /get, /get/ and /get/index.html serve the example page; /get/server runs its handler
+  const [ dir, file = "", ...rest ] = pathname.slice(1).split("/");
+  if (!dirs.includes(dir) || rest.length > 0) {
     send404(res);
+    return;
   }
+
+  if (file === "" || file === "index.html") {
+    pipeFileToResponse(res, path.join(__dirname, dir), "index.html");
+    return;
+  }
+
+  const handler = path.join(__dirname, dir, "server.js");
+  if (file === "server" && fs.existsSync(handler)) {
+    import(url.pathToFileURL(handler).href)
+      .then(module => module.default(req, res))
+      .catch(err => {
+        console.error("Error importing server:", err);
+        send404(res);
+      });
+    return;
+  }
+
+  send404(res);
 });
 
 const PORT = argv.p || 3000;

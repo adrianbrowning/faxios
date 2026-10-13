@@ -438,8 +438,12 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/faxios/dist/faxios.min.js"></script>
-  <script>
+  <script type="importmap">
+    { "imports": { "@gcmdev/faxios": "/faxios/index.js" } }
+  </script>
+  <script type="module">
+    import faxios from "@gcmdev/faxios";
+
     (function () {
       // Theme toggle functionality
       const themeToggle = document.getElementById('themeToggle');

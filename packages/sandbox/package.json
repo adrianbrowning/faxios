@@ -8,6 +8,9 @@
     "lint": "eslint --config eslint.config.ts \"**/*.js\" --cache --max-warnings=0",
     "lint:fix": "eslint --config eslint.config.style.ts \"**/*.js\" --cache --max-warnings=0 --fix"
   },
+  "dependencies": {
+    "@gcmdev/faxios": "workspace:*"
+  },
   "imports": {
     "#src/*.ts": "./src/*.ts"
   }

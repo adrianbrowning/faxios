@@ -22,12 +22,16 @@
     <ul id="orgs" class="list-unstyled"></ul>
   </div>
 
-  <script src="/faxios.min.js"></script>
-  <script>
+  <script type="importmap">
+    { "imports": { "@gcmdev/faxios": "/faxios/index.js" } }
+  </script>
+  <script type="module">
+    import faxios from "@gcmdev/faxios";
+
     faxios.all([
       faxios.get('https://api.github.com/users/mzabriskie'),
       faxios.get('https://api.github.com/users/mzabriskie/orgs')
-    ]).then(faxios.spread(function (user, orgs) {
+    ]).then(function ([ user, orgs ]) {
       document.getElementById('useravatar').src = user.data.avatar_url;
       document.getElementById('username').innerHTML = user.data.name;
       document.getElementById('orgs').innerHTML = orgs.data.map(function (org) {
@@ -40,7 +44,7 @@
           '</li>'
         );
       }).join('');
-    }));
+    });
   </script>
 </body>
 

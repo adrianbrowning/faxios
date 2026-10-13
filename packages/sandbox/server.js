@@ -21,6 +21,36 @@ function pipeFileToResponse(res, file, type) {
   fs.createReadStream(path.join(import.meta.dirname, file)).pipe(res);
 }
 
+const LIB_DIST = path.resolve(import.meta.dirname, "../lib/dist");
+const LIB_PREFIX = "/faxios/";
+
+/**
+ * Serves a file of the local faxios build, refusing any path outside `packages/lib/dist`.
+ *
+ * @param {http.ServerResponse} res - The HTTP response object.
+ * @param {string} file - The path relative to `packages/lib/dist`.
+ */
+function pipeLibFile(res, file) {
+  let resolvedPath;
+  try {
+    resolvedPath = path.resolve(LIB_DIST, "." + path.sep + decodeURIComponent(file));
+  }
+  catch {
+    resolvedPath = "";
+  }
+
+  if (!resolvedPath.startsWith(LIB_DIST + path.sep) || !fs.existsSync(resolvedPath) || !fs.statSync(resolvedPath).isFile()) {
+    res.writeHead(404);
+    res.end("<h1>404 Not Found</h1>");
+    return;
+  }
+
+  res.writeHead(200, {
+    "Content-Type": resolvedPath.endsWith(".js") ? "text/javascript" : "application/json",
+  });
+  fs.createReadStream(resolvedPath).pipe(res);
+}
+
 /**
  * Handles API requests to /api.
  *
@@ -67,7 +97,7 @@ function handleApiRequest(req, res) {
 /**
  * Handles incoming HTTP requests.
  *
- * Serves static files like index.html and faxios.js, or routes API requests to
+ * Serves index.html and the local faxios build under /faxios/, or routes API requests to
  * handleApiRequest. Responds with 404 for unrecognized paths.
  *
  * @param {http.IncomingMessage} req - The HTTP request object.
@@ -85,17 +115,14 @@ function requestHandler(req, res) {
     pathname = "/index.html";
   }
 
+  if (pathname.startsWith(LIB_PREFIX)) {
+    pipeLibFile(res, pathname.slice(LIB_PREFIX.length));
+    return;
+  }
+
   switch (pathname) {
     case "/index.html":
       pipeFileToResponse(res, "./client.html", "text/html");
-      break;
-
-    case "/faxios.js":
-      pipeFileToResponse(res, "../dist/faxios.js", "text/javascript");
-      break;
-
-    case "/faxios.js.map":
-      pipeFileToResponse(res, "../dist/faxios.js.map", "text/javascript");
       break;
 
     case "/api":

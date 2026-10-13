@@ -38,25 +38,29 @@ We keep the 7-day Dependabot delay for these updates unless a critical vulnerabi
 
 ## Running examples
 
-Use the examples for manual testing.
+Use the examples for manual testing. The pages load faxios as an ES module from the local build in `packages/lib/dist`, so build it first:
+
+```bash
+> pnpm run build
+```
 
 Run the examples:
 
 ```bash
-> npm run examples
+> pnpm run examples
 # Open 127.0.0.1:3000
 ```
 
 Run the browser sandbox:
 
 ```bash
-> npm start
+> pnpm start
 # Open 127.0.0.1:3000
 ```
 
 Run the terminal sandbox:
 
 ```bash
-> npm start
-> node ./sandbox/client
+> pnpm start
+> node ./packages/sandbox/client.js
 ```

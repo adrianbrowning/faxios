@@ -1,4 +1,4 @@
-import faxios from "../index.js";
+import faxios from "@gcmdev/faxios";
 
 const URL = "http://127.0.0.1:3000/api";
 const BODY = {

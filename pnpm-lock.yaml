@@ -119,7 +119,11 @@ importers:
         specifier: latest
         version: 0.8.0(typescript@6.0.3)
 
-  packages/sandbox: {}
+  packages/sandbox:
+    dependencies:
+      '@gcmdev/faxios':
+        specifier: workspace:*
+        version: link:../lib
 
   packages/tests:
     devDependencies:

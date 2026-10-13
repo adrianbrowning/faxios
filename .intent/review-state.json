@@ -98,15 +98,15 @@
       ]
     },
     "source:knip.json": {
-      "fingerprint": "030b726a19fae88d707a19b81005a6481d1e358565ca4edf933d30b43228a07b",
+      "fingerprint": "1bebb2547b71753552761d8c1514a046612c7f45a7428d4dc3f98183b7a6cbce",
       "snapshot": {
-        "knip.json": "cb4eeadd51e952bdb76c5b9d9be2099e3425d2ea82f1c9286e48d27ffa3d5c0e"
+        "knip.json": "4bf10757d9f71dfa0fd88fbf582b29ec3db1e2e63c1e4d05cba47a52e5dea78c"
       },
-      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "head": "c26e66e7eda4e9baba047bf80187091197d12c46",
       "outcome": "no-change",
-      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
       "evidence": [
-        "Changed: knip.json at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+        "Changed: knip.json at c26e66e7eda4e9baba047bf80187091197d12c46"
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
@@ -1948,15 +1948,15 @@
       ]
     },
     "source:CONTRIBUTING.md": {
-      "fingerprint": "e0eaa4497f3f4e711908b83d695909513219b80fbe00b31ecd6eea51a51f980a",
+      "fingerprint": "1635d34daf70faba4c5c81ab4b5df482ea3a9fde67ed8063ddb8c680dd98c4b8",
       "snapshot": {
-        "CONTRIBUTING.md": "19c3901f1bfd8f096b2b1ad93adbf934a79737ca343f33b133d7d13c766527f0"
+        "CONTRIBUTING.md": "61b95eea23305d34074e285c3b0c11ed0b66a27d01d6a8f3c1bb8ea53b29ee5c"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "head": "c26e66e7eda4e9baba047bf80187091197d12c46",
       "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
       "evidence": [
-        "Changed: CONTRIBUTING.md at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: CONTRIBUTING.md at c26e66e7eda4e9baba047bf80187091197d12c46"
       ]
     },
     "source:THREATMODEL.md": {
@@ -2140,18 +2140,15 @@
       ]
     },
     "source:packages/examples/server.js": {
-      "fingerprint": "42ef131fbe5f2d864a43da195c4cf27942ea7c4b631e45841ef9a1b05681f76f",
+      "fingerprint": "cbcbc0f3fc47e7b9e45b43590cfe620352309f9a82e7e2594080803027939efc",
       "snapshot": {
-        "packages/examples/server.js": "630c90c80fd9ce299918738c681a1730ca7662bfc37b1750874e4cb253abd90d"
+        "packages/examples/server.js": "fe3a6bb4609263612d61ce03257c3a4b664997f37491d5b07a0ed3b4d37c1a5e"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Examples dev server: lint style, and three rule fixes: asset regexes replaced by a FAXIOS_ASSETS endsWith lookup, useless `\\/` escape removed, `.then` returns the handler result. Not library API.",
+      "head": "c26e66e7eda4e9baba047bf80187091197d12c46",
+      "outcome": "no-change",
+      "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/examples/server.js",
-        "Throwaway check: the lookup picks the same asset as the old regexes for all four asset URLs, a non-asset URL and a nested path.",
-        "node --check passes; pnpm --filter @faxios/examples lint passes.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/examples/server.js at c26e66e7eda4e9baba047bf80187091197d12c46"
       ]
     },
     "source:packages/examples/upload/server.js": {
@@ -2451,16 +2448,15 @@
       ]
     },
     "source:packages/sandbox/client.js": {
-      "fingerprint": "ae09a3b903229fd827286ae3c2aec2d0f9cd394f6431a1e9d3aa3d02971bdefe",
+      "fingerprint": "d0ca11513bbc5796e640753d6a81ffc73753eeba881b35961dd29daa27740e70",
       "snapshot": {
-        "packages/sandbox/client.js": "1fba87d333622827bb4521fccf1b3691201732bdbe5d2ec1c3bc6ec6b9e3329b"
+        "packages/sandbox/client.js": "330579d7f1abd2cf0d16581b4c3f7490600d139ccf35d8e229f8faa9e4c75f5f"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "`.then(handleSuccess).catch(handleFailure)` chains on the GET and POST calls split across two lines (@stylistic newline-per-chained-call). The tokens are unchanged. Behaviour change: none",
+      "head": "c26e66e7eda4e9baba047bf80187091197d12c46",
+      "outcome": "no-change",
+      "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/sandbox/client.js: @@ -14,7 +14,9 @@. Method of checking: no shell or git was available, so I read PR #196 `pr://196/diff/175` (merge-base..HEAD 1b0379cd) instead of `git diff 01316e1 HEAD`",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/sandbox/client.js at c26e66e7eda4e9baba047bf80187091197d12c46"
       ]
     },
     "source:packages/sandbox/eslint.config.style.ts": {
@@ -2492,17 +2488,15 @@
       ]
     },
     "source:packages/sandbox/server.js": {
-      "fingerprint": "0f3f5a8fa057aae00a7f444e3fd6389e7541efc329d71bb25ec485bbe0ba9d7f",
+      "fingerprint": "8ddda39891702bfd235bc73ae9523c47ec93a504ce25f1c0c5ca674b8be71d62",
       "snapshot": {
-        "packages/sandbox/server.js": "93af6e5e79095b04da2b2a2e9c84d90adec0955c048fafb84b2db0090d3473bc"
+        "packages/sandbox/server.js": "3b6914032343dd6df9f599e7544d249e2c5bbdfa4f9a77fbd4761cb6833690c4"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Sandbox server: node:path import moved after node:http, arrow parens, brace style. Not library API.",
+      "head": "c26e66e7eda4e9baba047bf80187091197d12c46",
+      "outcome": "no-change",
+      "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/sandbox/server.js",
-        "git diff 01316e10..HEAD: import order and formatting only.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/sandbox/server.js at c26e66e7eda4e9baba047bf80187091197d12c46"
       ]
     },
     "source:packages/tests/browser/cancel.browser.test.ts": {
@@ -3421,27 +3415,27 @@
       ]
     },
     "source:packages/examples/README.md": {
-      "fingerprint": "2fe352ef195f4b1425f6d082aa8e63a03b13781629977e737407bf2c0e70b999",
+      "fingerprint": "b992c506270c246fd966d543d05386cbd1f6c9994d680d0b1172b6f11af6e059",
       "snapshot": {
-        "packages/examples/README.md": "35a16731d0dc01ae379ba3e230ce7099e9ab8729e1e1664c2eaa8cf4b48afd88"
+        "packages/examples/README.md": "43af5178d69a86e10c4e3541c0c227c4a728c81e9cd616db64dee9361cc7aa55"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "head": "c26e66e7eda4e9baba047bf80187091197d12c46",
       "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
       "evidence": [
-        "Changed: packages/examples/README.md at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: packages/examples/README.md at c26e66e7eda4e9baba047bf80187091197d12c46"
       ]
     },
     "source:packages/sandbox/client.html": {
-      "fingerprint": "37f2a16e59a9cd6786f575c94d8ca062b27fa5f00ba544f3ad421d40946aa108",
+      "fingerprint": "c25552e6773d5fcf87deb7bd7255386d998f94d755af7f49967034a1f542958d",
       "snapshot": {
-        "packages/sandbox/client.html": "5b0828ddab5d10c03959abfb0094cd65720e8b6a9af108e09e4f46e529f69f90"
+        "packages/sandbox/client.html": "93a5498e4d94f70741e0e3dda05872e9e6461aff89201e3238b2cadb230e4e0a"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "head": "c26e66e7eda4e9baba047bf80187091197d12c46",
       "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
       "evidence": [
-        "Changed: packages/sandbox/client.html at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: packages/sandbox/client.html at c26e66e7eda4e9baba047bf80187091197d12c46"
       ]
     },
     "source:packages/tests/unit/transformResponse.test.ts": {
@@ -5734,6 +5728,102 @@
       "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
       "evidence": [
         "Changed: packages/tests/run-tests.sh at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/examples/abort-controller/index.html": {
+      "fingerprint": "e2b4de3e41eb6418b95b6f5c0da10ec7a10b7728c910f2133c72c06292457863",
+      "snapshot": {
+        "packages/examples/abort-controller/index.html": "fd7027486cb3b7ea02d70231c5f5f04c60dcdb04da5af33bbb90950d903e956d"
+      },
+      "head": "c26e66e7eda4e9baba047bf80187091197d12c46",
+      "outcome": "no-change",
+      "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
+      "evidence": [
+        "Changed: packages/examples/abort-controller/index.html at c26e66e7eda4e9baba047bf80187091197d12c46"
+      ]
+    },
+    "source:packages/examples/all/index.html": {
+      "fingerprint": "05e26c91dac9c22f8f834a785516dcf566a58fc3f72154d2ae7dd325751a84b8",
+      "snapshot": {
+        "packages/examples/all/index.html": "f118f27cf5d76bcbe2cdb09cecc1c414063e4ca5e3c53fa9172577105a54a1a6"
+      },
+      "head": "c26e66e7eda4e9baba047bf80187091197d12c46",
+      "outcome": "no-change",
+      "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
+      "evidence": [
+        "Changed: packages/examples/all/index.html at c26e66e7eda4e9baba047bf80187091197d12c46"
+      ]
+    },
+    "source:packages/examples/amd/index.html": {
+      "fingerprint": "6c1618194bd0f7c9c53da98e5aae7c8cf1393face794fcd7fd39cd1ee3b6e5c3",
+      "snapshot": {
+        "packages/examples/amd/index.html": null
+      },
+      "head": "c26e66e7eda4e9baba047bf80187091197d12c46",
+      "outcome": "no-change",
+      "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
+      "evidence": [
+        "Changed: packages/examples/amd/index.html at c26e66e7eda4e9baba047bf80187091197d12c46"
+      ]
+    },
+    "source:packages/examples/get/index.html": {
+      "fingerprint": "19c50c87beff1b0f55be182354ea73a213bcc2fbe55d7f2fe5fc308bfe6c1602",
+      "snapshot": {
+        "packages/examples/get/index.html": "8e700e674275c2f3deb17337bb835144f0039b96e0876c54c7745b451c61afaf"
+      },
+      "head": "c26e66e7eda4e9baba047bf80187091197d12c46",
+      "outcome": "no-change",
+      "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
+      "evidence": [
+        "Changed: packages/examples/get/index.html at c26e66e7eda4e9baba047bf80187091197d12c46"
+      ]
+    },
+    "source:packages/examples/post/index.html": {
+      "fingerprint": "751e1f4d3369fea759066d8d5a925d9c3e9de9dbc5b27a842e5794e75a9dba1b",
+      "snapshot": {
+        "packages/examples/post/index.html": "b2331f391d848234d9299c108c262ceb963c73e495df26e2da0fc3bcd58d2c6f"
+      },
+      "head": "c26e66e7eda4e9baba047bf80187091197d12c46",
+      "outcome": "no-change",
+      "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
+      "evidence": [
+        "Changed: packages/examples/post/index.html at c26e66e7eda4e9baba047bf80187091197d12c46"
+      ]
+    },
+    "source:packages/examples/postMultipartFormData/index.html": {
+      "fingerprint": "2da61ee8608b83f8435075864942b53e9034450f8a9faf1df8eede5ce96b43aa",
+      "snapshot": {
+        "packages/examples/postMultipartFormData/index.html": "4d934aa399eb41ccc7e45e7b58a846a6dcb62b6a205b9cb7e15c2bee4308437d"
+      },
+      "head": "c26e66e7eda4e9baba047bf80187091197d12c46",
+      "outcome": "no-change",
+      "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
+      "evidence": [
+        "Changed: packages/examples/postMultipartFormData/index.html at c26e66e7eda4e9baba047bf80187091197d12c46"
+      ]
+    },
+    "source:packages/examples/transform-response/index.html": {
+      "fingerprint": "605e119f1054bb6b75153c4ed2a9f61b1685c8e86a8b97530f6aa08e828b6b8c",
+      "snapshot": {
+        "packages/examples/transform-response/index.html": "c16ddd786ccd3d25b018f5dd9db53c35ea9375986b9f4b694bec031121f70417"
+      },
+      "head": "c26e66e7eda4e9baba047bf80187091197d12c46",
+      "outcome": "no-change",
+      "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
+      "evidence": [
+        "Changed: packages/examples/transform-response/index.html at c26e66e7eda4e9baba047bf80187091197d12c46"
+      ]
+    },
+    "source:packages/examples/upload/index.html": {
+      "fingerprint": "e58667718b9cf79ccaf3025ba0c1f542764bb0d885390d12e314e1265538acdd",
+      "snapshot": {
+        "packages/examples/upload/index.html": "031a08a5afe38d21f85e67517693c67572ef6aa414adc6061480cf9af9c55a4b"
+      },
+      "head": "c26e66e7eda4e9baba047bf80187091197d12c46",
+      "outcome": "no-change",
+      "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
+      "evidence": [
+        "Changed: packages/examples/upload/index.html at c26e66e7eda4e9baba047bf80187091197d12c46"
       ]
     }
   }
