@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import type { Mock } from "vitest";
 import faxios from "#src/index.js";
+import type { FaxiosInstance } from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
-import type { FaxiosInstance } from "#src/lib/faxios.js";
 import type { FaxiosRequestConfig, FaxiosResponse } from "#src/lib/types.js";
 
 type FetchMock = Mock<(input: Request | string | URL, init?: RequestInit) => Promise<Response>>;

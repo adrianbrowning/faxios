@@ -1,14 +1,15 @@
 // @ts-self-types="./route.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
 import cloneConfig from "../helpers/cloneConfig.js";
+import type { FaxiosFeature } from "../types.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import type { BasePerCallConfig, DefineConfig, DefinedEndpoint, FaxiosLike } from "./define.js";
 import { createDefinedEndpoint } from "./define.js";
 import mergeConfig from "./mergeConfig.js";
 
 /** Config for `route()`: request defaults shared by every method, plus an optional `pathParamsSchema`. */
-export type RouteConfig<PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined> =
-  BasePerCallConfig & {
+export type RouteConfig<PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined, F = FaxiosFeature> =
+  BasePerCallConfig<F> & {
     /**
      * Standard Schema that validates `pathParams` on every call of every method's endpoint; its
      * output fills the `{key}` placeholders. Makes `pathParams` required per call, and a method's
@@ -21,20 +22,28 @@ export type RouteConfig<PP extends StandardSchemaV1<unknown, Record<string, unkn
 export type RouteMethodConfig<
   P extends StandardSchemaV1 | undefined = undefined,
   D extends StandardSchemaV1 | undefined = undefined,
-  R extends StandardSchemaV1 | undefined = undefined
-> = BasePerCallConfig & {
+  R extends StandardSchemaV1 | undefined = undefined,
+  F = FaxiosFeature
+> = BasePerCallConfig<F> & {
   paramsSchema?: P;
   requestSchema?: D;
   responseSchema?: R;
 };
 
+type RouteMethod = "delete" | "get" | "head" | "options" | "patch" | "post" | "put";
+
 /** The object `route()` returns: one endpoint factory per HTTP method (no `query`). */
-export type RouteBuilder<PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined, TOpts = unknown> = {
-  [M in "delete" | "get" | "head" | "options" | "patch" | "post" | "put"]: <
+export type RouteBuilder<PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined, TOpts = unknown, F = FaxiosFeature> = {
+  [M in RouteMethod]: <
     P extends StandardSchemaV1 | undefined = undefined,
     D extends StandardSchemaV1 | undefined = undefined,
     R extends StandardSchemaV1 | undefined = undefined
-  >(config?: RouteMethodConfig<P, D, R> & TOpts) => DefinedEndpoint<PP, P, D, R, TOpts>;
+  >(config?: RouteMethodConfig<P, D, R, F> & TOpts) => DefinedEndpoint<PP, P, D, R, TOpts, F>;
+};
+
+/** The object `route()` returns on an instance without the schema feature: endpoint factories that take request defaults only. */
+export type CoreRouteBuilder<TOpts = unknown, F = never> = {
+  [M in RouteMethod]: (config?: BasePerCallConfig<F> & TOpts) => DefinedEndpoint<undefined, undefined, undefined, undefined, TOpts, F>;
 };
 
 // ponytail: `query` excluded — non-standard HTTP method alias, not useful in route definitions

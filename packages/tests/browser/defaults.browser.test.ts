@@ -2,11 +2,13 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import faxios from "#src/index.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
-import defaults from "#src/lib/defaults/index.js";
+import createDefaults from "#src/lib/defaults/index.js";
 
 import { installFetchMock } from "./helpers/fetchMock.js";
 
 const XSRF_COOKIE_NAME = "CUSTOM-XSRF-TOKEN";
+
+const defaults = createDefaults();
 
 const transformRequest = defaults.transformRequest as unknown as Array<
   (data: unknown, headers: FaxiosHeaders) => unknown
@@ -45,14 +47,15 @@ describe("defaults (vitest browser)", () => {
     expect(transformRequest[0]!(null, headers)).toBe("null");
   });
 
-  it("should transform the plain data object to a FormData instance when header is 'multipart/form-data'", () => {
-    const headers = new FaxiosHeaders({
-      "Content-Type": "multipart/form-data",
-    });
+  // Through an instance: the default transform serializes a form body with the instance's form
+  // feature, which the root installs.
+  it("should send the plain data object as FormData when header is 'multipart/form-data'", async () => {
+    using mock = installFetchMock();
 
-    const transformed = transformRequest[0]!({ x: 1 }, headers);
+    await faxios.post("/foo", { x: 1 }, { headers: { "Content-Type": "multipart/form-data" } });
 
-    expect(transformed).toBeInstanceOf(FormData);
+    expect(mock.lastRequest!.headers.get("Content-Type")).toMatch(/^multipart\/form-data; boundary=/);
+    expect((await mock.lastRequest!.formData()).get("x")).toBe("1");
   });
 
   it("should do nothing to request string", () => {

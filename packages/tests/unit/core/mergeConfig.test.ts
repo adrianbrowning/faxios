@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { FaxiosHeaders } from "#src/index.js";
 import mergeConfig from "#src/lib/core/mergeConfig.js";
-import defaults from "#src/lib/defaults/index.js";
+import createDefaults from "#src/lib/defaults/index.js";
+
+const defaults = createDefaults();
 
 describe("core::mergeConfig", () => {
   it("accepts undefined for second argument", () => {

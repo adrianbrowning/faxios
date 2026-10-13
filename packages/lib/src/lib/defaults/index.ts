@@ -2,9 +2,7 @@
 
 import FaxiosError from "../core/FaxiosError.js";
 import type FaxiosHeaders from "../core/FaxiosHeaders.js";
-import formDataToJSON from "../helpers/formDataToJSON.js";
-import toFormData from "../helpers/toFormData.js";
-import toURLEncodedForm from "../helpers/toURLEncodedForm.js";
+import { requireForm } from "../core/features.js";
 import platform from "../platform.js";
 import type {
   FaxiosDefaults,
@@ -15,31 +13,24 @@ import type {
 import { hasOwnProp, isArrayBuffer, isArrayBufferView, isBlob, isBuffer, isFile, isFileList, isFormData, isHTMLForm, isObject, isReadableStream, isResponse, isStream, isString, isURLSearchParams } from "../utils.js";
 import transitionalDefaults from "./transitional.js";
 
-/**
- * It takes a string, tries to parse it, and if it fails, it returns the stringified version
- * of the input
- *
- * @param {any} rawValue - The value to be stringified.
- * @param {Function} parser - A function that parses a string into a JavaScript object.
- * @param {Function} encoder - A function that takes a value and returns a string.
- *
- * @returns {string} A stringified version of the rawValue.
- */
+// An object body sent as a form needs the form feature (`@gcmdev/faxios/form`); `undefined` for
+// any other body.
 function serializeObjectPayload(
+  config: InternalFaxiosRequestConfig,
   data: unknown,
-  contentType: string,
-  formSerializer: Record<string, unknown> | undefined,
-  FormDataCtor: (new () => object) | null | undefined
+  contentType: string
 ): unknown {
+  const formSerializer = config.formSerializer as Record<string, unknown> | undefined;
   if (contentType.indexOf("application/x-www-form-urlencoded") > -1) {
-    return toURLEncodedForm(data, formSerializer).toString();
+    return requireForm(config, "An application/x-www-form-urlencoded body").toURLEncoded(data, formSerializer);
   }
   const fileList = isFileList(data);
   if (fileList || contentType.indexOf("multipart/form-data") > -1) {
-    const _FormData = FormDataCtor;
-    return toFormData(
+    const form = requireForm(config, fileList ? "A FileList body" : "A multipart/form-data body");
+    const FormDataCtor = config.env?.FormData;
+    return form.toFormData(
       fileList ? { "files[]": data } : data,
-      (_FormData && new _FormData()) as GenericFormData | null | undefined,
+      (FormDataCtor && new FormDataCtor()) as GenericFormData | null | undefined,
       formSerializer
     );
   }
@@ -67,6 +58,16 @@ function throwOnStrictJSONError(
   throw e;
 }
 
+/**
+ * It takes a string, tries to parse it, and if it fails, it returns the stringified version
+ * of the input
+ *
+ * @param {any} rawValue - The value to be stringified.
+ * @param {Function} parser - A function that parses a string into a JavaScript object.
+ * @param {Function} encoder - A function that takes a value and returns a string.
+ *
+ * @returns {string} A stringified version of the rawValue.
+ */
 function stringifySafely(
   rawValue: unknown,
   parser?: ((s: string) => unknown) | null,
@@ -87,133 +88,137 @@ function stringifySafely(
   return (encoder || JSON.stringify)(rawValue);
 }
 
-const defaults: FaxiosDefaults = {
-  transitional: transitionalDefaults,
+function transformRequest(
+  this: InternalFaxiosRequestConfig,
+  data: unknown,
+  headers: FaxiosHeaders
+) {
+  const contentType =
+    (headers.getContentType() as null | string | undefined) || "";
+  const hasJSONContentType = contentType.indexOf("application/json") > -1;
+  const isObjectPayload = isObject(data);
 
-  transformRequest: [
-    function transformRequest(
-      this: InternalFaxiosRequestConfig,
-      data: unknown,
-      headers: FaxiosHeaders
-    ) {
-      const contentType =
-        (headers.getContentType() as null | string | undefined) || "";
-      const hasJSONContentType = contentType.indexOf("application/json") > -1;
-      const isObjectPayload = isObject(data);
+  if (isObjectPayload && isHTMLForm(data)) {
+    const GlobalFormData = (globalThis as Record<string, unknown>)[
+      "FormData"
+    ] as (new (el?: unknown) => unknown) | undefined;
+    if (GlobalFormData) {
+      data = new GlobalFormData(data);
+    }
+  }
 
-      if (isObjectPayload && isHTMLForm(data)) {
-        const GlobalFormData = (globalThis as Record<string, unknown>)[
-          "FormData"
-        ] as (new (el?: unknown) => unknown) | undefined;
-        if (GlobalFormData) {
-          data = new GlobalFormData(data);
-        }
-      }
+  const formData = isFormData(data);
 
-      const formData = isFormData(data);
+  if (formData) {
+    return hasJSONContentType ? JSON.stringify(requireForm(this, "A FormData body sent as JSON").formDataToJSON(data)) : data;
+  }
 
-      if (formData) {
-        return hasJSONContentType ? JSON.stringify(formDataToJSON(data)) : data;
-      }
+  // fetch takes any ArrayBufferView as a body and sends only the view's bytes.
+  // Never unwrap it to `.buffer`: a subarray or DataView would send the whole backing buffer.
+  if (
+    isArrayBuffer(data) ||
+    isArrayBufferView(data) ||
+    isBuffer(data) ||
+    isStream(data) ||
+    isFile(data) ||
+    isBlob(data) ||
+    isReadableStream(data)
+  ) {
+    return data;
+  }
+  if (isURLSearchParams(data)) {
+    headers.setContentType(
+      "application/x-www-form-urlencoded;charset=utf-8",
+      false
+    );
+    return String(data);
+  }
 
-      // fetch takes any ArrayBufferView as a body and sends only the view's bytes.
-      // Never unwrap it to `.buffer`: a subarray or DataView would send the whole backing buffer.
-      if (
-        isArrayBuffer(data) ||
-        isArrayBufferView(data) ||
-        isBuffer(data) ||
-        isStream(data) ||
-        isFile(data) ||
-        isBlob(data) ||
-        isReadableStream(data)
-      ) {
-        return data;
-      }
-      if (isURLSearchParams(data)) {
-        headers.setContentType(
-          "application/x-www-form-urlencoded;charset=utf-8",
-          false
-        );
-        return (data as { toString: () => string; }).toString();
-      }
+  if (isObjectPayload) {
+    const serialized = serializeObjectPayload(this, data, contentType);
+    if (serialized !== undefined) return serialized;
+  }
 
-      if (isObjectPayload) {
-        const formSerializer = this.formSerializer as Record<string, unknown> | undefined;
-        const serialized = serializeObjectPayload(data, contentType, formSerializer, this.env?.FormData);
-        if (serialized !== undefined) return serialized;
-      }
+  if (isObjectPayload || hasJSONContentType) {
+    headers.setContentType("application/json", false);
+    return stringifySafely(data);
+  }
 
-      if (isObjectPayload || hasJSONContentType) {
-        headers.setContentType("application/json", false);
-        return stringifySafely(data);
-      }
+  return data;
+}
 
-      return data;
+function transformResponse(
+  this: InternalFaxiosRequestConfig,
+  data: unknown
+) {
+  const forcedJSONParsing = (this.transitional || transitionalDefaults).forcedJSONParsing;
+  // Own only: a polluted Object.prototype.responseType must not make every body strict JSON.
+  const responseType = hasOwnProp(this, "responseType") ? this.responseType : undefined;
+  const JSONRequested = responseType === "json";
+  const shouldParseJSON = (forcedJSONParsing && !responseType) || JSONRequested;
+
+  if (isResponse(data) || isReadableStream(data)) {
+    return data;
+  }
+
+  if (data && isString(data) && shouldParseJSON) {
+    try {
+      return JSON.parse(data as string, hasOwnProp(this, "parseReviver") ? this.parseReviver : undefined);
+    }
+    catch (e) {
+      throwOnStrictJSONError(e, JSONRequested, this);
+    }
+  }
+
+  return data;
+}
+
+function validateStatus(status: number) {
+  return status >= 200 && status < 300;
+}
+
+/**
+ * Fresh defaults for an instance built from scratch. A factory, so the root default instance,
+ * whose `defaults` callers mutate, shares no object with instances `./core` creates.
+ */
+export default function createDefaults(): FaxiosDefaults {
+  return {
+    transitional: transitionalDefaults,
+
+    transformRequest: [ transformRequest ],
+
+    transformResponse: [ transformResponse ],
+
+    /**
+     * A timeout in milliseconds to abort a request. If set to 0 (default) a
+     * timeout is not created.
+     */
+    timeout: 0,
+
+    xsrfCookieName: "XSRF-TOKEN",
+    xsrfHeaderName: "X-XSRF-TOKEN",
+
+    maxContentLength: -1,
+    maxBodyLength: -1,
+
+    env: {
+      FormData: platform.classes.FormData,
     },
-  ],
 
-  transformResponse: [
-    function transformResponse(
-      this: InternalFaxiosRequestConfig,
-      data: unknown
-    ) {
-      const transitional = this.transitional || defaults.transitional;
-      const forcedJSONParsing = transitional && transitional.forcedJSONParsing;
-      // Own only: a polluted Object.prototype.responseType must not make every body strict JSON.
-      const responseType = hasOwnProp(this, "responseType") ? this.responseType : undefined;
-      const JSONRequested = responseType === "json";
-      const shouldParseJSON = (forcedJSONParsing && !responseType) || JSONRequested;
+    validateStatus,
 
-      if (isResponse(data) || isReadableStream(data)) {
-        return data;
-      }
-
-      if (data && isString(data) && shouldParseJSON) {
-        try {
-          return JSON.parse(data as string, hasOwnProp(this, "parseReviver") ? this.parseReviver : undefined);
-        }
-        catch (e) {
-          throwOnStrictJSONError(e, JSONRequested, this);
-        }
-      }
-
-      return data;
+    headers: {
+      common: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": undefined,
+      },
+      delete: {},
+      get: {},
+      head: {},
+      post: {},
+      put: {},
+      patch: {},
+      query: {},
     },
-  ],
-
-  /**
-   * A timeout in milliseconds to abort a request. If set to 0 (default) a
-   * timeout is not created.
-   */
-  timeout: 0,
-
-  xsrfCookieName: "XSRF-TOKEN",
-  xsrfHeaderName: "X-XSRF-TOKEN",
-
-  maxContentLength: -1,
-  maxBodyLength: -1,
-
-  env: {
-    FormData: platform.classes.FormData,
-  },
-
-  validateStatus: function validateStatus(status: number) {
-    return status >= 200 && status < 300;
-  },
-
-  headers: {
-    common: {
-      Accept: "application/json, text/plain, */*",
-      "Content-Type": undefined,
-    },
-    delete: {},
-    get: {},
-    head: {},
-    post: {},
-    put: {},
-    patch: {},
-    query: {},
-  },
-};
-
-export default defaults;
+  };
+}

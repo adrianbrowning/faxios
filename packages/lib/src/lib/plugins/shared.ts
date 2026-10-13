@@ -1,9 +1,9 @@
-// Helpers the built-in plugins share. Like the plugins, they import only the package root, which is
-// what a third-party plugin can import, so a plugin of your own can do anything these do. Not an
-// entry point.
+// Helpers the built-in plugins share. Like the plugins, they import only `@gcmdev/faxios/core`,
+// which a third-party plugin can import too, so a plugin of your own can do anything these do. Not
+// an entry point.
 
-import { FaxiosError } from "../../index.js";
-import type { InternalFaxiosRequestConfig } from "../../index.js";
+import { FaxiosError } from "../../core.js";
+import type { InternalFaxiosRequestConfig } from "../../core.js";
 
 /** A caller-supplied field, read as an own property only (THREATMODEL T-R4b). */
 export const own = <T extends object, K extends keyof T>(source: T, key: K): T[K] | undefined =>

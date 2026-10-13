@@ -2,12 +2,14 @@
 
 import transitionalDefaults from "../defaults/transitional.js";
 import validator from "../helpers/validator.js";
-import type { FaxiosRequestConfig, InternalFaxiosRequestConfig, ResponseType } from "../types.js";
+import type { FaxiosCoreRequestConfig, FaxiosRequestConfig, InternalFaxiosRequestConfig, ResponseType } from "../types.js";
 import { hasOwnProp } from "../utils.js";
 import FaxiosError from "./FaxiosError.js";
+import { FEATURE_OPTIONS, missingFeatureError } from "./features.js";
 
-// Every request config key faxios reads. `satisfies` keeps the list in step with
-// FaxiosRequestConfig: a missing key and an extra one are both type errors.
+// Every request config key core reads. `satisfies` keeps the list in step with
+// FaxiosCoreRequestConfig: a missing key and an extra one are both type errors. The schema and form
+// features add their own keys as plugin options when they're installed.
 const REQUEST_CONFIG_KEYS = {
   allowAbsoluteUrls: true,
   auth: true,
@@ -15,7 +17,6 @@ const REQUEST_CONFIG_KEYS = {
   data: true,
   env: true,
   fetchOptions: true,
-  formSerializer: true,
   headers: true,
   maxBodyLength: true,
   maxContentLength: true,
@@ -23,14 +24,10 @@ const REQUEST_CONFIG_KEYS = {
   onDownloadProgress: true,
   onUploadProgress: true,
   params: true,
-  paramsSchema: true,
   paramsSerializer: true,
   parseReviver: true,
   pathParams: true,
-  pathParamsSchema: true,
   redact: true,
-  requestSchema: true,
-  responseSchema: true,
   responseType: true,
   signal: true,
   timeout: true,
@@ -44,7 +41,7 @@ const REQUEST_CONFIG_KEYS = {
   withXSRFToken: true,
   xsrfCookieName: true,
   xsrfHeaderName: true,
-} satisfies Record<keyof FaxiosRequestConfig, true>;
+} satisfies Record<keyof FaxiosCoreRequestConfig, true>;
 
 const TRANSPORT_HINT = "faxios sends every request with fetch; configure the transport with fetchOptions (for example an undici dispatcher) or env.fetch";
 
@@ -100,6 +97,9 @@ const RESPONSE_TYPES = {
 export default function assertRequestConfig(config: FaxiosRequestConfig, pluginOptions: ReadonlySet<string>): void {
   for (const key of Object.keys(config)) {
     if (hasOwnProp(REQUEST_CONFIG_KEYS, key) || pluginOptions.has(key)) continue;
+    for (const feature of [ "form", "schema" ] as const) {
+      if ((FEATURE_OPTIONS[feature] as ReadonlyArray<string>).includes(key)) throw missingFeatureError(key, feature, config);
+    }
     throw new FaxiosError(`Unknown option ${key}${hintFor(key, pluginOptions)}`, FaxiosError.ERR_BAD_OPTION, config as InternalFaxiosRequestConfig);
   }
 

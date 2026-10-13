@@ -3,7 +3,31 @@
     "name": ".",
     "path": "dist/index.js",
     "import": "*",
-    "limit": "19 kB"
+    "limit": "19.8 kB"
+  },
+  {
+    "name": "./core",
+    "path": "dist/core.js",
+    "import": "*",
+    "limit": "17 kB"
+  },
+  {
+    "name": "./core GET only",
+    "path": "dist/core.js",
+    "import": "{ create }",
+    "limit": "16.9 kB"
+  },
+  {
+    "name": "./schema",
+    "path": "dist/schema.js",
+    "import": "*",
+    "limit": "4.95 kB"
+  },
+  {
+    "name": "./form",
+    "path": "dist/form.js",
+    "import": "*",
+    "limit": "5.8 kB"
   },
   {
     "name": "./plugins",
@@ -15,19 +39,19 @@
     "name": "./plugins/auth-bearer",
     "path": "dist/lib/plugins/authBearer.js",
     "import": "*",
-    "limit": "19.5 kB"
+    "limit": "4.9 kB"
   },
   {
     "name": "./plugins/forward-to",
     "path": "dist/lib/plugins/forwardTo.js",
     "import": "*",
-    "limit": "19 kB"
+    "limit": "4.5 kB"
   },
   {
     "name": "./plugins/retry",
     "path": "dist/lib/plugins/retry.js",
     "import": "*",
-    "limit": "20.5 kB"
+    "limit": "5.9 kB"
   },
   {
     "name": "./plugins/timing",

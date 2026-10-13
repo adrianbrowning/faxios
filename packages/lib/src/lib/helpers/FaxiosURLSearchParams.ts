@@ -1,29 +1,8 @@
 "use strict";
 
 import type { ParamEncoder } from "../types.js";
+import { encodeParam } from "./appendParams.js";
 import toFormData from "./toFormData.js";
-
-/**
- * It encodes a string by replacing all characters that are not in the unreserved set with
- * their percent-encoded equivalents
- *
- * @param {string} str - The string to encode.
- *
- * @returns {string} The encoded string.
- */
-function encode(str: string): string {
-  const charMap: Record<string, string> = {
-    "!": "%21",
-    "'": "%27",
-    "(": "%28",
-    ")": "%29",
-    "~": "%7E",
-    "%20": "+",
-  };
-  return encodeURIComponent(str).replace(/[!'()~]|%20/g, function replacer(match: string) {
-    return charMap[match] ?? match;
-  });
-}
 
 class FaxiosURLSearchParams {
   #pairs: Array<[string, unknown]> = [];
@@ -38,8 +17,8 @@ class FaxiosURLSearchParams {
 
   toString(encoder?: ParamEncoder): string {
     const _encode = encoder
-      ? (value: string) => encoder.call(undefined, value, encode)
-      : encode;
+      ? (value: string) => encoder.call(undefined, value, encodeParam)
+      : encodeParam;
 
     return this.#pairs
       .map(function each(pair: [string, unknown]) {
@@ -47,6 +26,14 @@ class FaxiosURLSearchParams {
       }, "")
       .join("&");
   }
+}
+
+/**
+ * The `params` serializer `@gcmdev/faxios/form` installs: toFormData's notation at any depth
+ * (`a[b][c]=1`), with the `dots`, `indexes`, `metaTokens`, `maxDepth` and `visitor` options.
+ */
+export function serializeFormParams(params: unknown, options: unknown, encoder: ParamEncoder): string {
+  return new FaxiosURLSearchParams(params, options).toString(encoder);
 }
 
 export default FaxiosURLSearchParams;

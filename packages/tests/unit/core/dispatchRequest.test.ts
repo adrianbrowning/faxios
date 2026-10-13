@@ -3,9 +3,12 @@ import { describe, it, vi } from "vitest";
 import dispatchRequest from "#src/lib/core/dispatchRequest.js";
 import FaxiosError, { isSchemaValidationError } from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
-import defaults from "#src/lib/defaults/index.js";
+import createDefaults from "#src/lib/defaults/index.js";
 import type { InternalFaxiosRequestConfig } from "#src/lib/types.js";
+import { rootFeatures } from "./_rootFeatures.js";
 import { makeSchema } from "./_schemaTestHelpers.js";
+
+const defaults = createDefaults();
 
 class ReactNativeFormData {
   append() {}
@@ -60,7 +63,7 @@ describe("core::dispatchRequest", () => {
 
       let thrown;
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (e) {
         thrown = e;
@@ -86,7 +89,7 @@ describe("core::dispatchRequest", () => {
 
       let thrown;
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (e) {
         thrown = e;
@@ -114,7 +117,7 @@ describe("core::dispatchRequest", () => {
       });
 
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (_) {
         // expected
@@ -142,7 +145,7 @@ describe("core::dispatchRequest", () => {
 
       let thrown;
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (e) {
         thrown = e;
@@ -173,7 +176,7 @@ describe("core::dispatchRequest", () => {
       });
 
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (_) {
         // expected
@@ -196,7 +199,7 @@ describe("core::dispatchRequest", () => {
 
       let thrown;
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (e) {
         thrown = e;
@@ -231,7 +234,7 @@ describe("core::dispatchRequest", () => {
         },
       });
 
-      const result = await dispatchRequest(config);
+      const result = await dispatchRequest(config, rootFeatures);
 
       const sentHeaders = Object.keys(capturedInit?.headers as Record<string, string>).map(key => key.toLowerCase());
       assert.ok(!sentHeaders.includes("content-type"), `sent: ${sentHeaders.join(", ")}`);
@@ -249,7 +252,7 @@ describe("core::dispatchRequest", () => {
         },
       });
 
-      const result = await dispatchRequest(config);
+      const result = await dispatchRequest(config, rootFeatures);
 
       assert.deepStrictEqual(result.data, { ok: true });
       assert.strictEqual(
@@ -274,7 +277,7 @@ describe("core::dispatchRequest", () => {
         },
       });
 
-      const result = await dispatchRequest(config);
+      const result = await dispatchRequest(config, rootFeatures);
 
       assert.deepStrictEqual(result.data, { name: "alice", age: 30, validated: true });
     });
@@ -294,7 +297,7 @@ describe("core::dispatchRequest", () => {
 
       let thrown: FaxiosError | undefined;
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (e) {
         thrown = e as FaxiosError;
@@ -318,7 +321,7 @@ describe("core::dispatchRequest", () => {
         },
       });
 
-      const result = await dispatchRequest(config);
+      const result = await dispatchRequest(config, rootFeatures);
       assert.deepStrictEqual(result.data, { ok: true });
     });
 
@@ -336,7 +339,7 @@ describe("core::dispatchRequest", () => {
 
       let thrown: FaxiosError | undefined;
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (e) {
         thrown = e as FaxiosError;
@@ -361,7 +364,7 @@ describe("core::dispatchRequest", () => {
 
       let thrown: FaxiosError | undefined;
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (e) {
         thrown = e as FaxiosError;
@@ -386,7 +389,7 @@ describe("core::dispatchRequest", () => {
 
       let thrown: FaxiosError | undefined;
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (e) {
         thrown = e as FaxiosError;
@@ -414,7 +417,7 @@ describe("core::dispatchRequest", () => {
 
       let thrown: FaxiosError | undefined;
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (e) {
         thrown = e as FaxiosError;
@@ -441,7 +444,7 @@ describe("core::dispatchRequest", () => {
       });
 
       await assert.rejects(
-        async () => dispatchRequest(config),
+        async () => dispatchRequest(config, rootFeatures),
         (err: unknown) => {
           assert.ok(err instanceof FaxiosError);
           assert.strictEqual(err.code, FaxiosError.ERR_BAD_RESPONSE_SCHEMA);
@@ -466,7 +469,7 @@ describe("core::dispatchRequest", () => {
         },
       });
 
-      const result = await dispatchRequest(config);
+      const result = await dispatchRequest(config, rootFeatures);
       assert.deepStrictEqual(result.data, { transformed: true });
     });
 
@@ -487,7 +490,7 @@ describe("core::dispatchRequest", () => {
 
       let thrown: FaxiosError | undefined;
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (e) {
         thrown = e as FaxiosError;
@@ -512,7 +515,7 @@ describe("core::dispatchRequest", () => {
 
       let thrown: unknown;
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (e) {
         thrown = e;
@@ -542,7 +545,7 @@ describe("core::dispatchRequest", () => {
 
       let thrown: FaxiosError | undefined;
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (e) {
         thrown = e as FaxiosError;
@@ -572,7 +575,7 @@ describe("core::dispatchRequest", () => {
 
       let thrown: FaxiosError | undefined;
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (e) {
         thrown = e as FaxiosError;
@@ -605,7 +608,7 @@ describe("core::dispatchRequest", () => {
         },
       });
 
-      const request = dispatchRequest(config);
+      const request = dispatchRequest(config, rootFeatures);
       await validating;
       controller.abort();
       release();
@@ -635,7 +638,7 @@ describe("core::dispatchRequest", () => {
 
       let thrown: FaxiosError | undefined;
       try {
-        await dispatchRequest(config);
+        await dispatchRequest(config, rootFeatures);
       }
       catch (e) {
         thrown = e as FaxiosError;
