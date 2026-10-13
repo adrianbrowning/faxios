@@ -235,8 +235,11 @@ catch (error) {
 
 - Non-2xx statuses reject because of the default `validateStatus`. Pass your own `validateStatus`
   to change which statuses resolve.
-- Transport failures (DNS, refused connection, CORS) reject with `ERR_NETWORK`; the runtime's
-  original error is on `error.cause`. `ECONNREFUSED` is not raised as the error's own code.
+- Transport failures (DNS, refused connection, CORS, a body that fails mid-read) reject with
+  `ERR_NETWORK`; the runtime's original error is on `error.cause`. `ECONNREFUSED` is not raised
+  as the error's own code. A URL `fetch` can't parse (outside the browser, a relative `url` with
+  no `baseURL`) rejects with `ERR_INVALID_URL`; a bad `method`, a `url` that isn't a string or
+  `URL`, or a non-object config rejects with `ERR_BAD_OPTION_VALUE`.
 - `error.toJSON()` never includes the response; list sensitive config keys in `redact` to mask
   them in that output.
 

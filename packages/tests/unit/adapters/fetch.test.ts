@@ -726,6 +726,22 @@ describe.runIf(typeof fetch === "function")(
       }
     });
 
+    it("should UTF-8 encode a non-ASCII config auth username", async () => {
+      const server = await startHTTPServer((req, res) => res.end(req.headers.authorization));
+
+      try {
+        const response = await fetchFaxios.get(
+          `http://localhost:${(server.address() as AddressInfo).port}/`,
+          { auth: { username: "\u7528\u6237", password: "pa\u00df" } }
+        );
+        const base64 = Buffer.from("\u7528\u6237:pa\u00df", "utf8").toString("base64");
+        assert.strictEqual(response.data, `Basic ${base64}`);
+      }
+      finally {
+        await stopHTTPServer(server);
+      }
+    });
+
     it("keeps malformed URL credentials percent-encoding and does not throw", async () => {
       const server = await startHTTPServer(
         (req, res) => {

@@ -1,8 +1,9 @@
 import assert from "node:assert";
 import type { AddressInfo } from "node:net";
 import net from "node:net";
-import { describe, it } from "vitest";
+import { describe, it, vi } from "vitest";
 import faxios from "#src/index.js";
+import FaxiosError from "#src/lib/core/FaxiosError.js";
 
 const getClosedPort = async () =>
   new Promise(resolve => {
@@ -43,5 +44,47 @@ describe("adapters - network-error details", () => {
 
       assert.strictEqual(typeof e.message, "string");
     }
+  });
+});
+
+describe("adapters - transport error codes", () => {
+  const rejection = async (promise: Promise<unknown>) => {
+    const err: unknown = await promise.then(
+      () => { throw new Error("request unexpectedly resolved"); },
+      (e: unknown) => e
+    );
+    assert.strictEqual(faxios.isFaxiosError(err), true, "isFaxiosError should be true");
+    return err as FaxiosError;
+  };
+
+  it("rejects a relative URL outside the browser with ERR_INVALID_URL and a baseURL hint", async () => {
+    const fetch = vi.fn(async () => new Response("ok"));
+    const err = await rejection(faxios.create({ env: { fetch } }).get("/user?ID=12345"));
+    assert.strictEqual(err.code, FaxiosError.ERR_INVALID_URL);
+    assert.match(err.message, /baseURL/);
+    assert.ok(err.cause instanceof TypeError, "the parse failure should be on error.cause");
+    assert.strictEqual(fetch.mock.calls.length, 0);
+  });
+
+  it("rejects a Request the runtime refuses to build with ERR_BAD_REQUEST", async () => {
+    const fetch = vi.fn(async () => new Response("ok"));
+    const err = await rejection(
+      faxios.create({ env: { fetch } }).request({ url: "http://example.test/", method: "get", data: "body" })
+    );
+    assert.strictEqual(err.code, FaxiosError.ERR_BAD_REQUEST);
+    assert.strictEqual(fetch.mock.calls.length, 0);
+  });
+
+  it("rejects a response body that fails mid-stream with ERR_NETWORK", async () => {
+    const terminated = new TypeError("terminated");
+    const fetch = vi.fn(async () => new Response(new ReadableStream({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode("partial"));
+        controller.error(terminated);
+      },
+    })));
+    const err = await rejection(faxios.create({ env: { fetch } }).get("http://example.test/"));
+    assert.strictEqual(err.code, FaxiosError.ERR_NETWORK);
+    assert.strictEqual(err.cause, terminated);
   });
 });

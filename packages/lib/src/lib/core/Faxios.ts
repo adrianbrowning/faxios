@@ -64,6 +64,9 @@ const METHOD_HEADER_GROUPS = Object.keys({
   query: true,
 } satisfies Record<keyof HeadersDefaults, true>) as Array<keyof HeadersDefaults>;
 
+// RFC 9110 token: what fetch accepts as a method name.
+const HTTP_TOKEN = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
+
 function patchErrorStack(err: Error): void {
   let dummy: { stack?: string; } = {};
   // captureStackTrace is V8-only (Node, Chromium); fall back elsewhere.
@@ -138,6 +141,37 @@ function resolveAllowAbsoluteUrls(
     const allowAbsoluteUrls = utils.hasOwnProp(defaults, "allowAbsoluteUrls") ? defaults.allowAbsoluteUrls : undefined;
     const baseURL = utils.hasOwnProp(defaults, "baseURL") ? defaults.baseURL : undefined;
     config.allowAbsoluteUrls = allowAbsoluteUrls ?? !baseURL;
+  }
+}
+
+// Callers can pass anything at runtime, so a config that isn't an object gets a coded error.
+function assertConfigObject(value: unknown): void {
+  if (value !== undefined && (value === null || typeof value !== "object")) {
+    throw new FaxiosError("config must be an object", FaxiosError.ERR_BAD_OPTION_VALUE);
+  }
+}
+
+// The request's method, lower-cased. Anything but an HTTP method name gets a coded error.
+function resolveMethod(
+  config: FaxiosRequestConfig,
+  defaults: FaxiosRequestConfig
+): string {
+  const defaultMethod = utils.hasOwnProp(defaults, "method") ? defaults.method : undefined;
+  const method: unknown = config.method || defaultMethod || "get";
+  if (typeof method !== "string" || !HTTP_TOKEN.test(method)) {
+    throw new FaxiosError("option method must be an HTTP method name", FaxiosError.ERR_BAD_OPTION_VALUE, config as InternalFaxiosRequestConfig);
+  }
+  return method.toLowerCase();
+}
+
+// A URL instance is sent as its href; anything but a string or URL gets a coded error.
+function normalizeURL(config: FaxiosRequestConfig): void {
+  const url: unknown = config.url;
+  if (url instanceof URL) {
+    config.url = url.href;
+  }
+  else if (url !== undefined && typeof url !== "string") {
+    throw new FaxiosError("option url must be a string or URL", FaxiosError.ERR_BAD_OPTION_VALUE, config as InternalFaxiosRequestConfig);
   }
 }
 
@@ -360,9 +394,12 @@ class Faxios {
     /*eslint no-param-reassign:0*/
     // Allow for faxios('example/url'[, config]) a la fetch API
     if (typeof configOrUrl === "string") {
+      // `faxios(url, null)` has always meant "no config".
+      assertConfigObject(config ?? undefined);
       config = { ...config, url: configOrUrl };
     }
     else {
+      assertConfigObject(configOrUrl);
       config = configOrUrl;
     }
 
@@ -400,11 +437,8 @@ class Faxios {
       true
     );
 
-    // Set config.method
-    const defaultMethod = utils.hasOwnProp(this.defaults, "method") ? this.defaults.method : undefined;
-    config.method = (
-      (config.method || defaultMethod || "get") as string
-    ).toLowerCase();
+    config.method = resolveMethod(config, this.defaults);
+    normalizeURL(config);
 
     config.headers = flattenMethodHeaders(headers, config.method);
 

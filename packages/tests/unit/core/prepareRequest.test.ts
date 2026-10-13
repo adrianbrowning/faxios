@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
 import prepareRequest from "#src/lib/core/prepareRequest.js";
-import type { FaxiosBasicCredentials, FaxiosRequestHeaders } from "#src/lib/types.js";
+import type { FaxiosRequestHeaders } from "#src/lib/types.js";
 
 class ReactNativeFormData {
   append() {}
@@ -38,28 +38,13 @@ describe("core::prepareRequest", () => {
     );
   });
 
-  it("should ignore inherited nested auth fields", () => {
-    Object.defineProperty(Object.prototype, "username", {
-      value: "inherited-user",
-      configurable: true,
-    });
-    Object.defineProperty(Object.prototype, "password", {
-      value: "inherited-pass",
-      configurable: true,
+  it("leaves basic auth to the adapter, which builds the header once", () => {
+    const config = prepareRequest({
+      url: "/foo",
+      auth: { username: "\u7528\u6237", password: "p" },
     });
 
-    try {
-      const config = prepareRequest({
-        url: "/foo",
-        auth: {} as FaxiosBasicCredentials,
-      });
-
-      assert.strictEqual((config.headers as FaxiosRequestHeaders).get("Authorization"), "Basic Og==");
-    }
-    finally {
-      delete (Object.prototype as Record<string, unknown>).username;
-      delete (Object.prototype as Record<string, unknown>).password;
-    }
+    assert.strictEqual((config.headers as FaxiosRequestHeaders).has("Authorization"), false);
   });
 
   it("should ignore inherited nested serializer fields", () => {

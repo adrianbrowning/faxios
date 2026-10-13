@@ -11,6 +11,8 @@ import utils from "../utils.js";
 
 export type ComposedSignal = AbortSignal & { unsubscribe?: () => void; };
 export type PendingBodyErrorRef = { value: (FaxiosError & { request?: unknown; }) | null; };
+// The adapter step a failure came from: building the Request, sending it, or reading the body.
+export type FetchStage = "body" | "build" | "send";
 
 const _textEncoder: TextEncoder | undefined =
   typeof globalThis.TextEncoder === "function" ? new globalThis.TextEncoder() : undefined;
@@ -72,13 +74,58 @@ export const checkMaterializedSize = (
   }
 };
 
+// Request and fetch reject an unparseable URL with a code-less TypeError. Outside the browser
+// (or Deno without --location) there's no base, so a relative URL can't parse.
+const isUnparseableURL = (url: string): boolean => {
+  const location: unknown = Reflect.get(globalThis, "location");
+  const base = typeof location === "object" && location !== null && "href" in location && typeof location.href === "string"
+    ? location.href
+    : undefined;
+  try {
+    new URL(url, base);
+    return false;
+  }
+  catch {
+    return true;
+  }
+};
+
+// Gives a code-less TypeError the code for the adapter step it came from. A "send" TypeError
+// that isn't a URL problem falls through to the network-error check.
+const throwStagedTypeError = (
+  err: Error,
+  stage: FetchStage,
+  url: string | undefined,
+  config: InternalFaxiosRequestConfig,
+  request: unknown
+): void => {
+  if (stage !== "body" && url !== undefined && isUnparseableURL(url)) {
+    const message = /^[a-z][a-z\d+\-.]*:/i.test(url)
+      ? "Invalid URL"
+      : "Invalid URL: a relative URL needs a baseURL outside the browser";
+    throw Object.assign(
+      new FaxiosError(message, FaxiosError.ERR_INVALID_URL, config, request),
+      { cause: err }
+    );
+  }
+  if (stage === "build") {
+    throw FaxiosError.from(err, FaxiosError.ERR_BAD_REQUEST, config, request);
+  }
+  // A body that fails mid-stream (connection reset, "terminated") is a network failure.
+  if (stage === "body") {
+    throw FaxiosError.from(err, FaxiosError.ERR_NETWORK, config, request);
+  }
+};
+
 // ponytail: exported for unit testing only — not part of public API
 export const handleFetchCaughtError = (
   err: unknown,
   composedSignal: ComposedSignal | undefined,
   pendingBodyErrorRef: PendingBodyErrorRef,
   config: InternalFaxiosRequestConfig,
-  request: unknown
+  request: unknown,
+  stage?: FetchStage,
+  url?: string
 ): never => {
   // Safari can surface fetch aborts as a DOMException-like object whose
   // branded getters throw. Prefer our composed signal reason before reading
@@ -112,6 +159,9 @@ export const handleFetchCaughtError = (
   }
 
   const _err = err as Record<string, unknown> & Error;
+  if (_err.name === "TypeError" && stage) {
+    throwStagedTypeError(_err, stage, url, config, request);
+  }
   if (
     _err.name === "TypeError" &&
     /Load failed|fetch/i.test(_err.message)

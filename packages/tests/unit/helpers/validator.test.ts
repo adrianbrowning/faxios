@@ -70,4 +70,12 @@ describe("validator::assertOptions", () => {
       );
     }).not.toThrow();
   });
+
+  it("rejects null and non-object options with ERR_BAD_OPTION_VALUE", () => {
+    for (const options of [ null, 5, "x" ]) {
+      expect(() => validator.assertOptions(options, {}, true)).toThrow(
+        expect.objectContaining({ isFaxiosError: true, code: FaxiosError.ERR_BAD_OPTION_VALUE })
+      );
+    }
+  });
 });

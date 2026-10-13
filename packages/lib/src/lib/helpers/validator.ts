@@ -81,10 +81,10 @@ const deprecatedWarnings: Record<string, boolean | undefined> = {};
  */
 
 function assertOptions(options: unknown, schema: Record<string, undefined | ValidatorFn>, allowUnknown: boolean): void {
-  if (typeof options !== "object") {
+  if (options === null || typeof options !== "object") {
     throw new FaxiosError("options must be an object", FaxiosError.ERR_BAD_OPTION_VALUE);
   }
-  const keys = Object.keys(options as object);
+  const keys = Object.keys(options);
   let i = keys.length;
   while (i-- > 0) {
     const opt = keys[i]!;
