@@ -10,6 +10,9 @@ const suiteRoot = path.resolve(
 );
 const repoRoot = path.resolve(suiteRoot, "../../..");
 const tscBin = path.join(suiteRoot, "node_modules", "typescript", "bin", "tsc");
+// The oldest TypeScript the shipped declarations support (they use NoInfer, added in 5.4). Keep in
+// step with the floor stated in the docs (getting-started/examples/typescript.md, advanced/type-script.md).
+const floorTscBin = path.join(suiteRoot, "node_modules", "typescript-5.4", "bin", "tsc");
 
 const tsconfig = {
   compilerOptions: {
@@ -25,6 +28,17 @@ const strictTsconfig = {
     strict: true,
     skipLibCheck: false,
     noEmit: true,
+  },
+};
+
+// skipLibCheck stays off so the faxios declarations themselves are checked. `types: []` keeps
+// @types/node out: its own declarations follow newer TypeScript releases, not faxios's floor.
+const floorTsconfig = {
+  compilerOptions: {
+    ...strictTsconfig.compilerOptions,
+    target: "es2022",
+    lib: [ "es2023", "dom", "dom.iterable" ],
+    types: [],
   },
 };
 
@@ -103,4 +117,28 @@ describe("module esm typings compatibility", () => {
       cleanupTempFixture(fixturePath);
     }
   });
+
+  for (const helper of [ "generics-index.ts", "middleware-index.ts" ]) {
+    it(`type-checks ${helper} against the shipped declarations with TypeScript 5.4`, () => {
+      const sourcePath = path.join(repoRoot, "tests/module/esm/tests/helpers", helper);
+      const fixturePath = createTempFixture(
+        suiteRoot,
+        "typings-ts-floor",
+        sourcePath,
+        floorTsconfig,
+        {
+          type: "module",
+        }
+      );
+
+      try {
+        runCommand("node", [ floorTscBin, "--noEmit", "-p", "tsconfig.json" ], {
+          cwd: fixturePath,
+        });
+      }
+      finally {
+        cleanupTempFixture(fixturePath);
+      }
+    });
+  }
 });

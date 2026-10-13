@@ -3,9 +3,9 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "32402b8cb4b6c72c4166d20cdb84c24b49be89d3aee0bfc97378b4ae85dcc1f1",
+      "fingerprint": "7e9b6d6509f8bc4d9b5607fc0056874faff13c75560b47df4f4fa9a7582a4fe2",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "645efdbec7507a40a89f6257c1eb954ba5bb150981d2eeeceb982b0a4ab0fced",
+        "MIGRATION_GUIDE.md": "3c1ef5f8183bfbd67313b82e8556f2c83495e11e3b39bda2f84b3f2d35f803d7",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
         "packages/lib/skills/configure-requests/SKILL.md": "d0adecf7743d3eb68b7464847f2e3be3e1a9eff17ae5f68b443562e8d562c0fa",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
@@ -33,17 +33,17 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "head": "a6926e1f507b0da9f07237183336e51a04704807",
       "outcome": "no-change",
-      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
+      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/src/lib/core/define.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/types.ts at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
+        "Changed: MIGRATION_GUIDE.md at a6926e1f507b0da9f07237183336e51a04704807"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "9a02eb9ffcab114ed824e924a5d495216cb45ac7cb9d85d81466248d11974127",
+      "fingerprint": "fa061db0c2eb966e6b5072dc1b6b931cfb0b6072bc98f85f2025f47b7a28a920",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "645efdbec7507a40a89f6257c1eb954ba5bb150981d2eeeceb982b0a4ab0fced",
+        "MIGRATION_GUIDE.md": "3c1ef5f8183bfbd67313b82e8556f2c83495e11e3b39bda2f84b3f2d35f803d7",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "head": "a6926e1f507b0da9f07237183336e51a04704807",
       "outcome": "no-change",
-      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
+      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/src/lib/core/define.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/types.ts at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
+        "Changed: MIGRATION_GUIDE.md at a6926e1f507b0da9f07237183336e51a04704807"
       ]
     },
     "source:knip.json": {
@@ -326,27 +326,27 @@
       ]
     },
     "source:packages/docs/pages/advanced/type-script.md": {
-      "fingerprint": "5144642e2cb8658bd8640094fff11f71b2bc23c2e0ae749ddc18f9f4bfa38900",
+      "fingerprint": "45137e483cb579fe56cbd0fc7e963d84479be9113a4eaf325d3ea67360ccc1f4",
       "snapshot": {
-        "packages/docs/pages/advanced/type-script.md": "11fcbc132c1533f229875b25bd41aa9f49ff19b4e259f9f8dd89bec5424e848d"
+        "packages/docs/pages/advanced/type-script.md": "9db72cea1bdbe04c00161d3d2cc887f5db333dc187c9e1124959338912df3c2b"
       },
-      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "head": "a6926e1f507b0da9f07237183336e51a04704807",
       "outcome": "no-change",
-      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
+      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/type-script.md at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
+        "Changed: packages/docs/pages/advanced/type-script.md at a6926e1f507b0da9f07237183336e51a04704807"
       ]
     },
     "source:packages/docs/pages/getting-started/examples/typescript.md": {
-      "fingerprint": "a36400c7b9aa821cc2c6a03186f7bbea62f1c300023adaa47078166fc4432e49",
+      "fingerprint": "0c00cf6fab0b1676ee5cdb0468009d8489e250a6c039e8bf4d6a091761aae54e",
       "snapshot": {
-        "packages/docs/pages/getting-started/examples/typescript.md": "554d206dfe717c8fca5caaa3c1d2a70a51d62339393ec30e6022fb70f7fee476"
+        "packages/docs/pages/getting-started/examples/typescript.md": "5a453c1af23e983ad76cd452b6ef4e4469194b85e25a447352906d4de7cccde2"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "head": "a6926e1f507b0da9f07237183336e51a04704807",
       "outcome": "no-change",
-      "reason": "Diff reviewed (M); consistent.",
+      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
       "evidence": [
-        "+L13..+L35: `FaxiosMiddleware`-annotated middleware, `ctx.config.headers.set`, and errors caught around `next`. +L39 recommends authBearer for bearer tokens. Matches SKILL L191-220."
+        "Changed: packages/docs/pages/getting-started/examples/typescript.md at a6926e1f507b0da9f07237183336e51a04704807"
       ]
     },
     "source:packages/docs/pages/getting-started/features.md": {
@@ -410,15 +410,15 @@
       ]
     },
     "source:packages/lib/README.md": {
-      "fingerprint": "6ebd2042e6afcfca4176261397c500d21e2a6bf24bd83fab37b2183d1853e5b2",
+      "fingerprint": "8d3239dc6f04ee35833d43367e57f1289563dd4f4eb4ef51a3a0e605197df4bb",
       "snapshot": {
-        "packages/lib/README.md": "991cea6ac98e6ffa4154b41d6044b9a1fa336451495bf99495f9dcbe71b2ccb2"
+        "packages/lib/README.md": "8413ee8783469db38937187a093d85f081bb8d6d1fae22760f9db883c14c29a1"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
-      "outcome": "updated",
-      "reason": "Skill updated from this diff.",
+      "head": "a6926e1f507b0da9f07237183336e51a04704807",
+      "outcome": "no-change",
+      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
       "evidence": [
-        "Added rejected body on error.response.data for failed responseSchema. Diff review: +L15: 'A failed `responseSchema` keeps the rejected body on `error.response.data`'. The skill does not say where the rejected body lives (SKILL L129-133). The rest is consistent: +L11 onion `.use()` middleware plus built-in plugins; +L16 strictly typed headers; +L47..+L56 'Keep the instance it returns: only that value is typed with the plugin's options' with `import { retry } from \"@gcmdev/faxios/plugins/retry\"` (SKILL L213, L224-228)."
+        "Changed: packages/lib/README.md at a6926e1f507b0da9f07237183336e51a04704807"
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
@@ -484,15 +484,15 @@
       ]
     },
     "source:packages/tests/module/esm/pnpm-lock.yaml": {
-      "fingerprint": "3ed8299f43ca9e16a2eb686544fd7a2588b854d35c4c1fb7b180f7b2b15cf20a",
+      "fingerprint": "126cd7f9b54c0b9e2e08cab57026a99ca1d2fcf6926514ad086bbe53ca1ef6e0",
       "snapshot": {
-        "packages/tests/module/esm/pnpm-lock.yaml": "6267afc958d75651533c37d89825401ac23d8f944712a8bc60f4b6958219d5f8"
+        "packages/tests/module/esm/pnpm-lock.yaml": "f5c710247b3611a241d014e5ea05a25c88ff62c147c42ce19c63b4fbf84c9c34"
       },
-      "head": "8ace0b3b81a7bb208c2764629def6b0041131228",
-      "outcome": "out-of-scope",
-      "reason": "Test harness lockfile records the packed faxios version.",
+      "head": "a6926e1f507b0da9f07237183336e51a04704807",
+      "outcome": "no-change",
+      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
       "evidence": [
-        "version: 0.2.0 -> 0.2.1 for the faxios tarball entry."
+        "Changed: packages/tests/module/esm/pnpm-lock.yaml at a6926e1f507b0da9f07237183336e51a04704807"
       ]
     },
     "source:packages/tests/smoke/esm/pnpm-lock.yaml": {
@@ -2598,16 +2598,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/typings.module.test.ts": {
-      "fingerprint": "66fa30d59791062075d93ba6a8315ffd5f9456fea961184cd0e1f2c063037ba6",
+      "fingerprint": "e9b5799f81592827b603bac900d2de555616d13ae8c985d3828422d71b9a1f17",
       "snapshot": {
-        "packages/tests/module/esm/tests/typings.module.test.ts": "0e03c6c6bde7fd82cde8005b79c342b0a3043d22a5b5b0a56d24de96b714920d"
+        "packages/tests/module/esm/tests/typings.module.test.ts": "607ca10e7d029377e0fc6b070ca74e4da7a07e6e035f9916d2689cb93cd1d1fa"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "a6926e1f507b0da9f07237183336e51a04704807",
       "outcome": "no-change",
-      "reason": "Same import-specifier swap: cleanupTempFixture now comes before createTempFixture. Behaviour change: none",
+      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/module/esm/tests/typings.module.test.ts: @@ -1,7 +1,7 @@ (diff/190)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/module/esm/tests/typings.module.test.ts at a6926e1f507b0da9f07237183336e51a04704807"
       ]
     },
     "source:packages/tests/scripts/check-expect-error.ts": {
@@ -4850,6 +4849,18 @@
       "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
       "evidence": [
         "Changed: packages/tests/unit/core/defineTypes.test.ts at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
+      ]
+    },
+    "source:.bumpy/typescript-floor-5-4.md": {
+      "fingerprint": "3d9b2b9228c20816ed7c95ad291cfea5c4a24b68bd8800bf95d7816b95a2d469",
+      "snapshot": {
+        ".bumpy/typescript-floor-5-4.md": "fcd29a6f7155146ac33978b3044e99437be01c892e41ee599e16d8d1caa8cdfa"
+      },
+      "head": "a6926e1f507b0da9f07237183336e51a04704807",
+      "outcome": "no-change",
+      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
+      "evidence": [
+        "Changed: .bumpy/typescript-floor-5-4.md at a6926e1f507b0da9f07237183336e51a04704807"
       ]
     }
   }
