@@ -12,7 +12,7 @@ Structured workflow for completing a unit of work in this repository.
 ### 1. Plan
 
 Before touching code:
-- Base the work on a fresh trunk: `git fetch origin`, then branch (or `gh stack init`) from `origin/main`. `gh stack init` uses the *local* `main`, so fast-forward it first if you stack.
+- Base the work on a fresh trunk: `git fetch origin`, then branch (or `gh stack init`) from `origin/main`. `gh stack init` uses the *local* `main`, so fast-forward it first if you stack. When other work runs at the same time, give the branch its own worktree: `git worktree add -b <branch> ../<dir> origin/main`, then `pnpm install --frozen-lockfile` in it.
 - Restate the task as a verifiable target ("done when X")
 - Identify affected packages (docs, examples, lib, sandbox, tests)
 - List files to create/modify
@@ -56,7 +56,7 @@ Run what CI runs:
 pnpm check
 ```
 
-It runs `lint` (type-check plus the `@ts-self-types` and `@ts-expect-error` checks, `lint:esl`, then `lint:fix`), `lint:knip`, `packages/tests/run-tests.sh` (build, pack, unit, browser headless, ESM smoke/module, Deno, Bun) and `test:docs-examples`. Treat any failing stage as blocking. While iterating, a focused `pnpm --filter @faxios/tests exec vitest run --project unit <file>` is faster; finish on `pnpm check`.
+It runs `lint` (type-check plus the `@ts-self-types` and `@ts-expect-error` checks, `lint:esl`, then the style check `lint:s`, which reports without fixing), `lint:knip`, `packages/tests/run-tests.sh` (build, pack, unit, browser headless, ESM smoke/module, Deno, Bun) and `test:docs-examples`. Treat any failing stage as blocking. While iterating, a focused `pnpm --filter @faxios/tests exec vitest run --project unit <file>` is faster; finish on `pnpm check`.
 
 `run-tests.sh` allows one run per checkout (its lock lives in that checkout's `packages/tests/`), so separate git worktrees can run `pnpm check` in parallel. It refuses to start if a harness lockfile differs from `HEAD`; follow its message rather than deleting the lock or the lockfile changes by hand.
 
@@ -93,4 +93,13 @@ Rules:
 - Use body for non-obvious motivation, not task IDs
 - One logical change per commit
 - Subject case must be sentence-case or lower-case (enforced by `commitlint.config.js`)
+
+### 6. Hand-off
+
+Done when the PR is open and every required check is green.
+
+1. **Record the Intent review.** `check-skills` (`validate / Validate intent skills`) fails on any PR with a pending review item. Run `pnpm exec intent maintainer check --base origin/main --artifacts _artifacts`. If it lists items, update `packages/lib/skills/configure-requests/` when the change alters what the skill teaches and record `pnpm exec intent maintainer review --base origin/main --updated "<reason>"`; otherwise record `--unchanged "<reason>"`. Commit `.intent/review-state.json` with the change.
+2. **Push and open the PR.** `gh pr create` and `gh pr edit` fail here (see `docs/agents/issue-tracker.md`), so open it with `gh api repos/adrianbrowning/faxios/pulls -f title=… -f head=<branch> -f base=main -F body=@<file> -q .html_url`. The body has a Summary, `Closes #N` (or `Part of #N` when the issue keeps a later part), each test with what it failed with before the fix, and the checks you ran. Set the issue's milestone on the PR with `gh api -X PATCH repos/adrianbrowning/faxios/issues/<PR> -F milestone=<number>`.
+3. **Wait for CI.** `scripts/pr-ci-status.sh <PR>` exits 0 when every workflow is green. Fix a failure, push, and run it again.
+4. **Rebase with the review.** A rebase onto a new `main` or a lower stack layer conflicts on `.intent/review-state.json` and leaves the review pending. Run `scripts/intent-restack.sh rebase <base>` in the branch's worktree, or `scripts/intent-restack.sh record <base>` after `gh stack rebase`.
 </content>
