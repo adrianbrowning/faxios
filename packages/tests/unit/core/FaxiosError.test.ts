@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import { isSchemaValidationError } from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
+import faxios from "#src/lib/faxios.js";
+import { authBearer } from "#src/lib/plugins/authBearer.js";
 import type { FaxiosResponse, InternalFaxiosRequestConfig } from "#src/lib/types.js";
 
 describe("core::FaxiosError", () => {
@@ -190,22 +192,54 @@ describe("core::FaxiosError", () => {
     );
   });
 
-  // Opt-in redaction: when `config.redact` is an array of key names, every
-  // matching key (case-insensitive, at any depth) has its value replaced with
-  // the redaction marker in the toJSON snapshot. Undefined leaves the legacy
-  // serialization untouched so existing consumers see no behavior change.
-  describe("toJSON redaction via config.redact", () => {
-    it("leaves config untouched when redact is undefined", () => {
-      const config = {
-        url: "/api",
-        auth: { username: "alice", password: "secret" },
+  // toJSON() always masks the credential keys `authorization`, `proxy-authorization`, `cookie`
+  // and `auth` (case-insensitive, at any depth) and strips `user:pass@` from URL strings; a
+  // `config.redact` array adds keys.
+  describe("toJSON redaction", () => {
+    // FaxiosHeaders' loose index signature doesn't unify with FaxiosRequestHeaders; same cast as dispatchRequest.test.ts.
+    const emptyHeaders = new FaxiosHeaders() as unknown as InternalFaxiosRequestConfig["headers"];
+
+    it("masks credential keys and URL user info by default", () => {
+      const headers = new FaxiosHeaders({
+        "Authorization": "Bearer secret-token",
+        "Proxy-Authorization": "Basic secret-proxy",
+        "Cookie": "session=secret-cookie",
+        "X-Trace": "trace-id",
+      });
+      const config: InternalFaxiosRequestConfig = {
+        url: "http://user:secret-pw@api.example.com/items",
+        baseURL: "https://user:secret-pw@api.example.com",
+        auth: { username: "alice", password: "secret-basic" },
+        headers: headers as unknown as InternalFaxiosRequestConfig["headers"],
       };
-      const error = new FaxiosError("Boom", "ECODE", config as any);
+      const error = new FaxiosError("Boom", "ECODE", config);
 
       const json = error.toJSON();
 
-      expect((json.config as any).auth.username).toBe("alice");
-      expect((json.config as any).auth.password).toBe("secret");
+      expect(JSON.stringify(json)).not.toContain("secret");
+      expect(json.config).toMatchObject({
+        url: "http://api.example.com/items",
+        baseURL: "https://api.example.com",
+        auth: "[REDACTED ****]",
+        headers: {
+          "Authorization": "[REDACTED ****]",
+          "Proxy-Authorization": "[REDACTED ****]",
+          "Cookie": "[REDACTED ****]",
+          "X-Trace": "trace-id",
+        },
+      });
+    });
+
+    it("masks the token authBearer sent on a failed request", async () => {
+      const api = faxios.create({
+        baseURL: "http://localhost",
+        env: { fetch: async () => new Response(null, { status: 500 }) },
+      }).use(authBearer(() => "secret-token"));
+
+      const error = await api.get("/x").catch((err: unknown) => err);
+
+      expect(faxios.isFaxiosError(error)).toBe(true);
+      expect(JSON.stringify(error)).not.toContain("secret-token");
     });
 
     it("ignores inherited redact accessors", () => {
@@ -216,24 +250,22 @@ describe("core::FaxiosError", () => {
         },
       });
 
-      const config = Object.create(prototype);
-      config.auth = { username: "alice", password: "secret" };
+      const config: InternalFaxiosRequestConfig = Object.create(prototype);
+      config.url = "/kept";
       const error = new FaxiosError("Boom", "ECODE", config);
 
-      const json = error.toJSON();
-
-      expect((json.config as any).auth.username).toBe("alice");
-      expect((json.config as any).auth.password).toBe("secret");
+      expect(error.toJSON().config).toMatchObject({ url: "/kept" });
     });
 
-    it("leaves config untouched when redact is an empty array", () => {
-      const config = {
+    it("still masks the default keys when redact is an empty array", () => {
+      const config: InternalFaxiosRequestConfig = {
         auth: { username: "alice", password: "secret" },
+        headers: emptyHeaders,
         redact: [],
       };
-      const error = new FaxiosError("Boom", "ECODE", config as any);
+      const error = new FaxiosError("Boom", "ECODE", config);
 
-      expect((error.toJSON().config as any).auth.password).toBe("secret");
+      expect(error.toJSON().config).toMatchObject({ auth: "[REDACTED ****]" });
     });
 
     it("replaces top-level matching keys with the redaction marker", () => {
@@ -252,18 +284,16 @@ describe("core::FaxiosError", () => {
 
     it("replaces matching keys at any nesting depth", () => {
       const config = {
-        auth: { username: "alice", password: "secret" },
-        proxy: { auth: { username: "pu", password: "pp" } },
+        login: { username: "alice", password: "secret" },
+        proxy: { login: { username: "pu", password: "pp" } },
         redact: [ "password" ],
       };
-      const error = new FaxiosError("Boom", "ECODE", config as any);
+      const error = new FaxiosError("Boom", "ECODE", { ...config, headers: emptyHeaders });
 
-      const json = error.toJSON();
-
-      expect((json.config as any).auth.username).toBe("alice");
-      expect((json.config as any).auth.password).toBe("[REDACTED ****]");
-      expect((json.config as any).proxy.auth.password).toBe("[REDACTED ****]");
-      expect((json.config as any).proxy.auth.username).toBe("pu");
+      expect(error.toJSON().config).toMatchObject({
+        login: { username: "alice", password: "[REDACTED ****]" },
+        proxy: { login: { username: "pu", password: "[REDACTED ****]" } },
+      });
     });
 
     it("matches case-insensitively", () => {
@@ -305,16 +335,17 @@ describe("core::FaxiosError", () => {
     });
 
     it("does not crash on circular config references", () => {
-      const config: Record<string, any> = {
-        auth: { password: "secret" },
+      const config: InternalFaxiosRequestConfig & { login?: object; self?: object; } = {
+        headers: emptyHeaders,
+        login: { password: "secret" },
         redact: [ "password" ],
       };
       config.self = config;
 
-      const error = new FaxiosError("Boom", "ECODE", config as any);
+      const error = new FaxiosError("Boom", "ECODE", config);
 
       const json = error.toJSON();
-      expect((json.config as any).auth.password).toBe("[REDACTED ****]");
+      expect(json.config).toMatchObject({ login: { password: "[REDACTED ****]" } });
       expect(Object.prototype.hasOwnProperty.call(json.config, "self")).toBe(
         false
       );
@@ -326,16 +357,16 @@ describe("core::FaxiosError", () => {
       const config = {
         issuedAt,
         endpoint,
-        auth: { password: "secret" },
+        login: { password: "secret" },
         redact: [ "password" ],
       };
-      const error = new FaxiosError("Boom", "ECODE", config as any);
+      const error = new FaxiosError("Boom", "ECODE", { ...config, headers: emptyHeaders });
 
       const json = error.toJSON();
 
-      expect((json.config as any).issuedAt).toBe(issuedAt);
-      expect((json.config as any).endpoint).toBe(endpoint);
-      expect((json.config as any).auth.password).toBe("[REDACTED ****]");
+      expect(json.config).toMatchObject({ login: { password: "[REDACTED ****]" } });
+      expect(json.config).toHaveProperty("issuedAt", issuedAt);
+      expect(json.config).toHaveProperty("endpoint", endpoint);
     });
 
     it("does not let a polluted Object.prototype.toJSON bypass redaction", () => {
@@ -351,7 +382,7 @@ describe("core::FaxiosError", () => {
       };
 
       const config = {
-        auth: { password: "secret" },
+        login: { password: "secret" },
         credentials: new Credentials(),
         items: [{ token: "t1" }],
         redact: [ "password", "token" ],
@@ -361,7 +392,7 @@ describe("core::FaxiosError", () => {
       try {
         const json = error.toJSON();
 
-        expect((json.config as any).auth.password).toBe("[REDACTED ****]");
+        expect(json.config).toHaveProperty([ "login", "password" ], "[REDACTED ****]");
         expect((json.config as any).credentials.password).toBe(
           "[REDACTED ****]"
         );
@@ -416,6 +447,42 @@ describe("core::FaxiosError", () => {
 
       // Useful for debugging — operators can see what was being redacted.
       expect((error.toJSON().config as any).redact).toEqual([ "password" ]);
+    });
+
+    describe("config snapshot", () => {
+      const snapshot = (source: object) => new FaxiosError("Boom", "ECODE", { ...source, headers: emptyHeaders }).toJSON().config;
+
+      it("drops circular references", () => {
+        const a: Array<unknown> = [ 0 ];
+        const obj = { a };
+        a[1] = obj;
+        const config: InternalFaxiosRequestConfig & { circular?: object; obj?: object; } = { headers: emptyHeaders, obj };
+        config.circular = config;
+
+        expect(new FaxiosError("Boom", "ECODE", config).toJSON().config).toEqual({ obj: { a: [ 0 ] }, headers: {} });
+      });
+
+      it("keeps objects with their own toJSON method without rebuilding them", () => {
+        const obj = { toJSON: () => ({ ok: 1 }) };
+
+        expect(snapshot({ obj })).toHaveProperty("obj", obj);
+      });
+
+      it("serializes a shared object at every occurrence, as it is not a cycle", () => {
+        const shared: Record<string, unknown> = { v: 1 };
+        shared.self = shared;
+
+        expect(snapshot({ x: shared, y: shared, list: [ shared ] })).toEqual({ x: { v: 1 }, y: { v: 1 }, list: [{ v: 1 }], headers: {} });
+      });
+
+      it("serializes deeply nested structures end to end", () => {
+        let source: Record<string, unknown> = { v: "leaf" };
+        for (let i = 0; i < 25; i++) {
+          source = { next: source };
+        }
+
+        expect(JSON.stringify(snapshot(source))).toContain("\"leaf\"");
+      });
     });
   });
 

@@ -8,7 +8,7 @@ import { definePlugin } from "./definePlugin.js";
 
 /**
  * What `timing` reports once per request: `status` on success, `error` on failure. No config,
- * headers or body, so an event is safe to log.
+ * headers, body or URL credentials, so an event is safe to log.
  */
 export type TimingEvent = {
   /**
@@ -19,17 +19,27 @@ export type TimingEvent = {
   durationMs: number;
   /** The request method, upper-cased (`"GET"`). */
   method: string;
-  /** The full request URL without its query string and fragment. */
+  /** The full request URL without its user info, query string and fragment. */
   url: string;
-} & ({ error: unknown; status?: undefined; } | { error?: undefined; status: number; });
+} & ({ error: TimingError; status?: undefined; } | { error?: undefined; status: number; });
+
+/**
+ * The failure `timing` reports: the error's `code` (a `FaxiosError` code such as
+ * `"ERR_NETWORK"`), `message`, and the HTTP `status` when a response arrived.
+ */
+type TimingError = { code: string | undefined; message: string; status: number | undefined; };
 
 const now = () => (typeof performance === "undefined" ? Date.now() : performance.now());
 
 const own = <T extends object, K extends keyof T>(source: T, key: K): T[K] | undefined =>
   (utils.hasOwnProp(source, key) ? source[key] : undefined);
 
-// Read once the request settles, so a later middleware's changes to the config count. The query
-// and fragment often carry secrets, and they'd make every URL a different metric label.
+// Up to the `@` of a URL's user info: after the scheme (`http:`, with any slashes) or after `//`.
+// Backslashes count as slashes, as they do in the WHATWG URL parser.
+const USER_INFO = /^([a-z][a-z\d+\-.]*:[/\\]*|[/\\]{2})[^/\\?#]*@/i;
+
+// Read once the request settles, so a later middleware's changes to the config count. The user
+// info, query and fragment often carry secrets, and they'd make every URL a different metric label.
 function describe({ config, state }: FaxiosContext) {
   // Typed string, but undefined when the request has neither url nor baseURL.
   const full: unknown = buildFullPath(own(config, "baseURL"), own(config, "url"), own(config, "allowAbsoluteUrls"));
@@ -38,8 +48,19 @@ function describe({ config, state }: FaxiosContext) {
   const attempt = state[RETRY_ATTEMPT];
   return {
     method: String(own(config, "method") ?? "get").toUpperCase(),
-    url: end === -1 ? url : url.slice(0, end),
+    url: (end === -1 ? url : url.slice(0, end)).replace(USER_INFO, "$1"),
     ...(typeof attempt === "number" ? { attempt } : {}),
+  };
+}
+
+// Only the code, message and status: a FaxiosError carries the config, so its headers too.
+function summarize(error: unknown): TimingError {
+  const code = utils.getSafeProp(error, "code");
+  const status = utils.getSafeProp(error, "status");
+  return {
+    code: typeof code === "string" ? code : undefined,
+    message: error instanceof Error ? error.message : String(error),
+    status: typeof status === "number" ? status : undefined,
   };
 }
 
@@ -61,7 +82,7 @@ export function timing(onTiming: (event: TimingEvent) => void): FaxiosPlugin {
       }
       catch (error) {
         try {
-          onTiming({ ...describe(ctx), durationMs: now() - start, error });
+          onTiming({ ...describe(ctx), durationMs: now() - start, error: summarize(error) });
         }
         catch {
           // The request's own error matters more than the observer's; keep it.

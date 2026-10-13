@@ -130,13 +130,16 @@ await api.get("/users");
 
 `onRetry(error, attempt, delayMs)` runs before each wait. If it throws, the request rejects with that error and stops retrying.
 
+Log `error.toJSON()` rather than the error itself. A `FaxiosError` carries the request config, headers included, and loggers such as `console.warn` print every field. `toJSON()` masks the `authorization`, `proxy-authorization`, `cookie` and `auth` keys and strips `user:pass@` from the URL; list any other secret keys in [`redact`](/pages/advanced/request-config#redact).
+
 ```ts
 import faxios from "@gcmdev/faxios";
 import { retry } from "@gcmdev/faxios/plugins/retry";
 
 const api = faxios.create({ baseURL: "https://api.example.com" }).use(retry({
   onRetry: (error, attempt, delayMs) => {
-    console.warn(`Try ${attempt} failed, retrying in ${delayMs}ms`, error);
+    const reason = faxios.isFaxiosError(error) ? error.toJSON() : error;
+    console.warn(`Try ${attempt} failed, retrying in ${delayMs}ms`, reason);
   },
 }));
 

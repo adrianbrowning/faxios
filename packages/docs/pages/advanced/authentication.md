@@ -66,6 +66,12 @@ const api = faxios.create({ baseURL: "https://api.example.com" })
 await api.get("/data");
 ```
 
+#### Redirects with a custom header
+
+When a redirect leaves the origin, `fetch` drops `Authorization` but sends every other header on to the new host. So with a custom `header`, `authBearer` sets [`fetchOptions.redirect`](/pages/advanced/fetch-adapter#fetch-options) to `"error"` on the requests it adds the header to, unless the request sets `redirect` itself. A redirect then rejects with `ERR_NETWORK`, and your key never reaches another host. With the default `Authorization` header, redirects are followed as usual.
+
+To follow redirects anyway, set `redirect` on the request, for example `fetchOptions: { redirect: "follow" }`. Do that only for an API whose redirects you trust, since the key then goes to wherever a redirect points.
+
 ## HTTP Basic auth
 
 For APIs that use HTTP Basic authentication, pass the `auth` option. faxios will encode the credentials and set the `Authorization` header automatically:

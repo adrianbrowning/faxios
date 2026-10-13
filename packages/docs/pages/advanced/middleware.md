@@ -520,11 +520,11 @@ See [Retry & error recovery](/pages/advanced/retry) for every option.
 `timing(onTiming)` measures the time around `next` and calls `onTiming` once per request with a `TimingEvent`:
 
 - on success: `{ method, url, attempt?, durationMs, status }`
-- on failure: `{ method, url, attempt?, durationMs, error }`, and the error is then rethrown
+- on failure: `{ method, url, attempt?, durationMs, error }`, where `error` is `{ code, message, status }`, and the request's error is then rethrown
 
-`method` is upper-cased. `url` is the full URL with `baseURL` applied, and with the query string and fragment stripped, since those often carry secrets. A URL with `pathParams` is reported by its template as the caller wrote it (e.g. `/users/{id}`), because path params are substituted at dispatch; this also keeps metric labels low-cardinality. `durationMs` comes from `performance.now()` where available. The response is returned unchanged.
+`method` is upper-cased. `url` is the full URL with `baseURL` applied, and with any `user:pass@`, the query string and the fragment stripped, since those often carry secrets. A URL with `pathParams` is reported by its template as the caller wrote it (e.g. `/users/{id}`), because path params are substituted at dispatch; this also keeps metric labels low-cardinality. `durationMs` comes from `performance.now()` where available. The response is returned unchanged.
 
-The event used to include the request `config`. It was removed because the config carries credentials (`Authorization` headers, tokens in query strings, request bodies), which then ended up in logs. No config, headers or body reach `onTiming`, so the event is safe to log.
+`error.code` is the `FaxiosError` code (such as `"ERR_NETWORK"` or `"ECONNABORTED"`), or the thrown error's own string `code`; `error.status` is the HTTP status when a response arrived. Each is `undefined` otherwise. The event carries no config, headers or body, not even inside `error`: the error a request rejects with holds its config, and so its credentials (`Authorization` headers, tokens in query strings, request bodies), which would then end up in logs. So the event is safe to log. To inspect the full error, catch the request's rejection instead.
 
 `attempt` comes from `retry`:
 

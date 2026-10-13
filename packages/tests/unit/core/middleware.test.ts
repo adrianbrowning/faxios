@@ -4,6 +4,7 @@ import { describe, expectTypeOf, it } from "vitest";
 import faxios, { CanceledError, FaxiosError, FaxiosHeaders } from "#src/index.js";
 import type { FaxiosInstance, FaxiosMiddleware, FaxiosPlugin, FaxiosResponse } from "#src/index.js";
 import { timing } from "#src/lib/plugins/timing.js";
+import type { TimingEvent } from "#src/lib/plugins/timing.js";
 
 const URL = "http://localhost/test";
 
@@ -395,13 +396,13 @@ describe("core::middleware", () => {
     });
 
     it("rejects with ERR_BAD_RESPONSE before an outer timing plugin reads the response", async () => {
-      const events: Array<{ error?: unknown; }> = [];
+      const events: Array<TimingEvent> = [];
       const api = faxios.create({ env: { fetch: jsonFetch() } })
         .use(timing(event => events.push(event)))
         .use(forgetsReturn);
       await assert.rejects(api.get(URL), isMissingResponse);
       assert.strictEqual(events.length, 1);
-      assert.ok(isMissingResponse(events[0]!.error));
+      assert.strictEqual(events[0]!.error?.code, FaxiosError.ERR_BAD_RESPONSE);
     });
   });
 

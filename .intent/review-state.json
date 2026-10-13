@@ -3,17 +3,17 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "5d7cadd65578bae7613ee8f7abc270e2325155a8df114ef46cc39835ad035e4e",
+      "fingerprint": "744e87db341e68dff92c5d82578af8c41a2c860531ec4ac92209987b42105b40",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3baba9ea3fee10c0847952dd29c4eba292b18fb26c249d948cd38bff0b93dc6a",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "da6b143ee4a0a3a04f238e992bf5b6eb6117ae7ed6949d756d64fa2807a76201",
+        "packages/lib/skills/configure-requests/SKILL.md": "1780cd4771da7ad9e02b771fb6b0c02bcafa1779a2f3f6fd64701732f976b4bb",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "25f57c39b1a80789f43986053be1ad9ec874224d9fac643728b2e44b0d06102c",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
         "packages/lib/src/lib/adapters/fetch.ts": "483f1d6a9f77ed2aba4ef73ab032125bfda9268711988c517c218fa1595c4130",
         "packages/lib/src/lib/core/Faxios.ts": "e194fd3e6294c964fb0d6076bb786d3203355f437b9a73b304b4b86b4fed2293",
-        "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
+        "packages/lib/src/lib/core/FaxiosError.ts": "32efa9ef0401a9f6cf0e179f9171176d1f9c99ca986fcfd948555849d42ea00d",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
         "packages/lib/src/lib/core/dispatchRequest.ts": "d932638959b9c35d830ef6a7e01f9fe29d5ae37c365a07fd1af715bc755b87ef",
@@ -21,40 +21,40 @@
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
         "packages/lib/src/lib/helpers/composeSignals.ts": "82087ee7bf3628d9e5d98c1611d14e6ce76df5ddcdde2db8298dfebc1d16f2ab",
-        "packages/lib/src/lib/plugins/authBearer.ts": "6257fa773e865ed38ef7bdcc49c6fdb6034828aceaaea63e913a3e908172af8c",
+        "packages/lib/src/lib/plugins/authBearer.ts": "46347f96efcc4e1f29245cf21835671cdfa3fe7d9e76c9c36d5b85fc697a2b0b",
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
         "packages/lib/src/lib/plugins/retry.ts": "e9b96b36455e38c3e16944542c9a8905a408f7495171e941cf52a07a429d53d3",
-        "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
+        "packages/lib/src/lib/plugins/timing.ts": "621b09295c3cbfd49e981c33458fd74fe068aec58829c52cd94f6dadf3e8a1ee",
         "packages/lib/src/lib/types.ts": "e9f9fe1c8e31f5f9008f8d2fed18de12dea7273f846dd7d392ed90c5ceafedb7",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
-        "packages/tests/unit/core/middleware.test.ts": "5022de5703b06d9e3ff6dced4fac3876e0ffd61ea06d75c4b16a6dbde2f22f88",
-        "packages/tests/unit/plugins/authBearer.test.ts": "b05e819aaec1ac05801f341218357e7a55563dd5ce8662f0a3df8df034fe1308",
+        "packages/tests/unit/core/middleware.test.ts": "f5886d5962182e662a08fc96bbf896fbaa27dc750182d41b122dfe2ffe94985e",
+        "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
-        "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
+        "packages/tests/unit/plugins/timing.test.ts": "2c8801466e565b919c13e48e8993cb664458c3e9ac17cc1fdcbce8c0574de720"
       },
-      "head": "c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab",
+      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
       "outcome": "updated",
-      "reason": "#235: the skill now says getUri() fills in pathParams and returns the URL the request sends.",
+      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/faxios.ts at c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/timing.ts, packages/tests/unit/core/middleware.test.ts, packages/tests/unit/plugins/authBearer.test.ts, packages/tests/unit/plugins/timing.test.ts at f8e65308b747dbb46d674597caabd55029175fd4"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "f5bcfc917bacea750ff5ecafebf1741fed6343b93e4d7bc286caa2872dae9240",
+      "fingerprint": "c6823432e72195d5e12ac9ef0aea154133e9becdd5abff03bba4f8930e739d2d",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3baba9ea3fee10c0847952dd29c4eba292b18fb26c249d948cd38bff0b93dc6a",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "da6b143ee4a0a3a04f238e992bf5b6eb6117ae7ed6949d756d64fa2807a76201",
+        "packages/lib/skills/configure-requests/SKILL.md": "1780cd4771da7ad9e02b771fb6b0c02bcafa1779a2f3f6fd64701732f976b4bb",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "25f57c39b1a80789f43986053be1ad9ec874224d9fac643728b2e44b0d06102c",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
         "packages/lib/src/lib/adapters/fetch.ts": "483f1d6a9f77ed2aba4ef73ab032125bfda9268711988c517c218fa1595c4130",
         "packages/lib/src/lib/core/Faxios.ts": "e194fd3e6294c964fb0d6076bb786d3203355f437b9a73b304b4b86b4fed2293",
-        "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
+        "packages/lib/src/lib/core/FaxiosError.ts": "32efa9ef0401a9f6cf0e179f9171176d1f9c99ca986fcfd948555849d42ea00d",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
         "packages/lib/src/lib/core/dispatchRequest.ts": "d932638959b9c35d830ef6a7e01f9fe29d5ae37c365a07fd1af715bc755b87ef",
@@ -62,23 +62,23 @@
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
         "packages/lib/src/lib/helpers/composeSignals.ts": "82087ee7bf3628d9e5d98c1611d14e6ce76df5ddcdde2db8298dfebc1d16f2ab",
-        "packages/lib/src/lib/plugins/authBearer.ts": "6257fa773e865ed38ef7bdcc49c6fdb6034828aceaaea63e913a3e908172af8c",
+        "packages/lib/src/lib/plugins/authBearer.ts": "46347f96efcc4e1f29245cf21835671cdfa3fe7d9e76c9c36d5b85fc697a2b0b",
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
         "packages/lib/src/lib/plugins/retry.ts": "e9b96b36455e38c3e16944542c9a8905a408f7495171e941cf52a07a429d53d3",
-        "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
+        "packages/lib/src/lib/plugins/timing.ts": "621b09295c3cbfd49e981c33458fd74fe068aec58829c52cd94f6dadf3e8a1ee",
         "packages/lib/src/lib/types.ts": "e9f9fe1c8e31f5f9008f8d2fed18de12dea7273f846dd7d392ed90c5ceafedb7",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
-        "packages/tests/unit/core/middleware.test.ts": "5022de5703b06d9e3ff6dced4fac3876e0ffd61ea06d75c4b16a6dbde2f22f88",
-        "packages/tests/unit/plugins/authBearer.test.ts": "b05e819aaec1ac05801f341218357e7a55563dd5ce8662f0a3df8df034fe1308",
+        "packages/tests/unit/core/middleware.test.ts": "f5886d5962182e662a08fc96bbf896fbaa27dc750182d41b122dfe2ffe94985e",
+        "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
-        "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
+        "packages/tests/unit/plugins/timing.test.ts": "2c8801466e565b919c13e48e8993cb664458c3e9ac17cc1fdcbce8c0574de720"
       },
-      "head": "c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab",
+      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
       "outcome": "updated",
-      "reason": "#235: the skill now says getUri() fills in pathParams and returns the URL the request sends.",
+      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/faxios.ts at c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/timing.ts, packages/tests/unit/core/middleware.test.ts, packages/tests/unit/plugins/authBearer.test.ts, packages/tests/unit/plugins/timing.test.ts at f8e65308b747dbb46d674597caabd55029175fd4"
       ]
     },
     "source:knip.json": {
@@ -182,15 +182,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
-      "fingerprint": "8557852beb6d334abec9f5ccdbf6b6991908d044dc0b4016de59d3e0998f2e29",
+      "fingerprint": "2955441bc8698ea67e7291c881f330cb9c2fc69cd11503110b54323c3d0b2fd5",
       "snapshot": {
-        "packages/docs/pages/advanced/authentication.md": "636c5fab6f401b878d5eb494767094a5873ac3719943b4af307a355724859cd9"
+        "packages/docs/pages/advanced/authentication.md": "e21bad3789a4e1cd4a0eea02ba5bbd70a7b395a849dc503ededfc944d8add866"
       },
-      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
+      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
       "outcome": "updated",
-      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
+      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/authentication.md at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
+        "Changed: packages/docs/pages/advanced/authentication.md at f8e65308b747dbb46d674597caabd55029175fd4"
       ]
     },
     "source:packages/docs/pages/advanced/create-an-instance.md": {
@@ -218,15 +218,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/error-handling.md": {
-      "fingerprint": "6bb4f91d4d06ffdfbc935af5c938e60000b337c4fd35bef42a53bffb2a55a584",
+      "fingerprint": "13d0dd9e1e14778874d256d8877c975dd33f8a9feff9afe132481c7e7461a3a7",
       "snapshot": {
-        "packages/docs/pages/advanced/error-handling.md": "72acd8a33b05c4a63370873971a275272ca0926b508d42c9057f33c64913e1ff"
+        "packages/docs/pages/advanced/error-handling.md": "cc9f2d17686743795c07e7ae3147f343692201cb604bf6ca87617eeb76fb7746"
       },
-      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
+      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
       "outcome": "updated",
-      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/error-handling.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/docs/pages/advanced/error-handling.md at f8e65308b747dbb46d674597caabd55029175fd4"
       ]
     },
     "source:packages/docs/pages/advanced/headers.md": {
@@ -254,15 +254,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "b824854f8b151ccdea16205a5d8ee0967affacff1243f66e900d2ebcafa2bcc5",
+      "fingerprint": "6362979fdebca976fb226511014c8bc591f401a8aba6fc34d1bfafdf7b9e0860",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "85360a1947dabbb5d479261f4b28a7930989aa2c3e104dafda8cca41c916da7b"
+        "packages/docs/pages/advanced/middleware.md": "e92466ed658fb873a3e1ce04c3f35fe98bcc1d9ba401bf13adc7ab103efcf9e5"
       },
-      "head": "90ed9eece075db8a379599d1faaeb20bc93f941b",
-      "outcome": "no-change",
-      "reason": "Skill describes Retry-After and next(ctx) at a level these patch fixes don't change; malformed headers and missing returns were bugs.",
+      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
+      "outcome": "updated",
+      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/docs/pages/advanced/middleware.md at f8e65308b747dbb46d674597caabd55029175fd4"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
@@ -278,27 +278,27 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "e83a37b271aadee31828143b99fefc86b9a7c4f3ab63a8b76e7c34dc059b0c8f",
+      "fingerprint": "0a1b4a85147b7a964a4dbc666a83cdf07e1ea5a756397038e646fe9f46519adb",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "7faa7bf0d592d3570d44f7cb494257f1360f3a173fae52de5f717177a040971f"
+        "packages/docs/pages/advanced/request-config.md": "8ad0f03ae85137b692bf9553c050641ac6e1ef5c82e6f1d81377993ef0a482a4"
       },
-      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
+      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
       "outcome": "updated",
-      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
+      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
+        "Changed: packages/docs/pages/advanced/request-config.md at f8e65308b747dbb46d674597caabd55029175fd4"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
-      "fingerprint": "4bf098604873342a0e49867c1332d2b025bc8f65e336cf6cd3beeefdbfb50ddc",
+      "fingerprint": "e1036cb7a46ec715a5775f068fbdb4ad388c4c46c5da0b79233b593f8146431f",
       "snapshot": {
-        "packages/docs/pages/advanced/retry.md": "bec9780e065c99499ba204c232693726869fe78b2dbfb97f2bf10a0c9effce9b"
+        "packages/docs/pages/advanced/retry.md": "2b3ae18b58eb1ce55cd4d115b7cdcc3a949d0e61d6dcdb868884e812c069817c"
       },
-      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
+      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
       "outcome": "updated",
-      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/retry.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/docs/pages/advanced/retry.md at f8e65308b747dbb46d674597caabd55029175fd4"
       ]
     },
     "source:packages/docs/pages/advanced/schema-validation.md": {
@@ -1947,15 +1947,15 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "92c9418c5b8ec14c6a4687e29d7a52d87e844a2b6062a7f8148b213117f115fc",
+      "fingerprint": "797f997efdb43730173b050778b24e919e43ab066224d17c5904d7a691bf176c",
       "snapshot": {
-        "THREATMODEL.md": "7a0555d23b84c7511504f29bc4002983ea056e319121ab6014dfaa54e7f0b489"
+        "THREATMODEL.md": "73738c03a00378e64496363e7448081d443ee4a67525089d17aa83c8436a784f"
       },
-      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
+      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
       "outcome": "updated",
-      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
+      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
       "evidence": [
-        "Changed: THREATMODEL.md at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
+        "Changed: THREATMODEL.md at f8e65308b747dbb46d674597caabd55029175fd4"
       ]
     },
     "source:packages/docs/.vitepress/theme/index.ts": {
@@ -2433,15 +2433,15 @@
       ]
     },
     "source:packages/lib/src/lib/utils.ts": {
-      "fingerprint": "585091400dbeafb6f78f97a28e6728d54693b40c84c8c646871af47e3863cb90",
+      "fingerprint": "afd85944906eb596c9c998406f0bdf5e375f3efb44b10474a0f4abcf2df1bad3",
       "snapshot": {
-        "packages/lib/src/lib/utils.ts": "80b8ace2f745d414c1bc13deed7d91181c93b284a4072bb6127baf8c01fa4d6b"
+        "packages/lib/src/lib/utils.ts": "4a2acd6beede92227cdb97cb9fb74a69465ddad946c519af64f2192c716c3dcd"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
-      "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
+      "outcome": "updated",
+      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
       "evidence": [
-        "Changed: packages/lib/src/lib/utils.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/lib/src/lib/utils.ts at f8e65308b747dbb46d674597caabd55029175fd4"
       ]
     },
     "source:packages/sandbox/client.js": {
@@ -2785,16 +2785,15 @@
       ]
     },
     "source:packages/tests/unit/core/FaxiosError.test.ts": {
-      "fingerprint": "fa49cf554f9e5ea36004b002c0451e1cccb729b2658d65a3d90e23e1821c692e",
+      "fingerprint": "70fda93f16bdd8733f784c4aaf2a868a1ad5fbc8f566b4e14e25744b646931ab",
       "snapshot": {
-        "packages/tests/unit/core/FaxiosError.test.ts": "9fb6bd1a51c8b4fafe484c11693f989bacb68815a7c8b86d16ccfe9ef9b6b94f"
+        "packages/tests/unit/core/FaxiosError.test.ts": "a0a70f734f0b1011146756cad287ce2fbc7fc38c7b4ea8613ddba6c87495ff5c"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
+      "outcome": "updated",
+      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/core/FaxiosError.test.ts: @@ -1,5 +1,5 @@ (diff/208)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/core/FaxiosError.test.ts at f8e65308b747dbb46d674597caabd55029175fd4"
       ]
     },
     "source:packages/tests/unit/core/buildFullPath.test.ts": {
@@ -3424,15 +3423,15 @@
       ]
     },
     "source:packages/docs/pages/misc/security.md": {
-      "fingerprint": "6e6ef148c208835dd08428ef573c248c629603f50aac7c0ac1ed4058e9f984d3",
+      "fingerprint": "afc41a45e27870ddcd344e30f286cc1a905c5cd118af1c642954782a6f489293",
       "snapshot": {
-        "packages/docs/pages/misc/security.md": "72fb6b5d70bf441ea7193e01147fdba6f3eb299ff8a121c9303d90c2944a10b4"
+        "packages/docs/pages/misc/security.md": "93cd7e9a239a44771a90b46b2681156c27c5ca32a7daab9fc326296c7a8be7be"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
-      "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
+      "outcome": "updated",
+      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
       "evidence": [
-        "Changed: packages/docs/pages/misc/security.md at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: packages/docs/pages/misc/security.md at f8e65308b747dbb46d674597caabd55029175fd4"
       ]
     },
     "source:packages/examples/README.md": {
@@ -4285,6 +4284,54 @@
       "reason": "#235: the skill now says getUri() fills in pathParams and returns the URL the request sends.",
       "evidence": [
         "Changed: .bumpy/geturi-path-params.md at c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab"
+      ]
+    },
+    "source:.bumpy/auth-bearer-custom-header-redirect.md": {
+      "fingerprint": "50d89aab074893bc3ddf23a9b1c52afbec6c9f431eafa615814dfdb00060ad22",
+      "snapshot": {
+        ".bumpy/auth-bearer-custom-header-redirect.md": "3b7980e8058d834919885b315183a286ec4319141168f5394719b90ef268485f"
+      },
+      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
+      "outcome": "updated",
+      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
+      "evidence": [
+        "Changed: .bumpy/auth-bearer-custom-header-redirect.md at f8e65308b747dbb46d674597caabd55029175fd4"
+      ]
+    },
+    "source:.bumpy/timing-event-error-summary.md": {
+      "fingerprint": "9581504b96bc84eb81c032bb092f965b1e048f5c526030584e054d418f6bd3a6",
+      "snapshot": {
+        ".bumpy/timing-event-error-summary.md": "8a4f16da4c0ade75c4b1826e79c813cea0f14dd0ea5a435da2a0aba7a1d6f00f"
+      },
+      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
+      "outcome": "updated",
+      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
+      "evidence": [
+        "Changed: .bumpy/timing-event-error-summary.md at f8e65308b747dbb46d674597caabd55029175fd4"
+      ]
+    },
+    "source:.bumpy/tojson-default-redaction.md": {
+      "fingerprint": "206670724c7b357da06a42a48de95fa1fa8b07b63d11bb9c9c34d82ab9c16023",
+      "snapshot": {
+        ".bumpy/tojson-default-redaction.md": "e32e4f5f6d89ad8b03e4bd27aa6887f78ae286695bb9e6ad071306de7cfd166f"
+      },
+      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
+      "outcome": "updated",
+      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
+      "evidence": [
+        "Changed: .bumpy/tojson-default-redaction.md at f8e65308b747dbb46d674597caabd55029175fd4"
+      ]
+    },
+    "source:packages/tests/unit/utils.test.ts": {
+      "fingerprint": "77e8978fa4ef833924ee8941a86345af055f23aecd5f6752a78a5e1925e45b27",
+      "snapshot": {
+        "packages/tests/unit/utils.test.ts": "d4abc06e132124e9bc3e84e13aa6aa373a9663e8615f336f64e82ad4cf573497"
+      },
+      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
+      "outcome": "updated",
+      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
+      "evidence": [
+        "Changed: packages/tests/unit/utils.test.ts at f8e65308b747dbb46d674597caabd55029175fd4"
       ]
     }
   }

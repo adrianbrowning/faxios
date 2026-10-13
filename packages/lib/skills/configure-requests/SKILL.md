@@ -240,8 +240,10 @@ catch (error) {
   as the error's own code. A URL `fetch` can't parse (outside the browser, a relative `url` with
   no `baseURL`) rejects with `ERR_INVALID_URL`; a bad `method`, a `url` that isn't a string or
   `URL`, or a non-object config rejects with `ERR_BAD_OPTION_VALUE`.
-- `error.toJSON()` never includes the response; list sensitive config keys in `redact` to mask
-  them in that output.
+- `error.toJSON()` never includes the response, masks `authorization`, `proxy-authorization`,
+  `cookie` and `auth` at any depth and strips `user:pass@` from `url`/`baseURL`; list other
+  sensitive config keys in `redact` to mask them too. Log `error.toJSON()`, not `error`: the
+  error object still holds the full config.
 
 ### Add behaviour with `.use()` middleware
 
@@ -288,6 +290,8 @@ plugin's request options (such as `retry: false`). Before writing plugin code, r
   `origins` to allow more. It leaves an explicit `Authorization` header alone unless
   `overwrite: true`. Install `retry` before it if each attempt should call `getToken` again.
   A `getToken` result that isn't a non-empty string sends the request without the header.
+  With a custom `header`, it sets `fetchOptions.redirect: "error"` unless the request sets
+  `redirect`, because fetch strips only `Authorization` on a cross-origin redirect.
 - `retry` defaults: 3 attempts, statuses 408/429/500/502/503/504 plus `ERR_NETWORK` and
   `ETIMEDOUT`, exponential backoff from 100 ms with full jitter. A 429/503 `Retry-After` sets the
   wait unless `respectRetryAfter: false`. Turn that off when something else, such as a queue
@@ -298,7 +302,8 @@ plugin's request options (such as `retry: false`). Before writing plugin code, r
   `Retry-After` longer than `maxRetryAfter` (default 5 min) rejects without retrying.
   `maxDelay` and `maxRetryAfter` are capped at 2147483647 ms (`ERR_BAD_OPTION_VALUE` above).
 - `timing(onTiming)` reports `{ method, url, attempt?, durationMs, status | error }` with no
-  headers or body; `url` has no query string and keeps `{param}` placeholders.
+  config, headers or body; `error` is `{ code, message, status }`, and `url` has no user info or
+  query string and keeps `{param}` placeholders.
   Install it before `retry` for one event per call, after it for one event per attempt.
 - To write your own plugin, use `definePlugin` from `@gcmdev/faxios/plugins`. The same
   [plugins](references/plugins.md) reference covers authoring.

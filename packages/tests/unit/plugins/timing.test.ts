@@ -52,7 +52,34 @@ describe("plugins::timing", () => {
     assert.strictEqual(events.length, 1);
     const { error, ...rest } = events[0]!;
     assert.deepStrictEqual(rest, { method: "POST", url: "http://localhost/timing", durationMs: 40 });
-    assert.ok(error instanceof FaxiosError);
+    assert.deepStrictEqual(error, { code: FaxiosError.ERR_BAD_RESPONSE, message: "Request failed with status code 500", status: 500 });
+  });
+
+  it("reports a failure with no token, password or userinfo in the event", async () => {
+    const events: Array<TimingEvent> = [];
+    const api = faxios.create({ baseURL: "http://user:secret-pw@localhost", env: { fetch: slowFetch(0, 500) } })
+      .use(authBearer(() => "secret-token"))
+      .use(timing(event => events.push(event)));
+
+    const request = assert.rejects(api.get(URL, { headers: { "X-Secret": "secret-header" } }), FaxiosError);
+    await vi.runAllTimersAsync();
+    await request;
+
+    assert.strictEqual(events[0]!.url, "http://localhost/timing");
+    assert.ok(!JSON.stringify(events[0]).includes("secret"));
+  });
+
+  it("reports an error that isn't a FaxiosError by its message", async () => {
+    const events: Array<TimingEvent> = [];
+    const api = faxios.create({ baseURL: BASE, env: { fetch: slowFetch(0) } })
+      .use(timing(event => events.push(event)))
+      .use(() => {
+        throw new Error("middleware broke");
+      });
+
+    await assert.rejects(api.get(URL), /middleware broke/);
+
+    assert.deepStrictEqual(events[0]!.error, { code: undefined, message: "middleware broke", status: undefined });
   });
 
   it("strips the query string and fragment from the URL", async () => {
@@ -163,8 +190,7 @@ describe("plugins::timing", () => {
     await request;
 
     assert.strictEqual(events.length, 2);
-    assert.ok(events[0]!.error instanceof FaxiosError);
-    assert.strictEqual(events[0]!.error.response?.status, 503);
+    assert.strictEqual(events[0]!.error?.status, 503);
     assert.strictEqual(events[0]!.status, undefined);
     assert.strictEqual(events[1]!.error, undefined);
     assert.strictEqual(events[1]!.status, 200);

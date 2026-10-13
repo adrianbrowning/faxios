@@ -8,6 +8,13 @@ import FaxiosHeaders from "./FaxiosHeaders.js";
 
 const REDACTED = "[REDACTED ****]";
 
+// Masked in every toJSON() snapshot; `config.redact` adds keys. Matched lower-cased.
+const DEFAULT_REDACT_KEYS: ReadonlyArray<string> = [ "authorization", "proxy-authorization", "cookie", "auth" ];
+
+// Up to the `@` of a URL's user info: after the scheme (`http:`, with any slashes) or after `//`.
+// Backslashes count as slashes, as they do in the WHATWG URL parser.
+const USER_INFO = /^([a-z][a-z\d+\-.]*:[/\\]*|[/\\]{2})[^/\\?#]*@/i;
+
 function hasOwnOrPrototypeToJSON(source: unknown): boolean {
   if (utils.hasOwnProp(source, "toJSON")) {
     return true;
@@ -26,19 +33,21 @@ function hasOwnOrPrototypeToJSON(source: unknown): boolean {
   return false;
 }
 
-// Build a plain-object snapshot of `config` and replace the value of any key
-// (case-insensitive) listed in `redactKeys` with REDACTED. Walks through arrays
-// and FaxiosHeaders, and short-circuits on circular references.
-function redactConfig(config: unknown, redactKeys: Array<string>): unknown {
+// Build a plain-object snapshot of `config`, replace the value of any key (case-insensitive)
+// listed in `redactKeys` with REDACTED, and strip user info from `url` and `baseURL`. Walks
+// through arrays and FaxiosHeaders, and short-circuits on circular references.
+function redactConfig(config: unknown, redactKeys: ReadonlyArray<string>): unknown {
   const lowerKeys = new Set(redactKeys.map(k => String(k).toLowerCase()));
   const seen: Array<object> = [];
 
   const visitObject = (source: object): Record<string, unknown> => {
     const result: Record<string, unknown> = Object.create(null);
     for (const [ key, value ] of Object.entries(source)) {
-      const reducedValue = lowerKeys.has(key.toLowerCase())
-        ? REDACTED
-        : visit(value);
+      const lowerKey = key.toLowerCase();
+      let reducedValue: unknown;
+      if (lowerKeys.has(lowerKey)) reducedValue = REDACTED;
+      else if ((lowerKey === "url" || lowerKey === "baseurl") && typeof value === "string") reducedValue = value.replace(USER_INFO, "$1");
+      else reducedValue = visit(value);
       if (!utils.isUndefined(reducedValue)) {
         result[key] = reducedValue;
       }
@@ -192,17 +201,14 @@ class FaxiosError<T = unknown, D = unknown> extends Error {
   }
 
   toJSON() {
-    // Opt-in redaction: when the request config carries a `redact` array, the
-    // value of any matching key (case-insensitive, at any depth) is replaced
-    // with REDACTED in the serialized snapshot. Undefined or empty leaves the
-    // existing serialization behavior unchanged.
+    // The value of any credential key, and of any key listed in the config's own `redact`
+    // array (case-insensitive, at any depth), is replaced with REDACTED in the snapshot.
     const config = this.config;
-    const redactKeys =
-      config && utils.hasOwnProp(config, "redact") ? config.redact : undefined;
-    const serializedConfig =
-      utils.isArray(redactKeys) && redactKeys.length > 0
-        ? redactConfig(config, redactKeys)
-        : utils.toJSONObject(config);
+    const extraKeys = config && utils.hasOwnProp(config, "redact") ? config.redact : undefined;
+    const redactKeys = utils.isArray(extraKeys)
+      ? [ ...DEFAULT_REDACT_KEYS, ...extraKeys.filter(key => typeof key === "string") ]
+      : DEFAULT_REDACT_KEYS;
+    const serializedConfig = redactConfig(config, redactKeys);
 
     return {
       // Standard

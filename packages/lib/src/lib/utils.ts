@@ -752,48 +752,6 @@ function isSpecCompliantForm(thing: unknown): boolean {
 }
 
 /**
- * Recursively converts an object to a JSON-compatible object, handling circular references and Buffers.
- *
- * @param {Object} obj - The object to convert.
- * @returns {Object} The JSON-compatible object.
- */
-const toJSONObject = (obj: unknown): unknown => {
-  const visited = new WeakSet<object>();
-
-  const visit = (source: unknown): unknown => {
-    if (isObject(source)) {
-      if (visited.has(source)) {
-        return;
-      }
-
-      //Buffer check
-      if (isBuffer(source)) {
-        return source;
-      }
-
-      if (!("toJSON" in source)) {
-        // add-on descent / delete-on-ascent: preserves path semantics, so DAG nodes serialise at every occurrence (see #7230).
-        visited.add(source);
-        const target: Record<number | string, unknown> = isArray(source) ? ([] as Record<number, unknown>) : {};
-
-        forEach(source, (value, key) => {
-          const reducedValue = visit(value);
-          !isUndefined(reducedValue) && (target[key as string] = reducedValue);
-        });
-
-        visited.delete(source);
-
-        return target;
-      }
-    }
-
-    return source;
-  };
-
-  return visit(obj);
-};
-
-/**
  * Determines if a value is an async function.
  *
  * @param {*} thing - The value to test.
@@ -938,7 +896,6 @@ export default {
   global: _global,
   isContextDefined,
   isSpecCompliantForm,
-  toJSONObject,
   isAsyncFn,
   isThenable,
   setImmediate: _setImmediate,

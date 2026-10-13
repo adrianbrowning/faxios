@@ -92,6 +92,10 @@ function sendsTokenTo(config: InternalFaxiosRequestConfig, origins: null | Reado
  * The token goes only to the `baseURL` origin when `baseURL` is absolute, otherwise only to
  * relative request URLs; `origins` replaces that rule.
  *
+ * With a custom `header`, `fetchOptions.redirect` defaults to `"error"` unless the request sets
+ * it: fetch strips only `Authorization` when a redirect leaves the origin, so following one would
+ * send the custom header to whatever host the API redirects to.
+ *
  * When `getToken` gives anything other than a non-empty string (`null`, `undefined`, `""`, a
  * number, an object), the request is sent without the header, so a signed-out state never sends
  * `Bearer null`. The parameter type stays `string`: the guard is for JavaScript callers and casts.
@@ -109,6 +113,7 @@ export function authBearer(getToken: () => Promise<string> | string, options: Au
   const overwrite = own(options, "overwrite") ?? false;
   const scheme = own(options, "scheme") ?? "Bearer";
   const header = own(options, "header") ?? "Authorization";
+  const customHeader = header.toLowerCase() !== "authorization";
   const origins = own(options, "origins")?.map(o => originOf(o)!) ?? null;
   const auth = { getToken: async () => getToken() };
   return definePlugin({
@@ -123,6 +128,10 @@ export function authBearer(getToken: () => Promise<string> | string, options: Au
       const headers = new FaxiosHeaders(ctx.config.headers).set(header, scheme ? `${scheme} ${token}` : token, true);
       const config = { ...ctx.config };
       config.headers = headers;
+      const fetchOptions = own(config, "fetchOptions");
+      if (customHeader && (!fetchOptions || !utils.hasOwnProp(fetchOptions, "redirect"))) {
+        config.fetchOptions = { ...fetchOptions, redirect: "error" };
+      }
       return next({ ...ctx, config });
     },
   });
