@@ -17,7 +17,7 @@ faxios is a promise-based HTTP client. One web-standard `fetch` adapter serves e
 This file is the canonical contributor guide for both human and AI agents working in this repo.
 
 - **Writing or reviewing library code:** follow [`CODING_STANDARDS.md`](CODING_STANDARDS.md).
-- **Checking a change:** `pnpm check` runs what CI runs (lint, knip, `packages/tests/run-tests.sh`, docs examples). Other scripts are in the root and package `package.json` files.
+- **Checking a change:** `pnpm check` runs what CI runs (lint, knip, `packages/tests/run-tests.sh`, docs examples, then `pnpm size`, the size-limit budget of every public entry point in `packages/lib/.size-limit.json`). Other scripts are in the root and package `package.json` files.
 - **Issues, PRs, stacks and CI status:** [`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md).
 
 ## AI Agent Marker

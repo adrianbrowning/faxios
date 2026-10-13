@@ -1,0 +1,38 @@
+[
+  {
+    "name": ".",
+    "path": "dist/index.js",
+    "import": "*",
+    "limit": "19 kB"
+  },
+  {
+    "name": "./plugins",
+    "path": "dist/lib/plugins/definePlugin.js",
+    "import": "*",
+    "limit": "100 B"
+  },
+  {
+    "name": "./plugins/auth-bearer",
+    "path": "dist/lib/plugins/authBearer.js",
+    "import": "*",
+    "limit": "19.5 kB"
+  },
+  {
+    "name": "./plugins/forward-to",
+    "path": "dist/lib/plugins/forwardTo.js",
+    "import": "*",
+    "limit": "19 kB"
+  },
+  {
+    "name": "./plugins/retry",
+    "path": "dist/lib/plugins/retry.js",
+    "import": "*",
+    "limit": "20.5 kB"
+  },
+  {
+    "name": "./plugins/timing",
+    "path": "dist/lib/plugins/timing.js",
+    "import": "*",
+    "limit": "720 B"
+  }
+]
