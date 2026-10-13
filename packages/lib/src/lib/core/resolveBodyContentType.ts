@@ -1,4 +1,4 @@
-import utils from "../utils.js";
+import { isFormData } from "../utils.js";
 import type FaxiosHeaders from "./FaxiosHeaders.js";
 
 /**
@@ -22,6 +22,6 @@ export default function resolveBodyContentType(
   headers: FaxiosHeaders,
   encodedContentType: null | string | undefined
 ): void {
-  if (utils.isFormData(data)) headers.delete("content-type");
+  if (isFormData(data)) headers.delete("content-type");
   if (encodedContentType) headers.setContentType(encodedContentType, false);
 }

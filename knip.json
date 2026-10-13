@@ -4,10 +4,7 @@
       "entry": [
         "scripts/**/*.js"
       ],
-      "project": ["**/*.{js,ts,cjs,mjs,mts}"],
-      "ignore": [
-        "src/lib/helpers/deprecatedMethod.ts"
-      ]
+      "project": ["**/*.{js,ts,cjs,mjs,mts}"]
     },
     "packages/tests": {
   "entry": [

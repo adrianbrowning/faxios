@@ -188,6 +188,12 @@ The `get<Header>` shortcuts take the parsers `get()` takes (`true`, a `RegExp` o
 
 The type declarations use `NoInfer`, which TypeScript 5.4 added, so faxios needs TypeScript 5.4 or greater. The docs used to say 4.7; on 4.7 to 5.3 the compiler reports `Cannot find name 'NoInfer'` in faxios's own `.d.ts` files. Upgrade TypeScript to 5.4 or later.
 
+### p) `unsafe/utils.js` removed and `toFormData` visitor helpers narrowed
+
+The `@gcmdev/faxios/unsafe/utils.js` subpath is removed. It exported faxios's internal type checks and object helpers with no stability promise; copy the few you need into your code.
+
+A custom `toFormData` visitor gets only the declared helpers as its fourth argument: `convertValue`, `defaultVisitor` and `isVisitable`. The `is*` predicates (`helpers.isArray`, `helpers.isBlob` and the rest) that came along at runtime, though `FormDataVisitorHelpers` never declared them, are gone. Use `Array.isArray`, `instanceof Blob` or your own checks.
+
 ---
 
 ## Overview

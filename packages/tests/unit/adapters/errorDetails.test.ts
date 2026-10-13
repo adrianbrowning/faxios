@@ -87,4 +87,49 @@ describe("adapters - transport error codes", () => {
     assert.strictEqual(err.code, FaxiosError.ERR_NETWORK);
     assert.strictEqual(err.cause, terminated);
   });
+
+  it("rejects with the abort reason, its config and Request, when fetch fails after an abort", async () => {
+    const controller = new AbortController();
+    const blip = new Error("network blip");
+    const fetch = vi.fn(async () => {
+      controller.abort("stopped");
+      throw blip;
+    });
+    const err = await rejection(faxios.create({ env: { fetch } }).get("http://example.test/", { signal: controller.signal }));
+    assert.strictEqual(err.code, FaxiosError.ERR_CANCELED);
+    assert.strictEqual(err.message, "stopped");
+    assert.strictEqual(err.config?.url, "http://example.test/");
+    assert.ok(err.request instanceof Request, "error.request is the Request");
+    assert.strictEqual(err.cause, blip);
+  });
+
+  it("rejects with a FaxiosError fetch throws, unwrapped and given the Request", async () => {
+    const thrown = new FaxiosError("Raw", FaxiosError.ERR_NETWORK);
+    const fetch = vi.fn(async () => {
+      throw thrown;
+    });
+    const err = await rejection(faxios.create({ env: { fetch } }).get("http://example.test/"));
+    assert.strictEqual(err, thrown);
+    assert.ok(err.request instanceof Request, "error.request is the Request");
+  });
+
+  it("rejects a 'Load failed' TypeError from fetch with ERR_NETWORK", async () => {
+    const loadFailed = new TypeError("Load failed");
+    const fetch = vi.fn(async () => {
+      throw loadFailed;
+    });
+    const err = await rejection(faxios.create({ env: { fetch } }).get("http://example.test/"));
+    assert.strictEqual(err.code, FaxiosError.ERR_NETWORK);
+    assert.strictEqual(err.cause, loadFailed);
+  });
+
+  it("wraps any other error fetch throws, keeping its code", async () => {
+    const other = Object.assign(new Error("Something else"), { code: "ERR_UNKNOWN" });
+    const fetch = vi.fn(async () => {
+      throw other;
+    });
+    const err = await rejection(faxios.create({ env: { fetch } }).get("http://example.test/"));
+    assert.strictEqual(err.code, "ERR_UNKNOWN");
+    assert.strictEqual(err.message, "Something else");
+  });
 });

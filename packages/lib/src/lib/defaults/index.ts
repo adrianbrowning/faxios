@@ -12,7 +12,7 @@ import type {
   GenericFormData,
   InternalFaxiosRequestConfig
 } from "../types.js";
-import utils from "../utils.js";
+import { hasOwnProp, isArrayBuffer, isArrayBufferView, isBlob, isBuffer, isFile, isFileList, isFormData, isHTMLForm, isObject, isReadableStream, isResponse, isStream, isString, isURLSearchParams } from "../utils.js";
 import transitionalDefaults from "./transitional.js";
 
 /**
@@ -34,11 +34,11 @@ function serializeObjectPayload(
   if (contentType.indexOf("application/x-www-form-urlencoded") > -1) {
     return toURLEncodedForm(data, formSerializer).toString();
   }
-  const isFileList = utils.isFileList(data);
-  if (isFileList || contentType.indexOf("multipart/form-data") > -1) {
+  const fileList = isFileList(data);
+  if (fileList || contentType.indexOf("multipart/form-data") > -1) {
     const _FormData = FormDataCtor;
     return toFormData(
-      isFileList ? { "files[]": data } : data,
+      fileList ? { "files[]": data } : data,
       (_FormData && new _FormData()) as GenericFormData | null | undefined,
       formSerializer
     );
@@ -72,7 +72,7 @@ function stringifySafely(
   parser?: ((s: string) => unknown) | null,
   encoder?: ((v: unknown) => string) | null
 ): unknown {
-  if (utils.isString(rawValue)) {
+  if (isString(rawValue)) {
     try {
       (parser || JSON.parse)(rawValue as string);
       return (rawValue as string).trim();
@@ -99,9 +99,9 @@ const defaults: FaxiosDefaults = {
       const contentType =
         (headers.getContentType() as null | string | undefined) || "";
       const hasJSONContentType = contentType.indexOf("application/json") > -1;
-      const isObjectPayload = utils.isObject(data);
+      const isObjectPayload = isObject(data);
 
-      if (isObjectPayload && utils.isHTMLForm(data)) {
+      if (isObjectPayload && isHTMLForm(data)) {
         const GlobalFormData = (globalThis as Record<string, unknown>)[
           "FormData"
         ] as (new (el?: unknown) => unknown) | undefined;
@@ -110,26 +110,26 @@ const defaults: FaxiosDefaults = {
         }
       }
 
-      const isFormData = utils.isFormData(data);
+      const formData = isFormData(data);
 
-      if (isFormData) {
+      if (formData) {
         return hasJSONContentType ? JSON.stringify(formDataToJSON(data)) : data;
       }
 
       // fetch takes any ArrayBufferView as a body and sends only the view's bytes.
       // Never unwrap it to `.buffer`: a subarray or DataView would send the whole backing buffer.
       if (
-        utils.isArrayBuffer(data) ||
-        utils.isArrayBufferView(data) ||
-        utils.isBuffer(data) ||
-        utils.isStream(data) ||
-        utils.isFile(data) ||
-        utils.isBlob(data) ||
-        utils.isReadableStream?.(data)
+        isArrayBuffer(data) ||
+        isArrayBufferView(data) ||
+        isBuffer(data) ||
+        isStream(data) ||
+        isFile(data) ||
+        isBlob(data) ||
+        isReadableStream(data)
       ) {
         return data;
       }
-      if (utils.isURLSearchParams(data)) {
+      if (isURLSearchParams(data)) {
         headers.setContentType(
           "application/x-www-form-urlencoded;charset=utf-8",
           false
@@ -160,17 +160,17 @@ const defaults: FaxiosDefaults = {
       const transitional = this.transitional || defaults.transitional;
       const forcedJSONParsing = transitional && transitional.forcedJSONParsing;
       // Own only: a polluted Object.prototype.responseType must not make every body strict JSON.
-      const responseType = utils.hasOwnProp(this, "responseType") ? this.responseType : undefined;
+      const responseType = hasOwnProp(this, "responseType") ? this.responseType : undefined;
       const JSONRequested = responseType === "json";
       const shouldParseJSON = (forcedJSONParsing && !responseType) || JSONRequested;
 
-      if (utils.isResponse?.(data) || utils.isReadableStream?.(data)) {
+      if (isResponse(data) || isReadableStream(data)) {
         return data;
       }
 
-      if (data && utils.isString(data) && shouldParseJSON) {
+      if (data && isString(data) && shouldParseJSON) {
         try {
-          return JSON.parse(data as string, utils.hasOwnProp(this, "parseReviver") ? this.parseReviver : undefined);
+          return JSON.parse(data as string, hasOwnProp(this, "parseReviver") ? this.parseReviver : undefined);
         }
         catch (e) {
           throwOnStrictJSONError(e, JSONRequested, this);

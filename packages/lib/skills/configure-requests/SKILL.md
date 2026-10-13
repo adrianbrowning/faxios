@@ -372,7 +372,7 @@ await faxios.get("https://api.example.com/feed", { fetchOptions: { cache: "no-st
 | `@gcmdev/faxios` | Stable: default `faxios`, `Faxios`, `FaxiosError`, `FaxiosHeaders`, `CanceledError`, `isCancel`, `isFaxiosError`, `isSchemaValidationError`, `mergeConfig`, `toFormData`, `formToJSON`, `HttpStatusCode`, `all`, `create`, `VERSION`, and the types |
 | `@gcmdev/faxios/plugins` | Stable: `definePlugin` only |
 | `@gcmdev/faxios/plugins/auth-bearer`, `/retry`, `/timing` | Stable: one plugin each |
-| `@gcmdev/faxios/unsafe/*` | Internal helpers (`buildFullPath`, `buildURL`, `combineURLs`, `isAbsoluteURL`, `utils`). No stability promise; do not use them in application code, and say so if a task seems to need them |
+| `@gcmdev/faxios/unsafe/*` | Internal helpers (`buildFullPath`, `buildURL`, `combineURLs`, `isAbsoluteURL`). No stability promise; do not use them in application code, and say so if a task seems to need them. `unsafe/utils.js` is gone |
 
 Use `faxios.create()` for instances. An instance made with `new Faxios()` has no `use()` or
 `eject()`.

@@ -11,7 +11,7 @@ import prepareRequest from "#src/lib/core/prepareRequest.js";
 import defaults from "#src/lib/defaults/index.js";
 import { retry } from "#src/lib/plugins/retry.ts";
 import { timing } from "#src/lib/plugins/timing.ts";
-import utils from "#src/lib/utils.js";
+import { extend, merge } from "#src/lib/utils.js";
 
 // ponytail: only augment Object.prototype with non-conflicting test-only keys.
 // All faxios config keys overlap with FaxiosRequestConfig and are accessed via ObjProto.
@@ -83,7 +83,7 @@ describe("Prototype Pollution Protection", () => {
 
   describe("utils.merge", () => {
     it("should filter __proto__ key at top level", () => {
-      const result = utils.merge(
+      const result = merge(
         {},
         { __proto__: { polluted: "yes" }, safe: "value" }
       );
@@ -94,7 +94,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter constructor key at top level", () => {
-      const result = utils.merge(
+      const result = merge(
         {},
         { constructor: { polluted: "yes" }, safe: "value" }
       );
@@ -104,7 +104,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter prototype key at top level", () => {
-      const result = utils.merge(
+      const result = merge(
         {},
         { prototype: { polluted: "yes" }, safe: "value" }
       );
@@ -114,7 +114,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter __proto__ key in nested objects", () => {
-      const result: any = utils.merge(
+      const result: any = merge(
         {},
         {
           headers: {
@@ -130,7 +130,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter constructor key in nested objects", () => {
-      const result: any = utils.merge(
+      const result: any = merge(
         {},
         {
           headers: {
@@ -146,7 +146,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter prototype key in nested objects", () => {
-      const result: any = utils.merge(
+      const result: any = merge(
         {},
         {
           headers: {
@@ -161,7 +161,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter dangerous keys in deeply nested objects", () => {
-      const result: any = utils.merge(
+      const result: any = merge(
         {},
         {
           level1: {
@@ -183,7 +183,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should still merge regular properties correctly", () => {
-      const result: any = utils.merge(
+      const result: any = merge(
         { a: 1, b: { c: 2 } },
         { b: { d: 3 }, e: 4 }
       );
@@ -196,7 +196,7 @@ describe("Prototype Pollution Protection", () => {
 
     it("should handle JSON.parse payloads safely", () => {
       const malicious = JSON.parse("{\"__proto__\": {\"polluted\": \"yes\"}}");
-      const result = utils.merge({}, malicious);
+      const result = merge({}, malicious);
 
       assert.strictEqual(Object.prototype.polluted, undefined);
       assert.strictEqual(result.hasOwnProperty("__proto__"), false);
@@ -207,7 +207,7 @@ describe("Prototype Pollution Protection", () => {
         "{\"headers\": {\"constructor\": {\"prototype\": {\"polluted\": \"yes\"}}}}"
       );
 
-      const result: any = utils.merge({}, malicious);
+      const result: any = merge({}, malicious);
 
       assert.strictEqual(Object.prototype.polluted, undefined);
       assert.strictEqual(result.headers.hasOwnProperty("constructor"), false);
@@ -1023,7 +1023,7 @@ describe("Prototype Pollution Protection", () => {
     it("should not pick up polluted Object.prototype.<key> as the existing value", () => {
       ObjProto.headers = { evil: "yes" };
 
-      const result: any = utils.merge(
+      const result: any = merge(
         {},
         { headers: { "Content-Type": "application/json" } }
       );
@@ -1038,7 +1038,7 @@ describe("Prototype Pollution Protection", () => {
       // eslint-disable-next-line no-extend-native -- prototype-pollution test; removed in afterEach
       Object.prototype.customNested = { evil: "yes" };
 
-      const result = utils.merge({}, { safe: "value" });
+      const result = merge({}, { safe: "value" });
 
       assert.strictEqual(result.hasOwnProperty("customNested"), false);
       assert.strictEqual(result.safe, "value");
@@ -1086,7 +1086,7 @@ describe("Prototype Pollution Protection", () => {
 
       const a: Record<string, unknown> = {};
       const b = { x: 1, fn() {} };
-      utils.extend(a, b, undefined);
+      extend(a, b, undefined);
 
       assert.strictEqual(a.x, 1);
       assert.strictEqual(typeof a.fn, "function");
@@ -1102,7 +1102,7 @@ describe("Prototype Pollution Protection", () => {
           return this.tag;
         },
       };
-      utils.extend(a, b, ctx);
+      extend(a, b, ctx);
 
       assert.strictEqual((a.method as () => string)(), "ctx");
     });

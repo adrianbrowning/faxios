@@ -1,5 +1,5 @@
 import FaxiosError from "../core/FaxiosError.js";
-import utils from "../utils.js";
+import { isArrayBuffer, isArrayBufferView, isString, kindOf } from "../utils.js";
 
 type ReadableStreamController = {
   close: () => void;
@@ -27,18 +27,18 @@ const toBytes = (chunk: unknown): Uint8Array => {
   if (chunk instanceof Uint8Array) {
     return chunk;
   }
-  if (utils.isArrayBufferView(chunk)) {
+  if (isArrayBufferView(chunk)) {
     const view = chunk as ArrayBufferView;
     return new Uint8Array(view.buffer, view.byteOffset, view.byteLength);
   }
-  if (utils.isArrayBuffer(chunk)) {
+  if (isArrayBuffer(chunk)) {
     return new Uint8Array(chunk as ArrayBuffer);
   }
-  if (utils.isString(chunk) && textEncoder) {
+  if (isString(chunk) && textEncoder) {
     return textEncoder.encode(chunk as string);
   }
   throw new FaxiosError(
-    "Stream chunk must be a Uint8Array, another ArrayBufferView, an ArrayBuffer or a string, got " + utils.kindOf(chunk),
+    "Stream chunk must be a Uint8Array, another ArrayBufferView, an ArrayBuffer or a string, got " + kindOf(chunk),
     FaxiosError.ERR_BAD_REQUEST
   );
 };

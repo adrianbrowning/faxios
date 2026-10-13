@@ -3,24 +3,24 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "7faa98aa6ad3cf067537e492e61fde800556f1010337e2ab7ba48cb96c70c54a",
+      "fingerprint": "fbcbf9ef7539ccc9240c0172ac36ab939a6bccfb81645320a815ba6c381a4d96",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "3c1ef5f8183bfbd67313b82e8556f2c83495e11e3b39bda2f84b3f2d35f803d7",
-        "packages/lib/package.json": "6ceed88544e8666b441eda75aac032ee5d0afb7184092c6ebca250806aab7ed0",
-        "packages/lib/skills/configure-requests/SKILL.md": "2e5616bdfc342aa754da49edecbd2f4e052cd2594d5e88bf41a3f4b2f4771f9c",
+        "MIGRATION_GUIDE.md": "3bf949a69aad11bd650413665ee98c34f837cf2f1c95dcdc3fef04f5dc37df18",
+        "packages/lib/package.json": "0d57625d5c5e8020dbe576224cdf3d6a90a422ef851e199410e43557091141a2",
+        "packages/lib/skills/configure-requests/SKILL.md": "9e008796bcbd01d607669e44449494d1722f68a09478a9ebba5579d7c10c6377",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
         "packages/lib/skills/configure-requests/references/plugins.md": "96873b03af18312869a0308acca3f5164e0de3811a45f280ccf0265c1f014dc4",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
-        "packages/lib/src/lib/adapters/fetch.ts": "dac730893928ede80b3a1b31b1064053a41555a2a13d340326fb3b78927c99b5",
-        "packages/lib/src/lib/core/Faxios.ts": "7d77d83175a3f2df158bf4fad8c92217e4cc7b1323e0834999d5428707be2d28",
-        "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
+        "packages/lib/src/lib/adapters/fetch.ts": "11d5e3d57f547279f4a60b19d26f1be988c82eea2317d21fd2222d4c2cb2a3ae",
+        "packages/lib/src/lib/core/Faxios.ts": "2a660bff655bbe89115a0810d4e52c8c6085e6fd6d76aaf5bfcfd2201d9c25f4",
+        "packages/lib/src/lib/core/FaxiosError.ts": "0d4dcfef4b59cee6e04d94dee4bf6ed90b17ca52c97240dd0437ffee62842c4b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "a40f986939a248c3184081537c46caac2da8fe1759c4637ea72b5370b7e64ba2",
-        "packages/lib/src/lib/core/mergeConfig.ts": "44c5417867eca00b465e1cbfbcee2104162d5e82705b15082b9be8ba28930f8a",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "6b62f390d50ef034fab96bf020191e1691ff35a1ca2c37f63f6b857b9a797654",
+        "packages/lib/src/lib/core/mergeConfig.ts": "69cd4509ebe201c439be5697f748f3bfb903ec7ec0ca4bf8573e7cd6bf075feb",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
-        "packages/lib/src/lib/helpers/composeSignals.ts": "829b7130dc742becad300735254e63afeb73a8f1f99dac48febf2dcc3e0aab1c",
+        "packages/lib/src/lib/faxios.ts": "e7c4505d47a7a7f03e00c6a79d26cf65e4899650b7671abbc3c008c771a0e9f4",
+        "packages/lib/src/lib/helpers/composeSignals.ts": "e625917dc3744abb5ac372b3da2173b7e01e1d20e96c90fcee08bbb90480c765",
         "packages/lib/src/lib/plugins/authBearer.ts": "6679d5ad304defc2ffd75f65bb0ec8edf38f7ccd1b4632465c6e127216125080",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "3561b842f48c354df300ecb38f37cb0971d8f42a6de8662c1161b1c36eb94a5f",
@@ -35,35 +35,35 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
       "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/tests/unit/plugins/forwardTo.test.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/helpers/composeSignals.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "b5d476e189b11867acf45c4fafb1f8cdc85020a5c801cecea0788e0da8d43790",
+      "fingerprint": "75af14314ce0a7f0f9aab32c1dd62f9eda1e7ecbcd373bb9bd9938543fab5731",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "3c1ef5f8183bfbd67313b82e8556f2c83495e11e3b39bda2f84b3f2d35f803d7",
+        "MIGRATION_GUIDE.md": "3bf949a69aad11bd650413665ee98c34f837cf2f1c95dcdc3fef04f5dc37df18",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
-        "packages/lib/package.json": "6ceed88544e8666b441eda75aac032ee5d0afb7184092c6ebca250806aab7ed0",
-        "packages/lib/skills/configure-requests/SKILL.md": "2e5616bdfc342aa754da49edecbd2f4e052cd2594d5e88bf41a3f4b2f4771f9c",
+        "packages/lib/package.json": "0d57625d5c5e8020dbe576224cdf3d6a90a422ef851e199410e43557091141a2",
+        "packages/lib/skills/configure-requests/SKILL.md": "9e008796bcbd01d607669e44449494d1722f68a09478a9ebba5579d7c10c6377",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
         "packages/lib/skills/configure-requests/references/plugins.md": "96873b03af18312869a0308acca3f5164e0de3811a45f280ccf0265c1f014dc4",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
-        "packages/lib/src/lib/adapters/fetch.ts": "dac730893928ede80b3a1b31b1064053a41555a2a13d340326fb3b78927c99b5",
-        "packages/lib/src/lib/core/Faxios.ts": "7d77d83175a3f2df158bf4fad8c92217e4cc7b1323e0834999d5428707be2d28",
-        "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
+        "packages/lib/src/lib/adapters/fetch.ts": "11d5e3d57f547279f4a60b19d26f1be988c82eea2317d21fd2222d4c2cb2a3ae",
+        "packages/lib/src/lib/core/Faxios.ts": "2a660bff655bbe89115a0810d4e52c8c6085e6fd6d76aaf5bfcfd2201d9c25f4",
+        "packages/lib/src/lib/core/FaxiosError.ts": "0d4dcfef4b59cee6e04d94dee4bf6ed90b17ca52c97240dd0437ffee62842c4b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "a40f986939a248c3184081537c46caac2da8fe1759c4637ea72b5370b7e64ba2",
-        "packages/lib/src/lib/core/mergeConfig.ts": "44c5417867eca00b465e1cbfbcee2104162d5e82705b15082b9be8ba28930f8a",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "6b62f390d50ef034fab96bf020191e1691ff35a1ca2c37f63f6b857b9a797654",
+        "packages/lib/src/lib/core/mergeConfig.ts": "69cd4509ebe201c439be5697f748f3bfb903ec7ec0ca4bf8573e7cd6bf075feb",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
-        "packages/lib/src/lib/helpers/composeSignals.ts": "829b7130dc742becad300735254e63afeb73a8f1f99dac48febf2dcc3e0aab1c",
+        "packages/lib/src/lib/faxios.ts": "e7c4505d47a7a7f03e00c6a79d26cf65e4899650b7671abbc3c008c771a0e9f4",
+        "packages/lib/src/lib/helpers/composeSignals.ts": "e625917dc3744abb5ac372b3da2173b7e01e1d20e96c90fcee08bbb90480c765",
         "packages/lib/src/lib/plugins/authBearer.ts": "6679d5ad304defc2ffd75f65bb0ec8edf38f7ccd1b4632465c6e127216125080",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "3561b842f48c354df300ecb38f37cb0971d8f42a6de8662c1161b1c36eb94a5f",
@@ -78,23 +78,23 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
       "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: _artifacts/domain_map.yaml, _artifacts/skill_tree.yaml, packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/tests/unit/plugins/forwardTo.test.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/helpers/composeSignals.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:knip.json": {
-      "fingerprint": "238662daeb4f1b7f25f044ed1be308337ea4fc2662e34727604ce527e2b04a8d",
+      "fingerprint": "3d0e82856ceabcb753d702fa4bfedf3f8d292c2d9a487b0d48fdd479ea984572",
       "snapshot": {
-        "knip.json": "53415bb7d47f06ab8b4e71deee1f5bfdafab9cb971839b905c299edb4d45619e"
+        "knip.json": "5efaf1f97eb9e3c61870067f0863ab8d915858b64a7e8bee7931ac6540113b54"
       },
-      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
-      "outcome": "out-of-scope",
-      "reason": "Tooling config: dropped the @splidejs/splide ignore after removing the dependency.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "@splidejs/splide was only imported by the deleted es/fr/zh home pages."
+        "Changed: knip.json at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
@@ -426,15 +426,15 @@
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
-      "fingerprint": "e4852e045e98a139398c95d2759104f5e804c3a9c186740fcb25f0d8e510cb41",
+      "fingerprint": "482f48c656821c5dbb6f4334ba06509b306274c88b2904c0f30043fbac61529b",
       "snapshot": {
-        "packages/lib/src/lib/defaults/index.ts": "2d4e8757b56382272657889b1eb48526c3748d0afb2abeca62e9fd9697dfc6da"
+        "packages/lib/src/lib/defaults/index.ts": "d88482e76419a0202278ea6c77c424b1bf4deb3d35c1536ac3c5ee3f66779673"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/defaults/index.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/lib/src/lib/defaults/index.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/browser/headers.browser.test.ts": {
@@ -450,15 +450,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch.test.ts": {
-      "fingerprint": "bbb89bfedb3f4ba81a9904faf90abc4811d52ef557364285ed20411ceb439620",
+      "fingerprint": "6bf4a833ede6d615231ef73624144b6b40051682d374cccff9a1fd4a53d45ed2",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch.test.ts": "74069f42db5a882742d879e209c106251dd87d62e77b1f03584aeaad79e8d136"
+        "packages/tests/unit/adapters/fetch.test.ts": "49a5de5a41b43d8d1c8507c5d7889cd9dd7df6814cc4c0a326295efae9743752"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/tests/unit/adapters/fetch.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:CHANGELOG.md": {
@@ -2210,15 +2210,15 @@
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
-      "fingerprint": "de1344c56f4ed1b91a7edb9d5b481c8502b9cf701f3b8ecf6ede3ac0f0aad22e",
+      "fingerprint": "3d0c61e29a66937e575ce15440e19b5a9e42191b55d3f8778202fdaab2e99f4f",
       "snapshot": {
-        "packages/lib/src/lib/adapters/fetch-helpers.ts": "85fc57685598177df9c127d46f69e3ec73a5023b4f7ace7163a163d656594c6a"
+        "packages/lib/src/lib/adapters/fetch-helpers.ts": "dd247d6f2feb4ab856af40ce97228a302d954d66cba57e9cdc7dc6e1520c6d19"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/lib/src/lib/cancel/CanceledError.ts": {
@@ -2234,39 +2234,39 @@
       ]
     },
     "source:packages/lib/src/lib/core/FaxiosHeaders.ts": {
-      "fingerprint": "4baa3632cee725d17d6d69f8820d55bdb983f20c3b45df813d5b28a244cae877",
+      "fingerprint": "ceeb3e9486222ce2517cd140217dcb361cf9ad80855c71d35de9b5e50f71abb2",
       "snapshot": {
-        "packages/lib/src/lib/core/FaxiosHeaders.ts": "401b5a73146437b667239454455f208def95825d41e5af3f3e2560acc673e3a6"
+        "packages/lib/src/lib/core/FaxiosHeaders.ts": "17111d684fbc43a49b1a3bb152db31cfba387b2f9901db5b1be196793796d648"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
-      "fingerprint": "7b90be47b28ab8da896990ea1e7c2911e9dcb44b73c2cdf1fda2d3b8cdb48557",
+      "fingerprint": "adb9b34cb9787996d639612a2798fd18eefa93f0a4a5fad3db1ad5a4e42b5876",
       "snapshot": {
-        "packages/lib/src/lib/core/prepareRequest.ts": "47dc3c0659672af9c7c21addcbab22976cc8cd0d24151bd071602bb3dc8745fb"
+        "packages/lib/src/lib/core/prepareRequest.ts": "31953085e47d8fa73ac45a2baf275dd0935aa49f0c44f5b73166f63135d94e86"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/lib/src/lib/core/transformData.ts": {
-      "fingerprint": "9cf44eef17578a9157d0d938b5395d281e4cc440aad99055a76481c7a08842a7",
+      "fingerprint": "f21a34487b387bc64abf8067dd19ab56d1e107679aa52d259db2b1a53e8546d2",
       "snapshot": {
-        "packages/lib/src/lib/core/transformData.ts": "446436ac144601f4f96947708c54b6b6372b8881cc00dbd4d1ed5475c4ebe0a1"
+        "packages/lib/src/lib/core/transformData.ts": "6a1ab049364619ea115ddeeb75774406cfe241cc06186ee7a1045c612b497044"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/transformData.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/lib/src/lib/core/transformData.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/lib/src/lib/core/validateSchema.ts": {
@@ -2295,65 +2295,63 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/cookies.ts": {
-      "fingerprint": "204e790c484b845b4d605226d508132630c47757d4c291d67825ef83cd09f29a",
+      "fingerprint": "7a651476f118d2a24aff47bbdad9660da635bf0b2769539dd36a139d4d9131e4",
       "snapshot": {
-        "packages/lib/src/lib/helpers/cookies.ts": "4c0a2b0d05a2af3b2b33c0c5b822f59ac089a9780d0c55be5e26a255fa978e26"
+        "packages/lib/src/lib/helpers/cookies.ts": "47f78c5ff30b3f99f8187405c6163a367dba8b9f061a8b0618d3099047462b69"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Members of the `CookieManager` type sorted (`read`, `remove`, `write`). `string | null` → `null | string` in the `read` type and in the `read()` return annotation. Behaviour change: none. The runtime object literals (`write`, `read`, `remove`) keep their order.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/cookies.ts: Whole file compared. Changed lines are HEAD L4-8 and L39.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/helpers/cookies.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/lib/src/lib/helpers/formDataToJSON.ts": {
-      "fingerprint": "99a35ebf78cb1c80a66f2f50261d5c4c96eecfffd9f1c2b3190d39b7262eb8b1",
+      "fingerprint": "9aa89296819ce9daaef0eb5a4e779d23139f06d735eae65693d8f083f20f43bf",
       "snapshot": {
-        "packages/lib/src/lib/helpers/formDataToJSON.ts": "4e6274cc3d0dc2e7ddaba163557013c714a742e67a421f374c1657ba8e9e4529"
+        "packages/lib/src/lib/helpers/formDataToJSON.ts": "d60f440749f9a03ac2151563483c5bf4f9264b70fbb58c03364079f7183d013b"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/formDataToJSON.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/lib/src/lib/helpers/formDataToJSON.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/lib/src/lib/helpers/parseHeaders.ts": {
-      "fingerprint": "92c04eeb1e609aee2ee8a4976581ef9b56195df29b7ab4c8bcf963b11423f6b5",
+      "fingerprint": "6aca35d888beb0d411a11df41559dc409377facff3ea23cf054fdcbbfac123d7",
       "snapshot": {
-        "packages/lib/src/lib/helpers/parseHeaders.ts": "3984e9feedab3f155d1b079420137ffec9d8ed5c6e7f15be098754de42b58a46"
+        "packages/lib/src/lib/helpers/parseHeaders.ts": "9d40f03b9dfbd1a33c065fd68a2fe7e5e614e3e84c093340b17fc1643ac74dbb"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/parseHeaders.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/lib/src/lib/helpers/parseHeaders.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/lib/src/lib/helpers/progressEventReducer.ts": {
-      "fingerprint": "c2a8ad276c4f815d17745c866d90d3564c2de7c988e0b82636e731a127ea8c18",
+      "fingerprint": "46b7d7d930c7f42b2a4fe649400e24623c008c0fd77d60f52f20c20775e326a3",
       "snapshot": {
-        "packages/lib/src/lib/helpers/progressEventReducer.ts": "9d58a822018eb3c16e9e58c52c9b9f00ced7ae5df9c43a1fc211977def3fe12e"
+        "packages/lib/src/lib/helpers/progressEventReducer.ts": "9a84e68ec943d6e2255f3f05edddcbf84dab70cbbc78f22ba7afa45b1111c366"
       },
-      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
-      "outcome": "no-change",
-      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/progressEventReducer.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/lib/src/lib/helpers/progressEventReducer.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/lib/src/lib/helpers/sanitizeHeaderValue.ts": {
-      "fingerprint": "2676a766635afae613f05264a5707653448b45cebecd9b655298b7c1ed83185b",
+      "fingerprint": "ceccb91f66a394a71935a650b91a733cd0701c9e60ab0a11a47585315864d63c",
       "snapshot": {
-        "packages/lib/src/lib/helpers/sanitizeHeaderValue.ts": "ae38283a2092f19d32bd7b91ebba549afdcee38dcad6e71bd4421cf4cfab3e64"
+        "packages/lib/src/lib/helpers/sanitizeHeaderValue.ts": "2f29bb6fb3d31c4232afd854bc0edc7be7579be168df1c8957b9d3d95fd8559a"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Return type `string | Array<string>` → `Array<string> | string`. Behaviour change: none. The regex string literals are unchanged.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/sanitizeHeaderValue.ts: Whole file compared. Only HEAD L39 differs.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/helpers/sanitizeHeaderValue.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/lib/src/lib/helpers/throttle.ts": {
@@ -2370,27 +2368,27 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/toFormData.ts": {
-      "fingerprint": "b18d1c34424d69d105537d315036611becd3675769477e0a41a1517114e6b3da",
+      "fingerprint": "3795855954457a81ab0e73799642dd9849fbdf41e03f916048d25055816a575c",
       "snapshot": {
-        "packages/lib/src/lib/helpers/toFormData.ts": "339c769af48c381a7928fd2fb9c681c5d97183a89ca6a12285692dbf8065f9c6"
+        "packages/lib/src/lib/helpers/toFormData.ts": "459543558249631fb7e18ba0c7f7acbf9b91753a005701612e30dd5bb8f54417"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
-      "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/toFormData.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/lib/src/lib/helpers/toFormData.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/lib/src/lib/helpers/trackStream.ts": {
-      "fingerprint": "3f80f5e6a78cb0e2929d0d5023b13c36c73b94160c6573f4810b2d1f551f0b70",
+      "fingerprint": "34f3ca031582fb29d28487e884289e5f10c378e09cc4354bac35a3a3b03d7a73",
       "snapshot": {
-        "packages/lib/src/lib/helpers/trackStream.ts": "444506fc493a4a6ef777c41fbf7202dfe6b255278aa6adc1c04563cb5388e72c"
+        "packages/lib/src/lib/helpers/trackStream.ts": "ed7b49a6c3c494867558ee74beb1fb63c40bf834302039b3b913f95e0eb6a643"
       },
-      "head": "12f00f571b1d09b579b3142ea82e2498e9357060",
-      "outcome": "no-change",
-      "reason": "#254: trackStream cancels the source directly; the configure-requests skill does not teach stream cancel internals.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/trackStream.ts at 12f00f571b1d09b579b3142ea82e2498e9357060"
+        "Changed: packages/lib/src/lib/helpers/trackStream.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/lib/src/lib/helpers/validator.ts": {
@@ -2432,15 +2430,15 @@
       ]
     },
     "source:packages/lib/src/lib/utils.ts": {
-      "fingerprint": "afd85944906eb596c9c998406f0bdf5e375f3efb44b10474a0f4abcf2df1bad3",
+      "fingerprint": "1180f666c3e37b9242e27f3e95a86cb71f5a5179f84a3e3cf8ad2f40e26bcc27",
       "snapshot": {
-        "packages/lib/src/lib/utils.ts": "4a2acd6beede92227cdb97cb9fb74a69465ddad946c519af64f2192c716c3dcd"
+        "packages/lib/src/lib/utils.ts": "1dbd9cf72111b5f05bce17afc4e59ba24566096a95687e265faf9c913906cb76"
       },
-      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
       "outcome": "updated",
-      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/utils.ts at f8e65308b747dbb46d674597caabd55029175fd4"
+        "Changed: packages/lib/src/lib/utils.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/sandbox/client.js": {
@@ -2729,15 +2727,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/errorDetails.test.ts": {
-      "fingerprint": "ebff92235ad636c146901d021c28e26201cd92d61d80d5f21f570f724bc1b36c",
+      "fingerprint": "931122d9cd47f52c716f9a44d379494a61e421fd25c172bf932089e2b3768fa0",
       "snapshot": {
-        "packages/tests/unit/adapters/errorDetails.test.ts": "e6bfe0caee99c80d138d85a154beb3cd5fad906510bf99360b373c27f813efba"
+        "packages/tests/unit/adapters/errorDetails.test.ts": "c14aaf36d6959b13e0a91e7dee8e33cea5a0c9d90536228219b43d56cfc24acf"
       },
-      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
       "outcome": "updated",
-      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/errorDetails.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/tests/unit/adapters/errorDetails.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/unit/axiosHeaders.test.ts": {
@@ -3054,15 +3052,15 @@
       ]
     },
     "source:packages/tests/unit/prototypePollution.test.ts": {
-      "fingerprint": "805989c16c71e0dbc49ce973e8b3f94798c42617256e9782c312ba30cab8900e",
+      "fingerprint": "d71cf923528c5f709af040d90e287eb4e41ccd13ddeb909d9f81323653bf3bab",
       "snapshot": {
-        "packages/tests/unit/prototypePollution.test.ts": "6c2a28686d97d962cb65ade534a48671cb05d832a681b39c972450594369d973"
+        "packages/tests/unit/prototypePollution.test.ts": "a19e75481354f26f8b2b05358be47072d23b8dbbb7001e04e678c3a6f97b9cbf"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
       "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/tests/unit/prototypePollution.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: packages/tests/unit/prototypePollution.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/unit/query.test.ts": {
@@ -3091,119 +3089,111 @@
       ]
     },
     "source:packages/tests/unit/utils/endsWith.test.ts": {
-      "fingerprint": "18ab791207eecde5d4078bbcfed1fd048b63a28c13a19bcbcc5bc76bf782b684",
+      "fingerprint": "38bae5c4f0988a0973a9be013e44340202d8ab5f2b9c74771ae14e56f7d36b2f",
       "snapshot": {
-        "packages/tests/unit/utils/endsWith.test.ts": "dfab1f4b0fb97d250dd4f26d7d70197d90babe4b03ed531d402d7e027a303390"
+        "packages/tests/unit/utils/endsWith.test.ts": "57d604ced4169f89e3af50fca1f634bfe1a88fc8f6f0653a294591ed776c309f"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/endsWith.test.ts: @@ -1,4 +1,4 @@ (diff/238)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/endsWith.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/unit/utils/extend.test.ts": {
-      "fingerprint": "08c0330d9f84130fe63bceabe9dba1b6d8a497b196fb6131a7ea73172171c13b",
+      "fingerprint": "cfdcfdfa090ebd9596c0f5ca98cc987de9cd09fb45a2ab892f45df143f2193bb",
       "snapshot": {
-        "packages/tests/unit/utils/extend.test.ts": "921815cfe49c391f47ceba8bfa9cdb2e266a8b8091500f88cda5511cf5d073f6"
+        "packages/tests/unit/utils/extend.test.ts": "9972b053557d2fc13b9cbcb87c622a8b6ec9af5786ae235d83bdcaa40d00288b"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/extend.test.ts: @@ -1,4 +1,4 @@ (diff/239)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/extend.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/unit/utils/forEach.test.ts": {
-      "fingerprint": "b0fccb6f001facbb06c5a8e1338a760426413e50e0eb164daaeb63ccbca5022c",
+      "fingerprint": "81e5d1f2bb30f77158b75f49e63033961e61b16b319f1d39cf06908322f87361",
       "snapshot": {
-        "packages/tests/unit/utils/forEach.test.ts": "91baa077ea7c7822007729a173dae2f1c74051b479dc90d69231eedea07e8985"
+        "packages/tests/unit/utils/forEach.test.ts": "45403a82031c5dcb8dbc56d880b826e5e0b0ff326443d5a8923f46c66eb29544"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/forEach.test.ts: @@ -1,4 +1,4 @@ (diff/240)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/forEach.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/unit/utils/isX.test.ts": {
-      "fingerprint": "38f9717e97f12da7839dfd73ad587d72cdf2217d0f7bba75fe7f399fc670f68e",
+      "fingerprint": "878b2035ea539713da5675330b07072cb7b02c7255e3bdd745d0f80955503624",
       "snapshot": {
-        "packages/tests/unit/utils/isX.test.ts": "4e817b008622561fbdd9e389b5e7bbf7c983f608cc248eac2eba23ba9538f7e0"
+        "packages/tests/unit/utils/isX.test.ts": "9189d87c3f76a549132f6ac3136b9313f09a7eb5cc1fc3f8f5c4c65b4bb79c97"
       },
-      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
-      "outcome": "no-change",
-      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/tests/unit/utils/isX.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
+        "Changed: packages/tests/unit/utils/isX.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/unit/utils/kindOf.test.ts": {
-      "fingerprint": "4df0f06821e11a30d9b931d2da4fb037baa516f65c98d83843b2d3ad459fa39a",
+      "fingerprint": "159bdeb3b2123d29eb6bc933b1c4589dfcad0c92c041804a97fb395a01198328",
       "snapshot": {
-        "packages/tests/unit/utils/kindOf.test.ts": "dfab1f4b0fb97d250dd4f26d7d70197d90babe4b03ed531d402d7e027a303390"
+        "packages/tests/unit/utils/kindOf.test.ts": "57d604ced4169f89e3af50fca1f634bfe1a88fc8f6f0653a294591ed776c309f"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/kindOf.test.ts: @@ -1,4 +1,4 @@ (diff/242)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/kindOf.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/unit/utils/kindOfTest.test.ts": {
-      "fingerprint": "f03954092aa4e46e51b2117a0b13a1699845120088f2132ba5cd85c0b1f4efc7",
+      "fingerprint": "13d2dcaaa4a884a0b83e69a350bbeedd52f7b03ad12ac01ba029c95b24066251",
       "snapshot": {
-        "packages/tests/unit/utils/kindOfTest.test.ts": "511a2eb11941aeb7760f02e129ebf63ebdd7d7bca707bb8114cef03e2afecb19"
+        "packages/tests/unit/utils/kindOfTest.test.ts": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/kindOfTest.test.ts: @@ -1,4 +1,4 @@ (diff/243)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/kindOfTest.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/unit/utils/merge.test.ts": {
-      "fingerprint": "d3811a658b3a9648a34cb6b03fc14c2fc9d1004559a27b60fd42307d7e567ea0",
+      "fingerprint": "21d3461c319b6e78d623fe6236e341c0d9e8384c3a5d8c96f6f4a1347b077b5e",
       "snapshot": {
-        "packages/tests/unit/utils/merge.test.ts": "7dc051cb8c18b5ce9259ccc274f9fd8eacfbf4840deef54fa4254a039c2b0e75"
+        "packages/tests/unit/utils/merge.test.ts": "ba9624911bed4d07ac1b51403ce37ec7d105cc7c6339a051610acea2b46443bd"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest imports sorted. Four `Record<symbol | string, unknown>` annotations became `Record<string | symbol, unknown>`. The object literals passed to merge (`{ x: 1, [key]: … }`) were not touched. Behaviour change: none",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/merge.test.ts: @@ -1,4 +1,4 @@, @@ -99,13 +99,13 @@, @@ -130,7 +130,7 @@, @@ -156,7 +156,7 @@ (diff/244)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/merge.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/unit/utils/toArray.test.ts": {
-      "fingerprint": "a84f1d99c49a6f9895ac95d6ea34ed3e921ba8bb03b4808adb8456da81223519",
+      "fingerprint": "dd6235f64888fa5ecde815bee99aeaed448bc5a57a9abd710719d94d7e08a55a",
       "snapshot": {
-        "packages/tests/unit/utils/toArray.test.ts": "edfed1bd8c0413331556bd2d7b045b9bf5d64fcf3dd76d400bf34af24f8f6744"
+        "packages/tests/unit/utils/toArray.test.ts": "1c78914fb04eb09d6376cb640f82bf2920c3f5bcf737c9a357579654ab6636d5"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/toArray.test.ts: @@ -1,4 +1,4 @@ (diff/245)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/toArray.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/unit/utils/toFlatObject.test.ts": {
-      "fingerprint": "fe6f7beab09da490aea3632992202a9ae47efdaa10683c41a35c427029ab5e22",
+      "fingerprint": "a686c1548240b6d7b5e97a51146f25982893da59785ae04675612e0f7992dab2",
       "snapshot": {
-        "packages/tests/unit/utils/toFlatObject.test.ts": "3530494839bca5f8dd67a1b2b70896d5d049d29339e67f9a9a05f4c9b6478817"
+        "packages/tests/unit/utils/toFlatObject.test.ts": "d894bafc20a5cee4d0831514afcd5b25952ffcc4656ff5bfb68ee3e80aeae3fb"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/toFlatObject.test.ts: @@ -1,4 +1,4 @@ (diff/246)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/toFlatObject.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:pnpm-workspace.yaml": {
@@ -3571,15 +3561,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/cloneConfig.ts": {
-      "fingerprint": "175438d1c1dc64c82aae01d29d7a499fcb3caf60cb1e9f1128320b65c6624497",
+      "fingerprint": "68efcfb52c30b348a138286b27dc6ba4cf56f2655ad23bc3d335ff8a6c29be8f",
       "snapshot": {
-        "packages/lib/src/lib/helpers/cloneConfig.ts": "c113c926243050da65fdb79cc4945de4f0ae584807c29a10900b5c3ccb80e761"
+        "packages/lib/src/lib/helpers/cloneConfig.ts": "a3ec8657f9360c9b91a5d2aaf89cbb1582ac40338bc748eae4196eab1ac17dda"
       },
-      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
       "outcome": "updated",
-      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/cloneConfig.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
+        "Changed: packages/lib/src/lib/helpers/cloneConfig.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/pin-tarball-integrity.ts": {
@@ -3643,15 +3633,15 @@
       ]
     },
     "source:packages/tests/unit/toFormData.test.ts": {
-      "fingerprint": "d890a537706dceb7c3b90401e86241b91266cb9c4f8ec705af7c0071ebfa55f9",
+      "fingerprint": "6aff0970a888993f3d42a143f191496aeae18c2093de2cfceeb680f4d9b8d018",
       "snapshot": {
-        "packages/tests/unit/toFormData.test.ts": "f99d51bb7a078db0a6f4fba0c158fa15323cc129a5d8adbfeb2c7d619e7ddd3d"
+        "packages/tests/unit/toFormData.test.ts": "7c21b32e7d0816f9eece8deac4fb3dde06ee256f513b923d7a3299711cb273ab"
       },
-      "head": "51b9fecea630fa9b8b9405af26a48909b73a05a2",
-      "outcome": "no-change",
-      "reason": "configure-requests skill does not document toFormData internals, Blob option or its error codes",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/tests/unit/toFormData.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/tests/unit/toFormData.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:.bumpy/progress-callback-errors.md": {
@@ -3895,15 +3885,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/buildURL.ts": {
-      "fingerprint": "5779b384b8efeee66d5a5e0d133ff5e3b1e2e03c87a87d9d1de6ca1b94be4f97",
+      "fingerprint": "030e950b7ce49b4c17e7e5bfb4e9114bbe764c658748fbe9265a62e12098968d",
       "snapshot": {
-        "packages/lib/src/lib/helpers/buildURL.ts": "1d930533c706ae6ddc1802c72b639e72c7705a91b08a82585a1a9a0e8710489d"
+        "packages/lib/src/lib/helpers/buildURL.ts": "f1ae38e6ad739bf8a1bfdff5c7396b73595f48b60c6ddd86bb4ec11c78b187d7"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
-      "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/buildURL.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/lib/src/lib/helpers/buildURL.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/lib/src/lib/helpers/combineURLs.ts": {
@@ -3931,15 +3921,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/isFaxiosError.ts": {
-      "fingerprint": "5ad918731077424d4f06e98c18478e74f3fb74eda67fa5028fa8c2927b63bf33",
+      "fingerprint": "668e5ee0c0ca93a743a086a67b852875846d57cedfa606efb215ee4631e6d081",
       "snapshot": {
-        "packages/lib/src/lib/helpers/isFaxiosError.ts": "5fe0082d35479efb562fe086cf20b16c35769f14f8da81c2a255523e3476fc58"
+        "packages/lib/src/lib/helpers/isFaxiosError.ts": "639c35f12c2cb0436e7df8d45590cc04985acf813947c3aa8280f6a47ea51b18"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
-      "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/isFaxiosError.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/lib/src/lib/helpers/isFaxiosError.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/scripts/check-ts-self-types.ts": {
@@ -3955,27 +3945,27 @@
       ]
     },
     "source:packages/tests/smoke/deno/deno.json": {
-      "fingerprint": "dae1d711a0002b6a6c221fc6a61a569fb88bdc4d52cfc8857068aa75900fe546",
+      "fingerprint": "694555e656b623b8c8654b67799d6802871bcec796c952771ef66c7e97a56f99",
       "snapshot": {
-        "packages/tests/smoke/deno/deno.json": "23036d1cf8f1bc20bcd3665075d1adfcfe7418911c6c0ac263fb0b06e9fdebe1"
+        "packages/tests/smoke/deno/deno.json": "6157274242e510559fac14b73167e521d64b2fef22c64d06e38a4dc0ce6fb00f"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
       "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/tests/smoke/deno/deno.json at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/tests/smoke/deno/deno.json at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/smoke/deno/types/consumer.ts": {
-      "fingerprint": "eed9faf6fb89fca9b60229565c4c361aff5721cc78f482eae7a2941821a003f1",
+      "fingerprint": "27dcd3d68468439ad22864b638c0c2f0bc6a94d8d707903e2ff96bdab0831968",
       "snapshot": {
-        "packages/tests/smoke/deno/types/consumer.ts": "04d78d9bf8992516034842a7834b1b7b251dc5a7dbb317a6a2ec66755196f221"
+        "packages/tests/smoke/deno/types/consumer.ts": "111d8aa575c3f3270d795eacc4c744d6286e0ecd4575a39948a26061ee276f9f"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
-      "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/tests/smoke/deno/types/consumer.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/tests/smoke/deno/types/consumer.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:.bumpy/middleware-missing-response.md": {
@@ -4027,15 +4017,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/resolveRequestURL.ts": {
-      "fingerprint": "dc840373d9d5c567ce762445f6fc9110b933824a7225728a5b5d6c18989a5be1",
+      "fingerprint": "aefd56ace088f7e102a1236dd309dccc169f734d88f6d9462ae8d49fe2f232e5",
       "snapshot": {
-        "packages/lib/src/lib/core/resolveRequestURL.ts": "8ada602889e3457d7c94f5a2699d755fa725180bcb051726da8eeb919d43d21e"
+        "packages/lib/src/lib/core/resolveRequestURL.ts": "047863cd9b15973a3a7224f7d5a3e110185b917aba6b2e02039d5a0023096158"
       },
-      "head": "c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
       "outcome": "updated",
-      "reason": "#235: the skill now says getUri() fills in pathParams and returns the URL the request sends.",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/resolveRequestURL.ts at c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab"
+        "Changed: packages/lib/src/lib/core/resolveRequestURL.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/unit/core/getUri.test.ts": {
@@ -4315,15 +4305,15 @@
       ]
     },
     "source:packages/tests/unit/utils.test.ts": {
-      "fingerprint": "77e8978fa4ef833924ee8941a86345af055f23aecd5f6752a78a5e1925e45b27",
+      "fingerprint": "b3bff05e4eca15b230bd29ef05565423474ba8534a4478a2f1f384ed46f8de0c",
       "snapshot": {
-        "packages/tests/unit/utils.test.ts": "d4abc06e132124e9bc3e84e13aa6aa373a9663e8615f336f64e82ad4cf573497"
+        "packages/tests/unit/utils.test.ts": "a6f6a8ef563a3a69094c2302c5fa94d6b705a362bc918f09892dd7bee0d3db0e"
       },
-      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
       "outcome": "updated",
-      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/tests/unit/utils.test.ts at f8e65308b747dbb46d674597caabd55029175fd4"
+        "Changed: packages/tests/unit/utils.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:.bumpy/faxios-error-name.md": {
@@ -4423,15 +4413,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/assertRequestConfig.ts": {
-      "fingerprint": "6413972ca8c68fe96a38c4365311303fe03170313def590a4b9673cd3a7dc05d",
+      "fingerprint": "ef95f4cc040649530e897c963af4199fdb0db951c590a447f521f0c7920a8d5d",
       "snapshot": {
-        "packages/lib/src/lib/core/assertRequestConfig.ts": "a064040307b8a973361a02be357f39e90fd01c5106b5c6de747e47185677822a"
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "444fac8bb31458256726781a1bde748837abca8ef2d4a0a495a4d748b11f34c9"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/assertRequestConfig.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/lib/src/lib/core/assertRequestConfig.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/browser/xsrf.browser.test.ts": {
@@ -4639,27 +4629,27 @@
       ]
     },
     "source:packages/lib/src/lib/core/resolveBodyContentType.ts": {
-      "fingerprint": "e4b297bdd45c4de1be86b6b835a62d783d3265645451b5d104a933963e08c574",
+      "fingerprint": "6f698739615cd8052cbbf93b1d33adae8b64c9c5e243cd48be7c8e9ea94dbf61",
       "snapshot": {
-        "packages/lib/src/lib/core/resolveBodyContentType.ts": "811892a7c5f5bf32a32d3a67e1fc8d2cf2204ffacecbb16b68ba630da7fae808"
+        "packages/lib/src/lib/core/resolveBodyContentType.ts": "d095cb8fd848961503feee65788804f5b1ab75ef794997c2c483b3fd2a02d55b"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/resolveBodyContentType.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/lib/src/lib/core/resolveBodyContentType.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:packages/tests/unit/adapters/fetch-pure.test.ts": {
-      "fingerprint": "7928a43e8952aa0add3b5a212d436b49b31c7ddf20ec0c1016096bb0c6365012",
+      "fingerprint": "0c92709ae8cbbfcaf77405430008ccd6b5c5de69196f91d3b628712391767df1",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch-pure.test.ts": "f9861a76c541ed0543c2d840cf7113dce4d6d2014f67914639d828b3e2a8da09"
+        "packages/tests/unit/adapters/fetch-pure.test.ts": null
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch-pure.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/tests/unit/adapters/fetch-pure.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     },
     "source:.bumpy/plugin-attempt-api.md": {
@@ -4960,6 +4950,42 @@
       "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
       "evidence": [
         "Changed: commitlint.config.js at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
+      ]
+    },
+    "source:.bumpy/remove-unsafe-utils.md": {
+      "fingerprint": "b8026dedfb11605835a62878b020900dc7bf6dbd27edf3cb0dd717e6003a9b57",
+      "snapshot": {
+        ".bumpy/remove-unsafe-utils.md": "8218c50fefe63673f49d74acc7b92dacd1b92db7ef1f3a5210fa4d3bb993ef96"
+      },
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
+      "evidence": [
+        "Changed: .bumpy/remove-unsafe-utils.md at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/deprecatedMethod.ts": {
+      "fingerprint": "491907d37ba2327edcef82689c5e5ec5df64f4dfbd1acc6f21b52caa9f60ffbb",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/deprecatedMethod.ts": null
+      },
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/deprecatedMethod.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
+      ]
+    },
+    "source:packages/tests/unit/core/settle.test.ts": {
+      "fingerprint": "196910c85686ab6e387546885ab3ecde210d840c45143c9ae0a2bbc1866e1a7f",
+      "snapshot": {
+        "packages/tests/unit/core/settle.test.ts": "f62bf41b1148a6d54b5861c7a5beed08b7543ac929c21fb4fa0c044249bfdbc9"
+      },
+      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "outcome": "updated",
+      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
+      "evidence": [
+        "Changed: packages/tests/unit/core/settle.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
       ]
     }
   }

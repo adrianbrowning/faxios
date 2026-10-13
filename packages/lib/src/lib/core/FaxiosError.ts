@@ -4,7 +4,7 @@
 import stripUserInfo from "../helpers/stripUserInfo.js";
 import type { FaxiosResponse, InternalFaxiosRequestConfig } from "../types.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
-import utils from "../utils.js";
+import { getSafeProp, hasOwnProp, isArray, isBuffer, isObject, isPlainObject, isUndefined } from "../utils.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
 
 const REDACTED = "[REDACTED ****]";
@@ -13,14 +13,14 @@ const REDACTED = "[REDACTED ****]";
 const DEFAULT_REDACT_KEYS: ReadonlyArray<string> = [ "authorization", "proxy-authorization", "cookie", "auth" ];
 
 function hasOwnOrPrototypeToJSON(source: unknown): boolean {
-  if (utils.hasOwnProp(source, "toJSON")) {
+  if (hasOwnProp(source, "toJSON")) {
     return true;
   }
 
   let prototype = Object.getPrototypeOf(source);
 
   while (prototype && prototype !== Object.prototype) {
-    if (utils.hasOwnProp(prototype, "toJSON")) {
+    if (hasOwnProp(prototype, "toJSON")) {
       return true;
     }
 
@@ -45,7 +45,7 @@ function redactConfig(config: unknown, redactKeys: ReadonlyArray<string>): unkno
       if (lowerKeys.has(lowerKey)) reducedValue = REDACTED;
       else if ((lowerKey === "url" || lowerKey === "baseurl") && typeof value === "string") reducedValue = stripUserInfo(value);
       else reducedValue = visit(value);
-      if (!utils.isUndefined(reducedValue)) {
+      if (!isUndefined(reducedValue)) {
         result[key] = reducedValue;
       }
     }
@@ -54,7 +54,7 @@ function redactConfig(config: unknown, redactKeys: ReadonlyArray<string>): unkno
 
   const visit = (source: unknown): unknown => {
     if (source === null || typeof source !== "object") return source;
-    if (utils.isBuffer(source)) return source;
+    if (isBuffer(source)) return source;
     if (seen.indexOf(source) !== -1) return undefined;
 
     if (source instanceof FaxiosHeaders) {
@@ -64,17 +64,17 @@ function redactConfig(config: unknown, redactKeys: ReadonlyArray<string>): unkno
     seen.push(source as object);
 
     let result: unknown;
-    if (utils.isArray(source)) {
+    if (isArray(source)) {
       result = [];
       (source as Array<unknown>).forEach((v, i) => {
         const reducedValue = visit(v);
-        if (!utils.isUndefined(reducedValue)) {
+        if (!isUndefined(reducedValue)) {
           (result as Array<unknown>)[i] = reducedValue;
         }
       });
     }
     else {
-      if (!utils.isPlainObject(source) && hasOwnOrPrototypeToJSON(source)) {
+      if (!isPlainObject(source) && hasOwnOrPrototypeToJSON(source)) {
         seen.pop();
         return source;
       }
@@ -103,7 +103,7 @@ type SerializedCause = { cause?: SerializedCause; code?: string; message: string
 function serializeCause(cause: unknown, seen: Set<unknown>): SerializedCause | undefined {
   if (!(cause instanceof Error) || seen.has(cause)) return undefined;
   seen.add(cause);
-  const code = utils.getSafeProp(cause, "code");
+  const code = getSafeProp(cause, "code");
   const next = serializeCause(cause.cause, seen);
   return {
     name: cause.name,
@@ -225,8 +225,8 @@ class FaxiosError<T = unknown, D = unknown> extends Error {
     // The value of any credential key, and of any key listed in the config's own `redact`
     // array (case-insensitive, at any depth), is replaced with REDACTED in the snapshot.
     const config = this.config;
-    const extraKeys = config && utils.hasOwnProp(config, "redact") ? config.redact : undefined;
-    const redactKeys = utils.isArray(extraKeys)
+    const extraKeys = config && hasOwnProp(config, "redact") ? config.redact : undefined;
+    const redactKeys = isArray(extraKeys)
       ? [ ...DEFAULT_REDACT_KEYS, ...extraKeys.filter(key => typeof key === "string") ]
       : DEFAULT_REDACT_KEYS;
     const serializedConfig = redactConfig(config, redactKeys);
@@ -282,24 +282,24 @@ export type SchemaValidationError =
   };
 
 function isFaxiosResponse(value: unknown): value is FaxiosResponse {
-  if (!utils.isObject(value)) return false;
+  if (!isObject(value)) return false;
   const r = value as Record<string, unknown>;
   return (
-    utils.hasOwnProp(r, "data") &&
+    hasOwnProp(r, "data") &&
     typeof r.status === "number" &&
     typeof r.statusText === "string" &&
-    utils.isObject(r.headers) &&
-    utils.isObject(r.config) &&
+    isObject(r.headers) &&
+    isObject(r.config) &&
     // headers is the only required field of InternalFaxiosRequestConfig.
-    utils.hasOwnProp(r.config, "headers") &&
-    utils.isObject((r.config as Record<string, unknown>).headers)
+    hasOwnProp(r.config, "headers") &&
+    isObject((r.config as Record<string, unknown>).headers)
   );
 }
 
 export function isSchemaValidationError(err: unknown): err is SchemaValidationError {
   const e = err as Record<string, unknown>;
   return (
-    utils.isObject(err) &&
+    isObject(err) &&
     e.isFaxiosError === true &&
     typeof e.code === "string" &&
     SCHEMA_ERROR_CODES.has(e.code) &&

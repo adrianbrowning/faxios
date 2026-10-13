@@ -16,7 +16,7 @@ type FetchFn = (
   init?: RequestInit
 ) => Promise<Response>;
 import type { FaxiosProgressEvent } from "#src/lib/types.js";
-import utils from "#src/lib/utils.js";
+import { isReadableStream } from "#src/lib/utils.js";
 import {
   generateReadable,
   makeEchoStream,
@@ -1423,25 +1423,6 @@ describe.runIf(typeof fetch === "function")(
     });
 
     describe("env config", () => {
-      it("should fallback to globalThis when utils.global is temporarily undefined", () => {
-        const originalGlobal = utils.global;
-
-        try {
-          (utils as { global: unknown; }).global = undefined;
-
-          assert.doesNotThrow(() =>
-            getFetch({
-              env: {
-                fetch() {},
-              },
-            })
-          );
-        }
-        finally {
-          utils.global = originalGlobal;
-        }
-      });
-
       it("should respect env fetch API configuration", async () => {
         const { data, headers } = await fetchFaxios.get("/", {
           env: {
@@ -1592,6 +1573,7 @@ describe.runIf(typeof fetch === "function")(
             }),
             err => {
               const e = err as { code: string; message: string; };
+              assert.ok((err as FaxiosError).request instanceof Request, "error.request is the Request");
               assert.strictEqual(e.code, "ERR_BAD_REQUEST");
               assert.match(
                 e.message,
@@ -1628,6 +1610,7 @@ describe.runIf(typeof fetch === "function")(
             }),
             err => {
               const e = err as { code: string; message: string; };
+              assert.ok((err as FaxiosError).request instanceof Request, "error.request is the Request");
               assert.strictEqual(e.code, "ERR_BAD_REQUEST");
               assert.strictEqual(
                 e.message,
@@ -1674,6 +1657,7 @@ describe.runIf(typeof fetch === "function")(
             }),
             err => {
               const e = err as { code: string; message: string; };
+              assert.ok((err as FaxiosError).request instanceof Request, "error.request is the Request");
               assert.strictEqual(e.code, "ERR_BAD_REQUEST");
               assert.strictEqual(
                 e.message,
@@ -1720,6 +1704,7 @@ describe.runIf(typeof fetch === "function")(
             fetchFaxios.post(`http://localhost:${(server.address() as AddressInfo).port}/`, form, { ...options, maxBodyLength: 1024 }),
             err => {
               const e = err as { code: string; message: string; };
+              assert.ok((err as FaxiosError).request instanceof Request, "error.request is the Request");
               assert.strictEqual(e.code, "ERR_BAD_REQUEST");
               assert.strictEqual(e.message, "Request body larger than maxBodyLength limit");
               return true;
@@ -1750,6 +1735,7 @@ describe.runIf(typeof fetch === "function")(
             fetchFaxios.post("http://localhost/", form, { maxBodyLength: 1024 }),
             err => {
               const e = err as { code: string; message: string; };
+              assert.ok((err as FaxiosError).request instanceof Request, "error.request is the Request");
               assert.strictEqual(e.code, "ERR_BAD_REQUEST");
               assert.strictEqual(e.message, "Request body larger than maxBodyLength limit");
               return true;
@@ -1819,7 +1805,7 @@ describe.runIf(typeof fetch === "function")(
 
         class NoStreamRequest {
           constructor(_url: Request | string | URL, init?: { body?: unknown; }) {
-            if (init && utils.isReadableStream!(init.body)) {
+            if (init && isReadableStream(init.body)) {
               throw new TypeError(
                 "ReadableStream request bodies are unsupported"
               );
@@ -1881,6 +1867,7 @@ describe.runIf(typeof fetch === "function")(
             }),
             err => {
               const e = err as { code: string; message: string; };
+              assert.ok((err as FaxiosError).request instanceof Request, "error.request is the Request");
               assert.strictEqual(e.code, "ERR_BAD_RESPONSE");
               assert.match(e.message, /maxContentLength size of 1024 exceeded/);
               return true;
@@ -1946,6 +1933,7 @@ describe.runIf(typeof fetch === "function")(
             }),
             err => {
               const e = err as { code: string; message: string; };
+              assert.ok((err as FaxiosError).request instanceof Request, "error.request is the Request");
               assert.strictEqual(e.code, "ERR_BAD_RESPONSE");
               assert.match(e.message, /maxContentLength size of 512 exceeded/);
               return true;
@@ -1971,6 +1959,7 @@ describe.runIf(typeof fetch === "function")(
           bareFaxios.get(dataUrl, { maxContentLength: 16 }),
           err => {
             const e = err as { code: string; message: string; };
+            assert.ok((err as FaxiosError).request instanceof Request, "error.request is the Request");
             assert.strictEqual(e.code, "ERR_BAD_RESPONSE");
             assert.match(e.message, /maxContentLength size of 16 exceeded/);
             return true;
@@ -1987,11 +1976,45 @@ describe.runIf(typeof fetch === "function")(
           bareFaxios.get(dataUrl, { maxContentLength: 16 }),
           err => {
             const e = err as { code: string; message: string; };
+            assert.ok((err as FaxiosError).request instanceof Request, "error.request is the Request");
             assert.strictEqual(e.code, "ERR_BAD_RESPONSE");
             assert.match(e.message, /maxContentLength size of 16 exceeded/);
             return true;
           }
         );
+      });
+
+      // `Response: null` stands in for a runtime whose responses can't stream: the body is
+      // checked against maxContentLength once it is read.
+      it.each([ "text", "arraybuffer", "blob" ] as const)("should reject a %s response over maxContentLength where responses can't stream", async responseType => {
+        const fetch = vi.fn(async () => new Response("x".repeat(200)));
+
+        await assert.rejects(
+          faxios.get("http://example.test/", { maxContentLength: 100, responseType, env: { fetch, Response: null } }),
+          err => {
+            const e = err as FaxiosError;
+            assert.strictEqual(e.code, "ERR_BAD_RESPONSE");
+            assert.strictEqual(e.message, "maxContentLength size of 100 exceeded");
+            assert.ok(e.request instanceof Request, "error.request is the Request");
+            return true;
+          }
+        );
+      });
+
+      it("should allow a response within maxContentLength where responses can't stream", async () => {
+        const fetch = vi.fn(async () => new Response("hi"));
+
+        const { data } = await faxios.get("http://example.test/", { maxContentLength: 100, env: { fetch, Response: null } });
+
+        assert.strictEqual(data, "hi");
+      });
+
+      it("should ignore a large Content-Length when maxContentLength is unset", async () => {
+        const fetch = vi.fn(async () => new Response("ok", { headers: { "Content-Length": "99999" } }));
+
+        const { data } = await faxios.get("http://example.test/", { env: { fetch } });
+
+        assert.strictEqual(data, "ok");
       });
 
       it("should allow a percent-encoded data: URL within decoded maxContentLength", async () => {

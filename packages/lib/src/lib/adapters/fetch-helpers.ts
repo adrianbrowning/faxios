@@ -7,50 +7,68 @@ import type {
   FaxiosResponse,
   InternalFaxiosRequestConfig
 } from "../types.js";
-import utils from "../utils.js";
+import { getSafeProp, toFiniteNumber } from "../utils.js";
 
 export type ComposedSignal = AbortSignal & { unsubscribe?: () => void; };
-export type PendingBodyErrorRef = { value: (FaxiosError & { request?: unknown; }) | null; };
 // The adapter step a failure came from: building the Request, sending it, or reading the body.
-export type FetchStage = "body" | "build" | "send";
+type FetchStage = "body" | "build" | "send";
+
+// One request's state, shared by the fetch adapter's helpers.
+export type FetchContext = {
+  config: InternalFaxiosRequestConfig;
+  headers: FaxiosHeaders;
+  // `responseType: "stream"` where responses can stream: the body outlives the adapter call.
+  isStreamResponse: boolean;
+  // `maxBodyLength` and `maxContentLength` in bytes; `undefined` when unset.
+  limits: { body: number | undefined; content: number | undefined; };
+  method: string;
+  // An error raised while fetch read the request body (over `limits.body`, or a chunk
+  // trackStream rejected); it is the request's error, not whatever fetch rejects with.
+  pendingBodyError: FaxiosError | null;
+  progress: { download: unknown; upload: unknown; };
+  // Ends a stream response: releases the request and, given an error, aborts it.
+  releaseStreamBody: (err?: unknown) => void;
+  // The Request given to fetch: null until it is built, and where Request isn't available.
+  request: null | Request;
+  signal: ComposedSignal;
+  // Which step a code-less TypeError came from, so it can get a code.
+  stage: FetchStage | undefined;
+  url: string;
+};
 
 const _textEncoder: TextEncoder | undefined =
   typeof globalThis.TextEncoder === "function" ? new globalThis.TextEncoder() : undefined;
 
-// ponytail: exported for unit testing only — not part of public API
-export const checkDeclaredContentLength = (
-  responseHeaders: FaxiosHeaders,
-  hasMaxContentLength: boolean,
-  maxContentLength: number,
-  config: InternalFaxiosRequestConfig,
-  request: unknown
-): void => {
-  if (!hasMaxContentLength) return;
-  const declaredLength = utils.toFiniteNumber(
+// The one place each size-limit error is defined. They read `ctx.request` when raised.
+export const contentTooLarge = (ctx: FetchContext): FaxiosError =>
+  new FaxiosError(
+    "maxContentLength size of " + ctx.limits.content + " exceeded",
+    FaxiosError.ERR_BAD_RESPONSE,
+    ctx.config,
+    ctx.request
+  );
+
+export const bodyTooLarge = (ctx: FetchContext): FaxiosError =>
+  new FaxiosError(
+    "Request body larger than maxBodyLength limit",
+    FaxiosError.ERR_BAD_REQUEST,
+    ctx.config,
+    ctx.request
+  );
+
+export const checkDeclaredContentLength = (ctx: FetchContext, responseHeaders: FaxiosHeaders): void => {
+  if (ctx.limits.content === undefined) return;
+  const declaredLength = toFiniteNumber(
     (responseHeaders.getContentLength as () => unknown)()
   );
-  if (declaredLength != null && declaredLength > maxContentLength) {
-    throw new FaxiosError(
-      "maxContentLength size of " + maxContentLength + " exceeded",
-      FaxiosError.ERR_BAD_RESPONSE,
-      config,
-      request
-    );
+  if (declaredLength != null && declaredLength > ctx.limits.content) {
+    throw contentTooLarge(ctx);
   }
 };
 
-// ponytail: exported for unit testing only — not part of public API
-export const checkMaterializedSize = (
-  responseData: unknown,
-  hasMaxContentLength: boolean,
-  maxContentLength: number,
-  isStreamResponse: boolean,
-  supportsResponseStream: boolean,
-  config: InternalFaxiosRequestConfig,
-  request: unknown
-): void => {
-  if (!hasMaxContentLength || supportsResponseStream || isStreamResponse) return;
-  if (responseData == null) return;
+// Where responses can't stream, the limit is checked on the body once it's read.
+export const checkMaterializedSize = (ctx: FetchContext, responseData: unknown): void => {
+  if (ctx.limits.content === undefined || responseData == null) return;
   let materializedSize: number | undefined;
   const rd = responseData as Record<string, unknown>;
   if (typeof rd["byteLength"] === "number") {
@@ -64,13 +82,8 @@ export const checkMaterializedSize = (
       ? _textEncoder.encode(responseData).byteLength
       : responseData.length;
   }
-  if (typeof materializedSize === "number" && materializedSize > maxContentLength) {
-    throw new FaxiosError(
-      "maxContentLength size of " + maxContentLength + " exceeded",
-      FaxiosError.ERR_BAD_RESPONSE,
-      config,
-      request
-    );
+  if (typeof materializedSize === "number" && materializedSize > ctx.limits.content) {
+    throw contentTooLarge(ctx);
   }
 };
 
@@ -92,14 +105,9 @@ const isUnparseableURL = (url: string): boolean => {
 
 // Gives a code-less TypeError the code for the adapter step it came from. A "send" TypeError
 // that isn't a URL problem falls through to the network-error check.
-const throwStagedTypeError = (
-  err: Error,
-  stage: FetchStage,
-  url: string | undefined,
-  config: InternalFaxiosRequestConfig,
-  request: unknown
-): void => {
-  if (stage !== "body" && url !== undefined && isUnparseableURL(url)) {
+const throwStagedTypeError = (ctx: FetchContext, err: Error): void => {
+  const { config, request, stage, url } = ctx;
+  if (stage !== "body" && isUnparseableURL(url)) {
     const message = /^[a-z][a-z\d+\-.]*:/i.test(url)
       ? "Invalid URL"
       : "Invalid URL: a relative URL needs a baseURL outside the browser";
@@ -120,37 +128,26 @@ const throwStagedTypeError = (
 // `Network Error: ENOTFOUND (GET https://host/path)`: the runtime's reason (its error code, else
 // its message) and the request. The URL loses its user info, query and fragment, which often
 // carry secrets.
-const networkErrorMessage = (cause: unknown, config: InternalFaxiosRequestConfig, url: string | undefined): string => {
-  const code = utils.getSafeProp(cause, "code");
+const networkErrorMessage = (ctx: FetchContext, cause: unknown): string => {
+  const { config, url } = ctx;
+  const code = getSafeProp(cause, "code");
   let reason = "";
   if (typeof code === "string" && code) reason = code;
   else if (cause instanceof Error && cause.message) reason = cause.message;
-  const method = utils.getSafeProp(config, "method");
+  const method = getSafeProp(config, "method");
   const verb = (typeof method === "string" ? method : "get").toUpperCase();
-  let target = "";
-  if (typeof url === "string") {
-    const safe = stripUserInfo(url);
-    const end = safe.search(/[?#]/);
-    target = ` (${verb} ${end === -1 ? safe : safe.slice(0, end)})`;
-  }
+  const safe = stripUserInfo(url);
+  const end = safe.search(/[?#]/);
+  const target = ` (${verb} ${end === -1 ? safe : safe.slice(0, end)})`;
   return reason ? `Network Error: ${reason}${target}` : `Network Error${target}`;
 };
 
-// ponytail: exported for unit testing only — not part of public API
-export const handleFetchCaughtError = (
-  err: unknown,
-  composedSignal: ComposedSignal | undefined,
-  pendingBodyErrorRef: PendingBodyErrorRef,
-  config: InternalFaxiosRequestConfig,
-  request: unknown,
-  stage?: FetchStage,
-  url?: string
-): never => {
+export const handleFetchCaughtError = (ctx: FetchContext, err: unknown): never => {
+  const { config, request, signal: composedSignal } = ctx;
   // Safari can surface fetch aborts as a DOMException-like object whose
   // branded getters throw. Prefer our composed signal reason before reading
   // the caught error, preserving timeout vs cancellation semantics.
   if (
-    composedSignal &&
     composedSignal.aborted &&
     composedSignal.reason instanceof FaxiosError
   ) {
@@ -165,10 +162,10 @@ export const handleFetchCaughtError = (
   // Surface a maxBodyLength violation we raised while the request body was
   // being streamed. Matching by identity keeps the error deterministic across
   // runtimes and avoids prototype-pollution reads.
-  if (pendingBodyErrorRef.value) {
-    const _pbe = pendingBodyErrorRef.value;
-    request && !_pbe.request && (_pbe.request = request);
-    throw _pbe;
+  const { pendingBodyError } = ctx;
+  if (pendingBodyError) {
+    request && !pendingBodyError.request && (pendingBodyError.request = request);
+    throw pendingBodyError;
   }
 
   // Re-throw FaxiosErrors we raised synchronously without re-wrapping them.
@@ -178,8 +175,8 @@ export const handleFetchCaughtError = (
   }
 
   const _err = err as Record<string, unknown> & Error;
-  if (_err.name === "TypeError" && stage) {
-    throwStagedTypeError(_err, stage, url, config, request);
+  if (_err.name === "TypeError" && ctx.stage) {
+    throwStagedTypeError(ctx, _err);
   }
   if (
     _err.name === "TypeError" &&
@@ -188,7 +185,7 @@ export const handleFetchCaughtError = (
     const cause: unknown = _err["cause"] || _err;
     throw Object.assign(
       new FaxiosError(
-        networkErrorMessage(cause, config, url),
+        networkErrorMessage(ctx, cause),
         FaxiosError.ERR_NETWORK,
         config,
         request,
@@ -205,17 +202,4 @@ export const handleFetchCaughtError = (
     request,
     _err["response"] as FaxiosResponse | undefined
   );
-};
-
-// fetch sends a string body as `text/plain;charset=UTF-8` when there's no Content-Type. A
-// Content-Type of `null` or `false` keeps the header off, so that string goes out as its bytes.
-export const encodeStringWithoutContentType = (
-  data: unknown,
-  headers: FaxiosHeaders,
-  encode: (str: string) => Promise<Uint8Array> | Uint8Array
-): Promise<unknown> | unknown => {
-  if (typeof data !== "string") return data;
-  const key = utils.findKey(headers, "content-type");
-  const contentType = key ? headers[key] : undefined;
-  return contentType === null || contentType === false ? encode(data) : data;
 };

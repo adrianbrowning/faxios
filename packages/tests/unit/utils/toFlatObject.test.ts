@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
-import utils from "#src/lib/utils.js";
-
-const { toFlatObject } = utils;
+import { toFlatObject } from "#src/lib/utils.js";
 
 describe("utils::toFlatObject", () => {
   it("should resolve object proto chain to a flat object representation", () => {

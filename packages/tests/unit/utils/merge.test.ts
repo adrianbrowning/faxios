@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
-import utils from "#src/lib/utils.js";
-
-const { merge } = utils;
+import { merge } from "#src/lib/utils.js";
 
 describe("utils::merge", () => {
   it("should be immutable", () => {
