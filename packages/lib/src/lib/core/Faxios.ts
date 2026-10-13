@@ -411,7 +411,6 @@ class Faxios {
       validator.assertOptions(
         transitional,
         {
-          silentJSONParsing: validators.transitional!(validators.boolean),
           forcedJSONParsing: validators.transitional!(validators.boolean),
           clarifyTimeoutError: validators.transitional!(validators.boolean),
           advertiseZstdAcceptEncoding: validators.transitional!(

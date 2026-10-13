@@ -80,6 +80,16 @@ describe("core::FaxiosError", () => {
       expect(errorFrom).toBeInstanceOf(FaxiosError);
     });
 
+    it("names the error FaxiosError and keeps the wrapped error on cause", () => {
+      const original = new SyntaxError("Unexpected token");
+
+      const errorFrom = FaxiosError.from(original, FaxiosError.ERR_BAD_RESPONSE);
+
+      expect(errorFrom.name).toBe("FaxiosError");
+      expect(String(errorFrom)).toBe("FaxiosError: Unexpected token");
+      expect(errorFrom.cause).toBe(original);
+    });
+
     it("preserves status from the original error when response is not provided", () => {
       const error = new Error("Network Error") as Error & { status?: number; };
       error.status = 404;
@@ -497,6 +507,52 @@ describe("core::FaxiosError", () => {
     const error = new FaxiosError("Boom", "ECODE", {} as any);
     const json = error.toJSON();
     expect(json.issues).toBeUndefined();
+  });
+
+  describe("toJSON cause", () => {
+    it("includes the cause's name, code and message", () => {
+      const original = Object.assign(new Error("connect ECONNREFUSED 127.0.0.1:1"), { code: "ECONNREFUSED" });
+      const error = new FaxiosError("Network Error: ECONNREFUSED", FaxiosError.ERR_NETWORK);
+      error.cause = original;
+
+      const json = JSON.parse(JSON.stringify(error));
+
+      expect(json.cause).toEqual({ name: "Error", code: "ECONNREFUSED", message: "connect ECONNREFUSED 127.0.0.1:1" });
+    });
+
+    it("follows nested causes without their config, stripping URL user info from messages", () => {
+      const inner = new TypeError("Failed to parse URL from http://user:secret@host/x");
+      const config: InternalFaxiosRequestConfig = {
+        headers: new FaxiosHeaders({ Authorization: "Bearer secret" }) as unknown as InternalFaxiosRequestConfig["headers"],
+      };
+      const middle = FaxiosError.from(inner, FaxiosError.ERR_INVALID_URL, config);
+      const outer = new FaxiosError("Boom", "ECODE");
+      outer.cause = middle;
+
+      const json = outer.toJSON();
+
+      expect(JSON.stringify(json)).not.toContain("secret");
+      expect(json.cause).toEqual({
+        name: "FaxiosError",
+        code: FaxiosError.ERR_INVALID_URL,
+        message: "Failed to parse URL from http://host/x",
+        cause: { name: "TypeError", message: "Failed to parse URL from http://host/x" },
+      });
+    });
+
+    it("stops at a cause that refers back to itself", () => {
+      const first = new Error("first");
+      const second = new Error("second", { cause: first });
+      first.cause = second;
+      const error = new FaxiosError("Boom");
+      error.cause = first;
+
+      expect(error.toJSON().cause).toEqual({ name: "Error", message: "first", cause: { name: "Error", message: "second" } });
+    });
+
+    it("is absent without a cause", () => {
+      expect(new FaxiosError("Boom").toJSON().cause).toBeUndefined();
+    });
   });
 
   describe("isSchemaValidationError", () => {

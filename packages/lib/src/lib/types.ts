@@ -114,7 +114,6 @@ export interface TransitionalOptions {
   advertiseZstdAcceptEncoding?: boolean;
   clarifyTimeoutError?: boolean;
   forcedJSONParsing?: boolean;
-  silentJSONParsing?: boolean;
   validateStatusUndefinedResolves?: boolean;
 }
 

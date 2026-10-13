@@ -46,15 +46,16 @@ function serializeObjectPayload(
   return undefined;
 }
 
+// An explicit `responseType: "json"` asks for JSON, so a body that isn't JSON rejects.
 function throwOnStrictJSONError(
   e: unknown,
-  strictJSONParsing: boolean,
+  JSONRequested: boolean,
   config: InternalFaxiosRequestConfig
 ): void {
-  if (!strictJSONParsing) return;
-  if ((e as { name?: string; }).name === "SyntaxError") {
+  if (!JSONRequested) return;
+  if (e instanceof SyntaxError) {
     throw FaxiosError.from(
-      e as Error,
+      e,
       FaxiosError.ERR_BAD_RESPONSE,
       config,
       null,
@@ -158,7 +159,8 @@ const defaults: FaxiosDefaults = {
     ) {
       const transitional = this.transitional || defaults.transitional;
       const forcedJSONParsing = transitional && transitional.forcedJSONParsing;
-      const responseType = this.responseType;
+      // Own only: a polluted Object.prototype.responseType must not make every body strict JSON.
+      const responseType = utils.hasOwnProp(this, "responseType") ? this.responseType : undefined;
       const JSONRequested = responseType === "json";
       const shouldParseJSON = (forcedJSONParsing && !responseType) || JSONRequested;
 
@@ -167,15 +169,11 @@ const defaults: FaxiosDefaults = {
       }
 
       if (data && utils.isString(data) && shouldParseJSON) {
-        const silentJSONParsing =
-          transitional && transitional.silentJSONParsing;
-        const strictJSONParsing = !silentJSONParsing && JSONRequested;
-
         try {
           return JSON.parse(data as string, utils.hasOwnProp(this, "parseReviver") ? this.parseReviver : undefined);
         }
         catch (e) {
-          throwOnStrictJSONError(e, strictJSONParsing, this);
+          throwOnStrictJSONError(e, JSONRequested, this);
         }
       }
 

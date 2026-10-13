@@ -2,6 +2,7 @@
 
 import FaxiosError from "../core/FaxiosError.js";
 import type FaxiosHeaders from "../core/FaxiosHeaders.js";
+import stripUserInfo from "../helpers/stripUserInfo.js";
 import type {
   FaxiosRequestHeaders,
   FaxiosResponse,
@@ -117,6 +118,25 @@ const throwStagedTypeError = (
   }
 };
 
+// `Network Error: ENOTFOUND (GET https://host/path)`: the runtime's reason (its error code, else
+// its message) and the request. The URL loses its user info, query and fragment, which often
+// carry secrets.
+const networkErrorMessage = (cause: unknown, config: InternalFaxiosRequestConfig, url: string | undefined): string => {
+  const code = utils.getSafeProp(cause, "code");
+  let reason = "";
+  if (typeof code === "string" && code) reason = code;
+  else if (cause instanceof Error && cause.message) reason = cause.message;
+  const method = utils.getSafeProp(config, "method");
+  const verb = (typeof method === "string" ? method : "get").toUpperCase();
+  let target = "";
+  if (typeof url === "string") {
+    const safe = stripUserInfo(url);
+    const end = safe.search(/[?#]/);
+    target = ` (${verb} ${end === -1 ? safe : safe.slice(0, end)})`;
+  }
+  return reason ? `Network Error: ${reason}${target}` : `Network Error${target}`;
+};
+
 // ponytail: exported for unit testing only — not part of public API
 export const handleFetchCaughtError = (
   err: unknown,
@@ -166,17 +186,16 @@ export const handleFetchCaughtError = (
     _err.name === "TypeError" &&
     /Load failed|fetch/i.test(_err.message)
   ) {
+    const cause: unknown = _err["cause"] || _err;
     throw Object.assign(
       new FaxiosError(
-        "Network Error",
+        networkErrorMessage(cause, config, url),
         FaxiosError.ERR_NETWORK,
         config,
         request,
         _err["response"] as FaxiosResponse | undefined
       ),
-      {
-        cause: _err["cause"] || _err,
-      }
+      { cause }
     );
   }
 

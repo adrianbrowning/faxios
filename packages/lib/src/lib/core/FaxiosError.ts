@@ -1,6 +1,7 @@
 // @ts-self-types="./FaxiosError.d.ts" — required for Deno: index.d.ts re-exports SchemaValidationError from here
 "use strict";
 
+import stripUserInfo from "../helpers/stripUserInfo.js";
 import type { FaxiosResponse, InternalFaxiosRequestConfig } from "../types.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import utils from "../utils.js";
@@ -10,10 +11,6 @@ const REDACTED = "[REDACTED ****]";
 
 // Masked in every toJSON() snapshot; `config.redact` adds keys. Matched lower-cased.
 const DEFAULT_REDACT_KEYS: ReadonlyArray<string> = [ "authorization", "proxy-authorization", "cookie", "auth" ];
-
-// Up to the `@` of a URL's user info: after the scheme (`http:`, with any slashes) or after `//`.
-// Backslashes count as slashes, as they do in the WHATWG URL parser.
-const USER_INFO = /^([a-z][a-z\d+\-.]*:[/\\]*|[/\\]{2})[^/\\?#]*@/i;
 
 function hasOwnOrPrototypeToJSON(source: unknown): boolean {
   if (utils.hasOwnProp(source, "toJSON")) {
@@ -46,7 +43,7 @@ function redactConfig(config: unknown, redactKeys: ReadonlyArray<string>): unkno
       const lowerKey = key.toLowerCase();
       let reducedValue: unknown;
       if (lowerKeys.has(lowerKey)) reducedValue = REDACTED;
-      else if ((lowerKey === "url" || lowerKey === "baseurl") && typeof value === "string") reducedValue = value.replace(USER_INFO, "$1");
+      else if ((lowerKey === "url" || lowerKey === "baseurl") && typeof value === "string") reducedValue = stripUserInfo(value);
       else reducedValue = visit(value);
       if (!utils.isUndefined(reducedValue)) {
         result[key] = reducedValue;
@@ -89,6 +86,31 @@ function redactConfig(config: unknown, redactKeys: ReadonlyArray<string>): unkno
   };
 
   return visit(config);
+}
+
+// `user:pass@` after a `scheme://` anywhere in free text, such as an error message.
+const USER_INFO_IN_TEXT = /\b([a-z][a-z\d+\-.]*:[/\\]{2})[^/\\?#\s@]*@/gi;
+
+function stripUserInfoInText(text: string): string {
+  return text.replace(USER_INFO_IN_TEXT, "$1");
+}
+
+type SerializedCause = { cause?: SerializedCause; code?: string; message: string; name: string; };
+
+// A JSON-safe view of an error's cause chain: each error's name, string `code` and message,
+// without config, request or response (so a wrapped FaxiosError leaks none of its config), and
+// without URL user info. Non-errors and causes already seen (a cycle) end the chain.
+function serializeCause(cause: unknown, seen: Set<unknown>): SerializedCause | undefined {
+  if (!(cause instanceof Error) || seen.has(cause)) return undefined;
+  seen.add(cause);
+  const code = utils.getSafeProp(cause, "code");
+  const next = serializeCause(cause.cause, seen);
+  return {
+    name: cause.name,
+    message: stripUserInfoInText(cause.message),
+    ...(typeof code === "string" ? { code } : {}),
+    ...(next ? { cause: next } : {}),
+  };
 }
 
 class FaxiosError<T = unknown, D = unknown> extends Error {
@@ -143,8 +165,8 @@ class FaxiosError<T = unknown, D = unknown> extends Error {
       request,
       response
     );
+    // The wrapped error keeps its own name (`TypeError`, `SyntaxError`) on `cause`.
     faxiosError.cause = error;
-    faxiosError.name = error.name;
 
     // Preserve status from the original error if not already set from response
     if (error.status != null && faxiosError.status == null) {
@@ -212,7 +234,7 @@ class FaxiosError<T = unknown, D = unknown> extends Error {
 
     return {
       // Standard
-      message: this.message,
+      message: stripUserInfoInText(this.message),
       name: this.name,
       // Microsoft
       description: this.description,
@@ -221,12 +243,13 @@ class FaxiosError<T = unknown, D = unknown> extends Error {
       fileName: this.fileName,
       lineNumber: this.lineNumber,
       columnNumber: this.columnNumber,
-      stack: this.stack,
+      stack: this.stack === undefined ? undefined : stripUserInfoInText(this.stack),
       // Faxios
       config: serializedConfig,
       code: this.code,
       status: this.status,
       issues: this.issues,
+      cause: serializeCause(this.cause, new Set()),
     };
   }
 }

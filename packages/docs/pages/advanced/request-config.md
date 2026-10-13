@@ -168,10 +168,10 @@ The `responseType` tells faxios how to read the response body. Values are matche
 - `formdata`: `response.formData()`, so `data` is a `FormData`
 - `text`: `response.text()`, so `data` is a string and is not JSON-parsed
 - `stream`: `data` is the `ReadableStream` from `response.body`
-- `json`: read as text, then JSON-parsed
+- `json`: read as text, then JSON-parsed. A body that isn't valid JSON rejects with a `FaxiosError` whose `code` is `ERR_BAD_RESPONSE`; the `SyntaxError` is on `error.cause` and the raw body on `error.response.data`
 - `document`: read as text; faxios does not build a DOM document
 
-If `responseType` is unset, the body is read as text and then JSON-parsed if it parses; otherwise `data` is the string. Binary bodies such as images or zip files are decoded as UTF-8 text in that case and come back corrupted, so set `responseType: "arraybuffer"` (or `"blob"`/`"stream"`) for them.
+If `responseType` is unset, the body is read as text and then JSON-parsed if it parses; otherwise `data` is the raw string and the request still resolves. Binary bodies such as images or zip files are decoded as UTF-8 text in that case and come back corrupted, so set `responseType: "arraybuffer"` (or `"blob"`/`"stream"`) for them.
 
 `responseType` doesn't change the TypeScript type of `data`, which is `unknown` unless you pass a type argument.
 
@@ -309,22 +309,12 @@ The `signal` property allows you to pass an instance of `AbortSignal` to the req
 
 The `transitional` property allows you to enable or disable certain transitional features. The following options are available:
 
-- `silentJSONParsing`: If set to `true` _(default)_, faxios silently ignores JSON parsing errors and leaves `response.data` as the raw response string when parsing fails. Set to `false` to reject with a `FaxiosError` whose `code` is `ERR_BAD_RESPONSE` instead.
-
-  ::: tip Important
-  This option only takes effect when `responseType` is **explicitly** set to `'json'`. When `responseType` is omitted, faxios uses `forcedJSONParsing` to attempt JSON parsing and silently returns the raw string on failure regardless of this setting. To make invalid JSON throw, set both:
-
-  ```js
-  import faxios from "@gcmdev/faxios";
-
-  await faxios.get("/data", { responseType: "json", transitional: { silentJSONParsing: false } });
-  ```
-  :::
-
 - `forcedJSONParsing`: Forces faxios to parse the response string as JSON even if `responseType` is not `'json'`.
 - `clarifyTimeoutError`: Accepted for compatibility but has no effect. Timed-out requests always reject with `ETIMEDOUT`.
 - `advertiseZstdAcceptEncoding`: When set to `true`, faxios adds `zstd` to the default `Accept-Encoding` request header. Response decompression is handled by the runtime's `fetch` implementation.
 - `validateStatusUndefinedResolves`: When `true` _(default)_, an explicit `validateStatus: undefined` resolves every response status (legacy behavior). Set to `false` to make an explicit `undefined` behave like an omitted option, so the configured or default validator applies (reject non-2xx).
+
+There is no `silentJSONParsing` option any more, and passing it rejects with `ERR_BAD_OPTION`. An explicit `responseType: "json"` always rejects a body that isn't valid JSON (see [`responseType`](#responsetype)); leave `responseType` unset to get the raw string instead.
 
 ### `env`
 
@@ -423,7 +413,6 @@ const config: FaxiosRequestConfig = {
   },
   signal: new AbortController().signal,
   transitional: {
-    silentJSONParsing: true,
     forcedJSONParsing: true,
     clarifyTimeoutError: false,
     advertiseZstdAcceptEncoding: false,
