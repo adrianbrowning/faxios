@@ -3,16 +3,16 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "97439db0064eab0c4407518883d5b94e85931c7d7a549a7de964f39bd62a908b",
+      "fingerprint": "5b6e4967a9f51ef76763e7f1febb34041af801444e63931cf0edbc19d41c81d5",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "c0bb05f55c5ab74840a93bc6f2674de07806acf5c33ce33afd34a4ac49492f07",
-        "packages/lib/skills/configure-requests/SKILL.md": "b3d7b7f9e39b6741b60e01e5271c58a835e6bac6579cdcd76aca06c7032ebc90",
+        "packages/lib/skills/configure-requests/SKILL.md": "a8435b3413bbc2df34de94b0263d5842d56c11b28e00ee123a5e1292730ba993",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
         "packages/lib/src/lib/adapters/fetch.ts": "7df1044dbd292343c796162d3a26822df85dda3b032998cfa6c852ab47d3d99d",
-        "packages/lib/src/lib/core/Faxios.ts": "3b53fc1e3fc622411ecc4b905e3c7e814fcd983d9331c6400e74e44e83661f63",
+        "packages/lib/src/lib/core/Faxios.ts": "0db334f0291d3f1eca6aedd2f3a680fd4129c082aa26563a908d479a5133b6b8",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "97e25da79a42da871a80b630101563758ca5df332aee2320d13bcaf0ea8faee5",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
@@ -33,27 +33,27 @@
         "packages/tests/unit/plugins/retry.test.ts": "34b0ff543162db94d4c4628381ef80492c4d6ca0a5bc2b04cfe9b235a9d577cc",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "1dc59b343071b3f6a6ef069fb4aacfc9f603de98",
+      "head": "171fd2a68f53dbb058a5074bc17f64201dee09dd",
       "outcome": "updated",
-      "reason": "Skill now describes route() merging and string headers under group names",
+      "reason": "configure-requests skill now says getUri() applies allowAbsoluteUrls the way a request does; other changes are internal URL resolution, docs, tests and a bump file",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/route.ts, packages/tests/unit/api.test.ts at fea06afc49b9161235087252789c1626cab7179c"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts at d8cbd4de61e82132702bf7f2751683bf4c27bded"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "8bc2799ec9a4ffc5159a19b14ff6c5def365675d28a4c1bfcaf38ae9821fc807",
+      "fingerprint": "874b6065afe7a5704893baa59f79a3f4cd109bbafe9920c433720ef24dcb6a44",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "c0bb05f55c5ab74840a93bc6f2674de07806acf5c33ce33afd34a4ac49492f07",
-        "packages/lib/skills/configure-requests/SKILL.md": "b3d7b7f9e39b6741b60e01e5271c58a835e6bac6579cdcd76aca06c7032ebc90",
+        "packages/lib/skills/configure-requests/SKILL.md": "a8435b3413bbc2df34de94b0263d5842d56c11b28e00ee123a5e1292730ba993",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
         "packages/lib/src/lib/adapters/fetch.ts": "7df1044dbd292343c796162d3a26822df85dda3b032998cfa6c852ab47d3d99d",
-        "packages/lib/src/lib/core/Faxios.ts": "3b53fc1e3fc622411ecc4b905e3c7e814fcd983d9331c6400e74e44e83661f63",
+        "packages/lib/src/lib/core/Faxios.ts": "0db334f0291d3f1eca6aedd2f3a680fd4129c082aa26563a908d479a5133b6b8",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "97e25da79a42da871a80b630101563758ca5df332aee2320d13bcaf0ea8faee5",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "34b0ff543162db94d4c4628381ef80492c4d6ca0a5bc2b04cfe9b235a9d577cc",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "1dc59b343071b3f6a6ef069fb4aacfc9f603de98",
+      "head": "171fd2a68f53dbb058a5074bc17f64201dee09dd",
       "outcome": "updated",
-      "reason": "Skill now describes route() merging and string headers under group names",
+      "reason": "configure-requests skill now says getUri() applies allowAbsoluteUrls the way a request does; other changes are internal URL resolution, docs, tests and a bump file",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/route.ts, packages/tests/unit/api.test.ts at fea06afc49b9161235087252789c1626cab7179c"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts at d8cbd4de61e82132702bf7f2751683bf4c27bded"
       ]
     },
     "source:knip.json": {
@@ -640,15 +640,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-method-aliases.md": {
-      "fingerprint": "0ce82886b160013461818666b838aef152cdfb46db581af3262553b3f603dfe3",
+      "fingerprint": "876794c825b35b05d932bd2a023b9d56db4df65786eead46f1c455d0035c3c43",
       "snapshot": {
-        "packages/docs/pages/advanced/request-method-aliases.md": "26f82afb1b3c48f7ba8cbdd778b08b6d64d1219f5ddb016b2bc69812fd16301f"
+        "packages/docs/pages/advanced/request-method-aliases.md": "3457109795a0e6b56dc9b82701da7d7653bfd60958c1d0dad2f3d2a82219f1ed"
       },
-      "head": "336e0938093c52368b413338e4102d88be95ba88",
+      "head": "171fd2a68f53dbb058a5074bc17f64201dee09dd",
       "outcome": "updated",
-      "reason": "Skill getUri line matches the corrected docs.",
+      "reason": "configure-requests skill now says getUri() applies allowAbsoluteUrls the way a request does; other changes are internal URL resolution, docs, tests and a bump file",
       "evidence": [
-        "request-method-aliases.md:126 and SKILL.md:73 both say pathParams are not substituted."
+        "Changed: packages/docs/pages/advanced/request-method-aliases.md at d8cbd4de61e82132702bf7f2751683bf4c27bded"
       ]
     },
     "source:packages/lib/tsconfig.json": {
@@ -2248,16 +2248,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
-      "fingerprint": "681f90c4996a9d74be0094bb0f32da448031e3ed8118d3e61d1ad22f11cdc006",
+      "fingerprint": "1b972d77074d47dac3d143acfe6d0884e7e1440965ea61a5fa74f8f57e466ddc",
       "snapshot": {
-        "packages/lib/src/lib/core/prepareRequest.ts": "7ff961021122fc8117e3cefe110238eb9d981147587acd0ba337d7c3bbcea2ad"
+        "packages/lib/src/lib/core/prepareRequest.ts": "2de9a117192f36c0971fd46770cc65d554ffc3c5409a2e63827898a755a11bae"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Cast union `Record<string, unknown> | null | undefined` → `null | Record<string, unknown> | undefined`. Behaviour change: none",
+      "head": "171fd2a68f53dbb058a5074bc17f64201dee09dd",
+      "outcome": "updated",
+      "reason": "configure-requests skill now says getUri() applies allowAbsoluteUrls the way a request does; other changes are internal URL resolution, docs, tests and a bump file",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/core/prepareRequest.ts: Whole file compared. Only HEAD L99 differs.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/core/prepareRequest.ts at d8cbd4de61e82132702bf7f2751683bf4c27bded"
       ]
     },
     "source:packages/lib/src/lib/core/transformData.ts": {
@@ -4033,6 +4032,42 @@
       "reason": "Skill now describes route() merging and string headers under group names",
       "evidence": [
         "Changed: .bumpy/config-merge-fixes.md at fea06afc49b9161235087252789c1626cab7179c"
+      ]
+    },
+    "source:.bumpy/geturi-allow-absolute-urls.md": {
+      "fingerprint": "35296214138653aa5bec3ae40e41bb7852116aa7c06c55f82c68ecef473e2d37",
+      "snapshot": {
+        ".bumpy/geturi-allow-absolute-urls.md": "25bef633168f4ad18a75d2427d358b5f0e1acaf24c19a94da7d16f43fde27ded"
+      },
+      "head": "171fd2a68f53dbb058a5074bc17f64201dee09dd",
+      "outcome": "updated",
+      "reason": "configure-requests skill now says getUri() applies allowAbsoluteUrls the way a request does; other changes are internal URL resolution, docs, tests and a bump file",
+      "evidence": [
+        "Changed: .bumpy/geturi-allow-absolute-urls.md at d8cbd4de61e82132702bf7f2751683bf4c27bded"
+      ]
+    },
+    "source:packages/lib/src/lib/core/resolveRequestURL.ts": {
+      "fingerprint": "20f0245ebd0a588f0169f2a1b3b0874cd69b130116dfd124d065ab1109d264e4",
+      "snapshot": {
+        "packages/lib/src/lib/core/resolveRequestURL.ts": "09a7243e17fd487ab020f1d7cff545177eb27415be4d121f5a014001b3c009a0"
+      },
+      "head": "171fd2a68f53dbb058a5074bc17f64201dee09dd",
+      "outcome": "updated",
+      "reason": "configure-requests skill now says getUri() applies allowAbsoluteUrls the way a request does; other changes are internal URL resolution, docs, tests and a bump file",
+      "evidence": [
+        "Changed: packages/lib/src/lib/core/resolveRequestURL.ts at d8cbd4de61e82132702bf7f2751683bf4c27bded"
+      ]
+    },
+    "source:packages/tests/unit/core/getUri.test.ts": {
+      "fingerprint": "13ee5026fc64dab19c11e06795386234a7c3405da2832fb07216c68fbb4e55ca",
+      "snapshot": {
+        "packages/tests/unit/core/getUri.test.ts": "c409b0c634841a3f6b3e506db5611a98b5109f42eadceeff8ec32e848be730ac"
+      },
+      "head": "171fd2a68f53dbb058a5074bc17f64201dee09dd",
+      "outcome": "updated",
+      "reason": "configure-requests skill now says getUri() applies allowAbsoluteUrls the way a request does; other changes are internal URL resolution, docs, tests and a bump file",
+      "evidence": [
+        "Changed: packages/tests/unit/core/getUri.test.ts at d8cbd4de61e82132702bf7f2751683bf4c27bded"
       ]
     }
   }

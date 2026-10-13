@@ -1,6 +1,5 @@
-import buildFullPath from "../core/buildFullPath.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
-import buildURL from "../helpers/buildURL.js";
+import resolveRequestURL from "../core/resolveRequestURL.js";
 import cloneConfig from "../helpers/cloneConfig.js";
 import cookies from "../helpers/cookies.js";
 import isURLSameOrigin from "../helpers/isURLSameOrigin.js";
@@ -91,20 +90,13 @@ function prepareRequest(config: FaxiosRequestConfig): FaxiosRequestConfig {
   const xsrfHeaderName = own("xsrfHeaderName") as string | undefined;
   const xsrfCookieName = own("xsrfCookieName") as string | undefined;
   const auth = own("auth");
-  const baseURL = own("baseURL");
-  const allowAbsoluteUrls = own("allowAbsoluteUrls");
-  const url = own("url");
 
   const headers: FaxiosHeaders = FaxiosHeaders.from(
     own("headers") as null | Record<string, unknown> | undefined
   );
   newConfig.headers = headers;
 
-  newConfig.url = buildURL(
-    buildFullPath(baseURL, url, allowAbsoluteUrls, newConfig),
-    own("params"),
-    own("paramsSerializer")
-  );
+  newConfig.url = resolveRequestURL(newConfig);
 
   // HTTP basic authentication
   if (auth) {

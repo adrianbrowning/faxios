@@ -2,7 +2,6 @@
 "use strict";
 
 import CanceledError from "../cancel/CanceledError.js";
-import buildURL from "../helpers/buildURL.js";
 import cloneConfig from "../helpers/cloneConfig.js";
 import validator from "../helpers/validator.js";
 import type { ValidatorFn } from "../helpers/validator.js";
@@ -23,13 +22,13 @@ import type {
 } from "../types.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import utils from "../utils.js";
-import buildFullPath from "./buildFullPath.js";
 import { createDefinedEndpoint } from "./define.js";
 import type { DefineConfig, DefinedEndpoint } from "./define.js";
 import dispatchRequest from "./dispatchRequest.js";
 import FaxiosError from "./FaxiosError.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
 import mergeConfig from "./mergeConfig.js";
+import resolveRequestURL from "./resolveRequestURL.js";
 import type { RouteBuilder, RouteConfig } from "./route.js";
 import { createRouteBuilder } from "./route.js";
 
@@ -500,13 +499,8 @@ class Faxios {
 
   getUri(config?: FaxiosRequestConfig) {
     config = mergeConfig(this.defaults, config);
-    const fullPath = buildFullPath(
-      config.baseURL,
-      config.url,
-      config.allowAbsoluteUrls,
-      config
-    );
-    return buildURL(fullPath, config.params, config.paramsSerializer);
+    resolveAllowAbsoluteUrls(config, this.defaults);
+    return resolveRequestURL(config);
   }
 
   define<

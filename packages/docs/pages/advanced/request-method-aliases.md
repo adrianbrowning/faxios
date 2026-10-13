@@ -123,7 +123,7 @@ The QUERY method is defined by an IETF [Internet-Draft](https://datatracker.ietf
 
 ### `getUri`
 
-The `getUri` method returns the URL that would be sent for a given config without actually making the request. It applies `baseURL`, `paramsSerializer`, and `params`. It does not substitute `pathParams` or run schemas, so `{key}` placeholders come back as written rather than as faxios would put them on the wire. Useful for building links, debugging serialization, or reusing the resolved URL in another request.
+The `getUri` method returns the URL that would be sent for a given config without actually making the request. It applies `baseURL`, `allowAbsoluteUrls`, `paramsSerializer`, and `params` the same way a request does. It does not substitute `pathParams` or run schemas, so `{key}` placeholders come back as written rather than as faxios would put them on the wire. Useful for building links, debugging serialization, or reusing the resolved URL in another request.
 
 ```ts check=skip
 faxios.getUri(config?: FaxiosRequestConfig): string;
@@ -141,7 +141,7 @@ const url = faxios.getUri({
 ```
 
 ::: tip
-Use `getUri` on an instance (`instance.getUri(config)`) to inherit the instance's `baseURL`, `params`, and `paramsSerializer` defaults.
+Use `getUri` on an instance (`instance.getUri(config)`) to inherit the instance's `baseURL`, `allowAbsoluteUrls`, `params`, and `paramsSerializer` defaults.
 :::
 
 ## Form data shorthand methods
