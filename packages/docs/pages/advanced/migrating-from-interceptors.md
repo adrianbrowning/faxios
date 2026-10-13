@@ -51,6 +51,8 @@ await api.get("/users");
 
 For bearer tokens specifically, the built-in [`authBearer`](/pages/advanced/authentication) plugin does this for you, and only sends the token to your own API's origin.
 
+An interceptor that rewrites `config.url` to send requests through a forwarding gateway has to fill in path params, run `paramsSchema` and append `params` itself, because middleware runs before dispatch does those. Use the built-in [`forwardTo`](/pages/advanced/middleware#forwardto) plugin instead: it forwards the final URL, on every retry.
+
 ## Response interceptors
 
 Before, an interceptor that unwraps `data`:

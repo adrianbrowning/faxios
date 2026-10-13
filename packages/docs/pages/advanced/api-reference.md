@@ -9,6 +9,7 @@ Below is a list of all the available functions and classes in the faxios package
 | `@gcmdev/faxios` | the default `faxios` instance, the classes and functions on this page, and the types, including the plugin types `FaxiosPlugin`, `FaxiosMiddleware`, `FaxiosContext` and `FaxiosNext` |
 | `@gcmdev/faxios/plugins` | `definePlugin` only |
 | `@gcmdev/faxios/plugins/auth-bearer` | `authBearer` and the types `AuthBearerOptions` and `AuthBearerCapability` |
+| `@gcmdev/faxios/plugins/forward-to` | `forwardTo` and the types `ForwardToOptions` and `ForwardToRequestOptions` |
 | `@gcmdev/faxios/plugins/retry` | `retry` and the types `RetryOptions` and `RetryRequestOptions` |
 | `@gcmdev/faxios/plugins/timing` | `timing` and the type `TimingEvent` |
 

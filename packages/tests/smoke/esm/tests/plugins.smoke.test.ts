@@ -1,6 +1,7 @@
 import faxios, * as root from "faxios";
 import * as pluginsEntry from "faxios/plugins";
 import { authBearer } from "faxios/plugins/auth-bearer";
+import { forwardTo } from "faxios/plugins/forward-to";
 import { retry } from "faxios/plugins/retry";
 import { timing } from "faxios/plugins/timing";
 import { describe, expect, it } from "vitest";
@@ -8,7 +9,7 @@ import { describe, expect, it } from "vitest";
 describe("plugin subpaths (dist export only)", () => {
   it("exports definePlugin only from faxios/plugins, and no plugin API from the root", () => {
     expect(Object.keys(pluginsEntry)).toEqual([ "definePlugin" ]);
-    for (const name of [ "authBearer", "retry", "timing", "definePlugin" ]) {
+    for (const name of [ "authBearer", "forwardTo", "retry", "timing", "definePlugin" ]) {
       expect(Object.hasOwn(root, name)).toBe(false);
     }
     expect(faxios.plugins).toBeUndefined();
@@ -41,5 +42,23 @@ describe("plugin subpaths (dist export only)", () => {
     expect(calls[1].headers.get("authorization")).toBe("Bearer smoke-token");
     expect(calls[1].headers.get("x-tag")).toBe("smoke");
     expect(events).toEqual([ expect.objectContaining({ status: 200 }) ]);
+  });
+
+  it("forwards every try to the gateway with the target URL in X-Forward-To", async () => {
+    const calls = [];
+    const fetch = async (input, init) => {
+      calls.push(new Request(input, init));
+      return new Response(null, { status: calls.length === 1 ? 503 : 200 });
+    };
+    const api = faxios.create({ baseURL: "https://api.example.com", env: { fetch } })
+      .use(retry({ attempts: 2, delay: 0 }))
+      .use(forwardTo("http://gateway.example/"));
+
+    await api.get("/items", { params: { q: "1" } });
+
+    expect(calls.map(call => [ call.url, call.headers.get("x-forward-to") ])).toEqual([
+      [ "http://gateway.example/", "https://api.example.com/items?q=1" ],
+      [ "http://gateway.example/", "https://api.example.com/items?q=1" ],
+    ]);
   });
 });

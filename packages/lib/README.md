@@ -8,7 +8,7 @@
 ## Features
 
 - Uses the web-standard [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) API in every runtime: browser, Node.js, Deno, and Bun.
-- Promise API with onion-style [`.use()` middleware](https://adrianbrowning.github.io/faxios/pages/advanced/middleware) and built-in plugins for [retries](https://adrianbrowning.github.io/faxios/pages/advanced/retry), [bearer auth](https://adrianbrowning.github.io/faxios/pages/advanced/authentication) and timing.
+- Promise API with onion-style [`.use()` middleware](https://adrianbrowning.github.io/faxios/pages/advanced/middleware) and built-in plugins for [retries](https://adrianbrowning.github.io/faxios/pages/advanced/retry), [bearer auth](https://adrianbrowning.github.io/faxios/pages/advanced/authentication), [forwarding gateways](https://adrianbrowning.github.io/faxios/pages/advanced/middleware#forwardto) and timing.
 - Request and response data transforms, with automatic JSON handling.
 - Serializes objects to `multipart/form-data` or `application/x-www-form-urlencoded`.
 - Cancellation with `AbortSignal`.

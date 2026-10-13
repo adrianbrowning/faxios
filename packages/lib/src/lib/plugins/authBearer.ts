@@ -3,7 +3,7 @@
 import { FaxiosError, FaxiosHeaders } from "../../index.js";
 import type { FaxiosPlugin, InternalFaxiosRequestConfig } from "../../index.js";
 import { definePlugin } from "./definePlugin.js";
-import { assertOptions, fullPath, isAbsoluteURL, isBoolean, own } from "./shared.js";
+import { assertOptions, fullPath, isAbsoluteURL, isBoolean, isHeaderName, own } from "./shared.js";
 
 /** What `authBearer` provides to plugins installed after it. */
 export type AuthBearerCapability = { auth: { getToken: () => Promise<string>; }; };
@@ -22,9 +22,6 @@ export type AuthBearerOptions = {
   scheme?: string;
 };
 
-// A header name is a token (RFC 9110 §5.6.2).
-const TOKEN = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
-
 // A bare origin, optionally with a trailing slash. A path would look like a narrower limit than
 // the origin the token is really sent to.
 function originOf(value: unknown): null | string {
@@ -41,7 +38,7 @@ function originOf(value: unknown): null | string {
 const optionsSchema = {
   overwrite: isBoolean,
   scheme: (value: unknown) => (typeof value === "string" && !/[\r\n]/.test(value)) || "a string without line breaks",
-  header: (value: unknown) => (typeof value === "string" && TOKEN.test(value)) || "a header name",
+  header: isHeaderName,
   origins: (value: unknown) => (Array.isArray(value) && value.every(o => originOf(o) !== null)) || "an array of origins such as \"https://api.example.com\"",
 };
 

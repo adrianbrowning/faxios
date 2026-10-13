@@ -18,6 +18,8 @@ import { definePlugin } from "faxios/plugins";
 import { retry as pluginsEntryRetry } from "faxios/plugins";
 import { authBearer } from "faxios/plugins/auth-bearer";
 import type { AuthBearerCapability } from "faxios/plugins/auth-bearer";
+import { forwardTo } from "faxios/plugins/forward-to";
+import type { ForwardToRequestOptions } from "faxios/plugins/forward-to";
 import { retry } from "faxios/plugins/retry";
 import type { RetryRequestOptions } from "faxios/plugins/retry";
 import { timing } from "faxios/plugins/timing";
@@ -56,8 +58,11 @@ const refreshOn401 = definePlugin({
 const refreshType: Equal<typeof refreshOn401, FaxiosPlugin<{ requires: AuthBearerCapability; }>> = true;
 const defaultRetry = retry();
 const retryType: Equal<typeof defaultRetry, FaxiosPlugin<{ options: RetryRequestOptions; }>> = true;
+const defaultForwardTo = forwardTo("http://gateway.test/");
+const forwardToType: Equal<typeof defaultForwardTo, FaxiosPlugin<{ options: ForwardToRequestOptions; }>> = true;
 void refreshType;
 void retryType;
+void forwardToType;
 void rootDefinePlugin;
 void pluginsEntryRetry;
 
@@ -67,10 +72,12 @@ async function middleware(): Promise<void> {
     .use(authBearer(() => "token"))
     .use(refreshOn401)
     .use(retry({ attempts: 2, methods: [ "get", "post" ] }))
-    .use(timing(({ attempt, durationMs }: TimingEvent) => void (durationMs + attempt)));
+    .use(timing(({ attempt, durationMs }: TimingEvent) => void (durationMs + attempt)))
+    .use(forwardTo("http://gateway.test/", { header: "X-Forward-To" }));
 
   await api.get("/items", { retry: false });
   await api.post("/items", {}, { retry: { attempts: 3 } });
+  await api.get("/health", { forward: false });
   api.eject(addHeader);
   faxios.create().use(assignHeaders);
   const child = faxios.create();
@@ -79,6 +86,9 @@ async function middleware(): Promise<void> {
 
   // @ts-expect-error - retry options need the retry plugin
   await faxios.create().get("/items", { retry: false });
+
+  // @ts-expect-error - forward needs the forwardTo plugin
+  await faxios.create().get("/items", { forward: false });
 
   // @ts-expect-error - refreshOn401 requires the auth capability authBearer provides
   faxios.create().use(refreshOn401);
