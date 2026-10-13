@@ -1833,15 +1833,15 @@
       ]
     },
     "source:.claude/skills/do-work/SKILL.md": {
-      "fingerprint": "dd6e5a588abbafb3dc765e54f745a06ba396282a8c9043c1ce2f889c4c50d65a",
+      "fingerprint": "6c0cbd4c92ed911b9e0c5d88728d2afe868a25cf91be5bd1079148e4f6ec576f",
       "snapshot": {
-        ".claude/skills/do-work/SKILL.md": "1d59be0894738d3ec920e3db22a46ae62354a80e6fe98174a8ce53ddc835b603"
+        ".claude/skills/do-work/SKILL.md": "390315ca477b2e2dd421c10faff555542959f2c1e35cba9238a93027d81f1446"
       },
-      "head": "465e8cdf20055c7da0786b97229d7d41d8bf030a",
+      "head": "4f30051218eb0164827fbf54d6ea3fac008dbc80",
       "outcome": "no-change",
-      "reason": "Contributor tooling and review rules only: scripts/intent-restack.sh, the do-work hand-off steps, the gh gotchas and two CODING_STANDARDS reviewer rules. No library API or skill guidance changes.",
+      "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
       "evidence": [
-        "Changed: .claude/skills/do-work/SKILL.md at 465e8cdf20055c7da0786b97229d7d41d8bf030a"
+        "Changed: .claude/skills/do-work/SKILL.md at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
       ]
     },
     "source:.github/actions/setup/action.yml": {
@@ -4219,27 +4219,27 @@
       ]
     },
     "source:docs/agents/issue-tracker.md": {
-      "fingerprint": "cf20a752803acc20ea6d3368b93437824e20e960451f9b64b3423ef8adbad818",
+      "fingerprint": "ea37b7e2cf3cf9b345feaa1c36d85a0cc907d892ca7da096bceb8a1ce3d0f10e",
       "snapshot": {
-        "docs/agents/issue-tracker.md": "2147ab0cf9c10b49db1c2580f6c879b330e5e81d9376c1f7c470be30aa69c4c5"
+        "docs/agents/issue-tracker.md": "90e43e4cdebf9b9d2197f2a75761bb495886248cf57d86a9c4373c28fdabce5b"
       },
-      "head": "465e8cdf20055c7da0786b97229d7d41d8bf030a",
+      "head": "4f30051218eb0164827fbf54d6ea3fac008dbc80",
       "outcome": "no-change",
-      "reason": "Contributor tooling and review rules only: scripts/intent-restack.sh, the do-work hand-off steps, the gh gotchas and two CODING_STANDARDS reviewer rules. No library API or skill guidance changes.",
+      "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
       "evidence": [
-        "Changed: docs/agents/issue-tracker.md at 465e8cdf20055c7da0786b97229d7d41d8bf030a"
+        "Changed: docs/agents/issue-tracker.md at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
       ]
     },
     "source:scripts/intent-restack.sh": {
-      "fingerprint": "286eb3ffe7cb00cc7d0e26c031320e2770c5c18431db3de8085fa01951171916",
+      "fingerprint": "11f678f08a19ad7cb97d8da8b3a2706b823ccf8dd1b5fc48416a13349b90295c",
       "snapshot": {
-        "scripts/intent-restack.sh": "c0421546aa00341dd13fdede19bf95e2de4537b730cdd89dde01fb56aa71e60a"
+        "scripts/intent-restack.sh": "5b8d4c0f52ae9ffdae5b9fdb125a011cc630a744b96f2acbcc267eec8cecaf31"
       },
-      "head": "465e8cdf20055c7da0786b97229d7d41d8bf030a",
+      "head": "4f30051218eb0164827fbf54d6ea3fac008dbc80",
       "outcome": "no-change",
-      "reason": "Contributor tooling and review rules only: scripts/intent-restack.sh, the do-work hand-off steps, the gh gotchas and two CODING_STANDARDS reviewer rules. No library API or skill guidance changes.",
+      "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
       "evidence": [
-        "Changed: scripts/intent-restack.sh at 465e8cdf20055c7da0786b97229d7d41d8bf030a"
+        "Changed: scripts/intent-restack.sh at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
       ]
     },
     "source:.bumpy/reject-absolute-url-with-base-url.md": {
@@ -4924,6 +4924,42 @@
       "reason": "#254: trackStream cancels the source directly; the configure-requests skill does not teach stream cancel internals.",
       "evidence": [
         "Changed: .bumpy/stream-cancel-hang.md at 12f00f571b1d09b579b3142ea82e2498e9357060"
+      ]
+    },
+    "source:.gitignore": {
+      "fingerprint": "b1e91f3d401f84ebc8068643e311b1404f0b8b6e408414bc2a95331a222b9d6d",
+      "snapshot": {
+        ".gitignore": "b3cceba4f5b60d39c3bbcc3662793d26ca3738fbf99ddd85b69894da855bd271"
+      },
+      "head": "4f30051218eb0164827fbf54d6ea3fac008dbc80",
+      "outcome": "no-change",
+      "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: .gitignore at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
+      ]
+    },
+    "source:.husky/pre-push": {
+      "fingerprint": "f494e618a7b739d6037693d6b35a4ee7343d8f54273156a9485beb6590d3e932",
+      "snapshot": {
+        ".husky/pre-push": "9847e5b1ee945a17d496b47a91c0db008674f61e7757e9dc2631882025e55899"
+      },
+      "head": "4f30051218eb0164827fbf54d6ea3fac008dbc80",
+      "outcome": "no-change",
+      "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: .husky/pre-push at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
+      ]
+    },
+    "source:commitlint.config.js": {
+      "fingerprint": "baa487d8c56f02de04ce25409f713773f67ba1f47fb1e61f838c81c76d27b8d4",
+      "snapshot": {
+        "commitlint.config.js": "91541af05198525587f7dc9b527ece32fff17fff37b772c6d9ed8b4dfe5c4891"
+      },
+      "head": "4f30051218eb0164827fbf54d6ea3fac008dbc80",
+      "outcome": "no-change",
+      "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: commitlint.config.js at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
       ]
     }
   }

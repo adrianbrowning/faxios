@@ -13,6 +13,12 @@
 #                               reason and evidence from <original>'s review-state.json (default:
 #                               the branch's pushed tip, origin/<branch>), and amend it into the
 #                               last commit. Use it after `gh stack rebase` or `gh stack sync`.
+#   stack                       For every layer of the current gh stack, bottom first: rebase it
+#                               onto the layer below (if that layer moved) and record its reviews.
+#                               Use it after amending a layer, e.g. to record that layer's review.
+#                               Every layer must be free to check out in this worktree. A conflict
+#                               outside .intent/review-state.json exits 3; finish that rebase, run
+#                               `record`, then run `stack` again.
 #
 # A pending item with no earlier record is recorded as "no-change" with its changed files as
 # evidence. Check that outcome when the layer changes what the skill teaches.
@@ -22,7 +28,7 @@
 set -euo pipefail
 
 state=.intent/review-state.json
-usage="usage: scripts/intent-restack.sh rebase <base> | record <base> [<original>]"
+usage="usage: scripts/intent-restack.sh rebase <base> | record <base> [<original>] | stack"
 
 in_rebase() {
   [ -d "$(git rev-parse --git-path rebase-merge)" ] || [ -d "$(git rev-parse --git-path rebase-apply)" ]
@@ -62,10 +68,11 @@ record() {
   pnpm exec intent maintainer check --base "$base" --artifacts _artifacts | tail -1
 }
 
+# rebase <base> [<upstream>]: replay the commits after <upstream> (default <base>) onto <base>.
 rebase() {
-  local base="$1" original conflicts
+  local base="$1" upstream="${2:-$1}" original conflicts
   original="$(git rev-parse HEAD)"
-  git rebase "$base" > /dev/null 2>&1 || true
+  git rebase --onto "$base" "$upstream" > /dev/null 2>&1 || true
   while in_rebase; do
     conflicts="$(git diff --name-only --diff-filter=U)"
     if [ -n "$conflicts" ] && [ "$conflicts" != "$state" ]; then
@@ -89,7 +96,36 @@ rebase() {
   record "$base" "$original"
 }
 
+stack() {
+  local view trunk branch below old i
+  local -a branches=() olds=()
+  view="$(gh stack view --json)"
+  trunk="origin/$(jq -r '.trunk' <<< "$view")"
+  # `base` is the parent tip gh stack last saw in the branch: the commit the layer was built on.
+  while IFS=$'\t' read -r branch old; do
+    branches+=("$branch")
+    olds+=("$old")
+  done < <(jq -r '.branches[] | select(.isMerged | not) | [.name, .base] | @tsv' <<< "$view")
+  for i in "${!branches[@]}"; do
+    branch="${branches[$i]}"
+    old="${olds[$i]}"
+    below="$trunk"
+    [ "$i" -gt 0 ] && below="${branches[$((i - 1))]}"
+    echo "== $branch on $below"
+    git checkout --quiet "$branch"
+    if [ "$i" -gt 0 ] && [ "$(git rev-parse "$below")" != "$old" ] && git merge-base --is-ancestor "$old" "$branch"; then
+      rebase "$below" "$old"
+    else
+      record "$below" "$(git rev-parse HEAD)"
+    fi
+  done
+}
+
 action="${1:?$usage}"
+if [ "$action" = stack ]; then
+  stack
+  exit 0
+fi
 base="${2:?$usage}"
 case "$action" in
   rebase) rebase "$base" ;;

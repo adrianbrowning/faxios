@@ -12,7 +12,7 @@ Structured workflow for completing a unit of work in this repository.
 ### 1. Plan
 
 Before touching code:
-- Base the work on a fresh trunk: `git fetch origin`, then branch (or `gh stack init`) from `origin/main`. `gh stack init` uses the *local* `main`, so fast-forward it first if you stack. When other work runs at the same time, give the branch its own worktree: `git worktree add -b <branch> ../<dir> origin/main`, then `pnpm install --frozen-lockfile` in it.
+- Base the work on a fresh trunk: `git fetch origin`, then branch (or `gh stack init`) from `origin/main`. `gh stack init` uses the *local* `main`, so fast-forward it first if you stack. When other work runs at the same time, give the branch its own worktree: `git worktree add -b <branch> ../<dir> origin/main`, then `pnpm install --frozen-lockfile` in it. Driving several worktrees at once: read "Parallel worktrees" in `docs/agents/issue-tracker.md` first.
 - Restate the task as a verifiable target ("done when X")
 - Identify affected packages (docs, examples, lib, sandbox, tests)
 - List files to create/modify
@@ -43,6 +43,7 @@ Rules:
 - One test at a time — never write a second failing test while one is already red
 - Tracer bullet first: get a thin path from input → output → network response before filling in edge cases
 - If a test proves impossible to write cleanly, the design is wrong — fix the design
+- A behaviour change breaks the tests that pin the old behaviour, and they are not only unit tests. Grep `packages/tests/{browser,smoke,module,docs-examples}` for the behaviour and update what pins it in the same commit.
 
 #### Front-end code (if any)
 

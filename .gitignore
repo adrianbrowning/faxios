@@ -26,3 +26,5 @@ packages/tests/.run-tests.lock/
 /plans/
 tests/**/pnpm-lock.yaml
 packages/tests/docs-examples/.generated*/
+packages/tests/browser/__screenshots__/
+packages/tests/.vitest-attachments/
