@@ -178,6 +178,12 @@ const api = faxios.create({ timeout: 20_000 }).use(retry({ attempts: 3, attemptT
 
 The `get<Header>` shortcuts take the parsers `get()` takes (`true`, a `RegExp` or a function), so `getContentType(/charset=(\S+)/)` is typed `RegExpExecArray | null | undefined`. Passing a string, such as `getContentType("application/json")`, is now a type error; it always threw `TypeError` at runtime. Use `hasContentType("application/json")` to test a value.
 
+### n) A response generic must match `responseSchema`
+
+`faxios.get<T>(url, { responseSchema })` (and every other method) now requires the schema's output to match `T`. Before, the explicit generic silently replaced the schema's output type, so `get<{ nope: string }>("/u", { responseSchema: zUser })` compiled and `response.data.nope` was typed `string`. Drop the generic and let the schema type `response.data`, or make the generic match. A config typed `FaxiosRequestConfig` whose `responseSchema` is a plain `StandardSchemaV1` no longer fits a generic call; type the schema with its output (`StandardSchemaV1<unknown, User>`).
+
+`define()` and `route()` endpoints without a schema now accept `pathParams`, `params` and `data` per call, `env.Response` accepts the global `Response`, and `define()`/`route()` infer `response.data` from a schema with no `~standard.types` field. These only remove type errors.
+
 ---
 
 ## Overview

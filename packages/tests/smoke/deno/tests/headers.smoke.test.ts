@@ -20,7 +20,7 @@ const createFetchCapture = () => {
   };
 };
 
-const env = (fetch: any): any => ({
+const env = (fetch: (input: Request | string | URL, init?: RequestInit) => Promise<Response>) => ({
   fetch,
   Request,
   Response,

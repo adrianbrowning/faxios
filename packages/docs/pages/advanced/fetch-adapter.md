@@ -27,7 +27,7 @@ You can customise the fetch adapter to use a custom `fetch` function instead of 
 faxios reads `env.fetch` for each request, so passing a new `fetch` on every request (as in the SvelteKit example below) costs nothing extra and doesn't grow memory. faxios checks what the `Request` and `Response` constructors support once per pair and reuses the result.
 
 ::: info
-When using a custom `fetch` function, you may also need to supply matching `Request` and `Response` constructors. If you omit them, the global constructors will be used. If your custom `fetch` is incompatible with the globals, pass `null` to disable them.
+When using a custom `fetch` function, you may also need to supply matching `Request` and `Response` constructors. If you omit them, the global constructors will be used. If your custom `fetch` is incompatible with the globals, pass `null` to disable them. `env.Response` is typed as a constructor called with `(body, init)` that returns a `Response`, so the global `Response` (or a compatible one) type-checks: `env: { fetch, Request, Response }`.
 
 **Note:** Setting `Request` and `Response` to `null` will make it impossible for the fetch adapter to capture download progress.
 :::

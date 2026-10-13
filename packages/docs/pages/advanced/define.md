@@ -39,7 +39,8 @@ See [Schema validation](/pages/advanced/schema-validation) for what each schema 
 
 The endpoint function takes a per-call config:
 
-- `pathParams`, `params`, and `data` are typed from the input type of `pathParamsSchema`, `paramsSchema`, and `requestSchema`. Each one is required when its schema is set, and the per-call config is then required too.
+- `pathParams`, `params`, and `data` are typed from the input type of `pathParamsSchema`, `paramsSchema`, and `requestSchema`. Each one is required when its schema is set, and the per-call config is then required too. Without its schema, each one is optional and typed as in the [request config](/pages/advanced/request-config), so `faxios.define("get", "/users/{id}")({ pathParams: { id: 1 }, params: { q: "x" } })` type-checks.
+- `response.data` is typed from the output type of `responseSchema`. It is read from the schema's `validate` result, so a [Standard Schema](https://standardschema.dev) with no `~standard.types` field still infers it.
 - Other request config fields, such as `headers`, `timeout`, or `signal`, are optional and override the define-time values.
 - `url`, `method`, and the four schema options cannot be passed per call. If a JavaScript caller passes them anyway, faxios ignores them.
 

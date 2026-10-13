@@ -38,7 +38,7 @@ const getRequestMeta = async (input: any, init: any) => {
   };
 };
 
-const env = (fetch: any): any => ({
+const env = (fetch: (input: Request | string | URL, init?: RequestInit) => Promise<Response>) => ({
   fetch,
   Request,
   Response,
