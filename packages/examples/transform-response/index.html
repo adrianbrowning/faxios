@@ -18,9 +18,13 @@
     </div>
   </div>
 
-  <script src="/faxios.min.js"></script>
-  <script>
-    var ISO_8601 = /(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})Z/;
+  <script type="importmap">
+    { "imports": { "@gcmdev/faxios": "/faxios/index.js" } }
+  </script>
+  <script type="module">
+    import faxios from "@gcmdev/faxios";
+
+    const ISO_8601 = /(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})Z/;
     function formatDate(d) {
       return (d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear();
     }

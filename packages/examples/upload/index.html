@@ -19,34 +19,32 @@
 
   <div id="output" class="container"></div>
 
-  <script src="/faxios.min.js"></script>
-  <script>
-    (function () {
-      var output = document.getElementById('output');
-      document.getElementById('upload').onclick = function () {
-        var data = new FormData();
-        data.append('foo', 'bar');
-        data.append('file', document.getElementById('file').files[0]);
+  <script type="importmap">
+    { "imports": { "@gcmdev/faxios": "/faxios/index.js" } }
+  </script>
+  <script type="module">
+    import faxios from "@gcmdev/faxios";
 
-        var config = {
-          onUploadProgress: function (progressEvent) {
-            var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            output.className = 'container';
-            output.textContent = 'Upload progress: ' + percentCompleted + '%';
-          }
-        };
+    const output = document.getElementById('output');
+    document.getElementById('upload').onclick = function () {
+      const data = new FormData();
+      data.append('foo', 'bar');
+      data.append('file', document.getElementById('file').files[0]);
 
-        faxios.put('/upload/server', data, config)
-          .then(function (res) {
-            output.className = 'container';
-            output.textContent = res.data;
-          })
-          .catch(function (err) {
-            output.className = 'container text-danger';
-            output.textContent = err.message;
-          });
-      };
-    })();
+      // fetch cannot report upload progress, so there is no onUploadProgress.
+      output.className = 'container';
+      output.textContent = 'Uploading...';
+
+      faxios.put('/upload/server', data)
+        .then(function () {
+          output.className = 'container';
+          output.textContent = 'Upload complete';
+        })
+        .catch(function (err) {
+          output.className = 'container text-danger';
+          output.textContent = err.message;
+        });
+    };
   </script>
 </body>
 

@@ -10,8 +10,12 @@
   <h1>faxios.get</h1>
   <ul id="people" class="list-unstyled"></ul>
 
-  <script src="/faxios.min.js"></script>
-  <script>
+  <script type="importmap">
+    { "imports": { "@gcmdev/faxios": "/faxios/index.js" } }
+  </script>
+  <script type="module">
+    import faxios from "@gcmdev/faxios";
+
     faxios.get('/get/server')
       .then(function (response) {
         document.getElementById('people').innerHTML = response.data.map(function (person) {
