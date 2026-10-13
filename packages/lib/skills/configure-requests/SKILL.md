@@ -72,9 +72,9 @@ const { data, status } = await api.get<{ id: number; name: string }>("/users/1")
 - `get`, `delete`, `head`, `options` take `(url, config?)`.
 - `post`, `put`, `patch`, `query` take `(url, data?, config?)`. `query` sends the HTTP QUERY method.
 - `postForm`, `putForm`, `patchForm` send `multipart/form-data`.
-- `api.getUri(config)` builds the URL from `baseURL`, `url`, `allowAbsoluteUrls` and `params` the
-  way a request does, without sending anything. It doesn't substitute `pathParams`, so `{key}`
-  placeholders stay as written.
+- `api.getUri(config)` builds the URL from `baseURL`, `url`, `pathParams`, `allowAbsoluteUrls` and
+  `params` the way a request does, without sending anything. It doesn't run schemas, so
+  `pathParams` fills the `{key}` placeholders as given.
 
 Path and query parameters:
 

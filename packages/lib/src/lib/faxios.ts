@@ -195,9 +195,9 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = {
     <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D> & TOpts): Promise<R>;
   };
   /**
-   * Build the URL for `config` without sending a request. Applies `baseURL`, `params` and
-   * `paramsSerializer`, but does not substitute `pathParams` or run schemas, so `{key}`
-   * placeholders come back as written.
+   * Build the URL for `config` without sending a request. Fills `{key}` placeholders from
+   * `pathParams` and applies `baseURL`, `allowAbsoluteUrls`, `params` and `paramsSerializer`
+   * like a request does. Schemas are not run, so `pathParams` is used as given.
    */
   getUri: (config?: FaxiosRequestConfig & TOpts) => string;
   head: {
