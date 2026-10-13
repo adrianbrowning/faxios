@@ -2,6 +2,7 @@ import assert from "node:assert";
 import { describe, it } from "vitest";
 import * as root from "#src/index.ts";
 import faxios, { create, Faxios, FaxiosError } from "#src/index.ts";
+import type { FaxiosRequestConfig } from "#src/index.ts";
 import * as pluginsEntry from "#src/lib/plugins/definePlugin.ts";
 
 describe("static api", () => {
@@ -257,5 +258,15 @@ describe("instance api", () => {
       (transformedData as unknown as Record<string, unknown>).stringKey,
       "value"
     );
+  });
+});
+
+describe("faxios(url, config)", () => {
+  it("does not write url into the caller's config", async () => {
+    const config: FaxiosRequestConfig = { env: { fetch: async () => new Response(null, { status: 200 }) } };
+
+    await faxios("http://example.test/a", config);
+
+    assert.strictEqual(Object.hasOwn(config, "url"), false);
   });
 });

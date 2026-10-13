@@ -338,8 +338,7 @@ class Faxios {
     /*eslint no-param-reassign:0*/
     // Allow for faxios('example/url'[, config]) a la fetch API
     if (typeof configOrUrl === "string") {
-      config = config || {};
-      config.url = configOrUrl;
+      config = { ...config, url: configOrUrl };
     }
     else {
       config = configOrUrl;
@@ -390,11 +389,13 @@ class Faxios {
     // checked widening, not an assertion: mergeConfig spreads a top-level
     // FaxiosHeaders, and method header groups are typed as plain header bags.
     const h: Record<string, unknown> | undefined = headers;
-    let contextHeaders = h && utils.merge(h.common, h[config.method]);
+    // A group is an object; a string under a group name is a real header.
+    const group = (name: string) => (h && utils.isObject(h[name]) ? h[name] : undefined);
+    let contextHeaders = h && utils.merge(group("common"), group(config.method));
 
     if (h) {
-      for (const group of METHOD_HEADER_GROUPS) {
-        delete h[group];
+      for (const name of METHOD_HEADER_GROUPS) {
+        if (utils.isObject(h[name])) delete h[name];
       }
     }
 
