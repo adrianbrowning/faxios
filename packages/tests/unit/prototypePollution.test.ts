@@ -816,6 +816,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should not expose arbitrary polluted keys as inherited properties", () => {
+      // eslint-disable-next-line no-extend-native -- prototype-pollution test; removed in finally
       Object.prototype.polluted = "attacker";
       try {
         const merged = mergeConfig({ url: "/x" }, {});
@@ -1095,6 +1096,7 @@ describe("Prototype Pollution Protection", () => {
     it("should not absorb polluted nested objects when the key is absent from inputs", () => {
       // When the source does not carry `customNested`, the merged result should
       // not surface it either, even if Object.prototype carries it.
+      // eslint-disable-next-line no-extend-native -- prototype-pollution test; removed in afterEach
       Object.prototype.customNested = { evil: "yes" };
 
       const result = utils.merge({}, { safe: "value" });

@@ -108,6 +108,7 @@ describe("FaxiosHeaders", () => {
       }
       finally {
         descriptor
+          // eslint-disable-next-line no-extend-native -- restores the descriptor the test saved
           ? Object.defineProperty(Object.prototype, "Authorization", descriptor)
           : delete (Object.prototype as Record<string, unknown>)["Authorization"];
       }
@@ -148,6 +149,7 @@ describe("FaxiosHeaders", () => {
       let accessed = false;
 
       try {
+        // eslint-disable-next-line no-extend-native -- prototype-pollution test; removed in finally
         Object.defineProperty(Object.prototype, Symbol.iterator, {
           configurable: true,
           get() {

@@ -132,6 +132,7 @@ describe("helpers::buildURL", () => {
     let serializeInvoked = false;
     let encodeInvoked = false;
 
+    // eslint-disable-next-line no-extend-native -- prototype-pollution test; removed in finally
     Object.defineProperty(Object.prototype, "serialize", {
       value() {
         serializeInvoked = true;
@@ -139,6 +140,7 @@ describe("helpers::buildURL", () => {
       },
       configurable: true,
     });
+    // eslint-disable-next-line no-extend-native -- prototype-pollution test; removed in finally
     Object.defineProperty(Object.prototype, "encode", {
       value() {
         encodeInvoked = true;

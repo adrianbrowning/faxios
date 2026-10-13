@@ -104,6 +104,7 @@ describe("utils::isX", () => {
     let accessed = false;
 
     try {
+      // eslint-disable-next-line no-extend-native -- prototype-pollution test; removed in finally
       Object.defineProperty(Object.prototype, Symbol.iterator, {
         configurable: true,
         get() {
