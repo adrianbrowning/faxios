@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@varlock/bumpy/config-schema.json",
   "baseBranch": "main",
-  "changelog": "github",
+  "changelog": ["github", { "internalAuthors": ["adrianbrowning"] }],
   "access": "public",
   "include": ["@gcmdev/faxios"],
   "publish": {
