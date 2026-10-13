@@ -279,7 +279,7 @@ The `maxBodyLength` property defines the maximum request body size in bytes. fax
 
 ### `redact`
 
-The `redact` property is an optional array of config key names to mask when an `FaxiosError` is serialized with `toJSON()`. Matching is case-insensitive and recursive across the serialized request config. Matching values are replaced with `[REDACTED ****]`.
+The `redact` property is an optional array of extra config key names to mask when an `FaxiosError` is serialized with `toJSON()`. `toJSON()` always masks `authorization`, `proxy-authorization`, `cookie` and `auth` and strips `user:pass@` from `url` and `baseURL`; `redact` adds to those keys and can't remove them. Matching is case-insensitive and recursive across the serialized request config. Matching values are replaced with `[REDACTED ****]`.
 
 `redact` only affects error serialization. It does not change request data, headers, or the original config object.
 
@@ -287,9 +287,9 @@ The `redact` property is an optional array of config key names to mask when an `
 import faxios from "@gcmdev/faxios";
 
 faxios.get('/user/12345', {
-  headers: { Authorization: 'Bearer token' },
-  auth: { username: 'me', password: 'secret' },
-  redact: ['authorization', 'password']
+  headers: { 'X-Api-Key': 'key' },
+  params: { token: 'secret' },
+  redact: ['x-api-key', 'token']
 }).catch((error) => {
   console.log(error.toJSON().config);
 });

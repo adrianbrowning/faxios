@@ -1,9 +1,11 @@
 import assert from "node:assert";
+import type { AddressInfo } from "node:net";
 import { afterEach, describe, expectTypeOf, it, vi } from "vitest";
 import faxios, { FaxiosError, FaxiosHeaders } from "#src/index.ts";
 import { authBearer } from "#src/lib/plugins/authBearer.ts";
 import { definePlugin } from "#src/lib/plugins/definePlugin.ts";
 import { retry } from "#src/lib/plugins/retry.ts";
+import { startHTTPServer, stopHTTPServer } from "../../setup/server.js";
 
 const BASE = "http://localhost";
 const URL = "/auth";
@@ -229,6 +231,50 @@ describe("plugins::authBearer", () => {
     assert.strictEqual(headers[0]!.get("X-Api-Key"), "Token abc");
     assert.strictEqual(headers[0]!.get("Authorization"), null);
     assert.strictEqual(headers[1]!.get("X-Api-Key"), "raw");
+  });
+
+  describe("a custom header and redirects", () => {
+    it("never reaches another origin the API redirects to", async () => {
+      const received: Array<string | undefined> = [];
+      const originB = await startHTTPServer((req, res) => {
+        const value = req.headers["x-api-key"];
+        received.push(typeof value === "string" ? value : undefined);
+        res.end("ok");
+      });
+      const portB = (originB.address() as AddressInfo).port;
+      const originA = await startHTTPServer((_req, res) => {
+        res.writeHead(302, { Location: `http://127.0.0.1:${portB}/landing` });
+        res.end();
+      });
+      try {
+        const api = faxios.create({ baseURL: `http://127.0.0.1:${(originA.address() as AddressInfo).port}` })
+          .use(authBearer(() => "secret-key", { header: "X-Api-Key", scheme: "" }));
+
+        await assert.rejects(api.get("/start"), (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_NETWORK);
+        assert.deepStrictEqual(received, []);
+      }
+      finally {
+        await stopHTTPServer(originA);
+        await stopHTTPServer(originB);
+      }
+    });
+
+    it("sets fetchOptions.redirect to \"error\" only for a custom header the caller hasn't set redirect for", async () => {
+      const redirects: Array<unknown> = [];
+      const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
+        redirects.push(init?.redirect);
+        return new Response(null, { status: 200 });
+      };
+      const custom = faxios.create({ baseURL: BASE, env: { fetch } }).use(authBearer(() => "key", { header: "X-Api-Key" }));
+      const standard = faxios.create({ baseURL: BASE, env: { fetch } }).use(authBearer(() => "token", { header: "authorization" }));
+
+      await custom.get(URL);
+      await custom.get(URL, { fetchOptions: { redirect: "manual" } });
+      await standard.get(URL);
+
+      // "follow" is fetch's own default, which the adapter writes when nothing sets redirect.
+      assert.deepStrictEqual(redirects, [ "error", "manual", "follow" ]);
+    });
   });
 
   describe("origin limit", () => {

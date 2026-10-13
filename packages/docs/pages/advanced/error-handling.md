@@ -81,18 +81,21 @@ faxios.get("/user/12345").catch(function (error) {
 });
 ```
 
-To avoid logging secrets from `error.config`, pass a `redact` array in the request config. Matching config keys are masked case-insensitively at any depth when `FaxiosError#toJSON()` is called.
+`toJSON()` never includes the request or the response, and it masks credentials so the result is safe to log: the values of the `authorization`, `proxy-authorization`, `cookie` and `auth` config keys (case-insensitive, at any depth) become `[REDACTED ****]`, and `user:pass@` is stripped from `url` and `baseURL`. To mask other secrets, such as an API key header or a token in `params`, list their keys in a `redact` array in the request config; they're masked the same way.
 
 ```js status=404
 import faxios from "@gcmdev/faxios";
 
 faxios.get("/user/12345", {
-  headers: { Authorization: "Bearer token" },
-  redact: ["authorization"]
+  headers: { Authorization: "Bearer token", "X-Api-Key": "key" },
+  redact: ["x-api-key"]
 }).catch(function (error) {
-  console.log(error.toJSON().config.headers.Authorization); // [REDACTED ****]
+  const { headers } = error.toJSON().config;
+  console.log(headers.Authorization, headers["X-Api-Key"]); // [REDACTED ****] [REDACTED ****]
 });
 ```
+
+The error object itself still holds the full `error.config`. A logger that prints the error's fields instead of calling `toJSON()` (`console.log(error)` in Node, many structured loggers) prints the credentials too, so log `error.toJSON()`.
 
 ## Handling timeouts
 
