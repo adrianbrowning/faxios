@@ -1806,15 +1806,15 @@
       ]
     },
     "source:.bumpy/_config.json": {
-      "fingerprint": "9a5b557af079aab6b3c03f99c0dd55a07dbbf28569efd01d418c0d2aa9ac480f",
+      "fingerprint": "8da9c3d14dd2b1376f4e79b43dafee37d4561057063725f80593d4a7c835641f",
       "snapshot": {
-        ".bumpy/_config.json": "ae157640b35ff62aa622777851f4f4271a5dc7715e15c5c5e0d83762c58972b4"
+        ".bumpy/_config.json": "d82cedbff502125ea6de7fb48c7c3770a42378f855e1a87492dc9c648d10dfa1"
       },
-      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "head": "ccaa208ff5d1130cab9df9ec54cfd4170ed9b038",
       "outcome": "no-change",
-      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
+      "reason": "bumpy config only: the GitHub changelog formatter lists the maintainer as an internal author, so entries stop thanking them. No library API or skill guidance changes.",
       "evidence": [
-        "Changed: .bumpy/_config.json at 280f7e791c50e367a025fddc617941296f15f52a"
+        "Changed: .bumpy/_config.json at 465e8cdf20055c7da0786b97229d7d41d8bf030a"
       ]
     },
     "source:.bumpy/bumpy-release-tooling.md": {
