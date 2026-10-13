@@ -1,7 +1,7 @@
 // @ts-self-types="./Faxios.d.ts" — required for Deno: index.ts re-exports Faxios
 "use strict";
 
-import CanceledError from "../cancel/CanceledError.js";
+import canceledFromSignal from "../cancel/canceledFromSignal.js";
 import cloneConfig from "../helpers/cloneConfig.js";
 import validator from "../helpers/validator.js";
 import type { ValidatorFn } from "../helpers/validator.js";
@@ -22,6 +22,7 @@ import type {
 } from "../types.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import utils from "../utils.js";
+import assertTimeout from "./assertTimeout.js";
 import { createDefinedEndpoint } from "./define.js";
 import type { DefineConfig, DefinedEndpoint } from "./define.js";
 import dispatchRequest from "./dispatchRequest.js";
@@ -190,14 +191,14 @@ function settleOnAbort(
   signal: AbortSignal | GenericAbortSignal,
   config: InternalFaxiosRequestConfig
 ): Promise<FaxiosResponse> {
-  if (signal.aborted) return Promise.reject(new CanceledError(null, config));
+  if (signal.aborted) return Promise.reject(canceledFromSignal(signal, config));
   const { addEventListener: add, removeEventListener: remove } = signal;
   if (typeof add !== "function") return run();
   return new Promise((resolve, reject) => {
     const stop = () => remove?.call(signal, "abort", onAbort);
     function onAbort() {
       stop();
-      reject(new CanceledError(null, config));
+      reject(canceledFromSignal(signal, config));
     }
     // Listen before running: middleware may abort the signal before its first await.
     add.call(signal, "abort", onAbort);
@@ -213,6 +214,28 @@ function settleOnAbort(
       .catch(reject);
   });
 }
+
+// Flatten the `common` and per-method header groups into one FaxiosHeaders.
+// Every FaxiosConfigHeaders member is a string-keyed object, so this is a
+// checked widening, not an assertion: mergeConfig spreads a top-level
+// FaxiosHeaders, and method header groups are typed as plain header bags.
+const flattenMethodHeaders = (headers: unknown, method: string): FaxiosHeaders => {
+  const h = headers as Record<string, unknown> | undefined;
+  // A group is an object; a string under a group name is a real header.
+  const group = (name: string) => (h && utils.isObject(h[name]) ? h[name] : undefined);
+  const contextHeaders = h && utils.merge(group("common"), group(method));
+
+  if (h) {
+    for (const name of METHOD_HEADER_GROUPS) {
+      if (utils.isObject(h[name])) delete h[name];
+    }
+  }
+
+  return FaxiosHeaders.concat(
+    contextHeaders,
+    ...(h ? [ h as unknown as null ] : [])
+  );
+};
 
 // Middleware registration isn't a Faxios member: the callable instance from create() reaches it
 // through these, and its FaxiosInstance["use"] is the one place plugins are typed and checked.
@@ -383,25 +406,10 @@ class Faxios {
       (config.method || defaultMethod || "get") as string
     ).toLowerCase();
 
-    // Flatten headers
-    // Every FaxiosConfigHeaders member is a string-keyed object, so this is a
-    // checked widening, not an assertion: mergeConfig spreads a top-level
-    // FaxiosHeaders, and method header groups are typed as plain header bags.
-    const h: Record<string, unknown> | undefined = headers;
-    // A group is an object; a string under a group name is a real header.
-    const group = (name: string) => (h && utils.isObject(h[name]) ? h[name] : undefined);
-    let contextHeaders = h && utils.merge(group("common"), group(config.method));
+    config.headers = flattenMethodHeaders(headers, config.method);
 
-    if (h) {
-      for (const name of METHOD_HEADER_GROUPS) {
-        if (utils.isObject(h[name])) delete h[name];
-      }
-    }
-
-    config.headers = FaxiosHeaders.concat(
-      contextHeaders,
-      ...(h ? [ h as unknown as null ] : [])
-    );
+    // Before middleware, so a bad value never reaches caller code or a timer that fires at once.
+    assertTimeout(utils.hasOwnProp(config, "timeout") ? config.timeout : undefined, config as InternalFaxiosRequestConfig);
 
     const composed = this.#composed;
     if (!composed) return dispatchRequest(config as InternalFaxiosRequestConfig);

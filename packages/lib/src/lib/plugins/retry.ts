@@ -1,7 +1,8 @@
 // @ts-self-types="./retry.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import CanceledError from "../cancel/CanceledError.js";
+import canceledFromSignal from "../cancel/canceledFromSignal.js";
 import isCancel from "../cancel/isCancel.js";
+import { MAX_TIMER_MS } from "../core/assertTimeout.js";
 import FaxiosError from "../core/FaxiosError.js";
 import validator from "../helpers/validator.js";
 import type { FaxiosContext, FaxiosPlugin, FaxiosRequestConfig, GenericAbortSignal, InternalFaxiosRequestConfig, Method } from "../types.js";
@@ -15,6 +16,9 @@ const ownValue = <T extends object, K extends keyof T>(source: T, key: K): T[K] 
 
 const isWait = (ms: unknown): ms is number => typeof ms === "number" && Number.isFinite(ms) && ms >= 0;
 
+// A wait a timer can hold: setTimeout fires at once for anything longer.
+const isTimerWait = (ms: unknown) => isWait(ms) && ms <= MAX_TIMER_MS;
+
 // An HTTP method is a token (RFC 9110 §9.1, §5.6.2); anything else can never match a request.
 const TOKEN = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
 
@@ -27,8 +31,8 @@ const optionsSchema = {
   delay: (value: unknown) => isWait(value) || typeof value === "function" || "a finite number of at least 0 or a function",
   methods: (value: unknown) => (Array.isArray(value) && value.every(m => typeof m === "string" && TOKEN.test(m))) || "an array of HTTP method names",
   statuses: (value: unknown) => (Array.isArray(value) && value.every(isStatus)) || "an array of HTTP status codes (100-599)",
-  maxRetryAfter: (value: unknown) => isWait(value) || "a finite number of milliseconds of at least 0",
-  maxDelay: (value: unknown) => isWait(value) || "a finite number of milliseconds of at least 0",
+  maxRetryAfter: (value: unknown) => isTimerWait(value) || `a number of milliseconds from 0 to ${MAX_TIMER_MS}`,
+  maxDelay: (value: unknown) => isTimerWait(value) || `a number of milliseconds from 0 to ${MAX_TIMER_MS}`,
   jitter: (value: unknown) => value === "full" || value === "none" || "\"full\" or \"none\"",
   respectRetryAfter: validator.validators["boolean"],
   onRetry: validator.validators["function"],
@@ -66,11 +70,15 @@ export type RetryOptions = {
    * together don't retry together; `"none"` waits the capped backoff. Doesn't apply to `Retry-After`.
    */
   jitter?: "full" | "none";
-  /** The most the computed backoff waits, in milliseconds. Default 30 000. Doesn't apply to `Retry-After`. */
+  /**
+   * The most the computed backoff waits, in milliseconds. Default 30 000, at most 2 147 483 647
+   * (the setTimeout limit). Doesn't apply to `Retry-After`.
+   */
   maxDelay?: number;
   /**
    * The longest `Retry-After` (seconds or an HTTP date, on a 429 or 503) to wait, in milliseconds.
-   * Default 300 000 (5 minutes). A longer one rejects with the response's error instead of retrying.
+   * Default 300 000 (5 minutes), at most 2 147 483 647 (the setTimeout limit). A longer one rejects
+   * with the response's error instead of retrying.
    * Ignored when `respectRetryAfter` is `false`.
    */
   maxRetryAfter?: number;
@@ -152,13 +160,13 @@ function canReplay(data: unknown): boolean {
 function wait(ms: number, signal: AbortSignal | GenericAbortSignal | undefined, config: FaxiosRequestConfig): Promise<void> {
   return new Promise((resolve, reject) => {
     if (signal?.aborted) {
-      reject(new CanceledError(null, config));
+      reject(canceledFromSignal(signal, config));
       return;
     }
     const onAbort = () => {
       clearTimeout(timer);
       signal?.removeEventListener?.("abort", onAbort);
-      reject(new CanceledError(null, config));
+      reject(canceledFromSignal(signal!, config));
     };
     const timer = setTimeout(() => {
       signal?.removeEventListener?.("abort", onAbort);

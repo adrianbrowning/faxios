@@ -1,4 +1,4 @@
-import CanceledError from "../cancel/CanceledError.js";
+import canceledFromSignal from "../cancel/canceledFromSignal.js";
 import FaxiosError from "../core/FaxiosError.js";
 import utils from "../utils.js";
 
@@ -29,8 +29,7 @@ const composeSignals = (signals: Array<unknown> | null | undefined, timeout?: nu
       aborted = true;
       unsubscribe();
       const err = reason instanceof Error ? reason : this.reason;
-      const errMsg = err instanceof Error ? err.message : (err as string | undefined);
-      const abortErr = err instanceof FaxiosError ? err : new CanceledError(errMsg, undefined, undefined);
+      const abortErr = err instanceof FaxiosError ? err : canceledFromSignal({ aborted: true, reason: err });
       controller.abort(abortErr);
     }
   };

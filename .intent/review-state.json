@@ -3,82 +3,82 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "5b6e4967a9f51ef76763e7f1febb34041af801444e63931cf0edbc19d41c81d5",
+      "fingerprint": "efdac616d303610d2511ef37bee41c54814d0e6e9a3e549e88e1c9d0d79a1470",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "c0bb05f55c5ab74840a93bc6f2674de07806acf5c33ce33afd34a4ac49492f07",
-        "packages/lib/skills/configure-requests/SKILL.md": "a8435b3413bbc2df34de94b0263d5842d56c11b28e00ee123a5e1292730ba993",
+        "packages/lib/skills/configure-requests/SKILL.md": "c1bafda54b8e9cb93ca4e7e2ccfd9efb7303683238bc8e1fa3977c64fe3ce994",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "7df1044dbd292343c796162d3a26822df85dda3b032998cfa6c852ab47d3d99d",
-        "packages/lib/src/lib/core/Faxios.ts": "0db334f0291d3f1eca6aedd2f3a680fd4129c082aa26563a908d479a5133b6b8",
+        "packages/lib/src/lib/adapters/fetch.ts": "c401f87c236db2607f7b588aa84442bcc6e62954ea8efb3c4f6bb8c9ba60a2fd",
+        "packages/lib/src/lib/core/Faxios.ts": "7f2933029d77a5ccf806fcad97db4914b4c499038cda04e482794c3ce29e7fe9",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "97e25da79a42da871a80b630101563758ca5df332aee2320d13bcaf0ea8faee5",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "cb6d7169f0838a9d2de49be8dccd3eef23b71a62f8e3d3c26e606453aea5a89b",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "d932638959b9c35d830ef6a7e01f9fe29d5ae37c365a07fd1af715bc755b87ef",
         "packages/lib/src/lib/core/mergeConfig.ts": "11a4ce46f0cff00c06e89c5eed86c5751ccd80a15a6eb589c35eda685899caea",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
-        "packages/lib/src/lib/helpers/composeSignals.ts": "9c09d5fe23395e8af8b9c62efd641405ea2832f224b3653f70ef3ee6b408f6f5",
+        "packages/lib/src/lib/helpers/composeSignals.ts": "82087ee7bf3628d9e5d98c1611d14e6ce76df5ddcdde2db8298dfebc1d16f2ab",
         "packages/lib/src/lib/plugins/authBearer.ts": "6257fa773e865ed38ef7bdcc49c6fdb6034828aceaaea63e913a3e908172af8c",
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
-        "packages/lib/src/lib/plugins/retry.ts": "364be9bf5faabee17b87fbdc3ebec9f6c2074fc14335c1d6c352c63f97d799df",
+        "packages/lib/src/lib/plugins/retry.ts": "e9b96b36455e38c3e16944542c9a8905a408f7495171e941cf52a07a429d53d3",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
         "packages/lib/src/lib/types.ts": "e9f9fe1c8e31f5f9008f8d2fed18de12dea7273f846dd7d392ed90c5ceafedb7",
         "packages/tests/unit/api.test.ts": "811a57cac8863ef6c8c3c502e7507c71d498c725e21a2cdc5988f1c6237ee549",
         "packages/tests/unit/core/middleware.test.ts": "5022de5703b06d9e3ff6dced4fac3876e0ffd61ea06d75c4b16a6dbde2f22f88",
         "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
-        "packages/tests/unit/plugins/retry.test.ts": "34b0ff543162db94d4c4628381ef80492c4d6ca0a5bc2b04cfe9b235a9d577cc",
+        "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "171fd2a68f53dbb058a5074bc17f64201dee09dd",
+      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
       "outcome": "updated",
-      "reason": "configure-requests skill now says getUri() applies allowAbsoluteUrls the way a request does; other changes are internal URL resolution, docs, tests and a bump file",
+      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts at d8cbd4de61e82132702bf7f2751683bf4c27bded"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/helpers/composeSignals.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "874b6065afe7a5704893baa59f79a3f4cd109bbafe9920c433720ef24dcb6a44",
+      "fingerprint": "4bfabd6718d8d70fb672f2c321ae0ea4b0169e760639ddc6cf2849aa4363256d",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "c0bb05f55c5ab74840a93bc6f2674de07806acf5c33ce33afd34a4ac49492f07",
-        "packages/lib/skills/configure-requests/SKILL.md": "a8435b3413bbc2df34de94b0263d5842d56c11b28e00ee123a5e1292730ba993",
+        "packages/lib/skills/configure-requests/SKILL.md": "c1bafda54b8e9cb93ca4e7e2ccfd9efb7303683238bc8e1fa3977c64fe3ce994",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "7df1044dbd292343c796162d3a26822df85dda3b032998cfa6c852ab47d3d99d",
-        "packages/lib/src/lib/core/Faxios.ts": "0db334f0291d3f1eca6aedd2f3a680fd4129c082aa26563a908d479a5133b6b8",
+        "packages/lib/src/lib/adapters/fetch.ts": "c401f87c236db2607f7b588aa84442bcc6e62954ea8efb3c4f6bb8c9ba60a2fd",
+        "packages/lib/src/lib/core/Faxios.ts": "7f2933029d77a5ccf806fcad97db4914b4c499038cda04e482794c3ce29e7fe9",
         "packages/lib/src/lib/core/FaxiosError.ts": "aeaaff95df5d8aa62ce1730901bed23debcaca70e8e0669fba9a30caf4c36928",
         "packages/lib/src/lib/core/buildFullPath.ts": "97e25da79a42da871a80b630101563758ca5df332aee2320d13bcaf0ea8faee5",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "cb6d7169f0838a9d2de49be8dccd3eef23b71a62f8e3d3c26e606453aea5a89b",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "d932638959b9c35d830ef6a7e01f9fe29d5ae37c365a07fd1af715bc755b87ef",
         "packages/lib/src/lib/core/mergeConfig.ts": "11a4ce46f0cff00c06e89c5eed86c5751ccd80a15a6eb589c35eda685899caea",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
-        "packages/lib/src/lib/helpers/composeSignals.ts": "9c09d5fe23395e8af8b9c62efd641405ea2832f224b3653f70ef3ee6b408f6f5",
+        "packages/lib/src/lib/helpers/composeSignals.ts": "82087ee7bf3628d9e5d98c1611d14e6ce76df5ddcdde2db8298dfebc1d16f2ab",
         "packages/lib/src/lib/plugins/authBearer.ts": "6257fa773e865ed38ef7bdcc49c6fdb6034828aceaaea63e913a3e908172af8c",
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
-        "packages/lib/src/lib/plugins/retry.ts": "364be9bf5faabee17b87fbdc3ebec9f6c2074fc14335c1d6c352c63f97d799df",
+        "packages/lib/src/lib/plugins/retry.ts": "e9b96b36455e38c3e16944542c9a8905a408f7495171e941cf52a07a429d53d3",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
         "packages/lib/src/lib/types.ts": "e9f9fe1c8e31f5f9008f8d2fed18de12dea7273f846dd7d392ed90c5ceafedb7",
         "packages/tests/unit/api.test.ts": "811a57cac8863ef6c8c3c502e7507c71d498c725e21a2cdc5988f1c6237ee549",
         "packages/tests/unit/core/middleware.test.ts": "5022de5703b06d9e3ff6dced4fac3876e0ffd61ea06d75c4b16a6dbde2f22f88",
         "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
-        "packages/tests/unit/plugins/retry.test.ts": "34b0ff543162db94d4c4628381ef80492c4d6ca0a5bc2b04cfe9b235a9d577cc",
+        "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "171fd2a68f53dbb058a5074bc17f64201dee09dd",
+      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
       "outcome": "updated",
-      "reason": "configure-requests skill now says getUri() applies allowAbsoluteUrls the way a request does; other changes are internal URL resolution, docs, tests and a bump file",
+      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts at d8cbd4de61e82132702bf7f2751683bf4c27bded"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/helpers/composeSignals.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "source:knip.json": {
@@ -278,25 +278,25 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "93859d8a7350762f53df44e59b4771a98ee77e17c195f64bca6b4d39e3c5389d",
+      "fingerprint": "77de25e24d449da9bb4be079d2a813f29abef031770d855762b03d104bda483a",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "a19b2714b5b2e22f2aaa599a0b09bce021a5903233506813f5383de78afd2456"
+        "packages/docs/pages/advanced/request-config.md": "e0f2868d269066b74c4c57fac2642735379e80940c6bfccee4afed105a3740f6"
       },
-      "head": "3f379a4c81c5a5f1a2456dcec19e8f6bcdbfd606",
+      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
+      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/docs/pages/advanced/request-config.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
-      "fingerprint": "0fc64291d7304ee8e19c34506e35a4cd2d4f72bd40f4ef97ea72b0b93a268456",
+      "fingerprint": "4bf098604873342a0e49867c1332d2b025bc8f65e336cf6cd3beeefdbfb50ddc",
       "snapshot": {
-        "packages/docs/pages/advanced/retry.md": "7a47e5d65f7bda4f3db478ec23a78579895e564b731de14e2c4f4cca4a0ce311"
+        "packages/docs/pages/advanced/retry.md": "bec9780e065c99499ba204c232693726869fe78b2dbfb97f2bf10a0c9effce9b"
       },
-      "head": "90ed9eece075db8a379599d1faaeb20bc93f941b",
-      "outcome": "no-change",
-      "reason": "Skill describes Retry-After and next(ctx) at a level these patch fixes don't change; malformed headers and missing returns were bugs.",
+      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
+      "outcome": "updated",
+      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
       "evidence": [
         "Changed: packages/docs/pages/advanced/retry.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
@@ -2211,16 +2211,15 @@
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
-      "fingerprint": "bc45043181f774cc4fb77cfcdafc0c9251a4c51aee2b75250bf2674f4e46a5ee",
+      "fingerprint": "0da89edf4548bf1fa46602f4197be9f31d92b602acaf4b515abe0c0820b87f89",
       "snapshot": {
-        "packages/lib/src/lib/adapters/fetch-helpers.ts": "65525a836e1612a50febda905a49f3a61272a536e5524be226d050e1dbebed5d"
+        "packages/lib/src/lib/adapters/fetch-helpers.ts": "cc7d601d9160fc45a3f29a88920404cc58a7873afed5af29273d6e08a865f420"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "`import type { … } from \"../types.js\"` specifiers sorted. Cast union `string | null | undefined` → `null | string | undefined`. Behaviour change: none",
+      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
+      "outcome": "updated",
+      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/adapters/fetch-helpers.ts: Whole file compared. Changed lines are HEAD L6-8 and L147.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     },
     "source:packages/lib/src/lib/cancel/CanceledError.ts": {
@@ -4068,6 +4067,78 @@
       "reason": "configure-requests skill now says getUri() applies allowAbsoluteUrls the way a request does; other changes are internal URL resolution, docs, tests and a bump file",
       "evidence": [
         "Changed: packages/tests/unit/core/getUri.test.ts at d8cbd4de61e82132702bf7f2751683bf4c27bded"
+      ]
+    },
+    "source:.bumpy/abort-during-async-schema.md": {
+      "fingerprint": "eb9e6ab8185bafcb80174e4d674900badeacc348983fe627da6d48f62fecc3b5",
+      "snapshot": {
+        ".bumpy/abort-during-async-schema.md": "91588132b045062bd3516be62f744eda5dc10e3dddb9ff9c143f8644b87756a6"
+      },
+      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
+      "outcome": "updated",
+      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "evidence": [
+        "Changed: .bumpy/abort-during-async-schema.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:.bumpy/cancel-keeps-abort-reason.md": {
+      "fingerprint": "c56a8a8385d8e53cf9f7d50860cf57c68f12f02a5894f0096b66e00ce36c6c7e",
+      "snapshot": {
+        ".bumpy/cancel-keeps-abort-reason.md": "f6240c54b72767f1e3c7b29e8d5fdd09f9a1eb8ef04ab5640e7deca03cf99b72"
+      },
+      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
+      "outcome": "updated",
+      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "evidence": [
+        "Changed: .bumpy/cancel-keeps-abort-reason.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:.bumpy/timer-range-checks.md": {
+      "fingerprint": "8bf77a6d8cf598ad1423cc8ad73ce5dcdc1538490f8283778274e52cd28bcecf",
+      "snapshot": {
+        ".bumpy/timer-range-checks.md": "b400499a462af176e727f5ff5e2b24df6067413e6f4612e764ab7644b036092c"
+      },
+      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
+      "outcome": "updated",
+      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "evidence": [
+        "Changed: .bumpy/timer-range-checks.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:packages/lib/src/lib/cancel/canceledFromSignal.ts": {
+      "fingerprint": "2153430fba9d382572172c21b4b14260716b4938c3f0d247b58bc083ee8d5f38",
+      "snapshot": {
+        "packages/lib/src/lib/cancel/canceledFromSignal.ts": "03316912f7e0b416cd0be76331f640db90dc1dc6622826650bf5d53d6aad7aa0"
+      },
+      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
+      "outcome": "updated",
+      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "evidence": [
+        "Changed: packages/lib/src/lib/cancel/canceledFromSignal.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:packages/lib/src/lib/core/assertTimeout.ts": {
+      "fingerprint": "e02a8315d596321af2dc20bd40287e1d84e0150bb8332c41f36d828cf43c8ae0",
+      "snapshot": {
+        "packages/lib/src/lib/core/assertTimeout.ts": "9dbee014d42508e9aaf23b1e4f1bb72ca3f2151e5deb24a5506d6ea812ef130a"
+      },
+      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
+      "outcome": "updated",
+      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "evidence": [
+        "Changed: packages/lib/src/lib/core/assertTimeout.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:packages/tests/unit/core/cancellation.test.ts": {
+      "fingerprint": "7be757be543a760e62a8473c52f3014fc17121cd1adc84696da7806ee728f5e6",
+      "snapshot": {
+        "packages/tests/unit/core/cancellation.test.ts": "17770a14c2d1ba27fb7b8d21c534543e5780650f44ce0cff4effb15389c8c3c6"
+      },
+      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
+      "outcome": "updated",
+      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "evidence": [
+        "Changed: packages/tests/unit/core/cancellation.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
       ]
     }
   }

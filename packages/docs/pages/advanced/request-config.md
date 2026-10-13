@@ -147,7 +147,7 @@ Controls how faxios copies headers returned by a `FormData`-like object's `getHe
 
 ### `timeout`
 
-The `timeout` is the number of milliseconds before the request times out. If the request takes longer than `timeout`, the request will be aborted. The default is `0` (no timeout).
+The `timeout` is the number of milliseconds before the request times out. If the request takes longer than `timeout`, the request will be aborted. The default is `0` (no timeout). It must be a number from `0` to `2147483647` (the longest delay `setTimeout` supports, about 24.8 days); anything else, including `NaN` and `Infinity`, rejects with `ERR_BAD_OPTION_VALUE` before any middleware runs.
 
 With `responseType: "stream"`, the request isn't over when the promise resolves. The `timeout` and the [`signal`](#signal) stay active until you have read the whole body or cancelled it, so a slow or stalled body still times out, and aborting the signal stops it. Reading the stream then fails with the `ETIMEDOUT` or `ERR_CANCELED` error. faxios releases the timer and the signal listener when the body ends, errors or is cancelled. If the response has no body (a `204`, `304` or `HEAD` response), it releases them when the promise resolves.
 
@@ -303,7 +303,7 @@ If `validateStatus` is set to `null`, faxios resolves every response. An explici
 
 ### `signal`
 
-The `signal` property allows you to pass an instance of `AbortSignal` to the request. This allows you to cancel the request using the `AbortController` API. For `responseType: "stream"`, the signal can also cancel the body while you read it (see [`timeout`](#timeout)).
+The `signal` property allows you to pass an instance of `AbortSignal` to the request. This allows you to cancel the request using the `AbortController` API. An abort rejects the request at once with a `CanceledError` (code `ERR_CANCELED`) at every stage, including while a middleware or an async schema is still running. If you abort with a reason (`controller.abort(reason)`), the error keeps it: an `Error` reason becomes the error's `cause` and gives it its message, and a string reason becomes the message. For `responseType: "stream"`, the signal can also cancel the body while you read it (see [`timeout`](#timeout)).
 
 ### `transitional`
 

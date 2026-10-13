@@ -203,9 +203,13 @@ catch (error) {
 ```
 
 - Cancellation uses `AbortSignal` only. faxios checks the signal before middleware, before each
-  schema step and right before `fetch`, so an abort during pre-flight work sends nothing.
+  schema step and right before `fetch`, so an abort during pre-flight work sends nothing. An
+  abort rejects at once, even while a middleware or an async schema is still running.
+- `controller.abort(reason)` keeps the reason: an `Error` becomes the `CanceledError`'s `cause`
+  and message, a string becomes the message, at every stage.
 - A timeout always rejects with `ETIMEDOUT`. `ECONNABORTED` is never raised, and
-  `transitional.clarifyTimeoutError` has no effect.
+  `transitional.clarifyTimeoutError` has no effect. `timeout` must be 0 to 2147483647 ms;
+  anything else (`-1`, `NaN`, `Infinity`, `2 ** 31`) rejects with `ERR_BAD_OPTION_VALUE`.
 - With `responseType: "stream"`, `timeout` and `signal` stay active until the body is fully
   read or cancelled. Reading a stalled body rejects with `ETIMEDOUT` or `ERR_CANCELED`.
   Cancel a body you don't read so the timer and signal listener are released.
@@ -289,6 +293,7 @@ plugin's request options (such as `retry: false`). Before writing plugin code, r
   the API dedupes repeats. Stream bodies are never replayed. Cancellation never retries. A custom
   `retryOn` replaces the whole default predicate (`statuses`, `ERR_NETWORK`, `ETIMEDOUT`), and a
   `Retry-After` longer than `maxRetryAfter` (default 5 min) rejects without retrying.
+  `maxDelay` and `maxRetryAfter` are capped at 2147483647 ms (`ERR_BAD_OPTION_VALUE` above).
 - `timing(onTiming)` reports `{ method, url, attempt?, durationMs, status | error }` with no
   headers or body; `url` has no query string and keeps `{param}` placeholders.
   Install it before `retry` for one event per call, after it for one event per attempt.
