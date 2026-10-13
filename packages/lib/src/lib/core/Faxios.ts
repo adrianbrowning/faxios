@@ -237,27 +237,25 @@ function settleOnAbort(
   });
 }
 
-// Flatten the `common` and per-method header groups into one FaxiosHeaders.
-// Every FaxiosConfigHeaders member is a string-keyed object, so this is a
-// checked widening, not an assertion: mergeConfig spreads a top-level
-// FaxiosHeaders, and method header groups are typed as plain header bags.
-const flattenMethodHeaders = (headers: unknown, method: string): FaxiosHeaders => {
-  const h = headers as Record<string, unknown> | undefined;
-  // A group is an object; a string under a group name is a real header.
-  const group = (name: string) => (h && utils.isObject(h[name]) ? h[name] : undefined);
-  const contextHeaders = h && utils.merge(group("common"), group(method));
-
-  if (h) {
-    for (const name of METHOD_HEADER_GROUPS) {
-      if (utils.isObject(h[name])) delete h[name];
-    }
+// One level's headers (instance or request), lowest precedence first: the `common` group, the
+// group for the request's method, then the top-level headers. Every FaxiosConfigHeaders member is
+// a string-keyed object, so the casts are checked widenings, not assertions.
+function headerLayers(headers: unknown, method: string): Array<null | Record<string, unknown>> {
+  if (!utils.isPlainObject(headers)) return [ headers as null ];
+  const h = headers as Record<string, unknown>;
+  // A group is an own object under a group name; a string under a group name is a real header.
+  const isGroup = (name: string) =>
+    METHOD_HEADER_GROUPS.includes(name as keyof HeadersDefaults) && utils.hasOwnProp(h, name) && utils.isObject(h[name]);
+  const topLevel: Record<string, unknown> = Object.create(null);
+  for (const name of Object.keys(h)) {
+    if (!isGroup(name)) topLevel[name] = h[name];
   }
-
-  return FaxiosHeaders.concat(
-    contextHeaders,
-    ...(h ? [ h as unknown as null ] : [])
-  );
-};
+  return [
+    isGroup("common") ? h["common"] as Record<string, unknown> : null,
+    isGroup(method) ? h[method] as Record<string, unknown> : null,
+    topLevel,
+  ];
+}
 
 // Middleware registration isn't a Faxios member: the callable instance from create() reaches it
 // through these, and its FaxiosInstance["use"] is the one place plugins are typed and checked.
@@ -399,10 +397,12 @@ class Faxios {
       config = configOrUrl;
     }
 
+    // Headers are flattened per level, so every request header group beats every instance one.
+    const instanceHeaders = utils.hasOwnProp(this.defaults, "headers") ? this.defaults.headers : undefined;
+    const requestHeaders = utils.hasOwnProp(config, "headers") ? config.headers : undefined;
+
     config = mergeConfig(this.defaults, config);
     assertRequestConfig(config, this.#pluginOptions);
-
-    const { headers } = config;
 
     normalizeParamsSerializer(config);
     resolveAllowAbsoluteUrls(config, this.defaults);
@@ -410,7 +410,9 @@ class Faxios {
     config.method = resolveMethod(config, this.defaults);
     normalizeURL(config);
 
-    config.headers = flattenMethodHeaders(headers, config.method);
+    // Every request header replaces the instance's, including a `null` or `false` there.
+    config.headers = FaxiosHeaders.concat(undefined, ...headerLayers(instanceHeaders, config.method))
+      .set(FaxiosHeaders.concat(undefined, ...headerLayers(requestHeaders, config.method)), true);
 
     // Before middleware, so a bad value never reaches caller code or a timer that fires at once.
     assertTimeout(utils.hasOwnProp(config, "timeout") ? config.timeout : undefined, config as InternalFaxiosRequestConfig);

@@ -71,6 +71,8 @@ Any other unknown request config key rejects the same way, so a typo such as `ti
 
 `maxContentLength` and `maxBodyLength` are **kept** and enforced by the fetch adapter.
 
+**Config merge.** Request headers now beat instance headers in every group: the order, lowest first, is instance `common`, instance method group, instance top-level, request `common`, request method group, request top-level. Previously an instance top-level header beat a request's `common` or method group. A request option set to `undefined` now counts as unset on `request()` and every method alias, so `{ timeout: undefined }` or `{ baseURL: undefined }` keeps the instance value; only `xsrfCookieName` and `xsrfHeaderName` are still cleared by `undefined`. `transitional.validateStatusUndefinedResolves` now defaults to `false`, so `validateStatus: undefined` rejects non-2xx like the default validator; pass `validateStatus: null` to resolve every status.
+
 ### f) Connection / transport errors now surface as `ERR_NETWORK`
 
 A refused connection or other transport failure now rejects with `FaxiosError` code `ERR_NETWORK`, and the underlying OS error (e.g. `ECONNREFUSED`) is attached on `error.cause`. Previously the http adapter surfaced `ECONNREFUSED` as the error code itself.

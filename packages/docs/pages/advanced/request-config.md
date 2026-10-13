@@ -280,7 +280,9 @@ faxios.get('/user/12345', {
 
 The `validateStatus` function allows you to override the default status code validation. By default, faxios will reject the promise if the status code is not in the range of 200-299. You can override this behavior by providing a custom `validateStatus` function. The function should return `true` if the status code is within the range you want to accept.
 
-If `validateStatus` is set to `null`, faxios resolves every response. An explicit `validateStatus: undefined` also resolves every response unless `transitional.validateStatusUndefinedResolves` is `false`.
+If `validateStatus` is set to `null`, faxios resolves every response. An explicit `validateStatus: undefined` counts as not set, so the instance's or the default validator applies, unless `transitional.validateStatusUndefinedResolves` is `true`.
+
+Every other option set to `undefined` also counts as not set and keeps the instance value, except `xsrfCookieName` and `xsrfHeaderName`, where `undefined` clears it. See [Config defaults](/pages/advanced/config-defaults#an-option-set-to-undefined).
 
 ### `signal`
 
@@ -292,7 +294,7 @@ The `transitional` property allows you to enable or disable certain transitional
 
 - `forcedJSONParsing`: Forces faxios to parse the response string as JSON even if `responseType` is not `'json'`.
 - `clarifyTimeoutError`: Accepted for compatibility but has no effect. Timed-out requests always reject with `ETIMEDOUT`.
-- `validateStatusUndefinedResolves`: When `true` _(default)_, an explicit `validateStatus: undefined` resolves every response status (legacy behavior). Set to `false` to make an explicit `undefined` behave like an omitted option, so the configured or default validator applies (reject non-2xx).
+- `validateStatusUndefinedResolves`: When `false` _(default)_, an explicit `validateStatus: undefined` behaves like an omitted option, so the instance's or the default validator applies (reject non-2xx). Set to `true` to make it resolve every response status (the behavior before 0.3.0); `validateStatus: null` does that without this flag.
 
 There is no `silentJSONParsing` option any more, and passing it rejects with `ERR_BAD_OPTION`. An explicit `responseType: "json"` always rejects a body that isn't valid JSON (see [`responseType`](#responsetype)); leave `responseType` unset to get the raw string instead.
 
@@ -394,7 +396,7 @@ const config: FaxiosRequestConfig = {
   transitional: {
     forcedJSONParsing: true,
     clarifyTimeoutError: false,
-    validateStatusUndefinedResolves: true,
+    validateStatusUndefinedResolves: false,
   },
   responseSchema: z.object({ id: z.number(), title: z.string() }),
   requestSchema: z.object({ firstName: z.string() }),

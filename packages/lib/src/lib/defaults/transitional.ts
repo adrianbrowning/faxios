@@ -6,5 +6,5 @@ import type { TransitionalOptions } from "../types.js";
 export default {
   forcedJSONParsing: true,
   clarifyTimeoutError: false,
-  validateStatusUndefinedResolves: true,
+  validateStatusUndefinedResolves: false,
 } satisfies Required<TransitionalOptions>;

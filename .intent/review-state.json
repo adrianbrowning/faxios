@@ -3,21 +3,21 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "bbc825f4aa44da8e91b8947a2a13986f91bf5e9133dbaee95d282ca80e91eb32",
+      "fingerprint": "2425deca423f367fdbc7d2fdbb0af2a49848ccebd00eaaf43a6312322b0f2ad2",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "8c8fc260db577953a1c2124c57298e1c40d88e46737a54ae499af97fa04645a4",
+        "MIGRATION_GUIDE.md": "1e788aa494ab1edcf63f1f8439936665afdf005ecc47253ba4d26885a2ad3535",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "16cbb6e44bd2ef7ae6b91fdb7db9773a938536889c651e865ea69a67e730e53f",
+        "packages/lib/skills/configure-requests/SKILL.md": "955875cad52b30fcbe5b3b68c21f572997fef841af688f3785cee82eeb7cc5cd",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "1cd413182f1603fc615a3c0e0dbc32043723545450a2d70281030e812516ba16",
         "packages/lib/skills/configure-requests/references/plugins.md": "914e94cc6d724c16a4d752c8168a342cca82dffa12a087253558ab6c929ee5b0",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
         "packages/lib/src/lib/adapters/fetch.ts": "82181ff21c458c30cb00bb80b71c1afa22e117aa761613c396a6896709a58c77",
-        "packages/lib/src/lib/core/Faxios.ts": "e74378c1f5192eb0cd26caef49aa57cc8a081840408f0752272a9062351e64db",
+        "packages/lib/src/lib/core/Faxios.ts": "140befadd92d2cb9d4a00c1a4cfeeedcc313d1a2e035c56780aa21d8e07730e3",
         "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
         "packages/lib/src/lib/core/dispatchRequest.ts": "d932638959b9c35d830ef6a7e01f9fe29d5ae37c365a07fd1af715bc755b87ef",
-        "packages/lib/src/lib/core/mergeConfig.ts": "fa64a0fc0e21ee947287d400fa4dace0d58a783c963544754cc45819020558b1",
+        "packages/lib/src/lib/core/mergeConfig.ts": "44c5417867eca00b465e1cbfbcee2104162d5e82705b15082b9be8ba28930f8a",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
         "packages/lib/src/lib/helpers/composeSignals.ts": "82087ee7bf3628d9e5d98c1611d14e6ce76df5ddcdde2db8298dfebc1d16f2ab",
@@ -33,32 +33,32 @@
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "2c8801466e565b919c13e48e8993cb664458c3e9ac17cc1fdcbce8c0574de720"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "a07985125c27956a1d106702007aa65f535066b6",
       "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/plugins/definePlugin.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/types.ts, packages/tests/unit/plugins/definePlugin.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/mergeConfig.ts at a07985125c27956a1d106702007aa65f535066b6"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "db0d6b1690c1fce7923dfa14d8e7f5caf0a627fd200518def3191980ef125327",
+      "fingerprint": "a598a99fb90fcc737b108deca3cdf39982b005f20c82905a5b689a5a7bc16e2b",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "8c8fc260db577953a1c2124c57298e1c40d88e46737a54ae499af97fa04645a4",
+        "MIGRATION_GUIDE.md": "1e788aa494ab1edcf63f1f8439936665afdf005ecc47253ba4d26885a2ad3535",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "16cbb6e44bd2ef7ae6b91fdb7db9773a938536889c651e865ea69a67e730e53f",
+        "packages/lib/skills/configure-requests/SKILL.md": "955875cad52b30fcbe5b3b68c21f572997fef841af688f3785cee82eeb7cc5cd",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "1cd413182f1603fc615a3c0e0dbc32043723545450a2d70281030e812516ba16",
         "packages/lib/skills/configure-requests/references/plugins.md": "914e94cc6d724c16a4d752c8168a342cca82dffa12a087253558ab6c929ee5b0",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
         "packages/lib/src/lib/adapters/fetch.ts": "82181ff21c458c30cb00bb80b71c1afa22e117aa761613c396a6896709a58c77",
-        "packages/lib/src/lib/core/Faxios.ts": "e74378c1f5192eb0cd26caef49aa57cc8a081840408f0752272a9062351e64db",
+        "packages/lib/src/lib/core/Faxios.ts": "140befadd92d2cb9d4a00c1a4cfeeedcc313d1a2e035c56780aa21d8e07730e3",
         "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
         "packages/lib/src/lib/core/dispatchRequest.ts": "d932638959b9c35d830ef6a7e01f9fe29d5ae37c365a07fd1af715bc755b87ef",
-        "packages/lib/src/lib/core/mergeConfig.ts": "fa64a0fc0e21ee947287d400fa4dace0d58a783c963544754cc45819020558b1",
+        "packages/lib/src/lib/core/mergeConfig.ts": "44c5417867eca00b465e1cbfbcee2104162d5e82705b15082b9be8ba28930f8a",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
         "packages/lib/src/lib/helpers/composeSignals.ts": "82087ee7bf3628d9e5d98c1611d14e6ce76df5ddcdde2db8298dfebc1d16f2ab",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "2c8801466e565b919c13e48e8993cb664458c3e9ac17cc1fdcbce8c0574de720"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "a07985125c27956a1d106702007aa65f535066b6",
       "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/plugins/definePlugin.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/types.ts, packages/tests/unit/plugins/definePlugin.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/mergeConfig.ts at a07985125c27956a1d106702007aa65f535066b6"
       ]
     },
     "source:knip.json": {
@@ -278,15 +278,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "230442ceb45e50a24dbcca4848a4bae8c24ca614c9cb37b7061d40ebc1c70f24",
+      "fingerprint": "f9091c060bd1b7483b487098b90642235843e465a469625be86dd841a31bed11",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "47953778b32c7f4b5dee99a98ba0ae85660215fef5062e266173919c8fbb1917"
+        "packages/docs/pages/advanced/request-config.md": "c2c701fe082d9c289148b83ccbd03692f68d9c09abd85f3bcf3f1427b3d80526"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "a07985125c27956a1d106702007aa65f535066b6",
       "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: packages/docs/pages/advanced/request-config.md at a07985125c27956a1d106702007aa65f535066b6"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -2844,15 +2844,15 @@
       ]
     },
     "source:packages/tests/unit/core/mergeConfig.test.ts": {
-      "fingerprint": "607cb9e20f884b43187911e3b0ed01518fabad08ed9d9729fdd1869eb121acbf",
+      "fingerprint": "5da22b73828be119b65f9149c9d718b0a59496a3d67f816881096d069ca3d8d0",
       "snapshot": {
-        "packages/tests/unit/core/mergeConfig.test.ts": "19c0c44e281867d460fb4e7608472bb12bfc7403cf8ec7577a1f37e6ee4ac379"
+        "packages/tests/unit/core/mergeConfig.test.ts": "af373b7314060f9b53034f6507d96143966b35cd30d9e2d2c14c8f13f0b34ae8"
       },
-      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
+      "head": "a07985125c27956a1d106702007aa65f535066b6",
       "outcome": "updated",
-      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
+      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
       "evidence": [
-        "Changed: packages/tests/unit/core/mergeConfig.test.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
+        "Changed: packages/tests/unit/core/mergeConfig.test.ts at a07985125c27956a1d106702007aa65f535066b6"
       ]
     },
     "source:packages/tests/unit/core/methodHeaderGroups.test.ts": {
@@ -4378,15 +4378,15 @@
       ]
     },
     "source:packages/lib/src/lib/defaults/transitional.ts": {
-      "fingerprint": "2550cd4d90ae953a87154f424c262f78f48db815f7026423c19e4daa3a5d9fd4",
+      "fingerprint": "d8190f9eb110bc8be7f618ec17597f3edeacf3e7fe96960b774e0084b6e05aee",
       "snapshot": {
-        "packages/lib/src/lib/defaults/transitional.ts": "05a5d497dcdd9924883767b335e01a666d6b8f0e8ade22f60c72f1f47885a79d"
+        "packages/lib/src/lib/defaults/transitional.ts": "c31fe256b87d121eab0973ba2e0b0b27c54db62a0968503a965ba719186a3d1a"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "a07985125c27956a1d106702007aa65f535066b6",
       "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
       "evidence": [
-        "Changed: packages/lib/src/lib/defaults/transitional.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: packages/lib/src/lib/defaults/transitional.ts at a07985125c27956a1d106702007aa65f535066b6"
       ]
     },
     "source:packages/lib/src/lib/helpers/stripUserInfo.ts": {
@@ -4555,6 +4555,42 @@
       "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
         "Changed: packages/tests/unit/core/unknownConfigKeys.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+      ]
+    },
+    "source:.bumpy/config-merge-precedence.md": {
+      "fingerprint": "4ce7282d0bb4bca3a1389b5b5cf4ddcd80110e01e3489aad109f4081bd497a4c",
+      "snapshot": {
+        ".bumpy/config-merge-precedence.md": "798e3bba308b169fd78302c3a1b26703f3dd9eb36cf81038cea5d3f8e08b0b55"
+      },
+      "head": "a07985125c27956a1d106702007aa65f535066b6",
+      "outcome": "updated",
+      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
+      "evidence": [
+        "Changed: .bumpy/config-merge-precedence.md at a07985125c27956a1d106702007aa65f535066b6"
+      ]
+    },
+    "source:packages/docs/pages/advanced/config-defaults.md": {
+      "fingerprint": "403661bbdc031c8faba99126477c5e06a23e5b2a4bc13ad8027ad5f0f4d1ed2d",
+      "snapshot": {
+        "packages/docs/pages/advanced/config-defaults.md": "83f3a75eb48ba13d8e538027a844aefdd7cd15539084cf0c8a5256b0408ddd56"
+      },
+      "head": "a07985125c27956a1d106702007aa65f535066b6",
+      "outcome": "updated",
+      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
+      "evidence": [
+        "Changed: packages/docs/pages/advanced/config-defaults.md at a07985125c27956a1d106702007aa65f535066b6"
+      ]
+    },
+    "source:packages/tests/unit/core/mergePrecedence.test.ts": {
+      "fingerprint": "84dc03bc54b165085e0c904618805c2334752c1f680fcd2a3b03c239a40fc5ae",
+      "snapshot": {
+        "packages/tests/unit/core/mergePrecedence.test.ts": "e6d92a93128b1f397b82b7ee17995a455bfbb4ada4026049f3e069f118cd9d25"
+      },
+      "head": "a07985125c27956a1d106702007aa65f535066b6",
+      "outcome": "updated",
+      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
+      "evidence": [
+        "Changed: packages/tests/unit/core/mergePrecedence.test.ts at a07985125c27956a1d106702007aa65f535066b6"
       ]
     }
   }

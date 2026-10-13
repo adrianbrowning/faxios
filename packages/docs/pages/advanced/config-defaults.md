@@ -19,7 +19,7 @@ If your application talks to more than one domain, setting `faxios.defaults.head
 
 ## Custom instance defaults
 
-faxios instances are declared with their own defaults when created. These defaults may be overridden setting the `defaults` property to the instance. An example of using custom instance defaults is shown below:
+faxios instances are declared with their own defaults when created. These defaults may be overridden by setting properties on the instance's `defaults`. An example of using custom instance defaults is shown below:
 
 ```js
 import faxios from "@gcmdev/faxios";
@@ -32,7 +32,7 @@ const instance = faxios.create({
   headers: { Authorization: "foobar" },
 });
 
-instance.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+instance.defaults.headers["Authorization"] = AUTH_TOKEN;
 ```
 
 ## Config order of precedence
@@ -54,4 +54,32 @@ instance.defaults.timeout = 2500;
 await instance.get("/longRequest", {
   timeout: 5000,
 });
+```
+
+### An option set to `undefined`
+
+A request option set to `undefined` counts as not set, so the instance value applies. `instance.request({ url: "/a", timeout: undefined })` keeps the instance's `timeout`, and so do `get()`, `post()` and every other method. The exceptions are `xsrfCookieName` and `xsrfHeaderName`, where `undefined` clears the instance value and turns the XSRF header off for that request.
+
+`validateStatus: undefined` also falls back to the instance's validator, so a `5xx` still rejects. To resolve every status, pass `validateStatus: null`.
+
+### Headers
+
+Headers merge in six levels, lowest precedence first:
+
+1. the instance's `common` group
+2. the instance's group for the request method, such as `get`
+3. the instance's top-level headers
+4. the request's `common` group
+5. the request's group for the request method
+6. the request's top-level headers
+
+Every request header beats every instance header, whatever group it's in. A request header set to `null` or `undefined` removes the instance's header. Inside one level, the top-level headers beat the groups, so the `Authorization` set above on `instance.defaults.headers` replaces the one from `create()`, but one set on `instance.defaults.headers.common` would not.
+
+```js
+import faxios from "@gcmdev/faxios";
+
+const api = faxios.create({ headers: { "X-Client": "web", get: { Accept: "application/json" } } });
+
+// Sends X-Client: cli and Accept: text/csv: request headers beat instance headers in any group.
+await api.get("/export", { headers: { common: { "X-Client": "cli" }, Accept: "text/csv" } });
 ```
