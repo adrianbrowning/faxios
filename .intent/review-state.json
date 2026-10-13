@@ -98,15 +98,15 @@
       ]
     },
     "source:knip.json": {
-      "fingerprint": "3d0e82856ceabcb753d702fa4bfedf3f8d292c2d9a487b0d48fdd479ea984572",
+      "fingerprint": "030b726a19fae88d707a19b81005a6481d1e358565ca4edf933d30b43228a07b",
       "snapshot": {
-        "knip.json": "5efaf1f97eb9e3c61870067f0863ab8d915858b64a7e8bee7931ac6540113b54"
+        "knip.json": "cb4eeadd51e952bdb76c5b9d9be2099e3425d2ea82f1c9286e48d27ffa3d5c0e"
       },
-      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
-      "outcome": "updated",
-      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
       "evidence": [
-        "Changed: knip.json at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
+        "Changed: knip.json at 3f255257ab10b40c960f0d87481ffbfada534a7e"
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
@@ -148,15 +148,15 @@
       ]
     },
     "source:packages/docs/.vitepress/config.mts": {
-      "fingerprint": "f38137dd0f167ed87d01315eb7661e3cc8a8fa8b71717cb56db8808d642b4333",
+      "fingerprint": "e475db17ba3616190e5bba373646b45913b0fb19ea2eb62a66b11bcf0b1f4b72",
       "snapshot": {
-        "packages/docs/.vitepress/config.mts": "02961dfeb6d4e32b0291ce19446e359ba9009739c29cd07761c24d0ea7012c0d"
+        "packages/docs/.vitepress/config.mts": "5798bee521002afaf87ca8f3a20f015c8b5c05fdbe6c95776633798c02036155"
       },
-      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
-      "outcome": "updated",
-      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
       "evidence": [
-        "Changed: packages/docs/.vitepress/config.mts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+        "Changed: packages/docs/.vitepress/config.mts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
       ]
     },
     "source:packages/docs/es/pages/advanced/interceptors.md": {
@@ -3205,17 +3205,15 @@
       ]
     },
     "source:pnpm-workspace.yaml": {
-      "fingerprint": "7368b2e61a5b45e78c216f1bf3c3f843421e85cc3c1b4df03cb22631ec88308c",
+      "fingerprint": "4981c71de182ec18af760cc7da74f49b0a466de9ea3645bb3ad53aab27a4853c",
       "snapshot": {
-        "pnpm-workspace.yaml": "824965ca54f20ffea1391dfe1f34bb435f1fb28114566daacd5d6db29c95d8a9"
+        "pnpm-workspace.yaml": "02173525f4be8d6c04489d6a63c79c7e927420ba9987967d7f9f54560f123b1b"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "allowBuilds for unrs-resolver (pnpm 10 build approval for the ESLint resolver). Workspace tooling.",
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
       "evidence": [
-        "git diff 01316e10..HEAD -- pnpm-workspace.yaml",
-        "pnpm install --frozen-lockfile succeeds.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: pnpm-workspace.yaml at 3f255257ab10b40c960f0d87481ffbfada534a7e"
       ]
     },
     "source:sharedConfig/eslint.config.style.ts": {
@@ -3337,15 +3335,15 @@
       ]
     },
     "source:.github/workflows/run-ci.yml": {
-      "fingerprint": "4b7426dd80163664d3d228ccd8cb9588e0cdb6d21105217aac91d0d8b5a1c739",
+      "fingerprint": "1fd6b136fd92bdef02dbeb1fac2de61ff5c0aa81d266dccb9485672ccdbc1181",
       "snapshot": {
-        ".github/workflows/run-ci.yml": "4c64fa3bba56ee678729e629214f771e06201ce35e44fc37b1e1b0b40f775f56"
+        ".github/workflows/run-ci.yml": "d6e0ffdc0123b7d2840c6a1fa880ce1ad593d582f0cdf2a88a3571592f08243f"
       },
-      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
       "outcome": "no-change",
-      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
       "evidence": [
-        "Changed: .github/workflows/run-ci.yml at 280f7e791c50e367a025fddc617941296f15f52a"
+        "Changed: .github/workflows/run-ci.yml at 3f255257ab10b40c960f0d87481ffbfada534a7e"
       ]
     },
     "source:.github/workflows/ts-check.yml": {
@@ -3579,15 +3577,15 @@
       ]
     },
     "source:packages/tests/pin-tarball-integrity.ts": {
-      "fingerprint": "0adb6beabed11c54cee844bf61f8e58479a65114aa3c4f95335d60e9c13a2971",
+      "fingerprint": "674320f46e410042eb893312751353ed9aa8b3cfeaad36bed2dce2152e0ac1af",
       "snapshot": {
-        "packages/tests/pin-tarball-integrity.ts": "34072db4241cd0d5e252eef72c3d8bc06ac9220f9e31b1322ee92cfffafb54b0"
+        "packages/tests/pin-tarball-integrity.ts": "411d691c18645cf9b61ede29a690897d5bb9379e24540db8f09f52fb1ec898d8"
       },
-      "head": "05ac94d71a2674b93106fda774dfeedc8f3cccc1",
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
       "outcome": "no-change",
-      "reason": "Test harness only: pin-tarball-integrity.ts also rewrites the faxios tarball version in the pnpm harness lockfiles, and AGENTS.md says so. No API or skill guidance changes.",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
       "evidence": [
-        "Changed: packages/tests/pin-tarball-integrity.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/tests/pin-tarball-integrity.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
       ]
     },
     "source:.bumpy/binary-body-content-type.md": {
@@ -5220,6 +5218,522 @@
       "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
         "Changed: packages/tests/unit/entryPoints.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:.github/workflows/bench.yml": {
+      "fingerprint": "3e41000d0e9bcf36aee37c29ce56f00b38cd10edde0a15eaceeceeafe90a4ed4",
+      "snapshot": {
+        ".github/workflows/bench.yml": "3e45b42db11348346e3ad3cac9e453150fb58ec0870a9bb2ada08b20e0b7450c"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: .github/workflows/bench.yml at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:.jscpd.json": {
+      "fingerprint": "bec6841198c3547eff8b27f8d77c5ebb2d737453ad3dd4fb60db10c3a1f64ae9",
+      "snapshot": {
+        ".jscpd.json": "71bfab34a9995fff40e50c4741fca4433cf28fe6fdc96594310d91ad6fe09d9c"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: .jscpd.json at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/.npmrc": {
+      "fingerprint": "d167ae551cd59c551be25aa6e73a9ff7c3bcd1c43a354860678f438aaa77f33f",
+      "snapshot": {
+        "packages/bench/.npmrc": "c1c9dc6d83f905a152c596421baafa430801d336d91ad7eb35e173238945aebb"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/.npmrc at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/.size-limit.ts": {
+      "fingerprint": "eb20706747f027bc8e364681f64a3acb214ef47a9ecc4e3a61827e01517c35b1",
+      "snapshot": {
+        "packages/bench/.size-limit.ts": "62f2c84ea3bd80a40f9d8ef94d12c1f518092ac32d3e7a8c55f8c173a97a1c35"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/.size-limit.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/README.md": {
+      "fingerprint": "1bc7c18279412909a9935744d88353b5cbd130017b40aa00ef58379f4eeba954",
+      "snapshot": {
+        "packages/bench/README.md": "dbbb318a508d555855afab7a9a6eb3ae24cb4fdf6fff9235bdfcac5a4f7a0050"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/README.md at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/fixtures/axios/basic.ts": {
+      "fingerprint": "4d66e0889b297d1e8c4f362594e728d46e4ffd310d05fcec612f435477e42a9f",
+      "snapshot": {
+        "packages/bench/fixtures/axios/basic.ts": "04c7f6d1a50c90adcc3b365f29b7d35bc268cba148e3f16752af9edefa6f5e8e"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/fixtures/axios/basic.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/fixtures/axios/retry.ts": {
+      "fingerprint": "d692d1d7d874554a4f4c688cef937c1ab0c0179e56f531ad2fe7fc853db9dcd2",
+      "snapshot": {
+        "packages/bench/fixtures/axios/retry.ts": "d1af18b7b20303958a1111399944009025270d187b03c868e15fd8b4321c6bf7"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/fixtures/axios/retry.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/fixtures/axios/validated.ts": {
+      "fingerprint": "4bf216cc6acb12f54a6f2e24724585157ddac50f2111b763cfbabd7107f0014f",
+      "snapshot": {
+        "packages/bench/fixtures/axios/validated.ts": "deed43712c8348bb0b0b74564952fe52c3aae792c66309008060e9c7f087549c"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/fixtures/axios/validated.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/fixtures/deps/axios.ts": {
+      "fingerprint": "59e65669752c0d1ded7147d7040a7792b504b305d5c756942b2b12b750baabc5",
+      "snapshot": {
+        "packages/bench/fixtures/deps/axios.ts": "f26652e0060b1b76f2b5392d5642678b85ddc05fd100ccbd1e7d054da3d03690"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/fixtures/deps/axios.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/fixtures/deps/faxios-retry.ts": {
+      "fingerprint": "71a3b0ee19db97db26258f96e40c45b4e0024c2721f9fb73c38b3f49676623bf",
+      "snapshot": {
+        "packages/bench/fixtures/deps/faxios-retry.ts": "dc7bc14d184fa6ad2503a0ae9cf2e5c60ca6918f6d3a3131e6346e349f4434f1"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/fixtures/deps/faxios-retry.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/fixtures/deps/faxios.ts": {
+      "fingerprint": "09c4049b68d580dade8c9edb5d8a50aa733c77bb4c2d7bfb3f843664fe6155bf",
+      "snapshot": {
+        "packages/bench/fixtures/deps/faxios.ts": "faab5612ae42788ab6ea2556b6e1fadc5a53e078b79d0b68dd32ea75443c40e4"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/fixtures/deps/faxios.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/fixtures/faxios/basic.ts": {
+      "fingerprint": "991f94791532e858c561d656852662e8887926d1cf2660f97282b695b540f25c",
+      "snapshot": {
+        "packages/bench/fixtures/faxios/basic.ts": "dc93a28513e701538aaa1d507e18a2c0ce74867067c1524a622510d14e9e622a"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/fixtures/faxios/basic.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/fixtures/faxios/retry.ts": {
+      "fingerprint": "736ccc30a6e37b58c76d63d64012ed04bb95ba81f308e22f5d91a126ea407f66",
+      "snapshot": {
+        "packages/bench/fixtures/faxios/retry.ts": "f728bfe0e7b0496f26a9ff597ad19329aaf56835804b46a1d6ce9d4457569221"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/fixtures/faxios/retry.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/fixtures/faxios/validated.ts": {
+      "fingerprint": "b6afc4f1f688f9671b6cc5f7b563ebcced4f674c64e365c8fda3c65fd020b497",
+      "snapshot": {
+        "packages/bench/fixtures/faxios/validated.ts": "0c859388ea4c342a7e4f89f7995c7b350777b9cf28209b137e39516d4cf3094c"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/fixtures/faxios/validated.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/fixtures/fetch/basic.ts": {
+      "fingerprint": "e89b23b0d5d01bcb71cc4f9315e82be7432795383381c20f6fd54a3aa153d0a0",
+      "snapshot": {
+        "packages/bench/fixtures/fetch/basic.ts": "79dae0aef6a0fda126a372a3112c879cb794e04d55277afdc74bb29a4e9d8057"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/fixtures/fetch/basic.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/fixtures/fetch/retry.ts": {
+      "fingerprint": "1ce73fd7137f4f89d10d24fd20e6c5dae4da4918b1347244a6952039fc4b956a",
+      "snapshot": {
+        "packages/bench/fixtures/fetch/retry.ts": "1c6856adb54a0b02b3c4f789a2a15f7ebe4d7fb008b7199b156110701cba8867"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/fixtures/fetch/retry.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/fixtures/fetch/validated.ts": {
+      "fingerprint": "d35d49d3bf740f860a3ad6e466a9a808576b62dd24f15e4f6912ea846b62d1fd",
+      "snapshot": {
+        "packages/bench/fixtures/fetch/validated.ts": "6511413efdbfe7b8682b470da9b667267a94e0d89001c087bc99b4d7bd2aa37a"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/fixtures/fetch/validated.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/fixtures/schemas.ts": {
+      "fingerprint": "21d9c1e7abc341d9433e03e6d6d23cbca2adad353c222896d5af02551b199e55",
+      "snapshot": {
+        "packages/bench/fixtures/schemas.ts": "fa01dc6d4bc78b1c1ca5dac648490306f4e3d48724d55130d01903562a0b212d"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/fixtures/schemas.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/fixtures/types.ts": {
+      "fingerprint": "81358174856677cb6dad872698de954b2b40bf0edbe632fb32031b1d124d74c6",
+      "snapshot": {
+        "packages/bench/fixtures/types.ts": "e8ba64271be3a993b5eefa7ef22a09babf070be100ca1cc5f222c153bda45c49"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/fixtures/types.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/pnpm-lock.yaml": {
+      "fingerprint": "a215d3b295ff7498d5ec357a8df6aceeb2e662d2bcd68f1b716d3ed4f2bb5bb4",
+      "snapshot": {
+        "packages/bench/pnpm-lock.yaml": "02679edf0a07296635626ccc28609806e6abdfa266df22adb4cdb6234ee72f5f"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/pnpm-lock.yaml at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/results/runtime.json": {
+      "fingerprint": "1bfae3a09e3eb90b2092b730d8c4a502b67babc7ce85e200c6446758ab59d133",
+      "snapshot": {
+        "packages/bench/results/runtime.json": "6483f613fe09de8282cd05dcac7f2efadce2ef0de31dc2e22d4a0cab652d957b"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/results/runtime.json at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/results/size.json": {
+      "fingerprint": "fc71e604ebe8e49758f76c1b6734dbd6c409b068ef8865c1bae70ecbf5b778b7",
+      "snapshot": {
+        "packages/bench/results/size.json": "a030b8e853689e2ea9ede916abb4c1c306a82f22e3ba62554d38780b162c4230"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/results/size.json at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/scripts/entries.ts": {
+      "fingerprint": "90438dd693639d4d339871afe2f9a761ca230c559a1c9ad8d8a2b50dd0117e54",
+      "snapshot": {
+        "packages/bench/scripts/entries.ts": "2790dee64d86e71f2969ede9bf0112cc551fd74c7293192c685f83c3f81cd9c1"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/scripts/entries.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/scripts/meta.ts": {
+      "fingerprint": "e210ba716a55df2ecb9f361681cf42425a3788b73c11103004d74b673b648a39",
+      "snapshot": {
+        "packages/bench/scripts/meta.ts": "da035b471c81325fd480e0a30f9105c240e88ee8e969a7ddd5189aab3decb483"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/scripts/meta.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/scripts/render.ts": {
+      "fingerprint": "8e3da58feda3c12c3192083355631bb8a0aa4f945fbb62f98e340322327146a2",
+      "snapshot": {
+        "packages/bench/scripts/render.ts": "d87bb56e08154188eef400dcec01b05e0d693b24a4645d1721b686e81ef86c7d"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/scripts/render.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/scripts/report.ts": {
+      "fingerprint": "8a60eb15c3444cfa937bd53429fdde3091fbc6f02f8c582aad7e95390c96ed29",
+      "snapshot": {
+        "packages/bench/scripts/report.ts": "e187bcf211a8416089971ac95a921b0e8bbce9e43168c58f61fcd154a07b00e2"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/scripts/report.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/scripts/results-schema.ts": {
+      "fingerprint": "08f178eff4a795e90a1ba6e09583762379ec9617a08837c1b08efd7a07b60a3b",
+      "snapshot": {
+        "packages/bench/scripts/results-schema.ts": "36533728365230618dd039bbb9286f457569c39a11c3c94725fa3b09fdb091b2"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/scripts/results-schema.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/scripts/runtime.ts": {
+      "fingerprint": "a9410d6794207da799999dac10df539b3f4feebfd750eb0d6c82be8730d163cc",
+      "snapshot": {
+        "packages/bench/scripts/runtime.ts": "a82d176195d63657802d4c0b7c3cda4439411ba02a1d4975854991dacdbb61fd"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/scripts/runtime.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/scripts/server-worker.ts": {
+      "fingerprint": "1f1ed008e1367fdec4a2aeb0a3c8043bd5e34e1bf4bf81df30c79727a94207b4",
+      "snapshot": {
+        "packages/bench/scripts/server-worker.ts": "a81628448065a30d67f09de630d582955d616c2fcfa88bf2af309d05fd39317b"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/scripts/server-worker.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/scripts/size.ts": {
+      "fingerprint": "c044c73403c218e6cbfc3a24f59ca460884276ff35f58b0e691b48550f27f281",
+      "snapshot": {
+        "packages/bench/scripts/size.ts": "6b802cbeb8a46a32ab902590651b0ce4a2c8b68768f3a99fa3a38ebdf6f36562"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/scripts/size.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/scripts/workload.ts": {
+      "fingerprint": "ef6e0709bcc6916567e5c92f63adf22d5026d6015d87f09e20019cf804b4a3f1",
+      "snapshot": {
+        "packages/bench/scripts/workload.ts": "393ba113f61cb4b54edaa810f5c90fb26038d2946f8e8319215ded6bf653871f"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/scripts/workload.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/tests/basic.test.ts": {
+      "fingerprint": "eab11188a8b519b539f4f312aace48a5bc88fc3303051fbf039dcdcb0e0ca668",
+      "snapshot": {
+        "packages/bench/tests/basic.test.ts": "af519c8d5dab49332d2b5881f9078d2b72c9a67ad5f8d73ccb337e709f01a061"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/tests/basic.test.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/tests/clients.ts": {
+      "fingerprint": "2ae22b36e3432f7272fe8f5ad9d78c6f08bcb97c1a23b9aef3471e91d7944a64",
+      "snapshot": {
+        "packages/bench/tests/clients.ts": "1f8e322c2b4002e491e4eb179806e1f1939c342b0f2b137748f2e879cd42c974"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/tests/clients.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/tests/ordering.test.ts": {
+      "fingerprint": "14189655be3cef31873ecd7f2d6d4bd71ba90a2919e1162f8da6ab1386f7ac70",
+      "snapshot": {
+        "packages/bench/tests/ordering.test.ts": "ccf2bcacd0bd125c0e734e92e3ec69e54b8ec857e16c0acccc559772b4f7b150"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/tests/ordering.test.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/tests/results.test.ts": {
+      "fingerprint": "0417e0c9f656ed9fe366b8bde9c13eb749fcbbc44c24cebf1b754757872f396f",
+      "snapshot": {
+        "packages/bench/tests/results.test.ts": "0b903fdfbba798dedf9a9c96c87a2189bf73928a5014f2dcdf66445462c696d2"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/tests/results.test.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/tests/retry.test.ts": {
+      "fingerprint": "373f6d4200912ae6c41d8b066139b87b73c7a7e901c7cbfd1bd9975dc20c6145",
+      "snapshot": {
+        "packages/bench/tests/retry.test.ts": "03b828b0d46f390906c76295e6f279661cba95a83a0ea741dbb0004ea94dcab8"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/tests/retry.test.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/tests/server.ts": {
+      "fingerprint": "4b7114c3671834cc0693288d2f740e2a54ff826236981404b3f40b74e96ef864",
+      "snapshot": {
+        "packages/bench/tests/server.ts": "5bd4bb4d94c0dfabbbf83ffdae0a86c6c7e0e2e92bb30fa48f9c742c9e6940f7"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/tests/server.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/tests/types.check.ts": {
+      "fingerprint": "d5ce602574c7e72ba56a662d57bfebc6bb1a8956e6a1ec1cbc86e1a07e0c261f",
+      "snapshot": {
+        "packages/bench/tests/types.check.ts": "ccc1080a1eccf239406dd55918cc51eea4a4221bbcae751cb9ad182050a12ad8"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/tests/types.check.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/tests/validated.test.ts": {
+      "fingerprint": "d9ebe30096a73904ccfaa02f77b7cb0b448f52f923e5a5247ccf4f54e6bf309e",
+      "snapshot": {
+        "packages/bench/tests/validated.test.ts": "8e11d29791315ddbc2f317fdd7fdb3c44ea3a2af29b47d5ec71b36031b14d62d"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/tests/validated.test.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/tsconfig.json": {
+      "fingerprint": "27ec0967a133e41d5323eb15ecdd980d3cab9fd47da306ddd0fed949c9f5b3bd",
+      "snapshot": {
+        "packages/bench/tsconfig.json": "f1132a45cba7d647be0afa8cf913c8f0fb5a0650d295c733d58dd4dbbe19a3af"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/tsconfig.json at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/bench/vitest.config.ts": {
+      "fingerprint": "1c039a411b64774826fd0636fcd37bbf48d4fda6ab817021d555575931aadec0",
+      "snapshot": {
+        "packages/bench/vitest.config.ts": "f934db17f136d3d9294a4eff4f44dd872e6816ce3cc3d8a61e61cae8de6ac909"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/bench/vitest.config.ts at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/docs/pages/misc/comparison.md": {
+      "fingerprint": "787ad13bd7c0b42356df5abf0eec6912a6522915d4f88a2957e22cf8adc96078",
+      "snapshot": {
+        "packages/docs/pages/misc/comparison.md": "645d1a1071e4ed4aea8075da1e0501a9a37860d72637f34260f9f4f7652e748f"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/docs/pages/misc/comparison.md at 3f255257ab10b40c960f0d87481ffbfada534a7e"
+      ]
+    },
+    "source:packages/tests/run-tests.sh": {
+      "fingerprint": "2e2e2e191a559b89ecee6eda8793e1daf0f398b3dd454fb658661210d6b65294",
+      "snapshot": {
+        "packages/tests/run-tests.sh": "f6b23622ecd0a68a0361eabee8ba1de5db459232a8cac976b05ddc9d56c852dc"
+      },
+      "head": "3f255257ab10b40c960f0d87481ffbfada534a7e",
+      "outcome": "no-change",
+      "reason": "#195: adds the packages/bench comparison harness and a generated docs page; nothing the configure-requests skill teaches changed.",
+      "evidence": [
+        "Changed: packages/tests/run-tests.sh at 3f255257ab10b40c960f0d87481ffbfada534a7e"
       ]
     }
   }
