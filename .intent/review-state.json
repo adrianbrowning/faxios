@@ -3,11 +3,11 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "8ad261f6089be313e8c52c727a59d2529c817f769b97a93e3bbceec6b7ded90b",
+      "fingerprint": "5d7cadd65578bae7613ee8f7abc270e2325155a8df114ef46cc39835ad035e4e",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3baba9ea3fee10c0847952dd29c4eba292b18fb26c249d948cd38bff0b93dc6a",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "d1e8735271b8d12ab9b28a7b4e530f9311528f516f617d8146bcee7b1adcf2fe",
+        "packages/lib/skills/configure-requests/SKILL.md": "da6b143ee4a0a3a04f238e992bf5b6eb6117ae7ed6949d756d64fa2807a76201",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "25f57c39b1a80789f43986053be1ad9ec874224d9fac643728b2e44b0d06102c",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
@@ -19,7 +19,7 @@
         "packages/lib/src/lib/core/dispatchRequest.ts": "d932638959b9c35d830ef6a7e01f9fe29d5ae37c365a07fd1af715bc755b87ef",
         "packages/lib/src/lib/core/mergeConfig.ts": "11a4ce46f0cff00c06e89c5eed86c5751ccd80a15a6eb589c35eda685899caea",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
+        "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
         "packages/lib/src/lib/helpers/composeSignals.ts": "82087ee7bf3628d9e5d98c1611d14e6ce76df5ddcdde2db8298dfebc1d16f2ab",
         "packages/lib/src/lib/plugins/authBearer.ts": "6257fa773e865ed38ef7bdcc49c6fdb6034828aceaaea63e913a3e908172af8c",
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
@@ -33,22 +33,22 @@
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
+      "head": "c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab",
       "outcome": "updated",
-      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
+      "reason": "#235: the skill now says getUri() fills in pathParams and returns the URL the request sends.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/core/buildFullPath.ts, packages/tests/unit/plugins/authBearer.test.ts at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/faxios.ts at c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "439428125eff240fb06cdad0514661aed268ad1e7aade442ff07124c70470db1",
+      "fingerprint": "f5bcfc917bacea750ff5ecafebf1741fed6343b93e4d7bc286caa2872dae9240",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3baba9ea3fee10c0847952dd29c4eba292b18fb26c249d948cd38bff0b93dc6a",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "d1e8735271b8d12ab9b28a7b4e530f9311528f516f617d8146bcee7b1adcf2fe",
+        "packages/lib/skills/configure-requests/SKILL.md": "da6b143ee4a0a3a04f238e992bf5b6eb6117ae7ed6949d756d64fa2807a76201",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "25f57c39b1a80789f43986053be1ad9ec874224d9fac643728b2e44b0d06102c",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
@@ -60,7 +60,7 @@
         "packages/lib/src/lib/core/dispatchRequest.ts": "d932638959b9c35d830ef6a7e01f9fe29d5ae37c365a07fd1af715bc755b87ef",
         "packages/lib/src/lib/core/mergeConfig.ts": "11a4ce46f0cff00c06e89c5eed86c5751ccd80a15a6eb589c35eda685899caea",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "4f201df3bb091f456e44e2c031e46ca0702c2f8680edcdca6bc92355f027dcd3",
+        "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
         "packages/lib/src/lib/helpers/composeSignals.ts": "82087ee7bf3628d9e5d98c1611d14e6ce76df5ddcdde2db8298dfebc1d16f2ab",
         "packages/lib/src/lib/plugins/authBearer.ts": "6257fa773e865ed38ef7bdcc49c6fdb6034828aceaaea63e913a3e908172af8c",
         "packages/lib/src/lib/plugins/definePlugin.ts": "c3eb32b9724798c0902d87a5e604280c65bfb5e502e37f00f01306717d58d907",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
+      "head": "c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab",
       "outcome": "updated",
-      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
+      "reason": "#235: the skill now says getUri() fills in pathParams and returns the URL the request sends.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/core/buildFullPath.ts, packages/tests/unit/plugins/authBearer.test.ts at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/faxios.ts at c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab"
       ]
     },
     "source:knip.json": {
@@ -640,15 +640,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-method-aliases.md": {
-      "fingerprint": "876794c825b35b05d932bd2a023b9d56db4df65786eead46f1c455d0035c3c43",
+      "fingerprint": "db9a376229415e6c470919f537e154f0a9f49a311328ae02f63dfa1132a3c44e",
       "snapshot": {
-        "packages/docs/pages/advanced/request-method-aliases.md": "3457109795a0e6b56dc9b82701da7d7653bfd60958c1d0dad2f3d2a82219f1ed"
+        "packages/docs/pages/advanced/request-method-aliases.md": "70ee941adfdbc977e5accca8f84d614adb644546f2366373cd721af5fdaedf9d"
       },
-      "head": "171fd2a68f53dbb058a5074bc17f64201dee09dd",
+      "head": "c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab",
       "outcome": "updated",
-      "reason": "configure-requests skill now says getUri() applies allowAbsoluteUrls the way a request does; other changes are internal URL resolution, docs, tests and a bump file",
+      "reason": "#235: the skill now says getUri() fills in pathParams and returns the URL the request sends.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-method-aliases.md at d8cbd4de61e82132702bf7f2751683bf4c27bded"
+        "Changed: packages/docs/pages/advanced/request-method-aliases.md at c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab"
       ]
     },
     "source:packages/lib/tsconfig.json": {
@@ -4036,27 +4036,27 @@
       ]
     },
     "source:packages/lib/src/lib/core/resolveRequestURL.ts": {
-      "fingerprint": "20f0245ebd0a588f0169f2a1b3b0874cd69b130116dfd124d065ab1109d264e4",
+      "fingerprint": "dc840373d9d5c567ce762445f6fc9110b933824a7225728a5b5d6c18989a5be1",
       "snapshot": {
-        "packages/lib/src/lib/core/resolveRequestURL.ts": "09a7243e17fd487ab020f1d7cff545177eb27415be4d121f5a014001b3c009a0"
+        "packages/lib/src/lib/core/resolveRequestURL.ts": "8ada602889e3457d7c94f5a2699d755fa725180bcb051726da8eeb919d43d21e"
       },
-      "head": "171fd2a68f53dbb058a5074bc17f64201dee09dd",
+      "head": "c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab",
       "outcome": "updated",
-      "reason": "configure-requests skill now says getUri() applies allowAbsoluteUrls the way a request does; other changes are internal URL resolution, docs, tests and a bump file",
+      "reason": "#235: the skill now says getUri() fills in pathParams and returns the URL the request sends.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/resolveRequestURL.ts at d8cbd4de61e82132702bf7f2751683bf4c27bded"
+        "Changed: packages/lib/src/lib/core/resolveRequestURL.ts at c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab"
       ]
     },
     "source:packages/tests/unit/core/getUri.test.ts": {
-      "fingerprint": "6df80156fdc5b1e1c2ce710725e5c8ecc3ac7bdfe9e69f348ae59b4ea709f70d",
+      "fingerprint": "adb2c8389a5b6d80b7b7d86f1c13b2728665c14551680339ab0e718b116b5f8d",
       "snapshot": {
-        "packages/tests/unit/core/getUri.test.ts": "6246661d7862ed6c280319d3a25f8369117704d62c637c733751354cdef2629a"
+        "packages/tests/unit/core/getUri.test.ts": "8837002cfe42ac7ffbebf5dc12f4afe6bf91c665474b180a50ab5678d3cd368a"
       },
-      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
+      "head": "c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab",
       "outcome": "updated",
-      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
+      "reason": "#235: the skill now says getUri() fills in pathParams and returns the URL the request sends.",
       "evidence": [
-        "Changed: packages/tests/unit/core/getUri.test.ts at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
+        "Changed: packages/tests/unit/core/getUri.test.ts at c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab"
       ]
     },
     "source:.bumpy/abort-during-async-schema.md": {
@@ -4273,6 +4273,18 @@
       "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
       "evidence": [
         "Changed: packages/tests/browser/options.browser.test.ts at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
+      ]
+    },
+    "source:.bumpy/geturi-path-params.md": {
+      "fingerprint": "5630ad0d4fc8b9077325d66c09a5fc7652e404978161c2a85636315b2d618306",
+      "snapshot": {
+        ".bumpy/geturi-path-params.md": "20fc2161a329ad38e845db1d283e3733d018400a64c23077cf5af910e0ee93e8"
+      },
+      "head": "c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab",
+      "outcome": "updated",
+      "reason": "#235: the skill now says getUri() fills in pathParams and returns the URL the request sends.",
+      "evidence": [
+        "Changed: .bumpy/geturi-path-params.md at c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab"
       ]
     }
   }

@@ -81,3 +81,25 @@ describe("getUri() matches the URL the request sends", () => {
     assert.deepStrictEqual(seen, [ "https://other.example.com/x" ]);
   });
 });
+
+describe("getUri() fills in pathParams", () => {
+  it("returns the URL the request sends, with placeholders substituted and encoded", async () => {
+    const instance = faxios.create({ baseURL: "https://api.example.com/v1" });
+    const config: FaxiosRequestConfig = { url: "/users/{id}/posts/{slug}", pathParams: { id: 42, slug: "a b" }, params: { q: 1 } };
+
+    assert.strictEqual(instance.getUri(config), "https://api.example.com/v1/users/42/posts/a%20b?q=1");
+    assert.strictEqual(instance.getUri(config), await sentURL(instance, config));
+  });
+
+  it("throws ERR_BAD_OPTION_VALUE for a placeholder missing from pathParams", () => {
+    const instance = faxios.create({ baseURL: "https://api.example.com/v1" });
+    assert.throws(
+      () => instance.getUri({ url: "/users/{id}", pathParams: {} }),
+      { code: "ERR_BAD_OPTION_VALUE", message: "Path param \"id\" not found in pathParams" }
+    );
+  });
+
+  it("leaves placeholders as written when pathParams is not set", () => {
+    assert.strictEqual(faxios.getUri({ url: "https://api.example.com/users/{id}" }), "https://api.example.com/users/{id}");
+  });
+});
