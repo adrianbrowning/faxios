@@ -41,6 +41,7 @@ const sidebar = [
     text: "Advanced",
     items: [
       { text: "Public API", link: "/pages/advanced/api-reference" },
+      { text: "Entry points", link: "/pages/advanced/entry-points" },
       {
         text: "Request method aliases",
         link: "/pages/advanced/request-method-aliases",

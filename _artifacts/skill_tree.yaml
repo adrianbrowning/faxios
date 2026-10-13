@@ -21,7 +21,13 @@ skills:
         sources:
           [
             src/index.ts,
+            src/core.ts,
+            src/schema.ts,
+            src/form.ts,
             src/lib/faxios.ts,
+            src/lib/rootFaxios.ts,
+            src/lib/createInstance.ts,
+            src/lib/core/features.ts,
             src/lib/core/Faxios.ts,
             src/lib/core/mergeConfig.ts,
             src/lib/core/buildFullPath.ts,
@@ -44,8 +50,8 @@ skills:
             adrianbrowning/faxios:MIGRATION_GUIDE.md
           ],
         requires: [],
-        purpose: "Teach agents the request surface faxios actually implements (one
-          fetch transport, .use() middleware, AbortSignal cancellation, Standard
+        purpose: "Teach agents the request surface faxios actually implements (one fetch
+          transport, .use() middleware, AbortSignal cancellation, Standard
           Schema validation) and stop them from generating Axios APIs that
           faxios removed or never verified.\n"
       }

@@ -63,7 +63,10 @@ await getDistro({ pathParams: { account: "acme", profile: "main" }, retry: { att
 ## Build a plugin with `definePlugin`
 
 `definePlugin` comes from `@gcmdev/faxios/plugins`. It returns the same object and only changes the
-types. faxios infers the plugin's slots:
+types. In a plugin you publish, import faxios types and errors from `@gcmdev/faxios/core`, as the
+built-in plugins do, not from the root: the root builds the default instance when it loads. The
+examples below import the root because they also create the instance. faxios infers the plugin's
+slots:
 
 - **options**: request options the plugin reads, from the first type argument of the middleware's
   `ctx: FaxiosContext<Options, Capabilities>` annotation. They become valid keys on every

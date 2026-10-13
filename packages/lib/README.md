@@ -55,6 +55,15 @@ const api = faxios.create().use(retry());
 const { data } = await api.get("/user", { headers: { Accept: "application/json" } });
 ```
 
+For a smaller bundle, build instances from `@gcmdev/faxios/core` and add only the features you use: `use(schema())` from `@gcmdev/faxios/schema` and `use(form())` from `@gcmdev/faxios/form`. See [Entry points](https://adrianbrowning.github.io/faxios/pages/advanced/entry-points).
+
+```js
+import { create } from "@gcmdev/faxios/core";
+
+const api = create({ baseURL: "https://api.example.com" });
+const { data } = await api.get("/user", { params: { ID: 12345 } });
+```
+
 ## Documentation
 
 The full documentation is at https://adrianbrowning.github.io/faxios/.
@@ -63,6 +72,7 @@ The full documentation is at https://adrianbrowning.github.io/faxios/.
 - [Request config](https://adrianbrowning.github.io/faxios/pages/advanced/request-config)
 - [Error handling](https://adrianbrowning.github.io/faxios/pages/advanced/error-handling)
 - [Middleware and plugins](https://adrianbrowning.github.io/faxios/pages/advanced/middleware)
+- [Entry points](https://adrianbrowning.github.io/faxios/pages/advanced/entry-points)
 - [Migrating from interceptors](https://adrianbrowning.github.io/faxios/pages/advanced/migrating-from-interceptors)
 - [Schema validation](https://adrianbrowning.github.io/faxios/pages/advanced/schema-validation)
 - [Typed endpoints: `define()`](https://adrianbrowning.github.io/faxios/pages/advanced/define)

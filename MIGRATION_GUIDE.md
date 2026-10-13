@@ -194,6 +194,14 @@ The `@gcmdev/faxios/unsafe/utils.js` subpath is removed. It exported faxios's in
 
 A custom `toFormData` visitor gets only the declared helpers as its fourth argument: `convertValue`, `defaultVisitor` and `isVisitable`. The `is*` predicates (`helpers.isArray`, `helpers.isBlob` and the rest) that came along at runtime, though `FormDataVisitorHelpers` never declared them, are gone. Use `Array.isArray`, `instanceof Blob` or your own checks.
 
+### q) Smaller entry points: `@gcmdev/faxios/core`, `/schema` and `/form`
+
+Nothing changes for code that imports `@gcmdev/faxios`: the default export, `faxios.create()` and `new Faxios()` still validate schemas and serialize forms, and the statics are still there.
+
+To load less code, build instances with `create()` from `@gcmdev/faxios/core` instead. A core instance has no axios-compat statics, and installs schema validation and form serialization only when you ask: `use(schema())` from `@gcmdev/faxios/schema` and `use(form())` from `@gcmdev/faxios/form`. Without them, the schema options and `formSerializer` reject with `ERR_BAD_OPTION` (and are type errors), and nested `params` and object bodies sent as forms reject with `ERR_NOT_SUPPORT`. The steps are in [Entry points](https://adrianbrowning.github.io/faxios/pages/advanced/entry-points#moving-from-the-root-to-core).
+
+The built-in plugin subpaths now import `@gcmdev/faxios/core` instead of the package root, so importing a plugin no longer builds the default instance. A plugin of your own should import `@gcmdev/faxios/core` too.
+
 ---
 
 ## Overview

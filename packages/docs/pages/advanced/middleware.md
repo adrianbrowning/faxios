@@ -276,7 +276,7 @@ Requests that are already running keep the middleware and capabilities they star
 
 ## Writing a plugin
 
-A plugin is middleware with a name, plus optional capabilities it provides to other plugins. Build one with `definePlugin`, the only export of `@gcmdev/faxios/plugins`. The built-in plugins import only `@gcmdev/faxios` and `@gcmdev/faxios/plugins`, so a plugin of your own can do anything they do:
+A plugin is middleware with a name, plus optional capabilities it provides to other plugins. Build one with `definePlugin`, the only export of `@gcmdev/faxios/plugins`. The built-in plugins import only the public entry points `@gcmdev/faxios/core` (and `/schema` or `/form` when they need those features) and `@gcmdev/faxios/plugins`, so a plugin of your own can do anything they do. Import from `@gcmdev/faxios/core` rather than the package root in a plugin you publish: the root builds the default instance when it loads, and [`./core`](/pages/advanced/entry-points) doesn't:
 
 ```ts
 import faxios from "@gcmdev/faxios";
@@ -482,7 +482,7 @@ Two plugins can't provide the same capability on one instance. Installing the se
 
 ## Built-in plugins
 
-faxios ships four plugins. Each one has its own entry point, which exports the plugin and its types. Neither the package root nor `@gcmdev/faxios/plugins` re-exports them, and there is no `faxios.plugins` property.
+faxios ships four plugins. Each one has its own entry point, which exports the plugin and its types. Neither the package root nor `@gcmdev/faxios/plugins` re-exports them, and there is no `faxios.plugins` property. Each plugin entry point loads [`@gcmdev/faxios/core`](/pages/advanced/entry-points), not the package root, so importing a plugin doesn't build the default instance, and every plugin installs on a core instance as well as on the default export.
 
 | Plugin | Import | Adds |
 | --- | --- | --- |
