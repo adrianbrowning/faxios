@@ -94,6 +94,7 @@ describe("formDataToJSON", () => {
   });
 
   it("should not write through to inherited objects on Object.prototype", () => {
+    // eslint-disable-next-line no-extend-native -- prototype-pollution test; removed in finally
     Object.defineProperty(Object.prototype, "injected", {
       value: { hijack: true },
       configurable: true,

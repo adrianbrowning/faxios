@@ -66,6 +66,7 @@ Paths are relative to `packages/lib/src/lib/`.
 ## Tests
 
 - Use `packages/tests/setup/server.ts` for local HTTP servers and clean up with `try/finally`; leaked servers hang Vitest.
+- Start test servers on port 0 and build URLs from `server.address().port`, so worktrees can run the suites at the same time. `faxios/no-fixed-test-port` (`packages/tests/eslint-rules/`) rejects literal and `const` ports.
 - Browser tests mock `globalThis.fetch`; restore globals and reset spies in cleanup hooks.
 - Declaration changes need the module suite (`packages/tests/module/esm`, which pins its own TypeScript version); `run-tests.sh` runs it.
 

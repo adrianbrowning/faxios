@@ -110,6 +110,7 @@ describe("static api", () => {
   });
 
   it("should ignore inherited data for bodyless method helpers", async () => {
+    // eslint-disable-next-line no-extend-native -- prototype-pollution test; removed in finally
     Object.defineProperty(Object.prototype, "data", {
       value: "inherited-body",
       configurable: true,
@@ -147,6 +148,7 @@ describe("static api", () => {
   it("should ignore inherited nested serializer fields in getUri", () => {
     let serializeInvoked = false;
 
+    // eslint-disable-next-line no-extend-native -- prototype-pollution test; removed in finally
     Object.defineProperty(Object.prototype, "serialize", {
       value() {
         serializeInvoked = true;

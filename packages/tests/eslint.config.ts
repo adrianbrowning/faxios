@@ -1,7 +1,10 @@
 import type { Linter } from "eslint";
 import tseslint from "typescript-eslint";
 import sharedConfig from "../../sharedConfig/eslint.config.ts";
+import noFixedTestPort from "./eslint-rules/no-fixed-test-port.ts";
 import testServerCleanup from "./eslint-rules/test-server-cleanup.ts";
+
+const faxiosPlugin = { rules: { "no-fixed-test-port": noFixedTestPort, "test-server-cleanup": testServerCleanup } };
 
 // Files that live outside the main tsconfig and can't be added to it
 // (they run in different runtime environments: bun, deno, node-cjs)
@@ -152,12 +155,19 @@ export const extraRules: Array<Linter.Config> = [
       "sonarjs/prefer-specific-assertions": "off",
     },
   },
+  // Every file here: test servers bind port 0, so parallel runs (other worktrees, agents)
+  // don't collide; and nothing patches built-in prototypes except the listed pollution tests.
+  {
+    plugins: { faxios: faxiosPlugin },
+    rules: {
+      "faxios/no-fixed-test-port": "error",
+      "no-extend-native": "error",
+    },
+  },
   // AGENTS.md: stop every test server in `finally` or afterEach/afterAll.
   {
     files: [ "**/*.test.ts", "**/*.test.js" ],
-    plugins: {
-      faxios: { rules: { "test-server-cleanup": testServerCleanup } },
-    },
+    plugins: { faxios: faxiosPlugin },
     rules: {
       "faxios/test-server-cleanup": "error",
     },
