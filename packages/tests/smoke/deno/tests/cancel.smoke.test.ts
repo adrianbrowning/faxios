@@ -1,7 +1,7 @@
 import { assertEquals } from "@std/assert";
 import faxios from "faxios";
 
-const env = (fetch: any): any => ({
+const env = (fetch: (input: Request | string | URL, init?: RequestInit) => Promise<Response>) => ({
   fetch,
   Request,
   Response,
@@ -25,7 +25,7 @@ Deno.test("cancel: pre-aborted AbortController cancels request", async () => {
   const err = await faxios
     .get("https://example.com/cancel", {
       signal: controller.signal as any,
-      env: env(fetch) as any,
+      env: env(fetch),
     })
     .catch((e: any) => e);
 
@@ -63,7 +63,7 @@ Deno.test("cancel: in-flight abort cancels request", async () => {
 
   const request = faxios.get("https://example.com/in-flight", {
     signal: controller.signal as any,
-    env: env(fetch) as any,
+    env: env(fetch),
   });
 
   controller.abort();

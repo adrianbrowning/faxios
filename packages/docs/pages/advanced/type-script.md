@@ -126,4 +126,16 @@ const { data } = await faxios.get("/user/1", { responseSchema: UserSchema });
 // data is typed as { name: string; age: number }
 ```
 
+If you pass both a type parameter and a `responseSchema`, the schema's output must match the type parameter. A disagreeing pair is a type error rather than a silently wrong `response.data`:
+
+```ts check=types
+import faxios from "@gcmdev/faxios";
+import { z } from "zod";
+
+const UserSchema = z.object({ name: z.string(), age: z.number() });
+await faxios.get<{ name: string; age: number }>("/user/1", { responseSchema: UserSchema }); // OK
+// @ts-expect-error TS2769 -- the schema outputs { name, age }, not { nope }
+await faxios.get<{ nope: string }>("/user/1", { responseSchema: UserSchema });
+```
+
 See [Schema validation](/pages/advanced/schema-validation), and [`define()`](/pages/advanced/define) / [`route()`](/pages/advanced/route) for typed endpoint functions.

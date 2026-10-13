@@ -15,10 +15,18 @@ type StrippedFields =
   | "responseSchema"
   | "url";
 
-/** Request config accepted by a defined endpoint call: everything except `url`, `method`, `pathParams`, `params`, `data` and the schemas. */
+/** Request config shared by `define()`, `route()` and endpoint calls: everything except `url`, `method`, `pathParams`, `params`, `data` and the schemas. */
 export type BasePerCallConfig = Omit<FaxiosRequestConfig, StrippedFields>;
 
-/** Config for one call of a defined endpoint; `pathParams`, `params` and `data` are required when their schema is set. */
+// Read the input and output types from the StandardSchemaV1 type parameters rather than the optional
+// `~standard.types` field, so a spec-conforming schema without `types` still infers its output.
+type SchemaInput<S> = S extends StandardSchemaV1<infer I, unknown> ? I : never;
+type SchemaOutput<S> = S extends StandardSchemaV1<unknown, infer O> ? O : unknown;
+
+/**
+ * Config for one call of a defined endpoint. `pathParams`, `params` and `data` are required and typed
+ * by their schema when one is set, and optional request config otherwise.
+ */
 export type PerCallConfig<
   PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined,
   P extends StandardSchemaV1 | undefined,
@@ -35,10 +43,10 @@ export type PerCallConfig<
      * `ERR_BAD_OPTION_VALUE`, and a schema failure with `ERR_BAD_PATH_PARAMS_SCHEMA`.
      * Keys with no matching placeholder are ignored.
      */
-    pathParams: StandardSchemaV1.InferInput<PP>;
-  } : unknown)
-  & (P extends StandardSchemaV1 ? { params: StandardSchemaV1.InferInput<P>; } : unknown)
-  & (D extends StandardSchemaV1 ? { data: StandardSchemaV1.InferInput<D>; } : unknown);
+    pathParams: SchemaInput<PP>;
+  } : Pick<FaxiosRequestConfig, "pathParams">)
+  & (P extends StandardSchemaV1 ? { params: SchemaInput<P>; } : Pick<FaxiosRequestConfig, "params">)
+  & (D extends StandardSchemaV1 ? { data: SchemaInput<D>; } : Pick<FaxiosRequestConfig, "data">);
 
 /** Config for `define()`: request defaults plus the schemas, which are locked at define time. */
 export type DefineConfig<
@@ -69,8 +77,8 @@ export type DefinedEndpoint<
   TOpts = unknown
 > =
   HasInputSchema<PP, P, D> extends true
-    ? (callConfig: PerCallConfig<PP, P, D, TOpts>) => Promise<FaxiosResponse<R extends StandardSchemaV1 ? StandardSchemaV1.InferOutput<R> : unknown>>
-    : (callConfig?: PerCallConfig<PP, P, D, TOpts>) => Promise<FaxiosResponse<R extends StandardSchemaV1 ? StandardSchemaV1.InferOutput<R> : unknown>>;
+    ? (callConfig: PerCallConfig<PP, P, D, TOpts>) => Promise<FaxiosResponse<SchemaOutput<R>>>
+    : (callConfig?: PerCallConfig<PP, P, D, TOpts>) => Promise<FaxiosResponse<SchemaOutput<R>>>;
 
 /** The minimal instance shape `define()` and `route()` need: a `request` method. */
 export interface FaxiosLike {
@@ -81,8 +89,8 @@ type SchemaFields = Extract<StrippedFields, `${string}Schema`>;
 const schemaKeys = [ "pathParamsSchema", "paramsSchema", "requestSchema", "responseSchema" ] as const;
 // compile-time assertion: schemaKeys and SchemaFields must stay in sync
 void (schemaKeys satisfies ReadonlyArray<SchemaFields>);
-// strippedKeys strips url/method/schemas from per-call config; StrippedFields also omits pathParams/params/data
-// at the type level (those are still allowed at runtime — they're the validated data, not the schema definitions)
+// strippedKeys strips url/method/schemas from per-call config; pathParams/params/data stay (they're the
+// validated data, not the schema definitions), and PerCallConfig types them per schema
 const strippedKeys = [ "url", "method", ...schemaKeys ] as const;
 
 export function createDefinedEndpoint<
@@ -98,7 +106,8 @@ export function createDefinedEndpoint<
 ): DefinedEndpoint<PP, P, D, R> {
   const bakedConfig: FaxiosRequestConfig = { ...(defineConfig ?? {}), method, url };
 
-  const fn = (callConfig?: PerCallConfig<PP, P, D>) => {
+  // Typed loosely: DefinedEndpoint carries the per-schema call types, this body only copies the config.
+  const fn = (callConfig?: FaxiosRequestConfig) => {
     const safeCall: FaxiosRequestConfig = { ...(callConfig ?? {}) };
     // ponytail: runtime guard — strip identity + schemas so JS callers can't override
     for (const k of strippedKeys) {

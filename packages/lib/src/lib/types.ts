@@ -208,7 +208,7 @@ export interface FaxiosRequestConfig<D = unknown> {
       input: Request | string | URL,
       init?: RequestInit,
     ) => unknown) | null;
-    Response?: (new (...args: Array<unknown>) => unknown) | null;
+    Response?: (new (body?: BodyInit | null, init?: ResponseInit) => Response) | null;
   };
   fetchOptions?: Record<string, unknown>;
   formSerializer?: FormSerializerOptions;
@@ -275,6 +275,14 @@ export interface FaxiosRequestConfig<D = unknown> {
 }
 
 export type SchemaConfig<O, D = unknown> = FaxiosRequestConfig<D> & { responseSchema: StandardSchemaV1<unknown, O>; };
+
+/**
+ * Config for the request overloads typed by an explicit response generic `T`: a `responseSchema`
+ * must output `T`, so the generic can't silently override what the schema returns.
+ */
+export type ResponseTypedConfig<T, D = unknown> = Omit<FaxiosRequestConfig<D>, "responseSchema"> & {
+  responseSchema?: StandardSchemaV1<unknown, T>;
+};
 
 export type RawFaxiosRequestConfig<D = unknown> = FaxiosRequestConfig<D>;
 

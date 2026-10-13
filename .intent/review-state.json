@@ -3,9 +3,9 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "c9192ddd6c72b2d365e147fc94f059353a23db6252a4d0034cdbcca4061f1522",
+      "fingerprint": "32402b8cb4b6c72c4166d20cdb84c24b49be89d3aee0bfc97378b4ae85dcc1f1",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "e9b7b3e73eedf178ac3a56c7baef5d90efe4e35d9012b174172847d360e366f3",
+        "MIGRATION_GUIDE.md": "645efdbec7507a40a89f6257c1eb954ba5bb150981d2eeeceb982b0a4ab0fced",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
         "packages/lib/skills/configure-requests/SKILL.md": "d0adecf7743d3eb68b7464847f2e3be3e1a9eff17ae5f68b443562e8d562c0fa",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
@@ -15,17 +15,17 @@
         "packages/lib/src/lib/core/Faxios.ts": "7d77d83175a3f2df158bf4fad8c92217e4cc7b1323e0834999d5428707be2d28",
         "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
-        "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
+        "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
         "packages/lib/src/lib/core/dispatchRequest.ts": "a40f986939a248c3184081537c46caac2da8fe1759c4637ea72b5370b7e64ba2",
         "packages/lib/src/lib/core/mergeConfig.ts": "44c5417867eca00b465e1cbfbcee2104162d5e82705b15082b9be8ba28930f8a",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
+        "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
         "packages/lib/src/lib/helpers/composeSignals.ts": "829b7130dc742becad300735254e63afeb73a8f1f99dac48febf2dcc3e0aab1c",
         "packages/lib/src/lib/plugins/authBearer.ts": "25931d33a4b2384df7dc3df77e3aa1d6848a94c6676909896a23506cb1542b9c",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/retry.ts": "83aac25415efa7c0135b7ab4733632b3cb265a9ab11266a125eb2541c2af7d12",
         "packages/lib/src/lib/plugins/timing.ts": "718ad5f2c23e3ee0e39ef8632b223da5ad46e556d4d5d0e5f54369708eaaee5d",
-        "packages/lib/src/lib/types.ts": "ec87f84d8d62a616eb4bd68d4221db38e891736b12ff1364489f572a478f9937",
+        "packages/lib/src/lib/types.ts": "7be2bd96745f0f50e4ce5cf6e0ba00803662033b75f1543390656c7dd5b317c3",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
@@ -33,17 +33,17 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
       "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/types.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/src/lib/core/define.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/types.ts at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "56eac8abbbc06a57761f473a4b6ac17a52d1c1cf4485d7d11441a6d0d493e38f",
+      "fingerprint": "9a02eb9ffcab114ed824e924a5d495216cb45ac7cb9d85d81466248d11974127",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "e9b7b3e73eedf178ac3a56c7baef5d90efe4e35d9012b174172847d360e366f3",
+        "MIGRATION_GUIDE.md": "645efdbec7507a40a89f6257c1eb954ba5bb150981d2eeeceb982b0a4ab0fced",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
@@ -56,17 +56,17 @@
         "packages/lib/src/lib/core/Faxios.ts": "7d77d83175a3f2df158bf4fad8c92217e4cc7b1323e0834999d5428707be2d28",
         "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
-        "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
+        "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
         "packages/lib/src/lib/core/dispatchRequest.ts": "a40f986939a248c3184081537c46caac2da8fe1759c4637ea72b5370b7e64ba2",
         "packages/lib/src/lib/core/mergeConfig.ts": "44c5417867eca00b465e1cbfbcee2104162d5e82705b15082b9be8ba28930f8a",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
+        "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
         "packages/lib/src/lib/helpers/composeSignals.ts": "829b7130dc742becad300735254e63afeb73a8f1f99dac48febf2dcc3e0aab1c",
         "packages/lib/src/lib/plugins/authBearer.ts": "25931d33a4b2384df7dc3df77e3aa1d6848a94c6676909896a23506cb1542b9c",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/retry.ts": "83aac25415efa7c0135b7ab4733632b3cb265a9ab11266a125eb2541c2af7d12",
         "packages/lib/src/lib/plugins/timing.ts": "718ad5f2c23e3ee0e39ef8632b223da5ad46e556d4d5d0e5f54369708eaaee5d",
-        "packages/lib/src/lib/types.ts": "ec87f84d8d62a616eb4bd68d4221db38e891736b12ff1364489f572a478f9937",
+        "packages/lib/src/lib/types.ts": "7be2bd96745f0f50e4ce5cf6e0ba00803662033b75f1543390656c7dd5b317c3",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
       "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/types.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/src/lib/core/define.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/types.ts at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
       ]
     },
     "source:knip.json": {
@@ -206,15 +206,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/define.md": {
-      "fingerprint": "6664860fc9579697c739eaee13c30eb93cfc75f6b94153899185ee1b9481d5d2",
+      "fingerprint": "4c9f24be20558b17c7508ba2ddf8ae7aeb0deccafeb5a4a05ad2101b90e2abdb",
       "snapshot": {
-        "packages/docs/pages/advanced/define.md": "dfacf44f9f5ff955f92292eb5ebd5eac34aa13d809e9a202e14fd516fcf03bdf"
+        "packages/docs/pages/advanced/define.md": "9bd64dce014b827a44ab2cc94ca756690cb9268291c9121c81e8174e60b48624"
       },
-      "head": "0d3c421862f3cab417d950f0075f471a9a99320a",
-      "outcome": "updated",
-      "reason": "Skill wiring rule mirrors the new define.md text.",
+      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "outcome": "no-change",
+      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
       "evidence": [
-        "define.md line 18 and the instance example say the same as SKILL.md; the example runs under test:docs-examples."
+        "Changed: packages/docs/pages/advanced/define.md at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
       ]
     },
     "source:packages/docs/pages/advanced/error-handling.md": {
@@ -326,15 +326,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/type-script.md": {
-      "fingerprint": "d4643f4c9c44e93b4411164635601bc68e090b8ef78218a68645dfd55c83c11a",
+      "fingerprint": "5144642e2cb8658bd8640094fff11f71b2bc23c2e0ae749ddc18f9f4bfa38900",
       "snapshot": {
-        "packages/docs/pages/advanced/type-script.md": "46f26e183862cd3a235b784c7db8a5ea2be4e82efc68e42bf178d71b5328ee09"
+        "packages/docs/pages/advanced/type-script.md": "11fcbc132c1533f229875b25bd41aa9f49ff19b4e259f9f8dd89bec5424e848d"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
-      "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "outcome": "no-change",
+      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/type-script.md at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: packages/docs/pages/advanced/type-script.md at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
       ]
     },
     "source:packages/docs/pages/getting-started/examples/typescript.md": {
@@ -2676,16 +2676,15 @@
       ]
     },
     "source:packages/tests/smoke/deno/tests/fetch.smoke.test.ts": {
-      "fingerprint": "0bdb5c7ae493f45c3499b6c47f7cb58b2e600c29d9dd892eb220bb076ca6bfbb",
+      "fingerprint": "aaa10e91483b62f0bd0672d24e00f58995770e463129cf2cdc01eb3c34afa2db",
       "snapshot": {
-        "packages/tests/smoke/deno/tests/fetch.smoke.test.ts": "379c7874b6e20f8ccc641556ba12fa9949d803ccaa0a91295432551a7b86181a"
+        "packages/tests/smoke/deno/tests/fetch.smoke.test.ts": "79e9eb787373264b27af92cb5e768e24e6a1b79d93cab33474d51f8fba6ff05c"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
       "outcome": "no-change",
-      "reason": "Same changes as the bun file: return-type union order, `{init; input}` type-literal key order, and method union sorted (`patch | post | put`, same 6 members). Behaviour change: none",
+      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/smoke/deno/tests/fetch.smoke.test.ts: @@ -2,9 +2,9 @@ and @@ -58,7 +58,7 @@ (diff/198)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/smoke/deno/tests/fetch.smoke.test.ts at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
       ]
     },
     "source:packages/tests/smoke/deno/tests/import.smoke.test.ts": {
@@ -3558,15 +3557,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/fetch-adapter.md": {
-      "fingerprint": "db51a2195d70d1d91ba194fa114f6eb861cf6ee38a786d41f4854be77c961149",
+      "fingerprint": "c39f8412c539a523c698933ec0f97313082e2fb8393979d975837952fb774ddd",
       "snapshot": {
-        "packages/docs/pages/advanced/fetch-adapter.md": "024fd701520193c09261b2b34fb50b4a6b7c564a7686c135c89b2a27ec6a0414"
+        "packages/docs/pages/advanced/fetch-adapter.md": "85146526151126a3e8fa51797cff5d2882f4a136cf6337f221dc343b473b2532"
       },
-      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
-      "outcome": "updated",
-      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
+      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "outcome": "no-change",
+      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/fetch-adapter.md at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
+        "Changed: packages/docs/pages/advanced/fetch-adapter.md at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
       ]
     },
     "source:packages/lib/src/lib/helpers/cloneConfig.ts": {
@@ -4770,15 +4769,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/generics-index.ts": {
-      "fingerprint": "8aa8c0e48bf7af6ceb94b722732c55671b7e19c3a075d1ade2874db46f20f6f9",
+      "fingerprint": "02958f873fecd0aff4f49649fbf0377b98c8b6425b773457717cafd4e4af4855",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/generics-index.ts": "1152de730ee2870a2f73178bd7b48b9b642860c34215a995aa53dbb6744621e9"
+        "packages/tests/module/esm/tests/helpers/generics-index.ts": "b537e2a685b8937169d3bc5cedf7b31d79deb1b9c251867b4f5ea8782bb691a8"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
       "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
       "evidence": [
-        "Changed: packages/tests/module/esm/tests/helpers/generics-index.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/tests/module/esm/tests/helpers/generics-index.ts at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
       ]
     },
     "source:packages/tests/unit/core/headersTypes.test.ts": {
@@ -4791,6 +4790,66 @@
       "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
         "Changed: packages/tests/unit/core/headersTypes.test.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+      ]
+    },
+    "source:.bumpy/define-route-schema-types.md": {
+      "fingerprint": "adfb8686ccd69578efe315036de05515805bceef35fd7ba57d422f7aed97203a",
+      "snapshot": {
+        ".bumpy/define-route-schema-types.md": "e579bca15c94759c13f0925a98198f99082e4e1c3043f430f63d118326ab184b"
+      },
+      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "outcome": "no-change",
+      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
+      "evidence": [
+        "Changed: .bumpy/define-route-schema-types.md at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
+      ]
+    },
+    "source:packages/tests/smoke/deno/tests/cancel.smoke.test.ts": {
+      "fingerprint": "6d3013d62dabed4c1e39eea4d7a0a74a2168da59136aae87367efacf509b72bb",
+      "snapshot": {
+        "packages/tests/smoke/deno/tests/cancel.smoke.test.ts": "7040041cec9f576e0c04bdbd384691e034cf559cddb2ad7738d0d84c41e08c54"
+      },
+      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "outcome": "no-change",
+      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
+      "evidence": [
+        "Changed: packages/tests/smoke/deno/tests/cancel.smoke.test.ts at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
+      ]
+    },
+    "source:packages/tests/smoke/deno/tests/error.smoke.test.ts": {
+      "fingerprint": "62834d91aacd958cb7042ef1e299cd65e8e3f15ef6ccea4b31f36fe1ec513ab0",
+      "snapshot": {
+        "packages/tests/smoke/deno/tests/error.smoke.test.ts": "573a3b6984317d19f849f9c6c7a8717d4307a098d836fd4ae937de3ffc4ba5d3"
+      },
+      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "outcome": "no-change",
+      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
+      "evidence": [
+        "Changed: packages/tests/smoke/deno/tests/error.smoke.test.ts at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
+      ]
+    },
+    "source:packages/tests/smoke/deno/tests/headers.smoke.test.ts": {
+      "fingerprint": "652f3142800e30358a502cb240bb5aba07bb7b63c520fb8952f6d687ea2a70f5",
+      "snapshot": {
+        "packages/tests/smoke/deno/tests/headers.smoke.test.ts": "30ab3ea8d620d8ef93017740bde5a14389de4a507394cdb82c284912a1a40fb7"
+      },
+      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "outcome": "no-change",
+      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
+      "evidence": [
+        "Changed: packages/tests/smoke/deno/tests/headers.smoke.test.ts at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
+      ]
+    },
+    "source:packages/tests/unit/core/defineTypes.test.ts": {
+      "fingerprint": "c265a8758b4022dfc212281cf7eb49cbddd16478d762c44591a8ff100ac163ff",
+      "snapshot": {
+        "packages/tests/unit/core/defineTypes.test.ts": "a3f20e8023ff90b7c87746bb8e76c9f11b06028bf048df63dc647bf094a0b618"
+      },
+      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "outcome": "no-change",
+      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
+      "evidence": [
+        "Changed: packages/tests/unit/core/defineTypes.test.ts at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
       ]
     }
   }

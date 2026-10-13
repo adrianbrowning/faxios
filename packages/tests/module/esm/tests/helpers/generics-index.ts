@@ -3,7 +3,7 @@
 // - request-body D typing
 // - removal of the FaxiosInstance catch-all index signature
 // - typed FaxiosHeaders accessors (no longer `unknown`)
-// - serializer maxDepth and nullable env.Request/env.Response
+// - serializer maxDepth, nullable env.Request/env.Response, and the global fetch/Request/Response as env
 // - instance defaults typed as header buckets plus request config
 // - isFaxiosError/isCancel narrow `unknown` as type predicates
 // - env.FormData accepts the runtime FormData constructor (and null)
@@ -132,6 +132,7 @@ function serializerAndEnvOptionsAreTyped(): void {
     paramsSerializer: { maxDepth: Infinity },
     env: { fetch: globalThis.fetch, Request: null, Response: null },
   });
+  void faxios.get("/x", { env: { fetch, Request, Response } });
   // @ts-expect-error - maxDepth is a number
   faxios.create({ formSerializer: { maxDepth: "10" } });
 }
