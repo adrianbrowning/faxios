@@ -58,7 +58,7 @@ The above form will be submitted as:
 ```
 
 ::: tip Path collisions overwrite earlier values
-Field names are parsed into property paths by splitting on `.`, brackets, or whitespace. Two inputs whose paths overlap will collide: in the example above, `deep.prop` parses to `["deep", "prop"]` and `deep prop spaced` parses to `["deep", "prop", "spaced"]`, so the deeper assignment replaces `deep.prop = "2"` with the nested object `{ spaced: "3" }`. Pick non-overlapping field names if you need both values.
+Field names are parsed into property paths by splitting on `.`, `-`, brackets, whitespace, or other punctuation. Letters and digits from any script are kept, so `名前` and `user[名前]` work as names. Two inputs whose paths overlap will collide: in the example above, `deep.prop` parses to `["deep", "prop"]` and `deep prop spaced` parses to `["deep", "prop", "spaced"]`, so the deeper assignment replaces `deep.prop = "2"` with the nested object `{ spaced: "3" }`. Pick non-overlapping field names if you need both values.
 :::
 
 ::: warning

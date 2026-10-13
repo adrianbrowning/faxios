@@ -28,7 +28,8 @@ function parsePropPath(name: string): Array<string> {
   // foo-x-y-z
   // foo x y z
   const path: Array<string> = [];
-  const pattern = /\w+|\[(\w*)]/g;
+  // Unicode word characters; ASCII input tokenizes exactly as `\w` did.
+  const pattern = /[\p{L}\p{M}\p{N}\p{Pc}]+|\[([\p{L}\p{M}\p{N}\p{Pc}]*)\]/gu;
   let match: null | RegExpExecArray;
 
   while ((match = pattern.exec(name)) !== null) {
