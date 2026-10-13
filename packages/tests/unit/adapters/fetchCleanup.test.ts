@@ -263,4 +263,95 @@ describe("fetch adapter request cleanup", () => {
       assert.strictEqual(getEventListeners(controller.signal, "abort").length, 0);
     });
   });
+
+  describe("stream body cancelled while a read of a stalled source is pending", () => {
+    // Sends nothing: with highWaterMark 0 the source is pulled only for a pending read.
+    const stalledBody = () => {
+      const { promise: reading, resolve: onRead } = Promise.withResolvers<void>();
+      const cancelled: Array<unknown> = [];
+      const body = new ReadableStream<Uint8Array>(
+        {
+          pull() {
+            onRead();
+          },
+          cancel(reason) {
+            cancelled.push(reason);
+          },
+        },
+        { highWaterMark: 0 }
+      );
+      return { body, cancelled, reading };
+    };
+
+    // Under fake timers: reports a hang once the clock passes 1s, instead of waiting for the test timeout.
+    const settlesInTime = async (promise: Promise<unknown>) => {
+      const { promise: deadline, resolve: hung } = Promise.withResolvers<string>();
+      setTimeout(hung, 1000, "hung");
+      const result = Promise.race([ promise.then(() => "settled"), deadline ]);
+      await vi.advanceTimersByTimeAsync(1000);
+      return result;
+    };
+
+    for (const middlewares of [ 0, 3 ]) {
+      for (const timeout of [ undefined, 60_000 ]) {
+        it(`settles and cancels the response source (${middlewares} middlewares, ${timeout ? "with" : "without"} timeout)`, async () => {
+          vi.useFakeTimers();
+          const { body, cancelled, reading } = stalledBody();
+          const api = faxios.create({ allowAbsoluteUrls: true });
+          for (let i = 0; i < middlewares; i++) api.use(async (ctx, next) => next(ctx));
+          const controller = new AbortController();
+          const { data } = await api.get<ReadableStream<Uint8Array>>("http://localhost/", {
+            responseType: "stream",
+            signal: controller.signal,
+            timeout,
+            env: { fetch: async () => new Response(body) },
+          });
+          await reading;
+          const reason = new Error("done reading");
+          assert.strictEqual(await settlesInTime(data.cancel(reason)), "settled");
+          assert.deepStrictEqual(cancelled, [ reason ]);
+          assert.strictEqual(vi.getTimerCount(), 0);
+          assert.strictEqual(getEventListeners(controller.signal, "abort").length, 0);
+        });
+      }
+    }
+
+    it("cancels the upload source when fetch cancels the tracked request body", async () => {
+      vi.useFakeTimers();
+      const { body: source, cancelled, reading } = stalledBody();
+      let bodyCancel: Promise<void> | undefined;
+      // Like a fetch that cancels the request body when the request is aborted.
+      const cancellingFetch = async (_input: unknown, init?: RequestInit) => {
+        // With onUploadProgress the adapter sends the tracked stream as the body.
+        const body = init!.body as ReadableStream<Uint8Array>;
+        const signal = init!.signal!;
+        const reader = body.getReader();
+        void reader.read();
+        const { promise, reject } = Promise.withResolvers<Response>();
+        const onAbort = () => {
+          bodyCancel = reader.cancel(signal.reason);
+          reject(signal.reason);
+        };
+        signal.addEventListener("abort", onAbort, { once: true });
+        return promise;
+      };
+      const controller = new AbortController();
+      const request = assert.rejects(
+        client.post("http://localhost/", source, {
+          signal: controller.signal,
+          headers: { "Content-Type": "application/octet-stream" },
+          onUploadProgress: () => {},
+          env: { fetch: cancellingFetch },
+        }),
+        { code: "ERR_CANCELED" }
+      );
+      assert.strictEqual(await settlesInTime(reading), "settled");
+      controller.abort(new Error("user left"));
+      await request;
+      assert.ok(bodyCancel);
+      assert.strictEqual(await settlesInTime(bodyCancel), "settled");
+      assert.strictEqual(cancelled.length, 1);
+      assert.strictEqual(source.locked, false);
+    });
+  });
 });

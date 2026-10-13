@@ -61,15 +61,16 @@ const streamChunk = function* (chunk: Uint8Array, chunkSize?: number): Generator
   }
 };
 
-const readBytes = async function* (iterable: unknown, chunkSize?: number): AsyncGenerator<Uint8Array> {
-  for await (const chunk of readStream(iterable)) {
-    yield* streamChunk(toBytes(chunk), chunkSize);
-  }
+type Source = {
+  // Cancels the source and releases it; a read in flight settles as done.
+  close: (reason?: unknown) => Promise<unknown>;
+  read: () => Promise<IteratorResult<unknown>>;
 };
 
 type ReaderLike = {
-  cancel: () => Promise<void>;
-  read: () => Promise<{ done: boolean; value: unknown; }>;
+  cancel: (reason?: unknown) => Promise<void>;
+  read: () => Promise<IteratorResult<unknown>>;
+  releaseLock: () => void;
 };
 
 type StreamLike = {
@@ -77,31 +78,46 @@ type StreamLike = {
   getReader?: () => ReaderLike;
 };
 
-const readStream = async function* (stream: unknown): AsyncGenerator<unknown> {
+// Prefer a reader: cancelling it settles a pending read() at once, while an async iterator's
+// return() waits behind a pending next(), so a stalled source could never be cancelled.
+const openSource = (stream: unknown): Source => {
   const s = stream as StreamLike;
-  if (s[Symbol.asyncIterator]) {
-    yield* s as AsyncIterable<unknown>;
-    return;
+  if (s.getReader) {
+    const reader = s.getReader();
+    return {
+      async close(reason) {
+        try {
+          await reader.cancel(reason);
+        }
+        finally {
+          reader.releaseLock();
+        }
+      },
+      read: () => reader.read(),
+    };
   }
 
-  const reader = s.getReader!();
-  try {
-    for (;;) {
-      // eslint-disable-next-line no-await-in-loop
-      const { done, value } = await reader.read();
-      if (done) {
-        break;
-      }
-      yield value;
+  const iterator = s[Symbol.asyncIterator]!();
+  return {
+    close: async () => iterator.return?.(),
+    read: () => iterator.next(),
+  };
+};
+
+const readBytes = async function* (source: Source, chunkSize?: number): AsyncGenerator<Uint8Array> {
+  for (;;) {
+    // eslint-disable-next-line no-await-in-loop
+    const { done, value } = await source.read();
+    if (done) {
+      return;
     }
-  }
-  finally {
-    await reader.cancel();
+    yield* streamChunk(toBytes(value), chunkSize);
   }
 };
 
 export const trackStream = (stream: unknown, chunkSize: number | undefined, onProgress?: ((bytes: number) => void) | null, onFinish?: ((err?: unknown) => void) | null): unknown => {
-  const iterator = readBytes(stream, chunkSize);
+  const source = openSource(stream);
+  const iterator = readBytes(source, chunkSize);
 
   let bytes = 0;
   let done = false;
@@ -117,8 +133,13 @@ export const trackStream = (stream: unknown, chunkSize: number | undefined, onPr
       async pull(controller: ReadableStreamController) {
         try {
           const { done: iterDone, value } = await iterator.next();
+          // Cancelled while this read was pending: the stream is already closed.
+          if (done) {
+            return;
+          }
 
           if (iterDone) {
+            await source.close();
             _onFinish();
             controller.close();
             return;
@@ -134,14 +155,17 @@ export const trackStream = (stream: unknown, chunkSize: number | undefined, onPr
         catch (err) {
           // Cancel the source so its lock and connection are released. The original error wins
           // over a failure to cancel.
-          await iterator.return(undefined).catch(() => {});
+          await source.close(err).catch(() => {});
+          await iterator.return(undefined);
           _onFinish(err);
           throw err;
         }
       },
       async cancel(reason?: unknown) {
         _onFinish(reason);
-        return iterator.return(undefined);
+        // Cancelling the source settles a pending read, so the generator can then finish.
+        await source.close(reason);
+        await iterator.return(undefined);
       },
     },
     {
