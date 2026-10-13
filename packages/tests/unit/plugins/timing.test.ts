@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { afterEach, beforeEach, describe, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expectTypeOf, it, vi } from "vitest";
 import faxios, { FaxiosError } from "#src/index.ts";
 import { authBearer } from "#src/lib/plugins/authBearer.ts";
 import { retry } from "#src/lib/plugins/retry.ts";
@@ -37,7 +37,7 @@ describe("plugins::timing", () => {
     await vi.advanceTimersByTimeAsync(25);
     const response = await request;
 
-    assert.deepStrictEqual(events, [{ method: "GET", url: "http://localhost/timing", durationMs: 25, status: 200 }]);
+    assert.deepStrictEqual(events, [{ method: "GET", url: "http://localhost/timing", attempt: 1, durationMs: 25, status: 200 }]);
     assert.strictEqual(response.status, 200);
   });
 
@@ -51,7 +51,7 @@ describe("plugins::timing", () => {
 
     assert.strictEqual(events.length, 1);
     const { error, ...rest } = events[0]!;
-    assert.deepStrictEqual(rest, { method: "POST", url: "http://localhost/timing", durationMs: 40 });
+    assert.deepStrictEqual(rest, { method: "POST", url: "http://localhost/timing", attempt: 1, durationMs: 40 });
     assert.deepStrictEqual(error, { code: FaxiosError.ERR_BAD_RESPONSE, message: "Request failed with status code 500", status: 500 });
   });
 
@@ -114,7 +114,7 @@ describe("plugins::timing", () => {
     await vi.runAllTimersAsync();
     await request;
 
-    assert.deepStrictEqual(Object.keys(events[0]!).sort(), [ "durationMs", "method", "status", "url" ]);
+    assert.deepStrictEqual(Object.keys(events[0]!).sort(), [ "attempt", "durationMs", "method", "status", "url" ]);
     assert.ok(!JSON.stringify(events[0]).includes("secret"));
   });
 
@@ -147,7 +147,33 @@ describe("plugins::timing", () => {
     assert.deepStrictEqual(events, [{ method: "GET", url: "http://localhost/timing", attempt: 2, durationMs: 25, status: 200 }]);
   });
 
-  it("leaves attempt out without retry", async () => {
+  it("reports the attempt a hand-written retry middleware sets on ctx.attempt", async () => {
+    const events: Array<TimingEvent> = [];
+    const api = faxios.create({ baseURL: BASE, env: { fetch: flakyFetch(0, [ 503 ]) } })
+      .use(async (ctx, next) => {
+        for (let attempt = 1; ; attempt++) {
+          ctx.attempt = attempt;
+          try {
+            return await next(ctx);
+          }
+          catch (err) {
+            if (attempt === 2) throw err;
+          }
+        }
+      })
+      .use(timing(event => events.push(event)));
+
+    const request = api.get(URL);
+    await vi.runAllTimersAsync();
+    await request;
+
+    assert.deepStrictEqual(events.map(({ attempt, status }) => ({ attempt, status })), [
+      { attempt: 1, status: undefined },
+      { attempt: 2, status: 200 },
+    ]);
+  });
+
+  it("reports attempt 1 without retry", async () => {
     const events: Array<TimingEvent> = [];
     const api = faxios.create({ baseURL: BASE, env: { fetch: slowFetch(0) } }).use(timing(event => events.push(event)));
 
@@ -155,7 +181,8 @@ describe("plugins::timing", () => {
     await vi.runAllTimersAsync();
     await request;
 
-    assert.strictEqual(Object.hasOwn(events[0]!, "attempt"), false);
+    assert.strictEqual(events[0]!.attempt, 1);
+    expectTypeOf<TimingEvent["attempt"]>().toEqualTypeOf<number>();
   });
 
   it("rejects with the request's own error even when onTiming throws on a failure", async () => {

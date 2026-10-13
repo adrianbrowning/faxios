@@ -148,6 +148,33 @@ const api = faxios
 Calling `next` again re-sends the body. A stream body is used up by the first try; sending it
 again rejects with `ERR_BAD_REQUEST`.
 
+## Report the try number from your own retry
+
+`ctx.attempt` is the try a context leads to, from 1. `retry` sets it before each try; a hand-written
+retry sets it the same way, and `timing` installed after it reports each try's number:
+
+```ts
+import faxios, { FaxiosError } from "@gcmdev/faxios";
+import { timing } from "@gcmdev/faxios/plugins/timing";
+
+const api = faxios
+  .create({ baseURL: "https://api.example.com" })
+  .use(async (ctx, next) => {
+    for (let attempt = 1; ; attempt++) {
+      ctx.attempt = attempt;
+      try {
+        return await next(ctx);
+      }
+      catch (error) {
+        if (attempt === 3 || !(error instanceof FaxiosError) || error.code !== FaxiosError.ERR_NETWORK) throw error;
+      }
+    }
+  })
+  .use(timing(event => console.log(event.attempt, event.durationMs)));
+```
+
+Don't keep the try number in a private symbol on `ctx.state`: other plugins can't read it.
+
 ## Rules `.use()` enforces at runtime
 
 - `name` must be a non-empty own string, otherwise `ERR_BAD_OPTION_VALUE`.
@@ -159,4 +186,4 @@ again rejects with `ERR_BAD_REQUEST`.
 
 Sources: `src/lib/plugins/definePlugin.ts`, `src/lib/types.ts` (`FaxiosContext`, `FaxiosPlugin`),
 `src/lib/core/Faxios.ts` (`use`), `packages/tests/unit/plugins/authBearer.test.ts`,
-`packages/tests/unit/plugins/definePlugin.test.ts`.
+`packages/tests/unit/plugins/definePlugin.test.ts`, `packages/tests/unit/plugins/timing.test.ts`.

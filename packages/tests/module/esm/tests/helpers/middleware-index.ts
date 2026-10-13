@@ -1,6 +1,6 @@
 // Type-checked fixture (NO @ts-nocheck) guarding the packaged middleware API:
 // - use() chains on create() instances and accumulates plugin options and capabilities
-// - ctx and next are typed for inline middleware
+// - ctx and next are typed for inline middleware, including the ctx.attempt try number
 // - plugin options are rejected without their plugin
 // - a plugin that needs a capability can't be installed before its provider
 // - static helpers exist only on the default export
@@ -28,6 +28,7 @@ type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B 
 const addHeader: FaxiosMiddleware = async (ctx, next) => {
   const context: FaxiosContext = ctx;
   context.config.headers.set("X-Trace", "1");
+  context.attempt = context.attempt + 1;
   const response: FaxiosResponse = await next(ctx);
   return response;
 };
@@ -66,7 +67,7 @@ async function middleware(): Promise<void> {
     .use(authBearer(() => "token"))
     .use(refreshOn401)
     .use(retry({ attempts: 2, methods: [ "get", "post" ] }))
-    .use(timing(({ durationMs }: TimingEvent) => void durationMs));
+    .use(timing(({ attempt, durationMs }: TimingEvent) => void (durationMs + attempt)));
 
   await api.get("/items", { retry: false });
   await api.post("/items", {}, { retry: { attempts: 3 } });

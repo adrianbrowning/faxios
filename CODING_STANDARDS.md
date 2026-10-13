@@ -12,7 +12,7 @@ Config objects, plugin objects, option objects and anything else a caller hands 
 
 ## Options and errors
 
-- Validate options through `helpers/validator.ts` (`assertOptions` with a schema), for the factory argument and any per-request override alike. Reject `null`, non-objects and unknown keys; check numbers for range and finiteness, since `NaN` or `Infinity` can make a loop unbounded.
+- Validate options through `helpers/validator.ts` (`assertOptions` with a schema), for the factory argument and any per-request override alike; built-in plugins use `assertOptions` from `plugins/shared.ts`. Reject `null`, non-objects and unknown keys; check numbers for range and finiteness, since `NaN` or `Infinity` can make a loop unbounded.
 - Throw `FaxiosError(message, code, config, request, response)` for faxios-originated failures, never raw `Error`. Wrap third-party errors with `FaxiosError.from(...)`. Codes live in `core/FaxiosError.ts`; bad option values are `ERR_BAD_OPTION_VALUE`, unknown options `ERR_BAD_OPTION`.
 - A patch change keeps every input the code accepted before. Narrowing what an option takes (an allow-list of keys, rejecting a value that used to work, a stricter type) changes behaviour for some caller, so it goes in the next minor with a bump file that says so.
 
@@ -27,7 +27,7 @@ Config objects, plugin objects, option objects and anything else a caller hands 
 - Middleware composition stays plain closures with no async wrapper; a middleware that calls `next` before awaiting reaches the adapter in the same tick.
 - Each `next(ctx)` dispatches its own copy of `ctx.config`; dispatch never writes back to `ctx.config`.
 - `use()` / `eject()` replace the middleware list and capabilities instead of mutating them; in-flight requests keep their snapshot.
-- Built-in plugins use only the public middleware API. Defaults are conservative: `retry` retries idempotent methods only.
+- Built-in plugins use only the public middleware API: they import only the package root (`../../index.js`) and each other, which `lint:esl` enforces, and they share per-request values through public context fields such as `ctx.attempt`, never a private symbol. Defaults are conservative: `retry` retries idempotent methods only.
 
 ## Shape and style
 

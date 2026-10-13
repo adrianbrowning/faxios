@@ -409,6 +409,12 @@ interface ContextHeaders {
 // `{}` defaults match a FaxiosInstance with no plugins, so a plain `FaxiosMiddleware` installs on one.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- see above
 export interface FaxiosContext<TOptions = {}, TCapabilities = {}> {
+  /**
+   * The try this context leads to, counting from 1. `retry` sets it before each try, so middleware
+   * installed after `retry` reads each try's number, and middleware installed before it reads the
+   * last try's number once `next` settles. A hand-written retry middleware sets it the same way.
+   */
+  attempt: number;
   /** Values provided by installed plugins, shared by every request of the instance. */
   capabilities: TCapabilities;
   /** The merged request config. `headers` is a `FaxiosHeaders` instance. */

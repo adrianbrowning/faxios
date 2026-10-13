@@ -220,6 +220,20 @@ describe("core::middleware", () => {
       assert.notStrictEqual(states[0], states[1]);
       assert.strictEqual(Object.getPrototypeOf(states[0]), null);
     });
+
+    it("starts every request's ctx.attempt at 1, whatever an earlier request set", async () => {
+      const seen: Array<number> = [];
+      const api = faxios.create({ env: { fetch: jsonFetch() } }).use(async (ctx, next) => {
+        seen.push(ctx.attempt);
+        ctx.attempt = 5;
+        return next(ctx);
+      });
+
+      await api.get(URL);
+      await api.get(URL);
+
+      assert.deepStrictEqual(seen, [ 1, 1 ]);
+    });
   });
 
   describe("capabilities", () => {

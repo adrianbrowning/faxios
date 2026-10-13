@@ -3,16 +3,16 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "b0c40e345f65057286994224e9e46034b850c5580cca5fbc2adf5c536ddfc407",
+      "fingerprint": "04e105383c628367a6367fd9062cb11cf57c5def0b1b045f9187c304895877af",
       "snapshot": {
         "MIGRATION_GUIDE.md": "c1ad4b4b502f5eb5c9b5cc969e3410f68f4e637951681f119a43087abf2f0c31",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "955875cad52b30fcbe5b3b68c21f572997fef841af688f3785cee82eeb7cc5cd",
+        "packages/lib/skills/configure-requests/SKILL.md": "32e92c90338207e24beb5116d4805776b9716521f2834af0ecffded0accc237f",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "1cd413182f1603fc615a3c0e0dbc32043723545450a2d70281030e812516ba16",
-        "packages/lib/skills/configure-requests/references/plugins.md": "914e94cc6d724c16a4d752c8168a342cca82dffa12a087253558ab6c929ee5b0",
-        "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
+        "packages/lib/skills/configure-requests/references/plugins.md": "e05e13099aa48813cc16bd96588852d01188cf65f648b606342aea39710aa4c9",
+        "packages/lib/src/index.ts": "edd330b5bfd7f3bc0066ae038c0f802be6634c68080482031db7780df21d286f",
         "packages/lib/src/lib/adapters/fetch.ts": "675d7138127d4428f8fd1693642b76b07df242a654218b4fff3833e80d10f8cc",
-        "packages/lib/src/lib/core/Faxios.ts": "140befadd92d2cb9d4a00c1a4cfeeedcc313d1a2e035c56780aa21d8e07730e3",
+        "packages/lib/src/lib/core/Faxios.ts": "e99da0bfe6144fd45363fdf17115862f14d468797c8be9a94c980b0e9af79a3e",
         "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
@@ -21,39 +21,39 @@
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
         "packages/lib/src/lib/helpers/composeSignals.ts": "82087ee7bf3628d9e5d98c1611d14e6ce76df5ddcdde2db8298dfebc1d16f2ab",
-        "packages/lib/src/lib/plugins/authBearer.ts": "46347f96efcc4e1f29245cf21835671cdfa3fe7d9e76c9c36d5b85fc697a2b0b",
-        "packages/lib/src/lib/plugins/definePlugin.ts": "115bfafc88f311a53f58c0b41262b591e7005c66ab73173d1a3312b06a51823c",
-        "packages/lib/src/lib/plugins/retry.ts": "1b3b817cc2fe27c05173ecd3643e48ca538bcd1bac5d0a29f3c0431388f9c1a4",
-        "packages/lib/src/lib/plugins/timing.ts": "621b09295c3cbfd49e981c33458fd74fe068aec58829c52cd94f6dadf3e8a1ee",
-        "packages/lib/src/lib/types.ts": "64ffd3643342b464350262b5f2d9208805220b85e66a226e9d70947c3204fed0",
+        "packages/lib/src/lib/plugins/authBearer.ts": "25931d33a4b2384df7dc3df77e3aa1d6848a94c6676909896a23506cb1542b9c",
+        "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
+        "packages/lib/src/lib/plugins/retry.ts": "fb390f6c43feb658a3dfe43ab4bc5bb8e83eeacf5c9079daeb10fe8a932ecbfe",
+        "packages/lib/src/lib/plugins/timing.ts": "718ad5f2c23e3ee0e39ef8632b223da5ad46e556d4d5d0e5f54369708eaaee5d",
+        "packages/lib/src/lib/types.ts": "c2c5d5dfdf2544244ba68079f413a6f5d0463652ca18834de7a42689aeb549fc",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
-        "packages/tests/unit/core/middleware.test.ts": "f5886d5962182e662a08fc96bbf896fbaa27dc750182d41b122dfe2ffe94985e",
+        "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
-        "packages/tests/unit/plugins/timing.test.ts": "2c8801466e565b919c13e48e8993cb664458c3e9ac17cc1fdcbce8c0574de720"
+        "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "outcome": "updated",
+      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/types.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/index.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/definePlugin.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/lib/src/lib/types.ts, packages/tests/unit/core/middleware.test.ts, packages/tests/unit/plugins/timing.test.ts at 1f97712f0c2b15e3e294b68ec9439755aa454651"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "b6ac3945d5ef6308582eac83f92a16867ae3650014f34f09cf8f899a9b21262b",
+      "fingerprint": "63be56e3f84ed6028c50af6e82c3c16ab89ada475517020e6368a335f4a8f771",
       "snapshot": {
         "MIGRATION_GUIDE.md": "c1ad4b4b502f5eb5c9b5cc969e3410f68f4e637951681f119a43087abf2f0c31",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "955875cad52b30fcbe5b3b68c21f572997fef841af688f3785cee82eeb7cc5cd",
+        "packages/lib/skills/configure-requests/SKILL.md": "32e92c90338207e24beb5116d4805776b9716521f2834af0ecffded0accc237f",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "1cd413182f1603fc615a3c0e0dbc32043723545450a2d70281030e812516ba16",
-        "packages/lib/skills/configure-requests/references/plugins.md": "914e94cc6d724c16a4d752c8168a342cca82dffa12a087253558ab6c929ee5b0",
-        "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
+        "packages/lib/skills/configure-requests/references/plugins.md": "e05e13099aa48813cc16bd96588852d01188cf65f648b606342aea39710aa4c9",
+        "packages/lib/src/index.ts": "edd330b5bfd7f3bc0066ae038c0f802be6634c68080482031db7780df21d286f",
         "packages/lib/src/lib/adapters/fetch.ts": "675d7138127d4428f8fd1693642b76b07df242a654218b4fff3833e80d10f8cc",
-        "packages/lib/src/lib/core/Faxios.ts": "140befadd92d2cb9d4a00c1a4cfeeedcc313d1a2e035c56780aa21d8e07730e3",
+        "packages/lib/src/lib/core/Faxios.ts": "e99da0bfe6144fd45363fdf17115862f14d468797c8be9a94c980b0e9af79a3e",
         "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
@@ -62,23 +62,23 @@
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
         "packages/lib/src/lib/helpers/composeSignals.ts": "82087ee7bf3628d9e5d98c1611d14e6ce76df5ddcdde2db8298dfebc1d16f2ab",
-        "packages/lib/src/lib/plugins/authBearer.ts": "46347f96efcc4e1f29245cf21835671cdfa3fe7d9e76c9c36d5b85fc697a2b0b",
-        "packages/lib/src/lib/plugins/definePlugin.ts": "115bfafc88f311a53f58c0b41262b591e7005c66ab73173d1a3312b06a51823c",
-        "packages/lib/src/lib/plugins/retry.ts": "1b3b817cc2fe27c05173ecd3643e48ca538bcd1bac5d0a29f3c0431388f9c1a4",
-        "packages/lib/src/lib/plugins/timing.ts": "621b09295c3cbfd49e981c33458fd74fe068aec58829c52cd94f6dadf3e8a1ee",
-        "packages/lib/src/lib/types.ts": "64ffd3643342b464350262b5f2d9208805220b85e66a226e9d70947c3204fed0",
+        "packages/lib/src/lib/plugins/authBearer.ts": "25931d33a4b2384df7dc3df77e3aa1d6848a94c6676909896a23506cb1542b9c",
+        "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
+        "packages/lib/src/lib/plugins/retry.ts": "fb390f6c43feb658a3dfe43ab4bc5bb8e83eeacf5c9079daeb10fe8a932ecbfe",
+        "packages/lib/src/lib/plugins/timing.ts": "718ad5f2c23e3ee0e39ef8632b223da5ad46e556d4d5d0e5f54369708eaaee5d",
+        "packages/lib/src/lib/types.ts": "c2c5d5dfdf2544244ba68079f413a6f5d0463652ca18834de7a42689aeb549fc",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
-        "packages/tests/unit/core/middleware.test.ts": "f5886d5962182e662a08fc96bbf896fbaa27dc750182d41b122dfe2ffe94985e",
+        "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
-        "packages/tests/unit/plugins/timing.test.ts": "2c8801466e565b919c13e48e8993cb664458c3e9ac17cc1fdcbce8c0574de720"
+        "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "outcome": "updated",
+      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/types.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/index.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/definePlugin.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/lib/src/lib/types.ts, packages/tests/unit/core/middleware.test.ts, packages/tests/unit/plugins/timing.test.ts at 1f97712f0c2b15e3e294b68ec9439755aa454651"
       ]
     },
     "source:knip.json": {
@@ -170,15 +170,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "cf3be1cd025182f9d2770868f142ea4d089360a39aadfcc11bebeb40d562df4f",
+      "fingerprint": "0e32b899fab03f2f2639458bd210a0af30614ce5798e7088a49d9021a7b6a5d5",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "cb7702cb8c4e5c95d5db669797482685b8173ba347d28270b1543d7050720f44"
+        "packages/docs/pages/advanced/api-reference.md": "5b1580ec769386fad1bf140b6a676ee09702d30689c1908d10da2a58892131f9"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "outcome": "updated",
+      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/api-reference.md at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/docs/pages/advanced/api-reference.md at 1f97712f0c2b15e3e294b68ec9439755aa454651"
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
@@ -254,15 +254,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "293556adcfb808366c75925b6ec272ff482ef6ab8214819add46822cbef3ffab",
+      "fingerprint": "90912a3c54f1aff0ea02772246a50d313d3726f9ca38e27988567f88ac27dd64",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "0d3c9f3ae8ea7a9a719e32bf5cf5d3500e39e3d262f3e09cb1ab06c0139c4370"
+        "packages/docs/pages/advanced/middleware.md": "e02729fcce7e09f6fb7c899a9a8377cf75b46719ed45b77e476508f42676f200"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
       "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: packages/docs/pages/advanced/middleware.md at 1f97712f0c2b15e3e294b68ec9439755aa454651"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
@@ -290,15 +290,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
-      "fingerprint": "e1036cb7a46ec715a5775f068fbdb4ad388c4c46c5da0b79233b593f8146431f",
+      "fingerprint": "01f9c70f48a6f246959455fc261ff59b3e655557fd8de79d85572bd9df6bcb61",
       "snapshot": {
-        "packages/docs/pages/advanced/retry.md": "2b3ae18b58eb1ce55cd4d115b7cdcc3a949d0e61d6dcdb868884e812c069817c"
+        "packages/docs/pages/advanced/retry.md": "00e9f4e0ea380044c718e9c47006a176372ba9c23b4de762b5ae1b13e262ca7c"
       },
-      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
+      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
       "outcome": "updated",
-      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
+      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/retry.md at f8e65308b747dbb46d674597caabd55029175fd4"
+        "Changed: packages/docs/pages/advanced/retry.md at 1f97712f0c2b15e3e294b68ec9439755aa454651"
       ]
     },
     "source:packages/docs/pages/advanced/schema-validation.md": {
@@ -2194,17 +2194,15 @@
       ]
     },
     "source:packages/lib/eslint.config.ts": {
-      "fingerprint": "78729eaa16a052079cc10a8e0bb4c07b098c5e70301c544883993fef175f90b7",
+      "fingerprint": "94f5c01adb8e8a5b0453afff77fbf76b3cc7d9f881f05b073cb07c634080ccf7",
       "snapshot": {
-        "packages/lib/eslint.config.ts": "1670446f6bf375b1a9621ca619b431a3322ad04548b02f42a73403c61deaffb6"
+        "packages/lib/eslint.config.ts": "7c87a76931acae679a1a12e46563e26f14f9019a3620546170056403f222ef88"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Lib ESLint config now builds on sharedConfig. Lint tooling, no runtime code.",
+      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "outcome": "updated",
+      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/eslint.config.ts",
-        "pnpm --filter @gcmdev/faxios lint:esl passes.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/eslint.config.ts at 1f97712f0c2b15e3e294b68ec9439755aa454651"
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
@@ -2868,15 +2866,15 @@
       ]
     },
     "source:packages/tests/unit/core/middlewareTypes.test.ts": {
-      "fingerprint": "04bd48ae554aa4a8dbc874e9d6bad4942c8094cbdc02da40e95d3deab76f8454",
+      "fingerprint": "0c03881977615d807a3f4f9a528320786cfcb40ca3ccac3b120065ecb130e3ea",
       "snapshot": {
-        "packages/tests/unit/core/middlewareTypes.test.ts": "51a8fd944d2f378e090204517db6732590deaa68da33f879acafa73ee4d6f786"
+        "packages/tests/unit/core/middlewareTypes.test.ts": "5d1ccc4182e2c9c96e699411098cc002363424feec1f301e5c26201099081031"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
       "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
       "evidence": [
-        "Changed: packages/tests/unit/core/middlewareTypes.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: packages/tests/unit/core/middlewareTypes.test.ts at 1f97712f0c2b15e3e294b68ec9439755aa454651"
       ]
     },
     "source:packages/tests/unit/core/paramsSchema.test.ts": {
@@ -4210,15 +4208,15 @@
       ]
     },
     "source:CODING_STANDARDS.md": {
-      "fingerprint": "35fa57ca5e96bd7f2f46988756f23b4e1d832c58558e62d51611c1c728700ab5",
+      "fingerprint": "56a6933a9467ebb0496994a7c004c949a3edebf9d4f54b2ecd08d04b7b84c83e",
       "snapshot": {
-        "CODING_STANDARDS.md": "9222dc333631972bd0d2cd39adfe77cf09b74fc36b57decf370a2160baa09dc2"
+        "CODING_STANDARDS.md": "328925200cc52e5c2783e0b1627c2a64177eb82e5d805e622a1791e9f070092d"
       },
-      "head": "465e8cdf20055c7da0786b97229d7d41d8bf030a",
-      "outcome": "no-change",
-      "reason": "Contributor tooling and review rules only: scripts/intent-restack.sh, the do-work hand-off steps, the gh gotchas and two CODING_STANDARDS reviewer rules. No library API or skill guidance changes.",
+      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "outcome": "updated",
+      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
       "evidence": [
-        "Changed: CODING_STANDARDS.md at 465e8cdf20055c7da0786b97229d7d41d8bf030a"
+        "Changed: CODING_STANDARDS.md at 1f97712f0c2b15e3e294b68ec9439755aa454651"
       ]
     },
     "source:docs/agents/issue-tracker.md": {
@@ -4663,6 +4661,54 @@
       "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
         "Changed: packages/tests/unit/adapters/fetch-pure.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
+      ]
+    },
+    "source:.bumpy/plugin-attempt-api.md": {
+      "fingerprint": "1e4343b5ad9293614f5ad04b892ac6993fd17b57503d2684509430e2fc0f1e32",
+      "snapshot": {
+        ".bumpy/plugin-attempt-api.md": "c4035637b2c32d9dea2e132450b6d79796c71508e629302787a85a2b5d08547e"
+      },
+      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "outcome": "updated",
+      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "evidence": [
+        "Changed: .bumpy/plugin-attempt-api.md at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+      ]
+    },
+    "source:packages/lib/src/lib/plugins/attempt.ts": {
+      "fingerprint": "8db4feb99b9256efe5f340d4a89cf3abaeaa01aeb89c7537971c27786ff33445",
+      "snapshot": {
+        "packages/lib/src/lib/plugins/attempt.ts": null
+      },
+      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "outcome": "updated",
+      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/plugins/attempt.ts at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+      ]
+    },
+    "source:packages/lib/src/lib/plugins/shared.ts": {
+      "fingerprint": "cf0e5511425c556401cc2ea742138f7a73e0680790ac4a7e5e86368a2f55a1aa",
+      "snapshot": {
+        "packages/lib/src/lib/plugins/shared.ts": "c11167c106076979073d53e1179aa1372fdd7027f7fa2fa146ec506aba55678b"
+      },
+      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "outcome": "updated",
+      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/plugins/shared.ts at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+      ]
+    },
+    "source:packages/tests/module/esm/tests/helpers/middleware-index.ts": {
+      "fingerprint": "23b407118e6f76ab1ce89fa0bd7c4255c7e434511e53645e93b776ea9e0864f9",
+      "snapshot": {
+        "packages/tests/module/esm/tests/helpers/middleware-index.ts": "eb1e8fcd7a3dbd5388039b0a4e54b64c65ee373539a0ef71d352c68db0b348e5"
+      },
+      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "outcome": "updated",
+      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "evidence": [
+        "Changed: packages/tests/module/esm/tests/helpers/middleware-index.ts at 1f97712f0c2b15e3e294b68ec9439755aa454651"
       ]
     }
   }

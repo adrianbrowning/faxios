@@ -421,6 +421,7 @@ class Faxios {
     if (!composed) return dispatchRequest(config as InternalFaxiosRequestConfig);
 
     const ctx: FaxiosContext = {
+      attempt: 1,
       config: config as InternalFaxiosRequestConfig,
       state: Object.create(null),
       capabilities: this.#capabilities,

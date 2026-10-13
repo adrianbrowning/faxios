@@ -344,6 +344,8 @@ The `ctx` every middleware receives. It is created once per request, after the r
 
 ```ts check=skip
 interface FaxiosContext<TOptions = {}, TCapabilities = {}> {
+  // The try this context leads to, from 1. `retry` (or your own retry middleware) sets it per try.
+  attempt: number;
   // The merged request config, with the plugin request options. `headers` is a FaxiosHeaders.
   config: InternalFaxiosRequestConfig & TOptions;
   // Null-prototype scratch space for this request only.
