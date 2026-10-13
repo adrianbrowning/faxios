@@ -4,6 +4,7 @@
     "faxios": "../../../lib/dist/index.js",
     "faxios/plugins": "../../../lib/dist/lib/plugins/definePlugin.js",
     "faxios/plugins/auth-bearer": "../../../lib/dist/lib/plugins/authBearer.js",
+    "faxios/plugins/forward-to": "../../../lib/dist/lib/plugins/forwardTo.js",
     "faxios/plugins/retry": "../../../lib/dist/lib/plugins/retry.js",
     "faxios/plugins/timing": "../../../lib/dist/lib/plugins/timing.js",
     "faxios/unsafe/core/buildFullPath.js": "../../../lib/dist/lib/core/buildFullPath.js",

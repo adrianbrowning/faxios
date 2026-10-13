@@ -3,13 +3,13 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "7e9b6d6509f8bc4d9b5607fc0056874faff13c75560b47df4f4fa9a7582a4fe2",
+      "fingerprint": "7faa98aa6ad3cf067537e492e61fde800556f1010337e2ab7ba48cb96c70c54a",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3c1ef5f8183bfbd67313b82e8556f2c83495e11e3b39bda2f84b3f2d35f803d7",
-        "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "d0adecf7743d3eb68b7464847f2e3be3e1a9eff17ae5f68b443562e8d562c0fa",
+        "packages/lib/package.json": "6ceed88544e8666b441eda75aac032ee5d0afb7184092c6ebca250806aab7ed0",
+        "packages/lib/skills/configure-requests/SKILL.md": "2e5616bdfc342aa754da49edecbd2f4e052cd2594d5e88bf41a3f4b2f4771f9c",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
-        "packages/lib/skills/configure-requests/references/plugins.md": "e05e13099aa48813cc16bd96588852d01188cf65f648b606342aea39710aa4c9",
+        "packages/lib/skills/configure-requests/references/plugins.md": "96873b03af18312869a0308acca3f5164e0de3811a45f280ccf0265c1f014dc4",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
         "packages/lib/src/lib/adapters/fetch.ts": "dac730893928ede80b3a1b31b1064053a41555a2a13d340326fb3b78927c99b5",
         "packages/lib/src/lib/core/Faxios.ts": "7d77d83175a3f2df158bf4fad8c92217e4cc7b1323e0834999d5428707be2d28",
@@ -21,8 +21,9 @@
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
         "packages/lib/src/lib/helpers/composeSignals.ts": "829b7130dc742becad300735254e63afeb73a8f1f99dac48febf2dcc3e0aab1c",
-        "packages/lib/src/lib/plugins/authBearer.ts": "25931d33a4b2384df7dc3df77e3aa1d6848a94c6676909896a23506cb1542b9c",
+        "packages/lib/src/lib/plugins/authBearer.ts": "6679d5ad304defc2ffd75f65bb0ec8edf38f7ccd1b4632465c6e127216125080",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
+        "packages/lib/src/lib/plugins/forwardTo.ts": "3561b842f48c354df300ecb38f37cb0971d8f42a6de8662c1161b1c36eb94a5f",
         "packages/lib/src/lib/plugins/retry.ts": "83aac25415efa7c0135b7ab4733632b3cb265a9ab11266a125eb2541c2af7d12",
         "packages/lib/src/lib/plugins/timing.ts": "718ad5f2c23e3ee0e39ef8632b223da5ad46e556d4d5d0e5f54369708eaaee5d",
         "packages/lib/src/lib/types.ts": "7be2bd96745f0f50e4ce5cf6e0ba00803662033b75f1543390656c7dd5b317c3",
@@ -30,27 +31,28 @@
         "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
+        "packages/tests/unit/plugins/forwardTo.test.ts": "f22d77b513f3feefd0c68151b35242e29b8392d8f33726209cc5b8e1a1642dbc",
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "a6926e1f507b0da9f07237183336e51a04704807",
-      "outcome": "no-change",
-      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
+      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "outcome": "updated",
+      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md at a6926e1f507b0da9f07237183336e51a04704807"
+        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/tests/unit/plugins/forwardTo.test.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "fa061db0c2eb966e6b5072dc1b6b931cfb0b6072bc98f85f2025f47b7a28a920",
+      "fingerprint": "b5d476e189b11867acf45c4fafb1f8cdc85020a5c801cecea0788e0da8d43790",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3c1ef5f8183bfbd67313b82e8556f2c83495e11e3b39bda2f84b3f2d35f803d7",
-        "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
+        "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
-        "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
-        "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "d0adecf7743d3eb68b7464847f2e3be3e1a9eff17ae5f68b443562e8d562c0fa",
+        "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
+        "packages/lib/package.json": "6ceed88544e8666b441eda75aac032ee5d0afb7184092c6ebca250806aab7ed0",
+        "packages/lib/skills/configure-requests/SKILL.md": "2e5616bdfc342aa754da49edecbd2f4e052cd2594d5e88bf41a3f4b2f4771f9c",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
-        "packages/lib/skills/configure-requests/references/plugins.md": "e05e13099aa48813cc16bd96588852d01188cf65f648b606342aea39710aa4c9",
+        "packages/lib/skills/configure-requests/references/plugins.md": "96873b03af18312869a0308acca3f5164e0de3811a45f280ccf0265c1f014dc4",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
         "packages/lib/src/lib/adapters/fetch.ts": "dac730893928ede80b3a1b31b1064053a41555a2a13d340326fb3b78927c99b5",
         "packages/lib/src/lib/core/Faxios.ts": "7d77d83175a3f2df158bf4fad8c92217e4cc7b1323e0834999d5428707be2d28",
@@ -62,8 +64,9 @@
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
         "packages/lib/src/lib/helpers/composeSignals.ts": "829b7130dc742becad300735254e63afeb73a8f1f99dac48febf2dcc3e0aab1c",
-        "packages/lib/src/lib/plugins/authBearer.ts": "25931d33a4b2384df7dc3df77e3aa1d6848a94c6676909896a23506cb1542b9c",
+        "packages/lib/src/lib/plugins/authBearer.ts": "6679d5ad304defc2ffd75f65bb0ec8edf38f7ccd1b4632465c6e127216125080",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
+        "packages/lib/src/lib/plugins/forwardTo.ts": "3561b842f48c354df300ecb38f37cb0971d8f42a6de8662c1161b1c36eb94a5f",
         "packages/lib/src/lib/plugins/retry.ts": "83aac25415efa7c0135b7ab4733632b3cb265a9ab11266a125eb2541c2af7d12",
         "packages/lib/src/lib/plugins/timing.ts": "718ad5f2c23e3ee0e39ef8632b223da5ad46e556d4d5d0e5f54369708eaaee5d",
         "packages/lib/src/lib/types.ts": "7be2bd96745f0f50e4ce5cf6e0ba00803662033b75f1543390656c7dd5b317c3",
@@ -71,14 +74,15 @@
         "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
+        "packages/tests/unit/plugins/forwardTo.test.ts": "f22d77b513f3feefd0c68151b35242e29b8392d8f33726209cc5b8e1a1642dbc",
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "a6926e1f507b0da9f07237183336e51a04704807",
-      "outcome": "no-change",
-      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
+      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "outcome": "updated",
+      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md at a6926e1f507b0da9f07237183336e51a04704807"
+        "Changed: _artifacts/domain_map.yaml, _artifacts/skill_tree.yaml, packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/tests/unit/plugins/forwardTo.test.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
       ]
     },
     "source:knip.json": {
@@ -170,27 +174,27 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "f8041410dcf55ba36b677f2cfae3bfc54244af6d8cd3790fb8d2054b26177a5c",
+      "fingerprint": "b31b5d722a371d82f8b5ef2dae119a4a6fcee0d869a794990682c9a0a8b16630",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "833bc455ffa9f4fe01d94149680c1ac31fdad500847001c4258070e68880446d"
+        "packages/docs/pages/advanced/api-reference.md": "76d309958edf022cb7c3d90f20952541c23898df1e09a6d8810e6d54322a3cca"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "outcome": "updated",
+      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/api-reference.md at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/docs/pages/advanced/api-reference.md at f59775c08419cb31e97d0b6395315f647aa499a1"
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
-      "fingerprint": "2955441bc8698ea67e7291c881f330cb9c2fc69cd11503110b54323c3d0b2fd5",
+      "fingerprint": "88d6d53bb06406eea88afc5e079b0c4382d8cb5e0c3b95c289ba491e262a203b",
       "snapshot": {
-        "packages/docs/pages/advanced/authentication.md": "e21bad3789a4e1cd4a0eea02ba5bbd70a7b395a849dc503ededfc944d8add866"
+        "packages/docs/pages/advanced/authentication.md": "5dee0e5f797665deb1309ac43bd3f3ab60767cb742c69dc20fcdc77ac5f396c5"
       },
-      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
+      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
       "outcome": "updated",
-      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
+      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/authentication.md at f8e65308b747dbb46d674597caabd55029175fd4"
+        "Changed: packages/docs/pages/advanced/authentication.md at f59775c08419cb31e97d0b6395315f647aa499a1"
       ]
     },
     "source:packages/docs/pages/advanced/create-an-instance.md": {
@@ -254,27 +258,27 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "296a77bb687c918c889c954333be4293507ebd7beff9e5037bbd4696aab1c4b9",
+      "fingerprint": "14af4f8b78e18187e945bbe54f33a026ebc4c22030243f68801723c52010e4df",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "0a4131e3736ee267036f3f6346b2a2456d1e3bdc105f23c8523152e008a47792"
+        "packages/docs/pages/advanced/middleware.md": "4f4d8d5291e9d8b288c8aa3beb1e1db6111a6185dd559215788097249b4a2890"
       },
-      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
+      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
       "outcome": "updated",
-      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
+      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
+        "Changed: packages/docs/pages/advanced/middleware.md at f59775c08419cb31e97d0b6395315f647aa499a1"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
-      "fingerprint": "e0f521d3a66a1a8ff8eb8fbd3c4c727f7bf94329f51b9df45b6d282843466b87",
+      "fingerprint": "a9831e4bd68f615cf33cfbca3de42ecfe05ce5c62fced9f1b1b6b4ded0be40dd",
       "snapshot": {
-        "packages/docs/pages/advanced/migrating-from-interceptors.md": "fc19a36f932d130ed5a232e6307f623c3a66ecf56ea81bddda04c108b4cd43c1"
+        "packages/docs/pages/advanced/migrating-from-interceptors.md": "5cc5e0fa79b064dae0f0d112749991b9d8272ea8bc3af2806d02a3714fa079c2"
       },
-      "head": "466184284f2ed349a4f774209812095d3e6b3647",
+      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
       "outcome": "updated",
-      "reason": "Rebased onto #202. The plugins reference now describes the refreshOn401 recipe installed before authBearer with one shared refresh, and that a used stream body rejects with ERR_BAD_REQUEST; the adapter rejects a stream body that was already sent.",
+      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/migrating-from-interceptors.md at 466184284f2ed349a4f774209812095d3e6b3647"
+        "Changed: packages/docs/pages/advanced/migrating-from-interceptors.md at f59775c08419cb31e97d0b6395315f647aa499a1"
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
@@ -410,15 +414,15 @@
       ]
     },
     "source:packages/lib/README.md": {
-      "fingerprint": "8d3239dc6f04ee35833d43367e57f1289563dd4f4eb4ef51a3a0e605197df4bb",
+      "fingerprint": "cb03b3ba80df6cbf90e0021975ad9e64677b2055f57b83ab3b7cf94b6536a330",
       "snapshot": {
-        "packages/lib/README.md": "8413ee8783469db38937187a093d85f081bb8d6d1fae22760f9db883c14c29a1"
+        "packages/lib/README.md": "7ecc2cf5a0b9871e8659bb9805fcd4b162a4693c10501b20077205d03a1e9b2d"
       },
-      "head": "a6926e1f507b0da9f07237183336e51a04704807",
-      "outcome": "no-change",
-      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
+      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "outcome": "updated",
+      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
       "evidence": [
-        "Changed: packages/lib/README.md at a6926e1f507b0da9f07237183336e51a04704807"
+        "Changed: packages/lib/README.md at f59775c08419cb31e97d0b6395315f647aa499a1"
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
@@ -2700,16 +2704,15 @@
       ]
     },
     "source:packages/tests/smoke/deno/tests/plugins.smoke.test.ts": {
-      "fingerprint": "54d660931b0c9baba9783ca14282bbeed2ebf3f2cce00317733a1c6b4c5b531b",
+      "fingerprint": "c1bfd166e83d0da233f2c76782d77dcf1d31030a65602c4bf21b41b07baed59a",
       "snapshot": {
-        "packages/tests/smoke/deno/tests/plugins.smoke.test.ts": "5d3ac8ec786d01cbbb308773047630b461adf6fe15ee4b3b6cce3b03e97bb9e4"
+        "packages/tests/smoke/deno/tests/plugins.smoke.test.ts": "0add4365382a4f55cc41c50601f84f3c317e96057e1c8e7c3ee4f6f3db6ab45c"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Param union `string | URL | Request` became `Request | string | URL`. Behaviour change: none",
+      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "outcome": "updated",
+      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/smoke/deno/tests/plugins.smoke.test.ts: @@ -15,7 +15,7 @@ (diff/200)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/smoke/deno/tests/plugins.smoke.test.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
       ]
     },
     "source:packages/tests/tsconfig.json": {
@@ -3952,15 +3955,15 @@
       ]
     },
     "source:packages/tests/smoke/deno/deno.json": {
-      "fingerprint": "732804d1e2046d3ba985f26f28e19391e71bb01335be47fc4a18ff034b2206e1",
+      "fingerprint": "dae1d711a0002b6a6c221fc6a61a569fb88bdc4d52cfc8857068aa75900fe546",
       "snapshot": {
-        "packages/tests/smoke/deno/deno.json": "e448b67156d753624c3a989e52e04e6302e7f1997e43e1bbf6bad188dc32f7c8"
+        "packages/tests/smoke/deno/deno.json": "23036d1cf8f1bc20bcd3665075d1adfcfe7418911c6c0ac263fb0b06e9fdebe1"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
-      "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "outcome": "updated",
+      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
       "evidence": [
-        "Changed: packages/tests/smoke/deno/deno.json at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/tests/smoke/deno/deno.json at f59775c08419cb31e97d0b6395315f647aa499a1"
       ]
     },
     "source:packages/tests/smoke/deno/types/consumer.ts": {
@@ -4684,27 +4687,27 @@
       ]
     },
     "source:packages/lib/src/lib/plugins/shared.ts": {
-      "fingerprint": "cf0e5511425c556401cc2ea742138f7a73e0680790ac4a7e5e86368a2f55a1aa",
+      "fingerprint": "689e7bd8741e242f078a8930939a4d98cf3ecb2e2524852000fe750aa08750bb",
       "snapshot": {
-        "packages/lib/src/lib/plugins/shared.ts": "c11167c106076979073d53e1179aa1372fdd7027f7fa2fa146ec506aba55678b"
+        "packages/lib/src/lib/plugins/shared.ts": "93503984b2e554ef8268a9f14350dad5e2839ac2835af19f41c9652ead8f1419"
       },
-      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
       "outcome": "updated",
-      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
       "evidence": [
-        "Changed: packages/lib/src/lib/plugins/shared.ts at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+        "Changed: packages/lib/src/lib/plugins/shared.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/middleware-index.ts": {
-      "fingerprint": "23b407118e6f76ab1ce89fa0bd7c4255c7e434511e53645e93b776ea9e0864f9",
+      "fingerprint": "390e0cdda13c760ede5c51e5565f8b718d46fec55f9e7a560d59cb732af5b6c2",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/middleware-index.ts": "eb1e8fcd7a3dbd5388039b0a4e54b64c65ee373539a0ef71d352c68db0b348e5"
+        "packages/tests/module/esm/tests/helpers/middleware-index.ts": "ff3f370f972d9b57cbf0d02de33846dbbe1d0cbd30063204296fbdcace2ec2cd"
       },
-      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
       "outcome": "updated",
-      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
       "evidence": [
-        "Changed: packages/tests/module/esm/tests/helpers/middleware-index.ts at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+        "Changed: packages/tests/module/esm/tests/helpers/middleware-index.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
       ]
     },
     "source:.bumpy/whole-request-timeout.md": {
@@ -4861,6 +4864,54 @@
       "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
       "evidence": [
         "Changed: .bumpy/typescript-floor-5-4.md at a6926e1f507b0da9f07237183336e51a04704807"
+      ]
+    },
+    "source:.bumpy/forward-to-plugin.md": {
+      "fingerprint": "7f161d4b67f3e86c6d9576c628eaaae0aef254a6fb64bf9f860fb86cea407ec1",
+      "snapshot": {
+        ".bumpy/forward-to-plugin.md": "605e0d10ccef99e6e9b35791188f6b07e8f99d43db643d301b8d1b85c9667405"
+      },
+      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "outcome": "updated",
+      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "evidence": [
+        "Changed: .bumpy/forward-to-plugin.md at f59775c08419cb31e97d0b6395315f647aa499a1"
+      ]
+    },
+    "source:packages/tests/browser/plugins.browser.test.ts": {
+      "fingerprint": "3444aa2958edd6feb1abe84dd63340af27f119cd88caa0ab5142b70b48093c9a",
+      "snapshot": {
+        "packages/tests/browser/plugins.browser.test.ts": "0177b4078aab48f261a20e3e83d05cabfa99e0846eb201ad5da2a7ea13ae0bf5"
+      },
+      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "outcome": "updated",
+      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "evidence": [
+        "Changed: packages/tests/browser/plugins.browser.test.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
+      ]
+    },
+    "source:packages/tests/smoke/bun/tests/plugins.smoke.test.ts": {
+      "fingerprint": "772cfc908455e5a57c4a3cd0f781b0bf249e0de4c499e0473bf0992a01cdd103",
+      "snapshot": {
+        "packages/tests/smoke/bun/tests/plugins.smoke.test.ts": "b2ec25510c829c7c8be4898a408406cfe8fc0b11aa984984d675cdd51aaf6b38"
+      },
+      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "outcome": "updated",
+      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "evidence": [
+        "Changed: packages/tests/smoke/bun/tests/plugins.smoke.test.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/plugins.smoke.test.ts": {
+      "fingerprint": "f12012103d9cea84722ad46f8e7d40be6f3bf8dbeff2a98963eb1fc2977bf35d",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/plugins.smoke.test.ts": "c6cbf40cef3207d939781528ffbc9b9a64abaaf1355287ba945f9aba82cdd051"
+      },
+      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "outcome": "updated",
+      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "evidence": [
+        "Changed: packages/tests/smoke/esm/tests/plugins.smoke.test.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
       ]
     }
   }

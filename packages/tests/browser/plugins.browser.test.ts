@@ -3,13 +3,14 @@ import { describe, expect, it } from "vitest";
 import faxios from "#src/index.js";
 import { authBearer } from "#src/lib/plugins/authBearer.js";
 import * as pluginsEntry from "#src/lib/plugins/definePlugin.js";
+import { forwardTo } from "#src/lib/plugins/forwardTo.js";
 import { retry } from "#src/lib/plugins/retry.js";
 import { timing } from "#src/lib/plugins/timing.js";
 import type { TimingEvent } from "#src/lib/plugins/timing.js";
 
 import { installFetchMock } from "./helpers/fetchMock.js";
 
-// The modules behind @gcmdev/faxios/plugins and the auth-bearer, retry and timing subpaths.
+// The modules behind @gcmdev/faxios/plugins and the auth-bearer, forward-to, retry and timing subpaths.
 describe("plugin entry points (vitest browser)", () => {
   it("exports only definePlugin from the plugins entry point", () => {
     expect(Object.keys(pluginsEntry)).toEqual([ "definePlugin" ]);
@@ -51,6 +52,17 @@ describe("plugin entry points (vitest browser)", () => {
       [ true, "Bearer listed-token" ],
       [ true, "Bearer listed-token" ],
       [ false, null ],
+    ]);
+  });
+
+  it("forwards a relative request to the gateway with its page-resolved URL in X-Forward-To", async () => {
+    using mock = installFetchMock();
+    const api = faxios.create().use(forwardTo("https://gateway.test/"));
+
+    await api.get("/items", { params: { q: "1" } });
+
+    expect(mock.requests.map(request => [ request.url, request.headers.get("x-forward-to") ])).toEqual([
+      [ "https://gateway.test/", `${location.origin}/items?q=1` ],
     ]);
   });
 });

@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import faxios, * as root from "faxios";
 import * as pluginsEntry from "faxios/plugins";
 import { authBearer } from "faxios/plugins/auth-bearer";
+import { forwardTo } from "faxios/plugins/forward-to";
 import { retry } from "faxios/plugins/retry";
 import { timing } from "faxios/plugins/timing";
 import type { TimingEvent } from "faxios/plugins/timing";
@@ -9,7 +10,7 @@ import type { TimingEvent } from "faxios/plugins/timing";
 describe("plugin subpaths", () => {
   test("faxios/plugins exports only definePlugin, the root no plugin API", () => {
     expect(Object.keys(pluginsEntry)).toEqual([ "definePlugin" ]);
-    for (const name of [ "authBearer", "retry", "timing", "definePlugin" ]) {
+    for (const name of [ "authBearer", "forwardTo", "retry", "timing", "definePlugin" ]) {
       expect(Object.hasOwn(root, name)).toBe(false);
     }
   });
@@ -41,5 +42,25 @@ describe("plugin subpaths", () => {
     expect(calls[1]!.headers.get("authorization")).toBe("Bearer bun-token");
     expect(calls[1]!.headers.get("x-tag")).toBe("bun");
     expect(events.map(event => event.status)).toEqual([ 200 ]);
+  });
+
+  test("forwardTo sends every try to the gateway with the target URL in X-Forward-To", async () => {
+    const calls: Array<Request> = [];
+    const fetch = async (input: unknown, init?: RequestInit) => {
+      calls.push(new Request(input as string, init));
+      return new Response(null, { status: calls.length === 1 ? 503 : 200 });
+    };
+    const api = faxios.create({ baseURL: "https://api.example.com", env: { fetch } })
+      .use(retry({ attempts: 2, delay: 0 }))
+      .use(forwardTo("http://gateway.example/"));
+
+    await api.get("/items", { params: { q: "1" } });
+    await api.get("/direct", { forward: false });
+
+    expect(calls.map(call => [ call.url, call.headers.get("x-forward-to") ])).toEqual([
+      [ "http://gateway.example/", "https://api.example.com/items?q=1" ],
+      [ "http://gateway.example/", "https://api.example.com/items?q=1" ],
+      [ "https://api.example.com/direct", null ],
+    ]);
   });
 });

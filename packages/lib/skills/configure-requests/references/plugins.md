@@ -1,7 +1,7 @@
 # Plugins
 
-Read this before installing the built-in plugins (`authBearer`, `retry`, `timing`), writing a
-reusable faxios plugin, typing middleware options, or sharing a value between plugins. Plain
+Read this before installing the built-in plugins (`authBearer`, `forwardTo`, `retry`, `timing`),
+writing a reusable faxios plugin, typing middleware options, or sharing a value between plugins. Plain
 one-off middleware (`api.use(async (ctx, next) => ...)`) does not need it.
 
 ## Install the built-in plugins
@@ -26,6 +26,22 @@ await api.get("/health", { retry: false });
 Check: `faxios.get("/health", { retry: false })` on the default export (or any instance without
 `retry()` installed) is a type error. Use the value `.use()` returned. The option defaults and
 ordering rules are in the SKILL.md "Use the built-in plugins from their subpaths" section.
+
+To reach the API through a forwarding gateway, install `forwardTo`; requests then go to the
+gateway with the target URL in `X-Forward-To`, and `forward: false` skips it:
+
+```ts
+import faxios from "@gcmdev/faxios";
+import { forwardTo } from "@gcmdev/faxios/plugins/forward-to";
+import { retry } from "@gcmdev/faxios/plugins/retry";
+
+const api = faxios.create({ baseURL: "https://api.example.com" })
+  .use(retry())
+  .use(forwardTo("http://gateway.local:8888/"));
+
+await api.get("/accounts/{id}", { pathParams: { id: "acme" } }); // X-Forward-To: https://api.example.com/accounts/acme
+await api.get("/health", { forward: false });                    // sent straight to the API
+```
 
 ## Define endpoints on a plugin instance
 
@@ -186,4 +202,5 @@ Don't keep the try number in a private symbol on `ctx.state`: other plugins can'
 
 Sources: `src/lib/plugins/definePlugin.ts`, `src/lib/types.ts` (`FaxiosContext`, `FaxiosPlugin`),
 `src/lib/core/Faxios.ts` (`use`), `packages/tests/unit/plugins/authBearer.test.ts`,
-`packages/tests/unit/plugins/definePlugin.test.ts`, `packages/tests/unit/plugins/timing.test.ts`.
+`packages/tests/unit/plugins/definePlugin.test.ts`, `packages/tests/unit/plugins/forwardTo.test.ts`,
+`packages/tests/unit/plugins/timing.test.ts`.

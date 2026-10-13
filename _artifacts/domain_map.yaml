@@ -32,7 +32,7 @@ skills:
       - 'AbortSignal cancellation, timeout, isCancel, CanceledError'
       - 'FaxiosError codes, isFaxiosError, isSchemaValidationError, validateStatus'
       - '.use() middleware, eject, ctx.config/state/capabilities'
-      - 'built-in plugins: auth-bearer, retry, timing; definePlugin'
+      - 'built-in plugins: auth-bearer, forward-to, retry, timing; definePlugin'
       - 'env.fetch and fetchOptions as the only transport customisation'
       - 'stable root/plugin subpaths vs ./unsafe/* exports'
       - 'Axios-to-faxios porting boundaries'

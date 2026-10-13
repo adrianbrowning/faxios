@@ -29,6 +29,7 @@ sources:
   - src/lib/helpers/composeSignals.ts
   - src/lib/plugins/definePlugin.ts
   - src/lib/plugins/authBearer.ts
+  - src/lib/plugins/forwardTo.ts
   - src/lib/plugins/retry.ts
   - src/lib/plugins/timing.ts
   - package.json
@@ -295,10 +296,11 @@ const api = faxios
 ### Use the built-in plugins from their subpaths
 
 Each built-in plugin has its own subpath and is not exported from the root:
-`authBearer` from `@gcmdev/faxios/plugins/auth-bearer`, `retry` from
-`@gcmdev/faxios/plugins/retry`, `timing` from `@gcmdev/faxios/plugins/timing`. Install them with
-`.use()` on the instance and keep the returned value, because it is the only value typed with the
-plugin's request options (such as `retry: false`). Before writing plugin code, read
+`authBearer` from `@gcmdev/faxios/plugins/auth-bearer`, `forwardTo` from
+`@gcmdev/faxios/plugins/forward-to`, `retry` from `@gcmdev/faxios/plugins/retry`, `timing` from
+`@gcmdev/faxios/plugins/timing`. Install them with `.use()` on the instance and keep the returned
+value, because it is the only value typed with the plugin's request options (such as
+`retry: false`). Before writing plugin code, read
 [plugins](references/plugins.md) for a complete installation example.
 
 - `authBearer(getToken, { scheme, header, origins, overwrite })` sends the token only to the
@@ -308,6 +310,13 @@ plugin's request options (such as `retry: false`). Before writing plugin code, r
   A `getToken` result that isn't a non-empty string sends the request without the header.
   With a custom `header`, it sets `fetchOptions.redirect: "error"` unless the request sets
   `redirect`, because fetch strips only `Authorization` on a cross-origin redirect.
+- `forwardTo(gateway, { header })` sends each request to `gateway` (absolute http/https URL)
+  with the final target URL (`baseURL`, `pathParams`, validated `params` applied) in
+  `X-Forward-To` or `header`. It wraps `env.fetch` (or the global fetch); never rewrite `url` in
+  middleware to reach a gateway, since path params and `params` are applied after middleware.
+  Every `retry` try is forwarded, wherever `retry` is installed. Middleware, `authBearer`'s
+  origin rule and `timing` see the target URL, not the gateway. `forward: false` on a request
+  sends it directly; `forward` accepts only `false`.
 - `retry` defaults: 3 attempts, statuses 408/429/500/502/503/504 plus `ERR_NETWORK` and
   `ETIMEDOUT`, exponential backoff from 100 ms with full jitter. A 429/503 `Retry-After` sets the
   wait unless `respectRetryAfter: false`. Turn that off when something else, such as a queue
