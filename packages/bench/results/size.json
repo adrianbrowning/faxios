@@ -1,0 +1,194 @@
+{
+  "meta": {
+    "date": "2026-10-13T14:27:59.651Z",
+    "commit": "295ce821fd890a08c576acdd14aee32c02f6525d",
+    "libDirty": false,
+    "platform": {
+      "os": "darwin",
+      "release": "25.6.0",
+      "arch": "arm64",
+      "cpu": "Apple M2 Max",
+      "cores": 12,
+      "memoryGiB": 32
+    },
+    "runtime": {
+      "name": "node",
+      "version": "24.19.0"
+    },
+    "versions": {
+      "@gcmdev/faxios": "0.2.4",
+      "axios": "1.20.0",
+      "zod": "4.6.5",
+      "size-limit": "14.2.0",
+      "@size-limit/esbuild": "14.2.0",
+      "esbuild": "0.28.2",
+      "tinybench": "6.2.1"
+    }
+  },
+  "bundler": {
+    "format": "esm",
+    "platform": "browser",
+    "target": "es2022"
+  },
+  "dependencies": [
+    {
+      "name": "dep-faxios",
+      "label": "faxios (root import)",
+      "sizes": {
+        "raw": 129905,
+        "minified": 55253,
+        "gzip": 20790,
+        "brotli": 18806
+      }
+    },
+    {
+      "name": "dep-faxios-retry",
+      "label": "faxios + plugins/retry",
+      "sizes": {
+        "raw": 139734,
+        "minified": 60387,
+        "gzip": 22552,
+        "brotli": 20296
+      }
+    },
+    {
+      "name": "dep-axios",
+      "label": "Axios (root import)",
+      "sizes": {
+        "raw": 125379,
+        "minified": 51054,
+        "gzip": 19507,
+        "brotli": 17719
+      }
+    },
+    {
+      "name": "dep-schemas",
+      "label": "Shared zod schemas",
+      "sizes": {
+        "raw": 180450,
+        "minified": 89833,
+        "gzip": 26197,
+        "brotli": 23335
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "fetch-basic",
+      "label": "Native Fetch: Basic JSON request",
+      "client": "fetch",
+      "stage": "basic",
+      "sizes": {
+        "raw": 652,
+        "minified": 399,
+        "gzip": 269,
+        "brotli": 217
+      },
+      "sourceLines": 23
+    },
+    {
+      "name": "axios-basic",
+      "label": "Axios: Basic JSON request",
+      "client": "axios",
+      "stage": "basic",
+      "sizes": {
+        "raw": 125733,
+        "minified": 51256,
+        "gzip": 19587,
+        "brotli": 17799
+      },
+      "sourceLines": 11
+    },
+    {
+      "name": "faxios-basic",
+      "label": "faxios: Basic JSON request",
+      "client": "faxios",
+      "stage": "basic",
+      "sizes": {
+        "raw": 130195,
+        "minified": 55427,
+        "gzip": 20860,
+        "brotli": 18878
+      },
+      "sourceLines": 11
+    },
+    {
+      "name": "fetch-validated",
+      "label": "Native Fetch: Validated endpoint",
+      "client": "fetch",
+      "stage": "validated",
+      "sizes": {
+        "raw": 181832,
+        "minified": 90625,
+        "gzip": 26592,
+        "brotli": 23668
+      },
+      "sourceLines": 39
+    },
+    {
+      "name": "axios-validated",
+      "label": "Axios: Validated endpoint",
+      "client": "axios",
+      "stage": "validated",
+      "sizes": {
+        "raw": 306875,
+        "minified": 141559,
+        "gzip": 45481,
+        "brotli": 40610
+      },
+      "sourceLines": 31
+    },
+    {
+      "name": "faxios-validated",
+      "label": "faxios: Validated endpoint",
+      "client": "faxios",
+      "stage": "validated",
+      "sizes": {
+        "raw": 311249,
+        "minified": 145610,
+        "gzip": 46775,
+        "brotli": 41540
+      },
+      "sourceLines": 18
+    },
+    {
+      "name": "fetch-retry",
+      "label": "Native Fetch: Validated endpoint with retries",
+      "client": "fetch",
+      "stage": "retry",
+      "sizes": {
+        "raw": 186104,
+        "minified": 93072,
+        "gzip": 27570,
+        "brotli": 24524
+      },
+      "sourceLines": 132
+    },
+    {
+      "name": "axios-retry",
+      "label": "Axios: Validated endpoint with retries",
+      "client": "axios",
+      "stage": "retry",
+      "sizes": {
+        "raw": 310416,
+        "minified": 143579,
+        "gzip": 46360,
+        "brotli": 41326
+      },
+      "sourceLines": 99
+    },
+    {
+      "name": "faxios-retry",
+      "label": "faxios: Validated endpoint with retries",
+      "client": "faxios",
+      "stage": "retry",
+      "sizes": {
+        "raw": 321595,
+        "minified": 150997,
+        "gzip": 48555,
+        "brotli": 43122
+      },
+      "sourceLines": 32
+    }
+  ]
+}

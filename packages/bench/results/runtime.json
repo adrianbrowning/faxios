@@ -1,0 +1,396 @@
+{
+  "meta": {
+    "date": "2026-10-13T14:28:00.184Z",
+    "commit": "295ce821fd890a08c576acdd14aee32c02f6525d",
+    "libDirty": false,
+    "platform": {
+      "os": "darwin",
+      "release": "25.6.0",
+      "arch": "arm64",
+      "cpu": "Apple M2 Max",
+      "cores": 12,
+      "memoryGiB": 32
+    },
+    "runtime": {
+      "name": "node",
+      "version": "24.19.0"
+    },
+    "versions": {
+      "@gcmdev/faxios": "0.2.4",
+      "axios": "1.20.0",
+      "zod": "4.6.5",
+      "size-limit": "14.2.0",
+      "@size-limit/esbuild": "14.2.0",
+      "esbuild": "0.28.2",
+      "tinybench": "6.2.1"
+    }
+  },
+  "options": {
+    "timeMs": 1000,
+    "warmupTimeMs": 250,
+    "concurrency": 1
+  },
+  "results": [
+    {
+      "mode": "memory",
+      "stage": "basic",
+      "client": "fetch",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 260277,
+      "attemptsPerOp": 1,
+      "latencyMs": {
+        "mean": 0.003842061526758135,
+        "p50": 0.0036250000000563887,
+        "p95": 0.00458400000002257,
+        "p99": 0.006541999999967629,
+        "min": 0.0030419999999367064,
+        "max": 0.5698750000000246
+      },
+      "rmePercent": 0.30065864245097934,
+      "opsPerSecond": 269305.0837305262
+    },
+    {
+      "mode": "memory",
+      "stage": "validated",
+      "client": "fetch",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 167124,
+      "attemptsPerOp": 1,
+      "latencyMs": {
+        "mean": 0.005983599411215524,
+        "p50": 0.005583999999998923,
+        "p95": 0.007291000000350323,
+        "p99": 0.009042000000135886,
+        "min": 0.004791000000295753,
+        "max": 2.1949580000000424
+      },
+      "rmePercent": 0.7945370179998613,
+      "opsPerSecond": 173506.93088526244
+    },
+    {
+      "mode": "memory",
+      "stage": "retry",
+      "client": "fetch",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 439,
+      "attemptsPerOp": 3,
+      "latencyMs": {
+        "mean": 2.2783945785877107,
+        "p50": 2.3264580000000024,
+        "p95": 2.366207999999915,
+        "p99": 2.406917999999978,
+        "min": 1.1533750000007785,
+        "max": 3.772625000000062
+      },
+      "rmePercent": 0.9772699835348871,
+      "opsPerSecond": 447.07933254569406
+    },
+    {
+      "mode": "memory",
+      "stage": "basic",
+      "client": "axios",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 30098,
+      "attemptsPerOp": 1,
+      "latencyMs": {
+        "mean": 0.03322561734999103,
+        "p50": 0.03208300000005693,
+        "p95": 0.03837500000008731,
+        "p99": 0.04520802999955777,
+        "min": 0.027250000000094587,
+        "max": 0.363999999999578
+      },
+      "rmePercent": 0.23966416294822365,
+      "opsPerSecond": 30527.94487244627
+    },
+    {
+      "mode": "memory",
+      "stage": "validated",
+      "client": "axios",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 24626,
+      "attemptsPerOp": 1,
+      "latencyMs": {
+        "mean": 0.04060813526354022,
+        "p50": 0.03687499999978172,
+        "p95": 0.04550000000017462,
+        "p99": 0.10728175000031115,
+        "min": 0.03166699999928824,
+        "max": 2.722708000000239
+      },
+      "rmePercent": 1.1547294552795262,
+      "opsPerSecond": 26274.603965084643
+    },
+    {
+      "mode": "memory",
+      "stage": "retry",
+      "client": "axios",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 415,
+      "attemptsPerOp": 3,
+      "latencyMs": {
+        "mean": 2.4106295879518274,
+        "p50": 2.4534169999997175,
+        "p95": 2.549833000000035,
+        "p99": 2.6171057400003703,
+        "min": 1.2501659999998083,
+        "max": 2.677958000000217
+      },
+      "rmePercent": 0.9310565670756588,
+      "opsPerSecond": 421.4191075346122
+    },
+    {
+      "mode": "memory",
+      "stage": "basic",
+      "client": "faxios",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 28817,
+      "attemptsPerOp": 1,
+      "latencyMs": {
+        "mean": 0.03470200388659145,
+        "p50": 0.033041999999113614,
+        "p95": 0.039083000001483015,
+        "p99": 0.04461828000050446,
+        "min": 0.02841699999953562,
+        "max": 1.08679100000154
+      },
+      "rmePercent": 0.8594241220274456,
+      "opsPerSecond": 29692.458467378863
+    },
+    {
+      "mode": "memory",
+      "stage": "validated",
+      "client": "faxios",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 21752,
+      "attemptsPerOp": 1,
+      "latencyMs": {
+        "mean": 0.04597467083486677,
+        "p50": 0.04383400000006077,
+        "p95": 0.051292000000103144,
+        "p99": 0.06666567000080263,
+        "min": 0.03808300000127929,
+        "max": 1.1776669999999285
+      },
+      "rmePercent": 0.8010657470284717,
+      "opsPerSecond": 22418.57246714602
+    },
+    {
+      "mode": "memory",
+      "stage": "retry",
+      "client": "faxios",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 409,
+      "attemptsPerOp": 3,
+      "latencyMs": {
+        "mean": 2.4494860611247224,
+        "p50": 2.475166000000172,
+        "p95": 2.575457999999344,
+        "p99": 2.6241160800013312,
+        "min": 1.3042079999995622,
+        "max": 2.678125000000364
+      },
+      "rmePercent": 0.7577040148145745,
+      "opsPerSecond": 412.5386807457677
+    },
+    {
+      "mode": "server",
+      "stage": "basic",
+      "client": "fetch",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 775,
+      "attemptsPerOp": 1,
+      "latencyMs": {
+        "mean": 1.2904154787097304,
+        "p50": 1.3062499999996362,
+        "p95": 1.4547080000011192,
+        "p99": 1.6131748399998105,
+        "min": 0.099833000000217,
+        "max": 1.8240000000005239
+      },
+      "rmePercent": 1.1507762675815887,
+      "opsPerSecond": 924.9733266914114
+    },
+    {
+      "mode": "server",
+      "stage": "validated",
+      "client": "fetch",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 821,
+      "attemptsPerOp": 1,
+      "latencyMs": {
+        "mean": 1.218160986601669,
+        "p50": 1.2424580000006245,
+        "p95": 1.301499999999578,
+        "p99": 1.3339169999999283,
+        "min": 0.06658299999980954,
+        "max": 3.133165999999619
+      },
+      "rmePercent": 1.1542596986982927,
+      "opsPerSecond": 1050.94730086506
+    },
+    {
+      "mode": "server",
+      "stage": "retry",
+      "client": "fetch",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 167,
+      "attemptsPerOp": 3,
+      "latencyMs": {
+        "mean": 6.017192628742547,
+        "p50": 6.063583000001017,
+        "p95": 6.284750000000713,
+        "p99": 6.378529059999892,
+        "min": 4.786083000000872,
+        "max": 8.17291699999987
+      },
+      "rmePercent": 0.9063480067758433,
+      "opsPerSecond": 166.81908002722352
+    },
+    {
+      "mode": "server",
+      "stage": "basic",
+      "client": "axios",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 742,
+      "attemptsPerOp": 1,
+      "latencyMs": {
+        "mean": 1.349295351752018,
+        "p50": 1.3087914999996428,
+        "p95": 1.618291999999201,
+        "p99": 2.679865279999583,
+        "min": 0.13720800000010058,
+        "max": 21.095957999999882
+      },
+      "rmePercent": 4.36292611616916,
+      "opsPerSecond": 926.4850746806925
+    },
+    {
+      "mode": "server",
+      "stage": "validated",
+      "client": "axios",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 752,
+      "attemptsPerOp": 1,
+      "latencyMs": {
+        "mean": 1.330117375000088,
+        "p50": 1.349312500000451,
+        "p95": 1.4287499999991269,
+        "p99": 1.465532330001588,
+        "min": 0.15049999999973807,
+        "max": 2.7087090000022727
+      },
+      "rmePercent": 1.0028084298891504,
+      "opsPerSecond": 831.7757632741101
+    },
+    {
+      "mode": "server",
+      "stage": "retry",
+      "client": "axios",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 154,
+      "attemptsPerOp": 3,
+      "latencyMs": {
+        "mean": 6.511423194805135,
+        "p50": 6.5377709999993385,
+        "p95": 6.963500000001659,
+        "p99": 7.213732499999241,
+        "min": 5.215041999999812,
+        "max": 7.48608299999978
+      },
+      "rmePercent": 0.8201241996178731,
+      "opsPerSecond": 154.02903968383734
+    },
+    {
+      "mode": "server",
+      "stage": "basic",
+      "client": "faxios",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 740,
+      "attemptsPerOp": 1,
+      "latencyMs": {
+        "mean": 1.3528438608107587,
+        "p50": 1.3670829999991838,
+        "p95": 1.467625000001135,
+        "p99": 1.5229794999998922,
+        "min": 0.143791999998939,
+        "max": 3.144458000002487
+      },
+      "rmePercent": 1.0094132348377847,
+      "opsPerSecond": 818.6509097284729
+    },
+    {
+      "mode": "server",
+      "stage": "validated",
+      "client": "faxios",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 734,
+      "attemptsPerOp": 1,
+      "latencyMs": {
+        "mean": 1.3625471089918613,
+        "p50": 1.3834994999997434,
+        "p95": 1.4804580000018177,
+        "p99": 1.522956029999295,
+        "min": 0.17224999999962165,
+        "max": 3.5393330000006245
+      },
+      "rmePercent": 1.219774024880735,
+      "opsPerSecond": 831.3015503512775
+    },
+    {
+      "mode": "server",
+      "stage": "retry",
+      "client": "faxios",
+      "transport": "fetch",
+      "secondary": false,
+      "samples": 156,
+      "attemptsPerOp": 3,
+      "latencyMs": {
+        "mean": 6.436187788461634,
+        "p50": 6.478124999999636,
+        "p95": 6.831417000001238,
+        "p99": 6.972687799998312,
+        "min": 5.099040999997669,
+        "max": 7.704125000000204
+      },
+      "rmePercent": 0.9495726764203781,
+      "opsPerSecond": 156.0012216064826
+    },
+    {
+      "mode": "server",
+      "stage": "basic",
+      "client": "axios",
+      "transport": "axios-http",
+      "secondary": true,
+      "samples": 8583,
+      "attemptsPerOp": 1,
+      "latencyMs": {
+        "mean": 0.11651401945710577,
+        "p50": 0.10750000000189175,
+        "p95": 0.1476250000014261,
+        "p99": 0.180863060001866,
+        "min": 0.08245899999747053,
+        "max": 2.80449999999837
+      },
+      "rmePercent": 1.576629972740462,
+      "opsPerSecond": 9038.36229698805
+    }
+  ]
+}

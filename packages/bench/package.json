@@ -1,0 +1,30 @@
+{
+  "name": "@faxios/bench",
+  "version": "0.0.0",
+  "description": "Size and runtime comparison of native Fetch, Axios and the packed faxios",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run --config vitest.config.ts",
+    "size": "node scripts/size.ts",
+    "runtime": "node scripts/runtime.ts",
+    "report": "node scripts/report.ts",
+    "bench": "node scripts/size.ts && node scripts/runtime.ts && node scripts/report.ts"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@size-limit/esbuild": "14.2.0",
+    "@size-limit/file": "14.2.0",
+    "axios": "1.20.0",
+    "size-limit": "14.2.0",
+    "tinybench": "6.2.1",
+    "vitest": "4.1.5",
+    "zod": "4.6.5"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "dependencies": {
+    "faxios": "file:../tests/faxios.tgz"
+  }
+}

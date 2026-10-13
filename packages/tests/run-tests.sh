@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
+# Usage: run-tests.sh           build, pack and run every suite (what `pnpm check` runs)
+#        run-tests.sh --bench   build, pack and regenerate the comparison results (`pnpm bench`)
 set -e
 
 cd "$(dirname "$0")"
+
+MODE=${1:-test}
+if [ "$MODE" != "test" ] && [ "$MODE" != "--bench" ]; then
+  echo "run-tests.sh: unknown argument $MODE (expected --bench or nothing)" >&2
+  exit 2
+fi
 
 # One run at a time: every run rebuilds dist/ and repacks faxios.tgz, so an overlapping run (or a
 # test:docs-examples run against dist/) reads half-written files and fails for no reason.
@@ -22,11 +30,15 @@ echo $$ > "$LOCK_DIR/pid"
 # then fails the run if a lockfile still differs from HEAD (it would otherwise ride into a commit).
 LOCK_BACKUP=""
 BUN_CACHE=""
+# Where a lockfile's backup lives; "../" becomes "up/" so ../bench stays inside the backup dir.
+backup_of() {
+  echo "$LOCK_BACKUP/${1//..\//up/}"
+}
 cleanup() {
   local status=$?
   if [ -n "$LOCK_BACKUP" ]; then
     for lockfile in $LOCKFILES; do
-      if [ -f "$LOCK_BACKUP/$lockfile" ]; then cp "$LOCK_BACKUP/$lockfile" "$lockfile"; fi
+      if [ -f "$(backup_of "$lockfile")" ]; then cp "$(backup_of "$lockfile")" "$lockfile"; fi
     done
     if [ -z "$FAXIOS_ALLOW_DIRTY_LOCKFILES" ] && ! git diff --quiet HEAD -- $LOCKFILES; then
       echo "run-tests.sh: these harness lockfiles still differ from HEAD after the restore:" >&2
@@ -39,7 +51,12 @@ cleanup() {
 }
 trap cleanup EXIT
 
-LOCKFILES="smoke/esm/pnpm-lock.yaml module/esm/pnpm-lock.yaml smoke/bun/bun.lock"
+# The bench harness (packages/bench) consumes the same tarball through "file:../tests/faxios.tgz".
+if [ "$MODE" = "--bench" ]; then
+  LOCKFILES="../bench/pnpm-lock.yaml"
+else
+  LOCKFILES="smoke/esm/pnpm-lock.yaml module/esm/pnpm-lock.yaml smoke/bun/bun.lock ../bench/pnpm-lock.yaml"
+fi
 # A killed run leaves the lockfiles pinned to its tarball; backing those up and "restoring" them
 # would keep them modified forever. Start only from the committed lockfiles.
 if [ -z "$FAXIOS_ALLOW_DIRTY_LOCKFILES" ] && ! git diff --quiet HEAD -- $LOCKFILES; then
@@ -53,9 +70,9 @@ fi
 echo "==> build faxios"
 pnpm --dir ../lib build
 
-echo "==> pack + install into smoke/module suites"
-# The suites depend on "faxios": "file:../../faxios.tgz"; stage the fresh
-# tarball at packages/tests/faxios.tgz, as CI does with $FAXIOS_TARBALL. Their
+echo "==> pack + install into the harnesses"
+# The harnesses depend on "faxios": "file:../../faxios.tgz" (packages/bench: "file:../tests/faxios.tgz");
+# stage the fresh tarball at packages/tests/faxios.tgz, as CI does with $FAXIOS_TARBALL. Their
 # lockfiles record a tarball integrity that changes every build, so pin it to
 # the staged tarball, install frozen, and restore the tracked lockfiles on exit.
 PACK_DIR=$(mktemp -d)
@@ -63,13 +80,23 @@ TARBALL=$(pnpm --dir ../lib pack --pack-destination "$PACK_DIR" 2>/dev/null | ta
 mv -f "$TARBALL" faxios.tgz
 rm -rf "$PACK_DIR"
 LOCK_BACKUP=$(mktemp -d)
-# Bun's shared cache keeps serving an older build of the same tarball path.
-BUN_CACHE=$(mktemp -d)
+if [ "$MODE" = "test" ]; then
+  # Bun's shared cache keeps serving an older build of the same tarball path.
+  BUN_CACHE=$(mktemp -d)
+fi
 for lockfile in $LOCKFILES; do
-  mkdir -p "$LOCK_BACKUP/$(dirname "$lockfile")"
-  cp "$lockfile" "$LOCK_BACKUP/$lockfile"
+  mkdir -p "$(dirname "$(backup_of "$lockfile")")"
+  cp "$lockfile" "$(backup_of "$lockfile")"
 done
 node pin-tarball-integrity.ts $LOCKFILES
+pnpm --dir ../bench install --frozen-lockfile --ignore-workspace --ignore-scripts
+
+if [ "$MODE" = "--bench" ]; then
+  echo "==> bench: size, runtime, docs page"
+  pnpm --dir ../bench --ignore-workspace run bench
+  exit 0
+fi
+
 pnpm --dir smoke/esm install --frozen-lockfile --ignore-workspace --ignore-scripts
 pnpm --dir module/esm install --frozen-lockfile --ignore-workspace --ignore-scripts
 BUN_INSTALL_CACHE_DIR="$BUN_CACHE" bun install --cwd smoke/bun --frozen-lockfile
@@ -91,3 +118,6 @@ pnpm test:smoke:deno
 
 echo "==> Bun"
 pnpm test:smoke:bun
+
+echo "==> bench fixtures"
+pnpm test:bench

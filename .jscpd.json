@@ -16,7 +16,8 @@
     "**/__tests__/**",
     "node_modules/**",
     "dist/**",
-    "coverage/**"
+    "coverage/**",
+    "packages/bench/fixtures/**"
   ],
   "reporters": [
     "console"

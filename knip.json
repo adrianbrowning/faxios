@@ -33,7 +33,7 @@
       "project": []
     }
   },
-  "ignoreBinaries": ["sha256sum"],
+  "ignoreBinaries": ["sha256sum", "size-limit"],
   "ignoreDependencies": [
     "@vitest/browser",
     "@ai-hero/sandcastle",

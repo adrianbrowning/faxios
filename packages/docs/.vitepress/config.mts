@@ -100,6 +100,7 @@ const sidebar = [
     items: [
       { text: "SemVer", link: "/pages/misc/semver" },
       { text: "Security", link: "/pages/misc/security" },
+      { text: "Fetch, Axios and faxios compared", link: "/pages/misc/comparison" },
     ],
   },
 ];
