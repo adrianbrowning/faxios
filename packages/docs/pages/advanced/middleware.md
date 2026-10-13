@@ -288,10 +288,10 @@ const api = faxios.create({ baseURL: "https://api.example.com" }).use(requestId(
 await api.get("/users");
 ```
 
-`definePlugin({ name, provides?, middleware })` returns the object it was given, so `eject()` takes the same reference. What it adds is the plugin's type, which it infers from the object:
+`definePlugin({ name, provides?, options?, middleware })` returns the object it was given, so `eject()` takes the same reference. What it adds is the plugin's type, which it infers from the object:
 
 - `provides` comes from the `provides` value.
-- The request options and required capabilities come from the middleware's context annotation, `ctx: FaxiosContext<Options, Capabilities>`. Use `unknown` for `Options` when the plugin adds no options.
+- The request options and required capabilities come from the middleware's context annotation, `ctx: FaxiosContext<Options, Capabilities>`. Use `unknown` for `Options` when the plugin adds no options. A plugin with request options also names them at runtime in `options` (see [Typed request options](#typed-request-options)).
 - Capabilities the plugin provides itself can be in that annotation; they don't count as required.
 - A `provides` value whose type contradicts the annotation is a type error.
 - Middleware without an annotation still sees the plugin's own `provides` on `ctx.capabilities`.
@@ -330,13 +330,13 @@ Each slot is optional:
 | --- | --- |
 | `requires` | Capabilities that must be installed before this plugin. Installing it earlier is a type error. |
 | `provides` | Capabilities this plugin adds to `ctx.capabilities`. Declaring it makes the `provides` value required. |
-| `options` | Request options this plugin adds to every config-taking member of the instance. They must be optional. |
+| `options` | Request options this plugin adds to every config-taking member of the instance. They must be optional. Declaring it makes the plugin's `options` value required: an object that maps each option name to `true`, such as `{ cache: true }`. |
 
 A slot you leave out adds nothing. An unknown key, such as `require`, is a type error rather than being ignored. The emitted types also carry a `"~plugin"` property; it is an internal marker, so never set or read it.
 
 ## Typed request options
 
-A plugin adds request options by annotating its middleware's context with them. This `cache()` plugin adds a `cache` option and answers repeated `GET` requests from memory without calling `next`:
+A plugin adds request options by annotating its middleware's context with them and listing their names in `options`. faxios rejects every request config key that is neither a faxios option nor named by an installed plugin's `options`, so a plugin that leaves a name out makes requests carrying that option reject with `ERR_BAD_OPTION`. `definePlugin` and `FaxiosPlugin` make `options` required, with every option named, whenever the context declares request options. This `cache()` plugin adds a `cache` option and answers repeated `GET` requests from memory without calling `next`:
 
 ```ts
 import faxios from "@gcmdev/faxios";
@@ -349,6 +349,7 @@ export function cache(defaultTtlMs = 60_000): FaxiosPlugin<{ options: CacheOptio
   const store = new Map<string, { expires: number; response: FaxiosResponse }>();
   return definePlugin({
     name: "cache",
+    options: { cache: true },
     middleware: async (ctx: FaxiosContext<CacheOptions>, next) => {
       const option = ctx.config.cache;
       if (option === false || ctx.config.method !== "get") return next(ctx);
@@ -383,7 +384,7 @@ await api.get("/users", { cache: { ttlMs: "5s" } });
 
 `ctx.config.method` is always lower-case in middleware, because faxios normalizes it during the merge.
 
-On an instance without `cache()`, `{ cache: { ttlMs: 5_000 } }` is a type error. TypeScript only checks excess properties on object literals, though, so a config held in a variable can carry a plugin option the instance doesn't have.
+On an instance without `cache()`, `{ cache: { ttlMs: 5_000 } }` is a type error. TypeScript only checks excess properties on object literals, though, so a config held in a variable can still carry it. At runtime that request rejects with `ERR_BAD_OPTION` (`Unknown option cache`), because only installed plugins add accepted request options.
 
 ## Capabilities
 

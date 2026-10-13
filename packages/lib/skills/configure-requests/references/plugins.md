@@ -51,7 +51,9 @@ types. faxios infers the plugin's slots:
 
 - **options**: request options the plugin reads, from the first type argument of the middleware's
   `ctx: FaxiosContext<Options, Capabilities>` annotation. They become valid keys on every
-  config-taking call of the instance `.use()` returns.
+  config-taking call of the instance `.use()` returns. The plugin must also name each one in its
+  `options` value (`options: { trace: true }`); faxios rejects any request config key that no
+  installed plugin names, and `definePlugin` makes the names required.
 - **requires**: capabilities that must already be installed, from the second type argument.
 - **provides**: capabilities this plugin adds to `ctx.capabilities`, from the `provides` value.
 
@@ -64,6 +66,7 @@ type TraceOptions = { trace?: string | false };
 export function traceHeader(header = "X-Trace-Id") {
   return definePlugin({
     name: "traceHeader",
+    options: { trace: true },
     middleware: async (ctx: FaxiosContext<TraceOptions>, next) => {
       const trace = ctx.config.trace;
       if (trace !== false) ctx.config.headers.set(header, trace ?? crypto.randomUUID());
@@ -76,7 +79,8 @@ const api = faxios.create({ baseURL: "https://api.example.com" }).use(traceHeade
 await api.get("/orders", { trace: "abc-123" }); // `trace` type-checks only on `api`
 ```
 
-Check: `faxios.get("/orders", { trace: "x" })` on an instance without the plugin is a type error.
+Check: `faxios.get("/orders", { trace: "x" })` on an instance without the plugin is a type error,
+and at runtime it rejects with `ERR_BAD_OPTION` (`Unknown option trace`).
 
 ## Require a capability from another plugin
 

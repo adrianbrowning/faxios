@@ -30,7 +30,6 @@ describe("progress", () => {
     };
 
     const response = await faxios.get("https://example.com/download", {
-      adapter: "fetch",
       responseType: "text",
       onDownloadProgress: ({ loaded }: { loaded: number; }) => {
         samples.push(loaded);

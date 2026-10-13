@@ -25,7 +25,6 @@ describe("cancellation", () => {
 
     const err = await faxios
       .get("https://example.com/cancel", {
-        adapter: "fetch",
         signal: controller.signal,
         env: env(fetch),
       })
@@ -65,7 +64,6 @@ describe("cancellation", () => {
     const controller = new AbortController();
 
     const request = faxios.get("https://example.com/in-flight", {
-      adapter: "fetch",
       signal: controller.signal,
       env: env(fetch),
     });

@@ -53,7 +53,6 @@ describe("fetch adapter", () => {
     const { mockFetch, getCalls } = createFetchMock();
 
     const response = await faxios.get("https://example.com/users", {
-      adapter: "fetch",
       env: env(mockFetch),
     });
 
@@ -69,7 +68,6 @@ describe("fetch adapter", () => {
       "https://example.com/items",
       { name: "widget" },
       {
-        adapter: "fetch",
         env: env(mockFetch),
       }
     );
@@ -91,14 +89,12 @@ describe("fetch adapter", () => {
           "https://example.com/items",
           { name: "widget" },
           {
-            adapter: "fetch",
             env: env(mockFetch),
           }
         );
       }
       else {
         await faxios[method]("https://example.com/items", {
-          adapter: "fetch",
           env: env(mockFetch),
         });
       }
@@ -119,7 +115,6 @@ describe("fetch adapter", () => {
     const { mockFetch, getCalls } = createFetchMock();
 
     await faxios.get("https://example.com/users", {
-      adapter: "fetch",
       env: env(mockFetch),
     });
 

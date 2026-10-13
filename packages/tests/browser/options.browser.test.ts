@@ -67,20 +67,18 @@ describe("options (vitest browser)", () => {
     expect(mock.lastRequest!.url).toBe("http://test.com/foo");
   });
 
-  it("should warn about baseUrl", async () => {
+  it("should reject baseUrl and name baseURL", async () => {
     using mock = installFetchMock();
-    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
     const instance = faxios.create({
-      // @ts-expect-error intentionally testing misspelled baseUrl to verify warning
+      // @ts-expect-error TS2561 -- intentionally misspelled baseUrl to verify the rejection
       baseUrl: "http://example.com/",
     });
 
-    await instance.get("/foo");
-
-    expect(warnSpy).toHaveBeenCalledWith(
-      "baseUrl is likely a misspelling of baseURL"
-    );
-    expect(new URL(mock.lastRequest!.url).pathname).toBe("/foo");
+    await expect(instance.get("/foo")).rejects.toMatchObject({
+      code: "ERR_BAD_OPTION",
+      message: "Unknown option baseUrl; did you mean baseURL?",
+    });
+    expect(mock.lastRequest).toBeUndefined();
   });
 
   it("should ignore base URL if request URL is absolute and allowAbsoluteUrls is true", async () => {

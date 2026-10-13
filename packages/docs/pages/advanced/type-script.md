@@ -86,12 +86,12 @@ const api = faxios.create({ baseURL: "https://api.example.com" }).use(retry());
 await api.get("/users", { retry: { attempts: 5 } });
 await api.post("/users", { name: "Fred" }, { retry: false });
 
-// Without retry() installed, the option is a type error.
+// Without retry() installed, the option is a type error, and the request rejects with ERR_BAD_OPTION.
 // @ts-expect-error TS2769 -- this instance has no retry option
-await faxios.create().get("/users", { retry: false });
+await faxios.create().get("/users", { retry: false }).catch((error: unknown) => console.error(error));
 ```
 
-Plugin options are typed on every config-taking member, including `defaults`, `define()` and `route()`. Excess-property checks only run on object literals, so a config held in a variable can still carry a plugin option the instance doesn't have.
+Plugin options are typed on every config-taking member, including `defaults`, `define()` and `route()`. Excess-property checks only run on object literals, so a config held in a variable can still carry a plugin option the instance doesn't have. At runtime that request rejects with `ERR_BAD_OPTION`: faxios accepts a plugin's options only while the plugin is installed.
 
 `create()` children start with no middleware and no plugin types. `eject()` doesn't narrow the type either: options a removed plugin added stay in it.
 

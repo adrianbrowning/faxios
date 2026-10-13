@@ -19,12 +19,13 @@ behaviour outside this list as unverified until the installed types and a test p
 | `axios.isAxiosError(e)` | `isFaxiosError(e)` (named import) | Type guard |
 | `error.code === "ECONNABORTED"` (timeout) | `error.code === "ETIMEDOUT"` | `clarifyTimeoutError` is inert |
 | `error.code === "ECONNREFUSED"` | `error.code === "ERR_NETWORK"`, details on `error.cause` | All transport failures |
-| `adapter: ...` / custom adapter | `env: { fetch }` or `fetchOptions` | No adapter option exists |
-| `proxy: {...}` / `httpAgent` / `httpsAgent` | Runtime-level proxy config. In Node the project docs pass an `undici` `ProxyAgent` as `fetchOptions.dispatcher`, using the app's own `undici` dependency | Not faxios options; faxios passes the dispatcher to `fetch` but does not test proxying |
-| `maxRedirects`, `beforeRedirect` | fetch follows redirects; `fetchOptions: { redirect: "manual" }` to stop | `ERR_FR_TOO_MANY_REDIRECTS` is never raised |
-| `maxRate`, `socketPath`, `decompress`, `insecureHTTPParser`, `httpVersion`, HTTP/2 options, `lookup`, `family` | none | Removed; ignored at runtime when untyped |
+| `adapter: ...` / custom adapter | `env: { fetch }` or `fetchOptions` | No adapter option exists; passing `adapter` rejects with `ERR_BAD_OPTION` |
+| `proxy: {...}` / `httpAgent` / `httpsAgent` | Runtime-level proxy config. In Node the project docs pass an `undici` `ProxyAgent` as `fetchOptions.dispatcher`, using the app's own `undici` dependency | Not faxios options; passing them rejects with `ERR_BAD_OPTION`. faxios passes the dispatcher to `fetch` but does not test proxying |
+| `maxRedirects`, `beforeRedirect` | fetch follows redirects; `fetchOptions: { redirect: "manual" }` to stop | Passing them rejects with `ERR_BAD_OPTION`; `ERR_FR_TOO_MANY_REDIRECTS` is never raised |
+| `maxRate`, `socketPath`, `decompress`, `insecureHTTPParser`, `httpVersion`, HTTP/2 options, `lookup`, `family` | none | Removed; passing them rejects with `ERR_BAD_OPTION` |
 | `onUploadProgress` | same option | Fires only where fetch streams request bodies (Node); never called in browsers or web workers |
-| `responseType: "document"` | none in practice | Falls back to text |
+| `responseType: "document"` | `responseType: "text"` and a `DOMParser` | `"document"` rejects with `ERR_BAD_OPTION_VALUE` |
+| `responseEncoding` | `responseType: "arraybuffer"` and a `TextDecoder` | Rejects with `ERR_BAD_OPTION`; text is decoded as UTF-8 |
 | retry via `axios-retry` | `retry()` from `@gcmdev/faxios/plugins/retry` | POST/PATCH excluded by default |
 | auth header interceptor | `authBearer()` from `@gcmdev/faxios/plugins/auth-bearer` | Sends only to the baseURL origin by default |
 
@@ -35,9 +36,9 @@ These ports compile and run but behave differently:
 1. **Absolute URL on a `baseURL` instance.** Axios sends an absolute request URL as-is. faxios
    rejects it with `ERR_INVALID_URL` when the instance has a `baseURL`, unless
    `allowAbsoluteUrls: true` is set on the instance or request. Search ports for instance calls with `http://` or `https://` URLs.
-2. **Untyped configs with removed keys.** A config built with spread or `any` keeps `proxy`,
-   `adapter` or `httpAgent` and faxios ignores them. The request then goes direct, without the
-   proxy or agent the code expected. Delete the keys and move the behaviour to `fetchOptions`.
+2. **Untyped configs with removed keys.** A config built with spread or `any` that keeps `proxy`,
+   `adapter` or `httpAgent` now rejects with `ERR_BAD_OPTION`, naming the key and its replacement.
+   Delete the keys and move the behaviour to `fetchOptions`.
 3. **Interceptor order.** Axios ran request interceptors last-registered-first and response
    interceptors first-registered-first. Middleware runs in registration order on the way in and
    in reverse on the way out, so both sides flip; reorder the `.use()` calls.

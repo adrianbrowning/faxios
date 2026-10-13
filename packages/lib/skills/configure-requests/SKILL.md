@@ -367,8 +367,10 @@ export only. Instances from `create()` do not have them; import them by name ins
    Source: `packages/tests/unit/api.test.ts`, `src/lib/core/Faxios.ts`.
 2. **HIGH: Passing Axios transport options.** `adapter`, `proxy`, `httpAgent`, `httpsAgent`,
    `maxRedirects`, `socketPath`, `decompress` and `cancelToken` are not faxios options. Typed object
-   literals reject them, but untyped or spread configs pass and are silently ignored at runtime.
-   Use `fetchOptions` or `env.fetch`. Source: `src/lib/types.ts`, `MIGRATION_GUIDE.md`.
+   literals reject them, and at runtime any unknown config key (including a typo such as
+   `timout`) rejects the request with `ERR_BAD_OPTION`, naming the key and, for removed options,
+   what to use instead. Use `fetchOptions` or `env.fetch`. Source:
+   `src/lib/core/assertRequestConfig.ts`, `MIGRATION_GUIDE.md`.
 3. **HIGH: Using `CancelToken`.** It does not exist. Use `AbortController` and `signal`.
 4. **HIGH: Checking for `ECONNABORTED` on timeout.** faxios raises `ETIMEDOUT`. Code that checks
    `ECONNABORTED` never matches. Source: `src/lib/helpers/composeSignals.ts`.

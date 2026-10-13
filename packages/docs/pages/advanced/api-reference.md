@@ -310,7 +310,9 @@ use(middlewareOrPlugin: FaxiosMiddleware<TOpts, TCaps> | FaxiosPlugin<Spec>): Fa
 
 The return value is the same object at runtime, typed with the plugin's request options and capabilities added. Keep it and make requests through it: the instance you called `use()` on has the plugin installed too, but its type doesn't know the plugin's options.
 
-Installing a plugin before one that provides a capability it requires is a type error, and so is installing a second plugin that provides the same capability. At runtime the duplicate throws a `FaxiosError` with code `ERR_BAD_OPTION`. A value that is neither a function nor a plugin with a `middleware` function, or a plugin without a non-empty `name`, throws `ERR_BAD_OPTION_VALUE`.
+Installing a plugin before one that provides a capability it requires is a type error, and so is installing a second plugin that provides the same capability. At runtime the duplicate throws a `FaxiosError` with code `ERR_BAD_OPTION`. A value that is neither a function nor a plugin with a `middleware` function, a plugin without a non-empty `name`, or a plugin whose own `options` isn't an object, throws `ERR_BAD_OPTION_VALUE`.
+
+While a plugin is installed, the request option names in its `options` are accepted in request config. Any other key that isn't a faxios option rejects the request with `ERR_BAD_OPTION`; `eject()` removes the names again.
 
 `use()` exists on the default export and on `faxios.create()` instances. Children made with `create()` start with no middleware and without the parent's plugin types.
 
@@ -330,6 +332,8 @@ Imported from `@gcmdev/faxios/plugins`. Builds a plugin and infers its `FaxiosPl
 definePlugin(plugin: {
   name: string;
   provides?: Provides;
+  // Required, naming every option, when the middleware's context declares request options.
+  options?: { [name in keyof Options]: true };
   middleware: FaxiosMiddleware<Options, Capabilities>;
 }): FaxiosPlugin<{ requires: Required; provides: Provides; options: Options }>;
 ```
@@ -371,11 +375,12 @@ type FaxiosPlugin<Spec extends { requires?: unknown; provides?: unknown; options
 //   name: string;
 //   middleware: FaxiosMiddleware<Options, Requires & Provides>;
 //   provides: Provides; (required when the spec declares provides, optional otherwise)
+//   options: { [name in keyof Options]: true }; (required when the spec declares options, optional otherwise)
 ```
 
 - `requires`: capabilities that must be installed before the plugin.
 - `provides`: capabilities the plugin adds to `ctx.capabilities`.
-- `options`: request options the plugin adds to every config-taking member, including `defaults`, `define()` and `route()`. They must be optional.
+- `options`: request options the plugin adds to every config-taking member, including `defaults`, `define()` and `route()`. They must be optional. The plugin object names each of them in its `options` value, which is how faxios accepts them at runtime.
 
 A slot you leave out adds nothing. Any other key, such as `require`, is a type error. The `"~plugin"` property in the emitted types is an internal marker; never set or read it.
 

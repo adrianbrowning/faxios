@@ -2,10 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import faxios from "#src/index.js";
 import cookies from "#src/lib/helpers/cookies.js";
-import type {
-  FaxiosRequestConfig,
-  InternalFaxiosRequestConfig
-} from "#src/lib/types.js";
+import type { InternalFaxiosRequestConfig } from "#src/lib/types.js";
 
 import { installFetchMock } from "./helpers/fetchMock.js";
 
@@ -106,12 +103,12 @@ describe("xsrf (vitest browser)", () => {
       const token = "12345";
       setXsrfCookie(token);
 
+      // The resolver decides from the request config; unknown keys are rejected, so it reads a real one.
       await faxios("/foo", {
+        params: { flag: "yes" },
         withXSRFToken: (config: InternalFaxiosRequestConfig) =>
-          (config as InternalFaxiosRequestConfig & { userFlag: string; })
-            .userFlag === "yes",
-        userFlag: "yes",
-      } as FaxiosRequestConfig);
+          (config.params as Record<string, unknown> | undefined)?.["flag"] === "yes",
+      });
 
       expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe(token);
     });

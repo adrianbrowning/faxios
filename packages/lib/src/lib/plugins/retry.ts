@@ -237,6 +237,7 @@ export function retry(options: RetryOptions = {}): FaxiosPlugin<{ options: Retry
   const pluginMethods = ownValue(options, "methods")?.map(m => m.toLowerCase());
   return definePlugin({
     name: "retry",
+    options: { retry: true },
     middleware: async (ctx: FaxiosContext<RetryRequestOptions>, next) => {
       const perRequest = ownValue(ctx.config, "retry");
       if (perRequest === false) return next(ctx);
