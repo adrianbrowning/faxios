@@ -1,2 +1,14 @@
 #!/bin/sh
-pnpm lint
+# `pnpm lint` checks the checked-out tree. `gh stack submit` pushes each branch separately, so skip
+# the run when this clean tree already passed.
+tree="$(git rev-parse 'HEAD^{tree}')"
+stamp="$(git rev-parse --git-path faxios-pre-push-lint)"
+clean() { [ -z "$(git status --porcelain --untracked-files=no)" ]; }
+
+if clean && [ "$(cat "$stamp" 2> /dev/null)" = "$tree" ]; then
+  exit 0
+fi
+pnpm lint || exit 1
+if clean; then
+  echo "$tree" > "$stamp"
+fi
