@@ -3375,15 +3375,15 @@
       ]
     },
     "source:.github/workflows/links.yml": {
-      "fingerprint": "41e9e15b012f2af09d97e19106c141d9a077336202dfbcc5550290a3de584a1a",
+      "fingerprint": "e985f46365ff4a0302c6e1cd84df77b1aa574e119a65905d9f6d7b2aaead42e9",
       "snapshot": {
-        ".github/workflows/links.yml": "d322b8cc65c3199c638681a21bb6907d48dd8021ea7c627e7c21e2838e189deb"
+        ".github/workflows/links.yml": "217dd2f155d5438baf8feb8551c85b80dc77419020c4333726190622ecc3fada"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "head": "e21dce3db9f37d87f9e4cd544e5331cf6e2ca5ec",
       "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "reason": "Link-check CI config only (lychee remaps); nothing the configure-requests skill teaches changed.",
       "evidence": [
-        "Changed: .github/workflows/links.yml at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: .github/workflows/links.yml at e21dce3db9f37d87f9e4cd544e5331cf6e2ca5ec"
       ]
     },
     "source:SECURITY.md": {
@@ -3399,15 +3399,15 @@
       ]
     },
     "source:lychee.toml": {
-      "fingerprint": "77047a35f1d59a0090babb15b4e42a0eeeaf8fb5a9d756460d7b86a2ea065ff8",
+      "fingerprint": "72e7bdc8935cdff0e353366420f17b562b42c993a572f513e150380bad074c5d",
       "snapshot": {
-        "lychee.toml": "e12ef09f643006619cfdf7659289e57ea2660424f677e1d74ca521d1475b8b2d"
+        "lychee.toml": "c8d0af6340b37bf96db54bd74bfdf32f37b209c4035bd75d92aed912ee5ec5c2"
       },
-      "head": "3a64287d44a5a030fd0f9477d851569e4851a912",
+      "head": "e21dce3db9f37d87f9e4cd544e5331cf6e2ca5ec",
       "outcome": "no-change",
-      "reason": "Link-check config only: lychee retries longer and treats 429/503 rate limits as reachable. No API or skill guidance changes.",
+      "reason": "Link-check CI config only (lychee remaps); nothing the configure-requests skill teaches changed.",
       "evidence": [
-        "Changed: lychee.toml at 3a64287d44a5a030fd0f9477d851569e4851a912"
+        "Changed: lychee.toml at e21dce3db9f37d87f9e4cd544e5331cf6e2ca5ec"
       ]
     },
     "source:packages/docs/pages/misc/security.md": {
