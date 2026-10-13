@@ -1830,17 +1830,15 @@
       ]
     },
     "source:.claude/skills/do-work/SKILL.md": {
-      "fingerprint": "b62eb9c59c3ad40b80249d19f40b77a0597f9f0a8b0b40e960c0e127eeb6164b",
+      "fingerprint": "dd6e5a588abbafb3dc765e54f745a06ba396282a8c9043c1ce2f889c4c50d65a",
       "snapshot": {
-        ".claude/skills/do-work/SKILL.md": "126d485a613a4fa67f8d250c5fc36a6b6b670d89e814ce971304b9875ab884f1"
+        ".claude/skills/do-work/SKILL.md": "1d59be0894738d3ec920e3db22a46ae62354a80e6fe98174a8ce53ddc835b603"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Contributor workflow skill gains a 'Bump file' step (pnpm bump / add-change skill, don't edit packages/lib/CHANGELOG.md); later steps renumbered. Agent process only, not the library skill.",
+      "head": "465e8cdf20055c7da0786b97229d7d41d8bf030a",
+      "outcome": "no-change",
+      "reason": "Contributor tooling and review rules only: scripts/intent-restack.sh, the do-work hand-off steps, the gh gotchas and two CODING_STANDARDS reviewer rules. No library API or skill guidance changes.",
       "evidence": [
-        "git diff 01316e10..HEAD -- .claude/skills/do-work/SKILL.md",
-        "git diff: +5 -1 lines, new section 4 and '### 5. Commit'.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: .claude/skills/do-work/SKILL.md at 465e8cdf20055c7da0786b97229d7d41d8bf030a"
       ]
     },
     "source:.github/actions/setup/action.yml": {
@@ -4196,6 +4194,42 @@
       "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
       "evidence": [
         "Changed: packages/tests/unit/core/requestInput.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:CODING_STANDARDS.md": {
+      "fingerprint": "35fa57ca5e96bd7f2f46988756f23b4e1d832c58558e62d51611c1c728700ab5",
+      "snapshot": {
+        "CODING_STANDARDS.md": "9222dc333631972bd0d2cd39adfe77cf09b74fc36b57decf370a2160baa09dc2"
+      },
+      "head": "465e8cdf20055c7da0786b97229d7d41d8bf030a",
+      "outcome": "no-change",
+      "reason": "Contributor tooling and review rules only: scripts/intent-restack.sh, the do-work hand-off steps, the gh gotchas and two CODING_STANDARDS reviewer rules. No library API or skill guidance changes.",
+      "evidence": [
+        "Changed: CODING_STANDARDS.md at 465e8cdf20055c7da0786b97229d7d41d8bf030a"
+      ]
+    },
+    "source:docs/agents/issue-tracker.md": {
+      "fingerprint": "cf20a752803acc20ea6d3368b93437824e20e960451f9b64b3423ef8adbad818",
+      "snapshot": {
+        "docs/agents/issue-tracker.md": "2147ab0cf9c10b49db1c2580f6c879b330e5e81d9376c1f7c470be30aa69c4c5"
+      },
+      "head": "465e8cdf20055c7da0786b97229d7d41d8bf030a",
+      "outcome": "no-change",
+      "reason": "Contributor tooling and review rules only: scripts/intent-restack.sh, the do-work hand-off steps, the gh gotchas and two CODING_STANDARDS reviewer rules. No library API or skill guidance changes.",
+      "evidence": [
+        "Changed: docs/agents/issue-tracker.md at 465e8cdf20055c7da0786b97229d7d41d8bf030a"
+      ]
+    },
+    "source:scripts/intent-restack.sh": {
+      "fingerprint": "286eb3ffe7cb00cc7d0e26c031320e2770c5c18431db3de8085fa01951171916",
+      "snapshot": {
+        "scripts/intent-restack.sh": "c0421546aa00341dd13fdede19bf95e2de4537b730cdd89dde01fb56aa71e60a"
+      },
+      "head": "465e8cdf20055c7da0786b97229d7d41d8bf030a",
+      "outcome": "no-change",
+      "reason": "Contributor tooling and review rules only: scripts/intent-restack.sh, the do-work hand-off steps, the gh gotchas and two CODING_STANDARDS reviewer rules. No library API or skill guidance changes.",
+      "evidence": [
+        "Changed: scripts/intent-restack.sh at 465e8cdf20055c7da0786b97229d7d41d8bf030a"
       ]
     }
   }

@@ -15,8 +15,9 @@ Infer the repo from `git remote -v` — `gh` does this automatically when run in
 
 ## Known `gh` gotchas
 
-- **Editing a PR title or body:** `gh pr edit` fails on this repo with a Projects (classic) GraphQL deprecation error. Use the REST API instead: write `{"title": "...", "body": "..."}` to a file and run `gh api --method PATCH repos/<owner>/<repo>/pulls/<N> --input <file>`.
+- **Creating or editing a PR:** `gh pr create` and `gh pr edit` fail on this repo with a Projects (classic) GraphQL deprecation error. Use the REST API instead: `gh api repos/<owner>/<repo>/pulls -f title=… -f head=<branch> -f base=main -F body=@<file>` to create, and write `{"title": "...", "body": "..."}` to a file and run `gh api --method PATCH repos/<owner>/<repo>/pulls/<N> --input <file>` to edit.
 - **Stacked PRs:** `gh stack init` branches from the *local* trunk. Run `git fetch origin` and fast-forward `main` first, or the stack is based on a stale commit.
+- **Rebasing a PR or a stack layer:** every PR writes `.intent/review-state.json`, so a rebase conflicts on it, and the recorded reviews no longer match the new base. Run `scripts/intent-restack.sh rebase <base>` in the branch's worktree, bottom layer first; after `gh stack rebase` or `gh stack sync`, run `scripts/intent-restack.sh record <base>` per layer. It takes the base's copy on conflict, records each pending item again with its earlier reason, and amends the review into the layer's last commit.
 - **CI status of a PR:** run `scripts/pr-ci-status.sh <pr>` rather than reading `gh pr checks`. A push can start two runs of one workflow on the same commit, and the concurrency group cancels one; its matrix jobs never expand their names, so `gh pr checks` keeps listing them as failed (e.g. `ESM smoke tests (Node ${{ matrix.node-version }})`) after the other run passes. The script reports the newest run per workflow that wasn't cancelled and exits 0 green, 1 failed, 2 still running or no runs yet.
 
 ## Pull requests as a triage surface

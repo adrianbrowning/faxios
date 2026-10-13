@@ -14,6 +14,7 @@ Config objects, plugin objects, option objects and anything else a caller hands 
 
 - Validate options through `helpers/validator.ts` (`assertOptions` with a schema), for the factory argument and any per-request override alike. Reject `null`, non-objects and unknown keys; check numbers for range and finiteness, since `NaN` or `Infinity` can make a loop unbounded.
 - Throw `FaxiosError(message, code, config, request, response)` for faxios-originated failures, never raw `Error`. Wrap third-party errors with `FaxiosError.from(...)`. Codes live in `core/FaxiosError.ts`; bad option values are `ERR_BAD_OPTION_VALUE`, unknown options `ERR_BAD_OPTION`.
+- A patch change keeps every input the code accepted before. Narrowing what an option takes (an allow-list of keys, rejecting a value that used to work, a stricter type) changes behaviour for some caller, so it goes in the next minor with a bump file that says so.
 
 ## Cancellation and listeners
 
@@ -40,6 +41,7 @@ Config objects, plugin objects, option objects and anything else a caller hands 
 ## Tests
 
 - A regression test fails before the fix and passes after it, for the reason the fix addresses.
+- Assert what a caller can observe: the request on the wire, the result, the error and its `code`, listeners left on a signal. Counting calls into internal code, or patching a built-in method to watch it, tests how the code is written, so it fails on a correct refactor.
 - Use `vi.useFakeTimers()` or promise gates, never real timers. Restore globals, `Object.prototype` pollution and spies in `finally` or cleanup hooks.
 - Install middleware on a fresh `faxios.create()` instance. If a test must use the shared default instance, eject the middleware in `finally`.
 - Type tests put negative cases in uncalled functions. Each `@ts-expect-error` names the code it expects (`// @ts-expect-error TS2353 -- reason`), which `lint:ts` checks.
