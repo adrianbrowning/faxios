@@ -1,7 +1,9 @@
 import assert from "node:assert";
+import { getEventListeners } from "node:events";
 import type { ServerResponse } from "node:http";
 import type { AddressInfo } from "node:net";
-import { describe, it } from "vitest";
+import { AbortController as PolyfilledController } from "abortcontroller-polyfill/dist/cjs-ponyfill.js";
+import { afterEach, beforeEach, describe, it, vi } from "vitest";
 import faxios, { CanceledError, FaxiosError } from "#src/index.js";
 import type { FaxiosRequestConfig } from "#src/index.js";
 import { startHTTPServer, stopHTTPServer } from "../../setup/server.js";
@@ -25,6 +27,9 @@ const flush = async () => {
 
 const isBadTimeout = (err: unknown) =>
   err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE && err.message.includes("timeout");
+
+const isTimeout = (ms: number) => (err: unknown) =>
+  err instanceof FaxiosError && err.code === FaxiosError.ETIMEDOUT && err.message === `timeout of ${ms}ms exceeded`;
 
 describe("core::cancellation", () => {
   describe("abort during async pre-flight validation", () => {
@@ -89,14 +94,6 @@ describe("core::cancellation", () => {
       assert.strictEqual(calls.length, 0);
     });
 
-    it("rejects an out-of-range timeout a middleware sets", async () => {
-      const calls: Array<unknown> = [];
-      const api = faxios.create({ env: { fetch: jsonFetch(calls) } }).use(async (ctx, next) => next({ ...ctx, config: { ...ctx.config, timeout: -1 } }));
-
-      await assert.rejects(api.get(URL), isBadTimeout);
-      assert.strictEqual(calls.length, 0);
-    });
-
     it("accepts 0, the setTimeout limit and a numeric string", async () => {
       const api = faxios.create({ env: { fetch: jsonFetch() } });
 
@@ -104,6 +101,120 @@ describe("core::cancellation", () => {
         const response = await api.get(URL, { timeout });
         assert.deepStrictEqual(response.data, { ok: true });
       }
+    });
+  });
+
+  describe("timeout bounds the whole request", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("rejects with ETIMEDOUT while a middleware waits before next(), and sends nothing", async () => {
+      const calls: Array<unknown> = [];
+      const { promise: gate, resolve: open } = Promise.withResolvers<void>();
+      const api = faxios.create({ env: { fetch: jsonFetch(calls) }, timeout: 50 }).use(async (ctx, next) => {
+        await gate;
+        return next(ctx);
+      });
+
+      const request = assert.rejects(api.get(URL), isTimeout(50));
+      await vi.advanceTimersByTimeAsync(50);
+      await request;
+      open();
+      await vi.runAllTimersAsync();
+
+      assert.strictEqual(calls.length, 0);
+    });
+
+    it("rejects with ETIMEDOUT while an async schema runs, without middleware, and sends nothing", async () => {
+      const calls: Array<unknown> = [];
+      const { promise: gate, resolve: open } = Promise.withResolvers<void>();
+      const schema = makeSchema(async (value: unknown) => {
+        await gate;
+        return { value };
+      });
+      const api = faxios.create({ env: { fetch: jsonFetch(calls) } });
+
+      const request = assert.rejects(api.post(URL, { a: 1 }, { timeout: 50, requestSchema: schema }), isTimeout(50));
+      await vi.advanceTimersByTimeAsync(50);
+      await request;
+      open();
+      await vi.runAllTimersAsync();
+
+      assert.strictEqual(calls.length, 0);
+    });
+
+    it("rejects with ETIMEDOUT while a response schema runs", async () => {
+      const { promise: gate, resolve: open } = Promise.withResolvers<void>();
+      const schema = makeSchema(async (value: unknown) => {
+        await gate;
+        return { value };
+      });
+      const api = faxios.create({ env: { fetch: jsonFetch() } });
+
+      const request = assert.rejects(api.get(URL, { timeout: 50, responseSchema: schema }), isTimeout(50));
+      await vi.advanceTimersByTimeAsync(50);
+      await request;
+      open();
+    });
+
+    it("uses timeoutErrorMessage for the whole-request timeout", async () => {
+      const api = faxios.create({ env: { fetch: jsonFetch() } }).use(async () => new Promise(() => {}));
+
+      const request = assert.rejects(api.get(URL, { timeout: 50, timeoutErrorMessage: "too slow" }), (err: unknown) =>
+        err instanceof FaxiosError && err.code === FaxiosError.ETIMEDOUT && err.message === "too slow");
+      await vi.advanceTimersByTimeAsync(50);
+      await request;
+    });
+
+    it("clears its timer and leaves no listener on the caller's signal once the request settles", async () => {
+      const controller = new AbortController();
+      const api = faxios.create({ env: { fetch: jsonFetch() }, timeout: 1000 }).use(async (ctx, next) => next(ctx));
+
+      const response = await api.get(URL, { signal: controller.signal });
+      assert.deepStrictEqual(response.data, { ok: true });
+      assert.strictEqual(vi.getTimerCount(), 0);
+      assert.strictEqual(getEventListeners(controller.signal, "abort").length, 0);
+
+      await assert.rejects(faxios.create({ env: { fetch: async () => Promise.reject(new TypeError("fetch failed")) }, timeout: 1000 })
+        .get(URL, { signal: controller.signal }), { code: FaxiosError.ERR_NETWORK });
+      assert.strictEqual(vi.getTimerCount(), 0);
+      assert.strictEqual(getEventListeners(controller.signal, "abort").length, 0);
+    });
+
+    it("rejects with the caller's CanceledError when the caller aborts before the deadline", async () => {
+      const controller = new AbortController();
+      const reason = new Error("user left");
+      const api = faxios.create({ env: { fetch: jsonFetch() }, timeout: 1000 }).use(async () => new Promise(() => {}));
+
+      const request = api.get(URL, { signal: controller.signal });
+      controller.abort(reason);
+      await assert.rejects(request, (err: unknown) => err instanceof CanceledError && err.message === "user left" && err.cause === reason);
+      assert.strictEqual(vi.getTimerCount(), 0);
+    });
+
+    it("is armed before middleware runs, so a timeout a middleware sets doesn't change it", async () => {
+      const calls: Array<unknown> = [];
+      const api = faxios.create({ env: { fetch: jsonFetch(calls) } }).use(async (ctx, next) => next({ ...ctx, config: { ...ctx.config, timeout: -1 } }));
+
+      const response = await api.get(URL);
+      assert.deepStrictEqual(response.data, { ok: true });
+      assert.strictEqual(calls.length, 1);
+    });
+
+    it("follows a polyfilled caller signal, which AbortSignal.any() can't take", async () => {
+      const controller = new PolyfilledController();
+      assert.ok(!(controller.signal instanceof AbortSignal));
+      const api = faxios.create({ env: { fetch: jsonFetch() }, timeout: 1000 }).use(async () => new Promise(() => {}));
+
+      const request = assert.rejects(api.get(URL, { signal: controller.signal }), (err: unknown) => err instanceof CanceledError && err.message === "user left");
+      controller.abort("user left");
+      await request;
+      assert.strictEqual(vi.getTimerCount(), 0);
     });
   });
 

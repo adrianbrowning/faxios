@@ -3,16 +3,16 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "04e105383c628367a6367fd9062cb11cf57c5def0b1b045f9187c304895877af",
+      "fingerprint": "88f423416ad35a2ba3a4335e9e52affcfa5fd2fbbb7e004a56b414bd160471d7",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "c1ad4b4b502f5eb5c9b5cc969e3410f68f4e637951681f119a43087abf2f0c31",
+        "MIGRATION_GUIDE.md": "b0ce6d57daa49ad35f89cfe352c0b4136e4a721c33abc5993284a299d2800549",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "32e92c90338207e24beb5116d4805776b9716521f2834af0ecffded0accc237f",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "1cd413182f1603fc615a3c0e0dbc32043723545450a2d70281030e812516ba16",
+        "packages/lib/skills/configure-requests/SKILL.md": "d0adecf7743d3eb68b7464847f2e3be3e1a9eff17ae5f68b443562e8d562c0fa",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
         "packages/lib/skills/configure-requests/references/plugins.md": "e05e13099aa48813cc16bd96588852d01188cf65f648b606342aea39710aa4c9",
         "packages/lib/src/index.ts": "edd330b5bfd7f3bc0066ae038c0f802be6634c68080482031db7780df21d286f",
-        "packages/lib/src/lib/adapters/fetch.ts": "675d7138127d4428f8fd1693642b76b07df242a654218b4fff3833e80d10f8cc",
-        "packages/lib/src/lib/core/Faxios.ts": "e99da0bfe6144fd45363fdf17115862f14d468797c8be9a94c980b0e9af79a3e",
+        "packages/lib/src/lib/adapters/fetch.ts": "a5eec64d1166a730747b87667e5c3d5d64794e8175c63068871595dc46e8f204",
+        "packages/lib/src/lib/core/Faxios.ts": "eeaff0c5bd167ce5158679b43556ba55f295a887c97a27633a54a66cbc55a3c3",
         "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
@@ -20,40 +20,40 @@
         "packages/lib/src/lib/core/mergeConfig.ts": "44c5417867eca00b465e1cbfbcee2104162d5e82705b15082b9be8ba28930f8a",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
-        "packages/lib/src/lib/helpers/composeSignals.ts": "82087ee7bf3628d9e5d98c1611d14e6ce76df5ddcdde2db8298dfebc1d16f2ab",
+        "packages/lib/src/lib/helpers/composeSignals.ts": "829b7130dc742becad300735254e63afeb73a8f1f99dac48febf2dcc3e0aab1c",
         "packages/lib/src/lib/plugins/authBearer.ts": "25931d33a4b2384df7dc3df77e3aa1d6848a94c6676909896a23506cb1542b9c",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
-        "packages/lib/src/lib/plugins/retry.ts": "fb390f6c43feb658a3dfe43ab4bc5bb8e83eeacf5c9079daeb10fe8a932ecbfe",
+        "packages/lib/src/lib/plugins/retry.ts": "83aac25415efa7c0135b7ab4733632b3cb265a9ab11266a125eb2541c2af7d12",
         "packages/lib/src/lib/plugins/timing.ts": "718ad5f2c23e3ee0e39ef8632b223da5ad46e556d4d5d0e5f54369708eaaee5d",
         "packages/lib/src/lib/types.ts": "c2c5d5dfdf2544244ba68079f413a6f5d0463652ca18834de7a42689aeb549fc",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
-        "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
+        "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
       "outcome": "updated",
-      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/index.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/definePlugin.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/lib/src/lib/types.ts, packages/tests/unit/core/middleware.test.ts, packages/tests/unit/plugins/timing.test.ts at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/helpers/composeSignals.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "63be56e3f84ed6028c50af6e82c3c16ab89ada475517020e6368a335f4a8f771",
+      "fingerprint": "5056d884c40b4a60886bc217f10b31d52bf02431e8860fec681c2992503a7372",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "c1ad4b4b502f5eb5c9b5cc969e3410f68f4e637951681f119a43087abf2f0c31",
+        "MIGRATION_GUIDE.md": "b0ce6d57daa49ad35f89cfe352c0b4136e4a721c33abc5993284a299d2800549",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
-        "packages/lib/skills/configure-requests/SKILL.md": "32e92c90338207e24beb5116d4805776b9716521f2834af0ecffded0accc237f",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "1cd413182f1603fc615a3c0e0dbc32043723545450a2d70281030e812516ba16",
+        "packages/lib/skills/configure-requests/SKILL.md": "d0adecf7743d3eb68b7464847f2e3be3e1a9eff17ae5f68b443562e8d562c0fa",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
         "packages/lib/skills/configure-requests/references/plugins.md": "e05e13099aa48813cc16bd96588852d01188cf65f648b606342aea39710aa4c9",
         "packages/lib/src/index.ts": "edd330b5bfd7f3bc0066ae038c0f802be6634c68080482031db7780df21d286f",
-        "packages/lib/src/lib/adapters/fetch.ts": "675d7138127d4428f8fd1693642b76b07df242a654218b4fff3833e80d10f8cc",
-        "packages/lib/src/lib/core/Faxios.ts": "e99da0bfe6144fd45363fdf17115862f14d468797c8be9a94c980b0e9af79a3e",
+        "packages/lib/src/lib/adapters/fetch.ts": "a5eec64d1166a730747b87667e5c3d5d64794e8175c63068871595dc46e8f204",
+        "packages/lib/src/lib/core/Faxios.ts": "eeaff0c5bd167ce5158679b43556ba55f295a887c97a27633a54a66cbc55a3c3",
         "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
@@ -61,24 +61,24 @@
         "packages/lib/src/lib/core/mergeConfig.ts": "44c5417867eca00b465e1cbfbcee2104162d5e82705b15082b9be8ba28930f8a",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
-        "packages/lib/src/lib/helpers/composeSignals.ts": "82087ee7bf3628d9e5d98c1611d14e6ce76df5ddcdde2db8298dfebc1d16f2ab",
+        "packages/lib/src/lib/helpers/composeSignals.ts": "829b7130dc742becad300735254e63afeb73a8f1f99dac48febf2dcc3e0aab1c",
         "packages/lib/src/lib/plugins/authBearer.ts": "25931d33a4b2384df7dc3df77e3aa1d6848a94c6676909896a23506cb1542b9c",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
-        "packages/lib/src/lib/plugins/retry.ts": "fb390f6c43feb658a3dfe43ab4bc5bb8e83eeacf5c9079daeb10fe8a932ecbfe",
+        "packages/lib/src/lib/plugins/retry.ts": "83aac25415efa7c0135b7ab4733632b3cb265a9ab11266a125eb2541c2af7d12",
         "packages/lib/src/lib/plugins/timing.ts": "718ad5f2c23e3ee0e39ef8632b223da5ad46e556d4d5d0e5f54369708eaaee5d",
         "packages/lib/src/lib/types.ts": "c2c5d5dfdf2544244ba68079f413a6f5d0463652ca18834de7a42689aeb549fc",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
-        "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
+        "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
       "outcome": "updated",
-      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/index.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/definePlugin.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/lib/src/lib/types.ts, packages/tests/unit/core/middleware.test.ts, packages/tests/unit/plugins/timing.test.ts at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/helpers/composeSignals.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
       ]
     },
     "source:knip.json": {
@@ -218,15 +218,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/error-handling.md": {
-      "fingerprint": "368bed469713d64919b09827e8e83fe7ebc5f3acdcd6fbd9f1cc42440c6392e0",
+      "fingerprint": "7edbd00164e7178a0683c00eea2b0d4fdcc9073cbe5899cf625e315f125938db",
       "snapshot": {
-        "packages/docs/pages/advanced/error-handling.md": "4de6bee4f5c76523e8c23b16ed6172f727b6f7587166ad4e11d9eb084a28b665"
+        "packages/docs/pages/advanced/error-handling.md": "33b23c25a988ed6318b9e5dc5a82ff5c64e1811b2397aca062ba0ecfe11c1be3"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
       "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/error-handling.md at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: packages/docs/pages/advanced/error-handling.md at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
       ]
     },
     "source:packages/docs/pages/advanced/headers.md": {
@@ -254,15 +254,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "90912a3c54f1aff0ea02772246a50d313d3726f9ca38e27988567f88ac27dd64",
+      "fingerprint": "296a77bb687c918c889c954333be4293507ebd7beff9e5037bbd4696aab1c4b9",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "e02729fcce7e09f6fb7c899a9a8377cf75b46719ed45b77e476508f42676f200"
+        "packages/docs/pages/advanced/middleware.md": "0a4131e3736ee267036f3f6346b2a2456d1e3bdc105f23c8523152e008a47792"
       },
-      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
       "outcome": "updated",
-      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+        "Changed: packages/docs/pages/advanced/middleware.md at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
@@ -278,27 +278,27 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "951306f9ce0cff0acf5bac2678ffbaca3b2c90479741ab467876e380d527aee4",
+      "fingerprint": "433ca2966d954634d76a1383f5acaf547e09b988d7b27074247ab2aec2afe800",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "e41f989fb9e249f54a5e576dd9edf61115b7a7905af7d9006faefd06205cff43"
+        "packages/docs/pages/advanced/request-config.md": "90fb2e91e599955820c60e86fe402fb1aedb2ebf3bbd1ff57a60122d562b9b72"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
+      "outcome": "updated",
+      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/docs/pages/advanced/request-config.md at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
-      "fingerprint": "01f9c70f48a6f246959455fc261ff59b3e655557fd8de79d85572bd9df6bcb61",
+      "fingerprint": "6d29ee7a5a3e8c8811833c4949699640a95e23770976705998e454a764216641",
       "snapshot": {
-        "packages/docs/pages/advanced/retry.md": "00e9f4e0ea380044c718e9c47006a176372ba9c23b4de762b5ae1b13e262ca7c"
+        "packages/docs/pages/advanced/retry.md": "6d87e04d8c70e5b76484c04fd0ce504ea8ee954ac2d3866cdfe751b7391c8867"
       },
-      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
       "outcome": "updated",
-      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/retry.md at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+        "Changed: packages/docs/pages/advanced/retry.md at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
       ]
     },
     "source:packages/docs/pages/advanced/schema-validation.md": {
@@ -3560,15 +3560,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/fetch-adapter.md": {
-      "fingerprint": "0d23c6ba53c56dfb4a5f44dfd4b7108ec933d4d56bd39cc35194a12a65465ff8",
+      "fingerprint": "db51a2195d70d1d91ba194fa114f6eb861cf6ee38a786d41f4854be77c961149",
       "snapshot": {
-        "packages/docs/pages/advanced/fetch-adapter.md": "7431ccff06777d07f59330d244c1e895fe6b2342bb73bc814b447af31772a3d2"
+        "packages/docs/pages/advanced/fetch-adapter.md": "024fd701520193c09261b2b34fb50b4a6b7c564a7686c135c89b2a27ec6a0414"
       },
-      "head": "3f379a4c81c5a5f1a2456dcec19e8f6bcdbfd606",
+      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
+      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/fetch-adapter.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/docs/pages/advanced/fetch-adapter.md at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
       ]
     },
     "source:packages/lib/src/lib/helpers/cloneConfig.ts": {
@@ -3764,15 +3764,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetchCleanup.test.ts": {
-      "fingerprint": "263c3c24d647c7ecdd67f4e14c112d900bdbd1dd4d24b369a6308823e248e967",
+      "fingerprint": "c62238341db31aaa296e593ef1851d6d9d1bf0d39d814d61d15eec3b78aeecdc",
       "snapshot": {
-        "packages/tests/unit/adapters/fetchCleanup.test.ts": "5b9cd8cd3a4542940b4f2235a2e0de3a860e6e05d4d0131f7dbb22d89ccf4f0f"
+        "packages/tests/unit/adapters/fetchCleanup.test.ts": "7484c5394b21cfcb5d100fb935d33406abd06d3e258980d75455905e31a25b47"
       },
-      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
+      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
       "outcome": "updated",
-      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
+      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetchCleanup.test.ts at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
+        "Changed: packages/tests/unit/adapters/fetchCleanup.test.ts at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
       ]
     },
     "source:.bumpy/browser-upload-progress.md": {
@@ -4088,15 +4088,15 @@
       ]
     },
     "source:packages/lib/src/lib/cancel/canceledFromSignal.ts": {
-      "fingerprint": "2153430fba9d382572172c21b4b14260716b4938c3f0d247b58bc083ee8d5f38",
+      "fingerprint": "9f1cd59ace4bbe3a372b8ea680272181976c2a72d6a361a604118ba98725b30b",
       "snapshot": {
-        "packages/lib/src/lib/cancel/canceledFromSignal.ts": "03316912f7e0b416cd0be76331f640db90dc1dc6622826650bf5d53d6aad7aa0"
+        "packages/lib/src/lib/cancel/canceledFromSignal.ts": "6a3a94cb21c613d9d5c360e1c3095282a98e45f58e6d44b6226a85dbea788e7e"
       },
-      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
+      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
       "outcome": "updated",
-      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
       "evidence": [
-        "Changed: packages/lib/src/lib/cancel/canceledFromSignal.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/lib/src/lib/cancel/canceledFromSignal.ts at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
       ]
     },
     "source:packages/lib/src/lib/core/assertTimeout.ts": {
@@ -4112,15 +4112,15 @@
       ]
     },
     "source:packages/tests/unit/core/cancellation.test.ts": {
-      "fingerprint": "7be757be543a760e62a8473c52f3014fc17121cd1adc84696da7806ee728f5e6",
+      "fingerprint": "91e3417ffc671949fdf7d0cd18950f60d86e5de62d36d4d78c61c35686c7db66",
       "snapshot": {
-        "packages/tests/unit/core/cancellation.test.ts": "17770a14c2d1ba27fb7b8d21c534543e5780650f44ce0cff4effb15389c8c3c6"
+        "packages/tests/unit/core/cancellation.test.ts": "e48b21aed21c738185363133ff81b4f0638d22420072267e0729923da09269f0"
       },
-      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
+      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
       "outcome": "updated",
-      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
       "evidence": [
-        "Changed: packages/tests/unit/core/cancellation.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/tests/unit/core/cancellation.test.ts at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
       ]
     },
     "source:.bumpy/basic-auth-utf8-username.md": {
@@ -4709,6 +4709,42 @@
       "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
       "evidence": [
         "Changed: packages/tests/module/esm/tests/helpers/middleware-index.ts at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+      ]
+    },
+    "source:.bumpy/whole-request-timeout.md": {
+      "fingerprint": "20f680c86b9b8c063e4897e87ba0dd72e8d2477d48621b78a773078e4f9e124c",
+      "snapshot": {
+        ".bumpy/whole-request-timeout.md": "6a330eea8a98eb9cd9d75745130cdc1d754656b962806165810c8231ef2e3a99"
+      },
+      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
+      "outcome": "updated",
+      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
+      "evidence": [
+        "Changed: .bumpy/whole-request-timeout.md at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
+      ]
+    },
+    "source:packages/lib/src/lib/core/requestDeadline.ts": {
+      "fingerprint": "62e162a3871334ff13a8353653c2c1ff26adab8ef8f4f0a59e3687f0f3d95b92",
+      "snapshot": {
+        "packages/lib/src/lib/core/requestDeadline.ts": "9d8918899d41c2ddc93575eadc4124a53d0bb60c094e102770b920ccc9ee44fc"
+      },
+      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
+      "outcome": "updated",
+      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/core/requestDeadline.ts at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
+      ]
+    },
+    "source:packages/tests/unit/composeSignals.test.ts": {
+      "fingerprint": "cab1752aca0c03ef31037ed3f816cd175109f328acefc6e5c56488a7c123b544",
+      "snapshot": {
+        "packages/tests/unit/composeSignals.test.ts": "1c280a6bb551e9f798a7b7c30a9440f70b79ccceef4f2d28d8d43da9ae6df12b"
+      },
+      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
+      "outcome": "updated",
+      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
+      "evidence": [
+        "Changed: packages/tests/unit/composeSignals.test.ts at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
       ]
     }
   }

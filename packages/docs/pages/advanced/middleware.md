@@ -250,6 +250,8 @@ A middleware that returns a response without calling `next` sends nothing. Dispa
 
 Aborting the request's `signal` at any point before the request is sent rejects with `CanceledError` and sends nothing, even while a middleware is awaiting something before it calls `next`. An already-aborted request runs no middleware.
 
+[`timeout`](/pages/advanced/request-config#timeout) covers middleware too. The deadline starts before the first middleware runs, so a middleware that never resumes still rejects with `ETIMEDOUT` once it passes. While the deadline runs, `ctx.config.signal` is the request's signal, which aborts at the deadline as well as when the caller aborts; pass it on to any work of your own that should stop with the request. Setting `ctx.config.timeout` in middleware doesn't change the deadline.
+
 ## `eject()`
 
 `eject()` removes middleware or a plugin by reference, so pass it the same function or plugin object you gave `use()`:

@@ -146,6 +146,26 @@ const api = faxios.create({ baseURL: "https://api.example.com" }).use(retry({
 await api.get("/users");
 ```
 
+## Timeouts
+
+The request's [`timeout`](/pages/advanced/request-config#timeout) bounds all tries together: every try, every wait between them and the middleware around them. Once it passes, the request rejects with `ETIMEDOUT`, the pending try or wait stops at once, and `retry` doesn't try again or call `onRetry`, however many attempts are left.
+
+`attemptTimeout` bounds each try on its own, in milliseconds: middleware installed after `retry`, the schemas and the `fetch`, until that try's response arrives. A try that runs out is aborted and rejects with `ETIMEDOUT`, which the default predicate retries. The default is `0`, no limit per try; it must be from 0 to 2147483647. Use the two together to give up on a hung try early while still capping the whole request:
+
+```ts
+import faxios from "@gcmdev/faxios";
+import { retry } from "@gcmdev/faxios/plugins/retry";
+
+// Each try gets 2 seconds; the request gives up after 5 seconds in all.
+const api = faxios.create({ baseURL: "https://api.example.com", timeout: 5_000 })
+  .use(retry({ attempts: 4, attemptTimeout: 2_000 }));
+
+await api.get("/users");
+await api.get("/reports/latest", { retry: { attemptTimeout: 10_000 } });
+```
+
+With `attemptTimeout`, middleware after `retry` gets a context whose `ctx.config.signal` is the try's own signal. A `responseType: "stream"` body read after the response arrives isn't bounded by `attemptTimeout`, nor by the request's `timeout`, but your `signal` still cancels it.
+
 ## Methods
 
 Only idempotent methods are retried by default: GET, HEAD, OPTIONS, PUT, DELETE and QUERY. POST and PATCH are retried only when you list them in `methods` (in any case). Do that only if your API dedupes repeated requests, or a retried payment may be charged twice.

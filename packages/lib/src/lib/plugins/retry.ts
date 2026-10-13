@@ -1,7 +1,7 @@
 // @ts-self-types="./retry.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
 import { CanceledError, FaxiosError, isCancel } from "../../index.js";
-import type { FaxiosContext, FaxiosPlugin, FaxiosRequestConfig, InternalFaxiosRequestConfig, Method } from "../../index.js";
+import type { FaxiosContext, FaxiosNext, FaxiosPlugin, FaxiosRequestConfig, FaxiosResponse, InternalFaxiosRequestConfig, Method } from "../../index.js";
 import { definePlugin } from "./definePlugin.js";
 import { assertOptions, isBoolean, isFunction, own } from "./shared.js";
 
@@ -21,6 +21,7 @@ const isStatus = (value: unknown) => Number.isInteger(value) && (value as number
 // Bounded on purpose: NaN or Infinity would make a failing request loop forever.
 const optionsSchema = {
   attempts: (value: unknown) => (Number.isInteger(value) && (value as number) >= 1) || "an integer of at least 1",
+  attemptTimeout: (value: unknown) => isTimerWait(value) || `a number of milliseconds from 0 to ${MAX_TIMER_MS}`,
   retryOn: isFunction,
   delay: (value: unknown) => isWait(value) || typeof value === "function" || "a finite number of at least 0 or a function",
   methods: (value: unknown) => (Array.isArray(value) && value.every(m => typeof m === "string" && TOKEN.test(m))) || "an array of HTTP method names",
@@ -50,6 +51,13 @@ function assertRetryOptions(value: unknown, config?: InternalFaxiosRequestConfig
 export type RetryOptions = {
   /** Total tries, counting the first request. Default 3. */
   attempts?: number;
+  /**
+   * The most one try may take, in milliseconds: middleware installed after `retry`, the schemas
+   * and the fetch, until the try's response arrives. A try that runs out rejects with `ETIMEDOUT`,
+   * which the default predicate retries. Default 0: no limit per try. The request's `timeout` still
+   * bounds all tries and waits together. At most 2 147 483 647 (the setTimeout limit).
+   */
+  attemptTimeout?: number;
   /**
    * Milliseconds to wait before the next try, or a function of the try that failed. Default 100ms,
    * doubling. Capped at `maxDelay`, then jittered. A 429 or 503 with a `Retry-After` header waits
@@ -149,9 +157,11 @@ function canReplay(data: unknown): boolean {
   return typeof data !== "object" || data === null || !("pipe" in data) || typeof data.pipe !== "function";
 }
 
-// The error dispatch rejects an aborted request with: the reason's message, the reason as cause.
-function canceledFrom(signal: { readonly aborted: boolean; reason?: unknown; }, config: FaxiosRequestConfig): CanceledError {
+// The error dispatch rejects an aborted request with. A FaxiosError reason is that error already
+// (an ETIMEDOUT); otherwise the reason's message, with the reason as cause.
+function canceledFrom(signal: { readonly aborted: boolean; reason?: unknown; }, config: FaxiosRequestConfig): FaxiosError {
   const reason: unknown = signal.reason;
+  if (reason instanceof FaxiosError) return reason;
   if (!(reason instanceof Error)) return new CanceledError(typeof reason === "string" ? reason : null, config);
   const error = new CanceledError(reason.message, config);
   error.cause = reason;
@@ -177,6 +187,59 @@ function wait(ms: number, signal: FaxiosRequestConfig["signal"], config: FaxiosR
   });
 }
 
+// A try's signal: it aborts when the try's own controller does, or when the request's signal does.
+// any() follows the request's signal without a listener on it, so a stream body read after the
+// try still sees the caller's abort. A signal any() can't take gets a listener `unlink` removes.
+function linkSignal(outer: FaxiosRequestConfig["signal"], controller: AbortController): { signal: AbortSignal; unlink: () => void; } {
+  const unlinked = { signal: controller.signal, unlink: () => {} };
+  if (!outer) return unlinked;
+  if (typeof AbortSignal.any === "function" && outer instanceof AbortSignal) {
+    return { ...unlinked, signal: AbortSignal.any([ outer, controller.signal ]) };
+  }
+  const forward = () => {
+    outer.removeEventListener?.("abort", forward);
+    controller.abort("reason" in outer ? outer.reason : undefined);
+  };
+  if (outer.aborted) forward();
+  else outer.addEventListener?.("abort", forward);
+  return { signal: controller.signal, unlink: () => outer.removeEventListener?.("abort", forward) };
+}
+
+// One try with its own deadline. It settles once the deadline passes, even while middleware after
+// retry never resumes, and its signal aborts that try's fetch.
+function tryWithin(ms: number, ctx: FaxiosContext<RetryRequestOptions>, next: FaxiosNext<RetryRequestOptions>): Promise<FaxiosResponse> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => {
+    controller.abort(new FaxiosError(`timeout of ${ms}ms exceeded`, FaxiosError.ETIMEDOUT, ctx.config));
+  }, ms);
+  const { signal, unlink } = linkSignal(own(ctx.config, "signal"), controller);
+  return new Promise((resolve, reject) => {
+    const stop = () => {
+      clearTimeout(timer);
+      unlink();
+      signal.removeEventListener("abort", onAbort);
+    };
+    function onAbort() {
+      stop();
+      reject(canceledFrom(signal, ctx.config));
+    }
+    // Listen before running: middleware may abort before its first await.
+    signal.addEventListener("abort", onAbort);
+    if (signal.aborted) {
+      onAbort();
+      return;
+    }
+    // The executor calls next() right away, as a plain next(ctx) would, and turns a synchronous
+    // throw into a rejection.
+    // eslint-disable-next-line sonarjs/prefer-promise-shorthand -- see above
+    const pending = new Promise<FaxiosResponse>(_resolve => {
+      _resolve(next({ ...ctx, config: { ...ctx.config, signal } }));
+    });
+    // After the deadline the result has nowhere to go; this still consumes it.
+    pending.finally(stop).then(resolve, reject);
+  });
+}
+
 // Each list is lower-cased right after it is validated: the plugin's once, a per-request override's
 // on the request that carries it.
 function retriesMethod(config: InternalFaxiosRequestConfig, perRequest: RetryOptions | undefined, pluginMethods: ReadonlyArray<string> | undefined): boolean {
@@ -187,6 +250,7 @@ function retriesMethod(config: InternalFaxiosRequestConfig, perRequest: RetryOpt
 
 type Policy = {
   attempts: number;
+  attemptTimeout: number;
   delay: ((attempt: number, error: unknown) => number) | number;
   jitter: "full" | "none";
   maxDelay: number;
@@ -202,6 +266,7 @@ function resolvePolicy(options: RetryOptions, perRequest: RetryOptions | undefin
   const statuses = setting("statuses") ?? DEFAULT_STATUSES;
   return {
     attempts: setting("attempts") ?? 3,
+    attemptTimeout: setting("attemptTimeout") ?? 0,
     retryOn: setting("retryOn") ?? ((error: unknown) => retryByDefault(error, statuses)),
     delay: setting("delay") ?? doublingDelay,
     maxDelay: setting("maxDelay") ?? 30_000,
@@ -212,9 +277,11 @@ function resolvePolicy(options: RetryOptions, perRequest: RetryOptions | undefin
   };
 }
 
-// How long to wait before the next try, or undefined when the server's Retry-After is longer
-// than the caller is willing to wait, so the error is rethrown.
+// How long to wait before the next try, or undefined to rethrow the error: the request's signal
+// aborted (the caller canceled, or the request's timeout passed), no tries are left, the body can't
+// be sent again, the predicate says no, or a Retry-After is longer than the caller will wait.
 function waitBeforeRetry(error: unknown, attempt: number, policy: Policy, config: InternalFaxiosRequestConfig): number | undefined {
+  if (own(config, "signal")?.aborted || attempt >= policy.attempts || !canReplay(own(config, "data")) || !policy.retryOn(error, attempt)) return undefined;
   const retryAfter = policy.respectRetryAfter ? retryAfterMs(error) : undefined;
   if (retryAfter !== undefined) return retryAfter > policy.maxRetryAfter ? undefined : retryAfter;
   const computed: unknown = typeof policy.delay === "function" ? policy.delay(attempt, error) : policy.delay;
@@ -252,10 +319,9 @@ export function retry(options: RetryOptions = {}): FaxiosPlugin<{ options: Retry
         ctx.attempt = attempt;
         try {
           // eslint-disable-next-line no-await-in-loop -- see above
-          return await next(ctx);
+          return await (policy.attemptTimeout > 0 ? tryWithin(policy.attemptTimeout, ctx, next) : next(ctx));
         }
         catch (error) {
-          if (attempt >= policy.attempts || !canReplay(own(ctx.config, "data")) || !policy.retryOn(error, attempt)) throw error;
           const ms = waitBeforeRetry(error, attempt, policy, ctx.config);
           if (ms === undefined) throw error;
           // A throwing hook rejects the request with its own error, before any wait.

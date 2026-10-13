@@ -47,17 +47,7 @@ describe("helpers::composeSignals", () => {
     assert.strictEqual((signal.reason as CanceledError).message, "first");
   });
 
-  runIfAbortController("should abort on timeout", async () => {
-    const signal = composeSignals([], 100)!;
-
-    await new Promise(resolve => {
-      signal.addEventListener("abort", resolve);
-    });
-
-    assert.match(String(signal.reason), /timeout of 100ms exceeded/);
-  });
-
-  it("should return undefined if signals and timeout are not provided", () => {
+  it("should return undefined when no signal is provided", () => {
     const signal = composeSignals([]);
 
     assert.strictEqual(signal, undefined);

@@ -5,7 +5,6 @@ import canceledFromSignal from "../cancel/canceledFromSignal.js";
 import cloneConfig from "../helpers/cloneConfig.js";
 import validator from "../helpers/validator.js";
 import type {
-  FaxiosContext,
   FaxiosMiddleware,
   FaxiosNext,
   FaxiosPluginArgument,
@@ -29,6 +28,7 @@ import dispatchRequest from "./dispatchRequest.js";
 import FaxiosError from "./FaxiosError.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
 import mergeConfig from "./mergeConfig.js";
+import armDeadline from "./requestDeadline.js";
 import resolveRequestURL from "./resolveRequestURL.js";
 import type { RouteBuilder, RouteConfig } from "./route.js";
 import { createRouteBuilder } from "./route.js";
@@ -237,6 +237,22 @@ function settleOnAbort(
   });
 }
 
+// Runs the request under its signal and `timeout`. The deadline is armed here, before middleware,
+// so it covers the whole request: middleware, schemas, every retry try and wait, the fetch and the
+// body. Its signal replaces config.signal, so every stage that watches the signal stops at it.
+// Without a deadline or middleware, dispatch watches the caller's signal itself. Not async: a
+// request without a timeout reaches dispatch in the same tick, as it did before.
+function runRequest(run: () => Promise<FaxiosResponse>, config: InternalFaxiosRequestConfig, hasMiddleware: boolean): Promise<FaxiosResponse> {
+  const timeout = utils.hasOwnProp(config, "timeout") ? config.timeout : undefined;
+  const callerSignal = utils.hasOwnProp(config, "signal") ? config.signal : undefined;
+  const ms = timeout == null ? 0 : Number(timeout);
+  if (ms <= 0) return callerSignal && hasMiddleware ? settleOnAbort(run, callerSignal, config) : run();
+  const deadline = armDeadline(ms, callerSignal, config);
+  config.signal = deadline.signal;
+  // settleOnAbort never throws, so the deadline is always settled.
+  return settleOnAbort(run, deadline.signal, config).finally(deadline.settle);
+}
+
 // One level's headers (instance or request), lowest precedence first: the `common` group, the
 // group for the request's method, then the top-level headers. Every FaxiosConfigHeaders member is
 // a string-keyed object, so the casts are checked widenings, not assertions.
@@ -414,20 +430,14 @@ class Faxios {
     config.headers = FaxiosHeaders.concat(undefined, ...headerLayers(instanceHeaders, config.method))
       .set(FaxiosHeaders.concat(undefined, ...headerLayers(requestHeaders, config.method)), true);
 
+    const internal = config as InternalFaxiosRequestConfig;
     // Before middleware, so a bad value never reaches caller code or a timer that fires at once.
-    assertTimeout(utils.hasOwnProp(config, "timeout") ? config.timeout : undefined, config as InternalFaxiosRequestConfig);
+    assertTimeout(utils.hasOwnProp(config, "timeout") ? config.timeout : undefined, internal);
 
     const composed = this.#composed;
-    if (!composed) return dispatchRequest(config as InternalFaxiosRequestConfig);
-
-    const ctx: FaxiosContext = {
-      attempt: 1,
-      config: config as InternalFaxiosRequestConfig,
-      state: Object.create(null),
-      capabilities: this.#capabilities,
-    };
-    const signal = utils.hasOwnProp(config, "signal") ? config.signal : undefined;
-    return signal ? settleOnAbort(() => composed(ctx), signal, ctx.config) : composed(ctx);
+    if (!composed) return runRequest(() => dispatchRequest(internal), internal, false);
+    // Built when the run starts, so ctx.config carries the request's signal.
+    return runRequest(() => composed({ attempt: 1, config: internal, state: Object.create(null), capabilities: this.#capabilities }), internal, true);
   }
    
   get<O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;

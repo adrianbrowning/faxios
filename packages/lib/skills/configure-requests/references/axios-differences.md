@@ -42,7 +42,9 @@ These ports compile and run but behave differently:
 3. **Interceptor order.** Axios ran request interceptors last-registered-first and response
    interceptors first-registered-first. Middleware runs in registration order on the way in and
    in reverse on the way out, so both sides flip; reorder the `.use()` calls.
-4. **Timeout handling.** Branches that check `ECONNABORTED` never run.
+4. **Timeout handling.** Branches that check `ECONNABORTED` never run. `timeout` bounds the whole
+   request, middleware and every retry try included, not one try as Axios's does; for a per-try
+   limit use `retry({ attemptTimeout })`.
 5. **Statics on instances.** `instance.isCancel`, `instance.mergeConfig` and similar are undefined
    on `create()` instances.
 

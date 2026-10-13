@@ -159,6 +159,19 @@ await faxios.post('/login', 'user=ada&pass=secret', {
 });
 ```
 
+### l) `timeout` covers the whole request
+
+`timeout` used to bound one `fetch` call: middleware, async schemas and every retry try ran outside it, so `timeout: 5000` with the `retry` plugin could take minutes, and a hung middleware never timed out. It now starts before middleware and bounds the whole request, retries included, and a timed-out request is not retried. For a limit per try, use the `retry` plugin's `attemptTimeout`. Changing `ctx.config.timeout` in middleware no longer has any effect.
+
+```javascript
+import faxios from '@gcmdev/faxios';
+import { retry } from '@gcmdev/faxios/plugins/retry';
+
+// Before, `timeout: 5000` meant up to 3 tries of 5 seconds each, plus the waits between them.
+// Now: 5 seconds per try, 20 seconds in all.
+const api = faxios.create({ timeout: 20_000 }).use(retry({ attempts: 3, attemptTimeout: 5000 }));
+```
+
 ---
 
 ## Overview
