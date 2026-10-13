@@ -31,6 +31,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 - Package, lockfile, and GitHub Actions update PRs are maintainer/bot-only; close these PRs from outside collaborators. Keep the 7-day Dependabot delay unless a critical vulnerability requires a maintainer-led manual update.
 - Build/test/lint tools still execute dependency code despite `ignore-scripts`; avoid unnecessary full builds when a focused check proves the change.
 - Smoke and module suites test the packed tarball (`packages/tests/faxios.tgz`), not the source tree. Their installs are frozen: `pin-tarball-integrity.ts` rewrites only the tarball's digest (and, in pnpm lockfiles, its version) in the harness lockfiles before `--frozen-lockfile`, so a release doesn't have to edit them. Keep the harness lockfiles and frozen installs; `--no-lockfile` or deleting a lockfile unpins every transitive dependency.
+- `packages/bench` compares native Fetch, Axios and the packed faxios. It sits outside the workspace with its own frozen lockfile, like the smoke and module suites, and `run-tests.sh` runs its fixture tests. `pnpm bench` regenerates its results and the generated docs page `packages/docs/pages/misc/comparison.md`; don't edit that page by hand.
 
 ## Package Shape
 

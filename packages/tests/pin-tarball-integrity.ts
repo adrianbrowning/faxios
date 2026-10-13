@@ -18,8 +18,9 @@ const integrity = `sha512-${digest}`;
 const { version } = JSON.parse(readFileSync(new URL("../lib/package.json", testsDir), "utf8")) as { version: string; };
 
 const ENTRY_BY_LOCKFILE: Record<string, { pattern: RegExp; replacement: string; }> = {
+  // smoke/module reach the tarball as ../../faxios.tgz, packages/bench as ../tests/faxios.tgz.
   "pnpm-lock.yaml": {
-    pattern: /(\{integrity: )sha512-[\w+/=]+(, tarball: file:\.\.\/\.\.\/faxios\.tgz\}\n {4}version: )\S+/g,
+    pattern: /(\{integrity: )sha512-[\w+/=]+(, tarball: file:\.\.\/(?:\.\.|tests)\/faxios\.tgz\}\n {4}version: )\S+/g,
     replacement: `$1${integrity}$2${version}`,
   },
   "bun.lock": {
