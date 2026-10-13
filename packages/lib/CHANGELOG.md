@@ -2,6 +2,37 @@
 
 
 
+
+## 0.2.4
+<sub>2026-10-13</sub>
+
+- [#222](https://github.com/adrianbrowning/faxios/pull/222)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed formDataToJSON dropping non-ASCII field names, so fields like 名前 and 姓 now map to their own keys instead of merging under "undefined".
+- [#225](https://github.com/adrianbrowning/faxios/pull/225)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed FaxiosHeaders getSetCookie() returning a string instead of a one-element array when a response has a single set-cookie header.
+- [#229](https://github.com/adrianbrowning/faxios/pull/229)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed Deno types for isFaxiosError, isCancel, mergeConfig, CanceledError, Faxios, toFormData, HttpStatusCode, VERSION and the unsafe/* exports, which Deno read as any or loose JS types instead of the shipped .d.ts.
+- [#226](https://github.com/adrianbrowning/faxios/pull/226)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed a middleware that forgets to return next(ctx) crashing later with a TypeError; the request now rejects with an ERR_BAD_RESPONSE FaxiosError that names the cause.
+- [#226](https://github.com/adrianbrowning/faxios/pull/226)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed retry treating malformed Retry-After values such as 1.5 or -1 as past dates and retrying at once; only delta-seconds and RFC 9110 HTTP dates are honoured now.
+- [#223](https://github.com/adrianbrowning/faxios/pull/223)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed config merging: request(url, config) no longer writes url into your config, route() method configs now merge headers and nested options with the route config, and headers literally named like a method group (such as get or common) are sent instead of dropped.
+- [#228](https://github.com/adrianbrowning/faxios/pull/228)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed getUri() ignoring allowAbsoluteUrls, so on an instance with baseURL it now returns the same URL the request is sent to.
+- [#224](https://github.com/adrianbrowning/faxios/pull/224)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed an abort during an async `requestSchema` or `paramsSchema` waiting for the schema to finish when the instance has no middleware; the request now rejects with `ERR_CANCELED` at once and sends nothing.
+- [#230](https://github.com/adrianbrowning/faxios/pull/230)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed basic auth with a non-ASCII username throwing InvalidCharacterError; the Authorization header is now built once and UTF-8 encodes both username and password.
+- [#224](https://github.com/adrianbrowning/faxios/pull/224)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed `controller.abort(reason)` losing the reason: every `CanceledError` now takes its message from an `Error` or string reason and keeps an `Error` reason as `cause`, at every stage of the request.
+- [#230](https://github.com/adrianbrowning/faxios/pull/230)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed a null or non-object config, a non-string or invalid method, and a url that isn't a string or URL rejecting with an uncoded error; they now reject with ERR_BAD_OPTION_VALUE, and a URL instance is sent as documented.
+- [#230](https://github.com/adrianbrowning/faxios/pull/230)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed transport failures rejecting without a code: a URL fetch can't parse rejects with ERR_INVALID_URL (with a hint that relative URLs need a baseURL outside the browser), a request the runtime refuses to build rejects with ERR_BAD_REQUEST, and a response body that fails mid-read rejects with ERR_NETWORK.
+- [#224](https://github.com/adrianbrowning/faxios/pull/224)  *(patch)* Thanks [@adrianbrowning](https://github.com/adrianbrowning)!
+  Fixed `timeout` values below 0 or above 2147483647 ms timing out at once, and retry `maxDelay` / `maxRetryAfter` values above 2147483647 ms retrying at once; they now reject with `ERR_BAD_OPTION_VALUE` naming the option.
+
 ## 0.2.3
 <sub>2026-10-12</sub>
 

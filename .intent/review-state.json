@@ -3,10 +3,10 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "ea4af23865b97e7b97b202664025244e636f021a98fcc0087a8e2414b8f5a04c",
+      "fingerprint": "5c8fd67c80e7ed7bde6a8d9127b97d56ea8239a25d8cc9914d80faa969c20012",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
-        "packages/lib/package.json": "c0bb05f55c5ab74840a93bc6f2674de07806acf5c33ce33afd34a4ac49492f07",
+        "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
         "packages/lib/skills/configure-requests/SKILL.md": "9ebce05ee93562003511dfbaa7e34fd86f07ec93097419922ce5c8f565d387c3",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
@@ -33,21 +33,21 @@
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
-      "outcome": "updated",
-      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/lib/package.json at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "12cbd095455f1a9e0320aaf724322d3e3068f34d1838898808b3c645f418eac8",
+      "fingerprint": "3d298cca08432d3145aa021ae907a32f3b24290ddbe34ba9731dfb09038a98aa",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
-        "packages/lib/package.json": "c0bb05f55c5ab74840a93bc6f2674de07806acf5c33ce33afd34a4ac49492f07",
+        "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
         "packages/lib/skills/configure-requests/SKILL.md": "9ebce05ee93562003511dfbaa7e34fd86f07ec93097419922ce5c8f565d387c3",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "7e0d55292e7b1afb65d925a3e68d0eeea16e4237ba070686404d6695287710db",
         "packages/lib/skills/configure-requests/references/plugins.md": "fb5c7a57eabcae66f88b02b78b5df0184670f890afbcf0acb2f9acad76e64582",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
-      "outcome": "updated",
-      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/lib/package.json at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:knip.json": {
@@ -473,15 +473,15 @@
       ]
     },
     "source:packages/lib/src/lib/env/data.ts": {
-      "fingerprint": "f0b774f66b5082983ea2986ce83eec7cd2fa297a583363990cb786de9c35c65f",
+      "fingerprint": "96c873d7dfdbd86e417bc39f8b3c8ba98014478fb9488e62cff096bc9af3772e",
       "snapshot": {
-        "packages/lib/src/lib/env/data.ts": "beae67415eef47f84ae24f4c6055d6a7e4abf976c04713e33fa5bebf450a4260"
+        "packages/lib/src/lib/env/data.ts": "4c9404149f2d2653b6e429dc8ccb0076a4c954e9c0eca2349989dd9fc92d5764"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
       "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: packages/lib/src/lib/env/data.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/lib/src/lib/env/data.ts at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:packages/tests/module/esm/pnpm-lock.yaml": {
@@ -2158,15 +2158,15 @@
       ]
     },
     "source:packages/lib/CHANGELOG.md": {
-      "fingerprint": "8b3826aed0f1b95e6379990a9ccfc7ab58fd70c4f4d11f2cf6d909ac0cd04621",
+      "fingerprint": "262e7a33066e1156ff343b9d1add46250fc1947f225ca0e08dd585ff71129bcf",
       "snapshot": {
-        "packages/lib/CHANGELOG.md": "7ec92897efc8bba59d38e6893201aaa4c4ba80237aa0fda741a2eb4b72c06518"
+        "packages/lib/CHANGELOG.md": "a17ee5b159ac8f494e5f3bbfdfa20f0b84a23b67c33cc55668399c9f12383d89"
       },
-      "head": "e30240bd9376afd11233fac3e9d2938ac6ca83c7",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
       "outcome": "no-change",
       "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: packages/lib/CHANGELOG.md at e30240bd9376afd11233fac3e9d2938ac6ca83c7"
+        "Changed: packages/lib/CHANGELOG.md at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:packages/lib/eslint-rules/remove-signal-listeners.ts": {
@@ -3839,15 +3839,15 @@
       ]
     },
     "source:.bumpy/formdatatojson-unicode-names.md": {
-      "fingerprint": "14f187255e0c8e16d9c3ce70dcc3a0becb5af6cbb1554f1f23c685700ccdaff4",
+      "fingerprint": "89f3de74f80699c3fe4e0eeb287acd53e629fe5bb3912fbea303bcaffb396104",
       "snapshot": {
-        ".bumpy/formdatatojson-unicode-names.md": "e90ba823bb30f5dffeaa82dd58ab60d90d6e1bb48917dece32279cfb78db3100"
+        ".bumpy/formdatatojson-unicode-names.md": null
       },
-      "head": "0d843fe0905888352e41d7ba60865740164da2e3",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
       "outcome": "no-change",
-      "reason": "formDataToJSON field-name tokenizing is not documented by the configure-requests skill",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/formdatatojson-unicode-names.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: .bumpy/formdatatojson-unicode-names.md at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:packages/docs/pages/advanced/html-form-processing.md": {
@@ -3863,15 +3863,15 @@
       ]
     },
     "source:.bumpy/getsetcookie-always-array.md": {
-      "fingerprint": "c56a9440635802a9b4ac2b1fdddaf191dc61189e3b6c9273aa67ffd1eb8a2df5",
+      "fingerprint": "537ac868352ddf680945fd742f46fa2f08c0786158827442b1eb486bad0ba373",
       "snapshot": {
-        ".bumpy/getsetcookie-always-array.md": "2876451422eaa1f31f19c36ef918df06a816dd3697697f83014e935209ba7d78"
+        ".bumpy/getsetcookie-always-array.md": null
       },
-      "head": "e26c1ab7e3e9ec0704c84a23dead8868970e1f04",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
       "outcome": "no-change",
-      "reason": "getSetCookie bug fix; configure-requests skill does not document getSetCookie",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/getsetcookie-always-array.md at 507ee20348e63b7dd80ede3c38d05aef74f7369d"
+        "Changed: .bumpy/getsetcookie-always-array.md at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:packages/tests/unit/core/getSetCookie.test.ts": {
@@ -3887,15 +3887,15 @@
       ]
     },
     "source:.bumpy/deno-self-types.md": {
-      "fingerprint": "091c9a2be8f023394c27c3b2c60b1332b3748a3b3ebf835e43f4733e4032048e",
+      "fingerprint": "f5e0623a79f8c13be7fcd0f5218d631c463584cec0570445db38a3fb3a4e9b3a",
       "snapshot": {
-        ".bumpy/deno-self-types.md": "f1a72d9614e6540a87e9ab244266e0f520e719c51787d806a83366a58f823fb1"
+        ".bumpy/deno-self-types.md": null
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
       "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/deno-self-types.md at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: .bumpy/deno-self-types.md at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:packages/lib/src/lib/cancel/isCancel.ts": {
@@ -3995,51 +3995,51 @@
       ]
     },
     "source:.bumpy/middleware-missing-response.md": {
-      "fingerprint": "72e55f0f685719894391b0e0d80de64cd8e6e81b91522e4f9d3979a2562a64fe",
+      "fingerprint": "c027f2e554a963bb8a8766263af20368090bef7e8eca6e8f4b589df175f44def",
       "snapshot": {
-        ".bumpy/middleware-missing-response.md": "ec9ca6625dd27e63ac4b178a38eddb88a2631ff7853b114dbbb3cfdc709e340c"
+        ".bumpy/middleware-missing-response.md": null
       },
-      "head": "90ed9eece075db8a379599d1faaeb20bc93f941b",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
       "outcome": "no-change",
-      "reason": "Skill describes Retry-After and next(ctx) at a level these patch fixes don't change; malformed headers and missing returns were bugs.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/middleware-missing-response.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: .bumpy/middleware-missing-response.md at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:.bumpy/retry-after-strict-parsing.md": {
-      "fingerprint": "5d95e693cc19a5761a446013c8f5bc630d8edcd8a20c8120624edf76fd2a53f7",
+      "fingerprint": "6233043389731f3f7e9f50cc987f1b1f6e913c726217502a3aab1bcb9ce062ec",
       "snapshot": {
-        ".bumpy/retry-after-strict-parsing.md": "d5409d41bc235563854662689271cc558c41dfc2155dc10f11ac17c6c9193ac7"
+        ".bumpy/retry-after-strict-parsing.md": null
       },
-      "head": "90ed9eece075db8a379599d1faaeb20bc93f941b",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
       "outcome": "no-change",
-      "reason": "Skill describes Retry-After and next(ctx) at a level these patch fixes don't change; malformed headers and missing returns were bugs.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/retry-after-strict-parsing.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: .bumpy/retry-after-strict-parsing.md at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:.bumpy/config-merge-fixes.md": {
-      "fingerprint": "7c0c4287dbe427a8e0a9da8e9f75f51cf49775bf3147e8d7b08260fabfdafb61",
+      "fingerprint": "e2b7757777a77129b1970884883a66778a9c385195929499834118522c5febf7",
       "snapshot": {
-        ".bumpy/config-merge-fixes.md": "147949773b861cb058a2c36a147fbeed6afe47e947ad89587b21ba2181540355"
+        ".bumpy/config-merge-fixes.md": null
       },
-      "head": "1dc59b343071b3f6a6ef069fb4aacfc9f603de98",
-      "outcome": "updated",
-      "reason": "Skill now describes route() merging and string headers under group names",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/config-merge-fixes.md at fea06afc49b9161235087252789c1626cab7179c"
+        "Changed: .bumpy/config-merge-fixes.md at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:.bumpy/geturi-allow-absolute-urls.md": {
-      "fingerprint": "35296214138653aa5bec3ae40e41bb7852116aa7c06c55f82c68ecef473e2d37",
+      "fingerprint": "af55136c61038962c8647e3517c9e3d3274d39e73a63425b4e2dc031f4738e80",
       "snapshot": {
-        ".bumpy/geturi-allow-absolute-urls.md": "25bef633168f4ad18a75d2427d358b5f0e1acaf24c19a94da7d16f43fde27ded"
+        ".bumpy/geturi-allow-absolute-urls.md": null
       },
-      "head": "171fd2a68f53dbb058a5074bc17f64201dee09dd",
-      "outcome": "updated",
-      "reason": "configure-requests skill now says getUri() applies allowAbsoluteUrls the way a request does; other changes are internal URL resolution, docs, tests and a bump file",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/geturi-allow-absolute-urls.md at d8cbd4de61e82132702bf7f2751683bf4c27bded"
+        "Changed: .bumpy/geturi-allow-absolute-urls.md at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:packages/lib/src/lib/core/resolveRequestURL.ts": {
@@ -4067,39 +4067,39 @@
       ]
     },
     "source:.bumpy/abort-during-async-schema.md": {
-      "fingerprint": "eb9e6ab8185bafcb80174e4d674900badeacc348983fe627da6d48f62fecc3b5",
+      "fingerprint": "206283f4204f949336747beeb2a240ed7d59b762ea900041edf535c3852c4fcc",
       "snapshot": {
-        ".bumpy/abort-during-async-schema.md": "91588132b045062bd3516be62f744eda5dc10e3dddb9ff9c143f8644b87756a6"
+        ".bumpy/abort-during-async-schema.md": null
       },
-      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
-      "outcome": "updated",
-      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/abort-during-async-schema.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: .bumpy/abort-during-async-schema.md at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:.bumpy/cancel-keeps-abort-reason.md": {
-      "fingerprint": "c56a8a8385d8e53cf9f7d50860cf57c68f12f02a5894f0096b66e00ce36c6c7e",
+      "fingerprint": "e010d3dd1e370f4b9e9b9f8c7454d1c82e9807c5b56c0d67da7054c34d2108a9",
       "snapshot": {
-        ".bumpy/cancel-keeps-abort-reason.md": "f6240c54b72767f1e3c7b29e8d5fdd09f9a1eb8ef04ab5640e7deca03cf99b72"
+        ".bumpy/cancel-keeps-abort-reason.md": null
       },
-      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
-      "outcome": "updated",
-      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/cancel-keeps-abort-reason.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: .bumpy/cancel-keeps-abort-reason.md at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:.bumpy/timer-range-checks.md": {
-      "fingerprint": "8bf77a6d8cf598ad1423cc8ad73ce5dcdc1538490f8283778274e52cd28bcecf",
+      "fingerprint": "715a1855d79af11849b9eef7c030a76218be7c750d74d006fd34bab1293ef22d",
       "snapshot": {
-        ".bumpy/timer-range-checks.md": "b400499a462af176e727f5ff5e2b24df6067413e6f4612e764ab7644b036092c"
+        ".bumpy/timer-range-checks.md": null
       },
-      "head": "58c6bff1a5087337f8578e67cfb298284dda82cf",
-      "outcome": "updated",
-      "reason": "configure-requests skill now documents immediate abort during async schemas, the abort reason kept as message/cause at every stage, and the 0..2147483647 ms range for timeout, retry maxDelay and maxRetryAfter; docs pages, bump files and tests need no other guidance change",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/timer-range-checks.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: .bumpy/timer-range-checks.md at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:packages/lib/src/lib/cancel/canceledFromSignal.ts": {
@@ -4139,39 +4139,39 @@
       ]
     },
     "source:.bumpy/basic-auth-utf8-username.md": {
-      "fingerprint": "f8b9560dbab8ad0dd9676402d972741462949f1f3769809839950e60efa086d2",
+      "fingerprint": "74809dbe982f5d7e67f12cd68922056ffe53e60e88479e3eadeec183e1bf6ac0",
       "snapshot": {
-        ".bumpy/basic-auth-utf8-username.md": "4fae6b1c19165a7643b5732bc25dba5fcbfb632b969f3c711a9547fd87349618"
+        ".bumpy/basic-auth-utf8-username.md": null
       },
-      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
-      "outcome": "updated",
-      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/basic-auth-utf8-username.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: .bumpy/basic-auth-utf8-username.md at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:.bumpy/coded-bad-request-input.md": {
-      "fingerprint": "a1b1cbbe1adb90ee77f01a37a6cc5fb13173d10028b1b8aed284cfb3d9ac80a9",
+      "fingerprint": "72f2eca76902dda5ac25b366a4f2fe89edc313276d752d46f2051e0071815ce0",
       "snapshot": {
-        ".bumpy/coded-bad-request-input.md": "e8ec85f5fdbce61faac91699c7c189b8e9c6934aa8fa51721b15ea6f42758254"
+        ".bumpy/coded-bad-request-input.md": null
       },
-      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
-      "outcome": "updated",
-      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/coded-bad-request-input.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: .bumpy/coded-bad-request-input.md at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:.bumpy/coded-transport-errors.md": {
-      "fingerprint": "61cc67de2ec4d78f4c6fbe2f3dabaea4d71fc38e480964754e031e6d3d6ae687",
+      "fingerprint": "86095b342d234ebb9b57224916e57843a6ef447fa9e5db8ccf4d9201bd22a2a6",
       "snapshot": {
-        ".bumpy/coded-transport-errors.md": "9db99a5e1b7e7d89cb414f94c85cd775a1546cee2393a81ea15c3fb0967e056d"
+        ".bumpy/coded-transport-errors.md": null
       },
-      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
-      "outcome": "updated",
-      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/coded-transport-errors.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: .bumpy/coded-transport-errors.md at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
       ]
     },
     "source:packages/tests/unit/core/prepareRequest.test.ts": {
