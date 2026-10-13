@@ -2382,15 +2382,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/trackStream.ts": {
-      "fingerprint": "1f3efef7063ac7bd8f485b619c0791a41a8923da210d52fe8bf8fc937e30d6f1",
+      "fingerprint": "3f80f5e6a78cb0e2929d0d5023b13c36c73b94160c6573f4810b2d1f551f0b70",
       "snapshot": {
-        "packages/lib/src/lib/helpers/trackStream.ts": "8b3c37be367aa90e5d5ee7273f168d26f7c8f50343283f78df3ef42a6c0c911c"
+        "packages/lib/src/lib/helpers/trackStream.ts": "444506fc493a4a6ef777c41fbf7202dfe6b255278aa6adc1c04563cb5388e72c"
       },
-      "head": "23213e44dbd985b44c9cd337f9e7cb84074f3bdd",
-      "outcome": "updated",
-      "reason": "configure-requests documents that timeout and signal stay active for responseType stream until the body is read or cancelled (#169); other changes are adapter internals, tests, docs and bump files with no skill guidance impact",
+      "head": "12f00f571b1d09b579b3142ea82e2498e9357060",
+      "outcome": "no-change",
+      "reason": "#254: trackStream cancels the source directly; the configure-requests skill does not teach stream cancel internals.",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/trackStream.ts at 691c3ccb35491168d20ddf36af8166cc86e4f3ee"
+        "Changed: packages/lib/src/lib/helpers/trackStream.ts at 12f00f571b1d09b579b3142ea82e2498e9357060"
       ]
     },
     "source:packages/lib/src/lib/helpers/validator.ts": {
@@ -3763,15 +3763,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetchCleanup.test.ts": {
-      "fingerprint": "c62238341db31aaa296e593ef1851d6d9d1bf0d39d814d61d15eec3b78aeecdc",
+      "fingerprint": "ca0f869b006393ee4ec5760d2c9ed0a773636a1d13bd3472c667b49c1c418df2",
       "snapshot": {
-        "packages/tests/unit/adapters/fetchCleanup.test.ts": "7484c5394b21cfcb5d100fb935d33406abd06d3e258980d75455905e31a25b47"
+        "packages/tests/unit/adapters/fetchCleanup.test.ts": "f55f86b234f28c4a280aa6d0fcd300c66c5cde38dbab35730653f3c4fa99618a"
       },
-      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
-      "outcome": "updated",
-      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
+      "head": "12f00f571b1d09b579b3142ea82e2498e9357060",
+      "outcome": "no-change",
+      "reason": "#254: trackStream cancels the source directly; the configure-requests skill does not teach stream cancel internals.",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetchCleanup.test.ts at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
+        "Changed: packages/tests/unit/adapters/fetchCleanup.test.ts at 12f00f571b1d09b579b3142ea82e2498e9357060"
       ]
     },
     "source:.bumpy/browser-upload-progress.md": {
@@ -4912,6 +4912,18 @@
       "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
       "evidence": [
         "Changed: packages/tests/smoke/esm/tests/plugins.smoke.test.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
+      ]
+    },
+    "source:.bumpy/stream-cancel-hang.md": {
+      "fingerprint": "08a165da03b0814f8be0e02872753d71f1e782a850b77339d6dc54b59028c7a2",
+      "snapshot": {
+        ".bumpy/stream-cancel-hang.md": "87891747c6fdf8666e7a13cfa366b0864c07952f37e97e63ba5e02eed2f956a3"
+      },
+      "head": "12f00f571b1d09b579b3142ea82e2498e9357060",
+      "outcome": "no-change",
+      "reason": "#254: trackStream cancels the source directly; the configure-requests skill does not teach stream cancel internals.",
+      "evidence": [
+        "Changed: .bumpy/stream-cancel-hang.md at 12f00f571b1d09b579b3142ea82e2498e9357060"
       ]
     }
   }
