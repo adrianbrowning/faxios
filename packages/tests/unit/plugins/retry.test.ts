@@ -371,6 +371,35 @@ describe("plugins::retry", () => {
       await request;
     });
 
+    it.each([ "1.5", "-1", "+5", "3,", "12/25", "1 2", "garbage", "2026-01-01T00:00:00Z", "Thu, 01 Jan 2026 00:00:03 UTC" ])(
+      "waits the computed backoff when Retry-After is %j",
+      async value => {
+        vi.setSystemTime(new Date("2026-01-01T00:00:00Z"));
+        const { fetch, calls } = scriptedFetch([{ status: 503, headers: { "Retry-After": value } }, 200 ]);
+        const api = faxios.create({ env: { fetch } }).use(retry({ delay: 50, jitter: "none" }));
+
+        const request = api.get(URL);
+        assert.strictEqual(await callsAfter(calls, 49), 1);
+        assert.strictEqual(await callsAfter(calls, 1), 2);
+        await request;
+      }
+    );
+
+    it.each([
+      [ "IMF-fixdate", "Thu, 01 Jan 2026 00:00:03 GMT" ],
+      [ "RFC 850", "Thursday, 01-Jan-26 00:00:03 GMT" ],
+      [ "asctime", "Thu Jan  1 00:00:03 2026" ],
+    ])("waits until a Retry-After %s date", async (_form, value) => {
+      vi.setSystemTime(new Date("2026-01-01T00:00:00Z"));
+      const { fetch, calls } = scriptedFetch([{ status: 503, headers: { "Retry-After": value } }, 200 ]);
+      const api = faxios.create({ env: { fetch } }).use(retry({ delay: 10, jitter: "none" }));
+
+      const request = api.get(URL);
+      assert.strictEqual(await callsAfter(calls, 2999), 1);
+      assert.strictEqual(await callsAfter(calls, 1), 2);
+      await request;
+    });
+
     it("rethrows without retrying when Retry-After is past maxRetryAfter (default 5 minutes)", async () => {
       const tooLong = scriptedFetch([{ status: 503, headers: { "Retry-After": "301" } }, 200 ]);
       const allowed = scriptedFetch([{ status: 503, headers: { "Retry-After": "301" } }, 200 ]);

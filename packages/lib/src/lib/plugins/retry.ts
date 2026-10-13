@@ -115,6 +115,18 @@ function retryByDefault(error: unknown, statuses: ReadonlyArray<number>): boolea
   return status !== undefined && statuses.includes(status);
 }
 
+// The three HTTP-date forms RFC 9110 §5.6.7 allows: IMF-fixdate, RFC 850 and asctime. Date.parse
+// alone accepts far more ("1.5", "-1", "12/25"), which would read as a past date and retry at once.
+const DAY = "(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)";
+const LONG_DAY = "(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)";
+const MONTH = "(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)";
+const TIME = "\\d{2}:\\d{2}:\\d{2}";
+const HTTP_DATE = new RegExp(
+  `^(?:${DAY}, \\d{2} ${MONTH} \\d{4} ${TIME} GMT`
+  + `|${LONG_DAY}, \\d{2}-${MONTH}-\\d{2} ${TIME} GMT`
+  + `|${DAY} ${MONTH} [ \\d]\\d ${TIME} \\d{4})$`
+);
+
 // The wait a 429 or 503 asks for, in milliseconds: delay-seconds or an HTTP date (a past date
 // means now). undefined when there's no usable header, so the computed backoff applies.
 function retryAfterMs(error: unknown): number | undefined {
@@ -123,7 +135,9 @@ function retryAfterMs(error: unknown): number | undefined {
   if (typeof value !== "string") return undefined;
   const trimmed = value.trim();
   if (/^\d+$/.test(trimmed)) return Number(trimmed) * 1000;
-  const date = Date.parse(trimmed);
+  if (!HTTP_DATE.test(trimmed)) return undefined;
+  // asctime has no zone; RFC 9110 says it's UTC, but Date.parse would read it as local time.
+  const date = Date.parse(/GMT$/.test(trimmed) ? trimmed : `${trimmed} GMT`);
   return Number.isNaN(date) ? undefined : Math.max(0, date - Date.now());
 }
 
