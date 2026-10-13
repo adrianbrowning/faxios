@@ -3,20 +3,20 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "2425deca423f367fdbc7d2fdbb0af2a49848ccebd00eaaf43a6312322b0f2ad2",
+      "fingerprint": "b0c40e345f65057286994224e9e46034b850c5580cca5fbc2adf5c536ddfc407",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "1e788aa494ab1edcf63f1f8439936665afdf005ecc47253ba4d26885a2ad3535",
+        "MIGRATION_GUIDE.md": "c1ad4b4b502f5eb5c9b5cc969e3410f68f4e637951681f119a43087abf2f0c31",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
         "packages/lib/skills/configure-requests/SKILL.md": "955875cad52b30fcbe5b3b68c21f572997fef841af688f3785cee82eeb7cc5cd",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "1cd413182f1603fc615a3c0e0dbc32043723545450a2d70281030e812516ba16",
         "packages/lib/skills/configure-requests/references/plugins.md": "914e94cc6d724c16a4d752c8168a342cca82dffa12a087253558ab6c929ee5b0",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "82181ff21c458c30cb00bb80b71c1afa22e117aa761613c396a6896709a58c77",
+        "packages/lib/src/lib/adapters/fetch.ts": "675d7138127d4428f8fd1693642b76b07df242a654218b4fff3833e80d10f8cc",
         "packages/lib/src/lib/core/Faxios.ts": "140befadd92d2cb9d4a00c1a4cfeeedcc313d1a2e035c56780aa21d8e07730e3",
         "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "d932638959b9c35d830ef6a7e01f9fe29d5ae37c365a07fd1af715bc755b87ef",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "6698a4baef5c1beaf8f819fd02ff0419e58be3cb1299e6bd44d5b95c6fb24181",
         "packages/lib/src/lib/core/mergeConfig.ts": "44c5417867eca00b465e1cbfbcee2104162d5e82705b15082b9be8ba28930f8a",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
@@ -25,7 +25,7 @@
         "packages/lib/src/lib/plugins/definePlugin.ts": "115bfafc88f311a53f58c0b41262b591e7005c66ab73173d1a3312b06a51823c",
         "packages/lib/src/lib/plugins/retry.ts": "1b3b817cc2fe27c05173ecd3643e48ca538bcd1bac5d0a29f3c0431388f9c1a4",
         "packages/lib/src/lib/plugins/timing.ts": "621b09295c3cbfd49e981c33458fd74fe068aec58829c52cd94f6dadf3e8a1ee",
-        "packages/lib/src/lib/types.ts": "bc12f73ad9b7f628e3e61a74090f2236401d2cd6409d5dad9c60bbb36900bb3d",
+        "packages/lib/src/lib/types.ts": "64ffd3643342b464350262b5f2d9208805220b85e66a226e9d70947c3204fed0",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "f5886d5962182e662a08fc96bbf896fbaa27dc750182d41b122dfe2ffe94985e",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
@@ -33,17 +33,17 @@
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "2c8801466e565b919c13e48e8993cb664458c3e9ac17cc1fdcbce8c0574de720"
       },
-      "head": "a07985125c27956a1d106702007aa65f535066b6",
-      "outcome": "updated",
-      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/mergeConfig.ts at a07985125c27956a1d106702007aa65f535066b6"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/types.ts at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "a598a99fb90fcc737b108deca3cdf39982b005f20c82905a5b689a5a7bc16e2b",
+      "fingerprint": "b6ac3945d5ef6308582eac83f92a16867ae3650014f34f09cf8f899a9b21262b",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "1e788aa494ab1edcf63f1f8439936665afdf005ecc47253ba4d26885a2ad3535",
+        "MIGRATION_GUIDE.md": "c1ad4b4b502f5eb5c9b5cc969e3410f68f4e637951681f119a43087abf2f0c31",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "f241f53bac85e4278edf375259279d5fe3ea166d6f3795002043371433225997",
@@ -52,12 +52,12 @@
         "packages/lib/skills/configure-requests/references/axios-differences.md": "1cd413182f1603fc615a3c0e0dbc32043723545450a2d70281030e812516ba16",
         "packages/lib/skills/configure-requests/references/plugins.md": "914e94cc6d724c16a4d752c8168a342cca82dffa12a087253558ab6c929ee5b0",
         "packages/lib/src/index.ts": "cd4a834891510c6bb0ebf832956857779b10096364fe85ac4b04e0a0b5ebcf34",
-        "packages/lib/src/lib/adapters/fetch.ts": "82181ff21c458c30cb00bb80b71c1afa22e117aa761613c396a6896709a58c77",
+        "packages/lib/src/lib/adapters/fetch.ts": "675d7138127d4428f8fd1693642b76b07df242a654218b4fff3833e80d10f8cc",
         "packages/lib/src/lib/core/Faxios.ts": "140befadd92d2cb9d4a00c1a4cfeeedcc313d1a2e035c56780aa21d8e07730e3",
         "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "8933b37690f8e7a35f0692cfae5b9e168021f6f1d37d1bd4d2db5513b9a6bdc2",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "d932638959b9c35d830ef6a7e01f9fe29d5ae37c365a07fd1af715bc755b87ef",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "6698a4baef5c1beaf8f819fd02ff0419e58be3cb1299e6bd44d5b95c6fb24181",
         "packages/lib/src/lib/core/mergeConfig.ts": "44c5417867eca00b465e1cbfbcee2104162d5e82705b15082b9be8ba28930f8a",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "579b9b350ff7439a99cd64fabd7342793f74db17908da846df7877354acc113c",
@@ -66,7 +66,7 @@
         "packages/lib/src/lib/plugins/definePlugin.ts": "115bfafc88f311a53f58c0b41262b591e7005c66ab73173d1a3312b06a51823c",
         "packages/lib/src/lib/plugins/retry.ts": "1b3b817cc2fe27c05173ecd3643e48ca538bcd1bac5d0a29f3c0431388f9c1a4",
         "packages/lib/src/lib/plugins/timing.ts": "621b09295c3cbfd49e981c33458fd74fe068aec58829c52cd94f6dadf3e8a1ee",
-        "packages/lib/src/lib/types.ts": "bc12f73ad9b7f628e3e61a74090f2236401d2cd6409d5dad9c60bbb36900bb3d",
+        "packages/lib/src/lib/types.ts": "64ffd3643342b464350262b5f2d9208805220b85e66a226e9d70947c3204fed0",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "f5886d5962182e662a08fc96bbf896fbaa27dc750182d41b122dfe2ffe94985e",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
@@ -74,11 +74,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "2c8801466e565b919c13e48e8993cb664458c3e9ac17cc1fdcbce8c0574de720"
       },
-      "head": "a07985125c27956a1d106702007aa65f535066b6",
-      "outcome": "updated",
-      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/mergeConfig.ts at a07985125c27956a1d106702007aa65f535066b6"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/types.ts at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:knip.json": {
@@ -170,15 +170,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "7bda8fe0f88c52e0026eb0587408309cc7e77b9c39aed7567f16a87d7f829314",
+      "fingerprint": "cf3be1cd025182f9d2770868f142ea4d089360a39aadfcc11bebeb40d562df4f",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "ab976b07258de80dddb299f137568fddc5304503262b6b53eb5cc5e13ae48cf6"
+        "packages/docs/pages/advanced/api-reference.md": "cb7702cb8c4e5c95d5db669797482685b8173ba347d28270b1543d7050720f44"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
-      "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/api-reference.md at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: packages/docs/pages/advanced/api-reference.md at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
@@ -278,15 +278,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "f9091c060bd1b7483b487098b90642235843e465a469625be86dd841a31bed11",
+      "fingerprint": "951306f9ce0cff0acf5bac2678ffbaca3b2c90479741ab467876e380d527aee4",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "c2c701fe082d9c289148b83ccbd03692f68d9c09abd85f3bcf3f1427b3d80526"
+        "packages/docs/pages/advanced/request-config.md": "e41f989fb9e249f54a5e576dd9edf61115b7a7905af7d9006faefd06205cff43"
       },
-      "head": "a07985125c27956a1d106702007aa65f535066b6",
-      "outcome": "updated",
-      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at a07985125c27956a1d106702007aa65f535066b6"
+        "Changed: packages/docs/pages/advanced/request-config.md at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -434,27 +434,27 @@
       ]
     },
     "source:packages/tests/browser/headers.browser.test.ts": {
-      "fingerprint": "9829d4f6bbfc714c56350d40145fca948e347e1a660ef4df47a1fc6a3c32416a",
+      "fingerprint": "ce167b446d437d447293a780875baeff7eb59b2817da4664413bf05abaa01b0b",
       "snapshot": {
-        "packages/tests/browser/headers.browser.test.ts": "ec56478293dd2e9f48121630e88f5fa77360d3efb1abf543e9cb554059f16d03"
+        "packages/tests/browser/headers.browser.test.ts": "8014101c7170646fc9a417a12cd77658c1528beae06a7c09e61dac50667629ac"
       },
-      "head": "0c6a347b90800ae2b39744daedbc632b7976d762",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
       "outcome": "no-change",
-      "reason": "Fixes typed-array body bytes and drops User-Agent in browsers; the skill and planning records don't describe either, so their guidance is unchanged.",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/tests/browser/headers.browser.test.ts at 0c6a347b90800ae2b39744daedbc632b7976d762"
+        "Changed: packages/tests/browser/headers.browser.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:packages/tests/unit/adapters/fetch.test.ts": {
-      "fingerprint": "630eb993398d7cafe2803e3f6d3a2731813fd29571acbdf6a51a9688504f63fb",
+      "fingerprint": "bbb89bfedb3f4ba81a9904faf90abc4811d52ef557364285ed20411ceb439620",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch.test.ts": "443073286b41a34ee4dfeaa6da617b05fb3a77901f571cf87afda178debb31f5"
+        "packages/tests/unit/adapters/fetch.test.ts": "74069f42db5a882742d879e209c106251dd87d62e77b1f03584aeaad79e8d136"
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
-      "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch.test.ts at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: packages/tests/unit/adapters/fetch.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:CHANGELOG.md": {
@@ -2208,15 +2208,15 @@
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
-      "fingerprint": "e0efb00e154d876bcf44e4eaba0973a48e89611a78b00f1cd000bfb1f8ef915f",
+      "fingerprint": "2abaf99547cb2fc8b06262eef8b278cca07cca0a377871445a9746293a0b548b",
       "snapshot": {
-        "packages/lib/src/lib/adapters/fetch-helpers.ts": "b5a52fb13754eb490d345f23710e19172f0b8fc43f4ae46009da01ede3f29c95"
+        "packages/lib/src/lib/adapters/fetch-helpers.ts": "f151553efa20cc8bc54a6b8d7e4e0e695c45be057f6174a99f5a4d3d1fea2546"
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
-      "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:packages/lib/src/lib/cancel/CanceledError.ts": {
@@ -2244,15 +2244,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
-      "fingerprint": "bd71ef7926d677aac5ffc89bcd43a978f73c445caedd97ffeb6702bc0fddbf2a",
+      "fingerprint": "7b90be47b28ab8da896990ea1e7c2911e9dcb44b73c2cdf1fda2d3b8cdb48557",
       "snapshot": {
-        "packages/lib/src/lib/core/prepareRequest.ts": "431100de298a57bf0875ec8679d5e750da2a800e81685e48a5c00832aac045ed"
+        "packages/lib/src/lib/core/prepareRequest.ts": "47dc3c0659672af9c7c21addcbab22976cc8cd0d24151bd071602bb3dc8745fb"
       },
-      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
-      "outcome": "updated",
-      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:packages/lib/src/lib/core/transformData.ts": {
@@ -2307,15 +2307,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/formDataToJSON.ts": {
-      "fingerprint": "830d793f5f2dce8941120af1b807d8e9ee832e882b601131ee64f9ce0b900583",
+      "fingerprint": "99a35ebf78cb1c80a66f2f50261d5c4c96eecfffd9f1c2b3190d39b7262eb8b1",
       "snapshot": {
-        "packages/lib/src/lib/helpers/formDataToJSON.ts": "aa796d271703d093115043021bf91da12f0d3d419960f51663dc9cab0f3bedad"
+        "packages/lib/src/lib/helpers/formDataToJSON.ts": "4e6274cc3d0dc2e7ddaba163557013c714a742e67a421f374c1657ba8e9e4529"
       },
-      "head": "0d843fe0905888352e41d7ba60865740164da2e3",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
       "outcome": "no-change",
-      "reason": "formDataToJSON field-name tokenizing is not documented by the configure-requests skill",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/formDataToJSON.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/lib/src/lib/helpers/formDataToJSON.ts at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:packages/lib/src/lib/helpers/parseHeaders.ts": {
@@ -2819,15 +2819,15 @@
       ]
     },
     "source:packages/tests/unit/core/dispatchRequest.test.ts": {
-      "fingerprint": "a7a98d78927e32fe0682d70c31489595e80de0907375b3eff00ec3ca4742b880",
+      "fingerprint": "30ab1536075147da6e82a61e5c540c162367c75da029328060184b780071d102",
       "snapshot": {
-        "packages/tests/unit/core/dispatchRequest.test.ts": "1de68d80e2171e81890086c9a3b407e40f97c7cb971bc2c9720940498e8c2efa"
+        "packages/tests/unit/core/dispatchRequest.test.ts": "7542816775fed3481096f7a025b9f557d1cb48e753bf6422ba524543ed231ae8"
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
-      "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/tests/unit/core/dispatchRequest.test.ts at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: packages/tests/unit/core/dispatchRequest.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:packages/tests/unit/core/envFormData.test.ts": {
@@ -2981,15 +2981,15 @@
       ]
     },
     "source:packages/tests/unit/helpers/formDataToJSON.test.ts": {
-      "fingerprint": "97b8de46ff01a57dc5e7a2735fe46113458957bb3370e0c545c567de2c9aa367",
+      "fingerprint": "386864f1b7f6c7faefc4fa2b1994aafad5923a23612ab7bfc267a84aefb74a06",
       "snapshot": {
-        "packages/tests/unit/helpers/formDataToJSON.test.ts": "62775604820c915d259f7ce13122cf77fa4943b136c1c60cdace4d1a6f826a77"
+        "packages/tests/unit/helpers/formDataToJSON.test.ts": "bb25e13f022de0198b6e6aaa4bdc111cd5e00b2a7288e2fb9b7251740c434876"
       },
-      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
       "outcome": "no-change",
-      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/tests/unit/helpers/formDataToJSON.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
+        "Changed: packages/tests/unit/helpers/formDataToJSON.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:packages/tests/unit/helpers/isAbsoluteURL.test.ts": {
@@ -3418,15 +3418,15 @@
       ]
     },
     "source:packages/docs/pages/misc/security.md": {
-      "fingerprint": "afc41a45e27870ddcd344e30f286cc1a905c5cd118af1c642954782a6f489293",
+      "fingerprint": "c1ed7f296d81939d1bea573d87af198b31c466cc410fc2cf13923ec42982b6d8",
       "snapshot": {
-        "packages/docs/pages/misc/security.md": "93cd7e9a239a44771a90b46b2681156c27c5ca32a7daab9fc326296c7a8be7be"
+        "packages/docs/pages/misc/security.md": "286a701cdfd02a1667c4115268e1215463d893ac869701d52c1bf73f8bb54f51"
       },
-      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
-      "outcome": "updated",
-      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/docs/pages/misc/security.md at f8e65308b747dbb46d674597caabd55029175fd4"
+        "Changed: packages/docs/pages/misc/security.md at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:packages/examples/README.md": {
@@ -3610,27 +3610,27 @@
       ]
     },
     "source:packages/docs/pages/advanced/file-posting.md": {
-      "fingerprint": "c2b628f0e57ed07bf9776eba16cca2857871b5c4d3e0fbf4b73ef19407053125",
+      "fingerprint": "cd3d90a5903e31cb24334f6eacb600dbf61b8faeac3b43168cc8d3f546524a22",
       "snapshot": {
-        "packages/docs/pages/advanced/file-posting.md": "4b2294c9bfadb87e4722457fe953e21be9ce6d928f2eca43290b89e972ab9701"
+        "packages/docs/pages/advanced/file-posting.md": "3894e3904f04941f7b1273f3efaadf48b05953c7122dc70f8cfc87a98138bbea"
       },
-      "head": "3f379a4c81c5a5f1a2456dcec19e8f6bcdbfd606",
-      "outcome": "updated",
-      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/file-posting.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/docs/pages/advanced/file-posting.md at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:packages/tests/unit/requestBodyContentType.test.ts": {
-      "fingerprint": "6db984565f0ae19ee1dfccea35d4a3fafb056c1bf5e37450e0cd22391c7e99d0",
+      "fingerprint": "d931f953005969420e2bd8b4daa97852358d735279affd55051754f3cbd3f0f6",
       "snapshot": {
-        "packages/tests/unit/requestBodyContentType.test.ts": "4836324d17eee1dcf7f7e6242af222f062e5580e3f1f93621fe61dd54efd462d"
+        "packages/tests/unit/requestBodyContentType.test.ts": "b41dd0f1845c42254db6e415815c9d72de0eb9bc115cb8cbe79e67f33038f5f2"
       },
-      "head": "7acdc6538be649cd270d8fc61781c7f0b1caac78",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
       "outcome": "no-change",
-      "reason": "Skill does not document request-body Content-Type defaults; change only stops the urlencoded fallback for binary and stream bodies",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/tests/unit/requestBodyContentType.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/tests/unit/requestBodyContentType.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:.bumpy/toformdata-per-call-state.md": {
@@ -3814,15 +3814,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/multipart-form-data-format.md": {
-      "fingerprint": "5d8a38384a07705d1deb03815555e2cbb7ab932f48a48e932c1d6c094fb3c644",
+      "fingerprint": "7be695bc66bf748061752d66226a22147ccb38c1b1596f54116f0d21cca6ff05",
       "snapshot": {
-        "packages/docs/pages/advanced/multipart-form-data-format.md": "08f7c7c94e55e158fb2e87c97e7529bf872341b05a4298fb3dbb3e3ba2ed014d"
+        "packages/docs/pages/advanced/multipart-form-data-format.md": "c2b621ecc54bd0284770d888ba28c143a1610fc752f7c475b368790e3d0bc4ac"
       },
-      "head": "7809b9509ae1813a2eda607ce7d0593d742517cd",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
       "outcome": "no-change",
-      "reason": "Docs-only fix; the skill does not suggest the form-data package as a body",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/multipart-form-data-format.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/docs/pages/advanced/multipart-form-data-format.md at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:.bumpy/formdatatojson-unicode-names.md": {
@@ -3838,15 +3838,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/html-form-processing.md": {
-      "fingerprint": "dad5d13c1c3ec70b845b0e55691b0bddcac6ca50e4bf6fafe42a1b60d7c9dab2",
+      "fingerprint": "0492d9c94cc146edecce56ccce5f084a258192171e739653ae376a1fc7b172ee",
       "snapshot": {
-        "packages/docs/pages/advanced/html-form-processing.md": "ad55218b6fad0226f89dd61c5199d9bfdfb71a9e9df663c535bf262b1cb058bf"
+        "packages/docs/pages/advanced/html-form-processing.md": "bf643aaf55ecf301100b06e87efb8c3f9baa2bf00088dba33d3cff6a07a2f955"
       },
-      "head": "0d843fe0905888352e41d7ba60865740164da2e3",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
       "outcome": "no-change",
-      "reason": "formDataToJSON field-name tokenizing is not documented by the configure-requests skill",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/html-form-processing.md at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/docs/pages/advanced/html-form-processing.md at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:.bumpy/getsetcookie-always-array.md": {
@@ -4162,15 +4162,15 @@
       ]
     },
     "source:packages/tests/unit/core/prepareRequest.test.ts": {
-      "fingerprint": "e7634ffa4a038bb556b4d910011bbbf151b997e318c10627da856b77c400984d",
+      "fingerprint": "2c9a4a48581e9e98d230257ac9aeb24cd60345ed4cf1e8f09e214f2be407835b",
       "snapshot": {
-        "packages/tests/unit/core/prepareRequest.test.ts": "9438901101ed6c8ac80ba55e9670814381b683013e80d3683491d78237558258"
+        "packages/tests/unit/core/prepareRequest.test.ts": "c3b128b6e6c213f01777c40db77b4f819f2bb851f49c949d82e75664b8cc86e0"
       },
-      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
       "outcome": "no-change",
-      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/tests/unit/core/prepareRequest.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
+        "Changed: packages/tests/unit/core/prepareRequest.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:packages/tests/unit/core/requestInput.test.ts": {
@@ -4426,15 +4426,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/assertRequestConfig.ts": {
-      "fingerprint": "7bb1a74293187cb61eae0468ff2b3d58e804457d0220a2c9e7cdae6cd0ac5ae5",
+      "fingerprint": "6413972ca8c68fe96a38c4365311303fe03170313def590a4b9673cd3a7dc05d",
       "snapshot": {
-        "packages/lib/src/lib/core/assertRequestConfig.ts": "fb50b98e058180e50b717cc6e88a32092cea2af2566b022ce3a9b85270ce3d8b"
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "a064040307b8a973361a02be357f39e90fd01c5106b5c6de747e47185677822a"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
-      "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/assertRequestConfig.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: packages/lib/src/lib/core/assertRequestConfig.ts at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:packages/tests/browser/xsrf.browser.test.ts": {
@@ -4546,15 +4546,15 @@
       ]
     },
     "source:packages/tests/unit/core/unknownConfigKeys.test.ts": {
-      "fingerprint": "75716e7cb6e3924894cbdee274c544f0798bc31c78f6f526c4ec3f4faaf9dce3",
+      "fingerprint": "4eab15b6fb1de5f5b4ffb889940306bf8ec064f7488b1c84059a3c6c169b0305",
       "snapshot": {
-        "packages/tests/unit/core/unknownConfigKeys.test.ts": "b62c321c067466aacb0a77dd5c4d723375cd3606daa13ab21e19e4f8916849df"
+        "packages/tests/unit/core/unknownConfigKeys.test.ts": "4a6126caf34bbbeb619a55a4bb66b6fc00f34548b59870027ec6848410f5d146"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
-      "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
-        "Changed: packages/tests/unit/core/unknownConfigKeys.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: packages/tests/unit/core/unknownConfigKeys.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     },
     "source:.bumpy/config-merge-precedence.md": {
@@ -4591,6 +4591,78 @@
       "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
       "evidence": [
         "Changed: packages/tests/unit/core/mergePrecedence.test.ts at a07985125c27956a1d106702007aa65f535066b6"
+      ]
+    },
+    "source:.bumpy/formdata-content-type-rule.md": {
+      "fingerprint": "de9f8cb15715573f3aa271a74ea4540fac7d348636b7eea20a7d5c8be7adfb9f",
+      "snapshot": {
+        ".bumpy/formdata-content-type-rule.md": "95372e44e68ec342d5942c59a7f045eca727908d3e89f77d407767b6ba993c9a"
+      },
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "evidence": [
+        "Changed: .bumpy/formdata-content-type-rule.md at 35099193395c2d4372a08d722867483dc192f54d"
+      ]
+    },
+    "source:.bumpy/formtojson-split-dots-brackets.md": {
+      "fingerprint": "7093c06b5ea108309c7012e2912b2913a8b2b27124045736c91acc9392498a21",
+      "snapshot": {
+        ".bumpy/formtojson-split-dots-brackets.md": "3d727020602d68159be27eebb2e01c00644074846b72f673e423e5696224bdc6"
+      },
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "evidence": [
+        "Changed: .bumpy/formtojson-split-dots-brackets.md at 35099193395c2d4372a08d722867483dc192f54d"
+      ]
+    },
+    "source:.bumpy/reject-form-data-package-bodies.md": {
+      "fingerprint": "93088bd2bc60c55aff8d1c3b187b3f3fb8595a1239b084c7e928da46f10de325",
+      "snapshot": {
+        ".bumpy/reject-form-data-package-bodies.md": "900cb3f2e96e08a381ecb0cbd1906633687ddcbc39d5a027ffcbd4be55140395"
+      },
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "evidence": [
+        "Changed: .bumpy/reject-form-data-package-bodies.md at 35099193395c2d4372a08d722867483dc192f54d"
+      ]
+    },
+    "source:.bumpy/string-body-content-type.md": {
+      "fingerprint": "833e88fc5e0e52a1a5e796174807710036576513fcf71231d0080481bd0d37e4",
+      "snapshot": {
+        ".bumpy/string-body-content-type.md": "9d4f5d7bded85c29260284909264c8b42592525f4a5cf02d80755655ccd9c01f"
+      },
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "evidence": [
+        "Changed: .bumpy/string-body-content-type.md at 35099193395c2d4372a08d722867483dc192f54d"
+      ]
+    },
+    "source:packages/lib/src/lib/core/resolveBodyContentType.ts": {
+      "fingerprint": "239ec05edd2b95f45311ecb1b67220da28921cb304f5feb9eb285570828e7feb",
+      "snapshot": {
+        "packages/lib/src/lib/core/resolveBodyContentType.ts": "61f6f745aae71bd0bbe797d1572c8d7a75d0510891c53fbbe974c3e14a612f98"
+      },
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/core/resolveBodyContentType.ts at 35099193395c2d4372a08d722867483dc192f54d"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch-pure.test.ts": {
+      "fingerprint": "7928a43e8952aa0add3b5a212d436b49b31c7ddf20ec0c1016096bb0c6365012",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch-pure.test.ts": "f9861a76c541ed0543c2d840cf7113dce4d6d2014f67914639d828b3e2a8da09"
+      },
+      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "outcome": "no-change",
+      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch-pure.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
       ]
     }
   }

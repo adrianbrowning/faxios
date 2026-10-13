@@ -2,6 +2,7 @@ import assertTimeout from "../core/assertTimeout.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import prepareRequest from "../core/prepareRequest.js";
+import resolveBodyContentType from "../core/resolveBodyContentType.js";
 import { settle } from "../core/settle.js";
 import { VERSION } from "../env/data.js";
 import composeSignals from "../helpers/composeSignals.js";
@@ -19,7 +20,7 @@ import type {
   InternalFaxiosRequestConfig
 } from "../types.js";
 import utils from "../utils.js";
-import { checkDeclaredContentLength, checkMaterializedSize, cleanFormDataContentType, encodeBodyIfNeeded, handleFetchCaughtError } from "./fetch-helpers.js";
+import { checkDeclaredContentLength, checkMaterializedSize, encodeStringWithoutContentType, handleFetchCaughtError } from "./fetch-helpers.js";
 import type { ComposedSignal, FetchStage, PendingBodyErrorRef } from "./fetch-helpers.js";
 
 // btoa is a global in Node 16+ and browsers; accessed via globalThis for no-DOM lib compat
@@ -249,7 +250,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     for await (const chunk of source) yield typeof chunk === "string" ? await encodeText(chunk) : chunk;
   }
   const toWebStream = (body: unknown): unknown =>
-    (streamFrom && utils.isStream(body) && !utils.isFormData(body)
+    (streamFrom && utils.isStream(body)
       ? streamFrom(toByteChunks(body as AsyncIterable<unknown>))
       : body);
 
@@ -472,18 +473,10 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
   const applyUploadProgress = (
     _request: AnyRequest,
     data: unknown,
-    headers: FaxiosRequestHeaders,
     requestContentLength: number | undefined,
     onUploadProgress: unknown,
     _trackStream: (stream: unknown, onProgress?: (bytes: number) => void, flush?: () => void) => unknown
   ): unknown => {
-    let contentTypeHeader: null | string;
-    if (
-      utils.isFormData(data) &&
-      (contentTypeHeader = _request.headers.get("content-type"))
-    ) {
-      headers.setContentType(contentTypeHeader);
-    }
     if (_request.body) {
       const [ onProgress, flush ] = onUploadProgress
         ? progressEventDecorator(
@@ -515,7 +508,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     config: InternalFaxiosRequestConfig,
     request: unknown,
     pendingBodyErrorRef: PendingBodyErrorRef
-  ): Promise<{ data: unknown; requestContentLength: number | undefined; }> => {
+  ): Promise<{ data: unknown; encodedContentType: null | string; requestContentLength: number | undefined; }> => {
     // Browsers can't be given a stream body for upload progress: Chromium sends one only over
     // HTTP/2 or later and WebKit not at all, so the upload would fail. onUploadProgress isn't
     // called there (#209).
@@ -553,6 +546,8 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
         }
       );
 
+    // The Content-Type the Request derived when it encoded the body; fetch only sees the stream.
+    let encodedContentType: null | string = null;
     if (
       supportsRequestStream &&
       method !== "get" &&
@@ -572,7 +567,8 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
           body: data,
           duplex: "half",
         }) as AnyRequest;
-        data = applyUploadProgress(_request, data, headers, requestContentLength, uploadProgress, _trackStream);
+        encodedContentType = _request.headers.get("content-type");
+        data = applyUploadProgress(_request, data, requestContentLength, uploadProgress, _trackStream);
       }
     }
     else if (
@@ -599,7 +595,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       );
     }
 
-    return { data, requestContentLength };
+    return { data, encodedContentType, requestContentLength };
   };
 
   // Wrap the response body stream with download progress tracking and maxContentLength enforcement.
@@ -759,7 +755,9 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       // it; its size is never trusted from a caller-declared Content-Length.
       const mustEnforceStreamBody = hasMaxBodyLength && isCountedWhileSent(data);
 
-      ({ data } = await buildUploadStream(
+      const preparedBody = data;
+      let encodedContentType: null | string;
+      ({ data, encodedContentType } = await buildUploadStream(
         data,
         url,
         method!,
@@ -783,16 +781,13 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
         Request != null &&
         "credentials" in (Request.prototype as object);
 
-      cleanFormDataContentType(data, headers);
+      resolveBodyContentType(preparedBody, headers, encodedContentType);
 
       applyDefaultUserAgent(headers);
 
       const serializedHeaders = toByteStringHeaderObject(headers.normalize(false));
 
-      // Browsers auto-add "text/plain;charset=UTF-8" for string bodies when no Content-Type is set.
-      // Encoding as Uint8Array prevents the browser from injecting a content-type.
-      // Case-insensitive check: toByteStringHeaderObject may normalize to lowercase.
-      data = toWebStream(await encodeBodyIfNeeded(data, serializedHeaders, encodeText));
+      data = toWebStream(await encodeStringWithoutContentType(data, headers, encodeText));
 
       const resolvedOptions = initFromFetchOptions(fetchOptions, envFetch);
       resolvedOptions["signal"] = composedSignal;

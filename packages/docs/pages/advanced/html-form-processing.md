@@ -26,7 +26,7 @@ An example of a form that is valid and can be submitted by the above code is:
 <form id="htmlForm">
   <input type="text" name="foo" value="1" />
   <input type="text" name="deep.prop" value="2" />
-  <input type="text" name="deep prop spaced" value="3" />
+  <input type="text" name="first-name" value="3" />
   <input type="text" name="baz" value="4" />
   <input type="text" name="baz" value="5" />
 
@@ -46,10 +46,9 @@ The above form will be submitted as:
 {
   "foo": "1",
   "deep": {
-    "prop": {
-      "spaced": "3"
-    }
+    "prop": "2"
   },
+  "first-name": "3",
   "baz": ["4", "5"],
   "user": {
     "age": "value2"
@@ -58,7 +57,7 @@ The above form will be submitted as:
 ```
 
 ::: tip Path collisions overwrite earlier values
-Field names are parsed into property paths by splitting on `.`, `-`, brackets, whitespace, or other punctuation. Letters and digits from any script are kept, so `名前` and `user[名前]` work as names. Two inputs whose paths overlap will collide: in the example above, `deep.prop` parses to `["deep", "prop"]` and `deep prop spaced` parses to `["deep", "prop", "spaced"]`, so the deeper assignment replaces `deep.prop = "2"` with the nested object `{ spaced: "3" }`. Pick non-overlapping field names if you need both values.
+Field names are parsed into property paths by splitting only on `.` and brackets, so `first-name`, `last name` and `名前` each stay one key, and `user[名前]` nests as `{ "user": { "名前": … } }`. Two inputs whose paths overlap will collide: `deep.prop` parses to `["deep", "prop"]` and `deep.prop.spaced` to `["deep", "prop", "spaced"]`, so the deeper assignment replaces `deep.prop = "2"` with the nested object `{ "spaced": … }`. Pick non-overlapping field names if you need both values.
 :::
 
 ::: warning

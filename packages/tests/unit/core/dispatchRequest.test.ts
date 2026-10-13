@@ -213,15 +213,15 @@ describe("core::dispatchRequest", () => {
   });
 
   describe("happy path", () => {
-    it("does not set Content-Type for React Native FormData (utils.isFormData detects it)", async () => {
+    it("sends no Content-Type for React Native FormData, so its fetch writes the boundary", async () => {
       // ReactNativeFormData has Symbol.toStringTag === "FormData" so utils.isFormData returns true.
-      // dispatchRequest must not inject application/x-www-form-urlencoded for any FormData-like object.
       const data = new ReactNativeFormData();
       let capturedInit: RequestInit | undefined;
 
       const config = baseConfig({
         method: "post",
         data,
+        headers: faxiosHeaders({ "Content-Type": "application/x-www-form-urlencoded" }),
         env: {
           fetch: async (_input: Request | string | URL, init?: RequestInit) => {
             capturedInit = init;
@@ -235,12 +235,8 @@ describe("core::dispatchRequest", () => {
 
       const result = await dispatchRequest(config);
 
-      const sentHeaders = capturedInit?.headers as Record<string, string>;
-      assert.strictEqual(
-        sentHeaders["Content-Type"],
-        undefined,
-        "dispatchRequest must not inject Content-Type for FormData-like objects"
-      );
+      const sentHeaders = Object.keys(capturedInit?.headers as Record<string, string>).map(key => key.toLowerCase());
+      assert.ok(!sentHeaders.includes("content-type"), `sent: ${sentHeaders.join(", ")}`);
       assert.deepStrictEqual(result.data, { ok: true });
     });
 

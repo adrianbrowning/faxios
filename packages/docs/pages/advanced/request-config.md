@@ -96,9 +96,9 @@ The `headers` are the HTTP headers to be sent with the request. When you don't s
 
 - Plain objects are sent as JSON with `application/json`.
 - `URLSearchParams` is sent as `application/x-www-form-urlencoded;charset=utf-8`.
-- `FormData` gets `multipart/form-data` with a boundary from the runtime.
+- `FormData` gets `multipart/form-data` with the boundary the runtime encoded the body with. faxios drops any `Content-Type` you set for a `FormData` body, including a `boundary` of your own, since only the encoder's boundary matches the body.
 - `Blob`, `File`, `ArrayBuffer`, typed arrays, `DataView` and streams get no `Content-Type` from faxios. The runtime uses `Blob.type` (for example `image/png` for a `File`) or sends none.
-- Other bodies, such as plain strings, sent with `post`, `put` or `patch` get `application/x-www-form-urlencoded`, as in axios.
+- Plain strings get no `Content-Type` from faxios. The runtime sends `text/plain;charset=UTF-8`. Set the header yourself if the server expects something else, such as `application/x-www-form-urlencoded` for an `a=1&b=2` string, or set it to `null` to send the string with no `Content-Type`.
 
 ### `params`
 
@@ -139,13 +139,9 @@ The `data` is the data to be sent as the request body. This can be a string, a p
 
 When faxios wraps a `ReadableStream` body to report `onUploadProgress` or enforce `maxBodyLength`, it sends every byte of each chunk: a typed array or `DataView` keeps all its bytes, an `ArrayBuffer` is sent whole and a string is UTF-8 encoded. Any other chunk rejects the request with a `FaxiosError` whose code is `ERR_BAD_REQUEST`.
 
-For `FormData`, do not manually set `Content-Type`; the runtime adds the multipart boundary.
+For `FormData`, do not set `Content-Type`; faxios removes it so the header carries the boundary the runtime encoded the body with.
 
-If a `FormData`-like object provides a `getHeaders()` method, faxios copies all returned headers by default for v1 compatibility. If the object is custom or not fully trusted, set `formDataHeaderPolicy: 'content-only'` to copy only `Content-Type` and `Content-Length`, and set any other request headers explicitly via the request `headers` config.
-
-### `formDataHeaderPolicy`
-
-Controls how faxios copies headers returned by a `FormData`-like object's `getHeaders()` method. The default is `'legacy'`, which copies all returned headers to preserve existing v1 behavior. Set `'content-only'` to copy only `Content-Type` and `Content-Length` from `getHeaders()`.
+The body must be the runtime's global `FormData`. An instance of the npm `form-data` package (an object with `getHeaders()`) rejects with a `FaxiosError` whose code is `ERR_NOT_SUPPORT`, before anything is sent, because `fetch` cannot read it.
 
 ### `timeout`
 
@@ -369,9 +365,9 @@ const config: FaxiosRequestConfig = {
   data: {
     firstName: "Fred"
   },
-  // Syntax alternative to send data into the body method post only the value is sent, not the key
+  // Syntax alternative: a string body is sent as is, with `text/plain;charset=UTF-8` unless you set
+  // `Content-Type` (e.g. `application/x-www-form-urlencoded` for this one)
   // data: "Country=Brasil&City=Belo Horizonte",
-  formDataHeaderPolicy: "legacy",
   timeout: 1000,
   withCredentials: false,
   auth: {

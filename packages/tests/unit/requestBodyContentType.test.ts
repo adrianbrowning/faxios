@@ -5,7 +5,11 @@ import { describe, it } from "vitest";
 import faxios from "#src/index.ts";
 import { startHTTPServer, stopHTTPServer } from "../setup/server.js";
 
-const contentTypeOf = async (method: "patch" | "post" | "put" | "query", data: unknown) => {
+const contentTypeOf = async (
+  method: "patch" | "post" | "put" | "query",
+  data: unknown,
+  config: { headers?: { "Content-Type": false | null; }; onUploadProgress?: () => void; } = {}
+) => {
   let seen: string | undefined;
   const server = await startHTTPServer((req, res) => {
     seen = req.headers["content-type"];
@@ -14,6 +18,7 @@ const contentTypeOf = async (method: "patch" | "post" | "put" | "query", data: u
   }, { port: 0 });
   try {
     await faxios.request({
+      ...config,
       url: `http://localhost:${(server.address() as AddressInfo).port}/`,
       method,
       data,
@@ -61,8 +66,20 @@ describe("request body Content-Type (#171)", () => {
     });
   }
 
-  // Pinned: plain string bodies keep the axios-compatible fallback in 0.2.x (may change in 0.3.0).
-  it("keeps x-www-form-urlencoded for a plain string body", async () => {
-    assert.strictEqual(await contentTypeOf("post", "a=1"), "application/x-www-form-urlencoded");
+  it("lets fetch set text/plain;charset=UTF-8 for a plain string body", async () => {
+    for (const method of [ "post", "put", "patch", "query" ] as const) {
+      assert.strictEqual(await contentTypeOf(method, "a=1"), "text/plain;charset=UTF-8", method);
+    }
+  });
+
+  // With onUploadProgress the body reaches fetch as a counted stream, which fetch gives no Content-Type.
+  it("keeps text/plain;charset=UTF-8 for a plain string body sent with onUploadProgress", async () => {
+    assert.strictEqual(await contentTypeOf("post", "a=1", { onUploadProgress: () => {} }), "text/plain;charset=UTF-8");
+  });
+
+  // `null` and `false` keep the header off the request, so fetch must not add text/plain either.
+  it.each([ null, false ] as const)("sends no Content-Type for a string body with Content-Type: %s", async value => {
+    assert.strictEqual(await contentTypeOf("post", "a=1", { headers: { "Content-Type": value } }), undefined);
+    assert.strictEqual(await contentTypeOf("post", { a: 1 }, { headers: { "Content-Type": value } }), undefined);
   });
 });

@@ -253,7 +253,6 @@ export interface FaxiosRequestConfig<D = unknown> {
     Response?: (new (...args: Array<unknown>) => unknown) | null;
   };
   fetchOptions?: Record<string, unknown>;
-  formDataHeaderPolicy?: "content-only" | "legacy";
   formSerializer?: FormSerializerOptions;
   headers?: FaxiosConfigHeaders;
   maxBodyLength?: number;

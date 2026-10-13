@@ -1,6 +1,6 @@
 # File posting
 
-faxios makes file uploads straightforward. Use `postForm` or `FormData` when you need `multipart/form-data` uploads.
+faxios makes file uploads straightforward. Use `postForm` or the runtime's global `FormData` when you need `multipart/form-data` uploads. Don't set `Content-Type` for a `FormData` body: faxios removes it so the header carries the boundary the runtime encoded the body with. A body from the npm `form-data` package rejects with `ERR_NOT_SUPPORT`; build a global `FormData` instead.
 
 ## Single file (browser)
 
@@ -94,7 +94,7 @@ await faxios.post("https://httpbin.org/post", form);
 
 ## Uploading raw bytes
 
-To send a file as the whole request body (no multipart), pass the `File`, `Blob`, `ArrayBuffer`, typed array or stream as `data`. faxios does not set `Content-Type` for these bodies. The runtime uses the `Blob.type` (here `image/png`), or sends no `Content-Type` when there is none. Set the header yourself for an untyped `Blob`, an `ArrayBuffer`, a typed array or a stream if the server needs one.
+To send a file as the whole request body (no multipart), pass the `File`, `Blob`, `ArrayBuffer`, typed array or stream as `data`. faxios does not set `Content-Type` for these bodies. The runtime uses the `Blob.type` (here `image/png`), or sends no `Content-Type` when there is none. Set the header yourself for an untyped `Blob`, an `ArrayBuffer`, a typed array or a stream if the server needs one. A plain string body is sent as `text/plain;charset=UTF-8` unless you set `Content-Type`.
 
 ```js
 import faxios from "@gcmdev/faxios";

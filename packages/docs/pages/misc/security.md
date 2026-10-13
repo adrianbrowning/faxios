@@ -29,7 +29,6 @@ The following request-config options have direct security implications. They are
 | --- | --- | --- |
 | [`withXSRFToken`](/pages/advanced/request-config#withxsrftoken) | Setting `true` forces the XSRF header on cross-origin requests. Older faxios versions implicitly enabled this with `withCredentials: true`; newer versions require both flags. | Leave at `undefined` (same-origin only) unless your backend explicitly validates XSRF on cross-origin requests. |
 | [`redact`](/pages/advanced/request-config#redact) | `FaxiosError#toJSON()` includes the request config. It masks `authorization`, `proxy-authorization`, `cookie` and `auth` and strips `user:pass@` from URLs, but other secrets (an API key header, a token in `params`) still reach error logs and telemetry. | Pass a `redact` array with the other sensitive config key names. Matching is case-insensitive and recursive. Log `error.toJSON()`, not the error object. |
-| [`formDataHeaderPolicy`](/pages/advanced/request-config#formdataheaderpolicy) | A custom `FormData` whose `getHeaders()` returns attacker-controlled values can overwrite headers like `Authorization` or inject arbitrary ones in Node.js. | Set `'content-only'` to copy only `Content-Type` and `Content-Length`, then set other headers explicitly via the request `headers` config. |
 
 ## Supply-chain hardening: `ignore-scripts` and lifecycle scripts
 

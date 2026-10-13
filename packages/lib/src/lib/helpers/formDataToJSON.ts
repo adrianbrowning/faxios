@@ -16,20 +16,16 @@ function throwIfDepthExceeded(index: number): void {
 }
 
 /**
- * It takes a string like `foo[x][y][z]` and returns an array like `['foo', 'x', 'y', 'z']
+ * It takes a string like `foo[x][y][z]` or `foo.x.y.z` and returns an array like `['foo', 'x', 'y', 'z']`
  *
  * @param {string} name - The name of the property to get.
  *
  * @returns An array of strings.
  */
 function parsePropPath(name: string): Array<string> {
-  // foo[x][y][z]
-  // foo.x.y.z
-  // foo-x-y-z
-  // foo x y z
+  // Only dots and brackets separate path segments, so `first-name` and `last name` stay one key.
   const path: Array<string> = [];
-  // Unicode word characters; ASCII input tokenizes exactly as `\w` did.
-  const pattern = /[\p{L}\p{M}\p{N}\p{Pc}]+|\[([\p{L}\p{M}\p{N}\p{Pc}]*)\]/gu;
+  const pattern = /[^.[\]]+|\[([^[\]]*)\]/gu;
   let match: null | RegExpExecArray;
 
   while ((match = pattern.exec(name)) !== null) {

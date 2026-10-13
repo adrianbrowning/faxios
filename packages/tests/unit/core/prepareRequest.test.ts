@@ -3,41 +3,7 @@ import { describe, it } from "vitest";
 import prepareRequest from "#src/lib/core/prepareRequest.js";
 import type { FaxiosRequestHeaders } from "#src/lib/types.js";
 
-class ReactNativeFormData {
-  append() {}
-
-  getParts() {
-    return [];
-  }
-
-  get [Symbol.toStringTag]() {
-    return "FormData";
-  }
-}
-
 describe("core::prepareRequest", () => {
-  it("clears Content-Type for React Native FormData", () => {
-    const data = new ReactNativeFormData();
-    const config = prepareRequest({
-      url: "/upload",
-      data,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    });
-
-    const headers = config.headers as FaxiosRequestHeaders;
-    assert.strictEqual(config.data, data);
-    assert.strictEqual(headers.getContentType(), undefined);
-    assert.strictEqual(
-      Object.prototype.hasOwnProperty.call(
-        headers.toJSON(),
-        "Content-Type"
-      ),
-      false
-    );
-  });
-
   it("leaves basic auth to the adapter, which builds the header once", () => {
     const config = prepareRequest({
       url: "/foo",

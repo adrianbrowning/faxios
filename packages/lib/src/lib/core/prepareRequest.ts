@@ -7,26 +7,6 @@ import platform from "../platform.js";
 import type { FaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
 
-const FORM_DATA_CONTENT_HEADERS = [ "content-type", "content-length" ];
-
-function setFormDataHeaders(
-  headers: FaxiosHeaders,
-  formHeaders: Record<string, unknown>,
-  policy: unknown
-): void {
-  if (policy !== "content-only") {
-    headers.set(formHeaders);
-    return;
-  }
-  /* eslint-disable big-o/no-array-lookup-in-loop -- 2-element constant array */
-  Object.entries(formHeaders).forEach(([ key, val ]) => {
-    if (FORM_DATA_CONTENT_HEADERS.includes(key.toLowerCase())) {
-      headers.set(key, val);
-    }
-  });
-  /* eslint-enable big-o/no-array-lookup-in-loop */
-}
-
 function applyXSRFToken(
   headers: FaxiosHeaders,
   withXSRFToken: ((cfg: unknown) => unknown) | boolean | null | undefined,
@@ -67,7 +47,6 @@ function prepareRequest(config: FaxiosRequestConfig): FaxiosRequestConfig {
       ? (newConfig as Record<string, unknown>)[key]
       : undefined;
 
-  const data = own("data");
   let withXSRFToken = own("withXSRFToken") as
     | ((cfg: unknown) => unknown)
     | boolean
@@ -82,26 +61,6 @@ function prepareRequest(config: FaxiosRequestConfig): FaxiosRequestConfig {
   newConfig.headers = headers;
 
   newConfig.url = resolveRequestURL(newConfig);
-
-  if (utils.isFormData(data)) {
-    if (
-      platform.hasStandardBrowserEnv ||
-      platform.hasStandardBrowserWebWorkerEnv ||
-      utils.isReactNative(data)
-    ) {
-      (headers.setContentType as (v: unknown) => unknown)(undefined); // browser/web worker/RN handles it
-    }
-    else if (
-      utils.isFunction((data as Record<string, unknown>)["getHeaders"])
-    ) {
-      // Node.js FormData (like form-data package)
-      setFormDataHeaders(
-        headers,
-        (data as { getHeaders: () => Record<string, unknown>; }).getHeaders(),
-        own("formDataHeaderPolicy")
-      );
-    }
-  }
 
   // Add xsrf header
   // This is only done if running in a standard browser environment.

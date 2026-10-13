@@ -97,6 +97,16 @@ describe("core::Faxios unknown request config keys", () => {
     expect(err.message).toContain("advertiseZstdAcceptEncoding");
     expect(fetch).not.toHaveBeenCalled();
   });
+
+  it("rejects the removed formDataHeaderPolicy option with a migration hint", async () => {
+    const fetch = okFetch();
+    const api = faxios.create({ env: { fetch } });
+    const err = await rejection(api.post("http://example.test/", new FormData(), untyped({ formDataHeaderPolicy: "content-only" })));
+    expect(err.code).toBe(FaxiosError.ERR_BAD_OPTION);
+    expect(err.message).toContain("formDataHeaderPolicy");
+    expect(err.message).toContain("global FormData");
+    expect(fetch).not.toHaveBeenCalled();
+  });
 });
 
 describe("FaxiosRequestConfig removed options", () => {
@@ -114,6 +124,8 @@ describe("FaxiosRequestConfig removed options", () => {
         { transitional: { advertiseZstdAcceptEncoding: true } },
         // @ts-expect-error TS2353 -- faxios always sends with fetch
         { adapter: "http" },
+        // @ts-expect-error TS2353 -- formDataHeaderPolicy only applied to form-data package bodies
+        { formDataHeaderPolicy: "content-only" },
       ];
     }
     void surfaces;
