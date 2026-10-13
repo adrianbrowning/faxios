@@ -1,7 +1,5 @@
 "use strict";
 
-import FaxiosURLSearchParams from "./helpers/FaxiosURLSearchParams.js";
-
 const _globalThis = globalThis as {
   Blob?: new (...args: Array<unknown>) => object;
   document?: unknown;
@@ -31,7 +29,6 @@ const origin = (hasBrowserEnv && _globalThis.window?.location?.href) || "http://
 export default {
   isBrowser: true,
   classes: {
-    URLSearchParams: typeof URLSearchParams !== "undefined" ? URLSearchParams : FaxiosURLSearchParams,
     FormData: _globalThis.FormData !== undefined ? _globalThis.FormData : null,
     Blob: _globalThis.Blob !== undefined ? _globalThis.Blob : null,
   },

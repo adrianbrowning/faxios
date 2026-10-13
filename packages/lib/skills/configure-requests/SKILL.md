@@ -16,7 +16,13 @@ metadata:
   library_version: '0.2.1'
 sources:
   - src/index.ts
+  - src/core.ts
+  - src/schema.ts
+  - src/form.ts
   - src/lib/faxios.ts
+  - src/lib/rootFaxios.ts
+  - src/lib/createInstance.ts
+  - src/lib/core/features.ts
   - src/lib/core/Faxios.ts
   - src/lib/core/mergeConfig.ts
   - src/lib/core/buildFullPath.ts
@@ -332,8 +338,10 @@ value, because it is the only value typed with the plugin's request options (suc
   query string and keeps `{param}` placeholders. `attempt` is `ctx.attempt`: 1 without `retry`.
   Install it before `retry` for one event per call, after it for one event per attempt.
 - To write your own plugin, use `definePlugin` from `@gcmdev/faxios/plugins`. The built-in plugins
-  import only `@gcmdev/faxios` and `@gcmdev/faxios/plugins`, so yours can do what they do. The same
-  [plugins](references/plugins.md) reference covers authoring.
+  import only `@gcmdev/faxios/core` (and `/schema` or `/form` for those features) and
+  `@gcmdev/faxios/plugins`, never the root, so a plugin subpath doesn't build the default instance.
+  Do the same in a published plugin. The same [plugins](references/plugins.md) reference covers
+  authoring.
 
 ### Customise the transport through fetch, not adapters
 
@@ -365,17 +373,50 @@ await faxios.get("https://api.example.com/feed", { fetchOptions: { cache: "no-st
   faxios passes the instance through to `fetch` but does not test proxying. Browsers, Deno and Bun
   use their platform's proxy settings.
 
+### Load less with `@gcmdev/faxios/core`
+
+The root builds the default instance on import and carries schema validation, form
+serialization and the axios-compat statics. When bundle size matters, build instances from
+`@gcmdev/faxios/core` and install only the features the code uses:
+
+```ts
+import { create } from "@gcmdev/faxios/core";
+import { form } from "@gcmdev/faxios/form";
+import { schema } from "@gcmdev/faxios/schema";
+import { z } from "zod";
+
+const api = create({ baseURL: "https://api.example.com" }).use(schema()).use(form());
+const { data } = await api.get("/users/1", { responseSchema: z.object({ id: z.number() }) });
+```
+
+- Without `use(schema())`, `requestSchema`, `responseSchema`, `paramsSchema` and
+  `pathParamsSchema` are type errors (TS2769 on a request method) and reject with
+  `ERR_BAD_OPTION`. Without `use(form())`, `formSerializer` does the same; nested `params`, object
+  bodies sent as `multipart/form-data` or `x-www-form-urlencoded`, and `postForm`/`putForm`/
+  `patchForm` with an object reject with `ERR_NOT_SUPPORT`. Flat params, JSON and `FormData` bodies
+  work without either.
+- Keep the value `use()` returns; only it is typed with the feature's options. `create()` on a core
+  instance keeps its features (not its middleware).
+- Core has no statics and no `Faxios` class: import `isCancel`, `isFaxiosError`, `FaxiosError`,
+  `CanceledError` and `FaxiosHeaders` from `@gcmdev/faxios/core`, `toFormData` and `formToJSON`
+  from `@gcmdev/faxios/form`. One root import anywhere in the bundle brings the whole root back.
+- Don't move a working root codebase to core unless asked to cut bundle size; the root behaves as
+  before. Docs: `packages/docs/pages/advanced/entry-points.md`.
+
 ## Import boundaries
 
 | Import | Status |
 | --- | --- |
-| `@gcmdev/faxios` | Stable: default `faxios`, `Faxios`, `FaxiosError`, `FaxiosHeaders`, `CanceledError`, `isCancel`, `isFaxiosError`, `isSchemaValidationError`, `mergeConfig`, `toFormData`, `formToJSON`, `HttpStatusCode`, `all`, `create`, `VERSION`, and the types |
+| `@gcmdev/faxios` | Stable: default `faxios`, `Faxios`, `FaxiosError`, `FaxiosHeaders`, `CanceledError`, `isCancel`, `isFaxiosError`, `isSchemaValidationError`, `mergeConfig`, `toFormData`, `formToJSON`, `HttpStatusCode`, `all`, `create`, `VERSION`, and the types. Every instance has schema validation and form serialization |
+| `@gcmdev/faxios/core` | Stable: `create`, `FaxiosError`, `CanceledError`, `isCancel`, `isFaxiosError`, `FaxiosHeaders`, and the instance, config, plugin and middleware types (`FaxiosCoreInstance`). No default instance, statics, schema or form features |
+| `@gcmdev/faxios/schema` | Stable: `schema()` for `use()` on a core instance, `isSchemaValidationError`, `SchemaValidationError`, `SchemaRequestOptions`, `StandardSchemaV1` |
+| `@gcmdev/faxios/form` | Stable: `form()` for `use()` on a core instance, `toFormData`, `formToJSON`, the form types |
 | `@gcmdev/faxios/plugins` | Stable: `definePlugin` only |
-| `@gcmdev/faxios/plugins/auth-bearer`, `/retry`, `/timing` | Stable: one plugin each |
+| `@gcmdev/faxios/plugins/auth-bearer`, `/forward-to`, `/retry`, `/timing` | Stable: one plugin each; they import `@gcmdev/faxios/core`, not the root |
 | `@gcmdev/faxios/unsafe/*` | Internal helpers (`buildFullPath`, `buildURL`, `combineURLs`, `isAbsoluteURL`). No stability promise; do not use them in application code, and say so if a task seems to need them. `unsafe/utils.js` is gone |
 
-Use `faxios.create()` for instances. An instance made with `new Faxios()` has no `use()` or
-`eject()`.
+Use `faxios.create()` (root) or `create()` (core) for instances. An instance made with
+`new Faxios()` has no `use()` or `eject()`.
 
 Statics such as `isCancel`, `mergeConfig`, `HttpStatusCode` and `spread` exist on the default
 export only. Instances from `create()` do not have them; import them by name instead.

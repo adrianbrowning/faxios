@@ -5,17 +5,12 @@ import canceledFromSignal from "../cancel/canceledFromSignal.js";
 import isCancel from "../cancel/isCancel.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
-import { validateSchema } from "../core/validateSchema.js";
-import { substitutePathParams } from "../helpers/substitutePathParams.js";
+import { assertNoSchemaOptions, bindFeatures } from "../core/features.js";
+import type { Features } from "../core/features.js";
 import type { FaxiosResponse, InternalFaxiosRequestConfig } from "../types.js";
 import { getSafeProp, isFormData, isFunction, isSpecCompliantForm } from "../utils.js";
+import { fillPathParams, throwIfCancellationRequested } from "./preFlight.js";
 import transformData from "./transformData.js";
-
-function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void {
-  if (config.signal && config.signal.aborted) {
-    throw canceledFromSignal(config.signal, config);
-  }
-}
 
 // An async schema is caller code that may take any time, so the caller's abort settles the request
 // right away instead of waiting for it. The final check before the adapter still runs either way.
@@ -37,88 +32,26 @@ function settleOnAbort(preFlight: Promise<void>, config: InternalFaxiosRequestCo
   });
 }
 
-async function validateAndSubstitutePathParams(config: InternalFaxiosRequestConfig): Promise<void> {
-  if (config.pathParamsSchema) {
-    const validated = await validateSchema(
-      config.pathParamsSchema, config.pathParams,
-      FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
-    );
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime guard: schema can return { value: null }
-    if (validated == null) {
-      throw new FaxiosError(
-        "pathParamsSchema returned null/undefined",
-        FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
-      );
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, sonarjs/different-types-comparison -- runtime guard: schema may transform to non-Record
-    if (typeof validated !== "object" || validated === null || Array.isArray(validated)) {
-      throw new FaxiosError(
-        "pathParamsSchema must return a plain object",
-        FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
-      );
-    }
-    config.pathParams = validated;
-  }
-  const params = config.pathParams ?? {};
-  try {
-    config.url = substitutePathParams(config.url ?? "", params);
-  }
-  catch (err) {
-    throw FaxiosError.from(
-      err instanceof Error ? err : new Error(String(err)),
-      FaxiosError.ERR_BAD_OPTION_VALUE, config
-    );
-  }
+// Without the schema feature, a schema option can only arrive here through middleware; it rejects
+// rather than go unchecked.
+function preFlight(config: InternalFaxiosRequestConfig, features: Features): Promise<void> | undefined {
+  if (features.schema) return features.schema.preFlight(config);
+  assertNoSchemaOptions(config);
+  if (config.pathParams !== undefined) fillPathParams(config);
+  return undefined;
 }
 
-// Intentional mutation: config is the internal merged copy (post-mergeConfig), not the user's original.
-// Validation order (pathParams → params → data) is a fail-fast guarantee — do not reorder.
-// DO NOT make this function async. Returning undefined (not a Promise) on the fast path is a
-// microtask-ordering contract: dispatchRequest must reach the adapter in the same microtask so
-// that a synchronous controller.abort() after request creation is processed by the adapter's
-// signal listener, not before it registers. An async function always returns a Promise, inserting
-// a microtask boundary that breaks abort timing in fetch adapter tests and real-world usage.
-function validatePreFlight(config: InternalFaxiosRequestConfig): Promise<void> | undefined {
-  if (config.pathParamsSchema && config.pathParams === undefined) {
-    throw new FaxiosError(
-      "pathParams is required when pathParamsSchema is configured",
-      FaxiosError.ERR_BAD_OPTION_VALUE, config
-    );
-  }
-
-  const hasSchemas = config.pathParamsSchema || config.paramsSchema || config.requestSchema;
-  if (!hasSchemas && config.pathParams === undefined) return undefined;
-
-  // pathParams present but no schemas — substitute synchronously, no microtask boundary needed.
-  if (!hasSchemas) {
-    const params = config.pathParams ?? {};
-    try { config.url = substitutePathParams(config.url ?? "", params); }
-    catch (err) { throw FaxiosError.from(err instanceof Error ? err : new Error(String(err)), FaxiosError.ERR_BAD_OPTION_VALUE, config); }
-    return undefined;
-  }
-
-  return (async () => {
-    if (config.pathParams !== undefined) {
-      await validateAndSubstitutePathParams(config);
-    }
-
-    if (config.paramsSchema) {
-      throwIfCancellationRequested(config);
-      config.params = await validateSchema(config.paramsSchema, config.params, FaxiosError.ERR_BAD_PARAMS_SCHEMA, config) as typeof config.params;
-    }
-
-    if (config.requestSchema) {
-      throwIfCancellationRequested(config);
-      config.data = await validateSchema(config.requestSchema, config.data, FaxiosError.ERR_BAD_REQUEST_SCHEMA, config);
-    }
-  })();
-}
-
-export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig): Promise<FaxiosResponse> {
+/**
+ * Sends one request: pre-flight (the schema feature's validations, path params), transformRequest,
+ * the fetch adapter, transformResponse and the schema feature's response check. `features` are the
+ * ones installed on the request's instance.
+ */
+export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig, features: Features): Promise<FaxiosResponse> {
+  bindFeatures(config, features);
   throwIfCancellationRequested(config);
 
-  const preFlight = validatePreFlight(config);
-  if (preFlight) await settleOnAbort(preFlight, config);
+  const pending = preFlight(config, features);
+  if (pending) await settleOnAbort(pending, config);
 
   config.headers = FaxiosHeaders.from(config.headers);
 
@@ -167,9 +100,8 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
           delete (config as unknown as Record<string, unknown>)["response"];
         }
 
-        if (config.responseSchema) {
-          return validateSchema(config.responseSchema, response.data, FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, response)
-            .then(data => { response.data = data; throwIfCancellationRequested(config); return response; });
+        if (features.schema && config.responseSchema) {
+          return features.schema.checkResponse(config, response);
         }
 
         return response;

@@ -1,4 +1,5 @@
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
+import { featuresOf } from "../core/features.js";
 import resolveRequestURL from "../core/resolveRequestURL.js";
 import cloneConfig from "../helpers/cloneConfig.js";
 import cookies from "../helpers/cookies.js";
@@ -60,7 +61,8 @@ function prepareRequest(config: FaxiosRequestConfig): FaxiosRequestConfig {
   );
   newConfig.headers = headers;
 
-  newConfig.url = resolveRequestURL(newConfig);
+  // Looked up on `config`: the clone isn't the object dispatch bound the features to.
+  newConfig.url = resolveRequestURL(newConfig, featuresOf(config).form?.serializeParams);
 
   // Add xsrf header
   // This is only done if running in a standard browser environment.

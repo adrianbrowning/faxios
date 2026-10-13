@@ -17,7 +17,7 @@ faxios is a promise-based HTTP client. One web-standard `fetch` adapter serves e
 This file is the canonical contributor guide for both human and AI agents working in this repo.
 
 - **Writing or reviewing library code:** follow [`CODING_STANDARDS.md`](CODING_STANDARDS.md).
-- **Checking a change:** `pnpm check` runs what CI runs (lint, knip, `packages/tests/run-tests.sh`, docs examples). Other scripts are in the root and package `package.json` files.
+- **Checking a change:** `pnpm check` runs what CI runs (lint, knip, `packages/tests/run-tests.sh`, docs examples, then `pnpm size`, the size-limit budget of every public entry point in `packages/lib/.size-limit.json`). Other scripts are in the root and package `package.json` files.
 - **Issues, PRs, stacks and CI status:** [`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md).
 
 ## AI Agent Marker
@@ -47,9 +47,9 @@ This file is the canonical contributor guide for both human and AI agents workin
 
 Paths are relative to `packages/lib/src/lib/`.
 
-- `core/` is faxios domain logic: request dispatch, config merge, `.use()` middleware, headers, errors (`Faxios`, `FaxiosError`, `FaxiosHeaders`).
+- `core/` is faxios domain logic: request dispatch, config merge, `.use()` middleware, headers, errors (`Faxios`, `FaxiosError`, `FaxiosHeaders`). It imports no schema or form code: `features/schema.ts` and `features/form.ts` register those capabilities through `core/features.ts`, installed with `use(schema())` / `use(form())` on a `@gcmdev/faxios/core` instance. The root entry (`lib/faxios.ts`, `lib/rootFaxios.ts`) installs both on every instance and on `new Faxios()`.
 - `adapters/fetch.ts` is the only transport, called unconditionally from `core/dispatchRequest.ts`. Custom adapters aren't supported; `config.adapter` is not a valid config field.
-- `plugins/` holds the built-in plugins, each published as its own subpath (`@gcmdev/faxios/plugins/<name>`); `@gcmdev/faxios/plugins` exports `definePlugin` only. Files in `plugins/` import only the package root (`src/index.ts`) and each other, so a third-party plugin can do anything a built-in one does; `lint:esl` rejects other imports.
+- `plugins/` holds the built-in plugins, each published as its own subpath (`@gcmdev/faxios/plugins/<name>`); `@gcmdev/faxios/plugins` exports `definePlugin` only. Files in `plugins/` import only the public entry points `src/core.ts`, `src/schema.ts` and `src/form.ts` and each other, never the package root, so a plugin subpath doesn't load the default instance and a third-party plugin can do anything a built-in one does; `lint:esl` rejects other imports.
 - `helpers/` stays generic and reusable outside faxios; keep request-lifecycle logic out of it.
 
 ## Request Lifecycle
@@ -57,9 +57,9 @@ Paths are relative to `packages/lib/src/lib/`.
 1. User calls `faxios()` or a method alias.
 2. Merge instance defaults with request config via `mergeConfig`, validate options, and flatten method header groups into one `FaxiosHeaders`.
 3. Run `.use()` middleware in registration order; the innermost `next(ctx)` dispatches a copy of `ctx.config`.
-4. `dispatchRequest` checks cancellation, runs pre-flight schema validation and `transformRequest`, then checks cancellation again right before the adapter call.
+4. `dispatchRequest` checks cancellation, runs the schema feature's pre-flight validation (when installed) and `transformRequest`, then checks cancellation again right before the adapter call.
 5. The fetch adapter (`getFetch(config)` from `adapters/fetch.ts`) performs the HTTP request.
-6. Apply `transformResponse` functions and `responseSchema` validation.
+6. Apply `transformResponse` functions and, with the schema feature, `responseSchema` validation.
 7. Middleware unwinds in reverse registration order.
 8. Resolve promise with `FaxiosResponse` or reject with `FaxiosError`.
 

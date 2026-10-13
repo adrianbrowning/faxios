@@ -15,15 +15,16 @@ export const localRules: Array<Linter.Config> = [
       "faxios/remove-signal-listeners": "error",
     },
   },
-  // CODING_STANDARDS: built-in plugins use only what a third-party plugin can import, the package
-  // root, plus each other. definePlugin.ts is the `@gcmdev/faxios/plugins` entry point.
+  // CODING_STANDARDS: built-in plugins use only what a third-party plugin can import without the
+  // root default instance (`@gcmdev/faxios/core`, `/schema` and `/form`), plus each other.
+  // definePlugin.ts is the `@gcmdev/faxios/plugins` entry point.
   {
     files: [ "src/lib/plugins/**/*.ts" ],
     rules: {
       "no-restricted-imports": [ "error", {
         patterns: [{
-          regex: "^(?!\\.\\./\\.\\./index\\.js$|\\./[^/]+\\.js$)",
-          message: "Built-in plugins import only the package root (\"../../index.js\") and files in plugins/.",
+          regex: "^(?!\\.\\./\\.\\./(?:core|form|schema)\\.js$|\\./[^/]+\\.js$)",
+          message: "Built-in plugins import only @gcmdev/faxios/core, /schema or /form (\"../../core.js\", \"../../schema.js\", \"../../form.js\") and files in plugins/; the package root would load the default instance.",
         }],
       }],
     },

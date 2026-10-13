@@ -7,13 +7,16 @@ Below is a list of all the available functions and classes in the faxios package
 | Import path | Exports |
 | --- | --- |
 | `@gcmdev/faxios` | the default `faxios` instance, the classes and functions on this page, and the types, including the plugin types `FaxiosPlugin`, `FaxiosMiddleware`, `FaxiosContext` and `FaxiosNext` |
+| `@gcmdev/faxios/core` | `create()`, `FaxiosError`, `CanceledError`, `isCancel`, `isFaxiosError`, `FaxiosHeaders`, and the instance, config, plugin and middleware types, including `FaxiosCoreInstance`. No default instance, no axios-compat statics, no schema validation and no form serialization |
+| `@gcmdev/faxios/schema` | `schema()` (install with `use()` on a core instance), `isSchemaValidationError` and the types `SchemaValidationError`, `SchemaRequestOptions` and `StandardSchemaV1` |
+| `@gcmdev/faxios/form` | `form()` (install with `use()` on a core instance), `formToJSON`, `toFormData` and the form types |
 | `@gcmdev/faxios/plugins` | `definePlugin` only |
 | `@gcmdev/faxios/plugins/auth-bearer` | `authBearer` and the types `AuthBearerOptions` and `AuthBearerCapability` |
 | `@gcmdev/faxios/plugins/forward-to` | `forwardTo` and the types `ForwardToOptions` and `ForwardToRequestOptions` |
 | `@gcmdev/faxios/plugins/retry` | `retry` and the types `RetryOptions` and `RetryRequestOptions` |
 | `@gcmdev/faxios/plugins/timing` | `timing` and the type `TimingEvent` |
 
-The built-in plugins are only available from their own subpaths. Neither the package root nor `@gcmdev/faxios/plugins` re-exports them.
+The built-in plugins are only available from their own subpaths. Neither the package root nor `@gcmdev/faxios/plugins` re-exports them. [Entry points](/pages/advanced/entry-points) explains what `./core`, `./schema` and `./form` include and how to move from the root to `./core`.
 
 ## Instance
 
@@ -23,7 +26,7 @@ The `faxios` instance is the main object that you will use to make HTTP requests
 
 ### `Faxios`
 
-The `Faxios` class is the class behind every faxios instance. The default export and `faxios.create()` both build a callable instance on top of it. The `Faxios` class has a number of methods that you can use to make HTTP requests. These methods are documented in the [Request aliases section](/pages/advanced/request-method-aliases) of the documentation. An instance built with `new Faxios()` has no `use()` or `eject()`; use `faxios.create()` to get an instance that takes middleware.
+The `Faxios` class is the class behind every faxios instance. The default export and `faxios.create()` both build a callable instance on top of it. The `Faxios` class has a number of methods that you can use to make HTTP requests. These methods are documented in the [Request aliases section](/pages/advanced/request-method-aliases) of the documentation. An instance built with `new Faxios()` has no `use()` or `eject()`; use `faxios.create()` to get an instance that takes middleware. The root's `Faxios` has schema validation and form serialization built in, like every root instance; `@gcmdev/faxios/core` exports no class.
 
 #### `constructor`
 
@@ -315,7 +318,7 @@ Installing a plugin before one that provides a capability it requires is a type 
 
 While a plugin is installed, the request option names in its `options` are accepted in request config. Any other key that isn't a faxios option rejects the request with `ERR_BAD_OPTION`; `eject()` removes the names again.
 
-`use()` exists on the default export and on `faxios.create()` instances. Children made with `create()` start with no middleware and without the parent's plugin types.
+`use()` exists on the default export, on `faxios.create()` instances and on instances from `create()` in `@gcmdev/faxios/core`. Children made with `create()` start with no middleware and without the parent's plugin types. On a core instance, `use(schema())` and `use(form())` install those features (see [Entry points](/pages/advanced/entry-points)); a child made with `create()` keeps the features its parent has.
 
 ### `eject`
 

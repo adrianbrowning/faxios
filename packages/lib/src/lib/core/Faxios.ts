@@ -5,6 +5,7 @@ import canceledFromSignal from "../cancel/canceledFromSignal.js";
 import cloneConfig from "../helpers/cloneConfig.js";
 import validator from "../helpers/validator.js";
 import type {
+  FaxiosFeaturePlugin,
   FaxiosMiddleware,
   FaxiosNext,
   FaxiosPluginArgument,
@@ -26,6 +27,8 @@ import type { DefineConfig, DefinedEndpoint } from "./define.js";
 import dispatchRequest from "./dispatchRequest.js";
 import FaxiosError from "./FaxiosError.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
+import { FEATURE_OPTIONS, featureDefinition } from "./features.js";
+import type { FeatureDefinition, Features } from "./features.js";
 import mergeConfig from "./mergeConfig.js";
 import armDeadline from "./requestDeadline.js";
 import resolveRequestURL from "./resolveRequestURL.js";
@@ -166,21 +169,23 @@ type AnyContextMiddleware = FaxiosMiddleware<unknown, unknown>;
 type AnyContextNext = FaxiosNext<unknown, unknown>;
 
 type MiddlewareEntry = {
+  // What a feature plugin (schema() or form()) installs into dispatch; it has no middleware.
+  feature: FeatureDefinition | undefined;
   // Request option names the plugin declared, accepted in request config while it's installed.
   options: ReadonlyArray<string>;
   provided: Array<string>;
   // The value passed to use(), kept only for eject()'s identity check.
   ref: unknown;
-  run: AnyContextMiddleware;
+  run: AnyContextMiddleware | null;
 };
 
-function composeMiddleware(entries: ReadonlyArray<MiddlewareEntry>, dispatch: AnyContextNext): AnyContextNext {
+function composeMiddleware(runs: ReadonlyArray<AnyContextMiddleware>, dispatch: AnyContextNext): AnyContextNext {
   // Plain closures, no async wrapper: a middleware that calls next() before awaiting reaches the
   // adapter in the same tick, exactly as a request without middleware does.
   // Each middleware's result is checked before the one outside it sees it, so a middleware that
   // forgets `return next(ctx)` fails with a coded error instead of crashing the next one out.
-  return entries.reduceRight<AnyContextNext>(
-    (next, entry) => ctx => Promise.resolve(entry.run(ctx, next)).then(response => checkMiddlewareResponse(response, ctx.config)),
+  return runs.reduceRight<AnyContextNext>(
+    (next, run) => ctx => Promise.resolve(run(ctx, next)).then(response => checkMiddlewareResponse(response, ctx.config)),
     dispatch
   );
 }
@@ -275,7 +280,7 @@ function headerLayers(headers: unknown, method: string): Array<null | Record<str
 // Middleware registration isn't a Faxios member: the callable instance from create() reaches it
 // through these, and its FaxiosInstance["use"] is the one place plugins are typed and checked.
 // The registry itself is untyped, so the class has nothing to type-check against.
-let useMiddleware!: (faxios: Faxios, middleware: AnyContextMiddleware | FaxiosPluginArgument) => void;
+let useMiddleware!: (faxios: Faxios, middleware: AnyContextMiddleware | FaxiosFeaturePlugin | FaxiosPluginArgument) => void;
 let ejectMiddleware!: (faxios: Faxios, middleware: unknown) => void;
 
 /**
@@ -292,6 +297,8 @@ class Faxios {
   // snapshot it started with, and composes nothing per call.
   #composed: AnyContextNext | null = null;
   #capabilities: Record<string, unknown> = Object.create(null);
+  // What the installed feature plugins add to dispatch, replaced like the middleware.
+  #features: Features = {};
   // Request options the installed plugins declared; any other unknown config key is rejected.
   #pluginOptions: ReadonlySet<string> = new Set();
 
@@ -309,7 +316,16 @@ class Faxios {
   }
 
   // Middleware runs in registration order before dispatch and in reverse order after it.
-  #use(middleware: AnyContextMiddleware | FaxiosPluginArgument): void {
+  #use(registered: AnyContextMiddleware | FaxiosFeaturePlugin | FaxiosPluginArgument): void {
+    // schema() and form() objects carry no middleware: their implementation was registered when
+    // they were built, so a look-alike object installs nothing.
+    const feature = featureDefinition(registered);
+    if (feature) {
+      this.#setMiddleware([ ...this.#middleware, { ref: registered, run: null, provided: [], options: FEATURE_OPTIONS[feature.feature], feature }]);
+      return;
+    }
+    // Anything else must be middleware or a plugin; the checks below hold it to that at runtime.
+    const middleware = registered as AnyContextMiddleware | FaxiosPluginArgument;
     const plugin = typeof middleware === "function" ? null : middleware;
     // Plugins are caller objects: only their own fields count, so a polluted Object.prototype
     // can't supply middleware or capabilities (THREATMODEL T-R4b).
@@ -330,7 +346,7 @@ class Faxios {
     const options = declared == null ? [] : Object.keys(declared).filter(key => !isDangerousKey(key));
     const provides = own("provides");
     const provided = provides == null ? [] : this.#addCapabilities(String(name), provides);
-    this.#setMiddleware([ ...this.#middleware, { ref: middleware, run, provided, options }]);
+    this.#setMiddleware([ ...this.#middleware, { ref: middleware, run, provided, options, feature: undefined }]);
   }
 
   // Removes middleware or a plugin registered with use(), by reference. In-flight requests keep
@@ -349,9 +365,16 @@ class Faxios {
   #setMiddleware(entries: ReadonlyArray<MiddlewareEntry>): void {
     this.#middleware = entries;
     this.#pluginOptions = new Set(entries.flatMap(entry => entry.options));
-    this.#composed = entries.length === 0
+    const features: Features = {};
+    for (const { feature } of entries) {
+      if (feature?.feature === "schema") features.schema = feature.implementation;
+      else if (feature?.feature === "form") features.form = feature.implementation;
+    }
+    this.#features = features;
+    const runs = entries.flatMap(entry => (entry.run ? [ entry.run ] : []));
+    this.#composed = runs.length === 0
       ? null
-      : composeMiddleware(entries, ctx => dispatchRequest(copyForDispatch(ctx.config)));
+      : composeMiddleware(runs, ctx => dispatchRequest(copyForDispatch(ctx.config), features));
   }
 
   #addCapabilities(pluginName: string, provides: unknown): Array<string> {
@@ -434,7 +457,8 @@ class Faxios {
     assertTimeout(hasOwnProp(config, "timeout") ? config.timeout : undefined, internal);
 
     const composed = this.#composed;
-    if (!composed) return runRequest(() => dispatchRequest(internal), internal, false);
+    const features = this.#features;
+    if (!composed) return runRequest(() => dispatchRequest(internal, features), internal, false);
     // Built when the run starts, so ctx.config carries the request's signal.
     return runRequest(() => composed({ attempt: 1, config: internal, state: Object.create(null), capabilities: this.#capabilities }), internal, true);
   }
@@ -524,7 +548,7 @@ class Faxios {
   getUri(config?: FaxiosRequestConfig) {
     config = mergeConfig(this.defaults, config);
     resolveAllowAbsoluteUrls(config, this.defaults);
-    return resolveRequestURL(config);
+    return resolveRequestURL(config, this.#features.form?.serializeParams);
   }
 
   define<

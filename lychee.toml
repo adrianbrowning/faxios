@@ -1,5 +1,6 @@
 # Link check for the repository's Markdown (.github/workflows/links.yml).
-# Docs-site routes (/pages/...) are checked by the VitePress build instead.
+# links.yml remaps docs-site URLs, site routes (/pages/...) and github.com blob/main URLs to files in
+# the checkout, so a link to a page or file the same PR adds passes and a link to a missing one fails.
 no_progress = true
 max_concurrency = 4
 max_retries = 5
@@ -10,7 +11,6 @@ include_mail = false
 exclude = [
   '^https?://(localhost|127\.0\.0\.1)',
   '^https?://([a-z0-9-]+\.)?example\.(com|org|net)',
-  '^file://.*/pages/',
   # npm's website answers 403 to GitHub Actions runners.
   '^https?://(www\.)?npmjs\.(com|org)/',
 ]

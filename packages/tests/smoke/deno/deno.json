@@ -2,6 +2,9 @@
   "imports": {
     "@std/assert": "jsr:@std/assert@1.0.19",
     "faxios": "../../../lib/dist/index.js",
+    "faxios/core": "../../../lib/dist/core.js",
+    "faxios/form": "../../../lib/dist/form.js",
+    "faxios/schema": "../../../lib/dist/schema.js",
     "faxios/plugins": "../../../lib/dist/lib/plugins/definePlugin.js",
     "faxios/plugins/auth-bearer": "../../../lib/dist/lib/plugins/authBearer.js",
     "faxios/plugins/forward-to": "../../../lib/dist/lib/plugins/forwardTo.js",

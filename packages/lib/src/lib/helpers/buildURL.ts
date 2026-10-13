@@ -1,34 +1,15 @@
 // @ts-self-types="./buildURL.d.ts" — required for Deno: published as an unsafe/* export
 "use strict";
 
-import type { ParamEncoder } from "../types.js";
-import { getSafeProp, isFunction, isURLSearchParams } from "../utils.js";
-import FaxiosURLSearchParams from "./FaxiosURLSearchParams.js";
+import { appendParams } from "./appendParams.js";
+import { serializeFormParams } from "./FaxiosURLSearchParams.js";
+
+// eslint-disable-next-line no-barrel-files/no-barrel-files -- the unsafe/helpers/buildURL.js export has always exported encode
+export { encode } from "./appendParams.js";
 
 /**
- * It replaces URL-encoded forms of `:`, `$`, `,`, and spaces with
- * their plain counterparts (`:`, `$`, `,`, `+`).
- *
- * @param {string} val The value to be encoded.
- *
- * @returns {string} The encoded value.
- */
-export function encode(val: string): string {
-  return encodeURIComponent(val)
-    .replace(/%3A/gi, ":")
-    .replace(/%24/g, "$")
-    .replace(/%2C/gi, ",")
-    .replace(/%20/g, "+");
-}
-
-// The request path validates `paramsSerializer.encode` as a function; this
-// guard narrows the untyped option to ParamEncoder without asserting it.
-function isParamEncoder(value: unknown): value is ParamEncoder {
-  return typeof value === "function";
-}
-
-/**
- * Build a URL by appending params to the end
+ * Build a URL by appending params to the end, serializing nested params like
+ * `@gcmdev/faxios/form` does.
  *
  * @param {string} url The base of the url (e.g., http://www.google.com)
  * @param {object} [params] The params to be appended
@@ -37,42 +18,5 @@ function isParamEncoder(value: unknown): value is ParamEncoder {
  * @returns {string} The formatted url
  */
 export default function buildURL(url: string, params?: unknown, options?: unknown): string {
-  if (!params) {
-    return url;
-  }
-
-  const _options = isFunction(options)
-    ? {
-      serialize: options,
-    }
-    : options;
-
-  // Read serializer options pollution-safely: own properties and methods on a
-  // class/template prototype are honored, but values injected onto a polluted
-  // Object.prototype are ignored.
-  const customEncode = getSafeProp(_options, "encode");
-  const _encode: ParamEncoder = isParamEncoder(customEncode) ? customEncode : encode;
-  const serializeFn = getSafeProp(_options, "serialize") as ((params: unknown, options: unknown) => string) | undefined;
-
-  let serializedParams: string | undefined;
-
-  if (serializeFn) {
-    serializedParams = serializeFn(params, _options);
-  }
-  else {
-    serializedParams = isURLSearchParams(params)
-      ? (params as { toString: () => string; }).toString()
-      : new FaxiosURLSearchParams(params, _options).toString(_encode);
-  }
-
-  if (serializedParams) {
-    const hashmarkIndex = url.indexOf("#");
-
-    if (hashmarkIndex !== -1) {
-      url = url.slice(0, hashmarkIndex);
-    }
-    url += (url.indexOf("?") === -1 ? "?" : "&") + serializedParams;
-  }
-
-  return url;
+  return appendParams(url, params, options, serializeFormParams);
 }

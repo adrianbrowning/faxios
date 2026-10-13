@@ -1,14 +1,15 @@
 // @ts-self-types="./index.d.ts"
 /* eslint-disable no-barrel-files/no-barrel-files */
+import type { FaxiosInstance } from "./lib/createInstance.ts";
 import faxios from "./lib/faxios.ts";
-import type { FaxiosInstance, FaxiosStatic } from "./lib/faxios.ts";
+import type { FaxiosStatic } from "./lib/faxios.ts";
 import type { CreateFaxiosDefaults } from "./lib/types.ts";
 
 // Static re-exports so the emitted .d.ts references source modules.
 // zshy rewrites .ts -> .js for static import/export, but NOT for inline
 // import() type expressions (ImportTypeNode). Destructuring these off the
 // runtime instance forced TS to emit the broken inline `import("./x.ts")` form.
-export { default as Faxios } from "./lib/core/Faxios.ts";
+export { default as Faxios } from "./lib/rootFaxios.ts";
 export { default as FaxiosError, isSchemaValidationError } from "./lib/core/FaxiosError.ts";
 export type { SchemaValidationError } from "./lib/core/FaxiosError.ts";
 export { default as Cancel, default as CanceledError } from "./lib/cancel/CanceledError.ts";
@@ -20,7 +21,8 @@ export { default as HttpStatusCode } from "./lib/helpers/HttpStatusCode.ts";
 export { default as mergeConfig } from "./lib/core/mergeConfig.ts";
 export { VERSION } from "./lib/env/data.ts";
 
-export type { FaxiosInstance, FaxiosStatic } from "./lib/faxios.ts";
+export type { FaxiosInstance } from "./lib/createInstance.ts";
+export type { FaxiosStatic } from "./lib/faxios.ts";
 export type { StandardSchemaV1 } from "./lib/types/standard-schema.ts";
 export type { BasePerCallConfig, DefineConfig, DefinedEndpoint, FaxiosLike, PerCallConfig } from "./lib/core/define.ts";
 export type { RouteBuilder, RouteConfig, RouteMethodConfig } from "./lib/core/route.ts";

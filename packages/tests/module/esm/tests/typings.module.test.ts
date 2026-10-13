@@ -1,6 +1,8 @@
+import { spawnSync } from "node:child_process";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { describe, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { cleanupTempFixture, createTempFixture } from "./helpers/fixture.js";
 import { runCommand } from "./helpers/run-command.js";
 
@@ -118,7 +120,43 @@ describe("module esm typings compatibility", () => {
     }
   });
 
-  for (const helper of [ "generics-index.ts", "middleware-index.ts" ]) {
+  it("type-checks faxios/core with use(schema()) and use(form()) strictly", () => {
+    const sourcePath = path.join(repoRoot, "tests/module/esm/tests/helpers/core-index.ts");
+    const fixturePath = createTempFixture(suiteRoot, "typings-core", sourcePath, strictTsconfig, { type: "module" });
+
+    try {
+      runCommand("node", [ tscBin, "--noEmit", "-p", "tsconfig.json" ], { cwd: fixturePath });
+    }
+    finally {
+      cleanupTempFixture(fixturePath);
+    }
+  });
+
+  // A @ts-expect-error passes on any error, so remove each directive and check that the code it
+  // names (e.g. TS2769 for responseSchema before use(schema())) is reported on the line below.
+  it("reports the error each faxios/core directive names once the directive is removed", () => {
+    const sourcePath = path.join(repoRoot, "tests/module/esm/tests/helpers/core-index.ts");
+    const lines = fs.readFileSync(sourcePath, "utf8").split("\n");
+    const expected = lines.flatMap((line, index) => {
+      const code = /\/\/ @ts-expect-error (TS\d+)/.exec(line)?.[1];
+      return code ? [ `index.ts(${index + 2}): ${code}` ] : [];
+    });
+    const fixturePath = createTempFixture(suiteRoot, "typings-core-codes", sourcePath, strictTsconfig, { type: "module" });
+
+    try {
+      fs.writeFileSync(path.join(fixturePath, "index.ts"), lines.map(line => line.replace("// @ts-expect-error", "// expected")).join("\n"));
+      const result = spawnSync(process.execPath, [ tscBin, "--noEmit", "-p", "tsconfig.json" ], { cwd: fixturePath, encoding: "utf8" });
+      const reported = [ ...result.stdout.matchAll(/^index\.ts\((\d+),\d+\): error (TS\d+)/gm) ].map(([ , line, code ]) => `index.ts(${line}): ${code}`);
+
+      expect(expected).toContain("index.ts(40): TS2769");
+      expect(reported).toEqual(expected);
+    }
+    finally {
+      cleanupTempFixture(fixturePath);
+    }
+  });
+
+  for (const helper of [ "generics-index.ts", "middleware-index.ts", "core-index.ts" ]) {
     it(`type-checks ${helper} against the shipped declarations with TypeScript 5.4`, () => {
       const sourcePath = path.join(repoRoot, "tests/module/esm/tests/helpers", helper);
       const fixturePath = createTempFixture(

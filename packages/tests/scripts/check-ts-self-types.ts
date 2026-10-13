@@ -1,16 +1,15 @@
 // Deno finds the types of a built `.js` module only through a `@ts-self-types` pragma, so every
 // module whose types a consumer reaches needs one, on line 1: each `zshy.exports` source in
-// packages/lib/package.json, each module packages/lib/src/index.ts re-exports from, and each
-// module packages/lib/src/lib/faxios.ts types a static member with (`typeof X`). The compiler
-// keeps the pragma only if it isn't attached to a statement it erases: a type-only import or
-// export right below it takes the pragma with it, so leave a blank line before one.
+// packages/lib/package.json, each module one of those sources re-exports from, and each module
+// packages/lib/src/lib/faxios.ts types a static member with (`typeof X`). The compiler keeps the
+// pragma only if it isn't attached to a statement it erases: a type-only import or export right
+// below it takes the pragma with it, so leave a blank line before one.
 // Part of `lint:ts` in packages/tests.
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, dirname, join, relative, resolve } from "node:path";
 
 const libDir = resolve(import.meta.dirname, "../../lib");
 const srcDir = join(libDir, "src");
-const indexPath = join(srcDir, "index.ts");
 const faxiosPath = join(srcDir, "lib/faxios.ts");
 const problems: Array<string> = [];
 
@@ -41,14 +40,17 @@ function requirePragma(from: string, specifier: string, reason: string): void {
 // Published entry points: `zshy.exports` in package.json, `unsafe/*` included.
 const libPackagePath = join(libDir, "package.json");
 const { zshy } = JSON.parse(readFileSync(libPackagePath, "utf8")) as { zshy: { exports: Record<string, string>; }; };
-for (const [ key, source ] of Object.entries(zshy.exports)) {
-  if (source.endsWith(".ts")) requirePragma(libPackagePath, source, `package.json exports "${key}" from it`);
+const entries = Object.entries(zshy.exports).filter(([ , source ]) => source.endsWith(".ts"));
+for (const [ key, source ] of entries) {
+  requirePragma(libPackagePath, source, `package.json exports "${key}" from it`);
 }
 
-// Every `export … from "./x.ts"` in index.ts, values and types, including multi-line lists.
-const index = readFileSync(indexPath, "utf8");
-for (const match of index.matchAll(/export\s+(?:type\s*)?\{[^}]*\}\s*from\s*"(\.[^"]+)"/g)) {
-  requirePragma(indexPath, match[1]!, "src/index.ts re-exports from it");
+// Every `export … from "./x.ts"` in each entry source, values and types, including multi-line lists.
+for (const [ key, source ] of entries) {
+  const entryPath = join(libDir, source);
+  for (const match of readFileSync(entryPath, "utf8").matchAll(/export\s+(?:type\s*)?\{[^}]*\}\s*from\s*"(\.[^"]+)"/g)) {
+    requirePragma(entryPath, match[1]!, `the "${key}" entry re-exports from it`);
+  }
 }
 
 // Modules faxios.ts imports a value from and uses as `typeof X` in its exported types.

@@ -8,10 +8,12 @@ import FaxiosError from "#src/lib/core/FaxiosError.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import mergeConfig from "#src/lib/core/mergeConfig.js";
 import prepareRequest from "#src/lib/core/prepareRequest.js";
-import defaults from "#src/lib/defaults/index.js";
+import createDefaults from "#src/lib/defaults/index.js";
 import { retry } from "#src/lib/plugins/retry.ts";
 import { timing } from "#src/lib/plugins/timing.ts";
 import { extend, merge } from "#src/lib/utils.js";
+
+const defaults = createDefaults();
 
 // ponytail: only augment Object.prototype with non-conflicting test-only keys.
 // All faxios config keys overlap with FaxiosRequestConfig and are accessed via ObjProto.

@@ -1,8 +1,10 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
+import { z } from "zod";
 import * as root from "#src/index.ts";
 import faxios, { create, Faxios, FaxiosError } from "#src/index.ts";
 import type { FaxiosRequestConfig } from "#src/index.ts";
+import CoreFaxios from "#src/lib/core/Faxios.ts";
 import * as pluginsEntry from "#src/lib/plugins/definePlugin.ts";
 
 describe("static api", () => {
@@ -58,6 +60,17 @@ describe("static api", () => {
     assert.strictEqual(bare.use, undefined);
     // @ts-expect-error TS2339 -- eject() is typed only on the instance faxios.create() returns
     assert.strictEqual(bare.eject, undefined);
+  });
+
+  it("should give new Faxios() from the root the schema and form features, as before the core split", async () => {
+    // new Faxios() has no defaults, so no transformResponse: the body arrives as text.
+    const fetch = async () => new Response("7");
+    const bare = new Faxios({ baseURL: "https://api.example.com", env: { fetch } });
+
+    assert.ok(bare instanceof CoreFaxios);
+    assert.strictEqual(bare.getUri({ url: "/", params: { filter: { a: 1 } } }), "https://api.example.com/?filter%5Ba%5D=1");
+    const response = await bare.get("/", { responseSchema: z.string().transform(Number) });
+    assert.strictEqual(response.data, 7);
   });
 
   it("only types the static members on the default export", () => {

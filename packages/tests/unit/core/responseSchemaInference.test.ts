@@ -1,7 +1,7 @@
 import { describe, expectTypeOf, it } from "vitest";
 import type { FaxiosResponse, StandardSchemaV1 } from "#src/index.ts";
 import { FaxiosError, isSchemaValidationError } from "#src/index.ts";
-import type { FaxiosInstance } from "#src/lib/faxios.ts";
+import type { FaxiosInstance } from "#src/index.ts";
 
 type UserOutput = { age: number; name: string; };
 type UserSchema = StandardSchemaV1<unknown, UserOutput>;

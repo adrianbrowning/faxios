@@ -1,7 +1,7 @@
 import { describe, expectTypeOf, it } from "vitest";
 import { z } from "zod";
 import faxios from "#src/index.ts";
-import type { FaxiosInstance } from "#src/lib/faxios.ts";
+import type { FaxiosInstance } from "#src/index.ts";
 
 // Type-checked by `lint:ts`; the functions are never called.
 

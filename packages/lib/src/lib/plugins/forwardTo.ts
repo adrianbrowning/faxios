@@ -1,7 +1,7 @@
 // @ts-self-types="./forwardTo.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import { FaxiosError } from "../../index.js";
-import type { FaxiosContext, FaxiosPlugin, FaxiosRequestConfig } from "../../index.js";
+import { FaxiosError } from "../../core.js";
+import type { FaxiosContext, FaxiosPlugin, FaxiosRequestConfig } from "../../core.js";
 import { definePlugin } from "./definePlugin.js";
 import { assertOptions, isHeaderName, own } from "./shared.js";
 

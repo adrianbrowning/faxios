@@ -1,7 +1,7 @@
 // @ts-self-types="./authBearer.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import { FaxiosError, FaxiosHeaders } from "../../index.js";
-import type { FaxiosPlugin, InternalFaxiosRequestConfig } from "../../index.js";
+import { FaxiosError, FaxiosHeaders } from "../../core.js";
+import type { FaxiosPlugin, InternalFaxiosRequestConfig } from "../../core.js";
 import { definePlugin } from "./definePlugin.js";
 import { assertOptions, fullPath, isAbsoluteURL, isBoolean, isHeaderName, own } from "./shared.js";
 

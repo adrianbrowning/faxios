@@ -57,11 +57,15 @@
     "lint:esl": "eslint --config eslint.config.ts \"**/*.{j,t}s{,x}\" --cache --cache-strategy content --max-warnings=0",
     "lint:s": "eslint --config eslint.config.style.ts \"**/*.{j,t}s{,x}\" --cache --cache-strategy content --max-warnings=0",
     "lint:fix": "pnpm lint:s --fix",
-    "lint:e18e": "pnpm dlx @e18e/cli analyze"
+    "lint:e18e": "pnpm dlx @e18e/cli analyze",
+    "size": "size-limit"
   },
   "devDependencies": {
     "@gingacodemonkey/config": "^0.1.0",
+    "@size-limit/esbuild": "14.2.0",
+    "@size-limit/file": "14.2.0",
     "eslint": "^9.39.5",
+    "size-limit": "14.2.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.0",
     "zshy": "latest"
@@ -69,6 +73,9 @@
   "zshy": {
     "exports": {
       ".": "./src/index.ts",
+      "./core": "./src/core.ts",
+      "./form": "./src/form.ts",
+      "./schema": "./src/schema.ts",
       "./plugins": "./src/lib/plugins/definePlugin.ts",
       "./plugins/auth-bearer": "./src/lib/plugins/authBearer.ts",
       "./plugins/forward-to": "./src/lib/plugins/forwardTo.ts",
@@ -91,6 +98,18 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "default": "./dist/core.js"
+    },
+    "./form": {
+      "types": "./dist/form.d.ts",
+      "default": "./dist/form.js"
+    },
+    "./schema": {
+      "types": "./dist/schema.d.ts",
+      "default": "./dist/schema.js"
     },
     "./plugins": {
       "types": "./dist/lib/plugins/definePlugin.d.ts",

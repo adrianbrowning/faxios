@@ -40,6 +40,9 @@ jobs:
           args: >-
             --config lychee.toml
             --root-dir ${{ github.workspace }}
+            --remap '^https://adrianbrowning\.github\.io/faxios/pages/([^#]+)(#.*)?$ file://${{ github.workspace }}/packages/docs/pages/$1.md'
+            --remap '^file://${{ github.workspace }}/pages/([^#]+)(#.*)?$ file://${{ github.workspace }}/packages/docs/pages/$1.md'
+            --remap '^https://github\.com/adrianbrowning/faxios/blob/main/([^#]+)(#.*)?$ file://${{ github.workspace }}/$1'
             '*.md' '.github/**/*.md' 'docs/**/*.md'
             'packages/docs/index.md' 'packages/docs/pages/**/*.md'
             'packages/lib/README.md' 'packages/lib/skills/**/*.md'

@@ -191,7 +191,38 @@ export interface FaxiosResponseTransformer {
   ): unknown;
 }
 
-export interface FaxiosRequestConfig<D = unknown> {
+/** A feature `@gcmdev/faxios/schema` (`schema`) or `@gcmdev/faxios/form` (`form`) installs. */
+export type FaxiosFeature = "form" | "schema";
+
+/**
+ * What `schema()` and `form()` return: install it with `use()`. It adds no middleware; dispatch
+ * runs the feature at its fixed place in the request, whatever middleware is installed.
+ */
+export interface FaxiosFeaturePlugin<TFeature extends FaxiosFeature = FaxiosFeature> {
+  readonly feature: TFeature;
+  readonly name: TFeature;
+}
+
+/** The request options `@gcmdev/faxios/schema` adds. */
+export interface SchemaRequestOptions {
+  paramsSchema?: StandardSchemaV1;
+  /**
+   * Standard Schema that validates `pathParams` before substitution; its output replaces
+   * `pathParams`. Requires `pathParams`, or the request rejects with `ERR_BAD_OPTION_VALUE`.
+   * A validation failure, or output that isn't a plain object, rejects with `ERR_BAD_PATH_PARAMS_SCHEMA`.
+   */
+  pathParamsSchema?: StandardSchemaV1<unknown, Record<string, unknown>>;
+  requestSchema?: StandardSchemaV1;
+  responseSchema?: StandardSchemaV1;
+}
+
+/** The request option `@gcmdev/faxios/form` adds. */
+export interface FormRequestOptions {
+  formSerializer?: FormSerializerOptions;
+}
+
+/** Request config of an instance without the schema and form features (`@gcmdev/faxios/core`). */
+export interface FaxiosCoreRequestConfig<D = unknown> {
   allowAbsoluteUrls?: boolean;
   auth?: FaxiosBasicCredentials;
   baseURL?: string;
@@ -211,7 +242,6 @@ export interface FaxiosRequestConfig<D = unknown> {
     Response?: (new (body?: BodyInit | null, init?: ResponseInit) => Response) | null;
   };
   fetchOptions?: Record<string, unknown>;
-  formSerializer?: FormSerializerOptions;
   headers?: FaxiosConfigHeaders;
   maxBodyLength?: number;
   maxContentLength?: number;
@@ -231,7 +261,6 @@ export interface FaxiosRequestConfig<D = unknown> {
    */
   onUploadProgress?: (progressEvent: FaxiosProgressEvent) => void;
   params?: Record<string, unknown> | URLSearchParams;
-  paramsSchema?: StandardSchemaV1;
   paramsSerializer?: CustomParamsSerializer | ParamsSerializerOptions;
   parseReviver?: (
     this: unknown,
@@ -246,15 +275,7 @@ export interface FaxiosRequestConfig<D = unknown> {
    * with no matching placeholder are ignored. Without `pathParams`, placeholders are sent literally.
    */
   pathParams?: Record<string, unknown>;
-  /**
-   * Standard Schema that validates `pathParams` before substitution; its output replaces
-   * `pathParams`. Requires `pathParams`, or the request rejects with `ERR_BAD_OPTION_VALUE`.
-   * A validation failure, or output that isn't a plain object, rejects with `ERR_BAD_PATH_PARAMS_SCHEMA`.
-   */
-  pathParamsSchema?: StandardSchemaV1<unknown, Record<string, unknown>>;
   redact?: Array<string>;
-  requestSchema?: StandardSchemaV1;
-  responseSchema?: StandardSchemaV1;
   responseType?: ResponseType;
   signal?: AbortSignal | GenericAbortSignal;
   timeout?: Milliseconds;
@@ -274,15 +295,30 @@ export interface FaxiosRequestConfig<D = unknown> {
   xsrfHeaderName?: string;
 }
 
-export type SchemaConfig<O, D = unknown> = FaxiosRequestConfig<D> & { responseSchema: StandardSchemaV1<unknown, O>; };
+/** Request config of an instance with both features, which is every instance the root entry creates. */
+export interface FaxiosRequestConfig<D = unknown> extends FaxiosCoreRequestConfig<D>, FormRequestOptions, SchemaRequestOptions {}
+
+// The options of the features F holds, `unknown` (adds nothing) for the ones it lacks.
+type FeatureOptions<F> = ("form" extends F ? FormRequestOptions : unknown) & ("schema" extends F ? SchemaRequestOptions : unknown);
+
+/** Request config of an instance with the features F installed. */
+export type FaxiosRequestConfigFor<F, D = unknown> = [FaxiosFeature] extends [F] ? FaxiosRequestConfig<D> : FaxiosCoreRequestConfig<D> & FeatureOptions<F>;
+
+/** The request option names of the features F lacks. */
+export type MissingFeatureKeys<F> = ("form" extends F ? never : keyof FormRequestOptions) | ("schema" extends F ? never : keyof SchemaRequestOptions);
+
+/** Config for the request overloads typed by a `responseSchema`; `never` without the schema feature, so those overloads don't apply. */
+export type SchemaConfig<O, D = unknown, F = FaxiosFeature> = "schema" extends F
+  ? FaxiosRequestConfigFor<F, D> & { responseSchema: StandardSchemaV1<unknown, O>; }
+  : never;
 
 /**
  * Config for the request overloads typed by an explicit response generic `T`: a `responseSchema`
  * must output `T`, so the generic can't silently override what the schema returns.
  */
-export type ResponseTypedConfig<T, D = unknown> = Omit<FaxiosRequestConfig<D>, "responseSchema"> & {
-  responseSchema?: StandardSchemaV1<unknown, T>;
-};
+export type ResponseTypedConfig<T, D = unknown, F = FaxiosFeature> = "schema" extends F
+  ? Omit<FaxiosRequestConfigFor<F, D>, "responseSchema"> & { responseSchema?: StandardSchemaV1<unknown, T>; }
+  : FaxiosRequestConfigFor<F, D>;
 
 export type RawFaxiosRequestConfig<D = unknown> = FaxiosRequestConfig<D>;
 

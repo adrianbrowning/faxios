@@ -3,31 +3,37 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "fbcbf9ef7539ccc9240c0172ac36ab939a6bccfb81645320a815ba6c381a4d96",
+      "fingerprint": "74495cdefacc6b514eff80415a0c9e94463d949440f3d6594c2c21303fdd1d88",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "3bf949a69aad11bd650413665ee98c34f837cf2f1c95dcdc3fef04f5dc37df18",
-        "packages/lib/package.json": "0d57625d5c5e8020dbe576224cdf3d6a90a422ef851e199410e43557091141a2",
-        "packages/lib/skills/configure-requests/SKILL.md": "9e008796bcbd01d607669e44449494d1722f68a09478a9ebba5579d7c10c6377",
+        "MIGRATION_GUIDE.md": "15b67c13a9be2eb87bcd05f738eb94f28c559d2f2795e62146cbc2cde1c126e2",
+        "packages/lib/package.json": "0f023177a8cc70c3e513b9723225820d04f4162bacb6d7299de30c28fab00aca",
+        "packages/lib/skills/configure-requests/SKILL.md": "edeaea9992ad0fed3a45eed6a28e64e2f953340f20354ef4941c13544efb5650",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
-        "packages/lib/skills/configure-requests/references/plugins.md": "96873b03af18312869a0308acca3f5164e0de3811a45f280ccf0265c1f014dc4",
-        "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
+        "packages/lib/skills/configure-requests/references/plugins.md": "ac64fdd8c7e89c4746a1cecd659fa0d1274662770c5c9f4b83803b8ff231a2ed",
+        "packages/lib/src/core.ts": "c57c6ddd98214c07d67779ade2c024fd371c925c4192d98d0f3d68e543425b33",
+        "packages/lib/src/form.ts": "d16ab47067481a28e43790ed7759b71a753d6302849ca67eb9ec68870afe437c",
+        "packages/lib/src/index.ts": "b7331f853663f186d2fc29caa3e41729b39d48595054e79273d1a191056eae17",
         "packages/lib/src/lib/adapters/fetch.ts": "11d5e3d57f547279f4a60b19d26f1be988c82eea2317d21fd2222d4c2cb2a3ae",
-        "packages/lib/src/lib/core/Faxios.ts": "2a660bff655bbe89115a0810d4e52c8c6085e6fd6d76aaf5bfcfd2201d9c25f4",
+        "packages/lib/src/lib/core/Faxios.ts": "ddab21a6576939b65c2a99f226dde1df0efad6c0d582113b296026e408a06cee",
         "packages/lib/src/lib/core/FaxiosError.ts": "0d4dcfef4b59cee6e04d94dee4bf6ed90b17ca52c97240dd0437ffee62842c4b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
-        "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "6b62f390d50ef034fab96bf020191e1691ff35a1ca2c37f63f6b857b9a797654",
+        "packages/lib/src/lib/core/define.ts": "44a581d8e0764eb3a7ca1d9ca39d9b04a6fd6a480489a05ab77525b24472980e",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "a399d550a55720f08dcd6a35d16bb49976c2e17a06a475623e43f35120f7247d",
+        "packages/lib/src/lib/core/features.ts": "d2ff30480e3a828dc37209bf895f4195378570b1c5148e77fce11930e03e9dd8",
         "packages/lib/src/lib/core/mergeConfig.ts": "69cd4509ebe201c439be5697f748f3bfb903ec7ec0ca4bf8573e7cd6bf075feb",
-        "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "e7c4505d47a7a7f03e00c6a79d26cf65e4899650b7671abbc3c008c771a0e9f4",
+        "packages/lib/src/lib/core/route.ts": "8cc31f9f5fd6a248f8ae21ba1ef9218c46b1f542a52b4a61f0f4e0dcac749f47",
+        "packages/lib/src/lib/createInstance.ts": "a2d8c84d3ac9a1ce6194af73fe188e5bc872fad83ecc0e0520d18c750e15ef4e",
+        "packages/lib/src/lib/faxios.ts": "aee5921ce09e20a9bab7aefcaaf8c66c84deb840d5030837d13d5d380fcce9e7",
         "packages/lib/src/lib/helpers/composeSignals.ts": "e625917dc3744abb5ac372b3da2173b7e01e1d20e96c90fcee08bbb90480c765",
-        "packages/lib/src/lib/plugins/authBearer.ts": "6679d5ad304defc2ffd75f65bb0ec8edf38f7ccd1b4632465c6e127216125080",
-        "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
-        "packages/lib/src/lib/plugins/forwardTo.ts": "3561b842f48c354df300ecb38f37cb0971d8f42a6de8662c1161b1c36eb94a5f",
-        "packages/lib/src/lib/plugins/retry.ts": "83aac25415efa7c0135b7ab4733632b3cb265a9ab11266a125eb2541c2af7d12",
-        "packages/lib/src/lib/plugins/timing.ts": "718ad5f2c23e3ee0e39ef8632b223da5ad46e556d4d5d0e5f54369708eaaee5d",
-        "packages/lib/src/lib/types.ts": "7be2bd96745f0f50e4ce5cf6e0ba00803662033b75f1543390656c7dd5b317c3",
-        "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
+        "packages/lib/src/lib/plugins/authBearer.ts": "2ba46d306fa855e526e28598adf1eeb2697a211c6250df94fe817a6bd0c1a84d",
+        "packages/lib/src/lib/plugins/definePlugin.ts": "d1191949ea1daeb40262aec838b2d36bcc3efdfd5bba673de208eac02aa7c959",
+        "packages/lib/src/lib/plugins/forwardTo.ts": "c568cca330565448bb0d042ccaa3caa934dc22a6668528dda747f48ea53b80bf",
+        "packages/lib/src/lib/plugins/retry.ts": "0882204742016bdd87c96a44c21c40b88a6036d1bd1d856e2c8a6f6f194dda49",
+        "packages/lib/src/lib/plugins/timing.ts": "a6b82205e5fd06b9e35933d94bc6c392df714aa748d2ec6989de43018f31cb69",
+        "packages/lib/src/lib/rootFaxios.ts": "fb5eb96668b01947a6a8cbd2c3717db497beee9950692d7f622a63de2beb3c17",
+        "packages/lib/src/lib/types.ts": "ddf0f8fffd54a9efe53e56f46e2cba368be74ed9e0fa8ecbf9455bcc2824b7ce",
+        "packages/lib/src/schema.ts": "51214bb3385f8bb5368ec67158a98ce45eac42c1bd0476c78681c90fd26178df",
+        "packages/tests/unit/api.test.ts": "ca0750fb03d66d15aad62fcf37ace4388c2ce6e9958e65786905c63c84867a12",
         "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
@@ -35,42 +41,48 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/helpers/composeSignals.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/core.ts, packages/lib/src/form.ts, packages/lib/src/index.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/define.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/features.ts, packages/lib/src/lib/core/route.ts, packages/lib/src/lib/createInstance.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/definePlugin.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/lib/src/lib/rootFaxios.ts, packages/lib/src/lib/types.ts, packages/lib/src/schema.ts, packages/tests/unit/api.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "75af14314ce0a7f0f9aab32c1dd62f9eda1e7ecbcd373bb9bd9938543fab5731",
+      "fingerprint": "db53574351c4ded77054ad76ed414647e587a716da03773afbae946005f20493",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "3bf949a69aad11bd650413665ee98c34f837cf2f1c95dcdc3fef04f5dc37df18",
+        "MIGRATION_GUIDE.md": "15b67c13a9be2eb87bcd05f738eb94f28c559d2f2795e62146cbc2cde1c126e2",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
-        "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
-        "packages/lib/package.json": "0d57625d5c5e8020dbe576224cdf3d6a90a422ef851e199410e43557091141a2",
-        "packages/lib/skills/configure-requests/SKILL.md": "9e008796bcbd01d607669e44449494d1722f68a09478a9ebba5579d7c10c6377",
+        "_artifacts/skill_tree.yaml": "b05df669c1e6255e1a68572bb1616f2612fa59471aada6847866851983dd020a",
+        "packages/lib/package.json": "0f023177a8cc70c3e513b9723225820d04f4162bacb6d7299de30c28fab00aca",
+        "packages/lib/skills/configure-requests/SKILL.md": "edeaea9992ad0fed3a45eed6a28e64e2f953340f20354ef4941c13544efb5650",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
-        "packages/lib/skills/configure-requests/references/plugins.md": "96873b03af18312869a0308acca3f5164e0de3811a45f280ccf0265c1f014dc4",
-        "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
+        "packages/lib/skills/configure-requests/references/plugins.md": "ac64fdd8c7e89c4746a1cecd659fa0d1274662770c5c9f4b83803b8ff231a2ed",
+        "packages/lib/src/core.ts": "c57c6ddd98214c07d67779ade2c024fd371c925c4192d98d0f3d68e543425b33",
+        "packages/lib/src/form.ts": "d16ab47067481a28e43790ed7759b71a753d6302849ca67eb9ec68870afe437c",
+        "packages/lib/src/index.ts": "b7331f853663f186d2fc29caa3e41729b39d48595054e79273d1a191056eae17",
         "packages/lib/src/lib/adapters/fetch.ts": "11d5e3d57f547279f4a60b19d26f1be988c82eea2317d21fd2222d4c2cb2a3ae",
-        "packages/lib/src/lib/core/Faxios.ts": "2a660bff655bbe89115a0810d4e52c8c6085e6fd6d76aaf5bfcfd2201d9c25f4",
+        "packages/lib/src/lib/core/Faxios.ts": "ddab21a6576939b65c2a99f226dde1df0efad6c0d582113b296026e408a06cee",
         "packages/lib/src/lib/core/FaxiosError.ts": "0d4dcfef4b59cee6e04d94dee4bf6ed90b17ca52c97240dd0437ffee62842c4b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
-        "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "6b62f390d50ef034fab96bf020191e1691ff35a1ca2c37f63f6b857b9a797654",
+        "packages/lib/src/lib/core/define.ts": "44a581d8e0764eb3a7ca1d9ca39d9b04a6fd6a480489a05ab77525b24472980e",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "a399d550a55720f08dcd6a35d16bb49976c2e17a06a475623e43f35120f7247d",
+        "packages/lib/src/lib/core/features.ts": "d2ff30480e3a828dc37209bf895f4195378570b1c5148e77fce11930e03e9dd8",
         "packages/lib/src/lib/core/mergeConfig.ts": "69cd4509ebe201c439be5697f748f3bfb903ec7ec0ca4bf8573e7cd6bf075feb",
-        "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "e7c4505d47a7a7f03e00c6a79d26cf65e4899650b7671abbc3c008c771a0e9f4",
+        "packages/lib/src/lib/core/route.ts": "8cc31f9f5fd6a248f8ae21ba1ef9218c46b1f542a52b4a61f0f4e0dcac749f47",
+        "packages/lib/src/lib/createInstance.ts": "a2d8c84d3ac9a1ce6194af73fe188e5bc872fad83ecc0e0520d18c750e15ef4e",
+        "packages/lib/src/lib/faxios.ts": "aee5921ce09e20a9bab7aefcaaf8c66c84deb840d5030837d13d5d380fcce9e7",
         "packages/lib/src/lib/helpers/composeSignals.ts": "e625917dc3744abb5ac372b3da2173b7e01e1d20e96c90fcee08bbb90480c765",
-        "packages/lib/src/lib/plugins/authBearer.ts": "6679d5ad304defc2ffd75f65bb0ec8edf38f7ccd1b4632465c6e127216125080",
-        "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
-        "packages/lib/src/lib/plugins/forwardTo.ts": "3561b842f48c354df300ecb38f37cb0971d8f42a6de8662c1161b1c36eb94a5f",
-        "packages/lib/src/lib/plugins/retry.ts": "83aac25415efa7c0135b7ab4733632b3cb265a9ab11266a125eb2541c2af7d12",
-        "packages/lib/src/lib/plugins/timing.ts": "718ad5f2c23e3ee0e39ef8632b223da5ad46e556d4d5d0e5f54369708eaaee5d",
-        "packages/lib/src/lib/types.ts": "7be2bd96745f0f50e4ce5cf6e0ba00803662033b75f1543390656c7dd5b317c3",
-        "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
+        "packages/lib/src/lib/plugins/authBearer.ts": "2ba46d306fa855e526e28598adf1eeb2697a211c6250df94fe817a6bd0c1a84d",
+        "packages/lib/src/lib/plugins/definePlugin.ts": "d1191949ea1daeb40262aec838b2d36bcc3efdfd5bba673de208eac02aa7c959",
+        "packages/lib/src/lib/plugins/forwardTo.ts": "c568cca330565448bb0d042ccaa3caa934dc22a6668528dda747f48ea53b80bf",
+        "packages/lib/src/lib/plugins/retry.ts": "0882204742016bdd87c96a44c21c40b88a6036d1bd1d856e2c8a6f6f194dda49",
+        "packages/lib/src/lib/plugins/timing.ts": "a6b82205e5fd06b9e35933d94bc6c392df714aa748d2ec6989de43018f31cb69",
+        "packages/lib/src/lib/rootFaxios.ts": "fb5eb96668b01947a6a8cbd2c3717db497beee9950692d7f622a63de2beb3c17",
+        "packages/lib/src/lib/types.ts": "ddf0f8fffd54a9efe53e56f46e2cba368be74ed9e0fa8ecbf9455bcc2824b7ce",
+        "packages/lib/src/schema.ts": "51214bb3385f8bb5368ec67158a98ce45eac42c1bd0476c78681c90fd26178df",
+        "packages/tests/unit/api.test.ts": "ca0750fb03d66d15aad62fcf37ace4388c2ce6e9958e65786905c63c84867a12",
         "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
         "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
@@ -78,11 +90,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "head": "d240561455a54e89baee8bfd6c615a27ebb667c7",
       "outcome": "updated",
-      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core; skill_tree.yaml sources list the new entry modules.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/helpers/composeSignals.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
+        "Changed: _artifacts/skill_tree.yaml at d240561455a54e89baee8bfd6c615a27ebb667c7"
       ]
     },
     "source:knip.json": {
@@ -136,17 +148,15 @@
       ]
     },
     "source:packages/docs/.vitepress/config.mts": {
-      "fingerprint": "d26a8a7bafc9f165354e981f50596eeb88aeb2f69fbe444b1827b94bfc725fb2",
+      "fingerprint": "f38137dd0f167ed87d01315eb7661e3cc8a8fa8b71717cb56db8808d642b4333",
       "snapshot": {
-        "packages/docs/.vitepress/config.mts": "3773cf4200e9235a128acaf72bc751b3796f5638c6be702bea0867736393695a"
+        "packages/docs/.vitepress/config.mts": "02961dfeb6d4e32b0291ce19446e359ba9009739c29cd07761c24d0ea7012c0d"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Docs site config: Changelog nav link points at packages/lib/CHANGELOG.md; srcExclude drops the deleted es/fr/zh dirs. Not library API.",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "git diff cf6f2410..HEAD -- packages/docs/.vitepress/config.mts",
-        "pnpm --filter @faxios/docs run docs:build passed.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/docs/.vitepress/config.mts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/docs/es/pages/advanced/interceptors.md": {
@@ -174,15 +184,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "b31b5d722a371d82f8b5ef2dae119a4a6fcee0d869a794990682c9a0a8b16630",
+      "fingerprint": "06ed2e7586168cee7bec6f110eae605399e92a50b422886b582cde8243ca3548",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "76d309958edf022cb7c3d90f20952541c23898df1e09a6d8810e6d54322a3cca"
+        "packages/docs/pages/advanced/api-reference.md": "4abbafab546a512abbdc6c94608eae1858f98feb016eeac435b5ae75273925d6"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/api-reference.md at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/docs/pages/advanced/api-reference.md at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
@@ -258,15 +268,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "14af4f8b78e18187e945bbe54f33a026ebc4c22030243f68801723c52010e4df",
+      "fingerprint": "4a4976850e812eae9e0e66ecd6d8b4aa274112918a5f5c9ddf2cc7ece2a4d89a",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "4f4d8d5291e9d8b288c8aa3beb1e1db6111a6185dd559215788097249b4a2890"
+        "packages/docs/pages/advanced/middleware.md": "654a6b06aede864986b03c8224228aab780b917151ed7fd082b85d2e038e9c0f"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/docs/pages/advanced/middleware.md at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
@@ -414,27 +424,27 @@
       ]
     },
     "source:packages/lib/README.md": {
-      "fingerprint": "cb03b3ba80df6cbf90e0021975ad9e64677b2055f57b83ab3b7cf94b6536a330",
+      "fingerprint": "d2a8d1efea1a9352355d2bd307e298f9f9c6f6b0629841511ab9d63a08b17b92",
       "snapshot": {
-        "packages/lib/README.md": "7ecc2cf5a0b9871e8659bb9805fcd4b162a4693c10501b20077205d03a1e9b2d"
+        "packages/lib/README.md": "f7f926b7f37b738c550c9787cbb1e8a86633ae5540c303a3fa3de7278df267e6"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/lib/README.md at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/lib/README.md at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
-      "fingerprint": "482f48c656821c5dbb6f4334ba06509b306274c88b2904c0f30043fbac61529b",
+      "fingerprint": "486854a46120899d0dce6a92517589d12d8c4942dc2b568de709def4cac17f5f",
       "snapshot": {
-        "packages/lib/src/lib/defaults/index.ts": "d88482e76419a0202278ea6c77c424b1bf4deb3d35c1536ac3c5ee3f66779673"
+        "packages/lib/src/lib/defaults/index.ts": "3d7f8dc2c1f747942155b0874d80e39894bdcbecb41bb99f9b1e5d0a9c22971a"
       },
-      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/lib/src/lib/defaults/index.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
+        "Changed: packages/lib/src/lib/defaults/index.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/tests/browser/headers.browser.test.ts": {
@@ -1833,15 +1843,15 @@
       ]
     },
     "source:.claude/skills/do-work/SKILL.md": {
-      "fingerprint": "6c0cbd4c92ed911b9e0c5d88728d2afe868a25cf91be5bd1079148e4f6ec576f",
+      "fingerprint": "88fbd3709705ac508a05bd2a6707a837345f63cac15af63cf5492a75f7af9959",
       "snapshot": {
-        ".claude/skills/do-work/SKILL.md": "390315ca477b2e2dd421c10faff555542959f2c1e35cba9238a93027d81f1446"
+        ".claude/skills/do-work/SKILL.md": "3db9a3880c3eecf7e0a12e3ed1bfc890a860190ddee0d2df9972a885e7e595b9"
       },
-      "head": "4f30051218eb0164827fbf54d6ea3fac008dbc80",
-      "outcome": "no-change",
-      "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: .claude/skills/do-work/SKILL.md at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
+        "Changed: .claude/skills/do-work/SKILL.md at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:.github/actions/setup/action.yml": {
@@ -2198,15 +2208,15 @@
       ]
     },
     "source:packages/lib/eslint.config.ts": {
-      "fingerprint": "94f5c01adb8e8a5b0453afff77fbf76b3cc7d9f881f05b073cb07c634080ccf7",
+      "fingerprint": "23db2e16b0a89f15f4788fc4a7de2c858df89b9863bb355080034fd1311d908f",
       "snapshot": {
-        "packages/lib/eslint.config.ts": "7c87a76931acae679a1a12e46563e26f14f9019a3620546170056403f222ef88"
+        "packages/lib/eslint.config.ts": "4d0f9f5063983a82ebeaade78d7aa639ce657a623e61477ea25dabed117df317"
       },
-      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/lib/eslint.config.ts at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+        "Changed: packages/lib/eslint.config.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
@@ -2246,27 +2256,27 @@
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
-      "fingerprint": "adb9b34cb9787996d639612a2798fd18eefa93f0a4a5fad3db1ad5a4e42b5876",
+      "fingerprint": "5002dfa3b7245933c8e12db85dd90744c1ce7b6d6a062188b734225831460d15",
       "snapshot": {
-        "packages/lib/src/lib/core/prepareRequest.ts": "31953085e47d8fa73ac45a2baf275dd0935aa49f0c44f5b73166f63135d94e86"
+        "packages/lib/src/lib/core/prepareRequest.ts": "735eec1dec96f1dbbbfdb63b1bef07af68fac693d7a4943da9206207aaf5390c"
       },
-      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
+        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/lib/src/lib/core/transformData.ts": {
-      "fingerprint": "f21a34487b387bc64abf8067dd19ab56d1e107679aa52d259db2b1a53e8546d2",
+      "fingerprint": "f028de2a01b3cb7c713b7e908bbc7959942665256c3893502404915e9f7e360d",
       "snapshot": {
-        "packages/lib/src/lib/core/transformData.ts": "6a1ab049364619ea115ddeeb75774406cfe241cc06186ee7a1045c612b497044"
+        "packages/lib/src/lib/core/transformData.ts": "5c10ac2f2ec2237666e171e9edcc2f7f74da6f2f50b3351c58355729d049b14a"
       },
-      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/transformData.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
+        "Changed: packages/lib/src/lib/core/transformData.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/lib/src/lib/core/validateSchema.ts": {
@@ -2404,16 +2414,15 @@
       ]
     },
     "source:packages/lib/src/lib/platform.ts": {
-      "fingerprint": "8bc7df58aa33cc7599ea188e4ced891c7cecf81eb05b4a6121c7e140ce7db5b9",
+      "fingerprint": "0551533dcef3f0d4582273ac1714e0385f4fee1adc709bfb79455e4abc49a50f",
       "snapshot": {
-        "packages/lib/src/lib/platform.ts": "39e7a3bc4ad403b73e23cefeb238b4728ecd6adc461036198036d1d4e3b6fcce"
+        "packages/lib/src/lib/platform.ts": "4d26ae62bd964520d4f464667037a4d43e0b910899ceedb0f8cf0b00ff6a0768"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Members of the `_globalThis` cast type literal sorted (`Blob`, `document`, `FormData`, `navigator`, `self`, `window`, `WorkerGlobalScope`). Behaviour change: none. The exported runtime object (including the `classes` and `protocols` order) is unchanged.",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/platform.ts: Whole file compared. Changed lines are HEAD L5-13.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/platform.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/lib/src/lib/types/standard-schema.ts": {
@@ -2600,15 +2609,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/typings.module.test.ts": {
-      "fingerprint": "e9b5799f81592827b603bac900d2de555616d13ae8c985d3828422d71b9a1f17",
+      "fingerprint": "2088009150aaa4e2c2dbfc1b1f8e3f484576468b7c62a98d01d8dabd47ff8478",
       "snapshot": {
-        "packages/tests/module/esm/tests/typings.module.test.ts": "607ca10e7d029377e0fc6b070ca74e4da7a07e6e035f9916d2689cb93cd1d1fa"
+        "packages/tests/module/esm/tests/typings.module.test.ts": "f3d7579220daf400fc8b260c3ccdfc87eac45d51313866eef3fb3c7ec94edb92"
       },
-      "head": "a6926e1f507b0da9f07237183336e51a04704807",
-      "outcome": "no-change",
-      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/tests/module/esm/tests/typings.module.test.ts at a6926e1f507b0da9f07237183336e51a04704807"
+        "Changed: packages/tests/module/esm/tests/typings.module.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/tests/scripts/check-expect-error.ts": {
@@ -2814,15 +2823,15 @@
       ]
     },
     "source:packages/tests/unit/core/dispatchRequest.test.ts": {
-      "fingerprint": "e04e065f55157a2aab477899224d26a3f50846ac6fad9aaf05ec1502ef1027b2",
+      "fingerprint": "58ae8b47d79e99364b76e428cec0b236100b9efefd54e511fafe6d8aa4c1392f",
       "snapshot": {
-        "packages/tests/unit/core/dispatchRequest.test.ts": "575cb857d90ef722f041069e3e903e9a5732119c9913f1cfb8d27b2a252d279c"
+        "packages/tests/unit/core/dispatchRequest.test.ts": "e454439225b8c568d669f6760644afa62413467ba425e91d00bdbe8958e4e617"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/tests/unit/core/dispatchRequest.test.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/tests/unit/core/dispatchRequest.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/tests/unit/core/envFormData.test.ts": {
@@ -2839,15 +2848,15 @@
       ]
     },
     "source:packages/tests/unit/core/mergeConfig.test.ts": {
-      "fingerprint": "5da22b73828be119b65f9149c9d718b0a59496a3d67f816881096d069ca3d8d0",
+      "fingerprint": "9c8c44dfcb419301e16131b17c792da35213e9ae234fb4a722afe9de3085ec0c",
       "snapshot": {
-        "packages/tests/unit/core/mergeConfig.test.ts": "af373b7314060f9b53034f6507d96143966b35cd30d9e2d2c14c8f13f0b34ae8"
+        "packages/tests/unit/core/mergeConfig.test.ts": "302fa0f76199c2d9567389509911c5fc3a3cea4f62cc7703a885456809b3fa5d"
       },
-      "head": "a07985125c27956a1d106702007aa65f535066b6",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/tests/unit/core/mergeConfig.test.ts at a07985125c27956a1d106702007aa65f535066b6"
+        "Changed: packages/tests/unit/core/mergeConfig.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/tests/unit/core/methodHeaderGroups.test.ts": {
@@ -2913,16 +2922,15 @@
       ]
     },
     "source:packages/tests/unit/core/responseSchemaInference.test.ts": {
-      "fingerprint": "873a202c28e78b3698c537a6a4a70d99cbfc943f872331d884ec63a73d55c0f6",
+      "fingerprint": "5f3a96292e26c4f1881cf799da6a69fded776eaeeadb51c5088f94622b11b206",
       "snapshot": {
-        "packages/tests/unit/core/responseSchemaInference.test.ts": "6b814b47d5624f9de0654d3be401540e5016ab89c4cb40e22f0456ae79c0f527"
+        "packages/tests/unit/core/responseSchemaInference.test.ts": "10afa6689bc8c0c669c35838606b9512580d6f3495b3684846c9867cc4c1461a"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest imports sorted. `UserOutput` keys sorted (age, name). The expected `err.code` literal union is sorted, with the same 4 members. Behaviour change: none",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/core/responseSchemaInference.test.ts: @@ -1,9 +1,9 @@ and @@ -44,7 +44,7 @@ (diff/221)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/core/responseSchemaInference.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/tests/unit/core/route.test.ts": {
@@ -3052,15 +3060,15 @@
       ]
     },
     "source:packages/tests/unit/prototypePollution.test.ts": {
-      "fingerprint": "d71cf923528c5f709af040d90e287eb4e41ccd13ddeb909d9f81323653bf3bab",
+      "fingerprint": "7f6dc96e3698d295aa1720b39e6792a8142292cc0493f0ef32a9bd73437a08b2",
       "snapshot": {
-        "packages/tests/unit/prototypePollution.test.ts": "a19e75481354f26f8b2b05358be47072d23b8dbbb7001e04e678c3a6f97b9cbf"
+        "packages/tests/unit/prototypePollution.test.ts": "e041e9641889a79b8a171da509a1a939249f0ed41cdc373f763960254a070cca"
       },
-      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/tests/unit/prototypePollution.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
+        "Changed: packages/tests/unit/prototypePollution.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/tests/unit/query.test.ts": {
@@ -3267,17 +3275,15 @@
       ]
     },
     "source:.github/workflows/bundle-size.yml": {
-      "fingerprint": "4c6996de580612f8c21374daa23a811c6c195104ed1c7728eab55c43dbf8bb33",
+      "fingerprint": "26804049d92dea7ebe37226386c83c12c8a7881bc51b581fc21ebbb88d36ddbf",
       "snapshot": {
-        ".github/workflows/bundle-size.yml": "da2c7951d69f9aa5d84df2a8cd042040788ffbf09b82d699039697d4f360b022"
+        ".github/workflows/bundle-size.yml": null
       },
-      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
-      "outcome": "out-of-scope",
-      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "git diff HEAD -- .github/workflows/bundle-size.yml",
-        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
-        "zizmor 1.30.1 --offline: no new findings for this file."
+        "Changed: .github/workflows/bundle-size.yml at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:.github/workflows/cache.yml": {
@@ -3369,15 +3375,15 @@
       ]
     },
     "source:.github/workflows/links.yml": {
-      "fingerprint": "41e9e15b012f2af09d97e19106c141d9a077336202dfbcc5550290a3de584a1a",
+      "fingerprint": "e985f46365ff4a0302c6e1cd84df77b1aa574e119a65905d9f6d7b2aaead42e9",
       "snapshot": {
-        ".github/workflows/links.yml": "d322b8cc65c3199c638681a21bb6907d48dd8021ea7c627e7c21e2838e189deb"
+        ".github/workflows/links.yml": "217dd2f155d5438baf8feb8551c85b80dc77419020c4333726190622ecc3fada"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "head": "e21dce3db9f37d87f9e4cd544e5331cf6e2ca5ec",
       "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "reason": "Link-check CI config only (lychee remaps); nothing the configure-requests skill teaches changed.",
       "evidence": [
-        "Changed: .github/workflows/links.yml at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: .github/workflows/links.yml at e21dce3db9f37d87f9e4cd544e5331cf6e2ca5ec"
       ]
     },
     "source:SECURITY.md": {
@@ -3393,15 +3399,15 @@
       ]
     },
     "source:lychee.toml": {
-      "fingerprint": "77047a35f1d59a0090babb15b4e42a0eeeaf8fb5a9d756460d7b86a2ea065ff8",
+      "fingerprint": "72e7bdc8935cdff0e353366420f17b562b42c993a572f513e150380bad074c5d",
       "snapshot": {
-        "lychee.toml": "e12ef09f643006619cfdf7659289e57ea2660424f677e1d74ca521d1475b8b2d"
+        "lychee.toml": "c8d0af6340b37bf96db54bd74bfdf32f37b209c4035bd75d92aed912ee5ec5c2"
       },
-      "head": "3a64287d44a5a030fd0f9477d851569e4851a912",
+      "head": "e21dce3db9f37d87f9e4cd544e5331cf6e2ca5ec",
       "outcome": "no-change",
-      "reason": "Link-check config only: lychee retries longer and treats 429/503 rate limits as reachable. No API or skill guidance changes.",
+      "reason": "Link-check CI config only (lychee remaps); nothing the configure-requests skill teaches changed.",
       "evidence": [
-        "Changed: lychee.toml at 3a64287d44a5a030fd0f9477d851569e4851a912"
+        "Changed: lychee.toml at e21dce3db9f37d87f9e4cd544e5331cf6e2ca5ec"
       ]
     },
     "source:packages/docs/pages/misc/security.md": {
@@ -3441,15 +3447,15 @@
       ]
     },
     "source:packages/tests/unit/transformResponse.test.ts": {
-      "fingerprint": "be1a1152a03642eda63ab8be7286726ddf9146f27c99dcf4f0ba3fe2af583d13",
+      "fingerprint": "e422e337e9893440f64f8c55d4db5f19a701a52399cd4eb124c7464b5f45e6a0",
       "snapshot": {
-        "packages/tests/unit/transformResponse.test.ts": "c12c7a80c854d106da67e0e6e65242124f92de60da1cf4c808fc92dc11b02a66"
+        "packages/tests/unit/transformResponse.test.ts": "1bc9050dc833ae232ecd551c5ec90cc4216df9e85e5adff72bd46c714b79364b"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/tests/unit/transformResponse.test.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/tests/unit/transformResponse.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:.bumpy/release-gates.md": {
@@ -3885,15 +3891,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/buildURL.ts": {
-      "fingerprint": "030e950b7ce49b4c17e7e5bfb4e9114bbe764c658748fbe9265a62e12098968d",
+      "fingerprint": "ecd66236d17e69b021861a460cdccc75f6ddf6fc8426db68f59438bada453a82",
       "snapshot": {
-        "packages/lib/src/lib/helpers/buildURL.ts": "f1ae38e6ad739bf8a1bfdff5c7396b73595f48b60c6ddd86bb4ec11c78b187d7"
+        "packages/lib/src/lib/helpers/buildURL.ts": "07685ac68943d8ce73a3eb29d65ca871f8a064b945a96abaa03e8df08272d075"
       },
-      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/buildURL.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
+        "Changed: packages/lib/src/lib/helpers/buildURL.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/lib/src/lib/helpers/combineURLs.ts": {
@@ -3933,27 +3939,27 @@
       ]
     },
     "source:packages/tests/scripts/check-ts-self-types.ts": {
-      "fingerprint": "4f08096648912fdfba3d8c65a5929c2bad682cf0d10a6e574c64e41ba60300ee",
+      "fingerprint": "2e80dc614b10bff35d881204480e24755ae9c600755b8bfbf0ecd1da6a5e05af",
       "snapshot": {
-        "packages/tests/scripts/check-ts-self-types.ts": "f4cb2bb735f82bd4268d4b5a49b512bccfc4c98c91dc66ef1878996e8374a628"
+        "packages/tests/scripts/check-ts-self-types.ts": "03ae964005ae1650021f9612e3b635c1669f07a9c70111ac6f035d3ffdbf7f53"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
-      "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/tests/scripts/check-ts-self-types.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/tests/scripts/check-ts-self-types.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/tests/smoke/deno/deno.json": {
-      "fingerprint": "694555e656b623b8c8654b67799d6802871bcec796c952771ef66c7e97a56f99",
+      "fingerprint": "49657726a301478465cce6bb68b9fd41e709990837f9c640f340cad6dd5b488e",
       "snapshot": {
-        "packages/tests/smoke/deno/deno.json": "6157274242e510559fac14b73167e521d64b2fef22c64d06e38a4dc0ce6fb00f"
+        "packages/tests/smoke/deno/deno.json": "32a62c0a6c746bb2143915e0559c4aa9de0c655d0d4a35097c2bfb1972c81dd2"
       },
-      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/tests/smoke/deno/deno.json at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
+        "Changed: packages/tests/smoke/deno/deno.json at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/tests/smoke/deno/types/consumer.ts": {
@@ -4017,15 +4023,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/resolveRequestURL.ts": {
-      "fingerprint": "aefd56ace088f7e102a1236dd309dccc169f734d88f6d9462ae8d49fe2f232e5",
+      "fingerprint": "ac6522d84b03c47811931137b54fb7fccca18b41d619709a49e0d25038e9d471",
       "snapshot": {
-        "packages/lib/src/lib/core/resolveRequestURL.ts": "047863cd9b15973a3a7224f7d5a3e110185b917aba6b2e02039d5a0023096158"
+        "packages/lib/src/lib/core/resolveRequestURL.ts": "384ff969ff042b995eb3c386cb1f3d5c4ef2e42af03ae7025f33819806dab9bc"
       },
-      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/resolveRequestURL.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
+        "Changed: packages/lib/src/lib/core/resolveRequestURL.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/tests/unit/core/getUri.test.ts": {
@@ -4197,15 +4203,15 @@
       ]
     },
     "source:CODING_STANDARDS.md": {
-      "fingerprint": "56a6933a9467ebb0496994a7c004c949a3edebf9d4f54b2ecd08d04b7b84c83e",
+      "fingerprint": "246062ad6d689c5da3da06004a3d7944a7316a4f1d3e81cb762b6825c0cd1149",
       "snapshot": {
-        "CODING_STANDARDS.md": "328925200cc52e5c2783e0b1627c2a64177eb82e5d805e622a1791e9f070092d"
+        "CODING_STANDARDS.md": "0b3a86a381049e004c30dc319f007a3e4e5833349c3bf46676d97df433280459"
       },
-      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: CODING_STANDARDS.md at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+        "Changed: CODING_STANDARDS.md at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:docs/agents/issue-tracker.md": {
@@ -4413,15 +4419,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/assertRequestConfig.ts": {
-      "fingerprint": "ef95f4cc040649530e897c963af4199fdb0db951c590a447f521f0c7920a8d5d",
+      "fingerprint": "b9616efb61a13c6f285c5e6f6fe31483ba8f4bc42becf42745ea0e0fc530f59d",
       "snapshot": {
-        "packages/lib/src/lib/core/assertRequestConfig.ts": "444fac8bb31458256726781a1bde748837abca8ef2d4a0a495a4d748b11f34c9"
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "680f89cef3f626b30103d9959a726b0133482260365f1884e3250171f6bec9f4"
       },
-      "head": "44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/assertRequestConfig.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
+        "Changed: packages/lib/src/lib/core/assertRequestConfig.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/tests/browser/xsrf.browser.test.ts": {
@@ -4569,15 +4575,15 @@
       ]
     },
     "source:packages/tests/unit/core/mergePrecedence.test.ts": {
-      "fingerprint": "84dc03bc54b165085e0c904618805c2334752c1f680fcd2a3b03c239a40fc5ae",
+      "fingerprint": "314421abb8fbe353b825a4498c2a9df8841bd8d593bb703c9fe3682c897cbd96",
       "snapshot": {
-        "packages/tests/unit/core/mergePrecedence.test.ts": "e6d92a93128b1f397b82b7ee17995a455bfbb4ada4026049f3e069f118cd9d25"
+        "packages/tests/unit/core/mergePrecedence.test.ts": "cd26f40540c97ad82e6972c326954a45a1f9928707fbe19e064f3eac515f879e"
       },
-      "head": "a07985125c27956a1d106702007aa65f535066b6",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/tests/unit/core/mergePrecedence.test.ts at a07985125c27956a1d106702007aa65f535066b6"
+        "Changed: packages/tests/unit/core/mergePrecedence.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:.bumpy/formdata-content-type-rule.md": {
@@ -4677,15 +4683,15 @@
       ]
     },
     "source:packages/lib/src/lib/plugins/shared.ts": {
-      "fingerprint": "689e7bd8741e242f078a8930939a4d98cf3ecb2e2524852000fe750aa08750bb",
+      "fingerprint": "fd10cd2bacccc11b38c0b5d25e8a0edaf6c855b401cfe6f2f5307c76755abeb2",
       "snapshot": {
-        "packages/lib/src/lib/plugins/shared.ts": "93503984b2e554ef8268a9f14350dad5e2839ac2835af19f41c9652ead8f1419"
+        "packages/lib/src/lib/plugins/shared.ts": "cd5b45f306e5fead6304c1c53ef5c83c1fe27eba612eb1ed3b44f7ed1eea0b26"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
       "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/lib/src/lib/plugins/shared.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/lib/src/lib/plugins/shared.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/middleware-index.ts": {
@@ -4773,15 +4779,15 @@
       ]
     },
     "source:packages/tests/unit/core/headersTypes.test.ts": {
-      "fingerprint": "5cfb152cb7f47ea14983f71e019457ac2d8c3826a14cfd8e97a9bb0f3bfd0e30",
+      "fingerprint": "53dbcbb6e728a9cc44758607995ed212b0985aa8ebcd02ab7cddb4073b20b3a6",
       "snapshot": {
-        "packages/tests/unit/core/headersTypes.test.ts": "961974a6bbe1eb3ca0ac68300ac5185622743ad54455fc73a5968d774880ec0b"
+        "packages/tests/unit/core/headersTypes.test.ts": "3ca9fbec4b8daf6033f7e78fa39725f229ee91228a786ea242712f65a7dc2e7d"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/tests/unit/core/headersTypes.test.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/tests/unit/core/headersTypes.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:.bumpy/define-route-schema-types.md": {
@@ -4833,15 +4839,15 @@
       ]
     },
     "source:packages/tests/unit/core/defineTypes.test.ts": {
-      "fingerprint": "c265a8758b4022dfc212281cf7eb49cbddd16478d762c44591a8ff100ac163ff",
+      "fingerprint": "48557e793b1dfa2027927dab687df8b44aab6e50058aa86364e90ccf3e45559c",
       "snapshot": {
-        "packages/tests/unit/core/defineTypes.test.ts": "a3f20e8023ff90b7c87746bb8e76c9f11b06028bf048df63dc647bf094a0b618"
+        "packages/tests/unit/core/defineTypes.test.ts": "d16617ea21d9b52e21b97475fe19c296ad20a84f05d9b6271fd512c625b67ac3"
       },
-      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
-      "outcome": "no-change",
-      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
       "evidence": [
-        "Changed: packages/tests/unit/core/defineTypes.test.ts at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
+        "Changed: packages/tests/unit/core/defineTypes.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     },
     "source:.bumpy/typescript-floor-5-4.md": {
@@ -4986,6 +4992,234 @@
       "reason": "#166: the skill's import-boundaries table no longer lists utils under unsafe/*, because the unsafe/utils.js subpath is removed.",
       "evidence": [
         "Changed: packages/tests/unit/core/settle.test.ts at 44c2cc7a289e7dc6cbbae0a1f5902da2a2fa3105"
+      ]
+    },
+    "source:.bumpy/core-entry-points.md": {
+      "fingerprint": "ccecd3304cdf3685dfe287d26713a511c1a047397e268ba43b3430947e5da372",
+      "snapshot": {
+        ".bumpy/core-entry-points.md": "f4526fb4ff10de3ceb50f07e59c955699d6bd86f1ba140cb1a901dae86504eb3"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: .bumpy/core-entry-points.md at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:.github/workflows/size-limit.yml": {
+      "fingerprint": "57027a85bd5343d419ed516a0d9af4eded0e2b6cb59f600e9f363ef220c5666c",
+      "snapshot": {
+        ".github/workflows/size-limit.yml": "db23950df18be883ad3e6045b2b0f2703fb96dda143c60f23fb3b4f950dfcca5"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: .github/workflows/size-limit.yml at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/docs/pages/advanced/entry-points.md": {
+      "fingerprint": "a2ee9596f0cfd4e431d69545800207a70a34295c831e1dbcec5ad19d0712519a",
+      "snapshot": {
+        "packages/docs/pages/advanced/entry-points.md": "fae3bddaaa5b3da27fbb0a79d9a7fbbaf03f5c8a906304e29cfe604a7056e20a"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/docs/pages/advanced/entry-points.md at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/lib/.size-limit.json": {
+      "fingerprint": "6ca24dff9f1c6a2851cceda105f6a8154fab2fc643e6c72c09af9969be040245",
+      "snapshot": {
+        "packages/lib/.size-limit.json": "6b95d021c07d8986354057ceb9e322d69700af55bf11bbddd6af16a7c3bab57c"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/lib/.size-limit.json at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/lib/src/lib/core/preFlight.ts": {
+      "fingerprint": "90dd35655b9e3430f64087da73c24fe4d97bb855e935ece6030e8a3803bb0360",
+      "snapshot": {
+        "packages/lib/src/lib/core/preFlight.ts": "088a3f5e03d0e955e4bc905fb16039cbef41aa7f00c0720ac94806c1ac5fe163"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/core/preFlight.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/lib/src/lib/features/form.ts": {
+      "fingerprint": "2250f65d108932b0ba3c8a1c85867ef9af93282c5d7c137230e4a41a34f6e44b",
+      "snapshot": {
+        "packages/lib/src/lib/features/form.ts": "3ea975518b7fab4697d10c96916cadc3edb4415aa0b0801cf985de55153957c7"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/features/form.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/lib/src/lib/features/schema.ts": {
+      "fingerprint": "2c3d0cf8d4dc8c2af35bb689d7b746ad9a22fd55144fc93e0b08a8e90c2db894",
+      "snapshot": {
+        "packages/lib/src/lib/features/schema.ts": "fa814f7dbf8ff8b52c547070d1891573bae748b6f0eda11110787c8f5c9ee16d"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/features/schema.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/FaxiosURLSearchParams.ts": {
+      "fingerprint": "cd0798db3b8dc3d7f1bcc6f16a0567afe315a993e963b87204036dd2d53f52e0",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/FaxiosURLSearchParams.ts": "6a9a5c0522a95862caa0898e335bfa0b40bc859e82421319a9c2b93625e1118a"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/FaxiosURLSearchParams.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/appendParams.ts": {
+      "fingerprint": "4d81df08a7fccfe2273e29e91c1608a292e69e9607af0b965392e22d0235540e",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/appendParams.ts": "3b8971b6ac0a6f4047df7d28f9a7e66684cd6138617c5dadb0dd67854571a91e"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/appendParams.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/toURLEncodedForm.ts": {
+      "fingerprint": "7fa1d3386c1fe02adc3e940035c6b2284a47bdee997d0711d59dbdc56c2804a8",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/toURLEncodedForm.ts": "fdea6317ae5baa1bd74fff80760781ea88a75b3d5adde324b8fba26184281c7a"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/toURLEncodedForm.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/tests/browser/core.browser.test.ts": {
+      "fingerprint": "ee20a8b23f1c929b125e0a199ea7060e0e0e2e876f3f78d573daeff13ebca40d",
+      "snapshot": {
+        "packages/tests/browser/core.browser.test.ts": "714b6517b437fd680b6a7374d7fdc7b8bdd4345bdbaf615e5fb135a78d527ae7"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/tests/browser/core.browser.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/tests/browser/defaults.browser.test.ts": {
+      "fingerprint": "64fd7b2506070b047208ccbb7b32de07275a44949be7b4749d8d69c77467d287",
+      "snapshot": {
+        "packages/tests/browser/defaults.browser.test.ts": "cb9601e53e90556b07710677bd93c0a7dfb3fab9b3c463fe1765a476867cc528"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/tests/browser/defaults.browser.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/tests/module/esm/tests/helpers/core-index.ts": {
+      "fingerprint": "2418b64c4bb6bd76b2e7726e0e36ac2d528c6f51b7dfdcdda43b7b2aa33008c3",
+      "snapshot": {
+        "packages/tests/module/esm/tests/helpers/core-index.ts": "3c627da246a16fea09997b045d5180ab7bb4d2b68550adb4d2c56e182a3400d9"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/tests/module/esm/tests/helpers/core-index.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/tests/smoke/bun/tests/core.smoke.test.ts": {
+      "fingerprint": "dade65260747558bd381a0f30770ff2d627b61aa246bbcf5affeabbb7f021396",
+      "snapshot": {
+        "packages/tests/smoke/bun/tests/core.smoke.test.ts": "5c7b7ad5d4df6dfabd5f45419b0d003712c00a7b9b2659d758219df42ef5e553"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/tests/smoke/bun/tests/core.smoke.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/tests/smoke/deno/tests/core.smoke.test.ts": {
+      "fingerprint": "19a46ff06944477e690ceec07580999b4892bd28ae941b47125ce567ba827544",
+      "snapshot": {
+        "packages/tests/smoke/deno/tests/core.smoke.test.ts": "d67f7039216c31d456b69581c3ab339a48c0848186c9ad2aaca4e7c8cb39829c"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/tests/smoke/deno/tests/core.smoke.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/core.smoke.test.ts": {
+      "fingerprint": "af539530d726f0d5dae7cf2965e41c3cc3b770a863aa79d9cdc5f9c64a80e5af",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/core.smoke.test.ts": "66dc8f6e83f9e5e3130031f0b80e2e3f22fafdb77d71f18b0ce89ade6084c713"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/tests/smoke/esm/tests/core.smoke.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/tests/unit/core/_rootFeatures.ts": {
+      "fingerprint": "7360047cea83364e6df6e3b0b01c9aa78bcc7a4af1abfe46a1d76bb889e690ad",
+      "snapshot": {
+        "packages/tests/unit/core/_rootFeatures.ts": "73fae6f725b6ae8f7c1c7368b12c7cb751e60fd1935137b7bb01dcfb8099aa5b"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/tests/unit/core/_rootFeatures.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/tests/unit/core/coreEntry.test.ts": {
+      "fingerprint": "b99c0e3d45f31484349f481bf2918fb6931b9ade345a6ba5a55e90442bd49fc5",
+      "snapshot": {
+        "packages/tests/unit/core/coreEntry.test.ts": "023af8605c66e633dca90e524a777cd8775f7c9e3d4b19f0488c333bde466d48"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/tests/unit/core/coreEntry.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+      ]
+    },
+    "source:packages/tests/unit/entryPoints.test.ts": {
+      "fingerprint": "cc3e3338969e6abd7fec93558bb06dc8e0309088d4b90476c793961144832068",
+      "snapshot": {
+        "packages/tests/unit/entryPoints.test.ts": "f4434dccdcb5b8fec3ec30de72b0b4115d588596802f25fa5c62a1ee34505eaa"
+      },
+      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
+      "outcome": "updated",
+      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "evidence": [
+        "Changed: packages/tests/unit/entryPoints.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
       ]
     }
   }

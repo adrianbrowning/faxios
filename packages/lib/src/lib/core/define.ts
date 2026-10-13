@@ -1,6 +1,6 @@
 // @ts-self-types="./define.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import type { FaxiosRequestConfig, FaxiosResponse, Method, StringLiteralsOrString } from "../types.js";
+import type { FaxiosFeature, FaxiosRequestConfig, FaxiosRequestConfigFor, FaxiosResponse, Method, StringLiteralsOrString } from "../types.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import mergeConfig from "./mergeConfig.js";
 
@@ -15,8 +15,11 @@ type StrippedFields =
   | "responseSchema"
   | "url";
 
-/** Request config shared by `define()`, `route()` and endpoint calls: everything except `url`, `method`, `pathParams`, `params`, `data` and the schemas. */
-export type BasePerCallConfig = Omit<FaxiosRequestConfig, StrippedFields>;
+/**
+ * Request config shared by `define()`, `route()` and endpoint calls: everything except `url`, `method`, `pathParams`, `params`, `data` and the schemas.
+ * `F` holds the instance's features (both on the root entry's instances).
+ */
+export type BasePerCallConfig<F = FaxiosFeature> = Omit<FaxiosRequestConfigFor<F>, StrippedFields>;
 
 // Read the input and output types from the StandardSchemaV1 type parameters rather than the optional
 // `~standard.types` field, so a spec-conforming schema without `types` still infers its output.
@@ -31,9 +34,10 @@ export type PerCallConfig<
   PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined,
   P extends StandardSchemaV1 | undefined,
   D extends StandardSchemaV1 | undefined,
-  TOpts = unknown
+  TOpts = unknown,
+  F = FaxiosFeature
 > =
-  BasePerCallConfig
+  BasePerCallConfig<F>
   & TOpts
   & (PP extends StandardSchemaV1 ? {
     /**
@@ -53,8 +57,9 @@ export type DefineConfig<
   PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined = undefined,
   P extends StandardSchemaV1 | undefined = undefined,
   D extends StandardSchemaV1 | undefined = undefined,
-  R extends StandardSchemaV1 | undefined = undefined
-> = BasePerCallConfig & {
+  R extends StandardSchemaV1 | undefined = undefined,
+  F = FaxiosFeature
+> = BasePerCallConfig<F> & {
   paramsSchema?: P;
   /**
    * Standard Schema that validates `pathParams` on every call; its output fills the `{key}`
@@ -74,11 +79,12 @@ export type DefinedEndpoint<
   P extends StandardSchemaV1 | undefined,
   D extends StandardSchemaV1 | undefined,
   R extends StandardSchemaV1 | undefined,
-  TOpts = unknown
+  TOpts = unknown,
+  F = FaxiosFeature
 > =
   HasInputSchema<PP, P, D> extends true
-    ? (callConfig: PerCallConfig<PP, P, D, TOpts>) => Promise<FaxiosResponse<SchemaOutput<R>>>
-    : (callConfig?: PerCallConfig<PP, P, D, TOpts>) => Promise<FaxiosResponse<SchemaOutput<R>>>;
+    ? (callConfig: PerCallConfig<PP, P, D, TOpts, F>) => Promise<FaxiosResponse<SchemaOutput<R>>>
+    : (callConfig?: PerCallConfig<PP, P, D, TOpts, F>) => Promise<FaxiosResponse<SchemaOutput<R>>>;
 
 /** The minimal instance shape `define()` and `route()` need: a `request` method. */
 export interface FaxiosLike {

@@ -3,9 +3,9 @@ import { describe, it } from "vitest";
 import faxios from "#src/index.js";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import transformData from "#src/lib/core/transformData.js";
-import defaults from "#src/lib/defaults/index.js";
+import createDefaults from "#src/lib/defaults/index.js";
 
-const transformResponse = defaults.transformResponse;
+const transformResponse = createDefaults().transformResponse;
 
 describe("transformResponse", () => {
   describe("200 request", () => {
