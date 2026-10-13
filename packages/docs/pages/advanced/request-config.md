@@ -303,7 +303,7 @@ The `transitional` property allows you to enable or disable certain transitional
 
 - `forcedJSONParsing`: Forces faxios to parse the response string as JSON even if `responseType` is not `'json'`.
 - `clarifyTimeoutError`: Accepted for compatibility but has no effect. Timed-out requests always reject with `ETIMEDOUT`.
-- `validateStatusUndefinedResolves`: When `false` _(default)_, an explicit `validateStatus: undefined` behaves like an omitted option, so the instance's or the default validator applies (reject non-2xx). Set to `true` to make it resolve every response status (the behavior before 0.3.0); `validateStatus: null` does that without this flag.
+- `validateStatusUndefinedResolves`: When `false` _(default)_, an explicit `validateStatus: undefined` behaves like an omitted option, so the instance's or the default validator applies (reject non-2xx). Set to `true` to make it resolve every response status (the behavior before 1.0.0); `validateStatus: null` does that without this flag.
 
 There is no `silentJSONParsing` option any more, and passing it rejects with `ERR_BAD_OPTION`. An explicit `responseType: "json"` always rejects a body that isn't valid JSON (see [`responseType`](#responsetype)); leave `responseType` unset to get the raw string instead.
 

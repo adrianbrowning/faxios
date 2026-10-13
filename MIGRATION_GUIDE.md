@@ -6,7 +6,7 @@
 
 ## Table of Contents
 
-- [Fetch-Only Migration (next major)](#fetch-only-migration-next-major)
+- [Migrating to 1.0.0](#migrating-to-1-0-0)
 - [Overview](#overview)
 - [Breaking Changes](#breaking-changes)
 - [Error Handling Migration](#error-handling-migration)
@@ -17,9 +17,9 @@
 - [Troubleshooting](#troubleshooting)
 - [Resources](#resources)
 
-## Fetch-Only Migration (next major)
+## Migrating to 1.0.0
 
-> **This is the next major release.** faxios now uses the web-standard `fetch` API as its **only** HTTP transport in every runtime (browser, Node 18+, Deno, Bun). The legacy adapters and their HTTP-stack dependencies were removed. If you used Node-specific transport options, you must change your code.
+> **1.0.0 is the first stable release.** It is also a breaking release: faxios uses the web-standard `fetch` API as its **only** HTTP transport in every runtime (browser, Node 18+, Deno, Bun), the legacy adapters and their HTTP-stack dependencies are removed, and sections a) to q) below list every other behaviour and type change since 0.2. If you used Node-specific transport options, you must change your code.
 
 ### What changed at a glance
 
@@ -28,7 +28,7 @@
 | Node transport | `http`/`https` adapter (`follow-redirects`, `form-data`, `proxy-from-env`, `https-proxy-agent`) | web-standard `fetch` |
 | Browser transport | `XMLHttpRequest` (xhr) adapter | web-standard `fetch` |
 | Package format | (see ESM-only note below) | ESM-only, no CJS / no UMD |
-| Upload progress | `onUploadProgress` | removed (fetch cannot emit it) |
+| Upload progress | `onUploadProgress` everywhere | `onUploadProgress` only in Node.js |
 | Download progress | `onDownloadProgress` | still supported |
 | Connection-refused error code | `ECONNREFUSED` | `ERR_NETWORK` (OS error on `error.cause`) |
 
@@ -44,20 +44,14 @@ The `XMLHttpRequest` adapter is gone. Browsers use `fetch`. There is no `adapter
 
 faxios ships as ESM only, built by `zshy`. Use `import faxios from 'faxios'`. `require('faxios')` works only through Node's ESM interop; there is no dedicated CJS entry (`.d.cts`) and no UMD / minified CDN `<script>` bundle.
 
-### d) `onUploadProgress` no longer supported
+### d) `onUploadProgress` is called only in Node.js
 
-`fetch` cannot emit upload progress, so `onUploadProgress` was dropped. `onDownloadProgress` still works.
+faxios reports upload progress by streaming the request body, which only Node.js's `fetch` can do. In browsers, web workers, Deno and Bun `onUploadProgress` is not called and the body is sent as it is. `onDownloadProgress` works everywhere. See [Fetch adapter](https://adrianbrowning.github.io/faxios/pages/advanced/fetch-adapter) for details.
 
 ```javascript
-// Before
 faxios.post('/upload', body, {
-  onUploadProgress: e => console.log(e.loaded),   // no longer called
-  onDownloadProgress: e => console.log(e.loaded), // still works
-});
-
-// Now — remove onUploadProgress; track upload progress at the app layer if needed.
-faxios.post('/upload', body, {
-  onDownloadProgress: e => console.log(e.loaded),
+  onUploadProgress: e => console.log(e.loaded),   // called in Node.js only
+  onDownloadProgress: e => console.log(e.loaded), // called in every runtime
 });
 ```
 

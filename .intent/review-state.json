@@ -3,9 +3,9 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "74495cdefacc6b514eff80415a0c9e94463d949440f3d6594c2c21303fdd1d88",
+      "fingerprint": "5fb138bd4075831bd477fdcb97d233ce7019a075becacf7cd2940c7899bc336c",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "15b67c13a9be2eb87bcd05f738eb94f28c559d2f2795e62146cbc2cde1c126e2",
+        "MIGRATION_GUIDE.md": "6a9b8ef63b20bb3d626890e52d9db8801032b4dc1a6de1e7c6516f8f5d36d992",
         "packages/lib/package.json": "0f023177a8cc70c3e513b9723225820d04f4162bacb6d7299de30c28fab00aca",
         "packages/lib/skills/configure-requests/SKILL.md": "edeaea9992ad0fed3a45eed6a28e64e2f953340f20354ef4941c13544efb5650",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
@@ -41,17 +41,17 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "7228154f74836f76417ecbf40c9ecda477ed3de4",
-      "outcome": "updated",
-      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core.",
+      "head": "2856d8ba18e3161aba45375c6f7b5887923807b9",
+      "outcome": "no-change",
+      "reason": "1.0.0 release: major bump file and version text in the migration guide; the skill does not state a version.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/core.ts, packages/lib/src/form.ts, packages/lib/src/index.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/define.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/features.ts, packages/lib/src/lib/core/route.ts, packages/lib/src/lib/createInstance.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/definePlugin.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/lib/src/lib/rootFaxios.ts, packages/lib/src/lib/types.ts, packages/lib/src/schema.ts, packages/tests/unit/api.test.ts at 7228154f74836f76417ecbf40c9ecda477ed3de4"
+        "Changed: MIGRATION_GUIDE.md at 2856d8ba18e3161aba45375c6f7b5887923807b9"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "db53574351c4ded77054ad76ed414647e587a716da03773afbae946005f20493",
+      "fingerprint": "595e29b0befc3bd12e53c309056fd865cabb87a94271033d6d918badb433bb74",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "15b67c13a9be2eb87bcd05f738eb94f28c559d2f2795e62146cbc2cde1c126e2",
+        "MIGRATION_GUIDE.md": "6a9b8ef63b20bb3d626890e52d9db8801032b4dc1a6de1e7c6516f8f5d36d992",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "b05df669c1e6255e1a68572bb1616f2612fa59471aada6847866851983dd020a",
@@ -90,11 +90,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "d240561455a54e89baee8bfd6c615a27ebb667c7",
-      "outcome": "updated",
-      "reason": "#18: the skill now teaches the ./core, ./schema and ./form entry points, use(schema())/use(form()), and that plugins import ./core; skill_tree.yaml sources list the new entry modules.",
+      "head": "2856d8ba18e3161aba45375c6f7b5887923807b9",
+      "outcome": "no-change",
+      "reason": "1.0.0 release: major bump file and version text in the migration guide; the skill does not state a version.",
       "evidence": [
-        "Changed: _artifacts/skill_tree.yaml at d240561455a54e89baee8bfd6c615a27ebb667c7"
+        "Changed: MIGRATION_GUIDE.md at 2856d8ba18e3161aba45375c6f7b5887923807b9"
       ]
     },
     "source:knip.json": {
@@ -292,15 +292,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "433ca2966d954634d76a1383f5acaf547e09b988d7b27074247ab2aec2afe800",
+      "fingerprint": "4e09f51fa84d103ff24b06d217174005b9a9584b23edcc89bf67a8226e2e56f9",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "90fb2e91e599955820c60e86fe402fb1aedb2ebf3bbd1ff57a60122d562b9b72"
+        "packages/docs/pages/advanced/request-config.md": "5737f822aaa49c6a5d5eb8b1a7736056477266a43501d7b3a1a3fd31b81bcbde"
       },
-      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
-      "outcome": "updated",
-      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
+      "head": "2856d8ba18e3161aba45375c6f7b5887923807b9",
+      "outcome": "no-change",
+      "reason": "1.0.0 release: major bump file and version text in the migration guide; the skill does not state a version.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
+        "Changed: packages/docs/pages/advanced/request-config.md at 2856d8ba18e3161aba45375c6f7b5887923807b9"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -5824,6 +5824,18 @@
       "reason": "#2: examples and sandbox load faxios as an ES module; the skill's 'no UMD bundle' statement stays true.",
       "evidence": [
         "Changed: packages/examples/upload/index.html at c26e66e7eda4e9baba047bf80187091197d12c46"
+      ]
+    },
+    "source:.bumpy/release-1-0-0.md": {
+      "fingerprint": "aeef40292ba3de6fa0e82265d4b4efd62b95009b0484fa35f09bb2f072586d1f",
+      "snapshot": {
+        ".bumpy/release-1-0-0.md": "779b3169feafd9d7fc96409624dfea25b30e084337a1e18d975d7cb1799e6279"
+      },
+      "head": "2856d8ba18e3161aba45375c6f7b5887923807b9",
+      "outcome": "no-change",
+      "reason": "1.0.0 release: major bump file and version text in the migration guide; the skill does not state a version.",
+      "evidence": [
+        "Changed: .bumpy/release-1-0-0.md at 2856d8ba18e3161aba45375c6f7b5887923807b9"
       ]
     }
   }
