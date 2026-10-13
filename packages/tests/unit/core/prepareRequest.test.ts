@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
+import type FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import prepareRequest from "#src/lib/core/prepareRequest.js";
-import type { FaxiosRequestHeaders } from "#src/lib/types.js";
 
 describe("core::prepareRequest", () => {
   it("leaves basic auth to the adapter, which builds the header once", () => {
@@ -10,7 +10,7 @@ describe("core::prepareRequest", () => {
       auth: { username: "\u7528\u6237", password: "p" },
     });
 
-    assert.strictEqual((config.headers as FaxiosRequestHeaders).has("Authorization"), false);
+    assert.strictEqual((config.headers as FaxiosHeaders).has("Authorization"), false);
   });
 
   it("should ignore inherited nested serializer fields", () => {

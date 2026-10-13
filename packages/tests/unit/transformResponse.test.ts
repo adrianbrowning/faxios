@@ -5,7 +5,7 @@ import FaxiosError from "#src/lib/core/FaxiosError.js";
 import transformData from "#src/lib/core/transformData.js";
 import defaults from "#src/lib/defaults/index.js";
 
-const transformResponse = defaults.transformResponse as Parameters<typeof transformData>[0];
+const transformResponse = defaults.transformResponse;
 
 describe("transformResponse", () => {
   describe("200 request", () => {

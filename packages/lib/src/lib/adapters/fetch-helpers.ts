@@ -4,7 +4,6 @@ import FaxiosError from "../core/FaxiosError.js";
 import type FaxiosHeaders from "../core/FaxiosHeaders.js";
 import stripUserInfo from "../helpers/stripUserInfo.js";
 import type {
-  FaxiosRequestHeaders,
   FaxiosResponse,
   InternalFaxiosRequestConfig
 } from "../types.js";
@@ -212,7 +211,7 @@ export const handleFetchCaughtError = (
 // Content-Type of `null` or `false` keeps the header off, so that string goes out as its bytes.
 export const encodeStringWithoutContentType = (
   data: unknown,
-  headers: FaxiosRequestHeaders,
+  headers: FaxiosHeaders,
   encode: (str: string) => Promise<Uint8Array> | Uint8Array
 ): Promise<unknown> | unknown => {
   if (typeof data !== "string") return data;

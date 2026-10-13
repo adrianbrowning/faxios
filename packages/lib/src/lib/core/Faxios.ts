@@ -9,7 +9,6 @@ import type {
   FaxiosNext,
   FaxiosPluginArgument,
   FaxiosRequestConfig,
-  FaxiosRequestHeaders,
   FaxiosResponse,
   GenericAbortSignal,
   HeadersDefaults,
@@ -201,7 +200,7 @@ function checkMiddlewareResponse(response: unknown, config: InternalFaxiosReques
 // that calls next() again starts from the same input.
 function copyForDispatch(config: InternalFaxiosRequestConfig): InternalFaxiosRequestConfig {
   const copy = cloneConfig(config);
-  copy.headers = new FaxiosHeaders(config.headers) as unknown as FaxiosRequestHeaders;
+  copy.headers = new FaxiosHeaders(config.headers);
   return copy;
 }
 

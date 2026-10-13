@@ -1,5 +1,5 @@
-import type { FaxiosRequestHeaders } from "../types.js";
 import utils from "../utils.js";
+import type FaxiosHeaders from "./FaxiosHeaders.js";
 
 /**
  * Decides the request body's Content-Type once the body is final, in every runtime.
@@ -19,7 +19,7 @@ import utils from "../utils.js";
  */
 export default function resolveBodyContentType(
   data: unknown,
-  headers: FaxiosRequestHeaders,
+  headers: FaxiosHeaders,
   encodedContentType: null | string | undefined
 ): void {
   if (utils.isFormData(data)) headers.delete("content-type");

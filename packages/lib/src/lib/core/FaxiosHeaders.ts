@@ -8,10 +8,42 @@ import utils from "../utils.js";
 
 const $internals = Symbol("internals");
 
+/** Matches a header value for `has()`, `delete()`, `clear()` and the `has<Header>` shortcuts. */
 type HeaderMatcher =
   | ((this: FaxiosHeaders, value: string, name: string) => boolean)
   | RegExp
   | string;
+
+/** Turns a header value into something else, for `get()` and the `get<Header>` shortcuts. */
+type HeaderParser<R> = (this: FaxiosHeaders, value: FaxiosHeaderValue, header: string) => R;
+
+/** A `get<Header>` shortcut: `get()` with the header name already filled in. */
+interface HeaderGetter {
+  (): FaxiosHeaderValue | undefined;
+  (parser: true): Record<string, string> | undefined;
+  (parser: RegExp): null | RegExpExecArray | undefined;
+  <R>(parser: HeaderParser<R>): R | undefined;
+}
+
+// The headers that get `get<Header>`, `set<Header>` and `has<Header>` shortcuts. Both the runtime
+// registration (FaxiosHeaders.accessor below) and the declarations (HeaderAccessors) come from here.
+const ACCESSOR_HEADERS = [
+  "Content-Type",
+  "Content-Length",
+  "Accept",
+  "Accept-Encoding",
+  "User-Agent",
+  "Authorization",
+] as const;
+
+type AccessorHeader = (typeof ACCESSOR_HEADERS)[number];
+// "Accept-Encoding" -> "AcceptEncoding", matching utils.toCamelCase(" " + header) at runtime.
+type AccessorSuffix<H extends string> = H extends `${infer Head}-${infer Rest}` ? `${Head}${AccessorSuffix<Rest>}` : H;
+
+type HeaderAccessors =
+  & { [H in AccessorHeader as `get${AccessorSuffix<H>}`]: HeaderGetter; }
+  & { [H in AccessorHeader as `has${AccessorSuffix<H>}`]: (matcher?: HeaderMatcher) => boolean; }
+  & { [H in AccessorHeader as `set${AccessorSuffix<H>}`]: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosHeaders; };
 
 type HeaderInput =
   | FaxiosHeaders
@@ -82,11 +114,7 @@ function matchHeaderValue(
   context: FaxiosHeaders,
   value: unknown,
   header: string,
-  filter:
-    | ((this: FaxiosHeaders, value: string, name: string) => boolean)
-    | RegExp
-    | string
-    | undefined,
+  filter: HeaderMatcher | undefined,
   isHeaderNameFilter?: boolean
 ): boolean | undefined {
   if (utils.isFunction(filter)) {
@@ -166,33 +194,17 @@ function buildAccessors(obj: object, header: string): void {
 
 declare const faxiosHeadersBrand: unique symbol;
 
+// The get/set/has<Header> shortcuts that FaxiosHeaders.accessor(ACCESSOR_HEADERS) registers at runtime,
+// merged into the class below.
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- declaration merging adds HeaderAccessors to the class
+interface FaxiosHeaders extends HeaderAccessors {}
+
 class FaxiosHeaders {
   [key: string]: unknown;
 
   // Type-only brand (nothing at runtime): lets config types accept an instance
   // without its index signature or method names leaking into header-name completions.
   declare readonly [faxiosHeadersBrand]: true;
-
-  // Accessors generated at runtime by FaxiosHeaders.accessor([...]) below.
-  // Declared here so consumers get real types instead of the index signature.
-  declare getContentType: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
-  declare setContentType: (value: FaxiosHeaderValue, rewrite?: boolean) => this;
-  declare hasContentType: (matcher?: HeaderMatcher) => boolean;
-  declare getContentLength: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
-  declare setContentLength: (value: FaxiosHeaderValue, rewrite?: boolean) => this;
-  declare hasContentLength: (matcher?: HeaderMatcher) => boolean;
-  declare getAccept: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
-  declare setAccept: (value: FaxiosHeaderValue, rewrite?: boolean) => this;
-  declare hasAccept: (matcher?: HeaderMatcher) => boolean;
-  declare getAcceptEncoding: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
-  declare setAcceptEncoding: (value: FaxiosHeaderValue, rewrite?: boolean) => this;
-  declare hasAcceptEncoding: (matcher?: HeaderMatcher) => boolean;
-  declare getUserAgent: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
-  declare setUserAgent: (value: FaxiosHeaderValue, rewrite?: boolean) => this;
-  declare hasUserAgent: (matcher?: HeaderMatcher) => boolean;
-  declare getAuthorization: (matcher?: HeaderMatcher) => FaxiosHeaderValue | undefined;
-  declare setAuthorization: (value: FaxiosHeaderValue, rewrite?: boolean) => this;
-  declare hasAuthorization: (matcher?: HeaderMatcher) => boolean;
 
   constructor(
     headers?: FaxiosHeaders | null | Record<string, unknown> | string
@@ -271,17 +283,10 @@ class FaxiosHeaders {
   get(header: string): FaxiosHeaderValue | undefined;
   get(header: string, parser: true): Record<string, string> | undefined;
   get(header: string, parser: RegExp): null | RegExpExecArray | undefined;
-  get<R>(header: string, parser: (this: FaxiosHeaders, value: FaxiosHeaderValue, header: string) => R): R | undefined;
+  get<R>(header: string, parser: HeaderParser<R>): R | undefined;
   get(
     header: string,
-    parser?:
-      | ((
-        this: FaxiosHeaders,
-        value: FaxiosHeaderValue,
-        header: string
-      ) => unknown)
-      | RegExp
-      | true
+    parser?: HeaderParser<unknown> | RegExp | true
   ): unknown {
     header = normalizeHeader(header);
 
@@ -302,13 +307,7 @@ class FaxiosHeaders {
         }
 
         if (utils.isFunction(parser)) {
-          return (
-            parser as (
-              this: FaxiosHeaders,
-              value: FaxiosHeaderValue,
-              header: string
-            ) => unknown
-          ).call(this, value, key);
+          return (parser as HeaderParser<unknown>).call(this, value, key);
         }
 
         if (utils.isRegExp(parser)) {
@@ -499,7 +498,7 @@ class FaxiosHeaders {
     return computed;
   }
 
-  static accessor(header: Array<string> | string): typeof FaxiosHeaders {
+  static accessor(header: ReadonlyArray<string> | string): typeof FaxiosHeaders {
     const self = this as unknown as Record<
       symbol,
       { accessors: Record<string, boolean>; }
@@ -524,22 +523,15 @@ class FaxiosHeaders {
       }
     }
 
-    utils.isArray(header)
-      ? header.forEach(defineAccessor)
-      : defineAccessor(header);
+    typeof header === "string"
+      ? defineAccessor(header)
+      : header.forEach(defineAccessor);
 
     return this;
   }
 }
 
-FaxiosHeaders.accessor([
-  "Content-Type",
-  "Content-Length",
-  "Accept",
-  "Accept-Encoding",
-  "User-Agent",
-  "Authorization",
-]);
+FaxiosHeaders.accessor(ACCESSOR_HEADERS);
 
 // reserved names hotfix
 utils.reduceDescriptors(

@@ -1,13 +1,13 @@
 "use strict";
 
 import FaxiosError from "../core/FaxiosError.js";
+import type FaxiosHeaders from "../core/FaxiosHeaders.js";
 import formDataToJSON from "../helpers/formDataToJSON.js";
 import toFormData from "../helpers/toFormData.js";
 import toURLEncodedForm from "../helpers/toURLEncodedForm.js";
 import platform from "../platform.js";
 import type {
   FaxiosDefaults,
-  FaxiosRequestHeaders,
   FaxiosResponse,
   GenericFormData,
   InternalFaxiosRequestConfig
@@ -94,7 +94,7 @@ const defaults: FaxiosDefaults = {
     function transformRequest(
       this: InternalFaxiosRequestConfig,
       data: unknown,
-      headers: FaxiosRequestHeaders
+      headers: FaxiosHeaders
     ) {
       const contentType =
         (headers.getContentType() as null | string | undefined) || "";

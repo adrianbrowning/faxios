@@ -91,7 +91,7 @@ describe("middleware types", () => {
       faxios.create().use(async (ctx, next) => {
         ctx.config.headers = new FaxiosHeaders({ "X-From": "middleware" });
         expectTypeOf(ctx.config.headers.set).toBeFunction();
-        // @ts-expect-error TS2322 -- reading it back as FaxiosRequestHeaders would lose the accessor methods
+        // @ts-expect-error TS2740 -- reading it back as FaxiosHeaders would lose the accessor methods
         ctx.config.headers = { "X-From": "middleware" };
         return next(ctx);
       });

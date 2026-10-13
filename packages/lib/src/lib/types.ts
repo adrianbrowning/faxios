@@ -2,6 +2,7 @@
 // Internal shared types — imported by implementation files.
 // Public API types in index.d.ts re-export or extend these.
 
+import type FaxiosHeaders from "./core/FaxiosHeaders.js";
 import type { FaxiosHeadersInstance } from "./core/FaxiosHeaders.js";
 import type { StandardSchemaV1 } from "./types/standard-schema.js";
 
@@ -15,10 +16,6 @@ export type FaxiosHeaderValue =
   | null
   | number
   | string;
-
-export interface RawFaxiosHeaders {
-  [key: string]: FaxiosHeaderValue;
-}
 
 type UppercaseMethod =
   | "DELETE"
@@ -177,50 +174,11 @@ export interface FaxiosBasicCredentials {
   username: string;
 }
 
-// forward-declared; implemented in core/FaxiosHeaders.ts
-// Using a structural type that matches FaxiosHeaders class methods
-type HeaderMatcher =
-  | ((value: string, name: string) => boolean)
-  | RegExp
-  | string;
-
-type HeaderGetResult = Array<string> | null | Record<string, string> | RegExpExecArray | string | true | undefined;
-
-export type FaxiosRequestHeaders = Record<string, FaxiosHeaderValue> & {
-  clear: (matcher?: HeaderMatcher) => boolean;
-  concat: (...targets: Array<unknown>) => FaxiosRequestHeaders;
-  delete: (header: Array<string> | string, matcher?: HeaderMatcher) => boolean;
-  get: (header: string, parser?: boolean | RegExp) => HeaderGetResult;
-  getAccept: (matcher?: HeaderMatcher) => HeaderGetResult;
-  getAcceptEncoding: (matcher?: HeaderMatcher) => HeaderGetResult;
-  getAuthorization: (matcher?: HeaderMatcher) => HeaderGetResult;
-  getContentLength: (matcher?: HeaderMatcher) => HeaderGetResult;
-  getContentType: (matcher?: HeaderMatcher) => HeaderGetResult;
-  getUserAgent: (matcher?: HeaderMatcher) => HeaderGetResult;
-  has: (header: string, matcher?: HeaderMatcher) => boolean;
-  hasAccept: (matcher?: HeaderMatcher) => boolean;
-  hasAcceptEncoding: (matcher?: HeaderMatcher) => boolean;
-  hasAuthorization: (matcher?: HeaderMatcher) => boolean;
-  hasContentLength: (matcher?: HeaderMatcher) => boolean;
-  hasContentType: (matcher?: HeaderMatcher) => boolean;
-  hasUserAgent: (matcher?: HeaderMatcher) => boolean;
-  normalize: (format?: boolean) => FaxiosRequestHeaders;
-  set: (header: Record<string, unknown> | string, value?: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
-  setAccept: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
-  setAcceptEncoding: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
-  setAuthorization: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
-
-  setContentLength: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
-  setContentType: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
-  setUserAgent: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosRequestHeaders;
-  toJSON: (asStrings?: boolean) => Record<string, FaxiosHeaderValue>;
-};
-
 export interface FaxiosRequestTransformer {
   (
     this: InternalFaxiosRequestConfig,
     data: unknown,
-    headers: FaxiosRequestHeaders,
+    headers: FaxiosHeaders,
   ): unknown;
 }
 
@@ -228,7 +186,7 @@ export interface FaxiosResponseTransformer {
   (
     this: InternalFaxiosRequestConfig,
     data: unknown,
-    headers: RawFaxiosHeaders,
+    headers: FaxiosHeaders,
     status?: number,
   ): unknown;
 }
@@ -323,34 +281,13 @@ export type RawFaxiosRequestConfig<D = unknown> = FaxiosRequestConfig<D>;
 export interface InternalFaxiosRequestConfig<
   D = unknown
 > extends FaxiosRequestConfig<D> {
-  headers: FaxiosRequestHeaders;
-}
-
-// export type RawFaxiosResponseHeaders = Partial<
-//   RawFaxiosHeaders & {
-//     "set-cookie": Array<string>;
-//     "content-type": string;
-//     "content-length": string;
-//     "cache-control": string;
-//     "content-encoding": string;
-//     server: string;
-//   }
-// >;
-
-// export type FaxiosResponseHeaders = RawFaxiosResponseHeaders &
-//   Record<string, FaxiosHeaderValue>;
-
-export interface FaxiosResponseHeadersLike {
-  // Property access stays loose (matches the FaxiosHeaders runtime class), but
-  // get() is precisely typed so the common accessor isn't `unknown`.
-  [key: string]: unknown;
-  get: (header: string) => FaxiosHeaderValue | undefined;
+  headers: FaxiosHeaders;
 }
 
 export interface FaxiosResponse<T = unknown, D = unknown> {
   config: InternalFaxiosRequestConfig<D>;
   data: T;
-  headers: FaxiosResponseHeadersLike;
+  headers: FaxiosHeaders;
   request?: null | Request;
   status: number;
   statusText: string;
@@ -394,14 +331,6 @@ export type FaxiosConfigHeaders =
 /** Config accepted by `create()`; identical to a request config. */
 export type CreateFaxiosDefaults<D = unknown> = FaxiosRequestConfig<D>;
 
-// Reading ctx.config.headers gives the accessor-typed headers; middleware may also assign a new
-// FaxiosHeaders (dispatch normalizes it the same way). A plain object isn't accepted, because the
-// next middleware would read it back expecting set()/get().
-interface ContextHeaders {
-  get headers(): FaxiosRequestHeaders;
-  set headers(value: FaxiosHeadersInstance | FaxiosRequestHeaders);
-}
-
 /**
  * Per-request state passed through `.use()` middleware. Created once per
  * request, after the request config is merged with the instance defaults.
@@ -417,8 +346,11 @@ export interface FaxiosContext<TOptions = {}, TCapabilities = {}> {
   attempt: number;
   /** Values provided by installed plugins, shared by every request of the instance. */
   capabilities: TCapabilities;
-  /** The merged request config. `headers` is a `FaxiosHeaders` instance. */
-  config: Omit<InternalFaxiosRequestConfig, "headers"> & ContextHeaders & TOptions;
+  /**
+   * The merged request config. `headers` is a `FaxiosHeaders` instance; middleware may assign a new
+   * one, which dispatch normalizes the same way.
+   */
+  config: InternalFaxiosRequestConfig & TOptions;
   /** Null-prototype scratch space shared by middleware for this request only. */
   state: Record<PropertyKey, unknown>;
 }

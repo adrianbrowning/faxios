@@ -1,11 +1,10 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
-import type { FaxiosRequestHeaders } from "#src/lib/types.js";
 
-// The get/set/has<Header> shortcuts FaxiosRequestHeaders declares, without its index signature.
-type DeclaredRequestHeaderAccessor = keyof {
-  [K in keyof FaxiosRequestHeaders as K extends "get" | "has" | "set"
+// The get/set/has<Header> shortcuts FaxiosHeaders declares, without its index signature.
+type DeclaredHeaderAccessor = keyof {
+  [K in keyof FaxiosHeaders as K extends "get" | "getSetCookie" | "has" | "set"
     ? never
     : K extends `${"get" | "has" | "set"}${string}` ? K : never]: true;
 };
@@ -577,7 +576,7 @@ describe("FaxiosHeaders", () => {
       assert.strictEqual((headers as any).hasFoo(), true);
     });
 
-    it("should register every shortcut FaxiosRequestHeaders declares", () => {
+    it("should register every shortcut FaxiosHeaders declares", () => {
       // `satisfies` makes tsc reject this object unless its keys are exactly the declared shortcuts.
       const declared = {
         getContentType: true,
@@ -598,7 +597,7 @@ describe("FaxiosHeaders", () => {
         getAuthorization: true,
         setAuthorization: true,
         hasAuthorization: true,
-      } satisfies Record<DeclaredRequestHeaderAccessor, true>;
+      } satisfies Record<DeclaredHeaderAccessor, true>;
       const headers = new FaxiosHeaders();
 
       for (const name of Object.keys(declared)) {

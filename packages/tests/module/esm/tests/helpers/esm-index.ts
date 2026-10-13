@@ -5,9 +5,7 @@ import type {
   FaxiosInstance,
   FaxiosProgressEvent,
   FaxiosRequestConfig,
-  FaxiosRequestHeaders,
   FaxiosResponse,
-  FaxiosResponseHeaders,
   ParamsSerializerOptions,
   RawFaxiosRequestHeaders
 } from "faxios";
@@ -481,7 +479,7 @@ faxios.get("/user", {
   ],
 
   transformResponse: [
-    (data: any, headers: FaxiosResponseHeaders) => {
+    (data: any, headers: FaxiosHeaders) => {
       headers.has("foo");
     },
   ],
@@ -560,10 +558,10 @@ for (const [ header, value ] of headers) {
   headers.y = 2;
 })();
 
-// FaxiosRequestHeaders
+// FaxiosHeaders as request headers
 
 (() => {
-  const headers: FaxiosRequestHeaders = new FaxiosHeaders({ x: 1 });
+  const headers: FaxiosHeaders = new FaxiosHeaders({ x: 1 });
 
   headers.y = 2;
 

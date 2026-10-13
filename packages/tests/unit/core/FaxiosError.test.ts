@@ -206,8 +206,7 @@ describe("core::FaxiosError", () => {
   // and `auth` (case-insensitive, at any depth) and strips `user:pass@` from URL strings; a
   // `config.redact` array adds keys.
   describe("toJSON redaction", () => {
-    // FaxiosHeaders' loose index signature doesn't unify with FaxiosRequestHeaders; same cast as dispatchRequest.test.ts.
-    const emptyHeaders = new FaxiosHeaders() as unknown as InternalFaxiosRequestConfig["headers"];
+    const emptyHeaders = new FaxiosHeaders();
 
     it("masks credential keys and URL user info by default", () => {
       const headers = new FaxiosHeaders({
@@ -220,7 +219,7 @@ describe("core::FaxiosError", () => {
         url: "http://user:secret-pw@api.example.com/items",
         baseURL: "https://user:secret-pw@api.example.com",
         auth: { username: "alice", password: "secret-basic" },
-        headers: headers as unknown as InternalFaxiosRequestConfig["headers"],
+        headers,
       };
       const error = new FaxiosError("Boom", "ECODE", config);
 
@@ -324,7 +323,7 @@ describe("core::FaxiosError", () => {
       headers.set("X-Trace", "trace-id");
 
       const config = { headers, redact: [ "Authorization" ] };
-      const error = new FaxiosError("Boom", "ECODE", config as any);
+      const error = new FaxiosError("Boom", "ECODE", config);
 
       const serialized = (error.toJSON().config as any).headers;
       expect(serialized.Authorization).toBe("[REDACTED ****]");
@@ -440,7 +439,7 @@ describe("core::FaxiosError", () => {
         headers,
         redact: [ "password", "Authorization" ],
       };
-      const error = new FaxiosError("Boom", "ECODE", config as any);
+      const error = new FaxiosError("Boom", "ECODE", config);
 
       error.toJSON();
 
@@ -523,7 +522,7 @@ describe("core::FaxiosError", () => {
     it("follows nested causes without their config, stripping URL user info from messages", () => {
       const inner = new TypeError("Failed to parse URL from http://user:secret@host/x");
       const config: InternalFaxiosRequestConfig = {
-        headers: new FaxiosHeaders({ Authorization: "Bearer secret" }) as unknown as InternalFaxiosRequestConfig["headers"],
+        headers: new FaxiosHeaders({ Authorization: "Bearer secret" }),
       };
       const middle = FaxiosError.from(inner, FaxiosError.ERR_INVALID_URL, config);
       const outer = new FaxiosError("Boom", "ECODE");
@@ -556,8 +555,7 @@ describe("core::FaxiosError", () => {
   });
 
   describe("isSchemaValidationError", () => {
-    // FaxiosHeaders' loose index signature doesn't unify with FaxiosRequestHeaders; same cast as dispatchRequest.test.ts.
-    const config: InternalFaxiosRequestConfig = { headers: new FaxiosHeaders() as unknown as InternalFaxiosRequestConfig["headers"] };
+    const config: InternalFaxiosRequestConfig = { headers: new FaxiosHeaders() };
     const response: FaxiosResponse = { data: { name: 123 }, status: 200, statusText: "OK", headers: new FaxiosHeaders(), config };
 
     it("returns true for FaxiosError with ERR_BAD_RESPONSE_SCHEMA, issues and response", () => {
