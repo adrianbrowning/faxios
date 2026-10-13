@@ -1,7 +1,7 @@
-import assertTimeout from "../core/assertTimeout.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import prepareRequest from "../core/prepareRequest.js";
+import { holdDeadline } from "../core/requestDeadline.js";
 import resolveBodyContentType from "../core/resolveBodyContentType.js";
 import { settle } from "../core/settle.js";
 import { VERSION } from "../env/data.js";
@@ -687,8 +687,6 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       method,
       data,
       signal,
-      timeout,
-      timeoutErrorMessage,
       onDownloadProgress,
       onUploadProgress,
       responseType,
@@ -712,22 +710,19 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     const envFetch = ownEnv(config, "fetch") as FetchFn | undefined;
     const _fetch: FetchFn = (envFetch || (globalThis as unknown as Record<string, unknown>)["fetch"]) as FetchFn;
 
-    assertTimeout(timeout, config);
-
     responseType = (
       responseType ? (responseType + "").toLowerCase() : "text"
     ) as typeof responseType;
 
     // Owns the request's cleanup: aborting it on a failure aborts fetch, which releases the
-    // connection and any body still being sent or received.
+    // connection and any body still being sent or received. `timeout` isn't armed here: the
+    // request's signal carries the whole-request deadline (core/requestDeadline.ts).
     const requestController = new AbortController();
-    const composedSignal = composeSignals(
-      [ signal, requestController.signal ],
-      timeout,
-      timeoutErrorMessage
-    ) as ComposedSignal;
+    const composedSignal = composeSignals([ signal, requestController.signal ]) as ComposedSignal;
 
     const unsubscribe = composedSignal.unsubscribe!.bind(composedSignal);
+    // Set when a stream body keeps the request's deadline armed past the response.
+    let releaseDeadline: (() => void) | undefined;
 
     let request: null | Request = null;
     const pendingBodyErrorRef: PendingBodyErrorRef = { value: null };
@@ -816,12 +811,15 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
 
       const isStreamResponse = supportsResponseStream && responseType === "stream";
 
-      // A stream body outlives this call, so its end, error or cancel releases the request.
-      // A buffered body is released below, or by the catch on failure.
+      // A stream body outlives this call, so its end, error or cancel releases the request, and
+      // the deadline keeps running until then. A buffered body is released below, or by the
+      // catch on failure.
+      if (isStreamResponse && response.body != null) releaseDeadline = holdDeadline(signal);
       const releaseStreamBody = (bodyErr?: unknown): void => {
         if (!isStreamResponse) return;
         if (bodyErr !== undefined) requestController.abort(bodyErr);
         unsubscribe();
+        releaseDeadline?.();
       };
 
       response = buildDownloadStream(
@@ -878,6 +876,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       // Classify first: the abort below sets the composed signal's reason.
       requestController.abort(error);
       unsubscribe();
+      releaseDeadline?.();
       throw error;
     }
   };

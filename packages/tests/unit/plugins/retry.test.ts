@@ -89,25 +89,138 @@ describe("plugins::retry", () => {
     assert.strictEqual(calls.length, 1);
   });
 
-  it("retries timeouts", async () => {
-    let calls = 0;
+  it("retries a try that runs past attemptTimeout, aborting that try's fetch", async () => {
+    const signals: Array<AbortSignal | undefined> = [];
     const fetch = async (input: Request | string | URL, init?: RequestInit) => {
-      calls++;
-      if (calls > 1) return Promise.resolve(new Response(null, { status: 200 }));
       const signal = init?.signal ?? (input instanceof Request ? input.signal : undefined);
+      signals.push(signal ?? undefined);
+      if (signals.length > 1) return Promise.resolve(new Response(null, { status: 200 }));
       return new Promise<Response>((_resolve, reject) => {
         signal?.addEventListener("abort", () => reject(signal.reason));
       });
     };
-    const api = faxios.create({ env: { fetch }, timeout: 50 }).use(retry({ delay: 0 }));
+    const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0, attemptTimeout: 50 }));
 
     const request = api.get(URL);
     await vi.advanceTimersByTimeAsync(50);
     await vi.runAllTimersAsync();
     const response = await request;
 
-    assert.strictEqual(calls, 2);
+    assert.strictEqual(signals.length, 2);
+    assert.strictEqual(signals[0]!.aborted, true);
     assert.strictEqual(response.status, 200);
+    assert.strictEqual(vi.getTimerCount(), 0);
+  });
+
+  it("ends a try whose middleware after retry never resumes once attemptTimeout passes", async () => {
+    const { fetch, calls } = scriptedFetch([ 200 ]);
+    let tries = 0;
+    const api = faxios.create({ env: { fetch } })
+      .use(retry({ delay: 0, attemptTimeout: 50 }))
+      .use(async (ctx, next) => {
+        tries++;
+        if (tries === 1) return new Promise(() => {});
+        return next(ctx);
+      });
+
+    const request = api.get(URL);
+    await vi.advanceTimersByTimeAsync(50);
+    await vi.runAllTimersAsync();
+    const response = await request;
+
+    assert.strictEqual(tries, 2);
+    assert.strictEqual(calls.length, 1);
+    assert.strictEqual(response.status, 200);
+  });
+
+  it("applies a per-request attemptTimeout", async () => {
+    const { fetch } = scriptedFetch([ 200 ]);
+    let tries = 0;
+    const api = faxios.create({ env: { fetch } })
+      .use(retry({ delay: 0, attempts: 2 }))
+      .use(async (ctx, next) => {
+        tries++;
+        if (tries === 1) return new Promise(() => {});
+        return next(ctx);
+      });
+
+    const request = api.get(URL, { retry: { attemptTimeout: 20 } });
+    await vi.advanceTimersByTimeAsync(20);
+    await vi.runAllTimersAsync();
+
+    assert.strictEqual((await request).status, 200);
+    assert.strictEqual(tries, 2);
+  });
+
+  it("doesn't retry once the request's timeout passes, and stops a pending wait", async () => {
+    const { fetch, calls } = scriptedFetch([ 503 ]);
+    const retried: Array<number> = [];
+    const api = faxios.create({ env: { fetch }, timeout: 150 })
+      .use(retry({ attempts: 5, delay: 100, jitter: "none", onRetry: (_error, attempt) => retried.push(attempt) }));
+
+    const request = assert.rejects(api.get(URL), (err: unknown) =>
+      err instanceof FaxiosError && err.code === FaxiosError.ETIMEDOUT && err.message === "timeout of 150ms exceeded");
+    await vi.advanceTimersByTimeAsync(150);
+    await request;
+
+    // Tries at 0 and 100ms; the deadline lands during the second wait.
+    assert.strictEqual(calls.length, 2);
+    assert.deepStrictEqual(retried, [ 1, 2 ]);
+    assert.strictEqual(vi.getTimerCount(), 0);
+  });
+
+  it("doesn't retry a try the request's timeout ended, even with attemptTimeout and tries left", async () => {
+    const retried: Array<number> = [];
+    let calls = 0;
+    const fetch = async (input: Request | string | URL, init?: RequestInit) => {
+      calls++;
+      const signal = init?.signal ?? (input instanceof Request ? input.signal : undefined);
+      return new Promise<Response>((_resolve, reject) => {
+        signal?.addEventListener("abort", () => reject(signal.reason));
+      });
+    };
+    const api = faxios.create({ env: { fetch }, timeout: 80 })
+      .use(retry({ attempts: 5, delay: 0, attemptTimeout: 50, onRetry: (_error, attempt) => retried.push(attempt) }));
+
+    const request = assert.rejects(api.get(URL), (err: unknown) =>
+      err instanceof FaxiosError && err.code === FaxiosError.ETIMEDOUT && err.message === "timeout of 80ms exceeded");
+    await vi.advanceTimersByTimeAsync(80);
+    await request;
+
+    assert.strictEqual(calls, 2);
+    assert.deepStrictEqual(retried, [ 1 ]);
+    assert.strictEqual(vi.getTimerCount(), 0);
+  });
+
+  it("never calls onRetry after the caller aborts, even when retryOn would retry", async () => {
+    const controller = new AbortController();
+    const retried: Array<number> = [];
+    const fetch = async (input: Request | string | URL, init?: RequestInit) => {
+      const signal = init?.signal ?? (input instanceof Request ? input.signal : undefined);
+      return new Promise<Response>((_resolve, reject) => {
+        signal?.addEventListener("abort", () => reject(signal.reason));
+      });
+    };
+    const api = faxios.create({ env: { fetch } })
+      .use(async (ctx, next) => {
+        try {
+          return await next(ctx);
+        }
+        catch (err) {
+          // Seen only by middleware outside retry: the request itself already settled.
+          retried.push(-1);
+          throw err;
+        }
+      })
+      .use(retry({ delay: 0, retryOn: () => true, onRetry: (_error, attempt) => retried.push(attempt) }));
+
+    const request = assert.rejects(api.get(URL, { signal: controller.signal }), CanceledError);
+    await vi.advanceTimersByTimeAsync(0);
+    controller.abort();
+    await request;
+    await vi.runAllTimersAsync();
+
+    assert.deepStrictEqual(retried, [ -1 ]);
   });
 
   it("uses retryOn to decide which failures to retry", async () => {
@@ -594,6 +707,12 @@ describe("plugins::retry", () => {
         assert.throws(() => retry({ maxRetryAfter: ms }), (err: unknown) => isBadValue(err) && (err as Error).message.includes("maxRetryAfter"), `maxRetryAfter: ${ms}`);
       }
       assert.doesNotThrow(() => retry({ maxDelay: 2_147_483_647, maxRetryAfter: 2_147_483_647 }));
+      for (const attemptTimeout of [ Number.NaN, -1, Number.POSITIVE_INFINITY, 2 ** 31 ]) {
+        assert.throws(() => retry({ attemptTimeout }), (err: unknown) => isBadValue(err) && (err as Error).message.includes("attemptTimeout"), `attemptTimeout: ${attemptTimeout}`);
+      }
+      // @ts-expect-error TS2322 -- attemptTimeout is a number of milliseconds
+      assert.throws(() => retry({ attemptTimeout: "50" }), isBadValue);
+      assert.doesNotThrow(() => retry({ attemptTimeout: 0 }));
       // @ts-expect-error TS2322 -- jitter is "full" or "none"
       assert.throws(() => retry({ jitter: "half" }), isBadValue);
       // @ts-expect-error TS2322 -- onRetry must be a function

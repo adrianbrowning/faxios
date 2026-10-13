@@ -1,5 +1,4 @@
 import canceledFromSignal from "../cancel/canceledFromSignal.js";
-import FaxiosError from "../core/FaxiosError.js";
 import utils from "../utils.js";
 
 type AbortHandler = (this: AbortSignal & { reason?: unknown; }, reason: unknown) => void;
@@ -13,10 +12,10 @@ type SignalLike = {
 };
 export type ExtendedAbortSignal = AbortSignal & { unsubscribe?: (() => void) | ((handler: AbortHandler) => void); };
 
-const composeSignals = (signals: Array<unknown> | null | undefined, timeout?: number, timeoutMessage?: string): ExtendedAbortSignal | undefined => {
+const composeSignals = (signals: Array<unknown> | null | undefined): ExtendedAbortSignal | undefined => {
   let activeSignals: Array<SignalLike> | null = signals ? (signals.filter(Boolean) as Array<SignalLike>) : [];
 
-  if (!timeout && !activeSignals.length) {
+  if (!activeSignals.length) {
     return;
   }
 
@@ -29,23 +28,12 @@ const composeSignals = (signals: Array<unknown> | null | undefined, timeout?: nu
       aborted = true;
       unsubscribe();
       const err = reason instanceof Error ? reason : this.reason;
-      const abortErr = err instanceof FaxiosError ? err : canceledFromSignal({ aborted: true, reason: err });
-      controller.abort(abortErr);
+      controller.abort(canceledFromSignal({ aborted: true, reason: err }));
     }
   };
 
-  let timer: null | ReturnType<typeof setTimeout> =
-    timeout
-      ? setTimeout(() => {
-        timer = null;
-        onabort.call(controller.signal, new FaxiosError(timeoutMessage || `timeout of ${timeout}ms exceeded`, FaxiosError.ETIMEDOUT));
-      }, timeout)
-      : null;
-
   const unsubscribe = () => {
     if (!activeSignals) { return; }
-    if (timer) { clearTimeout(timer); }
-    timer = null;
     activeSignals.forEach(signal => {
       signal.unsubscribe
         ? (signal.unsubscribe)(onabort)

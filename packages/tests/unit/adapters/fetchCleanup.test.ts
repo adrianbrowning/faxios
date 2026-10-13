@@ -184,6 +184,51 @@ describe("fetch adapter request cleanup", () => {
       const rejected = assert.rejects(pending, { code: "ETIMEDOUT" });
       await vi.advanceTimersByTimeAsync(1000);
       await rejected;
+      assert.strictEqual(vi.getTimerCount(), 0);
+    });
+
+    it("keeps the timeout armed while the body is open and clears it once the body ends", async () => {
+      vi.useFakeTimers();
+      const { promise: gate, resolve: open } = Promise.withResolvers<void>();
+      const body = new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode("first "));
+        },
+        async pull(controller) {
+          await gate;
+          controller.enqueue(new TextEncoder().encode("last"));
+          controller.close();
+        },
+      });
+      const { data } = await client.get<ReadableStream<Uint8Array>>("http://localhost/", {
+        responseType: "stream",
+        timeout: 1000,
+        env: { fetch: async () => new Response(body) },
+      });
+      assert.strictEqual(vi.getTimerCount(), 1);
+      open();
+      assert.strictEqual(await new Response(data).text(), "first last");
+      assert.strictEqual(vi.getTimerCount(), 0);
+    });
+
+    it("is aborted by the caller signal while the body is read, with a timeout set", async () => {
+      vi.useFakeTimers();
+      const controller = new AbortController();
+      const sent: { signal?: AbortSignal; } = {};
+      const { data } = await client.get<ReadableStream<Uint8Array>>("http://localhost/", {
+        responseType: "stream",
+        timeout: 60_000,
+        signal: controller.signal,
+        env: { fetch: stallingFetch(sent) },
+      });
+      const reader = data.getReader();
+      await reader.read();
+      const pending = reader.read();
+      controller.abort(new Error("user left"));
+      await assert.rejects(pending, { code: "ERR_CANCELED", message: "user left" });
+      await vi.advanceTimersByTimeAsync(0);
+      assert.strictEqual(vi.getTimerCount(), 0);
+      assert.strictEqual(getEventListeners(controller.signal, "abort").length, 0);
     });
 
     it("is aborted by the caller signal while the body is read, and drops its listener", async () => {

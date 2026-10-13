@@ -145,9 +145,22 @@ The body must be the runtime's global `FormData`. An instance of the npm `form-d
 
 ### `timeout`
 
-The `timeout` is the number of milliseconds before the request times out. If the request takes longer than `timeout`, the request will be aborted. The default is `0` (no timeout). It must be a number from `0` to `2147483647` (the longest delay `setTimeout` supports, about 24.8 days); anything else, including `NaN` and `Infinity`, rejects with `ERR_BAD_OPTION_VALUE` before any middleware runs.
+The `timeout` is the number of milliseconds the whole request may take. It starts when you call faxios, before any middleware runs, and covers everything until the promise settles: [middleware](/pages/advanced/middleware), async schemas, every [`retry`](/pages/advanced/retry) try and the waits between them, the `fetch` call and reading the body. When it passes, the request rejects at once with a `FaxiosError` whose code is `ETIMEDOUT` (message `timeout of <n>ms exceeded`, or `timeoutErrorMessage` when you set one), even while a middleware is still waiting, and any `fetch` in flight is aborted. A timed-out request is not retried. The default is `0` (no timeout). It must be a number from `0` to `2147483647` (the longest delay `setTimeout` supports, about 24.8 days); anything else, including `NaN` and `Infinity`, rejects with `ERR_BAD_OPTION_VALUE` before any middleware runs.
 
-With `responseType: "stream"`, the request isn't over when the promise resolves. The `timeout` and the [`signal`](#signal) stay active until you have read the whole body or cancelled it, so a slow or stalled body still times out, and aborting the signal stops it. Reading the stream then fails with the `ETIMEDOUT` or `ERR_CANCELED` error. faxios releases the timer and the signal listener when the body ends, errors or is cancelled. If the response has no body (a `204`, `304` or `HEAD` response), it releases them when the promise resolves.
+The deadline is armed from the merged config before middleware runs, so a middleware that changes `ctx.config.timeout` doesn't move it. While the deadline runs, `ctx.config.signal` is a signal faxios builds: it aborts when your [`signal`](#signal) does, with your reason, or at the deadline. To bound each retry try separately, use the `retry` plugin's [`attemptTimeout`](/pages/advanced/retry#timeouts).
+
+```js
+import faxios from "@gcmdev/faxios";
+import { retry } from "@gcmdev/faxios/plugins/retry";
+
+// At most 10 seconds in all, and at most 3 seconds for each of up to 3 tries.
+const api = faxios.create({ baseURL: "https://api.example.com", timeout: 10_000 })
+  .use(retry({ attempts: 3, attemptTimeout: 3_000 }));
+
+await api.get("/users");
+```
+
+With `responseType: "stream"`, the request isn't over when the promise resolves. The `timeout` and the [`signal`](#signal) stay active until you have read the whole body or cancelled it, so a slow or stalled body still times out, counted from when the request started, and aborting the signal stops it. Reading the stream then fails with the `ETIMEDOUT` or `ERR_CANCELED` error. faxios releases the timer and the signal listener when the body ends, errors or is cancelled. If the response has no body (a `204`, `304` or `HEAD` response), it releases them when the promise resolves.
 
 ### `withCredentials`
 

@@ -216,6 +216,10 @@ catch (error) {
 - A timeout always rejects with `ETIMEDOUT`. `ECONNABORTED` is never raised, and
   `transitional.clarifyTimeoutError` has no effect. `timeout` must be 0 to 2147483647 ms;
   anything else (`-1`, `NaN`, `Infinity`, `2 ** 31`) rejects with `ERR_BAD_OPTION_VALUE`.
+- `timeout` bounds the whole request: it starts before middleware and covers middleware,
+  schemas, every `retry` try and wait, and the fetch. It is not per try (unlike Axios), and a
+  timed-out request is not retried. For a per-try limit use `retry({ attemptTimeout })`.
+  Changing `ctx.config.timeout` in middleware has no effect.
 - With `responseType: "stream"`, `timeout` and `signal` stay active until the body is fully
   read or cancelled. Reading a stalled body rejects with `ETIMEDOUT` or `ERR_CANCELED`.
   Cancel a body you don't read so the timer and signal listener are released.
@@ -307,7 +311,8 @@ plugin's request options (such as `retry: false`). Before writing plugin code, r
 - `retry` defaults: 3 attempts, statuses 408/429/500/502/503/504 plus `ERR_NETWORK` and
   `ETIMEDOUT`, exponential backoff from 100 ms with full jitter. A 429/503 `Retry-After` sets the
   wait unless `respectRetryAfter: false`. Turn that off when something else, such as a queue
-  throttle, already honours `Retry-After`.
+  throttle, already honours `Retry-After`. `attemptTimeout` (ms, default 0 = none) aborts one try
+  that runs too long and retries it; the request's `timeout` still caps all tries together.
   Only GET, HEAD, OPTIONS, PUT, DELETE and QUERY retry; list POST or PATCH in `methods` only when
   the API dedupes repeats. Stream bodies are never replayed. Cancellation never retries. A custom
   `retryOn` replaces the whole default predicate (`statuses`, `ERR_NETWORK`, `ETIMEDOUT`), and a
