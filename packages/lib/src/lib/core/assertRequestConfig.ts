@@ -3,7 +3,7 @@
 import transitionalDefaults from "../defaults/transitional.js";
 import validator from "../helpers/validator.js";
 import type { FaxiosRequestConfig, InternalFaxiosRequestConfig, ResponseType } from "../types.js";
-import utils from "../utils.js";
+import { hasOwnProp } from "../utils.js";
 import FaxiosError from "./FaxiosError.js";
 
 // Every request config key faxios reads. `satisfies` keeps the list in step with
@@ -74,7 +74,7 @@ const REMOVED_OPTIONS: Readonly<Record<string, string>> = {
 
 // A removed option's replacement, or the accepted option the key differs from only by case.
 function hintFor(key: string, pluginOptions: ReadonlySet<string>): string {
-  if (utils.hasOwnProp(REMOVED_OPTIONS, key)) return `: it was removed; ${REMOVED_OPTIONS[key]}`;
+  if (hasOwnProp(REMOVED_OPTIONS, key)) return `: it was removed; ${REMOVED_OPTIONS[key]}`;
   const lower = key.toLowerCase();
   const match = [ ...Object.keys(REQUEST_CONFIG_KEYS), ...pluginOptions ].find(known => known.toLowerCase() === lower);
   return match === undefined ? "" : `; did you mean ${match}?`;
@@ -99,7 +99,7 @@ const RESPONSE_TYPES = {
  */
 export default function assertRequestConfig(config: FaxiosRequestConfig, pluginOptions: ReadonlySet<string>): void {
   for (const key of Object.keys(config)) {
-    if (utils.hasOwnProp(REQUEST_CONFIG_KEYS, key) || pluginOptions.has(key)) continue;
+    if (hasOwnProp(REQUEST_CONFIG_KEYS, key) || pluginOptions.has(key)) continue;
     throw new FaxiosError(`Unknown option ${key}${hintFor(key, pluginOptions)}`, FaxiosError.ERR_BAD_OPTION, config as InternalFaxiosRequestConfig);
   }
 
@@ -109,7 +109,7 @@ export default function assertRequestConfig(config: FaxiosRequestConfig, pluginO
 
   // Matched case-insensitively, as the fetch adapter reads it.
   const responseType: unknown = config.responseType;
-  if (responseType !== undefined && (typeof responseType !== "string" || !utils.hasOwnProp(RESPONSE_TYPES, responseType.toLowerCase()))) {
+  if (responseType !== undefined && (typeof responseType !== "string" || !hasOwnProp(RESPONSE_TYPES, responseType.toLowerCase()))) {
     throw new FaxiosError(
       `option responseType must be one of ${Object.keys(RESPONSE_TYPES).join(", ")}`,
       FaxiosError.ERR_BAD_OPTION_VALUE,

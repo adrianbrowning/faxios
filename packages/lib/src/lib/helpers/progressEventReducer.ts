@@ -1,5 +1,5 @@
 import type { FaxiosProgressEvent } from "../types.js";
-import utils from "../utils.js";
+import { isThenable } from "../utils.js";
 import speedometer from "./speedometer.js";
 import throttle from "./throttle.js";
 
@@ -57,10 +57,10 @@ export const progressEventDecorator = (total: number | undefined, throttled: Ret
 export const asyncDecorator =
   (fn: (...args: Array<unknown>) => unknown) =>
     (...args: Array<unknown>) =>
-      utils.asap(() => {
+      queueMicrotask(() => {
         try {
           const result = fn(...args);
-          if (utils.isThenable(result)) {
+          if (isThenable(result)) {
             (result as PromiseLike<unknown>).then(undefined, () => {});
           }
         }

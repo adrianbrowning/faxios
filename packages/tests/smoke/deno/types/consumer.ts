@@ -7,7 +7,6 @@ import buildFullPath from "faxios/unsafe/core/buildFullPath.js";
 import buildURL from "faxios/unsafe/helpers/buildURL.js";
 import combineURLs from "faxios/unsafe/helpers/combineURLs.js";
 import isAbsoluteURL from "faxios/unsafe/helpers/isAbsoluteURL.js";
-import utils from "faxios/unsafe/utils.js";
 
 type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
 type IsAny<T> = 0 extends 1 & T ? true : false;
@@ -43,5 +42,3 @@ expectType<Equal<typeof combineURLs, (baseURL: string, relativeURL?: string) => 
 expectType<Equal<typeof isAbsoluteURL, (url: unknown) => boolean>>(true);
 expectType<Equal<typeof buildURL, (url: string, params?: unknown, options?: unknown) => string>>(true);
 expectType<Equal<typeof buildFullPath, (baseURL: unknown, requestedURL: unknown, allowAbsoluteUrls?: unknown, config?: unknown) => string>>(true);
-expectType<Equal<IsAny<typeof utils>, false>>(true);
-expectType<Equal<typeof utils.isString, (thing: unknown) => boolean>>(true);

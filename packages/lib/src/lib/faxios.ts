@@ -17,7 +17,7 @@ import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
 import type { CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosMiddleware, FaxiosPluginArgument, FaxiosRequestConfig, FaxiosResponse, HeadersDefaults, Method, ResponseTypedConfig, SchemaConfig, StringLiteralsOrString } from "./types.js";
 import type { StandardSchemaV1 } from "./types/standard-schema.js";
-import utils from "./utils.js";
+import { extend, isHTMLForm } from "./utils.js";
 
 /**
  * Create an instance of Faxios
@@ -33,10 +33,10 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
   // Copy faxios.prototype to instance. The instance is a callable populated
   // dynamically here; extend mutates it via own-key copy.
   const target = instance as unknown as Record<string, unknown>;
-  utils.extend(target, Faxios.prototype, context, { allOwnKeys: true });
+  extend(target, Faxios.prototype, context, { allOwnKeys: true });
 
   // Copy context to instance
-  utils.extend(target, context, null, { allOwnKeys: true });
+  extend(target, context, null, { allOwnKeys: true });
 
   // use() and eject() aren't Faxios members, so the instance gets them here. use() returns the
   // callable instance for chaining. At runtime it only registers the middleware; the plugin rules
@@ -293,7 +293,7 @@ faxios.mergeConfig = mergeConfig;
 
 faxios.FaxiosHeaders = FaxiosHeaders;
 
-faxios.formToJSON = (thing: unknown): unknown => formDataToJSON(utils.isHTMLForm(thing) ? ((): unknown => {
+faxios.formToJSON = (thing: unknown): unknown => formDataToJSON(isHTMLForm(thing) ? ((): unknown => {
   const GlobalFormData = (globalThis as Record<string, unknown>)["FormData"] as (new (el?: unknown) => unknown) | undefined;
   return GlobalFormData ? new GlobalFormData(thing) : thing;
 })() : thing);

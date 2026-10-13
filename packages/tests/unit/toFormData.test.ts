@@ -305,6 +305,17 @@ describe("helpers::toFormData", () => {
     assert.ok(!keys.some(key => key.includes("type")));
     assert.ok(!keys.some(key => key.includes("name")));
   });
+
+  it("gives a custom visitor only the declared helpers", () => {
+    const seen: Array<Array<string>> = [];
+    toFormData({ a: 1 }, new globalThis.FormData() as unknown as GenericFormData, {
+      visitor(_value: unknown, _key: number | string, _path: Array<number | string> | null, helpers: object) {
+        seen.push(Object.keys(helpers).sort());
+        return false;
+      },
+    });
+    assert.deepStrictEqual(seen, [[ "convertValue", "defaultVisitor", "isVisitable" ]]);
+  });
 });
 
 describe("helpers::toFormData per-call state (#172)", () => {

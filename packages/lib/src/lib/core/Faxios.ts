@@ -18,7 +18,7 @@ import type {
   StringLiteralsOrString
 } from "../types.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
-import utils from "../utils.js";
+import { hasOwnProp, isDangerousKey, isFunction, isObject, isPlainObject } from "../utils.js";
 import assertRequestConfig from "./assertRequestConfig.js";
 import assertTimeout from "./assertTimeout.js";
 import { createDefinedEndpoint } from "./define.js";
@@ -98,7 +98,7 @@ function normalizeParamsSerializer(config: FaxiosRequestConfig): void {
   const { paramsSerializer } = config;
   if (paramsSerializer == null) return;
 
-  if (utils.isFunction(paramsSerializer)) {
+  if (isFunction(paramsSerializer)) {
     config.paramsSerializer = {
       serialize: paramsSerializer as (
         params: Record<string, unknown>
@@ -123,8 +123,8 @@ function resolveAllowAbsoluteUrls(
 ): void {
   if (config.allowAbsoluteUrls === undefined) {
     // Own reads only: instance defaults may be a plain object (the default instance's are).
-    const allowAbsoluteUrls = utils.hasOwnProp(defaults, "allowAbsoluteUrls") ? defaults.allowAbsoluteUrls : undefined;
-    const baseURL = utils.hasOwnProp(defaults, "baseURL") ? defaults.baseURL : undefined;
+    const allowAbsoluteUrls = hasOwnProp(defaults, "allowAbsoluteUrls") ? defaults.allowAbsoluteUrls : undefined;
+    const baseURL = hasOwnProp(defaults, "baseURL") ? defaults.baseURL : undefined;
     config.allowAbsoluteUrls = allowAbsoluteUrls ?? !baseURL;
   }
 }
@@ -141,7 +141,7 @@ function resolveMethod(
   config: FaxiosRequestConfig,
   defaults: FaxiosRequestConfig
 ): string {
-  const defaultMethod = utils.hasOwnProp(defaults, "method") ? defaults.method : undefined;
+  const defaultMethod = hasOwnProp(defaults, "method") ? defaults.method : undefined;
   const method: unknown = config.method || defaultMethod || "get";
   if (typeof method !== "string" || !HTTP_TOKEN.test(method)) {
     throw new FaxiosError("option method must be an HTTP method name", FaxiosError.ERR_BAD_OPTION_VALUE, config as InternalFaxiosRequestConfig);
@@ -187,7 +187,7 @@ function composeMiddleware(entries: ReadonlyArray<MiddlewareEntry>, dispatch: An
 
 function checkMiddlewareResponse(response: unknown, config: InternalFaxiosRequestConfig): FaxiosResponse {
   // Only a missing result is rejected: a middleware may return its own response-shaped object.
-  if (utils.isObject(response)) return response as FaxiosResponse;
+  if (isObject(response)) return response as FaxiosResponse;
   throw new FaxiosError(
     "Middleware resolved without a response; did you forget to return next(ctx)?",
     FaxiosError.ERR_BAD_RESPONSE,
@@ -242,8 +242,8 @@ function settleOnAbort(
 // Without a deadline or middleware, dispatch watches the caller's signal itself. Not async: a
 // request without a timeout reaches dispatch in the same tick, as it did before.
 function runRequest(run: () => Promise<FaxiosResponse>, config: InternalFaxiosRequestConfig, hasMiddleware: boolean): Promise<FaxiosResponse> {
-  const timeout = utils.hasOwnProp(config, "timeout") ? config.timeout : undefined;
-  const callerSignal = utils.hasOwnProp(config, "signal") ? config.signal : undefined;
+  const timeout = hasOwnProp(config, "timeout") ? config.timeout : undefined;
+  const callerSignal = hasOwnProp(config, "signal") ? config.signal : undefined;
   const ms = timeout == null ? 0 : Number(timeout);
   if (ms <= 0) return callerSignal && hasMiddleware ? settleOnAbort(run, callerSignal, config) : run();
   const deadline = armDeadline(ms, callerSignal, config);
@@ -256,11 +256,11 @@ function runRequest(run: () => Promise<FaxiosResponse>, config: InternalFaxiosRe
 // group for the request's method, then the top-level headers. Every FaxiosConfigHeaders member is
 // a string-keyed object, so the casts are checked widenings, not assertions.
 function headerLayers(headers: unknown, method: string): Array<null | Record<string, unknown>> {
-  if (!utils.isPlainObject(headers)) return [ headers as null ];
+  if (!isPlainObject(headers)) return [ headers as null ];
   const h = headers as Record<string, unknown>;
   // A group is an own object under a group name; a string under a group name is a real header.
   const isGroup = (name: string) =>
-    METHOD_HEADER_GROUPS.includes(name as keyof HeadersDefaults) && utils.hasOwnProp(h, name) && utils.isObject(h[name]);
+    METHOD_HEADER_GROUPS.includes(name as keyof HeadersDefaults) && hasOwnProp(h, name) && isObject(h[name]);
   const topLevel: Record<string, unknown> = Object.create(null);
   for (const name of Object.keys(h)) {
     if (!isGroup(name)) topLevel[name] = h[name];
@@ -314,7 +314,7 @@ class Faxios {
     // Plugins are caller objects: only their own fields count, so a polluted Object.prototype
     // can't supply middleware or capabilities (THREATMODEL T-R4b).
     const own = <K extends keyof FaxiosPluginArgument>(key: K) =>
-      (plugin && utils.hasOwnProp(plugin, key) ? plugin[key] : undefined);
+      (plugin && hasOwnProp(plugin, key) ? plugin[key] : undefined);
     const run = plugin ? own("middleware") : middleware;
     if (typeof run !== "function") {
       throw new FaxiosError("use() expects a middleware function or a plugin with a middleware function", FaxiosError.ERR_BAD_OPTION_VALUE);
@@ -324,10 +324,10 @@ class Faxios {
       throw new FaxiosError("use() expects a plugin's own name to be a non-empty string", FaxiosError.ERR_BAD_OPTION_VALUE);
     }
     const declared = own("options");
-    if (declared != null && !utils.isPlainObject(declared)) {
+    if (declared != null && !isPlainObject(declared)) {
       throw new FaxiosError("use() expects a plugin's own options to be an object of request option names", FaxiosError.ERR_BAD_OPTION_VALUE);
     }
-    const options = declared == null ? [] : Object.keys(declared).filter(key => !utils.isDangerousKey(key));
+    const options = declared == null ? [] : Object.keys(declared).filter(key => !isDangerousKey(key));
     const provides = own("provides");
     const provided = provides == null ? [] : this.#addCapabilities(String(name), provides);
     this.#setMiddleware([ ...this.#middleware, { ref: middleware, run, provided, options }]);
@@ -356,9 +356,9 @@ class Faxios {
 
   #addCapabilities(pluginName: string, provides: unknown): Array<string> {
     const source = provides as Record<string, unknown>;
-    const keys = Object.keys(source).filter(key => !utils.isDangerousKey(key));
+    const keys = Object.keys(source).filter(key => !isDangerousKey(key));
     for (const key of keys) {
-      if (utils.hasOwnProp(this.#capabilities, key)) {
+      if (hasOwnProp(this.#capabilities, key)) {
         throw new FaxiosError(`Plugin "${pluginName}" provides capability "${key}", which another plugin already provides`, FaxiosError.ERR_BAD_OPTION);
       }
     }
@@ -413,8 +413,8 @@ class Faxios {
     }
 
     // Headers are flattened per level, so every request header group beats every instance one.
-    const instanceHeaders = utils.hasOwnProp(this.defaults, "headers") ? this.defaults.headers : undefined;
-    const requestHeaders = utils.hasOwnProp(config, "headers") ? config.headers : undefined;
+    const instanceHeaders = hasOwnProp(this.defaults, "headers") ? this.defaults.headers : undefined;
+    const requestHeaders = hasOwnProp(config, "headers") ? config.headers : undefined;
 
     config = mergeConfig(this.defaults, config);
     assertRequestConfig(config, this.#pluginOptions);
@@ -431,7 +431,7 @@ class Faxios {
 
     const internal = config as InternalFaxiosRequestConfig;
     // Before middleware, so a bad value never reaches caller code or a timer that fires at once.
-    assertTimeout(utils.hasOwnProp(config, "timeout") ? config.timeout : undefined, internal);
+    assertTimeout(hasOwnProp(config, "timeout") ? config.timeout : undefined, internal);
 
     const composed = this.#composed;
     if (!composed) return runRequest(() => dispatchRequest(internal), internal, false);
@@ -445,7 +445,7 @@ class Faxios {
     return this.request(mergeConfig(config || {}, {
       method: "get",
       url,
-      data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
+      data: config && hasOwnProp(config, "data") ? config.data : undefined,
     }));
   }
    
@@ -455,7 +455,7 @@ class Faxios {
     return this.request(mergeConfig(config || {}, {
       method: "delete",
       url,
-      data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
+      data: config && hasOwnProp(config, "data") ? config.data : undefined,
     }));
   }
    
@@ -465,7 +465,7 @@ class Faxios {
     return this.request(mergeConfig(config || {}, {
       method: "head",
       url,
-      data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
+      data: config && hasOwnProp(config, "data") ? config.data : undefined,
     }));
   }
    
@@ -475,7 +475,7 @@ class Faxios {
     return this.request(mergeConfig(config || {}, {
       method: "options",
       url,
-      data: config && utils.hasOwnProp(config, "data") ? config.data : undefined,
+      data: config && hasOwnProp(config, "data") ? config.data : undefined,
     }));
   }
    

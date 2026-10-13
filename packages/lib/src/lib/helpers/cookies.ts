@@ -1,5 +1,5 @@
 import platform from "../platform.js";
-import utils from "../utils.js";
+import { isNumber, isString } from "../utils.js";
 
 type CookieManager = {
   read: (name: string) => null | string;
@@ -17,19 +17,19 @@ export default platform.hasStandardBrowserEnv
 
       const cookie = [ `${name}=${encodeURIComponent(value)}` ];
 
-      if (utils.isNumber(expires)) {
+      if (isNumber(expires)) {
         cookie.push(`expires=${new Date(expires!).toUTCString()}`);
       }
-      if (utils.isString(path)) {
+      if (isString(path)) {
         cookie.push(`path=${path}`);
       }
-      if (utils.isString(domain)) {
+      if (isString(domain)) {
         cookie.push(`domain=${domain}`);
       }
       if (secure === true) {
         cookie.push("secure");
       }
-      if (utils.isString(sameSite)) {
+      if (isString(sameSite)) {
         cookie.push(`SameSite=${sameSite}`);
       }
 

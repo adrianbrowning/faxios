@@ -5,7 +5,7 @@ import cookies from "../helpers/cookies.js";
 import isURLSameOrigin from "../helpers/isURLSameOrigin.js";
 import platform from "../platform.js";
 import type { FaxiosRequestConfig } from "../types.js";
-import utils from "../utils.js";
+import { hasOwnProp, isFunction } from "../utils.js";
 
 function applyXSRFToken(
   headers: FaxiosHeaders,
@@ -14,7 +14,7 @@ function applyXSRFToken(
   xsrfCookieName: string | undefined,
   config: FaxiosRequestConfig
 ): void {
-  if (utils.isFunction(withXSRFToken)) {
+  if (isFunction(withXSRFToken)) {
     withXSRFToken = (withXSRFToken as (cfg: unknown) => unknown)(
       config
     ) as boolean | null | undefined;
@@ -43,7 +43,7 @@ function prepareRequest(config: FaxiosRequestConfig): FaxiosRequestConfig {
   // Read only own properties to prevent prototype pollution gadgets
   // (e.g. Object.prototype.baseURL = 'https://evil.com').
   const own = (key: string) =>
-    utils.hasOwnProp(newConfig, key)
+    hasOwnProp(newConfig, key)
       ? (newConfig as Record<string, unknown>)[key]
       : undefined;
 

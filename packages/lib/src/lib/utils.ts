@@ -1,4 +1,3 @@
-// @ts-self-types="./utils.d.ts" — required for Deno: published as an unsafe/* export
 "use strict";
 
 // utils is a library of generic helper functions non-specific to faxios
@@ -7,13 +6,13 @@ const { toString } = Object.prototype;
 const { getPrototypeOf } = Object;
 const { iterator, toStringTag } = Symbol;
 
-const hasOwnProperty = (obj: unknown, prop: PropertyKey) => Object.hasOwn(obj as object, prop);
+export const hasOwnProp = (obj: unknown, prop: PropertyKey) => Object.hasOwn(obj as object, prop);
 
 /**
  * The one dangerous-key check: `__proto__`, `constructor` and `prototype` are skipped wherever
  * config, route or form data keys are materialized into objects, to block prototype-pollution writes.
  */
-const isDangerousKey = (key: PropertyKey): boolean =>
+export const isDangerousKey = (key: PropertyKey): boolean =>
   key === "__proto__" || key === "constructor" || key === "prototype";
 
 /**
@@ -28,7 +27,7 @@ const isDangerousKey = (key: PropertyKey): boolean =>
  *
  * @returns {boolean} True when `prop` is owned below Object.prototype
  */
-const hasOwnInPrototypeChain = (thing: unknown, prop: PropertyKey): boolean => {
+export const hasOwnInPrototypeChain = (thing: unknown, prop: PropertyKey): boolean => {
   let obj: null | object = thing != null && typeof thing === "object" ? thing : null;
   if (obj === null) return false;
   const seen: Array<object> = [];
@@ -39,7 +38,7 @@ const hasOwnInPrototypeChain = (thing: unknown, prop: PropertyKey): boolean => {
     }
     seen.push(obj);
 
-    if (hasOwnProperty(obj, prop)) {
+    if (hasOwnProp(obj, prop)) {
       return true;
     }
     obj = getPrototypeOf(obj) as null | object;
@@ -58,10 +57,10 @@ const hasOwnInPrototypeChain = (thing: unknown, prop: PropertyKey): boolean => {
  *
  * @returns {*} The resolved value, or undefined when unsafe/absent
  */
-const getSafeProp = (obj: unknown, prop: PropertyKey): unknown =>
+export const getSafeProp = (obj: unknown, prop: PropertyKey): unknown =>
   obj != null && hasOwnInPrototypeChain(obj, prop) ? (obj as Record<PropertyKey, unknown>)[prop] : undefined;
 
-const kindOf = (cache => (thing: unknown) => {
+export const kindOf = (cache => (thing: unknown) => {
   const str = toString.call(thing);
   return (cache as Record<string, string>)[str] || ((cache as Record<string, string>)[str] = str.slice(8, -1).toLowerCase());
 })(Object.create(null) as object);
@@ -80,7 +79,7 @@ const typeOfTest = (type: string) => (thing: unknown) => typeof thing === type;
  *
  * @returns {boolean} True if value is an Array, otherwise false
  */
-const { isArray } = Array;
+export const { isArray } = Array;
 
 /**
  * Determine if a value is undefined
@@ -89,7 +88,7 @@ const { isArray } = Array;
  *
  * @returns {boolean} True if the value is undefined, otherwise false
  */
-const isUndefined = typeOfTest("undefined");
+export const isUndefined = typeOfTest("undefined");
 
 /**
  * Determine if a value is a Buffer
@@ -98,7 +97,7 @@ const isUndefined = typeOfTest("undefined");
  *
  * @returns {boolean} True if value is a Buffer, otherwise false
  */
-function isBuffer(val: unknown): boolean {
+export function isBuffer(val: unknown): boolean {
   return (
     val !== null &&
     !isUndefined(val) &&
@@ -115,7 +114,7 @@ function isBuffer(val: unknown): boolean {
  *
  * @returns {boolean} True if value is an ArrayBuffer, otherwise false
  */
-const isArrayBuffer = kindOfTest("ArrayBuffer");
+export const isArrayBuffer = kindOfTest("ArrayBuffer");
 
 /**
  * Determine if a value is a view on an ArrayBuffer
@@ -124,7 +123,7 @@ const isArrayBuffer = kindOfTest("ArrayBuffer");
  *
  * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
  */
-function isArrayBufferView(val: unknown): boolean {
+export function isArrayBufferView(val: unknown): boolean {
   let result;
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (typeof ArrayBuffer !== "undefined" && ArrayBuffer.isView) {
@@ -143,7 +142,7 @@ function isArrayBufferView(val: unknown): boolean {
  *
  * @returns {boolean} True if value is a String, otherwise false
  */
-const isString = typeOfTest("string");
+export const isString = typeOfTest("string");
 
 /**
  * Determine if a value is a Function
@@ -151,7 +150,7 @@ const isString = typeOfTest("string");
  * @param {*} val The value to test
  * @returns {boolean} True if value is a Function, otherwise false
  */
-const isFunction = typeOfTest("function");
+export const isFunction = typeOfTest("function");
 
 /**
  * Determine if a value is a Number
@@ -160,7 +159,7 @@ const isFunction = typeOfTest("function");
  *
  * @returns {boolean} True if value is a Number, otherwise false
  */
-const isNumber = typeOfTest("number");
+export const isNumber = typeOfTest("number");
 
 /**
  * Determine if a value is an Object
@@ -169,7 +168,7 @@ const isNumber = typeOfTest("number");
  *
  * @returns {boolean} True if value is an Object, otherwise false
  */
-const isObject = (thing: unknown): thing is object => thing !== null && typeof thing === "object";
+export const isObject = (thing: unknown): thing is object => thing !== null && typeof thing === "object";
 
 /**
  * Determine if a value is a Boolean
@@ -177,7 +176,7 @@ const isObject = (thing: unknown): thing is object => thing !== null && typeof t
  * @param {*} thing The value to test
  * @returns {boolean} True if value is a Boolean, otherwise false
  */
-const isBoolean = (thing: unknown) => thing === true || thing === false;
+export const isBoolean = (thing: unknown) => thing === true || thing === false;
 
 /**
  * Determine if a value is a plain Object
@@ -186,7 +185,7 @@ const isBoolean = (thing: unknown) => thing === true || thing === false;
  *
  * @returns {boolean} True if value is a plain Object, otherwise false
  */
-const isPlainObject = (val: unknown): boolean => {
+export const isPlainObject = (val: unknown): boolean => {
   if (!isObject(val)) {
     return false;
   }
@@ -205,35 +204,13 @@ const isPlainObject = (val: unknown): boolean => {
 };
 
 /**
- * Determine if a value is an empty object (safely handles Buffers)
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if value is an empty object, otherwise false
- */
-const isEmptyObject = (val: unknown): boolean => {
-  // Early return for non-objects or Buffers to prevent RangeError
-  if (!isObject(val) || isBuffer(val)) {
-    return false;
-  }
-
-  try {
-    return Object.keys(val).length === 0 && Object.getPrototypeOf(val) === Object.prototype;
-  }
-  catch {
-    // Fallback for any other objects that might cause RangeError with Object.keys()
-    return false;
-  }
-};
-
-/**
  * Determine if a value is a Date
  *
  * @param {*} val The value to test
  *
  * @returns {boolean} True if value is a Date, otherwise false
  */
-const isDate = kindOfTest("Date");
+export const isDate = kindOfTest("Date");
 
 /**
  * Determine if a value is a File
@@ -242,7 +219,7 @@ const isDate = kindOfTest("Date");
  *
  * @returns {boolean} True if value is a File, otherwise false
  */
-const isFile = kindOfTest("File");
+export const isFile = kindOfTest("File");
 
 /**
  * Determine if a value is a React Native Blob
@@ -255,7 +232,7 @@ const isFile = kindOfTest("File");
  *
  * @returns {boolean} True if value is a React Native Blob, otherwise false
  */
-const isReactNativeBlob = (value: unknown) => !!(value && typeof (value as Record<string, unknown>).uri !== "undefined");
+export const isReactNativeBlob = (value: unknown) => !!(value && typeof (value as Record<string, unknown>).uri !== "undefined");
 
 /**
  * Determine if environment is React Native
@@ -265,7 +242,7 @@ const isReactNativeBlob = (value: unknown) => !!(value && typeof (value as Recor
  *
  * @returns {boolean} True if environment is React Native, otherwise false
  */
-const isReactNative = (formData: unknown) => formData && typeof (formData as Record<string, unknown>).getParts !== "undefined";
+export const isReactNative = (formData: unknown) => formData && typeof (formData as Record<string, unknown>).getParts !== "undefined";
 
 /**
  * Determine if a value is a Blob
@@ -274,7 +251,7 @@ const isReactNative = (formData: unknown) => formData && typeof (formData as Rec
  *
  * @returns {boolean} True if value is a Blob, otherwise false
  */
-const isBlob = kindOfTest("Blob");
+export const isBlob = kindOfTest("Blob");
 
 /**
  * Determine if a value is a FileList
@@ -283,7 +260,7 @@ const isBlob = kindOfTest("Blob");
  *
  * @returns {boolean} True if value is a FileList, otherwise false
  */
-const isFileList = kindOfTest("FileList");
+export const isFileList = kindOfTest("FileList");
 
 /**
  * Determine if a value is a Stream
@@ -292,7 +269,7 @@ const isFileList = kindOfTest("FileList");
  *
  * @returns {boolean} True if value is a Stream, otherwise false
  */
-const isStream = (val: unknown) => isObject(val) && isFunction((val as Record<string, unknown>).pipe);
+export const isStream = (val: unknown) => isObject(val) && isFunction((val as Record<string, unknown>).pipe);
 
 /**
  * Determine if a value is a FormData
@@ -304,7 +281,7 @@ const isStream = (val: unknown) => isObject(val) && isFunction((val as Record<st
 const G: Record<string, unknown> = globalThis;
 const FormDataCtor = typeof G["FormData"] !== "undefined" ? G["FormData"] as new () => object : undefined;
 
-const isFormData = (thing: unknown): boolean => {
+export const isFormData = (thing: unknown): boolean => {
   if (!thing) return false;
   if (FormDataCtor && thing instanceof FormDataCtor) return true;
   // Reject plain objects inheriting directly from Object.prototype so prototype-pollution gadgets can't spoof FormData.
@@ -326,14 +303,13 @@ const isFormData = (thing: unknown): boolean => {
  *
  * @returns {boolean} True if value is a URLSearchParams object, otherwise false
  */
-const isURLSearchParams = kindOfTest("URLSearchParams");
+export const isURLSearchParams = kindOfTest("URLSearchParams");
 
-const [ isReadableStream, isRequest, isResponse, isHeaders ] = [
-  "ReadableStream",
-  "Request",
-  "Response",
-  "Headers",
-].map(kindOfTest);
+export const isReadableStream = kindOfTest("ReadableStream");
+
+export const isRequest = kindOfTest("Request");
+
+export const isResponse = kindOfTest("Response");
 
 /**
  * Iterate over an Array or an Object invoking a function for each item.
@@ -351,7 +327,7 @@ const [ isReadableStream, isRequest, isResponse, isHeaders ] = [
  * @param {Boolean} [options.allOwnKeys = false]
  * @returns {any}
  */
-function forEach(obj: unknown, fn: (value: unknown, key: unknown, obj: unknown) => void, { allOwnKeys = false } = {}): void {
+export function forEach(obj: unknown, fn: (value: unknown, key: unknown, obj: unknown) => void, { allOwnKeys = false } = {}): void {
   // Don't bother if no value provided
   if (obj === null || typeof obj === "undefined") {
     return;
@@ -398,7 +374,7 @@ function forEach(obj: unknown, fn: (value: unknown, key: unknown, obj: unknown) 
  * @param {string} key - The key to find (case-insensitive).
  * @returns {?string} The actual key name if found, otherwise null.
  */
-function findKey(obj: unknown, key: string): null | string {
+export function findKey(obj: unknown, key: string): null | string {
   if (isBuffer(obj)) {
     return null;
   }
@@ -416,15 +392,7 @@ function findKey(obj: unknown, key: string): null | string {
   return null;
 }
 
-type GlobalWithEvents = typeof globalThis & {
-  addEventListener?: (type: string, listener: (event: Record<string, unknown>) => void, capture?: boolean) => void;
-  postMessage?: (message: unknown, targetOrigin: string) => void;
-  process?: { nextTick?: (cb: () => void) => void; };
-  setImmediate?: (cb: () => void) => void;
-};
-const _global = globalThis as GlobalWithEvents;
-
-const isContextDefined = (context: unknown) => !isUndefined(context) && context !== _global;
+const isContextDefined = (context: unknown) => !isUndefined(context) && context !== globalThis;
 
 /**
  * Accepts varargs expecting each argument to be an object, then
@@ -444,7 +412,7 @@ const isContextDefined = (context: unknown) => !isUndefined(context) && context 
  *
  * @returns {Object} Result of all merge properties
  */
-function merge(this: unknown, ...objs: Array<unknown>): Record<string, unknown> {
+export function merge(this: unknown, ...objs: Array<unknown>): Record<string, unknown> {
   const ctx = (isContextDefined(this) && this) as false | { caseless?: unknown; skipUndefined?: unknown; };
   const caseless = ctx && ctx.caseless;
   const skipUndefined = ctx && ctx.skipUndefined;
@@ -465,7 +433,7 @@ function merge(this: unknown, ...objs: Array<unknown>): Record<string, unknown> 
     // Read via own-prop only — a bare `result[targetKey]` walks the prototype
     // chain, so a polluted Object.prototype value could surface here and get
     // copied into the merged result.
-    const existing = hasOwnProperty(result, targetKey) ? result[targetKey] : undefined;
+    const existing = hasOwnProp(result, targetKey) ? result[targetKey] : undefined;
     if (isPlainObject(existing) && isPlainObject(val)) {
       result[targetKey] = merge(existing, val);
     }
@@ -478,7 +446,7 @@ function merge(this: unknown, ...objs: Array<unknown>): Record<string, unknown> 
     else if (!skipUndefined || !isUndefined(val)) {
       result[targetKey] = val;
     }
-    if (lowerKey !== undefined && hasOwnProperty(result, targetKey)) {
+    if (lowerKey !== undefined && hasOwnProp(result, targetKey)) {
       caselessKeys.set(lowerKey, targetKey as string);
     }
   };
@@ -517,7 +485,7 @@ function merge(this: unknown, ...objs: Array<unknown>): Record<string, unknown> 
  * @param {Boolean} [options.allOwnKeys]
  * @returns {Object} The resulting value of object a
  */
-const extend = (a: Record<string, unknown>, b: unknown, thisArg: unknown, { allOwnKeys }: { allOwnKeys?: boolean; } = {}) => {
+export const extend = (a: Record<string, unknown>, b: unknown, thisArg: unknown, { allOwnKeys }: { allOwnKeys?: boolean; } = {}) => {
   forEach(
     b,
     (val, key) => {
@@ -544,20 +512,6 @@ const extend = (a: Record<string, unknown>, b: unknown, thisArg: unknown, { allO
 };
 
 /**
- * Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
- *
- * @param {string} content with BOM
- *
- * @returns {string} content value without BOM
- */
-const stripBOM = (content: string) => {
-  if (content.charCodeAt(0) === 0xfeff) {
-    content = content.slice(1);
-  }
-  return content;
-};
-
-/**
  * Resolve object with deep prototype chain to a flat object
  * @param {Object} sourceObj source object
  * @param {Object} [destObj]
@@ -566,7 +520,7 @@ const stripBOM = (content: string) => {
  *
  * @returns {Object}
  */
-const toFlatObject = (sourceObj: unknown, destObj?: Record<string, unknown>, filter?: ((src: object, dest: Record<string, unknown>) => boolean) | false, propFilter?: (prop: string, src: unknown, dest: Record<string, unknown>) => boolean): Record<string, unknown> => {
+export const toFlatObject = (sourceObj: unknown, destObj?: Record<string, unknown>, filter?: ((src: object, dest: Record<string, unknown>) => boolean) | false, propFilter?: (prop: string, src: unknown, dest: Record<string, unknown>) => boolean): Record<string, unknown> => {
   let props: Array<string>;
   let i: number;
   let prop: string | undefined;
@@ -595,7 +549,7 @@ const toFlatObject = (sourceObj: unknown, destObj?: Record<string, unknown>, fil
   return dest;
 };
 
-const toArray = (thing?: unknown): Array<unknown> | null => {
+export const toArray = (thing?: unknown): Array<unknown> | null => {
   if (!thing) return null;
   if (isArray(thing)) return thing;
   if (!isNumber((thing as { length?: unknown; }).length)) return null;
@@ -611,40 +565,21 @@ const toArray = (thing?: unknown): Array<unknown> | null => {
  * @returns {Array}
  */
 
-const isTypedArray = ((TypedArray: (abstract new (...args: Array<unknown>) => unknown) | false) =>
+export const isTypedArray = ((TypedArray: (abstract new (...args: Array<unknown>) => unknown) | false) =>
 
   (thing: unknown) => TypedArray && thing instanceof TypedArray
 )(typeof Uint8Array !== "undefined" && getPrototypeOf(Uint8Array) as abstract new (...args: Array<unknown>) => unknown);
 
-const forEachEntry = (obj: unknown, fn: (key: unknown, value: unknown) => void) => {
+export const forEachEntry = (obj: unknown, fn: (key: unknown, value: unknown) => void) => {
   for (const [ key, value ] of obj as Iterable<[unknown, unknown]>) {
     fn.call(obj, key, value);
   }
 };
 
-/**
- * It takes a regular expression and a string, and returns an array of all the matches
- *
- * @param {string} regExp - The regular expression to match against.
- * @param {string} str - The string to search.
- *
- * @returns {Array<boolean>}
- */
-const matchAll = (regExp: RegExp, str: string) => {
-  let matches: null | RegExpExecArray;
-  const arr: Array<RegExpExecArray> = [];
-
-  while ((matches = regExp.exec(str)) !== null) {
-    arr.push(matches);
-  }
-
-  return arr;
-};
-
 /* Checking if the kindOfTest function returns true when passed an HTMLFormElement. */
-const isHTMLForm = kindOfTest("HTMLFormElement");
+export const isHTMLForm = kindOfTest("HTMLFormElement");
 
-const toCamelCase = (str: string) => str.toLowerCase().replace(/[-_\s]([a-z\d])(\w*)/g, function replacer(_m: string, p1: string, p2: string) {
+export const toCamelCase = (str: string) => str.toLowerCase().replace(/[-_\s]([a-z\d])(\w*)/g, function replacer(_m: string, p1: string, p2: string) {
   return p1.toUpperCase() + p2;
 });
 
@@ -657,9 +592,9 @@ const { propertyIsEnumerable } = Object.prototype;
  *
  * @returns {boolean} True if value is a RegExp object, otherwise false
  */
-const isRegExp = kindOfTest("RegExp");
+export const isRegExp = kindOfTest("RegExp");
 
-const reduceDescriptors = (obj: object, reducer: (descriptor: PropertyDescriptor, name: string, obj: object) => false | PropertyDescriptor | undefined) => {
+export const reduceDescriptors = (obj: object, reducer: (descriptor: PropertyDescriptor, name: string, obj: object) => false | PropertyDescriptor | undefined) => {
   const descriptors = Object.getOwnPropertyDescriptors(obj);
   const reducedDescriptors: PropertyDescriptorMap = {};
 
@@ -678,7 +613,7 @@ const reduceDescriptors = (obj: object, reducer: (descriptor: PropertyDescriptor
  * @param {Object} obj
  */
 
-const freezeMethods = (obj: object) => {
+export const freezeMethods = (obj: object) => {
   // eslint-disable-next-line sonarjs/function-return-type
   reduceDescriptors(obj, (descriptor, name): false | PropertyDescriptor => {
     // skip restricted props in strict mode
@@ -714,7 +649,7 @@ const freezeMethods = (obj: object) => {
  * @param {string} delimiter - The delimiter to use if input is a string.
  * @returns {Object} An object with keys from the array or string, values set to true.
  */
-const toObjectSet = (arrayOrString: Array<unknown> | string, delimiter: string) => {
+export const toObjectSet = (arrayOrString: Array<unknown> | string, delimiter: string) => {
   const obj: Record<string, boolean> = {};
 
   const define = (arr: Array<unknown>) => {
@@ -728,9 +663,7 @@ const toObjectSet = (arrayOrString: Array<unknown> | string, delimiter: string) 
   return obj;
 };
 
-const noop = () => {};
-
-const toFiniteNumber = (value: unknown, defaultValue?: number) => {
+export const toFiniteNumber = (value: unknown, defaultValue?: number) => {
   const num = +(value as number);
   return value != null && Number.isFinite(num) ? num : defaultValue;
 };
@@ -742,7 +675,7 @@ const toFiniteNumber = (value: unknown, defaultValue?: number) => {
  *
  * @returns {boolean}
  */
-function isSpecCompliantForm(thing: unknown): boolean {
+export function isSpecCompliantForm(thing: unknown): boolean {
   return !!(
     thing &&
     isFunction((thing as Record<string | symbol, unknown>).append) &&
@@ -752,79 +685,16 @@ function isSpecCompliantForm(thing: unknown): boolean {
 }
 
 /**
- * Determines if a value is an async function.
- *
- * @param {*} thing - The value to test.
- * @returns {boolean} True if value is an async function, otherwise false.
- */
-const isAsyncFn = kindOfTest("AsyncFunction");
-
-/**
  * Determines if a value is thenable (has then and catch methods).
  *
  * @param {*} thing - The value to test.
  * @returns {boolean} True if value is thenable, otherwise false.
  */
-const isThenable = (thing: unknown) =>
+export const isThenable = (thing: unknown) =>
   thing &&
   (isObject(thing) || isFunction(thing)) &&
   isFunction((thing as Record<string, unknown>).then) &&
   isFunction((thing as Record<string, unknown>).catch);
-
-// original code
-// https://github.com/DigitalBrainJS/FaxiosPromise/blob/16deab13710ec09779922131f3fa5954320f83ab/lib/utils.js#L11-L34
-
-/**
- * Provides a cross-platform setImmediate implementation.
- * Uses native setImmediate if available, otherwise falls back to postMessage or setTimeout.
- *
- * @param {boolean} setImmediateSupported - Whether setImmediate is supported.
- * @param {boolean} postMessageSupported - Whether postMessage is supported.
- * @returns {Function} A function to schedule a callback asynchronously.
- */
-const _setImmediate = ((setImmediateSupported: boolean, postMessageSupported: boolean) => {
-  if (setImmediateSupported) {
-    return (_global["setImmediate"] as (cb: () => void) => unknown);
-  }
-
-  return postMessageSupported
-    ? ((token: string, callbacks: Array<() => void>) => {
-      const _addEventListener = _global.addEventListener as NonNullable<GlobalWithEvents["addEventListener"]>;
-      _addEventListener(
-        "message",
-        (evt: Record<string, unknown>) => {
-          if (evt["source"] === _global && evt["data"] === token) {
-            callbacks.length && callbacks.shift()!();
-          }
-        },
-        false
-      );
-
-      const _postMessage = _global.postMessage as NonNullable<GlobalWithEvents["postMessage"]>;
-
-      return (cb: () => void) => {
-        callbacks.push(cb);
-        _postMessage(token, "*");
-      };
-    // eslint-disable-next-line sonarjs/pseudo-random
-    })(`faxios@${Math.random()}`, [])
-    : (cb: () => void) => setTimeout(cb);
-})(isFunction(_global["setImmediate"]), isFunction(_global["postMessage"]));
-
-/**
- * Schedules a microtask or asynchronous callback as soon as possible.
- * Uses queueMicrotask if available, otherwise falls back to process.nextTick or _setImmediate.
- *
- * @type {Function}
- */
- 
-const _process = _global["process"];
-const asap =
-  typeof queueMicrotask !== "undefined"
-    ? queueMicrotask.bind(globalThis)
-    : (_process && _process.nextTick) || _setImmediate;
-
-// *********************
 
 const isIterable = (thing: unknown) => thing != null && isFunction((thing as Record<symbol, unknown>)[iterator]);
 
@@ -839,67 +709,5 @@ const isIterable = (thing: unknown) => thing != null && isFunction((thing as Rec
  *
  * @returns {boolean} True if value has a non-polluted iterator
  */
-const isSafeIterable = (thing: unknown) =>
+export const isSafeIterable = (thing: unknown) =>
   thing != null && hasOwnInPrototypeChain(thing, iterator) && isIterable(thing);
-
-export default {
-  isArray,
-  isArrayBuffer,
-  isBuffer,
-  isFormData,
-  isArrayBufferView,
-  isString,
-  isNumber,
-  isBoolean,
-  isObject,
-  isPlainObject,
-  isEmptyObject,
-  isReadableStream,
-  isRequest,
-  isResponse,
-  isHeaders,
-  isUndefined,
-  isDate,
-  isFile,
-  isReactNativeBlob,
-  isReactNative,
-  isBlob,
-  isRegExp,
-  isFunction,
-  isStream,
-  isURLSearchParams,
-  isTypedArray,
-  isFileList,
-  forEach,
-  merge,
-  extend,
-  stripBOM,
-  toFlatObject,
-  kindOf,
-  kindOfTest,
-  toArray,
-  forEachEntry,
-  matchAll,
-  isHTMLForm,
-  hasOwnProperty,
-  hasOwnProp: hasOwnProperty, // an alias to avoid ESLint no-prototype-builtins detection
-  isDangerousKey,
-  hasOwnInPrototypeChain,
-  getSafeProp,
-  reduceDescriptors,
-  freezeMethods,
-  toObjectSet,
-  toCamelCase,
-  noop,
-  toFiniteNumber,
-  findKey,
-  global: _global,
-  isContextDefined,
-  isSpecCompliantForm,
-  isAsyncFn,
-  isThenable,
-  setImmediate: _setImmediate,
-  asap,
-  isIterable,
-  isSafeIterable,
-};
