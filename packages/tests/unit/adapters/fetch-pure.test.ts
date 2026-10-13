@@ -3,8 +3,6 @@ import { describe, it } from "vitest";
 import {
   checkDeclaredContentLength,
   checkMaterializedSize,
-  cleanFormDataContentType,
-  encodeBodyIfNeeded,
   handleFetchCaughtError
 } from "#src/lib/adapters/fetch-helpers.js";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
@@ -208,57 +206,6 @@ describe("handleFetchCaughtError", () => {
         return true;
       }
     );
-  });
-});
-
-describe("cleanFormDataContentType", () => {
-  it("deletes content-type for multipart/form-data without boundary", () => {
-    const fd = new FormData();
-    const headers = FaxiosHeaders.from({ "content-type": "multipart/form-data" });
-    cleanFormDataContentType(fd, headers as unknown as import("#src/lib/types.js").FaxiosRequestHeaders);
-    assert.strictEqual(headers.has("content-type"), false);
-  });
-
-  it("leaves content-type intact when boundary is present", () => {
-    const fd = new FormData();
-    const ct = "multipart/form-data; boundary=----abc";
-    const headers = FaxiosHeaders.from({ "content-type": ct });
-    cleanFormDataContentType(fd, headers as unknown as import("#src/lib/types.js").FaxiosRequestHeaders);
-    assert.ok(headers.has("content-type"));
-  });
-
-  it("leaves non-multipart content-type untouched", () => {
-    const fd = new FormData();
-    const headers = FaxiosHeaders.from({ "content-type": "application/json" });
-    cleanFormDataContentType(fd, headers as unknown as import("#src/lib/types.js").FaxiosRequestHeaders);
-    assert.ok(headers.has("content-type"));
-  });
-
-  it("does nothing for non-FormData data", () => {
-    const headers = FaxiosHeaders.from({ "content-type": "multipart/form-data" });
-    cleanFormDataContentType("plain string", headers as unknown as import("#src/lib/types.js").FaxiosRequestHeaders);
-    assert.ok(headers.has("content-type"));
-  });
-});
-
-describe("encodeBodyIfNeeded", () => {
-  const syncEncode = (str: string): Uint8Array => new TextEncoder().encode(str);
-
-  it("encodes string with no content-type to Uint8Array", async () => {
-    const result = await encodeBodyIfNeeded("hello", {}, syncEncode);
-    assert.ok(result instanceof Uint8Array);
-  });
-
-  it("returns string as-is when content-type header is present", async () => {
-    const headers = { "content-type": "text/plain" };
-    const result = await encodeBodyIfNeeded("hello", headers, syncEncode);
-    assert.strictEqual(result, "hello");
-  });
-
-  it("returns non-string data as-is", async () => {
-    const obj = { foo: "bar" };
-    const result = await encodeBodyIfNeeded(obj, {}, syncEncode);
-    assert.strictEqual(result, obj);
   });
 });
 

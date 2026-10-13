@@ -105,7 +105,7 @@ describe("headers (vitest browser)", () => {
     testHeaderValue(mock.lastRequest!.headers, "Content-Type");
   });
 
-  it("should preserve content-type if data is false", async () => {
+  it("should leave the Content-Type of a false body to fetch", async () => {
     using mock = installFetchMock();
 
     await faxios.post("/foo", false);
@@ -113,7 +113,7 @@ describe("headers (vitest browser)", () => {
     testHeaderValue(
       mock.lastRequest!.headers,
       "Content-Type",
-      "application/x-www-form-urlencoded"
+      "text/plain;charset=UTF-8"
     );
   });
 

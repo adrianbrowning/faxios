@@ -11,9 +11,9 @@ formData.append('foo', 'bar');
 await faxios.post('https://httpbin.org/post', formData);
 ```
 
-Do not manually set the `Content-Type` header; the runtime adds the multipart boundary itself when it serializes a `FormData` body.
+Do not set the `Content-Type` header for a `FormData` body. The runtime picks the multipart boundary when it encodes the body, so faxios removes any `Content-Type` you or a default set (including one with a `boundary` of your own) and the header always carries the boundary the body was encoded with.
 
-The global `FormData` (and `Blob`/`File`) is available in every supported runtime — browsers, Node.js, Deno, and Bun — so the same code works everywhere. The request body must be the runtime's global `FormData`. faxios no longer bundles the `form-data` package, and instances of the npm `form-data` package are not supported as a request body: `fetch` cannot read them, so the server receives the text `[object FormData]` instead of your fields.
+The global `FormData` (and `Blob`/`File`) is available in every supported runtime — browsers, Node.js, Deno, and Bun — so the same code works everywhere. The request body must be the runtime's global `FormData`. faxios no longer bundles the `form-data` package, and an instance of the npm `form-data` package (an object with `getHeaders()`) is rejected as a request body with a `FaxiosError` whose code is `ERR_NOT_SUPPORT`, before anything is sent: `fetch` cannot read it.
 
 ```js
 import faxios from '@gcmdev/faxios';
@@ -69,28 +69,6 @@ faxios
   )
   .then(({ data }) => console.log(data));
 ```
-
-## Header policy for `FormData`-like objects with `getHeaders()`
-
-When you pass a `FormData`-like object that exposes `getHeaders()`, faxios copies all headers it returns onto the request by default. This preserves v1 compatibility but can be problematic when the object comes from an untrusted source — `getHeaders()` could overwrite headers like `Authorization` or inject arbitrary ones.
-
-Set `formDataHeaderPolicy: 'content-only'` to copy **only** `Content-Type` and `Content-Length` from `getHeaders()`, then set any other headers explicitly via the request `headers` config:
-
-```js
-import faxios from '@gcmdev/faxios';
-
-const form = new FormData();
-form.append('file', new Blob(['hello']), 'hello.txt');
-
-await faxios.post("https://example.com/upload", form, {
-  formDataHeaderPolicy: "content-only",
-  headers: {
-    Authorization: "Bearer my-token",
-  },
-});
-```
-
-The default value is `'legacy'`. See [`formDataHeaderPolicy`](/pages/advanced/request-config#formdataheaderpolicy) in the request config reference for details.
 
 ## Supported endings
 

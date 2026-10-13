@@ -124,13 +124,15 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
 
   config.data = transformData.call(config, config.transformRequest);
 
+  // fetch can't read the npm `form-data` package (a FormData-like stream with `getHeaders()`): it
+  // would send the text "[object FormData]".
   const data: unknown = config.data;
-  // Binary and stream bodies keep their own type: fetch uses `Blob.type` or sends none.
-  const isBinaryOrStream = utils.isBlob(data) || utils.isFile(data) || utils.isArrayBuffer(data) || utils.isArrayBufferView(data) ||
-    utils.isReadableStream?.(data) || utils.isStream(data) ||
-    (typeof data === "object" && data !== null && Symbol.asyncIterator in data);
-  if (data != null && !utils.isFormData(data) && !isBinaryOrStream && [ "post", "put", "patch" ].indexOf(config.method as string) !== -1) {
-    (config.headers as unknown as { setContentType: (v: string, r: boolean) => void; }).setContentType("application/x-www-form-urlencoded", false);
+  if (utils.isFormData(data) && !utils.isSpecCompliantForm(data) && utils.isFunction(utils.getSafeProp(data, "getHeaders"))) {
+    throw new FaxiosError(
+      "The form-data package is not supported as a request body; use the global FormData",
+      FaxiosError.ERR_NOT_SUPPORT,
+      config
+    );
   }
 
   // Last cancellation check: nothing between here and the adapter call may await. An abort that

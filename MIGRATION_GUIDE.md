@@ -65,7 +65,7 @@ faxios.post('/upload', body, {
 
 The following config fields were removed from the public type. Passing them is a **type error**, and at runtime the request **rejects** with a `FaxiosError` whose `code` is `ERR_BAD_OPTION`; the message names the field and what to use instead:
 
-`adapter`, `cancelToken`, `maxRedirects`, `maxRate`, `beforeRedirect`, `socketPath`, `allowedSocketPaths`, `transport`, `httpAgent`, `httpsAgent`, `proxy`, `decompress`, `insecureHTTPParser`, `httpVersion`, `http2Options`, `sensitiveHeaders`, `lookup`, `family`, `responseEncoding`.
+`adapter`, `cancelToken`, `maxRedirects`, `maxRate`, `beforeRedirect`, `socketPath`, `allowedSocketPaths`, `transport`, `httpAgent`, `httpsAgent`, `proxy`, `decompress`, `insecureHTTPParser`, `httpVersion`, `http2Options`, `sensitiveHeaders`, `lookup`, `family`, `responseEncoding`, `formDataHeaderPolicy`.
 
 Any other unknown request config key rejects the same way, so a typo such as `timout` fails instead of silently dropping the timeout. Keys a plugin adds, such as `retry`, are accepted while the plugin is installed. `responseType: "document"` and `responseType: "response"` reject with `ERR_BAD_OPTION_VALUE`, and `transitional.advertiseZstdAcceptEncoding` rejects with `ERR_BAD_OPTION`; none of them ever changed what faxios did. Text is always decoded as UTF-8: read other encodings with `responseType: "arraybuffer"` and a `TextDecoder`.
 
@@ -138,6 +138,26 @@ Request-config `headers` takes strings, numbers, booleans, `null` and `undefined
 ### j) Absolute URLs on a `baseURL` instance reject
 
 An instance with a `baseURL` defaults `allowAbsoluteUrls` to `false`. An absolute request `url` on it used to be appended to the base (`https://api.example.com/v1/https://other.example/x`); it now rejects with `ERR_INVALID_URL` before fetch is called, and `getUri()` throws the same error. Set `allowAbsoluteUrls: true` on the instance or the request when the absolute URL is trusted (for example `next`/`Link` URLs from your API), or use an instance without `baseURL`. See [`allowAbsoluteUrls`](https://adrianbrowning.github.io/faxios/pages/advanced/request-config#allowabsoluteurls).
+
+### k) Request body Content-Type and FormData field names
+
+- **String bodies:** faxios no longer sets `application/x-www-form-urlencoded` on a plain string `post`, `put` or `patch` body. `fetch` sends it as `text/plain;charset=UTF-8`. If your server expects a urlencoded string, set the header, or pass a `URLSearchParams`, which faxios sends as `application/x-www-form-urlencoded;charset=utf-8`.
+- **`form-data` package bodies:** an instance of the npm `form-data` package (an object with `getHeaders()`) now rejects with `FaxiosError` code `ERR_NOT_SUPPORT` before anything is sent. It used to be sent as the text `[object FormData]`. Use the runtime's global `FormData`.
+- **`formDataHeaderPolicy` removed:** it only applied to `getHeaders()` bodies. Passing it now rejects with `ERR_BAD_OPTION` (see e) above); drop it from your config.
+- **FormData Content-Type:** faxios now removes any `Content-Type` you set for a `FormData` body in every runtime, including one with your own `boundary`, so the header always carries the boundary the body was encoded with. Before, Node kept a `boundary` you set even though the body used another one.
+- **`formToJSON` field names:** names split into nested keys only on `.` and brackets. `first-name` now gives `{ "first-name": … }` instead of `{ first: { name: … } }`, and `last name` stays one key. Rename fields to `first.name` or `first[name]` to keep the nesting.
+
+```javascript
+// Before: sent as application/x-www-form-urlencoded
+await faxios.post('/login', 'user=ada&pass=secret');
+
+// Now
+await faxios.post('/login', new URLSearchParams({ user: 'ada', pass: 'secret' }));
+// or keep the string and set the header
+await faxios.post('/login', 'user=ada&pass=secret', {
+  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+});
+```
 
 ---
 

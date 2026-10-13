@@ -208,30 +208,15 @@ export const handleFetchCaughtError = (
   );
 };
 
-// ponytail: exported for unit testing only — not part of public API
-export const cleanFormDataContentType = (
+// fetch sends a string body as `text/plain;charset=UTF-8` when there's no Content-Type. A
+// Content-Type of `null` or `false` keeps the header off, so that string goes out as its bytes.
+export const encodeStringWithoutContentType = (
   data: unknown,
-  headers: FaxiosRequestHeaders
-): void => {
-  if (utils.isFormData(data)) {
-    const contentType = headers.getContentType() as null | string | undefined;
-    if (
-      contentType &&
-      /^multipart\/form-data/i.test(contentType) &&
-      !/boundary=/i.test(contentType)
-    ) {
-      headers.delete("content-type");
-    }
-  }
-};
-
-// ponytail: exported for unit testing only — not part of public API
-export const encodeBodyIfNeeded = (
-  data: unknown,
-  headers: Record<string, unknown>,
+  headers: FaxiosRequestHeaders,
   encode: (str: string) => Promise<Uint8Array> | Uint8Array
 ): Promise<unknown> | unknown => {
-  if (!utils.isString(data) || utils.findKey(headers, "content-type")) return data;
-  // ponytail: skip await when TextEncoder is sync (avoids microtask hop on every string body)
-  return encode(data as string);
+  if (typeof data !== "string") return data;
+  const key = utils.findKey(headers, "content-type");
+  const contentType = key ? headers[key] : undefined;
+  return contentType === null || contentType === false ? encode(data) : data;
 };

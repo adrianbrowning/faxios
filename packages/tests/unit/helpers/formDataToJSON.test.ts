@@ -176,11 +176,13 @@ describe("formDataToJSON", () => {
     });
   });
 
-  it("should keep today's output for ASCII names and separators", () => {
+  it("should split field names only on dots and brackets", () => {
     const formData = new FormData();
 
     formData.append("first-name", "Ada");
+    formData.append("last name", "Lovelace");
     formData.append("user[email]", "a@b");
+    formData.append("user[home-town]", "London");
     formData.append("a[]", "1");
     formData.append("a[]", "2");
     formData.append("b[0]", "x");
@@ -188,8 +190,9 @@ describe("formDataToJSON", () => {
     formData.append("c.d.e", "z");
 
     expect(formDataToJSON(formData)).toEqual({
-      first: { name: "Ada" },
-      user: { email: "a@b" },
+      "first-name": "Ada",
+      "last name": "Lovelace",
+      user: { email: "a@b", "home-town": "London" },
       a: [ "1", "2" ],
       b: [ "x", "y" ],
       c: { d: { e: "z" } },

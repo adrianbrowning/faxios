@@ -261,7 +261,7 @@ await faxios.post("/api/users", form);
 
 ### `formToJSON`
 
-Converts a `FormData` instance back to a plain JavaScript object. Useful for reading form data in a structured format.
+Converts a `FormData` instance back to a plain JavaScript object. Useful for reading form data in a structured format. Field names split into nested keys only on `.` and brackets (`user[email]`, `user.email`), so names such as `first-name` stay one key.
 
 ```ts check=skip
 formToJSON(form: FormData | HTMLFormElement): unknown;
