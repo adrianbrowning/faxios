@@ -3,7 +3,7 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "5c8fd67c80e7ed7bde6a8d9127b97d56ea8239a25d8cc9914d80faa969c20012",
+      "fingerprint": "12709d0c2a2af2d84650e8c44d19f7d287a4d7d9773fbb2b065a8607ed38b646",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "packages/lib/package.json": "1a7fdba625bdf26635361755d966b6495eaa8c6cfd55f88130558082effabf0d",
@@ -26,22 +26,22 @@
         "packages/lib/src/lib/plugins/retry.ts": "e9b96b36455e38c3e16944542c9a8905a408f7495171e941cf52a07a429d53d3",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
         "packages/lib/src/lib/types.ts": "e9f9fe1c8e31f5f9008f8d2fed18de12dea7273f846dd7d392ed90c5ceafedb7",
-        "packages/tests/unit/api.test.ts": "811a57cac8863ef6c8c3c502e7507c71d498c725e21a2cdc5988f1c6237ee549",
+        "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "5022de5703b06d9e3ff6dced4fac3876e0ffd61ea06d75c4b16a6dbde2f22f88",
         "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
+      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
       "outcome": "no-change",
-      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
+      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
       "evidence": [
-        "Changed: packages/lib/package.json at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
+        "Changed: packages/tests/unit/api.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "3d298cca08432d3145aa021ae907a32f3b24290ddbe34ba9731dfb09038a98aa",
+      "fingerprint": "6d20b798a92fa9884367f66e376e01f76a1cd34f1c9de9ab8b3ed10cbcc34af0",
       "snapshot": {
         "MIGRATION_GUIDE.md": "5cd475fd756b01ef356c7b8a0497bc035bf971cc0fa50b88f247399f056a61a4",
         "_artifacts/domain_map.yaml": "6f807d668f9d9a27e4fca5c9d37914e8c1b1af02b2fe136ce323bd6e1c50d266",
@@ -67,18 +67,18 @@
         "packages/lib/src/lib/plugins/retry.ts": "e9b96b36455e38c3e16944542c9a8905a408f7495171e941cf52a07a429d53d3",
         "packages/lib/src/lib/plugins/timing.ts": "3e93b2fc1319e687c66f0f7097824a14f9473a33e79746f292c2890f95c5ac0d",
         "packages/lib/src/lib/types.ts": "e9f9fe1c8e31f5f9008f8d2fed18de12dea7273f846dd7d392ed90c5ceafedb7",
-        "packages/tests/unit/api.test.ts": "811a57cac8863ef6c8c3c502e7507c71d498c725e21a2cdc5988f1c6237ee549",
+        "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "5022de5703b06d9e3ff6dced4fac3876e0ffd61ea06d75c4b16a6dbde2f22f88",
         "packages/tests/unit/plugins/authBearer.test.ts": "58783c77371dd12f92ba8cc8b3f182261764deaaa57f25daad26e171a4b23c8e",
         "packages/tests/unit/plugins/definePlugin.test.ts": "8e464e359165b34ada30c1276b3afea2772c857658eb9083f914988a0ff8b145",
         "packages/tests/unit/plugins/retry.test.ts": "cb6bb7e90bde8fa0e5465fa599051d86c29d5fc3adb1d22426bfd5aaf26e0961",
         "packages/tests/unit/plugins/timing.test.ts": "0d837514a6891da5e7c3a4d5c5eae03614a60527fb1d677bdcc55f75f0753322"
       },
-      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
+      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
       "outcome": "no-change",
-      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
+      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
       "evidence": [
-        "Changed: packages/lib/package.json at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
+        "Changed: packages/tests/unit/api.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
       ]
     },
     "source:knip.json": {
@@ -447,15 +447,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch.test.ts": {
-      "fingerprint": "806cc5fcc40c29b90951245e9800197f31e2b1516a8c6371ab1206d98872a5ea",
+      "fingerprint": "df1058247016975b2f6abd3777cd685c1df5eceab3453bf902f38ec58dec6b61",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch.test.ts": "9751c164ed5906d28681d45a598a11a2a24a27001c1deb4b3dd8b781b29229aa"
+        "packages/tests/unit/adapters/fetch.test.ts": "0c6c90b12f2133588b6bd6742cb23098eb3fe4f7e87758a2999aef628b5f9000"
       },
-      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
-      "outcome": "updated",
-      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
+      "outcome": "no-change",
+      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/tests/unit/adapters/fetch.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
       ]
     },
     "source:CHANGELOG.md": {
@@ -2555,17 +2555,15 @@
       ]
     },
     "source:packages/tests/eslint.config.ts": {
-      "fingerprint": "7294f8234ab8653d3b43165ce923e3bcc527cf51372b31b651bf575bd63d76ed",
+      "fingerprint": "f4446ec7f821f9f312347913a7d4c709d0144169f62cd6153f7764ae0b3e7291",
       "snapshot": {
-        "packages/tests/eslint.config.ts": "de1b7e67a2538dc4fc6616788d0f26b9a3b5d5d00524fe11ca50d9e9e83b6222"
+        "packages/tests/eslint.config.ts": "f625cc0de412a237a466801193108a41c7f1a5c0e5cc0416f5b20baf960f338a"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Tests ESLint config builds on sharedConfig and turns off gingacodemonkey/workspace-boundaries (tests import lib internals via #src/* on purpose). Lint tooling.",
+      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
+      "outcome": "no-change",
+      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/eslint.config.ts",
-        "pnpm --filter @faxios/tests lint:esl passes (177 workspace-boundaries errors before).",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/eslint.config.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/esm-functions.ts": {
@@ -2751,15 +2749,15 @@
       ]
     },
     "source:packages/tests/unit/axiosHeaders.test.ts": {
-      "fingerprint": "4edb1880d092c26655f8800351690257d0b108190c7326e0f486165647109746",
+      "fingerprint": "6ffc3b7d3276e0a9dc18795483a2f99498e9eaa3e478e91e67e41e3b76d083bd",
       "snapshot": {
-        "packages/tests/unit/axiosHeaders.test.ts": "c3ea96d11ae62f91650897851197df3bd8ef04f9e4b5e28181c676676de2ea28"
+        "packages/tests/unit/axiosHeaders.test.ts": "3b75fa5c0f3522cd5db651bdc0b01461dc193f4a1f235309bf3bf209ec66cf8a"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
       "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
       "evidence": [
-        "Changed: packages/tests/unit/axiosHeaders.test.ts at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: packages/tests/unit/axiosHeaders.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
       ]
     },
     "source:packages/tests/unit/cancel/canceledError.test.ts": {
@@ -2967,16 +2965,15 @@
       ]
     },
     "source:packages/tests/unit/helpers/buildURL.test.ts": {
-      "fingerprint": "ff12bd20a2c8226f672dba2af8d5da9f7cc52bef898630330fdf04b98551482d",
+      "fingerprint": "f367f126ff98a460a2311164a1867f7ef054adbe7f457f5b086c8786f04baf66",
       "snapshot": {
-        "packages/tests/unit/helpers/buildURL.test.ts": "fb98ecfd247c6019cc8cced8f0bfd8fff216c7c9ec0213f904e924fe1265668f"
+        "packages/tests/unit/helpers/buildURL.test.ts": "156451c6574817cf29498af2c628ffed15c8c4813e8279018882c6a8dd8347b3"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
       "outcome": "no-change",
-      "reason": "vitest import `describe, it, expect, expectTypeOf, vi` became `describe, expect, expectTypeOf, it, vi`. Behaviour change: none",
+      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/helpers/buildURL.test.ts: @@ -1,4 +1,4 @@ (diff/224)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/helpers/buildURL.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
       ]
     },
     "source:packages/tests/unit/helpers/combineURLs.test.ts": {
@@ -2993,15 +2990,15 @@
       ]
     },
     "source:packages/tests/unit/helpers/formDataToJSON.test.ts": {
-      "fingerprint": "e2be3c396be386208790beb565145a9360b72ab7f9a91be864c76e6abb3e4d3d",
+      "fingerprint": "97b8de46ff01a57dc5e7a2735fe46113458957bb3370e0c545c567de2c9aa367",
       "snapshot": {
-        "packages/tests/unit/helpers/formDataToJSON.test.ts": "f05b09f3c1a91b4cace4103f7e995917c9865602b349a9df0e49ca54f5057d5a"
+        "packages/tests/unit/helpers/formDataToJSON.test.ts": "62775604820c915d259f7ce13122cf77fa4943b136c1c60cdace4d1a6f826a77"
       },
-      "head": "0d843fe0905888352e41d7ba60865740164da2e3",
+      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
       "outcome": "no-change",
-      "reason": "formDataToJSON field-name tokenizing is not documented by the configure-requests skill",
+      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
       "evidence": [
-        "Changed: packages/tests/unit/helpers/formDataToJSON.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/tests/unit/helpers/formDataToJSON.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
       ]
     },
     "source:packages/tests/unit/helpers/isAbsoluteURL.test.ts": {
@@ -3069,15 +3066,15 @@
       ]
     },
     "source:packages/tests/unit/prototypePollution.test.ts": {
-      "fingerprint": "2340b1e4e2bdd27c4268ee830e7bf2f4add9394a6a5722741b555b8eb30e02e2",
+      "fingerprint": "434a83e111a2aa7a460135da77ec3397042a5530fba177535d23f1f3f54e3565",
       "snapshot": {
-        "packages/tests/unit/prototypePollution.test.ts": "b3c39f8a8e0862acdb76a4f011a224448e64da773f1f16a341a1357beed0842f"
+        "packages/tests/unit/prototypePollution.test.ts": "222f15b3eb910a9ae5087206498d1696fc2de1a5adcd1a15681c994ca02a701b"
       },
-      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
-      "outcome": "updated",
-      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
+      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
+      "outcome": "no-change",
+      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
       "evidence": [
-        "Changed: packages/tests/unit/prototypePollution.test.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
+        "Changed: packages/tests/unit/prototypePollution.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
       ]
     },
     "source:packages/tests/unit/query.test.ts": {
@@ -3145,16 +3142,15 @@
       ]
     },
     "source:packages/tests/unit/utils/isX.test.ts": {
-      "fingerprint": "84ddf810478ccca8e6d58585b06fa08f69159c1f9a8b82b6c4803d1aa28280e7",
+      "fingerprint": "38f9717e97f12da7839dfd73ad587d72cdf2217d0f7bba75fe7f399fc670f68e",
       "snapshot": {
-        "packages/tests/unit/utils/isX.test.ts": "5ce45539ff4dcdf7387501f10298db69fa26e5d90a8b5a07b629b73aabdc2901"
+        "packages/tests/unit/utils/isX.test.ts": "4e817b008622561fbdd9e389b5e7bbf7c983f608cc248eac2eba23ba9538f7e0"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
       "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/isX.test.ts: @@ -1,4 +1,4 @@ (diff/241)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/isX.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
       ]
     },
     "source:packages/tests/unit/utils/kindOf.test.ts": {
@@ -4175,15 +4171,15 @@
       ]
     },
     "source:packages/tests/unit/core/prepareRequest.test.ts": {
-      "fingerprint": "5ad06af930febcd5cb3ca631490a6c44ae8de3e884d85463a5b53e7488f816f3",
+      "fingerprint": "e7634ffa4a038bb556b4d910011bbbf151b997e318c10627da856b77c400984d",
       "snapshot": {
-        "packages/tests/unit/core/prepareRequest.test.ts": "bb239583446b6ff6663b5981f02ef8e73f48272a2d9b7127d7c2a62607c91b52"
+        "packages/tests/unit/core/prepareRequest.test.ts": "9438901101ed6c8ac80ba55e9670814381b683013e80d3683491d78237558258"
       },
-      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
-      "outcome": "updated",
-      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
+      "outcome": "no-change",
+      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
       "evidence": [
-        "Changed: packages/tests/unit/core/prepareRequest.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/tests/unit/core/prepareRequest.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
       ]
     },
     "source:packages/tests/unit/core/requestInput.test.ts": {
@@ -4196,6 +4192,30 @@
       "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
       "evidence": [
         "Changed: packages/tests/unit/core/requestInput.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+      ]
+    },
+    "source:packages/tests/eslint-rules/no-fixed-test-port.ts": {
+      "fingerprint": "798f7dab9a74b435c44350782c1201d2ccc26428e836b16a5827390006f78402",
+      "snapshot": {
+        "packages/tests/eslint-rules/no-fixed-test-port.ts": "6e7fd607cfe17581e0deb1a79f269130ff79dc3ff982f8e96c543c8eff70827a"
+      },
+      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
+      "outcome": "no-change",
+      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
+      "evidence": [
+        "Changed: packages/tests/eslint-rules/no-fixed-test-port.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
+      ]
+    },
+    "source:packages/tests/unit/eslint-rules/no-fixed-test-port.test.ts": {
+      "fingerprint": "dd6f5969368e4a314e63fafaeab01d437aa2d50514d582f1eebc7c8821c0d91a",
+      "snapshot": {
+        "packages/tests/unit/eslint-rules/no-fixed-test-port.test.ts": "5f869221ab0fd14b17cbcb299ce4b49ce61fc23a6c2e153bdcd2d0ba90b07d46"
+      },
+      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
+      "outcome": "no-change",
+      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
+      "evidence": [
+        "Changed: packages/tests/unit/eslint-rules/no-fixed-test-port.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
       ]
     }
   }
