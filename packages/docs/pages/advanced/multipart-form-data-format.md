@@ -13,7 +13,7 @@ await faxios.post('https://httpbin.org/post', formData);
 
 Do not manually set the `Content-Type` header; the runtime adds the multipart boundary itself when it serializes a `FormData` body.
 
-The global `FormData` (and `Blob`/`File`) is available in every supported runtime — browsers, Node.js, Deno, and Bun — so the same code works everywhere. faxios no longer bundles the `form-data` package:
+The global `FormData` (and `Blob`/`File`) is available in every supported runtime — browsers, Node.js, Deno, and Bun — so the same code works everywhere. The request body must be the runtime's global `FormData`. faxios no longer bundles the `form-data` package, and instances of the npm `form-data` package are not supported as a request body: `fetch` cannot read them, so the server receives the text `[object FormData]` instead of your fields.
 
 ```js
 import faxios from '@gcmdev/faxios';
@@ -70,16 +70,16 @@ faxios
   .then(({ data }) => console.log(data));
 ```
 
-## Header policy for Node.js `FormData` <Badge type="warning" text="Node.js only" />
+## Header policy for `FormData`-like objects with `getHeaders()`
 
-When you pass a Node.js `FormData` object that exposes `getHeaders()` (such as the [`form-data`](https://github.com/form-data/form-data) package), faxios copies all headers it returns onto the request by default. This preserves v1 compatibility but can be problematic when the `FormData` object comes from an untrusted source — `getHeaders()` could overwrite headers like `Authorization` or inject arbitrary ones.
+When you pass a `FormData`-like object that exposes `getHeaders()`, faxios copies all headers it returns onto the request by default. This preserves v1 compatibility but can be problematic when the object comes from an untrusted source — `getHeaders()` could overwrite headers like `Authorization` or inject arbitrary ones.
 
 Set `formDataHeaderPolicy: 'content-only'` to copy **only** `Content-Type` and `Content-Length` from `getHeaders()`, then set any other headers explicitly via the request `headers` config:
 
 ```js
 import faxios from '@gcmdev/faxios';
 
-const form = new FormData(); // or a `form-data` instance that exposes getHeaders()
+const form = new FormData();
 form.append('file', new Blob(['hello']), 'hello.txt');
 
 await faxios.post("https://example.com/upload", form, {
