@@ -1887,30 +1887,27 @@
       ]
     },
     "source:.github/workflows/ci.yml": {
-      "fingerprint": "6fe11ca7856ba3951d3099433b86a7959270ce5c6b40d8b33fb784c4cdd5fad9",
+      "fingerprint": "bdcbb6370c8a5aea9c479ab30f5c92278eac43d717d9ad114f290be5d373581d",
       "snapshot": {
-        ".github/workflows/ci.yml": "a09409c55e4112bd4831c3d6abdf225a108d40d8d446669965849277104fb5ac"
+        ".github/workflows/ci.yml": "00f7c984d1a35f0b9b3457b50a304201697da879835063cfb038d413fe162c3c"
       },
-      "head": "46af769a8f669f8c5f7715a14689ed4453dfeb25",
-      "outcome": "out-of-scope",
-      "reason": "Workspace CI installs all Playwright browsers (`playwright install --with-deps`) before `pnpm test`, because the headless browser project runs chromium, firefox and webkit. CI only; not library API.",
+      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
+      "outcome": "no-change",
+      "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
       "evidence": [
-        "packages/tests/vitest.config.js lines 41-44: instances chromium, firefox, webkit (headless).",
-        "PR #196 CI after the chromium-only install: 'browserType.launch: Executable doesn't exist at …/firefox-1543/firefox/firefox'.",
-        "run-ci.yml uses the same command."
+        "Changed: .github/workflows/ci.yml at 03009f7a217f136a32ed7d58306f67141aae2805"
       ]
     },
     "source:.github/workflows/knip.yml": {
-      "fingerprint": "894a80d60ce339f22ee57ef9b7eb902f268e5ea6df239372b4e3dccd900df7ba",
+      "fingerprint": "7139bf18910c0ae27b705fc094efc3b89d8e31b7ad9b2d7a4b691f60317caaf7",
       "snapshot": {
-        ".github/workflows/knip.yml": "e0e4b19e7d1ca53b5ac9984166bfca6387684aaae07f1076e7b67caa4945e47a"
+        ".github/workflows/knip.yml": "d695f63829da8794a59e2a4a28c5629888c09b122061f8335d51108ae6ca1cc7"
       },
-      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
-      "outcome": "out-of-scope",
-      "reason": "Self-repository `$/.github/actions/setup` instead of `./`. CI only; not library API.",
+      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
+      "outcome": "no-change",
+      "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
       "evidence": [
-        "git diff HEAD -- .github/workflows/knip.yml",
-        "zizmor 1.30.1 --offline: no new findings for this file. (self-repository finding gone)"
+        "Changed: .github/workflows/knip.yml at 03009f7a217f136a32ed7d58306f67141aae2805"
       ]
     },
     "source:.github/workflows/release.yml": {
@@ -3487,15 +3484,15 @@
       ]
     },
     "source:.lintstagedrc": {
-      "fingerprint": "1245cbba64cfe40b88fc149910e3e6dad2f41fda5d762d978f0e39b846834ead",
+      "fingerprint": "0f8f685d1fbc93e0f663c4a4ca3d21e11dd7011b02aaac0a215f69ea9cac849f",
       "snapshot": {
-        ".lintstagedrc": "13d18ec6d95090a581d5dc542168d4300f67741ebf5469696909216dd634040a"
+        ".lintstagedrc": "ad206c1f78aa0bcd1f785e9862e7128b1658b6fbf0a397f1118be156c20d4e13"
       },
-      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
       "outcome": "no-change",
-      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
+      "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
       "evidence": [
-        "Changed: .lintstagedrc at 280f7e791c50e367a025fddc617941296f15f52a"
+        "Changed: .lintstagedrc at 03009f7a217f136a32ed7d58306f67141aae2805"
       ]
     },
     "source:.bumpy/authbearer-skip-empty-token.md": {
@@ -3799,15 +3796,15 @@
       ]
     },
     "source:packages/tests/vitest.config.js": {
-      "fingerprint": "2cf5ba284f1013863c8c196040dd2c0d8aba4fac92e449e7023de3b56bd1654d",
+      "fingerprint": "023b9b0de640e3bec2188ff5c3f4e2c947ced324e3b3c1cafdbdf8f314e3990f",
       "snapshot": {
-        "packages/tests/vitest.config.js": "c2d7bb14fb24913b363bb4cca4daf47c59d1b040b8760774e806ee8f785f575e"
+        "packages/tests/vitest.config.js": "7311fdde6abd45a028dd5ffec676629d19c70cfee4352290037c6a61b6466789"
       },
-      "head": "3f379a4c81c5a5f1a2456dcec19e8f6bcdbfd606",
-      "outcome": "updated",
-      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
+      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
+      "outcome": "no-change",
+      "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
       "evidence": [
-        "Changed: packages/tests/vitest.config.js at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/tests/vitest.config.js at 03009f7a217f136a32ed7d58306f67141aae2805"
       ]
     },
     "source:packages/docs/pages/advanced/multipart-form-data-format.md": {
@@ -4219,27 +4216,27 @@
       ]
     },
     "source:docs/agents/issue-tracker.md": {
-      "fingerprint": "ea37b7e2cf3cf9b345feaa1c36d85a0cc907d892ca7da096bceb8a1ce3d0f10e",
+      "fingerprint": "c57884b09fb6ae3c93a95704d413731189a0e286c1fd6238e82251b3a1a96717",
       "snapshot": {
-        "docs/agents/issue-tracker.md": "90e43e4cdebf9b9d2197f2a75761bb495886248cf57d86a9c4373c28fdabce5b"
+        "docs/agents/issue-tracker.md": "c0f9d8fe4f9b18f38eb11620a3c873197dd4b9ca5f0bfe6855a2d659ee7653d7"
       },
-      "head": "4f30051218eb0164827fbf54d6ea3fac008dbc80",
+      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
       "outcome": "no-change",
-      "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
+      "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
       "evidence": [
-        "Changed: docs/agents/issue-tracker.md at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
+        "Changed: docs/agents/issue-tracker.md at 03009f7a217f136a32ed7d58306f67141aae2805"
       ]
     },
     "source:scripts/intent-restack.sh": {
-      "fingerprint": "11f678f08a19ad7cb97d8da8b3a2706b823ccf8dd1b5fc48416a13349b90295c",
+      "fingerprint": "2eaeca381afefdd96f25b0e289f6e2d879c632852890598dba93e42f40accaa0",
       "snapshot": {
-        "scripts/intent-restack.sh": "5b8d4c0f52ae9ffdae5b9fdb125a011cc630a744b96f2acbcc267eec8cecaf31"
+        "scripts/intent-restack.sh": "39d426bdbd0a71bdd1fe26d4df6e45b14d5da7735a795f95e44857b08ee5be69"
       },
-      "head": "4f30051218eb0164827fbf54d6ea3fac008dbc80",
+      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
       "outcome": "no-change",
-      "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
+      "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
       "evidence": [
-        "Changed: scripts/intent-restack.sh at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
+        "Changed: scripts/intent-restack.sh at 03009f7a217f136a32ed7d58306f67141aae2805"
       ]
     },
     "source:.bumpy/reject-absolute-url-with-base-url.md": {
@@ -4939,15 +4936,15 @@
       ]
     },
     "source:.husky/pre-push": {
-      "fingerprint": "f494e618a7b739d6037693d6b35a4ee7343d8f54273156a9485beb6590d3e932",
+      "fingerprint": "3bd8085fdb0e9599d8367cc1754a5a705297af7e594e31cdc555eaeff99b50bd",
       "snapshot": {
-        ".husky/pre-push": "9847e5b1ee945a17d496b47a91c0db008674f61e7757e9dc2631882025e55899"
+        ".husky/pre-push": "a85f02f799b9d1ddabcf739ff7868c9b372390608b21af9cfbcf3d5c5a90aeb0"
       },
-      "head": "4f30051218eb0164827fbf54d6ea3fac008dbc80",
+      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
       "outcome": "no-change",
-      "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
+      "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
       "evidence": [
-        "Changed: .husky/pre-push at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
+        "Changed: .husky/pre-push at 03009f7a217f136a32ed7d58306f67141aae2805"
       ]
     },
     "source:commitlint.config.js": {
@@ -4960,6 +4957,18 @@
       "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
       "evidence": [
         "Changed: commitlint.config.js at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
+      ]
+    },
+    "source:packages/tests/unit/scripts/intentRestack.test.ts": {
+      "fingerprint": "ab2c6faa03ecf1d18d7f2218ef0c4c97aa0965d1efe6b1e4fc6e788e88ed9a0d",
+      "snapshot": {
+        "packages/tests/unit/scripts/intentRestack.test.ts": "229c109835cca6c3915eee47c66be8131e09a109e0c06331db821b59b9b7599f"
+      },
+      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
+      "outcome": "no-change",
+      "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
+      "evidence": [
+        "Changed: packages/tests/unit/scripts/intentRestack.test.ts at 03009f7a217f136a32ed7d58306f67141aae2805"
       ]
     }
   }
