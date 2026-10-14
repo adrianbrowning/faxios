@@ -50,14 +50,14 @@ describe("request bodies reach the server (dist export only)", () => {
   }
 
   it("POST with an async generator sends every chunk", async () => {
-    const received = [];
+    const received: Array<Received> = [];
     server = await startServer(received);
     async function* chunks() {
       yield "ab";
       yield new TextEncoder().encode("cd");
     }
 
-    await faxios.post(`http://127.0.0.1:${server.address().port}/`, chunks());
+    await faxios.post(`http://127.0.0.1:${serverPort(server)}/`, chunks());
 
     expect(received).toHaveLength(1);
     expect(received[0].text).toBe("abcd");
