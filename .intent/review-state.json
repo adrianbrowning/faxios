@@ -3,13 +3,13 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "7faa98aa6ad3cf067537e492e61fde800556f1010337e2ab7ba48cb96c70c54a",
+      "fingerprint": "5b9a2c1fb6931c1b440e19a3703391eaa933254ce9c05ff7bbfd3a5990669927",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3c1ef5f8183bfbd67313b82e8556f2c83495e11e3b39bda2f84b3f2d35f803d7",
-        "packages/lib/package.json": "6ceed88544e8666b441eda75aac032ee5d0afb7184092c6ebca250806aab7ed0",
+        "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
         "packages/lib/skills/configure-requests/SKILL.md": "2e5616bdfc342aa754da49edecbd2f4e052cd2594d5e88bf41a3f4b2f4771f9c",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
-        "packages/lib/skills/configure-requests/references/plugins.md": "96873b03af18312869a0308acca3f5164e0de3811a45f280ccf0265c1f014dc4",
+        "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
         "packages/lib/src/lib/adapters/fetch.ts": "dac730893928ede80b3a1b31b1064053a41555a2a13d340326fb3b78927c99b5",
         "packages/lib/src/lib/core/Faxios.ts": "7d77d83175a3f2df158bf4fad8c92217e4cc7b1323e0834999d5428707be2d28",
@@ -35,24 +35,24 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
       "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
-        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/tests/unit/plugins/forwardTo.test.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/references/plugins.md at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "b5d476e189b11867acf45c4fafb1f8cdc85020a5c801cecea0788e0da8d43790",
+      "fingerprint": "1a9030d2feb63c9119ff94d6c177ce781c9811832848321e40a7d13ec85b58b7",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3c1ef5f8183bfbd67313b82e8556f2c83495e11e3b39bda2f84b3f2d35f803d7",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
-        "packages/lib/package.json": "6ceed88544e8666b441eda75aac032ee5d0afb7184092c6ebca250806aab7ed0",
+        "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
         "packages/lib/skills/configure-requests/SKILL.md": "2e5616bdfc342aa754da49edecbd2f4e052cd2594d5e88bf41a3f4b2f4771f9c",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
-        "packages/lib/skills/configure-requests/references/plugins.md": "96873b03af18312869a0308acca3f5164e0de3811a45f280ccf0265c1f014dc4",
+        "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
         "packages/lib/src/lib/adapters/fetch.ts": "dac730893928ede80b3a1b31b1064053a41555a2a13d340326fb3b78927c99b5",
         "packages/lib/src/lib/core/Faxios.ts": "7d77d83175a3f2df158bf4fad8c92217e4cc7b1323e0834999d5428707be2d28",
@@ -78,23 +78,23 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
       "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
-        "Changed: _artifacts/domain_map.yaml, _artifacts/skill_tree.yaml, packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/tests/unit/plugins/forwardTo.test.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/references/plugins.md at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
       ]
     },
     "source:knip.json": {
-      "fingerprint": "238662daeb4f1b7f25f044ed1be308337ea4fc2662e34727604ce527e2b04a8d",
+      "fingerprint": "a70b8948763e2f5852db9478a9798c866e3b5a211d9761fe4a02f475bb12285f",
       "snapshot": {
-        "knip.json": "53415bb7d47f06ab8b4e71deee1f5bfdafab9cb971839b905c299edb4d45619e"
+        "knip.json": "7e5eb4a22809df25fec0c594d1fc216443acc810abcdfb83ed92c8475ea7b6fd"
       },
-      "head": "bc120fc724ba378a1bff22364a881f3df09f6f71",
-      "outcome": "out-of-scope",
-      "reason": "Tooling config: dropped the @splidejs/splide ignore after removing the dependency.",
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
-        "@splidejs/splide was only imported by the deleted es/fr/zh home pages."
+        "Changed: knip.json at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
@@ -136,17 +136,15 @@
       ]
     },
     "source:packages/docs/.vitepress/config.mts": {
-      "fingerprint": "d26a8a7bafc9f165354e981f50596eeb88aeb2f69fbe444b1827b94bfc725fb2",
+      "fingerprint": "31f79f7da9475dc434d5a7e81603b97dcd6c0ac4fb14f1f4c46c53d8cce59288",
       "snapshot": {
-        "packages/docs/.vitepress/config.mts": "3773cf4200e9235a128acaf72bc751b3796f5638c6be702bea0867736393695a"
+        "packages/docs/.vitepress/config.mts": "370068f7fd54171f2355b76b90330de83d18565585deffb63abc1bc4bec6fe72"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Docs site config: Changelog nav link points at packages/lib/CHANGELOG.md; srcExclude drops the deleted es/fr/zh dirs. Not library API.",
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
-        "git diff cf6f2410..HEAD -- packages/docs/.vitepress/config.mts",
-        "pnpm --filter @faxios/docs run docs:build passed.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/docs/.vitepress/config.mts at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
       ]
     },
     "source:packages/docs/es/pages/advanced/interceptors.md": {
@@ -210,15 +208,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/define.md": {
-      "fingerprint": "4c9f24be20558b17c7508ba2ddf8ae7aeb0deccafeb5a4a05ad2101b90e2abdb",
+      "fingerprint": "cd35513d723c1df5e300742cca1f8def0725bd8b14bc7f0d4386176bb5b8a565",
       "snapshot": {
-        "packages/docs/pages/advanced/define.md": "9bd64dce014b827a44ab2cc94ca756690cb9268291c9121c81e8174e60b48624"
+        "packages/docs/pages/advanced/define.md": "a9bd58c76017e0a0d7ad87d3a8a4cc856441d5873eed84090487e3ec6e03b1b5"
       },
-      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
-      "outcome": "no-change",
-      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/define.md at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
+        "Changed: packages/docs/pages/advanced/define.md at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
       ]
     },
     "source:packages/docs/pages/advanced/error-handling.md": {
@@ -488,27 +486,27 @@
       ]
     },
     "source:packages/tests/module/esm/pnpm-lock.yaml": {
-      "fingerprint": "126cd7f9b54c0b9e2e08cab57026a99ca1d2fcf6926514ad086bbe53ca1ef6e0",
+      "fingerprint": "56b36b573b76b82090b4e41455ee774a363a4f82146fc4295bf6e8c687c91612",
       "snapshot": {
-        "packages/tests/module/esm/pnpm-lock.yaml": "f5c710247b3611a241d014e5ea05a25c88ff62c147c42ce19c63b4fbf84c9c34"
+        "packages/tests/module/esm/pnpm-lock.yaml": "21abb3c5a2f29979a58dbaf8d6568089db3e906b1870c04b347f22e09703c8b1"
       },
-      "head": "a6926e1f507b0da9f07237183336e51a04704807",
-      "outcome": "no-change",
-      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
-        "Changed: packages/tests/module/esm/pnpm-lock.yaml at a6926e1f507b0da9f07237183336e51a04704807"
+        "Changed: packages/tests/module/esm/pnpm-lock.yaml at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
       ]
     },
     "source:packages/tests/smoke/esm/pnpm-lock.yaml": {
-      "fingerprint": "98488d987695ae03ac4e18019cf804d155a107f5d401e5ac06c832037f727e89",
+      "fingerprint": "93a94ccf4ac960aac061e0d99dd1df9a17e8649dc09476aa012e2288a8030a6e",
       "snapshot": {
-        "packages/tests/smoke/esm/pnpm-lock.yaml": "5e6f432ccee40f5ecfa9b8d3f737e7ee81fd68ac6d13f19173d8a80fa602f09a"
+        "packages/tests/smoke/esm/pnpm-lock.yaml": "9666a372e6860d0e1b848cdaf7498d66f5ec34b98f510642618de206d602e755"
       },
-      "head": "8ace0b3b81a7bb208c2764629def6b0041131228",
-      "outcome": "out-of-scope",
-      "reason": "Test harness lockfile records the packed faxios version.",
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
-        "version: 0.2.0 -> 0.2.1 for the faxios tarball entry."
+        "Changed: packages/tests/smoke/esm/pnpm-lock.yaml at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
       ]
     },
     "source:packages/tests/unit/version.test.ts": {
@@ -2001,31 +1999,27 @@
       ]
     },
     "source:packages/docs/scripts/process-sponsors.js": {
-      "fingerprint": "3406fb569bce049de84d50ab0640e66e8fc139e06ea6d15d3e0a839cf30060da",
+      "fingerprint": "a72974d7a2035f1f821f77085c05838d03842a3f143d2634f11ce523270acac4",
       "snapshot": {
-        "packages/docs/scripts/process-sponsors.js": "70ebf281cbd502f3a421d65a0235a5d50b98441f6026796ffa1589cba18d6c71"
+        "packages/docs/scripts/process-sponsors.js": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Sponsor data script: lint style only (arrow parens, trailing commas, brace style, import order); same logic. Not library API.",
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/docs/scripts/process-sponsors.js",
-        "git diff 01316e10..HEAD: every hunk is punctuation/formatting or import-specifier order.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/docs/scripts/process-sponsors.js at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
       ]
     },
     "source:packages/docs/scripts/utils.js": {
-      "fingerprint": "685f4f25e118320678e5680d5c8df6c78690113516ff57712b1e82b41c909eba",
+      "fingerprint": "c2beb1084a02a87e3ff828cdf6297a28696af3b7ff88ab8f832c46ada8f8b739",
       "snapshot": {
-        "packages/docs/scripts/utils.js": "5d42ce52b29c8f7223251f5d9eb72ecb91a17a402f18a51a93911c7c2f92e818"
+        "packages/docs/scripts/utils.js": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Console helpers: single to double quotes and arrow-param parens only. Not library API.",
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/docs/scripts/utils.js",
-        "git diff 01316e10..HEAD: 7 lines, quotes and parens only.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/docs/scripts/utils.js at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
       ]
     },
     "source:packages/docs/tsconfig.json": {
@@ -3246,17 +3240,15 @@
       ]
     },
     "source:sharedConfig/tsconfig.base.json": {
-      "fingerprint": "6bf9d673df66e94ae56352cd66a730040b13bf55b0cb2f49f70968e4b312e9d0",
+      "fingerprint": "0bf87badfa001a4fd91a331e307e0c70040a96c35a0863517163253f64833ce8",
       "snapshot": {
-        "sharedConfig/tsconfig.base.json": "35a7ddb268e7f3addb8085b472c6754a575dcd00183f3b098eef82abafe33539"
+        "sharedConfig/tsconfig.base.json": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "New shared tsconfig base (not extended by lib, tests or docs). Tooling.",
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
-        "git diff 01316e10..HEAD -- sharedConfig/tsconfig.base.json",
-        "pnpm -r lint:ts passes.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: sharedConfig/tsconfig.base.json at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
       ]
     },
     "source:tsconfig.json": {
@@ -3388,39 +3380,39 @@
       ]
     },
     "source:SECURITY.md": {
-      "fingerprint": "70bfa6ffb217f6637670027d5431681e49686269b52adcc4f29461e0475d09e9",
+      "fingerprint": "e0a388744d84b6b0bf0e7f67330d184fdbe39520d79e06c5728ff322392cedff",
       "snapshot": {
-        "SECURITY.md": "67218497d2752f1fe589268d59ab8adcf75e9d18e9661f36b9aa67e71dca2571"
+        "SECURITY.md": "7aa61386f624bbcd1b62ded81327fa0e03884f7f4f23480a5c6de539a41d393d"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
-      "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
-        "Changed: SECURITY.md at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: SECURITY.md at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
       ]
     },
     "source:lychee.toml": {
-      "fingerprint": "77047a35f1d59a0090babb15b4e42a0eeeaf8fb5a9d756460d7b86a2ea065ff8",
+      "fingerprint": "6555a91a6d5cce9bf96dc6763c24fafd635da87e1d45c269904e372211985b41",
       "snapshot": {
-        "lychee.toml": "e12ef09f643006619cfdf7659289e57ea2660424f677e1d74ca521d1475b8b2d"
+        "lychee.toml": "b3a16307007113b65fd5973d36d5646557672912c3d10fe6b9a66857b0eeabe3"
       },
-      "head": "3a64287d44a5a030fd0f9477d851569e4851a912",
-      "outcome": "no-change",
-      "reason": "Link-check config only: lychee retries longer and treats 429/503 rate limits as reachable. No API or skill guidance changes.",
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
-        "Changed: lychee.toml at 3a64287d44a5a030fd0f9477d851569e4851a912"
+        "Changed: lychee.toml at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
       ]
     },
     "source:packages/docs/pages/misc/security.md": {
-      "fingerprint": "c1ed7f296d81939d1bea573d87af198b31c466cc410fc2cf13923ec42982b6d8",
+      "fingerprint": "b34b33bc1992c78b93714dbe7cb48050fc8ceec506d7e341dd97ebd9f485ff84",
       "snapshot": {
-        "packages/docs/pages/misc/security.md": "286a701cdfd02a1667c4115268e1215463d893ac869701d52c1bf73f8bb54f51"
+        "packages/docs/pages/misc/security.md": "7ea41d9aa53594845be4bf9f0fccafd1b3b54ea311f1a1c4fbcad7af65a8adae"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
-        "Changed: packages/docs/pages/misc/security.md at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/docs/pages/misc/security.md at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
       ]
     },
     "source:packages/examples/README.md": {
@@ -4924,15 +4916,15 @@
       ]
     },
     "source:.gitignore": {
-      "fingerprint": "b1e91f3d401f84ebc8068643e311b1404f0b8b6e408414bc2a95331a222b9d6d",
+      "fingerprint": "32952604722d770c17e6f29461b7c8c01bfe5fd129cd1b06fe1d62ed4e6433a4",
       "snapshot": {
-        ".gitignore": "b3cceba4f5b60d39c3bbcc3662793d26ca3738fbf99ddd85b69894da855bd271"
+        ".gitignore": "713ecd9f24d6ccacb03b7dcee75ce02ab5e025dfc982a7df25ab990a2d2f8589"
       },
-      "head": "4f30051218eb0164827fbf54d6ea3fac008dbc80",
-      "outcome": "no-change",
-      "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
-        "Changed: .gitignore at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
+        "Changed: .gitignore at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
       ]
     },
     "source:.husky/pre-push": {
@@ -5185,6 +5177,150 @@
       "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
       "evidence": [
         "Changed files: sharedConfig/eslint.config.style.js.map"
+      ]
+    },
+    "source:.bumpy/292-repo-hygiene.md": {
+      "fingerprint": "c36329d80b371b01d30db9fcb4c8c17aa3e3806a67a0dc8d4268d0e29dd0f7a1",
+      "snapshot": {
+        ".bumpy/292-repo-hygiene.md": "1722ce3671ccd19960fa3a0e1a9be3a3ed7161e08cb16e6ebbb4f855413e00bf"
+      },
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "evidence": [
+        "Changed: .bumpy/292-repo-hygiene.md at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+      ]
+    },
+    "source:.github/FUNDING.yml": {
+      "fingerprint": "0bcccf8b8a24d2e3bd098540aa5a9406988db7afb606e62fb1631f538830d9e2",
+      "snapshot": {
+        ".github/FUNDING.yml": "33b006d9b355af621a09c711fd6465d56434d8902e596f3dffe015fc558442f9"
+      },
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "evidence": [
+        "Changed: .github/FUNDING.yml at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+      ]
+    },
+    "source:eslint.config.style.ts": {
+      "fingerprint": "38b541b4b054ada4a981cfb9ffc656c593c0d69f4370e72b1c293e478619ba93",
+      "snapshot": {
+        "eslint.config.style.ts": null
+      },
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "evidence": [
+        "Changed: eslint.config.style.ts at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+      ]
+    },
+    "source:eslint.config.ts": {
+      "fingerprint": "6288b8e7143b8922c6f286909b666b86eaa4c6e4f688e7eb06692b3caad895fd",
+      "snapshot": {
+        "eslint.config.ts": null
+      },
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "evidence": [
+        "Changed: eslint.config.ts at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+      ]
+    },
+    "source:packages/docs/data/sponsors.json": {
+      "fingerprint": "ec2658380b4da1592b0a7150b139c511bebfbfb160d8e4ffdb15a1f2b00a1f42",
+      "snapshot": {
+        "packages/docs/data/sponsors.json": null
+      },
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "evidence": [
+        "Changed: packages/docs/data/sponsors.json at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+      ]
+    },
+    "source:packages/docs/pages/misc/sponsors.md": {
+      "fingerprint": "7b1a3d88af829caafcb39d7512ad7c8372ec4e26d8d3cf0db33fe199014df289",
+      "snapshot": {
+        "packages/docs/pages/misc/sponsors.md": null
+      },
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "evidence": [
+        "Changed: packages/docs/pages/misc/sponsors.md at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+      ]
+    },
+    "source:shared/tsconfig.json": {
+      "fingerprint": "e79def255496b2548efeaa48a7f1a4301abd0aec26c580a2d1d2e8a710682564",
+      "snapshot": {
+        "shared/tsconfig.json": null
+      },
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "evidence": [
+        "Changed: shared/tsconfig.json at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+      ]
+    },
+    "source:tests/module/esm/module.test.js": {
+      "fingerprint": "b4b4bdfd65fc2b2f692aa6c8a61017e5888fcf01ccea305d6a0948821fc9dd03",
+      "snapshot": {
+        "tests/module/esm/module.test.js": null
+      },
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "evidence": [
+        "Changed: tests/module/esm/module.test.js at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+      ]
+    },
+    "source:tests/smoke/bun/smoke.test.js": {
+      "fingerprint": "b9d29ab9958ca7d5de64b6663cfd2f82a618e79fd2c700b5721a86e54e329b7b",
+      "snapshot": {
+        "tests/smoke/bun/smoke.test.js": null
+      },
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "evidence": [
+        "Changed: tests/smoke/bun/smoke.test.js at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+      ]
+    },
+    "source:tests/smoke/deno/deno.json": {
+      "fingerprint": "8e83f6643996fc0bca839f062e3af4603b97958cbd91fc600e2de08d73b9c777",
+      "snapshot": {
+        "tests/smoke/deno/deno.json": null
+      },
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "evidence": [
+        "Changed: tests/smoke/deno/deno.json at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+      ]
+    },
+    "source:tests/smoke/deno/smoke.test.ts": {
+      "fingerprint": "fd19dd79ed782fdc6c95c650a93609ff6e527f4c2c3f0aedb8aabec0b4c09f1b",
+      "snapshot": {
+        "tests/smoke/deno/smoke.test.ts": null
+      },
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "evidence": [
+        "Changed: tests/smoke/deno/smoke.test.ts at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+      ]
+    },
+    "source:tests/smoke/esm/smoke.test.js": {
+      "fingerprint": "640c77b9c692ae157d428d5188086b7935af672b20244c823d97fb17664b1621",
+      "snapshot": {
+        "tests/smoke/esm/smoke.test.js": null
+      },
+      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "outcome": "updated",
+      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "evidence": [
+        "Changed: tests/smoke/esm/smoke.test.js at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
       ]
     }
   }
