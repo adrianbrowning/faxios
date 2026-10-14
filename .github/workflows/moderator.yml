@@ -7,10 +7,18 @@ on:
   pull_request_review_comment:
     types: [created]
 
+# One run at a time per issue or pull request, so a burst of comments does
+# not start parallel AI runs. GitHub keeps one pending run per group, so in a
+# burst the comments between the running and the newest one are not checked.
+concurrency:
+  group: moderator-${{ github.event.issue.number || github.event.pull_request.number }}
+  cancel-in-progress: false
+
 jobs:
   spam-detection:
     name: AI Moderator
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       issues: write
       pull-requests: write
