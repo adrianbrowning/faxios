@@ -43,6 +43,11 @@ jobs:
       - name: Lint
         run: pnpm run lint
 
+      # Writes nothing; fails when a Markdown copy differs from its file= source (mdcode.config.json).
+      # `pnpm check` runs it too.
+      - name: Check Markdown examples are in sync
+        run: pnpm run docs:sync:check
+
       - name: Build project
         run: pnpm run build
 
