@@ -11,7 +11,6 @@ import type {
   FaxiosPluginArgument,
   FaxiosRequestConfig,
   FaxiosResponse,
-  GenericAbortSignal,
   HeadersDefaults,
   InternalFaxiosRequestConfig,
   Method,
@@ -29,7 +28,7 @@ import dispatchRequest from "./dispatchRequest.js";
 import FaxiosError from "./FaxiosError.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
 import mergeConfig from "./mergeConfig.js";
-import armDeadline, { settleAfterBody } from "./requestDeadline.js";
+import armDeadline, { RequestBodies } from "./requestDeadline.js";
 import resolveRequestURL from "./resolveRequestURL.js";
 import type { RouteBuilder, RouteConfig } from "./route.js";
 import { createRouteBuilder } from "./route.js";
@@ -206,42 +205,31 @@ function copyForDispatch(config: InternalFaxiosRequestConfig): InternalFaxiosReq
   return copy;
 }
 
-// Middleware is caller code that may await anything, so the caller's abort settles the request
-// right away instead of waiting for it. Dispatch still checks the signal before the adapter call,
-// so nothing is sent after an abort either way. An already-aborted request runs no middleware.
-// A stream body still open when the request settles stays under the signal until it ends, and
-// `settle` runs then.
-function settleOnAbort(
-  run: () => Promise<FaxiosResponse>,
-  signal: AbortSignal | GenericAbortSignal,
-  config: InternalFaxiosRequestConfig,
-  settle: () => void
-): Promise<FaxiosResponse> {
-  return raceAbort(signal, run, () => canceledFromSignal(signal, config)).then(
-    response => {
-      settleAfterBody(response, signal, config, settle);
-      return response;
-    },
-    (err: unknown) => {
-      settle();
-      throw err;
-    }
-  );
-}
+// The stream bodies of each request with middleware, by its ctx.state: every middleware passes the
+// state on with the context, so the dispatch at the end of the chain finds the request it serves.
+const bodiesByState = new WeakMap<object, RequestBodies>();
 
 // Runs the request under its signal and `timeout`. The deadline is armed here, before middleware,
 // so it covers the whole request: middleware, schemas, every retry try and wait, the fetch and the
 // body. Its signal replaces config.signal, so every stage that watches the signal stops at it.
+// Middleware is caller code that may await anything, so an abort settles the request right away
+// instead of waiting for it; dispatch still checks the signal before the adapter call, so nothing
+// is sent after an abort either way, and an already-aborted request runs no middleware. A stream
+// body the request opened stays under its signal until the body ends, and only then is the
+// deadline settled; when the abort won the race, the body is aborted at once.
 // Without a deadline or middleware, dispatch watches the caller's signal itself. Not async: a
-// request without a timeout reaches dispatch in the same tick, as it did before.
-function runRequest(run: () => Promise<FaxiosResponse>, config: InternalFaxiosRequestConfig, hasMiddleware: boolean): Promise<FaxiosResponse> {
+// request reaches dispatch in the same tick.
+function runRequest(run: (bodies?: RequestBodies) => Promise<FaxiosResponse>, config: InternalFaxiosRequestConfig, hasMiddleware: boolean): Promise<FaxiosResponse> {
   const timeout = utils.hasOwnProp(config, "timeout") ? config.timeout : undefined;
   const callerSignal = utils.hasOwnProp(config, "signal") ? config.signal : undefined;
   const ms = timeout == null ? 0 : Number(timeout);
-  if (ms <= 0) return callerSignal && hasMiddleware ? settleOnAbort(run, callerSignal, config, () => {}) : run();
-  const deadline = armDeadline(ms, callerSignal, config);
-  config.signal = deadline.signal;
-  return settleOnAbort(run, deadline.signal, config, deadline.settle);
+  if (ms <= 0 && (!callerSignal || !hasMiddleware)) return run();
+  const deadline = ms > 0 ? armDeadline(ms, callerSignal, config) : undefined;
+  const signal = deadline ? deadline.signal : callerSignal!;
+  config.signal = signal;
+  const bodies = new RequestBodies(signal, config, deadline ? deadline.settle : () => {});
+  return raceAbort(signal, () => run(bodies), () => canceledFromSignal(signal, config))
+    .finally(() => bodies.release());
 }
 
 // One level's headers (instance or request), lowest precedence first: the `common` group, the
@@ -344,7 +332,7 @@ class Faxios {
     this.#pluginOptions = new Set(entries.flatMap(entry => entry.options));
     this.#composed = entries.length === 0
       ? null
-      : composeMiddleware(entries, ctx => dispatchRequest(copyForDispatch(ctx.config)));
+      : composeMiddleware(entries, ctx => dispatchRequest(copyForDispatch(ctx.config), bodiesByState.get(ctx.state)));
   }
 
   // Reads every caller-supplied capability into a new snapshot without touching instance state,
@@ -430,9 +418,13 @@ class Faxios {
     assertSignal(utils.hasOwnProp(config, "signal") ? config.signal : undefined, internal);
 
     const composed = this.#composed;
-    if (!composed) return runRequest(() => dispatchRequest(internal), internal, false);
+    if (!composed) return runRequest(bodies => dispatchRequest(internal, bodies), internal, false);
     // Built when the run starts, so ctx.config carries the request's signal.
-    return runRequest(() => composed({ attempt: 1, config: internal, state: Object.create(null), capabilities: this.#capabilities }), internal, true);
+    return runRequest(bodies => {
+      const state: Record<string, unknown> = Object.create(null);
+      if (bodies) bodiesByState.set(state, bodies);
+      return composed({ attempt: 1, config: internal, state, capabilities: this.#capabilities });
+    }, internal, true);
   }
    
   get<O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;

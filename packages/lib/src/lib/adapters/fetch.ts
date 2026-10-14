@@ -1,8 +1,7 @@
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import prepareRequest from "../core/prepareRequest.js";
-import { openStreamBody } from "../core/requestDeadline.js";
-import type { StreamBody } from "../core/requestDeadline.js";
+import type { RequestBodies } from "../core/requestDeadline.js";
 import resolveBodyContentType from "../core/resolveBodyContentType.js";
 import { settle } from "../core/settle.js";
 import { VERSION } from "../env/data.js";
@@ -176,7 +175,8 @@ type FetchEnv = {
 };
 
 // `body` is the request body as transformRequest left it; `config.data` stays the caller's value.
-type FetchAdapter = (config: InternalFaxiosRequestConfig, body: unknown) => Promise<unknown>;
+// `bodies`: the request's stream bodies, which core keeps under the request's signal.
+type FetchAdapter = (config: InternalFaxiosRequestConfig, body: unknown, bodies?: RequestBodies) => Promise<unknown>;
 
 // Own reads only: a polluted Object.prototype.fetch must never become the transport.
 const readOwn = (obj: unknown, key: string): unknown =>
@@ -678,7 +678,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     if (!isStreamResponse || response.body == null) unsubscribe();
   };
 
-  return async (config: InternalFaxiosRequestConfig, body: unknown) => {
+  return async (config: InternalFaxiosRequestConfig, body: unknown, bodies?: RequestBodies) => {
     const _resolved = prepareRequest(config) as InternalFaxiosRequestConfig & {
       fetchOptions?: Record<string, unknown>;
       withCredentials?: boolean | string;
@@ -724,7 +724,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
 
     const unsubscribe = composedSignal.unsubscribe!.bind(composedSignal);
     // Set when a stream body keeps the request's signal and deadline in force past the response.
-    let streamBody: StreamBody | undefined;
+    let endStreamBody: (() => void) | undefined;
 
     let request: null | Request = null;
     const pendingBodyErrorRef: PendingBodyErrorRef = { value: null };
@@ -818,12 +818,12 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       // A stream body outlives this call, so its end, error or cancel releases the request, and
       // the request's signal and deadline govern it until then (core/requestDeadline.ts). A
       // buffered body is released below, or by the catch on failure.
-      if (isStreamResponse && response.body != null) streamBody = openStreamBody(reason => requestController.abort(reason));
+      if (isStreamResponse && response.body != null) endStreamBody = bodies?.open(reason => requestController.abort(reason));
       const releaseStreamBody = (bodyErr?: unknown): void => {
         if (!isStreamResponse) return;
         if (bodyErr !== undefined) requestController.abort(bodyErr);
         unsubscribe();
-        streamBody?.end();
+        endStreamBody?.();
       };
 
       response = buildDownloadStream(
@@ -859,16 +859,14 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       unsubscribeOnComplete(isStreamResponse, response, unsubscribe);
 
       return await new Promise((resolve, reject) => {
-        const result = {
+        settle(resolve, reject, {
           data: responseData,
           headers: responseHeaders,
           status: response.status,
           statusText: response.statusText,
           config,
           request,
-        };
-        streamBody?.attach(result);
-        settle(resolve, reject, result);
+        });
       });
     }
     catch (err) {
@@ -882,7 +880,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       // Classify first: the abort below sets the composed signal's reason.
       requestController.abort(error);
       unsubscribe();
-      streamBody?.end();
+      endStreamBody?.();
       throw error;
     }
   };

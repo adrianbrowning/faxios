@@ -38,60 +38,67 @@ export default function armDeadline(
   };
 }
 
-type OpenBody = {
-  abort: (reason: FaxiosError) => void;
-  ended: boolean;
-  onEnd: (() => void) | undefined;
-};
-
-// By the response the adapter resolves with, which middleware such as retry passes on as is.
-const openBodies = new WeakMap<object, OpenBody>();
-
-export type StreamBody = {
-  /** Marks `response` as the one carrying this body, until the body ends. */
-  attach: (response: object) => void;
-  /** The body ended, errored or was cancelled. */
-  end: () => void;
-};
+type AbortBody = (reason: FaxiosError) => void;
 
 /**
- * A `responseType: "stream"` body the request's signal must still govern after the request
- * settles. `abort` aborts the fetch the body comes from.
+ * The `responseType: "stream"` bodies one request opened, which the request's signal (the
+ * caller's, or the deadline's) must still govern after the request settles: even when middleware
+ * gave the fetch a signal of its own, such as a retry try's, that stopped following the request's
+ * when the try ended, and whatever response object middleware hands back.
  */
-export function openStreamBody(abort: (reason: FaxiosError) => void): StreamBody {
-  const body: OpenBody = { abort, ended: false, onEnd: undefined };
-  return {
-    attach: response => {
-      if (!body.ended) openBodies.set(response, body);
-    },
-    end: () => {
-      if (body.ended) return;
-      body.ended = true;
-      body.onEnd?.();
-    },
-  };
-}
+export class RequestBodies {
+  readonly #config: InternalFaxiosRequestConfig;
+  #done = false;
+  readonly #open = new Set<AbortBody>();
+  #released = false;
+  readonly #settle: () => void;
+  readonly #signal: AbortSignal | GenericAbortSignal;
+  #unwatch: (() => void) | undefined;
 
-/**
- * Runs `settle` once the request is done with `signal`: at once, or, for a response whose stream
- * body is still open, once that body ends. Until then an abort of `signal` (the caller's, or the
- * deadline's) aborts the body, even when middleware gave the fetch a signal of its own, such as a
- * retry try's, that stopped following the request's when the try ended.
- */
-export function settleAfterBody(
-  response: unknown,
-  signal: AbortSignal | GenericAbortSignal,
-  config: InternalFaxiosRequestConfig,
-  settle: () => void
-): void {
-  const body = typeof response === "object" && response !== null ? openBodies.get(response) : undefined;
-  if (!body || body.ended) {
-    settle();
-    return;
+  constructor(signal: AbortSignal | GenericAbortSignal, config: InternalFaxiosRequestConfig, settle: () => void) {
+    this.#signal = signal;
+    this.#config = config;
+    this.#settle = settle;
   }
-  const stop = onAbort(signal, () => body.abort(canceledFromSignal(signal, config)));
-  body.onEnd = () => {
-    stop();
-    settle();
-  };
+
+  /**
+   * The adapter opened a stream body; `abort` aborts the fetch it comes from. Returns what to call
+   * once the body ends, errors or is cancelled.
+   */
+  open(abort: AbortBody): () => void {
+    if (this.#done) {
+      // Opened after the request let go of its signal: only an abort already seen applies.
+      if (this.#signal.aborted) abort(canceledFromSignal(this.#signal, this.#config));
+      return () => {};
+    }
+    this.#open.add(abort);
+    if (this.#released) this.#watch();
+    return () => {
+      if (this.#open.delete(abort) && this.#released && this.#open.size === 0) this.#finish();
+    };
+  }
+
+  /** The request settled, either way: `settle` runs now, or once every open body has ended. */
+  release(): void {
+    this.#released = true;
+    if (this.#open.size === 0) this.#finish();
+    else this.#watch();
+  }
+
+  // An abort ends every open body at once, and with it the request's hold on its signal.
+  #watch(): void {
+    this.#unwatch ??= onAbort(this.#signal, () => {
+      const reason = canceledFromSignal(this.#signal, this.#config);
+      for (const abort of this.#open) abort(reason);
+      this.#open.clear();
+      this.#finish();
+    });
+  }
+
+  #finish(): void {
+    if (this.#done) return;
+    this.#done = true;
+    this.#unwatch?.();
+    this.#settle();
+  }
 }

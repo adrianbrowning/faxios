@@ -181,6 +181,28 @@ describe("fetch adapter request cleanup", () => {
       assert.strictEqual(vi.getTimerCount(), 0);
     });
 
+    it("is aborted by timeout or the caller signal while the body is read, behind middleware that returns its own response", async () => {
+      vi.useFakeTimers();
+      const copying = faxios.create({ allowAbsoluteUrls: true }).use(async (ctx, next) => ({ ...(await next(ctx)) }));
+      for (const by of [ "timeout", "signal" ] as const) {
+        const controller = new AbortController();
+        const { data } = await copying.get<ReadableStream<Uint8Array>>("http://localhost/", {
+          responseType: "stream",
+          timeout: 1000,
+          signal: controller.signal,
+          env: { fetch: stallingFetch({}) },
+        });
+        const reader = data.getReader();
+        await reader.read();
+        const rejected = assert.rejects(reader.read(), { code: by === "timeout" ? "ETIMEDOUT" : "ERR_CANCELED" });
+        if (by === "timeout") await vi.advanceTimersByTimeAsync(1000);
+        else controller.abort();
+        await rejected;
+        assert.strictEqual(vi.getTimerCount(), 0);
+        assert.strictEqual(getEventListeners(controller.signal, "abort").length, 0);
+      }
+    });
+
     it("keeps the timeout armed while the body is open and clears it once the body ends", async () => {
       vi.useFakeTimers();
       const { promise: gate, resolve: open } = Promise.withResolvers<void>();

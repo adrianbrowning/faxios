@@ -186,6 +186,49 @@ describe("plugins::retry", () => {
     assert.strictEqual(vi.getTimerCount(), 0);
   });
 
+  it("aborts the streamed fetch when the request's timeout passes while a middleware outside retry still waits", async () => {
+    const { promise: sent, resolve: send } = Promise.withResolvers<AbortSignal>();
+    const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
+      const signal = init!.signal!;
+      send(signal);
+      const body = new ReadableStream<Uint8Array>({
+        start(controller) {
+          signal.addEventListener("abort", () => controller.error(signal.reason), { once: true });
+        },
+      });
+      return new Response(body);
+    };
+    const api = faxios.create({ env: { fetch }, timeout: 100 })
+      .use(async (ctx, next) => {
+        const response = await next(ctx);
+        await new Promise(resolve => setTimeout(resolve, 150));
+        return response;
+      })
+      .use(retry({ delay: 0, attemptTimeout: 50 }));
+
+    const request = assert.rejects(api.get(URL, { responseType: "stream" }), { code: FaxiosError.ETIMEDOUT });
+    const fetchSignal = await sent;
+    await vi.advanceTimersByTimeAsync(100);
+    await request;
+    // The try had ended, so only the request's deadline can still reach the body it left open.
+    assert.strictEqual(fetchSignal.aborted, true);
+    await vi.runAllTimersAsync();
+  });
+
+  it("rejects a signal without listener methods that a middleware before retry passes on, before any try", async () => {
+    const { fetch, calls } = scriptedFetch([ 200 ]);
+    // Faxios checks the request's own signal; this one only middleware can introduce.
+    const listenerless = { aborted: false } as unknown as AbortSignal;
+    const api = faxios.create({ env: { fetch } })
+      .use(async (ctx, next) => next({ ...ctx, config: { ...ctx.config, signal: listenerless } }))
+      .use(retry({ delay: 0, attemptTimeout: 50 }));
+
+    await assert.rejects(api.get(URL), (err: unknown) =>
+      err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE && err.message.includes("signal"));
+    assert.strictEqual(calls.length, 0);
+    assert.strictEqual(vi.getTimerCount(), 0);
+  });
+
   it("ends a try whose middleware after retry never resumes once attemptTimeout passes", async () => {
     const { fetch, calls } = scriptedFetch([ 200 ]);
     let tries = 0;

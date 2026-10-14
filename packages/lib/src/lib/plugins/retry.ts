@@ -209,6 +209,22 @@ function linkSignal(outer: FaxiosRequestConfig["signal"], controller: AbortContr
   return { signal: controller.signal, unlink: () => outer.removeEventListener("abort", forward) };
 }
 
+// Retry listens on the request's signal for its waits and tries, so a signal a middleware before
+// retry passes on without listener methods gets the error dispatch would give it, before any timer.
+function assertListenable(signal: unknown, config: InternalFaxiosRequestConfig): void {
+  if (signal == null) return;
+  const listenable = typeof signal === "object" &&
+    "addEventListener" in signal && typeof signal.addEventListener === "function" &&
+    "removeEventListener" in signal && typeof signal.removeEventListener === "function";
+  if (!listenable) {
+    throw new FaxiosError(
+      "option signal must be an AbortSignal: an object with aborted, addEventListener and removeEventListener",
+      FaxiosError.ERR_BAD_OPTION_VALUE,
+      config
+    );
+  }
+}
+
 // One try with its own deadline. It settles once the deadline passes, even while middleware after
 // retry never resumes, and its signal aborts that try's fetch.
 function tryWithin(ms: number, ctx: FaxiosContext<RetryRequestOptions>, next: FaxiosNext<RetryRequestOptions>): Promise<FaxiosResponse> {
@@ -316,6 +332,7 @@ export function retry(options: RetryOptions = {}): FaxiosPlugin<{ options: Retry
       if (perRequest !== undefined) assertRetryOptions(perRequest, ctx.config);
       const policy = resolvePolicy(options, perRequest);
       if (!retriesMethod(ctx.config, perRequest, pluginMethods)) return next(ctx);
+      assertListenable(own(ctx.config, "signal"), ctx.config);
 
       // Tries run one after another on purpose: each must finish before deciding on the next.
       for (let attempt = 1; ; attempt++) {

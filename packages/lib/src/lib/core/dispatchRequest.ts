@@ -11,6 +11,7 @@ import { substitutePathParams } from "../helpers/substitutePathParams.js";
 import type { FaxiosResponse, InternalFaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
 import assertSignal from "./assertSignal.js";
+import type { RequestBodies } from "./requestDeadline.js";
 import transformData from "./transformData.js";
 
 function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void {
@@ -104,7 +105,7 @@ function validatePreFlight(config: InternalFaxiosRequestConfig): (() => Promise<
   };
 }
 
-export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig): Promise<FaxiosResponse> {
+export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig, bodies?: RequestBodies): Promise<FaxiosResponse> {
   // Middleware may pass on a signal of its own.
   assertSignal(config.signal, config);
   throwIfCancellationRequested(config);
@@ -141,10 +142,10 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
       config
     );
   }
-  const adapter = _adapter as (config: InternalFaxiosRequestConfig, body: unknown) => Promise<FaxiosResponse>;
+  const adapter = _adapter as (config: InternalFaxiosRequestConfig, body: unknown, bodies?: RequestBodies) => Promise<FaxiosResponse>;
 
   /* eslint-disable promise/always-return */
-  return (adapter(config, data))
+  return (adapter(config, data, bodies))
     .then(
 
       function onAdapterResolution(response: FaxiosResponse) {
