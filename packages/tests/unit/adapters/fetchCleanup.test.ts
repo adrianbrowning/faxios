@@ -280,6 +280,95 @@ describe("fetch adapter request cleanup", () => {
     });
   });
 
+  describe("stream response with an error status", () => {
+    const notFound = JSON.stringify({ error: "not found" });
+    const rejection = async (config: Parameters<typeof client.get>[1], url = "http://localhost/") =>
+      client.get(url, { responseType: "stream", ...config }).then(
+        () => assert.fail("expected the 404 to reject"),
+        (err: unknown) => err as { code?: string; response?: { data: ReadableStream<Uint8Array>; status: number; }; }
+      );
+
+    it("rejects with ERR_BAD_REQUEST and hands over the server's body", async () => {
+      const server = await startHTTPServer((_req, res) => {
+        res.statusCode = 404;
+        res.setHeader("Content-Type", "application/json");
+        res.end(notFound);
+      });
+      try {
+        const err = await rejection({}, urlOf(server));
+        assert.strictEqual(err.code, "ERR_BAD_REQUEST");
+        assert.strictEqual(err.response?.status, 404);
+        assert.strictEqual(await new Response(err.response.data).text(), notFound);
+      }
+      finally {
+        await stopHTTPServer(server);
+      }
+    });
+
+    it("keeps the timeout and caller listener while the body is open and clears them once it is read", async () => {
+      vi.useFakeTimers();
+      const controller = new AbortController();
+      // Ends only when the gate opens, so the body is still open when the request rejects.
+      const { promise: gate, resolve: open } = Promise.withResolvers<void>();
+      const body = new ReadableStream<Uint8Array>({
+        async pull(stream) {
+          await gate;
+          stream.enqueue(new TextEncoder().encode(notFound));
+          stream.close();
+        },
+      });
+      const err = await rejection({
+        timeout: 60_000,
+        signal: controller.signal,
+        env: { fetch: async () => new Response(body, { status: 404 }) },
+      });
+      assert.strictEqual(vi.getTimerCount(), 1);
+      assert.strictEqual(getEventListeners(controller.signal, "abort").length, 1);
+      open();
+      assert.strictEqual(await new Response(err.response!.data).text(), notFound);
+      await vi.advanceTimersByTimeAsync(0);
+      assert.strictEqual(vi.getTimerCount(), 0);
+      assert.strictEqual(getEventListeners(controller.signal, "abort").length, 0);
+    });
+
+    it("is aborted by timeout while the body is open", async () => {
+      vi.useFakeTimers();
+      // Behaves like fetch: sends nothing, and aborting the request signal errors the body.
+      const stallingNotFound = async (_input: unknown, init?: RequestInit) => {
+        const signal = init!.signal!;
+        const body = new ReadableStream<Uint8Array>({
+          start(stream) {
+            signal.addEventListener("abort", () => stream.error(signal.reason));
+          },
+        });
+        return new Response(body, { status: 404 });
+      };
+      const err = await rejection({ timeout: 1000, env: { fetch: stallingNotFound } });
+      const rejected = assert.rejects(err.response!.data.getReader().read(), { code: "ETIMEDOUT" });
+      await vi.advanceTimersByTimeAsync(1000);
+      await rejected;
+      assert.strictEqual(vi.getTimerCount(), 0);
+    });
+
+    it("closes the connection when the body is cancelled", async () => {
+      const { closed, handler } = endlessResponse();
+      const server = await startHTTPServer((req, res) => {
+        res.statusCode = 503;
+        handler(req, res);
+      });
+      try {
+        const err = await rejection({}, urlOf(server));
+        assert.strictEqual(err.code, "ERR_BAD_RESPONSE");
+        await err.response!.data.cancel();
+        // Without the release the server keeps streaming and this never resolves.
+        await closed;
+      }
+      finally {
+        await stopHTTPServer(server);
+      }
+    });
+  });
+
   describe("stream body cancelled while a read of a stalled source is pending", () => {
     // Sends nothing: with highWaterMark 0 the source is pulled only for a pending read.
     const stalledBody = () => {

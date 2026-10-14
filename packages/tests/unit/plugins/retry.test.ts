@@ -229,6 +229,31 @@ describe("plugins::retry", () => {
     assert.strictEqual(vi.getTimerCount(), 0);
   });
 
+  it("cancels the stream body of a status error it retries", async () => {
+    let cancelled = 0;
+    let calls = 0;
+    const fetch = async () => {
+      calls++;
+      const body = new ReadableStream<Uint8Array>({
+        cancel() {
+          cancelled++;
+        },
+      });
+      return new Response(body, { status: calls === 1 ? 503 : 200 });
+    };
+    const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }));
+
+    const request = api.get<ReadableStream<Uint8Array>>(URL, { responseType: "stream" });
+    await vi.advanceTimersByTimeAsync(0);
+    const { data } = await request;
+
+    assert.strictEqual(calls, 2);
+    // The 503's body never reaches the caller, so retry releases it; the 200's stays open.
+    assert.strictEqual(cancelled, 1);
+    await data.cancel();
+    assert.strictEqual(cancelled, 2);
+  });
+
   it("ends a try whose middleware after retry never resumes once attemptTimeout passes", async () => {
     const { fetch, calls } = scriptedFetch([ 200 ]);
     let tries = 0;

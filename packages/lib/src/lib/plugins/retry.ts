@@ -163,6 +163,15 @@ function canReplay(data: unknown): boolean {
   return true;
 }
 
+// A status error's `responseType: "stream"` body holds its connection open until it is read or
+// cancelled. Retrying drops it, so it is cancelled; one onRetry started reading is left alone.
+function discardBody(reason: unknown): void {
+  const data: unknown = reason instanceof FaxiosError ? reason.response?.data : undefined;
+  if (Object.prototype.toString.call(data) !== "[object ReadableStream]") return;
+  const stream = data as ReadableStream;
+  if (!stream.locked) stream.cancel().catch(() => {});
+}
+
 // The error dispatch rejects an aborted request with. A FaxiosError reason is that error already
 // (an ETIMEDOUT); otherwise the reason's message, with the reason as cause.
 function canceledFrom(signal: { readonly aborted: boolean; reason?: unknown; }, config: FaxiosRequestConfig): FaxiosError {
@@ -347,6 +356,7 @@ export function retry(options: RetryOptions = {}): FaxiosPlugin<{ options: Retry
           if (ms === undefined) throw error;
           // A throwing hook rejects the request with its own error, before any wait.
           policy.onRetry?.(error, attempt, ms);
+          discardBody(error);
           // eslint-disable-next-line no-await-in-loop -- see above
           await wait(ms, own(ctx.config, "signal"), ctx.config);
         }

@@ -16,6 +16,7 @@ import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import { trackStream } from "../helpers/trackStream.js";
 import platform from "../platform.js";
 import type {
+  FaxiosResponse,
   InternalFaxiosRequestConfig
 } from "../types.js";
 import utils from "../utils.js";
@@ -84,6 +85,18 @@ const rejectUsedStreamBody = (data: unknown, config: InternalFaxiosRequestConfig
 // later try can still send it.
 const markStreamBodySent = (data: unknown): void => {
   if (utils.isReadableStream!(data)) sentStreamBodies.add(data as object);
+};
+
+// The response, or a promise rejected with its status error, settled now so the adapter can
+// return it after its catch. A throwing validateStatus still throws here, into that catch.
+const settleByStatus = (response: FaxiosResponse): Promise<FaxiosResponse> => {
+  let outcome: Promise<FaxiosResponse> | undefined;
+  settle(value => {
+    outcome = Promise.resolve(value);
+  }, reason => {
+    outcome = Promise.reject(reason);
+  }, response);
+  return outcome!;
 };
 
 const isBrowserRuntime = platform.hasStandardBrowserEnv || platform.hasStandardBrowserWebWorkerEnv;
@@ -734,6 +747,9 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     const pendingBodyErrorRef: PendingBodyErrorRef = { value: null };
     // Which step a code-less TypeError came from, so it can get a code.
     let stage: FetchStage | undefined;
+    // The response, or the status error, returned after the catch: aborting the request there
+    // would error a stream body the status error hands to the caller.
+    let settled: Promise<FaxiosResponse>;
 
     try {
       // Everything before the send builds the request, so an unparseable URL that the upload
@@ -863,15 +879,13 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
 
       unsubscribeOnComplete(isStreamResponse, response, unsubscribe);
 
-      return await new Promise((resolve, reject) => {
-        settle(resolve, reject, {
-          data: responseData,
-          headers: responseHeaders,
-          status: response.status,
-          statusText: response.statusText,
-          config,
-          request,
-        });
+      settled = settleByStatus({
+        data: responseData,
+        headers: responseHeaders,
+        status: response.status,
+        statusText: response.statusText,
+        config,
+        request,
       });
     }
     catch (err) {
@@ -888,6 +902,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       endStreamBody?.();
       throw error;
     }
+    return settled;
   };
 };
 
