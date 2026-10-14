@@ -69,7 +69,7 @@ describe("module esm typings compatibility", () => {
     }
   });
 
-  it("enforces <T,R,D> generics, typed headers, and no instance index signature", () => {
+  it("enforces <T,D> generics, typed headers, and no instance index signature", () => {
     const sourcePath = path.join(
       repoRoot,
       "tests/module/esm/tests/helpers/generics-index.ts"

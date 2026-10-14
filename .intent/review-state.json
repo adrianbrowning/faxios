@@ -3,30 +3,30 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "912abddbd0c6ba2756cc25862aed464a3d84838d69a1e9cf7ac3544408ba0deb",
+      "fingerprint": "dac8d18a918c062ecb7d971f59c396baed37840e18f25287949107ec6445028f",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "packages/lib/package.json": "220d8b3dc5040c04c1c2b2a4a1423ae6560988427c0548b7bae8e29186de5732",
-        "packages/lib/skills/configure-requests/SKILL.md": "ef7922e8f26581f865e593601047ae57ecb60b84c6e2d6fb1e4c00d9256ae339",
+        "packages/lib/skills/configure-requests/SKILL.md": "bfe9ba4960a64368a41662237b4d4f53148aa049cc5e46683a257b529d1c3b10",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
-        "packages/lib/src/index.ts": "5b3d974dc05a7620d18082ce0cdccb4c3260fa37612996c8cdaacaa149310fc7",
-        "packages/lib/src/lib/adapters/fetch.ts": "8515ede0dec528cbc35984ba060c863a3f9267c9426e042402d88f7b0c928779",
-        "packages/lib/src/lib/core/Faxios.ts": "21cf4f7b1f195bacadc5af61ebf4911f8be366616fe5b44a96fdf5f5a0a219d7",
-        "packages/lib/src/lib/core/FaxiosError.ts": "94b53f3922ce0cfa4a7c8e7168c04d1871d2080e2b7dd443e4860c04adca2bf3",
+        "packages/lib/src/index.ts": "213ce7f2ff6d1ae0bdfd7a08c32649ca82abf59c5320c6357b0e1b7fa29092cb",
+        "packages/lib/src/lib/adapters/fetch.ts": "2bdb2faf20ee21e41d0f66bcbc34bb18b35bf7b0d4d332b608cfd990ea70adfb",
+        "packages/lib/src/lib/core/Faxios.ts": "7a88a56adebd77541e6271f88ab6cf63138583ccafadb5f6198a37febb16d60d",
+        "packages/lib/src/lib/core/FaxiosError.ts": "cbc450b2d0d43577f6915639a07bc7d595373d34791e07b2e421d27a9ba98b6d",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
-        "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
+        "packages/lib/src/lib/core/define.ts": "ff1f833330fb99385525466abb042b0fde845d4b6a64c05b28ffbd4f7e7a2d91",
         "packages/lib/src/lib/core/dispatchRequest.ts": "4564c956ec0823acec07d1581689a81c2c134fd9b3b75f8c74e7c889090f9139",
-        "packages/lib/src/lib/core/mergeConfig.ts": "e3dc3f5f52f57381163e506acdc52ff567e35104a7d607160da853e2510c7672",
+        "packages/lib/src/lib/core/mergeConfig.ts": "b5bf3188c622df38513f49fa4468e5eed25467913d00254408fa0eb18d861392",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "58f6fe8de5c8371ad7e9444e4789f42eb774774cda276463391eb2865d75a0c8",
-        "packages/lib/src/lib/helpers/composeSignals.ts": "ccd69c28a17fc485975de89502ff80d075e919fef437d0afb8460ec0631ef9ef",
-        "packages/lib/src/lib/plugins/authBearer.ts": "30914c957cc2e19b94a677521fd3555d33cf9a4df59127853e21b72877f2cda3",
+        "packages/lib/src/lib/faxios.ts": "ba5e65e6cfaaa2ce03658a4c092569d79cd05551bbf5cbcb4eb4209ac27e4616",
+        "packages/lib/src/lib/helpers/composeSignals.ts": "390b71ce73079ec812d066dd0a82bc44decf1e778eea95fbcfa925a9fe168749",
+        "packages/lib/src/lib/plugins/authBearer.ts": "61690015ca6af4e577d4e47543646f7e094aa1fa96b29dbcaecc99ff63f2b1ea",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
-        "packages/lib/src/lib/plugins/forwardTo.ts": "22c20f990feac10f744738cc5a34b32fa5583f115210aa64dbecd7b26fc2da7c",
-        "packages/lib/src/lib/plugins/retry.ts": "f3a67c455d37eca5c4534528bdea8e12974f223af7e107436e8c3f8d4e003ec7",
+        "packages/lib/src/lib/plugins/forwardTo.ts": "5690ae53faa509f69e60225194216f3f87dacf0c8331d379e80d44b449403013",
+        "packages/lib/src/lib/plugins/retry.ts": "c985b4b5f2412e2b44c9f2c320dd260751c4b755bdd808c2893b4fc06eb858b3",
         "packages/lib/src/lib/plugins/timing.ts": "e29c1a110d73273227bee8e0aebc8cd55b5c97e5300544d4a78e024b7e82a836",
-        "packages/lib/src/lib/types.ts": "f883ed0c902ffee69ab3d7c68482e024c7d6ad59351a3463b2c841552ba7df3e",
+        "packages/lib/src/lib/types.ts": "20354f6310ef3f38776f633f75787fb4f5596460d5f86ad6c183785aa80d2180",
         "packages/tests/unit/api.test.ts": "0ba379110ac2c0b8d538f4c7ea15f03a86c353ef0745bc3ba0de4d86bff6c814",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "f73ea84b082e8d00a3b1741f87769332a9b2eca440f20e4742f6c7338ad05902",
@@ -35,7 +35,7 @@
         "packages/tests/unit/plugins/retry.test.ts": "bb88c03b5c3875b9bcef3c81d3d89ef4f7241040c5338f8af991c332c5e69949",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -43,33 +43,33 @@
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "e5e2f641d23d3ba1b4e33b7e9021851febd2beaac66265cccb4e5704be5bbdb6",
+      "fingerprint": "783deb2c15f4ed4908ad5c99a19f72c01fa361ed2f1d81bab73cde6ace493e69",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
         "packages/lib/package.json": "220d8b3dc5040c04c1c2b2a4a1423ae6560988427c0548b7bae8e29186de5732",
-        "packages/lib/skills/configure-requests/SKILL.md": "ef7922e8f26581f865e593601047ae57ecb60b84c6e2d6fb1e4c00d9256ae339",
+        "packages/lib/skills/configure-requests/SKILL.md": "bfe9ba4960a64368a41662237b4d4f53148aa049cc5e46683a257b529d1c3b10",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
-        "packages/lib/src/index.ts": "5b3d974dc05a7620d18082ce0cdccb4c3260fa37612996c8cdaacaa149310fc7",
-        "packages/lib/src/lib/adapters/fetch.ts": "8515ede0dec528cbc35984ba060c863a3f9267c9426e042402d88f7b0c928779",
-        "packages/lib/src/lib/core/Faxios.ts": "21cf4f7b1f195bacadc5af61ebf4911f8be366616fe5b44a96fdf5f5a0a219d7",
-        "packages/lib/src/lib/core/FaxiosError.ts": "94b53f3922ce0cfa4a7c8e7168c04d1871d2080e2b7dd443e4860c04adca2bf3",
+        "packages/lib/src/index.ts": "213ce7f2ff6d1ae0bdfd7a08c32649ca82abf59c5320c6357b0e1b7fa29092cb",
+        "packages/lib/src/lib/adapters/fetch.ts": "2bdb2faf20ee21e41d0f66bcbc34bb18b35bf7b0d4d332b608cfd990ea70adfb",
+        "packages/lib/src/lib/core/Faxios.ts": "7a88a56adebd77541e6271f88ab6cf63138583ccafadb5f6198a37febb16d60d",
+        "packages/lib/src/lib/core/FaxiosError.ts": "cbc450b2d0d43577f6915639a07bc7d595373d34791e07b2e421d27a9ba98b6d",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
-        "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
+        "packages/lib/src/lib/core/define.ts": "ff1f833330fb99385525466abb042b0fde845d4b6a64c05b28ffbd4f7e7a2d91",
         "packages/lib/src/lib/core/dispatchRequest.ts": "4564c956ec0823acec07d1581689a81c2c134fd9b3b75f8c74e7c889090f9139",
-        "packages/lib/src/lib/core/mergeConfig.ts": "e3dc3f5f52f57381163e506acdc52ff567e35104a7d607160da853e2510c7672",
+        "packages/lib/src/lib/core/mergeConfig.ts": "b5bf3188c622df38513f49fa4468e5eed25467913d00254408fa0eb18d861392",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "58f6fe8de5c8371ad7e9444e4789f42eb774774cda276463391eb2865d75a0c8",
-        "packages/lib/src/lib/helpers/composeSignals.ts": "ccd69c28a17fc485975de89502ff80d075e919fef437d0afb8460ec0631ef9ef",
-        "packages/lib/src/lib/plugins/authBearer.ts": "30914c957cc2e19b94a677521fd3555d33cf9a4df59127853e21b72877f2cda3",
+        "packages/lib/src/lib/faxios.ts": "ba5e65e6cfaaa2ce03658a4c092569d79cd05551bbf5cbcb4eb4209ac27e4616",
+        "packages/lib/src/lib/helpers/composeSignals.ts": "390b71ce73079ec812d066dd0a82bc44decf1e778eea95fbcfa925a9fe168749",
+        "packages/lib/src/lib/plugins/authBearer.ts": "61690015ca6af4e577d4e47543646f7e094aa1fa96b29dbcaecc99ff63f2b1ea",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
-        "packages/lib/src/lib/plugins/forwardTo.ts": "22c20f990feac10f744738cc5a34b32fa5583f115210aa64dbecd7b26fc2da7c",
-        "packages/lib/src/lib/plugins/retry.ts": "f3a67c455d37eca5c4534528bdea8e12974f223af7e107436e8c3f8d4e003ec7",
+        "packages/lib/src/lib/plugins/forwardTo.ts": "5690ae53faa509f69e60225194216f3f87dacf0c8331d379e80d44b449403013",
+        "packages/lib/src/lib/plugins/retry.ts": "c985b4b5f2412e2b44c9f2c320dd260751c4b755bdd808c2893b4fc06eb858b3",
         "packages/lib/src/lib/plugins/timing.ts": "e29c1a110d73273227bee8e0aebc8cd55b5c97e5300544d4a78e024b7e82a836",
-        "packages/lib/src/lib/types.ts": "f883ed0c902ffee69ab3d7c68482e024c7d6ad59351a3463b2c841552ba7df3e",
+        "packages/lib/src/lib/types.ts": "20354f6310ef3f38776f633f75787fb4f5596460d5f86ad6c183785aa80d2180",
         "packages/tests/unit/api.test.ts": "0ba379110ac2c0b8d538f4c7ea15f03a86c353ef0745bc3ba0de4d86bff6c814",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "f73ea84b082e8d00a3b1741f87769332a9b2eca440f20e4742f6c7338ad05902",
@@ -78,7 +78,7 @@
         "packages/tests/unit/plugins/retry.test.ts": "bb88c03b5c3875b9bcef3c81d3d89ef4f7241040c5338f8af991c332c5e69949",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -172,11 +172,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "05332f081845c0a63be7a7b472290d024bac00c9ec69ca60a72eda4b8d217771",
+      "fingerprint": "0e34c32aefd6f7a59918af983f0ea7e165b4f4253eb838a99f1376476fdff199",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "4e3b6e3b2d796e15e7e7bb0d25b8e32eb4aabbe4155dcdb4beb1af44892a7492"
+        "packages/docs/pages/advanced/api-reference.md": "06c6609c55fe63b335f86f577d2eed5f2db213d663ce4284b7f97a6aebf91392"
       },
-      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -328,11 +328,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/type-script.md": {
-      "fingerprint": "fef838fff320cbc39ce4d2257b8a67fb2d2840222f2040dbe52fd7e1a878e572",
+      "fingerprint": "8a8a423ad38ff40f0f1e0b48cfdfe85b705b2c94d7ffa316277ab505e9409b81",
       "snapshot": {
-        "packages/docs/pages/advanced/type-script.md": "0c223e0a9e4223cb47e08ff1f5001d6f5c7e4678eb2044949f46d4efb4edbc51"
+        "packages/docs/pages/advanced/type-script.md": "da4f5236299f47baf772119a0cb3592f10454707d2cbbf98b6fd0ed4e9d54093"
       },
-      "head": "7441ba80d614af467b190486de40ddf207be5a85",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "Skill now states create() child header precedence, that plugin option defaults are not inherited and are removed on eject, and that params/env merge one level deep",
       "evidence": [
@@ -625,11 +625,11 @@
       ]
     },
     "source:packages/tests/unit/core/define.test.ts": {
-      "fingerprint": "d68720443709cfde94e5cb971154c01141ca2214aef8c415af07e308f8adcf4f",
+      "fingerprint": "08699212df93b68fe3383fb16364718665bdf910e20420c7e8f4fa4c16fc639c",
       "snapshot": {
-        "packages/tests/unit/core/define.test.ts": "6de1ef42f25355a1a8bd3054ec791084d349e1a642bdaa0c90f5df7262056b3e"
+        "packages/tests/unit/core/define.test.ts": "e305e886b83bcc87c65811b8294d73a353831860f4b1584210bdec374d774507"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "no-change",
       "reason": "Since 0d3c4218: lint ordering (vitest imports, `Request | string | URL`) plus main's test that middleware registered after define() runs on the endpoint call. The skill's define()/use() guidance already matches.",
       "evidence": [
@@ -651,11 +651,11 @@
       ]
     },
     "source:packages/lib/tsconfig.json": {
-      "fingerprint": "baf67e5e7c8e4989ea941e655d13049e390ee55e66388c8fbc0a2ea3f6202d35",
+      "fingerprint": "edbb3ab9159b2044ea1cdaaefa3b4c9cafe2447873e842b154991a7f9e3bb323",
       "snapshot": {
-        "packages/lib/tsconfig.json": "f8334aba90c9eecd5c4b4462cae515fc43b86da64800808c6c0953e54d4a8b7d"
+        "packages/lib/tsconfig.json": "8cecf478947a157fcc08773cec6fdfd77d0b04c98eae536a2654f3e22d2a0971"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "out-of-scope",
       "reason": "Single extends of @gingacodemonkey/config/tsc/no-dom/library, declarationMap kept, include/exclude reformatted; composite/emit options from an earlier draft removed. Type-check config, not API.",
       "evidence": [
@@ -2180,11 +2180,11 @@
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
-      "fingerprint": "61598a9b96727cbfab5a778c45838c6f08d6c258ff841a099bd640a2d12bd374",
+      "fingerprint": "68768ed8b5f40bd8dc0a691d2133361d40e94d10ac13867d57301e2de7ee6b0a",
       "snapshot": {
-        "packages/lib/src/lib/adapters/fetch-helpers.ts": "a3eb1c268f4f34f33dba4b5f0515ca14b139b1010dd00d886bc8853d44098183"
+        "packages/lib/src/lib/adapters/fetch-helpers.ts": "c26ce590f1728d3fb03fd3ef089f753fc09b83dc5ca79d78bab31ff65192e785"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
@@ -2204,11 +2204,11 @@
       ]
     },
     "source:packages/lib/src/lib/core/FaxiosHeaders.ts": {
-      "fingerprint": "5c7e95aca5189f5553fa3c8a244093166e5d21a3cb42c72ca4928aba411a38a7",
+      "fingerprint": "e9c41814e70a48f6c007ef1a5ae49113929e0d30ad47ca32babb97e6c3889d70",
       "snapshot": {
-        "packages/lib/src/lib/core/FaxiosHeaders.ts": "c1911f4ccd61ac7d4962ed63ba6bf069a1b91e849ac14f029bf85bd97b3c92d4"
+        "packages/lib/src/lib/core/FaxiosHeaders.ts": "16df601096cb403d1dd46c1f2e1976622acfb9cdde1709c4034497650d8d6726"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
@@ -2216,11 +2216,11 @@
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
-      "fingerprint": "8b2b6afe50c9dbb07fa0dfff2e901e90f5f03cb4b8e7fba77eafed8509f7a320",
+      "fingerprint": "308973055136a846c36626b969b886732b8505965bf31e1e637da482e71cd862",
       "snapshot": {
-        "packages/lib/src/lib/core/prepareRequest.ts": "20807d92db51758da29191e5b4ad3505943a2a222667737ae36cdd335392a0a4"
+        "packages/lib/src/lib/core/prepareRequest.ts": "b14a613ca8168be6134876530be14c589aae31203a970e3c6f128d3503c9ff4f"
       },
-      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -2228,11 +2228,11 @@
       ]
     },
     "source:packages/lib/src/lib/core/transformData.ts": {
-      "fingerprint": "642e3683665904b33abe375e7d4fb2e4f2d9683ba2f23a5af05d424230e54f90",
+      "fingerprint": "5003be454ef365cbb4c3fb569f2d989b90b16c4fc2e3a3344eca6f6fa4d7e67f",
       "snapshot": {
-        "packages/lib/src/lib/core/transformData.ts": "e0390ce91047430f7f8802312fec7b94cfd1a671f7755a3be05a7082343cf252"
+        "packages/lib/src/lib/core/transformData.ts": "cede29b2614d37748d49da19caf44e1211703be2f48ea0cdd5f738a4dd88f6d3"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
@@ -2252,11 +2252,11 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/HttpStatusCode.ts": {
-      "fingerprint": "f876df977b5f74794b9d7ac139c5cda751f42f5ccc17bc6841179255ce034d5a",
+      "fingerprint": "22963c33cf1a9bb6c6a12a5720292b7f4b6a4d0921aa91ea46d9182904768223",
       "snapshot": {
-        "packages/lib/src/lib/helpers/HttpStatusCode.ts": "8ef45554313582b6b3425e3842d0cf08685f88d674f8e254744f356fab29880b"
+        "packages/lib/src/lib/helpers/HttpStatusCode.ts": "adcad38bbaf74befd5a922abe9db0aa032484168b50ad469d4f41f9aa2d28c42"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "no-change",
       "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
       "evidence": [
@@ -2337,11 +2337,11 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/toFormData.ts": {
-      "fingerprint": "c80fcc7b232836169488cec2d19af55e029d8a1fcb4eb6b7cd7bd27f213c8deb",
+      "fingerprint": "336f3a7eeeb0526e4bb1d423961779d757dc3f64d329e5c3925a0e7e22e14a30",
       "snapshot": {
-        "packages/lib/src/lib/helpers/toFormData.ts": "3b932d09f1b2053b7c1df2176f8ba41bd632226e8081a8a5bc4fd39bb41ba4ba"
+        "packages/lib/src/lib/helpers/toFormData.ts": "ea02f70d8c7eb5c587cbfe3d4540bc91c987ad72267bb37aec5c93c5423bc26a"
       },
-      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -2398,11 +2398,11 @@
       ]
     },
     "source:packages/lib/src/lib/utils.ts": {
-      "fingerprint": "196310f52b8a413b69393075e5002acc50d91720365ad27360da8a2d4b6dbf30",
+      "fingerprint": "b03bc1579e13c107887dc37529391114860343064a61f2b39c52e2e1ca955a35",
       "snapshot": {
-        "packages/lib/src/lib/utils.ts": "9dcfbfdd24b7cdc013686618504d1a18c627fce949dc58be463df6c9a4a9a761"
+        "packages/lib/src/lib/utils.ts": "1f4e93b76b11c73b3f3c69006ae251446c018c480a4d091331a5668d3664b491"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
@@ -2511,11 +2511,11 @@
       ]
     },
     "source:packages/tests/eslint.config.ts": {
-      "fingerprint": "4cf5cf5bc39bbb2b52b1848fd2eb26c2020d22c53a135a6b2fd3b4a678c25f15",
+      "fingerprint": "358c6915174d0097d1da012936b23b441f136b0caa7e63198bd499de5a9edea0",
       "snapshot": {
-        "packages/tests/eslint.config.ts": "5136d643e1ba25812b610deec055ab45493e0d4b266998f495cfa8256faa8514"
+        "packages/tests/eslint.config.ts": "167038395b4a156a2d1369c5e860d45a4bc7fafd088dab833d28b969dad78807"
       },
-      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -2561,11 +2561,11 @@
       ]
     },
     "source:packages/tests/module/esm/tests/typings.module.test.ts": {
-      "fingerprint": "8fae986d91134ab6ca9b84404d0272054975c5371463da1f083961db9ea08a43",
+      "fingerprint": "2905dfaaf8eacd53e512b2868f81c77a86857445e7907c0cf9561b7730ce4ef8",
       "snapshot": {
-        "packages/tests/module/esm/tests/typings.module.test.ts": "97debb32edb7fbfcc44f2658f624e4a4d9a77bcef0b22f8ff3ea9cddd3208792"
+        "packages/tests/module/esm/tests/typings.module.test.ts": "0e3b11b699ed2939902b8aee46e8fe6dbc6aeccdbc46deeee968f4db1cd4912f"
       },
-      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -2698,11 +2698,11 @@
       ]
     },
     "source:packages/tests/unit/axiosHeaders.test.ts": {
-      "fingerprint": "b0b6074e8c0f8184aaf1a47a1fa84824050d6caee31ba05701bdc64e03cbc3f5",
+      "fingerprint": "6a2e2c6099a50cde9fdc28d84df4327e20e7de7fed61ec509a6e5cff786c576c",
       "snapshot": {
-        "packages/tests/unit/axiosHeaders.test.ts": "839b7dfeee8328c6d310f974c28c7df74789ca92fedacad150f698de19ffdc6c"
+        "packages/tests/unit/axiosHeaders.test.ts": "e2af73da2939a73b348be2bccaf21f6e7e9b666543d85ef281fbde060c956f64"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "no-change",
       "reason": "Header-name storage fix and bump wording; the skill does not teach header internals",
       "evidence": [
@@ -2773,11 +2773,11 @@
       ]
     },
     "source:packages/tests/unit/core/dispatchRequest.test.ts": {
-      "fingerprint": "3d38445af85d3e7c6105b46d786f3d86efbd24e94d40b3480179256740969f97",
+      "fingerprint": "d9761c735ee89f60314db6f445080337fa6986c23cde37bfd66effa5dbe461a3",
       "snapshot": {
-        "packages/tests/unit/core/dispatchRequest.test.ts": "3b1e89ab8ed9c5ce1e79f2305fb5a5d0b2849d8698b09d20cbfb414635c967fc"
+        "packages/tests/unit/core/dispatchRequest.test.ts": "d78a797b510a07f9fd4dbde4438ccd93aa688ce98f7af1fdae4782995b22676f"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
@@ -2797,11 +2797,11 @@
       ]
     },
     "source:packages/tests/unit/core/mergeConfig.test.ts": {
-      "fingerprint": "2ae832e511d5120c02cfe595a1f23c52f3a5bbb2d51502dc77e2db67d5872240",
+      "fingerprint": "2dbc1bcebd46363191282bdebd1005946681eb62800cb2d01d715d38c25c3e49",
       "snapshot": {
-        "packages/tests/unit/core/mergeConfig.test.ts": "6d1a1b8386c72f67801cf13ec4c4a9a087b54a4b912d2cf8d44ad47e80d7af65"
+        "packages/tests/unit/core/mergeConfig.test.ts": "cb2d9bbb9b8532db7b3f9d423f2bdc28df04eaef5ada0faac4e9660694368f80"
       },
-      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
@@ -2882,11 +2882,11 @@
       ]
     },
     "source:packages/tests/unit/core/route.test.ts": {
-      "fingerprint": "904915fd84e6349b21f954594d32a3292ba8784e33e263851cc4a108d950e99a",
+      "fingerprint": "d18a6c46d6d88fd855327bc50ac50dbae10a545416ab5d3d42ce8b53f7b82d79",
       "snapshot": {
-        "packages/tests/unit/core/route.test.ts": "fb3ecab1913ccbe73ad92487ea9f4c9f81e064ab7e5bdbc445e6b71f8be2b217"
+        "packages/tests/unit/core/route.test.ts": "e66fc71c357bd8321bcf4e1bad44bfae1b174169615fae4cc64ff26bbd5f1c2d"
       },
-      "head": "1dc59b343071b3f6a6ef069fb4aacfc9f603de98",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "Skill now describes route() merging and string headers under group names",
       "evidence": [
@@ -3492,11 +3492,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/fetch-adapter.md": {
-      "fingerprint": "8da281f73942278dc6e61ee7f1539f76d4af3097bebdc23d7f39124d02f56873",
+      "fingerprint": "327d531932ead12293a865a78afb1ecf3f0368ece90a8823ebb19f27d70ed1ea",
       "snapshot": {
-        "packages/docs/pages/advanced/fetch-adapter.md": "d7fb1e83b48e8f684b3a6edfc90c03ff630d5e8c5a9742964bc6b5c021c6a7ba"
+        "packages/docs/pages/advanced/fetch-adapter.md": "66634eab517b3aea06e471622f816f16825869c78698a64b099bd5732b2e813a"
       },
-      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -4656,11 +4656,11 @@
       ]
     },
     "source:packages/lib/src/lib/core/requestDeadline.ts": {
-      "fingerprint": "b936e16449381a590863bf2c188dfbf2284165f3ead051e722e36e19a629548c",
+      "fingerprint": "257fe9fea5abc4f8f1411730344232df6ffacd10235212ec38786a71ef445b1a",
       "snapshot": {
-        "packages/lib/src/lib/core/requestDeadline.ts": "1b49c99f94aa3cfad498cfde8c0a112e2141997a8d9c43811ddf40c9fddacbc4"
+        "packages/lib/src/lib/core/requestDeadline.ts": "cb6803d70ca9b4600a32ce580ecef0e609b02fc59de12a51430394bedf54b16d"
       },
-      "head": "672fec258385a1a6d3b7057272bc30094f072c36",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
       "evidence": [
@@ -4704,11 +4704,11 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/generics-index.ts": {
-      "fingerprint": "02958f873fecd0aff4f49649fbf0377b98c8b6425b773457717cafd4e4af4855",
+      "fingerprint": "5d66192eda36444429e498e493c1b9046ed61c0f7a2b6a4ac63d366bd32aba9a",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/generics-index.ts": "b537e2a685b8937169d3bc5cedf7b31d79deb1b9c251867b4f5ea8782bb691a8"
+        "packages/tests/module/esm/tests/helpers/generics-index.ts": "6b44690faa854cc1b130bbcdd55bc842f51b8c0a39bcc4bcc5a8ed96c3de63ca"
       },
-      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "no-change",
       "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
       "evidence": [
@@ -4776,11 +4776,11 @@
       ]
     },
     "source:packages/tests/unit/core/defineTypes.test.ts": {
-      "fingerprint": "8fa4fcf737421525bbaa0a0572030395bf891dfd55c2fdc77ad562dad5c0cf09",
+      "fingerprint": "783e6eef385edb301218ded74fb8101fbe17672536a9c779fc5e44e7efb6d26e",
       "snapshot": {
-        "packages/tests/unit/core/defineTypes.test.ts": "5f63782638d23a4e08245df0d90bc508aa79a3d2199a21e66dd7e071bf105f91"
+        "packages/tests/unit/core/defineTypes.test.ts": "d05f040b74933afcd4eb372d435757a7893dce9884cecf2d5ace2a89a85391b4"
       },
-      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -6276,11 +6276,11 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/toURLEncodedForm.ts": {
-      "fingerprint": "ca8dc1a94bd60cdf1c497d3a03479d266bb2031a67ff75f7acfaaa3370cf58e6",
+      "fingerprint": "bdbb25144e6f8d763ccb9c30e804ce3325f49a2e7f4c349befe6361225fc6ea2",
       "snapshot": {
-        "packages/lib/src/lib/helpers/toURLEncodedForm.ts": "dba362c33ce3abeac63cd47819bf4ca612f9417d034a5c8383e14d35d778bdda"
+        "packages/lib/src/lib/helpers/toURLEncodedForm.ts": "944c29a62ff01e2fdf5940a48aaaf0c729d50a53c8545963e642e58d06eff7d7"
       },
-      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -6396,11 +6396,11 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/all.ts": {
-      "fingerprint": "28689daec480e3da9ca83f7f70bf3d940251f5c8a6eed6429dedd0600dbcba4b",
+      "fingerprint": "5b06291afd6a4bcd71c207f19d6e7e96fe6f4b090f6b437ee9236f2f8b753cd0",
       "snapshot": {
-        "packages/lib/src/lib/helpers/all.ts": "15f5f1ca30da899230c74c7c03d6d93fb7311305661bacaa0e7a127d6f0edb1d"
+        "packages/lib/src/lib/helpers/all.ts": "148665c5cb55fc1909b6669c6a57b75fcd293cd6a2180ca2d0afca4d4eb781e9"
       },
-      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
       "evidence": [
@@ -6408,11 +6408,11 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/formToJSON.ts": {
-      "fingerprint": "3502f2b0b359e480504036685a427924128286b01b394be821c44d0668061167",
+      "fingerprint": "ad08cc505780e6d4edad9c3f622a2a7b51acf5cb85d88635ab7b5b0df04566c9",
       "snapshot": {
-        "packages/lib/src/lib/helpers/formToJSON.ts": "55a8b060edfed368eea2d17141350e1ef489723bd46c15da86582054aee4bc8e"
+        "packages/lib/src/lib/helpers/formToJSON.ts": "6bfbd3305bb8b411748888197f83de865e7696e96fbb64bd2959af26a62c6eff"
       },
-      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
       "outcome": "updated",
       "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
       "evidence": [
@@ -6525,6 +6525,114 @@
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
         "Changed: packages/tests/module/esm/tests/helpers/export-surface.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
+      ]
+    },
+    "source:.bumpy/295-declarations.md": {
+      "fingerprint": "c88773f386c09758168336cd9c3c74483fb9d70d8e883f11e04ffcf1325dc13f",
+      "snapshot": {
+        ".bumpy/295-declarations.md": "abbc4b14c50ebab78350408b3afa5056f478a13d84685b82e22d7bed88ac3bb1"
+      },
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: .bumpy/295-declarations.md"
+      ]
+    },
+    "source:packages/lib/src/lib/types/web-globals.d.ts": {
+      "fingerprint": "1b6405e4ba5d2c9fe0a4ee8022f27dc8623acede589c160e36996d865262a8d1",
+      "snapshot": {
+        "packages/lib/src/lib/types/web-globals.d.ts": "5be3929574c5a7171a3fbba6d4cb373b0cdbb3962f6708fe5da00d1cc6a7f0b4"
+      },
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/lib/src/lib/types/web-globals.d.ts"
+      ]
+    },
+    "source:packages/lib/src/lib/types/web.ts": {
+      "fingerprint": "cb19ba6df39e7f8df2c0151112374ded1659ebd1c568e67247c0694ecc3950a7",
+      "snapshot": {
+        "packages/lib/src/lib/types/web.ts": "ee7a834c6a4d8c54219623cc0a2bfcd22e955307faa33866532149a826bc45cd"
+      },
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/lib/src/lib/types/web.ts"
+      ]
+    },
+    "source:packages/lib/tsconfig.check.json": {
+      "fingerprint": "ae14959c12ae69d1cbec147bc54023d280d2b1d8547a2bc78974aa3d5e5d9396",
+      "snapshot": {
+        "packages/lib/tsconfig.check.json": "5a1a640178de1cb25ae0dd7faf7c72e4f8c86c9ed77b5ac8a25352faf121cf1e"
+      },
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/lib/tsconfig.check.json"
+      ]
+    },
+    "source:packages/tests/module/esm/tests/helpers/exact-optional/index.ts": {
+      "fingerprint": "13f938448ddcd67897826d953a0126349c658085470ea574ed7a1e3788e5c9fa",
+      "snapshot": {
+        "packages/tests/module/esm/tests/helpers/exact-optional/index.ts": "ee4cc8148d0775378e51ab268584559b4951d40e803c958cd5ef6743331ff913"
+      },
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/module/esm/tests/helpers/exact-optional/index.ts"
+      ]
+    },
+    "source:packages/tests/module/esm/tests/helpers/exact-optional/tsconfig.json": {
+      "fingerprint": "e413f59ad66c7aeb6ba8ff8b6f1ff191b2bfa5cf3a46ac2510587867fcc3ca7e",
+      "snapshot": {
+        "packages/tests/module/esm/tests/helpers/exact-optional/tsconfig.json": "cd069d9db276e99eb0c9fe3eae2275d5a76ea87b6611f80362aff7a83c6b9af7"
+      },
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/module/esm/tests/helpers/exact-optional/tsconfig.json"
+      ]
+    },
+    "source:packages/tests/module/esm/tests/helpers/node-only/index.ts": {
+      "fingerprint": "569505be0421164849a2c5f8185e95e32a690afa9cf1a8ddcdb1472eab9e3114",
+      "snapshot": {
+        "packages/tests/module/esm/tests/helpers/node-only/index.ts": "c8dca45015f8cca90f918020475e71363313200b4acfd0a7b3d07867754956e6"
+      },
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/module/esm/tests/helpers/node-only/index.ts"
+      ]
+    },
+    "source:packages/tests/module/esm/tests/helpers/node-only/tsconfig.json": {
+      "fingerprint": "8ee785f5cfeec32f45828d11f6aef580393be7a9015aeeb5beed835337036c97",
+      "snapshot": {
+        "packages/tests/module/esm/tests/helpers/node-only/tsconfig.json": "2679775deab5ad0633b93ad027ba8511bb067ab8f97255b14a23eaa661a77533"
+      },
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/module/esm/tests/helpers/node-only/tsconfig.json"
+      ]
+    },
+    "source:packages/tests/module/esm/tsconfig.json": {
+      "fingerprint": "479625846381379f89d51d63b504214e5261467ad11ab0d4ca8c17c778b91478",
+      "snapshot": {
+        "packages/tests/module/esm/tsconfig.json": "5bb588d9eaa433d65e2e59cefcc9aea2c3125d4330f4e26e5296930315119b48"
+      },
+      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/module/esm/tsconfig.json"
       ]
     }
   }
