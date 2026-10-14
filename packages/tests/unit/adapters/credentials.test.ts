@@ -8,8 +8,8 @@ const sentCredentials = async (withCredentials?: boolean | string): Promise<unkn
   await faxios.get("http://localhost/", {
     ...(withCredentials === undefined ? {} : { withCredentials: withCredentials as boolean }),
     env: {
-      fetch: async (_input: unknown, init: RequestInit) => {
-        credentials = init.credentials;
+      fetch: async (_input: unknown, init?: RequestInit) => {
+        credentials = init?.credentials;
         return new Response("ok");
       },
     },
