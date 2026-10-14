@@ -251,6 +251,26 @@ function deleteHeader(layer: Record<string, unknown> | undefined, header: string
   }
 }
 
+// A child method group beats the parent for that method only. A parent top-level value beat the
+// parent's groups, so it moves to `common`, where the child group beats it. A plain header
+// literally named `common` leaves no room for the group, so the parent's then stays.
+function yieldToChildGroup(
+  top: Record<string, unknown>,
+  groups: Partial<Record<keyof HeadersDefaults, Record<string, unknown>>>,
+  method: keyof HeadersDefaults,
+  header: string,
+  deleteEverywhere: (header: string) => void
+): void {
+  const topKey = Object.keys(top).findLast(key => key.toLowerCase() === header);
+  if (topKey !== undefined && !utils.hasOwnProp(top, "common")) {
+    const value = top[topKey];
+    deleteEverywhere(header);
+    groups.common ??= Object.create(null) as Record<string, unknown>;
+    groups.common[topKey] = value;
+  }
+  deleteHeader(groups[method], header);
+}
+
 /**
  * The parent's headers for a create() child, with every header the child sets removed from the
  * parent layers it must beat. Deep-merging the result with the child's headers then gives each
@@ -273,27 +293,13 @@ function inheritHeaders(parentHeaders: unknown, childHeaders: unknown): unknown 
     deleteHeader(top, header);
     for (const group of Object.values(groups)) deleteHeader(group, header);
   };
+  const everyMethod = [ ...Object.keys(c).filter(name => !isHeaderGroup(c, name)), ...isHeaderGroup(c, "common") ? Object.keys(c["common"] as object) : [] ];
   // Child top-level and `common` headers apply to every method, so they replace every parent layer.
-  for (const name of Object.keys(c)) {
-    if (!isHeaderGroup(c, name)) deleteEverywhere(name.toLowerCase());
-  }
-  if (isHeaderGroup(c, "common")) {
-    for (const name of Object.keys(c["common"] as object)) deleteEverywhere(name.toLowerCase());
-  }
-  // A child method group beats the parent for that method only. A parent top-level value beat
-  // the parent's groups, so it moves to `common`, where the child group beats it.
+  for (const name of everyMethod) deleteEverywhere(name.toLowerCase());
   for (const method of METHOD_HEADER_GROUPS) {
     if (method === "common" || !isHeaderGroup(c, method)) continue;
     for (const name of Object.keys(c[method] as object)) {
-      const header = name.toLowerCase();
-      const topKey = Object.keys(top).findLast(key => key.toLowerCase() === header);
-      // A plain header literally named `common` leaves no room for the group; keep the parent's.
-      if (topKey !== undefined && !utils.hasOwnProp(top, "common")) {
-        const value = top[topKey];
-        deleteEverywhere(header);
-        (groups.common ??= Object.create(null) as Record<string, unknown>)[topKey] = value;
-      }
-      deleteHeader(groups[method], header);
+      yieldToChildGroup(top, groups, method, name.toLowerCase(), deleteEverywhere);
     }
   }
   return Object.assign(Object.create(null) as Record<string, unknown>, top, groups);

@@ -7,6 +7,8 @@ import FaxiosHeaders from "./FaxiosHeaders.js";
 
 const headersToObject = (thing: unknown) => (thing instanceof FaxiosHeaders ? { ...thing } : thing);
 
+type MergeInput = FaxiosDefaults | FaxiosRequestConfig | Record<string, unknown>;
+
 /**
  * Config-specific merge-function which creates a new config-object
  * by merging two configuration objects together.
@@ -16,7 +18,7 @@ const headersToObject = (thing: unknown) => (thing instanceof FaxiosHeaders ? { 
  *
  * @returns {Object} New object resulting from merging config2 to config1
  */
-export default function mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfig | Record<string, unknown>, config2?: FaxiosDefaults | FaxiosRequestConfig | Record<string, unknown>): FaxiosRequestConfig & Record<string, unknown> {
+export default function mergeConfig(config1: MergeInput, config2?: MergeInput): FaxiosRequestConfig & Record<string, unknown> {
   return merge(config1, config2 || {}, false);
 }
 
@@ -28,7 +30,7 @@ export function mergeConfigExceptHeaders(config1: FaxiosDefaults | FaxiosRequest
   return merge(config1, config2 || {}, true);
 }
 
-function merge(config1: FaxiosDefaults | FaxiosRequestConfig | Record<string, unknown>, config2: FaxiosDefaults | FaxiosRequestConfig | Record<string, unknown>, skipHeaders: boolean): FaxiosRequestConfig & Record<string, unknown> {
+function merge(config1: MergeInput, config2: MergeInput, skipHeaders: boolean): FaxiosRequestConfig & Record<string, unknown> {
 
   // Use a null-prototype object so that downstream reads such as `config.auth`
   // or `config.baseURL` cannot inherit polluted values from Object.prototype.
