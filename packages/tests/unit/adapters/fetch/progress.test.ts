@@ -45,14 +45,50 @@ const feed = async ({ controller }: ReturnType<typeof createSource>) => {
   controller.close();
 };
 
+// Every chunk after the first arrives CHUNK_INTERVAL ms after the one before it, so the measured
+// rate is CHUNK_LENGTH bytes per CHUNK_INTERVAL ms. The first chunk falls in the speedometer's
+// 250 ms warm-up, so it has no rate and no estimate.
+const STEADY_RATE = (CHUNK_LENGTH * 1000) / CHUNK_INTERVAL;
+
 const expectedSamples = (direction: { download: true; } | { upload: true; }) =>
-  Array.from({ length: COUNT }, (_, i) => ({
-    loaded: CHUNK_LENGTH * (i + 1),
-    total: CONTENT_LENGTH,
-    progress: (CHUNK_LENGTH * (i + 1)) / CONTENT_LENGTH,
-    bytes: CHUNK_LENGTH,
-    ...direction,
-  }));
+  Array.from({ length: COUNT }, (_, i) => {
+    const loaded = CHUNK_LENGTH * (i + 1);
+    return {
+      loaded,
+      total: CONTENT_LENGTH,
+      progress: loaded / CONTENT_LENGTH,
+      bytes: CHUNK_LENGTH,
+      rate: i === 0 ? undefined : STEADY_RATE,
+      estimated: i === 0 ? undefined : (CONTENT_LENGTH - loaded) / STEADY_RATE,
+      ...direction,
+    };
+  });
+
+const pick = ({ loaded, total, progress, bytes, rate, estimated, upload, download }: FaxiosProgressEvent) =>
+  ({ loaded, total, progress, bytes, rate, estimated, ...(upload ? { upload } : {}), ...(download ? { download } : {}) });
+
+// Runs a GET whose response body is fed chunk by chunk, and returns the download progress samples.
+const captureDownload = async (headers: Record<string, string>) => {
+  vi.useFakeTimers({ toFake: FAKED_TIMERS });
+  const source = createSource();
+  const samples: Array<Partial<FaxiosProgressEvent>> = [];
+
+  const request = fetchFaxios.get("/", {
+    env: {
+      fetch: async () => new Response(source.body, { headers }),
+    },
+    onDownloadProgress: event => {
+      samples.push(pick(event));
+    },
+    responseType: "text",
+  });
+
+  await feed(source);
+  const { data } = await request;
+  await drainMacrotasks();
+  assert.strictEqual(data, CHUNK.repeat(COUNT));
+  return samples;
+};
 
 describe.runIf(typeof fetch === "function")(
   "supports fetch with nodejs",
@@ -75,8 +111,8 @@ describe.runIf(typeof fetch === "function")(
                 return new Response(await new Response(body).text());
               },
             },
-            onUploadProgress: ({ loaded, total, progress, bytes, upload }) => {
-              samples.push({ loaded, total, progress, bytes, upload });
+            onUploadProgress: event => {
+              samples.push(pick(event));
             },
             headers: {
               "Content-Length": CONTENT_LENGTH,
@@ -151,29 +187,45 @@ describe.runIf(typeof fetch === "function")(
 
       describe("download", () => {
         it("should support download progress capturing", async () => {
-          vi.useFakeTimers({ toFake: FAKED_TIMERS });
-          const source = createSource();
-          const samples: Array<Partial<FaxiosProgressEvent>> = [];
+          const samples = await captureDownload({ "Content-Length": String(CONTENT_LENGTH) });
 
-          const request = fetchFaxios.get("/", {
-            env: {
-              fetch: async () =>
-                new Response(source.body, {
-                  headers: { "Content-Length": String(CONTENT_LENGTH) },
-                }),
-            },
-            onDownloadProgress: ({ loaded, total, progress, bytes, download }) => {
-              samples.push({ loaded, total, progress, bytes, download });
-            },
-            responseType: "text",
-          });
-
-          await feed(source);
-          const { data } = await request;
-          await drainMacrotasks();
-
-          assert.strictEqual(data, CHUNK.repeat(COUNT));
           assert.deepStrictEqual(samples, expectedSamples({ download: true }));
+        });
+
+        it("reports no progress, rate or estimate for a declared total of 0", async () => {
+          // A server that sends more than its Content-Length of 0: loaded is clamped to the total,
+          // so no ratio is divided by zero and every event reads as no progress.
+          const samples = await captureDownload({ "Content-Length": "0" });
+
+          assert.deepStrictEqual(
+            samples,
+            Array.from({ length: COUNT }, () => ({
+              loaded: 0,
+              total: 0,
+              progress: undefined,
+              bytes: 0,
+              rate: undefined,
+              estimated: undefined,
+              download: true,
+            }))
+          );
+        });
+
+        it("reports a rate but no estimate when the Content-Length is unknown", async () => {
+          const samples = await captureDownload({});
+
+          assert.deepStrictEqual(
+            samples,
+            Array.from({ length: COUNT }, (_, i) => ({
+              loaded: CHUNK_LENGTH * (i + 1),
+              total: undefined,
+              progress: undefined,
+              bytes: CHUNK_LENGTH,
+              rate: i === 0 ? undefined : STEADY_RATE,
+              estimated: undefined,
+              download: true,
+            }))
+          );
         });
       });
     });

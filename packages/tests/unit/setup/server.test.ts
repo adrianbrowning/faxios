@@ -41,7 +41,7 @@ describe("setup/server", () => {
 
   it("stopHTTPServer rejects when the server does not close before the timeout", async () => {
     vi.useFakeTimers();
-    const unclosable = { close() {} } as unknown as ExtendedServer;
+    const unclosable = { close() {}, closeAllConnections() {} } as unknown as ExtendedServer;
 
     const stopped = stopHTTPServer(unclosable, 100);
     const assertion = assert.rejects(stopped, /did not close within 100ms/);

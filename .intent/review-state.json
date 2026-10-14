@@ -448,15 +448,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch.test.ts": {
-      "fingerprint": "deed859acda88037bb1d05ada376c734d55ad56dffef8c1d0318f2c255edf453",
+      "fingerprint": "ed43faf3d2dfaaaa98a8e703e8aada08220e1138c2f81f332022c18ffd3277a6",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch.test.ts": "1d8d78e3220bff747634209a4f9ca9dfad7b0d86751e9869c19727907abab470"
+        "packages/tests/unit/adapters/fetch.test.ts": "a8cc9fad39d14965e1d7997a697d23fb7aea7104e40d6a7f28e6f6100b7cf164"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "head": "7285e2c90783d42ede4ddd0d275de3714895f10a",
       "outcome": "no-change",
-      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "reason": "test-only changes to the unit suite and its server helper; the skill teaches nothing about them",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+        "Changed: packages/tests/unit/adapters/fetch.test.ts at 6b03ffb1d4b599bad6db4a72dd32418fa89afc69"
       ]
     },
     "source:CHANGELOG.md": {
@@ -2604,27 +2604,27 @@
       ]
     },
     "source:packages/tests/setup/server.ts": {
-      "fingerprint": "cc97caccaf3379ab7041d08040107e2b879d91c43024c28c6cf6b18ddfc8ba3a",
+      "fingerprint": "999fb5d5bf04fc501be739f76b724ebaf57091676632c9637dce8cccb7d8a067",
       "snapshot": {
-        "packages/tests/setup/server.ts": "cbbfc0c44695daba16c17c5f91fe0cd2e0a6376c6cce1503838c79b079e7a760"
+        "packages/tests/setup/server.ts": "320c77d4cc5d4006c47a58ff6484d79695b7414261e8337a9921e0bb39f3d347"
       },
-      "head": "1dbb3b488c94cd4699e4e769110c060f8a927756",
-      "outcome": "no-change",
-      "reason": "test-only changes; skill guidance unaffected",
-      "evidence": [
-        "Changed: packages/tests/setup/server.ts at 1dbb3b488c94cd4699e4e769110c060f8a927756"
-      ]
-    },
-    "source:packages/tests/setup/vendor.d.ts": {
-      "fingerprint": "789c82641c71dc0aff64131e12358d8164f12b156494cacca909d240aee7a3bf",
-      "snapshot": {
-        "packages/tests/setup/vendor.d.ts": "bb2234b7b9f08c63b876a43e73d30f49d832f1298b1838aab405b4bada581db8"
-      },
-      "head": "bf30cfa0a3908a8b5859f98b24a367aeb0170f03",
+      "head": "7285e2c90783d42ede4ddd0d275de3714895f10a",
       "outcome": "no-change",
       "reason": "test-only changes to the unit suite, its server helper and test deps; the skill teaches nothing about them",
       "evidence": [
-        "Changed: packages/tests/setup/vendor.d.ts at bf30cfa0a3908a8b5859f98b24a367aeb0170f03"
+        "Changed: packages/tests/setup/server.ts at f0549dea7befb84a26c93609fdff0d445fac2358"
+      ]
+    },
+    "source:packages/tests/setup/vendor.d.ts": {
+      "fingerprint": "b7be7c2291be5c5ef5ddf35efd85e7cd6f8ebdb38726e234929835f7821a2494",
+      "snapshot": {
+        "packages/tests/setup/vendor.d.ts": "78645103f3406ae3c37b0d9170948419f50f66500406df656300402e778016c4"
+      },
+      "head": "7285e2c90783d42ede4ddd0d275de3714895f10a",
+      "outcome": "no-change",
+      "reason": "test-only changes to the unit suite, its server helper and test deps; the skill teaches nothing about them",
+      "evidence": [
+        "Changed: packages/tests/setup/vendor.d.ts at f0549dea7befb84a26c93609fdff0d445fac2358"
       ]
     },
     "source:packages/tests/smoke/bun/tests/fetch.smoke.test.ts": {
@@ -3015,15 +3015,15 @@
       ]
     },
     "source:packages/tests/unit/prototypePollution.test.ts": {
-      "fingerprint": "12d88d4cd24dfb27502404f177127b83fcc5f06136269ef62da3b99e5da5f403",
+      "fingerprint": "5480a9610b7c2ce70e7b932c087389ad48fb2679f53b11c5ec222ac46ca0009b",
       "snapshot": {
-        "packages/tests/unit/prototypePollution.test.ts": "516a20936fc6124b86ca57ff0552f8480133292a84f6fc1c6a5f843831424c9d"
+        "packages/tests/unit/prototypePollution.test.ts": "8cb56ddcbe58ce99b93b68eadfd49de92643691430aaefd4183ac4dd619e08a1"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "head": "7285e2c90783d42ede4ddd0d275de3714895f10a",
       "outcome": "no-change",
-      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "reason": "test-only changes to the unit suite and its server helper; the skill teaches nothing about them",
       "evidence": [
-        "Changed: packages/tests/unit/prototypePollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+        "Changed: packages/tests/unit/prototypePollution.test.ts at 6b03ffb1d4b599bad6db4a72dd32418fa89afc69"
       ]
     },
     "source:packages/tests/unit/query.test.ts": {
@@ -3040,15 +3040,15 @@
       ]
     },
     "source:packages/tests/unit/regression.test.ts": {
-      "fingerprint": "bee5df29c3205cea66f2411cfecf2cd41127445b381598410df83e387983f693",
+      "fingerprint": "7edab4880bbda4b906d00195503a9743d52efb74b981b6f345031c956dc92a0f",
       "snapshot": {
-        "packages/tests/unit/regression.test.ts": "257178bca249674f2634906e74399773c996b912ecdea090328b75f32f28c775"
+        "packages/tests/unit/regression.test.ts": "99b51fdf529603382dfb79125bc327393b63faaaadd18a5d75f40b8c6f3cbe1e"
       },
-      "head": "1dbb3b488c94cd4699e4e769110c060f8a927756",
+      "head": "7285e2c90783d42ede4ddd0d275de3714895f10a",
       "outcome": "no-change",
-      "reason": "test-only changes; skill guidance unaffected",
+      "reason": "test-only changes to the unit suite and its server helper; the skill teaches nothing about them",
       "evidence": [
-        "Changed: packages/tests/unit/regression.test.ts at 1dbb3b488c94cd4699e4e769110c060f8a927756"
+        "Changed: packages/tests/unit/regression.test.ts at 6b03ffb1d4b599bad6db4a72dd32418fa89afc69"
       ]
     },
     "source:packages/tests/unit/utils/endsWith.test.ts": {
@@ -3646,15 +3646,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch-progress.test.ts": {
-      "fingerprint": "a5819e70ebd4d81dfe09d286aefcc0e64c772d3b5c1f3af03293d878cd85d01c",
+      "fingerprint": "4005005551ab4c8006ae6ba55915b98b71b9ca080fb174a4a56a51a3071d4724",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch-progress.test.ts": "b997b27d53a38d5ea868adb8d9c4039929aeefe7cfa4e027f8ecc4033d42eccb"
+        "packages/tests/unit/adapters/fetch-progress.test.ts": "2d288d7c199cfc983e5d26f78945f8393bebd5f05f8444feec1e8459c7fac3fd"
       },
-      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
+      "head": "7285e2c90783d42ede4ddd0d275de3714895f10a",
       "outcome": "no-change",
-      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
+      "reason": "test-only changes to the unit suite and its server helper; the skill teaches nothing about them",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch-progress.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/tests/unit/adapters/fetch-progress.test.ts at 6b03ffb1d4b599bad6db4a72dd32418fa89afc69"
       ]
     },
     "source:.bumpy/stream-chunks-and-headers.md": {
@@ -5506,15 +5506,15 @@
       ]
     },
     "source:packages/tests/README.md": {
-      "fingerprint": "7bede69a570c40b4b0f497aeea049fd8121bcba1d3aed49a003f45a554803b27",
+      "fingerprint": "5ea130f9d82ce9389194cec562bb1cb5d3235e7bd22324277641c6ad3b6cce91",
       "snapshot": {
-        "packages/tests/README.md": "5add6a5b154d5c1c61dc9ce916cbe0bd36da8438c193adb0a4b91aa384555216"
+        "packages/tests/README.md": "7e9cc8eacf4b3a3b7491137c2ba616bfbaaa8a972f177e46b947bf705c99a8e1"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "head": "7285e2c90783d42ede4ddd0d275de3714895f10a",
       "outcome": "no-change",
-      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "reason": "test-only changes to the unit suite, its server helper and test deps; the skill teaches nothing about them",
       "evidence": [
-        "Changed: packages/tests/README.md at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+        "Changed: packages/tests/README.md at f0549dea7befb84a26c93609fdff0d445fac2358"
       ]
     },
     "source:packages/tests/smoke/esm/tests/headers.smoke.test.ts": {
@@ -5674,15 +5674,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch/cancellation.test.ts": {
-      "fingerprint": "611f0ddb4bc42ab8171b4c2a81aaab8b929fe0a7cf9752148c56b5d3f5be296e",
+      "fingerprint": "404748697c867fc4f6ce5450cdcb4061bf60d4b8168141973dab695bbd3d1d3d",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch/cancellation.test.ts": "98fc007aa6eb390955c37ba94e0327329315e823579f2173c5fd9660f275b67e"
+        "packages/tests/unit/adapters/fetch/cancellation.test.ts": "2cac0be218ce497370cd25d292af3529180e381b9ed01c4a2695417a4717b12d"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "head": "7285e2c90783d42ede4ddd0d275de3714895f10a",
       "outcome": "no-change",
-      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "reason": "test-only changes to the unit suite, its server helper and test deps; the skill teaches nothing about them",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch/cancellation.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+        "Changed: packages/tests/unit/adapters/fetch/cancellation.test.ts at f0549dea7befb84a26c93609fdff0d445fac2358"
       ]
     },
     "source:packages/tests/unit/adapters/fetch/content-type.test.ts": {
@@ -5734,15 +5734,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch/progress.test.ts": {
-      "fingerprint": "d4530a1e4f32951f74568ba2ba0b03d599c3c1bf348e76d82fb2ede615e332fc",
+      "fingerprint": "eac221e76c4d53f053629c9ea916ca8c423e76d63794c1f2dd03990b2bf6f006",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch/progress.test.ts": "7f7028d4f3c67086066f46a389269ba4f44b7119cecafbe6425b8dd6d2dc4086"
+        "packages/tests/unit/adapters/fetch/progress.test.ts": "fa97ebcc2be5105f6762fc74e90726b4c74175a2b7d459baeb07fd05e39d77f9"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "head": "7285e2c90783d42ede4ddd0d275de3714895f10a",
       "outcome": "no-change",
-      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "reason": "test-only changes to the unit suite, its server helper and test deps; the skill teaches nothing about them",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch/progress.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+        "Changed: packages/tests/unit/adapters/fetch/progress.test.ts at f0549dea7befb84a26c93609fdff0d445fac2358"
       ]
     },
     "source:packages/tests/unit/adapters/fetch/request-body.test.ts": {
@@ -5782,15 +5782,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch/timeout.test.ts": {
-      "fingerprint": "d1bef03892047d25726bebda8788044639180e4239b8177d9acbab05a4847f61",
+      "fingerprint": "63f9c2217405035df4c04a05427bbcaedb2292aaaa8ee1380a470486d152d309",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch/timeout.test.ts": "dbeed5e8efd2b0a138d3601da9bbccf4a8a9dafd2332ca1aa75837962d5c4197"
+        "packages/tests/unit/adapters/fetch/timeout.test.ts": "4554dfc60065c640fb45fe7d0d02f34cc43b2a59063ff4584ce7b6522b10364b"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "head": "7285e2c90783d42ede4ddd0d275de3714895f10a",
       "outcome": "no-change",
-      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "reason": "test-only changes to the unit suite, its server helper and test deps; the skill teaches nothing about them",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch/timeout.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+        "Changed: packages/tests/unit/adapters/fetch/timeout.test.ts at f0549dea7befb84a26c93609fdff0d445fac2358"
       ]
     },
     "source:packages/tests/unit/adapters/fetch/user-agent.test.ts": {
@@ -5899,6 +5899,18 @@
       "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
       "evidence": [
         "Changed: packages/tests/unit/utils/merge.pollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/setup/server.test.ts": {
+      "fingerprint": "cb222ec978d4f067313d7caaa07744764cc8b26749590b16b7b2b5b763b0c36f",
+      "snapshot": {
+        "packages/tests/unit/setup/server.test.ts": "c7e889f2677322af434c8c5441ac6532208bf23a5347832b9d132f47a829d2d9"
+      },
+      "head": "7285e2c90783d42ede4ddd0d275de3714895f10a",
+      "outcome": "no-change",
+      "reason": "test-only changes to the unit suite, its server helper and test deps; the skill teaches nothing about them",
+      "evidence": [
+        "Changed: packages/tests/unit/setup/server.test.ts at f0549dea7befb84a26c93609fdff0d445fac2358"
       ]
     }
   }
