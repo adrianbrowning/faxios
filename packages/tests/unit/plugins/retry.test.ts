@@ -334,6 +334,24 @@ describe("plugins::retry", () => {
     assert.strictEqual(calls.length, 1);
   });
 
+  it("sends and replays a plain object body as JSON when Object.prototype.pipe is polluted", async () => {
+    const { fetch, calls } = scriptedFetch([ 503, 200 ]);
+    const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }));
+    const proto = Object.prototype as Record<string, unknown>;
+    proto["pipe"] = () => {};
+    try {
+      // Settled to a value, so a pre-fix 503 rejection isn't unhandled while the timers run.
+      const outcome = api.put(URL, { order: 1 }).catch((err: unknown) => err);
+      await vi.runAllTimersAsync();
+      await outcome;
+    }
+    finally {
+      delete proto["pipe"];
+    }
+
+    assert.deepStrictEqual(calls.map(init => init?.body), [ "{\"order\":1}", "{\"order\":1}" ]);
+  });
+
   it("does not retry a POST or PATCH by default", async () => {
     const post = scriptedFetch([ 503, 200 ]);
     const patch = scriptedFetch([ "network", 200 ]);

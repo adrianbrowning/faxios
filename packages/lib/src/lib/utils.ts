@@ -286,13 +286,14 @@ const isBlob = kindOfTest("Blob");
 const isFileList = kindOfTest("FileList");
 
 /**
- * Determine if a value is a Stream
+ * Determine if a value is a Node-style stream: it or its class defines `pipe`. A `pipe` only a
+ * polluted Object.prototype supplies doesn't count, so a plain object body stays a plain object.
  *
  * @param {*} val The value to test
  *
  * @returns {boolean} True if value is a Stream, otherwise false
  */
-const isStream = (val: unknown) => isObject(val) && isFunction((val as Record<string, unknown>).pipe);
+const isStream = (val: unknown) => isObject(val) && isFunction(getSafeProp(val, "pipe"));
 
 /**
  * Determine if a value is a FormData
