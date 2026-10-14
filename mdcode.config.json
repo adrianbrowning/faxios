@@ -1,0 +1,15 @@
+{
+  "documents": [
+    "*.md",
+    ".github/**/*.md",
+    "docs/**/*.md",
+    "packages/docs/index.md",
+    "packages/docs/pages/**/*.md",
+    "packages/lib/README.md",
+    "packages/lib/skills/**/*.md",
+    "packages/lib/src/**/*.md",
+    "packages/tests/README.md",
+    "packages/tests/docs-examples/fixtures/**/*.md"
+  ],
+  "sourceRoot": "."
+}

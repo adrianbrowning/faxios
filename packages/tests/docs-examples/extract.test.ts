@@ -2,11 +2,12 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, relative } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { docsSources, extractBlocks, parseMarkers } from "./extract.ts";
+import { checkScope, docsSources, extractBlocks, parseMarkers, trackedMarkdown } from "./extract.ts";
+
+const repoRoot = join(import.meta.dirname, "../../..");
 
 describe("docsSources", () => {
-  it("includes the READMEs, the migration guide and the package's agent skills", () => {
-    const repoRoot = join(import.meta.dirname, "../../..");
+  it("scans every document in mdcode.config.json", () => {
     const sources = docsSources().map(path => relative(repoRoot, path));
 
     expect(sources).toContain("README.md");
@@ -14,6 +15,25 @@ describe("docsSources", () => {
     expect(sources).toContain("packages/lib/README.md");
     expect(sources).toContain("packages/lib/skills/configure-requests/SKILL.md");
     expect(sources).toContain("packages/docs/pages/advanced/cancellation.md");
+  });
+
+  it("covers every tracked first-party Markdown file", () => {
+    const sources = docsSources().map(path => relative(repoRoot, path));
+
+    expect(() => checkScope(trackedMarkdown(), sources)).not.toThrow();
+  });
+});
+
+describe("checkScope", () => {
+  it("fails on a Markdown file that is neither scanned nor excluded", () => {
+    expect(() => checkScope([ "README.md", "guides/new-page.md" ], [ "README.md" ])).toThrow(/guides\/new-page\.md/);
+  });
+
+  it("lets the documented exclusions through, and nothing else under their names", () => {
+    const excluded = [ "packages/lib/CHANGELOG.md", ".agents/skills/x/SKILL.md", ".claude/skills/x/SKILL.md", "_artifacts/skill_spec.md", ".intent/notes.md" ];
+
+    expect(() => checkScope(excluded, [])).not.toThrow();
+    expect(() => checkScope([ "docs/CHANGELOG.md" ], [])).toThrow(/docs\/CHANGELOG\.md/);
   });
 });
 
@@ -58,8 +78,9 @@ describe("parseMarkers", () => {
     expect(() => parseMarkers("page.md:1", { reason: "fragment" })).toThrow("page.md:1: reason=fragment only goes with check=skip");
   });
 
-  it("rejects an unknown marker key", () => {
-    expect(() => parseMarkers("page.md:1", { expects: "log:x" })).toThrow("page.md:1: unknown marker expects (expected check, contract, expect, placeholders, reason, status)");
+  it("rejects an unknown marker key, and lets mdcode's file= and region= through", () => {
+    expect(() => parseMarkers("page.md:1", { expects: "log:x" })).toThrow("page.md:1: unknown marker expects (expected check, contract, expect, file, placeholders, reason, region, status)");
+    expect(parseMarkers("page.md:1", { file: "src/example.ts", region: "main" })).toMatchObject({ run: true, skip: false });
   });
 });
 
@@ -142,6 +163,23 @@ describe("extractBlocks", () => {
 
   it("checks the markers of a check=skip block too, naming its fence line", () => {
     expect(() => extract("# Page\n\n```ts check=skip\n{ url: ... }\n```\n")).toThrow(/page\.md:3: check=skip needs reason=/);
+    expect(() => extract("```ts check=skip reason=fragment status=abc\n{ url: ... }\n```\n")).toThrow(/not an HTTP status code/);
+  });
+
+  it("names the page and fence line when a block's metadata is malformed", () => {
+    expect(() => extract("# Page\n\n```ts check=\"types\nconst a = 1;\n```\n")).toThrow(/page\.md: .*line 3: unterminated quoted value/s);
+  });
+
+  it("rejects a fence whose language is neither an example nor a listed non-example", () => {
+    expect(() => extract("```bash\nnpm test\n```\n\n```diff\n-a\n+b\n```\n\n```\nplain\n```\n")).not.toThrow();
+    expect(() => extract("```yaml\nkey: 1\n```\n")).toThrow(/page\.md:1: unclassified yaml block/);
+    expect(() => extract("```tsx\nconst a = <div />;\n```\n")).toThrow(/page\.md:1: unclassified tsx block/);
+  });
+
+  it("treats a block copied from a source file like any other block", () => {
+    const blocks = extract("```yaml file=config.yaml\nkey: 1\n```\n\n```ts file=src/example.ts region=main\nconst a = 1;\n```\n");
+
+    expect(blocks.map(({ source, run }) => ({ line: source.split(":").at(-1), run }))).toEqual([{ line: "5", run: true }]);
   });
 
   it("writes a contract block as declaration checks that never run", () => {
