@@ -4854,15 +4854,15 @@
       ]
     },
     "source:packages/tests/smoke/esm/tests/plugins.smoke.test.ts": {
-      "fingerprint": "f12012103d9cea84722ad46f8e7d40be6f3bf8dbeff2a98963eb1fc2977bf35d",
+      "fingerprint": "b796c23c12c18efb55980372f0905b9379423198ca819b997642329aaf8d2ea5",
       "snapshot": {
-        "packages/tests/smoke/esm/tests/plugins.smoke.test.ts": "c6cbf40cef3207d939781528ffbc9b9a64abaaf1355287ba945f9aba82cdd051"
+        "packages/tests/smoke/esm/tests/plugins.smoke.test.ts": "ae78a98f00dc2af46ebd48ffa599b7d75b86cf5df79221e3862ebf0bf8b575b0"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
-      "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "head": "bfc99c19c8fb2a2f8c2d976b3b576797c5980394",
+      "outcome": "no-change",
+      "reason": "Smoke test moves baseURL to the instance to match the authBearer rule the skill already teaches",
       "evidence": [
-        "Changed: packages/tests/smoke/esm/tests/plugins.smoke.test.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/tests/smoke/esm/tests/plugins.smoke.test.ts at bfc99c19c8fb2a2f8c2d976b3b576797c5980394"
       ]
     },
     "source:.bumpy/stream-cancel-hang.md": {
