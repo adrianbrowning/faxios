@@ -33,7 +33,6 @@
     "abortcontroller-polyfill": "^1.7.8",
     "eslint": "^9.39.5",
     "form-data": "^4.0.5",
-    "formidable": "^3.5.4",
     "get-stream": "^9.0.1",
     "mdcode-ts": "0.0.4",
     "playwright": "^1.63.0",

@@ -3,17 +3,6 @@ declare module "abortcontroller-polyfill/dist/cjs-ponyfill.js" {
   export const AbortSignal: typeof globalThis.AbortSignal;
 }
 
-declare module "formidable" {
-  import type { IncomingMessage } from "node:http";
-  type Fields = Record<string, Array<string> | string>;
-  type Files = Record<string, unknown>;
-  class IncomingForm {
-    parse(req: IncomingMessage, callback: (err: Error | null, fields: Fields, files: Files) => void): void;
-  }
-  export { IncomingForm };
-  export type { Fields, Files };
-}
-
 declare module "stream-throttle" {
   import { Transform } from "node:stream";
   class Throttle extends Transform {
