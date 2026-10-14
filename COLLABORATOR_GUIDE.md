@@ -24,7 +24,8 @@ When reviewing a PR, make sure:
 - The change fits within faxios. Decline features early and kindly when they belong in user code or a plugin.
 - It follows [AGENTS.md](./AGENTS.md) and [CODING_STANDARDS.md](./CODING_STANDARDS.md), and `pnpm check` passes in CI. Do not merge red PRs.
 - Security-sensitive changes get extra scrutiny and focused regression tests. Consult [THREATMODEL.md](./THREATMODEL.md).
-- Removed functionality and breaking changes are called out in the PR description.
+- Removed functionality and breaking changes are called out in the PR description. While faxios is `0.x`, a breaking change ships as a `minor` bump whose text starts with "Breaking:", never a `major`; the docs [SemVer page](./packages/docs/pages/misc/semver.md) promises users the same.
+- A change to a public signature, root export or request option updates the API reference, Request config or other contract page in the same PR. CI's docs build and contract checks fail otherwise; don't merge around them.
 - PR titles use [Conventional Commits](https://www.conventionalcommits.org/) (`fix:`, `feat:`, `chore:`, `docs:`, etc.).
 - Package, lockfile, and GitHub Actions update PRs come from maintainers or approved bots. Close PRs from outside collaborators that only update npm packages, lockfiles, or GitHub Actions versions.
 
