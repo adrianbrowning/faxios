@@ -3,13 +3,13 @@ import transformData from "#src/lib/core/transformData.js";
 
 describe("core::transformData", () => {
   it("supports a single transformer", () => {
-    const data = transformData.call({}, (_value: unknown) => "foo");
+    const data = transformData({}, (_value: unknown) => "foo");
 
     expect(data).toBe("foo");
   });
 
   it("supports an array of transformers", () => {
-    const data = transformData.call({ data: "" }, [
+    const data = transformData({ data: "" }, [
       (value: unknown) => (value as string) + "f",
       (value: unknown) => (value as string) + "o",
       (value: unknown) => (value as string) + "o",
@@ -23,7 +23,7 @@ describe("core::transformData", () => {
       "content-type": "foo/bar",
     };
 
-    const data = transformData.call(
+    const data = transformData(
       {
         data: "",
         headers,
@@ -38,7 +38,7 @@ describe("core::transformData", () => {
   });
 
   it("passes status code through to transformers", () => {
-    const data = transformData.call(
+    const data = transformData(
       {},
       [
         (value: unknown, _headers: unknown, status: number | undefined) =>

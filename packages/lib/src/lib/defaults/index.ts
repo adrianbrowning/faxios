@@ -1,6 +1,5 @@
 "use strict";
 
-import FaxiosError from "../core/FaxiosError.js";
 import type FaxiosHeaders from "../core/FaxiosHeaders.js";
 import formDataToJSON from "../helpers/formDataToJSON.js";
 import toFormData from "../helpers/toFormData.js";
@@ -8,7 +7,6 @@ import toURLEncodedForm from "../helpers/toURLEncodedForm.js";
 import platform from "../platform.js";
 import type {
   FaxiosDefaults,
-  FaxiosResponse,
   GenericFormData,
   InternalFaxiosRequestConfig
 } from "../types.js";
@@ -34,27 +32,6 @@ function serializeObjectPayload(
     );
   }
   return undefined;
-}
-
-// An explicit `responseType: "json"` asks for JSON, so a body that isn't JSON rejects.
-function throwOnStrictJSONError(
-  e: unknown,
-  JSONRequested: boolean,
-  config: InternalFaxiosRequestConfig
-): void {
-  if (!JSONRequested) return;
-  if (e instanceof SyntaxError) {
-    throw FaxiosError.from(
-      e,
-      FaxiosError.ERR_BAD_RESPONSE,
-      config,
-      null,
-      (config as unknown as Record<string, unknown>)["response"] as
-        | FaxiosResponse
-        | undefined
-    );
-  }
-  throw e;
 }
 
 const defaults: FaxiosDefaults = {
@@ -146,7 +123,9 @@ const defaults: FaxiosDefaults = {
           return JSON.parse(data as string, utils.hasOwnProp(this, "parseReviver") ? this.parseReviver : undefined);
         }
         catch (e) {
-          throwOnStrictJSONError(e, JSONRequested, this);
+          // An explicit `responseType: "json"` asks for JSON, so a body that isn't JSON rejects.
+          // dispatchRequest turns the SyntaxError into ERR_BAD_RESPONSE with the response.
+          if (JSONRequested) throw e;
         }
       }
 
