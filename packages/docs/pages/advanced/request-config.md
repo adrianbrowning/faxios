@@ -25,7 +25,7 @@ The `url` is the URL to which the request is made. It can be a string or an inst
 
 ### `method`
 
-The `method` is the HTTP method to use for the request. The default method is `GET`. Any HTTP method name works, including extension methods such as `PROPFIND`. A value that isn't a string or isn't a valid method name rejects with `ERR_BAD_OPTION_VALUE`.
+The `method` is the HTTP method to use for the request. The default method is `GET`. Any HTTP method name works, including extension methods such as `PROPFIND`. Leaving `method` out, or setting it to `undefined` or `null`, uses the instance's method, or `GET`. Any other value that isn't a valid method name, including `""`, `0` and `false`, rejects with `ERR_BAD_OPTION_VALUE`.
 
 ### `baseURL`
 
@@ -106,7 +106,7 @@ The `params` are the URL parameters to be sent with the request. This must be a 
 
 ### `paramsSerializer`
 
-The `paramsSerializer` function allows you to serialize the `params` object before it is sent to the server. There are a few options available for this function, so please refer to the full request config example at the end of this page.
+The `paramsSerializer` function allows you to serialize the `params` object before it is sent to the server. Pass a function, or an object with the `encode` and `serialize` functions and the `formSerializer` options below; see the full request config example at the end of this page. An object key faxios doesn't know (`indexs`) rejects with `ERR_BAD_OPTION`, and a value of the wrong type with `ERR_BAD_OPTION_VALUE`; both errors carry `error.config`. `getUri()` applies the same checks.
 
 #### Strict RFC 3986 percent-encoding
 
@@ -327,7 +327,9 @@ The `formSerializer` option allows you to configure how plain objects are serial
 - `dots` — use dot notation instead of bracket notation
 - `metaTokens` — preserve special key endings such as `{}`
 - `indexes` — control bracket format for array keys (`null` / `false` / `true`)
-- `maxDepth` _(default: `100`)_ — maximum nesting depth before throwing `FaxiosError` with code `ERR_FORM_DATA_DEPTH_EXCEEDED`. Set to `Infinity` to disable.
+- `maxDepth` _(default: `100`)_ — maximum nesting depth before throwing `FaxiosError` with code `ERR_FORM_DATA_DEPTH_EXCEEDED`. Set to `Infinity` to disable. Any other value that isn't a non-negative integer, such as `NaN` or `-1`, rejects with `ERR_BAD_OPTION_VALUE`.
+
+Any other key (`dot`) rejects with `ERR_BAD_OPTION`, and a value of the wrong type with `ERR_BAD_OPTION_VALUE`.
 
 See the [multipart/form-data](/pages/advanced/multipart-form-data-format) page for full details, and the full request config example at the end of this page.
 
@@ -337,7 +339,7 @@ The following options validate request inputs and response data with any Standar
 
 - `responseSchema` — validates `response.data` after `transformResponse`; rejects with `ERR_BAD_RESPONSE_SCHEMA` on failure. TypeScript infers the `response.data` type from the schema's output type.
 - `requestSchema` — validates `config.data` before sending; rejects with `ERR_BAD_REQUEST_SCHEMA`.
-- `paramsSchema` — validates `config.params` before URL construction; rejects with `ERR_BAD_PARAMS_SCHEMA`.
+- `paramsSchema` — validates `config.params` before URL construction; rejects with `ERR_BAD_PARAMS_SCHEMA`. The schema's output replaces `params`, so it must be an object, `URLSearchParams`, `null` or `undefined`; any other output also rejects with `ERR_BAD_PARAMS_SCHEMA`.
 - `pathParams` — substitutes `{key}` placeholders in the URL.
 - `pathParamsSchema` — validates `pathParams` before substitution; rejects with `ERR_BAD_PATH_PARAMS_SCHEMA`. When set, `pathParams` is required.
 

@@ -77,6 +77,18 @@ describe("helpers::cookies (vitest browser)", () => {
     expect(document.cookie).toBe("foo=bar%20baz%25");
   });
 
+  it("decodes a percent-encoded value on read", () => {
+    document.cookie = "foo=a%2Bb";
+
+    expect(cookies.read("foo")).toBe("a+b");
+  });
+
+  it("returns a malformed percent-encoded value as written instead of throwing URIError", () => {
+    document.cookie = "foo=a%E0%A4%A";
+
+    expect(cookies.read("foo")).toBe("a%E0%A4%A");
+  });
+
   it("matches cookie names exactly even when the name contains regex metacharacters", () => {
     // previously cookies.read built a RegExp by interpolating
     // the requested name. Metacharacters could match a different cookie or trigger

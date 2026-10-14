@@ -1,4 +1,5 @@
 import assert from "node:assert";
+import vm from "node:vm";
 import { describe, it } from "vitest";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import { validateSchema } from "#src/lib/core/validateSchema.js";
@@ -112,6 +113,24 @@ describe("core::validateSchema", () => {
       await assert.rejects(
         async () => validateSchema(schema, "x", FaxiosError.ERR_BAD_REQUEST_SCHEMA, configWithSignal),
         (e: unknown) => !(e instanceof FaxiosError) && (e as { __CANCEL__?: boolean; }).__CANCEL__ === true
+      );
+    });
+  });
+
+  describe("realm-independent results", () => {
+    it("awaits a Promise created in another realm", async () => {
+      const schema = makeSchema(() => vm.runInNewContext("Promise.resolve({ value: { ok: 1 } })") as never);
+
+      const value = await validateSchema(schema, "input", FaxiosError.ERR_BAD_REQUEST_SCHEMA, dummyConfig);
+      assert.deepStrictEqual({ ...(value as object) }, { ok: 1 });
+    });
+
+    it("reads issues from a foreign-realm Promise", async () => {
+      const schema = makeSchema(() => vm.runInNewContext("Promise.resolve({ issues: [{ message: 'bad' }] })") as never);
+
+      await assert.rejects(
+        validateSchema(schema, "input", FaxiosError.ERR_BAD_REQUEST_SCHEMA, dummyConfig),
+        { code: "ERR_BAD_REQUEST_SCHEMA", message: "Schema validation failed" }
       );
     });
   });

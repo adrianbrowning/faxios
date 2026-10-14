@@ -48,7 +48,14 @@ export default platform.hasStandardBrowserEnv
         const cookie = cookies[i]!.replace(/^\s+/, "");
         const eq = cookie.indexOf("=");
         if (eq !== -1 && cookie.slice(0, eq) === name) {
-          return decodeURIComponent(cookie.slice(eq + 1));
+          const value = cookie.slice(eq + 1);
+          // A malformed escape (set by other code on the site) is returned as written, not thrown.
+          try {
+            return decodeURIComponent(value);
+          }
+          catch {
+            return value;
+          }
         }
       }
       return null;

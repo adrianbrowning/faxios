@@ -202,4 +202,31 @@ describe("mergeConfig paramsSchema", () => {
       s1["~standard"].validate
     );
   });
+
+  it.each([ "q=1", 5, true, [ "a" ]])("rejects schema output %j that is not a params object with ERR_BAD_PARAMS_SCHEMA", async output => {
+    const schema = makeSchema(() => ({ value: output }));
+    let fetched = false;
+
+    await assert.rejects(
+      faxios.get("http://localhost/test", {
+        params: { q: "raw" },
+        paramsSchema: schema,
+        env: { fetch: async () => { fetched = true; return new Response("{}"); } },
+      }),
+      { code: "ERR_BAD_PARAMS_SCHEMA", message: "paramsSchema output must be an object, URLSearchParams, null or undefined" }
+    );
+    assert.strictEqual(fetched, false);
+  });
+
+  it.each([ undefined, null, new URLSearchParams("q=s") ])("accepts schema output %j", async output => {
+    const schema = makeSchema(() => ({ value: output }));
+    let url = "";
+
+    await faxios.get("http://localhost/test", {
+      params: { q: "raw" },
+      paramsSchema: schema,
+      env: { fetch: async (input: Request | string | URL) => { url = String(input instanceof Request ? input.url : input); return new Response("{}"); } },
+    });
+    assert.strictEqual(url, output instanceof URLSearchParams ? "http://localhost/test?q=s" : "http://localhost/test");
+  });
 });

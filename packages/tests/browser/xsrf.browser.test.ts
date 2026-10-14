@@ -41,6 +41,24 @@ describe("xsrf (vitest browser)", () => {
     expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe("12345");
   });
 
+  it("decodes a percent-encoded xsrf cookie into the header", async () => {
+    using mock = installFetchMock();
+    setXsrfCookie("a%2Bb");
+
+    await faxios("/foo");
+
+    expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe("a+b");
+  });
+
+  it("sends a malformed percent-encoded xsrf cookie as written", async () => {
+    using mock = installFetchMock();
+    setXsrfCookie("a%E0%A4%A");
+
+    await faxios("/foo");
+
+    expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe("a%E0%A4%A");
+  });
+
   it("should not set xsrf header if xsrfCookieName is null", async () => {
     using mock = installFetchMock();
     setXsrfCookie("12345");

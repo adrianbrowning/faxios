@@ -4,7 +4,6 @@
 import canceledFromSignal from "../cancel/canceledFromSignal.js";
 import cloneConfig from "../helpers/cloneConfig.js";
 import raceAbort from "../helpers/raceAbort.js";
-import validator from "../helpers/validator.js";
 import type {
   FaxiosMiddleware,
   FaxiosNext,
@@ -95,26 +94,15 @@ function patchErrorStack(err: Error): void {
   }
 }
 
+// assertRequestConfig has checked an object paramsSerializer; a function one is its serialize option.
 function normalizeParamsSerializer(config: FaxiosRequestConfig): void {
   const { paramsSerializer } = config;
-  if (paramsSerializer == null) return;
-
   if (utils.isFunction(paramsSerializer)) {
     config.paramsSerializer = {
       serialize: paramsSerializer as (
         params: Record<string, unknown>
       ) => string,
     };
-  }
-  else {
-    validator.assertOptions(
-      paramsSerializer,
-      {
-        encode: validator.validators.function,
-        serialize: validator.validators.function,
-      },
-      true
-    );
   }
 }
 
@@ -143,7 +131,8 @@ function resolveMethod(
   defaults: FaxiosRequestConfig
 ): string {
   const defaultMethod = utils.hasOwnProp(defaults, "method") ? defaults.method : undefined;
-  const method: unknown = config.method || defaultMethod || "get";
+  // Only an absent (undefined or null) method falls back; '', 0 or false is rejected.
+  const method: unknown = config.method ?? defaultMethod ?? "get";
   if (typeof method !== "string" || !HTTP_TOKEN.test(method)) {
     throw new FaxiosError("option method must be an HTTP method name", FaxiosError.ERR_BAD_OPTION_VALUE, config as InternalFaxiosRequestConfig);
   }
@@ -399,14 +388,8 @@ class Faxios {
     const instanceHeaders = utils.hasOwnProp(this.defaults, "headers") ? this.defaults.headers : undefined;
     const requestHeaders = utils.hasOwnProp(config, "headers") ? config.headers : undefined;
 
-    config = mergeConfig(this.defaults, config);
-    assertRequestConfig(config, this.#pluginOptions);
-
-    normalizeParamsSerializer(config);
-    resolveAllowAbsoluteUrls(config, this.defaults);
-
+    config = this.#mergeAndNormalize(config);
     config.method = resolveMethod(config, this.defaults);
-    normalizeURL(config);
 
     // Every request header replaces the instance's, including a `null` or `false` there.
     config.headers = FaxiosHeaders.concat(undefined, ...headerLayers(instanceHeaders, config.method))
@@ -510,9 +493,18 @@ class Faxios {
   }
 
   getUri(config?: FaxiosRequestConfig) {
-    config = mergeConfig(this.defaults, config);
-    resolveAllowAbsoluteUrls(config, this.defaults);
-    return resolveRequestURL(config);
+    return resolveRequestURL(this.#mergeAndNormalize(config));
+  }
+
+  // The one normalization step request() and getUri() share before resolveRequestURL, so both
+  // validate and resolve the same URL.
+  #mergeAndNormalize(config: FaxiosRequestConfig | undefined): FaxiosRequestConfig {
+    const merged = mergeConfig(this.defaults, config);
+    assertRequestConfig(merged, this.#pluginOptions);
+    normalizeParamsSerializer(merged);
+    resolveAllowAbsoluteUrls(merged, this.defaults);
+    normalizeURL(merged);
+    return merged;
   }
 
   define<

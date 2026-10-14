@@ -18,8 +18,8 @@ export async function validateSchema<S extends StandardSchemaV1>(
 ): Promise<StandardSchemaV1.InferOutput<S>> {
   let result: StandardSchemaV1.Result<unknown> | undefined;
   try {
-    const raw = schema["~standard"].validate(value);
-    result = raw instanceof Promise ? await raw : raw;
+    // Awaited unconditionally: a Promise from another realm fails `instanceof Promise`.
+    result = await schema["~standard"].validate(value);
   }
   catch (err) {
     if (isCancel(err)) throw err;

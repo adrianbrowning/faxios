@@ -95,7 +95,17 @@ function validatePreFlight(config: InternalFaxiosRequestConfig): (() => Promise<
 
     if (config.paramsSchema) {
       throwIfCancellationRequested(config);
-      config.params = await validateSchema(config.paramsSchema, config.params, FaxiosError.ERR_BAD_PARAMS_SCHEMA, config) as typeof config.params;
+      const params: unknown = await validateSchema(config.paramsSchema, config.params, FaxiosError.ERR_BAD_PARAMS_SCHEMA, config);
+      // The output is serialized as params, so it must be a shape buildURL reads.
+      if (params != null && (typeof params !== "object" || Array.isArray(params))) {
+        const error = new FaxiosError(
+          "paramsSchema output must be an object, URLSearchParams, null or undefined",
+          FaxiosError.ERR_BAD_PARAMS_SCHEMA, config
+        );
+        error.issues = [{ message: error.message }];
+        throw error;
+      }
+      config.params = params as typeof config.params;
     }
 
     if (config.requestSchema) {
