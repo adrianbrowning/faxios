@@ -478,6 +478,27 @@ describe("core::FaxiosError", () => {
       expect((error.toJSON().config as any).redact).toEqual([ "password" ]);
     });
 
+    it("keeps the rejected password out of schema issues", async () => {
+      // A request schema that reports issues the way Valibot does: each object path segment
+      // carries the object it checked and the rejected value next to the key.
+      const requestSchema = {
+        "~standard": {
+          version: 1 as const,
+          vendor: "valibot-shaped",
+          validate: (input: unknown) => ({
+            issues: [{ message: "Invalid length", path: [{ type: "object", origin: "value", input, key: "password", value: "hunter2" }] }],
+          }),
+        },
+      };
+      const api = faxios.create({ baseURL: "http://localhost", env: { fetch: async () => new Response(null) } });
+
+      const error = await api.post("/login", { username: "alice", password: "hunter2" }, { requestSchema, redact: [ "password" ] })
+        .catch((err: unknown) => err as FaxiosError);
+
+      expect(error.code).toBe(FaxiosError.ERR_BAD_REQUEST_SCHEMA);
+      expect(JSON.stringify(error)).not.toContain("hunter2");
+    });
+
     describe("config snapshot", () => {
       const snapshot = (source: object) => new FaxiosError("Boom", "ECODE", { ...source, headers: emptyHeaders }).toJSON().config;
 

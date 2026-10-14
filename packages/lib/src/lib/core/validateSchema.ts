@@ -44,8 +44,11 @@ export async function validateSchema<S extends StandardSchemaV1>(
       "Schema validation failed",
       errorCode, config, undefined, response
     );
-    // Strip to spec-only fields — runtime libs may attach sensitive data
-    error.issues = result.issues.map(({ message, path }) => path ? { message, path } : { message });
+    // Strip to spec-only fields: runtime libs attach the rejected value to an issue, and Valibot
+    // also to each path segment (`{ type, origin, input, key, value }`), so a segment keeps only `key`.
+    error.issues = result.issues.map(({ message, path }) => path
+      ? { message, path: path.map(segment => (typeof segment === "object" ? { key: segment.key } : segment)) }
+      : { message });
     throw error;
   }
   // Standard Schema spec guarantees Result.value aligns with InferOutput
