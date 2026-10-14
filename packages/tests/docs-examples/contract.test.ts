@@ -73,6 +73,24 @@ describe("contract blocks", () => {
       differs: "response?: FaxiosResponse<D, T>;",
     },
     {
+      name: "a property that gains readonly",
+      fence: "contract=@gcmdev/faxios#FaxiosError<T,D>",
+      matches: "response?: FaxiosResponse<T, D>;",
+      differs: "readonly response?: FaxiosResponse<T, D>;",
+    },
+    {
+      name: "a property that stops being optional",
+      fence: "contract=@gcmdev/faxios#FaxiosError<T,D>",
+      matches: "response?: FaxiosResponse<T, D>;",
+      differs: "response: FaxiosResponse<T, D> | undefined;",
+    },
+    {
+      name: "a config option that loses ?",
+      fence: "contract=@gcmdev/faxios#FaxiosRequestConfig",
+      matches: "withXSRFToken?: boolean | undefined | ((config: InternalFaxiosRequestConfig) => boolean | undefined);",
+      differs: "withXSRFToken: boolean | undefined | ((config: InternalFaxiosRequestConfig) => boolean | undefined);",
+    },
+    {
       name: "a static member",
       fence: "contract=@gcmdev/faxios#FaxiosHeaders",
       matches: "type HeaderInput = FaxiosHeaders | Record<string, FaxiosHeaderValue | undefined> | Iterable<readonly [string, FaxiosHeaderValue | undefined]> | Headers | string | null | undefined;\nstatic from(thing?: HeaderInput): FaxiosHeaders;",

@@ -141,8 +141,9 @@ function memberChecks(member: ts.ClassElement | ts.TypeElement, real: string | u
     ];
   }
   if (name === undefined) throw new Error(`can't compare the member: ${member.getText()}`);
-  if (isStatic) return [ `__same<(typeof __Documented)["${name}"], (typeof ${real})["${name}"]>("matches");` ];
-  if (real) return [ `__same<__Documented${probeArgs}["${name}"], ${real}${probeArgs}["${name}"]>("matches");` ];
+  // Pick, not an indexed type, so `readonly` and `?` are compared along with the member's type.
+  if (isStatic) return [ `__same<Pick<typeof __Documented, "${name}">, Pick<typeof ${real}, "${name}">>("matches");` ];
+  if (real) return [ `__same<Pick<__Documented${probeArgs}, "${name}">, Pick<${real}${probeArgs}, "${name}">>("matches");` ];
   return [ `__same<__Documented["${name}"], typeof __Target.${name}>("matches");` ];
 }
 
