@@ -6,7 +6,7 @@
   "include": ["@gcmdev/faxios"],
   "packages": {
     "@gcmdev/faxios": {
-      "publishCommand": "npm view @gcmdev/faxios@{{version}} version"
+      "publishCommand": "test -n \"$(npm view @gcmdev/faxios@{{version}} version)\""
     }
   }
 }

@@ -181,10 +181,26 @@ jobs:
             exit 1
           fi
 
+      # A run whose `release` job failed leaves the version on npm without a
+      # tag, so the next run plans the publish again. Skip it when npm already
+      # has these exact bytes; fail when it has a different tarball.
       - name: Publish to npm
         env:
           TARBALL_NAME: ${{ needs.ci.outputs.tarball-name }}
-        run: npm publish "tarball/$TARBALL_NAME" --access public --provenance --ignore-scripts
+          VERSION: ${{ needs.ci.outputs.version }}
+        run: |
+          set -euo pipefail
+          tarball="tarball/$TARBALL_NAME"
+          integrity="sha512-$(openssl dgst -sha512 -binary "$tarball" | base64 -w0)"
+          published=$(npm view "@gcmdev/faxios@$VERSION" dist.integrity 2>/dev/null || true)
+          if [[ -z "$published" ]]; then
+            npm publish "$tarball" --access public --provenance --ignore-scripts
+          elif [[ "$published" == "$integrity" ]]; then
+            echo "@gcmdev/faxios@$VERSION is already on npm with this tarball; skipping the publish"
+          else
+            echo "::error::@gcmdev/faxios@$VERSION is already on npm with a different tarball ($published, this one is $integrity)"
+            exit 1
+          fi
 
   # Tags the release commit and publishes the GitHub release. The package's
   # `publishCommand` in .bumpy/_config.json only confirms the version is on
