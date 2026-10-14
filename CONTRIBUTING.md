@@ -50,7 +50,7 @@ pnpm docs:dev
 pnpm docs:build
 ```
 
-Some code blocks are copies of files in `packages/tests/docs-examples/sources/`; their fence names the file with `file=`. Edit the source file, never the copy, and check it with `pnpm lint`. Then review what changes in the Markdown, apply it, and run the full check:
+Some code blocks are copies of files in `packages/tests/docs-examples/sources/`; their fence names the file with `file=`. Edit the source file, never the copy, and lint it with `pnpm lint`. Then review what changes in the Markdown, apply it, and run the full check, which type-checks and runs the copy against the built package:
 
 ```bash
 pnpm docs:sync
