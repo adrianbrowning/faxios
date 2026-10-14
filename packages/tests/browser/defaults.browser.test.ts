@@ -38,7 +38,8 @@ describe("defaults (vitest browser)", () => {
       "{\"foo\":\"bar\"}"
     );
     expect(transformRequest[0]!([ 42, 43 ], headers)).toBe("[42,43]");
-    expect(transformRequest[0]!("foo", headers)).toBe("\"foo\"");
+    // A string is the JSON text the caller wrote, sent as is, not quoted again (#296).
+    expect(transformRequest[0]!("foo", headers)).toBe("foo");
     expect(transformRequest[0]!(42, headers)).toBe("42");
     expect(transformRequest[0]!(true, headers)).toBe("true");
     expect(transformRequest[0]!(false, headers)).toBe("false");
