@@ -553,7 +553,43 @@ describe("core::FaxiosError", () => {
       it("keeps objects with their own toJSON method without rebuilding them", () => {
         const obj = { toJSON: () => ({ ok: 1 }) };
 
-        expect(snapshot({ obj })).toHaveProperty("obj", obj);
+        expect((snapshot({ obj }) as Record<string, unknown>)["obj"]).toBe(obj);
+      });
+
+      it("masks redact keys in what a custom toJSON returns, at any depth", () => {
+        class Credentials {
+          toJSON() {
+            return { user: "alice", password: "secret-1", nested: { list: [{ token: "secret-2" }] } };
+          }
+        }
+        const config = { credentials: new Credentials(), login: { toJSON: () => ({ password: "secret-3" }) }, redact: [ "password", "token" ] };
+
+        const json = snapshot(config);
+
+        expect(json).toMatchObject({
+          credentials: { user: "alice", password: "[REDACTED ****]", nested: { list: [{ token: "[REDACTED ****]" }] } },
+          login: { password: "[REDACTED ****]" },
+        });
+        expect(JSON.stringify(json)).not.toContain("secret");
+      });
+
+      it("serializes what toJSON returns once, as JSON.stringify does, dropping a cycle back to the object", () => {
+        const looped: Record<string, unknown> = { password: "secret" };
+        looped["toJSON"] = () => ({ self: looped, again: { toJSON: () => looped }, password: looped["password"] });
+
+        const json = snapshot({ looped, redact: [ "password" ] });
+
+        expect(json).toMatchObject({ looped: { password: "[REDACTED ****]" } });
+        expect(JSON.stringify(json)).not.toContain("secret");
+      });
+
+      it("leaves out a value whose toJSON throws, so the error still serializes", () => {
+        const broken = { toJSON: () => { throw new Error("no"); } };
+
+        const json = snapshot({ broken, kept: 1 });
+
+        expect(json).toEqual({ kept: 1, headers: {} });
+        expect(() => JSON.stringify(json)).not.toThrow();
       });
 
       it("serializes a shared object at every occurrence, as it is not a cycle", () => {

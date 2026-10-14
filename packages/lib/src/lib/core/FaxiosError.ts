@@ -12,80 +12,95 @@ const REDACTED = "[REDACTED ****]";
 // Masked in every toJSON() snapshot; `config.redact` adds keys. Matched lower-cased.
 const DEFAULT_REDACT_KEYS: ReadonlyArray<string> = [ "authorization", "proxy-authorization", "cookie", "auth" ];
 
-function hasOwnOrPrototypeToJSON(source: unknown): boolean {
-  if (utils.hasOwnProp(source, "toJSON")) {
-    return true;
-  }
-
-  let prototype = Object.getPrototypeOf(source);
-
-  while (prototype && prototype !== Object.prototype) {
-    if (utils.hasOwnProp(prototype, "toJSON")) {
-      return true;
-    }
-
-    prototype = Object.getPrototypeOf(prototype);
-  }
-
-  return false;
-}
-
-// Build a plain-object snapshot of `config`, replace the value of any key (case-insensitive)
-// listed in `redactKeys` with REDACTED, and strip user info from `url` and `baseURL`. Walks
-// through arrays and FaxiosHeaders, and short-circuits on circular references.
+// Build a plain-object snapshot of `config`: the value of any key (case-insensitive) listed in
+// `redactKeys` becomes REDACTED, and `url` and `baseURL` lose their user info. Walks arrays,
+// FaxiosHeaders, and what a value's own or class `toJSON` returns: called once with its key, as
+// JSON.stringify calls it, and never one only a polluted Object.prototype supplies. A value that
+// refers back to an object being walked (a cycle), and a value whose toJSON throws, are left out.
+// A value with a toJSON is kept as it is when its output holds nothing to mask, so it serializes
+// its own way; otherwise the masked copy of that output replaces it.
 function redactConfig(config: unknown, redactKeys: ReadonlyArray<string>): unknown {
   const lowerKeys = new Set(redactKeys.map(k => String(k).toLowerCase()));
   const seen: Array<object> = [];
+  // Every masked, stripped or dropped value, so a toJSON value knows whether its output changed.
+  let edits = 0;
 
-  const visitObject = (source: object): Record<string, unknown> => {
-    const result: Record<string, unknown> = Object.create(null);
-    for (const [ key, value ] of Object.entries(source)) {
-      const lowerKey = key.toLowerCase();
-      let reducedValue: unknown;
-      if (lowerKeys.has(lowerKey)) reducedValue = REDACTED;
-      else if ((lowerKey === "url" || lowerKey === "baseurl") && typeof value === "string") reducedValue = stripUserInfo(value);
-      else reducedValue = visit(value);
-      if (!utils.isUndefined(reducedValue)) {
-        result[key] = reducedValue;
-      }
+  // The snapshot of one object entry: masked, stripped of URL user info, or visited.
+  const maskEntry = (key: string, value: unknown): unknown => {
+    const lowerKey = key.toLowerCase();
+    if (lowerKeys.has(lowerKey)) {
+      edits++;
+      return REDACTED;
     }
-    return result;
+    if ((lowerKey === "url" || lowerKey === "baseurl") && typeof value === "string") {
+      const stripped = stripUserInfo(value);
+      if (stripped !== value) edits++;
+      return stripped;
+    }
+    return visit(value, key);
   };
 
-  const visit = (source: unknown): unknown => {
-    if (source === null || typeof source !== "object") return source;
-    if (utils.isBuffer(source)) return source;
-    if (seen.indexOf(source) !== -1) return undefined;
-
-    if (source instanceof FaxiosHeaders) {
-      source = source.toJSON();
-    }
-
-    seen.push(source as object);
-
+  // A copy of `source`'s own entries (array items, or enumerable string keys), each visited.
+  const copyEntries = (source: object): unknown => {
+    seen.push(source);
     let result: unknown;
     if (utils.isArray(source)) {
-      result = [];
-      (source as Array<unknown>).forEach((v, i) => {
-        const reducedValue = visit(v);
-        if (!utils.isUndefined(reducedValue)) {
-          (result as Array<unknown>)[i] = reducedValue;
-        }
+      const items: Array<unknown> = [];
+      source.forEach((item, index) => {
+        const reduced = visit(item, String(index));
+        if (!utils.isUndefined(reduced)) items[index] = reduced;
       });
+      result = items;
     }
     else {
-      if (!utils.isPlainObject(source) && hasOwnOrPrototypeToJSON(source)) {
-        seen.pop();
-        return source;
+      const record: Record<string, unknown> = Object.create(null);
+      for (const [ key, value ] of Object.entries(source)) {
+        // Copied, a serializer would run on the copy and emit what it closes over, unmasked.
+        if (key === "toJSON" && typeof value === "function") continue;
+        const reduced = maskEntry(key, value);
+        if (!utils.isUndefined(reduced)) record[key] = reduced;
       }
-      result = visitObject(source as object);
+      result = record;
     }
-
     seen.pop();
     return result;
   };
 
-  return visit(config);
+  const visit = (value: unknown, key: string): unknown => {
+    if (value === null || typeof value !== "object" || utils.isBuffer(value)) return value;
+    if (seen.includes(value)) {
+      edits++;
+      return undefined;
+    }
+    if (value instanceof FaxiosHeaders) return copyEntries(value.toJSON());
+    // Arrays skip the lookup, so a polluted Array.prototype.toJSON can't stand in for one.
+    const serialize = utils.isArray(value) ? undefined : utils.getSafeProp(value, "toJSON");
+    if (typeof serialize !== "function") return copyEntries(value);
+
+    const before = edits;
+    let output: unknown;
+    try {
+      output = serialize.call(value, key);
+    }
+    catch {
+      edits++;
+      return undefined;
+    }
+    // JSON.stringify serializes the output without calling a toJSON on the output itself.
+    let masked = output;
+    if (output !== null && typeof output === "object") {
+      seen.push(value);
+      if (output !== value && seen.includes(output)) {
+        edits++;
+        masked = undefined;
+      }
+      else masked = copyEntries(output);
+      seen.pop();
+    }
+    return edits === before ? value : masked;
+  };
+
+  return visit(config, "");
 }
 
 // `user:pass@` after a `scheme://` anywhere in free text, such as an error message. A match can
