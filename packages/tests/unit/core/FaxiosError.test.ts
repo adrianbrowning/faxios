@@ -761,13 +761,10 @@ describe("core::FaxiosError", () => {
       const error = new FaxiosError("Response validation failed", FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, undefined, response);
       error.issues = [{ message: "expected string" }];
 
-      if (isSchemaValidationError(error) && error.code === FaxiosError.ERR_BAD_RESPONSE_SCHEMA) {
-        expect(error.issues[0]!.message).toBe("expected string");
-        expect(error.response.data).toStrictEqual({ name: 123 });
-      }
-      else {
-        expect.fail("should have narrowed");
-      }
+      expect(isSchemaValidationError(error)).toBe(true);
+      if (!isSchemaValidationError(error) || error.code !== FaxiosError.ERR_BAD_RESPONSE_SCHEMA) throw new Error("should have narrowed");
+      expect(error.issues[0]!.message).toBe("expected string");
+      expect(error.response.data).toStrictEqual({ name: 123 });
     });
   });
 });

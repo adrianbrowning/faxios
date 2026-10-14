@@ -125,15 +125,8 @@ describe("formDataToJSON", () => {
 
     formData.append("foo" + "[bar]".repeat(101), "123");
 
-    try {
-      formDataToJSON(formData);
-      throw new Error("Should have thrown");
-    }
-    catch (err) {
-      expect(err).toBeInstanceOf(FaxiosError);
-      expect((err as FaxiosError).code).toBe(FaxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
-      expect(err).not.toBeInstanceOf(RangeError);
-    }
+    // A FaxiosError, not the RangeError deep recursion would raise.
+    expect(() => formDataToJSON(formData)).toThrow(expect.objectContaining({ name: "FaxiosError", code: FaxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED }));
   });
 
   it("should throw FaxiosError while tokenizing very deep field paths", () => {
@@ -141,15 +134,7 @@ describe("formDataToJSON", () => {
 
     formData.append("foo" + "[bar]".repeat(10000), "123");
 
-    try {
-      formDataToJSON(formData);
-      throw new Error("Should have thrown");
-    }
-    catch (err) {
-      expect(err).toBeInstanceOf(FaxiosError);
-      expect((err as FaxiosError).code).toBe(FaxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED);
-      expect(err).not.toBeInstanceOf(RangeError);
-    }
+    expect(() => formDataToJSON(formData)).toThrow(expect.objectContaining({ name: "FaxiosError", code: FaxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED }));
   });
 
   it("should convert a field path at the default depth limit", () => {

@@ -87,8 +87,9 @@ describe("helpers::progressReporter", () => {
       throw new Error("listener");
     }, 10, false, Number.POSITIVE_INFINITY);
 
-    report(5);
-    reportAsync(5);
+    expect(() => report(5)).not.toThrow();
+    expect(() => reportAsync(5)).not.toThrow();
+    // A rejection the reporter didn't catch would fail the run as an unhandled rejection.
     await settle();
   });
 });

@@ -250,6 +250,7 @@ describe("plugins::forwardTo", () => {
   });
 
   describe("types", () => {
+    // eslint-disable-next-line vitest/expect-expect -- type-only: the @ts-expect-error lines are the assertions, checked by lint:ts
     it("types forward only on the instance use() returns", () => {
       // Never called: only the type checker reads these.
       async function typeChecks() {

@@ -183,12 +183,15 @@ describe("pathParamsSchema validation", () => {
     const failSchema = makeSchema<Record<string, unknown>>(() => ({ issues: [{ message: "fail" }] }));
     const passSchema = makeSchema<Record<string, unknown>>(v => ({ value: v as Record<string, unknown> }));
     const instance = faxios.create({ pathParamsSchema: failSchema });
-    await instance.get("http://localhost/users/{id}", {
+    const fetch = vi.fn(mockFetch({}));
+    const res = await instance.get("http://localhost/users/{id}", {
       pathParams: { id: 1 },
       pathParamsSchema: passSchema,
-      env: { fetch: mockFetch({}) },
+      env: { fetch },
     });
-    // no throw = per-request schema won
+    // The instance-level failSchema would have rejected before fetch.
+    assert.strictEqual(res.status, 200);
+    assert.strictEqual(fetch.mock.calls.length, 1);
   });
 
   it("wraps schema throws in FaxiosError with ERR_BAD_PATH_PARAMS_SCHEMA", async () => {

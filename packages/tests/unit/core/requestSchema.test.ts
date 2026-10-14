@@ -63,11 +63,18 @@ describe("requestSchema validation", () => {
 
   it("supports async schemas returning Promise<Result>", async () => {
     const schema = makeSchema(async () => ({ value: { name: "async-ok" } }));
+    let capturedBody: string | undefined;
 
     await faxios.post("http://localhost/test", { name: "raw" }, {
       requestSchema: schema,
-      env: { fetch: mockFetch({}) },
+      env: {
+        fetch: async (input: Request | string | URL) => {
+          capturedBody = await (input as Request).text();
+          return new Response(JSON.stringify({}), { status: 200, headers: { "content-type": "application/json" } });
+        },
+      },
     });
+    assert.strictEqual(capturedBody, "{\"name\":\"async-ok\"}");
   });
 
   it("validates undefined data against schema", async () => {
@@ -91,11 +98,17 @@ describe("requestSchema validation", () => {
 
   it("passes through unchanged when no requestSchema in config", async () => {
     const data = { hello: "world" };
+    let capturedBody: string | undefined;
 
     await faxios.post("http://localhost/test", data, {
-      env: { fetch: mockFetch({}) },
+      env: {
+        fetch: async (input: Request | string | URL) => {
+          capturedBody = await (input as Request).text();
+          return new Response(JSON.stringify({}), { status: 200, headers: { "content-type": "application/json" } });
+        },
+      },
     });
-    // no throw = pass
+    assert.strictEqual(capturedBody, "{\"hello\":\"world\"}");
   });
 
   it("wraps schema throws in FaxiosError with ERR_BAD_REQUEST_SCHEMA", async () => {
@@ -159,11 +172,11 @@ describe("requestSchema validation", () => {
     const passSchema = makeSchema(v => ({ value: v }));
     const instance = faxios.create({ requestSchema: failSchema });
 
-    await instance.post("http://localhost/test", { x: 1 }, {
+    const res = await instance.post("http://localhost/test", { x: 1 }, {
       requestSchema: passSchema,
       env: { fetch: mockFetch({}) },
     });
-    // no throw = per-request schema won
+    assert.strictEqual(res.status, 200);
   });
 });
 

@@ -111,6 +111,7 @@ describe("core::Faxios unknown request config keys", () => {
 
 describe("FaxiosRequestConfig removed options", () => {
   // Checked by `lint:ts`; `surfaces` is never called.
+  // eslint-disable-next-line vitest/expect-expect -- type-only: the @ts-expect-error lines are the assertions
   it("no longer type-checks", () => {
     function surfaces(): Array<FaxiosRequestConfig> {
       return [

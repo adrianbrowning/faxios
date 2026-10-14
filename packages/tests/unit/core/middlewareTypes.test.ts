@@ -142,6 +142,7 @@ describe("middleware types", () => {
     void surfaces;
   });
 
+  // eslint-disable-next-line vitest/expect-expect -- type-only: the @ts-expect-error lines are the assertions, checked by lint:ts
   it("rejects plugin options without the plugin", () => {
     function surfaces(): void {
       const api = faxios.create();
@@ -177,6 +178,7 @@ describe("middleware types", () => {
     void surfaces;
   });
 
+  // eslint-disable-next-line vitest/expect-expect -- type-only: the @ts-expect-error lines are the assertions, checked by lint:ts
   it("rejects a plugin whose required capability isn't installed", () => {
     function surfaces(): void {
       const bare = faxios.create();
@@ -194,6 +196,7 @@ describe("middleware types", () => {
     void surfaces;
   });
 
+  // eslint-disable-next-line vitest/expect-expect -- type-only: the @ts-expect-error lines are the assertions, checked by lint:ts
   it("rejects a second plugin that provides an installed capability", () => {
     function surfaces(): void {
       const withAuth = faxios.create().use(authBearer(getToken));
@@ -244,6 +247,7 @@ describe("middleware types", () => {
     void surfaces;
   });
 
+  // eslint-disable-next-line vitest/expect-expect -- type-only: the @ts-expect-error lines are the assertions, checked by lint:ts
   it("rejects a plugin with a required request option", () => {
     function surfaces(): void {
       const tenant: FaxiosPlugin<{ options: { tenant: string; }; }> = { name: "tenant", options: { tenant: true }, middleware: async (ctx, next) => next(ctx) };
@@ -255,6 +259,7 @@ describe("middleware types", () => {
     void surfaces;
   });
 
+  // eslint-disable-next-line vitest/expect-expect -- type-only: the @ts-expect-error lines are the assertions, checked by lint:ts
   it("rejects capability names use() can't copy", () => {
     function surfaces(): void {
       const sym = Symbol("auth");
@@ -273,6 +278,7 @@ describe("middleware types", () => {
     void surfaces;
   });
 
+  // eslint-disable-next-line vitest/expect-expect -- type-only: the @ts-expect-error lines are the assertions, checked by lint:ts
   it("makes next() take the context the middleware received", () => {
     function surfaces(): void {
       faxios.create().use(authBearer(getToken))
@@ -282,6 +288,7 @@ describe("middleware types", () => {
     void surfaces;
   });
 
+  // eslint-disable-next-line vitest/expect-expect -- type-only: the @ts-expect-error lines are the assertions, checked by lint:ts
   it("rejects a union of capability maps", () => {
     function surfaces(): void {
       const either: FaxiosPlugin<{ requires: AuthCapability | { cache: true; }; }> = { name: "either", middleware: async (ctx, next) => next(ctx) };

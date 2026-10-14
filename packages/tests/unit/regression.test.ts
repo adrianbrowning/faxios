@@ -78,15 +78,12 @@ describe("regression", () => {
         });
 
         try {
-          await instance.get("/status/400");
-        }
-        catch (error) {
-          assert.equal((error as { name: string; }).name, "FaxiosError");
-          assert.equal(
-            (error as { isFaxiosError: boolean; }).isFaxiosError,
-            true
-          );
-          assert.equal((error as { status: number; }).status, 400);
+          await assert.rejects(instance.get("/status/400"), {
+            name: "FaxiosError",
+            isFaxiosError: true,
+            status: 400,
+            code: "ERR_BAD_REQUEST",
+          });
         }
         finally {
           await stopHTTPServer(server);
@@ -104,15 +101,12 @@ describe("regression", () => {
         });
 
         try {
-          await instance.get("/status/400");
-        }
-        catch (error) {
-          assert.equal((error as { name: string; }).name, "FaxiosError");
-          assert.equal(
-            (error as { isFaxiosError: boolean; }).isFaxiosError,
-            true
-          );
-          assert.equal((error as { status: number; }).status, 400);
+          await assert.rejects(instance.get("/status/400"), {
+            name: "FaxiosError",
+            isFaxiosError: true,
+            status: 400,
+            code: "ERR_BAD_REQUEST",
+          });
         }
         finally {
           await stopHTTPServer(server);

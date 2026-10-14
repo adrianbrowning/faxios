@@ -4,7 +4,7 @@ import Faxios from "#src/lib/core/Faxios.js";
 
 describe("Faxios", () => {
   describe("handle un-writable error stack", () => {
-    const testUnwritableErrorStack = async (
+    const assertUnwritableErrorStack = async (
       stackAttributes: PropertyDescriptor
     ) => {
       const mockError = new Error("test-error");
@@ -18,24 +18,19 @@ describe("Faxios", () => {
         } ],
       });
 
-      try {
-        await faxios.request("http://localhost/test-url", {});
-      }
-      catch (e) {
-        assert.strictEqual((e as Error).message, "test-error");
-      }
+      await assert.rejects(faxios.request("http://localhost/test-url", {}), { message: "test-error" });
     };
 
     it("should support errors with a defined but un-writable stack", async () => {
-      await testUnwritableErrorStack({ value: {}, writable: false });
+      await assertUnwritableErrorStack({ value: {}, writable: false });
     });
 
     it("should support errors with an undefined and un-writable stack", async () => {
-      await testUnwritableErrorStack({ value: undefined, writable: false });
+      await assertUnwritableErrorStack({ value: undefined, writable: false });
     });
 
     it("should support errors with a custom getter/setter for the stack property", async () => {
-      await testUnwritableErrorStack({
+      await assertUnwritableErrorStack({
         get: () => ({}),
         set: () => {
           throw new Error("read-only");
@@ -44,7 +39,7 @@ describe("Faxios", () => {
     });
 
     it("should support errors with a custom getter/setter for the stack property (null case)", async () => {
-      await testUnwritableErrorStack({
+      await assertUnwritableErrorStack({
         get: () => null,
         set: () => {
           throw new Error("read-only");

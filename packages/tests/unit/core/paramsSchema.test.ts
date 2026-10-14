@@ -66,12 +66,19 @@ describe("paramsSchema validation", () => {
 
   it("supports async schemas returning Promise<Result>", async () => {
     const schema = makeSchema(async () => ({ value: { q: "async-ok" } }));
+    let capturedUrl = "";
 
     await faxios.get("http://localhost/test", {
       params: { q: "raw" },
       paramsSchema: schema,
-      env: { fetch: mockFetch({}) },
+      env: {
+        fetch: async (input: Request | string | URL) => {
+          capturedUrl = input instanceof Request ? input.url : String(input);
+          return new Response(JSON.stringify({}), { status: 200, headers: { "content-type": "application/json" } });
+        },
+      },
     });
+    assert.strictEqual(capturedUrl, "http://localhost/test?q=async-ok");
   });
 
   it("validates undefined params against schema", async () => {
@@ -94,11 +101,17 @@ describe("paramsSchema validation", () => {
   });
 
   it("passes through unchanged when no paramsSchema in config", async () => {
+    let capturedUrl = "";
     await faxios.get("http://localhost/test", {
       params: { q: "hello" },
-      env: { fetch: mockFetch({}) },
+      env: {
+        fetch: async (input: Request | string | URL) => {
+          capturedUrl = input instanceof Request ? input.url : String(input);
+          return new Response(JSON.stringify({}), { status: 200, headers: { "content-type": "application/json" } });
+        },
+      },
     });
-    // no throw = pass
+    assert.strictEqual(capturedUrl, "http://localhost/test?q=hello");
   });
 
   it("wraps schema throws in FaxiosError with ERR_BAD_PARAMS_SCHEMA", async () => {
@@ -164,12 +177,12 @@ describe("paramsSchema validation", () => {
     const passSchema = makeSchema(v => ({ value: v }));
     const instance = faxios.create({ paramsSchema: failSchema });
 
-    await instance.get("http://localhost/test", {
+    const res = await instance.get("http://localhost/test", {
       params: { q: "x" },
       paramsSchema: passSchema,
       env: { fetch: mockFetch({}) },
     });
-    // no throw = per-request schema won
+    assert.strictEqual(res.status, 200);
   });
 
   it("paramsSchema failure prevents requestSchema from running (fail-fast)", async () => {
