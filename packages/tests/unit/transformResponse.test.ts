@@ -88,6 +88,26 @@ describe("transformResponse", () => {
     });
   });
 
+  // Validation and the adapter read responseType case-insensitively; so must the JSON parse.
+  describe.each([ "JSON", "Json" ])("responseType: %s", responseType => {
+    const respond = (body: string) => faxios.create({ env: { fetch: async () => new Response(body, { status: 200 }) } });
+    // Accepted at run time, though the type only lists the lower-case names.
+    const config = { responseType } as unknown as { responseType: "json"; };
+
+    it("parses a JSON body", async () => {
+      const { data } = await respond("{\"a\":1}").get("http://localhost/x", config);
+
+      assert.deepStrictEqual(data, { a: 1 });
+    });
+
+    it("rejects an invalid JSON body with ERR_BAD_RESPONSE", async () => {
+      await assert.rejects(respond("{bad json").get("http://localhost/x", config), (err: unknown) =>
+        err instanceof FaxiosError &&
+        err.code === FaxiosError.ERR_BAD_RESPONSE &&
+        err.cause instanceof SyntaxError);
+    });
+  });
+
   describe("malformed JSON with responseType: json", () => {
     it("throws FaxiosError with ERR_BAD_RESPONSE code", () => {
       const response = { status: 200, headers: {}, data: "{bad json" };

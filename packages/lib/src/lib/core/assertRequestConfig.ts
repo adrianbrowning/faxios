@@ -107,7 +107,7 @@ export default function assertRequestConfig(config: FaxiosRequestConfig, pluginO
     validator.assertOptions(config.transitional, TRANSITIONAL_SCHEMA, false);
   }
 
-  // Matched case-insensitively, as the fetch adapter reads it.
+  // Matched case-insensitively, as the fetch adapter and transformResponse read it.
   const responseType: unknown = config.responseType;
   if (responseType !== undefined && (typeof responseType !== "string" || !utils.hasOwnProp(RESPONSE_TYPES, responseType.toLowerCase()))) {
     throw new FaxiosError(

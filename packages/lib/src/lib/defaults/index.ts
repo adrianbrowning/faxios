@@ -160,8 +160,9 @@ const defaults: FaxiosDefaults = {
       const transitional = this.transitional || defaults.transitional;
       const forcedJSONParsing = transitional && transitional.forcedJSONParsing;
       // Own only: a polluted Object.prototype.responseType must not make every body strict JSON.
+      // Matched case-insensitively, as validation and the fetch adapter read it.
       const responseType = utils.hasOwnProp(this, "responseType") ? this.responseType : undefined;
-      const JSONRequested = responseType === "json";
+      const JSONRequested = typeof responseType === "string" && responseType.toLowerCase() === "json";
       const shouldParseJSON = (forcedJSONParsing && !responseType) || JSONRequested;
 
       if (utils.isResponse?.(data) || utils.isReadableStream?.(data)) {
