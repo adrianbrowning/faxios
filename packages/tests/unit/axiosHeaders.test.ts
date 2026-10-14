@@ -327,6 +327,27 @@ describe("FaxiosHeaders", () => {
     assert.strictEqual(headers.get("Get"), "bar");
   });
 
+  it("does not let normalize() store a trimmed method name over the method", () => {
+    const headers = new FaxiosHeaders({ "set ": "x" });
+
+    headers.normalize(false);
+
+    assert.strictEqual(Object.hasOwn(headers, "set"), false);
+    assert.strictEqual(typeof headers.set, "function");
+    assert.strictEqual(headers.get("set"), "x");
+  });
+
+  it("keeps config.headers.set a method for a request header named \"set \"", async () => {
+    const api = faxios.create({ env: { fetch: async () => new Response("ok") } });
+
+    const response = await api.get("http://localhost/x", { headers: { "set ": "x" } });
+    const headers = response.config.headers;
+
+    assert.strictEqual(Object.hasOwn(headers, "set"), false);
+    headers.set("x-after", "1");
+    assert.strictEqual(headers.get("x-after"), "1");
+  });
+
   describe("get", () => {
     describe("filter", () => {
       it("should support RegExp", () => {

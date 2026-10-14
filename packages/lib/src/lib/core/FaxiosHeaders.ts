@@ -100,6 +100,14 @@ function storeValue(headers: object, values: Map<string, string>, key: string, v
   else values.delete(key);
 }
 
+// A header named like a method (`set`, `getContentType`), after trimming, is stored capitalized
+// (`Set`), so it never shadows the method. Lookups are case-insensitive, so `get("set")` still
+// finds it. `set()` and `normalize()` both store names through here.
+function storedHeaderName(name: string): string {
+  const trimmed = name.trim();
+  return Object.hasOwn(FaxiosHeaders.prototype, trimmed) ? trimmed[0]!.toUpperCase() + trimmed.slice(1) : name;
+}
+
 // eslint-disable-next-line sonarjs/function-return-type
 function normalizeValue(
   value: FaxiosHeaderValue | undefined
@@ -260,9 +268,7 @@ class FaxiosHeaders {
       }
 
       const key = index ? index.get(lHeader) : findHeaderKey(self, lHeader);
-      // A header named like a method (`set`, `getContentType`) is stored capitalized (`Set`), so it
-      // never shadows the method. Lookups are case-insensitive, so `get("set")` still finds it.
-      const name = Object.hasOwn(FaxiosHeaders.prototype, _header) ? _header[0]!.toUpperCase() + _header.slice(1) : _header;
+      const name = storedHeaderName(String(_header));
       if (key === undefined) {
         index ??= keyIndexes.get(self)!;
         index.set(String(name).toLowerCase(), name);
@@ -449,7 +455,7 @@ class FaxiosHeaders {
         return;
       }
 
-      const normalized = format ? formatHeader(header) : String(header).trim();
+      const normalized = storedHeaderName(format ? formatHeader(header) : String(header).trim());
 
       if (normalized !== header) {
         delete (self as Record<string, unknown>)[header];
