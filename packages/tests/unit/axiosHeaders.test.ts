@@ -1,7 +1,7 @@
 import assert from "node:assert";
-import { describe, it } from "vitest";
+import { describe, it, vi } from "vitest";
 import faxios from "#src/index.ts";
-import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
+import FaxiosHeaders, { defineHeaderShortcuts } from "#src/lib/core/FaxiosHeaders.js";
 
 // The get/set/has<Header> shortcuts FaxiosHeaders declares, without its index signature.
 type DeclaredHeaderAccessor = keyof {
@@ -543,38 +543,36 @@ describe("FaxiosHeaders", () => {
   });
 
   describe("accessors", () => {
-    it("should support get accessor", () => {
-      const headers = new FaxiosHeaders({
-        foo: 1,
-      });
+    // A subclass, so the shortcuts land on its prototype and not on the shared FaxiosHeaders one.
+    it("adds get, set and has shortcuts for a header", () => {
+      class Headers extends FaxiosHeaders {}
+      defineHeaderShortcuts(Headers.prototype, [ "foo" ]);
+      const headers = new Headers({ foo: 1 }) as unknown as Record<string, (...args: Array<unknown>) => unknown>;
 
-      (headers.constructor as typeof FaxiosHeaders).accessor("foo");
-
-      assert.strictEqual(typeof (headers as any).getFoo, "function");
-      assert.strictEqual((headers as any).getFoo(), "1");
+      assert.strictEqual(headers["getFoo"]!(), "1");
+      assert.strictEqual(headers["hasFoo"]!(), true);
+      headers["setFoo"]!(2);
+      assert.strictEqual(headers["getFoo"]!(), "2");
+      assert.strictEqual(Object.hasOwn(FaxiosHeaders.prototype, "getFoo"), false);
     });
 
-    it("should support set accessor", () => {
-      const headers = new FaxiosHeaders({
-        foo: 1,
-      });
+    it("registers a header once when the shortcut builder runs twice", () => {
+      class Headers extends FaxiosHeaders {}
+      const defineProperty = vi.spyOn(Object, "defineProperty");
+      try {
+        defineHeaderShortcuts(Headers.prototype, [ "X-Once" ]);
+        defineHeaderShortcuts(Headers.prototype, [ "x-once" ]);
 
-      (headers.constructor as typeof FaxiosHeaders).accessor("foo");
-
-      assert.strictEqual(typeof (headers as any).setFoo, "function");
-      (headers as any).setFoo(2);
-      assert.strictEqual((headers as any).getFoo(), "2");
+        const calls = defineProperty.mock.calls.filter(([ target, name ]) => target === Headers.prototype && name === "getXOnce");
+        assert.strictEqual(calls.length, 1);
+      }
+      finally {
+        defineProperty.mockRestore();
+      }
     });
 
-    it("should support has accessor", () => {
-      const headers = new FaxiosHeaders({
-        foo: 1,
-      });
-
-      (headers.constructor as typeof FaxiosHeaders).accessor("foo");
-
-      assert.strictEqual(typeof (headers as any).hasFoo, "function");
-      assert.strictEqual((headers as any).hasFoo(), true);
+    it("is not a public static on FaxiosHeaders", () => {
+      assert.strictEqual("accessor" in FaxiosHeaders, false);
     });
 
     it("should register every shortcut FaxiosHeaders declares", () => {

@@ -6,8 +6,6 @@ import { sanitizeHeaderValue } from "../helpers/sanitizeHeaderValue.js";
 import type { FaxiosHeaderValue } from "../types.js";
 import utils from "../utils.js";
 
-const $internals = Symbol("internals");
-
 /** Matches a header value for `has()`, `delete()`, `clear()` and the `has<Header>` shortcuts. */
 type HeaderMatcher =
   | ((this: FaxiosHeaders, value: string, name: string) => boolean)
@@ -26,7 +24,7 @@ interface HeaderGetter {
 }
 
 // The headers that get `get<Header>`, `set<Header>` and `has<Header>` shortcuts. Both the runtime
-// registration (FaxiosHeaders.accessor below) and the declarations (HeaderAccessors) come from here.
+// registration (defineHeaderShortcuts below) and the declarations (HeaderAccessors) come from here.
 const ACCESSOR_HEADERS = [
   "Content-Type",
   "Content-Length",
@@ -217,7 +215,7 @@ function buildAccessors(obj: object, header: string): void {
 
 declare const faxiosHeadersBrand: unique symbol;
 
-// The get/set/has<Header> shortcuts that FaxiosHeaders.accessor(ACCESSOR_HEADERS) registers at runtime,
+// The get/set/has<Header> shortcuts that defineHeaderShortcuts(ACCESSOR_HEADERS) registers at load,
 // merged into the class below.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- declaration merging adds HeaderAccessors to the class
 interface FaxiosHeaders extends HeaderAccessors {}
@@ -262,9 +260,12 @@ class FaxiosHeaders {
       }
 
       const key = index ? index.get(lHeader) : findHeaderKey(self, lHeader);
+      // A header named like a method (`set`, `getContentType`) is stored capitalized (`Set`), so it
+      // never shadows the method. Lookups are case-insensitive, so `get("set")` still finds it.
+      const name = Object.hasOwn(FaxiosHeaders.prototype, _header) ? _header[0]!.toUpperCase() + _header.slice(1) : _header;
       if (key === undefined) {
         index ??= keyIndexes.get(self)!;
-        index.set(String(_header).toLowerCase(), _header);
+        index.set(String(name).toLowerCase(), name);
       }
 
       if (
@@ -275,7 +276,7 @@ class FaxiosHeaders {
           (self as Record<string, unknown>)[key] !== false &&
           (self as Record<string, unknown>)[key] !== null)
       ) {
-        storeValue(self, values, key || _header, _value, typeof _value === "string" && sourceValues?.get(_header) === _value);
+        storeValue(self, values, key || name, _value, typeof _value === "string" && sourceValues?.get(_header) === _value);
       }
     }
 
@@ -523,55 +524,24 @@ class FaxiosHeaders {
 
     return computed;
   }
+}
 
-  static accessor(header: ReadonlyArray<string> | string): typeof FaxiosHeaders {
-    const self = this as unknown as Record<
-      symbol,
-      { accessors: Record<string, boolean>; }
-    >;
-    const internals =
-      (self[$internals] =
-        self[$internals] =
-          {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            accessors: {} as Record<string, boolean>,
-          });
+// Lower-cased headers that already have shortcuts, per prototype.
+const definedShortcuts = new WeakMap<object, Set<string>>();
 
-    const accessors = internals.accessors;
-    const prototype = this.prototype;
-
-    function defineAccessor(_header: string): void {
-      const lHeader = normalizeHeader(_header);
-
-      if (!accessors[lHeader]) {
-        buildAccessors(prototype, _header);
-        accessors[lHeader] = true;
-      }
-    }
-
-    typeof header === "string"
-      ? defineAccessor(header)
-      : header.forEach(defineAccessor);
-
-    return this;
+/** Adds get/set/has<Header> shortcuts to `prototype`, once per header (matched case-insensitively). */
+export function defineHeaderShortcuts(prototype: object, headers: ReadonlyArray<string>): void {
+  const defined = definedShortcuts.get(prototype) ?? new Set<string>();
+  definedShortcuts.set(prototype, defined);
+  for (const header of headers) {
+    const key = normalizeHeader(header);
+    if (defined.has(key)) continue;
+    buildAccessors(prototype, header);
+    defined.add(key);
   }
 }
 
-FaxiosHeaders.accessor(ACCESSOR_HEADERS);
-
-// reserved names hotfix
-utils.reduceDescriptors(
-  FaxiosHeaders.prototype,
-  ({ value }: PropertyDescriptor, key: string) => {
-    let mapped = key[0]!.toUpperCase() + key.slice(1); // map `set` => `Set`
-    return {
-      get: () => value,
-      set(this: Record<string, unknown>, headerValue: unknown) {
-        this[mapped] = headerValue;
-      },
-    };
-  }
-);
+defineHeaderShortcuts(FaxiosHeaders.prototype, ACCESSOR_HEADERS);
 
 utils.freezeMethods(FaxiosHeaders);
 
