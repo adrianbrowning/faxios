@@ -1,32 +1,34 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
 import prepareRequest from "#src/lib/core/prepareRequest.js";
+import resolveRequestURL from "#src/lib/core/resolveRequestURL.js";
 import { ObjProto, restorePrototypeAfterEach } from "../../setup/pollution.js";
 
 describe("Prototype Pollution Protection", () => {
   restorePrototypeAfterEach();
 
-  describe("prepareRequest params and paramsSerializer gadget", () => {
-    it("should not inherit polluted params via prepareRequest", () => {
+  // Dispatch resolves the URL with resolveRequestURL and hands it to prepareRequest.
+  describe("resolveRequestURL params and paramsSerializer gadget", () => {
+    it("should not inherit polluted params via resolveRequestURL", () => {
       ObjProto.params = { injected: "yes" };
 
-      const resolved = prepareRequest({ url: "/api", method: "get" });
+      const url = resolveRequestURL({ url: "/api", method: "get" });
 
       assert.ok(
-        resolved.url!.indexOf("injected") === -1,
+        url.indexOf("injected") === -1,
         "polluted params must not appear in URL"
       );
-      assert.strictEqual(resolved.url, "/api", "URL must remain unchanged");
+      assert.strictEqual(url, "/api", "URL must remain unchanged");
     });
 
-    it("should not invoke polluted paramsSerializer via prepareRequest", () => {
+    it("should not invoke polluted paramsSerializer via resolveRequestURL", () => {
       let serializerInvoked = false;
       ObjProto.paramsSerializer = function polluted() {
         serializerInvoked = true;
         return "injected=yes";
       };
 
-      const resolved = prepareRequest({
+      const url = resolveRequestURL({
         url: "/api",
         method: "get",
         params: { legit: "true" },
@@ -39,7 +41,7 @@ describe("Prototype Pollution Protection", () => {
       );
       // The URL should have legit param serialized normally
       assert.ok(
-        resolved.url!.indexOf("legit=true") !== -1,
+        url.indexOf("legit=true") !== -1,
         "legitimate params must still be serialized"
       );
     });
@@ -55,7 +57,7 @@ describe("Prototype Pollution Protection", () => {
 
       // prepareRequest calls cloneConfig internally — this must not throw
       assert.doesNotThrow(() => {
-        prepareRequest({ url: "/api", method: "get" });
+        prepareRequest({ url: "/api", method: "get" }, "/api");
       }, "cloneConfig must not throw when Object.prototype.get is polluted");
     });
   });

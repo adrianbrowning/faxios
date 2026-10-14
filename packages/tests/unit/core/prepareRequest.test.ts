@@ -2,18 +2,20 @@ import assert from "node:assert";
 import { describe, it } from "vitest";
 import type FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import prepareRequest from "#src/lib/core/prepareRequest.js";
+import resolveRequestURL from "#src/lib/core/resolveRequestURL.js";
 
 describe("core::prepareRequest", () => {
   it("leaves basic auth to the adapter, which builds the header once", () => {
     const config = prepareRequest({
       url: "/foo",
       auth: { username: "\u7528\u6237", password: "p" },
-    });
+    }, "/foo");
 
     assert.strictEqual((config.headers as FaxiosHeaders).has("Authorization"), false);
   });
 
-  it("should ignore inherited nested serializer fields", () => {
+  // The URL dispatch hands to prepareRequest comes from resolveRequestURL.
+  it("resolveRequestURL ignores inherited nested serializer fields", () => {
     let serializeInvoked = false;
     let encodeInvoked = false;
 
@@ -35,13 +37,13 @@ describe("core::prepareRequest", () => {
     });
 
     try {
-      const config = prepareRequest({
+      const url = resolveRequestURL({
         url: "/foo",
         params: { value: "a b" },
         paramsSerializer: {},
       });
 
-      assert.strictEqual(config.url, "/foo?value=a+b");
+      assert.strictEqual(url, "/foo?value=a+b");
       assert.strictEqual(serializeInvoked, false);
       assert.strictEqual(encodeInvoked, false);
     }
@@ -52,14 +54,14 @@ describe("core::prepareRequest", () => {
   });
 
   it("returned config is null-prototype (no Object.prototype inheritance)", () => {
-    const config = prepareRequest({ url: "/test" });
+    const config = prepareRequest({ url: "/test" }, "/test");
     assert.strictEqual(Object.getPrototypeOf(config), null);
   });
 
   it("polluted Object.prototype field does not leak into prepared config", () => {
     (Object.prototype as Record<string, unknown>).maxBodyLength = 999;
     try {
-      const config = prepareRequest({ url: "/test" });
+      const config = prepareRequest({ url: "/test" }, "/test");
       // own-property check: maxBodyLength not set on config itself
       assert.strictEqual(
         Object.prototype.hasOwnProperty.call(config, "maxBodyLength"),

@@ -29,7 +29,7 @@ The `method` is the HTTP method to use for the request. The default method is `G
 
 ### `baseURL`
 
-The `baseURL` is the base URL to be prepended to the `url` unless the `url` is an absolute URL. This is useful for making requests to the same domain without having to repeat the domain name and any api or version prefix.
+The `baseURL` is the base URL to be prepended to the `url` unless the `url` is an absolute URL. This is useful for making requests to the same domain without having to repeat the domain name and any api or version prefix. A `url` is absolute only when it starts with a scheme followed by `//` (`https://…`), as in axios. A relative path whose first segment has a colon, such as `documents:batchGet` or `localhost:3000/x`, is joined to `baseURL` like any other relative path.
 
 ### `allowAbsoluteUrls`
 

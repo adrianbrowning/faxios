@@ -1,0 +1,5 @@
+---
+"@gcmdev/faxios": minor
+---
+
+Breaking: request URLs are resolved in one place, and plugins use the same resolver. A `url` is absolute only when a scheme is followed by `//`, as in axios, so a relative path with a colon in its first segment (`documents:batchGet`, `localhost:3000/x`) now joins `baseURL` instead of rejecting with `ERR_INVALID_URL` or being sent as a bare scheme; this also applies to the `unsafe/helpers/isAbsoluteURL.js` export. `resolveRequestURL(config)` is now exported from the package root for plugins, and `ctx.instanceBaseURL` carries the instance's own `baseURL`. `authBearer` bases its default origin rule on the instance `baseURL`, so a per-request `baseURL` override no longer receives the token, and a request core rejects (an absolute URL with `allowAbsoluteUrls: false`) no longer calls `getToken`. `timing` reports such a URL as given instead of joined to `baseURL`. A missing path param rejects with one `ERR_BAD_OPTION_VALUE` error carrying the config, without another `FaxiosError` as its `cause`; path params are filled in only in the URL dispatch sends, after the schemas run, so `error.config.url` keeps the template.

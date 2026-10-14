@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
-import faxios from "#src/index.ts";
+import faxios, { resolveRequestURL } from "#src/index.ts";
 import type { FaxiosInstance, FaxiosRequestConfig } from "#src/index.ts";
 
 async function sentURL(instance: FaxiosInstance, config: FaxiosRequestConfig): Promise<string> {
@@ -149,5 +149,41 @@ describe("getUri() fills in pathParams", () => {
 
   it("leaves placeholders as written when pathParams is not set", () => {
     assert.strictEqual(faxios.getUri({ url: "https://api.example.com/users/{id}" }), "https://api.example.com/users/{id}");
+  });
+});
+
+describe("resolveRequestURL() gives plugins the URL core sends", () => {
+  const BASE = "https://api.example.com/v1/";
+  const table: Array<{ config: FaxiosRequestConfig; expected: string; instanceBaseURL?: string; }> = [
+    { instanceBaseURL: BASE, config: { url: "projects/p1:run" }, expected: "https://api.example.com/v1/projects/p1:run" },
+    { instanceBaseURL: BASE, config: { url: "documents:batchGet" }, expected: "https://api.example.com/v1/documents:batchGet" },
+    { instanceBaseURL: BASE, config: { url: "localhost:3000/x" }, expected: "https://api.example.com/v1/localhost:3000/x" },
+    { config: { url: "documents:batchGet", baseURL: BASE }, expected: "https://api.example.com/v1/documents:batchGet" },
+    { instanceBaseURL: BASE, config: { url: "/users/{id}", pathParams: { id: "a b" }, params: { q: 1 } }, expected: "https://api.example.com/v1/users/a%20b?q=1" },
+    { instanceBaseURL: BASE, config: { url: "https://other.example/x", allowAbsoluteUrls: true }, expected: "https://other.example/x" },
+    { instanceBaseURL: BASE, config: { url: "/x", baseURL: "https://partner.example" }, expected: "https://partner.example/x" },
+    { config: { url: "https://other.example/x" }, expected: "https://other.example/x" },
+  ];
+
+  it.each(table)("instance baseURL=$instanceBaseURL config=$config", async ({ instanceBaseURL, config, expected }) => {
+    const seen: Array<string> = [];
+    const instance = faxios.create(instanceBaseURL === undefined ? {} : { baseURL: instanceBaseURL })
+      .use(async (ctx, next) => {
+        seen.push(resolveRequestURL(ctx.config));
+        return next(ctx);
+      });
+
+    assert.strictEqual(instance.getUri(config), expected);
+    assert.strictEqual(await sentURL(instance, config), expected);
+    assert.deepStrictEqual(seen, [ expected ]);
+  });
+
+  it("rejects an absolute URL with an instance baseURL, as core does", async () => {
+    const instance = faxios.create({ baseURL: BASE }).use(async (ctx, next) => {
+      assert.throws(() => resolveRequestURL(ctx.config), { code: "ERR_INVALID_URL" });
+      return next(ctx);
+    });
+
+    await assert.rejects(instance.get("https://other.example/x"), { code: "ERR_INVALID_URL" });
   });
 });

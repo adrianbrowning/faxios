@@ -107,6 +107,7 @@ Every request gets a fresh `ctx`, built after the request config has been merged
 - `ctx.state` is a null-prototype object for this request only. Middleware can use it to pass values to each other.
 - `ctx.capabilities` holds the values plugins [provide](#capabilities). It is shared by every request of the instance.
 - `ctx.attempt` is the try the context leads to, counting from 1. It starts at 1 for every request; [`retry`](#retry) sets it before each try, and a retry middleware of your own [can too](#calling-next-again-retries).
+- `ctx.instanceBaseURL` is the instance's own `baseURL`, or `undefined` when it has none. A per-request `baseURL` changes `ctx.config.baseURL` but not this, so a plugin can tell the API the instance was made for from a request's override.
 
 ```ts
 import faxios from "@gcmdev/faxios";
@@ -138,14 +139,14 @@ For bearer tokens, use the built-in [`authBearer`](#authbearer) plugin rather th
 
 ### Each call dispatches a copy
 
-`next(ctx)` runs the rest of the chain and then dispatches a copy of `ctx.config`. Changes dispatch makes, such as path-param substitution, `transformRequest` output and schema output, go to the copy and never show up on `ctx.config`:
+`next(ctx)` runs the rest of the chain and then dispatches a copy of `ctx.config`. Changes dispatch makes, such as `transformRequest` output and schema output, go to the copy and never show up on `ctx.config`. Dispatch fills in path params only in the URL it sends, so `ctx.config.url` keeps the template:
 
 ```ts
 import faxios from "@gcmdev/faxios";
 
 const api = faxios.create({ baseURL: "https://api.example.com" }).use(async (ctx, next) => {
   const response = await next(ctx);
-  console.log(ctx.config.url); // "/users/{id}": middleware sees the template; dispatch substitutes path params on its own copy
+  console.log(ctx.config.url); // "/users/{id}": dispatch fills in path params only in the URL it sends
   return response;
 });
 
@@ -301,6 +302,24 @@ await api.get("/users");
 - Capabilities the plugin provides itself can be in that annotation; they don't count as required.
 - A `provides` value whose type contradicts the annotation is a type error.
 - Middleware without an annotation still sees the plugin's own `provides` on `ctx.capabilities`.
+
+To see the URL a request goes to, import `resolveRequestURL(config)` from `@gcmdev/faxios`. It is the resolver core uses for the request and for `getUri()`: `url` with `pathParams` filled in, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params`. A URL is absolute only when a scheme is followed by `//`, so `documents:batchGet` joins `baseURL`. It throws the `FaxiosError` the request would reject with: `ERR_INVALID_URL` for an absolute URL that `allowAbsoluteUrls: false` refuses, `ERR_BAD_OPTION_VALUE` for a placeholder `pathParams` can't fill. In middleware, schemas haven't run yet, so it uses `pathParams` and `params` as the caller gave them.
+
+```ts
+import faxios, { resolveRequestURL } from "@gcmdev/faxios";
+import { definePlugin } from "@gcmdev/faxios/plugins";
+
+const logURL = () => definePlugin({
+  name: "logURL",
+  middleware: async (ctx, next) => {
+    console.log(resolveRequestURL(ctx.config)); // "https://api.example.com/users/7?q=1"
+    return next(ctx);
+  },
+});
+
+const api = faxios.create({ baseURL: "https://api.example.com" }).use(logURL());
+await api.get("/users/{id}", { pathParams: { id: 7 }, params: { q: 1 } });
+```
 
 ### Typing a plugin factory
 
@@ -493,7 +512,7 @@ faxios ships four plugins. Each one has its own entry point, which exports the p
 
 ### `authBearer`
 
-`authBearer(getToken, options?)` sets `Authorization: Bearer <token>` on requests to your API, calling `getToken` (which may return a string or a promise) on each of them. A header the request already has is kept unless you pass `overwrite: true`. By default the token goes only to the `baseURL` origin when `baseURL` is absolute, and only to relative URLs otherwise; `origins` replaces that rule. It provides the `auth` capability, which `requireSignIn` above uses. Install [`refreshOn401`](#refreshing-a-token-after-a-401) before it, so a retry gets a fresh header.
+`authBearer(getToken, options?)` sets `Authorization: Bearer <token>` on requests to your API, calling `getToken` (which may return a string or a promise) on each of them. A header the request already has is kept unless you pass `overwrite: true`. By default the token goes only to the origin of the instance `baseURL` when that is absolute, and only to relative URLs otherwise; a per-request `baseURL` never gets it, and `origins` replaces the rule. A request core would reject (an absolute URL with `allowAbsoluteUrls: false`) gets no token, and `getToken` isn't called. It provides the `auth` capability, which `requireSignIn` above uses. Install [`refreshOn401`](#refreshing-a-token-after-a-401) before it, so a retry gets a fresh header.
 
 ```ts
 import faxios from "@gcmdev/faxios";
@@ -556,7 +575,7 @@ See [Retry & error recovery](/pages/advanced/retry) for every option.
 - on success: `{ method, url, attempt, durationMs, status }`
 - on failure: `{ method, url, attempt, durationMs, error }`, where `error` is `{ code, message, status }`, and the request's error is then rethrown
 
-`method` is upper-cased. `url` is the full URL with `baseURL` applied, and with any `user:pass@`, the query string and the fragment stripped, since those often carry secrets. A URL with `pathParams` is reported by its template as the caller wrote it (e.g. `/users/{id}`), because path params are substituted at dispatch; this also keeps metric labels low-cardinality. `durationMs` comes from `performance.now()` where available. The response is returned unchanged.
+`method` is upper-cased. `url` is the full URL with `baseURL` applied, as [`resolveRequestURL`](#writing-a-plugin) resolves it, and with any `user:pass@`, the query string and the fragment stripped, since those often carry secrets. A URL with `pathParams` is reported by its template as the caller wrote it (e.g. `/users/{id}`), which keeps metric labels low-cardinality. A URL core rejects, such as an absolute URL with `allowAbsoluteUrls: false`, is reported as the request gave it, not joined to `baseURL`. `durationMs` comes from `performance.now()` where available. The response is returned unchanged.
 
 `error.code` is the `FaxiosError` code (such as `"ERR_NETWORK"` or `"ECONNABORTED"`), or the thrown error's own string `code`; `error.status` is the HTTP status when a response arrived. Each is `undefined` otherwise. The event carries no config, headers or body, not even inside `error`: the error a request rejects with holds its config, and so its credentials (`Authorization` headers, tokens in query strings, request bodies), which would then end up in logs. `error.message` is the error's message with any URL `user:pass@` stripped. The rest of the message is the error's own text, so the event is safe to log as long as your middleware, transforms and schemas keep secrets out of the errors they throw. To inspect the full error, catch the request's rejection instead.
 

@@ -26,10 +26,11 @@ A header the request already has, set per request or in the instance defaults, i
 
 ### Which requests get the token
 
-The token only goes to your API's origin:
+The token only goes to your API's origin, which is the origin of the instance's `baseURL` (the one you passed to `faxios.create()`). The request URL is resolved the way core sends it, with [`resolveRequestURL`](/pages/advanced/middleware#writing-a-plugin):
 
-- With an absolute `baseURL`, only requests whose resolved origin equals the `baseURL` origin get it. This matters with `allowAbsoluteUrls: true`; with the default `false`, an absolute URL rejects with `ERR_INVALID_URL` before the token is read.
-- With a relative or missing `baseURL`, only relative request URLs get it, never an absolute or protocol-relative one (`//host`, `/\host`). So the default export, which has no `baseURL`, never sends the token to an absolute URL.
+- With an absolute instance `baseURL`, only requests whose resolved origin equals that origin get it. This matters with `allowAbsoluteUrls: true`; with the default `false`, an absolute URL rejects with `ERR_INVALID_URL`, and `getToken` is never called for it.
+- A per-request `baseURL` doesn't change the rule. `api.get("/x", { baseURL: "https://partner.example" })` resolves to the partner's origin, so it goes without the token, unless that origin is the instance's or is listed in `origins`.
+- With a relative or missing instance `baseURL`, only relative request URLs get it, never an absolute or protocol-relative one (`//host`, `/\host`). So the default export, which has no `baseURL`, never sends the token to an absolute URL, even one a per-request `baseURL` produces.
 
 This is a security rule. Before it, a token installed on the default export followed any absolute URL, so a request to a third-party host leaked your credentials.
 

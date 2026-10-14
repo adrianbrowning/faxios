@@ -51,6 +51,21 @@ describe("pathParams substitution", () => {
     }
   });
 
+  it("rejects a missing path param with one FaxiosError: its cause is not another FaxiosError", async () => {
+    const instance = faxios.create({ baseURL: "http://localhost", env: { fetch: mockFetch({}) } });
+    const isMissingParam = (err: unknown) => err instanceof FaxiosError &&
+      err.code === FaxiosError.ERR_BAD_OPTION_VALUE &&
+      err.message === "Path param \"id\" not found in pathParams" &&
+      !(err.cause instanceof FaxiosError) &&
+      err.config !== undefined;
+
+    await assert.rejects(instance.get("/users/{id}", { pathParams: {} }), isMissingParam);
+    // With a schema, substitution runs on its output.
+    const passSchema = makeSchema<Record<string, unknown>>(v => ({ value: v as Record<string, unknown> }));
+    await assert.rejects(instance.get("/users/{id}", { pathParams: {}, pathParamsSchema: passSchema }), isMissingParam);
+    assert.throws(() => instance.getUri({ url: "/users/{id}", pathParams: {} }), isMissingParam);
+  });
+
   it("rejects dot segments, plain or percent-encoded, before fetch is called", async () => {
     for (const id of [ ".", "..", "%2e", "%2e%2e", "%2E%2e", ".%2e", "%2E." ]) {
       const fetch = vi.fn(async () => new Response(null, { status: 200 }));

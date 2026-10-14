@@ -18,6 +18,7 @@ export { default as toFormData } from "./lib/helpers/toFormData.ts";
 export { default as FaxiosHeaders } from "./lib/core/FaxiosHeaders.ts";
 export { default as HttpStatusCode } from "./lib/helpers/HttpStatusCode.ts";
 export { default as mergeConfig } from "./lib/core/mergeConfig.ts";
+export { default as resolveRequestURL } from "./lib/core/resolveRequestURL.ts";
 export { VERSION } from "./lib/env/data.ts";
 
 export type { FaxiosInstance, FaxiosStatic } from "./lib/faxios.ts";

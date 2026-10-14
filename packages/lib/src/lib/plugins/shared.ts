@@ -33,37 +33,3 @@ export function assertOptions(value: unknown, schema: Readonly<Record<string, Op
     if (result !== true) throw new FaxiosError(`option ${key} must be ${String(result)}`, FaxiosError.ERR_BAD_OPTION_VALUE, config);
   }
 }
-
-export function isAbsoluteURL(url: string): boolean {
-  try {
-    new URL(url);
-    return true;
-  }
-  catch {
-    return false;
-  }
-}
-
-// Joins with exactly one slash. Scans instead of a regex, which backtracks on a run of slashes.
-function combineURLs(baseURL: string, relativeURL: string): string {
-  if (!relativeURL) return baseURL;
-  let end = baseURL.length;
-  while (end > 0 && baseURL.charCodeAt(end - 1) === 47) end--;
-  let start = 0;
-  while (start < relativeURL.length && relativeURL.charCodeAt(start) === 47) start++;
-  return `${baseURL.slice(0, end)}/${relativeURL.slice(start)}`;
-}
-
-/**
- * The request URL with `baseURL` applied, the way dispatch applies it (`allowAbsoluteUrls`
- * included), before path params and `params`: `""` when the request has neither.
- */
-export function fullPath(config: InternalFaxiosRequestConfig): string {
-  const baseURL = own(config, "baseURL");
-  const url = own(config, "url");
-  const requested = typeof url === "string" ? url : "";
-  if (typeof baseURL === "string" && baseURL !== "" && (!isAbsoluteURL(requested) || own(config, "allowAbsoluteUrls") === false)) {
-    return combineURLs(baseURL, requested);
-  }
-  return requested;
-}

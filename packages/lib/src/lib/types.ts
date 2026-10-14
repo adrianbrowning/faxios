@@ -364,6 +364,12 @@ export interface FaxiosContext<TOptions = {}, TCapabilities = {}> {
    * one, which dispatch normalizes the same way.
    */
   config: InternalFaxiosRequestConfig & TOptions;
+  /**
+   * The instance's own `baseURL` (`faxios.create({ baseURL })`), read when the request starts:
+   * `undefined` when the instance has none. A per-request `baseURL` changes `ctx.config.baseURL`,
+   * not this, so a plugin can tell the API the instance was made for from a request's override.
+   */
+  readonly instanceBaseURL: string | undefined;
   /** Null-prototype scratch space shared by middleware for this request only. */
   state: Record<PropertyKey, unknown>;
 }

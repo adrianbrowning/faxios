@@ -308,6 +308,30 @@ describe("plugins::authBearer", () => {
       assert.deepStrictEqual(authorizations, [ "Bearer token", "Bearer token", null, null ]);
     });
 
+    it("with an instance baseURL, rejects an absolute URL without calling getToken", async () => {
+      const { fetch, authorizations } = recordingFetch();
+      const getToken = vi.fn(() => "token");
+      const api = faxios.create({ baseURL: "https://api.test", env: { fetch } }).use(authBearer(getToken));
+
+      await assert.rejects(api.get("https://other.test/items"), { code: "ERR_INVALID_URL" });
+
+      assert.strictEqual(getToken.mock.calls.length, 0);
+      assert.deepStrictEqual(authorizations, []);
+    });
+
+    it("applies the origin rule to the instance baseURL, so a per-request baseURL doesn't get the token", async () => {
+      const { fetch, authorizations } = recordingFetch();
+      const api = faxios.create({ baseURL: "https://api.test", env: { fetch } }).use(authBearer(() => "token"));
+      const bare = faxios.create({ env: { fetch } }).use(authBearer(() => "token"));
+
+      await api.get("/items");
+      await api.get("/items", { baseURL: "https://partner.test" });
+      await api.get("/items", { baseURL: "https://api.test/v2" });
+      await bare.get("/items", { baseURL: "https://partner.test" });
+
+      assert.deepStrictEqual(authorizations, [ "Bearer token", null, "Bearer token", null ]);
+    });
+
     it("on the default singleton, sends no token to an absolute URL", async () => {
       const { fetch, authorizations } = recordingFetch();
       const plugin = authBearer(() => "token");
