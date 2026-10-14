@@ -141,6 +141,24 @@ describe("static api", () => {
     assert.deepStrictEqual(faxios.spread((...args) => args)([ 1, 2 ]), [ 1, 2 ]);
   });
 
+  it("does not export spread by name, as the skill and API reference say", () => {
+    assert.strictEqual("spread" in root, false);
+    assert.strictEqual("all" in root, true);
+    assert.strictEqual(typeof faxios.spread, "function");
+  });
+
+  it("runs transformRequest on a GET request", async () => {
+    let called = 0;
+    await faxios.get("http://localhost/", {
+      env: { fetch: okFetch },
+      transformRequest: [ data => {
+        called++;
+        return data;
+      } ],
+    });
+    assert.strictEqual(called, 1);
+  });
+
   it("should have factory method", async () => {
     let url = "";
     const fetch = async (input: Request | string | URL) => {

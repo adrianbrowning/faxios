@@ -25,6 +25,16 @@ describe("transformResponse", () => {
     });
   });
 
+  describe("forcedJSONParsing with an explicit responseType", () => {
+    const api = faxios.create({ env: { fetch: async () => new Response("{\"a\":1}", { status: 200 }) } });
+
+    it("keeps the body a string when responseType is 'text' and forcedJSONParsing is true", async () => {
+      const response = await api.get("http://localhost/x", { responseType: "text", transitional: { forcedJSONParsing: true } });
+
+      assert.strictEqual(response.data, "{\"a\":1}");
+    });
+  });
+
   describe("an invalid JSON body on the wire", () => {
     const api = faxios.create({ env: { fetch: async () => new Response("{bad json", { status: 200 }) } });
 

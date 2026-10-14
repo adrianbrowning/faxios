@@ -174,7 +174,7 @@ catch (error) {
   (`api.define(...).use(...)` is a TypeError), so put middleware on the instance and call
   `define()`/`route()` on the value `.use()` returned. Middleware added later still runs (the
   endpoint calls `api.request()` each time), but only that value types plugin options.
-  `pathParams` is accepted only when `pathParamsSchema` is set. A `route()` method config merges
+  `pathParams` is required when `pathParamsSchema` is set and optional otherwise. A `route()` method config merges
   over the route config like any other config, so headers combine.
 
 ```ts check=types
@@ -413,7 +413,7 @@ await faxios.get("https://api.example.com/feed", { fetchOptions: { cache: "no-st
 Use `faxios.create()` for instances. An instance made with `new Faxios()` has no `use()` or
 `eject()`.
 
-Statics such as `isCancel`, `mergeConfig`, `HttpStatusCode` and `spread` exist on the default
+Statics such as `isCancel`, `mergeConfig` and `HttpStatusCode` exist on the default
 export only. Instances from `create()` do not have them; import them by name instead.
 
 ## Common mistakes

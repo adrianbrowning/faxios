@@ -41,7 +41,7 @@ If you do not set it, faxios uses the instance default. When the instance defaul
 
 ### `transformRequest`
 
-The `transformRequest` function allows you to modify the request data before it is sent to the server. Each function is called with the request data and the request headers, and may modify the headers object. This is only applicable for request methods `PUT`, `POST`, `PATCH` and `DELETE`. The last function in the array must return a string or an instance of Buffer, ArrayBuffer, FormData or Stream.
+The `transformRequest` function allows you to modify the request data before it is sent to the server. Each function is called with the request data and the request headers, and may modify the headers object. It runs for every request method, including `GET`. The last function in the array must return a string or an instance of Buffer, ArrayBuffer, FormData or Stream.
 
 ### `transformResponse`
 
@@ -133,7 +133,7 @@ const client = faxios.create({
 
 ### `data`
 
-The `data` is the data to be sent as the request body. This can be a string, a plain object, a Buffer, ArrayBuffer, FormData, Stream, or URLSearchParams. Only applicable for request methods `PUT`, `POST`, `DELETE` , and `PATCH`. When no `transformRequest` is set, must be of one of the following types:
+The `data` is the data to be sent as the request body. This can be a string, a plain object, a Buffer, ArrayBuffer, FormData, Stream, or URLSearchParams. Only applicable for request methods `PUT`, `POST`, `DELETE`, `PATCH` and `QUERY`. When no `transformRequest` is set, must be of one of the following types:
 
 - string, plain object, ArrayBuffer, ArrayBufferView, URLSearchParams
 - FormData, File, Blob (available in all supported runtimes)
@@ -307,7 +307,7 @@ The `signal` property allows you to pass an instance of `AbortSignal` to the req
 
 The `transitional` property allows you to enable or disable certain transitional features. Any key not listed here rejects with `ERR_BAD_OPTION`. The following options are available:
 
-- `forcedJSONParsing`: Forces faxios to parse the response string as JSON even if `responseType` is not `'json'`.
+- `forcedJSONParsing`: When `true` _(default)_, faxios parses a string response body as JSON only when `responseType` is unset; an explicit `responseType` such as `'text'` keeps the string. Set to `false` to keep bodies without a `responseType` as strings too.
 - `clarifyTimeoutError`: Accepted for compatibility but has no effect. Timed-out requests always reject with `ETIMEDOUT`.
 - `validateStatusUndefinedResolves`: When `false` _(default)_, an explicit `validateStatus: undefined` behaves like an omitted option, so the instance's or the default validator applies (reject non-2xx). Set to `true` to make it resolve every response status (the behavior before 0.3.0); `validateStatus: null` does that without this flag.
 
