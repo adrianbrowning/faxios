@@ -14,17 +14,6 @@ const URLSearchParamsCtor = FaxiosURLSearchParams as unknown as new (
 ) => { toString: () => string; };
 
 describe("helpers::toFormData", () => {
-  const createRNFormDataSpy = () => {
-    const calls: Array<[string, unknown]> = [];
-    return {
-      calls,
-      append: (key: string, value: unknown) => {
-        calls.push([ key, value ]);
-      },
-      getParts: () => [],
-    };
-  };
-
   it("should convert a flat object to FormData", () => {
     const data = {
       foo: "bar",
@@ -71,53 +60,6 @@ describe("helpers::toFormData", () => {
 
     const formData = toFormData(data, fd());
     assert.ok(formData instanceof FormData);
-  });
-
-  it("should append root-level React Native blob without recursion", () => {
-    const formData = createRNFormDataSpy();
-
-    const blob = {
-      uri: "file://test.png",
-      type: "image/png",
-      name: "test.png",
-    };
-
-    toFormData({ file: blob }, formData);
-
-    assert.strictEqual(formData.calls.length, 1);
-    assert.strictEqual(formData.calls[0]![0], "file");
-    assert.strictEqual(formData.calls[0]![1], blob);
-  });
-
-  it("should append nested React Native blob without recursion", () => {
-    const formData = createRNFormDataSpy();
-
-    const blob = {
-      uri: "file://nested.png",
-      type: "image/png",
-      name: "nested.png",
-    };
-
-    toFormData({ nested: { file: blob } }, formData);
-
-    assert.strictEqual(formData.calls.length, 1);
-    assert.strictEqual(formData.calls[0]![0], "nested[file]");
-    assert.strictEqual(formData.calls[0]![1], blob);
-  });
-
-  it("should append deeply nested React Native blob without recursion", () => {
-    const formData = createRNFormDataSpy();
-
-    const blob = {
-      uri: "file://deep.png",
-      name: "deep.png",
-    };
-
-    toFormData({ a: { b: { c: blob } } }, formData);
-
-    assert.strictEqual(formData.calls.length, 1);
-    assert.strictEqual(formData.calls[0]![0], "a[b][c]");
-    assert.strictEqual(formData.calls[0]![1], blob);
   });
 
   // --- Depth limit tests ---
@@ -298,25 +240,6 @@ describe("helpers::toFormData", () => {
         assert.strictEqual(err.code, "ERR_FORM_DATA_DEPTH_EXCEEDED");
       }
     });
-  });
-
-  it("should NOT recurse into React Native blob properties", () => {
-    const formData = createRNFormDataSpy();
-
-    const blob = {
-      uri: "file://nope.png",
-      type: "image/png",
-      name: "nope.png",
-    };
-
-    toFormData({ file: blob }, formData);
-
-    const keys = formData.calls.map(call => call[0]);
-
-    assert.deepStrictEqual(keys, [ "file" ]);
-    assert.ok(!keys.some(key => key.includes("uri")));
-    assert.ok(!keys.some(key => key.includes("type")));
-    assert.ok(!keys.some(key => key.includes("name")));
   });
 });
 

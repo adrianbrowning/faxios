@@ -2,7 +2,8 @@ import utils from "../utils.js";
 import type FaxiosHeaders from "./FaxiosHeaders.js";
 
 /**
- * Decides the request body's Content-Type once the body is final, in every runtime.
+ * Decides the request body's Content-Type once the body is final, in every runtime. It is the one
+ * place the fetch adapter changes Content-Type.
  *
  * A FormData body's header must carry the boundary the body was encoded with, and only the
  * encoder picks it, so faxios never sends a default or caller Content-Type for a FormData body:
@@ -13,15 +14,27 @@ import type FaxiosHeaders from "./FaxiosHeaders.js";
  * produced is set: always for FormData, and for any other body only when the request has none
  * (a string still goes out as `text/plain;charset=UTF-8`, a Blob with its `type`).
  *
- * @param data The request body as prepared, before any upload stream wraps it.
+ * fetch sends a string body as `text/plain;charset=UTF-8` when there's no Content-Type. A
+ * Content-Type of `null` or `false` keeps the header off, so that string is encoded to its bytes.
+ *
+ * @param preparedBody The request body as prepared, before any upload stream wraps it.
+ * @param body The body that goes to fetch (the prepared body or its upload stream).
  * @param headers The request headers, updated in place.
  * @param encodedContentType The Content-Type from encoding the body ahead of fetch, if it was.
+ * @param encode Encodes a string body to bytes.
+ * @returns The body to send.
  */
 export default function resolveBodyContentType(
-  data: unknown,
+  preparedBody: unknown,
+  body: unknown,
   headers: FaxiosHeaders,
-  encodedContentType: null | string | undefined
-): void {
-  if (utils.isFormData(data)) headers.delete("content-type");
+  encodedContentType: null | string | undefined,
+  encode: (str: string) => Promise<Uint8Array> | Uint8Array
+): Promise<unknown> | unknown {
+  if (utils.isFormData(preparedBody)) headers.delete("content-type");
   if (encodedContentType) headers.setContentType(encodedContentType, false);
+
+  if (typeof body !== "string") return body;
+  const contentType = headers.get("content-type");
+  return contentType === null || contentType === false ? encode(body) : body;
 }

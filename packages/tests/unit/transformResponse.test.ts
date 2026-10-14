@@ -2,22 +2,25 @@ import assert from "node:assert";
 import { describe, it } from "vitest";
 import faxios from "#src/index.js";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
+import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import transformData from "#src/lib/core/transformData.js";
 import defaults from "#src/lib/defaults/index.js";
+import type { InternalFaxiosRequestConfig } from "#src/lib/types.js";
 
 const transformResponse = defaults.transformResponse;
+const config: InternalFaxiosRequestConfig = { headers: new FaxiosHeaders() };
 
 describe("transformResponse", () => {
   describe("200 request", () => {
     it("parses json", () => {
       const data = "{\"message\": \"hello, world\"}";
-      const result = transformData({}, transformResponse, { data, headers: { "content-type": "application/json" }, status: 200 });
+      const result = transformData(config, transformResponse, { data, headers: { "content-type": "application/json" }, status: 200 });
       assert.strictEqual((result as { message: string; }).message, "hello, world");
     });
 
     it("ignores XML", () => {
       const data = "<message>hello, world</message>";
-      const result = transformData({}, transformResponse, { data, headers: { "content-type": "text/xml" }, status: 200 });
+      const result = transformData(config, transformResponse, { data, headers: { "content-type": "text/xml" }, status: 200 });
       assert.strictEqual(result, data);
     });
   });
@@ -93,13 +96,13 @@ describe("transformResponse", () => {
   describe("204 request", () => {
     it("does not parse the empty string", () => {
       const data = "";
-      const result = transformData({}, transformResponse, { data, headers: { "content-type": undefined }, status: 204 });
+      const result = transformData(config, transformResponse, { data, headers: { "content-type": undefined }, status: 204 });
       assert.strictEqual(result, "");
     });
 
     it("does not parse undefined", () => {
       const data = undefined;
-      const result = transformData({}, transformResponse, { data, headers: { "content-type": undefined }, status: 200 });
+      const result = transformData(config, transformResponse, { data, headers: { "content-type": undefined }, status: 200 });
       assert.strictEqual(result, data);
     });
   });

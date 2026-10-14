@@ -27,15 +27,9 @@ describe("helpers::cookies (vitest browser)", () => {
     clearAllCookies();
   });
 
-  it("writes cookies", () => {
-    cookies.write("foo", "baz");
-
-    expect(document.cookie).toBe("foo=baz");
-  });
-
   it("reads cookies", () => {
-    cookies.write("foo", "abc");
-    cookies.write("bar", "def");
+    document.cookie = "foo=abc";
+    document.cookie = "bar=def";
 
     expect(cookies.read("foo")).toBe("abc");
     expect(cookies.read("bar")).toBe("def");
@@ -64,17 +58,8 @@ describe("helpers::cookies (vitest browser)", () => {
     }
   });
 
-  it("removes cookies", () => {
-    cookies.write("foo", "bar");
-    cookies.remove("foo");
-
+  it("returns null for a missing cookie", () => {
     expect(cookies.read("foo")).toBeNull();
-  });
-
-  it("uri encodes values", () => {
-    cookies.write("foo", "bar baz%");
-
-    expect(document.cookie).toBe("foo=bar%20baz%25");
   });
 
   it("decodes a percent-encoded value on read", () => {
@@ -94,13 +79,13 @@ describe("helpers::cookies (vitest browser)", () => {
     // the requested name. Metacharacters could match a different cookie or trigger
     // catastrophic backtracking. A name such as "X.Y" must not match a cookie called
     // "XAY" set by the same site.
-    cookies.write("XAY", "wrong");
+    document.cookie = "XAY=wrong";
 
     expect(cookies.read("X.Y")).toBeNull();
   });
 
   it("does not return a partial match for a name that is a prefix of another cookie", () => {
-    cookies.write("xsrf-token-extra", "wrong");
+    document.cookie = "xsrf-token-extra=wrong";
 
     expect(cookies.read("xsrf-token")).toBeNull();
   });

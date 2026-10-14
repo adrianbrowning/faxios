@@ -1,10 +1,7 @@
 import platform from "../platform.js";
-import utils from "../utils.js";
 
-type CookieManager = {
+type CookieReader = {
   read: (name: string) => null | string;
-  remove: (name: string) => void;
-  write: (name: string, value: string, expires?: number, path?: string, domain?: string, secure?: boolean, sameSite?: string) => void;
 };
 
 const _globalThis = globalThis as { document?: { cookie?: string; }; };
@@ -12,30 +9,6 @@ const _globalThis = globalThis as { document?: { cookie?: string; }; };
 export default platform.hasStandardBrowserEnv
   ? // Standard browser envs support document.cookie
   {
-    write(name: string, value: string, expires?: number, path?: string, domain?: string, secure?: boolean, sameSite?: string) {
-      if (!_globalThis.document) return;
-
-      const cookie = [ `${name}=${encodeURIComponent(value)}` ];
-
-      if (utils.isNumber(expires)) {
-        cookie.push(`expires=${new Date(expires!).toUTCString()}`);
-      }
-      if (utils.isString(path)) {
-        cookie.push(`path=${path}`);
-      }
-      if (utils.isString(domain)) {
-        cookie.push(`domain=${domain}`);
-      }
-      if (secure === true) {
-        cookie.push("secure");
-      }
-      if (utils.isString(sameSite)) {
-        cookie.push(`SameSite=${sameSite}`);
-      }
-
-      _globalThis.document.cookie = cookie.join("; ");
-    },
-
     read(name: string): null | string {
       if (!_globalThis.document) return null;
       // Match name=value by splitting on the semicolon separator instead of building a
@@ -60,16 +33,10 @@ export default platform.hasStandardBrowserEnv
       }
       return null;
     },
-
-    remove(name: string) {
-      this.write(name, "", Date.now() - 86400000, "/");
-    },
-  } satisfies CookieManager
-  : // Non-standard browser env (web workers, react-native) lack needed support.
+  } satisfies CookieReader
+  : // Web workers have no document.cookie.
   {
-    write() {},
     read(): null {
       return null;
     },
-    remove() {},
-  } satisfies CookieManager;
+  } satisfies CookieReader;

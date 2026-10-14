@@ -209,11 +209,6 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
   function defaultVisitor(this: GenericFormData, value: unknown, key: number | string, path: Array<number | string> | null, _helpers?: FormDataVisitorHelpers): boolean {
     let arr: unknown = value;
 
-    if (utils.isReactNative(formData) && utils.isReactNativeBlob(value)) {
-      (formData as GenericFormData).append(renderKey(path, key, dots), convertValue(value));
-      return false;
-    }
-
     if (value && !path && typeof value === "object") {
       if (String(key).endsWith("{}")) {
         key = metaTokens ? key : String(key).slice(0, -2);

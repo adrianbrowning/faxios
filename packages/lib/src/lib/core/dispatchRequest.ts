@@ -170,17 +170,18 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
         if (!isCancel(reason)) {
           throwIfCancellationRequested(config);
 
-          const r = reason as null | { response?: { [k: string]: unknown; data?: unknown; headers?: unknown; status?: number; }; };
+          // The adapter rejects with a FaxiosError that carries the response for a status error.
+          const r = reason as null | { response?: FaxiosResponse; };
           if (r?.response) {
             try {
-              r.response.data = transformResponseData(config, r.response as FaxiosResponse);
+              r.response.data = transformResponseData(config, r.response);
             }
             catch (transformErr) {
               // The status error stays the error: a body that fails to transform (an HTML page
               // for `responseType: "json"`) keeps its raw data and becomes the cause.
               if (reason instanceof FaxiosError && reason.cause === undefined) reason.cause = transformErr as Error;
             }
-            r.response.headers = FaxiosHeaders.from(r.response.headers as Record<string, unknown>);
+            r.response.headers = FaxiosHeaders.from(r.response.headers);
           }
         }
 

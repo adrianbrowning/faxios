@@ -252,29 +252,6 @@ const isDate = kindOfTest("Date");
 const isFile = kindOfTest("File");
 
 /**
- * Determine if a value is a React Native Blob
- * React Native "blob": an object with a `uri` attribute. Optionally, it can
- * also have a `name` and `type` attribute to specify filename and content type
- *
- * @see https://github.com/facebook/react-native/blob/26684cf3adf4094eb6c405d345a75bf8c7c0bf88/Libraries/Network/FormData.js#L68-L71
- *
- * @param {*} value The value to test
- *
- * @returns {boolean} True if value is a React Native Blob, otherwise false
- */
-const isReactNativeBlob = (value: unknown) => !!(value && typeof (value as Record<string, unknown>).uri !== "undefined");
-
-/**
- * Determine if environment is React Native
- * ReactNative `FormData` has a non-standard `getParts()` method
- *
- * @param {*} formData The formData to test
- *
- * @returns {boolean} True if environment is React Native, otherwise false
- */
-const isReactNative = (formData: unknown) => formData && typeof (formData as Record<string, unknown>).getParts !== "undefined";
-
-/**
  * Determine if a value is a Blob
  *
  * @param {*} val The value to test
@@ -453,9 +430,8 @@ const isContextDefined = (context: unknown) => !isUndefined(context) && context 
  * @returns {Object} Result of all merge properties
  */
 function merge(this: unknown, ...objs: Array<unknown>): Record<string, unknown> {
-  const ctx = (isContextDefined(this) && this) as false | { caseless?: unknown; skipUndefined?: unknown; };
+  const ctx = (isContextDefined(this) && this) as false | { caseless?: unknown; };
   const caseless = ctx && ctx.caseless;
-  const skipUndefined = ctx && ctx.skipUndefined;
   const result: Record<string | symbol, unknown> = {};
   // Caseless mode: lowercased key -> the key already written to `result`. Only assignValue
   // writes to `result`, so this index is complete.
@@ -483,7 +459,7 @@ function merge(this: unknown, ...objs: Array<unknown>): Record<string, unknown> 
     else if (isArray(val)) {
       result[targetKey] = val.slice();
     }
-    else if (!skipUndefined || !isUndefined(val)) {
+    else {
       result[targetKey] = val;
     }
     if (lowerKey !== undefined && hasOwnProperty(result, targetKey)) {
@@ -869,8 +845,6 @@ export default {
   isUndefined,
   isDate,
   isFile,
-  isReactNativeBlob,
-  isReactNative,
   isBlob,
   isRegExp,
   isFunction,

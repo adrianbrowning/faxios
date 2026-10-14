@@ -1,24 +1,14 @@
 "use strict";
 
-import FaxiosURLSearchParams from "./helpers/FaxiosURLSearchParams.js";
-
 const _globalThis = globalThis as {
-  Blob?: new (...args: Array<unknown>) => object;
   document?: unknown;
   FormData?: new () => object;
-  navigator?: { product?: string; userAgent?: string; };
   self?: { importScripts?: unknown; };
   window?: { location?: { href?: string; }; };
   WorkerGlobalScope?: unknown;
 };
 
-const hasBrowserEnv = typeof _globalThis.window !== "undefined" && typeof _globalThis.document !== "undefined";
-
-const _navigator = typeof _globalThis.navigator === "object" ? _globalThis.navigator : undefined;
-
-const hasStandardBrowserEnv =
-  hasBrowserEnv &&
-  (!_navigator || [ "ReactNative", "NativeScript", "NS" ].indexOf(_navigator.product ?? "") < 0);
+const hasStandardBrowserEnv = typeof _globalThis.window !== "undefined" && typeof _globalThis.document !== "undefined";
 
 const hasStandardBrowserWebWorkerEnv = (() => (
   typeof _globalThis.WorkerGlobalScope !== "undefined" &&
@@ -26,19 +16,13 @@ const hasStandardBrowserWebWorkerEnv = (() => (
     typeof _globalThis.self?.importScripts === "function"
 ))();
 
-const origin = (hasBrowserEnv && _globalThis.window?.location?.href) || "http://localhost";
+const origin = (hasStandardBrowserEnv && _globalThis.window?.location?.href) || "http://localhost";
 
 export default {
-  isBrowser: true,
   classes: {
-    URLSearchParams: typeof URLSearchParams !== "undefined" ? URLSearchParams : FaxiosURLSearchParams,
     FormData: _globalThis.FormData !== undefined ? _globalThis.FormData : null,
-    Blob: _globalThis.Blob !== undefined ? _globalThis.Blob : null,
   },
-  protocols: [ "http", "https", "file", "blob", "url", "data" ],
-  hasBrowserEnv,
   hasStandardBrowserEnv,
   hasStandardBrowserWebWorkerEnv,
-  navigator: _navigator,
   origin,
 };

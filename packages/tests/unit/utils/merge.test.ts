@@ -161,15 +161,4 @@ describe("utils::merge", () => {
     expect(merged).toEqual({ 0: "value", x: 1 });
     expect(merged[key]).toBeUndefined();
   });
-
-  it("should honor skipUndefined for symbol keys", () => {
-    const key = Symbol("key");
-    const merged: Record<symbol, unknown> = merge.call(
-      { skipUndefined: true },
-      { [key]: "first" },
-      { [key]: undefined }
-    );
-
-    expect(merged[key]).toBe("first");
-  });
 });

@@ -94,6 +94,8 @@ The `FaxiosHeaders` class is a utility class that is used to manage HTTP headers
 
 Only the main methods are documented here. For a full list of methods, please refer to the type declaration file.
 
+Each instance also has `get`, `set` and `has` shortcuts for `Content-Type`, `Content-Length`, `Accept`, `Accept-Encoding`, `User-Agent` and `Authorization` (for example `headers.getContentType()`). The set is fixed: there is no `FaxiosHeaders.accessor()` to add more.
+
 #### `constructor`
 
 Creates a new instance of the `FaxiosHeaders` class. The constructor takes an optional headers object as an argument.

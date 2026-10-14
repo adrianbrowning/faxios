@@ -1,22 +1,24 @@
 import { describe, expect, it } from "vitest";
-import { progressEventReducer } from "#src/lib/helpers/progressEventReducer.js";
+import { progressReporter } from "#src/lib/helpers/progressEventReducer.js";
 import type { FaxiosProgressEvent } from "#src/lib/types.js";
 
-describe("helpers::progressEventReducer", () => {
-  it("should clamp loaded/progress and avoid negative bytes for out-of-order events", () => {
-    const events: Array<FaxiosProgressEvent> = [];
-    const [ onProgress, flush ] = progressEventReducer(
-      data => {
-        events.push(data);
-      },
-      false,
-      Number.POSITIVE_INFINITY
-    );
+// Listeners run on a queued microtask; awaiting one more lets those queued earlier run first.
+const settle = async () => {
+  await Promise.resolve();
+};
 
-    onProgress({ lengthComputable: true, loaded: 80, total: 100 });
-    onProgress({ lengthComputable: true, loaded: 60, total: 100 });
-    onProgress({ lengthComputable: true, loaded: 180, total: 100 });
+describe("helpers::progressReporter", () => {
+  it("takes byte counts, clamps loaded/progress and avoids negative bytes for out-of-order counts", async () => {
+    const events: Array<FaxiosProgressEvent> = [];
+    const [ report, flush ] = progressReporter(data => {
+      events.push(data);
+    }, 100, false, Number.POSITIVE_INFINITY);
+
+    report(80);
+    report(60);
+    report(180);
     flush();
+    await settle();
 
     expect(events.length).toBe(3);
     expect(events[0]!.bytes).toBe(80);
@@ -30,30 +32,31 @@ describe("helpers::progressEventReducer", () => {
     expect(last.bytes).toBe(20);
   });
 
-  it("should ignore malformed events that lack a numeric loaded value", () => {
+  it("reports an unknown total as not length-computable, with no event key", async () => {
     const events: Array<FaxiosProgressEvent> = [];
-    const [ onProgress, flush ] = progressEventReducer(
-      data => {
-        events.push(data);
-      },
-      false,
-      Number.POSITIVE_INFINITY
-    );
+    const [ report ] = progressReporter(data => {
+      events.push(data);
+    }, undefined, true, Number.POSITIVE_INFINITY);
 
-    onProgress(undefined);
-    onProgress(null);
-    onProgress({});
-    onProgress({ loaded: null, total: 100, lengthComputable: true });
-    onProgress({ loaded: "abc", total: 100, lengthComputable: true });
-    flush();
+    report(50);
+    await settle();
 
-    expect(events.length).toBe(0);
+    expect(events).toHaveLength(1);
+    expect(events[0]).toMatchObject({ loaded: 50, bytes: 50, lengthComputable: false, download: true });
+    expect(events[0]!.total).toBeUndefined();
+    expect(Object.hasOwn(events[0]!, "event")).toBe(false);
+  });
 
-    onProgress({ lengthComputable: true, loaded: 50, total: 100 });
-    flush();
+  it("ignores a listener that throws or rejects", async () => {
+    const [ report ] = progressReporter(() => {
+      throw new Error("listener");
+    }, 10, false, Number.POSITIVE_INFINITY);
+    const [ reportAsync ] = progressReporter(async () => {
+      throw new Error("listener");
+    }, 10, false, Number.POSITIVE_INFINITY);
 
-    expect(events.length).toBe(1);
-    expect(events[0]!.loaded).toBe(50);
-    expect(events[0]!.bytes).toBe(50);
+    report(5);
+    reportAsync(5);
+    await settle();
   });
 });
