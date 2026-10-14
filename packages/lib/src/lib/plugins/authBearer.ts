@@ -79,7 +79,9 @@ function sendsTokenTo(config: InternalFaxiosRequestConfig, instanceBaseURL: unkn
   // and encodes `: / \ ? # @`), just like the `{key}` left here: the template and the URL sent
   // have the same delimiters in the same places, so outside the scheme and authority checked
   // above a path param can't move the origin. A scheme placeholder without `//` (`{s}:/x`) can
-  // only make an `http(s):` URL without `//`, which core rejects with ERR_INVALID_URL.
+  // only make an `http(s):` URL without `//`, which core rejects with ERR_INVALID_URL. The URL
+  // parser drops tabs and line breaks (`{s}:\t//host`), so core rejects a url or baseURL holding
+  // one (ERR_INVALID_URL) and the resolve below throws: the template checked here is the one sent.
   // A URL core rejects (an absolute URL with `allowAbsoluteUrls: false`) gets no token.
   let url: string;
   try {

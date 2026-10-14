@@ -73,4 +73,19 @@ describe("core::buildFullPath", () => {
     ).toBe("https://api.example.com/users");
   });
 
+  it("rejects a tab or line break in the URL, or in the baseURL it joins", () => {
+    const invalid = { code: FaxiosError.ERR_INVALID_URL, message: "Invalid URL: contains a tab or line break" };
+    for (const call of [
+      () => buildFullPath(undefined, "https:\t//evil.test/p"),
+      () => buildFullPath(undefined, "https:/\n/evil.test/p"),
+      () => buildFullPath(undefined, "/a\rb"),
+      () => buildFullPath("https://api.example.com", "/users\t"),
+      () => buildFullPath("https://api.\nexample.com", "/users"),
+    ]) {
+      expect(call).toThrow(expect.objectContaining(invalid));
+    }
+    // An unused baseURL isn't checked, as for a malformed protocol.
+    expect(buildFullPath("https://api.\nexample.com", "https://other.example/x")).toBe("https://other.example/x");
+  });
+
 });

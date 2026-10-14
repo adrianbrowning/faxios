@@ -21,10 +21,22 @@ function normalizeURLForProtocolCheck(url: string): string {
   return stripLeadingC0ControlOrSpace(url).replace(httpProtocolControlCharacters, "");
 }
 
-function assertValidHttpProtocolURL(url: unknown, config: unknown): void {
-  if (typeof url === "string" && malformedHttpProtocol.test(normalizeURLForProtocolCheck(url))) {
+// The URL parser drops these wherever they are, so `{s}:\t//host` filled in becomes `https://host`:
+// a check on the string as written (isAbsoluteURL, a plugin's origin rule) would see another URL.
+const urlParserStrippedCharacter = /[\t\n\r]/;
+
+function assertValidURL(url: unknown, config: unknown): void {
+  if (typeof url !== "string") return;
+  if (malformedHttpProtocol.test(normalizeURLForProtocolCheck(url))) {
     throw new FaxiosError(
       "Invalid URL: missing \"//\" after protocol",
+      FaxiosError.ERR_INVALID_URL,
+      config as InternalFaxiosRequestConfig
+    );
+  }
+  if (urlParserStrippedCharacter.test(url)) {
+    throw new FaxiosError(
+      "Invalid URL: contains a tab or line break",
       FaxiosError.ERR_INVALID_URL,
       config as InternalFaxiosRequestConfig
     );
@@ -35,7 +47,8 @@ function assertValidHttpProtocolURL(url: unknown, config: unknown): void {
  * Creates a new URL by combining the baseURL with the requestedURL when the requestedURL is
  * relative. An absolute requestedURL is returned untouched, unless a baseURL is set and
  * `allowAbsoluteUrls` is `false`: then it throws `ERR_INVALID_URL` rather than send the
- * request somewhere the caller didn't mean.
+ * request somewhere the caller didn't mean. A URL (or the baseURL it joins) with an `http(s):`
+ * protocol missing `//`, or with a tab or line break anywhere, throws `ERR_INVALID_URL`.
  *
  * @param {string} baseURL The base URL
  * @param {string} requestedURL Absolute or relative URL to combine
@@ -43,7 +56,7 @@ function assertValidHttpProtocolURL(url: unknown, config: unknown): void {
  * @returns {string} The combined full path
  */
 export default function buildFullPath(baseURL: unknown, requestedURL: unknown, allowAbsoluteUrls?: unknown, config?: unknown): string {
-  assertValidHttpProtocolURL(requestedURL, config);
+  assertValidURL(requestedURL, config);
   if (!baseURL) return requestedURL as string;
   if (isAbsoluteURL(requestedURL)) {
     if (allowAbsoluteUrls === false) {
@@ -55,6 +68,6 @@ export default function buildFullPath(baseURL: unknown, requestedURL: unknown, a
     }
     return requestedURL as string;
   }
-  assertValidHttpProtocolURL(baseURL, config);
+  assertValidURL(baseURL, config);
   return combineURLs(baseURL as string, requestedURL as string);
 }

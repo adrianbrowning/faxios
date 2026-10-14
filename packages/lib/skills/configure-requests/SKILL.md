@@ -424,7 +424,8 @@ export only. Instances from `create()` do not have them; import them by name ins
    `ERR_INVALID_URL` before fetch: `api.get("https://other.example/x")` fails, and so does
    `api.getUri({ url: "https://other.example/x" })`. Use a separate instance, or set
    `allowAbsoluteUrls: true` when the absolute URL is trusted. A URL is absolute only with a
-   scheme and `//`: `documents:batchGet` or `localhost:3000/x` joins `baseURL`. Source:
+   scheme and `//`: `documents:batchGet` or `localhost:3000/x` joins `baseURL`. A `url` or
+   joined `baseURL` with a tab or line break rejects with `ERR_INVALID_URL`. Source:
    `src/lib/core/Faxios.ts` (`resolveAllowAbsoluteUrls`), `src/lib/core/buildFullPath.ts`,
    `src/lib/helpers/isAbsoluteURL.ts`.
 6. **MEDIUM: Importing plugins from the root.** `import { retry } from "@gcmdev/faxios"` fails and

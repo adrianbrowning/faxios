@@ -418,6 +418,21 @@ describe("plugins::authBearer", () => {
       assert.deepStrictEqual(authorizations, []);
     });
 
+    // The URL parser drops tabs and line breaks, so `{s}:\t//host` would turn into `https://host`.
+    it("rejects a URL with a tab or line break that would hide a scheme placeholder, sending nothing", async () => {
+      const { fetch, authorizations } = recordingFetch();
+      const bare = faxios.create({ env: { fetch } }).use(authBearer(() => "token"));
+      const api = faxios.create({ baseURL: "https://api.test", env: { fetch } }).use(authBearer(() => "token"));
+      const isInvalid = { code: "ERR_INVALID_URL", message: "Invalid URL: contains a tab or line break" };
+
+      for (const url of [ "{s}:\t//evil.test/p", "{s}:/\n/evil.test/p", "{s}:\r//evil.test/p" ]) {
+        await assert.rejects(bare.get(url, { pathParams: { s: "https" } }), isInvalid, JSON.stringify(url));
+        await assert.rejects(api.get(url, { baseURL: "", pathParams: { s: "https" } }), isInvalid, JSON.stringify(url));
+      }
+
+      assert.deepStrictEqual(authorizations, []);
+    });
+
     it("still sends the token to the API for ordinary path placeholders", async () => {
       const urls: Array<string> = [];
       const { fetch, authorizations } = recordingFetch();
