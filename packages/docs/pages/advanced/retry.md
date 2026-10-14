@@ -164,7 +164,7 @@ await api.get("/users");
 await api.get("/reports/latest", { retry: { attemptTimeout: 10_000 } });
 ```
 
-With `attemptTimeout`, middleware after `retry` gets a context whose `ctx.config.signal` is the try's own signal. A `responseType: "stream"` body read after the response arrives isn't bounded by `attemptTimeout`, whose timer stops when the try's response arrives; the request's `timeout` and your `signal` still govern it until the body is read or cancelled. When `retry` tries again after a status error, it cancels that error's stream body, which nothing else reads, so its connection is released; a body `onRetry` started reading is left to it.
+With `attemptTimeout`, middleware after `retry` gets a context whose `ctx.config.signal` is the try's own signal. A `responseType: "stream"` body read after the response arrives isn't bounded by `attemptTimeout`, whose timer stops when the try's response arrives; the request's `timeout` and your `signal` still govern it until the body is read or cancelled. When `retry` drops a status error, because it tries again or because `onRetry` or `delay` threw, it cancels that error's stream body, which nothing else reads, so its connection is released; a body `onRetry` started reading is left to it.
 
 ## Methods
 
