@@ -4,7 +4,7 @@ import cookies from "../helpers/cookies.js";
 import isURLSameOrigin from "../helpers/isURLSameOrigin.js";
 import platform from "../platform.js";
 import type { FaxiosRequestConfig } from "../types.js";
-import utils from "../utils.js";
+import { hasOwnProp, isFunction, isObject } from "../utils.js";
 
 function applyXSRFToken(
   headers: FaxiosHeaders,
@@ -13,7 +13,7 @@ function applyXSRFToken(
   xsrfCookieName: string | undefined,
   config: FaxiosRequestConfig
 ): boolean {
-  if (utils.isFunction(withXSRFToken)) {
+  if (isFunction(withXSRFToken)) {
     withXSRFToken = (withXSRFToken as (cfg: unknown) => unknown)(
       config
     ) as boolean | null | undefined;
@@ -44,7 +44,7 @@ function prepareRequest(config: FaxiosRequestConfig, url: string): FaxiosRequest
   // Read only own properties to prevent prototype pollution gadgets
   // (e.g. Object.prototype.baseURL = 'https://evil.com').
   const own = (key: string) =>
-    utils.hasOwnProp(newConfig, key)
+    hasOwnProp(newConfig, key)
       ? (newConfig as Record<string, unknown>)[key]
       : undefined;
 
@@ -73,7 +73,7 @@ function prepareRequest(config: FaxiosRequestConfig, url: string): FaxiosRequest
     // Fetch strips only Authorization when a redirect leaves the origin, so following one would
     // send the XSRF token to whatever host it points at. Refuse redirects unless the caller chose.
     const fetchOptions = own("fetchOptions") as Record<string, unknown> | undefined;
-    if (!utils.isObject(fetchOptions) || !utils.hasOwnProp(fetchOptions, "redirect")) {
+    if (!isObject(fetchOptions) || !hasOwnProp(fetchOptions, "redirect")) {
       newConfig.fetchOptions = { ...fetchOptions, redirect: "error" };
     }
   }

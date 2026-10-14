@@ -14,7 +14,7 @@ const CHUNK_LENGTH = Buffer.byteLength(CHUNK);
 const CONTENT_LENGTH = COUNT * CHUNK_LENGTH;
 // Longer than the progress throttle window (1000 ms / 3), so each chunk gets its own event.
 const CHUNK_INTERVAL = 400;
-// Fake only the clock the throttle reads; setImmediate stays real so streams and asap callbacks run.
+// Fake only the clock the throttle reads; setImmediate stays real so streams and queued microtasks run.
 const FAKED_TIMERS: Array<"clearTimeout" | "Date" | "setTimeout"> = [ "Date", "setTimeout", "clearTimeout" ];
 
 const drainMacrotasks = async () => {

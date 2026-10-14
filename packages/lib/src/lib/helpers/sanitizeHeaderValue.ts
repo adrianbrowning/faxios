@@ -1,6 +1,6 @@
 "use strict";
 
-import utils from "../utils.js";
+import { forEach, isArray } from "../utils.js";
 
 function trimSPorHTAB(str: string): string {
   let start = 0;
@@ -37,8 +37,8 @@ const INVALID_BYTE_STRING_HEADER_VALUE_CHARS = new RegExp("[^\\u0009\\u0020-\\u0
 
 // eslint-disable-next-line sonarjs/function-return-type
 function sanitizeValue(value: unknown, invalidChars: RegExp): Array<string> | string {
-  if (utils.isArray(value)) {
-    return (value as Array<unknown>).map(item => sanitizeValue(item, invalidChars) as string);
+  if (isArray(value)) {
+    return (value).map(item => sanitizeValue(item, invalidChars) as string);
   }
 
   return trimSPorHTAB(String(value).replace(invalidChars, ""));
@@ -53,7 +53,7 @@ const sanitizeByteStringHeaderValue = (value: unknown) =>
 export function toByteStringHeaderObject(headers: { toJSON: () => Record<string, unknown>; }) {
   const byteStringHeaders: Record<string, unknown> = Object.create(null);
 
-  utils.forEach(headers.toJSON(), (value: unknown, header: unknown) => {
+  forEach(headers.toJSON(), (value: unknown, header: unknown) => {
     byteStringHeaders[String(header)] = sanitizeByteStringHeaderValue(value);
   });
 

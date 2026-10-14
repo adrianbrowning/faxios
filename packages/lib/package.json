@@ -63,7 +63,6 @@
       "./unsafe/helpers/isAbsoluteURL.js": "./src/lib/helpers/isAbsoluteURL.ts",
       "./unsafe/helpers/buildURL.js": "./src/lib/helpers/buildURL.ts",
       "./unsafe/helpers/combineURLs.js": "./src/lib/helpers/combineURLs.ts",
-      "./unsafe/utils.js": "./src/lib/utils.ts",
       "./package.json": "./package.json"
     },
     "cjs": false,
@@ -112,10 +111,6 @@
     "./unsafe/helpers/combineURLs.js": {
       "types": "./dist/lib/helpers/combineURLs.d.ts",
       "default": "./dist/lib/helpers/combineURLs.js"
-    },
-    "./unsafe/utils.js": {
-      "types": "./dist/lib/utils.d.ts",
-      "default": "./dist/lib/utils.js"
     },
     "./package.json": "./package.json"
   },

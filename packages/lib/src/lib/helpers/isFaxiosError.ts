@@ -2,7 +2,7 @@
 "use strict";
 
 import type FaxiosError from "../core/FaxiosError.js";
-import utils from "../utils.js";
+import { isObject } from "../utils.js";
 
 /**
  * Determines whether the payload is an error thrown by Faxios.
@@ -16,5 +16,5 @@ import utils from "../utils.js";
  * @returns {boolean} True if the payload is an error thrown by Faxios, otherwise false
  */
 export default function isFaxiosError<T = unknown, D = unknown>(payload: unknown): payload is FaxiosError<T, D> {
-  return utils.isObject(payload) && (payload as Record<string, unknown>).isFaxiosError === true;
+  return isObject(payload) && (payload as Record<string, unknown>).isFaxiosError === true;
 }

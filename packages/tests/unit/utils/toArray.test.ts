@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
-import utils from "#src/lib/utils.js";
-
-const { toArray } = utils;
+import { toArray } from "#src/lib/utils.js";
 
 describe("utils::toArray", () => {
   it("should return null or an array copy depending on input", () => {

@@ -3,7 +3,7 @@ import type { AddressInfo } from "node:net";
 import stream from "node:stream";
 import { describe, it, vi } from "vitest";
 import faxios from "#src/index.js";
-import utils from "#src/lib/utils.js";
+import { isReadableStream } from "#src/lib/utils.js";
 import {
   startHTTPServer,
   stopHTTPServer
@@ -272,7 +272,7 @@ describe.runIf(typeof fetch === "function")(
 
         class NoStreamRequest {
           constructor(_url: Request | string | URL, init?: { body?: unknown; }) {
-            if (init && utils.isReadableStream!(init.body)) {
+            if (init && isReadableStream(init.body)) {
               throw new TypeError(
                 "ReadableStream request bodies are unsupported"
               );

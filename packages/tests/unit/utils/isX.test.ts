@@ -1,35 +1,35 @@
 import { describe, expect, it } from "vitest";
-import utils from "#src/lib/utils.js";
+import { getSafeProp, hasOwnInPrototypeChain, isArray, isArrayBuffer, isArrayBufferView, isBlob, isDate, isFormData, isFunction, isNumber, isObject, isPlainObject, isSafeIterable, isString, isTypedArray, isUndefined, isURLSearchParams } from "#src/lib/utils.js";
 
 describe("utils::isX", () => {
   it("should validate Array", () => {
-    expect(utils.isArray([])).toEqual(true);
-    expect(utils.isArray({ length: 5 })).toEqual(false);
+    expect(isArray([])).toEqual(true);
+    expect(isArray({ length: 5 })).toEqual(false);
   });
 
   it("should validate ArrayBuffer", () => {
-    expect(utils.isArrayBuffer(new ArrayBuffer(2))).toEqual(true);
-    expect(utils.isArrayBuffer({})).toEqual(false);
+    expect(isArrayBuffer(new ArrayBuffer(2))).toEqual(true);
+    expect(isArrayBuffer({})).toEqual(false);
   });
 
   it("should validate ArrayBufferView", () => {
-    expect(utils.isArrayBufferView(new DataView(new ArrayBuffer(2)))).toEqual(
+    expect(isArrayBufferView(new DataView(new ArrayBuffer(2)))).toEqual(
       true
     );
   });
 
   it("should validate FormData", () => {
-    expect(utils.isFormData(new FormData())).toEqual(true);
+    expect(isFormData(new FormData())).toEqual(true);
   });
 
   it("should validate Blob", () => {
-    expect(utils.isBlob(new Blob())).toEqual(true);
+    expect(isBlob(new Blob())).toEqual(true);
   });
 
   it("should validate String", () => {
-    expect(utils.isString("")).toEqual(true);
+    expect(isString("")).toEqual(true);
     expect(
-      utils.isString({
+      isString({
         toString: function () {
           return "";
         },
@@ -38,26 +38,26 @@ describe("utils::isX", () => {
   });
 
   it("should validate Number", () => {
-    expect(utils.isNumber(123)).toEqual(true);
-    expect(utils.isNumber("123")).toEqual(false);
+    expect(isNumber(123)).toEqual(true);
+    expect(isNumber("123")).toEqual(false);
   });
 
   it("should validate Undefined", () => {
-    expect(utils.isUndefined(undefined)).toEqual(true);
-    expect(utils.isUndefined(null)).toEqual(false);
+    expect(isUndefined(undefined)).toEqual(true);
+    expect(isUndefined(null)).toEqual(false);
   });
 
   it("should validate Object", () => {
-    expect(utils.isObject({})).toEqual(true);
-    expect(utils.isObject([])).toEqual(true);
-    expect(utils.isObject(null)).toEqual(false);
+    expect(isObject({})).toEqual(true);
+    expect(isObject([])).toEqual(true);
+    expect(isObject(null)).toEqual(false);
   });
 
   it("should validate plain Object", () => {
-    expect(utils.isPlainObject({})).toEqual(true);
-    expect(utils.isPlainObject([])).toEqual(false);
-    expect(utils.isPlainObject(null)).toEqual(false);
-    expect(utils.isPlainObject(Object.create({}))).toEqual(false);
+    expect(isPlainObject({})).toEqual(true);
+    expect(isPlainObject([])).toEqual(false);
+    expect(isPlainObject(null)).toEqual(false);
+    expect(isPlainObject(Object.create({}))).toEqual(false);
   });
 
   it("should ignore inherited symbol properties when validating plain Object", () => {
@@ -68,17 +68,17 @@ describe("utils::isX", () => {
       };
       proto[Symbol.toStringTag] = "Custom";
 
-      expect(utils.isPlainObject({})).toEqual(true);
-      expect(utils.isPlainObject([])).toEqual(false);
+      expect(isPlainObject({})).toEqual(true);
+      expect(isPlainObject([])).toEqual(false);
       expect(
-        utils.isPlainObject({
+        isPlainObject({
           [Symbol.iterator]: function* () {
             yield [ "x-own", "yes" ];
           },
         })
       ).toEqual(false);
       expect(
-        utils.isPlainObject({
+        isPlainObject({
           [Symbol.toStringTag]: "Custom",
         })
       ).toEqual(false);
@@ -97,7 +97,7 @@ describe("utils::isX", () => {
       yield [ "x", "1" ];
     };
 
-    expect(utils.isPlainObject(Object.create(proto))).toEqual(false);
+    expect(isPlainObject(Object.create(proto))).toEqual(false);
   });
 
   it("should not read polluted Object.prototype iterator accessors for safe iterable checks", () => {
@@ -113,7 +113,7 @@ describe("utils::isX", () => {
         },
       });
 
-      expect(utils.isSafeIterable({})).toEqual(false);
+      expect(isSafeIterable({})).toEqual(false);
       expect(accessed).toEqual(false);
     }
     finally {
@@ -137,28 +137,28 @@ describe("utils::isX", () => {
       }
     );
 
-    expect(utils.hasOwnInPrototypeChain(proxy, "missing")).toEqual(false);
-    expect(utils.getSafeProp(proxy, "missing")).toEqual(undefined);
+    expect(hasOwnInPrototypeChain(proxy, "missing")).toEqual(false);
+    expect(getSafeProp(proxy, "missing")).toEqual(undefined);
     expect(calls).toBeLessThanOrEqual(2);
   });
 
   it("should validate Date", () => {
-    expect(utils.isDate(new Date())).toEqual(true);
-    expect(utils.isDate(Date.now())).toEqual(false);
+    expect(isDate(new Date())).toEqual(true);
+    expect(isDate(Date.now())).toEqual(false);
   });
 
   it("should validate Function", () => {
-    expect(utils.isFunction(function () {})).toEqual(true);
-    expect(utils.isFunction("function")).toEqual(false);
+    expect(isFunction(function () {})).toEqual(true);
+    expect(isFunction("function")).toEqual(false);
   });
 
   it("should validate URLSearchParams", () => {
-    expect(utils.isURLSearchParams(new URLSearchParams())).toEqual(true);
-    expect(utils.isURLSearchParams("foo=1&bar=2")).toEqual(false);
+    expect(isURLSearchParams(new URLSearchParams())).toEqual(true);
+    expect(isURLSearchParams("foo=1&bar=2")).toEqual(false);
   });
 
   it("should validate TypedArray instance", () => {
-    expect(utils.isTypedArray(new Uint8Array([ 1, 2, 3 ]))).toEqual(true);
-    expect(utils.isTypedArray([ 1, 2, 3 ])).toEqual(false);
+    expect(isTypedArray(new Uint8Array([ 1, 2, 3 ]))).toEqual(true);
+    expect(isTypedArray([ 1, 2, 3 ])).toEqual(false);
   });
 });

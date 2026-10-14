@@ -1,5 +1,4 @@
 import canceledFromSignal from "../cancel/canceledFromSignal.js";
-import utils from "../utils.js";
 import { onAbort } from "./raceAbort.js";
 import type { AbortableSignal } from "./raceAbort.js";
 
@@ -34,7 +33,7 @@ const composeSignals = (signals: Array<unknown> | null | undefined): ExtendedAbo
   }
 
   const signal: ExtendedAbortSignal = controller.signal;
-  signal.unsubscribe = () => utils.asap(unsubscribe);
+  signal.unsubscribe = () => queueMicrotask(unsubscribe);
 
   return signal;
 };

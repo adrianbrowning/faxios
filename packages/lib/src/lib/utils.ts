@@ -1,13 +1,10 @@
-// @ts-self-types="./utils.d.ts" — required for Deno: published as an unsafe/* export
-"use strict";
-
 // utils is a library of generic helper functions non-specific to faxios
 
 const { toString } = Object.prototype;
 const { getPrototypeOf } = Object;
 const { iterator, toStringTag } = Symbol;
 
-const hasOwnProperty = (obj: unknown, prop: PropertyKey) => Object.hasOwn(obj as object, prop);
+const hasOwnProp = (obj: unknown, prop: PropertyKey) => Object.hasOwn(obj as object, prop);
 
 /**
  * The one dangerous-key check: `__proto__`, `constructor` and `prototype` are skipped wherever
@@ -38,7 +35,7 @@ const hasOwnInPrototypeChain = (thing: unknown, prop: PropertyKey): boolean => {
   let steps = 0;
 
   while (obj != null && obj !== Object.prototype) {
-    if (hasOwnProperty(obj, prop)) {
+    if (hasOwnProp(obj, prop)) {
       return true;
     }
     obj = getPrototypeOf(obj) as null | object;
@@ -81,13 +78,13 @@ const kindOfTest = (type: string) => {
 const typeOfTest = (type: string) => (thing: unknown) => typeof thing === type;
 
 /**
- * Determine if a value is a non-null object
+ * Determine if a value is an Array
  *
- * @param {Object} val The value to test
+ * @param {*} value The value to test
  *
  * @returns {boolean} True if value is an Array, otherwise false
  */
-const { isArray } = Array;
+const isArray: (value: unknown) => value is Array<unknown> = Array.isArray;
 
 /**
  * Determine if a value is undefined
@@ -212,28 +209,6 @@ const isPlainObject = (val: unknown): boolean => {
 };
 
 /**
- * Determine if a value is an empty object (safely handles Buffers)
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if value is an empty object, otherwise false
- */
-const isEmptyObject = (val: unknown): boolean => {
-  // Early return for non-objects or Buffers to prevent RangeError
-  if (!isObject(val) || isBuffer(val)) {
-    return false;
-  }
-
-  try {
-    return Object.keys(val).length === 0 && Object.getPrototypeOf(val) === Object.prototype;
-  }
-  catch {
-    // Fallback for any other objects that might cause RangeError with Object.keys()
-    return false;
-  }
-};
-
-/**
  * Determine if a value is a Date
  *
  * @param {*} val The value to test
@@ -313,12 +288,9 @@ const isFormData = (thing: unknown): boolean => {
  */
 const isURLSearchParams = kindOfTest("URLSearchParams");
 
-const [ isReadableStream, isRequest, isResponse, isHeaders ] = [
-  "ReadableStream",
-  "Request",
-  "Response",
-  "Headers",
-].map(kindOfTest);
+const isReadableStream = (thing: unknown): thing is ReadableStream<unknown> => kindOf(thing) === "readablestream";
+const isRequest = (thing: unknown): thing is Request => kindOf(thing) === "request";
+const isResponse = (thing: unknown): thing is Response => kindOf(thing) === "response";
 
 /**
  * Iterate over an Array or an Object invoking a function for each item.
@@ -334,7 +306,7 @@ const [ isReadableStream, isRequest, isResponse, isHeaders ] = [
  *
  * @param {Object} [options]
  * @param {Boolean} [options.allOwnKeys = false]
- * @returns {any}
+ * @returns {void}
  */
 function forEach(obj: unknown, fn: (value: unknown, key: unknown, obj: unknown) => void, { allOwnKeys = false } = {}): void {
   // Don't bother if no value provided
@@ -401,15 +373,7 @@ function findKey(obj: unknown, key: string): null | string {
   return null;
 }
 
-type GlobalWithEvents = typeof globalThis & {
-  addEventListener?: (type: string, listener: (event: Record<string, unknown>) => void, capture?: boolean) => void;
-  postMessage?: (message: unknown, targetOrigin: string) => void;
-  process?: { nextTick?: (cb: () => void) => void; };
-  setImmediate?: (cb: () => void) => void;
-};
-const _global = globalThis as GlobalWithEvents;
-
-const isContextDefined = (context: unknown) => !isUndefined(context) && context !== _global;
+const isContextDefined = (context: unknown) => !isUndefined(context) && context !== globalThis;
 
 /**
  * Accepts varargs expecting each argument to be an object, then
@@ -449,7 +413,7 @@ function merge(this: unknown, ...objs: Array<unknown>): Record<string, unknown> 
     // Read via own-prop only — a bare `result[targetKey]` walks the prototype
     // chain, so a polluted Object.prototype value could surface here and get
     // copied into the merged result.
-    const existing = hasOwnProperty(result, targetKey) ? result[targetKey] : undefined;
+    const existing = hasOwnProp(result, targetKey) ? result[targetKey] : undefined;
     if (isPlainObject(existing) && isPlainObject(val)) {
       result[targetKey] = merge(existing, val);
     }
@@ -462,7 +426,7 @@ function merge(this: unknown, ...objs: Array<unknown>): Record<string, unknown> 
     else {
       result[targetKey] = val;
     }
-    if (lowerKey !== undefined && hasOwnProperty(result, targetKey)) {
+    if (lowerKey !== undefined && hasOwnProp(result, targetKey)) {
       caselessKeys.set(lowerKey, targetKey as string);
     }
   };
@@ -528,20 +492,6 @@ const extend = (a: Record<string, unknown>, b: unknown, thisArg: unknown, { allO
 };
 
 /**
- * Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
- *
- * @param {string} content with BOM
- *
- * @returns {string} content value without BOM
- */
-const stripBOM = (content: string) => {
-  if (content.charCodeAt(0) === 0xfeff) {
-    content = content.slice(1);
-  }
-  return content;
-};
-
-/**
  * Resolve object with deep prototype chain to a flat object
  * @param {Object} sourceObj source object
  * @param {Object} [destObj]
@@ -604,25 +554,6 @@ const forEachEntry = (obj: unknown, fn: (key: unknown, value: unknown) => void) 
   for (const [ key, value ] of obj as Iterable<[unknown, unknown]>) {
     fn.call(obj, key, value);
   }
-};
-
-/**
- * It takes a regular expression and a string, and returns an array of all the matches
- *
- * @param {string} regExp - The regular expression to match against.
- * @param {string} str - The string to search.
- *
- * @returns {Array<boolean>}
- */
-const matchAll = (regExp: RegExp, str: string) => {
-  let matches: null | RegExpExecArray;
-  const arr: Array<RegExpExecArray> = [];
-
-  while ((matches = regExp.exec(str)) !== null) {
-    arr.push(matches);
-  }
-
-  return arr;
 };
 
 /* Checking if the kindOfTest function returns true when passed an HTMLFormElement. */
@@ -712,8 +643,6 @@ const toObjectSet = (arrayOrString: Array<unknown> | string, delimiter: string) 
   return obj;
 };
 
-const noop = () => {};
-
 const toFiniteNumber = (value: unknown, defaultValue?: number) => {
   const num = +(value as number);
   return value != null && Number.isFinite(num) ? num : defaultValue;
@@ -736,79 +665,15 @@ function isSpecCompliantForm(thing: unknown): boolean {
 }
 
 /**
- * Determines if a value is an async function.
- *
- * @param {*} thing - The value to test.
- * @returns {boolean} True if value is an async function, otherwise false.
- */
-const isAsyncFn = kindOfTest("AsyncFunction");
-
-/**
  * Determines if a value is thenable (has then and catch methods).
  *
  * @param {*} thing - The value to test.
  * @returns {boolean} True if value is thenable, otherwise false.
  */
-const isThenable = (thing: unknown) =>
-  thing &&
+const isThenable = (thing: unknown): thing is PromiseLike<unknown> =>
   (isObject(thing) || isFunction(thing)) &&
   isFunction((thing as Record<string, unknown>).then) &&
   isFunction((thing as Record<string, unknown>).catch);
-
-// original code
-// https://github.com/DigitalBrainJS/FaxiosPromise/blob/16deab13710ec09779922131f3fa5954320f83ab/lib/utils.js#L11-L34
-
-/**
- * Provides a cross-platform setImmediate implementation.
- * Uses native setImmediate if available, otherwise falls back to postMessage or setTimeout.
- *
- * @param {boolean} setImmediateSupported - Whether setImmediate is supported.
- * @param {boolean} postMessageSupported - Whether postMessage is supported.
- * @returns {Function} A function to schedule a callback asynchronously.
- */
-const _setImmediate = ((setImmediateSupported: boolean, postMessageSupported: boolean) => {
-  if (setImmediateSupported) {
-    return (_global["setImmediate"] as (cb: () => void) => unknown);
-  }
-
-  return postMessageSupported
-    ? ((token: string, callbacks: Array<() => void>) => {
-      const _addEventListener = _global.addEventListener as NonNullable<GlobalWithEvents["addEventListener"]>;
-      _addEventListener(
-        "message",
-        (evt: Record<string, unknown>) => {
-          if (evt["source"] === _global && evt["data"] === token) {
-            callbacks.length && callbacks.shift()!();
-          }
-        },
-        false
-      );
-
-      const _postMessage = _global.postMessage as NonNullable<GlobalWithEvents["postMessage"]>;
-
-      return (cb: () => void) => {
-        callbacks.push(cb);
-        _postMessage(token, "*");
-      };
-    // eslint-disable-next-line sonarjs/pseudo-random
-    })(`faxios@${Math.random()}`, [])
-    : (cb: () => void) => setTimeout(cb);
-})(isFunction(_global["setImmediate"]), isFunction(_global["postMessage"]));
-
-/**
- * Schedules a microtask or asynchronous callback as soon as possible.
- * Uses queueMicrotask if available, otherwise falls back to process.nextTick or _setImmediate.
- *
- * @type {Function}
- */
- 
-const _process = _global["process"];
-const asap =
-  typeof queueMicrotask !== "undefined"
-    ? queueMicrotask.bind(globalThis)
-    : (_process && _process.nextTick) || _setImmediate;
-
-// *********************
 
 const isIterable = (thing: unknown) => thing != null && isFunction((thing as Record<symbol, unknown>)[iterator]);
 
@@ -826,62 +691,48 @@ const isIterable = (thing: unknown) => thing != null && isFunction((thing as Rec
 const isSafeIterable = (thing: unknown) =>
   thing != null && hasOwnInPrototypeChain(thing, iterator) && isIterable(thing);
 
-export default {
+export {
+  extend,
+  findKey,
+  forEach,
+  forEachEntry,
+  freezeMethods,
+  getSafeProp,
+  hasOwnInPrototypeChain,
+  hasOwnProp,
   isArray,
   isArrayBuffer,
-  isBuffer,
-  isFormData,
   isArrayBufferView,
-  isString,
-  isNumber,
+  isBlob,
   isBoolean,
-  isObject,
-  isPlainObject,
-  isEmptyObject,
-  isReadableStream,
-  isRequest,
-  isResponse,
-  isHeaders,
-  isUndefined,
+  isBuffer,
+  isDangerousKey,
   isDate,
   isFile,
-  isBlob,
-  isRegExp,
-  isFunction,
-  isStream,
-  isURLSearchParams,
-  isTypedArray,
   isFileList,
-  forEach,
-  merge,
-  extend,
-  stripBOM,
-  toFlatObject,
-  kindOf,
-  kindOfTest,
-  toArray,
-  forEachEntry,
-  matchAll,
+  isFormData,
+  isFunction,
   isHTMLForm,
-  hasOwnProperty,
-  hasOwnProp: hasOwnProperty, // an alias to avoid ESLint no-prototype-builtins detection
-  isDangerousKey,
-  hasOwnInPrototypeChain,
-  getSafeProp,
-  reduceDescriptors,
-  freezeMethods,
-  toObjectSet,
-  toCamelCase,
-  noop,
-  toFiniteNumber,
-  findKey,
-  global: _global,
-  isContextDefined,
-  isSpecCompliantForm,
-  isAsyncFn,
-  isThenable,
-  setImmediate: _setImmediate,
-  asap,
-  isIterable,
+  isNumber,
+  isObject,
+  isPlainObject,
+  isReadableStream,
+  isRegExp,
+  isRequest,
+  isResponse,
   isSafeIterable,
+  isSpecCompliantForm,
+  isStream,
+  isString,
+  isThenable,
+  isTypedArray,
+  isUndefined,
+  isURLSearchParams,
+  kindOf,
+  merge,
+  toArray,
+  toCamelCase,
+  toFiniteNumber,
+  toFlatObject,
+  toObjectSet
 };

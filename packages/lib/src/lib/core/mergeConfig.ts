@@ -2,7 +2,7 @@
 "use strict";
 
 import type { FaxiosDefaults, FaxiosRequestConfig } from "../types.js";
-import utils from "../utils.js";
+import { hasOwnProp, isArray, isDangerousKey, isPlainObject, isUndefined, merge } from "../utils.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
 
 const headersToObject = (thing: unknown) => (thing instanceof FaxiosHeaders ? { ...thing } : thing);
@@ -19,7 +19,7 @@ type MergeInput = FaxiosDefaults | FaxiosRequestConfig | Record<string, unknown>
  * @returns {Object} New object resulting from merging config2 to config1
  */
 export default function mergeConfig(config1: MergeInput, config2?: MergeInput): FaxiosRequestConfig & Record<string, unknown> {
-  return merge(config1, config2 || {}, false);
+  return mergeConfigs(config1, config2 || {}, false);
 }
 
 /**
@@ -27,36 +27,36 @@ export default function mergeConfig(config1: MergeInput, config2?: MergeInput): 
  * of them would only be discarded.
  */
 export function mergeConfigExceptHeaders(config1: FaxiosDefaults | FaxiosRequestConfig, config2?: FaxiosRequestConfig): FaxiosRequestConfig & Record<string, unknown> {
-  return merge(config1, config2 || {}, true);
+  return mergeConfigs(config1, config2 || {}, true);
 }
 
 type MergeFn = (a: unknown, b: unknown, prop: string, config1: MergeInput, config2: MergeInput) => unknown;
 
 function getMergedValue(target: unknown, source: unknown, caseless?: boolean): unknown {
-  if (utils.isPlainObject(target) && utils.isPlainObject(source)) {
-    return utils.merge.call({ caseless }, target, source);
+  if (isPlainObject(target) && isPlainObject(source)) {
+    return merge.call({ caseless }, target, source);
   }
-  else if (utils.isPlainObject(source)) {
-    return utils.merge({}, source);
+  else if (isPlainObject(source)) {
+    return merge({}, source);
   }
-  else if (utils.isArray(source)) {
+  else if (isArray(source)) {
     return source.slice();
   }
   return source;
 }
 
 function mergeDeepProperties(a: unknown, b: unknown, caseless?: boolean): unknown {
-  if (!utils.isUndefined(b)) {
+  if (!isUndefined(b)) {
     return getMergedValue(a, b, caseless);
   }
-  else if (!utils.isUndefined(a)) {
+  else if (!isUndefined(a)) {
     return getMergedValue(undefined, a, caseless);
   }
   return undefined;
 }
 
 function valueFromConfig2(_a: unknown, b: unknown): unknown {
-  if (!utils.isUndefined(b)) {
+  if (!isUndefined(b)) {
     return getMergedValue(undefined, b);
   }
   return undefined;
@@ -64,10 +64,10 @@ function valueFromConfig2(_a: unknown, b: unknown): unknown {
 
 // An own `undefined` in config2 is treated as unset, so config1's value applies.
 function defaultToConfig2(a: unknown, b: unknown): unknown {
-  if (!utils.isUndefined(b)) {
+  if (!isUndefined(b)) {
     return getMergedValue(undefined, b);
   }
-  else if (!utils.isUndefined(a)) {
+  else if (!isUndefined(a)) {
     return getMergedValue(undefined, a);
   }
   return undefined;
@@ -88,7 +88,7 @@ const DATA_SLOT: PropertyDescriptor = Object.assign(Object.create(null) as Prope
 function ownCopy(...sources: Array<unknown>): Record<string, unknown> {
   const out: Record<string, unknown> = Object.create(null);
   for (const source of sources) {
-    if (!utils.isPlainObject(source)) continue;
+    if (!isPlainObject(source)) continue;
     const record = source as Record<string, unknown>;
     for (const key of Object.keys(record)) {
       DATA_SLOT.value = record[key];
@@ -102,35 +102,35 @@ function ownCopy(...sources: Array<unknown>): Record<string, unknown> {
 // `params`: a plain object is copied with every own key; anything else (URLSearchParams,
 // a custom serializer's input) passes through as given.
 function mergeParams(a: unknown, b: unknown): unknown {
-  const source = utils.isUndefined(b) ? a : b;
-  if (!utils.isPlainObject(source)) return source;
-  return utils.isUndefined(b) ? ownCopy(a) : ownCopy(a, b);
+  const source = isUndefined(b) ? a : b;
+  if (!isPlainObject(source)) return source;
+  return isUndefined(b) ? ownCopy(a) : ownCopy(a, b);
 }
 
 // `env`: shallow, null-prototype, so `fetch`, `Request` and `Response` can only be own values.
 function mergeEnv(a: unknown, b: unknown): unknown {
-  if (utils.isUndefined(a) && utils.isUndefined(b)) return undefined;
+  if (isUndefined(a) && isUndefined(b)) return undefined;
   return ownCopy(a, b);
 }
 
 // `redact`: a request's keys add to the instance's, so a per-request list can't unmask an
 // instance key. Lower-cased and deduplicated, as toJSON() matches them case-insensitively.
 function mergeRedact(a: unknown, b: unknown): unknown {
-  if (utils.isUndefined(a) && utils.isUndefined(b)) return undefined;
+  if (isUndefined(a) && isUndefined(b)) return undefined;
   const keys = new Set<string>();
   for (const list of [ a, b ]) {
-    if (!utils.isArray(list)) continue;
+    if (!isArray(list)) continue;
     for (const key of list) if (typeof key === "string") keys.add(key.toLowerCase());
   }
   return [ ...keys ];
 }
 
 function getMergedTransitionalOption(prop: string, config1: MergeInput, config2: MergeInput): unknown {
-  const transitional2 = utils.hasOwnProp(config2, "transitional") ? (config2 as Record<string, unknown>)["transitional"] : undefined;
+  const transitional2 = hasOwnProp(config2, "transitional") ? (config2 as Record<string, unknown>)["transitional"] : undefined;
 
-  if (!utils.isUndefined(transitional2)) {
-    if (utils.isPlainObject(transitional2)) {
-      if (utils.hasOwnProp(transitional2, prop)) {
+  if (!isUndefined(transitional2)) {
+    if (isPlainObject(transitional2)) {
+      if (hasOwnProp(transitional2, prop)) {
         return (transitional2 as Record<string, unknown>)[prop];
       }
     }
@@ -139,9 +139,9 @@ function getMergedTransitionalOption(prop: string, config1: MergeInput, config2:
     }
   }
 
-  const transitional1 = utils.hasOwnProp(config1, "transitional") ? (config1 as Record<string, unknown>)["transitional"] : undefined;
+  const transitional1 = hasOwnProp(config1, "transitional") ? (config1 as Record<string, unknown>)["transitional"] : undefined;
 
-  if (utils.isPlainObject(transitional1) && utils.hasOwnProp(transitional1, prop)) {
+  if (isPlainObject(transitional1) && hasOwnProp(transitional1, prop)) {
     return (transitional1 as Record<string, unknown>)[prop];
   }
 
@@ -149,10 +149,10 @@ function getMergedTransitionalOption(prop: string, config1: MergeInput, config2:
 }
 
 function mergeDirectKeys(a: unknown, b: unknown, prop: string, config1: MergeInput, config2: MergeInput): unknown {
-  if (utils.hasOwnProp(config2, prop)) {
+  if (hasOwnProp(config2, prop)) {
     return getMergedValue(a, b);
   }
-  else if (utils.hasOwnProp(config1, prop)) {
+  else if (hasOwnProp(config1, prop)) {
     return getMergedValue(undefined, a);
   }
   return undefined;
@@ -198,7 +198,7 @@ const mergeDeep: MergeFn = (a, b) => mergeDeepProperties(a, b);
 
 const { propertyIsEnumerable } = Object.prototype;
 
-function merge(config1: MergeInput, config2: MergeInput, skipHeaders: boolean): FaxiosRequestConfig & Record<string, unknown> {
+function mergeConfigs(config1: MergeInput, config2: MergeInput, skipHeaders: boolean): FaxiosRequestConfig & Record<string, unknown> {
   // Use a null-prototype object so that downstream reads such as `config.auth`
   // or `config.baseURL` cannot inherit polluted values from Object.prototype.
   // `hasOwnProperty` is restored as a non-enumerable own slot to preserve
@@ -220,12 +220,12 @@ function merge(config1: MergeInput, config2: MergeInput, skipHeaders: boolean): 
   const out = config as Record<string, unknown>;
 
   const computeConfigValue = (key: string): void => {
-    if (utils.isDangerousKey(key) || skipHeaders && key === "headers") return;
+    if (isDangerousKey(key) || skipHeaders && key === "headers") return;
     const mergeFn = mergeMap[key] ?? mergeDeep;
-    const a = utils.hasOwnProp(config1, key) ? c1[key] : undefined;
-    const b = utils.hasOwnProp(config2, key) ? c2[key] : undefined;
+    const a = hasOwnProp(config1, key) ? c1[key] : undefined;
+    const b = hasOwnProp(config2, key) ? c2[key] : undefined;
     const configValue = mergeFn(a, b, key, config1, config2);
-    (utils.isUndefined(configValue) && mergeFn !== mergeDirectKeys) || (out[key] = configValue);
+    (isUndefined(configValue) && mergeFn !== mergeDirectKeys) || (out[key] = configValue);
   };
 
   // config1's enumerable keys, then config2's that config1 doesn't list: the order a spread of
@@ -239,11 +239,11 @@ function merge(config1: MergeInput, config2: MergeInput, skipHeaders: boolean): 
   // undefined, unless `transitional.validateStatusUndefinedResolves` opts back in to resolving
   // every status. `validateStatus: null` is the explicit way to resolve every status.
   if (
-    utils.hasOwnProp(config2, "validateStatus") &&
-    utils.isUndefined((config2).validateStatus) &&
+    hasOwnProp(config2, "validateStatus") &&
+    isUndefined((config2).validateStatus) &&
     getMergedTransitionalOption("validateStatusUndefinedResolves", config1, config2) !== true
   ) {
-    if (utils.hasOwnProp(config1, "validateStatus")) {
+    if (hasOwnProp(config1, "validateStatus")) {
       out["validateStatus"] = getMergedValue(undefined, (config1).validateStatus);
     }
     else {

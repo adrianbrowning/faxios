@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
-import utils from "#src/lib/utils.js";
-
-const { kindOf } = utils;
+import { kindOf } from "#src/lib/utils.js";
 
 describe("utils::kindOf", () => {
   it("should return object tag", () => {

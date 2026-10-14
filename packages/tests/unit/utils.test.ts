@@ -1,27 +1,27 @@
 import assert from "node:assert";
 import stream from "node:stream";
 import FormData from "form-data";
-import { describe, it } from "vitest";
-import utils from "#src/lib/utils.js";
+import { describe, it, vi } from "vitest";
+import { findKey, forEach, isBuffer, isFormData, isStream } from "#src/lib/utils.js";
 
 describe("utils", () => {
   it("should validate Stream", () => {
-    assert.strictEqual(utils.isStream(new stream.Readable()), true);
-    assert.strictEqual(utils.isStream({ foo: "bar" }), false);
+    assert.strictEqual(isStream(new stream.Readable()), true);
+    assert.strictEqual(isStream({ foo: "bar" }), false);
   });
 
   it("should validate Buffer", () => {
-    assert.strictEqual(utils.isBuffer(Buffer.from("a")), true);
-    assert.strictEqual(utils.isBuffer(null), false);
-    assert.strictEqual(utils.isBuffer(undefined), false);
+    assert.strictEqual(isBuffer(Buffer.from("a")), true);
+    assert.strictEqual(isBuffer(null), false);
+    assert.strictEqual(isBuffer(undefined), false);
   });
 
   describe("utils::isFormData", () => {
     it("should detect the FormData instance provided by the `form-data` package", () => {
       [ 1, "str", {}, new RegExp("") ].forEach(thing => {
-        assert.equal(utils.isFormData(thing), false);
+        assert.equal(isFormData(thing), false);
       });
-      assert.equal(utils.isFormData(new FormData()), true);
+      assert.equal(isFormData(new FormData()), true);
     });
 
     it("should not call toString method on built-in objects instances", () => {
@@ -29,7 +29,7 @@ describe("utils", () => {
 
       buf.toString = () => assert.fail("should not be called");
 
-      assert.equal(utils.isFormData(buf), false);
+      assert.equal(isFormData(buf), false);
     });
 
     it("should not call toString method on built-in objects instances, even if append method exists", () => {
@@ -39,7 +39,7 @@ describe("utils", () => {
 
       buf.toString = () => assert.fail("should not be called");
 
-      assert.equal(utils.isFormData(buf), false);
+      assert.equal(isFormData(buf), false);
     });
 
     it("should detect custom FormData instances by toStringTag signature and append method presence", () => {
@@ -50,24 +50,16 @@ describe("utils", () => {
           return "FormData";
         }
       }
-      assert.equal(utils.isFormData(new FormData()), true);
+      assert.equal(isFormData(new FormData()), true);
     });
   });
 
   describe("Buffer RangeError Fix", () => {
-    it("should handle large Buffer in isEmptyObject without RangeError", () => {
-      const largeBuffer = Buffer.alloc(1024 * 1024 * 200);
-
-      const result = utils.isEmptyObject(largeBuffer);
-
-      assert.strictEqual(result, false);
-    });
-
     it("should handle large Buffer in forEach without RangeError", () => {
       const largeBuffer = Buffer.alloc(1024 * 1024 * 200);
       let count = 0;
 
-      utils.forEach(largeBuffer, () => count++);
+      forEach(largeBuffer, () => count++);
 
       assert.strictEqual(count, 0);
     });
@@ -75,9 +67,29 @@ describe("utils", () => {
     it("should handle large Buffer in findKey without RangeError", () => {
       const largeBuffer = Buffer.alloc(1024 * 1024 * 200);
 
-      const result = utils.findKey(largeBuffer, "test");
+      const result = findKey(largeBuffer, "test");
 
       assert.strictEqual(result, null);
     });
+  });
+
+  // A browser without setImmediate has postMessage; scheduling must not leave a window listener.
+  // The import is dynamic on purpose: the check is what loading the module does to the globals.
+  it("adds no message listener at import when setImmediate is missing", async () => {
+    const listened: Array<string> = [];
+    vi.stubGlobal("setImmediate", undefined);
+    vi.stubGlobal("postMessage", () => {});
+    vi.stubGlobal("addEventListener", (type: string) => {
+      listened.push(type);
+    });
+    vi.resetModules();
+    try {
+      await import("#src/index.js");
+    }
+    finally {
+      vi.unstubAllGlobals();
+      vi.resetModules();
+    }
+    assert.deepStrictEqual(listened.filter(type => type === "message"), []);
   });
 });

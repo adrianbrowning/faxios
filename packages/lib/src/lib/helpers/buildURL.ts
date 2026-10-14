@@ -2,7 +2,7 @@
 "use strict";
 
 import type { ParamEncoder } from "../types.js";
-import utils from "../utils.js";
+import { getSafeProp, isFunction, isURLSearchParams } from "../utils.js";
 import FaxiosURLSearchParams from "./FaxiosURLSearchParams.js";
 
 /**
@@ -41,7 +41,7 @@ export default function buildURL(url: string, params?: unknown, options?: unknow
     return url;
   }
 
-  const _options = utils.isFunction(options)
+  const _options = isFunction(options)
     ? {
       serialize: options,
     }
@@ -50,9 +50,9 @@ export default function buildURL(url: string, params?: unknown, options?: unknow
   // Read serializer options pollution-safely: own properties and methods on a
   // class/template prototype are honored, but values injected onto a polluted
   // Object.prototype are ignored.
-  const customEncode = utils.getSafeProp(_options, "encode");
+  const customEncode = getSafeProp(_options, "encode");
   const _encode: ParamEncoder = isParamEncoder(customEncode) ? customEncode : encode;
-  const serializeFn = utils.getSafeProp(_options, "serialize") as ((params: unknown, options: unknown) => string) | undefined;
+  const serializeFn = getSafeProp(_options, "serialize") as ((params: unknown, options: unknown) => string) | undefined;
 
   let serializedParams: string | undefined;
 
@@ -60,7 +60,7 @@ export default function buildURL(url: string, params?: unknown, options?: unknow
     serializedParams = serializeFn(params, _options);
   }
   else {
-    serializedParams = utils.isURLSearchParams(params)
+    serializedParams = isURLSearchParams(params)
       ? (params as { toString: () => string; }).toString()
       : new FaxiosURLSearchParams(params, _options).toString(_encode);
   }
