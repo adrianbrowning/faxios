@@ -256,6 +256,10 @@ const isFileList = kindOfTest("FileList");
  */
 const isStream = (val: unknown) => isObject(val) && isFunction(getSafeProp(val, "pipe"));
 
+// An async iterable body, such as an async generator, is sent as a stream of its chunks.
+const isAsyncIterable = (val: unknown): val is AsyncIterable<unknown> =>
+  isObject(val) && isFunction(getSafeProp(val, Symbol.asyncIterator));
+
 /**
  * Determine if a value is a FormData
  *
@@ -705,6 +709,7 @@ export {
   isArray,
   isArrayBuffer,
   isArrayBufferView,
+  isAsyncIterable,
   isBlob,
   isBoolean,
   isBuffer,

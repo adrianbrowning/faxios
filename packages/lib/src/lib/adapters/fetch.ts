@@ -19,7 +19,7 @@ import type {
   InternalFaxiosRequestConfig
 } from "../types.js";
 import type { WebRequest } from "../types/web.js";
-import { findKey, getSafeProp, hasOwnInPrototypeChain, hasOwnProp, isArrayBuffer, isArrayBufferView, isBlob, isFunction, isObject, isReadableStream, isRequest, isResponse, isSpecCompliantForm, isStream, isString, isURLSearchParams, toFiniteNumber } from "../utils.js";
+import { findKey, getSafeProp, hasOwnInPrototypeChain, hasOwnProp, isArrayBuffer, isArrayBufferView, isAsyncIterable, isBlob, isFunction, isObject, isReadableStream, isRequest, isResponse, isSpecCompliantForm, isStream, isString, isURLSearchParams, toFiniteNumber } from "../utils.js";
 import {
   bodyTooLarge,
   checkDeclaredContentLength,
@@ -400,18 +400,19 @@ const fetchInitFor = (
   return init;
 };
 
-// Web stream bodies must yield bytes, so a Node stream body is sent as a web stream whose string
-// chunks (e.g. `Readable.from(["a"])`) are encoded.
+// Web stream bodies must yield bytes, so a Node stream or async iterable body is sent as a web
+// stream whose string chunks (e.g. `Readable.from(["a"])`) are encoded.
 async function* toByteChunks(source: AsyncIterable<unknown>) {
   for await (const chunk of source) yield typeof chunk === "string" ? textEncoder.encode(chunk) : chunk;
 }
+// A Node stream or another async iterable; a web stream (async iterable in Node) is sent as is.
+const isIterableStream = (body: unknown): body is AsyncIterable<unknown> =>
+  !isReadableStream(body) && (isStream(body) || isAsyncIterable(body));
 const toWebStream = (runtime: FetchRuntime, body: unknown): unknown =>
-  (runtime.streamFrom && isStream(body)
-    ? runtime.streamFrom(toByteChunks(body as AsyncIterable<unknown>))
-    : body);
+  (runtime.streamFrom && isIterableStream(body) ? runtime.streamFrom(toByteChunks(body)) : body);
 
-// A web stream or Node stream body: read once, as it is sent, and sent with `duplex`.
-const isStreamBody = (body: unknown): boolean => isReadableStream(body) || isStream(body);
+// A web stream, Node stream or async iterable body: read once, as it is sent, and sent with `duplex`.
+const isStreamBody = (body: unknown): boolean => isReadableStream(body) || isIterableStream(body);
 
 // Bodies counted as fetch reads them when maxBodyLength is set.
 const isCountedWhileSent = (runtime: FetchRuntime, body: unknown): boolean =>

@@ -11,7 +11,7 @@ import type {
   GenericFormData,
   InternalFaxiosRequestConfig
 } from "../types.js";
-import { hasOwnProp, isArrayBuffer, isArrayBufferView, isBlob, isBuffer, isFile, isFileList, isFormData, isHTMLForm, isObject, isReadableStream, isResponse, isStream, isString, isURLSearchParams } from "../utils.js";
+import { hasOwnProp, isArrayBuffer, isArrayBufferView, isAsyncIterable, isBlob, isBuffer, isFile, isFileList, isFormData, isHTMLForm, isObject, isReadableStream, isResponse, isStream, isString, isURLSearchParams } from "../utils.js";
 import transitionalDefaults from "./transitional.js";
 
 function serializeObjectPayload(
@@ -71,7 +71,8 @@ const defaults: FaxiosDefaults = {
         isStream(data) ||
         isFile(data) ||
         isBlob(data) ||
-        isReadableStream(data)
+        isReadableStream(data) ||
+        isAsyncIterable(data)
       ) {
         return data;
       }
