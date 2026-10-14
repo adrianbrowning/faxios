@@ -448,15 +448,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch.test.ts": {
-      "fingerprint": "bbb89bfedb3f4ba81a9904faf90abc4811d52ef557364285ed20411ceb439620",
+      "fingerprint": "deed859acda88037bb1d05ada376c734d55ad56dffef8c1d0318f2c255edf453",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch.test.ts": "74069f42db5a882742d879e209c106251dd87d62e77b1f03584aeaad79e8d136"
+        "packages/tests/unit/adapters/fetch.test.ts": "1d8d78e3220bff747634209a4f9ca9dfad7b0d86751e9869c19727907abab470"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
       "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/tests/unit/adapters/fetch.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
       ]
     },
     "source:CHANGELOG.md": {
@@ -3016,15 +3016,15 @@
       ]
     },
     "source:packages/tests/unit/prototypePollution.test.ts": {
-      "fingerprint": "67205059e483d66ec3b61b4e782d685ad45612e481f90a731720d1052e32841a",
+      "fingerprint": "12d88d4cd24dfb27502404f177127b83fcc5f06136269ef62da3b99e5da5f403",
       "snapshot": {
-        "packages/tests/unit/prototypePollution.test.ts": "f37175d378795ac3e82a01f2111e19409c28a733317e1c3d099040650b1e2866"
+        "packages/tests/unit/prototypePollution.test.ts": "516a20936fc6124b86ca57ff0552f8480133292a84f6fc1c6a5f843831424c9d"
       },
-      "head": "1dbb3b488c94cd4699e4e769110c060f8a927756",
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
       "outcome": "no-change",
-      "reason": "test-only changes; skill guidance unaffected",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
       "evidence": [
-        "Changed: packages/tests/unit/prototypePollution.test.ts at 1dbb3b488c94cd4699e4e769110c060f8a927756"
+        "Changed: packages/tests/unit/prototypePollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
       ]
     },
     "source:packages/tests/unit/query.test.ts": {
@@ -5507,15 +5507,15 @@
       ]
     },
     "source:packages/tests/README.md": {
-      "fingerprint": "746be03445c58a30625205a97c8c8c430bdfdc19d51d2d4b4a09153a005b563c",
+      "fingerprint": "7bede69a570c40b4b0f497aeea049fd8121bcba1d3aed49a003f45a554803b27",
       "snapshot": {
-        "packages/tests/README.md": "4231bc9ca824ebcddaa5e765a7f5c08d601f7680d4e990d525e8c497e340f60a"
+        "packages/tests/README.md": "5add6a5b154d5c1c61dc9ce916cbe0bd36da8438c193adb0a4b91aa384555216"
       },
-      "head": "0f2caf939ec854fba295170e591f96f55d3dc640",
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
       "outcome": "no-change",
-      "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
       "evidence": [
-        "Changed: packages/tests/README.md at 5ec7ea4b09f436506a6044c02747686361b3b9af"
+        "Changed: packages/tests/README.md at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
       ]
     },
     "source:packages/tests/smoke/esm/tests/headers.smoke.test.ts": {
@@ -5636,6 +5636,270 @@
       "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
       "evidence": [
         "Changed: packages/tests/smoke/deno/deno.lock at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+      ]
+    },
+    "source:packages/tests/setup/pollution.ts": {
+      "fingerprint": "732cb72c58488d8a52850c4b316d4afbc4c1165ed0f12e65520bfd7034e999d9",
+      "snapshot": {
+        "packages/tests/setup/pollution.ts": "4a83d1c2431b7222eaa6254b7a85a77c0cbbc54fbbb7e1ab66718cd44dd2c588"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/setup/pollution.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch/_helpers.ts": {
+      "fingerprint": "a197f86da72fb4d98acaf7dd583ece0bac358d1df04b87bd890019b304ef8d7d",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch/_helpers.ts": "853e74933a8d6de50e4d5637c04cf5a3932ae80b95ed31d521b16cc33ae32b9b"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch/_helpers.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch/auth.test.ts": {
+      "fingerprint": "762a28394c7ac851da0c57e5a45b2aa1ae70bb042accd029b68b80eda0d44389",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch/auth.test.ts": "ce8973da3fe284d245e57177baff42297dd340d815116599787978ee80a990cf"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch/auth.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch/cancellation.test.ts": {
+      "fingerprint": "611f0ddb4bc42ab8171b4c2a81aaab8b929fe0a7cf9752148c56b5d3f5be296e",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch/cancellation.test.ts": "98fc007aa6eb390955c37ba94e0327329315e823579f2173c5fd9660f275b67e"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch/cancellation.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch/content-type.test.ts": {
+      "fingerprint": "f6156046c3d0f9afbc49348690ddcabde8bd004b3cc80554d585e0674bc2ed10",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch/content-type.test.ts": "4d3ef806205d732e03b2c508e2a128965cbfae8ce82edc11f87b3fdf23438ad0"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch/content-type.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch/env.test.ts": {
+      "fingerprint": "1beaa6075e82fb01a139642534f861411328730dbc08e6d58c4ce3bd612a98cb",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch/env.test.ts": "515a39e12efe62250593d4444ccfbc545ea6368b94898d63c221cea82979ada7"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch/env.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch/pollution.test.ts": {
+      "fingerprint": "462a38d674571b37704d967e19b77484e456716667a5f94f17dc700f790f8097",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch/pollution.test.ts": "4b5baccb5003d5bfbe42fe1406429665f8f868c15f333ac57ca0c8ceb0aafa60"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch/pollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch/probe-cleanup.test.ts": {
+      "fingerprint": "6d276425161b774710907e6da9ef65630f3fcbd266eeb4493ec723f368f79334",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch/probe-cleanup.test.ts": "bea3e65104256312febe712fc1865790e690677f4a1fc62a12e48b3084cfc0d4"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch/probe-cleanup.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch/progress.test.ts": {
+      "fingerprint": "d4530a1e4f32951f74568ba2ba0b03d599c3c1bf348e76d82fb2ede615e332fc",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch/progress.test.ts": "7f7028d4f3c67086066f46a389269ba4f44b7119cecafbe6425b8dd6d2dc4086"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch/progress.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch/request-body.test.ts": {
+      "fingerprint": "2c277ab0dd4463ce19c18dc23b1f1734f5ca3e52942e870984a721ee9d171773",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch/request-body.test.ts": "9be921fa6b9cf84c3658081e8068079ecc6d04941d073bb362b433231713cdce"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch/request-body.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch/responses.test.ts": {
+      "fingerprint": "3b79eea858614c28ee719dca5c05b4930f38db705562b4bbfd7360cea51f8e05",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch/responses.test.ts": "04a8b1e815f00e32c9d9eec2e86ade5d2c29a36f66f47d4ce2d00efc7dc3c445"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch/responses.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch/size-limits.test.ts": {
+      "fingerprint": "e88c2ec66e9ae1cf62b4c4ce04a5337a9995533d421f3fca0a12568f912d02e3",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch/size-limits.test.ts": "fd9b4407fb43595248081182da64f79f78a2ced65fc69bd90019777184ca2694"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch/size-limits.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch/timeout.test.ts": {
+      "fingerprint": "d1bef03892047d25726bebda8788044639180e4239b8177d9acbab05a4847f61",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch/timeout.test.ts": "dbeed5e8efd2b0a138d3601da9bbccf4a8a9dafd2332ca1aa75837962d5c4197"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch/timeout.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch/user-agent.test.ts": {
+      "fingerprint": "413a82f4dd1249bfa5db4d84ca7b806b0466f2b306c94e8aa0b0e45faba3915b",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch/user-agent.test.ts": "5d31c4c77800c795ce7cfcdf3f922beade042d38adaf18b7df130ec88f725908"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch/user-agent.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/core/FaxiosError.pollution.test.ts": {
+      "fingerprint": "9ff094a3eb996f901f4139bd8a4f7f54c2ada295c5598fde881f635d1e87d5e5",
+      "snapshot": {
+        "packages/tests/unit/core/FaxiosError.pollution.test.ts": "a6b114985efc27b91e7a7300ebe140187c195f0edf1d54015f6f2a88a536fd18"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/core/FaxiosError.pollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/core/FaxiosHeaders.pollution.test.ts": {
+      "fingerprint": "6f3a48bfccc3b3e9ab1fa0b6506bb0ebe54a1d90040a795b06be1cc3b5b24fa8",
+      "snapshot": {
+        "packages/tests/unit/core/FaxiosHeaders.pollution.test.ts": "cd47aa43dd382cbc90cf97cbbf01452cf6fcde4740bfa7b5f135113395a1e5a4"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/core/FaxiosHeaders.pollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/core/mergeConfig.pollution.test.ts": {
+      "fingerprint": "9f47e2a5ade7b8e5aad74fc3797c1e489c723edd31d75b90ba772f5429c69511",
+      "snapshot": {
+        "packages/tests/unit/core/mergeConfig.pollution.test.ts": "78b8a9083d6cc97f48f47587620b6c231038f257923dc705aa403aeac6fda44c"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/core/mergeConfig.pollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/core/prepareRequest.pollution.test.ts": {
+      "fingerprint": "39be8a318d2e62861526c786d50afae989f6958d4d0ddcb4e0fe2d20349f5ef9",
+      "snapshot": {
+        "packages/tests/unit/core/prepareRequest.pollution.test.ts": "571cf7557420fe6b4c4a670d093ffa77c337f3d3d413cc6b25b1e57ff289a58b"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/core/prepareRequest.pollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/setup/pollution.test.ts": {
+      "fingerprint": "6b4cd1ec3b555cfa8418143f60d904299742af06911ac9445ed048cec66e3f47",
+      "snapshot": {
+        "packages/tests/unit/setup/pollution.test.ts": "58eac14b8108e4b0e34e8bff696957be500aab869ad519428035507e7830eedd"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/setup/pollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/transformResponse.pollution.test.ts": {
+      "fingerprint": "8f09dd768758959394571f6cbad0685703447f733487db873acedf19f1d411d4",
+      "snapshot": {
+        "packages/tests/unit/transformResponse.pollution.test.ts": "9b2b69faa78826e1e31a6ab17ccd30f81ec37f840bb0bcc3a5dd3b480a9ee481"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/transformResponse.pollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/utils/extend.pollution.test.ts": {
+      "fingerprint": "e0304d239014dd2172634563140ac8f7909b61775d8f9d5e3d8fe4141484644a",
+      "snapshot": {
+        "packages/tests/unit/utils/extend.pollution.test.ts": "043996fbaa6e16b65e1b7500ee60a003530916b14346abbc08f504b94c6c3547"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/utils/extend.pollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+      ]
+    },
+    "source:packages/tests/unit/utils/merge.pollution.test.ts": {
+      "fingerprint": "38ce290e062eff670c62d1579214064ae1ba38054a32aca0acf2a0d4383e9b56",
+      "snapshot": {
+        "packages/tests/unit/utils/merge.pollution.test.ts": "eb70265ed87e1df6a452c0f3675a3526370d64c9361a447ca4a75513dfbf2725"
+      },
+      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "outcome": "no-change",
+      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/utils/merge.pollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
       ]
     }
   }

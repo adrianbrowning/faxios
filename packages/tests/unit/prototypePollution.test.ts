@@ -2,358 +2,25 @@
 import assert from "node:assert";
 import http from "node:http";
 import type { AddressInfo } from "node:net";
-import { afterEach, describe, it, vi } from "vitest";
+import { describe, it, vi } from "vitest";
 import faxios from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
-import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
-import mergeConfig from "#src/lib/core/mergeConfig.js";
-import prepareRequest from "#src/lib/core/prepareRequest.js";
-import defaults from "#src/lib/defaults/index.js";
 import { retry } from "#src/lib/plugins/retry.ts";
 import { timing } from "#src/lib/plugins/timing.ts";
-import utils from "#src/lib/utils.js";
-
-// ponytail: only augment Object.prototype with non-conflicting test-only keys.
-// All faxios config keys overlap with FaxiosRequestConfig and are accessed via ObjProto.
-declare global {
-  interface Object {
-    customNested?: unknown;
-    polluted?: unknown;
-  }
-}
-
-/** Asserts `value` is an object with the expected prototype that did not pick up `polluted`. */
-const assertClean = (value: unknown, proto: null | object = Object.prototype): Record<string, unknown> => {
-  assert.ok(typeof value === "object" && value !== null, "expected an object");
-  assert.strictEqual(Object.getPrototypeOf(value), proto);
-  assert.strictEqual(Reflect.get(value, "polluted"), undefined);
-  assert.strictEqual(Object.hasOwn(value, "__proto__"), false);
-  return value as Record<string, unknown>;
-};
-
-const ObjProto = Object.prototype as any;
+import { ObjProto, restorePrototypeAfterEach } from "../setup/pollution.js";
 
 type ServerLike = http.Server;
+
 // ponytail: cast for test ergonomics — faxios.get returns Promise<unknown> in this codebase
 
 const ax = faxios as any;
 
 describe("Prototype Pollution Protection", () => {
-  afterEach(() => {
-    // Clean up any pollution that might have occurred.
-    delete Object.prototype.polluted;
-    delete ObjProto.parseReviver;
-    delete ObjProto.transport;
-    delete ObjProto.transformRequest;
-    delete ObjProto.transformResponse;
-    delete ObjProto.formSerializer;
-    delete ObjProto.httpVersion;
-    delete ObjProto.lookup;
-    delete ObjProto.family;
-    delete ObjProto.http2Options;
-    delete ObjProto.validateStatus;
-    delete ObjProto.auth;
-    delete ObjProto.baseURL;
-    delete ObjProto.socketPath;
-    delete ObjProto.beforeRedirect;
-    delete ObjProto.sensitiveHeaders;
-    delete ObjProto.insecureHTTPParser;
-    delete ObjProto.httpAgent;
-    delete ObjProto.httpsAgent;
-    delete ObjProto.proxy;
-    delete ObjProto.maxContentLength;
-    delete ObjProto.maxBodyLength;
-    delete ObjProto.maxRedirects;
-    delete ObjProto.maxRate;
-    delete ObjProto.timeout;
-    delete ObjProto.transitional;
-    delete ObjProto.timeoutErrorMessage;
-    delete ObjProto.env;
-    delete ObjProto.cancelToken;
-    delete ObjProto.signal;
-    delete ObjProto.decompress;
-    delete ObjProto.params;
-    delete ObjProto.paramsSerializer;
-    delete ObjProto.method;
-    delete ObjProto.withCredentials;
-    delete ObjProto.responseType;
-    delete ObjProto.fetchOptions;
-    delete ObjProto.username;
-    delete ObjProto.password;
-    delete ObjProto.hostname;
-    delete ObjProto.host;
-    delete ObjProto.port;
-    delete ObjProto.protocol;
-    delete ObjProto.get;
-    delete ObjProto.set;
-    delete ObjProto.headers;
-    delete Object.prototype.customNested;
-  });
-
-  describe("utils.merge", () => {
-    it("should filter __proto__ key at top level", () => {
-      const result = assertClean(utils.merge(
-        {},
-        JSON.parse("{\"__proto__\": {\"polluted\": \"yes\"}, \"safe\": \"value\"}")
-      ));
-
-      assert.strictEqual(Object.prototype.polluted, undefined);
-      assert.strictEqual(result.safe, "value");
-    });
-
-    it("should filter constructor key at top level", () => {
-      const result = utils.merge(
-        {},
-        { constructor: { polluted: "yes" }, safe: "value" }
-      );
-
-      assert.strictEqual(result.safe, "value");
-      assert.strictEqual(result.hasOwnProperty("constructor"), false);
-    });
-
-    it("should filter prototype key at top level", () => {
-      const result = utils.merge(
-        {},
-        { prototype: { polluted: "yes" }, safe: "value" }
-      );
-
-      assert.strictEqual(result.safe, "value");
-      assert.strictEqual(result.hasOwnProperty("prototype"), false);
-    });
-
-    it("should filter __proto__ key in nested objects", () => {
-      const result = assertClean(utils.merge(
-        {},
-        JSON.parse("{\"headers\": {\"__proto__\": {\"polluted\": \"nested\"}, \"Content-Type\": \"application/json\"}}")
-      ));
-      const headers = assertClean(result.headers);
-
-      assert.strictEqual(Object.prototype.polluted, undefined);
-      assert.strictEqual(headers["Content-Type"], "application/json");
-    });
-
-    it("should filter constructor key in nested objects", () => {
-      const result: any = utils.merge(
-        {},
-        {
-          headers: {
-            constructor: { prototype: { polluted: "nested" } },
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      assert.strictEqual(Object.prototype.polluted, undefined);
-      assert.strictEqual(result.headers["Content-Type"], "application/json");
-      assert.strictEqual(result.headers.hasOwnProperty("constructor"), false);
-    });
-
-    it("should filter prototype key in nested objects", () => {
-      const result: any = utils.merge(
-        {},
-        {
-          headers: {
-            prototype: { polluted: "nested" },
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      assert.strictEqual(result.headers["Content-Type"], "application/json");
-      assert.strictEqual(result.headers.hasOwnProperty("prototype"), false);
-    });
-
-    it("should filter dangerous keys in deeply nested objects", () => {
-      const result = assertClean(utils.merge(
-        {},
-        JSON.parse("{\"level1\": {\"level2\": {\"__proto__\": {\"polluted\": \"deep\"}, \"prototype\": {\"polluted\": \"deep\"}, \"safe\": \"value\"}}}")
-      ));
-      const level1 = assertClean(result.level1);
-      const level2 = assertClean(level1.level2);
-
-      assert.strictEqual(Object.prototype.polluted, undefined);
-      assert.strictEqual(level2.safe, "value");
-      assert.strictEqual(Object.hasOwn(level2, "prototype"), false);
-    });
-
-    it("should still merge regular properties correctly", () => {
-      const result: any = utils.merge(
-        { a: 1, b: { c: 2 } },
-        { b: { d: 3 }, e: 4 }
-      );
-
-      assert.strictEqual(result.a, 1);
-      assert.strictEqual(result.b.c, 2);
-      assert.strictEqual(result.b.d, 3);
-      assert.strictEqual(result.e, 4);
-    });
-
-    it("should handle JSON.parse payloads safely", () => {
-      const malicious = JSON.parse("{\"__proto__\": {\"polluted\": \"yes\"}}");
-      assertClean(utils.merge({}, malicious));
-
-      assert.strictEqual(Object.prototype.polluted, undefined);
-    });
-
-    it("should handle nested JSON.parse payloads safely", () => {
-      const malicious = JSON.parse(
-        "{\"headers\": {\"constructor\": {\"prototype\": {\"polluted\": \"yes\"}}}}"
-      );
-
-      const result: any = utils.merge({}, malicious);
-
-      assert.strictEqual(Object.prototype.polluted, undefined);
-      assert.strictEqual(result.headers.hasOwnProperty("constructor"), false);
-    });
-  });
-
-  describe("mergeConfig", () => {
-    it("should filter dangerous keys at top level", () => {
-      const result = assertClean(mergeConfig(
-        {},
-        JSON.parse("{\"__proto__\": {\"polluted\": \"yes\"}, \"constructor\": {\"polluted\": \"yes\"}, \"prototype\": {\"polluted\": \"yes\"}, \"url\": \"/api/test\"}")
-      ), null);
-
-      assert.strictEqual(Object.prototype.polluted, undefined);
-      assert.strictEqual(result.url, "/api/test");
-      assert.strictEqual(Object.hasOwn(result, "constructor"), false);
-      assert.strictEqual(Object.hasOwn(result, "prototype"), false);
-    });
-
-    it("should filter dangerous keys in headers", () => {
-      const result = assertClean(mergeConfig(
-        {},
-        JSON.parse("{\"headers\": {\"__proto__\": {\"polluted\": \"yes\"}, \"Content-Type\": \"application/json\"}}")
-      ), null);
-      const headers = assertClean(result.headers);
-
-      assert.strictEqual(Object.prototype.polluted, undefined);
-      assert.strictEqual(headers["Content-Type"], "application/json");
-    });
-
-    it("should filter dangerous keys in custom config properties", () => {
-      const result = assertClean(mergeConfig(
-        {},
-        JSON.parse("{\"customProp\": {\"__proto__\": {\"polluted\": \"yes\"}, \"safe\": \"value\"}}")
-      ), null);
-      const customProp = assertClean(result.customProp);
-
-      assert.strictEqual(Object.prototype.polluted, undefined);
-      assert.strictEqual(customProp.safe, "value");
-    });
-
-    it("should still merge configs correctly", () => {
-      const config1 = {
-        baseURL: "https://api.example.com",
-        timeout: 1000,
-        headers: {
-          common: {
-            Accept: "application/json",
-          },
-        },
-      };
-
-      const config2 = {
-        url: "/users",
-        timeout: 5000,
-        headers: {
-          common: {
-            "Content-Type": "application/json",
-          },
-        },
-      };
-
-      const result: any = mergeConfig(config1, config2);
-
-      assert.strictEqual(result.baseURL, "https://api.example.com");
-      assert.strictEqual(result.url, "/users");
-      assert.strictEqual(result.timeout, 5000);
-      assert.strictEqual(result.headers.common.Accept, "application/json");
-      assert.strictEqual(
-        result.headers.common["Content-Type"],
-        "application/json"
-      );
-    });
-
-    // Polluted transformRequest/Response must not
-    // replace the safe defaults through inherited reads during merge.
-    it("should not inherit polluted transformRequest from Object.prototype", () => {
-      const polluted = () => "attacker";
-      ObjProto.transformRequest = polluted;
-
-      const result = mergeConfig(
-        { transformRequest: [ d => d ] },
-        { url: "/x" }
-      );
-
-      assert.notStrictEqual(result.transformRequest, polluted);
-      assert.ok(Array.isArray(result.transformRequest));
-    });
-
-    it("should not inherit polluted transformResponse from Object.prototype", () => {
-      const polluted = () => "attacker";
-      ObjProto.transformResponse = polluted;
-
-      const result = mergeConfig(
-        { transformResponse: [ d => d ] },
-        { url: "/x" }
-      );
-
-      assert.notStrictEqual(result.transformResponse, polluted);
-      assert.ok(Array.isArray(result.transformResponse));
-    });
-  });
-
-  // parseReviver read via prototype chain.
-  describe("defaults.transformResponse parseReviver", () => {
-    it("should ignore Object.prototype.parseReviver when parsing JSON", () => {
-      let reviverCalled = false;
-      ObjProto.parseReviver = function polluted(k: unknown, v: unknown) {
-        reviverCalled = true;
-        if (k === "role") return "admin";
-        return v;
-      };
-
-      const ctx = { transitional: defaults.transitional };
-
-      const transformFn = (defaults.transformResponse as Array<any>)[0];
-
-      const result: any = transformFn.call(
-        ctx,
-        "{\"role\":\"user\",\"balance\":100}"
-      );
-
-      assert.strictEqual(reviverCalled, false);
-      assert.strictEqual(result.role, "user");
-      assert.strictEqual(result.balance, 100);
-    });
-
-    it("should ignore Object.prototype.responseType", () => {
-      ObjProto.responseType = "json";
-      const ctx = { transitional: defaults.transitional };
-      // Non-JSON string body must be returned as-is; polluted responseType must
-      // not force strict JSON parsing.
-
-      const result = (defaults.transformResponse as Array<any>)[0].call(
-        ctx,
-        "plain text"
-      );
-      assert.strictEqual(result, "plain text");
-      delete ObjProto.responseType;
-    });
-  });
+  restorePrototypeAfterEach();
 
   // mergeDirectKeys must not inherit validateStatus from
   // Object.prototype (was using the `in` operator which traverses the chain).
   describe("validateStatus merge", () => {
-    it("should not inherit a polluted validateStatus during mergeConfig", () => {
-      ObjProto.validateStatus = () => true;
-
-      const merged = mergeConfig(defaults, { url: "/x" });
-
-      assert.strictEqual(merged.validateStatus, defaults.validateStatus);
-    });
-
     it("should keep 4xx/5xx responses rejected when Object.prototype.validateStatus is polluted", async () => {
       ObjProto.validateStatus = () => true;
 
@@ -660,91 +327,6 @@ describe("Prototype Pollution Protection", () => {
     }, 10000);
   });
 
-  describe("prepareRequest params and paramsSerializer gadget", () => {
-    it("should not inherit polluted params via prepareRequest", () => {
-      ObjProto.params = { injected: "yes" };
-
-      try {
-        const resolved = prepareRequest({ url: "/api", method: "get" });
-
-        assert.ok(
-          resolved.url!.indexOf("injected") === -1,
-          "polluted params must not appear in URL"
-        );
-        assert.strictEqual(resolved.url, "/api", "URL must remain unchanged");
-      }
-      finally {
-        delete ObjProto.params;
-      }
-    });
-
-    it("should not invoke polluted paramsSerializer via prepareRequest", () => {
-      let serializerInvoked = false;
-      ObjProto.paramsSerializer = function polluted() {
-        serializerInvoked = true;
-        return "injected=yes";
-      };
-
-      try {
-        const resolved = prepareRequest({
-          url: "/api",
-          method: "get",
-          params: { legit: "true" },
-        });
-
-        assert.strictEqual(
-          serializerInvoked,
-          false,
-          "polluted paramsSerializer must not be called"
-        );
-        // The URL should have legit param serialized normally
-        assert.ok(
-          resolved.url!.indexOf("legit=true") !== -1,
-          "legitimate params must still be serialized"
-        );
-      }
-      finally {
-        delete ObjProto.paramsSerializer;
-      }
-    });
-  });
-
-  // Structural defense: mergeConfig returns a null-prototype object, so any
-  // property read that is not an own property of config cannot inherit from
-  // Object.prototype. Adding a new key to Object.prototype must never appear
-  // as a property of the merged config.
-  describe("mergeConfig null-prototype structural defense", () => {
-    it("should return an object whose prototype is null", () => {
-      const merged = mergeConfig({ url: "/x" }, { method: "get" });
-      assert.strictEqual(Object.getPrototypeOf(merged), null);
-    });
-
-    it("should preserve hasOwnProperty as a callable own slot", () => {
-      const merged = mergeConfig({}, { url: "/x", method: "get" });
-      assert.strictEqual(typeof merged.hasOwnProperty, "function");
-      assert.strictEqual(merged.hasOwnProperty("url"), true);
-      assert.strictEqual(merged.hasOwnProperty("method"), true);
-      assert.strictEqual(merged.hasOwnProperty("bogus"), false);
-    });
-
-    it("should not serialize hasOwnProperty slot via Object.keys", () => {
-      const merged = mergeConfig({ url: "/x" }, {});
-      assert.ok(!Object.keys(merged).includes("hasOwnProperty"));
-    });
-
-    it("should not expose arbitrary polluted keys as inherited properties", () => {
-      // eslint-disable-next-line no-extend-native -- prototype-pollution test; removed in finally
-      Object.prototype.polluted = "attacker";
-      try {
-        const merged = mergeConfig({ url: "/x" }, {});
-        assert.strictEqual(merged.polluted, undefined);
-      }
-      finally {
-        delete Object.prototype.polluted;
-      }
-    });
-  });
-
   // Verify every gadget enumerated in the audit
   // is neutralized end-to-end by the null-prototype config.
   describe("Full gadget coverage via null-prototype config", () => {
@@ -818,15 +400,16 @@ describe("Prototype Pollution Protection", () => {
 
     it("should ignore polluted httpAgent", async () => {
       let agentUsed = false;
-      ObjProto.httpAgent = new http.Agent({
+      const agent = new http.Agent({
         keepAlive: false,
       });
       // Wrap createConnection to detect usage
-      const origCreate = (ObjProto.httpAgent as http.Agent).createConnection;
-      ObjProto.httpAgent.createConnection = function (...args: Array<unknown>) {
+      const origCreate = agent.createConnection;
+      agent.createConnection = function (...args: Array<unknown>) {
         agentUsed = true;
         return origCreate.apply(this, args as Parameters<typeof origCreate>);
       };
+      ObjProto.httpAgent = agent;
 
       const server = await startEcho();
       const { port } = server.address() as AddressInfo;
@@ -888,16 +471,6 @@ describe("Prototype Pollution Protection", () => {
         await stop(server);
       }
     }, 10000);
-
-    it("should ignore polluted timeout at the merged config level", () => {
-      ObjProto.timeout = 1;
-      const merged = mergeConfig({}, { url: "/x" });
-      assert.strictEqual(
-        Object.prototype.hasOwnProperty.call(merged, "timeout"),
-        false
-      );
-      assert.strictEqual(merged.timeout, undefined);
-    });
 
     it("should ignore polluted timeoutErrorMessage", async () => {
       ObjProto.timeoutErrorMessage = "INJECTED_TIMEOUT";
@@ -993,107 +566,6 @@ describe("Prototype Pollution Protection", () => {
     }, 10000);
   });
 
-  // utils.merge previously read `result[targetKey]` directly, which walks the
-  // prototype chain. A polluted Object.prototype.<key> object would surface as
-  // the existing value and be merged into the result.
-  describe("utils.merge prototype-chain read", () => {
-    it("should not pick up polluted Object.prototype.<key> as the existing value", () => {
-      ObjProto.headers = { evil: "yes" };
-
-      const result: any = utils.merge(
-        {},
-        { headers: { "Content-Type": "application/json" } }
-      );
-
-      assert.strictEqual(result.headers.evil, undefined);
-      assert.strictEqual(result.headers["Content-Type"], "application/json");
-    });
-
-    it("should not absorb polluted nested objects when the key is absent from inputs", () => {
-      // When the source does not carry `customNested`, the merged result should
-      // not surface it either, even if Object.prototype carries it.
-      // eslint-disable-next-line no-extend-native -- prototype-pollution test; removed in afterEach
-      Object.prototype.customNested = { evil: "yes" };
-
-      const result = utils.merge({}, { safe: "value" });
-
-      assert.strictEqual(result.hasOwnProperty("customNested"), false);
-      assert.strictEqual(result.safe, "value");
-    });
-  });
-
-  // Object.defineProperty calls a HasProperty check on `get`/`set` of the
-  // descriptor. A polluted Object.prototype.get with a non-function value would
-  // throw TypeError at every defineProperty site that uses a plain literal
-  // descriptor. Each fixed site should be shielded with `__proto__: null`.
-  describe("Object.defineProperty descriptor literals", () => {
-    it("should construct FaxiosError when Object.prototype.get is polluted", () => {
-      ObjProto.get = "attacker";
-
-      const err = new FaxiosError("hello", "ECODE");
-
-      assert.strictEqual(err.message, "hello");
-      assert.strictEqual(err.code, "ECODE");
-    });
-
-    it("should construct FaxiosHeaders accessor methods when Object.prototype.get is polluted", () => {
-      ObjProto.get = "attacker";
-
-      // FaxiosHeaders.accessor uses Object.defineProperty on the prototype.
-      // Triggering a fresh accessor definition exercises the descriptor literal.
-      FaxiosHeaders.accessor("X-Pp-Test");
-
-      const h = new FaxiosHeaders() as any;
-      h.setXPpTest("value");
-      assert.strictEqual(h.getXPpTest(), "value");
-    });
-
-    it("should not throw in mergeConfig when Object.prototype.get is polluted", () => {
-      ObjProto.get = "attacker";
-
-      const result = mergeConfig({}, { url: "/x", method: "get" });
-
-      assert.strictEqual(result.url, "/x");
-      assert.strictEqual(result.method, "get");
-      assert.strictEqual(typeof result.hasOwnProperty, "function");
-    });
-
-    it("should not throw in utils.extend when Object.prototype.get is polluted", () => {
-      ObjProto.get = "attacker";
-
-      const a: Record<string, unknown> = {};
-      const b = { x: 1, fn() {} };
-      utils.extend(a, b, undefined);
-
-      assert.strictEqual(a.x, 1);
-      assert.strictEqual(typeof a.fn, "function");
-    });
-
-    it("should not throw in utils.extend with thisArg when Object.prototype.get is polluted", () => {
-      ObjProto.get = "attacker";
-
-      const a: Record<string, unknown> = {};
-      const ctx = { tag: "ctx" };
-      const b = {
-        method(this: { tag: string; }) {
-          return this.tag;
-        },
-      };
-      utils.extend(a, b, ctx);
-
-      assert.strictEqual((a.method as () => string)(), "ctx");
-    });
-
-    it("should also be shielded against a polluted Object.prototype.set", () => {
-      ObjProto.set = "attacker";
-
-      // Same surface as `get` — ToPropertyDescriptor checks both. One spot-check
-      // covers them all since they share the same fix.
-      const err = new FaxiosError("hello");
-      assert.strictEqual(err.message, "hello");
-    });
-  });
-
   // End-to-end regressions covering published advisory PoCs against full faxios
   // request flow. Each test mirrors the exploit scenario from the advisory and
   // asserts the attack does not succeed.
@@ -1169,7 +641,10 @@ describe("Prototype Pollution Protection", () => {
     it("polluted Object.prototype.transformResponse must not be invoked or leak request credentials", async () => {
       let invoked = false;
       let stolen = null;
-      ObjProto.transformResponse = function pollutedTransform(data: unknown) {
+      ObjProto.transformResponse = function pollutedTransform(
+        this: undefined | { auth?: { password?: string; username?: string; }; url?: string; },
+        data: unknown
+      ) {
         invoked = true;
 
         const ctx = this;
@@ -1209,21 +684,6 @@ describe("Prototype Pollution Protection", () => {
         await stop(server);
       }
     }, 10000);
-  });
-
-  // cloneConfig uses Object.defineProperty with a descriptor object.
-  // If Object.prototype.get is polluted with a function, a plain {} descriptor
-  // would result in a mixed accessor+data descriptor and throw a TypeError.
-  // The descriptor must be null-prototyped to be immune.
-  describe("cloneConfig Object.defineProperty descriptor pollution", () => {
-    it("should not throw when Object.prototype.get is polluted", () => {
-      ObjProto.get = function polluted() { return "attacker"; };
-
-      // prepareRequest calls cloneConfig internally — this must not throw
-      assert.doesNotThrow(() => {
-        prepareRequest({ url: "/api", method: "get" });
-      }, "cloneConfig must not throw when Object.prototype.get is polluted");
-    });
   });
 
   describe("clone-swap regression", () => {
@@ -1278,34 +738,24 @@ describe("Prototype Pollution Protection", () => {
     it("ignores an inherited provides on plugins that declare none", async () => {
       ObjProto.provides = { auth: { getToken: async () => "stolen" } };
       let seen: unknown;
-      try {
-        const api = faxios.create({ env: { fetch: okFetch } })
-          .use(retry({ delay: 0 }))
-          .use(timing(() => undefined))
-          .use(async (ctx, next) => {
-            seen = Object.keys(ctx.capabilities);
-            return next(ctx);
-          });
-        await api.get("http://test.local/x");
-      }
-      finally {
-        delete ObjProto.provides;
-      }
+      const api = faxios.create({ env: { fetch: okFetch } })
+        .use(retry({ delay: 0 }))
+        .use(timing(() => undefined))
+        .use(async (ctx, next) => {
+          seen = Object.keys(ctx.capabilities);
+          return next(ctx);
+        });
+      await api.get("http://test.local/x");
 
       assert.deepStrictEqual(seen, []);
     });
 
     it("ignores an inherited middleware on a plugin object without one", () => {
       ObjProto.middleware = async (ctx: unknown, next: (c: unknown) => unknown) => next(ctx);
-      try {
-        assert.throws(
-          () => faxios.create().use({ name: "empty" } as never),
-          (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE
-        );
-      }
-      finally {
-        delete ObjProto.middleware;
-      }
+      assert.throws(
+        () => faxios.create().use({ name: "empty" } as never),
+        (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE
+      );
     });
   });
 
@@ -1359,11 +809,6 @@ describe("Prototype Pollution Protection", () => {
       }
     });
 
-    it("passes the request body to the transport by reference", () => {
-      const data = { constructor: "Bob" };
-      assert.strictEqual(mergeConfig({}, { data }).data, data);
-    });
-
     it("sends a params key named constructor in the query string", async () => {
       const hits: Array<Hit> = [];
       const server = await startEchoServer(hits);
@@ -1396,7 +841,6 @@ describe("Prototype Pollution Protection", () => {
         assert.deepStrictEqual(hits.map(h => h.url), [ "/start", "/final" ]);
       }
       finally {
-        delete ObjProto[key];
         await stop(server);
       }
     });
@@ -1419,7 +863,6 @@ describe("Prototype Pollution Protection", () => {
         assert.deepStrictEqual(seen, []);
       }
       finally {
-        delete ObjProto.dispatcher;
         await stop(server);
       }
     });
@@ -1442,9 +885,6 @@ describe("Prototype Pollution Protection", () => {
         assert.strictEqual(hits.length, 1);
       }
       finally {
-        delete ObjProto.fetch;
-        delete ObjProto.Request;
-        delete ObjProto.Response;
         await stop(server);
       }
     });
@@ -1460,7 +900,6 @@ describe("Prototype Pollution Protection", () => {
         assert.deepStrictEqual(hits.map(h => h.method), [ "GET", "GET" ]);
       }
       finally {
-        delete ObjProto.method;
         await stop(server);
       }
     });
@@ -1475,7 +914,6 @@ describe("Prototype Pollution Protection", () => {
         assert.strictEqual(hits[0]!.url, "/abs");
       }
       finally {
-        delete ObjProto.allowAbsoluteUrls;
         await stop(server);
       }
     });
@@ -1491,8 +929,6 @@ describe("Prototype Pollution Protection", () => {
         assert.strictEqual(hits[0]!.url, "/v?apiKey=K&nested%5Ba%5D=1");
       }
       finally {
-        delete ObjProto.visitor;
-        delete ObjProto.maxDepth;
         await stop(server);
       }
     });
@@ -1505,12 +941,7 @@ describe("Prototype Pollution Protection", () => {
       };
       const api = faxios.create({ env: { fetch } });
       ObjProto.cf = { cacheTtl: 1 };
-      try {
-        await api.get("http://test.local/n", { fetchOptions: { method: "DELETE", next: { revalidate: 60 } } });
-      }
-      finally {
-        delete ObjProto.cf;
-      }
+      await api.get("http://test.local/n", { fetchOptions: { method: "DELETE", next: { revalidate: 60 } } });
 
       const init = inits[0]!;
       assert.deepStrictEqual(init["next"], { revalidate: 60 });
