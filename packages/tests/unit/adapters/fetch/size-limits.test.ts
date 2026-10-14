@@ -345,6 +345,25 @@ describe.runIf(typeof fetch === "function")(
         }
       });
 
+      // Content-Length on these describes the body a GET would get, not one sent here.
+      it.each([
+        [ "head", 200 ],
+        [ "get", 204 ],
+        [ "get", 205 ],
+        [ "get", 304 ],
+      ] as const)("should resolve a %s %i whose declared Content-Length exceeds maxContentLength", async (method, status) => {
+        const response = await fetchFaxios.request({
+          url: "/",
+          method,
+          maxContentLength: 1024,
+          validateStatus: () => true,
+          env: { fetch: async () => new Response(null, { status, headers: { "Content-Length": "5000000" } }) },
+        });
+
+        assert.strictEqual(response.status, status);
+        assert.strictEqual(response.headers.get("content-length"), "5000000");
+      });
+
       it("should handle plain object response headers while enforcing maxContentLength", async () => {
         const { data, headers } = await fetchFaxios.get("/", {
           maxContentLength: 10,

@@ -17,33 +17,45 @@ describe("checkDeclaredContentLength", () => {
   it("skips when hasMaxContentLength is false", () => {
     const headers = FaxiosHeaders.from({ "content-length": "99999" });
     assert.doesNotThrow(() =>
-      checkDeclaredContentLength(headers, false, 100, config, request)
+      checkDeclaredContentLength(headers, "get", 200, false, 100, config, request)
     );
   });
 
   it("skips when content-length header is absent", () => {
     const headers = FaxiosHeaders.from({});
     assert.doesNotThrow(() =>
-      checkDeclaredContentLength(headers, true, 100, config, request)
+      checkDeclaredContentLength(headers, "get", 200, true, 100, config, request)
     );
   });
 
   it("passes when declared length is within cap", () => {
     const headers = FaxiosHeaders.from({ "content-length": "50" });
     assert.doesNotThrow(() =>
-      checkDeclaredContentLength(headers, true, 100, config, request)
+      checkDeclaredContentLength(headers, "get", 200, true, 100, config, request)
     );
   });
 
   it("throws ERR_BAD_RESPONSE when declared length exceeds cap", () => {
     const headers = FaxiosHeaders.from({ "content-length": "200" });
     assert.throws(
-      () => checkDeclaredContentLength(headers, true, 100, config, request),
+      () => checkDeclaredContentLength(headers, "get", 200, true, 100, config, request),
       (err: unknown) => {
         assert.ok(err instanceof FaxiosError);
         assert.strictEqual(err.code, FaxiosError.ERR_BAD_RESPONSE);
         return true;
       }
+    );
+  });
+
+  it.each([
+    [ "head", 200 ],
+    [ "get", 204 ],
+    [ "get", 205 ],
+    [ "get", 304 ],
+  ])("skips a %s %i, which has no body", (method, status) => {
+    const headers = FaxiosHeaders.from({ "content-length": "200" });
+    assert.doesNotThrow(() =>
+      checkDeclaredContentLength(headers, method, status, true, 100, config, request)
     );
   });
 });

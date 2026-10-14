@@ -17,15 +17,20 @@ export type FetchStage = "body" | "build" | "send";
 const _textEncoder: TextEncoder | undefined =
   typeof globalThis.TextEncoder === "function" ? new globalThis.TextEncoder() : undefined;
 
+// A HEAD response and these statuses have no body, so their Content-Length isn't what they send.
+const BODILESS_STATUSES: ReadonlyArray<number> = [ 204, 205, 304 ];
+
 // ponytail: exported for unit testing only — not part of public API
 export const checkDeclaredContentLength = (
   responseHeaders: FaxiosHeaders,
+  method: string,
+  status: number,
   hasMaxContentLength: boolean,
   maxContentLength: number,
   config: InternalFaxiosRequestConfig,
   request: unknown
 ): void => {
-  if (!hasMaxContentLength) return;
+  if (!hasMaxContentLength || method === "head" || BODILESS_STATUSES.includes(status)) return;
   const declaredLength = utils.toFiniteNumber(
     (responseHeaders.getContentLength as () => unknown)()
   );

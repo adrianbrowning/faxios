@@ -811,7 +811,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
 
       const responseHeaders = FaxiosHeaders.from(response.headers);
 
-      checkDeclaredContentLength(responseHeaders, hasMaxContentLength, maxContentLength!, config, request);
+      checkDeclaredContentLength(responseHeaders, method!, response.status, hasMaxContentLength, maxContentLength!, config, request);
 
       const isStreamResponse = supportsResponseStream && responseType === "stream";
 
