@@ -369,7 +369,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
 
   const normalizeCredentials = (wc: boolean | string): string => {
     if (utils.isString(wc)) return wc as string;
-    return wc ? "include" : "omit";
+    return wc === true ? "include" : "same-origin";
   };
 
   // HTTP basic authentication: extract auth from config or URL, set Authorization header,

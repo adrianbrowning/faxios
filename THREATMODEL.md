@@ -170,11 +170,11 @@ The runtime model is general by design. faxios is a transport library and cannot
 
 |                   |                                                                                                                                                                                       |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Description**   | Browser deployment. `xsrfCookieName` is set; attacker tricks the app into requesting `https://evil.com` and the XSRF token cookie value is attached as a header.                      |
+| **Description**   | Browser deployment. `xsrfCookieName` is set; attacker tricks the app into requesting `https://evil.com`, or an open redirect on the app's own origin sends a same-origin request on to `https://evil.com`, and the XSRF token cookie value is attached as a header. `fetch` drops only `Authorization` when a redirect leaves the origin. |
 | **Likelihood**    | Low                                                                                                                                                                                   |
 | **Impact**        | Medium                                                                                                                                                                                |
-| **Mitigations**   | `lib/helpers/resolveConfig.js` only attaches the XSRF header when `isURLSameOrigin()` passes (or when `withXSRFToken` is explicitly forced). This was the fix for **CVE-2023-45857**. |
-| **Residual risk** | Low. The same-origin check uses the WHATWG `URL` parser (`lib/helpers/isURLSameOrigin.js`), which is robust against parser-differential attacks.                                      |
+| **Mitigations**   | `lib/core/prepareRequest.ts` only attaches the XSRF header when `isURLSameOrigin()` passes for the resolved URL (`baseURL` included), or when `withXSRFToken` is exactly `true` (own property, or a resolver returning `true`). This was the fix for **CVE-2023-45857**. When it attaches the header and the request sets no own `fetchOptions.redirect`, it sets `redirect: "error"`, so a redirect rejects instead of carrying the token to another origin. `withCredentials` has no effect on the header. |
+| **Residual risk** | Low. The same-origin check uses the WHATWG `URL` parser (`lib/helpers/isURLSameOrigin.ts`), which is robust against parser-differential attacks. A caller that sets `fetchOptions.redirect: "follow"` on an XSRF-bearing request, or forces `withXSRFToken: true`, sends the token wherever the redirect or URL points. Same-origin redirects are also refused under the default, which breaks an app that relies on them until it sets `redirect` itself. |
 
 ---
 
