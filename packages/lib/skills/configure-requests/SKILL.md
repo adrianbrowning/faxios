@@ -381,7 +381,9 @@ await faxios.get("https://api.example.com/feed", { fetchOptions: { cache: "no-st
 - `fetch` gets `(request, init)`: one `Request` built from that init, and an init that repeats
   the Request's members with `body: null`. A custom `env.fetch` reads the body from the Request
   (`await input.text()`), not `init.body`; only with `env.Request: null` is it
-  `fetch(url, init)` with the body in `init.body`.
+  `fetch(url, init)` with the body in `init.body`. `init.headers` is the Request's `Headers`
+  object (use `.get(name)`, not `init.headers[name]`), and `init.duplex` is `"half"` only for a
+  stream body.
 - `withCredentials: true` becomes fetch `credentials: "include"`; `false` or unset becomes
   `"same-origin"`, so same-origin requests still send cookies. A string passes through unchanged.
 - In the browser, when faxios sets the XSRF header and the request sets no `redirect`, it uses

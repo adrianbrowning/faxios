@@ -316,12 +316,19 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       return duplexAccessed && !hasContentType;
     });
 
+  // A web stream or Node stream body: read once, as it is sent, and sent with `duplex`.
+  const isStreamBody = (body: unknown): boolean => utils.isReadableStream!(body) || utils.isStream(body);
+
   // Outside browsers a FormData body under maxBodyLength is streamed and counted as fetch reads it;
   // browsers can't send a stream body (see buildUploadStream).
   const countsFormDataWhileSent = !isBrowserRuntime && supportsRequestStream;
   // Bodies counted as fetch reads them when maxBodyLength is set.
   const isCountedWhileSent = (body: unknown): boolean =>
-    utils.isReadableStream!(body) || utils.isStream(body) || (countsFormDataWhileSent && utils.isSpecCompliantForm(body));
+    isStreamBody(body) || (countsFormDataWhileSent && utils.isSpecCompliantForm(body));
+
+  // Cloudflare Workers throws when credentials are defined
+  // see https://github.com/cloudflare/workerd/issues/902
+  const isCredentialsSupported = isRequestSupported && "credentials" in ((Request as AnyConstructor).prototype as object);
 
   const supportsResponseStream =
     isResponseSupported &&
@@ -813,14 +820,6 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       ));
 
       withCredentials = normalizeCredentials(withCredentials);
-
-      // Cloudflare Workers throws when credentials are defined
-      // see https://github.com/cloudflare/workerd/issues/902
-      const isCredentialsSupported =
-        isRequestSupported &&
-        Request != null &&
-        "credentials" in (Request.prototype as object);
-
       resolveBodyContentType(preparedBody, headers, encodedContentType);
 
       applyDefaultUserAgent(headers);
@@ -834,7 +833,9 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       requestInit["method"] = (method as string).toUpperCase();
       requestInit["headers"] = serializedHeaders;
       requestInit["body"] = data;
-      requestInit["duplex"] = "half";
+      // Only a stream body needs `duplex`. Leaving it off otherwise also tells a custom
+      // `env.fetch` (the forwardTo plugin) that the Request's body can be buffered and resent.
+      if (isStreamBody(data)) requestInit["duplex"] = "half";
       requestInit["credentials"] = isCredentialsSupported ? withCredentials : undefined;
 
       request = isRequestSupported
