@@ -350,6 +350,86 @@ describe("core::middleware", () => {
       assert.deepStrictEqual(Object.keys(capabilities), [ "ok" ]);
       assert.strictEqual("polluted" in {}, false);
     });
+
+    describe("failed registration", () => {
+      const throwingProvides = (before: Record<string, unknown>, after: Record<string, unknown> = {}) => {
+        const provides = { ...before };
+        Object.defineProperty(provides, "broken", { enumerable: true, get: () => { throw new Error("getter failed"); } });
+        return Object.assign(provides, after);
+      };
+      const seenBy = (api: FaxiosInstance) => {
+        let seen: unknown;
+        api.use(async (ctx, next) => {
+          seen = ctx.capabilities;
+          return next(ctx);
+        });
+        return async () => {
+          await api.get(URL);
+          assert(seen && typeof seen === "object");
+          return Object.keys(seen);
+        };
+      };
+
+      it.each([
+        [ "after", throwingProvides({ early: 1 }) ],
+        [ "before", throwingProvides({}, { late: 1 }) ],
+      ])("leaves no ghost capability when a getter throws %s a valid entry", async (_, provides) => {
+        const api = faxios.create({ env: { fetch: jsonFetch() } });
+        const keys = seenBy(api);
+
+        assert.throws(() => api.use(plugin("broken", provides)), /getter failed/);
+
+        assert.deepStrictEqual(await keys(), []);
+        assert.doesNotThrow(() => api.use(plugin("retry", { early: 2, late: 2, broken: 2 })));
+      });
+
+      it("leaves capabilities and middleware unchanged when a capability is a duplicate", async () => {
+        const log: Array<string> = [];
+        const api = faxios.create({ env: { fetch: jsonFetch() } });
+        api.use(plugin("first", { auth: 1 }));
+        const keys = seenBy(api);
+
+        assert.throws(() => api.use(plugin("second", { extra: 1, auth: 2 }, async (ctx, next) => {
+          log.push("second");
+          return next(ctx);
+        })), (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION);
+
+        assert.deepStrictEqual(await keys(), [ "auth" ]);
+        assert.deepStrictEqual(log, []);
+      });
+
+      it("accepts the same plugin again once its provides is fixed", async () => {
+        const api = faxios.create({ env: { fetch: jsonFetch() } });
+        const fixed = plugin("p", throwingProvides({ ok: 1 }));
+        assert.throws(() => api.use(fixed), /getter failed/);
+
+        fixed.provides = { ok: 1, broken: 2 };
+        api.use(fixed);
+        const keys = seenBy(api);
+
+        assert.deepStrictEqual((await keys()).sort(), [ "broken", "ok" ]);
+      });
+
+      it("keeps a running request's capabilities when a later registration fails", async () => {
+        let seen: unknown;
+        const { promise: gate, resolve: open } = Promise.withResolvers<void>();
+        const api = faxios.create({ env: { fetch: jsonFetch() } })
+          .use(plugin("auth", { auth: "token" }))
+          .use(async (ctx, next) => {
+            await gate;
+            seen = ctx.capabilities;
+            return next(ctx);
+          });
+
+        const request = api.get(URL);
+        assert.throws(() => api.use(plugin("broken", throwingProvides({ extra: 1 }))), /getter failed/);
+        open();
+        await request;
+
+        assert(seen && typeof seen === "object");
+        assert.deepStrictEqual(Object.keys(seen), [ "auth" ]);
+      });
+    });
   });
 
   describe("use() return value", () => {
