@@ -3334,15 +3334,15 @@
       ]
     },
     "source:SECURITY.md": {
-      "fingerprint": "e0a388744d84b6b0bf0e7f67330d184fdbe39520d79e06c5728ff322392cedff",
+      "fingerprint": "73411fc50063123919de2d82d81242aac2160b47ac302f54efa2769083afe1a0",
       "snapshot": {
-        "SECURITY.md": "7aa61386f624bbcd1b62ded81327fa0e03884f7f4f23480a5c6de539a41d393d"
+        "SECURITY.md": "6e524886d4dd537cef0af62338b21831c62928bfe128df08ba5db4235f167b93"
       },
-      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
-      "outcome": "updated",
-      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "head": "97e7c23fdbd287d2173a8dab435d5b62116cf957",
+      "outcome": "no-change",
+      "reason": "Conduct reporting, issue forms and SECURITY.md wording only; the packaged skill teaches nothing about them",
       "evidence": [
-        "Changed: SECURITY.md at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+        "Changed: SECURITY.md at bc3136d50ee0ca33a47326027c10e111cad381e9"
       ]
     },
     "source:lychee.toml": {
@@ -7207,6 +7207,66 @@
       "reason": "#276: skill import table lists /forward-to (checked against package.json exports by packages/tests/scripts/check-skill-exports.ts); library_version 0.2.4; sources add assertRequestConfig, assertSignal, assertTimeout, requestDeadline and resolveRequestURL; ETIMEDOUT cited from requestDeadline.ts; domain_map/skill_spec/skill_tree refreshed and the MIGRATION_GUIDE gap closed (#188); THREATMODEL cites current .ts files and tests; bump file describes the skill change",
       "evidence": [
         "Changed: packages/tests/scripts/check-skill-exports.ts at c6837e153a1f472149917f5556ddd2dba1e4fbc5"
+      ]
+    },
+    "source:.github/ISSUE_TEMPLATE/bug_report.md": {
+      "fingerprint": "2c656fbbb2a2a8efb74d0bf5abe31dacc8ba102897009151696853bc541093d4",
+      "snapshot": {
+        ".github/ISSUE_TEMPLATE/bug_report.md": "8dccadbb117c9900d1d2e824a374c1b642a217d2f970f0236ea9a110f06438c7"
+      },
+      "head": "97e7c23fdbd287d2173a8dab435d5b62116cf957",
+      "outcome": "no-change",
+      "reason": "Conduct reporting, issue forms and SECURITY.md wording only; the packaged skill teaches nothing about them",
+      "evidence": [
+        "Changed: .github/ISSUE_TEMPLATE/bug_report.md at bc3136d50ee0ca33a47326027c10e111cad381e9"
+      ]
+    },
+    "source:.github/ISSUE_TEMPLATE/conduct_report.md": {
+      "fingerprint": "ebd8a4611881a646867b263ff4334a9e243bd627a7a39f26ad9d5d50826966c3",
+      "snapshot": {
+        ".github/ISSUE_TEMPLATE/conduct_report.md": null
+      },
+      "head": "97e7c23fdbd287d2173a8dab435d5b62116cf957",
+      "outcome": "no-change",
+      "reason": "Conduct reporting, issue forms and SECURITY.md wording only; the packaged skill teaches nothing about them",
+      "evidence": [
+        "Changed: .github/ISSUE_TEMPLATE/conduct_report.md at bc3136d50ee0ca33a47326027c10e111cad381e9"
+      ]
+    },
+    "source:.github/ISSUE_TEMPLATE/config.yml": {
+      "fingerprint": "8f17576a346eef92c07dff6a4000035930cb444c0948dee6a27dbe231d10b3df",
+      "snapshot": {
+        ".github/ISSUE_TEMPLATE/config.yml": "59882c7cb7bb5e68e54d572f63ff772a7085da4cfd3944f06806271eadfe8ee2"
+      },
+      "head": "97e7c23fdbd287d2173a8dab435d5b62116cf957",
+      "outcome": "no-change",
+      "reason": "Conduct reporting, issue forms and SECURITY.md wording only; the packaged skill teaches nothing about them",
+      "evidence": [
+        "Changed: .github/ISSUE_TEMPLATE/config.yml at bc3136d50ee0ca33a47326027c10e111cad381e9"
+      ]
+    },
+    "source:.github/ISSUE_TEMPLATE/feature_request.yml": {
+      "fingerprint": "7f499dd0a61a249bd39025b10d42954c0e1511ca2870908ead490dd59949a138",
+      "snapshot": {
+        ".github/ISSUE_TEMPLATE/feature_request.yml": "c84e6f480560aa92bba55241c8a39b4d725073dad7ca00aff8053f721bc3c88f"
+      },
+      "head": "97e7c23fdbd287d2173a8dab435d5b62116cf957",
+      "outcome": "no-change",
+      "reason": "Conduct reporting, issue forms and SECURITY.md wording only; the packaged skill teaches nothing about them",
+      "evidence": [
+        "Changed: .github/ISSUE_TEMPLATE/feature_request.yml at bc3136d50ee0ca33a47326027c10e111cad381e9"
+      ]
+    },
+    "source:CODE_OF_CONDUCT.md": {
+      "fingerprint": "92688eb336044ff1ea0d46e9f8ac0e429a503153e9b011312db8abef32f3d85d",
+      "snapshot": {
+        "CODE_OF_CONDUCT.md": "fca93ead2c806b9dae9b5247ec26c73ae1a483a05c2060877dc7abd275fa0057"
+      },
+      "head": "97e7c23fdbd287d2173a8dab435d5b62116cf957",
+      "outcome": "no-change",
+      "reason": "Conduct reporting, issue forms and SECURITY.md wording only; the packaged skill teaches nothing about them",
+      "evidence": [
+        "Changed: CODE_OF_CONDUCT.md at bc3136d50ee0ca33a47326027c10e111cad381e9"
       ]
     }
   }
