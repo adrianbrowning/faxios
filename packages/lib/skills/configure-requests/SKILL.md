@@ -146,7 +146,7 @@ wire entirely, including ones faxios adds itself, set it to `null` or `false`.
 Any Standard Schema v1 library works (Zod, Valibot, ArkType). Passing `responseSchema` types
 `response.data` as the schema's output:
 
-```ts
+```ts expect=error:ERR_BAD_RESPONSE_SCHEMA
 import faxios, { isSchemaValidationError } from "@gcmdev/faxios";
 import { z } from "zod";
 
@@ -177,7 +177,7 @@ catch (error) {
   `pathParams` is accepted only when `pathParamsSchema` is set. A `route()` method config merges
   over the route config like any other config, so headers combine.
 
-```ts
+```ts check=types
 import faxios from "@gcmdev/faxios";
 import { z } from "zod";
 
@@ -197,7 +197,7 @@ console.log(data.name);
 
 ### Cancel requests and apply timeouts
 
-```ts
+```ts expect=log:canceled
 import faxios, { FaxiosError, isCancel } from "@gcmdev/faxios";
 
 const controller = new AbortController();

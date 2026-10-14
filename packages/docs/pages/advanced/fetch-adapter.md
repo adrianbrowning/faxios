@@ -64,7 +64,7 @@ const { data } = await instance.get('https://api.example.com/users');
 
 [Tauri](https://tauri.app/plugin/http-client/) provides a platform `fetch` function that bypasses browser CORS restrictions for requests made from the native layer. The example below shows a minimal setup for using faxios inside a Tauri app with that custom fetch.
 
-```js check=skip
+```js check=skip reason=dependency
 import { fetch } from '@tauri-apps/plugin-http';
 import faxios from '@gcmdev/faxios';
 

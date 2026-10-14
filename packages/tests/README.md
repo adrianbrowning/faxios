@@ -11,10 +11,10 @@ Run everything with `pnpm check` from the repo root. It runs [run-tests.sh](run-
 | [unit/](unit/) | Node behaviour tests | lib source through `#src/*` | `vitest run --project unit` |
 | [browser/](browser/) | Browser behaviour tests | lib source through `#src/*` | `vitest run --project browser-headless` (Chromium, Firefox, WebKit) |
 | [smoke/esm/](smoke/esm/) | Node ESM package smoke tests | the packed tarball | `pnpm test:smoke:esm:vitest` |
-| [smoke/deno/](smoke/deno/) | Deno smoke tests and type checks | the built `lib/dist` | `pnpm test:smoke:deno` |
+| [smoke/deno/](smoke/deno/) | Deno smoke tests and type checks | the packed tarball | `pnpm test:smoke:deno` |
 | [smoke/bun/](smoke/bun/) | Bun smoke tests | the packed tarball | `pnpm test:smoke:bun` |
 | [module/esm/](module/esm/) | Declaration and packaging tests (own TypeScript version) | the packed tarball | `pnpm test:module:esm` |
-| [docs-examples/](docs-examples/) | Code blocks from the README and docs pages, type-checked and run | the built `lib/dist` | `pnpm test:docs-examples` |
+| [docs-examples/](docs-examples/) | Code blocks from the READMEs, migration guide, agent skills and docs pages, type-checked and run | the built `lib/dist` | `pnpm test:docs-examples` |
 | [setup/](setup/) | Shared helpers | | |
 | [eslint-rules/](eslint-rules/) | Lint rules for this package (tests in `unit/eslint-rules/`) | | |
 | [scripts/](scripts/) | `lint:ts` checks and release helpers | | |
@@ -58,7 +58,9 @@ Representative files: [browser/headers.browser.test.ts](browser/headers.browser.
 
 Smoke tests check that the published package imports and makes requests in each runtime. Keep them small: imports, exports and the critical request flows.
 
-- `smoke/esm` and `smoke/bun` install `faxios.tgz` from their own frozen lockfiles; `smoke/deno` maps `faxios` to `lib/dist` in [smoke/deno/deno.json](smoke/deno/deno.json). When you add a scenario to one runtime, add it to the others where it applies.
+- `smoke/esm` and `smoke/bun` install `faxios.tgz` from their own frozen lockfiles. `smoke/deno` can't install a tarball, so `deno task install` extracts it into `smoke/deno/.faxios`, which its [package.json](smoke/deno/package.json) depends on, and runs `deno install --frozen`; imports then resolve through the package's `exports` map, as in the other runtimes. When you add a scenario to one runtime, add it to the others where it applies.
+- The `realFetch` suites in `smoke/deno` and `smoke/bun` use the runtime's own fetch against a local `Deno.serve`/`Bun.serve` (port 0, stopped in `finally`); the other suites inject `env.fetch`.
+- [smoke/bun/tsconfig.json](smoke/bun/tsconfig.json) type-checks the Bun tests against the installed declarations (`pnpm lint:ts:smoke`, after the installs).
 - [smoke/deno/types/consumer.ts](smoke/deno/types/consumer.ts) is checked by `deno check`, never run. It fails when a built module loses its `@ts-self-types` pragma.
 - Don't delete or regenerate a harness lockfile. [AGENTS.md](../../AGENTS.md) ("Setup And Safety") explains how `run-tests.sh` pins the tarball.
 
@@ -72,7 +74,9 @@ Representative files: [module/esm/tests/typings.module.test.ts](module/esm/tests
 
 ## Docs examples (`docs-examples/`)
 
-[docs-examples/extract.ts](docs-examples/extract.ts) extracts the `js`/`ts` code blocks from `packages/lib/README.md` and the docs pages. The comment at the top of that file lists the fence markers that skip a block, type-check it only, or change the fake `fetch` response.
+[docs-examples/extract.ts](docs-examples/extract.ts) extracts the `js`/`ts` code blocks from the root and package READMEs, `MIGRATION_GUIDE.md`, the package's agent skills and the docs pages. The comment at the top of that file lists the fence markers: `check=skip` with the `reason=` it is skipped, `check=types`, `status=` and `placeholders=` for the fake `fetch`, and `expect=` for the documented outcome.
+
+Each block runs as a module against a fake `fetch`. The test waits until every request the block started, and the code handling its response, has finished, then checks the block's `expect=` outcomes. A `console.error` call fails the block unless it has an `expect=error:` marker.
 
 ## Checklist
 

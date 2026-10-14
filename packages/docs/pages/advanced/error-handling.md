@@ -36,7 +36,7 @@ Below is a list of potential faxios identified error
 
 The default behaviour of faxios is to reject the promise if the request fails. However, you can also catch the error and handle it as you see fit. Below is an example of how to catch an error:
 
-```js status=404
+```js status=404 expect=log:404
 import faxios from "@gcmdev/faxios";
 
 faxios.get("/user/12345").catch(function (error) {
@@ -72,7 +72,7 @@ faxios.get("/user/12345", {
 
 Using the `toJSON` method, you can get an object with more information about the error.
 
-```js status=404
+```js status=404 expect=log:status:%20404
 import faxios from "@gcmdev/faxios";
 
 faxios.get("/user/12345").catch(function (error) {
@@ -91,7 +91,7 @@ What reaches the log, and what you still have to keep out of it:
 
 `toJSON()` also includes `cause`, the chain of wrapped errors as `{ name, code, message, cause }`, so a logged network failure still names the underlying error (for example `{ name: "Error", code: "ECONNREFUSED", message: "connect ECONNREFUSED 127.0.0.1:443" }`). Each entry holds only those fields, never a wrapped error's config, and user info is stripped from URLs in the messages and the stack.
 
-```js status=404
+```js status=404 expect=log:[REDACTED%20****]%20[REDACTED%20****]
 import faxios from "@gcmdev/faxios";
 
 faxios.get("/user/12345", {

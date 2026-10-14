@@ -6,7 +6,7 @@ With the introduction of the new `FaxiosHeaders` class, faxios provides a set of
 
 The `FaxiosHeaders` class constructor accepts an optional object with headers to initialize the instance. The headers object can contain any number of headers, and the keys are case-insensitive.
 
-```ts check=skip
+```ts check=skip reason=signature
 constructor(headers?: Record<string, FaxiosHeaderValue> | FaxiosHeaders | string | null);
 ```
 
@@ -33,7 +33,7 @@ console.log(headers);
 
 The `set` method is used to set headers on the instance of `FaxiosHeaders`. The method can be called with a single header name and value, an object with multiple headers, or a string with headers separated by a newline character. The method also accepts an optional `rewrite` parameter that controls the behaviour of setting the header.
 
-```ts check=skip
+```ts check=skip reason=signature
 set(headerName: string, value: FaxiosHeaderValue, rewrite?: boolean): this;
 set(headers?: Record<string, FaxiosHeaderValue> | FaxiosHeaders | string, rewrite?: boolean): this;
 ```
@@ -52,7 +52,7 @@ Empty or whitespace-only header names are ignored.
 
 The `get` method is used to retrieve the value of a header. The method can be called with a single header name and an optional parser. Without a parser it returns the raw value. Pass `true` to parse the value into key-value pairs, a function to transform the value, or a regular expression to extract part of the value.
 
-```ts check=skip
+```ts check=skip reason=signature
 get(headerName: string): FaxiosHeaderValue | undefined;
 get(headerName: string, parser: true): Record<string, string> | undefined;
 get(headerName: string, parser: RegExp): RegExpExecArray | null | undefined;
@@ -92,7 +92,7 @@ console.log(headers.get('Content-Type', /boundary=(\w+)/)?.[0]);
 
 The `has` method is used to check if a header exists in the instance of `FaxiosHeaders`. The method can be called with a single header name and an optional matcher.
 
-```ts check=skip
+```ts check=skip reason=signature
 has(header: string, matcher?: string | RegExp | ((this: FaxiosHeaders, value: string, name: string) => boolean)): boolean;
 ```
 
@@ -104,7 +104,7 @@ Returns true if the header is set (has no undefined value).
 
 The `delete` method is used to delete a header from the instance of `FaxiosHeaders`. The method can be called with a single header name and an optional matcher.
 
-```ts check=skip
+```ts check=skip reason=signature
 delete(header: string | string[], matcher?: string | RegExp | ((this: FaxiosHeaders, value: string, name: string) => boolean)): boolean;
 ```
 
@@ -116,7 +116,7 @@ Returns true if at least one header has been removed.
 
 The `clear` method is used to delete all headers from the instance of `FaxiosHeaders` if nothing is passed. If a matcher is passed, only the headers that match the matcher are removed, in this case, the matcher is used to match against the header name rather than the value.
 
-```ts check=skip
+```ts check=skip reason=signature
 clear(matcher?: string | RegExp | ((this: FaxiosHeaders, value: string, name: string) => boolean)): boolean;
 ```
 
@@ -164,7 +164,7 @@ const headers = FaxiosHeaders.concat(
 console.log(headers.toJSON()); // [Object: null prototype] { 'content-type': 'application/octet-stream' }
 ```
 
-```ts check=skip
+```ts check=skip reason=signature
 concat(...targets: Array<FaxiosHeaders | Record<string, FaxiosHeaderValue> | string | undefined | null>): FaxiosHeaders;
 ```
 
@@ -176,7 +176,7 @@ Returns a new FaxiosHeaders instance.
 
 Resolve all internal headers values into a new null prototype object. Headers whose value is `null`, `undefined` or `false` are left out. Set `asStrings` to true to resolve arrays as a string containing all elements, separated by commas.
 
-```ts check=skip
+```ts check=skip reason=signature
 toJSON(asStrings?: boolean): Record<string, unknown>;
 ```
 
@@ -184,7 +184,7 @@ toJSON(asStrings?: boolean): Record<string, unknown>;
 
 Returns a new `FaxiosHeaders` instance created from the raw headers passed in, or simply returns the given headers object if it's a `FaxiosHeaders` instance.
 
-```ts check=skip
+```ts check=skip reason=signature
 static from(thing?: FaxiosHeaders | Record<string, FaxiosHeaderValue> | string | null): FaxiosHeaders;
 ```
 
@@ -192,7 +192,7 @@ static from(thing?: FaxiosHeaders | Record<string, FaxiosHeaderValue> | string |
 
 Returns a new `FaxiosHeaders` instance created by merging the target objects.
 
-```ts check=skip
+```ts check=skip reason=signature
 static concat(...targets: Array<FaxiosHeaders | Record<string, FaxiosHeaderValue> | string | undefined | null>): FaxiosHeaders;
 ```
 
@@ -209,7 +209,7 @@ The following shortcuts are available:
 
 Each `get<Header>` shortcut takes the same parsers as `get()`, without the header name. Each `has<Header>` shortcut takes the same matcher as `has()`:
 
-```ts check=skip
+```ts check=skip reason=signature
 getContentType(): FaxiosHeaderValue | undefined;
 getContentType(parser: true): Record<string, string> | undefined;
 getContentType(parser: RegExp): RegExpExecArray | null | undefined;

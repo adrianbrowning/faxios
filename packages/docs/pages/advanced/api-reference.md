@@ -29,7 +29,7 @@ The `Faxios` class is the class behind every faxios instance. The default export
 
 Creates a new instance of the `Faxios` class. The constructor takes an optional configuration object as an argument.
 
-```ts check=skip
+```ts check=skip reason=signature
 constructor(instanceConfig?: FaxiosRequestConfig);
 ```
 
@@ -37,7 +37,7 @@ constructor(instanceConfig?: FaxiosRequestConfig);
 
 Handles request invocation and response resolution. This is the main method that you will use to make HTTP requests. It takes a configuration object as an argument and returns a promise that resolves to the response object.
 
-```ts check=skip
+```ts check=skip reason=signature
 request<T = unknown, D = unknown>(configOrUrl: string | URL | FaxiosRequestConfig<D>, config?: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T, D>>;
 ```
 
@@ -51,7 +51,7 @@ The `FaxiosError` class is an error class that is thrown when an HTTP request fa
 
 Creates a new instance of the `FaxiosError` class. The constructor takes a message and an optional code, config, request, and response as arguments.
 
-```ts check=skip
+```ts check=skip reason=signature
 constructor(message: string, code?: string, config?: InternalFaxiosRequestConfig<D>, request?: unknown, response?: FaxiosResponse<T, D>);
 ```
 
@@ -59,7 +59,7 @@ constructor(message: string, code?: string, config?: InternalFaxiosRequestConfig
 
 The `FaxiosError` class provides the following properties:
 
-```ts check=skip
+```ts check=skip reason=signature
 // Config instance.
 config?: InternalFaxiosRequestConfig<D>;
 
@@ -101,7 +101,7 @@ Each instance also has `get`, `set` and `has` shortcuts for `Content-Type`, `Con
 
 Creates a new instance of the `FaxiosHeaders` class. The constructor takes an optional headers object as an argument.
 
-```ts check=skip
+```ts check=skip reason=signature
 constructor(headers?: Record<string, unknown> | FaxiosHeaders | string | null);
 ```
 
@@ -110,7 +110,7 @@ constructor(headers?: Record<string, unknown> | FaxiosHeaders | string | null);
 Adds a header to the headers object.
 Empty or whitespace-only header names are ignored.
 
-```ts check=skip
+```ts check=skip reason=signature
 set(headerName: string, value: FaxiosHeaderValue, rewrite?: boolean): FaxiosHeaders;
 set(headers: Record<string, unknown> | FaxiosHeaders | string, rewrite?: boolean): FaxiosHeaders;
 ```
@@ -119,7 +119,7 @@ set(headers: Record<string, unknown> | FaxiosHeaders | string, rewrite?: boolean
 
 Gets a header from the headers object.
 
-```ts check=skip
+```ts check=skip reason=signature
 get(headerName: string): FaxiosHeaderValue | undefined;
 get(headerName: string, parser: true): Record<string, string> | undefined;
 get(headerName: string, parser: RegExp): RegExpExecArray | null | undefined;
@@ -130,7 +130,7 @@ get<R>(headerName: string, parser: (this: FaxiosHeaders, value: FaxiosHeaderValu
 
 Checks if a header exists in the headers object.
 
-```ts check=skip
+```ts check=skip reason=signature
 has(header: string, matcher?: string | RegExp | ((value: string, name: string) => boolean)): boolean;
 ```
 
@@ -138,7 +138,7 @@ has(header: string, matcher?: string | RegExp | ((value: string, name: string) =
 
 Removes a header from the headers object.
 
-```ts check=skip
+```ts check=skip reason=signature
 delete(header: string | string[], matcher?: string | RegExp | ((value: string, name: string) => boolean)): boolean;
 ```
 
@@ -146,7 +146,7 @@ delete(header: string | string[], matcher?: string | RegExp | ((value: string, n
 
 Removes all headers from the headers object.
 
-```ts check=skip
+```ts check=skip reason=signature
 clear(matcher?: string | RegExp | ((value: string, name: string) => boolean)): boolean;
 ```
 
@@ -154,7 +154,7 @@ clear(matcher?: string | RegExp | ((value: string, name: string) => boolean)): b
 
 Normalizes the headers object.
 
-```ts check=skip
+```ts check=skip reason=signature
 normalize(format?: boolean): FaxiosHeaders;
 ```
 
@@ -162,7 +162,7 @@ normalize(format?: boolean): FaxiosHeaders;
 
 Concatenates headers objects.
 
-```ts check=skip
+```ts check=skip reason=signature
 concat(...targets: Array<FaxiosHeaders | Record<string, unknown> | string | undefined | null>): FaxiosHeaders;
 ```
 
@@ -170,7 +170,7 @@ concat(...targets: Array<FaxiosHeaders | Record<string, unknown> | string | unde
 
 Converts the headers object to a JSON object.
 
-```ts check=skip
+```ts check=skip reason=signature
 // With asStrings: true, array values are joined with ", ".
 toJSON(asStrings?: boolean): Record<string, unknown>;
 ```
@@ -187,11 +187,11 @@ The `Cancel` class is an alias for the `CanceledError` class. It is exported for
 
 A function that checks if an error is a `CanceledError`. Useful for distinguishing intentional cancellations from unexpected errors.
 
-```ts check=skip
+```ts check=skip reason=signature
 isCancel(value: unknown): value is CanceledError;
 ```
 
-```js
+```js expect=log:Request%20was%20cancelled:%20User%20navigated%20away
 import faxios from "@gcmdev/faxios";
 
 const controller = new AbortController();
@@ -211,11 +211,11 @@ controller.abort("User navigated away");
 
 A function that checks if an error is a `FaxiosError`. Use this in `catch` blocks to safely access faxios-specific error properties like `error.response` and `error.config`. It is a type guard, so in TypeScript (or checked JavaScript) it narrows the error to `FaxiosError`. Pass a type argument to type `error.response.data`; the shape is not checked at runtime.
 
-```ts check=skip
+```ts check=skip reason=signature
 isFaxiosError<T = unknown, D = unknown>(value: unknown): value is FaxiosError<T, D>;
 ```
 
-```js status=500
+```js status=500 expect=error:HTTP%20error%20500
 import faxios from "@gcmdev/faxios";
 
 try {
@@ -241,7 +241,7 @@ The `all` function is deprecated and will be removed in a future release.
 
 The `spread` function is a utility function that can be used to spread an array of arguments into a function call. This is useful when you have an array of arguments that you want to pass to a function that takes multiple arguments. It is available on the instance as `faxios.spread` and is not a named export.
 
-```ts check=skip
+```ts check=skip reason=signature
 spread<TArgs extends unknown[], TResult>(callback: (...args: TArgs) => TResult): (array: TArgs) => TResult;
 ```
 
@@ -249,7 +249,7 @@ spread<TArgs extends unknown[], TResult>(callback: (...args: TArgs) => TResult):
 
 Converts a plain JavaScript object (or a nested one) to a `FormData` instance. Useful when you want to programmatically build multipart form data from an object. Without a target it creates a global `FormData`; a target can also be any FormData-like object with an `append(name, value)` method (`GenericFormData`), such as one from the `form-data` package, and is returned with its own type.
 
-```ts check=skip
+```ts check=skip reason=signature
 toFormData(sourceObj: unknown, formData?: null, options?: FormSerializerOptions): FormData;
 toFormData<F extends GenericFormData>(sourceObj: unknown, formData: F, options?: FormSerializerOptions): F;
 ```
@@ -268,7 +268,7 @@ await faxios.post("/api/users", form);
 
 Converts a `FormData` instance back to a plain JavaScript object. Useful for reading form data in a structured format. Field names split into nested keys only on `.` and brackets (`user[email]`, `user.email`), so names such as `first-name` stay one key.
 
-```ts check=skip
+```ts check=skip reason=signature
 formToJSON(form: FormData | HTMLFormElement): null | Record<string, unknown>;
 ```
 
@@ -287,7 +287,7 @@ console.log(obj); // { name: "Jay", role: "admin" }
 
 Merges two faxios config objects together, applying the same deep-merge strategy that faxios uses internally when combining defaults with per-request options. Later values take precedence.
 
-```ts check=skip
+```ts check=skip reason=signature
 mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfig, config2?: FaxiosRequestConfig): FaxiosRequestConfig;
 ```
 
@@ -309,7 +309,7 @@ See [Middleware and plugins](/pages/advanced/middleware) for a guide with exampl
 
 Registers middleware or a plugin on the instance and returns the instance. Middleware runs in registration order before the request is sent and in reverse order after it.
 
-```ts check=skip
+```ts check=skip reason=signature
 use(middlewareOrPlugin: FaxiosMiddleware<TOpts, TCaps> | FaxiosPlugin<Spec>): FaxiosInstance<TOpts & Options, TCaps & Provides>;
 ```
 
@@ -325,7 +325,7 @@ While a plugin is installed, the request option names in its `options` are accep
 
 Removes middleware or a plugin by reference, so pass the same value you gave `use()`. Requests already running keep the middleware they started with. The capabilities the plugin provided are removed; the instance type isn't narrowed.
 
-```ts check=skip
+```ts check=skip reason=signature
 eject(middlewareOrPlugin: FaxiosMiddleware | FaxiosPlugin): void;
 ```
 
@@ -333,7 +333,7 @@ eject(middlewareOrPlugin: FaxiosMiddleware | FaxiosPlugin): void;
 
 Imported from `@gcmdev/faxios/plugins`. Builds a plugin and infers its `FaxiosPlugin` type: `provides` from the `provides` value, and the request options and required capabilities from the middleware's `ctx: FaxiosContext<Options, Capabilities>` annotation. Capabilities the plugin provides itself don't count as required. Returns the object it was given.
 
-```ts check=skip
+```ts check=skip reason=signature
 definePlugin(plugin: {
   name: string;
   provides?: Provides;
@@ -347,7 +347,7 @@ definePlugin(plugin: {
 
 The `ctx` every middleware receives. It is created once per request, after the request config is merged with the instance defaults.
 
-```ts check=skip
+```ts check=skip reason=signature
 interface FaxiosContext<TOptions = {}, TCapabilities = {}> {
   // The try this context leads to, from 1. `retry` (or your own retry middleware) sets it per try.
   attempt: number;
@@ -364,7 +364,7 @@ interface FaxiosContext<TOptions = {}, TCapabilities = {}> {
 
 `next(ctx)` runs the rest of the chain, then dispatches a copy of `ctx.config`. It takes the same context type the middleware received.
 
-```ts check=skip
+```ts check=skip reason=signature
 type FaxiosNext<TOptions = {}, TCapabilities = {}> =
   (ctx: FaxiosContext<TOptions, TCapabilities>) => Promise<FaxiosResponse>;
 
@@ -376,7 +376,7 @@ type FaxiosMiddleware<TOptions = {}, TCapabilities = {}> =
 
 A plugin's type, given as one object of optional slots. Use it to annotate a plugin factory's return type.
 
-```ts check=skip
+```ts check=skip reason=signature
 type FaxiosPlugin<Spec extends { requires?: unknown; provides?: unknown; options?: unknown } = {}>;
 // A plugin object has:
 //   name: string;
@@ -401,7 +401,7 @@ A slot you leave out adds nothing. Any other key, such as `require`, is a type e
 
 An object that contains a list of HTTP status codes as named constants. Use this to write readable conditionals instead of bare numbers. Each name has its literal type (`HttpStatusCode.NotFound` is `404`), and like a TypeScript enum each code maps back to its name (`HttpStatusCode[404]` is `"NotFound"`).
 
-```js status=404
+```js status=404 expect=error:Resource%20not%20found
 import faxios, { HttpStatusCode } from "@gcmdev/faxios";
 
 try {
