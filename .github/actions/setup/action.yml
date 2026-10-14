@@ -12,8 +12,8 @@ inputs:
     description: Cache the pnpm store. Turn off in jobs that publish.
     default: 'true'
   ignore-scripts:
-    description: Install without running dependency lifecycle scripts
-    default: 'false'
+    description: Install without running dependency lifecycle scripts. A job that needs them sets 'false'.
+    default: 'true'
 
 runs:
   using: composite
