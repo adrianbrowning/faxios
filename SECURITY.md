@@ -37,6 +37,8 @@ If you believe you have found a security vulnerability in faxios, report it thro
 
 Do not report security vulnerabilities through public GitHub issues. Use GitHub's private security channel by opening a [security advisory](https://github.com/adrianbrowning/faxios/security/advisories/new).
 
+This channel is for security vulnerabilities only. To report harassment or other behavior that breaks the code of conduct, use the private channel described in [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md#reporting).
+
 ## Disclosure policy
 
 When we receive a security vulnerability report, we assign it a primary handler. The handler confirms the problem, determines affected versions, evaluates severity, develops and ships a fix, and coordinates public disclosure with the reporter.
