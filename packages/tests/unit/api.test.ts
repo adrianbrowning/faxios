@@ -100,6 +100,11 @@ describe("static api", () => {
     assert.strictEqual(create, faxios.create);
   });
 
+  it("attaches the standalone all and formToJSON to the default instance", () => {
+    assert.strictEqual(faxios.all, root.all);
+    assert.strictEqual(faxios.formToJSON, root.formToJSON);
+  });
+
   it("should have CanceledError and isCancel properties", () => {
     assert.strictEqual(typeof faxios.Cancel, "function");
     assert.strictEqual(typeof faxios.isCancel, "function");

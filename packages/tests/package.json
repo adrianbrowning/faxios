@@ -31,6 +31,7 @@
     "@vitest/browser": "^4.1.11",
     "@vitest/browser-playwright": "^4.1.11",
     "abortcontroller-polyfill": "^1.7.8",
+    "esbuild": "^0.28.2",
     "eslint": "^9.39.5",
     "form-data": "^4.0.5",
     "mdcode-ts": "0.0.4",

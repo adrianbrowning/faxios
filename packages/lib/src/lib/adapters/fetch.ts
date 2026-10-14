@@ -847,5 +847,3 @@ export const getFetch = (config?: { env?: Record<string, unknown>; }): false | F
   }
   return adapter;
 };
-
-getFetch();

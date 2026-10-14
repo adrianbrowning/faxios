@@ -34,16 +34,7 @@ jobs:
       - name: Build project
         run: pnpm --filter @gcmdev/faxios run build
 
-      - name: Compare bundle size
-        uses: axios/bundle-size@6940d767de28b002599d1ab36cc04748de2c49e7 # 0.2.0
-        with:
-          path: './packages/lib'
-          package-name: '@gcmdev/faxios'
-          files: |
-            dist/index.js
-          output-file: bundle-size-comparison.json
-          release-stream: '0'
-
-      - name: Add bundle size report to summary
-        if: always() && hashFiles('packages/lib/bundle-size-comparison.md') != ''
-        run: cat packages/lib/bundle-size-comparison.md >> "$GITHUB_STEP_SUMMARY"
+      # Bundles real consumer entry points with esbuild and writes their sizes to the step summary.
+      # Fails when an entry exceeds its budget.
+      - name: Measure bundle size
+        run: node packages/tests/scripts/bundle-size.ts

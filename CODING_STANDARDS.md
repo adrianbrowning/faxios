@@ -27,7 +27,7 @@ Config objects, plugin objects, option objects and anything else a caller hands 
 - Middleware composition stays plain closures with no async wrapper; a middleware that calls `next` before awaiting reaches the adapter in the same tick.
 - Each `next(ctx)` dispatches its own copy of `ctx.config`; dispatch never writes back to `ctx.config`.
 - `use()` / `eject()` replace the middleware list and capabilities instead of mutating them; in-flight requests keep their snapshot.
-- Built-in plugins use only the public middleware API: they import only the package root (`../../index.js`) and each other, which `lint:esl` enforces, and they share per-request values through public context fields such as `ctx.attempt`, never a private symbol. Defaults are conservative: `retry` retries idempotent methods only.
+- Built-in plugins use only the public middleware API: they use only what the package root exports, and each other. Types come from the root (`../../index.js`); runtime values come from the module the root re-exports them from (`../core/FaxiosError.js`), so a plugin bundle doesn't keep the default instance. `lint:esl` enforces both, and they share per-request values through public context fields such as `ctx.attempt`, never a private symbol. Defaults are conservative: `retry` retries idempotent methods only.
 
 ## Shape and style
 
