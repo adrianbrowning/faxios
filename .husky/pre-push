@@ -6,7 +6,7 @@
 stamps="$(git rev-parse --git-path faxios-pre-push-lint)"
 zero="0000000000000000000000000000000000000000"
 
-while read -r _ local_sha _ _; do
+while read -r local_ref local_sha _ _; do
   # A deleted ref has nothing to lint.
   [ -z "$local_sha" ] || [ "$local_sha" = "$zero" ] && continue
   tree="$(git rev-parse "$local_sha^{tree}")"
@@ -18,10 +18,13 @@ while read -r _ local_sha _ _; do
   else
     dir="$(mktemp -d)"
     git worktree add --quiet --detach "$dir" "$local_sha" || exit 1
-    (cd "$dir" && pnpm install --frozen-lockfile --offline --silent && pnpm lint)
+    (cd "$dir" && pnpm install --frozen-lockfile --offline && pnpm lint)
     status=$?
     git worktree remove --force "$dir"
-    [ "$status" -eq 0 ] || exit 1
+    if [ "$status" -ne 0 ]; then
+      echo "pre-push: install or lint failed for $local_ref ($local_sha, tree $tree)" >&2
+      exit 1
+    fi
   fi
   echo "$tree" >> "$stamps"
 done
