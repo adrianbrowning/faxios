@@ -3,10 +3,10 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "fed106ed5a6b363390c1517094be8ab1edfe2486f2c1198c7b2e4d8560efa42a",
+      "fingerprint": "66f7b74c0d9506e965abe680f91ee88142624f29c892ecdb050efc9ac9214b11",
       "snapshot": {
         "MIGRATION_GUIDE.md": "78321da3eb997f0ee170b4f78177bd21f664549b3d9f060d06a3d5ebff9a1367",
-        "packages/lib/package.json": "220d8b3dc5040c04c1c2b2a4a1423ae6560988427c0548b7bae8e29186de5732",
+        "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
         "packages/lib/skills/configure-requests/SKILL.md": "c58a1472c5c7ccd52c227480425c8bdf6450e004aea08fcb957f78e9cc5a2627",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
@@ -35,7 +35,7 @@
         "packages/tests/unit/plugins/retry.test.ts": "6135e34294945ae5361ee86060d7253ea8880b1bede31b97f5f044f0bcee77d4",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "3ebcbed4a658f1c97c4442cd1fdcf51f3e895d1e",
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
       "outcome": "updated",
       "reason": "Skill stable-exports row lists resolveRequestURL (#294 review)",
       "evidence": [
@@ -43,13 +43,13 @@
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "68fcecf7b3c5d2fdd5892766b3596e318ad30919413bede061a2017e294c6759",
+      "fingerprint": "ed7bccfb92eef731451e34b58e8bedbdae5751f1f7b67153bff1150af0423f6e",
       "snapshot": {
         "MIGRATION_GUIDE.md": "78321da3eb997f0ee170b4f78177bd21f664549b3d9f060d06a3d5ebff9a1367",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
-        "packages/lib/package.json": "220d8b3dc5040c04c1c2b2a4a1423ae6560988427c0548b7bae8e29186de5732",
+        "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
         "packages/lib/skills/configure-requests/SKILL.md": "c58a1472c5c7ccd52c227480425c8bdf6450e004aea08fcb957f78e9cc5a2627",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
@@ -78,7 +78,7 @@
         "packages/tests/unit/plugins/retry.test.ts": "6135e34294945ae5361ee86060d7253ea8880b1bede31b97f5f044f0bcee77d4",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "3ebcbed4a658f1c97c4442cd1fdcf51f3e895d1e",
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
       "outcome": "updated",
       "reason": "Skill stable-exports row lists resolveRequestURL (#294 review)",
       "evidence": [
@@ -172,11 +172,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "e2f6444923a431152724cd9c2a98bd443b2dc3fb12fdf67851b9f1b711e8adf1",
+      "fingerprint": "529e12d10a7aa52dc925ef3972c69d04980adecb1e20562d5187ed89e2348f44",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "44709c4e6734dbdbddecf3d702a2cee77eadb2556297bb3811deb7e716e68138"
+        "packages/docs/pages/advanced/api-reference.md": "da6f22923682c1243695f11ac802cc174155a3f6aaead08d305b382366af3e21"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -280,11 +280,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "e18674b3cae6e62afdebcaf0eeb9e511a8a950e576b8fe7e3e29ed7a96b6c46b",
+      "fingerprint": "b515806141e233cfdef06c2b5d5ae96f5579b54f09a03b9680a537e1c77f6aab",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "823d6676b1a3c6500ece360b68f7e960bcb4f87bed30e3060964744af9701728"
+        "packages/docs/pages/advanced/request-config.md": "a4c558b56d54fd922b232a521bddbdef58edb2974c45ec5c0f3a383aca49985c"
       },
-      "head": "3ebcbed4a658f1c97c4442cd1fdcf51f3e895d1e",
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
       "outcome": "updated",
       "reason": "Skill corrected for spread named export and pathParams optionality (#294)",
       "evidence": [
@@ -589,11 +589,11 @@
       ]
     },
     "source:packages/tests/docs-examples/extract.test.ts": {
-      "fingerprint": "c3d7721ce8278eb33ffc4f7e43a62852fc1b206e7e72573465790e0a56a5ba7a",
+      "fingerprint": "3bed1f3534eeaa29ba3124c59429745fc30afb6192ca6733703acf3f4a1b5711",
       "snapshot": {
-        "packages/tests/docs-examples/extract.test.ts": "671b86b5dae4fc23eeb32accb04aa1dfc4797136d492320390ac9fc185e82654"
+        "packages/tests/docs-examples/extract.test.ts": "bfa3319732393a4e300c79be3ec5469fbba1f020a65a6def165c8c9a295d6317"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
       "outcome": "no-change",
       "reason": "Adds a root landing README and extracts its example in test:docs-examples; no library API or behaviour taught by configure-requests changes.",
       "evidence": [
@@ -601,11 +601,11 @@
       ]
     },
     "source:packages/tests/docs-examples/extract.ts": {
-      "fingerprint": "b19b42495c16d877a213c2bed1fe43202bdbb6ee0cd03a6c96ebe706b0b17131",
+      "fingerprint": "6038c11e22bad798c230b2df6cf74309027a5c0ad4762f1a35f0d8d0e42e14cb",
       "snapshot": {
-        "packages/tests/docs-examples/extract.ts": "e89dfb0ddd16df16e0a85d228a8268c0232482e23177f932179c85297a7b16a9"
+        "packages/tests/docs-examples/extract.ts": "cf7c21c310d14d27ab9394ec19969680d34d6ad26a9dbd457274ef5a5ebfebd1"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
       "outcome": "no-change",
       "reason": "Adds a root landing README and extracts its example in test:docs-examples; no library API or behaviour taught by configure-requests changes.",
       "evidence": [
@@ -639,11 +639,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-method-aliases.md": {
-      "fingerprint": "8baa4aa3d1a2ad38d8ec021e2602963461109703892a758e98b5eee3a6cd6dcd",
+      "fingerprint": "486fca530873903fb7512d2efac559777d77d18a3d9cdb1df0cdca7062cb16c0",
       "snapshot": {
-        "packages/docs/pages/advanced/request-method-aliases.md": "3717329a4add8d04c9997def8d7a6f6686491738f06f712fc9b116735bc33be7"
+        "packages/docs/pages/advanced/request-method-aliases.md": "4f4ac1a7d02d60545ff555a16ae57ff3ad0d7e024b986c0cd8cc1d8a3dc06aa4"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -1829,11 +1829,11 @@
       ]
     },
     "source:.claude/skills/do-work/SKILL.md": {
-      "fingerprint": "84a2a15928e10bc050d4ab4fe46bea58095e785601204b1beb7c5f2edc3d3c7a",
+      "fingerprint": "1fccb0b1c6ee7862de24e00203db979eb8e2ab72730b6328c4649e8ab4615391",
       "snapshot": {
-        ".claude/skills/do-work/SKILL.md": "d9842a4da66f02eb0c9c433a696b185b20745400f621181a78e65c954ebdbae4"
+        ".claude/skills/do-work/SKILL.md": "38d4fd78d9dd49cefab3f06d7389a7c2592dee5f714cd42420d2aa2591f1f7a5"
       },
-      "head": "0f2caf939ec854fba295170e591f96f55d3dc640",
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
       "outcome": "no-change",
       "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
       "evidence": [
@@ -1881,11 +1881,11 @@
       ]
     },
     "source:.github/workflows/ci.yml": {
-      "fingerprint": "8207c5c22547fd73ba8a8fea6f5bbe7a3068fc6f919514684f31b0ab05635a39",
+      "fingerprint": "c8957c9dd2fcf98abfdb3fcb525678e0e94602e7f5a61e4e85174926b893b39b",
       "snapshot": {
-        ".github/workflows/ci.yml": "4445ec5304c888bbe5596d9e86066c00b9e7655705dcaf629d03dca663a42179"
+        ".github/workflows/ci.yml": "8689ce61c89f0b28437d39e5ffc0026f8c314d487d696de1c1bcf6777b3d00f4"
       },
-      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
       "outcome": "no-change",
       "reason": "Review fixes: plugin import lint limited to root-exported names, CI builds before tests, bump text; the configure-requests skill already describes plugin imports correctly",
       "evidence": [
@@ -1917,11 +1917,11 @@
       ]
     },
     "source:COLLABORATOR_GUIDE.md": {
-      "fingerprint": "3feab2c580f37b56dcaeba8d67f7e453a5662058e0631e693409610d77591d96",
+      "fingerprint": "420aa5ff6c7fd738baf6af3bce38e18e65ec940a01cbc91943f473a0e953e538",
       "snapshot": {
-        "COLLABORATOR_GUIDE.md": "ab2ff85be9a3f10aa90f02891388f8b3cd202ab7cd893e25a614153e4cfeae9b"
+        "COLLABORATOR_GUIDE.md": "2bd4dd929e53f108ac2232fd596e903bdec694f21c2fac3fcecc1e6f96d35eb8"
       },
-      "head": "0f2caf939ec854fba295170e591f96f55d3dc640",
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
       "outcome": "no-change",
       "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
       "evidence": [
@@ -1929,11 +1929,11 @@
       ]
     },
     "source:CONTRIBUTING.md": {
-      "fingerprint": "d5ab10e7e42faed637a073ee4f0f6a6dd215fc1ca66dcde4b762ad72c9592929",
+      "fingerprint": "5e38212f45bc54ae24ffcb857b0904f85c92ad349606b7b5647e777e1030d413",
       "snapshot": {
-        "CONTRIBUTING.md": "f0df4ee41edf9c97442e31762ed3340a3d435612407f4a465a00b9d23811cad9"
+        "CONTRIBUTING.md": "a6ad21fe1b4eb5c2aa9fd8178075c38400a0d606c8a1cfb0589ca2f3291fd3ab"
       },
-      "head": "0f2caf939ec854fba295170e591f96f55d3dc640",
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
       "outcome": "no-change",
       "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
       "evidence": [
@@ -3274,11 +3274,11 @@
       ]
     },
     "source:.github/workflows/run-ci.yml": {
-      "fingerprint": "c8711874264e4a70e6569e7a796753735c9ccee941906e452967bb119eebb26b",
+      "fingerprint": "82af70e3ac02c11f5251a2d3c487f5dcde7e4505facba7e1c55b67b0b0d523ba",
       "snapshot": {
-        ".github/workflows/run-ci.yml": "a67aa838c6384503f3a0cbfb4a4d15cb6fd8fd8b1a6c698b048f1fa7ba8eec9d"
+        ".github/workflows/run-ci.yml": "e0da5c6c798285c0664172046a7641ed64c74fe90105e4a5e746a1810f3fad7c"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
       "outcome": "no-change",
       "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
       "evidence": [
@@ -4356,11 +4356,11 @@
       ]
     },
     "source:packages/lib/src/lib/core/assertRequestConfig.ts": {
-      "fingerprint": "43571f542c2b06853203d75667d4c7a88f516b21310d1004dc49fcf2d831f576",
+      "fingerprint": "cfe168df67d5a1637b996f9bade68ccb0792d8099ba30563495507b1b2f64c2a",
       "snapshot": {
-        "packages/lib/src/lib/core/assertRequestConfig.ts": "45654bba30c83cc7c5708d77b5339b9accc68352a507795c60d0ae8d585cc5fe"
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "8b1ca790e583d5d51dc24e7a3d6b9bd306593ee78805bb0bb6fd9112724a36e0"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
       "outcome": "updated",
       "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
@@ -4692,11 +4692,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/header-methods.md": {
-      "fingerprint": "028800c80081ddf608842e48cbfe8377a902bdc6afd81ee88a63007df6c2eb61",
+      "fingerprint": "275d63a9a342eca77117cba76b1bdb2d80e0b399d1c4cf567f746d33d4313241",
       "snapshot": {
-        "packages/docs/pages/advanced/header-methods.md": "31606192c27748b47de92136178ffbf1d98c2f9b6120a475fc79b27d9b8fdd23"
+        "packages/docs/pages/advanced/header-methods.md": "e7068e2442c7c2df05a7feb85f3dec9cae01db7a7d25f2b4e5799220ccb01f69"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
       "outcome": "no-change",
       "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
@@ -5484,11 +5484,11 @@
       ]
     },
     "source:packages/tests/README.md": {
-      "fingerprint": "dea6571ec40e19a96697140682369f6443a6d221cda6f7b335fd621e49c96bfd",
+      "fingerprint": "a99a2669011cfbfae6525c0019c7508eceb9ed8bf04580c293b2c31e1341d84e",
       "snapshot": {
-        "packages/tests/README.md": "5ec8fa9a79acd5236497bd712be70dffca494659a3bec12f3eb7eb0629646077"
+        "packages/tests/README.md": "197d77d176c5589c9fd43bb9ff7dde8a7ef79350969cb74de48dede860a529a0"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
       "outcome": "no-change",
       "reason": "test-only changes to the unit suite, its server helper and test deps; the skill teaches nothing about them",
       "evidence": [
@@ -7041,6 +7041,78 @@
       "reason": "Skill corrected for spread named export and pathParams optionality (#294)",
       "evidence": [
         "Changed: .bumpy/294-skill-docs.md at 8e6378ca8866ecac735ac97060d1ed8b82965b29"
+      ]
+    },
+    "source:.bumpy/jolly-glad-wave.md": {
+      "fingerprint": "bb1cc88e436dc2808181e40aa5595f6f3cfc8bc795d19bf7a544f750eeddb45c",
+      "snapshot": {
+        ".bumpy/jolly-glad-wave.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+      },
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: .bumpy/jolly-glad-wave.md"
+      ]
+    },
+    "source:packages/docs/pages/misc/semver.md": {
+      "fingerprint": "b47be23cc013b2314befc2330602581354d5c57e9d2bd27bb38caf3d7594674c",
+      "snapshot": {
+        "packages/docs/pages/misc/semver.md": "dc108619729761c511388cd2e6b5fe71b8408aee9dfd5d16b4ebba7d5dbe33b5"
+      },
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/docs/pages/misc/semver.md"
+      ]
+    },
+    "source:packages/tests/docs-examples/contract.test.ts": {
+      "fingerprint": "46101ac4dc1ab16a91ec9dc21cc6a2eeb5b59a0bb0601a110e8be88d09daca4e",
+      "snapshot": {
+        "packages/tests/docs-examples/contract.test.ts": "a53c93bacee333328ce33bc25da51ec6ef33874ae6e398d6db08a57d70b7ba87"
+      },
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/docs-examples/contract.test.ts"
+      ]
+    },
+    "source:packages/tests/docs-examples/contract.ts": {
+      "fingerprint": "547c2125fec83a51b58a9adad5dbe7bf90bafe667104525b64bfa267e629b71f",
+      "snapshot": {
+        "packages/tests/docs-examples/contract.ts": "65be58aaff64238c0661701b5fcd7be79222d2c3694078cb6dd3804bfcadd96a"
+      },
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/docs-examples/contract.ts"
+      ]
+    },
+    "source:packages/tests/docs-examples/docs-build.test.ts": {
+      "fingerprint": "98bb3a67ad39032a3fdf2754a1d2bc7e2d0a59a11317bfb108f48295d7bc5e0a",
+      "snapshot": {
+        "packages/tests/docs-examples/docs-build.test.ts": "9108d6cb7b58f83655fcd759f1b9f2140300d091ab19cbabf6f4ef7c3832c7e0"
+      },
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/docs-examples/docs-build.test.ts"
+      ]
+    },
+    "source:packages/tests/docs-examples/fixtures/broken-vitepress/index.md": {
+      "fingerprint": "91c66350453ddbb26bd69faa2428a3fee31d4f77ebd1bb38a4299ebd3112a10b",
+      "snapshot": {
+        "packages/tests/docs-examples/fixtures/broken-vitepress/index.md": "ee255235a0526e9d2d6f374543c447a622432169356331eccc091ffca7214515"
+      },
+      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/docs-examples/fixtures/broken-vitepress/index.md"
       ]
     }
   }

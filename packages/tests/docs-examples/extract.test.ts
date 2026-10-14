@@ -156,5 +156,6 @@ describe("extractBlocks", () => {
     expect(() => extract("```ts contract=@gcmdev/faxios#Nope\nx(): void;\n```\n")).toThrow(/has no export named Nope/);
     expect(() => extract("```js contract=@gcmdev/faxios\nx(): void;\n```\n")).toThrow(/needs a ts block/);
     expect(() => extract("```ts contract=@gcmdev/faxios check=types\nx(): void;\n```\n")).toThrow(/needs a ts block/);
+    expect(() => extract("```ts contract=@gcmdev/faxios check=skip reason=signature\nx(): void;\n```\n")).toThrow(/needs a ts block/);
   });
 });
