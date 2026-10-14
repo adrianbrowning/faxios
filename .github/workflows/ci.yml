@@ -43,8 +43,10 @@ jobs:
         working-directory: packages/tests
         run: pnpm exec playwright install --with-deps
 
+      # unit/scripts/bundleSize.test.ts bundles the built package, so build before testing
+      - name: Build
+        run: pnpm build
+
       - name: Test
         run: pnpm test
 
-      - name: Build
-        run: pnpm build
