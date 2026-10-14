@@ -1,84 +1,39 @@
-import { assertEquals } from "@std/assert";
+import { assertEquals, assertStringIncludes } from "@std/assert";
 import faxios from "faxios";
-
-const createFetchCapture = () => {
-  const calls: Array<Request> = [];
-
-  const fetch = async (input: any, init?: any) => {
-    const request = input instanceof Request ? input : new Request(input, init);
-    calls.push(request);
-
-    return new Response(JSON.stringify({ ok: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  };
-
-  return {
-    fetch,
-    getCalls: () => calls,
-  };
-};
-
-const env = (fetch: (input: Request | string | URL, init?: RequestInit) => Promise<Response>) => ({
-  fetch,
-  Request,
-  Response,
-});
+import { createRecordingFetch } from "./helpers.ts";
 
 Deno.test("headers: default Accept header is sent", async () => {
-  const { fetch, getCalls } = createFetchCapture();
+  const { fetch, calls } = createRecordingFetch();
 
-  await faxios.get("https://example.com/default-headers", {
-    env: env(fetch),
-  });
+  await faxios.get("https://example.com/default-headers", { env: { fetch } });
 
-  const request = getCalls()[0];
-  assertEquals(
-    request.headers.get("accept"),
-    "application/json, text/plain, */*"
-  );
+  assertEquals(calls[0]!.headers.get("accept"), "application/json, text/plain, */*");
 });
 
 Deno.test("headers: custom headers are forwarded", async () => {
-  const { fetch, getCalls } = createFetchCapture();
+  const { fetch, calls } = createRecordingFetch();
 
   await faxios.get("https://example.com/custom-headers", {
-    headers: {
-      "X-Trace-Id": "trace-123",
-      Authorization: "Bearer token-abc",
-    },
-    env: env(fetch),
+    headers: { "X-Trace-Id": "trace-123", Authorization: "Bearer token-abc" },
+    env: { fetch },
   });
 
-  const request = getCalls()[0];
-  assertEquals(request.headers.get("x-trace-id"), "trace-123");
-  assertEquals(request.headers.get("authorization"), "Bearer token-abc");
+  assertEquals(calls[0]!.headers.get("x-trace-id"), "trace-123");
+  assertEquals(calls[0]!.headers.get("authorization"), "Bearer token-abc");
 });
 
 Deno.test("headers: content-type is set for JSON POST payload", async () => {
-  const { fetch, getCalls } = createFetchCapture();
+  const { fetch, calls } = createRecordingFetch();
 
-  await faxios.post(
-    "https://example.com/post-json",
-    { name: "widget" },
-    {
-      env: env(fetch),
-    }
-  );
+  await faxios.post("https://example.com/post-json", { name: "widget" }, { env: { fetch } });
 
-  const request = getCalls()[0];
-  const contentType = request.headers.get("content-type") || "";
-  assertEquals(contentType.includes("application/json"), true);
+  assertStringIncludes(calls[0]!.headers.get("content-type") ?? "", "application/json");
 });
 
 Deno.test("headers: content-type is absent for bodyless GET", async () => {
-  const { fetch, getCalls } = createFetchCapture();
+  const { fetch, calls } = createRecordingFetch();
 
-  await faxios.get("https://example.com/get-no-body", {
-    env: env(fetch),
-  });
+  await faxios.get("https://example.com/get-no-body", { env: { fetch } });
 
-  const request = getCalls()[0];
-  assertEquals(request.headers.get("content-type"), null);
+  assertEquals(calls[0]!.headers.get("content-type"), null);
 });

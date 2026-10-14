@@ -5,6 +5,7 @@ import { forwardTo } from "faxios/plugins/forward-to";
 import { retry } from "faxios/plugins/retry";
 import { timing } from "faxios/plugins/timing";
 import { describe, expect, it } from "vitest";
+import type { MockFetch } from "./helpers.js";
 
 describe("plugin subpaths (dist export only)", () => {
   it("exports definePlugin only from faxios/plugins, and no plugin API from the root", () => {
@@ -12,16 +13,16 @@ describe("plugin subpaths (dist export only)", () => {
     for (const name of [ "authBearer", "forwardTo", "retry", "timing", "definePlugin" ]) {
       expect(Object.hasOwn(root, name)).toBe(false);
     }
-    expect(faxios.plugins).toBeUndefined();
+    expect(Reflect.get(faxios, "plugins")).toBeUndefined();
   });
 
   it("runs a definePlugin plugin with authBearer, retry and timing", async () => {
-    const calls = [];
-    const fetch = async (input, init) => {
+    const calls: Array<Request> = [];
+    const fetch: MockFetch = async (input, init) => {
       calls.push(new Request(input, init));
       return new Response(null, { status: calls.length === 1 ? 503 : 200 });
     };
-    const events = [];
+    const events: Array<unknown> = [];
     const tagged = pluginsEntry.definePlugin({
       name: "tag",
       middleware: async (ctx, next) => {
@@ -46,8 +47,8 @@ describe("plugin subpaths (dist export only)", () => {
   });
 
   it("forwards every try to the gateway with the target URL in X-Forward-To", async () => {
-    const calls = [];
-    const fetch = async (input, init) => {
+    const calls: Array<Request> = [];
+    const fetch: MockFetch = async (input, init) => {
       calls.push(new Request(input, init));
       return new Response(null, { status: calls.length === 1 ? 503 : 200 });
     };

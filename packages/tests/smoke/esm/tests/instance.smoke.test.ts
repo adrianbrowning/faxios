@@ -1,26 +1,10 @@
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
-
-const createFetchMock = responseBody => {
-  const calls = [];
-
-  const mockFetch = async (input, init) => {
-    calls.push({ input, init: init || {} });
-    return new Response(responseBody != null ? responseBody : JSON.stringify({ ok: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  };
-
-  return {
-    mockFetch,
-    getCalls: () => calls,
-  };
-};
+import { createRecordingFetch } from "./helpers.js";
 
 describe("instance compat (dist export only)", () => {
   it("creates isolated instances with separate defaults", async () => {
-    const { mockFetch, getCalls } = createFetchMock(null);
+    const { mockFetch, getCalls } = createRecordingFetch();
 
     const clientA = faxios.create({
       baseURL: "http://example.com/api-a",
@@ -43,7 +27,7 @@ describe("instance compat (dist export only)", () => {
   });
 
   it("supports callable instance form instance(config)", async () => {
-    const { mockFetch, getCalls } = createFetchMock(null);
+    const { mockFetch, getCalls } = createRecordingFetch();
     const env = { fetch: mockFetch, Request, Response };
     const client = faxios.create({ baseURL: "http://example.com" });
 
@@ -55,7 +39,7 @@ describe("instance compat (dist export only)", () => {
   });
 
   it("applies instance middleware before dispatch", async () => {
-    const { mockFetch, getCalls } = createFetchMock(null);
+    const { mockFetch, getCalls } = createRecordingFetch();
     const env = { fetch: mockFetch, Request, Response };
     const client = faxios.create({ baseURL: "http://example.com" }).use(async (ctx, next) => {
       ctx.config.headers.set("X-From-Middleware", "yes");
@@ -69,11 +53,11 @@ describe("instance compat (dist export only)", () => {
   });
 
   it("applies instance middleware after dispatch", async () => {
-    const { mockFetch } = createFetchMock(JSON.stringify({ name: "faxios" }));
+    const { mockFetch } = createRecordingFetch(JSON.stringify({ name: "faxios" }));
     const env = { fetch: mockFetch, Request, Response };
     const client = faxios.create({ baseURL: "http://example.com" }).use(async (ctx, next) => {
       const response = await next(ctx);
-      return { ...response, data: { ...response.data, wrapped: true } };
+      return { ...response, data: { ...(response.data as Record<string, unknown>), wrapped: true } };
     });
 
     const response = await client.get("/middleware-response", { env });

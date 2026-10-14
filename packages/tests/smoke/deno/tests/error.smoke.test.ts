@@ -1,47 +1,23 @@
 import { assertEquals } from "@std/assert";
 import faxios from "faxios";
-
-const env = (fetch: (input: Request | string | URL, init?: RequestInit) => Promise<Response>) => ({
-  fetch,
-  Request,
-  Response,
-});
+import type { MockFetch } from "./helpers.ts";
+import { jsonResponse } from "./helpers.ts";
 
 Deno.test("errors: rejects with FaxiosError for 500", async () => {
-  const fetch = async () =>
-    new Response(JSON.stringify({ error: "boom" }), {
-      status: 500,
-      statusText: "Internal Server Error",
-      headers: { "Content-Type": "application/json" },
-    });
+  const fetch: MockFetch = async () => jsonResponse({ error: "boom" }, { status: 500, statusText: "Internal Server Error" });
 
-  const err = await faxios
-    .get("https://example.com/fail", {
-      env: env(fetch),
-    })
-    .catch((e: any) => e);
+  const err = await faxios.get("https://example.com/fail", { env: { fetch } }).catch((e: unknown) => e);
 
   assertEquals(faxios.isFaxiosError(err), true);
-  assertEquals(err.response.status, 500);
-  assertEquals(err.response.data, { error: "boom" });
+  assertEquals(faxios.isFaxiosError(err) ? [ err.response?.status, err.response?.data ] : undefined, [ 500, { error: "boom" }]);
 });
 
 Deno.test("errors: rejects with FaxiosError for 404", async () => {
-  const fetch = async () =>
-    new Response(JSON.stringify({ error: "missing" }), {
-      status: 404,
-      statusText: "Not Found",
-      headers: { "Content-Type": "application/json" },
-    });
+  const fetch: MockFetch = async () => jsonResponse({ error: "missing" }, { status: 404, statusText: "Not Found" });
 
-  const err = await faxios
-    .get("https://example.com/missing", {
-      env: env(fetch),
-    })
-    .catch((e: any) => e);
+  const err = await faxios.get("https://example.com/missing", { env: { fetch } }).catch((e: unknown) => e);
 
-  assertEquals(faxios.isFaxiosError(err), true);
-  assertEquals(err.response.status, 404);
+  assertEquals(faxios.isFaxiosError(err) ? err.response?.status : undefined, 404);
 });
 
 Deno.test("errors: isFaxiosError returns false for plain Error", () => {

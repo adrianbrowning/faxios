@@ -1,15 +1,20 @@
 import { Readable } from "node:stream";
 import faxios from "faxios";
+import type { FaxiosProgressEvent } from "faxios";
+import type { FetchInput } from "./helpers.js";
+
+type Sample = Pick<FaxiosProgressEvent, "download" | "loaded" | "total" | "upload">;
 import { describe, expect, it } from "vitest";
 
 describe("progress compat (dist export only)", () => {
   it("emits upload progress events for stream payloads", async () => {
-    const samples = [];
+    const samples: Array<Sample> = [];
     const payload = [ "abc", "def", "ghi" ];
     const total = payload.join("").length;
 
     // The adapter wraps the body in a tracked ReadableStream; consuming it triggers onUploadProgress.
-    const mockFetch = async input => {
+    const mockFetch = async (input: FetchInput) => {
+      if (!(input instanceof Request)) throw new TypeError("expected a Request");
       // Drain the body so the tracked stream fires progress events
       await input.arrayBuffer();
       return new Response(JSON.stringify({ ok: true }), {
@@ -35,7 +40,7 @@ describe("progress compat (dist export only)", () => {
   });
 
   it("emits download progress events", async () => {
-    const samples = [];
+    const samples: Array<Sample> = [];
     const chunks = [ "ab", "cd", "ef" ];
     const total = chunks.join("").length;
 

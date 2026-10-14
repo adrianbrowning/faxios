@@ -1,12 +1,8 @@
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
+import { pendingFetch } from "./helpers.js";
 
-const hangingFetch = async (_input, init) =>
-  new Promise((_resolve, reject) => {
-    const { signal } = init || {};
-    if (signal?.aborted) { reject(signal.reason); return; }
-    signal?.addEventListener("abort", () => reject(signal.reason), { once: true });
-  });
+const hangingFetch = pendingFetch;
 
 describe("timeout compat (dist export only)", () => {
   it("rejects with ETIMEDOUT on timeout", async () => {
@@ -39,6 +35,7 @@ describe("timeout compat (dist export only)", () => {
   it("accepts timeout as a numeric string", async () => {
     const err = await faxios
       .get("http://example.com/timeout", {
+        // @ts-expect-error TS2322 -- untyped JS callers may pass a numeric string; the runtime parses it
         timeout: "30",
         env: { fetch: hangingFetch, Request, Response },
       })
@@ -52,6 +49,7 @@ describe("timeout compat (dist export only)", () => {
   it("rejects with ERR_BAD_OPTION_VALUE when timeout is not parsable", async () => {
     const err = await faxios
       .get("http://example.com/timeout", {
+        // @ts-expect-error TS2322 -- untyped JS callers may pass garbage; the runtime must reject it
         timeout: { invalid: true },
         env: { fetch: hangingFetch, Request, Response },
       })

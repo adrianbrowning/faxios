@@ -39,7 +39,8 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# The pnpm and bun lockfiles pin faxios.tgz; deno.lock imports dist/ by path, so it is only guarded.
+# The pnpm and bun lockfiles pin faxios.tgz. smoke/deno installs it as an extracted directory,
+# which deno.lock doesn't record, so deno.lock is only guarded.
 TARBALL_LOCKFILES="smoke/esm/pnpm-lock.yaml module/esm/pnpm-lock.yaml smoke/bun/bun.lock"
 LOCKFILES="$TARBALL_LOCKFILES smoke/deno/deno.lock"
 # A killed run leaves the lockfiles pinned to its tarball; backing those up and "restoring" them
@@ -76,6 +77,14 @@ node pin-tarball-integrity.ts $TARBALL_LOCKFILES
 pnpm --dir smoke/esm install --frozen-lockfile --ignore-workspace --ignore-scripts
 pnpm --dir module/esm install --frozen-lockfile --ignore-workspace --ignore-scripts
 BUN_INSTALL_CACHE_DIR="$BUN_CACHE" bun install --cwd smoke/bun --frozen-lockfile
+# Deno can't install a tarball dependency; this task extracts it into smoke/deno/.faxios (the
+# package.json `file:` dependency) and runs `deno install --frozen`.
+deno task --cwd smoke/deno install
+
+# The smoke suites type-check against the packed tarball's declarations, so this runs after the
+# installs above rather than in `lint:ts` (which runs before anything is built or installed).
+echo "==> type-check smoke suites"
+pnpm lint:ts:smoke
 
 echo "==> unit"
 pnpm test:vitest:unit

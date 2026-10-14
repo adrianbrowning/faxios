@@ -1,29 +1,16 @@
 import { describe, expect, test } from "bun:test";
 import faxios from "faxios";
-
-const env = (fetch: typeof globalThis.fetch) => ({
-  fetch,
-  Request,
-  Response,
-});
+import type { MockFetch } from "./helpers.ts";
+import { jsonResponse } from "./helpers.ts";
 
 describe("errors", () => {
   test("non-2xx response rejects with FaxiosError and status 404", async () => {
-    const fetch = async () =>
-      new Response(JSON.stringify({ error: "missing" }), {
-        status: 404,
-        statusText: "Not Found",
-        headers: { "Content-Type": "application/json" },
-      });
+    const fetch: MockFetch = async () => jsonResponse({ error: "missing" }, { status: 404, statusText: "Not Found" });
 
-    const err = await faxios
-      .get("https://example.com/missing", {
-        env: env(fetch),
-      })
-      .catch((e: any) => e);
+    const err = await faxios.get("https://example.com/missing", { env: { fetch } }).catch((e: unknown) => e);
 
     expect(faxios.isFaxiosError(err)).toBe(true);
-    expect(err.response.status).toBe(404);
+    expect(err).toMatchObject({ response: { status: 404, data: { error: "missing" } } });
   });
 
   test("faxios.isFaxiosError returns false for a plain Error", () => {

@@ -1,18 +1,13 @@
 import { describe, expect, test } from "bun:test";
 import faxios from "faxios";
-
-const env = (fetch: typeof globalThis.fetch) => ({
-  fetch,
-  Request,
-  Response,
-});
+import type { MockFetch } from "./helpers.ts";
 
 describe("progress", () => {
   test("onDownloadProgress fires with loaded > 0 for streaming fetch response", async () => {
     const samples: Array<number> = [];
 
-    const fetch = async () => {
-      const stream = new ReadableStream({
+    const fetch: MockFetch = async () => {
+      const stream = new ReadableStream<Uint8Array>({
         start(controller) {
           controller.enqueue(new TextEncoder().encode("ab"));
           controller.enqueue(new TextEncoder().encode("cd"));
@@ -20,25 +15,19 @@ describe("progress", () => {
         },
       });
 
-      return new Response(stream, {
-        status: 200,
-        headers: {
-          "Content-Type": "text/plain",
-          "Content-Length": "4",
-        },
-      });
+      return new Response(stream, { status: 200, headers: { "Content-Type": "text/plain", "Content-Length": "4" } });
     };
 
     const response = await faxios.get("https://example.com/download", {
       responseType: "text",
-      onDownloadProgress: ({ loaded }: { loaded: number; }) => {
+      onDownloadProgress: ({ loaded }) => {
         samples.push(loaded);
       },
-      env: env(fetch),
+      env: { fetch },
     });
 
     expect(response.data).toBe("abcd");
     expect(samples.length).toBeGreaterThan(0);
-    expect(samples.some(loaded => loaded > 0)).toBe(true);
+    expect(samples.at(-1)).toBe(4);
   });
 });

@@ -1,10 +1,14 @@
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
+import { toRequest } from "./helpers.js";
+import type { FetchInput } from "./helpers.js";
 
-const createFetchMock = responseFactory => {
-  const calls = [];
+type Echo = { body: string; contentType: null | string; method: string; url: string; };
 
-  const mockFetch = async (input, init) => {
+const createFetchMock = (responseFactory?: (input: FetchInput, init: RequestInit) => Promise<Response> | Response) => {
+  const calls: Array<{ init: RequestInit; input: FetchInput; }> = [];
+
+  const mockFetch = async (input: FetchInput, init?: RequestInit) => {
     calls.push({ input, init: init || {} });
 
     if (responseFactory) {
@@ -42,32 +46,16 @@ describe("fetch compat (dist export only)", () => {
 
   it("sends method, headers and body for post requests", async () => {
     const { mockFetch, getCalls } = createFetchMock(async (input, init) => {
-      const requestInit = init || {};
-      const isRequest = input && typeof input !== "string";
-      const method = isRequest ? input.method : requestInit.method;
-
-      const body =
-        isRequest && typeof input.clone === "function"
-          ? await input.clone().text()
-          : requestInit.body;
-
-      let contentType;
-      if (isRequest && input.headers) {
-        contentType = input.headers.get("content-type");
-      }
-      else if (requestInit.headers) {
-        contentType =
-          requestInit.headers["Content-Type"] ||
-          requestInit.headers["content-type"];
-      }
+      const request = toRequest(input, init);
+      const echo: Echo = {
+        url: request.url,
+        method: request.method,
+        contentType: request.headers.get("content-type"),
+        body: await request.text(),
+      };
 
       return new Response(
-        JSON.stringify({
-          url: typeof input === "string" ? input : input.url,
-          method,
-          contentType,
-          body,
-        }),
+        JSON.stringify(echo),
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
@@ -75,7 +63,7 @@ describe("fetch compat (dist export only)", () => {
       );
     });
 
-    const response = await faxios.post(
+    const response = await faxios.post<Echo>(
       "https://example.com/items",
       { name: "widget" },
       {

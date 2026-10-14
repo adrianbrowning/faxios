@@ -1,5 +1,6 @@
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
+import { pendingFetch } from "./helpers.js";
 
 describe("error compat (dist export only)", () => {
   it("rejects with FaxiosError for non-2xx responses by default", async () => {
@@ -55,12 +56,7 @@ describe("error compat (dist export only)", () => {
   });
 
   it("rejects with ETIMEDOUT on timeout", async () => {
-    const mockFetch = async (_input, init) =>
-      new Promise((_resolve, reject) => {
-        const { signal } = init || {};
-        if (signal?.aborted) { reject(signal.reason); return; }
-        signal?.addEventListener("abort", () => reject(signal.reason), { once: true });
-      });
+    const mockFetch = pendingFetch;
 
     const err = await faxios
       .get("http://example.com/timeout", {
@@ -75,12 +71,7 @@ describe("error compat (dist export only)", () => {
   });
 
   it("uses timeoutErrorMessage when provided", async () => {
-    const mockFetch = async (_input, init) =>
-      new Promise((_resolve, reject) => {
-        const { signal } = init || {};
-        if (signal?.aborted) { reject(signal.reason); return; }
-        signal?.addEventListener("abort", () => reject(signal.reason), { once: true });
-      });
+    const mockFetch = pendingFetch;
 
     const err = await faxios
       .get("http://example.com/timeout", {

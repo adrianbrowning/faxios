@@ -1,12 +1,15 @@
 import http from "node:http";
 import faxios from "faxios";
 import { afterEach, describe, expect, it } from "vitest";
+import { serverPort } from "./helpers.js";
 
 // Real fetch against a real server: a body that fetch drops never reaches a mock's Request.
-const startServer = received =>
-  new Promise(resolve => {
+type Received = { bytes: number; contentLength: string | undefined; text: string; };
+
+const startServer = (received: Array<Received>) =>
+  new Promise<http.Server>(resolve => {
     const server = http.createServer((req, res) => {
-      const chunks = [];
+      const chunks: Array<Buffer> = [];
       req.on("data", chunk => chunks.push(chunk));
       req.on("end", () => {
         const body = Buffer.concat(chunks);
@@ -18,15 +21,15 @@ const startServer = received =>
   });
 
 describe("request bodies reach the server (dist export only)", () => {
-  let server;
+  let server: http.Server | undefined;
 
   afterEach(async () => {
-    if (server?.listening) await new Promise(resolve => server.close(resolve));
+    if (server?.listening) await new Promise(resolve => server?.close(resolve));
     server = undefined;
   });
 
   const big = "x".repeat(200 * 1024);
-  const cases = [
+  const cases: Array<[string, unknown, string]> = [
     [ "a string", "abc", "abc" ],
     [ "a JSON object", { name: "a" }, JSON.stringify({ name: "a" }) ],
     [ "a 200 KB string", big, big ],
@@ -34,10 +37,10 @@ describe("request bodies reach the server (dist export only)", () => {
 
   for (const [ name, data, expected ] of cases) {
     it(`POST with ${name}`, async () => {
-      const received = [];
+      const received: Array<Received> = [];
       server = await startServer(received);
 
-      await faxios.post(`http://127.0.0.1:${server.address().port}/`, data);
+      await faxios.post(`http://127.0.0.1:${serverPort(server)}/`, data);
 
       expect(received).toHaveLength(1);
       expect(received[0].bytes).toBe(expected.length);

@@ -1,21 +1,22 @@
 import { Readable } from "node:stream";
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
+import { toRequest } from "./helpers.js";
+import type { FetchInput } from "./helpers.js";
 
 describe("files compat (dist export only)", () => {
   it("supports posting Buffer payloads", async () => {
     const source = Buffer.from("binary-\x00-data", "utf8");
-    let capturedBody;
-
-    const mockFetch = async input => {
-      capturedBody = Buffer.from(await input.arrayBuffer());
+    
+    const mockFetch = async (input: FetchInput) => {
+      const capturedBody = Buffer.from(await toRequest(input).arrayBuffer());
       return new Response(JSON.stringify({ echoed: capturedBody.toString("base64") }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
     };
 
-    const response = await faxios.post("http://example.com/upload", source, {
+    const response = await faxios.post<{ echoed: unknown; }>("http://example.com/upload", source, {
       env: { fetch: mockFetch, Request, Response },
     });
 
@@ -24,17 +25,16 @@ describe("files compat (dist export only)", () => {
 
   it("supports posting Uint8Array payloads", async () => {
     const source = Uint8Array.from([ 1, 2, 3, 4, 255 ]);
-    let capturedBody;
-
-    const mockFetch = async input => {
-      capturedBody = new Uint8Array(await input.arrayBuffer());
+    
+    const mockFetch = async (input: FetchInput) => {
+      const capturedBody = new Uint8Array(await toRequest(input).arrayBuffer());
       return new Response(JSON.stringify({ echoed: Array.from(capturedBody.values()) }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
     };
 
-    const response = await faxios.post("http://example.com/upload", source, {
+    const response = await faxios.post<{ echoed: unknown; }>("http://example.com/upload", source, {
       env: { fetch: mockFetch, Request, Response },
     });
 
@@ -45,16 +45,17 @@ describe("files compat (dist export only)", () => {
     const streamData = [ "hello ", "stream ", "world" ];
     const source = Readable.from(streamData);
 
-    const mockFetch = async input => {
-      const text = new TextDecoder().decode(await input.arrayBuffer());
-      const contentType = input.headers.get("content-type") ?? "";
+    const mockFetch = async (input: FetchInput) => {
+      const request = toRequest(input);
+      const text = new TextDecoder().decode(await request.arrayBuffer());
+      const contentType = request.headers.get("content-type") ?? "";
       return new Response(JSON.stringify({ text, contentType }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
     };
 
-    const response = await faxios.post("http://example.com/upload", source, {
+    const response = await faxios.post<{ contentType: string; text: string; }>("http://example.com/upload", source, {
       headers: { "Content-Type": "application/octet-stream" },
       env: { fetch: mockFetch, Request, Response },
     });
@@ -73,7 +74,7 @@ describe("files compat (dist export only)", () => {
         headers: { "Content-Type": "application/octet-stream" },
       });
 
-    const response = await faxios.get("http://example.com/file.bin", {
+    const response = await faxios.get<ArrayBuffer>("http://example.com/file.bin", {
       responseType: "arraybuffer",
       env: { fetch: mockFetch, Request, Response },
     });

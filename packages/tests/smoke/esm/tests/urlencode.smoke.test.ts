@@ -1,11 +1,16 @@
 import faxios from "faxios";
+import { toRequest } from "./helpers.js";
+import type { MockFetch } from "./helpers.js";
+
+type Echo = { body: string; contentType: string; path: string; };
 import { describe, expect, it } from "vitest";
 
 const createEchoFetch = () => {
-  const mockFetch = async (input, init) => {
-    const url = new URL(input.url);
-    const body = await input.text();
-    const contentType = new Headers(init.headers ?? {}).get("content-type") ?? "";
+  const mockFetch: MockFetch = async (input, init) => {
+    const request = toRequest(input, init);
+    const url = new URL(request.url);
+    const body = await request.text();
+    const contentType = request.headers.get("content-type") ?? "";
 
     return new Response(
       JSON.stringify({ path: url.pathname + url.search, body, contentType }),
@@ -20,7 +25,7 @@ describe("urlencode compat (dist export only)", () => {
   it("serializes params into request URL", async () => {
     const { mockFetch } = createEchoFetch();
 
-    const response = await faxios.get("http://example.com/search", {
+    const response = await faxios.get<Echo>("http://example.com/search", {
       env: { fetch: mockFetch, Request, Response },
       params: { q: "faxios docs", page: 2 },
     });
@@ -31,7 +36,7 @@ describe("urlencode compat (dist export only)", () => {
   it("supports custom paramsSerializer function", async () => {
     const { mockFetch } = createEchoFetch();
 
-    const response = await faxios.get("http://example.com/search", {
+    const response = await faxios.get<Echo>("http://example.com/search", {
       env: { fetch: mockFetch, Request, Response },
       params: { q: "ignored" },
       paramsSerializer: () => "fixed=1",
@@ -46,7 +51,7 @@ describe("urlencode compat (dist export only)", () => {
     payload.append("name", "faxios");
     payload.append("mode", "compat");
 
-    const response = await faxios.post("http://example.com/form", payload, {
+    const response = await faxios.post<Echo>("http://example.com/form", payload, {
       env: { fetch: mockFetch, Request, Response },
     });
 
@@ -57,7 +62,7 @@ describe("urlencode compat (dist export only)", () => {
   it("serializes object payload when content-type is application/x-www-form-urlencoded", async () => {
     const { mockFetch } = createEchoFetch();
 
-    const response = await faxios.post(
+    const response = await faxios.post<Echo>(
       "http://example.com/form",
       { name: "faxios", mode: "compat" },
       {
@@ -73,7 +78,7 @@ describe("urlencode compat (dist export only)", () => {
   it("respects formSerializer options for index formatting", async () => {
     const { mockFetch } = createEchoFetch();
 
-    const response = await faxios.post(
+    const response = await faxios.post<Echo>(
       "http://example.com/form",
       { arr: [ "1", "2" ] },
       {

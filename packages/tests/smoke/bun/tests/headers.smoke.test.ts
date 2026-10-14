@@ -1,61 +1,21 @@
 import { describe, expect, test } from "bun:test";
 import faxios from "faxios";
-
-const createFetchCapture = () => {
-  const calls: Array<Request> = [];
-
-  const fetch = async (input: unknown, init?: RequestInit) => {
-    const request =
-      input instanceof Request ? input : new Request(input as string, init);
-    calls.push(request);
-
-    return new Response(JSON.stringify({ ok: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  };
-
-  return {
-    fetch,
-    getCalls: () => calls,
-  };
-};
-
-const env = (fetch: typeof globalThis.fetch) => ({
-  fetch,
-  Request,
-  Response,
-});
+import { createRecordingFetch } from "./helpers.ts";
 
 describe("headers", () => {
   test("custom X-Custom header is forwarded to mock fetch (case-insensitive)", async () => {
-    const { fetch, getCalls } = createFetchCapture();
+    const { fetch, calls } = createRecordingFetch();
 
-    await faxios.get("https://example.com/custom-headers", {
-      headers: {
-        "X-Custom": "trace-123",
-      },
-      env: env(fetch),
-    });
+    await faxios.get("https://example.com/custom-headers", { headers: { "X-Custom": "trace-123" }, env: { fetch } });
 
-    const request = getCalls()[0];
-    expect(request.headers.get("x-custom")).toBe("trace-123");
+    expect(calls[0]!.headers.get("x-custom")).toBe("trace-123");
   });
 
   test("content-type application/json is inferred for JSON POST body", async () => {
-    const { fetch, getCalls } = createFetchCapture();
+    const { fetch, calls } = createRecordingFetch();
 
-    await faxios.post(
-      "https://example.com/post-json",
-      { name: "widget" },
-      {
-        env: env(fetch),
-      }
-    );
+    await faxios.post("https://example.com/post-json", { name: "widget" }, { env: { fetch } });
 
-    const request = getCalls()[0];
-    const contentType = request.headers.get("content-type") || "";
-
-    expect(contentType.includes("application/json")).toBe(true);
+    expect(calls[0]!.headers.get("content-type")).toContain("application/json");
   });
 });

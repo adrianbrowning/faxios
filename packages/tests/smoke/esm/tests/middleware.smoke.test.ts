@@ -1,25 +1,16 @@
 import faxios from "faxios";
+import type { FaxiosContext, FaxiosNext } from "faxios";
 import { describe, expect, it } from "vitest";
+import { createRecordingFetch } from "./helpers.js";
+import type { MockFetch } from "./helpers.js";
 
-const createFetchMock = responseBody => {
-  const calls = [];
+type Count = { n: number; };
 
-  const mockFetch = async (input, init) => {
-    calls.push({ input, init: init || {} });
-    return new Response(responseBody != null ? responseBody : JSON.stringify({ value: "ok" }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  };
-
-  return { mockFetch, getCalls: () => calls };
-};
-
-const env = mockFetch => ({ fetch: mockFetch, Request, Response });
+const env = (mockFetch: MockFetch) => ({ fetch: mockFetch, Request, Response });
 
 describe("middleware compat (dist export only)", () => {
   it("applies config changes from every middleware before dispatch", async () => {
-    const { mockFetch, getCalls } = createFetchMock(null);
+    const { mockFetch, getCalls } = createRecordingFetch();
     const client = faxios.create()
       .use(async (ctx, next) => {
         ctx.config.headers.set("X-One", "1");
@@ -38,25 +29,25 @@ describe("middleware compat (dist export only)", () => {
   });
 
   it("unwinds in reverse registration order after dispatch", async () => {
-    const { mockFetch } = createFetchMock(JSON.stringify({ n: 1 }));
+    const { mockFetch } = createRecordingFetch(JSON.stringify({ n: 1 }));
     const client = faxios.create()
       .use(async (ctx, next) => {
         const response = await next(ctx);
-        return { ...response, data: { n: response.data.n * 10 } };
+        return { ...response, data: { n: (response.data as Count).n * 10 } };
       })
       .use(async (ctx, next) => {
         const response = await next(ctx);
-        return { ...response, data: { n: response.data.n + 1 } };
+        return { ...response, data: { n: (response.data as Count).n + 1 } };
       });
 
-    const response = await client.get("http://example.com/resource", { env: env(mockFetch) });
+    const response = await client.get<Count>("http://example.com/resource", { env: env(mockFetch) });
 
     expect(response.data.n).toBe(20);
   });
 
   it("supports ejecting middleware", async () => {
-    const { mockFetch, getCalls } = createFetchMock(null);
-    const addHeader = async (ctx, next) => {
+    const { mockFetch, getCalls } = createRecordingFetch();
+    const addHeader = async (ctx: FaxiosContext, next: FaxiosNext) => {
       ctx.config.headers.set("X-Ejected", "yes");
       return next(ctx);
     };
@@ -69,21 +60,13 @@ describe("middleware compat (dist export only)", () => {
   });
 
   it("propagates errors thrown by middleware without dispatching", async () => {
-    const { mockFetch, getCalls } = createFetchMock(null);
+    const { mockFetch, getCalls } = createRecordingFetch();
     const client = faxios.create().use(async () => {
       throw new Error("blocked-by-middleware");
     });
 
-    let err;
-    try {
-      await client.get("http://example.com/resource", { env: env(mockFetch) });
-    }
-    catch (e) {
-      err = e;
-    }
-
-    expect(err).toBeDefined();
-    expect(err.message).toContain("blocked-by-middleware");
+    await expect(client.get("http://example.com/resource", { env: env(mockFetch) }))
+      .rejects.toThrow("blocked-by-middleware");
     expect(getCalls()).toHaveLength(0);
   });
 });

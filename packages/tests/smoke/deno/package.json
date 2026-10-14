@@ -1,0 +1,8 @@
+{
+  "name": "@faxios/deno-smoke-tests",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "faxios": "file:./.faxios"
+  }
+}
