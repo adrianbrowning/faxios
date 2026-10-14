@@ -3,30 +3,30 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "a97f8feaea391c207c3ff34ae74a2aeab147dc94eb2a893559c37f845e53b13e",
+      "fingerprint": "912abddbd0c6ba2756cc25862aed464a3d84838d69a1e9cf7ac3544408ba0deb",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "packages/lib/package.json": "220d8b3dc5040c04c1c2b2a4a1423ae6560988427c0548b7bae8e29186de5732",
-        "packages/lib/skills/configure-requests/SKILL.md": "4a7d6c1df0e6a2333f98ba9672a5db7048bdf7a18f9c1cd699b13efa9afaa12b",
+        "packages/lib/skills/configure-requests/SKILL.md": "ef7922e8f26581f865e593601047ae57ecb60b84c6e2d6fb1e4c00d9256ae339",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
-        "packages/lib/src/index.ts": "4b67a7cc0caa4ada9bf11b202b7cf0486e662e42b6b26a3e53bfb726bda546e2",
-        "packages/lib/src/lib/adapters/fetch.ts": "4dd3cbcda7bcea6591c8e840afca4dcdaaeb288f8834b687c91ad9145745aa6b",
-        "packages/lib/src/lib/core/Faxios.ts": "b713ecadc80cc084228967904ab5801bdaf9335a34c68b1be1dc7a3f1675cc07",
-        "packages/lib/src/lib/core/FaxiosError.ts": "4299cf8fd90ffb0e782e922879ebe3b13b97778f47de2d9e8d4dee31fb3f9554",
+        "packages/lib/src/index.ts": "5b3d974dc05a7620d18082ce0cdccb4c3260fa37612996c8cdaacaa149310fc7",
+        "packages/lib/src/lib/adapters/fetch.ts": "8515ede0dec528cbc35984ba060c863a3f9267c9426e042402d88f7b0c928779",
+        "packages/lib/src/lib/core/Faxios.ts": "21cf4f7b1f195bacadc5af61ebf4911f8be366616fe5b44a96fdf5f5a0a219d7",
+        "packages/lib/src/lib/core/FaxiosError.ts": "94b53f3922ce0cfa4a7c8e7168c04d1871d2080e2b7dd443e4860c04adca2bf3",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
         "packages/lib/src/lib/core/dispatchRequest.ts": "4564c956ec0823acec07d1581689a81c2c134fd9b3b75f8c74e7c889090f9139",
         "packages/lib/src/lib/core/mergeConfig.ts": "e3dc3f5f52f57381163e506acdc52ff567e35104a7d607160da853e2510c7672",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "acb8eab7a7b0598967f93e67ff0993239d19b7b1f988cf2d465f7882b5584036",
+        "packages/lib/src/lib/faxios.ts": "58f6fe8de5c8371ad7e9444e4789f42eb774774cda276463391eb2865d75a0c8",
         "packages/lib/src/lib/helpers/composeSignals.ts": "ccd69c28a17fc485975de89502ff80d075e919fef437d0afb8460ec0631ef9ef",
         "packages/lib/src/lib/plugins/authBearer.ts": "30914c957cc2e19b94a677521fd3555d33cf9a4df59127853e21b72877f2cda3",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "22c20f990feac10f744738cc5a34b32fa5583f115210aa64dbecd7b26fc2da7c",
         "packages/lib/src/lib/plugins/retry.ts": "f3a67c455d37eca5c4534528bdea8e12974f223af7e107436e8c3f8d4e003ec7",
         "packages/lib/src/lib/plugins/timing.ts": "e29c1a110d73273227bee8e0aebc8cd55b5c97e5300544d4a78e024b7e82a836",
-        "packages/lib/src/lib/types.ts": "4ca51da7f4771a5544ba73c7b7c141636f95498997cbca8f834f3b4e8c3918b5",
+        "packages/lib/src/lib/types.ts": "f883ed0c902ffee69ab3d7c68482e024c7d6ad59351a3463b2c841552ba7df3e",
         "packages/tests/unit/api.test.ts": "0ba379110ac2c0b8d538f4c7ea15f03a86c353ef0745bc3ba0de4d86bff6c814",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "f73ea84b082e8d00a3b1741f87769332a9b2eca440f20e4742f6c7338ad05902",
@@ -35,41 +35,41 @@
         "packages/tests/unit/plugins/retry.test.ts": "bb88c03b5c3875b9bcef3c81d3d89ef4f7241040c5338f8af991c332c5e69949",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
       "outcome": "updated",
-      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/tests/unit/api.test.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/types.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "43aa5932eaa19649b4f10ccfccbf231c606c43d45acc8cdfbb0ca2df09ebf9d5",
+      "fingerprint": "e5e2f641d23d3ba1b4e33b7e9021851febd2beaac66265cccb4e5704be5bbdb6",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
         "packages/lib/package.json": "220d8b3dc5040c04c1c2b2a4a1423ae6560988427c0548b7bae8e29186de5732",
-        "packages/lib/skills/configure-requests/SKILL.md": "4a7d6c1df0e6a2333f98ba9672a5db7048bdf7a18f9c1cd699b13efa9afaa12b",
+        "packages/lib/skills/configure-requests/SKILL.md": "ef7922e8f26581f865e593601047ae57ecb60b84c6e2d6fb1e4c00d9256ae339",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
-        "packages/lib/src/index.ts": "4b67a7cc0caa4ada9bf11b202b7cf0486e662e42b6b26a3e53bfb726bda546e2",
-        "packages/lib/src/lib/adapters/fetch.ts": "4dd3cbcda7bcea6591c8e840afca4dcdaaeb288f8834b687c91ad9145745aa6b",
-        "packages/lib/src/lib/core/Faxios.ts": "b713ecadc80cc084228967904ab5801bdaf9335a34c68b1be1dc7a3f1675cc07",
-        "packages/lib/src/lib/core/FaxiosError.ts": "4299cf8fd90ffb0e782e922879ebe3b13b97778f47de2d9e8d4dee31fb3f9554",
+        "packages/lib/src/index.ts": "5b3d974dc05a7620d18082ce0cdccb4c3260fa37612996c8cdaacaa149310fc7",
+        "packages/lib/src/lib/adapters/fetch.ts": "8515ede0dec528cbc35984ba060c863a3f9267c9426e042402d88f7b0c928779",
+        "packages/lib/src/lib/core/Faxios.ts": "21cf4f7b1f195bacadc5af61ebf4911f8be366616fe5b44a96fdf5f5a0a219d7",
+        "packages/lib/src/lib/core/FaxiosError.ts": "94b53f3922ce0cfa4a7c8e7168c04d1871d2080e2b7dd443e4860c04adca2bf3",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
         "packages/lib/src/lib/core/dispatchRequest.ts": "4564c956ec0823acec07d1581689a81c2c134fd9b3b75f8c74e7c889090f9139",
         "packages/lib/src/lib/core/mergeConfig.ts": "e3dc3f5f52f57381163e506acdc52ff567e35104a7d607160da853e2510c7672",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "acb8eab7a7b0598967f93e67ff0993239d19b7b1f988cf2d465f7882b5584036",
+        "packages/lib/src/lib/faxios.ts": "58f6fe8de5c8371ad7e9444e4789f42eb774774cda276463391eb2865d75a0c8",
         "packages/lib/src/lib/helpers/composeSignals.ts": "ccd69c28a17fc485975de89502ff80d075e919fef437d0afb8460ec0631ef9ef",
         "packages/lib/src/lib/plugins/authBearer.ts": "30914c957cc2e19b94a677521fd3555d33cf9a4df59127853e21b72877f2cda3",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "22c20f990feac10f744738cc5a34b32fa5583f115210aa64dbecd7b26fc2da7c",
         "packages/lib/src/lib/plugins/retry.ts": "f3a67c455d37eca5c4534528bdea8e12974f223af7e107436e8c3f8d4e003ec7",
         "packages/lib/src/lib/plugins/timing.ts": "e29c1a110d73273227bee8e0aebc8cd55b5c97e5300544d4a78e024b7e82a836",
-        "packages/lib/src/lib/types.ts": "4ca51da7f4771a5544ba73c7b7c141636f95498997cbca8f834f3b4e8c3918b5",
+        "packages/lib/src/lib/types.ts": "f883ed0c902ffee69ab3d7c68482e024c7d6ad59351a3463b2c841552ba7df3e",
         "packages/tests/unit/api.test.ts": "0ba379110ac2c0b8d538f4c7ea15f03a86c353ef0745bc3ba0de4d86bff6c814",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "f73ea84b082e8d00a3b1741f87769332a9b2eca440f20e4742f6c7338ad05902",
@@ -78,23 +78,23 @@
         "packages/tests/unit/plugins/retry.test.ts": "bb88c03b5c3875b9bcef3c81d3d89ef4f7241040c5338f8af991c332c5e69949",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
       "outcome": "updated",
-      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/tests/unit/api.test.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/types.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:knip.json": {
-      "fingerprint": "df255401e449deeb8e7e08db5a31bc13a617c12f0e2266306abb66d3546fab7c",
+      "fingerprint": "9ba75a88912c881e0eba1e53b82414d814f36f336512ce6747b7bac7934174b0",
       "snapshot": {
-        "knip.json": "6fde7d591f18ba788b85875c7a2fa48f08314780c6e75d7ba763b44e0c417c01"
+        "knip.json": "17282b97649e3a6621edfc7714ca0c8230b322eca55d6a9abbc3297e192a649b"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
       "outcome": "updated",
-      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: knip.json at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+        "Changed: knip.json at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
@@ -172,15 +172,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "9daf4b16439faa1a7551407a9e1e02eda8aada8463d3d98ec8a77549b1f40d62",
+      "fingerprint": "05332f081845c0a63be7a7b472290d024bac00c9ec69ca60a72eda4b8d217771",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "4f899b09d86d4a1c48e6e43553cd743ebcffb51e1ae2b4052c21f056edcff3ce"
+        "packages/docs/pages/advanced/api-reference.md": "4e3b6e3b2d796e15e7e7bb0d25b8e32eb4aabbe4155dcdb4beb1af44892a7492"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/api-reference.md at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/docs/pages/advanced/api-reference.md at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
@@ -280,15 +280,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "ed59456c11f2044b9758bec4e36433f244fc8b7fcdcb546b409b986a4158807b",
+      "fingerprint": "6333e3d1710d38beb2e9d76ad1f8261d179d19f7383ef2368352ab17af364c6c",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "06b3b5d5526e25f5635c9e23bc6902d94d986d571a3b63ed32f4d3bd6660f0f8"
+        "packages/docs/pages/advanced/request-config.md": "31cd3044420f49cad61abcee406d77721bc8c7c58a199b24d79523c96c09cc2a"
       },
-      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at fc407621c60a552cd012e910401add6d8e8e8807"
+        "Changed: packages/docs/pages/advanced/request-config.md at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -424,15 +424,15 @@
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
-      "fingerprint": "bd3ca9d818c93d6113286f2fddbea767232b5c38e49d6002f00bc1542467872b",
+      "fingerprint": "2d58b5302ecabf19bb716d54f60af8c4ca956715e614acbab8b4e9e6cdfbeb2e",
       "snapshot": {
-        "packages/lib/src/lib/defaults/index.ts": "b34d5f6541181477205a9e31a528ac35d755361f81b8d764cb5ae4ac1b047266"
+        "packages/lib/src/lib/defaults/index.ts": "6b15e6cf39266280a787de784a4a9ed8253a741bd3767f701a013347d58290b6"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
       "outcome": "updated",
-      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/lib/src/lib/defaults/index.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+        "Changed: packages/lib/src/lib/defaults/index.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:packages/tests/browser/headers.browser.test.ts": {
@@ -639,15 +639,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-method-aliases.md": {
-      "fingerprint": "db9a376229415e6c470919f537e154f0a9f49a311328ae02f63dfa1132a3c44e",
+      "fingerprint": "1087231cdd23514f1b6118169fca34de15446a423520bd74a62db19ac0358b9b",
       "snapshot": {
-        "packages/docs/pages/advanced/request-method-aliases.md": "70ee941adfdbc977e5accca8f84d614adb644546f2366373cd721af5fdaedf9d"
+        "packages/docs/pages/advanced/request-method-aliases.md": "607b32dd34338bca8dca17203ae79c095fa3ba64a21f5229b9a7cd0d6b407fb6"
       },
-      "head": "c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
       "outcome": "updated",
-      "reason": "#235: the skill now says getUri() fills in pathParams and returns the URL the request sends.",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-method-aliases.md at c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab"
+        "Changed: packages/docs/pages/advanced/request-method-aliases.md at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:packages/lib/tsconfig.json": {
@@ -2216,15 +2216,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
-      "fingerprint": "304812bd4c53e74167f69b6768e5edaf893f5a81fb35b939ffb5a8a005efe41c",
+      "fingerprint": "8b2b6afe50c9dbb07fa0dfff2e901e90f5f03cb4b8e7fba77eafed8509f7a320",
       "snapshot": {
-        "packages/lib/src/lib/core/prepareRequest.ts": "d812d6c8db01926f589b0224c4f996216ae56d2880c5f7c7f5ae716bc24d8f95"
+        "packages/lib/src/lib/core/prepareRequest.ts": "20807d92db51758da29191e5b4ad3505943a2a222667737ae36cdd335392a0a4"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
       "outcome": "updated",
-      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:packages/lib/src/lib/core/transformData.ts": {
@@ -2337,15 +2337,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/toFormData.ts": {
-      "fingerprint": "cc24c4087ac38be679be3ddd01e3cc8eb5f1d7ec4cdd9e6d4d34582ae3876234",
+      "fingerprint": "c80fcc7b232836169488cec2d19af55e029d8a1fcb4eb6b7cd7bd27f213c8deb",
       "snapshot": {
-        "packages/lib/src/lib/helpers/toFormData.ts": "803148c3a9b494a1f1a6796c4f89de318b9795f3c15c85a739ecf28f8608d7d7"
+        "packages/lib/src/lib/helpers/toFormData.ts": "3b932d09f1b2053b7c1df2176f8ba41bd632226e8081a8a5bc4fd39bb41ba4ba"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
       "outcome": "updated",
-      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/toFormData.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+        "Changed: packages/lib/src/lib/helpers/toFormData.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:packages/lib/src/lib/helpers/trackStream.ts": {
@@ -2511,15 +2511,15 @@
       ]
     },
     "source:packages/tests/eslint.config.ts": {
-      "fingerprint": "832c6ad1413db2e8f8c807b34601bb739d37a124e185b9c998e2cd41fc5fd9cb",
+      "fingerprint": "4cf5cf5bc39bbb2b52b1848fd2eb26c2020d22c53a135a6b2fd3b4a678c25f15",
       "snapshot": {
-        "packages/tests/eslint.config.ts": "47daaf08c1f7fc569d103242b47d2ed37a4b52cb557db0688fddcf0e6933dece"
+        "packages/tests/eslint.config.ts": "5136d643e1ba25812b610deec055ab45493e0d4b266998f495cfa8256faa8514"
       },
-      "head": "0f2caf939ec854fba295170e591f96f55d3dc640",
-      "outcome": "no-change",
-      "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/tests/eslint.config.ts at 5ec7ea4b09f436506a6044c02747686361b3b9af"
+        "Changed: packages/tests/eslint.config.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/esm-functions.ts": {
@@ -2561,15 +2561,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/typings.module.test.ts": {
-      "fingerprint": "e9b5799f81592827b603bac900d2de555616d13ae8c985d3828422d71b9a1f17",
+      "fingerprint": "8fae986d91134ab6ca9b84404d0272054975c5371463da1f083961db9ea08a43",
       "snapshot": {
-        "packages/tests/module/esm/tests/typings.module.test.ts": "607ca10e7d029377e0fc6b070ca74e4da7a07e6e035f9916d2689cb93cd1d1fa"
+        "packages/tests/module/esm/tests/typings.module.test.ts": "97debb32edb7fbfcc44f2658f624e4a4d9a77bcef0b22f8ff3ea9cddd3208792"
       },
-      "head": "a6926e1f507b0da9f07237183336e51a04704807",
-      "outcome": "no-change",
-      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/tests/module/esm/tests/typings.module.test.ts at a6926e1f507b0da9f07237183336e51a04704807"
+        "Changed: packages/tests/module/esm/tests/typings.module.test.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:packages/tests/scripts/check-expect-error.ts": {
@@ -3492,15 +3492,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/fetch-adapter.md": {
-      "fingerprint": "f4f840d31f0cf130435e5f405dd388ae59a65da6ae9ca99e7a29f99c73081db3",
+      "fingerprint": "8da281f73942278dc6e61ee7f1539f76d4af3097bebdc23d7f39124d02f56873",
       "snapshot": {
-        "packages/docs/pages/advanced/fetch-adapter.md": "1b10bc0307b0a9285c7c59af1f65d1b8b95e948eb3b35a331c47744565a0b37f"
+        "packages/docs/pages/advanced/fetch-adapter.md": "d7fb1e83b48e8f684b3a6edfc90c03ff630d5e8c5a9742964bc6b5c021c6a7ba"
       },
-      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
       "outcome": "updated",
-      "reason": "SKILL.md now says the fetch init body member is null in Node/Deno and undefined in Bun, chosen by a one-time probe",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/fetch-adapter.md at 4ea5dad1bc2c3a38a1f98321274dad54c22f3ec8"
+        "Changed: packages/docs/pages/advanced/fetch-adapter.md at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:packages/lib/src/lib/helpers/cloneConfig.ts": {
@@ -3540,15 +3540,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/file-posting.md": {
-      "fingerprint": "cd3d90a5903e31cb24334f6eacb600dbf61b8faeac3b43168cc8d3f546524a22",
+      "fingerprint": "6b1505a4e90ac0a29131af57b95fa912b81d593cbe51230c6548ab626ba5411f",
       "snapshot": {
-        "packages/docs/pages/advanced/file-posting.md": "3894e3904f04941f7b1273f3efaadf48b05953c7122dc70f8cfc87a98138bbea"
+        "packages/docs/pages/advanced/file-posting.md": "d624a63b3670279b17b367bb142fc63bf198f321e0cc31a356749ef1b887ddbc"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/file-posting.md at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/docs/pages/advanced/file-posting.md at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:packages/tests/unit/requestBodyContentType.test.ts": {
@@ -3576,15 +3576,15 @@
       ]
     },
     "source:packages/tests/unit/toFormData.test.ts": {
-      "fingerprint": "5ebbdd4dfcd6825a1e34d6fe8d128a4ddbe335682de7610fd8c139f425f725f4",
+      "fingerprint": "18263036298087f2f80ea5122002af6104a2c32f84eb971596633a152f968cea",
       "snapshot": {
-        "packages/tests/unit/toFormData.test.ts": "4dc43a32f97e81fbfece91bbd202313eb05afe72544089a150d41181be44bed6"
+        "packages/tests/unit/toFormData.test.ts": "63875f737be38d14848db8b3505696888034ee91d1be3e4404c9842e4264feef"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
       "outcome": "updated",
-      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/tests/unit/toFormData.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+        "Changed: packages/tests/unit/toFormData.test.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:.bumpy/progress-callback-errors.md": {
@@ -3612,15 +3612,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/progress-capturing.md": {
-      "fingerprint": "ffd8e383831b2778c8df46b170f7661af8851ecb4c82f8b65486e18df38761e0",
+      "fingerprint": "7e66c3e7d9d3202dfd21b3e2bbe2b1b466abf3394b2952cf1528affd1aad33b8",
       "snapshot": {
-        "packages/docs/pages/advanced/progress-capturing.md": "9819805ea9894ffbce29ba32a2423a214ea27f21d3f1dffff746c9c3b7154634"
+        "packages/docs/pages/advanced/progress-capturing.md": "27235c4e3dd96d35cd9b4dc7d316eb52327513d9f04728b1d4a75c9a78d28659"
       },
-      "head": "3f379a4c81c5a5f1a2456dcec19e8f6bcdbfd606",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md and axios-differences.md now say onUploadProgress fires only where faxios streams the request body (Node) and never in browsers or web workers (#170); _artifacts skill_spec item 8 still points at fetch-adapter.md, which documents the new behaviour; docs, tests, vitest config and bump file need no other skill change",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/progress-capturing.md at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/docs/pages/advanced/progress-capturing.md at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:packages/tests/unit/adapters/fetch-progress.test.ts": {
@@ -3972,15 +3972,15 @@
       ]
     },
     "source:packages/tests/unit/core/getUri.test.ts": {
-      "fingerprint": "146301a09b24b47f479d27a483697302f9ba447bb1f25ea20948c5bb2ee40fa7",
+      "fingerprint": "3079e50d07cda6bd83b794a450ba27092db130d03c6fcfd96823f91634c04c01",
       "snapshot": {
-        "packages/tests/unit/core/getUri.test.ts": "8bbe286afeb3ea73b400188a31d15c30d4baeffc867be59221650a459d502c55"
+        "packages/tests/unit/core/getUri.test.ts": "7c22bd781c9ddb41866d899e94b968a8aba12680e8ba33e5921f31e8bb8b7826"
       },
-      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
       "outcome": "updated",
-      "reason": "Skill now teaches resolveRequestURL and ctx.instanceBaseURL for plugins, the instance-baseURL authBearer origin rule, and that a URL is absolute only with a scheme and //",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/tests/unit/core/getUri.test.ts at 06608f4bf5126bc949bde148a37bb3e85fc98041"
+        "Changed: packages/tests/unit/core/getUri.test.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:.bumpy/abort-during-async-schema.md": {
@@ -4104,15 +4104,15 @@
       ]
     },
     "source:packages/tests/unit/core/requestInput.test.ts": {
-      "fingerprint": "1963bb856e63e070dbffda611c7a3c2822023aaa5116faa1bb2d21295216f85f",
+      "fingerprint": "2a967dc49e5deca41c1013101e49b9aae62f8aae4d2a482be672b8d152470a26",
       "snapshot": {
-        "packages/tests/unit/core/requestInput.test.ts": "59b3243414a0fcb6bbb775ba8e516a771280023215b652a04801dc3ca707b974"
+        "packages/tests/unit/core/requestInput.test.ts": "beb2036d0d3ea1c1e9e723aa8437bd3c0ead30aec2250862b7339be54a55de95"
       },
-      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
       "outcome": "updated",
-      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/tests/unit/core/requestInput.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/tests/unit/core/requestInput.test.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:packages/tests/eslint-rules/no-fixed-test-port.ts": {
@@ -4776,15 +4776,15 @@
       ]
     },
     "source:packages/tests/unit/core/defineTypes.test.ts": {
-      "fingerprint": "c265a8758b4022dfc212281cf7eb49cbddd16478d762c44591a8ff100ac163ff",
+      "fingerprint": "8fa4fcf737421525bbaa0a0572030395bf891dfd55c2fdc77ad562dad5c0cf09",
       "snapshot": {
-        "packages/tests/unit/core/defineTypes.test.ts": "a3f20e8023ff90b7c87746bb8e76c9f11b06028bf048df63dc647bf094a0b618"
+        "packages/tests/unit/core/defineTypes.test.ts": "5f63782638d23a4e08245df0d90bc508aa79a3d2199a21e66dd7e071bf105f91"
       },
-      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
-      "outcome": "no-change",
-      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/tests/unit/core/defineTypes.test.ts at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
+        "Changed: packages/tests/unit/core/defineTypes.test.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:.bumpy/typescript-floor-5-4.md": {
@@ -6276,15 +6276,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/toURLEncodedForm.ts": {
-      "fingerprint": "9155acccd38548b7af84c45d5eecb223849cdf7d7e0c4c4c3e382d04d622131a",
+      "fingerprint": "ca8dc1a94bd60cdf1c497d3a03479d266bb2031a67ff75f7acfaaa3370cf58e6",
       "snapshot": {
-        "packages/lib/src/lib/helpers/toURLEncodedForm.ts": "e18c7558b4f52aae896216631725b80595b8e88e8fa344b710536c51865cdbef"
+        "packages/lib/src/lib/helpers/toURLEncodedForm.ts": "dba362c33ce3abeac63cd47819bf4ca612f9417d034a5c8383e14d35d778bdda"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/toURLEncodedForm.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/lib/src/lib/helpers/toURLEncodedForm.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     },
     "source:packages/tests/unit/core/strictJsonError.test.ts": {
@@ -6465,6 +6465,66 @@
       "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
       "evidence": [
         "Changed: packages/tests/unit/scripts/bundleSize.test.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
+      ]
+    },
+    "source:.bumpy/279-api-types.md": {
+      "fingerprint": "81e8136d93a713b81c31a209d7405c4f6f8372c0861e2d370546b1ed42838e61",
+      "snapshot": {
+        ".bumpy/279-api-types.md": "e3620e6d12a8117f40326270ef956254a6bfe3358f4f4c8a8fa2f16c782f4f01"
+      },
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "outcome": "no-change",
+      "reason": "bump file wording now says only positional URL inputs changed at runtime; no skill guidance changes",
+      "evidence": [
+        "Changed: .bumpy/279-api-types.md at a1b6be8343ef0db8a2eada3a08060d40afd5adef"
+      ]
+    },
+    "source:packages/lib/scripts/axios-build-instance.js": {
+      "fingerprint": "8007234642dd016aea400260d1567cd499875be34f782add5bcd165e735dbdea",
+      "snapshot": {
+        "packages/lib/scripts/axios-build-instance.js": null
+      },
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
+      "evidence": [
+        "Changed: packages/lib/scripts/axios-build-instance.js at 22f8a916c00ebcd2a3c783fff8c275765469824c"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/FaxiosURLSearchParams.ts": {
+      "fingerprint": "05daa8736519879506c4532fa170fb6de964fe3aee18ed9724c8b8834ae7f882",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/FaxiosURLSearchParams.ts": "4e66e9414f6944eb43ac7bfe9ad7d071357ae1d2e24398a08f73e4b2c5a9cd9c"
+      },
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/FaxiosURLSearchParams.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
+      ]
+    },
+    "source:packages/tests/browser/toFormData.browser.test.ts": {
+      "fingerprint": "e790e3c88a3a3c4df7f528e047fd39d9b9ce507b1ff91dfeaaef085d638c4d22",
+      "snapshot": {
+        "packages/tests/browser/toFormData.browser.test.ts": "1b96095a89f16760c0ae1fdb6a9952025d6881359659668b9e83e01e26e642f8"
+      },
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "outcome": "no-change",
+      "reason": "browser toFormData test only drops casts the new toFormData return type makes unnecessary; no skill guidance changes",
+      "evidence": [
+        "Changed: packages/tests/browser/toFormData.browser.test.ts at a884c5feb8e84aea4830dbb76f3c509cbf1d9b7d"
+      ]
+    },
+    "source:packages/tests/module/esm/tests/helpers/export-surface.ts": {
+      "fingerprint": "3a7e6b3aae2777af9dd9dae5c5000ef409c1981f4e5c695c63cd1fcd68813e8d",
+      "snapshot": {
+        "packages/tests/module/esm/tests/helpers/export-surface.ts": "e811c97853390b656e18747d9d4fa58ab16816709c873cfb70d9abd0052b2c3e"
+      },
+      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
+      "evidence": [
+        "Changed: packages/tests/module/esm/tests/helpers/export-surface.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
       ]
     }
   }
