@@ -230,7 +230,9 @@ catch (error) {
 - With `responseType: "stream"`, `timeout` and `signal` stay active until the body is fully
   read or cancelled, also behind `retry({ attemptTimeout })`, whose per-try limit stops when the
   response arrives. Reading a stalled body rejects with `ETIMEDOUT` or `ERR_CANCELED`.
-  Cancel a body you don't read so the timer and signal listener are released.
+  A status error (`ERR_BAD_REQUEST` for a 404) carries the open body on `error.response.data`;
+  read it for the server's error details. Cancel a body you don't read so the timer and signal
+  listener are released.
 
 ### Handle errors by code
 
