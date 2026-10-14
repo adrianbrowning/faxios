@@ -271,6 +271,16 @@ function yieldToChildGroup(
   deleteHeader(groups[method], header);
 }
 
+// Own string keys of a caller's header group in a null-prototype object, skipping the keys that
+// could pollute a prototype. Never Object.assign: it runs getters and copies symbols.
+function ownHeaderCopy(source: Record<string, unknown>): Record<string, unknown> {
+  const copy: Record<string, unknown> = Object.create(null);
+  for (const key of Object.keys(source)) {
+    if (!utils.isDangerousKey(key)) copy[key] = source[key];
+  }
+  return copy;
+}
+
 /**
  * The parent's headers for a create() child, with every header the child sets removed from the
  * parent layers it must beat. Deep-merging the result with the child's headers then gives each
@@ -285,9 +295,10 @@ function inheritHeaders(parentHeaders: unknown, childHeaders: unknown): unknown 
   const c = child as Record<string, unknown>;
   const top: Record<string, unknown> = Object.create(null);
   const groups: Partial<Record<keyof HeadersDefaults, Record<string, unknown>>> = Object.create(null);
+  // A caller object: own string keys only, skipping the ones that could pollute a prototype.
   for (const name of Object.keys(p)) {
-    if (isHeaderGroup(p, name)) groups[name as keyof HeadersDefaults] = Object.assign(Object.create(null) as Record<string, unknown>, p[name]);
-    else top[name] = p[name];
+    if (isHeaderGroup(p, name)) groups[name as keyof HeadersDefaults] = ownHeaderCopy(p[name] as Record<string, unknown>);
+    else if (!utils.isDangerousKey(name)) top[name] = p[name];
   }
   const deleteEverywhere = (header: string) => {
     deleteHeader(top, header);

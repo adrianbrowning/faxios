@@ -306,6 +306,18 @@ describe("instance api", () => {
       assert.strictEqual(await sendsHeader(child, "post", "X-A"), await perRequest("X-A"));
       assert.strictEqual(await sendsHeader(child, "post", "X-B"), await perRequest("X-B"));
     });
+
+    it("skips an own __proto__ key in a parent header group", async () => {
+      const common = JSON.parse("{\"__proto__\": {\"X-Polluted\": \"yes\"}, \"X-Kept\": \"parent\"}") as Record<string, string>;
+      const parent = create({ headers: { common } });
+      const child = parent.create({ headers: { get: { "X-Other": "child" } } });
+
+      const childCommon = child.defaults.headers.common as Record<string, unknown>;
+      assert.strictEqual(Object.hasOwn(childCommon, "__proto__"), false);
+      assert.strictEqual(childCommon["X-Polluted"], undefined);
+      assert.strictEqual(await sendsHeader(child, "get", "X-Kept"), "parent");
+      assert.strictEqual(await sendsHeader(child, "get", "X-Polluted"), null);
+    });
   });
 });
 
