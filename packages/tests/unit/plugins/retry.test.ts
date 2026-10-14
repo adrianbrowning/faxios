@@ -951,6 +951,27 @@ describe("plugins::retry", () => {
       assert.strictEqual(calls.length, 0);
     });
 
+    it("accepts at most 10 attempts, from the plugin or per request", async () => {
+      const isAttemptsBound = (err: unknown) => isBadValue(err) && (err as Error).message.includes("attempts");
+      assert.throws(() => retry({ attempts: 11 }), isAttemptsBound);
+      assert.throws(() => retry({ attempts: Number.MAX_SAFE_INTEGER }), isAttemptsBound);
+
+      const { fetch, calls } = scriptedFetch([ 503 ]);
+      const api = faxios.create({ env: { fetch } }).use(retry({ attempts: 10, delay: 0 }));
+      await assert.rejects(api.get(URL, { retry: { attempts: 11 } }), isAttemptsBound);
+      assert.strictEqual(calls.length, 0);
+
+      const request = assert.rejects(api.get(URL), isStatus(503));
+      await vi.runAllTimersAsync();
+      await request;
+      assert.strictEqual(calls.length, 10);
+
+      const overridden = assert.rejects(api.get(URL, { retry: { attempts: 10 } }), isStatus(503));
+      await vi.runAllTimersAsync();
+      await overridden;
+      assert.strictEqual(calls.length, 20);
+    });
+
     it("rejects a delay function that returns an invalid wait", async () => {
       const { fetch, calls } = scriptedFetch([ 503, 200 ]);
       const api = faxios.create({ env: { fetch } }).use(retry({ delay: () => Number.NaN }));

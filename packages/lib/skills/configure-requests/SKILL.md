@@ -338,7 +338,8 @@ value, because it is the only value typed with the plugin's request options (suc
   the API dedupes repeats. Stream bodies are never replayed. Cancellation never retries. A custom
   `retryOn` replaces the whole default predicate (`statuses`, `ERR_NETWORK`, `ETIMEDOUT`), and a
   `Retry-After` longer than `maxRetryAfter` (default 5 min) rejects without retrying.
-  `maxDelay` and `maxRetryAfter` are capped at 2147483647 ms (`ERR_BAD_OPTION_VALUE` above).
+  `maxDelay` and `maxRetryAfter` are capped at 2147483647 ms and `attempts` at 10, in the plugin
+  and per request alike (`ERR_BAD_OPTION_VALUE` above).
 - `timing(onTiming)` reports `{ method, url, attempt, durationMs, status | error }` with no
   config, headers or body; `error` is `{ code, message, status }`, and `url` has no user info or
   query string and keeps `{param}` placeholders. `attempt` is `ctx.attempt`: 1 without `retry`.

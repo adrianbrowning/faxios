@@ -8,6 +8,9 @@ import { assertOptions, isBoolean, isFunction, own } from "./shared.js";
 // setTimeout fires at once for anything longer: it keeps the delay as a signed 32-bit integer.
 const MAX_TIMER_MS = 2_147_483_647;
 
+// Each try is a full request, so a large count turns one call into a flood against a failing server.
+const MAX_ATTEMPTS = 10;
+
 const isWait = (ms: unknown): ms is number => typeof ms === "number" && Number.isFinite(ms) && ms >= 0;
 
 // A wait a timer can hold: setTimeout fires at once for anything longer.
@@ -20,7 +23,7 @@ const isStatus = (value: unknown) => Number.isInteger(value) && (value as number
 
 // Bounded on purpose: NaN or Infinity would make a failing request loop forever.
 const optionsSchema = {
-  attempts: (value: unknown) => (Number.isInteger(value) && (value as number) >= 1) || "an integer of at least 1",
+  attempts: (value: unknown) => (Number.isInteger(value) && (value as number) >= 1 && (value as number) <= MAX_ATTEMPTS) || `an integer from 1 to ${MAX_ATTEMPTS}`,
   attemptTimeout: (value: unknown) => isTimerWait(value) || `a number of milliseconds from 0 to ${MAX_TIMER_MS}`,
   retryOn: isFunction,
   delay: (value: unknown) => isWait(value) || typeof value === "function" || "a finite number of at least 0 or a function",
@@ -49,7 +52,7 @@ function assertRetryOptions(value: unknown, config?: InternalFaxiosRequestConfig
 }
 
 export type RetryOptions = {
-  /** Total tries, counting the first request. Default 3. */
+  /** Total tries, counting the first request: an integer from 1 to 10. Default 3. */
   attempts?: number;
   /**
    * The most one try may take, in milliseconds: middleware installed after `retry`, the schemas
