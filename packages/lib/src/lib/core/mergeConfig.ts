@@ -111,6 +111,18 @@ export default function mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfi
     return ownCopy(a, b);
   }
 
+  // `redact`: a request's keys add to the instance's, so a per-request list can't unmask an
+  // instance key. Lower-cased and deduplicated, as toJSON() matches them case-insensitively.
+  function mergeRedact(a: unknown, b: unknown): unknown {
+    if (utils.isUndefined(a) && utils.isUndefined(b)) return undefined;
+    const keys = new Set<string>();
+    for (const list of [ a, b ]) {
+      if (!utils.isArray(list)) continue;
+      for (const key of list) if (typeof key === "string") keys.add(key.toLowerCase());
+    }
+    return [ ...keys ];
+  }
+
   function getMergedTransitionalOption(prop: string): unknown {
     const c2 = config2 as Record<string, unknown>;
     const c1 = config1 as Record<string, unknown>;
@@ -154,6 +166,7 @@ export default function mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfi
     data: (_a: unknown, b: unknown) => b,
     params: mergeParams,
     env: mergeEnv,
+    redact: mergeRedact,
     baseURL: defaultToConfig2,
     transformRequest: defaultToConfig2,
     transformResponse: defaultToConfig2,

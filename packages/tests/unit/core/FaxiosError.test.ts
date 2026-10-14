@@ -326,15 +326,14 @@ describe("core::FaxiosError", () => {
     });
 
     it("matches case-insensitively", () => {
+      // Not a default key, so only the folded `redact` entry can mask it.
       const config = {
-        headers: { Authorization: "Bearer abc" },
-        redact: [ "authorization" ],
+        login: { apiKey: "secret-key" },
+        redact: [ "APIKEY" ],
       };
-      const error = new FaxiosError("Boom", "ECODE", config as any);
+      const error = new FaxiosError("Boom", "ECODE", { ...config, headers: emptyHeaders });
 
-      expect((error.toJSON().config as any).headers.Authorization).toBe(
-        "[REDACTED ****]"
-      );
+      expect(error.toJSON().config).toMatchObject({ login: { apiKey: "[REDACTED ****]" } });
     });
 
     it("redacts headers stored in an FaxiosHeaders instance", () => {
@@ -476,6 +475,21 @@ describe("core::FaxiosError", () => {
 
       // Useful for debugging — operators can see what was being redacted.
       expect((error.toJSON().config as any).redact).toEqual([ "password" ]);
+    });
+
+    it("masks the instance's redact keys and the request's together", async () => {
+      const api = faxios.create({
+        baseURL: "http://localhost",
+        headers: { "X-Api-Key": "instance-secret" },
+        redact: [ "x-api-key" ],
+        env: { fetch: async () => new Response(null, { status: 500 }) },
+      });
+
+      const error = await api.get("/x", { params: { password: "request-secret" }, redact: [ "password" ] })
+        .catch((err: unknown) => err);
+
+      expect(faxios.isFaxiosError(error)).toBe(true);
+      expect(JSON.stringify(error)).not.toMatch(/instance-secret|request-secret/);
     });
 
     it("keeps the rejected password out of schema issues", async () => {
