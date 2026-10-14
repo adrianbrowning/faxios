@@ -45,4 +45,19 @@ describe("request bodies reach the server", () => {
       expect(received[0]!.text).toBe(expected);
     });
   }
+
+  test("POST of a string ignores a polluted Object.prototype.body", async () => {
+    const received: Array<Received> = [];
+    const url = startServer(received);
+    (Object.prototype as Record<string, unknown>)["body"] = "POLLUTED";
+    try {
+      await faxios.post(url, "real");
+    }
+    finally {
+      delete (Object.prototype as Record<string, unknown>)["body"];
+    }
+
+    expect(received).toHaveLength(1);
+    expect(received[0]!.text).toBe("real");
+  });
 });

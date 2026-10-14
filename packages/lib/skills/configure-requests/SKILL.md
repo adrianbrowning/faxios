@@ -379,7 +379,8 @@ await faxios.get("https://api.example.com/feed", { fetchOptions: { cache: "no-st
   Inherited keys are ignored. faxios sets `signal`, `method`, `headers`, `body`, `duplex` and
   `credentials` itself and ignores those keys in `fetchOptions`.
 - `fetch` gets `(request, init)`: one `Request` built from that init, and an init that repeats
-  the Request's members with `body: undefined`. A custom `env.fetch` reads the body from the Request
+  the Request's members with an own `body` that adds no new body (`null` in Node and Deno,
+  `undefined` in Bun, probed once). A custom `env.fetch` reads the body from the Request
   (`await input.text()`), not `init.body`; only with `env.Request: null` is it
   `fetch(url, init)` with the body in `init.body`. `init.headers` is the Request's `Headers`
   object (use `.get(name)`, not `init.headers[name]`), and `init.duplex` is `"half"` only for a

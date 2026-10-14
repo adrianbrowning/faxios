@@ -32,3 +32,21 @@ for (const [ name, data, expected ] of cases) {
     }
   });
 }
+
+Deno.test("request bodies reach the server: POST of a string ignores a polluted Object.prototype.body", async () => {
+  const received: Array<string> = [];
+  const server = Deno.serve({ port: 0, hostname: "127.0.0.1", onListen() {} }, async req => {
+    received.push(await req.text());
+    return new Response("ok");
+  });
+  (Object.prototype as Record<string, unknown>)["body"] = "POLLUTED";
+  try {
+    await faxios.post(`http://127.0.0.1:${server.addr.port}/`, "real");
+  }
+  finally {
+    delete (Object.prototype as Record<string, unknown>)["body"];
+    await server.shutdown();
+  }
+
+  assertEquals(received, [ "real" ]);
+});

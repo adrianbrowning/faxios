@@ -246,13 +246,25 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     return init;
   };
 
+  // Whether `new Request(request, { body: null })` keeps the request's body. Node and Deno keep it
+  // (an own `null` there means "no new body"); Bun replaces it with no body. Probed once per
+  // Request constructor; a constructor that can't be probed counts as Bun-like.
+  const nullKeepsBody = isRequestSupported && test(() => {
+    const base = new (Request as AnyConstructor)("https://x.invalid/", { method: "POST", body: "x" }) as AnyRequest;
+    const init = Object.assign(Object.create(null) as Record<string, unknown>, { body: null });
+    return (new (Request as AnyConstructor)(base, init) as AnyRequest).body !== null;
+  });
+
   // The init passed to fetch next to the Request. fetch builds its own Request from both, and
   // undici converts the init into a plain dictionary first, so a member left out would pick up a
   // polluted Object.prototype value (`method`, `headers`, `redirect`, ...). Every member the
   // Request carries is set again from the Request itself, so nothing is re-encoded, and `headers`
-  // are the Request's already-validated ones. `body` is an own `undefined`: fetch then takes the
-  // Request's body instead of reading the caller's body a second time, and the own member still
-  // shadows a polluted Object.prototype.body. Not `null`, which Bun reads as "send no body".
+  // are the Request's already-validated ones. `body` is an own member, so fetch takes the
+  // Request's body instead of reading the caller's body a second time and never a polluted
+  // Object.prototype.body. Its value depends on the runtime: Deno treats an own `undefined` as
+  // missing and reads the prototype's, so it gets `null`, which keeps the Request's body there and
+  // in Node; Bun reads `null` as "send no body", so it gets `undefined`, which Bun does treat as
+  // an own member (nullKeepsBody tells them apart).
   // `request.body` is never read here: in Bun and Deno that turns a string or bytes body into a
   // stream, which is then sent without a Content-Length. Members a Request doesn't carry, such as
   // undici's `dispatcher` or Next.js `next`, are copied as given.
@@ -263,7 +275,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       if (key === "body" || key === "signal") continue;
       init[key] = utils.hasOwnInPrototypeChain(requestPrototype, key) ? Reflect.get(request, key) : requestInit[key];
     }
-    init["body"] = undefined;
+    init["body"] = nullKeepsBody ? null : undefined;
     init["signal"] = requestInit["signal"];
     return init;
   };

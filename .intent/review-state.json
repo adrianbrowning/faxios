@@ -3,86 +3,86 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "4f9fc7aeeadbc3318074a68385037c9b69c9dc764b3e0e4ce004bdc74b990415",
+      "fingerprint": "396787e0addc108598d1cee3520f0421abbbd5f514b1a4fa3401e6faa0a623fa",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "bf167bbb7b63a4daeb3724a0abf38c7d3028878df15d03919e19e80dcf795c89",
+        "packages/lib/skills/configure-requests/SKILL.md": "fbb0d3d84bb55654ad2094ebe50016f793743879027775cf197b2b5dad0e2af6",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
         "packages/lib/src/index.ts": "44edf51b3bbdf494fd213b55e6e377866e18146c47fc443a3d3d7426a3d685b7",
-        "packages/lib/src/lib/adapters/fetch.ts": "57a894363c98f3e3d85df13ef913ee794e0529a1101b8a34a1b98bb25717113e",
-        "packages/lib/src/lib/core/Faxios.ts": "74b6c5e9de843eaf31483faba50f6da48bd848856e391bd7b806dfbcf3f10384",
+        "packages/lib/src/lib/adapters/fetch.ts": "3cf392c5d81bc40dbba1fa26d019277cccfc8ab22706c0ef4fc3f7512c99cbfa",
+        "packages/lib/src/lib/core/Faxios.ts": "dd854a8f11a3dc0fb3ece28293150772d545b07411fe9e55340808638054a1d3",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
         "packages/lib/src/lib/core/dispatchRequest.ts": "3060c07faf738c6f502cb87cbc30765177639bebce7f35e5ccbd60b4f0962c8a",
-        "packages/lib/src/lib/core/mergeConfig.ts": "7d3828ce1e8cc82fa7324b3bee63ac37e6ca76fabc050a3eb7dcb07bace4a1df",
+        "packages/lib/src/lib/core/mergeConfig.ts": "e152f98463e21404abc79e0ad92d54bdbead8348294196a08db798647be50ab8",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "7de7c2a220f01ef7ef347a6cbf1af1f3cbbb0ceb22dd4ec17da52eb4170a6df5",
         "packages/lib/src/lib/helpers/composeSignals.ts": "2db636d9e1c28e5ef7832041d316c7ce588b32ef5d30bbe35eb2951b86b2bd6a",
         "packages/lib/src/lib/plugins/authBearer.ts": "14db38066e32d09780067881e10afcdeb55414a3faa459dfc839aa0e04aa1225",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
-        "packages/lib/src/lib/plugins/forwardTo.ts": "e3d1d859c7f1df06764e2ab3aff2164fba44cffd893435faf6d425f02af15425",
+        "packages/lib/src/lib/plugins/forwardTo.ts": "23e726af7fc75358fd80eb140a3189b699b3be47787a8714e6b043a8291acb25",
         "packages/lib/src/lib/plugins/retry.ts": "734d82655b3a61e35b437f1e1c6112ffc804dcc3608ac4de66edbf95da912aaa",
         "packages/lib/src/lib/plugins/timing.ts": "c845896855141244cf672d5224327d774ecc9c3e68b38544a4c6c01ec18ca358",
         "packages/lib/src/lib/types.ts": "76b9cb3435abd05297bbc385cb54241503ed03a41ca3d0b363023016d967119c",
-        "packages/tests/unit/api.test.ts": "b7e207437aee83d021ee976f1f74c8e310d7c38e8e0a4e02502f7ded840e5107",
-        "packages/tests/unit/core/middleware.test.ts": "c86f72477d110e15c919e370e7a355ee8d8809aee21f8fb155cf2ebc4b145613",
+        "packages/tests/unit/api.test.ts": "d6e131634ba5ee160fe06af49528455d6610fb85316e17104e13c643a1581c7b",
+        "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "f73ea84b082e8d00a3b1741f87769332a9b2eca440f20e4742f6c7338ad05902",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
-        "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
-        "packages/tests/unit/plugins/retry.test.ts": "d3259244222d9d8b3d380a0526e2486b60e2e82fa56a84242e7b3b90a5eec98f",
+        "packages/tests/unit/plugins/forwardTo.test.ts": "69648d5f3d33fa6b108cd713891a1e805495b5c9ad5b9cefdf73d6705d1a5896",
+        "packages/tests/unit/plugins/retry.test.ts": "bb88c03b5c3875b9bcef3c81d3d89ef4f7241040c5338f8af991c332c5e69949",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "7441ba80d614af467b190486de40ddf207be5a85",
-      "outcome": "no-change",
-      "reason": "Safe-copy fix in create() header inheritance; skill text unaffected",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "SKILL.md now says the fetch init body member is null in Node/Deno and undefined in Bun, chosen by a one-time probe",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/Faxios.ts, packages/tests/unit/api.test.ts at f4086a2de3392d6efe3c9402b54b2dc75b9c03cb"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/plugins/forwardTo.ts at 4ea5dad1bc2c3a38a1f98321274dad54c22f3ec8"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "1e2cf0312c5d29c73b1d1ba20afdacb5eec7c09a646da53c286a864a3fa9bd47",
+      "fingerprint": "5621c970f6d9eed0d8482a1ef1cdc85e973f6fe8b07a766d8a2553b2f93719a4",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "bf167bbb7b63a4daeb3724a0abf38c7d3028878df15d03919e19e80dcf795c89",
+        "packages/lib/skills/configure-requests/SKILL.md": "fbb0d3d84bb55654ad2094ebe50016f793743879027775cf197b2b5dad0e2af6",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
         "packages/lib/src/index.ts": "44edf51b3bbdf494fd213b55e6e377866e18146c47fc443a3d3d7426a3d685b7",
-        "packages/lib/src/lib/adapters/fetch.ts": "57a894363c98f3e3d85df13ef913ee794e0529a1101b8a34a1b98bb25717113e",
-        "packages/lib/src/lib/core/Faxios.ts": "74b6c5e9de843eaf31483faba50f6da48bd848856e391bd7b806dfbcf3f10384",
+        "packages/lib/src/lib/adapters/fetch.ts": "3cf392c5d81bc40dbba1fa26d019277cccfc8ab22706c0ef4fc3f7512c99cbfa",
+        "packages/lib/src/lib/core/Faxios.ts": "dd854a8f11a3dc0fb3ece28293150772d545b07411fe9e55340808638054a1d3",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
         "packages/lib/src/lib/core/dispatchRequest.ts": "3060c07faf738c6f502cb87cbc30765177639bebce7f35e5ccbd60b4f0962c8a",
-        "packages/lib/src/lib/core/mergeConfig.ts": "7d3828ce1e8cc82fa7324b3bee63ac37e6ca76fabc050a3eb7dcb07bace4a1df",
+        "packages/lib/src/lib/core/mergeConfig.ts": "e152f98463e21404abc79e0ad92d54bdbead8348294196a08db798647be50ab8",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "7de7c2a220f01ef7ef347a6cbf1af1f3cbbb0ceb22dd4ec17da52eb4170a6df5",
         "packages/lib/src/lib/helpers/composeSignals.ts": "2db636d9e1c28e5ef7832041d316c7ce588b32ef5d30bbe35eb2951b86b2bd6a",
         "packages/lib/src/lib/plugins/authBearer.ts": "14db38066e32d09780067881e10afcdeb55414a3faa459dfc839aa0e04aa1225",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
-        "packages/lib/src/lib/plugins/forwardTo.ts": "e3d1d859c7f1df06764e2ab3aff2164fba44cffd893435faf6d425f02af15425",
+        "packages/lib/src/lib/plugins/forwardTo.ts": "23e726af7fc75358fd80eb140a3189b699b3be47787a8714e6b043a8291acb25",
         "packages/lib/src/lib/plugins/retry.ts": "734d82655b3a61e35b437f1e1c6112ffc804dcc3608ac4de66edbf95da912aaa",
         "packages/lib/src/lib/plugins/timing.ts": "c845896855141244cf672d5224327d774ecc9c3e68b38544a4c6c01ec18ca358",
         "packages/lib/src/lib/types.ts": "76b9cb3435abd05297bbc385cb54241503ed03a41ca3d0b363023016d967119c",
-        "packages/tests/unit/api.test.ts": "b7e207437aee83d021ee976f1f74c8e310d7c38e8e0a4e02502f7ded840e5107",
-        "packages/tests/unit/core/middleware.test.ts": "c86f72477d110e15c919e370e7a355ee8d8809aee21f8fb155cf2ebc4b145613",
+        "packages/tests/unit/api.test.ts": "d6e131634ba5ee160fe06af49528455d6610fb85316e17104e13c643a1581c7b",
+        "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "f73ea84b082e8d00a3b1741f87769332a9b2eca440f20e4742f6c7338ad05902",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
-        "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
-        "packages/tests/unit/plugins/retry.test.ts": "d3259244222d9d8b3d380a0526e2486b60e2e82fa56a84242e7b3b90a5eec98f",
+        "packages/tests/unit/plugins/forwardTo.test.ts": "69648d5f3d33fa6b108cd713891a1e805495b5c9ad5b9cefdf73d6705d1a5896",
+        "packages/tests/unit/plugins/retry.test.ts": "bb88c03b5c3875b9bcef3c81d3d89ef4f7241040c5338f8af991c332c5e69949",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "7441ba80d614af467b190486de40ddf207be5a85",
-      "outcome": "no-change",
-      "reason": "Safe-copy fix in create() header inheritance; skill text unaffected",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "SKILL.md now says the fetch init body member is null in Node/Deno and undefined in Bun, chosen by a one-time probe",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/Faxios.ts, packages/tests/unit/api.test.ts at f4086a2de3392d6efe3c9402b54b2dc75b9c03cb"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/plugins/forwardTo.ts at 4ea5dad1bc2c3a38a1f98321274dad54c22f3ec8"
       ]
     },
     "source:knip.json": {
@@ -280,15 +280,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "505d71ff066b70ef47d3dc345cbc227e96d6af686359a5c3a87e6b26e7f67f18",
+      "fingerprint": "ed59456c11f2044b9758bec4e36433f244fc8b7fcdcb546b409b986a4158807b",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "048c3867c9bcd0606cab2c8b9a5b0fb4dedad0ee5fe05592eb3652421f6ad4e6"
+        "packages/docs/pages/advanced/request-config.md": "06b3b5d5526e25f5635c9e23bc6902d94d986d571a3b63ed32f4d3bd6660f0f8"
       },
-      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
       "outcome": "updated",
-      "reason": "Skill states a url or joined baseURL with a tab or line break rejects with ERR_INVALID_URL",
+      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 8211220225a5d8cc4b83d177120331bd72fb7f0f"
+        "Changed: packages/docs/pages/advanced/request-config.md at fc407621c60a552cd012e910401add6d8e8e8807"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -424,27 +424,27 @@
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
-      "fingerprint": "48fa3a6e50a47ce5ce2d3d2064ea62fbe38eadd57c622c83f410d8372169d0a8",
+      "fingerprint": "caab243863f7c60193f294fcbd7cdf0fdd6c651582571d05c99afa6c048d84cf",
       "snapshot": {
-        "packages/lib/src/lib/defaults/index.ts": "3557f8b093c99aa900a7b3e8e5be8e79ae16a85daf547fac69a8d2d48769e33a"
+        "packages/lib/src/lib/defaults/index.ts": "4255b536394c89eefd7940242c10daee93388983414cd7cbdd241cdd7c96f508"
       },
-      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
       "outcome": "updated",
-      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
+      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
-        "Changed: packages/lib/src/lib/defaults/index.ts at 86f20473642fb3c294f745739f7ba05847421218"
+        "Changed: packages/lib/src/lib/defaults/index.ts at fc407621c60a552cd012e910401add6d8e8e8807"
       ]
     },
     "source:packages/tests/browser/headers.browser.test.ts": {
-      "fingerprint": "ce167b446d437d447293a780875baeff7eb59b2817da4664413bf05abaa01b0b",
+      "fingerprint": "2be8a8a36901baf370b40bfd4952a14424e8f1dd1fa531c2167b31d1dfeee731",
       "snapshot": {
-        "packages/tests/browser/headers.browser.test.ts": "8014101c7170646fc9a417a12cd77658c1528beae06a7c09e61dac50667629ac"
+        "packages/tests/browser/headers.browser.test.ts": "cff985dd0cde64830f08e4df924e466a481199269b3d11c13e1fbb8a2c2ee5a5"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
-        "Changed: packages/tests/browser/headers.browser.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/tests/browser/headers.browser.test.ts at fc407621c60a552cd012e910401add6d8e8e8807"
       ]
     },
     "source:packages/tests/unit/adapters/fetch.test.ts": {
@@ -2204,15 +2204,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/FaxiosHeaders.ts": {
-      "fingerprint": "910a2c553ff076a4ebf06f033513f9b2cef410ca769a6a5dcf7e54e093a0664e",
+      "fingerprint": "62dd649a2f8705dacb998ac8811d87eb2dd8e8426ee1f4b967ed0c0ccf1c9c9b",
       "snapshot": {
-        "packages/lib/src/lib/core/FaxiosHeaders.ts": "bd0c6dec943a2fbe236c7ddaa8b5c1ebb66f19892053f24847a58da53db46f4f"
+        "packages/lib/src/lib/core/FaxiosHeaders.ts": "8006a617817ecb4916224547154cf3e5b270fe4939d1bf1e567585cb23700e6b"
       },
-      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
-      "outcome": "no-change",
-      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
+        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at fc407621c60a552cd012e910401add6d8e8e8807"
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
@@ -2228,15 +2228,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/transformData.ts": {
-      "fingerprint": "9cf44eef17578a9157d0d938b5395d281e4cc440aad99055a76481c7a08842a7",
+      "fingerprint": "b0929641e9aa1fbeeaabc8b048d1655f305b184ede5fd3c7e0768bf4d8bcd68b",
       "snapshot": {
-        "packages/lib/src/lib/core/transformData.ts": "446436ac144601f4f96947708c54b6b6372b8881cc00dbd4d1ed5475c4ebe0a1"
+        "packages/lib/src/lib/core/transformData.ts": "5a59b029eadb28372560f30505b383ae962dbfea5d3d8bedd4f6d8efe8a38268"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/transformData.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/lib/src/lib/core/transformData.ts at fc407621c60a552cd012e910401add6d8e8e8807"
       ]
     },
     "source:packages/lib/src/lib/core/validateSchema.ts": {
@@ -2400,15 +2400,15 @@
       ]
     },
     "source:packages/lib/src/lib/utils.ts": {
-      "fingerprint": "a4530a05ab879c88b2903e6a51c570520ab05525d9cf5c2f42fbbf02540a17db",
+      "fingerprint": "08e536d17209bcb190161598541023b12da0cdd0bdc5f0ec9d397b25e055ad79",
       "snapshot": {
-        "packages/lib/src/lib/utils.ts": "b2ed6009d5497b9060f9e8673a25bd2461844a8d17c54b781300c0e609c854e4"
+        "packages/lib/src/lib/utils.ts": "52a5db898e25a858c7cf41517c112afe61fb6bd85fbefacd76e8af6030758a27"
       },
-      "head": "16004a89cc705910f332129196177c5afcbad839",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says a request redact adds to the instance's, config.data on errors is the caller's body, and schema issues keep only message and path keys",
+      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
-        "Changed: packages/lib/src/lib/utils.ts at 0fd26195c33fab2485de5afef6b316d94f126562"
+        "Changed: packages/lib/src/lib/utils.ts at fc407621c60a552cd012e910401add6d8e8e8807"
       ]
     },
     "source:packages/sandbox/client.js": {
@@ -2738,15 +2738,15 @@
       ]
     },
     "source:packages/tests/unit/core/FaxiosError.test.ts": {
-      "fingerprint": "5c73f0d89cb5ca425969ddc67de6c10e160072dd2bb83ccaf4e9013a83569d51",
+      "fingerprint": "4807f4349ca8737eb21234e918e644ca2316a79562f09fcfffb77ef611e7bbaf",
       "snapshot": {
-        "packages/tests/unit/core/FaxiosError.test.ts": "380839074115db53df3374dd7e4164fb3bc7dd9aecbb73a39ed15e78e21f37e5"
+        "packages/tests/unit/core/FaxiosError.test.ts": "7df90331ae7bf90c695712efd4ee3e694d59e5146a8b8510c0fc2fb15a07440a"
       },
-      "head": "16004a89cc705910f332129196177c5afcbad839",
-      "outcome": "no-change",
-      "reason": "test-only follow-up narrows a rejected error in FaxiosError.test.ts; skill guidance unchanged",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
-        "Changed: packages/tests/unit/core/FaxiosError.test.ts at ef1580c13da237d698177a4a87d5225a551d2897"
+        "Changed: packages/tests/unit/core/FaxiosError.test.ts at fc407621c60a552cd012e910401add6d8e8e8807"
       ]
     },
     "source:packages/tests/unit/core/buildFullPath.test.ts": {
@@ -2787,28 +2787,27 @@
       ]
     },
     "source:packages/tests/unit/core/envFormData.test.ts": {
-      "fingerprint": "d5813dffe23f8560d0fe7c03dc1c5faef1287c92459d00b0e59627c5c0f8fb9e",
+      "fingerprint": "e5b02309d2097cce9abf8a7f205b245ff678aa10c5c239aa0ca0986ba4669900",
       "snapshot": {
-        "packages/tests/unit/core/envFormData.test.ts": "9ed3947d002b2a38dfb696852ed2d6a1fd98b6fe24c181b4cf7bc4557a16a332"
+        "packages/tests/unit/core/envFormData.test.ts": "3fac8b8a22a87a8188c9fbdb364aa3f0e8f6b2fe1c712fe0a13c3283e376fbb1"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest imports sorted. `string | URL | Request` became `Request | string | URL`. Behaviour change: none",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/core/envFormData.test.ts: @@ -1,9 +1,9 @@ (diff/213)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/core/envFormData.test.ts at fc407621c60a552cd012e910401add6d8e8e8807"
       ]
     },
     "source:packages/tests/unit/core/mergeConfig.test.ts": {
-      "fingerprint": "d2a3a749e6c8d52cc12fcd014078f1236ac754f6d764affce9a6398f2ebac17a",
+      "fingerprint": "2ae832e511d5120c02cfe595a1f23c52f3a5bbb2d51502dc77e2db67d5872240",
       "snapshot": {
-        "packages/tests/unit/core/mergeConfig.test.ts": "1dad9cb1198019ac581a6452e915bc2854ac80f049fd4ca23dd2ebc093dc2058"
+        "packages/tests/unit/core/mergeConfig.test.ts": "6d1a1b8386c72f67801cf13ec4c4a9a087b54a4b912d2cf8d44ad47e80d7af65"
       },
-      "head": "7441ba80d614af467b190486de40ddf207be5a85",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
       "outcome": "updated",
-      "reason": "Skill now states create() child header precedence, that plugin option defaults are not inherited and are removed on eject, and that params/env merge one level deep",
+      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
-        "Changed: packages/tests/unit/core/mergeConfig.test.ts at fa7ce8ce8e9082ce5828ac74667103547b9a6aaa"
+        "Changed: packages/tests/unit/core/mergeConfig.test.ts at fc407621c60a552cd012e910401add6d8e8e8807"
       ]
     },
     "source:packages/tests/unit/core/methodHeaderGroups.test.ts": {
@@ -2860,16 +2859,15 @@
       ]
     },
     "source:packages/tests/unit/core/requestSchema.test.ts": {
-      "fingerprint": "23a923ef9056add1cda1bcbb54445a8f66d79d42d40a7f14b9bafd20efeb9f21",
+      "fingerprint": "b587d68d7c7568fa4a1c324ac4723eed159606da2b581fa45398a874cc479ac4",
       "snapshot": {
-        "packages/tests/unit/core/requestSchema.test.ts": "f11bff350dd55b448ad7d06b8ce36963015b83ad7447aa2fe3c02e7c7795f5be"
+        "packages/tests/unit/core/requestSchema.test.ts": "72ed75d24ef27313866664eed4537af750a92dc7f494f16cbc3741be19377ae9"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Fetch-param union reordered. Behaviour change: none",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/core/requestSchema.test.ts: @@ -14,7 +14,7 @@ (diff/220)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/core/requestSchema.test.ts at fc407621c60a552cd012e910401add6d8e8e8807"
       ]
     },
     "source:packages/tests/unit/core/responseSchemaInference.test.ts": {
@@ -3022,16 +3020,15 @@
       ]
     },
     "source:packages/tests/unit/query.test.ts": {
-      "fingerprint": "67070b0000fe304a4f44aa8cf70ab60e57652d360f04dd9fd1583a923c4163ec",
+      "fingerprint": "b84134c62078518099080f36ab4002552240b63ebb74b0b56aff4dd72e172a02",
       "snapshot": {
-        "packages/tests/unit/query.test.ts": "e9f667a151d43e51516e0981dac7ec2108c6aeea39069919b1269a13f1bd3e67"
+        "packages/tests/unit/query.test.ts": "989b969245c629f514b39c78cac48b2a223f94057acac600942303773d69d14f"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Eight fetch-param unions changed from `string | Request | URL` to `Request | string | URL`. Keys sorted in two `faxios.query<{…}>` response-type generic args. Behaviour change: none. Only type arguments changed; the runtime assertions are unchanged.",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/query.test.ts: @@ -9,7 @@, -27, -42, -60, -77, -97, -115, -133, -172, -207 (10 hunks, diff/236)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/query.test.ts at fc407621c60a552cd012e910401add6d8e8e8807"
       ]
     },
     "source:packages/tests/unit/regression.test.ts": {
@@ -3509,15 +3506,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/fetch-adapter.md": {
-      "fingerprint": "438ab01f1f6373e99db6dc9b53547d86fc9c600160994420dce882d77bfeaacd",
+      "fingerprint": "f4f840d31f0cf130435e5f405dd388ae59a65da6ae9ca99e7a29f99c73081db3",
       "snapshot": {
-        "packages/docs/pages/advanced/fetch-adapter.md": "8b8aad27405ac349c5dec0fccd32a18af4a57cdac99478a94ddd714728da7f9c"
+        "packages/docs/pages/advanced/fetch-adapter.md": "1b10bc0307b0a9285c7c59af1f65d1b8b95e948eb3b35a331c47744565a0b37f"
       },
-      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
       "outcome": "updated",
-      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
+      "reason": "SKILL.md now says the fetch init body member is null in Node/Deno and undefined in Bun, chosen by a one-time probe",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/fetch-adapter.md at 86f20473642fb3c294f745739f7ba05847421218"
+        "Changed: packages/docs/pages/advanced/fetch-adapter.md at 4ea5dad1bc2c3a38a1f98321274dad54c22f3ec8"
       ]
     },
     "source:packages/lib/src/lib/helpers/cloneConfig.ts": {
@@ -3569,15 +3566,15 @@
       ]
     },
     "source:packages/tests/unit/requestBodyContentType.test.ts": {
-      "fingerprint": "d931f953005969420e2bd8b4daa97852358d735279affd55051754f3cbd3f0f6",
+      "fingerprint": "88af3560f796259bf7823762f809ed0c81657e8ecbe6c66c826ac2665a4094c7",
       "snapshot": {
-        "packages/tests/unit/requestBodyContentType.test.ts": "b41dd0f1845c42254db6e415815c9d72de0eb9bc115cb8cbe79e67f33038f5f2"
+        "packages/tests/unit/requestBodyContentType.test.ts": "3b29d56b5e10cdf5563212cdf3add232db9e3233849c182b04be9579f4f6e923"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "SKILL.md now says the fetch init body member is null in Node/Deno and undefined in Bun, chosen by a one-time probe",
       "evidence": [
-        "Changed: packages/tests/unit/requestBodyContentType.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/tests/unit/requestBodyContentType.test.ts at 4ea5dad1bc2c3a38a1f98321274dad54c22f3ec8"
       ]
     },
     "source:.bumpy/toformdata-per-call-state.md": {
@@ -3665,15 +3662,15 @@
       ]
     },
     "source:packages/tests/unit/core/FaxiosHeadersIndex.test.ts": {
-      "fingerprint": "273fd21f7c4473895049607967d245336a5b462ad7e1df638e9b226bd63b3b56",
+      "fingerprint": "892630c573381cccfb169e4e63c3a5d8088cbfd7b1547ce5b4ee3f363cf94561",
       "snapshot": {
-        "packages/tests/unit/core/FaxiosHeadersIndex.test.ts": "5346173ac90ed085b2cc690e58759f1a6c3f4abf996dbc237b555f950842df60"
+        "packages/tests/unit/core/FaxiosHeadersIndex.test.ts": "d5101e5eaf0d260298606aeb036fb6ddec2b509398f332d7eb8b1b33ee29ceaf"
       },
-      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
-      "outcome": "no-change",
-      "reason": "Test-only change: removed two implementation-detail tests; no skill-documented behaviour changed.",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
-        "Changed: packages/tests/unit/core/FaxiosHeadersIndex.test.ts at cea57cd56e56dbb8291f9c48967a049a33673729"
+        "Changed: packages/tests/unit/core/FaxiosHeadersIndex.test.ts at fc407621c60a552cd012e910401add6d8e8e8807"
       ]
     },
     "source:packages/tests/unit/helpers/trackStream.test.ts": {
@@ -3713,15 +3710,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetchCleanup.test.ts": {
-      "fingerprint": "dea8c3a9c93e2786e56457b5dc55baf9b2f1ec9613d1528952ec3782fa85fedc",
+      "fingerprint": "4c2e3cc40f47cdb2d96458315f15f51a0de7c13db60c9ab7c5234bec11721917",
       "snapshot": {
-        "packages/tests/unit/adapters/fetchCleanup.test.ts": "398671a407642b3496c19f29eda6ba99be67e3bcb20b68d88935ea18f5f7999b"
+        "packages/tests/unit/adapters/fetchCleanup.test.ts": "4964e41dc131af84bede3af7943eb32cba6cedc3ecc61b7743f316898fc12e95"
       },
-      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
       "outcome": "updated",
-      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
+      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetchCleanup.test.ts at 86f20473642fb3c294f745739f7ba05847421218"
+        "Changed: packages/tests/unit/adapters/fetchCleanup.test.ts at fc407621c60a552cd012e910401add6d8e8e8807"
       ]
     },
     "source:.bumpy/browser-upload-progress.md": {
@@ -3905,15 +3902,15 @@
       ]
     },
     "source:packages/tests/smoke/deno/deno.json": {
-      "fingerprint": "6f033129425663d6302ea8691fa07b4971ec90a0d8c8f79c06dd73dcff00ebd7",
+      "fingerprint": "505579677e6e9da10a4b914eee740a805a8da65353523fa8612c3b9361462445",
       "snapshot": {
-        "packages/tests/smoke/deno/deno.json": "4e745e0836df1df464ccb52288a62d7e3a0bafc7289423c534924cf79cd3803f"
+        "packages/tests/smoke/deno/deno.json": "c259b317775a99c026ecd5923118984d9a5a6bdc20f160df4c9666fbbe0e3c7e"
       },
-      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
-      "outcome": "no-change",
-      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "SKILL.md now says the fetch init repeats the Request's members with body: undefined (Bun reads body: null as no body); smoke tests post real bodies",
       "evidence": [
-        "Changed: packages/tests/smoke/deno/deno.json at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+        "Changed: packages/tests/smoke/deno/deno.json at fc450aa8a45d0ca2f4d53f47c70cad9274970ef3"
       ]
     },
     "source:packages/tests/smoke/deno/types/consumer.ts": {
@@ -4829,15 +4826,15 @@
       ]
     },
     "source:packages/tests/browser/plugins.browser.test.ts": {
-      "fingerprint": "3485aa3b59a41e551243c09e8d31843e190fc6dd0bf02ccc3c49a8ba0fc3def3",
+      "fingerprint": "1eaf886632b6fe116ac163baf21f5749dc1b934c33f47c86ee9335183d1d1275",
       "snapshot": {
-        "packages/tests/browser/plugins.browser.test.ts": "5a05f63744ec213decda3ab182ed641436f1e348fa9a51f26563198c0164727e"
+        "packages/tests/browser/plugins.browser.test.ts": "0d8a71da96cfa1718822a884bdc6349f43263371474f7d82d39ba4776fd28eef"
       },
-      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
       "outcome": "updated",
-      "reason": "Skill states an empty path param value rejects with ERR_BAD_OPTION_VALUE",
+      "reason": "SKILL.md now says init.headers is the Request's Headers object and duplex is set only for stream bodies; forwardTo resends non-stream bodies as bytes",
       "evidence": [
-        "Changed: packages/tests/browser/plugins.browser.test.ts at 29772255069f57f9dfb1764f3b2dd0fa40ec60ab"
+        "Changed: packages/tests/browser/plugins.browser.test.ts at 063a46a16e86d9b1aa0a640d14e6a57e26950608"
       ]
     },
     "source:packages/tests/smoke/bun/tests/plugins.smoke.test.ts": {
@@ -6194,6 +6191,78 @@
       "reason": "Skill now states create() child header precedence, that plugin option defaults are not inherited and are removed on eject, and that params/env merge one level deep",
       "evidence": [
         "Changed: .bumpy/288-create-headers.md at fa7ce8ce8e9082ce5828ac74667103547b9a6aaa"
+      ]
+    },
+    "source:.bumpy/296-request-once.md": {
+      "fingerprint": "521639178766ce7c2c99d6efd556af6523ca262e692756aafc0f96066687a419",
+      "snapshot": {
+        ".bumpy/296-request-once.md": "82f39dae19eb71d4ab33c64520088f0187c6026508228e9edd46ad6e98fd965c"
+      },
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "SKILL.md now says the fetch init body member is null in Node/Deno and undefined in Bun, chosen by a one-time probe",
+      "evidence": [
+        "Changed: .bumpy/296-request-once.md at 4ea5dad1bc2c3a38a1f98321274dad54c22f3ec8"
+      ]
+    },
+    "source:packages/tests/browser/defaults.browser.test.ts": {
+      "fingerprint": "cb8870fb86052ad9ec60ca3cbaecf271c5697990a414c204ba1293e11ea2cf97",
+      "snapshot": {
+        "packages/tests/browser/defaults.browser.test.ts": "c3c658efd5ed0f9d0987cf7a14e059d208620fa6f39a7ef014e58a1ba6bc07fc"
+      },
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "no-change",
+      "reason": "browser test now pins JSON string bodies sent as written; skill does not teach that detail",
+      "evidence": [
+        "Changed: packages/tests/browser/defaults.browser.test.ts at b1cca34c138f902020d67e4d2d6c24b791e1bcd6"
+      ]
+    },
+    "source:packages/tests/smoke/bun/tests/body.smoke.test.ts": {
+      "fingerprint": "c171bf1d85a76fd22090351f50e313247ff1788ab3649e097a94c15c18aef832",
+      "snapshot": {
+        "packages/tests/smoke/bun/tests/body.smoke.test.ts": "7fdfe919f951873f37ed3e9b40114ce5861f8b24fd812992dbeb248ed74468fb"
+      },
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "SKILL.md now says the fetch init body member is null in Node/Deno and undefined in Bun, chosen by a one-time probe",
+      "evidence": [
+        "Changed: packages/tests/smoke/bun/tests/body.smoke.test.ts at 4ea5dad1bc2c3a38a1f98321274dad54c22f3ec8"
+      ]
+    },
+    "source:packages/tests/smoke/deno/tests/body.smoke.test.ts": {
+      "fingerprint": "f2decb15a6a7fdd5f80d96c13f4c1d7d63c303099df9d558e92e9f64e0007615",
+      "snapshot": {
+        "packages/tests/smoke/deno/tests/body.smoke.test.ts": "6bdcce812e1174a5284a816777d8961ecbecacab7fd650eadf89b1dc255013f3"
+      },
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "SKILL.md now says the fetch init body member is null in Node/Deno and undefined in Bun, chosen by a one-time probe",
+      "evidence": [
+        "Changed: packages/tests/smoke/deno/tests/body.smoke.test.ts at 4ea5dad1bc2c3a38a1f98321274dad54c22f3ec8"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/body.smoke.test.ts": {
+      "fingerprint": "da171a167d3537434f571ebf4b42eacdfe793b792d0596131c2cb4cc14704667",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/body.smoke.test.ts": "7be16bb0ea9d7e0cfc4967c8a29485628257a974ed9289c450017190461f2dda"
+      },
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "SKILL.md now says the fetch init repeats the Request's members with body: undefined (Bun reads body: null as no body); smoke tests post real bodies",
+      "evidence": [
+        "Changed: packages/tests/smoke/esm/tests/body.smoke.test.ts at fc450aa8a45d0ca2f4d53f47c70cad9274970ef3"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/urlencode.smoke.test.ts": {
+      "fingerprint": "2c3e051725ab549fa33d84d5967d12c7956aa1b796ef40b3f10ad29b48ce2b5a",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/urlencode.smoke.test.ts": "65502a6814e38a0b2297a628cd46309b4e9310302afe7da13c575440f46779aa"
+      },
+      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
+      "evidence": [
+        "Changed: packages/tests/smoke/esm/tests/urlencode.smoke.test.ts at fc407621c60a552cd012e910401add6d8e8e8807"
       ]
     }
   }

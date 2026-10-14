@@ -113,13 +113,46 @@ describe("request built once (#296)", () => {
     assert.strictEqual(seenInput.headers.get("content-type"), "application/json");
     assert.ok(seenInit);
     assert.strictEqual(Object.getPrototypeOf(seenInit), null);
-    // The body moves from the Request; fetch never gets the caller's body to encode again. An own
-    // `undefined`, not `null`: Bun reads `body: null` as "send no body".
+    // The body moves from the Request; fetch never gets the caller's body to encode again. Node's
+    // Request keeps the body on an own `null`, which also blocks a polluted Object.prototype.body.
     assert.ok(Object.hasOwn(seenInit, "body"));
-    assert.strictEqual(seenInit["body"], undefined);
+    assert.strictEqual(seenInit["body"], null);
     assert.strictEqual(seenInit["headers"], seenInput.headers);
     assert.strictEqual(seenInit["method"], "POST");
     assert.deepStrictEqual(seenInit["next"], { revalidate: 1 });
+  });
+
+  // How each runtime treats `new Request(request, { body })`. Node and Deno keep the body on an
+  // own `null`; Bun drops it there. Deno reads an own `undefined` as missing, Bun doesn't.
+  const runtimeRequest = (nullDropsBody: boolean) => class extends Request {
+    constructor(input: RequestInfo | URL, init?: RequestInit) {
+      const hasOwnBody = init !== undefined && Object.hasOwn(init, "body");
+      if (nullDropsBody && input instanceof Request && hasOwnBody && init.body === null) {
+        super(input.url, { method: input.method, headers: input.headers });
+        return;
+      }
+      super(input, init);
+    }
+  };
+
+  it.each([
+    [ "keeps the body on null (Node, Deno)", false, null ],
+    [ "drops the body on null (Bun)", true, undefined ],
+  ] as const)("sends the body when the runtime's Request %s", async (_name, nullDropsBody, expected) => {
+    const RuntimeRequest = runtimeRequest(nullDropsBody);
+    let initBody: unknown = "unset";
+    let sent: null | string = null;
+    const fetch = async (input: Request | string | URL, init?: RequestInit) => {
+      assert.ok(init && Object.hasOwn(init, "body"));
+      initBody = init.body;
+      sent = await new RuntimeRequest(input, init).text();
+      return new Response("ok");
+    };
+
+    await faxios.post("http://localhost/", "real", { env: { fetch, Request: RuntimeRequest } });
+
+    assert.strictEqual(initBody, expected);
+    assert.strictEqual(sent, "real");
   });
 
   // fetch builds its own Request from the Request and the init, as undici does. An init that

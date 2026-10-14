@@ -31,7 +31,7 @@ function isHTTPURL(value: unknown): value is string {
 
 // Sends what faxios would have sent to `gateway` instead, with the target URL in `header`. The
 // adapter passes every init member (method, headers, signal, credentials, fetchOptions) with
-// every call; with a Request input the body stays on the Request (`init.body` is undefined), so it is
+// every call; with a Request input the body stays on the Request (`init.body` is null or undefined), so it is
 // taken from there. Only the URL and that one header change.
 function forwardingFetch(gateway: string, header: string, base: Fetch): Fetch {
   return async (input, init) => {
