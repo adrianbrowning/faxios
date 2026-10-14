@@ -81,7 +81,14 @@ faxios.get("/user/12345").catch(function (error) {
 });
 ```
 
-`toJSON()` never includes the request or the response, and it masks credentials so the result is safe to log: the values of the `authorization`, `proxy-authorization`, `cookie` and `auth` config keys (case-insensitive, at any depth) become `[REDACTED ****]`, and `user:pass@` is stripped from `url` and `baseURL`. To mask other secrets, such as an API key header or a token in `params`, list their keys in a `redact` array in the request config; they're masked the same way.
+`toJSON()` never includes the request or the response, and it masks credentials: the values of the `authorization`, `proxy-authorization`, `cookie` and `auth` config keys (case-insensitive, at any depth) become `[REDACTED ****]`, and `user:pass@` is stripped from `url` and `baseURL`. To mask other secrets, such as an API key header, a token in `params` or a password in the body, list their keys in a `redact` array; they're masked the same way. A request's `redact` adds to the instance's, so both lists apply.
+
+What reaches the log, and what you still have to keep out of it:
+
+- **Request body.** `config.data` on the error is the body you passed, not the JSON or form string faxios sent, so `redact` masks its keys whether it went out as JSON or urlencoded. A body you serialized yourself (a string, `URLSearchParams`, `FormData`) has no keys to match: a string is logged as it is, and `URLSearchParams` and `FormData` as `{}`.
+- **Values with a `toJSON` method.** `toJSON()` masks the keys in what the method returns, at any depth. A value whose `toJSON` throws, or that refers back to itself, is left out.
+- **Schema `issues`.** Each issue keeps only its `message` and `path`, and each path segment only its `key`, so the rejected value a schema library attaches never reaches the log. The `message` is the library's text.
+- **Messages.** `message`, `stack` and the `cause` messages lose URL user info. The rest of a message is the error's own text: a middleware, transform or schema that puts a secret in a message puts it in the log.
 
 `toJSON()` also includes `cause`, the chain of wrapped errors as `{ name, code, message, cause }`, so a logged network failure still names the underlying error (for example `{ name: "Error", code: "ECONNREFUSED", message: "connect ECONNREFUSED 127.0.0.1:443" }`). Each entry holds only those fields, never a wrapped error's config, and user info is stripped from URLs in the messages and the stack.
 

@@ -257,9 +257,12 @@ catch (error) {
   name (`TypeError`, `SyntaxError`) from `error.cause`.
 - `error.toJSON()` never includes the response, masks `authorization`, `proxy-authorization`,
   `cookie` and `auth` at any depth and strips `user:pass@` from `url`/`baseURL`; list other
-  sensitive config keys in `redact` to mask them too. Its `cause` is the wrapped error chain as
-  `{ name, code, message, cause }`. Log `error.toJSON()`, not `error`: the error object still
-  holds the full config.
+  sensitive config keys in `redact` to mask them too. A request's `redact` adds to the
+  instance's. `config.data` is the body the caller passed (an object, not the JSON or form string
+  sent), so `redact: ["password"]` masks a body password; a pre-serialized string body is logged
+  as is. Schema `issues` keep only `message` and each path segment's `key`. Its `cause` is the
+  wrapped error chain as `{ name, code, message, cause }`. Log `error.toJSON()`, not `error`: the
+  error object still holds the full config.
 
 ### Add behaviour with `.use()` middleware
 

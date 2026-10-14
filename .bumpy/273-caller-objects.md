@@ -1,0 +1,5 @@
+---
+"@gcmdev/faxios": minor
+---
+
+Breaking: `error.config.data` and `response.config.data` are now the body you passed, not the JSON or urlencoded string faxios sent, so `redact: ["password"]` masks a body password in `error.toJSON()`. A request's `redact` now adds to the instance's instead of replacing it, and the merged list is lower-cased and deduplicated. `toJSON()` also masks redact keys in what a value's own or class `toJSON` returns, leaves out a value whose `toJSON` throws or that loops back to itself, and strips `user:pass@` from `message` and `stack` in linear time, where a long `a.a.a…` path used to block the event loop for seconds. Schema `issues` keep only `message` and each path segment's `key`, so the rejected value a library such as Valibot attaches no longer reaches `toJSON()`. `timing` strips URL user info from `error.message`. A `pipe` that only a polluted `Object.prototype` supplies no longer makes a plain object body count as a stream, so it is sent as JSON and `retry` replays it.
