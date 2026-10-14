@@ -63,10 +63,3 @@ While a report is under embargo, we ask reporters not to disclose it publicly un
 ## Security updates
 
 We release security updates after the patch is developed and tested. We notify users through the project's GitHub repository, publish release notes and security advisories on GitHub releases, and deprecate all versions that contain the vulnerability.
-
-## Security partners and acknowledgements
-
-Thanks to these security researchers for working with us:
-
-- [Socket Dev](https://socket.dev/)
-- [GitHub Security Lab](https://securitylab.github.com/)

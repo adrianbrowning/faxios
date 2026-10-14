@@ -109,8 +109,6 @@ export default defineConfig({
   lang: "en-US",
   title: "faxios | Promise based HTTP client",
   description: "Documentation for the faxios HTTP client",
-  // The sponsors data is axios's. Keep the page out of the site until updated.
-  srcExclude: ["pages/misc/sponsors.md"],
   head: [
     ["link", { rel: "icon", href: `${base}favicon.ico` }],
     [

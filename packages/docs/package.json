@@ -9,8 +9,6 @@
     "docs:dev": "vitepress dev",
     "docs:build": "vitepress build",
     "docs:preview": "vitepress preview",
-    "docs:update:sponsors": "node ./scripts/process-sponsors.js",
-    "prod:build": "npm run docs:update:sponsors && npm run docs:build",
     "lint": "pnpm lint:esl && pnpm lint:s",
     "lint:esl": "eslint --config eslint.config.ts \"**/*.{j,t}s{,x}\" --cache --max-warnings=0",
     "lint:s": "eslint --config eslint.config.style.ts \"**/*.{j,t}s{,x}\" --cache --max-warnings=0",
@@ -18,7 +16,6 @@
     "lint:ts": "tsc --noEmit -p ."
   },
   "dependencies": {
-    "@gcmdev/faxios": "workspace:*",
     "vitepress": "2.0.0-alpha.20"
   },
   "devDependencies": {
