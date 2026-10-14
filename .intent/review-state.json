@@ -4936,15 +4936,15 @@
       ]
     },
     "source:.husky/pre-push": {
-      "fingerprint": "3bd8085fdb0e9599d8367cc1754a5a705297af7e594e31cdc555eaeff99b50bd",
+      "fingerprint": "324e4e05bb4a71ec663d4aa3832df6197d3c1d71229417b8894f9b186aa8c792",
       "snapshot": {
-        ".husky/pre-push": "a85f02f799b9d1ddabcf739ff7868c9b372390608b21af9cfbcf3d5c5a90aeb0"
+        ".husky/pre-push": "e3b93dc854c25e11a893e8253e690a7c1d47d4612d1fe3608f0723f9062392d5"
       },
-      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
+      "head": "34af829edb0a1f66a75c59781d03db24a07a8a29",
       "outcome": "no-change",
       "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
       "evidence": [
-        "Changed: .husky/pre-push at 03009f7a217f136a32ed7d58306f67141aae2805"
+        "Changed: .husky/pre-push at 34af829edb0a1f66a75c59781d03db24a07a8a29"
       ]
     },
     "source:commitlint.config.js": {
@@ -4969,6 +4969,222 @@
       "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
       "evidence": [
         "Changed: packages/tests/unit/scripts/intentRestack.test.ts at 03009f7a217f136a32ed7d58306f67141aae2805"
+      ]
+    },
+    "source:packages/lib/eslint-rules/plugin-imports.d.ts": {
+      "fingerprint": "14006b9b701f4ce45342b0a42f31dd7ec237dae920a1db0d9910b5190e79a451",
+      "snapshot": {
+        "packages/lib/eslint-rules/plugin-imports.d.ts": "36e247304ee90b24c72f40d635256be8a383881497a3e3fae7aa87a685cb9b7a"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/lib/eslint-rules/plugin-imports.d.ts"
+      ]
+    },
+    "source:packages/lib/eslint-rules/plugin-imports.js": {
+      "fingerprint": "324eb43b304f9d4b639be9d025d7e83fd566e545fc5f03ed7a37e2c823933def",
+      "snapshot": {
+        "packages/lib/eslint-rules/plugin-imports.js": "b914f3adccd08bbb1b3398a3f25628b9413354f194c10c4142c4d58f5225bdad"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/lib/eslint-rules/plugin-imports.js"
+      ]
+    },
+    "source:packages/lib/eslint-rules/plugin-imports.js.map": {
+      "fingerprint": "8da8c9f83d3f2f164ee0c4f354643086bf1d5069d1f940e812603fb6cce5569e",
+      "snapshot": {
+        "packages/lib/eslint-rules/plugin-imports.js.map": "a531306d695d916aa1afe4e31a38d52e8193494aa9e9bb65a495a976f8b20063"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/lib/eslint-rules/plugin-imports.js.map"
+      ]
+    },
+    "source:packages/lib/eslint-rules/remove-signal-listeners.d.ts": {
+      "fingerprint": "e45835b6c2b0afbecccc7880efd480171cc3e5cb99157dc6738bfc9888eebd08",
+      "snapshot": {
+        "packages/lib/eslint-rules/remove-signal-listeners.d.ts": "a2da55cc8436566f905152b616d7f60a94fd1ce22a17098da3cc00149b31f594"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/lib/eslint-rules/remove-signal-listeners.d.ts"
+      ]
+    },
+    "source:packages/lib/eslint-rules/remove-signal-listeners.js": {
+      "fingerprint": "4313fe434b9960ad7688ca31354d6c29e62842c4cf0da9686ab53213d36baf38",
+      "snapshot": {
+        "packages/lib/eslint-rules/remove-signal-listeners.js": "9dd86e1afcd0ed61323d58d5bbf080726ba6f3de08b55b4efc255f8247cfcd64"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/lib/eslint-rules/remove-signal-listeners.js"
+      ]
+    },
+    "source:packages/lib/eslint-rules/remove-signal-listeners.js.map": {
+      "fingerprint": "6828477859f1a8a8a8d6b862f0341e4966dcff528c9e1d7429e75fe1ce162f9f",
+      "snapshot": {
+        "packages/lib/eslint-rules/remove-signal-listeners.js.map": "301d1b6d663ea2e9326b04807da5e174de65f1f1d444dafcbc3f2b98700382e7"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/lib/eslint-rules/remove-signal-listeners.js.map"
+      ]
+    },
+    "source:packages/lib/eslint.config.d.ts": {
+      "fingerprint": "1caa7043b1070ef62aaae5bc2751e759b0421e61acb96fcc5ac4d2901063833e",
+      "snapshot": {
+        "packages/lib/eslint.config.d.ts": "df60d32e30f95da55abb149ecbc06bd7ca89796ddac4d3bdeb3a69e734e7ded3"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/lib/eslint.config.d.ts"
+      ]
+    },
+    "source:packages/lib/eslint.config.js": {
+      "fingerprint": "22d24b6737ffaa8fc2e5124d16851e09617f757ed926b124f0f854222153cf20",
+      "snapshot": {
+        "packages/lib/eslint.config.js": "ad2fc962f05a1be94620e345d987b9d70c061a448e991b727fb9e3047169639c"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/lib/eslint.config.js"
+      ]
+    },
+    "source:packages/lib/eslint.config.js.map": {
+      "fingerprint": "8dbac37182ab30b96e0a843dff9618edde172f6ddd362b38175702efb6462e27",
+      "snapshot": {
+        "packages/lib/eslint.config.js.map": "28e214eea1d70b1fd1ceccf29528148f8b4a60606119e5f59680b9164aa76ea8"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/lib/eslint.config.js.map"
+      ]
+    },
+    "source:packages/lib/eslint.config.style.d.ts": {
+      "fingerprint": "9e93099b88e83f1ccae9fc4e3ad8af5f377d273eb51e22341ea41918541f89af",
+      "snapshot": {
+        "packages/lib/eslint.config.style.d.ts": "7d29afc6e4256a30279d05399bbe2e8d628624a12e1a3b625295b58ea814f76b"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/lib/eslint.config.style.d.ts"
+      ]
+    },
+    "source:packages/lib/eslint.config.style.js": {
+      "fingerprint": "869c35621f08d1e3178c82faf1d49f0aa3e40f4764c5019c74cdf34b80cdfd0f",
+      "snapshot": {
+        "packages/lib/eslint.config.style.js": "8827b3337a6f0ecec1da0d1d7938da9ba100790bcf1b45e339dd87cc54d22c61"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/lib/eslint.config.style.js"
+      ]
+    },
+    "source:packages/lib/eslint.config.style.js.map": {
+      "fingerprint": "18bf492074289c309a973cce375ea2f6a70c92cbd8f787498994da0b67ab5cae",
+      "snapshot": {
+        "packages/lib/eslint.config.style.js.map": "db8bbdcca8c2e6a835d36a95dd4a670ea96fffc55caae1f41eec4efc680557d5"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/lib/eslint.config.style.js.map"
+      ]
+    },
+    "source:sharedConfig/eslint.config.d.ts": {
+      "fingerprint": "ef8d616fc0077f6f946bc2fddc548d502d4067c8b246ec6b63fdd290bba83f5e",
+      "snapshot": {
+        "sharedConfig/eslint.config.d.ts": "350f9211e293311ec7922d615cc5a912ebf07c91d0694f7cc175b6bbea6c6758"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: sharedConfig/eslint.config.d.ts"
+      ]
+    },
+    "source:sharedConfig/eslint.config.js": {
+      "fingerprint": "6d134f56392759dc1c3a2450343795c3d2d06c3b8041d689905eb2f78878fcac",
+      "snapshot": {
+        "sharedConfig/eslint.config.js": "5bc417b9810c0adfdd8f18a9bb11a081506d2528cee413a9c2c5e12eaf636874"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: sharedConfig/eslint.config.js"
+      ]
+    },
+    "source:sharedConfig/eslint.config.js.map": {
+      "fingerprint": "9b8b1df551e4fe0d31345135a90b3288d580bd5f8a6c786e834db81b89f55a40",
+      "snapshot": {
+        "sharedConfig/eslint.config.js.map": "ea7da1d8e7ee9d7d73cc796060fe5fa884b50393c63409ab204cb6d57544d334"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: sharedConfig/eslint.config.js.map"
+      ]
+    },
+    "source:sharedConfig/eslint.config.style.d.ts": {
+      "fingerprint": "47268d65e4ab85f2e54dd2caeeb69646756b3cfb6606948daab43654da2608a8",
+      "snapshot": {
+        "sharedConfig/eslint.config.style.d.ts": "7d29afc6e4256a30279d05399bbe2e8d628624a12e1a3b625295b58ea814f76b"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: sharedConfig/eslint.config.style.d.ts"
+      ]
+    },
+    "source:sharedConfig/eslint.config.style.js": {
+      "fingerprint": "76718fddd7454c206bc6d1845054963187e739d04119c4077cccd60ae6123c80",
+      "snapshot": {
+        "sharedConfig/eslint.config.style.js": "4007108e29f6c47ae8162ed6b25401c339599c28e01d203a8ce4067a3ae88b77"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: sharedConfig/eslint.config.style.js"
+      ]
+    },
+    "source:sharedConfig/eslint.config.style.js.map": {
+      "fingerprint": "c492a9596b9b9f9d44ba5b8d2bb734ee2938bbb6b147d81dde5060cf6b1a72ac",
+      "snapshot": {
+        "sharedConfig/eslint.config.style.js.map": "c0faf46ac4f2490bc98dd29d5e02954738a36702fbb21e7314e87793306ea3f5"
+      },
+      "head": "7cf0ec58f9be7dbf4a84efc26f416dbe65788bab",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: sharedConfig/eslint.config.style.js.map"
       ]
     }
   }
