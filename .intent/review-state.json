@@ -589,29 +589,27 @@
       ]
     },
     "source:packages/tests/docs-examples/extract.test.ts": {
-      "fingerprint": "272f68d34f4ffa45c5e427ee1342a0d027d36f08cdb77a8c8d357975652fa020",
+      "fingerprint": "7a92654c928c11582c7f4d2bfb1415d4f386f503c495814c09d15023b29e1a41",
       "snapshot": {
-        "packages/tests/docs-examples/extract.test.ts": "24249e9b08895859bd5855b0efb3de7aa816d441f3c2ab8d3d52880ba57b4a06"
+        "packages/tests/docs-examples/extract.test.ts": "e7b87e6c0cd461cd04025eebd2bb71870d006009cc332241ef6227c13879cc7e"
       },
-      "head": "a15418fe9ebc066d9f5379b3b7d2dc16167fa33f",
-      "outcome": "out-of-scope",
-      "reason": "Tests for the placeholders=literal fence marker.",
+      "head": "adf77e9c2a3d379e030fbda7ce4b166b791089ec",
+      "outcome": "no-change",
+      "reason": "Adds a root landing README and extracts its example in test:docs-examples; no library API or behaviour taught by configure-requests changes.",
       "evidence": [
-        "Marker carried to the manifest; invalid value throws."
+        "Changed: packages/tests/docs-examples/extract.test.ts at e3e74a239a152b801141bedfc18f60acded5c8d2"
       ]
     },
     "source:packages/tests/docs-examples/extract.ts": {
-      "fingerprint": "16e41f73c149ef6248fdd4f1c9edbc382c7270a50a384b7607a93801a631c8ca",
+      "fingerprint": "5c52f5cf19b81d91a983e22600ccd2210ddc43d486cc900dcebe03990c22a503",
       "snapshot": {
-        "packages/tests/docs-examples/extract.ts": "8111ca5716f27a3090112b7a430168e6b4de56defe65cac36edc85f73fa5fcc7"
+        "packages/tests/docs-examples/extract.ts": "62a6e92c06237f7da64c14851158fd04282730a8e2c42b901ef044ce97c35cfe"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "adf77e9c2a3d379e030fbda7ce4b166b791089ec",
       "outcome": "no-change",
-      "reason": "Since a15418fe: placeholders=literal marker and validateMarkers(); this PR only rewrites the locale comment ('The docs are English-only'). Test harness, no skill impact.",
+      "reason": "Adds a root landing README and extracts its example in test:docs-examples; no library API or behaviour taught by configure-requests changes.",
       "evidence": [
-        "git diff a15418fe..HEAD -- packages/tests/docs-examples/extract.ts",
-        "pnpm test:docs-examples: 177 blocks extracted, 166 tests passed.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/docs-examples/extract.ts at e3e74a239a152b801141bedfc18f60acded5c8d2"
       ]
     },
     "source:packages/docs/pages/advanced/route.md": {
@@ -5537,6 +5535,18 @@
       "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
       "evidence": [
         "Changed: packages/tests/smoke/esm/tests/headers.smoke.test.ts at 5ec7ea4b09f436506a6044c02747686361b3b9af"
+      ]
+    },
+    "source:README.md": {
+      "fingerprint": "b95a73b320595cce7412bb06ab824855cff2b8365fbc1b8233d20685e9440fe2",
+      "snapshot": {
+        "README.md": "587679f7264f623f470383110b7060927cc8767c4ed299a1af6df7202d0d4420"
+      },
+      "head": "adf77e9c2a3d379e030fbda7ce4b166b791089ec",
+      "outcome": "no-change",
+      "reason": "Adds a root landing README and extracts its example in test:docs-examples; no library API or behaviour taught by configure-requests changes.",
+      "evidence": [
+        "Changed: README.md at e3e74a239a152b801141bedfc18f60acded5c8d2"
       ]
     }
   }
