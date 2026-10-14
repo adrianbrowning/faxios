@@ -13,6 +13,13 @@ import type { FaxiosResponse, InternalFaxiosRequestConfig } from "#src/lib/types
 const config = {} as InternalFaxiosRequestConfig;
 const request = {};
 
+const isContentTooLarge = (limit: number) => (err: unknown) => {
+  assert.ok(err instanceof FaxiosError);
+  assert.strictEqual(err.code, FaxiosError.ERR_BAD_RESPONSE);
+  assert.strictEqual(err.message, `maxContentLength size of ${limit} exceeded`);
+  return true;
+};
+
 describe("checkDeclaredContentLength", () => {
   it("skips when hasMaxContentLength is false", () => {
     const headers = FaxiosHeaders.from({ "content-length": "99999" });
@@ -28,22 +35,18 @@ describe("checkDeclaredContentLength", () => {
     );
   });
 
-  it("passes when declared length is within cap", () => {
-    const headers = FaxiosHeaders.from({ "content-length": "50" });
+  it("passes when declared length is exactly the cap", () => {
+    const headers = FaxiosHeaders.from({ "content-length": "100" });
     assert.doesNotThrow(() =>
       checkDeclaredContentLength(headers, "get", 200, true, 100, config, request)
     );
   });
 
-  it("throws ERR_BAD_RESPONSE when declared length exceeds cap", () => {
-    const headers = FaxiosHeaders.from({ "content-length": "200" });
+  it("throws ERR_BAD_RESPONSE when declared length is one byte over the cap", () => {
+    const headers = FaxiosHeaders.from({ "content-length": "101" });
     assert.throws(
       () => checkDeclaredContentLength(headers, "get", 200, true, 100, config, request),
-      (err: unknown) => {
-        assert.ok(err instanceof FaxiosError);
-        assert.strictEqual(err.code, FaxiosError.ERR_BAD_RESPONSE);
-        return true;
-      }
+      isContentTooLarge(100)
     );
   });
 
@@ -63,74 +66,39 @@ describe("checkDeclaredContentLength", () => {
 describe("checkMaterializedSize", () => {
   it("skips when hasMaxContentLength is false", () => {
     assert.doesNotThrow(() =>
-      checkMaterializedSize("x".repeat(200), false, 100, false, false, config, request)
+      checkMaterializedSize("x".repeat(200), false, 100, false, config, request)
     );
   });
 
-  it("skips when supportsResponseStream is true", () => {
+  it("skips a body the stream wrapper counted while it was read", () => {
     assert.doesNotThrow(() =>
-      checkMaterializedSize("x".repeat(200), true, 100, false, true, config, request)
-    );
-  });
-
-  it("skips when isStreamResponse is true", () => {
-    assert.doesNotThrow(() =>
-      checkMaterializedSize("x".repeat(200), true, 100, true, false, config, request)
+      checkMaterializedSize("x".repeat(200), true, 100, true, config, request)
     );
   });
 
   it("skips when responseData is null", () => {
     assert.doesNotThrow(() =>
-      checkMaterializedSize(null, true, 100, false, false, config, request)
+      checkMaterializedSize(null, true, 100, false, config, request)
     );
   });
 
-  it("throws ERR_BAD_RESPONSE for oversized string", () => {
-    const big = "x".repeat(200);
+  it.each([
+    [ "string", (n: number) => "x".repeat(n) ],
+    [ "ArrayBuffer (byteLength)", (n: number) => new ArrayBuffer(n) ],
+    [ "Blob (size)", (n: number) => new Blob([ "x".repeat(n) ]) ],
+  ])("passes a %s of exactly the cap and throws ERR_BAD_RESPONSE one byte over", (_label, make) => {
+    assert.doesNotThrow(() => checkMaterializedSize(make(100), true, 100, false, config, request));
     assert.throws(
-      () => checkMaterializedSize(big, true, 100, false, false, config, request),
-      (err: unknown) => {
-        assert.ok(err instanceof FaxiosError);
-        assert.strictEqual(err.code, FaxiosError.ERR_BAD_RESPONSE);
-        return true;
-      }
+      () => checkMaterializedSize(make(101), true, 100, false, config, request),
+      isContentTooLarge(100)
     );
   });
 
-  it("passes for string within cap", () => {
-    assert.doesNotThrow(() =>
-      checkMaterializedSize("hi", true, 100, false, false, config, request)
-    );
-  });
-
-  it("throws ERR_BAD_RESPONSE for oversized ArrayBuffer (byteLength)", () => {
-    const buf = new ArrayBuffer(200);
+  it("measures a string in UTF-8 bytes, not UTF-16 code units", () => {
+    assert.doesNotThrow(() => checkMaterializedSize("é".repeat(50), true, 100, false, config, request));
     assert.throws(
-      () => checkMaterializedSize(buf, true, 100, false, false, config, request),
-      (err: unknown) => {
-        assert.ok(err instanceof FaxiosError);
-        assert.strictEqual(err.code, FaxiosError.ERR_BAD_RESPONSE);
-        return true;
-      }
-    );
-  });
-
-  it("passes for ArrayBuffer within cap", () => {
-    const buf = new ArrayBuffer(50);
-    assert.doesNotThrow(() =>
-      checkMaterializedSize(buf, true, 100, false, false, config, request)
-    );
-  });
-
-  it("throws ERR_BAD_RESPONSE for oversized Blob (size)", () => {
-    const blob = new Blob([ "x".repeat(200) ]);
-    assert.throws(
-      () => checkMaterializedSize(blob, true, 100, false, false, config, request),
-      (err: unknown) => {
-        assert.ok(err instanceof FaxiosError);
-        assert.strictEqual(err.code, FaxiosError.ERR_BAD_RESPONSE);
-        return true;
-      }
+      () => checkMaterializedSize("é".repeat(51), true, 100, false, config, request),
+      isContentTooLarge(100)
     );
   });
 });
@@ -147,6 +115,8 @@ describe("handleFetchCaughtError", () => {
       () => handleFetchCaughtError(new Error("abort"), ac.signal, ref, config, request),
       (err: unknown) => {
         assert.strictEqual(err, reason);
+        assert.strictEqual((err).code, FaxiosError.ERR_CANCELED);
+        assert.strictEqual((err).message, "Canceled");
         assert.strictEqual((err).config, config);
         assert.strictEqual((err).request, request);
         return true;
@@ -164,6 +134,8 @@ describe("handleFetchCaughtError", () => {
       () => handleFetchCaughtError(raw, ac.signal, ref, config, request),
       (err: unknown) => {
         assert.ok(err instanceof FaxiosError);
+        assert.strictEqual(err.code, FaxiosError.ERR_CANCELED);
+        assert.strictEqual(err.message, "Canceled");
         assert.strictEqual((err).cause, raw);
         return true;
       }
@@ -177,6 +149,8 @@ describe("handleFetchCaughtError", () => {
       () => handleFetchCaughtError(new Error("ignored"), undefined, ref, config, request),
       (err: unknown) => {
         assert.strictEqual(err, bodyErr);
+        assert.strictEqual((err).code, FaxiosError.ERR_BAD_REQUEST);
+        assert.strictEqual((err).message, "Body too large");
         assert.strictEqual((err).request, request);
         return true;
       }
@@ -190,21 +164,24 @@ describe("handleFetchCaughtError", () => {
       () => handleFetchCaughtError(original, undefined, ref, config, request),
       (err: unknown) => {
         assert.strictEqual(err, original);
+        assert.strictEqual((err).code, FaxiosError.ERR_NETWORK);
+        assert.strictEqual((err).message, "Raw");
         return true;
       }
     );
   });
 
   it.each([
-    [ "a TypeError with a runtime-specific message", new TypeError("client error (Connect)") ],
-    [ "an error with a runtime-specific code", Object.assign(new Error("Unable to connect"), { code: "ConnectionRefused" }) ],
-  ])("wraps %s raised while sending as ERR_NETWORK with the error as cause", (_label, sendErr) => {
+    [ "a TypeError with a runtime-specific message", new TypeError("client error (Connect)"), "Network Error: client error (Connect) (GET http://example.test/)" ],
+    [ "an error with a runtime-specific code", Object.assign(new Error("Unable to connect"), { code: "ConnectionRefused" }), "Network Error: ConnectionRefused (GET http://example.test/)" ],
+  ])("wraps %s raised while sending as ERR_NETWORK with the error as cause", (_label, sendErr, message) => {
     const ref = makeRef();
     assert.throws(
       () => handleFetchCaughtError(sendErr, undefined, ref, config, request, "send", "http://example.test/"),
       (err: unknown) => {
         assert.ok(err instanceof FaxiosError);
         assert.strictEqual(err.code, FaxiosError.ERR_NETWORK);
+        assert.strictEqual(err.message, message);
         assert.strictEqual(err.cause, sendErr);
         return true;
       }
@@ -218,6 +195,9 @@ describe("handleFetchCaughtError", () => {
       () => handleFetchCaughtError(generic, undefined, ref, config, request),
       (err: unknown) => {
         assert.ok(err instanceof FaxiosError);
+        assert.strictEqual(err.code, "ERR_UNKNOWN");
+        assert.strictEqual(err.message, "Something else");
+        assert.strictEqual(err.cause, generic);
         return true;
       }
     );
