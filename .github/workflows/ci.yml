@@ -8,10 +8,10 @@ on:
     branches:
       - main
 
-# A newer push to the same PR or branch cancels the run it supersedes
+# A newer push to a PR cancels the run it supersedes; runs on main all finish, so each merge gets a result
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Read-only: pull_request runs from forks get no secrets and no write token either way
 permissions:

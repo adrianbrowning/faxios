@@ -1,14 +1,27 @@
 #!/bin/sh
-# `pnpm lint` checks the checked-out tree. `gh stack submit` pushes each branch separately, so skip
-# the run when this clean tree already passed.
-tree="$(git rev-parse 'HEAD^{tree}')"
-stamp="$(git rev-parse --git-path faxios-pre-push-lint)"
-clean() { [ -z "$(git status --porcelain --untracked-files=no)" ]; }
+# Lint the tree of each pushed commit, not the checked-out one: `git push origin other-branch` and
+# `gh stack submit` push branches that may not be checked out. git sends one line per ref on stdin:
+# `<local ref> <local sha> <remote ref> <remote sha>`. Each tree is checked out into a scratch
+# worktree; a tree that already passed is skipped, so a stack submit lints each new tree once.
+stamps="$(git rev-parse --git-path faxios-pre-push-lint)"
+zero="0000000000000000000000000000000000000000"
 
-if clean && [ "$(cat "$stamp" 2> /dev/null)" = "$tree" ]; then
-  exit 0
-fi
-pnpm lint || exit 1
-if clean; then
-  echo "$tree" > "$stamp"
-fi
+while read -r _ local_sha _ _; do
+  # A deleted ref has nothing to lint.
+  [ -z "$local_sha" ] || [ "$local_sha" = "$zero" ] && continue
+  tree="$(git rev-parse "$local_sha^{tree}")"
+  grep -qx "$tree" "$stamps" 2> /dev/null && continue
+
+  if [ "$tree" = "$(git rev-parse 'HEAD^{tree}')" ] && [ -z "$(git status --porcelain --untracked-files=no)" ]; then
+    # The pushed tree is the clean checkout: lint it in place, with its installed dependencies.
+    pnpm lint || exit 1
+  else
+    dir="$(mktemp -d)"
+    git worktree add --quiet --detach "$dir" "$local_sha" || exit 1
+    (cd "$dir" && pnpm install --frozen-lockfile --offline --silent && pnpm lint)
+    status=$?
+    git worktree remove --force "$dir"
+    [ "$status" -eq 0 ] || exit 1
+  fi
+  echo "$tree" >> "$stamps"
+done

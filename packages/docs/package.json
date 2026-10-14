@@ -11,8 +11,10 @@
     "docs:preview": "vitepress preview",
     "docs:update:sponsors": "node ./scripts/process-sponsors.js",
     "prod:build": "npm run docs:update:sponsors && npm run docs:build",
-    "lint": "eslint --config eslint.config.ts \"**/*.{j,t}s{,x}\" --cache --max-warnings=0",
-    "lint:fix": "eslint --config eslint.config.style.ts \"**/*.{j,t}s{,x}\" --cache --max-warnings=0 --fix",
+    "lint": "pnpm lint:esl && pnpm lint:s",
+    "lint:esl": "eslint --config eslint.config.ts \"**/*.{j,t}s{,x}\" --cache --max-warnings=0",
+    "lint:s": "eslint --config eslint.config.style.ts \"**/*.{j,t}s{,x}\" --cache --max-warnings=0",
+    "lint:fix": "pnpm lint:s --fix",
     "lint:ts": "tsc --noEmit -p ."
   },
   "dependencies": {
