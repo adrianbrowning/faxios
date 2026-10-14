@@ -62,11 +62,20 @@ function pageHref(): string | undefined {
   return undefined;
 }
 
+// The scheme and authority of a URL template (`https://api.example.com`, `{s}://host`,
+// `//host`): an optional scheme up to a `:`, then two slashes and the authority. No match for a
+// URL without an authority. Neither class matches a slash, so the scan is linear.
+const SCHEME_AND_AUTHORITY = /^(?:[^/?#\\]*:)?[/\\]{2}[^/?#\\]*/;
+
 function sendsTokenTo(config: InternalFaxiosRequestConfig, instanceBaseURL: unknown, origins: null | ReadonlyArray<string>): boolean {
+  // A placeholder in the scheme or authority (`{s}://evil.test`, `https://{host}/x`) lets the
+  // path params, which may only exist after `pathParamsSchema` runs, decide the origin: no token.
+  const template = own(config, "url");
+  if (typeof template === "string" && SCHEME_AND_AUTHORITY.exec(template)?.[0].includes("{")) return false;
   // The URL core sends, from the same resolver, without `pathParams` and `params`: middleware runs
   // before `pathParamsSchema`, which may fill or rename placeholders, and the caller's
   // paramsSerializer shouldn't run an extra time. Path params are percent-encoded into the path,
-  // so they don't move the origin; a placeholder in the host leaves an origin that matches nothing.
+  // so outside the scheme and authority they don't move the origin.
   // A URL core rejects (an absolute URL with `allowAbsoluteUrls: false`) gets no token.
   let url: string;
   try {

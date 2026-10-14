@@ -320,7 +320,8 @@ value, because it is the only value typed with the plugin's request options (suc
 
 - `authBearer(getToken, { scheme, header, origins, overwrite })` sends the token only to the
   instance `baseURL` origin when that is absolute; otherwise only to relative request URLs. A
-  per-request `baseURL` never gets it. Use
+  per-request `baseURL` never gets it, nor does a URL with a `pathParams` placeholder in its
+  scheme or host (`"https://{host}/x"`). Use
   `origins` to allow more. It leaves an explicit `Authorization` header alone unless
   `overwrite: true`. Install `retry` before it if each attempt should call `getToken` again.
   A `getToken` result that isn't a non-empty string sends the request without the header.
