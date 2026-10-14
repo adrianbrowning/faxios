@@ -493,7 +493,8 @@ describe("core::FaxiosError", () => {
       });
       const data = { username: "alice", password: "hunter2" };
 
-      const error = await api.post("/login", data, { headers, redact: [ "password" ] }).catch((err: unknown) => err as FaxiosError);
+      const error: unknown = await api.post("/login", data, { headers, redact: [ "password" ] }).catch((err: unknown) => err);
+      if (!(error instanceof FaxiosError)) throw new Error("expected the request to reject with a FaxiosError");
 
       expect(bodies).toEqual([ sent ]);
       expect(error.config?.data).toBe(data);
@@ -530,8 +531,9 @@ describe("core::FaxiosError", () => {
       };
       const api = faxios.create({ baseURL: "http://localhost", env: { fetch: async () => new Response(null) } });
 
-      const error = await api.post("/login", { username: "alice", password: "hunter2" }, { requestSchema, redact: [ "password" ] })
-        .catch((err: unknown) => err as FaxiosError);
+      const error: unknown = await api.post("/login", { username: "alice", password: "hunter2" }, { requestSchema, redact: [ "password" ] })
+        .catch((err: unknown) => err);
+      if (!(error instanceof FaxiosError)) throw new Error("expected the request to reject with a FaxiosError");
 
       expect(error.code).toBe(FaxiosError.ERR_BAD_REQUEST_SCHEMA);
       expect(JSON.stringify(error)).not.toContain("hunter2");
