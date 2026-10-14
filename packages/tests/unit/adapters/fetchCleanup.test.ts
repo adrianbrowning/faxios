@@ -426,9 +426,9 @@ describe("fetch adapter request cleanup", () => {
       const { body: source, cancelled, reading } = stalledBody();
       let bodyCancel: Promise<void> | undefined;
       // Like a fetch that cancels the request body when the request is aborted.
-      const cancellingFetch = async (_input: unknown, init?: RequestInit) => {
-        // With onUploadProgress the adapter sends the tracked stream as the body.
-        const body = init!.body as ReadableStream<Uint8Array>;
+      const cancellingFetch = async (input: unknown, init?: RequestInit) => {
+        // With onUploadProgress the adapter sends the tracked stream as the Request body.
+        const body = (input as Request).body!;
         const signal = init!.signal!;
         const reader = body.getReader();
         void reader.read();

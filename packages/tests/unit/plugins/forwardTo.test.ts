@@ -87,7 +87,8 @@ describe("plugins::forwardTo", () => {
     assert.strictEqual(init?.cache, "no-store");
     assert.strictEqual(init?.credentials, "include");
     assert.ok(init?.signal instanceof AbortSignal);
-    assert.strictEqual(init?.body, JSON.stringify({ name: "a" }));
+    // The adapter leaves the body on its Request; the gateway call carries it in the init.
+    assert.strictEqual(await new Response(init?.body).text(), JSON.stringify({ name: "a" }));
     const headers = new Headers(init?.headers);
     assert.strictEqual(headers.get("X-Trace"), "1");
     assert.strictEqual(headers.get("Content-Type"), "application/json");

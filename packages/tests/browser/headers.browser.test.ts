@@ -144,9 +144,8 @@ describe("headers (vitest browser)", () => {
 
     await faxios.get("/foo");
 
-    // Read the init faxios passed, not the Request: some browsers drop User-Agent from a Request.
     const init = mock.fetch.mock.calls[0]![1] as RequestInit;
-    const names = Object.keys(init.headers as Record<string, string>).map(name => name.toLowerCase());
+    const names = [ ...new Headers(init.headers).keys() ];
     expect(names).not.toContain("user-agent");
   });
 });

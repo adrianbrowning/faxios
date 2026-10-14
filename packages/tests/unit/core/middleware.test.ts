@@ -8,11 +8,11 @@ import type { TimingEvent } from "#src/lib/plugins/timing.js";
 
 const URL = "http://localhost/test";
 
-type Sent = { init: RequestInit | undefined; url: string; };
+type Sent = { init: RequestInit | undefined; request: Request | undefined; url: string; };
 
 function jsonFetch(sent: Array<Sent> = [], status = 200) {
   return async (input: Request | string | URL, init?: RequestInit) => {
-    sent.push({ url: input instanceof Request ? input.url : String(input), init });
+    sent.push({ url: input instanceof Request ? input.url : String(input), init, request: input instanceof Request ? input : undefined });
     return new Response(JSON.stringify({ ok: true }), {
       status,
       headers: { "Content-Type": "application/json" },
@@ -225,7 +225,7 @@ describe("core::middleware", () => {
         requestSchema: { "~standard": { version: 1, vendor: "test", validate: (v: unknown) => ({ value: { wrapped: v } }) } },
       });
 
-      assert.deepStrictEqual(sent.map(s => [ s.url, s.init?.body ]), [
+      assert.deepStrictEqual(await Promise.all(sent.map(async s => [ s.url, await s.request?.text() ])), [
         [ "http://localhost/items/7", "{\"wrapped\":{\"a\":1}}" ],
         [ "http://localhost/items/7", "{\"wrapped\":{\"a\":1}}" ],
       ]);

@@ -27,8 +27,8 @@ describe("QUERY method", () => {
 
       await faxios.query("http://localhost/search", requestBody, {
         env: {
-          fetch: async (_input: Request | string | URL, init?: RequestInit) => {
-            assert.deepStrictEqual(init?.body, JSON.stringify(requestBody));
+          fetch: async (input: Request | string | URL) => {
+            assert.deepStrictEqual(await (input as Request).text(), JSON.stringify(requestBody));
             return new Response(null, { status: 200 });
           },
         },
@@ -43,9 +43,9 @@ describe("QUERY method", () => {
         },
         env: {
           fetch: async (_input: Request | string | URL, init?: RequestInit) => {
-            const headers = init?.headers as Record<string, string>;
-            assert.strictEqual(headers["X-Custom-Header"], "custom-value");
-            assert.strictEqual(headers["Authorization"], "Bearer token-abc");
+            const headers = new Headers(init?.headers);
+            assert.strictEqual(headers.get("X-Custom-Header"), "custom-value");
+            assert.strictEqual(headers.get("Authorization"), "Bearer token-abc");
             return new Response(null, { status: 200 });
           },
         },
@@ -78,9 +78,9 @@ describe("QUERY method", () => {
         {
           env: {
             fetch: async (_input: Request | string | URL, init?: RequestInit) => {
-              const headers = init?.headers as Record<string, string>;
+              const headers = new Headers(init?.headers);
               assert.ok(
-                headers["Content-Type"]?.includes("application/json"),
+                headers.get("Content-Type")?.includes("application/json"),
                 "Expected Content-Type to include application/json"
               );
               return new Response(null, { status: 200 });
@@ -116,9 +116,9 @@ describe("QUERY method", () => {
         headers: { "X-Request-Header": "from-request" },
         env: {
           fetch: async (_input: Request | string | URL, init?: RequestInit) => {
-            const headers = init?.headers as Record<string, string>;
-            assert.strictEqual(headers["X-Instance-Header"], "from-instance");
-            assert.strictEqual(headers["X-Request-Header"], "from-request");
+            const headers = new Headers(init?.headers);
+            assert.strictEqual(headers.get("X-Instance-Header"), "from-instance");
+            assert.strictEqual(headers.get("X-Request-Header"), "from-request");
             return new Response(null, { status: 200 });
           },
         },
@@ -133,9 +133,9 @@ describe("QUERY method", () => {
         url: "http://localhost/test",
         data: { selector: "*" },
         env: {
-          fetch: async (_input: Request | string | URL, init?: RequestInit) => {
+          fetch: async (input: Request | string | URL, init?: RequestInit) => {
             assert.strictEqual(init?.method, "QUERY");
-            assert.deepStrictEqual(init?.body, JSON.stringify({ selector: "*" }));
+            assert.deepStrictEqual(await (input as Request).text(), JSON.stringify({ selector: "*" }));
             return new Response(JSON.stringify({ result: "ok" }), {
               status: 200,
               headers: { "content-type": "application/json" },

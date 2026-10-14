@@ -387,7 +387,8 @@ const config: FaxiosRequestConfig = {
     firstName: "Fred"
   },
   // Syntax alternative: a string body is sent as is, with `text/plain;charset=UTF-8` unless you set
-  // `Content-Type` (e.g. `application/x-www-form-urlencoded` for this one)
+  // `Content-Type` (e.g. `application/x-www-form-urlencoded` for this one). With a JSON
+  // `Content-Type` it is sent as the JSON text you wrote, trimmed, and is never parsed or quoted
   // data: "Country=Brasil&City=Belo Horizonte",
   timeout: 1000,
   withCredentials: false,

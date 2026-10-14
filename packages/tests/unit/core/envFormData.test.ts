@@ -17,7 +17,7 @@ describe("env.FormData", () => {
     class CustomFormData extends FormData {}
     const { seen, fetch } = captureBody();
 
-    await faxios.post("http://example.test/", { a: "1" }, { ...multipart, env: { FormData: CustomFormData, fetch } });
+    await faxios.post("http://example.test/", { a: "1" }, { ...multipart, env: { FormData: CustomFormData, Request: null, fetch } });
 
     expect(seen.body).toBeInstanceOf(CustomFormData);
     expect((seen.body as FormData).get("a")).toBe("1");
@@ -26,7 +26,7 @@ describe("env.FormData", () => {
   it("falls back to the global FormData when set to null", async () => {
     const { seen, fetch } = captureBody();
 
-    await faxios.post("http://example.test/", { a: "1" }, { ...multipart, env: { FormData: null, fetch } });
+    await faxios.post("http://example.test/", { a: "1" }, { ...multipart, env: { FormData: null, Request: null, fetch } });
 
     expect(seen.body).toBeInstanceOf(FormData);
     expect((seen.body as FormData).get("a")).toBe("1");

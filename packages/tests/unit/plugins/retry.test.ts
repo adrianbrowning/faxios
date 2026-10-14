@@ -503,7 +503,12 @@ describe("plugins::retry", () => {
   });
 
   it("sends and replays a plain object body as JSON when Object.prototype.pipe is polluted", async () => {
-    const { fetch, calls } = scriptedFetch([ 503, 200 ]);
+    const scripted = scriptedFetch([ 503, 200 ]);
+    const bodies: Array<string> = [];
+    const fetch = async (input: Request | string | URL, init?: RequestInit) => {
+      bodies.push(await (input as Request).text());
+      return scripted.fetch(input, init);
+    };
     const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }));
     const proto = Object.prototype as Record<string, unknown>;
     proto["pipe"] = () => {};
@@ -517,7 +522,7 @@ describe("plugins::retry", () => {
       delete proto["pipe"];
     }
 
-    assert.deepStrictEqual(calls.map(init => init?.body), [ "{\"order\":1}", "{\"order\":1}" ]);
+    assert.deepStrictEqual(bodies, [ "{\"order\":1}", "{\"order\":1}" ]);
   });
 
   it("does not retry a POST or PATCH by default", async () => {

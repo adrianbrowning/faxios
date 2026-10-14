@@ -52,46 +52,55 @@ const METHOD_HEADER_GROUPS = Object.keys({
 // RFC 9110 token: what fetch accepts as a method name.
 const HTTP_TOKEN = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
 
+// Adds the caller's frames to `rawStack`, the request's error stack. `callerStack` is the stack
+// captured where request() rejects, including its "Error" line.
+function stitchStack(rawStack: unknown, callerStack: string): unknown {
+  const firstNewline = callerStack.indexOf("\n");
+  // slice off the Error: ... line
+  const stack = firstNewline === -1 ? "" : callerStack.slice(firstNewline + 1);
+  if (!rawStack) return stack;
+  if (!stack) return rawStack;
+  // match without the 2 top stack lines
+  const firstNewlineIndex = stack.indexOf("\n");
+  const secondNewlineIndex = firstNewlineIndex === -1 ? -1 : stack.indexOf("\n", firstNewlineIndex + 1);
+  const stackWithoutTwoTopLines = secondNewlineIndex === -1 ? "" : stack.slice(secondNewlineIndex + 1);
+  return String(rawStack).endsWith(stackWithoutTwoTopLines) ? rawStack : rawStack + "\n" + stack;
+}
+
+// Formatting a stack is costly, and most rejections are handled without reading it, so the
+// caller's frames are captured now and stitched into err.stack only when it is first read.
 function patchErrorStack(err: Error): void {
-  let dummy: { stack?: string; } = {};
-  // captureStackTrace is V8-only (Node, Chromium); fall back elsewhere.
+  let callerFrames: { stack?: string; } = {};
+  // captureStackTrace is V8-only (Node, Chromium) and formats nothing until .stack is read.
   const captureStackTrace = (Error as { captureStackTrace?: (target: object) => void; }).captureStackTrace;
   if (captureStackTrace) {
-    captureStackTrace(dummy);
+    captureStackTrace(callerFrames);
   }
   else {
-    dummy = new Error();
+    callerFrames = new Error();
   }
 
-  const rawStack = dummy.stack ?? "";
-  const firstNewline = rawStack.indexOf("\n");
-  // slice off the Error: ... line
-  const stack = firstNewline === -1 ? "" : rawStack.slice(firstNewline + 1);
-
-  try {
-    if (!err.stack) {
-      err.stack = stack;
-      // match without the 2 top stack lines
-    }
-    else if (stack) {
-      const firstNewlineIndex = stack.indexOf("\n");
-      const secondNewlineIndex =
-        firstNewlineIndex === -1
-          ? -1
-          : stack.indexOf("\n", firstNewlineIndex + 1);
-      const stackWithoutTwoTopLines =
-        secondNewlineIndex === -1
-          ? ""
-          : stack.slice(secondNewlineIndex + 1);
-
-      if (!String(err.stack).endsWith(stackWithoutTwoTopLines)) {
-        err.stack += "\n" + stack;
-      }
-    }
-  }
-  catch {
-    // ignore the case where "stack" is an un-writable property
-  }
+  // V8 keeps an own accessor that formats on first read; elsewhere `stack` may be an own string
+  // or an accessor on Error.prototype.
+  const own = Object.getOwnPropertyDescriptor(err, "stack");
+  if (own && !own.configurable) return;
+  const readOriginal = (): unknown => {
+    if (!own) return Reflect.get(Object.getPrototypeOf(err) ?? {}, "stack", err);
+    return own.get ? own.get.call(err) : own.value;
+  };
+  const settle = (value: unknown): void => {
+    Object.defineProperty(err, "stack", { value, writable: true, enumerable: own?.enumerable ?? false, configurable: true });
+  };
+  Object.defineProperty(err, "stack", {
+    get() {
+      const value = stitchStack(readOriginal(), callerFrames.stack ?? "");
+      settle(value);
+      return value;
+    },
+    set: settle,
+    enumerable: own?.enumerable ?? false,
+    configurable: true,
+  });
 }
 
 // assertRequestConfig has checked an object paramsSerializer; a function one is its serialize option.

@@ -17,7 +17,5 @@ export default function transformData(this: unknown, fns: Array<TransformFn> | T
     data = (fn as TransformFn).call(config, data, headers, response?.status);
   });
 
-  headers.normalize(false);
-
   return data;
 }

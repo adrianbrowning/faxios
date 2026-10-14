@@ -31,18 +31,25 @@ const isDangerousKey = (key: PropertyKey): boolean =>
 const hasOwnInPrototypeChain = (thing: unknown, prop: PropertyKey): boolean => {
   let obj: null | object = thing != null && typeof thing === "object" ? thing : null;
   if (obj === null) return false;
-  const seen: Array<object> = [];
+  // A Proxy's getPrototypeOf can return a cycle. Brent's cycle detection stops on one without
+  // keeping every object seen: `checkpoint` moves to the current object at each power of two.
+  let checkpoint: null | object = obj;
+  let power = 1;
+  let steps = 0;
 
   while (obj != null && obj !== Object.prototype) {
-    if (seen.indexOf(obj) !== -1) {
-      return false;
-    }
-    seen.push(obj);
-
     if (hasOwnProperty(obj, prop)) {
       return true;
     }
     obj = getPrototypeOf(obj) as null | object;
+    if (obj === checkpoint) {
+      return false;
+    }
+    if (++steps === power) {
+      checkpoint = obj;
+      power *= 2;
+      steps = 0;
+    }
   }
   return false;
 };
