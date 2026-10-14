@@ -256,16 +256,16 @@ If either callback throws, or returns a promise that rejects, faxios catches and
 
 ### `maxContentLength`
 
-The `maxContentLength` property defines the maximum response size in bytes. The fetch adapter enforces it when the response length is declared, the response stream can be tracked, or the response size can otherwise be determined. When a response goes over the limit, faxios rejects with `ERR_BAD_RESPONSE` and aborts the request, so the connection is closed instead of left downloading. A `HEAD` response and a `204`, `205` or `304` response have no body, so the `Content-Length` they declare isn't checked against the limit.
+The `maxContentLength` property defines the maximum response size in bytes. A response of exactly `maxContentLength` bytes is allowed; one byte more is rejected. The fetch adapter enforces it when the response length is declared, the response stream can be tracked, or the response size can otherwise be determined. When there's no stream to track (the runtime has no stream responses, or an `env.fetch` returns a Response-like value without a stream `body`), faxios measures the body once it's read: a string in UTF-8 bytes, an `ArrayBuffer` or `Blob` by its size. When a response goes over the limit, faxios rejects with `ERR_BAD_RESPONSE` and aborts the request, so the connection is closed instead of left downloading. A `HEAD` response and a `204`, `205` or `304` response have no body, so the `Content-Length` they declare isn't checked against the limit.
 
 > ⚠️ **Security:** defaults to `-1` (unlimited). Unbounded responses combined with gzip/deflate/brotli/zstd decompression allow decompression-bomb DoS.
 > Set an explicit limit when requesting servers you do not fully trust.
 
 ### `maxBodyLength`
 
-The `maxBodyLength` property defines the maximum request body size in bytes. faxios checks the body's real size, never a `Content-Length` header you set:
+The `maxBodyLength` property defines the maximum request body size in bytes. A body of exactly `maxBodyLength` bytes is allowed; one byte more is rejected. faxios checks the body's real size, never a `Content-Length` header you set:
 
-- A string, `URLSearchParams`, `Blob`, `ArrayBuffer` or typed array body is measured before the request is sent.
+- A string, `URLSearchParams`, `Blob`, `ArrayBuffer` or typed array body is measured before the request is sent. A string counts its UTF-8 bytes (`"é"` is 2), worked out without encoding a copy of it.
 - A stream body is counted as it is sent, and the request fails once it passes the limit. Where the runtime's `fetch` can't stream a request body, a stream body with `maxBodyLength` set is rejected with `ERR_NOT_SUPPORT`.
 - A `FormData` body is not read into memory to measure it. Before sending, faxios adds up the sizes of its string values and files and rejects the request if they alone pass the limit. In Node.js the body is then streamed and counted as it is sent, so the multipart boundaries and part headers count too. In browsers, Deno and Bun it isn't streamed (see [Fetch adapter](/pages/advanced/fetch-adapter)), so the boundaries and part headers are not counted: a `FormData` body whose values fit under the limit is sent even when the whole multipart body is slightly larger.
 

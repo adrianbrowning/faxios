@@ -3,15 +3,15 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "a31e9a8ffd113ad5f17b84b6ea44298522a785693831d7a0bfa9ac6e9fa16976",
+      "fingerprint": "0a2b2c193f6d2ffdfcf8374a4fb78717e2cea72d9eb48999c42d7cab82d1cbf1",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "11b630ee1c95e2c62e1d34f1e78ceb90bfde7e09553f1beaaa4bc86cef2306ad",
+        "packages/lib/skills/configure-requests/SKILL.md": "2188cd5e30cd3081fe2e9fb31abb436c053126e1c7a7e3697570f9f87a4b4513",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
         "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
-        "packages/lib/src/lib/adapters/fetch.ts": "294bfda4dcf19d1e32ae937d0bc93fd3688af23d54485d351a31f5d3f1fb0614",
+        "packages/lib/src/lib/adapters/fetch.ts": "d61c84c79249a8b259c6fd329581af4f85ef91d1cb16e2728e0b93a7431a525b",
         "packages/lib/src/lib/core/Faxios.ts": "600c5b4e45b5af27de5b3b6e03b10b822193bcef4077f212d96a2cc54a4b76b8",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
@@ -24,7 +24,7 @@
         "packages/lib/src/lib/plugins/authBearer.ts": "c93f20ab62b3a69bcebdb0ecf20e1a1c1f49cda1a01579e8f8573d72cfdc65e5",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "e3d1d859c7f1df06764e2ab3aff2164fba44cffd893435faf6d425f02af15425",
-        "packages/lib/src/lib/plugins/retry.ts": "f13ac50f29918a1241c16029e3e253cfd4bc665f8252f16f77adee297852f463",
+        "packages/lib/src/lib/plugins/retry.ts": "734d82655b3a61e35b437f1e1c6112ffc804dcc3608ac4de66edbf95da912aaa",
         "packages/lib/src/lib/plugins/timing.ts": "d00f2ddea50758514a1b0498ea9961d19c678bc11fa9ee4f22d15af55dd6b8a4",
         "packages/lib/src/lib/types.ts": "094961eefee9680b19a9d95c1b1c5c534f6207bb3ce3d0ba943542d22717f0c5",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
@@ -32,29 +32,29 @@
         "packages/tests/unit/plugins/authBearer.test.ts": "84baff907f21988dea49400531dd0abdf7b5a5148d1904e712ebe0b43ebfd3ae",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
-        "packages/tests/unit/plugins/retry.test.ts": "fb59e8014d7d4a50819edaaca38c7edf6d4bbf6a5ba110cf15ab05dcbb2651dc",
+        "packages/tests/unit/plugins/retry.test.ts": "d3259244222d9d8b3d380a0526e2486b60e2e82fa56a84242e7b3b90a5eec98f",
         "packages/tests/unit/plugins/timing.test.ts": "2bb6422d1f3a5d8181eaba9fe0f45fb50b1ba39cb16a1c75ca254e20fe1a2ba1"
       },
-      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
-      "outcome": "no-change",
-      "reason": "retry now also cancels a dropped status error's stream body when onRetry or delay throws; an internal cleanup the configure-requests skill doesn't teach; retry docs and bump file updated",
+      "head": "e860801c73b0297a0ec4073403971cc452274399",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
       "evidence": [
-        "Changed: packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at 8099a7cfe2993903d11e32ae2377b13a8c2e81ec"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at 484d2ac2104da3e5946af6a25500ec7b40729206"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "532ef5c3cec12058090fe63b83aeb534936fb133fdaa8c8de506301d7b7ed4a0",
+      "fingerprint": "ff8f2cf932ee84bf8c26d6a8415796c33434bb167f363d107e3e38a90f1db4c6",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "11b630ee1c95e2c62e1d34f1e78ceb90bfde7e09553f1beaaa4bc86cef2306ad",
+        "packages/lib/skills/configure-requests/SKILL.md": "2188cd5e30cd3081fe2e9fb31abb436c053126e1c7a7e3697570f9f87a4b4513",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
         "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
-        "packages/lib/src/lib/adapters/fetch.ts": "294bfda4dcf19d1e32ae937d0bc93fd3688af23d54485d351a31f5d3f1fb0614",
+        "packages/lib/src/lib/adapters/fetch.ts": "d61c84c79249a8b259c6fd329581af4f85ef91d1cb16e2728e0b93a7431a525b",
         "packages/lib/src/lib/core/Faxios.ts": "600c5b4e45b5af27de5b3b6e03b10b822193bcef4077f212d96a2cc54a4b76b8",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
@@ -67,7 +67,7 @@
         "packages/lib/src/lib/plugins/authBearer.ts": "c93f20ab62b3a69bcebdb0ecf20e1a1c1f49cda1a01579e8f8573d72cfdc65e5",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "e3d1d859c7f1df06764e2ab3aff2164fba44cffd893435faf6d425f02af15425",
-        "packages/lib/src/lib/plugins/retry.ts": "f13ac50f29918a1241c16029e3e253cfd4bc665f8252f16f77adee297852f463",
+        "packages/lib/src/lib/plugins/retry.ts": "734d82655b3a61e35b437f1e1c6112ffc804dcc3608ac4de66edbf95da912aaa",
         "packages/lib/src/lib/plugins/timing.ts": "d00f2ddea50758514a1b0498ea9961d19c678bc11fa9ee4f22d15af55dd6b8a4",
         "packages/lib/src/lib/types.ts": "094961eefee9680b19a9d95c1b1c5c534f6207bb3ce3d0ba943542d22717f0c5",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
@@ -75,14 +75,14 @@
         "packages/tests/unit/plugins/authBearer.test.ts": "84baff907f21988dea49400531dd0abdf7b5a5148d1904e712ebe0b43ebfd3ae",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
-        "packages/tests/unit/plugins/retry.test.ts": "fb59e8014d7d4a50819edaaca38c7edf6d4bbf6a5ba110cf15ab05dcbb2651dc",
+        "packages/tests/unit/plugins/retry.test.ts": "d3259244222d9d8b3d380a0526e2486b60e2e82fa56a84242e7b3b90a5eec98f",
         "packages/tests/unit/plugins/timing.test.ts": "2bb6422d1f3a5d8181eaba9fe0f45fb50b1ba39cb16a1c75ca254e20fe1a2ba1"
       },
-      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
-      "outcome": "no-change",
-      "reason": "retry now also cancels a dropped status error's stream body when onRetry or delay throws; an internal cleanup the configure-requests skill doesn't teach; retry docs and bump file updated",
+      "head": "e860801c73b0297a0ec4073403971cc452274399",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
       "evidence": [
-        "Changed: packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at 8099a7cfe2993903d11e32ae2377b13a8c2e81ec"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at 484d2ac2104da3e5946af6a25500ec7b40729206"
       ]
     },
     "source:knip.json": {
@@ -280,27 +280,27 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "996308357097a8d4a85a582f8e90461610aeb68e410f8d9628cf34f173970ce1",
+      "fingerprint": "9c4ed6dafb11e354629d63cf8186490e5fffeb66f414c1a56e79f056f36f0724",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "52557a5366262b3971e3c164fe8c7f7e3e6a04c6e930d00c33a528da447eaff2"
+        "packages/docs/pages/advanced/request-config.md": "e479fc3347ddff07a61aec3de0f785805c93b5d45a7ace3bea3e4da2dbcb7f47"
       },
-      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "head": "e860801c73b0297a0ec4073403971cc452274399",
       "outcome": "updated",
-      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
+      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 86f20473642fb3c294f745739f7ba05847421218"
+        "Changed: packages/docs/pages/advanced/request-config.md at 484d2ac2104da3e5946af6a25500ec7b40729206"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
-      "fingerprint": "87eb95468b9fa2e01ba5fa8400092dde027fcb8ed1d66c6e35825a5e1e15a568",
+      "fingerprint": "4c56526bc7223df647b62a51a8c48ca711fd2a35ef34087d6bf0e6d11d5926fc",
       "snapshot": {
-        "packages/docs/pages/advanced/retry.md": "05f0e918f0e499cb4488e8cb9cf83133491c79ae8a08d6a8219076770c200f49"
+        "packages/docs/pages/advanced/retry.md": "c78bd073b0e220b429976442638756022eaba7dd2ed8174a5adab0215eb44bff"
       },
-      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
-      "outcome": "no-change",
-      "reason": "retry now also cancels a dropped status error's stream body when onRetry or delay throws; an internal cleanup the configure-requests skill doesn't teach; retry docs and bump file updated",
+      "head": "e860801c73b0297a0ec4073403971cc452274399",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/retry.md at 8099a7cfe2993903d11e32ae2377b13a8c2e81ec"
+        "Changed: packages/docs/pages/advanced/retry.md at 484d2ac2104da3e5946af6a25500ec7b40729206"
       ]
     },
     "source:packages/docs/pages/advanced/schema-validation.md": {
@@ -2180,15 +2180,15 @@
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
-      "fingerprint": "b15587783fb751b8f059ad6fec8cae869c136713ee59672d3b5c789ba22dea55",
+      "fingerprint": "6a5381087f6049ea56cadf1aa053287df7554ee5d3b7a57808fdcd7128cc3827",
       "snapshot": {
-        "packages/lib/src/lib/adapters/fetch-helpers.ts": "6073e0b13fa33afda49431a61beb023828590fda9e6cb05b4ca70e3f773a0355"
+        "packages/lib/src/lib/adapters/fetch-helpers.ts": "da272085c4fa1ab2c7beaa150ab0e0d7c31c5d104c63662f6fe073eac38dc08f"
       },
-      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "head": "e860801c73b0297a0ec4073403971cc452274399",
       "outcome": "updated",
-      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
+      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 86f20473642fb3c294f745739f7ba05847421218"
+        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 484d2ac2104da3e5946af6a25500ec7b40729206"
       ]
     },
     "source:packages/lib/src/lib/cancel/CanceledError.ts": {
@@ -4604,15 +4604,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch-pure.test.ts": {
-      "fingerprint": "bc36be4a55be1cd6529634d928f3cdbc961136600150c313159c3ab75854b41e",
+      "fingerprint": "bc32d26b7f44e886fd4e896c2b9d780940e06f0487ac5ecd6e9723b51ce3559f",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch-pure.test.ts": "b3577c35bafb4edeede94e245349819feb8fbd67b9d710bef1d8406bb261c0f3"
+        "packages/tests/unit/adapters/fetch-pure.test.ts": "7c73002da52a0e3af495074ff76489fcaf0c49daa6094a7459a2ecd878be72e0"
       },
-      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "head": "e860801c73b0297a0ec4073403971cc452274399",
       "outcome": "updated",
-      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
+      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch-pure.test.ts at 86f20473642fb3c294f745739f7ba05847421218"
+        "Changed: packages/tests/unit/adapters/fetch-pure.test.ts at 484d2ac2104da3e5946af6a25500ec7b40729206"
       ]
     },
     "source:.bumpy/plugin-attempt-api.md": {
@@ -6089,6 +6089,54 @@
       "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
       "evidence": [
         "Changed: packages/lib/src/lib/core/settle.ts at 86f20473642fb3c294f745739f7ba05847421218"
+      ]
+    },
+    "source:.bumpy/277-resource-bounds.md": {
+      "fingerprint": "5f3e9d0e3d4d0be582358ec5c93789219986ec62cdf250be8f810dd25e92d376",
+      "snapshot": {
+        ".bumpy/277-resource-bounds.md": "f75bf2ccfe362125fdb6a1af320776578ae22c8a47d395c22b1fd22b8d56afb7"
+      },
+      "head": "e860801c73b0297a0ec4073403971cc452274399",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
+      "evidence": [
+        "Changed: .bumpy/277-resource-bounds.md at 484d2ac2104da3e5946af6a25500ec7b40729206"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/utf8ByteLength.ts": {
+      "fingerprint": "cbfa5f5989fd5e26667dd7288b06708c9fce15024680b95f22e7b6e9d0266a4f",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/utf8ByteLength.ts": "04926f7cf3de0590d268b245358532aa26318043607c05cf7fca592117447879"
+      },
+      "head": "e860801c73b0297a0ec4073403971cc452274399",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/utf8ByteLength.ts at 484d2ac2104da3e5946af6a25500ec7b40729206"
+      ]
+    },
+    "source:packages/tests/unit/adapters/sizeLimits.test.ts": {
+      "fingerprint": "d6d01743419c74049190d4c786b1daaf236b6d5e86621519ae588dd95ae6f6dc",
+      "snapshot": {
+        "packages/tests/unit/adapters/sizeLimits.test.ts": "40471569154fb4f172b131213f6965ecf91005b1bda3ea561250bf85440ccc8b"
+      },
+      "head": "e860801c73b0297a0ec4073403971cc452274399",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/sizeLimits.test.ts at 484d2ac2104da3e5946af6a25500ec7b40729206"
+      ]
+    },
+    "source:packages/tests/unit/helpers/utf8ByteLength.test.ts": {
+      "fingerprint": "00df7f31e966e5dc1e1d7c4c9a6f1aa5bc66751c64ff0e6592702f1c6db7fadd",
+      "snapshot": {
+        "packages/tests/unit/helpers/utf8ByteLength.test.ts": "2f9ec036ab1aaf360fead74f055698ec3d845ec4173b247111238fc3bbdfdd0c"
+      },
+      "head": "e860801c73b0297a0ec4073403971cc452274399",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
+      "evidence": [
+        "Changed: packages/tests/unit/helpers/utf8ByteLength.test.ts at 484d2ac2104da3e5946af6a25500ec7b40729206"
       ]
     }
   }
