@@ -8,13 +8,13 @@
 // - definePlugin infers a plugin's slots, and the Faxios class has no use()
 // - the internal plugin helper types aren't importable from the package root
 import faxios, { Faxios, FaxiosHeaders } from "faxios";
-// @ts-expect-error - the built-in plugins aren't root exports
+// @ts-expect-error TS2614 -- the built-in plugins aren't root exports
 import { retry as rootRetry } from "faxios";
-// @ts-expect-error - definePlugin lives on faxios/plugins, not the root
+// @ts-expect-error TS2614 -- definePlugin lives on faxios/plugins, not the root
 import { definePlugin as rootDefinePlugin } from "faxios";
 import type { FaxiosContext, FaxiosInstance, FaxiosMiddleware, FaxiosPlugin, FaxiosResponse } from "faxios";
 import { definePlugin } from "faxios/plugins";
-// @ts-expect-error - faxios/plugins doesn't re-export the built-ins
+// @ts-expect-error TS2305 -- faxios/plugins doesn't re-export the built-ins
 import { retry as pluginsEntryRetry } from "faxios/plugins";
 import { authBearer } from "faxios/plugins/auth-bearer";
 import type { AuthBearerCapability } from "faxios/plugins/auth-bearer";
@@ -84,30 +84,30 @@ async function middleware(): Promise<void> {
   const created: Equal<typeof child, FaxiosInstance> = true;
   void created;
 
-  // @ts-expect-error - retry options need the retry plugin
+  // @ts-expect-error TS2769 -- retry options need the retry plugin
   await faxios.create().get("/items", { retry: false });
 
-  // @ts-expect-error - forward needs the forwardTo plugin
+  // @ts-expect-error TS2769 -- forward needs the forwardTo plugin
   await faxios.create().get("/items", { forward: false });
 
-  // @ts-expect-error - refreshOn401 requires the auth capability authBearer provides
+  // @ts-expect-error TS2345 -- refreshOn401 requires the auth capability authBearer provides
   faxios.create().use(refreshOn401);
 
-  // @ts-expect-error - static helpers exist only on the default export
+  // @ts-expect-error TS2339 -- static helpers exist only on the default export
   void faxios.create().mergeConfig;
 
-  // @ts-expect-error - the built-in plugins moved to faxios/plugins
+  // @ts-expect-error TS2339 -- the built-in plugins moved to faxios/plugins
   void faxios.plugins;
 
-  // @ts-expect-error - use() is typed only on the instance create() returns
+  // @ts-expect-error TS2339 -- use() is typed only on the instance create() returns
   new Faxios().use(addHeader);
 }
 
 void rootRetry;
 
-// @ts-expect-error - internal: use() infers through it, users write FaxiosPlugin
+// @ts-expect-error TS2694 -- internal: use() infers through it, users write FaxiosPlugin
 export type RootPluginBase = import("faxios").FaxiosPluginBase;
-// @ts-expect-error - internal: use() infers through it, users write FaxiosPlugin
+// @ts-expect-error TS2694 -- internal: use() infers through it, users write FaxiosPlugin
 export type RootPluginArgument = import("faxios").FaxiosPluginArgument;
 
 void middleware;

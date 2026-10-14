@@ -71,11 +71,11 @@ function requestHeaderAccessorsMatchRuntime(): void {
       void chained;
       void has;
 
-      // @ts-expect-error - no Content-Encoding accessor is registered at runtime
+      // @ts-expect-error TS18046 -- no Content-Encoding accessor is registered at runtime
       headers.getContentEncoding();
-      // @ts-expect-error - no Content-Encoding accessor is registered at runtime
+      // @ts-expect-error TS18046 -- no Content-Encoding accessor is registered at runtime
       headers.setContentEncoding("gzip");
-      // @ts-expect-error - no Content-Encoding accessor is registered at runtime
+      // @ts-expect-error TS18046 -- no Content-Encoding accessor is registered at runtime
       headers.hasContentEncoding();
       return data;
     } ],
@@ -99,7 +99,7 @@ async function responseHeadersAreFaxiosHeaders(): Promise<void> {
   void match;
   void length;
 
-  // @ts-expect-error - get accessors take a parser, not a matcher string
+  // @ts-expect-error TS2769 -- get accessors take a parser, not a matcher string
   headers.getContentType("application/json");
 }
 
@@ -114,25 +114,25 @@ function headerRewriteIsBoolean(requestHeaders: FaxiosHeaders): void {
   requestHeaders.set("X-A", "v", true);
   requestHeaders.setContentType("text/plain", false);
 
-  // @ts-expect-error - rewrite is boolean; a function was never called
+  // @ts-expect-error TS2345 -- rewrite is boolean; a function was never called
   h.set("X-A", "v", () => true);
-  // @ts-expect-error - accessor rewrite is boolean; a function was never called
+  // @ts-expect-error TS2345 -- accessor rewrite is boolean; a function was never called
   h.setContentType("text/plain", () => true);
-  // @ts-expect-error - request headers rewrite is boolean
+  // @ts-expect-error TS2345 -- request headers rewrite is boolean
   requestHeaders.set("X-A", "v", () => true);
-  // @ts-expect-error - request headers accessor rewrite is boolean
+  // @ts-expect-error TS2345 -- request headers accessor rewrite is boolean
   requestHeaders.setAuthorization("Bearer t", () => true);
-  // @ts-expect-error - request headers accessor rewrite is boolean
+  // @ts-expect-error TS2345 -- request headers accessor rewrite is boolean
   requestHeaders.setAcceptEncoding("gzip", () => true);
 }
 
 function indexSignatureRemoved(): void {
-  // @ts-expect-error - FaxiosInstance no longer has a catch-all index signature
+  // @ts-expect-error TS2339 -- FaxiosInstance no longer has a catch-all index signature
   faxios.thisMemberDoesNotExist;
 }
 
 function requestBodyIsTyped(): void {
-  // @ts-expect-error - body must match D ({ name: string })
+  // @ts-expect-error TS2353 -- body must match D ({ name: string })
   void faxios.post<User, { name: string; }>("/user", { wrong: 1 });
 }
 
@@ -143,7 +143,7 @@ function serializerAndEnvOptionsAreTyped(): void {
     env: { fetch: globalThis.fetch, Request: null, Response: null },
   });
   void faxios.get("/x", { env: { fetch, Request, Response } });
-  // @ts-expect-error - maxDepth is a number
+  // @ts-expect-error TS2322 -- maxDepth is a number
   faxios.create({ formSerializer: { maxDepth: "10" } });
 }
 
@@ -165,11 +165,11 @@ function defaultsAreTyped(): void {
   void auth;
   void timeout;
 
-  // @ts-expect-error - a header bucket is an object of header values
+  // @ts-expect-error TS2322 -- a header bucket is an object of header values
   faxios.defaults.headers.common = 5;
-  // @ts-expect-error - timeout is a number
+  // @ts-expect-error TS2322 -- timeout is a number
   instance.defaults.timeout = "1000";
-  // @ts-expect-error - headers must keep its buckets
+  // @ts-expect-error TS2322 -- headers must keep its buckets
   instance.defaults.headers = "x";
 }
 
@@ -178,7 +178,7 @@ function typeGuardsNarrow(e: unknown): void {
     const code: string | undefined = e.code;
     const status: number | undefined = e.response?.status;
     const url: string | undefined = e.config?.url;
-    // @ts-expect-error - response data is unknown without a type argument
+    // @ts-expect-error TS18046 -- response data is unknown without a type argument
     void e.response?.data.msg;
     void code;
     void status;
@@ -188,7 +188,7 @@ function typeGuardsNarrow(e: unknown): void {
   if (isFaxiosError<{ msg: string; }>(e)) {
     const msg: string | undefined = e.response?.data.msg;
     void msg;
-    // @ts-expect-error - msg is a string, not a number
+    // @ts-expect-error TS2322 -- msg is a string, not a number
     const wrong: number | undefined = e.response?.data.msg;
     void wrong;
   }
@@ -217,7 +217,7 @@ function envFormDataAcceptsRuntimeConstructor(): void {
   class CustomFormData extends FormData {}
   faxios.create({ env: { FormData: CustomFormData } });
   faxios.create({ env: { FormData: null } });
-  // @ts-expect-error - env.FormData must be a constructor, not a factory
+  // @ts-expect-error TS2322 -- env.FormData must be a constructor, not a factory
   faxios.create({ env: { FormData: () => new FormData() } });
 }
 

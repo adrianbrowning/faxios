@@ -1,6 +1,4 @@
-// @ts-nocheck
 import type {
-  AddressFamily,
   FaxiosError,
   FaxiosInstance,
   FaxiosProgressEvent,
@@ -177,141 +175,20 @@ faxios
   .then(handleUserResponse)
   .catch(handleError);
 
-// with custom response headers FaxiosResponse<T, any, H> result
+// FaxiosResponse<T, D> has no axios-style third (response headers) type argument
 
-const handleUserResponseWithCustomHeaders = (
-  response: FaxiosResponse<User, any, ResponseHeaders>
-) => {
-  console.log(response.data.id);
-  console.log(response.data.name);
-  console.log(response.status);
-  console.log(response.statusText);
-  console.log(response.headers);
-  console.log(response.config);
-};
+function responseHasNoHeadersTypeArgument(): void {
+  // @ts-expect-error TS2707 -- FaxiosResponse takes <T, D>; response headers are always FaxiosHeaders
+  const response: FaxiosResponse<User, unknown, ResponseHeaders> | undefined = undefined;
+  void response;
+}
 
-faxios
-  .get<User, FaxiosResponse<User, any, ResponseHeaders>>("/user?id=12345")
-  .then(handleUserResponseWithCustomHeaders)
-  .catch(handleError);
+// The second type argument types the request body (D), not an axios-style resolved value
 
-faxios
-  .get<User, FaxiosResponse<User, any, ResponseHeaders>>("/user", {
-    params: { id: 12345 },
-  })
-  .then(handleUserResponseWithCustomHeaders)
-  .catch(handleError);
-
-faxios
-  .head<User, FaxiosResponse<User, any, ResponseHeaders>>("/user")
-  .then(handleUserResponseWithCustomHeaders)
-  .catch(handleError);
-
-faxios
-  .options<User, FaxiosResponse<User, any, ResponseHeaders>>("/user")
-  .then(handleUserResponseWithCustomHeaders)
-  .catch(handleError);
-
-faxios
-  .delete<User, FaxiosResponse<User, any, ResponseHeaders>>("/user")
-  .then(handleUserResponseWithCustomHeaders)
-  .catch(handleError);
-
-faxios
-  .post<
-  User,
-  FaxiosResponse<User, any, ResponseHeaders>
->("/user", { name: "foo", id: 1 })
-  .then(handleUserResponseWithCustomHeaders)
-  .catch(handleError);
-
-faxios
-  .post<User, FaxiosResponse<User, any, ResponseHeaders>>(
-    "/user",
-    { name: "foo", id: 1 },
-    { headers: { "X-FOO": "bar" } }
-  )
-  .then(handleUserResponseWithCustomHeaders)
-  .catch(handleError);
-
-faxios
-  .put<
-  User,
-  FaxiosResponse<User, any, ResponseHeaders>
->("/user", { name: "foo", id: 1 })
-  .then(handleUserResponseWithCustomHeaders)
-  .catch(handleError);
-
-faxios
-  .patch<
-  User,
-  FaxiosResponse<User, any, ResponseHeaders>
->("/user", { name: "foo", id: 1 })
-  .then(handleUserResponseWithCustomHeaders)
-  .catch(handleError);
-
-// (Typed methods) with custom response type
-
-const handleStringResponse = (response: string) => {
-  console.log(response);
-};
-
-faxios
-  .get<User, string>("/user?id=12345")
-  .then(handleStringResponse)
-  .catch(handleError);
-
-faxios
-  .get<User, string>("/user", { params: { id: 12345 } })
-  .then(handleStringResponse)
-  .catch(handleError);
-
-faxios
-  .head<User, string>("/user")
-  .then(handleStringResponse)
-  .catch(handleError);
-
-faxios
-  .options<User, string>("/user")
-  .then(handleStringResponse)
-  .catch(handleError);
-
-faxios
-  .delete<User, string>("/user")
-  .then(handleStringResponse)
-  .catch(handleError);
-
-faxios
-  .post<Partial<UserCreationDef>, string>("/user", { name: "foo" })
-  .then(handleStringResponse)
-  .catch(handleError);
-
-faxios
-  .post<Partial<UserCreationDef>, string>(
-    "/user",
-    { name: "foo" },
-    { headers: { "X-FOO": "bar" } }
-  )
-  .then(handleStringResponse)
-  .catch(handleError);
-
-faxios
-  .put<Partial<UserCreationDef>, string>("/user", { name: "foo" })
-  .then(handleStringResponse)
-  .catch(handleError);
-
-faxios
-  .patch<Partial<UserCreationDef>, string>("/user", { name: "foo" })
-  .then(handleStringResponse)
-  .catch(handleError);
-
-faxios
-  .request<User, string>({
-    method: "get",
-    url: "/user?id=12345",
-  })
-  .then(handleStringResponse)
-  .catch(handleError);
+function secondTypeArgumentIsRequestData(): void {
+  // @ts-expect-error TS2345 -- D is string here, so an object body is rejected
+  void faxios.post<User, string>("/user", { name: "foo" });
+}
 
 // Instances
 
@@ -390,7 +267,7 @@ const promise: Promise<Array<number>> = faxios.all(promises);
 // faxios.spread
 
 const fn1 = (a: number, b: number, c: number) => `${a}-${b}-${c}`;
-const fn2: (arr: Array<number>) => string = faxios.spread(fn1);
+const fn2: (arr: [number, number, number]) => string = faxios.spread(fn1);
 
 // Promises
 
@@ -455,7 +332,7 @@ toFormData({ x: 1 }, new FormData());
 
 // formToJSON
 
-faxios.toFormData(new FormData());
+faxios.formToJSON(new FormData());
 
 // named export
 formToJSON(new FormData());
@@ -519,15 +396,16 @@ function getRequestConfig2(options: FaxiosRequestConfig): FaxiosRequestConfig {
   };
 }
 
-// Max Rate
+// axios Node-adapter options faxios doesn't have
 
-faxios.get("/user", {
-  maxRate: 1000,
-});
-
-faxios.get("/user", {
-  maxRate: [ 1000, 1000 ],
-});
+function axiosOnlyOptionsAreRejected(): void {
+  // @ts-expect-error TS2769 -- no maxRate option
+  void faxios.get("/user", { maxRate: 1000 });
+  // @ts-expect-error TS2769 -- no maxRate option
+  void faxios.get("/user", { maxRate: [ 1000, 1000 ] });
+  // @ts-expect-error TS2769 -- no lookup option
+  void faxios.get("/user", { lookup: (hostname: string, opt: object) => [ "127.0.0.1", 4 ] });
+}
 
 // Node progress
 
@@ -580,22 +458,6 @@ for (const [ header, value ] of headers) {
     },
   });
 }
-
-// lookup
-faxios.get("/user", {
-  lookup: (
-    hostname: string,
-    opt: object,
-    cb: (err: Error | null, address: string, family: AddressFamily) => void
-  ) => {
-    cb(null, "127.0.0.1", 4);
-  },
-});
-
-// lookup async
-faxios.get("/user", {
-  lookup: (hostname: string, opt: object) => [ "127.0.0.1", 4 ],
-});
 
 // FaxiosError.cause should be typed as Error to allow accessing .message
 faxios.get("/user").catch((error: FaxiosError) => {
