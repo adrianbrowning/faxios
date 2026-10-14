@@ -61,10 +61,9 @@ These ports compile and run but behave differently:
 
 `MIGRATION_GUIDE.md` section "h) Interceptors replaced by `.use()` middleware" and the docs pages
 `advanced/middleware.md` and `advanced/migrating-from-interceptors.md` show interceptor-to-middleware
-conversions; any `interceptors` code there is the "before" side. The guide's Fetch-Only section
-still says Node 18+ and that custom adapters work through `adapter`. Both are wrong: faxios needs
-Node 24+ and has no `adapter` option.
+conversions; any `interceptors` code there is the "before" side. faxios needs Node 24+ and has no
+`adapter` option.
 
-Sources: `MIGRATION_GUIDE.md` (Fetch-Only Migration), `src/lib/types.ts`, `src/lib/core/Faxios.ts`,
+Sources: `MIGRATION_GUIDE.md`, `src/lib/types.ts`, `src/lib/core/Faxios.ts`,
 `src/lib/core/buildFullPath.ts`, `src/lib/helpers/composeSignals.ts`,
 `src/lib/adapters/fetch-helpers.ts`, `packages/tests/unit/api.test.ts`.

@@ -53,7 +53,7 @@ This is particularly useful for performing high-performance type hydration (e.g.
 
 In modern environments (ES2023+), the reviver function receives a third `context` argument. This provides access to the raw JSON `source`, allowing for precise conversion of large integers (BigInt) that would otherwise lose precision if parsed as standard JavaScript numbers.
 
-> Note: `Temporal` is not yet available in all environments. Consider using a polyfill if needed.
+> Note: `Temporal` is not yet available in every runtime faxios supports.
 
 ```js
 import faxios from "@gcmdev/faxios";
@@ -395,8 +395,8 @@ const config: FaxiosRequestConfig = {
   onDownloadProgress: function ({ loaded, total, progress, bytes, estimated, rate, download = true }) {
     // Do whatever you want with the faxios progress event
   },
-  maxContentLength: 2000,
-  maxBodyLength: 2000,
+  maxContentLength: -1,
+  maxBodyLength: -1,
   redact: ["authorization", "password"],
   validateStatus: function (status) {
     return status >= 200 && status < 300;

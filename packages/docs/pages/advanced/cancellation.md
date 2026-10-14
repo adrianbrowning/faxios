@@ -1,6 +1,6 @@
 # Cancellation
 
-Starting from v0.22.0 faxios supports AbortController to cancel requests in a clean way. This feature is available in the browser and in Node.js when using a version of faxios that supports AbortController. To cancel a request, you need to create an instance of `AbortController` and pass its `signal` to the request's `signal` option.
+faxios cancels requests with `AbortController` in every runtime. To cancel a request, you need to create an instance of `AbortController` and pass its `signal` to the request's `signal` option.
 
 ```js
 import faxios, { isCancel } from "@gcmdev/faxios";

@@ -58,13 +58,13 @@ unpkg serves the package files as published, so import the ES module entry point
 
 ## Importing faxios
 
-Once installed, you can import the library with `import`:
+Once installed, import the default export. Helpers such as `isCancel` and classes such as `FaxiosError` are also named exports:
 
 ```js
 import faxios, { isCancel, FaxiosError } from "@gcmdev/faxios";
 ```
 
-You can also use the default export, since the named export is just a re-export from the faxios factory:
+There is no named `faxios` export. The helpers are also properties of the default export:
 
 ```js
 import faxios from "@gcmdev/faxios";

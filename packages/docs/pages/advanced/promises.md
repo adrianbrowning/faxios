@@ -1,6 +1,6 @@
 # Promises
 
-faxios is built on top of the native ES6 Promise API. Every faxios request returns a Promise that resolves to a response object or rejects with an error. If your environment doesn't support ES6 Promises, you will need to polyfill them — for example with [es6-promise](https://github.com/stefanpenner/es6-promise).
+faxios is built on top of the native ES6 Promise API. Every faxios request returns a Promise that resolves to a response object or rejects with an error.
 
 ## then / catch / finally
 

@@ -23,7 +23,7 @@ const sidebar = [
         items: [
           {
             text: "JavaScript",
-            link: "/pages/getting-started/examples/commonjs",
+            link: "/pages/getting-started/examples/javascript",
           },
           {
             text: "TypeScript",
@@ -32,7 +32,7 @@ const sidebar = [
         ],
       },
       {
-        text: "Upgrade guide v0.x -> v1.x",
+        text: "Coming from axios",
         link: "/pages/getting-started/upgrade-guide",
       },
     ],
@@ -146,8 +146,9 @@ export default defineConfig({
     siteTitle: "faxios",
     socialLinks: [{ icon: "github", link: repoURL }],
     footer: {
-      message: "faxios is provided under the MIT license",
-      copyright: "Copyright © 2014-present Matt Zabriskie & Collaborators",
+      message:
+        'faxios is provided under the MIT license. Based on <a href="https://github.com/axios/axios">axios</a> by Matt Zabriskie and collaborators.',
+      copyright: "Copyright © faxios contributors",
     },
   },
 });
