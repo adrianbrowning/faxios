@@ -19,7 +19,7 @@ import type {
   InternalFaxiosRequestConfig
 } from "../types.js";
 import utils from "../utils.js";
-import { checkDeclaredContentLength, checkMaterializedSize, encodeStringWithoutContentType, handleFetchCaughtError } from "./fetch-helpers.js";
+import { checkDeclaredContentLength, checkMaterializedSize, encodeStringWithoutContentType, handleFetchCaughtError, requireRequestURL } from "./fetch-helpers.js";
 import type { ComposedSignal, FetchStage, PendingBodyErrorRef } from "./fetch-helpers.js";
 
 // btoa is a global in Node 16+ and browsers; accessed via globalThis for no-DOM lib compat
@@ -731,9 +731,12 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     let stage: FetchStage | undefined;
 
     try {
+      // Everything before the send builds the request, so an unparseable URL that the upload
+      // stream or the credential check trips over still gets its code.
+      stage = "build";
       rejectUsedStreamBody(data, config);
 
-      url = applyAuthToRequest(url!, headers, own);
+      url = applyAuthToRequest(requireRequestURL(url, config), headers, own);
 
       const preflightContentLength = await checkPreflightLimits(
         url,
@@ -793,7 +796,6 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       resolvedOptions["duplex"] = "half";
       resolvedOptions["credentials"] = isCredentialsSupported ? withCredentials : undefined;
 
-      stage = "build";
       request = isRequestSupported
         ? new (Request as AnyConstructor)(url, resolvedOptions) as Request
         : null;

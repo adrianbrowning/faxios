@@ -90,6 +90,15 @@ const isUnparseableURL = (url: string): boolean => {
   }
 };
 
+// With neither `url` nor `baseURL` (or a middleware that set `url` to a non-string) there is no
+// URL to send to.
+export const requireRequestURL = (url: unknown, config: InternalFaxiosRequestConfig): string => {
+  if (typeof url !== "string") {
+    throw new FaxiosError("Invalid URL: no url or baseURL given", FaxiosError.ERR_INVALID_URL, config);
+  }
+  return url;
+};
+
 // Gives a code-less TypeError the code for the adapter step it came from. A "send" TypeError
 // that isn't a URL problem falls through to the network-error check.
 const throwStagedTypeError = (
@@ -181,10 +190,10 @@ export const handleFetchCaughtError = (
   if (_err.name === "TypeError" && stage) {
     throwStagedTypeError(_err, stage, url, config, request);
   }
-  if (
-    _err.name === "TypeError" &&
-    /Load failed|fetch/i.test(_err.message)
-  ) {
+  // fetch rejecting while sending is a transport failure. Runtimes word it differently (Node's
+  // "fetch failed", Bun's ConnectionRefused, Deno's "client error (Connect)"), so the stage
+  // decides, not the message.
+  if (stage === "send") {
     const cause: unknown = _err["cause"] || _err;
     throw Object.assign(
       new FaxiosError(

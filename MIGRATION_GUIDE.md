@@ -52,7 +52,7 @@ Any other unknown request config key rejects the same way, so a typo such as `ti
 
 `maxContentLength` and `maxBodyLength` are **kept** and enforced by the fetch adapter. Both default to `-1` (no limit); set them to cap response and request body size in bytes.
 
-**JSON parsing.** As in axios, a string response body is parsed as JSON when `responseType` is unset (`transitional.forcedJSONParsing`), and left as text if it is not valid JSON. With `responseType: "json"` a body that is not JSON rejects with `ERR_BAD_RESPONSE`.
+**JSON parsing.** As in axios, a string response body is parsed as JSON when `responseType` is unset (`transitional.forcedJSONParsing`), and left as text if it is not valid JSON. With `responseType: "json"` a 2xx body that is not JSON rejects with `ERR_BAD_RESPONSE`; a 4xx or 5xx body that is not JSON keeps its status error, with the parse error on `error.cause`.
 
 **Config merge.** Request headers now beat instance headers in every group: the order, lowest first, is instance `common`, instance method group, instance top-level, request `common`, request method group, request top-level. Previously an instance top-level header beat a request's `common` or method group. A request option set to `undefined` now counts as unset on `request()` and every method alias, so `{ timeout: undefined }` or `{ baseURL: undefined }` keeps the instance value; only `xsrfCookieName` and `xsrfHeaderName` are still cleared by `undefined`. `transitional.validateStatusUndefinedResolves` now defaults to `false`, so `validateStatus: undefined` rejects non-2xx like the default validator; pass `validateStatus: null` to resolve every status.
 

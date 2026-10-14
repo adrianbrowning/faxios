@@ -50,6 +50,24 @@ describe("plugins::retry", () => {
     assert.deepStrictEqual(response.data, { attempt: 3 });
   });
 
+  it.each([
+    [ "Deno", () => new TypeError("client error (Connect)") ],
+    [ "Bun", () => Object.assign(new Error("Unable to connect. Is the computer able to access the url?"), { code: "ConnectionRefused" }) ],
+  ])("retries a refused connection worded the way %s words it", async (_runtime, refused) => {
+    const calls: Array<unknown> = [];
+    const fetch = async (input: Request | string | URL) => {
+      calls.push(input);
+      throw refused();
+    };
+    const api = faxios.create({ env: { fetch } }).use(retry({ attempts: 3, delay: 0 }));
+
+    const request = assert.rejects(api.get(URL), (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_NETWORK);
+    await vi.runAllTimersAsync();
+    await request;
+
+    assert.strictEqual(calls.length, 3);
+  });
+
   it("waits the delay before each retry, doubling by default", async () => {
     const { fetch, calls } = scriptedFetch([ 503, 503, 200 ]);
     const api = faxios.create({ env: { fetch } }).use(retry({ jitter: "none" }));

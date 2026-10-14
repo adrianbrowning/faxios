@@ -3,6 +3,7 @@ import type { AddressInfo } from "node:net";
 import net from "node:net";
 import { describe, it, vi } from "vitest";
 import faxios from "#src/index.js";
+import type { FaxiosRequestConfig } from "#src/index.js";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 
 const getClosedPort = async () =>
@@ -63,6 +64,38 @@ describe("adapters - transport error codes", () => {
     assert.strictEqual(err.code, FaxiosError.ERR_INVALID_URL);
     assert.match(err.message, /baseURL/);
     assert.ok(err.cause instanceof TypeError, "the parse failure should be on error.cause");
+    assert.strictEqual(fetch.mock.calls.length, 0);
+  });
+
+  it.each<[string, FaxiosRequestConfig]>([
+    [ "onUploadProgress", { method: "post", data: "body", onUploadProgress: () => {} }],
+    [ "maxBodyLength", { method: "post", data: new ReadableStream({ start(c) { c.enqueue(new Uint8Array(1)); c.close(); } }), maxBodyLength: 100 }],
+  ])("rejects a relative URL with ERR_INVALID_URL when %s is set", async (_option, options) => {
+    const fetch = vi.fn(async () => new Response("ok"));
+    const err = await rejection(faxios.create({ env: { fetch } }).request({ url: "/user", ...options }));
+    assert.strictEqual(err.code, FaxiosError.ERR_INVALID_URL);
+    assert.match(err.message, /baseURL/);
+    assert.strictEqual(fetch.mock.calls.length, 0);
+  });
+
+  it.each([
+    [ "no options", {}],
+    [ "params", { params: { q: 1 } }],
+  ])("rejects a request with no url and no baseURL with ERR_INVALID_URL (%s)", async (_label, options) => {
+    const fetch = vi.fn(async () => new Response("ok"));
+    const err = await rejection(faxios.create({ env: { fetch } }).request(options));
+    assert.strictEqual(err.code, FaxiosError.ERR_INVALID_URL);
+    assert.strictEqual(fetch.mock.calls.length, 0);
+  });
+
+  it("rejects a url that middleware set to a non-string with ERR_INVALID_URL", async () => {
+    const fetch = vi.fn(async () => new Response("ok"));
+    const api = faxios.create({ env: { fetch } }).use(async (ctx, next) => {
+      Object.assign(ctx.config, { url: 42 });
+      return next(ctx);
+    });
+    const err = await rejection(api.get("http://example.test/"));
+    assert.strictEqual(err.code, FaxiosError.ERR_INVALID_URL);
     assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
