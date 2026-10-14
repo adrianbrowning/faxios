@@ -220,9 +220,10 @@ jobs:
       - name: Prepare packed faxios dist
         run: mkdir -p packages/lib/dist && tar -xzf artifacts/*faxios-*.tgz -C artifacts && cp -R artifacts/package/dist/. ./packages/lib/dist
 
+      # deno.json sets `lock.frozen`, so the install and the test task fail when deno.lock must change.
       - name: Install Deno smoke test dependencies
         working-directory: packages/tests/smoke/deno
-        run: deno install
+        run: deno install --frozen
 
       - name: Run Deno smoke tests
         working-directory: packages/tests/smoke/deno

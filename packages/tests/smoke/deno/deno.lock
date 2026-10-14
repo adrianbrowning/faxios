@@ -4,7 +4,7 @@
     "jsr:@std/assert@1.0.19": "1.0.19",
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "npm:@types/node@*": "22.15.15",
-    "npm:form-data@*": "4.0.6"
+    "npm:form-data@4.0.6": "4.0.6"
   },
   "jsr": {
     "@std/assert@1.0.19": {
@@ -144,7 +144,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@std/assert@1.0.19",
-      "npm:form-data@*"
+      "npm:form-data@4.0.6"
     ]
   }
 }
