@@ -131,9 +131,13 @@ function serializeCause(cause: unknown, seen: Set<unknown>): SerializedCause | u
   };
 }
 
+/** The codes faxios itself sets: the `ERR_*`, `ECONNABORTED` and `ETIMEDOUT` statics on `FaxiosError`. */
+export type FaxiosErrorCode = (typeof FaxiosError)[Extract<keyof typeof FaxiosError, `E${string}`>];
+
 class FaxiosError<T = unknown, D = unknown> extends Error {
   isFaxiosError: boolean;
-  code?: string;
+  /** A `FaxiosErrorCode`, or a code a plugin or the wrapped error set. */
+  code?: FaxiosErrorCode | (string & {});
   config?: InternalFaxiosRequestConfig<D>;
   request?: unknown;
   response?: FaxiosResponse<T, D>;

@@ -38,7 +38,7 @@ constructor(instanceConfig?: FaxiosRequestConfig);
 Handles request invocation and response resolution. This is the main method that you will use to make HTTP requests. It takes a configuration object as an argument and returns a promise that resolves to the response object.
 
 ```ts check=skip
-request<T = unknown, R = FaxiosResponse<T>, D = unknown>(configOrUrl: string | FaxiosRequestConfig<D>, config?: FaxiosRequestConfig<D>): Promise<R>;
+request<T = unknown, D = unknown>(configOrUrl: string | URL | FaxiosRequestConfig<D>, config?: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T, D>>;
 ```
 
 ## Functions
@@ -63,8 +63,9 @@ The `FaxiosError` class provides the following properties:
 // Config instance.
 config?: InternalFaxiosRequestConfig<D>;
 
-// Error code.
-code?: string;
+// Error code: one of the `FaxiosErrorCode` statics (`ERR_NETWORK`, `ETIMEDOUT`, ...),
+// or a code a plugin or a wrapped error set.
+code?: FaxiosErrorCode | (string & {});
 
 // Request instance.
 request?: unknown;
@@ -232,7 +233,7 @@ try {
 
 ### `all` <Badge type="danger" text="Deprecated in favour of Promise.all" />
 
-The `all` function is a utility function that takes an array of promises and returns a single promise that resolves when all of the promises in the array have resolved. The `all` function is now deprecated in favour of the `Promise.all` method. It is recommended that you use the `Promise.all` method instead.
+The `all` function is a utility function that takes an array of promises and returns a single promise that resolves when all of the promises in the array have resolved. It is typed like `Promise.all`: a tuple of promises (or plain values) resolves to a tuple of their results. The `all` function is now deprecated in favour of the `Promise.all` method. It is recommended that you use the `Promise.all` method instead.
 
 The `all` function is deprecated and will be removed in a future release.
 
@@ -241,7 +242,7 @@ The `all` function is deprecated and will be removed in a future release.
 The `spread` function is a utility function that can be used to spread an array of arguments into a function call. This is useful when you have an array of arguments that you want to pass to a function that takes multiple arguments. It is available on the instance as `faxios.spread` and is not a named export.
 
 ```ts check=skip
-spread(callback: (...args: unknown[]) => unknown): (array: unknown[]) => unknown;
+spread<TArgs extends unknown[], TResult>(callback: (...args: TArgs) => TResult): (array: TArgs) => TResult;
 ```
 
 ### `toFormData`
@@ -268,7 +269,7 @@ await faxios.post("/api/users", form);
 Converts a `FormData` instance back to a plain JavaScript object. Useful for reading form data in a structured format. Field names split into nested keys only on `.` and brackets (`user[email]`, `user.email`), so names such as `first-name` stay one key.
 
 ```ts check=skip
-formToJSON(form: FormData | HTMLFormElement): unknown;
+formToJSON(form: FormData | HTMLFormElement): null | Record<string, unknown>;
 ```
 
 ```js
@@ -287,7 +288,7 @@ console.log(obj); // { name: "Jay", role: "admin" }
 Merges two faxios config objects together, applying the same deep-merge strategy that faxios uses internally when combining defaults with per-request options. Later values take precedence.
 
 ```ts check=skip
-mergeConfig(config1: FaxiosRequestConfig, config2?: FaxiosRequestConfig): FaxiosRequestConfig;
+mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfig, config2?: FaxiosRequestConfig): FaxiosRequestConfig;
 ```
 
 ```js
@@ -398,7 +399,7 @@ A slot you leave out adds nothing. Any other key, such as `require`, is a type e
 
 ### `HttpStatusCode`
 
-An object that contains a list of HTTP status codes as named constants. Use this to write readable conditionals instead of bare numbers.
+An object that contains a list of HTTP status codes as named constants. Use this to write readable conditionals instead of bare numbers. Each name has its literal type (`HttpStatusCode.NotFound` is `404`), and like a TypeScript enum each code maps back to its name (`HttpStatusCode[404]` is `"NotFound"`).
 
 ```js status=404
 import faxios, { HttpStatusCode } from "@gcmdev/faxios";

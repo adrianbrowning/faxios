@@ -173,7 +173,7 @@ function canReplay(data: unknown): boolean {
 function discardBody(reason: unknown): void {
   const data: unknown = reason instanceof FaxiosError ? reason.response?.data : undefined;
   if (Object.prototype.toString.call(data) !== "[object ReadableStream]") return;
-  const stream = data as ReadableStream;
+  const stream = data as InstanceType<typeof ReadableStream>;
   if (!stream.locked) stream.cancel().catch(() => {});
 }
 
@@ -227,7 +227,7 @@ function wait(ms: number, signal: FaxiosRequestConfig["signal"], config: FaxiosR
 // long as that lives, and without a `timeout` that is the caller's, perhaps long-lived, signal.
 // `unlink` removes the listener once the try settles. A stream body read after that stays under
 // the request's signal and timeout through core, not through this link.
-function linkSignal(outer: FaxiosRequestConfig["signal"], controller: AbortController): { signal: AbortSignal; unlink: () => void; } {
+function linkSignal(outer: FaxiosRequestConfig["signal"], controller: InstanceType<typeof AbortController>): { signal: InstanceType<typeof AbortController>["signal"]; unlink: () => void; } {
   if (!outer) return { signal: controller.signal, unlink: () => {} };
   const forward = () => {
     outer.removeEventListener("abort", forward);

@@ -11,14 +11,14 @@ type MergeInput = FaxiosDefaults | FaxiosRequestConfig | Record<string, unknown>
 
 /**
  * Config-specific merge-function which creates a new config-object
- * by merging two configuration objects together.
+ * by merging two configuration objects together: config2 wins.
  *
- * @param {Object} config1
- * @param {Object} config2
+ * @param config1 Defaults or a request config.
+ * @param config2 The request config merged over it.
  *
- * @returns {Object} New object resulting from merging config2 to config1
+ * @returns New object resulting from merging config2 to config1
  */
-export default function mergeConfig(config1: MergeInput, config2?: MergeInput): FaxiosRequestConfig & Record<string, unknown> {
+export default function mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfig, config2?: FaxiosRequestConfig): FaxiosRequestConfig {
   return mergeConfigs(config1, config2 || {}, false);
 }
 

@@ -1,5 +1,7 @@
 // utils is a library of generic helper functions non-specific to faxios
 
+import type { WebReadableStream, WebRequest, WebResponse } from "./types/web.js";
+
 const { toString } = Object.prototype;
 const { getPrototypeOf } = Object;
 const { iterator, toStringTag } = Symbol;
@@ -288,9 +290,9 @@ const isFormData = (thing: unknown): boolean => {
  */
 const isURLSearchParams = kindOfTest("URLSearchParams");
 
-const isReadableStream = (thing: unknown): thing is ReadableStream<unknown> => kindOf(thing) === "readablestream";
-const isRequest = (thing: unknown): thing is Request => kindOf(thing) === "request";
-const isResponse = (thing: unknown): thing is Response => kindOf(thing) === "response";
+const isReadableStream = (thing: unknown): thing is WebReadableStream => kindOf(thing) === "readablestream";
+const isRequest = (thing: unknown): thing is WebRequest => kindOf(thing) === "request";
+const isResponse = (thing: unknown): thing is WebResponse => kindOf(thing) === "response";
 
 /**
  * Iterate over an Array or an Object invoking a function for each item.

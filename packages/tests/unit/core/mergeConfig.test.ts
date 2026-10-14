@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { FaxiosHeaders } from "#src/index.js";
-import mergeConfig, { mergeConfigExceptHeaders } from "#src/lib/core/mergeConfig.js";
+import typedMergeConfig, { mergeConfigExceptHeaders } from "#src/lib/core/mergeConfig.js";
 import defaults from "#src/lib/defaults/index.js";
+
+// These tests pin the runtime merge for any input a JavaScript caller can pass (unknown keys,
+// wrong value types), which the public signature rejects; the type tests live in the module suite.
+const mergeConfig = typedMergeConfig as (config1: unknown, config2?: unknown) => Record<string, unknown>;
 
 describe("core::mergeConfig", () => {
   it("accepts undefined for second argument", () => {
@@ -330,22 +334,22 @@ describe("core::mergeConfig", () => {
 
     it("uses config2 schema when config1 has none", () => {
       const merged = mergeConfig({}, { responseSchema: schemaB });
-      expect((merged as Record<string, unknown>).responseSchema).toStrictEqual(schemaB);
+      expect((merged).responseSchema).toStrictEqual(schemaB);
     });
 
     it("uses config1 schema when config2 has none", () => {
       const merged = mergeConfig({ responseSchema: schemaA }, {});
-      expect((merged as Record<string, unknown>).responseSchema).toStrictEqual(schemaA);
+      expect((merged).responseSchema).toStrictEqual(schemaA);
     });
 
     it("config2 wins when both have responseSchema", () => {
       const merged = mergeConfig({ responseSchema: schemaA }, { responseSchema: schemaB });
-      expect((merged as Record<string, unknown>).responseSchema).toStrictEqual(schemaB);
+      expect((merged).responseSchema).toStrictEqual(schemaB);
     });
 
     it("explicit undefined in config2 keeps config1's schema", () => {
       const merged = mergeConfig({ responseSchema: schemaA }, { responseSchema: undefined });
-      expect((merged as Record<string, unknown>).responseSchema).toStrictEqual(schemaA);
+      expect((merged).responseSchema).toStrictEqual(schemaA);
     });
   });
 

@@ -1,4 +1,5 @@
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
+import type { HeaderInput } from "../core/FaxiosHeaders.js";
 import cloneConfig from "../helpers/cloneConfig.js";
 import cookies from "../helpers/cookies.js";
 import isURLSameOrigin from "../helpers/isURLSameOrigin.js";
@@ -57,7 +58,7 @@ function prepareRequest(config: FaxiosRequestConfig, url: string): FaxiosRequest
   const xsrfCookieName = own("xsrfCookieName") as string | undefined;
 
   const headers: FaxiosHeaders = FaxiosHeaders.from(
-    own("headers") as null | Record<string, unknown> | undefined
+    own("headers") as HeaderInput
   );
   newConfig.headers = headers;
 

@@ -1,5 +1,6 @@
 import assert from "node:assert";
 import { describe, expectTypeOf, it } from "vitest";
+import { z } from "zod";
 import faxios from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import { makeSchema, mockFetch } from "./_schemaTestHelpers.js";
@@ -182,5 +183,33 @@ describe("faxios.define()", () => {
     });
     await getHealth();
     assert.strictEqual(calls, 1);
+  });
+
+  it("rejects a missing or wrong pathParams, params and data at the type level", () => {
+    // Type-checked by `lint:ts`; never called.
+    function check() {
+      const getUser = faxios.define("GET", "/users/{id}", { pathParamsSchema: z.object({ id: z.string() }) });
+      const search = faxios.define("GET", "/search", { paramsSchema: z.object({ q: z.string() }) });
+      const createUser = faxios.define("POST", "/users", { requestSchema: z.object({ name: z.string() }) });
+      void getUser({ pathParams: { id: "1" } });
+      void search({ params: { q: "x" } });
+      void createUser({ data: { name: "a" } });
+
+      // @ts-expect-error TS2554 -- an endpoint with an input schema needs its call config
+      void getUser();
+      // @ts-expect-error TS2345 -- pathParams is required by the pathParamsSchema
+      void getUser({});
+      // @ts-expect-error TS2322 -- id is a string
+      void getUser({ pathParams: { id: 1 } });
+      // @ts-expect-error TS2345 -- params is required by the paramsSchema
+      void search({});
+      // @ts-expect-error TS2322 -- q is a string
+      void search({ params: { q: 1 } });
+      // @ts-expect-error TS2345 -- data is required by the requestSchema
+      void createUser({});
+      // @ts-expect-error TS2322 -- name is a string
+      void createUser({ data: { name: 1 } });
+    }
+    expectTypeOf(check).toBeFunction();
   });
 });

@@ -89,7 +89,7 @@ describe("FaxiosHeaders", () => {
     it("should support iterables as a key-value source object", () => {
       const headers = new FaxiosHeaders();
 
-      headers.set(new Map([[ "x", "123" ]]) as unknown as Record<string, unknown>);
+      headers.set(new Map([[ "x", "123" ]]));
 
       assert.strictEqual(headers.get("x"), "123");
     });
@@ -102,7 +102,7 @@ describe("FaxiosHeaders", () => {
       (Object.prototype as Record<string, unknown>)["Authorization"] = "polluted";
 
       try {
-        const headers = new FaxiosHeaders(new Map([[ "Authorization", "real" ]]) as unknown as Record<string, unknown>);
+        const headers = new FaxiosHeaders(new Map([[ "Authorization", "real" ]]));
 
         assert.strictEqual(headers.get("authorization"), "real");
       }
@@ -119,7 +119,7 @@ describe("FaxiosHeaders", () => {
 
       headers.set({
         *[Symbol.iterator]() {
-          yield [ "x", "123" ];
+          yield [ "x", "123" ] as const;
         },
       });
 
@@ -181,7 +181,7 @@ describe("FaxiosHeaders", () => {
         // prototype other than Object.prototype, yet their only iterator comes
         // from the polluted Object.prototype — they must not be iterated.
         class HeaderBag {
-          [key: string]: unknown;
+          [key: string]: string;
           constructor() {
             this["authorization"] = "Bearer VALID";
           }
@@ -217,7 +217,7 @@ describe("FaxiosHeaders", () => {
         nativeHeaders.append("set-cookie", "baz");
         nativeHeaders.append("y", "qux");
 
-        headers.set(nativeHeaders as unknown as Record<string, unknown>);
+        headers.set(nativeHeaders);
 
         assert.deepStrictEqual(headers.get("set-cookie"), [
           "foo",
@@ -253,7 +253,8 @@ describe("FaxiosHeaders", () => {
     it("should recursively normalize non-string array header elements", () => {
       const headers = new FaxiosHeaders();
 
-      headers.set("x-multi", [ "a", false, null, 1 ] as unknown);
+      // A JavaScript caller can pass any array; the types allow string arrays only.
+      headers.set("x-multi", [ "a", false, null, 1 ] as unknown as Array<string>);
 
       assert.deepStrictEqual(headers.get("x-multi"), [ "a", false, null, "1" ]);
     });
@@ -305,7 +306,7 @@ describe("FaxiosHeaders", () => {
             [ "", "e" ],
             [ "   ", "f" ],
             [ "x", "y" ],
-          ]) as unknown as Record<string, unknown>
+          ])
         )
       );
 
@@ -682,8 +683,9 @@ describe("FaxiosHeaders", () => {
     });
 
     it("should support array values", () => {
+      // A JavaScript caller can pass number arrays; the types allow string arrays only.
       const headers = new FaxiosHeaders({
-        foo: [ 1, 2, 3 ],
+        foo: [ 1, 2, 3 ] as unknown as Array<string>,
       });
 
       assert.deepStrictEqual(
@@ -798,5 +800,20 @@ describe("FaxiosHeaders", () => {
 
       assert.strictEqual(sent?.get("x-ok"), "1");
     });
+  });
+
+  it("sends request config headers given as a Headers or a Map, on the request and on create()", async () => {
+    let sent: Headers | undefined;
+    const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
+      sent = new Headers(init?.headers);
+      return new Response(null, { status: 200 });
+    };
+
+    await faxios.create({ env: { fetch } }).get("http://localhost/h", { headers: new Headers({ "X-A": "1" }) });
+    assert.strictEqual(sent?.get("x-a"), "1");
+    await faxios.create({ env: { fetch } }).get("http://localhost/h", { headers: new Map([[ "X-B", "2" ]]) });
+    assert.strictEqual(sent?.get("x-b"), "2");
+    await faxios.create({ env: { fetch }, headers: new Headers({ "X-C": "3" }) }).get("http://localhost/h");
+    assert.strictEqual(sent?.get("x-c"), "3");
   });
 });

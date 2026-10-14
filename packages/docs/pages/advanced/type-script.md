@@ -10,6 +10,12 @@ faxios is published as ESM only, so there are a few configuration caveats:
 - If you use ESM, your settings should be fine.
 - There is no CJS build and no `index.d.cts`; load faxios with `import`.
 
+## Strict and Node-only projects
+
+The declarations need neither the DOM lib nor `@types/node`, and they type-check with `skipLibCheck: false`. Where they mention a web type (`Request`, `Response`, `URL`, `AbortSignal`, `RequestInit`, `Blob`), they use your project's own global type when its `lib` or `@types/node` declares one, and a minimal built-in shape otherwise.
+
+With `exactOptionalPropertyTypes`, every optional config field and header still takes `undefined`. faxios treats an own `undefined` as unset, so `{ timeout: maybeNumber }` and `headers: { Authorization: undefined }` compile.
+
 ## Type guards for faxios errors
 
 Use the `faxios.isFaxiosError` type guard to safely narrow `unknown` errors in `catch` blocks. After narrowing, you can access faxios-specific properties like `error.response`, `error.config`, and `error.code` with full type safety.
@@ -111,6 +117,15 @@ interface User {
 
 const { data } = await faxios.get<User>("/users/1");
 // `data` is typed as `User`
+```
+
+The second type parameter, `D`, types the request body (`data`). Every request method resolves to `FaxiosResponse<T, D>`, because middleware always returns a `FaxiosResponse`; there is no third type parameter to retype the result.
+
+```ts check=types
+import faxios from "@gcmdev/faxios";
+
+const response = await faxios.post<{ id: number }, { name: string }>("/users", { name: "Jay" });
+// response is FaxiosResponse<{ id: number }, { name: string }>
 ```
 
 ## Inferring response data from a schema

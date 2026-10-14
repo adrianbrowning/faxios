@@ -1,5 +1,6 @@
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
+import type { HeaderInput } from "../core/FaxiosHeaders.js";
 import prepareRequest from "../core/prepareRequest.js";
 import type { RequestBodies } from "../core/requestDeadline.js";
 import resolveBodyContentType from "../core/resolveBodyContentType.js";
@@ -17,6 +18,7 @@ import type {
   FaxiosResponse,
   InternalFaxiosRequestConfig
 } from "../types.js";
+import type { WebRequest } from "../types/web.js";
 import { findKey, getSafeProp, hasOwnInPrototypeChain, hasOwnProp, isArrayBuffer, isArrayBufferView, isBlob, isFunction, isObject, isReadableStream, isRequest, isResponse, isSpecCompliantForm, isStream, isString, isURLSearchParams, toFiniteNumber } from "../utils.js";
 import {
   bodyTooLarge,
@@ -385,7 +387,7 @@ const buildRequestInit = (
 // undici's `dispatcher` or Next.js `next`, are copied as given.
 const fetchInitFor = (
   runtime: FetchRuntime,
-  sent: { init: Record<string, unknown>; Request: AnyConstructor; request: Request; }
+  sent: { init: Record<string, unknown>; Request: AnyConstructor; request: WebRequest; }
 ): Record<string, unknown> => {
   const init: Record<string, unknown> = Object.create(null);
   const requestPrototype = sent.Request.prototype as object;
@@ -742,7 +744,7 @@ const sendRequest = async (
     });
 
     const { Request } = runtime;
-    const request = Request ? new Request(url, requestInit) as Request : undefined;
+    const request = Request ? new Request(url, requestInit) as WebRequest : undefined;
     ctx.request = request;
 
     markStreamBodySent(body);
@@ -752,7 +754,8 @@ const sendRequest = async (
       : _fetch(url, requestInit));
     ctx.stage = undefined;
 
-    const responseHeaders = FaxiosHeaders.from(response.headers);
+    // A fetch Response's headers is a Headers: an iterable of [name, value] pairs.
+    const responseHeaders = FaxiosHeaders.from(response.headers as HeaderInput);
 
     checkDeclaredContentLength(ctx, { headers: responseHeaders, status: response.status });
 

@@ -20,6 +20,7 @@ import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
 import type { CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosMiddleware, FaxiosPluginArgument, FaxiosRequestConfig, FaxiosResponse, HeadersDefaults, Method, ResponseTypedConfig, SchemaConfig, StringLiteralsOrString } from "./types.js";
 import type { StandardSchemaV1 } from "./types/standard-schema.js";
+import type { WebURL } from "./types/web.js";
 
 // Keys of TNeed that THave lacks, or provides with an incompatible type.
 type MissingCapabilities<THave, TNeed> = {
@@ -139,9 +140,9 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = {
     middleware: FaxiosMiddleware<TOpts, TCaps> | (FaxiosPluginArgument<TReq, TProv, TOpt> & CheckPlugin<TCaps, TReq, TProv, TOpt>)
   ) => FaxiosInstance<TOpts & TOpt, TCaps & ProvidedCapabilities<TProv>>;
   <O, D = unknown>(config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-  <O, D = unknown>(url: string | URL, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-  <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: ResponseTypedConfig<T, D> & TOpts): Promise<R>;
-  <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, config?: ResponseTypedConfig<T, D> & TOpts): Promise<R>;
+  <O, D = unknown>(url: string | WebURL, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+  <T = unknown, D = unknown>(config: ResponseTypedConfig<T, D> & TOpts): Promise<FaxiosResponse<T, D>>;
+  <T = unknown, D = unknown>(url: string | WebURL, config?: ResponseTypedConfig<T, D> & TOpts): Promise<FaxiosResponse<T, D>>;
   create: (instanceConfig?: CreateFaxiosDefaults) => FaxiosInstance;
   // `common` plus one header group per method; a key set directly on
   // `headers` applies to every method.
@@ -149,12 +150,12 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = {
     headers: HeadersDefaults & { [key: string]: FaxiosHeaderValue | undefined; };
   } & Partial<TOpts>;
   delete: {
-    <O, D = unknown>(url: string | URL, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, config?: ResponseTypedConfig<T, D> & TOpts): Promise<R>;
+    <O, D = unknown>(url: string | WebURL, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, D = unknown>(url: string | WebURL, config?: ResponseTypedConfig<T, D> & TOpts): Promise<FaxiosResponse<T, D>>;
   };
   get: {
-    <O, D = unknown>(url: string | URL, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, config?: ResponseTypedConfig<T, D> & TOpts): Promise<R>;
+    <O, D = unknown>(url: string | WebURL, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, D = unknown>(url: string | WebURL, config?: ResponseTypedConfig<T, D> & TOpts): Promise<FaxiosResponse<T, D>>;
   };
   /**
    * Build the URL for `config` without sending a request. Fills `{key}` placeholders from
@@ -163,62 +164,63 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = {
    */
   getUri: (config?: FaxiosRequestConfig & TOpts) => string;
   head: {
-    <O, D = unknown>(url: string | URL, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, config?: ResponseTypedConfig<T, D> & TOpts): Promise<R>;
+    <O, D = unknown>(url: string | WebURL, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, D = unknown>(url: string | WebURL, config?: ResponseTypedConfig<T, D> & TOpts): Promise<FaxiosResponse<T, D>>;
   };
   options: {
-    <O, D = unknown>(url: string | URL, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, config?: ResponseTypedConfig<T, D> & TOpts): Promise<R>;
+    <O, D = unknown>(url: string | WebURL, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, D = unknown>(url: string | WebURL, config?: ResponseTypedConfig<T, D> & TOpts): Promise<FaxiosResponse<T, D>>;
   };
   patch: {
-    <O, D = unknown>(url: string | URL, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, data?: D, config?: ResponseTypedConfig<T, D> & TOpts): Promise<R>;
+    <O, D = unknown>(url: string | WebURL, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, D = unknown>(url: string | WebURL, data?: D, config?: ResponseTypedConfig<T, D> & TOpts): Promise<FaxiosResponse<T, D>>;
   };
   patchForm: {
-    <O, D = unknown>(url: string | URL, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, data?: D, config?: ResponseTypedConfig<T, D> & TOpts): Promise<R>;
+    <O, D = unknown>(url: string | WebURL, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, D = unknown>(url: string | WebURL, data?: D, config?: ResponseTypedConfig<T, D> & TOpts): Promise<FaxiosResponse<T, D>>;
   };
   post: {
-    <O, D = unknown>(url: string | URL, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, data?: D, config?: ResponseTypedConfig<T, D> & TOpts): Promise<R>;
+    <O, D = unknown>(url: string | WebURL, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, D = unknown>(url: string | WebURL, data?: D, config?: ResponseTypedConfig<T, D> & TOpts): Promise<FaxiosResponse<T, D>>;
   };
   postForm: {
-    <O, D = unknown>(url: string | URL, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, data?: D, config?: ResponseTypedConfig<T, D> & TOpts): Promise<R>;
+    <O, D = unknown>(url: string | WebURL, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, D = unknown>(url: string | WebURL, data?: D, config?: ResponseTypedConfig<T, D> & TOpts): Promise<FaxiosResponse<T, D>>;
   };
   put: {
-    <O, D = unknown>(url: string | URL, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, data?: D, config?: ResponseTypedConfig<T, D> & TOpts): Promise<R>;
+    <O, D = unknown>(url: string | WebURL, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, D = unknown>(url: string | WebURL, data?: D, config?: ResponseTypedConfig<T, D> & TOpts): Promise<FaxiosResponse<T, D>>;
   };
   putForm: {
-    <O, D = unknown>(url: string | URL, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, data?: D, config?: ResponseTypedConfig<T, D> & TOpts): Promise<R>;
+    <O, D = unknown>(url: string | WebURL, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, D = unknown>(url: string | WebURL, data?: D, config?: ResponseTypedConfig<T, D> & TOpts): Promise<FaxiosResponse<T, D>>;
   };
   query: {
-    <O, D = unknown>(url: string | URL, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, data?: D, config?: ResponseTypedConfig<T, D> & TOpts): Promise<R>;
+    <O, D = unknown>(url: string | WebURL, data: D | undefined, config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
+    <T = unknown, D = unknown>(url: string | WebURL, data?: D, config?: ResponseTypedConfig<T, D> & TOpts): Promise<FaxiosResponse<T, D>>;
   };
   request: {
     <O, D = unknown>(config: SchemaConfig<O, D> & TOpts): Promise<FaxiosResponse<O, D>>;
-    <T = unknown, R = FaxiosResponse<T>, D = unknown>(config: ResponseTypedConfig<T, D> & TOpts): Promise<R>;
+    <T = unknown, D = unknown>(config: ResponseTypedConfig<T, D> & TOpts): Promise<FaxiosResponse<T, D>>;
   };
 };
 
 /** The default export: an instance plus the static helpers only it carries. */
 export type FaxiosStatic = FaxiosInstance & {
-  all: (promises: Array<Promise<unknown>>) => Promise<Array<unknown>>;
+  all: typeof all;
   Cancel: typeof CanceledError;
   CanceledError: typeof CanceledError;
   default: FaxiosStatic;
   Faxios: typeof Faxios;
   FaxiosError: typeof FaxiosError;
   FaxiosHeaders: typeof FaxiosHeaders;
-  formToJSON: (thing: unknown) => unknown;
+  formToJSON: typeof formToJSON;
   HttpStatusCode: typeof HttpStatusCode;
   isCancel: typeof isCancel;
   isFaxiosError: typeof isFaxiosError;
   mergeConfig: typeof mergeConfig;
-  spread: (fn: (...args: Array<unknown>) => unknown) => (arr: Array<unknown>) => unknown;
+  /** Wraps `fn` so it takes its arguments as one array, for `all(...).then(spread(...))`. */
+  spread: <TArgs extends Array<unknown>, TResult>(fn: (...args: TArgs) => TResult) => (arr: TArgs) => TResult;
   toFormData: typeof toFormData;
   VERSION: typeof VERSION;
 };
@@ -245,7 +247,7 @@ faxios.Cancel = faxios.CanceledError;
 // Expose all/spread
 faxios.all = all;
 
-faxios.spread = (fn: (...args: Array<unknown>) => unknown) => (arr: Array<unknown>) => fn(...arr);
+faxios.spread = fn => arr => fn(...arr);
 
 // Expose isFaxiosError
 faxios.isFaxiosError = isFaxiosError;

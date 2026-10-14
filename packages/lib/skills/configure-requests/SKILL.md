@@ -64,6 +64,8 @@ const { data, status } = await api.get<{ id: number; name: string }>("/users/1")
 - Install with `npm i @gcmdev/faxios`. From CommonJS, load it with `await import("@gcmdev/faxios")`;
   there is no `require` build and no UMD/CDN bundle.
 - Check: the call resolves with a `FaxiosResponse` whose `data` is parsed JSON for JSON responses.
+  The type parameters are `<T, D>` (response data, request body); every method resolves to
+  `FaxiosResponse<T, D>`, and there is no third parameter to retype the result.
 
 ## Core patterns
 

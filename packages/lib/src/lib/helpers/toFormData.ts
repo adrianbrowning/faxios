@@ -4,6 +4,7 @@
 import FaxiosError from "../core/FaxiosError.js";
 // temporary hotfix to avoid circular references until FaxiosURLSearchParams is refactored
 import type { FormDataVisitorHelpers, FormSerializerOptions, GenericFormData, SerializerVisitor } from "../types.js";
+import type { WebFormData } from "../types/web.js";
 import { forEach, isArray, isArrayBuffer, isBlob, isBoolean, isDate, isFileList, isFunction, isObject, isPlainObject, isSpecCompliantForm, isString, isTypedArray, isUndefined, toArray, toFlatObject } from "../utils.js";
 import validator from "./validator.js";
 
@@ -73,7 +74,7 @@ function isFlatArray(arr: unknown): boolean {
  *   (default `false`), `indexes` (default `false`), `maxDepth` and `Blob`.
  * @returns The target, with every value appended.
  */
-function toFormData(obj: unknown, formData?: null, options?: FormSerializerOptions): FormData;
+function toFormData(obj: unknown, formData?: null, options?: FormSerializerOptions): WebFormData;
 function toFormData<F extends GenericFormData>(obj: unknown, formData: F, options?: FormSerializerOptions): F;
 function toFormData(obj: unknown, formData?: GenericFormData | null, options?: FormSerializerOptions): GenericFormData;
 function toFormData(obj: unknown, formData?: GenericFormData | null, serializerOptions?: FormSerializerOptions): GenericFormData {

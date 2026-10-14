@@ -7,7 +7,7 @@ import defaults from "#src/lib/defaults/index.js";
 import type { InternalFaxiosRequestConfig } from "#src/lib/types.js";
 import { makeSchema } from "./_schemaTestHelpers.js";
 
-function faxiosHeaders(init?: Record<string, unknown>) {
+function faxiosHeaders(init?: ConstructorParameters<typeof FaxiosHeaders>[0]) {
   return new FaxiosHeaders(init);
 }
 

@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "vitest";
@@ -158,6 +159,36 @@ describe("module esm typings compatibility", () => {
 
       try {
         runCommand("node", [ floorTscBin, "--noEmit", "-p", "tsconfig.json" ], {
+          cwd: fixturePath,
+        });
+      }
+      finally {
+        cleanupTempFixture(fixturePath);
+      }
+    });
+  }
+
+  // Fixtures that carry their own tsconfig.json next to index.ts: a consumer setup the shared
+  // configs above don't cover.
+  for (const [ dir, title ] of [
+    [ "node-only", "type-checks the shipped declarations for a Node-only consumer without the DOM lib" ],
+    [ "exact-optional", "accepts undefined optionals under exactOptionalPropertyTypes" ],
+  ] as const) {
+    it(title, () => {
+      const fixtureDir = path.join(suiteRoot, "tests/helpers", dir);
+      const fixtureTsconfig: object = JSON.parse(fs.readFileSync(path.join(fixtureDir, "tsconfig.json"), "utf8"));
+      const fixturePath = createTempFixture(
+        suiteRoot,
+        `typings-${dir}`,
+        path.join(fixtureDir, "index.ts"),
+        fixtureTsconfig,
+        {
+          type: "module",
+        }
+      );
+
+      try {
+        runCommand("node", [ tscBin, "--noEmit", "-p", "tsconfig.json" ], {
           cwd: fixturePath,
         });
       }
