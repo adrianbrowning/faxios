@@ -62,16 +62,19 @@ const DEFAULT_CHUNK_SIZE = 64 * 1024;
 
 const textEncoder = new TextEncoder();
 
-// Web stream bodies this adapter has sent. fetch can read a stream without leaving it locked,
-// and there's no portable "disturbed" check, so a second send is caught here.
+// Web stream and async iterable bodies this adapter has sent. fetch can read a stream without
+// leaving it locked, there's no portable "disturbed" check, and a used-up async generator looks
+// like a fresh one, so a second send is caught here.
 const sentStreamBodies = new WeakSet<object>();
 
 // A stream body can be read once. Middleware that calls next() again after a try read it
-// would send an empty body (Node stream) or get an uncoded TypeError from fetch (web stream).
+// would send an empty body (Node stream, async iterable) or get an uncoded TypeError from fetch
+// (web stream).
 const rejectUsedStreamBody = (data: unknown, config: InternalFaxiosRequestConfig): void => {
   const body = data as { bodyUsed?: unknown; destroyed?: unknown; locked?: unknown; readableDidRead?: unknown; readableEnded?: unknown; };
   if (
-    (isReadableStream(data) && (body.locked === true || sentStreamBodies.has(body))) ||
+    (isReadableStream(data) && body.locked === true) ||
+    sentStreamBodies.has(body) ||
     ((isRequest(data) || isResponse(data)) && body.bodyUsed === true) ||
     (isStream(data) && (body.readableDidRead === true || body.readableEnded === true || body.destroyed === true))
   ) {
@@ -83,10 +86,10 @@ const rejectUsedStreamBody = (data: unknown, config: InternalFaxiosRequestConfig
   }
 };
 
-// Called right before fetch: a try that failed before that left a web stream body unread, so a
-// later try can still send it.
+// Called right before fetch: a try that failed before that left a web stream or async iterable
+// body unread, so a later try can still send it. Node streams are checked by their own state.
 const markStreamBodySent = (data: unknown): void => {
-  if (isReadableStream(data)) sentStreamBodies.add(data);
+  if (isReadableStream(data) || (isAsyncIterable(data) && !isStream(data))) sentStreamBodies.add(data);
 };
 
 // The response, or a promise rejected with its status error, settled now so the adapter can

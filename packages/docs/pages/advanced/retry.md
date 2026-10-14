@@ -184,7 +184,7 @@ await api.post("/search", { q: "faxios" });
 
 Each `methods` entry must be an HTTP method token (RFC 9110). An empty or non-token name, such as `""` or `"GET POST"`, rejects with `ERR_BAD_OPTION_VALUE`.
 
-A request with a stream body (a web `ReadableStream` or a Node stream) is never retried, since the first try consumed it.
+A request with a stream body (a web `ReadableStream`, a Node stream or an async iterable such as an async generator) is never retried, since the first try consumed it.
 
 ## Per-request options
 

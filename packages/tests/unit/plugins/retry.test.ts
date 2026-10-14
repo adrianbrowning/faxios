@@ -521,6 +521,18 @@ describe("plugins::retry", () => {
     assert.strictEqual(calls.length, 1);
   });
 
+  it("does not retry an async generator body", async () => {
+    const { fetch, calls } = scriptedFetch([ 503, 200 ]);
+    const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }));
+    async function* body() {
+      yield "chunk";
+    }
+
+    await rejectsWithTimers(api.put(URL, body()), isStatus(503));
+
+    assert.strictEqual(calls.length, 1);
+  });
+
   it("sends and replays a plain object body as JSON when Object.prototype.pipe is polluted", async () => {
     const scripted = scriptedFetch([ 503, 200 ]);
     const bodies: Array<string> = [];
