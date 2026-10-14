@@ -1831,15 +1831,15 @@
       ]
     },
     "source:.claude/skills/do-work/SKILL.md": {
-      "fingerprint": "6c0cbd4c92ed911b9e0c5d88728d2afe868a25cf91be5bd1079148e4f6ec576f",
+      "fingerprint": "84a2a15928e10bc050d4ab4fe46bea58095e785601204b1beb7c5f2edc3d3c7a",
       "snapshot": {
-        ".claude/skills/do-work/SKILL.md": "390315ca477b2e2dd421c10faff555542959f2c1e35cba9238a93027d81f1446"
+        ".claude/skills/do-work/SKILL.md": "d9842a4da66f02eb0c9c433a696b185b20745400f621181a78e65c954ebdbae4"
       },
-      "head": "4f30051218eb0164827fbf54d6ea3fac008dbc80",
+      "head": "0f2caf939ec854fba295170e591f96f55d3dc640",
       "outcome": "no-change",
-      "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
+      "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
       "evidence": [
-        "Changed: .claude/skills/do-work/SKILL.md at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
+        "Changed: .claude/skills/do-work/SKILL.md at 5ec7ea4b09f436506a6044c02747686361b3b9af"
       ]
     },
     "source:.github/actions/setup/action.yml": {
@@ -1921,27 +1921,27 @@
       ]
     },
     "source:COLLABORATOR_GUIDE.md": {
-      "fingerprint": "35f768601793b30254acc4e0424e43220e24818acc59e54b0eb8325b66dda0d1",
+      "fingerprint": "3feab2c580f37b56dcaeba8d67f7e453a5662058e0631e693409610d77591d96",
       "snapshot": {
-        "COLLABORATOR_GUIDE.md": "72f37ee4e1ee696fb137167214dcdcc2c6752fa7c7e6adeafa95bbe34002b1cf"
+        "COLLABORATOR_GUIDE.md": "ab2ff85be9a3f10aa90f02891388f8b3cd202ab7cd893e25a614153e4cfeae9b"
       },
-      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "head": "0f2caf939ec854fba295170e591f96f55d3dc640",
       "outcome": "no-change",
-      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
+      "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
       "evidence": [
-        "Changed: COLLABORATOR_GUIDE.md at 280f7e791c50e367a025fddc617941296f15f52a"
+        "Changed: COLLABORATOR_GUIDE.md at 5ec7ea4b09f436506a6044c02747686361b3b9af"
       ]
     },
     "source:CONTRIBUTING.md": {
-      "fingerprint": "e0eaa4497f3f4e711908b83d695909513219b80fbe00b31ecd6eea51a51f980a",
+      "fingerprint": "d5ab10e7e42faed637a073ee4f0f6a6dd215fc1ca66dcde4b762ad72c9592929",
       "snapshot": {
-        "CONTRIBUTING.md": "19c3901f1bfd8f096b2b1ad93adbf934a79737ca343f33b133d7d13c766527f0"
+        "CONTRIBUTING.md": "f0df4ee41edf9c97442e31762ed3340a3d435612407f4a465a00b9d23811cad9"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "head": "0f2caf939ec854fba295170e591f96f55d3dc640",
       "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
       "evidence": [
-        "Changed: CONTRIBUTING.md at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: CONTRIBUTING.md at 5ec7ea4b09f436506a6044c02747686361b3b9af"
       ]
     },
     "source:THREATMODEL.md": {
@@ -2519,15 +2519,15 @@
       ]
     },
     "source:packages/tests/eslint.config.ts": {
-      "fingerprint": "f4446ec7f821f9f312347913a7d4c709d0144169f62cd6153f7764ae0b3e7291",
+      "fingerprint": "832c6ad1413db2e8f8c807b34601bb739d37a124e185b9c998e2cd41fc5fd9cb",
       "snapshot": {
-        "packages/tests/eslint.config.ts": "f625cc0de412a237a466801193108a41c7f1a5c0e5cc0416f5b20baf960f338a"
+        "packages/tests/eslint.config.ts": "47daaf08c1f7fc569d103242b47d2ed37a4b52cb557db0688fddcf0e6933dece"
       },
-      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
+      "head": "0f2caf939ec854fba295170e591f96f55d3dc640",
       "outcome": "no-change",
-      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
+      "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
       "evidence": [
-        "Changed: packages/tests/eslint.config.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
+        "Changed: packages/tests/eslint.config.ts at 5ec7ea4b09f436506a6044c02747686361b3b9af"
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/esm-functions.ts": {
@@ -3344,15 +3344,15 @@
       ]
     },
     "source:.github/workflows/links.yml": {
-      "fingerprint": "806b993de9f410be3c1ce34cf5a146af438d1f832f34579ff427ff685fe88ce0",
+      "fingerprint": "8af785a79a1577c96d9099c0e2371c84e95bbc051f23bbe095754cc474e25210",
       "snapshot": {
-        ".github/workflows/links.yml": "f7bae5e1fba22c194d7d1b92f21f1a0332871b77ec13a949961ae438d4c10cc6"
+        ".github/workflows/links.yml": "7ae08ae36ceecccd429f93ddc97406176619aed302324464ba77c38ad4f11925"
       },
-      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
-      "outcome": "updated",
-      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "head": "0f2caf939ec854fba295170e591f96f55d3dc640",
+      "outcome": "no-change",
+      "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
       "evidence": [
-        "Changed: .github/workflows/links.yml at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+        "Changed: .github/workflows/links.yml at 5ec7ea4b09f436506a6044c02747686361b3b9af"
       ]
     },
     "source:SECURITY.md": {
@@ -5501,6 +5501,42 @@
       "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
         "Changed: packages/lib/src/lib/env/README.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:.github/PULL_REQUEST_TEMPLATE.md": {
+      "fingerprint": "a004ad535c917fdc5203fb27a61811fe309c5099d819033bcc83803fd1fb97b0",
+      "snapshot": {
+        ".github/PULL_REQUEST_TEMPLATE.md": "ba14069a19a5ffd19ed804924f772204671cc6345db64f46602c632c78842cd1"
+      },
+      "head": "0f2caf939ec854fba295170e591f96f55d3dc640",
+      "outcome": "no-change",
+      "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
+      "evidence": [
+        "Changed: .github/PULL_REQUEST_TEMPLATE.md at 5ec7ea4b09f436506a6044c02747686361b3b9af"
+      ]
+    },
+    "source:packages/tests/README.md": {
+      "fingerprint": "746be03445c58a30625205a97c8c8c430bdfdc19d51d2d4b4a09153a005b563c",
+      "snapshot": {
+        "packages/tests/README.md": "4231bc9ca824ebcddaa5e765a7f5c08d601f7680d4e990d525e8c497e340f60a"
+      },
+      "head": "0f2caf939ec854fba295170e591f96f55d3dc640",
+      "outcome": "no-change",
+      "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
+      "evidence": [
+        "Changed: packages/tests/README.md at 5ec7ea4b09f436506a6044c02747686361b3b9af"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/headers.smoke.test.ts": {
+      "fingerprint": "d42ba44b8826a07efcf8c6d9e593414e6559141dccff2969a1d79c59f894d07b",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/headers.smoke.test.ts": "f0d50a502cbfee272fe60ebf0b6a274475907b5f3d730f25124fd7e432cfc6ab"
+      },
+      "head": "0f2caf939ec854fba295170e591f96f55d3dc640",
+      "outcome": "no-change",
+      "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
+      "evidence": [
+        "Changed: packages/tests/smoke/esm/tests/headers.smoke.test.ts at 5ec7ea4b09f436506a6044c02747686361b3b9af"
       ]
     }
   }

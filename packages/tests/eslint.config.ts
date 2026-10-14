@@ -6,19 +6,26 @@ import testServerCleanup from "./eslint-rules/test-server-cleanup.ts";
 
 const faxiosPlugin = { rules: { "no-fixed-test-port": noFixedTestPort, "test-server-cleanup": testServerCleanup } };
 
-// Files that live outside the main tsconfig and can't be added to it
-// (they run in different runtime environments: bun, deno, node-cjs)
+// The smoke (esm, deno, bun) and module (esm) harnesses install the packed tarball into their own
+// node_modules (Deno maps it to lib/dist), so the main tsconfig excludes them and typed linting
+// can't resolve their `faxios` imports.
 const EXTERNAL_TS_FILES = [ "smoke/**/*.ts", "module/**/*.ts" ];
 
-// Type-checking exercise files (esm-index.ts, cjs-typing.ts, etc.)
-// These files exist purely to exercise the public API types; they are not
-// runnable programs and intentionally contain unused vars, any types, etc.
-const MODULE_TYPING_FILES = [ "module/**/*.ts" ];
+// Fixture sources the module and Deno suites compile with tsc or `deno check` to exercise the
+// public API types. They aren't Vitest tests and intentionally contain unused vars, `any`, etc.
+// The `*.module.test.ts` files and the helpers they import are runnable tests and get the normal rules.
+const TYPING_FIXTURE_FILES = [
+  "module/esm/tests/helpers/esm-functions.ts",
+  "module/esm/tests/helpers/esm-index.ts",
+  "module/esm/tests/helpers/generics-index.ts",
+  "module/esm/tests/helpers/middleware-index.ts",
+  "smoke/deno/types/**/*.ts",
+];
 
 export const extraRules: Array<Linter.Config> = [
   // Blocks extracted from markdown by docs-examples/extract.ts
   { ignores: [ "docs-examples/.generated*/**" ] },
-  // For files outside the tsconfig project, disable projectService-based linting
+  // Files outside the tsconfig project: turn off projectService and the rules that need type information
   {
     files: EXTERNAL_TS_FILES,
     languageOptions: {
@@ -37,28 +44,14 @@ export const extraRules: Array<Linter.Config> = [
       "@typescript-eslint/use-unknown-in-catch-callback-variable": "off",
       "@typescript-eslint/no-deprecated": "off",
       "@typescript-eslint/promise-function-async": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-unused-vars": "off",
-      "sonarjs/no-unused-vars": "off",
-      "sonarjs/no-dead-store": "off",
-      "sonarjs/no-empty-test-file": "off",
-      "promise/catch-or-return": "off",
-      "promise/always-return": "off",
-      "promise/no-return-wrap": "off",
-      "promise/no-promise-in-callback": "off",
-      // "unicorn/prefer-node-protocol": "off",
-      "sonarjs/no-identical-functions": "off",
-      "vitest/no-conditional-expect": "off",
     },
   },
-  // Module typing test files: they exist purely to exercise the public API types
+  // Typing fixtures: they exist only to exercise the public API types
   {
-    files: MODULE_TYPING_FILES,
+    files: TYPING_FIXTURE_FILES,
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-floating-promises": "off",
-      "@typescript-eslint/use-unknown-in-catch-callback-variable": "off",
       "sonarjs/no-unused-vars": "off",
       "sonarjs/no-dead-store": "off",
       "sonarjs/no-identical-functions": "off",
@@ -66,9 +59,16 @@ export const extraRules: Array<Linter.Config> = [
       "promise/catch-or-return": "off",
       "promise/always-return": "off",
       "promise/no-return-wrap": "off",
-      // Assertions-only tests / vitest expect-expect
+      // No Vitest `test()` calls to hold assertions
       "sonarjs/assertions-in-tests": "off",
       "vitest/expect-expect": "off",
+    },
+  },
+  // Deno tests register with `Deno.test`, which sonarjs doesn't count as a test
+  {
+    files: [ "smoke/deno/tests/**/*.ts" ],
+    rules: {
+      "sonarjs/no-empty-test-file": "off",
     },
   },
   // Tests that use helper functions containing assertions
