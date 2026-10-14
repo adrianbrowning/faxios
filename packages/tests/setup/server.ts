@@ -4,25 +4,18 @@ import http from "node:http";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import http2 from "node:http2";
 import stream from "node:stream";
-import { IncomingForm } from "formidable";
-import getStream, { getStreamAsBuffer } from "get-stream";
+import getStream from "get-stream";
 import selfsigned from "selfsigned";
 import { Throttle } from "stream-throttle";
 
-export const SERVER_HANDLER_STREAM_ECHO = (
-  req: IncomingMessage,
-  res: ServerResponse
-) => req.pipe(res);
-
-export const setTimeoutAsync = async (ms: number) =>
+const setTimeoutAsync = async (ms: number) =>
   new Promise(resolve => setTimeout(resolve, ms));
 
-const certificatePromise = selfsigned.generate(undefined, { keySize: 2048 });
-const trackedServers = new Set<ExtendedServer>();
-
-const untrackServer = (server: http2.Http2SecureServer | http.Server) => {
-  trackedServers.delete(server);
-};
+// Generated on first HTTP/2 use only: plain HTTP servers then start without touching the
+// certificate code, which breaks while a test has polluted Object.prototype.
+let certificatePromise: ReturnType<typeof selfsigned.generate> | undefined;
+const getCertificate = async () =>
+  (certificatePromise ??= selfsigned.generate(undefined, { keySize: 2048 }));
 
 type ServerOptions = {
   cert?: string;
@@ -46,8 +39,6 @@ export const startHTTPServer = async (
     | ServerOptions,
   options?: ServerOptions
 ): Promise<ExtendedServer> => {
-  const certificate = await certificatePromise;
-
   const {
     handler,
     useBuffering = false,
@@ -59,8 +50,8 @@ export const startHTTPServer = async (
     port = 0,
     keepAlive = 1000,
     useHTTP2,
-    key = certificate.private,
-    cert = certificate.cert,
+    key,
+    cert,
   } = Object.assign(
     typeof handlerOrOptions === "function"
       ? { handler: handlerOrOptions }
@@ -68,7 +59,9 @@ export const startHTTPServer = async (
     options
   );
 
-  return new Promise(resolve => {
+  const certificate = useHTTP2 && (!key || !cert) ? await getCertificate() : undefined;
+
+  return new Promise((resolve, reject) => {
     const serverHandler =
       handler ||
       async function (req: IncomingMessage, res: ServerResponse) {
@@ -105,7 +98,7 @@ export const startHTTPServer = async (
 
     const server = useHTTP2
       ? http2.createSecureServer(
-        { key, cert },
+        { key: key ?? certificate?.private, cert: cert ?? certificate?.cert },
         serverHandler as unknown as (
           req: http2.Http2ServerRequest,
           res: http2.Http2ServerResponse
@@ -137,9 +130,12 @@ export const startHTTPServer = async (
       (server as http.Server).keepAliveTimeout = keepAlive;
     }
 
-    server.listen(port, function (this: ExtendedServer) {
-      trackedServers.add(this);
-      resolve(this);
+    // A bind failure (EADDRINUSE) rejects the test that started the server instead of
+    // surfacing as an unhandled error while the test hangs.
+    server.once("error", reject);
+    server.listen(port, "127.0.0.1", () => {
+      server.off("error", reject);
+      resolve(server);
     });
   });
 };
@@ -171,43 +167,16 @@ export const stopHTTPServer = async (
     if (typeof server.closeAllSessions === "function") {
       server.closeAllSessions();
     }
-    await Promise.race([ closed, setTimeoutAsync(timeout - grace) ]);
+    const outcome = await Promise.race([
+      closed.then(() => "closed"),
+      setTimeoutAsync(timeout - grace).then(() => "timed_out"),
+    ]);
+
+    if (outcome === "timed_out") {
+      throw new Error(`Test server did not close within ${timeout}ms`);
+    }
   }
-
-  untrackServer(server);
 };
-
-export const stopAllTrackedHTTPServers = async (timeout = 10000) => {
-  const servers = Array.from(trackedServers);
-  await Promise.all(
-    servers.map(async server => stopHTTPServer(server, timeout))
-  );
-};
-
-export const handleFormData = async (req: IncomingMessage) =>
-  new Promise<{
-    fields: Record<string, Array<string> | string>;
-    files: Record<string, unknown>;
-  }>((resolve, reject) => {
-     
-    const form = new IncomingForm();
-
-    form.parse(req, (err, fields, files) => {
-      if (err) {
-        // Drain any unread bytes so the kernel doesn't send an RST when the
-        // server closes the response. An unread request buffer is what causes
-        // the client write side to surface EPIPE on a subsequent test.
-        if (typeof req.resume === "function") req.resume();
-        return reject(err);
-      }
-
-      resolve({ fields, files });
-    });
-  });
-
-export const nodeVersion = process.versions.node
-  .split(".")
-  .map(v => parseInt(v, 10));
 
 export const generateReadable = (
   length = 1024 * 1024,
@@ -255,87 +224,3 @@ export const makeEchoStream = (echo: boolean) =>
       echo && console.log("Echo chunk", chunk);
     },
   });
-
-export const startTestServer = async (port: number) => {
-  const handler = async (req: IncomingMessage) => {
-    const parsed = new URL(req.url ?? "/", `http://localhost:${port}`);
-
-    const params = Object.fromEntries(parsed.searchParams);
-
-    const response: Record<string, unknown> = {
-      url: req.url,
-      pathname: parsed.pathname,
-      params,
-      method: req.method,
-      headers: req.headers,
-    };
-
-    const contentType = req.headers["content-type"] || "";
-
-    const { delay = 0 } = params;
-
-    if (+delay) {
-      await setTimeoutAsync(+delay);
-    }
-
-    if (parsed.pathname.replace(/\/$/, "")) {
-      // case "/echo/json":
-      // default:
-      if (contentType.startsWith("multipart/")) {
-        const { fields, files } = await handleFormData(req);
-        response.form = fields;
-        response.files = files;
-      }
-      else {
-        response.body = (await getStreamAsBuffer(req)).toString("hex");
-      }
-
-      return {
-        body: response,
-      };
-    }
-
-    return undefined;
-  };
-
-  return startHTTPServer(
-     
-    async (req, res) => {
-      res.setHeader("Access-Control-Allow-Origin", `*`);
-      res.setHeader(
-        "Access-Control-Allow-Methods",
-        "GET, POST, PUT, DELETE, OPTIONS"
-      );
-      res.setHeader("Access-Control-Allow-Headers", "*");
-      res.setHeader("Access-Control-Max-Age", "86400");
-
-      if (req.method === "OPTIONS") {
-        res.writeHead(204);
-        res.end();
-        return;
-      }
-
-      await Promise.resolve(handler(req)).then(result => {  
-         
-        const {
-          status = 200,
-          headers = {},
-          body,
-        } = (result || {}) as {
-          body?: unknown;
-          headers?: Record<string, string>;
-          status?: number;
-        };
-
-        res.statusCode = status;
-
-        Object.entries(headers).forEach(([ header, value ]) => {
-          res.setHeader(header, value);
-        });
-
-        res.end(JSON.stringify(body, null, 2));
-      });
-    },
-    { port }
-  );
-};

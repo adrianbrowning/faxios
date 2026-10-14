@@ -4,12 +4,21 @@ import zlib from "node:zlib";
 import { describe, it } from "vitest";
 import faxios from "#src/index.js";
 import type { FaxiosProgressEvent } from "#src/lib/types.js";
-import { setTimeoutAsync, startHTTPServer, stopHTTPServer } from "../../setup/server.js";
+import { startHTTPServer, stopHTTPServer } from "../../setup/server.js";
 
 const BODY = "x".repeat(200_000);
 
 const urlOf = (server: { address: () => AddressInfo | null | string; }) =>
   `http://localhost:${(server.address() as AddressInfo).port}/`;
+
+// Progress listeners run through setImmediate; let the queued ones run.
+const drainMacrotasks = async () => {
+  for (let i = 0; i < 5; i++) {
+    await new Promise<void>(resolve => {
+      setImmediate(resolve);
+    });
+  }
+};
 
 const collectUncaught = async (run: () => Promise<void>): Promise<Array<unknown>> => {
   const errors: Array<unknown> = [];
@@ -24,8 +33,7 @@ const collectUncaught = async (run: () => Promise<void>): Promise<Array<unknown>
   process.on("unhandledRejection", onError);
   try {
     await run();
-    // Let queued microtasks and timers from the progress throttle run.
-    await setTimeoutAsync(50);
+    await drainMacrotasks();
   }
   finally {
     process.off("uncaughtException", onError);
@@ -108,7 +116,7 @@ describe("fetch adapter progress callbacks", () => {
           samples.push(e);
         },
       });
-      await setTimeoutAsync(50);
+      await drainMacrotasks();
       assert.strictEqual(data, BODY);
       assert.ok(samples.length > 0);
       for (const e of samples) {

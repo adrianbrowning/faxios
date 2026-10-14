@@ -246,19 +246,22 @@ describe.runIf(typeof fetch === "function")(
     });
 
     it("should handle fetch failed error as an FaxiosError with ERR_NETWORK code", async () => {
-      try {
-        await fetchFaxios("http://notExistsUrl.in.nowhere");
-        assert.fail("should fail");
-      }
-      catch (err) {
-        const axiosErr = err as FaxiosError;
-        assert.strictEqual(axiosErr.code, FaxiosError.ERR_NETWORK);
-        assert.strictEqual(String(axiosErr), "FaxiosError: Network Error: ENOTFOUND (GET http://notExistsUrl.in.nowhere)");
-        assert.strictEqual(
-          axiosErr.cause && (axiosErr.cause as { code?: string; }).code,
-          "ENOTFOUND"
-        );
-      }
+      // Undici's DNS failure shape, injected so the test does not depend on a resolver.
+      const dnsFailure = async () => {
+        throw new TypeError("fetch failed", {
+          cause: Object.assign(new Error("getaddrinfo ENOTFOUND"), { code: "ENOTFOUND" }),
+        });
+      };
+
+      await assert.rejects(
+        async () => fetchFaxios("http://example.invalid/", { env: { fetch: dnsFailure } }),
+        (err: FaxiosError) => {
+          assert.strictEqual(err.code, FaxiosError.ERR_NETWORK);
+          assert.strictEqual(String(err), "FaxiosError: Network Error: ENOTFOUND (GET http://example.invalid/)");
+          assert.strictEqual((err.cause as { code?: string; }).code, "ENOTFOUND");
+          return true;
+        }
+      );
     });
 
     it("names the underlying reason of a refused connection, without the URL's user info or query", async () => {

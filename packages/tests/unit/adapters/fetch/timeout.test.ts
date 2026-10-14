@@ -1,11 +1,11 @@
 import assert from "node:assert";
+import type { ServerResponse } from "node:http";
 import type { AddressInfo } from "node:net";
 import { AbortController } from "abortcontroller-polyfill/dist/cjs-ponyfill.js";
-import { describe, it } from "vitest";
+import { describe, it, vi } from "vitest";
 import faxios from "#src/index.js";
 import type { GenericAbortSignal } from "#src/lib/types.js";
 import {
-  setTimeoutAsync,
   startHTTPServer,
   stopHTTPServer
 } from "../../../setup/server.js";
@@ -44,17 +44,24 @@ const createBrokenDOMExceptionLikeError = () =>
     }
   );
 
+// A handler that holds every response until the test releases it, so the request can only time out.
+const createStall = () => {
+  const pending: Array<ServerResponse> = [];
+  const handler = (_req: unknown, res: ServerResponse) => {
+    pending.push(res);
+  };
+  const release = () => {
+    for (const res of pending.splice(0)) res.end("OK");
+  };
+  return { handler, release };
+};
+
 describe.runIf(typeof fetch === "function")(
   "supports fetch with nodejs",
   () => {
     it("should support a timeout", async () => {
-      const server = await startHTTPServer(
-        async (_req, res) => {
-          await setTimeoutAsync(1000);
-          res.end("OK");
-        },
-        { port: 0 }
-      );
+      const { handler, release } = createStall();
+      const server = await startHTTPServer(handler);
 
       try {
         const timeout = 500;
@@ -78,19 +85,15 @@ describe.runIf(typeof fetch === "function")(
         );
       }
       finally {
+        release();
         await stopHTTPServer(server);
       }
     });
 
     describe("fetch adapter - timeout normalization", () => {
       it("should reject with an FaxiosError(ETIMEDOUT) on timeout", async () => {
-        const server = await startHTTPServer(
-          async (_req, res) => {
-            await setTimeoutAsync(1000);
-            res.end("OK");
-          },
-          { port: 0 }
-        );
+        const { handler, release } = createStall();
+        const server = await startHTTPServer(handler);
 
         try {
           await assert.rejects(
@@ -111,6 +114,7 @@ describe.runIf(typeof fetch === "function")(
           );
         }
         finally {
+          release();
           await stopHTTPServer(server);
         }
       });
@@ -175,13 +179,10 @@ describe.runIf(typeof fetch === "function")(
         await assert.rejects(async () => request, assertUserAbort);
       });
 
-      // Timing-sensitive: a 50ms abort race observed by a fake fetch can flake
-      // under CI runner load even though the production code is fine. Retry as
-      // a backstop.
       it(
         "should surface ETIMEDOUT when fetch rejects with a broken DOMException on abort (Safari)",
-        { retry: 2 },
         async () => {
+          vi.useFakeTimers();
           const safariFetch = async (
             url: RequestInfo | URL,
             init?: RequestInit
@@ -199,7 +200,7 @@ describe.runIf(typeof fetch === "function")(
             });
           };
 
-          await assert.rejects(
+          const assertion = assert.rejects(
             async () =>
               fetchFaxios.get("/", {
                 timeout: 50,
@@ -218,6 +219,14 @@ describe.runIf(typeof fetch === "function")(
               return true;
             }
           );
+
+          try {
+            await vi.advanceTimersByTimeAsync(50);
+            await assertion;
+          }
+          finally {
+            vi.useRealTimers();
+          }
         }
       );
     });

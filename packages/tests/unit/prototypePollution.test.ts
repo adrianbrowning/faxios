@@ -8,8 +8,10 @@ import FaxiosError from "#src/lib/core/FaxiosError.js";
 import { retry } from "#src/lib/plugins/retry.ts";
 import { timing } from "#src/lib/plugins/timing.ts";
 import { ObjProto, restorePrototypeAfterEach } from "../setup/pollution.js";
+import { startHTTPServer, stopHTTPServer } from "../setup/server.js";
+import type { ExtendedServer } from "../setup/server.js";
 
-type ServerLike = http.Server;
+type ServerLike = ExtendedServer;
 
 // ponytail: cast for test ergonomics — faxios.get returns Promise<unknown> in this codebase
 
@@ -24,14 +26,10 @@ describe("Prototype Pollution Protection", () => {
     it("should keep 4xx/5xx responses rejected when Object.prototype.validateStatus is polluted", async () => {
       ObjProto.validateStatus = () => true;
 
-      const server = http.createServer((_req, res) => {
+      const server = await startHTTPServer((_req, res) => {
         res.writeHead(401, { "Content-Type": "application/json" });
         res.end("{\"error\":\"unauthorized\"}");
       });
-
-      await new Promise<void>(resolve =>
-        server.listen(0, "127.0.0.1", () => resolve())
-      );
       const { port } = server.address() as AddressInfo;
 
       try {
@@ -49,7 +47,7 @@ describe("Prototype Pollution Protection", () => {
         assert.strictEqual(threw, true);
       }
       finally {
-        await new Promise<void>(resolve => server.close(() => resolve()));
+        await stopHTTPServer(server);
       }
     }, 10000);
   });
@@ -77,14 +75,10 @@ describe("Prototype Pollution Protection", () => {
         apiKey: "sk-secret-internal-key",
       };
 
-      const server = http.createServer((_req, res) => {
+      const server = await startHTTPServer((_req, res) => {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify(payload));
       });
-
-      await new Promise<void>(resolve =>
-        server.listen(0, "127.0.0.1", () => resolve())
-      );
       const { port } = server.address() as AddressInfo;
 
       try {
@@ -95,7 +89,7 @@ describe("Prototype Pollution Protection", () => {
         assert.deepStrictEqual(stolen, {});
       }
       finally {
-        await new Promise<void>(resolve => server.close(() => resolve()));
+        await stopHTTPServer(server);
       }
     }, 10000);
   });
@@ -115,14 +109,10 @@ describe("Prototype Pollution Protection", () => {
         },
       };
 
-      const server = http.createServer((_req, res) => {
+      const server = await startHTTPServer((_req, res) => {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end("{\"ok\":true}");
       });
-
-      await new Promise<void>(resolve =>
-        server.listen(0, "127.0.0.1", () => resolve())
-      );
       const { port } = server.address() as AddressInfo;
 
       try {
@@ -131,7 +121,7 @@ describe("Prototype Pollution Protection", () => {
         assert.strictEqual(hijackCalled, false);
       }
       finally {
-        await new Promise<void>(resolve => server.close(() => resolve()));
+        await stopHTTPServer(server);
       }
     }, 10000);
   });
@@ -144,21 +134,16 @@ describe("Prototype Pollution Protection", () => {
     async function startServer(
       handler?: http.RequestListener
     ): Promise<ServerLike> {
-      return new Promise(resolve => {
-        const server = http.createServer(
-          handler ||
-            ((req, res) => {
-              res.writeHead(200, { "Content-Type": "application/json" });
-              res.end(JSON.stringify({ headers: req.headers, url: req.url }));
-            })
-        );
-        server.listen(0, "127.0.0.1", () => resolve(server));
-      });
+      return startHTTPServer(
+        handler ||
+          ((req, res) => {
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ headers: req.headers, url: req.url }));
+          })
+      );
     }
 
-    async function stopServer(server: ServerLike): Promise<void> {
-      return new Promise(resolve => server.close(() => resolve()));
-    }
+    const stopServer = stopHTTPServer;
 
     it("should not pick up Object.prototype.auth as an Authorization header", async () => {
       ObjProto.auth = { username: "attacker", password: "exfil" };
@@ -246,14 +231,11 @@ describe("Prototype Pollution Protection", () => {
     // Critically, hijackHit must always be false.
     it("should not hijack relative-URL requests via Object.prototype.baseURL", async () => {
       let hijackHit = false;
-      const hijacker = http.createServer((_req, res) => {
+      const hijacker = await startHTTPServer((_req, res) => {
         hijackHit = true;
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end("{\"hijacked\":true}");
       });
-      await new Promise<void>(resolve =>
-        hijacker.listen(0, "127.0.0.1", () => resolve())
-      );
       const { port: hijackerPort } = hijacker.address() as AddressInfo;
 
       ObjProto.baseURL = `http://127.0.0.1:${hijackerPort}`;
@@ -272,7 +254,7 @@ describe("Prototype Pollution Protection", () => {
         assert.strictEqual(threw, true);
       }
       finally {
-        await new Promise<void>(resolve => hijacker.close(() => resolve()));
+        await stopHTTPServer(hijacker);
       }
     }, 10000);
 
@@ -280,23 +262,17 @@ describe("Prototype Pollution Protection", () => {
     // even for a fully-qualified requested URL.
     it("should not hijack requests via Object.prototype.baseURL with allowAbsoluteUrls:false", async () => {
       let hijackHit = false;
-      const hijacker = http.createServer((_req, res) => {
+      const hijacker = await startHTTPServer((_req, res) => {
         hijackHit = true;
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end("{\"hijacked\":true}");
       });
-      await new Promise<void>(resolve =>
-        hijacker.listen(0, "127.0.0.1", () => resolve())
-      );
       const { port: hijackerPort } = hijacker.address() as AddressInfo;
 
-      const target = http.createServer((_req, res) => {
+      const target = await startHTTPServer((_req, res) => {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end("{\"ok\":true}");
       });
-      await new Promise<void>(resolve =>
-        target.listen(0, "127.0.0.1", () => resolve())
-      );
       const { port: targetPort } = target.address() as AddressInfo;
 
       ObjProto.baseURL = `http://127.0.0.1:${hijackerPort}`;
@@ -321,8 +297,8 @@ describe("Prototype Pollution Protection", () => {
         assert.strictEqual(threw, false);
       }
       finally {
-        await new Promise<void>(resolve => hijacker.close(() => resolve()));
-        await new Promise<void>(resolve => target.close(() => resolve()));
+        await stopHTTPServer(hijacker);
+        await stopHTTPServer(target);
       }
     }, 10000);
   });
@@ -333,9 +309,8 @@ describe("Prototype Pollution Protection", () => {
     async function startEcho(
       handler?: http.RequestListener
     ): Promise<ServerLike> {
-      return new Promise(resolve => {
-        const server = http.createServer(
-          handler ||
+      return startHTTPServer(
+        handler ||
             ((req, res) => {
               let body = "";
               req.on("data", (c: Buffer) => (body += c));
@@ -351,12 +326,9 @@ describe("Prototype Pollution Protection", () => {
                 );
               });
             })
-        );
-        server.listen(0, "127.0.0.1", () => resolve(server));
-      });
+      );
     }
-    const stop = async (s: ServerLike): Promise<void> =>
-      new Promise(resolve => s.close(() => resolve()));
+    const stop = stopHTTPServer;
 
     it("should ignore polluted transformRequest", async () => {
       let invoked = false;
@@ -573,13 +545,9 @@ describe("Prototype Pollution Protection", () => {
     async function startServer(
       handler: http.RequestListener
     ): Promise<ServerLike> {
-      return new Promise(resolve => {
-        const server = http.createServer(handler);
-        server.listen(0, "127.0.0.1", () => resolve(server));
-      });
+      return startHTTPServer(handler);
     }
-    const stop = async (s: ServerLike): Promise<void> =>
-      new Promise(resolve => s.close(() => resolve()));
+    const stop = stopHTTPServer;
 
     // Full MITM via prototype pollution gadget in
     // `config.proxy`. mergeConfig must not surface a polluted Object.prototype.proxy
@@ -766,7 +734,7 @@ describe("Prototype Pollution Protection", () => {
     type Hit = { body: string; method: string | undefined; url: string | undefined; };
 
     async function startEchoServer(hits: Array<Hit>): Promise<ServerLike> {
-      const server = http.createServer((req, res) => {
+      return startHTTPServer((req, res) => {
         let body = "";
         req.setEncoding("utf8");
         req.on("data", (chunk: string) => { body += chunk; });
@@ -781,16 +749,9 @@ describe("Prototype Pollution Protection", () => {
           res.end("{\"real\":true}");
         });
       });
-      const { promise, resolve } = Promise.withResolvers<ServerLike>();
-      server.listen(0, "127.0.0.1", () => resolve(server));
-      return promise;
     }
     const urlOf = (s: ServerLike): string => `http://127.0.0.1:${(s.address() as AddressInfo).port}`;
-    const stop = async (s: ServerLike): Promise<void> => {
-      const { promise, resolve } = Promise.withResolvers<void>();
-      s.close(() => resolve());
-      return promise;
-    };
+    const stop = stopHTTPServer;
 
     it("sends body keys constructor, prototype and __proto__ unchanged", async () => {
       const hits: Array<Hit> = [];
