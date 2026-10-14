@@ -6,17 +6,28 @@ import type { GenericAbortSignal } from "#src/lib/types.js";
 import { installFetchMock } from "./helpers/fetchMock.js";
 
 describe("cancel (vitest browser)", () => {
-  it("supports cancellation using AbortController signal", async () => {
-    using _mock = installFetchMock();
+  it("cancels an in-flight request using AbortController signal", async () => {
     const controller = new AbortController();
+    const { promise: sent, resolve: send } = Promise.withResolvers<AbortSignal>();
+    const fetch = async (_input: RequestInfo | URL, init?: RequestInit) => {
+      const signal = init!.signal!;
+      send(signal);
+      return new Promise<Response>((_resolve, reject) => {
+        signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+      });
+    };
     const promise = faxios.get("/foo/bar", {
       signal: controller.signal as GenericAbortSignal,
+      env: { fetch },
     });
 
+    // Abort once fetch has the request, so the abort has to reach the fetch itself.
+    const fetchSignal = await sent;
     controller.abort();
 
     const error = await promise.catch((thrown: unknown) => thrown);
     expect(faxios.isCancel(error)).toBe(true);
+    expect(fetchSignal.aborted).toBe(true);
   });
 
   describe("listener cleanup on error paths", () => {

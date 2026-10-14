@@ -182,33 +182,31 @@ function wait(ms: number, signal: FaxiosRequestConfig["signal"], config: FaxiosR
     }
     const onAbort = () => {
       clearTimeout(timer);
-      signal?.removeEventListener?.("abort", onAbort);
+      signal?.removeEventListener("abort", onAbort);
       reject(canceledFrom(signal!, config));
     };
     const timer = setTimeout(() => {
-      signal?.removeEventListener?.("abort", onAbort);
+      signal?.removeEventListener("abort", onAbort);
       resolve();
     }, ms);
-    signal?.addEventListener?.("abort", onAbort);
+    signal?.addEventListener("abort", onAbort);
   });
 }
 
 // A try's signal: it aborts when the try's own controller does, or when the request's signal does.
-// any() follows the request's signal without a listener on it, so a stream body read after the
-// try still sees the caller's abort. A signal any() can't take gets a listener `unlink` removes.
+// A listener, never AbortSignal.any(): an any() signal stays linked to the request's signal for as
+// long as that lives, and without a `timeout` that is the caller's, perhaps long-lived, signal.
+// `unlink` removes the listener once the try settles. A stream body read after that stays under
+// the request's signal and timeout through core, not through this link.
 function linkSignal(outer: FaxiosRequestConfig["signal"], controller: AbortController): { signal: AbortSignal; unlink: () => void; } {
-  const unlinked = { signal: controller.signal, unlink: () => {} };
-  if (!outer) return unlinked;
-  if (typeof AbortSignal.any === "function" && outer instanceof AbortSignal) {
-    return { ...unlinked, signal: AbortSignal.any([ outer, controller.signal ]) };
-  }
+  if (!outer) return { signal: controller.signal, unlink: () => {} };
   const forward = () => {
-    outer.removeEventListener?.("abort", forward);
+    outer.removeEventListener("abort", forward);
     controller.abort("reason" in outer ? outer.reason : undefined);
   };
   if (outer.aborted) forward();
-  else outer.addEventListener?.("abort", forward);
-  return { signal: controller.signal, unlink: () => outer.removeEventListener?.("abort", forward) };
+  else outer.addEventListener("abort", forward);
+  return { signal: controller.signal, unlink: () => outer.removeEventListener("abort", forward) };
 }
 
 // One try with its own deadline. It settles once the deadline passes, even while middleware after

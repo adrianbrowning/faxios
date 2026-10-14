@@ -1,4 +1,5 @@
 import assert from "node:assert";
+import { getEventListeners } from "node:events";
 import { describe, it } from "vitest";
 import CanceledError from "#src/lib/cancel/CanceledError.js";
 import composeSignals from "#src/lib/helpers/composeSignals.js";
@@ -45,6 +46,41 @@ describe("helpers::composeSignals", () => {
 
     assert.strictEqual(signal.aborted, true);
     assert.strictEqual((signal.reason as CanceledError).message, "first");
+  });
+
+  runIfAbortController("removes its listeners from every input on unsubscribe", async () => {
+    const first = new AbortController();
+    const second = new AbortController();
+
+    const signal = composeSignals([ first.signal, second.signal ])!;
+    assert.strictEqual(getEventListeners(first.signal, "abort").length, 1);
+    signal.unsubscribe!();
+    // Removal is deferred to a microtask.
+    await Promise.resolve();
+
+    assert.strictEqual(getEventListeners(first.signal, "abort").length, 0);
+    assert.strictEqual(getEventListeners(second.signal, "abort").length, 0);
+  });
+
+  runIfAbortController("removes its listeners from every input once one aborts", () => {
+    const first = new AbortController();
+    const second = new AbortController();
+
+    composeSignals([ first.signal, second.signal ]);
+    second.abort(new Error("second"));
+
+    assert.strictEqual(getEventListeners(first.signal, "abort").length, 0);
+    assert.strictEqual(getEventListeners(second.signal, "abort").length, 0);
+  });
+
+  runIfAbortController("adds no listener after an input that is already aborted", () => {
+    const first = new AbortController();
+    const second = new AbortController();
+    first.abort(new Error("first"));
+
+    composeSignals([ first.signal, second.signal ]);
+
+    assert.strictEqual(getEventListeners(second.signal, "abort").length, 0);
   });
 
   it("should return undefined when no signal is provided", () => {

@@ -6,9 +6,11 @@ import isCancel from "../cancel/isCancel.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import { validateSchema } from "../core/validateSchema.js";
+import raceAbort from "../helpers/raceAbort.js";
 import { substitutePathParams } from "../helpers/substitutePathParams.js";
 import type { FaxiosResponse, InternalFaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
+import assertSignal from "./assertSignal.js";
 import transformData from "./transformData.js";
 
 function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void {
@@ -19,22 +21,9 @@ function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void
 
 // An async schema is caller code that may take any time, so the caller's abort settles the request
 // right away instead of waiting for it. The final check before the adapter still runs either way.
-function settleOnAbort(preFlight: Promise<void>, config: InternalFaxiosRequestConfig): Promise<void> {
+function settleOnAbort(preFlight: () => Promise<void>, config: InternalFaxiosRequestConfig): Promise<void> {
   const signal = config.signal;
-  if (!signal || typeof signal.addEventListener !== "function") return preFlight;
-  // The executor form: the library's TypeScript lib target has no Promise.withResolvers.
-  return new Promise((resolve, reject) => {
-    const onAbort = () => {
-      signal.removeEventListener?.("abort", onAbort);
-      reject(canceledFromSignal(signal, config));
-    };
-    signal.addEventListener?.("abort", onAbort);
-    // Once the abort has settled the request, the schema's result has nowhere to go; this still
-    // consumes it, so it never becomes an unhandled rejection.
-    preFlight.finally(() => signal.removeEventListener?.("abort", onAbort)).then(resolve, reject);
-    // A schema may abort before its first await, which fires no event once we listen.
-    if (signal.aborted) onAbort();
-  });
+  return signal ? raceAbort(signal, preFlight, () => canceledFromSignal(signal, config)) : preFlight();
 }
 
 async function validateAndSubstitutePathParams(config: InternalFaxiosRequestConfig): Promise<void> {
@@ -78,7 +67,8 @@ async function validateAndSubstitutePathParams(config: InternalFaxiosRequestConf
 // that a synchronous controller.abort() after request creation is processed by the adapter's
 // signal listener, not before it registers. An async function always returns a Promise, inserting
 // a microtask boundary that breaks abort timing in fetch adapter tests and real-world usage.
-function validatePreFlight(config: InternalFaxiosRequestConfig): Promise<void> | undefined {
+// The schema work is returned unstarted, so its abort listener is in place before a schema runs.
+function validatePreFlight(config: InternalFaxiosRequestConfig): (() => Promise<void>) | undefined {
   if (config.pathParamsSchema && config.pathParams === undefined) {
     throw new FaxiosError(
       "pathParams is required when pathParamsSchema is configured",
@@ -97,7 +87,7 @@ function validatePreFlight(config: InternalFaxiosRequestConfig): Promise<void> |
     return undefined;
   }
 
-  return (async () => {
+  return async () => {
     if (config.pathParams !== undefined) {
       await validateAndSubstitutePathParams(config);
     }
@@ -111,10 +101,12 @@ function validatePreFlight(config: InternalFaxiosRequestConfig): Promise<void> |
       throwIfCancellationRequested(config);
       config.data = await validateSchema(config.requestSchema, config.data, FaxiosError.ERR_BAD_REQUEST_SCHEMA, config);
     }
-  })();
+  };
 }
 
 export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig): Promise<FaxiosResponse> {
+  // Middleware may pass on a signal of its own.
+  assertSignal(config.signal, config);
   throwIfCancellationRequested(config);
 
   const preFlight = validatePreFlight(config);

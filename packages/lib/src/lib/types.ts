@@ -93,11 +93,16 @@ export interface TransitionalOptions {
   validateStatusUndefinedResolves?: boolean;
 }
 
+/**
+ * A signal faxios can watch: an `AbortSignal` from another realm or a polyfill. faxios listens for
+ * its `abort` event, so the listener methods are required; a `signal` without them rejects with
+ * `ERR_BAD_OPTION_VALUE`.
+ */
 export interface GenericAbortSignal {
   readonly aborted: boolean;
-  addEventListener?: (...args: Array<unknown>) => unknown;
+  addEventListener: (...args: Array<unknown>) => unknown;
   onabort?: ((event: Event) => void) | null;
-  removeEventListener?: (...args: Array<unknown>) => unknown;
+  removeEventListener: (...args: Array<unknown>) => unknown;
 }
 
 export interface GenericFormData {

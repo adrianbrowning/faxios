@@ -506,9 +506,12 @@ describe("core::middleware", () => {
       const sent: Array<Sent> = [];
       const controller = new AbortController();
       const { promise: gate, resolve: open } = Promise.withResolvers<void>();
+      const { promise: resumed, resolve: resume } = Promise.withResolvers<unknown>();
       const api = faxios.create({ env: { fetch: jsonFetch(sent) } }).use(async (ctx, next) => {
         await gate;
-        return next(ctx);
+        const result = next(ctx);
+        resume(result.catch((err: unknown) => err));
+        return result;
       });
 
       const request = api.get(URL, { signal: controller.signal });
@@ -516,18 +519,23 @@ describe("core::middleware", () => {
       open();
 
       await assert.rejects(request, (err: unknown) => err instanceof CanceledError);
+      // The middleware still goes on to call next(): wait for that dispatch to settle before counting sends.
+      assert.ok(await resumed instanceof CanceledError);
       assert.strictEqual(sent.length, 0);
     });
 
     it("cancels an in-flight request through a middleware that awaits next()", async () => {
       const controller = new AbortController();
+      const { promise: sent, resolve: send } = Promise.withResolvers<AbortSignal>();
       const api = faxios.create({
         env: {
-          fetch: async (_input: Request | string | URL, init?: RequestInit) => new Promise<Response>((_resolve, reject) => {
-            const abort = () => reject(new DOMException("aborted", "AbortError"));
-            if (init?.signal?.aborted) return abort();
-            init?.signal?.addEventListener("abort", abort);
-          }),
+          fetch: async (_input: Request | string | URL, init?: RequestInit) => {
+            const signal = init!.signal!;
+            send(signal);
+            return new Promise<Response>((_resolve, reject) => {
+              signal.addEventListener("abort", () => reject(new DOMException("aborted", "AbortError")), { once: true });
+            });
+          },
         },
       }).use(async (ctx, next) => {
         const response = await next(ctx);
@@ -535,9 +543,11 @@ describe("core::middleware", () => {
       });
 
       const request = api.get(URL, { signal: controller.signal });
+      const fetchSignal = await sent;
       controller.abort();
 
       await assert.rejects(request, (err: unknown) => err instanceof CanceledError);
+      assert.strictEqual(fetchSignal.aborted, true);
     });
 
     it("rejects as soon as the caller aborts, even while a middleware never resumes", async () => {

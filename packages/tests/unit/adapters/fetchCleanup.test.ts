@@ -90,43 +90,37 @@ describe("fetch adapter request cleanup", () => {
   });
 
   describe("stream response without a body", () => {
+    // Middleware makes core hold the request open for a stream body; with no body there is none.
+    const passThrough = faxios.create({ allowAbsoluteUrls: true }).use(async (ctx, next) => next(ctx));
+
     for (const [ method, status ] of [[ "get", 204 ], [ "head", 200 ]] as const) {
-      it(`removes the caller signal listener and clears the timeout (${method.toUpperCase()} ${status})`, async () => {
-        const server = await startHTTPServer((_req, res) => {
-          res.statusCode = status;
-          res.end();
-        });
-        try {
-          const controller = new AbortController();
-          let fetchSignal: AbortSignal | undefined;
-          const response = await client.request({
-            url: urlOf(server),
-            method,
-            responseType: "stream",
-            signal: controller.signal,
-            timeout: 60000,
-            env: {
-              fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
-                fetchSignal = init?.signal ?? undefined;
-                return fetch(input, init);
-              },
-            },
-          });
-          assert.strictEqual(response.status, status);
-          assert.strictEqual(response.data, null);
-          // Cleanup is deferred to the next tick.
-          await new Promise(resolve => setImmediate(resolve));
-          assert.strictEqual(getEventListeners(controller.signal, "abort").length, 0);
-          // The timer is gone: advancing past the timeout doesn't abort the request signal.
-          vi.useFakeTimers();
-          vi.advanceTimersByTime(60001);
-          assert.ok(fetchSignal);
-          assert.strictEqual(fetchSignal.aborted, false);
-        }
-        finally {
-          vi.useRealTimers();
-          await stopHTTPServer(server);
-        }
+      const request = async (signal: AbortSignal, timeout?: number) => passThrough.request({
+        url: "http://localhost/",
+        method,
+        responseType: "stream",
+        signal,
+        timeout,
+        env: { fetch: async () => new Response(null, { status }) },
+      });
+
+      it(`clears the timeout once the request settles (${method.toUpperCase()} ${status})`, async () => {
+        vi.useFakeTimers();
+        const controller = new AbortController();
+        const response = await request(controller.signal, 60_000);
+        assert.strictEqual(response.status, status);
+        assert.strictEqual(response.data, null);
+        // Runs the cleanup the adapter defers, without waiting on a real tick.
+        await vi.advanceTimersByTimeAsync(0);
+        assert.strictEqual(vi.getTimerCount(), 0);
+      });
+
+      it(`removes the caller signal listener once the request settles (${method.toUpperCase()} ${status})`, async () => {
+        vi.useFakeTimers();
+        const controller = new AbortController();
+        const response = await request(controller.signal);
+        assert.strictEqual(response.data, null);
+        await vi.advanceTimersByTimeAsync(0);
+        assert.strictEqual(getEventListeners(controller.signal, "abort").length, 0);
       });
     }
   });

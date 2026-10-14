@@ -1,59 +1,40 @@
 import canceledFromSignal from "../cancel/canceledFromSignal.js";
 import utils from "../utils.js";
+import { onAbort } from "./raceAbort.js";
+import type { AbortableSignal } from "./raceAbort.js";
 
-type AbortHandler = (this: AbortSignal & { reason?: unknown; }, reason: unknown) => void;
-type EventListenerFn = (event: unknown) => void;
-type SignalLike = {
-  aborted: boolean;
-  addEventListener: (type: string, listener: EventListenerFn) => void;
-  reason?: unknown;
-  removeEventListener: (type: string, listener: EventListenerFn) => void;
-  unsubscribe?: (() => void) | ((handler: AbortHandler) => void);
-};
-export type ExtendedAbortSignal = AbortSignal & { unsubscribe?: (() => void) | ((handler: AbortHandler) => void); };
+export type ExtendedAbortSignal = AbortSignal & { unsubscribe?: () => void; };
 
+/**
+ * One signal that aborts when the first of `signals` does, with that input's reason as a
+ * `CanceledError`. Its `unsubscribe()` removes every listener on the inputs, on the next microtask.
+ */
 const composeSignals = (signals: Array<unknown> | null | undefined): ExtendedAbortSignal | undefined => {
-  let activeSignals: Array<SignalLike> | null = signals ? (signals.filter(Boolean) as Array<SignalLike>) : [];
+  const inputs = signals ? (signals.filter(Boolean) as Array<AbortableSignal & { reason?: unknown; }>) : [];
 
-  if (!activeSignals.length) {
+  if (!inputs.length) {
     return;
   }
 
   const controller = new AbortController();
-
-  let aborted = false;
-
-  const onabort: AbortHandler = function (this: AbortSignal & { reason?: unknown; }, reason: unknown) {
-    if (!aborted) {
-      aborted = true;
-      unsubscribe();
-      const err = reason instanceof Error ? reason : this.reason;
-      controller.abort(canceledFromSignal({ aborted: true, reason: err }));
-    }
-  };
+  let stops: Array<() => void> = [];
 
   const unsubscribe = () => {
-    if (!activeSignals) { return; }
-    activeSignals.forEach(signal => {
-      signal.unsubscribe
-        ? (signal.unsubscribe)(onabort)
-        : signal.removeEventListener("abort", onabort);
-    });
-    activeSignals = null;
+    for (const stop of stops) stop();
+    stops = [];
   };
 
-  // An already-aborted input never fires "abort" again, so propagate it now.
-  for (const signal of activeSignals) {
-    if (signal.aborted) {
-      onabort.call(signal as unknown as AbortSignal, signal.reason);
-      break;
-    }
-    signal.addEventListener("abort", onabort);
+  // An already-aborted input aborts the result at once; the inputs after it aren't watched.
+  for (const input of inputs) {
+    stops.push(onAbort(input, () => {
+      unsubscribe();
+      controller.abort(canceledFromSignal({ aborted: true, reason: input.reason }));
+    }));
+    if (controller.signal.aborted) break;
   }
 
-  const { signal } = controller;
-
-  (signal as ExtendedAbortSignal).unsubscribe = () => utils.asap(unsubscribe);
+  const signal: ExtendedAbortSignal = controller.signal;
+  signal.unsubscribe = () => utils.asap(unsubscribe);
 
   return signal;
 };

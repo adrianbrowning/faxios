@@ -3,6 +3,7 @@
 
 import canceledFromSignal from "../cancel/canceledFromSignal.js";
 import cloneConfig from "../helpers/cloneConfig.js";
+import raceAbort from "../helpers/raceAbort.js";
 import validator from "../helpers/validator.js";
 import type {
   FaxiosMiddleware,
@@ -20,6 +21,7 @@ import type {
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import utils from "../utils.js";
 import assertRequestConfig from "./assertRequestConfig.js";
+import assertSignal from "./assertSignal.js";
 import assertTimeout from "./assertTimeout.js";
 import { createDefinedEndpoint } from "./define.js";
 import type { DefineConfig, DefinedEndpoint } from "./define.js";
@@ -27,7 +29,7 @@ import dispatchRequest from "./dispatchRequest.js";
 import FaxiosError from "./FaxiosError.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
 import mergeConfig from "./mergeConfig.js";
-import armDeadline from "./requestDeadline.js";
+import armDeadline, { settleAfterBody } from "./requestDeadline.js";
 import resolveRequestURL from "./resolveRequestURL.js";
 import type { RouteBuilder, RouteConfig } from "./route.js";
 import { createRouteBuilder } from "./route.js";
@@ -207,33 +209,24 @@ function copyForDispatch(config: InternalFaxiosRequestConfig): InternalFaxiosReq
 // Middleware is caller code that may await anything, so the caller's abort settles the request
 // right away instead of waiting for it. Dispatch still checks the signal before the adapter call,
 // so nothing is sent after an abort either way. An already-aborted request runs no middleware.
+// A stream body still open when the request settles stays under the signal until it ends, and
+// `settle` runs then.
 function settleOnAbort(
   run: () => Promise<FaxiosResponse>,
   signal: AbortSignal | GenericAbortSignal,
-  config: InternalFaxiosRequestConfig
+  config: InternalFaxiosRequestConfig,
+  settle: () => void
 ): Promise<FaxiosResponse> {
-  if (signal.aborted) return Promise.reject(canceledFromSignal(signal, config));
-  const { addEventListener: add, removeEventListener: remove } = signal;
-  if (typeof add !== "function") return run();
-  return new Promise((resolve, reject) => {
-    const stop = () => remove?.call(signal, "abort", onAbort);
-    function onAbort() {
-      stop();
-      reject(canceledFromSignal(signal, config));
+  return raceAbort(signal, run, () => canceledFromSignal(signal, config)).then(
+    response => {
+      settleAfterBody(response, signal, config, settle);
+      return response;
+    },
+    (err: unknown) => {
+      settle();
+      throw err;
     }
-    // Listen before running: middleware may abort the signal before its first await.
-    add.call(signal, "abort", onAbort);
-    // The executor calls run() right away and turns a synchronous throw into a rejection, which
-    // Promise.resolve(run()) wouldn't, and .then(run) would delay dispatch by a tick.
-    // eslint-disable-next-line sonarjs/prefer-promise-shorthand -- see above
-    const pending = new Promise<FaxiosResponse>(_resolve => {
-      _resolve(run());
-    });
-    // Once the abort has settled the request, this result has nowhere to go; the handlers below
-    // still consume it, so it never becomes an unhandled rejection.
-    pending.finally(stop).then(resolve)
-      .catch(reject);
-  });
+  );
 }
 
 // Runs the request under its signal and `timeout`. The deadline is armed here, before middleware,
@@ -245,11 +238,10 @@ function runRequest(run: () => Promise<FaxiosResponse>, config: InternalFaxiosRe
   const timeout = utils.hasOwnProp(config, "timeout") ? config.timeout : undefined;
   const callerSignal = utils.hasOwnProp(config, "signal") ? config.signal : undefined;
   const ms = timeout == null ? 0 : Number(timeout);
-  if (ms <= 0) return callerSignal && hasMiddleware ? settleOnAbort(run, callerSignal, config) : run();
+  if (ms <= 0) return callerSignal && hasMiddleware ? settleOnAbort(run, callerSignal, config, () => {}) : run();
   const deadline = armDeadline(ms, callerSignal, config);
   config.signal = deadline.signal;
-  // settleOnAbort never throws, so the deadline is always settled.
-  return settleOnAbort(run, deadline.signal, config).finally(deadline.settle);
+  return settleOnAbort(run, deadline.signal, config, deadline.settle);
 }
 
 // One level's headers (instance or request), lowest precedence first: the `common` group, the
@@ -435,6 +427,7 @@ class Faxios {
     const internal = config as InternalFaxiosRequestConfig;
     // Before middleware, so a bad value never reaches caller code or a timer that fires at once.
     assertTimeout(utils.hasOwnProp(config, "timeout") ? config.timeout : undefined, internal);
+    assertSignal(utils.hasOwnProp(config, "signal") ? config.signal : undefined, internal);
 
     const composed = this.#composed;
     if (!composed) return runRequest(() => dispatchRequest(internal), internal, false);
