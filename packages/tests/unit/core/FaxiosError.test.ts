@@ -477,6 +477,30 @@ describe("core::FaxiosError", () => {
       expect((error.toJSON().config as any).redact).toEqual([ "password" ]);
     });
 
+    it.each([
+      [ "JSON", {}, "{\"username\":\"alice\",\"password\":\"hunter2\"}" ],
+      [ "urlencoded", { "Content-Type": "application/x-www-form-urlencoded" }, "username=alice&password=hunter2" ],
+    ])("masks redact keys in a %s body and keeps the caller's data on the error", async (_kind, headers, sent) => {
+      const bodies: Array<unknown> = [];
+      const api = faxios.create({
+        baseURL: "http://localhost",
+        env: {
+          fetch: async (_input: Request | string | URL, init?: RequestInit) => {
+            bodies.push(init?.body);
+            return new Response(null, { status: 401 });
+          },
+        },
+      });
+      const data = { username: "alice", password: "hunter2" };
+
+      const error = await api.post("/login", data, { headers, redact: [ "password" ] }).catch((err: unknown) => err as FaxiosError);
+
+      expect(bodies).toEqual([ sent ]);
+      expect(error.config?.data).toBe(data);
+      expect(error.toJSON().config).toMatchObject({ data: { username: "alice", password: "[REDACTED ****]" } });
+      expect(JSON.stringify(error)).not.toContain("hunter2");
+    });
+
     it("masks the instance's redact keys and the request's together", async () => {
       const api = faxios.create({
         baseURL: "http://localhost",

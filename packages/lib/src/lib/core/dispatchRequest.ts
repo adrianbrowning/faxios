@@ -122,11 +122,12 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
 
   config.headers = FaxiosHeaders.from(config.headers);
 
-  config.data = transformData.call(config, config.transformRequest);
+  // The serialized body goes to the adapter on its own; `config.data` keeps the caller's value, so
+  // the config on an error holds an object `redact` can mask instead of a JSON or form string.
+  const data: unknown = transformData.call(config, config.transformRequest);
 
   // fetch can't read the npm `form-data` package (a FormData-like stream with `getHeaders()`): it
   // would send the text "[object FormData]".
-  const data: unknown = config.data;
   if (utils.isFormData(data) && !utils.isSpecCompliantForm(data) && utils.isFunction(utils.getSafeProp(data, "getHeaders"))) {
     throw new FaxiosError(
       "The form-data package is not supported as a request body; use the global FormData",
@@ -148,10 +149,10 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
       config
     );
   }
-  const adapter = _adapter as (config: InternalFaxiosRequestConfig) => Promise<FaxiosResponse>;
+  const adapter = _adapter as (config: InternalFaxiosRequestConfig, body: unknown) => Promise<FaxiosResponse>;
 
   /* eslint-disable promise/always-return */
-  return (adapter(config))
+  return (adapter(config, data))
     .then(
 
       function onAdapterResolution(response: FaxiosResponse) {
