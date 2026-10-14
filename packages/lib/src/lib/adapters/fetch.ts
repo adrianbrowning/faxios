@@ -249,17 +249,21 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
   // The init passed to fetch next to the Request. fetch builds its own Request from both, and
   // undici converts the init into a plain dictionary first, so a member left out would pick up a
   // polluted Object.prototype value (`method`, `headers`, `redirect`, ...). Every member the
-  // Request carries is set again from the Request itself, so nothing is re-encoded: `body: null`
-  // moves the Request's body instead of reading the caller's body a second time, and `headers`
-  // are the Request's already-validated ones. Members a Request doesn't carry, such as undici's
-  // `dispatcher` or Next.js `next`, are copied as given.
+  // Request carries is set again from the Request itself, so nothing is re-encoded, and `headers`
+  // are the Request's already-validated ones. `body` is an own `undefined`: fetch then takes the
+  // Request's body instead of reading the caller's body a second time, and the own member still
+  // shadows a polluted Object.prototype.body. Not `null`, which Bun reads as "send no body".
+  // `request.body` is never read here: in Bun and Deno that turns a string or bytes body into a
+  // stream, which is then sent without a Content-Length. Members a Request doesn't carry, such as
+  // undici's `dispatcher` or Next.js `next`, are copied as given.
   const fetchInitFor = (request: Request, requestInit: Record<string, unknown>): Record<string, unknown> => {
     const init: Record<string, unknown> = Object.create(null);
     const requestPrototype = (Request as AnyConstructor).prototype;
     for (const key of Object.keys(requestInit)) {
+      if (key === "body" || key === "signal") continue;
       init[key] = utils.hasOwnInPrototypeChain(requestPrototype, key) ? Reflect.get(request, key) : requestInit[key];
     }
-    init["body"] = null;
+    init["body"] = undefined;
     init["signal"] = requestInit["signal"];
     return init;
   };

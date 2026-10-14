@@ -15,7 +15,7 @@
     "form-data": "npm:form-data@4.0.6"
   },
   "tasks": {
-    "test": "deno check types/ && deno test --allow-read --allow-env tests/"
+    "test": "deno check types/ && deno test --allow-read --allow-env --allow-net=127.0.0.1 tests/"
   },
   "test": {
     "include": ["tests/**/*.smoke.test.ts"]

@@ -113,8 +113,10 @@ describe("request built once (#296)", () => {
     assert.strictEqual(seenInput.headers.get("content-type"), "application/json");
     assert.ok(seenInit);
     assert.strictEqual(Object.getPrototypeOf(seenInit), null);
-    // The body moves from the Request; fetch never gets the caller's body to encode again.
-    assert.strictEqual(seenInit["body"], null);
+    // The body moves from the Request; fetch never gets the caller's body to encode again. An own
+    // `undefined`, not `null`: Bun reads `body: null` as "send no body".
+    assert.ok(Object.hasOwn(seenInit, "body"));
+    assert.strictEqual(seenInit["body"], undefined);
     assert.strictEqual(seenInit["headers"], seenInput.headers);
     assert.strictEqual(seenInit["method"], "POST");
     assert.deepStrictEqual(seenInit["next"], { revalidate: 1 });
