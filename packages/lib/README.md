@@ -30,7 +30,7 @@ pnpm add @gcmdev/faxios
 
 ## Example
 
-```js file=packages/tests/docs-examples/sources/package-readme-request.js
+```js file=packages/tests/docs-examples/sources/package-readme-request.js expect=request:GET%20https://example.test/user?ID=12345%0A,request:POST%20https://example.test/user%0A,request:{"firstName":"Fred"%2C"lastName":"Flintstone"}
 import faxios from "@gcmdev/faxios";
 
 const { data: user } = await faxios.get("/user", {
@@ -46,7 +46,7 @@ const response = await faxios.post("/user", {
 
 Add behaviour to every request with `.use()`. Keep the instance it returns: only that value is typed with the plugin's options.
 
-```js file=packages/tests/docs-examples/sources/package-readme-plugin.js
+```js file=packages/tests/docs-examples/sources/package-readme-plugin.js expect=request:GET%20https://example.test/user%0Aaccept:%20application/json%0A
 import faxios from "@gcmdev/faxios";
 import { retry } from "@gcmdev/faxios/plugins/retry";
 

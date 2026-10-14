@@ -17,7 +17,7 @@ npm install @gcmdev/faxios
 
 ## Example
 
-```ts file=packages/tests/docs-examples/sources/landing-readme.ts
+```ts file=packages/tests/docs-examples/sources/landing-readme.ts expect=request:GET%20https://api.example.com/users/1%0A,log:200
 import faxios from "@gcmdev/faxios";
 
 const { data, status } = await faxios.get("https://api.example.com/users/1");
