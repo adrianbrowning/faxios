@@ -332,6 +332,40 @@ describe("plugins::authBearer", () => {
       assert.deepStrictEqual(authorizations, [ "Bearer token", null, "Bearer token", null ]);
     });
 
+    // Middleware runs before pathParamsSchema, so the raw pathParams can't fill the template.
+    it("sends the token when pathParamsSchema fills a placeholder with a default", async () => {
+      const urls: Array<string> = [];
+      const { fetch, authorizations } = recordingFetch();
+      const recording = async (input: Request | string | URL, init?: RequestInit) => {
+        urls.push(input instanceof Request ? input.url : String(input));
+        return fetch(input, init);
+      };
+      const pathParamsSchema = { "~standard": { version: 1 as const, vendor: "test", validate: (value: unknown) => ({ value: { version: "v2", ...(value as object) } }) } };
+      const api = faxios.create({ baseURL: "https://api.test", env: { fetch: recording } }).use(authBearer(() => "token"));
+
+      await api.get("/{version}/users", { pathParams: {}, pathParamsSchema });
+
+      assert.deepStrictEqual(urls, [ "https://api.test/v2/users" ]);
+      assert.deepStrictEqual(authorizations, [ "Bearer token" ]);
+    });
+
+    it("sends the token when pathParamsSchema renames a placeholder's key", async () => {
+      const urls: Array<string> = [];
+      const { fetch, authorizations } = recordingFetch();
+      const recording = async (input: Request | string | URL, init?: RequestInit) => {
+        urls.push(input instanceof Request ? input.url : String(input));
+        return fetch(input, init);
+      };
+      const rename = (value: unknown) => ({ value: { userId: value && typeof value === "object" && "id" in value ? value.id : undefined } });
+      const pathParamsSchema = { "~standard": { version: 1 as const, vendor: "test", validate: rename } };
+      const api = faxios.create({ baseURL: "https://api.test", env: { fetch: recording } }).use(authBearer(() => "token"));
+
+      await api.get("/users/{userId}", { pathParams: { id: "7" }, pathParamsSchema });
+
+      assert.deepStrictEqual(urls, [ "https://api.test/users/7" ]);
+      assert.deepStrictEqual(authorizations, [ "Bearer token" ]);
+    });
+
     it("on the default singleton, sends no token to an absolute URL", async () => {
       const { fetch, authorizations } = recordingFetch();
       const plugin = authBearer(() => "token");

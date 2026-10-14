@@ -63,12 +63,14 @@ function pageHref(): string | undefined {
 }
 
 function sendsTokenTo(config: InternalFaxiosRequestConfig, instanceBaseURL: unknown, origins: null | ReadonlyArray<string>): boolean {
-  // The URL core sends, from the same resolver. `params` can't move the origin, so the caller's
-  // paramsSerializer isn't run an extra time. A URL core rejects (an absolute URL with
-  // `allowAbsoluteUrls: false`, a path param `pathParams` can't fill) gets no token.
+  // The URL core sends, from the same resolver, without `pathParams` and `params`: middleware runs
+  // before `pathParamsSchema`, which may fill or rename placeholders, and the caller's
+  // paramsSerializer shouldn't run an extra time. Path params are percent-encoded into the path,
+  // so they don't move the origin; a placeholder in the host leaves an origin that matches nothing.
+  // A URL core rejects (an absolute URL with `allowAbsoluteUrls: false`) gets no token.
   let url: string;
   try {
-    const resolved: unknown = resolveRequestURL({ ...config, params: undefined });
+    const resolved: unknown = resolveRequestURL({ ...config, pathParams: undefined, params: undefined });
     url = typeof resolved === "string" ? resolved : "";
   }
   catch {

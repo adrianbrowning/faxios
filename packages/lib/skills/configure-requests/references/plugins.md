@@ -105,8 +105,10 @@ It is the resolver core uses for the request and `getUri()`: `pathParams` filled
 joined (honouring `allowAbsoluteUrls`), `params` serialized. A URL is absolute only with a scheme
 and `//`, so `documents:batchGet` joins `baseURL`. It throws what the request would reject with
 (`ERR_INVALID_URL`, `ERR_BAD_OPTION_VALUE`), so a plugin that guards credentials treats a throw as
-"don't attach". For the API origin use `ctx.instanceBaseURL`, not `ctx.config.baseURL`, which a
-per-request override can point anywhere.
+"don't attach". Middleware runs before `pathParamsSchema`, so for an origin check resolve with
+`pathParams: undefined` (and `params: undefined`): a schema may fill or rename placeholders the raw
+`pathParams` can't, and path params never move the origin. For the API origin use
+`ctx.instanceBaseURL`, not `ctx.config.baseURL`, which a per-request override can point anywhere.
 
 ```ts
 import faxios, { resolveRequestURL } from "@gcmdev/faxios";
@@ -118,7 +120,8 @@ const apiKey = (key: string) => definePlugin({
     let sameAPI = false;
     try {
       // Both throw for a URL that isn't absolute, or one core would reject: no key then.
-      sameAPI = new URL(resolveRequestURL(ctx.config)).origin === new URL(ctx.instanceBaseURL ?? "").origin;
+      const url = resolveRequestURL({ ...ctx.config, pathParams: undefined, params: undefined });
+      sameAPI = new URL(url).origin === new URL(ctx.instanceBaseURL ?? "").origin;
     }
     catch {
       sameAPI = false;
