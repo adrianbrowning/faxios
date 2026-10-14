@@ -67,9 +67,8 @@ const sentStreamBodies = new WeakSet<object>();
 // would send an empty body (Node stream) or get an uncoded TypeError from fetch (web stream).
 const rejectUsedStreamBody = (data: unknown, config: InternalFaxiosRequestConfig): void => {
   const body = data as { bodyUsed?: unknown; destroyed?: unknown; locked?: unknown; readableDidRead?: unknown; readableEnded?: unknown; };
-  const isWebStream = utils.isReadableStream!(data);
   if (
-    (isWebStream && (body.locked === true || sentStreamBodies.has(body))) ||
+    (utils.isReadableStream!(data) && (body.locked === true || sentStreamBodies.has(body))) ||
     ((utils.isRequest!(data) || utils.isResponse!(data)) && body.bodyUsed === true) ||
     (utils.isStream(data) && (body.readableDidRead === true || body.readableEnded === true || body.destroyed === true))
   ) {
@@ -79,7 +78,12 @@ const rejectUsedStreamBody = (data: unknown, config: InternalFaxiosRequestConfig
       config
     );
   }
-  if (isWebStream) sentStreamBodies.add(body);
+};
+
+// Called right before fetch: a try that failed before that left a web stream body unread, so a
+// later try can still send it.
+const markStreamBodySent = (data: unknown): void => {
+  if (utils.isReadableStream!(data)) sentStreamBodies.add(data as object);
 };
 
 const isBrowserRuntime = platform.hasStandardBrowserEnv || platform.hasStandardBrowserWebWorkerEnv;
@@ -803,6 +807,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
 
       // Pass resolvedOptions as the fetch init even when a Request object is supplied, so the
       // same null-prototype members apply to both calls.
+      markStreamBodySent(preparedBody);
       stage = "send";
       let response = await (isRequestSupported
         ? _fetch(request, resolvedOptions)

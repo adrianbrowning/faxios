@@ -72,6 +72,37 @@ describe.runIf(typeof fetch === "function")(
       });
     }
 
+    it("sends an unread ReadableStream body again after a try that failed before sending", async () => {
+      const server = await startHTTPServer(async (req, res) => {
+        const chunks: Array<Buffer> = [];
+        for await (const chunk of req) chunks.push(chunk as Buffer);
+        res.end(Buffer.concat(chunks).toString());
+      });
+
+      try {
+        const url = `http://localhost:${(server.address() as AddressInfo).port}/`;
+        // The first try's data: URL fails the maxContentLength pre-flight check, before fetch.
+        const api = faxios.create({ allowAbsoluteUrls: true }).use(async (ctx, next) => {
+          const dataURL = `data:text/plain,${"0".repeat(64)}`;
+          await assert.rejects(next({ ...ctx, config: { ...ctx.config, url: dataURL } }), { code: "ERR_BAD_RESPONSE" });
+          return next(ctx);
+        });
+        const body = new ReadableStream({
+          start(controller) {
+            controller.enqueue(new TextEncoder().encode("hello world"));
+            controller.close();
+          },
+        });
+
+        const { data } = await api.post(url, body, { maxContentLength: 32 });
+
+        assert.strictEqual(data, "hello world");
+      }
+      finally {
+        await stopHTTPServer(server);
+      }
+    });
+
     describe("fetch adapter - request body bytes", () => {
       const echoBody = async () => startHTTPServer(
         async (req, res) => {
