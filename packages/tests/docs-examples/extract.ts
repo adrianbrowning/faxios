@@ -21,6 +21,8 @@
 //                                   on its first console.error)
 //                   request:<text>  a request contained <text>, written as `METHOD url`, then
 //                                   one `name: value` line per header, a blank line and the body
+//   contract=@gcmdev/faxios[#Export]  a ts block of declarations, type-checked against the
+//                 shipped declarations instead of compiled as code, never run (see contract.ts)
 // Any other js/ts block is type-checked and run.
 //
 // Usage: node docs-examples/extract.ts [--only <path substring>] [--out <dir name>]
@@ -30,6 +32,7 @@ import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { parse } from "mdcode-ts";
+import { contractModule, parseContractTarget } from "./contract.ts";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(here, "../../..");
@@ -46,7 +49,7 @@ const EXTENSIONS: Record<string, "js" | "ts"> = {
 const EXPECTATION_KINDS = [ "error", "log", "request" ] as const;
 export type Expectation = { kind: typeof EXPECTATION_KINDS[number]; text: string; };
 
-const MARKER_KEYS: Record<string, true> = { check: true, expect: true, placeholders: true, reason: true, status: true };
+const MARKER_KEYS: Record<string, true> = { check: true, contract: true, expect: true, placeholders: true, reason: true, status: true };
 const SKIP_REASONS = [ "dependency", "fragment", "listing", "signature" ];
 
 export type ExtractedBlock = {
@@ -144,6 +147,14 @@ export function parseMarkers(source: string, meta: Record<string, string>): Mark
   };
 }
 
+// A contract block is only type-checked against the shipped declarations. Checked before a skip,
+// so `check=skip` can't hide a contract that is never checked.
+function validateContract(source: string, ext: "js" | "ts", { check, contract, expect, status }: Record<string, string>): void {
+  if (contract !== undefined && (ext !== "ts" || check !== undefined || status !== undefined || expect !== undefined)) {
+    throw new Error(`${source}: contract= needs a ts block without check=, status= or expect=`);
+  }
+}
+
 export function extractBlocks(paths: Array<string>, outDir: string): Array<ExtractedBlock> {
   rmSync(outDir, { recursive: true, force: true });
   mkdirSync(outDir, { recursive: true });
@@ -152,6 +163,7 @@ export function extractBlocks(paths: Array<string>, outDir: string): Array<Extra
   for (const path of paths) {
     const markdown = readFileSync(path, "utf8");
     const label = relative(repoRoot, path);
+    const pageHelpers = new Map<string, string>();
     for (const block of parse({ source: markdown })) {
       const ext = EXTENSIONS[block.lang];
       if (!ext) continue;
@@ -159,12 +171,15 @@ export function extractBlocks(paths: Array<string>, outDir: string): Array<Extra
       const line = fenceLine(markdown, block.position?.start ?? 0);
       const source = `${label}:${line}`;
       const { skip, ...markers } = parseMarkers(source, block.meta);
+      validateContract(source, ext, block.meta);
       if (skip) continue;
+      const { contract } = block.meta;
 
       const file = `${label.replaceAll("/", "__")}__L${line}.${ext}`;
       // `export {}` keeps every block a module, so top-level await works and names don't clash.
-      writeFileSync(join(outDir, file), `// ${source}\n${block.code}\nexport {};\n`);
-      blocks.push({ source, file, ...markers });
+      const code = contract === undefined ? block.code : contractModule(source, block.code, parseContractTarget(source, contract), pageHelpers);
+      writeFileSync(join(outDir, file), `// ${source}\n${code}\nexport {};\n`);
+      blocks.push({ source, file, ...markers, run: markers.run && contract === undefined });
     }
   }
 

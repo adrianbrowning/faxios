@@ -8,8 +8,9 @@ import { hasOwnProp, isFunction } from "../utils.js";
 import FaxiosError from "./FaxiosError.js";
 
 // Every request config key faxios reads. `satisfies` keeps the list in step with
-// FaxiosRequestConfig: a missing key and an extra one are both type errors.
-const REQUEST_CONFIG_KEYS = {
+// FaxiosRequestConfig: a missing key and an extra one are both type errors. Exported for the docs
+// check that every key has a section on the Request config page.
+export const REQUEST_CONFIG_KEYS = {
   allowAbsoluteUrls: true,
   auth: true,
   baseURL: true,

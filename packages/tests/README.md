@@ -74,9 +74,11 @@ Representative files: [module/esm/tests/typings.module.test.ts](module/esm/tests
 
 ## Docs examples (`docs-examples/`)
 
-[docs-examples/extract.ts](docs-examples/extract.ts) extracts the `js`/`ts` code blocks from the root and package READMEs, `MIGRATION_GUIDE.md`, the package's agent skills and the docs pages. The comment at the top of that file lists the fence markers: `check=skip` with the `reason=` it is skipped, `check=types`, `status=` and `placeholders=` for the fake `fetch`, and `expect=` for the documented outcome.
+[docs-examples/extract.ts](docs-examples/extract.ts) extracts the `js`/`ts` code blocks from the root and package READMEs, `MIGRATION_GUIDE.md`, the package's agent skills and the docs pages. The comment at the top of that file lists the fence markers: `check=skip` with the `reason=` it is skipped, `check=types`, `status=` and `placeholders=` for the fake `fetch`, `expect=` for the documented outcome, and `contract=` for a declaration listing: [docs-examples/contract.ts](docs-examples/contract.ts) turns it into checks that fail `tsc` once a documented signature differs from the shipped declaration.
 
 Each block runs as a module against a fake `fetch`. The test waits until every request the block started, and the code handling its response, has finished, then checks the block's `expect=` outcomes. A `console.error` call fails the block unless it has an `expect=error:` marker.
+
+[docs-examples/contract.test.ts](docs-examples/contract.test.ts) checks that the API reference lists every root export and that the Request config page has a section for, and sets in its full example, every request config key; it also proves a changed contract block fails. [docs-examples/docs-build.test.ts](docs-examples/docs-build.test.ts) builds [fixtures/broken-vitepress/](docs-examples/fixtures/broken-vitepress/) and expects the VitePress build that `pnpm docs:build` runs to fail on its dead link.
 
 ## Checklist
 
