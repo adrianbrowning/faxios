@@ -85,9 +85,13 @@ describe("formDataToJSON", () => {
     formData.append("constructor.prototype.y", "value");
 
     // `__proto__`, `constructor` and `prototype` path segments are all skipped (utils.isDangerousKey).
-    expect(formDataToJSON(formData)).toEqual({
+    const result = formDataToJSON(formData);
+
+    expect(result).toEqual({
       foo: [ "1", "2" ],
     });
+    expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
+    expect(Reflect.get(result, "x")).toBeUndefined();
 
     expect(({} as { x?: unknown; }).x).toEqual(undefined);
     expect(({} as { y?: unknown; }).y).toEqual(undefined);

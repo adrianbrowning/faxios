@@ -3,10 +3,11 @@
  */
 import assert from "node:assert";
 import http from "node:http";
-import type { Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { afterEach, beforeEach, describe, it } from "vitest";
 import faxios from "#src/index.ts";
+import { startHTTPServer, stopHTTPServer } from "../setup/server.js";
+import type { ExtendedServer } from "../setup/server.js";
 
 describe("regression", () => {
   describe("issues", () => {
@@ -122,32 +123,29 @@ describe("regression", () => {
   // https://security.snyk.io/vuln/SNYK-JS-AXIOS-7361793
   // https://github.com/axios/axios/issues/6463
   describe("SSRF SNYK-JS-faxios-7361793", () => {
-    let goodServer: Server;
-    let badServer: Server;
+    let goodServer: ExtendedServer;
+    let badServer: ExtendedServer;
     let goodPort: number;
     let badPort: number;
+    let badHits: number;
 
-    beforeEach(() => {
-      goodServer = http
-        .createServer((_req, res) => {
-          res.write("good");
-          res.end();
-        })
-        .listen(0);
+    beforeEach(async () => {
+      badHits = 0;
+      goodServer = await startHTTPServer((req, res) => {
+        res.end(JSON.stringify({ body: "good", url: req.url }));
+      });
       goodPort = (goodServer.address() as AddressInfo).port;
 
-      badServer = http
-        .createServer((_req, res) => {
-          res.write("bad");
-          res.end();
-        })
-        .listen(0);
+      badServer = await startHTTPServer((_req, res) => {
+        badHits += 1;
+        res.end(JSON.stringify({ body: "bad" }));
+      });
       badPort = (badServer.address() as AddressInfo).port;
     });
 
-    afterEach(() => {
-      goodServer.close();
-      badServer.close();
+    afterEach(async () => {
+      await stopHTTPServer(goodServer);
+      await stopHTTPServer(badServer);
     });
 
     it("should not fetch the protocol-relative authority in server-side mode", async () => {
@@ -155,22 +153,15 @@ describe("regression", () => {
         baseURL: "http://localhost:" + String(goodPort),
       });
 
-      // A protocol-relative authority (`//host:port`) must not be resolved to
-      // the attacker origin. fetch rejects it as an unparseable URL rather than
-      // silently routing to badServer.
+      // A protocol-relative path (`//host:port`) must stay a path on baseURL,
+      // not be resolved to the attacker origin.
       const userId = "/localhost:" + String(badPort);
 
-      try {
-        const res = (await ssrfFaxios.get(`/${userId}`));
-        assert.notStrictEqual(res.data, "bad", "must not reach the bad server");
-        assert.fail("Expected an error to be thrown");
-      }
-      catch (error) {
-        assert.notStrictEqual(
-          (error as { message: string; }).message,
-          undefined
-        );
-      }
+      const res = await ssrfFaxios.get<{ body: string; url: string; }>(`/${userId}`);
+
+      assert.strictEqual(res.data.body, "good");
+      assert.strictEqual(res.data.url, "/localhost:" + String(badPort));
+      assert.strictEqual(badHits, 0);
     });
   });
 });

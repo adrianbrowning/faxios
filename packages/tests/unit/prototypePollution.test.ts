@@ -22,6 +22,15 @@ declare global {
   }
 }
 
+/** Asserts `value` is an object with the expected prototype that did not pick up `polluted`. */
+const assertClean = (value: unknown, proto: null | object = Object.prototype): Record<string, unknown> => {
+  assert.ok(typeof value === "object" && value !== null, "expected an object");
+  assert.strictEqual(Object.getPrototypeOf(value), proto);
+  assert.strictEqual(Reflect.get(value, "polluted"), undefined);
+  assert.strictEqual(Object.hasOwn(value, "__proto__"), false);
+  return value as Record<string, unknown>;
+};
+
 const ObjProto = Object.prototype as any;
 
 type ServerLike = http.Server;
@@ -83,14 +92,13 @@ describe("Prototype Pollution Protection", () => {
 
   describe("utils.merge", () => {
     it("should filter __proto__ key at top level", () => {
-      const result = utils.merge(
+      const result = assertClean(utils.merge(
         {},
-        { __proto__: { polluted: "yes" }, safe: "value" }
-      );
+        JSON.parse("{\"__proto__\": {\"polluted\": \"yes\"}, \"safe\": \"value\"}")
+      ));
 
       assert.strictEqual(Object.prototype.polluted, undefined);
       assert.strictEqual(result.safe, "value");
-      assert.strictEqual(result.hasOwnProperty("__proto__"), false);
     });
 
     it("should filter constructor key at top level", () => {
@@ -114,19 +122,14 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter __proto__ key in nested objects", () => {
-      const result: any = utils.merge(
+      const result = assertClean(utils.merge(
         {},
-        {
-          headers: {
-            __proto__: { polluted: "nested" },
-            "Content-Type": "application/json",
-          },
-        }
-      );
+        JSON.parse("{\"headers\": {\"__proto__\": {\"polluted\": \"nested\"}, \"Content-Type\": \"application/json\"}}")
+      ));
+      const headers = assertClean(result.headers);
 
       assert.strictEqual(Object.prototype.polluted, undefined);
-      assert.strictEqual(result.headers["Content-Type"], "application/json");
-      assert.strictEqual(result.headers.hasOwnProperty("__proto__"), false);
+      assert.strictEqual(headers["Content-Type"], "application/json");
     });
 
     it("should filter constructor key in nested objects", () => {
@@ -161,25 +164,16 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter dangerous keys in deeply nested objects", () => {
-      const result: any = utils.merge(
+      const result = assertClean(utils.merge(
         {},
-        {
-          level1: {
-            level2: {
-              __proto__: { polluted: "deep" },
-              prototype: { polluted: "deep" },
-              safe: "value",
-            },
-          },
-        }
-      );
+        JSON.parse("{\"level1\": {\"level2\": {\"__proto__\": {\"polluted\": \"deep\"}, \"prototype\": {\"polluted\": \"deep\"}, \"safe\": \"value\"}}}")
+      ));
+      const level1 = assertClean(result.level1);
+      const level2 = assertClean(level1.level2);
 
       assert.strictEqual(Object.prototype.polluted, undefined);
-      assert.strictEqual(result.level1.level2.safe, "value");
-      assert.strictEqual(
-        result.level1.level2.hasOwnProperty("__proto__"),
-        false
-      );
+      assert.strictEqual(level2.safe, "value");
+      assert.strictEqual(Object.hasOwn(level2, "prototype"), false);
     });
 
     it("should still merge regular properties correctly", () => {
@@ -196,10 +190,9 @@ describe("Prototype Pollution Protection", () => {
 
     it("should handle JSON.parse payloads safely", () => {
       const malicious = JSON.parse("{\"__proto__\": {\"polluted\": \"yes\"}}");
-      const result = utils.merge({}, malicious);
+      assertClean(utils.merge({}, malicious));
 
       assert.strictEqual(Object.prototype.polluted, undefined);
-      assert.strictEqual(result.hasOwnProperty("__proto__"), false);
     });
 
     it("should handle nested JSON.parse payloads safely", () => {
@@ -216,53 +209,37 @@ describe("Prototype Pollution Protection", () => {
 
   describe("mergeConfig", () => {
     it("should filter dangerous keys at top level", () => {
-      const result = mergeConfig(
+      const result = assertClean(mergeConfig(
         {},
-        {
-          __proto__: { polluted: "yes" },
-          constructor: { polluted: "yes" },
-          prototype: { polluted: "yes" },
-          url: "/api/test",
-        }
-      );
+        JSON.parse("{\"__proto__\": {\"polluted\": \"yes\"}, \"constructor\": {\"polluted\": \"yes\"}, \"prototype\": {\"polluted\": \"yes\"}, \"url\": \"/api/test\"}")
+      ), null);
 
       assert.strictEqual(Object.prototype.polluted, undefined);
       assert.strictEqual(result.url, "/api/test");
-      assert.strictEqual(result.hasOwnProperty("__proto__"), false);
-      assert.strictEqual(result.hasOwnProperty("constructor"), false);
-      assert.strictEqual(result.hasOwnProperty("prototype"), false);
+      assert.strictEqual(Object.hasOwn(result, "constructor"), false);
+      assert.strictEqual(Object.hasOwn(result, "prototype"), false);
     });
 
     it("should filter dangerous keys in headers", () => {
-      const result: any = mergeConfig(
+      const result = assertClean(mergeConfig(
         {},
-        {
-          headers: {
-            __proto__: { polluted: "yes" },
-            "Content-Type": "application/json",
-          },
-        }
-      );
+        JSON.parse("{\"headers\": {\"__proto__\": {\"polluted\": \"yes\"}, \"Content-Type\": \"application/json\"}}")
+      ), null);
+      const headers = assertClean(result.headers);
 
       assert.strictEqual(Object.prototype.polluted, undefined);
-      assert.strictEqual(result.headers["Content-Type"], "application/json");
-      assert.strictEqual(result.headers.hasOwnProperty("__proto__"), false);
+      assert.strictEqual(headers["Content-Type"], "application/json");
     });
 
     it("should filter dangerous keys in custom config properties", () => {
-      const result: any = mergeConfig(
+      const result = assertClean(mergeConfig(
         {},
-        {
-          customProp: {
-            __proto__: { polluted: "yes" },
-            safe: "value",
-          },
-        }
-      );
+        JSON.parse("{\"customProp\": {\"__proto__\": {\"polluted\": \"yes\"}, \"safe\": \"value\"}}")
+      ), null);
+      const customProp = assertClean(result.customProp);
 
       assert.strictEqual(Object.prototype.polluted, undefined);
-      assert.strictEqual(result.customProp.safe, "value");
-      assert.strictEqual(result.customProp.hasOwnProperty("__proto__"), false);
+      assert.strictEqual(customProp.safe, "value");
     });
 
     it("should still merge configs correctly", () => {

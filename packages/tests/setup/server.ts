@@ -35,7 +35,7 @@ type ServerOptions = {
   useHTTP2?: boolean;
 };
 
-type ExtendedServer = (http2.Http2SecureServer | http.Server) & {
+export type ExtendedServer = (http2.Http2SecureServer | http.Server) & {
   closeAllConnections?: () => void;
   closeAllSessions?: () => void;
 };
