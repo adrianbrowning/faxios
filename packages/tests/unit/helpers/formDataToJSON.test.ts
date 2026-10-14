@@ -91,7 +91,7 @@ describe("formDataToJSON", () => {
       foo: [ "1", "2" ],
     });
     expect(Object.getPrototypeOf(result)).toBe(Object.prototype);
-    expect(Reflect.get(result, "x")).toBeUndefined();
+    expect(result?.x).toBeUndefined();
 
     expect(({} as { x?: unknown; }).x).toEqual(undefined);
     expect(({} as { y?: unknown; }).y).toEqual(undefined);
