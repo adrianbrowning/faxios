@@ -164,6 +164,10 @@ await api.get("/users");
 
 With `responseType: "stream"`, the request isn't over when the promise resolves. The `timeout` and the [`signal`](#signal) stay active until you have read the whole body or cancelled it, so a slow or stalled body still times out, counted from when the request started, and aborting the signal stops it. Reading the stream then fails with the `ETIMEDOUT` or `ERR_CANCELED` error. faxios releases the timer and the signal listener when the body ends, errors or is cancelled. If the response has no body (a `204`, `304` or `HEAD` response), it releases them when the promise resolves. A status error works the same way: when a `404` rejects with `ERR_BAD_REQUEST`, `error.response.data` is the open stream, so read it for the server's error body or cancel it.
 
+### `timeoutErrorMessage`
+
+The `timeoutErrorMessage` property replaces the message of the `ETIMEDOUT` error a timed-out request rejects with. Unset or empty, the message is `timeout of <n>ms exceeded`.
+
 ### `withCredentials`
 
 The `withCredentials` property maps to the fetch `credentials` mode. `true` sends `credentials: "include"`, so cross-site requests carry credentials such as cookies, authorization headers, or TLS client certificates. `false` or unset sends `credentials: "same-origin"`, so same-origin requests still carry cookies and cross-site requests don't. A string value is passed to `fetch` as the `credentials` mode unchanged. The default is `false`. It only controls whether the browser sends credentials; it does not control whether the XSRF header is added (see [`withXSRFToken`](#withxsrftoken)).
@@ -230,8 +234,8 @@ The `xsrfHeaderName` is the name of the header to use as a value for `XSRF` toke
 - `false` — never set the XSRF header.
 - `(config: InternalFaxiosRequestConfig) => boolean | undefined` — a callback that decides per-request, receiving the internal config object.
 
-```ts check=skip reason=signature
-withXSRFToken: boolean | undefined | ((config: InternalFaxiosRequestConfig) => boolean | undefined);
+```ts contract=@gcmdev/faxios#FaxiosRequestConfig
+withXSRFToken?: boolean | undefined | ((config: InternalFaxiosRequestConfig) => boolean | undefined);
 ```
 
 When faxios sets the XSRF header and the request doesn't set [`fetchOptions.redirect`](/pages/advanced/fetch-adapter#fetch-options), it sends the request with `redirect: "error"`. `fetch` drops only `Authorization` when a redirect leaves the origin, so following one would send the token to whatever host the redirect points at. A redirect then rejects with `ERR_NETWORK`. To follow redirects anyway, set `fetchOptions: { redirect: "follow" }` on the request, but only for an API whose redirects you trust.
@@ -250,11 +254,15 @@ faxios.get('/user', { withCredentials: true, withXSRFToken: true });
 
 The `onDownloadProgress` function allows you to listen to the progress of a download.
 
-`onUploadProgress` works the same way for the request body. It is called only where faxios streams the request body, which today is Node.js. Deno and Bun can send a stream body, but their `Request` doesn't read the `duplex` option faxios checks for, so faxios sends the body as it is and the callback is not called. In browsers and web workers faxios never streams the body for progress, so the callback is not called there either. See [Fetch adapter](/pages/advanced/fetch-adapter) for details and [#209](https://github.com/adrianbrowning/faxios/issues/209) for upload progress in browsers.
-
 For a compressed response (any `Content-Encoding` other than `identity`), `total` is `undefined` and `lengthComputable` is `false`, because `Content-Length` is the compressed size.
 
-If either callback throws, or returns a promise that rejects, faxios catches and ignores the error. The request carries on and settles normally.
+If the callback throws, or returns a promise that rejects, faxios catches and ignores the error. The request carries on and settles normally.
+
+### `onUploadProgress`
+
+`onUploadProgress` works like `onDownloadProgress`, for the request body. It is called only where faxios streams the request body, which today is Node.js. Deno and Bun can send a stream body, but their `Request` doesn't read the `duplex` option faxios checks for, so faxios sends the body as it is and the callback is not called. In browsers and web workers faxios never streams the body for progress, so the callback is not called there either. See [Fetch adapter](/pages/advanced/fetch-adapter) for details and [#209](https://github.com/adrianbrowning/faxios/issues/209) for upload progress in browsers.
+
+If the callback throws, or returns a promise that rejects, faxios catches and ignores the error. The request carries on and settles normally.
 
 ### `maxContentLength`
 
@@ -321,6 +329,10 @@ The `env` property allows you to set some configuration options. For example the
 
 `env` also accepts custom `fetch`, `Request`, and `Response` implementations for the fetch adapter. See [Custom fetch](/pages/advanced/fetch-adapter#custom-fetch).
 
+### `fetchOptions`
+
+The `fetchOptions` property holds extra init members for `fetch`, such as `cache`, `redirect`, `priority`, or a runtime extension like Node's undici `dispatcher`, Next.js `next` or Cloudflare's `cf`. faxios copies its own enumerable keys into the init it passes to `fetch`, and ignores `signal`, `method`, `headers`, `body`, `duplex` and `credentials`, which it sets itself. In TypeScript it is `FaxiosFetchOptions`: the standard keys are type-checked and other keys pass through. See [Fetch options](/pages/advanced/fetch-adapter#fetch-options).
+
 ### `formSerializer`
 
 The `formSerializer` option allows you to configure how plain objects are serialized to `multipart/form-data` when used as request `data`. Available options:
@@ -335,15 +347,27 @@ Any other key (`dot`) rejects with `ERR_BAD_OPTION`, and a value of the wrong ty
 
 See the [multipart/form-data](/pages/advanced/multipart-form-data-format) page for full details, and the full request config example at the end of this page.
 
-### Schema options
+### `responseSchema`
 
-The following options validate request inputs and response data with any Standard Schema v1 compliant schema (Zod, Valibot, ArkType). See [Schema validation](/pages/advanced/schema-validation) for details.
+The schema options validate request inputs and response data with any Standard Schema v1 compliant schema (Zod, Valibot, ArkType). See [Schema validation](/pages/advanced/schema-validation) for details.
 
-- `responseSchema` — validates `response.data` after `transformResponse`; rejects with `ERR_BAD_RESPONSE_SCHEMA` on failure. TypeScript infers the `response.data` type from the schema's output type.
-- `requestSchema` — validates `config.data` before sending; rejects with `ERR_BAD_REQUEST_SCHEMA`.
-- `paramsSchema` — validates `config.params` before URL construction; rejects with `ERR_BAD_PARAMS_SCHEMA`. The schema's output replaces `params`, so it must be an object, `URLSearchParams`, `null` or `undefined`; any other output also rejects with `ERR_BAD_PARAMS_SCHEMA`.
-- `pathParams` — substitutes `{key}` placeholders in the URL.
-- `pathParamsSchema` — validates `pathParams` before substitution; rejects with `ERR_BAD_PATH_PARAMS_SCHEMA`. When set, `pathParams` is required.
+`responseSchema` validates `response.data` after `transformResponse`, and rejects with `ERR_BAD_RESPONSE_SCHEMA` on failure. TypeScript infers the `response.data` type from the schema's output type.
+
+### `requestSchema`
+
+`requestSchema` validates `config.data` before sending, and rejects with `ERR_BAD_REQUEST_SCHEMA` on failure.
+
+### `paramsSchema`
+
+`paramsSchema` validates `config.params` before URL construction, and rejects with `ERR_BAD_PARAMS_SCHEMA` on failure. The schema's output replaces `params`, so it must be an object, `URLSearchParams`, `null` or `undefined`; any other output also rejects with `ERR_BAD_PARAMS_SCHEMA`.
+
+### `pathParams`
+
+`pathParams` substitutes `{key}` placeholders in the URL.
+
+### `pathParamsSchema`
+
+`pathParamsSchema` validates `pathParams` before substitution, and rejects with `ERR_BAD_PATH_PARAMS_SCHEMA` on failure. When it is set, `pathParams` is required.
 
 ## Full request config example
 
@@ -362,6 +386,8 @@ const config: FaxiosRequestConfig = {
   transformResponse: [function (data) {
     return data;
   }],
+  // Passed to the JSON.parse call of the default transformResponse
+  parseReviver: (key, value) => value,
   headers: { "X-Requested-With": "XMLHttpRequest" },
   params: {
     postId: 5
@@ -391,6 +417,7 @@ const config: FaxiosRequestConfig = {
   // `Content-Type` it is sent as the JSON text you wrote, trimmed, and is never parsed or quoted
   // data: "Country=Brasil&City=Belo Horizonte",
   timeout: 1000,
+  timeoutErrorMessage: "The posts API took longer than 1 second",
   withCredentials: false,
   auth: {
     username: "janedoe",
@@ -403,6 +430,9 @@ const config: FaxiosRequestConfig = {
   withXSRFToken: (config) => config.url?.startsWith("/") ?? false,
   onDownloadProgress: function ({ loaded, total, progress, bytes, estimated, rate, download = true }) {
     // Do whatever you want with the faxios progress event
+  },
+  onUploadProgress: function ({ loaded, total, upload = true }) {
+    // Called where faxios streams the request body (Node.js)
   },
   maxContentLength: -1,
   maxBodyLength: -1,
@@ -423,6 +453,10 @@ const config: FaxiosRequestConfig = {
   pathParamsSchema: z.object({ id: z.string() }),
   env: {
     fetch: globalThis.fetch
+  },
+  // Extra fetch init members, passed to fetch as they are
+  fetchOptions: {
+    cache: "no-store",
   },
   formSerializer: {
     // Custom visitor function to serialize form values

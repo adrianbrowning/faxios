@@ -1,12 +1,14 @@
 # API reference
 
-Below is a list of all the available functions and classes in the faxios package. These functions may be used and imported in your project. All of these functions and classes are protected by our renewed promise to follow semantic versioning. This means that you can rely on these functions and classes to remain stable and unchanged in future releases unless a major version change is made.
+This page lists every export of the package root, `@gcmdev/faxios`: the classes, functions and constants each have a section, and the types are in the [Types](#types) table. The plugin subpaths are listed under [Entry points](#entry-points) and documented on their own pages. Everything listed here follows the [versioning policy](/pages/misc/semver).
+
+The declaration blocks on this page are checked against the package's shipped TypeScript declarations whenever the docs are tested, so they show the signatures you get. A few name a helper type, such as `HeaderInput`, that the block defines because the package doesn't export it by name.
 
 ## Entry points
 
 | Import path | Exports |
 | --- | --- |
-| `@gcmdev/faxios` | the default `faxios` instance, the classes and functions on this page, and the types, including the plugin types `FaxiosPlugin`, `FaxiosMiddleware`, `FaxiosContext` and `FaxiosNext` |
+| `@gcmdev/faxios` | the default `faxios` instance, and the classes, functions, constants and types on this page |
 | `@gcmdev/faxios/plugins` | `definePlugin` only |
 | `@gcmdev/faxios/plugins/auth-bearer` | `authBearer` and the types `AuthBearerOptions` and `AuthBearerCapability` |
 | `@gcmdev/faxios/plugins/forward-to` | `forwardTo` and the types `ForwardToOptions` and `ForwardToRequestOptions` |
@@ -17,41 +19,53 @@ The built-in plugins are only available from their own subpaths. Neither the pac
 
 ## Instance
 
-The `faxios` instance is the main object that you will use to make HTTP requests. It is a factory function that creates a new instance of the `faxios` class. The `faxios` instance has a number of methods that you can use to make HTTP requests. These methods are documented in the [Request aliases section](/pages/advanced/request-method-aliases) of the documentation. The default export and every `faxios.create()` instance also have [`use()` and `eject()`](#middleware-and-plugins).
+### `faxios` <Badge type="tip" text="Default export" />
+
+The default export is a ready-made instance. Call it, or one of its [request aliases](/pages/advanced/request-method-aliases), to send a request. The default export and every `create()` instance also have [`use()` and `eject()`](#middleware-and-plugins), `defaults`, `getUri()`, [`define()`](/pages/advanced/define) and `route()`. Only the default export also carries the statics listed under [`FaxiosStatic`](#types), such as `faxios.isCancel` and `faxios.spread`.
+
+### `create`
+
+Creates a new instance with its own defaults, middleware and plugins. It is the same function as `faxios.create`. See [Creating an instance](/pages/advanced/create-an-instance).
+
+```ts contract=@gcmdev/faxios
+create(instanceConfig?: CreateFaxiosDefaults): FaxiosInstance;
+```
 
 ## Classes
 
 ### `Faxios`
 
-The `Faxios` class is the class behind every faxios instance. The default export and `faxios.create()` both build a callable instance on top of it. The `Faxios` class has a number of methods that you can use to make HTTP requests. These methods are documented in the [Request aliases section](/pages/advanced/request-method-aliases) of the documentation. An instance built with `new Faxios()` has no `use()` or `eject()`; use `faxios.create()` to get an instance that takes middleware.
+The `Faxios` class is the class behind every faxios instance. The default export and `create()` both build a callable instance on top of it. Its methods are documented in the [Request aliases section](/pages/advanced/request-method-aliases). An instance built with `new Faxios()` has no `use()` or `eject()`; use `create()` to get an instance that takes middleware.
 
 #### `constructor`
 
 Creates a new instance of the `Faxios` class. The constructor takes an optional configuration object as an argument.
 
-```ts check=skip reason=signature
+```ts contract=@gcmdev/faxios#Faxios
 constructor(instanceConfig?: FaxiosRequestConfig);
 ```
 
 #### `request`
 
-Handles request invocation and response resolution. This is the main method that you will use to make HTTP requests. It takes a configuration object as an argument and returns a promise that resolves to the response object.
+Sends a request and returns a promise that resolves to the response. With a `responseSchema` in the config, `response.data` is typed by the schema's output; otherwise by the response generic `T`, which a `responseSchema` must then output.
 
-```ts check=skip reason=signature
-request<T = unknown, D = unknown>(configOrUrl: string | URL | FaxiosRequestConfig<D>, config?: FaxiosRequestConfig<D>): Promise<FaxiosResponse<T, D>>;
+```ts contract=@gcmdev/faxios#Faxios
+type SchemaConfig<O, D> = FaxiosRequestConfig<D> & { responseSchema: StandardSchemaV1<unknown, O> };
+type ResponseTypedConfig<T, D> = Omit<FaxiosRequestConfig<D>, "responseSchema"> & { responseSchema?: StandardSchemaV1<unknown, T> | undefined };
+request<O, D = unknown>(config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+request<O, D = unknown>(url: string | URL, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+request<T = unknown, D = unknown>(configOrUrl: ResponseTypedConfig<T, D> | string | URL, config?: ResponseTypedConfig<T, D>): Promise<FaxiosResponse<T, D>>;
 ```
-
-## Functions
 
 ### `FaxiosError`
 
-The `FaxiosError` class is an error class that is thrown when an HTTP request fails. It extends the `Error` class and adds additional properties to the error object. Its type parameters `FaxiosError<T = unknown, D = unknown>` type the response data and the request data.
+The `FaxiosError` class is the error a failed request rejects with. It extends `Error`. Its type parameters `FaxiosError<T = unknown, D = unknown>` type the response data and the request data. The error codes faxios sets are statics on the class (`FaxiosError.ERR_NETWORK`, `FaxiosError.ETIMEDOUT`, ...); their union is the `FaxiosErrorCode` type. See [Error handling](/pages/advanced/error-handling).
 
 #### `constructor`
 
 Creates a new instance of the `FaxiosError` class. The constructor takes a message and an optional code, config, request, and response as arguments.
 
-```ts check=skip reason=signature
+```ts contract=@gcmdev/faxios#FaxiosError<T,D>
 constructor(message: string, code?: string, config?: InternalFaxiosRequestConfig<D>, request?: unknown, response?: FaxiosResponse<T, D>);
 ```
 
@@ -59,135 +73,99 @@ constructor(message: string, code?: string, config?: InternalFaxiosRequestConfig
 
 The `FaxiosError` class provides the following properties:
 
-```ts check=skip reason=signature
-// Config instance.
+```ts contract=@gcmdev/faxios#FaxiosError<T,D>
+// The request config.
 config?: InternalFaxiosRequestConfig<D>;
 
-// Error code: one of the `FaxiosErrorCode` statics (`ERR_NETWORK`, `ETIMEDOUT`, ...),
+// One of the `FaxiosErrorCode` statics (`ERR_NETWORK`, `ETIMEDOUT`, ...),
 // or a code a plugin or a wrapped error set.
 code?: FaxiosErrorCode | (string & {});
 
-// Request instance.
+// The request.
 request?: unknown;
 
-// Response instance.
+// The response, when the server answered.
 response?: FaxiosResponse<T, D>;
 
-// Boolean indicating if the error is a `FaxiosError`.
+// Always true; isFaxiosError() checks it.
 isFaxiosError: boolean;
 
-// Error status code.
+// The response status code.
 status?: number;
 
-// Helper method to convert the error to a JSON object.
-toJSON: () => object;
-
-// Error cause.
+// The error this one wraps.
 cause?: Error;
 
 // Schema issues, set on the ERR_BAD_*_SCHEMA errors. Each issue carries `message` and `path`.
 issues?: ReadonlyArray<StandardSchemaV1.Issue>;
 ```
 
+#### `toJSON`
+
+Returns a plain object for logging. It masks the `authorization`, `proxy-authorization`, `cookie` and `auth` config keys and the keys in the [`redact`](/pages/advanced/request-config#redact) option, and strips `user:pass@` from `url` and `baseURL`.
+
+```ts contract=@gcmdev/faxios#FaxiosError<T,D>
+type SerializedCause = { cause?: SerializedCause; code?: string; message: string; name: string };
+toJSON(): { message: string; name: string; stack: string | undefined; config: unknown; code: string | (string & {}) | undefined; status: number | undefined; issues: readonly StandardSchemaV1.Issue[] | undefined; cause: SerializedCause | undefined };
+```
+
 ### `FaxiosHeaders`
 
-The `FaxiosHeaders` class is a utility class that is used to manage HTTP headers. It provides methods for manipulating headers, such as adding, removing, and getting headers.
-
-Only the main methods are documented here. For a full list of methods, please refer to the type declaration file.
+The `FaxiosHeaders` class manages HTTP headers: header names are case-insensitive, and its methods add, read, match and remove headers. Every method is described on [Header methods](/pages/advanced/header-methods).
 
 Each instance also has `get`, `set` and `has` shortcuts for `Content-Type`, `Content-Length`, `Accept`, `Accept-Encoding`, `User-Agent` and `Authorization` (for example `headers.getContentType()`). The set is fixed: there is no `FaxiosHeaders.accessor()` to add more.
 
-#### `constructor`
+```ts contract=@gcmdev/faxios#FaxiosHeaders
+// What the constructor, set(), concat() and the statics read: another FaxiosHeaders, a header
+// object, raw `Name: value` lines, or an iterable of [name, value] pairs (a Headers, a Map, an array).
+type HeaderInput = FaxiosHeaders | Record<string, FaxiosHeaderValue | undefined> | Iterable<readonly [string, FaxiosHeaderValue | undefined]> | Headers | string | null | undefined;
+type HeaderMatcher = string | RegExp | ((this: FaxiosHeaders, value: string, name: string) => boolean);
+type HeaderParser<R> = (this: FaxiosHeaders, value: FaxiosHeaderValue, header: string) => R;
+constructor(headers?: HeaderInput);
 
-Creates a new instance of the `FaxiosHeaders` class. The constructor takes an optional headers object as an argument.
+// Empty or whitespace-only header names are ignored.
+set(header: string, value?: FaxiosHeaderValue, rewrite?: boolean): this;
+set(headers: HeaderInput, rewrite?: boolean): this;
 
-```ts check=skip reason=signature
-constructor(headers?: Record<string, unknown> | FaxiosHeaders | string | null);
-```
+get(header: string): FaxiosHeaderValue | undefined;
+get(header: string, parser: true): Record<string, string> | undefined;
+get(header: string, parser: RegExp): null | RegExpExecArray | undefined;
+get<R>(header: string, parser: HeaderParser<R>): R | undefined;
 
-#### `set`
+has(header: string, matcher?: HeaderMatcher): boolean;
+delete(header: Array<string> | string, matcher?: HeaderMatcher): boolean;
+clear(matcher?: HeaderMatcher): boolean;
+normalize(format?: boolean): this;
+concat(...targets: Array<HeaderInput>): FaxiosHeaders;
 
-Adds a header to the headers object.
-Empty or whitespace-only header names are ignored.
-
-```ts check=skip reason=signature
-set(headerName: string, value: FaxiosHeaderValue, rewrite?: boolean): FaxiosHeaders;
-set(headers: Record<string, unknown> | FaxiosHeaders | string, rewrite?: boolean): FaxiosHeaders;
-```
-
-#### `get`
-
-Gets a header from the headers object.
-
-```ts check=skip reason=signature
-get(headerName: string): FaxiosHeaderValue | undefined;
-get(headerName: string, parser: true): Record<string, string> | undefined;
-get(headerName: string, parser: RegExp): RegExpExecArray | null | undefined;
-get<R>(headerName: string, parser: (this: FaxiosHeaders, value: FaxiosHeaderValue, header: string) => R): R | undefined;
-```
-
-#### `has`
-
-Checks if a header exists in the headers object.
-
-```ts check=skip reason=signature
-has(header: string, matcher?: string | RegExp | ((value: string, name: string) => boolean)): boolean;
-```
-
-#### `delete`
-
-Removes a header from the headers object.
-
-```ts check=skip reason=signature
-delete(header: string | string[], matcher?: string | RegExp | ((value: string, name: string) => boolean)): boolean;
-```
-
-#### `clear`
-
-Removes all headers from the headers object.
-
-```ts check=skip reason=signature
-clear(matcher?: string | RegExp | ((value: string, name: string) => boolean)): boolean;
-```
-
-#### `normalize`
-
-Normalizes the headers object.
-
-```ts check=skip reason=signature
-normalize(format?: boolean): FaxiosHeaders;
-```
-
-#### `concat`
-
-Concatenates headers objects.
-
-```ts check=skip reason=signature
-concat(...targets: Array<FaxiosHeaders | Record<string, unknown> | string | undefined | null>): FaxiosHeaders;
-```
-
-#### `toJSON`
-
-Converts the headers object to a JSON object.
-
-```ts check=skip reason=signature
 // With asStrings: true, array values are joined with ", ".
 toJSON(asStrings?: boolean): Record<string, unknown>;
+toString(): string;
+getSetCookie(): Array<string>;
+
+static from(thing?: HeaderInput): FaxiosHeaders;
+static concat(first: HeaderInput, ...targets: Array<HeaderInput>): FaxiosHeaders;
 ```
 
 ### `CanceledError` <Badge type="tip" text="Extended FaxiosError" />
 
-The `CanceledError` class is an error class that is thrown when an HTTP request is canceled. It extends the `FaxiosError` class.
+The `CanceledError` class is the error a canceled request rejects with, code `ERR_CANCELED`. It extends the `FaxiosError` class.
+
+```ts contract=@gcmdev/faxios#CanceledError
+constructor(message?: null | string, config?: FaxiosRequestConfig, request?: unknown);
+```
 
 ### `Cancel` <Badge type="tip" text="Alias for CanceledError" />
 
 The `Cancel` class is an alias for the `CanceledError` class. It is exported for backwards compatibility and will be removed in a future release.
 
+## Functions
+
 ### `isCancel`
 
 A function that checks if an error is a `CanceledError`. Useful for distinguishing intentional cancellations from unexpected errors.
 
-```ts check=skip reason=signature
+```ts contract=@gcmdev/faxios
 isCancel(value: unknown): value is CanceledError;
 ```
 
@@ -211,8 +189,8 @@ controller.abort("User navigated away");
 
 A function that checks if an error is a `FaxiosError`. Use this in `catch` blocks to safely access faxios-specific error properties like `error.response` and `error.config`. It is a type guard, so in TypeScript (or checked JavaScript) it narrows the error to `FaxiosError`. Pass a type argument to type `error.response.data`; the shape is not checked at runtime.
 
-```ts check=skip reason=signature
-isFaxiosError<T = unknown, D = unknown>(value: unknown): value is FaxiosError<T, D>;
+```ts contract=@gcmdev/faxios
+isFaxiosError<T = unknown, D = unknown>(payload: unknown): payload is FaxiosError<T, D>;
 ```
 
 ```js status=500 expect=error:HTTP%20error%20500
@@ -231,27 +209,22 @@ try {
 }
 ```
 
-### `all` <Badge type="danger" text="Deprecated in favour of Promise.all" />
+### `isSchemaValidationError`
 
-The `all` function is a utility function that takes an array of promises and returns a single promise that resolves when all of the promises in the array have resolved. It is typed like `Promise.all`: a tuple of promises (or plain values) resolves to a tuple of their results. The `all` function is now deprecated in favour of the `Promise.all` method. It is recommended that you use the `Promise.all` method instead.
+A type guard for the errors a schema rejects with: `ERR_BAD_RESPONSE_SCHEMA`, `ERR_BAD_REQUEST_SCHEMA`, `ERR_BAD_PARAMS_SCHEMA` and `ERR_BAD_PATH_PARAMS_SCHEMA`. It narrows to `SchemaValidationError`, whose `issues` is always set; for `ERR_BAD_RESPONSE_SCHEMA`, `response` is set too. See [Schema validation](/pages/advanced/schema-validation).
 
-The `all` function is deprecated and will be removed in a future release.
-
-### `spread`
-
-The `spread` function is a utility function that can be used to spread an array of arguments into a function call. This is useful when you have an array of arguments that you want to pass to a function that takes multiple arguments. It is available on the instance as `faxios.spread` and is not a named export.
-
-```ts check=skip reason=signature
-spread<TArgs extends unknown[], TResult>(callback: (...args: TArgs) => TResult): (array: TArgs) => TResult;
+```ts contract=@gcmdev/faxios
+isSchemaValidationError(err: unknown): err is SchemaValidationError;
 ```
 
 ### `toFormData`
 
 Converts a plain JavaScript object (or a nested one) to a `FormData` instance. Useful when you want to programmatically build multipart form data from an object. Without a target it creates a global `FormData`; a target can also be any FormData-like object with an `append(name, value)` method (`GenericFormData`), such as one from the `form-data` package, and is returned with its own type.
 
-```ts check=skip reason=signature
-toFormData(sourceObj: unknown, formData?: null, options?: FormSerializerOptions): FormData;
-toFormData<F extends GenericFormData>(sourceObj: unknown, formData: F, options?: FormSerializerOptions): F;
+```ts contract=@gcmdev/faxios
+toFormData(obj: unknown, formData?: null, options?: FormSerializerOptions): FormData;
+toFormData<F extends GenericFormData>(obj: unknown, formData: F, options?: FormSerializerOptions): F;
+toFormData(obj: unknown, formData?: GenericFormData | null, options?: FormSerializerOptions): GenericFormData;
 ```
 
 ```js
@@ -266,10 +239,10 @@ await faxios.post("/api/users", form);
 
 ### `formToJSON`
 
-Converts a `FormData` instance back to a plain JavaScript object. Useful for reading form data in a structured format. Field names split into nested keys only on `.` and brackets (`user[email]`, `user.email`), so names such as `first-name` stay one key.
+Converts a `FormData` instance (or an HTML form element) back to a plain JavaScript object, and returns `null` for anything else. Field names split into nested keys only on `.` and brackets (`user[email]`, `user.email`), so names such as `first-name` stay one key.
 
-```ts check=skip reason=signature
-formToJSON(form: FormData | HTMLFormElement): null | Record<string, unknown>;
+```ts contract=@gcmdev/faxios
+formToJSON(thing: unknown): null | Record<string, unknown>;
 ```
 
 ```js
@@ -287,7 +260,7 @@ console.log(obj); // { name: "Jay", role: "admin" }
 
 Merges two faxios config objects together, applying the same deep-merge strategy that faxios uses internally when combining defaults with per-request options. Later values take precedence.
 
-```ts check=skip reason=signature
+```ts contract=@gcmdev/faxios
 mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfig, config2?: FaxiosRequestConfig): FaxiosRequestConfig;
 ```
 
@@ -301,13 +274,39 @@ const merged = mergeConfig(base, override);
 // { baseURL: "https://api.example.com", timeout: 10000, headers: { "X-Custom": "value" } }
 ```
 
+### `resolveRequestURL`
+
+Returns the URL a request with this config is sent to: `url` with its `{key}` placeholders filled from `pathParams`, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params` serialized with `paramsSerializer`. It is the resolver faxios itself uses for requests and `getUri()`, exported for plugins. It throws the `FaxiosError` the request would reject with. See [Writing a plugin](/pages/advanced/middleware#writing-a-plugin).
+
+```ts contract=@gcmdev/faxios
+resolveRequestURL(config: FaxiosRequestConfig): string;
+```
+
+### `all` <Badge type="danger" text="Deprecated in favour of Promise.all" />
+
+The `all` function takes an array of promises and returns a single promise that resolves when all of them have resolved. It is typed like `Promise.all`: a tuple of promises (or plain values) resolves to a tuple of their results. Use `Promise.all` instead.
+
+```ts contract=@gcmdev/faxios
+all<T extends [] | ReadonlyArray<unknown>>(values: T): Promise<{ -readonly [K in keyof T]: Awaited<T[K]> }>;
+```
+
+The `all` function is deprecated and will be removed in a future release.
+
+### `spread`
+
+The `spread` function wraps a function so it takes its arguments as one array, for `all(...).then(spread(...))`. It is available on the default export as `faxios.spread` and is not a named export.
+
+```ts contract=@gcmdev/faxios#FaxiosStatic
+spread<TArgs extends Array<unknown>, TResult>(fn: (...args: TArgs) => TResult): (arr: TArgs) => TResult;
+```
+
 ## Middleware and plugins
 
 See [Middleware and plugins](/pages/advanced/middleware) for a guide with examples.
 
 ### `use`
 
-Registers middleware or a plugin on the instance and returns the instance. Middleware runs in registration order before the request is sent and in reverse order after it.
+Registers middleware or a plugin on the instance and returns the instance. Middleware runs in registration order before the request is sent and in reverse order after it. This summary leaves out the type-level checks the shipped declaration adds; see `FaxiosInstance` in the type declaration file.
 
 ```ts check=skip reason=signature
 use(middlewareOrPlugin: FaxiosMiddleware<TOpts, TCaps> | FaxiosPlugin<Spec>): FaxiosInstance<TOpts & Options, TCaps & Provides>;
@@ -319,7 +318,7 @@ Installing a plugin before one that provides a capability it requires is a type 
 
 While a plugin is installed, the request option names in its `options` are accepted in request config. Any other key that isn't a faxios option rejects the request with `ERR_BAD_OPTION`; `eject()` removes the names again.
 
-`use()` exists on the default export and on `faxios.create()` instances. Children made with `create()` start with no middleware and without the parent's plugin types.
+`use()` exists on the default export and on `create()` instances. Children made with `create()` start with no middleware and without the parent's plugin types.
 
 ### `eject`
 
@@ -331,7 +330,7 @@ eject(middlewareOrPlugin: FaxiosMiddleware | FaxiosPlugin): void;
 
 ### `definePlugin`
 
-Imported from `@gcmdev/faxios/plugins`. Builds a plugin and infers its `FaxiosPlugin` type: `provides` from the `provides` value, and the request options and required capabilities from the middleware's `ctx: FaxiosContext<Options, Capabilities>` annotation. Capabilities the plugin provides itself don't count as required. Returns the object it was given.
+Imported from `@gcmdev/faxios/plugins`. Builds a plugin and infers its `FaxiosPlugin` type: `provides` from the `provides` value, and the request options and required capabilities from the middleware's `ctx: FaxiosContext<Options, Capabilities>` annotation. Capabilities the plugin provides itself don't count as required. Returns the object it was given. This is a summary; the shipped declaration also checks the `options` names against the context's request options.
 
 ```ts check=skip reason=signature
 definePlugin(plugin: {
@@ -347,16 +346,18 @@ definePlugin(plugin: {
 
 The `ctx` every middleware receives. It is created once per request, after the request config is merged with the instance defaults.
 
-```ts check=skip reason=signature
+```ts contract=@gcmdev/faxios
 interface FaxiosContext<TOptions = {}, TCapabilities = {}> {
   // The try this context leads to, from 1. `retry` (or your own retry middleware) sets it per try.
   attempt: number;
-  // The merged request config, with the plugin request options. `headers` is a FaxiosHeaders.
-  config: InternalFaxiosRequestConfig & TOptions;
-  // Null-prototype scratch space for this request only.
-  state: Record<PropertyKey, unknown>;
   // Values installed plugins provide, shared by every request of the instance.
   capabilities: TCapabilities;
+  // The merged request config, with the plugin request options. `headers` is a FaxiosHeaders.
+  config: InternalFaxiosRequestConfig & TOptions;
+  // The instance's own baseURL, read when the request starts; a per-request baseURL doesn't change it.
+  readonly instanceBaseURL: string | undefined;
+  // Null-prototype scratch space for this request only.
+  state: Record<PropertyKey, unknown>;
 }
 ```
 
@@ -364,7 +365,7 @@ interface FaxiosContext<TOptions = {}, TCapabilities = {}> {
 
 `next(ctx)` runs the rest of the chain, then dispatches a copy of `ctx.config`. It takes the same context type the middleware received.
 
-```ts check=skip reason=signature
+```ts contract=@gcmdev/faxios
 type FaxiosNext<TOptions = {}, TCapabilities = {}> =
   (ctx: FaxiosContext<TOptions, TCapabilities>) => Promise<FaxiosResponse>;
 
@@ -374,7 +375,7 @@ type FaxiosMiddleware<TOptions = {}, TCapabilities = {}> =
 
 ### `FaxiosPlugin`
 
-A plugin's type, given as one object of optional slots. Use it to annotate a plugin factory's return type.
+A plugin's type, given as one object of optional slots (`FaxiosPluginSpec`). Use it to annotate a plugin factory's return type. The shape below is a summary of the shipped type.
 
 ```ts check=skip reason=signature
 type FaxiosPlugin<Spec extends { requires?: unknown; provides?: unknown; options?: unknown } = {}>;
@@ -387,13 +388,13 @@ type FaxiosPlugin<Spec extends { requires?: unknown; provides?: unknown; options
 
 - `requires`: capabilities that must be installed before the plugin.
 - `provides`: capabilities the plugin adds to `ctx.capabilities`.
-- `options`: request options the plugin adds to every config-taking member, including `defaults`, `define()` and `route()`. They must be optional. The plugin object names each of them in its `options` value, which is how faxios accepts them at runtime.
+- `options`: request options the plugin adds to every config-taking member, including `defaults`, `define()` and `route()`. They must be optional. The plugin object names each of them in its `options` value (a `FaxiosPluginOptionNames<Options>`), which is how faxios accepts them at runtime.
 
 A slot you leave out adds nothing. Any other key, such as `require`, is a type error. The `"~plugin"` property in the emitted types is an internal marker; never set or read it.
 
 ### `FaxiosInstance`
 
-`FaxiosInstance<TOpts = {}, TCaps = {}>` is the type of the default export and of `faxios.create()` instances. `TOpts` holds the request options and `TCaps` the capabilities that installed plugins added through `use()`.
+`FaxiosInstance<TOpts = {}, TCaps = {}>` is the type of the default export and of `create()` instances. `TOpts` holds the request options and `TCaps` the capabilities that installed plugins added through `use()`.
 
 ## Constants
 
@@ -417,8 +418,55 @@ try {
 }
 ```
 
-## Miscellaneous
-
 ### `VERSION`
 
-The current version of the `faxios` package. This is a string that represents the version number of the package. It is updated with each release of the package.
+The version of the installed package, as a string such as `"0.2.4"`.
+
+## Types
+
+The package root exports these types. Import them with `import type { ... } from "@gcmdev/faxios"`.
+
+| Type | What it describes |
+| --- | --- |
+| `FaxiosRequestConfig` | A request config; every key is described on [Request config](/pages/advanced/request-config) |
+| `InternalFaxiosRequestConfig` | The merged config middleware, transformers and errors see: a request config whose `headers` is a `FaxiosHeaders` |
+| `FaxiosDefaults` | The instance `defaults`: a request config with header groups per method |
+| `CreateFaxiosDefaults` | The config `create()` takes |
+| `HeadersDefaults` | The header groups of `defaults.headers`: `common` and one per method |
+| `FaxiosConfigHeaders` | What the `headers` option takes: a header object, method header groups, a `Headers` or a `FaxiosHeaders` |
+| `RawFaxiosRequestHeaders` | A plain header object for a request |
+| `FaxiosHeaderValue` | One header value: a string, number, boolean, array of strings, `null` or `undefined` |
+| `FaxiosResponse` | The resolved response: `data`, `status`, `statusText`, `headers`, `config` and `request` |
+| `FaxiosPromise` | `Promise<FaxiosResponse<T>>` |
+| `FaxiosErrorCode` | The union of the error codes faxios sets, the `FaxiosError` statics |
+| `SchemaValidationError` | The `FaxiosError` that [`isSchemaValidationError`](#isschemavalidationerror) narrows to |
+| `Method` | An HTTP method name, in lower or upper case |
+| `ResponseType` | The values of the [`responseType`](/pages/advanced/request-config#responsetype) option |
+| `FaxiosBasicCredentials` | The [`auth`](/pages/advanced/request-config#auth) option: `username` and `password` |
+| `FaxiosFetchOptions` | The [`fetchOptions`](/pages/advanced/request-config#fetchoptions) option |
+| `FaxiosProgressEvent` | What `onDownloadProgress` and `onUploadProgress` receive |
+| `FaxiosRequestTransformer` | A [`transformRequest`](/pages/advanced/request-config#transformrequest) function |
+| `FaxiosResponseTransformer` | A [`transformResponse`](/pages/advanced/request-config#transformresponse) function |
+| `ParamsSerializerOptions` | The object form of the [`paramsSerializer`](/pages/advanced/request-config#paramsserializer) option |
+| `CustomParamsSerializer` | The function form of the `paramsSerializer` option |
+| `FormSerializerOptions` | The [`formSerializer`](/pages/advanced/request-config#formserializer) option, also taken by `toFormData()` |
+| `TransitionalOptions` | The [`transitional`](/pages/advanced/request-config#transitional) option |
+| `GenericAbortSignal` | An `AbortSignal`-like object the `signal` option accepts |
+| `GenericFormData` | A FormData-like object with an `append(name, value)` method |
+| `GenericHTMLFormElement` | An HTML-form-like object `toFormData()` and `formToJSON()` read |
+| `StandardSchemaV1` | The [Standard Schema](https://standardschema.dev/) v1 interface the schema options take |
+| `FaxiosInstance` | A faxios instance, see [`FaxiosInstance`](#faxiosinstance) |
+| `FaxiosStatic` | The default export: a `FaxiosInstance` plus the statics `all`, `spread`, `isCancel`, `isFaxiosError`, `mergeConfig`, `toFormData`, `formToJSON`, `HttpStatusCode`, `VERSION`, the classes and `default` |
+| `FaxiosContext` | The middleware context, see [`FaxiosContext`](#faxioscontext) |
+| `FaxiosMiddleware` | A middleware function, see [`FaxiosMiddleware` and `FaxiosNext`](#faxiosmiddleware-and-faxiosnext) |
+| `FaxiosNext` | The `next` function a middleware calls |
+| `FaxiosPlugin` | A plugin, see [`FaxiosPlugin`](#faxiosplugin) |
+| `FaxiosPluginSpec` | The optional `requires`, `provides` and `options` slots of a `FaxiosPlugin` |
+| `FaxiosPluginOptionNames` | A plugin's runtime list of request option names, each mapped to `true` |
+| `DefineConfig` | The config [`define()`](/pages/advanced/define) takes |
+| `DefinedEndpoint` | The endpoint function `define()` returns |
+| `BasePerCallConfig` | The request config every endpoint call takes: everything except `url`, `method`, `pathParams`, `params`, `data` and the schemas |
+| `PerCallConfig` | The config one endpoint call takes: `BasePerCallConfig` plus `pathParams`, `params` and `data`, typed by their schemas |
+| `RouteConfig` | The config `route()` takes |
+| `RouteBuilder` | The object `route()` returns, with one endpoint factory per method |
+| `RouteMethodConfig` | The config one of those factories takes |
