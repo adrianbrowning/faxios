@@ -93,7 +93,8 @@ describe("getUri() matches the URL the request sends", () => {
 });
 
 describe("getUri() normalizes the config like a request", () => {
-  const url = new URL("https://x.example/a");
+  // FaxiosRequestConfig types url as a string; a URL instance is accepted at runtime.
+  const url = new URL("https://x.example/a") as unknown as string;
 
   it("accepts a URL instance without a baseURL", async () => {
     const config: FaxiosRequestConfig = { url, params: { q: 1 } };
