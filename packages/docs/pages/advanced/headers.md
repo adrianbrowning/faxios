@@ -86,6 +86,8 @@ const api = faxios.create({
 });
 ```
 
+faxios skips the header names `__proto__`, `constructor` and `prototype` (in any case) wherever headers are set, including `FaxiosHeaders.from()`, `new FaxiosHeaders()` and `set()`. A header map from `JSON.parse` with one of these keys keeps its other headers. Response headers whose names exist on `Object.prototype`, such as `ToString` or `ValueOf`, are kept like any other header.
+
 ### Header typing
 
 The `headers` option is typed as `FaxiosConfigHeaders`. Your editor suggests common header names and `Content-Type` values, and any other header name is still allowed. It accepts three shapes:

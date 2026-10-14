@@ -76,8 +76,11 @@ export function forwardTo(gateway: string, options: ForwardToOptions = {}): Faxi
       // No fetch at all: let dispatch report it.
       if (!base) return next(ctx);
       // On a copy: middleware that calls next() again (retry installed before this plugin) comes
-      // back through here with the unwrapped fetch, so a try is never forwarded twice.
-      return next({ ...ctx, config: { ...ctx.config, env: { ...env, fetch: forwardingFetch(gateway, header, base) } } });
+      // back through here with the unwrapped fetch, so a try is never forwarded twice. Both copies
+      // keep a null prototype, like every ctx.config, so later middleware never reads inherited keys.
+      const forwardEnv = Object.assign(Object.create(null) as NonNullable<typeof env>, env, { fetch: forwardingFetch(gateway, header, base) });
+      const config = Object.assign(Object.create(null) as typeof ctx.config, ctx.config, { env: forwardEnv });
+      return next({ ...ctx, config });
     },
   });
 }

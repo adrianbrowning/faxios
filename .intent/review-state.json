@@ -3,7 +3,7 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "b445d2ba52a3c8662ab4e3906e7c8c8ab169686240eb1e8487ea67f4b3aefd17",
+      "fingerprint": "ed09756e2c07f2ef21d23c6f5b5897ac2914bf4d599f0c8706e01b6b2962259d",
       "snapshot": {
         "MIGRATION_GUIDE.md": "adc906193779e6ef7adadee324ee5a4a711461420eeacdbdcd0d9383edb081b4",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
@@ -21,29 +21,29 @@
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
         "packages/lib/src/lib/helpers/composeSignals.ts": "829b7130dc742becad300735254e63afeb73a8f1f99dac48febf2dcc3e0aab1c",
-        "packages/lib/src/lib/plugins/authBearer.ts": "6679d5ad304defc2ffd75f65bb0ec8edf38f7ccd1b4632465c6e127216125080",
+        "packages/lib/src/lib/plugins/authBearer.ts": "c93f20ab62b3a69bcebdb0ecf20e1a1c1f49cda1a01579e8f8573d72cfdc65e5",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
-        "packages/lib/src/lib/plugins/forwardTo.ts": "3561b842f48c354df300ecb38f37cb0971d8f42a6de8662c1161b1c36eb94a5f",
+        "packages/lib/src/lib/plugins/forwardTo.ts": "e3d1d859c7f1df06764e2ab3aff2164fba44cffd893435faf6d425f02af15425",
         "packages/lib/src/lib/plugins/retry.ts": "83aac25415efa7c0135b7ab4733632b3cb265a9ab11266a125eb2541c2af7d12",
         "packages/lib/src/lib/plugins/timing.ts": "718ad5f2c23e3ee0e39ef8632b223da5ad46e556d4d5d0e5f54369708eaaee5d",
         "packages/lib/src/lib/types.ts": "7be2bd96745f0f50e4ce5cf6e0ba00803662033b75f1543390656c7dd5b317c3",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
-        "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
+        "packages/tests/unit/plugins/authBearer.test.ts": "84baff907f21988dea49400531dd0abdf7b5a5148d1904e712ebe0b43ebfd3ae",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
-        "packages/tests/unit/plugins/forwardTo.test.ts": "f22d77b513f3feefd0c68151b35242e29b8392d8f33726209cc5b8e1a1642dbc",
+        "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
-      "outcome": "updated",
-      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
+      "outcome": "no-change",
+      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/references/axios-differences.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+        "Changed: packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/tests/unit/plugins/authBearer.test.ts, packages/tests/unit/plugins/forwardTo.test.ts at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "a82109338e05534734158196b842d765151057a338626c33bd19ab534690cc89",
+      "fingerprint": "10ff5ca92cee031ce844d66b762accc50f2923e6c36ca0c828891e8510b15c66",
       "snapshot": {
         "MIGRATION_GUIDE.md": "adc906193779e6ef7adadee324ee5a4a711461420eeacdbdcd0d9383edb081b4",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
@@ -64,25 +64,25 @@
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
         "packages/lib/src/lib/helpers/composeSignals.ts": "829b7130dc742becad300735254e63afeb73a8f1f99dac48febf2dcc3e0aab1c",
-        "packages/lib/src/lib/plugins/authBearer.ts": "6679d5ad304defc2ffd75f65bb0ec8edf38f7ccd1b4632465c6e127216125080",
+        "packages/lib/src/lib/plugins/authBearer.ts": "c93f20ab62b3a69bcebdb0ecf20e1a1c1f49cda1a01579e8f8573d72cfdc65e5",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
-        "packages/lib/src/lib/plugins/forwardTo.ts": "3561b842f48c354df300ecb38f37cb0971d8f42a6de8662c1161b1c36eb94a5f",
+        "packages/lib/src/lib/plugins/forwardTo.ts": "e3d1d859c7f1df06764e2ab3aff2164fba44cffd893435faf6d425f02af15425",
         "packages/lib/src/lib/plugins/retry.ts": "83aac25415efa7c0135b7ab4733632b3cb265a9ab11266a125eb2541c2af7d12",
         "packages/lib/src/lib/plugins/timing.ts": "718ad5f2c23e3ee0e39ef8632b223da5ad46e556d4d5d0e5f54369708eaaee5d",
         "packages/lib/src/lib/types.ts": "7be2bd96745f0f50e4ce5cf6e0ba00803662033b75f1543390656c7dd5b317c3",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
-        "packages/tests/unit/plugins/authBearer.test.ts": "2350eae5f4bf25aa8c94c8d8c7451b7b676c784fc92eb1d344875a0f099a5e3f",
+        "packages/tests/unit/plugins/authBearer.test.ts": "84baff907f21988dea49400531dd0abdf7b5a5148d1904e712ebe0b43ebfd3ae",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
-        "packages/tests/unit/plugins/forwardTo.test.ts": "f22d77b513f3feefd0c68151b35242e29b8392d8f33726209cc5b8e1a1642dbc",
+        "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
-      "outcome": "updated",
-      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
+      "outcome": "no-change",
+      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/references/axios-differences.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+        "Changed: packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/tests/unit/plugins/authBearer.test.ts, packages/tests/unit/plugins/forwardTo.test.ts at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
       ]
     },
     "source:knip.json": {
@@ -232,15 +232,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/headers.md": {
-      "fingerprint": "aef6a489104632a63cd7f3b373963a3e4bca537568e0a64c76a65027d1e3f81b",
+      "fingerprint": "a4b5f0c2e8fb05d79333ac1058a0cf38ee596510cb9e088f6ca92700758b88fb",
       "snapshot": {
-        "packages/docs/pages/advanced/headers.md": "05c1b3ef27caaf9749e8e58d5a756a9bac6e2de74f0291e52fe4c9220f232501"
+        "packages/docs/pages/advanced/headers.md": "aa2490bfe1e1a65dd3ae0e673a01db972f5dfce127ff23bb8d86802541854246"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
       "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/headers.md at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/docs/pages/advanced/headers.md at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
       ]
     },
     "source:packages/docs/pages/advanced/interceptors.md": {
@@ -1941,15 +1941,15 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "797f997efdb43730173b050778b24e919e43ab066224d17c5904d7a691bf176c",
+      "fingerprint": "b19899dd7753e1f1592b023c970a6a72df07483aea0e324ca5d31440abe45977",
       "snapshot": {
-        "THREATMODEL.md": "73738c03a00378e64496363e7448081d443ee4a67525089d17aa83c8436a784f"
+        "THREATMODEL.md": "f979c531c22b46c16c8a49fb40644016fe65b9d3b88675c87de9026da980b249"
       },
-      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
-      "outcome": "updated",
-      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
+      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
+      "outcome": "no-change",
+      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
       "evidence": [
-        "Changed: THREATMODEL.md at f8e65308b747dbb46d674597caabd55029175fd4"
+        "Changed: THREATMODEL.md at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
       ]
     },
     "source:packages/docs/.vitepress/theme/index.ts": {
@@ -2204,15 +2204,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/FaxiosHeaders.ts": {
-      "fingerprint": "4baa3632cee725d17d6d69f8820d55bdb983f20c3b45df813d5b28a244cae877",
+      "fingerprint": "910a2c553ff076a4ebf06f033513f9b2cef410ca769a6a5dcf7e54e093a0664e",
       "snapshot": {
-        "packages/lib/src/lib/core/FaxiosHeaders.ts": "401b5a73146437b667239454455f208def95825d41e5af3f3e2560acc673e3a6"
+        "packages/lib/src/lib/core/FaxiosHeaders.ts": "bd0c6dec943a2fbe236c7ddaa8b5c1ebb66f19892053f24847a58da53db46f4f"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
       "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
@@ -2290,15 +2290,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/parseHeaders.ts": {
-      "fingerprint": "92c04eeb1e609aee2ee8a4976581ef9b56195df29b7ab4c8bcf963b11423f6b5",
+      "fingerprint": "0916f3b5571bed522e4eb90b411c3c8d56d1ba644477ef9b385dc1c10d9cc686",
       "snapshot": {
-        "packages/lib/src/lib/helpers/parseHeaders.ts": "3984e9feedab3f155d1b079420137ffec9d8ed5c6e7f15be098754de42b58a46"
+        "packages/lib/src/lib/helpers/parseHeaders.ts": "94df8d992f2985633b3340f94cf1823b6e51be8a2f543f17362462fbeee49ccf"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
       "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/parseHeaders.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/lib/src/lib/helpers/parseHeaders.ts at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
       ]
     },
     "source:packages/lib/src/lib/helpers/progressEventReducer.ts": {
@@ -2702,15 +2702,15 @@
       ]
     },
     "source:packages/tests/unit/axiosHeaders.test.ts": {
-      "fingerprint": "087cd702160ef99b12f2fe676bd7521d2256980ad4073c91b64fdf04b1cb237b",
+      "fingerprint": "c9ef65b11881e537ab80456ceb93627a185d9be6f8d3a5df90558a2ac21907a6",
       "snapshot": {
-        "packages/tests/unit/axiosHeaders.test.ts": "79372aa2395ab08f0e35b0333112099c11a0ab592570da8afb0a164a02f682e0"
+        "packages/tests/unit/axiosHeaders.test.ts": "218d27d4424e77e1dd326c0342c98d1cfeff9839317872987db62132d65890d8"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
       "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
       "evidence": [
-        "Changed: packages/tests/unit/axiosHeaders.test.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/tests/unit/axiosHeaders.test.ts at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
       ]
     },
     "source:packages/tests/unit/cancel/canceledError.test.ts": {
@@ -2977,16 +2977,15 @@
       ]
     },
     "source:packages/tests/unit/helpers/parseHeaders.test.ts": {
-      "fingerprint": "34b9485cac4c492e724b64b2fc78b009518cbe1b1d813b9c7373f06673dd054d",
+      "fingerprint": "b2603361220dde55c1571a763f1ca948b508352a0efd3ec7f698a9e5eb300fb6",
       "snapshot": {
-        "packages/tests/unit/helpers/parseHeaders.test.ts": "f51215727f8843dce18c4a3d62a9ea4b1f36bf404cf0d017b7b932a6be9f412c"
+        "packages/tests/unit/helpers/parseHeaders.test.ts": "ddbb66fbeef541bf221d6d7135ac649e37d51e13a2c5aef5ca1e9ee51c25fc86"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
       "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/helpers/parseHeaders.test.ts: @@ -1,4 +1,4 @@ (diff/229)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/helpers/parseHeaders.test.ts at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
       ]
     },
     "source:packages/tests/unit/helpers/progressEventReducer.test.ts": {
@@ -5911,6 +5910,18 @@
       "reason": "test-only changes to the unit suite, its server helper and test deps; the skill teaches nothing about them",
       "evidence": [
         "Changed: packages/tests/unit/setup/server.test.ts at f0549dea7befb84a26c93609fdff0d445fac2358"
+      ]
+    },
+    "source:.bumpy/289-proto-keys.md": {
+      "fingerprint": "b74ddbc957281630686d0313e522ac5e74b9cf87adab2850ca673d0b567d87f7",
+      "snapshot": {
+        ".bumpy/289-proto-keys.md": "59135eaf519ed0beb4e0a9df14b79870d90ab2c1fbce86a289f6449ee47f618a"
+      },
+      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
+      "outcome": "no-change",
+      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
+      "evidence": [
+        "Changed: .bumpy/289-proto-keys.md at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
       ]
     }
   }

@@ -2,6 +2,18 @@ import { describe, expect, it } from "vitest";
 import parseHeaders from "#src/lib/helpers/parseHeaders.js";
 
 describe("helpers::parseHeaders", () => {
+  it("keeps header names that exist on Object.prototype as own properties", () => {
+    const parsed = parseHeaders("Constructor: x\nToString: y\nHasOwnProperty: z\nValueOf: v\nX-A: 1");
+
+    expect(Object.entries(parsed)).toEqual([
+      [ "constructor", "x" ],
+      [ "tostring", "y" ],
+      [ "hasownproperty", "z" ],
+      [ "valueof", "v" ],
+      [ "x-a", "1" ],
+    ]);
+  });
+
   it("should parse headers", () => {
     const date = new Date();
     const parsed = parseHeaders(

@@ -30,6 +30,20 @@ describe("plugins::forwardTo", () => {
     vi.unstubAllGlobals();
   });
 
+  it("passes null-prototype ctx.config and env to middleware installed after it", async () => {
+    const protos: Array<unknown> = [];
+    const { fetch } = recordingFetch();
+    const api = faxios.create({ baseURL: "https://api.example.com", env: { fetch } }).use(forwardTo(GATEWAY))
+      .use(async (ctx, next) => {
+        protos.push(Object.getPrototypeOf(ctx.config), Object.getPrototypeOf(ctx.config.env));
+        return next(ctx);
+      });
+
+    await api.get("/x");
+
+    assert.deepStrictEqual(protos, [ null, null ]);
+  });
+
   it("sends the request to the gateway with the final URL in X-Forward-To", async () => {
     const received: Array<{ forwardTo: string | undefined; url: string | undefined; }> = [];
     const gateway = await startHTTPServer((req, res) => {

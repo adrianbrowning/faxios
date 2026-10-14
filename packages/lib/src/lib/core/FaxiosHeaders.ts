@@ -229,7 +229,8 @@ class FaxiosHeaders {
     ): void {
       const lHeader = normalizeHeader(_header);
 
-      if (!lHeader) {
+      // Header names are stored as own properties, so names that would reach the prototype are skipped.
+      if (!lHeader || utils.isDangerousKey(lHeader)) {
         return;
       }
 

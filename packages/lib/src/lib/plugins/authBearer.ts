@@ -111,7 +111,8 @@ export function authBearer(getToken: () => Promise<string> | string, options: Au
       // On a copy: middleware that calls next() again (retry installed before this plugin) comes
       // back through here without the header, so every try asks for a fresh token.
       const headers = new FaxiosHeaders(ctx.config.headers).set(header, scheme ? `${scheme} ${token}` : token, true);
-      const config = { ...ctx.config };
+      // Null prototype, like every ctx.config: later middleware must not read inherited keys.
+      const config: InternalFaxiosRequestConfig = Object.assign(Object.create(null) as InternalFaxiosRequestConfig, ctx.config);
       config.headers = headers;
       const fetchOptions = own(config, "fetchOptions");
       if (customHeader && (!fetchOptions || !Object.hasOwn(fetchOptions, "redirect"))) {
