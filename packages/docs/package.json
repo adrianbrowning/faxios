@@ -9,7 +9,7 @@
     "docs:dev": "vitepress dev",
     "docs:build": "vitepress build",
     "docs:preview": "vitepress preview",
-    "lint": "pnpm lint:esl && pnpm lint:s",
+    "lint": "pnpm lint:ts && pnpm lint:esl && pnpm lint:s",
     "lint:esl": "eslint --config eslint.config.ts \"**/*.{j,t}s{,x}\" --cache --max-warnings=0",
     "lint:s": "eslint --config eslint.config.style.ts \"**/*.{j,t}s{,x}\" --cache --max-warnings=0",
     "lint:fix": "pnpm lint:s --fix",
