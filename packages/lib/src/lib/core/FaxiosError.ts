@@ -88,8 +88,11 @@ function redactConfig(config: unknown, redactKeys: ReadonlyArray<string>): unkno
   return visit(config);
 }
 
-// `user:pass@` after a `scheme://` anywhere in free text, such as an error message.
-const USER_INFO_IN_TEXT = /\b([a-z][a-z\d+\-.]*:[/\\]{2})[^/\\?#\s@]*@/gi;
+// `user:pass@` after a `scheme://` anywhere in free text, such as an error message. A match can
+// start only at a scheme character followed by `:` and two slashes, and the user info stops at the
+// first `/`, so the scan is linear: matching the whole scheme from a word boundary rescanned the
+// text from every letter of a long `a.a.a…` path, which took seconds on a 200 kB message.
+const USER_INFO_IN_TEXT = /([a-z\d+\-.]:[/\\]{2})[^/\\?#\s@]*@/gi;
 
 function stripUserInfoInText(text: string): string {
   return text.replace(USER_INFO_IN_TEXT, "$1");

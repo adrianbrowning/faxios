@@ -239,6 +239,26 @@ describe("core::FaxiosError", () => {
       });
     });
 
+    it("strips URL user info from the message and the stack", () => {
+      const error = new FaxiosError("connect ECONNREFUSED http://user:secret-pw@api.example.com/items");
+
+      const json = error.toJSON();
+
+      expect(json.message).toBe("connect ECONNREFUSED http://api.example.com/items");
+      expect(json.stack).toContain("http://api.example.com/items");
+      expect(json.stack).not.toContain("secret-pw");
+    });
+
+    it("strips URL user info from a long message in linear time", () => {
+      // A path segment of "a." runs made the old unanchored pattern rescan to the end from every letter.
+      const error = new FaxiosError(`Network Error: http://host/files/${"a.".repeat(1e5)}`);
+
+      const start = performance.now();
+      error.toJSON();
+
+      expect(performance.now() - start).toBeLessThan(50);
+    });
+
     it("masks the token authBearer sent on a failed request", async () => {
       const api = faxios.create({
         baseURL: "http://localhost",
