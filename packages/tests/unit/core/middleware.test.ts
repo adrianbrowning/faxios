@@ -352,7 +352,8 @@ describe("core::middleware", () => {
     });
 
     describe("failed registration", () => {
-      const throwingProvides = (before: Record<string, unknown>, after: Record<string, unknown> = {}) => {
+      type Provides = { broken?: unknown; early?: unknown; extra?: unknown; late?: unknown; ok?: unknown; };
+      const throwingProvides = (before: Provides, after: Provides = {}): Provides => {
         const provides = { ...before };
         Object.defineProperty(provides, "broken", { enumerable: true, get: () => { throw new Error("getter failed"); } });
         return Object.assign(provides, after);
