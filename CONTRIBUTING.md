@@ -50,6 +50,16 @@ pnpm docs:dev
 pnpm docs:build
 ```
 
+Some code blocks are copies of files in `packages/tests/docs-examples/sources/`; their fence names the file with `file=`. Edit the source file, never the copy, and check it with `pnpm lint`. Then review what changes in the Markdown, apply it, and run the full check:
+
+```bash
+pnpm docs:sync
+pnpm docs:sync:apply
+pnpm check
+```
+
+`pnpm docs:sync` prints the diff and writes nothing; `pnpm check` fails while a copy differs from its source, and on a Markdown file outside the paths in `mdcode.config.json`. [AGENTS.md](AGENTS.md) explains how each kind of code block is checked.
+
 ## Dependency and GitHub Actions updates
 
 Please do not open pull requests that only update npm packages, lockfiles, or GitHub Actions versions. We close these PRs from outside collaborators. Only maintainers and approved automated bots may create package and GitHub Actions update PRs.
