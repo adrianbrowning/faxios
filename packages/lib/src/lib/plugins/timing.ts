@@ -6,7 +6,9 @@ import { fullPath, own } from "./shared.js";
 
 /**
  * What `timing` reports once per request: `status` on success, `error` on failure. No config,
- * headers, body or URL credentials, so an event is safe to log.
+ * headers, body or URL credentials: the URL loses its user info, query and fragment, and the
+ * error message its URL user info. The rest of an error message is the error's own text, so a
+ * middleware or schema that puts a secret in its message puts it in the event too.
  */
 export type TimingEvent = {
   /**
@@ -23,7 +25,7 @@ export type TimingEvent = {
 
 /**
  * The failure `timing` reports: the error's `code` (a `FaxiosError` code such as
- * `"ERR_NETWORK"`), `message`, and the HTTP `status` when a response arrived.
+ * `"ERR_NETWORK"`), `message` without URL user info, and the HTTP `status` when a response arrived.
  */
 type TimingError = { code: string | undefined; message: string; status: number | undefined; };
 
@@ -32,6 +34,10 @@ const now = () => (typeof performance === "undefined" ? Date.now() : performance
 // Up to the `@` of a URL's user info: after the scheme (`http:`, with any slashes) or after `//`.
 // Backslashes count as slashes, as they do in the WHATWG URL parser.
 const USER_INFO = /^([a-z][a-z\d+\-.]*:[/\\]*|[/\\]{2})[^/\\?#]*@/i;
+
+// `user:pass@` after a `scheme://` anywhere in an error message. A match starts only at a scheme
+// character followed by `:` and two slashes, and stops at the first `/`, so the scan is linear.
+const USER_INFO_IN_TEXT = /([a-z\d+\-.]:[/\\]{2})[^/\\?#\s@]*@/gi;
 
 // A property the error or its class defines, never one only Object.prototype supplies.
 function errorProp(error: unknown, key: "code" | "status"): unknown {
@@ -60,7 +66,7 @@ function summarize(error: unknown): TimingError {
   const status = errorProp(error, "status");
   return {
     code: typeof code === "string" ? code : undefined,
-    message: error instanceof Error ? error.message : String(error),
+    message: (error instanceof Error ? error.message : String(error)).replace(USER_INFO_IN_TEXT, "$1"),
     status: typeof status === "number" ? status : undefined,
   };
 }
