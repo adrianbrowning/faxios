@@ -121,7 +121,9 @@ JSON parse; `"blob"`, `"formdata"` and `"stream"` (a `ReadableStream`) are also 
   etc. A group is an object; a string under a group name (a header literally named `get`) is a
   plain header. Precedence, lowest first: instance `common`, instance method group, instance
   flat keys, request `common`, request method group, request flat keys. So any request header
-  beats any instance header, and within one level flat keys win over groups. Header
+  beats any instance header, and within one level flat keys win over groups. A `create()` child
+  layers over its parent the same way: any child header, `common` included, beats every parent
+  header, and a child method group applies to that method only. Header
   values must be strings, numbers, string arrays, booleans, `null` or `undefined`; convert
   anything else with `String(...)`.
 - Arrays such as `transformRequest` and `transformResponse` are replaced, not concatenated.
@@ -129,9 +131,10 @@ JSON parse; `"blob"`, `"formdata"` and `"stream"` (a `ReadableStream`) are also 
   schema or `validateStatus` still applies, on `request()` and every method alias alike. Only
   `xsrfCookieName` and `xsrfHeaderName` are cleared by `undefined`. Use `validateStatus: null` to
   resolve every status.
-- `params`, `auth`, `env` and other plain objects deep-merge.
-- Middleware added with `.use()` is not copied into `create()` children. Register it on each
-  instance that needs it.
+- `params` and `env` merge one level deep: their own keys combine, and a nested value (such as
+  `params: { filter: { … } }`) is replaced, not merged. `auth` and other plain objects deep-merge.
+- Middleware added with `.use()` is not copied into `create()` children, and neither are the
+  parent's defaults for plugin options. Register the plugin on each instance that needs it.
 
 To remove an inherited header for one request, set it to `undefined`. To keep a header off the
 wire entirely, including ones faxios adds itself, set it to `null` or `false`.

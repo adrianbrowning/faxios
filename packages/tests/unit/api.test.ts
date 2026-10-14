@@ -2,7 +2,7 @@ import assert from "node:assert";
 import { describe, it } from "vitest";
 import * as root from "#src/index.ts";
 import faxios, { create, Faxios, FaxiosError } from "#src/index.ts";
-import type { FaxiosRequestConfig } from "#src/index.ts";
+import type { FaxiosInstance, FaxiosRequestConfig } from "#src/index.ts";
 import * as pluginsEntry from "#src/lib/plugins/definePlugin.ts";
 
 describe("static api", () => {
@@ -260,6 +260,52 @@ describe("instance api", () => {
       (transformedData as unknown as Record<string, unknown>).stringKey,
       "value"
     );
+  });
+
+  describe("create() child headers", () => {
+    const sendsHeader = async (api: FaxiosInstance, method: "get" | "post", name: string) => {
+      let sent: null | string = "unsent";
+      const fetch = async (_input: unknown, init?: RequestInit) => {
+        sent = new Headers(init?.headers).get(name);
+        return new Response(null, { status: 200 });
+      };
+      await api.request({ url: "http://localhost/test", method, env: { fetch } });
+      return sent;
+    };
+
+    it("lets a child's common header beat the parent's top-level one", async () => {
+      const parent = create({ headers: { "X-H": "parent-top" } });
+      const child = parent.create({ headers: { common: { "x-h": "child-common" } } });
+
+      assert.strictEqual(await sendsHeader(child, "get", "X-H"), "child-common");
+    });
+
+    it("lets a child's method group beat the parent's top-level one for that method only", async () => {
+      const parent = create({ headers: { "X-H": "parent-top", common: { "X-H": "parent-common" } } });
+      const child = parent.create({ headers: { get: { "X-H": "child-get" } } });
+
+      assert.strictEqual(await sendsHeader(child, "get", "X-H"), "child-get");
+      assert.strictEqual(await sendsHeader(child, "post", "X-H"), "parent-top");
+    });
+
+    it("sends the same headers as the parent with those headers on the request", async () => {
+      const parentHeaders = { "X-A": "parent-top", post: { "X-B": "parent-post" } };
+      const childHeaders = { common: { "X-A": "child-common", "X-B": "child-common" } };
+      const child = create({ headers: parentHeaders }).create({ headers: childHeaders });
+      const parent = create({ headers: parentHeaders });
+      const perRequest = async (name: string) => {
+        let sent: null | string = null;
+        const fetch = async (_input: unknown, init?: RequestInit) => {
+          sent = new Headers(init?.headers).get(name);
+          return new Response(null, { status: 200 });
+        };
+        await parent.post("http://localhost/test", undefined, { headers: childHeaders, env: { fetch } });
+        return sent;
+      };
+
+      assert.strictEqual(await sendsHeader(child, "post", "X-A"), await perRequest("X-A"));
+      assert.strictEqual(await sendsHeader(child, "post", "X-B"), await perRequest("X-B"));
+    });
   });
 });
 

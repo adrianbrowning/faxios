@@ -17,8 +17,18 @@ const headersToObject = (thing: unknown) => (thing instanceof FaxiosHeaders ? { 
  * @returns {Object} New object resulting from merging config2 to config1
  */
 export default function mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfig | Record<string, unknown>, config2?: FaxiosDefaults | FaxiosRequestConfig | Record<string, unknown>): FaxiosRequestConfig & Record<string, unknown> {
-   
-  config2 = config2 || {};
+  return merge(config1, config2 || {}, false);
+}
+
+/**
+ * mergeConfig() without `headers`: request() layers headers itself, per method, so a deep merge
+ * of them would only be discarded.
+ */
+export function mergeConfigExceptHeaders(config1: FaxiosDefaults | FaxiosRequestConfig, config2?: FaxiosRequestConfig): FaxiosRequestConfig & Record<string, unknown> {
+  return merge(config1, config2 || {}, true);
+}
+
+function merge(config1: FaxiosDefaults | FaxiosRequestConfig | Record<string, unknown>, config2: FaxiosDefaults | FaxiosRequestConfig | Record<string, unknown>, skipHeaders: boolean): FaxiosRequestConfig & Record<string, unknown> {
 
   // Use a null-prototype object so that downstream reads such as `config.auth`
   // or `config.baseURL` cannot inherit polluted values from Object.prototype.
@@ -200,7 +210,7 @@ export default function mergeConfig(config1: FaxiosDefaults | FaxiosRequestConfi
 
   utils.forEach(Object.keys({ ...config1, ...config2 }), function computeConfigValue(_value: unknown, _prop: unknown) {
     const key = _value as string;
-    if (utils.isDangerousKey(key)) return;
+    if (utils.isDangerousKey(key) || skipHeaders && key === "headers") return;
     const mergeFn = (utils.hasOwnProp(mergeMap, key) ? (mergeMap as Record<string, typeof mergeDeepProperties>)[key] : mergeDeepProperties)!;
     const a = utils.hasOwnProp(config1, key) ? c1[key] : undefined;
     const b = utils.hasOwnProp(config2, key) ? c2[key] : undefined;
