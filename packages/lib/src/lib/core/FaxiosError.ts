@@ -203,9 +203,8 @@ class FaxiosError<T = unknown, D = unknown> extends Error {
   ) {
     super(message);
 
-    // Make message enumerable to maintain backward compatibility
-    // The native Error constructor sets message as non-enumerable,
-    // but faxios < v1.13.3 had it as enumerable
+    // An enumerable message, so spreading an error or reading Object.keys() includes it. The
+    // native Error constructor sets message as non-enumerable.
     Object.defineProperty(
       this,
       "message",

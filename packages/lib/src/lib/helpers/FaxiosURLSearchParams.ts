@@ -1,6 +1,6 @@
 "use strict";
 
-import type { ParamEncoder } from "../types.js";
+import type { FormSerializerOptions, ParamEncoder } from "../types.js";
 import toFormData from "./toFormData.js";
 
 /**
@@ -29,7 +29,7 @@ class FaxiosURLSearchParams {
   #pairs: Array<[string, unknown]> = [];
 
   constructor(params?: unknown, options?: unknown) {
-    params && toFormData(params, this, options as Record<string, unknown>);
+    params && toFormData(params, this, options as FormSerializerOptions);
   }
 
   append(name: string, value: unknown): void {

@@ -1,6 +1,6 @@
 import { describe, expectTypeOf, it } from "vitest";
 import { z } from "zod";
-import faxios from "#src/index.ts";
+import faxios, { Faxios } from "#src/index.ts";
 import type { FaxiosInstance } from "#src/lib/faxios.ts";
 
 // Type-checked by `lint:ts`; the functions are never called.
@@ -59,6 +59,18 @@ describe("define() and route() types", () => {
 describe("explicit response generic and responseSchema", () => {
   it("rejects a generic that disagrees with the responseSchema output", () => {
     async function check(instance: FaxiosInstance) {
+      // @ts-expect-error TS2769 -- the schema outputs { id, name }, not { nope }
+      await instance.get<{ nope: string; }>("/u", { responseSchema: zUser });
+      // @ts-expect-error TS2769 -- same on a body method
+      await instance.post<{ nope: string; }>("/u", {}, { responseSchema: zUser });
+      // @ts-expect-error TS2769 -- same on request()
+      await instance.request<{ nope: string; }>({ url: "/u", responseSchema: zUser });
+    }
+    expectTypeOf(check).toBeFunction();
+  });
+
+  it("rejects the same disagreeing pair on the Faxios class", () => {
+    async function check(instance: Faxios) {
       // @ts-expect-error TS2769 -- the schema outputs { id, name }, not { nope }
       await instance.get<{ nope: string; }>("/u", { responseSchema: zUser });
       // @ts-expect-error TS2769 -- same on a body method

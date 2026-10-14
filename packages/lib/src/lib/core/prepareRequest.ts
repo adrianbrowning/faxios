@@ -9,8 +9,7 @@ import { hasOwnProp, isFunction, isObject } from "../utils.js";
 function applyXSRFToken(
   headers: FaxiosHeaders,
   withXSRFToken: ((cfg: unknown) => unknown) | boolean | null | undefined,
-  xsrfHeaderName: string | undefined,
-  xsrfCookieName: string | undefined,
+  xsrf: { cookieName: string | undefined; headerName: string | undefined; url: string; },
   config: FaxiosRequestConfig
 ): boolean {
   if (isFunction(withXSRFToken)) {
@@ -24,10 +23,11 @@ function applyXSRFToken(
   // the XSRF token cross-origin.
   const shouldSendXSRF =
     withXSRFToken === true ||
-    (withXSRFToken == null && isURLSameOrigin(config.url ?? ""));
+    (withXSRFToken == null && isURLSameOrigin(xsrf.url));
 
   if (!shouldSendXSRF) return false;
 
+  const { cookieName: xsrfCookieName, headerName: xsrfHeaderName } = xsrf;
   const xsrfValue =
     xsrfHeaderName && xsrfCookieName && cookies.read(xsrfCookieName);
 
@@ -68,7 +68,7 @@ function prepareRequest(config: FaxiosRequestConfig, url: string): FaxiosRequest
   // Specifically not if we're in a web worker.
   if (
     platform.hasStandardBrowserEnv &&
-    applyXSRFToken(headers, withXSRFToken, xsrfHeaderName, xsrfCookieName, newConfig)
+    applyXSRFToken(headers, withXSRFToken, { cookieName: xsrfCookieName, headerName: xsrfHeaderName, url }, newConfig)
   ) {
     // Fetch strips only Authorization when a redirect leaves the origin, so following one would
     // send the XSRF token to whatever host it points at. Refuse redirects unless the caller chose.

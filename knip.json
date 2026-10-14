@@ -1,9 +1,6 @@
 {
   "workspaces": {
     "packages/lib": {
-      "entry": [
-        "scripts/**/*.js"
-      ],
       "project": ["**/*.{js,ts,cjs,mjs,mts}"]
     },
     "packages/tests": {

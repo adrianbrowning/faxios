@@ -4,9 +4,9 @@ import { describe, it } from "vitest";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import FaxiosURLSearchParams from "#src/lib/helpers/FaxiosURLSearchParams.js";
 import toFormData from "#src/lib/helpers/toFormData.js";
-import type { GenericFormData } from "#src/lib/types.js";
+import type { FormDataVisitorHelpers, GenericFormData, SerializerVisitor } from "#src/lib/types.js";
 
-const fd = () => new FormData() as unknown as GenericFormData;
+const fd = () => new FormData();
 // ponytail: FaxiosURLSearchParams is a function-constructor; cast once
 const URLSearchParamsCtor = FaxiosURLSearchParams as unknown as new (
   params?: unknown,
@@ -121,7 +121,8 @@ describe("helpers::toFormData", () => {
     });
 
     it.each([ NaN, -1, 1.5, -Infinity, "5", null ])("rejects maxDepth %j with ERR_BAD_OPTION_VALUE", maxDepth => {
-      assert.throws(() => toFormData(nest(2), fd(), { maxDepth }), {
+      // Deliberately invalid at runtime; the type says number.
+      assert.throws(() => toFormData(nest(2), fd(), { maxDepth: maxDepth as number }), {
         code: "ERR_BAD_OPTION_VALUE",
         message: "option maxDepth must be a non-negative integer or Infinity",
       });
@@ -248,20 +249,20 @@ describe("helpers::toFormData per-call state (#172)", () => {
 
   it("isolates a re-entrant visitor's inner call from the outer FormData", () => {
     const inner = new globalThis.FormData();
-    const outer = toFormData({ a: 1, b: 2 }, new globalThis.FormData() as unknown as GenericFormData, {
-      visitor(this: GenericFormData, value: unknown, key: number | string, path: Array<number | string> | null, helpers: { defaultVisitor: (...args: Array<unknown>) => boolean; }) {
-        if (key === "a") toFormData({ x: 9 }, inner as unknown as GenericFormData);
+    const outer = toFormData({ a: 1, b: 2 }, new globalThis.FormData(), {
+      visitor(this: GenericFormData, value: unknown, key: number | string, path: Array<number | string> | null, helpers: FormDataVisitorHelpers) {
+        if (key === "a") toFormData({ x: 9 }, inner);
         return helpers.defaultVisitor.call(this, value, key, path, helpers);
       },
-    }) as unknown as globalThis.FormData;
+    });
     assert.deepStrictEqual(entries(outer), [[ "a", "1" ], [ "b", "2" ]]);
     assert.deepStrictEqual(entries(inner), [[ "x", "9" ]]);
   });
 
   it("gives a visitor only the declared helpers", () => {
     let keys: Array<string> = [];
-    toFormData({ a: 1 }, new globalThis.FormData() as unknown as GenericFormData, {
-      visitor(this: GenericFormData, value: unknown, key: number | string, path: Array<number | string> | null, helpers: { defaultVisitor: (...args: Array<unknown>) => boolean; }) {
+    toFormData({ a: 1 }, new globalThis.FormData(), {
+      visitor(this: GenericFormData, value: unknown, key: number | string, path: Array<number | string> | null, helpers: FormDataVisitorHelpers) {
         keys = Object.keys(helpers).sort();
         return helpers.defaultVisitor.call(this, value, key, path, helpers);
       },
@@ -270,8 +271,8 @@ describe("helpers::toFormData per-call state (#172)", () => {
   });
 
   it("dots/indexes options on one call don't change a later default call", () => {
-    toFormData({ arr: [ 1 ], o: { k: 1 } }, new globalThis.FormData() as unknown as GenericFormData, { dots: true, indexes: true });
-    const form = toFormData({ arr: [ 1 ], o: { k: 1 } }, new globalThis.FormData() as unknown as GenericFormData) as unknown as globalThis.FormData;
+    toFormData({ arr: [ 1 ], o: { k: 1 } }, new globalThis.FormData(), { dots: true, indexes: true });
+    const form = toFormData({ arr: [ 1 ], o: { k: 1 } }, new globalThis.FormData());
     assert.deepStrictEqual(entries(form), [[ "arr[]", "1" ], [ "o[k]", "1" ]]);
   });
 
@@ -283,7 +284,7 @@ describe("helpers::toFormData per-call state (#172)", () => {
         made.push(this);
       }
     }
-    const form = toFormData({ bin: new Uint8Array([ 1 ]) }, new globalThis.FormData() as unknown as GenericFormData, { Blob: MyBlob }) as unknown as globalThis.FormData;
+    const form = toFormData({ bin: new Uint8Array([ 1 ]) }, new globalThis.FormData(), { Blob: MyBlob });
     assert.strictEqual(made.length, 1);
     assert.ok(form.get("bin") instanceof globalThis.Blob);
   });
@@ -301,7 +302,8 @@ describe("helpers::toFormData per-call state (#172)", () => {
 
   it("gives each throw a FaxiosError code", () => {
     assert.strictEqual(code(() => toFormData("x", fd())), FaxiosError.ERR_BAD_REQUEST);
-    assert.strictEqual(code(() => toFormData({}, fd(), { visitor: 1 })), FaxiosError.ERR_BAD_OPTION_VALUE);
+    // A non-function visitor is rejected at runtime; the type rules it out.
+    assert.strictEqual(code(() => toFormData({}, fd(), { visitor: 1 as unknown as SerializerVisitor })), FaxiosError.ERR_BAD_OPTION_VALUE);
     const self: Record<string, unknown> = {};
     self["self"] = self;
     assert.strictEqual(code(() => toFormData(self, fd())), FaxiosError.ERR_BAD_REQUEST);

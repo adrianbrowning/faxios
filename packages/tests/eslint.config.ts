@@ -17,6 +17,7 @@ const EXTERNAL_TS_FILES = [ "smoke/**/*.ts", "module/**/*.ts" ];
 const TYPING_FIXTURE_FILES = [
   "module/esm/tests/helpers/esm-functions.ts",
   "module/esm/tests/helpers/esm-index.ts",
+  "module/esm/tests/helpers/export-surface.ts",
   "module/esm/tests/helpers/generics-index.ts",
   "module/esm/tests/helpers/middleware-index.ts",
   "smoke/deno/types/**/*.ts",

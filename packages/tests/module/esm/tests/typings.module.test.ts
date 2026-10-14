@@ -118,7 +118,32 @@ describe("module esm typings compatibility", () => {
     }
   });
 
-  for (const helper of [ "generics-index.ts", "middleware-index.ts" ]) {
+  it("exports every public config and API type and types toFormData and URL inputs", () => {
+    const sourcePath = path.join(
+      repoRoot,
+      "tests/module/esm/tests/helpers/export-surface.ts"
+    );
+    const fixturePath = createTempFixture(
+      suiteRoot,
+      "typings-export-surface",
+      sourcePath,
+      floorTsconfig,
+      {
+        type: "module",
+      }
+    );
+
+    try {
+      runCommand("node", [ tscBin, "--noEmit", "-p", "tsconfig.json" ], {
+        cwd: fixturePath,
+      });
+    }
+    finally {
+      cleanupTempFixture(fixturePath);
+    }
+  });
+
+  for (const helper of [ "generics-index.ts", "middleware-index.ts", "export-surface.ts" ]) {
     it(`type-checks ${helper} against the shipped declarations with TypeScript 5.4`, () => {
       const sourcePath = path.join(repoRoot, "tests/module/esm/tests/helpers", helper);
       const fixturePath = createTempFixture(

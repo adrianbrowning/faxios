@@ -105,8 +105,14 @@ export interface GenericAbortSignal {
   removeEventListener: (...args: Array<unknown>) => unknown;
 }
 
+/**
+ * A FormData-like target for `toFormData`: any object with an `append(name, value)` method, such
+ * as the global `FormData` or the `form-data` package. A method, so its parameters are checked
+ * bivariantly and the global `FormData` (whose `append` takes `string | Blob`) is accepted.
+ */
 export interface GenericFormData {
-  append: (name: string, value: unknown, options?: unknown) => unknown;
+  // eslint-disable-next-line @typescript-eslint/method-signature-style -- see above
+  append(name: string, value: unknown, options?: unknown): unknown;
 }
 
 export interface GenericHTMLFormElement {
@@ -227,8 +233,10 @@ export interface FaxiosRequestConfig<D = unknown> {
    */
   onDownloadProgress?: (progressEvent: FaxiosProgressEvent) => void;
   /**
-   * Called with upload progress where faxios can stream the request body, which today is
-   * Node.js. It is not called in browsers or web workers (see #209).
+   * Called with upload progress where faxios streams the request body: in server runtimes whose
+   * `Request` reads the `duplex` option, which today is Node.js. Deno's and Bun's `Request` don't
+   * read it, so faxios sends the body as it is and the callback is not called there. faxios never
+   * streams the body in browsers or web workers (see #209).
    * An error thrown (or a rejected promise returned) by the callback is caught and ignored;
    * the request settles normally.
    */
@@ -267,7 +275,8 @@ export interface FaxiosRequestConfig<D = unknown> {
     | Array<FaxiosResponseTransformer>
     | FaxiosResponseTransformer;
   transitional?: TransitionalOptions;
-  url?: string;
+  /** The request URL; a `URL` instance is sent as its `href`. */
+  url?: string | URL;
   validateStatus?: ((status: number) => boolean) | null;
   withCredentials?: boolean;
   withXSRFToken?:
@@ -293,6 +302,8 @@ export interface InternalFaxiosRequestConfig<
   D = unknown
 > extends FaxiosRequestConfig<D> {
   headers: FaxiosHeaders;
+  // Normalized to a string before middleware runs.
+  url?: string;
 }
 
 export interface FaxiosResponse<T = unknown, D = unknown> {
