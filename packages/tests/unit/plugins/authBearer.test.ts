@@ -403,6 +403,37 @@ describe("plugins::authBearer", () => {
       assert.deepStrictEqual(authorizations, [ null, null, "Bearer token" ]);
     });
 
+    // An empty value would delete the text between two slashes and turn what follows into a host.
+    it("rejects an empty path param that would collapse the template into a new origin, sending nothing", async () => {
+      const { fetch, authorizations } = recordingFetch();
+      const bare = faxios.create({ env: { fetch } }).use(authBearer(() => "token"));
+      const api = faxios.create({ baseURL: "https://api.test", allowAbsoluteUrls: true, env: { fetch } })
+        .use(authBearer(() => "token"));
+      const isEmptyParam = { code: "ERR_BAD_OPTION_VALUE", message: "Path param \"x\" must not be empty" };
+
+      await assert.rejects(bare.get("{s}:/{x}/evil.test/p", { pathParams: { s: "https", x: "" } }), isEmptyParam);
+      await assert.rejects(api.get("{s}:/{x}/evil.test/p", { pathParams: { s: "https", x: "" } }), isEmptyParam);
+      await assert.rejects(bare.get("/{x}/{repo}", { pathParams: { x: "", repo: "evil.test" } }), isEmptyParam);
+
+      assert.deepStrictEqual(authorizations, []);
+    });
+
+    it("still sends the token to the API for ordinary path placeholders", async () => {
+      const urls: Array<string> = [];
+      const { fetch, authorizations } = recordingFetch();
+      const recording = async (input: Request | string | URL, init?: RequestInit) => {
+        urls.push(input instanceof Request ? input.url : String(input));
+        return fetch(input, init);
+      };
+      const api = faxios.create({ baseURL: "https://api.test/v1", env: { fetch: recording } }).use(authBearer(() => "token"));
+
+      await api.get("/{org}/{repo}", { pathParams: { org: "acme", repo: "evil.test" } });
+      await api.get("/users/{id}", { pathParams: { id: "a b" }, params: { q: "{x}" } });
+
+      assert.deepStrictEqual(urls, [ "https://api.test/v1/acme/evil.test", "https://api.test/v1/users/a%20b?q=%7Bx%7D" ]);
+      assert.deepStrictEqual(authorizations, [ "Bearer token", "Bearer token" ]);
+    });
+
     it("on the default singleton, sends no token to an absolute URL", async () => {
       const { fetch, authorizations } = recordingFetch();
       const plugin = authBearer(() => "token");

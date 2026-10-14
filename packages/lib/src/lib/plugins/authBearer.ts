@@ -74,8 +74,12 @@ function sendsTokenTo(config: InternalFaxiosRequestConfig, instanceBaseURL: unkn
   if (typeof template === "string" && SCHEME_AND_AUTHORITY.exec(template)?.[0].includes("{")) return false;
   // The URL core sends, from the same resolver, without `pathParams` and `params`: middleware runs
   // before `pathParamsSchema`, which may fill or rename placeholders, and the caller's
-  // paramsSerializer shouldn't run an extra time. Path params are percent-encoded into the path,
-  // so outside the scheme and authority they don't move the origin.
+  // paramsSerializer shouldn't run an extra time. That is sound because core fills a placeholder
+  // only with a non-empty run of non-delimiter characters (substitutePathParams rejects `""`
+  // and encodes `: / \ ? # @`), just like the `{key}` left here: the template and the URL sent
+  // have the same delimiters in the same places, so outside the scheme and authority checked
+  // above a path param can't move the origin. A scheme placeholder without `//` (`{s}:/x`) can
+  // only make an `http(s):` URL without `//`, which core rejects with ERR_INVALID_URL.
   // A URL core rejects (an absolute URL with `allowAbsoluteUrls: false`) gets no token.
   let url: string;
   try {

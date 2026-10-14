@@ -27,7 +27,7 @@ TypeScript infers `response.data` from the output type of `responseSchema`; you 
 
 ## Path parameters
 
-`pathParams` substitutes `{key}` placeholders in the URL. Each value is converted to a string and encoded with `encodeURIComponent`. A missing or `null` value, or a value of `.` or `..` (also percent-encoded, such as `%2e%2e`), rejects with `ERR_BAD_OPTION_VALUE` before the request is sent, because a dot segment would move the request to another path.
+`pathParams` substitutes `{key}` placeholders in the URL. Each value is converted to a string and encoded with `encodeURIComponent`. A missing or `null` value, an empty value (`""`, or anything whose string form is empty), or a value of `.` or `..` (also percent-encoded, such as `%2e%2e`), rejects with `ERR_BAD_OPTION_VALUE` before the request is sent. A dot segment would move the request to another path, and an empty value would join the slashes around it, so `/{org}/{repo}` with an empty `org` would become `//host`, a URL on another host.
 
 ```ts
 import faxios from "@gcmdev/faxios";
@@ -44,7 +44,7 @@ await faxios.get("/users/{id}", {
 
 `pathParams` works without a schema. When `pathParamsSchema` is set, `pathParams` is required: a request without it rejects with `ERR_BAD_OPTION_VALUE`. The schema must return a plain object.
 
-A placeholder with no matching key in `pathParams`, or whose value is `null` or `undefined`, rejects with `ERR_BAD_OPTION_VALUE`.
+A placeholder with no matching key in `pathParams`, or whose value is `null`, `undefined` or empty, rejects with `ERR_BAD_OPTION_VALUE`.
 
 ## When validation runs
 

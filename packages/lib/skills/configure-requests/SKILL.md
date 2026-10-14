@@ -90,8 +90,9 @@ const res = await faxios.get("https://api.example.com/users/{id}/posts", {
 // GET https://api.example.com/users/42/posts?page=2&tag=news
 ```
 
-`pathParams` values are `encodeURIComponent`-encoded. A missing or `null` value, or `.`/`..`
-(also percent-encoded, such as `%2e%2e`), rejects with `ERR_BAD_OPTION_VALUE`.
+`pathParams` values are `encodeURIComponent`-encoded. A missing, `null` or empty (`""`) value, or
+`.`/`..` (also percent-encoded, such as `%2e%2e`), rejects with `ERR_BAD_OPTION_VALUE`: an empty
+value would turn `/{org}/{repo}` into `//host`.
 
 Binary downloads need `responseType`, and a type argument because `data` is `unknown`:
 

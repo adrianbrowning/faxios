@@ -55,6 +55,19 @@ describe("plugin entry points (vitest browser)", () => {
     ]);
   });
 
+  it("sends nothing when an empty path param would collapse a relative URL into //host, and still sends the token for a filled one", async () => {
+    using mock = installFetchMock();
+    const api = faxios.create().use(authBearer(() => "page-token"));
+
+    await expect(api.get("/{org}/{repo}", { pathParams: { org: "", repo: "evil.test" } }))
+      .rejects.toMatchObject({ code: "ERR_BAD_OPTION_VALUE" });
+    await api.get("/{org}/{repo}", { pathParams: { org: "acme", repo: "evil.test" } });
+
+    expect(mock.requests.map(request => [ new URL(request.url).host === location.host, request.headers.get("authorization") ])).toEqual([
+      [ true, "Bearer page-token" ],
+    ]);
+  });
+
   it("forwards a relative request to the gateway with its page-resolved URL in X-Forward-To", async () => {
     using mock = installFetchMock();
     const api = faxios.create().use(forwardTo("https://gateway.test/"));

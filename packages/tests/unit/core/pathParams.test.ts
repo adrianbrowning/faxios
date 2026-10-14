@@ -66,6 +66,16 @@ describe("pathParams substitution", () => {
     assert.throws(() => instance.getUri({ url: "/users/{id}", pathParams: {} }), isMissingParam);
   });
 
+  it("rejects an empty path param before fetch is called", async () => {
+    const fetch = vi.fn(async () => new Response(null, { status: 200 }));
+    const expected = { code: "ERR_BAD_OPTION_VALUE", message: "Path param \"id\" must not be empty" };
+    for (const id of [ "", []]) {
+      await assert.rejects(faxios.get("http://localhost/users/{id}/posts", { pathParams: { id }, env: { fetch } }), expected);
+      assert.throws(() => faxios.getUri({ url: "http://localhost/users/{id}/posts", pathParams: { id } }), expected);
+    }
+    assert.strictEqual(fetch.mock.calls.length, 0);
+  });
+
   it("rejects dot segments, plain or percent-encoded, before fetch is called", async () => {
     for (const id of [ ".", "..", "%2e", "%2e%2e", "%2E%2e", ".%2e", "%2E." ]) {
       const fetch = vi.fn(async () => new Response(null, { status: 200 }));
