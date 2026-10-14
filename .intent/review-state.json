@@ -2616,16 +2616,15 @@
       ]
     },
     "source:packages/tests/setup/vendor.d.ts": {
-      "fingerprint": "74af40a677a195453f8d710344375193373ba23d937d9f7ab3782cb37805c68d",
+      "fingerprint": "789c82641c71dc0aff64131e12358d8164f12b156494cacca909d240aee7a3bf",
       "snapshot": {
-        "packages/tests/setup/vendor.d.ts": "c44689ee9deab236a5022b31da70dfb8fc095f1bf5a563120a4b521602fff518"
+        "packages/tests/setup/vendor.d.ts": "bb2234b7b9f08c63b876a43e73d30f49d832f1298b1838aab405b4bada581db8"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "bf30cfa0a3908a8b5859f98b24a367aeb0170f03",
       "outcome": "no-change",
-      "reason": "`Fields = Record<string, string | Array<string>>` became `Array<string> | string`. Behaviour change: none",
+      "reason": "test-only changes to the unit suite, its server helper and test deps; the skill teaches nothing about them",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/setup/vendor.d.ts: @@ -5,7 +5,7 @@ (diff/196)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/setup/vendor.d.ts at bf30cfa0a3908a8b5859f98b24a367aeb0170f03"
       ]
     },
     "source:packages/tests/smoke/bun/tests/fetch.smoke.test.ts": {
