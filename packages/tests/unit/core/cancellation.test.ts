@@ -392,5 +392,17 @@ describe("core::cancellation", () => {
       await assert.rejects(faxios.create({ env: { fetch: jsonFetch() } }).get(URL, { signal: controller.signal }), (err: unknown) =>
         err instanceof CanceledError && err.message === "user left");
     });
+
+    it("uses the default message and no cause for a non-Error, non-string reason", async () => {
+      const controller = new AbortController();
+      controller.abort({ code: 1 });
+
+      await assert.rejects(faxios.create({ env: { fetch: jsonFetch() } }).get(URL, { signal: controller.signal }), (err: unknown) => {
+        assert.ok(err instanceof CanceledError, `expected a CanceledError, got ${String(err)}`);
+        assert.strictEqual(err.message, "canceled");
+        assert.strictEqual(err.cause, undefined);
+        return true;
+      });
+    });
   });
 });

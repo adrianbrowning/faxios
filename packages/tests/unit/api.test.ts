@@ -2,44 +2,94 @@ import assert from "node:assert";
 import { describe, it } from "vitest";
 import * as root from "#src/index.ts";
 import faxios, { create, Faxios, FaxiosError } from "#src/index.ts";
-import type { FaxiosInstance, FaxiosRequestConfig } from "#src/index.ts";
+import type { FaxiosInstance, FaxiosMiddleware, FaxiosRequestConfig } from "#src/index.ts";
 import * as pluginsEntry from "#src/lib/plugins/definePlugin.ts";
 
+const okFetch = async () => new Response(null, { status: 200 });
+
+// Each helper sends its own method, its URL and, for the body methods, its data.
+const sentByEveryHelper = async (client: FaxiosInstance) => {
+  const sent: Array<[string, string, string]> = [];
+  const fetch = async (input: Request | string | URL) => {
+    assert.ok(input instanceof Request);
+    sent.push([ input.method, new URL(input.url).pathname, await input.text() ]);
+    return new Response(null, { status: 200 });
+  };
+  const config = { env: { fetch } };
+  await client.request({ ...config, url: "http://localhost/request", method: "post", data: "r" });
+  await client.get("http://localhost/get", config);
+  await client.head("http://localhost/head", config);
+  await client.options("http://localhost/options", config);
+  await client.delete("http://localhost/delete", config);
+  await client.post("http://localhost/post", "p", config);
+  await client.put("http://localhost/put", "u", config);
+  await client.patch("http://localhost/patch", "a", config);
+  await client.query("http://localhost/query", "q", config);
+  return sent;
+};
+
+const everyHelperSends = [
+  [ "POST", "/request", "r" ],
+  [ "GET", "/get", "" ],
+  [ "HEAD", "/head", "" ],
+  [ "OPTIONS", "/options", "" ],
+  [ "DELETE", "/delete", "" ],
+  [ "POST", "/post", "p" ],
+  [ "PUT", "/put", "u" ],
+  [ "PATCH", "/patch", "a" ],
+  [ "QUERY", "/query", "q" ],
+];
+
+// Runs a request through `client` and returns the URL of each request the middleware saw.
+const seenByMiddleware = async (client: FaxiosInstance) => {
+  const log: Array<string> = [];
+  const mw: FaxiosMiddleware = async (ctx, next) => {
+    log.push(ctx.config.url ?? "");
+    return next(ctx);
+  };
+  client.use(mw);
+  try {
+    await client.get("http://localhost/used", { env: { fetch: okFetch } });
+  }
+  finally {
+    client.eject(mw);
+  }
+  await client.get("http://localhost/ejected", { env: { fetch: okFetch } });
+  return log;
+};
+
 describe("static api", () => {
-  it("should have request method helpers", () => {
-    assert.strictEqual(typeof faxios.request, "function");
-    assert.strictEqual(typeof faxios.get, "function");
-    assert.strictEqual(typeof faxios.head, "function");
-    assert.strictEqual(typeof faxios.options, "function");
-    assert.strictEqual(typeof faxios.delete, "function");
-    assert.strictEqual(typeof faxios.post, "function");
-    assert.strictEqual(typeof faxios.put, "function");
-    assert.strictEqual(typeof faxios.patch, "function");
-    assert.strictEqual(typeof faxios.query, "function");
+  it("should have request method helpers", async () => {
+    assert.deepStrictEqual(await sentByEveryHelper(faxios), everyHelperSends);
   });
 
   it("should have promise method helpers", async () => {
-    const promise = faxios.request({
-      url: "http://localhost/test",
-      env: {
-        fetch: async () => new Response(null, { status: 200 }),
-      },
-    });
+    const ok = faxios.request({ url: "http://localhost/test", env: { fetch: okFetch } });
+    const failed = faxios.request({ url: "http://localhost/test", env: { fetch: async () => new Response(null, { status: 500 }) } });
 
-    assert.strictEqual(typeof promise.then, "function");
-    assert.strictEqual(typeof promise.catch, "function");
-
-    await promise;
+    assert.strictEqual(await ok.then(res => res.status), 200);
+    assert.strictEqual(await failed.catch((err: unknown) => err instanceof FaxiosError && err.response?.status), 500);
   });
 
-  it("should have defaults", () => {
-    assert.strictEqual(typeof faxios.defaults, "object");
-    assert.strictEqual(typeof faxios.defaults.headers, "object");
+  it("should have defaults", async () => {
+    let sent: null | string = null;
+    const fetch = async (input: Request | string | URL) => {
+      assert.ok(input instanceof Request);
+      sent = input.headers.get("x-default");
+      return new Response(null, { status: 200 });
+    };
+    faxios.defaults.headers.common["X-Default"] = "on";
+    try {
+      await faxios.get("http://localhost/", { env: { fetch } });
+    }
+    finally {
+      delete faxios.defaults.headers.common["X-Default"];
+    }
+    assert.strictEqual(sent, "on");
   });
 
-  it("should have use/eject", () => {
-    assert.strictEqual(typeof faxios.use, "function");
-    assert.strictEqual(typeof faxios.eject, "function");
+  it("should have use/eject", async () => {
+    assert.deepStrictEqual(await seenByMiddleware(faxios), [ "http://localhost/used" ]);
   });
 
   it("keeps plugin exports off the root: definePlugin on /plugins, each built-in on its own subpath", () => {
@@ -86,17 +136,24 @@ describe("static api", () => {
     );
   });
 
-  it("should have all/spread helpers", () => {
-    assert.strictEqual(typeof faxios.all, "function");
-    assert.strictEqual(typeof faxios.spread, "function");
+  it("should have all/spread helpers", async () => {
+    assert.deepStrictEqual(await faxios.all([ Promise.resolve(1), Promise.resolve(2) ]), [ 1, 2 ]);
+    assert.deepStrictEqual(faxios.spread((...args) => args)([ 1, 2 ]), [ 1, 2 ]);
   });
 
-  it("should have factory method", () => {
-    assert.strictEqual(typeof faxios.create, "function");
+  it("should have factory method", async () => {
+    let url = "";
+    const fetch = async (input: Request | string | URL) => {
+      assert.ok(input instanceof Request);
+      url = input.url;
+      return new Response(null, { status: 200 });
+    };
+    await faxios.create({ baseURL: "http://created.test/api/", env: { fetch } }).get("items");
+
+    assert.strictEqual(url, "http://created.test/api/items");
   });
 
   it("should expose create as a named export", () => {
-    assert.strictEqual(typeof create, "function");
     assert.strictEqual(create, faxios.create);
   });
 
@@ -106,12 +163,12 @@ describe("static api", () => {
   });
 
   it("should have CanceledError and isCancel properties", () => {
-    assert.strictEqual(typeof faxios.Cancel, "function");
-    assert.strictEqual(typeof faxios.isCancel, "function");
+    assert.strictEqual(faxios.isCancel(new faxios.Cancel()), true);
+    assert.strictEqual(faxios.isCancel(new Error("canceled")), false);
   });
 
   it("should have getUri method", () => {
-    assert.strictEqual(typeof faxios.getUri, "function");
+    assert.strictEqual(faxios.getUri({ baseURL: "http://localhost/api/", url: "items", params: { a: 1 } }), "http://localhost/api/items?a=1");
   });
 
   it("should ignore inherited data for bodyless method helpers", async () => {
@@ -179,11 +236,15 @@ describe("static api", () => {
   });
 
   it("should have isFaxiosError properties", () => {
-    assert.strictEqual(typeof faxios.isFaxiosError, "function");
+    assert.strictEqual(faxios.isFaxiosError(new FaxiosError("Boom!")), true);
+    assert.strictEqual(faxios.isFaxiosError(new Error("Boom!")), false);
   });
 
   it("should have mergeConfig properties", () => {
-    assert.strictEqual(typeof faxios.mergeConfig, "function");
+    const merged = faxios.mergeConfig({ baseURL: "http://a.test/", timeout: 1 }, { timeout: 2 });
+
+    assert.strictEqual(merged.baseURL, "http://a.test/");
+    assert.strictEqual(merged.timeout, 2);
   });
 
   it("should pass symbol keys to transformRequest", async () => {
@@ -217,21 +278,12 @@ describe("static api", () => {
 describe("instance api", () => {
   const instance = faxios.create();
 
-  it("should have request methods", () => {
-    assert.strictEqual(typeof instance.request, "function");
-    assert.strictEqual(typeof instance.get, "function");
-    assert.strictEqual(typeof instance.options, "function");
-    assert.strictEqual(typeof instance.head, "function");
-    assert.strictEqual(typeof instance.delete, "function");
-    assert.strictEqual(typeof instance.post, "function");
-    assert.strictEqual(typeof instance.put, "function");
-    assert.strictEqual(typeof instance.patch, "function");
-    assert.strictEqual(typeof instance.query, "function");
+  it("should have request methods", async () => {
+    assert.deepStrictEqual(await sentByEveryHelper(instance), everyHelperSends);
   });
 
-  it("should have use/eject", () => {
-    assert.strictEqual(typeof instance.use, "function");
-    assert.strictEqual(typeof instance.eject, "function");
+  it("should have use/eject", async () => {
+    assert.deepStrictEqual(await seenByMiddleware(instance), [ "http://localhost/used" ]);
   });
 
   it("should pass symbol keys to transformRequest through faxios.create", async () => {

@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { describe, expectTypeOf, it } from "vitest";
+import { describe, expectTypeOf, it, vi } from "vitest";
 import { z } from "zod";
 import faxios from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
@@ -81,16 +81,20 @@ describe("faxios.define()", () => {
     let capturedUrl = "";
     let capturedMethod = "";
     const getUser = faxios.define("GET", "http://localhost/users/1");
-    await getUser({
+    // JS caller passes url/method, which the types forbid — both must be ignored
+    const untypedCall = getUser as unknown as (config: Record<string, unknown>) => Promise<unknown>;
+    await untypedCall({
+      url: "http://localhost/other",
+      method: "POST",
       env: {
-        fetch: async (input: Request | string | URL, init?: RequestInit) => {
-          capturedUrl = input instanceof Request ? input.url : String(input);
-          capturedMethod = (init?.method ?? "GET").toUpperCase();
+        fetch: async (input: Request) => {
+          capturedUrl = input.url;
+          capturedMethod = input.method;
           return new Response(null, { status: 200 });
         },
       },
     });
-    assert.ok(capturedUrl.includes("/users/1"), `URL was ${capturedUrl}`);
+    assert.strictEqual(capturedUrl, "http://localhost/users/1");
     assert.strictEqual(capturedMethod, "GET");
   });
 
@@ -171,6 +175,21 @@ describe("faxios.define()", () => {
       env: { fetch: mockFetch({ id: 1 }) },
     });
     assert.deepStrictEqual(res.data, { id: 1 });
+  });
+
+  it("per-call pathParamsSchema is stripped — baked pathParamsSchema runs and fails before fetch", async () => {
+    const issues = [{ message: "baked" }];
+    const bakedSchema = makeSchema<Record<string, unknown>>(() => ({ issues }));
+    const passSchema = makeSchema<Record<string, unknown>>(v => ({ value: v as Record<string, unknown> }));
+    const fetch = vi.fn(mockFetch({}));
+    const getUser = faxios.define("GET", "http://localhost/users/{id}", { pathParamsSchema: bakedSchema });
+    // JS caller injects a passing pathParamsSchema, which the types forbid — must be ignored
+    const untypedCall = getUser as unknown as (config: Record<string, unknown>) => Promise<unknown>;
+    await assert.rejects(
+      untypedCall({ pathParams: { id: "1" }, pathParamsSchema: passSchema, env: { fetch } }),
+      { code: FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, issues }
+    );
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("middleware registered after define() runs on the endpoint call", async () => {

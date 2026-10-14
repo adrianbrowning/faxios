@@ -96,13 +96,18 @@ describe("core::dispatchRequest", () => {
   });
 
   describe("JSON parse failure on adapter rejection", () => {
-    it("rejects with FaxiosError carrying response and status (rejection path)", async () => {
+    // validateStatus rejects 500, so the adapter rejects with a status error and the response
+    // reaches onAdapterRejection.
+
+    it("keeps the status error, the raw body, and the parse error as cause (rejection path)", async () => {
       const config = baseConfig({
+        validateStatus: status => status < 500,
         env: {
           fetch: async () =>
             new Response("{bad json", {
               status: 500,
               statusText: "Internal Server Error",
+              headers: { "content-type": "application/json" },
             }),
         },
       });
@@ -116,6 +121,8 @@ describe("core::dispatchRequest", () => {
       }
 
       assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
+      assert.strictEqual(thrown.code, FaxiosError.ERR_BAD_RESPONSE);
+      assert.strictEqual(thrown.message, "Request failed with status code 500");
       assert.strictEqual(
         thrown.response!.data,
         "{bad json",
@@ -126,15 +133,25 @@ describe("core::dispatchRequest", () => {
         500,
         "error.status must equal response status"
       );
+      const cause = thrown.cause;
+      assert.ok(cause instanceof FaxiosError, "the parse failure must become the cause");
+      assert.strictEqual(cause.code, FaxiosError.ERR_BAD_RESPONSE);
+      assert.ok(cause.cause instanceof SyntaxError, "the cause must wrap the JSON SyntaxError");
+      assert.ok(thrown.response!.headers instanceof FaxiosHeaders);
     });
-  });
 
-  describe("unsupported environment", () => {
-    it("throws ERR_NOT_SUPPORT when fetch is unavailable", async () => {
-      const fetchMod = await import("#src/lib/adapters/fetch.js");
-      const spy = vi.spyOn(fetchMod, "getFetch").mockReturnValue(false);
-
-      const config = baseConfig({});
+    it("transforms a parseable body on the rejection path", async () => {
+      const config = baseConfig({
+        validateStatus: status => status < 500,
+        env: {
+          fetch: async () =>
+            new Response("{\"error\":\"boom\"}", {
+              status: 500,
+              statusText: "Internal Server Error",
+              headers: { "content-type": "application/json" },
+            }),
+        },
+      });
 
       let thrown;
       try {
@@ -143,12 +160,37 @@ describe("core::dispatchRequest", () => {
       catch (e) {
         thrown = e;
       }
+
+      assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
+      assert.strictEqual(thrown.code, FaxiosError.ERR_BAD_RESPONSE);
+      assert.strictEqual(thrown.status, 500);
+      assert.deepStrictEqual(
+        thrown.response!.data,
+        { error: "boom" },
+        "error.response.data must be the transformed body"
+      );
+      assert.strictEqual(thrown.cause, undefined);
+    });
+  });
+
+  describe("unsupported environment", () => {
+    it("throws ERR_NOT_SUPPORT when env.fetch is undefined and there is no global fetch", async () => {
+      vi.stubGlobal("fetch", undefined);
+
+      let thrown;
+      try {
+        await dispatchRequest(baseConfig({ env: { fetch: undefined } }));
+      }
+      catch (e) {
+        thrown = e;
+      }
       finally {
-        spy.mockRestore();
+        vi.unstubAllGlobals();
       }
 
       assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
       assert.strictEqual(thrown.code, FaxiosError.ERR_NOT_SUPPORT);
+      assert.strictEqual(thrown.message, "Fetch API is not supported in this environment");
     });
   });
 

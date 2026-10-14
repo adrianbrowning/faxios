@@ -13,29 +13,17 @@ const URLSearchParamsCtor = FaxiosURLSearchParams as unknown as new (
   options?: unknown,
 ) => { toString: () => string; };
 
+// The entries toFormData appends, read back from a spec FormData.
+const entriesOf = (data: object, options?: Parameters<typeof toFormData>[2]) =>
+  [ ...(toFormData(data, new globalThis.FormData(), options)).entries() ];
+
 describe("helpers::toFormData", () => {
   it("should convert a flat object to FormData", () => {
-    const data = {
-      foo: "bar",
-      baz: 123,
-    };
-
-    const formData = toFormData(data, fd());
-
-    assert.ok(formData instanceof FormData);
-    assert.ok((formData as unknown as { _streams: Array<unknown>; })._streams.length > 0);
+    assert.deepStrictEqual(entriesOf({ foo: "bar", baz: 123 }), [[ "foo", "bar" ], [ "baz", "123" ]]);
   });
 
   it("should convert a nested object to FormData", () => {
-    const data = {
-      foo: {
-        bar: "baz",
-      },
-    };
-
-    const formData = toFormData(data, fd());
-
-    assert.ok(formData instanceof FormData);
+    assert.deepStrictEqual(entriesOf({ foo: { bar: "baz" } }), [[ "foo[bar]", "baz" ]]);
   });
 
   it("should throw Error on circular reference", () => {
@@ -54,12 +42,7 @@ describe("helpers::toFormData", () => {
   });
 
   it("should handle arrays", () => {
-    const data = {
-      arr: [ 1, 2, 3 ],
-    };
-
-    const formData = toFormData(data, fd());
-    assert.ok(formData instanceof FormData);
+    assert.deepStrictEqual(entriesOf({ arr: [ 1, 2, 3 ] }), [[ "arr[]", "1" ], [ "arr[]", "2" ], [ "arr[]", "3" ]]);
   });
 
   // --- Depth limit tests ---
@@ -69,6 +52,8 @@ describe("helpers::toFormData", () => {
     for (let i = 0; i < depth; i++) o = { a: o };
     return o;
   }
+  // The one entry `nest(depth)` appends: `a[a]…[leaf]` set to "1".
+  const nestedEntry = (depth: number) => [[ `a${"[a]".repeat(depth - 1)}[leaf]`, "1" ]];
 
   describe("maxDepth option", () => {
     it("should throw FaxiosError when payload exceeds default depth limit (100)", () => {
@@ -87,18 +72,15 @@ describe("helpers::toFormData", () => {
     });
 
     it("should succeed when payload is exactly at the default depth limit (100)", () => {
-      const formData = toFormData(nest(100), fd());
-      assert.ok(formData instanceof FormData);
+      assert.deepStrictEqual(entriesOf(nest(100)), nestedEntry(100));
     });
 
     it("should succeed for a shallow payload (no regression)", () => {
-      const formData = toFormData(nest(5), fd());
-      assert.ok(formData instanceof FormData);
+      assert.deepStrictEqual(entriesOf(nest(5)), nestedEntry(5));
     });
 
     it("should allow deeper payloads when maxDepth is raised", () => {
-      const formData = toFormData(nest(150), fd(), { maxDepth: 200 });
-      assert.ok(formData instanceof FormData);
+      assert.deepStrictEqual(entriesOf(nest(150), { maxDepth: 200 }), nestedEntry(150));
     });
 
     it("should reject shallower payloads when maxDepth is lowered", () => {
@@ -114,10 +96,7 @@ describe("helpers::toFormData", () => {
 
     it("should not throw for depth guard when maxDepth is Infinity (guard disabled)", () => {
       // Use 500 levels — deep enough to prove the guard is off, shallow enough not to overflow V8
-      const formData = toFormData(nest(500), fd(), {
-        maxDepth: Infinity,
-      });
-      assert.ok(formData instanceof FormData);
+      assert.deepStrictEqual(entriesOf(nest(500), { maxDepth: Infinity }), nestedEntry(500));
     });
 
     it.each([ NaN, -1, 1.5, -Infinity, "5", null ])("rejects maxDepth %j with ERR_BAD_OPTION_VALUE", maxDepth => {
@@ -182,8 +161,7 @@ describe("helpers::toFormData", () => {
     });
 
     it("should allow {} metatoken values at the same boundary as normal top-level properties", () => {
-      const formData = toFormData({ "safe{}": nest(99) }, fd());
-      assert.ok(formData instanceof FormData);
+      assert.deepStrictEqual(entriesOf({ "safe{}": nest(99) }), [[ "safe{}", JSON.stringify(nest(99)) ]]);
     });
 
     it("should reject {} metatoken values beyond the normal top-level property boundary", () => {

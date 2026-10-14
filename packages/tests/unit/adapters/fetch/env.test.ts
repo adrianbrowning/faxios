@@ -34,13 +34,15 @@ describe.runIf(typeof fetch === "function")(
 
         form.append("x", "1");
 
-        const { data, headers } = await fetchFaxios.post("/", form, {
+        const calls: Array<{ init: RequestInit | undefined; input: unknown; }> = [];
+        const { data, headers } = await fetchFaxios.post("/upload", form, {
           onUploadProgress() {
             // dummy listener to activate streaming
           },
           env: {
             Request: null,
-            fetch() {
+            fetch(input: unknown, init?: RequestInit) {
+              calls.push({ input, init });
               return {
                 headers: {
                   foo: "1",
@@ -53,6 +55,13 @@ describe.runIf(typeof fetch === "function")(
 
         assert.strictEqual(headers.get("foo"), "1");
         assert.strictEqual(data, "test");
+        assert.strictEqual(calls.length, 1);
+        const { input, init } = calls[0]!;
+        assert.strictEqual(input, "http://localhost/upload", "fetch must get the URL string, not a Request");
+        assert.ok(init, "fetch must get an init object");
+        assert.strictEqual(init.method, "POST");
+        assert.ok(init.body instanceof FormData, "the FormData body must be passed through in init");
+        assert.strictEqual(init.body.get("x"), "1");
       });
 
       it("should be able to handle response with lack of Response object", async () => {

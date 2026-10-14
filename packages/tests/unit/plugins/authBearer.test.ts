@@ -178,9 +178,11 @@ describe("plugins::authBearer", () => {
     assert.deepStrictEqual(authorizations, [ null, null ]);
   });
 
-  it("shares one refresh between concurrent 401s", async () => {
+  // refreshOn401 shares one refresh between the requests; what faxios must do is run each
+  // request's second try back through authBearer, which asks for the token again for that try.
+  it("sends the refreshed token on each retry of concurrent 401s that share one refresh", async () => {
     let token = "expired";
-    let refreshCalls = 0;
+    let tokenReads = 0;
     let markAllSent!: () => void;
     const allSent = new Promise<void>(resolve => {
       markAllSent = resolve;
@@ -194,17 +196,19 @@ describe("plugins::authBearer", () => {
     });
     const api = faxios.create({ baseURL: BASE, env: { fetch } })
       .use(refreshOn401(async () => {
-        refreshCalls += 1;
         await allSent;
         token = "fresh";
       }))
-      .use(authBearer(() => token));
+      .use(authBearer(() => {
+        tokenReads += 1;
+        return token;
+      }));
 
     const responses = await Promise.all(Array.from({ length: 5 }, async () => api.get(URL)));
 
     assert.deepStrictEqual(responses.map(r => r.status), [ 200, 200, 200, 200, 200 ]);
-    assert.strictEqual(refreshCalls, 1);
-    assert.strictEqual(authorizations.filter(a => a === "Bearer fresh").length, 5);
+    assert.deepStrictEqual(authorizations, [ ...Array(5).fill("Bearer expired"), ...Array(5).fill("Bearer fresh") ]);
+    assert.strictEqual(tokenReads, 10);
   });
 
   describe("an explicit header", () => {

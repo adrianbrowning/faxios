@@ -28,11 +28,12 @@ describe("paramsSchema validation", () => {
     const issues = [{ message: "expected object, got string" }];
     const schema = makeSchema(() => ({ issues }));
 
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.get("http://localhost/test", {
         params: { q: "bad" },
         paramsSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -40,17 +41,19 @@ describe("paramsSchema validation", () => {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PARAMS_SCHEMA);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("attaches issues array from schema result to the error", async () => {
     const issues = [{ message: "invalid type" }, { message: "too short", path: [ "q" ] }];
     const schema = makeSchema(() => ({ issues }));
 
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.get("http://localhost/test", {
         params: { q: 1 },
         paramsSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -58,6 +61,7 @@ describe("paramsSchema validation", () => {
       assert.ok(err instanceof FaxiosError);
       assert.deepStrictEqual((err as FaxiosError & { issues: unknown; }).issues, issues);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("supports async schemas returning Promise<Result>", async () => {
@@ -74,10 +78,11 @@ describe("paramsSchema validation", () => {
     const issues = [{ message: "params are required" }];
     const schema = makeSchema(v => v === undefined ? { issues } : { value: v });
 
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.get("http://localhost/test", {
         paramsSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -85,6 +90,7 @@ describe("paramsSchema validation", () => {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PARAMS_SCHEMA);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("passes through unchanged when no paramsSchema in config", async () => {
@@ -98,11 +104,12 @@ describe("paramsSchema validation", () => {
   it("wraps schema throws in FaxiosError with ERR_BAD_PARAMS_SCHEMA", async () => {
     const schema = makeSchema(() => { throw new Error("schema exploded"); });
 
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.get("http://localhost/test", {
         params: { q: "x" },
         paramsSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -110,6 +117,7 @@ describe("paramsSchema validation", () => {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PARAMS_SCHEMA);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("instance-level paramsSchema is used when no per-request schema is set", async () => {
@@ -117,10 +125,11 @@ describe("paramsSchema validation", () => {
     const schema = makeSchema(() => ({ issues }));
     const instance = faxios.create({ paramsSchema: schema });
 
+    const fetch = vi.fn(mockFetch({}));
     try {
       await instance.get("http://localhost/test", {
         params: { q: "x" },
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -128,15 +137,17 @@ describe("paramsSchema validation", () => {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PARAMS_SCHEMA);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("throws when schema returns a falsy non-Result value", async () => {
     const schema = makeSchema(() => undefined as never);
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.get("http://localhost/test", {
         params: { q: "x" },
         paramsSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -145,6 +156,7 @@ describe("paramsSchema validation", () => {
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PARAMS_SCHEMA);
       assert.ok(err.message.includes("non-Result"));
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("per-request paramsSchema overrides instance-level schema", async () => {
@@ -166,12 +178,13 @@ describe("paramsSchema validation", () => {
     const requestValidate = vi.fn(() => ({ value: {} }));
     const requestSchema = makeSchema(requestValidate);
 
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.post("http://localhost/test", { body: "data" }, {
         params: { q: "x" },
         paramsSchema,
         requestSchema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -180,6 +193,7 @@ describe("paramsSchema validation", () => {
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PARAMS_SCHEMA);
       assert.strictEqual(requestValidate.mock.calls.length, 0);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 });
 

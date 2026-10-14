@@ -162,8 +162,9 @@ describe("helpers::buildURL", () => {
 });
 
 describe("helpers::encode", () => {
-  it("should be exported as a named export", () => {
-    expect(typeof encode).toBe("function");
+  it("should be the encoder buildURL uses for params by default", () => {
+    expect(buildURL("/foo", { q: "a:b c/d" })).toEqual(`/foo?q=${encode("a:b c/d")}`);
+    expect(buildURL("/foo", { q: "a:b c/d" })).toEqual("/foo?q=a:b+c%2Fd");
   });
 
   it("should leave plain ASCII unchanged", () => {

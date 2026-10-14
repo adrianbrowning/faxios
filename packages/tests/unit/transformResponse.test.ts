@@ -102,7 +102,7 @@ describe("transformResponse", () => {
 
     it("does not parse undefined", () => {
       const data = undefined;
-      const result = transformData(config, transformResponse, { data, headers: { "content-type": undefined }, status: 200 });
+      const result = transformData(config, transformResponse, { data, headers: { "content-type": undefined }, status: 204 });
       assert.strictEqual(result, data);
     });
   });

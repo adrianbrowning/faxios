@@ -1,10 +1,6 @@
 import assert from "node:assert";
-import { describe, it, vi } from "vitest";
+import { describe, it } from "vitest";
 import Faxios from "#src/lib/core/Faxios.js";
-
-vi.mock("#src/lib/core/dispatchRequest.js", () => ({ default: vi.fn() }));
-
-const { default: dispatchRequest } = await import("#src/lib/core/dispatchRequest.js");
 
 describe("Faxios", () => {
   describe("handle un-writable error stack", () => {
@@ -13,12 +9,17 @@ describe("Faxios", () => {
     ) => {
       const mockError = new Error("test-error");
       Object.defineProperty(mockError, "stack", stackAttributes);
-      vi.mocked(dispatchRequest).mockRejectedValueOnce(mockError);
 
-      const faxios = new Faxios({});
+      // A request transformer's error reaches the caller as thrown, so the request rejects with
+      // this exact error and its stack is patched on the way out.
+      const faxios = new Faxios({
+        transformRequest: [ () => {
+          throw mockError;
+        } ],
+      });
 
       try {
-        await faxios.request("test-url", {});
+        await faxios.request("http://localhost/test-url", {});
       }
       catch (e) {
         assert.strictEqual((e as Error).message, "test-error");

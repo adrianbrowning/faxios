@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { describe, it } from "vitest";
+import { describe, it, vi } from "vitest";
 import faxios from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import mergeConfig from "#src/lib/core/mergeConfig.js";
@@ -27,10 +27,11 @@ describe("requestSchema validation", () => {
     const issues = [{ message: "expected object, got string" }];
     const schema = makeSchema(() => ({ issues }));
 
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.post("http://localhost/test", { bad: true }, {
         requestSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -38,16 +39,18 @@ describe("requestSchema validation", () => {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_REQUEST_SCHEMA);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("attaches issues array from schema result to the error", async () => {
     const issues = [{ message: "invalid type" }, { message: "too short", path: [ "name" ] }];
     const schema = makeSchema(() => ({ issues }));
 
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.post("http://localhost/test", { x: 1 }, {
         requestSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -55,6 +58,7 @@ describe("requestSchema validation", () => {
       assert.ok(err instanceof FaxiosError);
       assert.deepStrictEqual((err as FaxiosError & { issues: unknown; }).issues, issues);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("supports async schemas returning Promise<Result>", async () => {
@@ -70,10 +74,11 @@ describe("requestSchema validation", () => {
     const issues = [{ message: "data is required" }];
     const schema = makeSchema(v => v === undefined ? { issues } : { value: v });
 
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.post("http://localhost/test", undefined, {
         requestSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -81,6 +86,7 @@ describe("requestSchema validation", () => {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_REQUEST_SCHEMA);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("passes through unchanged when no requestSchema in config", async () => {
@@ -95,10 +101,11 @@ describe("requestSchema validation", () => {
   it("wraps schema throws in FaxiosError with ERR_BAD_REQUEST_SCHEMA", async () => {
     const schema = makeSchema(() => { throw new Error("schema exploded"); });
 
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.post("http://localhost/test", { x: 1 }, {
         requestSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -106,6 +113,7 @@ describe("requestSchema validation", () => {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_REQUEST_SCHEMA);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("instance-level requestSchema is used when no per-request schema is set", async () => {
@@ -113,9 +121,10 @@ describe("requestSchema validation", () => {
     const schema = makeSchema(() => ({ issues }));
     const instance = faxios.create({ requestSchema: schema });
 
+    const fetch = vi.fn(mockFetch({}));
     try {
       await instance.post("http://localhost/test", { x: 1 }, {
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -123,15 +132,17 @@ describe("requestSchema validation", () => {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_REQUEST_SCHEMA);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("throws when schema returns a falsy non-Result value", async () => {
     const schema = makeSchema(() => undefined as never);
 
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.post("http://localhost/test", { x: 1 }, {
         requestSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -140,6 +151,7 @@ describe("requestSchema validation", () => {
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_REQUEST_SCHEMA);
       assert.ok(err.message.includes("non-Result"));
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("per-request requestSchema overrides instance-level schema", async () => {

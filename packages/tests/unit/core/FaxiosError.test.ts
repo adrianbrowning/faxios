@@ -416,19 +416,18 @@ describe("core::FaxiosError", () => {
         }
       }
 
-      (Object.prototype as any).toJSON = function () {
-        return this;
-      };
-
-      const config = {
-        login: { password: "secret" },
-        credentials: new Credentials(),
-        items: [{ token: "t1" }],
-        redact: [ "password", "token" ],
-      };
-      const error = new FaxiosError("Boom", "ECODE", config as any);
-
       try {
+        (Object.prototype as any).toJSON = function () {
+          return this;
+        };
+
+        const config = {
+          login: { password: "secret" },
+          credentials: new Credentials(),
+          items: [{ token: "t1" }],
+          redact: [ "password", "token" ],
+        };
+        const error = new FaxiosError("Boom", "ECODE", config as any);
         const json = error.toJSON();
 
         expect(json.config).toHaveProperty([ "login", "password" ], "[REDACTED ****]");

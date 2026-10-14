@@ -18,17 +18,11 @@ function testHeaderValue(headers: Headers, key: string, val?: unknown) {
 describe("headers (vitest browser)", () => {
   it("should default common headers", async () => {
     using mock = installFetchMock();
-    const headers = faxios.defaults.headers.common;
 
     await faxios("/foo");
 
-    for (const key in headers) {
-      if (Object.prototype.hasOwnProperty.call(headers, key)) {
-        // Headers.get() returns null for absent headers; undefined in defaults means not sent
-        const expected = headers[key] === undefined ? null : headers[key];
-        expect(mock.lastRequest!.headers.get(key)).toBe(expected);
-      }
-    }
+    expect(mock.lastRequest!.headers.get("Accept")).toBe("application/json, text/plain, */*");
+    expect(mock.lastRequest!.headers.get("Content-Type")).toBeNull();
   });
 
   it("should respect common Content-Type header", async () => {
@@ -45,13 +39,10 @@ describe("headers (vitest browser)", () => {
 
   it("should add extra headers for post", async () => {
     using mock = installFetchMock();
-    const headers = FaxiosHeaders.from(faxios.defaults.headers.common).toJSON();
 
     await faxios.post("/foo", "fizz=buzz");
 
-    for (const key in headers) {
-      expect(mock.lastRequest!.headers.get(key)).toBe(headers[key]);
-    }
+    expect(mock.lastRequest!.headers.get("Accept")).toBe("application/json, text/plain, */*");
   });
 
   it("should reset headers by null or explicit undefined", async () => {

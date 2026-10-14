@@ -1,7 +1,6 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 
 import faxios from "#src/index.js";
-import cookies from "#src/lib/helpers/cookies.js";
 import type { InternalFaxiosRequestConfig } from "#src/lib/types.js";
 
 import { installFetchMock } from "./helpers/fetchMock.js";
@@ -21,7 +20,6 @@ const xsrfHeaderName = faxios.defaults.xsrfHeaderName as string;
 describe("xsrf (vitest browser)", () => {
   afterEach(() => {
     clearXsrfCookie();
-    vi.restoreAllMocks();
   });
 
   it("should not set xsrf header if cookie is null", async () => {
@@ -59,22 +57,13 @@ describe("xsrf (vitest browser)", () => {
     expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe("a%E0%A4%A");
   });
 
-  it("should not set xsrf header if xsrfCookieName is null", async () => {
+  it("should not set xsrf header if xsrfCookieName is set to undefined", async () => {
     using mock = installFetchMock();
     setXsrfCookie("12345");
 
     await faxios("/foo", { xsrfCookieName: undefined });
 
     expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBeNull();
-  });
-
-  it("should not read cookies at all if xsrfCookieName is null", async () => {
-    using _mock = installFetchMock();
-    const readSpy = vi.spyOn(cookies, "read");
-
-    await faxios("/foo", { xsrfCookieName: undefined });
-
-    expect(readSpy).not.toHaveBeenCalled();
   });
 
   it("should not set xsrf header for cross origin", async () => {

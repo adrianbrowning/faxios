@@ -38,10 +38,11 @@ describe("pathParams substitution", () => {
   });
 
   it("throws ERR_BAD_OPTION_VALUE when placeholder has no matching key", async () => {
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.get("http://localhost/users/{id}", {
         pathParams: {},
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -49,10 +50,12 @@ describe("pathParams substitution", () => {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_OPTION_VALUE);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("rejects a missing path param with one FaxiosError: its cause is not another FaxiosError", async () => {
-    const instance = faxios.create({ baseURL: "http://localhost", env: { fetch: mockFetch({}) } });
+    const fetch = vi.fn(mockFetch({}));
+    const instance = faxios.create({ baseURL: "http://localhost", env: { fetch } });
     const isMissingParam = (err: unknown) => err instanceof FaxiosError &&
       err.code === FaxiosError.ERR_BAD_OPTION_VALUE &&
       err.message === "Path param \"id\" not found in pathParams" &&
@@ -64,6 +67,7 @@ describe("pathParams substitution", () => {
     const passSchema = makeSchema<Record<string, unknown>>(v => ({ value: v as Record<string, unknown> }));
     await assert.rejects(instance.get("/users/{id}", { pathParams: {}, pathParamsSchema: passSchema }), isMissingParam);
     assert.throws(() => instance.getUri({ url: "/users/{id}", pathParams: {} }), isMissingParam);
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("rejects an empty path param before fetch is called", async () => {
@@ -122,11 +126,12 @@ describe("pathParamsSchema validation", () => {
 
   it("throws ERR_BAD_PATH_PARAMS_SCHEMA on validation failure", async () => {
     const schema = makeSchema<Record<string, unknown>>(() => ({ issues: [{ message: "bad path params" }] }));
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.get("http://localhost/users/{id}", {
         pathParams: { id: 1 },
         pathParamsSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -134,16 +139,18 @@ describe("pathParamsSchema validation", () => {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("attaches issues from schema result to the error", async () => {
     const issues = [{ message: "invalid id" }];
     const schema = makeSchema<Record<string, unknown>>(() => ({ issues }));
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.get("http://localhost/users/{id}", {
         pathParams: { id: "bad" },
         pathParamsSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -151,15 +158,17 @@ describe("pathParamsSchema validation", () => {
       assert.ok(err instanceof FaxiosError);
       assert.deepStrictEqual((err as FaxiosError & { issues: unknown; }).issues, issues);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("instance-level pathParamsSchema is used when no per-request schema", async () => {
     const schema = makeSchema<Record<string, unknown>>(() => ({ issues: [{ message: "bad" }] }));
     const instance = faxios.create({ pathParamsSchema: schema });
+    const fetch = vi.fn(mockFetch({}));
     try {
       await instance.get("http://localhost/users/{id}", {
         pathParams: { id: 1 },
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -167,6 +176,7 @@ describe("pathParamsSchema validation", () => {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("per-request pathParamsSchema overrides instance-level", async () => {
@@ -183,11 +193,12 @@ describe("pathParamsSchema validation", () => {
 
   it("wraps schema throws in FaxiosError with ERR_BAD_PATH_PARAMS_SCHEMA", async () => {
     const schema = makeSchema<Record<string, unknown>>(() => { throw new Error("schema exploded"); });
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.get("http://localhost/users/{id}", {
         pathParams: { id: 1 },
         pathParamsSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -195,15 +206,17 @@ describe("pathParamsSchema validation", () => {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("throws when schema returns a falsy non-Result value", async () => {
     const schema = makeSchema<Record<string, unknown>>(() => undefined as never);
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.get("http://localhost/users/{id}", {
         pathParams: { id: 1 },
         pathParamsSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -212,19 +225,21 @@ describe("pathParamsSchema validation", () => {
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA);
       assert.ok(err.message.includes("non-Result"));
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("pathParamsSchema failure prevents paramsSchema from running (fail-fast)", async () => {
     const pathSchema = makeSchema<Record<string, unknown>>(() => ({ issues: [{ message: "bad path" }] }));
     const paramsValidate = vi.fn(() => ({ value: {} }));
     const paramsSchema = makeSchema(paramsValidate);
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.get("http://localhost/users/{id}", {
         pathParams: { id: 1 },
         pathParamsSchema: pathSchema,
         params: { q: "x" },
         paramsSchema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -233,17 +248,19 @@ describe("pathParamsSchema validation", () => {
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA);
       assert.strictEqual(paramsValidate.mock.calls.length, 0);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 });
 
 describe("pathParamsSchema runtime type guards", () => {
   it("throws when schema returns { value: null }", async () => {
     const schema = makeSchema<Record<string, unknown>>(() => ({ value: null as any }));
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.get("http://localhost/users/{id}", {
         pathParams: { id: 1 },
         pathParamsSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -251,15 +268,17 @@ describe("pathParamsSchema runtime type guards", () => {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("throws when schema returns { value: 'string' }", async () => {
     const schema = makeSchema<Record<string, unknown>>(() => ({ value: "not-an-object" as any }));
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.get("http://localhost/users/{id}", {
         pathParams: { id: 1 },
         pathParamsSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -268,15 +287,17 @@ describe("pathParamsSchema runtime type guards", () => {
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA);
       assert.ok(err.message.includes("plain object"));
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("throws when schema returns { value: [] }", async () => {
     const schema = makeSchema<Record<string, unknown>>(() => ({ value: [] as any }));
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.get("http://localhost/users/{id}", {
         pathParams: { id: 1 },
         pathParamsSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -285,16 +306,18 @@ describe("pathParamsSchema runtime type guards", () => {
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA);
       assert.ok(err.message.includes("plain object"));
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 });
 
 describe("pathParams guard", () => {
   it("throws ERR_BAD_OPTION_VALUE when pathParamsSchema set but pathParams undefined", async () => {
     const schema = makeSchema<Record<string, unknown>>(v => ({ value: v as Record<string, unknown> }));
+    const fetch = vi.fn(mockFetch({}));
     try {
       await faxios.get("http://localhost/users/{id}", {
         pathParamsSchema: schema,
-        env: { fetch: mockFetch({}) },
+        env: { fetch },
       });
       assert.fail("should have thrown");
     }
@@ -302,6 +325,7 @@ describe("pathParams guard", () => {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_OPTION_VALUE);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 });
 
@@ -354,6 +378,15 @@ describe("pathParams encoding — no double-encoding through pipeline", () => {
       env: { fetch: t.fetch },
     });
     assert.ok(t.url.includes("/hello%20world"), `Expected hello%20world in ${t.url}`);
+  });
+
+  it("question mark and hash in value are encoded into the path, not parsed as query/fragment", async () => {
+    const t = captureFetch();
+    await faxios.get("http://localhost/{seg}", {
+      pathParams: { seg: "a?b#c" },
+      env: { fetch: t.fetch },
+    });
+    assert.strictEqual(t.url, "http://localhost/a%3Fb%23c");
   });
 });
 

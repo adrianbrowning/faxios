@@ -45,7 +45,7 @@ describe("transform (vitest browser)", () => {
       headers: { "Content-Type": "application/json" },
     });
 
-    expect(response).toBeTruthy();
+    expect(response.status).toBe(200);
     expect(mock.lastRequest!.headers.get("Content-Type")).toBe(
       "application/json"
     );
@@ -64,7 +64,6 @@ describe("transform (vitest browser)", () => {
       },
     });
 
-    expect(response).toBeTruthy();
     expect(response.data).toBe(rawData);
   });
 
@@ -155,7 +154,6 @@ describe("transform (vitest browser)", () => {
       responseType: "json",
     });
 
-    expect(response).toBeTruthy();
     expect(response.data).toEqual({ key1: "value1" });
   });
 });
