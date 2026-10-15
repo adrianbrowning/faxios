@@ -260,10 +260,10 @@ This model protects what gets published as `@gcmdev/faxios` on npm. A successful
                                             │  • build                   │
                                             │  • npm pack once, output   │
                                             │      its sha256            │
-                                            │  • then the tests, docs    │
-                                            │      build, and the smoke  │
-                                            │      and module suites on  │
-                                            │      that tarball          │
+                                            │  • then lint, the tests,   │
+                                            │      docs build, and the   │
+                                            │      smoke and module      │
+                                            │      suites on that tarball│
                                             │             │ artifact     │
                                             │  publish (npm-publish env, │
                                             │  OIDC, no checkout):       │
@@ -282,7 +282,7 @@ This model protects what gets published as `@gcmdev/faxios` on npm. A successful
                                                   + provenance attestation
 ```
 
-Release artifact flow (#270). `release.yml` calls `run-ci.yml` on the commit it releases. Its build job installs with `--ignore-scripts`, builds, and straight away packs the tarball once with `npm pack --ignore-scripts` and records the file name, version and SHA-256 as job outputs. Only then does it run the unit, docs-example and browser suites and the docs build, so a test or docs tool that changes the `.tgz` afterwards fails the publish job's SHA-256 check. The smoke and module jobs test that same file. The `publish` job then downloads the artifact, checks it against those outputs (exactly one file, the SHA-256, `@gcmdev/faxios@<version>` in its `package.json`, `package/LICENSE` present) and runs `npm publish <tarball> --provenance`. It checks out nothing and installs nothing, so no repository code and no dependency runs in the job that holds the OIDC token. The checksum travels as a job output, not inside the artifact, so a replaced artifact fails the check. The `release` job runs bumpy afterwards to tag the commit and publish the GitHub release; bumpy's `publishCommand` for the package (`.bumpy/_config.json`) only confirms the version is on npm. The `rc` path is the same: a manual run of `release.yml` on `main` with `rc` checked has `run-ci.yml` pack main's pending release as `<next version>-rc-<short sha>`, and the `rc` job publishes that tested tarball to the `next` dist-tag.
+Release artifact flow (#270). `release.yml` calls `run-ci.yml` on the commit it releases. Its build job installs with `--ignore-scripts`, builds, and straight away packs the tarball once with `npm pack --ignore-scripts` and records the file name, version and SHA-256 as job outputs. Only the install, the snapshot version step (on an `rc` run) and the build run before the pack. Lint, the Markdown sync check, the unit, docs-example and browser suites and the docs build all run after it, so a lint, test or docs tool that changes the `.tgz` afterwards fails the publish job's SHA-256 check. The smoke and module jobs test that same file. The `publish` job then downloads the artifact, checks it against those outputs (exactly one file, the SHA-256, `@gcmdev/faxios@<version>` in its `package.json`, `package/LICENSE` present) and runs `npm publish <tarball> --provenance`. It checks out nothing and installs nothing, so no repository code and no dependency runs in the job that holds the OIDC token. The checksum travels as a job output, not inside the artifact, so a replaced artifact fails the check. The `release` job runs bumpy afterwards to tag the commit and publish the GitHub release; bumpy's `publishCommand` for the package (`.bumpy/_config.json`) only confirms the version is on npm. The `rc` path is the same: a manual run of `release.yml` on `main` with `rc` checked has `run-ci.yml` pack main's pending release as `<next version>-rc-<short sha>`, and the `rc` job publishes that tested tarball to the `next` dist-tag.
 
 ### 3.2 Assets
 
