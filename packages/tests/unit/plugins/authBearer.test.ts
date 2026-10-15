@@ -133,6 +133,20 @@ describe("plugins::authBearer", () => {
     assert.strictEqual(seen, "token");
   });
 
+  it("passes a null-prototype ctx.config to middleware installed after it", async () => {
+    let proto: unknown = "unset";
+    const { fetch } = recordingFetch();
+    const api = faxios.create({ baseURL: BASE, env: { fetch } }).use(authBearer(() => "token"))
+      .use(async (ctx, next) => {
+        proto = Object.getPrototypeOf(ctx.config);
+        return next(ctx);
+      });
+
+    await api.get(URL);
+
+    assert.strictEqual(proto, null);
+  });
+
   it("works with a refreshOn401 plugin that retries once with a fresh token", async () => {
     let token = "expired";
     const { fetch, authorizations } = recordingFetch(authorization => authorization === "Bearer fresh" ? 200 : 401);

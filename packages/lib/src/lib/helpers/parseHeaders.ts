@@ -39,7 +39,8 @@ const ignoreDuplicateOf = utils.toObjectSet([
  * @returns {Object} Headers parsed into an object
  */
 export default (rawHeaders: string): Record<string, Array<string> | string> => {
-  const parsed: Record<string, Array<string> | string> = {};
+  // Null prototype: names such as `constructor` or `toString` are read and stored as own keys.
+  const parsed: Record<string, Array<string> | string> = Object.create(null);
   let key: string;
   let val: string;
   let i: number;
@@ -53,7 +54,7 @@ export default (rawHeaders: string): Record<string, Array<string> | string> => {
           .toLowerCase();
         val = line.substring(i + 1).trim();
 
-        if (!key || (parsed[key] !== undefined && ignoreDuplicateOf[key] !== undefined)) {
+        if (!key || (parsed[key] !== undefined && Object.hasOwn(ignoreDuplicateOf, key))) {
           return;
         }
 

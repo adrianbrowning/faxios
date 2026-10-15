@@ -1,5 +1,6 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
+import faxios from "#src/index.ts";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 
 // The get/set/has<Header> shortcuts FaxiosHeaders declares, without its index signature.
@@ -746,6 +747,37 @@ describe("FaxiosHeaders", () => {
 
     it("should return empty set-cookie", () => {
       assert.deepStrictEqual(new FaxiosHeaders().getSetCookie(), []);
+    });
+  });
+
+  describe("dangerous header names", () => {
+    const input = () => JSON.parse("{\"__proto__\":[\"x\"],\"constructor\":\"c\",\"prototype\":\"p\",\"x-ok\":\"1\"}") as Record<string, string>;
+
+    for (const [ name, make ] of [
+      [ "from", () => FaxiosHeaders.from(input()) ],
+      [ "constructor", () => new FaxiosHeaders(input()) ],
+      [ "set", () => new FaxiosHeaders().set(input()) ],
+    ] as const) {
+      it(`${name} skips __proto__, constructor and prototype and keeps other headers`, () => {
+        const h = make();
+
+        assert.strictEqual(Object.getPrototypeOf(h), FaxiosHeaders.prototype);
+        assert.strictEqual(typeof h.get, "function");
+        assert.strictEqual(h.get("x-ok"), "1");
+        assert.deepStrictEqual(Object.keys(h), [ "x-ok" ]);
+      });
+    }
+
+    it("a request with headers from JSON.parse keeps its other headers", async () => {
+      let sent: Headers | undefined;
+      const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
+        sent = new Headers(init?.headers);
+        return new Response(null, { status: 200 });
+      };
+
+      await faxios.create({ env: { fetch } }).get("http://localhost/h", { headers: input() });
+
+      assert.strictEqual(sent?.get("x-ok"), "1");
     });
   });
 });
