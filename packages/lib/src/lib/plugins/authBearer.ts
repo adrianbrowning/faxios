@@ -88,8 +88,7 @@ function sendsTokenTo(config: InternalFaxiosRequestConfig, instanceBaseURL: unkn
   // A URL core rejects (an absolute URL with `allowAbsoluteUrls: false`) gets no token.
   let url: string;
   try {
-    const resolved: unknown = resolveRequestURL({ ...config, pathParams: undefined, params: undefined });
-    url = typeof resolved === "string" ? resolved : "";
+    url = resolveRequestURL({ ...config, pathParams: undefined, params: undefined });
   }
   catch {
     return false;

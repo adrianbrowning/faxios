@@ -276,7 +276,7 @@ const merged = mergeConfig(base, override);
 
 ### `resolveRequestURL`
 
-Returns the URL a request with this config is sent to: `url` with its `{key}` placeholders filled from `pathParams`, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params` serialized with `paramsSerializer`. It is the resolver faxios itself uses for requests and `getUri()`, exported for plugins. It throws the `FaxiosError` the request would reject with. See [Writing a plugin](/pages/advanced/middleware#writing-a-plugin).
+Returns the URL a request with this config is sent to: `url` (a `URL` as its `href`) with its `{key}` placeholders filled from `pathParams`, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params` serialized with `paramsSerializer`. It is the resolver faxios itself uses for requests and `getUri()`, exported for plugins. It throws the `FaxiosError` the request would reject with, `ERR_INVALID_URL` for a config with neither `url` nor `baseURL` included. See [Writing a plugin](/pages/advanced/middleware#writing-a-plugin).
 
 ```ts contract=@gcmdev/faxios
 resolveRequestURL(config: FaxiosRequestConfig): string;

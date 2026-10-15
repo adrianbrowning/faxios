@@ -14,8 +14,11 @@ import FaxiosError from "./FaxiosError.js";
  * the URL a request goes to. Schemas are not run here: on the request path `pathParams` and
  * `params` already hold the schema output; elsewhere they are used as given.
  *
+ * A `URL` url is resolved as its `href`.
+ *
  * Throws a `FaxiosError`: `ERR_BAD_OPTION_VALUE` for a placeholder `pathParams` can't fill,
- * `ERR_INVALID_URL` for an absolute `url` with a `baseURL` and `allowAbsoluteUrls: false`.
+ * `ERR_INVALID_URL` for an absolute `url` with a `baseURL` and `allowAbsoluteUrls: false`, for a
+ * url that isn't a string or `URL`, and for a config with neither `url` nor `baseURL`.
  *
  * Reads only own properties so inherited values (e.g. `Object.prototype.baseURL`) are ignored.
  */
@@ -27,6 +30,10 @@ export default function resolveRequestURL(config: FaxiosRequestConfig): string {
   const internal = config as InternalFaxiosRequestConfig;
 
   let url = own("url");
+  if (url instanceof URL) url = url.href;
+  else if (url !== undefined && typeof url !== "string") {
+    throw new FaxiosError("Invalid URL: url must be a string or URL", FaxiosError.ERR_INVALID_URL, internal);
+  }
   const pathParams = own("pathParams");
   if (pathParams !== undefined && typeof url === "string") {
     try {
@@ -40,8 +47,9 @@ export default function resolveRequestURL(config: FaxiosRequestConfig): string {
     }
   }
 
-  const fullPath = buildFullPath(own("baseURL"), url, own("allowAbsoluteUrls"), config);
-  // With no url and no baseURL there is nothing to add params to; the adapter rejects the
-  // request with ERR_INVALID_URL.
-  return typeof fullPath === "string" ? buildURL(fullPath, own("params"), own("paramsSerializer")) : fullPath;
+  const fullPath: unknown = buildFullPath(own("baseURL"), url, own("allowAbsoluteUrls"), config);
+  if (typeof fullPath !== "string") {
+    throw new FaxiosError("Invalid URL: no url or baseURL given", FaxiosError.ERR_INVALID_URL, internal);
+  }
+  return buildURL(fullPath, own("params"), own("paramsSerializer"));
 }

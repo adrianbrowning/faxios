@@ -185,4 +185,21 @@ describe("resolveRequestURL() gives plugins the URL core sends", () => {
 
     await assert.rejects(instance.get("https://other.example/x"), { code: "ERR_INVALID_URL" });
   });
+
+  it("sends a URL url as its href, with params", () => {
+    const url: string = resolveRequestURL({ url: new URL("https://other.example/a"), params: { q: 1 } });
+
+    assert.strictEqual(url, "https://other.example/a?q=1");
+  });
+
+  it("checks a URL url against baseURL like a string one", () => {
+    const config = { baseURL: BASE, url: new URL("https://other.example/a") };
+
+    assert.strictEqual(resolveRequestURL(config), "https://other.example/a");
+    assert.throws(() => resolveRequestURL({ ...config, allowAbsoluteUrls: false }), { name: "FaxiosError", code: "ERR_INVALID_URL" });
+  });
+
+  it("throws ERR_INVALID_URL when there is no url and no baseURL", () => {
+    assert.throws(() => resolveRequestURL({}), { name: "FaxiosError", code: "ERR_INVALID_URL" });
+  });
 });

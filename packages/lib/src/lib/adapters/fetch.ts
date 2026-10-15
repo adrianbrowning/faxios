@@ -25,8 +25,7 @@ import {
   checkDeclaredContentLength,
   checkMaterializedSize,
   contentTooLarge,
-  handleFetchCaughtError,
-  requireRequestURL
+  handleFetchCaughtError
 } from "./fetch-helpers.js";
 import type { ComposedSignal, FetchContext } from "./fetch-helpers.js";
 
@@ -728,7 +727,7 @@ const sendRequest = async (
     ctx.stage = "build";
     rejectUsedStreamBody(body, config);
 
-    const url = applyAuthToRequest(ctx, requireRequestURL(ctx.url, config));
+    const url = applyAuthToRequest(ctx, input.url);
     ctx.url = url;
 
     const contentLength = checkPreflightLimits(ctx, { data: body, url });

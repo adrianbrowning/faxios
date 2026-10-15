@@ -99,15 +99,6 @@ const isUnparseableURL = (url: string): boolean => {
   }
 };
 
-// With neither `url` nor `baseURL` (or a middleware that set `url` to a non-string) there is no
-// URL to send to.
-export const requireRequestURL = (url: unknown, config: InternalFaxiosRequestConfig): string => {
-  if (typeof url !== "string") {
-    throw new FaxiosError("Invalid URL: no url or baseURL given", FaxiosError.ERR_INVALID_URL, config);
-  }
-  return url;
-};
-
 // Gives a code-less TypeError the code for the adapter step it came from. A "send" TypeError
 // that isn't a URL problem falls through to the network-error check.
 const throwStagedTypeError = (err: Error, ctx: FetchContext): void => {
