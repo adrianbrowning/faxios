@@ -179,7 +179,7 @@ The `responseType` tells faxios how to read the response body. Values are matche
 - `formdata`: `response.formData()`, so `data` is a `FormData`
 - `text`: `response.text()`, so `data` is a string and is not JSON-parsed
 - `stream`: `data` is the `ReadableStream` from `response.body`
-- `json`: read as text, then JSON-parsed. A body that isn't valid JSON rejects with a `FaxiosError` whose `code` is `ERR_BAD_RESPONSE`; the `SyntaxError` is on `error.cause` and the raw body on `error.response.data`
+- `json`: read as text, then JSON-parsed. A 2xx body that isn't valid JSON rejects with a `FaxiosError` whose `code` is `ERR_BAD_RESPONSE`; the `SyntaxError` is on `error.cause` and the raw body on `error.response.data`. A 4xx or 5xx response with such a body (an HTML error page from a proxy, say) rejects with its status error instead, `ERR_BAD_REQUEST` or `ERR_BAD_RESPONSE` with `Request failed with status code N`; the raw body is on `error.response.data` and the parse error on `error.cause`
 
 Any other value, including the `document` and `response` values faxios used to accept, rejects with `ERR_BAD_OPTION_VALUE`.
 

@@ -66,6 +66,28 @@ describe("transformResponse", () => {
     });
   });
 
+  describe("a non-JSON error body with responseType: json", () => {
+    const html = "<html><body>Service Unavailable</body></html>";
+    const respond = (status: number) => faxios.create({ env: { fetch: async () => new Response(html, { status }) } });
+
+    it.each([
+      [ 503, FaxiosError.ERR_BAD_RESPONSE ],
+      [ 404, FaxiosError.ERR_BAD_REQUEST ],
+    ])("rejects a %i with the status error, the raw body and the parse error as cause", async (status, code) => {
+      await assert.rejects(respond(status).get("http://localhost/x", { responseType: "json" }), (err: unknown) => {
+        assert.ok(err instanceof FaxiosError);
+        assert.strictEqual(err.code, code);
+        assert.strictEqual(err.message, `Request failed with status code ${status}`);
+        assert.strictEqual(err.response?.status, status);
+        assert.strictEqual(err.response?.data, html);
+        assert.ok(err.cause instanceof FaxiosError);
+        assert.strictEqual(err.cause.code, FaxiosError.ERR_BAD_RESPONSE);
+        assert.ok(err.cause.cause instanceof SyntaxError);
+        return true;
+      });
+    });
+  });
+
   describe("malformed JSON with responseType: json", () => {
     it("throws FaxiosError with ERR_BAD_RESPONSE code", () => {
       const response = { status: 200, headers: {}, data: "{bad json" };

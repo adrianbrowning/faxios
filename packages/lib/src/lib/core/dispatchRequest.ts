@@ -185,6 +185,11 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
             try {
               r.response.data = transformData.call(config, config.transformResponse, r.response);
             }
+            catch (transformErr) {
+              // The status error stays the error: a body that fails to transform (an HTML page
+              // for `responseType: "json"`) keeps its raw data and becomes the cause.
+              if (reason instanceof FaxiosError && reason.cause === undefined) reason.cause = transformErr as Error;
+            }
             finally {
               delete (config as unknown as Record<string, unknown>)["response"];
             }

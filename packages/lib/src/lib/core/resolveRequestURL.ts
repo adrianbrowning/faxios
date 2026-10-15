@@ -34,9 +34,8 @@ export default function resolveRequestURL(config: FaxiosRequestConfig): string {
     }
   }
 
-  return buildURL(
-    buildFullPath(own("baseURL"), url, own("allowAbsoluteUrls"), config),
-    own("params"),
-    own("paramsSerializer")
-  );
+  const fullPath = buildFullPath(own("baseURL"), url, own("allowAbsoluteUrls"), config);
+  // With no url and no baseURL there is nothing to add params to; the adapter rejects the
+  // request with ERR_INVALID_URL.
+  return typeof fullPath === "string" ? buildURL(fullPath, own("params"), own("paramsSerializer")) : fullPath;
 }

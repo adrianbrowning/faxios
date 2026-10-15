@@ -3,20 +3,20 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "3ebd9f32ff8e14935acce4a3cc366a2695c92f8785651c9c382ad2cf5384b6dc",
+      "fingerprint": "9a3c7f7151848f4984938f1a91981d40e5294ed09c1b3f79f8d90c16678f523e",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "adc906193779e6ef7adadee324ee5a4a711461420eeacdbdcd0d9383edb081b4",
+        "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "6ff25aebbd95191b736ece3e348159e95948876dad013b11de7d273544c443a2",
+        "packages/lib/skills/configure-requests/SKILL.md": "b4fe63d21ca84c2dbc376ffa741bc417932d4a4a1a8524702e574739b6194598",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
         "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
-        "packages/lib/src/lib/adapters/fetch.ts": "d971fd5c45357f60daf55c41bb9aa10ac58366e341d3bf37a5eb90b137c3e405",
+        "packages/lib/src/lib/adapters/fetch.ts": "c31c356d34555c3162a6af05608a673da31ced0878bea15395813cd2882a8dc6",
         "packages/lib/src/lib/core/Faxios.ts": "9137318462d415375fbcc412c4dfa44c363ce2bec4f9ee78eed54a3efaef48c0",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "d5ac5411d68a2fe8c1106f2c4aaa3e4af9282d1568934113e0eb23bc873db9f7",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "e9e25e887399e128a9fbab66377c2eee390272bc35c6adcb295e6ed9b8fe64f1",
         "packages/lib/src/lib/core/mergeConfig.ts": "b3f15fc665f58314f7934bd5510cdcf3faa57e483f03c553600708798d13e946",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
@@ -32,34 +32,34 @@
         "packages/tests/unit/plugins/authBearer.test.ts": "84baff907f21988dea49400531dd0abdf7b5a5148d1904e712ebe0b43ebfd3ae",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
-        "packages/tests/unit/plugins/retry.test.ts": "211222f8205dfcc23c2cacff16561038402c81c917e492e1679fb8838ddfb209",
+        "packages/tests/unit/plugins/retry.test.ts": "5b16864bc3ca6e302db3e68f072101bd7eddb97b5a32afc3607f2ea76c8ca0dc",
         "packages/tests/unit/plugins/timing.test.ts": "2bb6422d1f3a5d8181eaba9fe0f45fb50b1ba39cb16a1c75ca254e20fe1a2ba1"
       },
-      "head": "350605777edb17586f58ed6796d0d5b5166a9899",
-      "outcome": "no-change",
-      "reason": "Atomic capability registration on failed use() is an internal fix; the skill does not teach failure-state behaviour",
+      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
+      "outcome": "updated",
+      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
       "evidence": [
-        "Changed: packages/tests/unit/core/middleware.test.ts at 20e98674b5a8897cb24a5e7b7f41d6472d86b485"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/tests/unit/plugins/retry.test.ts at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "0f3f9960297f105f8b73d6223d6b10e0b829ba60f12f10a48b3fcc646f61df13",
+      "fingerprint": "fdb184a61940ad1c8279cbd80c1602153f8d699e51656e5f7600bf05f4752da2",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "adc906193779e6ef7adadee324ee5a4a711461420eeacdbdcd0d9383edb081b4",
+        "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "6ff25aebbd95191b736ece3e348159e95948876dad013b11de7d273544c443a2",
+        "packages/lib/skills/configure-requests/SKILL.md": "b4fe63d21ca84c2dbc376ffa741bc417932d4a4a1a8524702e574739b6194598",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
         "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
-        "packages/lib/src/lib/adapters/fetch.ts": "d971fd5c45357f60daf55c41bb9aa10ac58366e341d3bf37a5eb90b137c3e405",
+        "packages/lib/src/lib/adapters/fetch.ts": "c31c356d34555c3162a6af05608a673da31ced0878bea15395813cd2882a8dc6",
         "packages/lib/src/lib/core/Faxios.ts": "9137318462d415375fbcc412c4dfa44c363ce2bec4f9ee78eed54a3efaef48c0",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "d5ac5411d68a2fe8c1106f2c4aaa3e4af9282d1568934113e0eb23bc873db9f7",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "e9e25e887399e128a9fbab66377c2eee390272bc35c6adcb295e6ed9b8fe64f1",
         "packages/lib/src/lib/core/mergeConfig.ts": "b3f15fc665f58314f7934bd5510cdcf3faa57e483f03c553600708798d13e946",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
@@ -75,14 +75,14 @@
         "packages/tests/unit/plugins/authBearer.test.ts": "84baff907f21988dea49400531dd0abdf7b5a5148d1904e712ebe0b43ebfd3ae",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
-        "packages/tests/unit/plugins/retry.test.ts": "211222f8205dfcc23c2cacff16561038402c81c917e492e1679fb8838ddfb209",
+        "packages/tests/unit/plugins/retry.test.ts": "5b16864bc3ca6e302db3e68f072101bd7eddb97b5a32afc3607f2ea76c8ca0dc",
         "packages/tests/unit/plugins/timing.test.ts": "2bb6422d1f3a5d8181eaba9fe0f45fb50b1ba39cb16a1c75ca254e20fe1a2ba1"
       },
-      "head": "350605777edb17586f58ed6796d0d5b5166a9899",
-      "outcome": "no-change",
-      "reason": "Atomic capability registration on failed use() is an internal fix; the skill does not teach failure-state behaviour",
+      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
+      "outcome": "updated",
+      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
       "evidence": [
-        "Changed: packages/tests/unit/core/middleware.test.ts at 20e98674b5a8897cb24a5e7b7f41d6472d86b485"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/tests/unit/plugins/retry.test.ts at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
       ]
     },
     "source:knip.json": {
@@ -220,15 +220,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/error-handling.md": {
-      "fingerprint": "374f2c71e5053463e6d675bc40c9a7b600a06f489c13a8b70252c0460deb224c",
+      "fingerprint": "e23e73feddf35d262ddd72cedc26ab2dddae12a739fe0fcb0cac5174e16ab3e2",
       "snapshot": {
-        "packages/docs/pages/advanced/error-handling.md": "83cc94ce22756ed94c897bf3d2b74e845c25f6eae1024dc5ba7ba19d297bce09"
+        "packages/docs/pages/advanced/error-handling.md": "806b4f5c9ae3dab64bc3a2cf2651ef03d21a2f4179ba89c6dd4b3a96554acbde"
       },
-      "head": "16004a89cc705910f332129196177c5afcbad839",
+      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says a request redact adds to the instance's, config.data on errors is the caller's body, and schema issues keep only message and path keys",
+      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/error-handling.md at 0fd26195c33fab2485de5afef6b316d94f126562"
+        "Changed: packages/docs/pages/advanced/error-handling.md at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
       ]
     },
     "source:packages/docs/pages/advanced/headers.md": {
@@ -280,15 +280,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "a07ab98c02d9303ac88c8a45c8e5d4263ef49e16217a8ca7f762de20a3cc1eac",
+      "fingerprint": "ed8658ee0b469b31b4fbc9e907d21b459b0cecd8efdf3f12787ae51d7ac108f1",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "0b4aaf1dccc4f5ddc630c8d90ca1707bb67d0a5b6beb3159aeae3989ab7234b1"
+        "packages/docs/pages/advanced/request-config.md": "46043c1e0e9a9e160a00d6104d10cb54bde840349e440804b0e5c71fa4eec3b3"
       },
-      "head": "16004a89cc705910f332129196177c5afcbad839",
+      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says a request redact adds to the instance's, config.data on errors is the caller's body, and schema issues keep only message and path keys",
+      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 0fd26195c33fab2485de5afef6b316d94f126562"
+        "Changed: packages/docs/pages/advanced/request-config.md at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -2180,15 +2180,15 @@
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
-      "fingerprint": "de1344c56f4ed1b91a7edb9d5b481c8502b9cf701f3b8ecf6ede3ac0f0aad22e",
+      "fingerprint": "b28ef0fe5698d15f91810bac1febe142a2d6c43544434b527c450c09be0a4fc1",
       "snapshot": {
-        "packages/lib/src/lib/adapters/fetch-helpers.ts": "85fc57685598177df9c127d46f69e3ec73a5023b4f7ace7163a163d656594c6a"
+        "packages/lib/src/lib/adapters/fetch-helpers.ts": "726c0eb85d9f4dc6612c9683d1597c001ae5f2dae58996257b5ee615ab4de29f"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
+      "outcome": "updated",
+      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
       ]
     },
     "source:packages/lib/src/lib/cancel/CanceledError.ts": {
@@ -2689,15 +2689,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/errorDetails.test.ts": {
-      "fingerprint": "ebff92235ad636c146901d021c28e26201cd92d61d80d5f21f570f724bc1b36c",
+      "fingerprint": "d00f2c826c36f1c2cc197b0adf5e1e2621cc1344c9ee1c7a8e6e3256dbc68756",
       "snapshot": {
-        "packages/tests/unit/adapters/errorDetails.test.ts": "e6bfe0caee99c80d138d85a154beb3cd5fad906510bf99360b373c27f813efba"
+        "packages/tests/unit/adapters/errorDetails.test.ts": "f9c3a9e49c481daf846243d5a6510c9658b1eb9cee3393238fdcf59a8e181059"
       },
-      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
+      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
       "outcome": "updated",
-      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/errorDetails.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/tests/unit/adapters/errorDetails.test.ts at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
       ]
     },
     "source:packages/tests/unit/axiosHeaders.test.ts": {
@@ -3404,15 +3404,15 @@
       ]
     },
     "source:packages/tests/unit/transformResponse.test.ts": {
-      "fingerprint": "be1a1152a03642eda63ab8be7286726ddf9146f27c99dcf4f0ba3fe2af583d13",
+      "fingerprint": "636317475d097f59e31003d3d8c2a9b3fe9034b808c849ff8dbeaccc25132a8f",
       "snapshot": {
-        "packages/tests/unit/transformResponse.test.ts": "c12c7a80c854d106da67e0e6e65242124f92de60da1cf4c808fc92dc11b02a66"
+        "packages/tests/unit/transformResponse.test.ts": "9fd3f56343aeacbddc848ca2eb150a5769762a4b075a5c6c9688fb7decbbac44"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
+      "outcome": "updated",
+      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
       "evidence": [
-        "Changed: packages/tests/unit/transformResponse.test.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/tests/unit/transformResponse.test.ts at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
       ]
     },
     "source:.bumpy/release-gates.md": {
@@ -3980,15 +3980,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/resolveRequestURL.ts": {
-      "fingerprint": "dc840373d9d5c567ce762445f6fc9110b933824a7225728a5b5d6c18989a5be1",
+      "fingerprint": "fadcc4683ed404d4ad37e33334721ad91c60122a9d227bcf9dae0a1a88a2c59a",
       "snapshot": {
-        "packages/lib/src/lib/core/resolveRequestURL.ts": "8ada602889e3457d7c94f5a2699d755fa725180bcb051726da8eeb919d43d21e"
+        "packages/lib/src/lib/core/resolveRequestURL.ts": "a1ecc8c9acb55726bb8759b3391283254b4e58d2d1c315897bc103af2951729b"
       },
-      "head": "c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab",
+      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
       "outcome": "updated",
-      "reason": "#235: the skill now says getUri() fills in pathParams and returns the URL the request sends.",
+      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/resolveRequestURL.ts at c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab"
+        "Changed: packages/lib/src/lib/core/resolveRequestURL.ts at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
       ]
     },
     "source:packages/tests/unit/core/getUri.test.ts": {
@@ -4604,15 +4604,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch-pure.test.ts": {
-      "fingerprint": "7928a43e8952aa0add3b5a212d436b49b31c7ddf20ec0c1016096bb0c6365012",
+      "fingerprint": "9e1e0ef24dad77d963ede00ddd89022bec0eff3402a5c9c526c29fecf07fcd6a",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch-pure.test.ts": "f9861a76c541ed0543c2d840cf7113dce4d6d2014f67914639d828b3e2a8da09"
+        "packages/tests/unit/adapters/fetch-pure.test.ts": "d93cfba9138d65e2f76c3c698ca79cba7fd19a7d9cb4176a7d7e3a4aa56fca8d"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
+      "outcome": "updated",
+      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch-pure.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/tests/unit/adapters/fetch-pure.test.ts at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
       ]
     },
     "source:.bumpy/plugin-attempt-api.md": {
@@ -6005,6 +6005,18 @@
       "reason": "Atomic capability registration on failed use() is an internal fix; the skill does not teach failure-state behaviour",
       "evidence": [
         "Changed: .bumpy/275-plugin-atomic.md at bf2bf61ff7b46e6ab2cba8611412304f435c33b8"
+      ]
+    },
+    "source:.bumpy/285-error-codes.md": {
+      "fingerprint": "01155a8e94d597ea022244cead0d3851e3ebf894e789fb07cf18fc033d1169d3",
+      "snapshot": {
+        ".bumpy/285-error-codes.md": "1910b2fba49e79a15464b061ca990de8a521d7ee1ba0f87dda170b8126f73b81"
+      },
+      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
+      "outcome": "updated",
+      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
+      "evidence": [
+        "Changed: .bumpy/285-error-codes.md at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
       ]
     }
   }

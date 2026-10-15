@@ -183,14 +183,17 @@ describe("handleFetchCaughtError", () => {
     );
   });
 
-  it("wraps TypeError with 'Load failed' message as ERR_NETWORK", () => {
-    const te = Object.assign(new TypeError("Load failed"), { name: "TypeError" });
+  it.each([
+    [ "a TypeError with a runtime-specific message", new TypeError("client error (Connect)") ],
+    [ "an error with a runtime-specific code", Object.assign(new Error("Unable to connect"), { code: "ConnectionRefused" }) ],
+  ])("wraps %s raised while sending as ERR_NETWORK with the error as cause", (_label, sendErr) => {
     const ref = makeRef();
     assert.throws(
-      () => handleFetchCaughtError(te, undefined, ref, config, request),
+      () => handleFetchCaughtError(sendErr, undefined, ref, config, request, "send", "http://example.test/"),
       (err: unknown) => {
         assert.ok(err instanceof FaxiosError);
-        assert.strictEqual((err).code, FaxiosError.ERR_NETWORK);
+        assert.strictEqual(err.code, FaxiosError.ERR_NETWORK);
+        assert.strictEqual(err.cause, sendErr);
         return true;
       }
     );

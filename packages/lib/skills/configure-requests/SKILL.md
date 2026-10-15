@@ -105,7 +105,9 @@ console.log(data.byteLength);
 ```
 
 Unset `responseType` reads the body as text, then JSON-parses it if it parses, else keeps the raw
-string. `"json"` is strict: a body that isn't JSON rejects with `ERR_BAD_RESPONSE`. `"text"` skips the
+string. `"json"` is strict: a 2xx body that isn't JSON rejects with `ERR_BAD_RESPONSE`. A 4xx/5xx
+body that isn't JSON keeps the status error (`Request failed with status code N`), with the raw
+body on `error.response.data` and the parse error on `error.cause`. `"text"` skips the
 JSON parse; `"blob"`, `"formdata"` and `"stream"` (a `ReadableStream`) are also supported.
 
 ### Merge defaults the way faxios does
