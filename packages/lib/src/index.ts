@@ -17,6 +17,12 @@ export { default as FaxiosHeaders } from "./lib/core/FaxiosHeaders.ts";
 export { default as HttpStatusCode } from "./lib/helpers/HttpStatusCode.ts";
 export { default as mergeConfig } from "./lib/core/mergeConfig.ts";
 export { default as resolveRequestURL } from "./lib/core/resolveRequestURL.ts";
+// The core rules built-in and third-party plugins reuse rather than copy.
+export { default as canceledFromSignal } from "./lib/cancel/canceledFromSignal.ts";
+export { default as assertSignal } from "./lib/core/assertSignal.ts";
+export { onAbort, default as raceAbort } from "./lib/helpers/raceAbort.ts";
+export type { AbortableSignal } from "./lib/helpers/raceAbort.ts";
+export { hasOwnInPrototypeChain } from "./lib/utils.ts";
 export { VERSION } from "./lib/env/data.ts";
 // Standalone modules that faxios.ts also attaches to the default instance. Reading them off the
 // instance here would keep the whole library in every bundle that imports any named export.

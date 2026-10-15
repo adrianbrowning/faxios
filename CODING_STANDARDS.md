@@ -7,7 +7,7 @@ Rules for writing and reviewing library code in `packages/lib/src`. Mechanical r
 Config objects, plugin objects, option objects and anything else a caller hands faxios may come from a polluted `Object.prototype` (THREATMODEL T-R4b).
 
 - Read caller-supplied fields as own properties: `hasOwnProp(obj, key)` from `utils.ts` or a local `own()` helper. Never use `in`, destructuring, plain `obj.foo` or `Object.assign` on them. This covers request config (`ctx.config.retry`, `.signal`, `.method`, `.data`), plugin objects (`name`, `middleware`, `provides`) and plugin option objects.
-- Merging or materializing objects filters `__proto__`, `constructor` and `prototype`, and builds null-prototype results (`helpers/cloneConfig.ts`, `ctx.state`, `ctx.capabilities`). Regressions here are security bugs.
+- Merging or materializing objects filters `__proto__`, `constructor` and `prototype`, and builds null-prototype results (`core/cloneConfig.ts`, `ctx.state`, `ctx.capabilities`). Regressions here are security bugs.
 - URL construction (CRLF/header injection), XSRF and the `maxContentLength` / `maxBodyLength` guards in `lib/adapters/fetch.ts`: consult `THREATMODEL.md` and add focused regression tests. Only `withXSRFToken === true` forces cross-origin XSRF header attachment.
 
 ## Options and errors

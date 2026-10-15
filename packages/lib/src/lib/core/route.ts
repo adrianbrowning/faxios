@@ -1,7 +1,7 @@
 // @ts-self-types="./route.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import cloneConfig from "../helpers/cloneConfig.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
+import cloneConfig from "./cloneConfig.js";
 import type { BasePerCallConfig, DefineConfig, DefinedEndpoint, FaxiosLike } from "./define.js";
 import { createDefinedEndpoint } from "./define.js";
 import mergeConfig from "./mergeConfig.js";

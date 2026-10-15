@@ -1,3 +1,5 @@
+// @ts-self-types="./canceledFromSignal.d.ts" — required for Deno: index.d.ts re-exports from here
+
 import FaxiosError from "../core/FaxiosError.js";
 import type { FaxiosRequestConfig } from "../types.js";
 import CanceledError from "./CanceledError.js";

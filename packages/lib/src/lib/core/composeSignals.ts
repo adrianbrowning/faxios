@@ -1,7 +1,7 @@
 import canceledFromSignal from "../cancel/canceledFromSignal.js";
+import { onAbort } from "../helpers/raceAbort.js";
+import type { AbortableSignal } from "../helpers/raceAbort.js";
 import type { WebAbortSignal } from "../types/web.js";
-import { onAbort } from "./raceAbort.js";
-import type { AbortableSignal } from "./raceAbort.js";
 
 export type ExtendedAbortSignal = WebAbortSignal & { unsubscribe?: () => void; };
 

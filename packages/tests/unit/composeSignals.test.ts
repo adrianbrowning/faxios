@@ -2,7 +2,7 @@ import assert from "node:assert";
 import { getEventListeners } from "node:events";
 import { describe, it } from "vitest";
 import CanceledError from "#src/lib/cancel/CanceledError.js";
-import composeSignals from "#src/lib/helpers/composeSignals.js";
+import composeSignals from "#src/lib/core/composeSignals.js";
 
 describe("helpers::composeSignals", () => {
   const runIfAbortController =

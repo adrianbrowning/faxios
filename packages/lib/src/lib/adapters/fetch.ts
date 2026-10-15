@@ -1,3 +1,4 @@
+import composeSignals from "../core/composeSignals.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import type { HeaderInput } from "../core/FaxiosHeaders.js";
@@ -6,12 +7,9 @@ import type { RequestBodies } from "../core/requestDeadline.js";
 import resolveBodyContentType from "../core/resolveBodyContentType.js";
 import { settle } from "../core/settle.js";
 import { VERSION } from "../env/data.js";
-import composeSignals from "../helpers/composeSignals.js";
-import estimateDataURLDecodedBytes from "../helpers/estimateDataURLDecodedBytes.js";
 import { progressReporter } from "../helpers/progressEventReducer.js";
 import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import { trackStream } from "../helpers/trackStream.js";
-import utf8ByteLength from "../helpers/utf8ByteLength.js";
 import platform from "../platform.js";
 import type {
   FaxiosProgressEvent,
@@ -19,34 +17,24 @@ import type {
   InternalFaxiosRequestConfig
 } from "../types.js";
 import type { WebRequest } from "../types/web.js";
-import { findKey, getSafeProp, hasOwnInPrototypeChain, hasOwnProp, isArrayBuffer, isArrayBufferView, isAsyncIterable, isBlob, isFunction, isObject, isReadableStream, isRequest, isResponse, isSpecCompliantForm, isStream, isString, isURLSearchParams, toFiniteNumber } from "../utils.js";
+import { findKey, getSafeProp, hasOwnInPrototypeChain, hasOwnProp, isAsyncIterable, isFunction, isObject, isReadableStream, isRequest, isResponse, isSpecCompliantForm, isStream, isString, toFiniteNumber } from "../utils.js";
+import { handleFetchCaughtError } from "./fetch-helpers.js";
+import type { AnyConstructor, AnyResponse, ComposedSignal, FetchContext, FetchRuntime } from "./fetch-helpers.js";
 import {
   bodyTooLarge,
   checkDeclaredContentLength,
   checkMaterializedSize,
+  checkPreflightLimits,
   contentTooLarge,
-  handleFetchCaughtError
-} from "./fetch-helpers.js";
-import type { ComposedSignal, FetchContext } from "./fetch-helpers.js";
+  limitOf,
+  resolveBodyLength
+} from "./fetch-limits.js";
 
 // btoa is a global in every supported runtime; accessed via globalThis for no-DOM lib compat
 const _btoa: (data: string) => string = (
   globalThis as unknown as Record<string, unknown>
 )["btoa"] as (data: string) => string;
-type AnyConstructor = new (...args: Array<unknown>) => unknown;
 type FetchFn = (input: unknown, init?: unknown) => Promise<AnyResponse>;
-type AnyResponse = {
-  [key: string]: unknown;
-  arrayBuffer: () => Promise<ArrayBuffer>;
-  body: unknown;
-  headers: {
-    [key: string]: unknown;
-    get: (name: string) => null | string;
-    has: (name: string) => boolean;
-  };
-  status: number;
-  statusText: string;
-};
 type AnyRequest = {
   [key: string]: unknown;
   arrayBuffer: () => Promise<ArrayBuffer>;
@@ -205,46 +193,6 @@ const readOwn = (obj: unknown, key: string): unknown =>
   typeof obj === "object" && obj !== null && hasOwnProp(obj, key) ? Reflect.get(obj, key) : undefined;
 const ownEnv = (config: unknown, key: keyof FetchEnv): unknown => readOwn(readOwn(config, "env"), key);
 
-// What the runtime's fetch side supports. Feature detection depends only on the Request and
-// Response constructors, so one record serves every `env.fetch`.
-type FetchRuntime = {
-  // Outside browsers a FormData body under maxBodyLength is streamed and counted as fetch reads
-  // it; browsers can't send a stream body (see buildUploadStream).
-  countsFormDataWhileSent: boolean;
-  // Cloudflare Workers throws when credentials are defined
-  // see https://github.com/cloudflare/workerd/issues/902
-  isCredentialsSupported: boolean;
-  isReadableStreamSupported: boolean;
-  // Whether `new Request(request, { body: null })` keeps the request's body (see fetchInitFor).
-  nullKeepsBody: boolean;
-  // Undefined where the runtime has none or `env` disables it.
-  Request: AnyConstructor | undefined;
-  // Only members this runtime's Request exposes, so an engine that rejects members it doesn't
-  // implement (Cloudflare Workers) is never sent one.
-  requestInitDefaults: Array<[string, unknown]>;
-  resolvers: Record<string, (res: AnyResponse, config: InternalFaxiosRequestConfig) => unknown>;
-  Response: AnyConstructor | undefined;
-  // `ReadableStream.from`, which turns a Node stream body into a web stream.
-  streamFrom: ((source: unknown) => unknown) | undefined;
-  supportsRequestStream: boolean;
-  supportsResponseStream: boolean;
-};
-
-// The per-request state the adapter's steps share.
-type RequestContext = FetchContext & {
-  headers: FaxiosHeaders;
-  onDownloadProgress: unknown;
-  // Browsers can't be given a stream body for upload progress: Chromium sends one only over
-  // HTTP/2 or later and WebKit not at all, so the upload would fail. onUploadProgress isn't
-  // called there (#209), so it is undefined.
-  onUploadProgress: unknown;
-  runtime: FetchRuntime;
-  // GET and HEAD send no body.
-  sendsBody: boolean;
-  // `responseType: "stream"` where the runtime has stream responses.
-  streamsResponse: boolean;
-};
-
 const RESPONSE_TYPES = [ "text", "arrayBuffer", "blob", "formData", "stream" ];
 
 // How each responseType reads the response; `stream` hands over the body where the runtime has
@@ -346,7 +294,7 @@ const probeRuntime = (env: Omit<FetchEnv, "fetch">): FetchRuntime => {
 // inherited keys never do. The caller sets signal, method, headers, body, duplex, credentials.
 // This init builds the Request; fetch gets the init fetchInitFor derives from it.
 const buildRequestInit = (
-  ctx: RequestContext,
+  ctx: FetchContext,
   options: { data: unknown; envFetch: FetchFn | undefined; fetchOptions: unknown; withCredentials: boolean | string | undefined; }
 ): Record<string, unknown> => {
   const init: Record<string, unknown> = Object.create(null);
@@ -420,53 +368,6 @@ const isStreamBody = (body: unknown): boolean => isReadableStream(body) || isIte
 const isCountedWhileSent = (runtime: FetchRuntime, body: unknown): boolean =>
   isStreamBody(body) || (runtime.countsFormDataWhileSent && isSpecCompliantForm(body));
 
-// Sizes come from the body itself, never an encoded copy: measuring must not allocate a buffer
-// as large as the body it may reject.
-const getBodyLength = (body: unknown): number | undefined => {
-  if (body == null) {
-    return 0;
-  }
-
-  if (isBlob(body)) {
-    return (body as { size: number; }).size;
-  }
-
-  if (isArrayBufferView(body) || isArrayBuffer(body)) {
-    return (body as ArrayBuffer | ArrayBufferView).byteLength;
-  }
-
-  if (isURLSearchParams(body)) {
-    body = body + "";
-  }
-
-  if (isString(body)) {
-    return utf8ByteLength(body as string);
-  }
-  return undefined;
-};
-
-// The bytes of a FormData body's field values and files, from their sizes, without reading the
-// body. A lower bound: the multipart body adds boundaries and part headers. Undefined for any
-// other body.
-const getFormDataFieldsLength = (body: unknown): number | undefined => {
-  if (!isSpecCompliantForm(body)) {
-    return undefined;
-  }
-  let length = 0;
-  for (const [ , value ] of body as Iterable<[string, unknown]>) {
-    // A FormData value is a string or a File.
-    const size = isString(value) ? undefined : getSafeProp(value, "size");
-    length += typeof size === "number" ? size : utf8ByteLength(String(value));
-  }
-  return length;
-};
-
-const resolveBodyLength = (headers: FaxiosHeaders, body: unknown): number | undefined => {
-  const length = toFiniteNumber(headers.getContentLength());
-
-  return length == null ? getBodyLength(body) : length;
-};
-
 const normalizeCredentials = (wc: boolean | string): string => {
   if (isString(wc)) return wc as string;
   return wc === true ? "include" : "same-origin";
@@ -474,7 +375,7 @@ const normalizeCredentials = (wc: boolean | string): string => {
 
 // HTTP basic authentication: extract auth from config or URL, set Authorization header,
 // strip credentials from URL. Returns the (possibly updated) URL.
-const applyAuthToRequest = (ctx: RequestContext, url: string): string => {
+const applyAuthToRequest = (ctx: FetchContext, url: string): string => {
   let auth: undefined | { password: unknown; username: unknown; };
   const configAuth = readOwn(ctx.config, "auth");
   if (configAuth) {
@@ -512,40 +413,10 @@ const applyAuthToRequest = (ctx: RequestContext, url: string): string => {
   return url;
 };
 
-// Pre-flight size checks: data: URL content-length and known-size body maxBodyLength. They run
-// before any Request exists. Returns the body's length if it was measured, else undefined.
-const checkPreflightLimits = (ctx: RequestContext, outbound: { data: unknown; url: string; }): number | undefined => {
-  const { body: maxBodyLength, content: maxContentLength } = ctx.limits;
-  // Enforce maxContentLength for data: URLs up-front so we never materialize
-  // an oversized payload.
-  if (
-    maxContentLength !== undefined &&
-    outbound.url.startsWith("data:") &&
-    estimateDataURLDecodedBytes(outbound.url) > maxContentLength
-  ) {
-    throw contentTooLarge(ctx);
-  }
-  // Enforce maxBodyLength against known-size bodies before dispatch using
-  // the body's actual size — never a caller-declared Content-Length.
-  // A FormData body isn't measured, since that buffers it whole: its values alone over the limit
-  // reject it here, and where it's streamed the byte counter covers the multipart framing too.
-  if (maxBodyLength !== undefined && ctx.sendsBody) {
-    const outboundLength = getBodyLength(outbound.data);
-    const checkedLength = outboundLength ?? getFormDataFieldsLength(outbound.data);
-    if (typeof checkedLength === "number" && isFinite(checkedLength)) {
-      if (checkedLength > maxBodyLength) {
-        throw bodyTooLarge(ctx);
-      }
-      return outboundLength;
-    }
-  }
-  return undefined;
-};
-
 // Counts a request body stream as fetch reads it, which is after the Request exists, so the
 // maxBodyLength error carries it.
 const countUploadStream = (
-  ctx: RequestContext,
+  ctx: FetchContext,
   upload: { flush?: () => void; onProgress?: (bytes: number) => void; stream: unknown; }
 ): unknown => {
   const maxBodyLength = ctx.limits.body;
@@ -573,7 +444,7 @@ const countUploadStream = (
 // Set up request body streaming with upload progress and/or maxBodyLength enforcement.
 // `contentLength` is the length the pre-flight check measured, if it did.
 const buildUploadStream = (
-  ctx: RequestContext,
+  ctx: FetchContext,
   upload: { contentLength: number | undefined; data: unknown; url: string; }
 ): { data: unknown; encodedContentType: null | string; } => {
   const { onUploadProgress, runtime } = ctx;
@@ -621,7 +492,7 @@ const buildUploadStream = (
 
 // Wrap the response body stream with download progress tracking and maxContentLength enforcement.
 const buildDownloadStream = (
-  ctx: RequestContext,
+  ctx: FetchContext,
   received: { headers: FaxiosHeaders; release: (err?: unknown) => void; response: AnyResponse; }
 ): AnyResponse => {
   const { onDownloadProgress } = ctx;
@@ -671,10 +542,6 @@ const buildDownloadStream = (
   ) as AnyResponse;
 };
 
-// A size limit is set when it is a number above -1.
-const limitOf = (value: unknown): number | undefined =>
-  (typeof value === "number" && value > -1 ? value : undefined);
-
 // One request through fetch; `input` holds the FetchAdapter arguments.
 const sendRequest = async (
   runtime: FetchRuntime,
@@ -701,7 +568,7 @@ const sendRequest = async (
   // Set when a stream body keeps the request's signal and deadline in force past the response.
   let endStreamBody: (() => void) | undefined;
 
-  const ctx: RequestContext = {
+  const ctx: FetchContext = {
     bodyError: undefined,
     config,
     headers: resolved.headers,

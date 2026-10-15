@@ -223,7 +223,7 @@ and stop generating Axios APIs it removed or never verified.
       `blob`, `formdata`, `json`, `stream` and `text` are accepted, and anything else rejects with
       `ERR_BAD_OPTION_VALUE`.
     - The timeout's `ETIMEDOUT` is raised in `src/lib/core/requestDeadline.ts`, which bounds the
-      whole request; `src/lib/helpers/composeSignals.ts` only combines signals.
+      whole request; `src/lib/core/composeSignals.ts` only combines signals.
   - Version: SKILL.md `library_version` and `domain_map.yaml` now say 0.2.4, the version in
     `packages/lib/package.json`.
   - Sources: SKILL.md and `skill_tree.yaml` add `src/lib/core/assertRequestConfig.ts`,

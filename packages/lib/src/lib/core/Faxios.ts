@@ -2,7 +2,6 @@
 "use strict";
 
 import canceledFromSignal from "../cancel/canceledFromSignal.js";
-import cloneConfig from "../helpers/cloneConfig.js";
 import raceAbort from "../helpers/raceAbort.js";
 import type {
   FaxiosMiddleware,
@@ -23,6 +22,7 @@ import { hasOwnProp, isDangerousKey, isFunction, isObject, isPlainObject } from 
 import assertRequestConfig from "./assertRequestConfig.js";
 import assertSignal from "./assertSignal.js";
 import assertTimeout from "./assertTimeout.js";
+import cloneConfig from "./cloneConfig.js";
 import { createDefinedEndpoint } from "./define.js";
 import type { DefineConfig, DefinedEndpoint } from "./define.js";
 import dispatchRequest from "./dispatchRequest.js";
@@ -31,7 +31,7 @@ import FaxiosHeaders from "./FaxiosHeaders.js";
 import { flattenHeaders, inheritHeaders } from "./headerLayers.js";
 import mergeConfig, { mergeConfigExceptHeaders } from "./mergeConfig.js";
 import armDeadline, { RequestBodies } from "./requestDeadline.js";
-import resolveRequestURL from "./resolveRequestURL.js";
+import resolveRequestURL, { normalizeRequestURL } from "./resolveRequestURL.js";
 import type { RouteBuilder, RouteConfig } from "./route.js";
 import { createRouteBuilder } from "./route.js";
 
@@ -120,29 +120,23 @@ function assertConfigObject(value: unknown): void {
   }
 }
 
-// The request's method, lower-cased. Anything but an HTTP method name gets a coded error.
-function resolveMethod(
-  config: FaxiosRequestConfig,
-  defaults: FaxiosRequestConfig
-): string {
+// The method a request asks for: only an absent (undefined or null) method falls back to the
+// instance's, then "get"; '', 0 or false stays, for resolveMethod to reject.
+function requestedMethod(config: FaxiosRequestConfig, defaults: FaxiosRequestConfig): unknown {
   const defaultMethod = hasOwnProp(defaults, "method") ? defaults.method : undefined;
-  // Only an absent (undefined or null) method falls back; '', 0 or false is rejected.
-  const method: unknown = config.method ?? defaultMethod ?? "get";
-  if (typeof method !== "string" || !HTTP_TOKEN.test(method)) {
-    throw new FaxiosError("option method must be an HTTP method name", FaxiosError.ERR_BAD_OPTION_VALUE, config as InternalFaxiosRequestConfig);
-  }
-  return method.toLowerCase();
+  return config.method ?? defaultMethod ?? "get";
 }
 
-// A URL instance is sent as its href; anything but a string or URL gets a coded error.
-function normalizeURL(config: FaxiosRequestConfig): void {
-  const url: unknown = config.url;
-  if (url instanceof URL) {
-    config.url = url.href;
+// The request's method, lower-cased. Anything but an HTTP method name gets a coded error.
+function resolveMethod(
+  config: InternalFaxiosRequestConfig,
+  defaults: FaxiosRequestConfig
+): string {
+  const method = requestedMethod(config, defaults);
+  if (typeof method !== "string" || !HTTP_TOKEN.test(method)) {
+    throw new FaxiosError("option method must be an HTTP method name", FaxiosError.ERR_BAD_OPTION_VALUE, config);
   }
-  else if (url !== undefined && typeof url !== "string") {
-    throw new FaxiosError("option url must be a string or URL", FaxiosError.ERR_BAD_OPTION_VALUE, config as InternalFaxiosRequestConfig);
-  }
+  return method.toLowerCase();
 }
 
 // The registry is untyped: each entry was checked against its instance's options and capabilities
@@ -379,19 +373,11 @@ class Faxios {
       config = configOrUrl;
     }
 
-    // Headers are flattened per level, so every request header group beats every instance one.
-    const instanceHeaders = hasOwnProp(this.defaults, "headers") ? this.defaults.headers : undefined;
-    const requestHeaders = hasOwnProp(config, "headers") ? config.headers : undefined;
+    const internal = this.#mergeAndNormalize(config, true);
 
-    config = this.#mergeAndNormalize(config);
-    config.method = resolveMethod(config, this.defaults);
-
-    config.headers = flattenHeaders(instanceHeaders, requestHeaders, config.method);
-
-    const internal = config as InternalFaxiosRequestConfig;
     // Before middleware, so a bad value never reaches caller code or a timer that fires at once.
-    assertTimeout(hasOwnProp(config, "timeout") ? config.timeout : undefined, internal);
-    assertSignal(hasOwnProp(config, "signal") ? config.signal : undefined, internal);
+    assertTimeout(hasOwnProp(internal, "timeout") ? internal.timeout : undefined, internal);
+    assertSignal(hasOwnProp(internal, "signal") ? internal.signal : undefined, internal);
 
     const composed = this.#composed;
     if (!composed) return runRequest(bodies => dispatchRequest(internal, bodies), internal, false);
@@ -492,18 +478,41 @@ class Faxios {
   }
 
   getUri(config?: FaxiosRequestConfig) {
-    return resolveRequestURL(this.#mergeAndNormalize(config));
+    return resolveRequestURL(this.#mergeAndNormalize(config, false));
   }
 
   // The one normalization step request() and getUri() share before resolveRequestURL, so both
-  // validate and resolve the same URL. Headers are left out: request() layers them per method.
-  #mergeAndNormalize(config: FaxiosRequestConfig | undefined): FaxiosRequestConfig {
+  // validate and resolve the same URL. The internal view is built before any check runs, so the
+  // config on an error a check throws carries the headers the request would use, flattened per
+  // level for its method so every request header group beats every instance one. The checks keep
+  // their order: options, then url (a URL url becomes its href here), then for a request the
+  // method, then the headers' own failure, which getUri() never reports.
+  #mergeAndNormalize(config: FaxiosRequestConfig | undefined, forRequest: boolean): InternalFaxiosRequestConfig {
     const merged = mergeConfigExceptHeaders(this.defaults, config);
-    assertRequestConfig(merged, this.#pluginOptions);
-    normalizeParamsSerializer(merged);
-    resolveAllowAbsoluteUrls(merged, this.defaults);
-    normalizeURL(merged);
-    return merged;
+    const instanceHeaders = hasOwnProp(this.defaults, "headers") ? this.defaults.headers : undefined;
+    const requestHeaders = config && hasOwnProp(config, "headers") ? config.headers : undefined;
+    const method = requestedMethod(merged, this.defaults);
+    let headers: FaxiosHeaders;
+    let headersFailure: undefined | { error: unknown; };
+    try {
+      // A method resolveMethod rejects matches no method header group.
+      headers = flattenHeaders(instanceHeaders, requestHeaders, typeof method === "string" ? method.toLowerCase() : "");
+    }
+    catch (error) {
+      headers = new FaxiosHeaders();
+      headersFailure = { error };
+    }
+    // The cast covers only `url`, which is a string once normalizeRequestURL has run.
+    const internal = Object.assign(merged, { headers }) as InternalFaxiosRequestConfig;
+    assertRequestConfig(internal, this.#pluginOptions);
+    normalizeParamsSerializer(internal);
+    resolveAllowAbsoluteUrls(internal, this.defaults);
+    if (hasOwnProp(internal, "url")) internal.url = normalizeRequestURL(internal.url, internal);
+    if (forRequest) {
+      internal.method = resolveMethod(internal, this.defaults);
+      if (headersFailure) throw headersFailure.error;
+    }
+    return internal;
   }
 
   define<

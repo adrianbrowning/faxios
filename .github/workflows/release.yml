@@ -94,7 +94,8 @@ jobs:
           BUMPY_GH_TOKEN: ${{ secrets.BUMPY_GH_TOKEN }}
 
       # `bumpy version` only bumps package.json. Put the same version into the
-      # hard-coded VERSION (User-Agent, error messages) on the PR branch, and
+      # hard-coded VERSION (User-Agent, error messages) and the packaged skill's
+      # library_version on the PR branch, and
       # record the Intent review of bumpy's changes, which check-skills.yml
       # requires on every PR.
       - name: Sync VERSION and record the skill review on the Version Packages PR
@@ -113,8 +114,8 @@ jobs:
           git checkout -B "$BRANCH" FETCH_HEAD
           node packages/tests/scripts/sync-version.ts
           pnpm exec intent maintainer review --base origin/main --unchanged \
-            "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR."
-          git add packages/lib/src/lib/env/data.ts .intent/review-state.json
+            "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR."
+          git add packages/lib/src/lib/env/data.ts packages/lib/skills/configure-requests/SKILL.md .intent/review-state.json
           if git diff --cached --quiet; then
             exit 0
           fi

@@ -1,3 +1,5 @@
+// @ts-self-types="./assertSignal.d.ts" — required for Deno: index.d.ts re-exports from here
+
 import type { InternalFaxiosRequestConfig } from "../types.js";
 import FaxiosError from "./FaxiosError.js";
 

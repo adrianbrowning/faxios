@@ -114,11 +114,12 @@ const RESPONSE_TYPES = {
  * Asserts that every own key of a merged request config is a faxios option or a request option an
  * installed plugin declared, then checks `transitional`, the serializer options and `responseType`.
  * An unknown key rejects with `ERR_BAD_OPTION` naming it, so a typo never silently drops a setting.
+ * `config` is the internal view request() builds first, so every error here carries it.
  */
-export default function assertRequestConfig(config: FaxiosRequestConfig, pluginOptions: ReadonlySet<string>): void {
+export default function assertRequestConfig(config: InternalFaxiosRequestConfig, pluginOptions: ReadonlySet<string>): void {
   for (const key of Object.keys(config)) {
     if (hasOwnProp(REQUEST_CONFIG_KEYS, key) || pluginOptions.has(key)) continue;
-    throw new FaxiosError(`Unknown option ${key}${hintFor(key, pluginOptions)}`, FaxiosError.ERR_BAD_OPTION, config as InternalFaxiosRequestConfig);
+    throw new FaxiosError(`Unknown option ${key}${hintFor(key, pluginOptions)}`, FaxiosError.ERR_BAD_OPTION, config);
   }
 
   if (config.transitional !== undefined) {
@@ -140,7 +141,7 @@ export default function assertRequestConfig(config: FaxiosRequestConfig, pluginO
     throw new FaxiosError(
       `option responseType must be one of ${Object.keys(RESPONSE_TYPES).join(", ")}`,
       FaxiosError.ERR_BAD_OPTION_VALUE,
-      config as InternalFaxiosRequestConfig
+      config
     );
   }
 
@@ -149,12 +150,12 @@ export default function assertRequestConfig(config: FaxiosRequestConfig, pluginO
 }
 
 // A bad limit must not switch the size guard off: -1 is the only "unlimited" value.
-function assertSizeLimit(config: FaxiosRequestConfig, key: "maxBodyLength" | "maxContentLength"): void {
+function assertSizeLimit(config: InternalFaxiosRequestConfig, key: "maxBodyLength" | "maxContentLength"): void {
   const limit: unknown = hasOwnProp(config, key) ? config[key] : undefined;
   if (limit === undefined || limit === -1 || (Number.isFinite(limit) && (limit as number) >= 0)) return;
   throw new FaxiosError(
     `option ${key} must be -1 (unlimited) or a finite number of bytes from 0`,
     FaxiosError.ERR_BAD_OPTION_VALUE,
-    config as InternalFaxiosRequestConfig
+    config
   );
 }

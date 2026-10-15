@@ -102,11 +102,13 @@ and at runtime it rejects with `ERR_BAD_OPTION` (`Unknown option trace`).
 
 Import `resolveRequestURL(config)` from `@gcmdev/faxios`; never join `baseURL` and `url` by hand.
 It is the resolver core uses for the request and `getUri()`: `pathParams` filled in, `baseURL`
-joined (honouring `allowAbsoluteUrls`), `params` serialized; a `URL` url resolves as its `href`. A
-URL is absolute only with a scheme and `//`, so `documents:batchGet` joins `baseURL`. It always
+joined (honouring `allowAbsoluteUrls` as given: unset, an absolute `url` wins; core sets it from
+the instance defaults before middleware), `params` serialized; a `URL` url resolves as its `href`.
+A URL is absolute only with a scheme and `//`, so `documents:batchGet` joins `baseURL`. It always
 returns a string or throws what the request would reject with (`ERR_INVALID_URL`, also for no
-`url` and no `baseURL`; `ERR_BAD_OPTION_VALUE`), so a plugin that guards credentials treats a throw as
-"don't attach". Middleware runs before `pathParamsSchema`, so for an origin check resolve with
+`url` and no `baseURL`; `ERR_BAD_OPTION_VALUE`, also for a `url` that isn't a string or `URL`), so
+a plugin that guards credentials treats a throw as "don't attach". Middleware runs before
+`pathParamsSchema`, so for an origin check resolve with
 `pathParams: undefined` (and `params: undefined`): a schema may fill or rename placeholders the raw
 `pathParams` can't, and path params never move the origin. For the API origin use
 `ctx.instanceBaseURL`, not `ctx.config.baseURL`, which a per-request override can point anywhere.

@@ -1,3 +1,5 @@
+// @ts-self-types="./utils.d.ts" — required for Deno: index.d.ts re-exports from here
+
 // utils is a library of generic helper functions non-specific to faxios
 
 import type { WebReadableStream, WebRequest, WebResponse } from "./types/web.js";

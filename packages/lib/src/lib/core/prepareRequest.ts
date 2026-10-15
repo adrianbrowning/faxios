@@ -1,11 +1,11 @@
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import type { HeaderInput } from "../core/FaxiosHeaders.js";
-import cloneConfig from "../helpers/cloneConfig.js";
 import cookies from "../helpers/cookies.js";
 import isURLSameOrigin from "../helpers/isURLSameOrigin.js";
 import platform from "../platform.js";
 import type { FaxiosRequestConfig } from "../types.js";
 import { hasOwnProp, isFunction, isObject } from "../utils.js";
+import cloneConfig from "./cloneConfig.js";
 
 function applyXSRFToken(
   headers: FaxiosHeaders,

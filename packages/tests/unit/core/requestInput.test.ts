@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import faxios from "#src/index.js";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
+import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
 import type { FaxiosRequestConfig } from "#src/lib/types.js";
 
 const okFetch = () => vi.fn(async (_input: unknown, _init?: unknown) => new Response("ok"));
@@ -97,5 +98,62 @@ describe("core::Faxios request input", () => {
       [ "POST", "http://example.test/a?b=1" ],
       [ "PATCH", "http://example.test/a?b=1" ],
     ]);
+  });
+});
+
+describe("core::Faxios errors thrown before dispatch carry the request's config", () => {
+  it("an unknown option (ERR_BAD_OPTION) has flattened headers", async () => {
+    const fetch = okFetch();
+    const api = faxios.create({ env: { fetch }, headers: { "X-Instance": "i", "X-Both": "instance", "post": { "X-Group": "post" } } });
+    const err: FaxiosError = await api.request({
+      url: "https://a.example/x",
+      method: "POST",
+      headers: { "X-Both": "request" },
+      unknownKey: 1,
+    } as unknown as FaxiosRequestConfig).then(() => { throw new Error("request unexpectedly resolved"); }, (e: unknown) => e as FaxiosError);
+
+    expect(err.code).toBe(FaxiosError.ERR_BAD_OPTION);
+    expect(err.config!.headers).toBeInstanceOf(FaxiosHeaders);
+    expect(err.config!.headers.get("X-Instance")).toBe("i");
+    expect(err.config!.headers.get("X-Both")).toBe("request");
+    expect(err.config!.headers.get("X-Group")).toBe("post");
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it("a bad method (ERR_BAD_OPTION_VALUE) has flattened headers and a URL url as its href", async () => {
+    const fetch = okFetch();
+    const api = faxios.create({ env: { fetch }, headers: { "X-Instance": "i" } });
+    const err = await expectBadOption(api.request({ url: new URL("https://a.example/x"), method: 5 } as unknown as FaxiosRequestConfig));
+
+    expect(err.config!.headers).toBeInstanceOf(FaxiosHeaders);
+    expect(err.config!.headers.get("X-Instance")).toBe("i");
+    expect(err.config!.url).toBe("https://a.example/x");
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it("an unknown option wins over a bad url", async () => {
+    const fetch = okFetch();
+    const api = faxios.create({ env: { fetch } });
+    const config = { url: 5, unknownKey: 1 } as unknown as FaxiosRequestConfig;
+    const expected = { code: FaxiosError.ERR_BAD_OPTION, message: "Unknown option unknownKey" };
+
+    await expect(api.request(config)).rejects.toMatchObject(expected);
+    expect(() => api.getUri(config)).toThrow(expect.objectContaining(expected));
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it("a bad option value from getUri() has flattened headers", () => {
+    const api = faxios.create({ headers: { "X-Instance": "i" } });
+    let err: FaxiosError | undefined;
+    try {
+      api.getUri({ url: "https://a.example", responseType: "nope" } as unknown as FaxiosRequestConfig);
+    }
+    catch (e) {
+      err = e as FaxiosError;
+    }
+
+    expect(err?.code).toBe(FaxiosError.ERR_BAD_OPTION_VALUE);
+    expect(err?.config?.headers).toBeInstanceOf(FaxiosHeaders);
+    expect(err?.config?.headers.get("X-Instance")).toBe("i");
   });
 });

@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { describe, it } from "vitest";
-import { substitutePathParams } from "#src/lib/helpers/substitutePathParams.js";
+import { substitutePathParams } from "#src/lib/core/substitutePathParams.js";
 
 describe("substitutePathParams", () => {
   it("replaces a single placeholder", () => {
