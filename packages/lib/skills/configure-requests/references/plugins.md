@@ -113,6 +113,7 @@ returns a string or throws what the request would reject with (`ERR_INVALID_URL`
 
 ```ts
 import faxios, { FaxiosHeaders, resolveRequestURL } from "@gcmdev/faxios";
+import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
 import { definePlugin } from "@gcmdev/faxios/plugins";
 
 const apiKey = (key: string) => definePlugin({
@@ -129,11 +130,18 @@ const apiKey = (key: string) => definePlugin({
     }
     if (!sameAPI) return next(ctx);
     // Fetch strips only Authorization on a cross-origin redirect, so refuse redirects for a
-    // custom credential header unless the caller chose, as authBearer does. On a copy.
+    // custom credential header unless the caller chose, as authBearer does. Read `redirect` as an
+    // own key, so a polluted Object.prototype can't choose, and build a null-prototype copy.
     const headers = new FaxiosHeaders(ctx.config.headers).set("X-Api-Key", key);
     const fetchOptions = ctx.config.fetchOptions;
-    const redirect = fetchOptions?.redirect ?? "error";
-    return next({ ...ctx, config: { ...ctx.config, headers, fetchOptions: { ...fetchOptions, redirect } } });
+    const redirect = fetchOptions && Object.hasOwn(fetchOptions, "redirect") && fetchOptions.redirect !== undefined
+      ? fetchOptions.redirect
+      : "error";
+    const config: InternalFaxiosRequestConfig = Object.assign(Object.create(null) as InternalFaxiosRequestConfig, ctx.config, {
+      headers,
+      fetchOptions: { ...fetchOptions, redirect },
+    });
+    return next({ ...ctx, config });
   },
 });
 
