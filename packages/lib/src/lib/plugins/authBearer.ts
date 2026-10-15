@@ -3,9 +3,8 @@
 import type { FaxiosPlugin, InternalFaxiosRequestConfig } from "../../index.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
-import resolveRequestURL from "../core/resolveRequestURL.js";
 import { definePlugin } from "./definePlugin.js";
-import { assertOptions, isBoolean, isHeaderName, own } from "./shared.js";
+import { assertOptions, isBoolean, isHeaderName, own, templateURL } from "./shared.js";
 
 /** What `authBearer` provides to plugins installed after it. */
 export type AuthBearerCapability = { auth: { getToken: () => Promise<string>; }; };
@@ -90,13 +89,8 @@ function sendsTokenTo(config: InternalFaxiosRequestConfig, instanceBaseURL: unkn
   // parser drops tabs and line breaks (`{s}:\t//host`), so core rejects a url or baseURL holding
   // one (ERR_INVALID_URL) and the resolve below throws: the template checked here is the one sent.
   // A URL core rejects (an absolute URL with `allowAbsoluteUrls: false`) gets no token.
-  let url: string;
-  try {
-    url = resolveRequestURL({ ...config, pathParams: undefined, params: undefined });
-  }
-  catch {
-    return false;
-  }
+  const url = templateURL(config);
+  if (url === undefined) return false;
   const page = pageHref();
   if (origins) {
     const origin = resolvedOrigin(url, page);
