@@ -3,96 +3,98 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "b887d97ffebe83cfaf3296e1a442961b846d757179878b04ccda2a649c41124c",
+      "fingerprint": "645460631733ff0402014b8d53950be71194b949cadff0814abdd78df50fc468",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "78321da3eb997f0ee170b4f78177bd21f664549b3d9f060d06a3d5ebff9a1367",
+        "MIGRATION_GUIDE.md": "48d99cef091e5e681900c8aa040d099d9b06610431767ef3ba74363be7426539",
         "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
-        "packages/lib/skills/configure-requests/SKILL.md": "4504b574b0255a1a15f4ce7560a9c3730e95c40ade7c89a2ec0b1c5a26f0f2de",
+        "packages/lib/skills/configure-requests/SKILL.md": "04e2e652f70b17cffddf59204c0255db8588b29121106e16aca7ff142bdb1a37",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "1e0cd5af74a973acf734e72a6ad967e6d18f44f591ebce1a6cab60a564b88b2f",
-        "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
-        "packages/lib/src/index.ts": "213ce7f2ff6d1ae0bdfd7a08c32649ca82abf59c5320c6357b0e1b7fa29092cb",
-        "packages/lib/src/lib/adapters/fetch.ts": "99f1427e4b7650d91cc82683997b8dd40dcab9387b738e8761ced56b024ae99d",
-        "packages/lib/src/lib/core/Faxios.ts": "7a88a56adebd77541e6271f88ab6cf63138583ccafadb5f6198a37febb16d60d",
-        "packages/lib/src/lib/core/FaxiosError.ts": "cbc450b2d0d43577f6915639a07bc7d595373d34791e07b2e421d27a9ba98b6d",
+        "packages/lib/skills/configure-requests/references/plugins.md": "a5be5b9800253f262f1de03a7c8d9e6e7e65d68863a649949d0953f9a9c66295",
+        "packages/lib/src/index.ts": "0e433e2cccd5a8484ffbfb743e41ca262259686619f0befdf9375fa17ec05205",
+        "packages/lib/src/lib/adapters/fetch.ts": "32786c64173f91e51445b495473db53d9e9c6410c9a47feb12ed547a22da8431",
+        "packages/lib/src/lib/core/Faxios.ts": "f7eb5bec35e80e1c0e24858de55eb325681fad2abb0394f1386e1d832d76fdf6",
+        "packages/lib/src/lib/core/FaxiosError.ts": "a2e72238c0efdc9ffd7b661ef0ee78e058e91c01f8c6fee6bf21330041f9504c",
         "packages/lib/src/lib/core/assertRequestConfig.ts": "8b1ca790e583d5d51dc24e7a3d6b9bd306593ee78805bb0bb6fd9112724a36e0",
         "packages/lib/src/lib/core/assertSignal.ts": "20419441a170629926bc0b980a2bd51f39fd20bfa6ec21172bfedbdcdb19af81",
         "packages/lib/src/lib/core/assertTimeout.ts": "9dbee014d42508e9aaf23b1e4f1bb72ca3f2151e5deb24a5506d6ea812ef130a",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
-        "packages/lib/src/lib/core/define.ts": "ff1f833330fb99385525466abb042b0fde845d4b6a64c05b28ffbd4f7e7a2d91",
+        "packages/lib/src/lib/core/define.ts": "2939b0b995ccce9df8f5f0257fcae51bfaf4f0dc7ff066b5d78bcd57d42e5e25",
         "packages/lib/src/lib/core/dispatchRequest.ts": "4564c956ec0823acec07d1581689a81c2c134fd9b3b75f8c74e7c889090f9139",
-        "packages/lib/src/lib/core/mergeConfig.ts": "b5bf3188c622df38513f49fa4468e5eed25467913d00254408fa0eb18d861392",
+        "packages/lib/src/lib/core/headerLayers.ts": "23225f4be31a3cd60d6c35bcd776bdc575d357a89f682615bf8f24f2f9891e13",
+        "packages/lib/src/lib/core/mergeConfig.ts": "6d42e94727f77f051226c8d328530eb0cb1caad2ccdc690bd9a6a87700ecb567",
         "packages/lib/src/lib/core/requestDeadline.ts": "cb6803d70ca9b4600a32ce580ecef0e609b02fc59de12a51430394bedf54b16d",
-        "packages/lib/src/lib/core/resolveRequestURL.ts": "2c7b6ce093bd2565ae4a417ac2dbda32dd9620ebe496ef2ac2308e14a53ef101",
+        "packages/lib/src/lib/core/resolveRequestURL.ts": "a3655d41eca4623229b0ae7b477deebded47a5e1fb05a21b53514eb791143428",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "ba5e65e6cfaaa2ce03658a4c092569d79cd05551bbf5cbcb4eb4209ac27e4616",
+        "packages/lib/src/lib/faxios.ts": "fbbd81cc005f413d6ce76987495e2b91973d3a8eb52bae7cc1e9c961fe84b3e4",
         "packages/lib/src/lib/helpers/composeSignals.ts": "390b71ce73079ec812d066dd0a82bc44decf1e778eea95fbcfa925a9fe168749",
-        "packages/lib/src/lib/plugins/authBearer.ts": "61690015ca6af4e577d4e47543646f7e094aa1fa96b29dbcaecc99ff63f2b1ea",
+        "packages/lib/src/lib/plugins/authBearer.ts": "e348383bbce226d7fde1c1cd724abdf3dea7e2553c47562045bd4ed790566b7b",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
-        "packages/lib/src/lib/plugins/forwardTo.ts": "5690ae53faa509f69e60225194216f3f87dacf0c8331d379e80d44b449403013",
-        "packages/lib/src/lib/plugins/retry.ts": "96c35defb9ef1dc18156a931dc01edeae2c356de62b05592f646e32618d1237a",
+        "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
+        "packages/lib/src/lib/plugins/retry.ts": "a973ddfe5a0b24e7069b9c9970dc1c2dcb50d3f9193d17cd7b9364e37fd2c22b",
         "packages/lib/src/lib/plugins/timing.ts": "e29c1a110d73273227bee8e0aebc8cd55b5c97e5300544d4a78e024b7e82a836",
-        "packages/lib/src/lib/types.ts": "20354f6310ef3f38776f633f75787fb4f5596460d5f86ad6c183785aa80d2180",
-        "packages/tests/unit/api.test.ts": "2b398a1dbb869f9cdb025a2bc50554cb2c48c4617865b74747de8d2f66cef126",
+        "packages/lib/src/lib/types.ts": "4cf750d2b63eb3e92562de9a1cceca8f102151d9ab041d0730eff04bc796cdf0",
+        "packages/tests/unit/api.test.ts": "42512861aed96b6bb71fc11326c2225fe0906caa370ab76cbfb7727c9b7ca7e1",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
-        "packages/tests/unit/plugins/authBearer.test.ts": "24ba450bf7333c3f8090993d4bd72f5022a8e1771723932dd72556b5193613cd",
+        "packages/tests/unit/plugins/authBearer.test.ts": "89f77870b4609308af92ebc8b72615d74c6b194c69745ba9a1a13871fad666fd",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
         "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
         "packages/tests/unit/plugins/retry.test.ts": "6135e34294945ae5361ee86060d7253ea8880b1bede31b97f5f044f0bcee77d4",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "762e01c6766df386c2fb67ee89b4ed09b7f8b972",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
       "outcome": "updated",
-      "reason": "#276: skill import table lists /forward-to (checked against package.json exports by packages/tests/scripts/check-skill-exports.ts); library_version 0.2.4; sources add assertRequestConfig, assertSignal, assertTimeout, requestDeadline and resolveRequestURL; ETIMEDOUT cited from requestDeadline.ts; domain_map/skill_spec/skill_tree refreshed and the MIGRATION_GUIDE gap closed (#188); THREATMODEL cites current .ts files and tests; bump file describes the skill change",
+      "reason": "Skill X-Api-Key example reads redirect as an own key on a null-prototype config copy; getUri ERR_INVALID_URL in JSDoc and migration guide",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/core/assertSignal.ts, packages/lib/src/lib/core/assertTimeout.ts, packages/lib/src/lib/core/requestDeadline.ts, packages/lib/src/lib/core/resolveRequestURL.ts at c6837e153a1f472149917f5556ddd2dba1e4fbc5"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/faxios.ts at 1843d8388905c9568c81f182ed239382a968e7d8"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "b377ca5fbe96e10a04f414af1a997879c201e08c998ba3d2f154db9488789b68",
+      "fingerprint": "7782da7fc754f4b4b62393269a0dd4b7901bf01bad49f50cf601d96965bdabf6",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "78321da3eb997f0ee170b4f78177bd21f664549b3d9f060d06a3d5ebff9a1367",
+        "MIGRATION_GUIDE.md": "48d99cef091e5e681900c8aa040d099d9b06610431767ef3ba74363be7426539",
         "_artifacts/domain_map.yaml": "6472bf0fa719fbc9a6bb2fc70343ca2804d53f7a37e185c26930d8bb0283ddfc",
         "_artifacts/skill_spec.md": "f3684ca03caad063c50220153b6bda6baa88cb9855c4685f3f230e239fc9e4a7",
-        "_artifacts/skill_tree.yaml": "3c8e18a429816ce5d4df460fef8e5c2d5f1ffa570920f422f88c225b8a1a9c64",
+        "_artifacts/skill_tree.yaml": "91151b302b352ad15d85fb5e9d74be6131c3543b217dfd14122afeff06903b8c",
         "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
-        "packages/lib/skills/configure-requests/SKILL.md": "4504b574b0255a1a15f4ce7560a9c3730e95c40ade7c89a2ec0b1c5a26f0f2de",
+        "packages/lib/skills/configure-requests/SKILL.md": "04e2e652f70b17cffddf59204c0255db8588b29121106e16aca7ff142bdb1a37",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "1e0cd5af74a973acf734e72a6ad967e6d18f44f591ebce1a6cab60a564b88b2f",
-        "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
-        "packages/lib/src/index.ts": "213ce7f2ff6d1ae0bdfd7a08c32649ca82abf59c5320c6357b0e1b7fa29092cb",
-        "packages/lib/src/lib/adapters/fetch.ts": "99f1427e4b7650d91cc82683997b8dd40dcab9387b738e8761ced56b024ae99d",
-        "packages/lib/src/lib/core/Faxios.ts": "7a88a56adebd77541e6271f88ab6cf63138583ccafadb5f6198a37febb16d60d",
-        "packages/lib/src/lib/core/FaxiosError.ts": "cbc450b2d0d43577f6915639a07bc7d595373d34791e07b2e421d27a9ba98b6d",
+        "packages/lib/skills/configure-requests/references/plugins.md": "a5be5b9800253f262f1de03a7c8d9e6e7e65d68863a649949d0953f9a9c66295",
+        "packages/lib/src/index.ts": "0e433e2cccd5a8484ffbfb743e41ca262259686619f0befdf9375fa17ec05205",
+        "packages/lib/src/lib/adapters/fetch.ts": "32786c64173f91e51445b495473db53d9e9c6410c9a47feb12ed547a22da8431",
+        "packages/lib/src/lib/core/Faxios.ts": "f7eb5bec35e80e1c0e24858de55eb325681fad2abb0394f1386e1d832d76fdf6",
+        "packages/lib/src/lib/core/FaxiosError.ts": "a2e72238c0efdc9ffd7b661ef0ee78e058e91c01f8c6fee6bf21330041f9504c",
         "packages/lib/src/lib/core/assertRequestConfig.ts": "8b1ca790e583d5d51dc24e7a3d6b9bd306593ee78805bb0bb6fd9112724a36e0",
         "packages/lib/src/lib/core/assertSignal.ts": "20419441a170629926bc0b980a2bd51f39fd20bfa6ec21172bfedbdcdb19af81",
         "packages/lib/src/lib/core/assertTimeout.ts": "9dbee014d42508e9aaf23b1e4f1bb72ca3f2151e5deb24a5506d6ea812ef130a",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
-        "packages/lib/src/lib/core/define.ts": "ff1f833330fb99385525466abb042b0fde845d4b6a64c05b28ffbd4f7e7a2d91",
+        "packages/lib/src/lib/core/define.ts": "2939b0b995ccce9df8f5f0257fcae51bfaf4f0dc7ff066b5d78bcd57d42e5e25",
         "packages/lib/src/lib/core/dispatchRequest.ts": "4564c956ec0823acec07d1581689a81c2c134fd9b3b75f8c74e7c889090f9139",
-        "packages/lib/src/lib/core/mergeConfig.ts": "b5bf3188c622df38513f49fa4468e5eed25467913d00254408fa0eb18d861392",
+        "packages/lib/src/lib/core/headerLayers.ts": "23225f4be31a3cd60d6c35bcd776bdc575d357a89f682615bf8f24f2f9891e13",
+        "packages/lib/src/lib/core/mergeConfig.ts": "6d42e94727f77f051226c8d328530eb0cb1caad2ccdc690bd9a6a87700ecb567",
         "packages/lib/src/lib/core/requestDeadline.ts": "cb6803d70ca9b4600a32ce580ecef0e609b02fc59de12a51430394bedf54b16d",
-        "packages/lib/src/lib/core/resolveRequestURL.ts": "2c7b6ce093bd2565ae4a417ac2dbda32dd9620ebe496ef2ac2308e14a53ef101",
+        "packages/lib/src/lib/core/resolveRequestURL.ts": "a3655d41eca4623229b0ae7b477deebded47a5e1fb05a21b53514eb791143428",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "ba5e65e6cfaaa2ce03658a4c092569d79cd05551bbf5cbcb4eb4209ac27e4616",
+        "packages/lib/src/lib/faxios.ts": "fbbd81cc005f413d6ce76987495e2b91973d3a8eb52bae7cc1e9c961fe84b3e4",
         "packages/lib/src/lib/helpers/composeSignals.ts": "390b71ce73079ec812d066dd0a82bc44decf1e778eea95fbcfa925a9fe168749",
-        "packages/lib/src/lib/plugins/authBearer.ts": "61690015ca6af4e577d4e47543646f7e094aa1fa96b29dbcaecc99ff63f2b1ea",
+        "packages/lib/src/lib/plugins/authBearer.ts": "e348383bbce226d7fde1c1cd724abdf3dea7e2553c47562045bd4ed790566b7b",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
-        "packages/lib/src/lib/plugins/forwardTo.ts": "5690ae53faa509f69e60225194216f3f87dacf0c8331d379e80d44b449403013",
-        "packages/lib/src/lib/plugins/retry.ts": "96c35defb9ef1dc18156a931dc01edeae2c356de62b05592f646e32618d1237a",
+        "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
+        "packages/lib/src/lib/plugins/retry.ts": "a973ddfe5a0b24e7069b9c9970dc1c2dcb50d3f9193d17cd7b9364e37fd2c22b",
         "packages/lib/src/lib/plugins/timing.ts": "e29c1a110d73273227bee8e0aebc8cd55b5c97e5300544d4a78e024b7e82a836",
-        "packages/lib/src/lib/types.ts": "20354f6310ef3f38776f633f75787fb4f5596460d5f86ad6c183785aa80d2180",
-        "packages/tests/unit/api.test.ts": "2b398a1dbb869f9cdb025a2bc50554cb2c48c4617865b74747de8d2f66cef126",
+        "packages/lib/src/lib/types.ts": "4cf750d2b63eb3e92562de9a1cceca8f102151d9ab041d0730eff04bc796cdf0",
+        "packages/tests/unit/api.test.ts": "42512861aed96b6bb71fc11326c2225fe0906caa370ab76cbfb7727c9b7ca7e1",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
-        "packages/tests/unit/plugins/authBearer.test.ts": "24ba450bf7333c3f8090993d4bd72f5022a8e1771723932dd72556b5193613cd",
+        "packages/tests/unit/plugins/authBearer.test.ts": "89f77870b4609308af92ebc8b72615d74c6b194c69745ba9a1a13871fad666fd",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
         "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
         "packages/tests/unit/plugins/retry.test.ts": "6135e34294945ae5361ee86060d7253ea8880b1bede31b97f5f044f0bcee77d4",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "762e01c6766df386c2fb67ee89b4ed09b7f8b972",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
       "outcome": "updated",
-      "reason": "#276: skill import table lists /forward-to (checked against package.json exports by packages/tests/scripts/check-skill-exports.ts); library_version 0.2.4; sources add assertRequestConfig, assertSignal, assertTimeout, requestDeadline and resolveRequestURL; ETIMEDOUT cited from requestDeadline.ts; domain_map/skill_spec/skill_tree refreshed and the MIGRATION_GUIDE gap closed (#188); THREATMODEL cites current .ts files and tests; bump file describes the skill change",
+      "reason": "Skill X-Api-Key example reads redirect as an own key on a null-prototype config copy; getUri ERR_INVALID_URL in JSDoc and migration guide",
       "evidence": [
-        "Changed: _artifacts/domain_map.yaml, _artifacts/skill_spec.md, _artifacts/skill_tree.yaml, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/core/assertSignal.ts, packages/lib/src/lib/core/assertTimeout.ts, packages/lib/src/lib/core/requestDeadline.ts, packages/lib/src/lib/core/resolveRequestURL.ts at c6837e153a1f472149917f5556ddd2dba1e4fbc5"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/faxios.ts at 1843d8388905c9568c81f182ed239382a968e7d8"
       ]
     },
     "source:knip.json": {
@@ -182,15 +184,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "529e12d10a7aa52dc925ef3972c69d04980adecb1e20562d5187ed89e2348f44",
+      "fingerprint": "745d4a1942a1afc2b7dd005c965671ba9d9803261bbc00565fed822384db8401",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "da6f22923682c1243695f11ac802cc174155a3f6aaead08d305b382366af3e21"
+        "packages/docs/pages/advanced/api-reference.md": "8f9191bef5da57de676c09cad9f465424ef5e500f112b6a5db3d49209c88fd9d"
       },
-      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
+      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/api-reference.md at 22f8a916c00ebcd2a3c783fff8c275765469824c"
+        "Changed: packages/docs/pages/advanced/api-reference.md at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
@@ -266,15 +268,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "f2fbdd91ed0ceed43b8212294cdc7be211001addfc7f101ca5ec87b814a776a3",
+      "fingerprint": "940ef0d929e6a085b0445f701e4560a31f674be009ccc59d50fe27bc19b7609f",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "0655ddaa41abe1a6a7c906bb6eeff5068b9dc87297c4bda82650ed6c484b96fb"
+        "packages/docs/pages/advanced/middleware.md": "0bf0a88241174d9d334bd52dd6bc334a30cd9ed399c6a384c448bda40ecc002b"
       },
-      "head": "3ebcbed4a658f1c97c4442cd1fdcf51f3e895d1e",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
       "outcome": "updated",
-      "reason": "Skill corrected for spread named export and pathParams optionality (#294)",
+      "reason": "Skill teaches that getUri throws ERR_INVALID_URL without url or baseURL, and that a rebuilt context keeps stream-body tracking through ctx.state",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at 8e6378ca8866ecac735ac97060d1ed8b82965b29"
+        "Changed: packages/docs/pages/advanced/middleware.md at badaab98777d2b8f17a5accf867d16b236ed4ff2"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
@@ -649,15 +651,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-method-aliases.md": {
-      "fingerprint": "486fca530873903fb7512d2efac559777d77d18a3d9cdb1df0cdca7062cb16c0",
+      "fingerprint": "5f86220cf9b4aad9f3911a551b87ffac71e7c046e30801d44f9f51f2bc5a958f",
       "snapshot": {
-        "packages/docs/pages/advanced/request-method-aliases.md": "4f4ac1a7d02d60545ff555a16ae57ff3ad0d7e024b986c0cd8cc1d8a3dc06aa4"
+        "packages/docs/pages/advanced/request-method-aliases.md": "2308ac8f189b6d71b3e8238754682dde12232350a562275b5a05ac48313a377a"
       },
-      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
+      "reason": "Skill teaches that getUri throws ERR_INVALID_URL without url or baseURL, and that a rebuilt context keeps stream-body tracking through ctx.state",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-method-aliases.md at 22f8a916c00ebcd2a3c783fff8c275765469824c"
+        "Changed: packages/docs/pages/advanced/request-method-aliases.md at badaab98777d2b8f17a5accf867d16b236ed4ff2"
       ]
     },
     "source:packages/lib/tsconfig.json": {
@@ -2190,15 +2192,15 @@
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
-      "fingerprint": "68768ed8b5f40bd8dc0a691d2133361d40e94d10ac13867d57301e2de7ee6b0a",
+      "fingerprint": "7fae37115ee760c36f72318616b790455a6b88b5a094961953af9337c4e58aec",
       "snapshot": {
-        "packages/lib/src/lib/adapters/fetch-helpers.ts": "c26ce590f1728d3fb03fd3ef089f753fc09b83dc5ca79d78bab31ff65192e785"
+        "packages/lib/src/lib/adapters/fetch-helpers.ts": "df081efe6c2de5e8f0e526a1da46cda3bf466ad53fe28c2626ea5025b40e3c44"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
       "outcome": "updated",
-      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
       ]
     },
     "source:packages/lib/src/lib/cancel/CanceledError.ts": {
@@ -2214,27 +2216,27 @@
       ]
     },
     "source:packages/lib/src/lib/core/FaxiosHeaders.ts": {
-      "fingerprint": "e9c41814e70a48f6c007ef1a5ae49113929e0d30ad47ca32babb97e6c3889d70",
+      "fingerprint": "0e2397b2ded575ca029da82fb3d5797c045825286fc81aa734a758f152468d4b",
       "snapshot": {
-        "packages/lib/src/lib/core/FaxiosHeaders.ts": "16df601096cb403d1dd46c1f2e1976622acfb9cdde1709c4034497650d8d6726"
+        "packages/lib/src/lib/core/FaxiosHeaders.ts": "340984095be60f041210726aa6ff1a64b51d214dc7f189a78611472c78d58c38"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
       "outcome": "updated",
-      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
-      "fingerprint": "308973055136a846c36626b969b886732b8505965bf31e1e637da482e71cd862",
+      "fingerprint": "798b312d22a1081d60365997d6d0fbb03a99907a2b2e9bbee0e24f332d5e39d9",
       "snapshot": {
-        "packages/lib/src/lib/core/prepareRequest.ts": "b14a613ca8168be6134876530be14c589aae31203a970e3c6f128d3503c9ff4f"
+        "packages/lib/src/lib/core/prepareRequest.ts": "1806d4bad968d1cf7f9d1aec944ef8188b4e92125b84671e74df0c2d10c0e3b7"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
+      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
+        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
       ]
     },
     "source:packages/lib/src/lib/core/transformData.ts": {
@@ -2708,15 +2710,15 @@
       ]
     },
     "source:packages/tests/unit/axiosHeaders.test.ts": {
-      "fingerprint": "6a2e2c6099a50cde9fdc28d84df4327e20e7de7fed61ec509a6e5cff786c576c",
+      "fingerprint": "eb51bfb04d9f816c0244b01e3412bcd228edda71dd3e8e29477444a6802ca352",
       "snapshot": {
-        "packages/tests/unit/axiosHeaders.test.ts": "e2af73da2939a73b348be2bccaf21f6e7e9b666543d85ef281fbde060c956f64"
+        "packages/tests/unit/axiosHeaders.test.ts": "b5073aee7f4ce5c4eaf00f5f597071b7e06e6afda7734d9e5e8394c048208a6d"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
-      "outcome": "no-change",
-      "reason": "Header-name storage fix and bump wording; the skill does not teach header internals",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
+      "outcome": "updated",
+      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
       "evidence": [
-        "Changed: packages/tests/unit/axiosHeaders.test.ts at fa1633fcfb9343f6aad92120dd04d1308f98369a"
+        "Changed: packages/tests/unit/axiosHeaders.test.ts at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
       ]
     },
     "source:packages/tests/unit/cancel/canceledError.test.ts": {
@@ -3706,15 +3708,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetchCleanup.test.ts": {
-      "fingerprint": "4c2e3cc40f47cdb2d96458315f15f51a0de7c13db60c9ab7c5234bec11721917",
+      "fingerprint": "cf68b1665aa06b64d045e3a1038e5e36976885907f271d402cc8f2848ef8d592",
       "snapshot": {
-        "packages/tests/unit/adapters/fetchCleanup.test.ts": "4964e41dc131af84bede3af7943eb32cba6cedc3ecc61b7743f316898fc12e95"
+        "packages/tests/unit/adapters/fetchCleanup.test.ts": "94d565eec566b0ee249b4bc7e00270c4037d55bdc6fd4c61d5c108b39fe3aadb"
       },
-      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
+      "reason": "Skill teaches that getUri throws ERR_INVALID_URL without url or baseURL, and that a rebuilt context keeps stream-body tracking through ctx.state",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetchCleanup.test.ts at fc407621c60a552cd012e910401add6d8e8e8807"
+        "Changed: packages/tests/unit/adapters/fetchCleanup.test.ts at badaab98777d2b8f17a5accf867d16b236ed4ff2"
       ]
     },
     "source:.bumpy/browser-upload-progress.md": {
@@ -3982,15 +3984,15 @@
       ]
     },
     "source:packages/tests/unit/core/getUri.test.ts": {
-      "fingerprint": "3079e50d07cda6bd83b794a450ba27092db130d03c6fcfd96823f91634c04c01",
+      "fingerprint": "6f8e9460a762979abe4888593f1a45bd7c0019fb753fe272a46fbe117fe7e1e4",
       "snapshot": {
-        "packages/tests/unit/core/getUri.test.ts": "7c22bd781c9ddb41866d899e94b968a8aba12680e8ba33e5921f31e8bb8b7826"
+        "packages/tests/unit/core/getUri.test.ts": "66da895f3f3b3a2554c0018673b61041a0df6aad01d5372089bf3c9be75b8c9b"
       },
-      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
+      "reason": "Skill X-Api-Key example reads redirect as an own key on a null-prototype config copy; getUri ERR_INVALID_URL in JSDoc and migration guide",
       "evidence": [
-        "Changed: packages/tests/unit/core/getUri.test.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
+        "Changed: packages/tests/unit/core/getUri.test.ts at 1843d8388905c9568c81f182ed239382a968e7d8"
       ]
     },
     "source:.bumpy/abort-during-async-schema.md": {
@@ -4378,15 +4380,15 @@
       ]
     },
     "source:packages/tests/browser/xsrf.browser.test.ts": {
-      "fingerprint": "d5a9d6b772efa06ff766b40229774e8de7bd28f6bdebe9f3bed3eebb9fd7c47e",
+      "fingerprint": "9d0a630f3f819fe7d5a7e39e6bc029b5dcaa99e34db041035d3f784ab16a8299",
       "snapshot": {
-        "packages/tests/browser/xsrf.browser.test.ts": "a37b4a335ef6cb7da054c7682459aeac411171ca3fe16260b99cd07f13688adf"
+        "packages/tests/browser/xsrf.browser.test.ts": "115c70b98f388d53ee595288cc4c8309e9aa06b31d11d7d9e3dcf1133268e2a9"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
       "outcome": "updated",
-      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
       "evidence": [
-        "Changed: packages/tests/browser/xsrf.browser.test.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
+        "Changed: packages/tests/browser/xsrf.browser.test.ts at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
       ]
     },
     "source:packages/tests/smoke/bun/tests/cancel.smoke.test.ts": {
@@ -5698,15 +5700,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch/pollution.test.ts": {
-      "fingerprint": "462a38d674571b37704d967e19b77484e456716667a5f94f17dc700f790f8097",
+      "fingerprint": "d8a6fd4f36d5842c1dc588974e091d104b2af323022638b23b6ec113f05639f9",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch/pollution.test.ts": "4b5baccb5003d5bfbe42fe1406429665f8f868c15f333ac57ca0c8ceb0aafa60"
+        "packages/tests/unit/adapters/fetch/pollution.test.ts": "c2b4462983488d618cac9af074cca00a24a42a186f36837191db2176d5b747da"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
-      "outcome": "no-change",
-      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
+      "outcome": "updated",
+      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch/pollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+        "Changed: packages/tests/unit/adapters/fetch/pollution.test.ts at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
       ]
     },
     "source:packages/tests/unit/adapters/fetch/probe-cleanup.test.ts": {
@@ -6058,15 +6060,15 @@
       ]
     },
     "source:.bumpy/286-response-edges.md": {
-      "fingerprint": "1b2f0b316ef8fbab7aa90e060d7a4bf23a58ee3d84fddeb43efa60a0e71617cb",
+      "fingerprint": "8ecddb8b35d4722ff9ab7750bcf6f0c791e17d1261fdd4c33668ccf4a8e2f214",
       "snapshot": {
-        ".bumpy/286-response-edges.md": "414617dfa05275608edceda496c15201e6f9d15561e9efab4a468953c677166a"
+        ".bumpy/286-response-edges.md": "80e86bced7041af84531c4c77e422657cf43d61e66d101583cd1f40b14773e7d"
       },
-      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
-      "outcome": "no-change",
-      "reason": "retry now also cancels a dropped status error's stream body when onRetry or delay throws; an internal cleanup the configure-requests skill doesn't teach; retry docs and bump file updated",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
+      "outcome": "updated",
+      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
       "evidence": [
-        "Changed: .bumpy/286-response-edges.md at 8099a7cfe2993903d11e32ae2377b13a8c2e81ec"
+        "Changed: .bumpy/286-response-edges.md at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
       ]
     },
     "source:packages/lib/src/lib/core/settle.ts": {
@@ -6178,15 +6180,15 @@
       ]
     },
     "source:.bumpy/288-create-headers.md": {
-      "fingerprint": "d468f6b165d21f3b39450270ec631aa8a2b746a243654a77a23a9401e09bbf50",
+      "fingerprint": "ba66ed38d5f2c438b17d321dbc0d4b4e1417892300e1e08ec36372fde22544bc",
       "snapshot": {
-        ".bumpy/288-create-headers.md": "8b8e46b35466137088b83294cf8a2facf87c2df35df4a12310aa8de82b913f32"
+        ".bumpy/288-create-headers.md": "12418efac8874e8942db7c93cb9b28e867c7f231d5d2aafc564af26b88ce2b69"
       },
-      "head": "7441ba80d614af467b190486de40ddf207be5a85",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
       "outcome": "updated",
-      "reason": "Skill now states create() child header precedence, that plugin option defaults are not inherited and are removed on eject, and that params/env merge one level deep",
+      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
       "evidence": [
-        "Changed: .bumpy/288-create-headers.md at fa7ce8ce8e9082ce5828ac74667103547b9a6aaa"
+        "Changed: .bumpy/288-create-headers.md at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
       ]
     },
     "source:.bumpy/296-request-once.md": {
@@ -6262,27 +6264,27 @@
       ]
     },
     "source:.bumpy/298-dead-code.md": {
-      "fingerprint": "75f229210fb6aa4b552f6e7f69ae3766165de6a59e9bde057c950b7d33faf540",
+      "fingerprint": "f6fd84a154828eeff59183dd8af5b13464e18e8ec3493251f6f4730ea5348455",
       "snapshot": {
-        ".bumpy/298-dead-code.md": "90dad508b54a48fce13ecff9317e6d5c666e8a3629bd8871aaa5d790ba33267d"
+        ".bumpy/298-dead-code.md": "3b022f54addc47ff8b168f4dcc48bfdbdbf9f96d36115cf9abfac07c7f2c9522"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
-      "outcome": "no-change",
-      "reason": "Header-name storage fix and bump wording; the skill does not teach header internals",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
+      "outcome": "updated",
+      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
       "evidence": [
-        "Changed: .bumpy/298-dead-code.md at fa1633fcfb9343f6aad92120dd04d1308f98369a"
+        "Changed: .bumpy/298-dead-code.md at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
       ]
     },
     "source:packages/lib/src/lib/helpers/isURLSameOrigin.ts": {
-      "fingerprint": "c7ac5e740e7ee133d9c171517ed8bb00bef292ddfda7c25940eb107ac564ab99",
+      "fingerprint": "1ec2816a763aeb5ca9cce246c6480a234c14f2d6c3982d7ca1480e053a5b837c",
       "snapshot": {
-        "packages/lib/src/lib/helpers/isURLSameOrigin.ts": "05ac0954dbf1e1ceb06b05dd2666b0f691e56d50536e306cb0ef2e034620f6c4"
+        "packages/lib/src/lib/helpers/isURLSameOrigin.ts": "62a76c043dbabb06c1e77f93eb72a5845532189f47dc28212fa83af5124a2cbd"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/isURLSameOrigin.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/lib/src/lib/helpers/isURLSameOrigin.ts at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
       ]
     },
     "source:packages/lib/src/lib/helpers/toURLEncodedForm.ts": {
@@ -6538,15 +6540,15 @@
       ]
     },
     "source:.bumpy/295-declarations.md": {
-      "fingerprint": "c88773f386c09758168336cd9c3c74483fb9d70d8e883f11e04ffcf1325dc13f",
+      "fingerprint": "b63e934b4e13817fc9c8f0a574de5d6ce6e5a146097233a7761d9c3f43b0489b",
       "snapshot": {
-        ".bumpy/295-declarations.md": "abbc4b14c50ebab78350408b3afa5056f478a13d84685b82e22d7bed88ac3bb1"
+        ".bumpy/295-declarations.md": "4d3b0a5aec34418a8728f64a263810ef5964265f3b441820c4037e0ad20adcff"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
-      "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
+      "outcome": "updated",
+      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
       "evidence": [
-        "Changed files: .bumpy/295-declarations.md"
+        "Changed: .bumpy/295-declarations.md at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
       ]
     },
     "source:packages/lib/src/lib/types/web-globals.d.ts": {
@@ -6586,15 +6588,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/exact-optional/index.ts": {
-      "fingerprint": "13f938448ddcd67897826d953a0126349c658085470ea574ed7a1e3788e5c9fa",
+      "fingerprint": "622d57211825a72551865706971841be4c816c093e1a795b252ca07d7193f385",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/exact-optional/index.ts": "ee4cc8148d0775378e51ab268584559b4951d40e803c958cd5ef6743331ff913"
+        "packages/tests/module/esm/tests/helpers/exact-optional/index.ts": "f6e5914e2ce275e53f430212ecefe56fab2da0846b07c7d78334b9ff6373f1a0"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
-      "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
+      "outcome": "updated",
+      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
       "evidence": [
-        "Changed files: packages/tests/module/esm/tests/helpers/exact-optional/index.ts"
+        "Changed: packages/tests/module/esm/tests/helpers/exact-optional/index.ts at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/exact-optional/tsconfig.json": {
@@ -7291,6 +7293,18 @@
       "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
       "evidence": [
         "Changed files: packages/tests/scripts/check-workflow-timeouts.ts"
+      ]
+    },
+    "source:.bumpy/review-fixes-lib.md": {
+      "fingerprint": "f88697cc9d8d0778402b2af795070d7b6f4e949f1cebe974e8e592c1c5fc29b5",
+      "snapshot": {
+        ".bumpy/review-fixes-lib.md": "26fa2057cc31b7184cd749d934fc6804344755b467196304efe5f1b2a517856d"
+      },
+      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
+      "outcome": "updated",
+      "reason": "Skill X-Api-Key example reads redirect as an own key on a null-prototype config copy; getUri ERR_INVALID_URL in JSDoc and migration guide",
+      "evidence": [
+        "Changed: .bumpy/review-fixes-lib.md at 1843d8388905c9568c81f182ed239382a968e7d8"
       ]
     }
   }
