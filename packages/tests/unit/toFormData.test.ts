@@ -178,6 +178,19 @@ describe("helpers::toFormData", () => {
       assert.ok(formData instanceof FormData);
     });
 
+    it.each([ NaN, -1, 1.5, -Infinity, "5", null ])("rejects maxDepth %j with ERR_BAD_OPTION_VALUE", maxDepth => {
+      assert.throws(() => toFormData(nest(2), fd(), { maxDepth }), {
+        code: "ERR_BAD_OPTION_VALUE",
+        message: "option maxDepth must be a non-negative integer or Infinity",
+      });
+    });
+
+    it.each([ NaN, -1 ])("rejects params maxDepth %j with ERR_BAD_OPTION_VALUE", maxDepth => {
+      assert.throws(() => new URLSearchParamsCtor(nest(2), { maxDepth }).toString(), {
+        code: "ERR_BAD_OPTION_VALUE",
+      });
+    });
+
     it("should still detect circular references when depth guard is active", () => {
       const data: Record<string, unknown> = { foo: "bar" };
       data.self = data;

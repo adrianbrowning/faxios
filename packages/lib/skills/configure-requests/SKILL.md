@@ -74,7 +74,8 @@ const { data, status } = await api.get<{ id: number; name: string }>("/users/1")
 - `post`, `put`, `patch`, `query` take `(url, data?, config?)`. `query` sends the HTTP QUERY method.
 - `postForm`, `putForm`, `patchForm` send `multipart/form-data`.
 - `api.getUri(config)` builds the URL from `baseURL`, `url`, `pathParams`, `allowAbsoluteUrls` and
-  `params` the way a request does, without sending anything. It doesn't run schemas, so
+  `params` the way a request does, without sending anything: a `URL` instance `url`, a function
+  `paramsSerializer` and the option checks behave as on a request. It doesn't run schemas, so
   `pathParams` fills the `{key}` placeholders as given.
 
 Path and query parameters:
@@ -260,8 +261,10 @@ catch (error) {
   (`Network Error: ECONNREFUSED (GET https://host/path)`); the runtime's original error is on
   `error.cause`. `ECONNREFUSED` is not raised as the error's own code. A URL `fetch` can't parse
   (outside the browser, a relative `url` with no `baseURL`) rejects with `ERR_INVALID_URL`; a bad
-  `method`, a `url` that isn't a string or `URL`, or a non-object config rejects with
-  `ERR_BAD_OPTION_VALUE`.
+  `method` (including `""`, `0` or `false`; only `undefined`/`null` mean the default), a `url` that
+  isn't a string or `URL`, or a non-object config rejects with `ERR_BAD_OPTION_VALUE`. An unknown
+  `paramsSerializer` or `formSerializer` key rejects with `ERR_BAD_OPTION`; a `maxDepth` that isn't a
+  non-negative integer or `Infinity` rejects with `ERR_BAD_OPTION_VALUE`.
 - `error.name` is always `"FaxiosError"`; branch on `error.code`, and read a wrapped error's own
   name (`TypeError`, `SyntaxError`) from `error.cause`.
 - `error.toJSON()` never includes the response, masks `authorization`, `proxy-authorization`,

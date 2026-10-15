@@ -46,13 +46,23 @@ describe("getUri() matches the URL the request sends", () => {
         config.baseURL = requestBaseURL;
       }
 
+      // Request allowAbsoluteUrls wins, then the instance's; unset, it is true only without an instance baseURL.
+      const allow = requestAllow ?? instanceAllow ?? instanceBaseURL === undefined;
+      const baseURL = requestBaseURL ?? instanceBaseURL;
+      let expected: string | undefined = `${baseURL}${url}&b=2`;
+      if (url.startsWith("http")) {
+        expected = baseURL !== undefined && !allow ? undefined : `${url}?b=2`;
+      }
+
       const sent = await sentURL(instance, config).then(url => ({ url }), (error: unknown) => ({ error }));
-      if ("error" in sent) {
+      if (expected === undefined) {
         assert.throws(() => instance.getUri(config), { code: "ERR_INVALID_URL" });
+        assert.ok("error" in sent);
         assert.deepStrictEqual((sent.error as { code?: unknown; }).code, "ERR_INVALID_URL");
       }
       else {
-        assert.strictEqual(instance.getUri(config), sent.url);
+        assert.strictEqual(instance.getUri(config), expected);
+        assert.deepStrictEqual(sent, { url: expected });
       }
     }
   );
@@ -79,6 +89,44 @@ describe("getUri() matches the URL the request sends", () => {
     assert.deepStrictEqual(seen, []);
     await instance.get("https://other.example.com/x", { allowAbsoluteUrls: true });
     assert.deepStrictEqual(seen, [ "https://other.example.com/x" ]);
+  });
+});
+
+describe("getUri() normalizes the config like a request", () => {
+  // FaxiosRequestConfig types url as a string; a URL instance is accepted at runtime.
+  const url = new URL("https://x.example/a") as unknown as string;
+
+  it("accepts a URL instance without a baseURL", async () => {
+    const config: FaxiosRequestConfig = { url, params: { q: 1 } };
+    assert.strictEqual(faxios.getUri(config), "https://x.example/a?q=1");
+    assert.strictEqual(await sentURL(faxios, config), "https://x.example/a?q=1");
+  });
+
+  it("accepts a URL instance with a baseURL and allowAbsoluteUrls: true", async () => {
+    const instance = faxios.create({ baseURL: "https://api.example.com/v1" });
+    const config: FaxiosRequestConfig = { url, params: { q: 1 }, allowAbsoluteUrls: true };
+    assert.strictEqual(instance.getUri(config), "https://x.example/a?q=1");
+    assert.strictEqual(await sentURL(instance, config), "https://x.example/a?q=1");
+  });
+
+  it("rejects a url that is neither a string nor a URL with the request's error", async () => {
+    const config = { url: 5 } as unknown as FaxiosRequestConfig;
+    const expected = { code: "ERR_BAD_OPTION_VALUE", message: "option url must be a string or URL" };
+    assert.throws(() => faxios.getUri(config), expected);
+    await assert.rejects(faxios.request(config), expected);
+  });
+
+  it("wraps a function paramsSerializer as the request does", async () => {
+    const config: FaxiosRequestConfig = { url: "https://x.example/a", params: { q: 1 }, paramsSerializer: () => "custom=1" };
+    assert.strictEqual(faxios.getUri(config), "https://x.example/a?custom=1");
+    assert.strictEqual(await sentURL(faxios, config), "https://x.example/a?custom=1");
+  });
+
+  it("rejects an unknown paramsSerializer key as the request does", async () => {
+    const config = { url: "https://x.example/a", params: { a: [ 1 ] }, paramsSerializer: { indexs: true } } as unknown as FaxiosRequestConfig;
+    const expected = { code: "ERR_BAD_OPTION", message: "Unknown option indexs" };
+    assert.throws(() => faxios.getUri(config), expected);
+    await assert.rejects(faxios.request(config), expected);
   });
 });
 

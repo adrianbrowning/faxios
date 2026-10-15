@@ -2,7 +2,8 @@
 
 import transitionalDefaults from "../defaults/transitional.js";
 import validator from "../helpers/validator.js";
-import type { FaxiosRequestConfig, InternalFaxiosRequestConfig, ResponseType } from "../types.js";
+import type { ValidatorFn } from "../helpers/validator.js";
+import type { FaxiosRequestConfig, InternalFaxiosRequestConfig, ParamsSerializerOptions, ResponseType, SerializerOptions } from "../types.js";
 import utils from "../utils.js";
 import FaxiosError from "./FaxiosError.js";
 
@@ -83,6 +84,22 @@ function hintFor(key: string, pluginOptions: ReadonlySet<string>): string {
 // Every transitional option is a boolean flag listed in the defaults.
 const TRANSITIONAL_SCHEMA = Object.fromEntries(Object.keys(transitionalDefaults).map(key => [ key, validator.validators.boolean ]));
 
+// Every serializer option, so a typo (`indexs`, `dot`) rejects instead of changing the output.
+const SERIALIZER_SCHEMA = {
+  Blob: validator.validators.function,
+  dots: validator.validators.boolean,
+  indexes: (thing: unknown): boolean | string => thing === null || typeof thing === "boolean" || "a boolean or null",
+  maxDepth: validator.validators.maxDepth,
+  metaTokens: validator.validators.boolean,
+  visitor: validator.validators.function,
+} satisfies Record<keyof SerializerOptions, ValidatorFn>;
+
+const PARAMS_SERIALIZER_SCHEMA = {
+  ...SERIALIZER_SCHEMA,
+  encode: validator.validators.function,
+  serialize: validator.validators.function,
+} satisfies Record<keyof ParamsSerializerOptions, ValidatorFn>;
+
 const RESPONSE_TYPES = {
   arraybuffer: true,
   blob: true,
@@ -94,8 +111,8 @@ const RESPONSE_TYPES = {
 
 /**
  * Asserts that every own key of a merged request config is a faxios option or a request option an
- * installed plugin declared, then checks `transitional` and `responseType`. An unknown key rejects
- * with `ERR_BAD_OPTION` naming it, so a typo never silently drops a setting.
+ * installed plugin declared, then checks `transitional`, the serializer options and `responseType`.
+ * An unknown key rejects with `ERR_BAD_OPTION` naming it, so a typo never silently drops a setting.
  */
 export default function assertRequestConfig(config: FaxiosRequestConfig, pluginOptions: ReadonlySet<string>): void {
   for (const key of Object.keys(config)) {
@@ -104,7 +121,16 @@ export default function assertRequestConfig(config: FaxiosRequestConfig, pluginO
   }
 
   if (config.transitional !== undefined) {
-    validator.assertOptions(config.transitional, TRANSITIONAL_SCHEMA, false);
+    validator.assertOptions(config.transitional, TRANSITIONAL_SCHEMA, false, config);
+  }
+
+  // A function paramsSerializer is the serialize option on its own.
+  const { formSerializer, paramsSerializer } = config;
+  if (paramsSerializer != null && !utils.isFunction(paramsSerializer)) {
+    validator.assertOptions(paramsSerializer, PARAMS_SERIALIZER_SCHEMA, false, config);
+  }
+  if (formSerializer != null) {
+    validator.assertOptions(formSerializer, SERIALIZER_SCHEMA, false, config);
   }
 
   // Matched case-insensitively, as the fetch adapter and transformResponse read it.

@@ -3,20 +3,20 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "0a2b2c193f6d2ffdfcf8374a4fb78717e2cea72d9eb48999c42d7cab82d1cbf1",
+      "fingerprint": "ac712794cb8599e66c8351d69dbf6a8a767e73a99cbfc80198fd1e0d431ecb04",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "2188cd5e30cd3081fe2e9fb31abb436c053126e1c7a7e3697570f9f87a4b4513",
+        "packages/lib/skills/configure-requests/SKILL.md": "2ba42666c2516bd2a398f1805aeef3772eefbf731ed69d0a8637783b045509e2",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
         "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
         "packages/lib/src/lib/adapters/fetch.ts": "d61c84c79249a8b259c6fd329581af4f85ef91d1cb16e2728e0b93a7431a525b",
-        "packages/lib/src/lib/core/Faxios.ts": "600c5b4e45b5af27de5b3b6e03b10b822193bcef4077f212d96a2cc54a4b76b8",
+        "packages/lib/src/lib/core/Faxios.ts": "cadb47ef5a1bfa8f324d4df312089a68fcfbcc5c3f01ebb46dec6a4ae25a802d",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "6b4f30ed3852be649b34ef378580272b8e05185c9e6fb5a838ed7243cf983b06",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "8c46c2fe2cf6fa7bf7bddd415c67251240d6a5e31669a499d4a586b2f29963dc",
         "packages/lib/src/lib/core/mergeConfig.ts": "b3f15fc665f58314f7934bd5510cdcf3faa57e483f03c553600708798d13e946",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
@@ -35,31 +35,31 @@
         "packages/tests/unit/plugins/retry.test.ts": "d3259244222d9d8b3d380a0526e2486b60e2e82fa56a84242e7b3b90a5eec98f",
         "packages/tests/unit/plugins/timing.test.ts": "2bb6422d1f3a5d8181eaba9fe0f45fb50b1ba39cb16a1c75ca254e20fe1a2ba1"
       },
-      "head": "e860801c73b0297a0ec4073403971cc452274399",
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at 484d2ac2104da3e5946af6a25500ec7b40729206"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/dispatchRequest.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "ff8f2cf932ee84bf8c26d6a8415796c33434bb167f363d107e3e38a90f1db4c6",
+      "fingerprint": "17b5fe4765ced1ab64e2c6b6dbe2523c989e835c7020d8e80b50a5bed2940993",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "2188cd5e30cd3081fe2e9fb31abb436c053126e1c7a7e3697570f9f87a4b4513",
+        "packages/lib/skills/configure-requests/SKILL.md": "2ba42666c2516bd2a398f1805aeef3772eefbf731ed69d0a8637783b045509e2",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
         "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
         "packages/lib/src/lib/adapters/fetch.ts": "d61c84c79249a8b259c6fd329581af4f85ef91d1cb16e2728e0b93a7431a525b",
-        "packages/lib/src/lib/core/Faxios.ts": "600c5b4e45b5af27de5b3b6e03b10b822193bcef4077f212d96a2cc54a4b76b8",
+        "packages/lib/src/lib/core/Faxios.ts": "cadb47ef5a1bfa8f324d4df312089a68fcfbcc5c3f01ebb46dec6a4ae25a802d",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "6b4f30ed3852be649b34ef378580272b8e05185c9e6fb5a838ed7243cf983b06",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "8c46c2fe2cf6fa7bf7bddd415c67251240d6a5e31669a499d4a586b2f29963dc",
         "packages/lib/src/lib/core/mergeConfig.ts": "b3f15fc665f58314f7934bd5510cdcf3faa57e483f03c553600708798d13e946",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
@@ -78,11 +78,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "d3259244222d9d8b3d380a0526e2486b60e2e82fa56a84242e7b3b90a5eec98f",
         "packages/tests/unit/plugins/timing.test.ts": "2bb6422d1f3a5d8181eaba9fe0f45fb50b1ba39cb16a1c75ca254e20fe1a2ba1"
       },
-      "head": "e860801c73b0297a0ec4073403971cc452274399",
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at 484d2ac2104da3e5946af6a25500ec7b40729206"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/dispatchRequest.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
       ]
     },
     "source:knip.json": {
@@ -280,15 +280,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "9c4ed6dafb11e354629d63cf8186490e5fffeb66f414c1a56e79f056f36f0724",
+      "fingerprint": "38438b9849f44e03c2484c441fdbc7011ec2e6c303d5bc565f24ff1c2db19c50",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "e479fc3347ddff07a61aec3de0f785805c93b5d45a7ace3bea3e4da2dbcb7f47"
+        "packages/docs/pages/advanced/request-config.md": "5cd5755bf4bc2869a2bb65d2ae6f0c37bfe31d3ec9a5f12fd6e0510ab8e95176"
       },
-      "head": "e860801c73b0297a0ec4073403971cc452274399",
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 484d2ac2104da3e5946af6a25500ec7b40729206"
+        "Changed: packages/docs/pages/advanced/request-config.md at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -2240,15 +2240,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/validateSchema.ts": {
-      "fingerprint": "bd3fd12cfbc3878d5bfaa0838a418f4cd835a5b5f4647076733bd21172aa1df5",
+      "fingerprint": "3522ea662d7fa4438e9f78ebf386d54de3e0d2349b5c78f18ceb002bc507ec6f",
       "snapshot": {
-        "packages/lib/src/lib/core/validateSchema.ts": "176cf35e6b93d9f593b94583456fb4dc8c8369235e802a3f893ccbd1726b4dae"
+        "packages/lib/src/lib/core/validateSchema.ts": "340880c610c53b9954f879c65cad1056cbb0f34b2a721d7bcd4c49b0d123b3cb"
       },
-      "head": "16004a89cc705910f332129196177c5afcbad839",
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says a request redact adds to the instance's, config.data on errors is the caller's body, and schema issues keep only message and path keys",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/validateSchema.ts at 0fd26195c33fab2485de5afef6b316d94f126562"
+        "Changed: packages/lib/src/lib/core/validateSchema.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
       ]
     },
     "source:packages/lib/src/lib/helpers/HttpStatusCode.ts": {
@@ -2264,16 +2264,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/cookies.ts": {
-      "fingerprint": "204e790c484b845b4d605226d508132630c47757d4c291d67825ef83cd09f29a",
+      "fingerprint": "e8b570dfa66a13208082030bae75c1ffcfe80a1106829793539141b5e16a634c",
       "snapshot": {
-        "packages/lib/src/lib/helpers/cookies.ts": "4c0a2b0d05a2af3b2b33c0c5b822f59ac089a9780d0c55be5e26a255fa978e26"
+        "packages/lib/src/lib/helpers/cookies.ts": "b694cd03ebe6fa72814699176a19a3179363d8b0ba4283876835f09549233c3f"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Members of the `CookieManager` type sorted (`read`, `remove`, `write`). `string | null` → `null | string` in the `read` type and in the `read()` return annotation. Behaviour change: none. The runtime object literals (`write`, `read`, `remove`) keep their order.",
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "outcome": "updated",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/cookies.ts: Whole file compared. Changed lines are HEAD L4-8 and L39.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/helpers/cookies.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
       ]
     },
     "source:packages/lib/src/lib/helpers/formDataToJSON.ts": {
@@ -2339,15 +2338,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/toFormData.ts": {
-      "fingerprint": "b18d1c34424d69d105537d315036611becd3675769477e0a41a1517114e6b3da",
+      "fingerprint": "bbff89440bbc35c92e2dcb9cf7a8d766efdeac321fe71f2353a7445d0bd7c1d9",
       "snapshot": {
-        "packages/lib/src/lib/helpers/toFormData.ts": "339c769af48c381a7928fd2fb9c681c5d97183a89ca6a12285692dbf8065f9c6"
+        "packages/lib/src/lib/helpers/toFormData.ts": "6e468d80a2b7889ecea4dc0d46abd7871db8d67286059816e258e0a51e08402b"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
-      "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "outcome": "updated",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/toFormData.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/lib/src/lib/helpers/toFormData.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
       ]
     },
     "source:packages/lib/src/lib/helpers/trackStream.ts": {
@@ -2363,15 +2362,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/validator.ts": {
-      "fingerprint": "002910db71e9ea32c6c7989391f719e654105d44e696ddaf714472662f60fe22",
+      "fingerprint": "858d2abda0a5b53d508cc8734b6acb5d8ccd55c64d5e9cd38dca6a8a3b609f75",
       "snapshot": {
-        "packages/lib/src/lib/helpers/validator.ts": "ffc37a0425481d5789b2fa3d8bd202252ee606a5c345eb7b0f64eab2b5fb94d9"
+        "packages/lib/src/lib/helpers/validator.ts": "b8413923e0f0f42607848aaaa247fb3a2d98ca357e9bcabf0bc0c0611fae7087"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
       "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/validator.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: packages/lib/src/lib/helpers/validator.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
       ]
     },
     "source:packages/lib/src/lib/platform.ts": {
@@ -2837,16 +2836,15 @@
       ]
     },
     "source:packages/tests/unit/core/paramsSchema.test.ts": {
-      "fingerprint": "be06d1abcaaee58878bc0b884efe4d0ef0dc55a9c6c92a0425545068ef8acd2e",
+      "fingerprint": "5cc3468a0a2942365245818ab404f54ea49955626510fa36064dca9849dbea40",
       "snapshot": {
-        "packages/tests/unit/core/paramsSchema.test.ts": "ff3b19e5e97948094d05d16185c2ff2a2d14689df5f98a626a8ba5473e44e25f"
+        "packages/tests/unit/core/paramsSchema.test.ts": "54ac6080684f97091804c1d99683ded4c672f22706671241694a5b4dfb53577d"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "`string | URL | Request` became `Request | string | URL`. Behaviour change: none",
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "outcome": "updated",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/core/paramsSchema.test.ts: @@ -15,7 +15,7 @@ (diff/218)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/core/paramsSchema.test.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
       ]
     },
     "source:packages/tests/unit/core/pathParams.test.ts": {
@@ -3001,15 +2999,15 @@
       ]
     },
     "source:packages/tests/unit/helpers/validator.test.ts": {
-      "fingerprint": "b23e9f456decd6f169d44a4d66863ffb30ec2a1b40924a5c53f42c52cdbef714",
+      "fingerprint": "25135dbe3fed945eeb8940f732531d3a481b77140c90d6e31675bb4650b47c3b",
       "snapshot": {
-        "packages/tests/unit/helpers/validator.test.ts": "cc31eeea352727f773f6212da2c04bd07f155f256960c6084bd31e51a67da810"
+        "packages/tests/unit/helpers/validator.test.ts": "73343e5b422dc0adf13ff0771f6838a34344a97b2135900b4baec74132fea727"
       },
-      "head": "d99df8f6b475b66ce4fae764415835b0581dd3e3",
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
       "outcome": "updated",
-      "reason": "Updated configure-requests SKILL.md error-handling bullet for the new ERR_INVALID_URL, ERR_BAD_OPTION_VALUE and mid-body ERR_NETWORK codes; other changed files are lib fixes, tests, docs and bump files covered by that update",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
-        "Changed: packages/tests/unit/helpers/validator.test.ts at 7809b9509ae1813a2eda607ce7d0593d742517cd"
+        "Changed: packages/tests/unit/helpers/validator.test.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
       ]
     },
     "source:packages/tests/unit/prototypePollution.test.ts": {
@@ -3596,15 +3594,15 @@
       ]
     },
     "source:packages/tests/unit/toFormData.test.ts": {
-      "fingerprint": "d890a537706dceb7c3b90401e86241b91266cb9c4f8ec705af7c0071ebfa55f9",
+      "fingerprint": "f912c9524242eb8b38c7609d337850db7f18b532677396c8084f3487d8c65888",
       "snapshot": {
-        "packages/tests/unit/toFormData.test.ts": "f99d51bb7a078db0a6f4fba0c158fa15323cc129a5d8adbfeb2c7d619e7ddd3d"
+        "packages/tests/unit/toFormData.test.ts": "d0ecd2929093eb993042b8c1b6653068693893f7f49cc5fd7d6ee8acccf359aa"
       },
-      "head": "51b9fecea630fa9b8b9405af26a48909b73a05a2",
-      "outcome": "no-change",
-      "reason": "configure-requests skill does not document toFormData internals, Blob option or its error codes",
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "outcome": "updated",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
-        "Changed: packages/tests/unit/toFormData.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/tests/unit/toFormData.test.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
       ]
     },
     "source:.bumpy/progress-callback-errors.md": {
@@ -3992,15 +3990,15 @@
       ]
     },
     "source:packages/tests/unit/core/getUri.test.ts": {
-      "fingerprint": "adb2c8389a5b6d80b7b7d86f1c13b2728665c14551680339ab0e718b116b5f8d",
+      "fingerprint": "c5029c435a9e8032fff9582eefcf1c6cdca771fbcbbfabefc843c65f24543847",
       "snapshot": {
-        "packages/tests/unit/core/getUri.test.ts": "8837002cfe42ac7ffbebf5dc12f4afe6bf91c665474b180a50ab5678d3cd368a"
+        "packages/tests/unit/core/getUri.test.ts": "6ae1aced2711839b62ba27e05121884d007cc21c3e77a68c293df0dd3b128a1e"
       },
-      "head": "c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab",
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
       "outcome": "updated",
-      "reason": "#235: the skill now says getUri() fills in pathParams and returns the URL the request sends.",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
-        "Changed: packages/tests/unit/core/getUri.test.ts at c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab"
+        "Changed: packages/tests/unit/core/getUri.test.ts at eb953a0082fd35a3900eb4dfb5a39d3ad20e9f8c"
       ]
     },
     "source:.bumpy/abort-during-async-schema.md": {
@@ -4376,27 +4374,27 @@
       ]
     },
     "source:packages/lib/src/lib/core/assertRequestConfig.ts": {
-      "fingerprint": "e2d4b3a89dc619d195990e714a0f833a548e6199e07c75612a091bb86da814dc",
+      "fingerprint": "487bc3236d7a10b0def73d4be9bd4e44852ced07de571752e08c17c182749a77",
       "snapshot": {
-        "packages/lib/src/lib/core/assertRequestConfig.ts": "1ef0f93e33d410e455c355cf8a51272bb1347eff3df2f2eb142eb9e37c1a05ef"
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "59c23c98b0472f318fdadc93e938086b25b8f1b5e5b1aea586028bfa208e48f8"
       },
-      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
       "outcome": "updated",
-      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/assertRequestConfig.ts at 86f20473642fb3c294f745739f7ba05847421218"
+        "Changed: packages/lib/src/lib/core/assertRequestConfig.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
       ]
     },
     "source:packages/tests/browser/xsrf.browser.test.ts": {
-      "fingerprint": "f3ef09d7fbaf8cefc8713e557cb880bde3206ce7e2232b2a6b1d3449a6d1a7e1",
+      "fingerprint": "aaf170fa8ae403b80b930f9ef49b380d59c0878669ccd4ae6cd212dcd941768d",
       "snapshot": {
-        "packages/tests/browser/xsrf.browser.test.ts": "56d6288a43cbd2ed111555d43e526d9910350b51cf0acecc1ffcc977244316a1"
+        "packages/tests/browser/xsrf.browser.test.ts": "822bfa072240d74210520c0610fa97934b9cdba2512fa837e2e2fac015a9113d"
       },
-      "head": "8f4937c2fbe18a923f35634f3a570f480c7d8b8e",
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now teaches withCredentials->credentials mapping (false/unset same-origin) and the XSRF redirect:'error' default; planning records unaffected (no new skill or task scope)",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
-        "Changed: packages/tests/browser/xsrf.browser.test.ts at dfdc00f066473f22ac32be6628f5b36e726e06af"
+        "Changed: packages/tests/browser/xsrf.browser.test.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
       ]
     },
     "source:packages/tests/smoke/bun/tests/cancel.smoke.test.ts": {
@@ -5984,15 +5982,15 @@
       ]
     },
     "source:packages/tests/unit/core/validateSchema.test.ts": {
-      "fingerprint": "543ef14d67afe936731887692cf00effd3e1df34011ce85b240c5ab7106075e6",
+      "fingerprint": "d61b350f8492bd3754c6fda70eb602dc0f3f524a38f286bb830bdd2358039334",
       "snapshot": {
-        "packages/tests/unit/core/validateSchema.test.ts": "9ad15d51ce16d9b5f57c7507f8f4e1b0f3004d28560c1a0d9675b13b795ca2cd"
+        "packages/tests/unit/core/validateSchema.test.ts": "85dd9ce086a4083d23b21ef762456da3bd8356e285418ab8580819a6c0fb0374"
       },
-      "head": "16004a89cc705910f332129196177c5afcbad839",
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says a request redact adds to the instance's, config.data on errors is the caller's body, and schema issues keep only message and path keys",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
-        "Changed: packages/tests/unit/core/validateSchema.test.ts at 0fd26195c33fab2485de5afef6b316d94f126562"
+        "Changed: packages/tests/unit/core/validateSchema.test.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
       ]
     },
     "source:.bumpy/275-plugin-atomic.md": {
@@ -6137,6 +6135,42 @@
       "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
       "evidence": [
         "Changed: packages/tests/unit/helpers/utf8ByteLength.test.ts at 484d2ac2104da3e5946af6a25500ec7b40729206"
+      ]
+    },
+    "source:.bumpy/269-fail-closed.md": {
+      "fingerprint": "f60e77731566ada90ccb2184bc52e1c48f617d2c407ae7f41d3405eeb7f2deab",
+      "snapshot": {
+        ".bumpy/269-fail-closed.md": "b4eefa86a8d1af78c9b9e936becbe28707f2ffa2529746ca65fc16eebef722fa"
+      },
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "outcome": "updated",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "evidence": [
+        "Changed: .bumpy/269-fail-closed.md at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
+      ]
+    },
+    "source:packages/tests/browser/cookies.browser.test.ts": {
+      "fingerprint": "6952e9b7c55c5ab5b3c7d3d3bb12d46bffbe1d3589c7d8d9728f958c1a6d199b",
+      "snapshot": {
+        "packages/tests/browser/cookies.browser.test.ts": "b80c73f72ec6f4ea8bdcf615deade943ed182790eba1426f6470f57d8125a674"
+      },
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "outcome": "updated",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "evidence": [
+        "Changed: packages/tests/browser/cookies.browser.test.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
+      ]
+    },
+    "source:packages/tests/unit/core/requestMethod.test.ts": {
+      "fingerprint": "9915f8b4118c929de4eb3f584d00e77039a3c3268d160524ed544c56ef2a79ab",
+      "snapshot": {
+        "packages/tests/unit/core/requestMethod.test.ts": "f0fa98d8fd4b02ba48560c20fdb63c2eb9fb10c1d2b4222c545e0ae2fb67020a"
+      },
+      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "outcome": "updated",
+      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "evidence": [
+        "Changed: packages/tests/unit/core/requestMethod.test.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
       ]
     }
   }

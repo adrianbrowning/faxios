@@ -5,6 +5,7 @@ import FaxiosError from "../core/FaxiosError.js";
 // temporary hotfix to avoid circular references until FaxiosURLSearchParams is refactored
 import type { FormDataVisitorHelpers, GenericFormData, SerializerVisitor } from "../types.js";
 import utils from "../utils.js";
+import validator from "./validator.js";
 
 // Default nesting limit shared with the inverse transform (formDataToJSON) so
 // the FormData <-> JSON round-trip stays symmetric.
@@ -122,10 +123,12 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
   const dots = options["dots"];
   const indexes = options["indexes"];
   const _Blob = (options["Blob"] || (globalThis as Record<string, unknown>)["Blob"]) as (new (parts: Array<unknown>) => unknown) | undefined;
-  const maxDepth =
-    options["maxDepth"] === undefined
-      ? DEFAULT_FORM_DATA_MAX_DEPTH
-      : (options["maxDepth"] as number);
+  const maxDepthOption = options["maxDepth"];
+  const maxDepthValid = maxDepthOption === undefined || validator.validators.maxDepth(maxDepthOption);
+  if (maxDepthValid !== true) {
+    throw new FaxiosError(`option maxDepth must be ${maxDepthValid}`, FaxiosError.ERR_BAD_OPTION_VALUE);
+  }
+  const maxDepth = maxDepthOption === undefined ? DEFAULT_FORM_DATA_MAX_DEPTH : maxDepthOption as number;
   const useBlob = typeof _Blob === "function" && utils.isSpecCompliantForm(formData);
   const stack: Array<unknown> = [];
 
