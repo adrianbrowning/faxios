@@ -21,7 +21,7 @@ behaviour outside this list as unverified until the installed types and a test p
 | `error.code === "ECONNREFUSED"` | `error.code === "ERR_NETWORK"`, details on `error.cause` | All transport failures |
 | `adapter: ...` / custom adapter | `env: { fetch }` or `fetchOptions` | No adapter option exists; passing `adapter` rejects with `ERR_BAD_OPTION` |
 | `proxy: {...}` / `httpAgent` / `httpsAgent` | Runtime-level proxy config. In Node the project docs pass an `undici` `ProxyAgent` as `fetchOptions.dispatcher`, using the app's own `undici` dependency | Not faxios options; passing them rejects with `ERR_BAD_OPTION`. faxios passes the dispatcher to `fetch` but does not test proxying |
-| `maxRedirects`, `beforeRedirect` | fetch follows redirects; `fetchOptions: { redirect: "manual" }` to stop | Passing them rejects with `ERR_BAD_OPTION`; there is no `ERR_FR_TOO_MANY_REDIRECTS` code |
+| `maxRedirects`, `beforeRedirect` | fetch follows redirects, except a browser request carrying the XSRF header (see below); `fetchOptions: { redirect: "manual" }` to stop | Passing them rejects with `ERR_BAD_OPTION`; there is no `ERR_FR_TOO_MANY_REDIRECTS` code |
 | `maxRate`, `socketPath`, `decompress`, `insecureHTTPParser`, `httpVersion`, HTTP/2 options, `lookup`, `family` | none | Removed; passing them rejects with `ERR_BAD_OPTION` |
 | `onUploadProgress` | same option | Fires only where fetch streams request bodies (Node); never called in browsers or web workers |
 | `responseType: "document"` | `responseType: "text"` and a `DOMParser` | `"document"` rejects with `ERR_BAD_OPTION_VALUE` |
@@ -47,6 +47,16 @@ These ports compile and run but behave differently:
    limit use `retry({ attemptTimeout })`.
 5. **Statics on instances.** `instance.isCancel`, `instance.mergeConfig` and similar are undefined
    on `create()` instances.
+6. **Redirects with the XSRF header.** When faxios sets the XSRF header (browser, default cookie
+   `XSRF-TOKEN` as in Axios) and the request has no own `fetchOptions.redirect` (or an own
+   `undefined`), it sends `redirect: "error"`, so any redirect, same-origin included, rejects with
+   `ERR_NETWORK`. Set `fetchOptions.redirect` on the request to choose.
+7. **`error.config.data`.** It is the caller's value (the `requestSchema` output when one is set),
+   not the serialized string Axios keeps. Drop `JSON.parse(error.config.data)`.
+8. **`responseType` case.** `"JSON"`, in any case, parses like `"json"`, strict-JSON errors included.
+9. **No `R` type parameter.** Methods take `<T, D>`, not Axios's `<T, R, D>`, so
+   `get<User, AxiosResponse<User>>()` ports with the second argument read as the body type `D`.
+   Drop `R`.
 
 ## Port checklist
 
@@ -66,5 +76,6 @@ conversions; any `interceptors` code there is the "before" side. faxios needs No
 
 Sources: `MIGRATION_GUIDE.md`, `src/lib/types.ts`, `src/lib/core/Faxios.ts`,
 `src/lib/core/assertRequestConfig.ts`, `src/lib/core/buildFullPath.ts`,
-`src/lib/core/requestDeadline.ts`, `src/lib/adapters/fetch-helpers.ts`,
-`packages/tests/unit/api.test.ts`.
+`src/lib/core/requestDeadline.ts`, `src/lib/core/prepareRequest.ts`,
+`src/lib/core/dispatchRequest.ts`, `src/lib/defaults/index.ts`,
+`src/lib/adapters/fetch-helpers.ts`, `packages/tests/unit/api.test.ts`.

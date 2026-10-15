@@ -171,6 +171,22 @@ The `get<Header>` shortcuts take the parsers `get()` takes (`true`, a `RegExp` o
 
 The type declarations use `NoInfer`, which TypeScript 5.4 added, so faxios needs TypeScript 5.4 or greater. The docs used to say 4.7; on 4.7 to 5.3 the compiler reports `Cannot find name 'NoInfer'` in faxios's own `.d.ts` files. Upgrade TypeScript to 5.4 or later.
 
+## p) A request that sends the XSRF header refuses redirects
+
+In a browser, when faxios sets the XSRF header (default cookie `XSRF-TOKEN`, as in axios) and the request has no own `fetchOptions.redirect` (or an own `undefined`), it sends the request with `redirect: "error"`. Fetch strips only `Authorization` when a redirect leaves the origin, so following one would send the token to whatever host it points at. Axios follows the redirect. A redirect now rejects with `ERR_NETWORK`, same-origin ones included; set `fetchOptions: { redirect: "follow" }` (or `"manual"`) on the request to choose for yourself.
+
+## q) `error.config.data` is the caller's value
+
+In axios, `error.config.data` is the serialized body, such as the JSON string. In faxios it is the value the request was given (after `requestSchema`, when one is set): an object stays an object. Code that runs `JSON.parse(error.config.data)` should read the value directly.
+
+## r) `responseType` is case-insensitive
+
+`responseType: "JSON"`, or any other case, parses the body like `"json"`, strict-JSON errors included.
+
+## s) Response types take `<T, D>`, with no `R` parameter
+
+Axios methods take `<T, R = AxiosResponse<T>, D>`. faxios methods take `<T, D>` and always resolve to `FaxiosResponse<T, D>`, so `faxios.get<User, FaxiosResponse<User>>(url)` compiles with the second argument read as the request body type `D`. Drop the `R` argument when porting: `get<User>(url)`, or `post<User, NewUser>(url, body)`.
+
 ## Need help?
 
 If something in this guide is wrong or missing, please [open an issue](https://github.com/adrianbrowning/faxios/issues).
