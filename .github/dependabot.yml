@@ -2,9 +2,16 @@ version: 2
 # Package and GitHub Actions update PRs are maintainer/bot-only.
 # Keep the 7-day cooldown unless a critical vulnerability requires a
 # maintainer-led manual update.
+# Every tracked lockfile needs an entry here and an audit step in
+# .github/workflows/lockfile-lint.yml; .github/scripts/check-lockfile-coverage.mjs
+# enforces both. Dependabot has no Deno ecosystem, so
+# packages/tests/smoke/deno/deno.lock is updated by hand.
 updates:
   - package-ecosystem: 'github-actions'
-    directory: '/'
+    # '/' covers only the workflows; the composite actions need their own glob.
+    directories:
+      - '/'
+      - '/.github/actions/*'
     groups:
       github-actions:
         patterns:
@@ -17,7 +24,11 @@ updates:
     cooldown:
       default-days: 7
   - package-ecosystem: 'npm'
-    directory: '/'
+    # The test harnesses install outside the workspace, from their own lockfiles.
+    directories:
+      - '/'
+      - '/packages/tests/smoke/esm'
+      - '/packages/tests/module/esm'
     schedule:
       interval: 'weekly'
     open-pull-requests-limit: 5
@@ -29,6 +40,24 @@ updates:
           - 'patch'
       development_dependencies:
         dependency-type: 'development'
+        update-types:
+          - 'minor'
+          - 'patch'
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+    labels:
+      - 'commit::chore'
+      - 'type::automated-pr'
+    cooldown:
+      default-days: 7
+  - package-ecosystem: 'bun'
+    directory: '/packages/tests/smoke/bun'
+    schedule:
+      interval: 'weekly'
+    open-pull-requests-limit: 5
+    groups:
+      bun_dependencies:
         update-types:
           - 'minor'
           - 'patch'

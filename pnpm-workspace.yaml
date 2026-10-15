@@ -28,8 +28,10 @@ overrides:
 auditConfig:
   ignoreGhsas:
     # braces <=3.0.3 stack exhaustion on deeply nested patterns. No patched release exists.
-    # Only reachable through semantic-release-unsquash's commit analyzer (release tooling),
-    # which matches repo-controlled patterns, not untrusted input.
+    # Checked 2026-10-14 with `pnpm why braces -r`: only path is zshy@0.8.0 -> fast-glob@3.3.3
+    # -> micromatch@4.0.8 -> braces@3.0.3. zshy is a devDependency of packages/lib (the build
+    # tool) and globs repo-controlled patterns at build time, never untrusted input, and braces
+    # is not in the published package. Recheck when zshy or fast-glob updates.
     - GHSA-vfj7-8cjw-p6xm
 allowBuilds:
   'unrs-resolver': true

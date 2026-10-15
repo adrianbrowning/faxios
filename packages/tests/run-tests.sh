@@ -39,7 +39,9 @@ cleanup() {
 }
 trap cleanup EXIT
 
-LOCKFILES="smoke/esm/pnpm-lock.yaml module/esm/pnpm-lock.yaml smoke/bun/bun.lock"
+# The pnpm and bun lockfiles pin faxios.tgz; deno.lock imports dist/ by path, so it is only guarded.
+TARBALL_LOCKFILES="smoke/esm/pnpm-lock.yaml module/esm/pnpm-lock.yaml smoke/bun/bun.lock"
+LOCKFILES="$TARBALL_LOCKFILES smoke/deno/deno.lock"
 # A killed run leaves the lockfiles pinned to its tarball; backing those up and "restoring" them
 # would keep them modified forever. Start only from the committed lockfiles.
 if [ -z "$FAXIOS_ALLOW_DIRTY_LOCKFILES" ] && ! git diff --quiet HEAD -- $LOCKFILES; then
@@ -65,11 +67,12 @@ rm -rf "$PACK_DIR"
 LOCK_BACKUP=$(mktemp -d)
 # Bun's shared cache keeps serving an older build of the same tarball path.
 BUN_CACHE=$(mktemp -d)
-for lockfile in $LOCKFILES; do
+# deno.lock isn't backed up, so a run that changes it fails the exit guard instead of being reverted.
+for lockfile in $TARBALL_LOCKFILES; do
   mkdir -p "$LOCK_BACKUP/$(dirname "$lockfile")"
   cp "$lockfile" "$LOCK_BACKUP/$lockfile"
 done
-node pin-tarball-integrity.ts $LOCKFILES
+node pin-tarball-integrity.ts $TARBALL_LOCKFILES
 pnpm --dir smoke/esm install --frozen-lockfile --ignore-workspace --ignore-scripts
 pnpm --dir module/esm install --frozen-lockfile --ignore-workspace --ignore-scripts
 BUN_INSTALL_CACHE_DIR="$BUN_CACHE" bun install --cwd smoke/bun --frozen-lockfile

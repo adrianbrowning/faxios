@@ -12,12 +12,13 @@
     "faxios/unsafe/helpers/buildURL.js": "../../../lib/dist/lib/helpers/buildURL.js",
     "faxios/unsafe/helpers/combineURLs.js": "../../../lib/dist/lib/helpers/combineURLs.js",
     "faxios/unsafe/utils.js": "../../../lib/dist/lib/utils.js",
-    "form-data": "npm:form-data"
+    "form-data": "npm:form-data@4.0.6"
   },
   "tasks": {
     "test": "deno check types/ && deno test --allow-read --allow-env tests/"
   },
   "test": {
     "include": ["tests/**/*.smoke.test.ts"]
-  }
+  },
+  "lock": { "frozen": true }
 }

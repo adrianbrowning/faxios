@@ -14,7 +14,7 @@
     "@types/node": "24.13.2",
     "typescript": "6.0.3",
     "typescript-5.4": "npm:typescript@5.4.5",
-    "vitest": "4.1.9"
+    "vitest": "4.1.11"
   },
   "dependencies": {
     "faxios": "file:../../faxios.tgz"

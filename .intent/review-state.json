@@ -486,27 +486,27 @@
       ]
     },
     "source:packages/tests/module/esm/pnpm-lock.yaml": {
-      "fingerprint": "56b36b573b76b82090b4e41455ee774a363a4f82146fc4295bf6e8c687c91612",
+      "fingerprint": "161c9d20d21738ca6e471377be7e2b0087fa20ecb00a53f1ec4c1b201b44a072",
       "snapshot": {
-        "packages/tests/module/esm/pnpm-lock.yaml": "21abb3c5a2f29979a58dbaf8d6568089db3e906b1870c04b347f22e09703c8b1"
+        "packages/tests/module/esm/pnpm-lock.yaml": "a1aa399d041c95daa90083c22e06f4b4284952b3b21e7894165042b126f99808"
       },
-      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
-      "outcome": "updated",
-      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "outcome": "no-change",
+      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
       "evidence": [
-        "Changed: packages/tests/module/esm/pnpm-lock.yaml at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+        "Changed: packages/tests/module/esm/pnpm-lock.yaml at 003bc07716cf27a55462f6d045f74de4ffee59a6"
       ]
     },
     "source:packages/tests/smoke/esm/pnpm-lock.yaml": {
-      "fingerprint": "93a94ccf4ac960aac061e0d99dd1df9a17e8649dc09476aa012e2288a8030a6e",
+      "fingerprint": "9c63d9b06d7a6eefb8dca5ef10b27916433062d037cf5e1a0d2314a117da64e3",
       "snapshot": {
-        "packages/tests/smoke/esm/pnpm-lock.yaml": "9666a372e6860d0e1b848cdaf7498d66f5ec34b98f510642618de206d602e755"
+        "packages/tests/smoke/esm/pnpm-lock.yaml": "36a53cd09f310dad62d0071df1efa1ae78e60c12ee19054cf637405b65d2a669"
       },
-      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
-      "outcome": "updated",
-      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "outcome": "no-change",
+      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
       "evidence": [
-        "Changed: packages/tests/smoke/esm/pnpm-lock.yaml at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+        "Changed: packages/tests/smoke/esm/pnpm-lock.yaml at 003bc07716cf27a55462f6d045f74de4ffee59a6"
       ]
     },
     "source:packages/tests/unit/version.test.ts": {
@@ -1841,17 +1841,15 @@
       ]
     },
     "source:.github/actions/setup/action.yml": {
-      "fingerprint": "34387c5cc68281b9577ec845aad8bf4d7a2a61c937bb38c5b7ce4b7d71beb268",
+      "fingerprint": "94dabe8bdc68144dd5151763b3068e9b0bd5ac37ca3102a5a7d37f7770c6ed07",
       "snapshot": {
-        ".github/actions/setup/action.yml": "779b6c8d76c6fe1ee11aa1213f1ba21b2bd6df0765a4e811114485b98b6a781e"
+        ".github/actions/setup/action.yml": "e430d99269327a1d913315687a2923d5145ee20e8724b6cef758f3ccc1e6a6ee"
       },
-      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
-      "outcome": "out-of-scope",
-      "reason": "Pin comment for pnpm/action-setup ea17c68 corrected from `# v6` to `# v6.1.0` (GitHub code scanning: v6 points to 0977fd99725f). CI only; not library API.",
+      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "outcome": "no-change",
+      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
       "evidence": [
-        "git diff HEAD -- .github/actions/setup/action.yml",
-        "gh api pnpm/action-setup tags: v6.1.0 = ea17c68df891, v6 = 0977fd99725f.",
-        "zizmor 1.30.1 --offline: no new findings for this file."
+        "Changed: .github/actions/setup/action.yml at 003bc07716cf27a55462f6d045f74de4ffee59a6"
       ]
     },
     "source:.github/workflows/bumpy-check.yml": {
@@ -3172,17 +3170,15 @@
       ]
     },
     "source:pnpm-workspace.yaml": {
-      "fingerprint": "7368b2e61a5b45e78c216f1bf3c3f843421e85cc3c1b4df03cb22631ec88308c",
+      "fingerprint": "9ecb925a7f5108a064a39c2d69a6b3fbfb0a804cb4b059c69a3f1985c7086ea4",
       "snapshot": {
-        "pnpm-workspace.yaml": "824965ca54f20ffea1391dfe1f34bb435f1fb28114566daacd5d6db29c95d8a9"
+        "pnpm-workspace.yaml": "e9a87e42dc6e0339ca63ae69a3a2dc0c079a1aa551524663425c1915a321a08c"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "allowBuilds for unrs-resolver (pnpm 10 build approval for the ESLint resolver). Workspace tooling.",
+      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "outcome": "no-change",
+      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
       "evidence": [
-        "git diff 01316e10..HEAD -- pnpm-workspace.yaml",
-        "pnpm install --frozen-lockfile succeeds.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: pnpm-workspace.yaml at 003bc07716cf27a55462f6d045f74de4ffee59a6"
       ]
     },
     "source:sharedConfig/eslint.config.style.ts": {
@@ -3290,29 +3286,27 @@
       ]
     },
     "source:.github/workflows/lockfile-lint.yml": {
-      "fingerprint": "f12c9446e90c2907c33e9b2cc8089a9177d75eeb9f75424c9ce7816157b15d68",
+      "fingerprint": "f8c8bd7bb7616b56563c04a0d0efe95ae56438ae7755c57060304d4756efd466",
       "snapshot": {
-        ".github/workflows/lockfile-lint.yml": "fd6d92af9ec8b3002e40510660231ed311d199ae8fdb32dc5458ef291fce9113"
+        ".github/workflows/lockfile-lint.yml": "d8c6fbdf3d087348600193570ec1cd7c956d5aa5a63f7791285db20d7f16854b"
       },
-      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
-      "outcome": "out-of-scope",
-      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "outcome": "no-change",
+      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
       "evidence": [
-        "git diff HEAD -- .github/workflows/lockfile-lint.yml",
-        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
-        "zizmor 1.30.1 --offline: no new findings for this file."
+        "Changed: .github/workflows/lockfile-lint.yml at 003bc07716cf27a55462f6d045f74de4ffee59a6"
       ]
     },
     "source:.github/workflows/run-ci.yml": {
-      "fingerprint": "4b7426dd80163664d3d228ccd8cb9588e0cdb6d21105217aac91d0d8b5a1c739",
+      "fingerprint": "c59b6001e708bdea17f829bf8cd65af2db156d784da2c81b92b39ee7b0adf6d7",
       "snapshot": {
-        ".github/workflows/run-ci.yml": "4c64fa3bba56ee678729e629214f771e06201ce35e44fc37b1e1b0b40f775f56"
+        ".github/workflows/run-ci.yml": "f1f74174921c653ab6cfcf6b5a68bd6f23cf4007cb2ef10a0af923948995bb09"
       },
-      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
       "outcome": "no-change",
-      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
+      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
       "evidence": [
-        "Changed: .github/workflows/run-ci.yml at 280f7e791c50e367a025fddc617941296f15f52a"
+        "Changed: .github/workflows/run-ci.yml at 003bc07716cf27a55462f6d045f74de4ffee59a6"
       ]
     },
     "source:.github/workflows/ts-check.yml": {
@@ -3918,15 +3912,15 @@
       ]
     },
     "source:packages/tests/smoke/deno/deno.json": {
-      "fingerprint": "dae1d711a0002b6a6c221fc6a61a569fb88bdc4d52cfc8857068aa75900fe546",
+      "fingerprint": "6f033129425663d6302ea8691fa07b4971ec90a0d8c8f79c06dd73dcff00ebd7",
       "snapshot": {
-        "packages/tests/smoke/deno/deno.json": "23036d1cf8f1bc20bcd3665075d1adfcfe7418911c6c0ac263fb0b06e9fdebe1"
+        "packages/tests/smoke/deno/deno.json": "4e745e0836df1df464ccb52288a62d7e3a0bafc7289423c534924cf79cd3803f"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
-      "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "outcome": "no-change",
+      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
       "evidence": [
-        "Changed: packages/tests/smoke/deno/deno.json at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/tests/smoke/deno/deno.json at 003bc07716cf27a55462f6d045f74de4ffee59a6"
       ]
     },
     "source:packages/tests/smoke/deno/types/consumer.ts": {
@@ -5547,6 +5541,102 @@
       "reason": "Adds a root landing README and extracts its example in test:docs-examples; no library API or behaviour taught by configure-requests changes.",
       "evidence": [
         "Changed: README.md at e3e74a239a152b801141bedfc18f60acded5c8d2"
+      ]
+    },
+    "source:.bumpy/young-silver-cat.md": {
+      "fingerprint": "4922be1fcad049344246907b9bda5e71db041ef8482fd9acf2ed8579acf5d22c",
+      "snapshot": {
+        ".bumpy/young-silver-cat.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+      },
+      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "outcome": "no-change",
+      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "evidence": [
+        "Changed: .bumpy/young-silver-cat.md at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+      ]
+    },
+    "source:.github/dependabot.yml": {
+      "fingerprint": "4a7f31b61c633cdd8743b11f3307707f9a1eb76638ca765f11b9b5f8d0e6d9bd",
+      "snapshot": {
+        ".github/dependabot.yml": "625dce87bc5caef3667869a9ba34da8d8e64c6f2c351710e48ab2c096287a522"
+      },
+      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "outcome": "no-change",
+      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "evidence": [
+        "Changed: .github/dependabot.yml at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+      ]
+    },
+    "source:.github/scripts/check-lockfile-coverage.mjs": {
+      "fingerprint": "410fb9a794024bcc85fe20925081a95638b7c55b7b9acf7d1a477a4f0a29194b",
+      "snapshot": {
+        ".github/scripts/check-lockfile-coverage.mjs": "509d891c5c4f532ffbbc35e9de218a3de76c47377de416f7de04c52494b1bd4c"
+      },
+      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "outcome": "no-change",
+      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "evidence": [
+        "Changed: .github/scripts/check-lockfile-coverage.mjs at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+      ]
+    },
+    "source:packages/lib/pnpm-lock.yaml": {
+      "fingerprint": "6370bcf2a26e1af978981a9aa536b3cc1fdddda52d285cfa5e2929da9a266524",
+      "snapshot": {
+        "packages/lib/pnpm-lock.yaml": null
+      },
+      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "outcome": "no-change",
+      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "evidence": [
+        "Changed: packages/lib/pnpm-lock.yaml at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+      ]
+    },
+    "source:packages/tests/module/esm/package-lock.json": {
+      "fingerprint": "afce1c29a5516ca5fe6def1eee9ff6bd406bd77ae325e0d3dfe5dd5a8cb48c8f",
+      "snapshot": {
+        "packages/tests/module/esm/package-lock.json": null
+      },
+      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "outcome": "no-change",
+      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "evidence": [
+        "Changed: packages/tests/module/esm/package-lock.json at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+      ]
+    },
+    "source:packages/tests/run-tests.sh": {
+      "fingerprint": "e6e99d335993acdb470017a58066a96dac9b65fbc6a7bfe8c8b288653af93e69",
+      "snapshot": {
+        "packages/tests/run-tests.sh": "f348ada37e407fb86c81a639722679acd66e15bb15c5658c3df77771dde3b3de"
+      },
+      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "outcome": "no-change",
+      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "evidence": [
+        "Changed: packages/tests/run-tests.sh at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+      ]
+    },
+    "source:packages/tests/smoke/bun/pnpm-lock.yaml": {
+      "fingerprint": "80c1c4b0e9e98018daf89b91e03f5a196a8b7834d293d6f32a5964bbef6c5c31",
+      "snapshot": {
+        "packages/tests/smoke/bun/pnpm-lock.yaml": null
+      },
+      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "outcome": "no-change",
+      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "evidence": [
+        "Changed: packages/tests/smoke/bun/pnpm-lock.yaml at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+      ]
+    },
+    "source:packages/tests/smoke/deno/deno.lock": {
+      "fingerprint": "8099d54f06441f4c8c75f6e99222e4bdddace58d2081ecbbb9adb84d8172b793",
+      "snapshot": {
+        "packages/tests/smoke/deno/deno.lock": "3e34ff3390bd3825b29541e6f0dcaeabbab51129283a0bab302fb29e745f08b5"
+      },
+      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "outcome": "no-change",
+      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "evidence": [
+        "Changed: packages/tests/smoke/deno/deno.lock at 003bc07716cf27a55462f6d045f74de4ffee59a6"
       ]
     }
   }
