@@ -120,7 +120,7 @@ Request-config `headers` takes strings, numbers, booleans, `null` and `undefined
 
 ## j) Absolute URLs on a `baseURL` instance reject
 
-An instance with a `baseURL` defaults `allowAbsoluteUrls` to `false`. An absolute request `url` on it used to be appended to the base (`https://api.example.com/v1/https://other.example/x`); it now rejects with `ERR_INVALID_URL` before fetch is called, and `getUri()` throws the same error. Set `allowAbsoluteUrls: true` on the instance or the request when the absolute URL is trusted (for example `next`/`Link` URLs from your API), or use an instance without `baseURL`. See [`allowAbsoluteUrls`](https://adrianbrowning.github.io/faxios/pages/advanced/request-config#allowabsoluteurls).
+An instance with a `baseURL` defaults `allowAbsoluteUrls` to `false`. An absolute request `url` on it used to be appended to the base (`https://api.example.com/v1/https://other.example/x`); it now rejects with `ERR_INVALID_URL` before fetch is called, and `getUri()` throws the same error. Set `allowAbsoluteUrls: true` on the instance or the request when the absolute URL is trusted (for example `next`/`Link` URLs from your API), or use an instance without `baseURL`. See [`allowAbsoluteUrls`](https://adrianbrowning.github.io/faxios/pages/advanced/request-config#allowabsoluteurls). `getUri()` with neither `url` nor `baseURL` also throws `ERR_INVALID_URL`, where axios returns `undefined`.
 
 ## k) Request body Content-Type and FormData field names
 

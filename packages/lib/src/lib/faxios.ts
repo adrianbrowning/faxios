@@ -160,7 +160,8 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = {
   /**
    * Build the URL for `config` without sending a request. Fills `{key}` placeholders from
    * `pathParams` and applies `baseURL`, `allowAbsoluteUrls`, `params` and `paramsSerializer`
-   * like a request does. Schemas are not run, so `pathParams` is used as given.
+   * like a request does. Schemas are not run, so `pathParams` is used as given. Throws a
+   * `FaxiosError` with `ERR_INVALID_URL` when there is neither `url` nor `baseURL`.
    */
   getUri: (config?: FaxiosRequestConfig & TOpts) => string;
   head: {
