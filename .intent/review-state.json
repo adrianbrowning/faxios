@@ -1953,15 +1953,15 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "39a76a4e7b2b5552e2eacea5e3b30dad3440bf19cf7289659b41ca757085a345",
+      "fingerprint": "13e2899d2af0abad24865478f6a89180d38729c34343ce8fb10bc013452feb6b",
       "snapshot": {
-        "THREATMODEL.md": "2b1c320c29a04f1123db95c10e54ec718fd8d44f47c76f6e2786010d5405367d"
+        "THREATMODEL.md": "7d1ea44dc3f912e1e032039528dcda0f5a9f6a58ebfbbcd82db52b6fbeed9b1c"
       },
-      "head": "45b7b0555ce63551641d71fbf6964bd0c543a3ee",
+      "head": "5bcf364646a57ea5a331b054b072307fab2feb16",
       "outcome": "no-change",
-      "reason": "CI, Dependabot and test-harness changes only; nothing the configure-requests skill teaches changed",
+      "reason": "CI step order, workflow comments, docs and test-harness changes only; nothing the configure-requests skill teaches changed",
       "evidence": [
-        "Changed: THREATMODEL.md at e3fd6a6b6c28cd539f29f96a074008f366d9a32a"
+        "Changed: THREATMODEL.md at 5bcf364646a57ea5a331b054b072307fab2feb16"
       ]
     },
     "source:packages/docs/.vitepress/theme/index.ts": {
@@ -3285,15 +3285,15 @@
       ]
     },
     "source:.github/workflows/run-ci.yml": {
-      "fingerprint": "f0e53f769d1b20d67443fb010be09ee777ce630f1be649f0bb25a3c1f68e8336",
+      "fingerprint": "ee6cecfe98b4568712a0674ea7153a825c8665aedf425a5e1e8ddf088a38ea58",
       "snapshot": {
-        ".github/workflows/run-ci.yml": "80d21e584b88bed2a59801602506e23ddadb5edbc4566d70222b50d32be85481"
+        ".github/workflows/run-ci.yml": "9f27c1d31149dfa9287ed05521817212757d251a9468b0c52abaf7386dbc8254"
       },
-      "head": "45b7b0555ce63551641d71fbf6964bd0c543a3ee",
+      "head": "5bcf364646a57ea5a331b054b072307fab2feb16",
       "outcome": "no-change",
-      "reason": "CI, Dependabot and test-harness changes only; nothing the configure-requests skill teaches changed",
+      "reason": "CI step order, workflow comments, docs and test-harness changes only; nothing the configure-requests skill teaches changed",
       "evidence": [
-        "Changed: .github/workflows/run-ci.yml at e3fd6a6b6c28cd539f29f96a074008f366d9a32a"
+        "Changed: .github/workflows/run-ci.yml at 5bcf364646a57ea5a331b054b072307fab2feb16"
       ]
     },
     "source:.github/workflows/ts-check.yml": {
