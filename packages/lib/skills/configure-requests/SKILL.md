@@ -356,6 +356,11 @@ await faxios.get("https://api.example.com/feed", { fetchOptions: { cache: "no-st
   `fetch`, including runtime extensions (Next.js `next`, Workers `cf`, undici `dispatcher`).
   Inherited keys are ignored. faxios sets `signal`, `method`, `headers`, `body`, `duplex` and
   `credentials` itself and ignores those keys in `fetchOptions`.
+- `withCredentials: true` becomes fetch `credentials: "include"`; `false` or unset becomes
+  `"same-origin"`, so same-origin requests still send cookies. A string passes through unchanged.
+- In the browser, when faxios sets the XSRF header and the request sets no `redirect`, it uses
+  `fetchOptions.redirect: "error"`, because fetch strips only `Authorization` on a cross-origin
+  redirect. Set `fetchOptions: { redirect: "follow" }` only for redirects you trust.
 - `env.fetch`, `env.Request` and `env.Response` count only as own properties of `env`.
 - Plain-object values inside `fetchOptions` are copied when configs merge; class instances are
   passed by reference.

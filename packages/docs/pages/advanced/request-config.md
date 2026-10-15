@@ -164,7 +164,7 @@ With `responseType: "stream"`, the request isn't over when the promise resolves.
 
 ### `withCredentials`
 
-The `withCredentials` property indicates whether or not cross-site Access-Control requests should be made using credentials such as cookies, authorization headers, or TLS client certificates. Setting withCredentials has no effect on same-site requests. The default is `false`. It only controls whether the browser sends credentials; it does not control whether the XSRF header is added (see [`withXSRFToken`](#withxsrftoken)).
+The `withCredentials` property maps to the fetch `credentials` mode. `true` sends `credentials: "include"`, so cross-site requests carry credentials such as cookies, authorization headers, or TLS client certificates. `false` or unset sends `credentials: "same-origin"`, so same-origin requests still carry cookies and cross-site requests don't. A string value is passed to `fetch` as the `credentials` mode unchanged. The default is `false`. It only controls whether the browser sends credentials; it does not control whether the XSRF header is added (see [`withXSRFToken`](#withxsrftoken)).
 
 ### `auth`
 
@@ -231,6 +231,8 @@ The `xsrfHeaderName` is the name of the header to use as a value for `XSRF` toke
 ```ts check=skip
 withXSRFToken: boolean | undefined | ((config: InternalFaxiosRequestConfig) => boolean | undefined);
 ```
+
+When faxios sets the XSRF header and the request doesn't set [`fetchOptions.redirect`](/pages/advanced/fetch-adapter#fetch-options), it sends the request with `redirect: "error"`. `fetch` drops only `Authorization` when a redirect leaves the origin, so following one would send the token to whatever host the redirect points at. A redirect then rejects with `ERR_NETWORK`. To follow redirects anyway, set `fetchOptions: { redirect: "follow" }` on the request, but only for an API whose redirects you trust.
 
 ::: warning Cross-origin XSRF and `withCredentials`
 `withCredentials` controls whether cross-site requests include credentials (cookies, HTTP auth). `withXSRFToken` controls whether faxios sets the XSRF header. For cross-origin requests, set `withXSRFToken: true` to force the header; additionally set `withCredentials: true` only when the request also needs credentials/cookies.

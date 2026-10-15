@@ -3,15 +3,15 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "ed09756e2c07f2ef21d23c6f5b5897ac2914bf4d599f0c8706e01b6b2962259d",
+      "fingerprint": "5f6b04a0d13408d80258dcf06c783527eb3b7a486f2d6ebbebb51d13b8f72e1c",
       "snapshot": {
         "MIGRATION_GUIDE.md": "adc906193779e6ef7adadee324ee5a4a711461420eeacdbdcd0d9383edb081b4",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "2e5616bdfc342aa754da49edecbd2f4e052cd2594d5e88bf41a3f4b2f4771f9c",
+        "packages/lib/skills/configure-requests/SKILL.md": "7cdb664461a24b8bf1ad0734d593f5752343d2327787004a19e4862c3979d9d1",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
         "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
-        "packages/lib/src/lib/adapters/fetch.ts": "dac730893928ede80b3a1b31b1064053a41555a2a13d340326fb3b78927c99b5",
+        "packages/lib/src/lib/adapters/fetch.ts": "d28ac761e74769c73caa467497e949ed086d39bf1a21c3bca4728ff9c7d1722c",
         "packages/lib/src/lib/core/Faxios.ts": "7d77d83175a3f2df158bf4fad8c92217e4cc7b1323e0834999d5428707be2d28",
         "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
@@ -35,26 +35,26 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
-      "outcome": "no-change",
-      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
+      "head": "8f4937c2fbe18a923f35634f3a570f480c7d8b8e",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now teaches withCredentials->credentials mapping (false/unset same-origin) and the XSRF redirect:'error' default; planning records unaffected (no new skill or task scope)",
       "evidence": [
-        "Changed: packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/tests/unit/plugins/authBearer.test.ts, packages/tests/unit/plugins/forwardTo.test.ts at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts at dfdc00f066473f22ac32be6628f5b36e726e06af"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "10ff5ca92cee031ce844d66b762accc50f2923e6c36ca0c828891e8510b15c66",
+      "fingerprint": "8d37bc01c67cb95f50dc5645529b860b223f3c54ce83e64b1d15aafd71118ab8",
       "snapshot": {
         "MIGRATION_GUIDE.md": "adc906193779e6ef7adadee324ee5a4a711461420eeacdbdcd0d9383edb081b4",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "2e5616bdfc342aa754da49edecbd2f4e052cd2594d5e88bf41a3f4b2f4771f9c",
+        "packages/lib/skills/configure-requests/SKILL.md": "7cdb664461a24b8bf1ad0734d593f5752343d2327787004a19e4862c3979d9d1",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
         "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
-        "packages/lib/src/lib/adapters/fetch.ts": "dac730893928ede80b3a1b31b1064053a41555a2a13d340326fb3b78927c99b5",
+        "packages/lib/src/lib/adapters/fetch.ts": "d28ac761e74769c73caa467497e949ed086d39bf1a21c3bca4728ff9c7d1722c",
         "packages/lib/src/lib/core/Faxios.ts": "7d77d83175a3f2df158bf4fad8c92217e4cc7b1323e0834999d5428707be2d28",
         "packages/lib/src/lib/core/FaxiosError.ts": "51127bb1ac9921b69faf06ad0b3052afcaaa38ece0ee50136782d8e46d1fd87b",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
@@ -78,11 +78,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
-      "outcome": "no-change",
-      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
+      "head": "8f4937c2fbe18a923f35634f3a570f480c7d8b8e",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now teaches withCredentials->credentials mapping (false/unset same-origin) and the XSRF redirect:'error' default; planning records unaffected (no new skill or task scope)",
       "evidence": [
-        "Changed: packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/tests/unit/plugins/authBearer.test.ts, packages/tests/unit/plugins/forwardTo.test.ts at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts at dfdc00f066473f22ac32be6628f5b36e726e06af"
       ]
     },
     "source:knip.json": {
@@ -280,15 +280,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "ffddcf370d0b48c7349639f55ed8219cef3e581a83fb83c5cd16d7f4cd6d6b55",
+      "fingerprint": "0359cca0802b92e3f22e0554c3d4cc4f11f52460ddfb86479fe069c38f9935d9",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "47c3c33aff0f00baed4dbb948a7e09cd05565c894188f515b9bc55e1d644b167"
+        "packages/docs/pages/advanced/request-config.md": "290f12dc395bc6c1549df7e52e6723d8599465d613aa938cd3e5d8ddb2182d62"
       },
-      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "head": "8f4937c2fbe18a923f35634f3a570f480c7d8b8e",
       "outcome": "updated",
-      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "reason": "configure-requests SKILL.md now teaches withCredentials->credentials mapping (false/unset same-origin) and the XSRF redirect:'error' default; planning records unaffected (no new skill or task scope)",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+        "Changed: packages/docs/pages/advanced/request-config.md at dfdc00f066473f22ac32be6628f5b36e726e06af"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -1941,15 +1941,15 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "b19899dd7753e1f1592b023c970a6a72df07483aea0e324ca5d31440abe45977",
+      "fingerprint": "2df011a1cd463fe8c2dec773b93f638898437a222e774d1490cdd4a137db03ca",
       "snapshot": {
-        "THREATMODEL.md": "f979c531c22b46c16c8a49fb40644016fe65b9d3b88675c87de9026da980b249"
+        "THREATMODEL.md": "2e04aa9879653e9bbbc764b2d9ba1217fc13f3731bf36c47c6db3b173becb4ac"
       },
-      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
-      "outcome": "no-change",
-      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
+      "head": "8f4937c2fbe18a923f35634f3a570f480c7d8b8e",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now teaches withCredentials->credentials mapping (false/unset same-origin) and the XSRF redirect:'error' default; planning records unaffected (no new skill or task scope)",
       "evidence": [
-        "Changed: THREATMODEL.md at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
+        "Changed: THREATMODEL.md at dfdc00f066473f22ac32be6628f5b36e726e06af"
       ]
     },
     "source:packages/docs/.vitepress/theme/index.ts": {
@@ -2216,15 +2216,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
-      "fingerprint": "7b90be47b28ab8da896990ea1e7c2911e9dcb44b73c2cdf1fda2d3b8cdb48557",
+      "fingerprint": "5403b9056f1f8f2eab9d6ff98663234ef43e091becad1fbdbbe61994353d1ce2",
       "snapshot": {
-        "packages/lib/src/lib/core/prepareRequest.ts": "47dc3c0659672af9c7c21addcbab22976cc8cd0d24151bd071602bb3dc8745fb"
+        "packages/lib/src/lib/core/prepareRequest.ts": "bd4e0d83ea8a60a1b63aa5ed157e93cc840bcdb858495b20f5f950882ba6862e"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "8f4937c2fbe18a923f35634f3a570f480c7d8b8e",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now teaches withCredentials->credentials mapping (false/unset same-origin) and the XSRF redirect:'error' default; planning records unaffected (no new skill or task scope)",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/lib/src/lib/core/prepareRequest.ts at dfdc00f066473f22ac32be6628f5b36e726e06af"
       ]
     },
     "source:packages/lib/src/lib/core/transformData.ts": {
@@ -3369,15 +3369,15 @@
       ]
     },
     "source:packages/docs/pages/misc/security.md": {
-      "fingerprint": "b34b33bc1992c78b93714dbe7cb48050fc8ceec506d7e341dd97ebd9f485ff84",
+      "fingerprint": "bb050e02f221f6b72273e551db6f2321442dbd8009ebe4e9d0291a3690487907",
       "snapshot": {
-        "packages/docs/pages/misc/security.md": "7ea41d9aa53594845be4bf9f0fccafd1b3b54ea311f1a1c4fbcad7af65a8adae"
+        "packages/docs/pages/misc/security.md": "6e34006aa388b17fe957efe8b0171a1606e450de6cfa21518404ded0a7a082e0"
       },
-      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "head": "8f4937c2fbe18a923f35634f3a570f480c7d8b8e",
       "outcome": "updated",
-      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "reason": "configure-requests SKILL.md now teaches withCredentials->credentials mapping (false/unset same-origin) and the XSRF redirect:'error' default; planning records unaffected (no new skill or task scope)",
       "evidence": [
-        "Changed: packages/docs/pages/misc/security.md at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+        "Changed: packages/docs/pages/misc/security.md at dfdc00f066473f22ac32be6628f5b36e726e06af"
       ]
     },
     "source:packages/examples/README.md": {
@@ -4389,15 +4389,15 @@
       ]
     },
     "source:packages/tests/browser/xsrf.browser.test.ts": {
-      "fingerprint": "d5825bde8bcb5563eb16832444322d179a632ebb31686e59786bea1b027f2da0",
+      "fingerprint": "f3ef09d7fbaf8cefc8713e557cb880bde3206ce7e2232b2a6b1d3449a6d1a7e1",
       "snapshot": {
-        "packages/tests/browser/xsrf.browser.test.ts": "cc459198d26183ddb7df6c652e5c73ce718b3d06e57510544e461604260df9e6"
+        "packages/tests/browser/xsrf.browser.test.ts": "56d6288a43cbd2ed111555d43e526d9910350b51cf0acecc1ffcc977244316a1"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "8f4937c2fbe18a923f35634f3a570f480c7d8b8e",
       "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "reason": "configure-requests SKILL.md now teaches withCredentials->credentials mapping (false/unset same-origin) and the XSRF redirect:'error' default; planning records unaffected (no new skill or task scope)",
       "evidence": [
-        "Changed: packages/tests/browser/xsrf.browser.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: packages/tests/browser/xsrf.browser.test.ts at dfdc00f066473f22ac32be6628f5b36e726e06af"
       ]
     },
     "source:packages/tests/smoke/bun/tests/cancel.smoke.test.ts": {
@@ -5922,6 +5922,54 @@
       "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
       "evidence": [
         "Changed: .bumpy/289-proto-keys.md at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
+      ]
+    },
+    "source:.bumpy/290-284-same-origin.md": {
+      "fingerprint": "ebdad56f81eb9eee453c05d56eae02fc0210fc57bc1d81f0dac4967b44e9f3b0",
+      "snapshot": {
+        ".bumpy/290-284-same-origin.md": "6d227fd7a8753f1904fc8266c914fa1b1c7adc73958c8119b56d2d2221f4f72b"
+      },
+      "head": "8f4937c2fbe18a923f35634f3a570f480c7d8b8e",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now teaches withCredentials->credentials mapping (false/unset same-origin) and the XSRF redirect:'error' default; planning records unaffected (no new skill or task scope)",
+      "evidence": [
+        "Changed: .bumpy/290-284-same-origin.md at dfdc00f066473f22ac32be6628f5b36e726e06af"
+      ]
+    },
+    "source:packages/tests/browser/credentials.browser.test.ts": {
+      "fingerprint": "d12e3feb0de20ced59050f4a71ed400507f715c8cbc34c26ba5549853da26686",
+      "snapshot": {
+        "packages/tests/browser/credentials.browser.test.ts": "99750f47e18fff854b2fec2e8fd763d8ae621e9b9b8568da5d46501f63642f8b"
+      },
+      "head": "8f4937c2fbe18a923f35634f3a570f480c7d8b8e",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now teaches withCredentials->credentials mapping (false/unset same-origin) and the XSRF redirect:'error' default; planning records unaffected (no new skill or task scope)",
+      "evidence": [
+        "Changed: packages/tests/browser/credentials.browser.test.ts at dfdc00f066473f22ac32be6628f5b36e726e06af"
+      ]
+    },
+    "source:packages/tests/browser/isURLSameOrigin.browser.test.ts": {
+      "fingerprint": "e0955e17596c3011bcd2fc409b1ad1dc7c4b3ef52d5ade555accaab3a2eb59aa",
+      "snapshot": {
+        "packages/tests/browser/isURLSameOrigin.browser.test.ts": "f526162736a1f268b8a4584a22a4bf7f58b640d5de3879e72b4eea777f24c022"
+      },
+      "head": "8f4937c2fbe18a923f35634f3a570f480c7d8b8e",
+      "outcome": "updated",
+      "reason": "configure-requests SKILL.md now teaches withCredentials->credentials mapping (false/unset same-origin) and the XSRF redirect:'error' default; planning records unaffected (no new skill or task scope)",
+      "evidence": [
+        "Changed: packages/tests/browser/isURLSameOrigin.browser.test.ts at dfdc00f066473f22ac32be6628f5b36e726e06af"
+      ]
+    },
+    "source:packages/tests/unit/adapters/credentials.test.ts": {
+      "fingerprint": "94a0511c6ed90c12160706a5f2996c4e3932f640aab142498db3937ced113f8e",
+      "snapshot": {
+        "packages/tests/unit/adapters/credentials.test.ts": "1d7526234bcf8f46ffdc3729b06ad6fc66b721d9dba363332628c53e901cbf0c"
+      },
+      "head": "8f4937c2fbe18a923f35634f3a570f480c7d8b8e",
+      "outcome": "no-change",
+      "reason": "test-only type fix for the fetch stub; skill guidance unaffected",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/credentials.test.ts at 172b46c86c19d978ecdee93d908cda080edf5ff7"
       ]
     }
   }

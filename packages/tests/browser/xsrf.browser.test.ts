@@ -98,19 +98,96 @@ describe("xsrf (vitest browser)", () => {
       expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBeNull();
     });
 
-    it("should support function resolver", async () => {
+    it("should send xsrf header cross-origin when the function resolver returns true", async () => {
       using mock = installFetchMock();
       const token = "12345";
       setXsrfCookie(token);
 
-      // The resolver decides from the request config; unknown keys are rejected, so it reads a real one.
-      await faxios("/foo", {
-        params: { flag: "yes" },
-        withXSRFToken: (config: InternalFaxiosRequestConfig) =>
-          (config.params as Record<string, unknown> | undefined)?.["flag"] === "yes",
-      });
+      await faxios("http://example.com/", { withXSRFToken: () => true });
 
       expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe(token);
+    });
+
+    it("should not set xsrf header same-origin when the function resolver returns false", async () => {
+      using mock = installFetchMock();
+      setXsrfCookie("12345");
+
+      await faxios("/foo", { withXSRFToken: () => false });
+
+      expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBeNull();
+    });
+
+    it("should pass the request config to the function resolver", async () => {
+      using _mock = installFetchMock();
+      setXsrfCookie("12345");
+      const seen: Array<InternalFaxiosRequestConfig> = [];
+
+      await faxios("/foo", {
+        params: { flag: "yes" },
+        withXSRFToken: (config: InternalFaxiosRequestConfig) => {
+          seen.push(config);
+          return undefined;
+        },
+      });
+
+      expect(seen).toHaveLength(1);
+      expect(seen[0]!.method).toBe("get");
+      expect(seen[0]!.params).toEqual({ flag: "yes" });
+    });
+  });
+
+  describe("cross-origin targets", () => {
+    const otherPort = `${location.protocol}//${location.hostname}:${Number(location.port || (location.protocol === "https:" ? 443 : 80)) + 1}/foo`;
+    const otherScheme = `${location.protocol === "https:" ? "http:" : "https:"}//${location.host}/foo`;
+
+    const cases: Array<[string, string, { baseURL?: string; }]> = [
+      [ "same host on another port", otherPort, {}],
+      [ "same host with the other scheme", otherScheme, {}],
+      [ "a //host URL", "//example.com/foo", {}],
+      [ "a relative URL with a cross-origin baseURL", "/foo", { baseURL: "http://example.com" }],
+    ];
+
+    cases.forEach(([ label, url, config ]) => {
+      it(`should not set xsrf header for ${label}`, async () => {
+        using mock = installFetchMock();
+        setXsrfCookie("12345");
+
+        await faxios(url, config);
+
+        expect(mock.requests).toHaveLength(1);
+        expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBeNull();
+      });
+    });
+  });
+
+  describe("redirects", () => {
+    it("should refuse redirects when the xsrf header is set and fetchOptions.redirect is unset", async () => {
+      using mock = installFetchMock();
+      setXsrfCookie("12345");
+
+      await faxios("/foo");
+
+      expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe("12345");
+      expect(mock.lastRequest!.redirect).toBe("error");
+    });
+
+    it("should keep a caller-set fetchOptions.redirect when the xsrf header is set", async () => {
+      using mock = installFetchMock();
+      setXsrfCookie("12345");
+
+      await faxios("/foo", { fetchOptions: { redirect: "follow" } });
+
+      expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe("12345");
+      expect(mock.lastRequest!.redirect).toBe("follow");
+    });
+
+    it("should follow redirects when no xsrf header is set", async () => {
+      using mock = installFetchMock();
+
+      await faxios("/foo");
+
+      expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBeNull();
+      expect(mock.lastRequest!.redirect).toBe("follow");
     });
   });
 
@@ -141,14 +218,16 @@ describe("xsrf (vitest browser)", () => {
       });
     });
 
-    it("should not send xsrf header cross-origin when Object.prototype.withXSRFToken is polluted", async () => {
-      using mock = installFetchMock();
-      (Object.prototype as Record<string, unknown>).withXSRFToken = 1;
-      setXsrfCookie("12345");
+    [ 1, true ].forEach(polluted => {
+      it(`should not send xsrf header cross-origin when Object.prototype.withXSRFToken = ${String(polluted)}`, async () => {
+        using mock = installFetchMock();
+        (Object.prototype as Record<string, unknown>).withXSRFToken = polluted;
+        setXsrfCookie("12345");
 
-      await faxios("http://example.com/");
+        await faxios("http://example.com/");
 
-      expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBeNull();
+        expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBeNull();
+      });
     });
 
     it("should still send xsrf header cross-origin when withXSRFToken === true (strict)", async () => {

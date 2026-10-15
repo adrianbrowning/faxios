@@ -13,7 +13,7 @@ function applyXSRFToken(
   xsrfHeaderName: string | undefined,
   xsrfCookieName: string | undefined,
   config: FaxiosRequestConfig
-): void {
+): boolean {
   if (utils.isFunction(withXSRFToken)) {
     withXSRFToken = (withXSRFToken as (cfg: unknown) => unknown)(
       config
@@ -27,14 +27,15 @@ function applyXSRFToken(
     withXSRFToken === true ||
     (withXSRFToken == null && isURLSameOrigin(config.url ?? ""));
 
-  if (shouldSendXSRF) {
-    const xsrfValue =
-      xsrfHeaderName && xsrfCookieName && cookies.read(xsrfCookieName);
+  if (!shouldSendXSRF) return false;
 
-    if (xsrfValue) {
-      headers.set(xsrfHeaderName, xsrfValue);
-    }
-  }
+  const xsrfValue =
+    xsrfHeaderName && xsrfCookieName && cookies.read(xsrfCookieName);
+
+  if (!xsrfValue) return false;
+
+  headers.set(xsrfHeaderName, xsrfValue);
+  return true;
 }
 
 function prepareRequest(config: FaxiosRequestConfig): FaxiosRequestConfig {
@@ -65,8 +66,16 @@ function prepareRequest(config: FaxiosRequestConfig): FaxiosRequestConfig {
   // Add xsrf header
   // This is only done if running in a standard browser environment.
   // Specifically not if we're in a web worker, or react-native.
-  if (platform.hasStandardBrowserEnv) {
-    applyXSRFToken(headers, withXSRFToken, xsrfHeaderName, xsrfCookieName, newConfig);
+  if (
+    platform.hasStandardBrowserEnv &&
+    applyXSRFToken(headers, withXSRFToken, xsrfHeaderName, xsrfCookieName, newConfig)
+  ) {
+    // Fetch strips only Authorization when a redirect leaves the origin, so following one would
+    // send the XSRF token to whatever host it points at. Refuse redirects unless the caller chose.
+    const fetchOptions = own("fetchOptions") as Record<string, unknown> | undefined;
+    if (!utils.isObject(fetchOptions) || !utils.hasOwnProp(fetchOptions, "redirect")) {
+      newConfig.fetchOptions = { ...fetchOptions, redirect: "error" };
+    }
   }
 
   return newConfig;
