@@ -128,8 +128,8 @@ importers:
         specifier: ^4.0.5
         version: 4.0.6
       mdcode-ts:
-        specifier: 0.0.4
-        version: 0.0.4
+        specifier: 0.1.0
+        version: 0.1.0
       playwright:
         specifier: ^1.63.0
         version: 1.63.0
@@ -1929,6 +1929,10 @@ packages:
   devlop@1.1.0:
     resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
 
+  diff@9.0.0:
+    resolution: {integrity: sha512-svtcdpS8CgJyqAjEQIXdb3OjhFVVYjzGAPO8WGCmRbrml64SPw/jJD4GoE98aR7r25A0XcgrK3F02yw9R/vhQw==}
+    engines: {node: '>=0.3.1'}
+
   doctrine@2.1.0:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}
     engines: {node: '>=0.10.0'}
@@ -2904,9 +2908,9 @@ packages:
   mdast-util-to-hast@13.2.1:
     resolution: {integrity: sha512-cctsq2wp5vTsLIcaymblUriiTcZd0CwWtCbLvrOzYCDZoWyMNV8sZ7krj09FSnsiJi3WVsHLM4k6Dq/yaPyCXA==}
 
-  mdcode-ts@0.0.4:
-    resolution: {integrity: sha512-yuq9C4M9VfaX0xgB6kTdz8s/FtC4Y8xQCE6JAa4JSWQaOcVxabbfYfagfv0373doFcqNWSmpgt869y7OKQhM8Q==}
-    engines: {node: '>=22.0.0'}
+  mdcode-ts@0.1.0:
+    resolution: {integrity: sha512-FR0r1fOPIgKVwIe80tO29Z6R6hbfC0eiqyF2seC+gk1IH+5GDfrMJ1YeTtsCGhJr6jf3m/6+HasUjopVS+G84w==}
+    engines: {node: '>=22.17.0'}
     hasBin: true
 
   merge2@1.4.1:
@@ -5504,6 +5508,8 @@ snapshots:
     dependencies:
       dequal: 2.0.3
 
+  diff@9.0.0: {}
+
   doctrine@2.1.0:
     dependencies:
       esutils: 2.0.3
@@ -6674,9 +6680,10 @@ snapshots:
       unist-util-visit: 5.1.0
       vfile: 6.0.3
 
-  mdcode-ts@0.0.4:
+  mdcode-ts@0.1.0:
     dependencies:
       commander: 14.0.3
+      diff: 9.0.0
       tar-stream: 3.2.1
     transitivePeerDependencies:
       - bare-abort-controller

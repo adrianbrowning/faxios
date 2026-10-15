@@ -23,7 +23,10 @@
     "lint:esl": "eslint --config eslint.config.ts \"**/*.{j,t}s{,x}\" --cache --cache-strategy content --max-warnings=0",
     "lint:s": "eslint --config eslint.config.style.ts \"**/*.{j,t}s{,x}\" --cache --cache-strategy content --max-warnings=0",
     "lint:fix": "pnpm lint:s --fix",
-    "test:docs-examples": "node docs-examples/extract.ts && tsc -p docs-examples/tsconfig.json && vitest run --config docs-examples/vitest.config.ts"
+    "test:docs-examples": "node docs-examples/extract.ts && tsc -p docs-examples/tsconfig.json && vitest run --config docs-examples/vitest.config.ts",
+    "docs:sync": "cd ../.. && mdcode update --project --diff",
+    "docs:sync:apply": "cd ../.. && mdcode update --project --apply",
+    "docs:sync:check": "cd ../.. && mdcode update --project --check --quiet"
   },
   "devDependencies": {
     "@gcmdev/faxios": "workspace:*",
@@ -35,7 +38,7 @@
     "esbuild": "^0.28.2",
     "eslint": "^9.39.5",
     "form-data": "^4.0.5",
-    "mdcode-ts": "0.0.4",
+    "mdcode-ts": "0.1.0",
     "playwright": "^1.63.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.0",

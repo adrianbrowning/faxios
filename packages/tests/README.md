@@ -14,7 +14,7 @@ Run everything with `pnpm check` from the repo root. It runs [run-tests.sh](run-
 | [smoke/deno/](smoke/deno/) | Deno smoke tests and type checks | the packed tarball | `pnpm test:smoke:deno` |
 | [smoke/bun/](smoke/bun/) | Bun smoke tests | the packed tarball | `pnpm test:smoke:bun` |
 | [module/esm/](module/esm/) | Declaration and packaging tests (own TypeScript version) | the packed tarball | `pnpm test:module:esm` |
-| [docs-examples/](docs-examples/) | Code blocks from the READMEs, migration guide, agent skills and docs pages, type-checked and run | the built `lib/dist` | `pnpm test:docs-examples` |
+| [docs-examples/](docs-examples/) | Code blocks from every first-party Markdown file, type-checked and run; `sources/` holds the examples the Markdown copies with `file=` | the built `lib/dist` | `pnpm test:docs-examples` |
 | [setup/](setup/) | Shared helpers | | |
 | [eslint-rules/](eslint-rules/) | Lint rules for this package (tests in `unit/eslint-rules/`) | | |
 | [scripts/](scripts/) | `lint:ts` checks and release helpers | | |
@@ -74,7 +74,7 @@ Representative files: [module/esm/tests/typings.module.test.ts](module/esm/tests
 
 ## Docs examples (`docs-examples/`)
 
-[docs-examples/extract.ts](docs-examples/extract.ts) extracts the `js`/`ts` code blocks from the root and package READMEs, `MIGRATION_GUIDE.md`, the package's agent skills and the docs pages. The comment at the top of that file lists the fence markers: `check=skip` with the `reason=` it is skipped, `check=types`, `status=` and `placeholders=` for the fake `fetch`, `expect=` for the documented outcome, and `contract=` for a declaration listing: [docs-examples/contract.ts](docs-examples/contract.ts) turns it into checks that fail `tsc` once a documented signature differs from the shipped declaration.
+[docs-examples/extract.ts](docs-examples/extract.ts) extracts the `js`/`ts` code blocks from the Markdown files listed in the root `mdcode.config.json` and the pending bump files, and fails on a tracked Markdown file outside them that it doesn't exclude, or on a block in a language it doesn't classify. The comment at the top of that file lists the fence markers: `check=skip` with the `reason=` it is skipped, `check=types`, `status=` and `placeholders=` for the fake `fetch`, `expect=` for the documented outcome, and `contract=` for a declaration listing: [docs-examples/contract.ts](docs-examples/contract.ts) turns it into checks that fail `tsc` once a documented signature differs from the shipped declaration. A block with `file=` is a copy of a file in [docs-examples/sources/](docs-examples/sources/), kept in sync by `pnpm docs:sync:check` (see [AGENTS.md](../../AGENTS.md)), and is extracted like any other block.
 
 Each block runs as a module against a fake `fetch`. The test waits until every request the block started, and the code handling its response, has finished, then checks the block's `expect=` outcomes. A `console.error` call fails the block unless it has an `expect=error:` marker.
 

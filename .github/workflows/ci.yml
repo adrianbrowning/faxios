@@ -38,6 +38,10 @@ jobs:
       - name: Type-check
         run: pnpm lint:ts
 
+      # Writes nothing; fails when a Markdown copy differs from its file= source (mdcode.config.json)
+      - name: Check Markdown examples are in sync
+        run: pnpm docs:sync:check
+
       # The browser project runs headless Chromium, Firefox and WebKit
       - name: Install Playwright with deps
         working-directory: packages/tests

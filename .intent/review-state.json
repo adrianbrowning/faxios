@@ -412,15 +412,15 @@
       ]
     },
     "source:packages/lib/README.md": {
-      "fingerprint": "b58d7381e178723f8468db4af4e92ef427f5b3af0213035609664d95142824b4",
+      "fingerprint": "df7fc7509e9b369c32e36983fcc69fa27afc21a3ef56617fd253c2fbba920a19",
       "snapshot": {
-        "packages/lib/README.md": "b53486b514ce320ab6bba48cac48c8fab58e3892c6c7434d665bc5e2798815fa"
+        "packages/lib/README.md": "872cb16e252d4c66ababd6c935ec364f191a56b03a0f7b3511e31a3d187bfeaa"
       },
-      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
-      "outcome": "updated",
-      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "head": "32234c458f13a175aa56a692ac189f4129775038",
+      "outcome": "no-change",
+      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
       "evidence": [
-        "Changed: packages/lib/README.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+        "Changed: packages/lib/README.md at 02bc02539714e48c32c881c43720b5d34bb375f7"
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
@@ -589,27 +589,27 @@
       ]
     },
     "source:packages/tests/docs-examples/extract.test.ts": {
-      "fingerprint": "3bed1f3534eeaa29ba3124c59429745fc30afb6192ca6733703acf3f4a1b5711",
+      "fingerprint": "aff78a7e1b43eb1e33cd1406d7bc7896fbda19e599ebdfd4ee0b375025b56b85",
       "snapshot": {
-        "packages/tests/docs-examples/extract.test.ts": "bfa3319732393a4e300c79be3ec5469fbba1f020a65a6def165c8c9a295d6317"
+        "packages/tests/docs-examples/extract.test.ts": "04016ebbb8f4b420f231a80c5ad7fa42288893abc152927ef9698659dff05fe2"
       },
-      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "head": "32234c458f13a175aa56a692ac189f4129775038",
       "outcome": "no-change",
-      "reason": "Adds a root landing README and extracts its example in test:docs-examples; no library API or behaviour taught by configure-requests changes.",
+      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
       "evidence": [
-        "Changed: packages/tests/docs-examples/extract.test.ts at e3e74a239a152b801141bedfc18f60acded5c8d2"
+        "Changed: packages/tests/docs-examples/extract.test.ts at 02bc02539714e48c32c881c43720b5d34bb375f7"
       ]
     },
     "source:packages/tests/docs-examples/extract.ts": {
-      "fingerprint": "6038c11e22bad798c230b2df6cf74309027a5c0ad4762f1a35f0d8d0e42e14cb",
+      "fingerprint": "b1002032eb0ab8db980797f966b27b5ac7c2559a911f905c9c70aeddca91d1a2",
       "snapshot": {
-        "packages/tests/docs-examples/extract.ts": "cf7c21c310d14d27ab9394ec19969680d34d6ad26a9dbd457274ef5a5ebfebd1"
+        "packages/tests/docs-examples/extract.ts": "641d948b0cadb8713dd9e8cfa3ebfed091e1c1d43e355b1d15b76cbaebdd0381"
       },
-      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "head": "32234c458f13a175aa56a692ac189f4129775038",
       "outcome": "no-change",
-      "reason": "Adds a root landing README and extracts its example in test:docs-examples; no library API or behaviour taught by configure-requests changes.",
+      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
       "evidence": [
-        "Changed: packages/tests/docs-examples/extract.ts at e3e74a239a152b801141bedfc18f60acded5c8d2"
+        "Changed: packages/tests/docs-examples/extract.ts at 02bc02539714e48c32c881c43720b5d34bb375f7"
       ]
     },
     "source:packages/docs/pages/advanced/route.md": {
@@ -1829,15 +1829,15 @@
       ]
     },
     "source:.claude/skills/do-work/SKILL.md": {
-      "fingerprint": "1fccb0b1c6ee7862de24e00203db979eb8e2ab72730b6328c4649e8ab4615391",
+      "fingerprint": "922ab1ab0ba36c4fb9037f1db12448ac4bcfbd1d46c47ae76380c8a8ba02e6a3",
       "snapshot": {
-        ".claude/skills/do-work/SKILL.md": "38d4fd78d9dd49cefab3f06d7389a7c2592dee5f714cd42420d2aa2591f1f7a5"
+        ".claude/skills/do-work/SKILL.md": "fb266aa49831a1f66198456ed54afbaf81d12aba7332abe5bfb61adcf010cc83"
       },
-      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "head": "32234c458f13a175aa56a692ac189f4129775038",
       "outcome": "no-change",
-      "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
+      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
       "evidence": [
-        "Changed: .claude/skills/do-work/SKILL.md at 5ec7ea4b09f436506a6044c02747686361b3b9af"
+        "Changed: .claude/skills/do-work/SKILL.md at 02bc02539714e48c32c881c43720b5d34bb375f7"
       ]
     },
     "source:.github/actions/setup/action.yml": {
@@ -1881,15 +1881,15 @@
       ]
     },
     "source:.github/workflows/ci.yml": {
-      "fingerprint": "c8957c9dd2fcf98abfdb3fcb525678e0e94602e7f5a61e4e85174926b893b39b",
+      "fingerprint": "8cc4b9217c1ccbf8280880a5c7f2e093ac4ef92718d56b8bbcbc48e63f9c72dd",
       "snapshot": {
-        ".github/workflows/ci.yml": "8689ce61c89f0b28437d39e5ffc0026f8c314d487d696de1c1bcf6777b3d00f4"
+        ".github/workflows/ci.yml": "2f5412a7003fe2b2203e3b755bd92c79fa7f2ebf66b905951498e40318356927"
       },
-      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "head": "32234c458f13a175aa56a692ac189f4129775038",
       "outcome": "no-change",
-      "reason": "Review fixes: plugin import lint limited to root-exported names, CI builds before tests, bump text; the configure-requests skill already describes plugin imports correctly",
+      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
       "evidence": [
-        "Changed: .github/workflows/ci.yml at c7d55ccc0029b173ec5fa125c00be93e2a1c2977"
+        "Changed: .github/workflows/ci.yml at 02bc02539714e48c32c881c43720b5d34bb375f7"
       ]
     },
     "source:.github/workflows/knip.yml": {
@@ -1929,15 +1929,15 @@
       ]
     },
     "source:CONTRIBUTING.md": {
-      "fingerprint": "5e38212f45bc54ae24ffcb857b0904f85c92ad349606b7b5647e777e1030d413",
+      "fingerprint": "2dd413035714350dbb55e6840e8156baca94a5ff674154e54758476a39f6574b",
       "snapshot": {
-        "CONTRIBUTING.md": "a6ad21fe1b4eb5c2aa9fd8178075c38400a0d606c8a1cfb0589ca2f3291fd3ab"
+        "CONTRIBUTING.md": "7e1f571e1a5df1cd28c3fc4a597940244ed6f96b379dcd4e7726746e34c888ba"
       },
-      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "head": "32234c458f13a175aa56a692ac189f4129775038",
       "outcome": "no-change",
-      "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
+      "reason": "Contributor wording only: README sources are linted by pnpm lint and type-checked by test:docs-examples after the build; the skill is unchanged.",
       "evidence": [
-        "Changed: CONTRIBUTING.md at 5ec7ea4b09f436506a6044c02747686361b3b9af"
+        "Changed: CONTRIBUTING.md at 00b9b82daa4f93f5097f0d530b718349dc3dc6fa"
       ]
     },
     "source:THREATMODEL.md": {
@@ -3274,15 +3274,15 @@
       ]
     },
     "source:.github/workflows/run-ci.yml": {
-      "fingerprint": "82af70e3ac02c11f5251a2d3c487f5dcde7e4505facba7e1c55b67b0b0d523ba",
+      "fingerprint": "2080ede971e8f678cbf00b4abc5215f41c118e4c7a29533e207e6e74218ca0ef",
       "snapshot": {
-        ".github/workflows/run-ci.yml": "e0da5c6c798285c0664172046a7641ed64c74fe90105e4a5e746a1810f3fad7c"
+        ".github/workflows/run-ci.yml": "d03ed9a772a2457f759e418413cd4692c536ed579ebbcba8d13f3bdf87ed2d03"
       },
-      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "head": "32234c458f13a175aa56a692ac189f4129775038",
       "outcome": "no-change",
-      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "reason": "Docs build in pnpm check and PR CI, contract checks for docs declaration blocks, docs pages fixed to the shipped API, lib bp/version/docs:dev scripts removed and zshy pinned, REQUEST_CONFIG_KEYS exported for a docs test; no library behaviour, option or export the configure-requests skill teaches changes",
       "evidence": [
-        "Changed: .github/workflows/run-ci.yml at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+        "Changed: .github/workflows/run-ci.yml at e587c3c07f450449a711f53a0099c400a362a8e8"
       ]
     },
     "source:.github/workflows/ts-check.yml": {
@@ -5484,15 +5484,15 @@
       ]
     },
     "source:packages/tests/README.md": {
-      "fingerprint": "a99a2669011cfbfae6525c0019c7508eceb9ed8bf04580c293b2c31e1341d84e",
+      "fingerprint": "1ff382491908039b8c2fb34829672e1c82d9004250442b1ece624fb8be7c6ac8",
       "snapshot": {
-        "packages/tests/README.md": "197d77d176c5589c9fd43bb9ff7dde8a7ef79350969cb74de48dede860a529a0"
+        "packages/tests/README.md": "3472c3d4c501e482b8ee5eba8061259c616334afa7e7f5b68eddad157926b241"
       },
-      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "head": "32234c458f13a175aa56a692ac189f4129775038",
       "outcome": "no-change",
-      "reason": "test-only changes to the unit suite, its server helper and test deps; the skill teaches nothing about them",
+      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
       "evidence": [
-        "Changed: packages/tests/README.md at f0549dea7befb84a26c93609fdff0d445fac2358"
+        "Changed: packages/tests/README.md at 02bc02539714e48c32c881c43720b5d34bb375f7"
       ]
     },
     "source:packages/tests/smoke/esm/tests/headers.smoke.test.ts": {
@@ -5508,15 +5508,15 @@
       ]
     },
     "source:README.md": {
-      "fingerprint": "b95a73b320595cce7412bb06ab824855cff2b8365fbc1b8233d20685e9440fe2",
+      "fingerprint": "f4adb9ed216b3e8b6b1b9cdaa9ef0b8e7521221b0f5b6e66f3e2463c57729575",
       "snapshot": {
-        "README.md": "587679f7264f623f470383110b7060927cc8767c4ed299a1af6df7202d0d4420"
+        "README.md": "91d276accb39c6a2886e33ca95b393016871974264afd342feafbf1bfd0581ec"
       },
-      "head": "adf77e9c2a3d379e030fbda7ce4b166b791089ec",
+      "head": "32234c458f13a175aa56a692ac189f4129775038",
       "outcome": "no-change",
-      "reason": "Adds a root landing README and extracts its example in test:docs-examples; no library API or behaviour taught by configure-requests changes.",
+      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
       "evidence": [
-        "Changed: README.md at e3e74a239a152b801141bedfc18f60acded5c8d2"
+        "Changed: README.md at 02bc02539714e48c32c881c43720b5d34bb375f7"
       ]
     },
     "source:.bumpy/young-silver-cat.md": {
@@ -7113,6 +7113,66 @@
       "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
       "evidence": [
         "Changed files: packages/tests/docs-examples/fixtures/broken-vitepress/index.md"
+      ]
+    },
+    "source:.bumpy/old-thin-vine.md": {
+      "fingerprint": "5653aaee1b7dd6e59ce925030ebce2216336b1211b4119c4825077fe53010630",
+      "snapshot": {
+        ".bumpy/old-thin-vine.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+      },
+      "head": "32234c458f13a175aa56a692ac189f4129775038",
+      "outcome": "no-change",
+      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
+      "evidence": [
+        "Changed: .bumpy/old-thin-vine.md at 02bc02539714e48c32c881c43720b5d34bb375f7"
+      ]
+    },
+    "source:mdcode.config.json": {
+      "fingerprint": "4e4a770669bd384e35f27e900438c0d6c84238cd7fffc62783d23c653a3b4d22",
+      "snapshot": {
+        "mdcode.config.json": "027797ab1030f534a13b0989f54d79b5d21fe0db02bbc29b52bcf9ae9b61f6bd"
+      },
+      "head": "32234c458f13a175aa56a692ac189f4129775038",
+      "outcome": "no-change",
+      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
+      "evidence": [
+        "Changed: mdcode.config.json at 02bc02539714e48c32c881c43720b5d34bb375f7"
+      ]
+    },
+    "source:packages/tests/docs-examples/sources/landing-readme.ts": {
+      "fingerprint": "aa537c6aae4def7255706f5f9f3489e1f397113e0f6d6acd66aa3dce7d479372",
+      "snapshot": {
+        "packages/tests/docs-examples/sources/landing-readme.ts": "1fe9eb63afada8d81c6592e8d435d3ae53bdc9c1631489cd9e65798b7b453007"
+      },
+      "head": "32234c458f13a175aa56a692ac189f4129775038",
+      "outcome": "no-change",
+      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
+      "evidence": [
+        "Changed: packages/tests/docs-examples/sources/landing-readme.ts at 02bc02539714e48c32c881c43720b5d34bb375f7"
+      ]
+    },
+    "source:packages/tests/docs-examples/sources/package-readme-plugin.js": {
+      "fingerprint": "6f40109aa9cbb0fabfeffb0fcc27fb4b2491d5aab40376e8b01be463562ee0ac",
+      "snapshot": {
+        "packages/tests/docs-examples/sources/package-readme-plugin.js": "ae79f893e81760ab3ae2e1e5f2acdc851e42a7e0c47d531ce9c9e4554fcc6842"
+      },
+      "head": "32234c458f13a175aa56a692ac189f4129775038",
+      "outcome": "no-change",
+      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
+      "evidence": [
+        "Changed: packages/tests/docs-examples/sources/package-readme-plugin.js at 02bc02539714e48c32c881c43720b5d34bb375f7"
+      ]
+    },
+    "source:packages/tests/docs-examples/sources/package-readme-request.js": {
+      "fingerprint": "b3df292d840dfc9f478788dbcb27e8fe47f007f4a7bbff3a88abbefdfaf15210",
+      "snapshot": {
+        "packages/tests/docs-examples/sources/package-readme-request.js": "d7f5bd1e77e707dec99cfbb5880c4fe93ce35b6ab53ce985cbef63bb02741fd6"
+      },
+      "head": "32234c458f13a175aa56a692ac189f4129775038",
+      "outcome": "no-change",
+      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
+      "evidence": [
+        "Changed: packages/tests/docs-examples/sources/package-readme-request.js at 02bc02539714e48c32c881c43720b5d34bb375f7"
       ]
     }
   }
