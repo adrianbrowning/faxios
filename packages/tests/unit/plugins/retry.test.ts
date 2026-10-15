@@ -639,6 +639,20 @@ describe("plugins::retry", () => {
     assert.strictEqual(calls.length, 3);
   });
 
+  it("passes a null-prototype ctx.config to middleware after it when attemptTimeout is set", async () => {
+    const { fetch } = scriptedFetch([ 200 ]);
+    let proto: unknown = "unset";
+    const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0, attemptTimeout: 50 }))
+      .use(async (ctx, next) => {
+        proto = Object.getPrototypeOf(ctx.config);
+        return next(ctx);
+      });
+
+    await api.get(URL);
+
+    assert.strictEqual(proto, null);
+  });
+
   describe("policy", () => {
     // Advances fake time by `ms` and reports how many tries fetch saw by then.
     const callsAfter = async (calls: Array<unknown>, ms: number) => {

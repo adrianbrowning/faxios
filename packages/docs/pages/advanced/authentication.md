@@ -76,6 +76,8 @@ When a redirect leaves the origin, `fetch` drops `Authorization` but sends every
 
 To follow redirects anyway, set `redirect` on the request, for example `fetchOptions: { redirect: "follow" }`. Do that only for an API whose redirects you trust, since the key then goes to wherever a redirect points.
 
+`authBearer` also adds a custom `header` to the request's [`redact`](/pages/advanced/request-config#redact) list, so `error.toJSON()` masks your key the same way it masks `Authorization`.
+
 ## HTTP Basic auth
 
 For APIs that use HTTP Basic authentication, pass the `auth` option. faxios will encode the credentials and set the `Authorization` header automatically:

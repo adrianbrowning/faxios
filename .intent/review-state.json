@@ -3,18 +3,18 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "f663e17e228521d3e0f1c9f1b9b1be20a8c4298519cb99c2d2028409583a51a3",
+      "fingerprint": "35a5966b2c5240c23e42cc43a82002a7f86f6ae735dc67704aca9d7a7a10d3af",
       "snapshot": {
         "MIGRATION_GUIDE.md": "98c7aaba2216d86056c235988ee196509617b04b4a972666446eb2652d19179f",
         "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
-        "packages/lib/skills/configure-requests/SKILL.md": "04e2e652f70b17cffddf59204c0255db8588b29121106e16aca7ff142bdb1a37",
+        "packages/lib/skills/configure-requests/SKILL.md": "d9c075ab517036dca83af2f79fb7e4e5c7f51e6a1c43a6d01100ee0d8285e4f9",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "34e6933c02dda42e9d5712a1bf40c42da63bd5cb5ff08b159da447bccaeee1f3",
         "packages/lib/skills/configure-requests/references/plugins.md": "a5be5b9800253f262f1de03a7c8d9e6e7e65d68863a649949d0953f9a9c66295",
         "packages/lib/src/index.ts": "0e433e2cccd5a8484ffbfb743e41ca262259686619f0befdf9375fa17ec05205",
         "packages/lib/src/lib/adapters/fetch.ts": "32786c64173f91e51445b495473db53d9e9c6410c9a47feb12ed547a22da8431",
         "packages/lib/src/lib/core/Faxios.ts": "f7eb5bec35e80e1c0e24858de55eb325681fad2abb0394f1386e1d832d76fdf6",
         "packages/lib/src/lib/core/FaxiosError.ts": "a2e72238c0efdc9ffd7b661ef0ee78e058e91c01f8c6fee6bf21330041f9504c",
-        "packages/lib/src/lib/core/assertRequestConfig.ts": "8b1ca790e583d5d51dc24e7a3d6b9bd306593ee78805bb0bb6fd9112724a36e0",
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "5b4b4c5ff1e02c09f0328a9887861e27c9634a93d78a7bcc11a7714fe0bd0485",
         "packages/lib/src/lib/core/assertSignal.ts": "20419441a170629926bc0b980a2bd51f39fd20bfa6ec21172bfedbdcdb19af81",
         "packages/lib/src/lib/core/assertTimeout.ts": "9dbee014d42508e9aaf23b1e4f1bb72ca3f2151e5deb24a5506d6ea812ef130a",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
@@ -27,43 +27,43 @@
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "fbbd81cc005f413d6ce76987495e2b91973d3a8eb52bae7cc1e9c961fe84b3e4",
         "packages/lib/src/lib/helpers/composeSignals.ts": "390b71ce73079ec812d066dd0a82bc44decf1e778eea95fbcfa925a9fe168749",
-        "packages/lib/src/lib/plugins/authBearer.ts": "36cdfc8437baf57c79b3bff59878c2852b38a278e1ba8f65b40cfea73e6749b2",
+        "packages/lib/src/lib/plugins/authBearer.ts": "17a4be430dfe29962f75456784762dddff6598cf69dab5bbfc801142428a9eb6",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
-        "packages/lib/src/lib/plugins/retry.ts": "6abeb19751306bb3e5015038da5000de43c49c9ae2eb41f186df34a91dae298f",
+        "packages/lib/src/lib/plugins/retry.ts": "69bce8242908707d6cdf05f62573adcecac84365d177b6ff4b95299a24f52ad2",
         "packages/lib/src/lib/plugins/timing.ts": "1f27720ea0ef52f3065691d0018524bec0dbe8598af4d0c898b369ca2fde1d59",
         "packages/lib/src/lib/types.ts": "4cf750d2b63eb3e92562de9a1cceca8f102151d9ab041d0730eff04bc796cdf0",
         "packages/tests/unit/api.test.ts": "42512861aed96b6bb71fc11326c2225fe0906caa370ab76cbfb7727c9b7ca7e1",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
-        "packages/tests/unit/plugins/authBearer.test.ts": "89f77870b4609308af92ebc8b72615d74c6b194c69745ba9a1a13871fad666fd",
+        "packages/tests/unit/plugins/authBearer.test.ts": "676015494660fe61f56303b21b93cafb78d9ef31e1e1c6210d1cc1a9fc0e86f2",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
         "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
-        "packages/tests/unit/plugins/retry.test.ts": "03af116d28863a24b047363209c0793ca494da241abdaeb74187de43c59039ce",
+        "packages/tests/unit/plugins/retry.test.ts": "64d2f4b33d299bdaa6030db378b016d753a7a2e9477ca89375df55371cf99b8f",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "4de5faca993ee73f8eb162f4ebeb544a68689acc",
+      "head": "65f1d369230889444a3251f5c8d746d2a3096b1d",
       "outcome": "updated",
-      "reason": "axios-differences reference now lists the XSRF redirect, config.data, responseType case and R-generic differences; retry signal check and plugin helper refactors change nothing the skill teaches",
+      "reason": "skill notes authBearer custom-header redaction and the valid size-limit values",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/tests/unit/plugins/retry.test.ts at 4de5faca993ee73f8eb162f4ebeb544a68689acc"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/authBearer.test.ts, packages/tests/unit/plugins/retry.test.ts at 65f1d369230889444a3251f5c8d746d2a3096b1d"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "4ccaf2e533dc1ae770b82461047290f686d81790f167ed0a1ce07913e03ee301",
+      "fingerprint": "c36b46dcbe9c7b7a45601e491db5dc6dbd10d345949d027393e5953a47b5670c",
       "snapshot": {
         "MIGRATION_GUIDE.md": "98c7aaba2216d86056c235988ee196509617b04b4a972666446eb2652d19179f",
         "_artifacts/domain_map.yaml": "6472bf0fa719fbc9a6bb2fc70343ca2804d53f7a37e185c26930d8bb0283ddfc",
         "_artifacts/skill_spec.md": "f3684ca03caad063c50220153b6bda6baa88cb9855c4685f3f230e239fc9e4a7",
         "_artifacts/skill_tree.yaml": "91151b302b352ad15d85fb5e9d74be6131c3543b217dfd14122afeff06903b8c",
         "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
-        "packages/lib/skills/configure-requests/SKILL.md": "04e2e652f70b17cffddf59204c0255db8588b29121106e16aca7ff142bdb1a37",
+        "packages/lib/skills/configure-requests/SKILL.md": "d9c075ab517036dca83af2f79fb7e4e5c7f51e6a1c43a6d01100ee0d8285e4f9",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "34e6933c02dda42e9d5712a1bf40c42da63bd5cb5ff08b159da447bccaeee1f3",
         "packages/lib/skills/configure-requests/references/plugins.md": "a5be5b9800253f262f1de03a7c8d9e6e7e65d68863a649949d0953f9a9c66295",
         "packages/lib/src/index.ts": "0e433e2cccd5a8484ffbfb743e41ca262259686619f0befdf9375fa17ec05205",
         "packages/lib/src/lib/adapters/fetch.ts": "32786c64173f91e51445b495473db53d9e9c6410c9a47feb12ed547a22da8431",
         "packages/lib/src/lib/core/Faxios.ts": "f7eb5bec35e80e1c0e24858de55eb325681fad2abb0394f1386e1d832d76fdf6",
         "packages/lib/src/lib/core/FaxiosError.ts": "a2e72238c0efdc9ffd7b661ef0ee78e058e91c01f8c6fee6bf21330041f9504c",
-        "packages/lib/src/lib/core/assertRequestConfig.ts": "8b1ca790e583d5d51dc24e7a3d6b9bd306593ee78805bb0bb6fd9112724a36e0",
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "5b4b4c5ff1e02c09f0328a9887861e27c9634a93d78a7bcc11a7714fe0bd0485",
         "packages/lib/src/lib/core/assertSignal.ts": "20419441a170629926bc0b980a2bd51f39fd20bfa6ec21172bfedbdcdb19af81",
         "packages/lib/src/lib/core/assertTimeout.ts": "9dbee014d42508e9aaf23b1e4f1bb72ca3f2151e5deb24a5506d6ea812ef130a",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
@@ -76,25 +76,25 @@
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "fbbd81cc005f413d6ce76987495e2b91973d3a8eb52bae7cc1e9c961fe84b3e4",
         "packages/lib/src/lib/helpers/composeSignals.ts": "390b71ce73079ec812d066dd0a82bc44decf1e778eea95fbcfa925a9fe168749",
-        "packages/lib/src/lib/plugins/authBearer.ts": "36cdfc8437baf57c79b3bff59878c2852b38a278e1ba8f65b40cfea73e6749b2",
+        "packages/lib/src/lib/plugins/authBearer.ts": "17a4be430dfe29962f75456784762dddff6598cf69dab5bbfc801142428a9eb6",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
-        "packages/lib/src/lib/plugins/retry.ts": "6abeb19751306bb3e5015038da5000de43c49c9ae2eb41f186df34a91dae298f",
+        "packages/lib/src/lib/plugins/retry.ts": "69bce8242908707d6cdf05f62573adcecac84365d177b6ff4b95299a24f52ad2",
         "packages/lib/src/lib/plugins/timing.ts": "1f27720ea0ef52f3065691d0018524bec0dbe8598af4d0c898b369ca2fde1d59",
         "packages/lib/src/lib/types.ts": "4cf750d2b63eb3e92562de9a1cceca8f102151d9ab041d0730eff04bc796cdf0",
         "packages/tests/unit/api.test.ts": "42512861aed96b6bb71fc11326c2225fe0906caa370ab76cbfb7727c9b7ca7e1",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
-        "packages/tests/unit/plugins/authBearer.test.ts": "89f77870b4609308af92ebc8b72615d74c6b194c69745ba9a1a13871fad666fd",
+        "packages/tests/unit/plugins/authBearer.test.ts": "676015494660fe61f56303b21b93cafb78d9ef31e1e1c6210d1cc1a9fc0e86f2",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
         "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
-        "packages/tests/unit/plugins/retry.test.ts": "03af116d28863a24b047363209c0793ca494da241abdaeb74187de43c59039ce",
+        "packages/tests/unit/plugins/retry.test.ts": "64d2f4b33d299bdaa6030db378b016d753a7a2e9477ca89375df55371cf99b8f",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "4de5faca993ee73f8eb162f4ebeb544a68689acc",
+      "head": "65f1d369230889444a3251f5c8d746d2a3096b1d",
       "outcome": "updated",
-      "reason": "axios-differences reference now lists the XSRF redirect, config.data, responseType case and R-generic differences; retry signal check and plugin helper refactors change nothing the skill teaches",
+      "reason": "skill notes authBearer custom-header redaction and the valid size-limit values",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/tests/unit/plugins/retry.test.ts at 4de5faca993ee73f8eb162f4ebeb544a68689acc"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/authBearer.test.ts, packages/tests/unit/plugins/retry.test.ts at 65f1d369230889444a3251f5c8d746d2a3096b1d"
       ]
     },
     "source:knip.json": {
@@ -196,15 +196,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
-      "fingerprint": "55ebbb677268472ed2e8ad54625ad8ece2755efae8c12c8a3001b31724b2e94f",
+      "fingerprint": "2ab972bd5c8f29dd78a41bba395420ea59a2b9def61955af307f3bd77f1a7bb7",
       "snapshot": {
-        "packages/docs/pages/advanced/authentication.md": "b3be9e72fbdd71a7e4f550e62f3ad1d28ff909919c79ee7f02cd4bde9baec55a"
+        "packages/docs/pages/advanced/authentication.md": "fd2327fc03f4f0369fc12e146cb631fd11ca1552f3a3f071b80e48cd4de0a2ed"
       },
-      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
+      "head": "65f1d369230889444a3251f5c8d746d2a3096b1d",
       "outcome": "updated",
-      "reason": "Skill states an empty path param value rejects with ERR_BAD_OPTION_VALUE",
+      "reason": "skill notes authBearer custom-header redaction and the valid size-limit values",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/authentication.md at 29772255069f57f9dfb1764f3b2dd0fa40ec60ab"
+        "Changed: packages/docs/pages/advanced/authentication.md at 65f1d369230889444a3251f5c8d746d2a3096b1d"
       ]
     },
     "source:packages/docs/pages/advanced/create-an-instance.md": {
@@ -292,15 +292,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "b515806141e233cfdef06c2b5d5ae96f5579b54f09a03b9680a537e1c77f6aab",
+      "fingerprint": "8e6df3773a82205b833f345393ffe1ac8329ae1caf4365eb2f3f52c9b7b12636",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "a4c558b56d54fd922b232a521bddbdef58edb2974c45ec5c0f3a383aca49985c"
+        "packages/docs/pages/advanced/request-config.md": "1a8dfdd41ad3bb0eeeaca8c27d008062d84b91eeae568d40da5e3e3f9347468d"
       },
-      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "head": "65f1d369230889444a3251f5c8d746d2a3096b1d",
       "outcome": "updated",
-      "reason": "Skill corrected for spread named export and pathParams optionality (#294)",
+      "reason": "skill notes authBearer custom-header redaction and the valid size-limit values",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 8e6378ca8866ecac735ac97060d1ed8b82965b29"
+        "Changed: packages/docs/pages/advanced/request-config.md at 65f1d369230889444a3251f5c8d746d2a3096b1d"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -6107,15 +6107,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/sizeLimits.test.ts": {
-      "fingerprint": "d6d01743419c74049190d4c786b1daaf236b6d5e86621519ae588dd95ae6f6dc",
+      "fingerprint": "610b17e4095c9fb435ce88888fde9941129a20530066b8b872b6d04249c5f0d5",
       "snapshot": {
-        "packages/tests/unit/adapters/sizeLimits.test.ts": "40471569154fb4f172b131213f6965ecf91005b1bda3ea561250bf85440ccc8b"
+        "packages/tests/unit/adapters/sizeLimits.test.ts": "ad476eee0dfd03ef96df53ef3266115cd0bc2d361bcc83eb87b8e248867ffbb9"
       },
-      "head": "e860801c73b0297a0ec4073403971cc452274399",
+      "head": "65f1d369230889444a3251f5c8d746d2a3096b1d",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
+      "reason": "skill notes authBearer custom-header redaction and the valid size-limit values",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/sizeLimits.test.ts at 484d2ac2104da3e5946af6a25500ec7b40729206"
+        "Changed: packages/tests/unit/adapters/sizeLimits.test.ts at 65f1d369230889444a3251f5c8d746d2a3096b1d"
       ]
     },
     "source:packages/tests/unit/helpers/utf8ByteLength.test.ts": {
@@ -7304,6 +7304,42 @@
       "reason": "axios-differences reference now lists the XSRF redirect, config.data, responseType case and R-generic differences; retry signal check and plugin helper refactors change nothing the skill teaches",
       "evidence": [
         "Changed: .bumpy/review-fixes-lib.md at 4de5faca993ee73f8eb162f4ebeb544a68689acc"
+      ]
+    },
+    "source:.bumpy/auth-bearer-redact-custom-header.md": {
+      "fingerprint": "7a5ed62bbbaed355adfe5504b0095600c2656aadfa5abfd3bb681f46ddfb6e25",
+      "snapshot": {
+        ".bumpy/auth-bearer-redact-custom-header.md": "3962e5159c1aa5d6ed88f23ad2b220c72943d39f3b2a8b8a9a4cef3c7cf3bfdc"
+      },
+      "head": "65f1d369230889444a3251f5c8d746d2a3096b1d",
+      "outcome": "updated",
+      "reason": "skill notes authBearer custom-header redaction and the valid size-limit values",
+      "evidence": [
+        "Changed: .bumpy/auth-bearer-redact-custom-header.md at 65f1d369230889444a3251f5c8d746d2a3096b1d"
+      ]
+    },
+    "source:.bumpy/retry-attempt-timeout-null-proto.md": {
+      "fingerprint": "8b1b945be15e0b63abd1f4e02b090566cea587ae25b2374131958e900d353cbd",
+      "snapshot": {
+        ".bumpy/retry-attempt-timeout-null-proto.md": "51e9de8e6d726209053ea1727badcc37b179fba63a265fae0b6578eb179e8834"
+      },
+      "head": "65f1d369230889444a3251f5c8d746d2a3096b1d",
+      "outcome": "updated",
+      "reason": "skill notes authBearer custom-header redaction and the valid size-limit values",
+      "evidence": [
+        "Changed: .bumpy/retry-attempt-timeout-null-proto.md at 65f1d369230889444a3251f5c8d746d2a3096b1d"
+      ]
+    },
+    "source:.bumpy/size-limit-values.md": {
+      "fingerprint": "8c10efb63b74682d5d7629d275425260ebfbbdea818294eaadeddb3377df11a4",
+      "snapshot": {
+        ".bumpy/size-limit-values.md": "7f61a19cee2f0fd517b070b24cdb0190143ec18ef0001923adacfb67835b2046"
+      },
+      "head": "65f1d369230889444a3251f5c8d746d2a3096b1d",
+      "outcome": "updated",
+      "reason": "skill notes authBearer custom-header redaction and the valid size-limit values",
+      "evidence": [
+        "Changed: .bumpy/size-limit-values.md at 65f1d369230889444a3251f5c8d746d2a3096b1d"
       ]
     }
   }

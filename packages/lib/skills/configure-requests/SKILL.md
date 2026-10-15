@@ -110,7 +110,7 @@ import faxios from "@gcmdev/faxios";
 
 const { data } = await faxios.get<ArrayBuffer>("https://example.com/report.zip", {
   responseType: "arraybuffer",
-  maxContentLength: 50 * 1024 * 1024, // the body is buffered; cap it for untrusted servers
+  maxContentLength: 50 * 1024 * 1024, // -1 or a finite byte count; buffered, so cap it for untrusted servers
 });
 console.log(data.byteLength);
 ```
@@ -284,7 +284,8 @@ catch (error) {
   name (`TypeError`, `SyntaxError`) from `error.cause`.
 - `error.toJSON()` never includes the response, masks `authorization`, `proxy-authorization`,
   `cookie` and `auth` at any depth and strips `user:pass@` from `url`/`baseURL`; list other
-  sensitive config keys in `redact` to mask them too. A request's `redact` adds to the
+  sensitive config keys in `redact` to mask them too. `authBearer` with a custom `header` adds
+  that header for you. A request's `redact` adds to the
   instance's. `config.data` is the body the caller passed (an object, not the JSON or form string
   sent), so `redact: ["password"]` masks a body password; a pre-serialized string body is logged
   as is. Schema `issues` keep only `message` and each path segment's `key`. Its `cause` is the

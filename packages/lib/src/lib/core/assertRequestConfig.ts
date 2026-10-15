@@ -143,4 +143,18 @@ export default function assertRequestConfig(config: FaxiosRequestConfig, pluginO
       config as InternalFaxiosRequestConfig
     );
   }
+
+  assertSizeLimit(config, "maxContentLength");
+  assertSizeLimit(config, "maxBodyLength");
+}
+
+// A bad limit must not switch the size guard off: -1 is the only "unlimited" value.
+function assertSizeLimit(config: FaxiosRequestConfig, key: "maxBodyLength" | "maxContentLength"): void {
+  const limit: unknown = hasOwnProp(config, key) ? config[key] : undefined;
+  if (limit === undefined || limit === -1 || (Number.isFinite(limit) && (limit as number) >= 0)) return;
+  throw new FaxiosError(
+    `option ${key} must be -1 (unlimited) or a finite number of bytes from 0`,
+    FaxiosError.ERR_BAD_OPTION_VALUE,
+    config as InternalFaxiosRequestConfig
+  );
 }

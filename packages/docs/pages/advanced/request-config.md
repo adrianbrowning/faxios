@@ -271,6 +271,8 @@ The `maxContentLength` property defines the maximum response size in bytes. A re
 > ⚠️ **Security:** defaults to `-1` (unlimited). Unbounded responses combined with gzip/deflate/brotli/zstd decompression allow decompression-bomb DoS.
 > Set an explicit limit when requesting servers you do not fully trust.
 
+Both `maxContentLength` and [`maxBodyLength`](#maxbodylength) take `-1` (unlimited) or a finite number of bytes from `0`. Any other value, such as the string `"1048576"`, `NaN`, `Infinity` or `null`, rejects with `ERR_BAD_OPTION_VALUE` before the request is sent, so a mistyped limit never switches the check off.
+
 ### `maxBodyLength`
 
 The `maxBodyLength` property defines the maximum request body size in bytes. A body of exactly `maxBodyLength` bytes is allowed; one byte more is rejected. faxios checks the body's real size, never a `Content-Length` header you set:

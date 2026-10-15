@@ -149,6 +149,10 @@ export function authBearer(getToken: () => Promise<string> | string, options: Au
       if (customHeader && (!fetchOptions || !Object.hasOwn(fetchOptions, "redirect") || fetchOptions.redirect === undefined)) {
         config.fetchOptions = { ...fetchOptions, redirect: "error" };
       }
+      if (customHeader) {
+        // Mask the token in error.toJSON(), as the default list masks Authorization.
+        config.redact = [ ...own(config, "redact") ?? [], header.toLowerCase() ];
+      }
       return next({ ...ctx, config });
     },
   });

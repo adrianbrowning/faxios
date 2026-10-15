@@ -290,7 +290,8 @@ function tryWithin(ms: number, ctx: FaxiosContext<RetryRequestOptions>, next: Fa
     // throw into a rejection.
     // eslint-disable-next-line sonarjs/prefer-promise-shorthand -- see above
     const pending = new Promise<FaxiosResponse>(_resolve => {
-      _resolve(next({ ...ctx, config: { ...ctx.config, signal } }));
+      // Null prototype, like every ctx.config: later middleware must not read inherited keys.
+      _resolve(next({ ...ctx, config: Object.assign(Object.create(null) as InternalFaxiosRequestConfig, ctx.config, { signal }) }));
     });
     // After the deadline the result has nowhere to go; this still consumes it.
     pending.finally(stop).then(resolve, reject);

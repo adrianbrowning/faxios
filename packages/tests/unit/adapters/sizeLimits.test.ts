@@ -66,6 +66,26 @@ const post = async (data: unknown, env: Env) =>
 const get = async (url: string, env: Env, config: FaxiosRequestConfig = {}) =>
   faxios.get(url, { maxContentLength: LIMIT, env, ...config });
 
+describe("adapters::fetch size limit option values", () => {
+  it.each([ "maxContentLength", "maxBodyLength" ] as const)("rejects a %s that would switch the limit off", async key => {
+    const sink = respondWith(() => new Response("a".repeat(LIMIT + 1)));
+    for (const value of [ String(LIMIT), Number.NaN, Number.POSITIVE_INFINITY, null, -2, -0.5 ]) {
+      await assert.rejects(
+        faxios.post(URL, "a".repeat(LIMIT + 1), { [key]: value as never, env: { fetch: sink.fetch } as Env }),
+        (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE && err.message.includes(key),
+        `${key}: ${String(value)}`
+      );
+    }
+    assert.strictEqual(sink.calls, 0);
+    // -1 is unlimited; LIMIT is a real limit, so one byte more is still rejected by the guard.
+    await faxios.post(URL, "a", { [key]: -1, env: { fetch: sink.fetch } as Env });
+    await assert.rejects(
+      faxios.post(URL, "a".repeat(LIMIT + 1), { [key]: LIMIT, env: { fetch: sink.fetch } as Env }),
+      key === "maxBodyLength" ? isBodyTooLarge : isContentTooLarge
+    );
+  });
+});
+
 describe.runIf(typeof fetch === "function")("adapters::fetch size limits at the boundary", () => {
   describe("maxBodyLength, known-size preflight", () => {
     it.each([
