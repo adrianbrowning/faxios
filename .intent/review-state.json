@@ -3,12 +3,12 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "645460631733ff0402014b8d53950be71194b949cadff0814abdd78df50fc468",
+      "fingerprint": "f663e17e228521d3e0f1c9f1b9b1be20a8c4298519cb99c2d2028409583a51a3",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "48d99cef091e5e681900c8aa040d099d9b06610431767ef3ba74363be7426539",
+        "MIGRATION_GUIDE.md": "98c7aaba2216d86056c235988ee196509617b04b4a972666446eb2652d19179f",
         "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
         "packages/lib/skills/configure-requests/SKILL.md": "04e2e652f70b17cffddf59204c0255db8588b29121106e16aca7ff142bdb1a37",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "1e0cd5af74a973acf734e72a6ad967e6d18f44f591ebce1a6cab60a564b88b2f",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "34e6933c02dda42e9d5712a1bf40c42da63bd5cb5ff08b159da447bccaeee1f3",
         "packages/lib/skills/configure-requests/references/plugins.md": "a5be5b9800253f262f1de03a7c8d9e6e7e65d68863a649949d0953f9a9c66295",
         "packages/lib/src/index.ts": "0e433e2cccd5a8484ffbfb743e41ca262259686619f0befdf9375fa17ec05205",
         "packages/lib/src/lib/adapters/fetch.ts": "32786c64173f91e51445b495473db53d9e9c6410c9a47feb12ed547a22da8431",
@@ -27,37 +27,37 @@
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "fbbd81cc005f413d6ce76987495e2b91973d3a8eb52bae7cc1e9c961fe84b3e4",
         "packages/lib/src/lib/helpers/composeSignals.ts": "390b71ce73079ec812d066dd0a82bc44decf1e778eea95fbcfa925a9fe168749",
-        "packages/lib/src/lib/plugins/authBearer.ts": "e348383bbce226d7fde1c1cd724abdf3dea7e2553c47562045bd4ed790566b7b",
+        "packages/lib/src/lib/plugins/authBearer.ts": "36cdfc8437baf57c79b3bff59878c2852b38a278e1ba8f65b40cfea73e6749b2",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
-        "packages/lib/src/lib/plugins/retry.ts": "a973ddfe5a0b24e7069b9c9970dc1c2dcb50d3f9193d17cd7b9364e37fd2c22b",
-        "packages/lib/src/lib/plugins/timing.ts": "e29c1a110d73273227bee8e0aebc8cd55b5c97e5300544d4a78e024b7e82a836",
+        "packages/lib/src/lib/plugins/retry.ts": "6abeb19751306bb3e5015038da5000de43c49c9ae2eb41f186df34a91dae298f",
+        "packages/lib/src/lib/plugins/timing.ts": "1f27720ea0ef52f3065691d0018524bec0dbe8598af4d0c898b369ca2fde1d59",
         "packages/lib/src/lib/types.ts": "4cf750d2b63eb3e92562de9a1cceca8f102151d9ab041d0730eff04bc796cdf0",
         "packages/tests/unit/api.test.ts": "42512861aed96b6bb71fc11326c2225fe0906caa370ab76cbfb7727c9b7ca7e1",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "89f77870b4609308af92ebc8b72615d74c6b194c69745ba9a1a13871fad666fd",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
         "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
-        "packages/tests/unit/plugins/retry.test.ts": "6135e34294945ae5361ee86060d7253ea8880b1bede31b97f5f044f0bcee77d4",
+        "packages/tests/unit/plugins/retry.test.ts": "03af116d28863a24b047363209c0793ca494da241abdaeb74187de43c59039ce",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
+      "head": "4de5faca993ee73f8eb162f4ebeb544a68689acc",
       "outcome": "updated",
-      "reason": "Skill X-Api-Key example reads redirect as an own key on a null-prototype config copy; getUri ERR_INVALID_URL in JSDoc and migration guide",
+      "reason": "axios-differences reference now lists the XSRF redirect, config.data, responseType case and R-generic differences; retry signal check and plugin helper refactors change nothing the skill teaches",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/faxios.ts at 1843d8388905c9568c81f182ed239382a968e7d8"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/tests/unit/plugins/retry.test.ts at 4de5faca993ee73f8eb162f4ebeb544a68689acc"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "7782da7fc754f4b4b62393269a0dd4b7901bf01bad49f50cf601d96965bdabf6",
+      "fingerprint": "4ccaf2e533dc1ae770b82461047290f686d81790f167ed0a1ce07913e03ee301",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "48d99cef091e5e681900c8aa040d099d9b06610431767ef3ba74363be7426539",
+        "MIGRATION_GUIDE.md": "98c7aaba2216d86056c235988ee196509617b04b4a972666446eb2652d19179f",
         "_artifacts/domain_map.yaml": "6472bf0fa719fbc9a6bb2fc70343ca2804d53f7a37e185c26930d8bb0283ddfc",
         "_artifacts/skill_spec.md": "f3684ca03caad063c50220153b6bda6baa88cb9855c4685f3f230e239fc9e4a7",
         "_artifacts/skill_tree.yaml": "91151b302b352ad15d85fb5e9d74be6131c3543b217dfd14122afeff06903b8c",
         "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
         "packages/lib/skills/configure-requests/SKILL.md": "04e2e652f70b17cffddf59204c0255db8588b29121106e16aca7ff142bdb1a37",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "1e0cd5af74a973acf734e72a6ad967e6d18f44f591ebce1a6cab60a564b88b2f",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "34e6933c02dda42e9d5712a1bf40c42da63bd5cb5ff08b159da447bccaeee1f3",
         "packages/lib/skills/configure-requests/references/plugins.md": "a5be5b9800253f262f1de03a7c8d9e6e7e65d68863a649949d0953f9a9c66295",
         "packages/lib/src/index.ts": "0e433e2cccd5a8484ffbfb743e41ca262259686619f0befdf9375fa17ec05205",
         "packages/lib/src/lib/adapters/fetch.ts": "32786c64173f91e51445b495473db53d9e9c6410c9a47feb12ed547a22da8431",
@@ -76,25 +76,25 @@
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "fbbd81cc005f413d6ce76987495e2b91973d3a8eb52bae7cc1e9c961fe84b3e4",
         "packages/lib/src/lib/helpers/composeSignals.ts": "390b71ce73079ec812d066dd0a82bc44decf1e778eea95fbcfa925a9fe168749",
-        "packages/lib/src/lib/plugins/authBearer.ts": "e348383bbce226d7fde1c1cd724abdf3dea7e2553c47562045bd4ed790566b7b",
+        "packages/lib/src/lib/plugins/authBearer.ts": "36cdfc8437baf57c79b3bff59878c2852b38a278e1ba8f65b40cfea73e6749b2",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
-        "packages/lib/src/lib/plugins/retry.ts": "a973ddfe5a0b24e7069b9c9970dc1c2dcb50d3f9193d17cd7b9364e37fd2c22b",
-        "packages/lib/src/lib/plugins/timing.ts": "e29c1a110d73273227bee8e0aebc8cd55b5c97e5300544d4a78e024b7e82a836",
+        "packages/lib/src/lib/plugins/retry.ts": "6abeb19751306bb3e5015038da5000de43c49c9ae2eb41f186df34a91dae298f",
+        "packages/lib/src/lib/plugins/timing.ts": "1f27720ea0ef52f3065691d0018524bec0dbe8598af4d0c898b369ca2fde1d59",
         "packages/lib/src/lib/types.ts": "4cf750d2b63eb3e92562de9a1cceca8f102151d9ab041d0730eff04bc796cdf0",
         "packages/tests/unit/api.test.ts": "42512861aed96b6bb71fc11326c2225fe0906caa370ab76cbfb7727c9b7ca7e1",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "89f77870b4609308af92ebc8b72615d74c6b194c69745ba9a1a13871fad666fd",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
         "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
-        "packages/tests/unit/plugins/retry.test.ts": "6135e34294945ae5361ee86060d7253ea8880b1bede31b97f5f044f0bcee77d4",
+        "packages/tests/unit/plugins/retry.test.ts": "03af116d28863a24b047363209c0793ca494da241abdaeb74187de43c59039ce",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
+      "head": "4de5faca993ee73f8eb162f4ebeb544a68689acc",
       "outcome": "updated",
-      "reason": "Skill X-Api-Key example reads redirect as an own key on a null-prototype config copy; getUri ERR_INVALID_URL in JSDoc and migration guide",
+      "reason": "axios-differences reference now lists the XSRF redirect, config.data, responseType case and R-generic differences; retry signal check and plugin helper refactors change nothing the skill teaches",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/faxios.ts at 1843d8388905c9568c81f182ed239382a968e7d8"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/tests/unit/plugins/retry.test.ts at 4de5faca993ee73f8eb162f4ebeb544a68689acc"
       ]
     },
     "source:knip.json": {
@@ -4512,15 +4512,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/config-defaults.md": {
-      "fingerprint": "cda2980315ac16994db995b7b06064ca41a951a9a813bab1e6137a2615549a6f",
+      "fingerprint": "cabff556aff6fca72580beb58024c0a1b5b30c6a75bb3affedff5d9fddd7285e",
       "snapshot": {
-        "packages/docs/pages/advanced/config-defaults.md": "ab90c8432199e6b9c8a9556f2878f05fa5b1d0e3df6890762fc09cf9980ee2e9"
+        "packages/docs/pages/advanced/config-defaults.md": "fae1ebcdd36ef2aa89402c3d2de6e022d65947213e377cead4141f8c2e5182b8"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "4de5faca993ee73f8eb162f4ebeb544a68689acc",
       "outcome": "updated",
-      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
+      "reason": "axios-differences reference now lists the XSRF redirect, config.data, responseType case and R-generic differences; retry signal check and plugin helper refactors change nothing the skill teaches",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/config-defaults.md at a07985125c27956a1d106702007aa65f535066b6"
+        "Changed: packages/docs/pages/advanced/config-defaults.md at 4de5faca993ee73f8eb162f4ebeb544a68689acc"
       ]
     },
     "source:packages/tests/unit/core/mergePrecedence.test.ts": {
@@ -4632,15 +4632,15 @@
       ]
     },
     "source:packages/lib/src/lib/plugins/shared.ts": {
-      "fingerprint": "5800e4bb98217b466e85ecb05c455518a9484ec6c304123e3d6ed309b10eda8c",
+      "fingerprint": "6799adefd3ced5d242f74b494941bf3ad27e8605eb7a913c540ac9c240046a43",
       "snapshot": {
-        "packages/lib/src/lib/plugins/shared.ts": "d557f4de1c6ad47d281199dea3d77b528af3db38a5aa1575cf924c817c1cb8c6"
+        "packages/lib/src/lib/plugins/shared.ts": "411984cc1d99e0aa349c5ce3246e8b85ac7df3c61ea8944bea4cc2fa8f340643"
       },
-      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "head": "4de5faca993ee73f8eb162f4ebeb544a68689acc",
       "outcome": "updated",
-      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
+      "reason": "axios-differences reference now lists the XSRF redirect, config.data, responseType case and R-generic differences; retry signal check and plugin helper refactors change nothing the skill teaches",
       "evidence": [
-        "Changed: packages/lib/src/lib/plugins/shared.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
+        "Changed: packages/lib/src/lib/plugins/shared.ts at 4de5faca993ee73f8eb162f4ebeb544a68689acc"
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/middleware-index.ts": {
@@ -7296,15 +7296,15 @@
       ]
     },
     "source:.bumpy/review-fixes-lib.md": {
-      "fingerprint": "f88697cc9d8d0778402b2af795070d7b6f4e949f1cebe974e8e592c1c5fc29b5",
+      "fingerprint": "635e2b4ce2f97fcb528564588a9e72b9248570844ff8849ceb97b549fd120d7a",
       "snapshot": {
-        ".bumpy/review-fixes-lib.md": "26fa2057cc31b7184cd749d934fc6804344755b467196304efe5f1b2a517856d"
+        ".bumpy/review-fixes-lib.md": "6d5db27b610d6cfa57d329e70f9756f10e789fc0b8aa9763eefa1b608af8d44f"
       },
-      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
+      "head": "4de5faca993ee73f8eb162f4ebeb544a68689acc",
       "outcome": "updated",
-      "reason": "Skill X-Api-Key example reads redirect as an own key on a null-prototype config copy; getUri ERR_INVALID_URL in JSDoc and migration guide",
+      "reason": "axios-differences reference now lists the XSRF redirect, config.data, responseType case and R-generic differences; retry signal check and plugin helper refactors change nothing the skill teaches",
       "evidence": [
-        "Changed: .bumpy/review-fixes-lib.md at 1843d8388905c9568c81f182ed239382a968e7d8"
+        "Changed: .bumpy/review-fixes-lib.md at 4de5faca993ee73f8eb162f4ebeb544a68689acc"
       ]
     }
   }
