@@ -2604,16 +2604,15 @@
       ]
     },
     "source:packages/tests/setup/server.ts": {
-      "fingerprint": "d50404cd69d3089179fece00dcd0f02f781d830abed5064f7b794fe9e8dacebc",
+      "fingerprint": "cc97caccaf3379ab7041d08040107e2b879d91c43024c28c6cf6b18ddfc8ba3a",
       "snapshot": {
-        "packages/tests/setup/server.ts": "699fb28cd07dc62c7718836a8549347a48bfbe3c7bbc110d37306f563086cc62"
+        "packages/tests/setup/server.ts": "cbbfc0c44695daba16c17c5f91fe0cd2e0a6376c6cce1503838c79b079e7a760"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "1dbb3b488c94cd4699e4e769110c060f8a927756",
       "outcome": "no-change",
-      "reason": "Unions `http.Server | http2.Http2SecureServer` reversed (in untrackServer and ExtendedServer). `ServerOptions` keys sorted. `ExtendedServer` keys closeAllConnections and closeAllSessions swapped. Stream union members sorted. `Record<string, string | Array<string>>` became `Array<string> | string`. Keys of the inline `{status, headers, body}` type assertion sorted. The object-destructuring pattern itself did not move. Behaviour change: none (all type-level). The destructuring `{ status = 200?, headers = {}, body }` is outside the moved lines.",
+      "reason": "test-only changes; skill guidance unaffected",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/setup/server.ts: @@ -20,24 +20,24 @@, @@ -84,8 +84,8 @@, @@ -186,7 +186,7 @@, @@ -322,9 +322,9 @@ (diff/195)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/setup/server.ts at 1dbb3b488c94cd4699e4e769110c060f8a927756"
       ]
     },
     "source:packages/tests/setup/vendor.d.ts": {
@@ -2941,15 +2940,15 @@
       ]
     },
     "source:packages/tests/unit/helpers/formDataToJSON.test.ts": {
-      "fingerprint": "386864f1b7f6c7faefc4fa2b1994aafad5923a23612ab7bfc267a84aefb74a06",
+      "fingerprint": "0473e3d1d859e0c20d35c508bbb3dc2206e4f0211fd8ab5afd3eb22461fc573b",
       "snapshot": {
-        "packages/tests/unit/helpers/formDataToJSON.test.ts": "bb25e13f022de0198b6e6aaa4bdc111cd5e00b2a7288e2fb9b7251740c434876"
+        "packages/tests/unit/helpers/formDataToJSON.test.ts": "4d5d4f1efdff42e0a844dd639ff23773816fe99d782200b402cc84c9b5243ad6"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "head": "38f134f0eebdc1fb61b7f4c42634c39f2ed608d7",
       "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "reason": "test-only changes; skill guidance unaffected",
       "evidence": [
-        "Changed: packages/tests/unit/helpers/formDataToJSON.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/tests/unit/helpers/formDataToJSON.test.ts at 38f134f0eebdc1fb61b7f4c42634c39f2ed608d7"
       ]
     },
     "source:packages/tests/unit/helpers/isAbsoluteURL.test.ts": {
@@ -3017,15 +3016,15 @@
       ]
     },
     "source:packages/tests/unit/prototypePollution.test.ts": {
-      "fingerprint": "805989c16c71e0dbc49ce973e8b3f94798c42617256e9782c312ba30cab8900e",
+      "fingerprint": "67205059e483d66ec3b61b4e782d685ad45612e481f90a731720d1052e32841a",
       "snapshot": {
-        "packages/tests/unit/prototypePollution.test.ts": "6c2a28686d97d962cb65ade534a48671cb05d832a681b39c972450594369d973"
+        "packages/tests/unit/prototypePollution.test.ts": "f37175d378795ac3e82a01f2111e19409c28a733317e1c3d099040650b1e2866"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
-      "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "head": "1dbb3b488c94cd4699e4e769110c060f8a927756",
+      "outcome": "no-change",
+      "reason": "test-only changes; skill guidance unaffected",
       "evidence": [
-        "Changed: packages/tests/unit/prototypePollution.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: packages/tests/unit/prototypePollution.test.ts at 1dbb3b488c94cd4699e4e769110c060f8a927756"
       ]
     },
     "source:packages/tests/unit/query.test.ts": {
@@ -3042,15 +3041,15 @@
       ]
     },
     "source:packages/tests/unit/regression.test.ts": {
-      "fingerprint": "bebf4769b09ec35f4b17ed2fd546e2e90b8a23cc25f3d35f84c93abf889d72e5",
+      "fingerprint": "bee5df29c3205cea66f2411cfecf2cd41127445b381598410df83e387983f693",
       "snapshot": {
-        "packages/tests/unit/regression.test.ts": "21ad96cf34e1cedf8c26d187c778c5a7e53f91fa9c053f4a1ec4bee0b40a4861"
+        "packages/tests/unit/regression.test.ts": "257178bca249674f2634906e74399773c996b912ecdea090328b75f32f28c775"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
+      "head": "1dbb3b488c94cd4699e4e769110c060f8a927756",
       "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "reason": "test-only changes; skill guidance unaffected",
       "evidence": [
-        "Changed: packages/tests/unit/regression.test.ts at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: packages/tests/unit/regression.test.ts at 1dbb3b488c94cd4699e4e769110c060f8a927756"
       ]
     },
     "source:packages/tests/unit/utils/endsWith.test.ts": {
