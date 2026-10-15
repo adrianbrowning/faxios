@@ -27,7 +27,7 @@ This code of conduct applies in all faxios spaces: issues, pull requests, discus
 
 ## Reporting
 
-Report unacceptable behavior privately to the maintainers at **[MAINTAINER: private conduct-report address]**.
+Report unacceptable behavior privately to the maintainers at [gingacodemonkey@gmail.com](mailto:gingacodemonkey@gmail.com).
 Don't report conduct in a public issue, pull request, or comment. Those are visible to everyone, including the person you are reporting.
 Security vulnerabilities are not conduct reports. Report them through a [GitHub security advisory](https://github.com/adrianbrowning/faxios/security/advisories/new) as described in [SECURITY.md](SECURITY.md).
 
