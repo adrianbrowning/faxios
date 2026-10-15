@@ -8,7 +8,7 @@ import faxios from "./lib/faxios.ts";
 // runtime instance forced TS to emit the broken inline `import("./x.ts")` form.
 export { default as Faxios } from "./lib/core/Faxios.ts";
 export { default as FaxiosError, isSchemaValidationError } from "./lib/core/FaxiosError.ts";
-export type { SchemaValidationError } from "./lib/core/FaxiosError.ts";
+export type { FaxiosErrorCode, SchemaValidationError } from "./lib/core/FaxiosError.ts";
 export { default as Cancel, default as CanceledError } from "./lib/cancel/CanceledError.ts";
 export { default as isCancel } from "./lib/cancel/isCancel.ts";
 export { default as isFaxiosError } from "./lib/helpers/isFaxiosError.ts";
@@ -26,7 +26,7 @@ export { create } from "./lib/create.ts";
 
 export type { FaxiosInstance, FaxiosStatic } from "./lib/faxios.ts";
 export type { StandardSchemaV1 } from "./lib/types/standard-schema.ts";
-export type { BasePerCallConfig, DefineConfig, DefinedEndpoint, FaxiosLike, PerCallConfig } from "./lib/core/define.ts";
+export type { BasePerCallConfig, DefineConfig, DefinedEndpoint, PerCallConfig } from "./lib/core/define.ts";
 export type { RouteBuilder, RouteConfig, RouteMethodConfig } from "./lib/core/route.ts";
 
 export type {
@@ -36,6 +36,7 @@ export type {
   FaxiosConfigHeaders,
   FaxiosContext,
   FaxiosDefaults,
+  FaxiosFetchOptions,
   FaxiosHeaderValue,
   FaxiosMiddleware,
   FaxiosNext,
@@ -56,7 +57,6 @@ export type {
   InternalFaxiosRequestConfig,
   Method,
   ParamsSerializerOptions,
-  RawFaxiosRequestConfig,
   RawFaxiosRequestHeaders,
   ResponseType,
   TransitionalOptions

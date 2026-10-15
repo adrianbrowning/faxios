@@ -1,6 +1,7 @@
 import { describe, expectTypeOf, it } from "vitest";
 import { z } from "zod";
 import faxios, { Faxios } from "#src/index.ts";
+import type { FaxiosResponse } from "#src/index.ts";
 import type { FaxiosInstance } from "#src/lib/faxios.ts";
 
 // Type-checked by `lint:ts`; the functions are never called.
@@ -85,6 +86,22 @@ describe("explicit response generic and responseSchema", () => {
     async function check(instance: FaxiosInstance) {
       const response = await instance.get<{ id: number; name: string; }>("/u", { responseSchema: zUser });
       expectTypeOf(response.data).toEqualTypeOf<{ id: number; name: string; }>();
+    }
+    expectTypeOf(check).toBeFunction();
+  });
+
+  it("resolves every request method to FaxiosResponse<T, D>, with no third R generic", () => {
+    async function check(instance: FaxiosInstance, cls: Faxios) {
+      expectTypeOf(await instance.get<{ id: number; }>("/u")).toEqualTypeOf<FaxiosResponse<{ id: number; }>>();
+      expectTypeOf(await cls.post<{ id: number; }, { name: string; }>("/u", { name: "a" })).toEqualTypeOf<FaxiosResponse<{ id: number; }, { name: string; }>>();
+      // @ts-expect-error TS2322 -- the second type argument is D; the result is a FaxiosResponse
+      const viaInstance: string = await instance.get<{ id: number; }, string>("/u");
+      // @ts-expect-error TS2322 -- same on the Faxios class
+      const viaClass: string = await cls.get<{ id: number; }, string>("/u");
+      // @ts-expect-error TS2558 -- request methods take two type arguments
+      void cls.request<{ id: number; }, FaxiosResponse, unknown>({ url: "/u" });
+      void viaInstance;
+      void viaClass;
     }
     expectTypeOf(check).toBeFunction();
   });

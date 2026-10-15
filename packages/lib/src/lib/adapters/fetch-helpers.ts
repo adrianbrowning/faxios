@@ -8,9 +8,10 @@ import type {
   FaxiosResponse,
   InternalFaxiosRequestConfig
 } from "../types.js";
+import type { WebAbortSignal, WebRequest } from "../types/web.js";
 import { getSafeProp, toFiniteNumber } from "../utils.js";
 
-export type ComposedSignal = AbortSignal & { unsubscribe?: () => void; };
+export type ComposedSignal = WebAbortSignal & { unsubscribe?: () => void; };
 // The adapter step a failure came from: building the Request, sending it, or reading the body.
 export type FetchStage = "body" | "build" | "send";
 
@@ -23,7 +24,7 @@ export type FetchContext = {
   limits: { body: number | undefined; content: number | undefined; };
   method: string;
   // The fetch Request, once built. Undefined before that and where the runtime has no Request.
-  request: Request | undefined;
+  request: undefined | WebRequest;
   signal: ComposedSignal;
   stage: FetchStage | undefined;
   url: unknown;

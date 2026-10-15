@@ -4,6 +4,7 @@
 import parseHeaders from "../helpers/parseHeaders.js";
 import { sanitizeHeaderValue } from "../helpers/sanitizeHeaderValue.js";
 import type { FaxiosHeaderValue } from "../types.js";
+import type { WebHeaders } from "../types/web.js";
 import { forEach, freezeMethods, hasOwnProp, isArray, isDangerousKey, isFunction, isObject, isPlainObject, isRegExp, isSafeIterable, isString, toCamelCase } from "../utils.js";
 
 /** Matches a header value for `has()`, `delete()`, `clear()` and the `has<Header>` shortcuts. */
@@ -43,12 +44,22 @@ type HeaderAccessors =
   & { [H in AccessorHeader as `has${AccessorSuffix<H>}`]: (matcher?: HeaderMatcher) => boolean; }
   & { [H in AccessorHeader as `set${AccessorSuffix<H>}`]: (value: FaxiosHeaderValue, rewrite?: boolean) => FaxiosHeaders; };
 
-type HeaderInput =
+/** A header bag: header names mapped to header values; `undefined` leaves a header unset. */
+type HeaderObject = { [header: string]: FaxiosHeaderValue | undefined; };
+
+/**
+ * What `new FaxiosHeaders()`, `set()`, `from()` and `concat()` read: another `FaxiosHeaders`, a
+ * header object, raw `Name: value` lines, or an iterable of `[name, value]` entries (a `Headers`,
+ * a `Map` or an array of pairs).
+ */
+export type HeaderInput =
   | FaxiosHeaders
+  | HeaderObject
+  | Iterable<readonly [string, FaxiosHeaderValue | undefined]>
   | null
-  | Record<string, unknown>
   | string
-  | undefined;
+  | undefined
+  | WebHeaders;
 
 /** Matches a `FaxiosHeaders` instance by its type-only brand. */
 export type FaxiosHeadersInstance = Pick<FaxiosHeaders, typeof faxiosHeadersBrand>;
@@ -235,15 +246,17 @@ class FaxiosHeaders {
   // without its index signature or method names leaking into header-name completions.
   declare readonly [faxiosHeadersBrand]: true;
 
-  constructor(
-    headers?: FaxiosHeaders | null | Record<string, unknown> | string
-  ) {
+  constructor(headers?: HeaderInput) {
     headers && this.set(headers);
   }
 
+  /** Set one header; `rewrite` decides whether an existing value is replaced. */
+  set(header: string, value?: FaxiosHeaderValue, rewrite?: boolean): this;
+  /** Set every header in `headers`; `rewrite` applies to each. */
+  set(headers: HeaderInput, rewrite?: boolean): this;
   set(
     header: HeaderInput,
-    valueOrRewrite?: unknown,
+    valueOrRewrite?: FaxiosHeaderValue,
     rewrite?: boolean
   ): this {
     const self = this;
@@ -512,18 +525,11 @@ class FaxiosHeaders {
     return "FaxiosHeaders";
   }
 
-  static from(
-    thing?: FaxiosHeaders | null | Record<string, unknown> | string
-  ): FaxiosHeaders {
+  static from(thing?: HeaderInput): FaxiosHeaders {
     return thing instanceof this ? thing : new this(thing);
   }
 
-  static concat(
-    first: FaxiosHeaders | null | Record<string, unknown> | string | undefined,
-    ...targets: Array<
-      FaxiosHeaders | null | Record<string, unknown> | string | undefined
-    >
-  ): FaxiosHeaders {
+  static concat(first: HeaderInput, ...targets: Array<HeaderInput>): FaxiosHeaders {
     const computed = new this(first);
 
     targets.forEach(target => computed.set(target));

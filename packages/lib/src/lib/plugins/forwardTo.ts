@@ -14,6 +14,7 @@ export type ForwardToOptions = {
 export type ForwardToRequestOptions = { forward?: false; };
 
 type Fetch = NonNullable<NonNullable<FaxiosRequestConfig["env"]>["fetch"]>;
+type FetchInit = NonNullable<Parameters<Fetch>[1]>;
 
 const optionsSchema = { header: isHeaderName };
 
@@ -43,7 +44,7 @@ function forwardingFetch(gateway: string, header: string, base: Fetch): Fetch {
     headers.set(header, target);
     // Null prototype, like the adapter's own init: fetch reads every member through the prototype
     // chain, so a plain object would let a polluted Object.prototype.dispatcher apply.
-    const forwarded: RequestInit = Object.assign(Object.create(null) as RequestInit, init, { headers });
+    const forwarded: FetchInit = Object.assign(Object.create(null) as FetchInit, init, { headers });
     if (forwarded.body == null && request && request.method !== "GET" && request.method !== "HEAD") {
       // The adapter sets `duplex` only when the caller's body was a stream, so only then is it
       // streamed on. Any other body is resent as bytes, which keeps its Content-Length and works

@@ -1,8 +1,9 @@
 import canceledFromSignal from "../cancel/canceledFromSignal.js";
+import type { WebAbortSignal } from "../types/web.js";
 import { onAbort } from "./raceAbort.js";
 import type { AbortableSignal } from "./raceAbort.js";
 
-export type ExtendedAbortSignal = AbortSignal & { unsubscribe?: () => void; };
+export type ExtendedAbortSignal = WebAbortSignal & { unsubscribe?: () => void; };
 
 /**
  * One signal that aborts when the first of `signals` does, with that input's reason as a

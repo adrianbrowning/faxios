@@ -1,13 +1,14 @@
 import canceledFromSignal from "../cancel/canceledFromSignal.js";
 import { onAbort } from "../helpers/raceAbort.js";
 import type { GenericAbortSignal, InternalFaxiosRequestConfig } from "../types.js";
+import type { WebAbortSignal } from "../types/web.js";
 import FaxiosError from "./FaxiosError.js";
 
 export type RequestDeadline = {
   /** Stops the timer and unhooks the caller's signal. */
   settle: () => void;
   /** Aborts with the caller's reason when their signal does, or with `ETIMEDOUT` at the deadline. */
-  signal: AbortSignal;
+  signal: WebAbortSignal;
 };
 
 /**
@@ -17,7 +18,7 @@ export type RequestDeadline = {
  */
 export default function armDeadline(
   timeout: number,
-  caller: AbortSignal | GenericAbortSignal | undefined,
+  caller: GenericAbortSignal | undefined | WebAbortSignal,
   config: InternalFaxiosRequestConfig
 ): RequestDeadline {
   const controller = new AbortController();
@@ -52,10 +53,10 @@ export class RequestBodies {
   readonly #open = new Set<AbortBody>();
   #released = false;
   readonly #settle: () => void;
-  readonly #signal: AbortSignal | GenericAbortSignal;
+  readonly #signal: GenericAbortSignal | WebAbortSignal;
   #unwatch: (() => void) | undefined;
 
-  constructor(signal: AbortSignal | GenericAbortSignal, config: InternalFaxiosRequestConfig, settle: () => void) {
+  constructor(signal: GenericAbortSignal | WebAbortSignal, config: InternalFaxiosRequestConfig, settle: () => void) {
     this.#signal = signal;
     this.#config = config;
     this.#settle = settle;

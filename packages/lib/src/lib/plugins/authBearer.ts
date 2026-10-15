@@ -59,7 +59,8 @@ function resolvedOrigin(url: string, base: string | undefined): null | string {
 
 // A relative URL goes to the page's origin, which only a browser has.
 function pageHref(): string | undefined {
-  const location: unknown = "location" in globalThis ? globalThis.location : undefined;
+  // `location` is a browser global; the lib's types (no DOM lib) don't declare it.
+  const location: unknown = Reflect.get(globalThis, "location");
   if (location && typeof location === "object" && "href" in location && typeof location.href === "string") return location.href;
   return undefined;
 }

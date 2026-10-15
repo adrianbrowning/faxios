@@ -69,10 +69,13 @@ const HttpStatusCode = {
   TimeoutOccurred: 524,
   SslHandshakeFailed: 525,
   InvalidSslCertificate: 526,
-};
+} as const;
 
+type StatusCodes = typeof HttpStatusCode;
+
+// Like a TypeScript enum: each name maps to its code, and each code back to its name.
 Object.entries(HttpStatusCode).forEach(([ key, value ]) => {
   (HttpStatusCode as Record<number | string, number | string>)[value] = key;
 });
 
-export default HttpStatusCode;
+export default HttpStatusCode as StatusCodes & { readonly [K in keyof StatusCodes as StatusCodes[K]]: K; };

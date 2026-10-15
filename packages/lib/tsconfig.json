@@ -5,12 +5,10 @@
     "rootDir": "./src",
     "incremental": false,
     "declarationMap": true,
-    "types": [],
-    "lib": [
-      "ES2023",
-      "DOM",
-      "DOM.Iterable"
-    ]
+    // No DOM lib and no @types/node: the build sees only the web globals web-globals.d.ts declares,
+    // so a published declaration can't name a DOM-only or Node-only type (see src/lib/types/web.ts).
+    "types": ["./src/lib/types/web-globals.d.ts"],
+    "lib": ["ES2023"]
   },
   "include": [
     "./src/**/*.ts",

@@ -18,8 +18,10 @@ const TYPING_FIXTURE_FILES = [
   "module/esm/tests/helpers/esm-functions.ts",
   "module/esm/tests/helpers/esm-index.ts",
   "module/esm/tests/helpers/export-surface.ts",
+  "module/esm/tests/helpers/exact-optional/*.ts",
   "module/esm/tests/helpers/generics-index.ts",
   "module/esm/tests/helpers/middleware-index.ts",
+  "module/esm/tests/helpers/node-only/*.ts",
   "smoke/deno/types/**/*.ts",
 ];
 

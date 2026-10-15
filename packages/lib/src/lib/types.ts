@@ -1,10 +1,14 @@
 // @ts-self-types="./types.d.ts"
 // Internal shared types — imported by implementation files.
 // Public API types in index.d.ts re-export or extend these.
+// `x?: T | undefined` is not redundant for a consumer with `exactOptionalPropertyTypes`: without
+// `| undefined` it can't pass the `undefined` that faxios treats as unset.
+/* eslint-disable sonarjs/no-redundant-optional -- see above */
 
 import type FaxiosHeaders from "./core/FaxiosHeaders.js";
 import type { FaxiosHeadersInstance } from "./core/FaxiosHeaders.js";
 import type { StandardSchemaV1 } from "./types/standard-schema.js";
+import type { RequestInitShim, WebAbortSignal, WebBlob, WebBlobPart, WebBodyInit, WebEvent, WebHeaders, WebRequest, WebRequestInit, WebResponse, WebResponseInit, WebURL, WebURLSearchParams } from "./types/web.js";
 
 export type StringLiteralsOrString<Literals extends string> =
   | Literals
@@ -76,8 +80,8 @@ type ContentType =
  */
 export type RawFaxiosRequestHeaders =
   & { [header: string]: FaxiosHeaderValue | undefined; }
-  & { [Header in CommonRequestHeadersList]?: FaxiosHeaderValue; }
-  & { "Content-Type"?: ContentType; };
+  & { [Header in CommonRequestHeadersList]?: FaxiosHeaderValue | undefined; }
+  & { "Content-Type"?: ContentType | undefined; };
 
 export type ResponseType =
   | "arraybuffer"
@@ -101,7 +105,7 @@ export interface TransitionalOptions {
 export interface GenericAbortSignal {
   readonly aborted: boolean;
   addEventListener: (...args: Array<unknown>) => unknown;
-  onabort?: ((event: Event) => void) | null;
+  onabort?: ((event: WebEvent) => void) | null;
   removeEventListener: (...args: Array<unknown>) => unknown;
 }
 
@@ -139,13 +143,13 @@ export interface SerializerVisitor {
 
 export interface SerializerOptions {
   /** FormData only: Blob constructor used to wrap `ArrayBuffer` and typed-array values. Defaults to `globalThis.Blob`. */
-  Blob?: new (parts: Array<BlobPart>) => Blob;
-  dots?: boolean;
-  indexes?: boolean | null;
+  Blob?: (new (parts: Array<WebBlobPart>) => WebBlob) | undefined;
+  dots?: boolean | undefined;
+  indexes?: boolean | null | undefined;
   /** Maximum nesting depth to serialize; deeper objects throw `ERR_FORM_DATA_DEPTH_EXCEEDED`. `Infinity` disables the check. */
-  maxDepth?: number;
-  metaTokens?: boolean;
-  visitor?: SerializerVisitor;
+  maxDepth?: number | undefined;
+  metaTokens?: boolean | undefined;
+  visitor?: SerializerVisitor | undefined;
 }
 
 // tslint:disable-next-line
@@ -160,8 +164,8 @@ export interface CustomParamsSerializer {
 }
 
 export interface ParamsSerializerOptions extends SerializerOptions {
-  encode?: ParamEncoder;
-  serialize?: CustomParamsSerializer;
+  encode?: ParamEncoder | undefined;
+  serialize?: CustomParamsSerializer | undefined;
 }
 
 type Milliseconds = number;
@@ -200,38 +204,48 @@ export interface FaxiosResponseTransformer {
   ): unknown;
 }
 
+/**
+ * `fetchOptions`: extra `fetch()` init options faxios passes through. The standard keys are
+ * checked against the Fetch Standard; any other key (a runtime extension such as undici's
+ * `dispatcher`, Next.js's `next` or Cloudflare's `cf`) is passed on unchecked. faxios sets
+ * `body`, `credentials`, `duplex`, `headers`, `method` and `signal` itself and ignores them here.
+ */
+export type FaxiosFetchOptions = Omit<RequestInitShim, "body" | "credentials" | "duplex" | "headers" | "method" | "signal"> & { [option: string]: unknown; };
+
+// Every optional field also takes `undefined`: mergeConfig treats an own `undefined` as unset, so
+// `{ timeout: maybeNumber }` must compile under `exactOptionalPropertyTypes` too.
 export interface FaxiosRequestConfig<D = unknown> {
-  allowAbsoluteUrls?: boolean;
-  auth?: FaxiosBasicCredentials;
-  baseURL?: string;
-  data?: D;
-  env?: {
-    fetch?: (
-      input: Request | string | URL,
-      init?: RequestInit
-    ) => Promise<Response>;
+  allowAbsoluteUrls?: boolean | undefined;
+  auth?: FaxiosBasicCredentials | undefined;
+  baseURL?: string | undefined;
+  data?: D | undefined;
+  env?: undefined | {
+    fetch?: ((
+      input: string | WebRequest | WebURL,
+      init?: WebRequestInit
+    ) => Promise<WebResponse>) | undefined;
     /** Constructed with no arguments to serialize `multipart/form-data` payloads; `null` falls back to the global `FormData`. */
-    FormData?: (new () => object) | null;
+    FormData?: (new () => object) | null | undefined;
     /** `null` disables the constructor, e.g. when a custom `fetch` is incompatible with the global one. */
     Request?: (new (
-      input: Request | string | URL,
-      init?: RequestInit,
-    ) => unknown) | null;
-    Response?: (new (body?: BodyInit | null, init?: ResponseInit) => Response) | null;
+      input: string | WebRequest | WebURL,
+      init?: WebRequestInit,
+    ) => unknown) | null | undefined;
+    Response?: (new (body?: WebBodyInit, init?: WebResponseInit) => WebResponse) | null | undefined;
   };
-  fetchOptions?: Record<string, unknown>;
-  formSerializer?: FormSerializerOptions;
-  headers?: FaxiosConfigHeaders;
-  maxBodyLength?: number;
-  maxContentLength?: number;
-  method?: StringLiteralsOrString<Method>;
+  fetchOptions?: FaxiosFetchOptions | undefined;
+  formSerializer?: FormSerializerOptions | undefined;
+  headers?: FaxiosConfigHeaders | undefined;
+  maxBodyLength?: number | undefined;
+  maxContentLength?: number | undefined;
+  method?: StringLiteralsOrString<Method> | undefined;
   /**
    * Called with download progress. For a content-encoded response (any `Content-Encoding`
    * other than `identity`) `total` is `undefined` and `lengthComputable` is `false`.
    * An error thrown (or a rejected promise returned) by the callback is caught and ignored;
    * the request settles normally.
    */
-  onDownloadProgress?: (progressEvent: FaxiosProgressEvent) => void;
+  onDownloadProgress?: ((progressEvent: FaxiosProgressEvent) => void) | undefined;
   /**
    * Called with upload progress where faxios streams the request body: in server runtimes whose
    * `Request` reads the `duplex` option, which today is Node.js. Deno's and Bun's `Request` don't
@@ -240,50 +254,52 @@ export interface FaxiosRequestConfig<D = unknown> {
    * An error thrown (or a rejected promise returned) by the callback is caught and ignored;
    * the request settles normally.
    */
-  onUploadProgress?: (progressEvent: FaxiosProgressEvent) => void;
-  params?: Record<string, unknown> | URLSearchParams;
-  paramsSchema?: StandardSchemaV1;
-  paramsSerializer?: CustomParamsSerializer | ParamsSerializerOptions;
-  parseReviver?: (
+  onUploadProgress?: ((progressEvent: FaxiosProgressEvent) => void) | undefined;
+  params?: Record<string, unknown> | undefined | WebURLSearchParams;
+  paramsSchema?: StandardSchemaV1 | undefined;
+  paramsSerializer?: CustomParamsSerializer | ParamsSerializerOptions | undefined;
+  parseReviver?: ((
     this: unknown,
     key: string,
     value: unknown,
     context?: { source?: string; }
-  ) => unknown;
+  ) => unknown) | undefined;
   /**
    * Values for `{key}` placeholders in `url` (braces, not `:key`). Only own properties count.
    * Each value goes through `String()` then `encodeURIComponent`. A placeholder whose key is
    * missing, or whose value is `null` or `undefined`, rejects with `ERR_BAD_OPTION_VALUE`. Keys
    * with no matching placeholder are ignored. Without `pathParams`, placeholders are sent literally.
    */
-  pathParams?: Record<string, unknown>;
+  pathParams?: Record<string, unknown> | undefined;
   /**
    * Standard Schema that validates `pathParams` before substitution; its output replaces
    * `pathParams`. Requires `pathParams`, or the request rejects with `ERR_BAD_OPTION_VALUE`.
    * A validation failure, or output that isn't a plain object, rejects with `ERR_BAD_PATH_PARAMS_SCHEMA`.
    */
-  pathParamsSchema?: StandardSchemaV1<unknown, Record<string, unknown>>;
-  redact?: Array<string>;
-  requestSchema?: StandardSchemaV1;
-  responseSchema?: StandardSchemaV1;
-  responseType?: ResponseType;
-  signal?: AbortSignal | GenericAbortSignal;
-  timeout?: Milliseconds;
-  timeoutErrorMessage?: string;
-  transformRequest?: Array<FaxiosRequestTransformer> | FaxiosRequestTransformer;
+  pathParamsSchema?: StandardSchemaV1<unknown, Record<string, unknown>> | undefined;
+  redact?: Array<string> | undefined;
+  requestSchema?: StandardSchemaV1 | undefined;
+  responseSchema?: StandardSchemaV1 | undefined;
+  responseType?: ResponseType | undefined;
+  signal?: GenericAbortSignal | undefined | WebAbortSignal;
+  timeout?: Milliseconds | undefined;
+  timeoutErrorMessage?: string | undefined;
+  transformRequest?: Array<FaxiosRequestTransformer> | FaxiosRequestTransformer | undefined;
   transformResponse?:
     | Array<FaxiosResponseTransformer>
-    | FaxiosResponseTransformer;
-  transitional?: TransitionalOptions;
+    | FaxiosResponseTransformer
+    | undefined;
+  transitional?: TransitionalOptions | undefined;
   /** The request URL; a `URL` instance is sent as its `href`. */
-  url?: string | URL;
-  validateStatus?: ((status: number) => boolean) | null;
-  withCredentials?: boolean;
+  url?: string | undefined | WebURL;
+  validateStatus?: ((status: number) => boolean) | null | undefined;
+  withCredentials?: boolean | undefined;
   withXSRFToken?:
     | ((config: InternalFaxiosRequestConfig) => boolean | undefined)
-    | boolean;
-  xsrfCookieName?: string;
-  xsrfHeaderName?: string;
+    | boolean
+    | undefined;
+  xsrfCookieName?: string | undefined;
+  xsrfHeaderName?: string | undefined;
 }
 
 export type SchemaConfig<O, D = unknown> = FaxiosRequestConfig<D> & { responseSchema: StandardSchemaV1<unknown, O>; };
@@ -293,24 +309,22 @@ export type SchemaConfig<O, D = unknown> = FaxiosRequestConfig<D> & { responseSc
  * must output `T`, so the generic can't silently override what the schema returns.
  */
 export type ResponseTypedConfig<T, D = unknown> = Omit<FaxiosRequestConfig<D>, "responseSchema"> & {
-  responseSchema?: StandardSchemaV1<unknown, T>;
+  responseSchema?: StandardSchemaV1<unknown, T> | undefined;
 };
-
-export type RawFaxiosRequestConfig<D = unknown> = FaxiosRequestConfig<D>;
 
 export interface InternalFaxiosRequestConfig<
   D = unknown
 > extends FaxiosRequestConfig<D> {
   headers: FaxiosHeaders;
   // Normalized to a string before middleware runs.
-  url?: string;
+  url?: string | undefined;
 }
 
 export interface FaxiosResponse<T = unknown, D = unknown> {
   config: InternalFaxiosRequestConfig<D>;
   data: T;
   headers: FaxiosHeaders;
-  request?: null | Request;
+  request?: null | WebRequest;
   status: number;
   statusText: string;
 }
@@ -322,14 +336,14 @@ export interface HeadersDefaults {
   delete: RawFaxiosRequestHeaders;
   get: RawFaxiosRequestHeaders;
   head: RawFaxiosRequestHeaders;
-  link?: RawFaxiosRequestHeaders;
-  options?: RawFaxiosRequestHeaders;
+  link?: RawFaxiosRequestHeaders | undefined;
+  options?: RawFaxiosRequestHeaders | undefined;
   patch: RawFaxiosRequestHeaders;
   post: RawFaxiosRequestHeaders;
-  purge?: RawFaxiosRequestHeaders;
+  purge?: RawFaxiosRequestHeaders | undefined;
   put: RawFaxiosRequestHeaders;
-  query?: RawFaxiosRequestHeaders;
-  unlink?: RawFaxiosRequestHeaders;
+  query?: RawFaxiosRequestHeaders | undefined;
+  unlink?: RawFaxiosRequestHeaders | undefined;
 }
 
 export interface FaxiosDefaults<D = unknown> extends Omit<
@@ -347,8 +361,10 @@ export interface FaxiosDefaults<D = unknown> extends Omit<
  */
 export type FaxiosConfigHeaders =
   | FaxiosHeadersInstance
+  | Iterable<readonly [string, string]>
   | Partial<HeadersDefaults>
-  | RawFaxiosRequestHeaders;
+  | RawFaxiosRequestHeaders
+  | WebHeaders;
 
 /** Config accepted by `create()`; identical to a request config. */
 export type CreateFaxiosDefaults<D = unknown> = FaxiosRequestConfig<D>;
