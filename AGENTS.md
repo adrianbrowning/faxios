@@ -17,7 +17,8 @@ faxios is a promise-based HTTP client. One web-standard `fetch` adapter serves e
 This file is the canonical contributor guide for both human and AI agents working in this repo.
 
 - **Writing or reviewing library code:** follow [`CODING_STANDARDS.md`](CODING_STANDARDS.md).
-- **Checking a change:** `pnpm check` runs what CI runs (lint, knip, `packages/tests/run-tests.sh`, docs examples). Other scripts are in the root and package `package.json` files.
+- **Checking a change:** `pnpm check` runs what CI runs: lint (each package's `lint`, which type-checks, the docs `.vitepress` config included), knip, `packages/tests/run-tests.sh`, the docs examples and API contract checks (`test:docs-examples`) and the production docs build (`docs:build`). The differences: CI's `pnpm test` also runs the `browser` Vitest project, which `run-tests.sh` covers with `browser-headless`, and CI also runs the workflow-only checks in `.github/workflows/` (dependency review, zizmor, links, lockfile audit, bundle size, skills and build reproducibility). Other scripts are in the root and package `package.json` files.
+- **Docs:** `pnpm docs:dev` serves the site and `pnpm docs:build` builds it as the deploy does. `test:docs-examples` type-checks and runs the js/ts blocks of the READMEs and docs pages (markers in `packages/tests/docs-examples/extract.ts`), checks every `contract=` declaration block against the shipped declarations, and checks that the API reference lists every root export and the Request config page has a section for every request config key. A change to a public signature, root export or request option updates those pages in the same PR.
 - **Issues, PRs, stacks and CI status:** [`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md).
 
 ## AI Agent Marker
@@ -42,6 +43,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 ## Changes And Releases
 
 - A user-visible change to `packages/lib` needs a bump file in `.bumpy/` in the same PR. Create it with `pnpm bump` (`bumpy add`), or with the bumpy `add-change` skill (`node_modules/@varlock/bumpy/skills/add-change/SKILL.md`). Its text becomes the changelog entry. For a PR that changes `packages/lib` but needs no release, add an empty one with `pnpm exec bumpy add --empty`.
+- While the package is `0.x`, a breaking change is a `minor` bump whose text starts with "Breaking:", never a `major`, and a `patch` never breaks a caller; `major` bumps start at `1.0.0`. The docs [SemVer page](packages/docs/pages/misc/semver.md) makes users the same promise.
 - Don't edit `packages/lib/CHANGELOG.md` by hand. bumpy writes it in the Version Packages PR, and merging that PR publishes the release.
 - Update `README.md`, the docs site and examples in the same PR as the change they describe. The docs are English-only. The site deploys only when a release is published, so editing pages on `main` publishes nothing early.
 

@@ -59,7 +59,7 @@ describe("parseMarkers", () => {
   });
 
   it("rejects an unknown marker key", () => {
-    expect(() => parseMarkers("page.md:1", { expects: "log:x" })).toThrow("page.md:1: unknown marker expects (expected check, expect, placeholders, reason, status)");
+    expect(() => parseMarkers("page.md:1", { expects: "log:x" })).toThrow("page.md:1: unknown marker expects (expected check, contract, expect, placeholders, reason, status)");
   });
 });
 
@@ -142,5 +142,20 @@ describe("extractBlocks", () => {
 
   it("checks the markers of a check=skip block too, naming its fence line", () => {
     expect(() => extract("# Page\n\n```ts check=skip\n{ url: ... }\n```\n")).toThrow(/page\.md:3: check=skip needs reason=/);
+  });
+
+  it("writes a contract block as declaration checks that never run", () => {
+    const [ block ] = extract("```ts contract=@gcmdev/faxios\nisCancel(value: unknown): value is CanceledError;\n```\n");
+
+    expect(block!.run).toBe(false);
+    expect(readFileSync(join(outDir, block!.file), "utf8")).toContain("__same<__Documented[\"isCancel\"], typeof __Target.isCancel>(\"matches\");");
+  });
+
+  it("rejects a contract marker that names no entry point or export, or isn't on a plain ts block", () => {
+    expect(() => extract("```ts contract=@gcmdev/nope\nx(): void;\n```\n")).toThrow(/must name an entry point/);
+    expect(() => extract("```ts contract=@gcmdev/faxios#Nope\nx(): void;\n```\n")).toThrow(/has no export named Nope/);
+    expect(() => extract("```js contract=@gcmdev/faxios\nx(): void;\n```\n")).toThrow(/needs a ts block/);
+    expect(() => extract("```ts contract=@gcmdev/faxios check=types\nx(): void;\n```\n")).toThrow(/needs a ts block/);
+    expect(() => extract("```ts contract=@gcmdev/faxios check=skip reason=signature\nx(): void;\n```\n")).toThrow(/needs a ts block/);
   });
 });

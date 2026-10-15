@@ -34,9 +34,6 @@
   ],
   "scripts": {
     "build": "zshy",
-    "bp": "pnpm build && pnpm pack",
-    "version": "pnpm run build && git add package.json",
-    "docs:dev": "cd docs && npm run docs:dev",
     "lint": "pnpm lint:ts && pnpm lint:esl && pnpm lint:s",
     "lint:ts": "tsc --noEmit -p tsconfig.check.json",
     "lint:esl": "eslint --config eslint.config.ts \"**/*.{j,t}s{,x}\" --cache --cache-strategy content --max-warnings=0",
@@ -49,7 +46,7 @@
     "eslint": "^9.39.5",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.0",
-    "zshy": "latest"
+    "zshy": "0.8.0"
   },
   "zshy": {
     "exports": {

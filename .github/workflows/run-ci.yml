@@ -56,6 +56,11 @@ jobs:
       - name: Check docs examples
         run: pnpm run test:docs-examples
 
+      # The production VitePress build, so a broken page or config fails the PR instead of the
+      # post-release deploy (docs.yml). `pnpm check` runs it too.
+      - name: Build docs
+        run: pnpm run docs:build
+
       - name: Run browser tests
         run: pnpm run test:vitest:browser:headless
 

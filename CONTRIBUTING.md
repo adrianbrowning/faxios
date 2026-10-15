@@ -25,7 +25,7 @@ The repo `.npmrc` sets `ignore-scripts=true`, so the install doesn't set up the 
 pnpm check
 ```
 
-`pnpm check` runs what CI runs: lint, knip, `packages/tests/run-tests.sh` (build, pack, then the unit, browser, smoke, module, Deno and Bun suites) and the docs examples. While you iterate, run one test file:
+`pnpm check` runs what CI runs: lint (including the type-checks), knip, `packages/tests/run-tests.sh` (build, pack, then the unit, browser, smoke, module, Deno and Bun suites), the docs examples and API contract checks, and the production docs build. [AGENTS.md](AGENTS.md) lists the few CI checks it leaves out. While you iterate, run one test file:
 
 ```bash
 pnpm --filter @faxios/tests exec vitest run --project unit unit/core/mergeConfig.test.ts
@@ -39,14 +39,15 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `
 
 ## Changelog and docs
 
-A pull request that changes the published package (`packages/lib`) in a way users can see needs a bump file. Run `pnpm bump` (`bumpy add`), choose `patch`, `minor` or `major`, and write the changelog text. Commit the new file in `.bumpy/` with your change. `pnpm bump:status` shows the pending release plan. The bumpy check on the pull request shows the planned version, and warns when a bump file is missing.
+A pull request that changes the published package (`packages/lib`) in a way users can see needs a bump file. Run `pnpm bump` (`bumpy add`), choose `patch` or `minor`, and write the changelog text. While faxios is `0.x`, a breaking change is a `minor` whose text starts with "Breaking:", as the [versioning page](https://adrianbrowning.github.io/faxios/pages/misc/semver) promises users. Commit the new file in `.bumpy/` with your change. `pnpm bump:status` shows the pending release plan. The bumpy check on the pull request shows the planned version, and warns when a bump file is missing.
 
 Don't edit `packages/lib/CHANGELOG.md`. bumpy writes it when maintainers release.
 
-Update `README.md` and the [documentation](https://adrianbrowning.github.io/faxios/) in the same pull request as the change they describe. The site deploys only when a release is published, so nothing goes live early. To preview the site:
+Update `README.md` and the [documentation](https://adrianbrowning.github.io/faxios/) in the same pull request as the change they describe. The site deploys only when a release is published, so nothing goes live early. `pnpm check` builds the site and type-checks the docs examples, and the declaration blocks marked `contract=` are checked against the shipped types, so a changed signature fails until its page is updated. To preview the site, or build it as the deploy does:
 
 ```bash
-pnpm --filter @faxios/docs docs:dev
+pnpm docs:dev
+pnpm docs:build
 ```
 
 ## Dependency and GitHub Actions updates
