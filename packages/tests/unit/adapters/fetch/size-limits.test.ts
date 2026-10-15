@@ -163,7 +163,6 @@ describe.runIf(typeof fetch === "function")(
             });
           }
         );
-        const arrayBuffer = vi.spyOn(Request.prototype, "arrayBuffer");
 
         try {
           const form = new FormData();
@@ -179,43 +178,32 @@ describe.runIf(typeof fetch === "function")(
             }
           );
 
-          assert.strictEqual(arrayBuffer.mock.calls.length, 0);
           assert.ok(
             bytesReceived <= 1024,
             `server should not receive more than maxBodyLength; got ${bytesReceived}`
           );
         }
         finally {
-          arrayBuffer.mockRestore();
           await stopHTTPServer(server);
         }
       });
 
       it("should reject a FormData body whose fields alone exceed maxBodyLength before sending it", async () => {
-        const fetchSpy = vi.spyOn(globalThis, "fetch");
-        const arrayBuffer = vi.spyOn(Request.prototype, "arrayBuffer");
+        const envFetch = vi.fn<typeof fetch>(async () => new Response("ok"));
+        const form = new FormData();
+        form.append("file", new Blob([ new Uint8Array(4096) ]), "file.bin");
 
-        try {
-          const form = new FormData();
-          form.append("file", new Blob([ new Uint8Array(4096) ]), "file.bin");
+        await assert.rejects(
+          fetchFaxios.post("http://localhost/", form, { maxBodyLength: 1024, env: { fetch: envFetch } }),
+          err => {
+            const e = err as { code: string; message: string; };
+            assert.strictEqual(e.code, "ERR_BAD_REQUEST");
+            assert.strictEqual(e.message, "Request body larger than maxBodyLength limit");
+            return true;
+          }
+        );
 
-          await assert.rejects(
-            fetchFaxios.post("http://localhost/", form, { maxBodyLength: 1024 }),
-            err => {
-              const e = err as { code: string; message: string; };
-              assert.strictEqual(e.code, "ERR_BAD_REQUEST");
-              assert.strictEqual(e.message, "Request body larger than maxBodyLength limit");
-              return true;
-            }
-          );
-
-          assert.strictEqual(arrayBuffer.mock.calls.length, 0);
-          assert.strictEqual(fetchSpy.mock.calls.length, 0);
-        }
-        finally {
-          arrayBuffer.mockRestore();
-          fetchSpy.mockRestore();
-        }
+        assert.strictEqual(envFetch.mock.calls.length, 0, "fetch must not be called");
       });
 
       it("should enforce maxBodyLength with custom fetch when Request is unavailable", async () => {

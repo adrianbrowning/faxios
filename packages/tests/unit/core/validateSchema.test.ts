@@ -1,10 +1,11 @@
 import assert from "node:assert";
 import vm from "node:vm";
-import { describe, it } from "vitest";
+import { describe, it, vi } from "vitest";
+import faxios from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
 import { validateSchema } from "#src/lib/core/validateSchema.js";
 import type { InternalFaxiosRequestConfig } from "#src/lib/types.js";
-import { makeSchema } from "./_schemaTestHelpers.js";
+import { makeSchema, mockFetch } from "./_schemaTestHelpers.js";
 
 const dummyConfig = { method: "get", url: "/test" } as InternalFaxiosRequestConfig;
 
@@ -99,6 +100,17 @@ describe("core::validateSchema", () => {
         async () => validateSchema(schema, "x", FaxiosError.ERR_BAD_REQUEST_SCHEMA, dummyConfig),
         (e: unknown) => e instanceof FaxiosError && e.code === FaxiosError.ERR_BAD_REQUEST_SCHEMA
       );
+    });
+
+    it("wraps an async validator that rejects in a coded schema error and never calls fetch", async () => {
+      const schema = makeSchema(async () => { throw new Error("async schema exploded"); });
+      const fetch = vi.fn(mockFetch({}));
+
+      await assert.rejects(
+        faxios.post("http://localhost/test", { x: 1 }, { requestSchema: schema, env: { fetch } }),
+        { code: FaxiosError.ERR_BAD_REQUEST_SCHEMA, message: "async schema exploded" }
+      );
+      assert.strictEqual(fetch.mock.calls.length, 0);
     });
   });
 

@@ -58,7 +58,7 @@ describe("instance (vitest browser)", () => {
 
     await instance("/foo");
 
-    expect(new URL(mock.lastRequest!.url).pathname).toBe("/foo");
+    expect(mock.lastRequest!.url).toBe(new URL("/foo", location.href).href);
   });
 
   it("should make an http request", async () => {

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { progressReporter } from "#src/lib/helpers/progressEventReducer.js";
 import type { FaxiosProgressEvent } from "#src/lib/types.js";
 
@@ -8,6 +8,38 @@ const settle = async () => {
 };
 
 describe("helpers::progressReporter", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("collapses counts inside one throttle window and flush emits the last one", async () => {
+    vi.useFakeTimers({ toFake: [ "setTimeout", "clearTimeout", "Date" ] });
+    const loaded: Array<number> = [];
+    // 10 events a second: one per 100 ms window.
+    const [ report, flush ] = progressReporter(data => {
+      loaded.push(data.loaded);
+    }, 100, false, 10);
+
+    report(10);
+    report(20);
+    report(30);
+    await settle();
+    expect(loaded).toEqual([ 10 ]);
+
+    flush();
+    await settle();
+    expect(loaded).toEqual([ 10, 30 ]);
+
+    // A count inside the window flush opened waits for the window to end.
+    report(40);
+    vi.advanceTimersByTime(99);
+    await settle();
+    expect(loaded).toEqual([ 10, 30 ]);
+    vi.advanceTimersByTime(1);
+    await settle();
+    expect(loaded).toEqual([ 10, 30, 40 ]);
+  });
+
   it("takes byte counts, clamps loaded/progress and avoids negative bytes for out-of-order counts", async () => {
     const events: Array<FaxiosProgressEvent> = [];
     const [ report, flush ] = progressReporter(data => {

@@ -99,7 +99,7 @@ The `headers` are the HTTP headers to be sent with the request. When you don't s
 - Plain objects are sent as JSON with `application/json`.
 - `URLSearchParams` is sent as `application/x-www-form-urlencoded;charset=utf-8`.
 - `FormData` gets `multipart/form-data` with the boundary the runtime encoded the body with. faxios drops any `Content-Type` you set for a `FormData` body, including a `boundary` of your own, since only the encoder's boundary matches the body.
-- `Blob`, `File`, `ArrayBuffer`, typed arrays, `DataView` and streams get no `Content-Type` from faxios. The runtime uses `Blob.type` (for example `image/png` for a `File`) or sends none.
+- `Blob`, `File`, `ArrayBuffer`, typed arrays, `DataView`, streams and async iterables get no `Content-Type` from faxios. The runtime uses `Blob.type` (for example `image/png` for a `File`) or sends none.
 - Plain strings get no `Content-Type` from faxios. The runtime sends `text/plain;charset=UTF-8`. Set the header yourself if the server expects something else, such as `application/x-www-form-urlencoded` for an `a=1&b=2` string, or set it to `null` to send the string with no `Content-Type`.
 
 ### `params`
@@ -137,7 +137,7 @@ The `data` is the data to be sent as the request body. This can be a string, a p
 
 - string, plain object, ArrayBuffer, ArrayBufferView, URLSearchParams
 - FormData, File, Blob (available in all supported runtimes)
-- ReadableStream
+- ReadableStream, a Node.js stream, or an async iterable (such as an async generator) of byte or string chunks, sent as a stream of its chunks
 
 When faxios wraps a `ReadableStream` body to report `onUploadProgress` or enforce `maxBodyLength`, it sends every byte of each chunk: a typed array or `DataView` keeps all its bytes, an `ArrayBuffer` is sent whole and a string is UTF-8 encoded. Any other chunk rejects the request with a `FaxiosError` whose code is `ERR_BAD_REQUEST`.
 

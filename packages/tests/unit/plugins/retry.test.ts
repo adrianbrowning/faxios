@@ -25,6 +25,14 @@ function scriptedFetch(replies: Array<Reply>) {
 
 const isStatus = (status: number) => (err: unknown) => err instanceof FaxiosError && err.response?.status === status;
 
+// Runs every timer while `request` settles, so a retry the test forbids ends in a failed
+// assertion (the retry's reply or a call count), not in a hang until the test timeout.
+async function rejectsWithTimers(request: Promise<unknown>, check: (err: unknown) => boolean) {
+  const rejected = assert.rejects(request, check);
+  await vi.runAllTimersAsync();
+  await rejected;
+}
+
 describe("plugins::retry", () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -102,7 +110,7 @@ describe("plugins::retry", () => {
     const { fetch, calls } = scriptedFetch([ 404 ]);
     const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }));
 
-    await assert.rejects(api.get(URL), isStatus(404));
+    await rejectsWithTimers(api.get(URL), isStatus(404));
 
     assert.strictEqual(calls.length, 1);
   });
@@ -412,7 +420,7 @@ describe("plugins::retry", () => {
     const offApi = faxios.create({ env: { fetch: off.fetch } }).use(retry({ attempts: 5, delay: 0 }));
     const onceApi = faxios.create({ env: { fetch: once.fetch } }).use(retry({ attempts: 5, delay: 0 }));
 
-    await assert.rejects(offApi.get(URL, { retry: false }), isStatus(503));
+    await rejectsWithTimers(offApi.get(URL, { retry: false }), isStatus(503));
     const overridden = assert.rejects(onceApi.get(URL, { retry: { attempts: 2 } }), isStatus(503));
     await vi.runAllTimersAsync();
     await overridden;
@@ -468,13 +476,24 @@ describe("plugins::retry", () => {
 
   it("never retries a request the caller canceled", async () => {
     const controller = new AbortController();
-    controller.abort();
-    const { fetch, calls } = scriptedFetch([ 200 ]);
-    const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }));
+    const retried: Array<number> = [];
+    let calls = 0;
+    // The caller cancels as the first try fails. retryOn retries anything, so only the canceled
+    // signal can stop a second try.
+    const fetch = async () => {
+      calls++;
+      controller.abort();
+      return new Response(null, { status: 503 });
+    };
+    const api = faxios.create({ env: { fetch } })
+      .use(retry({ delay: 0, retryOn: () => true, onRetry: (_error, attempt) => retried.push(attempt) }));
 
-    await assert.rejects(api.get(URL, { signal: controller.signal }), (err: unknown) => err instanceof CanceledError);
+    const request = assert.rejects(api.get(URL, { signal: controller.signal }), (err: unknown) => err instanceof CanceledError);
+    await vi.runAllTimersAsync();
+    await request;
 
-    assert.strictEqual(calls.length, 0);
+    assert.strictEqual(calls, 1);
+    assert.deepStrictEqual(retried, []);
   });
 
   it("does not retry a body that can't be replayed", async () => {
@@ -488,7 +507,7 @@ describe("plugins::retry", () => {
     });
 
     // PUT is retried by default, so only the stream check can stop the second try.
-    await assert.rejects(api.put(URL, body), isStatus(503));
+    await rejectsWithTimers(api.put(URL, body), isStatus(503));
 
     assert.strictEqual(calls.length, 1);
   });
@@ -497,7 +516,19 @@ describe("plugins::retry", () => {
     const { fetch, calls } = scriptedFetch([ 503, 200 ]);
     const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }));
 
-    await assert.rejects(api.put(URL, Readable.from([ "chunk" ])), isStatus(503));
+    await rejectsWithTimers(api.put(URL, Readable.from([ "chunk" ])), isStatus(503));
+
+    assert.strictEqual(calls.length, 1);
+  });
+
+  it("does not retry an async generator body", async () => {
+    const { fetch, calls } = scriptedFetch([ 503, 200 ]);
+    const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }));
+    async function* body() {
+      yield "chunk";
+    }
+
+    await rejectsWithTimers(api.put(URL, body()), isStatus(503));
 
     assert.strictEqual(calls.length, 1);
   });
@@ -529,9 +560,9 @@ describe("plugins::retry", () => {
     const post = scriptedFetch([ 503, 200 ]);
     const patch = scriptedFetch([ "network", 200 ]);
 
-    await assert.rejects(faxios.create({ env: { fetch: post.fetch } }).use(retry({ delay: 0 }))
+    await rejectsWithTimers(faxios.create({ env: { fetch: post.fetch } }).use(retry({ delay: 0 }))
       .post(URL, { order: 1 }), isStatus(503));
-    await assert.rejects(faxios.create({ env: { fetch: patch.fetch } }).use(retry({ delay: 0 }))
+    await rejectsWithTimers(faxios.create({ env: { fetch: patch.fetch } }).use(retry({ delay: 0 }))
       .patch(URL, { order: 1 }), (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_NETWORK);
 
     assert.strictEqual(post.calls.length, 1);
@@ -612,7 +643,7 @@ describe("plugins::retry", () => {
       }
       for (const status of [ 400, 404, 501, 505, 599 ]) {
         const { fetch, calls } = scriptedFetch([ status, 200 ]);
-        await assert.rejects(faxios.create({ env: { fetch } }).use(retry({ delay: 0 }))
+        await rejectsWithTimers(faxios.create({ env: { fetch } }).use(retry({ delay: 0 }))
           .get(URL), isStatus(status));
         assert.strictEqual(calls.length, 1, `status ${status}`);
       }
@@ -721,7 +752,7 @@ describe("plugins::retry", () => {
       const tooLong = scriptedFetch([{ status: 503, headers: { "Retry-After": "301" } }, 200 ]);
       const allowed = scriptedFetch([{ status: 503, headers: { "Retry-After": "301" } }, 200 ]);
 
-      await assert.rejects(faxios.create({ env: { fetch: tooLong.fetch } }).use(retry())
+      await rejectsWithTimers(faxios.create({ env: { fetch: tooLong.fetch } }).use(retry())
         .get(URL), isStatus(503));
       const request = faxios.create({ env: { fetch: allowed.fetch } }).use(retry({ maxRetryAfter: 301_000 }))
         .get(URL);
@@ -860,7 +891,7 @@ describe("plugins::retry", () => {
       const { fetch, calls } = scriptedFetch([ 503, 200 ]);
       const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0, statuses: [ 503 ] }));
 
-      await assert.rejects(api.post(URL, {}), isStatus(503));
+      await rejectsWithTimers(api.post(URL, {}), isStatus(503));
 
       assert.strictEqual(calls.length, 1);
     });

@@ -154,32 +154,38 @@ describe.runIf(typeof fetch === "function")(
                 received += chunk.length;
               });
               req.on("end", () => {
-                res.end(String(received));
+                res.setHeader("Content-Type", "application/json");
+                res.end(JSON.stringify({
+                  received,
+                  contentLength: req.headers["content-length"] ?? null,
+                  transferEncoding: req.headers["transfer-encoding"] ?? null,
+                }));
               });
             }
           );
-          const arrayBuffer = vi.spyOn(Request.prototype, "arrayBuffer");
 
           try {
             const form = new FormData();
             form.append("file", new Blob([ new Uint8Array(200_000) ]), "file.bin");
             const samples: Array<FaxiosProgressEvent> = [];
 
-            const { data } = await fetchFaxios.post(`http://localhost:${(server.address() as AddressInfo).port}/`, form, {
-              onUploadProgress: event => samples.push(event),
-              responseType: "text",
-            });
+            const { data } = await fetchFaxios.post<{ contentLength: null | string; received: number; transferEncoding: null | string; }>(
+              `http://localhost:${(server.address() as AddressInfo).port}/`,
+              form,
+              { onUploadProgress: event => samples.push(event) }
+            );
 
-            assert.strictEqual(arrayBuffer.mock.calls.length, 0);
-            assert.ok(samples.length > 0, "onUploadProgress was not called");
-            assert.strictEqual(samples.at(-1)!.loaded, Number(data));
+            // A streamed body goes out chunked, with no length measured up front.
+            assert.strictEqual(data.transferEncoding, "chunked");
+            assert.strictEqual(data.contentLength, null);
+            assert.ok(samples.length > 1, `upload progress must arrive as the body streams; got ${samples.length} event(s)`);
+            assert.strictEqual(samples.at(-1)!.loaded, data.received);
             for (const sample of samples) {
               assert.strictEqual(sample.lengthComputable, false);
               assert.strictEqual(sample.total, undefined);
             }
           }
           finally {
-            arrayBuffer.mockRestore();
             await stopHTTPServer(server);
           }
         });

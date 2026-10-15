@@ -37,6 +37,9 @@ describe.runIf(typeof fetch === "function")(
           controller.close();
         },
       }) ],
+      [ "async generator", () => (async function* () {
+        yield "hello world";
+      })() ],
     ] as const) {
       it(`rejects with a coded error when middleware sends a used ${kind} body again`, async () => {
         const server = await startHTTPServer((req, res) => {

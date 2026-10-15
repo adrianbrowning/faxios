@@ -186,7 +186,7 @@ describe("defaults (vitest browser)", () => {
 
     await instance.get("/foo/users");
 
-    expect(new URL(mock.lastRequest!.url).pathname).toBe("/foo/users");
+    expect(mock.lastRequest!.url).toBe(new URL("/foo/users", location.href).href);
   });
 
   it("should resistant to ReDoS attack", async () => {

@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { describe, expectTypeOf, it } from "vitest";
+import { describe, expectTypeOf, it, vi } from "vitest";
 import { z } from "zod";
 import faxios from "#src/index.ts";
 import FaxiosError from "#src/lib/core/FaxiosError.js";
@@ -106,28 +106,32 @@ describe("faxios.route()", () => {
     const failSchema = makeSchema(() => ({ issues: [{ message: "bad body" }] }));
     const r = faxios.route("http://localhost/items");
     const createItem = r.post({ requestSchema: failSchema });
+    const fetch = vi.fn(mockFetch({}));
     try {
-      await createItem({ data: { name: "x" }, env: { fetch: mockFetch({}) } });
+      await createItem({ data: { name: "x" }, env: { fetch } });
       assert.fail("should have thrown");
     }
     catch (err) {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_REQUEST_SCHEMA);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("method-level paramsSchema validates query params", async () => {
     const failSchema = makeSchema(() => ({ issues: [{ message: "bad params" }] }));
     const r = faxios.route("http://localhost/search");
     const search = r.get({ paramsSchema: failSchema });
+    const fetch = vi.fn(mockFetch({}));
     try {
-      await search({ params: { q: "x" }, env: { fetch: mockFetch({}) } });
+      await search({ params: { q: "x" }, env: { fetch } });
       assert.fail("should have thrown");
     }
     catch (err) {
       assert.ok(err instanceof FaxiosError);
       assert.strictEqual(err.code, FaxiosError.ERR_BAD_PARAMS_SCHEMA);
     }
+    assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
   it("merges route and method headers instead of replacing them", async () => {

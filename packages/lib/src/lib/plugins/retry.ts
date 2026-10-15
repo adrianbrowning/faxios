@@ -156,16 +156,21 @@ function retryAfterMs(error: unknown): number | undefined {
 const doublingDelay = (attempt: number) => 100 * 2 ** (attempt - 1);
 
 // A stream is consumed by the first try, so sending it again would send nothing.
-// The same stream checks the fetch adapter uses: web ReadableStreams and Node-style pipe streams,
-// whose `pipe` the stream or its class defines. A `pipe` only a polluted Object.prototype supplies
-// doesn't make a plain object body a stream.
+// The same stream checks the fetch adapter uses: web ReadableStreams, Node-style pipe streams and
+// async iterables (such as async generators), whose `pipe` or `Symbol.asyncIterator` the body or
+// its class defines. One only a polluted Object.prototype supplies doesn't make a plain object
+// body a stream.
+const ownMethod = (data: object, key: PropertyKey): boolean => {
+  for (let o: null | object = data; o !== null && o !== Object.prototype; o = Object.getPrototypeOf(o) as null | object) {
+    if (Object.hasOwn(o, key)) return typeof Reflect.get(data, key) === "function";
+  }
+  return false;
+};
+
 function canReplay(data: unknown): boolean {
   if (Object.prototype.toString.call(data) === "[object ReadableStream]") return false;
   if (typeof data !== "object" || data === null) return true;
-  for (let o: null | object = data; o !== null && o !== Object.prototype; o = Object.getPrototypeOf(o) as null | object) {
-    if (Object.hasOwn(o, "pipe")) return typeof Reflect.get(data, "pipe") !== "function";
-  }
-  return true;
+  return !ownMethod(data, "pipe") && !ownMethod(data, Symbol.asyncIterator);
 }
 
 // A status error's `responseType: "stream"` body holds its connection open until it is read or

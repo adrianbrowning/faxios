@@ -25,6 +25,20 @@ describe("helpers::composeSignals", () => {
     assert.ok(called);
   });
 
+  runIfAbortController("takes the reason of a later input that aborts", () => {
+    const first = new AbortController();
+    const second = new AbortController();
+    const third = new AbortController();
+
+    const signal = composeSignals([ first.signal, second.signal, third.signal ])!;
+    assert.strictEqual(signal.aborted, false);
+    third.abort(new Error("third"));
+
+    assert.strictEqual(signal.aborted, true);
+    assert.ok(signal.reason instanceof CanceledError);
+    assert.strictEqual(signal.reason.message, "third");
+  });
+
   runIfAbortController("should abort immediately when a signal is already aborted", () => {
     const controller = new AbortController();
     controller.abort(new Error("already aborted"));

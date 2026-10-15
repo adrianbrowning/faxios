@@ -178,13 +178,12 @@ describe.runIf(typeof fetch === "function")(
     });
 
     it("should combine baseURL and url", async () => {
-      const server = await startHTTPServer(async (_req, res) => res.end("OK"));
-      const baseURL = `http://localhost:${(server.address() as AddressInfo).port}`;
+      const server = await startHTTPServer(async (req, res) => res.end(req.url));
+      const baseURL = `http://localhost:${(server.address() as AddressInfo).port}/api`;
       try {
         const res = await faxios.create({ baseURL })("/foo");
 
-        assert.equal(res.config.baseURL, baseURL);
-        assert.equal(res.config.url, "/foo");
+        assert.strictEqual(res.data, "/api/foo", "server must receive baseURL path joined with url");
       }
       finally {
         await stopHTTPServer(server);

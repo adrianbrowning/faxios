@@ -5,15 +5,16 @@ import { describe, it, vi } from "vitest";
 import faxios from "#src/index.ts";
 import { startHTTPServer, stopHTTPServer } from "../setup/server.js";
 
-const contentTypeOf = async (
+const sentOver = async (
   method: "patch" | "post" | "put" | "query",
   data: unknown,
   config: { headers?: { "Content-Type": false | null; }; onUploadProgress?: () => void; } = {}
 ) => {
-  let seen: string | undefined;
+  let contentType: string | undefined;
+  const chunks: Array<Buffer> = [];
   const server = await startHTTPServer((req, res) => {
-    seen = req.headers["content-type"];
-    req.resume();
+    contentType = req.headers["content-type"];
+    req.on("data", (chunk: Buffer) => chunks.push(chunk));
     req.on("end", () => res.end("ok"));
   }, { port: 0 });
   try {
@@ -23,12 +24,14 @@ const contentTypeOf = async (
       method,
       data,
     });
-    return seen;
+    return { bytes: [ ...Buffer.concat(chunks) ], contentType };
   }
   finally {
     await stopHTTPServer(server);
   }
 };
+
+const contentTypeOf = async (...args: Parameters<typeof sentOver>) => (await sentOver(...args)).contentType;
 
 describe("request body Content-Type (#171)", () => {
   it("uses File.type for a File body", async () => {
@@ -42,29 +45,44 @@ describe("request body Content-Type (#171)", () => {
     assert.strictEqual(await contentTypeOf("post", new Blob([ "x" ], { type: "text/csv" })), "text/csv");
   });
 
-  const binaryBodies: Array<[string, () => unknown]> = [
-    [ "untyped Blob", () => new Blob([ "x" ]) ],
-    [ "ArrayBuffer", () => new Uint8Array([ 1, 2 ]).buffer ],
-    [ "Uint8Array", () => new Uint8Array([ 1, 2 ]) ],
-    [ "DataView", () => new DataView(new Uint8Array([ 1, 2 ]).buffer) ],
+  // Each body goes out as its own bytes with no Content-Type: fetch derives none for these.
+  const binaryBodies: Array<[string, () => unknown, Array<number>]> = [
+    [ "untyped Blob", () => new Blob([ "x" ]), [ 0x78 ]],
+    [ "ArrayBuffer", () => new Uint8Array([ 1, 2 ]).buffer, [ 1, 2 ]],
+    [ "Uint8Array", () => new Uint8Array([ 1, 2 ]), [ 1, 2 ]],
+    [ "DataView", () => new DataView(new Uint8Array([ 1, 2 ]).buffer), [ 1, 2 ]],
     [ "web ReadableStream", () => new ReadableStream({
       start(controller) {
         controller.enqueue(new Uint8Array([ 1, 2 ]));
         controller.close();
       },
-    }) ],
-    [ "Node Readable", () => Readable.from([ Buffer.from("x") ]) ],
-    [ "async iterable", () => ({ async* [Symbol.asyncIterator]() { yield new Uint8Array([ 1 ]); } }) ],
+    }), [ 1, 2 ]],
+    [ "Node Readable", () => Readable.from([ Buffer.from("x") ]), [ 0x78 ]],
+    [ "async iterable", () => ({ async* [Symbol.asyncIterator]() { yield new Uint8Array([ 1 ]); } }), [ 1 ]],
   ];
 
-  for (const [ name, make ] of binaryBodies) {
-    it(`does not send x-www-form-urlencoded for a ${name} body`, async () => {
+  for (const [ name, make, bytes ] of binaryBodies) {
+    it(`sends a ${name} body as its bytes with no Content-Type`, async () => {
       for (const method of [ "post", "put", "patch", "query" ] as const) {
-        const ct = await contentTypeOf(method, make());
-        assert.ok(!ct?.includes("x-www-form-urlencoded"), `${method}: got ${ct}`);
+        assert.deepStrictEqual(await sentOver(method, make()), { bytes, contentType: undefined }, method);
       }
     });
   }
+
+  // Only Node's fetch reads an async iterable body; every runtime's fetch reads a web stream.
+  it("gives fetch an async iterable body as a web stream of its bytes", async () => {
+    let body: unknown;
+    const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
+      body = init?.body;
+      return new Response("ok");
+    };
+    const data = { async* [Symbol.asyncIterator]() { yield "a"; yield new Uint8Array([ 1 ]); } };
+
+    await faxios.post("http://localhost/", data, { env: { fetch, Request: null } });
+
+    assert.ok(body instanceof ReadableStream);
+    assert.deepStrictEqual([ ...new Uint8Array(await new Response(body).arrayBuffer()) ], [ 0x61, 1 ]);
+  });
 
   it("lets fetch set text/plain;charset=UTF-8 for a plain string body", async () => {
     for (const method of [ "post", "put", "patch", "query" ] as const) {

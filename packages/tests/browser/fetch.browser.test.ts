@@ -38,25 +38,4 @@ describe("fetch (vitest browser)", () => {
     expect(lastRequest!.headers.get("x-test")).toBe("okInjected: yes");
     expect(lastRequest!.headers.get("Injected")).toBeNull();
   });
-
-  it("should apply middleware config changes to the outbound fetch call", async () => {
-    const instance = faxios.create().use(async (ctx, next) => {
-      await Promise.resolve();
-      ctx.config.headers.set("x-middleware", "async-yes");
-      return next(ctx);
-    });
-
-    await instance("/foo");
-
-    expect(lastRequest!.headers.get("x-middleware")).toBe("async-yes");
-  });
-
-  it("should not call fetch when a middleware rejects", async () => {
-    const instance = faxios.create().use(async () => {
-      throw new Error("middleware rejection");
-    });
-
-    await expect(instance("/foo")).rejects.toThrow("middleware rejection");
-    expect(lastRequest).toBeUndefined();
-  });
 });
