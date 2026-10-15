@@ -99,6 +99,8 @@ const slowApi = api.create({ timeout: 60_000 }).use(retry({ attempts: 2 }));
 await slowApi.get("/reports", { retry: false });
 ```
 
+Because the child has none of the parent's plugins, `create()` leaves out every default the parent's plugins declared as a request option: with `api.defaults.retry = { attempts: 5 }`, the child above gets no `retry` default. Set it again on the child after installing the plugin. `eject()` works the same way: it removes the defaults for the options the ejected plugin declared, unless another installed plugin declares the same option. Without this, every request would reject with `ERR_BAD_OPTION` (`Unknown option retry`).
+
 ## The context
 
 Every request gets a fresh `ctx`, built after the request config has been merged with the instance defaults.

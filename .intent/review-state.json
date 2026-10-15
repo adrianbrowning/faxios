@@ -3,23 +3,23 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "30f6a1ebb606e64362d7f31aeb95d4a4f8a6649be7c75a57d41b6fe2dd7253e7",
+      "fingerprint": "4f9fc7aeeadbc3318074a68385037c9b69c9dc764b3e0e4ce004bdc74b990415",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "e4ecf18d52350c0415f223122b89b930081b7b87f9dbfb80b1ffff5037efc0fa",
+        "packages/lib/skills/configure-requests/SKILL.md": "bf167bbb7b63a4daeb3724a0abf38c7d3028878df15d03919e19e80dcf795c89",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
-        "packages/lib/skills/configure-requests/references/plugins.md": "bcc12dedc528fdd6a909feb15a0007dd262219c11567c5295e7be350b4d5d6ff",
+        "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
         "packages/lib/src/index.ts": "44edf51b3bbdf494fd213b55e6e377866e18146c47fc443a3d3d7426a3d685b7",
         "packages/lib/src/lib/adapters/fetch.ts": "57a894363c98f3e3d85df13ef913ee794e0529a1101b8a34a1b98bb25717113e",
-        "packages/lib/src/lib/core/Faxios.ts": "a7b17693127670647b4455ced29e94ce86ae3da3e48b73e0a65ecffd2c56ab9f",
+        "packages/lib/src/lib/core/Faxios.ts": "74b6c5e9de843eaf31483faba50f6da48bd848856e391bd7b806dfbcf3f10384",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
         "packages/lib/src/lib/core/dispatchRequest.ts": "3060c07faf738c6f502cb87cbc30765177639bebce7f35e5ccbd60b4f0962c8a",
-        "packages/lib/src/lib/core/mergeConfig.ts": "b3f15fc665f58314f7934bd5510cdcf3faa57e483f03c553600708798d13e946",
+        "packages/lib/src/lib/core/mergeConfig.ts": "7d3828ce1e8cc82fa7324b3bee63ac37e6ca76fabc050a3eb7dcb07bace4a1df",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
+        "packages/lib/src/lib/faxios.ts": "7de7c2a220f01ef7ef347a6cbf1af1f3cbbb0ceb22dd4ec17da52eb4170a6df5",
         "packages/lib/src/lib/helpers/composeSignals.ts": "2db636d9e1c28e5ef7832041d316c7ce588b32ef5d30bbe35eb2951b86b2bd6a",
         "packages/lib/src/lib/plugins/authBearer.ts": "14db38066e32d09780067881e10afcdeb55414a3faa459dfc839aa0e04aa1225",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
@@ -27,42 +27,42 @@
         "packages/lib/src/lib/plugins/retry.ts": "734d82655b3a61e35b437f1e1c6112ffc804dcc3608ac4de66edbf95da912aaa",
         "packages/lib/src/lib/plugins/timing.ts": "c845896855141244cf672d5224327d774ecc9c3e68b38544a4c6c01ec18ca358",
         "packages/lib/src/lib/types.ts": "76b9cb3435abd05297bbc385cb54241503ed03a41ca3d0b363023016d967119c",
-        "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
-        "packages/tests/unit/core/middleware.test.ts": "104387a4440757c9d93e2a2fb75d8b3f34b53b1ccaf99c7313712a5bcfe7da0d",
+        "packages/tests/unit/api.test.ts": "b7e207437aee83d021ee976f1f74c8e310d7c38e8e0a4e02502f7ded840e5107",
+        "packages/tests/unit/core/middleware.test.ts": "c86f72477d110e15c919e370e7a355ee8d8809aee21f8fb155cf2ebc4b145613",
         "packages/tests/unit/plugins/authBearer.test.ts": "f73ea84b082e8d00a3b1741f87769332a9b2eca440f20e4742f6c7338ad05902",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
         "packages/tests/unit/plugins/retry.test.ts": "d3259244222d9d8b3d380a0526e2486b60e2e82fa56a84242e7b3b90a5eec98f",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
-      "outcome": "updated",
-      "reason": "Skill states a url or joined baseURL with a tab or line break rejects with ERR_INVALID_URL",
+      "head": "7441ba80d614af467b190486de40ddf207be5a85",
+      "outcome": "no-change",
+      "reason": "Safe-copy fix in create() header inheritance; skill text unaffected",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/buildFullPath.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/tests/unit/plugins/authBearer.test.ts at 8211220225a5d8cc4b83d177120331bd72fb7f0f"
+        "Changed: packages/lib/src/lib/core/Faxios.ts, packages/tests/unit/api.test.ts at f4086a2de3392d6efe3c9402b54b2dc75b9c03cb"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "616c39fbd6b50de7c4b0488e26a35dbe30f01a72dd233a0fcc2d954cab2a096e",
+      "fingerprint": "1e2cf0312c5d29c73b1d1ba20afdacb5eec7c09a646da53c286a864a3fa9bd47",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "e4ecf18d52350c0415f223122b89b930081b7b87f9dbfb80b1ffff5037efc0fa",
+        "packages/lib/skills/configure-requests/SKILL.md": "bf167bbb7b63a4daeb3724a0abf38c7d3028878df15d03919e19e80dcf795c89",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
-        "packages/lib/skills/configure-requests/references/plugins.md": "bcc12dedc528fdd6a909feb15a0007dd262219c11567c5295e7be350b4d5d6ff",
+        "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
         "packages/lib/src/index.ts": "44edf51b3bbdf494fd213b55e6e377866e18146c47fc443a3d3d7426a3d685b7",
         "packages/lib/src/lib/adapters/fetch.ts": "57a894363c98f3e3d85df13ef913ee794e0529a1101b8a34a1b98bb25717113e",
-        "packages/lib/src/lib/core/Faxios.ts": "a7b17693127670647b4455ced29e94ce86ae3da3e48b73e0a65ecffd2c56ab9f",
+        "packages/lib/src/lib/core/Faxios.ts": "74b6c5e9de843eaf31483faba50f6da48bd848856e391bd7b806dfbcf3f10384",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
         "packages/lib/src/lib/core/dispatchRequest.ts": "3060c07faf738c6f502cb87cbc30765177639bebce7f35e5ccbd60b4f0962c8a",
-        "packages/lib/src/lib/core/mergeConfig.ts": "b3f15fc665f58314f7934bd5510cdcf3faa57e483f03c553600708798d13e946",
+        "packages/lib/src/lib/core/mergeConfig.ts": "7d3828ce1e8cc82fa7324b3bee63ac37e6ca76fabc050a3eb7dcb07bace4a1df",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
+        "packages/lib/src/lib/faxios.ts": "7de7c2a220f01ef7ef347a6cbf1af1f3cbbb0ceb22dd4ec17da52eb4170a6df5",
         "packages/lib/src/lib/helpers/composeSignals.ts": "2db636d9e1c28e5ef7832041d316c7ce588b32ef5d30bbe35eb2951b86b2bd6a",
         "packages/lib/src/lib/plugins/authBearer.ts": "14db38066e32d09780067881e10afcdeb55414a3faa459dfc839aa0e04aa1225",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
@@ -70,19 +70,19 @@
         "packages/lib/src/lib/plugins/retry.ts": "734d82655b3a61e35b437f1e1c6112ffc804dcc3608ac4de66edbf95da912aaa",
         "packages/lib/src/lib/plugins/timing.ts": "c845896855141244cf672d5224327d774ecc9c3e68b38544a4c6c01ec18ca358",
         "packages/lib/src/lib/types.ts": "76b9cb3435abd05297bbc385cb54241503ed03a41ca3d0b363023016d967119c",
-        "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
-        "packages/tests/unit/core/middleware.test.ts": "104387a4440757c9d93e2a2fb75d8b3f34b53b1ccaf99c7313712a5bcfe7da0d",
+        "packages/tests/unit/api.test.ts": "b7e207437aee83d021ee976f1f74c8e310d7c38e8e0a4e02502f7ded840e5107",
+        "packages/tests/unit/core/middleware.test.ts": "c86f72477d110e15c919e370e7a355ee8d8809aee21f8fb155cf2ebc4b145613",
         "packages/tests/unit/plugins/authBearer.test.ts": "f73ea84b082e8d00a3b1741f87769332a9b2eca440f20e4742f6c7338ad05902",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
         "packages/tests/unit/plugins/retry.test.ts": "d3259244222d9d8b3d380a0526e2486b60e2e82fa56a84242e7b3b90a5eec98f",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
-      "outcome": "updated",
-      "reason": "Skill states a url or joined baseURL with a tab or line break rejects with ERR_INVALID_URL",
+      "head": "7441ba80d614af467b190486de40ddf207be5a85",
+      "outcome": "no-change",
+      "reason": "Safe-copy fix in create() header inheritance; skill text unaffected",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/buildFullPath.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/tests/unit/plugins/authBearer.test.ts at 8211220225a5d8cc4b83d177120331bd72fb7f0f"
+        "Changed: packages/lib/src/lib/core/Faxios.ts, packages/tests/unit/api.test.ts at f4086a2de3392d6efe3c9402b54b2dc75b9c03cb"
       ]
     },
     "source:knip.json": {
@@ -256,15 +256,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "53c486b71454137621ca387dfbb00c2f423a78e17f78836e472f92933c56da71",
+      "fingerprint": "68b5496a1b3d4ebb59b7eaf569d93704af7e79b6c587a2934b5c95e1a29117b4",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "aaafb684a701fc464396c1ebed0297ab17e687b7045989605f7c814f4187bd9e"
+        "packages/docs/pages/advanced/middleware.md": "e638f8299d61a696f91257e311a080cf74fb144de82c6ba9afad477e2b529b13"
       },
-      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
+      "head": "7441ba80d614af467b190486de40ddf207be5a85",
       "outcome": "updated",
-      "reason": "Plugin reference now resolves the origin without raw pathParams/params, matching authBearer",
+      "reason": "Skill now states create() child header precedence, that plugin option defaults are not inherited and are removed on eject, and that params/env merge one level deep",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at 92a2ed7dfc5aedab11b43a5cf126444c6b4ba4bf"
+        "Changed: packages/docs/pages/advanced/middleware.md at fa7ce8ce8e9082ce5828ac74667103547b9a6aaa"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
@@ -328,15 +328,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/type-script.md": {
-      "fingerprint": "45137e483cb579fe56cbd0fc7e963d84479be9113a4eaf325d3ea67360ccc1f4",
+      "fingerprint": "fef838fff320cbc39ce4d2257b8a67fb2d2840222f2040dbe52fd7e1a878e572",
       "snapshot": {
-        "packages/docs/pages/advanced/type-script.md": "9db72cea1bdbe04c00161d3d2cc887f5db333dc187c9e1124959338912df3c2b"
+        "packages/docs/pages/advanced/type-script.md": "0c223e0a9e4223cb47e08ff1f5001d6f5c7e4678eb2044949f46d4efb4edbc51"
       },
-      "head": "a6926e1f507b0da9f07237183336e51a04704807",
-      "outcome": "no-change",
-      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
+      "head": "7441ba80d614af467b190486de40ddf207be5a85",
+      "outcome": "updated",
+      "reason": "Skill now states create() child header precedence, that plugin option defaults are not inherited and are removed on eject, and that params/env merge one level deep",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/type-script.md at a6926e1f507b0da9f07237183336e51a04704807"
+        "Changed: packages/docs/pages/advanced/type-script.md at fa7ce8ce8e9082ce5828ac74667103547b9a6aaa"
       ]
     },
     "source:packages/docs/pages/getting-started/examples/typescript.md": {
@@ -2800,15 +2800,15 @@
       ]
     },
     "source:packages/tests/unit/core/mergeConfig.test.ts": {
-      "fingerprint": "f2166c7a4b6c4fe6a4e58c30c1538a746696412793f59d17033b9ed78ffb7c46",
+      "fingerprint": "d2a3a749e6c8d52cc12fcd014078f1236ac754f6d764affce9a6398f2ebac17a",
       "snapshot": {
-        "packages/tests/unit/core/mergeConfig.test.ts": "14227598dc19aebf623548c0f90c84f65745cdb566a69ac681d16a04753c9ac6"
+        "packages/tests/unit/core/mergeConfig.test.ts": "1dad9cb1198019ac581a6452e915bc2854ac80f049fd4ca23dd2ebc093dc2058"
       },
-      "head": "16004a89cc705910f332129196177c5afcbad839",
+      "head": "7441ba80d614af467b190486de40ddf207be5a85",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says a request redact adds to the instance's, config.data on errors is the caller's body, and schema issues keep only message and path keys",
+      "reason": "Skill now states create() child header precedence, that plugin option defaults are not inherited and are removed on eject, and that params/env merge one level deep",
       "evidence": [
-        "Changed: packages/tests/unit/core/mergeConfig.test.ts at 0fd26195c33fab2485de5afef6b316d94f126562"
+        "Changed: packages/tests/unit/core/mergeConfig.test.ts at fa7ce8ce8e9082ce5828ac74667103547b9a6aaa"
       ]
     },
     "source:packages/tests/unit/core/methodHeaderGroups.test.ts": {
@@ -6182,6 +6182,18 @@
       "reason": "Skill states a url or joined baseURL with a tab or line break rejects with ERR_INVALID_URL",
       "evidence": [
         "Changed: .bumpy/287-url-resolver.md at 8211220225a5d8cc4b83d177120331bd72fb7f0f"
+      ]
+    },
+    "source:.bumpy/288-create-headers.md": {
+      "fingerprint": "d468f6b165d21f3b39450270ec631aa8a2b746a243654a77a23a9401e09bbf50",
+      "snapshot": {
+        ".bumpy/288-create-headers.md": "8b8e46b35466137088b83294cf8a2facf87c2df35df4a12310aa8de82b913f32"
+      },
+      "head": "7441ba80d614af467b190486de40ddf207be5a85",
+      "outcome": "updated",
+      "reason": "Skill now states create() child header precedence, that plugin option defaults are not inherited and are removed on eject, and that params/env merge one level deep",
+      "evidence": [
+        "Changed: .bumpy/288-create-headers.md at fa7ce8ce8e9082ce5828ac74667103547b9a6aaa"
       ]
     }
   }

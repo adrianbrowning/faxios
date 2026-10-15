@@ -24,6 +24,9 @@ const sentHeader = (sent: Sent, name: string) => new Headers(sent.init?.headers)
 
 const passthrough: FaxiosMiddleware = async (ctx, next) => next(ctx);
 
+const triesPlugin = (): FaxiosPlugin<{ options: { tries?: number; }; }> =>
+  ({ name: "tries", options: { tries: true }, middleware: async (ctx, next) => next(ctx) });
+
 function plugin<TProvides extends Record<string, unknown>>(
   name: string,
   provides: TProvides,
@@ -175,6 +178,34 @@ describe("core::middleware", () => {
       await request;
 
       assert.deepStrictEqual(log, [ "inner" ]);
+    });
+
+    it("strips the ejected plugin's option defaults, so later requests don't reject", async () => {
+      const sent: Array<Sent> = [];
+      const tries = triesPlugin();
+      const api = faxios.create({ env: { fetch: jsonFetch(sent) } }).use(tries);
+      api.defaults.tries = 3;
+
+      api.eject(tries);
+      await api.get(URL);
+
+      assert.strictEqual(sent.length, 1);
+      assert.strictEqual(Object.hasOwn(api.defaults, "tries"), false);
+    });
+  });
+
+  describe("create() children", () => {
+    it("drops the parent's plugin option defaults, so the child's requests don't reject", async () => {
+      const sent: Array<Sent> = [];
+      const parent = faxios.create({ env: { fetch: jsonFetch(sent) } }).use(triesPlugin());
+      parent.defaults.tries = 3;
+
+      const child = parent.create();
+      await child.get(URL);
+
+      assert.strictEqual(sent.length, 1);
+      assert.strictEqual(Object.hasOwn(child.defaults, "tries"), false);
+      assert.strictEqual(parent.defaults.tries, 3);
     });
   });
 

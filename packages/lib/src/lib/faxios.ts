@@ -4,7 +4,7 @@
 import CanceledError from "./cancel/CanceledError.js";
 import isCancel from "./cancel/isCancel.js";
 import type { DefineConfig, DefinedEndpoint } from "./core/define.js";
-import Faxios, { ejectMiddleware, useMiddleware } from "./core/Faxios.js";
+import Faxios, { childDefaults, ejectMiddleware, useMiddleware } from "./core/Faxios.js";
 import FaxiosError from "./core/FaxiosError.js";
 import FaxiosHeaders from "./core/FaxiosHeaders.js";
 import mergeConfig from "./core/mergeConfig.js";
@@ -51,9 +51,10 @@ function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
     ejectMiddleware(context, middleware);
   };
 
-  // Factory for creating new instances
+  // Factory for creating new instances. Middleware isn't copied, so neither are the defaults for
+  // its plugins' options.
   instance.create = function create(instanceConfig?: CreateFaxiosDefaults): FaxiosInstance {
-    return createInstance(mergeConfig(defaultConfig, instanceConfig));
+    return createInstance(childDefaults(context, instanceConfig));
   };
 
   return instance;

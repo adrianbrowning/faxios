@@ -93,7 +93,7 @@ await faxios.create().get("/users", { retry: false }).catch((error: unknown) => 
 
 Plugin options are typed on every config-taking member, including `defaults`, `define()` and `route()`. Excess-property checks only run on object literals, so a config held in a variable can still carry a plugin option the instance doesn't have. At runtime that request rejects with `ERR_BAD_OPTION`: faxios accepts a plugin's options only while the plugin is installed.
 
-`create()` children start with no middleware and no plugin types. `eject()` doesn't narrow the type either: options a removed plugin added stay in it.
+`create()` children start with no middleware and no plugin types, and without the defaults set for the parent's plugin options. `eject()` doesn't narrow the type: options a removed plugin added stay in it, but their values in `defaults` are removed.
 
 A plugin that requires a capability, such as a token-refresh plugin that needs `auth` from `authBearer`, is a type error when installed before the plugin that provides it. To write your own typed plugins with `definePlugin` and `FaxiosPlugin<{ requires?; provides?; options? }>`, see [Writing a plugin](/pages/advanced/middleware#writing-a-plugin) and [Typed request options](/pages/advanced/middleware#typed-request-options).
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { FaxiosHeaders } from "#src/index.js";
-import mergeConfig from "#src/lib/core/mergeConfig.js";
+import mergeConfig, { mergeConfigExceptHeaders } from "#src/lib/core/mergeConfig.js";
 import defaults from "#src/lib/defaults/index.js";
 
 describe("core::mergeConfig", () => {
@@ -346,6 +346,24 @@ describe("core::mergeConfig", () => {
     it("explicit undefined in config2 keeps config1's schema", () => {
       const merged = mergeConfig({ responseSchema: schemaA }, { responseSchema: undefined });
       expect((merged as Record<string, unknown>).responseSchema).toStrictEqual(schemaA);
+    });
+  });
+
+  describe("one level deep", () => {
+    it("replaces a nested params value instead of merging it", () => {
+      const merged = mergeConfig({ params: { filter: { status: "open" }, page: 1 } }, { params: { filter: { owner: "me" } } });
+
+      expect({ ...merged.params as object }).toEqual({ filter: { owner: "me" }, page: 1 });
+    });
+  });
+
+  describe("mergeConfigExceptHeaders", () => {
+    it("merges every key but headers", () => {
+      const merged = mergeConfigExceptHeaders({ headers: { "X-A": "a" }, timeout: 1 }, { headers: { "X-B": "b" }, baseURL: "http://x.test" });
+
+      expect(Object.hasOwn(merged, "headers")).toBe(false);
+      expect(merged.timeout).toBe(1);
+      expect(merged.baseURL).toBe("http://x.test");
     });
   });
 

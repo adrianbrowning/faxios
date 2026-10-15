@@ -235,7 +235,8 @@ Don't keep the try number in a private symbol on `ctx.state`: other plugins can'
 - Built-in plugin options are validated strictly: unknown or mistyped keys throw
   `ERR_BAD_OPTION` / `ERR_BAD_OPTION_VALUE` when the plugin is created or when a per-request
   override is read.
-- `create()` children do not inherit middleware or plugins.
+- `create()` children do not inherit middleware or plugins, nor the parent's defaults for plugin
+  options. `eject()` removes the defaults for the options the ejected plugin declared.
 
 Sources: `src/lib/plugins/definePlugin.ts`, `src/lib/types.ts` (`FaxiosContext`, `FaxiosPlugin`),
 `src/lib/core/Faxios.ts` (`use`), `packages/tests/unit/plugins/authBearer.test.ts`,
