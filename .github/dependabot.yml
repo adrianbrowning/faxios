@@ -2,10 +2,13 @@ version: 2
 # Package and GitHub Actions update PRs are maintainer/bot-only.
 # Keep the 7-day cooldown unless a critical vulnerability requires a
 # maintainer-led manual update.
-# Every tracked lockfile needs an entry here and an audit step in
-# .github/workflows/lockfile-lint.yml; .github/scripts/check-lockfile-coverage.mjs
-# enforces both. Dependabot has no Deno ecosystem, so
-# packages/tests/smoke/deno/deno.lock is updated by hand.
+# Every tracked lockfile needs an entry here, or a reason in the MANUAL table of
+# .github/scripts/check-lockfile-coverage.mjs, and an audit step in
+# .github/workflows/lockfile-lint.yml; that script enforces both. Dependabot has
+# no Deno ecosystem, so packages/tests/smoke/deno/deno.lock is updated by hand.
+# The smoke/esm and module/esm harnesses depend on file:../../faxios.tgz, which
+# is never committed, so Dependabot's update jobs can't install them; pnpm audit
+# covers their lockfiles and they are updated by hand (AGENTS.md).
 updates:
   - package-ecosystem: 'github-actions'
     # '/' covers only the workflows; the composite actions need their own glob.
@@ -24,11 +27,7 @@ updates:
     cooldown:
       default-days: 7
   - package-ecosystem: 'npm'
-    # The test harnesses install outside the workspace, from their own lockfiles.
-    directories:
-      - '/'
-      - '/packages/tests/smoke/esm'
-      - '/packages/tests/module/esm'
+    directory: '/'
     schedule:
       interval: 'weekly'
     open-pull-requests-limit: 5

@@ -1,7 +1,9 @@
 name: Lockfile lint
 
-# Every tracked lockfile is audited here and kept current by Dependabot; the
-# `lockfile-coverage` job fails when a lockfile is missing from either.
+# Every tracked lockfile is audited here when its tool has an audit, and is kept
+# current by Dependabot or, when Dependabot can't update it, by hand with a
+# reason in the MANUAL table of check-lockfile-coverage.mjs (deno.lock and the
+# smoke/esm and module/esm lockfiles). The `lockfile-coverage` job enforces both.
 on:
   pull_request:
     paths:

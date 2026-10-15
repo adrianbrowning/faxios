@@ -1,6 +1,7 @@
 // Fails when a tracked lockfile is not kept up to date by Dependabot and audited in CI.
 // Every lockfile an install reads must have a Dependabot entry for its directory (in
-// .github/dependabot.yml) and a `--audit-level=high` audit step (in the workflow below).
+// .github/dependabot.yml), or a MANUAL entry below with the reason Dependabot can't update it,
+// and a `--audit-level=high` audit step (in the workflow below) when its tool has an audit.
 // A lockfile that nothing installs from should be deleted, not listed here.
 // Usage: node .github/scripts/check-lockfile-coverage.mjs (from anywhere in the repo)
 import { execFileSync } from "node:child_process";
@@ -11,20 +12,26 @@ const root = execFileSync("git", ["rev-parse", "--show-toplevel"], { encoding: "
 const DEPENDABOT = ".github/dependabot.yml";
 const AUDIT_WORKFLOW = ".github/workflows/lockfile-lint.yml";
 
-// Lockfile name -> Dependabot ecosystem and the audit tool that reads it.
+// Lockfile name -> Dependabot ecosystem and the audit tool that reads it (null: none).
 const KINDS = {
   "pnpm-lock.yaml": { ecosystem: "npm", tool: "pnpm" },
   "package-lock.json": { ecosystem: "npm", tool: "npm" },
   "yarn.lock": { ecosystem: "npm", tool: "yarn" },
   "bun.lock": { ecosystem: "bun", tool: "bun" },
   "bun.lockb": { ecosystem: "bun", tool: "bun" },
-  "deno.lock": { ecosystem: null, tool: "deno" },
+  "deno.lock": { ecosystem: null, tool: null },
 };
 
-// Lockfiles that no Dependabot ecosystem or audit tool covers; each needs a reason a maintainer accepted.
+// Lockfiles Dependabot can't update, so they must have no Dependabot entry. Each needs a reason a
+// maintainer accepted, saying why and how the lockfile is kept current instead.
+const TARBALL_HARNESS =
+  "Its package.json depends on file:../../faxios.tgz, which is never committed, so Dependabot's update jobs can't install it. " +
+  "The harness-audit job in lockfile-lint.yml runs pnpm audit on it; update it by hand with the tarball staged (AGENTS.md).";
 const MANUAL = {
   "packages/tests/smoke/deno/deno.lock":
     "Dependabot has no Deno ecosystem; update it by hand (AGENTS.md). Its install is frozen.",
+  "packages/tests/smoke/esm/pnpm-lock.yaml": TARBALL_HARNESS,
+  "packages/tests/module/esm/pnpm-lock.yaml": TARBALL_HARNESS,
 };
 
 const read = (path) => readFileSync(join(root, path), "utf8");
@@ -99,16 +106,25 @@ const audited = auditedLockfiles(read(AUDIT_WORKFLOW));
 const problems = [];
 
 for (const lockfile of lockfiles) {
-  if (Object.hasOwn(MANUAL, lockfile)) continue;
   const { ecosystem, tool } = KINDS[basename(lockfile)];
   const dir = dirname(lockfile);
+  const dependabotDir = `/${dir === "." ? "" : dir}`;
   const updated = entries.some(
     (entry) => entry.ecosystem === ecosystem && entry.directories.some((pattern) => directoryMatches(pattern, dir)),
   );
-  if (!updated) {
-    problems.push(`${lockfile}: no '${ecosystem ?? "?"}' Dependabot entry for /${dir === "." ? "" : dir} in ${DEPENDABOT}`);
+  if (Object.hasOwn(MANUAL, lockfile)) {
+    const reason = MANUAL[lockfile];
+    if (typeof reason !== "string" || reason.trim() === "") {
+      problems.push(`${lockfile}: its MANUAL entry needs the reason Dependabot can't update it and how it is kept current`);
+    }
+    if (updated) {
+      problems.push(`${lockfile}: listed in MANUAL, but ${DEPENDABOT} still runs '${ecosystem}' update jobs for ${dependabotDir}; remove one`);
+    }
   }
-  if (!audited.has(`${dir}:${tool}`)) {
+  else if (!updated) {
+    problems.push(`${lockfile}: no '${ecosystem ?? "?"}' Dependabot entry for ${dependabotDir} in ${DEPENDABOT}`);
+  }
+  if (tool !== null && !audited.has(`${dir}:${tool}`)) {
     problems.push(`${lockfile}: no '${tool} audit --audit-level=high' step for ${dir} in ${AUDIT_WORKFLOW}`);
   }
 }
@@ -122,4 +138,4 @@ if (problems.length > 0) {
   console.error("Cover each lockfile an install reads, or delete it if nothing installs from it.");
   process.exit(1);
 }
-console.log(`All ${lockfiles.length} lockfiles are covered by Dependabot and an audit step.`);
+console.log(`All ${lockfiles.length} lockfiles are audited where their tool can, and covered by Dependabot or a MANUAL reason.`);

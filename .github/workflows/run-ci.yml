@@ -34,8 +34,10 @@ env:
 
 concurrency:
   # The `ci-` prefix keeps a run called from release.yml out of release.yml's own group.
-  # A newer push to a PR cancels the run it supersedes; runs on main all finish.
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  # A newer push to a PR cancels the run it supersedes. Every other run has a group of its
+  # own commit: GitHub keeps one pending run per group and cancels it when a newer one
+  # queues, even without cancel-in-progress, so a group per ref would drop queued main commits.
+  group: ci-${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
@@ -90,6 +92,29 @@ jobs:
           npm --prefix packages/lib pkg set "version=$version"
           node packages/tests/scripts/sync-version.ts
 
+      - name: Build project
+        run: pnpm run build
+
+      # Packed and hashed straight after the build, before any lint, test or docs tooling runs in
+      # this workspace: only the install, the snapshot version step and the build run before it.
+      # Nothing later can change what release.yml publishes unnoticed: a changed .tgz fails its
+      # sha256 check. npm, not pnpm: npm is the publisher, and check-license.ts checks npm's file
+      # list.
+      - name: Pack tarball
+        id: pack
+        working-directory: packages/lib
+        run: |
+          set -euo pipefail
+          name=$(npm pack --ignore-scripts --json | node -e 'let s = ""; process.stdin.on("data", d => s += d).on("end", () => console.log(JSON.parse(s)[0].filename))')
+          sha256=$(sha256sum "$name" | cut -d ' ' -f 1)
+          version=$(node -p 'require("./package.json").version')
+          {
+            echo "name=$name"
+            echo "sha256=$sha256"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+          echo "Packed \`$name\` (version $version), sha256 \`$sha256\`" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Lint
         run: pnpm run lint
 
@@ -97,9 +122,6 @@ jobs:
       # `pnpm check` runs it too.
       - name: Check Markdown examples are in sync
         run: pnpm run docs:sync:check
-
-      - name: Build project
-        run: pnpm run build
 
       - name: Install Playwright with deps
         working-directory: packages/tests
@@ -118,22 +140,6 @@ jobs:
 
       - name: Run browser tests
         run: pnpm run test:vitest:browser:headless
-
-      # npm, not pnpm: npm is the publisher, and check-license.ts checks npm's file list.
-      - name: Pack tarball
-        id: pack
-        working-directory: packages/lib
-        run: |
-          set -euo pipefail
-          name=$(npm pack --ignore-scripts --json | node -e 'let s = ""; process.stdin.on("data", d => s += d).on("end", () => console.log(JSON.parse(s)[0].filename))')
-          sha256=$(sha256sum "$name" | cut -d ' ' -f 1)
-          version=$(node -p 'require("./package.json").version')
-          {
-            echo "name=$name"
-            echo "sha256=$sha256"
-            echo "version=$version"
-          } >> "$GITHUB_OUTPUT"
-          echo "Packed \`$name\` (version $version), sha256 \`$sha256\`" >> "$GITHUB_STEP_SUMMARY"
 
       # Compares against a PR's base, so it only runs on pull requests.
       - name: Dependency Review
@@ -194,6 +200,11 @@ jobs:
       - name: Type-check ESM smoke tests
         working-directory: packages/tests
         run: pnpm exec tsc --noEmit -p smoke/esm/tsconfig.json
+
+      # Each `@ts-expect-error TSnnnn` must still be silencing that error, under the same tsconfig.
+      - name: Check ESM smoke @ts-expect-error codes
+        working-directory: packages/tests
+        run: node scripts/check-expect-error.ts --smoke
 
       - name: Run ESM smoke tests
         working-directory: packages/tests/smoke/esm

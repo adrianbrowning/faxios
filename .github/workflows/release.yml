@@ -14,8 +14,9 @@ name: Release
 #   tested the same way. Snapshots make no tags, releases or commits.
 #
 # Trust (#270): only `publish` and `rc` get `id-token: write`. They run only
-# on main, in the `npm-publish` environment that npm trusted publishing (OIDC)
-# is bound to, and they check out, install and build nothing: they run
+# on main, in the `npm-publish` environment (npm trusted publishing (OIDC) is
+# bound to it once that npm setting is applied by hand), and they check out,
+# install and build nothing: they run
 # setup-node, the artifact download and the shell in this file. The build and
 # its dependencies run in run-ci.yml with a read-only token and no OIDC.
 #
