@@ -570,11 +570,11 @@
       ]
     },
     "source:packages/tests/scripts/check-license.ts": {
-      "fingerprint": "990a2b9b2a42b9e331658f13338aab5f2f58ef19df5f8b7c8e15adc5a48eed85",
+      "fingerprint": "dff705aa2e354fcfecbb0856489fa4d613e1905e5a6454fd02f28265be47fe17",
       "snapshot": {
-        "packages/tests/scripts/check-license.ts": "3d8a3213a7cd2b8b4bbe4e1701cdf43a19ef7427ee95871af1d1283836b3cf52"
+        "packages/tests/scripts/check-license.ts": "85e9a87bc0ae90c69b0ac8b212a0fac95bdc0a80d83521dc764e3660fec4311c"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
       "outcome": "no-change",
       "reason": "Matches main's a15418fe logic (npm on PATH); this PR only rewrites comments to name release.yml and bumpy's npm packing. Packaging check, no skill impact.",
       "evidence": [
@@ -1815,11 +1815,11 @@
       ]
     },
     "source:.bumpy/_config.json": {
-      "fingerprint": "8da9c3d14dd2b1376f4e79b43dafee37d4561057063725f80593d4a7c835641f",
+      "fingerprint": "dadd79288e34839b8885dac280a7b492a9136c00837631e20ffae943ce553a9e",
       "snapshot": {
-        ".bumpy/_config.json": "d82cedbff502125ea6de7fb48c7c3770a42378f855e1a87492dc9c648d10dfa1"
+        ".bumpy/_config.json": "e40e62ce680881c8b51ade1b26b764ddb38d8148a496ca39f8eedb8b80727ecc"
       },
-      "head": "ccaa208ff5d1130cab9df9ec54cfd4170ed9b038",
+      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
       "outcome": "no-change",
       "reason": "bumpy config only: the GitHub changelog formatter lists the maintainer as an internal author, so entries stop thanking them. No library API or skill guidance changes.",
       "evidence": [
@@ -1891,11 +1891,11 @@
       ]
     },
     "source:.github/workflows/ci.yml": {
-      "fingerprint": "8cc4b9217c1ccbf8280880a5c7f2e093ac4ef92718d56b8bbcbc48e63f9c72dd",
+      "fingerprint": "76271048bc9eb3d704d863e0178411124109bc6fd98e6f2ede5c7920bce43d27",
       "snapshot": {
-        ".github/workflows/ci.yml": "2f5412a7003fe2b2203e3b755bd92c79fa7f2ebf66b905951498e40318356927"
+        ".github/workflows/ci.yml": null
       },
-      "head": "32234c458f13a175aa56a692ac189f4129775038",
+      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
       "outcome": "no-change",
       "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
       "evidence": [
@@ -1915,11 +1915,11 @@
       ]
     },
     "source:.github/workflows/release.yml": {
-      "fingerprint": "dc990c021c19472e0883df239398e5930091b5538f9df86a83fa2d994a29d14c",
+      "fingerprint": "bec218498e19b678765440b6cc18e9edeeb48e6b8c3ee3fb23fe4ad23b007621",
       "snapshot": {
-        ".github/workflows/release.yml": "47d50a45fa8fff5e48d178bef0d85f3d37812797fc0fcd03fe56b23b5646bb04"
+        ".github/workflows/release.yml": "533a86e0d3e706fd8a5e825ef80378a8dc1324f1dff958f0a790506ee0c47261"
       },
-      "head": "cfbda2b2c64667f803d29692960c88da00926654",
+      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
       "outcome": "no-change",
       "reason": "release.yml: the version job also records the Intent review on the Version Packages PR. No API or skill guidance changes.",
       "evidence": [
@@ -1951,11 +1951,11 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "c7c122d541545549eb442f3622443a19eb59c67ea2a59cc9c7576f7e80405f93",
+      "fingerprint": "12e6a76b3ed8fbdd95c4dacda10e18850660d1c63e7d7f8810c8eda831f21347",
       "snapshot": {
-        "THREATMODEL.md": "0022980fe583afae18b0a22cb2bf439900b04e05c4126e112faf0875b760d367"
+        "THREATMODEL.md": "cbd58323e9b7365a7bd056165b7c946d86e7ba98a37e2c28b14b61c3ce4673f4"
       },
-      "head": "762e01c6766df386c2fb67ee89b4ed09b7f8b972",
+      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
       "outcome": "updated",
       "reason": "#276: skill import table lists /forward-to (checked against package.json exports by packages/tests/scripts/check-skill-exports.ts); library_version 0.2.4; sources add assertRequestConfig, assertSignal, assertTimeout, requestDeadline and resolveRequestURL; ETIMEDOUT cited from requestDeadline.ts; domain_map/skill_spec/skill_tree refreshed and the MIGRATION_GUIDE gap closed (#188); THREATMODEL cites current .ts files and tests; bump file describes the skill change",
       "evidence": [
@@ -3224,11 +3224,11 @@
       ]
     },
     "source:.github/workflows/bundle-size.yml": {
-      "fingerprint": "43cd1f7b5d4193bb7f678fcb893acf42758aa652b3bc6d1b752eed5b83c9ee7d",
+      "fingerprint": "65a9e46fceef7766f4159f9899a8e854c27ce7935b8299fd92a3badbc73f81f5",
       "snapshot": {
-        ".github/workflows/bundle-size.yml": "dcad5c03b4941bb6d78ab9a86980d7546c29f1d33298caf3bbf9f03d4a5e9b14"
+        ".github/workflows/bundle-size.yml": "621050cebb5179881275db9003e31a7a7ebc38d0239fe4e27b32f7d11171cc24"
       },
-      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
       "outcome": "updated",
       "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
       "evidence": [
@@ -3248,11 +3248,11 @@
       ]
     },
     "source:.github/workflows/docs.yml": {
-      "fingerprint": "1b348c609419ab482fcd173334429fd38fe13bd8853395c108d9a20098d98658",
+      "fingerprint": "20493d6c89bd58b826c6dd67a000e5683365a1d6cdc8f1e1b19801b6dd275047",
       "snapshot": {
-        ".github/workflows/docs.yml": "79f7abe4a881788d3851e3a534278b845fd348d556adc4985b715fa728657b1e"
+        ".github/workflows/docs.yml": "d34d9ae068c63268c6c92dbec15ceaa1e3ceb1be1dcceb3d18fbbb8fc2387c76"
       },
-      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
       "outcome": "no-change",
       "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
       "evidence": [
@@ -3272,11 +3272,11 @@
       ]
     },
     "source:.github/workflows/lockfile-lint.yml": {
-      "fingerprint": "f8c8bd7bb7616b56563c04a0d0efe95ae56438ae7755c57060304d4756efd466",
+      "fingerprint": "2dd855fad1b433670eb190e38db614bec6f902628d6ce3fc896cb0d22ea11f7d",
       "snapshot": {
-        ".github/workflows/lockfile-lint.yml": "d8c6fbdf3d087348600193570ec1cd7c956d5aa5a63f7791285db20d7f16854b"
+        ".github/workflows/lockfile-lint.yml": "1a17b1cefdaa8feb6492d12d6cd704fe6991b66a7bdb61f944deeedcc303ff2a"
       },
-      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
       "outcome": "no-change",
       "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
       "evidence": [
@@ -3284,11 +3284,11 @@
       ]
     },
     "source:.github/workflows/run-ci.yml": {
-      "fingerprint": "2080ede971e8f678cbf00b4abc5215f41c118e4c7a29533e207e6e74218ca0ef",
+      "fingerprint": "ac1be634e3ba7c7926577317c5870a69b1d4fb47db69928a287a3d8bec8009c4",
       "snapshot": {
-        ".github/workflows/run-ci.yml": "d03ed9a772a2457f759e418413cd4692c536ed579ebbcba8d13f3bdf87ed2d03"
+        ".github/workflows/run-ci.yml": "a528d34085619325bdc657f04c916486345cb3cfee0f1ac9b000830b992abaf7"
       },
-      "head": "32234c458f13a175aa56a692ac189f4129775038",
+      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
       "outcome": "no-change",
       "reason": "Docs build in pnpm check and PR CI, contract checks for docs declaration blocks, docs pages fixed to the shipped API, lib bp/version/docs:dev scripts removed and zshy pinned, REQUEST_CONFIG_KEYS exported for a docs test; no library behaviour, option or export the configure-requests skill teaches changes",
       "evidence": [
@@ -3308,11 +3308,11 @@
       ]
     },
     "source:.github/workflows/verify-build-reproducibility.yml": {
-      "fingerprint": "8325ffb1309cd1c993a44a20e2c51b7e2b8847f0ccc0353e2fd446ee610d9b49",
+      "fingerprint": "3c3a3b1308de5fe752b700e42c1ddfcf735cc34dcdd48fb8c2a16b18969320da",
       "snapshot": {
-        ".github/workflows/verify-build-reproducibility.yml": "a0fd816f59d047e8e615712e32b38422d9c891f3bb0538610f2f4c0c2ce1edd7"
+        ".github/workflows/verify-build-reproducibility.yml": "3d7012c98477e495a17dc7553b49118cad7627a265a34009fb3aa6679a208b14"
       },
-      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
+      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
       "outcome": "out-of-scope",
       "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
       "evidence": [
@@ -3418,11 +3418,11 @@
       ]
     },
     "source:.github/workflows/zizmor.yml": {
-      "fingerprint": "ad9918510686cd16ab35010da37eaec55ad6e4e27d3f8247e37218bdf2340adb",
+      "fingerprint": "8622a3357e5cba12482d9a8c246ea12bd7a035fc844f143666abf093fda2bb95",
       "snapshot": {
-        ".github/workflows/zizmor.yml": "00e640e9d982f545092737e9e0d3a3446555d7362c01b3a4ff7b5157cf03f1bf"
+        ".github/workflows/zizmor.yml": "0868cbf403850adb23a7fb829d92a5c73c161cc9c351741e461dbd44e0736a32"
       },
-      "head": "280f7e791c50e367a025fddc617941296f15f52a",
+      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
       "outcome": "no-change",
       "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
       "evidence": [
@@ -7267,6 +7267,30 @@
       "reason": "Conduct-report address only; the packaged skill teaches nothing about conduct reporting",
       "evidence": [
         "Changed: CODE_OF_CONDUCT.md at adb16ea89d4b8e0a71790dc702f9e519bccd324a"
+      ]
+    },
+    "source:.github/workflows/moderator.yml": {
+      "fingerprint": "f1dc5c1f2b0c7acacc4bae2ea214820438eef42974c233621621241115390b5e",
+      "snapshot": {
+        ".github/workflows/moderator.yml": "3fab45775dd90e9178c91e4f942ff883d93760b9cee571c300d33f23c35867f8"
+      },
+      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: .github/workflows/moderator.yml"
+      ]
+    },
+    "source:packages/tests/scripts/check-workflow-timeouts.ts": {
+      "fingerprint": "66a2e0d633d725c30b5d15789a9fc6b4ec11dea38ac0b8b5b770633d162d9caf",
+      "snapshot": {
+        "packages/tests/scripts/check-workflow-timeouts.ts": "f6f0e3e499ee04a89a9eeea3fc0d54e9fdb97539784889e3c91611cc8305c7d3"
+      },
+      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/scripts/check-workflow-timeouts.ts"
       ]
     }
   }

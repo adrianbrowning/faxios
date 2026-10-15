@@ -4,9 +4,9 @@
   "changelog": ["github", { "internalAuthors": ["adrianbrowning"] }],
   "access": "public",
   "include": ["@gcmdev/faxios"],
-  "publish": {
-    "packManager": "npm",
-    "provenance": true,
-    "npmStaged": false
+  "packages": {
+    "@gcmdev/faxios": {
+      "publishCommand": "test -n \"$(npm view @gcmdev/faxios@{{version}} version)\""
+    }
   }
 }

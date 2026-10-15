@@ -1,10 +1,30 @@
 name: Continuous integration
 
+# The one CI suite: pull requests, pushes to main, and release.yml, which runs
+# it on the commit it publishes (#162). The build job packs the package
+# tarball once; every later job tests that file, and release.yml publishes it
+# after checking it against the `tarball-sha256` output (#270).
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-  # release.yml runs this on the release commit before it publishes (#162).
+  push:
+    branches: [main]
   workflow_call:
+    inputs:
+      snapshot:
+        description: Snapshot name (e.g. `rc`). Packs main's pending release as `<next version>-<name>-<short sha>`.
+        type: string
+        default: ''
+    outputs:
+      tarball-name:
+        description: File name of the packed tarball in the `faxios-tarball` artifact
+        value: ${{ jobs.build-and-run-vitest.outputs.tarball-name }}
+      tarball-sha256:
+        description: SHA-256 of the packed tarball
+        value: ${{ jobs.build-and-run-vitest.outputs.tarball-sha256 }}
+      version:
+        description: Package version inside the tarball
+        value: ${{ jobs.build-and-run-vitest.outputs.version }}
 
 permissions:
   contents: read
@@ -14,13 +34,19 @@ env:
 
 concurrency:
   # The `ci-` prefix keeps a run called from release.yml out of release.yml's own group.
+  # A newer push to a PR cancels the run it supersedes; runs on main all finish.
   group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build-and-run-vitest:
     name: Build and run vitest
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      tarball-name: ${{ steps.pack.outputs.name }}
+      tarball-sha256: ${{ steps.pack.outputs.sha256 }}
+      version: ${{ steps.pack.outputs.version }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -30,15 +56,39 @@ jobs:
       # The pnpm version comes from `packageManager` in the root package.json
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
 
+      # Only pull requests use the pnpm store cache: runs on main build the
+      # tarball that release.yml publishes.
       - name: Setup node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 26.x
-          registry-url: 'https://registry.npmjs.org'
-          cache: pnpm
+          cache: ${{ github.event_name == 'pull_request' && 'pnpm' || '' }}
+          package-manager-cache: ${{ github.event_name == 'pull_request' }}
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
+
+      # bumpy's snapshot version: the next version from the pending bump files,
+      # then the name and the short sha. VERSION in data.ts must match it.
+      - name: Set the snapshot version
+        if: inputs.snapshot
+        env:
+          SNAPSHOT: ${{ inputs.snapshot }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$SNAPSHOT" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
+            echo "::error::snapshot name must be lower-case letters, digits and dashes"
+            exit 1
+          fi
+          next=$(pnpm exec bumpy status --json --filter @gcmdev/faxios \
+            | node -e 'let s = ""; process.stdin.on("data", d => s += d).on("end", () => console.log(JSON.parse(s).releases[0]?.newVersion ?? ""))')
+          if [[ -z "$next" ]]; then
+            echo "::error::no pending release on this commit; a snapshot needs pending bump files"
+            exit 1
+          fi
+          version="$next-$SNAPSHOT-$(git rev-parse --short=7 HEAD)"
+          npm --prefix packages/lib pkg set "version=$version"
+          node packages/tests/scripts/sync-version.ts
 
       - name: Lint
         run: pnpm run lint
@@ -69,24 +119,32 @@ jobs:
       - name: Run browser tests
         run: pnpm run test:vitest:browser:headless
 
+      # npm, not pnpm: npm is the publisher, and check-license.ts checks npm's file list.
       - name: Pack tarball
+        id: pack
         working-directory: packages/lib
-        run: pnpm pack
+        run: |
+          set -euo pipefail
+          name=$(npm pack --ignore-scripts --json | node -e 'let s = ""; process.stdin.on("data", d => s += d).on("end", () => console.log(JSON.parse(s)[0].filename))')
+          sha256=$(sha256sum "$name" | cut -d ' ' -f 1)
+          version=$(node -p 'require("./package.json").version')
+          {
+            echo "name=$name"
+            echo "sha256=$sha256"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+          echo "Packed \`$name\` (version $version), sha256 \`$sha256\`" >> "$GITHUB_STEP_SUMMARY"
 
       # Compares against a PR's base, so it only runs on pull requests.
       - name: Dependency Review
         if: github.event_name == 'pull_request'
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
-        continue-on-error: true
-        with:
-          # dev server CVEs in private docs package (vite@5.x no patch; esbuild dev server)
-          allow-ghsas: GHSA-fx2h-pf6j-xcff,GHSA-4w7w-66w2-5vf9,GHSA-v6wh-96g9-6wx3,GHSA-67mh-4wv8-2f99
 
       - name: Upload tarball
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: faxios-tarball
-          path: packages/lib/*faxios-*.tgz
+          path: packages/lib/${{ steps.pack.outputs.name }}
           if-no-files-found: error
           retention-days: 1
 
@@ -95,6 +153,7 @@ jobs:
     name: ESM smoke tests (Node ${{ matrix.node-version }})
     needs: build-and-run-vitest
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
@@ -144,6 +203,7 @@ jobs:
     name: ESM module tests (Node ${{ matrix.node-version }})
     needs: build-and-run-vitest
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
@@ -184,6 +244,7 @@ jobs:
     name: Bun smoke tests
     needs: build-and-run-vitest
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -224,6 +285,7 @@ jobs:
     name: Deno smoke tests
     needs: build-and-run-vitest
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

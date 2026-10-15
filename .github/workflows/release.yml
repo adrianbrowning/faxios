@@ -4,25 +4,34 @@ name: Release
 #
 # - A push to main with pending bump files opens or updates the Version
 #   Packages PR (bumpy/version-packages).
-# - Merging that PR publishes: run-ci.yml must pass on the merged commit, then
-#   `npm publish --provenance`, the git tag and the GitHub release. Then
-#   docs.yml deploys the site and check-skills.yml reviews the skill.
-# - The `release-rc` label on the Version Packages PR publishes a snapshot of
-#   main's pending release to the `next` dist-tag. Snapshots make no tags,
-#   releases or commits.
+# - Merging that PR publishes. run-ci.yml builds, packs and tests the tarball
+#   on the merged commit; `publish` checks that tarball against run-ci's
+#   SHA-256 and runs `npm publish <tarball> --provenance`; `release` has bumpy
+#   tag the commit and publish the GitHub release. Then docs.yml deploys the
+#   site and check-skills.yml reviews the skill.
+# - Running this workflow by hand on main with `rc` checked publishes a
+#   snapshot of main's pending release to the `next` dist-tag, built and
+#   tested the same way. Snapshots make no tags, releases or commits.
 #
-# Publishing runs in the `npm-publish` environment, which npm trusted
-# publishing (OIDC) is bound to. BUMPY_GH_TOKEN (a PAT or app token) lets
-# bumpy open the Version Packages PR with CI running on it; without it, bumpy
-# needs "Allow GitHub Actions to create and approve pull requests".
+# Trust (#270): only `publish` and `rc` get `id-token: write`. They run only
+# on main, in the `npm-publish` environment that npm trusted publishing (OIDC)
+# is bound to, and they check out, install and build nothing: they run
+# setup-node, the artifact download and the shell in this file. The build and
+# its dependencies run in run-ci.yml with a read-only token and no OIDC.
+#
+# BUMPY_GH_TOKEN (a PAT or app token) lets bumpy open the Version Packages PR
+# with CI running on it; without it, bumpy needs "Allow GitHub Actions to
+# create and approve pull requests".
 
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
-    types: [labeled]
   workflow_dispatch:
+    inputs:
+      rc:
+        description: Publish a snapshot of main's pending release to the `next` dist-tag
+        type: boolean
+        default: false
 
 concurrency:
   group: release-${{ github.ref }}
@@ -33,7 +42,7 @@ permissions: {}
 jobs:
   # Detects what `ci release` would do. No write token, no publish credentials.
   plan:
-    if: github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/main' && !inputs.rc
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -114,6 +123,7 @@ jobs:
           git push origin "HEAD:refs/heads/$BRANCH"
 
   # The publish gate (#162): the full PR suite on the commit that publishes.
+  # It builds and packs the tarball that `publish` publishes.
   ci:
     needs: plan
     if: needs.plan.outputs.mode == 'publish'
@@ -121,15 +131,86 @@ jobs:
       contents: read
     uses: $/.github/workflows/run-ci.yml
 
+  # Publishes the tarball run-ci.yml tested. No checkout, install or build:
+  # nothing from the repository or its dependencies runs next to the OIDC token.
   publish:
     needs: [plan, ci]
     if: needs.plan.outputs.mode == 'publish'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     environment: npm-publish
     permissions:
-      contents: write
       id-token: write
+    steps:
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 26.x
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: faxios-tarball
+          path: tarball
+
+      # The checksum comes from run-ci's job output, not from the artifact, so
+      # a replaced artifact fails here.
+      - name: Check the tarball is the one CI tested
+        working-directory: tarball
+        env:
+          TARBALL_NAME: ${{ needs.ci.outputs.tarball-name }}
+          TARBALL_SHA256: ${{ needs.ci.outputs.tarball-sha256 }}
+          VERSION: ${{ needs.ci.outputs.version }}
+        run: &check-tarball |
+          set -euo pipefail
+          files=(*)
+          if [[ ! "$TARBALL_SHA256" =~ ^[0-9a-f]{64}$ || "${files[*]}" != "$TARBALL_NAME" ]]; then
+            echo "::error::expected only $TARBALL_NAME (sha256 '$TARBALL_SHA256') in the artifact, found: ${files[*]}"
+            exit 1
+          fi
+          echo "$TARBALL_SHA256  $TARBALL_NAME" | sha256sum --check --strict
+          manifest=$(tar -xOzf "$TARBALL_NAME" package/package.json)
+          id=$(node -p 'const m = JSON.parse(process.argv[1]); m.name + "@" + m.version' "$manifest")
+          if [[ "$id" != "@gcmdev/faxios@$VERSION" ]]; then
+            echo "::error::the tarball holds $id, expected @gcmdev/faxios@$VERSION"
+            exit 1
+          fi
+          # npm adds LICENSE only from packages/lib, so 0.2.0 shipped without it (#160).
+          if ! tar -tzf "$TARBALL_NAME" | grep -qx 'package/LICENSE'; then
+            echo "::error::the tarball has no LICENSE"
+            exit 1
+          fi
+
+      # A run whose `release` job failed leaves the version on npm without a
+      # tag, so the next run plans the publish again. Skip it when npm already
+      # has these exact bytes; fail when it has a different tarball.
+      - name: Publish to npm
+        env:
+          TARBALL_NAME: ${{ needs.ci.outputs.tarball-name }}
+          VERSION: ${{ needs.ci.outputs.version }}
+        run: |
+          set -euo pipefail
+          tarball="tarball/$TARBALL_NAME"
+          integrity="sha512-$(openssl dgst -sha512 -binary "$tarball" | base64 -w0)"
+          published=$(npm view "@gcmdev/faxios@$VERSION" dist.integrity 2>/dev/null || true)
+          if [[ -z "$published" ]]; then
+            npm publish "$tarball" --access public --provenance --ignore-scripts
+          elif [[ "$published" == "$integrity" ]]; then
+            echo "@gcmdev/faxios@$VERSION is already on npm with this tarball; skipping the publish"
+          else
+            echo "::error::@gcmdev/faxios@$VERSION is already on npm with a different tarball ($published, this one is $integrity)"
+            exit 1
+          fi
+
+  # Tags the release commit and publishes the GitHub release. The package's
+  # `publishCommand` in .bumpy/_config.json only confirms the version is on
+  # npm, so bumpy publishes nothing; this job has no OIDC token.
+  release:
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -138,25 +219,18 @@ jobs:
 
       - uses: $/.github/actions/setup
         with:
-          registry-url: https://registry.npmjs.org
           cache: 'false'
           ignore-scripts: 'true'
 
-      - name: Build project
-        run: pnpm run build
-
-      # npm adds LICENSE only from packages/lib, so 0.2.0 shipped without it (#160).
-      - name: Check the package includes LICENSE
-        run: node packages/tests/scripts/check-license.ts
-
-      - run: pnpm exec bumpy ci release --expect-mode publish
+      # bumpy creates the tag and the GitHub release here; `publish` published to npm.
+      - run: pnpm exec bumpy ci release --expect-mode publish # zizmor: ignore[use-trusted-publishing]
         env:
           GH_TOKEN: ${{ github.token }}
           BUMPY_GH_TOKEN: ${{ secrets.BUMPY_GH_TOKEN }}
 
   # On the push to main, which the github-pages environment admits (#167).
   docs:
-    needs: publish
+    needs: release
     permissions:
       contents: read
       pages: write
@@ -166,7 +240,7 @@ jobs:
   # A release created with the default token doesn't fire `release: published`,
   # so start check-skills' post-release review directly.
   skills-review:
-    needs: publish
+    needs: release
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -177,40 +251,54 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
-  # The version PR has already consumed the bump files, so the snapshot is
-  # built from main (the PR's base), where they are still pending.
-  rc:
-    if: >-
-      github.event_name == 'pull_request' &&
-      github.event.label.name == 'release-rc' &&
-      github.event.pull_request.head.ref == 'bumpy/version-packages' &&
-      github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    environment: npm-publish
+  # The snapshot build: main's pending release, versioned
+  # `<next version>-rc-<short sha>` and tested by the full suite.
+  rc-ci:
+    if: github.ref == 'refs/heads/main' && inputs.rc
     permissions:
       contents: read
+    uses: $/.github/workflows/run-ci.yml
+    with:
+      snapshot: rc
+
+  # Publishes the snapshot tarball rc-ci tested, like `publish`, to `next`.
+  rc:
+    needs: rc-ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: npm-publish
+    permissions:
       id-token: write
-      pull-requests: write
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          ref: ${{ github.event.pull_request.base.sha }}
-          fetch-depth: 0
-          persist-credentials: false
-
-      - uses: $/.github/actions/setup
-        with:
+          node-version: 26.x
           registry-url: https://registry.npmjs.org
-          cache: 'false'
-          ignore-scripts: 'true'
+          package-manager-cache: false
 
-      - name: Build project
-        run: pnpm run build
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: faxios-tarball
+          path: tarball
 
-      - name: Check the package includes LICENSE
-        run: node packages/tests/scripts/check-license.ts
-
-      - run: pnpm exec bumpy ci release --snapshot rc --tag next
+      - name: Check the tarball is the one CI tested
+        working-directory: tarball
         env:
-          GH_TOKEN: ${{ github.token }}
+          TARBALL_NAME: ${{ needs.rc-ci.outputs.tarball-name }}
+          TARBALL_SHA256: ${{ needs.rc-ci.outputs.tarball-sha256 }}
+          VERSION: ${{ needs.rc-ci.outputs.version }}
+        run: *check-tarball
+
+      # A snapshot version must be a prerelease, so it can never become `latest`.
+      - name: Publish to npm
+        env:
+          TARBALL_NAME: ${{ needs.rc-ci.outputs.tarball-name }}
+          VERSION: ${{ needs.rc-ci.outputs.version }}
+        run: |
+          set -euo pipefail
+          if [[ "$VERSION" != *-rc-* ]]; then
+            echo "::error::$VERSION is not an rc snapshot version"
+            exit 1
+          fi
+          npm publish "tarball/$TARBALL_NAME" --access public --provenance --ignore-scripts --tag next
+          echo "Published \`@gcmdev/faxios@$VERSION\` to \`next\`: \`npm install @gcmdev/faxios@next\`" >> "$GITHUB_STEP_SUMMARY"
