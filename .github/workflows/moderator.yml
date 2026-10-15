@@ -1,7 +1,8 @@
 name: AI Moderator
-# On issue_comment, GitHub runs this file from the default branch, and checkout
-# gets the default branch (persist-credentials: false). The job runs only the
-# pinned github/ai-moderator action, so no PR code runs with that event's token.
+# On issue_comment, GitHub runs this file from the default branch. The job checks
+# out nothing and runs only the pinned github/ai-moderator action, which reads its
+# own bundled prompts (custom-prompt-path is not set), so no repository or PR code
+# runs with that event's token.
 on:
   issues:
     types: [opened]
@@ -28,11 +29,6 @@ jobs:
       models: read
       contents: read
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
       - name: Run AI Moderator
         uses: github/ai-moderator@81159c370785e295c97461ade67d7c33576e9319 # v1.1.4
         with:
