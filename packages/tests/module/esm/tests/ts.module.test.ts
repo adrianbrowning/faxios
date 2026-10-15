@@ -1,45 +1,19 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { describe, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { cleanupTempFixture, createTempFixture } from "./helpers/fixture.js";
 import { runCommand } from "./helpers/run-command.js";
-
-const suiteRoot = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  ".."
-);
-const repoRoot = path.resolve(suiteRoot, "../../..");
-const tscBin = path.join(suiteRoot, "node_modules", "typescript", "bin", "tsc");
-
-const tsconfig = {
-  compilerOptions: {
-    target: "es2022",
-    module: "nodenext",
-    moduleResolution: "nodenext",
-    strict: true,
-    skipLibCheck: true,
-  },
-};
+import { functionsFixture, suiteRoot } from "./helpers/typing-fixtures.js";
 
 describe("module ts compatibility", () => {
-  it("compiles and executes import faxios syntax", () => {
-    const sourcePath = path.join(
-      repoRoot,
-      "tests/module/esm/tests/helpers/esm-functions.ts"
-    );
-    const fixturePath = createTempFixture(
-      suiteRoot,
-      "ts",
-      sourcePath,
-      tsconfig,
-      {
-        type: "module",
-      }
-    );
+  it(functionsFixture.title, () => {
+    const { name, source, tsc, tsconfig } = functionsFixture;
+    const fixturePath = createTempFixture(suiteRoot, name, source, tsconfig, { type: "module" });
 
     try {
-      runCommand("node", [ tscBin, "-p", "tsconfig.json" ], { cwd: fixturePath });
-      runCommand("node", [ "index.js" ], { cwd: fixturePath });
+      runCommand("node", [ tsc, "-p", "tsconfig.json" ], { cwd: fixturePath });
+      // index.js asserts each function's behaviour with node:assert; a mismatch exits non-zero,
+      // which runCommand throws on.
+      const { stdout } = runCommand("node", [ "index.js" ], { cwd: fixturePath });
+      expect(stdout).toBe("esm functions ok\n");
     }
     finally {
       cleanupTempFixture(fixturePath);

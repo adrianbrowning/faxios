@@ -123,7 +123,7 @@ For bearer tokens, install the [`authBearer`](/pages/advanced/authentication) pl
 
 Use `faxios.isFaxiosError()` to narrow the type of a caught error. Pass the shape your API returns as a type argument to type `error.response.data`. faxios does not check that shape at runtime, so validate it if the server might send something else:
 
-```ts status=401
+```ts status=401 expect=error:401
 import faxios from "@gcmdev/faxios";
 
 type ApiError = {

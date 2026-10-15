@@ -2,7 +2,7 @@
 
 Every faxios request resolves to a response object with the following shape. The schema is consistent across both browser and Node.js environments.
 
-```js check=skip
+```js check=skip reason=listing
 {
   // The response data provided by the server.
   // When using `transformResponse`, this will be the result of the last transform.

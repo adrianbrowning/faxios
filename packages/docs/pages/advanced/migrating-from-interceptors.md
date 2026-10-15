@@ -153,7 +153,7 @@ a before -> b before -> dispatch -> b after -> a after
 
 Interceptors did not work this way. Request interceptors ran last-registered-first, and response interceptors ran first-registered-first. So when you turn each interceptor into its own middleware, register them in the reverse order of the interceptors they replace. That holds for both kinds: a request interceptor added last ran first, and the middleware that replaces it must be registered first; a response interceptor added first ran first, and the middleware registered last is the first to see the response.
 
-```ts
+```ts expect=log:'a%20before'%2C%20'b%20before'%2C%20'b%20after'%2C%20'a%20after'
 import faxios from "@gcmdev/faxios";
 
 const order: Array<string> = [];

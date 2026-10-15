@@ -75,7 +75,7 @@ Headers merge in six levels, lowest precedence first:
 
 Every request header beats every instance header, whatever group it's in. A request header set to `null` or `undefined` removes the instance's header. Inside one level, the top-level headers beat the groups, so the `Authorization` set above on `instance.defaults.headers` replaces the one from `create()`, but one set on `instance.defaults.headers.common` would not.
 
-```js
+```js expect=request:x-client:%20cli%0A,request:accept:%20text/csv%0A
 import faxios from "@gcmdev/faxios";
 
 const api = faxios.create({ headers: { "X-Client": "web", get: { Accept: "application/json" } } });

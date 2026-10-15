@@ -17,7 +17,7 @@ export async function getUser(id) {
 }
 ```
 
-```js check=skip
+```js check=skip reason=fragment
 // user-service.test.js
 import { describe, it, expect, vi } from "vitest";
 import faxios from "@gcmdev/faxios";

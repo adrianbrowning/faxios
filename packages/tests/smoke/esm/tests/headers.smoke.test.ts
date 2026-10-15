@@ -1,10 +1,11 @@
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
+import type { MockFetch } from "./helpers.js";
 
 const createFetchMock = () => {
-  let capturedInit;
+  let capturedInit: RequestInit = {};
 
-  const mockFetch = async (_input, init) => {
+  const mockFetch: MockFetch = async (_input, init) => {
     capturedInit = init || {};
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,

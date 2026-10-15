@@ -4,7 +4,7 @@
 
 By default, faxios serializes JavaScript objects to `JSON`. To send data in the [`application/x-www-form-urlencoded` format](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST) instead, you can use the [`URLSearchParams`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) API, which is [supported](http://www.caniuse.com/#feat=urlsearchparams) in the vast majority of browsers, and [Node](https://nodejs.org/api/url.html#url_class_urlsearchparams) starting with v10 (released in 2018).
 
-```js
+```js expect=request:content-type:%20application/x-www-form-urlencoded,request:foo=bar&extraparam=value
 import faxios from '@gcmdev/faxios';
 
 const params = new URLSearchParams({ foo: 'bar' });
@@ -16,7 +16,7 @@ await faxios.post('/foo', params);
 
 For older browsers or environments without `URLSearchParams`, you can use the [`qs`](https://github.com/ljharb/qs) library to serialize objects to the `application/x-www-form-urlencoded` format.
 
-```js check=skip
+```js check=skip reason=dependency
 import faxios from '@gcmdev/faxios';
 import qs from 'qs';
 
@@ -25,7 +25,7 @@ await faxios.post('/foo', qs.stringify({ bar: 123 }));
 
 For full control over headers and method, pass `qs.stringify` output as the request `data` and set `Content-Type` explicitly:
 
-```js check=skip
+```js check=skip reason=dependency
 import faxios from '@gcmdev/faxios';
 import qs from 'qs';
 
@@ -55,7 +55,7 @@ The `qs` library is preferable if you need to stringify nested objects, as the `
 
 faxios automatically serializes JavaScript objects to `URLSearchParams` if the `Content-Type` header is set to `application/x-www-form-urlencoded`. This means that you can pass a JavaScript object directly to the `data` property of the faxios request config. For example when passing data to a `POST` request:
 
-```js
+```js expect=request:users%255B1%255D%255Bsurname%255D=Anderson,request:arr2%255B1%255D%255B0%255D=2
 import faxios from '@gcmdev/faxios';
 
 const data = {
@@ -108,7 +108,7 @@ await faxios.get('/api', { params: deepObject, paramsSerializer: { maxDepth: 200
 Only raise `maxDepth` if your schema genuinely requires it. The default of 100 protects server-side code that forwards client-controlled data to faxios as `params` from DoS attacks via deeply nested objects.
 :::
 
-```js check=skip
+```js check=skip reason=fragment
 var app = express();
 
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies

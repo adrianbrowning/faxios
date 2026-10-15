@@ -117,6 +117,15 @@ jobs:
           cd packages/tests/smoke/esm
           pnpm install --frozen-lockfile --ignore-workspace --ignore-scripts
 
+      # Against the installed tarball's declarations, with the TypeScript and @types/node from
+      # packages/tests (smoke/esm/tsconfig.json reads its @types from there).
+      - name: Install TypeScript for the ESM smoke type-check
+        run: pnpm install --frozen-lockfile --ignore-scripts --filter @faxios/tests
+
+      - name: Type-check ESM smoke tests
+        working-directory: packages/tests
+        run: pnpm exec tsc --noEmit -p smoke/esm/tsconfig.json
+
       - name: Run ESM smoke tests
         working-directory: packages/tests/smoke/esm
         run: pnpm run test:smoke:esm:vitest
@@ -192,6 +201,11 @@ jobs:
           cd packages/tests/smoke/bun
           bun install --frozen-lockfile
 
+      # Against the installed tarball's declarations, with the TypeScript and @types/bun in bun.lock.
+      - name: Type-check Bun smoke tests
+        working-directory: packages/tests/smoke/bun
+        run: bun node_modules/typescript/bin/tsc --noEmit -p tsconfig.json
+
       - name: Run Bun smoke tests
         working-directory: packages/tests/smoke/bun
         run: bun test
@@ -217,13 +231,13 @@ jobs:
           name: faxios-tarball
           path: artifacts
 
-      - name: Prepare packed faxios dist
-        run: mkdir -p packages/lib/dist && tar -xzf artifacts/*faxios-*.tgz -C artifacts && cp -R artifacts/package/dist/. ./packages/lib/dist
-
+      # Deno can't install a tarball dependency, so the `install` task extracts $FAXIOS_TARBALL
+      # into smoke/deno/.faxios (package.json's `file:` dependency) and runs `deno install --frozen`.
       # deno.json sets `lock.frozen`, so the install and the test task fail when deno.lock must change.
       - name: Install Deno smoke test dependencies
-        working-directory: packages/tests/smoke/deno
-        run: deno install --frozen
+        run: |
+          cp artifacts/*faxios-*.tgz "$FAXIOS_TARBALL"
+          deno task --cwd packages/tests/smoke/deno install
 
       - name: Run Deno smoke tests
         working-directory: packages/tests/smoke/deno

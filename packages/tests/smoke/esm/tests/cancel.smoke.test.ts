@@ -1,16 +1,14 @@
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
+import { pendingFetch } from "./helpers.js";
+import type { MockFetch } from "./helpers.js";
 
 const createPendingFetch = () => {
   let requestCount = 0;
 
-  const mockFetch = async (_input, init) => {
+  const mockFetch: MockFetch = async (input, init) => {
     requestCount++;
-    return new Promise((_resolve, reject) => {
-      const { signal } = init || {};
-      if (signal?.aborted) { reject(signal.reason); return; }
-      signal?.addEventListener("abort", () => reject(signal.reason), { once: true });
-    });
+    return pendingFetch(input, init);
   };
 
   return { mockFetch, getRequestCount: () => requestCount };
@@ -22,16 +20,12 @@ describe("cancel compat (dist export only)", () => {
     const controller = new AbortController();
     controller.abort();
 
-    try {
-      await faxios.get("http://example.com/resource", {
-        signal: controller.signal,
-        env: { fetch: mockFetch, Request, Response },
-      });
-    }
-    catch (error) {
-      expect(error.code).toBe("ERR_CANCELED");
-    }
+    const request = faxios.get("http://example.com/resource", {
+      signal: controller.signal,
+      env: { fetch: mockFetch, Request, Response },
+    });
 
+    await expect(request).rejects.toMatchObject({ code: "ERR_CANCELED" });
     expect(getRequestCount()).toBe(0);
   });
 
@@ -39,20 +33,13 @@ describe("cancel compat (dist export only)", () => {
     const { mockFetch, getRequestCount } = createPendingFetch();
     const controller = new AbortController();
 
-    try {
-      const request = faxios.get("http://example.com/resource", {
-        signal: controller.signal,
-        env: { fetch: mockFetch, Request, Response },
-      });
+    const request = faxios.get("http://example.com/resource", {
+      signal: controller.signal,
+      env: { fetch: mockFetch, Request, Response },
+    });
+    controller.abort();
 
-      controller.abort();
-      await request;
-    }
-    catch (error) {
-      expect(error.code).toBe("ERR_CANCELED");
-    }
-
+    await expect(request).rejects.toMatchObject({ code: "ERR_CANCELED" });
     expect(getRequestCount()).toBe(1);
   });
-
 });

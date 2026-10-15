@@ -1,0 +1,31 @@
+import { assertEquals } from "@std/assert";
+import faxios from "faxios";
+import type { MockFetch } from "./helpers.ts";
+
+Deno.test("progress: onDownloadProgress fires with loaded > 0 for streaming fetch response", async () => {
+  const samples: Array<number> = [];
+
+  const fetch: MockFetch = async () => {
+    const stream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode("ab"));
+        controller.enqueue(new TextEncoder().encode("cd"));
+        controller.close();
+      },
+    });
+
+    return new Response(stream, { status: 200, headers: { "Content-Type": "text/plain", "Content-Length": "4" } });
+  };
+
+  const response = await faxios.get("https://example.com/download", {
+    responseType: "text",
+    onDownloadProgress: ({ loaded }) => {
+      samples.push(loaded);
+    },
+    env: { fetch },
+  });
+
+  assertEquals(response.data, "abcd");
+  assertEquals(samples.length > 0, true);
+  assertEquals(samples.at(-1), 4);
+});

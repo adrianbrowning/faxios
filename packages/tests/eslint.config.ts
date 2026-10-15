@@ -7,8 +7,8 @@ import testServerCleanup from "./eslint-rules/test-server-cleanup.ts";
 const faxiosPlugin = { rules: { "no-fixed-test-port": noFixedTestPort, "test-server-cleanup": testServerCleanup } };
 
 // The smoke (esm, deno, bun) and module (esm) harnesses install the packed tarball into their own
-// node_modules (Deno maps it to lib/dist), so the main tsconfig excludes them and typed linting
-// can't resolve their `faxios` imports.
+// node_modules, so the main tsconfig excludes them and typed linting can't resolve their `faxios`
+// imports.
 const EXTERNAL_TS_FILES = [ "smoke/**/*.ts", "module/**/*.ts" ];
 
 // Fixture sources the module and Deno suites compile with tsc or `deno check` to exercise the
@@ -26,8 +26,8 @@ const TYPING_FIXTURE_FILES = [
 ];
 
 export const extraRules: Array<Linter.Config> = [
-  // Blocks extracted from markdown by docs-examples/extract.ts
-  { ignores: [ "docs-examples/.generated*/**" ] },
+  // Blocks extracted from markdown by docs-examples/extract.ts, and the tarball `deno task install` unpacks
+  { ignores: [ "docs-examples/.generated*/**", "smoke/deno/.faxios/**" ] },
   // Files outside the tsconfig project: turn off projectService and the rules that need type information
   {
     files: EXTERNAL_TS_FILES,
@@ -74,20 +74,6 @@ export const extraRules: Array<Linter.Config> = [
       "sonarjs/no-empty-test-file": "off",
     },
   },
-  // Tests that use helper functions containing assertions
-  {
-    files: [
-      "browser/headers.browser.test.ts",
-      "unit/faxios.test.ts",
-    ],
-    rules: {
-      "vitest/expect-expect": [
-        "error",
-        { assertFunctionNames: [ "expect", "testHeaderValue", "assert.*" ] },
-      ],
-      "vitest/no-conditional-expect": "off",
-    },
-  },
   // Test files: disable security/style rules that are intentionally violated
   {
     files: [ "**/*.ts", "**/*.tsx" ],
@@ -112,7 +98,6 @@ export const extraRules: Array<Linter.Config> = [
       "sonarjs/no-empty-group": "off",
       "@typescript-eslint/consistent-type-imports": "off",
       "sonarjs/no-ignored-exceptions": "off",
-      "vitest/no-conditional-expect": "off",
       "@typescript-eslint/no-explicit-any": "off",
       // Test callbacks often return async functions where void is expected
       "@typescript-eslint/no-misused-promises": "off",
@@ -138,9 +123,8 @@ export const extraRules: Array<Linter.Config> = [
       "sonarjs/prefer-regexp-exec": "off",
       // Test transformers legitimately reassign the value parameter
       "sonarjs/no-parameter-reassignment": "off",
-      // Some tests assert via thrown errors or helper functions
+      // Some tests assert via thrown errors or helper functions; vitest/expect-expect (below) covers this
       "sonarjs/assertions-in-tests": "off",
-      "vitest/expect-expect": "off",
       // Nested describe blocks in parameterised tests
       "vitest/max-nested-describe": "off",
       // Dynamic test titles from test-case objects
@@ -156,6 +140,19 @@ export const extraRules: Array<Linter.Config> = [
       "no-await-in-loop": "off",
       // Tests use .toBe(null) / .toBe(undefined) intentionally
       "sonarjs/prefer-specific-assertions": "off",
+    },
+  },
+  // Every test (smoke files included) must assert, and not only inside a branch: a test whose
+  // assertions sit in `catch` or `if` passes when the request resolves. `assert*` covers
+  // node:assert, Deno's assertEquals and local assertX helpers; expectTypeOf/assertType are
+  // Vitest's type assertions, checked by `lint:ts`.
+  {
+    files: [ "**/*.test.ts", "**/*.test.tsx" ],
+    rules: {
+      "vitest/expect-expect": [ "error", {
+        assertFunctionNames: [ "expect", "assert", "assert.*", "assertEquals", "assert*", "testHeaderValue", "expectTypeOf", "assertType" ],
+      }],
+      "vitest/no-conditional-expect": "error",
     },
   },
   // Every file here: test servers bind port 0, so parallel runs (other worktrees, agents)

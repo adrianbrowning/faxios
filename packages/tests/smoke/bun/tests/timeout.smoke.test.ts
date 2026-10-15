@@ -1,53 +1,21 @@
 import { describe, expect, test } from "bun:test";
 import faxios from "faxios";
+import type { MockFetch } from "./helpers.ts";
 
-const env = (fetch: typeof globalThis.fetch) => ({
-  fetch,
-  Request,
-  Response,
-});
-
-const createAbortedError = () => {
-  const error = new Error("The operation was aborted") as Error & {
-    code?: string;
-    name: string;
-  };
-  error.name = "AbortError";
-  error.code = "ECONNABORTED";
-  return error;
-};
+// Never settles on its own: rejects with the signal's reason once faxios aborts it.
+const pendingFetch: MockFetch = async (_input, init) =>
+  new Promise<Response>((_resolve, reject) => {
+    const signal = init!.signal!;
+    signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+  });
 
 describe("timeout", () => {
   test("timeout: 50 with never-resolving fetch mock rejects with ETIMEDOUT", async () => {
-    const fetch = async (input: unknown, init?: RequestInit) =>
-      new Promise<Response>((_resolve, reject) => {
-        const signal =
-          init?.signal || (input instanceof Request ? input.signal : undefined);
-
-        if (signal) {
-          if (signal.aborted) {
-            reject(createAbortedError());
-            return;
-          }
-
-          signal.addEventListener(
-            "abort",
-            () => {
-              reject(createAbortedError());
-            },
-            { once: true }
-          );
-        }
-      });
-
     const err = await faxios
-      .get("https://example.com/timeout", {
-        timeout: 50,
-        env: env(fetch),
-      })
-      .catch((e: any) => e);
+      .get("https://example.com/timeout", { timeout: 50, env: { fetch: pendingFetch } })
+      .catch((e: unknown) => e);
 
     expect(faxios.isFaxiosError(err)).toBe(true);
-    expect(err.code).toBe("ETIMEDOUT");
+    expect(err).toMatchObject({ code: "ETIMEDOUT" });
   });
 });

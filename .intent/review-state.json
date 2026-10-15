@@ -3,11 +3,11 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "cb4eb2d16b6b81b46495e6bc7d9dd6f1df19592e701bb96ec10c50148f042c7b",
+      "fingerprint": "c6b4f07bf8b4ccd13f17a64628b0085ee5b7d704193271498540801a4e1c07df",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
+        "MIGRATION_GUIDE.md": "78321da3eb997f0ee170b4f78177bd21f664549b3d9f060d06a3d5ebff9a1367",
         "packages/lib/package.json": "220d8b3dc5040c04c1c2b2a4a1423ae6560988427c0548b7bae8e29186de5732",
-        "packages/lib/skills/configure-requests/SKILL.md": "bfe9ba4960a64368a41662237b4d4f53148aa049cc5e46683a257b529d1c3b10",
+        "packages/lib/skills/configure-requests/SKILL.md": "4e86879cce66fd7263c5d7b1f18910dd06dc80d921a3b921b59aa9a0a8e72968",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
         "packages/lib/src/index.ts": "213ce7f2ff6d1ae0bdfd7a08c32649ca82abf59c5320c6357b0e1b7fa29092cb",
@@ -30,12 +30,12 @@
         "packages/tests/unit/api.test.ts": "dcd11ebbc28c63eff20b7cc4e4f5018124b0f5a4c419010818a42d66d21f454a",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "24ba450bf7333c3f8090993d4bd72f5022a8e1771723932dd72556b5193613cd",
-        "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
-        "packages/tests/unit/plugins/forwardTo.test.ts": "69648d5f3d33fa6b108cd713891a1e805495b5c9ad5b9cefdf73d6705d1a5896",
+        "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
+        "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
         "packages/tests/unit/plugins/retry.test.ts": "6135e34294945ae5361ee86060d7253ea8880b1bede31b97f5f044f0bcee77d4",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -43,14 +43,14 @@
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "d93519d9843df17fd4ce09dd62c49a5a5d8a6f0dacd0145bb0e71a08b8d444ea",
+      "fingerprint": "e417ca1f38931d54b45c44f43e8b76dfb2695e657c32c00e46a893399c15f4ee",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
+        "MIGRATION_GUIDE.md": "78321da3eb997f0ee170b4f78177bd21f664549b3d9f060d06a3d5ebff9a1367",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
         "packages/lib/package.json": "220d8b3dc5040c04c1c2b2a4a1423ae6560988427c0548b7bae8e29186de5732",
-        "packages/lib/skills/configure-requests/SKILL.md": "bfe9ba4960a64368a41662237b4d4f53148aa049cc5e46683a257b529d1c3b10",
+        "packages/lib/skills/configure-requests/SKILL.md": "4e86879cce66fd7263c5d7b1f18910dd06dc80d921a3b921b59aa9a0a8e72968",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
         "packages/lib/src/index.ts": "213ce7f2ff6d1ae0bdfd7a08c32649ca82abf59c5320c6357b0e1b7fa29092cb",
@@ -73,12 +73,12 @@
         "packages/tests/unit/api.test.ts": "dcd11ebbc28c63eff20b7cc4e4f5018124b0f5a4c419010818a42d66d21f454a",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "24ba450bf7333c3f8090993d4bd72f5022a8e1771723932dd72556b5193613cd",
-        "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
-        "packages/tests/unit/plugins/forwardTo.test.ts": "69648d5f3d33fa6b108cd713891a1e805495b5c9ad5b9cefdf73d6705d1a5896",
+        "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
+        "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
         "packages/tests/unit/plugins/retry.test.ts": "6135e34294945ae5361ee86060d7253ea8880b1bede31b97f5f044f0bcee77d4",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -172,11 +172,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "0e34c32aefd6f7a59918af983f0ea7e165b4f4253eb838a99f1376476fdff199",
+      "fingerprint": "e2f6444923a431152724cd9c2a98bd443b2dc3fb12fdf67851b9f1b711e8adf1",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "06c6609c55fe63b335f86f577d2eed5f2db213d663ce4284b7f97a6aebf91392"
+        "packages/docs/pages/advanced/api-reference.md": "44709c4e6734dbdbddecf3d702a2cee77eadb2556297bb3811deb7e716e68138"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -220,11 +220,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/error-handling.md": {
-      "fingerprint": "9a7db70cc43f19f114a58288668bdb0f0788d36e68f83b542a2798f95634947b",
+      "fingerprint": "aa14f716d3babbe8c29de7bd8aefa17ae0ac7b93ca6e532370e36c53791ecad7",
       "snapshot": {
-        "packages/docs/pages/advanced/error-handling.md": "55df228728613db5b9949ed4f749dc9fa157b4fb21467f13b2f43109d05d50c1"
+        "packages/docs/pages/advanced/error-handling.md": "ed8522611e4de6d1b5520b8b47f3d02a232e023f46aad0580136b4d9f67520cb"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
@@ -256,11 +256,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "02a88d0946ba03b9f331e7c0fc6e50b1c9f78dd06c1d8cf89a215894b587d840",
+      "fingerprint": "e8cda1532ff69dac9090d0e49df9c69d012304b50014b0bcbb3ac596c24470d8",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "1c39d37a0a148c71a84bcd6a0150ac1a7b55a49a70169911ce96ecc047226786"
+        "packages/docs/pages/advanced/middleware.md": "6be1febe0a12c0518a73577b3ba92802dd198bc12ecda9efc233105f94f24b88"
       },
-      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
       "evidence": [
@@ -268,11 +268,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
-      "fingerprint": "a9831e4bd68f615cf33cfbca3de42ecfe05ce5c62fced9f1b1b6b4ded0be40dd",
+      "fingerprint": "49ede3ab20a5bc0724a6cc37cf5785de4c764e08c3a852c07690ed8bb0452c0d",
       "snapshot": {
-        "packages/docs/pages/advanced/migrating-from-interceptors.md": "5cc5e0fa79b064dae0f0d112749991b9d8272ea8bc3af2806d02a3714fa079c2"
+        "packages/docs/pages/advanced/migrating-from-interceptors.md": "9c07783541dcb518f5cd84b41396d86f9e1db3d2ae1f12e82aa1331451b81bdb"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
       "evidence": [
@@ -280,11 +280,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "18b44a5d6944777eff6c683b62bb01f0afcdec9edde2fb3b03a382b5b31b1b51",
+      "fingerprint": "5766248f6f8897801c4950fc77cd3ab5906decfeccc5f77fdb785f33219076e9",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "c4f4e6b071ff7e9aa834a3eb30a7a54ec2d2be69c9619c1254d3dcff107b7ec2"
+        "packages/docs/pages/advanced/request-config.md": "d1a814656afd65b7cee9a62e34c056ae28f0bb4c327f5571138f906ab8df9fdf"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -292,11 +292,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
-      "fingerprint": "e883423c200c6f77c9d489d1aad240ccc9ef04a15e139152956b83ffba0a9da0",
+      "fingerprint": "550f31e3dfcd5c858dbb6565c39ba682ba5a600dd1dbf6f4b53e6e03bd85da92",
       "snapshot": {
-        "packages/docs/pages/advanced/retry.md": "117a1640fabaf6a634f2c68879172252a8bbdd48118ced33101fc2d1cfa6536e"
+        "packages/docs/pages/advanced/retry.md": "461658cae880a88069a3c908c972a8c304bb3c94b23b38cebea6f63bc4f2b7f7"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
       "evidence": [
@@ -316,11 +316,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/testing.md": {
-      "fingerprint": "4054cdd203bcd02db0f29b0ce3d046d2192d7fea860944fce4c5c284be3ae224",
+      "fingerprint": "1621d5ad7ac2ec49e4df074065cb551672e305ada9d08c62aebb602c09602afc",
       "snapshot": {
-        "packages/docs/pages/advanced/testing.md": "a4c301e84bd5b5f3be80c1644bac681f6bff0ed412251f914837af05ab1a9848"
+        "packages/docs/pages/advanced/testing.md": "4927a9cb8d576759173d5c30ba0c637865428e4e1a480dadb4cee0ab83aae34f"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "Diff reviewed (M); consistent.",
       "evidence": [
@@ -328,11 +328,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/type-script.md": {
-      "fingerprint": "8a8a423ad38ff40f0f1e0b48cfdfe85b705b2c94d7ffa316277ab505e9409b81",
+      "fingerprint": "5f89dc249c6b51f5b9cb39abc2c3ee8e44605342264acdd280d658d2b56cf5f1",
       "snapshot": {
-        "packages/docs/pages/advanced/type-script.md": "da4f5236299f47baf772119a0cb3592f10454707d2cbbf98b6fd0ed4e9d54093"
+        "packages/docs/pages/advanced/type-script.md": "a8e5edfae948a92197d9f26de4de92503f8fe3100515831f0ddf1c262095a564"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "Skill now states create() child header precedence, that plugin option defaults are not inherited and are removed on eject, and that params/env merge one level deep",
       "evidence": [
@@ -340,11 +340,11 @@
       ]
     },
     "source:packages/docs/pages/getting-started/examples/typescript.md": {
-      "fingerprint": "0c00cf6fab0b1676ee5cdb0468009d8489e250a6c039e8bf4d6a091761aae54e",
+      "fingerprint": "8fa4b0a712e7bde6ba0836f080d7651af0e9e61eaf452f8a7164994650d41c06",
       "snapshot": {
-        "packages/docs/pages/getting-started/examples/typescript.md": "5a453c1af23e983ad76cd452b6ef4e4469194b85e25a447352906d4de7cccde2"
+        "packages/docs/pages/getting-started/examples/typescript.md": "67ddb802125b99c484dbd231d426515db2e7c5543228b5e5699617acfa8da805"
       },
-      "head": "a6926e1f507b0da9f07237183336e51a04704807",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
       "evidence": [
@@ -364,11 +364,11 @@
       ]
     },
     "source:packages/docs/pages/getting-started/upgrade-guide.md": {
-      "fingerprint": "5d6c4346ea04a1d8cbf6f92306da40fce1dda114499367ae948555783479aaf8",
+      "fingerprint": "a77a16bae72f063007db8c92c6896d9a83fe5bdc2523c441aa46742fac18a45b",
       "snapshot": {
-        "packages/docs/pages/getting-started/upgrade-guide.md": "7df3fcb39dbb7c4e2391a91711cb270a9059b739da11ca789bbc941f377d4973"
+        "packages/docs/pages/getting-started/upgrade-guide.md": "0b375845621375127e6ee7860754beda9a414710eef579699a8c553839bacfb6"
       },
-      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
@@ -575,11 +575,11 @@
       ]
     },
     "source:packages/tests/docs-examples/examples.test.ts": {
-      "fingerprint": "f1f4fa453c096e55e204bf9c766be994ba6c19c90a88c2c75f0ee6b8e6583222",
+      "fingerprint": "700ac1b9652436e8061ca816b0fafe727d0d2792a1f40ae55a7f6d7c8dfc1a6b",
       "snapshot": {
-        "packages/tests/docs-examples/examples.test.ts": "188dbbc389fc6a582be7a0df608c72cf927661d10aa6a9af8c946a22dd636eb3"
+        "packages/tests/docs-examples/examples.test.ts": "0a5042a247cd7c4722281d3e42ed614dd933992f074c1f55dd30c51447c795e4"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "Since a15418fe (main, #146): the docs-example harness rejects unsubstituted `/:x` / `{x}` path placeholders unless the block is marked placeholders=literal; union order sorted. Test harness; the skill already teaches `{key}` placeholders.",
       "evidence": [
@@ -589,11 +589,11 @@
       ]
     },
     "source:packages/tests/docs-examples/extract.test.ts": {
-      "fingerprint": "7a92654c928c11582c7f4d2bfb1415d4f386f503c495814c09d15023b29e1a41",
+      "fingerprint": "c3d7721ce8278eb33ffc4f7e43a62852fc1b206e7e72573465790e0a56a5ba7a",
       "snapshot": {
-        "packages/tests/docs-examples/extract.test.ts": "e7b87e6c0cd461cd04025eebd2bb71870d006009cc332241ef6227c13879cc7e"
+        "packages/tests/docs-examples/extract.test.ts": "671b86b5dae4fc23eeb32accb04aa1dfc4797136d492320390ac9fc185e82654"
       },
-      "head": "adf77e9c2a3d379e030fbda7ce4b166b791089ec",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "Adds a root landing README and extracts its example in test:docs-examples; no library API or behaviour taught by configure-requests changes.",
       "evidence": [
@@ -601,11 +601,11 @@
       ]
     },
     "source:packages/tests/docs-examples/extract.ts": {
-      "fingerprint": "5c52f5cf19b81d91a983e22600ccd2210ddc43d486cc900dcebe03990c22a503",
+      "fingerprint": "b19b42495c16d877a213c2bed1fe43202bdbb6ee0cd03a6c96ebe706b0b17131",
       "snapshot": {
-        "packages/tests/docs-examples/extract.ts": "62a6e92c06237f7da64c14851158fd04282730a8e2c42b901ef044ce97c35cfe"
+        "packages/tests/docs-examples/extract.ts": "e89dfb0ddd16df16e0a85d228a8268c0232482e23177f932179c85297a7b16a9"
       },
-      "head": "adf77e9c2a3d379e030fbda7ce4b166b791089ec",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "Adds a root landing README and extracts its example in test:docs-examples; no library API or behaviour taught by configure-requests changes.",
       "evidence": [
@@ -639,11 +639,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-method-aliases.md": {
-      "fingerprint": "1087231cdd23514f1b6118169fca34de15446a423520bd74a62db19ac0358b9b",
+      "fingerprint": "8baa4aa3d1a2ad38d8ec021e2602963461109703892a758e98b5eee3a6cd6dcd",
       "snapshot": {
-        "packages/docs/pages/advanced/request-method-aliases.md": "607b32dd34338bca8dca17203ae79c095fa3ba64a21f5229b9a7cd0d6b407fb6"
+        "packages/docs/pages/advanced/request-method-aliases.md": "3717329a4add8d04c9997def8d7a6f6686491738f06f712fc9b116735bc33be7"
       },
-      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -2511,11 +2511,11 @@
       ]
     },
     "source:packages/tests/eslint.config.ts": {
-      "fingerprint": "358c6915174d0097d1da012936b23b441f136b0caa7e63198bd499de5a9edea0",
+      "fingerprint": "c9c1c6ea1cf48c543b2800fa22aaf74a6b921b02aae0c94825fefc27c889fd85",
       "snapshot": {
-        "packages/tests/eslint.config.ts": "167038395b4a156a2d1369c5e860d45a4bc7fafd088dab833d28b969dad78807"
+        "packages/tests/eslint.config.ts": "0a657291b7aa5c717d6507cc7c12d1ef4f5d29ece23839c14a3a0a57240f3d30"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -2523,11 +2523,11 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/esm-functions.ts": {
-      "fingerprint": "a7e6d378b427879a6366e88a4d6e63c8be21bd0be3e0a4b8c9e6151bf4dace4a",
+      "fingerprint": "10d0f534fb3941feb47fb99e7bf220080911c57f7e60d80c418cc5c5eb1f61cc",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/esm-functions.ts": "cf1a84e64c659d15966ac8f11cb44c6a0a2a2c42276fc443728d550fec592c6e"
+        "packages/tests/module/esm/tests/helpers/esm-functions.ts": "31b5ed9d9d1c5dbfb98a9520756b4e061b9acf55adc70a8303b6bb66326c8eda"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "Named imports from \"faxios\" sorted: `all` moved first, and `isCancel` now comes before `isFaxiosError`. Behaviour change: none",
       "evidence": [
@@ -2536,11 +2536,11 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/esm-index.ts": {
-      "fingerprint": "6828da75961d04819521919c2a4c2154b3420c98dc9e07bbdaf79d87a73b0f26",
+      "fingerprint": "b41a0949be584ec3db52011c09a593313d68a8399f9814fff69d9c924e192c8c",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/esm-index.ts": "a52d26e0cf818db02e0d61714bcbacd68421c35babd84e2726f40ef19ab5f269"
+        "packages/tests/module/esm/tests/helpers/esm-index.ts": "e9e3890987b07a86a0b30484d02d3ad426d34a22c1015002f86c8b571a84c81c"
       },
-      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
@@ -2548,11 +2548,11 @@
       ]
     },
     "source:packages/tests/module/esm/tests/ts.module.test.ts": {
-      "fingerprint": "75225ada8d38c42b915aaae848e990a1007bceef2132f55caa65de75c71c00d2",
+      "fingerprint": "f544ddc041f102404097dae32be7c7bcb5f568f7566f8963fdc7355444c0f212",
       "snapshot": {
-        "packages/tests/module/esm/tests/ts.module.test.ts": "5886e8f179467ebe96ff9b9462f1369cf4baa979deb96d24cb565b6dc415b017"
+        "packages/tests/module/esm/tests/ts.module.test.ts": "700c1b5ce05da3b2013afb6bd2a17a7098f9b778b8723a15038d098213cbb716"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "`{ createTempFixture, cleanupTempFixture }` became `{ cleanupTempFixture, createTempFixture }`. Behaviour change: none",
       "evidence": [
@@ -2561,11 +2561,11 @@
       ]
     },
     "source:packages/tests/module/esm/tests/typings.module.test.ts": {
-      "fingerprint": "2905dfaaf8eacd53e512b2868f81c77a86857445e7907c0cf9561b7730ce4ef8",
+      "fingerprint": "66984d6c6751db2b4effe616e59666ad0e464386727906327a9d769c49e6f20f",
       "snapshot": {
-        "packages/tests/module/esm/tests/typings.module.test.ts": "0e3b11b699ed2939902b8aee46e8fe6dbc6aeccdbc46deeee968f4db1cd4912f"
+        "packages/tests/module/esm/tests/typings.module.test.ts": "50db086c75369e61fb761f55633bf0e77adaeb378dbc1240bb09826b2732ee4c"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -2573,11 +2573,11 @@
       ]
     },
     "source:packages/tests/scripts/check-expect-error.ts": {
-      "fingerprint": "a22e8c3611be2897aa4de93df8ba335a471454c62079baec2e6c681dbb0da7c7",
+      "fingerprint": "7d3bfee4c1ac1213cc6a6e26115134e4680c076da30b6a1339cc035759e8ed05",
       "snapshot": {
-        "packages/tests/scripts/check-expect-error.ts": "d1131e8f4f3a1c515ef0c72f1f2909a5008876e78f265da2d7fc18a078b15269"
+        "packages/tests/scripts/check-expect-error.ts": "0115ec33d507db954b994932b37e14fea25b43aab3fe12ee327c252b0b67dc07"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "Keys sorted in the `Directive` type literal (code, index) and the `Copy` type literal (copy, directives, lines, source). Both are type-only. Behaviour change: none",
       "evidence": [
@@ -2624,11 +2624,11 @@
       ]
     },
     "source:packages/tests/smoke/bun/tests/fetch.smoke.test.ts": {
-      "fingerprint": "88c80acc88d380f682be903306a7eca226ea037b4bb9c4061de591b52e455315",
+      "fingerprint": "988feb1a983de2b147307c295737062c454ecfdad6f8b35735c62bf4c3fc56b8",
       "snapshot": {
-        "packages/tests/smoke/bun/tests/fetch.smoke.test.ts": "103b3b4ca963a71c31531dba584ac0ca9f7b4709d9ae17838b9389a8209d53cc"
+        "packages/tests/smoke/bun/tests/fetch.smoke.test.ts": "c7733abb0dc18aaa5cb94a33912c904d1bc5088dde6227ed935da2bc3b67b841"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
@@ -2636,11 +2636,11 @@
       ]
     },
     "source:packages/tests/smoke/deno/tests/fetch.smoke.test.ts": {
-      "fingerprint": "aaa10e91483b62f0bd0672d24e00f58995770e463129cf2cdc01eb3c34afa2db",
+      "fingerprint": "35556ad448232461f1cdc92e11b82716b0828ecd2a21e6b6405a35fd01800a91",
       "snapshot": {
-        "packages/tests/smoke/deno/tests/fetch.smoke.test.ts": "79e9eb787373264b27af92cb5e768e24e6a1b79d93cab33474d51f8fba6ff05c"
+        "packages/tests/smoke/deno/tests/fetch.smoke.test.ts": "2f96aaeaedb08e293a146a386228e47ec3e2495a39c0587c4dd3ec8e1f5e60c3"
       },
-      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
       "evidence": [
@@ -2736,11 +2736,11 @@
       ]
     },
     "source:packages/tests/unit/core/FaxiosError.test.ts": {
-      "fingerprint": "9d5ca5258310ed69ce4645e2160db82f2b9ad5db38d90f7b9bbb3846aef316ab",
+      "fingerprint": "064be2b5427cb11197070032e60c76baa5806fcf1ef6c10ef9af14b7ad2999c3",
       "snapshot": {
-        "packages/tests/unit/core/FaxiosError.test.ts": "4cea433a6d4e04fe3e62cadb5f83d4c6afbbbf0522a7e11e634c42c25c528c23"
+        "packages/tests/unit/core/FaxiosError.test.ts": "be7dd7db9f6ea7b5f967b1b137d07bd72a656664412c81cb6911bb13375ab2ef"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
@@ -2821,11 +2821,11 @@
       ]
     },
     "source:packages/tests/unit/core/middlewareTypes.test.ts": {
-      "fingerprint": "95dc7d7e33d4372db6d4c9dd67b6b8a26400b73d61f253bc2ac156fd94a370d6",
+      "fingerprint": "21c72fc11f6c56b922eda153fa42cd182826a7fedc5ec2a4bdd0a452e4174fd9",
       "snapshot": {
-        "packages/tests/unit/core/middlewareTypes.test.ts": "49ac25b8cc9eef17ac7b8783ca7640baad583f183905388b4b31dfc90d965506"
+        "packages/tests/unit/core/middlewareTypes.test.ts": "0b15b0bc7b3abadd1b58086826f050a47d02f638fcfa414976ecfd9073aa9bf5"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
@@ -2833,11 +2833,11 @@
       ]
     },
     "source:packages/tests/unit/core/paramsSchema.test.ts": {
-      "fingerprint": "89cfcf3f982580b1e01945c9444abd3df1a02ce1037eba7338cc886eda91de3b",
+      "fingerprint": "d86afdaa9454ff29e5217c91150cfe72150be546cb2730792a4e63c3d861e09a",
       "snapshot": {
-        "packages/tests/unit/core/paramsSchema.test.ts": "4fd80bdfbda55201283581431bf22697cbd920e100ab158acfa98818e9450218"
+        "packages/tests/unit/core/paramsSchema.test.ts": "c116bc72e1969b2d1139e63f769a0307346221343f2ab56d62d304515aba4f5f"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
@@ -2845,11 +2845,11 @@
       ]
     },
     "source:packages/tests/unit/core/pathParams.test.ts": {
-      "fingerprint": "7cbd005bcf54ee37d80e04e6d6230771ff94c24019ffcbcf4df6e11d97eb0a5c",
+      "fingerprint": "86921c422850e9d3bca439db869ec93ca56f9897b135d7466c359fb91c2c3a49",
       "snapshot": {
-        "packages/tests/unit/core/pathParams.test.ts": "5650134ab40ded31b371ca0a352ac434e5cda2374773b305c5029d51b9a1db87"
+        "packages/tests/unit/core/pathParams.test.ts": "e0bc63419b4c26f87d6d6de8f21ff8da01bf5aba2bc5f87cb0fed4a23fa4b091"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "Skill states an empty path param value rejects with ERR_BAD_OPTION_VALUE",
       "evidence": [
@@ -2857,11 +2857,11 @@
       ]
     },
     "source:packages/tests/unit/core/requestSchema.test.ts": {
-      "fingerprint": "71ce1c51c3c4fe668221a061593eddfe94d0256374e419b9cfe55cd963855378",
+      "fingerprint": "660ac46f5ccf8c6f2a16e86e7420843661be2e43af9e3d0c0766d1ce26ff1b0f",
       "snapshot": {
-        "packages/tests/unit/core/requestSchema.test.ts": "4e91c81c0d72039dddcff035bc007820381fcbea326c3fe36a2fd2b61e02126d"
+        "packages/tests/unit/core/requestSchema.test.ts": "d3d3cec40bf8b59b7f3edcc971413f9938be816fe3b4f9b546332d00e3984fc1"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
@@ -2931,11 +2931,11 @@
       ]
     },
     "source:packages/tests/unit/helpers/formDataToJSON.test.ts": {
-      "fingerprint": "0473e3d1d859e0c20d35c508bbb3dc2206e4f0211fd8ab5afd3eb22461fc573b",
+      "fingerprint": "1c2cab16ca598e66737e17dd0670e84f0196bea17bf6172429874aaca6c543f7",
       "snapshot": {
-        "packages/tests/unit/helpers/formDataToJSON.test.ts": "4d5d4f1efdff42e0a844dd639ff23773816fe99d782200b402cc84c9b5243ad6"
+        "packages/tests/unit/helpers/formDataToJSON.test.ts": "aa2be2eeb3e41e1ce63a90885815470f5302656bc60bb4d6a1dada33b16f6994"
       },
-      "head": "38f134f0eebdc1fb61b7f4c42634c39f2ed608d7",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "test-only changes; skill guidance unaffected",
       "evidence": [
@@ -2980,11 +2980,11 @@
       ]
     },
     "source:packages/tests/unit/helpers/progressEventReducer.test.ts": {
-      "fingerprint": "eded07b086972dcd029a21a32681a90f672d90d85f9cbcaf0258572b4ef1407f",
+      "fingerprint": "9e4dc0f287a1ee875e4a64c4eb0c54540480db9bd20ef49eec69fcd56f90c10a",
       "snapshot": {
-        "packages/tests/unit/helpers/progressEventReducer.test.ts": "8db612ad6f57f8604544f4dd66be3c0137edc363b7a67ebc5bdece2476198a18"
+        "packages/tests/unit/helpers/progressEventReducer.test.ts": "453c07358c042319afbef90c9d85e895c130c078c2abf2b014db8e5c52d92af7"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
@@ -3004,11 +3004,11 @@
       ]
     },
     "source:packages/tests/unit/prototypePollution.test.ts": {
-      "fingerprint": "5480a9610b7c2ce70e7b932c087389ad48fb2679f53b11c5ec222ac46ca0009b",
+      "fingerprint": "4825e8673ee6e88f18fb99ae7fc5da931d35372292a43a2da39e50bad1ad60f5",
       "snapshot": {
-        "packages/tests/unit/prototypePollution.test.ts": "8cb56ddcbe58ce99b93b68eadfd49de92643691430aaefd4183ac4dd619e08a1"
+        "packages/tests/unit/prototypePollution.test.ts": "6410fb54f24e13f0998da94e11eda8c16879f052a3c6c6c786d752bedcd4556b"
       },
-      "head": "7285e2c90783d42ede4ddd0d275de3714895f10a",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "test-only changes to the unit suite and its server helper; the skill teaches nothing about them",
       "evidence": [
@@ -3028,11 +3028,11 @@
       ]
     },
     "source:packages/tests/unit/regression.test.ts": {
-      "fingerprint": "7edab4880bbda4b906d00195503a9743d52efb74b981b6f345031c956dc92a0f",
+      "fingerprint": "a050a1e80d38e16f5ba38a32f36a9b7afb0eb83002043344217a29237dc25d43",
       "snapshot": {
-        "packages/tests/unit/regression.test.ts": "99b51fdf529603382dfb79125bc327393b63faaaadd18a5d75f40b8c6f3cbe1e"
+        "packages/tests/unit/regression.test.ts": "814a027d286e59a6cbe596dc028655f0cbec21e6b77e03ef48a34d0e99168330"
       },
-      "head": "7285e2c90783d42ede4ddd0d275de3714895f10a",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "test-only changes to the unit suite and its server helper; the skill teaches nothing about them",
       "evidence": [
@@ -3274,11 +3274,11 @@
       ]
     },
     "source:.github/workflows/run-ci.yml": {
-      "fingerprint": "c59b6001e708bdea17f829bf8cd65af2db156d784da2c81b92b39ee7b0adf6d7",
+      "fingerprint": "c8711874264e4a70e6569e7a796753735c9ccee941906e452967bb119eebb26b",
       "snapshot": {
-        ".github/workflows/run-ci.yml": "f1f74174921c653ab6cfcf6b5a68bd6f23cf4007cb2ef10a0af923948995bb09"
+        ".github/workflows/run-ci.yml": "a67aa838c6384503f3a0cbfb4a4d15cb6fd8fd8b1a6c698b048f1fa7ba8eec9d"
       },
-      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
       "evidence": [
@@ -3492,11 +3492,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/fetch-adapter.md": {
-      "fingerprint": "327d531932ead12293a865a78afb1ecf3f0368ece90a8823ebb19f27d70ed1ea",
+      "fingerprint": "03e99eb85afca30893b8ec7649ec143537a119360625f3510cfff298a891e0ee",
       "snapshot": {
-        "packages/docs/pages/advanced/fetch-adapter.md": "66634eab517b3aea06e471622f816f16825869c78698a64b099bd5732b2e813a"
+        "packages/docs/pages/advanced/fetch-adapter.md": "187307d945e711d977fd1a90df0e9e1f263d2054e824665c0994d9fb404ec618"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -3744,11 +3744,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/multipart-form-data-format.md": {
-      "fingerprint": "2e8129626282587725d345d13a002f7f531f5e872e14b220727efbac3f64196e",
+      "fingerprint": "29b911f6ea9ab36e3376e27c3a4764ec6d834eb656b0f649fe340ac64e4dee04",
       "snapshot": {
-        "packages/docs/pages/advanced/multipart-form-data-format.md": "6e546f1a0c64b5f2cdfa8c822ce1482179a1f58fdb58152d54916f30ea0100e6"
+        "packages/docs/pages/advanced/multipart-form-data-format.md": "0e5fb6122cb33a755cde26a723822eee61cd5979f819fe184977b300f8c4dd60"
       },
-      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
@@ -3888,11 +3888,11 @@
       ]
     },
     "source:packages/tests/smoke/deno/deno.json": {
-      "fingerprint": "6c01e02a6497886478b170ef6ea7182418b680b36df62ac52db442093f63dac3",
+      "fingerprint": "35edecdd1e55c4848bf6ea3394d8a32ba00979ec28cf820e2fed96db9ec81af2",
       "snapshot": {
-        "packages/tests/smoke/deno/deno.json": "954fdc873ac1400dccabff141e086742347a1b528ff5fa4713edd86b61310bd0"
+        "packages/tests/smoke/deno/deno.json": "6bb7cd1be6af056bbd4c43d9f1a57f1ca32e918cdc13a1b56b3a6d3563cee333"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
@@ -4140,11 +4140,11 @@
       ]
     },
     "source:CODING_STANDARDS.md": {
-      "fingerprint": "96f1d4c602189a7bad7d028997e72e3f2e789af709ec6b678bcd6c71b23885d6",
+      "fingerprint": "81e0a22995e678fabb813982c5d8c477428f0068402f3b34ff3e90d0ee21e1d9",
       "snapshot": {
-        "CODING_STANDARDS.md": "7d7098df4ac1bf972cca44a8cbf73384bea2858f4aface25d7095f3ee29b0349"
+        "CODING_STANDARDS.md": "e8104d3c6c0801f0d470fbd5a6bc6a16d7a3b2896f2cc521aaec8625b392ca7b"
       },
-      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
       "evidence": [
@@ -4380,11 +4380,11 @@
       ]
     },
     "source:packages/tests/smoke/bun/tests/cancel.smoke.test.ts": {
-      "fingerprint": "d908726117032971f8b486b2ac9de29ff12b0203ba73b4dc336514073b09e2e2",
+      "fingerprint": "47414085a6209dc7e29f065805a12a27546fd95c3ba243140ef5a786bfe3b63f",
       "snapshot": {
-        "packages/tests/smoke/bun/tests/cancel.smoke.test.ts": "a7fffa20bbffa82f0cb5af597f2b4c353ecb0873d8e8fea2b3d7f21d8997beb4"
+        "packages/tests/smoke/bun/tests/cancel.smoke.test.ts": "466316a55f725544d82390e9ab0ad231ca85b402824363ee73a0040ffb4e0375"
       },
-      "head": "672fec258385a1a6d3b7057272bc30094f072c36",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
@@ -4392,11 +4392,11 @@
       ]
     },
     "source:packages/tests/smoke/bun/tests/error.smoke.test.ts": {
-      "fingerprint": "77c50b74e69690cc049cb861e59c209dbef9d6825fb360549172f9001df0615e",
+      "fingerprint": "50b655a33a6275eddc70b286fd40bae933eae87247c7dcab22a373ce1f57d6d6",
       "snapshot": {
-        "packages/tests/smoke/bun/tests/error.smoke.test.ts": "ff4eb0d98f43aced64699e32b61ca425095d846e793ef8983c1de8b8437a18b7"
+        "packages/tests/smoke/bun/tests/error.smoke.test.ts": "299d6e38810f6a269d4859854fe43e773c32cae9aa17853e036fca1d392fe9c8"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
@@ -4404,11 +4404,11 @@
       ]
     },
     "source:packages/tests/smoke/bun/tests/formData.smoke.test.ts": {
-      "fingerprint": "42695a555e858970d9d056c07309fd3400a48d9bcdb704f27b7c3f45cae60880",
+      "fingerprint": "982f4f5fc4824639bbdddc23439c965ff00d617534b5ea74a93a051776f7eada",
       "snapshot": {
-        "packages/tests/smoke/bun/tests/formData.smoke.test.ts": "4eeac61a3fa9f44e2131849aed151ebc7cfea1773ef4810d62e82a69373bda2b"
+        "packages/tests/smoke/bun/tests/formData.smoke.test.ts": "95c2f2ad0bb9e13d53e9b45d2490e066496710405ab902a66842c257b57522a6"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
@@ -4416,11 +4416,11 @@
       ]
     },
     "source:packages/tests/smoke/bun/tests/headers.smoke.test.ts": {
-      "fingerprint": "6d59bd466ade3b1eb68ccb757adf947b167eafd5b847305bbfbdcc058759556c",
+      "fingerprint": "19e7dbf83e24abf05c2b2297a1f62cabc6194e2b8bbe7bada799091839c41fc8",
       "snapshot": {
-        "packages/tests/smoke/bun/tests/headers.smoke.test.ts": "3fd6bcaf12fe05855bf8d01d95315a2b03896dd894504ea5b8ad4cea59b05806"
+        "packages/tests/smoke/bun/tests/headers.smoke.test.ts": "9fed78bbd3f2e00c6ac27620df72cac8ea553a4bd13b4b6c931f5db6c7392d40"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
@@ -4428,11 +4428,11 @@
       ]
     },
     "source:packages/tests/smoke/bun/tests/progress.smoke.test.ts": {
-      "fingerprint": "b1c23fe63c9d9a0f68df93a540276425b73d5a03278708084f6deb52757b9a99",
+      "fingerprint": "5f124563477f30a0d884a8cd4a8006084fcd0840d81f27ed6dd71fdefab4d1fc",
       "snapshot": {
-        "packages/tests/smoke/bun/tests/progress.smoke.test.ts": "bccdba7a34230a49ec3568fd7fce1201b9c9ac4962efc17a9a404f0e553268ee"
+        "packages/tests/smoke/bun/tests/progress.smoke.test.ts": "f17ed534b60ee085e3482df44469ebeae8ad5aed57518efd8fb665fdde17f6de"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
@@ -4440,11 +4440,11 @@
       ]
     },
     "source:packages/tests/smoke/bun/tests/timeout.smoke.test.ts": {
-      "fingerprint": "f20c0530be7e6c7ad6ad910cc9a0c48340ee1b844803109766f84d899b31f4c4",
+      "fingerprint": "f8f573cf41d7a055cbc3813e12b9e2ea8bc8ee450bb0a65aa4d80efec3f1faf3",
       "snapshot": {
-        "packages/tests/smoke/bun/tests/timeout.smoke.test.ts": "9b73fad96ebc6b35c7c9a80084f167cd09d85cd2b18bf5009d1d398d1c31a735"
+        "packages/tests/smoke/bun/tests/timeout.smoke.test.ts": "f1dabcf4bb992321e58adcd70041b11841ee730293b43bda6ebe9edee7e2a4ae"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
@@ -4452,11 +4452,11 @@
       ]
     },
     "source:packages/tests/smoke/esm/tests/auth.smoke.test.ts": {
-      "fingerprint": "d2909fad82c5fc353b74fe8b55a03744af214b073e15a14e4b3b14e7d4a0e621",
+      "fingerprint": "9dd9ee645bb156b248ab4bfa66f560fd09b7d3a1843b2fd58e372f1bf7a67e57",
       "snapshot": {
-        "packages/tests/smoke/esm/tests/auth.smoke.test.ts": "eb083f26335c855fc12639944ff2e3b6684dd9a5d50f42db2f3ffaa45cabf8d9"
+        "packages/tests/smoke/esm/tests/auth.smoke.test.ts": "0aaefdfb8741b70204ec5c928849dd4910912063d7a5fd33daf92095ad5ee197"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
@@ -4464,11 +4464,11 @@
       ]
     },
     "source:packages/tests/smoke/esm/tests/fetch.smoke.test.ts": {
-      "fingerprint": "0063033b05151a343d8b3c7488aa778a66813b025c393a956fe64ad86067593c",
+      "fingerprint": "68ac8b162168e231c73e5b83f05a37bde97aa365563ff085eb58c502ced63fce",
       "snapshot": {
-        "packages/tests/smoke/esm/tests/fetch.smoke.test.ts": "79dc27551f5e6605acc561881681f112d02cb7c52086033d5ea8757acb3066bf"
+        "packages/tests/smoke/esm/tests/fetch.smoke.test.ts": "e0185e6a526ec2073623efaeed649af4f1ba0b4450aca5d8a483b5fee4870b34"
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
       "evidence": [
@@ -4476,11 +4476,11 @@
       ]
     },
     "source:packages/tests/unit/core/unknownConfigKeys.test.ts": {
-      "fingerprint": "4eab15b6fb1de5f5b4ffb889940306bf8ec064f7488b1c84059a3c6c169b0305",
+      "fingerprint": "52d6c1eb1a5b1783498dac0ac1c7d16b1b0f9aef82b608fff9326ec6332be359",
       "snapshot": {
-        "packages/tests/unit/core/unknownConfigKeys.test.ts": "4a6126caf34bbbeb619a55a4bb66b6fc00f34548b59870027ec6848410f5d146"
+        "packages/tests/unit/core/unknownConfigKeys.test.ts": "73a807442fc5d21fa8159ec6fc9e9f28d6b1a46a621a985f9bc89a6526fda01d"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
       "evidence": [
@@ -4500,11 +4500,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/config-defaults.md": {
-      "fingerprint": "403661bbdc031c8faba99126477c5e06a23e5b2a4bc13ad8027ad5f0f4d1ed2d",
+      "fingerprint": "cda2980315ac16994db995b7b06064ca41a951a9a813bab1e6137a2615549a6f",
       "snapshot": {
-        "packages/docs/pages/advanced/config-defaults.md": "83f3a75eb48ba13d8e538027a844aefdd7cd15539084cf0c8a5256b0408ddd56"
+        "packages/docs/pages/advanced/config-defaults.md": "ab90c8432199e6b9c8a9556f2878f05fa5b1d0e3df6890762fc09cf9980ee2e9"
       },
-      "head": "a07985125c27956a1d106702007aa65f535066b6",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
       "evidence": [
@@ -4632,11 +4632,11 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/middleware-index.ts": {
-      "fingerprint": "390e0cdda13c760ede5c51e5565f8b718d46fec55f9e7a560d59cb732af5b6c2",
+      "fingerprint": "083818b49891f9e14b5b67020d64b37eb1013cf16f441662a8244d3007f13844",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/middleware-index.ts": "ff3f370f972d9b57cbf0d02de33846dbbe1d0cbd30063204296fbdcace2ec2cd"
+        "packages/tests/module/esm/tests/helpers/middleware-index.ts": "ef68467baa40a05747ef12146a6b513291e1e2e66f7f9454fc1927a2a5b02c90"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
       "evidence": [
@@ -4692,11 +4692,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/header-methods.md": {
-      "fingerprint": "0d3afeaaf70e221fd6130be7110586b7ee5253b99ac7c8a1d301d7c0d961f611",
+      "fingerprint": "028800c80081ddf608842e48cbfe8377a902bdc6afd81ee88a63007df6c2eb61",
       "snapshot": {
-        "packages/docs/pages/advanced/header-methods.md": "681a8b686cae0027a76da88355894af090a0caaf29b461bebbfb842a9b4be5ef"
+        "packages/docs/pages/advanced/header-methods.md": "31606192c27748b47de92136178ffbf1d98c2f9b6120a475fc79b27d9b8fdd23"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
       "evidence": [
@@ -4704,11 +4704,11 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/generics-index.ts": {
-      "fingerprint": "5d66192eda36444429e498e493c1b9046ed61c0f7a2b6a4ac63d366bd32aba9a",
+      "fingerprint": "f2b4731e16bb60de3df1d617c82de1f4970d4312deb251992f8036e2478ffe72",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/generics-index.ts": "6b44690faa854cc1b130bbcdd55bc842f51b8c0a39bcc4bcc5a8ed96c3de63ca"
+        "packages/tests/module/esm/tests/helpers/generics-index.ts": "e39a06c6f0dcde2a47a19c418f9328c8310ae121e1a1675143dc94055bdfefc7"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
       "evidence": [
@@ -4740,11 +4740,11 @@
       ]
     },
     "source:packages/tests/smoke/deno/tests/cancel.smoke.test.ts": {
-      "fingerprint": "0c7a7ba76cc6615dbef776e2b0055b98ff05de0799e40681c0f6a3772b9dfd15",
+      "fingerprint": "c8a809febc8c50f97fd9e7c02ca22eaa0e684bb2a1f78668de559684456de90d",
       "snapshot": {
-        "packages/tests/smoke/deno/tests/cancel.smoke.test.ts": "07efb6dbbc48dd7ad7daadffd10944036fe9669b034e599b30976c370ed3349f"
+        "packages/tests/smoke/deno/tests/cancel.smoke.test.ts": "8d7ae1c0c57b8de387d0321073d83c84fddc5a479b4b3ae41d4475a633b287a7"
       },
-      "head": "672fec258385a1a6d3b7057272bc30094f072c36",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
       "evidence": [
@@ -4752,11 +4752,11 @@
       ]
     },
     "source:packages/tests/smoke/deno/tests/error.smoke.test.ts": {
-      "fingerprint": "62834d91aacd958cb7042ef1e299cd65e8e3f15ef6ccea4b31f36fe1ec513ab0",
+      "fingerprint": "f9d0de2e0fdfd18787d1028ac875614384e21b7cd9f5229ec2659bf0076a1ead",
       "snapshot": {
-        "packages/tests/smoke/deno/tests/error.smoke.test.ts": "573a3b6984317d19f849f9c6c7a8717d4307a098d836fd4ae937de3ffc4ba5d3"
+        "packages/tests/smoke/deno/tests/error.smoke.test.ts": "ad0e4f6166ce4e403dc788bfa973716e6881bd064e23f0df86adbfbe655e1c7d"
       },
-      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
       "evidence": [
@@ -4764,11 +4764,11 @@
       ]
     },
     "source:packages/tests/smoke/deno/tests/headers.smoke.test.ts": {
-      "fingerprint": "652f3142800e30358a502cb240bb5aba07bb7b63c520fb8952f6d687ea2a70f5",
+      "fingerprint": "6c5b9a5b3f0c098c23c9b8fdf3c3555d50a6496b774c6e35bcb1a1b2b729b361",
       "snapshot": {
-        "packages/tests/smoke/deno/tests/headers.smoke.test.ts": "30ab3ea8d620d8ef93017740bde5a14389de4a507394cdb82c284912a1a40fb7"
+        "packages/tests/smoke/deno/tests/headers.smoke.test.ts": "b6aee036058f78e2196533b32833c00660b36d6b659c389b277f035a08dc15ac"
       },
-      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
       "evidence": [
@@ -4824,11 +4824,11 @@
       ]
     },
     "source:packages/tests/smoke/bun/tests/plugins.smoke.test.ts": {
-      "fingerprint": "772cfc908455e5a57c4a3cd0f781b0bf249e0de4c499e0473bf0992a01cdd103",
+      "fingerprint": "e4e378f2323c1f408da87f23384da8556fec01f89fb2b755a077dda8e92b8b0d",
       "snapshot": {
-        "packages/tests/smoke/bun/tests/plugins.smoke.test.ts": "b2ec25510c829c7c8be4898a408406cfe8fc0b11aa984984d675cdd51aaf6b38"
+        "packages/tests/smoke/bun/tests/plugins.smoke.test.ts": "59aad7ad961bb78f23cceba59eb03176981af20a051f621e8dfd4a9cd46039d9"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
       "evidence": [
@@ -4836,11 +4836,11 @@
       ]
     },
     "source:packages/tests/smoke/esm/tests/plugins.smoke.test.ts": {
-      "fingerprint": "b796c23c12c18efb55980372f0905b9379423198ca819b997642329aaf8d2ea5",
+      "fingerprint": "c7ce8b9a41cb5e0c20f7278bea11d782f3d3f811756a78cbb9bd9bea2daa6b72",
       "snapshot": {
-        "packages/tests/smoke/esm/tests/plugins.smoke.test.ts": "ae78a98f00dc2af46ebd48ffa599b7d75b86cf5df79221e3862ebf0bf8b575b0"
+        "packages/tests/smoke/esm/tests/plugins.smoke.test.ts": "59ebbea56ef18c803a23e6b69c1ef35dbbc93f635b739ef84d9db25fb5763360"
       },
-      "head": "bfc99c19c8fb2a2f8c2d976b3b576797c5980394",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "Smoke test moves baseURL to the instance to match the authBearer rule the skill already teaches",
       "evidence": [
@@ -4860,11 +4860,11 @@
       ]
     },
     "source:.gitignore": {
-      "fingerprint": "32952604722d770c17e6f29461b7c8c01bfe5fd129cd1b06fe1d62ed4e6433a4",
+      "fingerprint": "4b938e001f28be14fa189b3a210df8cf97953dd0f156f71fcec7adc07864c90d",
       "snapshot": {
-        ".gitignore": "713ecd9f24d6ccacb03b7dcee75ce02ab5e025dfc982a7df25ab990a2d2f8589"
+        ".gitignore": "11232fa89a44d80538d002d9383cc9e066e3767b9d1fee54f14e67183fa1227e"
       },
-      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
@@ -5280,11 +5280,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/cancellation.md": {
-      "fingerprint": "fdb33f7551b7d5a0ec3f9a5b767bb8ccb77ea331e70cd01db726b0eb46884320",
+      "fingerprint": "48b1458d46002c070012724f9b2157e51c4a1e85671be9f2e94d59d586a2c9db",
       "snapshot": {
-        "packages/docs/pages/advanced/cancellation.md": "9691aa18f592fb310b2102d21c0eb6bdbecc21c70606e0a6ec740afd43658ac0"
+        "packages/docs/pages/advanced/cancellation.md": "a8cfa76612a23f6d1e28d179edc40e90e2f86b2678cdf24986b551021e4f39f7"
       },
-      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
       "evidence": [
@@ -5304,11 +5304,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/x-www-form-urlencoded-format.md": {
-      "fingerprint": "eace13c0172015c435081723d2fa900fc2a59b2d4bc6ce5f14a193a73751708c",
+      "fingerprint": "a642ea60d574a1f4757a26db7e79892fca2761a7eb4c22619f803a312ec4aa7e",
       "snapshot": {
-        "packages/docs/pages/advanced/x-www-form-urlencoded-format.md": "02400e8179ce325bedd0fccb907147d26d6c1d8d200ffa16417590ef3a1e44db"
+        "packages/docs/pages/advanced/x-www-form-urlencoded-format.md": "e6798db9d31e98a39a2fb8aec095bb5ee27272a027a15585691696c4fb0843d1"
       },
-      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
@@ -5484,11 +5484,11 @@
       ]
     },
     "source:packages/tests/README.md": {
-      "fingerprint": "5ea130f9d82ce9389194cec562bb1cb5d3235e7bd22324277641c6ad3b6cce91",
+      "fingerprint": "dea6571ec40e19a96697140682369f6443a6d221cda6f7b335fd621e49c96bfd",
       "snapshot": {
-        "packages/tests/README.md": "7e9cc8eacf4b3a3b7491137c2ba616bfbaaa8a972f177e46b947bf705c99a8e1"
+        "packages/tests/README.md": "5ec8fa9a79acd5236497bd712be70dffca494659a3bec12f3eb7eb0629646077"
       },
-      "head": "7285e2c90783d42ede4ddd0d275de3714895f10a",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "test-only changes to the unit suite, its server helper and test deps; the skill teaches nothing about them",
       "evidence": [
@@ -5496,11 +5496,11 @@
       ]
     },
     "source:packages/tests/smoke/esm/tests/headers.smoke.test.ts": {
-      "fingerprint": "d42ba44b8826a07efcf8c6d9e593414e6559141dccff2969a1d79c59f894d07b",
+      "fingerprint": "8bf1f3f25e039a5849b731524c4bb25ea345999cf6e938289a6b1b9f13b6dea2",
       "snapshot": {
-        "packages/tests/smoke/esm/tests/headers.smoke.test.ts": "f0d50a502cbfee272fe60ebf0b6a274475907b5f3d730f25124fd7e432cfc6ab"
+        "packages/tests/smoke/esm/tests/headers.smoke.test.ts": "4b576e25a9f616dc7d93b179c7390206c2dacb3571a51a33df817a9a5a2bcce2"
       },
-      "head": "0f2caf939ec854fba295170e591f96f55d3dc640",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "Contributor docs, PR template, link check and test lint config only; the configure-requests skill teaches no contributor workflow, so nothing it teaches changed",
       "evidence": [
@@ -5580,11 +5580,11 @@
       ]
     },
     "source:packages/tests/run-tests.sh": {
-      "fingerprint": "e6e99d335993acdb470017a58066a96dac9b65fbc6a7bfe8c8b288653af93e69",
+      "fingerprint": "76cca3c8e86c99fc557d9af0b2f32068501363d2f5548bfc8f4a48a122ecbab6",
       "snapshot": {
-        "packages/tests/run-tests.sh": "f348ada37e407fb86c81a639722679acd66e15bb15c5658c3df77771dde3b3de"
+        "packages/tests/run-tests.sh": "2e0bc3e2a57c1c930d7b1881a72886401bacd76aaec1ec36604f543f7ab331ba"
       },
-      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
       "evidence": [
@@ -5604,11 +5604,11 @@
       ]
     },
     "source:packages/tests/smoke/deno/deno.lock": {
-      "fingerprint": "8099d54f06441f4c8c75f6e99222e4bdddace58d2081ecbbb9adb84d8172b793",
+      "fingerprint": "06ec390405d9dbdc1101f9a27b7d4b478255b5dfe6859cc4f2858a6bfaa07793",
       "snapshot": {
-        "packages/tests/smoke/deno/deno.lock": "3e34ff3390bd3825b29541e6f0dcaeabbab51129283a0bab302fb29e745f08b5"
+        "packages/tests/smoke/deno/deno.lock": "f6790d50d8bcf6a9e7075b35cd441fd4f43f2f2077a6429739daca6b7d59375b"
       },
-      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
       "evidence": [
@@ -5832,11 +5832,11 @@
       ]
     },
     "source:packages/tests/unit/setup/pollution.test.ts": {
-      "fingerprint": "6b4cd1ec3b555cfa8418143f60d904299742af06911ac9445ed048cec66e3f47",
+      "fingerprint": "138108125db99a94aafa8027c007c6b31514ba2935ff15761af622398b915afc",
       "snapshot": {
-        "packages/tests/unit/setup/pollution.test.ts": "58eac14b8108e4b0e34e8bff696957be500aab869ad519428035507e7830eedd"
+        "packages/tests/unit/setup/pollution.test.ts": "aa6960888241043b8e30a310fc76cfcf707db823498a984b86bdc7c4b4a3a033"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
       "evidence": [
@@ -6228,23 +6228,23 @@
       ]
     },
     "source:packages/tests/smoke/esm/tests/body.smoke.test.ts": {
-      "fingerprint": "d1dcb6894ba46223abbbb0745726aec2f5b437e719e91324d2ae3cbe505e21ac",
+      "fingerprint": "b4f58c5ed61ea4811cce77cb7dccdd4c4b3901505d02fb0f077269cf8837ed3a",
       "snapshot": {
-        "packages/tests/smoke/esm/tests/body.smoke.test.ts": "e89feb51d0cd792bf365620d7f235707be7eaa8d85fc66f50fb2d23bd586471a"
+        "packages/tests/smoke/esm/tests/body.smoke.test.ts": "2274f48dae279a023913c31fc68f21ab74009b8bb91a367213450579ffc726a9"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
-      "outcome": "updated",
-      "reason": "SKILL.md now says the fetch init repeats the Request's members with body: undefined (Bun reads body: null as no body); smoke tests post real bodies",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Type annotations in a smoke test only; skill guidance unaffected",
       "evidence": [
-        "Changed: packages/tests/smoke/esm/tests/body.smoke.test.ts at fc450aa8a45d0ca2f4d53f47c70cad9274970ef3"
+        "Changed: packages/tests/smoke/esm/tests/body.smoke.test.ts at bc36679574e9238d2856222b665b34ddb81adbc1"
       ]
     },
     "source:packages/tests/smoke/esm/tests/urlencode.smoke.test.ts": {
-      "fingerprint": "2c3e051725ab549fa33d84d5967d12c7956aa1b796ef40b3f10ad29b48ce2b5a",
+      "fingerprint": "1383f8be88ccc966646a8e59ef85a367ec3812ad379b4bc6f434a05fb59ed06f",
       "snapshot": {
-        "packages/tests/smoke/esm/tests/urlencode.smoke.test.ts": "65502a6814e38a0b2297a628cd46309b4e9310302afe7da13c575440f46779aa"
+        "packages/tests/smoke/esm/tests/urlencode.smoke.test.ts": "a5faf4f42e119a02815ff1d93bf05840151a6e4154f449120f5dab9a74d33467"
       },
-      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
@@ -6516,11 +6516,11 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/export-surface.ts": {
-      "fingerprint": "3a7e6b3aae2777af9dd9dae5c5000ef409c1981f4e5c695c63cd1fcd68813e8d",
+      "fingerprint": "259b99c850f16e7ac1dff7f2591e39c5e52a6738891a4db75c2bcc86e95530bd",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/export-surface.ts": "e811c97853390b656e18747d9d4fa58ab16816709c873cfb70d9abd0052b2c3e"
+        "packages/tests/module/esm/tests/helpers/export-surface.ts": "51a523f7c09db0c80b05e9f514234ac635a18c379fa4df4739add2276acb61eb"
       },
-      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "updated",
       "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
       "evidence": [
@@ -6624,11 +6624,11 @@
       ]
     },
     "source:packages/tests/module/esm/tsconfig.json": {
-      "fingerprint": "479625846381379f89d51d63b504214e5261467ad11ab0d4ca8c17c778b91478",
+      "fingerprint": "e997d60fd7be5c2ed9e3857aa07ade16ca4251f4e60ad9df2896163dff9a2f10",
       "snapshot": {
-        "packages/tests/module/esm/tsconfig.json": "5bb588d9eaa433d65e2e59cefcc9aea2c3125d4330f4e26e5296930315119b48"
+        "packages/tests/module/esm/tsconfig.json": "75fd42902991c21bdc592291e627be22cf455eed695bab6eb03bfa0584541487"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
       "evidence": [
@@ -6672,15 +6672,363 @@
       ]
     },
     "source:packages/tests/unit/axios.test.ts": {
-      "fingerprint": "c0960e8356a71da9bb70791639587eecb0ce041e4886aa4479435626fd2f5a56",
+      "fingerprint": "fc79a8a532a75e149b2b8924f21aa6cccef431e5b99af60fa4532ac63000667c",
       "snapshot": {
-        "packages/tests/unit/axios.test.ts": "ae11aa034b930480be77bba41862597dc567afba9655ef924028bd4bf9b1279e"
+        "packages/tests/unit/axios.test.ts": "fa75f9063c6f7b637b73d4c539acf02ebaec8db6a4ec5cee34d8a283a576882b"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
       "outcome": "no-change",
       "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
       "evidence": [
         "Changed files: packages/tests/unit/axios.test.ts"
+      ]
+    },
+    "source:.bumpy/dry-rusty-dog.md": {
+      "fingerprint": "0f44f4a26487781181197d743081a41437c66832d6d821006045274740d8e4e6",
+      "snapshot": {
+        ".bumpy/dry-rusty-dog.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: .bumpy/dry-rusty-dog.md"
+      ]
+    },
+    "source:packages/docs/pages/advanced/response-schema.md": {
+      "fingerprint": "4856f76a271cfe828eefd16f47be6776cfc49cb61b19624e36c7294ba3a54f6d",
+      "snapshot": {
+        "packages/docs/pages/advanced/response-schema.md": "fcccbf5d239019c23f14a574c65fc7df3877ea78f117241cd2f5e5198541a599"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/docs/pages/advanced/response-schema.md"
+      ]
+    },
+    "source:packages/tests/module/esm/tests/expect-error.module.test.ts": {
+      "fingerprint": "84a8f4f1a4e60355833bb9839a78c61c58e406dd417653c3ff57ff64ae7cd155",
+      "snapshot": {
+        "packages/tests/module/esm/tests/expect-error.module.test.ts": "a7ed717affdfcb1a9fcfb5bc141cac5482223fc7cad440f4fab1f9e98f8c0671"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/module/esm/tests/expect-error.module.test.ts"
+      ]
+    },
+    "source:packages/tests/module/esm/tests/helpers/typing-fixtures.ts": {
+      "fingerprint": "b29c016da4f0fa01b388773e1028ce98cb6f0676536f1b3cc1b16fbaf716a94f",
+      "snapshot": {
+        "packages/tests/module/esm/tests/helpers/typing-fixtures.ts": "0cab5c7d4aec051b36ca856bc9fd1c95da3b7b394c5a0000eb0f18ef11120c01"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/module/esm/tests/helpers/typing-fixtures.ts"
+      ]
+    },
+    "source:packages/tests/module/esm/vitest.config.ts": {
+      "fingerprint": "09b2956209d455f663a4fcd0e708d7cf680f389dc90b30691861b2af617c6e83",
+      "snapshot": {
+        "packages/tests/module/esm/vitest.config.ts": "55f0dc71f83fd1884e0b7fc5c3f81f1314d235190907a5eb0f14d9ed40138fd0"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/module/esm/vitest.config.ts"
+      ]
+    },
+    "source:packages/tests/smoke/bun/tests/helpers.ts": {
+      "fingerprint": "05202d49aa0bda7655e6b7be291cb68491b1e1d527864fe8c8cc62e8c4e8c33b",
+      "snapshot": {
+        "packages/tests/smoke/bun/tests/helpers.ts": "a97b1d008fab7bf2953587cfa234ebd7d9183cd22142635f425f005d08622e50"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/bun/tests/helpers.ts"
+      ]
+    },
+    "source:packages/tests/smoke/bun/tests/import.smoke.test.ts": {
+      "fingerprint": "a6ec3d91042650dfb188659d946d47e18bce3962121ad52d1db832baa7c3dda6",
+      "snapshot": {
+        "packages/tests/smoke/bun/tests/import.smoke.test.ts": "364df526cf0de3050f1c81465f608c42bdd79d1a4b05d08d4c10d1c88bab6ae1"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/bun/tests/import.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/bun/tests/middleware.smoke.test.ts": {
+      "fingerprint": "493736748af2c902a61a8f49bca171af0adc2a05a8232063c03c15a162e776ee",
+      "snapshot": {
+        "packages/tests/smoke/bun/tests/middleware.smoke.test.ts": "7fe31608c9308f62a08f22cb767411f48a7883fb6e5446071d1825a92ed1bde8"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/bun/tests/middleware.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/bun/tests/realFetch.smoke.test.ts": {
+      "fingerprint": "ac44a100a3d32bd00e2b019d87e4b876cbba729c9d4f0a4becb978b9b7de290d",
+      "snapshot": {
+        "packages/tests/smoke/bun/tests/realFetch.smoke.test.ts": "99d6cef7138e2ce27eac4ddf5d108093980c7278dc1335157124b1836da9cbd6"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/bun/tests/realFetch.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/bun/tests/subpaths.smoke.test.ts": {
+      "fingerprint": "35ff29b071073bee3ebb478b845db340dcc399f7a0bd4de9725877c65b36bb8f",
+      "snapshot": {
+        "packages/tests/smoke/bun/tests/subpaths.smoke.test.ts": "c04490c8812b21eb454f207f06159d6470f9238894bf74c31d114c4d529cd0e2"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/bun/tests/subpaths.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/bun/tsconfig.json": {
+      "fingerprint": "3ecbc265bc142190f3d9e1f285b9d846591a2438d00936aaf7568be56374fac2",
+      "snapshot": {
+        "packages/tests/smoke/bun/tsconfig.json": "fa352e1187daef768656dd9805f1e8830aa90b197eeed1be82669bf7128afe8f"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/bun/tsconfig.json"
+      ]
+    },
+    "source:packages/tests/smoke/deno/tests/formData.smoke.test.ts": {
+      "fingerprint": "3ab73bca189c8cb3d273f1d181ba185f3cd8054f41b3f4a88390b237752197ff",
+      "snapshot": {
+        "packages/tests/smoke/deno/tests/formData.smoke.test.ts": "27ca32cab7459891edf879ffd10782cfd018ea370f531b79947a4974bfa71f24"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/deno/tests/formData.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/deno/tests/helpers.ts": {
+      "fingerprint": "db299a9972c7471fb38ae7d1b68ae7c1c02e9a043eed19547736b01076498348",
+      "snapshot": {
+        "packages/tests/smoke/deno/tests/helpers.ts": "6bb36edbf306d94e31f2bced16ed65272016ac7d807e71093d2888df67664775"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/deno/tests/helpers.ts"
+      ]
+    },
+    "source:packages/tests/smoke/deno/tests/middleware.smoke.test.ts": {
+      "fingerprint": "9875e2c21681ba6c807d2877ee2782280b0d0ef4b6e78d04f56f3c7c87ce5c76",
+      "snapshot": {
+        "packages/tests/smoke/deno/tests/middleware.smoke.test.ts": "8790295e7d61b320405ad58340400c601d1050362d936f54af30e3f931fd4b81"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/deno/tests/middleware.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/deno/tests/progress.smoke.test.ts": {
+      "fingerprint": "8c891ffdb4884ad4346d3051d7f7612aa7bed1ccfc2fe602291f1964fddb2ed2",
+      "snapshot": {
+        "packages/tests/smoke/deno/tests/progress.smoke.test.ts": "e7cf11447c2c2c9e147c3c97eaba991ca3db2f9456a91f1515d9d9fde5ac8377"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/deno/tests/progress.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/deno/tests/realFetch.smoke.test.ts": {
+      "fingerprint": "ecbc5f488d04bff5887b2b1282ace17725b87ae59cad7f608b4c23669bb25d4f",
+      "snapshot": {
+        "packages/tests/smoke/deno/tests/realFetch.smoke.test.ts": "dee7e1aaeecc426a29f98a82b6e71c4f96d0acb089713e5fbaff7cf5eb546f43"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/deno/tests/realFetch.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/deno/tests/timeout.smoke.test.ts": {
+      "fingerprint": "33129ee608d7da1107fd8302cd161f79d9ddea8138b4f420ce508523e1d4e72f",
+      "snapshot": {
+        "packages/tests/smoke/deno/tests/timeout.smoke.test.ts": "8d624c6da8afe1a023145abb85345df498a1241c1b44a34a293933b0bf9498c9"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/deno/tests/timeout.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/basic.smoke.test.ts": {
+      "fingerprint": "da9ca41c616d0a328378e788fe1e6888681ff5e247f2241390a0ad3867f6832e",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/basic.smoke.test.ts": "18b53804a053ae0af0bebc56f32cf374afb437a849673d90681425e30c584f15"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/esm/tests/basic.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/cancel.smoke.test.ts": {
+      "fingerprint": "81a19148b5b8dbbc480fed20ed50113e49543264e55c1ce80826591776c0df3f",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/cancel.smoke.test.ts": "cc6467284ce31076b53e5503c380b41a1641d399f507ec68c8b0cc02b204e015"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/esm/tests/cancel.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/error.smoke.test.ts": {
+      "fingerprint": "1b51a1586367f881f0595e53a1905cc8cff8bd0e0f5b4cc90fd74e1b379d5cb8",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/error.smoke.test.ts": "4e72be9c8e2bb0231f4e6e2c388b4652ac60bb3bad4e89fe507b3cfe5c83552a"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/esm/tests/error.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/files.smoke.test.ts": {
+      "fingerprint": "700f0f4c3f166b855211a2d4a1c7d9aeb2143fd52a9bbddcc9a042e4f306590e",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/files.smoke.test.ts": "677336f4ef9723d050b81e2d2a70ec2eaebff16a58a277afcaa9ba6ef963fa07"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/esm/tests/files.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/formData.smoke.test.ts": {
+      "fingerprint": "c421ab98f3aeab3352912ed21bccc62964c58b9d6e9491cad1c7adad5674ad71",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/formData.smoke.test.ts": "4887022d96ed1e168d15f045f3c36656f23c11926c539f4e1ad3509d8f7dd0e0"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/esm/tests/formData.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/helpers.ts": {
+      "fingerprint": "4cffe26bfac259c13bbd41116451c3f2449d776b2910eec782911dfd99bcbb77",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/helpers.ts": "cb4040f5c322c9d017aff626da59ec663da1b1785fbc09c74a4dfb14a09f40fa"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/esm/tests/helpers.ts"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/import.smoke.test.ts": {
+      "fingerprint": "7512a1a909a39a9db9231b4ab7be71ff199e52d24a5cb5ac7bc96eba22539127",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/import.smoke.test.ts": "f19ed3d77461b2046181d9d9abf8b0bfcf2677ef02cb92f858a8a02a1631953c"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/esm/tests/import.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/instance.smoke.test.ts": {
+      "fingerprint": "c9b55d97f153cf83269abd92c7f9adb06180fea4dad7b7661f23c8ebf2949d44",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/instance.smoke.test.ts": "2fa39278a732b846f5b9ecf86bcef7d567e3e874eeb37e3fcd27062cdfba4a01"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/esm/tests/instance.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/middleware.smoke.test.ts": {
+      "fingerprint": "b786b59b8675b4d8bcaf280b0f484ce7a80e38de5785de98d693c403f58fbb46",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/middleware.smoke.test.ts": "76ab996e8ca4ada7def59073ee4d696b61d6ff0fa2eb925f3404a6e19fe81bcf"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/esm/tests/middleware.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/progress.smoke.test.ts": {
+      "fingerprint": "f6c4d50225ac355a244684cf3364908d18bd24c29e70320a3aebd9b8e95b20dd",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/progress.smoke.test.ts": "c21a81221f41f1051031a39a0abfd1a30ce565d3ca1fc933fe5e213f721799cc"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/esm/tests/progress.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tests/timeout.smoke.test.ts": {
+      "fingerprint": "e305f9d716402fdbfc8a74df3bb1c07cbce1f6a12b432b1f8a10299a9d248583",
+      "snapshot": {
+        "packages/tests/smoke/esm/tests/timeout.smoke.test.ts": "daf7a311313abae56d8ee36284c89625840d8451df8b76b58e1fe35732b35927"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/esm/tests/timeout.smoke.test.ts"
+      ]
+    },
+    "source:packages/tests/smoke/esm/tsconfig.json": {
+      "fingerprint": "ec8ce0bf1500a24f30d3665378737f117d668222fc86671b2591bbdc05550489",
+      "snapshot": {
+        "packages/tests/smoke/esm/tsconfig.json": "7e80e171fcd15e42a553612fe904cdf717a7af80f2dc6a37a1cb16e35703ddc2"
+      },
+      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/smoke/esm/tsconfig.json"
       ]
     }
   }

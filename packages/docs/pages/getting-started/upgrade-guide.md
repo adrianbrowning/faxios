@@ -64,7 +64,7 @@ If you set `Content-Type: application/json` on a `FormData` body, faxios seriali
 
 **`params` are percent-encoded.** If your backend expected raw brackets from qs-style encoding, you may need to configure a custom serializer:
 
-```js check=skip
+```js check=skip reason=dependency
 import faxios from "@gcmdev/faxios";
 import qs from 'qs';
 

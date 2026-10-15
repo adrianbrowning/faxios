@@ -1,4 +1,8 @@
 import faxios from "faxios";
+import { toRequest } from "./helpers.js";
+import type { FetchInput } from "./helpers.js";
+
+type Echo = { contentType: string; payload: string; };
 import { describe, expect, it } from "vitest";
 
 describe("formData compat (dist export only)", () => {
@@ -7,16 +11,17 @@ describe("formData compat (dist export only)", () => {
     form.append("username", "janedoe");
     form.append("role", "admin");
 
-    const mockFetch = async input => {
-      const contentType = input.headers.get("content-type") ?? "";
-      const payload = await input.text();
+    const mockFetch = async (input: FetchInput) => {
+      const request = toRequest(input);
+      const contentType = request.headers.get("content-type") ?? "";
+      const payload = await request.text();
       return new Response(JSON.stringify({ contentType, payload }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
     };
 
-    const response = await faxios.post("http://example.com/form", form, {
+    const response = await faxios.post<Echo>("http://example.com/form", form, {
       env: { fetch: mockFetch, Request, Response },
     });
 
@@ -28,16 +33,17 @@ describe("formData compat (dist export only)", () => {
   });
 
   it("supports faxios.postForm helper", async () => {
-    const mockFetch = async input => {
-      const contentType = input.headers.get("content-type") ?? "";
-      const payload = await input.text();
+    const mockFetch = async (input: FetchInput) => {
+      const request = toRequest(input);
+      const contentType = request.headers.get("content-type") ?? "";
+      const payload = await request.text();
       return new Response(JSON.stringify({ contentType, payload }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
     };
 
-    const response = await faxios.postForm(
+    const response = await faxios.postForm<Echo>(
       "http://example.com/post-form",
       { project: "faxios", mode: "compat" },
       {

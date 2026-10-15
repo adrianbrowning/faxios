@@ -230,7 +230,7 @@ await api.get("/users");
 
 An abort during a backoff wait rejects with `CanceledError` straight away, and a cancellation is never retried. As at every other stage, the error keeps the abort reason as its `cause`:
 
-```js
+```js expect=log:Request%20aborted%20by%20user
 import faxios from "@gcmdev/faxios";
 import { retry } from "@gcmdev/faxios/plugins/retry";
 

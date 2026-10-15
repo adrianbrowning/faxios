@@ -1,9 +1,11 @@
 import http from "node:http";
+import type { AddressInfo } from "node:net";
 import faxios from "faxios";
+import type { FaxiosRequestConfig } from "faxios";
 import { afterEach, describe, expect, it } from "vitest";
 
-const startServer = handler =>
-  new Promise(resolve => {
+const startServer = (handler: http.RequestListener) =>
+  new Promise<http.Server>(resolve => {
     const server = http.createServer(handler);
 
     server.listen(0, "127.0.0.1", () => {
@@ -11,12 +13,12 @@ const startServer = handler =>
     });
   });
 
-const stopServer = server => {
+const stopServer = (server: http.Server | undefined) => {
   if (!server || !server.listening) {
     return Promise.resolve();
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     server.close(error => {
       if (error) {
         reject(error);
@@ -28,20 +30,20 @@ const stopServer = server => {
 };
 
 describe("auth compat (dist export only)", () => {
-  let server;
+  let server: http.Server | undefined;
 
   afterEach(async () => {
     await stopServer(server);
     server = undefined;
   });
 
-  const requestWithConfig = async config => {
+  const requestWithConfig = async (config: FaxiosRequestConfig) => {
     server = await startServer((req, res) => {
       res.setHeader("Content-Type", "text/plain");
       res.end(req.headers.authorization || "");
     });
 
-    const { port } = server.address();
+    const { port } = server.address() as AddressInfo;
 
     return faxios.get(`http://127.0.0.1:${port}/`, config);
   };
@@ -61,6 +63,7 @@ describe("auth compat (dist export only)", () => {
 
   it("supports auth without password", async () => {
     const response = await requestWithConfig({
+      // @ts-expect-error TS2741 -- untyped JS callers may omit the password; the runtime encodes it as empty
       auth: {
         username: "Aladdin",
       },
@@ -93,7 +96,7 @@ describe("auth compat (dist export only)", () => {
       res.end(req.headers.authorization || "");
     });
 
-    const { port } = server.address();
+    const { port } = server.address() as AddressInfo;
 
     const response = await faxios.get(`http://urluser:urlpass@127.0.0.1:${port}/`);
 
@@ -108,7 +111,7 @@ describe("auth compat (dist export only)", () => {
       res.end(req.headers.authorization || "");
     });
 
-    const { port } = server.address();
+    const { port } = server.address() as AddressInfo;
 
     const response = await faxios.get(
       `http://urluser:urlpass@127.0.0.1:${port}/`,

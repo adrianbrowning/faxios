@@ -9,6 +9,7 @@ const leakSymbol = Symbol("leak");
 describe("restorePrototypeAfterEach", () => {
   restorePrototypeAfterEach();
 
+  // eslint-disable-next-line vitest/expect-expect -- it.fails: the throw is the point; the next test asserts the restore
   it.fails("pollutes Object.prototype and then throws", () => {
     ObjProto["leaked"] = "yes";
     ObjProto[leakSymbol] = "yes";

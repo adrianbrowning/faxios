@@ -35,7 +35,7 @@ faxios ships as ESM only, built by `zshy`. Use `import faxios from '@gcmdev/faxi
 
 faxios reports upload progress by streaming the request body, which only Node.js's `fetch` supports today. In browsers, Deno and Bun `onUploadProgress` is not called and the body is sent as it is. `onDownloadProgress` works in every runtime. See [Fetch adapter](https://adrianbrowning.github.io/faxios/pages/advanced/fetch-adapter).
 
-```javascript
+```javascript check=skip reason=fragment
 faxios.post('/upload', body, {
   onUploadProgress: e => console.log(e.loaded),   // Node.js only
   onDownloadProgress: e => console.log(e.loaded), // every runtime
@@ -60,7 +60,7 @@ Any other unknown request config key rejects the same way, so a typo such as `ti
 
 A refused connection or other transport failure now rejects with `FaxiosError` code `ERR_NETWORK`, and the underlying OS error (e.g. `ECONNREFUSED`) is attached on `error.cause`. Previously the http adapter surfaced `ECONNREFUSED` as the error code itself.
 
-```javascript
+```javascript check=skip reason=fragment
 // Before
 catch (err) {
   if (err.code === 'ECONNREFUSED') { /* ... */ }
@@ -85,7 +85,7 @@ faxios no longer manages proxies (`proxy`, `proxy-from-env`, `https-proxy-agent`
 - **Node (undici):** set a custom dispatcher/agent via `fetchOptions` (e.g. an undici `ProxyAgent`), or rely on runtime-level proxy environment variables that your `fetch` implementation honors.
 - **Browser / Deno / Bun:** use the platform's own proxy configuration.
 
-```javascript
+```javascript check=skip reason=dependency
 // Node example: proxy via an undici dispatcher passed through fetchOptions
 import { ProxyAgent } from 'undici';
 
@@ -98,7 +98,7 @@ faxios.get('https://api.example.com', {
 
 `faxios.interceptors` is gone. Register middleware with `.use()`: code before `await next(ctx)` changes the request through `ctx.config`, code after it sees the response, and a `try`/`catch` around `next` replaces an `onRejected` handler. Request interceptors ran last-registered-first while middleware runs in registration order, so check the order when you convert several. `use()` returns the instance, typed with any plugin's request options: keep and use the chained result. Instances made with `create()` start with no middleware. Passing `transitional.legacyInterceptorReqResOrdering` now rejects with `ERR_BAD_OPTION`.
 
-```javascript
+```javascript check=skip reason=fragment
 // Before
 faxios.interceptors.request.use(config => {
   config.headers.set('Authorization', `Bearer ${getToken()}`);
@@ -130,7 +130,7 @@ An instance with a `baseURL` defaults `allowAbsoluteUrls` to `false`. An absolut
 - **FormData Content-Type:** faxios now removes any `Content-Type` you set for a `FormData` body in every runtime, including one with your own `boundary`, so the header always carries the boundary the body was encoded with. Before, Node kept a `boundary` you set even though the body used another one.
 - **`formToJSON` field names:** names split into nested keys only on `.` and brackets. `first-name` now gives `{ "first-name": … }` instead of `{ first: { name: … } }`, and `last name` stays one key. Rename fields to `first.name` or `first[name]` to keep the nesting.
 
-```javascript
+```javascript check=skip reason=fragment
 // Before: sent as application/x-www-form-urlencoded
 await faxios.post('/login', 'user=ada&pass=secret');
 

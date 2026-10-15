@@ -1,5 +1,15 @@
 import { describe, expect, test } from "bun:test";
 import faxios from "faxios";
+import type { MockFetch } from "./helpers.ts";
+import { jsonResponse, toRequest } from "./helpers.ts";
+
+type Echo = { contentType: string; payload: string; };
+
+// Answers with the request's Content-Type and the body it received.
+const echoFetch: MockFetch = async (input, init) => {
+  const request = toRequest(input, init);
+  return jsonResponse({ contentType: request.headers.get("content-type") ?? "", payload: await request.text() });
+};
 
 describe("form data", () => {
   test("native Bun FormData body produces multipart/form-data content-type", async () => {
@@ -7,18 +17,7 @@ describe("form data", () => {
     form.append("username", "janedoe");
     form.append("role", "admin");
 
-    const mockFetch = async (input: Request) => {
-      const contentType = input.headers.get("content-type") ?? "";
-      const payload = await input.text();
-      return new Response(JSON.stringify({ contentType, payload }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
-    };
-
-    const response = await faxios.post("http://example.com/form", form, {
-      env: { fetch: mockFetch, Request, Response },
-    });
+    const response = await faxios.post<Echo>("http://example.com/form", form, { env: { fetch: echoFetch } });
 
     expect(response.data.contentType).toContain("multipart/form-data");
     expect(response.data.payload).toContain("name=\"username\"");
@@ -28,19 +27,10 @@ describe("form data", () => {
   });
 
   test("faxios.postForm helper produces multipart/form-data", async () => {
-    const mockFetch = async (input: Request) => {
-      const contentType = input.headers.get("content-type") ?? "";
-      const payload = await input.text();
-      return new Response(JSON.stringify({ contentType, payload }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
-    };
-
-    const response = await faxios.postForm(
+    const response = await faxios.postForm<Echo>(
       "http://example.com/post-form",
       { project: "faxios", mode: "compat" },
-      { env: { fetch: mockFetch, Request, Response } }
+      { env: { fetch: echoFetch } }
     );
 
     expect(response.data.contentType).toContain("multipart/form-data");

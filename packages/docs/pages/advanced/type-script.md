@@ -82,7 +82,7 @@ Plain middleware adds nothing to the type, so `FaxiosInstance` still fits. To wr
 
 Plugins add request options and capabilities to the instance type. `use()` returns the same instance with that new type, so keep the chained result and send requests through it. Annotating the variable as a plain `FaxiosInstance` would throw the plugin's options away:
 
-```ts
+```ts expect=error:ERR_BAD_OPTION
 import faxios from "@gcmdev/faxios";
 import { retry } from "@gcmdev/faxios/plugins/retry";
 

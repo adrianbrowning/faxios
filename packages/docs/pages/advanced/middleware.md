@@ -29,7 +29,7 @@ request  ──▶ a before ──▶ b before ──▶ dispatch ──┐
 response ◀── a after  ◀── b after  ◀──────────────┘
 ```
 
-```ts
+```ts expect=log:'a%20before'%2C%20'b%20before'%2C%20'b%20after'%2C%20'a%20after'
 import faxios from "@gcmdev/faxios";
 import type { FaxiosMiddleware } from "@gcmdev/faxios";
 
@@ -143,7 +143,7 @@ For bearer tokens, use the built-in [`authBearer`](#authbearer) plugin rather th
 
 `next(ctx)` runs the rest of the chain and then dispatches a copy of `ctx.config`. Changes dispatch makes, such as `transformRequest` output and schema output, go to the copy and never show up on `ctx.config`. Dispatch fills in path params only in the URL it sends, so `ctx.config.url` keeps the template:
 
-```ts
+```ts expect=log:/users/%7Bid%7D
 import faxios from "@gcmdev/faxios";
 
 const api = faxios.create({ baseURL: "https://api.example.com" }).use(async (ctx, next) => {
@@ -186,7 +186,7 @@ Calling `next` again is safe when the body can be read again, such as a string, 
 
 `validateStatus` rejects non-2xx responses by default, so middleware sees a 404 or 500 as a rejected `FaxiosError`, not as a response. Catch it around `next`; the response is on `err.response`. This middleware turns a 404 back into a response:
 
-```ts status=404
+```ts status=404 expect=log:404
 import faxios, { isFaxiosError } from "@gcmdev/faxios";
 
 const api = faxios.create({ baseURL: "https://api.example.com" }).use(async (ctx, next) => {
@@ -307,7 +307,7 @@ await api.get("/users");
 
 To see the URL a request goes to, import `resolveRequestURL(config)` from `@gcmdev/faxios`. It is the resolver core uses for the request and for `getUri()`: `url` with `pathParams` filled in, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params`. A URL is absolute only when a scheme is followed by `//`, so `documents:batchGet` joins `baseURL`. It throws the `FaxiosError` the request would reject with: `ERR_INVALID_URL` for an absolute URL that `allowAbsoluteUrls: false` refuses, `ERR_BAD_OPTION_VALUE` for a placeholder `pathParams` can't fill. In middleware, schemas haven't run yet, so it uses `pathParams` and `params` as the caller gave them. To check only the origin, as `authBearer` does, pass `{ ...ctx.config, pathParams: undefined, params: undefined }`: a `pathParamsSchema` may fill or rename placeholders the raw `pathParams` can't, and path params never move the origin.
 
-```ts
+```ts expect=log:https://api.example.com/users/7?q=1
 import faxios, { resolveRequestURL } from "@gcmdev/faxios";
 import { definePlugin } from "@gcmdev/faxios/plugins";
 

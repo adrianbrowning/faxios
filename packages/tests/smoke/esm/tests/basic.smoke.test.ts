@@ -1,12 +1,14 @@
 import faxios from "faxios";
 import { describe, expect, it } from "vitest";
 
-const createFetchMock = () => {
-  let capturedInput;
-  let capturedInit;
+type MockFetch = (input: Request | string | URL, init?: RequestInit) => Promise<Response>;
 
-  const mockFetch = async (input, init) => {
-    capturedInput = input;
+const createFetchMock = () => {
+  let capturedInput: Request | undefined;
+  let capturedInit: RequestInit = {};
+
+  const mockFetch = async (input: Request | string | URL, init?: RequestInit) => {
+    capturedInput = input instanceof Request ? input : new Request(input, init);
     capturedInit = init || {};
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
@@ -16,11 +18,14 @@ const createFetchMock = () => {
 
   return {
     mockFetch,
-    getCaptured: () => ({ input: capturedInput, init: capturedInit }),
+    getCaptured: () => {
+      if (!capturedInput) throw new Error("fetch was not called");
+      return { input: capturedInput, init: capturedInit };
+    },
   };
 };
 
-const runRequest = async run => {
+const runRequest = async (run: (mockFetch: MockFetch) => Promise<unknown>) => {
   const { mockFetch, getCaptured } = createFetchMock();
   await run(mockFetch);
   return getCaptured();

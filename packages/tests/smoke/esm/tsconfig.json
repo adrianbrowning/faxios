@@ -3,8 +3,12 @@
     "target": "esnext",
     "module": "esnext",
     "moduleResolution": "bundler",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "strict": true,
     "skipLibCheck": true,
-    "noEmit": true
+    "noEmit": true,
+    "typeRoots": ["../../node_modules/@types"],
+    "types": ["node"]
   },
-  "include": ["tests/**/*.ts"]
+  "include": ["tests/**/*.ts", "vitest.config.ts"]
 }

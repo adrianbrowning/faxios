@@ -2,7 +2,7 @@
 
 faxios cancels requests with `AbortController` in every runtime. To cancel a request, you need to create an instance of `AbortController` and pass its `signal` to the request's `signal` option.
 
-```js
+```js expect=log:Request%20canceled
 import faxios, { isCancel } from "@gcmdev/faxios";
 
 const controller = new AbortController();
@@ -27,7 +27,7 @@ controller.abort();
 
 You can cancel several requests with the same abort controller. If its signal is already aborted at the moment of starting an faxios request, then the request is cancelled immediately, without any attempts to make a real request.
 
-```js
+```js expect=log:Request%20canceled
 import faxios, { isCancel } from "@gcmdev/faxios";
 
 const controller = new AbortController();

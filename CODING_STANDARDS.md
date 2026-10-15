@@ -44,4 +44,4 @@ Config objects, plugin objects, option objects and anything else a caller hands 
 - Assert what a caller can observe: the request on the wire, the result, the error and its `code`, listeners left on a signal. Counting calls into internal code, or patching a built-in method to watch it, tests how the code is written, so it fails on a correct refactor.
 - Use `vi.useFakeTimers()` or promise gates, never real timers. Restore globals, `Object.prototype` pollution and spies in `finally` or cleanup hooks.
 - Install middleware on a fresh `faxios.create()` instance. If a test must use the shared default instance, eject the middleware in `finally`.
-- Type tests put negative cases in uncalled functions. Each `@ts-expect-error` names the code it expects (`// @ts-expect-error TS2353 -- reason`), which `lint:ts` checks.
+- Type tests put negative cases in uncalled functions. Each `@ts-expect-error` names the code it expects (`// @ts-expect-error TS2353 -- reason`), which `lint:ts` checks; under module/esm, which compiles against the installed tarball, `lint:ts` only requires the code and the module suite checks it (`check-expect-error.ts --module`).

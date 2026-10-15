@@ -78,7 +78,7 @@ function formData(): void {
     },
   };
   const appended: GenericFormData = toFormData({ x: 1 }, like);
-  // @ts-expect-error TS2353 -- not a serializer option
+  // @ts-expect-error TS2769 -- not a serializer option (toFormData is overloaded)
   toFormData({ x: 1 }, null, { nope: true });
   void target;
   void created;

@@ -6,6 +6,8 @@ import { forwardTo } from "faxios/plugins/forward-to";
 import { retry } from "faxios/plugins/retry";
 import { timing } from "faxios/plugins/timing";
 import type { TimingEvent } from "faxios/plugins/timing";
+import type { MockFetch } from "./helpers.ts";
+import { toRequest } from "./helpers.ts";
 
 describe("plugin subpaths", () => {
   test("faxios/plugins exports only definePlugin, the root no plugin API", () => {
@@ -17,8 +19,8 @@ describe("plugin subpaths", () => {
 
   test("a definePlugin plugin runs with authBearer, retry and timing", async () => {
     const calls: Array<Request> = [];
-    const fetch = async (input: unknown, init?: RequestInit) => {
-      calls.push(new Request(input as string, init));
+    const fetch: MockFetch = async (input, init) => {
+      calls.push(toRequest(input, init));
       return new Response(null, { status: calls.length === 1 ? 503 : 200 });
     };
     const events: Array<TimingEvent> = [];
@@ -46,8 +48,8 @@ describe("plugin subpaths", () => {
 
   test("forwardTo sends every try to the gateway with the target URL in X-Forward-To", async () => {
     const calls: Array<Request> = [];
-    const fetch = async (input: unknown, init?: RequestInit) => {
-      calls.push(new Request(input as string, init));
+    const fetch: MockFetch = async (input, init) => {
+      calls.push(toRequest(input, init));
       return new Response(null, { status: calls.length === 1 ? 503 : 200 });
     };
     const api = faxios.create({ baseURL: "https://api.example.com", env: { fetch } })

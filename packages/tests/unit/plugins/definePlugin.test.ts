@@ -105,6 +105,7 @@ describe("definePlugin", () => {
     void surfaces;
   });
 
+  // eslint-disable-next-line vitest/expect-expect -- type-only: the @ts-expect-error lines are the assertions, checked by lint:ts
   it("rejects a provides value that contradicts the middleware's context", () => {
     function surfaces(): void {
       definePlugin({
@@ -139,6 +140,7 @@ describe("definePlugin", () => {
 });
 
 describe("FaxiosPlugin", () => {
+  // eslint-disable-next-line vitest/expect-expect -- type-only: the @ts-expect-error lines are the assertions, checked by lint:ts
   it("takes one object of named slots", () => {
     function surfaces(): void {
       const requiresOnly: FaxiosPlugin<{ requires: AuthCapability; }> = { name: "r", middleware: async (ctx, next) => next(ctx) };
@@ -161,6 +163,7 @@ describe("FaxiosPlugin", () => {
 });
 
 describe("Faxios class", () => {
+  // eslint-disable-next-line vitest/expect-expect -- type-only: the @ts-expect-error lines are the assertions, checked by lint:ts
   it("doesn't type use() or eject()", () => {
     function surfaces(): void {
       // @ts-expect-error TS2339 -- plugins install through faxios.create() or the default export

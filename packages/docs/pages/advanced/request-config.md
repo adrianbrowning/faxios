@@ -230,7 +230,7 @@ The `xsrfHeaderName` is the name of the header to use as a value for `XSRF` toke
 - `false` — never set the XSRF header.
 - `(config: InternalFaxiosRequestConfig) => boolean | undefined` — a callback that decides per-request, receiving the internal config object.
 
-```ts check=skip
+```ts check=skip reason=signature
 withXSRFToken: boolean | undefined | ((config: InternalFaxiosRequestConfig) => boolean | undefined);
 ```
 

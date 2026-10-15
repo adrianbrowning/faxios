@@ -1,122 +1,42 @@
 import { assertEquals } from "@std/assert";
 import faxios from "faxios";
-
-const createFetchMock = (
-  responseFactory?: (input: any, init: any) => Promise<Response> | Response
-) => {
-  const calls: Array<{ init: any; input: any; }> = [];
-
-  const mockFetch = async (input: any, init: any = {}) => {
-    calls.push({ input, init });
-
-    if (responseFactory) {
-      return responseFactory(input, init);
-    }
-
-    return new Response(JSON.stringify({ ok: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  };
-
-  return {
-    mockFetch,
-    getCalls: () => calls,
-  };
-};
-
-const getRequestMeta = async (input: any, init: any) => {
-  const request = input instanceof Request ? input : new Request(input, init);
-
-  return {
-    url: request.url,
-    method: request.method,
-    body:
-      request.method === "GET" || request.method === "HEAD"
-        ? undefined
-        : await request.clone().text(),
-  };
-};
-
-const env = (fetch: (input: Request | string | URL, init?: RequestInit) => Promise<Response>) => ({
-  fetch,
-  Request,
-  Response,
-});
+import { createRecordingFetch } from "./helpers.ts";
 
 Deno.test("fetch adapter: GET resolves JSON response", async () => {
-  const { mockFetch, getCalls } = createFetchMock();
+  const { fetch, calls } = createRecordingFetch();
 
-  const response = await faxios.get("https://example.com/users", {
-    env: env(mockFetch),
-  });
+  const response = await faxios.get("https://example.com/users", { env: { fetch } });
 
   assertEquals(response.status, 200);
   assertEquals(response.data, { ok: true });
-  assertEquals(getCalls().length, 1);
+  assertEquals(calls.length, 1);
 });
 
 Deno.test("fetch adapter: forwards HTTP methods", async () => {
-  const run = async (
-    method: "delete" | "head" | "options" | "patch" | "post" | "put",
-    expected: string
-  ) => {
-    const { mockFetch, getCalls } = createFetchMock();
+  const { fetch, calls } = createRecordingFetch();
 
-    if (method === "post" || method === "put" || method === "patch") {
-      await faxios[method](
-        "https://example.com/items",
-        { name: "widget" },
-        {
-          env: env(mockFetch),
-        }
-      );
-    }
-    else {
-      await faxios[method]("https://example.com/items", {
-        env: env(mockFetch),
-      });
-    }
+  await faxios.delete("https://example.com/items", { env: { fetch } });
+  await faxios.head("https://example.com/items", { env: { fetch } });
+  await faxios.options("https://example.com/items", { env: { fetch } });
+  await faxios.post("https://example.com/items", { name: "widget" }, { env: { fetch } });
+  await faxios.put("https://example.com/items", { name: "widget" }, { env: { fetch } });
+  await faxios.patch("https://example.com/items", { name: "widget" }, { env: { fetch } });
 
-    const { input, init } = getCalls()[0];
-    const meta = await getRequestMeta(input, init);
-    assertEquals(meta.method, expected);
-  };
-
-  await run("delete", "DELETE");
-  await run("head", "HEAD");
-  await run("options", "OPTIONS");
-  await run("post", "POST");
-  await run("put", "PUT");
-  await run("patch", "PATCH");
+  assertEquals(calls.map(call => call.method), [ "DELETE", "HEAD", "OPTIONS", "POST", "PUT", "PATCH" ]);
 });
 
 Deno.test("fetch adapter: serializes JSON body for POST", async () => {
-  const { mockFetch, getCalls } = createFetchMock();
+  const { fetch, calls } = createRecordingFetch();
 
-  await faxios.post(
-    "https://example.com/items",
-    { name: "widget" },
-    {
-      env: env(mockFetch),
-    }
-  );
+  await faxios.post("https://example.com/items", { name: "widget" }, { env: { fetch } });
 
-  const { input, init } = getCalls()[0];
-  const meta = await getRequestMeta(input, init);
-
-  assertEquals(meta.body, JSON.stringify({ name: "widget" }));
+  assertEquals(await calls[0]!.text(), JSON.stringify({ name: "widget" }));
 });
 
 Deno.test("fetch adapter: forwards full URL", async () => {
-  const { mockFetch, getCalls } = createFetchMock();
+  const { fetch, calls } = createRecordingFetch();
 
-  await faxios.get("https://example.com/users", {
-    env: env(mockFetch),
-  });
+  await faxios.get("https://example.com/users", { env: { fetch } });
 
-  const { input, init } = getCalls()[0];
-  const meta = await getRequestMeta(input, init);
-
-  assertEquals(meta.url, "https://example.com/users");
+  assertEquals(calls[0]!.url, "https://example.com/users");
 });

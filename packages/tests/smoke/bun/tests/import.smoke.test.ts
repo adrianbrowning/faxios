@@ -1,18 +1,41 @@
 import { describe, expect, test } from "bun:test";
+import faxios, * as root from "faxios";
+import { create, isCancel, isFaxiosError, VERSION } from "faxios";
 
 describe("Bun importing", () => {
-  test("default export is callable", async () => {
-    const { default: faxios } = await import("faxios");
+  test("default export is callable", () => {
     expect(typeof faxios).toBe("function");
   });
 
-  test("named exports are present", async () => {
-    const exports = (await import("faxios")) as Record<string, any>;
+  test("named exports are present", () => {
+    expect(typeof create).toBe("function");
+    expect(typeof isCancel).toBe("function");
+    expect(typeof isFaxiosError).toBe("function");
+    expect(typeof VERSION).toBe("string");
+    expect(isCancel).toBe(faxios.isCancel);
+    expect(isFaxiosError).toBe(faxios.isFaxiosError);
+  });
 
-    expect(typeof (exports.faxios ?? exports.default)).toBe("function");
-    expect(typeof (exports.create ?? exports.default.create)).toBe("function");
-    expect(typeof exports.isCancel).toBe("function");
-    expect(typeof exports.isFaxiosError).toBe("function");
-    expect(typeof exports.VERSION).toBe("string");
+  // A removed or added root export changes the public API; update this list on purpose.
+  test("the root entry exports exactly the published names", () => {
+    expect(Object.keys(root).sort()).toEqual([
+      "Cancel",
+      "CanceledError",
+      "Faxios",
+      "FaxiosError",
+      "FaxiosHeaders",
+      "HttpStatusCode",
+      "VERSION",
+      "all",
+      "create",
+      "default",
+      "formToJSON",
+      "isCancel",
+      "isFaxiosError",
+      "isSchemaValidationError",
+      "mergeConfig",
+      "resolveRequestURL",
+      "toFormData",
+    ]);
   });
 });
