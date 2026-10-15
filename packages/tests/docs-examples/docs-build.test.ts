@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
 import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import { promisify } from "node:util";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
@@ -8,12 +8,15 @@ const run = promisify(execFile);
 const docsPackage = join(import.meta.dirname, "../../docs");
 const vitepress = join(docsPackage, "node_modules/.bin/vitepress");
 const fixture = join(import.meta.dirname, "fixtures/broken-vitepress");
+const siteConfig = join(docsPackage, ".vitepress/config.mts");
 // Inside the docs package's node_modules (ignored by git), so the site resolves `vue` from the
 // docs dependencies the way the real site does, and the build cache and output stay out of the repo.
 const scratch = join(docsPackage, "node_modules/.cache");
 
 // `pnpm docs:build` (in `pnpm check` and PR CI) is the production VitePress build. This proves
 // that build fails on a broken page, so the failure shows up before a release deploys the site.
+// The fixture site uses the real site config, so a setting there that hides dead links (such as
+// `ignoreDeadLinks`) fails this test.
 describe("docs build", () => {
   let site: string;
 
@@ -21,6 +24,9 @@ describe("docs build", () => {
     mkdirSync(scratch, { recursive: true });
     site = mkdtempSync(join(scratch, "broken-vitepress-"));
     cpSync(fixture, site, { recursive: true });
+    const configDir = join(site, ".vitepress");
+    mkdirSync(configDir);
+    writeFileSync(join(configDir, "config.mts"), `export { default } from ${JSON.stringify(relative(configDir, siteConfig))};\n`);
   });
 
   afterEach(() => {
