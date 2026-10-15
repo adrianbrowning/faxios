@@ -37,7 +37,8 @@ Every test is TypeScript:
 ## Unit (`unit/`)
 
 - Import lib internals through `#src/*` (mapped to `../lib/src/*` in [tsconfig.json](tsconfig.json)), for example `import mergeConfig from "#src/lib/core/mergeConfig.js";`.
-- Tests that need a real HTTP server start one with `startHTTPServer` from [setup/server.ts](setup/server.ts) and stop it in `finally` (or `afterEach`/`afterAll`). A leaked server hangs Vitest, and the `faxios/test-server-cleanup` lint rule rejects a test that doesn't stop it. Servers bind port 0; `faxios/no-fixed-test-port` rejects a fixed port.
+- Tests that need a real HTTP server start one with `startHTTPServer` from [setup/server.ts](setup/server.ts) and stop it with `stopHTTPServer` in `finally` (or `afterEach`/`afterAll`). A leaked server hangs Vitest, and the `faxios/test-server-cleanup` lint rule rejects a test that doesn't stop it. Servers bind `127.0.0.1` on port 0; `faxios/no-fixed-test-port` rejects a fixed port. `startHTTPServer` rejects on a bind error such as `EADDRINUSE`, and `stopHTTPServer` rejects when the server does not close before its timeout.
+- Use fake timers (`vi.useFakeTimers()`) or a test-held response instead of real sleeps, and an injected `env.fetch` or a local server instead of the network.
 - Keep fixtures next to the tests that use them, for example [unit/adapters/faxios.png](unit/adapters/faxios.png) and [unit/core/_schemaTestHelpers.ts](unit/core/_schemaTestHelpers.ts).
 - Keep each test module under 1,000 lines. Split a large suite by behaviour, as [unit/adapters/fetch/](unit/adapters/fetch/) does (`responses`, `auth`, `cancellation`, `progress`, `size-limits`, ...).
 - Put a prototype-pollution regression next to the component it protects, for example [unit/core/mergeConfig.pollution.test.ts](unit/core/mergeConfig.pollution.test.ts). [unit/prototypePollution.test.ts](unit/prototypePollution.test.ts) keeps only scenarios that cross layers through a full request.

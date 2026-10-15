@@ -2,7 +2,6 @@
  * Combined regression tests (issues 4999, 5028, 7364 + SSRF SNYK-1038255, SNYK-7361793).
  */
 import assert from "node:assert";
-import http from "node:http";
 import type { AddressInfo } from "node:net";
 import { afterEach, beforeEach, describe, it } from "vitest";
 import faxios from "#src/index.ts";
@@ -12,14 +11,22 @@ import type { ExtendedServer } from "../setup/server.js";
 describe("regression", () => {
   describe("issues", () => {
     describe("4999", () => {
-      // Depends on network: https://postman-echo.com
       it("should not fail with query parsing", async () => {
-        const { data } = await faxios.get<{
-          args: { foo1: string; foo2: string; };
-        }>("https://postman-echo.com/get?foo1=bar1&foo2=bar2");
+        const server = await startHTTPServer((req, res) => {
+          res.end(req.url);
+        });
 
-        assert.strictEqual(data.args.foo1, "bar1");
-        assert.strictEqual(data.args.foo2, "bar2");
+        try {
+          const { data } = await faxios.get<string>(
+            `http://localhost:${(server.address() as AddressInfo).port}/get?foo1=bar1&foo2=bar2`,
+            { responseType: "text" }
+          );
+
+          assert.strictEqual(data, "/get?foo1=bar1&foo2=bar2");
+        }
+        finally {
+          await stopHTTPServer(server);
+        }
       });
     });
 
@@ -30,14 +37,12 @@ describe("regression", () => {
         const cookie2 =
           "something-ssr.sig=n4MlwVAaxQAxhbdJO5XbUpDw-lA; path=/; expires=Wed, 12 Apr 2023 12:03:42 GMT; samesite=lax; secure; httponly";
 
-        const server = http
-          .createServer((_req, res) => {
-            res.setHeader("Set-Cookie", [ cookie1, cookie2 ]);
-            res.writeHead(200);
-            res.write("Hi there");
-            res.end();
-          })
-          .listen(0);
+        const server = await startHTTPServer((_req, res) => {
+          res.setHeader("Set-Cookie", [ cookie1, cookie2 ]);
+          res.writeHead(200);
+          res.write("Hi there");
+          res.end();
+        });
 
         const request = faxios.create().use(async (ctx, next) => {
           const res = await next(ctx);
@@ -51,7 +56,7 @@ describe("regression", () => {
           });
         }
         finally {
-          server.close();
+          await stopHTTPServer(server);
         }
       });
     });
@@ -63,12 +68,10 @@ describe("regression", () => {
           return;
         }
 
-        const server = http
-          .createServer((_req, res) => {
-            res.statusCode = 400;
-            res.end();
-          })
-          .listen(0);
+        const server = await startHTTPServer((_req, res) => {
+          res.statusCode = 400;
+          res.end();
+        });
 
         const instance = faxios.create({
           baseURL: `http://localhost:${(server.address() as AddressInfo).port}`,
@@ -86,17 +89,15 @@ describe("regression", () => {
           assert.equal((error as { status: number; }).status, 400);
         }
         finally {
-          server.close();
+          await stopHTTPServer(server);
         }
       });
 
       it("should have status code in faxios error", async () => {
-        const server = http
-          .createServer((_req, res) => {
-            res.statusCode = 400;
-            res.end();
-          })
-          .listen(0);
+        const server = await startHTTPServer((_req, res) => {
+          res.statusCode = 400;
+          res.end();
+        });
 
         const instance = faxios.create({
           baseURL: `http://localhost:${(server.address() as AddressInfo).port}`,
@@ -114,7 +115,7 @@ describe("regression", () => {
           assert.equal((error as { status: number; }).status, 400);
         }
         finally {
-          server.close();
+          await stopHTTPServer(server);
         }
       });
     });
