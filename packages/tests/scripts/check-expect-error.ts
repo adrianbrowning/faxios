@@ -4,12 +4,15 @@
 // the directive's target line once the directive is removed.
 //
 // `node scripts/check-expect-error.ts` (part of `lint:ts`) compiles the workspace roots with
-// tsconfig.check.json and browser with browser/tsconfig.json. module/esm compiles against the
-// installed tarball, which doesn't exist yet when lint:ts runs, so there it only requires a code.
-// `--module` (run by module/esm/tests/expect-error.module.test.ts, after the install) checks the
-// module/esm codes with module/esm's pinned TypeScript: each helper typings.module.test.ts and
-// ts.module.test.ts compile in a temp dir under that fixture's tsconfig, every other file under
+// tsconfig.check.json and browser with browser/tsconfig.json. module/esm and smoke/esm compile
+// against the installed tarball, which doesn't exist yet when lint:ts runs, so there it only
+// requires a code. Two modes check those codes after the installs:
+// `--module` (run by module/esm/tests/expect-error.module.test.ts) checks the module/esm codes
+// with module/esm's pinned TypeScript: each helper typings.module.test.ts and ts.module.test.ts
+// compile in a temp dir under that fixture's tsconfig, every other file under
 // module/esm/tsconfig.json.
+// `--smoke` (run by `lint:ts:smoke` and the ESM smoke CI job) checks the smoke/esm codes under
+// smoke/esm/tsconfig.json, with the TypeScript that `lint:ts:smoke` uses.
 // `--write` adds the current code to directives that have none.
 import { execFileSync } from "node:child_process";
 import { readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
@@ -25,10 +28,12 @@ import type { TypingFixture } from "../module/esm/tests/helpers/typing-fixtures.
 
 const testsDir = resolve(import.meta.dirname, "..");
 const esmTestsDir = join(esmDir, "tests");
+const smokeEsmTestsDir = join(testsDir, "smoke/esm/tests");
 const DIRECTIVE = "// @ts-expect-error";
 const SUFFIX = ".expect-error-check.ts";
 const write = process.argv.includes("--write");
 const moduleMode = process.argv.includes("--module");
+const smokeMode = process.argv.includes("--smoke");
 
 type Directive = { code: string | undefined; index: number; };
 type Source = { directives: Array<Directive>; lines: Array<string>; path: string; };
@@ -119,15 +124,24 @@ function check(tsc: string, project: string, cwd: string, copies: Array<Copy>, l
 
 const besideSource = (source: Source): Copy => ({ source, copy: source.path.replace(/\.ts$/, SUFFIX) });
 
+const workspaceTsc = (): string => createRequire(import.meta.url).resolve("typescript/bin/tsc");
+
 function checkWorkspace(): void {
-  const tsc = createRequire(import.meta.url).resolve("typescript/bin/tsc");
+  const tsc = workspaceTsc();
   check(tsc, "tsconfig.check.json", testsDir, [ "unit", "setup", "eslint-rules", "docs-examples" ].flatMap(root => scan(join(testsDir, root))).map(besideSource));
   check(tsc, "browser/tsconfig.json", testsDir, scan(join(testsDir, "browser")).map(besideSource));
-  for (const source of scan(esmTestsDir)) {
-    for (const directive of source.directives) {
-      if (directive.code === undefined) problems.push(`${where(source, directive)}: name the expected error, "${DIRECTIVE} TSnnnn -- reason" (\`node scripts/check-expect-error.ts --module --write\` adds it once module/esm is installed)`);
+  // Suites that compile against the installed tarball, and the mode that checks them after the install.
+  for (const [ dir, mode ] of [[ esmTestsDir, "--module" ], [ smokeEsmTestsDir, "--smoke" ]] as const) {
+    for (const source of scan(dir)) {
+      for (const directive of source.directives) {
+        if (directive.code === undefined) problems.push(`${where(source, directive)}: name the expected error, "${DIRECTIVE} TSnnnn -- reason" (\`node scripts/check-expect-error.ts ${mode} --write\` adds it once the suite is installed)`);
+      }
     }
   }
+}
+
+function checkSmoke(): void {
+  check(workspaceTsc(), "smoke/esm/tsconfig.json", testsDir, scan(smokeEsmTestsDir).map(besideSource));
 }
 
 function checkModule(): void {
@@ -158,6 +172,7 @@ function checkModule(): void {
 }
 
 if (moduleMode) checkModule();
+else if (smokeMode) checkSmoke();
 else checkWorkspace();
 
 for (const source of changed) writeFileSync(source.path, source.lines.join("\n"));

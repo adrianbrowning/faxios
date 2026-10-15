@@ -200,6 +200,11 @@ jobs:
         working-directory: packages/tests
         run: pnpm exec tsc --noEmit -p smoke/esm/tsconfig.json
 
+      # Each `@ts-expect-error TSnnnn` must still be silencing that error, under the same tsconfig.
+      - name: Check ESM smoke @ts-expect-error codes
+        working-directory: packages/tests
+        run: node scripts/check-expect-error.ts --smoke
+
       - name: Run ESM smoke tests
         working-directory: packages/tests/smoke/esm
         run: pnpm run test:smoke:esm:vitest
