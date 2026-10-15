@@ -46,8 +46,8 @@ const config: FaxiosRequestConfig = {
   xsrfHeaderName: "X-XSRF-TOKEN",
   onUploadProgress: (progressEvent: FaxiosProgressEvent) => {},
   onDownloadProgress: (progressEvent: FaxiosProgressEvent) => {},
-  maxContentLength: 2000,
-  maxBodyLength: 2000,
+  maxContentLength: -1,
+  maxBodyLength: -1,
   validateStatus: (status: number) => status >= 200 && status < 300,
 };
 

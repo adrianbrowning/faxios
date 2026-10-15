@@ -15,8 +15,6 @@ exclude = [
   '^https?://(www\.)?npmjs\.(com|org)/',
 ]
 exclude_path = [
-  # Copied from the axios ecosystem; rewrite or delete it in #188.
-  "ECOSYSTEM.md",
   # Release history inherited from axios, kept as written.
   "packages/lib/CHANGELOG.md",
   "node_modules",

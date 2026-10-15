@@ -53,7 +53,7 @@ The `qs` library is preferable if you need to stringify nested objects, as the `
 
 ## Automatic serialization to URLSearchParams <Badge type="tip" text="New" />
 
-Starting from v0.21.0, faxios automatically serializes JavaScript objects to `URLSearchParams` if the `Content-Type` header is set to `application/x-www-form-urlencoded`. This means that you can pass a JavaScript object directly to the `data` property of the faxios request config. For example when passing data to a `POST` request:
+faxios automatically serializes JavaScript objects to `URLSearchParams` if the `Content-Type` header is set to `application/x-www-form-urlencoded`. This means that you can pass a JavaScript object directly to the `data` property of the faxios request config. For example when passing data to a `POST` request:
 
 ```js
 import faxios from '@gcmdev/faxios';

@@ -1,24 +1,22 @@
-# Upgrade guide
+# Coming from axios
 
-This guide is intended to help you upgrade your project from one version of the framework to another. It is recommended to read the release notes for each major version you are upgrading from/to, as they may contain important information about breaking changes.
+faxios keeps most of the axios request API, but it sends every request with the web-standard `fetch` API and has no adapters or interceptors. This page covers the changes most axios code needs. The [migration guide](https://github.com/adrianbrowning/faxios/blob/main/MIGRATION_GUIDE.md) lists every difference.
 
-## Upgrading from v0.x to v1.x
+### Install and import
 
-### Changes to the import statement
-
-In v1.x, the import statement has been changed to use the `default` export. This means that you will need to update your import statements to use the `default` export.
+Install `@gcmdev/faxios` and import its default export. faxios is ESM only and needs Node 24 or later in Node.js.
 
 ```diff
-- import { faxios } from "@gcmdev/faxios";
+- import axios from "axios";
 + import faxios from "@gcmdev/faxios";
 ```
 
 ### Interceptors are replaced by middleware
 
-`faxios.interceptors` is gone. Register [middleware](/pages/advanced/middleware) with `.use()` instead: code before `await next(ctx)` changes the request through `ctx.config`, and code after it sees the response.
+faxios has no `interceptors`. Register [middleware](/pages/advanced/middleware) with `.use()` instead: code before `await next(ctx)` changes the request through `ctx.config`, and code after it sees the response.
 
 ```diff
-- faxios.interceptors.request.use((config) => {
+- axios.interceptors.request.use((config) => {
 -   config.headers.set("X-Request-Id", crypto.randomUUID());
 -   return config;
 - });
@@ -30,9 +28,9 @@ In v1.x, the import statement has been changed to use the `default` export. This
 
 Request interceptors ran in reverse registration order, so check the order when you convert more than one. See [Migrating from interceptors](/pages/advanced/migrating-from-interceptors) for response interceptors, error handlers, `runWhen`, `eject` and ordering.
 
-### Changes to request headers shape
+### Request headers
 
-In v1.x, the shape of the request headers has been changed to drop the `common` property. This means that you will need to update your code to use the new shape of the request headers as follows:
+Read and set request headers directly on `headers`, not on a `common` group:
 
 ```diff
 - if (request.headers?.common?.Authorization) {
@@ -51,22 +49,20 @@ faxios.defaults.headers["Accept"] = "application/json";
 
 ### Multipart form data
 
-If a request includes a `FormData` payload, the `Content-Type: multipart/form-data` header is now set automatically. Remove any manual header to avoid duplicates:
+If a request includes a `FormData` payload, `fetch` sets `Content-Type: multipart/form-data` with the boundary it encoded the body with, and faxios removes any `Content-Type` you set for it. Drop the manual header:
 
 ```diff
-- faxios.post("/upload", formData, {
+- axios.post("/upload", formData, {
 -   headers: { "Content-Type": "multipart/form-data" },
 - });
 + faxios.post("/upload", formData);
 ```
 
-If you explicitly set `Content-Type: application/json`, faxios will now automatically serialize the data to JSON.
+If you set `Content-Type: application/json` on a `FormData` body, faxios serializes it to JSON instead.
 
 ### Parameter serialization
 
-v1.x introduced several breaking changes to how URL parameters are serialized. The most important ones:
-
-**`params` are now percent-encoded by default.** If your backend expected raw brackets from qs-style encoding, you may need to configure a custom serializer:
+**`params` are percent-encoded.** If your backend expected raw brackets from qs-style encoding, you may need to configure a custom serializer:
 
 ```js check=skip
 import faxios from "@gcmdev/faxios";
@@ -79,22 +75,16 @@ faxios.create({
 });
 ```
 
-**Nested objects in `params` are now serialized with bracket notation** (`foo[bar]=1`) rather than dot notation. If your backend expected dot notation, use a custom serializer.
+**Nested objects in `params` are serialized with bracket notation** (`foo[bar]=1`) rather than dot notation. If your backend expected dot notation, use a custom serializer.
 
-**`null` and `undefined` params** are now handled consistently: `null` values are serialized as empty strings, while `undefined` values are omitted entirely.
+**`null` and `undefined` params are omitted.** `{ a: null, b: undefined, c: "" }` gives `?c=`.
 
 For the full parameter serialization config options, see the [Request config](/pages/advanced/request-config) page.
 
-### Internals no longer exported
+### Config faxios does not support
 
-We have elected to no longer export the internals of faxios. This means that you will need to update your code to only use the public API of faxios. This change was made to simplify the API and reduce the surface area of faxios, allowing us to make changes to the internals without declaring them as breaking changes.
+Transport options such as `adapter`, `httpAgent`, `proxy`, `maxRedirects` and `cancelToken` are not supported: a request that passes one rejects with `ERR_BAD_OPTION`, and the message says what to use instead. See the [config reference](/pages/advanced/request-config) and the [API reference](/pages/advanced/api-reference) for what faxios supports.
 
-Please review the [API reference](/pages/advanced/api-reference) on this site for the latest information on the public API of faxios.
+### Something missing?
 
-### Request config
-
-We have made changes to the request config object. Please review the [config reference](/pages/advanced/request-config) on this site for the latest information.
-
-### Missed breaking changes
-
-This guide is not exhaustive and may not cover all breaking changes. Should you encounter any issue, please [open an issue](https://github.com/adrianbrowning/faxios/issues/new) and say which breaking change it is about.
+Should you find a difference this page does not cover, please [open an issue](https://github.com/adrianbrowning/faxios/issues/new).

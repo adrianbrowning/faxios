@@ -3,12 +3,12 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "5b9a2c1fb6931c1b440e19a3703391eaa933254ce9c05ff7bbfd3a5990669927",
+      "fingerprint": "b445d2ba52a3c8662ab4e3906e7c8c8ab169686240eb1e8487ea67f4b3aefd17",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "3c1ef5f8183bfbd67313b82e8556f2c83495e11e3b39bda2f84b3f2d35f803d7",
+        "MIGRATION_GUIDE.md": "adc906193779e6ef7adadee324ee5a4a711461420eeacdbdcd0d9383edb081b4",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
         "packages/lib/skills/configure-requests/SKILL.md": "2e5616bdfc342aa754da49edecbd2f4e052cd2594d5e88bf41a3f4b2f4771f9c",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
         "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
         "packages/lib/src/lib/adapters/fetch.ts": "dac730893928ede80b3a1b31b1064053a41555a2a13d340326fb3b78927c99b5",
@@ -35,23 +35,23 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
       "outcome": "updated",
-      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/references/plugins.md at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/references/axios-differences.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "1a9030d2feb63c9119ff94d6c177ce781c9811832848321e40a7d13ec85b58b7",
+      "fingerprint": "a82109338e05534734158196b842d765151057a338626c33bd19ab534690cc89",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "3c1ef5f8183bfbd67313b82e8556f2c83495e11e3b39bda2f84b3f2d35f803d7",
+        "MIGRATION_GUIDE.md": "adc906193779e6ef7adadee324ee5a4a711461420eeacdbdcd0d9383edb081b4",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
         "packages/lib/skills/configure-requests/SKILL.md": "2e5616bdfc342aa754da49edecbd2f4e052cd2594d5e88bf41a3f4b2f4771f9c",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "a451ba2fd4adff4ae30d5526ff9f8a5ed8f9d0a7f36bbee0ac7629b2a007ccb9",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
         "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
         "packages/lib/src/lib/adapters/fetch.ts": "dac730893928ede80b3a1b31b1064053a41555a2a13d340326fb3b78927c99b5",
@@ -78,23 +78,23 @@
         "packages/tests/unit/plugins/retry.test.ts": "d1d5b3ab05ed0fcef9d01878a3a2c2a0d94307375b96fc47fce85df47be88abc",
         "packages/tests/unit/plugins/timing.test.ts": "4e14ca2e99a8d22ceada3d3a15839fd6ee4842c957bbc19d72de97d716e05f9c"
       },
-      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
       "outcome": "updated",
-      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/references/plugins.md at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/references/axios-differences.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:knip.json": {
-      "fingerprint": "a70b8948763e2f5852db9478a9798c866e3b5a211d9761fe4a02f475bb12285f",
+      "fingerprint": "364ee11b33138b89bcc634800110567bcd87aceb23128017181061ae39989e4c",
       "snapshot": {
-        "knip.json": "7e5eb4a22809df25fec0c594d1fc216443acc810abcdfb83ed92c8475ea7b6fd"
+        "knip.json": "77eba28bdcbcee1b6bdf4d7b134082930f7d385d2da77873f81c9519b846c846"
       },
-      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
       "outcome": "updated",
-      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "Changed: knip.json at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+        "Changed: knip.json at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
@@ -112,15 +112,15 @@
       ]
     },
     "source:ECOSYSTEM.md": {
-      "fingerprint": "d25f484ec71ed15e301b91c7a281bfcc5f839ce0c85f133af76251cc298e8117",
+      "fingerprint": "4c4fa9ffab43cb31e89d16dbe6df7250ede069d2ee99c54f2f312196c4834f84",
       "snapshot": {
-        "ECOSYSTEM.md": "b40bd7693d283e36b56950d71b23a891402fc9d4d59bfc00a78bc6e0981dab98"
+        "ECOSYSTEM.md": null
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
-      "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "Changed: ECOSYSTEM.md at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: ECOSYSTEM.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:PRE_RELEASE_DOCS.md": {
@@ -136,15 +136,15 @@
       ]
     },
     "source:packages/docs/.vitepress/config.mts": {
-      "fingerprint": "31f79f7da9475dc434d5a7e81603b97dcd6c0ac4fb14f1f4c46c53d8cce59288",
+      "fingerprint": "1310fc35f9044f4c74786a1e71572e2dd84bf596148c02caf856238d4aabe21b",
       "snapshot": {
-        "packages/docs/.vitepress/config.mts": "370068f7fd54171f2355b76b90330de83d18565585deffb63abc1bc4bec6fe72"
+        "packages/docs/.vitepress/config.mts": "02be11f497ff44e854b099abbda2b10e41bb20663ac47827d4ea338c0704ad9a"
       },
-      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
       "outcome": "updated",
-      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "Changed: packages/docs/.vitepress/config.mts at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+        "Changed: packages/docs/.vitepress/config.mts at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/docs/es/pages/advanced/interceptors.md": {
@@ -172,15 +172,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "b31b5d722a371d82f8b5ef2dae119a4a6fcee0d869a794990682c9a0a8b16630",
+      "fingerprint": "09e743673c60bc94e863d2d9be92c230a50bbfbd666b43e6c6cb1adaabe793e3",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "76d309958edf022cb7c3d90f20952541c23898df1e09a6d8810e6d54322a3cca"
+        "packages/docs/pages/advanced/api-reference.md": "18de405e2a3ffe626c3def47c206f0214e982eaf0543a87db2834cd98b5223b1"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
       "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/api-reference.md at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/docs/pages/advanced/api-reference.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
@@ -280,15 +280,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "433ca2966d954634d76a1383f5acaf547e09b988d7b27074247ab2aec2afe800",
+      "fingerprint": "ffddcf370d0b48c7349639f55ed8219cef3e581a83fb83c5cd16d7f4cd6d6b55",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "90fb2e91e599955820c60e86fe402fb1aedb2ebf3bbd1ff57a60122d562b9b72"
+        "packages/docs/pages/advanced/request-config.md": "47c3c33aff0f00baed4dbb948a7e09cd05565c894188f515b9bc55e1d644b167"
       },
-      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
       "outcome": "updated",
-      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
+        "Changed: packages/docs/pages/advanced/request-config.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -352,27 +352,27 @@
       ]
     },
     "source:packages/docs/pages/getting-started/features.md": {
-      "fingerprint": "44e46a1c8f257e7e44b7594fb2bdedf7a9402280d565588c58d79f6c021a5e9e",
+      "fingerprint": "7eacb98834dacfbca5fb2d9c6ebe3c4c7b5a8e51ce8fb4c5f531efa016caab76",
       "snapshot": {
-        "packages/docs/pages/getting-started/features.md": "66aec567c738cc3ff7c9a023f0a35c9d00294e959a53a7f883a4c5f2c1ba9776"
+        "packages/docs/pages/getting-started/features.md": "c3cdfb831eae8532d251dfcf7fdec0d29aa5594ca3fc5c8dc0111a43d64c0578"
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
-      "outcome": "no-change",
-      "reason": "Diff reviewed (M); consistent.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "-L9/+L10: 'Intercept request and response' becomes 'Middleware around every request, with built-in `retry` and `authBearer` plugins'. Agrees with SKILL L193 and L222-245."
+        "Changed: packages/docs/pages/getting-started/features.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/docs/pages/getting-started/upgrade-guide.md": {
-      "fingerprint": "a35bf3a4685422885c3d854f78559d9c2d8401b7448aa65eacef1c18095a4cee",
+      "fingerprint": "5d6c4346ea04a1d8cbf6f92306da40fce1dda114499367ae948555783479aaf8",
       "snapshot": {
-        "packages/docs/pages/getting-started/upgrade-guide.md": "e24b564fb84efd7f6e6719160b0ac00a5bad21ee09b476d0a996a7b38b3c2700"
+        "packages/docs/pages/getting-started/upgrade-guide.md": "7df3fcb39dbb7c4e2391a91711cb270a9059b739da11ca789bbc941f377d4973"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
-      "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "Changed: packages/docs/pages/getting-started/upgrade-guide.md at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: packages/docs/pages/getting-started/upgrade-guide.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/docs/zh/pages/advanced/interceptors.md": {
@@ -388,39 +388,39 @@
       ]
     },
     "source:packages/examples/improved-network-errors.md": {
-      "fingerprint": "c526c8a690744880bcd1ddd42ef6f1d338ed510c9405048261175bf7f62f5b71",
+      "fingerprint": "3c5a450d5d1fc80059df152fb628a7b6a0b25849063404dcc078c90c95501048",
       "snapshot": {
-        "packages/examples/improved-network-errors.md": "a587738e546e49135758a4b0f164295144185dfee0e2e4a67d6d9643736a4caf"
+        "packages/examples/improved-network-errors.md": null
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
-      "outcome": "no-change",
-      "reason": "Diff reviewed (M); consistent.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "-L9/+L11 and -L13/+L15: 'via a Response interceptor' becomes 'via `.use()` middleware… catches the error thrown by `next(ctx)`'. This matches the try/catch-around-next pattern at SKILL L203-209. The custom codes (`ERR_DNS_FAILURE` etc.) are the example's own and come from unchanged context."
+        "Changed: packages/examples/improved-network-errors.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/examples/network_enhanced.js": {
-      "fingerprint": "2b811c8dafbbc0aee34459cebb9737d85269676eac1a6fecc63436a10f86077e",
+      "fingerprint": "b014962dc9ec082797f98efd4310527f6b723b80d30eb67cbf1aa9caed101c45",
       "snapshot": {
-        "packages/examples/network_enhanced.js": "8b05596f2798a1da44b8963aba7a3d7a8deed43f208455b46cf5734351b486ed"
+        "packages/examples/network_enhanced.js": null
       },
-      "head": "cf6f2410db65fea7a0aeb0468a0bbfd737fc036d",
-      "outcome": "no-change",
-      "reason": "Diff reviewed (M); consistent.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "-L9..-L18/+L9..+L16: `client.interceptors.response.use(_, err => throw enhance(err))` becomes `faxios.create(config).use(async (ctx, next) => { try { return await next(ctx) } catch (error) { throw enhanceNetworkError(error) } })`, and the chained instance is returned. Matches SKILL L199-211 and L213."
+        "Changed: packages/examples/network_enhanced.js at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/lib/README.md": {
-      "fingerprint": "cb03b3ba80df6cbf90e0021975ad9e64677b2055f57b83ab3b7cf94b6536a330",
+      "fingerprint": "b58d7381e178723f8468db4af4e92ef427f5b3af0213035609664d95142824b4",
       "snapshot": {
-        "packages/lib/README.md": "7ecc2cf5a0b9871e8659bb9805fcd4b162a4693c10501b20077205d03a1e9b2d"
+        "packages/lib/README.md": "b53486b514ce320ab6bba48cac48c8fab58e3892c6c7434d665bc5e2798815fa"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
       "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "Changed: packages/lib/README.md at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/lib/README.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
@@ -2037,116 +2037,99 @@
       ]
     },
     "source:packages/examples/abort-controller/server.js": {
-      "fingerprint": "df2d47ca7d844642699a68760e54bd8b16bab1cc56d408e45c26862008ce0937",
+      "fingerprint": "3fd0d6f11d7c51a2264236c0a13b1791f9bf0e691daeb130bdee8c53815ce859",
       "snapshot": {
-        "packages/examples/abort-controller/server.js": "86a56eeb3f03df01dd78719fcf845c1745b0b4ab0f5c5775bdd3269f87d759f5"
+        "packages/examples/abort-controller/server.js": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Example server: quotes and brace style only. Not library API.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/examples/abort-controller/server.js",
-        "git diff 01316e10..HEAD: quote and `} catch` -> `}\\ncatch` changes only.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/examples/abort-controller/server.js at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/examples/eslint.config.style.ts": {
-      "fingerprint": "09187af73708e4dacc598ae2905d814f3529f6f5c1785f426c25bfba70bebf9d",
+      "fingerprint": "fc8e742291bf0a0e472977f01211754fb3efa1ae8a61563755dbbab686126d43",
       "snapshot": {
-        "packages/examples/eslint.config.style.ts": "6419aaea12c934c349af2fff2c4410008dd00e9c04dc4c1aced771af17c5f436"
+        "packages/examples/eslint.config.style.ts": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "New examples ESLint style config re-exporting sharedConfig. Lint tooling.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/examples/eslint.config.style.ts",
-        "pnpm --filter @faxios/examples lint passes.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/examples/eslint.config.style.ts at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/examples/eslint.config.ts": {
-      "fingerprint": "43a080aa257c5c4cba73b4f9c3f2e13fbe8b406cca786dc81b03644737e7b1bb",
+      "fingerprint": "1c5f1499d931f2134d9a37c1afb8a0d23b87127b841ca9d240efe1c4ce0f7609",
       "snapshot": {
-        "packages/examples/eslint.config.ts": "0922d9925365b90e225d1c0b4c8abbac4d64de9bf648d032d6114aadc1377014"
+        "packages/examples/eslint.config.ts": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "New examples ESLint config re-exporting sharedConfig. Lint tooling.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/examples/eslint.config.ts",
-        "pnpm --filter @faxios/examples lint passes.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/examples/eslint.config.ts at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/examples/get/server.js": {
-      "fingerprint": "449d2cb0c0895fd4b6b95a51c9438bd019b538e3bd7b7b25ec42cb3d126e2f00",
+      "fingerprint": "bf6c01df0e2cdb007a21dfe42dbd7ec3614f4a09cd2e951f95fd64c1a1b0d8ee",
       "snapshot": {
-        "packages/examples/get/server.js": "6bac6ad690a9c68155532937afe5cbc653cca776886511a18a9cc58a0cc81c81"
+        "packages/examples/get/server.js": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Example server: single to double quotes only. Not library API.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/examples/get/server.js",
-        "git diff 01316e10..HEAD: 17 quote-only line changes.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/examples/get/server.js at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/examples/post/server.js": {
-      "fingerprint": "1781e30909fd5d01558e7d79acc0f80994024d197b69996873fb5e973a18d61e",
+      "fingerprint": "fe19d7f6cd1a750cebc2ce51f09d6460a81d663703d6e4ba97d31c04b5c93d99",
       "snapshot": {
-        "packages/examples/post/server.js": "d6751683a73c8921bad841c7415287af895da609affce428f2633ce85034dbc9"
+        "packages/examples/post/server.js": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Example server: quotes only. Not library API.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/examples/post/server.js",
-        "git diff 01316e10..HEAD: 5 quote-only line changes.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/examples/post/server.js at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/examples/postMultipartFormData/server.js": {
-      "fingerprint": "61e6af08e6c9c59555788660e9fc2d2894a43565fa5895361a13b5c82e84b4b8",
+      "fingerprint": "7a355012b7aea15bdaa787cc5dcb5d292cbf75053bed26404bd414dfd7012555",
       "snapshot": {
-        "packages/examples/postMultipartFormData/server.js": "df6a29428a5c5ebe578f4f2fc27c3980298212a72c64a00246f8963c5800aa14"
+        "packages/examples/postMultipartFormData/server.js": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Example server: quotes only. Not library API.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/examples/postMultipartFormData/server.js",
-        "git diff 01316e10..HEAD: 4 quote-only line changes.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/examples/postMultipartFormData/server.js at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/examples/server.js": {
-      "fingerprint": "42ef131fbe5f2d864a43da195c4cf27942ea7c4b631e45841ef9a1b05681f76f",
+      "fingerprint": "e0e761bddec1d6baa2c45a168edeb20d592e8dc749c143c2f0ca74c581bbfdc5",
       "snapshot": {
-        "packages/examples/server.js": "630c90c80fd9ce299918738c681a1730ca7662bfc37b1750874e4cb253abd90d"
+        "packages/examples/server.js": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Examples dev server: lint style, and three rule fixes: asset regexes replaced by a FAXIOS_ASSETS endsWith lookup, useless `\\/` escape removed, `.then` returns the handler result. Not library API.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/examples/server.js",
-        "Throwaway check: the lookup picks the same asset as the old regexes for all four asset URLs, a non-asset URL and a nested path.",
-        "node --check passes; pnpm --filter @faxios/examples lint passes.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/examples/server.js at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/examples/upload/server.js": {
-      "fingerprint": "9d4b55a1e5a7c8371d34fe18235823ed6ef7a8ab51f83ad06a1cc96e59e23b88",
+      "fingerprint": "3749f530b762a5f66776eec7b50b580fcd86c5001bf68681beea1f1360d6724c",
       "snapshot": {
-        "packages/examples/upload/server.js": "a0835fec44fb442c547f8efb7ebef34e68feb33834950586e979b325a3acf6d4"
+        "packages/examples/upload/server.js": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Example server: quotes only. Not library API.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/examples/upload/server.js",
-        "git diff 01316e10..HEAD: 4 quote-only line changes.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/examples/upload/server.js at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/lib/CHANGELOG.md": {
@@ -2435,58 +2418,51 @@
       ]
     },
     "source:packages/sandbox/client.js": {
-      "fingerprint": "ae09a3b903229fd827286ae3c2aec2d0f9cd394f6431a1e9d3aa3d02971bdefe",
+      "fingerprint": "19078f473ae3265796adfa0f33af5f189bf986048d4290aafaf9ce9e6d864868",
       "snapshot": {
-        "packages/sandbox/client.js": "1fba87d333622827bb4521fccf1b3691201732bdbe5d2ec1c3bc6ec6b9e3329b"
+        "packages/sandbox/client.js": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "`.then(handleSuccess).catch(handleFailure)` chains on the GET and POST calls split across two lines (@stylistic newline-per-chained-call). The tokens are unchanged. Behaviour change: none",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/sandbox/client.js: @@ -14,7 +14,9 @@. Method of checking: no shell or git was available, so I read PR #196 `pr://196/diff/175` (merge-base..HEAD 1b0379cd) instead of `git diff 01316e1 HEAD`",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/sandbox/client.js at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/sandbox/eslint.config.style.ts": {
-      "fingerprint": "d77aa1746d0d747075030525a560a0cc106e205949343c0a5a97035a54fcbc59",
+      "fingerprint": "27baba64b26cf2a272787aec79274a9e2d44cda722443c4d949f1ab766400b15",
       "snapshot": {
-        "packages/sandbox/eslint.config.style.ts": "6419aaea12c934c349af2fff2c4410008dd00e9c04dc4c1aced771af17c5f436"
+        "packages/sandbox/eslint.config.style.ts": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "New sandbox ESLint style config re-exporting sharedConfig. Lint tooling.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/sandbox/eslint.config.style.ts",
-        "pnpm --filter @faxios/sandbox lint passes.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/sandbox/eslint.config.style.ts at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/sandbox/eslint.config.ts": {
-      "fingerprint": "7f5b95e980106e97df3f64f3758321cc6207db008bd014ad268fcbf05b236650",
+      "fingerprint": "03c32638c881cd105b1fdb19c85e6818d72430bc6d4d496575516acd8cb93db8",
       "snapshot": {
-        "packages/sandbox/eslint.config.ts": "0922d9925365b90e225d1c0b4c8abbac4d64de9bf648d032d6114aadc1377014"
+        "packages/sandbox/eslint.config.ts": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "New sandbox ESLint config re-exporting sharedConfig. Lint tooling.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/sandbox/eslint.config.ts",
-        "pnpm --filter @faxios/sandbox lint passes.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/sandbox/eslint.config.ts at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/sandbox/server.js": {
-      "fingerprint": "0f3f5a8fa057aae00a7f444e3fd6389e7541efc329d71bb25ec485bbe0ba9d7f",
+      "fingerprint": "5b8ea58b5d4ab7037ef20debe2104bb46e68b4479ba832678317c059f49519b5",
       "snapshot": {
-        "packages/sandbox/server.js": "93af6e5e79095b04da2b2a2e9c84d90adec0955c048fafb84b2db0090d3473bc"
+        "packages/sandbox/server.js": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "out-of-scope",
-      "reason": "Sandbox server: node:path import moved after node:http, arrow parens, brace style. Not library API.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/sandbox/server.js",
-        "git diff 01316e10..HEAD: import order and formatting only.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/sandbox/server.js at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/tests/browser/cancel.browser.test.ts": {
@@ -2568,15 +2544,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/esm-index.ts": {
-      "fingerprint": "165e8986958b2f2841f56c2fc9208edf5de915ceff2c69a0c8285be063002080",
+      "fingerprint": "6828da75961d04819521919c2a4c2154b3420c98dc9e07bbdaf79d87a73b0f26",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/esm-index.ts": "1902e68c5c5a89d92e1b3bf5e24c5fa9f55523d98571efc997406bd434871abf"
+        "packages/tests/module/esm/tests/helpers/esm-index.ts": "a52d26e0cf818db02e0d61714bcbacd68421c35babd84e2726f40ef19ab5f269"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "Changed: packages/tests/module/esm/tests/helpers/esm-index.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/tests/module/esm/tests/helpers/esm-index.ts at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/tests/module/esm/tests/ts.module.test.ts": {
@@ -3368,15 +3344,15 @@
       ]
     },
     "source:.github/workflows/links.yml": {
-      "fingerprint": "41e9e15b012f2af09d97e19106c141d9a077336202dfbcc5550290a3de584a1a",
+      "fingerprint": "806b993de9f410be3c1ce34cf5a146af438d1f832f34579ff427ff685fe88ce0",
       "snapshot": {
-        ".github/workflows/links.yml": "d322b8cc65c3199c638681a21bb6907d48dd8021ea7c627e7c21e2838e189deb"
+        ".github/workflows/links.yml": "f7bae5e1fba22c194d7d1b92f21f1a0332871b77ec13a949961ae438d4c10cc6"
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
-      "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "Changed: .github/workflows/links.yml at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: .github/workflows/links.yml at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:SECURITY.md": {
@@ -3392,15 +3368,15 @@
       ]
     },
     "source:lychee.toml": {
-      "fingerprint": "6555a91a6d5cce9bf96dc6763c24fafd635da87e1d45c269904e372211985b41",
+      "fingerprint": "c0fe3c4f9430b3dd8a7ec099c16cc4226b80e715320404555b2fbb23775640b3",
       "snapshot": {
-        "lychee.toml": "b3a16307007113b65fd5973d36d5646557672912c3d10fe6b9a66857b0eeabe3"
+        "lychee.toml": "3c46af01cb3b75dbee8c74d8b2c40c67149fc86ddbaef96aaa0ec04bb20bdfb9"
       },
-      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
       "outcome": "updated",
-      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "Changed: lychee.toml at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+        "Changed: lychee.toml at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/docs/pages/misc/security.md": {
@@ -3416,27 +3392,27 @@
       ]
     },
     "source:packages/examples/README.md": {
-      "fingerprint": "2fe352ef195f4b1425f6d082aa8e63a03b13781629977e737407bf2c0e70b999",
+      "fingerprint": "db1a86298a4911e22e510fc8d7d5e590bf16af9de4dafcea6a90b499d2fd7921",
       "snapshot": {
-        "packages/examples/README.md": "35a16731d0dc01ae379ba3e230ce7099e9ab8729e1e1664c2eaa8cf4b48afd88"
+        "packages/examples/README.md": null
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
-      "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "Changed: packages/examples/README.md at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: packages/examples/README.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/sandbox/client.html": {
-      "fingerprint": "37f2a16e59a9cd6786f575c94d8ca062b27fa5f00ba544f3ad421d40946aa108",
+      "fingerprint": "987a140b1298c71e2a08170b95d5084fa41a6cabdd5655860ad5e449e7ed0227",
       "snapshot": {
-        "packages/sandbox/client.html": "5b0828ddab5d10c03959abfb0094cd65720e8b6a9af108e09e4f46e529f69f90"
+        "packages/sandbox/client.html": null
       },
-      "head": "d99d0823130e376a804170960262841265d5d84e",
-      "outcome": "no-change",
-      "reason": "Security-policy and link fixes for #175: repository and advisory links, the @gcmdev/faxios package name, pnpm commands, provenance wording, axios issue links in test comments, and a lychee link check. No API or behaviour the skill teaches changes.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "Changed: packages/sandbox/client.html at d99d0823130e376a804170960262841265d5d84e"
+        "Changed: packages/sandbox/client.html at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:packages/tests/unit/transformResponse.test.ts": {
@@ -3800,15 +3776,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/multipart-form-data-format.md": {
-      "fingerprint": "7be695bc66bf748061752d66226a22147ccb38c1b1596f54116f0d21cca6ff05",
+      "fingerprint": "2e8129626282587725d345d13a002f7f531f5e872e14b220727efbac3f64196e",
       "snapshot": {
-        "packages/docs/pages/advanced/multipart-form-data-format.md": "c2b621ecc54bd0284770d888ba28c143a1610fc752f7c475b368790e3d0bc4ac"
+        "packages/docs/pages/advanced/multipart-form-data-format.md": "6e546f1a0c64b5f2cdfa8c822ce1482179a1f58fdb58152d54916f30ea0100e6"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/multipart-form-data-format.md at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/docs/pages/advanced/multipart-form-data-format.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     },
     "source:.bumpy/formdatatojson-unicode-names.md": {
@@ -5321,6 +5297,210 @@
       "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
       "evidence": [
         "Changed: tests/smoke/esm/smoke.test.js at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+      ]
+    },
+    "source:.bumpy/188-user-docs.md": {
+      "fingerprint": "8eba1db5acbcb0d2ff6a086a59d4583adbd1fcbd0ac84ef56a1058269289371e",
+      "snapshot": {
+        ".bumpy/188-user-docs.md": "2c2eb6817c9409ba6404e77537df9f39a3b697e821b14ffb96cbd3c27a6b6c2e"
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: .bumpy/188-user-docs.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/docs/pages/advanced/cancellation.md": {
+      "fingerprint": "25e924e9373c62a7cc23d414c558d412eee0c57a8dc4dc3d6f04942fbbd2a4bd",
+      "snapshot": {
+        "packages/docs/pages/advanced/cancellation.md": "9cacb80fde6e931387029f50d17579c2130676612e4ad2a30340a3f97f755eef"
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/docs/pages/advanced/cancellation.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/docs/pages/advanced/promises.md": {
+      "fingerprint": "355f7ac73021d110ef0eb684dac84079c2a701cdbcdea05fd02af5761b942597",
+      "snapshot": {
+        "packages/docs/pages/advanced/promises.md": "cb33a444dbcdfe6e19b557a1f546bbe580602b1048dc8383767686279c5046fd"
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/docs/pages/advanced/promises.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/docs/pages/advanced/x-www-form-urlencoded-format.md": {
+      "fingerprint": "eace13c0172015c435081723d2fa900fc2a59b2d4bc6ce5f14a193a73751708c",
+      "snapshot": {
+        "packages/docs/pages/advanced/x-www-form-urlencoded-format.md": "02400e8179ce325bedd0fccb907147d26d6c1d8d200ffa16417590ef3a1e44db"
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/docs/pages/advanced/x-www-form-urlencoded-format.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/docs/pages/getting-started/examples/commonjs.md": {
+      "fingerprint": "58785d3c5e6790545bb0ea86da989445d1215e08b14f1b9676b0aaf899d93547",
+      "snapshot": {
+        "packages/docs/pages/getting-started/examples/commonjs.md": "78572e1ef3c89128b5f88b4bb1abccacb437c1de2c572a6253c45f91d339eebd"
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/docs/pages/getting-started/examples/commonjs.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/docs/pages/getting-started/examples/javascript.md": {
+      "fingerprint": "7e0f916810f10a4939bf62b3d60bb8c249081851e5e087f2eae2852c7c26aa16",
+      "snapshot": {
+        "packages/docs/pages/getting-started/examples/javascript.md": "65c02f146d2f3e4242e9b687be78e65d9889789db1285e7e5413642dfff6ac4e"
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/docs/pages/getting-started/examples/javascript.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/docs/pages/getting-started/first-steps.md": {
+      "fingerprint": "bab3073edf520300f48ec59347cb01a39dd0b38d96010d8aada8cb2364bcb6fc",
+      "snapshot": {
+        "packages/docs/pages/getting-started/first-steps.md": "477454e57a291f36dd7ebc7919d3b8eb7cd0aecf86332d9b0fecaf5a70a4079c"
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/docs/pages/getting-started/first-steps.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/examples/abort-controller/index.html": {
+      "fingerprint": "d58b154f589cf39e6ae652032b6945054cff62ddec2f0633d6b82705cc9e97e3",
+      "snapshot": {
+        "packages/examples/abort-controller/index.html": null
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/examples/abort-controller/index.html at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/examples/all/index.html": {
+      "fingerprint": "c0b39b8ec921a3ed4b9a293d75fbd4066a9fc06dcac452554d90ec6c697d202c",
+      "snapshot": {
+        "packages/examples/all/index.html": null
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/examples/all/index.html at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/examples/amd/index.html": {
+      "fingerprint": "6c1618194bd0f7c9c53da98e5aae7c8cf1393face794fcd7fd39cd1ee3b6e5c3",
+      "snapshot": {
+        "packages/examples/amd/index.html": null
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/examples/amd/index.html at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/examples/get/index.html": {
+      "fingerprint": "f7681aa6d7335bd39a20e27a0221620cd57575460ff999ae8fe91ee3656cd5d0",
+      "snapshot": {
+        "packages/examples/get/index.html": null
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/examples/get/index.html at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/examples/post/index.html": {
+      "fingerprint": "cc4f700ec90f06fecc78103e5ea6bde84a5e8f96c5cdaaa1a1708feca3d90e5c",
+      "snapshot": {
+        "packages/examples/post/index.html": null
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/examples/post/index.html at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/examples/postMultipartFormData/index.html": {
+      "fingerprint": "75adb81fd9922fccc4bbaf1d1eebc1c0daa149b4bab605651476c1018d12ae71",
+      "snapshot": {
+        "packages/examples/postMultipartFormData/index.html": null
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/examples/postMultipartFormData/index.html at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/examples/transform-response/index.html": {
+      "fingerprint": "8c62060c71efc748d686d4fb9b7ad4b81692ba1f189799acef03757368f80a03",
+      "snapshot": {
+        "packages/examples/transform-response/index.html": null
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/examples/transform-response/index.html at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/examples/upload/index.html": {
+      "fingerprint": "d3d31bf3321229b9ba75a9db9ac7d503bb3f49388370e470d9e783bcd0b34d33",
+      "snapshot": {
+        "packages/examples/upload/index.html": null
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/examples/upload/index.html at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/lib/src/lib/adapters/README.md": {
+      "fingerprint": "9388ad5ce96bca0084959e7f1c28ee499d0c184ab9f29b8c378174a7609fc86e",
+      "snapshot": {
+        "packages/lib/src/lib/adapters/README.md": "d19991575bc16dcca1045dd8b64c968ad27731fca27196bd0e6c57a284b1dc4d"
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/lib/src/lib/adapters/README.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+      ]
+    },
+    "source:packages/lib/src/lib/env/README.md": {
+      "fingerprint": "6955dd3f1027749ff46682af93bc916fc56c9bb5dec9371b58ee63717ede931f",
+      "snapshot": {
+        "packages/lib/src/lib/env/README.md": "670906e97551df00720dbd86d158d753a1cfbdef1dde3a37952e2141ca83d16d"
+      },
+      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "outcome": "updated",
+      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "evidence": [
+        "Changed: packages/lib/src/lib/env/README.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
       ]
     }
   }

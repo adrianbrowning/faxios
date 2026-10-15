@@ -20,14 +20,6 @@
       "project": ["**/*.{js,ts,mts,vue}"],
       "ignoreDependencies": ["esbuild"]
     },
-    "packages/examples": {
-      "entry": ["**/*.js"],
-      "project": ["**/*.{js,ts}"]
-    },
-    "packages/sandbox": {
-      "project": ["**/*.{js,ts}"],
-      "ignore": ["client.js"]
-    },
     ".": {
       "entry": [".sandcastle/*.ts"],
       "project": ["**/*.{js,ts,cjs,mjs,mts}"]

@@ -1,10 +1,10 @@
 # Features
 
-faxios is a powerful HTTP client that provides a simple and easy-to-use API for making HTTP requests. It supports all modern browsers and is widely used in the JavaScript community. Here are some of the features that make faxios a great choice for your next project.
+faxios is a TypeScript-first, promise-based HTTP client built on the web-standard `fetch` API. It runs in browsers, Node.js, Deno and Bun with the same API. Here is what it offers.
 
 ## Isomorphic
 
-faxios is a universal HTTP client that can be used in both the browser and Node.js. This means you can use faxios to make API requests from your frontend code as well as your backend code. This makes faxios a great choice for building progressive web apps, single-page applications, and server-side rendered applications.
+faxios is a universal HTTP client that can be used in the browser, Node.js, Deno and Bun. This means you can use faxios to make API requests from your frontend code as well as your backend code. This makes faxios a great choice for building progressive web apps, single-page applications, and server-side rendered applications.
 
 faxios is also a great choice for teams that work on both frontend and backend code. By using faxios for both frontend and backend code, you can have a consistent API for making HTTP requests, which can help reduce the complexity of your codebase.
 
@@ -25,7 +25,7 @@ In addition to Node.js, faxios has Bun and Deno smoke tests that validate key ru
 ## Additional features
 
 - Supports the Promise API
-- [Middleware](/pages/advanced/middleware) around every request, with built-in `retry` and `authBearer` plugins
+- [Middleware](/pages/advanced/middleware) around every request, with built-in [`authBearer`](/pages/advanced/authentication), `forwardTo`, `retry` and `timing` plugins
 - Transform request and response data
 - Abort controller
 - Timeouts
@@ -36,6 +36,6 @@ In addition to Node.js, faxios has Bun and Deno smoke tests that validate key ru
   - URL encoded form (application/x-www-form-urlencoded)
 - Posting HTML forms as JSON
 - Automatic JSON data handling in response
-- Progress capturing for browsers and node.js with extra info (speed rate, remaining time)
-- Compatible with spec-compliant FormData and Blob (including node.js)
+- Download progress in every runtime and upload progress in Node.js, with extra info (speed rate, remaining time)
+- Compatible with spec-compliant FormData and Blob (including Node.js, Deno and Bun)
 - Client side support for protecting against XSRF

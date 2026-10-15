@@ -29,7 +29,7 @@ await faxios.post('https://example.com', form);
 
 ## Automatic serialization to FormData <Badge type="tip" text="New" />
 
-Starting from v0.27.0, faxios supports automatic object serialization to a FormData object if the request Content-Type header is set to multipart/form-data. This means that you can pass a JavaScript object directly to the data property of the faxios request config. For example when passing data to a POST request:
+faxios supports automatic object serialization to a FormData object if the request Content-Type header is set to multipart/form-data. This means that you can pass a JavaScript object directly to the data property of the faxios request config. For example when passing data to a POST request:
 
 ```js
 import faxios from '@gcmdev/faxios';

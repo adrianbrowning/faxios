@@ -232,7 +232,7 @@ try {
 
 The `all` function is a utility function that takes an array of promises and returns a single promise that resolves when all of the promises in the array have resolved. The `all` function is now deprecated in favour of the `Promise.all` method. It is recommended that you use the `Promise.all` method instead.
 
-As of version 0.22.0, the `all` function is deprecated and will be removed in a future release. It is recommended that you use the `Promise.all` method instead.
+The `all` function is deprecated and will be removed in a future release.
 
 ### `spread`
 
