@@ -107,7 +107,9 @@ function redactConfig(config: unknown, redactKeys: ReadonlyArray<string>): unkno
 // start only at a scheme character followed by `:` and two slashes, and the user info stops at the
 // first `/`, so the scan is linear: matching the whole scheme from a word boundary rescanned the
 // text from every letter of a long `a.a.a…` path, which took seconds on a 200 kB message.
-const USER_INFO_IN_TEXT = /([a-z\d+\-.]:[/\\]{2})[^/\\?#\s@]*@/gi;
+// The user info runs through the last `@` before a `/`, `?`, `#` or space (`user:p@ss@host`);
+// each repeat ends at an `@` and none can contain one, so the repeats can't overlap.
+const USER_INFO_IN_TEXT = /([a-z\d+\-.]:[/\\]{2})(?:[^/\\?#\s@]*@)+/gi;
 
 function stripUserInfoInText(text: string): string {
   return text.replace(USER_INFO_IN_TEXT, "$1");
@@ -131,10 +133,7 @@ function serializeCause(cause: unknown, seen: Set<unknown>): SerializedCause | u
   };
 }
 
-/**
- * The code statics on `FaxiosError` (`ERR_*`, `ETIMEDOUT`, `ECONNABORTED`). `ECONNABORTED` is kept
- * for compatibility with axios code that checks it; faxios never raises it.
- */
+/** The code statics on `FaxiosError` (`ERR_*`, `ETIMEDOUT`). */
 export type FaxiosErrorCode = (typeof FaxiosError)[Extract<keyof typeof FaxiosError, `E${string}`>];
 
 class FaxiosError<T = unknown, D = unknown> extends Error {
@@ -151,7 +150,6 @@ class FaxiosError<T = unknown, D = unknown> extends Error {
 
   static readonly ERR_BAD_OPTION_VALUE = "ERR_BAD_OPTION_VALUE";
   static readonly ERR_BAD_OPTION = "ERR_BAD_OPTION";
-  static readonly ECONNABORTED = "ECONNABORTED";
   static readonly ETIMEDOUT = "ETIMEDOUT";
   static readonly ERR_NETWORK = "ERR_NETWORK";
   static readonly ERR_BAD_RESPONSE = "ERR_BAD_RESPONSE";

@@ -92,7 +92,6 @@ export type ResponseType =
   | "text";
 
 export interface TransitionalOptions {
-  clarifyTimeoutError?: boolean | undefined;
   forcedJSONParsing?: boolean | undefined;
   validateStatusUndefinedResolves?: boolean | undefined;
 }
@@ -100,13 +99,16 @@ export interface TransitionalOptions {
 /**
  * A signal faxios can watch: an `AbortSignal` from another realm or a polyfill. faxios listens for
  * its `abort` event, so the listener methods are required; a `signal` without them rejects with
- * `ERR_BAD_OPTION_VALUE`.
+ * `ERR_BAD_OPTION_VALUE`. The listener members are methods, so their parameters are checked
+ * bivariantly and a polyfill typed `addEventListener(type: "abort", …)` is accepted.
  */
 export interface GenericAbortSignal {
   readonly aborted: boolean;
-  addEventListener: (...args: Array<unknown>) => unknown;
+  // eslint-disable-next-line @typescript-eslint/method-signature-style -- see above
+  addEventListener(...args: Array<unknown>): unknown;
   onabort?: ((event: WebEvent) => void) | null;
-  removeEventListener: (...args: Array<unknown>) => unknown;
+  // eslint-disable-next-line @typescript-eslint/method-signature-style -- see above
+  removeEventListener(...args: Array<unknown>): unknown;
 }
 
 /**

@@ -59,8 +59,13 @@ export default function resolveRequestURL(config: FaxiosRequestConfig): string {
     }
   }
 
-  const fullPath: unknown = buildFullPath(own("baseURL"), url, own("allowAbsoluteUrls"), config);
-  if (typeof fullPath !== "string") {
+  const baseURL = own("baseURL");
+  // A truthy non-string baseURL used to fail inside the join with a TypeError.
+  if (baseURL && typeof baseURL !== "string") {
+    throw new FaxiosError("option baseURL must be a string", FaxiosError.ERR_BAD_OPTION_VALUE, internal);
+  }
+  const fullPath = buildFullPath(typeof baseURL === "string" ? baseURL : undefined, url, own("allowAbsoluteUrls"), config);
+  if (fullPath === undefined) {
     throw new FaxiosError("Invalid URL: no url or baseURL given", FaxiosError.ERR_INVALID_URL, internal);
   }
   return buildURL(fullPath, own("params"), own("paramsSerializer"));

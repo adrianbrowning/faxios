@@ -23,10 +23,15 @@ export type Measurement = Entry & {
 };
 
 export const entries: Array<Entry> = [
-  { name: "default", source: "import faxios from \"@gcmdev/faxios\";\nconsole.log(faxios);" },
+  // Budgets sit a little above the measured size, so growth is a deliberate budget change.
+  { name: "default", source: "import faxios from \"@gcmdev/faxios\";\nconsole.log(faxios);", budget: 59 * 1024 },
   // A named root import must not keep the default instance and the request pipeline (#297).
   { name: "isCancel", source: "import { isCancel } from \"@gcmdev/faxios\";\nconsole.log(isCancel);", budget: 1024 },
-  { name: "retry", source: "import { retry } from \"@gcmdev/faxios/plugins/retry\";\nconsole.log(retry);" },
+  { name: "retry", source: "import { retry } from \"@gcmdev/faxios/plugins/retry\";\nconsole.log(retry);", budget: 17 * 1024 },
+  { name: "authBearer", source: "import { authBearer } from \"@gcmdev/faxios/plugins/auth-bearer\";\nconsole.log(authBearer);", budget: 20 * 1024 },
+  { name: "forwardTo", source: "import { forwardTo } from \"@gcmdev/faxios/plugins/forward-to\";\nconsole.log(forwardTo);", budget: 12.5 * 1024 },
+  { name: "timing", source: "import { timing } from \"@gcmdev/faxios/plugins/timing\";\nconsole.log(timing);", budget: 18.5 * 1024 },
+  { name: "definePlugin", source: "import { definePlugin } from \"@gcmdev/faxios/plugins\";\nconsole.log(definePlugin);", budget: 1024 },
 ];
 
 const testsDir = resolve(import.meta.dirname, "..");

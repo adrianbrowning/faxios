@@ -198,7 +198,7 @@ function decideRetry(error: unknown, attempt: number, policy: Policy, config: In
 }
 
 // The executor form: the library's TypeScript lib target has no Promise.withResolvers.
-function wait(ms: number, signal: FaxiosRequestConfig["signal"], config: FaxiosRequestConfig): Promise<void> {
+function wait(ms: number, signal: FaxiosRequestConfig["signal"], config: InternalFaxiosRequestConfig): Promise<void> {
   if (!signal) return new Promise(resolve => setTimeout(resolve, ms));
   let cancel = () => {};
   return raceAbort(signal, () => new Promise<void>(resolve => {

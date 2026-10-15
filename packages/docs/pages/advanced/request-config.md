@@ -318,7 +318,6 @@ The `signal` property allows you to pass an instance of `AbortSignal` to the req
 The `transitional` property allows you to enable or disable certain transitional features. Any key not listed here rejects with `ERR_BAD_OPTION`. The following options are available:
 
 - `forcedJSONParsing`: When `true` _(default)_, faxios parses a string response body as JSON only when `responseType` is unset; an explicit `responseType` such as `'text'` keeps the string. Set to `false` to keep bodies without a `responseType` as strings too.
-- `clarifyTimeoutError`: Accepted for compatibility but has no effect. Timed-out requests always reject with `ETIMEDOUT`.
 - `validateStatusUndefinedResolves`: When `false` _(default)_, an explicit `validateStatus: undefined` behaves like an omitted option, so the instance's or the default validator applies (reject non-2xx). Set to `true` to make it resolve every response status (the behavior before 0.3.0); `validateStatus: null` does that without this flag.
 
 There is no `silentJSONParsing` option any more, and passing it rejects with `ERR_BAD_OPTION`. An explicit `responseType: "json"` always rejects a body that isn't valid JSON (see [`responseType`](#responsetype)); leave `responseType` unset to get the raw string instead.
@@ -445,7 +444,6 @@ const config: FaxiosRequestConfig = {
   signal: new AbortController().signal,
   transitional: {
     forcedJSONParsing: true,
-    clarifyTimeoutError: false,
     validateStatusUndefinedResolves: false,
   },
   responseSchema: z.object({ id: z.number(), title: z.string() }),

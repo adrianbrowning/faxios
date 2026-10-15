@@ -101,14 +101,16 @@ const PARAMS_SERIALIZER_SCHEMA = {
   serialize: validator.validators.function,
 } satisfies Record<keyof ParamsSerializerOptions, ValidatorFn>;
 
-const RESPONSE_TYPES = {
-  arraybuffer: true,
-  blob: true,
-  formdata: true,
-  json: true,
-  stream: true,
-  text: true,
-} satisfies Record<ResponseType, true>;
+// Each responseType, lower-cased, with the Response method the fetch adapter reads it with
+// (`json` is read as text and parsed by transformResponse).
+export const RESPONSE_TYPES = {
+  arraybuffer: "arrayBuffer",
+  blob: "blob",
+  formdata: "formData",
+  json: "text",
+  stream: "stream",
+  text: "text",
+} satisfies Record<ResponseType, string>;
 
 /**
  * Asserts that every own key of a merged request config is a faxios option or a request option an

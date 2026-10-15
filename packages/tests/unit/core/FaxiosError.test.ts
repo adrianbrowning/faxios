@@ -59,7 +59,6 @@ describe("core::FaxiosError", () => {
     }
     expect(Object.hasOwn(FaxiosError, "ECONNREFUSED")).toBe(false);
     expect(Object.hasOwn(FaxiosError, "ERR_FR_TOO_MANY_REDIRECTS")).toBe(false);
-    expect(FaxiosError.from.length).toBe(5);
   });
 
   describe("FaxiosError.from", () => {
@@ -134,9 +133,10 @@ describe("core::FaxiosError", () => {
   });
 
   it("supports static error-code properties", () => {
-    const error = new FaxiosError("My Faxios Error", FaxiosError.ECONNABORTED);
+    const error = new FaxiosError("My Faxios Error", FaxiosError.ETIMEDOUT);
 
-    expect(error.code).toBe(FaxiosError.ECONNABORTED);
+    expect(error.code).toBe(FaxiosError.ETIMEDOUT);
+    expect("ECONNABORTED" in FaxiosError).toBe(false);
   });
 
   it("sets status when response is passed to constructor", () => {

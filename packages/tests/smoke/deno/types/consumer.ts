@@ -41,4 +41,4 @@ export const version: string = VERSION;
 expectType<Equal<typeof combineURLs, (baseURL: string, relativeURL?: string) => string>>(true);
 expectType<Equal<typeof isAbsoluteURL, (url: unknown) => boolean>>(true);
 expectType<Equal<typeof buildURL, (url: string, params?: unknown, options?: unknown) => string>>(true);
-expectType<Equal<typeof buildFullPath, (baseURL: unknown, requestedURL: unknown, allowAbsoluteUrls?: unknown, config?: unknown) => string>>(true);
+expectType<Equal<typeof buildFullPath, (baseURL: string | undefined, requestedURL: string | undefined, allowAbsoluteUrls?: unknown, config?: unknown) => string | undefined>>(true);

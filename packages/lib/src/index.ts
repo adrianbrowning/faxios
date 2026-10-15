@@ -9,7 +9,7 @@ import faxios from "./lib/faxios.ts";
 export { default as Faxios } from "./lib/core/Faxios.ts";
 export { default as FaxiosError, isSchemaValidationError } from "./lib/core/FaxiosError.ts";
 export type { FaxiosErrorCode, SchemaValidationError } from "./lib/core/FaxiosError.ts";
-export { default as Cancel, default as CanceledError } from "./lib/cancel/CanceledError.ts";
+export { default as CanceledError } from "./lib/cancel/CanceledError.ts";
 export { default as isCancel } from "./lib/cancel/isCancel.ts";
 export { default as isFaxiosError } from "./lib/helpers/isFaxiosError.ts";
 export { default as toFormData } from "./lib/helpers/toFormData.ts";
@@ -55,6 +55,7 @@ export type {
   FaxiosRequestTransformer,
   FaxiosResponse,
   FaxiosResponseTransformer,
+  FormDataVisitorHelpers,
   FormSerializerOptions,
   GenericAbortSignal,
   GenericFormData,
@@ -65,6 +66,7 @@ export type {
   ParamsSerializerOptions,
   RawFaxiosRequestHeaders,
   ResponseType,
+  SerializerVisitor,
   TransitionalOptions
 } from "./lib/types.ts";
 

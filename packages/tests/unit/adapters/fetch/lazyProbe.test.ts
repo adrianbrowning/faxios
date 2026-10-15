@@ -8,6 +8,8 @@ describe("fetch adapter probes", () => {
 
   it("probes the runtime on the first getFetch() call, not at import", async () => {
     let constructed = 0;
+    // A deliberate exception to testing behaviour only: "no probe at import" has no other
+    // observable effect, so counting Request constructions is the only way to pin it.
     vi.stubGlobal("Request", class extends Request {
       constructor(...args: ConstructorParameters<typeof Request>) {
         super(...args);

@@ -210,4 +210,11 @@ describe("resolveRequestURL() gives plugins the URL core sends", () => {
   it("throws ERR_INVALID_URL when there is no url and no baseURL", () => {
     assert.throws(() => resolveRequestURL({}), { name: "FaxiosError", code: "ERR_INVALID_URL" });
   });
+
+  it("getUri() throws ERR_INVALID_URL when there is no url and no baseURL", () => {
+    const instance = faxios.create();
+
+    assert.throws(() => instance.getUri(), { name: "FaxiosError", code: "ERR_INVALID_URL" });
+    assert.throws(() => instance.getUri({}), { name: "FaxiosError", code: "ERR_INVALID_URL" });
+  });
 });

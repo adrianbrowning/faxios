@@ -9,6 +9,8 @@ const pendingFetch: MockFetch = async (_input, init) =>
     signal.addEventListener("abort", () => reject(signal.reason), { once: true });
   });
 
+// Real timers on purpose: this smoke run has no fake-timer API it can rely on (bun:test has no timer advancing), and the
+// point is to check the dist build's timeout against the runtime's own setTimeout. The wait is 50 ms.
 describe("timeout", () => {
   test("timeout: 50 with never-resolving fetch mock rejects with ETIMEDOUT", async () => {
     const err = await faxios

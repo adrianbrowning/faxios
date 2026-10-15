@@ -154,11 +154,9 @@ describe("Prototype Pollution Protection", () => {
     // The baseURL branch in buildFullPath only runs when the requested URL is
     // relative (with allowAbsoluteUrls === false an absolute URL throws). An absolute URL would skip
     // baseURL regardless of pollution and would not exercise the gadget. We
-    // therefore issue a relative GET and assert that either:
-    //   - the request fails (no host to resolve) because baseURL is correctly
-    //     absent from the merged config, OR
-    //   - the request is fulfilled without hitting the hijacker.
-    // Critically, hijackHit must always be false.
+    // therefore issue a relative GET with no baseURL of its own: it must fail
+    // (no host to resolve) because the inherited baseURL is ignored, and must
+    // never hit the hijacker.
     it("should not hijack relative-URL requests via Object.prototype.baseURL", async () => {
       let hijackHit = false;
       const hijacker = await startHTTPServer((_req, res) => {
@@ -171,17 +169,8 @@ describe("Prototype Pollution Protection", () => {
       ObjProto.baseURL = `http://127.0.0.1:${hijackerPort}`;
 
       try {
-        let threw = false;
-        try {
-          await ax.get("/api");
-        }
-        catch (_err) {
-          threw = true;
-        }
-        // Either the request fails (desired — no baseURL means no host) or it
-        // resolves, but it must NOT hit the polluted hijacker.
+        await assert.rejects(ax.get("/api"), { name: "FaxiosError", code: "ERR_INVALID_URL" });
         assert.strictEqual(hijackHit, false);
-        assert.strictEqual(threw, true);
       }
       finally {
         await stopHTTPServer(hijacker);

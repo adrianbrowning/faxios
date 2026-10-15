@@ -209,7 +209,6 @@ export type FaxiosInstance<TOpts = {}, TCaps = {}> = {
 /** The default export: an instance plus the static helpers only it carries. */
 export type FaxiosStatic = FaxiosInstance & {
   all: typeof all;
-  Cancel: typeof CanceledError;
   CanceledError: typeof CanceledError;
   default: FaxiosStatic;
   Faxios: typeof Faxios;
@@ -241,9 +240,6 @@ faxios.toFormData = toFormData;
 
 // Expose FaxiosError class
 faxios.FaxiosError = FaxiosError;
-
-// alias for CanceledError for backward compatibility
-faxios.Cancel = faxios.CanceledError;
 
 // Expose all/spread
 faxios.all = all;

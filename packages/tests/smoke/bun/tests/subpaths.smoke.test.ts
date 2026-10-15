@@ -11,7 +11,7 @@ import isAbsoluteURL from "faxios/unsafe/helpers/isAbsoluteURL.js";
 // shipped declarations, so these fail `lint:ts:smoke` when a subpath loses its `.d.ts`.
 type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
 const typeIs = <T extends true>(): T | undefined => undefined;
-typeIs<Equal<typeof buildFullPath, (baseURL: unknown, requestedURL: unknown, allowAbsoluteUrls?: unknown, config?: unknown) => string>>();
+typeIs<Equal<typeof buildFullPath, (baseURL: string | undefined, requestedURL: string | undefined, allowAbsoluteUrls?: unknown, config?: unknown) => string | undefined>>();
 typeIs<Equal<typeof buildURL, (url: string, params?: unknown, options?: unknown) => string>>();
 typeIs<Equal<typeof combineURLs, (baseURL: string, relativeURL?: string) => string>>();
 typeIs<Equal<typeof isAbsoluteURL, (url: unknown) => boolean>>();

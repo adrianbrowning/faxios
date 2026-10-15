@@ -1,3 +1,4 @@
+import { RESPONSE_TYPES } from "../core/assertRequestConfig.js";
 import composeSignals from "../core/composeSignals.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
@@ -5,7 +6,7 @@ import type { HeaderInput } from "../core/FaxiosHeaders.js";
 import prepareRequest from "../core/prepareRequest.js";
 import type { RequestBodies } from "../core/requestDeadline.js";
 import resolveBodyContentType from "../core/resolveBodyContentType.js";
-import { settle } from "../core/settle.js";
+import { statusError } from "../core/statusError.js";
 import { VERSION } from "../env/data.js";
 import { progressReporter } from "../helpers/progressEventReducer.js";
 import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
@@ -17,9 +18,9 @@ import type {
   InternalFaxiosRequestConfig
 } from "../types.js";
 import type { WebRequest } from "../types/web.js";
-import { findKey, getSafeProp, hasOwnInPrototypeChain, hasOwnProp, isAsyncIterable, isFunction, isObject, isReadableStream, isRequest, isResponse, isSpecCompliantForm, isStream, isString, toFiniteNumber } from "../utils.js";
+import { getSafeProp, hasOwnInPrototypeChain, hasOwnProp, isAsyncIterable, isFunction, isObject, isReadableStream, isRequest, isResponse, isSpecCompliantForm, isStream, isString, toFiniteNumber } from "../utils.js";
 import { handleFetchCaughtError } from "./fetch-helpers.js";
-import type { AnyConstructor, AnyResponse, ComposedSignal, FetchContext, FetchRuntime } from "./fetch-helpers.js";
+import type { AnyConstructor, AnyResponse, FetchContext, FetchRuntime } from "./fetch-helpers.js";
 import {
   bodyTooLarge,
   checkDeclaredContentLength,
@@ -77,18 +78,6 @@ const rejectUsedStreamBody = (data: unknown, config: InternalFaxiosRequestConfig
 // body unread, so a later try can still send it. Node streams are checked by their own state.
 const markStreamBodySent = (data: unknown): void => {
   if (isReadableStream(data) || (isAsyncIterable(data) && !isStream(data))) sentStreamBodies.add(data);
-};
-
-// The response, or a promise rejected with its status error, settled now so the adapter can
-// return it after its catch. A throwing validateStatus still throws here, into that catch.
-const settleByStatus = (response: FaxiosResponse): Promise<FaxiosResponse> => {
-  let outcome: Promise<FaxiosResponse> | undefined;
-  settle(value => {
-    outcome = Promise.resolve(value);
-  }, reason => {
-    outcome = Promise.reject(reason);
-  }, response);
-  return outcome!;
 };
 
 const isBrowserRuntime = platform.hasStandardBrowserEnv || platform.hasStandardBrowserWebWorkerEnv;
@@ -186,21 +175,19 @@ type FetchEnv = {
 // `body` is the request body as transformRequest left it; `config.data` stays the caller's value.
 // `url` is the URL dispatch resolved (resolveRequestURL); `config.url` stays the caller's template.
 // `bodies`: the request's stream bodies, which core keeps under the request's signal.
-type FetchAdapter = (config: InternalFaxiosRequestConfig, body: unknown, url: string, bodies?: RequestBodies) => Promise<unknown>;
+type FetchAdapter = (config: InternalFaxiosRequestConfig, body: unknown, url: string, bodies?: RequestBodies) => Promise<FaxiosResponse>;
 
 // Own reads only: a polluted Object.prototype.fetch must never become the transport.
 const readOwn = (obj: unknown, key: string): unknown =>
   typeof obj === "object" && obj !== null && hasOwnProp(obj, key) ? Reflect.get(obj, key) : undefined;
 const ownEnv = (config: unknown, key: keyof FetchEnv): unknown => readOwn(readOwn(config, "env"), key);
 
-const RESPONSE_TYPES = [ "text", "arrayBuffer", "blob", "formData", "stream" ];
-
-// How each responseType reads the response; `stream` hands over the body where the runtime has
-// stream responses.
+// How each lower-cased responseType reads the response (by the Response method RESPONSE_TYPES
+// names); `stream` hands over the body where the runtime has stream responses.
 const buildResolvers = (supportsResponseStream: boolean): FetchRuntime["resolvers"] => {
-  const resolvers: FetchRuntime["resolvers"] = {};
-  for (const type of RESPONSE_TYPES) {
-    resolvers[type] = type === "stream" && supportsResponseStream
+  const resolvers: FetchRuntime["resolvers"] = Object.create(null) as FetchRuntime["resolvers"];
+  for (const [ responseType, type ] of Object.entries(RESPONSE_TYPES)) {
+    resolvers[responseType] = type === "stream" && supportsResponseStream
       ? (res: AnyResponse) => res.body
       : (res: AnyResponse, config: InternalFaxiosRequestConfig) => {
         const method = res[type];
@@ -534,6 +521,13 @@ const buildDownloadStream = (
       DEFAULT_CHUNK_SIZE,
       onChunkProgress,
       (err?: unknown) => {
+        // trackStream rejects a chunk that isn't bytes with a bare ERR_BAD_REQUEST; on the way
+        // down the server sent it, so it is a bad response, and it carries the request's config.
+        if (err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_REQUEST && !err.config) {
+          err.code = FaxiosError.ERR_BAD_RESPONSE;
+          err.config = ctx.config;
+          ctx.request && (err.request = ctx.request);
+        }
         flush && flush();
         received.release(err);
       }
@@ -556,13 +550,13 @@ const sendRequest = async (
   const responseType = resolved.responseType ? String(resolved.responseType).toLowerCase() : "text";
 
   const envFetch = ownEnv(config, "fetch") as FetchFn | undefined;
-  const _fetch: FetchFn = (envFetch || Reflect.get(globalThis, "fetch")) as FetchFn;
+  const fetchFn: FetchFn = (envFetch || Reflect.get(globalThis, "fetch")) as FetchFn;
 
   // Owns the request's cleanup: aborting it on a failure aborts fetch, which releases the
   // connection and any body still being sent or received. `timeout` isn't armed here: the
   // request's signal carries the whole-request deadline (core/requestDeadline.ts).
   const requestController = new AbortController();
-  const composedSignal = composeSignals([ resolved.signal, requestController.signal ]) as ComposedSignal;
+  const composedSignal = composeSignals([ resolved.signal, requestController.signal ])!;
 
   const unsubscribe = composedSignal.unsubscribe!.bind(composedSignal);
   // Set when a stream body keeps the request's signal and deadline in force past the response.
@@ -586,7 +580,8 @@ const sendRequest = async (
   };
   // The response, or the status error, returned after the catch: aborting the request there
   // would error a stream body the status error hands to the caller.
-  let settled: Promise<FaxiosResponse>;
+  let settled: FaxiosResponse;
+  let rejection: FaxiosError | undefined;
 
   try {
     // Everything before the send builds the request, so an unparseable URL that the upload
@@ -620,8 +615,8 @@ const sendRequest = async (
     markStreamBodySent(body);
     ctx.stage = "send";
     let response = await (Request && request
-      ? _fetch(request, fetchInitFor(runtime, { init: requestInit, Request, request }))
-      : _fetch(url, requestInit));
+      ? fetchFn(request, fetchInitFor(runtime, { init: requestInit, Request, request }))
+      : fetchFn(url, requestInit));
     ctx.stage = undefined;
 
     // A fetch Response's headers is a Headers: an iterable of [name, value] pairs.
@@ -646,7 +641,7 @@ const sendRequest = async (
     const isCountedWhileRead = counted !== response;
     response = counted;
 
-    const resolver = runtime.resolvers[findKey(runtime.resolvers, responseType) || "text"]!;
+    const resolver = runtime.resolvers[responseType] ?? runtime.resolvers["text"]!;
     ctx.stage = "body";
     const responseData = await resolver(response, config);
     ctx.stage = undefined;
@@ -656,14 +651,15 @@ const sendRequest = async (
     // A stream body releases the request when it ends; a response without a body has nothing to wait for.
     if (!ctx.streamsResponse || response.body == null) unsubscribe();
 
-    settled = settleByStatus({
+    settled = {
       data: responseData,
       headers: responseHeaders,
       status: response.status,
       statusText: response.statusText,
       config,
       request: request ?? null,
-    });
+    };
+    rejection = statusError(settled);
   }
   catch (err) {
     let error: unknown = err;
@@ -679,6 +675,7 @@ const sendRequest = async (
     endStreamBody?.();
     throw error;
   }
+  if (rejection) throw rejection;
   return settled;
 };
 

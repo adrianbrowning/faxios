@@ -2,7 +2,6 @@
 "use strict";
 
 import FaxiosError from "../core/FaxiosError.js";
-// temporary hotfix to avoid circular references until FaxiosURLSearchParams is refactored
 import type { FormDataVisitorHelpers, FormSerializerOptions, GenericFormData, SerializerVisitor } from "../types.js";
 import type { WebFormData } from "../types/web.js";
 import { forEach, isArray, isArrayBuffer, isBlob, isBoolean, isDate, isFileList, isFunction, isObject, isPlainObject, isSpecCompliantForm, isString, isTypedArray, isUndefined, toArray, toFlatObject } from "../utils.js";
@@ -108,14 +107,14 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, serializerO
   const visitor = (options["visitor"] || defaultVisitor) as SerializerVisitor;
   const dots = options["dots"];
   const indexes = options["indexes"];
-  const _Blob = (options["Blob"] || (globalThis as Record<string, unknown>)["Blob"]) as (new (parts: Array<unknown>) => unknown) | undefined;
+  const BlobCtor = (options["Blob"] || (globalThis as Record<string, unknown>)["Blob"]) as (new (parts: Array<unknown>) => unknown) | undefined;
   const maxDepthOption = options["maxDepth"];
   const maxDepthValid = maxDepthOption === undefined || validator.validators.maxDepth(maxDepthOption);
   if (maxDepthValid !== true) {
     throw new FaxiosError(`option maxDepth must be ${maxDepthValid}`, FaxiosError.ERR_BAD_OPTION_VALUE);
   }
   const maxDepth = maxDepthOption === undefined ? DEFAULT_FORM_DATA_MAX_DEPTH : maxDepthOption as number;
-  const useBlob = typeof _Blob === "function" && isSpecCompliantForm(formData);
+  const useBlob = typeof BlobCtor === "function" && isSpecCompliantForm(formData);
   const stack: Array<unknown> = [];
 
   if (!isFunction(visitor)) {
@@ -141,7 +140,7 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, serializerO
     }
 
     if (isArrayBuffer(value) || isTypedArray(value)) {
-      return new (_Blob as new (parts: Array<unknown>) => unknown)([ value ]);
+      return new (BlobCtor as new (parts: Array<unknown>) => unknown)([ value ]);
     }
 
     return value;

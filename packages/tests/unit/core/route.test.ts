@@ -8,7 +8,7 @@ import { makeSchema, mockFetch } from "./_schemaTestHelpers.js";
 describe("faxios.route()", () => {
   it("returns a builder with all HTTP method helpers", () => {
     const r = faxios.route("/test");
-    for (const m of [ "get", "post", "put", "patch", "delete", "head", "options" ] as const) {
+    for (const m of [ "get", "post", "put", "patch", "delete", "head", "options", "query" ] as const) {
       assert.strictEqual(typeof r[m], "function");
     }
   });
@@ -29,6 +29,7 @@ describe("faxios.route()", () => {
     await r.get()();
     await r.post()();
     await r.put()();
+    await r.query()({ data: { q: 1 } });
 
     assert.strictEqual(captured[0]?.url, "http://localhost/items");
     assert.strictEqual(captured[0]?.method, "GET");
@@ -36,6 +37,8 @@ describe("faxios.route()", () => {
     assert.strictEqual(captured[1]?.method, "POST");
     assert.strictEqual(captured[2]?.url, "http://localhost/items");
     assert.strictEqual(captured[2]?.method, "PUT");
+    assert.strictEqual(captured[3]?.url, "http://localhost/items");
+    assert.strictEqual(captured[3]?.method, "QUERY");
   });
 
   it("pathParamsSchema flows through — required at call-time", async () => {

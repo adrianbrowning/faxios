@@ -3,37 +3,37 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "fc93d6021be8ce978c047e5190a12fac5b2cef6108a8f87c08d1e8d234b2f8d1",
+      "fingerprint": "a6676de1779b6bce0ad4e26e7e5cc915e1ac6bb0b69c5e3e9705a4f3561cb754",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "98c7aaba2216d86056c235988ee196509617b04b4a972666446eb2652d19179f",
+        "MIGRATION_GUIDE.md": "a2ad27a445529243ff03c4721c48fba6cb2fe9ba4962721f2eff1372373ea03b",
         "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
-        "packages/lib/skills/configure-requests/SKILL.md": "8938efda2c72b727f1a75d08eb93b30a97a13896768a4799a40b78573e39196b",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "34e6933c02dda42e9d5712a1bf40c42da63bd5cb5ff08b159da447bccaeee1f3",
+        "packages/lib/skills/configure-requests/SKILL.md": "56a0040056f0a8a4dfbf85233c3e62524aeb6e13471f9951601ef0ebeda158c2",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "e7841075a87fab1a1bdcf7e2deee00b1177165cbc703547e777eaef417704e80",
         "packages/lib/skills/configure-requests/references/plugins.md": "8b9e1a7c90a81e2e07bc4a3184f4ccdfaf9e544a59b7452dcaee715836ea43b4",
-        "packages/lib/src/index.ts": "a75b26acf3788db31932a4b72acaa1435cfdbbb16e5dd8ca427f764dca48e7ff",
-        "packages/lib/src/lib/adapters/fetch.ts": "bf7ecdca77d997c930a6d8dcbf43445a035e2ecd6420730746b2c0670d3fb92e",
-        "packages/lib/src/lib/core/Faxios.ts": "fb078c94d0ae27dbfa41233dca2c081448f242ff4acb1d769ac733b80e23635a",
-        "packages/lib/src/lib/core/FaxiosError.ts": "a2e72238c0efdc9ffd7b661ef0ee78e058e91c01f8c6fee6bf21330041f9504c",
-        "packages/lib/src/lib/core/assertRequestConfig.ts": "c3cd6788c2f7f83299284b9893657c8bb3c7779d6d8d67e99cbd9438d00d3082",
+        "packages/lib/src/index.ts": "fd921c2fe3d94631ecdf54d28b84ce244cd5d51b55045a0f96b13d6d0ed96d3d",
+        "packages/lib/src/lib/adapters/fetch.ts": "8e820867716bdc8de097b4c3ba66d86b9f68f498de7851f4535b5f6597c05f00",
+        "packages/lib/src/lib/core/Faxios.ts": "2b818cf6b061db124977bf912e5fafce3d840af3f9f8a16a38654cea26570c27",
+        "packages/lib/src/lib/core/FaxiosError.ts": "ba6ba0149fd924f9249db4909f3db56020e795e8a697fd2965a9ef04b49e9e34",
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "f97a0f978f16013d10bcd5b4e0b500818991c502fdf917abce9d30fbd331bca7",
         "packages/lib/src/lib/core/assertSignal.ts": "1198024df3bef8e27aca705897c1d9018f6399ede2bb7d4bcb46988861965da5",
-        "packages/lib/src/lib/core/assertTimeout.ts": "9dbee014d42508e9aaf23b1e4f1bb72ca3f2151e5deb24a5506d6ea812ef130a",
-        "packages/lib/src/lib/core/buildFullPath.ts": "87ba6875c52761292f8c59870a8d4fd1183bd25d6a7fc54930cd7da625203337",
+        "packages/lib/src/lib/core/assertTimeout.ts": "f8204e9b0180dc9a720a003b86b01b95b9daa2ea937b8792ceec0cabf8f096ca",
+        "packages/lib/src/lib/core/buildFullPath.ts": "e66967b07c75e6ae631b7294b4fbf35b31f3bc2f3dad75a727c0cbeff65555b8",
         "packages/lib/src/lib/core/composeSignals.ts": "bf39888cd60edf3d826351c25eaf59d2e745c245356bb7f5b6ed99a5f5cdb989",
         "packages/lib/src/lib/core/define.ts": "2939b0b995ccce9df8f5f0257fcae51bfaf4f0dc7ff066b5d78bcd57d42e5e25",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "4564c956ec0823acec07d1581689a81c2c134fd9b3b75f8c74e7c889090f9139",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "bf7d75fa4c079a2e3a872231325ee3ce5a1c54f07a3453b9d5bf3d37b557e4d4",
         "packages/lib/src/lib/core/headerLayers.ts": "23225f4be31a3cd60d6c35bcd776bdc575d357a89f682615bf8f24f2f9891e13",
         "packages/lib/src/lib/core/mergeConfig.ts": "6d42e94727f77f051226c8d328530eb0cb1caad2ccdc690bd9a6a87700ecb567",
         "packages/lib/src/lib/core/requestDeadline.ts": "cb6803d70ca9b4600a32ce580ecef0e609b02fc59de12a51430394bedf54b16d",
-        "packages/lib/src/lib/core/resolveRequestURL.ts": "d6193fc504e83a301988a6d60364a08a810224d06cda36a40c41f2130fc0e187",
-        "packages/lib/src/lib/core/route.ts": "7400795389f1dbe2955f4b5785d468dee7888f277c4369c8f9a49af6c57683fa",
-        "packages/lib/src/lib/faxios.ts": "fbbd81cc005f413d6ce76987495e2b91973d3a8eb52bae7cc1e9c961fe84b3e4",
+        "packages/lib/src/lib/core/resolveRequestURL.ts": "2d890984440b820141b4855b9894c93ec0d9b46ddea759b4f304d45c2a65869e",
+        "packages/lib/src/lib/core/route.ts": "affd3e41358463e3b5f40a1cb661807bbccacdfd5265db649775894b6819a8a5",
+        "packages/lib/src/lib/faxios.ts": "729e970f0b4013c195a6cca36b70774a91fec7c2b329fa180a4f0588311da63a",
         "packages/lib/src/lib/plugins/authBearer.ts": "17a4be430dfe29962f75456784762dddff6598cf69dab5bbfc801142428a9eb6",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
-        "packages/lib/src/lib/plugins/retry.ts": "d86c4095bcf98be861dacd38837c7f35ee55a23351acc33c0f62f6b5c3e59bff",
-        "packages/lib/src/lib/plugins/timing.ts": "1f27720ea0ef52f3065691d0018524bec0dbe8598af4d0c898b369ca2fde1d59",
-        "packages/lib/src/lib/types.ts": "4cf750d2b63eb3e92562de9a1cceca8f102151d9ab041d0730eff04bc796cdf0",
-        "packages/tests/unit/api.test.ts": "42512861aed96b6bb71fc11326c2225fe0906caa370ab76cbfb7727c9b7ca7e1",
+        "packages/lib/src/lib/plugins/retry.ts": "5baf85c4aa520de6ddb7c4b3f7fc13502bec3d1c26b5d04eb833ea660174d8a1",
+        "packages/lib/src/lib/plugins/timing.ts": "91a019a018662213c3129c4b7b09384b49b68e6c6a515155a0ee5f33ba599986",
+        "packages/lib/src/lib/types.ts": "bde2ecb615f42bd7a46ef566e9b198be62d4bed0d4a7962da323932d0c148063",
+        "packages/tests/unit/api.test.ts": "990637f0d66f52ab670c55014c0c14888ddeb09ae80383007f25c0fab557fd80",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "676015494660fe61f56303b21b93cafb78d9ef31e1e1c6210d1cc1a9fc0e86f2",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
@@ -41,48 +41,48 @@
         "packages/tests/unit/plugins/retry.test.ts": "8541b4f51e07a864563876b32b131e7d41f27ad695a184cf9afb080bab1fa453",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/core/assertSignal.ts, packages/lib/src/lib/core/buildFullPath.ts, packages/lib/src/lib/core/composeSignals.ts, packages/lib/src/lib/core/resolveRequestURL.ts, packages/lib/src/lib/core/route.ts, packages/lib/src/lib/helpers/composeSignals.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/core/assertTimeout.ts, packages/lib/src/lib/core/buildFullPath.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/resolveRequestURL.ts, packages/lib/src/lib/core/route.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/lib/src/lib/types.ts, packages/tests/unit/api.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "088f3bd672e0395aa2825645bff1d4eece35145834ae5bf1b4298b354aaf7afb",
+      "fingerprint": "a90bd981ca2f6d1b24f5103686d1b456a7aa3520f2c07c10216138bfb6c130ef",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "98c7aaba2216d86056c235988ee196509617b04b4a972666446eb2652d19179f",
+        "MIGRATION_GUIDE.md": "a2ad27a445529243ff03c4721c48fba6cb2fe9ba4962721f2eff1372373ea03b",
         "_artifacts/domain_map.yaml": "6472bf0fa719fbc9a6bb2fc70343ca2804d53f7a37e185c26930d8bb0283ddfc",
         "_artifacts/skill_spec.md": "d63b29668e7ce92902de02f79cfb5a30fe4435db0d06aa6b588a08574dae6617",
         "_artifacts/skill_tree.yaml": "3feeffaf53d40b2b0ddbf118874eb314cbc208da7669fe05be1763f4bc98b77e",
         "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
-        "packages/lib/skills/configure-requests/SKILL.md": "8938efda2c72b727f1a75d08eb93b30a97a13896768a4799a40b78573e39196b",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "34e6933c02dda42e9d5712a1bf40c42da63bd5cb5ff08b159da447bccaeee1f3",
+        "packages/lib/skills/configure-requests/SKILL.md": "56a0040056f0a8a4dfbf85233c3e62524aeb6e13471f9951601ef0ebeda158c2",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "e7841075a87fab1a1bdcf7e2deee00b1177165cbc703547e777eaef417704e80",
         "packages/lib/skills/configure-requests/references/plugins.md": "8b9e1a7c90a81e2e07bc4a3184f4ccdfaf9e544a59b7452dcaee715836ea43b4",
-        "packages/lib/src/index.ts": "a75b26acf3788db31932a4b72acaa1435cfdbbb16e5dd8ca427f764dca48e7ff",
-        "packages/lib/src/lib/adapters/fetch.ts": "bf7ecdca77d997c930a6d8dcbf43445a035e2ecd6420730746b2c0670d3fb92e",
-        "packages/lib/src/lib/core/Faxios.ts": "fb078c94d0ae27dbfa41233dca2c081448f242ff4acb1d769ac733b80e23635a",
-        "packages/lib/src/lib/core/FaxiosError.ts": "a2e72238c0efdc9ffd7b661ef0ee78e058e91c01f8c6fee6bf21330041f9504c",
-        "packages/lib/src/lib/core/assertRequestConfig.ts": "c3cd6788c2f7f83299284b9893657c8bb3c7779d6d8d67e99cbd9438d00d3082",
+        "packages/lib/src/index.ts": "fd921c2fe3d94631ecdf54d28b84ce244cd5d51b55045a0f96b13d6d0ed96d3d",
+        "packages/lib/src/lib/adapters/fetch.ts": "8e820867716bdc8de097b4c3ba66d86b9f68f498de7851f4535b5f6597c05f00",
+        "packages/lib/src/lib/core/Faxios.ts": "2b818cf6b061db124977bf912e5fafce3d840af3f9f8a16a38654cea26570c27",
+        "packages/lib/src/lib/core/FaxiosError.ts": "ba6ba0149fd924f9249db4909f3db56020e795e8a697fd2965a9ef04b49e9e34",
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "f97a0f978f16013d10bcd5b4e0b500818991c502fdf917abce9d30fbd331bca7",
         "packages/lib/src/lib/core/assertSignal.ts": "1198024df3bef8e27aca705897c1d9018f6399ede2bb7d4bcb46988861965da5",
-        "packages/lib/src/lib/core/assertTimeout.ts": "9dbee014d42508e9aaf23b1e4f1bb72ca3f2151e5deb24a5506d6ea812ef130a",
-        "packages/lib/src/lib/core/buildFullPath.ts": "87ba6875c52761292f8c59870a8d4fd1183bd25d6a7fc54930cd7da625203337",
+        "packages/lib/src/lib/core/assertTimeout.ts": "f8204e9b0180dc9a720a003b86b01b95b9daa2ea937b8792ceec0cabf8f096ca",
+        "packages/lib/src/lib/core/buildFullPath.ts": "e66967b07c75e6ae631b7294b4fbf35b31f3bc2f3dad75a727c0cbeff65555b8",
         "packages/lib/src/lib/core/composeSignals.ts": "bf39888cd60edf3d826351c25eaf59d2e745c245356bb7f5b6ed99a5f5cdb989",
         "packages/lib/src/lib/core/define.ts": "2939b0b995ccce9df8f5f0257fcae51bfaf4f0dc7ff066b5d78bcd57d42e5e25",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "4564c956ec0823acec07d1581689a81c2c134fd9b3b75f8c74e7c889090f9139",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "bf7d75fa4c079a2e3a872231325ee3ce5a1c54f07a3453b9d5bf3d37b557e4d4",
         "packages/lib/src/lib/core/headerLayers.ts": "23225f4be31a3cd60d6c35bcd776bdc575d357a89f682615bf8f24f2f9891e13",
         "packages/lib/src/lib/core/mergeConfig.ts": "6d42e94727f77f051226c8d328530eb0cb1caad2ccdc690bd9a6a87700ecb567",
         "packages/lib/src/lib/core/requestDeadline.ts": "cb6803d70ca9b4600a32ce580ecef0e609b02fc59de12a51430394bedf54b16d",
-        "packages/lib/src/lib/core/resolveRequestURL.ts": "d6193fc504e83a301988a6d60364a08a810224d06cda36a40c41f2130fc0e187",
-        "packages/lib/src/lib/core/route.ts": "7400795389f1dbe2955f4b5785d468dee7888f277c4369c8f9a49af6c57683fa",
-        "packages/lib/src/lib/faxios.ts": "fbbd81cc005f413d6ce76987495e2b91973d3a8eb52bae7cc1e9c961fe84b3e4",
+        "packages/lib/src/lib/core/resolveRequestURL.ts": "2d890984440b820141b4855b9894c93ec0d9b46ddea759b4f304d45c2a65869e",
+        "packages/lib/src/lib/core/route.ts": "affd3e41358463e3b5f40a1cb661807bbccacdfd5265db649775894b6819a8a5",
+        "packages/lib/src/lib/faxios.ts": "729e970f0b4013c195a6cca36b70774a91fec7c2b329fa180a4f0588311da63a",
         "packages/lib/src/lib/plugins/authBearer.ts": "17a4be430dfe29962f75456784762dddff6598cf69dab5bbfc801142428a9eb6",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
-        "packages/lib/src/lib/plugins/retry.ts": "d86c4095bcf98be861dacd38837c7f35ee55a23351acc33c0f62f6b5c3e59bff",
-        "packages/lib/src/lib/plugins/timing.ts": "1f27720ea0ef52f3065691d0018524bec0dbe8598af4d0c898b369ca2fde1d59",
-        "packages/lib/src/lib/types.ts": "4cf750d2b63eb3e92562de9a1cceca8f102151d9ab041d0730eff04bc796cdf0",
-        "packages/tests/unit/api.test.ts": "42512861aed96b6bb71fc11326c2225fe0906caa370ab76cbfb7727c9b7ca7e1",
+        "packages/lib/src/lib/plugins/retry.ts": "5baf85c4aa520de6ddb7c4b3f7fc13502bec3d1c26b5d04eb833ea660174d8a1",
+        "packages/lib/src/lib/plugins/timing.ts": "91a019a018662213c3129c4b7b09384b49b68e6c6a515155a0ee5f33ba599986",
+        "packages/lib/src/lib/types.ts": "bde2ecb615f42bd7a46ef566e9b198be62d4bed0d4a7962da323932d0c148063",
+        "packages/tests/unit/api.test.ts": "990637f0d66f52ab670c55014c0c14888ddeb09ae80383007f25c0fab557fd80",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "676015494660fe61f56303b21b93cafb78d9ef31e1e1c6210d1cc1a9fc0e86f2",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
@@ -90,11 +90,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "8541b4f51e07a864563876b32b131e7d41f27ad695a184cf9afb080bab1fa453",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: _artifacts/skill_spec.md, _artifacts/skill_tree.yaml, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/core/assertSignal.ts, packages/lib/src/lib/core/buildFullPath.ts, packages/lib/src/lib/core/composeSignals.ts, packages/lib/src/lib/core/resolveRequestURL.ts, packages/lib/src/lib/core/route.ts, packages/lib/src/lib/helpers/composeSignals.ts, packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/core/assertTimeout.ts, packages/lib/src/lib/core/buildFullPath.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/resolveRequestURL.ts, packages/lib/src/lib/core/route.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/lib/src/lib/types.ts, packages/tests/unit/api.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:knip.json": {
@@ -148,15 +148,15 @@
       ]
     },
     "source:packages/docs/.vitepress/config.mts": {
-      "fingerprint": "1310fc35f9044f4c74786a1e71572e2dd84bf596148c02caf856238d4aabe21b",
+      "fingerprint": "91464ded680e6ad1c989786f9d7a5cc06028204f6f4e3f8ae8b25b65ac5010ae",
       "snapshot": {
-        "packages/docs/.vitepress/config.mts": "02be11f497ff44e854b099abbda2b10e41bb20663ac47827d4ea338c0704ad9a"
+        "packages/docs/.vitepress/config.mts": "7f774e5b990b4a87822e237ec99dfe043334da159a9415857467337fb0d9cdf5"
       },
-      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/docs/.vitepress/config.mts at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+        "Changed: packages/docs/.vitepress/config.mts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/docs/es/pages/advanced/interceptors.md": {
@@ -184,27 +184,27 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "c2da5b91b904d2f7f7bfec978535a9ffd4314433c0316671ab7ea6088a285ded",
+      "fingerprint": "1e59d435fb0ffff1b6badffabdeabb4e2aa2f1ba4043ed5c20bec49006a6c52f",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "4cfbd252bb39c93200c09070902c5f65503c3ad6068a8c0aa334920af2c723a9"
+        "packages/docs/pages/advanced/api-reference.md": "6acdc2940593a9b1e0d8ffd0ab4fcd618a084e4de8c5cc31c30ba27e26cf4570"
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/api-reference.md at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: packages/docs/pages/advanced/api-reference.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
-      "fingerprint": "2ab972bd5c8f29dd78a41bba395420ea59a2b9def61955af307f3bd77f1a7bb7",
+      "fingerprint": "e648891dd5200f6483ff11ab268fd07b70d127da975b7c6cf6fb900295a27114",
       "snapshot": {
-        "packages/docs/pages/advanced/authentication.md": "fd2327fc03f4f0369fc12e146cb631fd11ca1552f3a3f071b80e48cd4de0a2ed"
+        "packages/docs/pages/advanced/authentication.md": "a4b739fafefd73912bd3ddd12ff26f083d3b9081b49a30d4b9df6b567da804dd"
       },
-      "head": "65f1d369230889444a3251f5c8d746d2a3096b1d",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "skill notes authBearer custom-header redaction and the valid size-limit values",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/authentication.md at 65f1d369230889444a3251f5c8d746d2a3096b1d"
+        "Changed: packages/docs/pages/advanced/authentication.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/docs/pages/advanced/create-an-instance.md": {
@@ -232,15 +232,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/error-handling.md": {
-      "fingerprint": "aa14f716d3babbe8c29de7bd8aefa17ae0ac7b93ca6e532370e36c53791ecad7",
+      "fingerprint": "864daad504ef39ce67e89856504c906f56e529179ea047d4a228394b6abed062",
       "snapshot": {
-        "packages/docs/pages/advanced/error-handling.md": "ed8522611e4de6d1b5520b8b47f3d02a232e023f46aad0580136b4d9f67520cb"
+        "packages/docs/pages/advanced/error-handling.md": "cdf785597a39b4c2dbccf4fab0c0721f113af33f6fa5532f14d28d23eb465762"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/error-handling.md at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/docs/pages/advanced/error-handling.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/docs/pages/advanced/headers.md": {
@@ -292,15 +292,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "8e6df3773a82205b833f345393ffe1ac8329ae1caf4365eb2f3f52c9b7b12636",
+      "fingerprint": "1c5c76f0b87d444a8e31a40511c999e1b920c5f43ee0f7418c8286550c6e3ca7",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "1a8dfdd41ad3bb0eeeaca8c27d008062d84b91eeae568d40da5e3e3f9347468d"
+        "packages/docs/pages/advanced/request-config.md": "0e2c34db9e03a1ecead37399a6f543c1fe96141e42a240a98545b37ec81e73a3"
       },
-      "head": "65f1d369230889444a3251f5c8d746d2a3096b1d",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "skill notes authBearer custom-header redaction and the valid size-limit values",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 65f1d369230889444a3251f5c8d746d2a3096b1d"
+        "Changed: packages/docs/pages/advanced/request-config.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -340,15 +340,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/type-script.md": {
-      "fingerprint": "5f89dc249c6b51f5b9cb39abc2c3ee8e44605342264acdd280d658d2b56cf5f1",
+      "fingerprint": "e5c5bb964ff8d488efc26189e89fdbd1ee942100d1dae4090eb2a5e2a822a815",
       "snapshot": {
-        "packages/docs/pages/advanced/type-script.md": "a8e5edfae948a92197d9f26de4de92503f8fe3100515831f0ddf1c262095a564"
+        "packages/docs/pages/advanced/type-script.md": "8e65968b6408253cbf08a6f86cd40402e6ceaa51c3c0b51d7413d569d06f6f7d"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "Skill now states create() child header precedence, that plugin option defaults are not inherited and are removed on eject, and that params/env merge one level deep",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/type-script.md at fa7ce8ce8e9082ce5828ac74667103547b9a6aaa"
+        "Changed: packages/docs/pages/advanced/type-script.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/docs/pages/getting-started/examples/typescript.md": {
@@ -424,15 +424,15 @@
       ]
     },
     "source:packages/lib/README.md": {
-      "fingerprint": "df7fc7509e9b369c32e36983fcc69fa27afc21a3ef56617fd253c2fbba920a19",
+      "fingerprint": "2c6861db35f9ec52b3e291ec461a0173c23259d5c05d5e0f0f6d071c978e38b6",
       "snapshot": {
-        "packages/lib/README.md": "872cb16e252d4c66ababd6c935ec364f191a56b03a0f7b3511e31a3d187bfeaa"
+        "packages/lib/README.md": "74a111e24dcd1e9791d56c7995fa280ebe532d9282e5fcd2746be2dbe3b7c34d"
       },
-      "head": "32234c458f13a175aa56a692ac189f4129775038",
-      "outcome": "no-change",
-      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/lib/README.md at 02bc02539714e48c32c881c43720b5d34bb375f7"
+        "Changed: packages/lib/README.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
@@ -625,15 +625,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/route.md": {
-      "fingerprint": "7b8d26fe0fab0d44f40d6818928876041da1af3f7abab4ffba4c5bf228977b4b",
+      "fingerprint": "c4448e11d909c558010d05751cb8c0b3e8e83656e9267716d394e148482faa51",
       "snapshot": {
-        "packages/docs/pages/advanced/route.md": "547e5d3ff3127ea27a6d8cf31295bc07bba231771cba268c6f426b3566351987"
+        "packages/docs/pages/advanced/route.md": "4d1c1a2dd26e8e4e5492f30db7c455919179d23d1d7cf129e8831d302beb586a"
       },
-      "head": "0d3c421862f3cab417d950f0075f471a9a99320a",
-      "outcome": "no-change",
-      "reason": "route.md gains the matching wiring sentence; SKILL.md already covers route() with define().",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "route.md line 18 diff only."
+        "Changed: packages/docs/pages/advanced/route.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/unit/core/define.test.ts": {
@@ -1817,15 +1817,15 @@
       ]
     },
     "source:.bumpy/_config.json": {
-      "fingerprint": "dadd79288e34839b8885dac280a7b492a9136c00837631e20ffae943ce553a9e",
+      "fingerprint": "3d119a2cc0b2f7547bdfaeb5481979c5cce6c87ef45d7acb468ddba359d6008b",
       "snapshot": {
-        ".bumpy/_config.json": "e40e62ce680881c8b51ade1b26b764ddb38d8148a496ca39f8eedb8b80727ecc"
+        ".bumpy/_config.json": "bca412e5e1f1c6f3abfda1e0e675d194d75eab034b431eabe6695c2fc67750de"
       },
-      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
-      "outcome": "no-change",
-      "reason": "bumpy config only: the GitHub changelog formatter lists the maintainer as an internal author, so entries stop thanking them. No library API or skill guidance changes.",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: .bumpy/_config.json at 465e8cdf20055c7da0786b97229d7d41d8bf030a"
+        "Changed: .bumpy/_config.json at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:.bumpy/bumpy-release-tooling.md": {
@@ -1917,15 +1917,15 @@
       ]
     },
     "source:.github/workflows/release.yml": {
-      "fingerprint": "1f783797e7fafec6cf965cae205c929db40f97b9329efa0443c20337fabecf55",
+      "fingerprint": "a781a9a5af3b290b4ea52326bbfb5d217bee0b9b6908a66da6d4a13d40575e82",
       "snapshot": {
-        ".github/workflows/release.yml": "7e4a3bdc3961660546ab7ae7a26785fd44e94b746ad36c896bf6bf49541e569a"
+        ".github/workflows/release.yml": "bfb3806f0e7486bf42e23c1c4290b34349033cdbc128b399a58a133a399d1672"
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: .github/workflows/release.yml at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: .github/workflows/release.yml at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:COLLABORATOR_GUIDE.md": {
@@ -1953,15 +1953,15 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "7dd65b593c58e88a3501c354af9374a5e5bff0f841d9b0a5fd7475f0b91adc95",
+      "fingerprint": "ff774921433e87d9782e64db8df2d7701ffc9dfc0db72743db4c639b9fca2b46",
       "snapshot": {
-        "THREATMODEL.md": "64c79aa8a7ce435e3d092b43a6b5971d8ae4caba4690659fba18251a647cad98"
+        "THREATMODEL.md": "71fe4eb23e33a3ae2e8f630345343c9c7306ff454875425b407d9a1316303271"
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: THREATMODEL.md at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: THREATMODEL.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/docs/.vitepress/theme/index.ts": {
@@ -2192,51 +2192,51 @@
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
-      "fingerprint": "7fb23e3acbe0b20ca644f27817d2cba5f8c601fc26c4e4d45a5cd16eccf07d2a",
+      "fingerprint": "6a8e7ee7211b533b2aa975d172b6f6556de66fbedaa01ff5d0faa0078eee0a70",
       "snapshot": {
-        "packages/lib/src/lib/adapters/fetch-helpers.ts": "9ae26383b53136d15e3fe74d6e98d2ca2de88ec6beac611ecaf11f61b71acaf1"
+        "packages/lib/src/lib/adapters/fetch-helpers.ts": "4a6a3afdf88ac8bac67d83d42ecd0e457bdb31dfcce7e354ca1ab258ed7c91e7"
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/lib/src/lib/cancel/CanceledError.ts": {
-      "fingerprint": "5c1f947aec6253ab11e97e3d3e467df726bfc6586ca880d17978d6923751cb72",
+      "fingerprint": "b01c69a7c01cc25831fa9b8ceb345f199ba00a7b1fc96cb36e69e364adf5f2d0",
       "snapshot": {
-        "packages/lib/src/lib/cancel/CanceledError.ts": "dcaea2d3dcd6689ee8337df011202dea48ab9972f78a48ba48cefeffd8f2f24e"
+        "packages/lib/src/lib/cancel/CanceledError.ts": "ab96833d6cf3320d79b23b440018d04e8745de58c2465e00e1f56db8e6f96972"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
-      "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/lib/src/lib/cancel/CanceledError.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/lib/src/lib/cancel/CanceledError.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/lib/src/lib/core/FaxiosHeaders.ts": {
-      "fingerprint": "0e2397b2ded575ca029da82fb3d5797c045825286fc81aa734a758f152468d4b",
+      "fingerprint": "696f0941dc3b0765004c999e8343955236d713d7211298a3b7ab4933d2514a7f",
       "snapshot": {
-        "packages/lib/src/lib/core/FaxiosHeaders.ts": "340984095be60f041210726aa6ff1a64b51d214dc7f189a78611472c78d58c38"
+        "packages/lib/src/lib/core/FaxiosHeaders.ts": "caddbbf676dd0a09e503b7f8f775e28f2ed72490a0a366f8b0003a02f58a20ae"
       },
-      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
+        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
-      "fingerprint": "becf0d70155a9ddb960b9ecae8bb54265e827c8361e3a9212631dac44f2c654a",
+      "fingerprint": "f9c2bcb87f6491f05f5d68e87950691b47cb95f12cf307c848686c88a301f162",
       "snapshot": {
-        "packages/lib/src/lib/core/prepareRequest.ts": "98bee95df776df274242651b47d5de39fdb579dd5c8b173ba3de91044f60d9ac"
+        "packages/lib/src/lib/core/prepareRequest.ts": "64cbf8fdd8ad88bf93a632e42574364051b72a4e92ce1075fd7429294e56f1ef"
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/prepareRequest.ts at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/lib/src/lib/core/transformData.ts": {
@@ -2349,15 +2349,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/toFormData.ts": {
-      "fingerprint": "336f3a7eeeb0526e4bb1d423961779d757dc3f64d329e5c3925a0e7e22e14a30",
+      "fingerprint": "af1e94cd9456f9b9bc585bf415ae14d3f0b657bbde0794d244b4fb56609571bc",
       "snapshot": {
-        "packages/lib/src/lib/helpers/toFormData.ts": "ea02f70d8c7eb5c587cbfe3d4540bc91c987ad72267bb37aec5c93c5423bc26a"
+        "packages/lib/src/lib/helpers/toFormData.ts": "a32f6e91dfc8dcdbc7575c7c3de9d2d4b5f74c80dcf06fbc930b9ff603f490db"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/toFormData.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
+        "Changed: packages/lib/src/lib/helpers/toFormData.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/lib/src/lib/helpers/trackStream.ts": {
@@ -2523,15 +2523,15 @@
       ]
     },
     "source:packages/tests/eslint.config.ts": {
-      "fingerprint": "c9c1c6ea1cf48c543b2800fa22aaf74a6b921b02aae0c94825fefc27c889fd85",
+      "fingerprint": "7cdbc9ab3f30e99ef48294728f98bf157e801c1f704fa5332b00b25d1164cd3c",
       "snapshot": {
-        "packages/tests/eslint.config.ts": "0a657291b7aa5c717d6507cc7c12d1ef4f5d29ece23839c14a3a0a57240f3d30"
+        "packages/tests/eslint.config.ts": "e7bd455c206bfca8e2fb872c63ca446619f11be2653bbe64766a5ffa24484942"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/eslint.config.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
+        "Changed: packages/tests/eslint.config.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/esm-functions.ts": {
@@ -2707,15 +2707,15 @@
       ]
     },
     "source:packages/tests/unit/axiosHeaders.test.ts": {
-      "fingerprint": "eb51bfb04d9f816c0244b01e3412bcd228edda71dd3e8e29477444a6802ca352",
+      "fingerprint": "3a16087f5dff20ee5263a33cd96961963501a8ed11fe4f93d7ed684f5eb98a10",
       "snapshot": {
-        "packages/tests/unit/axiosHeaders.test.ts": "b5073aee7f4ce5c4eaf00f5f597071b7e06e6afda7734d9e5e8394c048208a6d"
+        "packages/tests/unit/axiosHeaders.test.ts": "c9cfab698994392824e2508f57907f57fdbe99d80dcc22d999b9a25065e1aa54"
       },
-      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/unit/axiosHeaders.test.ts at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
+        "Changed: packages/tests/unit/axiosHeaders.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/unit/cancel/canceledError.test.ts": {
@@ -2745,15 +2745,15 @@
       ]
     },
     "source:packages/tests/unit/core/FaxiosError.test.ts": {
-      "fingerprint": "064be2b5427cb11197070032e60c76baa5806fcf1ef6c10ef9af14b7ad2999c3",
+      "fingerprint": "b6f2fc60daca482e29f572e05c9d899a2835b0486470718f70afad1bb5439db9",
       "snapshot": {
-        "packages/tests/unit/core/FaxiosError.test.ts": "be7dd7db9f6ea7b5f967b1b137d07bd72a656664412c81cb6911bb13375ab2ef"
+        "packages/tests/unit/core/FaxiosError.test.ts": "92fc25008d985d1d5e4b679698c037506555b33339c631ab25ee02ef782acd28"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/unit/core/FaxiosError.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/tests/unit/core/FaxiosError.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/unit/core/buildFullPath.test.ts": {
@@ -2806,15 +2806,15 @@
       ]
     },
     "source:packages/tests/unit/core/mergeConfig.test.ts": {
-      "fingerprint": "2dbc1bcebd46363191282bdebd1005946681eb62800cb2d01d715d38c25c3e49",
+      "fingerprint": "f7898cd72550bae3da477961a4be62c3e0f58f14ed10eee762f32517978e8b18",
       "snapshot": {
-        "packages/tests/unit/core/mergeConfig.test.ts": "cb2d9bbb9b8532db7b3f9d423f2bdc28df04eaef5ada0faac4e9660694368f80"
+        "packages/tests/unit/core/mergeConfig.test.ts": "bb3fbf61079f3aefb25f1762eb1c97ea29d579ccadb68b28a95b8aa1f4c5d37f"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/unit/core/mergeConfig.test.ts at fc407621c60a552cd012e910401add6d8e8e8807"
+        "Changed: packages/tests/unit/core/mergeConfig.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/unit/core/methodHeaderGroups.test.ts": {
@@ -2891,15 +2891,15 @@
       ]
     },
     "source:packages/tests/unit/core/route.test.ts": {
-      "fingerprint": "c33118b6f6cee061bd58dbf6e5dbce82573a07af07973c19e358d0196cec433a",
+      "fingerprint": "b48087e1ae3add66e519833fc00f810391dd277d8676eb826acff400da9daf62",
       "snapshot": {
-        "packages/tests/unit/core/route.test.ts": "61fa135d30d7420b3637eb8ee108af14934925e14e48df35005f5496de5382a0"
+        "packages/tests/unit/core/route.test.ts": "d67dc589fab75ff674d003a21a39d8884a89bfabdcedfe10382cc4eefeb20752"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "Skill now describes route() merging and string headers under group names",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/unit/core/route.test.ts at fea06afc49b9161235087252789c1626cab7179c"
+        "Changed: packages/tests/unit/core/route.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/unit/core/transformData.test.ts": {
@@ -3013,15 +3013,15 @@
       ]
     },
     "source:packages/tests/unit/prototypePollution.test.ts": {
-      "fingerprint": "4825e8673ee6e88f18fb99ae7fc5da931d35372292a43a2da39e50bad1ad60f5",
+      "fingerprint": "6524a542eb2e3012186cab5d2b001282501befea85e1db37053c176103197ae5",
       "snapshot": {
-        "packages/tests/unit/prototypePollution.test.ts": "6410fb54f24e13f0998da94e11eda8c16879f052a3c6c6c786d752bedcd4556b"
+        "packages/tests/unit/prototypePollution.test.ts": "11abbc822832e15837d97555914fa8c05a0d5c64ded27f9d95dbc72be121011e"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
-      "outcome": "no-change",
-      "reason": "test-only changes to the unit suite and its server helper; the skill teaches nothing about them",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/unit/prototypePollution.test.ts at 6b03ffb1d4b599bad6db4a72dd32418fa89afc69"
+        "Changed: packages/tests/unit/prototypePollution.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/unit/query.test.ts": {
@@ -3307,17 +3307,15 @@
       ]
     },
     "source:.github/workflows/verify-build-reproducibility.yml": {
-      "fingerprint": "3c3a3b1308de5fe752b700e42c1ddfcf735cc34dcdd48fb8c2a16b18969320da",
+      "fingerprint": "cbf7ccf017ad9aee498952d0b0be5b6565e162973e70575b3aa1498275b43572",
       "snapshot": {
-        ".github/workflows/verify-build-reproducibility.yml": "3d7012c98477e495a17dc7553b49118cad7627a265a34009fb3aa6679a208b14"
+        ".github/workflows/verify-build-reproducibility.yml": "10ee171a24176d4ceab8a3c7b2f46d65a7de694c979e13e17c08de77e03fcdd7"
       },
-      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
-      "outcome": "out-of-scope",
-      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "git diff HEAD -- .github/workflows/verify-build-reproducibility.yml",
-        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
-        "zizmor 1.30.1 --offline: no new findings for this file."
+        "Changed: .github/workflows/verify-build-reproducibility.yml at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:.github/workflows/links.yml": {
@@ -3561,15 +3559,15 @@
       ]
     },
     "source:packages/tests/unit/requestBodyContentType.test.ts": {
-      "fingerprint": "a58257d02b62c516467e819a4676343470638a886b52d98745d24be6624d819f",
+      "fingerprint": "56efc8fc8f97461bed742e44634325ccbbb73f41d4d263992fc8a26a1a3cdcb7",
       "snapshot": {
-        "packages/tests/unit/requestBodyContentType.test.ts": "b91a5b6e8a84a1d3cfc308a67a2f8870f290a5d740147a8806bb5b0f612dc952"
+        "packages/tests/unit/requestBodyContentType.test.ts": "260d91e19d1625b1626b93bed93e1a82ac4875a65adac360fb7c0bc5aa7f9250"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "SKILL.md now says the fetch init body member is null in Node/Deno and undefined in Bun, chosen by a one-time probe",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/unit/requestBodyContentType.test.ts at 4ea5dad1bc2c3a38a1f98321274dad54c22f3ec8"
+        "Changed: packages/tests/unit/requestBodyContentType.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:.bumpy/toformdata-per-call-state.md": {
@@ -3909,15 +3907,15 @@
       ]
     },
     "source:packages/tests/smoke/deno/types/consumer.ts": {
-      "fingerprint": "27dcd3d68468439ad22864b638c0c2f0bc6a94d8d707903e2ff96bdab0831968",
+      "fingerprint": "e66028619b7612200e44d5a7665e47274a253a77408500f6e6b28318c370bf1d",
       "snapshot": {
-        "packages/tests/smoke/deno/types/consumer.ts": "111d8aa575c3f3270d795eacc4c744d6286e0ecd4575a39948a26061ee276f9f"
+        "packages/tests/smoke/deno/types/consumer.ts": "c952bc047e5b3aedc8352062abaa749c12b6c56f8e25cbda393b42e0ca55402b"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/smoke/deno/types/consumer.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+        "Changed: packages/tests/smoke/deno/types/consumer.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:.bumpy/middleware-missing-response.md": {
@@ -3981,15 +3979,15 @@
       ]
     },
     "source:packages/tests/unit/core/getUri.test.ts": {
-      "fingerprint": "c11b2fd8ffbeedb8545376a4b9ab6e9caf32e0a512e02f7afe0903d5cc665203",
+      "fingerprint": "040836d89ecce94d104b4f118bbc79fc32d5ee34384783c3e873a2c640909acd",
       "snapshot": {
-        "packages/tests/unit/core/getUri.test.ts": "1d75332072539894bf26f39a7af43a50cc1b1a335a58a75762b1388c17519688"
+        "packages/tests/unit/core/getUri.test.ts": "f56be1a225983ca1611f44e8cb5968736db54b9bcf6d6751f441e79e75be5192"
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/unit/core/getUri.test.ts at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: packages/tests/unit/core/getUri.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:.bumpy/abort-during-async-schema.md": {
@@ -4029,15 +4027,15 @@
       ]
     },
     "source:packages/lib/src/lib/cancel/canceledFromSignal.ts": {
-      "fingerprint": "242b2aa4201e608fe7fc8591ba3a843e79924e1b9ee32a3bf7af391564edd308",
+      "fingerprint": "75aada75e54befe67756f4fa4a12f99576833100da7ae8fc0d67070849f1c884",
       "snapshot": {
-        "packages/lib/src/lib/cancel/canceledFromSignal.ts": "539e06b5daa4b6989dce87612d6d28137f672d0b6a514f77351c407b17c91cfa"
+        "packages/lib/src/lib/cancel/canceledFromSignal.ts": "8698e8258a1701a34fcdbe7db17f3d09a24e47aa1d602091808664936ca042b9"
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/lib/src/lib/cancel/canceledFromSignal.ts at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: packages/lib/src/lib/cancel/canceledFromSignal.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/lib/src/lib/core/assertTimeout.ts": {
@@ -4053,15 +4051,15 @@
       ]
     },
     "source:packages/tests/unit/core/cancellation.test.ts": {
-      "fingerprint": "5eb87f65fa9ef31270fce97b795a0f21191dcaf9ed7dea5cf42cc36d2fd7b1fd",
+      "fingerprint": "391edb672074e40f0b6f7b240e41715517b77b1509f90801195092e736bd13f6",
       "snapshot": {
-        "packages/tests/unit/core/cancellation.test.ts": "674e5952bedc09a16413bd9c6c743c9b16e3e2f626e633047110f27c3bb7e93c"
+        "packages/tests/unit/core/cancellation.test.ts": "79172c0da5f44375641a9f541b708cad9d1d66f4db26f63c2f49acdeeff59f43"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/unit/core/cancellation.test.ts at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
+        "Changed: packages/tests/unit/core/cancellation.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:.bumpy/basic-auth-utf8-username.md": {
@@ -4317,15 +4315,15 @@
       ]
     },
     "source:packages/lib/src/lib/defaults/transitional.ts": {
-      "fingerprint": "d8190f9eb110bc8be7f618ec17597f3edeacf3e7fe96960b774e0084b6e05aee",
+      "fingerprint": "5778177deb259c71fb00d628b109a6d6a7d7781d973e101de92b19a1056e50ad",
       "snapshot": {
-        "packages/lib/src/lib/defaults/transitional.ts": "c31fe256b87d121eab0973ba2e0b0b27c54db62a0968503a965ba719186a3d1a"
+        "packages/lib/src/lib/defaults/transitional.ts": "65d14389c93f1eefdca3b369d8765a384da9ab15aaca569f3e7d4fb902294077"
       },
-      "head": "a07985125c27956a1d106702007aa65f535066b6",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/lib/src/lib/defaults/transitional.ts at a07985125c27956a1d106702007aa65f535066b6"
+        "Changed: packages/lib/src/lib/defaults/transitional.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/lib/src/lib/helpers/stripUserInfo.ts": {
@@ -4377,15 +4375,15 @@
       ]
     },
     "source:packages/tests/browser/xsrf.browser.test.ts": {
-      "fingerprint": "9d0a630f3f819fe7d5a7e39e6bc029b5dcaa99e34db041035d3f784ab16a8299",
+      "fingerprint": "40a2cb969f210e74be148564969b5da29bc2a57d252983bf27539426dedaa0b1",
       "snapshot": {
-        "packages/tests/browser/xsrf.browser.test.ts": "115c70b98f388d53ee595288cc4c8309e9aa06b31d11d7d9e3dcf1133268e2a9"
+        "packages/tests/browser/xsrf.browser.test.ts": "f9979d6c9fb49038fddcf71b2d483cdf9129c4797ca0a0675ca93bb0fdcbc8f1"
       },
-      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/browser/xsrf.browser.test.ts at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
+        "Changed: packages/tests/browser/xsrf.browser.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/smoke/bun/tests/cancel.smoke.test.ts": {
@@ -4449,15 +4447,15 @@
       ]
     },
     "source:packages/tests/smoke/bun/tests/timeout.smoke.test.ts": {
-      "fingerprint": "f8f573cf41d7a055cbc3813e12b9e2ea8bc8ee450bb0a65aa4d80efec3f1faf3",
+      "fingerprint": "a0d14660b5b621f85fbc81aac873a4bd970e6dce01adf6a2e5b115555433f8fb",
       "snapshot": {
-        "packages/tests/smoke/bun/tests/timeout.smoke.test.ts": "f1dabcf4bb992321e58adcd70041b11841ee730293b43bda6ebe9edee7e2a4ae"
+        "packages/tests/smoke/bun/tests/timeout.smoke.test.ts": "57e83600df261fd2d844da5b05f03153ee487a43a3a6392eb06ad74e30bb6044"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/smoke/bun/tests/timeout.smoke.test.ts at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: packages/tests/smoke/bun/tests/timeout.smoke.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/smoke/esm/tests/auth.smoke.test.ts": {
@@ -4677,15 +4675,15 @@
       ]
     },
     "source:packages/tests/unit/composeSignals.test.ts": {
-      "fingerprint": "34c661576a40ea42534244766726b14ef1a0cf07e3d9c26448af1bb80bf65c4c",
+      "fingerprint": "3c30221c2b4ace55dbf19990ece16439910a5509679cf34d8a03a16bdcc0d124",
       "snapshot": {
-        "packages/tests/unit/composeSignals.test.ts": "1ed64582daefd2ef88845427943fd3d02e188a1bdd172e59958347ecc29f535a"
+        "packages/tests/unit/composeSignals.test.ts": "2f208a9a4539d5258f17c885a80923e7aa9bed58d70f7eb03f0693ec13488902"
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/unit/composeSignals.test.ts at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: packages/tests/unit/composeSignals.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:.bumpy/response-headers-faxios-headers.md": {
@@ -5517,15 +5515,15 @@
       ]
     },
     "source:README.md": {
-      "fingerprint": "f4adb9ed216b3e8b6b1b9cdaa9ef0b8e7521221b0f5b6e66f3e2463c57729575",
+      "fingerprint": "36398499e07d3c9334a2594a13186f9aa7b8bd06cad76b528ee5fc6b26a27e8a",
       "snapshot": {
-        "README.md": "91d276accb39c6a2886e33ca95b393016871974264afd342feafbf1bfd0581ec"
+        "README.md": "b2ce0df293d4b9d50e9d7f71216b663d814aab6f0430c3260e71523d5ab82ee1"
       },
-      "head": "32234c458f13a175aa56a692ac189f4129775038",
-      "outcome": "no-change",
-      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: README.md at 02bc02539714e48c32c881c43720b5d34bb375f7"
+        "Changed: README.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:.bumpy/young-silver-cat.md": {
@@ -6009,15 +6007,15 @@
       ]
     },
     "source:.bumpy/278-cancellation.md": {
-      "fingerprint": "2af3aacaf08bec921abab49fea920511276f2f6ef6a720178f6a0e3bfddfca2b",
+      "fingerprint": "294b02ea1906fb57c28329c3b54ebde0cff15fd7fafdb4eff47b49283eeda455",
       "snapshot": {
-        ".bumpy/278-cancellation.md": "24a9812e29702f4fd61f3d02d97c62685388db518f18c786eda79a779bc07ec5"
+        ".bumpy/278-cancellation.md": "a20c5f2f61497a3ecb6a71125a78f525fd95cc516b50e02fe795313df3679fe9"
       },
-      "head": "672fec258385a1a6d3b7057272bc30094f072c36",
-      "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed files: .bumpy/278-cancellation.md"
+        "Changed: .bumpy/278-cancellation.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/lib/src/lib/core/assertSignal.ts": {
@@ -6069,15 +6067,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/settle.ts": {
-      "fingerprint": "1956f4c4b7ecae31b5352ee7e4b13a08d3c98f89e021d4e8212fa639ec250997",
+      "fingerprint": "cddbadacbf046c0b3c426b7c8b5cbdd8ee6e6109fa29ae3e4519319cf8d81b53",
       "snapshot": {
-        "packages/lib/src/lib/core/settle.ts": "2f573a014d3d06bc902051e205420a5002b47fc184233c0fdb8b2826f2f3d356"
+        "packages/lib/src/lib/core/settle.ts": null
       },
-      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/settle.ts at 86f20473642fb3c294f745739f7ba05847421218"
+        "Changed: packages/lib/src/lib/core/settle.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:.bumpy/277-resource-bounds.md": {
@@ -6165,15 +6163,15 @@
       ]
     },
     "source:.bumpy/287-url-resolver.md": {
-      "fingerprint": "bbf50ff0220d4fc4797d83289bf3d4bf7651623de2fea6ea9fe5219d0a9d1097",
+      "fingerprint": "1d94eab371aabc601fe1398e1d649e8b778caf5448e967add8de2e32a004c3fb",
       "snapshot": {
-        ".bumpy/287-url-resolver.md": "8a7637a0b2d02926ffb26808f110bf9cd0702e6acfba198b6f6421785732d7b0"
+        ".bumpy/287-url-resolver.md": "27994f64214e481a4c948909c930fc497297719698cc6cf66343d11a47b6c11f"
       },
-      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "Skill states a url or joined baseURL with a tab or line break rejects with ERR_INVALID_URL",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: .bumpy/287-url-resolver.md at 8211220225a5d8cc4b83d177120331bd72fb7f0f"
+        "Changed: .bumpy/287-url-resolver.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:.bumpy/288-create-headers.md": {
@@ -6261,15 +6259,15 @@
       ]
     },
     "source:.bumpy/298-dead-code.md": {
-      "fingerprint": "f6fd84a154828eeff59183dd8af5b13464e18e8ec3493251f6f4730ea5348455",
+      "fingerprint": "67290cbffbaa8849904f49c5b170660556e7775b1b8fb6d23745167257513d6f",
       "snapshot": {
-        ".bumpy/298-dead-code.md": "3b022f54addc47ff8b168f4dcc48bfdbdbf9f96d36115cf9abfac07c7f2c9522"
+        ".bumpy/298-dead-code.md": "b93dfe6365be7af81b6868fc4a706386cdef91418471d6b86a9ca133d5de45c5"
       },
-      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: .bumpy/298-dead-code.md at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
+        "Changed: .bumpy/298-dead-code.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/lib/src/lib/helpers/isURLSameOrigin.ts": {
@@ -6309,15 +6307,15 @@
       ]
     },
     "source:.bumpy/166-utils-named.md": {
-      "fingerprint": "f2e94a26fa0b45b2256cd46f663c4f5bc7162c54988253c315e47b251f8ed38f",
+      "fingerprint": "599f6d8023c88c576cf11b888e19a77540ed85340d382f3489cee6df7765c6c9",
       "snapshot": {
-        ".bumpy/166-utils-named.md": "93570368ab224ad5a1bed9bf42599759bb3eb767dd68cf72673f54bdff581306"
+        ".bumpy/166-utils-named.md": "5d3cb89635c21762431e151c323051525157de70ff0f4193083145765a5731f3"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: .bumpy/166-utils-named.md at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+        "Changed: .bumpy/166-utils-named.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/lib/src/lib/helpers/deprecatedMethod.ts": {
@@ -6345,15 +6343,15 @@
       ]
     },
     "source:packages/tests/unit/core/settle.test.ts": {
-      "fingerprint": "196910c85686ab6e387546885ab3ecde210d840c45143c9ae0a2bbc1866e1a7f",
+      "fingerprint": "d61bb3183d8a84402a2faa6677ce1cbba038853934dc969271e0818bff1e1a2d",
       "snapshot": {
-        "packages/tests/unit/core/settle.test.ts": "f62bf41b1148a6d54b5861c7a5beed08b7543ac929c21fb4fa0c044249bfdbc9"
+        "packages/tests/unit/core/settle.test.ts": null
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/unit/core/settle.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+        "Changed: packages/tests/unit/core/settle.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:.bumpy/copper-merry-jay.md": {
@@ -6429,39 +6427,39 @@
       ]
     },
     "source:packages/tests/scripts/bundle-size.ts": {
-      "fingerprint": "975cddad6aacd123dd809b8406693656dec76127084baf12b7512cca009a52be",
+      "fingerprint": "4e95d9c0220ef024583cbe29cf2733fb87804572c3db72727a27d048a190c1d3",
       "snapshot": {
-        "packages/tests/scripts/bundle-size.ts": "2152e1e633bc065bb30084b2b33cdd736449aeccfa5b4caad63ca89904276341"
+        "packages/tests/scripts/bundle-size.ts": "e5b782ae7d13ef11cb38b343be88b78a3b43ec774d318bc095718ceecb35ec20"
       },
-      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/scripts/bundle-size.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
+        "Changed: packages/tests/scripts/bundle-size.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/unit/adapters/fetch/lazyProbe.test.ts": {
-      "fingerprint": "ded7ff6e27b998ae2cd84aac605ce7514c9ee11e18df7c6e350f08400bc0f587",
+      "fingerprint": "ce0f81e7578a07a883cf51b0d14a6f4479be3e7549f8795d072dd23af8c85b3c",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch/lazyProbe.test.ts": "d23525ace03ac8e41971186d55fdfb59fe3e88fdc09bd9e29f303dfbb96afa86"
+        "packages/tests/unit/adapters/fetch/lazyProbe.test.ts": "1b110e9768520c9ae8ef288af8651d6b19c718362d2e2d2288af08c84654c98f"
       },
-      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch/lazyProbe.test.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
+        "Changed: packages/tests/unit/adapters/fetch/lazyProbe.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/unit/eslint-rules/pluginImports.test.ts": {
-      "fingerprint": "3fd8536b555f20bc7b48f5e2cee8ae7f0022fab1501f88d100a0babb6a12c0d7",
+      "fingerprint": "6eb738d2c9db32a71006b08650a7afa744b957bfcfdecdd036facbc0e6fd3634",
       "snapshot": {
-        "packages/tests/unit/eslint-rules/pluginImports.test.ts": "7adde3f340be79de60d9e9ba2c8c29dbba3a471f21d3e732b702286a0ba990e0"
+        "packages/tests/unit/eslint-rules/pluginImports.test.ts": "ae073dfc93f1fb2fc0e75f2fd8b554f68193c69a983761a2550d3dc741e0f937"
       },
-      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
-      "outcome": "no-change",
-      "reason": "Review fixes: plugin import lint limited to root-exported names, CI builds before tests, bump text; the configure-requests skill already describes plugin imports correctly",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/unit/eslint-rules/pluginImports.test.ts at c7d55ccc0029b173ec5fa125c00be93e2a1c2977"
+        "Changed: packages/tests/unit/eslint-rules/pluginImports.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/unit/scripts/bundleSize.test.ts": {
@@ -6525,15 +6523,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/export-surface.ts": {
-      "fingerprint": "259b99c850f16e7ac1dff7f2591e39c5e52a6738891a4db75c2bcc86e95530bd",
+      "fingerprint": "89e1b5cefaef91b18daf0b7ef72ef4db3f66640c9cccb944bb6c5d61b1dc96a7",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/export-surface.ts": "51a523f7c09db0c80b05e9f514234ac635a18c379fa4df4739add2276acb61eb"
+        "packages/tests/module/esm/tests/helpers/export-surface.ts": "d6f5e6386c559b5fa8a6a47d925e99abc0a6bfeaf856215f44315c8e894ba74d"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/module/esm/tests/helpers/export-surface.ts at 22f8a916c00ebcd2a3c783fff8c275765469824c"
+        "Changed: packages/tests/module/esm/tests/helpers/export-surface.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:.bumpy/295-declarations.md": {
@@ -6585,15 +6583,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/exact-optional/index.ts": {
-      "fingerprint": "622d57211825a72551865706971841be4c816c093e1a795b252ca07d7193f385",
+      "fingerprint": "8011f80ebca35568ac5b39409f843b0ec5234075b4ac7c64e0964203fdaafdcd",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/exact-optional/index.ts": "f6e5914e2ce275e53f430212ecefe56fab2da0846b07c7d78334b9ff6373f1a0"
+        "packages/tests/module/esm/tests/helpers/exact-optional/index.ts": "b79b2e035a04e3d1b754c203503f9b0a71bd500464cf546f46f19cab9a05b642"
       },
-      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/module/esm/tests/helpers/exact-optional/index.ts at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
+        "Changed: packages/tests/module/esm/tests/helpers/exact-optional/index.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/exact-optional/tsconfig.json": {
@@ -6633,15 +6631,15 @@
       ]
     },
     "source:packages/tests/module/esm/tsconfig.json": {
-      "fingerprint": "e997d60fd7be5c2ed9e3857aa07ade16ca4251f4e60ad9df2896163dff9a2f10",
+      "fingerprint": "406ebfe8fc78f6a35ff46df8436fc3122254aaaeaa705c8ead1f79c5586b79be",
       "snapshot": {
-        "packages/tests/module/esm/tsconfig.json": "75fd42902991c21bdc592291e627be22cf455eed695bab6eb03bfa0584541487"
+        "packages/tests/module/esm/tsconfig.json": "48931a0906253975592e0a936494ad15c1e7f3627b97fcc1917f1d5b69f79d66"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
-      "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed files: packages/tests/module/esm/tsconfig.json"
+        "Changed: packages/tests/module/esm/tsconfig.json at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:.bumpy/async-iterable-body.md": {
@@ -6669,15 +6667,15 @@
       ]
     },
     "source:packages/tests/browser/instance.browser.test.ts": {
-      "fingerprint": "ef7acda018fe83dfb6e2b35aee21b38e4973989508413f7201b0884a4340876d",
+      "fingerprint": "b418793f6984ab8672ce980b32e285ce910f70806f89b6e9a36855358a5e03ba",
       "snapshot": {
-        "packages/tests/browser/instance.browser.test.ts": "736429c007d038e87989aaa6d77d1e918368496cb685242316aa1ac51bafe7b7"
+        "packages/tests/browser/instance.browser.test.ts": "e82e395660686f63d6aad07da10c0ae62f5931206b5668eedcb6a6c8902baf60"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
-      "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed files: packages/tests/browser/instance.browser.test.ts"
+        "Changed: packages/tests/browser/instance.browser.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/unit/axios.test.ts": {
@@ -6729,15 +6727,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/typing-fixtures.ts": {
-      "fingerprint": "b29c016da4f0fa01b388773e1028ce98cb6f0676536f1b3cc1b16fbaf716a94f",
+      "fingerprint": "d1a49ef3c796549867a26f23c3ed54b46921706353935187499d07cbb69dc3ee",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/typing-fixtures.ts": "0cab5c7d4aec051b36ca856bc9fd1c95da3b7b394c5a0000eb0f18ef11120c01"
+        "packages/tests/module/esm/tests/helpers/typing-fixtures.ts": "703c7d07cd4beb9f85941e4fc2b20d5fe258d530ecd26c5e22fe5d9032b5ae76"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
-      "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed files: packages/tests/module/esm/tests/helpers/typing-fixtures.ts"
+        "Changed: packages/tests/module/esm/tests/helpers/typing-fixtures.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/module/esm/vitest.config.ts": {
@@ -6765,15 +6763,15 @@
       ]
     },
     "source:packages/tests/smoke/bun/tests/import.smoke.test.ts": {
-      "fingerprint": "cb7e8ae1afbc09fb930387263236f19dc178aa90ac9bad1e09cd67aa27b99a07",
+      "fingerprint": "524fc644d2f34c07bb1eef2b610ebd1d9ac0904b94996a12b20190b523340994",
       "snapshot": {
-        "packages/tests/smoke/bun/tests/import.smoke.test.ts": "4c76b72ae2ec6142ef02c5310fb66b2df6fa42175b6be0672b29fceba3b01b8a"
+        "packages/tests/smoke/bun/tests/import.smoke.test.ts": "cf6db04cd06de2541b2c9352be04dacf856fff4fb049d9f2b9be8b1016483936"
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
       "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/smoke/bun/tests/import.smoke.test.ts at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: packages/tests/smoke/bun/tests/import.smoke.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/smoke/bun/tests/middleware.smoke.test.ts": {
@@ -6801,15 +6799,15 @@
       ]
     },
     "source:packages/tests/smoke/bun/tests/subpaths.smoke.test.ts": {
-      "fingerprint": "35ff29b071073bee3ebb478b845db340dcc399f7a0bd4de9725877c65b36bb8f",
+      "fingerprint": "b5f543087ea575d56dd2eb90cf47f470d060ca89654a3dfe7b0d130cd12b4cb1",
       "snapshot": {
-        "packages/tests/smoke/bun/tests/subpaths.smoke.test.ts": "c04490c8812b21eb454f207f06159d6470f9238894bf74c31d114c4d529cd0e2"
+        "packages/tests/smoke/bun/tests/subpaths.smoke.test.ts": "18b88aa390050439c2ab85afe60a086f6c050f068f3cc03e697619ebc1079971"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
-      "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed files: packages/tests/smoke/bun/tests/subpaths.smoke.test.ts"
+        "Changed: packages/tests/smoke/bun/tests/subpaths.smoke.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/smoke/bun/tsconfig.json": {
@@ -6873,27 +6871,27 @@
       ]
     },
     "source:packages/tests/smoke/deno/tests/realFetch.smoke.test.ts": {
-      "fingerprint": "ecbc5f488d04bff5887b2b1282ace17725b87ae59cad7f608b4c23669bb25d4f",
+      "fingerprint": "8b0e7bfc7fa1218e4ec7d6f816d9d838f5b321ca338eda80a2ab32b251bd44cb",
       "snapshot": {
-        "packages/tests/smoke/deno/tests/realFetch.smoke.test.ts": "dee7e1aaeecc426a29f98a82b6e71c4f96d0acb089713e5fbaff7cf5eb546f43"
+        "packages/tests/smoke/deno/tests/realFetch.smoke.test.ts": "8483e5daa63db13a08073d120591f5f0f031cb29c901fac1a18784dcf1fa847d"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
-      "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed files: packages/tests/smoke/deno/tests/realFetch.smoke.test.ts"
+        "Changed: packages/tests/smoke/deno/tests/realFetch.smoke.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/smoke/deno/tests/timeout.smoke.test.ts": {
-      "fingerprint": "33129ee608d7da1107fd8302cd161f79d9ddea8138b4f420ce508523e1d4e72f",
+      "fingerprint": "0f1d69f9d901c5b25642b15f2039237730ddb976efdd4904a67e1b309e8fb172",
       "snapshot": {
-        "packages/tests/smoke/deno/tests/timeout.smoke.test.ts": "8d624c6da8afe1a023145abb85345df498a1241c1b44a34a293933b0bf9498c9"
+        "packages/tests/smoke/deno/tests/timeout.smoke.test.ts": "d6bbecd5e682dbcf07ed54c32de23e7d1b3f7b2eaa19c32f367e98daacdfeca4"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
-      "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed files: packages/tests/smoke/deno/tests/timeout.smoke.test.ts"
+        "Changed: packages/tests/smoke/deno/tests/timeout.smoke.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/smoke/esm/tests/basic.smoke.test.ts": {
@@ -6921,15 +6919,15 @@
       ]
     },
     "source:packages/tests/smoke/esm/tests/error.smoke.test.ts": {
-      "fingerprint": "1b51a1586367f881f0595e53a1905cc8cff8bd0e0f5b4cc90fd74e1b379d5cb8",
+      "fingerprint": "d691c1f7b0d922bc4677a2ef326309343c99684d14511a1add2274bf6e1f135b",
       "snapshot": {
-        "packages/tests/smoke/esm/tests/error.smoke.test.ts": "4e72be9c8e2bb0231f4e6e2c388b4652ac60bb3bad4e89fe507b3cfe5c83552a"
+        "packages/tests/smoke/esm/tests/error.smoke.test.ts": "5aac79655eb5bc8fb0dda2c7890d81f9fdfb86530ccdcc109426a8cc5062a8b7"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
-      "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed files: packages/tests/smoke/esm/tests/error.smoke.test.ts"
+        "Changed: packages/tests/smoke/esm/tests/error.smoke.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/smoke/esm/tests/files.smoke.test.ts": {
@@ -7017,15 +7015,15 @@
       ]
     },
     "source:packages/tests/smoke/esm/tests/timeout.smoke.test.ts": {
-      "fingerprint": "941ffed9ac73bf8367c526ae62f81e9e81599dab4d49f732980af797b382c2a8",
+      "fingerprint": "49a031dca8a7073916a7830ec145ec5933d305cb965b8d13cd9b1fd6a28ccf99",
       "snapshot": {
-        "packages/tests/smoke/esm/tests/timeout.smoke.test.ts": "9c6d5172e50c94b59f481ad66ed64a062a07d6a6a9a8b619846447cc69602811"
+        "packages/tests/smoke/esm/tests/timeout.smoke.test.ts": "a16fcf9e142aeb1d0dfb9e312b349de11f20937ed8542fe75d725658acc7f02c"
       },
-      "head": "45b7b0555ce63551641d71fbf6964bd0c543a3ee",
-      "outcome": "no-change",
-      "reason": "CI, Dependabot and test-harness changes only; nothing the configure-requests skill teaches changed",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/smoke/esm/tests/timeout.smoke.test.ts at e3fd6a6b6c28cd539f29f96a074008f366d9a32a"
+        "Changed: packages/tests/smoke/esm/tests/timeout.smoke.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/smoke/esm/tsconfig.json": {
@@ -7161,27 +7159,27 @@
       ]
     },
     "source:packages/tests/docs-examples/sources/package-readme-plugin.js": {
-      "fingerprint": "6f40109aa9cbb0fabfeffb0fcc27fb4b2491d5aab40376e8b01be463562ee0ac",
+      "fingerprint": "c0c8cf0037009df40324e620c704b0a3b43a067e36b5feeaabb1b5d3b19d79e2",
       "snapshot": {
-        "packages/tests/docs-examples/sources/package-readme-plugin.js": "ae79f893e81760ab3ae2e1e5f2acdc851e42a7e0c47d531ce9c9e4554fcc6842"
+        "packages/tests/docs-examples/sources/package-readme-plugin.js": "03814bd1df65209b6c8f593e442b4a05936b0edc4cc2e247ccccfc1e5848c658"
       },
-      "head": "32234c458f13a175aa56a692ac189f4129775038",
-      "outcome": "no-change",
-      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/docs-examples/sources/package-readme-plugin.js at 02bc02539714e48c32c881c43720b5d34bb375f7"
+        "Changed: packages/tests/docs-examples/sources/package-readme-plugin.js at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:packages/tests/docs-examples/sources/package-readme-request.js": {
-      "fingerprint": "b3df292d840dfc9f478788dbcb27e8fe47f007f4a7bbff3a88abbefdfaf15210",
+      "fingerprint": "0d517b7a63932d90c1ab0240ccf96b302168320ac98a78ac67279684c2d51523",
       "snapshot": {
-        "packages/tests/docs-examples/sources/package-readme-request.js": "d7f5bd1e77e707dec99cfbb5880c4fe93ce35b6ab53ce985cbef63bb02741fd6"
+        "packages/tests/docs-examples/sources/package-readme-request.js": "3e12c7e88da137820d0ca7204dd8c8c84d2c4faa9055c2d58dd321e7b825c21a"
       },
-      "head": "32234c458f13a175aa56a692ac189f4129775038",
-      "outcome": "no-change",
-      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
-        "Changed: packages/tests/docs-examples/sources/package-readme-request.js at 02bc02539714e48c32c881c43720b5d34bb375f7"
+        "Changed: packages/tests/docs-examples/sources/package-readme-request.js at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     },
     "source:.bumpy/276-intent-records.md": {
@@ -7434,6 +7432,210 @@
       "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
       "evidence": [
         "Changed: packages/tests/unit/helpers/substitutePathParams.test.ts at b9ae6369ce2a338168784170e2981521705d770d"
+      ]
+    },
+    "source:.bumpy/audit-perf-types.md": {
+      "fingerprint": "3237a7cb5b0019279f8a216746f27f25b17947d360159b3bb4d4aacf445fffbc",
+      "snapshot": {
+        ".bumpy/audit-perf-types.md": "c2c73b59c08e3e24781a855ac38c1c529631ed99ad2b602e85e2b9f048c28790"
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: .bumpy/audit-perf-types.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:.bumpy/audit-types-narrowing.md": {
+      "fingerprint": "bda2df5fc7658d219f9054326d0301411d38724669213702f14a8b2e1a9e2921",
+      "snapshot": {
+        ".bumpy/audit-types-narrowing.md": "1e1ee37458e44533dd91c4cd1015b714a87296261c2dbe60fb5972b86860ef9f"
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: .bumpy/audit-types-narrowing.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:.bumpy/error-config-leaks-and-codes.md": {
+      "fingerprint": "b997a8a6e937f167abfcc048801eaf2357a1b256a001eb9a42a84152e05aecb2",
+      "snapshot": {
+        ".bumpy/error-config-leaks-and-codes.md": "e6bc469987a85010ab10488a2995705c630aff342757acb0d0048efaa2ad6d0b"
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: .bumpy/error-config-leaks-and-codes.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:.bumpy/remove-legacy-aliases.md": {
+      "fingerprint": "74e5f52982442b0bb2507e5d57828d6d8d84fed4b33c1bd48cd25944061c8543",
+      "snapshot": {
+        ".bumpy/remove-legacy-aliases.md": "a660aba3def5f0f4730e02bec8bf81c3c6a245ca926a5ffd7f9c3443f27fe681"
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: .bumpy/remove-legacy-aliases.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:.bumpy/route-query.md": {
+      "fingerprint": "60bd58ee27d91dd82cc9ee37de4ef79c849fecbe7fa025a0f692f0327230ff51",
+      "snapshot": {
+        ".bumpy/route-query.md": "5d78e0e01b2f6d568cc521d4119281ed4f99fd4ac822fb1e6754118bfb490070"
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: .bumpy/route-query.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:.bumpy/timeout-number-only.md": {
+      "fingerprint": "0b07e6cd761f9b055e0cdbaafbd5c6b43ef887a15d9c7a6fae6fbe44e5107290",
+      "snapshot": {
+        ".bumpy/timeout-number-only.md": "5aa95767044df0edf79f5df873b37ff457a235f0b138f8c89375913560898452"
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: .bumpy/timeout-number-only.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:packages/docs/public/logo-light.svg": {
+      "fingerprint": "e3f0cb6c40b3cf507fbf5bbdb27fae17c2c1808de1446852a61c9617e518ee34",
+      "snapshot": {
+        "packages/docs/public/logo-light.svg": null
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: packages/docs/public/logo-light.svg at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:packages/docs/public/logo.svg": {
+      "fingerprint": "de840a4fe5bccfd715c891c3234aa30189097e1601ef216484b6c1115fa5088c",
+      "snapshot": {
+        "packages/docs/public/logo.svg": null
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: packages/docs/public/logo.svg at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:packages/docs/public/words-light.svg": {
+      "fingerprint": "489204752fc1355339d03cc84727d1185ffa9ea8b71019a5609a03aa7ea3d3fc",
+      "snapshot": {
+        "packages/docs/public/words-light.svg": null
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: packages/docs/public/words-light.svg at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:packages/docs/public/words.svg": {
+      "fingerprint": "e5d6d2e31fe6775a13beafbeaa46002dce680ed40df7d89e2df0c2035e7a0593",
+      "snapshot": {
+        "packages/docs/public/words.svg": null
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: packages/docs/public/words.svg at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:packages/lib/src/lib/core/patchErrorStack.ts": {
+      "fingerprint": "0a8916cf421ecc3858d28f047d9b77b428c03f37647ea8c3d6f102ccdd878835",
+      "snapshot": {
+        "packages/lib/src/lib/core/patchErrorStack.ts": "0046577f401c06e25aca87ddb295e3f8bbce96c08dd5be00e429912d1108319e"
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: packages/lib/src/lib/core/patchErrorStack.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:packages/lib/src/lib/core/statusError.ts": {
+      "fingerprint": "53882dde68d179512ab50bf9b34c26fcd61add9262677e766a214429016cfac5",
+      "snapshot": {
+        "packages/lib/src/lib/core/statusError.ts": "81eeec6eb94acaf5263b777b247c49e46c494dadeb0fa303dfe16f8e75ba7060"
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: packages/lib/src/lib/core/statusError.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/estimateDataURLDecodedBytes.ts": {
+      "fingerprint": "a64139f141d906970d67339009ad73b2633526061bb73cf7bc374b4fb4060c63",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/estimateDataURLDecodedBytes.ts": "1e9d044f8812df7f8921039deca4060b30579bd1ce4a902329d397b02eac3345"
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/estimateDataURLDecodedBytes.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:packages/tests/module/esm/tests/helpers/no-globals/index.ts": {
+      "fingerprint": "41022b780ac8a4915b3e7d99a14196e80643d7ca269437b9c507be9c92113eb3",
+      "snapshot": {
+        "packages/tests/module/esm/tests/helpers/no-globals/index.ts": "2b04f7f39765d353add7414508cb4acb1121ca01b6b0abed6a5eabcb2d602371"
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: packages/tests/module/esm/tests/helpers/no-globals/index.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:packages/tests/module/esm/tests/helpers/no-globals/tsconfig.json": {
+      "fingerprint": "3c29363a992f26b76479ae9a60c748ba02904ae471841304f364bd73c06f2799",
+      "snapshot": {
+        "packages/tests/module/esm/tests/helpers/no-globals/tsconfig.json": "eaf1d154f0ff18379d8dd154d978e05c8845ca67f94425d1bfc030c75a2a18ac"
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: packages/tests/module/esm/tests/helpers/no-globals/tsconfig.json at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:packages/tests/unit/auditRegressions.test.ts": {
+      "fingerprint": "a7033f311a9b5e4b199def98c8744f09f613fb2b30ed275836c0fe27b818c40a",
+      "snapshot": {
+        "packages/tests/unit/auditRegressions.test.ts": "f51d400227654886e5af0f9a534c3e447716a4d2099cbe0eb3712f6894dfd0b1"
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: packages/tests/unit/auditRegressions.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:packages/tests/unit/core/statusError.test.ts": {
+      "fingerprint": "365b4744071d6908ed286cbd2ca3380ea5a7eaffe590e0f0db9285e2cabc60ac",
+      "snapshot": {
+        "packages/tests/unit/core/statusError.test.ts": "ac6a31a18684601ab52bbbef587c87c420c1001b1b302080214b976f701b1be4"
+      },
+      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "outcome": "updated",
+      "reason": "audit observations: docs, skill and sources updated",
+      "evidence": [
+        "Changed: packages/tests/unit/core/statusError.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
       ]
     }
   }

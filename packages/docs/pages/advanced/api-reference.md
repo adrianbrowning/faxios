@@ -152,12 +152,8 @@ static concat(first: HeaderInput, ...targets: Array<HeaderInput>): FaxiosHeaders
 The `CanceledError` class is the error a canceled request rejects with, code `ERR_CANCELED`. It extends the `FaxiosError` class.
 
 ```ts contract=@gcmdev/faxios#CanceledError
-constructor(message?: null | string, config?: FaxiosRequestConfig, request?: unknown);
+constructor(message?: null | string, config?: InternalFaxiosRequestConfig, request?: unknown);
 ```
-
-### `Cancel` <Badge type="tip" text="Alias for CanceledError" />
-
-The `Cancel` class is an alias for the `CanceledError` class. It is exported for backwards compatibility and will be removed in a future release.
 
 ## Functions
 
@@ -287,7 +283,7 @@ resolveRequestURL(config: FaxiosRequestConfig): string;
 Returns the error faxios rejects a request with when its signal aborts. A `FaxiosError` reason (such as the `ETIMEDOUT` of `timeout`) is returned as is; otherwise a `CanceledError` whose message comes from an `Error` or string reason (else "canceled"), keeping an `Error` reason as `cause`. Exported for plugins.
 
 ```ts contract=@gcmdev/faxios
-canceledFromSignal(signal: { readonly aborted: boolean; reason?: unknown; }, config?: FaxiosRequestConfig, request?: unknown): FaxiosError;
+canceledFromSignal(signal: { readonly aborted: boolean; reason?: unknown; }, config?: InternalFaxiosRequestConfig, request?: unknown): FaxiosError;
 ```
 
 ### `assertSignal`
@@ -490,7 +486,7 @@ The package root exports these types. Import them with `import type { ... } from
 | `FaxiosHeaderValue` | One header value: a string, number, boolean, array of strings, `null` or `undefined` |
 | `FaxiosResponse` | The resolved response: `data`, `status`, `statusText`, `headers`, `config` and `request` |
 | `FaxiosPromise` | `Promise<FaxiosResponse<T>>` |
-| `FaxiosErrorCode` | The union of the `FaxiosError` code statics; `ECONNABORTED` is kept for compatibility and never raised |
+| `FaxiosErrorCode` | The union of the `FaxiosError` code statics |
 | `SchemaValidationError` | The `FaxiosError` that [`isSchemaValidationError`](#isschemavalidationerror) narrows to |
 | `Method` | An HTTP method name, in lower or upper case |
 | `ResponseType` | The values of the [`responseType`](/pages/advanced/request-config#responsetype) option |
@@ -502,6 +498,8 @@ The package root exports these types. Import them with `import type { ... } from
 | `ParamsSerializerOptions` | The object form of the [`paramsSerializer`](/pages/advanced/request-config#paramsserializer) option |
 | `CustomParamsSerializer` | The function form of the `paramsSerializer` option |
 | `FormSerializerOptions` | The [`formSerializer`](/pages/advanced/request-config#formserializer) option, also taken by `toFormData()` |
+| `SerializerVisitor` | The `visitor` function `FormSerializerOptions` takes, called for each value `toFormData()` serializes |
+| `FormDataVisitorHelpers` | The helpers a `SerializerVisitor` gets: `defaultVisitor`, `convertValue` and `isVisitable` |
 | `TransitionalOptions` | The [`transitional`](/pages/advanced/request-config#transitional) option |
 | `GenericAbortSignal` | An `AbortSignal`-like object the `signal` option accepts |
 | `GenericFormData` | A FormData-like object with an `append(name, value)` method |

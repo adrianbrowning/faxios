@@ -47,6 +47,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 - A user-visible change to `packages/lib` needs a bump file in `.bumpy/` in the same PR. Create it with `pnpm bump` (`bumpy add`), or with the bumpy `add-change` skill (`node_modules/@varlock/bumpy/skills/add-change/SKILL.md`). Its text becomes the changelog entry. For a PR that changes `packages/lib` but needs no release, add an empty one with `pnpm exec bumpy add --empty`.
 - While the package is `0.x`, a breaking change is a `minor` bump whose text starts with "Breaking:", never a `major`, and a `patch` never breaks a caller; `major` bumps start at `1.0.0`. The docs [SemVer page](packages/docs/pages/misc/semver.md) makes users the same promise.
 - Don't edit `packages/lib/CHANGELOG.md` by hand. bumpy writes it in the Version Packages PR, and merging that PR publishes the release.
+- Don't merge to `main` while a `release.yml` run is in progress. GitHub keeps one pending run per concurrency group, so a newer push replaces a queued publish run; re-run a dropped one by hand.
 - Update `README.md`, the docs site and examples in the same PR as the change they describe. The docs are English-only. The site deploys only when a release is published, so editing pages on `main` publishes nothing early.
 
 ## Architecture Boundaries

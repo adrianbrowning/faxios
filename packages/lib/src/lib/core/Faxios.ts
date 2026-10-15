@@ -30,6 +30,7 @@ import FaxiosError from "./FaxiosError.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
 import { flattenHeaders, inheritHeaders } from "./headerLayers.js";
 import mergeConfig, { mergeConfigExceptHeaders } from "./mergeConfig.js";
+import patchErrorStack from "./patchErrorStack.js";
 import armDeadline, { RequestBodies } from "./requestDeadline.js";
 import resolveRequestURL, { normalizeRequestURL } from "./resolveRequestURL.js";
 import type { RouteBuilder, RouteConfig } from "./route.js";
@@ -37,57 +38,6 @@ import { createRouteBuilder } from "./route.js";
 
 // RFC 9110 token: what fetch accepts as a method name.
 const HTTP_TOKEN = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
-
-// Adds the caller's frames to `rawStack`, the request's error stack. `callerStack` is the stack
-// captured where request() rejects, including its "Error" line.
-function stitchStack(rawStack: unknown, callerStack: string): unknown {
-  const firstNewline = callerStack.indexOf("\n");
-  // slice off the Error: ... line
-  const stack = firstNewline === -1 ? "" : callerStack.slice(firstNewline + 1);
-  if (!rawStack) return stack;
-  if (!stack) return rawStack;
-  // match without the 2 top stack lines
-  const firstNewlineIndex = stack.indexOf("\n");
-  const secondNewlineIndex = firstNewlineIndex === -1 ? -1 : stack.indexOf("\n", firstNewlineIndex + 1);
-  const stackWithoutTwoTopLines = secondNewlineIndex === -1 ? "" : stack.slice(secondNewlineIndex + 1);
-  return String(rawStack).endsWith(stackWithoutTwoTopLines) ? rawStack : rawStack + "\n" + stack;
-}
-
-// Formatting a stack is costly, and most rejections are handled without reading it, so the
-// caller's frames are captured now and stitched into err.stack only when it is first read.
-function patchErrorStack(err: Error): void {
-  let callerFrames: { stack?: string; } = {};
-  // captureStackTrace is V8-only (Node, Chromium) and formats nothing until .stack is read.
-  const captureStackTrace = (Error as { captureStackTrace?: (target: object) => void; }).captureStackTrace;
-  if (captureStackTrace) {
-    captureStackTrace(callerFrames);
-  }
-  else {
-    callerFrames = new Error();
-  }
-
-  // V8 keeps an own accessor that formats on first read; elsewhere `stack` may be an own string
-  // or an accessor on Error.prototype.
-  const own = Object.getOwnPropertyDescriptor(err, "stack");
-  if (own && !own.configurable) return;
-  const readOriginal = (): unknown => {
-    if (!own) return Reflect.get(Object.getPrototypeOf(err) ?? {}, "stack", err);
-    return own.get ? own.get.call(err) : own.value;
-  };
-  const settle = (value: unknown): void => {
-    Object.defineProperty(err, "stack", { value, writable: true, enumerable: own?.enumerable ?? false, configurable: true });
-  };
-  Object.defineProperty(err, "stack", {
-    get() {
-      const value = stitchStack(readOriginal(), callerFrames.stack ?? "");
-      settle(value);
-      return value;
-    },
-    set: settle,
-    enumerable: own?.enumerable ?? false,
-    configurable: true,
-  });
-}
 
 // assertRequestConfig has checked an object paramsSerializer; a function one is its serialize option.
 function normalizeParamsSerializer(config: FaxiosRequestConfig): void {
@@ -473,8 +423,22 @@ class Faxios {
     config: FaxiosRequestConfig | undefined,
     body?: { data: unknown; headers: RawFaxiosRequestHeaders; }
   ): Promise<unknown> {
-    const aliasConfig = body ?? { data: config && hasOwnProp(config, "data") ? config.data : undefined };
-    return this.request(mergeConfig(config || {}, { ...aliasConfig, method, url }));
+    // One shallow own-key copy: request() runs the one full merge, against the instance defaults.
+    const aliasConfig: FaxiosRequestConfig & Record<string, unknown> = Object.create(null);
+    if (config) {
+      for (const key of Object.keys(config)) {
+        if (!isDangerousKey(key)) aliasConfig[key] = (config as Record<string, unknown>)[key];
+      }
+    }
+    if (body) {
+      aliasConfig.data = body.data;
+      if (hasOwnProp(body.headers, "Content-Type")) {
+        aliasConfig.headers = mergeConfig({ headers: aliasConfig.headers }, { headers: body.headers }).headers;
+      }
+    }
+    aliasConfig.method = method;
+    aliasConfig.url = url;
+    return this.request(aliasConfig);
   }
 
   getUri(config?: FaxiosRequestConfig) {

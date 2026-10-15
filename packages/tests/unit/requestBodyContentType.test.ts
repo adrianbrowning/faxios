@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import type { AddressInfo } from "node:net";
 import { Readable } from "node:stream";
-import { describe, it, vi } from "vitest";
+import { describe, it } from "vitest";
 import faxios from "#src/index.ts";
 import { startHTTPServer, stopHTTPServer } from "../setup/server.js";
 
@@ -236,14 +236,11 @@ describe("JSON string request bodies (#296)", () => {
   };
 
   it("sends a string body with a JSON Content-Type without parsing it", async () => {
-    const parse = vi.spyOn(JSON, "parse");
-    try {
-      assert.strictEqual(await sentBody(" {\"a\":1} "), "{\"a\":1}");
-      assert.strictEqual(parse.mock.calls.length, 0);
-    }
-    finally {
-      parse.mockRestore();
-    }
+    // Inner spacing and a big integer survive only if the string is not parsed and re-serialized.
+    assert.strictEqual(
+      await sentBody(" {\"a\": 1, \"n\": 12345678901234567890} "),
+      "{\"a\": 1, \"n\": 12345678901234567890}"
+    );
   });
 
   it("sends a string that isn't JSON as given, not as a quoted JSON string", async () => {

@@ -46,7 +46,7 @@ function exportedTypes(): void {
   const serialize: CustomParamsSerializer = params => new URLSearchParams(params as Record<string, string>).toString();
   const paramsOptions: ParamsSerializerOptions = { dots: true, serialize };
   const formOptions: FormSerializerOptions = { dots: true, indexes: null, maxDepth: 10 };
-  const transitional: TransitionalOptions = { clarifyTimeoutError: true };
+  const transitional: TransitionalOptions = { forcedJSONParsing: true };
   const spec: FaxiosPluginSpec = { options: { retries: 0 } };
   const defaults: FaxiosDefaults = { timeout: 1, headers: faxios.defaults.headers };
 

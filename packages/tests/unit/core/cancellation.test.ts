@@ -94,13 +94,19 @@ describe("core::cancellation", () => {
       assert.strictEqual(calls.length, 0);
     });
 
-    it("accepts 0, the setTimeout limit and a numeric string", async () => {
+    it("accepts 0 and the setTimeout limit", async () => {
       const api = faxios.create({ env: { fetch: jsonFetch() } });
 
-      for (const timeout of [ 0, 2_147_483_647, "30" as unknown as number ]) {
+      for (const timeout of [ 0, 2_147_483_647 ]) {
         const response = await api.get(URL, { timeout });
         assert.deepStrictEqual(response.data, { ok: true });
       }
+    });
+
+    it("rejects a numeric string", async () => {
+      const api = faxios.create({ env: { fetch: jsonFetch() } });
+
+      await assert.rejects(api.get(URL, { timeout: "30" as unknown as number }), { code: "ERR_BAD_OPTION_VALUE" });
     });
   });
 

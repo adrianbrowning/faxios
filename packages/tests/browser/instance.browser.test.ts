@@ -16,7 +16,6 @@ describe("instance (vitest browser)", () => {
           "Faxios",
           "FaxiosError",
           "create",
-          "Cancel",
           "CanceledError",
           "CancelToken",
           "isCancel",

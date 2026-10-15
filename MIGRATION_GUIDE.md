@@ -29,7 +29,7 @@ The `XMLHttpRequest` adapter is gone. Browsers use `fetch`. There is no `adapter
 
 ## c) ESM-only — no CJS build, no UMD/CDN bundle
 
-faxios ships as ESM only, built by `zshy`. Use `import faxios from '@gcmdev/faxios'`. `require('@gcmdev/faxios')` works only through Node's ESM interop; there is no dedicated CJS entry (`.d.cts`) and no UMD / minified CDN `<script>` bundle.
+faxios ships as ESM only, built by `zshy`. Use `import faxios from '@gcmdev/faxios'`. From CommonJS, load it with `await import('@gcmdev/faxios')`. Node's `require(esm)` support may load it too, but that isn't a supported entry: there is no CJS build or `require` export condition, no `.d.cts`, and no UMD / minified CDN `<script>` bundle.
 
 ## d) `onUploadProgress` works only in Node.js
 
@@ -186,6 +186,21 @@ In axios, `error.config.data` is the serialized body, such as the JSON string. I
 ## s) Response types take `<T, D>`, with no `R` parameter
 
 Axios methods take `<T, R = AxiosResponse<T>, D>`. faxios methods take `<T, D>` and always resolve to `FaxiosResponse<T, D>`, so `faxios.get<User, FaxiosResponse<User>>(url)` compiles with the second argument read as the request body type `D`. Drop the `R` argument when porting: `get<User>(url)`, or `post<User, NewUser>(url, body)`.
+
+## Upgrading from faxios 0.2
+
+The release after 0.2.x is a breaking one. The changelog has the full entry for each change; check your code for these:
+
+- **Config is checked.** A config key that is neither a faxios option nor a request option of an installed plugin, an unknown `transitional`, `paramsSerializer` or `formSerializer` key, and the removed `transitional.silentJSONParsing`, `transitional.clarifyTimeoutError` and `formDataHeaderPolicy` reject with `ERR_BAD_OPTION`. A wrong-typed value, an explicit empty `method`, a `signal` without `addEventListener`/`removeEventListener`, a `maxContentLength`/`maxBodyLength` other than `-1` or a finite number from `0`, and a `retry` `attempts` above 10 reject with `ERR_BAD_OPTION_VALUE`.
+- **Timeouts.** `timeout` bounds the whole request, retries included, and a timed-out request is not retried; use `retry({ attemptTimeout })` for a per-try limit. Timeouts reject with `ETIMEDOUT`.
+- **URLs.** An absolute `url` on an instance with a `baseURL` rejects with `ERR_INVALID_URL` unless `allowAbsoluteUrls` is `true`. A `url` is absolute only when a scheme is followed by `//`. `getUri()` fills `{key}` placeholders from `pathParams` and throws `ERR_INVALID_URL` with neither `url` nor `baseURL`.
+- **Redirects.** A request that sends the XSRF header, or whose `authBearer` plugin sets a custom `header`, defaults to `redirect: "error"`; set `fetchOptions.redirect` to choose.
+- **Bodies and responses.** A plain string body is sent as `text/plain`, and a string with a JSON `Content-Type` is sent as written. Any `Content-Type` set for a `FormData` body is removed, and npm `form-data` bodies reject with `ERR_NOT_SUPPORT`. `responseType: "json"` (any case) rejects a body that isn't JSON with `ERR_BAD_RESPONSE`.
+- **Headers.** Request headers beat instance headers in every group, and a `create()` child's headers beat its parent's. `response.headers` is a `FaxiosHeaders`.
+- **Errors.** `name` stays `"FaxiosError"` on wrapped errors, network error messages name the reason and the request, `toJSON()` always masks credentials, and `error.config.data` is the body you passed. `TimingEvent.error` is `{ code, message, status }`.
+- **Removed API.** The `Cancel` alias (use `CanceledError`), `FaxiosError.ECONNABORTED`, `ECONNREFUSED` and `ERR_FR_TOO_MANY_REDIRECTS` (check `ERR_NETWORK` and `error.cause`), `FaxiosHeaders.accessor()`, the `@gcmdev/faxios/unsafe/utils.js` subpath, and the `RawFaxiosRequestConfig`, `FaxiosResponseHeadersLike` and `FaxiosRequestHeaders` types.
+- **Types.** TypeScript 5.4 or greater. Methods take `<T, D>` with no `R` parameter, a response generic must match `responseSchema`, and `toFormData` options are typed `FormSerializerOptions`.
+- **`formToJSON`** splits field names only on `.` and brackets.
 
 ## Need help?
 

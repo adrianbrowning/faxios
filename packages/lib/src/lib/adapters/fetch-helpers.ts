@@ -1,5 +1,6 @@
 "use strict";
 
+import type { ExtendedAbortSignal } from "../core/composeSignals.js";
 import FaxiosError from "../core/FaxiosError.js";
 import type FaxiosHeaders from "../core/FaxiosHeaders.js";
 import stripUserInfo from "../helpers/stripUserInfo.js";
@@ -7,10 +8,9 @@ import type {
   FaxiosResponse,
   InternalFaxiosRequestConfig
 } from "../types.js";
-import type { WebAbortSignal, WebRequest } from "../types/web.js";
+import type { WebRequest } from "../types/web.js";
 import { getSafeProp } from "../utils.js";
 
-export type ComposedSignal = WebAbortSignal & { unsubscribe?: () => void; };
 // The adapter step a failure came from: building the Request, sending it, or reading the body.
 export type FetchStage = "body" | "build" | "send";
 
@@ -72,7 +72,7 @@ export type FetchContext = {
   runtime: FetchRuntime;
   // GET and HEAD send no body.
   sendsBody: boolean;
-  signal: ComposedSignal;
+  signal: ExtendedAbortSignal;
   stage: FetchStage | undefined;
   // `responseType: "stream"` where the runtime has stream responses.
   streamsResponse: boolean;
@@ -111,9 +111,15 @@ const throwStagedTypeError = (err: Error, ctx: FetchContext): void => {
   if (stage === "build") {
     throw FaxiosError.from(err, FaxiosError.ERR_BAD_REQUEST, config, request);
   }
-  // A body that fails mid-stream (connection reset, "terminated") is a network failure.
+  // A body that fails mid-stream (connection reset, "terminated") is a network failure; the
+  // runtime's TypeError carries the socket error, with its code, as the cause. formData()
+  // rejects a body it can't parse with a TypeError whose cause has no code: the server sent
+  // that body, so it is a bad response, and retrying would fetch the same bytes.
   if (stage === "body") {
-    throw FaxiosError.from(err, FaxiosError.ERR_NETWORK, config, request);
+    const responseType = getSafeProp(config, "responseType");
+    const isParseFailure = typeof responseType === "string" && responseType.toLowerCase() === "formdata"
+      && typeof getSafeProp(err.cause, "code") !== "string";
+    throw FaxiosError.from(err, isParseFailure ? FaxiosError.ERR_BAD_RESPONSE : FaxiosError.ERR_NETWORK, config, request);
   }
 };
 
@@ -166,32 +172,32 @@ export const handleFetchCaughtError = (err: unknown, ctx: FetchContext): never =
     throw err;
   }
 
-  const _err = err as Record<string, unknown> & Error;
-  if (_err.name === "TypeError" && stage) {
-    throwStagedTypeError(_err, ctx);
+  const caught = err as Record<string, unknown> & Error;
+  if (caught.name === "TypeError" && stage) {
+    throwStagedTypeError(caught, ctx);
   }
   // fetch rejecting while sending is a transport failure. Runtimes word it differently (Node's
   // "fetch failed", Bun's ConnectionRefused, Deno's "client error (Connect)"), so the stage
   // decides, not the message.
   if (stage === "send") {
-    const cause: unknown = _err["cause"] || _err;
+    const cause: unknown = caught["cause"] || caught;
     throw Object.assign(
       new FaxiosError(
         networkErrorMessage(cause, ctx),
         FaxiosError.ERR_NETWORK,
         config,
         request,
-        _err["response"] as FaxiosResponse | undefined
+        caught["response"] as FaxiosResponse | undefined
       ),
       { cause }
     );
   }
 
   throw FaxiosError.from(
-    _err,
-    _err["code"] as string | undefined,
+    caught,
+    caught["code"] as string | undefined,
     config,
     request,
-    _err["response"] as FaxiosResponse | undefined
+    caught["response"] as FaxiosResponse | undefined
   );
 };

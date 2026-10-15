@@ -8,5 +8,5 @@
     "noEmit": true
   },
   "include": ["tests/**/*.ts"],
-  "exclude": ["tests/helpers/node-only", "tests/helpers/exact-optional"]
+  "exclude": ["tests/helpers/node-only", "tests/helpers/exact-optional", "tests/helpers/no-globals"]
 }

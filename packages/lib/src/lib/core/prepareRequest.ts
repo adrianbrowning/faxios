@@ -57,9 +57,9 @@ function prepareRequest(config: FaxiosRequestConfig, url: string): FaxiosRequest
   const xsrfHeaderName = own("xsrfHeaderName") as string | undefined;
   const xsrfCookieName = own("xsrfCookieName") as string | undefined;
 
-  const headers: FaxiosHeaders = FaxiosHeaders.from(
-    own("headers") as HeaderInput
-  );
+  // A copy, never the caller's instance: config.headers reaches error.config and toJSON(), and
+  // the XSRF token set below must not.
+  const headers = new FaxiosHeaders(own("headers") as HeaderInput);
   newConfig.headers = headers;
 
   newConfig.url = url;

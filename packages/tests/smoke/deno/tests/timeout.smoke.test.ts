@@ -9,6 +9,8 @@ const pendingFetch: MockFetch = async (_input, init) =>
     signal.addEventListener("abort", () => reject(signal.reason), { once: true });
   });
 
+// Real timers on purpose: this smoke run has no fake-timer API it can rely on (@std/testing FakeTime is not a dependency here), and the
+// point is to check the dist build's timeout against the runtime's own setTimeout. The wait is 50 ms.
 Deno.test("timeout: 50 with never-resolving fetch mock rejects with ETIMEDOUT", async () => {
   const err = await faxios
     .get("https://example.com/timeout", { timeout: 50, env: { fetch: pendingFetch } })

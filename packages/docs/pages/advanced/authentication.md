@@ -51,7 +51,7 @@ await api.put("https://uploads.example.com/avatar", "...");
 
 Entries must be bare origins, without a path. A relative request URL counts only in a browser, as the page origin.
 
-With [`forwardTo`](/pages/advanced/middleware#forwardto) installed as well, the rule still checks the target URL, not the gateway: forwarding happens in `fetch`, after middleware. A request whose target is your API gets the token, and the forwarded request carries it to the gateway, so install `forwardTo` only for a gateway you trust with your credentials.
+With [`forwardTo`](/pages/advanced/middleware#forwardto) installed as well, the rule still checks the target URL, not the gateway: forwarding happens in `fetch`, after middleware. A request whose target is your API gets the token, and the forwarded request carries it to the gateway, so install `forwardTo` only for a gateway you trust with your credentials. The same holds for the XSRF header ([`withXSRFToken`](/pages/advanced/request-config#withxsrftoken)): its same-origin check also runs against the target URL, so a same-origin target sends the XSRF cookie's value to a cross-origin gateway as well.
 
 Invalid options throw `ERR_BAD_OPTION_VALUE` and unknown ones `ERR_BAD_OPTION`.
 

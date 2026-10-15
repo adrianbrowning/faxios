@@ -5,10 +5,7 @@ import CanceledError from "#src/lib/cancel/CanceledError.js";
 import composeSignals from "#src/lib/core/composeSignals.js";
 
 describe("helpers::composeSignals", () => {
-  const runIfAbortController =
-    typeof AbortController === "function" ? it : it.skip;
-
-  runIfAbortController("should abort when any of the signals abort", () => {
+  it("should abort when any of the signals abort", () => {
     let called;
 
     const controllerA = new AbortController();
@@ -25,7 +22,7 @@ describe("helpers::composeSignals", () => {
     assert.ok(called);
   });
 
-  runIfAbortController("takes the reason of a later input that aborts", () => {
+  it("takes the reason of a later input that aborts", () => {
     const first = new AbortController();
     const second = new AbortController();
     const third = new AbortController();
@@ -39,7 +36,7 @@ describe("helpers::composeSignals", () => {
     assert.strictEqual(signal.reason.message, "third");
   });
 
-  runIfAbortController("should abort immediately when a signal is already aborted", () => {
+  it("should abort immediately when a signal is already aborted", () => {
     const controller = new AbortController();
     controller.abort(new Error("already aborted"));
 
@@ -50,7 +47,7 @@ describe("helpers::composeSignals", () => {
     assert.strictEqual(signal.reason.message, "already aborted");
   });
 
-  runIfAbortController("should keep the first input's reason when an earlier input is already aborted", () => {
+  it("should keep the first input's reason when an earlier input is already aborted", () => {
     const first = new AbortController();
     const second = new AbortController();
     first.abort(new Error("first"));
@@ -62,7 +59,7 @@ describe("helpers::composeSignals", () => {
     assert.strictEqual((signal.reason as CanceledError).message, "first");
   });
 
-  runIfAbortController("removes its listeners from every input on unsubscribe", async () => {
+  it("removes its listeners from every input on unsubscribe", async () => {
     const first = new AbortController();
     const second = new AbortController();
 
@@ -76,7 +73,7 @@ describe("helpers::composeSignals", () => {
     assert.strictEqual(getEventListeners(second.signal, "abort").length, 0);
   });
 
-  runIfAbortController("removes its listeners from every input once one aborts", () => {
+  it("removes its listeners from every input once one aborts", () => {
     const first = new AbortController();
     const second = new AbortController();
 
@@ -87,7 +84,7 @@ describe("helpers::composeSignals", () => {
     assert.strictEqual(getEventListeners(second.signal, "abort").length, 0);
   });
 
-  runIfAbortController("adds no listener after an input that is already aborted", () => {
+  it("adds no listener after an input that is already aborted", () => {
     const first = new AbortController();
     const second = new AbortController();
     first.abort(new Error("first"));

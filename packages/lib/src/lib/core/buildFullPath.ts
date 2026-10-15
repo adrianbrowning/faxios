@@ -55,11 +55,11 @@ function assertValidURL(url: unknown, config: unknown): void {
  * @param {string} baseURL The base URL
  * @param {string} requestedURL Absolute or relative URL to combine
  *
- * @returns {string} The combined full path
+ * @returns {string} The combined full path, or undefined when neither URL is given
  */
-export default function buildFullPath(baseURL: unknown, requestedURL: unknown, allowAbsoluteUrls?: unknown, config?: unknown): string {
+export default function buildFullPath(baseURL: string | undefined, requestedURL: string | undefined, allowAbsoluteUrls?: unknown, config?: unknown): string | undefined {
   assertValidURL(requestedURL, config);
-  if (!baseURL) return requestedURL as string;
+  if (!baseURL) return requestedURL;
   if (isAbsoluteURL(requestedURL)) {
     if (allowAbsoluteUrls === false) {
       throw new FaxiosError(
@@ -68,8 +68,8 @@ export default function buildFullPath(baseURL: unknown, requestedURL: unknown, a
         config as InternalFaxiosRequestConfig
       );
     }
-    return requestedURL as string;
+    return requestedURL;
   }
   assertValidURL(baseURL, config);
-  return combineURLs(baseURL as string, requestedURL as string);
+  return combineURLs(baseURL, requestedURL);
 }

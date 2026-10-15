@@ -68,7 +68,8 @@ const { data, status } = await api.get<{ id: number; name: string }>("/users/1")
 ```
 
 - Install with `npm i @gcmdev/faxios`. From CommonJS, load it with `await import("@gcmdev/faxios")`;
-  there is no `require` build and no UMD/CDN bundle.
+  there is no CommonJS build and no UMD/CDN bundle. Node's `require(esm)` may also load it, but
+  that isn't a supported entry.
 - Check: the call resolves with a `FaxiosResponse` whose `data` is parsed JSON for JSON responses.
   The type parameters are `<T, D>` (response data, request body); every method resolves to
   `FaxiosResponse<T, D>`, and there is no third parameter to retype the result.
@@ -236,8 +237,8 @@ catch (error) {
   from the signal once each request settles.
 - `controller.abort(reason)` keeps the reason: an `Error` becomes the `CanceledError`'s `cause`
   and message, a string becomes the message, at every stage.
-- A timeout always rejects with `ETIMEDOUT`. `ECONNABORTED` is never raised, and
-  `transitional.clarifyTimeoutError` has no effect. `timeout` must be 0 to 2147483647 ms;
+- A timeout always rejects with `ETIMEDOUT`; there is no `ECONNABORTED` code, and
+  `transitional.clarifyTimeoutError` rejects with `ERR_BAD_OPTION`. `timeout` must be 0 to 2147483647 ms;
   anything else (`-1`, `NaN`, `Infinity`, `2 ** 31`) rejects with `ERR_BAD_OPTION_VALUE`.
 - `timeout` bounds the whole request: it starts before middleware and covers middleware,
   schemas, every `retry` try and wait, and the fetch. It is not per try (unlike Axios), and a

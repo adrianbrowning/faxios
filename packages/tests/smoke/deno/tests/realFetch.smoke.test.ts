@@ -58,6 +58,7 @@ Deno.test("real fetch: aborting after the first body chunk rejects with ERR_CANC
     },
   }), { headers: { "Content-Type": "text/plain" } }));
   const controller = new AbortController();
+  // Real timers on purpose: real fetch needs the real event loop, so fake timers can't apply.
   const fallback = setTimeout(release, 5000);
   const loaded: Array<number> = [];
   try {
@@ -85,7 +86,8 @@ Deno.test("real fetch: aborting after the first body chunk rejects with ERR_CANC
 
 Deno.test("real fetch: a server that never answers rejects with ETIMEDOUT after `timeout`", async () => {
   const { promise: released, resolve: release } = Promise.withResolvers<void>();
-  // `deno test` has no test timeout: a timeout that never fires gets the late answer and fails.
+  // Real timers on purpose: real fetch and Deno.serve need the real event loop, so the 100 ms
+  // `timeout` runs on real time. `deno test` has no test timeout: a timeout that never fires gets the late answer and fails.
   const fallback = setTimeout(release, 5000);
   const server = serve(async () => {
     await released;

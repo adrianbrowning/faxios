@@ -41,7 +41,8 @@ const USER_INFO = /^([a-z][a-z\d+\-.]*:[/\\]*|[/\\]{2})[^/\\?#]*@/i;
 
 // `user:pass@` after a `scheme://` anywhere in an error message. A match starts only at a scheme
 // character followed by `:` and two slashes, and stops at the first `/`, so the scan is linear.
-const USER_INFO_IN_TEXT = /([a-z\d+\-.]:[/\\]{2})[^/\\?#\s@]*@/gi;
+// The user info runs through the last `@` before a `/`, `?`, `#` or space (`user:p@ss@host`).
+const USER_INFO_IN_TEXT = /([a-z\d+\-.]:[/\\]{2})(?:[^/\\?#\s@]*@)+/gi;
 
 // A property the error or its class defines, never one only Object.prototype supplies.
 function errorProp(error: unknown, key: "code" | "status"): unknown {

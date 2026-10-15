@@ -1,17 +1,27 @@
 import faxios from "faxios";
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { pendingFetch } from "./helpers.js";
 
 const hangingFetch = pendingFetch;
 
 describe("timeout compat (dist export only)", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("rejects with ETIMEDOUT on timeout", async () => {
-    const err = await faxios
+    const pending = faxios
       .get("http://example.com/timeout", {
         timeout: 25,
         env: { fetch: hangingFetch, Request, Response },
       })
       .catch(e => e);
+    await vi.advanceTimersByTimeAsync(25);
+    const err = await pending;
 
     expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ETIMEDOUT");
@@ -19,45 +29,34 @@ describe("timeout compat (dist export only)", () => {
   });
 
   it("uses timeoutErrorMessage when provided", async () => {
-    const err = await faxios
+    const pending = faxios
       .get("http://example.com/timeout", {
         timeout: 25,
         timeoutErrorMessage: "custom timeout",
         env: { fetch: hangingFetch, Request, Response },
       })
       .catch(e => e);
+    await vi.advanceTimersByTimeAsync(25);
+    const err = await pending;
 
     expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ETIMEDOUT");
     expect(err.message).toBe("custom timeout");
   });
 
-  it("accepts timeout as a numeric string", async () => {
+  // Wrapped: it.each spreads an array case into arguments, so a bare `[]` would arrive as undefined.
+  it.each([{ timeout: "30" }, { timeout: true }, { timeout: " " }, { timeout: [] }, { timeout: { invalid: true } }])("rejects a timeout that isn't a number ($timeout)", async ({ timeout }) => {
     const err = await faxios
       .get("http://example.com/timeout", {
-        // @ts-expect-error TS2769 -- untyped JS callers may pass a numeric string; the runtime parses it
-        timeout: "30",
-        env: { fetch: hangingFetch, Request, Response },
-      })
-      .catch(e => e);
-
-    expect(faxios.isFaxiosError(err)).toBe(true);
-    expect(err.code).toBe("ETIMEDOUT");
-    expect(err.message).toBe("timeout of 30ms exceeded");
-  });
-
-  it("rejects with ERR_BAD_OPTION_VALUE when timeout is not parsable", async () => {
-    const err = await faxios
-      .get("http://example.com/timeout", {
-        // @ts-expect-error TS2769 -- untyped JS callers may pass garbage; the runtime must reject it
-        timeout: { invalid: true },
+        // @ts-expect-error TS2769 -- untyped JS callers may pass anything; the runtime must reject it
+        timeout,
         env: { fetch: hangingFetch, Request, Response },
       })
       .catch(e => e);
 
     expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ERR_BAD_OPTION_VALUE");
-    expect(err.message).toBe("error trying to parse `config.timeout` to int");
+    expect(err.message).toBe("`config.timeout` must be a finite number of milliseconds");
   });
 
   it("does not time out when timeout is 0", async () => {

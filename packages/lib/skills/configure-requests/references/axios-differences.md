@@ -17,11 +17,11 @@ behaviour outside this list as unverified until the installed types and a test p
 | `transitional.legacyInterceptorReqResOrdering` | remove it | Throws `ERR_BAD_OPTION` ("Unknown option"), like any unknown `transitional` key |
 | `CancelToken.source()` / `cancelToken` | `AbortController` + `signal` | `isCancel(e)` or `e.code === "ERR_CANCELED"` |
 | `axios.isAxiosError(e)` | `isFaxiosError(e)` (named import) | Type guard |
-| `error.code === "ECONNABORTED"` (timeout) | `error.code === "ETIMEDOUT"` | `clarifyTimeoutError` is inert |
+| `error.code === "ECONNABORTED"` (timeout) | `error.code === "ETIMEDOUT"` | `transitional.clarifyTimeoutError` rejects with `ERR_BAD_OPTION` |
 | `error.code === "ECONNREFUSED"` | `error.code === "ERR_NETWORK"`, details on `error.cause` | All transport failures |
 | `adapter: ...` / custom adapter | `env: { fetch }` or `fetchOptions` | No adapter option exists; passing `adapter` rejects with `ERR_BAD_OPTION` |
 | `proxy: {...}` / `httpAgent` / `httpsAgent` | Runtime-level proxy config. In Node the project docs pass an `undici` `ProxyAgent` as `fetchOptions.dispatcher`, using the app's own `undici` dependency | Not faxios options; passing them rejects with `ERR_BAD_OPTION`. faxios passes the dispatcher to `fetch` but does not test proxying |
-| `maxRedirects`, `beforeRedirect` | fetch follows redirects, except a browser request carrying the XSRF header (see below); `fetchOptions: { redirect: "manual" }` to stop | Passing them rejects with `ERR_BAD_OPTION`; there is no `ERR_FR_TOO_MANY_REDIRECTS` code |
+| `maxRedirects`, `beforeRedirect` | fetch follows redirects, except a browser request carrying the XSRF header and a request whose `authBearer` plugin sets a custom `header` (both default to `redirect: "error"`, see below); `fetchOptions: { redirect: "manual" }` to stop | Passing them rejects with `ERR_BAD_OPTION`; there is no `ERR_FR_TOO_MANY_REDIRECTS` code |
 | `maxRate`, `socketPath`, `decompress`, `insecureHTTPParser`, `httpVersion`, HTTP/2 options, `lookup`, `family` | none | Removed; passing them rejects with `ERR_BAD_OPTION` |
 | `onUploadProgress` | same option | Fires only where fetch streams request bodies (Node); never called in browsers or web workers |
 | `responseType: "document"` | `responseType: "text"` and a `DOMParser` | `"document"` rejects with `ERR_BAD_OPTION_VALUE` |

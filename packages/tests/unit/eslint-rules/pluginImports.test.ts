@@ -37,7 +37,6 @@ describe("rootRuntimeExports", () => {
     const index = readFileSync(resolve(import.meta.dirname, "../../../lib/src/index.ts"), "utf8");
     const reExports: Record<string, Array<string>> = {};
     for (const [ , names, module ] of index.matchAll(/^export \{([^}]+)\} from "\.\/lib\/(.+)\.ts";$/gm)) {
-      // `default as Cancel, default as CanceledError` re-exports one name twice.
       reExports[`../${module!}.js`] = [ ...new Set(names!.split(",").map(name => name.trim().split(" as ")[0]!)) ];
     }
     expect(rootRuntimeExports).toStrictEqual(reExports);
