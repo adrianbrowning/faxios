@@ -1,0 +1,16 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/adrianbrowning/faxios/security/advisories/new
+    about: Report vulnerabilities privately through a GitHub security advisory. Never open a public issue for a vulnerability.
+  - name: Report a code of conduct violation
+    url: https://github.com/adrianbrowning/faxios/blob/main/CODE_OF_CONDUCT.md#reporting
+    about: Conduct reports go to the maintainers privately. Follow the reporting steps in the code of conduct; don't open a public issue.
+  - name: Ask a usage question
+    url: https://adrianbrowning.github.io/faxios/
+    about: Read the guides and the full API on the documentation site. Open a bug report if the docs are wrong or a behavior looks like a bug.
+  # MAINTAINER: once GitHub Discussions is enabled for this repository, add this entry
+  # and point the "Ask a usage question" text at it.
+  # - name: Ask in GitHub Discussions
+  #   url: https://github.com/adrianbrowning/faxios/discussions
+  #   about: Ask how to use faxios and share what you built.
