@@ -148,7 +148,7 @@ export function authBearer(getToken: () => Promise<string> | string, options: Au
       const config: InternalFaxiosRequestConfig = Object.assign(Object.create(null) as InternalFaxiosRequestConfig, ctx.config);
       config.headers = headers;
       const fetchOptions = own(config, "fetchOptions");
-      if (customHeader && (!fetchOptions || !Object.hasOwn(fetchOptions, "redirect"))) {
+      if (customHeader && (!fetchOptions || !Object.hasOwn(fetchOptions, "redirect") || fetchOptions.redirect === undefined)) {
         config.fetchOptions = { ...fetchOptions, redirect: "error" };
       }
       return next({ ...ctx, config });
