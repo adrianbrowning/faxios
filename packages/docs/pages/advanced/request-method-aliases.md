@@ -141,7 +141,7 @@ The QUERY method is defined by an IETF [Internet-Draft](https://datatracker.ietf
 
 ### `getUri`
 
-The `getUri` method returns the URL that would be sent for a given config without actually making the request. It fills `{key}` placeholders from `pathParams` and applies `baseURL`, `allowAbsoluteUrls`, `paramsSerializer`, and `params` the same way a request does, so it returns the URL faxios puts on the wire. It does not run schemas: `pathParams` is used as given, and a missing placeholder throws `ERR_BAD_OPTION_VALUE`. Useful for building links, debugging serialization, or reusing the resolved URL in another request.
+The `getUri` method returns the URL that would be sent for a given config without actually making the request. It fills `{key}` placeholders from `pathParams` and applies `baseURL`, `allowAbsoluteUrls`, `paramsSerializer`, and `params` the same way a request does, so it returns the URL faxios puts on the wire. It does not run schemas: `pathParams` is used as given, and a missing placeholder throws `ERR_BAD_OPTION_VALUE`. A config with neither `url` nor `baseURL` (here or on the instance) throws `ERR_INVALID_URL`. Useful for building links, debugging serialization, or reusing the resolved URL in another request.
 
 ```ts contract=@gcmdev/faxios#FaxiosInstance
 faxios.getUri(config?: FaxiosRequestConfig): string;

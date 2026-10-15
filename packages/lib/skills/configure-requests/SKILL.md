@@ -84,7 +84,8 @@ const { data, status } = await api.get<{ id: number; name: string }>("/users/1")
 - `api.getUri(config)` builds the URL from `baseURL`, `url`, `pathParams`, `allowAbsoluteUrls` and
   `params` the way a request does, without sending anything: a `URL` instance `url`, a function
   `paramsSerializer` and the option checks behave as on a request. It doesn't run schemas, so
-  `pathParams` fills the `{key}` placeholders as given.
+  `pathParams` fills the `{key}` placeholders as given. With neither `url` nor `baseURL` it
+  throws `ERR_INVALID_URL`.
 
 Path and query parameters:
 
@@ -322,9 +323,9 @@ const api = faxios
 - Per-request scratch data goes on `ctx.state`. `ctx.attempt` is the try number (1 unless a
   retry middleware sets it); a hand-written retry loop sets `ctx.attempt` before each `next(ctx)`.
 - To change a context field for the rest of the chain, pass a spread copy:
-  `next({ ...ctx, config })` or `next({ ...ctx, state: { ...ctx.state } })`. Never build a new
-  context from scratch; the spread carries what core keeps on it, such as the stream body that
-  `timeout` still governs after the response.
+  `next({ ...ctx, config })` or `next({ ...ctx, state: { ...ctx.state } })`. The spread carries
+  what core keeps on the context, such as the stream body that `timeout` still governs after the
+  response; a context rebuilt from its fields keeps that only with the same `ctx.state` object.
 
 ### Use the built-in plugins from their subpaths
 

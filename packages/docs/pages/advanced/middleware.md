@@ -135,7 +135,7 @@ const api = faxios.create({ baseURL: "https://api.example.com" })
 await api.get("/users");
 ```
 
-To change a field for the rest of the chain, pass `next` a copy made with a spread, such as `next({ ...ctx, state: { ...ctx.state, user } })`. The spread also carries what core keeps on the context for the request, such as the stream body that `timeout` and the request's signal still govern after the response.
+To change a field for the rest of the chain, pass `next` a copy made with a spread, such as `next({ ...ctx, state: { ...ctx.state, user } })`. The spread also carries what core keeps on the context for the request, such as the stream body that `timeout` and the request's signal still govern after the response. A context built from its fields instead keeps that tracking only while it passes on the same `ctx.state` object.
 
 For bearer tokens, use the built-in [`authBearer`](#authbearer) plugin rather than setting `Authorization` yourself: it only sends the token to your API's origin.
 
