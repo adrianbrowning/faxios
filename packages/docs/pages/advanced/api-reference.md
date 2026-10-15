@@ -246,10 +246,11 @@ spread(callback: (...args: unknown[]) => unknown): (array: unknown[]) => unknown
 
 ### `toFormData`
 
-Converts a plain JavaScript object (or a nested one) to a `FormData` instance. Useful when you want to programmatically build multipart form data from an object.
+Converts a plain JavaScript object (or a nested one) to a `FormData` instance. Useful when you want to programmatically build multipart form data from an object. Without a target it creates a global `FormData`; a target can also be any FormData-like object with an `append(name, value)` method (`GenericFormData`), such as one from the `form-data` package, and is returned with its own type.
 
 ```ts check=skip
-toFormData(sourceObj: unknown, formData?: FormData | null, options?: FormSerializerOptions): FormData;
+toFormData(sourceObj: unknown, formData?: null, options?: FormSerializerOptions): FormData;
+toFormData<F extends GenericFormData>(sourceObj: unknown, formData: F, options?: FormSerializerOptions): F;
 ```
 
 ```js

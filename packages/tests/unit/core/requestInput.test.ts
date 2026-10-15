@@ -73,8 +73,29 @@ describe("core::Faxios request input", () => {
   it("sends a request to a URL instance", async () => {
     const fetch = okFetch();
     const api = faxios.create({ env: { fetch } });
-    const res = await api.request({ url: new URL("http://example.test/a?b=1") as unknown as string, params: { c: 2 } });
+    const res = await api.request({ url: new URL("http://example.test/a?b=1"), params: { c: 2 } });
     expect(res.config.url).toBe("http://example.test/a?b=1");
     expect((fetch.mock.calls[0]![0] as Request).url).toBe("http://example.test/a?b=1&c=2");
+  });
+
+  it("sends a request to a URL instance passed as the url argument", async () => {
+    const fetch = okFetch();
+    const api = faxios.create({ env: { fetch } });
+    const url = new URL("http://example.test/a?b=1");
+    const sent = [
+      await api(url),
+      await api(url, { method: "delete" }),
+      await api.get(url, { params: { c: 2 } }),
+      await api.post(url, "body"),
+      await api.patchForm(url, { a: "1" }),
+    ];
+    expect(sent.map(res => res.config.url)).toEqual(Array(5).fill("http://example.test/a?b=1"));
+    expect(fetch.mock.calls.map(([ request ]) => [ (request as Request).method, (request as Request).url ])).toEqual([
+      [ "GET", "http://example.test/a?b=1" ],
+      [ "DELETE", "http://example.test/a?b=1" ],
+      [ "GET", "http://example.test/a?b=1&c=2" ],
+      [ "POST", "http://example.test/a?b=1" ],
+      [ "PATCH", "http://example.test/a?b=1" ],
+    ]);
   });
 });

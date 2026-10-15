@@ -13,6 +13,8 @@ import type {
   HeadersDefaults,
   InternalFaxiosRequestConfig,
   Method,
+  RawFaxiosRequestHeaders,
+  ResponseTypedConfig,
   SchemaConfig,
   StringLiteralsOrString
 } from "../types.js";
@@ -442,18 +444,14 @@ class Faxios {
   }
 
   /**
-   * Dispatch a request
-   *
-   * @param {String|Object} configOrUrl The config specific for this request (merged with this.defaults)
-   * @param {?Object} config
-   *
-   * @returns {Promise} The Promise to be fulfilled
+   * Send a request: `request(config)`, or `request(url, config)` with a string or `URL` url. The
+   * config is merged with this.defaults.
    */
-
   async request<O, D = unknown>(config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-  async request<T = unknown, R = FaxiosResponse<T>, D = unknown>(configOrUrl: FaxiosRequestConfig<D> | string, config?: FaxiosRequestConfig<D>): Promise<R>;
+  async request<O, D = unknown>(url: string | URL, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  async request<T = unknown, R = FaxiosResponse<T>, D = unknown>(configOrUrl: ResponseTypedConfig<T, D> | string | URL, config?: ResponseTypedConfig<T, D>): Promise<R>;
   async request(
-    configOrUrl: FaxiosRequestConfig | string,
+    configOrUrl: FaxiosRequestConfig | string | URL,
     config?: FaxiosRequestConfig
   ) {
     try {
@@ -469,12 +467,12 @@ class Faxios {
   }
 
   async #request(
-    configOrUrl: FaxiosRequestConfig | string,
+    configOrUrl: FaxiosRequestConfig | string | URL,
     config?: FaxiosRequestConfig
   ): Promise<unknown> {
     /*eslint no-param-reassign:0*/
     // Allow for faxios('example/url'[, config]) a la fetch API
-    if (typeof configOrUrl === "string") {
+    if (typeof configOrUrl === "string" || configOrUrl instanceof URL) {
       // `faxios(url, null)` has always meant "no config".
       assertConfigObject(config ?? undefined);
       config = { ...config, url: configOrUrl };
@@ -511,87 +509,83 @@ class Faxios {
       return composed({ attempt: 1, config: internal, instanceBaseURL, state, capabilities: this.#capabilities });
     }, internal, true);
   }
-   
-  get<O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-  get<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
-  get(url: string, config?: FaxiosRequestConfig) {
-    return this.request(mergeConfig(config || {}, {
-      method: "get",
-      url,
-      data: config && hasOwnProp(config, "data") ? config.data : undefined,
-    }));
+
+  get<O, D = unknown>(url: string | URL, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  get<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, config?: ResponseTypedConfig<T, D>): Promise<R>;
+  get(url: string | URL, config?: FaxiosRequestConfig) {
+    return this.#alias("get", url, config);
   }
-   
-  delete<O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-  delete<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
-  delete(url: string, config?: FaxiosRequestConfig) {
-    return this.request(mergeConfig(config || {}, {
-      method: "delete",
-      url,
-      data: config && hasOwnProp(config, "data") ? config.data : undefined,
-    }));
+
+  delete<O, D = unknown>(url: string | URL, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  delete<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, config?: ResponseTypedConfig<T, D>): Promise<R>;
+  delete(url: string | URL, config?: FaxiosRequestConfig) {
+    return this.#alias("delete", url, config);
   }
-   
-  head<O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-  head<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
-  head(url: string, config?: FaxiosRequestConfig) {
-    return this.request(mergeConfig(config || {}, {
-      method: "head",
-      url,
-      data: config && hasOwnProp(config, "data") ? config.data : undefined,
-    }));
+
+  head<O, D = unknown>(url: string | URL, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  head<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, config?: ResponseTypedConfig<T, D>): Promise<R>;
+  head(url: string | URL, config?: FaxiosRequestConfig) {
+    return this.#alias("head", url, config);
   }
-   
-  options<O, D = unknown>(url: string, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-  options<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, config?: FaxiosRequestConfig<D>): Promise<R>;
-  options(url: string, config?: FaxiosRequestConfig) {
-    return this.request(mergeConfig(config || {}, {
-      method: "options",
-      url,
-      data: config && hasOwnProp(config, "data") ? config.data : undefined,
-    }));
+
+  options<O, D = unknown>(url: string | URL, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  options<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, config?: ResponseTypedConfig<T, D>): Promise<R>;
+  options(url: string | URL, config?: FaxiosRequestConfig) {
+    return this.#alias("options", url, config);
   }
-   
-  post<O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-  post<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
-  post(url: string, data?: unknown, config?: FaxiosRequestConfig) {
-    return this.request(mergeConfig(config || {}, { method: "post", headers: {}, url, data }));
+
+  post<O, D = unknown>(url: string | URL, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  post<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, data?: D, config?: ResponseTypedConfig<T, D>): Promise<R>;
+  post(url: string | URL, data?: unknown, config?: FaxiosRequestConfig) {
+    return this.#alias("post", url, config, { data, headers: {} });
   }
-   
-  postForm<O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-  postForm<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
-  postForm(url: string, data?: unknown, config?: FaxiosRequestConfig) {
-    return this.request(mergeConfig(config || {}, { method: "post", headers: { "Content-Type": "multipart/form-data" }, url, data }));
+
+  postForm<O, D = unknown>(url: string | URL, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  postForm<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, data?: D, config?: ResponseTypedConfig<T, D>): Promise<R>;
+  postForm(url: string | URL, data?: unknown, config?: FaxiosRequestConfig) {
+    return this.#alias("post", url, config, { data, headers: { "Content-Type": "multipart/form-data" } });
   }
-   
-  put<O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-  put<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
-  put(url: string, data?: unknown, config?: FaxiosRequestConfig) {
-    return this.request(mergeConfig(config || {}, { method: "put", headers: {}, url, data }));
+
+  put<O, D = unknown>(url: string | URL, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  put<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, data?: D, config?: ResponseTypedConfig<T, D>): Promise<R>;
+  put(url: string | URL, data?: unknown, config?: FaxiosRequestConfig) {
+    return this.#alias("put", url, config, { data, headers: {} });
   }
-   
-  putForm<O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-  putForm<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
-  putForm(url: string, data?: unknown, config?: FaxiosRequestConfig) {
-    return this.request(mergeConfig(config || {}, { method: "put", headers: { "Content-Type": "multipart/form-data" }, url, data }));
+
+  putForm<O, D = unknown>(url: string | URL, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  putForm<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, data?: D, config?: ResponseTypedConfig<T, D>): Promise<R>;
+  putForm(url: string | URL, data?: unknown, config?: FaxiosRequestConfig) {
+    return this.#alias("put", url, config, { data, headers: { "Content-Type": "multipart/form-data" } });
   }
-   
-  patch<O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-  patch<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
-  patch(url: string, data?: unknown, config?: FaxiosRequestConfig) {
-    return this.request(mergeConfig(config || {}, { method: "patch", headers: {}, url, data }));
+
+  patch<O, D = unknown>(url: string | URL, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  patch<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, data?: D, config?: ResponseTypedConfig<T, D>): Promise<R>;
+  patch(url: string | URL, data?: unknown, config?: FaxiosRequestConfig) {
+    return this.#alias("patch", url, config, { data, headers: {} });
   }
-   
-  patchForm<O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-  patchForm<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
-  patchForm(url: string, data?: unknown, config?: FaxiosRequestConfig) {
-    return this.request(mergeConfig(config || {}, { method: "patch", headers: { "Content-Type": "multipart/form-data" }, url, data }));
+
+  patchForm<O, D = unknown>(url: string | URL, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  patchForm<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, data?: D, config?: ResponseTypedConfig<T, D>): Promise<R>;
+  patchForm(url: string | URL, data?: unknown, config?: FaxiosRequestConfig) {
+    return this.#alias("patch", url, config, { data, headers: { "Content-Type": "multipart/form-data" } });
   }
-   
-  query<O, D = unknown>(url: string, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
-  query<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string, data?: D, config?: FaxiosRequestConfig<D>): Promise<R>;
-  query(url: string, data?: unknown, config?: FaxiosRequestConfig) {
-    return this.request(mergeConfig(config || {}, { method: "query", headers: {}, url, data }));
+
+  query<O, D = unknown>(url: string | URL, data: D | undefined, config: SchemaConfig<O, D>): Promise<FaxiosResponse<O, D>>;
+  query<T = unknown, R = FaxiosResponse<T>, D = unknown>(url: string | URL, data?: D, config?: ResponseTypedConfig<T, D>): Promise<R>;
+  query(url: string | URL, data?: unknown, config?: FaxiosRequestConfig) {
+    return this.#alias("query", url, config, { data, headers: {} });
+  }
+
+  // The merge-and-dispatch step every method alias shares. A bodyless alias sends the config's own
+  // `data`; a body alias sends its `data` argument, with its `headers` merged over the config's.
+  #alias(
+    method: string,
+    url: string | URL,
+    config: FaxiosRequestConfig | undefined,
+    body?: { data: unknown; headers: RawFaxiosRequestHeaders; }
+  ): Promise<unknown> {
+    const aliasConfig = body ?? { data: config && hasOwnProp(config, "data") ? config.data : undefined };
+    return this.request(mergeConfig(config || {}, { ...aliasConfig, method, url }));
   }
 
   getUri(config?: FaxiosRequestConfig) {

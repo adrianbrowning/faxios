@@ -7,6 +7,7 @@ import toURLEncodedForm from "../helpers/toURLEncodedForm.js";
 import platform from "../platform.js";
 import type {
   FaxiosDefaults,
+  FormSerializerOptions,
   GenericFormData,
   InternalFaxiosRequestConfig
 } from "../types.js";
@@ -16,7 +17,7 @@ import transitionalDefaults from "./transitional.js";
 function serializeObjectPayload(
   data: unknown,
   contentType: string,
-  formSerializer: Record<string, unknown> | undefined,
+  formSerializer: FormSerializerOptions | undefined,
   FormDataCtor: (new () => object) | null | undefined
 ): unknown {
   if (contentType.indexOf("application/x-www-form-urlencoded") > -1) {
@@ -83,8 +84,7 @@ const defaults: FaxiosDefaults = {
       }
 
       if (isObjectPayload) {
-        const formSerializer = this.formSerializer as Record<string, unknown> | undefined;
-        const serialized = serializeObjectPayload(data, contentType, formSerializer, this.env?.FormData);
+        const serialized = serializeObjectPayload(data, contentType, this.formSerializer, this.env?.FormData);
         if (serialized !== undefined) return serialized;
       }
 

@@ -1,8 +1,8 @@
 "use strict";
 
-import type { GenericFormData } from "../types.js";
+import type { FormSerializerOptions } from "../types.js";
 import toFormData from "./toFormData.js";
 
-export default function toURLEncodedForm(data: unknown, options?: Record<string, unknown>) {
-  return toFormData(data, new URLSearchParams() as unknown as GenericFormData, { ...options });
+export default function toURLEncodedForm(data: unknown, options?: FormSerializerOptions) {
+  return toFormData(data, new URLSearchParams(), { ...options });
 }

@@ -31,23 +31,35 @@ export type { RouteBuilder, RouteConfig, RouteMethodConfig } from "./lib/core/ro
 
 export type {
   CreateFaxiosDefaults,
+  CustomParamsSerializer,
+  FaxiosBasicCredentials,
   FaxiosConfigHeaders,
   FaxiosContext,
+  FaxiosDefaults,
   FaxiosHeaderValue,
   FaxiosMiddleware,
   FaxiosNext,
   FaxiosPlugin,
   FaxiosPluginOptionNames,
+  FaxiosPluginSpec,
+  FaxiosProgressEvent,
   FaxiosPromise,
   FaxiosRequestConfig,
+  FaxiosRequestTransformer,
   FaxiosResponse,
+  FaxiosResponseTransformer,
+  FormSerializerOptions,
+  GenericAbortSignal,
+  GenericFormData,
   GenericHTMLFormElement,
   HeadersDefaults,
   InternalFaxiosRequestConfig,
   Method,
+  ParamsSerializerOptions,
   RawFaxiosRequestConfig,
   RawFaxiosRequestHeaders,
-  ResponseType
+  ResponseType,
+  TransitionalOptions
 } from "./lib/types.ts";
 
 export { faxios as default };

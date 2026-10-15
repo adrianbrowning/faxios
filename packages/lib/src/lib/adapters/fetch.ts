@@ -28,7 +28,7 @@ import {
 } from "./fetch-helpers.js";
 import type { ComposedSignal, FetchContext } from "./fetch-helpers.js";
 
-// btoa is a global in Node 16+ and browsers; accessed via globalThis for no-DOM lib compat
+// btoa is a global in every supported runtime; accessed via globalThis for no-DOM lib compat
 const _btoa: (data: string) => string = (
   globalThis as unknown as Record<string, unknown>
 )["btoa"] as (data: string) => string;

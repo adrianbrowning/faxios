@@ -3,7 +3,7 @@
 
 import FaxiosError from "../core/FaxiosError.js";
 // temporary hotfix to avoid circular references until FaxiosURLSearchParams is refactored
-import type { FormDataVisitorHelpers, GenericFormData, SerializerVisitor } from "../types.js";
+import type { FormDataVisitorHelpers, FormSerializerOptions, GenericFormData, SerializerVisitor } from "../types.js";
 import { forEach, isArray, isArrayBuffer, isBlob, isBoolean, isDate, isFileList, isFunction, isObject, isPlainObject, isSpecCompliantForm, isString, isTypedArray, isUndefined, toArray, toFlatObject } from "../utils.js";
 import validator from "./validator.js";
 
@@ -65,29 +65,18 @@ function isFlatArray(arr: unknown): boolean {
 }
 
 /**
- * Convert a data object to FormData
+ * Serializes `obj` into `formData`, or into a new global `FormData` when none is given.
  *
- * @param {Object} obj
- * @param {?Object} [formData]
- * @param {?Object} [options]
- * @param {Function} [options.visitor]
- * @param {Boolean} [options.metaTokens = true]
- * @param {Boolean} [options.dots = false]
- * @param {?Boolean} [options.indexes = false]
- *
- * @returns {Object}
- **/
-
-/**
- * It converts an object into a FormData object
- *
- * @param {Object<any, any>} obj - The object to convert to form data.
- * @param {string} formData - The FormData object to append to.
- * @param {Object<string, any>} options
- *
- * @returns
+ * @param obj - The object to serialize.
+ * @param formData - A `FormData` or FormData-like target (any object with `append(name, value)`).
+ * @param options - Serializer options: `visitor`, `metaTokens` (default `true`), `dots`
+ *   (default `false`), `indexes` (default `false`), `maxDepth` and `Blob`.
+ * @returns The target, with every value appended.
  */
-function toFormData(obj: unknown, formData?: GenericFormData | null, options?: Record<string, unknown>): GenericFormData {
+function toFormData(obj: unknown, formData?: null, options?: FormSerializerOptions): FormData;
+function toFormData<F extends GenericFormData>(obj: unknown, formData: F, options?: FormSerializerOptions): F;
+function toFormData(obj: unknown, formData?: GenericFormData | null, options?: FormSerializerOptions): GenericFormData;
+function toFormData(obj: unknown, formData?: GenericFormData | null, serializerOptions?: FormSerializerOptions): GenericFormData {
   if (!isObject(obj)) {
     throw new FaxiosError("target must be an object", FaxiosError.ERR_BAD_REQUEST);
   }
@@ -100,8 +89,8 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
 
   // Null-prototype destination: `visitor`, `maxDepth` and `Blob` are read below, and a polluted
   // Object.prototype must not supply them.
-  options = toFlatObject(
-    options,
+  const options = toFlatObject(
+    serializerOptions,
     Object.assign(Object.create(null) as Record<string, unknown>, {
       metaTokens: true,
       dots: false,
