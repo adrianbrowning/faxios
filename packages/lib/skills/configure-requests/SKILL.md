@@ -214,6 +214,10 @@ catch (error) {
 - Cancellation uses `AbortSignal` only. faxios checks the signal before middleware, before each
   schema step and right before `fetch`, so an abort during pre-flight work sends nothing. An
   abort rejects at once, even while a middleware or an async schema is still running.
+- `signal` must have `aborted`, `addEventListener` and `removeEventListener` (a polyfilled or
+  other-realm `AbortSignal` works). Anything else rejects with `ERR_BAD_OPTION_VALUE` before
+  middleware runs. One long-lived signal can serve many requests: faxios removes its listeners
+  from the signal once each request settles.
 - `controller.abort(reason)` keeps the reason: an `Error` becomes the `CanceledError`'s `cause`
   and message, a string becomes the message, at every stage.
 - A timeout always rejects with `ETIMEDOUT`. `ECONNABORTED` is never raised, and
@@ -224,7 +228,8 @@ catch (error) {
   timed-out request is not retried. For a per-try limit use `retry({ attemptTimeout })`.
   Changing `ctx.config.timeout` in middleware has no effect.
 - With `responseType: "stream"`, `timeout` and `signal` stay active until the body is fully
-  read or cancelled. Reading a stalled body rejects with `ETIMEDOUT` or `ERR_CANCELED`.
+  read or cancelled, also behind `retry({ attemptTimeout })`, whose per-try limit stops when the
+  response arrives. Reading a stalled body rejects with `ETIMEDOUT` or `ERR_CANCELED`.
   Cancel a body you don't read so the timer and signal listener are released.
 
 ### Handle errors by code

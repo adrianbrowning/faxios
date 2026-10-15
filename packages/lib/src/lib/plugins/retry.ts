@@ -182,33 +182,47 @@ function wait(ms: number, signal: FaxiosRequestConfig["signal"], config: FaxiosR
     }
     const onAbort = () => {
       clearTimeout(timer);
-      signal?.removeEventListener?.("abort", onAbort);
+      signal?.removeEventListener("abort", onAbort);
       reject(canceledFrom(signal!, config));
     };
     const timer = setTimeout(() => {
-      signal?.removeEventListener?.("abort", onAbort);
+      signal?.removeEventListener("abort", onAbort);
       resolve();
     }, ms);
-    signal?.addEventListener?.("abort", onAbort);
+    signal?.addEventListener("abort", onAbort);
   });
 }
 
 // A try's signal: it aborts when the try's own controller does, or when the request's signal does.
-// any() follows the request's signal without a listener on it, so a stream body read after the
-// try still sees the caller's abort. A signal any() can't take gets a listener `unlink` removes.
+// A listener, never AbortSignal.any(): an any() signal stays linked to the request's signal for as
+// long as that lives, and without a `timeout` that is the caller's, perhaps long-lived, signal.
+// `unlink` removes the listener once the try settles. A stream body read after that stays under
+// the request's signal and timeout through core, not through this link.
 function linkSignal(outer: FaxiosRequestConfig["signal"], controller: AbortController): { signal: AbortSignal; unlink: () => void; } {
-  const unlinked = { signal: controller.signal, unlink: () => {} };
-  if (!outer) return unlinked;
-  if (typeof AbortSignal.any === "function" && outer instanceof AbortSignal) {
-    return { ...unlinked, signal: AbortSignal.any([ outer, controller.signal ]) };
-  }
+  if (!outer) return { signal: controller.signal, unlink: () => {} };
   const forward = () => {
-    outer.removeEventListener?.("abort", forward);
+    outer.removeEventListener("abort", forward);
     controller.abort("reason" in outer ? outer.reason : undefined);
   };
   if (outer.aborted) forward();
-  else outer.addEventListener?.("abort", forward);
-  return { signal: controller.signal, unlink: () => outer.removeEventListener?.("abort", forward) };
+  else outer.addEventListener("abort", forward);
+  return { signal: controller.signal, unlink: () => outer.removeEventListener("abort", forward) };
+}
+
+// Retry listens on the request's signal for its waits and tries, so a signal a middleware before
+// retry passes on without listener methods gets the error dispatch would give it, before any timer.
+function assertListenable(signal: unknown, config: InternalFaxiosRequestConfig): void {
+  if (signal == null) return;
+  const listenable = typeof signal === "object" &&
+    "addEventListener" in signal && typeof signal.addEventListener === "function" &&
+    "removeEventListener" in signal && typeof signal.removeEventListener === "function";
+  if (!listenable) {
+    throw new FaxiosError(
+      "option signal must be an AbortSignal: an object with aborted, addEventListener and removeEventListener",
+      FaxiosError.ERR_BAD_OPTION_VALUE,
+      config
+    );
+  }
 }
 
 // One try with its own deadline. It settles once the deadline passes, even while middleware after
@@ -318,6 +332,7 @@ export function retry(options: RetryOptions = {}): FaxiosPlugin<{ options: Retry
       if (perRequest !== undefined) assertRetryOptions(perRequest, ctx.config);
       const policy = resolvePolicy(options, perRequest);
       if (!retriesMethod(ctx.config, perRequest, pluginMethods)) return next(ctx);
+      assertListenable(own(ctx.config, "signal"), ctx.config);
 
       // Tries run one after another on purpose: each must finish before deciding on the next.
       for (let attempt = 1; ; attempt++) {

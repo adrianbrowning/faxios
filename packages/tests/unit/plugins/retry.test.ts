@@ -121,12 +121,111 @@ describe("plugins::retry", () => {
 
     const request = api.get(URL);
     await vi.advanceTimersByTimeAsync(50);
-    await vi.runAllTimersAsync();
+    // Fires the retry's wait only, never the second try's own timer.
+    await vi.advanceTimersToNextTimerAsync();
     const response = await request;
 
     assert.strictEqual(signals.length, 2);
     assert.strictEqual(signals[0]!.aborted, true);
+    // The successful try stops its own timer when it settles, not when the timer would fire.
+    assert.strictEqual(vi.getTimerCount(), 0);
+    assert.strictEqual(signals[1]!.aborted, false);
     assert.strictEqual(response.status, 200);
+  });
+
+  it("unlinks each try from a long-lived caller signal once the try settles", async () => {
+    const { fetch } = scriptedFetch([ 200 ]);
+    const app = new AbortController();
+    const trySignals: Array<AbortSignal> = [];
+    const api = faxios.create({ env: { fetch } })
+      .use(retry({ delay: 0, attemptTimeout: 60_000 }))
+      .use(async (ctx, next) => {
+        trySignals.push(ctx.config.signal as AbortSignal);
+        return next(ctx);
+      });
+
+    for (let i = 0; i < 20; i++) {
+      await api.get(URL, { signal: app.signal });
+      assert.strictEqual(getEventListeners(app.signal, "abort").length, 0);
+    }
+    assert.strictEqual(vi.getTimerCount(), 0);
+    // A try signal still linked to the caller's aborts with it, and the caller's keeps it alive.
+    app.abort();
+    assert.deepStrictEqual(trySignals.map(signal => signal.aborted), Array.from({ length: 20 }, () => false));
+  });
+
+  it("keeps a streamed body under the request's timeout after attemptTimeout's try has ended", async () => {
+    // Behaves like fetch: aborting the request signal errors the body with the signal's reason.
+    const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
+      const signal = init!.signal!;
+      const body = new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode("first"));
+          signal.addEventListener("abort", () => controller.error(signal.reason), { once: true });
+        },
+      });
+      return new Response(body);
+    };
+    const api = faxios.create({ env: { fetch }, timeout: 100 }).use(retry({ delay: 0, attemptTimeout: 50 }));
+
+    const { data } = await api.get<ReadableStream<Uint8Array>>(URL, { responseType: "stream" });
+    const reader = data.getReader();
+    await reader.read();
+    let outcome: unknown = "pending";
+    void reader.read().then(() => "read", (err: unknown) => err)
+      .then(value => {
+        outcome = value;
+      });
+    // Past the try's limit: its timer stopped when the response arrived.
+    await vi.advanceTimersByTimeAsync(60);
+    assert.strictEqual<unknown>(outcome, "pending");
+    await vi.advanceTimersByTimeAsync(40);
+    assert.ok(outcome instanceof FaxiosError, `expected ETIMEDOUT, got ${String(outcome)}`);
+    assert.strictEqual(outcome.code, FaxiosError.ETIMEDOUT);
+    assert.strictEqual(outcome.message, "timeout of 100ms exceeded");
+    assert.strictEqual(vi.getTimerCount(), 0);
+  });
+
+  it("aborts the streamed fetch when the request's timeout passes while a middleware outside retry still waits", async () => {
+    const { promise: sent, resolve: send } = Promise.withResolvers<AbortSignal>();
+    const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
+      const signal = init!.signal!;
+      send(signal);
+      const body = new ReadableStream<Uint8Array>({
+        start(controller) {
+          signal.addEventListener("abort", () => controller.error(signal.reason), { once: true });
+        },
+      });
+      return new Response(body);
+    };
+    const api = faxios.create({ env: { fetch }, timeout: 100 })
+      .use(async (ctx, next) => {
+        const response = await next(ctx);
+        await new Promise(resolve => setTimeout(resolve, 150));
+        return response;
+      })
+      .use(retry({ delay: 0, attemptTimeout: 50 }));
+
+    const request = assert.rejects(api.get(URL, { responseType: "stream" }), { code: FaxiosError.ETIMEDOUT });
+    const fetchSignal = await sent;
+    await vi.advanceTimersByTimeAsync(100);
+    await request;
+    // The try had ended, so only the request's deadline can still reach the body it left open.
+    assert.strictEqual(fetchSignal.aborted, true);
+    await vi.runAllTimersAsync();
+  });
+
+  it("rejects a signal without listener methods that a middleware before retry passes on, before any try", async () => {
+    const { fetch, calls } = scriptedFetch([ 200 ]);
+    // Faxios checks the request's own signal; this one only middleware can introduce.
+    const listenerless = { aborted: false } as unknown as AbortSignal;
+    const api = faxios.create({ env: { fetch } })
+      .use(async (ctx, next) => next({ ...ctx, config: { ...ctx.config, signal: listenerless } }))
+      .use(retry({ delay: 0, attemptTimeout: 50 }));
+
+    await assert.rejects(api.get(URL), (err: unknown) =>
+      err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE && err.message.includes("signal"));
+    assert.strictEqual(calls.length, 0);
     assert.strictEqual(vi.getTimerCount(), 0);
   });
 
@@ -213,10 +312,12 @@ describe("plugins::retry", () => {
   it("never calls onRetry after the caller aborts, even when retryOn would retry", async () => {
     const controller = new AbortController();
     const retried: Array<number> = [];
-    const fetch = async (input: Request | string | URL, init?: RequestInit) => {
-      const signal = init?.signal ?? (input instanceof Request ? input.signal : undefined);
+    const { promise: sent, resolve: send } = Promise.withResolvers<AbortSignal>();
+    const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
+      const signal = init!.signal!;
+      send(signal);
       return new Promise<Response>((_resolve, reject) => {
-        signal?.addEventListener("abort", () => reject(signal.reason));
+        signal.addEventListener("abort", () => reject(signal.reason), { once: true });
       });
     };
     const api = faxios.create({ env: { fetch } })
@@ -233,9 +334,11 @@ describe("plugins::retry", () => {
       .use(retry({ delay: 0, retryOn: () => true, onRetry: (_error, attempt) => retried.push(attempt) }));
 
     const request = assert.rejects(api.get(URL, { signal: controller.signal }), CanceledError);
-    await vi.advanceTimersByTimeAsync(0);
+    const fetchSignal = await sent;
     controller.abort();
     await request;
+    // The abort reached the fetch in flight, not only the request's own settling.
+    assert.strictEqual(fetchSignal.aborted, true);
     await vi.runAllTimersAsync();
 
     assert.deepStrictEqual(retried, [ -1 ]);
@@ -282,6 +385,8 @@ describe("plugins::retry", () => {
 
     const request = assert.rejects(api.get(URL, { signal: controller.signal }), (err: unknown) => err instanceof CanceledError);
     await vi.advanceTimersByTimeAsync(10);
+    // The first try has answered, so the abort lands in the backoff.
+    assert.strictEqual(calls.length, 1);
     controller.abort();
     await request;
     await vi.runAllTimersAsync();
@@ -290,7 +395,7 @@ describe("plugins::retry", () => {
   });
 
   it("keeps the abort reason as the cause when the caller aborts during the backoff", async () => {
-    const { fetch } = scriptedFetch([ 503, 200 ]);
+    const { fetch, calls } = scriptedFetch([ 503, 200 ]);
     const controller = new AbortController();
     const reason = new Error("user left");
     const api = faxios.create({ env: { fetch } }).use(retry({ delay: 1000 }));
@@ -298,17 +403,19 @@ describe("plugins::retry", () => {
     const request = assert.rejects(api.get(URL, { signal: controller.signal }), (err: unknown) =>
       err instanceof CanceledError && err.message === "user left" && err.cause === reason);
     await vi.advanceTimersByTimeAsync(10);
+    assert.strictEqual(calls.length, 1);
     controller.abort(reason);
     await request;
   });
 
   it("leaves no abort listener on the caller's signal after an abort during the backoff", async () => {
-    const { fetch } = scriptedFetch([ 503, 200 ]);
+    const { fetch, calls } = scriptedFetch([ 503, 200 ]);
     const controller = new AbortController();
     const api = faxios.create({ env: { fetch } }).use(retry({ delay: 1000 }));
 
     const request = assert.rejects(api.get(URL, { signal: controller.signal }), (err: unknown) => err instanceof CanceledError);
     await vi.advanceTimersByTimeAsync(10);
+    assert.strictEqual(calls.length, 1);
     controller.abort();
     await request;
     await vi.runAllTimersAsync();

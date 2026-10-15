@@ -171,19 +171,49 @@ describe("core::cancellation", () => {
       await request;
     });
 
-    it("clears its timer and leaves no listener on the caller's signal once the request settles", async () => {
-      const controller = new AbortController();
-      const api = faxios.create({ env: { fetch: jsonFetch() }, timeout: 1000 }).use(async (ctx, next) => next(ctx));
+    // The polyfill keeps its listeners on the signal, where a test can count them. It is a signal
+    // the request has to listen on, unlike a native one AbortSignal.any() follows without a listener.
+    const polyfillListeners = (signal: object): number => {
+      const listeners: unknown = "listeners" in signal ? signal.listeners : undefined;
+      if (typeof listeners !== "object" || listeners === null || !("abort" in listeners)) return 0;
+      return Array.isArray(listeners.abort) ? listeners.abort.length : 0;
+    };
 
-      const response = await api.get(URL, { signal: controller.signal });
-      assert.deepStrictEqual(response.data, { ok: true });
-      assert.strictEqual(vi.getTimerCount(), 0);
-      assert.strictEqual(getEventListeners(controller.signal, "abort").length, 0);
+    for (const [ outcome, fetch, expected ] of [
+      [ "succeeds", jsonFetch(), undefined ],
+      [ "fails with an HTTP error", async () => new Response("no", { status: 500 }), FaxiosError.ERR_BAD_RESPONSE ],
+      [ "fails with a network error", async () => Promise.reject(new TypeError("fetch failed")), FaxiosError.ERR_NETWORK ],
+    ] as const) {
+      it(`clears its timer and leaves no listener on a polyfilled caller signal once the request ${outcome}`, async () => {
+        const controller = new PolyfilledController();
+        const api = faxios.create({ env: { fetch }, timeout: 1000 });
 
-      await assert.rejects(faxios.create({ env: { fetch: async () => Promise.reject(new TypeError("fetch failed")) }, timeout: 1000 })
-        .get(URL, { signal: controller.signal }), { code: FaxiosError.ERR_NETWORK });
+        const request = api.get(URL, { signal: controller.signal });
+        assert.strictEqual(polyfillListeners(controller.signal), 1);
+        if (expected) await assert.rejects(request, { code: expected });
+        else assert.deepStrictEqual((await request).data, { ok: true });
+
+        assert.strictEqual(vi.getTimerCount(), 0);
+        assert.strictEqual(polyfillListeners(controller.signal), 0);
+      });
+    }
+
+    it("unlinks a long-lived caller signal from each request once it settles", async () => {
+      const app = new AbortController();
+      const requestSignals: Array<AbortSignal> = [];
+      const api = faxios.create({ env: { fetch: jsonFetch() }, timeout: 60_000 }).use(async (ctx, next) => {
+        requestSignals.push(ctx.config.signal as AbortSignal);
+        return next(ctx);
+      });
+
+      for (let i = 0; i < 20; i++) {
+        await api.get(URL, { signal: app.signal });
+        assert.strictEqual(getEventListeners(app.signal, "abort").length, 0);
+      }
       assert.strictEqual(vi.getTimerCount(), 0);
-      assert.strictEqual(getEventListeners(controller.signal, "abort").length, 0);
+      // A request signal still linked to the caller's aborts with it, and the caller's keeps it alive.
+      app.abort();
+      assert.deepStrictEqual(requestSignals.map(signal => signal.aborted), Array.from({ length: 20 }, () => false));
     });
 
     it("rejects with the caller's CanceledError when the caller aborts before the deadline", async () => {
@@ -199,11 +229,21 @@ describe("core::cancellation", () => {
 
     it("is armed before middleware runs, so a timeout a middleware sets doesn't change it", async () => {
       const calls: Array<unknown> = [];
-      const api = faxios.create({ env: { fetch: jsonFetch(calls) } }).use(async (ctx, next) => next({ ...ctx, config: { ...ctx.config, timeout: -1 } }));
+      const hangingFetch = async (input: Request | string | URL, init?: RequestInit) => {
+        calls.push(input);
+        const signal = init!.signal!;
+        return new Promise<Response>((_resolve, reject) => {
+          signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+        });
+      };
+      const api = faxios.create({ env: { fetch: hangingFetch }, timeout: 50 })
+        .use(async (ctx, next) => next({ ...ctx, config: { ...ctx.config, timeout: 0 } }));
 
-      const response = await api.get(URL);
-      assert.deepStrictEqual(response.data, { ok: true });
+      const request = assert.rejects(api.get(URL), isTimeout(50));
+      await vi.advanceTimersByTimeAsync(50);
+      await request;
       assert.strictEqual(calls.length, 1);
+      assert.strictEqual(vi.getTimerCount(), 0);
     });
 
     it("follows a polyfilled caller signal, which AbortSignal.any() can't take", async () => {
@@ -215,6 +255,41 @@ describe("core::cancellation", () => {
       controller.abort("user left");
       await request;
       assert.strictEqual(vi.getTimerCount(), 0);
+    });
+  });
+
+  describe("signal validation", () => {
+    // The public signal type requires listener methods: without them faxios can't watch the signal.
+    const listenerless = { aborted: false } as unknown as AbortSignal;
+
+    for (const timeout of [ undefined, 1000 ]) {
+      for (const withMiddleware of [ false, true ]) {
+        it(`rejects a signal without listener methods with ERR_BAD_OPTION_VALUE (timeout ${String(timeout)}, ${withMiddleware ? "with" : "without"} middleware)`, async () => {
+          const calls: Array<unknown> = [];
+          let ran = false;
+          const api = faxios.create({ env: { fetch: jsonFetch(calls) } });
+          if (withMiddleware) {
+            api.use(async (ctx, next) => {
+              ran = true;
+              return next(ctx);
+            });
+          }
+
+          await assert.rejects(api.get(URL, { signal: listenerless, timeout }), (err: unknown) =>
+            err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE && err.message.includes("signal"));
+          assert.strictEqual(ran, false);
+          assert.strictEqual(calls.length, 0);
+        });
+      }
+    }
+
+    it("rejects a signal without listener methods that a middleware passes on", async () => {
+      const calls: Array<unknown> = [];
+      const api = faxios.create({ env: { fetch: jsonFetch(calls) } })
+        .use(async (ctx, next) => next({ ...ctx, config: { ...ctx.config, signal: listenerless } }));
+
+      await assert.rejects(api.get(URL), { code: FaxiosError.ERR_BAD_OPTION_VALUE });
+      assert.strictEqual(calls.length, 0);
     });
   });
 
