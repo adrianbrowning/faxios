@@ -5,13 +5,17 @@ import FaxiosError from "../core/FaxiosError.js";
 import { definePlugin } from "./definePlugin.js";
 import { assertOptions, isHeaderName, own } from "./shared.js";
 
+// `x?: T | undefined` lets a consumer with `exactOptionalPropertyTypes` pass the `undefined` the
+// option checks treat as unset.
+/* eslint-disable sonarjs/no-redundant-optional -- see above */
 export type ForwardToOptions = {
   /** The header that carries the target URL. Default `"X-Forward-To"`. */
-  header?: string;
+  header?: string | undefined;
 };
 
 /** `forward: false` sends that request straight to its own URL instead of the gateway. */
-export type ForwardToRequestOptions = { forward?: false; };
+export type ForwardToRequestOptions = { forward?: false | undefined; };
+/* eslint-enable sonarjs/no-redundant-optional */
 
 type Fetch = NonNullable<NonNullable<FaxiosRequestConfig["env"]>["fetch"]>;
 type FetchInit = NonNullable<Parameters<Fetch>[1]>;

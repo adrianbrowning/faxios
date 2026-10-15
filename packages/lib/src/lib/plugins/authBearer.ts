@@ -10,19 +10,23 @@ import { assertOptions, isBoolean, isHeaderName, own } from "./shared.js";
 /** What `authBearer` provides to plugins installed after it. */
 export type AuthBearerCapability = { auth: { getToken: () => Promise<string>; }; };
 
+// `x?: T | undefined` lets a consumer with `exactOptionalPropertyTypes` pass the `undefined` the
+// option checks treat as unset.
+/* eslint-disable sonarjs/no-redundant-optional -- see above */
 export type AuthBearerOptions = {
   /** The header to set. Default `"Authorization"`. */
-  header?: string;
+  header?: string | undefined;
   /**
    * The origins (`"https://api.example.com"`) that get the token, replacing the default rule:
    * with an absolute instance `baseURL`, only its origin; otherwise only relative request URLs.
    */
-  origins?: Array<string>;
+  origins?: Array<string> | undefined;
   /** Replace a header the request already has. Default `false`: an explicit header is kept. */
-  overwrite?: boolean;
+  overwrite?: boolean | undefined;
   /** Put before the token, separated by a space. Default `"Bearer"`; `""` sends the bare token. */
-  scheme?: string;
+  scheme?: string | undefined;
 };
+/* eslint-enable sonarjs/no-redundant-optional */
 
 // A bare origin, optionally with a trailing slash. A path would look like a narrower limit than
 // the origin the token is really sent to.

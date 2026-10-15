@@ -3,7 +3,11 @@
 // config field or header must compile.
 import faxios, { create, FaxiosHeaders } from "faxios";
 import type { FaxiosRequestConfig } from "faxios";
+import { authBearer } from "faxios/plugins/auth-bearer";
+import { forwardTo } from "faxios/plugins/forward-to";
+import { retry } from "faxios/plugins/retry";
 
+declare const maybeBoolean: boolean | undefined;
 declare const maybeNumber: number | undefined;
 declare const maybeString: string | undefined;
 
@@ -24,4 +28,16 @@ async function undefinedOptionals(): Promise<void> {
   void config;
 }
 
+// Nested option objects take undefined too: transitional, the plugins' factory options and the
+// per-request retry option.
+async function undefinedNestedOptionals(): Promise<void> {
+  await faxios.get("/user", { transitional: { clarifyTimeoutError: maybeBoolean, forcedJSONParsing: undefined } });
+  const api = create({ transitional: { validateStatusUndefinedResolves: maybeBoolean } })
+    .use(retry({ attempts: maybeNumber, attemptTimeout: undefined, jitter: undefined }))
+    .use(authBearer(() => "token", { scheme: maybeString, header: undefined, overwrite: maybeBoolean }))
+    .use(forwardTo("http://gateway.local/", { header: maybeString }));
+  await api.get("/user", { retry: { attempts: maybeNumber }, forward: undefined });
+}
+
 void undefinedOptionals;
+void undefinedNestedOptionals;
