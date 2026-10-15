@@ -174,7 +174,8 @@ type FetchEnv = {
   Response?: unknown;
 };
 
-type FetchAdapter = (config: InternalFaxiosRequestConfig) => Promise<unknown>;
+// `body` is the request body as transformRequest left it; `config.data` stays the caller's value.
+type FetchAdapter = (config: InternalFaxiosRequestConfig, body: unknown) => Promise<unknown>;
 
 // Own reads only: a polluted Object.prototype.fetch must never become the transport.
 const readOwn = (obj: unknown, key: string): unknown =>
@@ -676,7 +677,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     if (!isStreamResponse || response.body == null) unsubscribe();
   };
 
-  return async (config: InternalFaxiosRequestConfig) => {
+  return async (config: InternalFaxiosRequestConfig, body: unknown) => {
     const _resolved = prepareRequest(config) as InternalFaxiosRequestConfig & {
       fetchOptions?: Record<string, unknown>;
       withCredentials?: boolean | string;
@@ -684,7 +685,6 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     let {
       url,
       method,
-      data,
       signal,
       onDownloadProgress,
       onUploadProgress,
@@ -693,6 +693,8 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       maxContentLength,
       maxBodyLength,
     } = _resolved;
+    // The body transformRequest produced; `config.data` keeps the caller's value for errors.
+    let data = body;
     let headers = _resolved.headers;
     let withCredentials: boolean | string =
       _resolved.withCredentials ?? "same-origin";

@@ -29,6 +29,21 @@ describe("core::validateSchema", () => {
       assert.strictEqual((err.issues![0] as unknown as Record<string, unknown>)["value"], undefined);
     });
 
+    it("keeps only the key of each object path segment", async () => {
+      // The shape of Valibot's ObjectPathItem: the rejected object and value ride along with the key.
+      const input = { username: "alice", password: "hunter2" };
+      const schema = makeSchema(() => ({
+        issues: [{ message: "Invalid length", path: [{ type: "object", origin: "value", input, key: "password", value: "hunter2" }, 0 ] }],
+      }));
+
+      let err: FaxiosError | undefined;
+      try { await validateSchema(schema, input, FaxiosError.ERR_BAD_REQUEST_SCHEMA, dummyConfig); }
+      catch (e) { err = e as FaxiosError; }
+
+      assert.ok(err instanceof FaxiosError);
+      assert.deepStrictEqual(err.issues, [{ message: "Invalid length", path: [{ key: "password" }, 0 ] }]);
+    });
+
     it("omits path key entirely when path is undefined", async () => {
       const schema = makeSchema(() => ({
         issues: [{ message: "no path", path: undefined }],

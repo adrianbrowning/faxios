@@ -239,6 +239,26 @@ describe("core::FaxiosError", () => {
       });
     });
 
+    it("strips URL user info from the message and the stack", () => {
+      const error = new FaxiosError("connect ECONNREFUSED http://user:secret-pw@api.example.com/items");
+
+      const json = error.toJSON();
+
+      expect(json.message).toBe("connect ECONNREFUSED http://api.example.com/items");
+      expect(json.stack).toContain("http://api.example.com/items");
+      expect(json.stack).not.toContain("secret-pw");
+    });
+
+    it("strips URL user info from a long message in linear time", () => {
+      // A path segment of "a." runs made the old unanchored pattern rescan to the end from every letter.
+      const error = new FaxiosError(`Network Error: http://host/files/${"a.".repeat(1e5)}`);
+
+      const start = performance.now();
+      error.toJSON();
+
+      expect(performance.now() - start).toBeLessThan(50);
+    });
+
     it("masks the token authBearer sent on a failed request", async () => {
       const api = faxios.create({
         baseURL: "http://localhost",
@@ -306,15 +326,14 @@ describe("core::FaxiosError", () => {
     });
 
     it("matches case-insensitively", () => {
+      // Not a default key, so only the folded `redact` entry can mask it.
       const config = {
-        headers: { Authorization: "Bearer abc" },
-        redact: [ "authorization" ],
+        login: { apiKey: "secret-key" },
+        redact: [ "APIKEY" ],
       };
-      const error = new FaxiosError("Boom", "ECODE", config as any);
+      const error = new FaxiosError("Boom", "ECODE", { ...config, headers: emptyHeaders });
 
-      expect((error.toJSON().config as any).headers.Authorization).toBe(
-        "[REDACTED ****]"
-      );
+      expect(error.toJSON().config).toMatchObject({ login: { apiKey: "[REDACTED ****]" } });
     });
 
     it("redacts headers stored in an FaxiosHeaders instance", () => {
@@ -458,6 +477,68 @@ describe("core::FaxiosError", () => {
       expect((error.toJSON().config as any).redact).toEqual([ "password" ]);
     });
 
+    it.each([
+      [ "JSON", {}, "{\"username\":\"alice\",\"password\":\"hunter2\"}" ],
+      [ "urlencoded", { "Content-Type": "application/x-www-form-urlencoded" }, "username=alice&password=hunter2" ],
+    ])("masks redact keys in a %s body and keeps the caller's data on the error", async (_kind, headers, sent) => {
+      const bodies: Array<unknown> = [];
+      const api = faxios.create({
+        baseURL: "http://localhost",
+        env: {
+          fetch: async (_input: Request | string | URL, init?: RequestInit) => {
+            bodies.push(init?.body);
+            return new Response(null, { status: 401 });
+          },
+        },
+      });
+      const data = { username: "alice", password: "hunter2" };
+
+      const error: unknown = await api.post("/login", data, { headers, redact: [ "password" ] }).catch((err: unknown) => err);
+      if (!(error instanceof FaxiosError)) throw new Error("expected the request to reject with a FaxiosError");
+
+      expect(bodies).toEqual([ sent ]);
+      expect(error.config?.data).toBe(data);
+      expect(error.toJSON().config).toMatchObject({ data: { username: "alice", password: "[REDACTED ****]" } });
+      expect(JSON.stringify(error)).not.toContain("hunter2");
+    });
+
+    it("masks the instance's redact keys and the request's together", async () => {
+      const api = faxios.create({
+        baseURL: "http://localhost",
+        headers: { "X-Api-Key": "instance-secret" },
+        redact: [ "x-api-key" ],
+        env: { fetch: async () => new Response(null, { status: 500 }) },
+      });
+
+      const error = await api.get("/x", { params: { password: "request-secret" }, redact: [ "password" ] })
+        .catch((err: unknown) => err);
+
+      expect(faxios.isFaxiosError(error)).toBe(true);
+      expect(JSON.stringify(error)).not.toMatch(/instance-secret|request-secret/);
+    });
+
+    it("keeps the rejected password out of schema issues", async () => {
+      // A request schema that reports issues the way Valibot does: each object path segment
+      // carries the object it checked and the rejected value next to the key.
+      const requestSchema = {
+        "~standard": {
+          version: 1 as const,
+          vendor: "valibot-shaped",
+          validate: (input: unknown) => ({
+            issues: [{ message: "Invalid length", path: [{ type: "object", origin: "value", input, key: "password", value: "hunter2" }] }],
+          }),
+        },
+      };
+      const api = faxios.create({ baseURL: "http://localhost", env: { fetch: async () => new Response(null) } });
+
+      const error: unknown = await api.post("/login", { username: "alice", password: "hunter2" }, { requestSchema, redact: [ "password" ] })
+        .catch((err: unknown) => err);
+      if (!(error instanceof FaxiosError)) throw new Error("expected the request to reject with a FaxiosError");
+
+      expect(error.code).toBe(FaxiosError.ERR_BAD_REQUEST_SCHEMA);
+      expect(JSON.stringify(error)).not.toContain("hunter2");
+    });
+
     describe("config snapshot", () => {
       const snapshot = (source: object) => new FaxiosError("Boom", "ECODE", { ...source, headers: emptyHeaders }).toJSON().config;
 
@@ -474,7 +555,43 @@ describe("core::FaxiosError", () => {
       it("keeps objects with their own toJSON method without rebuilding them", () => {
         const obj = { toJSON: () => ({ ok: 1 }) };
 
-        expect(snapshot({ obj })).toHaveProperty("obj", obj);
+        expect((snapshot({ obj }) as Record<string, unknown>)["obj"]).toBe(obj);
+      });
+
+      it("masks redact keys in what a custom toJSON returns, at any depth", () => {
+        class Credentials {
+          toJSON() {
+            return { user: "alice", password: "secret-1", nested: { list: [{ token: "secret-2" }] } };
+          }
+        }
+        const config = { credentials: new Credentials(), login: { toJSON: () => ({ password: "secret-3" }) }, redact: [ "password", "token" ] };
+
+        const json = snapshot(config);
+
+        expect(json).toMatchObject({
+          credentials: { user: "alice", password: "[REDACTED ****]", nested: { list: [{ token: "[REDACTED ****]" }] } },
+          login: { password: "[REDACTED ****]" },
+        });
+        expect(JSON.stringify(json)).not.toContain("secret");
+      });
+
+      it("serializes what toJSON returns once, as JSON.stringify does, dropping a cycle back to the object", () => {
+        const looped: Record<string, unknown> = { password: "secret" };
+        looped["toJSON"] = () => ({ self: looped, again: { toJSON: () => looped }, password: looped["password"] });
+
+        const json = snapshot({ looped, redact: [ "password" ] });
+
+        expect(json).toMatchObject({ looped: { password: "[REDACTED ****]" } });
+        expect(JSON.stringify(json)).not.toContain("secret");
+      });
+
+      it("leaves out a value whose toJSON throws, so the error still serializes", () => {
+        const broken = { toJSON: () => { throw new Error("no"); } };
+
+        const json = snapshot({ broken, kept: 1 });
+
+        expect(json).toEqual({ kept: 1, headers: {} });
+        expect(() => JSON.stringify(json)).not.toThrow();
       });
 
       it("serializes a shared object at every occurrence, as it is not a cycle", () => {

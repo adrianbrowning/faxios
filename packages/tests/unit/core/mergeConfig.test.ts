@@ -349,6 +349,22 @@ describe("core::mergeConfig", () => {
     });
   });
 
+  describe("redact", () => {
+    it("adds config2's keys to config1's, lower-cased and deduplicated", () => {
+      const merged = mergeConfig({ redact: [ "X-Api-Key", "token" ] }, { redact: [ "Password", "TOKEN" ] });
+
+      expect(merged.redact).toEqual([ "x-api-key", "token", "password" ]);
+    });
+
+    it("keeps config1's keys when config2 has none", () => {
+      expect(mergeConfig({ redact: [ "X-Api-Key" ] }, {}).redact).toEqual([ "x-api-key" ]);
+    });
+
+    it("leaves redact unset when neither config has it", () => {
+      expect(mergeConfig({}, {})).not.toHaveProperty("redact");
+    });
+  });
+
   describe("directMergeKeys", () => {
     it("merges when config2 defines the key", () => {
       expect(mergeConfig({}, { validateStatus: undefined })).toEqual({

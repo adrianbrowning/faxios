@@ -82,6 +82,19 @@ describe("plugins::timing", () => {
     assert.deepStrictEqual(events[0]!.error, { code: undefined, message: "middleware broke", status: undefined });
   });
 
+  it("strips URL user info from the error message", async () => {
+    const events: Array<TimingEvent> = [];
+    const api = faxios.create({ baseURL: BASE, env: { fetch: slowFetch(0) } })
+      .use(timing(event => events.push(event)))
+      .use(() => {
+        throw new Error("connect ECONNREFUSED http://user:secret-pw@localhost/timing");
+      });
+
+    await assert.rejects(api.get(URL), /ECONNREFUSED/);
+
+    assert.strictEqual(events[0]!.error!.message, "connect ECONNREFUSED http://localhost/timing");
+  });
+
   it("strips the query string and fragment from the URL", async () => {
     const events: Array<TimingEvent> = [];
     const api = faxios.create({ baseURL: `${BASE}/v1`, env: { fetch: slowFetch(0) } }).use(timing(event => events.push(event)));
