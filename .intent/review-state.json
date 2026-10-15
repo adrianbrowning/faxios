@@ -1953,15 +1953,15 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "12e6a76b3ed8fbdd95c4dacda10e18850660d1c63e7d7f8810c8eda831f21347",
+      "fingerprint": "39a76a4e7b2b5552e2eacea5e3b30dad3440bf19cf7289659b41ca757085a345",
       "snapshot": {
-        "THREATMODEL.md": "cbd58323e9b7365a7bd056165b7c946d86e7ba98a37e2c28b14b61c3ce4673f4"
+        "THREATMODEL.md": "2b1c320c29a04f1123db95c10e54ec718fd8d44f47c76f6e2786010d5405367d"
       },
-      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
-      "outcome": "updated",
-      "reason": "#276: skill import table lists /forward-to (checked against package.json exports by packages/tests/scripts/check-skill-exports.ts); library_version 0.2.4; sources add assertRequestConfig, assertSignal, assertTimeout, requestDeadline and resolveRequestURL; ETIMEDOUT cited from requestDeadline.ts; domain_map/skill_spec/skill_tree refreshed and the MIGRATION_GUIDE gap closed (#188); THREATMODEL cites current .ts files and tests; bump file describes the skill change",
+      "head": "45b7b0555ce63551641d71fbf6964bd0c543a3ee",
+      "outcome": "no-change",
+      "reason": "CI, Dependabot and test-harness changes only; nothing the configure-requests skill teaches changed",
       "evidence": [
-        "Changed: THREATMODEL.md at c6837e153a1f472149917f5556ddd2dba1e4fbc5"
+        "Changed: THREATMODEL.md at e3fd6a6b6c28cd539f29f96a074008f366d9a32a"
       ]
     },
     "source:packages/docs/.vitepress/theme/index.ts": {
@@ -2585,16 +2585,15 @@
       ]
     },
     "source:packages/tests/scripts/check-expect-error.ts": {
-      "fingerprint": "7d3bfee4c1ac1213cc6a6e26115134e4680c076da30b6a1339cc035759e8ed05",
+      "fingerprint": "6c4c0b10bfc242ecaeb262751db13594e1a9717296d872053027026442470c16",
       "snapshot": {
-        "packages/tests/scripts/check-expect-error.ts": "0115ec33d507db954b994932b37e14fea25b43aab3fe12ee327c252b0b67dc07"
+        "packages/tests/scripts/check-expect-error.ts": "8cc709d84c48055918766fc52b33096dc70d3692f46ded5004e4059afce87958"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "45b7b0555ce63551641d71fbf6964bd0c543a3ee",
       "outcome": "no-change",
-      "reason": "Keys sorted in the `Directive` type literal (code, index) and the `Copy` type literal (copy, directives, lines, source). Both are type-only. Behaviour change: none",
+      "reason": "CI, Dependabot and test-harness changes only; nothing the configure-requests skill teaches changed",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/scripts/check-expect-error.ts: @@ -14,8 +14,8 @@ (diff/192)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/scripts/check-expect-error.ts at e3fd6a6b6c28cd539f29f96a074008f366d9a32a"
       ]
     },
     "source:packages/tests/scripts/sync-version.ts": {
@@ -3274,27 +3273,27 @@
       ]
     },
     "source:.github/workflows/lockfile-lint.yml": {
-      "fingerprint": "2dd855fad1b433670eb190e38db614bec6f902628d6ce3fc896cb0d22ea11f7d",
+      "fingerprint": "6778e1cce64c539090058ad102111c622252f82d9d4f9d9571cc24dff161d4e1",
       "snapshot": {
-        ".github/workflows/lockfile-lint.yml": "1a17b1cefdaa8feb6492d12d6cd704fe6991b66a7bdb61f944deeedcc303ff2a"
+        ".github/workflows/lockfile-lint.yml": "b5e2d3f2ac97057da22e62716793eed62f032cbcf4634f854866ad83d52184e7"
       },
-      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
+      "head": "45b7b0555ce63551641d71fbf6964bd0c543a3ee",
       "outcome": "no-change",
-      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "reason": "Workflow header comment only; the packaged skill teaches nothing about lockfile linting",
       "evidence": [
-        "Changed: .github/workflows/lockfile-lint.yml at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+        "Changed: .github/workflows/lockfile-lint.yml at 77d63ba2cdbfc1db43b424f0de8141e2a426586f"
       ]
     },
     "source:.github/workflows/run-ci.yml": {
-      "fingerprint": "ac1be634e3ba7c7926577317c5870a69b1d4fb47db69928a287a3d8bec8009c4",
+      "fingerprint": "f0e53f769d1b20d67443fb010be09ee777ce630f1be649f0bb25a3c1f68e8336",
       "snapshot": {
-        ".github/workflows/run-ci.yml": "a528d34085619325bdc657f04c916486345cb3cfee0f1ac9b000830b992abaf7"
+        ".github/workflows/run-ci.yml": "80d21e584b88bed2a59801602506e23ddadb5edbc4566d70222b50d32be85481"
       },
-      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
+      "head": "45b7b0555ce63551641d71fbf6964bd0c543a3ee",
       "outcome": "no-change",
-      "reason": "Docs build in pnpm check and PR CI, contract checks for docs declaration blocks, docs pages fixed to the shipped API, lib bp/version/docs:dev scripts removed and zshy pinned, REQUEST_CONFIG_KEYS exported for a docs test; no library behaviour, option or export the configure-requests skill teaches changes",
+      "reason": "CI, Dependabot and test-harness changes only; nothing the configure-requests skill teaches changed",
       "evidence": [
-        "Changed: .github/workflows/run-ci.yml at e587c3c07f450449a711f53a0099c400a362a8e8"
+        "Changed: .github/workflows/run-ci.yml at e3fd6a6b6c28cd539f29f96a074008f366d9a32a"
       ]
     },
     "source:.github/workflows/ts-check.yml": {
@@ -4152,15 +4151,15 @@
       ]
     },
     "source:CODING_STANDARDS.md": {
-      "fingerprint": "81e0a22995e678fabb813982c5d8c477428f0068402f3b34ff3e90d0ee21e1d9",
+      "fingerprint": "436200b7847ef2e911aa52835da3cdedf023955e002a88be40e58b56dc5c396d",
       "snapshot": {
-        "CODING_STANDARDS.md": "e8104d3c6c0801f0d470fbd5a6bc6a16d7a3b2896f2cc521aaec8625b392ca7b"
+        "CODING_STANDARDS.md": "aa888c165bb98ad527be81748246afb8ca3b043a636f18e60c9093b86969e522"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
-      "outcome": "updated",
-      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
+      "head": "45b7b0555ce63551641d71fbf6964bd0c543a3ee",
+      "outcome": "no-change",
+      "reason": "CI, Dependabot and test-harness changes only; nothing the configure-requests skill teaches changed",
       "evidence": [
-        "Changed: CODING_STANDARDS.md at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
+        "Changed: CODING_STANDARDS.md at e3fd6a6b6c28cd539f29f96a074008f366d9a32a"
       ]
     },
     "source:docs/agents/issue-tracker.md": {
@@ -5544,27 +5543,27 @@
       ]
     },
     "source:.github/dependabot.yml": {
-      "fingerprint": "4a7f31b61c633cdd8743b11f3307707f9a1eb76638ca765f11b9b5f8d0e6d9bd",
+      "fingerprint": "91318d6e07583a7da23b21d86c88f81bea497f1a4a3a29b7967db93c67de4cb8",
       "snapshot": {
-        ".github/dependabot.yml": "625dce87bc5caef3667869a9ba34da8d8e64c6f2c351710e48ab2c096287a522"
+        ".github/dependabot.yml": "658e2feed48685d9cf3dce0ac519dbece6b2bb027a97d5fda96d3ad9457b3b96"
       },
-      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "head": "45b7b0555ce63551641d71fbf6964bd0c543a3ee",
       "outcome": "no-change",
-      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "reason": "CI, Dependabot and test-harness changes only; nothing the configure-requests skill teaches changed",
       "evidence": [
-        "Changed: .github/dependabot.yml at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+        "Changed: .github/dependabot.yml at e3fd6a6b6c28cd539f29f96a074008f366d9a32a"
       ]
     },
     "source:.github/scripts/check-lockfile-coverage.mjs": {
-      "fingerprint": "410fb9a794024bcc85fe20925081a95638b7c55b7b9acf7d1a477a4f0a29194b",
+      "fingerprint": "b5be993ab9e4102f65228682fed69a87107454b996165e2af6468276e3cae12d",
       "snapshot": {
-        ".github/scripts/check-lockfile-coverage.mjs": "509d891c5c4f532ffbbc35e9de218a3de76c47377de416f7de04c52494b1bd4c"
+        ".github/scripts/check-lockfile-coverage.mjs": "af7ea648568be85f34f0c620ac57f98e9bf0e79cbff81d59428b7a03595159d6"
       },
-      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "head": "45b7b0555ce63551641d71fbf6964bd0c543a3ee",
       "outcome": "no-change",
-      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "reason": "CI, Dependabot and test-harness changes only; nothing the configure-requests skill teaches changed",
       "evidence": [
-        "Changed: .github/scripts/check-lockfile-coverage.mjs at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+        "Changed: .github/scripts/check-lockfile-coverage.mjs at e3fd6a6b6c28cd539f29f96a074008f366d9a32a"
       ]
     },
     "source:packages/lib/pnpm-lock.yaml": {
@@ -7020,15 +7019,15 @@
       ]
     },
     "source:packages/tests/smoke/esm/tests/timeout.smoke.test.ts": {
-      "fingerprint": "e305f9d716402fdbfc8a74df3bb1c07cbce1f6a12b432b1f8a10299a9d248583",
+      "fingerprint": "941ffed9ac73bf8367c526ae62f81e9e81599dab4d49f732980af797b382c2a8",
       "snapshot": {
-        "packages/tests/smoke/esm/tests/timeout.smoke.test.ts": "daf7a311313abae56d8ee36284c89625840d8451df8b76b58e1fe35732b35927"
+        "packages/tests/smoke/esm/tests/timeout.smoke.test.ts": "9c6d5172e50c94b59f481ad66ed64a062a07d6a6a9a8b619846447cc69602811"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "45b7b0555ce63551641d71fbf6964bd0c543a3ee",
       "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "reason": "CI, Dependabot and test-harness changes only; nothing the configure-requests skill teaches changed",
       "evidence": [
-        "Changed files: packages/tests/smoke/esm/tests/timeout.smoke.test.ts"
+        "Changed: packages/tests/smoke/esm/tests/timeout.smoke.test.ts at e3fd6a6b6c28cd539f29f96a074008f366d9a32a"
       ]
     },
     "source:packages/tests/smoke/esm/tsconfig.json": {
@@ -7104,15 +7103,15 @@
       ]
     },
     "source:packages/tests/docs-examples/docs-build.test.ts": {
-      "fingerprint": "98bb3a67ad39032a3fdf2754a1d2bc7e2d0a59a11317bfb108f48295d7bc5e0a",
+      "fingerprint": "614fae110343fd90b47da82da748b91885efd68b44e8f651b9578ccaa723a2fc",
       "snapshot": {
-        "packages/tests/docs-examples/docs-build.test.ts": "9108d6cb7b58f83655fcd759f1b9f2140300d091ab19cbabf6f4ef7c3832c7e0"
+        "packages/tests/docs-examples/docs-build.test.ts": "fbd533c3b9d0ce9ed39333b9e4b43f06a95572471199e04fa647984efe4ba4a6"
       },
-      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "head": "45b7b0555ce63551641d71fbf6964bd0c543a3ee",
       "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "reason": "CI, Dependabot and test-harness changes only; nothing the configure-requests skill teaches changed",
       "evidence": [
-        "Changed files: packages/tests/docs-examples/docs-build.test.ts"
+        "Changed: packages/tests/docs-examples/docs-build.test.ts at e3fd6a6b6c28cd539f29f96a074008f366d9a32a"
       ]
     },
     "source:packages/tests/docs-examples/fixtures/broken-vitepress/index.md": {
