@@ -70,9 +70,15 @@ record() {
 
 # rebase <base> [<upstream>]: replay the commits after <upstream> (default <base>) onto <base>.
 rebase() {
-  local base="$1" upstream="${2:-$1}" original conflicts
+  local base="$1" upstream="${2:-$1}" original conflicts output
   original="$(git rev-parse HEAD)"
-  git rebase --onto "$base" "$upstream" > /dev/null 2>&1 || true
+  # A conflict stops the rebase with an error, which the loop below handles. Any other error
+  # (e.g. unstaged changes) means the rebase never started: stop before recording a review.
+  if ! output="$(git rebase --onto "$base" "$upstream" 2>&1)" && ! in_rebase; then
+    echo "$output" >&2
+    echo "git rebase failed; nothing was recorded." >&2
+    exit 1
+  fi
   while in_rebase; do
     conflicts="$(git diff --name-only --diff-filter=U)"
     if [ -n "$conflicts" ] && [ "$conflicts" != "$state" ]; then

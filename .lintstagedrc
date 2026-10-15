@@ -4,5 +4,8 @@
   ],
   "./packages/tests/**/*.{js,ts,jsx,tsx}": [
     "pnpm --filter @faxios/tests exec eslint --config eslint.config.style.ts --max-warnings=0 --fix"
+  ],
+  "./packages/docs/**/*.{js,ts,jsx,tsx}": [
+    "pnpm --filter @faxios/docs exec eslint --config eslint.config.style.ts --max-warnings=0 --fix"
   ]
 }
