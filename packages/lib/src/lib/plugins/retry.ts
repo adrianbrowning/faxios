@@ -248,10 +248,12 @@ function linkSignal(outer: FaxiosRequestConfig["signal"], controller: InstanceTy
 }
 
 // Retry listens on the request's signal for its waits and tries, so a signal a middleware before
-// retry passes on without listener methods gets the error dispatch would give it, before any timer.
+// retry passes on that core would refuse (core/assertSignal.ts) gets the error dispatch would give
+// it, before any timer.
 function assertListenable(signal: unknown, config: InternalFaxiosRequestConfig): void {
   if (signal == null) return;
   const listenable = typeof signal === "object" &&
+    "aborted" in signal &&
     "addEventListener" in signal && typeof signal.addEventListener === "function" &&
     "removeEventListener" in signal && typeof signal.removeEventListener === "function";
   if (!listenable) {
