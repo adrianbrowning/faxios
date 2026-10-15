@@ -18,6 +18,7 @@ sources:
   - src/index.ts
   - src/lib/faxios.ts
   - src/lib/core/Faxios.ts
+  - src/lib/core/headerLayers.ts
   - src/lib/core/mergeConfig.ts
   - src/lib/core/buildFullPath.ts
   - src/lib/core/dispatchRequest.ts
@@ -130,7 +131,9 @@ JSON parse; `"blob"`, `"formdata"` and `"stream"` (a `ReadableStream`) are also 
   flat keys, request `common`, request method group, request flat keys. So any request header
   beats any instance header, and within one level flat keys win over groups. A `create()` child
   layers over its parent the same way: any child header, `common` included, beats every parent
-  header, and a child method group applies to that method only. Header
+  header, and a child method group applies to that method only. `headers` may also be a
+  `Headers`, a `Map` or `[name, value]` pairs, on every method alias and on `create()`: it is
+  one flat layer, and a child given one still inherits the parent's groups. Header
   values must be strings, numbers, string arrays, booleans, `null` or `undefined`; convert
   anything else with `String(...)`.
 - Arrays such as `transformRequest` and `transformResponse` are replaced, not concatenated.
@@ -318,6 +321,10 @@ const api = faxios
 - `ctx.config.method` is always lower-case in middleware: compare with `"post"`, not `"POST"`.
 - Per-request scratch data goes on `ctx.state`. `ctx.attempt` is the try number (1 unless a
   retry middleware sets it); a hand-written retry loop sets `ctx.attempt` before each `next(ctx)`.
+- To change a context field for the rest of the chain, pass a spread copy:
+  `next({ ...ctx, config })` or `next({ ...ctx, state: { ...ctx.state } })`. Never build a new
+  context from scratch; the spread carries what core keeps on it, such as the stream body that
+  `timeout` still governs after the response.
 
 ### Use the built-in plugins from their subpaths
 
