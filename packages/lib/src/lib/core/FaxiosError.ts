@@ -140,22 +140,13 @@ class FaxiosError<T = unknown, D = unknown> extends Error {
   status?: number;
   override cause?: Error;
   issues?: ReadonlyArray<StandardSchemaV1.Issue>;
-  // legacy/cross-browser optional props:
-  description?: unknown;
-  number?: unknown;
-  fileName?: unknown;
-  lineNumber?: unknown;
-  columnNumber?: unknown;
-  event?: unknown;
   override name: string;
 
   static readonly ERR_BAD_OPTION_VALUE = "ERR_BAD_OPTION_VALUE";
   static readonly ERR_BAD_OPTION = "ERR_BAD_OPTION";
   static readonly ECONNABORTED = "ECONNABORTED";
   static readonly ETIMEDOUT = "ETIMEDOUT";
-  static readonly ECONNREFUSED = "ECONNREFUSED";
   static readonly ERR_NETWORK = "ERR_NETWORK";
-  static readonly ERR_FR_TOO_MANY_REDIRECTS = "ERR_FR_TOO_MANY_REDIRECTS";
   static readonly ERR_BAD_RESPONSE = "ERR_BAD_RESPONSE";
   static readonly ERR_BAD_REQUEST = "ERR_BAD_REQUEST";
   static readonly ERR_CANCELED = "ERR_CANCELED";
@@ -172,8 +163,7 @@ class FaxiosError<T = unknown, D = unknown> extends Error {
     code?: string,
     config?: InternalFaxiosRequestConfig,
     request?: unknown,
-    response?: FaxiosResponse,
-    customProps?: Record<string, unknown>
+    response?: FaxiosResponse
   ): FaxiosError {
     const faxiosError = new FaxiosError(
       error.message,
@@ -190,7 +180,6 @@ class FaxiosError<T = unknown, D = unknown> extends Error {
       faxiosError.status = error.status;
     }
 
-    customProps && Object.assign(faxiosError, customProps);
     return faxiosError;
   }
 
@@ -253,13 +242,6 @@ class FaxiosError<T = unknown, D = unknown> extends Error {
       // Standard
       message: stripUserInfoInText(this.message),
       name: this.name,
-      // Microsoft
-      description: this.description,
-      number: this.number,
-      // Mozilla
-      fileName: this.fileName,
-      lineNumber: this.lineNumber,
-      columnNumber: this.columnNumber,
       stack: this.stack === undefined ? undefined : stripUserInfoInText(this.stack),
       // Faxios
       config: serializedConfig,

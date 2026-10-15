@@ -7,21 +7,18 @@ import { settle } from "../core/settle.js";
 import { VERSION } from "../env/data.js";
 import composeSignals from "../helpers/composeSignals.js";
 import estimateDataURLDecodedBytes from "../helpers/estimateDataURLDecodedBytes.js";
-import {
-  asyncDecorator,
-  progressEventDecorator,
-  progressEventReducer
-} from "../helpers/progressEventReducer.js";
+import { progressReporter } from "../helpers/progressEventReducer.js";
 import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import { trackStream } from "../helpers/trackStream.js";
 import utf8ByteLength from "../helpers/utf8ByteLength.js";
 import platform from "../platform.js";
 import type {
+  FaxiosProgressEvent,
   FaxiosResponse,
   InternalFaxiosRequestConfig
 } from "../types.js";
 import utils from "../utils.js";
-import { checkDeclaredContentLength, checkMaterializedSize, encodeStringWithoutContentType, handleFetchCaughtError, requireRequestURL } from "./fetch-helpers.js";
+import { checkDeclaredContentLength, checkMaterializedSize, handleFetchCaughtError, requireRequestURL } from "./fetch-helpers.js";
 import type { ComposedSignal, FetchStage, PendingBodyErrorRef } from "./fetch-helpers.js";
 
 // btoa is a global in Node 16+ and browsers; accessed via globalThis for no-DOM lib compat
@@ -540,15 +537,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
   ): unknown => {
     if (_request.body) {
       const [ onProgress, flush ] = onUploadProgress
-        ? progressEventDecorator(
-          requestContentLength,
-          progressEventReducer(
-            asyncDecorator(
-              onUploadProgress as (...args: Array<unknown>) => unknown
-            ),
-            false
-          )
-        )
+        ? progressReporter(onUploadProgress as (data: FaxiosProgressEvent) => unknown, requestContentLength, false)
         : [];
       return _trackStream(_request.body, onProgress, flush);
     }
@@ -692,15 +681,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       );
 
     const [ onProgress, flush ] = onDownloadProgress
-      ? progressEventDecorator(
-        responseContentLength,
-        progressEventReducer(
-          asyncDecorator(
-            onDownloadProgress as (...args: Array<unknown>) => unknown
-          ),
-          true
-        )
-      )
+      ? progressReporter(onDownloadProgress as (data: FaxiosProgressEvent) => unknown, responseContentLength, true)
       : [];
 
     let bytesRead = 0;
@@ -836,13 +817,11 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       ));
 
       withCredentials = normalizeCredentials(withCredentials);
-      resolveBodyContentType(preparedBody, headers, encodedContentType);
+      data = toWebStream(await resolveBodyContentType(preparedBody, data, headers, encodedContentType, encodeText));
 
       applyDefaultUserAgent(headers);
 
       const serializedHeaders = toByteStringHeaderObject(headers.normalize(false));
-
-      data = toWebStream(await encodeStringWithoutContentType(data, headers, encodeText));
 
       const requestInit = initFromFetchOptions(fetchOptions, envFetch);
       requestInit["signal"] = composedSignal;

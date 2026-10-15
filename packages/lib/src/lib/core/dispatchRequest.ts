@@ -96,6 +96,18 @@ function validatePreFlight(config: InternalFaxiosRequestConfig): (() => Promise<
   };
 }
 
+// The default transformResponse throws a bare SyntaxError for a strict-JSON body that isn't JSON;
+// dispatch owns the error, so the one the caller sees carries the response and its status.
+function transformResponseData(config: InternalFaxiosRequestConfig, response: FaxiosResponse): unknown {
+  try {
+    return transformData(config, config.transformResponse, response);
+  }
+  catch (e) {
+    if (e instanceof SyntaxError) throw FaxiosError.from(e, FaxiosError.ERR_BAD_RESPONSE, config, null, response);
+    throw e;
+  }
+}
+
 export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig, bodies?: RequestBodies): Promise<FaxiosResponse> {
   // Middleware may pass on a signal of its own.
   assertSignal(config.signal, config);
@@ -111,7 +123,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
 
   // The serialized body goes to the adapter on its own; `config.data` keeps the caller's value, so
   // the config on an error holds an object `redact` can mask instead of a JSON or form string.
-  const data: unknown = transformData.call(config, config.transformRequest);
+  const data: unknown = transformData(config, config.transformRequest);
 
   // fetch can't read the npm `form-data` package (a FormData-like stream with `getHeaders()`): it
   // would send the text "[object FormData]".
@@ -137,23 +149,15 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
     );
   }
   const adapter = _adapter as (config: InternalFaxiosRequestConfig, body: unknown, url: string, bodies?: RequestBodies) => Promise<FaxiosResponse>;
-
-  /* eslint-disable promise/always-return */
+   
   return (adapter(config, data, url, bodies))
     .then(
 
       function onAdapterResolution(response: FaxiosResponse) {
         throwIfCancellationRequested(config);
 
-        (config as unknown as Record<string, unknown>)["response"] = response;
-
-        try {
-          response.data = transformData.call(config, config.transformResponse, response);
-          response.headers = FaxiosHeaders.from(response.headers);
-        }
-        finally {
-          delete (config as unknown as Record<string, unknown>)["response"];
-        }
+        response.data = transformResponseData(config, response);
+        response.headers = FaxiosHeaders.from(response.headers);
 
         if (config.responseSchema) {
           return validateSchema(config.responseSchema, response.data, FaxiosError.ERR_BAD_RESPONSE_SCHEMA, config, response)
@@ -166,26 +170,23 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
         if (!isCancel(reason)) {
           throwIfCancellationRequested(config);
 
-          const r = reason as null | { response?: { [k: string]: unknown; data?: unknown; headers?: unknown; status?: number; }; };
+          // The adapter rejects with a FaxiosError that carries the response for a status error.
+          const r = reason as null | { response?: FaxiosResponse; };
           if (r?.response) {
-            (config as unknown as Record<string, unknown>)["response"] = r.response;
             try {
-              r.response.data = transformData.call(config, config.transformResponse, r.response);
+              r.response.data = transformResponseData(config, r.response);
             }
             catch (transformErr) {
               // The status error stays the error: a body that fails to transform (an HTML page
               // for `responseType: "json"`) keeps its raw data and becomes the cause.
               if (reason instanceof FaxiosError && reason.cause === undefined) reason.cause = transformErr as Error;
             }
-            finally {
-              delete (config as unknown as Record<string, unknown>)["response"];
-            }
-            r.response.headers = FaxiosHeaders.from(r.response.headers as Record<string, unknown>);
+            r.response.headers = FaxiosHeaders.from(r.response.headers);
           }
         }
 
         throw reason;
       }
     );
-  /* eslint-enable promise/always-return */
+   
 }

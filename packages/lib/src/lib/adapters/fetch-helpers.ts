@@ -217,16 +217,3 @@ export const handleFetchCaughtError = (
     _err["response"] as FaxiosResponse | undefined
   );
 };
-
-// fetch sends a string body as `text/plain;charset=UTF-8` when there's no Content-Type. A
-// Content-Type of `null` or `false` keeps the header off, so that string goes out as its bytes.
-export const encodeStringWithoutContentType = (
-  data: unknown,
-  headers: FaxiosHeaders,
-  encode: (str: string) => Promise<Uint8Array> | Uint8Array
-): Promise<unknown> | unknown => {
-  if (typeof data !== "string") return data;
-  const key = utils.findKey(headers, "content-type");
-  const contentType = key ? headers[key] : undefined;
-  return contentType === null || contentType === false ? encode(data) : data;
-};

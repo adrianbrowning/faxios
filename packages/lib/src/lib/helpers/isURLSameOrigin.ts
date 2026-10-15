@@ -1,16 +1,11 @@
 import platform from "../platform.js";
 
+const pageOrigin = new URL(platform.origin);
+
 export default platform.hasStandardBrowserEnv
-  ? ((origin, isMSIE) => (url: string) => {
+  ? (url: string) => {
     const _url = new URL(url, platform.origin);
 
-    return (
-      origin.protocol === _url.protocol &&
-        origin.host === _url.host &&
-        (isMSIE || origin.port === _url.port)
-    );
-  })(
-    new URL(platform.origin),
-    !!(/(msie|trident)/i.test(platform.navigator?.userAgent ?? ""))
-  )
+    return pageOrigin.protocol === _url.protocol && pageOrigin.host === _url.host && pageOrigin.port === _url.port;
+  }
   : () => true;

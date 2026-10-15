@@ -7,18 +7,6 @@ import defaults from "#src/lib/defaults/index.js";
 import type { InternalFaxiosRequestConfig } from "#src/lib/types.js";
 import { makeSchema } from "./_schemaTestHelpers.js";
 
-class ReactNativeFormData {
-  append() {}
-
-  getParts() {
-    return [];
-  }
-
-  get [Symbol.toStringTag]() {
-    return "FormData";
-  }
-}
-
 function faxiosHeaders(init?: Record<string, unknown>) {
   return new FaxiosHeaders(init);
 }
@@ -105,27 +93,6 @@ describe("core::dispatchRequest", () => {
         "error.status must equal response status"
       );
     });
-
-    it("cleans up config.response after the transform throws", async () => {
-      const config = baseConfig({
-        env: {
-          fetch: async () => new Response("{bad json", { status: 200 }),
-        },
-      });
-
-      try {
-        await dispatchRequest(config);
-      }
-      catch (_) {
-        // expected
-      }
-
-      assert.strictEqual(
-        Object.prototype.hasOwnProperty.call(config, "response"),
-        false,
-        "config.response must be deleted in finally"
-      );
-    });
   });
 
   describe("JSON parse failure on adapter rejection", () => {
@@ -160,31 +127,6 @@ describe("core::dispatchRequest", () => {
         "error.status must equal response status"
       );
     });
-
-    it("cleans up config.response after the rejection-path transform", async () => {
-      const config = baseConfig({
-        env: {
-          fetch: async () =>
-            new Response("{bad json", {
-              status: 500,
-              statusText: "Internal Server Error",
-            }),
-        },
-      });
-
-      try {
-        await dispatchRequest(config);
-      }
-      catch (_) {
-        // expected
-      }
-
-      assert.strictEqual(
-        Object.prototype.hasOwnProperty.call(config, "response"),
-        false,
-        "config.response must be deleted in finally on the rejection path"
-      );
-    });
   });
 
   describe("unsupported environment", () => {
@@ -207,56 +149,6 @@ describe("core::dispatchRequest", () => {
 
       assert.ok(thrown instanceof FaxiosError, "must be FaxiosError");
       assert.strictEqual(thrown.code, FaxiosError.ERR_NOT_SUPPORT);
-    });
-  });
-
-  describe("happy path", () => {
-    it("sends no Content-Type for React Native FormData, so its fetch writes the boundary", async () => {
-      // ReactNativeFormData has Symbol.toStringTag === "FormData" so utils.isFormData returns true.
-      const data = new ReactNativeFormData();
-      let capturedInit: RequestInit | undefined;
-
-      const config = baseConfig({
-        method: "post",
-        data,
-        headers: faxiosHeaders({ "Content-Type": "application/x-www-form-urlencoded" }),
-        env: {
-          fetch: async (_input: Request | string | URL, init?: RequestInit) => {
-            capturedInit = init;
-            return new Response("{\"ok\":true}", {
-              status: 200,
-              headers: { "content-type": "application/json" },
-            });
-          },
-        },
-      });
-
-      const result = await dispatchRequest(config);
-
-      const sentHeaders = Object.keys(capturedInit?.headers as Record<string, string>).map(key => key.toLowerCase());
-      assert.ok(!sentHeaders.includes("content-type"), `sent: ${sentHeaders.join(", ")}`);
-      assert.deepStrictEqual(result.data, { ok: true });
-    });
-
-    it("cleans up config.response after a successful resolution", async () => {
-      const config = baseConfig({
-        env: {
-          fetch: async () =>
-            new Response("{\"ok\":true}", {
-              status: 200,
-              headers: { "content-type": "application/json" },
-            }),
-        },
-      });
-
-      const result = await dispatchRequest(config);
-
-      assert.deepStrictEqual(result.data, { ok: true });
-      assert.strictEqual(
-        Object.prototype.hasOwnProperty.call(config, "response"),
-        false,
-        "config.response must not be left set after a successful request"
-      );
     });
   });
 

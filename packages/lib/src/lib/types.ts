@@ -158,14 +158,12 @@ export interface ParamsSerializerOptions extends SerializerOptions {
   serialize?: CustomParamsSerializer;
 }
 
-type BrowserProgressEvent = unknown;
 type Milliseconds = number;
 
 export interface FaxiosProgressEvent {
   bytes: number;
   download?: boolean;
   estimated?: number;
-  event?: BrowserProgressEvent;
   lengthComputable: boolean;
   loaded: number;
   progress?: number;

@@ -3,20 +3,20 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "396787e0addc108598d1cee3520f0421abbbd5f514b1a4fa3401e6faa0a623fa",
+      "fingerprint": "a3ce62494786e210053221f06c2b9a43e5a9ab843540046b210ac3f8da084c99",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
         "packages/lib/skills/configure-requests/SKILL.md": "fbb0d3d84bb55654ad2094ebe50016f793743879027775cf197b2b5dad0e2af6",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
         "packages/lib/src/index.ts": "44edf51b3bbdf494fd213b55e6e377866e18146c47fc443a3d3d7426a3d685b7",
-        "packages/lib/src/lib/adapters/fetch.ts": "3cf392c5d81bc40dbba1fa26d019277cccfc8ab22706c0ef4fc3f7512c99cbfa",
+        "packages/lib/src/lib/adapters/fetch.ts": "d0eca968791bc38674e41d8c839a803f7f08ba3699c5d51b68765ad0baeca22c",
         "packages/lib/src/lib/core/Faxios.ts": "dd854a8f11a3dc0fb3ece28293150772d545b07411fe9e55340808638054a1d3",
-        "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
+        "packages/lib/src/lib/core/FaxiosError.ts": "429366c4f95706790a572d23b733aaee1d2db6834cd7953d6e4b606c47408a71",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "3060c07faf738c6f502cb87cbc30765177639bebce7f35e5ccbd60b4f0962c8a",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "ee8f375f8587e9e352eeda860b82f17fd366b164d611ad9109031b47bc38cdb6",
         "packages/lib/src/lib/core/mergeConfig.ts": "e152f98463e21404abc79e0ad92d54bdbead8348294196a08db798647be50ab8",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "7de7c2a220f01ef7ef347a6cbf1af1f3cbbb0ceb22dd4ec17da52eb4170a6df5",
@@ -26,7 +26,7 @@
         "packages/lib/src/lib/plugins/forwardTo.ts": "23e726af7fc75358fd80eb140a3189b699b3be47787a8714e6b043a8291acb25",
         "packages/lib/src/lib/plugins/retry.ts": "734d82655b3a61e35b437f1e1c6112ffc804dcc3608ac4de66edbf95da912aaa",
         "packages/lib/src/lib/plugins/timing.ts": "c845896855141244cf672d5224327d774ecc9c3e68b38544a4c6c01ec18ca358",
-        "packages/lib/src/lib/types.ts": "76b9cb3435abd05297bbc385cb54241503ed03a41ca3d0b363023016d967119c",
+        "packages/lib/src/lib/types.ts": "4ca51da7f4771a5544ba73c7b7c141636f95498997cbca8f834f3b4e8c3918b5",
         "packages/tests/unit/api.test.ts": "d6e131634ba5ee160fe06af49528455d6610fb85316e17104e13c643a1581c7b",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "f73ea84b082e8d00a3b1741f87769332a9b2eca440f20e4742f6c7338ad05902",
@@ -35,15 +35,15 @@
         "packages/tests/unit/plugins/retry.test.ts": "bb88c03b5c3875b9bcef3c81d3d89ef4f7241040c5338f8af991c332c5e69949",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "SKILL.md now says the fetch init body member is null in Node/Deno and undefined in Bun, chosen by a one-time probe",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/plugins/forwardTo.ts at 4ea5dad1bc2c3a38a1f98321274dad54c22f3ec8"
+        "Changed: packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/types.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "5621c970f6d9eed0d8482a1ef1cdc85e973f6fe8b07a766d8a2553b2f93719a4",
+      "fingerprint": "4127eac00dab5ed5454bc760bd70804cad1fb33adb9774bdb4247167e9469925",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
@@ -51,15 +51,15 @@
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
         "packages/lib/skills/configure-requests/SKILL.md": "fbb0d3d84bb55654ad2094ebe50016f793743879027775cf197b2b5dad0e2af6",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
         "packages/lib/src/index.ts": "44edf51b3bbdf494fd213b55e6e377866e18146c47fc443a3d3d7426a3d685b7",
-        "packages/lib/src/lib/adapters/fetch.ts": "3cf392c5d81bc40dbba1fa26d019277cccfc8ab22706c0ef4fc3f7512c99cbfa",
+        "packages/lib/src/lib/adapters/fetch.ts": "d0eca968791bc38674e41d8c839a803f7f08ba3699c5d51b68765ad0baeca22c",
         "packages/lib/src/lib/core/Faxios.ts": "dd854a8f11a3dc0fb3ece28293150772d545b07411fe9e55340808638054a1d3",
-        "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
+        "packages/lib/src/lib/core/FaxiosError.ts": "429366c4f95706790a572d23b733aaee1d2db6834cd7953d6e4b606c47408a71",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "3060c07faf738c6f502cb87cbc30765177639bebce7f35e5ccbd60b4f0962c8a",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "ee8f375f8587e9e352eeda860b82f17fd366b164d611ad9109031b47bc38cdb6",
         "packages/lib/src/lib/core/mergeConfig.ts": "e152f98463e21404abc79e0ad92d54bdbead8348294196a08db798647be50ab8",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "7de7c2a220f01ef7ef347a6cbf1af1f3cbbb0ceb22dd4ec17da52eb4170a6df5",
@@ -69,7 +69,7 @@
         "packages/lib/src/lib/plugins/forwardTo.ts": "23e726af7fc75358fd80eb140a3189b699b3be47787a8714e6b043a8291acb25",
         "packages/lib/src/lib/plugins/retry.ts": "734d82655b3a61e35b437f1e1c6112ffc804dcc3608ac4de66edbf95da912aaa",
         "packages/lib/src/lib/plugins/timing.ts": "c845896855141244cf672d5224327d774ecc9c3e68b38544a4c6c01ec18ca358",
-        "packages/lib/src/lib/types.ts": "76b9cb3435abd05297bbc385cb54241503ed03a41ca3d0b363023016d967119c",
+        "packages/lib/src/lib/types.ts": "4ca51da7f4771a5544ba73c7b7c141636f95498997cbca8f834f3b4e8c3918b5",
         "packages/tests/unit/api.test.ts": "d6e131634ba5ee160fe06af49528455d6610fb85316e17104e13c643a1581c7b",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "f73ea84b082e8d00a3b1741f87769332a9b2eca440f20e4742f6c7338ad05902",
@@ -78,11 +78,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "bb88c03b5c3875b9bcef3c81d3d89ef4f7241040c5338f8af991c332c5e69949",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "SKILL.md now says the fetch init body member is null in Node/Deno and undefined in Bun, chosen by a one-time probe",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/plugins/forwardTo.ts at 4ea5dad1bc2c3a38a1f98321274dad54c22f3ec8"
+        "Changed: packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/types.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:knip.json": {
@@ -172,15 +172,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "09e743673c60bc94e863d2d9be92c230a50bbfbd666b43e6c6cb1adaabe793e3",
+      "fingerprint": "9daf4b16439faa1a7551407a9e1e02eda8aada8463d3d98ec8a77549b1f40d62",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "18de405e2a3ffe626c3def47c206f0214e982eaf0543a87db2834cd98b5223b1"
+        "packages/docs/pages/advanced/api-reference.md": "4f899b09d86d4a1c48e6e43553cd743ebcffb51e1ae2b4052c21f056edcff3ce"
       },
-      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/api-reference.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+        "Changed: packages/docs/pages/advanced/api-reference.md at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
@@ -220,15 +220,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/error-handling.md": {
-      "fingerprint": "e23e73feddf35d262ddd72cedc26ab2dddae12a739fe0fcb0cac5174e16ab3e2",
+      "fingerprint": "9a7db70cc43f19f114a58288668bdb0f0788d36e68f83b542a2798f95634947b",
       "snapshot": {
-        "packages/docs/pages/advanced/error-handling.md": "806b4f5c9ae3dab64bc3a2cf2651ef03d21a2f4179ba89c6dd4b3a96554acbde"
+        "packages/docs/pages/advanced/error-handling.md": "55df228728613db5b9949ed4f749dc9fa157b4fb21467f13b2f43109d05d50c1"
       },
-      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/error-handling.md at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
+        "Changed: packages/docs/pages/advanced/error-handling.md at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/docs/pages/advanced/headers.md": {
@@ -424,15 +424,15 @@
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
-      "fingerprint": "caab243863f7c60193f294fcbd7cdf0fdd6c651582571d05c99afa6c048d84cf",
+      "fingerprint": "1d12341f4bdda666f39331ecc656c13f4d3f868771403ed3f36cccc4d2351857",
       "snapshot": {
-        "packages/lib/src/lib/defaults/index.ts": "4255b536394c89eefd7940242c10daee93388983414cd7cbdd241cdd7c96f508"
+        "packages/lib/src/lib/defaults/index.ts": "fbcf925b805344bafe280623d0443804a0af1169288c21e7a3fc8060baa08eb9"
       },
-      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/lib/src/lib/defaults/index.ts at fc407621c60a552cd012e910401add6d8e8e8807"
+        "Changed: packages/lib/src/lib/defaults/index.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/tests/browser/headers.browser.test.ts": {
@@ -2180,15 +2180,15 @@
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
-      "fingerprint": "6a5381087f6049ea56cadf1aa053287df7554ee5d3b7a57808fdcd7128cc3827",
+      "fingerprint": "e707b9f40c9971a48fab0bae9f42bfa3d83030a842e432203fb39ec129053e0d",
       "snapshot": {
-        "packages/lib/src/lib/adapters/fetch-helpers.ts": "da272085c4fa1ab2c7beaa150ab0e0d7c31c5d104c63662f6fe073eac38dc08f"
+        "packages/lib/src/lib/adapters/fetch-helpers.ts": "b782a7cb068a41ec1bc7b6ff48f3acdc9407e6fb3e5161999a542a2e4190df4b"
       },
-      "head": "e860801c73b0297a0ec4073403971cc452274399",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 484d2ac2104da3e5946af6a25500ec7b40729206"
+        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/lib/src/lib/cancel/CanceledError.ts": {
@@ -2204,39 +2204,39 @@
       ]
     },
     "source:packages/lib/src/lib/core/FaxiosHeaders.ts": {
-      "fingerprint": "62dd649a2f8705dacb998ac8811d87eb2dd8e8426ee1f4b967ed0c0ccf1c9c9b",
+      "fingerprint": "67bb32a136b4bdccff87e75ec914c2326de9fa0d8fb1045757f4f1f351ff1b71",
       "snapshot": {
-        "packages/lib/src/lib/core/FaxiosHeaders.ts": "8006a617817ecb4916224547154cf3e5b270fe4939d1bf1e567585cb23700e6b"
+        "packages/lib/src/lib/core/FaxiosHeaders.ts": "45e1870a65a2042f01ca20d20bf45243dd137c57610b0720e93093ba69742137"
       },
-      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
-      "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "outcome": "no-change",
+      "reason": "Header-name storage fix and bump wording; the skill does not teach header internals",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at fc407621c60a552cd012e910401add6d8e8e8807"
+        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at fa1633fcfb9343f6aad92120dd04d1308f98369a"
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
-      "fingerprint": "582c9f4348c209429e00092d327bd9cd228ec834910bffa1a20f1ac2badd46ef",
+      "fingerprint": "38749e6add95a01c0a470590dc5454e37533e06cac87dd43973a3cdae660130a",
       "snapshot": {
-        "packages/lib/src/lib/core/prepareRequest.ts": "4b755a83f4ef19abad72e2ca1ad43db1b3e087420f7188353f652789bca6e29d"
+        "packages/lib/src/lib/core/prepareRequest.ts": "43bb5f559f625c03b785b0f7654b8e7fe754124f72e167f95045236391a714a5"
       },
-      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "Skill now teaches resolveRequestURL and ctx.instanceBaseURL for plugins, the instance-baseURL authBearer origin rule, and that a URL is absolute only with a scheme and //",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 06608f4bf5126bc949bde148a37bb3e85fc98041"
+        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/lib/src/lib/core/transformData.ts": {
-      "fingerprint": "b0929641e9aa1fbeeaabc8b048d1655f305b184ede5fd3c7e0768bf4d8bcd68b",
+      "fingerprint": "6cd0673c19f6363bfc61c32aed8274ec9678f4591890a4e2c3ee06a0fdde92e3",
       "snapshot": {
-        "packages/lib/src/lib/core/transformData.ts": "5a59b029eadb28372560f30505b383ae962dbfea5d3d8bedd4f6d8efe8a38268"
+        "packages/lib/src/lib/core/transformData.ts": "7756f9c80d606157e081f21913d24ee5ec8dcdfd7322dda08a6a39c543cadb34"
       },
-      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/transformData.ts at fc407621c60a552cd012e910401add6d8e8e8807"
+        "Changed: packages/lib/src/lib/core/transformData.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/lib/src/lib/core/validateSchema.ts": {
@@ -2264,15 +2264,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/cookies.ts": {
-      "fingerprint": "e8b570dfa66a13208082030bae75c1ffcfe80a1106829793539141b5e16a634c",
+      "fingerprint": "ef81843b1f7f5087714a887f02a6bfdfbee397db3c4e1e99ccc0059b648c1d2e",
       "snapshot": {
-        "packages/lib/src/lib/helpers/cookies.ts": "b694cd03ebe6fa72814699176a19a3179363d8b0ba4283876835f09549233c3f"
+        "packages/lib/src/lib/helpers/cookies.ts": "a84cd7ddb8621b7bbdb8c8dd76d61b965dddcfc3ae97c02ea1faae8b8bd5528b"
       },
-      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/cookies.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
+        "Changed: packages/lib/src/lib/helpers/cookies.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/lib/src/lib/helpers/formDataToJSON.ts": {
@@ -2300,15 +2300,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/progressEventReducer.ts": {
-      "fingerprint": "c2a8ad276c4f815d17745c866d90d3564c2de7c988e0b82636e731a127ea8c18",
+      "fingerprint": "5e2d3aab58425db1093b07b2bc5671c1d6aa8ce9b66079ed5c64827a227145ce",
       "snapshot": {
-        "packages/lib/src/lib/helpers/progressEventReducer.ts": "9d58a822018eb3c16e9e58c52c9b9f00ced7ae5df9c43a1fc211977def3fe12e"
+        "packages/lib/src/lib/helpers/progressEventReducer.ts": "f45f48480929f38a49f90ae99cf29f784539ab52101d4e9255e152d868e1d508"
       },
-      "head": "7f99a9c23afd0ff9b88361e2f9024ecd98f05338",
-      "outcome": "no-change",
-      "reason": "Progress callback error handling and compressed-response totals are internal behaviour fixes; the configure-requests skill only covers onUploadProgress availability, which is unchanged.",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "outcome": "updated",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/progressEventReducer.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/lib/src/lib/helpers/progressEventReducer.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/lib/src/lib/helpers/sanitizeHeaderValue.ts": {
@@ -2338,15 +2338,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/toFormData.ts": {
-      "fingerprint": "bbff89440bbc35c92e2dcb9cf7a8d766efdeac321fe71f2353a7445d0bd7c1d9",
+      "fingerprint": "a418e4e1d261a0a59244fd700b23de69ea95e0264eaa8066b9cb9a53c8acbbd9",
       "snapshot": {
-        "packages/lib/src/lib/helpers/toFormData.ts": "6e468d80a2b7889ecea4dc0d46abd7871db8d67286059816e258e0a51e08402b"
+        "packages/lib/src/lib/helpers/toFormData.ts": "b5f076b111a444f5a6347225d0c0a66656a4856d9403aa195d9620935575650e"
       },
-      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/toFormData.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
+        "Changed: packages/lib/src/lib/helpers/toFormData.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/lib/src/lib/helpers/trackStream.ts": {
@@ -2374,16 +2374,15 @@
       ]
     },
     "source:packages/lib/src/lib/platform.ts": {
-      "fingerprint": "8bc7df58aa33cc7599ea188e4ced891c7cecf81eb05b4a6121c7e140ce7db5b9",
+      "fingerprint": "dd3959aa834fece7133646e35c7d1a9f829718724a66dba42e6c0a2c735d12cc",
       "snapshot": {
-        "packages/lib/src/lib/platform.ts": "39e7a3bc4ad403b73e23cefeb238b4728ecd6adc461036198036d1d4e3b6fcce"
+        "packages/lib/src/lib/platform.ts": "6faf5913af670c420fc9c2806b750153f5943b359b624a68b4f6857ff07e3dcd"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Members of the `_globalThis` cast type literal sorted (`Blob`, `document`, `FormData`, `navigator`, `self`, `window`, `WorkerGlobalScope`). Behaviour change: none. The exported runtime object (including the `classes` and `protocols` order) is unchanged.",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "outcome": "updated",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/platform.ts: Whole file compared. Changed lines are HEAD L5-13.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/platform.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/lib/src/lib/types/standard-schema.ts": {
@@ -2400,15 +2399,15 @@
       ]
     },
     "source:packages/lib/src/lib/utils.ts": {
-      "fingerprint": "08e536d17209bcb190161598541023b12da0cdd0bdc5f0ec9d397b25e055ad79",
+      "fingerprint": "8a9e3c601265a496895073bd3885202dfdd9623e35e0886b7d9edbcc5ad8bb2b",
       "snapshot": {
-        "packages/lib/src/lib/utils.ts": "52a5db898e25a858c7cf41517c112afe61fb6bd85fbefacd76e8af6030758a27"
+        "packages/lib/src/lib/utils.ts": "24090d39d3afda32e92bd3ad2fdc72de9adb788753936ab2825d79e0327b4574"
       },
-      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/lib/src/lib/utils.ts at fc407621c60a552cd012e910401add6d8e8e8807"
+        "Changed: packages/lib/src/lib/utils.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/sandbox/client.js": {
@@ -2700,15 +2699,15 @@
       ]
     },
     "source:packages/tests/unit/axiosHeaders.test.ts": {
-      "fingerprint": "c9ef65b11881e537ab80456ceb93627a185d9be6f8d3a5df90558a2ac21907a6",
+      "fingerprint": "b0b6074e8c0f8184aaf1a47a1fa84824050d6caee31ba05701bdc64e03cbc3f5",
       "snapshot": {
-        "packages/tests/unit/axiosHeaders.test.ts": "218d27d4424e77e1dd326c0342c98d1cfeff9839317872987db62132d65890d8"
+        "packages/tests/unit/axiosHeaders.test.ts": "839b7dfeee8328c6d310f974c28c7df74789ca92fedacad150f698de19ffdc6c"
       },
-      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "no-change",
-      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
+      "reason": "Header-name storage fix and bump wording; the skill does not teach header internals",
       "evidence": [
-        "Changed: packages/tests/unit/axiosHeaders.test.ts at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
+        "Changed: packages/tests/unit/axiosHeaders.test.ts at fa1633fcfb9343f6aad92120dd04d1308f98369a"
       ]
     },
     "source:packages/tests/unit/cancel/canceledError.test.ts": {
@@ -2738,15 +2737,15 @@
       ]
     },
     "source:packages/tests/unit/core/FaxiosError.test.ts": {
-      "fingerprint": "4807f4349ca8737eb21234e918e644ca2316a79562f09fcfffb77ef611e7bbaf",
+      "fingerprint": "e2931dd7ac286462585df09b83ef92ed4b72c80b4fecd36505593a1e4361148a",
       "snapshot": {
-        "packages/tests/unit/core/FaxiosError.test.ts": "7df90331ae7bf90c695712efd4ee3e694d59e5146a8b8510c0fc2fb15a07440a"
+        "packages/tests/unit/core/FaxiosError.test.ts": "45ca57a2a7fe0ead8998527cb083bb881571f4d1eeacdb39ca20c72bac85e254"
       },
-      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/tests/unit/core/FaxiosError.test.ts at fc407621c60a552cd012e910401add6d8e8e8807"
+        "Changed: packages/tests/unit/core/FaxiosError.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/tests/unit/core/buildFullPath.test.ts": {
@@ -2775,15 +2774,15 @@
       ]
     },
     "source:packages/tests/unit/core/dispatchRequest.test.ts": {
-      "fingerprint": "e04e065f55157a2aab477899224d26a3f50846ac6fad9aaf05ec1502ef1027b2",
+      "fingerprint": "3d38445af85d3e7c6105b46d786f3d86efbd24e94d40b3480179256740969f97",
       "snapshot": {
-        "packages/tests/unit/core/dispatchRequest.test.ts": "575cb857d90ef722f041069e3e903e9a5732119c9913f1cfb8d27b2a252d279c"
+        "packages/tests/unit/core/dispatchRequest.test.ts": "3b1e89ab8ed9c5ce1e79f2305fb5a5d0b2849d8698b09d20cbfb414635c967fc"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "outcome": "updated",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/tests/unit/core/dispatchRequest.test.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/tests/unit/core/dispatchRequest.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/tests/unit/core/envFormData.test.ts": {
@@ -2896,16 +2895,15 @@
       ]
     },
     "source:packages/tests/unit/core/transformData.test.ts": {
-      "fingerprint": "fd34451a9d6eba3da0f1988ea0b01b5716f79da3d426b92f655d3726181abb64",
+      "fingerprint": "39fb881e04466742c30368fc5c378f7a28ee66c07869bef76c30c90562e7f665",
       "snapshot": {
-        "packages/tests/unit/core/transformData.test.ts": "367870ba5830011f318695491d4ec789ccc32b17f0c252343b322919d46a1d95"
+        "packages/tests/unit/core/transformData.test.ts": "ab3a40d9830ab337df2ebebbeeaa43843a64a4f6e8792595df6b1bb86b6311fc"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "outcome": "updated",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/core/transformData.test.ts: @@ -1,4 +1,4 @@ (diff/223)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/core/transformData.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/tests/unit/helpers/buildURL.test.ts": {
@@ -2983,16 +2981,15 @@
       ]
     },
     "source:packages/tests/unit/helpers/progressEventReducer.test.ts": {
-      "fingerprint": "d8138d154459df4894dc7dc4a1799d659270caa4f8d16c7c6678cc228e5b7a60",
+      "fingerprint": "cc98bb399d65911e3abc3b4ec5406c9771fd5b52148293aab4d844f95aa1577b",
       "snapshot": {
-        "packages/tests/unit/helpers/progressEventReducer.test.ts": "64b8901cdea38dba5e05cabe07e4497234a10bc0c65a39efa0b24d10e1345829"
+        "packages/tests/unit/helpers/progressEventReducer.test.ts": "f045bf00d630c5cff4d88be8c99f5d20687065f49e1123f74fef39292c777906"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "outcome": "updated",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/helpers/progressEventReducer.test.ts: @@ -1,4 +1,4 @@ (diff/230)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/helpers/progressEventReducer.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/tests/unit/helpers/validator.test.ts": {
@@ -3121,16 +3118,15 @@
       ]
     },
     "source:packages/tests/unit/utils/merge.test.ts": {
-      "fingerprint": "d3811a658b3a9648a34cb6b03fc14c2fc9d1004559a27b60fd42307d7e567ea0",
+      "fingerprint": "652616112d1714e7c977b6fad7e47fd5b82483926425dc7d87d320a05a068f01",
       "snapshot": {
-        "packages/tests/unit/utils/merge.test.ts": "7dc051cb8c18b5ce9259ccc274f9fd8eacfbf4840deef54fa4254a039c2b0e75"
+        "packages/tests/unit/utils/merge.test.ts": "f28e0907133dea6254542eb4c15c50e90d6f5e3bebe9c3422ff6643ae714e178"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest imports sorted. Four `Record<symbol | string, unknown>` annotations became `Record<string | symbol, unknown>`. The object literals passed to merge (`{ x: 1, [key]: … }`) were not touched. Behaviour change: none",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "outcome": "updated",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/merge.test.ts: @@ -1,4 +1,4 @@, @@ -99,13 +99,13 @@, @@ -130,7 +130,7 @@, @@ -156,7 +156,7 @@ (diff/244)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/merge.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/tests/unit/utils/toArray.test.ts": {
@@ -3398,15 +3394,15 @@
       ]
     },
     "source:packages/tests/unit/transformResponse.test.ts": {
-      "fingerprint": "5b9914c13d2f478c60d479c11f7a0f7de1a56bf5990979bdd4f8db5fd8b4cf80",
+      "fingerprint": "d6405ca691fe231fd2d29d6c955a2051a74ac32ffeb3366f60c5e5884e6fb196",
       "snapshot": {
-        "packages/tests/unit/transformResponse.test.ts": "5906a01a1c6bfd157ae136e36df10341bc0d70c9488787756594947fe5f6480e"
+        "packages/tests/unit/transformResponse.test.ts": "0c266e4181d7013cbaee18caf3fec77927a31dcfed811eb48a975cb10d0d53da"
       },
-      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/tests/unit/transformResponse.test.ts at 86f20473642fb3c294f745739f7ba05847421218"
+        "Changed: packages/tests/unit/transformResponse.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:.bumpy/release-gates.md": {
@@ -3590,15 +3586,15 @@
       ]
     },
     "source:packages/tests/unit/toFormData.test.ts": {
-      "fingerprint": "f912c9524242eb8b38c7609d337850db7f18b532677396c8084f3487d8c65888",
+      "fingerprint": "4064262ed08d327c9c1b86106f00a375d18d1055e206c83f059e51c150a31342",
       "snapshot": {
-        "packages/tests/unit/toFormData.test.ts": "d0ecd2929093eb993042b8c1b6653068693893f7f49cc5fd7d6ee8acccf359aa"
+        "packages/tests/unit/toFormData.test.ts": "d18c223f9f3ddc30b062ad73d5e96ce05cf2cf072eb522feadb20e319f0cda89"
       },
-      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/tests/unit/toFormData.test.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
+        "Changed: packages/tests/unit/toFormData.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:.bumpy/progress-callback-errors.md": {
@@ -4262,15 +4258,15 @@
       ]
     },
     "source:packages/tests/unit/utils.test.ts": {
-      "fingerprint": "77e8978fa4ef833924ee8941a86345af055f23aecd5f6752a78a5e1925e45b27",
+      "fingerprint": "61157eaaaeee9b053dc60f5ce3cb407e8171f9072be2d5dd2440d1ab7c80e1b9",
       "snapshot": {
-        "packages/tests/unit/utils.test.ts": "d4abc06e132124e9bc3e84e13aa6aa373a9663e8615f336f64e82ad4cf573497"
+        "packages/tests/unit/utils.test.ts": "3be063074aaa7433406239d660f32de8e6f4d4b8c03150532856dfd190c61836"
       },
-      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/tests/unit/utils.test.ts at f8e65308b747dbb46d674597caabd55029175fd4"
+        "Changed: packages/tests/unit/utils.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:.bumpy/faxios-error-name.md": {
@@ -4586,15 +4582,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/resolveBodyContentType.ts": {
-      "fingerprint": "e4b297bdd45c4de1be86b6b835a62d783d3265645451b5d104a933963e08c574",
+      "fingerprint": "1fe098457c3c849a37a49b5fca78aa718b07483f7ac941713a6f8b563a0849ee",
       "snapshot": {
-        "packages/lib/src/lib/core/resolveBodyContentType.ts": "811892a7c5f5bf32a32d3a67e1fc8d2cf2204ffacecbb16b68ba630da7fae808"
+        "packages/lib/src/lib/core/resolveBodyContentType.ts": "9662d0583a7efa4d4f3068b71f1e8341ca8b85f6fd8722903e0733d5a72d509b"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "outcome": "updated",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/resolveBodyContentType.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/lib/src/lib/core/resolveBodyContentType.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/tests/unit/adapters/fetch-pure.test.ts": {
@@ -5810,15 +5806,15 @@
       ]
     },
     "source:packages/tests/unit/core/FaxiosHeaders.pollution.test.ts": {
-      "fingerprint": "6f3a48bfccc3b3e9ab1fa0b6506bb0ebe54a1d90040a795b06be1cc3b5b24fa8",
+      "fingerprint": "162db658eec0e66c6a49f0f09b7c2ab11cb779c1bb3c07d6da2c30ba85cf58d2",
       "snapshot": {
-        "packages/tests/unit/core/FaxiosHeaders.pollution.test.ts": "cd47aa43dd382cbc90cf97cbbf01452cf6fcde4740bfa7b5f135113395a1e5a4"
+        "packages/tests/unit/core/FaxiosHeaders.pollution.test.ts": "042ce052240fd6818c4aab3fb086f9dc49319438115494572d77fb09312d61ef"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
-      "outcome": "no-change",
-      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "outcome": "updated",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/tests/unit/core/FaxiosHeaders.pollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+        "Changed: packages/tests/unit/core/FaxiosHeaders.pollution.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/tests/unit/core/mergeConfig.pollution.test.ts": {
@@ -6146,15 +6142,15 @@
       ]
     },
     "source:packages/tests/browser/cookies.browser.test.ts": {
-      "fingerprint": "6952e9b7c55c5ab5b3c7d3d3bb12d46bffbe1d3589c7d8d9728f958c1a6d199b",
+      "fingerprint": "d96d2c15b761d4ead6aa24625bacecc5d3af2477ea2304eee32e132a3909e262",
       "snapshot": {
-        "packages/tests/browser/cookies.browser.test.ts": "b80c73f72ec6f4ea8bdcf615deade943ed182790eba1426f6470f57d8125a674"
+        "packages/tests/browser/cookies.browser.test.ts": "1f8949873b8f1bfba911256554b3b27352338ec5237f2ea5e7f8db2ca7525c63"
       },
-      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
       "outcome": "updated",
-      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
-        "Changed: packages/tests/browser/cookies.browser.test.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
+        "Changed: packages/tests/browser/cookies.browser.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     },
     "source:packages/tests/unit/core/requestMethod.test.ts": {
@@ -6263,6 +6259,54 @@
       "reason": "configure-requests SKILL.md now says env.fetch gets one Request carrying the body plus an init with body: null; JSON string bodies and the rest are internal performance changes",
       "evidence": [
         "Changed: packages/tests/smoke/esm/tests/urlencode.smoke.test.ts at fc407621c60a552cd012e910401add6d8e8e8807"
+      ]
+    },
+    "source:.bumpy/298-dead-code.md": {
+      "fingerprint": "75f229210fb6aa4b552f6e7f69ae3766165de6a59e9bde057c950b7d33faf540",
+      "snapshot": {
+        ".bumpy/298-dead-code.md": "90dad508b54a48fce13ecff9317e6d5c666e8a3629bd8871aaa5d790ba33267d"
+      },
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "outcome": "no-change",
+      "reason": "Header-name storage fix and bump wording; the skill does not teach header internals",
+      "evidence": [
+        "Changed: .bumpy/298-dead-code.md at fa1633fcfb9343f6aad92120dd04d1308f98369a"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/isURLSameOrigin.ts": {
+      "fingerprint": "c7ac5e740e7ee133d9c171517ed8bb00bef292ddfda7c25940eb107ac564ab99",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/isURLSameOrigin.ts": "05ac0954dbf1e1ceb06b05dd2666b0f691e56d50536e306cb0ef2e034620f6c4"
+      },
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "outcome": "updated",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/isURLSameOrigin.ts at 67e247e7b6f012770364267efab107f726b56dff"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/toURLEncodedForm.ts": {
+      "fingerprint": "9155acccd38548b7af84c45d5eecb223849cdf7d7e0c4c4c3e382d04d622131a",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/toURLEncodedForm.ts": "e18c7558b4f52aae896216631725b80595b8e88e8fa344b710536c51865cdbef"
+      },
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "outcome": "updated",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/toURLEncodedForm.ts at 67e247e7b6f012770364267efab107f726b56dff"
+      ]
+    },
+    "source:packages/tests/unit/core/strictJsonError.test.ts": {
+      "fingerprint": "2648fe76026a3d95a178eae79a865c386ae44545a1241ac9e880527c19af8030",
+      "snapshot": {
+        "packages/tests/unit/core/strictJsonError.test.ts": "16e0a98d14f1309de53cae47a29dff56495305766589998be1972d6324969189"
+      },
+      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "outcome": "updated",
+      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "evidence": [
+        "Changed: packages/tests/unit/core/strictJsonError.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
       ]
     }
   }

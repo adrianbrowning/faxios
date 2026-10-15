@@ -51,6 +51,17 @@ describe("core::FaxiosError", () => {
     expect((json as any).response).toBeUndefined();
   });
 
+  it("has no legacy browser fields, unused statics or customProps", () => {
+    const json = new FaxiosError("Boom!").toJSON();
+
+    for (const key of [ "description", "number", "fileName", "lineNumber", "columnNumber" ]) {
+      expect(Object.hasOwn(json, key)).toBe(false);
+    }
+    expect(Object.hasOwn(FaxiosError, "ECONNREFUSED")).toBe(false);
+    expect(Object.hasOwn(FaxiosError, "ERR_FR_TOO_MANY_REDIRECTS")).toBe(false);
+    expect(FaxiosError.from.length).toBe(5);
+  });
+
   describe("FaxiosError.from", () => {
     it("adds config, code, request and response to the wrapped error", () => {
       const error = new Error("Boom!");

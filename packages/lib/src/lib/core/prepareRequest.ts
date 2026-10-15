@@ -65,7 +65,7 @@ function prepareRequest(config: FaxiosRequestConfig, url: string): FaxiosRequest
 
   // Add xsrf header
   // This is only done if running in a standard browser environment.
-  // Specifically not if we're in a web worker, or react-native.
+  // Specifically not if we're in a web worker.
   if (
     platform.hasStandardBrowserEnv &&
     applyXSRFToken(headers, withXSRFToken, xsrfHeaderName, xsrfCookieName, newConfig)
