@@ -1,8 +1,18 @@
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { extractBlocks } from "./extract.ts";
+import { docsSources, extractBlocks } from "./extract.ts";
+
+describe("docsSources", () => {
+  it("includes the repository landing README and the package README", () => {
+    const repoRoot = join(import.meta.dirname, "../../..");
+    const sources = docsSources().map(path => relative(repoRoot, path));
+
+    expect(sources).toContain("README.md");
+    expect(sources).toContain("packages/lib/README.md");
+  });
+});
 
 describe("extractBlocks", () => {
   let dir: string;

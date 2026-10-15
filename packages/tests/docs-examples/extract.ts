@@ -1,5 +1,5 @@
-// Extracts the js/ts code blocks from the package README and the English docs
-// pages into one module per block, so they can be type-checked and run.
+// Extracts the js/ts code blocks from the repository and package READMEs and the
+// English docs pages into one module per block, so they can be type-checked and run.
 //
 // Fence info-string markers (key=value; mdcode drops bare words):
 //   check=skip    not extracted: fragments, pseudo-code, config listings
@@ -47,9 +47,10 @@ function markdownFiles(dir: string): Array<string> {
   });
 }
 
-// The npm README plus the docs pages. The docs are English-only.
+// The repository landing README, the npm README and the docs pages. The docs are English-only.
 export function docsSources(): Array<string> {
   return [
+    join(repoRoot, "README.md"),
     join(repoRoot, "packages/lib/README.md"),
     ...markdownFiles(join(repoRoot, "packages/docs/pages")),
   ].sort();
