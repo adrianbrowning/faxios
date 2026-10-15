@@ -88,10 +88,10 @@ function findHeaderKey(headers: object, lHeader: string): string | undefined {
   return key !== undefined && hasOwnProp(headers, key) ? key : indexKeys(headers).get(lHeader);
 }
 
-// Per instance: own key -> the string set() or normalize() last sanitized into it. Sanitizing is
-// idempotent, so a value still equal to that string needs no second pass; a value written as a
-// plain property differs and is sanitized as usual. Arrays are always sanitized again: they can
-// be changed in place.
+// Per instance: own key -> the string set() or normalize() last sanitized into it; delete() and
+// clear() drop the key's entry with the header. Sanitizing is idempotent, so a value still equal
+// to that string needs no second pass; a value written as a plain property differs and is
+// sanitized as usual. Arrays are always sanitized again: they can be changed in place.
 const sanitizedValues = new WeakMap<object, Map<string, string>>();
 
 function sanitizedValuesOf(headers: object): Map<string, string> {
@@ -409,6 +409,7 @@ class FaxiosHeaders {
             ))
         ) {
           delete (self as Record<string, unknown>)[key];
+          sanitizedValues.get(self)?.delete(key);
 
           deleted = true;
         }
@@ -443,6 +444,7 @@ class FaxiosHeaders {
         )
       ) {
         delete (this as Record<string, unknown>)[key];
+        sanitizedValues.get(this)?.delete(key);
         deleted = true;
       }
     }

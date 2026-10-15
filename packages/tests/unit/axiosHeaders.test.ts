@@ -468,6 +468,19 @@ describe("FaxiosHeaders", () => {
       assert.strictEqual(headers.has("baa"), false);
     });
 
+    it("doesn't bring a deleted header back through a copy or normalize()", () => {
+      const headers = new FaxiosHeaders();
+      headers.set("X-Gone", "a\r\nb");
+      headers.set("X-Kept", "k");
+
+      headers.delete("x-gone");
+
+      assert.strictEqual(new FaxiosHeaders(headers).has("X-Gone"), false);
+      assert.strictEqual(FaxiosHeaders.concat(headers).has("X-Gone"), false);
+      assert.strictEqual(headers.normalize(true).has("X-Gone"), false);
+      assert.deepStrictEqual(Object.keys(headers.toJSON()), [ "X-Kept" ]);
+    });
+
     describe("filter", () => {
       it("should support RegExp", () => {
         const headers = new FaxiosHeaders();
