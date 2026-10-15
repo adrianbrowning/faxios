@@ -438,7 +438,7 @@ The package root exports these types. Import them with `import type { ... } from
 | `FaxiosHeaderValue` | One header value: a string, number, boolean, array of strings, `null` or `undefined` |
 | `FaxiosResponse` | The resolved response: `data`, `status`, `statusText`, `headers`, `config` and `request` |
 | `FaxiosPromise` | `Promise<FaxiosResponse<T>>` |
-| `FaxiosErrorCode` | The union of the error codes faxios sets, the `FaxiosError` statics |
+| `FaxiosErrorCode` | The union of the `FaxiosError` code statics; `ECONNABORTED` is kept for compatibility and never raised |
 | `SchemaValidationError` | The `FaxiosError` that [`isSchemaValidationError`](#isschemavalidationerror) narrows to |
 | `Method` | An HTTP method name, in lower or upper case |
 | `ResponseType` | The values of the [`responseType`](/pages/advanced/request-config#responsetype) option |
@@ -465,6 +465,7 @@ The package root exports these types. Import them with `import type { ... } from
 | `FaxiosPluginOptionNames` | A plugin's runtime list of request option names, each mapped to `true` |
 | `DefineConfig` | The config [`define()`](/pages/advanced/define) takes |
 | `DefinedEndpoint` | The endpoint function `define()` returns |
+| `FaxiosLike` | Internal: the `request` shape `define()` and `route()` take. Not part of the documented API |
 | `BasePerCallConfig` | The request config every endpoint call takes: everything except `url`, `method`, `pathParams`, `params`, `data` and the schemas |
 | `PerCallConfig` | The config one endpoint call takes: `BasePerCallConfig` plus `pathParams`, `params` and `data`, typed by their schemas |
 | `RouteConfig` | The config `route()` takes |

@@ -80,7 +80,10 @@ export type DefinedEndpoint<
     ? (callConfig: PerCallConfig<PP, P, D, TOpts>) => Promise<FaxiosResponse<SchemaOutput<R>>>
     : (callConfig?: PerCallConfig<PP, P, D, TOpts>) => Promise<FaxiosResponse<SchemaOutput<R>>>;
 
-/** @internal The minimal instance shape `define()` and `route()` need: a `request` method. Not exported from the package root. */
+/**
+ * @internal The minimal instance shape `define()` and `route()` need: a `request` method.
+ * Exported from the package root for callers that already name it; not part of the documented API.
+ */
 export interface FaxiosLike {
   request: (config: FaxiosRequestConfig) => Promise<FaxiosResponse<unknown>>;
 }
