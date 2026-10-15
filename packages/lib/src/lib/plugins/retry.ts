@@ -163,6 +163,30 @@ function canReplay(data: unknown): boolean {
   return true;
 }
 
+// A status error's `responseType: "stream"` body holds its connection open until it is read or
+// cancelled. Retrying drops it, so it is cancelled; one onRetry started reading is left alone.
+function discardBody(reason: unknown): void {
+  const data: unknown = reason instanceof FaxiosError ? reason.response?.data : undefined;
+  if (Object.prototype.toString.call(data) !== "[object ReadableStream]") return;
+  const stream = data as ReadableStream;
+  if (!stream.locked) stream.cancel().catch(() => {});
+}
+
+// The wait before the next try, or undefined to rethrow `error`, after calling onRetry. A throwing
+// hook rejects the request with its own error, before any wait; so does a delay that gives no
+// valid wait. Either way `error` is dropped, so its body is too.
+function decideRetry(error: unknown, attempt: number, policy: Policy, config: InternalFaxiosRequestConfig): number | undefined {
+  try {
+    const ms = waitBeforeRetry(error, attempt, policy, config);
+    if (ms !== undefined) policy.onRetry?.(error, attempt, ms);
+    return ms;
+  }
+  catch (thrown) {
+    discardBody(error);
+    throw thrown;
+  }
+}
+
 // The error dispatch rejects an aborted request with. A FaxiosError reason is that error already
 // (an ETIMEDOUT); otherwise the reason's message, with the reason as cause.
 function canceledFrom(signal: { readonly aborted: boolean; reason?: unknown; }, config: FaxiosRequestConfig): FaxiosError {
@@ -343,10 +367,9 @@ export function retry(options: RetryOptions = {}): FaxiosPlugin<{ options: Retry
           return await (policy.attemptTimeout > 0 ? tryWithin(policy.attemptTimeout, ctx, next) : next(ctx));
         }
         catch (error) {
-          const ms = waitBeforeRetry(error, attempt, policy, ctx.config);
+          const ms = decideRetry(error, attempt, policy, ctx.config);
           if (ms === undefined) throw error;
-          // A throwing hook rejects the request with its own error, before any wait.
-          policy.onRetry?.(error, attempt, ms);
+          discardBody(error);
           // eslint-disable-next-line no-await-in-loop -- see above
           await wait(ms, own(ctx.config, "signal"), ctx.config);
         }

@@ -229,6 +229,49 @@ describe("plugins::retry", () => {
     assert.strictEqual(vi.getTimerCount(), 0);
   });
 
+  it("cancels the stream body of a status error it retries", async () => {
+    let cancelled = 0;
+    let calls = 0;
+    const fetch = async () => {
+      calls++;
+      const body = new ReadableStream<Uint8Array>({
+        cancel() {
+          cancelled++;
+        },
+      });
+      return new Response(body, { status: calls === 1 ? 503 : 200 });
+    };
+    const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0 }));
+
+    const request = api.get<ReadableStream<Uint8Array>>(URL, { responseType: "stream" });
+    await vi.advanceTimersByTimeAsync(0);
+    const { data } = await request;
+
+    assert.strictEqual(calls, 2);
+    // The 503's body never reaches the caller, so retry releases it; the 200's stays open.
+    assert.strictEqual(cancelled, 1);
+    await data.cancel();
+    assert.strictEqual(cancelled, 2);
+  });
+
+  it.each([
+    [ "an onRetry that throws", { onRetry: () => { throw new Error("hook failed"); } }, (err: unknown) => err instanceof Error && err.message === "hook failed" ],
+    [ "a delay that gives no valid wait", { delay: () => Number.NaN }, (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE ],
+  ] as const)("cancels the stream body of a status error it drops for %s", async (_label, options, isRejection) => {
+    let cancelled = 0;
+    const fetch = async () => new Response(new ReadableStream<Uint8Array>({
+      cancel() {
+        cancelled++;
+      },
+    }), { status: 503 });
+    const api = faxios.create({ env: { fetch } }).use(retry(options));
+
+    await assert.rejects(api.get(URL, { responseType: "stream" }), isRejection);
+
+    // The request rejects with the hook's or the delay's error, so nothing reads the 503's body.
+    assert.strictEqual(cancelled, 1);
+  });
+
   it("ends a try whose middleware after retry never resumes once attemptTimeout passes", async () => {
     const { fetch, calls } = scriptedFetch([ 200 ]);
     let tries = 0;

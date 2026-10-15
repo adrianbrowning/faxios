@@ -160,7 +160,7 @@ const api = faxios.create({ baseURL: "https://api.example.com", timeout: 10_000 
 await api.get("/users");
 ```
 
-With `responseType: "stream"`, the request isn't over when the promise resolves. The `timeout` and the [`signal`](#signal) stay active until you have read the whole body or cancelled it, so a slow or stalled body still times out, counted from when the request started, and aborting the signal stops it. Reading the stream then fails with the `ETIMEDOUT` or `ERR_CANCELED` error. faxios releases the timer and the signal listener when the body ends, errors or is cancelled. If the response has no body (a `204`, `304` or `HEAD` response), it releases them when the promise resolves.
+With `responseType: "stream"`, the request isn't over when the promise resolves. The `timeout` and the [`signal`](#signal) stay active until you have read the whole body or cancelled it, so a slow or stalled body still times out, counted from when the request started, and aborting the signal stops it. Reading the stream then fails with the `ETIMEDOUT` or `ERR_CANCELED` error. faxios releases the timer and the signal listener when the body ends, errors or is cancelled. If the response has no body (a `204`, `304` or `HEAD` response), it releases them when the promise resolves. A status error works the same way: when a `404` rejects with `ERR_BAD_REQUEST`, `error.response.data` is the open stream, so read it for the server's error body or cancel it.
 
 ### `withCredentials`
 
@@ -256,7 +256,7 @@ If either callback throws, or returns a promise that rejects, faxios catches and
 
 ### `maxContentLength`
 
-The `maxContentLength` property defines the maximum response size in bytes. The fetch adapter enforces it when the response length is declared, the response stream can be tracked, or the response size can otherwise be determined. When a response goes over the limit, faxios rejects with `ERR_BAD_RESPONSE` and aborts the request, so the connection is closed instead of left downloading.
+The `maxContentLength` property defines the maximum response size in bytes. The fetch adapter enforces it when the response length is declared, the response stream can be tracked, or the response size can otherwise be determined. When a response goes over the limit, faxios rejects with `ERR_BAD_RESPONSE` and aborts the request, so the connection is closed instead of left downloading. A `HEAD` response and a `204`, `205` or `304` response have no body, so the `Content-Length` they declare isn't checked against the limit.
 
 > ⚠️ **Security:** defaults to `-1` (unlimited). Unbounded responses combined with gzip/deflate/brotli/zstd decompression allow decompression-bomb DoS.
 > Set an explicit limit when requesting servers you do not fully trust.

@@ -60,4 +60,4 @@ A signal can outlive the requests that use it, such as one per page or per app. 
 
 ## Timeouts and streamed bodies
 
-With `responseType: "stream"`, the request's `signal` and `timeout` stay in force until the body has been read, errors or is cancelled, even when `retry({ attemptTimeout })` gave each try a limit of its own. A try's limit stops once its response arrives; the request's `timeout` keeps running, so a stalled body still rejects with `ETIMEDOUT`. Cancel a body you don't read, so the timer and the signal listener are released.
+With `responseType: "stream"`, the request's `signal` and `timeout` stay in force until the body has been read, errors or is cancelled, even when `retry({ attemptTimeout })` gave each try a limit of its own. A try's limit stops once its response arrives; the request's `timeout` keeps running, so a stalled body still rejects with `ETIMEDOUT`. The same holds for the body of a status error, on `error.response.data`. Cancel a body you don't read, so the timer and the signal listener are released.

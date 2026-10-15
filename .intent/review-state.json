@@ -3,15 +3,15 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "69a7ed84974c064cb060cb481514a7d3cad475df6136b515f7885a75cee6e393",
+      "fingerprint": "a31e9a8ffd113ad5f17b84b6ea44298522a785693831d7a0bfa9ac6e9fa16976",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "e9803b490824390ae8c7db05d72c3e0ec677e824453bbe4fd2078925b008145a",
+        "packages/lib/skills/configure-requests/SKILL.md": "11b630ee1c95e2c62e1d34f1e78ceb90bfde7e09553f1beaaa4bc86cef2306ad",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
         "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
-        "packages/lib/src/lib/adapters/fetch.ts": "d8cca64b10e08aca571d1b6e526c2c685dac036b53b3c6696fc431c99722bea8",
+        "packages/lib/src/lib/adapters/fetch.ts": "294bfda4dcf19d1e32ae937d0bc93fd3688af23d54485d351a31f5d3f1fb0614",
         "packages/lib/src/lib/core/Faxios.ts": "600c5b4e45b5af27de5b3b6e03b10b822193bcef4077f212d96a2cc54a4b76b8",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
@@ -24,7 +24,7 @@
         "packages/lib/src/lib/plugins/authBearer.ts": "c93f20ab62b3a69bcebdb0ecf20e1a1c1f49cda1a01579e8f8573d72cfdc65e5",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "e3d1d859c7f1df06764e2ab3aff2164fba44cffd893435faf6d425f02af15425",
-        "packages/lib/src/lib/plugins/retry.ts": "e2df4f7ebc05fe91bb0a80f87aa7834d59a6dd1b98b6fb449666af38769425a6",
+        "packages/lib/src/lib/plugins/retry.ts": "f13ac50f29918a1241c16029e3e253cfd4bc665f8252f16f77adee297852f463",
         "packages/lib/src/lib/plugins/timing.ts": "d00f2ddea50758514a1b0498ea9961d19c678bc11fa9ee4f22d15af55dd6b8a4",
         "packages/lib/src/lib/types.ts": "094961eefee9680b19a9d95c1b1c5c534f6207bb3ce3d0ba943542d22717f0c5",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
@@ -32,29 +32,29 @@
         "packages/tests/unit/plugins/authBearer.test.ts": "84baff907f21988dea49400531dd0abdf7b5a5148d1904e712ebe0b43ebfd3ae",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
-        "packages/tests/unit/plugins/retry.test.ts": "ea07c134631f8f6d646c4389a20bdb27b3889ae31840ba4adda022ee417595df",
+        "packages/tests/unit/plugins/retry.test.ts": "fb59e8014d7d4a50819edaaca38c7edf6d4bbf6a5ba110cf15ab05dcbb2651dc",
         "packages/tests/unit/plugins/timing.test.ts": "2bb6422d1f3a5d8181eaba9fe0f45fb50b1ba39cb16a1c75ca254e20fe1a2ba1"
       },
-      "head": "672fec258385a1a6d3b7057272bc30094f072c36",
-      "outcome": "updated",
-      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "outcome": "no-change",
+      "reason": "retry now also cancels a dropped status error's stream body when onRetry or delay throws; an internal cleanup the configure-requests skill doesn't teach; retry docs and bump file updated",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/tests/unit/plugins/retry.test.ts at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
+        "Changed: packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at 8099a7cfe2993903d11e32ae2377b13a8c2e81ec"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "c7ff741fdab4b9fa959f198965cff5d638e6e382a2936c0e1122b76733d66eb3",
+      "fingerprint": "532ef5c3cec12058090fe63b83aeb534936fb133fdaa8c8de506301d7b7ed4a0",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "e9803b490824390ae8c7db05d72c3e0ec677e824453bbe4fd2078925b008145a",
+        "packages/lib/skills/configure-requests/SKILL.md": "11b630ee1c95e2c62e1d34f1e78ceb90bfde7e09553f1beaaa4bc86cef2306ad",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
         "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
-        "packages/lib/src/lib/adapters/fetch.ts": "d8cca64b10e08aca571d1b6e526c2c685dac036b53b3c6696fc431c99722bea8",
+        "packages/lib/src/lib/adapters/fetch.ts": "294bfda4dcf19d1e32ae937d0bc93fd3688af23d54485d351a31f5d3f1fb0614",
         "packages/lib/src/lib/core/Faxios.ts": "600c5b4e45b5af27de5b3b6e03b10b822193bcef4077f212d96a2cc54a4b76b8",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
@@ -67,7 +67,7 @@
         "packages/lib/src/lib/plugins/authBearer.ts": "c93f20ab62b3a69bcebdb0ecf20e1a1c1f49cda1a01579e8f8573d72cfdc65e5",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "e3d1d859c7f1df06764e2ab3aff2164fba44cffd893435faf6d425f02af15425",
-        "packages/lib/src/lib/plugins/retry.ts": "e2df4f7ebc05fe91bb0a80f87aa7834d59a6dd1b98b6fb449666af38769425a6",
+        "packages/lib/src/lib/plugins/retry.ts": "f13ac50f29918a1241c16029e3e253cfd4bc665f8252f16f77adee297852f463",
         "packages/lib/src/lib/plugins/timing.ts": "d00f2ddea50758514a1b0498ea9961d19c678bc11fa9ee4f22d15af55dd6b8a4",
         "packages/lib/src/lib/types.ts": "094961eefee9680b19a9d95c1b1c5c534f6207bb3ce3d0ba943542d22717f0c5",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
@@ -75,14 +75,14 @@
         "packages/tests/unit/plugins/authBearer.test.ts": "84baff907f21988dea49400531dd0abdf7b5a5148d1904e712ebe0b43ebfd3ae",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
-        "packages/tests/unit/plugins/retry.test.ts": "ea07c134631f8f6d646c4389a20bdb27b3889ae31840ba4adda022ee417595df",
+        "packages/tests/unit/plugins/retry.test.ts": "fb59e8014d7d4a50819edaaca38c7edf6d4bbf6a5ba110cf15ab05dcbb2651dc",
         "packages/tests/unit/plugins/timing.test.ts": "2bb6422d1f3a5d8181eaba9fe0f45fb50b1ba39cb16a1c75ca254e20fe1a2ba1"
       },
-      "head": "672fec258385a1a6d3b7057272bc30094f072c36",
-      "outcome": "updated",
-      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "outcome": "no-change",
+      "reason": "retry now also cancels a dropped status error's stream body when onRetry or delay throws; an internal cleanup the configure-requests skill doesn't teach; retry docs and bump file updated",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/tests/unit/plugins/retry.test.ts at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
+        "Changed: packages/lib/src/lib/plugins/retry.ts, packages/tests/unit/plugins/retry.test.ts at 8099a7cfe2993903d11e32ae2377b13a8c2e81ec"
       ]
     },
     "source:knip.json": {
@@ -280,27 +280,27 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "ed8658ee0b469b31b4fbc9e907d21b459b0cecd8efdf3f12787ae51d7ac108f1",
+      "fingerprint": "996308357097a8d4a85a582f8e90461610aeb68e410f8d9628cf34f173970ce1",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "46043c1e0e9a9e160a00d6104d10cb54bde840349e440804b0e5c71fa4eec3b3"
+        "packages/docs/pages/advanced/request-config.md": "52557a5366262b3971e3c164fe8c7f7e3e6a04c6e930d00c33a528da447eaff2"
       },
-      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
       "outcome": "updated",
-      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
+      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
+        "Changed: packages/docs/pages/advanced/request-config.md at 86f20473642fb3c294f745739f7ba05847421218"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
-      "fingerprint": "e49e3759bdffc8baa993926ed0b032f0344c068fa2b7808a94294ae082d76b61",
+      "fingerprint": "87eb95468b9fa2e01ba5fa8400092dde027fcb8ed1d66c6e35825a5e1e15a568",
       "snapshot": {
-        "packages/docs/pages/advanced/retry.md": "17fcd676a16c7887c537331fc34f79a87534e994de8a13b6ed0b63bc813b410d"
+        "packages/docs/pages/advanced/retry.md": "05f0e918f0e499cb4488e8cb9cf83133491c79ae8a08d6a8219076770c200f49"
       },
-      "head": "672fec258385a1a6d3b7057272bc30094f072c36",
-      "outcome": "updated",
-      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "outcome": "no-change",
+      "reason": "retry now also cancels a dropped status error's stream body when onRetry or delay throws; an internal cleanup the configure-requests skill doesn't teach; retry docs and bump file updated",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/retry.md at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
+        "Changed: packages/docs/pages/advanced/retry.md at 8099a7cfe2993903d11e32ae2377b13a8c2e81ec"
       ]
     },
     "source:packages/docs/pages/advanced/schema-validation.md": {
@@ -424,15 +424,15 @@
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
-      "fingerprint": "e4852e045e98a139398c95d2759104f5e804c3a9c186740fcb25f0d8e510cb41",
+      "fingerprint": "48fa3a6e50a47ce5ce2d3d2064ea62fbe38eadd57c622c83f410d8372169d0a8",
       "snapshot": {
-        "packages/lib/src/lib/defaults/index.ts": "2d4e8757b56382272657889b1eb48526c3748d0afb2abeca62e9fd9697dfc6da"
+        "packages/lib/src/lib/defaults/index.ts": "3557f8b093c99aa900a7b3e8e5be8e79ae16a85daf547fac69a8d2d48769e33a"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "outcome": "updated",
+      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
       "evidence": [
-        "Changed: packages/lib/src/lib/defaults/index.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/lib/src/lib/defaults/index.ts at 86f20473642fb3c294f745739f7ba05847421218"
       ]
     },
     "source:packages/tests/browser/headers.browser.test.ts": {
@@ -2180,15 +2180,15 @@
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
-      "fingerprint": "b28ef0fe5698d15f91810bac1febe142a2d6c43544434b527c450c09be0a4fc1",
+      "fingerprint": "b15587783fb751b8f059ad6fec8cae869c136713ee59672d3b5c789ba22dea55",
       "snapshot": {
-        "packages/lib/src/lib/adapters/fetch-helpers.ts": "726c0eb85d9f4dc6612c9683d1597c001ae5f2dae58996257b5ee615ab4de29f"
+        "packages/lib/src/lib/adapters/fetch-helpers.ts": "6073e0b13fa33afda49431a61beb023828590fda9e6cb05b4ca70e3f773a0355"
       },
-      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
       "outcome": "updated",
-      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
+      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
+        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 86f20473642fb3c294f745739f7ba05847421218"
       ]
     },
     "source:packages/lib/src/lib/cancel/CanceledError.ts": {
@@ -3404,15 +3404,15 @@
       ]
     },
     "source:packages/tests/unit/transformResponse.test.ts": {
-      "fingerprint": "636317475d097f59e31003d3d8c2a9b3fe9034b808c849ff8dbeaccc25132a8f",
+      "fingerprint": "5b9914c13d2f478c60d479c11f7a0f7de1a56bf5990979bdd4f8db5fd8b4cf80",
       "snapshot": {
-        "packages/tests/unit/transformResponse.test.ts": "9fd3f56343aeacbddc848ca2eb150a5769762a4b075a5c6c9688fb7decbbac44"
+        "packages/tests/unit/transformResponse.test.ts": "5906a01a1c6bfd157ae136e36df10341bc0d70c9488787756594947fe5f6480e"
       },
-      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
       "outcome": "updated",
-      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
+      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
       "evidence": [
-        "Changed: packages/tests/unit/transformResponse.test.ts at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
+        "Changed: packages/tests/unit/transformResponse.test.ts at 86f20473642fb3c294f745739f7ba05847421218"
       ]
     },
     "source:.bumpy/release-gates.md": {
@@ -3512,15 +3512,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/fetch-adapter.md": {
-      "fingerprint": "c39f8412c539a523c698933ec0f97313082e2fb8393979d975837952fb774ddd",
+      "fingerprint": "438ab01f1f6373e99db6dc9b53547d86fc9c600160994420dce882d77bfeaacd",
       "snapshot": {
-        "packages/docs/pages/advanced/fetch-adapter.md": "85146526151126a3e8fa51797cff5d2882f4a136cf6337f221dc343b473b2532"
+        "packages/docs/pages/advanced/fetch-adapter.md": "8b8aad27405ac349c5dec0fccd32a18af4a57cdac99478a94ddd714728da7f9c"
       },
-      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
-      "outcome": "no-change",
-      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "outcome": "updated",
+      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/fetch-adapter.md at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
+        "Changed: packages/docs/pages/advanced/fetch-adapter.md at 86f20473642fb3c294f745739f7ba05847421218"
       ]
     },
     "source:packages/lib/src/lib/helpers/cloneConfig.ts": {
@@ -3716,15 +3716,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetchCleanup.test.ts": {
-      "fingerprint": "9f08528a73397077a7dfcf88107c1f4f570501123a2a525bce3015eea87a308e",
+      "fingerprint": "dea8c3a9c93e2786e56457b5dc55baf9b2f1ec9613d1528952ec3782fa85fedc",
       "snapshot": {
-        "packages/tests/unit/adapters/fetchCleanup.test.ts": "7cbf34a0aca1ab8ac6933b229e75458cfc2d7accf414145a58a68f6315703f55"
+        "packages/tests/unit/adapters/fetchCleanup.test.ts": "398671a407642b3496c19f29eda6ba99be67e3bcb20b68d88935ea18f5f7999b"
       },
-      "head": "672fec258385a1a6d3b7057272bc30094f072c36",
-      "outcome": "no-change",
-      "reason": "#254: trackStream cancels the source directly; the configure-requests skill does not teach stream cancel internals.",
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "outcome": "updated",
+      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetchCleanup.test.ts at 12f00f571b1d09b579b3142ea82e2498e9357060"
+        "Changed: packages/tests/unit/adapters/fetchCleanup.test.ts at 86f20473642fb3c294f745739f7ba05847421218"
       ]
     },
     "source:.bumpy/browser-upload-progress.md": {
@@ -4376,15 +4376,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/assertRequestConfig.ts": {
-      "fingerprint": "6413972ca8c68fe96a38c4365311303fe03170313def590a4b9673cd3a7dc05d",
+      "fingerprint": "e2d4b3a89dc619d195990e714a0f833a548e6199e07c75612a091bb86da814dc",
       "snapshot": {
-        "packages/lib/src/lib/core/assertRequestConfig.ts": "a064040307b8a973361a02be357f39e90fd01c5106b5c6de747e47185677822a"
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "1ef0f93e33d410e455c355cf8a51272bb1347eff3df2f2eb142eb9e37c1a05ef"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "outcome": "updated",
+      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/assertRequestConfig.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/lib/src/lib/core/assertRequestConfig.ts at 86f20473642fb3c294f745739f7ba05847421218"
       ]
     },
     "source:packages/tests/browser/xsrf.browser.test.ts": {
@@ -4604,15 +4604,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch-pure.test.ts": {
-      "fingerprint": "9e1e0ef24dad77d963ede00ddd89022bec0eff3402a5c9c526c29fecf07fcd6a",
+      "fingerprint": "bc36be4a55be1cd6529634d928f3cdbc961136600150c313159c3ab75854b41e",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch-pure.test.ts": "d93cfba9138d65e2f76c3c698ca79cba7fd19a7d9cb4176a7d7e3a4aa56fca8d"
+        "packages/tests/unit/adapters/fetch-pure.test.ts": "b3577c35bafb4edeede94e245349819feb8fbd67b9d710bef1d8406bb261c0f3"
       },
-      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
       "outcome": "updated",
-      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
+      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch-pure.test.ts at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
+        "Changed: packages/tests/unit/adapters/fetch-pure.test.ts at 86f20473642fb3c294f745739f7ba05847421218"
       ]
     },
     "source:.bumpy/plugin-attempt-api.md": {
@@ -5300,15 +5300,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/cancellation.md": {
-      "fingerprint": "ab293327c07c6cbfbe427b2212ff8092fc3485b1f80561cba49d328075fb7394",
+      "fingerprint": "fdb33f7551b7d5a0ec3f9a5b767bb8ccb77ea331e70cd01db726b0eb46884320",
       "snapshot": {
-        "packages/docs/pages/advanced/cancellation.md": "c51f54d697b5ad63182873c401331812f97156b5bc0a22429b855243d51f19dd"
+        "packages/docs/pages/advanced/cancellation.md": "9691aa18f592fb310b2102d21c0eb6bdbecc21c70606e0a6ec740afd43658ac0"
       },
-      "head": "672fec258385a1a6d3b7057272bc30094f072c36",
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
       "outcome": "updated",
-      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/cancellation.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+        "Changed: packages/docs/pages/advanced/cancellation.md at 86f20473642fb3c294f745739f7ba05847421218"
       ]
     },
     "source:packages/docs/pages/advanced/promises.md": {
@@ -5744,15 +5744,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch/request-body.test.ts": {
-      "fingerprint": "2c277ab0dd4463ce19c18dc23b1f1734f5ca3e52942e870984a721ee9d171773",
+      "fingerprint": "57d9f4e68e1881316166a116d553312c0bfd132da464510bb98d72a4e7dec12c",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch/request-body.test.ts": "9be921fa6b9cf84c3658081e8068079ecc6d04941d073bb362b433231713cdce"
+        "packages/tests/unit/adapters/fetch/request-body.test.ts": "18c5e363a307f3db79521f7104ded90eed8b45c845eb9d8056faf2cc92f95cee"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
-      "outcome": "no-change",
-      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "outcome": "updated",
+      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch/request-body.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+        "Changed: packages/tests/unit/adapters/fetch/request-body.test.ts at 86f20473642fb3c294f745739f7ba05847421218"
       ]
     },
     "source:packages/tests/unit/adapters/fetch/responses.test.ts": {
@@ -5768,15 +5768,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch/size-limits.test.ts": {
-      "fingerprint": "e88c2ec66e9ae1cf62b4c4ce04a5337a9995533d421f3fca0a12568f912d02e3",
+      "fingerprint": "fe8f6a0e26242842a28abb42bb1992db0ccf052d78ee8a3646587209633967d3",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch/size-limits.test.ts": "fd9b4407fb43595248081182da64f79f78a2ced65fc69bd90019777184ca2694"
+        "packages/tests/unit/adapters/fetch/size-limits.test.ts": "1eb9eef5ceb836e2d094986a70cf209967d19d2bd77e68f857c3d653977031ec"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
-      "outcome": "no-change",
-      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "outcome": "updated",
+      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch/size-limits.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+        "Changed: packages/tests/unit/adapters/fetch/size-limits.test.ts at 86f20473642fb3c294f745739f7ba05847421218"
       ]
     },
     "source:packages/tests/unit/adapters/fetch/timeout.test.ts": {
@@ -6065,6 +6065,30 @@
       "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
       "evidence": [
         "Changed files: packages/tests/unit/helpers/raceAbort.test.ts"
+      ]
+    },
+    "source:.bumpy/286-response-edges.md": {
+      "fingerprint": "1b2f0b316ef8fbab7aa90e060d7a4bf23a58ee3d84fddeb43efa60a0e71617cb",
+      "snapshot": {
+        ".bumpy/286-response-edges.md": "414617dfa05275608edceda496c15201e6f9d15561e9efab4a468953c677166a"
+      },
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "outcome": "no-change",
+      "reason": "retry now also cancels a dropped status error's stream body when onRetry or delay throws; an internal cleanup the configure-requests skill doesn't teach; retry docs and bump file updated",
+      "evidence": [
+        "Changed: .bumpy/286-response-edges.md at 8099a7cfe2993903d11e32ae2377b13a8c2e81ec"
+      ]
+    },
+    "source:packages/lib/src/lib/core/settle.ts": {
+      "fingerprint": "1956f4c4b7ecae31b5352ee7e4b13a08d3c98f89e021d4e8212fa639ec250997",
+      "snapshot": {
+        "packages/lib/src/lib/core/settle.ts": "2f573a014d3d06bc902051e205420a5002b47fc184233c0fdb8b2826f2f3d356"
+      },
+      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "outcome": "updated",
+      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
+      "evidence": [
+        "Changed: packages/lib/src/lib/core/settle.ts at 86f20473642fb3c294f745739f7ba05847421218"
       ]
     }
   }
