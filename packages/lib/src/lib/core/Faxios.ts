@@ -190,10 +190,16 @@ function copyForDispatch(config: InternalFaxiosRequestConfig): InternalFaxiosReq
 }
 
 // The stream bodies of a request with middleware ride on its context under a key only core
-// holds. A spread of the context (`next({ ...ctx, state: { ...ctx.state } })`) copies it, so the
-// dispatch at the end of the chain finds the request it serves whatever the middleware replaced.
+// holds, and are also found by its ctx.state. A spread of the context copies the key, and a
+// context rebuilt from its fields keeps the state, so the dispatch at the end of the chain finds
+// the request it serves as long as either survives.
 const REQUEST_BODIES = Symbol("faxios.requestBodies");
 type BodiesCarrier = { [REQUEST_BODIES]: RequestBodies | undefined; };
+const bodiesByState = new WeakMap<object, RequestBodies>();
+
+function bodiesOf(ctx: Parameters<AnyContextNext>[0]): RequestBodies | undefined {
+  return (ctx as Partial<BodiesCarrier>)[REQUEST_BODIES] ?? (isObject(ctx.state) ? bodiesByState.get(ctx.state) : undefined);
+}
 
 // Runs the request under its signal and `timeout`. The deadline is armed here, before middleware,
 // so it covers the whole request: middleware, schemas, every retry try and wait, the fetch and the
@@ -314,7 +320,7 @@ class Faxios {
     this.#pluginOptions = new Set(entries.flatMap(entry => entry.options));
     this.#composed = entries.length === 0
       ? null
-      : composeMiddleware(entries, ctx => dispatchRequest(copyForDispatch(ctx.config), (ctx as Partial<BodiesCarrier>)[REQUEST_BODIES]));
+      : composeMiddleware(entries, ctx => dispatchRequest(copyForDispatch(ctx.config), bodiesOf(ctx)));
   }
 
   // Reads every caller-supplied capability into a new snapshot without touching instance state,
@@ -393,11 +399,13 @@ class Faxios {
     const instanceBaseURL = typeof defaultBaseURL === "string" ? defaultBaseURL : undefined;
     // Built when the run starts, so ctx.config carries the request's signal.
     return runRequest(bodies => {
+      const state: Record<string, unknown> = Object.create(null);
+      if (bodies) bodiesByState.set(state, bodies);
       const ctx: Parameters<AnyContextNext>[0] & BodiesCarrier = {
         attempt: 1,
         config: internal,
         instanceBaseURL,
-        state: Object.create(null) as Record<string, unknown>,
+        state,
         capabilities: this.#capabilities,
         [REQUEST_BODIES]: bodies,
       };

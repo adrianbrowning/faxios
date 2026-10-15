@@ -219,6 +219,28 @@ describe("fetch adapter request cleanup", () => {
       assert.strictEqual(vi.getTimerCount(), 0);
     });
 
+    it("is aborted by timeout while the body is read, behind middleware that rebuilds the context literal", async () => {
+      vi.useFakeTimers();
+      const rebuilding = faxios.create({ allowAbsoluteUrls: true }).use(async (ctx, next) => next({
+        attempt: ctx.attempt,
+        capabilities: ctx.capabilities,
+        config: ctx.config,
+        instanceBaseURL: ctx.instanceBaseURL,
+        state: ctx.state,
+      }));
+      const { data } = await rebuilding.get<ReadableStream<Uint8Array>>("http://localhost/", {
+        responseType: "stream",
+        timeout: 1000,
+        env: { fetch: stallingFetch({}) },
+      });
+      const reader = data.getReader();
+      await reader.read();
+      const rejected = assert.rejects(reader.read(), { code: "ETIMEDOUT" });
+      await vi.advanceTimersByTimeAsync(1000);
+      await rejected;
+      assert.strictEqual(vi.getTimerCount(), 0);
+    });
+
     it("keeps the timeout armed while the body is open and clears it once the body ends", async () => {
       vi.useFakeTimers();
       const { promise: gate, resolve: open } = Promise.withResolvers<void>();
