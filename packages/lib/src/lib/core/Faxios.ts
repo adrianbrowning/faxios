@@ -329,8 +329,9 @@ class Faxios {
     }
     const options = declared == null ? [] : Object.keys(declared).filter(key => !utils.isDangerousKey(key));
     const provides = own("provides");
-    const provided = provides == null ? [] : this.#addCapabilities(String(name), provides);
-    this.#setMiddleware([ ...this.#middleware, { ref: middleware, run, provided, options }]);
+    const capabilities = provides == null ? null : this.#withCapabilities(String(name), provides);
+    this.#setMiddleware([ ...this.#middleware, { ref: middleware, run, provided: capabilities ? capabilities.keys : [], options }]);
+    if (capabilities) this.#capabilities = capabilities.next;
   }
 
   // Removes middleware or a plugin registered with use(), by reference. In-flight requests keep
@@ -354,7 +355,9 @@ class Faxios {
       : composeMiddleware(entries, ctx => dispatchRequest(copyForDispatch(ctx.config)));
   }
 
-  #addCapabilities(pluginName: string, provides: unknown): Array<string> {
+  // Reads every caller-supplied capability into a new snapshot without touching instance state,
+  // so a throwing getter or a collision leaves the instance as it was.
+  #withCapabilities(pluginName: string, provides: unknown): { keys: Array<string>; next: Record<string, unknown>; } {
     const source = provides as Record<string, unknown>;
     const keys = Object.keys(source).filter(key => !utils.isDangerousKey(key));
     for (const key of keys) {
@@ -362,11 +365,11 @@ class Faxios {
         throw new FaxiosError(`Plugin "${pluginName}" provides capability "${key}", which another plugin already provides`, FaxiosError.ERR_BAD_OPTION);
       }
     }
-    this.#capabilities = Object.assign(Object.create(null) as Record<string, unknown>, this.#capabilities);
+    const next = Object.assign(Object.create(null) as Record<string, unknown>, this.#capabilities);
     for (const key of keys) {
-      this.#capabilities[key] = source[key];
+      next[key] = source[key];
     }
-    return keys;
+    return { keys, next };
   }
 
   /**

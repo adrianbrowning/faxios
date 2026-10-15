@@ -3,7 +3,7 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "c953e0df05f8ea60eb6f906881f323d9e673aff090d680c6a979a91092af17d4",
+      "fingerprint": "3ebd9f32ff8e14935acce4a3cc366a2695c92f8785651c9c382ad2cf5384b6dc",
       "snapshot": {
         "MIGRATION_GUIDE.md": "adc906193779e6ef7adadee324ee5a4a711461420eeacdbdcd0d9383edb081b4",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
@@ -12,7 +12,7 @@
         "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
         "packages/lib/src/lib/adapters/fetch.ts": "d971fd5c45357f60daf55c41bb9aa10ac58366e341d3bf37a5eb90b137c3e405",
-        "packages/lib/src/lib/core/Faxios.ts": "7d77d83175a3f2df158bf4fad8c92217e4cc7b1323e0834999d5428707be2d28",
+        "packages/lib/src/lib/core/Faxios.ts": "9137318462d415375fbcc412c4dfa44c363ce2bec4f9ee78eed54a3efaef48c0",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
@@ -28,22 +28,22 @@
         "packages/lib/src/lib/plugins/timing.ts": "d00f2ddea50758514a1b0498ea9961d19c678bc11fa9ee4f22d15af55dd6b8a4",
         "packages/lib/src/lib/types.ts": "7be2bd96745f0f50e4ce5cf6e0ba00803662033b75f1543390656c7dd5b317c3",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
-        "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
+        "packages/tests/unit/core/middleware.test.ts": "d8f1e88a8efd90fb14181727f026a3a90bc48c133528898ea3875f6491b6ca4a",
         "packages/tests/unit/plugins/authBearer.test.ts": "84baff907f21988dea49400531dd0abdf7b5a5148d1904e712ebe0b43ebfd3ae",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
         "packages/tests/unit/plugins/retry.test.ts": "211222f8205dfcc23c2cacff16561038402c81c917e492e1679fb8838ddfb209",
         "packages/tests/unit/plugins/timing.test.ts": "2bb6422d1f3a5d8181eaba9fe0f45fb50b1ba39cb16a1c75ca254e20fe1a2ba1"
       },
-      "head": "16004a89cc705910f332129196177c5afcbad839",
-      "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says a request redact adds to the instance's, config.data on errors is the caller's body, and schema issues keep only message and path keys",
+      "head": "350605777edb17586f58ed6796d0d5b5166a9899",
+      "outcome": "no-change",
+      "reason": "Atomic capability registration on failed use() is an internal fix; the skill does not teach failure-state behaviour",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/tests/unit/plugins/retry.test.ts, packages/tests/unit/plugins/timing.test.ts at 0fd26195c33fab2485de5afef6b316d94f126562"
+        "Changed: packages/tests/unit/core/middleware.test.ts at 20e98674b5a8897cb24a5e7b7f41d6472d86b485"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "30eee6195f316e6721112b9943b3b5121be9a9d3bede1c32831239c0501445db",
+      "fingerprint": "0f3f9960297f105f8b73d6223d6b10e0b829ba60f12f10a48b3fcc646f61df13",
       "snapshot": {
         "MIGRATION_GUIDE.md": "adc906193779e6ef7adadee324ee5a4a711461420eeacdbdcd0d9383edb081b4",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
@@ -55,7 +55,7 @@
         "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
         "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
         "packages/lib/src/lib/adapters/fetch.ts": "d971fd5c45357f60daf55c41bb9aa10ac58366e341d3bf37a5eb90b137c3e405",
-        "packages/lib/src/lib/core/Faxios.ts": "7d77d83175a3f2df158bf4fad8c92217e4cc7b1323e0834999d5428707be2d28",
+        "packages/lib/src/lib/core/Faxios.ts": "9137318462d415375fbcc412c4dfa44c363ce2bec4f9ee78eed54a3efaef48c0",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
         "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
@@ -71,18 +71,18 @@
         "packages/lib/src/lib/plugins/timing.ts": "d00f2ddea50758514a1b0498ea9961d19c678bc11fa9ee4f22d15af55dd6b8a4",
         "packages/lib/src/lib/types.ts": "7be2bd96745f0f50e4ce5cf6e0ba00803662033b75f1543390656c7dd5b317c3",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
-        "packages/tests/unit/core/middleware.test.ts": "f2d29b3acdc1312eb10a1d7d78e135eb9a6e0c5f0eeb52a61293ccafc7887c07",
+        "packages/tests/unit/core/middleware.test.ts": "d8f1e88a8efd90fb14181727f026a3a90bc48c133528898ea3875f6491b6ca4a",
         "packages/tests/unit/plugins/authBearer.test.ts": "84baff907f21988dea49400531dd0abdf7b5a5148d1904e712ebe0b43ebfd3ae",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
         "packages/tests/unit/plugins/retry.test.ts": "211222f8205dfcc23c2cacff16561038402c81c917e492e1679fb8838ddfb209",
         "packages/tests/unit/plugins/timing.test.ts": "2bb6422d1f3a5d8181eaba9fe0f45fb50b1ba39cb16a1c75ca254e20fe1a2ba1"
       },
-      "head": "16004a89cc705910f332129196177c5afcbad839",
-      "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says a request redact adds to the instance's, config.data on errors is the caller's body, and schema issues keep only message and path keys",
+      "head": "350605777edb17586f58ed6796d0d5b5166a9899",
+      "outcome": "no-change",
+      "reason": "Atomic capability registration on failed use() is an internal fix; the skill does not teach failure-state behaviour",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/tests/unit/plugins/retry.test.ts, packages/tests/unit/plugins/timing.test.ts at 0fd26195c33fab2485de5afef6b316d94f126562"
+        "Changed: packages/tests/unit/core/middleware.test.ts at 20e98674b5a8897cb24a5e7b7f41d6472d86b485"
       ]
     },
     "source:knip.json": {
@@ -5993,6 +5993,18 @@
       "reason": "configure-requests SKILL.md now says a request redact adds to the instance's, config.data on errors is the caller's body, and schema issues keep only message and path keys",
       "evidence": [
         "Changed: packages/tests/unit/core/validateSchema.test.ts at 0fd26195c33fab2485de5afef6b316d94f126562"
+      ]
+    },
+    "source:.bumpy/275-plugin-atomic.md": {
+      "fingerprint": "5996e376c6c4f7413f5d3cbd594a3048c61c4ed90e20dc0d3527b651416315d6",
+      "snapshot": {
+        ".bumpy/275-plugin-atomic.md": "093ed96e5b0556c24cc798e392c5f857118b56f1ee330951967d5961c542429d"
+      },
+      "head": "350605777edb17586f58ed6796d0d5b5166a9899",
+      "outcome": "no-change",
+      "reason": "Atomic capability registration on failed use() is an internal fix; the skill does not teach failure-state behaviour",
+      "evidence": [
+        "Changed: .bumpy/275-plugin-atomic.md at bf2bf61ff7b46e6ab2cba8611412304f435c33b8"
       ]
     }
   }
