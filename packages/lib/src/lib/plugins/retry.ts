@@ -5,7 +5,7 @@ import CanceledError from "../cancel/CanceledError.js";
 import isCancel from "../cancel/isCancel.js";
 import FaxiosError from "../core/FaxiosError.js";
 import { definePlugin } from "./definePlugin.js";
-import { assertOptions, isBoolean, isFunction, own } from "./shared.js";
+import { assertOptions, isBoolean, isFunction, own, TOKEN } from "./shared.js";
 
 // setTimeout fires at once for anything longer: it keeps the delay as a signed 32-bit integer.
 const MAX_TIMER_MS = 2_147_483_647;
@@ -17,9 +17,6 @@ const isWait = (ms: unknown): ms is number => typeof ms === "number" && Number.i
 
 // A wait a timer can hold: setTimeout fires at once for anything longer.
 const isTimerWait = (ms: unknown) => isWait(ms) && ms <= MAX_TIMER_MS;
-
-// An HTTP method is a token (RFC 9110 §9.1, §5.6.2); anything else can never match a request.
-const TOKEN = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
 
 const isStatus = (value: unknown) => Number.isInteger(value) && (value as number) >= 100 && (value as number) <= 599;
 

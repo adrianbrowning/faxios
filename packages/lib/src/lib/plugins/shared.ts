@@ -9,13 +9,15 @@ import FaxiosError from "../core/FaxiosError.js";
 export const own = <T extends object, K extends keyof T>(source: T, key: K): T[K] | undefined =>
   (Object.hasOwn(source, key) ? source[key] : undefined);
 
+/** A token (RFC 9110 §5.6.2): what a header name and an HTTP method (§9.1) must be. */
+export const TOKEN = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
+
 /** Checks one option value: `true` when it is valid, else what it must be ("a boolean"). */
 export type OptionCheck = (value: unknown) => boolean | string;
 
 export const isBoolean: OptionCheck = value => typeof value === "boolean" || "a boolean";
 export const isFunction: OptionCheck = value => typeof value === "function" || "a function";
-// A header name is a token (RFC 9110 §5.6.2).
-export const isHeaderName: OptionCheck = value => (typeof value === "string" && /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/.test(value)) || "a header name";
+export const isHeaderName: OptionCheck = value => (typeof value === "string" && TOKEN.test(value)) || "a header name";
 
 /**
  * Rejects plugin options that aren't an object (`ERR_BAD_OPTION_VALUE`), have a key the schema
