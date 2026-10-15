@@ -1,9 +1,8 @@
 // @ts-self-types="./timing.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
 import type { FaxiosContext, FaxiosPlugin } from "../../index.js";
-import resolveRequestURL from "../core/resolveRequestURL.js";
 import { definePlugin } from "./definePlugin.js";
-import { own } from "./shared.js";
+import { own, templateURL } from "./shared.js";
 
 /**
  * What `timing` reports once per request: `status` on success, `error` on failure. No config,
@@ -58,13 +57,7 @@ function errorProp(error: unknown, key: "code" | "status"): unknown {
 // Resolved by core's resolver, without path params (the template keeps labels low-cardinality) or
 // `params` (stripped anyway; the caller's paramsSerializer isn't run again).
 function describe({ attempt, config }: FaxiosContext) {
-  let resolved: unknown;
-  try {
-    resolved = resolveRequestURL({ ...config, pathParams: undefined, params: undefined });
-  }
-  catch {
-    resolved = own(config, "url");
-  }
+  const resolved = templateURL(config) ?? own(config, "url");
   const url = typeof resolved === "string" ? resolved : "";
   const end = url.search(/[?#]/);
   return {

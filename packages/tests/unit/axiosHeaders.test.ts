@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { describe, it, vi } from "vitest";
+import { describe, it } from "vitest";
 import faxios from "#src/index.ts";
 import FaxiosHeaders, { defineHeaderShortcuts } from "#src/lib/core/FaxiosHeaders.js";
 
@@ -468,6 +468,19 @@ describe("FaxiosHeaders", () => {
       assert.strictEqual(headers.has("baa"), false);
     });
 
+    it("doesn't bring a deleted header back through a copy or normalize()", () => {
+      const headers = new FaxiosHeaders();
+      headers.set("X-Gone", "a\r\nb");
+      headers.set("X-Kept", "k");
+
+      headers.delete("x-gone");
+
+      assert.strictEqual(new FaxiosHeaders(headers).has("X-Gone"), false);
+      assert.strictEqual(FaxiosHeaders.concat(headers).has("X-Gone"), false);
+      assert.strictEqual(headers.normalize(true).has("X-Gone"), false);
+      assert.deepStrictEqual(Object.keys(headers.toJSON()), [ "X-Kept" ]);
+    });
+
     describe("filter", () => {
       it("should support RegExp", () => {
         const headers = new FaxiosHeaders();
@@ -580,17 +593,12 @@ describe("FaxiosHeaders", () => {
 
     it("registers a header once when the shortcut builder runs twice", () => {
       class Headers extends FaxiosHeaders {}
-      const defineProperty = vi.spyOn(Object, "defineProperty");
-      try {
-        defineHeaderShortcuts(Headers.prototype, [ "X-Once" ]);
-        defineHeaderShortcuts(Headers.prototype, [ "x-once" ]);
+      defineHeaderShortcuts(Headers.prototype, [ "X-Once" ]);
+      const first: unknown = Object.getOwnPropertyDescriptor(Headers.prototype, "getXOnce")?.value;
+      defineHeaderShortcuts(Headers.prototype, [ "x-once" ]);
 
-        const calls = defineProperty.mock.calls.filter(([ target, name ]) => target === Headers.prototype && name === "getXOnce");
-        assert.strictEqual(calls.length, 1);
-      }
-      finally {
-        defineProperty.mockRestore();
-      }
+      assert.strictEqual(typeof first, "function");
+      assert.strictEqual(Object.getOwnPropertyDescriptor(Headers.prototype, "getXOnce")?.value, first);
     });
 
     it("is not a public static on FaxiosHeaders", () => {
@@ -815,5 +823,29 @@ describe("FaxiosHeaders", () => {
     assert.strictEqual(sent?.get("x-b"), "2");
     await faxios.create({ env: { fetch }, headers: new Headers({ "X-C": "3" }) }).get("http://localhost/h");
     assert.strictEqual(sent?.get("x-c"), "3");
+  });
+
+  describe("body aliases send request headers given as a Headers, a Map or [name, value] pairs", () => {
+    const forms = {
+      Headers: () => new Headers({ "X-B": "2" }),
+      Map: () => new Map([[ "X-B", "2" ]]),
+      pairs: () => [[ "X-B", "2" ]] as Array<[string, string]>,
+    };
+    const aliases = [ "post", "put", "patch", "query", "postForm", "putForm", "patchForm" ] as const;
+    for (const alias of aliases) {
+      for (const [ form, make ] of Object.entries(forms)) {
+        it(`${alias} with ${form}`, async () => {
+          let sent: Headers | undefined;
+          const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
+            sent = new Headers(init?.headers);
+            return new Response(null, { status: 200 });
+          };
+
+          await faxios.create({ env: { fetch } })[alias]("http://localhost/h", { a: "1" }, { headers: make() });
+
+          assert.strictEqual(sent?.get("x-b"), "2");
+        });
+      }
+    }
   });
 });

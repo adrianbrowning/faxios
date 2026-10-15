@@ -92,9 +92,9 @@ export type ResponseType =
   | "text";
 
 export interface TransitionalOptions {
-  clarifyTimeoutError?: boolean;
-  forcedJSONParsing?: boolean;
-  validateStatusUndefinedResolves?: boolean;
+  clarifyTimeoutError?: boolean | undefined;
+  forcedJSONParsing?: boolean | undefined;
+  validateStatusUndefinedResolves?: boolean | undefined;
 }
 
 /**

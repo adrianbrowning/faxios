@@ -5,7 +5,7 @@ import CanceledError from "../cancel/CanceledError.js";
 import isCancel from "../cancel/isCancel.js";
 import FaxiosError from "../core/FaxiosError.js";
 import { definePlugin } from "./definePlugin.js";
-import { assertOptions, isBoolean, isFunction, own } from "./shared.js";
+import { assertOptions, isBoolean, isFunction, own, TOKEN } from "./shared.js";
 
 // setTimeout fires at once for anything longer: it keeps the delay as a signed 32-bit integer.
 const MAX_TIMER_MS = 2_147_483_647;
@@ -17,9 +17,6 @@ const isWait = (ms: unknown): ms is number => typeof ms === "number" && Number.i
 
 // A wait a timer can hold: setTimeout fires at once for anything longer.
 const isTimerWait = (ms: unknown) => isWait(ms) && ms <= MAX_TIMER_MS;
-
-// An HTTP method is a token (RFC 9110 §9.1, §5.6.2); anything else can never match a request.
-const TOKEN = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
 
 const isStatus = (value: unknown) => Number.isInteger(value) && (value as number) >= 100 && (value as number) <= 599;
 
@@ -53,72 +50,76 @@ function assertRetryOptions(value: unknown, config?: InternalFaxiosRequestConfig
   assertOptions(value, optionsSchema, "retry", config);
 }
 
+// `x?: T | undefined` lets a consumer with `exactOptionalPropertyTypes` pass the `undefined` the
+// option checks treat as unset.
+/* eslint-disable sonarjs/no-redundant-optional -- see above */
 export type RetryOptions = {
   /** Total tries, counting the first request: an integer from 1 to 10. Default 3. */
-  attempts?: number;
+  attempts?: number | undefined;
   /**
    * The most one try may take, in milliseconds: middleware installed after `retry`, the schemas
    * and the fetch, until the try's response arrives. A try that runs out rejects with `ETIMEDOUT`,
    * which the default predicate retries. Default 0: no limit per try. The request's `timeout` still
    * bounds all tries and waits together. At most 2 147 483 647 (the setTimeout limit).
    */
-  attemptTimeout?: number;
+  attemptTimeout?: number | undefined;
   /**
    * Milliseconds to wait before the next try, or a function of the try that failed. Default 100ms,
    * doubling. Capped at `maxDelay`, then jittered. A 429 or 503 with a `Retry-After` header waits
    * that long instead, unless `respectRetryAfter` is `false`.
    */
-  delay?: ((attempt: number, error: unknown) => number) | number;
+  delay?: ((attempt: number, error: unknown) => number) | number | undefined;
   /**
    * `"full"` (default) waits a random time between 0 and the capped backoff, so clients that failed
    * together don't retry together; `"none"` waits the capped backoff. Doesn't apply to `Retry-After`.
    */
-  jitter?: "full" | "none";
+  jitter?: "full" | "none" | undefined;
   /**
    * The most the computed backoff waits, in milliseconds. Default 30 000, at most 2 147 483 647
    * (the setTimeout limit). Doesn't apply to `Retry-After`.
    */
-  maxDelay?: number;
+  maxDelay?: number | undefined;
   /**
    * The longest `Retry-After` (seconds or an HTTP date, on a 429 or 503) to wait, in milliseconds.
    * Default 300 000 (5 minutes), at most 2 147 483 647 (the setTimeout limit). A longer one rejects
    * with the response's error instead of retrying.
    * Ignored when `respectRetryAfter` is `false`.
    */
-  maxRetryAfter?: number;
+  maxRetryAfter?: number | undefined;
   /**
    * HTTP methods that may be retried, in any case. Default: GET, HEAD, OPTIONS, PUT, DELETE and
    * QUERY. POST and PATCH aren't idempotent, so add them only if your API dedupes repeats. A request
    * whose method isn't listed is never retried, whatever `retryOn` or `statuses` say.
    */
-  methods?: ReadonlyArray<Method>;
+  methods?: ReadonlyArray<Method> | undefined;
   /**
    * Called before each wait with the error, the try that failed and the wait in milliseconds. If it
    * throws, the request rejects with that error and stops retrying.
    */
-  onRetry?: (error: unknown, attempt: number, delayMs: number) => void;
+  onRetry?: ((error: unknown, attempt: number, delayMs: number) => void) | undefined;
   /**
    * Whether a 429 or 503's `Retry-After` header sets the wait. Default `true`. With `false`, every
    * retry waits the computed backoff and `maxRetryAfter` doesn't apply; which requests retry doesn't
    * change. Turn it off when another plugin, such as a queue throttle, honours `Retry-After` itself.
    */
-  respectRetryAfter?: boolean;
+  respectRetryAfter?: boolean | undefined;
   /**
    * Whether the try that just failed should be retried. `attempt` counts from 1.
    * Default: network errors, timeouts and the `statuses`; never a cancellation. A custom `retryOn`
    * replaces that whole predicate, so `statuses` is ignored when both are set. retryOn decides
    * only within `methods`; to retry POST, list it in `methods`.
    */
-  retryOn?: (error: unknown, attempt: number) => boolean;
+  retryOn?: ((error: unknown, attempt: number) => boolean) | undefined;
   /**
    * Response statuses the default predicate retries. Default 408, 429, 500, 502, 503 and 504.
    * Ignored when `retryOn` is set.
    */
-  statuses?: ReadonlyArray<number>;
+  statuses?: ReadonlyArray<number> | undefined;
 };
 
 /** Per-request override: `false` turns retries off, an object overrides the plugin's options. */
-export type RetryRequestOptions = { retry?: false | RetryOptions; };
+export type RetryRequestOptions = { retry?: false | RetryOptions | undefined; };
+/* eslint-enable sonarjs/no-redundant-optional */
 
 function retryByDefault(error: unknown, statuses: ReadonlyArray<number>): boolean {
   if (isCancel(error) || !(error instanceof FaxiosError)) return false;
@@ -244,10 +245,12 @@ function linkSignal(outer: FaxiosRequestConfig["signal"], controller: InstanceTy
 }
 
 // Retry listens on the request's signal for its waits and tries, so a signal a middleware before
-// retry passes on without listener methods gets the error dispatch would give it, before any timer.
+// retry passes on that core would refuse (core/assertSignal.ts) gets the error dispatch would give
+// it, before any timer.
 function assertListenable(signal: unknown, config: InternalFaxiosRequestConfig): void {
   if (signal == null) return;
   const listenable = typeof signal === "object" &&
+    "aborted" in signal &&
     "addEventListener" in signal && typeof signal.addEventListener === "function" &&
     "removeEventListener" in signal && typeof signal.removeEventListener === "function";
   if (!listenable) {

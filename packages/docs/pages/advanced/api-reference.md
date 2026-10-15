@@ -276,7 +276,7 @@ const merged = mergeConfig(base, override);
 
 ### `resolveRequestURL`
 
-Returns the URL a request with this config is sent to: `url` with its `{key}` placeholders filled from `pathParams`, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params` serialized with `paramsSerializer`. It is the resolver faxios itself uses for requests and `getUri()`, exported for plugins. It throws the `FaxiosError` the request would reject with. See [Writing a plugin](/pages/advanced/middleware#writing-a-plugin).
+Returns the URL a request with this config is sent to: `url` (a `URL` as its `href`) with its `{key}` placeholders filled from `pathParams`, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params` serialized with `paramsSerializer`. It is the resolver faxios itself uses for requests and `getUri()`, exported for plugins. It throws the `FaxiosError` the request would reject with, `ERR_INVALID_URL` for a config with neither `url` nor `baseURL` included. See [Writing a plugin](/pages/advanced/middleware#writing-a-plugin).
 
 ```ts contract=@gcmdev/faxios
 resolveRequestURL(config: FaxiosRequestConfig): string;
@@ -438,7 +438,7 @@ The package root exports these types. Import them with `import type { ... } from
 | `FaxiosHeaderValue` | One header value: a string, number, boolean, array of strings, `null` or `undefined` |
 | `FaxiosResponse` | The resolved response: `data`, `status`, `statusText`, `headers`, `config` and `request` |
 | `FaxiosPromise` | `Promise<FaxiosResponse<T>>` |
-| `FaxiosErrorCode` | The union of the error codes faxios sets, the `FaxiosError` statics |
+| `FaxiosErrorCode` | The union of the `FaxiosError` code statics; `ECONNABORTED` is kept for compatibility and never raised |
 | `SchemaValidationError` | The `FaxiosError` that [`isSchemaValidationError`](#isschemavalidationerror) narrows to |
 | `Method` | An HTTP method name, in lower or upper case |
 | `ResponseType` | The values of the [`responseType`](/pages/advanced/request-config#responsetype) option |
@@ -465,6 +465,7 @@ The package root exports these types. Import them with `import type { ... } from
 | `FaxiosPluginOptionNames` | A plugin's runtime list of request option names, each mapped to `true` |
 | `DefineConfig` | The config [`define()`](/pages/advanced/define) takes |
 | `DefinedEndpoint` | The endpoint function `define()` returns |
+| `FaxiosLike` | Internal: the `request` shape `define()` and `route()` take. Not part of the documented API |
 | `BasePerCallConfig` | The request config every endpoint call takes: everything except `url`, `method`, `pathParams`, `params`, `data` and the schemas |
 | `PerCallConfig` | The config one endpoint call takes: `BasePerCallConfig` plus `pathParams`, `params` and `data`, typed by their schemas |
 | `RouteConfig` | The config `route()` takes |

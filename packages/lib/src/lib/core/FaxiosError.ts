@@ -131,7 +131,10 @@ function serializeCause(cause: unknown, seen: Set<unknown>): SerializedCause | u
   };
 }
 
-/** The codes faxios itself sets: the `ERR_*`, `ECONNABORTED` and `ETIMEDOUT` statics on `FaxiosError`. */
+/**
+ * The code statics on `FaxiosError` (`ERR_*`, `ETIMEDOUT`, `ECONNABORTED`). `ECONNABORTED` is kept
+ * for compatibility with axios code that checks it; faxios never raises it.
+ */
 export type FaxiosErrorCode = (typeof FaxiosError)[Extract<keyof typeof FaxiosError, `E${string}`>];
 
 class FaxiosError<T = unknown, D = unknown> extends Error {
@@ -191,7 +194,7 @@ class FaxiosError<T = unknown, D = unknown> extends Error {
    * Create an Error with the specified message, config, error code, request and response.
    *
    * @param {string} message The error message.
-   * @param {string} [code] The error code (for example, 'ECONNABORTED').
+   * @param {string} [code] The error code (for example, 'ERR_NETWORK').
    * @param {Object} [config] The config.
    * @param {Object} [request] The request.
    * @param {Object} [response] The response.

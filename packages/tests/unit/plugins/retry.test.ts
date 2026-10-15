@@ -237,6 +237,20 @@ describe("plugins::retry", () => {
     assert.strictEqual(vi.getTimerCount(), 0);
   });
 
+  it("rejects a signal with listener methods but no aborted flag that a middleware before retry passes on, before any try", async () => {
+    const { fetch, calls } = scriptedFetch([ 200 ]);
+    // The rule core applies to the request's own signal: aborted, addEventListener and removeEventListener.
+    const flagless = { addEventListener() {}, removeEventListener() {} } as unknown as AbortSignal;
+    const api = faxios.create({ env: { fetch } })
+      .use(async (ctx, next) => next({ ...ctx, config: { ...ctx.config, signal: flagless } }))
+      .use(retry({ delay: 0, attemptTimeout: 50 }));
+
+    await assert.rejects(api.get(URL), (err: unknown) =>
+      err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE && err.message.includes("signal"));
+    assert.strictEqual(calls.length, 0);
+    assert.strictEqual(vi.getTimerCount(), 0);
+  });
+
   it("cancels the stream body of a status error it retries", async () => {
     let cancelled = 0;
     let calls = 0;

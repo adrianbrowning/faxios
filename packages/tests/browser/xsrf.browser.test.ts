@@ -188,6 +188,16 @@ describe("xsrf (vitest browser)", () => {
       expect(mock.lastRequest!.redirect).toBe("follow");
     });
 
+    it("should refuse redirects when the xsrf header is set and fetchOptions.redirect is an own undefined", async () => {
+      using mock = installFetchMock();
+      setXsrfCookie("12345");
+
+      await faxios("/foo", { fetchOptions: { redirect: undefined } });
+
+      expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe("12345");
+      expect(mock.lastRequest!.redirect).toBe("error");
+    });
+
     it("should follow redirects when no xsrf header is set", async () => {
       using mock = installFetchMock();
 

@@ -26,7 +26,7 @@ export { create } from "./lib/create.ts";
 
 export type { FaxiosInstance, FaxiosStatic } from "./lib/faxios.ts";
 export type { StandardSchemaV1 } from "./lib/types/standard-schema.ts";
-export type { BasePerCallConfig, DefineConfig, DefinedEndpoint, PerCallConfig } from "./lib/core/define.ts";
+export type { BasePerCallConfig, DefineConfig, DefinedEndpoint, FaxiosLike, PerCallConfig } from "./lib/core/define.ts";
 export type { RouteBuilder, RouteConfig, RouteMethodConfig } from "./lib/core/route.ts";
 
 export type {

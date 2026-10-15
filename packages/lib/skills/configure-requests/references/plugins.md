@@ -102,16 +102,18 @@ and at runtime it rejects with `ERR_BAD_OPTION` (`Unknown option trace`).
 
 Import `resolveRequestURL(config)` from `@gcmdev/faxios`; never join `baseURL` and `url` by hand.
 It is the resolver core uses for the request and `getUri()`: `pathParams` filled in, `baseURL`
-joined (honouring `allowAbsoluteUrls`), `params` serialized. A URL is absolute only with a scheme
-and `//`, so `documents:batchGet` joins `baseURL`. It throws what the request would reject with
-(`ERR_INVALID_URL`, `ERR_BAD_OPTION_VALUE`), so a plugin that guards credentials treats a throw as
+joined (honouring `allowAbsoluteUrls`), `params` serialized; a `URL` url resolves as its `href`. A
+URL is absolute only with a scheme and `//`, so `documents:batchGet` joins `baseURL`. It always
+returns a string or throws what the request would reject with (`ERR_INVALID_URL`, also for no
+`url` and no `baseURL`; `ERR_BAD_OPTION_VALUE`), so a plugin that guards credentials treats a throw as
 "don't attach". Middleware runs before `pathParamsSchema`, so for an origin check resolve with
 `pathParams: undefined` (and `params: undefined`): a schema may fill or rename placeholders the raw
 `pathParams` can't, and path params never move the origin. For the API origin use
 `ctx.instanceBaseURL`, not `ctx.config.baseURL`, which a per-request override can point anywhere.
 
 ```ts
-import faxios, { resolveRequestURL } from "@gcmdev/faxios";
+import faxios, { FaxiosHeaders, resolveRequestURL } from "@gcmdev/faxios";
+import type { InternalFaxiosRequestConfig } from "@gcmdev/faxios";
 import { definePlugin } from "@gcmdev/faxios/plugins";
 
 const apiKey = (key: string) => definePlugin({
@@ -126,8 +128,20 @@ const apiKey = (key: string) => definePlugin({
     catch {
       sameAPI = false;
     }
-    if (sameAPI) ctx.config.headers.set("X-Api-Key", key);
-    return next(ctx);
+    if (!sameAPI) return next(ctx);
+    // Fetch strips only Authorization on a cross-origin redirect, so refuse redirects for a
+    // custom credential header unless the caller chose, as authBearer does. Read `redirect` as an
+    // own key, so a polluted Object.prototype can't choose, and build a null-prototype copy.
+    const headers = new FaxiosHeaders(ctx.config.headers).set("X-Api-Key", key);
+    const fetchOptions = ctx.config.fetchOptions;
+    const redirect = fetchOptions && Object.hasOwn(fetchOptions, "redirect") && fetchOptions.redirect !== undefined
+      ? fetchOptions.redirect
+      : "error";
+    const config: InternalFaxiosRequestConfig = Object.assign(Object.create(null) as InternalFaxiosRequestConfig, ctx.config, {
+      headers,
+      fetchOptions: { ...fetchOptions, redirect },
+    });
+    return next({ ...ctx, config });
   },
 });
 

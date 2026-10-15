@@ -393,6 +393,24 @@ describe("instance api", () => {
       assert.strictEqual(await sendsHeader(child, "get", "X-Kept"), "parent");
       assert.strictEqual(await sendsHeader(child, "get", "X-Polluted"), null);
     });
+
+    for (const [ form, make ] of [
+      [ "Headers", () => new Headers({ "X-C": "child", "X-H": "child" }) ],
+      [ "Map", () => new Map([[ "X-C", "child" ], [ "X-H", "child" ]]) ],
+      [ "pairs", () => [[ "X-C", "child" ], [ "X-H", "child" ]] as Array<[string, string]> ],
+    ] as const) {
+      it(`keeps the inherited header groups for a child given headers as ${form}`, async () => {
+        const parent = create({ headers: { "X-H": "parent-top", common: { Authorization: "parent-auth" } } });
+        const child = parent.create({ headers: make() });
+        child.defaults.headers.common["X-Set"] = "set";
+
+        assert.strictEqual(await sendsHeader(child, "get", "Accept"), "application/json, text/plain, */*");
+        assert.strictEqual(await sendsHeader(child, "get", "Authorization"), "parent-auth");
+        assert.strictEqual(await sendsHeader(child, "get", "X-C"), "child");
+        assert.strictEqual(await sendsHeader(child, "post", "X-H"), "child");
+        assert.strictEqual(await sendsHeader(child, "get", "X-Set"), "set");
+      });
+    }
   });
 });
 

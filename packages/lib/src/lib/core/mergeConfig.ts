@@ -3,9 +3,7 @@
 
 import type { FaxiosDefaults, FaxiosRequestConfig } from "../types.js";
 import { hasOwnProp, isArray, isDangerousKey, isPlainObject, isUndefined, merge } from "../utils.js";
-import FaxiosHeaders from "./FaxiosHeaders.js";
-
-const headersToObject = (thing: unknown) => (thing instanceof FaxiosHeaders ? { ...thing } : thing);
+import { headersToObject } from "./headerLayers.js";
 
 type MergeInput = FaxiosDefaults | FaxiosRequestConfig | Record<string, unknown>;
 

@@ -135,6 +135,8 @@ const api = faxios.create({ baseURL: "https://api.example.com" })
 await api.get("/users");
 ```
 
+To change a field for the rest of the chain, pass `next` a copy made with a spread, such as `next({ ...ctx, state: { ...ctx.state, user } })`. The spread also carries what core keeps on the context for the request, such as the stream body that `timeout` and the request's signal still govern after the response. A context built from its fields instead keeps that tracking only while it passes on the same `ctx.state` object.
+
 For bearer tokens, use the built-in [`authBearer`](#authbearer) plugin rather than setting `Authorization` yourself: it only sends the token to your API's origin.
 
 ## How `next` works
@@ -305,7 +307,7 @@ await api.get("/users");
 - A `provides` value whose type contradicts the annotation is a type error.
 - Middleware without an annotation still sees the plugin's own `provides` on `ctx.capabilities`.
 
-To see the URL a request goes to, import `resolveRequestURL(config)` from `@gcmdev/faxios`. It is the resolver core uses for the request and for `getUri()`: `url` with `pathParams` filled in, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params`. A URL is absolute only when a scheme is followed by `//`, so `documents:batchGet` joins `baseURL`. It throws the `FaxiosError` the request would reject with: `ERR_INVALID_URL` for an absolute URL that `allowAbsoluteUrls: false` refuses, `ERR_BAD_OPTION_VALUE` for a placeholder `pathParams` can't fill. In middleware, schemas haven't run yet, so it uses `pathParams` and `params` as the caller gave them. To check only the origin, as `authBearer` does, pass `{ ...ctx.config, pathParams: undefined, params: undefined }`: a `pathParamsSchema` may fill or rename placeholders the raw `pathParams` can't, and path params never move the origin.
+To see the URL a request goes to, import `resolveRequestURL(config)` from `@gcmdev/faxios`. It is the resolver core uses for the request and for `getUri()`: `url` with `pathParams` filled in, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params`. A `URL` url is resolved as its `href`. A URL is absolute only when a scheme is followed by `//`, so `documents:batchGet` joins `baseURL`. It always returns a string, or throws the `FaxiosError` the request would reject with: `ERR_INVALID_URL` for an absolute URL that `allowAbsoluteUrls: false` refuses and for a config with neither `url` nor `baseURL`, `ERR_BAD_OPTION_VALUE` for a placeholder `pathParams` can't fill. In middleware, schemas haven't run yet, so it uses `pathParams` and `params` as the caller gave them. To check only the origin, as `authBearer` does, pass `{ ...ctx.config, pathParams: undefined, params: undefined }`: a `pathParamsSchema` may fill or rename placeholders the raw `pathParams` can't, and path params never move the origin.
 
 ```ts expect=log:https://api.example.com/users/7?q=1
 import faxios, { resolveRequestURL } from "@gcmdev/faxios";

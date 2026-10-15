@@ -72,9 +72,10 @@ function prepareRequest(config: FaxiosRequestConfig, url: string): FaxiosRequest
     applyXSRFToken(headers, withXSRFToken, { cookieName: xsrfCookieName, headerName: xsrfHeaderName, url }, newConfig)
   ) {
     // Fetch strips only Authorization when a redirect leaves the origin, so following one would
-    // send the XSRF token to whatever host it points at. Refuse redirects unless the caller chose.
+    // send the XSRF token to whatever host it points at. Refuse redirects unless the caller chose;
+    // an own `undefined` is unset, as fetch reads it.
     const fetchOptions = own("fetchOptions") as Record<string, unknown> | undefined;
-    if (!isObject(fetchOptions) || !hasOwnProp(fetchOptions, "redirect")) {
+    if (!isObject(fetchOptions) || !hasOwnProp(fetchOptions, "redirect") || fetchOptions["redirect"] === undefined) {
       newConfig.fetchOptions = { ...fetchOptions, redirect: "error" };
     }
   }

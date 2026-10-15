@@ -293,6 +293,19 @@ describe("plugins::authBearer", () => {
       // "follow" is fetch's own default, which the adapter writes when nothing sets redirect.
       assert.deepStrictEqual(redirects, [ "error", "manual", "follow" ]);
     });
+
+    it("treats an own fetchOptions.redirect: undefined as unset for a custom header", async () => {
+      let redirect: unknown;
+      const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
+        redirect = init?.redirect;
+        return new Response(null, { status: 200 });
+      };
+      const custom = faxios.create({ baseURL: BASE, env: { fetch } }).use(authBearer(() => "key", { header: "X-Api-Key" }));
+
+      await custom.get(URL, { fetchOptions: { redirect: undefined } });
+
+      assert.strictEqual(redirect, "error");
+    });
   });
 
   describe("origin limit", () => {

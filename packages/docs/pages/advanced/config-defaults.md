@@ -75,6 +75,8 @@ Headers merge in six levels, lowest precedence first:
 
 Every request header beats every instance header, whatever group it's in. A request header set to `null` or `undefined` removes the instance's header. Inside one level, the top-level headers beat the groups, so the `Authorization` set above on `instance.defaults.headers` replaces the one from `create()`, but one set on `instance.defaults.headers.common` would not.
 
+An instance made with `instance.create()` layers its headers over the parent's the same way: any child header layer, `common` included, beats every parent layer, and a child method group such as `get` applies to that method only. So a child's `common: { "X-Client": "cli" }` replaces a parent's top-level `X-Client` for every method. The child doesn't inherit the defaults of the parent's plugin request options, such as `retry`, because it has none of the parent's plugins; see [Middleware](/pages/advanced/middleware).
+
 ```js expect=request:x-client:%20cli%0A,request:accept:%20text/csv%0A
 import faxios from "@gcmdev/faxios";
 

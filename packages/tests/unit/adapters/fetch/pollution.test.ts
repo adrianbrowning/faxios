@@ -29,8 +29,9 @@ describe.runIf(typeof fetch === "function")(
 
         assert.ok(capturedInit, "fetch should have been called");
         assert.strictEqual(capturedInit.method, "GET", "polluted method must not override GET");
-        assert.ok(
-          !("x-injected" in ((capturedInit.headers as Record<string, string>) ?? {})),
+        assert.strictEqual(
+          new Headers(capturedInit.headers).get("x-injected"),
+          null,
           "polluted headers must not bleed into request"
         );
         assert.notStrictEqual(capturedInit.credentials, "include", "polluted credentials must not override");
