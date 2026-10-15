@@ -3,24 +3,24 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "a3ce62494786e210053221f06c2b9a43e5a9ab843540046b210ac3f8da084c99",
+      "fingerprint": "5953720fd567a0d11b60fc22dffe359f9126eef41dbeb6b4fd83e57c1a08bcb4",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
-        "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "fbb0d3d84bb55654ad2094ebe50016f793743879027775cf197b2b5dad0e2af6",
+        "packages/lib/package.json": "220d8b3dc5040c04c1c2b2a4a1423ae6560988427c0548b7bae8e29186de5732",
+        "packages/lib/skills/configure-requests/SKILL.md": "971dd4e477e081e7fa948cbf1aba33a9bca83aa1b0193688398248c8a255f987",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
         "packages/lib/src/index.ts": "44edf51b3bbdf494fd213b55e6e377866e18146c47fc443a3d3d7426a3d685b7",
-        "packages/lib/src/lib/adapters/fetch.ts": "d0eca968791bc38674e41d8c839a803f7f08ba3699c5d51b68765ad0baeca22c",
-        "packages/lib/src/lib/core/Faxios.ts": "dd854a8f11a3dc0fb3ece28293150772d545b07411fe9e55340808638054a1d3",
-        "packages/lib/src/lib/core/FaxiosError.ts": "429366c4f95706790a572d23b733aaee1d2db6834cd7953d6e4b606c47408a71",
+        "packages/lib/src/lib/adapters/fetch.ts": "7d7d6d2711f35ad1dc4968bb97791856a4fab01236b9bf8193d29b6b40c01ba3",
+        "packages/lib/src/lib/core/Faxios.ts": "b713ecadc80cc084228967904ab5801bdaf9335a34c68b1be1dc7a3f1675cc07",
+        "packages/lib/src/lib/core/FaxiosError.ts": "4299cf8fd90ffb0e782e922879ebe3b13b97778f47de2d9e8d4dee31fb3f9554",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "ee8f375f8587e9e352eeda860b82f17fd366b164d611ad9109031b47bc38cdb6",
-        "packages/lib/src/lib/core/mergeConfig.ts": "e152f98463e21404abc79e0ad92d54bdbead8348294196a08db798647be50ab8",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "4564c956ec0823acec07d1581689a81c2c134fd9b3b75f8c74e7c889090f9139",
+        "packages/lib/src/lib/core/mergeConfig.ts": "e3dc3f5f52f57381163e506acdc52ff567e35104a7d607160da853e2510c7672",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "7de7c2a220f01ef7ef347a6cbf1af1f3cbbb0ceb22dd4ec17da52eb4170a6df5",
-        "packages/lib/src/lib/helpers/composeSignals.ts": "2db636d9e1c28e5ef7832041d316c7ce588b32ef5d30bbe35eb2951b86b2bd6a",
+        "packages/lib/src/lib/faxios.ts": "e0c7ab60ce2148e5ce388f0200a0339fcff0c22615e651f6c36e4bbfff33e857",
+        "packages/lib/src/lib/helpers/composeSignals.ts": "ccd69c28a17fc485975de89502ff80d075e919fef437d0afb8460ec0631ef9ef",
         "packages/lib/src/lib/plugins/authBearer.ts": "14db38066e32d09780067881e10afcdeb55414a3faa459dfc839aa0e04aa1225",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "23e726af7fc75358fd80eb140a3189b699b3be47787a8714e6b043a8291acb25",
@@ -35,35 +35,35 @@
         "packages/tests/unit/plugins/retry.test.ts": "bb88c03b5c3875b9bcef3c81d3d89ef4f7241040c5338f8af991c332c5e69949",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/types.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/helpers/composeSignals.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "4127eac00dab5ed5454bc760bd70804cad1fb33adb9774bdb4247167e9469925",
+      "fingerprint": "76161a8ea9b49e0d14eea495033282eb4a83e56ff6805c5d72142974eb68c8c8",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
-        "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "fbb0d3d84bb55654ad2094ebe50016f793743879027775cf197b2b5dad0e2af6",
+        "packages/lib/package.json": "220d8b3dc5040c04c1c2b2a4a1423ae6560988427c0548b7bae8e29186de5732",
+        "packages/lib/skills/configure-requests/SKILL.md": "971dd4e477e081e7fa948cbf1aba33a9bca83aa1b0193688398248c8a255f987",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
         "packages/lib/src/index.ts": "44edf51b3bbdf494fd213b55e6e377866e18146c47fc443a3d3d7426a3d685b7",
-        "packages/lib/src/lib/adapters/fetch.ts": "d0eca968791bc38674e41d8c839a803f7f08ba3699c5d51b68765ad0baeca22c",
-        "packages/lib/src/lib/core/Faxios.ts": "dd854a8f11a3dc0fb3ece28293150772d545b07411fe9e55340808638054a1d3",
-        "packages/lib/src/lib/core/FaxiosError.ts": "429366c4f95706790a572d23b733aaee1d2db6834cd7953d6e4b606c47408a71",
+        "packages/lib/src/lib/adapters/fetch.ts": "7d7d6d2711f35ad1dc4968bb97791856a4fab01236b9bf8193d29b6b40c01ba3",
+        "packages/lib/src/lib/core/Faxios.ts": "b713ecadc80cc084228967904ab5801bdaf9335a34c68b1be1dc7a3f1675cc07",
+        "packages/lib/src/lib/core/FaxiosError.ts": "4299cf8fd90ffb0e782e922879ebe3b13b97778f47de2d9e8d4dee31fb3f9554",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "ee8f375f8587e9e352eeda860b82f17fd366b164d611ad9109031b47bc38cdb6",
-        "packages/lib/src/lib/core/mergeConfig.ts": "e152f98463e21404abc79e0ad92d54bdbead8348294196a08db798647be50ab8",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "4564c956ec0823acec07d1581689a81c2c134fd9b3b75f8c74e7c889090f9139",
+        "packages/lib/src/lib/core/mergeConfig.ts": "e3dc3f5f52f57381163e506acdc52ff567e35104a7d607160da853e2510c7672",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "7de7c2a220f01ef7ef347a6cbf1af1f3cbbb0ceb22dd4ec17da52eb4170a6df5",
-        "packages/lib/src/lib/helpers/composeSignals.ts": "2db636d9e1c28e5ef7832041d316c7ce588b32ef5d30bbe35eb2951b86b2bd6a",
+        "packages/lib/src/lib/faxios.ts": "e0c7ab60ce2148e5ce388f0200a0339fcff0c22615e651f6c36e4bbfff33e857",
+        "packages/lib/src/lib/helpers/composeSignals.ts": "ccd69c28a17fc485975de89502ff80d075e919fef437d0afb8460ec0631ef9ef",
         "packages/lib/src/lib/plugins/authBearer.ts": "14db38066e32d09780067881e10afcdeb55414a3faa459dfc839aa0e04aa1225",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "23e726af7fc75358fd80eb140a3189b699b3be47787a8714e6b043a8291acb25",
@@ -78,23 +78,23 @@
         "packages/tests/unit/plugins/retry.test.ts": "bb88c03b5c3875b9bcef3c81d3d89ef4f7241040c5338f8af991c332c5e69949",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/types.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/helpers/composeSignals.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:knip.json": {
-      "fingerprint": "364ee11b33138b89bcc634800110567bcd87aceb23128017181061ae39989e4c",
+      "fingerprint": "df255401e449deeb8e7e08db5a31bc13a617c12f0e2266306abb66d3546fab7c",
       "snapshot": {
-        "knip.json": "77eba28bdcbcee1b6bdf4d7b134082930f7d385d2da77873f81c9519b846c846"
+        "knip.json": "6fde7d591f18ba788b85875c7a2fa48f08314780c6e75d7ba763b44e0c417c01"
       },
-      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: knip.json at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+        "Changed: knip.json at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
@@ -424,15 +424,15 @@
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
-      "fingerprint": "1d12341f4bdda666f39331ecc656c13f4d3f868771403ed3f36cccc4d2351857",
+      "fingerprint": "bd3ca9d818c93d6113286f2fddbea767232b5c38e49d6002f00bc1542467872b",
       "snapshot": {
-        "packages/lib/src/lib/defaults/index.ts": "fbcf925b805344bafe280623d0443804a0af1169288c21e7a3fc8060baa08eb9"
+        "packages/lib/src/lib/defaults/index.ts": "b34d5f6541181477205a9e31a528ac35d755361f81b8d764cb5ae4ac1b047266"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/defaults/index.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/lib/src/lib/defaults/index.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/browser/headers.browser.test.ts": {
@@ -2180,15 +2180,15 @@
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
-      "fingerprint": "e707b9f40c9971a48fab0bae9f42bfa3d83030a842e432203fb39ec129053e0d",
+      "fingerprint": "61598a9b96727cbfab5a778c45838c6f08d6c258ff841a099bd640a2d12bd374",
       "snapshot": {
-        "packages/lib/src/lib/adapters/fetch-helpers.ts": "b782a7cb068a41ec1bc7b6ff48f3acdc9407e6fb3e5161999a542a2e4190df4b"
+        "packages/lib/src/lib/adapters/fetch-helpers.ts": "a3eb1c268f4f34f33dba4b5f0515ca14b139b1010dd00d886bc8853d44098183"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/lib/src/lib/cancel/CanceledError.ts": {
@@ -2204,39 +2204,39 @@
       ]
     },
     "source:packages/lib/src/lib/core/FaxiosHeaders.ts": {
-      "fingerprint": "67bb32a136b4bdccff87e75ec914c2326de9fa0d8fb1045757f4f1f351ff1b71",
+      "fingerprint": "5c7e95aca5189f5553fa3c8a244093166e5d21a3cb42c72ca4928aba411a38a7",
       "snapshot": {
-        "packages/lib/src/lib/core/FaxiosHeaders.ts": "45e1870a65a2042f01ca20d20bf45243dd137c57610b0720e93093ba69742137"
+        "packages/lib/src/lib/core/FaxiosHeaders.ts": "c1911f4ccd61ac7d4962ed63ba6bf069a1b91e849ac14f029bf85bd97b3c92d4"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
-      "outcome": "no-change",
-      "reason": "Header-name storage fix and bump wording; the skill does not teach header internals",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at fa1633fcfb9343f6aad92120dd04d1308f98369a"
+        "Changed: packages/lib/src/lib/core/FaxiosHeaders.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
-      "fingerprint": "38749e6add95a01c0a470590dc5454e37533e06cac87dd43973a3cdae660130a",
+      "fingerprint": "304812bd4c53e74167f69b6768e5edaf893f5a81fb35b939ffb5a8a005efe41c",
       "snapshot": {
-        "packages/lib/src/lib/core/prepareRequest.ts": "43bb5f559f625c03b785b0f7654b8e7fe754124f72e167f95045236391a714a5"
+        "packages/lib/src/lib/core/prepareRequest.ts": "d812d6c8db01926f589b0224c4f996216ae56d2880c5f7c7f5ae716bc24d8f95"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/lib/src/lib/core/transformData.ts": {
-      "fingerprint": "6cd0673c19f6363bfc61c32aed8274ec9678f4591890a4e2c3ee06a0fdde92e3",
+      "fingerprint": "642e3683665904b33abe375e7d4fb2e4f2d9683ba2f23a5af05d424230e54f90",
       "snapshot": {
-        "packages/lib/src/lib/core/transformData.ts": "7756f9c80d606157e081f21913d24ee5ec8dcdfd7322dda08a6a39c543cadb34"
+        "packages/lib/src/lib/core/transformData.ts": "e0390ce91047430f7f8802312fec7b94cfd1a671f7755a3be05a7082343cf252"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/transformData.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/lib/src/lib/core/transformData.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/lib/src/lib/core/validateSchema.ts": {
@@ -2276,52 +2276,51 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/formDataToJSON.ts": {
-      "fingerprint": "99a35ebf78cb1c80a66f2f50261d5c4c96eecfffd9f1c2b3190d39b7262eb8b1",
+      "fingerprint": "57ecfd25e01415c7a223d9304111f1c3371164b6abbf316a4ed49329e10e2d3e",
       "snapshot": {
-        "packages/lib/src/lib/helpers/formDataToJSON.ts": "4e6274cc3d0dc2e7ddaba163557013c714a742e67a421f374c1657ba8e9e4529"
+        "packages/lib/src/lib/helpers/formDataToJSON.ts": "2ea6cf473e9e3262fa451bfdb252f680c25f82f70db7da92b5bf0bda0effa519"
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
-      "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/formDataToJSON.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/lib/src/lib/helpers/formDataToJSON.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/lib/src/lib/helpers/parseHeaders.ts": {
-      "fingerprint": "0916f3b5571bed522e4eb90b411c3c8d56d1ba644477ef9b385dc1c10d9cc686",
+      "fingerprint": "ed49a22d888118d3fbcd33f512f48c369da8c2564a6975debea2b61ca276a930",
       "snapshot": {
-        "packages/lib/src/lib/helpers/parseHeaders.ts": "94df8d992f2985633b3340f94cf1823b6e51be8a2f543f17362462fbeee49ccf"
+        "packages/lib/src/lib/helpers/parseHeaders.ts": "c48a11dcb38777defd78c4f1990d1c3da0314c96e33e1f089bb00b965fae9a18"
       },
-      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
-      "outcome": "no-change",
-      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/parseHeaders.ts at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
+        "Changed: packages/lib/src/lib/helpers/parseHeaders.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/lib/src/lib/helpers/progressEventReducer.ts": {
-      "fingerprint": "5e2d3aab58425db1093b07b2bc5671c1d6aa8ce9b66079ed5c64827a227145ce",
+      "fingerprint": "d459cc977891f980d76e54e1c281d5bafde2439a3eb4ba332a16379e6eeecd02",
       "snapshot": {
-        "packages/lib/src/lib/helpers/progressEventReducer.ts": "f45f48480929f38a49f90ae99cf29f784539ab52101d4e9255e152d868e1d508"
+        "packages/lib/src/lib/helpers/progressEventReducer.ts": "98be85f6c4a6b6ca2216bfc771b10d30ab2cf1e76603ae48d208e595c7c8655a"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/progressEventReducer.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/lib/src/lib/helpers/progressEventReducer.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/lib/src/lib/helpers/sanitizeHeaderValue.ts": {
-      "fingerprint": "2676a766635afae613f05264a5707653448b45cebecd9b655298b7c1ed83185b",
+      "fingerprint": "335bf098267d493872099142aac1821263c33b4edbcb8290cc72d2f254be52f7",
       "snapshot": {
-        "packages/lib/src/lib/helpers/sanitizeHeaderValue.ts": "ae38283a2092f19d32bd7b91ebba549afdcee38dcad6e71bd4421cf4cfab3e64"
+        "packages/lib/src/lib/helpers/sanitizeHeaderValue.ts": "dfdd912a3f4f0328ebbdfdae4db219d347764fc2080a21b42103c361b46e00b4"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "Return type `string | Array<string>` → `Array<string> | string`. Behaviour change: none. The regex string literals are unchanged.",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/lib/src/lib/helpers/sanitizeHeaderValue.ts: Whole file compared. Only HEAD L39 differs.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/lib/src/lib/helpers/sanitizeHeaderValue.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/lib/src/lib/helpers/throttle.ts": {
@@ -2338,27 +2337,27 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/toFormData.ts": {
-      "fingerprint": "a418e4e1d261a0a59244fd700b23de69ea95e0264eaa8066b9cb9a53c8acbbd9",
+      "fingerprint": "cc24c4087ac38be679be3ddd01e3cc8eb5f1d7ec4cdd9e6d4d34582ae3876234",
       "snapshot": {
-        "packages/lib/src/lib/helpers/toFormData.ts": "b5f076b111a444f5a6347225d0c0a66656a4856d9403aa195d9620935575650e"
+        "packages/lib/src/lib/helpers/toFormData.ts": "803148c3a9b494a1f1a6796c4f89de318b9795f3c15c85a739ecf28f8608d7d7"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/toFormData.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/lib/src/lib/helpers/toFormData.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/lib/src/lib/helpers/trackStream.ts": {
-      "fingerprint": "3f80f5e6a78cb0e2929d0d5023b13c36c73b94160c6573f4810b2d1f551f0b70",
+      "fingerprint": "34f3ca031582fb29d28487e884289e5f10c378e09cc4354bac35a3a3b03d7a73",
       "snapshot": {
-        "packages/lib/src/lib/helpers/trackStream.ts": "444506fc493a4a6ef777c41fbf7202dfe6b255278aa6adc1c04563cb5388e72c"
+        "packages/lib/src/lib/helpers/trackStream.ts": "ed7b49a6c3c494867558ee74beb1fb63c40bf834302039b3b913f95e0eb6a643"
       },
-      "head": "12f00f571b1d09b579b3142ea82e2498e9357060",
-      "outcome": "no-change",
-      "reason": "#254: trackStream cancels the source directly; the configure-requests skill does not teach stream cancel internals.",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/trackStream.ts at 12f00f571b1d09b579b3142ea82e2498e9357060"
+        "Changed: packages/lib/src/lib/helpers/trackStream.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/lib/src/lib/helpers/validator.ts": {
@@ -2399,15 +2398,15 @@
       ]
     },
     "source:packages/lib/src/lib/utils.ts": {
-      "fingerprint": "8a9e3c601265a496895073bd3885202dfdd9623e35e0886b7d9edbcc5ad8bb2b",
+      "fingerprint": "196310f52b8a413b69393075e5002acc50d91720365ad27360da8a2d4b6dbf30",
       "snapshot": {
-        "packages/lib/src/lib/utils.ts": "24090d39d3afda32e92bd3ad2fdc72de9adb788753936ab2825d79e0327b4574"
+        "packages/lib/src/lib/utils.ts": "9dcfbfdd24b7cdc013686618504d1a18c627fce949dc58be463df6c9a4a9a761"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/utils.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/lib/src/lib/utils.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/sandbox/client.js": {
@@ -3041,118 +3040,111 @@
       ]
     },
     "source:packages/tests/unit/utils/endsWith.test.ts": {
-      "fingerprint": "18ab791207eecde5d4078bbcfed1fd048b63a28c13a19bcbcc5bc76bf782b684",
+      "fingerprint": "38bae5c4f0988a0973a9be013e44340202d8ab5f2b9c74771ae14e56f7d36b2f",
       "snapshot": {
-        "packages/tests/unit/utils/endsWith.test.ts": "dfab1f4b0fb97d250dd4f26d7d70197d90babe4b03ed531d402d7e027a303390"
+        "packages/tests/unit/utils/endsWith.test.ts": "57d604ced4169f89e3af50fca1f634bfe1a88fc8f6f0653a294591ed776c309f"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/endsWith.test.ts: @@ -1,4 +1,4 @@ (diff/238)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/endsWith.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/unit/utils/extend.test.ts": {
-      "fingerprint": "08c0330d9f84130fe63bceabe9dba1b6d8a497b196fb6131a7ea73172171c13b",
+      "fingerprint": "cfdcfdfa090ebd9596c0f5ca98cc987de9cd09fb45a2ab892f45df143f2193bb",
       "snapshot": {
-        "packages/tests/unit/utils/extend.test.ts": "921815cfe49c391f47ceba8bfa9cdb2e266a8b8091500f88cda5511cf5d073f6"
+        "packages/tests/unit/utils/extend.test.ts": "9972b053557d2fc13b9cbcb87c622a8b6ec9af5786ae235d83bdcaa40d00288b"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/extend.test.ts: @@ -1,4 +1,4 @@ (diff/239)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/extend.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/unit/utils/forEach.test.ts": {
-      "fingerprint": "b0fccb6f001facbb06c5a8e1338a760426413e50e0eb164daaeb63ccbca5022c",
+      "fingerprint": "81e5d1f2bb30f77158b75f49e63033961e61b16b319f1d39cf06908322f87361",
       "snapshot": {
-        "packages/tests/unit/utils/forEach.test.ts": "91baa077ea7c7822007729a173dae2f1c74051b479dc90d69231eedea07e8985"
+        "packages/tests/unit/utils/forEach.test.ts": "45403a82031c5dcb8dbc56d880b826e5e0b0ff326443d5a8923f46c66eb29544"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/forEach.test.ts: @@ -1,4 +1,4 @@ (diff/240)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/forEach.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/unit/utils/isX.test.ts": {
-      "fingerprint": "38f9717e97f12da7839dfd73ad587d72cdf2217d0f7bba75fe7f399fc670f68e",
+      "fingerprint": "878b2035ea539713da5675330b07072cb7b02c7255e3bdd745d0f80955503624",
       "snapshot": {
-        "packages/tests/unit/utils/isX.test.ts": "4e817b008622561fbdd9e389b5e7bbf7c983f608cc248eac2eba23ba9538f7e0"
+        "packages/tests/unit/utils/isX.test.ts": "9189d87c3f76a549132f6ac3136b9313f09a7eb5cc1fc3f8f5c4c65b4bb79c97"
       },
-      "head": "925fd68b974b6f0b6edf1c68ee26ed27a6108e23",
-      "outcome": "no-change",
-      "reason": "Test-only change: servers bind port 0, new no-fixed-test-port lint rule, no-extend-native exemption comments in pollution tests. No library behaviour, public API or skill guidance changes.",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/tests/unit/utils/isX.test.ts at 925fd68b974b6f0b6edf1c68ee26ed27a6108e23"
+        "Changed: packages/tests/unit/utils/isX.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/unit/utils/kindOf.test.ts": {
-      "fingerprint": "4df0f06821e11a30d9b931d2da4fb037baa516f65c98d83843b2d3ad459fa39a",
+      "fingerprint": "159bdeb3b2123d29eb6bc933b1c4589dfcad0c92c041804a97fb395a01198328",
       "snapshot": {
-        "packages/tests/unit/utils/kindOf.test.ts": "dfab1f4b0fb97d250dd4f26d7d70197d90babe4b03ed531d402d7e027a303390"
+        "packages/tests/unit/utils/kindOf.test.ts": "57d604ced4169f89e3af50fca1f634bfe1a88fc8f6f0653a294591ed776c309f"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/kindOf.test.ts: @@ -1,4 +1,4 @@ (diff/242)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/kindOf.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/unit/utils/kindOfTest.test.ts": {
-      "fingerprint": "f03954092aa4e46e51b2117a0b13a1699845120088f2132ba5cd85c0b1f4efc7",
+      "fingerprint": "13d2dcaaa4a884a0b83e69a350bbeedd52f7b03ad12ac01ba029c95b24066251",
       "snapshot": {
-        "packages/tests/unit/utils/kindOfTest.test.ts": "511a2eb11941aeb7760f02e129ebf63ebdd7d7bca707bb8114cef03e2afecb19"
+        "packages/tests/unit/utils/kindOfTest.test.ts": null
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/kindOfTest.test.ts: @@ -1,4 +1,4 @@ (diff/243)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/kindOfTest.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/unit/utils/merge.test.ts": {
-      "fingerprint": "652616112d1714e7c977b6fad7e47fd5b82483926425dc7d87d320a05a068f01",
+      "fingerprint": "4da322103142c1a012fd60cde5f5775d68cd136b3c2e52022c089b0de053c5c4",
       "snapshot": {
-        "packages/tests/unit/utils/merge.test.ts": "f28e0907133dea6254542eb4c15c50e90d6f5e3bebe9c3422ff6643ae714e178"
+        "packages/tests/unit/utils/merge.test.ts": "6f4e4a73b6293ba4ed9534eee7f8e53e5a35ec573286168eae141fc30b17c0a2"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/tests/unit/utils/merge.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/tests/unit/utils/merge.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/unit/utils/toArray.test.ts": {
-      "fingerprint": "a84f1d99c49a6f9895ac95d6ea34ed3e921ba8bb03b4808adb8456da81223519",
+      "fingerprint": "dd6235f64888fa5ecde815bee99aeaed448bc5a57a9abd710719d94d7e08a55a",
       "snapshot": {
-        "packages/tests/unit/utils/toArray.test.ts": "edfed1bd8c0413331556bd2d7b045b9bf5d64fcf3dd76d400bf34af24f8f6744"
+        "packages/tests/unit/utils/toArray.test.ts": "1c78914fb04eb09d6376cb640f82bf2920c3f5bcf737c9a357579654ab6636d5"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/toArray.test.ts: @@ -1,4 +1,4 @@ (diff/245)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/toArray.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/unit/utils/toFlatObject.test.ts": {
-      "fingerprint": "fe6f7beab09da490aea3632992202a9ae47efdaa10683c41a35c427029ab5e22",
+      "fingerprint": "a686c1548240b6d7b5e97a51146f25982893da59785ae04675612e0f7992dab2",
       "snapshot": {
-        "packages/tests/unit/utils/toFlatObject.test.ts": "3530494839bca5f8dd67a1b2b70896d5d049d29339e67f9a9a05f4c9b6478817"
+        "packages/tests/unit/utils/toFlatObject.test.ts": "d894bafc20a5cee4d0831514afcd5b25952ffcc4656ff5bfb68ee3e80aeae3fb"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/utils/toFlatObject.test.ts: @@ -1,4 +1,4 @@ (diff/246)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/utils/toFlatObject.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:pnpm-workspace.yaml": {
@@ -3514,15 +3506,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/cloneConfig.ts": {
-      "fingerprint": "175438d1c1dc64c82aae01d29d7a499fcb3caf60cb1e9f1128320b65c6624497",
+      "fingerprint": "68efcfb52c30b348a138286b27dc6ba4cf56f2655ad23bc3d335ff8a6c29be8f",
       "snapshot": {
-        "packages/lib/src/lib/helpers/cloneConfig.ts": "c113c926243050da65fdb79cc4945de4f0ae584807c29a10900b5c3ccb80e761"
+        "packages/lib/src/lib/helpers/cloneConfig.ts": "a3ec8657f9360c9b91a5d2aaf89cbb1582ac40338bc748eae4196eab1ac17dda"
       },
-      "head": "2557ab2afafe5acbc28c2f1b33558872f5d17aa7",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "Rebased onto #203. The skill and fetch-adapter docs say request data passes by reference, params keep every own key, and every own fetchOptions key reaches fetch while inherited keys and Object.prototype members are ignored.",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/cloneConfig.ts at 2557ab2afafe5acbc28c2f1b33558872f5d17aa7"
+        "Changed: packages/lib/src/lib/helpers/cloneConfig.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/pin-tarball-integrity.ts": {
@@ -3586,15 +3578,15 @@
       ]
     },
     "source:packages/tests/unit/toFormData.test.ts": {
-      "fingerprint": "4064262ed08d327c9c1b86106f00a375d18d1055e206c83f059e51c150a31342",
+      "fingerprint": "5ebbdd4dfcd6825a1e34d6fe8d128a4ddbe335682de7610fd8c139f425f725f4",
       "snapshot": {
-        "packages/tests/unit/toFormData.test.ts": "d18c223f9f3ddc30b062ad73d5e96ce05cf2cf072eb522feadb20e319f0cda89"
+        "packages/tests/unit/toFormData.test.ts": "4dc43a32f97e81fbfece91bbd202313eb05afe72544089a150d41181be44bed6"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/tests/unit/toFormData.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/tests/unit/toFormData.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:.bumpy/progress-callback-errors.md": {
@@ -3838,15 +3830,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/buildURL.ts": {
-      "fingerprint": "5779b384b8efeee66d5a5e0d133ff5e3b1e2e03c87a87d9d1de6ca1b94be4f97",
+      "fingerprint": "030e950b7ce49b4c17e7e5bfb4e9114bbe764c658748fbe9265a62e12098968d",
       "snapshot": {
-        "packages/lib/src/lib/helpers/buildURL.ts": "1d930533c706ae6ddc1802c72b639e72c7705a91b08a82585a1a9a0e8710489d"
+        "packages/lib/src/lib/helpers/buildURL.ts": "f1ae38e6ad739bf8a1bfdff5c7396b73595f48b60c6ddd86bb4ec11c78b187d7"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
-      "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/buildURL.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/lib/src/lib/helpers/buildURL.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/lib/src/lib/helpers/combineURLs.ts": {
@@ -3874,15 +3866,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/isFaxiosError.ts": {
-      "fingerprint": "5ad918731077424d4f06e98c18478e74f3fb74eda67fa5028fa8c2927b63bf33",
+      "fingerprint": "668e5ee0c0ca93a743a086a67b852875846d57cedfa606efb215ee4631e6d081",
       "snapshot": {
-        "packages/lib/src/lib/helpers/isFaxiosError.ts": "5fe0082d35479efb562fe086cf20b16c35769f14f8da81c2a255523e3476fc58"
+        "packages/lib/src/lib/helpers/isFaxiosError.ts": "639c35f12c2cb0436e7df8d45590cc04985acf813947c3aa8280f6a47ea51b18"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
-      "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/isFaxiosError.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/lib/src/lib/helpers/isFaxiosError.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/scripts/check-ts-self-types.ts": {
@@ -3898,27 +3890,27 @@
       ]
     },
     "source:packages/tests/smoke/deno/deno.json": {
-      "fingerprint": "505579677e6e9da10a4b914eee740a805a8da65353523fa8612c3b9361462445",
+      "fingerprint": "6c01e02a6497886478b170ef6ea7182418b680b36df62ac52db442093f63dac3",
       "snapshot": {
-        "packages/tests/smoke/deno/deno.json": "c259b317775a99c026ecd5923118984d9a5a6bdc20f160df4c9666fbbe0e3c7e"
+        "packages/tests/smoke/deno/deno.json": "954fdc873ac1400dccabff141e086742347a1b528ff5fa4713edd86b61310bd0"
       },
-      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "SKILL.md now says the fetch init repeats the Request's members with body: undefined (Bun reads body: null as no body); smoke tests post real bodies",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/tests/smoke/deno/deno.json at fc450aa8a45d0ca2f4d53f47c70cad9274970ef3"
+        "Changed: packages/tests/smoke/deno/deno.json at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/smoke/deno/types/consumer.ts": {
-      "fingerprint": "eed9faf6fb89fca9b60229565c4c361aff5721cc78f482eae7a2941821a003f1",
+      "fingerprint": "27dcd3d68468439ad22864b638c0c2f0bc6a94d8d707903e2ff96bdab0831968",
       "snapshot": {
-        "packages/tests/smoke/deno/types/consumer.ts": "04d78d9bf8992516034842a7834b1b7b251dc5a7dbb317a6a2ec66755196f221"
+        "packages/tests/smoke/deno/types/consumer.ts": "111d8aa575c3f3270d795eacc4c744d6286e0ecd4575a39948a26061ee276f9f"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
-      "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/tests/smoke/deno/types/consumer.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/tests/smoke/deno/types/consumer.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:.bumpy/middleware-missing-response.md": {
@@ -3970,15 +3962,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/resolveRequestURL.ts": {
-      "fingerprint": "beab07ccc01a8771f819c1e78d7ec6420c30cdfaf4dd029fac027e71d80300e0",
+      "fingerprint": "e27b4985d0e4ac059c680f076cc8a54681ed4af294ec8b447c4c915e89c25939",
       "snapshot": {
-        "packages/lib/src/lib/core/resolveRequestURL.ts": "44cc5be130760c8338c84b546f5b16847ef38d6e872a854776600dc174605d70"
+        "packages/lib/src/lib/core/resolveRequestURL.ts": "2c7b6ce093bd2565ae4a417ac2dbda32dd9620ebe496ef2ac2308e14a53ef101"
       },
-      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "Skill now teaches resolveRequestURL and ctx.instanceBaseURL for plugins, the instance-baseURL authBearer origin rule, and that a URL is absolute only with a scheme and //",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/resolveRequestURL.ts at 06608f4bf5126bc949bde148a37bb3e85fc98041"
+        "Changed: packages/lib/src/lib/core/resolveRequestURL.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/unit/core/getUri.test.ts": {
@@ -4150,15 +4142,15 @@
       ]
     },
     "source:CODING_STANDARDS.md": {
-      "fingerprint": "56a6933a9467ebb0496994a7c004c949a3edebf9d4f54b2ecd08d04b7b84c83e",
+      "fingerprint": "8cb50d33c604325ac3246b64f4b69704cc386ed2a76cd6267d8dbeef1ec16e17",
       "snapshot": {
-        "CODING_STANDARDS.md": "328925200cc52e5c2783e0b1627c2a64177eb82e5d805e622a1791e9f070092d"
+        "CODING_STANDARDS.md": "86f955e3cf26b5aee656d039a08d403766a261eac267926e0dff6e6ba1fae764"
       },
-      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: CODING_STANDARDS.md at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+        "Changed: CODING_STANDARDS.md at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:docs/agents/issue-tracker.md": {
@@ -4258,15 +4250,15 @@
       ]
     },
     "source:packages/tests/unit/utils.test.ts": {
-      "fingerprint": "61157eaaaeee9b053dc60f5ce3cb407e8171f9072be2d5dd2440d1ab7c80e1b9",
+      "fingerprint": "4d6880ac409c918f347b895a544661de8aa4a74eab28dcfd032a9aee171c63a5",
       "snapshot": {
-        "packages/tests/unit/utils.test.ts": "3be063074aaa7433406239d660f32de8e6f4d4b8c03150532856dfd190c61836"
+        "packages/tests/unit/utils.test.ts": "57de60a996ee6f20ff08f1f80c4174cd9fed9052da4e75b886bc4b49fdc1d1e2"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/tests/unit/utils.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/tests/unit/utils.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:.bumpy/faxios-error-name.md": {
@@ -4366,15 +4358,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/assertRequestConfig.ts": {
-      "fingerprint": "487bc3236d7a10b0def73d4be9bd4e44852ced07de571752e08c17c182749a77",
+      "fingerprint": "43571f542c2b06853203d75667d4c7a88f516b21310d1004dc49fcf2d831f576",
       "snapshot": {
-        "packages/lib/src/lib/core/assertRequestConfig.ts": "59c23c98b0472f318fdadc93e938086b25b8f1b5e5b1aea586028bfa208e48f8"
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "45654bba30c83cc7c5708d77b5339b9accc68352a507795c60d0ae8d585cc5fe"
       },
-      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/assertRequestConfig.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
+        "Changed: packages/lib/src/lib/core/assertRequestConfig.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/browser/xsrf.browser.test.ts": {
@@ -4582,27 +4574,27 @@
       ]
     },
     "source:packages/lib/src/lib/core/resolveBodyContentType.ts": {
-      "fingerprint": "1fe098457c3c849a37a49b5fca78aa718b07483f7ac941713a6f8b563a0849ee",
+      "fingerprint": "30b79b0af01cf3f51842df8627d6063366399953762f3e28809b903e446b2607",
       "snapshot": {
-        "packages/lib/src/lib/core/resolveBodyContentType.ts": "9662d0583a7efa4d4f3068b71f1e8341ca8b85f6fd8722903e0733d5a72d509b"
+        "packages/lib/src/lib/core/resolveBodyContentType.ts": "9deda15525ca96411b021c29d51afd8c87a5f5196e6e6cee928a7c8740b2732a"
       },
-      "head": "39e14525539fef2f7c4b2bddcc47c323980265e8",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/resolveBodyContentType.ts at 67e247e7b6f012770364267efab107f726b56dff"
+        "Changed: packages/lib/src/lib/core/resolveBodyContentType.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/unit/adapters/fetch-pure.test.ts": {
-      "fingerprint": "bc32d26b7f44e886fd4e896c2b9d780940e06f0487ac5ecd6e9723b51ce3559f",
+      "fingerprint": "0c92709ae8cbbfcaf77405430008ccd6b5c5de69196f91d3b628712391767df1",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch-pure.test.ts": "7c73002da52a0e3af495074ff76489fcaf0c49daa6094a7459a2ecd878be72e0"
+        "packages/tests/unit/adapters/fetch-pure.test.ts": null
       },
-      "head": "e860801c73b0297a0ec4073403971cc452274399",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch-pure.test.ts at 484d2ac2104da3e5946af6a25500ec7b40729206"
+        "Changed: packages/tests/unit/adapters/fetch-pure.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:.bumpy/plugin-attempt-api.md": {
@@ -5686,15 +5678,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch/env.test.ts": {
-      "fingerprint": "1beaa6075e82fb01a139642534f861411328730dbc08e6d58c4ce3bd612a98cb",
+      "fingerprint": "c58cb5777ee84a83810f4150f85a5678d34b7d289d249bd120a374b25cdddd10",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch/env.test.ts": "515a39e12efe62250593d4444ccfbc545ea6368b94898d63c221cea82979ada7"
+        "packages/tests/unit/adapters/fetch/env.test.ts": "a5af9c830cc492186f3a967f67ca9ce35ef146f4624debe9d6dbfb010ac8d882"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
-      "outcome": "no-change",
-      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch/env.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+        "Changed: packages/tests/unit/adapters/fetch/env.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/unit/adapters/fetch/pollution.test.ts": {
@@ -5722,15 +5714,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch/progress.test.ts": {
-      "fingerprint": "eac221e76c4d53f053629c9ea916ca8c423e76d63794c1f2dd03990b2bf6f006",
+      "fingerprint": "6af35ea29141c084a1a5cc2290de0429674178921127a54fa7e7c1f6ff27c3b4",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch/progress.test.ts": "fa97ebcc2be5105f6762fc74e90726b4c74175a2b7d459baeb07fd05e39d77f9"
+        "packages/tests/unit/adapters/fetch/progress.test.ts": "9f4891dfd35ba27e53706d3d0db51f70214bfefa2138a4c476816fe327bd788c"
       },
-      "head": "7285e2c90783d42ede4ddd0d275de3714895f10a",
-      "outcome": "no-change",
-      "reason": "test-only changes to the unit suite, its server helper and test deps; the skill teaches nothing about them",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch/progress.test.ts at f0549dea7befb84a26c93609fdff0d445fac2358"
+        "Changed: packages/tests/unit/adapters/fetch/progress.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/unit/adapters/fetch/request-body.test.ts": {
@@ -5758,15 +5750,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch/size-limits.test.ts": {
-      "fingerprint": "fe8f6a0e26242842a28abb42bb1992db0ccf052d78ee8a3646587209633967d3",
+      "fingerprint": "551cf13198c760d440624b1c6589366109579ac93cb9e2e1302cab5a18cb97ff",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch/size-limits.test.ts": "1eb9eef5ceb836e2d094986a70cf209967d19d2bd77e68f857c3d653977031ec"
+        "packages/tests/unit/adapters/fetch/size-limits.test.ts": "0a9b17856ad89664e69671470701cfe83cc9b008c96e25cc826336cbb5d59ff9"
       },
-      "head": "81e158f312b6e0f20d5f6fb21f608bd663c1c2f0",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
       "outcome": "updated",
-      "reason": "configure-requests skill now teaches that a stream status error carries a readable body on error.response.data under the request's timeout and signal; docs cover bodiless maxContentLength, responseType case and retry discarding error bodies; planning records unaffected",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch/size-limits.test.ts at 86f20473642fb3c294f745739f7ba05847421218"
+        "Changed: packages/tests/unit/adapters/fetch/size-limits.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/unit/adapters/fetch/timeout.test.ts": {
@@ -5866,27 +5858,27 @@
       ]
     },
     "source:packages/tests/unit/utils/extend.pollution.test.ts": {
-      "fingerprint": "e0304d239014dd2172634563140ac8f7909b61775d8f9d5e3d8fe4141484644a",
+      "fingerprint": "7e2a663e7f064060d883141afb4c7957c94b0c02b5c0aeff799c0e7fc305c64b",
       "snapshot": {
-        "packages/tests/unit/utils/extend.pollution.test.ts": "043996fbaa6e16b65e1b7500ee60a003530916b14346abbc08f504b94c6c3547"
+        "packages/tests/unit/utils/extend.pollution.test.ts": "73380cdd9811f4b93ceb3839df98ae9d217ff4dff653490e9b6e1dec0873345c"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
-      "outcome": "no-change",
-      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/tests/unit/utils/extend.pollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+        "Changed: packages/tests/unit/utils/extend.pollution.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/unit/utils/merge.pollution.test.ts": {
-      "fingerprint": "38ce290e062eff670c62d1579214064ae1ba38054a32aca0acf2a0d4383e9b56",
+      "fingerprint": "f3d8e57df9a2c249b01d9770db8dcadca594585a24e26e312d9fa74d3e608737",
       "snapshot": {
-        "packages/tests/unit/utils/merge.pollution.test.ts": "eb70265ed87e1df6a452c0f3675a3526370d64c9361a447ca4a75513dfbf2725"
+        "packages/tests/unit/utils/merge.pollution.test.ts": "59f7c8734d02e399689649df55fefefb7d6c3ec4e075cefa5dad46b120cf9b06"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
-      "outcome": "no-change",
-      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
-        "Changed: packages/tests/unit/utils/merge.pollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+        "Changed: packages/tests/unit/utils/merge.pollution.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     },
     "source:packages/tests/unit/setup/server.test.ts": {
@@ -6307,6 +6299,54 @@
       "reason": "Removed ERR_FR_TOO_MANY_REDIRECTS from the axios-differences reference; the rest of the layer deletes dead internals and legacy API the skill does not teach",
       "evidence": [
         "Changed: packages/tests/unit/core/strictJsonError.test.ts at 67e247e7b6f012770364267efab107f726b56dff"
+      ]
+    },
+    "source:.bumpy/166-utils-named.md": {
+      "fingerprint": "f2e94a26fa0b45b2256cd46f663c4f5bc7162c54988253c315e47b251f8ed38f",
+      "snapshot": {
+        ".bumpy/166-utils-named.md": "93570368ab224ad5a1bed9bf42599759bb3eb767dd68cf72673f54bdff581306"
+      },
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "evidence": [
+        "Changed: .bumpy/166-utils-named.md at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/deprecatedMethod.ts": {
+      "fingerprint": "491907d37ba2327edcef82689c5e5ec5df64f4dfbd1acc6f21b52caa9f60ffbb",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/deprecatedMethod.ts": null
+      },
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/deprecatedMethod.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch/errors-and-limits.test.ts": {
+      "fingerprint": "6a875a927875dd000a4db274ac24d8743fa37434f811dce5433341a51463c69a",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch/errors-and-limits.test.ts": "a54ca905011e8022a76c36437bc4f8fd2022c7e82101dccb5ddeefc04e2b60d5"
+      },
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch/errors-and-limits.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+      ]
+    },
+    "source:packages/tests/unit/core/settle.test.ts": {
+      "fingerprint": "196910c85686ab6e387546885ab3ecde210d840c45143c9ae0a2bbc1866e1a7f",
+      "snapshot": {
+        "packages/tests/unit/core/settle.test.ts": "f62bf41b1148a6d54b5861c7a5beed08b7543ac929c21fb4fa0c044249bfdbc9"
+      },
+      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "outcome": "updated",
+      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "evidence": [
+        "Changed: packages/tests/unit/core/settle.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
       ]
     }
   }

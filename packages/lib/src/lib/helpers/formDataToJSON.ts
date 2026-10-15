@@ -1,7 +1,7 @@
 "use strict";
 
 import FaxiosError from "../core/FaxiosError.js";
-import utils from "../utils.js";
+import { forEachEntry, hasOwnProp, isArray, isDangerousKey, isFormData, isFunction, isObject } from "../utils.js";
 import { DEFAULT_FORM_DATA_MAX_DEPTH } from "./toFormData.js";
 
 const MAX_DEPTH = DEFAULT_FORM_DATA_MAX_DEPTH;
@@ -69,18 +69,18 @@ function formDataToJSON(formData: unknown): null | Record<string, unknown> {
 
     let name: number | string = path[index++]!;
 
-    if (utils.isDangerousKey(name)) return true;
+    if (isDangerousKey(name)) return true;
 
     const isNumericKey = Number.isFinite(+name);
     const isLast = index >= path.length;
-    name = !name && utils.isArray(target) ? (target as Array<unknown>).length : name;
+    name = !name && isArray(target) ? (target as Array<unknown>).length : name;
 
     const key = String(name);
 
     if (isLast) {
-      if (utils.hasOwnProp(target, key)) {
-        target[key] = utils.isArray(target[key])
-          ? (target[key] as Array<unknown>).concat(value)
+      if (hasOwnProp(target, key)) {
+        target[key] = isArray(target[key])
+          ? (target[key]).concat(value)
           : [ target[key], value ];
       }
       else {
@@ -90,23 +90,23 @@ function formDataToJSON(formData: unknown): null | Record<string, unknown> {
       return !isNumericKey;
     }
 
-    if (!utils.hasOwnProp(target, key) || !utils.isObject(target[key])) {
+    if (!hasOwnProp(target, key) || !isObject(target[key])) {
       target[key] = [];
     }
 
     const result = buildPath(path, value, target[key] as Record<string, unknown>, index);
 
-    if (result && utils.isArray(target[key])) {
-      target[key] = arrayToObject(target[key] as Array<unknown>);
+    if (result && isArray(target[key])) {
+      target[key] = arrayToObject(target[key]);
     }
 
     return !isNumericKey;
   }
 
-  if (utils.isFormData(formData) && utils.isFunction((formData as { entries?: unknown; }).entries)) {
+  if (isFormData(formData) && isFunction((formData as { entries?: unknown; }).entries)) {
     const obj: Record<string, unknown> = {};
 
-    utils.forEachEntry(formData, (name: unknown, value: unknown) => {
+    forEachEntry(formData, (name: unknown, value: unknown) => {
       buildPath(parsePropPath(name as string), value, obj, 0);
     });
 

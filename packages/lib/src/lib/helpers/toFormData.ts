@@ -4,7 +4,7 @@
 import FaxiosError from "../core/FaxiosError.js";
 // temporary hotfix to avoid circular references until FaxiosURLSearchParams is refactored
 import type { FormDataVisitorHelpers, GenericFormData, SerializerVisitor } from "../types.js";
-import utils from "../utils.js";
+import { forEach, isArray, isArrayBuffer, isBlob, isBoolean, isDate, isFileList, isFunction, isObject, isPlainObject, isSpecCompliantForm, isString, isTypedArray, isUndefined, toArray, toFlatObject } from "../utils.js";
 import validator from "./validator.js";
 
 // Default nesting limit shared with the inverse transform (formDataToJSON) so
@@ -19,7 +19,7 @@ export const DEFAULT_FORM_DATA_MAX_DEPTH = 100;
  * @returns {boolean}
  */
 function isVisitable(thing: unknown): boolean {
-  return utils.isPlainObject(thing) || utils.isArray(thing);
+  return isPlainObject(thing) || isArray(thing);
 }
 
 /**
@@ -61,12 +61,8 @@ function renderKey(path: Array<number | string> | null | undefined, key: number 
  * @returns {boolean}
  */
 function isFlatArray(arr: unknown): boolean {
-  return utils.isArray(arr) && !(arr as Array<unknown>).some(isVisitable);
+  return isArray(arr) && !(arr).some(isVisitable);
 }
-
-const predicates = utils.toFlatObject(utils, {}, null as unknown as false, function filter(prop: string) {
-  return /^is[A-Z]/.test(prop);
-});
 
 /**
  * Convert a data object to FormData
@@ -92,7 +88,7 @@ const predicates = utils.toFlatObject(utils, {}, null as unknown as false, funct
  * @returns
  */
 function toFormData(obj: unknown, formData?: GenericFormData | null, options?: Record<string, unknown>): GenericFormData {
-  if (!utils.isObject(obj)) {
+  if (!isObject(obj)) {
     throw new FaxiosError("target must be an object", FaxiosError.ERR_BAD_REQUEST);
   }
 
@@ -104,7 +100,7 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
 
   // Null-prototype destination: `visitor`, `maxDepth` and `Blob` are read below, and a polluted
   // Object.prototype must not supply them.
-  options = utils.toFlatObject(
+  options = toFlatObject(
     options,
     Object.assign(Object.create(null) as Record<string, unknown>, {
       metaTokens: true,
@@ -113,7 +109,7 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
     }),
     false,
     function defined(option: string, source: unknown) {
-      return !utils.isUndefined((source as Record<string, unknown>)[option]);
+      return !isUndefined((source as Record<string, unknown>)[option]);
     }
   );
 
@@ -129,32 +125,32 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
     throw new FaxiosError(`option maxDepth must be ${maxDepthValid}`, FaxiosError.ERR_BAD_OPTION_VALUE);
   }
   const maxDepth = maxDepthOption === undefined ? DEFAULT_FORM_DATA_MAX_DEPTH : maxDepthOption as number;
-  const useBlob = typeof _Blob === "function" && utils.isSpecCompliantForm(formData);
+  const useBlob = typeof _Blob === "function" && isSpecCompliantForm(formData);
   const stack: Array<unknown> = [];
 
-  if (!utils.isFunction(visitor)) {
+  if (!isFunction(visitor)) {
     throw new FaxiosError("visitor must be a function", FaxiosError.ERR_BAD_OPTION_VALUE);
   }
 
   function convertValue(value: unknown): unknown {
     if (value === null) return "";
 
-    if (utils.isDate(value)) {
+    if (isDate(value)) {
       return (value as Date).toISOString();
     }
 
-    if (utils.isBoolean(value)) {
+    if (isBoolean(value)) {
       return String(value);
     }
 
-    if (!useBlob && (utils.isBlob(value) || utils.isArrayBuffer(value) || utils.isTypedArray(value))) {
+    if (!useBlob && (isBlob(value) || isArrayBuffer(value) || isTypedArray(value))) {
       throw new FaxiosError(
         "Binary FormData values need a spec-compliant FormData and a Blob constructor (set the `Blob` option)",
         FaxiosError.ERR_NOT_SUPPORT
       );
     }
 
-    if (utils.isArrayBuffer(value) || utils.isTypedArray(value)) {
+    if (isArrayBuffer(value) || isTypedArray(value)) {
       return new (_Blob as new (parts: Array<unknown>) => unknown)([ value ]);
     }
 
@@ -181,7 +177,7 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
     const ancestors: Array<unknown> = [];
 
     return JSON.stringify(value, function limitDepth(this: unknown, _key: string, currentValue: unknown): unknown {
-      if (!utils.isObject(currentValue)) {
+      if (!isObject(currentValue)) {
         return currentValue;
       }
 
@@ -216,14 +212,14 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
         value = stringifyWithDepthLimit(value, 1);
       }
       else if (
-        (utils.isArray(value) && isFlatArray(value)) ||
-        ((utils.isFileList(value) || String(key).endsWith("[]")) &&
-          (arr = utils.toArray(value)))
+        (isArray(value) && isFlatArray(value)) ||
+        ((isFileList(value) || String(key).endsWith("[]")) &&
+          (arr = toArray(value)))
       ) {
         key = removeBrackets(String(key));
 
         (arr as Array<unknown>).forEach(function each(el: unknown, index: number) {
-          !utils.isUndefined(el) && el !== null &&
+          !isUndefined(el) && el !== null &&
             (formData as GenericFormData).append(
               /* eslint-disable sonarjs/no-nested-conditional */
               indexes === true
@@ -249,14 +245,13 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
   }
 
   const exposedHelpers: FormDataVisitorHelpers = {
-    ...predicates,
     defaultVisitor,
     convertValue,
     isVisitable,
   };
 
   function build(value: unknown, path?: Array<number | string>, depth = 0): void {
-    if (utils.isUndefined(value)) return;
+    if (isUndefined(value)) return;
 
     throwIfMaxDepthExceeded(depth);
 
@@ -266,13 +261,13 @@ function toFormData(obj: unknown, formData?: GenericFormData | null, options?: R
 
     stack.push(value);
 
-    utils.forEach(value, function each(el: unknown, key: unknown) {
+    forEach(value, function each(el: unknown, key: unknown) {
       const result =
-        !utils.isUndefined(el) && el !== null &&
+        !isUndefined(el) && el !== null &&
         visitor.call(
           formData as GenericFormData,
           el,
-          utils.isString(key) ? (key as string).trim() : key as number | string,
+          isString(key) ? (key as string).trim() : key as number | string,
           path ?? null,
           exposedHelpers
         );

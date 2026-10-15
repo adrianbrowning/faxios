@@ -258,6 +258,17 @@ describe("helpers::toFormData per-call state (#172)", () => {
     assert.deepStrictEqual(entries(inner), [[ "x", "9" ]]);
   });
 
+  it("gives a visitor only the declared helpers", () => {
+    let keys: Array<string> = [];
+    toFormData({ a: 1 }, new globalThis.FormData() as unknown as GenericFormData, {
+      visitor(this: GenericFormData, value: unknown, key: number | string, path: Array<number | string> | null, helpers: { defaultVisitor: (...args: Array<unknown>) => boolean; }) {
+        keys = Object.keys(helpers).sort();
+        return helpers.defaultVisitor.call(this, value, key, path, helpers);
+      },
+    });
+    assert.deepStrictEqual(keys, [ "convertValue", "defaultVisitor", "isVisitable" ]);
+  });
+
   it("dots/indexes options on one call don't change a later default call", () => {
     toFormData({ arr: [ 1 ], o: { k: 1 } }, new globalThis.FormData() as unknown as GenericFormData, { dots: true, indexes: true });
     const form = toFormData({ arr: [ 1 ], o: { k: 1 } }, new globalThis.FormData() as unknown as GenericFormData) as unknown as globalThis.FormData;

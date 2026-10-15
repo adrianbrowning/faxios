@@ -1,15 +1,15 @@
 /* eslint-disable no-prototype-builtins */
 import assert from "node:assert";
 import { describe, it } from "vitest";
-import utils from "#src/lib/utils.js";
+import { merge } from "#src/lib/utils.js";
 import { assertClean, ObjProto, restorePrototypeAfterEach } from "../../setup/pollution.js";
 
 describe("Prototype Pollution Protection", () => {
   restorePrototypeAfterEach();
 
-  describe("utils.merge", () => {
+  describe("merge", () => {
     it("should filter __proto__ key at top level", () => {
-      const result = assertClean(utils.merge(
+      const result = assertClean(merge(
         {},
         JSON.parse("{\"__proto__\": {\"polluted\": \"yes\"}, \"safe\": \"value\"}")
       ));
@@ -19,7 +19,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter constructor key at top level", () => {
-      const result = utils.merge(
+      const result = merge(
         {},
         { constructor: { polluted: "yes" }, safe: "value" }
       );
@@ -29,7 +29,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter prototype key at top level", () => {
-      const result = utils.merge(
+      const result = merge(
         {},
         { prototype: { polluted: "yes" }, safe: "value" }
       );
@@ -39,7 +39,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter __proto__ key in nested objects", () => {
-      const result = assertClean(utils.merge(
+      const result = assertClean(merge(
         {},
         JSON.parse("{\"headers\": {\"__proto__\": {\"polluted\": \"nested\"}, \"Content-Type\": \"application/json\"}}")
       ));
@@ -50,7 +50,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter constructor key in nested objects", () => {
-      const result: any = utils.merge(
+      const result: any = merge(
         {},
         {
           headers: {
@@ -66,7 +66,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter prototype key in nested objects", () => {
-      const result: any = utils.merge(
+      const result: any = merge(
         {},
         {
           headers: {
@@ -81,7 +81,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should filter dangerous keys in deeply nested objects", () => {
-      const result = assertClean(utils.merge(
+      const result = assertClean(merge(
         {},
         JSON.parse("{\"level1\": {\"level2\": {\"__proto__\": {\"polluted\": \"deep\"}, \"prototype\": {\"polluted\": \"deep\"}, \"safe\": \"value\"}}}")
       ));
@@ -94,7 +94,7 @@ describe("Prototype Pollution Protection", () => {
     });
 
     it("should still merge regular properties correctly", () => {
-      const result: any = utils.merge(
+      const result: any = merge(
         { a: 1, b: { c: 2 } },
         { b: { d: 3 }, e: 4 }
       );
@@ -107,7 +107,7 @@ describe("Prototype Pollution Protection", () => {
 
     it("should handle JSON.parse payloads safely", () => {
       const malicious = JSON.parse("{\"__proto__\": {\"polluted\": \"yes\"}}");
-      assertClean(utils.merge({}, malicious));
+      assertClean(merge({}, malicious));
 
       assert.strictEqual(Object.prototype.polluted, undefined);
     });
@@ -117,21 +117,21 @@ describe("Prototype Pollution Protection", () => {
         "{\"headers\": {\"constructor\": {\"prototype\": {\"polluted\": \"yes\"}}}}"
       );
 
-      const result: any = utils.merge({}, malicious);
+      const result: any = merge({}, malicious);
 
       assert.strictEqual(Object.prototype.polluted, undefined);
       assert.strictEqual(result.headers.hasOwnProperty("constructor"), false);
     });
   });
 
-  // utils.merge previously read `result[targetKey]` directly, which walks the
+  // merge previously read `result[targetKey]` directly, which walks the
   // prototype chain. A polluted Object.prototype.<key> object would surface as
   // the existing value and be merged into the result.
-  describe("utils.merge prototype-chain read", () => {
+  describe("merge prototype-chain read", () => {
     it("should not pick up polluted Object.prototype.<key> as the existing value", () => {
       ObjProto.headers = { evil: "yes" };
 
-      const result: any = utils.merge(
+      const result: any = merge(
         {},
         { headers: { "Content-Type": "application/json" } }
       );
@@ -146,7 +146,7 @@ describe("Prototype Pollution Protection", () => {
       // eslint-disable-next-line no-extend-native -- prototype-pollution test; removed in afterEach
       Object.prototype.customNested = { evil: "yes" };
 
-      const result = utils.merge({}, { safe: "value" });
+      const result = merge({}, { safe: "value" });
 
       assert.strictEqual(result.hasOwnProperty("customNested"), false);
       assert.strictEqual(result.safe, "value");

@@ -8,7 +8,7 @@ import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import { validateSchema } from "../core/validateSchema.js";
 import raceAbort from "../helpers/raceAbort.js";
 import type { FaxiosResponse, InternalFaxiosRequestConfig } from "../types.js";
-import utils from "../utils.js";
+import { getSafeProp, isFormData, isFunction, isSpecCompliantForm } from "../utils.js";
 import assertSignal from "./assertSignal.js";
 import type { RequestBodies } from "./requestDeadline.js";
 import resolveRequestURL from "./resolveRequestURL.js";
@@ -127,7 +127,7 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
 
   // fetch can't read the npm `form-data` package (a FormData-like stream with `getHeaders()`): it
   // would send the text "[object FormData]".
-  if (utils.isFormData(data) && !utils.isSpecCompliantForm(data) && utils.isFunction(utils.getSafeProp(data, "getHeaders"))) {
+  if (isFormData(data) && !isSpecCompliantForm(data) && isFunction(getSafeProp(data, "getHeaders"))) {
     throw new FaxiosError(
       "The form-data package is not supported as a request body; use the global FormData",
       FaxiosError.ERR_NOT_SUPPORT,

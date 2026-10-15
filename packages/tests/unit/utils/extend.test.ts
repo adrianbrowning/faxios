@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
-import utils from "#src/lib/utils.js";
-
-const { extend } = utils;
+import { extend } from "#src/lib/utils.js";
 
 describe("utils::extend", () => {
   it("should be mutable", () => {

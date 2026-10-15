@@ -1,4 +1,4 @@
-import utils from "../utils.js";
+import { isFormData } from "../utils.js";
 import type FaxiosHeaders from "./FaxiosHeaders.js";
 
 /**
@@ -21,7 +21,7 @@ import type FaxiosHeaders from "./FaxiosHeaders.js";
  * @param body The body that goes to fetch (the prepared body or its upload stream).
  * @param headers The request headers, updated in place.
  * @param encodedContentType The Content-Type from encoding the body ahead of fetch, if it was.
- * @param encode Encodes a string body to bytes.
+ * @param encode Encodes a string body to UTF-8 bytes.
  * @returns The body to send.
  */
 export default function resolveBodyContentType(
@@ -29,9 +29,9 @@ export default function resolveBodyContentType(
   body: unknown,
   headers: FaxiosHeaders,
   encodedContentType: null | string | undefined,
-  encode: (str: string) => Promise<Uint8Array> | Uint8Array
-): Promise<unknown> | unknown {
-  if (utils.isFormData(preparedBody)) headers.delete("content-type");
+  encode: (str: string) => Uint8Array
+): unknown {
+  if (isFormData(preparedBody)) headers.delete("content-type");
   if (encodedContentType) headers.setContentType(encodedContentType, false);
 
   if (typeof body !== "string") return body;

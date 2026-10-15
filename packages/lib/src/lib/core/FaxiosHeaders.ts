@@ -4,7 +4,7 @@
 import parseHeaders from "../helpers/parseHeaders.js";
 import { sanitizeHeaderValue } from "../helpers/sanitizeHeaderValue.js";
 import type { FaxiosHeaderValue } from "../types.js";
-import utils from "../utils.js";
+import { forEach, freezeMethods, hasOwnProp, isArray, isDangerousKey, isFunction, isObject, isPlainObject, isRegExp, isSafeIterable, isString, toCamelCase } from "../utils.js";
 
 /** Matches a header value for `has()`, `delete()`, `clear()` and the `has<Header>` shortcuts. */
 type HeaderMatcher =
@@ -35,7 +35,7 @@ const ACCESSOR_HEADERS = [
 ] as const;
 
 type AccessorHeader = (typeof ACCESSOR_HEADERS)[number];
-// "Accept-Encoding" -> "AcceptEncoding", matching utils.toCamelCase(" " + header) at runtime.
+// "Accept-Encoding" -> "AcceptEncoding", matching toCamelCase(" " + header) at runtime.
 type AccessorSuffix<H extends string> = H extends `${infer Head}-${infer Rest}` ? `${Head}${AccessorSuffix<Rest>}` : H;
 
 type HeaderAccessors =
@@ -64,7 +64,7 @@ const keyIndexes = new WeakMap<object, Map<string, string>>();
 
 function indexKeys(headers: object): Map<string, string> {
   const index = new Map<string, string>();
-  // Later keys overwrite earlier ones, matching utils.findKey, which scans from the end.
+  // Later keys overwrite earlier ones, matching `findKey` in utils.ts, which scans from the end.
   for (const key of Object.keys(headers)) {
     index.set(key.toLowerCase(), key);
   }
@@ -74,7 +74,7 @@ function indexKeys(headers: object): Map<string, string> {
 
 function findHeaderKey(headers: object, lHeader: string): string | undefined {
   const key = keyIndexes.get(headers)?.get(lHeader);
-  return key !== undefined && utils.hasOwnProp(headers, key) ? key : indexKeys(headers).get(lHeader);
+  return key !== undefined && hasOwnProp(headers, key) ? key : indexKeys(headers).get(lHeader);
 }
 
 // Per instance: own key -> the string set() or normalize() last sanitized into it. Sanitizing is
@@ -118,7 +118,7 @@ function normalizeValue(
   if (value === false) {
     return false;
   }
-  if (utils.isArray(value)) {
+  if (isArray(value)) {
     return (value as Array<FaxiosHeaderValue>).map(normalizeValue) as Array<string>;
   }
   return sanitizeHeaderValue(String(value));
@@ -146,7 +146,7 @@ function matchHeaderValue(
   filter: HeaderMatcher | undefined,
   isHeaderNameFilter?: boolean
 ): boolean | undefined {
-  if (utils.isFunction(filter)) {
+  if (isFunction(filter)) {
     return (
       filter as (this: FaxiosHeaders, value: string, name: string) => boolean
     ).call(context, value as string, header);
@@ -156,13 +156,13 @@ function matchHeaderValue(
     value = header;
   }
 
-  if (!utils.isString(value)) return undefined;
+  if (!isString(value)) return undefined;
 
-  if (utils.isString(filter)) {
+  if (isString(filter)) {
     return (value as string).indexOf(filter as string) !== -1;
   }
 
-  if (utils.isRegExp(filter)) {
+  if (isRegExp(filter)) {
     return (filter as RegExp).test(value as string);
   }
   return undefined;
@@ -178,14 +178,14 @@ function formatHeader(header: string): string {
 function iterableToHeaders(header: Iterable<unknown>): Record<string, unknown> {
   const obj: Record<string, unknown> = Object.create(null);
   for (const entry of header) {
-    if (!utils.isArray(entry)) {
+    if (!isArray(entry)) {
       throw new TypeError("Object iterator must return a key-value pair");
     }
-    const key = (entry as Array<unknown>)[0] as string;
-    const val = (entry as Array<unknown>)[1];
-    if (utils.hasOwnProp(obj, key)) {
+    const key = (entry)[0] as string;
+    const val = (entry)[1];
+    if (hasOwnProp(obj, key)) {
       const dest = obj[key];
-      obj[key] = utils.isArray(dest) ? [ ...(dest as Array<unknown>), val ] : [ dest, val ];
+      obj[key] = isArray(dest) ? [ ...(dest), val ] : [ dest, val ];
     }
     else {
       obj[key] = val;
@@ -195,7 +195,7 @@ function iterableToHeaders(header: Iterable<unknown>): Record<string, unknown> {
 }
 
 function buildAccessors(obj: object, header: string): void {
-  const accessorName = utils.toCamelCase(" " + header);
+  const accessorName = toCamelCase(" " + header);
 
   [ "get", "set", "has" ].forEach(methodName => {
     Object.defineProperty(
@@ -263,7 +263,7 @@ class FaxiosHeaders {
       const lHeader = normalizeHeader(_header);
 
       // Header names are stored as own properties, so names that would reach the prototype are skipped.
-      if (!lHeader || utils.isDangerousKey(lHeader)) {
+      if (!lHeader || isDangerousKey(lHeader)) {
         return;
       }
 
@@ -287,14 +287,14 @@ class FaxiosHeaders {
     }
 
     const setHeaders = (headers: object, _rewrite: unknown): void =>
-      utils.forEach(headers, (_value: unknown, _header: unknown) =>
+      forEach(headers, (_value: unknown, _header: unknown) =>
         setHeader(_value, _header as string, _rewrite)
       );
 
-    if (utils.isPlainObject(header) || header instanceof this.constructor) {
+    if (isPlainObject(header) || header instanceof this.constructor) {
       setHeaders(header as object, valueOrRewrite);
     }
-    else if (utils.isString(header)) {
+    else if (isString(header)) {
       header = (header as string).trim();
       if (!isValidHeaderName(header)) {
         setHeaders(parseHeaders(header), valueOrRewrite);
@@ -303,7 +303,7 @@ class FaxiosHeaders {
         setHeader(valueOrRewrite, header, rewrite);
       }
     }
-    else if (utils.isObject(header) && utils.isSafeIterable(header)) {
+    else if (isObject(header) && isSafeIterable(header)) {
       setHeaders(iterableToHeaders(header as Iterable<unknown>), valueOrRewrite);
     }
     else {
@@ -339,11 +339,11 @@ class FaxiosHeaders {
           return parseTokens(value as string);
         }
 
-        if (utils.isFunction(parser)) {
+        if (isFunction(parser)) {
           return (parser as HeaderParser<unknown>).call(this, value, key);
         }
 
-        if (utils.isRegExp(parser)) {
+        if (isRegExp(parser)) {
           return (parser as RegExp).exec(value as string);
         }
 
@@ -402,7 +402,7 @@ class FaxiosHeaders {
       }
     }
 
-    if (utils.isArray(header)) {
+    if (isArray(header)) {
       header.forEach(deleteHeader);
     }
     else {
@@ -443,7 +443,7 @@ class FaxiosHeaders {
     // Lowercased normalized name -> normalized name, for names already kept.
     const kept = new Map<string, string>();
 
-    utils.forEach(this, (value: unknown, _header: unknown) => {
+    forEach(this, (value: unknown, _header: unknown) => {
       const header = _header as string;
       const key = kept.get(header.toLowerCase());
       const clean = typeof value === "string" && values.get(header) === value;
@@ -477,12 +477,12 @@ class FaxiosHeaders {
   toJSON(asStrings?: boolean): Record<string, unknown> {
     const obj: Record<string, unknown> = Object.create(null);
 
-    utils.forEach(this, (value: unknown, _header: unknown) => {
+    forEach(this, (value: unknown, _header: unknown) => {
       const header = _header as string;
       value != null &&
         value !== false &&
         (obj[header] =
-          asStrings && utils.isArray(value)
+          asStrings && isArray(value)
             ? (value as Array<string>).join(", ")
             : value);
     });
@@ -549,6 +549,6 @@ export function defineHeaderShortcuts(prototype: object, headers: ReadonlyArray<
 
 defineHeaderShortcuts(FaxiosHeaders.prototype, ACCESSOR_HEADERS);
 
-utils.freezeMethods(FaxiosHeaders);
+freezeMethods(FaxiosHeaders);
 
 export default FaxiosHeaders;

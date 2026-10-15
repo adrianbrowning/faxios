@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
-import utils from "#src/lib/utils.js";
-
-const { forEach } = utils;
+import { forEach } from "#src/lib/utils.js";
 
 describe("utils::forEach", () => {
   it("should loop over an array", () => {

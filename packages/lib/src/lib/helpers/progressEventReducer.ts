@@ -1,5 +1,5 @@
 import type { FaxiosProgressEvent } from "../types.js";
-import utils from "../utils.js";
+import { isThenable } from "../utils.js";
 import speedometer from "./speedometer.js";
 import throttle from "./throttle.js";
 
@@ -18,11 +18,11 @@ export const progressReporter = (
   let bytesNotified = 0;
   const _speedometer = speedometer(50, 250);
 
-  const notify = (data: FaxiosProgressEvent): void => utils.asap(() => {
+  const notify = (data: FaxiosProgressEvent): void => queueMicrotask(() => {
     try {
       const result = listener(data);
-      if (utils.isThenable(result)) {
-        (result as PromiseLike<unknown>).then(undefined, () => {});
+      if (isThenable(result)) {
+        result.then(undefined, () => {});
       }
     }
     catch {

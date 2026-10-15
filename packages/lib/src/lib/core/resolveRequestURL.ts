@@ -2,7 +2,7 @@
 import buildURL from "../helpers/buildURL.js";
 import { substitutePathParams } from "../helpers/substitutePathParams.js";
 import type { FaxiosRequestConfig, InternalFaxiosRequestConfig } from "../types.js";
-import utils from "../utils.js";
+import { hasOwnProp } from "../utils.js";
 import buildFullPath from "./buildFullPath.js";
 import FaxiosError from "./FaxiosError.js";
 
@@ -21,7 +21,7 @@ import FaxiosError from "./FaxiosError.js";
  */
 export default function resolveRequestURL(config: FaxiosRequestConfig): string {
   const own = (key: string): unknown =>
-    utils.hasOwnProp(config, key)
+    hasOwnProp(config, key)
       ? (config as Record<string, unknown>)[key]
       : undefined;
   const internal = config as InternalFaxiosRequestConfig;

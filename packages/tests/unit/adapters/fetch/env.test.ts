@@ -1,8 +1,6 @@
 import assert from "node:assert";
 import type { AddressInfo } from "node:net";
 import { describe, it, vi } from "vitest";
-import { getFetch } from "#src/lib/adapters/fetch.js";
-import utils from "#src/lib/utils.js";
 import {
   startHTTPServer,
   stopHTTPServer
@@ -13,25 +11,6 @@ describe.runIf(typeof fetch === "function")(
   "supports fetch with nodejs",
   () => {
     describe("env config", () => {
-      it("should fallback to globalThis when utils.global is temporarily undefined", () => {
-        const originalGlobal = utils.global;
-
-        try {
-          (utils as { global: unknown; }).global = undefined;
-
-          assert.doesNotThrow(() =>
-            getFetch({
-              env: {
-                fetch() {},
-              },
-            })
-          );
-        }
-        finally {
-          utils.global = originalGlobal;
-        }
-      });
-
       it("should respect env fetch API configuration", async () => {
         const { data, headers } = await fetchFaxios.get("/", {
           env: {
