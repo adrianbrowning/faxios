@@ -4,61 +4,22 @@
 import CanceledError from "./cancel/CanceledError.js";
 import isCancel from "./cancel/isCancel.js";
 import type { DefineConfig, DefinedEndpoint } from "./core/define.js";
-import Faxios, { childDefaults, ejectMiddleware, useMiddleware } from "./core/Faxios.js";
+import Faxios from "./core/Faxios.js";
 import FaxiosError from "./core/FaxiosError.js";
 import FaxiosHeaders from "./core/FaxiosHeaders.js";
 import mergeConfig from "./core/mergeConfig.js";
 import type { RouteBuilder, RouteConfig } from "./core/route.js";
+import { create, defaultContext } from "./create.js";
+import { createInstance } from "./createInstance.js";
 import defaults from "./defaults/index.js";
 import { VERSION } from "./env/data.js";
-import formDataToJSON from "./helpers/formDataToJSON.js";
+import { all } from "./helpers/all.js";
+import { formToJSON } from "./helpers/formToJSON.js";
 import HttpStatusCode from "./helpers/HttpStatusCode.js";
 import isFaxiosError from "./helpers/isFaxiosError.js";
 import toFormData from "./helpers/toFormData.js";
 import type { CreateFaxiosDefaults, FaxiosDefaults, FaxiosHeaderValue, FaxiosMiddleware, FaxiosPluginArgument, FaxiosRequestConfig, FaxiosResponse, HeadersDefaults, Method, ResponseTypedConfig, SchemaConfig, StringLiteralsOrString } from "./types.js";
 import type { StandardSchemaV1 } from "./types/standard-schema.js";
-import { extend, isHTMLForm } from "./utils.js";
-
-/**
- * Create an instance of Faxios
- *
- * @param {Object} defaultConfig The default config for the instance
- *
- * @returns {Faxios} A new instance of Faxios
- */
-function createInstance(defaultConfig: FaxiosRequestConfig): FaxiosInstance {
-  const context = new Faxios(defaultConfig);
-  const instance = (Faxios.prototype.request as (...args: Array<unknown>) => unknown).bind(context) as unknown as FaxiosInstance;
-
-  // Copy faxios.prototype to instance. The instance is a callable populated
-  // dynamically here; extend mutates it via own-key copy.
-  const target = instance as unknown as Record<string, unknown>;
-  extend(target, Faxios.prototype, context, { allOwnKeys: true });
-
-  // Copy context to instance
-  extend(target, context, null, { allOwnKeys: true });
-
-  // use() and eject() aren't Faxios members, so the instance gets them here. use() returns the
-  // callable instance for chaining. At runtime it only registers the middleware; the plugin rules
-  // live in FaxiosInstance["use"], so the cast is the single place the phantom TOpts/TCaps
-  // refinement meets the untyped registry.
-  const use = (middleware: Parameters<typeof useMiddleware>[1]): FaxiosInstance => {
-    useMiddleware(context, middleware);
-    return instance;
-  };
-  instance.use = use as FaxiosInstance["use"];
-  instance.eject = (middleware: unknown) => {
-    ejectMiddleware(context, middleware);
-  };
-
-  // Factory for creating new instances. Middleware isn't copied, so neither are the defaults for
-  // its plugins' options.
-  instance.create = function create(instanceConfig?: CreateFaxiosDefaults): FaxiosInstance {
-    return createInstance(childDefaults(context, instanceConfig));
-  };
-
-  return instance;
-}
 
 // Keys of TNeed that THave lacks, or provides with an incompatible type.
 type MissingCapabilities<THave, TNeed> = {
@@ -262,8 +223,10 @@ export type FaxiosStatic = FaxiosInstance & {
   VERSION: typeof VERSION;
 };
 
-// Create the default instance to be exported; the statics are attached below.
-const faxios = createInstance(defaults) as FaxiosStatic;
+// Create the default instance to be exported; the statics are attached below. It dispatches
+// through defaultContext, so the named `create` export inherits from it as `faxios.create` does.
+const faxios = createInstance(defaults, defaultContext) as FaxiosStatic;
+faxios.create = create;
 
 // Expose Faxios class to allow class inheritance
 faxios.Faxios = Faxios;
@@ -280,9 +243,7 @@ faxios.FaxiosError = FaxiosError;
 faxios.Cancel = faxios.CanceledError;
 
 // Expose all/spread
-faxios.all = async function all(promises: Array<Promise<unknown>>): Promise<Array<unknown>> {
-  return Promise.all(promises);
-};
+faxios.all = all;
 
 faxios.spread = (fn: (...args: Array<unknown>) => unknown) => (arr: Array<unknown>) => fn(...arr);
 
@@ -294,10 +255,7 @@ faxios.mergeConfig = mergeConfig;
 
 faxios.FaxiosHeaders = FaxiosHeaders;
 
-faxios.formToJSON = (thing: unknown): unknown => formDataToJSON(isHTMLForm(thing) ? ((): unknown => {
-  const GlobalFormData = (globalThis as Record<string, unknown>)["FormData"] as (new (el?: unknown) => unknown) | undefined;
-  return GlobalFormData ? new GlobalFormData(thing) : thing;
-})() : thing);
+faxios.formToJSON = formToJSON;
 
 faxios.HttpStatusCode = HttpStatusCode;
 

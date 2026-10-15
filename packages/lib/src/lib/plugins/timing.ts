@@ -1,7 +1,7 @@
 // @ts-self-types="./timing.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import { resolveRequestURL } from "../../index.js";
 import type { FaxiosContext, FaxiosPlugin } from "../../index.js";
+import resolveRequestURL from "../core/resolveRequestURL.js";
 import { definePlugin } from "./definePlugin.js";
 import { own } from "./shared.js";
 

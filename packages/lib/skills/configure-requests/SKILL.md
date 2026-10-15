@@ -354,7 +354,7 @@ value, because it is the only value typed with the plugin's request options (suc
   query string and keeps `{param}` placeholders. `attempt` is `ctx.attempt`: 1 without `retry`.
   Install it before `retry` for one event per call, after it for one event per attempt.
 - To write your own plugin, use `definePlugin` from `@gcmdev/faxios/plugins`. The built-in plugins
-  import only `@gcmdev/faxios` and `@gcmdev/faxios/plugins`, so yours can do what they do. The same
+  use only what `@gcmdev/faxios` and `@gcmdev/faxios/plugins` export, so yours can do what they do. The same
   [plugins](references/plugins.md) reference covers authoring.
 
 ### Customise the transport through fetch, not adapters

@@ -1,7 +1,9 @@
 // @ts-self-types="./retry.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import { CanceledError, FaxiosError, isCancel } from "../../index.js";
 import type { FaxiosContext, FaxiosNext, FaxiosPlugin, FaxiosRequestConfig, FaxiosResponse, InternalFaxiosRequestConfig, Method } from "../../index.js";
+import CanceledError from "../cancel/CanceledError.js";
+import isCancel from "../cancel/isCancel.js";
+import FaxiosError from "../core/FaxiosError.js";
 import { definePlugin } from "./definePlugin.js";
 import { assertOptions, isBoolean, isFunction, own } from "./shared.js";
 

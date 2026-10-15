@@ -1,6 +1,7 @@
 import type { Linter } from "eslint";
 import tseslint from "typescript-eslint";
 import sharedConfig from "../../sharedConfig/eslint.config.ts";
+import { pluginImports } from "./eslint-rules/plugin-imports.ts";
 import removeSignalListeners from "./eslint-rules/remove-signal-listeners.ts";
 
 // AGENTS.md: remove every abort listener on settlement or cancellation.
@@ -15,19 +16,7 @@ export const localRules: Array<Linter.Config> = [
       "faxios/remove-signal-listeners": "error",
     },
   },
-  // CODING_STANDARDS: built-in plugins use only what a third-party plugin can import, the package
-  // root, plus each other. definePlugin.ts is the `@gcmdev/faxios/plugins` entry point.
-  {
-    files: [ "src/lib/plugins/**/*.ts" ],
-    rules: {
-      "no-restricted-imports": [ "error", {
-        patterns: [{
-          regex: "^(?!\\.\\./\\.\\./index\\.js$|\\./[^/]+\\.js$)",
-          message: "Built-in plugins import only the package root (\"../../index.js\") and files in plugins/.",
-        }],
-      }],
-    },
-  },
+  pluginImports,
   {
     files: [ "**/*.js", "**/*.cjs", "**/*.mjs" ],
     rules: {

@@ -1,8 +1,6 @@
 // @ts-self-types="./index.d.ts"
 /* eslint-disable no-barrel-files/no-barrel-files */
 import faxios from "./lib/faxios.ts";
-import type { FaxiosInstance, FaxiosStatic } from "./lib/faxios.ts";
-import type { CreateFaxiosDefaults } from "./lib/types.ts";
 
 // Static re-exports so the emitted .d.ts references source modules.
 // zshy rewrites .ts -> .js for static import/export, but NOT for inline
@@ -20,6 +18,11 @@ export { default as HttpStatusCode } from "./lib/helpers/HttpStatusCode.ts";
 export { default as mergeConfig } from "./lib/core/mergeConfig.ts";
 export { default as resolveRequestURL } from "./lib/core/resolveRequestURL.ts";
 export { VERSION } from "./lib/env/data.ts";
+// Standalone modules that faxios.ts also attaches to the default instance. Reading them off the
+// instance here would keep the whole library in every bundle that imports any named export.
+export { all } from "./lib/helpers/all.ts";
+export { formToJSON } from "./lib/helpers/formToJSON.ts";
+export { create } from "./lib/create.ts";
 
 export type { FaxiosInstance, FaxiosStatic } from "./lib/faxios.ts";
 export type { StandardSchemaV1 } from "./lib/types/standard-schema.ts";
@@ -46,12 +49,5 @@ export type {
   RawFaxiosRequestHeaders,
   ResponseType
 } from "./lib/types.ts";
-
-// Instance-synthesized members (no 1:1 source module). Types are self-contained
-// (all/formToJSON) or annotated with statically imported types (create), so no
-// inline import() is emitted. Runtime values are the same references as on the instance.
-export const all: FaxiosStatic["all"] = faxios.all;
-export const formToJSON: FaxiosStatic["formToJSON"] = faxios.formToJSON;
-export const create: (instanceConfig?: CreateFaxiosDefaults) => FaxiosInstance = faxios.create;
 
 export { faxios as default };

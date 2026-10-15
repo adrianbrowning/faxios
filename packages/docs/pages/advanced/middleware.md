@@ -279,7 +279,7 @@ Requests that are already running keep the middleware and capabilities they star
 
 ## Writing a plugin
 
-A plugin is middleware with a name, plus optional capabilities it provides to other plugins. Build one with `definePlugin`, the only export of `@gcmdev/faxios/plugins`. The built-in plugins import only `@gcmdev/faxios` and `@gcmdev/faxios/plugins`, so a plugin of your own can do anything they do:
+A plugin is middleware with a name, plus optional capabilities it provides to other plugins. Build one with `definePlugin`, the only export of `@gcmdev/faxios/plugins`. The built-in plugins use only what `@gcmdev/faxios` and `@gcmdev/faxios/plugins` export, so a plugin of your own can do anything they do:
 
 ```ts
 import faxios from "@gcmdev/faxios";

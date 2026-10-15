@@ -3,15 +3,15 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "5953720fd567a0d11b60fc22dffe359f9126eef41dbeb6b4fd83e57c1a08bcb4",
+      "fingerprint": "a97f8feaea391c207c3ff34ae74a2aeab147dc94eb2a893559c37f845e53b13e",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "packages/lib/package.json": "220d8b3dc5040c04c1c2b2a4a1423ae6560988427c0548b7bae8e29186de5732",
-        "packages/lib/skills/configure-requests/SKILL.md": "971dd4e477e081e7fa948cbf1aba33a9bca83aa1b0193688398248c8a255f987",
+        "packages/lib/skills/configure-requests/SKILL.md": "4a7d6c1df0e6a2333f98ba9672a5db7048bdf7a18f9c1cd699b13efa9afaa12b",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
-        "packages/lib/src/index.ts": "44edf51b3bbdf494fd213b55e6e377866e18146c47fc443a3d3d7426a3d685b7",
-        "packages/lib/src/lib/adapters/fetch.ts": "7d7d6d2711f35ad1dc4968bb97791856a4fab01236b9bf8193d29b6b40c01ba3",
+        "packages/lib/src/index.ts": "4b67a7cc0caa4ada9bf11b202b7cf0486e662e42b6b26a3e53bfb726bda546e2",
+        "packages/lib/src/lib/adapters/fetch.ts": "4dd3cbcda7bcea6591c8e840afca4dcdaaeb288f8834b687c91ad9145745aa6b",
         "packages/lib/src/lib/core/Faxios.ts": "b713ecadc80cc084228967904ab5801bdaf9335a34c68b1be1dc7a3f1675cc07",
         "packages/lib/src/lib/core/FaxiosError.ts": "4299cf8fd90ffb0e782e922879ebe3b13b97778f47de2d9e8d4dee31fb3f9554",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
@@ -19,15 +19,15 @@
         "packages/lib/src/lib/core/dispatchRequest.ts": "4564c956ec0823acec07d1581689a81c2c134fd9b3b75f8c74e7c889090f9139",
         "packages/lib/src/lib/core/mergeConfig.ts": "e3dc3f5f52f57381163e506acdc52ff567e35104a7d607160da853e2510c7672",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "e0c7ab60ce2148e5ce388f0200a0339fcff0c22615e651f6c36e4bbfff33e857",
+        "packages/lib/src/lib/faxios.ts": "acb8eab7a7b0598967f93e67ff0993239d19b7b1f988cf2d465f7882b5584036",
         "packages/lib/src/lib/helpers/composeSignals.ts": "ccd69c28a17fc485975de89502ff80d075e919fef437d0afb8460ec0631ef9ef",
-        "packages/lib/src/lib/plugins/authBearer.ts": "14db38066e32d09780067881e10afcdeb55414a3faa459dfc839aa0e04aa1225",
+        "packages/lib/src/lib/plugins/authBearer.ts": "30914c957cc2e19b94a677521fd3555d33cf9a4df59127853e21b72877f2cda3",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
-        "packages/lib/src/lib/plugins/forwardTo.ts": "23e726af7fc75358fd80eb140a3189b699b3be47787a8714e6b043a8291acb25",
-        "packages/lib/src/lib/plugins/retry.ts": "734d82655b3a61e35b437f1e1c6112ffc804dcc3608ac4de66edbf95da912aaa",
-        "packages/lib/src/lib/plugins/timing.ts": "c845896855141244cf672d5224327d774ecc9c3e68b38544a4c6c01ec18ca358",
+        "packages/lib/src/lib/plugins/forwardTo.ts": "22c20f990feac10f744738cc5a34b32fa5583f115210aa64dbecd7b26fc2da7c",
+        "packages/lib/src/lib/plugins/retry.ts": "f3a67c455d37eca5c4534528bdea8e12974f223af7e107436e8c3f8d4e003ec7",
+        "packages/lib/src/lib/plugins/timing.ts": "e29c1a110d73273227bee8e0aebc8cd55b5c97e5300544d4a78e024b7e82a836",
         "packages/lib/src/lib/types.ts": "4ca51da7f4771a5544ba73c7b7c141636f95498997cbca8f834f3b4e8c3918b5",
-        "packages/tests/unit/api.test.ts": "d6e131634ba5ee160fe06af49528455d6610fb85316e17104e13c643a1581c7b",
+        "packages/tests/unit/api.test.ts": "0ba379110ac2c0b8d538f4c7ea15f03a86c353ef0745bc3ba0de4d86bff6c814",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "f73ea84b082e8d00a3b1741f87769332a9b2eca440f20e4742f6c7338ad05902",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
@@ -35,26 +35,26 @@
         "packages/tests/unit/plugins/retry.test.ts": "bb88c03b5c3875b9bcef3c81d3d89ef4f7241040c5338f8af991c332c5e69949",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
       "outcome": "updated",
-      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
       "evidence": [
-        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/helpers/composeSignals.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/tests/unit/api.test.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "76161a8ea9b49e0d14eea495033282eb4a83e56ff6805c5d72142974eb68c8c8",
+      "fingerprint": "43aa5932eaa19649b4f10ccfccbf231c606c43d45acc8cdfbb0ca2df09ebf9d5",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
         "packages/lib/package.json": "220d8b3dc5040c04c1c2b2a4a1423ae6560988427c0548b7bae8e29186de5732",
-        "packages/lib/skills/configure-requests/SKILL.md": "971dd4e477e081e7fa948cbf1aba33a9bca83aa1b0193688398248c8a255f987",
+        "packages/lib/skills/configure-requests/SKILL.md": "4a7d6c1df0e6a2333f98ba9672a5db7048bdf7a18f9c1cd699b13efa9afaa12b",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
-        "packages/lib/src/index.ts": "44edf51b3bbdf494fd213b55e6e377866e18146c47fc443a3d3d7426a3d685b7",
-        "packages/lib/src/lib/adapters/fetch.ts": "7d7d6d2711f35ad1dc4968bb97791856a4fab01236b9bf8193d29b6b40c01ba3",
+        "packages/lib/src/index.ts": "4b67a7cc0caa4ada9bf11b202b7cf0486e662e42b6b26a3e53bfb726bda546e2",
+        "packages/lib/src/lib/adapters/fetch.ts": "4dd3cbcda7bcea6591c8e840afca4dcdaaeb288f8834b687c91ad9145745aa6b",
         "packages/lib/src/lib/core/Faxios.ts": "b713ecadc80cc084228967904ab5801bdaf9335a34c68b1be1dc7a3f1675cc07",
         "packages/lib/src/lib/core/FaxiosError.ts": "4299cf8fd90ffb0e782e922879ebe3b13b97778f47de2d9e8d4dee31fb3f9554",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
@@ -62,15 +62,15 @@
         "packages/lib/src/lib/core/dispatchRequest.ts": "4564c956ec0823acec07d1581689a81c2c134fd9b3b75f8c74e7c889090f9139",
         "packages/lib/src/lib/core/mergeConfig.ts": "e3dc3f5f52f57381163e506acdc52ff567e35104a7d607160da853e2510c7672",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
-        "packages/lib/src/lib/faxios.ts": "e0c7ab60ce2148e5ce388f0200a0339fcff0c22615e651f6c36e4bbfff33e857",
+        "packages/lib/src/lib/faxios.ts": "acb8eab7a7b0598967f93e67ff0993239d19b7b1f988cf2d465f7882b5584036",
         "packages/lib/src/lib/helpers/composeSignals.ts": "ccd69c28a17fc485975de89502ff80d075e919fef437d0afb8460ec0631ef9ef",
-        "packages/lib/src/lib/plugins/authBearer.ts": "14db38066e32d09780067881e10afcdeb55414a3faa459dfc839aa0e04aa1225",
+        "packages/lib/src/lib/plugins/authBearer.ts": "30914c957cc2e19b94a677521fd3555d33cf9a4df59127853e21b72877f2cda3",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
-        "packages/lib/src/lib/plugins/forwardTo.ts": "23e726af7fc75358fd80eb140a3189b699b3be47787a8714e6b043a8291acb25",
-        "packages/lib/src/lib/plugins/retry.ts": "734d82655b3a61e35b437f1e1c6112ffc804dcc3608ac4de66edbf95da912aaa",
-        "packages/lib/src/lib/plugins/timing.ts": "c845896855141244cf672d5224327d774ecc9c3e68b38544a4c6c01ec18ca358",
+        "packages/lib/src/lib/plugins/forwardTo.ts": "22c20f990feac10f744738cc5a34b32fa5583f115210aa64dbecd7b26fc2da7c",
+        "packages/lib/src/lib/plugins/retry.ts": "f3a67c455d37eca5c4534528bdea8e12974f223af7e107436e8c3f8d4e003ec7",
+        "packages/lib/src/lib/plugins/timing.ts": "e29c1a110d73273227bee8e0aebc8cd55b5c97e5300544d4a78e024b7e82a836",
         "packages/lib/src/lib/types.ts": "4ca51da7f4771a5544ba73c7b7c141636f95498997cbca8f834f3b4e8c3918b5",
-        "packages/tests/unit/api.test.ts": "d6e131634ba5ee160fe06af49528455d6610fb85316e17104e13c643a1581c7b",
+        "packages/tests/unit/api.test.ts": "0ba379110ac2c0b8d538f4c7ea15f03a86c353ef0745bc3ba0de4d86bff6c814",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "f73ea84b082e8d00a3b1741f87769332a9b2eca440f20e4742f6c7338ad05902",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
@@ -78,11 +78,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "bb88c03b5c3875b9bcef3c81d3d89ef4f7241040c5338f8af991c332c5e69949",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
       "outcome": "updated",
-      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
       "evidence": [
-        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/mergeConfig.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/helpers/composeSignals.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/lib/src/lib/plugins/forwardTo.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/tests/unit/api.test.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
       ]
     },
     "source:knip.json": {
@@ -256,15 +256,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "68b5496a1b3d4ebb59b7eaf569d93704af7e79b6c587a2934b5c95e1a29117b4",
+      "fingerprint": "02a88d0946ba03b9f331e7c0fc6e50b1c9f78dd06c1d8cf89a215894b587d840",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "e638f8299d61a696f91257e311a080cf74fb144de82c6ba9afad477e2b529b13"
+        "packages/docs/pages/advanced/middleware.md": "1c39d37a0a148c71a84bcd6a0150ac1a7b55a49a70169911ce96ecc047226786"
       },
-      "head": "7441ba80d614af467b190486de40ddf207be5a85",
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
       "outcome": "updated",
-      "reason": "Skill now states create() child header precedence, that plugin option defaults are not inherited and are removed on eject, and that params/env merge one level deep",
+      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at fa7ce8ce8e9082ce5828ac74667103547b9a6aaa"
+        "Changed: packages/docs/pages/advanced/middleware.md at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
@@ -1881,15 +1881,15 @@
       ]
     },
     "source:.github/workflows/ci.yml": {
-      "fingerprint": "bdcbb6370c8a5aea9c479ab30f5c92278eac43d717d9ad114f290be5d373581d",
+      "fingerprint": "8207c5c22547fd73ba8a8fea6f5bbe7a3068fc6f919514684f31b0ab05635a39",
       "snapshot": {
-        ".github/workflows/ci.yml": "00f7c984d1a35f0b9b3457b50a304201697da879835063cfb038d413fe162c3c"
+        ".github/workflows/ci.yml": "4445ec5304c888bbe5596d9e86066c00b9e7655705dcaf629d03dca663a42179"
       },
-      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
       "outcome": "no-change",
-      "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
+      "reason": "Review fixes: plugin import lint limited to root-exported names, CI builds before tests, bump text; the configure-requests skill already describes plugin imports correctly",
       "evidence": [
-        "Changed: .github/workflows/ci.yml at 03009f7a217f136a32ed7d58306f67141aae2805"
+        "Changed: .github/workflows/ci.yml at c7d55ccc0029b173ec5fa125c00be93e2a1c2977"
       ]
     },
     "source:.github/workflows/knip.yml": {
@@ -2168,15 +2168,15 @@
       ]
     },
     "source:packages/lib/eslint.config.ts": {
-      "fingerprint": "94f5c01adb8e8a5b0453afff77fbf76b3cc7d9f881f05b073cb07c634080ccf7",
+      "fingerprint": "7fd0a90286ace7413aa34d80c3887275995dc0a3df1b3f3cd2d6fbf5393ccdd7",
       "snapshot": {
-        "packages/lib/eslint.config.ts": "7c87a76931acae679a1a12e46563e26f14f9019a3620546170056403f222ef88"
+        "packages/lib/eslint.config.ts": "cc36934032fd1b43c55d9c70940c0637e6a5a01307cc4804c83b7d36a3242ada"
       },
-      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
-      "outcome": "updated",
-      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "outcome": "no-change",
+      "reason": "Review fixes: plugin import lint limited to root-exported names, CI builds before tests, bump text; the configure-requests skill already describes plugin imports correctly",
       "evidence": [
-        "Changed: packages/lib/eslint.config.ts at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+        "Changed: packages/lib/eslint.config.ts at c7d55ccc0029b173ec5fa125c00be93e2a1c2977"
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
@@ -3214,17 +3214,15 @@
       ]
     },
     "source:.github/workflows/bundle-size.yml": {
-      "fingerprint": "4c6996de580612f8c21374daa23a811c6c195104ed1c7728eab55c43dbf8bb33",
+      "fingerprint": "43cd1f7b5d4193bb7f678fcb893acf42758aa652b3bc6d1b752eed5b83c9ee7d",
       "snapshot": {
-        ".github/workflows/bundle-size.yml": "da2c7951d69f9aa5d84df2a8cd042040788ffbf09b82d699039697d4f360b022"
+        ".github/workflows/bundle-size.yml": "dcad5c03b4941bb6d78ab9a86980d7546c29f1d33298caf3bbf9f03d4a5e9b14"
       },
-      "head": "fd7c0cdffc209765a9d68c03ebc4e8a7b43462b1",
-      "outcome": "out-of-scope",
-      "reason": "pnpm/action-setup no longer gets `version: 10`; the version comes from `packageManager: pnpm@10.34.5` in the root package.json (both set made the action fail with 'Multiple versions of pnpm specified' on PR #196). Pin comment corrected to v6.1.0, the tag of ea17c68. CI only; not library API.",
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "outcome": "updated",
+      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
       "evidence": [
-        "git diff HEAD -- .github/workflows/bundle-size.yml",
-        "PR #196 CI log: 'Error: Multiple versions of pnpm specified: version 10 in the GitHub Action config … pnpm@10.34.5 in the package.json'.",
-        "zizmor 1.30.1 --offline: no new findings for this file."
+        "Changed: .github/workflows/bundle-size.yml at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
       ]
     },
     "source:.github/workflows/cache.yml": {
@@ -4142,15 +4140,15 @@
       ]
     },
     "source:CODING_STANDARDS.md": {
-      "fingerprint": "8cb50d33c604325ac3246b64f4b69704cc386ed2a76cd6267d8dbeef1ec16e17",
+      "fingerprint": "96f1d4c602189a7bad7d028997e72e3f2e789af709ec6b678bcd6c71b23885d6",
       "snapshot": {
-        "CODING_STANDARDS.md": "86f955e3cf26b5aee656d039a08d403766a261eac267926e0dff6e6ba1fae764"
+        "CODING_STANDARDS.md": "7d7098df4ac1bf972cca44a8cbf73384bea2858f4aface25d7095f3ee29b0349"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
       "outcome": "updated",
-      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
       "evidence": [
-        "Changed: CODING_STANDARDS.md at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+        "Changed: CODING_STANDARDS.md at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
       ]
     },
     "source:docs/agents/issue-tracker.md": {
@@ -4598,15 +4596,15 @@
       ]
     },
     "source:.bumpy/plugin-attempt-api.md": {
-      "fingerprint": "1e4343b5ad9293614f5ad04b892ac6993fd17b57503d2684509430e2fc0f1e32",
+      "fingerprint": "ae66cf5564315d4a984fd4c68f6aa3f894015e5c6c2e22e7c332023fb0a8e80d",
       "snapshot": {
-        ".bumpy/plugin-attempt-api.md": "c4035637b2c32d9dea2e132450b6d79796c71508e629302787a85a2b5d08547e"
+        ".bumpy/plugin-attempt-api.md": "fec500292ae365bce2fae4db8cec3d9ea7b786a4a71ad3b3318a0aa6128f354b"
       },
-      "head": "1f97712f0c2b15e3e294b68ec9439755aa454651",
-      "outcome": "updated",
-      "reason": "#238: the skill now documents ctx.attempt and that built-in plugins use only public entry points.",
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "outcome": "no-change",
+      "reason": "Review fixes: plugin import lint limited to root-exported names, CI builds before tests, bump text; the configure-requests skill already describes plugin imports correctly",
       "evidence": [
-        "Changed: .bumpy/plugin-attempt-api.md at 1f97712f0c2b15e3e294b68ec9439755aa454651"
+        "Changed: .bumpy/plugin-attempt-api.md at c7d55ccc0029b173ec5fa125c00be93e2a1c2977"
       ]
     },
     "source:packages/lib/src/lib/plugins/attempt.ts": {
@@ -4622,15 +4620,15 @@
       ]
     },
     "source:packages/lib/src/lib/plugins/shared.ts": {
-      "fingerprint": "89c0a218b76571ef382acd7d9ca3e226fde305d25989c7ea50b950a62996e0a5",
+      "fingerprint": "5800e4bb98217b466e85ecb05c455518a9484ec6c304123e3d6ed309b10eda8c",
       "snapshot": {
-        "packages/lib/src/lib/plugins/shared.ts": "df5c96f11cf8047253c27209310fbb7244c0821d2a8824f0bf6263ec12bd8616"
+        "packages/lib/src/lib/plugins/shared.ts": "d557f4de1c6ad47d281199dea3d77b528af3db38a5aa1575cf924c817c1cb8c6"
       },
-      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
       "outcome": "updated",
-      "reason": "Skill now teaches resolveRequestURL and ctx.instanceBaseURL for plugins, the instance-baseURL authBearer origin rule, and that a URL is absolute only with a scheme and //",
+      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
       "evidence": [
-        "Changed: packages/lib/src/lib/plugins/shared.ts at 06608f4bf5126bc949bde148a37bb3e85fc98041"
+        "Changed: packages/lib/src/lib/plugins/shared.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/middleware-index.ts": {
@@ -6347,6 +6345,126 @@
       "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
       "evidence": [
         "Changed: packages/tests/unit/core/settle.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+      ]
+    },
+    "source:.bumpy/copper-merry-jay.md": {
+      "fingerprint": "82e3a5d8b7395c3513abfe877e3a0e79b3dbe1db7849f539ded3baf2901bee90",
+      "snapshot": {
+        ".bumpy/copper-merry-jay.md": "cf037661d26d3e2422ce5a65e784200d3a7df69adbcdbfce88a01013c41e782b"
+      },
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "outcome": "no-change",
+      "reason": "Review fixes: plugin import lint limited to root-exported names, CI builds before tests, bump text; the configure-requests skill already describes plugin imports correctly",
+      "evidence": [
+        "Changed: .bumpy/copper-merry-jay.md at c7d55ccc0029b173ec5fa125c00be93e2a1c2977"
+      ]
+    },
+    "source:packages/lib/eslint-rules/plugin-imports.ts": {
+      "fingerprint": "4d83005fcd45b36fa369db1442a434ebef723e679b870adc257b6b0ad5d82693",
+      "snapshot": {
+        "packages/lib/eslint-rules/plugin-imports.ts": "de42489b49214964ec768c2a3f34d29f9b4e30c24eaaec79abfbab4071ab0bd7"
+      },
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "outcome": "no-change",
+      "reason": "Review fixes: plugin import lint limited to root-exported names, CI builds before tests, bump text; the configure-requests skill already describes plugin imports correctly",
+      "evidence": [
+        "Changed: packages/lib/eslint-rules/plugin-imports.ts at c7d55ccc0029b173ec5fa125c00be93e2a1c2977"
+      ]
+    },
+    "source:packages/lib/src/lib/create.ts": {
+      "fingerprint": "b7724f46722946e03010925e8f4a818e4527bef6b69ca91dfef99bf9dc48e798",
+      "snapshot": {
+        "packages/lib/src/lib/create.ts": "d5cc57324c70e3cb8361f194194b3c588c1add817fe95ff5d2ccd017ce42138f"
+      },
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "outcome": "updated",
+      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
+      "evidence": [
+        "Changed: packages/lib/src/lib/create.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
+      ]
+    },
+    "source:packages/lib/src/lib/createInstance.ts": {
+      "fingerprint": "944988ee9a84455b06d9ffb0be06b81b9b09af4026708c4abefb40a8fcaa6040",
+      "snapshot": {
+        "packages/lib/src/lib/createInstance.ts": "af79036d1e4a96c836022c4e3e95aaee0179a0391804ac2866aeb6829f4d437e"
+      },
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "outcome": "updated",
+      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
+      "evidence": [
+        "Changed: packages/lib/src/lib/createInstance.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/all.ts": {
+      "fingerprint": "28689daec480e3da9ca83f7f70bf3d940251f5c8a6eed6429dedd0600dbcba4b",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/all.ts": "15f5f1ca30da899230c74c7c03d6d93fb7311305661bacaa0e7a127d6f0edb1d"
+      },
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "outcome": "updated",
+      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/all.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
+      ]
+    },
+    "source:packages/lib/src/lib/helpers/formToJSON.ts": {
+      "fingerprint": "3502f2b0b359e480504036685a427924128286b01b394be821c44d0668061167",
+      "snapshot": {
+        "packages/lib/src/lib/helpers/formToJSON.ts": "55a8b060edfed368eea2d17141350e1ef489723bd46c15da86582054aee4bc8e"
+      },
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "outcome": "updated",
+      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
+      "evidence": [
+        "Changed: packages/lib/src/lib/helpers/formToJSON.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
+      ]
+    },
+    "source:packages/tests/scripts/bundle-size.ts": {
+      "fingerprint": "975cddad6aacd123dd809b8406693656dec76127084baf12b7512cca009a52be",
+      "snapshot": {
+        "packages/tests/scripts/bundle-size.ts": "2152e1e633bc065bb30084b2b33cdd736449aeccfa5b4caad63ca89904276341"
+      },
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "outcome": "updated",
+      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
+      "evidence": [
+        "Changed: packages/tests/scripts/bundle-size.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
+      ]
+    },
+    "source:packages/tests/unit/adapters/fetch/lazyProbe.test.ts": {
+      "fingerprint": "ded7ff6e27b998ae2cd84aac605ce7514c9ee11e18df7c6e350f08400bc0f587",
+      "snapshot": {
+        "packages/tests/unit/adapters/fetch/lazyProbe.test.ts": "d23525ace03ac8e41971186d55fdfb59fe3e88fdc09bd9e29f303dfbb96afa86"
+      },
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "outcome": "updated",
+      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/adapters/fetch/lazyProbe.test.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
+      ]
+    },
+    "source:packages/tests/unit/eslint-rules/pluginImports.test.ts": {
+      "fingerprint": "3fd8536b555f20bc7b48f5e2cee8ae7f0022fab1501f88d100a0babb6a12c0d7",
+      "snapshot": {
+        "packages/tests/unit/eslint-rules/pluginImports.test.ts": "7adde3f340be79de60d9e9ba2c8c29dbba3a471f21d3e732b702286a0ba990e0"
+      },
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "outcome": "no-change",
+      "reason": "Review fixes: plugin import lint limited to root-exported names, CI builds before tests, bump text; the configure-requests skill already describes plugin imports correctly",
+      "evidence": [
+        "Changed: packages/tests/unit/eslint-rules/pluginImports.test.ts at c7d55ccc0029b173ec5fa125c00be93e2a1c2977"
+      ]
+    },
+    "source:packages/tests/unit/scripts/bundleSize.test.ts": {
+      "fingerprint": "65bf2d2db798dbf98f15d087ab4391cdd3baf0aa6ebab32926a025bf4038c544",
+      "snapshot": {
+        "packages/tests/unit/scripts/bundleSize.test.ts": "6876ac68a02bf90c52eb3f87b5aa3520bc9adbaaafd0dae26684c1da50e0706c"
+      },
+      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "outcome": "updated",
+      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
+      "evidence": [
+        "Changed: packages/tests/unit/scripts/bundleSize.test.ts at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
       ]
     }
   }
