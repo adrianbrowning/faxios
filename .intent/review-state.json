@@ -3,21 +3,26 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "66f7b74c0d9506e965abe680f91ee88142624f29c892ecdb050efc9ac9214b11",
+      "fingerprint": "b887d97ffebe83cfaf3296e1a442961b846d757179878b04ccda2a649c41124c",
       "snapshot": {
         "MIGRATION_GUIDE.md": "78321da3eb997f0ee170b4f78177bd21f664549b3d9f060d06a3d5ebff9a1367",
         "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
-        "packages/lib/skills/configure-requests/SKILL.md": "c58a1472c5c7ccd52c227480425c8bdf6450e004aea08fcb957f78e9cc5a2627",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
+        "packages/lib/skills/configure-requests/SKILL.md": "4504b574b0255a1a15f4ce7560a9c3730e95c40ade7c89a2ec0b1c5a26f0f2de",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "1e0cd5af74a973acf734e72a6ad967e6d18f44f591ebce1a6cab60a564b88b2f",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
         "packages/lib/src/index.ts": "213ce7f2ff6d1ae0bdfd7a08c32649ca82abf59c5320c6357b0e1b7fa29092cb",
         "packages/lib/src/lib/adapters/fetch.ts": "99f1427e4b7650d91cc82683997b8dd40dcab9387b738e8761ced56b024ae99d",
         "packages/lib/src/lib/core/Faxios.ts": "7a88a56adebd77541e6271f88ab6cf63138583ccafadb5f6198a37febb16d60d",
         "packages/lib/src/lib/core/FaxiosError.ts": "cbc450b2d0d43577f6915639a07bc7d595373d34791e07b2e421d27a9ba98b6d",
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "8b1ca790e583d5d51dc24e7a3d6b9bd306593ee78805bb0bb6fd9112724a36e0",
+        "packages/lib/src/lib/core/assertSignal.ts": "20419441a170629926bc0b980a2bd51f39fd20bfa6ec21172bfedbdcdb19af81",
+        "packages/lib/src/lib/core/assertTimeout.ts": "9dbee014d42508e9aaf23b1e4f1bb72ca3f2151e5deb24a5506d6ea812ef130a",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
         "packages/lib/src/lib/core/define.ts": "ff1f833330fb99385525466abb042b0fde845d4b6a64c05b28ffbd4f7e7a2d91",
         "packages/lib/src/lib/core/dispatchRequest.ts": "4564c956ec0823acec07d1581689a81c2c134fd9b3b75f8c74e7c889090f9139",
         "packages/lib/src/lib/core/mergeConfig.ts": "b5bf3188c622df38513f49fa4468e5eed25467913d00254408fa0eb18d861392",
+        "packages/lib/src/lib/core/requestDeadline.ts": "cb6803d70ca9b4600a32ce580ecef0e609b02fc59de12a51430394bedf54b16d",
+        "packages/lib/src/lib/core/resolveRequestURL.ts": "2c7b6ce093bd2565ae4a417ac2dbda32dd9620ebe496ef2ac2308e14a53ef101",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "ba5e65e6cfaaa2ce03658a4c092569d79cd05551bbf5cbcb4eb4209ac27e4616",
         "packages/lib/src/lib/helpers/composeSignals.ts": "390b71ce73079ec812d066dd0a82bc44decf1e778eea95fbcfa925a9fe168749",
@@ -35,32 +40,37 @@
         "packages/tests/unit/plugins/retry.test.ts": "6135e34294945ae5361ee86060d7253ea8880b1bede31b97f5f044f0bcee77d4",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "head": "762e01c6766df386c2fb67ee89b4ed09b7f8b972",
       "outcome": "updated",
-      "reason": "Skill stable-exports row lists resolveRequestURL (#294 review)",
+      "reason": "#276: skill import table lists /forward-to (checked against package.json exports by packages/tests/scripts/check-skill-exports.ts); library_version 0.2.4; sources add assertRequestConfig, assertSignal, assertTimeout, requestDeadline and resolveRequestURL; ETIMEDOUT cited from requestDeadline.ts; domain_map/skill_spec/skill_tree refreshed and the MIGRATION_GUIDE gap closed (#188); THREATMODEL cites current .ts files and tests; bump file describes the skill change",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md at 5a6463428eedd8be2d29ce376b1c4a2f7145e18d"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/core/assertSignal.ts, packages/lib/src/lib/core/assertTimeout.ts, packages/lib/src/lib/core/requestDeadline.ts, packages/lib/src/lib/core/resolveRequestURL.ts at c6837e153a1f472149917f5556ddd2dba1e4fbc5"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "ed7bccfb92eef731451e34b58e8bedbdae5751f1f7b67153bff1150af0423f6e",
+      "fingerprint": "b377ca5fbe96e10a04f414af1a997879c201e08c998ba3d2f154db9488789b68",
       "snapshot": {
         "MIGRATION_GUIDE.md": "78321da3eb997f0ee170b4f78177bd21f664549b3d9f060d06a3d5ebff9a1367",
-        "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
-        "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
-        "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
+        "_artifacts/domain_map.yaml": "6472bf0fa719fbc9a6bb2fc70343ca2804d53f7a37e185c26930d8bb0283ddfc",
+        "_artifacts/skill_spec.md": "f3684ca03caad063c50220153b6bda6baa88cb9855c4685f3f230e239fc9e4a7",
+        "_artifacts/skill_tree.yaml": "3c8e18a429816ce5d4df460fef8e5c2d5f1ffa570920f422f88c225b8a1a9c64",
         "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
-        "packages/lib/skills/configure-requests/SKILL.md": "c58a1472c5c7ccd52c227480425c8bdf6450e004aea08fcb957f78e9cc5a2627",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "3c7f729e64aac1a8779107361c3db0c383448034d5f4d4cf3cecd4e6b5db903a",
+        "packages/lib/skills/configure-requests/SKILL.md": "4504b574b0255a1a15f4ce7560a9c3730e95c40ade7c89a2ec0b1c5a26f0f2de",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "1e0cd5af74a973acf734e72a6ad967e6d18f44f591ebce1a6cab60a564b88b2f",
         "packages/lib/skills/configure-requests/references/plugins.md": "f4c8b9cde23dad49ff49f63e1c8b8565271cadacea713ce853e7f010aa39fa5a",
         "packages/lib/src/index.ts": "213ce7f2ff6d1ae0bdfd7a08c32649ca82abf59c5320c6357b0e1b7fa29092cb",
         "packages/lib/src/lib/adapters/fetch.ts": "99f1427e4b7650d91cc82683997b8dd40dcab9387b738e8761ced56b024ae99d",
         "packages/lib/src/lib/core/Faxios.ts": "7a88a56adebd77541e6271f88ab6cf63138583ccafadb5f6198a37febb16d60d",
         "packages/lib/src/lib/core/FaxiosError.ts": "cbc450b2d0d43577f6915639a07bc7d595373d34791e07b2e421d27a9ba98b6d",
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "8b1ca790e583d5d51dc24e7a3d6b9bd306593ee78805bb0bb6fd9112724a36e0",
+        "packages/lib/src/lib/core/assertSignal.ts": "20419441a170629926bc0b980a2bd51f39fd20bfa6ec21172bfedbdcdb19af81",
+        "packages/lib/src/lib/core/assertTimeout.ts": "9dbee014d42508e9aaf23b1e4f1bb72ca3f2151e5deb24a5506d6ea812ef130a",
         "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
         "packages/lib/src/lib/core/define.ts": "ff1f833330fb99385525466abb042b0fde845d4b6a64c05b28ffbd4f7e7a2d91",
         "packages/lib/src/lib/core/dispatchRequest.ts": "4564c956ec0823acec07d1581689a81c2c134fd9b3b75f8c74e7c889090f9139",
         "packages/lib/src/lib/core/mergeConfig.ts": "b5bf3188c622df38513f49fa4468e5eed25467913d00254408fa0eb18d861392",
+        "packages/lib/src/lib/core/requestDeadline.ts": "cb6803d70ca9b4600a32ce580ecef0e609b02fc59de12a51430394bedf54b16d",
+        "packages/lib/src/lib/core/resolveRequestURL.ts": "2c7b6ce093bd2565ae4a417ac2dbda32dd9620ebe496ef2ac2308e14a53ef101",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "ba5e65e6cfaaa2ce03658a4c092569d79cd05551bbf5cbcb4eb4209ac27e4616",
         "packages/lib/src/lib/helpers/composeSignals.ts": "390b71ce73079ec812d066dd0a82bc44decf1e778eea95fbcfa925a9fe168749",
@@ -78,11 +88,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "6135e34294945ae5361ee86060d7253ea8880b1bede31b97f5f044f0bcee77d4",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "head": "762e01c6766df386c2fb67ee89b4ed09b7f8b972",
       "outcome": "updated",
-      "reason": "Skill stable-exports row lists resolveRequestURL (#294 review)",
+      "reason": "#276: skill import table lists /forward-to (checked against package.json exports by packages/tests/scripts/check-skill-exports.ts); library_version 0.2.4; sources add assertRequestConfig, assertSignal, assertTimeout, requestDeadline and resolveRequestURL; ETIMEDOUT cited from requestDeadline.ts; domain_map/skill_spec/skill_tree refreshed and the MIGRATION_GUIDE gap closed (#188); THREATMODEL cites current .ts files and tests; bump file describes the skill change",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md at 5a6463428eedd8be2d29ce376b1c4a2f7145e18d"
+        "Changed: _artifacts/domain_map.yaml, _artifacts/skill_spec.md, _artifacts/skill_tree.yaml, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/core/assertSignal.ts, packages/lib/src/lib/core/assertTimeout.ts, packages/lib/src/lib/core/requestDeadline.ts, packages/lib/src/lib/core/resolveRequestURL.ts at c6837e153a1f472149917f5556ddd2dba1e4fbc5"
       ]
     },
     "source:knip.json": {
@@ -1941,15 +1951,15 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "52b691a8bf09f81f8d3748ff734690512d7a49d2b8bb79aff164bd951d9a1325",
+      "fingerprint": "c7c122d541545549eb442f3622443a19eb59c67ea2a59cc9c7576f7e80405f93",
       "snapshot": {
-        "THREATMODEL.md": "3cde85ac19d2d4b18d752d80fbe69e1aec8ab4826fc6fd3e802c1105dfe50810"
+        "THREATMODEL.md": "0022980fe583afae18b0a22cb2bf439900b04e05c4126e112faf0875b760d367"
       },
-      "head": "16004a89cc705910f332129196177c5afcbad839",
+      "head": "762e01c6766df386c2fb67ee89b4ed09b7f8b972",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says a request redact adds to the instance's, config.data on errors is the caller's body, and schema issues keep only message and path keys",
+      "reason": "#276: skill import table lists /forward-to (checked against package.json exports by packages/tests/scripts/check-skill-exports.ts); library_version 0.2.4; sources add assertRequestConfig, assertSignal, assertTimeout, requestDeadline and resolveRequestURL; ETIMEDOUT cited from requestDeadline.ts; domain_map/skill_spec/skill_tree refreshed and the MIGRATION_GUIDE gap closed (#188); THREATMODEL cites current .ts files and tests; bump file describes the skill change",
       "evidence": [
-        "Changed: THREATMODEL.md at 0fd26195c33fab2485de5afef6b316d94f126562"
+        "Changed: THREATMODEL.md at c6837e153a1f472149917f5556ddd2dba1e4fbc5"
       ]
     },
     "source:packages/docs/.vitepress/theme/index.ts": {
@@ -7173,6 +7183,30 @@
       "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
       "evidence": [
         "Changed: packages/tests/docs-examples/sources/package-readme-request.js at 02bc02539714e48c32c881c43720b5d34bb375f7"
+      ]
+    },
+    "source:.bumpy/276-intent-records.md": {
+      "fingerprint": "33f224cb0476c90bf74cbd1037be2324539603265e9aeb4022c54410ca6df977",
+      "snapshot": {
+        ".bumpy/276-intent-records.md": "5c70c1361ac6bce4c7bcad4e72bfaad46fa76301eb8b79d3beffa5324c55e18b"
+      },
+      "head": "762e01c6766df386c2fb67ee89b4ed09b7f8b972",
+      "outcome": "updated",
+      "reason": "#276: skill import table lists /forward-to (checked against package.json exports by packages/tests/scripts/check-skill-exports.ts); library_version 0.2.4; sources add assertRequestConfig, assertSignal, assertTimeout, requestDeadline and resolveRequestURL; ETIMEDOUT cited from requestDeadline.ts; domain_map/skill_spec/skill_tree refreshed and the MIGRATION_GUIDE gap closed (#188); THREATMODEL cites current .ts files and tests; bump file describes the skill change",
+      "evidence": [
+        "Changed: .bumpy/276-intent-records.md at c6837e153a1f472149917f5556ddd2dba1e4fbc5"
+      ]
+    },
+    "source:packages/tests/scripts/check-skill-exports.ts": {
+      "fingerprint": "9244b31b4bb92b2638d67173df8eb454bc6e79ceb7bf1c6df33a578c495a0fcc",
+      "snapshot": {
+        "packages/tests/scripts/check-skill-exports.ts": "1ff55a541f455aafbff578585e93446d3aa50653b9675f728b3648bd1ccc2927"
+      },
+      "head": "762e01c6766df386c2fb67ee89b4ed09b7f8b972",
+      "outcome": "updated",
+      "reason": "#276: skill import table lists /forward-to (checked against package.json exports by packages/tests/scripts/check-skill-exports.ts); library_version 0.2.4; sources add assertRequestConfig, assertSignal, assertTimeout, requestDeadline and resolveRequestURL; ETIMEDOUT cited from requestDeadline.ts; domain_map/skill_spec/skill_tree refreshed and the MIGRATION_GUIDE gap closed (#188); THREATMODEL cites current .ts files and tests; bump file describes the skill change",
+      "evidence": [
+        "Changed: packages/tests/scripts/check-skill-exports.ts at c6837e153a1f472149917f5556ddd2dba1e4fbc5"
       ]
     }
   }

@@ -24,13 +24,13 @@ and stop generating Axios APIs it removed or never verified.
 | # | Mistake | Priority | Source | Cross-skill? |
 | --- | --- | --- | --- | --- |
 | 1 | Using Axios interceptors | HIGH | `packages/tests/unit/api.test.ts` | — |
-| 2 | Passing Axios transport options (`adapter`, `proxy`, `httpAgent`, ...) | HIGH | `src/lib/types.ts`, `MIGRATION_GUIDE.md` | — |
+| 2 | Passing Axios transport options (`adapter`, `proxy`, `httpAgent`, ...) | HIGH | `src/lib/types.ts`, `src/lib/core/assertRequestConfig.ts`, `MIGRATION_GUIDE.md` | — |
 | 3 | Using `CancelToken` | HIGH | `src/lib/cancel/` | — |
-| 4 | Checking `ECONNABORTED` for timeouts | HIGH | `src/lib/helpers/composeSignals.ts` | — |
-| 5 | Absolute URL on a `baseURL` instance | HIGH | `src/lib/core/Faxios.ts`, `src/lib/core/buildFullPath.ts` | — |
+| 4 | Checking `ECONNABORTED` for timeouts | HIGH | `src/lib/core/requestDeadline.ts` | — |
+| 5 | Absolute URL on a `baseURL` instance | HIGH | `src/lib/core/Faxios.ts`, `src/lib/core/resolveRequestURL.ts`, `src/lib/core/buildFullPath.ts` | — |
 | 6 | Importing plugins from the package root | MEDIUM | `packages/lib/package.json` | — |
 | 7 | Calling statics on `create()` instances | MEDIUM | `src/lib/faxios.ts` | — |
-| 8 | Promising upload progress in browsers | MEDIUM | `packages/docs/pages/advanced/fetch-adapter.md` | — |
+| 8 | Promising upload progress in browsers | MEDIUM | `src/lib/adapters/fetch.ts`, `packages/docs/pages/advanced/fetch-adapter.md` | — |
 | 9 | Assuming POST is retried | MEDIUM | `src/lib/plugins/retry.ts` | — |
 | 10 | Downloading a binary body without `responseType` | MEDIUM | `src/lib/adapters/fetch.ts` | — |
 
@@ -52,7 +52,7 @@ and stop generating Axios APIs it removed or never verified.
 | --- | --- | --- |
 | configure-requests | Should `./unsafe/*` subpaths get a documented stability statement? | open |
 | configure-requests | Is Node proxying through `fetchOptions.dispatcher` a supported, tested path? | open |
-| configure-requests | `MIGRATION_GUIDE.md` Fetch-Only section still says Node 18+ and that custom adapters work through `adapter` | open |
+| configure-requests | `MIGRATION_GUIDE.md` Fetch-Only section still says Node 18+ and that custom adapters work through `adapter` | resolved (#188: the guide says Node 24+ and has no `adapter` option) |
 | configure-requests | Intent resolves `@gcmdev/faxios/*` to `src/*` and ignores `exports`, so subpath imports can't be type-checked in SKILL.md | open (upstream) |
 
 ## Recommended Skill File Structure
@@ -76,7 +76,7 @@ and stop generating Axios APIs it removed or never verified.
   references, not separate skills.
 - **Source over docs.** Where `MIGRATION_GUIDE.md` or docs pages contradict source and tests
   (interceptors, Node 18, custom adapters, `onUploadProgress` removed), the skill follows source and
-  tests.
+  tests. #142 and #188 brought the guide in line with source.
 - **`unsafe/*` is out of scope for application code.** The skill lists those exports but tells
   agents not to use them.
 - **Built-in plugin example lives in `references/plugins.md`** (maintainer decision, 2026-10-06).
@@ -183,7 +183,8 @@ and stop generating Axios APIs it removed or never verified.
       substituted (fixed in #146: the page uses `{id}`, and `test:docs-examples` now rejects
       unsubstituted placeholders)
     - The pre-release changelog said the type guards are "on the instance"
-    - `packages/examples/network_enhanced.js` checks `ECONNREFUSED`
+    - `packages/examples/network_enhanced.js` checks `ECONNREFUSED` (the examples were removed
+      later, in `0552b112`)
   - CI's first `check-skills` run failed with `TS18046: 'data' is of type 'unknown'` on the zod
     schema example. Intent resolves example imports from the repository root, and the root had
     no `zod`. Locally the example passed only because `zod` was installed in `~/node_modules`.
@@ -211,3 +212,41 @@ and stop generating Axios APIs it removed or never verified.
     - `text` returns the JSON string unparsed; `json` parses it; `document` returns text.
     - Unset parses a JSON body and returns a binary body as a corrupted string.
     - `response` returns text, not a stream, so it is left out of the docs list.
+- **Records refresh (2026-10-15, source `59b0678a`, `@gcmdev/faxios` 0.2.4, Intent 0.5.3, #276).**
+  - Earlier batches record what was true at their source revision. Superseded since, and now
+    taught from current source:
+    - An absolute URL on a `baseURL` instance is no longer appended to the base: it rejects with
+      `ERR_INVALID_URL` before fetch, and `getUri()` rejects the same way.
+    - Removed Axios options in an untyped config are no longer ignored: any unknown key rejects
+      with `ERR_BAD_OPTION` (`src/lib/core/assertRequestConfig.ts`).
+    - `responseType: "document"` and `"response"` no longer return text: only `arraybuffer`,
+      `blob`, `formdata`, `json`, `stream` and `text` are accepted, and anything else rejects with
+      `ERR_BAD_OPTION_VALUE`.
+    - The timeout's `ETIMEDOUT` is raised in `src/lib/core/requestDeadline.ts`, which bounds the
+      whole request; `src/lib/helpers/composeSignals.ts` only combines signals.
+  - Version: SKILL.md `library_version` and `domain_map.yaml` now say 0.2.4, the version in
+    `packages/lib/package.json`.
+  - Sources: SKILL.md and `skill_tree.yaml` add `src/lib/core/assertRequestConfig.ts`,
+    `assertSignal.ts`, `assertTimeout.ts`, `requestDeadline.ts` and `resolveRequestURL.ts`, the
+    files that own the unknown-option rejection, the `signal` and `timeout` checks, the
+    whole-request deadline and URL resolution the skill teaches. An edit to any of them now leaves
+    a pending review item for the skill, not only for the file.
+  - Citations: common mistake #4 and `references/axios-differences.md` cite `requestDeadline.ts`
+    for `ETIMEDOUT`; mistake #5 adds `resolveRequestURL.ts`; `domain_map.yaml` failure modes now
+    describe the current rejections and cite the files that raise them. Every path the skill,
+    its references and these artifacts cite was checked to exist at `59b0678a`.
+  - Import boundaries: the plugin row now lists `/forward-to`, which the skill already told agents
+    to import. `packages/tests/scripts/check-skill-exports.ts` (part of `lint:ts` in
+    `packages/tests`) compares the table with the `exports` map in `packages/lib/package.json`
+    and fails when a subpath has no row or a row names no export. It failed before the row fix
+    with `the import table has no row for @gcmdev/faxios/plugins/forward-to`.
+  - Gaps: the `MIGRATION_GUIDE.md` Node 18 and `adapter` gap is resolved (#188). The `unsafe/*`
+    stability, Node proxying and Intent subpath-resolution gaps stay open.
+  - `THREATMODEL.md` was refreshed in the same change: its Axios-era `.js` citations now name the
+    current `.ts` files and tests, and the header, multipart, prototype-pollution, release and
+    logging entries describe what the code enforces today.
+  - Sync procedure: edit the skill and these artifacts, run
+    `pnpm exec intent maintainer check --base <base> --artifacts _artifacts`, record each pending
+    item with `pnpm exec intent maintainer review --base <base> --updated "<reason>"` (or
+    `--unchanged`), commit `.intent/review-state.json`, and run `maintainer check` again until it
+    reports 0 pending review items.

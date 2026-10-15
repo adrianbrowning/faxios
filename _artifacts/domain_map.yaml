@@ -1,12 +1,12 @@
 # domain_map.yaml
 # Library: @gcmdev/faxios (workspace: faxios-workspace)
-# Version: 0.1.0 (source revision 01316e10, origin/main)
-# Date: 2026-10-06
+# Version: 0.2.4 (first batch at 0.1.0, source revision 01316e10; sources refreshed at 59b0678a for #276)
+# Date: 2026-10-06 (refreshed 2026-10-15)
 # Status: reviewed (first batch; not full-library coverage)
 
 library:
   name: faxios-workspace
-  version: '0.1.0'
+  version: '0.2.4'
   repository: 'https://github.com/adrianbrowning/faxios'
   description: 'Promise-based HTTP client on the web-standard fetch API for browsers, Node 24+, Deno and Bun.'
   primary_framework: framework-agnostic
@@ -58,12 +58,12 @@ skills:
         status: removed
         version_context: 'Removed before the first faxios release; agents trained on Axios still generate it.'
       - mistake: Passing Axios transport options
-        mechanism: 'adapter, proxy, httpAgent and similar keys are not in FaxiosRequestConfig; untyped configs keep them and they are ignored at runtime.'
+        mechanism: 'adapter, proxy, httpAgent and similar keys are not in FaxiosRequestConfig, so typed literals reject them; at runtime an unknown key, removed Axios options included, rejects the request with ERR_BAD_OPTION naming the key and its replacement.'
         wrong_pattern: |
           faxios.create({ adapter: "http", proxy: { host: "p", port: 8080 } });
         correct_pattern: |
           faxios.create({ env: { fetch: myFetch }, fetchOptions: { cache: "no-store" } });
-        source: 'src/lib/types.ts; MIGRATION_GUIDE.md (Fetch-Only Migration); AGENTS.md'
+        source: 'src/lib/types.ts; src/lib/core/assertRequestConfig.ts; MIGRATION_GUIDE.md (e) Removed config fields); AGENTS.md'
         priority: HIGH
         status: removed
       - mistake: Using CancelToken
@@ -81,16 +81,16 @@ skills:
           if (error.code === "ECONNABORTED") retryLater();
         correct_pattern: |
           if (error.code === FaxiosError.ETIMEDOUT) retryLater();
-        source: 'src/lib/helpers/composeSignals.ts; packages/docs/pages/advanced/error-handling.md'
+        source: 'src/lib/core/requestDeadline.ts; packages/docs/pages/advanced/error-handling.md'
         priority: HIGH
         status: active
       - mistake: Absolute URL on a baseURL instance
-        mechanism: 'With an instance baseURL and allowAbsoluteUrls unset, faxios appends the absolute URL to the base.'
+        mechanism: 'With an instance baseURL and allowAbsoluteUrls unset, an absolute request URL rejects with ERR_INVALID_URL before fetch, and getUri() rejects the same way.'
         wrong_pattern: |
           faxios.create({ baseURL: "https://api.example.com" }).get("https://other.example/x");
         correct_pattern: |
           faxios.create({ baseURL: "https://api.example.com" }).get("https://other.example/x", { allowAbsoluteUrls: true });
-        source: 'src/lib/core/Faxios.ts (resolveAllowAbsoluteUrls); src/lib/core/buildFullPath.ts'
+        source: 'src/lib/core/Faxios.ts (resolveAllowAbsoluteUrls); src/lib/core/resolveRequestURL.ts; src/lib/core/buildFullPath.ts'
         priority: HIGH
         status: active
       - mistake: Importing plugins from the package root
@@ -112,12 +112,12 @@ skills:
         priority: MEDIUM
         status: active
       - mistake: Promising upload progress in browsers
-        mechanism: 'onUploadProgress fires only where fetch streams request bodies (duplex half), such as Node.'
+        mechanism: 'onUploadProgress fires only where faxios streams the request body: outside browsers, where the runtime Request reads the duplex option (Node today, not Deno or Bun).'
         wrong_pattern: |
           faxios.post(url, file, { onUploadProgress: showBar }); // assumed to work in every browser
         correct_pattern: |
           // Use onUploadProgress only where fetch supports streaming request bodies.
-        source: 'packages/docs/pages/advanced/fetch-adapter.md'
+        source: 'src/lib/adapters/fetch.ts (supportsRequestStream, isBrowserRuntime); packages/docs/pages/advanced/fetch-adapter.md'
         priority: MEDIUM
         status: active
       - mistake: Assuming POST is retried
@@ -158,8 +158,8 @@ gaps:
     status: open
   - skill: configure-requests
     question: 'MIGRATION_GUIDE.md Fetch-Only section still says Node 18+ and that custom adapters work through `adapter`.'
-    context: 'Since #142 the guide (section h) and docs middleware/migrating-from-interceptors pages convert interceptors to .use(); remaining interceptors code there is the before side. The Node 18 and adapter claims contradict AGENTS.md and engines; the skill follows source.'
-    status: open
+    context: 'Resolved by #188: MIGRATION_GUIDE.md section a) says Node 24 or later (engines.node >=24.0.0) and section b) says there is no adapter option (passing one rejects with ERR_BAD_OPTION). Kept for the record; the skill already followed source.'
+    status: resolved
   - skill: configure-requests
     question: 'When can SKILL.md examples importing @gcmdev/faxios/plugins/* return from references/plugins.md?'
     context: 'Intent 0.5.3 and 0.5.4 map <package>/* to src/* and the package root and ignore package.json exports, so correct consumer subpath imports fail SKILL.md example type-checking. The plugin example lives in references/plugins.md until Intent fixes this upstream.'

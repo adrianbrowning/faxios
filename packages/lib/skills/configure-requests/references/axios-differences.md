@@ -65,5 +65,6 @@ conversions; any `interceptors` code there is the "before" side. faxios needs No
 `adapter` option.
 
 Sources: `MIGRATION_GUIDE.md`, `src/lib/types.ts`, `src/lib/core/Faxios.ts`,
-`src/lib/core/buildFullPath.ts`, `src/lib/helpers/composeSignals.ts`,
-`src/lib/adapters/fetch-helpers.ts`, `packages/tests/unit/api.test.ts`.
+`src/lib/core/assertRequestConfig.ts`, `src/lib/core/buildFullPath.ts`,
+`src/lib/core/requestDeadline.ts`, `src/lib/adapters/fetch-helpers.ts`,
+`packages/tests/unit/api.test.ts`.

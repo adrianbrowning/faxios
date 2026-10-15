@@ -13,7 +13,7 @@ metadata:
     generating Axios APIs that faxios removed or never verified.
   type: core
   library: '@gcmdev/faxios'
-  library_version: '0.2.1'
+  library_version: '0.2.4'
 sources:
   - src/index.ts
   - src/lib/faxios.ts
@@ -21,6 +21,11 @@ sources:
   - src/lib/core/mergeConfig.ts
   - src/lib/core/buildFullPath.ts
   - src/lib/core/dispatchRequest.ts
+  - src/lib/core/assertRequestConfig.ts
+  - src/lib/core/assertSignal.ts
+  - src/lib/core/assertTimeout.ts
+  - src/lib/core/requestDeadline.ts
+  - src/lib/core/resolveRequestURL.ts
   - src/lib/core/FaxiosError.ts
   - src/lib/core/define.ts
   - src/lib/core/route.ts
@@ -407,7 +412,7 @@ await faxios.get("https://api.example.com/feed", { fetchOptions: { cache: "no-st
 | --- | --- |
 | `@gcmdev/faxios` | Stable: default `faxios`, `Faxios`, `FaxiosError`, `FaxiosHeaders`, `CanceledError`, `isCancel`, `isFaxiosError`, `isSchemaValidationError`, `mergeConfig`, `toFormData`, `formToJSON`, `HttpStatusCode`, `resolveRequestURL`, `all`, `create`, `VERSION`, and the types |
 | `@gcmdev/faxios/plugins` | Stable: `definePlugin` only |
-| `@gcmdev/faxios/plugins/auth-bearer`, `/retry`, `/timing` | Stable: one plugin each |
+| `@gcmdev/faxios/plugins/auth-bearer`, `/forward-to`, `/retry`, `/timing` | Stable: one plugin each |
 | `@gcmdev/faxios/unsafe/*` | Internal helpers (`buildFullPath`, `buildURL`, `combineURLs`, `isAbsoluteURL`). No stability promise; do not use them in application code, and say so if a task seems to need them |
 
 Use `faxios.create()` for instances. An instance made with `new Faxios()` has no `use()` or
@@ -430,7 +435,7 @@ export only. Instances from `create()` do not have them; import them by name ins
    `src/lib/core/assertRequestConfig.ts`, `MIGRATION_GUIDE.md`.
 3. **HIGH: Using `CancelToken`.** It does not exist. Use `AbortController` and `signal`.
 4. **HIGH: Checking for `ECONNABORTED` on timeout.** faxios raises `ETIMEDOUT`. Code that checks
-   `ECONNABORTED` never matches. Source: `src/lib/helpers/composeSignals.ts`.
+   `ECONNABORTED` never matches. Source: `src/lib/core/requestDeadline.ts`.
 5. **HIGH: Sending an absolute URL through an instance with `baseURL`.** When an instance has a
    `baseURL` and `allowAbsoluteUrls` is unset, an absolute request URL rejects with
    `ERR_INVALID_URL` before fetch: `api.get("https://other.example/x")` fails, and so does
@@ -438,8 +443,8 @@ export only. Instances from `create()` do not have them; import them by name ins
    `allowAbsoluteUrls: true` when the absolute URL is trusted. A URL is absolute only with a
    scheme and `//`: `documents:batchGet` or `localhost:3000/x` joins `baseURL`. A `url` or
    joined `baseURL` with a tab or line break rejects with `ERR_INVALID_URL`. Source:
-   `src/lib/core/Faxios.ts` (`resolveAllowAbsoluteUrls`), `src/lib/core/buildFullPath.ts`,
-   `src/lib/helpers/isAbsoluteURL.ts`.
+   `src/lib/core/Faxios.ts` (`resolveAllowAbsoluteUrls`), `src/lib/core/resolveRequestURL.ts`,
+   `src/lib/core/buildFullPath.ts`, `src/lib/helpers/isAbsoluteURL.ts`.
 6. **MEDIUM: Importing plugins from the root.** `import { retry } from "@gcmdev/faxios"` fails and
    `faxios.plugins` is undefined. Import from `@gcmdev/faxios/plugins/<name>`.
 7. **MEDIUM: Calling statics on an instance.** `api.isCancel(e)` is undefined on a `create()`
@@ -469,5 +474,5 @@ export only. Instances from `create()` do not have them; import them by name ins
 
 - When porting an Axios codebase, read [Axios differences](references/axios-differences.md)
   before changing call sites.
-- When installing `authBearer`, `retry` or `timing`, or writing a reusable plugin or typed
+- When installing `authBearer`, `forwardTo`, `retry` or `timing`, or writing a reusable plugin or typed
   middleware, read [plugins](references/plugins.md).
