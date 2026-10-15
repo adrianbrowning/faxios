@@ -199,6 +199,10 @@ describe("resolveRequestURL() gives plugins the URL core sends", () => {
     assert.throws(() => resolveRequestURL({ ...config, allowAbsoluteUrls: false }), { name: "FaxiosError", code: "ERR_INVALID_URL" });
   });
 
+  it("throws ERR_INVALID_URL for a url that is neither a string nor a URL", () => {
+    assert.throws(() => resolveRequestURL({ baseURL: BASE, url: 5 as unknown as string }), { name: "FaxiosError", code: "ERR_INVALID_URL" });
+  });
+
   it("throws ERR_INVALID_URL when there is no url and no baseURL", () => {
     assert.throws(() => resolveRequestURL({}), { name: "FaxiosError", code: "ERR_INVALID_URL" });
   });
