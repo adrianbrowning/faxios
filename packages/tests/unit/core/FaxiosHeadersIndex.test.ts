@@ -1,7 +1,20 @@
 import assert from "node:assert";
-import { describe, it } from "vitest";
+import { describe, it, vi } from "vitest";
 import faxios from "#src/index.js";
 import FaxiosHeaders from "#src/lib/core/FaxiosHeaders.js";
+import type * as SanitizeModule from "#src/lib/helpers/sanitizeHeaderValue.js";
+
+const sanitized = vi.hoisted(() => [] as Array<unknown>);
+vi.mock("#src/lib/helpers/sanitizeHeaderValue.js", async importOriginal => {
+  const actual = await importOriginal<typeof SanitizeModule>();
+  return {
+    ...actual,
+    sanitizeHeaderValue: (value: unknown) => {
+      sanitized.push(value);
+      return actual.sanitizeHeaderValue(value);
+    },
+  };
+});
 
 describe("FaxiosHeaders key index", () => {
   it("keeps the case of the first-set name", () => {
@@ -59,5 +72,32 @@ describe("FaxiosHeaders key index", () => {
 
     assert.strictEqual(res.headers.get("x-test"), "1");
     assert.strictEqual(iterations, 1);
+  });
+});
+
+describe("FaxiosHeaders sanitizing (#296)", () => {
+  const timesSanitized = (value: string) => sanitized.filter(seen => seen === value).length;
+
+  it("sanitizes each request header value once per request", async () => {
+    const fetch = async () => new Response("ok");
+    const plain = faxios.create({ headers: { "X-Instance": "instance-1" } });
+    const withMiddleware = faxios.create({ headers: { "X-Instance": "instance-1" } });
+    withMiddleware.use(async (ctx, next) => next(ctx));
+
+    for (const instance of [ plain, withMiddleware ]) {
+      sanitized.length = 0;
+      await instance.post("http://localhost/", { a: 1 }, { headers: { "X-Request": "request-1" }, env: { fetch } });
+
+      assert.strictEqual(timesSanitized("instance-1"), 1);
+      assert.strictEqual(timesSanitized("request-1"), 1);
+    }
+  });
+
+  it("still sanitizes a value written as a plain property", () => {
+    const headers = new FaxiosHeaders({ "X-A": "1" });
+    headers["X-A"] = "a\r\nInjected: 1";
+    headers.normalize(false);
+
+    assert.strictEqual(headers.get("x-a"), "aInjected: 1");
   });
 });

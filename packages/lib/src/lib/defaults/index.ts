@@ -15,16 +15,6 @@ import type {
 import utils from "../utils.js";
 import transitionalDefaults from "./transitional.js";
 
-/**
- * It takes a string, tries to parse it, and if it fails, it returns the stringified version
- * of the input
- *
- * @param {any} rawValue - The value to be stringified.
- * @param {Function} parser - A function that parses a string into a JavaScript object.
- * @param {Function} encoder - A function that takes a value and returns a string.
- *
- * @returns {string} A stringified version of the rawValue.
- */
 function serializeObjectPayload(
   data: unknown,
   contentType: string,
@@ -65,26 +55,6 @@ function throwOnStrictJSONError(
     );
   }
   throw e;
-}
-
-function stringifySafely(
-  rawValue: unknown,
-  parser?: ((s: string) => unknown) | null,
-  encoder?: ((v: unknown) => string) | null
-): unknown {
-  if (utils.isString(rawValue)) {
-    try {
-      (parser || JSON.parse)(rawValue as string);
-      return (rawValue as string).trim();
-    }
-    catch (e) {
-      if ((e as { name?: string; }).name !== "SyntaxError") {
-        throw e;
-      }
-    }
-  }
-
-  return (encoder || JSON.stringify)(rawValue);
 }
 
 const defaults: FaxiosDefaults = {
@@ -145,7 +115,9 @@ const defaults: FaxiosDefaults = {
 
       if (isObjectPayload || hasJSONContentType) {
         headers.setContentType("application/json", false);
-        return stringifySafely(data);
+        // A string is the JSON text the caller wrote; it isn't parsed to check it, which would
+        // cost a full parse of the body.
+        return utils.isString(data) ? (data as string).trim() : JSON.stringify(data);
       }
 
       return data;

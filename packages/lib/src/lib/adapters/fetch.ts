@@ -230,6 +230,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
   // .mode or undici .dispatcher apply to every request. Every own enumerable key of fetchOptions
   // is copied, so runtime extensions (Next.js `next`, Workers `cf`, Bun `tls`) still pass through;
   // inherited keys never do. The caller sets signal, method, headers, body, duplex, credentials.
+  // This init builds the Request; fetch gets the init fetchInitFor derives from it.
   const initFromFetchOptions = (fetchOptions: unknown, envFetch: FetchFn | undefined): Record<string, unknown> => {
     const init: Record<string, unknown> = Object.create(null);
     for (const [ key, value ] of requestInitDefaults) init[key] = value;
@@ -242,6 +243,40 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
         if (!utils.hasOwnProp(FAXIOS_INIT_KEYS, key)) init[key] = (fetchOptions as Record<string, unknown>)[key];
       }
     }
+    return init;
+  };
+
+  // Whether `new Request(request, { body: null })` keeps the request's body. Node and Deno keep it
+  // (an own `null` there means "no new body"); Bun replaces it with no body. Probed once per
+  // Request constructor; a constructor that can't be probed counts as Bun-like.
+  const nullKeepsBody = isRequestSupported && test(() => {
+    const base = new (Request as AnyConstructor)("https://x.invalid/", { method: "POST", body: "x" }) as AnyRequest;
+    const init = Object.assign(Object.create(null) as Record<string, unknown>, { body: null });
+    return (new (Request as AnyConstructor)(base, init) as AnyRequest).body !== null;
+  });
+
+  // The init passed to fetch next to the Request. fetch builds its own Request from both, and
+  // undici converts the init into a plain dictionary first, so a member left out would pick up a
+  // polluted Object.prototype value (`method`, `headers`, `redirect`, ...). Every member the
+  // Request carries is set again from the Request itself, so nothing is re-encoded, and `headers`
+  // are the Request's already-validated ones. `body` is an own member, so fetch takes the
+  // Request's body instead of reading the caller's body a second time and never a polluted
+  // Object.prototype.body. Its value depends on the runtime: Deno treats an own `undefined` as
+  // missing and reads the prototype's, so it gets `null`, which keeps the Request's body there and
+  // in Node; Bun reads `null` as "send no body", so it gets `undefined`, which Bun does treat as
+  // an own member (nullKeepsBody tells them apart).
+  // `request.body` is never read here: in Bun and Deno that turns a string or bytes body into a
+  // stream, which is then sent without a Content-Length. Members a Request doesn't carry, such as
+  // undici's `dispatcher` or Next.js `next`, are copied as given.
+  const fetchInitFor = (request: Request, requestInit: Record<string, unknown>): Record<string, unknown> => {
+    const init: Record<string, unknown> = Object.create(null);
+    const requestPrototype = (Request as AnyConstructor).prototype;
+    for (const key of Object.keys(requestInit)) {
+      if (key === "body" || key === "signal") continue;
+      init[key] = utils.hasOwnInPrototypeChain(requestPrototype, key) ? Reflect.get(request, key) : requestInit[key];
+    }
+    init["body"] = nullKeepsBody ? null : undefined;
+    init["signal"] = requestInit["signal"];
     return init;
   };
 
@@ -260,10 +295,8 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
           ).arrayBuffer()
         );
 
-  // A Node stream body reaches fetch twice: once in `new Request(url, init)` and again in
-  // `fetch(request, init)`. undici (Node 26.11+) starts reading an async iterable in both,
-  // so the first chunk goes to the discarded copy. One web stream is read only once.
-  // Web stream bodies must yield bytes, so string chunks (e.g. `Readable.from(["a"])`) are encoded.
+  // Web stream bodies must yield bytes, so a Node stream body is sent as a web stream whose string
+  // chunks (e.g. `Readable.from(["a"])`) are encoded.
   const from = (ReadableStream as undefined | { from?: (source: unknown) => unknown; })?.from;
   const streamFrom = typeof from === "function" ? from.bind(ReadableStream) : undefined;
   async function* toByteChunks(source: AsyncIterable<unknown>) {
@@ -299,12 +332,19 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       return duplexAccessed && !hasContentType;
     });
 
+  // A web stream or Node stream body: read once, as it is sent, and sent with `duplex`.
+  const isStreamBody = (body: unknown): boolean => utils.isReadableStream!(body) || utils.isStream(body);
+
   // Outside browsers a FormData body under maxBodyLength is streamed and counted as fetch reads it;
   // browsers can't send a stream body (see buildUploadStream).
   const countsFormDataWhileSent = !isBrowserRuntime && supportsRequestStream;
   // Bodies counted as fetch reads them when maxBodyLength is set.
   const isCountedWhileSent = (body: unknown): boolean =>
-    utils.isReadableStream!(body) || utils.isStream(body) || (countsFormDataWhileSent && utils.isSpecCompliantForm(body));
+    isStreamBody(body) || (countsFormDataWhileSent && utils.isSpecCompliantForm(body));
+
+  // Cloudflare Workers throws when credentials are defined
+  // see https://github.com/cloudflare/workerd/issues/902
+  const isCredentialsSupported = isRequestSupported && "credentials" in ((Request as AnyConstructor).prototype as object);
 
   const supportsResponseStream =
     isResponseSupported &&
@@ -796,14 +836,6 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       ));
 
       withCredentials = normalizeCredentials(withCredentials);
-
-      // Cloudflare Workers throws when credentials are defined
-      // see https://github.com/cloudflare/workerd/issues/902
-      const isCredentialsSupported =
-        isRequestSupported &&
-        Request != null &&
-        "credentials" in (Request.prototype as object);
-
       resolveBodyContentType(preparedBody, headers, encodedContentType);
 
       applyDefaultUserAgent(headers);
@@ -812,25 +844,25 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
 
       data = toWebStream(await encodeStringWithoutContentType(data, headers, encodeText));
 
-      const resolvedOptions = initFromFetchOptions(fetchOptions, envFetch);
-      resolvedOptions["signal"] = composedSignal;
-      resolvedOptions["method"] = (method as string).toUpperCase();
-      resolvedOptions["headers"] = serializedHeaders;
-      resolvedOptions["body"] = data;
-      resolvedOptions["duplex"] = "half";
-      resolvedOptions["credentials"] = isCredentialsSupported ? withCredentials : undefined;
+      const requestInit = initFromFetchOptions(fetchOptions, envFetch);
+      requestInit["signal"] = composedSignal;
+      requestInit["method"] = (method as string).toUpperCase();
+      requestInit["headers"] = serializedHeaders;
+      requestInit["body"] = data;
+      // Only a stream body needs `duplex`. Leaving it off otherwise also tells a custom
+      // `env.fetch` (the forwardTo plugin) that the Request's body can be buffered and resent.
+      if (isStreamBody(data)) requestInit["duplex"] = "half";
+      requestInit["credentials"] = isCredentialsSupported ? withCredentials : undefined;
 
       request = isRequestSupported
-        ? new (Request as AnyConstructor)(url, resolvedOptions) as Request
+        ? new (Request as AnyConstructor)(url, requestInit) as Request
         : null;
 
-      // Pass resolvedOptions as the fetch init even when a Request object is supplied, so the
-      // same null-prototype members apply to both calls.
       markStreamBodySent(preparedBody);
       stage = "send";
-      let response = await (isRequestSupported
-        ? _fetch(request, resolvedOptions)
-        : _fetch(url, resolvedOptions));
+      let response = await (request
+        ? _fetch(request, fetchInitFor(request, requestInit))
+        : _fetch(url, requestInit));
       stage = undefined;
 
       const responseHeaders = FaxiosHeaders.from(response.headers);

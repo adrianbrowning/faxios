@@ -72,6 +72,43 @@ describe("plugins::forwardTo", () => {
     }
   });
 
+  it("forwards a buffered body with its Content-Length and a stream body as a stream", async () => {
+    const received: Array<{ body: string; contentLength: string | undefined; }> = [];
+    const gateway = await startHTTPServer((req, res) => {
+      let body = "";
+      req.setEncoding("utf8");
+      req.on("data", (chunk: string) => {
+        body += chunk;
+      });
+      req.on("end", () => {
+        received.push({ body, contentLength: req.headers["content-length"] });
+        res.end("ok");
+      });
+    });
+    try {
+      const api = faxios.create({ baseURL: "https://api.example.com" })
+        .use(forwardTo(`http://127.0.0.1:${(gateway.address() as AddressInfo).port}/gw`));
+      const encoder = new TextEncoder();
+
+      await api.post("/items", { name: "a" });
+      await api.post("/items", new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(encoder.encode("s1"));
+          controller.enqueue(encoder.encode("s2"));
+          controller.close();
+        },
+      }));
+
+      assert.deepStrictEqual(received, [
+        { body: JSON.stringify({ name: "a" }), contentLength: String(JSON.stringify({ name: "a" }).length) },
+        { body: "s1s2", contentLength: undefined },
+      ]);
+    }
+    finally {
+      await stopHTTPServer(gateway);
+    }
+  });
+
   it("forwards the body and fetchOptions, changing only the URL and the forward header", async () => {
     const { fetch, sent } = recordingFetch();
     const api = faxios.create({ baseURL: "https://api.example.com", env: { fetch }, withCredentials: true })
@@ -87,7 +124,8 @@ describe("plugins::forwardTo", () => {
     assert.strictEqual(init?.cache, "no-store");
     assert.strictEqual(init?.credentials, "include");
     assert.ok(init?.signal instanceof AbortSignal);
-    assert.strictEqual(init?.body, JSON.stringify({ name: "a" }));
+    // The adapter leaves the body on its Request; the gateway call carries it in the init.
+    assert.strictEqual(await new Response(init?.body).text(), JSON.stringify({ name: "a" }));
     const headers = new Headers(init?.headers);
     assert.strictEqual(headers.get("X-Trace"), "1");
     assert.strictEqual(headers.get("Content-Type"), "application/json");

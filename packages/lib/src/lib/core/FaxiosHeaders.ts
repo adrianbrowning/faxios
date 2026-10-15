@@ -79,6 +79,29 @@ function findHeaderKey(headers: object, lHeader: string): string | undefined {
   return key !== undefined && utils.hasOwnProp(headers, key) ? key : indexKeys(headers).get(lHeader);
 }
 
+// Per instance: own key -> the string set() or normalize() last sanitized into it. Sanitizing is
+// idempotent, so a value still equal to that string needs no second pass; a value written as a
+// plain property differs and is sanitized as usual. Arrays are always sanitized again: they can
+// be changed in place.
+const sanitizedValues = new WeakMap<object, Map<string, string>>();
+
+function sanitizedValuesOf(headers: object): Map<string, string> {
+  let values = sanitizedValues.get(headers);
+  if (!values) {
+    values = new Map();
+    sanitizedValues.set(headers, values);
+  }
+  return values;
+}
+
+// Writes `value` under `key`, sanitized unless `clean` says it already is.
+function storeValue(headers: object, values: Map<string, string>, key: string, value: unknown, clean: boolean): void {
+  const stored = clean ? value : normalizeValue(value as FaxiosHeaderValue);
+  (headers as Record<string, unknown>)[key] = stored;
+  if (typeof stored === "string") values.set(key, stored);
+  else values.delete(key);
+}
+
 // eslint-disable-next-line sonarjs/function-return-type
 function normalizeValue(
   value: FaxiosHeaderValue | undefined
@@ -218,6 +241,10 @@ class FaxiosHeaders {
     rewrite?: boolean
   ): this {
     const self = this;
+    const values = sanitizedValuesOf(self);
+    // A FaxiosHeaders source has sanitized its values already; only those still as it left them
+    // are copied without another pass.
+    const sourceValues = header instanceof this.constructor ? sanitizedValues.get(header) : undefined;
     // Set once a lookup misses, which rebuilds the index from the own keys. Only setHeader writes
     // to self until this call returns, so from then on the index is complete and a miss is final.
     let index: Map<string, string> | undefined;
@@ -248,9 +275,7 @@ class FaxiosHeaders {
           (self as Record<string, unknown>)[key] !== false &&
           (self as Record<string, unknown>)[key] !== null)
       ) {
-        (self as Record<string, unknown>)[key || _header] = normalizeValue(
-          _value as FaxiosHeaderValue
-        );
+        storeValue(self, values, key || _header, _value, typeof _value === "string" && sourceValues?.get(_header) === _value);
       }
     }
 
@@ -407,18 +432,19 @@ class FaxiosHeaders {
 
   normalize(format: boolean = false): this {
     const self = this;
+    const values = sanitizedValuesOf(self);
     // Lowercased normalized name -> normalized name, for names already kept.
     const kept = new Map<string, string>();
 
     utils.forEach(this, (value: unknown, _header: unknown) => {
       const header = _header as string;
       const key = kept.get(header.toLowerCase());
+      const clean = typeof value === "string" && values.get(header) === value;
 
       if (key) {
-        (self as Record<string, unknown>)[key] = normalizeValue(
-          value as FaxiosHeaderValue
-        );
+        storeValue(self, values, key, value, clean);
         delete (self as Record<string, unknown>)[header];
+        values.delete(header);
         return;
       }
 
@@ -426,11 +452,10 @@ class FaxiosHeaders {
 
       if (normalized !== header) {
         delete (self as Record<string, unknown>)[header];
+        values.delete(header);
       }
 
-      (self as Record<string, unknown>)[normalized] = normalizeValue(
-        value as FaxiosHeaderValue
-      );
+      storeValue(self, values, normalized, value, clean);
 
       kept.set(normalized.toLowerCase(), normalized);
     });

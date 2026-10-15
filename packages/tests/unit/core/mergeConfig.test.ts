@@ -498,3 +498,29 @@ describe("core::mergeConfig", () => {
     });
   });
 });
+
+describe("core::mergeConfig key collection (#296)", () => {
+  it("reads each config value once", () => {
+    let reads = 0;
+    const config1 = {};
+    Object.defineProperty(config1, "timeout", {
+      enumerable: true,
+      get() {
+        reads++;
+        return 5;
+      },
+    });
+
+    const merged = mergeConfig(config1, { url: "/a" });
+
+    expect(merged.timeout).toBe(5);
+    expect(merged.url).toBe("/a");
+    expect(reads).toBe(1);
+  });
+
+  it("keeps config1's key order, then config2's new keys", () => {
+    const merged = mergeConfig({ timeout: 1, baseURL: "/a" }, { method: "post", timeout: 2 });
+
+    expect(Object.keys(merged)).toEqual([ "timeout", "baseURL", "method" ]);
+  });
+});

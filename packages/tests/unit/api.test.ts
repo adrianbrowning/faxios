@@ -129,14 +129,14 @@ describe("static api", () => {
           )[method]!;
           await fn("http://localhost/test", {
             env: {
-              fetch: async (_input: Request | string | URL, init?: RequestInit) => {
-                seenBody = init?.body;
+              fetch: async (input: Request | string | URL) => {
+                seenBody = (input as Request).body;
                 return new Response(null, { status: 200 });
               },
             },
           });
 
-          assert.strictEqual(seenBody, undefined);
+          assert.strictEqual(seenBody, null);
         })
       );
     }

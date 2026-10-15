@@ -30,18 +30,28 @@ function isHTTPURL(value: unknown): value is string {
 }
 
 // Sends what faxios would have sent to `gateway` instead, with the target URL in `header`. The
-// adapter passes the full init (method, headers, body, signal, credentials, fetchOptions) with
-// every call, so only the URL and that one header change.
+// adapter passes every init member (method, headers, signal, credentials, fetchOptions) with
+// every call; with a Request input the body stays on the Request (`init.body` is null or undefined), so it is
+// taken from there. Only the URL and that one header change.
 function forwardingFetch(gateway: string, header: string, base: Fetch): Fetch {
   return async (input, init) => {
     // A Request has its URL in `url`; a string or URL is one. No `instanceof Request`: a runtime
     // may have no global Request (`env.Request: null`).
-    const target = typeof input === "object" && "url" in input ? input.url : String(input);
-    const headers = new Headers(init?.headers ?? (typeof input === "object" && "headers" in input ? input.headers : undefined));
+    const request = typeof input === "object" && "url" in input ? input : undefined;
+    const target = request ? request.url : String(input);
+    const headers = new Headers(init?.headers ?? request?.headers);
     headers.set(header, target);
     // Null prototype, like the adapter's own init: fetch reads every member through the prototype
     // chain, so a plain object would let a polluted Object.prototype.dispatcher apply.
     const forwarded: RequestInit = Object.assign(Object.create(null) as RequestInit, init, { headers });
+    if (forwarded.body == null && request && request.method !== "GET" && request.method !== "HEAD") {
+      // The adapter sets `duplex` only when the caller's body was a stream, so only then is it
+      // streamed on. Any other body is resent as bytes, which keeps its Content-Length and works
+      // where fetch can't send a stream (most browsers) or `Request.body` is null (Firefox).
+      // `duplex` isn't in RequestInit's type yet.
+      const isStreamBody = init !== undefined && "duplex" in init && init.duplex === "half" && request.body != null;
+      Object.assign(forwarded, isStreamBody ? { body: request.body, duplex: "half" } : { body: await request.arrayBuffer() });
+    }
     return base(gateway, forwarded);
   };
 }

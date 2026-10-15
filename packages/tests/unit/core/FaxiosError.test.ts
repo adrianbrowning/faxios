@@ -485,8 +485,8 @@ describe("core::FaxiosError", () => {
       const api = faxios.create({
         baseURL: "http://localhost",
         env: {
-          fetch: async (_input: Request | string | URL, init?: RequestInit) => {
-            bodies.push(init?.body);
+          fetch: async (input: Request | string | URL) => {
+            bodies.push(await (input as Request).text());
             return new Response(null, { status: 401 });
           },
         },
@@ -759,5 +759,42 @@ describe("core::FaxiosError", () => {
         expect.fail("should have narrowed");
       }
     });
+  });
+});
+
+describe("rejected request stack (#296)", () => {
+  it("formats the stitched stack only when it is read", async () => {
+    const original = Error.prepareStackTrace;
+    let formatted = 0;
+    Error.prepareStackTrace = (error, frames) => {
+      formatted++;
+      return original ? original(error, frames) : `${String(error)}\n    at ${frames.join("\n    at ")}`;
+    };
+    try {
+      const fetch = async () => new Response("missing", { status: 404 });
+      const instance = faxios.create({ env: { fetch } });
+      let caught: unknown;
+      async function callsFaxiosForStackTest() {
+        await instance.get("http://localhost/missing");
+      }
+      try {
+        await callsFaxiosForStackTest();
+      }
+      catch (err) {
+        caught = err;
+      }
+
+      expect(caught).toBeInstanceOf(FaxiosError);
+      expect(formatted).toBe(0);
+
+      const stack = (caught as FaxiosError).stack;
+      expect(formatted).toBeGreaterThan(0);
+      expect(stack).toContain("Request failed with status code 404");
+      expect(stack).toContain("callsFaxiosForStackTest");
+      expect((caught as FaxiosError).stack).toBe(stack);
+    }
+    finally {
+      Error.prepareStackTrace = original;
+    }
   });
 });

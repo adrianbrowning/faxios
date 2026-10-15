@@ -4,10 +4,7 @@ import { describe, expect, it } from "vitest";
 const createEchoFetch = () => {
   const mockFetch = async (input, init) => {
     const url = new URL(input.url);
-    let body = "";
-    if (init.body != null) {
-      body = typeof init.body === "string" ? init.body : new TextDecoder().decode(await new Response(init.body).arrayBuffer());
-    }
+    const body = await input.text();
     const contentType = new Headers(init.headers ?? {}).get("content-type") ?? "";
 
     return new Response(

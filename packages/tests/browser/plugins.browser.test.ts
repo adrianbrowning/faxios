@@ -78,4 +78,19 @@ describe("plugin entry points (vitest browser)", () => {
       [ "https://gateway.test/", `${location.origin}/items?q=1` ],
     ]);
   });
+
+  // Browsers can't send a stream body over HTTP/1.1 (Firefox and Safari not at all), so a forwarded
+  // body that wasn't a stream goes to the gateway as bytes.
+  it("forwards a POST body to the gateway as bytes, not as a stream", async () => {
+    using mock = installFetchMock();
+    const api = faxios.create().use(forwardTo("https://gateway.test/"));
+
+    await api.post("/items", { name: "a" });
+
+    const [ , init ] = mock.fetch.mock.calls[0] as [unknown, RequestInit & { duplex?: unknown; }];
+    expect(init.body).toBeInstanceOf(ArrayBuffer);
+    expect(init.duplex).toBeUndefined();
+    expect(await mock.lastRequest!.text()).toBe(JSON.stringify({ name: "a" }));
+    expect(mock.lastRequest!.headers.get("x-forward-to")).toBe(`${location.origin}/items`);
+  });
 });
