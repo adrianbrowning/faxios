@@ -34,8 +34,10 @@ env:
 
 concurrency:
   # The `ci-` prefix keeps a run called from release.yml out of release.yml's own group.
-  # A newer push to a PR cancels the run it supersedes; runs on main all finish.
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  # A newer push to a PR cancels the run it supersedes. Every other run has a group of its
+  # own commit: GitHub keeps one pending run per group and cancels it when a newer one
+  # queues, even without cancel-in-progress, so a group per ref would drop queued main commits.
+  group: ci-${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
@@ -101,6 +103,25 @@ jobs:
       - name: Build project
         run: pnpm run build
 
+      # Packed and hashed straight after the build, before any test or docs tooling runs in this
+      # workspace, so nothing later can change what release.yml publishes: a changed .tgz fails
+      # its sha256 check. npm, not pnpm: npm is the publisher, and check-license.ts checks npm's
+      # file list.
+      - name: Pack tarball
+        id: pack
+        working-directory: packages/lib
+        run: |
+          set -euo pipefail
+          name=$(npm pack --ignore-scripts --json | node -e 'let s = ""; process.stdin.on("data", d => s += d).on("end", () => console.log(JSON.parse(s)[0].filename))')
+          sha256=$(sha256sum "$name" | cut -d ' ' -f 1)
+          version=$(node -p 'require("./package.json").version')
+          {
+            echo "name=$name"
+            echo "sha256=$sha256"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+          echo "Packed \`$name\` (version $version), sha256 \`$sha256\`" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Install Playwright with deps
         working-directory: packages/tests
         run: pnpm exec playwright install --with-deps
@@ -118,22 +139,6 @@ jobs:
 
       - name: Run browser tests
         run: pnpm run test:vitest:browser:headless
-
-      # npm, not pnpm: npm is the publisher, and check-license.ts checks npm's file list.
-      - name: Pack tarball
-        id: pack
-        working-directory: packages/lib
-        run: |
-          set -euo pipefail
-          name=$(npm pack --ignore-scripts --json | node -e 'let s = ""; process.stdin.on("data", d => s += d).on("end", () => console.log(JSON.parse(s)[0].filename))')
-          sha256=$(sha256sum "$name" | cut -d ' ' -f 1)
-          version=$(node -p 'require("./package.json").version')
-          {
-            echo "name=$name"
-            echo "sha256=$sha256"
-            echo "version=$version"
-          } >> "$GITHUB_OUTPUT"
-          echo "Packed \`$name\` (version $version), sha256 \`$sha256\`" >> "$GITHUB_STEP_SUMMARY"
 
       # Compares against a PR's base, so it only runs on pull requests.
       - name: Dependency Review
