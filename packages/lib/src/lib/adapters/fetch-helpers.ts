@@ -3,6 +3,7 @@
 import FaxiosError from "../core/FaxiosError.js";
 import type FaxiosHeaders from "../core/FaxiosHeaders.js";
 import stripUserInfo from "../helpers/stripUserInfo.js";
+import utf8ByteLength from "../helpers/utf8ByteLength.js";
 import type {
   FaxiosResponse,
   InternalFaxiosRequestConfig
@@ -13,9 +14,6 @@ export type ComposedSignal = AbortSignal & { unsubscribe?: () => void; };
 export type PendingBodyErrorRef = { value: (FaxiosError & { request?: unknown; }) | null; };
 // The adapter step a failure came from: building the Request, sending it, or reading the body.
 export type FetchStage = "body" | "build" | "send";
-
-const _textEncoder: TextEncoder | undefined =
-  typeof globalThis.TextEncoder === "function" ? new globalThis.TextEncoder() : undefined;
 
 // A HEAD response and these statuses have no body, so their Content-Length isn't what they send.
 const BODILESS_STATUSES: ReadonlyArray<number> = [ 204, 205, 304 ];
@@ -44,18 +42,19 @@ export const checkDeclaredContentLength = (
   }
 };
 
+// The body is measured once read unless the counting stream wrapper read it: a runtime without
+// stream responses, or a Response-like value from `env.fetch` with no stream body, skips the
+// wrapper.
 // ponytail: exported for unit testing only — not part of public API
 export const checkMaterializedSize = (
   responseData: unknown,
   hasMaxContentLength: boolean,
   maxContentLength: number,
-  isStreamResponse: boolean,
-  supportsResponseStream: boolean,
+  isCountedWhileRead: boolean,
   config: InternalFaxiosRequestConfig,
   request: unknown
 ): void => {
-  if (!hasMaxContentLength || supportsResponseStream || isStreamResponse) return;
-  if (responseData == null) return;
+  if (!hasMaxContentLength || isCountedWhileRead || responseData == null) return;
   let materializedSize: number | undefined;
   const rd = responseData as Record<string, unknown>;
   if (typeof rd["byteLength"] === "number") {
@@ -65,9 +64,7 @@ export const checkMaterializedSize = (
     materializedSize = rd["size"];
   }
   else if (typeof responseData === "string") {
-    materializedSize = _textEncoder
-      ? _textEncoder.encode(responseData).byteLength
-      : responseData.length;
+    materializedSize = utf8ByteLength(responseData);
   }
   if (typeof materializedSize === "number" && materializedSize > maxContentLength) {
     throw new FaxiosError(

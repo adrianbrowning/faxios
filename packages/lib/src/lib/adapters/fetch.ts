@@ -14,6 +14,7 @@ import {
 } from "../helpers/progressEventReducer.js";
 import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import { trackStream } from "../helpers/trackStream.js";
+import utf8ByteLength from "../helpers/utf8ByteLength.js";
 import platform from "../platform.js";
 import type {
   FaxiosResponse,
@@ -337,7 +338,9 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
       });
   });
 
-  const getBodyLength = async (body: unknown): Promise<number | undefined> => {
+  // Sizes come from the body itself, never an encoded copy: measuring must not allocate a buffer
+  // as large as the body it may reject.
+  const getBodyLength = (body: unknown): number | undefined => {
     if (body == null) {
       return 0;
     }
@@ -355,7 +358,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     }
 
     if (utils.isString(body)) {
-      return (await encodeText(body as string)).byteLength;
+      return utf8ByteLength(body as string);
     }
     return undefined;
   };
@@ -363,7 +366,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
   // The bytes of a FormData body's field values and files, from their sizes, without reading the
   // body. A lower bound: the multipart body adds boundaries and part headers. Undefined for any
   // other body.
-  const getFormDataFieldsLength = async (body: unknown): Promise<number | undefined> => {
+  const getFormDataFieldsLength = (body: unknown): number | undefined => {
     if (!utils.isSpecCompliantForm(body)) {
       return undefined;
     }
@@ -371,16 +374,15 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     for (const [ , value ] of body as Iterable<[string, unknown]>) {
       // A FormData value is a string or a File.
       const size = utils.isString(value) ? undefined : utils.getSafeProp(value, "size");
-      // eslint-disable-next-line no-await-in-loop
-      length += typeof size === "number" ? size : (await encodeText(String(value))).byteLength;
+      length += typeof size === "number" ? size : utf8ByteLength(String(value));
     }
     return length;
   };
 
-  const resolveBodyLength = async (
+  const resolveBodyLength = (
     headers: FaxiosHeaders,
     body: unknown
-  ): Promise<number | undefined> => {
+  ): number | undefined => {
     const length = utils.toFiniteNumber(headers.getContentLength());
 
     return length == null ? getBodyLength(body) : length;
@@ -437,7 +439,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
 
   // Pre-flight size checks: data: URL content-length and known-size body maxBodyLength.
   // Returns requestContentLength if computed, else undefined.
-  const checkPreflightLimits = async (
+  const checkPreflightLimits = (
     url: string,
     data: unknown,
     method: string,
@@ -447,7 +449,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     maxBodyLength: number,
     config: InternalFaxiosRequestConfig,
     request: unknown
-  ): Promise<number | undefined> => {
+  ): number | undefined => {
     // Enforce maxContentLength for data: URLs up-front so we never materialize
     // an oversized payload. The HTTP adapter applies the same check.
     if (
@@ -470,8 +472,8 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     // A FormData body isn't measured, since that buffers it whole: its values alone over the limit
     // reject it here, and where it's streamed the byte counter covers the multipart framing too.
     if (hasMaxBodyLength && method !== "get" && method !== "head") {
-      const outboundLength = await getBodyLength(data);
-      const checkedLength = outboundLength ?? await getFormDataFieldsLength(data);
+      const outboundLength = getBodyLength(data);
+      const checkedLength = outboundLength ?? getFormDataFieldsLength(data);
       if (typeof checkedLength === "number" && isFinite(checkedLength)) {
         if (checkedLength > maxBodyLength) {
           throw new FaxiosError(
@@ -513,7 +515,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
   };
 
   // Set up request body streaming with upload progress and/or maxBodyLength enforcement.
-  const buildUploadStream = async (
+  const buildUploadStream = (
     data: unknown,
     url: string,
     method: string,
@@ -526,7 +528,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     config: InternalFaxiosRequestConfig,
     request: unknown,
     pendingBodyErrorRef: PendingBodyErrorRef
-  ): Promise<{ data: unknown; encodedContentType: null | string; requestContentLength: number | undefined; }> => {
+  ): { data: unknown; encodedContentType: null | string; requestContentLength: number | undefined; } => {
     // Browsers can't be given a stream body for upload progress: Chromium sends one only over
     // HTTP/2 or later and WebKit not at all, so the upload would fail. onUploadProgress isn't
     // called there (#209).
@@ -574,7 +576,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     ) {
       requestContentLength =
         requestContentLength == null
-          ? await resolveBodyLength(headers, data)
+          ? resolveBodyLength(headers, data)
           : requestContentLength;
 
       // A declared length of 0 is only trusted to skip the wrap when we are
@@ -759,7 +761,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
 
       url = applyAuthToRequest(requireRequestURL(url, config), headers, own);
 
-      const preflightContentLength = await checkPreflightLimits(
+      const preflightContentLength = checkPreflightLimits(
         url,
         data,
         method!,
@@ -777,7 +779,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
 
       const preparedBody = data;
       let encodedContentType: null | string;
-      ({ data, encodedContentType } = await buildUploadStream(
+      ({ data, encodedContentType } = buildUploadStream(
         data,
         url,
         method!,
@@ -847,7 +849,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
         endStreamBody?.();
       };
 
-      response = buildDownloadStream(
+      const counted = buildDownloadStream(
         response,
         responseHeaders,
         onDownloadProgress,
@@ -858,6 +860,10 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
         config,
         request
       );
+      // A response the wrapper couldn't wrap (no stream support, or no stream body) is measured
+      // once read instead.
+      const isCountedWhileRead = counted !== response;
+      response = counted;
 
       responseType = responseType || "text";
 
@@ -871,8 +877,7 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
         responseData,
         hasMaxContentLength,
         maxContentLength!,
-        isStreamResponse,
-        supportsResponseStream,
+        isCountedWhileRead,
         config,
         request
       );

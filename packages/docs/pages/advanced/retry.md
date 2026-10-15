@@ -70,7 +70,7 @@ const api = faxios.create({ baseURL: "https://api.example.com" }).use(retry({ at
 await api.get("/users");
 ```
 
-`attempts` must be an integer of at least 1. Anything else, including `Infinity`, rejects with `ERR_BAD_OPTION_VALUE` before a request is sent.
+`attempts` must be an integer from 1 to 10, in the plugin options and in a per-request override alike. Anything else, including `11` or `Infinity`, rejects with `ERR_BAD_OPTION_VALUE` before a request is sent. Each try is a full request, so the cap keeps one call from turning into a flood against a server that is already failing.
 
 ## Waiting between tries
 
