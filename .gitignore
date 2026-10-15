@@ -5,15 +5,11 @@
 node_modules/
 coverage/
 temp/
-test/typescript/faxios.js*
-sauce_connect.log
-test/module/**/package-lock.json
 backup/
 .env
 dist/
 .vscode/
-docs/.vitepress/dist
-docs/.vitepress/cache
+packages/docs/.vitepress/cache/
 /.eslintcache
 /packages/lib/.eslintcache
 **/.eslintcache
@@ -24,7 +20,6 @@ packages/tests/.run-tests.lock/
 .pnpm-store/
 .claude/settings.local.json
 /plans/
-tests/**/pnpm-lock.yaml
 packages/tests/docs-examples/.generated*/
 packages/tests/browser/__screenshots__/
 packages/tests/.vitest-attachments/

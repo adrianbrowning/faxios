@@ -1,8 +1,0 @@
-{
-  "name": "faxios-smoke-bun",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "faxios": "*"
-  }
-}

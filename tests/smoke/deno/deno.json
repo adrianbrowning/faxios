@@ -1,8 +1,0 @@
-{
-  "tasks": {
-    "test": "deno test --allow-net smoke.test.ts"
-  },
-  "imports": {
-    "faxios/": "../../../packages/lib/dist/"
-  }
-}

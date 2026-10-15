@@ -19,7 +19,5 @@ exclude_path = [
   "ECOSYSTEM.md",
   # Release history inherited from axios, kept as written.
   "packages/lib/CHANGELOG.md",
-  # axios's sponsor page, left out of the site (srcExclude in .vitepress/config.mts); #188.
-  "packages/docs/pages/misc/sponsors.md",
   "node_modules",
 ]

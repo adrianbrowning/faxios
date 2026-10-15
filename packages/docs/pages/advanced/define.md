@@ -22,11 +22,11 @@ import faxios from "@gcmdev/faxios";
 import { retry } from "@gcmdev/faxios/plugins/retry";
 import { z } from "zod";
 
-const api = faxios.create({ baseURL: "https://tags.tiqcdn.com" }).use(retry());
-const getDistro = api.define("get", "/utag/{account}/{profile}/prod/distro.zip", {
-  pathParamsSchema: z.object({ account: z.string(), profile: z.string() }),
+const api = faxios.create({ baseURL: "https://api.example.com" }).use(retry());
+const getProject = api.define("get", "/accounts/{account}/projects/{project}", {
+  pathParamsSchema: z.object({ account: z.string(), project: z.string() }),
 });
-await getDistro({ pathParams: { account: "acme", profile: "main" }, retry: { attempts: 2 } });
+await getProject({ pathParams: { account: "acme", project: "main" }, retry: { attempts: 2 } });
 ```
 
 ## Define-time config

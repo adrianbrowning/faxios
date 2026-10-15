@@ -69,9 +69,6 @@ importers:
 
   packages/docs:
     dependencies:
-      '@gcmdev/faxios':
-        specifier: workspace:*
-        version: link:../lib
       vitepress:
         specifier: 2.0.0-alpha.20
         version: 2.0.0-alpha.20(@types/node@24.19.0)(change-case@5.4.4)(esbuild@0.28.2)(jiti@2.7.0)(postcss@8.5.28)(typescript@6.0.3)(yaml@2.9.0)

@@ -17,9 +17,6 @@
       "ignoreDependencies": ["@gcmdev/faxios", "zod"]
     },
     "packages/docs": {
-      "entry": [
-        "scripts/**/*.js"
-      ],
       "project": ["**/*.{js,ts,mts,vue}"],
       "ignoreDependencies": ["esbuild"]
     },
@@ -32,14 +29,13 @@
       "ignore": ["client.js"]
     },
     ".": {
-      "entry": [],
-      "project": []
+      "entry": [".sandcastle/*.ts"],
+      "project": ["**/*.{js,ts,cjs,mjs,mts}"]
     }
   },
   "ignoreBinaries": ["sha256sum"],
   "ignoreDependencies": [
     "@vitest/browser",
-    "@ai-hero/sandcastle",
     "@tanstack/intent",
     "zod"
   ],

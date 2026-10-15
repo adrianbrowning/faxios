@@ -110,10 +110,3 @@ Security updates are released as soon as possible after the patch has been devel
 ## Maintainer-side incident response
 
 For compromise scenarios affecting maintainer accounts, workstations, or release infrastructure (phishing, stolen hardware key, unexpected tag/publish), the project maintains an internal incident-response runbook in [THREATMODEL.md §3.7](https://github.com/adrianbrowning/faxios/blob/main/THREATMODEL.md#37-incident-response-runbook). It covers session revocation, key rotation, downstream notification, and unpublish/deprecate procedures.
-
-## Security Partners and Acknowledgements
-
-We would like to thank the following security researchers for working with us to help make the project safe for everyone:
-
-- [Socket Dev](https://socket.dev/)
-- [GitHub Security Lab](https://securitylab.github.com/)
