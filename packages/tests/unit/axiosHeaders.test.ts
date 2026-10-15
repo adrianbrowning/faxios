@@ -816,4 +816,28 @@ describe("FaxiosHeaders", () => {
     await faxios.create({ env: { fetch }, headers: new Headers({ "X-C": "3" }) }).get("http://localhost/h");
     assert.strictEqual(sent?.get("x-c"), "3");
   });
+
+  describe("body aliases send request headers given as a Headers, a Map or [name, value] pairs", () => {
+    const forms = {
+      Headers: () => new Headers({ "X-B": "2" }),
+      Map: () => new Map([[ "X-B", "2" ]]),
+      pairs: () => [[ "X-B", "2" ]] as Array<[string, string]>,
+    };
+    const aliases = [ "post", "put", "patch", "query", "postForm", "putForm", "patchForm" ] as const;
+    for (const alias of aliases) {
+      for (const [ form, make ] of Object.entries(forms)) {
+        it(`${alias} with ${form}`, async () => {
+          let sent: Headers | undefined;
+          const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
+            sent = new Headers(init?.headers);
+            return new Response(null, { status: 200 });
+          };
+
+          await faxios.create({ env: { fetch } })[alias]("http://localhost/h", { a: "1" }, { headers: make() });
+
+          assert.strictEqual(sent?.get("x-b"), "2");
+        });
+      }
+    }
+  });
 });

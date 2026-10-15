@@ -10,7 +10,6 @@ import type {
   FaxiosPluginArgument,
   FaxiosRequestConfig,
   FaxiosResponse,
-  HeadersDefaults,
   InternalFaxiosRequestConfig,
   Method,
   RawFaxiosRequestHeaders,
@@ -29,29 +28,12 @@ import type { DefineConfig, DefinedEndpoint } from "./define.js";
 import dispatchRequest from "./dispatchRequest.js";
 import FaxiosError from "./FaxiosError.js";
 import FaxiosHeaders from "./FaxiosHeaders.js";
-import type { HeaderInput } from "./FaxiosHeaders.js";
+import { flattenHeaders, inheritHeaders } from "./headerLayers.js";
 import mergeConfig, { mergeConfigExceptHeaders } from "./mergeConfig.js";
 import armDeadline, { RequestBodies } from "./requestDeadline.js";
 import resolveRequestURL from "./resolveRequestURL.js";
 import type { RouteBuilder, RouteConfig } from "./route.js";
 import { createRouteBuilder } from "./route.js";
-
-// Every method header group declared on HeadersDefaults. `satisfies` keeps this
-// list exhaustive, so a group the types accept can never reach the wire.
-const METHOD_HEADER_GROUPS = Object.keys({
-  common: true,
-  delete: true,
-  get: true,
-  head: true,
-  options: true,
-  post: true,
-  put: true,
-  patch: true,
-  purge: true,
-  link: true,
-  unlink: true,
-  query: true,
-} satisfies Record<keyof HeadersDefaults, true>) as Array<keyof HeadersDefaults>;
 
 // RFC 9110 token: what fetch accepts as a method name.
 const HTTP_TOKEN = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
@@ -234,102 +216,6 @@ function runRequest(run: (bodies?: RequestBodies) => Promise<FaxiosResponse>, co
     .finally(() => bodies.release());
 }
 
-// A group is an own object under a group name; a string under a group name is a real header.
-function isHeaderGroup(headers: Record<string, unknown>, name: string): boolean {
-  return METHOD_HEADER_GROUPS.includes(name as keyof HeadersDefaults) && hasOwnProp(headers, name) && isObject(headers[name]);
-}
-
-// One level's headers (instance or request), lowest precedence first: the `common` group, the
-// group for the request's method, then the top-level headers. A FaxiosHeaders, Headers or other
-// iterable is one layer as it is. The config was validated as FaxiosConfigHeaders, so the casts
-// name what each layer holds.
-function headerLayers(headers: unknown, method: string): Array<HeaderInput> {
-  if (!isPlainObject(headers)) return [ headers as HeaderInput ];
-  const h = headers as Record<string, unknown>;
-  const topLevel: Record<string, unknown> = Object.create(null);
-  for (const name of Object.keys(h)) {
-    if (!isHeaderGroup(h, name)) topLevel[name] = h[name];
-  }
-  return [
-    isHeaderGroup(h, "common") ? h["common"] as HeaderInput : null,
-    isHeaderGroup(h, method) ? h[method] as HeaderInput : null,
-    topLevel as HeaderInput,
-  ];
-}
-
-// Removes every own key of `layer` that names `header`, case-insensitively.
-function deleteHeader(layer: Record<string, unknown> | undefined, header: string): void {
-  if (!layer) return;
-  for (const key of Object.keys(layer)) {
-    if (key.toLowerCase() === header) delete layer[key];
-  }
-}
-
-// A child method group beats the parent for that method only. A parent top-level value beat the
-// parent's groups, so it moves to `common`, where the child group beats it. A plain header
-// literally named `common` leaves no room for the group, so the parent's then stays.
-function yieldToChildGroup(
-  top: Record<string, unknown>,
-  groups: Partial<Record<keyof HeadersDefaults, Record<string, unknown>>>,
-  method: keyof HeadersDefaults,
-  header: string,
-  deleteEverywhere: (header: string) => void
-): void {
-  const topKey = Object.keys(top).findLast(key => key.toLowerCase() === header);
-  if (topKey !== undefined && !hasOwnProp(top, "common")) {
-    const value = top[topKey];
-    deleteEverywhere(header);
-    groups.common ??= Object.create(null) as Record<string, unknown>;
-    groups.common[topKey] = value;
-  }
-  deleteHeader(groups[method], header);
-}
-
-// Own string keys of a caller's header group in a null-prototype object, skipping the keys that
-// could pollute a prototype. Never Object.assign: it runs getters and copies symbols.
-function ownHeaderCopy(source: Record<string, unknown>): Record<string, unknown> {
-  const copy: Record<string, unknown> = Object.create(null);
-  for (const key of Object.keys(source)) {
-    if (!isDangerousKey(key)) copy[key] = source[key];
-  }
-  return copy;
-}
-
-/**
- * The parent's headers for a create() child, with every header the child sets removed from the
- * parent layers it must beat. Deep-merging the result with the child's headers then gives each
- * method the headers request() would send for the same layers: any child layer, `common`
- * included, beats every parent layer, and a child method group applies to that method only.
- */
-function inheritHeaders(parentHeaders: unknown, childHeaders: unknown): unknown {
-  const parent = parentHeaders instanceof FaxiosHeaders ? { ...parentHeaders } : parentHeaders;
-  const child = childHeaders instanceof FaxiosHeaders ? { ...childHeaders } : childHeaders;
-  if (!isPlainObject(parent) || !isPlainObject(child)) return parentHeaders;
-  const p = parent as Record<string, unknown>;
-  const c = child as Record<string, unknown>;
-  const top: Record<string, unknown> = Object.create(null);
-  const groups: Partial<Record<keyof HeadersDefaults, Record<string, unknown>>> = Object.create(null);
-  // A caller object: own string keys only, skipping the ones that could pollute a prototype.
-  for (const name of Object.keys(p)) {
-    if (isHeaderGroup(p, name)) groups[name as keyof HeadersDefaults] = ownHeaderCopy(p[name] as Record<string, unknown>);
-    else if (!isDangerousKey(name)) top[name] = p[name];
-  }
-  const deleteEverywhere = (header: string) => {
-    deleteHeader(top, header);
-    for (const group of Object.values(groups)) deleteHeader(group, header);
-  };
-  const everyMethod = [ ...Object.keys(c).filter(name => !isHeaderGroup(c, name)), ...isHeaderGroup(c, "common") ? Object.keys(c["common"] as object) : [] ];
-  // Child top-level and `common` headers apply to every method, so they replace every parent layer.
-  for (const name of everyMethod) deleteEverywhere(name.toLowerCase());
-  for (const method of METHOD_HEADER_GROUPS) {
-    if (method === "common" || !isHeaderGroup(c, method)) continue;
-    for (const name of Object.keys(c[method] as object)) {
-      yieldToChildGroup(top, groups, method, name.toLowerCase(), deleteEverywhere);
-    }
-  }
-  return Object.assign(Object.create(null) as Record<string, unknown>, top, groups);
-}
-
 // Middleware registration isn't a Faxios member: the callable instance from create() reaches it
 // through these, and its FaxiosInstance["use"] is the one place plugins are typed and checked.
 // The registry itself is untyped, so the class has nothing to type-check against.
@@ -492,9 +378,7 @@ class Faxios {
     config = this.#mergeAndNormalize(config);
     config.method = resolveMethod(config, this.defaults);
 
-    // Every request header replaces the instance's, including a `null` or `false` there.
-    config.headers = FaxiosHeaders.concat(undefined, ...headerLayers(instanceHeaders, config.method))
-      .set(FaxiosHeaders.concat(undefined, ...headerLayers(requestHeaders, config.method)), true);
+    config.headers = flattenHeaders(instanceHeaders, requestHeaders, config.method);
 
     const internal = config as InternalFaxiosRequestConfig;
     // Before middleware, so a bad value never reaches caller code or a timer that fires at once.
