@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { describe, it, vi } from "vitest";
+import { describe, it } from "vitest";
 import faxios from "#src/index.ts";
 import FaxiosHeaders, { defineHeaderShortcuts } from "#src/lib/core/FaxiosHeaders.js";
 
@@ -580,17 +580,12 @@ describe("FaxiosHeaders", () => {
 
     it("registers a header once when the shortcut builder runs twice", () => {
       class Headers extends FaxiosHeaders {}
-      const defineProperty = vi.spyOn(Object, "defineProperty");
-      try {
-        defineHeaderShortcuts(Headers.prototype, [ "X-Once" ]);
-        defineHeaderShortcuts(Headers.prototype, [ "x-once" ]);
+      defineHeaderShortcuts(Headers.prototype, [ "X-Once" ]);
+      const first: unknown = Object.getOwnPropertyDescriptor(Headers.prototype, "getXOnce")?.value;
+      defineHeaderShortcuts(Headers.prototype, [ "x-once" ]);
 
-        const calls = defineProperty.mock.calls.filter(([ target, name ]) => target === Headers.prototype && name === "getXOnce");
-        assert.strictEqual(calls.length, 1);
-      }
-      finally {
-        defineProperty.mockRestore();
-      }
+      assert.strictEqual(typeof first, "function");
+      assert.strictEqual(Object.getOwnPropertyDescriptor(Headers.prototype, "getXOnce")?.value, first);
     });
 
     it("is not a public static on FaxiosHeaders", () => {
