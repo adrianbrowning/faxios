@@ -1,6 +1,6 @@
 # Collaborator guide
 
-As a collaborator, you help administer faxios. This guide covers the responsibilities that come with that access. For architecture, lifecycle, security-sensitive code, and conventions, use [AGENTS.md](./AGENTS.md), the canonical contributor guide.
+As a collaborator, you help administer faxios. This guide covers the responsibilities that come with that access. The technical rules (setup, architecture, tests, bump files, releases) are in [AGENTS.md](./AGENTS.md), and the rules for writing and reviewing library code are in [CODING_STANDARDS.md](./CODING_STANDARDS.md). This guide doesn't repeat them.
 
 ## Code of conduct
 
@@ -17,27 +17,20 @@ Read the [Code of Conduct](./CODE_OF_CONDUCT.md) and help enforce it. Keep the c
 
 Be helpful and patient. If a question comes from unclear docs, update the docs and consider adding an example instead of only answering in the thread. You are not expected to teach JavaScript or unrelated tooling. Redirect those questions politely.
 
-## Submit PRs
+## Review PRs
 
-When opening a PR, make sure:
+When reviewing a PR, make sure:
 
 - The change fits within faxios. Decline features early and kindly when they belong in user code or a plugin.
-- Cover behavior across the XHR, Fetch, and Node HTTP adapters where relevant. Detect by capability, not environment name.
-- Keep `index.d.ts` (ESM types) in sync when the public API changes.
-- Make faxios-originated failures throw `FaxiosError` with an appropriate code, never raw `Error`. Wrap third-party errors with `FaxiosError.from`.
-- Cover the change with unit tests. Update browser, smoke, or module suites when packaging or runtime surface is affected.
-- Lint and tests pass before review. Do not merge red PRs.
-- Do not add runtime dependencies without discussion. `package-lock.json` changes must keep `lockfile-lint` happy (npm HTTPS hosts, integrity hashes).
-- Package and GitHub Actions update PRs are maintainer/bot-only. Close PRs from outside collaborators that only update npm packages, lockfiles, or GitHub Actions versions.
-- Keep the 7-day Dependabot delay for these updates. Bypass it only when a critical vulnerability requires a maintainer-led manual update.
-- Security-sensitive changes get extra scrutiny and focused regression tests. This includes URL construction, redirects, proxy/env handling, XSRF, socket paths, decompression limits, prototype walking, and adapters. Consult [THREATMODEL.md](./THREATMODEL.md).
-- Warn before removing functionality.
-- New public API surface is predictable, consistent with existing options, and documented.
+- It follows [AGENTS.md](./AGENTS.md) and [CODING_STANDARDS.md](./CODING_STANDARDS.md), and `pnpm check` passes in CI. Do not merge red PRs.
+- Security-sensitive changes get extra scrutiny and focused regression tests. Consult [THREATMODEL.md](./THREATMODEL.md).
+- Removed functionality and breaking changes are called out in the PR description.
 - PR titles use [Conventional Commits](https://www.conventionalcommits.org/) (`fix:`, `feat:`, `chore:`, `docs:`, etc.).
-- A user-visible change to `packages/lib` has a bump file in `.bumpy/` with the right level (patch, minor or major). bumpy writes the changelog from it. Target `main`; in 0.x, breaking changes ship as a minor.
-- To release, merge the Version Packages PR that bumpy keeps up to date on `main`. `release.yml` runs CI on the merged commit, then publishes to npm, tags the release, creates the GitHub release and deploys the docs. Nothing waits for approval on npm, so review the Version Packages PR like any other.
+- Package, lockfile, and GitHub Actions update PRs come from maintainers or approved bots. Close PRs from outside collaborators that only update npm packages, lockfiles, or GitHub Actions versions.
 
-At least one maintainer must review and approve a PR before merge. If you are unsure about the impact of a change, ask for a second opinion. Call out breaking changes in the PR description and send them to the appropriate branch. Bug fixes need a test that reproduces the issue and verifies the fix.
+At least one maintainer must review and approve a PR before merge. If you are unsure about the impact of a change, ask for a second opinion. Bug fixes need a test that reproduces the issue and verifies the fix.
+
+To release, merge the Version Packages PR that bumpy keeps up to date on `main` (see "Changes And Releases" in [AGENTS.md](./AGENTS.md)). Nothing waits for approval on npm, so review the Version Packages PR like any other.
 
 If changes are requested, address them promptly. If you cannot make the changes, say so clearly so someone else can pick them up.
 
@@ -53,7 +46,7 @@ If someone reports a suspected vulnerability in a public issue, do not discuss s
 - Add runtime dependencies without discussion. The dependency surface is intentionally tiny.
 - Merge package, lockfile, or GitHub Actions version update PRs from outside collaborators.
 - Disable `ignore-scripts` in `.npmrc` or otherwise weaken install-time safety.
-- Weaken `beforeRedirect`, proxy, `socketPath`, XSRF, or prototype-pollution safeguards without tests covering the regression cases.
+- Weaken a safeguard listed in [THREATMODEL.md](./THREATMODEL.md) without tests covering the regression cases.
 
 ---
 

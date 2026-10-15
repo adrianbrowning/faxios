@@ -43,6 +43,7 @@ jobs:
             '*.md' '.github/**/*.md' 'docs/**/*.md'
             'packages/docs/index.md' 'packages/docs/pages/**/*.md'
             'packages/lib/README.md' 'packages/lib/skills/**/*.md'
+            'packages/tests/README.md' '.claude/**/*.md'
           fail: true
         env:
           # Raises the GitHub rate limit for github.com links.

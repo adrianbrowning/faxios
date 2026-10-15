@@ -1,110 +1,78 @@
-# Test Contribution Guide
+# Test contribution guide
 
-This guide explains how to contribute tests inside the `tests` directory.
-It is intentionally scoped to this directory only.
+Every test harness for faxios lives in this package (`@faxios/tests`). The repo-wide test rules are in [AGENTS.md](../../AGENTS.md) ("Tests") and [CODING_STANDARDS.md](../../CODING_STANDARDS.md) ("Tests"); this page says where a test goes and which helpers to use.
 
-## Tests Directory Layout
+Run everything with `pnpm check` from the repo root. It runs [run-tests.sh](run-tests.sh), which builds `packages/lib`, packs it into `faxios.tgz`, installs that tarball into the smoke and module harnesses, and runs every suite below.
 
-```text
-tests/
-  browser/   # browser runtime tests
-  setup/     # shared test setup utilities
-  smoke/     # package-compat smoke suites (esm + cjs)
-  unit/      # focused unit/behavior tests
+## Layout
+
+| Directory | Suite | Runs against | How it runs |
+| --- | --- | --- | --- |
+| [unit/](unit/) | Node behaviour tests | lib source through `#src/*` | `vitest run --project unit` |
+| [browser/](browser/) | Browser behaviour tests | lib source through `#src/*` | `vitest run --project browser-headless` (Chromium, Firefox, WebKit) |
+| [smoke/esm/](smoke/esm/) | Node ESM package smoke tests | the packed tarball | `pnpm test:smoke:esm:vitest` |
+| [smoke/deno/](smoke/deno/) | Deno smoke tests and type checks | the built `lib/dist` | `pnpm test:smoke:deno` |
+| [smoke/bun/](smoke/bun/) | Bun smoke tests | the packed tarball | `pnpm test:smoke:bun` |
+| [module/esm/](module/esm/) | Declaration and packaging tests (own TypeScript version) | the packed tarball | `pnpm test:module:esm` |
+| [docs-examples/](docs-examples/) | Code blocks from the README and docs pages, type-checked and run | the built `lib/dist` | `pnpm test:docs-examples` |
+| [setup/](setup/) | Shared helpers | | |
+| [eslint-rules/](eslint-rules/) | Lint rules for this package (tests in `unit/eslint-rules/`) | | |
+| [scripts/](scripts/) | `lint:ts` checks and release helpers | | |
+
+The test projects are defined in [vitest.config.js](vitest.config.js). To run one file while you iterate:
+
+```bash
+pnpm --filter @faxios/tests exec vitest run --project unit unit/core/mergeConfig.test.ts
 ```
 
-Use the runtime-first layout already present in this directory:
+## File names
 
-- Put browser-runtime behavior in `tests/browser`.
-- Put non-browser focused tests in `tests/unit`.
-- Put packaging/compatibility smoke checks in `tests/smoke/esm/tests` and `tests/smoke/cjs/tests`.
-- Reuse helpers from `tests/setup` instead of duplicating setup logic.
+Every test is TypeScript:
 
-## File Naming Conventions
+- Unit: `unit/**/*.test.ts`
+- Browser: `browser/**/*.browser.test.ts`
+- Smoke: `smoke/{esm,deno,bun}/tests/*.smoke.test.ts`
+- Module: `module/esm/tests/*.module.test.ts`
 
-Follow the existing file patterns:
+## Unit (`unit/`)
 
-- Unit tests: `*.test.js`
-- Browser tests: `*.browser.test.js`
-- ESM smoke tests: `*.smoke.test.js`
-- CJS smoke tests: `*.smoke.test.cjs`
+- Import lib internals through `#src/*` (mapped to `../lib/src/*` in [tsconfig.json](tsconfig.json)), for example `import mergeConfig from "#src/lib/core/mergeConfig.js";`.
+- Tests that need a real HTTP server start one with `startHTTPServer` from [setup/server.ts](setup/server.ts) and stop it in `finally` (or `afterEach`/`afterAll`). A leaked server hangs Vitest, and the `faxios/test-server-cleanup` lint rule rejects a test that doesn't stop it. Servers bind port 0; `faxios/no-fixed-test-port` rejects a fixed port.
+- Keep fixtures next to the tests that use them, for example [unit/adapters/faxios.png](unit/adapters/faxios.png) and [unit/core/_schemaTestHelpers.ts](unit/core/_schemaTestHelpers.ts).
 
-When adding a new test, match the nearest existing file name pattern in the same subdirectory.
+Representative files: [unit/adapters/fetch.test.ts](unit/adapters/fetch.test.ts), [unit/core/mergeConfig.test.ts](unit/core/mergeConfig.test.ts), [unit/regression.test.ts](unit/regression.test.ts).
 
-## Suite-Specific Authoring Patterns
+## Browser (`browser/`)
 
-### Unit (`tests/unit`)
+- Mock `globalThis.fetch` with `installFetchMock` from [browser/helpers/fetchMock.ts](browser/helpers/fetchMock.ts). It restores the original `fetch` on dispose, so declare it with `using`.
+- Restore every global you replace and reset spies in cleanup hooks. [setup/browser.setup.ts](setup/browser.setup.ts) clears the DOM after each test.
+- Real uploads go to the `/__faxios/upload` endpoint that [vitest.config.js](vitest.config.js) adds to the Vitest browser server.
 
-- Keep tests focused on one behavior or API surface.
-- For adapter/network behavior, prefer local test servers using utilities from `tests/setup/server.js`.
-- Ensure server cleanup with `try/finally` so tests do not leak resources.
-- Keep fixtures close to the tests that use them (see `tests/unit/adapters` for examples).
+Representative files: [browser/headers.browser.test.ts](browser/headers.browser.test.ts), [browser/cancel.browser.test.ts](browser/cancel.browser.test.ts), [browser/defaults.browser.test.ts](browser/defaults.browser.test.ts).
 
-Representative files:
+## Smoke (`smoke/`)
 
-- `tests/unit/adapters/http.test.js`
-- `tests/unit/adapters/fetch.test.js`
-- `tests/unit/regression.test.js`
+Smoke tests check that the published package imports and makes requests in each runtime. Keep them small: imports, exports and the critical request flows.
 
-### Browser (`tests/browser`)
+- `smoke/esm` and `smoke/bun` install `faxios.tgz` from their own frozen lockfiles; `smoke/deno` maps `faxios` to `lib/dist` in [smoke/deno/deno.json](smoke/deno/deno.json). When you add a scenario to one runtime, add it to the others where it applies.
+- [smoke/deno/types/consumer.ts](smoke/deno/types/consumer.ts) is checked by `deno check`, never run. It fails when a built module loses its `@ts-self-types` pragma.
+- Don't delete or regenerate a harness lockfile. [AGENTS.md](../../AGENTS.md) ("Setup And Safety") explains how `run-tests.sh` pins the tarball.
 
-- Use local in-file `MockXMLHttpRequest` style mocks when testing request behavior.
-- Replace global XHR in `beforeEach` and restore it in `afterEach`.
-- Reset spies/mocks in cleanup hooks to keep tests isolated.
-- Keep assertions centered on observable request/response behavior.
+Representative files: [smoke/esm/tests/fetch.smoke.test.ts](smoke/esm/tests/fetch.smoke.test.ts), [smoke/deno/tests/fetch.smoke.test.ts](smoke/deno/tests/fetch.smoke.test.ts), [smoke/bun/tests/fetch.smoke.test.ts](smoke/bun/tests/fetch.smoke.test.ts).
 
-Representative files:
+## Module (`module/esm/`)
 
-- `tests/browser/requests.browser.test.js`
-- `tests/browser/adapter.browser.test.js`
-- `tests/browser/defaults.browser.test.js`
+Run this suite when you change declarations or `exports`. Its tests copy a fixture from [module/esm/tests/helpers/](module/esm/tests/helpers/) into a temp project and compile it with the suite's pinned TypeScript, so the published `.d.ts` files are checked as a consumer sees them.
 
-### Smoke (`tests/smoke`)
+Representative files: [module/esm/tests/typings.module.test.ts](module/esm/tests/typings.module.test.ts), [module/esm/tests/ts.module.test.ts](module/esm/tests/ts.module.test.ts).
 
-- Keep ESM and CJS smoke coverage aligned for compatibility-sensitive behavior.
-- If you add a new smoke scenario in one format, add the equivalent in the other format.
-- Keep smoke tests small and focused on import/runtime behavior and critical request flows.
+## Docs examples (`docs-examples/`)
 
-Representative files:
+[docs-examples/extract.ts](docs-examples/extract.ts) extracts the `js`/`ts` code blocks from `packages/lib/README.md` and the docs pages. The comment at the top of that file lists the fence markers that skip a block, type-check it only, or change the fake `fetch` response.
 
-- `tests/smoke/esm/tests/fetch.smoke.test.js`
-- `tests/smoke/cjs/tests/fetch.smoke.test.cjs`
-- `tests/smoke/esm/tests/basic.smoke.test.js`
-- `tests/smoke/cjs/tests/basic.smoke.test.cjs`
+## Checklist
 
-## Shared Setup Utilities (`tests/setup`)
-
-Use shared helpers before introducing new setup code:
-
-- `tests/setup/server.js`
-  - Server lifecycle helpers: `startHTTPServer`, `stopHTTPServer`, `stopAllTrackedHTTPServers`
-  - Timing helpers: `setTimeoutAsync`
-  - Data/stream helpers used by adapter tests
-- `tests/setup/browser.setup.js`
-  - Browser cleanup hook (`afterEach`) for clearing test DOM state
-
-General expectation: if a helper can be reused by multiple tests in this directory, add or extend it in `tests/setup` instead of copying setup code between test files.
-
-## Fixtures and Test Data
-
-- Prefer colocated fixtures near the test files that need them.
-- Keep fixture names explicit and stable.
-- For matrix-like scenarios, prefer concise table-driven cases inside the test file when practical.
-
-Examples of colocated fixtures:
-
-- `tests/unit/adapters/cert.pem`
-- `tests/unit/adapters/key.pem`
-- `tests/unit/adapters/faxios.png`
-
-## Contributor Checklist
-
-Before opening a PR for tests in this directory:
-
-- File is placed in the correct suite directory (`unit`, `browser`, or `smoke`).
-- File name matches the local pattern (`*.test.js`, `*.browser.test.js`, `*.smoke.test.js`, `*.smoke.test.cjs`).
-- Test setup/teardown is explicit and leaves no global/server state behind.
-- Shared setup logic uses `tests/setup` helpers where possible.
-- Smoke tests remain ESM/CJS consistent when behavior is format-sensitive.
-- Fixtures are colocated and minimal.
-- Assertions are deterministic and avoid unnecessary timing/network flakiness.
+- The file is in the right suite directory and matches its name pattern.
+- Setup and teardown leave no server, global or spy behind.
+- Shared setup uses [setup/](setup/) helpers instead of a copy.
+- Assertions are deterministic and avoid timing and network flakiness.

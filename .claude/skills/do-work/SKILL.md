@@ -14,7 +14,7 @@ Structured workflow for completing a unit of work in this repository.
 Before touching code:
 - Base the work on a fresh trunk: `git fetch origin`, then branch (or `gh stack init`) from `origin/main`. `gh stack init` uses the *local* `main`, so fast-forward it first if you stack. When other work runs at the same time, give the branch its own worktree: `git worktree add -b <branch> ../<dir> origin/main`, then `pnpm install --frozen-lockfile` in it. Driving several worktrees at once: read "Parallel worktrees" in `docs/agents/issue-tracker.md` first.
 - Restate the task as a verifiable target ("done when X")
-- Identify affected packages (docs, examples, lib, sandbox, tests)
+- Identify affected packages (docs, lib, tests)
 - List files to create/modify
 - Surface ambiguities — ask before proceeding if any exist
 - For 3+ file changes or architectural decisions, use Plan mode
@@ -24,8 +24,8 @@ Before touching code:
 - Surgical changes — touch only what the task requires
 - Follow existing patterns in affected package (see CLAUDE.md / AGENTS.md)
 - ESM only (`type: module`); no CJS/`require`, no UMD
-- Explicit `.js` extensions in imports; run `.ts` directly with node (no `tsx`/`ts-node`)
-- `workspace:*` for internal package deps (e.g. `packages/tests` depends on `faxios` via `workspace:*`)
+- Explicit extensions in relative imports. In `packages/lib/src`, `src/index.ts` imports with `.ts` (zshy rewrites them to `.js` in `dist/`) and every other file imports with `.js`. `packages/tests` sets `allowImportingTsExtensions` and imports lib source through `#src/*` with either extension. Run `.ts` directly with node (no `tsx`/`ts-node`)
+- `workspace:*` for internal package deps (e.g. `packages/tests` depends on `@gcmdev/faxios` via `workspace:*`)
 - TypeScript strict config via `@gingacodemonkey/config/tsc/no-dom/library`
 
 #### Back-end code
@@ -79,21 +79,20 @@ Stage only files changed by this task. Write a **Conventional Commits** message 
 
 **Types:** `feat` | `fix` | `refactor` | `test` | `chore` | `docs` | `perf` | `ci`
 
-**Scope:** package name or domain (`lib`, `tests`, `docs`, `examples`, `sandbox`)
+**Scope:** package or area (`lib`, `tests`, `docs`, `ci`, `repo`)
 
 **Examples:**
 ```
-feat(auth): add token refresh on 401
-fix(worker): prevent duplicate message deletion on retry
-refactor(api): extract request-validation into shared util
-chore(deps): upgrade prisma to 6.x
+feat(lib): add token refresh on 401
+fix(tests): stop the test server in finally
+docs(docs): document the retry plugin options
 ```
 
 Rules:
 - Subject ≤ 72 chars, lowercase type/scope, no trailing period
 - Use body for non-obvious motivation, not task IDs
 - One logical change per commit
-- Subject case must be sentence-case or lower-case (enforced by `commitlint.config.js`)
+- Subject must not be start-case, pascal-case or upper-case (enforced by `commitlint.config.js`); code identifiers such as `FaxiosHeaders` inside a lower-case or sentence-case subject are fine
 
 ### 6. Hand-off
 
@@ -103,4 +102,3 @@ Done when the PR is open and every required check is green.
 2. **Push and open the PR.** `gh pr create` and `gh pr edit` fail here (see `docs/agents/issue-tracker.md`), so open it with `gh api repos/adrianbrowning/faxios/pulls -f title=… -f head=<branch> -f base=main -F body=@<file> -q .html_url`. The body has a Summary, `Closes #N` (or `Part of #N` when the issue keeps a later part), each test with what it failed with before the fix, and the checks you ran. Set the issue's milestone on the PR with `gh api -X PATCH repos/adrianbrowning/faxios/issues/<PR> -F milestone=<number>`.
 3. **Wait for CI.** `scripts/pr-ci-status.sh <PR>` exits 0 when every workflow is green. Fix a failure, push, and run it again.
 4. **Rebase with the review.** A rebase onto a new `main` or a lower stack layer conflicts on `.intent/review-state.json` and leaves the review pending. Run `scripts/intent-restack.sh rebase <base>` in the branch's worktree, or `scripts/intent-restack.sh record <base>` after `gh stack rebase`.
-</content>
