@@ -7271,15 +7271,15 @@
       ]
     },
     "source:.github/workflows/moderator.yml": {
-      "fingerprint": "f1dc5c1f2b0c7acacc4bae2ea214820438eef42974c233621621241115390b5e",
+      "fingerprint": "faac777a2348aa02aa2c7232549b55e2207faac86547bc0077de2b92f43bbfa4",
       "snapshot": {
-        ".github/workflows/moderator.yml": "3fab45775dd90e9178c91e4f942ff883d93760b9cee571c300d33f23c35867f8"
+        ".github/workflows/moderator.yml": "fdcf7033d5927721e50b2dda6e5288e60b7d1441472575b9cea9f14b7f473628"
       },
-      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
+      "head": "f27ff84d4bd87840a69e1bb5ab2ee21d743e8462",
       "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "reason": "Workflow comment and zizmor suppression only; the packaged skill teaches nothing about CI",
       "evidence": [
-        "Changed files: .github/workflows/moderator.yml"
+        "Changed: .github/workflows/moderator.yml at f27ff84d4bd87840a69e1bb5ab2ee21d743e8462"
       ]
     },
     "source:packages/tests/scripts/check-workflow-timeouts.ts": {
