@@ -1953,15 +1953,15 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "13e2899d2af0abad24865478f6a89180d38729c34343ce8fb10bc013452feb6b",
+      "fingerprint": "d0233a5f154d7d0f33b8d07b6cf0207c2c7e3111b3368cc9a38327e6014e774c",
       "snapshot": {
-        "THREATMODEL.md": "7d1ea44dc3f912e1e032039528dcda0f5a9f6a58ebfbbcd82db52b6fbeed9b1c"
+        "THREATMODEL.md": "f0b83df9db24389691f290d3b4ea309143c1e53fe45e82e827fc264ea824a89e"
       },
-      "head": "5bcf364646a57ea5a331b054b072307fab2feb16",
+      "head": "78e457f2ce06d206ff0af918b85ace34fa73c020",
       "outcome": "no-change",
-      "reason": "CI step order, workflow comments, docs and test-harness changes only; nothing the configure-requests skill teaches changed",
+      "reason": "Threat-model wording only; the packaged skill teaches nothing about publishing",
       "evidence": [
-        "Changed: THREATMODEL.md at 5bcf364646a57ea5a331b054b072307fab2feb16"
+        "Changed: THREATMODEL.md at 78e457f2ce06d206ff0af918b85ace34fa73c020"
       ]
     },
     "source:packages/docs/.vitepress/theme/index.ts": {
