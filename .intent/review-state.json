@@ -7258,15 +7258,15 @@
       ]
     },
     "source:CODE_OF_CONDUCT.md": {
-      "fingerprint": "92688eb336044ff1ea0d46e9f8ac0e429a503153e9b011312db8abef32f3d85d",
+      "fingerprint": "4f6a4aea0e67bf480928f8a2280e0bd31619a93d387e418e914b8552f148dae0",
       "snapshot": {
-        "CODE_OF_CONDUCT.md": "fca93ead2c806b9dae9b5247ec26c73ae1a483a05c2060877dc7abd275fa0057"
+        "CODE_OF_CONDUCT.md": "f5d50828bbb49b2d39ba2b7f0d34a5ee770218817cd1143967d22a76561ff060"
       },
-      "head": "97e7c23fdbd287d2173a8dab435d5b62116cf957",
+      "head": "adb16ea89d4b8e0a71790dc702f9e519bccd324a",
       "outcome": "no-change",
-      "reason": "Conduct reporting, issue forms and SECURITY.md wording only; the packaged skill teaches nothing about them",
+      "reason": "Conduct-report address only; the packaged skill teaches nothing about conduct reporting",
       "evidence": [
-        "Changed: CODE_OF_CONDUCT.md at bc3136d50ee0ca33a47326027c10e111cad381e9"
+        "Changed: CODE_OF_CONDUCT.md at adb16ea89d4b8e0a71790dc702f9e519bccd324a"
       ]
     }
   }
