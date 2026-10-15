@@ -1917,15 +1917,15 @@
       ]
     },
     "source:.github/workflows/release.yml": {
-      "fingerprint": "bec218498e19b678765440b6cc18e9edeeb48e6b8c3ee3fb23fe4ad23b007621",
+      "fingerprint": "68380b030d715dd143d08ffd5303ee165b30a0688ce75e806c4be84fa1c9846f",
       "snapshot": {
-        ".github/workflows/release.yml": "533a86e0d3e706fd8a5e825ef80378a8dc1324f1dff958f0a790506ee0c47261"
+        ".github/workflows/release.yml": "6b64fe923f87f62d3f5229a3506bc17cd48a41610a70d55f8313aecbe4a253e2"
       },
-      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
+      "head": "3406d704537cb06f43325f1239d9d86189547b27",
       "outcome": "no-change",
-      "reason": "release.yml: the version job also records the Intent review on the Version Packages PR. No API or skill guidance changes.",
+      "reason": "Threat-model and workflow comment wording only; the packaged skill teaches nothing about publishing",
       "evidence": [
-        "Changed: .github/workflows/release.yml at cfbda2b2c64667f803d29692960c88da00926654"
+        "Changed: .github/workflows/release.yml at 3406d704537cb06f43325f1239d9d86189547b27"
       ]
     },
     "source:COLLABORATOR_GUIDE.md": {
@@ -1953,15 +1953,15 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "d0233a5f154d7d0f33b8d07b6cf0207c2c7e3111b3368cc9a38327e6014e774c",
+      "fingerprint": "0cc222161d33a6f1920ea7fb01fd520faa5f82c93bba2a367d0a799e68cf690e",
       "snapshot": {
-        "THREATMODEL.md": "f0b83df9db24389691f290d3b4ea309143c1e53fe45e82e827fc264ea824a89e"
+        "THREATMODEL.md": "dfba65203554cd09c351ddb6854e64564bf4d696a5fcae6b54f29f5223f85b16"
       },
-      "head": "78e457f2ce06d206ff0af918b85ace34fa73c020",
+      "head": "3406d704537cb06f43325f1239d9d86189547b27",
       "outcome": "no-change",
-      "reason": "Threat-model wording only; the packaged skill teaches nothing about publishing",
+      "reason": "Threat-model and workflow comment wording only; the packaged skill teaches nothing about publishing",
       "evidence": [
-        "Changed: THREATMODEL.md at 78e457f2ce06d206ff0af918b85ace34fa73c020"
+        "Changed: THREATMODEL.md at 3406d704537cb06f43325f1239d9d86189547b27"
       ]
     },
     "source:packages/docs/.vitepress/theme/index.ts": {
