@@ -90,8 +90,9 @@ const res = await faxios.get("https://api.example.com/users/{id}/posts", {
 // GET https://api.example.com/users/42/posts?page=2&tag=news
 ```
 
-`pathParams` values are `encodeURIComponent`-encoded. A missing or `null` value, or `.`/`..`
-(also percent-encoded, such as `%2e%2e`), rejects with `ERR_BAD_OPTION_VALUE`.
+`pathParams` values are `encodeURIComponent`-encoded. A missing, `null` or empty (`""`) value, or
+`.`/`..` (also percent-encoded, such as `%2e%2e`), rejects with `ERR_BAD_OPTION_VALUE`: an empty
+value would turn `/{org}/{repo}` into `//host`.
 
 Binary downloads need `responseType`, and a type argument because `data` is `unknown`:
 
@@ -319,7 +320,9 @@ value, because it is the only value typed with the plugin's request options (suc
 [plugins](references/plugins.md) for a complete installation example.
 
 - `authBearer(getToken, { scheme, header, origins, overwrite })` sends the token only to the
-  `baseURL` origin when `baseURL` is absolute; otherwise only to relative request URLs. Use
+  instance `baseURL` origin when that is absolute; otherwise only to relative request URLs. A
+  per-request `baseURL` never gets it, nor does a URL with a `pathParams` placeholder in its
+  scheme or host (`"https://{host}/x"`). Use
   `origins` to allow more. It leaves an explicit `Authorization` header alone unless
   `overwrite: true`. Install `retry` before it if each attempt should call `getToken` again.
   A `getToken` result that isn't a non-empty string sends the request without the header.
@@ -420,8 +423,11 @@ export only. Instances from `create()` do not have them; import them by name ins
    `baseURL` and `allowAbsoluteUrls` is unset, an absolute request URL rejects with
    `ERR_INVALID_URL` before fetch: `api.get("https://other.example/x")` fails, and so does
    `api.getUri({ url: "https://other.example/x" })`. Use a separate instance, or set
-   `allowAbsoluteUrls: true` when the absolute URL is trusted. Source:
-   `src/lib/core/Faxios.ts` (`resolveAllowAbsoluteUrls`), `src/lib/core/buildFullPath.ts`.
+   `allowAbsoluteUrls: true` when the absolute URL is trusted. A URL is absolute only with a
+   scheme and `//`: `documents:batchGet` or `localhost:3000/x` joins `baseURL`. A `url` or
+   joined `baseURL` with a tab or line break rejects with `ERR_INVALID_URL`. Source:
+   `src/lib/core/Faxios.ts` (`resolveAllowAbsoluteUrls`), `src/lib/core/buildFullPath.ts`,
+   `src/lib/helpers/isAbsoluteURL.ts`.
 6. **MEDIUM: Importing plugins from the root.** `import { retry } from "@gcmdev/faxios"` fails and
    `faxios.plugins` is undefined. Import from `@gcmdev/faxios/plugins/<name>`.
 7. **MEDIUM: Calling statics on an instance.** `api.isCancel(e)` is undefined on a `create()`

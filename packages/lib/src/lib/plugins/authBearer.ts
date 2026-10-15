@@ -1,9 +1,9 @@
 // @ts-self-types="./authBearer.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import { FaxiosError, FaxiosHeaders } from "../../index.js";
+import { FaxiosError, FaxiosHeaders, resolveRequestURL } from "../../index.js";
 import type { FaxiosPlugin, InternalFaxiosRequestConfig } from "../../index.js";
 import { definePlugin } from "./definePlugin.js";
-import { assertOptions, fullPath, isAbsoluteURL, isBoolean, isHeaderName, own } from "./shared.js";
+import { assertOptions, isBoolean, isHeaderName, own } from "./shared.js";
 
 /** What `authBearer` provides to plugins installed after it. */
 export type AuthBearerCapability = { auth: { getToken: () => Promise<string>; }; };
@@ -13,7 +13,7 @@ export type AuthBearerOptions = {
   header?: string;
   /**
    * The origins (`"https://api.example.com"`) that get the token, replacing the default rule:
-   * with an absolute `baseURL`, only its origin; otherwise only relative request URLs.
+   * with an absolute instance `baseURL`, only its origin; otherwise only relative request URLs.
    */
   origins?: Array<string>;
   /** Replace a header the request already has. Default `false`: an explicit header is kept. */
@@ -62,25 +62,56 @@ function pageHref(): string | undefined {
   return undefined;
 }
 
-function sendsTokenTo(config: InternalFaxiosRequestConfig, origins: null | ReadonlyArray<string>): boolean {
-  const baseURL = own(config, "baseURL");
-  const url = fullPath(config);
+// The scheme and authority of a URL template (`https://api.example.com`, `{s}://host`,
+// `//host`): an optional scheme up to a `:`, then two slashes and the authority. No match for a
+// URL without an authority. Neither class matches a slash, so the scan is linear.
+const SCHEME_AND_AUTHORITY = /^(?:[^/?#\\]*:)?[/\\]{2}[^/?#\\]*/;
+
+function sendsTokenTo(config: InternalFaxiosRequestConfig, instanceBaseURL: unknown, origins: null | ReadonlyArray<string>): boolean {
+  // A placeholder in the scheme or authority (`{s}://evil.test`, `https://{host}/x`) lets the
+  // path params, which may only exist after `pathParamsSchema` runs, decide the origin: no token.
+  const template = own(config, "url");
+  if (typeof template === "string" && SCHEME_AND_AUTHORITY.exec(template)?.[0].includes("{")) return false;
+  // The URL core sends, from the same resolver, without `pathParams` and `params`: middleware runs
+  // before `pathParamsSchema`, which may fill or rename placeholders, and the caller's
+  // paramsSerializer shouldn't run an extra time. That is sound because core fills a placeholder
+  // only with a non-empty run of non-delimiter characters (substitutePathParams rejects `""`
+  // and encodes `: / \ ? # @`), just like the `{key}` left here: the template and the URL sent
+  // have the same delimiters in the same places, so outside the scheme and authority checked
+  // above a path param can't move the origin. A scheme placeholder without `//` (`{s}:/x`) can
+  // only make an `http(s):` URL without `//`, which core rejects with ERR_INVALID_URL. The URL
+  // parser drops tabs and line breaks (`{s}:\t//host`), so core rejects a url or baseURL holding
+  // one (ERR_INVALID_URL) and the resolve below throws: the template checked here is the one sent.
+  // A URL core rejects (an absolute URL with `allowAbsoluteUrls: false`) gets no token.
+  let url: string;
+  try {
+    const resolved: unknown = resolveRequestURL({ ...config, pathParams: undefined, params: undefined });
+    url = typeof resolved === "string" ? resolved : "";
+  }
+  catch {
+    return false;
+  }
+  const page = pageHref();
   if (origins) {
-    const origin = resolvedOrigin(url, isAbsoluteURL(url) ? undefined : pageHref());
+    const origin = resolvedOrigin(url, page);
     return origin !== null && origins.includes(origin);
   }
-  if (typeof baseURL === "string" && isAbsoluteURL(baseURL)) {
-    return resolvedOrigin(url, baseURL) === resolvedOrigin(baseURL, undefined);
+  // The instance's baseURL, never a per-request one: that would hand the token to any host a
+  // request names as its baseURL.
+  const apiOrigin = typeof instanceBaseURL === "string" ? resolvedOrigin(instanceBaseURL, undefined) : null;
+  if (apiOrigin !== null && apiOrigin !== "null") {
+    return resolvedOrigin(url, page ?? SAME_ORIGIN) === apiOrigin;
   }
-  return !isAbsoluteURL(url) && resolvedOrigin(url, SAME_ORIGIN) === SAME_ORIGIN;
+  // Only a relative URL that stays on the page: not one that parses alone, `//host` or `/\host`.
+  return resolvedOrigin(url, undefined) === null && resolvedOrigin(url, SAME_ORIGIN) === SAME_ORIGIN;
 }
 
 /**
  * Sets `Authorization: Bearer <token>` on requests to the API it guards, asking `getToken` each
  * time, and provides the `auth` capability so later plugins (for example a token-refresh plugin)
  * can ask for a token too. A header the request already has is kept unless `overwrite` is set.
- * The token goes only to the `baseURL` origin when `baseURL` is absolute, otherwise only to
- * relative request URLs; `origins` replaces that rule.
+ * The token goes only to the instance `baseURL` origin when that is absolute, otherwise only to
+ * relative request URLs; a per-request `baseURL` doesn't widen the rule. `origins` replaces it.
  *
  * With a custom `header`, `fetchOptions.redirect` defaults to `"error"` unless the request sets
  * it: fetch strips only `Authorization` when a redirect leaves the origin, so following one would
@@ -105,7 +136,7 @@ export function authBearer(getToken: () => Promise<string> | string, options: Au
     name: "authBearer",
     provides: { auth },
     middleware: async (ctx, next) => {
-      if ((!overwrite && ctx.config.headers.has(header)) || !sendsTokenTo(ctx.config, origins)) return next(ctx);
+      if ((!overwrite && ctx.config.headers.has(header)) || !sendsTokenTo(ctx.config, own(ctx, "instanceBaseURL"), origins)) return next(ctx);
       const token: unknown = await auth.getToken();
       if (typeof token !== "string" || token === "") return next(ctx);
       // On a copy: middleware that calls next() again (retry installed before this plugin) comes

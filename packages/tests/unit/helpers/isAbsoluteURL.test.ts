@@ -21,4 +21,10 @@ describe("helpers::isAbsoluteURL", () => {
     expect(isAbsoluteURL("/foo")).toBe(false);
     expect(isAbsoluteURL("foo")).toBe(false);
   });
+
+  it("returns false for a scheme without \"//\", so a relative path with a colon stays relative", () => {
+    expect(isAbsoluteURL("documents:batchGet")).toBe(false);
+    expect(isAbsoluteURL("localhost:3000/x")).toBe(false);
+    expect(isAbsoluteURL("mailto:someone@example.com")).toBe(false);
+  });
 });

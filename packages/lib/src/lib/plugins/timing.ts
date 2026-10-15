@@ -1,8 +1,9 @@
 // @ts-self-types="./timing.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
+import { resolveRequestURL } from "../../index.js";
 import type { FaxiosContext, FaxiosPlugin } from "../../index.js";
 import { definePlugin } from "./definePlugin.js";
-import { fullPath, own } from "./shared.js";
+import { own } from "./shared.js";
 
 /**
  * What `timing` reports once per request: `status` on success, `error` on failure. No config,
@@ -19,7 +20,11 @@ export type TimingEvent = {
   durationMs: number;
   /** The request method, upper-cased (`"GET"`). */
   method: string;
-  /** The full request URL without its user info, query string and fragment. */
+  /**
+   * The full request URL without its user info, query string and fragment. Path params stay as
+   * their template (`/users/{id}`). A URL core rejects (an absolute URL with
+   * `allowAbsoluteUrls: false`) is reported as the request gave it.
+   */
   url: string;
 } & ({ error: TimingError; status?: undefined; } | { error?: undefined; status: number; });
 
@@ -50,8 +55,17 @@ function errorProp(error: unknown, key: "code" | "status"): unknown {
 
 // Read once the request settles, so a later middleware's changes to the config count. The user
 // info, query and fragment often carry secrets, and they'd make every URL a different metric label.
+// Resolved by core's resolver, without path params (the template keeps labels low-cardinality) or
+// `params` (stripped anyway; the caller's paramsSerializer isn't run again).
 function describe({ attempt, config }: FaxiosContext) {
-  const url = fullPath(config);
+  let resolved: unknown;
+  try {
+    resolved = resolveRequestURL({ ...config, pathParams: undefined, params: undefined });
+  }
+  catch {
+    resolved = own(config, "url");
+  }
+  const url = typeof resolved === "string" ? resolved : "";
   const end = url.search(/[?#]/);
   return {
     method: String(own(config, "method") ?? "get").toUpperCase(),

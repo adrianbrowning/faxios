@@ -1,5 +1,4 @@
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
-import resolveRequestURL from "../core/resolveRequestURL.js";
 import cloneConfig from "../helpers/cloneConfig.js";
 import cookies from "../helpers/cookies.js";
 import isURLSameOrigin from "../helpers/isURLSameOrigin.js";
@@ -38,7 +37,8 @@ function applyXSRFToken(
   return true;
 }
 
-function prepareRequest(config: FaxiosRequestConfig): FaxiosRequestConfig {
+// `url` is the URL dispatch resolved with resolveRequestURL; it is not resolved again here.
+function prepareRequest(config: FaxiosRequestConfig, url: string): FaxiosRequestConfig {
   const newConfig = cloneConfig(config);
 
   // Read only own properties to prevent prototype pollution gadgets
@@ -61,7 +61,7 @@ function prepareRequest(config: FaxiosRequestConfig): FaxiosRequestConfig {
   );
   newConfig.headers = headers;
 
-  newConfig.url = resolveRequestURL(newConfig);
+  newConfig.url = url;
 
   // Add xsrf header
   // This is only done if running in a standard browser environment.

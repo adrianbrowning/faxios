@@ -117,6 +117,27 @@ describe("plugins::timing", () => {
     assert.strictEqual(events[0]!.url, "http://localhost/users/{id}");
   });
 
+  it("reports an absolute URL that the instance baseURL rejects as written, not joined to baseURL", async () => {
+    const events: Array<TimingEvent> = [];
+    const api = faxios.create({ baseURL: "https://api.example.com", env: { fetch: slowFetch(0) } }).use(timing(event => events.push(event)));
+
+    await assert.rejects(api.get("https://other.example/x?token=secret"), { code: "ERR_INVALID_URL" });
+
+    assert.strictEqual(events[0]!.url, "https://other.example/x");
+    assert.strictEqual(events[0]!.error?.code, "ERR_INVALID_URL");
+  });
+
+  it("joins a relative path whose first segment has a colon to baseURL", async () => {
+    const events: Array<TimingEvent> = [];
+    const api = faxios.create({ baseURL: `${BASE}/v1/`, env: { fetch: slowFetch(0) } }).use(timing(event => events.push(event)));
+
+    const request = api.get("documents:batchGet");
+    await vi.runAllTimersAsync();
+    await request;
+
+    assert.strictEqual(events[0]!.url, "http://localhost/v1/documents:batchGet");
+  });
+
   it("passes no config, headers or body to onTiming", async () => {
     const events: Array<TimingEvent> = [];
     const api = faxios.create({ baseURL: BASE, env: { fetch: slowFetch(0) } })

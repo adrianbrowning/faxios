@@ -7,11 +7,11 @@ import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import { validateSchema } from "../core/validateSchema.js";
 import raceAbort from "../helpers/raceAbort.js";
-import { substitutePathParams } from "../helpers/substitutePathParams.js";
 import type { FaxiosResponse, InternalFaxiosRequestConfig } from "../types.js";
 import utils from "../utils.js";
 import assertSignal from "./assertSignal.js";
 import type { RequestBodies } from "./requestDeadline.js";
+import resolveRequestURL from "./resolveRequestURL.js";
 import transformData from "./transformData.js";
 
 function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void {
@@ -27,42 +27,31 @@ function settleOnAbort(preFlight: () => Promise<void>, config: InternalFaxiosReq
   return signal ? raceAbort(signal, preFlight, () => canceledFromSignal(signal, config)) : preFlight();
 }
 
-async function validateAndSubstitutePathParams(config: InternalFaxiosRequestConfig): Promise<void> {
-  if (config.pathParamsSchema) {
-    const validated = await validateSchema(
-      config.pathParamsSchema, config.pathParams,
+async function validatePathParams(config: InternalFaxiosRequestConfig, schema: NonNullable<InternalFaxiosRequestConfig["pathParamsSchema"]>): Promise<void> {
+  const validated = await validateSchema(
+    schema, config.pathParams,
+    FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
+  );
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime guard: schema can return { value: null }
+  if (validated == null) {
+    throw new FaxiosError(
+      "pathParamsSchema returned null/undefined",
       FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
     );
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime guard: schema can return { value: null }
-    if (validated == null) {
-      throw new FaxiosError(
-        "pathParamsSchema returned null/undefined",
-        FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
-      );
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, sonarjs/different-types-comparison -- runtime guard: schema may transform to non-Record
-    if (typeof validated !== "object" || validated === null || Array.isArray(validated)) {
-      throw new FaxiosError(
-        "pathParamsSchema must return a plain object",
-        FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
-      );
-    }
-    config.pathParams = validated;
   }
-  const params = config.pathParams ?? {};
-  try {
-    config.url = substitutePathParams(config.url ?? "", params);
-  }
-  catch (err) {
-    throw FaxiosError.from(
-      err instanceof Error ? err : new Error(String(err)),
-      FaxiosError.ERR_BAD_OPTION_VALUE, config
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, sonarjs/different-types-comparison -- runtime guard: schema may transform to non-Record
+  if (typeof validated !== "object" || validated === null || Array.isArray(validated)) {
+    throw new FaxiosError(
+      "pathParamsSchema must return a plain object",
+      FaxiosError.ERR_BAD_PATH_PARAMS_SCHEMA, config
     );
   }
+  config.pathParams = validated;
 }
 
 // Intentional mutation: config is the internal merged copy (post-mergeConfig), not the user's original.
-// Validation order (pathParams → params → data) is a fail-fast guarantee — do not reorder.
+// Validation order (pathParams → params → data) is a fail-fast guarantee — do not reorder. Path
+// params are substituted afterwards, by resolveRequestURL, from the validated values.
 // DO NOT make this function async. Returning undefined (not a Promise) on the fast path is a
 // microtask-ordering contract: dispatchRequest must reach the adapter in the same microtask so
 // that a synchronous controller.abort() after request creation is processed by the adapter's
@@ -78,19 +67,11 @@ function validatePreFlight(config: InternalFaxiosRequestConfig): (() => Promise<
   }
 
   const hasSchemas = config.pathParamsSchema || config.paramsSchema || config.requestSchema;
-  if (!hasSchemas && config.pathParams === undefined) return undefined;
-
-  // pathParams present but no schemas — substitute synchronously, no microtask boundary needed.
-  if (!hasSchemas) {
-    const params = config.pathParams ?? {};
-    try { config.url = substitutePathParams(config.url ?? "", params); }
-    catch (err) { throw FaxiosError.from(err instanceof Error ? err : new Error(String(err)), FaxiosError.ERR_BAD_OPTION_VALUE, config); }
-    return undefined;
-  }
+  if (!hasSchemas) return undefined;
 
   return async () => {
-    if (config.pathParams !== undefined) {
-      await validateAndSubstitutePathParams(config);
+    if (config.pathParamsSchema) {
+      await validatePathParams(config, config.pathParamsSchema);
     }
 
     if (config.paramsSchema) {
@@ -123,6 +104,9 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
   const preFlight = validatePreFlight(config);
   if (preFlight) await settleOnAbort(preFlight, config);
 
+  // Resolved once, from the schema output, and handed to the adapter; config.url keeps the template.
+  const url = resolveRequestURL(config);
+
   config.headers = FaxiosHeaders.from(config.headers);
 
   // The serialized body goes to the adapter on its own; `config.data` keeps the caller's value, so
@@ -152,10 +136,10 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
       config
     );
   }
-  const adapter = _adapter as (config: InternalFaxiosRequestConfig, body: unknown, bodies?: RequestBodies) => Promise<FaxiosResponse>;
+  const adapter = _adapter as (config: InternalFaxiosRequestConfig, body: unknown, url: string, bodies?: RequestBodies) => Promise<FaxiosResponse>;
 
   /* eslint-disable promise/always-return */
-  return (adapter(config, data, bodies))
+  return (adapter(config, data, url, bodies))
     .then(
 
       function onAdapterResolution(response: FaxiosResponse) {

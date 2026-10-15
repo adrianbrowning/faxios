@@ -29,13 +29,14 @@ describe("plugin subpaths (dist export only)", () => {
         return next(ctx);
       },
     });
-    const api = faxios.create({ env: { fetch } })
+    // authBearer sends the token to the instance baseURL's origin, never to a per-request one.
+    const api = faxios.create({ baseURL: "http://example.com", env: { fetch } })
       .use(timing(event => events.push(event)))
       .use(authBearer(() => "smoke-token"))
       .use(tagged)
       .use(retry({ attempts: 2, delay: 0 }));
 
-    const response = await api.get("/plugins", { baseURL: "http://example.com" });
+    const response = await api.get("/plugins");
 
     expect(response.status).toBe(200);
     expect(calls).toHaveLength(2);

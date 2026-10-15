@@ -308,6 +308,147 @@ describe("plugins::authBearer", () => {
       assert.deepStrictEqual(authorizations, [ "Bearer token", "Bearer token", null, null ]);
     });
 
+    it("with an instance baseURL, rejects an absolute URL without calling getToken", async () => {
+      const { fetch, authorizations } = recordingFetch();
+      const getToken = vi.fn(() => "token");
+      const api = faxios.create({ baseURL: "https://api.test", env: { fetch } }).use(authBearer(getToken));
+
+      await assert.rejects(api.get("https://other.test/items"), { code: "ERR_INVALID_URL" });
+
+      assert.strictEqual(getToken.mock.calls.length, 0);
+      assert.deepStrictEqual(authorizations, []);
+    });
+
+    it("applies the origin rule to the instance baseURL, so a per-request baseURL doesn't get the token", async () => {
+      const { fetch, authorizations } = recordingFetch();
+      const api = faxios.create({ baseURL: "https://api.test", env: { fetch } }).use(authBearer(() => "token"));
+      const bare = faxios.create({ env: { fetch } }).use(authBearer(() => "token"));
+
+      await api.get("/items");
+      await api.get("/items", { baseURL: "https://partner.test" });
+      await api.get("/items", { baseURL: "https://api.test/v2" });
+      await bare.get("/items", { baseURL: "https://partner.test" });
+
+      assert.deepStrictEqual(authorizations, [ "Bearer token", null, "Bearer token", null ]);
+    });
+
+    // Middleware runs before pathParamsSchema, so the raw pathParams can't fill the template.
+    it("sends the token when pathParamsSchema fills a placeholder with a default", async () => {
+      const urls: Array<string> = [];
+      const { fetch, authorizations } = recordingFetch();
+      const recording = async (input: Request | string | URL, init?: RequestInit) => {
+        urls.push(input instanceof Request ? input.url : String(input));
+        return fetch(input, init);
+      };
+      const pathParamsSchema = { "~standard": { version: 1 as const, vendor: "test", validate: (value: unknown) => ({ value: { version: "v2", ...(value as object) } }) } };
+      const api = faxios.create({ baseURL: "https://api.test", env: { fetch: recording } }).use(authBearer(() => "token"));
+
+      await api.get("/{version}/users", { pathParams: {}, pathParamsSchema });
+
+      assert.deepStrictEqual(urls, [ "https://api.test/v2/users" ]);
+      assert.deepStrictEqual(authorizations, [ "Bearer token" ]);
+    });
+
+    it("sends the token when pathParamsSchema renames a placeholder's key", async () => {
+      const urls: Array<string> = [];
+      const { fetch, authorizations } = recordingFetch();
+      const recording = async (input: Request | string | URL, init?: RequestInit) => {
+        urls.push(input instanceof Request ? input.url : String(input));
+        return fetch(input, init);
+      };
+      const rename = (value: unknown) => ({ value: { userId: value && typeof value === "object" && "id" in value ? value.id : undefined } });
+      const pathParamsSchema = { "~standard": { version: 1 as const, vendor: "test", validate: rename } };
+      const api = faxios.create({ baseURL: "https://api.test", env: { fetch: recording } }).use(authBearer(() => "token"));
+
+      await api.get("/users/{userId}", { pathParams: { id: "7" }, pathParamsSchema });
+
+      assert.deepStrictEqual(urls, [ "https://api.test/users/7" ]);
+      assert.deepStrictEqual(authorizations, [ "Bearer token" ]);
+    });
+
+    it("sends no token when a path param fills the URL's scheme", async () => {
+      const urls: Array<string> = [];
+      const { fetch, authorizations } = recordingFetch();
+      const recording = async (input: Request | string | URL, init?: RequestInit) => {
+        urls.push(input instanceof Request ? input.url : String(input));
+        return fetch(input, init);
+      };
+      const api = faxios.create({ baseURL: "https://api.test", allowAbsoluteUrls: true, env: { fetch: recording } })
+        .use(authBearer(() => "token"));
+
+      await api.get("{s}://evil.test/x", { pathParams: { s: "https" } });
+
+      assert.deepStrictEqual(urls, [ "https://evil.test/x" ]);
+      assert.deepStrictEqual(authorizations, [ null ]);
+    });
+
+    it("sends no token when a path param fills the URL's authority", async () => {
+      const urls: Array<string> = [];
+      const { fetch, authorizations } = recordingFetch();
+      const recording = async (input: Request | string | URL, init?: RequestInit) => {
+        urls.push(input instanceof Request ? input.url : String(input));
+        return fetch(input, init);
+      };
+      const api = faxios.create({ baseURL: "https://api.test", allowAbsoluteUrls: true, env: { fetch: recording } })
+        .use(authBearer(() => "token"));
+      const listed = faxios.create({ allowAbsoluteUrls: true, env: { fetch: recording } })
+        .use(authBearer(() => "token", { origins: [ "https://api.test" ] }));
+
+      await api.get("https://{host}/x", { pathParams: { host: "api.test" } });
+      await listed.get("https://{host}/x", { pathParams: { host: "api.test" } });
+      // A placeholder after the authority still gets the token.
+      await api.get("https://api.test/{id}", { pathParams: { id: "7" } });
+
+      assert.deepStrictEqual(urls, [ "https://api.test/x", "https://api.test/x", "https://api.test/7" ]);
+      assert.deepStrictEqual(authorizations, [ null, null, "Bearer token" ]);
+    });
+
+    // An empty value would delete the text between two slashes and turn what follows into a host.
+    it("rejects an empty path param that would collapse the template into a new origin, sending nothing", async () => {
+      const { fetch, authorizations } = recordingFetch();
+      const bare = faxios.create({ env: { fetch } }).use(authBearer(() => "token"));
+      const api = faxios.create({ baseURL: "https://api.test", allowAbsoluteUrls: true, env: { fetch } })
+        .use(authBearer(() => "token"));
+      const isEmptyParam = { code: "ERR_BAD_OPTION_VALUE", message: "Path param \"x\" must not be empty" };
+
+      await assert.rejects(bare.get("{s}:/{x}/evil.test/p", { pathParams: { s: "https", x: "" } }), isEmptyParam);
+      await assert.rejects(api.get("{s}:/{x}/evil.test/p", { pathParams: { s: "https", x: "" } }), isEmptyParam);
+      await assert.rejects(bare.get("/{x}/{repo}", { pathParams: { x: "", repo: "evil.test" } }), isEmptyParam);
+
+      assert.deepStrictEqual(authorizations, []);
+    });
+
+    // The URL parser drops tabs and line breaks, so `{s}:\t//host` would turn into `https://host`.
+    it("rejects a URL with a tab or line break that would hide a scheme placeholder, sending nothing", async () => {
+      const { fetch, authorizations } = recordingFetch();
+      const bare = faxios.create({ env: { fetch } }).use(authBearer(() => "token"));
+      const api = faxios.create({ baseURL: "https://api.test", env: { fetch } }).use(authBearer(() => "token"));
+      const isInvalid = { code: "ERR_INVALID_URL", message: "Invalid URL: contains a tab or line break" };
+
+      for (const url of [ "{s}:\t//evil.test/p", "{s}:/\n/evil.test/p", "{s}:\r//evil.test/p" ]) {
+        await assert.rejects(bare.get(url, { pathParams: { s: "https" } }), isInvalid, JSON.stringify(url));
+        await assert.rejects(api.get(url, { baseURL: "", pathParams: { s: "https" } }), isInvalid, JSON.stringify(url));
+      }
+
+      assert.deepStrictEqual(authorizations, []);
+    });
+
+    it("still sends the token to the API for ordinary path placeholders", async () => {
+      const urls: Array<string> = [];
+      const { fetch, authorizations } = recordingFetch();
+      const recording = async (input: Request | string | URL, init?: RequestInit) => {
+        urls.push(input instanceof Request ? input.url : String(input));
+        return fetch(input, init);
+      };
+      const api = faxios.create({ baseURL: "https://api.test/v1", env: { fetch: recording } }).use(authBearer(() => "token"));
+
+      await api.get("/{org}/{repo}", { pathParams: { org: "acme", repo: "evil.test" } });
+      await api.get("/users/{id}", { pathParams: { id: "a b" }, params: { q: "{x}" } });
+
+      assert.deepStrictEqual(urls, [ "https://api.test/v1/acme/evil.test", "https://api.test/v1/users/a%20b?q=%7Bx%7D" ]);
+      assert.deepStrictEqual(authorizations, [ "Bearer token", "Bearer token" ]);
+    });
+
     it("on the default singleton, sends no token to an absolute URL", async () => {
       const { fetch, authorizations } = recordingFetch();
       const plugin = authBearer(() => "token");

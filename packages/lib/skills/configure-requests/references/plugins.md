@@ -98,6 +98,43 @@ await api.get("/orders", { trace: "abc-123" }); // `trace` type-checks only on `
 Check: `faxios.get("/orders", { trace: "x" })` on an instance without the plugin is a type error,
 and at runtime it rejects with `ERR_BAD_OPTION` (`Unknown option trace`).
 
+## Read the URL a request goes to
+
+Import `resolveRequestURL(config)` from `@gcmdev/faxios`; never join `baseURL` and `url` by hand.
+It is the resolver core uses for the request and `getUri()`: `pathParams` filled in, `baseURL`
+joined (honouring `allowAbsoluteUrls`), `params` serialized. A URL is absolute only with a scheme
+and `//`, so `documents:batchGet` joins `baseURL`. It throws what the request would reject with
+(`ERR_INVALID_URL`, `ERR_BAD_OPTION_VALUE`), so a plugin that guards credentials treats a throw as
+"don't attach". Middleware runs before `pathParamsSchema`, so for an origin check resolve with
+`pathParams: undefined` (and `params: undefined`): a schema may fill or rename placeholders the raw
+`pathParams` can't, and path params never move the origin. For the API origin use
+`ctx.instanceBaseURL`, not `ctx.config.baseURL`, which a per-request override can point anywhere.
+
+```ts
+import faxios, { resolveRequestURL } from "@gcmdev/faxios";
+import { definePlugin } from "@gcmdev/faxios/plugins";
+
+const apiKey = (key: string) => definePlugin({
+  name: "apiKey",
+  middleware: async (ctx, next) => {
+    let sameAPI = false;
+    try {
+      // Both throw for a URL that isn't absolute, or one core would reject: no key then.
+      const url = resolveRequestURL({ ...ctx.config, pathParams: undefined, params: undefined });
+      sameAPI = new URL(url).origin === new URL(ctx.instanceBaseURL ?? "").origin;
+    }
+    catch {
+      sameAPI = false;
+    }
+    if (sameAPI) ctx.config.headers.set("X-Api-Key", key);
+    return next(ctx);
+  },
+});
+
+const api = faxios.create({ baseURL: "https://api.example.com" }).use(apiKey("k"));
+await api.get("/orders");
+```
+
 ## Require a capability from another plugin
 
 `authBearer` provides `{ auth: { getToken(): Promise<string> } }`, exported as

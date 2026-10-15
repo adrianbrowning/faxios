@@ -3,86 +3,86 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "ac712794cb8599e66c8351d69dbf6a8a767e73a99cbfc80198fd1e0d431ecb04",
+      "fingerprint": "30f6a1ebb606e64362d7f31aeb95d4a4f8a6649be7c75a57d41b6fe2dd7253e7",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "2ba42666c2516bd2a398f1805aeef3772eefbf731ed69d0a8637783b045509e2",
+        "packages/lib/skills/configure-requests/SKILL.md": "e4ecf18d52350c0415f223122b89b930081b7b87f9dbfb80b1ffff5037efc0fa",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
-        "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
-        "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
-        "packages/lib/src/lib/adapters/fetch.ts": "d61c84c79249a8b259c6fd329581af4f85ef91d1cb16e2728e0b93a7431a525b",
-        "packages/lib/src/lib/core/Faxios.ts": "cadb47ef5a1bfa8f324d4df312089a68fcfbcc5c3f01ebb46dec6a4ae25a802d",
+        "packages/lib/skills/configure-requests/references/plugins.md": "bcc12dedc528fdd6a909feb15a0007dd262219c11567c5295e7be350b4d5d6ff",
+        "packages/lib/src/index.ts": "44edf51b3bbdf494fd213b55e6e377866e18146c47fc443a3d3d7426a3d685b7",
+        "packages/lib/src/lib/adapters/fetch.ts": "57a894363c98f3e3d85df13ef913ee794e0529a1101b8a34a1b98bb25717113e",
+        "packages/lib/src/lib/core/Faxios.ts": "a7b17693127670647b4455ced29e94ce86ae3da3e48b73e0a65ecffd2c56ab9f",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
-        "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
+        "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "8c46c2fe2cf6fa7bf7bddd415c67251240d6a5e31669a499d4a586b2f29963dc",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "3060c07faf738c6f502cb87cbc30765177639bebce7f35e5ccbd60b4f0962c8a",
         "packages/lib/src/lib/core/mergeConfig.ts": "b3f15fc665f58314f7934bd5510cdcf3faa57e483f03c553600708798d13e946",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
         "packages/lib/src/lib/helpers/composeSignals.ts": "2db636d9e1c28e5ef7832041d316c7ce588b32ef5d30bbe35eb2951b86b2bd6a",
-        "packages/lib/src/lib/plugins/authBearer.ts": "c93f20ab62b3a69bcebdb0ecf20e1a1c1f49cda1a01579e8f8573d72cfdc65e5",
+        "packages/lib/src/lib/plugins/authBearer.ts": "14db38066e32d09780067881e10afcdeb55414a3faa459dfc839aa0e04aa1225",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "e3d1d859c7f1df06764e2ab3aff2164fba44cffd893435faf6d425f02af15425",
         "packages/lib/src/lib/plugins/retry.ts": "734d82655b3a61e35b437f1e1c6112ffc804dcc3608ac4de66edbf95da912aaa",
-        "packages/lib/src/lib/plugins/timing.ts": "d00f2ddea50758514a1b0498ea9961d19c678bc11fa9ee4f22d15af55dd6b8a4",
-        "packages/lib/src/lib/types.ts": "094961eefee9680b19a9d95c1b1c5c534f6207bb3ce3d0ba943542d22717f0c5",
+        "packages/lib/src/lib/plugins/timing.ts": "c845896855141244cf672d5224327d774ecc9c3e68b38544a4c6c01ec18ca358",
+        "packages/lib/src/lib/types.ts": "76b9cb3435abd05297bbc385cb54241503ed03a41ca3d0b363023016d967119c",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "104387a4440757c9d93e2a2fb75d8b3f34b53b1ccaf99c7313712a5bcfe7da0d",
-        "packages/tests/unit/plugins/authBearer.test.ts": "84baff907f21988dea49400531dd0abdf7b5a5148d1904e712ebe0b43ebfd3ae",
+        "packages/tests/unit/plugins/authBearer.test.ts": "f73ea84b082e8d00a3b1741f87769332a9b2eca440f20e4742f6c7338ad05902",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
         "packages/tests/unit/plugins/retry.test.ts": "d3259244222d9d8b3d380a0526e2486b60e2e82fa56a84242e7b3b90a5eec98f",
-        "packages/tests/unit/plugins/timing.test.ts": "2bb6422d1f3a5d8181eaba9fe0f45fb50b1ba39cb16a1c75ca254e20fe1a2ba1"
+        "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
       "outcome": "updated",
-      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "reason": "Skill states a url or joined baseURL with a tab or line break rejects with ERR_INVALID_URL",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/dispatchRequest.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/buildFullPath.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/tests/unit/plugins/authBearer.test.ts at 8211220225a5d8cc4b83d177120331bd72fb7f0f"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "17b5fe4765ced1ab64e2c6b6dbe2523c989e835c7020d8e80b50a5bed2940993",
+      "fingerprint": "616c39fbd6b50de7c4b0488e26a35dbe30f01a72dd233a0fcc2d954cab2a096e",
       "snapshot": {
         "MIGRATION_GUIDE.md": "3a84ab7799978d9fbbbb85ce0840812c245a43edb7e9e6b0530e7de8a55b09ec",
         "_artifacts/domain_map.yaml": "b3fccd33269ffc2620ea08a1277a3c2cdc5a071710349205c5dfc6e2a2b63b3d",
         "_artifacts/skill_spec.md": "f21ec90d42aeba6ff4e7f8e336c9a7a30b0b28c8fa9c9333976ba3a578c0ea9e",
         "_artifacts/skill_tree.yaml": "bddc50aac3106e89dbe2aa295ae90200c6900286eca7ca68d054601e69dbcdce",
         "packages/lib/package.json": "f0d56f13cb446d79e280d0e3743cf2915cbec33afe277e345404d55bba8598b7",
-        "packages/lib/skills/configure-requests/SKILL.md": "2ba42666c2516bd2a398f1805aeef3772eefbf731ed69d0a8637783b045509e2",
+        "packages/lib/skills/configure-requests/SKILL.md": "e4ecf18d52350c0415f223122b89b930081b7b87f9dbfb80b1ffff5037efc0fa",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "36731a5bd2cae2d4835e4efe8e5f80fed58bf84d4ccedc3659ee592cf8be5271",
-        "packages/lib/skills/configure-requests/references/plugins.md": "b73dce879849686433fbea3a6e4feb8142329403df060021960de8f46bcf6d73",
-        "packages/lib/src/index.ts": "ba0ed1dfeaf6a1ad238b90d941fb227844599d31ee185259b0546e7f6476ff6f",
-        "packages/lib/src/lib/adapters/fetch.ts": "d61c84c79249a8b259c6fd329581af4f85ef91d1cb16e2728e0b93a7431a525b",
-        "packages/lib/src/lib/core/Faxios.ts": "cadb47ef5a1bfa8f324d4df312089a68fcfbcc5c3f01ebb46dec6a4ae25a802d",
+        "packages/lib/skills/configure-requests/references/plugins.md": "bcc12dedc528fdd6a909feb15a0007dd262219c11567c5295e7be350b4d5d6ff",
+        "packages/lib/src/index.ts": "44edf51b3bbdf494fd213b55e6e377866e18146c47fc443a3d3d7426a3d685b7",
+        "packages/lib/src/lib/adapters/fetch.ts": "57a894363c98f3e3d85df13ef913ee794e0529a1101b8a34a1b98bb25717113e",
+        "packages/lib/src/lib/core/Faxios.ts": "a7b17693127670647b4455ced29e94ce86ae3da3e48b73e0a65ecffd2c56ab9f",
         "packages/lib/src/lib/core/FaxiosError.ts": "4a8f188c094c1cd7f67ced76c4669a7456ad7ca6de06fddc09bb24397cc991c6",
-        "packages/lib/src/lib/core/buildFullPath.ts": "8230ff763cb6864857e37ade4c25fbc1e0d7d0499187dd8a5c80cceedb2f872b",
+        "packages/lib/src/lib/core/buildFullPath.ts": "6686835318bcab41e25562bf6a79b624d81886322281c79fd1f75d6abc1c00a5",
         "packages/lib/src/lib/core/define.ts": "f5250c9d32c23ccdf27455b814e0ae2e896a1d694908406d3c916f8a4a0dd590",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "8c46c2fe2cf6fa7bf7bddd415c67251240d6a5e31669a499d4a586b2f29963dc",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "3060c07faf738c6f502cb87cbc30765177639bebce7f35e5ccbd60b4f0962c8a",
         "packages/lib/src/lib/core/mergeConfig.ts": "b3f15fc665f58314f7934bd5510cdcf3faa57e483f03c553600708798d13e946",
         "packages/lib/src/lib/core/route.ts": "1dbe40403e97340b102d77a1960ad89e270ed955c14cb52acbfb2bcf37f564df",
         "packages/lib/src/lib/faxios.ts": "5276329927facf806b6696435098b2043f49d3f0da9c0ee07ba8e7cd860d826d",
         "packages/lib/src/lib/helpers/composeSignals.ts": "2db636d9e1c28e5ef7832041d316c7ce588b32ef5d30bbe35eb2951b86b2bd6a",
-        "packages/lib/src/lib/plugins/authBearer.ts": "c93f20ab62b3a69bcebdb0ecf20e1a1c1f49cda1a01579e8f8573d72cfdc65e5",
+        "packages/lib/src/lib/plugins/authBearer.ts": "14db38066e32d09780067881e10afcdeb55414a3faa459dfc839aa0e04aa1225",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "e3d1d859c7f1df06764e2ab3aff2164fba44cffd893435faf6d425f02af15425",
         "packages/lib/src/lib/plugins/retry.ts": "734d82655b3a61e35b437f1e1c6112ffc804dcc3608ac4de66edbf95da912aaa",
-        "packages/lib/src/lib/plugins/timing.ts": "d00f2ddea50758514a1b0498ea9961d19c678bc11fa9ee4f22d15af55dd6b8a4",
-        "packages/lib/src/lib/types.ts": "094961eefee9680b19a9d95c1b1c5c534f6207bb3ce3d0ba943542d22717f0c5",
+        "packages/lib/src/lib/plugins/timing.ts": "c845896855141244cf672d5224327d774ecc9c3e68b38544a4c6c01ec18ca358",
+        "packages/lib/src/lib/types.ts": "76b9cb3435abd05297bbc385cb54241503ed03a41ca3d0b363023016d967119c",
         "packages/tests/unit/api.test.ts": "1cdc27f41240881bf33ae3512b65407bf5d32ba9868809537241ca10478970ce",
         "packages/tests/unit/core/middleware.test.ts": "104387a4440757c9d93e2a2fb75d8b3f34b53b1ccaf99c7313712a5bcfe7da0d",
-        "packages/tests/unit/plugins/authBearer.test.ts": "84baff907f21988dea49400531dd0abdf7b5a5148d1904e712ebe0b43ebfd3ae",
+        "packages/tests/unit/plugins/authBearer.test.ts": "f73ea84b082e8d00a3b1741f87769332a9b2eca440f20e4742f6c7338ad05902",
         "packages/tests/unit/plugins/definePlugin.test.ts": "e4158f3f5a0dc18c51207266fb23b85c261a8e1264617df90edc289261153a4a",
         "packages/tests/unit/plugins/forwardTo.test.ts": "c1fd7b471635f561505c07ff0019a5456ad6181024a22f14c4db85d7afea3337",
         "packages/tests/unit/plugins/retry.test.ts": "d3259244222d9d8b3d380a0526e2486b60e2e82fa56a84242e7b3b90a5eec98f",
-        "packages/tests/unit/plugins/timing.test.ts": "2bb6422d1f3a5d8181eaba9fe0f45fb50b1ba39cb16a1c75ca254e20fe1a2ba1"
+        "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
       "outcome": "updated",
-      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "reason": "Skill states a url or joined baseURL with a tab or line break rejects with ERR_INVALID_URL",
       "evidence": [
-        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/dispatchRequest.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
+        "Changed: packages/lib/skills/configure-requests/SKILL.md, packages/lib/src/lib/core/buildFullPath.ts, packages/lib/src/lib/plugins/authBearer.ts, packages/tests/unit/plugins/authBearer.test.ts at 8211220225a5d8cc4b83d177120331bd72fb7f0f"
       ]
     },
     "source:knip.json": {
@@ -184,15 +184,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
-      "fingerprint": "88d6d53bb06406eea88afc5e079b0c4382d8cb5e0c3b95c289ba491e262a203b",
+      "fingerprint": "55ebbb677268472ed2e8ad54625ad8ece2755efae8c12c8a3001b31724b2e94f",
       "snapshot": {
-        "packages/docs/pages/advanced/authentication.md": "5dee0e5f797665deb1309ac43bd3f3ab60767cb742c69dc20fcdc77ac5f396c5"
+        "packages/docs/pages/advanced/authentication.md": "b3be9e72fbdd71a7e4f550e62f3ad1d28ff909919c79ee7f02cd4bde9baec55a"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
       "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "reason": "Skill states an empty path param value rejects with ERR_BAD_OPTION_VALUE",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/authentication.md at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/docs/pages/advanced/authentication.md at 29772255069f57f9dfb1764f3b2dd0fa40ec60ab"
       ]
     },
     "source:packages/docs/pages/advanced/create-an-instance.md": {
@@ -256,15 +256,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "417ad1228437ab725ed98bbcd0eb6296f0a4ba31622dd0ff2f40c3f366eb895e",
+      "fingerprint": "53c486b71454137621ca387dfbb00c2f423a78e17f78836e472f92933c56da71",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "cd4fe4928b66f3cb0cf11ddc67a05c77984d01a6140366942995ddc4c860713a"
+        "packages/docs/pages/advanced/middleware.md": "aaafb684a701fc464396c1ebed0297ab17e687b7045989605f7c814f4187bd9e"
       },
-      "head": "16004a89cc705910f332129196177c5afcbad839",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says a request redact adds to the instance's, config.data on errors is the caller's body, and schema issues keep only message and path keys",
+      "reason": "Plugin reference now resolves the origin without raw pathParams/params, matching authBearer",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at 0fd26195c33fab2485de5afef6b316d94f126562"
+        "Changed: packages/docs/pages/advanced/middleware.md at 92a2ed7dfc5aedab11b43a5cf126444c6b4ba4bf"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
@@ -280,15 +280,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "38438b9849f44e03c2484c441fdbc7011ec2e6c303d5bc565f24ff1c2db19c50",
+      "fingerprint": "505d71ff066b70ef47d3dc345cbc227e96d6af686359a5c3a87e6b26e7f67f18",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "5cd5755bf4bc2869a2bb65d2ae6f0c37bfe31d3ec9a5f12fd6e0510ab8e95176"
+        "packages/docs/pages/advanced/request-config.md": "048c3867c9bcd0606cab2c8b9a5b0fb4dedad0ee5fe05592eb3652421f6ad4e6"
       },
-      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
       "outcome": "updated",
-      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "reason": "Skill states a url or joined baseURL with a tab or line break rejects with ERR_INVALID_URL",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
+        "Changed: packages/docs/pages/advanced/request-config.md at 8211220225a5d8cc4b83d177120331bd72fb7f0f"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
@@ -304,15 +304,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/schema-validation.md": {
-      "fingerprint": "406be6edd6db97d15ab532b0273eb8d58b14a2da8a60e256f0aebba8bb1bb006",
+      "fingerprint": "19a10ece6f0d80c81b83770e816182d15db3b63d07262cc380356f66810fcd47",
       "snapshot": {
-        "packages/docs/pages/advanced/schema-validation.md": "d3960a9b89bba521e7d6849278b87fa5679ae5b890d5749ebda1388eab882005"
+        "packages/docs/pages/advanced/schema-validation.md": "a1dbfca65878629a68dc79e406bcdce575ba41e0b707c50199133607dc1bc0c2"
       },
-      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
+      "reason": "Skill states an empty path param value rejects with ERR_BAD_OPTION_VALUE",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/schema-validation.md at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
+        "Changed: packages/docs/pages/advanced/schema-validation.md at 29772255069f57f9dfb1764f3b2dd0fa40ec60ab"
       ]
     },
     "source:packages/docs/pages/advanced/testing.md": {
@@ -2216,15 +2216,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/prepareRequest.ts": {
-      "fingerprint": "5403b9056f1f8f2eab9d6ff98663234ef43e091becad1fbdbbe61994353d1ce2",
+      "fingerprint": "582c9f4348c209429e00092d327bd9cd228ec834910bffa1a20f1ac2badd46ef",
       "snapshot": {
-        "packages/lib/src/lib/core/prepareRequest.ts": "bd4e0d83ea8a60a1b63aa5ed157e93cc840bcdb858495b20f5f950882ba6862e"
+        "packages/lib/src/lib/core/prepareRequest.ts": "4b755a83f4ef19abad72e2ca1ad43db1b3e087420f7188353f652789bca6e29d"
       },
-      "head": "8f4937c2fbe18a923f35634f3a570f480c7d8b8e",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md now teaches withCredentials->credentials mapping (false/unset same-origin) and the XSRF redirect:'error' default; planning records unaffected (no new skill or task scope)",
+      "reason": "Skill now teaches resolveRequestURL and ctx.instanceBaseURL for plugins, the instance-baseURL authBearer origin rule, and that a URL is absolute only with a scheme and //",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/prepareRequest.ts at dfdc00f066473f22ac32be6628f5b36e726e06af"
+        "Changed: packages/lib/src/lib/core/prepareRequest.ts at 06608f4bf5126bc949bde148a37bb3e85fc98041"
       ]
     },
     "source:packages/lib/src/lib/core/transformData.ts": {
@@ -2750,15 +2750,15 @@
       ]
     },
     "source:packages/tests/unit/core/buildFullPath.test.ts": {
-      "fingerprint": "3f860b5f403361e2563ad34657b9609ffd6b3c5a5fe711ebc42ac3ff45b51aca",
+      "fingerprint": "74cd7d6391f57b8cc60b284d1bdd84bbd6bccb242436d22237a4f0692699de94",
       "snapshot": {
-        "packages/tests/unit/core/buildFullPath.test.ts": "b928ddd2bc57034fe1e33230bce963303525ef888c9f11aa44224617eec05207"
+        "packages/tests/unit/core/buildFullPath.test.ts": "d3a5628e989ee6eeda73eabe58ac7ed4d45a17dae97ef74634002cdd93dc6a33"
       },
-      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
       "outcome": "updated",
-      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
+      "reason": "Skill states a url or joined baseURL with a tab or line break rejects with ERR_INVALID_URL",
       "evidence": [
-        "Changed: packages/tests/unit/core/buildFullPath.test.ts at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
+        "Changed: packages/tests/unit/core/buildFullPath.test.ts at 8211220225a5d8cc4b83d177120331bd72fb7f0f"
       ]
     },
     "source:packages/tests/unit/core/configHeadersTypes.test.ts": {
@@ -2848,15 +2848,15 @@
       ]
     },
     "source:packages/tests/unit/core/pathParams.test.ts": {
-      "fingerprint": "de3250e02d62cae9b549b51e1683609cb8b262e10f279b027a3615f749e82c76",
+      "fingerprint": "3540a211bf328113af50fd4d8bd230827265ac75e44a9f61a0b667823f1981b7",
       "snapshot": {
-        "packages/tests/unit/core/pathParams.test.ts": "5f68b53f934a7ba9d0fb9c75de5eec9aad62270355fe0a4078c75dfc22122100"
+        "packages/tests/unit/core/pathParams.test.ts": "806f0b0a10ee0c43dcaab757d9d409a27273fdc66fbc7483f1901020261bd782"
       },
-      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
+      "reason": "Skill states an empty path param value rejects with ERR_BAD_OPTION_VALUE",
       "evidence": [
-        "Changed: packages/tests/unit/core/pathParams.test.ts at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
+        "Changed: packages/tests/unit/core/pathParams.test.ts at 29772255069f57f9dfb1764f3b2dd0fa40ec60ab"
       ]
     },
     "source:packages/tests/unit/core/requestSchema.test.ts": {
@@ -2948,16 +2948,15 @@
       ]
     },
     "source:packages/tests/unit/helpers/isAbsoluteURL.test.ts": {
-      "fingerprint": "3db95d3b93fc7b335486fde0ba351beb131981920a270998b510a0d2d44e7f1c",
+      "fingerprint": "2dd1f20ee615904940dff0f4dd3814ad9543888118521e5d672ce156ecde8ed7",
       "snapshot": {
-        "packages/tests/unit/helpers/isAbsoluteURL.test.ts": "92a9f6edbb818a15b6b452430d963d75070f8cf2b30fc5a5b043b605c826a401"
+        "packages/tests/unit/helpers/isAbsoluteURL.test.ts": "ab22a4eefa1719b5a076beffc1df9fe09d142a521be0280bc78b19e5fa724339"
       },
-      "head": "1b0379cdfa03ebdb59d234e936803d2d97c3f2e0",
-      "outcome": "no-change",
-      "reason": "vitest import specifiers sorted. Behaviour change: none",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
+      "outcome": "updated",
+      "reason": "Skill now teaches resolveRequestURL and ctx.instanceBaseURL for plugins, the instance-baseURL authBearer origin rule, and that a URL is absolute only with a scheme and //",
       "evidence": [
-        "git diff 01316e10..HEAD -- packages/tests/unit/helpers/isAbsoluteURL.test.ts: @@ -1,4 +1,4 @@ (diff/227)",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/unit/helpers/isAbsoluteURL.test.ts at 06608f4bf5126bc949bde148a37bb3e85fc98041"
       ]
     },
     "source:packages/tests/unit/helpers/isAxiosError.test.ts": {
@@ -3474,15 +3473,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/substitutePathParams.ts": {
-      "fingerprint": "d2b3ae9726b7ca390adf4b71d2b20bf707a94ea2b3e2411cfbdef160566995a3",
+      "fingerprint": "7a1bd1d2b8ddf8164aa4f30e8277678470b42660fa3d3adad17e860769755ab0",
       "snapshot": {
-        "packages/lib/src/lib/helpers/substitutePathParams.ts": "46af49a5a4e2edcc48c9c7378feb849ebb86a7696f898e3c3dae95c3c9451a37"
+        "packages/lib/src/lib/helpers/substitutePathParams.ts": "8ceac4db154022644939b033373428cad987328a6cedb4353bdab6d16b07cf29"
       },
-      "head": "ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
       "outcome": "updated",
-      "reason": "configure-requests SKILL.md documents the authBearer empty-token skip and the pathParams dot-segment rejection",
+      "reason": "Skill states an empty path param value rejects with ERR_BAD_OPTION_VALUE",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/substitutePathParams.ts at ac87d672f3d1b4c34ed1bd91eb6811f6bfc19e90"
+        "Changed: packages/lib/src/lib/helpers/substitutePathParams.ts at 29772255069f57f9dfb1764f3b2dd0fa40ec60ab"
       ]
     },
     "source:.bumpy/reject-used-stream-body.md": {
@@ -3870,15 +3869,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/isAbsoluteURL.ts": {
-      "fingerprint": "b3062e75cb3bc034ab298de738a27fa7ecf38b97ea3f8b732fb0fa89e147a9e3",
+      "fingerprint": "c9c9813672220f8213477ae675efc17eba999538e65bc8f36f341be3ddb25493",
       "snapshot": {
-        "packages/lib/src/lib/helpers/isAbsoluteURL.ts": "9700f209692f849c2e1cb3620969faf5fc4db70413f3f9a002deeb7670e8d742"
+        "packages/lib/src/lib/helpers/isAbsoluteURL.ts": "119cf72a51b963c4e8865906e11a02b08b6772736f03cc6f66a5bcea8d813e8a"
       },
-      "head": "3914c7fc69e5e04d0e90f69bdaa0c946b78de27c",
-      "outcome": "no-change",
-      "reason": "Adds Deno @ts-self-types pragmas and their checks; the configure-requests skill documents no Deno type resolution, so nothing in it changes.",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
+      "outcome": "updated",
+      "reason": "Skill now teaches resolveRequestURL and ctx.instanceBaseURL for plugins, the instance-baseURL authBearer origin rule, and that a URL is absolute only with a scheme and //",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/isAbsoluteURL.ts at f4577ea42d1f04daed1bc1ac950775b1dfcbdfa9"
+        "Changed: packages/lib/src/lib/helpers/isAbsoluteURL.ts at 06608f4bf5126bc949bde148a37bb3e85fc98041"
       ]
     },
     "source:packages/lib/src/lib/helpers/isFaxiosError.ts": {
@@ -3978,27 +3977,27 @@
       ]
     },
     "source:packages/lib/src/lib/core/resolveRequestURL.ts": {
-      "fingerprint": "fadcc4683ed404d4ad37e33334721ad91c60122a9d227bcf9dae0a1a88a2c59a",
+      "fingerprint": "beab07ccc01a8771f819c1e78d7ec6420c30cdfaf4dd029fac027e71d80300e0",
       "snapshot": {
-        "packages/lib/src/lib/core/resolveRequestURL.ts": "a1ecc8c9acb55726bb8759b3391283254b4e58d2d1c315897bc103af2951729b"
+        "packages/lib/src/lib/core/resolveRequestURL.ts": "44cc5be130760c8338c84b546f5b16847ef38d6e872a854776600dc174605d70"
       },
-      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
       "outcome": "updated",
-      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
+      "reason": "Skill now teaches resolveRequestURL and ctx.instanceBaseURL for plugins, the instance-baseURL authBearer origin rule, and that a URL is absolute only with a scheme and //",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/resolveRequestURL.ts at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
+        "Changed: packages/lib/src/lib/core/resolveRequestURL.ts at 06608f4bf5126bc949bde148a37bb3e85fc98041"
       ]
     },
     "source:packages/tests/unit/core/getUri.test.ts": {
-      "fingerprint": "c5029c435a9e8032fff9582eefcf1c6cdca771fbcbbfabefc843c65f24543847",
+      "fingerprint": "146301a09b24b47f479d27a483697302f9ba447bb1f25ea20948c5bb2ee40fa7",
       "snapshot": {
-        "packages/tests/unit/core/getUri.test.ts": "6ae1aced2711839b62ba27e05121884d007cc21c3e77a68c293df0dd3b128a1e"
+        "packages/tests/unit/core/getUri.test.ts": "8bbe286afeb3ea73b400188a31d15c30d4baeffc867be59221650a459d502c55"
       },
-      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
       "outcome": "updated",
-      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "reason": "Skill now teaches resolveRequestURL and ctx.instanceBaseURL for plugins, the instance-baseURL authBearer origin rule, and that a URL is absolute only with a scheme and //",
       "evidence": [
-        "Changed: packages/tests/unit/core/getUri.test.ts at eb953a0082fd35a3900eb4dfb5a39d3ad20e9f8c"
+        "Changed: packages/tests/unit/core/getUri.test.ts at 06608f4bf5126bc949bde148a37bb3e85fc98041"
       ]
     },
     "source:.bumpy/abort-during-async-schema.md": {
@@ -4110,15 +4109,15 @@
       ]
     },
     "source:packages/tests/unit/core/prepareRequest.test.ts": {
-      "fingerprint": "2f1935da9641a1d410bf597c880faf1f24401ee54d5e98c62e85a5539122a5f5",
+      "fingerprint": "ca8a4bb1c48fcf6b85d5b4d8bb8e04b327053879e0bc1f780e8287635c5e513a",
       "snapshot": {
-        "packages/tests/unit/core/prepareRequest.test.ts": "a4bd873c08d39567c171b51eeec75fb0e9d16bae69a4845cbc82fc32a81b1f4b"
+        "packages/tests/unit/core/prepareRequest.test.ts": "106546f1fd1eae097682ea74abbae99b41e9fbabe66acde6365ea22d82adba38"
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
-      "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
+      "outcome": "updated",
+      "reason": "Skill now teaches resolveRequestURL and ctx.instanceBaseURL for plugins, the instance-baseURL authBearer origin rule, and that a URL is absolute only with a scheme and //",
       "evidence": [
-        "Changed: packages/tests/unit/core/prepareRequest.test.ts at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: packages/tests/unit/core/prepareRequest.test.ts at 06608f4bf5126bc949bde148a37bb3e85fc98041"
       ]
     },
     "source:packages/tests/unit/core/requestInput.test.ts": {
@@ -4638,15 +4637,15 @@
       ]
     },
     "source:packages/lib/src/lib/plugins/shared.ts": {
-      "fingerprint": "689e7bd8741e242f078a8930939a4d98cf3ecb2e2524852000fe750aa08750bb",
+      "fingerprint": "89c0a218b76571ef382acd7d9ca3e226fde305d25989c7ea50b950a62996e0a5",
       "snapshot": {
-        "packages/lib/src/lib/plugins/shared.ts": "93503984b2e554ef8268a9f14350dad5e2839ac2835af19f41c9652ead8f1419"
+        "packages/lib/src/lib/plugins/shared.ts": "df5c96f11cf8047253c27209310fbb7244c0821d2a8824f0bf6263ec12bd8616"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
       "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "reason": "Skill now teaches resolveRequestURL and ctx.instanceBaseURL for plugins, the instance-baseURL authBearer origin rule, and that a URL is absolute only with a scheme and //",
       "evidence": [
-        "Changed: packages/lib/src/lib/plugins/shared.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/lib/src/lib/plugins/shared.ts at 06608f4bf5126bc949bde148a37bb3e85fc98041"
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/middleware-index.ts": {
@@ -4830,15 +4829,15 @@
       ]
     },
     "source:packages/tests/browser/plugins.browser.test.ts": {
-      "fingerprint": "3444aa2958edd6feb1abe84dd63340af27f119cd88caa0ab5142b70b48093c9a",
+      "fingerprint": "3485aa3b59a41e551243c09e8d31843e190fc6dd0bf02ccc3c49a8ba0fc3def3",
       "snapshot": {
-        "packages/tests/browser/plugins.browser.test.ts": "0177b4078aab48f261a20e3e83d05cabfa99e0846eb201ad5da2a7ea13ae0bf5"
+        "packages/tests/browser/plugins.browser.test.ts": "5a05f63744ec213decda3ab182ed641436f1e348fa9a51f26563198c0164727e"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
       "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "reason": "Skill states an empty path param value rejects with ERR_BAD_OPTION_VALUE",
       "evidence": [
-        "Changed: packages/tests/browser/plugins.browser.test.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/tests/browser/plugins.browser.test.ts at 29772255069f57f9dfb1764f3b2dd0fa40ec60ab"
       ]
     },
     "source:packages/tests/smoke/bun/tests/plugins.smoke.test.ts": {
@@ -4854,15 +4853,15 @@
       ]
     },
     "source:packages/tests/smoke/esm/tests/plugins.smoke.test.ts": {
-      "fingerprint": "f12012103d9cea84722ad46f8e7d40be6f3bf8dbeff2a98963eb1fc2977bf35d",
+      "fingerprint": "b796c23c12c18efb55980372f0905b9379423198ca819b997642329aaf8d2ea5",
       "snapshot": {
-        "packages/tests/smoke/esm/tests/plugins.smoke.test.ts": "c6cbf40cef3207d939781528ffbc9b9a64abaaf1355287ba945f9aba82cdd051"
+        "packages/tests/smoke/esm/tests/plugins.smoke.test.ts": "ae78a98f00dc2af46ebd48ffa599b7d75b86cf5df79221e3862ebf0bf8b575b0"
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
-      "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "head": "bfc99c19c8fb2a2f8c2d976b3b576797c5980394",
+      "outcome": "no-change",
+      "reason": "Smoke test moves baseURL to the instance to match the authBearer rule the skill already teaches",
       "evidence": [
-        "Changed: packages/tests/smoke/esm/tests/plugins.smoke.test.ts at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/tests/smoke/esm/tests/plugins.smoke.test.ts at bfc99c19c8fb2a2f8c2d976b3b576797c5980394"
       ]
     },
     "source:.bumpy/stream-cancel-hang.md": {
@@ -5838,15 +5837,15 @@
       ]
     },
     "source:packages/tests/unit/core/prepareRequest.pollution.test.ts": {
-      "fingerprint": "39be8a318d2e62861526c786d50afae989f6958d4d0ddcb4e0fe2d20349f5ef9",
+      "fingerprint": "cb34c96da55c9335b3c5588c56e78e6f6127eac4ea17a2da84dc2b6a6f7709b1",
       "snapshot": {
-        "packages/tests/unit/core/prepareRequest.pollution.test.ts": "571cf7557420fe6b4c4a670d093ffa77c337f3d3d413cc6b25b1e57ff289a58b"
+        "packages/tests/unit/core/prepareRequest.pollution.test.ts": "9d43c1b64e6bee83bc261fe8cb6a9e317c74444ba995d50db5286eaa85d41eb9"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
-      "outcome": "no-change",
-      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
+      "outcome": "updated",
+      "reason": "Skill now teaches resolveRequestURL and ctx.instanceBaseURL for plugins, the instance-baseURL authBearer origin rule, and that a URL is absolute only with a scheme and //",
       "evidence": [
-        "Changed: packages/tests/unit/core/prepareRequest.pollution.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+        "Changed: packages/tests/unit/core/prepareRequest.pollution.test.ts at 06608f4bf5126bc949bde148a37bb3e85fc98041"
       ]
     },
     "source:packages/tests/unit/setup/pollution.test.ts": {
@@ -6171,6 +6170,18 @@
       "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
       "evidence": [
         "Changed: packages/tests/unit/core/requestMethod.test.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
+      ]
+    },
+    "source:.bumpy/287-url-resolver.md": {
+      "fingerprint": "bbf50ff0220d4fc4797d83289bf3d4bf7651623de2fea6ea9fe5219d0a9d1097",
+      "snapshot": {
+        ".bumpy/287-url-resolver.md": "8a7637a0b2d02926ffb26808f110bf9cd0702e6acfba198b6f6421785732d7b0"
+      },
+      "head": "f4771aa6fa19a284861a536e31f3f9c5cb98fb84",
+      "outcome": "updated",
+      "reason": "Skill states a url or joined baseURL with a tab or line break rejects with ERR_INVALID_URL",
+      "evidence": [
+        "Changed: .bumpy/287-url-resolver.md at 8211220225a5d8cc4b83d177120331bd72fb7f0f"
       ]
     }
   }

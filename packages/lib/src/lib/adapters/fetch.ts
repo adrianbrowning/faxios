@@ -193,8 +193,9 @@ type FetchEnv = {
 };
 
 // `body` is the request body as transformRequest left it; `config.data` stays the caller's value.
+// `url` is the URL dispatch resolved (resolveRequestURL); `config.url` stays the caller's template.
 // `bodies`: the request's stream bodies, which core keeps under the request's signal.
-type FetchAdapter = (config: InternalFaxiosRequestConfig, body: unknown, bodies?: RequestBodies) => Promise<unknown>;
+type FetchAdapter = (config: InternalFaxiosRequestConfig, body: unknown, url: string, bodies?: RequestBodies) => Promise<unknown>;
 
 // Own reads only: a polluted Object.prototype.fetch must never become the transport.
 const readOwn = (obj: unknown, key: string): unknown =>
@@ -697,8 +698,8 @@ const factory = (env: Omit<FetchEnv, "fetch">): FetchAdapter => {
     if (!isStreamResponse || response.body == null) unsubscribe();
   };
 
-  return async (config: InternalFaxiosRequestConfig, body: unknown, bodies?: RequestBodies) => {
-    const _resolved = prepareRequest(config) as InternalFaxiosRequestConfig & {
+  return async (config: InternalFaxiosRequestConfig, body: unknown, requestURL: string, bodies?: RequestBodies) => {
+    const _resolved = prepareRequest(config, requestURL) as InternalFaxiosRequestConfig & {
       fetchOptions?: Record<string, unknown>;
       withCredentials?: boolean | string;
     };

@@ -402,11 +402,13 @@ class Faxios {
 
     const composed = this.#composed;
     if (!composed) return runRequest(bodies => dispatchRequest(internal, bodies), internal, false);
+    const defaultBaseURL = utils.hasOwnProp(this.defaults, "baseURL") ? this.defaults.baseURL : undefined;
+    const instanceBaseURL = typeof defaultBaseURL === "string" ? defaultBaseURL : undefined;
     // Built when the run starts, so ctx.config carries the request's signal.
     return runRequest(bodies => {
       const state: Record<string, unknown> = Object.create(null);
       if (bodies) bodiesByState.set(state, bodies);
-      return composed({ attempt: 1, config: internal, state, capabilities: this.#capabilities });
+      return composed({ attempt: 1, config: internal, instanceBaseURL, state, capabilities: this.#capabilities });
     }, internal, true);
   }
    
