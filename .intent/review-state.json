@@ -3,11 +3,11 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "e583d626bdbb3ec89af8bff8b38203e8d22288ede44b46e2a9d8ebc9d68805d1",
+      "fingerprint": "cfb1dfff029593403e118b5d4706855e7ada0b33c3cf4fb36cc4b1cb0966123f",
       "snapshot": {
         "MIGRATION_GUIDE.md": "cae546e787c02b7360e79afe3673b8b0d18cade4f48ff8c296fee43feee76dcc",
-        "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
-        "packages/lib/skills/configure-requests/SKILL.md": "649f0da2cf80d6c0c754bd8b38a2030df5c41d98b85cf1654cdcbc2c5c76bff9",
+        "packages/lib/package.json": "110fbf3e1f00faa886fefbbb10c66b19c84ed8208482be9a82f889c377fe23e9",
+        "packages/lib/skills/configure-requests/SKILL.md": "b6efd1246a7bd576b33f3b836eaed4e1dba41f23c08901b585abd0dcbe5d5afd",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "e7841075a87fab1a1bdcf7e2deee00b1177165cbc703547e777eaef417704e80",
         "packages/lib/skills/configure-requests/references/plugins.md": "949bed875f27d52cca1cdea369a0f205887de0a1277025d440c09f56cd2e6724",
         "packages/lib/src/index.ts": "39264439a2f273bd4c9479a29a9a1435b421f06bdf846d87d3f685311db947ea",
@@ -41,22 +41,22 @@
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
-      "outcome": "updated",
-      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/index.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/plugins/timing.ts, packages/lib/src/lib/types.ts at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
+        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "d42a20278377f7883b7486558a97cc0f22f7170ee9cd86931939d138765ac417",
+      "fingerprint": "dc474aee526e1df1a270500b53d53c17ef606c64cccca7695d48c993fa81a361",
       "snapshot": {
         "MIGRATION_GUIDE.md": "cae546e787c02b7360e79afe3673b8b0d18cade4f48ff8c296fee43feee76dcc",
         "_artifacts/domain_map.yaml": "6472bf0fa719fbc9a6bb2fc70343ca2804d53f7a37e185c26930d8bb0283ddfc",
         "_artifacts/skill_spec.md": "d63b29668e7ce92902de02f79cfb5a30fe4435db0d06aa6b588a08574dae6617",
         "_artifacts/skill_tree.yaml": "3feeffaf53d40b2b0ddbf118874eb314cbc208da7669fe05be1763f4bc98b77e",
-        "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
-        "packages/lib/skills/configure-requests/SKILL.md": "649f0da2cf80d6c0c754bd8b38a2030df5c41d98b85cf1654cdcbc2c5c76bff9",
+        "packages/lib/package.json": "110fbf3e1f00faa886fefbbb10c66b19c84ed8208482be9a82f889c377fe23e9",
+        "packages/lib/skills/configure-requests/SKILL.md": "b6efd1246a7bd576b33f3b836eaed4e1dba41f23c08901b585abd0dcbe5d5afd",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "e7841075a87fab1a1bdcf7e2deee00b1177165cbc703547e777eaef417704e80",
         "packages/lib/skills/configure-requests/references/plugins.md": "949bed875f27d52cca1cdea369a0f205887de0a1277025d440c09f56cd2e6724",
         "packages/lib/src/index.ts": "39264439a2f273bd4c9479a29a9a1435b421f06bdf846d87d3f685311db947ea",
@@ -90,11 +90,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
-      "outcome": "updated",
-      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/index.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/plugins/timing.ts, packages/lib/src/lib/types.ts at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
+        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:knip.json": {
@@ -486,15 +486,15 @@
       ]
     },
     "source:packages/lib/src/lib/env/data.ts": {
-      "fingerprint": "96c873d7dfdbd86e417bc39f8b3c8ba98014478fb9488e62cff096bc9af3772e",
+      "fingerprint": "651f006f957f614b73dd13219b313575de83b089169c894d81af199b098fb409",
       "snapshot": {
-        "packages/lib/src/lib/env/data.ts": "4c9404149f2d2653b6e429dc8ccb0076a4c954e9c0eca2349989dd9fc92d5764"
+        "packages/lib/src/lib/env/data.ts": "57c8b832989871274df822dca5ddd82dc7e1aac186165b2c14a90f3a94b99200"
       },
-      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: packages/lib/src/lib/env/data.ts at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
+        "Changed: packages/lib/src/lib/env/data.ts at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/tests/module/esm/pnpm-lock.yaml": {
@@ -2141,15 +2141,15 @@
       ]
     },
     "source:packages/lib/CHANGELOG.md": {
-      "fingerprint": "262e7a33066e1156ff343b9d1add46250fc1947f225ca0e08dd585ff71129bcf",
+      "fingerprint": "81f53f6895785b84adcfe9f21873468e2fcab7020b0df333185c49b4dd4a374c",
       "snapshot": {
-        "packages/lib/CHANGELOG.md": "a17ee5b159ac8f494e5f3bbfdfa20f0b84a23b67c33cc55668399c9f12383d89"
+        "packages/lib/CHANGELOG.md": "20f486e59a8dc3964cc443ed0acf0a4dd3f25a0bc1e19f005640d6d3fbf0af38"
       },
-      "head": "26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: packages/lib/CHANGELOG.md at 26f0cfd39552dc1f7f6ebf76715d86b9efb64d7f"
+        "Changed: packages/lib/CHANGELOG.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/lib/eslint-rules/remove-signal-listeners.ts": {
@@ -4183,15 +4183,15 @@
       ]
     },
     "source:.bumpy/reject-absolute-url-with-base-url.md": {
-      "fingerprint": "3ba386f7cb4c3687db7d3d13597a4a5bdd8c35f813f7e88b1179743929d8831b",
+      "fingerprint": "4f3cafc1997ff692579a0a09db902e49f98718bf20889feb8032067ea84bfd20",
       "snapshot": {
-        ".bumpy/reject-absolute-url-with-base-url.md": "870d0f323d969693249b8c7b69fcb21e7859e738808579dc46e15a4447672d74"
+        ".bumpy/reject-absolute-url-with-base-url.md": null
       },
-      "head": "ff76a32ef23e1e846fb55d03b5b083e5e49012ac",
-      "outcome": "updated",
-      "reason": "#208: the skill now says an absolute URL on a baseURL instance rejects with ERR_INVALID_URL unless allowAbsoluteUrls is true.",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/reject-absolute-url-with-base-url.md at ff76a32ef23e1e846fb55d03b5b083e5e49012ac"
+        "Changed: .bumpy/reject-absolute-url-with-base-url.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/tests/browser/options.browser.test.ts": {
@@ -4207,51 +4207,51 @@
       ]
     },
     "source:.bumpy/geturi-path-params.md": {
-      "fingerprint": "5630ad0d4fc8b9077325d66c09a5fc7652e404978161c2a85636315b2d618306",
+      "fingerprint": "94c06a810b1d0f31b0b98f9f18528a605033c84f8229ec10f82e0da77912bd4d",
       "snapshot": {
-        ".bumpy/geturi-path-params.md": "20fc2161a329ad38e845db1d283e3733d018400a64c23077cf5af910e0ee93e8"
+        ".bumpy/geturi-path-params.md": null
       },
-      "head": "c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab",
-      "outcome": "updated",
-      "reason": "#235: the skill now says getUri() fills in pathParams and returns the URL the request sends.",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/geturi-path-params.md at c8bfa3171ea4d8aca2d8f24b0767640eb4e10cab"
+        "Changed: .bumpy/geturi-path-params.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/auth-bearer-custom-header-redirect.md": {
-      "fingerprint": "50d89aab074893bc3ddf23a9b1c52afbec6c9f431eafa615814dfdb00060ad22",
+      "fingerprint": "ef54418762a6b15e7312267e6a629b65435e6c09244c4590b6b7bc373f089095",
       "snapshot": {
-        ".bumpy/auth-bearer-custom-header-redirect.md": "3b7980e8058d834919885b315183a286ec4319141168f5394719b90ef268485f"
+        ".bumpy/auth-bearer-custom-header-redirect.md": null
       },
-      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
-      "outcome": "updated",
-      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/auth-bearer-custom-header-redirect.md at f8e65308b747dbb46d674597caabd55029175fd4"
+        "Changed: .bumpy/auth-bearer-custom-header-redirect.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/timing-event-error-summary.md": {
-      "fingerprint": "9581504b96bc84eb81c032bb092f965b1e048f5c526030584e054d418f6bd3a6",
+      "fingerprint": "4afc3480710cf01d270b170a432aa9963bc804a4a872195710f3c0d572aad7bb",
       "snapshot": {
-        ".bumpy/timing-event-error-summary.md": "8a4f16da4c0ade75c4b1826e79c813cea0f14dd0ea5a435da2a0aba7a1d6f00f"
+        ".bumpy/timing-event-error-summary.md": null
       },
-      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
-      "outcome": "updated",
-      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/timing-event-error-summary.md at f8e65308b747dbb46d674597caabd55029175fd4"
+        "Changed: .bumpy/timing-event-error-summary.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/tojson-default-redaction.md": {
-      "fingerprint": "206670724c7b357da06a42a48de95fa1fa8b07b63d11bb9c9c34d82ab9c16023",
+      "fingerprint": "747f3f77b6124f80821da853f29cc90c5a5ee0403272d1c7dfbc15bd69c299ff",
       "snapshot": {
-        ".bumpy/tojson-default-redaction.md": "e32e4f5f6d89ad8b03e4bd27aa6887f78ae286695bb9e6ad071306de7cfd166f"
+        ".bumpy/tojson-default-redaction.md": null
       },
-      "head": "f8e65308b747dbb46d674597caabd55029175fd4",
-      "outcome": "updated",
-      "reason": "#207: the skill now describes the redacted TimingEvent.error, toJSON() default redaction and authBearer's redirect default for custom headers.",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/tojson-default-redaction.md at f8e65308b747dbb46d674597caabd55029175fd4"
+        "Changed: .bumpy/tojson-default-redaction.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/tests/unit/utils.test.ts": {
@@ -4267,51 +4267,51 @@
       ]
     },
     "source:.bumpy/faxios-error-name.md": {
-      "fingerprint": "e41b83cd35268f56943ce6611091ac12820c4baeadc61daa030ccb2dee1f6d03",
+      "fingerprint": "df8ec71a92786aac3d38c18cfd6af2eb98c2f9e8601bd5f619106655b8ae2467",
       "snapshot": {
-        ".bumpy/faxios-error-name.md": "ba9ecf803e39e0521cc32528c31f686c421fd568056f0418102f7678bb4d88b7"
+        ".bumpy/faxios-error-name.md": null
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
-      "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/faxios-error-name.md at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: .bumpy/faxios-error-name.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/network-error-message.md": {
-      "fingerprint": "99f5f823800fff224f426fc3d5f81c0b53984680d58d87554719fef77460d941",
+      "fingerprint": "8cdbfe187895340b8dae2ebd4eac7d080538530c95bc5c57794fe942611b78d2",
       "snapshot": {
-        ".bumpy/network-error-message.md": "45592c4471c4a9998b932ff83b2c58b944eceb03ad2f926e493995c78502b962"
+        ".bumpy/network-error-message.md": null
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
-      "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/network-error-message.md at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: .bumpy/network-error-message.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/strict-json-response-type.md": {
-      "fingerprint": "81497ba93ce0c0a3579a458fbc1633afca070e9d9ff26c864a116fbc853309d5",
+      "fingerprint": "9e403872b458adb95b2cc9490e6eca774e11b93a3c4a4cb086e79af0ee8ab4cf",
       "snapshot": {
-        ".bumpy/strict-json-response-type.md": "63bc6d16aaba591b0a59c0e5118e7a3cbadc9b691008461778163441a5ce8583"
+        ".bumpy/strict-json-response-type.md": null
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
-      "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/strict-json-response-type.md at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: .bumpy/strict-json-response-type.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/tojson-cause.md": {
-      "fingerprint": "29c7ab3debd7908e2ddcf090a06af6d25dc9f52cec03339582dc7d54bfa28620",
+      "fingerprint": "4fceab02b2b113ffb67321535afd804218d3d7052993b593d2385880dba94bc2",
       "snapshot": {
-        ".bumpy/tojson-cause.md": "d2ef1999bd5cd010b4e57f9fc086fb35d45964b31f69a8922cdad4a758faf0dc"
+        ".bumpy/tojson-cause.md": null
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
-      "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/tojson-cause.md at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: .bumpy/tojson-cause.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/lib/src/lib/defaults/transitional.ts": {
@@ -4351,15 +4351,15 @@
       ]
     },
     "source:.bumpy/reject-unknown-config-keys.md": {
-      "fingerprint": "00b6be52370e145f4a5a47dc17aee2a289cbe428a29e6303e274bb03d0869982",
+      "fingerprint": "23ee5f8779b07c37a5e173f8ac506de8a5be58c2b340655cac63fb88af5951d8",
       "snapshot": {
-        ".bumpy/reject-unknown-config-keys.md": "5c26950fba4a044498cdad2e70837c8d7df3e9618218d56b0c57d55bf5d00194"
+        ".bumpy/reject-unknown-config-keys.md": null
       },
-      "head": "73d553ec78fcc06814025852f1dab98c0af0d3c6",
-      "outcome": "updated",
-      "reason": "#181: the skill now says unknown and removed config keys reject with ERR_BAD_OPTION and plugins declare their request options.",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/reject-unknown-config-keys.md at 73d553ec78fcc06814025852f1dab98c0af0d3c6"
+        "Changed: .bumpy/reject-unknown-config-keys.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/lib/src/lib/core/assertRequestConfig.ts": {
@@ -4495,15 +4495,15 @@
       ]
     },
     "source:.bumpy/config-merge-precedence.md": {
-      "fingerprint": "4ce7282d0bb4bca3a1389b5b5cf4ddcd80110e01e3489aad109f4081bd497a4c",
+      "fingerprint": "2b9c3a299626192787f619eefa608724a70a4ac6565281bef414f3493a09537e",
       "snapshot": {
-        ".bumpy/config-merge-precedence.md": "798e3bba308b169fd78302c3a1b26703f3dd9eb36cf81038cea5d3f8e08b0b55"
+        ".bumpy/config-merge-precedence.md": null
       },
-      "head": "a07985125c27956a1d106702007aa65f535066b6",
-      "outcome": "updated",
-      "reason": "#234: the skill now gives the header precedence order and the own-undefined fallback rule.",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/config-merge-precedence.md at a07985125c27956a1d106702007aa65f535066b6"
+        "Changed: .bumpy/config-merge-precedence.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/docs/pages/advanced/config-defaults.md": {
@@ -4531,51 +4531,51 @@
       ]
     },
     "source:.bumpy/formdata-content-type-rule.md": {
-      "fingerprint": "de9f8cb15715573f3aa271a74ea4540fac7d348636b7eea20a7d5c8be7adfb9f",
+      "fingerprint": "6250825d27566bedf3b82368166a708ee361ac69336cb256b92643120d440f6c",
       "snapshot": {
-        ".bumpy/formdata-content-type-rule.md": "95372e44e68ec342d5942c59a7f045eca727908d3e89f77d407767b6ba993c9a"
+        ".bumpy/formdata-content-type-rule.md": null
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/formdata-content-type-rule.md at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: .bumpy/formdata-content-type-rule.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/formtojson-split-dots-brackets.md": {
-      "fingerprint": "7093c06b5ea108309c7012e2912b2913a8b2b27124045736c91acc9392498a21",
+      "fingerprint": "b8463fc7a8530d78aab05795fc534f05beae5af959fbd84d13d334e58098d96d",
       "snapshot": {
-        ".bumpy/formtojson-split-dots-brackets.md": "3d727020602d68159be27eebb2e01c00644074846b72f673e423e5696224bdc6"
+        ".bumpy/formtojson-split-dots-brackets.md": null
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/formtojson-split-dots-brackets.md at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: .bumpy/formtojson-split-dots-brackets.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/reject-form-data-package-bodies.md": {
-      "fingerprint": "93088bd2bc60c55aff8d1c3b187b3f3fb8595a1239b084c7e928da46f10de325",
+      "fingerprint": "86efeb441c478de2f69f87bb9451912385ea6c8e7fadb586e3f27dce7a73d16a",
       "snapshot": {
-        ".bumpy/reject-form-data-package-bodies.md": "900cb3f2e96e08a381ecb0cbd1906633687ddcbc39d5a027ffcbd4be55140395"
+        ".bumpy/reject-form-data-package-bodies.md": null
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/reject-form-data-package-bodies.md at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: .bumpy/reject-form-data-package-bodies.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/string-body-content-type.md": {
-      "fingerprint": "833e88fc5e0e52a1a5e796174807710036576513fcf71231d0080481bd0d37e4",
+      "fingerprint": "4ce254d4aa7c3599202d06da2bea12e2f5086138ee48fbaf66fdb72b5972def5",
       "snapshot": {
-        ".bumpy/string-body-content-type.md": "9d4f5d7bded85c29260284909264c8b42592525f4a5cf02d80755655ccd9c01f"
+        ".bumpy/string-body-content-type.md": null
       },
-      "head": "35099193395c2d4372a08d722867483dc192f54d",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/string-body-content-type.md at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: .bumpy/string-body-content-type.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/lib/src/lib/core/resolveBodyContentType.ts": {
@@ -4603,15 +4603,15 @@
       ]
     },
     "source:.bumpy/plugin-attempt-api.md": {
-      "fingerprint": "ae66cf5564315d4a984fd4c68f6aa3f894015e5c6c2e22e7c332023fb0a8e80d",
+      "fingerprint": "cdeac527e78c67e5aef1695795bcbf012d46893ed5c9470455f6ccead28f2444",
       "snapshot": {
-        ".bumpy/plugin-attempt-api.md": "fec500292ae365bce2fae4db8cec3d9ea7b786a4a71ad3b3318a0aa6128f354b"
+        ".bumpy/plugin-attempt-api.md": null
       },
-      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "Review fixes: plugin import lint limited to root-exported names, CI builds before tests, bump text; the configure-requests skill already describes plugin imports correctly",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/plugin-attempt-api.md at c7d55ccc0029b173ec5fa125c00be93e2a1c2977"
+        "Changed: .bumpy/plugin-attempt-api.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/lib/src/lib/plugins/attempt.ts": {
@@ -4651,15 +4651,15 @@
       ]
     },
     "source:.bumpy/whole-request-timeout.md": {
-      "fingerprint": "20f680c86b9b8c063e4897e87ba0dd72e8d2477d48621b78a773078e4f9e124c",
+      "fingerprint": "585e399af2498d1f9eaaeda74a33c5da3e7bb2500a11e6a8fc973406b31c24c2",
       "snapshot": {
-        ".bumpy/whole-request-timeout.md": "6a330eea8a98eb9cd9d75745130cdc1d754656b962806165810c8231ef2e3a99"
+        ".bumpy/whole-request-timeout.md": null
       },
-      "head": "b82cdc87b60909ae764bf7bed4c7fabce9e71b9a",
-      "outcome": "updated",
-      "reason": "#236: the skill now says timeout bounds the whole request and retry.attemptTimeout bounds one try.",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/whole-request-timeout.md at b82cdc87b60909ae764bf7bed4c7fabce9e71b9a"
+        "Changed: .bumpy/whole-request-timeout.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/lib/src/lib/core/requestDeadline.ts": {
@@ -4687,15 +4687,15 @@
       ]
     },
     "source:.bumpy/response-headers-faxios-headers.md": {
-      "fingerprint": "6651f67513d24591f71361f3a17cf09b255d8aedb4a00f1fce6496fb3070ebb0",
+      "fingerprint": "52ea99840d91c6a1405e652ded93af1dee571524c3e9a8961678a65643c6d0f6",
       "snapshot": {
-        ".bumpy/response-headers-faxios-headers.md": "094a643d40e3de72c63cecee287481db959d4b3d81aad1ab8464d59a184c91b6"
+        ".bumpy/response-headers-faxios-headers.md": null
       },
-      "head": "ec60180715be2fc29e78189587b246ad36d7e69b",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "#239: header typing changed; the skill's examples already call FaxiosHeaders methods and need no change.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/response-headers-faxios-headers.md at ec60180715be2fc29e78189587b246ad36d7e69b"
+        "Changed: .bumpy/response-headers-faxios-headers.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/docs/pages/advanced/header-methods.md": {
@@ -4735,15 +4735,15 @@
       ]
     },
     "source:.bumpy/define-route-schema-types.md": {
-      "fingerprint": "adfb8686ccd69578efe315036de05515805bceef35fd7ba57d422f7aed97203a",
+      "fingerprint": "59696591caec5161fbe14216297f4185fc7f2961f6882b302bd1cdf255df9933",
       "snapshot": {
-        ".bumpy/define-route-schema-types.md": "e579bca15c94759c13f0925a98198f99082e4e1c3043f430f63d118326ab184b"
+        ".bumpy/define-route-schema-types.md": null
       },
-      "head": "87d7ad0cc2917f62b6b63777da3fb2b9f1a60995",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "#164: define()/route() and env typing fixes; the skill teaches the same calls, which now type-check.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/define-route-schema-types.md at 87d7ad0cc2917f62b6b63777da3fb2b9f1a60995"
+        "Changed: .bumpy/define-route-schema-types.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/tests/smoke/deno/tests/cancel.smoke.test.ts": {
@@ -4795,27 +4795,27 @@
       ]
     },
     "source:.bumpy/typescript-floor-5-4.md": {
-      "fingerprint": "3d9b2b9228c20816ed7c95ad291cfea5c4a24b68bd8800bf95d7816b95a2d469",
+      "fingerprint": "bb17848864f7efe7ec0f9419e91c14456b95e75d9b085cd747b651944c085206",
       "snapshot": {
-        ".bumpy/typescript-floor-5-4.md": "fcd29a6f7155146ac33978b3044e99437be01c892e41ee599e16d8d1caa8cdfa"
+        ".bumpy/typescript-floor-5-4.md": null
       },
-      "head": "a6926e1f507b0da9f07237183336e51a04704807",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/typescript-floor-5-4.md at a6926e1f507b0da9f07237183336e51a04704807"
+        "Changed: .bumpy/typescript-floor-5-4.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/forward-to-plugin.md": {
-      "fingerprint": "7f161d4b67f3e86c6d9576c628eaaae0aef254a6fb64bf9f860fb86cea407ec1",
+      "fingerprint": "2af949b4ada76a583194c373f4ab97f48a89357e64f7a6f53216f4881daf4f35",
       "snapshot": {
-        ".bumpy/forward-to-plugin.md": "605e0d10ccef99e6e9b35791188f6b07e8f99d43db643d301b8d1b85c9667405"
+        ".bumpy/forward-to-plugin.md": null
       },
-      "head": "f59775c08419cb31e97d0b6395315f647aa499a1",
-      "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/forward-to-plugin.md at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: .bumpy/forward-to-plugin.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/tests/browser/plugins.browser.test.ts": {
@@ -4855,15 +4855,15 @@
       ]
     },
     "source:.bumpy/stream-cancel-hang.md": {
-      "fingerprint": "08a165da03b0814f8be0e02872753d71f1e782a850b77339d6dc54b59028c7a2",
+      "fingerprint": "a510fd9d3f405638eaebd235e52daecd30e07d3ea786ad01b3ad0c6889407c43",
       "snapshot": {
-        ".bumpy/stream-cancel-hang.md": "87891747c6fdf8666e7a13cfa366b0864c07952f37e97e63ba5e02eed2f956a3"
+        ".bumpy/stream-cancel-hang.md": null
       },
-      "head": "12f00f571b1d09b579b3142ea82e2498e9357060",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "#254: trackStream cancels the source directly; the configure-requests skill does not teach stream cancel internals.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/stream-cancel-hang.md at 12f00f571b1d09b579b3142ea82e2498e9357060"
+        "Changed: .bumpy/stream-cancel-hang.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.gitignore": {
@@ -5131,15 +5131,15 @@
       ]
     },
     "source:.bumpy/292-repo-hygiene.md": {
-      "fingerprint": "c36329d80b371b01d30db9fcb4c8c17aa3e3806a67a0dc8d4268d0e29dd0f7a1",
+      "fingerprint": "4bad1562e621c74f95e1aba615aa5e3aeb299a44aab2eb8a249fbb0f2eba66d4",
       "snapshot": {
-        ".bumpy/292-repo-hygiene.md": "1722ce3671ccd19960fa3a0e1a9be3a3ed7161e08cb16e6ebbb4f855413e00bf"
+        ".bumpy/292-repo-hygiene.md": null
       },
-      "head": "d740e7ae19d0261948961a9fb082792f504c8ce2",
-      "outcome": "updated",
-      "reason": "Replaced the vendor CDN define() example in references/plugins.md with api.example.com and a neutral path; repo hygiene changes do not alter what the skill teaches",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/292-repo-hygiene.md at 8964690cf3e1b0f1ecb939cd4ce1dbdf67ec05b9"
+        "Changed: .bumpy/292-repo-hygiene.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.github/FUNDING.yml": {
@@ -5275,15 +5275,15 @@
       ]
     },
     "source:.bumpy/188-user-docs.md": {
-      "fingerprint": "8cc3777fcd025d31f810a6c9daf57adc79107c5a94ea4824536d94751a9ca025",
+      "fingerprint": "739aeaca227c18e291e65cae2c42a62219f6b004b9127bd48405dfb880ede9b7",
       "snapshot": {
-        ".bumpy/188-user-docs.md": "78b5d494d744ab8353e8c681a304a105d0d015c261d210d92a6b4cb2ec57044e"
+        ".bumpy/188-user-docs.md": null
       },
-      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
-      "outcome": "updated",
-      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/188-user-docs.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
+        "Changed: .bumpy/188-user-docs.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/docs/pages/advanced/cancellation.md": {
@@ -5527,15 +5527,15 @@
       ]
     },
     "source:.bumpy/young-silver-cat.md": {
-      "fingerprint": "4922be1fcad049344246907b9bda5e71db041ef8482fd9acf2ed8579acf5d22c",
+      "fingerprint": "da4f428cb2de6bb3d8a7600f3cdf834682e836f1a5a2cb0c744bfbae3f77f41c",
       "snapshot": {
-        ".bumpy/young-silver-cat.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+        ".bumpy/young-silver-cat.md": null
       },
-      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/young-silver-cat.md at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+        "Changed: .bumpy/young-silver-cat.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.github/dependabot.yml": {
@@ -5899,27 +5899,27 @@
       ]
     },
     "source:.bumpy/289-proto-keys.md": {
-      "fingerprint": "b74ddbc957281630686d0313e522ac5e74b9cf87adab2850ca673d0b567d87f7",
+      "fingerprint": "fb0f93585dd4b60172c8b12857e0857f89caafc98a54a9ff6b6de3d1f6334bc2",
       "snapshot": {
-        ".bumpy/289-proto-keys.md": "59135eaf519ed0beb4e0a9df14b79870d90ab2c1fbce86a289f6449ee47f618a"
+        ".bumpy/289-proto-keys.md": null
       },
-      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/289-proto-keys.md at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
+        "Changed: .bumpy/289-proto-keys.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/290-284-same-origin.md": {
-      "fingerprint": "ebdad56f81eb9eee453c05d56eae02fc0210fc57bc1d81f0dac4967b44e9f3b0",
+      "fingerprint": "aad7945dfefd32a54ef307071af685aed03b61a2ff5d367cc108b1bb3e90fc9e",
       "snapshot": {
-        ".bumpy/290-284-same-origin.md": "6d227fd7a8753f1904fc8266c914fa1b1c7adc73958c8119b56d2d2221f4f72b"
+        ".bumpy/290-284-same-origin.md": null
       },
-      "head": "8f4937c2fbe18a923f35634f3a570f480c7d8b8e",
-      "outcome": "updated",
-      "reason": "configure-requests SKILL.md now teaches withCredentials->credentials mapping (false/unset same-origin) and the XSRF redirect:'error' default; planning records unaffected (no new skill or task scope)",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/290-284-same-origin.md at dfdc00f066473f22ac32be6628f5b36e726e06af"
+        "Changed: .bumpy/290-284-same-origin.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/tests/browser/credentials.browser.test.ts": {
@@ -5959,15 +5959,15 @@
       ]
     },
     "source:.bumpy/273-caller-objects.md": {
-      "fingerprint": "7b54eca2d4237976bda1cfd69ec6f845d0096483792aa18df04bb2e5d8e88d78",
+      "fingerprint": "81839a0cf19b2fcb0349d8bddee5fd19b32a9e7cd7bf57a330008e0646755c35",
       "snapshot": {
-        ".bumpy/273-caller-objects.md": "70d77414340058338e50acf32b9901b1766fafdde720a5b228113576f43e159c"
+        ".bumpy/273-caller-objects.md": null
       },
-      "head": "16004a89cc705910f332129196177c5afcbad839",
-      "outcome": "updated",
-      "reason": "configure-requests SKILL.md now says a request redact adds to the instance's, config.data on errors is the caller's body, and schema issues keep only message and path keys",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/273-caller-objects.md at 0fd26195c33fab2485de5afef6b316d94f126562"
+        "Changed: .bumpy/273-caller-objects.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/tests/unit/core/validateSchema.test.ts": {
@@ -5983,39 +5983,39 @@
       ]
     },
     "source:.bumpy/275-plugin-atomic.md": {
-      "fingerprint": "5996e376c6c4f7413f5d3cbd594a3048c61c4ed90e20dc0d3527b651416315d6",
+      "fingerprint": "3c9e3e9c5f8e0e0da668666560df24424e28f93a4451225cd00e8f404d4d802b",
       "snapshot": {
-        ".bumpy/275-plugin-atomic.md": "093ed96e5b0556c24cc798e392c5f857118b56f1ee330951967d5961c542429d"
+        ".bumpy/275-plugin-atomic.md": null
       },
-      "head": "350605777edb17586f58ed6796d0d5b5166a9899",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "Atomic capability registration on failed use() is an internal fix; the skill does not teach failure-state behaviour",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/275-plugin-atomic.md at bf2bf61ff7b46e6ab2cba8611412304f435c33b8"
+        "Changed: .bumpy/275-plugin-atomic.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/285-error-codes.md": {
-      "fingerprint": "01155a8e94d597ea022244cead0d3851e3ebf894e789fb07cf18fc033d1169d3",
+      "fingerprint": "c3ac94228bfa59e4c2df68ac6422ff3376ae35b4a8be0ad645de80b34338c791",
       "snapshot": {
-        ".bumpy/285-error-codes.md": "1910b2fba49e79a15464b061ca990de8a521d7ee1ba0f87dda170b8126f73b81"
+        ".bumpy/285-error-codes.md": null
       },
-      "head": "3a5de35d45ae88da1349a3aecac8a379c3e16d1f",
-      "outcome": "updated",
-      "reason": "Skill now says a 4xx/5xx non-JSON body keeps its status error with the parse error as cause; ERR_NETWORK and ERR_INVALID_URL guidance already matches the stage-based codes",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/285-error-codes.md at 5614e3a4cf0d0f9c9714d8d8193187eaf9804510"
+        "Changed: .bumpy/285-error-codes.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/278-cancellation.md": {
-      "fingerprint": "2b357351d3896b3aa514dbb59c3c63c67e6acd387752f59d96479c0dcbc8da8a",
+      "fingerprint": "e1670294adb9546b7c8d0e3ab39a266cf71accee6d442d31a631a45c9b371eaf",
       "snapshot": {
-        ".bumpy/278-cancellation.md": "399ba4ae4bb936f943e91b120e222a741abbffcf889d69c6cf815868e208aac9"
+        ".bumpy/278-cancellation.md": null
       },
-      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
-      "outcome": "updated",
-      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/278-cancellation.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
+        "Changed: .bumpy/278-cancellation.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/lib/src/lib/core/assertSignal.ts": {
@@ -6055,15 +6055,15 @@
       ]
     },
     "source:.bumpy/286-response-edges.md": {
-      "fingerprint": "8ecddb8b35d4722ff9ab7750bcf6f0c791e17d1261fdd4c33668ccf4a8e2f214",
+      "fingerprint": "8a98ad084ebd654f176525a82e90688ea0ce4842065f8ef39b3c9bafa57f7bfb",
       "snapshot": {
-        ".bumpy/286-response-edges.md": "80e86bced7041af84531c4c77e422657cf43d61e66d101583cd1f40b14773e7d"
+        ".bumpy/286-response-edges.md": null
       },
-      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
-      "outcome": "updated",
-      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/286-response-edges.md at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
+        "Changed: .bumpy/286-response-edges.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/lib/src/lib/core/settle.ts": {
@@ -6079,15 +6079,15 @@
       ]
     },
     "source:.bumpy/277-resource-bounds.md": {
-      "fingerprint": "5f3e9d0e3d4d0be582358ec5c93789219986ec62cdf250be8f810dd25e92d376",
+      "fingerprint": "c29dcb0ceadc55b6b3d9a3e21479443e35ad64a7116f86e44a2e9ca11fdbdc56",
       "snapshot": {
-        ".bumpy/277-resource-bounds.md": "f75bf2ccfe362125fdb6a1af320776578ae22c8a47d395c22b1fd22b8d56afb7"
+        ".bumpy/277-resource-bounds.md": null
       },
-      "head": "e860801c73b0297a0ec4073403971cc452274399",
-      "outcome": "updated",
-      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/277-resource-bounds.md at 484d2ac2104da3e5946af6a25500ec7b40729206"
+        "Changed: .bumpy/277-resource-bounds.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/lib/src/lib/helpers/utf8ByteLength.ts": {
@@ -6127,15 +6127,15 @@
       ]
     },
     "source:.bumpy/269-fail-closed.md": {
-      "fingerprint": "f60e77731566ada90ccb2184bc52e1c48f617d2c407ae7f41d3405eeb7f2deab",
+      "fingerprint": "f3b514513c7249d808407ee543b1ae45fcbb9d3c78645da41f512d7cc267db39",
       "snapshot": {
-        ".bumpy/269-fail-closed.md": "b4eefa86a8d1af78c9b9e936becbe28707f2ffa2529746ca65fc16eebef722fa"
+        ".bumpy/269-fail-closed.md": null
       },
-      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
-      "outcome": "updated",
-      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/269-fail-closed.md at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
+        "Changed: .bumpy/269-fail-closed.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/tests/browser/cookies.browser.test.ts": {
@@ -6163,39 +6163,39 @@
       ]
     },
     "source:.bumpy/287-url-resolver.md": {
-      "fingerprint": "1d94eab371aabc601fe1398e1d649e8b778caf5448e967add8de2e32a004c3fb",
+      "fingerprint": "6e4231de97ba12604348b042c99b42bd907e1fe5f850018ed645a49f16e42367",
       "snapshot": {
-        ".bumpy/287-url-resolver.md": "27994f64214e481a4c948909c930fc497297719698cc6cf66343d11a47b6c11f"
+        ".bumpy/287-url-resolver.md": null
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/287-url-resolver.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: .bumpy/287-url-resolver.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/288-create-headers.md": {
-      "fingerprint": "ba66ed38d5f2c438b17d321dbc0d4b4e1417892300e1e08ec36372fde22544bc",
+      "fingerprint": "890e3829f8c2d0c11ca8522ab718a49c83292a9f19f2504d1759d64ad2ff43f3",
       "snapshot": {
-        ".bumpy/288-create-headers.md": "12418efac8874e8942db7c93cb9b28e867c7f231d5d2aafc564af26b88ce2b69"
+        ".bumpy/288-create-headers.md": null
       },
-      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
-      "outcome": "updated",
-      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/288-create-headers.md at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
+        "Changed: .bumpy/288-create-headers.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/296-request-once.md": {
-      "fingerprint": "521639178766ce7c2c99d6efd556af6523ca262e692756aafc0f96066687a419",
+      "fingerprint": "5ac739c549484776e8c48c0d12846bbd2c3e8fecb36375c9bd20e78d2a9bc19a",
       "snapshot": {
-        ".bumpy/296-request-once.md": "82f39dae19eb71d4ab33c64520088f0187c6026508228e9edd46ad6e98fd965c"
+        ".bumpy/296-request-once.md": null
       },
-      "head": "7fb0f3322a19a7b68df934fe9fd1460e36e88298",
-      "outcome": "updated",
-      "reason": "SKILL.md now says the fetch init body member is null in Node/Deno and undefined in Bun, chosen by a one-time probe",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/296-request-once.md at 4ea5dad1bc2c3a38a1f98321274dad54c22f3ec8"
+        "Changed: .bumpy/296-request-once.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/tests/browser/defaults.browser.test.ts": {
@@ -6259,15 +6259,15 @@
       ]
     },
     "source:.bumpy/298-dead-code.md": {
-      "fingerprint": "67290cbffbaa8849904f49c5b170660556e7775b1b8fb6d23745167257513d6f",
+      "fingerprint": "dd1c50889d89107c8391b8d2e9b0241b9124af1f69d5fe98b61e0f606d59b6ac",
       "snapshot": {
-        ".bumpy/298-dead-code.md": "b93dfe6365be7af81b6868fc4a706386cdef91418471d6b86a9ca133d5de45c5"
+        ".bumpy/298-dead-code.md": null
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/298-dead-code.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: .bumpy/298-dead-code.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/lib/src/lib/helpers/isURLSameOrigin.ts": {
@@ -6307,15 +6307,15 @@
       ]
     },
     "source:.bumpy/166-utils-named.md": {
-      "fingerprint": "599f6d8023c88c576cf11b888e19a77540ed85340d382f3489cee6df7765c6c9",
+      "fingerprint": "5892c48192152549eb6048a55ba2f75408b0954b67060562950f15de29a5db54",
       "snapshot": {
-        ".bumpy/166-utils-named.md": "5d3cb89635c21762431e151c323051525157de70ff0f4193083145765a5731f3"
+        ".bumpy/166-utils-named.md": null
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/166-utils-named.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: .bumpy/166-utils-named.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/lib/src/lib/helpers/deprecatedMethod.ts": {
@@ -6355,15 +6355,15 @@
       ]
     },
     "source:.bumpy/copper-merry-jay.md": {
-      "fingerprint": "82e3a5d8b7395c3513abfe877e3a0e79b3dbe1db7849f539ded3baf2901bee90",
+      "fingerprint": "7f6cf52fcb994389dc8d91a53bad0eb1a58dbff5860ee8945859fc6cdf3d7c4c",
       "snapshot": {
-        ".bumpy/copper-merry-jay.md": "cf037661d26d3e2422ce5a65e784200d3a7df69adbcdbfce88a01013c41e782b"
+        ".bumpy/copper-merry-jay.md": null
       },
-      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "Review fixes: plugin import lint limited to root-exported names, CI builds before tests, bump text; the configure-requests skill already describes plugin imports correctly",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/copper-merry-jay.md at c7d55ccc0029b173ec5fa125c00be93e2a1c2977"
+        "Changed: .bumpy/copper-merry-jay.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/lib/eslint-rules/plugin-imports.ts": {
@@ -6475,15 +6475,15 @@
       ]
     },
     "source:.bumpy/279-api-types.md": {
-      "fingerprint": "81e8136d93a713b81c31a209d7405c4f6f8372c0861e2d370546b1ed42838e61",
+      "fingerprint": "42887066777d0d141a78bfb4b47fd90fcc24ea6a5dcb9fb6bf254c761ebdca92",
       "snapshot": {
-        ".bumpy/279-api-types.md": "e3620e6d12a8117f40326270ef956254a6bfe3358f4f4c8a8fa2f16c782f4f01"
+        ".bumpy/279-api-types.md": null
       },
-      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "bump file wording now says only positional URL inputs changed at runtime; no skill guidance changes",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/279-api-types.md at a1b6be8343ef0db8a2eada3a08060d40afd5adef"
+        "Changed: .bumpy/279-api-types.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/lib/scripts/axios-build-instance.js": {
@@ -6535,15 +6535,15 @@
       ]
     },
     "source:.bumpy/295-declarations.md": {
-      "fingerprint": "452769cb5b348b234abf4de4a5fac4748366e67690e4d868a0573699b5ced1a5",
+      "fingerprint": "2a36c2bd1587c908eb47d1f1fad9faf1a3e09caa8d7d0274c2de42be3bb7b313",
       "snapshot": {
-        ".bumpy/295-declarations.md": "f3e8979037ecc48445231dff3c6d6267c9f53b5b2f6f4fa7cb56eef942cbfaf2"
+        ".bumpy/295-declarations.md": null
       },
-      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/295-declarations.md at fba7e018c121fe120baa6e3d377335e69a94b244"
+        "Changed: .bumpy/295-declarations.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/lib/src/lib/types/web-globals.d.ts": {
@@ -6643,15 +6643,15 @@
       ]
     },
     "source:.bumpy/async-iterable-body.md": {
-      "fingerprint": "e0ceb9143bb57fac205f57ee21c58ba42f74acb5da68c92dd853482edc587ed9",
+      "fingerprint": "16d9b011dbe6307b5604b983f7fd178605ffd5a1be8f1ae3c89209cf095738d2",
       "snapshot": {
-        ".bumpy/async-iterable-body.md": "e53f13bfb676a988202ed80635ba6a3d5dbebe84a3d05c67b6968bc939aec8ea"
+        ".bumpy/async-iterable-body.md": null
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed files: .bumpy/async-iterable-body.md"
+        "Changed: .bumpy/async-iterable-body.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/tests/browser/fetch.browser.test.ts": {
@@ -6691,15 +6691,15 @@
       ]
     },
     "source:.bumpy/dry-rusty-dog.md": {
-      "fingerprint": "0f44f4a26487781181197d743081a41437c66832d6d821006045274740d8e4e6",
+      "fingerprint": "6623f4b38b92ac07a9d06767e233e99668d9f68dd2b9bbe6919e45ad43ebf65e",
       "snapshot": {
-        ".bumpy/dry-rusty-dog.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+        ".bumpy/dry-rusty-dog.md": null
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed files: .bumpy/dry-rusty-dog.md"
+        "Changed: .bumpy/dry-rusty-dog.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/docs/pages/advanced/response-schema.md": {
@@ -7039,27 +7039,27 @@
       ]
     },
     "source:.bumpy/294-skill-docs.md": {
-      "fingerprint": "a8e2dcd1daec9620311a3098dd23a7f305ba0cccdd7859b5109bc69f23f0e686",
+      "fingerprint": "b300248c12eb0e37e4fd8996a39763a3d293d1a8a0c7238a6295b3f1e5b4b9b1",
       "snapshot": {
-        ".bumpy/294-skill-docs.md": "2b5c1029ea32233dd592e848459a91a1504c883d63a3d8d2ca16b17bac547830"
+        ".bumpy/294-skill-docs.md": null
       },
-      "head": "3ebcbed4a658f1c97c4442cd1fdcf51f3e895d1e",
-      "outcome": "updated",
-      "reason": "Skill corrected for spread named export and pathParams optionality (#294)",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/294-skill-docs.md at 8e6378ca8866ecac735ac97060d1ed8b82965b29"
+        "Changed: .bumpy/294-skill-docs.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/jolly-glad-wave.md": {
-      "fingerprint": "bb1cc88e436dc2808181e40aa5595f6f3cfc8bc795d19bf7a544f750eeddb45c",
+      "fingerprint": "1befbc1b9e5f2201939d8862e411ffef5161080b0cc757ebdf6d9b97ed0b8e74",
       "snapshot": {
-        ".bumpy/jolly-glad-wave.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+        ".bumpy/jolly-glad-wave.md": null
       },
-      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed files: .bumpy/jolly-glad-wave.md"
+        "Changed: .bumpy/jolly-glad-wave.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/docs/pages/misc/semver.md": {
@@ -7123,15 +7123,15 @@
       ]
     },
     "source:.bumpy/old-thin-vine.md": {
-      "fingerprint": "5653aaee1b7dd6e59ce925030ebce2216336b1211b4119c4825077fe53010630",
+      "fingerprint": "cad504d3610fe420332b1d488625cdc9a2ca5ecaf19a99fe8205a87b2096e986",
       "snapshot": {
-        ".bumpy/old-thin-vine.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+        ".bumpy/old-thin-vine.md": null
       },
-      "head": "32234c458f13a175aa56a692ac189f4129775038",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/old-thin-vine.md at 02bc02539714e48c32c881c43720b5d34bb375f7"
+        "Changed: .bumpy/old-thin-vine.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:mdcode.config.json": {
@@ -7183,15 +7183,15 @@
       ]
     },
     "source:.bumpy/276-intent-records.md": {
-      "fingerprint": "2818712be4dab754ad43f20b30bab8c06843f9a5f08acc3b66089eb56ae95446",
+      "fingerprint": "fdd338bce56d9a44bad16d5a12cf8619a9bcdc66ba0ebf812af3d6cbf6b825c4",
       "snapshot": {
-        ".bumpy/276-intent-records.md": "39662bf6410f791e3c07f5f7302c01aaa157d9f0c2f172aed348a81917bc72a2"
+        ".bumpy/276-intent-records.md": null
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
-      "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/276-intent-records.md at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: .bumpy/276-intent-records.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/tests/scripts/check-skill-exports.ts": {
@@ -7291,75 +7291,75 @@
       ]
     },
     "source:.bumpy/review-fixes-lib.md": {
-      "fingerprint": "635e2b4ce2f97fcb528564588a9e72b9248570844ff8849ceb97b549fd120d7a",
+      "fingerprint": "e7f1ead58e75abf6f54a299bdc62ebb7d347918cf68ed30d6532c290ba5a4091",
       "snapshot": {
-        ".bumpy/review-fixes-lib.md": "6d5db27b610d6cfa57d329e70f9756f10e789fc0b8aa9763eefa1b608af8d44f"
+        ".bumpy/review-fixes-lib.md": null
       },
-      "head": "4de5faca993ee73f8eb162f4ebeb544a68689acc",
-      "outcome": "updated",
-      "reason": "axios-differences reference now lists the XSRF redirect, config.data, responseType case and R-generic differences; retry signal check and plugin helper refactors change nothing the skill teaches",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/review-fixes-lib.md at 4de5faca993ee73f8eb162f4ebeb544a68689acc"
+        "Changed: .bumpy/review-fixes-lib.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/auth-bearer-redact-custom-header.md": {
-      "fingerprint": "7a5ed62bbbaed355adfe5504b0095600c2656aadfa5abfd3bb681f46ddfb6e25",
+      "fingerprint": "e080406b1d4d9228147e032f74271513ea9402c79d261e38fd21902834055eb6",
       "snapshot": {
-        ".bumpy/auth-bearer-redact-custom-header.md": "3962e5159c1aa5d6ed88f23ad2b220c72943d39f3b2a8b8a9a4cef3c7cf3bfdc"
+        ".bumpy/auth-bearer-redact-custom-header.md": null
       },
-      "head": "65f1d369230889444a3251f5c8d746d2a3096b1d",
-      "outcome": "updated",
-      "reason": "skill notes authBearer custom-header redaction and the valid size-limit values",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/auth-bearer-redact-custom-header.md at 65f1d369230889444a3251f5c8d746d2a3096b1d"
+        "Changed: .bumpy/auth-bearer-redact-custom-header.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/retry-attempt-timeout-null-proto.md": {
-      "fingerprint": "8b1b945be15e0b63abd1f4e02b090566cea587ae25b2374131958e900d353cbd",
+      "fingerprint": "d31d8780f9274a6e26f9db4576d2e153def8ba554902877d57fd37ea99538d32",
       "snapshot": {
-        ".bumpy/retry-attempt-timeout-null-proto.md": "51e9de8e6d726209053ea1727badcc37b179fba63a265fae0b6578eb179e8834"
+        ".bumpy/retry-attempt-timeout-null-proto.md": null
       },
-      "head": "65f1d369230889444a3251f5c8d746d2a3096b1d",
-      "outcome": "updated",
-      "reason": "skill notes authBearer custom-header redaction and the valid size-limit values",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/retry-attempt-timeout-null-proto.md at 65f1d369230889444a3251f5c8d746d2a3096b1d"
+        "Changed: .bumpy/retry-attempt-timeout-null-proto.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/size-limit-values.md": {
-      "fingerprint": "8c10efb63b74682d5d7629d275425260ebfbbdea818294eaadeddb3377df11a4",
+      "fingerprint": "980fdbc1ef7fc5a568fc5937d68665419b597c1203f142f11fa56860953b94be",
       "snapshot": {
-        ".bumpy/size-limit-values.md": "7f61a19cee2f0fd517b070b24cdb0190143ec18ef0001923adacfb67835b2046"
+        ".bumpy/size-limit-values.md": null
       },
-      "head": "65f1d369230889444a3251f5c8d746d2a3096b1d",
-      "outcome": "updated",
-      "reason": "skill notes authBearer custom-header redaction and the valid size-limit values",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/size-limit-values.md at 65f1d369230889444a3251f5c8d746d2a3096b1d"
+        "Changed: .bumpy/size-limit-values.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/error-config-url.md": {
-      "fingerprint": "ce2a50bb2dd332c09636e50cdaeed0b9878175002ef6004e41d36999213661ba",
+      "fingerprint": "efcce9821e791ce8d2bfeacae6e165b046c301f7f58ba74a16f0d20ce6db984f",
       "snapshot": {
-        ".bumpy/error-config-url.md": "7ee515b513a12ee6a46d3b256da3c249581b31909bda36fd7869e753912b2d70"
+        ".bumpy/error-config-url.md": null
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
-      "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/error-config-url.md at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: .bumpy/error-config-url.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/retry-shared-core.md": {
-      "fingerprint": "8dc4a1ceb2596f9f3170133851c0d510acb7eded1b670920b434165f1038b26c",
+      "fingerprint": "95fb021c006901bbe9c9a21bd2c3c5773f832d08809a41db2eb00f560ba595cb",
       "snapshot": {
-        ".bumpy/retry-shared-core.md": "32a478a1b498860543840bce7177b0e919a441b1435b9ffeaee3a8f94bf07f86"
+        ".bumpy/retry-shared-core.md": null
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
-      "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/retry-shared-core.md at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: .bumpy/retry-shared-core.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-limits.ts": {
@@ -7435,75 +7435,75 @@
       ]
     },
     "source:.bumpy/audit-perf-types.md": {
-      "fingerprint": "a8a95392b426e87927266f2a6477cd7edff883274687ea9f69c4b06607fe308e",
+      "fingerprint": "4c2d8723d04791302cbf8abc378e23244ce8c986f22be6945c12ebe6ee4ab260",
       "snapshot": {
-        ".bumpy/audit-perf-types.md": "fa413379cf1161679ddb9d2b465c4568194010bc0f3fe4a3a2dfeb79b13affd5"
+        ".bumpy/audit-perf-types.md": null
       },
-      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
-      "outcome": "updated",
-      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/audit-perf-types.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
+        "Changed: .bumpy/audit-perf-types.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/audit-types-narrowing.md": {
-      "fingerprint": "bda2df5fc7658d219f9054326d0301411d38724669213702f14a8b2e1a9e2921",
+      "fingerprint": "bab25ddca08466a3f9e78680b0c7419735f06d444162b69b4b8577ffcf9b2b4d",
       "snapshot": {
-        ".bumpy/audit-types-narrowing.md": "1e1ee37458e44533dd91c4cd1015b714a87296261c2dbe60fb5972b86860ef9f"
+        ".bumpy/audit-types-narrowing.md": null
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/audit-types-narrowing.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: .bumpy/audit-types-narrowing.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/error-config-leaks-and-codes.md": {
-      "fingerprint": "94b0d06f8450894075da75e2a9c3ccaac18ba299e5aeb84904708965ccf8ce37",
+      "fingerprint": "3a0b96d585552ba53dcfe044b6a3e34fef1cd36afd388ec6cd96f85f4986014a",
       "snapshot": {
-        ".bumpy/error-config-leaks-and-codes.md": "6d08c1a408f0aa382aaa2edd442bf0e8185b18376d4d03536f8f237a3bb0cbf1"
+        ".bumpy/error-config-leaks-and-codes.md": null
       },
-      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
       "outcome": "no-change",
-      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/error-config-leaks-and-codes.md at fba7e018c121fe120baa6e3d377335e69a94b244"
+        "Changed: .bumpy/error-config-leaks-and-codes.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/remove-legacy-aliases.md": {
-      "fingerprint": "74e5f52982442b0bb2507e5d57828d6d8d84fed4b33c1bd48cd25944061c8543",
+      "fingerprint": "6efdf4537cac87e1f23cb40ae9a1f5a154f9d8deff8d7ce09fbf5b907cdc4055",
       "snapshot": {
-        ".bumpy/remove-legacy-aliases.md": "a660aba3def5f0f4730e02bec8bf81c3c6a245ca926a5ffd7f9c3443f27fe681"
+        ".bumpy/remove-legacy-aliases.md": null
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/remove-legacy-aliases.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: .bumpy/remove-legacy-aliases.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/route-query.md": {
-      "fingerprint": "60bd58ee27d91dd82cc9ee37de4ef79c849fecbe7fa025a0f692f0327230ff51",
+      "fingerprint": "d0ddeba149cdc7efb3e3dd0aa2b0155fa850a39e08d090e18cd06dd2f9d7dabe",
       "snapshot": {
-        ".bumpy/route-query.md": "5d78e0e01b2f6d568cc521d4119281ed4f99fd4ac822fb1e6754118bfb490070"
+        ".bumpy/route-query.md": null
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/route-query.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: .bumpy/route-query.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:.bumpy/timeout-number-only.md": {
-      "fingerprint": "0b07e6cd761f9b055e0cdbaafbd5c6b43ef887a15d9c7a6fae6fbe44e5107290",
+      "fingerprint": "a7c35ae3e0867e2514629e159719a80896be749979e262f50eddc1393089df65",
       "snapshot": {
-        ".bumpy/timeout-number-only.md": "5aa95767044df0edf79f5df873b37ff457a235f0b138f8c89375913560898452"
+        ".bumpy/timeout-number-only.md": null
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/timeout-number-only.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: .bumpy/timeout-number-only.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/docs/public/logo-light.svg": {
@@ -7651,15 +7651,15 @@
       ]
     },
     "source:.bumpy/strip-user-info-exports.md": {
-      "fingerprint": "591ce54cbce2e42cdb3f989985fd52a411e050da0a3317bda88ff57b970674cc",
+      "fingerprint": "9246ba4781b90251bff9b2d5e56e20bab8adadc60eb6fa408cdb879b226c1478",
       "snapshot": {
-        ".bumpy/strip-user-info-exports.md": "e4c8eff12f1420a13f0a2d1f25db3d9674d56ea131bd5cb860533b9a5b0dfba8"
+        ".bumpy/strip-user-info-exports.md": null
       },
-      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
-      "outcome": "updated",
-      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
+      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/strip-user-info-exports.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
+        "Changed: .bumpy/strip-user-info-exports.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
       ]
     },
     "source:packages/tests/unit/helpers/stripUserInfo.test.ts": {
