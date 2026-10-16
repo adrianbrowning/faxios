@@ -208,8 +208,20 @@ jobs:
         env:
           PUSH_TOKEN: ${{ secrets.BUMPY_GH_TOKEN || github.token }}
           BRANCH: bumpy/version-packages
+          EXPECTED_SHA: ${{ needs.version.outputs.sha }}
         run: |
           set -euo pipefail
+          # Commit only the three synced files, on top of the commit bumpy pushed
+          if [[ "$(git rev-parse HEAD)" != "$EXPECTED_SHA" ]]; then
+            echo "::error::checkout is not at $EXPECTED_SHA"
+            exit 1
+          fi
+          extra=$(git status --porcelain --untracked-files=all \
+            | grep -Ev '^M  (\.intent/review-state\.json|packages/lib/skills/configure-requests/SKILL\.md|packages/lib/src/lib/env/data\.ts)$' || true)
+          if [[ -n "$extra" ]]; then
+            echo "::error::unexpected changes before commit: ${extra//$'\n'/, }"
+            exit 1
+          fi
           if git diff --cached --quiet; then
             echo "VERSION, the skill and the Intent record are already in sync"
             exit 0

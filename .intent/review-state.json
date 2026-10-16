@@ -1917,15 +1917,15 @@
       ]
     },
     "source:.github/workflows/release.yml": {
-      "fingerprint": "ed9506a3ecd49db519389d7086520212a6958744561b16c0cb8c52aa6326fa5a",
+      "fingerprint": "85f9bea7ace276f1cff8148bc552e82e8686aab4b235ee8dd14e5a36d56a6ae9",
       "snapshot": {
-        ".github/workflows/release.yml": "ef5448e7042bb029a9cfd2bbdca45fb94c566ecd19b545c51d3fae89073a4602"
+        ".github/workflows/release.yml": "a99c62d2ca1d2fd8b4e8f7880611a2d72530b0aa3734d2259249844728840c98"
       },
-      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
-      "outcome": "updated",
-      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
+      "head": "f01d7dee195235c5d61c1544ed2017ce4e537c64",
+      "outcome": "no-change",
+      "reason": "release workflow only: push-version checks HEAD and the staged paths",
       "evidence": [
-        "Changed: .github/workflows/release.yml at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
+        "Changed: .github/workflows/release.yml at f01d7dee195235c5d61c1544ed2017ce4e537c64"
       ]
     },
     "source:COLLABORATOR_GUIDE.md": {
