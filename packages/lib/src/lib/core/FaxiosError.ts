@@ -1,7 +1,7 @@
 // @ts-self-types="./FaxiosError.d.ts" — required for Deno: index.d.ts re-exports SchemaValidationError from here
 "use strict";
 
-import stripUserInfo from "../helpers/stripUserInfo.js";
+import stripUserInfo, { stripUserInfoInText } from "../helpers/stripUserInfo.js";
 import type { FaxiosResponse, InternalFaxiosRequestConfig } from "../types.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
 import { getSafeProp, hasOwnProp, isArray, isBuffer, isObject, isUndefined } from "../utils.js";
@@ -101,18 +101,6 @@ function redactConfig(config: unknown, redactKeys: ReadonlyArray<string>): unkno
   };
 
   return visit(config, "");
-}
-
-// `user:pass@` after a `scheme://` anywhere in free text, such as an error message. A match can
-// start only at a scheme character followed by `:` and two slashes, and the user info stops at the
-// first `/`, so the scan is linear: matching the whole scheme from a word boundary rescanned the
-// text from every letter of a long `a.a.a…` path, which took seconds on a 200 kB message.
-// The user info runs through the last `@` before a `/`, `?`, `#` or space (`user:p@ss@host`);
-// each repeat ends at an `@` and none can contain one, so the repeats can't overlap.
-const USER_INFO_IN_TEXT = /([a-z\d+\-.]:[/\\]{2})(?:[^/\\?#\s@]*@)+/gi;
-
-function stripUserInfoInText(text: string): string {
-  return text.replace(USER_INFO_IN_TEXT, "$1");
 }
 
 type SerializedCause = { cause?: SerializedCause; code?: string; message: string; name: string; };

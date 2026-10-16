@@ -27,6 +27,7 @@ export const rootRuntimeExports: Record<string, Array<string>> = {
   "../helpers/HttpStatusCode.js": [ "default" ],
   "../helpers/isFaxiosError.js": [ "default" ],
   "../helpers/raceAbort.js": [ "onAbort", "default" ],
+  "../helpers/stripUserInfo.js": [ "default", "stripUserInfoInText" ],
   "../helpers/toFormData.js": [ "default" ],
   "../utils.js": [ "hasOwnInPrototypeChain" ],
 };

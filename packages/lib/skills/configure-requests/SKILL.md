@@ -420,7 +420,7 @@ await faxios.get("https://api.example.com/feed", { fetchOptions: { cache: "no-st
 
 | Import | Status |
 | --- | --- |
-| `@gcmdev/faxios` | Stable: default `faxios`, `Faxios`, `FaxiosError`, `FaxiosHeaders`, `CanceledError`, `isCancel`, `isFaxiosError`, `isSchemaValidationError`, `mergeConfig`, `toFormData`, `formToJSON`, `HttpStatusCode`, `resolveRequestURL`, `all`, `create`, `VERSION`, and the types |
+| `@gcmdev/faxios` | Stable: default `faxios`, `Faxios`, `FaxiosError`, `FaxiosHeaders`, `CanceledError`, `isCancel`, `isFaxiosError`, `isSchemaValidationError`, `mergeConfig`, `toFormData`, `formToJSON`, `HttpStatusCode`, `resolveRequestURL`, `canceledFromSignal`, `assertSignal`, `onAbort`, `raceAbort`, `hasOwnInPrototypeChain`, `stripUserInfo`, `stripUserInfoInText`, `all`, `create`, `VERSION`, and the types |
 | `@gcmdev/faxios/plugins` | Stable: `definePlugin` only |
 | `@gcmdev/faxios/plugins/auth-bearer`, `/forward-to`, `/retry`, `/timing` | Stable: one plugin each |
 | `@gcmdev/faxios/unsafe/*` | Internal helpers (`buildFullPath`, `buildURL`, `combineURLs`, `isAbsoluteURL`). No stability promise; do not use them in application code, and say so if a task seems to need them |

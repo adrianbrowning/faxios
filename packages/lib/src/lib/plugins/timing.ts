@@ -1,6 +1,7 @@
 // @ts-self-types="./timing.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
 import type { FaxiosContext, FaxiosPlugin } from "../../index.js";
+import stripUserInfo, { stripUserInfoInText } from "../helpers/stripUserInfo.js";
 import { definePlugin } from "./definePlugin.js";
 import { own, templateURL } from "./shared.js";
 
@@ -35,15 +36,6 @@ type TimingError = { code: string | undefined; message: string; status: number |
 
 const now = () => (typeof performance === "undefined" ? Date.now() : performance.now());
 
-// Up to the `@` of a URL's user info: after the scheme (`http:`, with any slashes) or after `//`.
-// Backslashes count as slashes, as they do in the WHATWG URL parser.
-const USER_INFO = /^([a-z][a-z\d+\-.]*:[/\\]*|[/\\]{2})[^/\\?#]*@/i;
-
-// `user:pass@` after a `scheme://` anywhere in an error message. A match starts only at a scheme
-// character followed by `:` and two slashes, and stops at the first `/`, so the scan is linear.
-// The user info runs through the last `@` before a `/`, `?`, `#` or space (`user:p@ss@host`).
-const USER_INFO_IN_TEXT = /([a-z\d+\-.]:[/\\]{2})(?:[^/\\?#\s@]*@)+/gi;
-
 // A property the error or its class defines, never one only Object.prototype supplies.
 function errorProp(error: unknown, key: "code" | "status"): unknown {
   if (typeof error !== "object" || error === null) return undefined;
@@ -63,7 +55,7 @@ function describe({ attempt, config }: FaxiosContext) {
   const end = url.search(/[?#]/);
   return {
     method: String(own(config, "method") ?? "get").toUpperCase(),
-    url: (end === -1 ? url : url.slice(0, end)).replace(USER_INFO, "$1"),
+    url: stripUserInfo(end === -1 ? url : url.slice(0, end)),
     attempt,
   };
 }
@@ -74,7 +66,7 @@ function summarize(error: unknown): TimingError {
   const status = errorProp(error, "status");
   return {
     code: typeof code === "string" ? code : undefined,
-    message: (error instanceof Error ? error.message : String(error)).replace(USER_INFO_IN_TEXT, "$1"),
+    message: stripUserInfoInText(error instanceof Error ? error.message : String(error)),
     status: typeof status === "number" ? status : undefined,
   };
 }

@@ -23,6 +23,7 @@ export { default as assertSignal } from "./lib/core/assertSignal.ts";
 export { onAbort, default as raceAbort } from "./lib/helpers/raceAbort.ts";
 export type { AbortableSignal } from "./lib/helpers/raceAbort.ts";
 export { hasOwnInPrototypeChain } from "./lib/utils.ts";
+export { default as stripUserInfo, stripUserInfoInText } from "./lib/helpers/stripUserInfo.ts";
 export { VERSION } from "./lib/env/data.ts";
 // Standalone modules that faxios.ts also attaches to the default instance. Reading them off the
 // instance here would keep the whole library in every bundle that imports any named export.

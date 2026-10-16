@@ -98,6 +98,15 @@ await api.get("/orders", { trace: "abc-123" }); // `trace` type-checks only on `
 Check: `faxios.get("/orders", { trace: "x" })` on an instance without the plugin is a type error,
 and at runtime it rejects with `ERR_BAD_OPTION` (`Unknown option trace`).
 
+## Reuse core's helpers
+
+Import the helpers core uses from `@gcmdev/faxios` instead of copying them into a plugin:
+`assertSignal` (reject a `signal` faxios can't watch), `onAbort` and `raceAbort` (with the
+`AbortableSignal` type) to react to or race an abort, `canceledFromSignal` for the error an aborted
+request rejects with, and `hasOwnInPrototypeChain` to read an option without trusting a polluted
+`Object.prototype`, and `stripUserInfo` (a URL) or `stripUserInfoInText` (free text such as an
+error message) to remove `user:pass@` before logging.
+
 ## Read the URL a request goes to
 
 Import `resolveRequestURL(config)` from `@gcmdev/faxios`; never join `baseURL` and `url` by hand.

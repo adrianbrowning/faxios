@@ -47,6 +47,18 @@ function exportedTypes(): void {
   } = { aborted: false, addEventListener: () => undefined, removeEventListener: () => undefined };
   const polyfillSignal: GenericAbortSignal = polyfill;
   const abortable: AbortableSignal = polyfill;
+  // The DOM AbortSignal fits both.
+  const domSignal: GenericAbortSignal = new AbortController().signal;
+  const domAbortable: AbortableSignal = new AbortController().signal;
+  // @ts-expect-error TS2739 -- faxios listens for "abort", so the listener members are required
+  const bare: GenericAbortSignal = { aborted: false };
+  const numberTyped: {
+    aborted: boolean;
+    addEventListener: (type: number, l: () => void) => void;
+    removeEventListener: (type: number, l: () => void) => void;
+  } = { aborted: false, addEventListener: () => undefined, removeEventListener: () => undefined };
+  // @ts-expect-error TS2322 -- a listener member that can't take the "abort" event type doesn't fit
+  const numberSignal: GenericAbortSignal = numberTyped;
   // @ts-expect-error TS2740 -- the config argument is an InternalFaxiosRequestConfig, not a bare headers bag
   void new CanceledError("x", { headers: {} });
   const visitor: SerializerVisitor | undefined = undefined;
@@ -77,6 +89,10 @@ function exportedTypes(): void {
   void progress;
   void polyfillSignal;
   void abortable;
+  void domSignal;
+  void domAbortable;
+  void bare;
+  void numberSignal;
   void visitor;
   void helpers;
   void formOptions;

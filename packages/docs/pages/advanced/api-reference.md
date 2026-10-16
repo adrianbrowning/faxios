@@ -296,7 +296,7 @@ assertSignal(signal: unknown, config: InternalFaxiosRequestConfig): void;
 
 ### `AbortableSignal`
 
-The part of an `AbortSignal` that `onAbort` and `raceAbort` use, so a polyfilled signal or one from another realm works too.
+The part of an `AbortSignal` that `onAbort` and `raceAbort` use, so a polyfilled signal or one from another realm works too. `GenericAbortSignal`, what the `signal` option accepts, extends it with an optional `onabort`.
 
 ```ts contract=@gcmdev/faxios
 type AbortableSignal = {
@@ -328,6 +328,22 @@ Whether `prop` is an own property of `thing` or of an object on its prototype ch
 
 ```ts contract=@gcmdev/faxios
 hasOwnInPrototypeChain(thing: unknown, prop: PropertyKey): boolean;
+```
+
+### `stripUserInfo`
+
+Returns `url` without the `user:pass@` of its authority, so it is safe to log. Only user info at the start of `url` is removed: after the scheme (`https://user:pass@host` becomes `https://host`) or after `//` in a protocol-relative URL. Backslashes count as slashes, as in the WHATWG URL parser. `FaxiosError#toJSON()` uses it on `url` and `baseURL`, and `timing` on the URL it reports. Exported for plugins.
+
+```ts contract=@gcmdev/faxios
+stripUserInfo(url: string): string;
+```
+
+### `stripUserInfoInText`
+
+Returns `text` without the `user:pass@` after each `scheme://` in it, so free text such as an error message is safe to log. The scan takes time linear in the length of `text`. `FaxiosError#toJSON()` uses it on the messages of the cause chain, and `timing` on the error message it reports. Exported for plugins.
+
+```ts contract=@gcmdev/faxios
+stripUserInfoInText(text: string): string;
 ```
 
 ### `all` <Badge type="danger" text="Deprecated in favour of Promise.all" />
@@ -501,7 +517,7 @@ The package root exports these types. Import them with `import type { ... } from
 | `SerializerVisitor` | The `visitor` function `FormSerializerOptions` takes, called for each value `toFormData()` serializes |
 | `FormDataVisitorHelpers` | The helpers a `SerializerVisitor` gets: `defaultVisitor`, `convertValue` and `isVisitable` |
 | `TransitionalOptions` | The [`transitional`](/pages/advanced/request-config#transitional) option |
-| `GenericAbortSignal` | An `AbortSignal`-like object the `signal` option accepts |
+| `GenericAbortSignal` | An `AbortSignal`-like object the `signal` option accepts: an [`AbortableSignal`](#abortablesignal) with an optional `onabort` |
 | `GenericFormData` | A FormData-like object with an `append(name, value)` method |
 | `GenericHTMLFormElement` | An HTML-form-like object `toFormData()` and `formToJSON()` read |
 | `StandardSchemaV1` | The [Standard Schema](https://standardschema.dev/) v1 interface the schema options take |

@@ -325,6 +325,10 @@ const api = faxios.create({ baseURL: "https://api.example.com" }).use(logURL());
 await api.get("/users/{id}", { pathParams: { id: 7 }, params: { q: 1 } });
 ```
 
+### Reuse core's helpers
+
+The package root exports the rules core uses for signals, cancellation and prototype walks, so import them from `@gcmdev/faxios` instead of copying them into a plugin: `assertSignal` (reject a `signal` faxios can't watch), `onAbort` and `raceAbort` (with the `AbortableSignal` type) to react to or race an abort, `canceledFromSignal` for the error an aborted request rejects with, and `hasOwnInPrototypeChain` to read an option without trusting a polluted `Object.prototype`, and `stripUserInfo` (a URL) and `stripUserInfoInText` (free text such as an error message) to remove `user:pass@` before logging. See the [API reference](/pages/advanced/api-reference) for each signature.
+
 ### Typing a plugin factory
 
 Annotate a factory's return type with `FaxiosPlugin<{ requires?; provides?; options? }>`. This is how the built-in plugins are declared, and it keeps the plugin's public type readable:

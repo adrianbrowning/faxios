@@ -3,17 +3,17 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "49819c6a4f28af3bfd0be64cc5cb5195e0765371f221b36c607cbb3a1fc94f16",
+      "fingerprint": "e583d626bdbb3ec89af8bff8b38203e8d22288ede44b46e2a9d8ebc9d68805d1",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "06b73573b58e7c0cf2b68c60bab2070dbd6cce1d7843b957d4e315bdfbd36b95",
+        "MIGRATION_GUIDE.md": "cae546e787c02b7360e79afe3673b8b0d18cade4f48ff8c296fee43feee76dcc",
         "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
-        "packages/lib/skills/configure-requests/SKILL.md": "56a0040056f0a8a4dfbf85233c3e62524aeb6e13471f9951601ef0ebeda158c2",
+        "packages/lib/skills/configure-requests/SKILL.md": "649f0da2cf80d6c0c754bd8b38a2030df5c41d98b85cf1654cdcbc2c5c76bff9",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "e7841075a87fab1a1bdcf7e2deee00b1177165cbc703547e777eaef417704e80",
-        "packages/lib/skills/configure-requests/references/plugins.md": "8b9e1a7c90a81e2e07bc4a3184f4ccdfaf9e544a59b7452dcaee715836ea43b4",
-        "packages/lib/src/index.ts": "fd921c2fe3d94631ecdf54d28b84ce244cd5d51b55045a0f96b13d6d0ed96d3d",
+        "packages/lib/skills/configure-requests/references/plugins.md": "949bed875f27d52cca1cdea369a0f205887de0a1277025d440c09f56cd2e6724",
+        "packages/lib/src/index.ts": "39264439a2f273bd4c9479a29a9a1435b421f06bdf846d87d3f685311db947ea",
         "packages/lib/src/lib/adapters/fetch.ts": "cbeb583e9ffb55061f8ae3fdb69beda59fd95c0a65303d333de322785ad2a88c",
-        "packages/lib/src/lib/core/Faxios.ts": "e7469eacefc1de17be049a9ac7045bfd0f866fad805957b462591c1d534a17cb",
-        "packages/lib/src/lib/core/FaxiosError.ts": "ba6ba0149fd924f9249db4909f3db56020e795e8a697fd2965a9ef04b49e9e34",
+        "packages/lib/src/lib/core/Faxios.ts": "189c1330e4c53e434d32a4493a889811dc611b4d0e0dfdcc15c07c41da4210e5",
+        "packages/lib/src/lib/core/FaxiosError.ts": "2c179b2c7768477345905a5ac770cbdf8b990a862fed3cc6163d765b7523c3ca",
         "packages/lib/src/lib/core/assertRequestConfig.ts": "6cb679260d7a88b4794c312b241153336ad0befa4e51916329344c5244d21597",
         "packages/lib/src/lib/core/assertSignal.ts": "1198024df3bef8e27aca705897c1d9018f6399ede2bb7d4bcb46988861965da5",
         "packages/lib/src/lib/core/assertTimeout.ts": "f8204e9b0180dc9a720a003b86b01b95b9daa2ea937b8792ceec0cabf8f096ca",
@@ -31,8 +31,8 @@
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
         "packages/lib/src/lib/plugins/retry.ts": "5baf85c4aa520de6ddb7c4b3f7fc13502bec3d1c26b5d04eb833ea660174d8a1",
-        "packages/lib/src/lib/plugins/timing.ts": "91a019a018662213c3129c4b7b09384b49b68e6c6a515155a0ee5f33ba599986",
-        "packages/lib/src/lib/types.ts": "bde2ecb615f42bd7a46ef566e9b198be62d4bed0d4a7962da323932d0c148063",
+        "packages/lib/src/lib/plugins/timing.ts": "8b4e233be25f4ba739937f540bdba3a5f432ff295bb8f72a8a921f07b53c10fc",
+        "packages/lib/src/lib/types.ts": "15e39f3b3a1df6bfe7da0c667931ac027bcd49d9bc9644b3d573a352d61f2166",
         "packages/tests/unit/api.test.ts": "990637f0d66f52ab670c55014c0c14888ddeb09ae80383007f25c0fab557fd80",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "676015494660fe61f56303b21b93cafb78d9ef31e1e1c6210d1cc1a9fc0e86f2",
@@ -41,28 +41,28 @@
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
-      "outcome": "no-change",
-      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
+      "outcome": "updated",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/tests/unit/plugins/retry.test.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/index.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/plugins/timing.ts, packages/lib/src/lib/types.ts at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "589eaf0a63de064c0a2391e8f3482c162ef5042716c7de1b5ee21eaac5b04492",
+      "fingerprint": "d42a20278377f7883b7486558a97cc0f22f7170ee9cd86931939d138765ac417",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "06b73573b58e7c0cf2b68c60bab2070dbd6cce1d7843b957d4e315bdfbd36b95",
+        "MIGRATION_GUIDE.md": "cae546e787c02b7360e79afe3673b8b0d18cade4f48ff8c296fee43feee76dcc",
         "_artifacts/domain_map.yaml": "6472bf0fa719fbc9a6bb2fc70343ca2804d53f7a37e185c26930d8bb0283ddfc",
         "_artifacts/skill_spec.md": "d63b29668e7ce92902de02f79cfb5a30fe4435db0d06aa6b588a08574dae6617",
         "_artifacts/skill_tree.yaml": "3feeffaf53d40b2b0ddbf118874eb314cbc208da7669fe05be1763f4bc98b77e",
         "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
-        "packages/lib/skills/configure-requests/SKILL.md": "56a0040056f0a8a4dfbf85233c3e62524aeb6e13471f9951601ef0ebeda158c2",
+        "packages/lib/skills/configure-requests/SKILL.md": "649f0da2cf80d6c0c754bd8b38a2030df5c41d98b85cf1654cdcbc2c5c76bff9",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "e7841075a87fab1a1bdcf7e2deee00b1177165cbc703547e777eaef417704e80",
-        "packages/lib/skills/configure-requests/references/plugins.md": "8b9e1a7c90a81e2e07bc4a3184f4ccdfaf9e544a59b7452dcaee715836ea43b4",
-        "packages/lib/src/index.ts": "fd921c2fe3d94631ecdf54d28b84ce244cd5d51b55045a0f96b13d6d0ed96d3d",
+        "packages/lib/skills/configure-requests/references/plugins.md": "949bed875f27d52cca1cdea369a0f205887de0a1277025d440c09f56cd2e6724",
+        "packages/lib/src/index.ts": "39264439a2f273bd4c9479a29a9a1435b421f06bdf846d87d3f685311db947ea",
         "packages/lib/src/lib/adapters/fetch.ts": "cbeb583e9ffb55061f8ae3fdb69beda59fd95c0a65303d333de322785ad2a88c",
-        "packages/lib/src/lib/core/Faxios.ts": "e7469eacefc1de17be049a9ac7045bfd0f866fad805957b462591c1d534a17cb",
-        "packages/lib/src/lib/core/FaxiosError.ts": "ba6ba0149fd924f9249db4909f3db56020e795e8a697fd2965a9ef04b49e9e34",
+        "packages/lib/src/lib/core/Faxios.ts": "189c1330e4c53e434d32a4493a889811dc611b4d0e0dfdcc15c07c41da4210e5",
+        "packages/lib/src/lib/core/FaxiosError.ts": "2c179b2c7768477345905a5ac770cbdf8b990a862fed3cc6163d765b7523c3ca",
         "packages/lib/src/lib/core/assertRequestConfig.ts": "6cb679260d7a88b4794c312b241153336ad0befa4e51916329344c5244d21597",
         "packages/lib/src/lib/core/assertSignal.ts": "1198024df3bef8e27aca705897c1d9018f6399ede2bb7d4bcb46988861965da5",
         "packages/lib/src/lib/core/assertTimeout.ts": "f8204e9b0180dc9a720a003b86b01b95b9daa2ea937b8792ceec0cabf8f096ca",
@@ -80,8 +80,8 @@
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
         "packages/lib/src/lib/plugins/retry.ts": "5baf85c4aa520de6ddb7c4b3f7fc13502bec3d1c26b5d04eb833ea660174d8a1",
-        "packages/lib/src/lib/plugins/timing.ts": "91a019a018662213c3129c4b7b09384b49b68e6c6a515155a0ee5f33ba599986",
-        "packages/lib/src/lib/types.ts": "bde2ecb615f42bd7a46ef566e9b198be62d4bed0d4a7962da323932d0c148063",
+        "packages/lib/src/lib/plugins/timing.ts": "8b4e233be25f4ba739937f540bdba3a5f432ff295bb8f72a8a921f07b53c10fc",
+        "packages/lib/src/lib/types.ts": "15e39f3b3a1df6bfe7da0c667931ac027bcd49d9bc9644b3d573a352d61f2166",
         "packages/tests/unit/api.test.ts": "990637f0d66f52ab670c55014c0c14888ddeb09ae80383007f25c0fab557fd80",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "676015494660fe61f56303b21b93cafb78d9ef31e1e1c6210d1cc1a9fc0e86f2",
@@ -90,11 +90,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
-      "outcome": "no-change",
-      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
+      "outcome": "updated",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/tests/unit/plugins/retry.test.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/index.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/plugins/timing.ts, packages/lib/src/lib/types.ts at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:knip.json": {
@@ -184,15 +184,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "1e59d435fb0ffff1b6badffabdeabb4e2aa2f1ba4043ed5c20bec49006a6c52f",
+      "fingerprint": "4e7bbe1ae22ba7191976ea2354c9793f55069a1d75b4cc139e2eb41c48e5ef80",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "6acdc2940593a9b1e0d8ffd0ab4fcd618a084e4de8c5cc31c30ba27e26cf4570"
+        "packages/docs/pages/advanced/api-reference.md": "ed29fdced427bc096f0c0d9994df0e2093f37137f3b324b89f9ef096cdd51dae"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
       "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/api-reference.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: packages/docs/pages/advanced/api-reference.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
@@ -268,15 +268,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "d49451c48f1a82b698a5edc437bab369575f476e4e2b20ff135bd60675d45b48",
+      "fingerprint": "360fe34d6470a8230be6b3a4faff4819ff58448e1df2c7610568f42e532f1ca4",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "a37710a72423d0082cfe3a9d83b040178cd28c2d527d9bda78b71b847831ef84"
+        "packages/docs/pages/advanced/middleware.md": "ca5aab4885340e93e749f69e5ee9e886280b5c7893e10c80f0f20dd4e7fa4ae1"
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
       "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: packages/docs/pages/advanced/middleware.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
@@ -376,15 +376,15 @@
       ]
     },
     "source:packages/docs/pages/getting-started/upgrade-guide.md": {
-      "fingerprint": "a77a16bae72f063007db8c92c6896d9a83fe5bdc2523c441aa46742fac18a45b",
+      "fingerprint": "5a5889fe0321d97a065daf55388d972be95e78708e9ace1d56faaeacc6873cfc",
       "snapshot": {
-        "packages/docs/pages/getting-started/upgrade-guide.md": "0b375845621375127e6ee7860754beda9a414710eef579699a8c553839bacfb6"
+        "packages/docs/pages/getting-started/upgrade-guide.md": "34daa11a88d856d873c7875fc14ee79853e80814bb0af27d5b0ca66968623d7f"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
       "outcome": "updated",
-      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: packages/docs/pages/getting-started/upgrade-guide.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+        "Changed: packages/docs/pages/getting-started/upgrade-guide.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:packages/docs/zh/pages/advanced/interceptors.md": {
@@ -1917,15 +1917,15 @@
       ]
     },
     "source:.github/workflows/release.yml": {
-      "fingerprint": "fd84d99a06f43586e61279fd64d62d5abe46147f712bb1af2912e46f1e1d3ad9",
+      "fingerprint": "ed9506a3ecd49db519389d7086520212a6958744561b16c0cb8c52aa6326fa5a",
       "snapshot": {
-        ".github/workflows/release.yml": "1273ed667310e4e005cb403b965d54fed6def6a7e74d1d0f766b274382b1ec00"
+        ".github/workflows/release.yml": "ef5448e7042bb029a9cfd2bbdca45fb94c566ecd19b545c51d3fae89073a4602"
       },
-      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
-      "outcome": "no-change",
-      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
+      "outcome": "updated",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: .github/workflows/release.yml at fba7e018c121fe120baa6e3d377335e69a94b244"
+        "Changed: .github/workflows/release.yml at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:COLLABORATOR_GUIDE.md": {
@@ -1953,15 +1953,15 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "46d94b4a969aa0af1695c365956c2735e1f857c1ad1264ea15f0cedbfe9b1328",
+      "fingerprint": "7b6e78e91e25d684775df6ec5e040dcac7e5fde3f0d78f9af4bd01bf72f67751",
       "snapshot": {
-        "THREATMODEL.md": "23453818bda43fab4bf57b3965f622f2f68c7e269ab0dcc05492a8f6821c661f"
+        "THREATMODEL.md": "83e5c5644efbd4095b211e4664d8a7dff4ba060345804eee27ab10ff78666b5b"
       },
-      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
-      "outcome": "no-change",
-      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
+      "outcome": "updated",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: THREATMODEL.md at fba7e018c121fe120baa6e3d377335e69a94b244"
+        "Changed: THREATMODEL.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:packages/docs/.vitepress/theme/index.ts": {
@@ -3907,15 +3907,15 @@
       ]
     },
     "source:packages/tests/smoke/deno/types/consumer.ts": {
-      "fingerprint": "c543be66eb7495be93a4da0f2961970c29e26c81a4516cc39a1549cfc28b6006",
+      "fingerprint": "bda571353a0d0cc3a570e7eb47e5eff57ecb50433a49f6ae2c0a98506c8bb68b",
       "snapshot": {
-        "packages/tests/smoke/deno/types/consumer.ts": "629bc91d7efbc1ec1b5e2611550ba3ac16a0f34e1a683157f89158b075ddea2e"
+        "packages/tests/smoke/deno/types/consumer.ts": "d3b2eeeb35c190fe0831639e6d234dd42306c77ba1f8d5e89e150534d759f4ed"
       },
-      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
-      "outcome": "no-change",
-      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
+      "outcome": "updated",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: packages/tests/smoke/deno/types/consumer.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
+        "Changed: packages/tests/smoke/deno/types/consumer.ts at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:.bumpy/middleware-missing-response.md": {
@@ -4327,15 +4327,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/stripUserInfo.ts": {
-      "fingerprint": "013cdbb0f320bab854a5ee94cab2ca10af190f7ed4970b19c55c9220f777c884",
+      "fingerprint": "afd07ae45533627c91048ea9ed00c34ba86d57f9a5d42926706f88b518a27233",
       "snapshot": {
-        "packages/lib/src/lib/helpers/stripUserInfo.ts": "0a22f7e9855fa4ba68965263d162808d09025d693e04d63719ad256d7f10e2a4"
+        "packages/lib/src/lib/helpers/stripUserInfo.ts": "f717b1d2c8eaa8089b01a0b053903c2966b2e5f6a402568017ac64219849edd9"
       },
-      "head": "5a45950a00ff6218e6dd7b1d3aa5a550465b3e13",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
       "outcome": "updated",
-      "reason": "#237: the skill now says FaxiosError.name is always FaxiosError, explicit responseType json is strict, and toJSON() includes cause.",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/stripUserInfo.ts at 5a45950a00ff6218e6dd7b1d3aa5a550465b3e13"
+        "Changed: packages/lib/src/lib/helpers/stripUserInfo.ts at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:packages/tests/browser/transform.browser.test.ts": {
@@ -5275,15 +5275,15 @@
       ]
     },
     "source:.bumpy/188-user-docs.md": {
-      "fingerprint": "8eba1db5acbcb0d2ff6a086a59d4583adbd1fcbd0ac84ef56a1058269289371e",
+      "fingerprint": "8cc3777fcd025d31f810a6c9daf57adc79107c5a94ea4824536d94751a9ca025",
       "snapshot": {
-        ".bumpy/188-user-docs.md": "2c2eb6817c9409ba6404e77537df9f39a3b697e821b14ffb96cbd3c27a6b6c2e"
+        ".bumpy/188-user-docs.md": "78b5d494d744ab8353e8c681a304a105d0d015c261d210d92a6b4cb2ec57044e"
       },
-      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
       "outcome": "updated",
-      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: .bumpy/188-user-docs.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+        "Changed: .bumpy/188-user-docs.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:packages/docs/pages/advanced/cancellation.md": {
@@ -6007,15 +6007,15 @@
       ]
     },
     "source:.bumpy/278-cancellation.md": {
-      "fingerprint": "294b02ea1906fb57c28329c3b54ebde0cff15fd7fafdb4eff47b49283eeda455",
+      "fingerprint": "2b357351d3896b3aa514dbb59c3c63c67e6acd387752f59d96479c0dcbc8da8a",
       "snapshot": {
-        ".bumpy/278-cancellation.md": "a20c5f2f61497a3ecb6a71125a78f525fd95cc516b50e02fe795313df3679fe9"
+        ".bumpy/278-cancellation.md": "399ba4ae4bb936f943e91b120e222a741abbffcf889d69c6cf815868e208aac9"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
       "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: .bumpy/278-cancellation.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: .bumpy/278-cancellation.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:packages/lib/src/lib/core/assertSignal.ts": {
@@ -6103,15 +6103,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/sizeLimits.test.ts": {
-      "fingerprint": "4d875cb94f991594b0467b35ed26206fe213c386147c91de6d623649b566ecb0",
+      "fingerprint": "39fd621823b14cc575b2d7f23c61d4e68bc54b40d1e138f3001f56ec79e68e34",
       "snapshot": {
-        "packages/tests/unit/adapters/sizeLimits.test.ts": "d317089a4d3cb26b853c261664633d438a9add86a96fb3ef3f3e01dd504a5316"
+        "packages/tests/unit/adapters/sizeLimits.test.ts": "624ea2c67ee2b34bbfab8e413a0b4b8836fda654d220b142bed09017ba19597c"
       },
-      "head": "af7ac3cb7f23a2efba3d3954a900f6fb4f7f70dd",
-      "outcome": "no-change",
-      "reason": "test-only: wider invalid-value matrix for size limits set by middleware",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
+      "outcome": "updated",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/sizeLimits.test.ts at af7ac3cb7f23a2efba3d3954a900f6fb4f7f70dd"
+        "Changed: packages/tests/unit/adapters/sizeLimits.test.ts at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:packages/tests/unit/helpers/utf8ByteLength.test.ts": {
@@ -6367,15 +6367,15 @@
       ]
     },
     "source:packages/lib/eslint-rules/plugin-imports.ts": {
-      "fingerprint": "f9181fb064800743a45e235ad4b2aa22c119853e20c06594de82de7d30d1805b",
+      "fingerprint": "d33b095d66b3ba2d7fc415c0475b9d9a71259eea0fd1f9d292391d22f18daf0c",
       "snapshot": {
-        "packages/lib/eslint-rules/plugin-imports.ts": "d851a280e43b7e8202cc7af24ef612c0487e9cedb2252ba96f0a8e27adb5239c"
+        "packages/lib/eslint-rules/plugin-imports.ts": "55975d48d565a88c953a3f6e0e802b92a47605032ac675b1d79a09144420880e"
       },
-      "head": "b9ae6369ce2a338168784170e2981521705d770d",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
       "outcome": "updated",
-      "reason": "skill sources follow helpers moved to core; resolveRequestURL url error code and allowAbsoluteUrls default documented; release sync stamps library_version",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: packages/lib/eslint-rules/plugin-imports.ts at b9ae6369ce2a338168784170e2981521705d770d"
+        "Changed: packages/lib/eslint-rules/plugin-imports.ts at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:packages/lib/src/lib/create.ts": {
@@ -6523,15 +6523,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/export-surface.ts": {
-      "fingerprint": "06c7b23f3599d0212760b481d6d1402bcf50c95883773589566a18d4d92af17d",
+      "fingerprint": "995144be84f249c583b2eed76b62cf3c6648c33fc066d1457a4c38be9175bd90",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/export-surface.ts": "471d55730b364c0f63a9c8bf9c189b3c215428b28fbb80ee1a4a307483b4d953"
+        "packages/tests/module/esm/tests/helpers/export-surface.ts": "acdd0b03e77945ea599d0e6129f8f5ea641e71018112691e5dbb34d28d733b76"
       },
-      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
-      "outcome": "no-change",
-      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
+      "outcome": "updated",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: packages/tests/module/esm/tests/helpers/export-surface.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
+        "Changed: packages/tests/module/esm/tests/helpers/export-surface.ts at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:.bumpy/295-declarations.md": {
@@ -6607,15 +6607,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/node-only/index.ts": {
-      "fingerprint": "569505be0421164849a2c5f8185e95e32a690afa9cf1a8ddcdb1472eab9e3114",
+      "fingerprint": "01f21f09da8cc88a6bd36c4b10b1ace0bdbd8f9b6d5e7ae45d6cadecc1dc95c0",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/node-only/index.ts": "c8dca45015f8cca90f918020475e71363313200b4acfd0a7b3d07867754956e6"
+        "packages/tests/module/esm/tests/helpers/node-only/index.ts": "cddca05f46c447453ef2f549db1f96cd60ecf60428ae6a3ce046fa57802c6e00"
       },
-      "head": "87b6fbe5a125ad1906a352907ff425254ce1b826",
-      "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
+      "outcome": "updated",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed files: packages/tests/module/esm/tests/helpers/node-only/index.ts"
+        "Changed: packages/tests/module/esm/tests/helpers/node-only/index.ts at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/node-only/tsconfig.json": {
@@ -6763,15 +6763,15 @@
       ]
     },
     "source:packages/tests/smoke/bun/tests/import.smoke.test.ts": {
-      "fingerprint": "524fc644d2f34c07bb1eef2b610ebd1d9ac0904b94996a12b20190b523340994",
+      "fingerprint": "56240c66f267c7cc60cdaf84e72bab0182f9925ac43e85b9c2e5d7a5beb25a09",
       "snapshot": {
-        "packages/tests/smoke/bun/tests/import.smoke.test.ts": "cf6db04cd06de2541b2c9352be04dacf856fff4fb049d9f2b9be8b1016483936"
+        "packages/tests/smoke/bun/tests/import.smoke.test.ts": "cb13e0a909c251fa5d5e72c5d3df84253b8466ad5594034d4d5dbc11b6dace5d"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
       "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: packages/tests/smoke/bun/tests/import.smoke.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: packages/tests/smoke/bun/tests/import.smoke.test.ts at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:packages/tests/smoke/bun/tests/middleware.smoke.test.ts": {
@@ -7063,15 +7063,15 @@
       ]
     },
     "source:packages/docs/pages/misc/semver.md": {
-      "fingerprint": "b47be23cc013b2314befc2330602581354d5c57e9d2bd27bb38caf3d7594674c",
+      "fingerprint": "ff4d2558d655d0105d12b80ef65c66c4c6ccfc05da4deba74a24477efdc48fd6",
       "snapshot": {
-        "packages/docs/pages/misc/semver.md": "dc108619729761c511388cd2e6b5fe71b8408aee9dfd5d16b4ebba7d5dbe33b5"
+        "packages/docs/pages/misc/semver.md": "f1b9d8bbaa4b3d160d326a993bb8451e749ce1cb3e657e2167ad7e028b226630"
       },
-      "head": "6231eaa21f0c73f7cd2c56a2424287607b2dadc9",
-      "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
+      "outcome": "updated",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed files: packages/docs/pages/misc/semver.md"
+        "Changed: packages/docs/pages/misc/semver.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:packages/tests/docs-examples/contract.test.ts": {
@@ -7435,15 +7435,15 @@
       ]
     },
     "source:.bumpy/audit-perf-types.md": {
-      "fingerprint": "3237a7cb5b0019279f8a216746f27f25b17947d360159b3bb4d4aacf445fffbc",
+      "fingerprint": "a8a95392b426e87927266f2a6477cd7edff883274687ea9f69c4b06607fe308e",
       "snapshot": {
-        ".bumpy/audit-perf-types.md": "c2c73b59c08e3e24781a855ac38c1c529631ed99ad2b602e85e2b9f048c28790"
+        ".bumpy/audit-perf-types.md": "fa413379cf1161679ddb9d2b465c4568194010bc0f3fe4a3a2dfeb79b13affd5"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
       "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
-        "Changed: .bumpy/audit-perf-types.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: .bumpy/audit-perf-types.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     },
     "source:.bumpy/audit-types-narrowing.md": {
@@ -7648,6 +7648,30 @@
       "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
       "evidence": [
         "Changed: packages/tests/unit/core/resolveRequestURL.test.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
+      ]
+    },
+    "source:.bumpy/strip-user-info-exports.md": {
+      "fingerprint": "591ce54cbce2e42cdb3f989985fd52a411e050da0a3317bda88ff57b970674cc",
+      "snapshot": {
+        ".bumpy/strip-user-info-exports.md": "e4c8eff12f1420a13f0a2d1f25db3d9674d56ea131bd5cb860533b9a5b0dfba8"
+      },
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
+      "outcome": "updated",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
+      "evidence": [
+        "Changed: .bumpy/strip-user-info-exports.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
+      ]
+    },
+    "source:packages/tests/unit/helpers/stripUserInfo.test.ts": {
+      "fingerprint": "f651644b7302e52e9ef2dbbd31678030c3fc73385f76d3c2988571b23e434d79",
+      "snapshot": {
+        "packages/tests/unit/helpers/stripUserInfo.test.ts": "917cac7442af986fb988049f258de103658ae09e4c65a9cfee4e8e07cd4fe813"
+      },
+      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
+      "outcome": "updated",
+      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
+      "evidence": [
+        "Changed: packages/tests/unit/helpers/stripUserInfo.test.ts at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
       ]
     }
   }

@@ -13,6 +13,8 @@ import faxios, {
   mergeConfig,
   onAbort,
   raceAbort,
+  stripUserInfo,
+  stripUserInfoInText,
   toFormData,
   VERSION
 } from "faxios";
@@ -63,12 +65,16 @@ expectType<Equal<IsAny<typeof assertSignal>, false>>(true);
 expectType<Equal<IsAny<typeof raceAbort>, false>>(true);
 expectType<Equal<IsAny<typeof onAbort>, false>>(true);
 expectType<Equal<IsAny<typeof hasOwnInPrototypeChain>, false>>(true);
+expectType<Equal<IsAny<typeof stripUserInfo>, false>>(true);
+expectType<Equal<IsAny<typeof stripUserInfoInText>, false>>(true);
 expectType<Equal<IsAny<AbortableSignal>, false>>(true);
 expectType<Equal<typeof canceledFromSignal, (signal: { readonly aborted: boolean; reason?: unknown; }, config?: InternalFaxiosRequestConfig, request?: unknown) => FaxiosError>>(true);
 expectType<Equal<typeof assertSignal, (signal: unknown, config: InternalFaxiosRequestConfig) => void>>(true);
 expectType<Equal<typeof raceAbort, <T>(signal: AbortableSignal, run: () => PromiseLike<T> | T, abortError: () => unknown) => Promise<T>>>(true);
 expectType<Equal<typeof onAbort, (signal: AbortableSignal, listener: () => void) => () => void>>(true);
 expectType<Equal<typeof hasOwnInPrototypeChain, (thing: unknown, prop: PropertyKey) => boolean>>(true);
+expectType<Equal<typeof stripUserInfo, (url: string) => string>>(true);
+expectType<Equal<typeof stripUserInfoInText, (text: string) => string>>(true);
 expectType<Equal<AbortableSignal, {
   readonly aborted: boolean;
   addEventListener: (type: "abort", listener: () => void) => unknown;

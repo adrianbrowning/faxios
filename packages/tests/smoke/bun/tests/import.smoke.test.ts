@@ -39,6 +39,8 @@ describe("Bun importing", () => {
       "onAbort",
       "raceAbort",
       "resolveRequestURL",
+      "stripUserInfo",
+      "stripUserInfoInText",
       "toFormData",
     ]);
   });

@@ -77,12 +77,9 @@ function requestedMethod(config: FaxiosRequestConfig, defaults: FaxiosRequestCon
   return config.method ?? defaultMethod ?? "get";
 }
 
-// The request's method, lower-cased. Anything but an HTTP method name gets a coded error.
-function resolveMethod(
-  config: InternalFaxiosRequestConfig,
-  defaults: FaxiosRequestConfig
-): string {
-  const method = requestedMethod(config, defaults);
+// The request's method (requestedMethod's result), lower-cased. Anything but an HTTP method name
+// gets a coded error.
+function resolveMethod(method: unknown, config: InternalFaxiosRequestConfig): string {
   if (typeof method !== "string" || !HTTP_TOKEN.test(method)) {
     throw new FaxiosError("option method must be an HTTP method name", FaxiosError.ERR_BAD_OPTION_VALUE, config);
   }
@@ -323,7 +320,9 @@ class Faxios {
       config = configOrUrl;
     }
 
-    const internal = this.#mergeAndNormalize(config, true);
+    const { headersFailure, internal, method } = this.#mergeAndNormalize(config);
+    internal.method = resolveMethod(method, internal);
+    if (headersFailure) throw headersFailure.error;
 
     // Before middleware, so a bad value never reaches caller code or a timer that fires at once.
     assertTimeout(hasOwnProp(internal, "timeout") ? internal.timeout : undefined, internal);
@@ -437,16 +436,23 @@ class Faxios {
   }
 
   getUri(config?: FaxiosRequestConfig) {
-    return resolveRequestURL(this.#mergeAndNormalize(config, false));
+    // The headers' failure is the request's to report; getUri() resolves only the URL.
+    return resolveRequestURL(this.#mergeAndNormalize(config).internal);
   }
 
   // The one normalization step request() and getUri() share before resolveRequestURL, so both
   // validate and resolve the same URL. The internal view is built before any check runs, so the
   // config on an error a check throws carries the headers the request would use, flattened per
-  // level for its method so every request header group beats every instance one. The checks keep
-  // their order: options, then url (a URL url becomes its href here), then for a request the
-  // method, then the headers' own failure, which getUri() never reports.
-  #mergeAndNormalize(config: FaxiosRequestConfig | undefined, forRequest: boolean): InternalFaxiosRequestConfig {
+  // level for its method so every request header group beats every instance one. The checks run
+  // options first, then url (a URL url becomes its href here). The requested method and what
+  // flattening the headers threw are returned, not checked: request() rejects a bad method before
+  // the headers' failure, and getUri() reports neither. The failure is boxed because a caller's
+  // header getter can throw any value, `undefined` included.
+  #mergeAndNormalize(config: FaxiosRequestConfig | undefined): {
+    headersFailure: undefined | { error: unknown; };
+    internal: InternalFaxiosRequestConfig;
+    method: unknown;
+  } {
     const merged = mergeConfigExceptHeaders(this.defaults, config);
     const instanceHeaders = hasOwnProp(this.defaults, "headers") ? this.defaults.headers : undefined;
     const requestHeaders = config && hasOwnProp(config, "headers") ? config.headers : undefined;
@@ -467,11 +473,7 @@ class Faxios {
     normalizeParamsSerializer(internal);
     resolveAllowAbsoluteUrls(internal, this.defaults);
     if (hasOwnProp(internal, "url")) internal.url = normalizeRequestURL(internal.url, internal);
-    if (forRequest) {
-      internal.method = resolveMethod(internal, this.defaults);
-      if (headersFailure) throw headersFailure.error;
-    }
-    return internal;
+    return { headersFailure, internal, method };
   }
 
   define<
