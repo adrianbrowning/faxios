@@ -314,7 +314,8 @@ jobs:
           VERSION: ${{ needs.ci.outputs.version }}
         run: |
           set -euo pipefail
-          tarball="tarball/$TARBALL_NAME"
+          # `./` makes npm read a file; `tarball/x.tgz` is GitHub owner/repo shorthand.
+          tarball="./tarball/$TARBALL_NAME"
           integrity="sha512-$(openssl dgst -sha512 -binary "$tarball" | base64 -w0)"
           published=$(npm view "@gcmdev/faxios@$VERSION" dist.integrity 2>/dev/null || true)
           if [[ -z "$published" ]]; then
@@ -429,5 +430,6 @@ jobs:
             echo "::error::$VERSION is not an rc snapshot version"
             exit 1
           fi
-          npm publish "tarball/$TARBALL_NAME" --access public --provenance --ignore-scripts --tag next
+          # `./` makes npm read a file; `tarball/x.tgz` is GitHub owner/repo shorthand.
+          npm publish "./tarball/$TARBALL_NAME" --access public --provenance --ignore-scripts --tag next
           echo "Published \`@gcmdev/faxios@$VERSION\` to \`next\`: \`npm install @gcmdev/faxios@next\`" >> "$GITHUB_STEP_SUMMARY"
