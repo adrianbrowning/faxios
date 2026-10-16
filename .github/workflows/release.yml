@@ -297,7 +297,10 @@ jobs:
             exit 1
           fi
           # npm adds LICENSE only from packages/lib, so 0.2.0 shipped without it (#160).
-          if ! tar -tzf "$TARBALL_NAME" | grep -qx 'package/LICENSE'; then
+          # List into a variable first: under pipefail, `tar | grep -q` fails when
+          # grep exits on the first match and tar gets SIGPIPE.
+          listing=$(tar -tzf "$TARBALL_NAME")
+          if ! grep -qx 'package/LICENSE' <<<"$listing"; then
             echo "::error::the tarball has no LICENSE"
             exit 1
           fi
