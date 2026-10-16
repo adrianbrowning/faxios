@@ -57,27 +57,23 @@ function estimateBase64DecodedBytes(body: string): number {
   return bytes > 0 ? bytes : 0;
 }
 
-// Returns [utf8Bytes, extraCharsToSkip]
-function utf8CharBytes(body: string, i: number, len: number): [number, number] {
-  const c = body.charCodeAt(i);
-  if (c === 37 /* '%' */ && isPercentEncodedByte(body, i, len)) return [ 1, 2 ];
-  if (c < 0x80) return [ 1, 0 ];
-  if (c < 0x800) return [ 2, 0 ];
-  if (c >= 0xd800 && c <= 0xdbff && i + 1 < len) {
-    const next = body.charCodeAt(i + 1);
-    if (next >= 0xdc00 && next <= 0xdfff) return [ 4, 1 ];
-  }
-  return [ 3, 0 ];
-}
-
 // Compute UTF-8 byte length directly from UTF-16 code units without allocating
 // a byte buffer (TextEncoder.encode would defeat the DoS guard on large bodies).
 function estimateUtf8BodyBytes(body: string): number {
   let bytes = 0;
   for (let i = 0, len = body.length; i < len; i++) {
-    const [ b, skip ] = utf8CharBytes(body, i, len);
-    bytes += b;
-    i += skip;
+    const c = body.charCodeAt(i);
+    if (c === 37 /* '%' */ && isPercentEncodedByte(body, i, len)) {
+      bytes += 1;
+      i += 2;
+    }
+    else if (c < 0x80) bytes += 1;
+    else if (c < 0x800) bytes += 2;
+    else if (c >= 0xd800 && c <= 0xdbff && i + 1 < len && body.charCodeAt(i + 1) >= 0xdc00 && body.charCodeAt(i + 1) <= 0xdfff) {
+      bytes += 4;
+      i += 1;
+    }
+    else bytes += 3;
   }
   return bytes;
 }

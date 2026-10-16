@@ -19,7 +19,6 @@ describe("Bun importing", () => {
   // A removed or added root export changes the public API; update this list on purpose.
   test("the root entry exports exactly the published names", () => {
     expect(Object.keys(root).sort()).toEqual([
-      "Cancel",
       "CanceledError",
       "Faxios",
       "FaxiosError",
@@ -27,14 +26,21 @@ describe("Bun importing", () => {
       "HttpStatusCode",
       "VERSION",
       "all",
+      "assertSignal",
+      "canceledFromSignal",
       "create",
       "default",
       "formToJSON",
+      "hasOwnInPrototypeChain",
       "isCancel",
       "isFaxiosError",
       "isSchemaValidationError",
       "mergeConfig",
+      "onAbort",
+      "raceAbort",
       "resolveRequestURL",
+      "stripUserInfo",
+      "stripUserInfoInText",
       "toFormData",
     ]);
   });

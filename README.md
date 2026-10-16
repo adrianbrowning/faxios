@@ -4,7 +4,7 @@ faxios is a promise-based HTTP client for the browser, Node.js, Deno and Bun, pu
 
 ## Supported platforms
 
-- ESM only. There is no CommonJS build, so load it with `import`, not `require()`.
+- ESM only. There is no CommonJS build: load it with `import`, or `await import()` from CommonJS. Node's `require(esm)` may also load it, but that isn't a supported entry.
 - Node.js 24 or later, using the `fetch` built into Node.js.
 - Browsers, Deno and Bun, through their own `fetch`.
 - TypeScript definitions are included in the package.

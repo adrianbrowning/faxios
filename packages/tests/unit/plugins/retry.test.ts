@@ -2,7 +2,7 @@ import assert from "node:assert";
 import { getEventListeners } from "node:events";
 import { Readable } from "node:stream";
 import { afterEach, beforeEach, describe, it, vi } from "vitest";
-import faxios, { CanceledError, FaxiosError } from "#src/index.ts";
+import faxios, { CanceledError, FaxiosError, FaxiosHeaders } from "#src/index.ts";
 import type { Method } from "#src/index.ts";
 import { retry } from "#src/lib/plugins/retry.ts";
 
@@ -76,6 +76,36 @@ describe("plugins::retry", () => {
     assert.strictEqual(calls.length, 3);
   });
 
+  it("retries a body whose Proxy prototype chain is a cycle, without hanging", async () => {
+    // The middleware after retry answers each try itself: core's request transform walks the
+    // body's prototype chain through instanceof, which this test doesn't cover.
+    let tries = 0;
+    const api = faxios.create()
+      .use(retry({ attempts: 2, delay: 0, methods: [ "post" ] }))
+      .use(async ctx => {
+        tries++;
+        if (tries === 1) throw new FaxiosError("fetch failed", FaxiosError.ERR_NETWORK, ctx.config);
+        return { config: ctx.config, data: { attempt: tries }, headers: new FaxiosHeaders(), status: 200, statusText: "OK" };
+      });
+    // The trap answers with the proxy itself a few times, then throws: a walk that never stops
+    // at the cycle fails the test with "cycled" instead of hanging it.
+    let protoCalls = 0;
+    const body: object = new Proxy({ a: 1 }, {
+      getPrototypeOf() {
+        protoCalls += 1;
+        if (protoCalls > 5) throw new Error("cycled");
+        return body;
+      },
+    });
+
+    const request = api.post(URL, body);
+    await vi.runAllTimersAsync();
+    const response = await request;
+
+    assert.strictEqual(tries, 2);
+    assert.deepStrictEqual(response.data, { attempt: 2 });
+  });
+
   it("waits the delay before each retry, doubling by default", async () => {
     const { fetch, calls } = scriptedFetch([ 503, 503, 200 ]);
     const api = faxios.create({ env: { fetch } }).use(retry({ jitter: "none" }));
@@ -139,6 +169,30 @@ describe("plugins::retry", () => {
     assert.strictEqual(vi.getTimerCount(), 0);
     assert.strictEqual(signals[1]!.aborted, false);
     assert.strictEqual(response.status, 200);
+  });
+
+  it("unlinks a try from the caller's signal in the abort itself, when attemptTimeout ends it", async () => {
+    const app = new AbortController();
+    let during = -1;
+    let afterAbort = -1;
+    const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
+      during = getEventListeners(app.signal, "abort").length;
+      const signal = init!.signal!;
+      return new Promise<Response>((_resolve, reject) => {
+        // Runs after the try's own abort listener, in the same task: no microtask in between.
+        signal.addEventListener("abort", () => {
+          afterAbort = getEventListeners(app.signal, "abort").length;
+          reject(signal.reason);
+        });
+      });
+    };
+    const api = faxios.create({ env: { fetch } }).use(retry({ attempts: 1, delay: 0, attemptTimeout: 50 }));
+
+    await rejectsWithTimers(api.get(URL, { signal: app.signal }), (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ETIMEDOUT);
+
+    assert.ok(during >= 1);
+    assert.strictEqual(afterAbort, during - 1);
+    assert.strictEqual(getEventListeners(app.signal, "abort").length, 0);
   });
 
   it("unlinks each try from a long-lived caller signal once the try settles", async () => {
@@ -637,6 +691,20 @@ describe("plugins::retry", () => {
 
     // The default 3 tries: neither the inherited attempts nor the inherited retry: false applied.
     assert.strictEqual(calls.length, 3);
+  });
+
+  it("passes a null-prototype ctx.config to middleware after it when attemptTimeout is set", async () => {
+    const { fetch } = scriptedFetch([ 200 ]);
+    let proto: unknown = "unset";
+    const api = faxios.create({ env: { fetch } }).use(retry({ delay: 0, attemptTimeout: 50 }))
+      .use(async (ctx, next) => {
+        proto = Object.getPrototypeOf(ctx.config);
+        return next(ctx);
+      });
+
+    await api.get(URL);
+
+    assert.strictEqual(proto, null);
   });
 
   describe("policy", () => {

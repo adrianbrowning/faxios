@@ -33,12 +33,15 @@ pnpm add @gcmdev/faxios
 ```js file=packages/tests/docs-examples/sources/package-readme-request.js expect=request:GET%20https://example.test/user?ID=12345%0A,request:POST%20https://example.test/user%0A,request:{"firstName":"Fred"%2C"lastName":"Flintstone"}
 import faxios from "@gcmdev/faxios";
 
-const { data: user } = await faxios.get("/user", {
+// Outside the browser a relative URL needs a baseURL.
+const api = faxios.create({ baseURL: "https://example.test" });
+
+const { data: user } = await api.get("/user", {
   params: { ID: 12345 },
   timeout: 5000,
 });
 
-const response = await faxios.post("/user", {
+const response = await api.post("/user", {
   firstName: "Fred",
   lastName: "Flintstone",
 });
@@ -50,7 +53,7 @@ Add behaviour to every request with `.use()`. Keep the instance it returns: only
 import faxios from "@gcmdev/faxios";
 import { retry } from "@gcmdev/faxios/plugins/retry";
 
-const api = faxios.create().use(retry());
+const api = faxios.create({ baseURL: "https://example.test" }).use(retry());
 
 const { data } = await api.get("/user", { headers: { Accept: "application/json" } });
 ```

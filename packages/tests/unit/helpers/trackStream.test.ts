@@ -33,12 +33,14 @@ const readAll = async (stream: unknown) => {
   }
 };
 
+const badChunk = (message: string) => new FaxiosError(message, FaxiosError.ERR_BAD_REQUEST);
+
 describe("trackStream", () => {
   it("passes Uint8Array chunks through without copying, including split pieces", async () => {
     const small = new Uint8Array([ 1, 2, 3 ]);
     const large = new Uint8Array(256 * 1024);
 
-    const out = await readAll(trackStream(streamOf([ small, large ]), 64 * 1024));
+    const out = await readAll(trackStream(streamOf([ small, large ]), 64 * 1024, badChunk));
 
     assert.strictEqual(out.length, 5);
     assert.strictEqual(out[0], small);
@@ -54,19 +56,23 @@ describe("trackStream", () => {
     const shared = new Uint8Array([ 9, 8, 7, 6 ]);
     const chunks = [ new Uint16Array([ 1, 2 ]), new DataView(shared.buffer, 1, 2), shared.buffer, "hé" ];
 
-    const out = await readAll(trackStream(streamOf(chunks), 64 * 1024, bytes => progress.push(bytes)));
+    const out = await readAll(trackStream(streamOf(chunks), 64 * 1024, badChunk, bytes => progress.push(bytes)));
 
     assert.deepStrictEqual(out.map(chunk => [ ...chunk ]), [[ 1, 0, 2, 0 ], [ 8, 7 ], [ 9, 8, 7, 6 ], [ 0x68, 0xc3, 0xa9 ]]);
     assert.strictEqual(out[1]!.buffer, shared.buffer);
     assert.deepStrictEqual(progress, [ 4, 6, 10, 13 ]);
   });
 
-  it("rejects chunks that are not bytes or strings with a coded FaxiosError", async () => {
-    await assert.rejects(readAll(trackStream(streamOf([ 42 ]), 64 * 1024)), (err: unknown) => {
-      assert.ok(err instanceof FaxiosError);
-      assert.strictEqual(err.code, FaxiosError.ERR_BAD_REQUEST);
-      return true;
-    });
+  it("rejects chunks that are not bytes or strings with the caller's error", async () => {
+    const made: Array<string> = [];
+    const failure = new Error("bad chunk");
+    const toError = (message: string) => {
+      made.push(message);
+      return failure;
+    };
+
+    await assert.rejects(readAll(trackStream(streamOf([ 42 ]), 64 * 1024, toError)), failure);
+    assert.deepStrictEqual(made, [ "Stream chunk must be a Uint8Array, another ArrayBufferView, an ArrayBuffer or a string, got number" ]);
   });
 
   describe("web ReadableStream request bodies sent to a server", () => {
@@ -105,6 +111,7 @@ describe("trackStream", () => {
           (err: unknown) => {
             assert.ok(err instanceof FaxiosError);
             assert.strictEqual(err.code, FaxiosError.ERR_BAD_REQUEST);
+            assert.ok(err.config);
             return true;
           }
         );

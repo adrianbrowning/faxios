@@ -1,11 +1,11 @@
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import type { HeaderInput } from "../core/FaxiosHeaders.js";
-import cloneConfig from "../helpers/cloneConfig.js";
 import cookies from "../helpers/cookies.js";
 import isURLSameOrigin from "../helpers/isURLSameOrigin.js";
 import platform from "../platform.js";
 import type { FaxiosRequestConfig } from "../types.js";
 import { hasOwnProp, isFunction, isObject } from "../utils.js";
+import cloneConfig from "./cloneConfig.js";
 
 function applyXSRFToken(
   headers: FaxiosHeaders,
@@ -57,9 +57,9 @@ function prepareRequest(config: FaxiosRequestConfig, url: string): FaxiosRequest
   const xsrfHeaderName = own("xsrfHeaderName") as string | undefined;
   const xsrfCookieName = own("xsrfCookieName") as string | undefined;
 
-  const headers: FaxiosHeaders = FaxiosHeaders.from(
-    own("headers") as HeaderInput
-  );
+  // A copy, never the caller's instance: config.headers reaches error.config and toJSON(), and
+  // the XSRF token set below must not.
+  const headers = new FaxiosHeaders(own("headers") as HeaderInput);
   newConfig.headers = headers;
 
   newConfig.url = url;

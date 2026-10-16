@@ -1,9 +1,12 @@
 // @ts-self-types="./retry.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
 import type { FaxiosContext, FaxiosNext, FaxiosPlugin, FaxiosRequestConfig, FaxiosResponse, InternalFaxiosRequestConfig, Method } from "../../index.js";
-import CanceledError from "../cancel/CanceledError.js";
+import canceledFromSignal from "../cancel/canceledFromSignal.js";
 import isCancel from "../cancel/isCancel.js";
+import assertSignal from "../core/assertSignal.js";
 import FaxiosError from "../core/FaxiosError.js";
+import raceAbort, { onAbort } from "../helpers/raceAbort.js";
+import { hasOwnInPrototypeChain } from "../utils.js";
 import { definePlugin } from "./definePlugin.js";
 import { assertOptions, isBoolean, isFunction, own, TOKEN } from "./shared.js";
 
@@ -161,12 +164,8 @@ const doublingDelay = (attempt: number) => 100 * 2 ** (attempt - 1);
 // async iterables (such as async generators), whose `pipe` or `Symbol.asyncIterator` the body or
 // its class defines. One only a polluted Object.prototype supplies doesn't make a plain object
 // body a stream.
-const ownMethod = (data: object, key: PropertyKey): boolean => {
-  for (let o: null | object = data; o !== null && o !== Object.prototype; o = Object.getPrototypeOf(o) as null | object) {
-    if (Object.hasOwn(o, key)) return typeof Reflect.get(data, key) === "function";
-  }
-  return false;
-};
+const ownMethod = (data: object, key: PropertyKey): boolean =>
+  hasOwnInPrototypeChain(data, key) && typeof Reflect.get(data, key) === "function";
 
 function canReplay(data: unknown): boolean {
   if (Object.prototype.toString.call(data) === "[object ReadableStream]") return false;
@@ -198,33 +197,16 @@ function decideRetry(error: unknown, attempt: number, policy: Policy, config: In
   }
 }
 
-// The error dispatch rejects an aborted request with. A FaxiosError reason is that error already
-// (an ETIMEDOUT); otherwise the reason's message, with the reason as cause.
-function canceledFrom(signal: { readonly aborted: boolean; reason?: unknown; }, config: FaxiosRequestConfig): FaxiosError {
-  const reason: unknown = signal.reason;
-  if (reason instanceof FaxiosError) return reason;
-  if (!(reason instanceof Error)) return new CanceledError(typeof reason === "string" ? reason : null, config);
-  const error = new CanceledError(reason.message, config);
-  error.cause = reason;
-  return error;
-}
-
-function wait(ms: number, signal: FaxiosRequestConfig["signal"], config: FaxiosRequestConfig): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (signal?.aborted) {
-      reject(canceledFrom(signal, config));
-      return;
-    }
-    const onAbort = () => {
-      clearTimeout(timer);
-      signal?.removeEventListener("abort", onAbort);
-      reject(canceledFrom(signal!, config));
-    };
-    const timer = setTimeout(() => {
-      signal?.removeEventListener("abort", onAbort);
-      resolve();
-    }, ms);
-    signal?.addEventListener("abort", onAbort);
+// The executor form: the library's TypeScript lib target has no Promise.withResolvers.
+function wait(ms: number, signal: FaxiosRequestConfig["signal"], config: InternalFaxiosRequestConfig): Promise<void> {
+  if (!signal) return new Promise(resolve => setTimeout(resolve, ms));
+  let cancel = () => {};
+  return raceAbort(signal, () => new Promise<void>(resolve => {
+    const timer = setTimeout(resolve, ms);
+    cancel = () => clearTimeout(timer);
+  }), () => {
+    cancel();
+    return canceledFromSignal(signal, config);
   });
 }
 
@@ -235,31 +217,8 @@ function wait(ms: number, signal: FaxiosRequestConfig["signal"], config: FaxiosR
 // the request's signal and timeout through core, not through this link.
 function linkSignal(outer: FaxiosRequestConfig["signal"], controller: InstanceType<typeof AbortController>): { signal: InstanceType<typeof AbortController>["signal"]; unlink: () => void; } {
   if (!outer) return { signal: controller.signal, unlink: () => {} };
-  const forward = () => {
-    outer.removeEventListener("abort", forward);
-    controller.abort("reason" in outer ? outer.reason : undefined);
-  };
-  if (outer.aborted) forward();
-  else outer.addEventListener("abort", forward);
-  return { signal: controller.signal, unlink: () => outer.removeEventListener("abort", forward) };
-}
-
-// Retry listens on the request's signal for its waits and tries, so a signal a middleware before
-// retry passes on that core would refuse (core/assertSignal.ts) gets the error dispatch would give
-// it, before any timer.
-function assertListenable(signal: unknown, config: InternalFaxiosRequestConfig): void {
-  if (signal == null) return;
-  const listenable = typeof signal === "object" &&
-    "aborted" in signal &&
-    "addEventListener" in signal && typeof signal.addEventListener === "function" &&
-    "removeEventListener" in signal && typeof signal.removeEventListener === "function";
-  if (!listenable) {
-    throw new FaxiosError(
-      "option signal must be an AbortSignal: an object with aborted, addEventListener and removeEventListener",
-      FaxiosError.ERR_BAD_OPTION_VALUE,
-      config
-    );
-  }
+  const unlink = onAbort(outer, () => controller.abort("reason" in outer ? outer.reason : undefined));
+  return { signal: controller.signal, unlink };
 }
 
 // One try with its own deadline. It settles once the deadline passes, even while middleware after
@@ -270,31 +229,18 @@ function tryWithin(ms: number, ctx: FaxiosContext<RetryRequestOptions>, next: Fa
     controller.abort(new FaxiosError(`timeout of ${ms}ms exceeded`, FaxiosError.ETIMEDOUT, ctx.config));
   }, ms);
   const { signal, unlink } = linkSignal(own(ctx.config, "signal"), controller);
-  return new Promise((resolve, reject) => {
-    const stop = () => {
-      clearTimeout(timer);
-      unlink();
-      signal.removeEventListener("abort", onAbort);
-    };
-    function onAbort() {
-      stop();
-      reject(canceledFrom(signal, ctx.config));
-    }
-    // Listen before running: middleware may abort before its first await.
-    signal.addEventListener("abort", onAbort);
-    if (signal.aborted) {
-      onAbort();
-      return;
-    }
-    // The executor calls next() right away, as a plain next(ctx) would, and turns a synchronous
-    // throw into a rejection.
-    // eslint-disable-next-line sonarjs/prefer-promise-shorthand -- see above
-    const pending = new Promise<FaxiosResponse>(_resolve => {
-      _resolve(next({ ...ctx, config: { ...ctx.config, signal } }));
-    });
-    // After the deadline the result has nowhere to go; this still consumes it.
-    pending.finally(stop).then(resolve, reject);
-  });
+  const stop = () => {
+    clearTimeout(timer);
+    unlink();
+  };
+  // raceAbort listens before running next(): middleware may abort before its first await. An
+  // abort cleans up in its own handler, so the request's signal holds no listener once it fires.
+  // After the deadline the result has nowhere to go; raceAbort still consumes it.
+  // Null prototype, like every ctx.config: later middleware must not read inherited keys.
+  return raceAbort(signal, () => next({ ...ctx, config: Object.assign(Object.create(null) as InternalFaxiosRequestConfig, ctx.config, { signal }) }), () => {
+    stop();
+    return canceledFromSignal(signal, ctx.config);
+  }).finally(stop);
 }
 
 // Each list is lower-cased right after it is validated: the plugin's once, a per-request override's
@@ -369,8 +315,10 @@ export function retry(options: RetryOptions = {}): FaxiosPlugin<{ options: Retry
       if (perRequest !== undefined) assertRetryOptions(perRequest, ctx.config);
       const policy = resolvePolicy(options, perRequest);
       if (!retriesMethod(ctx.config, perRequest, pluginMethods)) return next(ctx);
-      assertListenable(own(ctx.config, "signal"), ctx.config);
-
+      // Retry listens on the request's signal for its waits and tries, so a signal a middleware
+      // before retry passes on that core would refuse gets the error dispatch would give it,
+      // before any timer.
+      assertSignal(own(ctx.config, "signal"), ctx.config);
       // Tries run one after another on purpose: each must finish before deciding on the next.
       for (let attempt = 1; ; attempt++) {
         // Read by middleware on either side of this one, such as timing.

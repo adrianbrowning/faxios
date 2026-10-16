@@ -3,8 +3,9 @@
 // - toFormData takes a FormData (or a FormData-like object) and FormSerializerOptions, and
 //   returns FormData when no target is passed
 // - URL request inputs compile without casts on the instance, its aliases and the Faxios class
-import faxios, { Faxios, toFormData } from "faxios";
+import faxios, { CanceledError, Faxios, toFormData } from "faxios";
 import type {
+  AbortableSignal,
   CustomParamsSerializer,
   FaxiosBasicCredentials,
   FaxiosDefaults,
@@ -13,10 +14,12 @@ import type {
   FaxiosRequestConfig,
   FaxiosRequestTransformer,
   FaxiosResponseTransformer,
+  FormDataVisitorHelpers,
   FormSerializerOptions,
   GenericAbortSignal,
   GenericFormData,
   ParamsSerializerOptions,
+  SerializerVisitor,
   TransitionalOptions
 } from "faxios";
 
@@ -36,6 +39,30 @@ function exportedTypes(): void {
     addEventListener: () => undefined,
     removeEventListener: () => undefined,
   };
+  // A polyfill whose listener methods only accept "abort" still fits.
+  const polyfill: {
+    aborted: boolean;
+    addEventListener: (type: "abort", l: () => void) => void;
+    removeEventListener: (type: "abort", l: () => void) => void;
+  } = { aborted: false, addEventListener: () => undefined, removeEventListener: () => undefined };
+  const polyfillSignal: GenericAbortSignal = polyfill;
+  const abortable: AbortableSignal = polyfill;
+  // The DOM AbortSignal fits both.
+  const domSignal: GenericAbortSignal = new AbortController().signal;
+  const domAbortable: AbortableSignal = new AbortController().signal;
+  // @ts-expect-error TS2739 -- faxios listens for "abort", so the listener members are required
+  const bare: GenericAbortSignal = { aborted: false };
+  const numberTyped: {
+    aborted: boolean;
+    addEventListener: (type: number, l: () => void) => void;
+    removeEventListener: (type: number, l: () => void) => void;
+  } = { aborted: false, addEventListener: () => undefined, removeEventListener: () => undefined };
+  // @ts-expect-error TS2322 -- a listener member that can't take the "abort" event type doesn't fit
+  const numberSignal: GenericAbortSignal = numberTyped;
+  // @ts-expect-error TS2740 -- the config argument is an InternalFaxiosRequestConfig, not a bare headers bag
+  void new CanceledError("x", { headers: {} });
+  const visitor: SerializerVisitor | undefined = undefined;
+  const helpers: FormDataVisitorHelpers | undefined = undefined;
   const toRequest: FaxiosRequestTransformer = function (data) {
     return data;
   };
@@ -46,7 +73,7 @@ function exportedTypes(): void {
   const serialize: CustomParamsSerializer = params => new URLSearchParams(params as Record<string, string>).toString();
   const paramsOptions: ParamsSerializerOptions = { dots: true, serialize };
   const formOptions: FormSerializerOptions = { dots: true, indexes: null, maxDepth: 10 };
-  const transitional: TransitionalOptions = { clarifyTimeoutError: true };
+  const transitional: TransitionalOptions = { forcedJSONParsing: true };
   const spec: FaxiosPluginSpec = { options: { retries: 0 } };
   const defaults: FaxiosDefaults = { timeout: 1, headers: faxios.defaults.headers };
 
@@ -60,6 +87,14 @@ function exportedTypes(): void {
     transitional,
   });
   void progress;
+  void polyfillSignal;
+  void abortable;
+  void domSignal;
+  void domAbortable;
+  void bare;
+  void numberSignal;
+  void visitor;
+  void helpers;
   void formOptions;
   void spec;
   void defaults;

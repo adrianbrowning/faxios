@@ -181,7 +181,8 @@ describe("static api", () => {
   });
 
   it("should have CanceledError and isCancel properties", () => {
-    assert.strictEqual(faxios.isCancel(new faxios.Cancel()), true);
+    assert.strictEqual(faxios.isCancel(new faxios.CanceledError()), true);
+    assert.strictEqual("Cancel" in faxios, false);
     assert.strictEqual(faxios.isCancel(new Error("canceled")), false);
   });
 

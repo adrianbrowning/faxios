@@ -51,7 +51,7 @@ await api.put("https://uploads.example.com/avatar", "...");
 
 Entries must be bare origins, without a path. A relative request URL counts only in a browser, as the page origin.
 
-With [`forwardTo`](/pages/advanced/middleware#forwardto) installed as well, the rule still checks the target URL, not the gateway: forwarding happens in `fetch`, after middleware. A request whose target is your API gets the token, and the forwarded request carries it to the gateway, so install `forwardTo` only for a gateway you trust with your credentials.
+With [`forwardTo`](/pages/advanced/middleware#forwardto) installed as well, the rule still checks the target URL, not the gateway: forwarding happens in `fetch`, after middleware. A request whose target is your API gets the token, and the forwarded request carries it to the gateway, so install `forwardTo` only for a gateway you trust with your credentials. The same holds for the XSRF header ([`withXSRFToken`](/pages/advanced/request-config#withxsrftoken)): its same-origin check also runs against the target URL, so a same-origin target sends the XSRF cookie's value to a cross-origin gateway as well.
 
 Invalid options throw `ERR_BAD_OPTION_VALUE` and unknown ones `ERR_BAD_OPTION`.
 
@@ -75,6 +75,8 @@ await api.get("/data");
 When a redirect leaves the origin, `fetch` drops `Authorization` but sends every other header on to the new host. So with a custom `header`, `authBearer` sets [`fetchOptions.redirect`](/pages/advanced/fetch-adapter#fetch-options) to `"error"` on the requests it adds the header to, unless the request sets `redirect` itself. A redirect then rejects with `ERR_NETWORK`, and your key never reaches another host. With the default `Authorization` header, redirects are followed as usual.
 
 To follow redirects anyway, set `redirect` on the request, for example `fetchOptions: { redirect: "follow" }`. Do that only for an API whose redirects you trust, since the key then goes to wherever a redirect points.
+
+`authBearer` also adds a custom `header` to the request's [`redact`](/pages/advanced/request-config#redact) list, so `error.toJSON()` masks your key the same way it masks `Authorization`.
 
 ## HTTP Basic auth
 

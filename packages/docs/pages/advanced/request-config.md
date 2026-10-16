@@ -271,6 +271,8 @@ The `maxContentLength` property defines the maximum response size in bytes. A re
 > ⚠️ **Security:** defaults to `-1` (unlimited). Unbounded responses combined with gzip/deflate/brotli/zstd decompression allow decompression-bomb DoS.
 > Set an explicit limit when requesting servers you do not fully trust.
 
+Both `maxContentLength` and [`maxBodyLength`](#maxbodylength) take `-1` (unlimited) or a finite number of bytes from `0`. Any other value, such as the string `"1048576"`, `NaN`, `Infinity` or `null`, rejects with `ERR_BAD_OPTION_VALUE` before the request is sent, so a mistyped limit never switches the check off.
+
 ### `maxBodyLength`
 
 The `maxBodyLength` property defines the maximum request body size in bytes. A body of exactly `maxBodyLength` bytes is allowed; one byte more is rejected. faxios checks the body's real size, never a `Content-Length` header you set:
@@ -316,7 +318,6 @@ The `signal` property allows you to pass an instance of `AbortSignal` to the req
 The `transitional` property allows you to enable or disable certain transitional features. Any key not listed here rejects with `ERR_BAD_OPTION`. The following options are available:
 
 - `forcedJSONParsing`: When `true` _(default)_, faxios parses a string response body as JSON only when `responseType` is unset; an explicit `responseType` such as `'text'` keeps the string. Set to `false` to keep bodies without a `responseType` as strings too.
-- `clarifyTimeoutError`: Accepted for compatibility but has no effect. Timed-out requests always reject with `ETIMEDOUT`.
 - `validateStatusUndefinedResolves`: When `false` _(default)_, an explicit `validateStatus: undefined` behaves like an omitted option, so the instance's or the default validator applies (reject non-2xx). Set to `true` to make it resolve every response status (the behavior before 0.3.0); `validateStatus: null` does that without this flag.
 
 There is no `silentJSONParsing` option any more, and passing it rejects with `ERR_BAD_OPTION`. An explicit `responseType: "json"` always rejects a body that isn't valid JSON (see [`responseType`](#responsetype)); leave `responseType` unset to get the raw string instead.
@@ -443,7 +444,6 @@ const config: FaxiosRequestConfig = {
   signal: new AbortController().signal,
   transitional: {
     forcedJSONParsing: true,
-    clarifyTimeoutError: false,
     validateStatusUndefinedResolves: false,
   },
   responseSchema: z.object({ id: z.number(), title: z.string() }),

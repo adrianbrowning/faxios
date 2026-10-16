@@ -44,14 +44,15 @@ describe("adapters - transport error codes", () => {
     assert.strictEqual(fetch.mock.calls.length, 0);
   });
 
-  it("rejects a url that middleware set to a non-string with ERR_INVALID_URL", async () => {
+  it("rejects a url that middleware set to a non-string with the request's ERR_BAD_OPTION_VALUE", async () => {
     const fetch = vi.fn(async () => new Response("ok"));
     const api = faxios.create({ env: { fetch } }).use(async (ctx, next) => {
       Object.assign(ctx.config, { url: 42 });
       return next(ctx);
     });
     const err = await rejection(api.get("http://example.test/"));
-    assert.strictEqual(err.code, FaxiosError.ERR_INVALID_URL);
+    assert.strictEqual(err.code, FaxiosError.ERR_BAD_OPTION_VALUE);
+    assert.strictEqual(err.message, "option url must be a string or URL");
     assert.strictEqual(fetch.mock.calls.length, 0);
   });
 

@@ -20,7 +20,7 @@ await updateUser({ pathParams: { id: "123" }, data: { name: "Fred" } });
 
 ## Method helpers
 
-The builder has `get`, `post`, `put`, `patch`, `delete`, `head`, and `options`. Each helper takes an optional method-level config and returns an endpoint function that behaves like one created by [`faxios.define()`](/pages/advanced/define), including the per-call config rules.
+The builder has `get`, `post`, `put`, `patch`, `delete`, `head`, `options`, and `query`. Each helper takes an optional method-level config and returns an endpoint function that behaves like one created by [`faxios.define()`](/pages/advanced/define), including the per-call config rules. `query` sends the HTTP `QUERY` method with a body, like [`faxios.query()`](/pages/advanced/request-method-aliases#query).
 
 ## Route-level and method-level config
 

@@ -1,86 +1,83 @@
 "use strict";
 
+import type { ExtendedAbortSignal } from "../core/composeSignals.js";
 import FaxiosError from "../core/FaxiosError.js";
 import type FaxiosHeaders from "../core/FaxiosHeaders.js";
 import stripUserInfo from "../helpers/stripUserInfo.js";
-import utf8ByteLength from "../helpers/utf8ByteLength.js";
 import type {
   FaxiosResponse,
   InternalFaxiosRequestConfig
 } from "../types.js";
-import type { WebAbortSignal, WebRequest } from "../types/web.js";
-import { getSafeProp, toFiniteNumber } from "../utils.js";
+import type { WebRequest } from "../types/web.js";
+import { getSafeProp } from "../utils.js";
 
-export type ComposedSignal = WebAbortSignal & { unsubscribe?: () => void; };
 // The adapter step a failure came from: building the Request, sending it, or reading the body.
 export type FetchStage = "body" | "build" | "send";
+
+export type AnyConstructor = new (...args: Array<unknown>) => unknown;
+export type AnyResponse = {
+  [key: string]: unknown;
+  arrayBuffer: () => Promise<ArrayBuffer>;
+  body: unknown;
+  headers: {
+    [key: string]: unknown;
+    get: (name: string) => null | string;
+    has: (name: string) => boolean;
+  };
+  status: number;
+  statusText: string;
+};
+
+// What the runtime's fetch side supports. Feature detection depends only on the Request and
+// Response constructors, so one record serves every `env.fetch`.
+export type FetchRuntime = {
+  // Outside browsers a FormData body under maxBodyLength is streamed and counted as fetch reads
+  // it; browsers can't send a stream body (see buildUploadStream).
+  countsFormDataWhileSent: boolean;
+  // Cloudflare Workers throws when credentials are defined
+  // see https://github.com/cloudflare/workerd/issues/902
+  isCredentialsSupported: boolean;
+  isReadableStreamSupported: boolean;
+  // Whether `new Request(request, { body: null })` keeps the request's body (see fetchInitFor).
+  nullKeepsBody: boolean;
+  // Undefined where the runtime has none or `env` disables it.
+  Request: AnyConstructor | undefined;
+  // Only members this runtime's Request exposes, so an engine that rejects members it doesn't
+  // implement (Cloudflare Workers) is never sent one.
+  requestInitDefaults: Array<[string, unknown]>;
+  resolvers: Record<string, (res: AnyResponse, config: InternalFaxiosRequestConfig) => unknown>;
+  Response: AnyConstructor | undefined;
+  // `ReadableStream.from`, which turns a Node stream body into a web stream.
+  streamFrom: ((source: unknown) => unknown) | undefined;
+  supportsRequestStream: boolean;
+  supportsResponseStream: boolean;
+};
 
 // The per-request state the adapter's steps share.
 export type FetchContext = {
   // A maxBodyLength (or bad chunk) error raised while fetch read the request body stream.
   bodyError: FaxiosError | undefined;
   config: InternalFaxiosRequestConfig;
-  // maxContentLength and maxBodyLength; undefined when not set (a negative or non-number value).
+  headers: FaxiosHeaders;
+  // maxContentLength and maxBodyLength; undefined when unlimited (-1 or not set). Other values
+  // were rejected by assertSizeLimit, before and after middleware.
   limits: { body: number | undefined; content: number | undefined; };
   method: string;
+  onDownloadProgress: unknown;
+  // Browsers can't be given a stream body for upload progress: Chromium sends one only over
+  // HTTP/2 or later and WebKit not at all, so the upload would fail. onUploadProgress isn't
+  // called there (#209), so it is undefined.
+  onUploadProgress: unknown;
   // The fetch Request, once built. Undefined before that and where the runtime has no Request.
   request: undefined | WebRequest;
-  signal: ComposedSignal;
+  runtime: FetchRuntime;
+  // GET and HEAD send no body.
+  sendsBody: boolean;
+  signal: ExtendedAbortSignal;
   stage: FetchStage | undefined;
+  // `responseType: "stream"` where the runtime has stream responses.
+  streamsResponse: boolean;
   url: unknown;
-};
-
-// The one place each size-limit error is defined.
-export const contentTooLarge = (ctx: FetchContext): FaxiosError =>
-  new FaxiosError(
-    "maxContentLength size of " + String(ctx.limits.content) + " exceeded",
-    FaxiosError.ERR_BAD_RESPONSE,
-    ctx.config,
-    ctx.request
-  );
-
-export const bodyTooLarge = (ctx: FetchContext): FaxiosError =>
-  new FaxiosError(
-    "Request body larger than maxBodyLength limit",
-    FaxiosError.ERR_BAD_REQUEST,
-    ctx.config,
-    ctx.request
-  );
-
-// A HEAD response and these statuses have no body, so their Content-Length isn't what they send.
-const BODILESS_STATUSES: ReadonlyArray<number> = [ 204, 205, 304 ];
-
-export const checkDeclaredContentLength = (
-  ctx: FetchContext,
-  response: { headers: FaxiosHeaders; status: number; }
-): void => {
-  const limit = ctx.limits.content;
-  if (limit === undefined || ctx.method === "head" || BODILESS_STATUSES.includes(response.status)) return;
-  const declaredLength = toFiniteNumber(response.headers.getContentLength());
-  if (declaredLength != null && declaredLength > limit) {
-    throw contentTooLarge(ctx);
-  }
-};
-
-// The size of a body that was read whole, for a response the counting stream wrapper didn't read:
-// a runtime without stream responses, or a Response-like value from `env.fetch` with no stream body.
-export const checkMaterializedSize = (ctx: FetchContext, responseData: unknown): void => {
-  const limit = ctx.limits.content;
-  if (limit === undefined || responseData == null) return;
-  let materializedSize: number | undefined;
-  const rd = responseData as Record<string, unknown>;
-  if (typeof rd["byteLength"] === "number") {
-    materializedSize = rd["byteLength"];
-  }
-  else if (typeof rd["size"] === "number") {
-    materializedSize = rd["size"];
-  }
-  else if (typeof responseData === "string") {
-    materializedSize = utf8ByteLength(responseData);
-  }
-  if (typeof materializedSize === "number" && materializedSize > limit) {
-    throw contentTooLarge(ctx);
-  }
 };
 
 // Request and fetch reject an unparseable URL with a code-less TypeError. Outside the browser
@@ -115,9 +112,15 @@ const throwStagedTypeError = (err: Error, ctx: FetchContext): void => {
   if (stage === "build") {
     throw FaxiosError.from(err, FaxiosError.ERR_BAD_REQUEST, config, request);
   }
-  // A body that fails mid-stream (connection reset, "terminated") is a network failure.
+  // A body that fails mid-stream (connection reset, "terminated") is a network failure; the
+  // runtime's TypeError carries the socket error, with its code, as the cause. formData()
+  // rejects a body it can't parse with a TypeError whose cause has no code: the server sent
+  // that body, so it is a bad response, and retrying would fetch the same bytes.
   if (stage === "body") {
-    throw FaxiosError.from(err, FaxiosError.ERR_NETWORK, config, request);
+    const responseType = getSafeProp(config, "responseType");
+    const isParseFailure = typeof responseType === "string" && responseType.toLowerCase() === "formdata"
+      && typeof getSafeProp(err.cause, "code") !== "string";
+    throw FaxiosError.from(err, isParseFailure ? FaxiosError.ERR_BAD_RESPONSE : FaxiosError.ERR_NETWORK, config, request);
   }
 };
 
@@ -170,32 +173,32 @@ export const handleFetchCaughtError = (err: unknown, ctx: FetchContext): never =
     throw err;
   }
 
-  const _err = err as Record<string, unknown> & Error;
-  if (_err.name === "TypeError" && stage) {
-    throwStagedTypeError(_err, ctx);
+  const caught = err as Record<string, unknown> & Error;
+  if (caught.name === "TypeError" && stage) {
+    throwStagedTypeError(caught, ctx);
   }
   // fetch rejecting while sending is a transport failure. Runtimes word it differently (Node's
   // "fetch failed", Bun's ConnectionRefused, Deno's "client error (Connect)"), so the stage
   // decides, not the message.
   if (stage === "send") {
-    const cause: unknown = _err["cause"] || _err;
+    const cause: unknown = caught["cause"] || caught;
     throw Object.assign(
       new FaxiosError(
         networkErrorMessage(cause, ctx),
         FaxiosError.ERR_NETWORK,
         config,
         request,
-        _err["response"] as FaxiosResponse | undefined
+        caught["response"] as FaxiosResponse | undefined
       ),
       { cause }
     );
   }
 
   throw FaxiosError.from(
-    _err,
-    _err["code"] as string | undefined,
+    caught,
+    caught["code"] as string | undefined,
     config,
     request,
-    _err["response"] as FaxiosResponse | undefined
+    caught["response"] as FaxiosResponse | undefined
   );
 };

@@ -136,6 +136,17 @@ describe("core::mergeConfig", () => {
         y: "2",
       });
     });
+
+    it.each([
+      [ "Map", new Map([[ "x", "1" ]]), new Map([[ "y", "2" ]]) ],
+      [ "Headers", new Headers({ x: "1" }), new Headers({ y: "2" }) ],
+      [ "pair array", [[ "x", "1" ]], [[ "y", "2" ]]],
+    ])("merges %s headers into a plain object with both keys", (_kind, headers1, headers2) => {
+      const merged = mergeConfig({ headers: headers1 }, { headers: headers2 });
+
+      expect(Object.getPrototypeOf(merged.headers)).toBe(Object.prototype);
+      expect(merged.headers).toEqual({ x: "1", y: "2" });
+    });
   });
 
   describe("valueFromConfig2Keys", () => {

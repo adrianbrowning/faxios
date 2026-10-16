@@ -31,7 +31,7 @@ async function undefinedOptionals(): Promise<void> {
 // Nested option objects take undefined too: transitional, the plugins' factory options and the
 // per-request retry option.
 async function undefinedNestedOptionals(): Promise<void> {
-  await faxios.get("/user", { transitional: { clarifyTimeoutError: maybeBoolean, forcedJSONParsing: undefined } });
+  await faxios.get("/user", { transitional: { validateStatusUndefinedResolves: maybeBoolean, forcedJSONParsing: undefined } });
   const api = create({ transitional: { validateStatusUndefinedResolves: maybeBoolean } })
     .use(retry({ attempts: maybeNumber, attemptTimeout: undefined, jitter: undefined }))
     .use(authBearer(() => "token", { scheme: maybeString, header: undefined, overwrite: maybeBoolean }))

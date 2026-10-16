@@ -1,17 +1,16 @@
+import { RESPONSE_TYPES } from "../core/assertRequestConfig.js";
+import composeSignals from "../core/composeSignals.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import type { HeaderInput } from "../core/FaxiosHeaders.js";
 import prepareRequest from "../core/prepareRequest.js";
 import type { RequestBodies } from "../core/requestDeadline.js";
 import resolveBodyContentType from "../core/resolveBodyContentType.js";
-import { settle } from "../core/settle.js";
+import { statusError } from "../core/statusError.js";
 import { VERSION } from "../env/data.js";
-import composeSignals from "../helpers/composeSignals.js";
-import estimateDataURLDecodedBytes from "../helpers/estimateDataURLDecodedBytes.js";
 import { progressReporter } from "../helpers/progressEventReducer.js";
 import { toByteStringHeaderObject } from "../helpers/sanitizeHeaderValue.js";
 import { trackStream } from "../helpers/trackStream.js";
-import utf8ByteLength from "../helpers/utf8ByteLength.js";
 import platform from "../platform.js";
 import type {
   FaxiosProgressEvent,
@@ -19,34 +18,24 @@ import type {
   InternalFaxiosRequestConfig
 } from "../types.js";
 import type { WebRequest } from "../types/web.js";
-import { findKey, getSafeProp, hasOwnInPrototypeChain, hasOwnProp, isArrayBuffer, isArrayBufferView, isAsyncIterable, isBlob, isFunction, isObject, isReadableStream, isRequest, isResponse, isSpecCompliantForm, isStream, isString, isURLSearchParams, toFiniteNumber } from "../utils.js";
+import { getSafeProp, hasOwnInPrototypeChain, hasOwnProp, isAsyncIterable, isFunction, isObject, isReadableStream, isRequest, isResponse, isSpecCompliantForm, isStream, isString, toFiniteNumber } from "../utils.js";
+import { handleFetchCaughtError } from "./fetch-helpers.js";
+import type { AnyConstructor, AnyResponse, FetchContext, FetchRuntime } from "./fetch-helpers.js";
 import {
   bodyTooLarge,
   checkDeclaredContentLength,
   checkMaterializedSize,
+  checkPreflightLimits,
   contentTooLarge,
-  handleFetchCaughtError
-} from "./fetch-helpers.js";
-import type { ComposedSignal, FetchContext } from "./fetch-helpers.js";
+  limitOf,
+  resolveBodyLength
+} from "./fetch-limits.js";
 
 // btoa is a global in every supported runtime; accessed via globalThis for no-DOM lib compat
 const _btoa: (data: string) => string = (
   globalThis as unknown as Record<string, unknown>
 )["btoa"] as (data: string) => string;
-type AnyConstructor = new (...args: Array<unknown>) => unknown;
 type FetchFn = (input: unknown, init?: unknown) => Promise<AnyResponse>;
-type AnyResponse = {
-  [key: string]: unknown;
-  arrayBuffer: () => Promise<ArrayBuffer>;
-  body: unknown;
-  headers: {
-    [key: string]: unknown;
-    get: (name: string) => null | string;
-    has: (name: string) => boolean;
-  };
-  status: number;
-  statusText: string;
-};
 type AnyRequest = {
   [key: string]: unknown;
   arrayBuffer: () => Promise<ArrayBuffer>;
@@ -89,18 +78,6 @@ const rejectUsedStreamBody = (data: unknown, config: InternalFaxiosRequestConfig
 // body unread, so a later try can still send it. Node streams are checked by their own state.
 const markStreamBodySent = (data: unknown): void => {
   if (isReadableStream(data) || (isAsyncIterable(data) && !isStream(data))) sentStreamBodies.add(data);
-};
-
-// The response, or a promise rejected with its status error, settled now so the adapter can
-// return it after its catch. A throwing validateStatus still throws here, into that catch.
-const settleByStatus = (response: FaxiosResponse): Promise<FaxiosResponse> => {
-  let outcome: Promise<FaxiosResponse> | undefined;
-  settle(value => {
-    outcome = Promise.resolve(value);
-  }, reason => {
-    outcome = Promise.reject(reason);
-  }, response);
-  return outcome!;
 };
 
 const isBrowserRuntime = platform.hasStandardBrowserEnv || platform.hasStandardBrowserWebWorkerEnv;
@@ -198,61 +175,19 @@ type FetchEnv = {
 // `body` is the request body as transformRequest left it; `config.data` stays the caller's value.
 // `url` is the URL dispatch resolved (resolveRequestURL); `config.url` stays the caller's template.
 // `bodies`: the request's stream bodies, which core keeps under the request's signal.
-type FetchAdapter = (config: InternalFaxiosRequestConfig, body: unknown, url: string, bodies?: RequestBodies) => Promise<unknown>;
+type FetchAdapter = (config: InternalFaxiosRequestConfig, body: unknown, url: string, bodies?: RequestBodies) => Promise<FaxiosResponse>;
 
 // Own reads only: a polluted Object.prototype.fetch must never become the transport.
 const readOwn = (obj: unknown, key: string): unknown =>
   typeof obj === "object" && obj !== null && hasOwnProp(obj, key) ? Reflect.get(obj, key) : undefined;
 const ownEnv = (config: unknown, key: keyof FetchEnv): unknown => readOwn(readOwn(config, "env"), key);
 
-// What the runtime's fetch side supports. Feature detection depends only on the Request and
-// Response constructors, so one record serves every `env.fetch`.
-type FetchRuntime = {
-  // Outside browsers a FormData body under maxBodyLength is streamed and counted as fetch reads
-  // it; browsers can't send a stream body (see buildUploadStream).
-  countsFormDataWhileSent: boolean;
-  // Cloudflare Workers throws when credentials are defined
-  // see https://github.com/cloudflare/workerd/issues/902
-  isCredentialsSupported: boolean;
-  isReadableStreamSupported: boolean;
-  // Whether `new Request(request, { body: null })` keeps the request's body (see fetchInitFor).
-  nullKeepsBody: boolean;
-  // Undefined where the runtime has none or `env` disables it.
-  Request: AnyConstructor | undefined;
-  // Only members this runtime's Request exposes, so an engine that rejects members it doesn't
-  // implement (Cloudflare Workers) is never sent one.
-  requestInitDefaults: Array<[string, unknown]>;
-  resolvers: Record<string, (res: AnyResponse, config: InternalFaxiosRequestConfig) => unknown>;
-  Response: AnyConstructor | undefined;
-  // `ReadableStream.from`, which turns a Node stream body into a web stream.
-  streamFrom: ((source: unknown) => unknown) | undefined;
-  supportsRequestStream: boolean;
-  supportsResponseStream: boolean;
-};
-
-// The per-request state the adapter's steps share.
-type RequestContext = FetchContext & {
-  headers: FaxiosHeaders;
-  onDownloadProgress: unknown;
-  // Browsers can't be given a stream body for upload progress: Chromium sends one only over
-  // HTTP/2 or later and WebKit not at all, so the upload would fail. onUploadProgress isn't
-  // called there (#209), so it is undefined.
-  onUploadProgress: unknown;
-  runtime: FetchRuntime;
-  // GET and HEAD send no body.
-  sendsBody: boolean;
-  // `responseType: "stream"` where the runtime has stream responses.
-  streamsResponse: boolean;
-};
-
-const RESPONSE_TYPES = [ "text", "arrayBuffer", "blob", "formData", "stream" ];
-
-// How each responseType reads the response; `stream` hands over the body where the runtime has
-// stream responses.
+// How each lower-cased responseType reads the response (by the Response method RESPONSE_TYPES
+// names); `stream` hands over the body where the runtime has stream responses.
 const buildResolvers = (supportsResponseStream: boolean): FetchRuntime["resolvers"] => {
-  const resolvers: FetchRuntime["resolvers"] = {};
-  for (const type of RESPONSE_TYPES) {
-    resolvers[type] = type === "stream" && supportsResponseStream
+  const resolvers: FetchRuntime["resolvers"] = Object.create(null) as FetchRuntime["resolvers"];
+  for (const [ responseType, type ] of Object.entries(RESPONSE_TYPES)) {
+    resolvers[responseType] = type === "stream" && supportsResponseStream
       ? (res: AnyResponse) => res.body
       : (res: AnyResponse, config: InternalFaxiosRequestConfig) => {
         const method = res[type];
@@ -346,7 +281,7 @@ const probeRuntime = (env: Omit<FetchEnv, "fetch">): FetchRuntime => {
 // inherited keys never do. The caller sets signal, method, headers, body, duplex, credentials.
 // This init builds the Request; fetch gets the init fetchInitFor derives from it.
 const buildRequestInit = (
-  ctx: RequestContext,
+  ctx: FetchContext,
   options: { data: unknown; envFetch: FetchFn | undefined; fetchOptions: unknown; withCredentials: boolean | string | undefined; }
 ): Record<string, unknown> => {
   const init: Record<string, unknown> = Object.create(null);
@@ -420,53 +355,6 @@ const isStreamBody = (body: unknown): boolean => isReadableStream(body) || isIte
 const isCountedWhileSent = (runtime: FetchRuntime, body: unknown): boolean =>
   isStreamBody(body) || (runtime.countsFormDataWhileSent && isSpecCompliantForm(body));
 
-// Sizes come from the body itself, never an encoded copy: measuring must not allocate a buffer
-// as large as the body it may reject.
-const getBodyLength = (body: unknown): number | undefined => {
-  if (body == null) {
-    return 0;
-  }
-
-  if (isBlob(body)) {
-    return (body as { size: number; }).size;
-  }
-
-  if (isArrayBufferView(body) || isArrayBuffer(body)) {
-    return (body as ArrayBuffer | ArrayBufferView).byteLength;
-  }
-
-  if (isURLSearchParams(body)) {
-    body = body + "";
-  }
-
-  if (isString(body)) {
-    return utf8ByteLength(body as string);
-  }
-  return undefined;
-};
-
-// The bytes of a FormData body's field values and files, from their sizes, without reading the
-// body. A lower bound: the multipart body adds boundaries and part headers. Undefined for any
-// other body.
-const getFormDataFieldsLength = (body: unknown): number | undefined => {
-  if (!isSpecCompliantForm(body)) {
-    return undefined;
-  }
-  let length = 0;
-  for (const [ , value ] of body as Iterable<[string, unknown]>) {
-    // A FormData value is a string or a File.
-    const size = isString(value) ? undefined : getSafeProp(value, "size");
-    length += typeof size === "number" ? size : utf8ByteLength(String(value));
-  }
-  return length;
-};
-
-const resolveBodyLength = (headers: FaxiosHeaders, body: unknown): number | undefined => {
-  const length = toFiniteNumber(headers.getContentLength());
-
-  return length == null ? getBodyLength(body) : length;
-};
-
 const normalizeCredentials = (wc: boolean | string): string => {
   if (isString(wc)) return wc as string;
   return wc === true ? "include" : "same-origin";
@@ -474,7 +362,7 @@ const normalizeCredentials = (wc: boolean | string): string => {
 
 // HTTP basic authentication: extract auth from config or URL, set Authorization header,
 // strip credentials from URL. Returns the (possibly updated) URL.
-const applyAuthToRequest = (ctx: RequestContext, url: string): string => {
+const applyAuthToRequest = (ctx: FetchContext, url: string): string => {
   let auth: undefined | { password: unknown; username: unknown; };
   const configAuth = readOwn(ctx.config, "auth");
   if (configAuth) {
@@ -512,46 +400,19 @@ const applyAuthToRequest = (ctx: RequestContext, url: string): string => {
   return url;
 };
 
-// Pre-flight size checks: data: URL content-length and known-size body maxBodyLength. They run
-// before any Request exists. Returns the body's length if it was measured, else undefined.
-const checkPreflightLimits = (ctx: RequestContext, outbound: { data: unknown; url: string; }): number | undefined => {
-  const { body: maxBodyLength, content: maxContentLength } = ctx.limits;
-  // Enforce maxContentLength for data: URLs up-front so we never materialize
-  // an oversized payload.
-  if (
-    maxContentLength !== undefined &&
-    outbound.url.startsWith("data:") &&
-    estimateDataURLDecodedBytes(outbound.url) > maxContentLength
-  ) {
-    throw contentTooLarge(ctx);
-  }
-  // Enforce maxBodyLength against known-size bodies before dispatch using
-  // the body's actual size — never a caller-declared Content-Length.
-  // A FormData body isn't measured, since that buffers it whole: its values alone over the limit
-  // reject it here, and where it's streamed the byte counter covers the multipart framing too.
-  if (maxBodyLength !== undefined && ctx.sendsBody) {
-    const outboundLength = getBodyLength(outbound.data);
-    const checkedLength = outboundLength ?? getFormDataFieldsLength(outbound.data);
-    if (typeof checkedLength === "number" && isFinite(checkedLength)) {
-      if (checkedLength > maxBodyLength) {
-        throw bodyTooLarge(ctx);
-      }
-      return outboundLength;
-    }
-  }
-  return undefined;
-};
-
 // Counts a request body stream as fetch reads it, which is after the Request exists, so the
 // maxBodyLength error carries it.
 const countUploadStream = (
-  ctx: RequestContext,
+  ctx: FetchContext,
   upload: { flush?: () => void; onProgress?: (bytes: number) => void; stream: unknown; }
 ): unknown => {
   const maxBodyLength = ctx.limits.body;
   return trackStream(
     upload.stream,
     DEFAULT_CHUNK_SIZE,
+    // A chunk that isn't bytes is the caller's body, so it is a bad request. It becomes the body
+    // error, so it surfaces coded instead of as fetch's ERR_NETWORK.
+    (message: string) => (ctx.bodyError = new FaxiosError(message, FaxiosError.ERR_BAD_REQUEST, ctx.config)),
     (loadedBytes: number) => {
       if (maxBodyLength !== undefined && loadedBytes > maxBodyLength) {
         ctx.bodyError = bodyTooLarge(ctx);
@@ -559,21 +420,14 @@ const countUploadStream = (
       }
       upload.onProgress && upload.onProgress(loadedBytes);
     },
-    (err?: unknown) => {
-      // A chunk trackStream rejected (not bytes) surfaces as the coded error, not ERR_NETWORK.
-      if (err instanceof FaxiosError && !ctx.bodyError) {
-        err.config = ctx.config;
-        ctx.bodyError = err;
-      }
-      upload.flush && upload.flush();
-    }
+    upload.flush
   );
 };
 
 // Set up request body streaming with upload progress and/or maxBodyLength enforcement.
 // `contentLength` is the length the pre-flight check measured, if it did.
 const buildUploadStream = (
-  ctx: RequestContext,
+  ctx: FetchContext,
   upload: { contentLength: number | undefined; data: unknown; url: string; }
 ): { data: unknown; encodedContentType: null | string; } => {
   const { onUploadProgress, runtime } = ctx;
@@ -621,7 +475,7 @@ const buildUploadStream = (
 
 // Wrap the response body stream with download progress tracking and maxContentLength enforcement.
 const buildDownloadStream = (
-  ctx: RequestContext,
+  ctx: FetchContext,
   received: { headers: FaxiosHeaders; release: (err?: unknown) => void; response: AnyResponse; }
 ): AnyResponse => {
   const { onDownloadProgress } = ctx;
@@ -661,6 +515,8 @@ const buildDownloadStream = (
     trackStream(
       response.body,
       DEFAULT_CHUNK_SIZE,
+      // The server sent a chunk that isn't bytes, so it is a bad response.
+      (message: string) => new FaxiosError(message, FaxiosError.ERR_BAD_RESPONSE, ctx.config, ctx.request),
       onChunkProgress,
       (err?: unknown) => {
         flush && flush();
@@ -670,10 +526,6 @@ const buildDownloadStream = (
     options
   ) as AnyResponse;
 };
-
-// A size limit is set when it is a number above -1.
-const limitOf = (value: unknown): number | undefined =>
-  (typeof value === "number" && value > -1 ? value : undefined);
 
 // One request through fetch; `input` holds the FetchAdapter arguments.
 const sendRequest = async (
@@ -689,19 +541,19 @@ const sendRequest = async (
   const responseType = resolved.responseType ? String(resolved.responseType).toLowerCase() : "text";
 
   const envFetch = ownEnv(config, "fetch") as FetchFn | undefined;
-  const _fetch: FetchFn = (envFetch || Reflect.get(globalThis, "fetch")) as FetchFn;
+  const fetchFn: FetchFn = (envFetch || Reflect.get(globalThis, "fetch")) as FetchFn;
 
   // Owns the request's cleanup: aborting it on a failure aborts fetch, which releases the
   // connection and any body still being sent or received. `timeout` isn't armed here: the
   // request's signal carries the whole-request deadline (core/requestDeadline.ts).
   const requestController = new AbortController();
-  const composedSignal = composeSignals([ resolved.signal, requestController.signal ]) as ComposedSignal;
+  const composedSignal = composeSignals([ resolved.signal, requestController.signal ])!;
 
   const unsubscribe = composedSignal.unsubscribe!.bind(composedSignal);
   // Set when a stream body keeps the request's signal and deadline in force past the response.
   let endStreamBody: (() => void) | undefined;
 
-  const ctx: RequestContext = {
+  const ctx: FetchContext = {
     bodyError: undefined,
     config,
     headers: resolved.headers,
@@ -719,7 +571,8 @@ const sendRequest = async (
   };
   // The response, or the status error, returned after the catch: aborting the request there
   // would error a stream body the status error hands to the caller.
-  let settled: Promise<FaxiosResponse>;
+  let settled: FaxiosResponse;
+  let rejection: FaxiosError | undefined;
 
   try {
     // Everything before the send builds the request, so an unparseable URL that the upload
@@ -753,8 +606,8 @@ const sendRequest = async (
     markStreamBodySent(body);
     ctx.stage = "send";
     let response = await (Request && request
-      ? _fetch(request, fetchInitFor(runtime, { init: requestInit, Request, request }))
-      : _fetch(url, requestInit));
+      ? fetchFn(request, fetchInitFor(runtime, { init: requestInit, Request, request }))
+      : fetchFn(url, requestInit));
     ctx.stage = undefined;
 
     // A fetch Response's headers is a Headers: an iterable of [name, value] pairs.
@@ -779,7 +632,7 @@ const sendRequest = async (
     const isCountedWhileRead = counted !== response;
     response = counted;
 
-    const resolver = runtime.resolvers[findKey(runtime.resolvers, responseType) || "text"]!;
+    const resolver = runtime.resolvers[responseType] ?? runtime.resolvers["text"]!;
     ctx.stage = "body";
     const responseData = await resolver(response, config);
     ctx.stage = undefined;
@@ -789,14 +642,15 @@ const sendRequest = async (
     // A stream body releases the request when it ends; a response without a body has nothing to wait for.
     if (!ctx.streamsResponse || response.body == null) unsubscribe();
 
-    settled = settleByStatus({
+    settled = {
       data: responseData,
       headers: responseHeaders,
       status: response.status,
       statusText: response.statusText,
       config,
       request: request ?? null,
-    });
+    };
+    rejection = statusError(settled);
   }
   catch (err) {
     let error: unknown = err;
@@ -812,6 +666,7 @@ const sendRequest = async (
     endStreamBody?.();
     throw error;
   }
+  if (rejection) throw rejection;
   return settled;
 };
 

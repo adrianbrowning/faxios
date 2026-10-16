@@ -81,6 +81,7 @@ export const typingFixtures: Array<TypingFixture> = [
     tsconfig: floorTsconfig,
   })),
   ownConfig("node-only", "type-checks the shipped declarations for a Node-only consumer without the DOM lib"),
+  ownConfig("no-globals", "type-checks the shipped declarations for a consumer with neither the DOM lib nor @types/node"),
   ownConfig("exact-optional", "accepts undefined optionals under exactOptionalPropertyTypes"),
 ];
 

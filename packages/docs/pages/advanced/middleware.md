@@ -307,7 +307,7 @@ await api.get("/users");
 - A `provides` value whose type contradicts the annotation is a type error.
 - Middleware without an annotation still sees the plugin's own `provides` on `ctx.capabilities`.
 
-To see the URL a request goes to, import `resolveRequestURL(config)` from `@gcmdev/faxios`. It is the resolver core uses for the request and for `getUri()`: `url` with `pathParams` filled in, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params`. A `URL` url is resolved as its `href`. A URL is absolute only when a scheme is followed by `//`, so `documents:batchGet` joins `baseURL`. It always returns a string, or throws the `FaxiosError` the request would reject with: `ERR_INVALID_URL` for an absolute URL that `allowAbsoluteUrls: false` refuses and for a config with neither `url` nor `baseURL`, `ERR_BAD_OPTION_VALUE` for a placeholder `pathParams` can't fill. In middleware, schemas haven't run yet, so it uses `pathParams` and `params` as the caller gave them. To check only the origin, as `authBearer` does, pass `{ ...ctx.config, pathParams: undefined, params: undefined }`: a `pathParamsSchema` may fill or rename placeholders the raw `pathParams` can't, and path params never move the origin.
+To see the URL a request goes to, import `resolveRequestURL(config)` from `@gcmdev/faxios`. It is the resolver core uses for the request and for `getUri()`: `url` with `pathParams` filled in, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params`. A `URL` url is resolved as its `href`. A URL is absolute only when a scheme is followed by `//`, so `documents:batchGet` joins `baseURL`. It uses `allowAbsoluteUrls` as given and leaves the default to you: unset, an absolute `url` replaces `baseURL`. Core sets it from the instance defaults before middleware runs, so `ctx.config` already holds it. It always returns a string, or throws the `FaxiosError` the request would reject with: `ERR_INVALID_URL` for an absolute URL that `allowAbsoluteUrls: false` refuses and for a config with neither `url` nor `baseURL`, `ERR_BAD_OPTION_VALUE` for a `url` that isn't a string or `URL` and for a placeholder `pathParams` can't fill. In middleware, schemas haven't run yet, so it uses `pathParams` and `params` as the caller gave them. To check only the origin, as `authBearer` does, pass `{ ...ctx.config, pathParams: undefined, params: undefined }`: a `pathParamsSchema` may fill or rename placeholders the raw `pathParams` can't, and path params never move the origin.
 
 ```ts expect=log:https://api.example.com/users/7?q=1
 import faxios, { resolveRequestURL } from "@gcmdev/faxios";
@@ -324,6 +324,10 @@ const logURL = () => definePlugin({
 const api = faxios.create({ baseURL: "https://api.example.com" }).use(logURL());
 await api.get("/users/{id}", { pathParams: { id: 7 }, params: { q: 1 } });
 ```
+
+### Reuse core's helpers
+
+The package root exports the rules core uses for signals, cancellation and prototype walks, so import them from `@gcmdev/faxios` instead of copying them into a plugin: `assertSignal` (reject a `signal` faxios can't watch), `onAbort` and `raceAbort` (with the `AbortableSignal` type) to react to or race an abort, `canceledFromSignal` for the error an aborted request rejects with, and `hasOwnInPrototypeChain` to read an option without trusting a polluted `Object.prototype`, and `stripUserInfo` (a URL) and `stripUserInfoInText` (free text such as an error message) to remove `user:pass@` before logging. See the [API reference](/pages/advanced/api-reference) for each signature.
 
 ### Typing a plugin factory
 

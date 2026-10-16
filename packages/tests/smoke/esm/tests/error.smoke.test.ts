@@ -1,8 +1,12 @@
 import faxios from "faxios";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { pendingFetch } from "./helpers.js";
 
 describe("error compat (dist export only)", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("rejects with FaxiosError for non-2xx responses by default", async () => {
     const mockFetch = async () =>
       new Response(JSON.stringify({ error: "boom" }), {
@@ -56,14 +60,17 @@ describe("error compat (dist export only)", () => {
   });
 
   it("rejects with ETIMEDOUT on timeout", async () => {
+    vi.useFakeTimers();
     const mockFetch = pendingFetch;
 
-    const err = await faxios
+    const pending = faxios
       .get("http://example.com/timeout", {
         timeout: 10,
         env: { fetch: mockFetch, Request, Response },
       })
       .catch(e => e);
+    await vi.advanceTimersByTimeAsync(10);
+    const err = await pending;
 
     expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ETIMEDOUT");
@@ -71,15 +78,18 @@ describe("error compat (dist export only)", () => {
   });
 
   it("uses timeoutErrorMessage when provided", async () => {
+    vi.useFakeTimers();
     const mockFetch = pendingFetch;
 
-    const err = await faxios
+    const pending = faxios
       .get("http://example.com/timeout", {
         timeout: 25,
         timeoutErrorMessage: "custom timeout message",
         env: { fetch: mockFetch, Request, Response },
       })
       .catch(e => e);
+    await vi.advanceTimersByTimeAsync(25);
+    const err = await pending;
 
     expect(faxios.isFaxiosError(err)).toBe(true);
     expect(err.code).toBe("ETIMEDOUT");

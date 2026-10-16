@@ -188,6 +188,8 @@ function formatHeader(header: string): string {
 
 function iterableToHeaders(header: Iterable<unknown>): Record<string, unknown> {
   const obj: Record<string, unknown> = Object.create(null);
+  // The arrays built here for repeated names; a caller's array value is copied once, never pushed into.
+  let built: Set<unknown> | undefined;
   for (const entry of header) {
     if (!isArray(entry)) {
       throw new TypeError("Object iterator must return a key-value pair");
@@ -196,7 +198,15 @@ function iterableToHeaders(header: Iterable<unknown>): Record<string, unknown> {
     const val = (entry)[1];
     if (hasOwnProp(obj, key)) {
       const dest = obj[key];
-      obj[key] = isArray(dest) ? [ ...(dest), val ] : [ dest, val ];
+      if (built?.has(dest)) {
+        (dest as Array<unknown>).push(val);
+      }
+      else {
+        const values = isArray(dest) ? [ ...dest, val ] : [ dest, val ];
+        built ??= new Set();
+        built.add(values);
+        obj[key] = values;
+      }
     }
     else {
       obj[key] = val;

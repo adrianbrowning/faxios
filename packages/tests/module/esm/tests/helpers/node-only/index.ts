@@ -2,7 +2,7 @@
 // off (see tsconfig.json next to this file), so every shipped declaration file is checked. A
 // DOM-only name in the declarations (BlobPart, BodyInit, ...) fails here with TS2304.
 import faxios, { create, toFormData } from "faxios";
-import type { FaxiosRequestConfig, FaxiosResponse } from "faxios";
+import type { FaxiosRequestConfig, FaxiosResponse, GenericAbortSignal } from "faxios";
 import { definePlugin } from "faxios/plugins";
 import { authBearer } from "faxios/plugins/auth-bearer";
 import { forwardTo } from "faxios/plugins/forward-to";
@@ -24,6 +24,8 @@ async function nodeConsumer(): Promise<void> {
   const response: FaxiosResponse = await faxios.request(config);
   const request: null | Request | undefined = response.request;
   const form: FormData = toFormData({ a: 1 });
+  // Node's AbortSignal fits GenericAbortSignal on its own, not only through the config's union.
+  const nodeSignal: GenericAbortSignal = AbortSignal.timeout(1000);
 
   const instance = create()
     .use(retry())
@@ -38,6 +40,7 @@ async function nodeConsumer(): Promise<void> {
   void isAbsoluteURL("/a");
   void request;
   void form;
+  void nodeSignal;
 }
 
 void nodeConsumer;

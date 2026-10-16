@@ -1,7 +1,7 @@
 // @ts-self-types="./route.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import cloneConfig from "../helpers/cloneConfig.js";
 import type { StandardSchemaV1 } from "../types/standard-schema.js";
+import cloneConfig from "./cloneConfig.js";
 import type { BasePerCallConfig, DefineConfig, DefinedEndpoint, FaxiosLike } from "./define.js";
 import { createDefinedEndpoint } from "./define.js";
 import mergeConfig from "./mergeConfig.js";
@@ -28,17 +28,16 @@ export type RouteMethodConfig<
   responseSchema?: R;
 };
 
-/** The object `route()` returns: one endpoint factory per HTTP method (no `query`). */
+/** The object `route()` returns: one endpoint factory per HTTP method. */
 export type RouteBuilder<PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined, TOpts = unknown> = {
-  [M in "delete" | "get" | "head" | "options" | "patch" | "post" | "put"]: <
+  [M in "delete" | "get" | "head" | "options" | "patch" | "post" | "put" | "query"]: <
     P extends StandardSchemaV1 | undefined = undefined,
     D extends StandardSchemaV1 | undefined = undefined,
     R extends StandardSchemaV1 | undefined = undefined
   >(config?: RouteMethodConfig<P, D, R> & TOpts) => DefinedEndpoint<PP, P, D, R, TOpts>;
 };
 
-// ponytail: `query` excluded — non-standard HTTP method alias, not useful in route definitions
-const methods = [ "get", "post", "put", "patch", "delete", "head", "options" ] as const satisfies ReadonlyArray<keyof RouteBuilder<undefined>>;
+const methods = [ "get", "post", "put", "patch", "delete", "head", "options", "query" ] as const satisfies ReadonlyArray<keyof RouteBuilder<undefined>>;
 
 export function createRouteBuilder<PP extends StandardSchemaV1<unknown, Record<string, unknown>> | undefined>(
   instance: FaxiosLike,

@@ -1,5 +1,5 @@
-import FaxiosError from "../core/FaxiosError.js";
 import type { InternalFaxiosRequestConfig } from "../types.js";
+import FaxiosError from "./FaxiosError.js";
 
 // `.` and `..` (raw or percent-encoded) would become a dot segment that the URL parser resolves,
 // moving the request to another path.

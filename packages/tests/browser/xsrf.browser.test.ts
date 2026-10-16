@@ -1,6 +1,6 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, assert, describe, expect, it } from "vitest";
 
-import faxios from "#src/index.js";
+import faxios, { FaxiosError, FaxiosHeaders } from "#src/index.js";
 import type { InternalFaxiosRequestConfig } from "#src/lib/types.js";
 
 import { installFetchMock } from "./helpers/fetchMock.js";
@@ -266,5 +266,18 @@ describe("xsrf (vitest browser)", () => {
 
       expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe(token);
     });
+  });
+
+  it("keeps the xsrf token off error.config and error.toJSON()", async () => {
+    using mock = installFetchMock();
+    mock.respondWith({ status: 500 });
+    setXsrfCookie("secret-xsrf-token");
+
+    const err: unknown = await faxios("/foo", { headers: new FaxiosHeaders({ "X-Custom": "1" }) }).catch((e: unknown) => e);
+
+    expect(mock.lastRequest!.headers.get(xsrfHeaderName)).toBe("secret-xsrf-token");
+    assert(err instanceof FaxiosError);
+    expect(FaxiosHeaders.from(err.config!.headers).has(xsrfHeaderName)).toBe(false);
+    expect(JSON.stringify(err.toJSON())).not.toContain("secret-xsrf-token");
   });
 });

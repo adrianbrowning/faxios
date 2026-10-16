@@ -8,7 +8,7 @@ faxios is published as ESM only, so there are a few configuration caveats:
 
 - The recommended setting is `"moduleResolution": "node16"` (implied by `"module": "node16"`) or `"bundler"`.
 - If you use ESM, your settings should be fine.
-- There is no CJS build and no `index.d.cts`; load faxios with `import`.
+- There is no CJS build and no `index.d.cts`; load faxios with `import`, or `await import()` from CommonJS. Node's `require(esm)` may also load it, but that isn't a supported entry.
 
 ## Strict and Node-only projects
 

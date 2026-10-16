@@ -152,12 +152,8 @@ static concat(first: HeaderInput, ...targets: Array<HeaderInput>): FaxiosHeaders
 The `CanceledError` class is the error a canceled request rejects with, code `ERR_CANCELED`. It extends the `FaxiosError` class.
 
 ```ts contract=@gcmdev/faxios#CanceledError
-constructor(message?: null | string, config?: FaxiosRequestConfig, request?: unknown);
+constructor(message?: null | string, config?: InternalFaxiosRequestConfig, request?: unknown);
 ```
-
-### `Cancel` <Badge type="tip" text="Alias for CanceledError" />
-
-The `Cancel` class is an alias for the `CanceledError` class. It is exported for backwards compatibility and will be removed in a future release.
 
 ## Functions
 
@@ -276,10 +272,78 @@ const merged = mergeConfig(base, override);
 
 ### `resolveRequestURL`
 
-Returns the URL a request with this config is sent to: `url` (a `URL` as its `href`) with its `{key}` placeholders filled from `pathParams`, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params` serialized with `paramsSerializer`. It is the resolver faxios itself uses for requests and `getUri()`, exported for plugins. It throws the `FaxiosError` the request would reject with, `ERR_INVALID_URL` for a config with neither `url` nor `baseURL` included. See [Writing a plugin](/pages/advanced/middleware#writing-a-plugin).
+Returns the URL a request with this config is sent to: `url` (a `URL` as its `href`) with its `{key}` placeholders filled from `pathParams`, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params` serialized with `paramsSerializer`. It is the resolver faxios itself uses for requests and `getUri()`, exported for plugins. It uses `allowAbsoluteUrls` as given: unset, an absolute `url` replaces `baseURL`; requests and `getUri()` set it from the instance defaults first. It throws the `FaxiosError` the request would reject with, `ERR_INVALID_URL` for a config with neither `url` nor `baseURL` and `ERR_BAD_OPTION_VALUE` for a `url` that isn't a string or `URL` included. See [Writing a plugin](/pages/advanced/middleware#writing-a-plugin).
 
 ```ts contract=@gcmdev/faxios
 resolveRequestURL(config: FaxiosRequestConfig): string;
+```
+
+### `canceledFromSignal`
+
+Returns the error faxios rejects a request with when its signal aborts. A `FaxiosError` reason (such as the `ETIMEDOUT` of `timeout`) is returned as is; otherwise a `CanceledError` whose message comes from an `Error` or string reason (else "canceled"), keeping an `Error` reason as `cause`. Exported for plugins.
+
+```ts contract=@gcmdev/faxios
+canceledFromSignal(signal: { readonly aborted: boolean; reason?: unknown; }, config?: InternalFaxiosRequestConfig, request?: unknown): FaxiosError;
+```
+
+### `assertSignal`
+
+Throws the `ERR_BAD_OPTION_VALUE` `FaxiosError` faxios rejects with for a `signal` it can't watch: one without `aborted`, `addEventListener` and `removeEventListener`. `undefined` and `null` pass. Exported for plugins.
+
+```ts contract=@gcmdev/faxios
+assertSignal(signal: unknown, config: InternalFaxiosRequestConfig): void;
+```
+
+### `AbortableSignal`
+
+The part of an `AbortSignal` that `onAbort` and `raceAbort` use, so a polyfilled signal or one from another realm works too. `GenericAbortSignal`, what the `signal` option accepts, extends it with an optional `onabort`.
+
+```ts contract=@gcmdev/faxios
+type AbortableSignal = {
+  readonly aborted: boolean;
+  addEventListener: (type: "abort", listener: () => void) => unknown;
+  removeEventListener: (type: "abort", listener: () => void) => unknown;
+};
+```
+
+### `onAbort`
+
+Calls `listener` once when `signal` aborts, or at once when it already has. Returns what removes the listener. Exported for plugins.
+
+```ts contract=@gcmdev/faxios
+onAbort(signal: AbortableSignal, listener: () => void): () => void;
+```
+
+### `raceAbort`
+
+Settles with what `run` gives, or rejects with `abortError()` as soon as `signal` aborts. An already-aborted signal rejects without calling `run`, and a result that loses the race is still consumed. Exported for plugins.
+
+```ts contract=@gcmdev/faxios
+raceAbort<T>(signal: AbortableSignal, run: () => PromiseLike<T> | T, abortError: () => unknown): Promise<T>;
+```
+
+### `hasOwnInPrototypeChain`
+
+Whether `prop` is an own property of `thing` or of an object on its prototype chain below `Object.prototype`, so a value only a polluted `Object.prototype` supplies doesn't count. A chain a `Proxy` makes cyclic ends the walk. Exported for plugins.
+
+```ts contract=@gcmdev/faxios
+hasOwnInPrototypeChain(thing: unknown, prop: PropertyKey): boolean;
+```
+
+### `stripUserInfo`
+
+Returns `url` without the `user:pass@` of its authority, so it is safe to log. Only user info at the start of `url` is removed: after the scheme (`https://user:pass@host` becomes `https://host`) or after `//` in a protocol-relative URL. Backslashes count as slashes, as in the WHATWG URL parser. `FaxiosError#toJSON()` uses it on `url` and `baseURL`, and `timing` on the URL it reports. Exported for plugins.
+
+```ts contract=@gcmdev/faxios
+stripUserInfo(url: string): string;
+```
+
+### `stripUserInfoInText`
+
+Returns `text` without the `user:pass@` after each `scheme://` in it, so free text such as an error message is safe to log. The scan takes time linear in the length of `text`. `FaxiosError#toJSON()` uses it on the messages of the cause chain, and `timing` on the error message it reports. Exported for plugins.
+
+```ts contract=@gcmdev/faxios
+stripUserInfoInText(text: string): string;
 ```
 
 ### `all` <Badge type="danger" text="Deprecated in favour of Promise.all" />
@@ -438,7 +502,7 @@ The package root exports these types. Import them with `import type { ... } from
 | `FaxiosHeaderValue` | One header value: a string, number, boolean, array of strings, `null` or `undefined` |
 | `FaxiosResponse` | The resolved response: `data`, `status`, `statusText`, `headers`, `config` and `request` |
 | `FaxiosPromise` | `Promise<FaxiosResponse<T>>` |
-| `FaxiosErrorCode` | The union of the `FaxiosError` code statics; `ECONNABORTED` is kept for compatibility and never raised |
+| `FaxiosErrorCode` | The union of the `FaxiosError` code statics |
 | `SchemaValidationError` | The `FaxiosError` that [`isSchemaValidationError`](#isschemavalidationerror) narrows to |
 | `Method` | An HTTP method name, in lower or upper case |
 | `ResponseType` | The values of the [`responseType`](/pages/advanced/request-config#responsetype) option |
@@ -450,8 +514,10 @@ The package root exports these types. Import them with `import type { ... } from
 | `ParamsSerializerOptions` | The object form of the [`paramsSerializer`](/pages/advanced/request-config#paramsserializer) option |
 | `CustomParamsSerializer` | The function form of the `paramsSerializer` option |
 | `FormSerializerOptions` | The [`formSerializer`](/pages/advanced/request-config#formserializer) option, also taken by `toFormData()` |
+| `SerializerVisitor` | The `visitor` function `FormSerializerOptions` takes, called for each value `toFormData()` serializes |
+| `FormDataVisitorHelpers` | The helpers a `SerializerVisitor` gets: `defaultVisitor`, `convertValue` and `isVisitable` |
 | `TransitionalOptions` | The [`transitional`](/pages/advanced/request-config#transitional) option |
-| `GenericAbortSignal` | An `AbortSignal`-like object the `signal` option accepts |
+| `GenericAbortSignal` | An `AbortSignal`-like object the `signal` option accepts: an [`AbortableSignal`](#abortablesignal) with an optional `onabort` |
 | `GenericFormData` | A FormData-like object with an `append(name, value)` method |
 | `GenericHTMLFormElement` | An HTML-form-like object `toFormData()` and `formToJSON()` read |
 | `StandardSchemaV1` | The [Standard Schema](https://standardschema.dev/) v1 interface the schema options take |

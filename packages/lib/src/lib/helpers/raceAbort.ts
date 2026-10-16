@@ -1,3 +1,5 @@
+// @ts-self-types="./raceAbort.d.ts" — required for Deno: index.d.ts re-exports from here
+
 // The part of an AbortSignal these helpers use, so a polyfilled signal or one from another realm works too.
 export type AbortableSignal = {
   readonly aborted: boolean;

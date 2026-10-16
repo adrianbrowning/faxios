@@ -101,24 +101,27 @@ const PARAMS_SERIALIZER_SCHEMA = {
   serialize: validator.validators.function,
 } satisfies Record<keyof ParamsSerializerOptions, ValidatorFn>;
 
-const RESPONSE_TYPES = {
-  arraybuffer: true,
-  blob: true,
-  formdata: true,
-  json: true,
-  stream: true,
-  text: true,
-} satisfies Record<ResponseType, true>;
+// Each responseType, lower-cased, with the Response method the fetch adapter reads it with
+// (`json` is read as text and parsed by transformResponse).
+export const RESPONSE_TYPES = {
+  arraybuffer: "arrayBuffer",
+  blob: "blob",
+  formdata: "formData",
+  json: "text",
+  stream: "stream",
+  text: "text",
+} satisfies Record<ResponseType, string>;
 
 /**
  * Asserts that every own key of a merged request config is a faxios option or a request option an
  * installed plugin declared, then checks `transitional`, the serializer options and `responseType`.
  * An unknown key rejects with `ERR_BAD_OPTION` naming it, so a typo never silently drops a setting.
+ * `config` is the internal view request() builds first, so every error here carries it.
  */
-export default function assertRequestConfig(config: FaxiosRequestConfig, pluginOptions: ReadonlySet<string>): void {
+export default function assertRequestConfig(config: InternalFaxiosRequestConfig, pluginOptions: ReadonlySet<string>): void {
   for (const key of Object.keys(config)) {
     if (hasOwnProp(REQUEST_CONFIG_KEYS, key) || pluginOptions.has(key)) continue;
-    throw new FaxiosError(`Unknown option ${key}${hintFor(key, pluginOptions)}`, FaxiosError.ERR_BAD_OPTION, config as InternalFaxiosRequestConfig);
+    throw new FaxiosError(`Unknown option ${key}${hintFor(key, pluginOptions)}`, FaxiosError.ERR_BAD_OPTION, config);
   }
 
   if (config.transitional !== undefined) {
@@ -140,7 +143,21 @@ export default function assertRequestConfig(config: FaxiosRequestConfig, pluginO
     throw new FaxiosError(
       `option responseType must be one of ${Object.keys(RESPONSE_TYPES).join(", ")}`,
       FaxiosError.ERR_BAD_OPTION_VALUE,
-      config as InternalFaxiosRequestConfig
+      config
     );
   }
+
+  assertSizeLimit(config, "maxContentLength");
+  assertSizeLimit(config, "maxBodyLength");
+}
+
+// A bad limit must not switch the size guard off: -1 is the only "unlimited" value.
+export function assertSizeLimit(config: InternalFaxiosRequestConfig, key: "maxBodyLength" | "maxContentLength"): void {
+  const limit: unknown = hasOwnProp(config, key) ? config[key] : undefined;
+  if (limit === undefined || limit === -1 || (Number.isFinite(limit) && (limit as number) >= 0)) return;
+  throw new FaxiosError(
+    `option ${key} must be -1 (unlimited) or a finite number of bytes from 0`,
+    FaxiosError.ERR_BAD_OPTION_VALUE,
+    config
+  );
 }

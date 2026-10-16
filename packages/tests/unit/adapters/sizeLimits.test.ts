@@ -66,6 +66,26 @@ const post = async (data: unknown, env: Env) =>
 const get = async (url: string, env: Env, config: FaxiosRequestConfig = {}) =>
   faxios.get(url, { maxContentLength: LIMIT, env, ...config });
 
+describe("adapters::fetch size limit option values", () => {
+  it.each([ "maxContentLength", "maxBodyLength" ] as const)("rejects a %s that would switch the limit off", async key => {
+    const sink = respondWith(() => new Response("a".repeat(LIMIT + 1)));
+    for (const value of [ String(LIMIT), Number.NaN, Number.POSITIVE_INFINITY, null, -2, -0.5 ]) {
+      await assert.rejects(
+        faxios.post(URL, "a".repeat(LIMIT + 1), { [key]: value as never, env: { fetch: sink.fetch } as Env }),
+        (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE && err.message.includes(key),
+        `${key}: ${String(value)}`
+      );
+    }
+    assert.strictEqual(sink.calls, 0);
+    // -1 is unlimited; LIMIT is a real limit, so one byte more is still rejected by the guard.
+    await faxios.post(URL, "a", { [key]: -1, env: { fetch: sink.fetch } as Env });
+    await assert.rejects(
+      faxios.post(URL, "a".repeat(LIMIT + 1), { [key]: LIMIT, env: { fetch: sink.fetch } as Env }),
+      key === "maxBodyLength" ? isBodyTooLarge : isContentTooLarge
+    );
+  });
+});
+
 describe.runIf(typeof fetch === "function")("adapters::fetch size limits at the boundary", () => {
   describe("maxBodyLength, known-size preflight", () => {
     it.each([
@@ -230,5 +250,55 @@ describe.runIf(typeof fetch === "function")("adapters::fetch size limits at the 
       const big = respondWith(() => new Response(bytes(LIMIT + 1)));
       await assert.rejects(get(URL, { fetch: big.fetch, Response: null } as unknown as Env), isContentTooLarge);
     });
+  });
+});
+
+describe("adapters::fetch size limits set by middleware", () => {
+  it.each([ "maxContentLength", "maxBodyLength" ] as const)("rejects a %s that middleware sets to an invalid value", async key => {
+    const sink = respondWith(() => new Response("a".repeat(LIMIT + 1)));
+    for (const value of [ "1048576", Number.NaN, Number.POSITIVE_INFINITY, null, -2, -0.5 ]) {
+      const instance = faxios.create({ [key]: LIMIT, env: { fetch: sink.fetch } as Env }).use(async (ctx, next) => {
+        Object.assign(ctx.config, { [key]: value });
+        return next(ctx);
+      });
+      await assert.rejects(
+        instance.post(URL, "a".repeat(LIMIT + 1)),
+        (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE && err.message.includes(key),
+        `${key}: ${String(value)}`
+      );
+    }
+    assert.strictEqual(sink.calls, 0);
+  });
+});
+
+describe("adapters::fetch size limit option values checked before middleware", () => {
+  const isBadOption = (key: string) => (err: unknown) =>
+    err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE && err.message.includes(key);
+
+  it.each([ "maxContentLength", "maxBodyLength" ] as const)("rejects a per-request %s before any middleware runs", async key => {
+    const sink = respondWith(() => new Response("ok"));
+    let ran = false;
+    const instance = faxios.create({ env: { fetch: sink.fetch } as Env }).use(async (ctx, next) => {
+      ran = true;
+      return next(ctx);
+    });
+    await assert.rejects(instance.post(URL, "a", { [key]: "1" as never }), isBadOption(key));
+    assert.strictEqual(ran, false);
+    assert.strictEqual(sink.calls, 0);
+  });
+
+  it("getUri rejects invalid size limits", () => {
+    assert.throws(() => faxios.getUri({ url: URL, maxBodyLength: Number.NaN }), isBadOption("maxBodyLength"));
+    assert.throws(() => faxios.getUri({ url: URL, maxContentLength: "1" as never }), isBadOption("maxContentLength"));
+  });
+
+  it.runIf(typeof fetch === "function").each([ 0, -0 ])("accepts maxBodyLength %s at the boundary", async limit => {
+    const sink = uploadSink();
+    const headers = { "Content-Type": "application/octet-stream" };
+    await faxios.post(URL, bytes(0), { maxBodyLength: limit, headers, env: { fetch: sink.fetch } as Env });
+    assert.strictEqual(sink.calls, 1);
+    assert.strictEqual(sink.received, 0);
+    await assert.rejects(faxios.post(URL, bytes(1), { maxBodyLength: limit, headers, env: { fetch: sink.fetch } as Env }), isBodyTooLarge);
+    assert.strictEqual(sink.calls, 1);
   });
 });

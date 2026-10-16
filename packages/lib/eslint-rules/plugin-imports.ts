@@ -11,8 +11,10 @@ import tseslint from "typescript-eslint";
 // nothing a third-party plugin can't. packages/tests/unit/eslint-rules/pluginImports.test.ts
 // checks this list against src/index.ts.
 export const rootRuntimeExports: Record<string, Array<string>> = {
+  "../cancel/canceledFromSignal.js": [ "default" ],
   "../cancel/CanceledError.js": [ "default" ],
   "../cancel/isCancel.js": [ "default" ],
+  "../core/assertSignal.js": [ "default" ],
   "../core/Faxios.js": [ "default" ],
   "../core/FaxiosError.js": [ "default", "isSchemaValidationError" ],
   "../core/FaxiosHeaders.js": [ "default" ],
@@ -24,7 +26,10 @@ export const rootRuntimeExports: Record<string, Array<string>> = {
   "../helpers/formToJSON.js": [ "formToJSON" ],
   "../helpers/HttpStatusCode.js": [ "default" ],
   "../helpers/isFaxiosError.js": [ "default" ],
+  "../helpers/raceAbort.js": [ "onAbort", "default" ],
+  "../helpers/stripUserInfo.js": [ "default", "stripUserInfoInText" ],
   "../helpers/toFormData.js": [ "default" ],
+  "../utils.js": [ "hasOwnInPrototypeChain" ],
 };
 
 // Module specifiers a plugin may import, as regex sources: the root, files in plugins/, and the

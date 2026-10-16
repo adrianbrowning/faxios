@@ -1,6 +1,6 @@
-# Migrating from axios to faxios
+# Migrating to faxios
 
-faxios started as a fork of axios and keeps most of its request API, but it uses the web-standard `fetch` API as its **only** HTTP transport in every runtime (browser, Node 24+, Deno, Bun). The axios adapters and their HTTP-stack dependencies are gone. This guide lists what behaves differently from axios and what to change in your code.
+faxios started as a fork of axios and keeps most of its request API, but it uses the web-standard `fetch` API as its **only** HTTP transport in every runtime (browser, Node 24+, Deno, Bun). The axios adapters and their HTTP-stack dependencies are gone. This guide lists what behaves differently from axios and what to change in your code. If you already use faxios 0.2, see [Upgrading from faxios 0.2](#upgrading-from-faxios-02).
 
 Install the package as `@gcmdev/faxios` and import its default export:
 
@@ -29,7 +29,7 @@ The `XMLHttpRequest` adapter is gone. Browsers use `fetch`. There is no `adapter
 
 ## c) ESM-only — no CJS build, no UMD/CDN bundle
 
-faxios ships as ESM only, built by `zshy`. Use `import faxios from '@gcmdev/faxios'`. `require('@gcmdev/faxios')` works only through Node's ESM interop; there is no dedicated CJS entry (`.d.cts`) and no UMD / minified CDN `<script>` bundle.
+faxios ships as ESM only, built by `zshy`. Use `import faxios from '@gcmdev/faxios'`. From CommonJS, load it with `await import('@gcmdev/faxios')`. Node's `require(esm)` support may load it too, but that isn't a supported entry: there is no CJS build or `require` export condition, no `.d.cts`, and no UMD / minified CDN `<script>` bundle.
 
 ## d) `onUploadProgress` works only in Node.js
 
@@ -186,6 +186,23 @@ In axios, `error.config.data` is the serialized body, such as the JSON string. I
 ## s) Response types take `<T, D>`, with no `R` parameter
 
 Axios methods take `<T, R = AxiosResponse<T>, D>`. faxios methods take `<T, D>` and always resolve to `FaxiosResponse<T, D>`, so `faxios.get<User, FaxiosResponse<User>>(url)` compiles with the second argument read as the request body type `D`. Drop the `R` argument when porting: `get<User>(url)`, or `post<User, NewUser>(url, body)`.
+
+## Upgrading from faxios 0.2
+
+The release after 0.2.x is a breaking one. The changelog has the full entry for each change; check your code for these:
+
+- **Config is checked.** `timeout` must be a number (a numeric string such as `"30"` rejects), and a truthy non-string `baseURL` rejects with `ERR_BAD_OPTION_VALUE`. A config key that is neither a faxios option nor a request option of an installed plugin, an unknown `transitional`, `paramsSerializer` or `formSerializer` key, and the removed `responseEncoding`, `transitional.advertiseZstdAcceptEncoding`, `transitional.silentJSONParsing`, `transitional.clarifyTimeoutError`, `formDataHeaderPolicy`, `baseUrl` and `withXsrfToken` reject with `ERR_BAD_OPTION`; so do `responseType: "document"` and `"response"`. A wrong-typed value, an explicit empty `method`, a `signal` without `addEventListener`/`removeEventListener`, a `maxContentLength`/`maxBodyLength` other than `-1` or a finite number from `0`, and a `retry` `attempts` above 10 reject with `ERR_BAD_OPTION_VALUE`.
+- **`undefined` options and `validateStatus`.** An own `undefined` request option keeps the instance value (`{ timeout: undefined }` no longer clears it); only `xsrfCookieName` and `xsrfHeaderName` are still cleared. `transitional.validateStatusUndefinedResolves` defaults to `false`, so `validateStatus: undefined` rejects non-2xx; pass `validateStatus: null` to resolve every status.
+- **Timeouts.** `timeout` bounds the whole request, retries included, and a timed-out request is not retried; use `retry({ attemptTimeout })` for a per-try limit. Timeouts reject with `ETIMEDOUT`.
+- **URLs.** An absolute `url` on an instance with a `baseURL` rejects with `ERR_INVALID_URL` unless `allowAbsoluteUrls` is `true`. A `url` is absolute only when a scheme is followed by `//`. `getUri()` fills `{key}` placeholders from `pathParams` and throws `ERR_INVALID_URL` with neither `url` nor `baseURL`. A `url` or `baseURL` with a tab or line break rejects with `ERR_INVALID_URL`, and an empty (`""`) path param value with `ERR_BAD_OPTION_VALUE`.
+- **Redirects and credentials.** A request that sends the XSRF header, or whose `authBearer` plugin sets a custom `header`, defaults to `redirect: "error"`; set `fetchOptions.redirect` to choose. `authBearer` checks the origin against the instance `baseURL`, so a per-request `baseURL` override no longer gets the token. `withCredentials: false` maps to `credentials: "same-origin"` instead of `"omit"`.
+- **Bodies and responses.** A plain string body is sent as `text/plain`, and a string with a JSON `Content-Type` is sent as written. Any `Content-Type` set for a `FormData` body is removed, and npm `form-data` bodies reject with `ERR_NOT_SUPPORT`. `responseType: "json"` (any case) rejects a body that isn't JSON with `ERR_BAD_RESPONSE`. A custom `env.fetch` gets the body on the `Request` (`await input.text()`), not on `init.body`, and `init.headers` is a `Headers`.
+- **Headers.** Request headers beat instance headers in every group, and a `create()` child's headers beat its parent's. `response.headers` is a `FaxiosHeaders`. With `responseType: "stream"`, a 4xx or 5xx `error.response.data` is the readable error body.
+- **`create()` and plugins.** A `create()` child no longer copies the option defaults of its parent's plugins (such as `retry`); install the plugin on the child or pass the option per request. A plugin with request options must name them at runtime (`options: { retry: true }`); `definePlugin` and `FaxiosPlugin` require it. `ctx.attempt` is the try number, so `TimingEvent.attempt` is always present (1 without `retry`), and the built-in plugins no longer share a private symbol on `ctx.state`.
+- **Errors.** `name` stays `"FaxiosError"` on wrapped errors, network error messages name the reason and the request, `toJSON()` always masks credentials, a request's `redact` adds to the instance's instead of replacing it, and `error.config.data` is the body you passed. `TimingEvent.error` is `{ code, message, status }`. An unparseable `responseType: "formdata"` body rejects with `ERR_BAD_RESPONSE` (was `ERR_NETWORK`, so `retry` no longer retries it), and a response stream chunk that isn't bytes with `ERR_BAD_RESPONSE` (was `ERR_BAD_REQUEST`). Called on its own, the default `transformResponse` throws the bare `SyntaxError` for invalid JSON.
+- **Removed API.** The `Cancel` alias (use `CanceledError`), `FaxiosError.ECONNABORTED` (check `ETIMEDOUT` for a timeout), `FaxiosError.ERR_DEPRECATED`, `ECONNREFUSED` and `ERR_FR_TOO_MANY_REDIRECTS` (check `ERR_NETWORK` and `error.cause`), the legacy `FaxiosError` fields `description`, `number`, `fileName`, `lineNumber`, `columnNumber` and `event` (and their `toJSON()` keys), the `customProps` argument of `FaxiosError.from()`, the `event` key on progress events, `FaxiosHeaders.accessor()`, the `@gcmdev/faxios/unsafe/utils.js` subpath (and the `utils.is*` copies a `toFormData` visitor got), and the `RawFaxiosRequestConfig`, `FaxiosResponseHeadersLike` and `FaxiosRequestHeaders` types.
+- **Types.** TypeScript 5.4 or greater. Methods take `<T, D>` with no `R` parameter, a response generic must match `responseSchema`, and `toFormData` options are typed `FormSerializerOptions`. `mergeConfig` returns a `FaxiosRequestConfig` with no open index signature, `FaxiosHeaders` and `headers` values must be header values, and `fetchOptions` is checked as `FaxiosFetchOptions` (`{ cache: 42 }` is a type error). `GenericAbortSignal` now extends `AbortableSignal`: it requires `addEventListener` and `removeEventListener` typed `(type: "abort", listener: () => void) => unknown`; pass a real `AbortSignal` or a polyfill with those members. `new CanceledError(message, config)` and `canceledFromSignal(signal, config)` take an `InternalFaxiosRequestConfig` (pass `ctx.config`), and `unsafe/core/buildFullPath.js` takes and returns `string | undefined`.
+- **`formToJSON`** splits field names only on `.` and brackets.
 
 ## Need help?
 

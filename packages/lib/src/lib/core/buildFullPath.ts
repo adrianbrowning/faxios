@@ -47,17 +47,19 @@ function assertValidURL(url: unknown, config: unknown): void {
  * Creates a new URL by combining the baseURL with the requestedURL when the requestedURL is
  * relative. An absolute requestedURL is returned untouched, unless a baseURL is set and
  * `allowAbsoluteUrls` is `false`: then it throws `ERR_INVALID_URL` rather than send the
- * request somewhere the caller didn't mean. A URL (or the baseURL it joins) with an `http(s):`
- * protocol missing `//`, or with a tab or line break anywhere, throws `ERR_INVALID_URL`.
+ * request somewhere the caller didn't mean. Only `false` rejects: the caller supplies the
+ * default (request() and getUri() set it from the instance defaults). A URL (or the baseURL it
+ * joins) with an `http(s):` protocol missing `//`, or with a tab or line break anywhere, throws
+ * `ERR_INVALID_URL`.
  *
  * @param {string} baseURL The base URL
  * @param {string} requestedURL Absolute or relative URL to combine
  *
- * @returns {string} The combined full path
+ * @returns {string} The combined full path, or undefined when neither URL is given
  */
-export default function buildFullPath(baseURL: unknown, requestedURL: unknown, allowAbsoluteUrls?: unknown, config?: unknown): string {
+export default function buildFullPath(baseURL: string | undefined, requestedURL: string | undefined, allowAbsoluteUrls?: unknown, config?: unknown): string | undefined {
   assertValidURL(requestedURL, config);
-  if (!baseURL) return requestedURL as string;
+  if (!baseURL) return requestedURL;
   if (isAbsoluteURL(requestedURL)) {
     if (allowAbsoluteUrls === false) {
       throw new FaxiosError(
@@ -66,8 +68,8 @@ export default function buildFullPath(baseURL: unknown, requestedURL: unknown, a
         config as InternalFaxiosRequestConfig
       );
     }
-    return requestedURL as string;
+    return requestedURL;
   }
   assertValidURL(baseURL, config);
-  return combineURLs(baseURL as string, requestedURL as string);
+  return combineURLs(baseURL, requestedURL);
 }

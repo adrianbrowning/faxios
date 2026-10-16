@@ -37,7 +37,7 @@ skills:
             src/lib/core/route.ts,
             src/lib/types.ts,
             src/lib/adapters/fetch.ts,
-            src/lib/helpers/composeSignals.ts,
+            src/lib/core/composeSignals.ts,
             src/lib/plugins/definePlugin.ts,
             src/lib/plugins/authBearer.ts,
             src/lib/plugins/forwardTo.ts,

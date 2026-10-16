@@ -6,7 +6,7 @@
   "include": ["@gcmdev/faxios"],
   "packages": {
     "@gcmdev/faxios": {
-      "publishCommand": "test -n \"$(npm view @gcmdev/faxios@{{version}} version)\""
+      "publishCommand": "for i in 1 2 3 4 5; do test -n \"$(npm view @gcmdev/faxios@{{version}} version 2>/dev/null)\" && exit 0; sleep 10; done; exit 1"
     }
   }
 }

@@ -7,6 +7,7 @@
 
 import type FaxiosHeaders from "./core/FaxiosHeaders.js";
 import type { FaxiosHeadersInstance } from "./core/FaxiosHeaders.js";
+import type { AbortableSignal } from "./helpers/raceAbort.js";
 import type { StandardSchemaV1 } from "./types/standard-schema.js";
 import type { RequestInitShim, WebAbortSignal, WebBlob, WebBlobPart, WebBodyInit, WebEvent, WebHeaders, WebRequest, WebRequestInit, WebResponse, WebResponseInit, WebURL, WebURLSearchParams } from "./types/web.js";
 
@@ -92,21 +93,17 @@ export type ResponseType =
   | "text";
 
 export interface TransitionalOptions {
-  clarifyTimeoutError?: boolean | undefined;
   forcedJSONParsing?: boolean | undefined;
   validateStatusUndefinedResolves?: boolean | undefined;
 }
 
 /**
  * A signal faxios can watch: an `AbortSignal` from another realm or a polyfill. faxios listens for
- * its `abort` event, so the listener methods are required; a `signal` without them rejects with
+ * its `abort` event, so the listener members are required; a `signal` without them rejects with
  * `ERR_BAD_OPTION_VALUE`.
  */
-export interface GenericAbortSignal {
-  readonly aborted: boolean;
-  addEventListener: (...args: Array<unknown>) => unknown;
+export interface GenericAbortSignal extends AbortableSignal {
   onabort?: ((event: WebEvent) => void) | null;
-  removeEventListener: (...args: Array<unknown>) => unknown;
 }
 
 /**

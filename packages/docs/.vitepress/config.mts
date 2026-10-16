@@ -142,7 +142,6 @@ export default defineConfig({
   themeConfig: {
     nav,
     sidebar,
-    // The bundled logo and wordmark SVGs are axios's; use a text title until faxios has its own.
     siteTitle: "faxios",
     socialLinks: [{ icon: "github", link: repoURL }],
     footer: {

@@ -10,10 +10,6 @@ type DeclaredHeaderAccessor = keyof {
     : K extends `${"get" | "has" | "set"}${string}` ? K : never]: true;
 };
 
-const [ nodeMajorVersion ] = process.versions.node
-  .split(".")
-  .map(v => parseInt(v, 10));
-
 describe("FaxiosHeaders", () => {
   it("should support headers argument", () => {
     const headers = new FaxiosHeaders({
@@ -205,8 +201,7 @@ describe("FaxiosHeaders", () => {
       }
     });
 
-    const runIfNode18OrHigher = nodeMajorVersion! >= 18 ? it : it.skip;
-    runIfNode18OrHigher(
+    it(
       "should support setting multiple header values from an iterable source",
       () => {
         const headers = new FaxiosHeaders();

@@ -15,10 +15,11 @@ name: Release
 #
 # Trust (#270): only `publish` and `rc` get `id-token: write`. They run only
 # on main, in the `npm-publish` environment (npm trusted publishing (OIDC) is
-# bound to it once that npm setting is applied by hand), and they check out,
-# install and build nothing: they run
-# setup-node, the artifact download and the shell in this file. The build and
-# its dependencies run in run-ci.yml with a read-only token and no OIDC.
+# bound to it once that npm setting is applied by hand), and they check out
+# and build nothing and install only the pinned npm (`npm install -g
+# npm@11.15.0 --ignore-scripts`): they run setup-node, that npm, the artifact
+# download and the shell in this file. The build and its dependencies run in
+# run-ci.yml with a read-only token and no OIDC.
 #
 # BUMPY_GH_TOKEN (a PAT or app token) lets bumpy open the Version Packages PR
 # with CI running on it; without it, bumpy needs "Allow GitHub Actions to
@@ -34,6 +35,11 @@ on:
         type: boolean
         default: false
 
+# One release run at a time. GitHub keeps only one pending run per group: a
+# newer push to main replaces a run still waiting here, so a publish queued
+# behind a running release can be dropped. Don't merge to main while a
+# release run is in progress; if a publish run was dropped, re-run it (it
+# skips a version npm already has with the same bytes).
 concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: false
@@ -67,15 +73,22 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
   # Opens or updates the Version Packages PR. bumpy pushes with BUMPY_GH_TOKEN
-  # (or GH_TOKEN), so checkout keeps no credentials.
+  # (or GH_TOKEN), so checkout keeps no credentials. Then it syncs VERSION and
+  # records the skill review on that branch and hands the three changed files
+  # to `push-version` as an artifact. Nothing in this job commits or pushes
+  # after `intent` (dependency code) runs.
   version:
     needs: plan
     if: needs.plan.outputs.mode == 'version-pr'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # contents: write because bumpy pushes the branch with GH_TOKEN when
+    # BUMPY_GH_TOKEN is not set.
     permissions:
       contents: write
       pull-requests: write
+    outputs:
+      sha: ${{ steps.branch.outputs.sha }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -94,34 +107,135 @@ jobs:
           BUMPY_GH_TOKEN: ${{ secrets.BUMPY_GH_TOKEN }}
 
       # `bumpy version` only bumps package.json. Put the same version into the
-      # hard-coded VERSION (User-Agent, error messages) on the PR branch, and
-      # record the Intent review of bumpy's changes, which check-skills.yml
-      # requires on every PR.
-      - name: Sync VERSION and record the skill review on the Version Packages PR
+      # hard-coded VERSION (User-Agent, error messages) and the packaged skill's
+      # library_version on the PR branch, and record the Intent review of
+      # bumpy's changes, which check-skills.yml requires on every PR.
+      # This step sets the job output to the commit bumpy pushed before
+      # `intent` runs, and a later step can't change a step output, so
+      # `push-version` commits on top of that commit whatever runs here.
+      - name: Check out the Version Packages PR branch
+        id: branch
         env:
-          PUSH_TOKEN: ${{ secrets.BUMPY_GH_TOKEN || github.token }}
+          FETCH_TOKEN: ${{ github.token }}
           BRANCH: bumpy/version-packages
         run: |
           set -euo pipefail
           # Credentials only in this step's environment: not in argv, not in .git/config
-          auth=$(printf 'x-access-token:%s' "$PUSH_TOKEN" | base64 -w0)
+          auth=$(printf 'x-access-token:%s' "$FETCH_TOKEN" | base64 -w0)
           echo "::add-mask::$auth"
           export GIT_CONFIG_COUNT=1
           export GIT_CONFIG_KEY_0="http.${GITHUB_SERVER_URL}/.extraheader"
           export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth"
           git fetch origin "$BRANCH"
           git checkout -B "$BRANCH" FETCH_HEAD
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      # No token in this step's environment.
+      - name: Sync VERSION and record the skill review
+        run: |
+          set -euo pipefail
           node packages/tests/scripts/sync-version.ts
           pnpm exec intent maintainer review --base origin/main --unchanged \
-            "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files and the synced VERSION. No API or behaviour the skill teaches changes in this PR."
-          git add packages/lib/src/lib/env/data.ts .intent/review-state.json
+            "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR."
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: version-pr-files
+          path: |
+            packages/lib/src/lib/env/data.ts
+            packages/lib/skills/configure-requests/SKILL.md
+            .intent/review-state.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+
+  # Commits the three files from `version` on top of the commit bumpy pushed
+  # and pushes them to the Version Packages PR. The push token is used only
+  # here, in a fresh job where no repository or dependency code has run: no
+  # setup action and no install, and git config, PATH, the environment, HEAD
+  # and the index all come from a clean checkout of that commit, not from
+  # `version`. Only the contents of those three files come from `version`;
+  # they land in a PR that is reviewed before it merges.
+  push-version:
+    needs: [plan, version]
+    if: needs.plan.outputs.mode == 'version-pr'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # contents: write because the push falls back to github.token when
+    # BUMPY_GH_TOKEN is not set.
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.version.outputs.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: version-pr-files
+          path: ${{ runner.temp }}/version-pr-files
+
+      - name: Copy the synced files into the checkout
+        env:
+          ARTIFACT_DIR: ${{ runner.temp }}/version-pr-files
+        run: |
+          set -euo pipefail
+          files=(
+            .intent/review-state.json
+            packages/lib/skills/configure-requests/SKILL.md
+            packages/lib/src/lib/env/data.ts
+          )
+          expected=$(printf '%s\n' "${files[@]}" | LC_ALL=C sort)
+          found=$(cd "$ARTIFACT_DIR" && find . -mindepth 1 ! -type d -printf '%P\n' | LC_ALL=C sort)
+          if [[ "$found" != "$expected" ]]; then
+            echo "::error::expected only ${files[*]} in the artifact, found: ${found//$'\n'/, }"
+            exit 1
+          fi
+          for f in "${files[@]}"; do
+            if [[ ! -f "$ARTIFACT_DIR/$f" || -L "$ARTIFACT_DIR/$f" ]]; then
+              echo "::error::$f in the artifact is not a regular file"
+              exit 1
+            fi
+            cp -- "$ARTIFACT_DIR/$f" "$f"
+          done
+          git add -- "${files[@]}"
+
+      # A plain push, not a force push: it fails if the branch moved after
+      # bumpy pushed it.
+      - name: Push to the Version Packages PR
+        env:
+          PUSH_TOKEN: ${{ secrets.BUMPY_GH_TOKEN || github.token }}
+          BRANCH: bumpy/version-packages
+          EXPECTED_SHA: ${{ needs.version.outputs.sha }}
+        run: |
+          set -euo pipefail
+          # Commit only the three synced files, on top of the commit bumpy pushed
+          if [[ "$(git rev-parse HEAD)" != "$EXPECTED_SHA" ]]; then
+            echo "::error::checkout is not at $EXPECTED_SHA"
+            exit 1
+          fi
+          extra=$(git status --porcelain --untracked-files=all \
+            | grep -Ev '^M  (\.intent/review-state\.json|packages/lib/skills/configure-requests/SKILL\.md|packages/lib/src/lib/env/data\.ts)$' || true)
+          if [[ -n "$extra" ]]; then
+            echo "::error::unexpected changes before commit: ${extra//$'\n'/, }"
+            exit 1
+          fi
           if git diff --cached --quiet; then
+            echo "VERSION, the skill and the Intent record are already in sync"
             exit 0
           fi
           git -c user.name="github-actions[bot]" \
             -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
             commit -m "chore(release): sync VERSION and record the skill review"
-          git push origin "HEAD:refs/heads/$BRANCH"
+          # Credentials only in this step's environment: not in argv, not in .git/config
+          auth=$(printf 'x-access-token:%s' "$PUSH_TOKEN" | base64 -w0)
+          echo "::add-mask::$auth"
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0="http.${GITHUB_SERVER_URL}/.extraheader"
+          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth"
+          git push "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/$BRANCH"
 
   # The publish gate (#162): the full PR suite on the commit that publishes.
   # It builds and packs the tarball that `publish` publishes.
@@ -132,8 +246,9 @@ jobs:
       contents: read
     uses: $/.github/workflows/run-ci.yml
 
-  # Publishes the tarball run-ci.yml tested. No checkout, install or build:
-  # nothing from the repository or its dependencies runs next to the OIDC token.
+  # Publishes the tarball run-ci.yml tested. No checkout or build, and the only
+  # install is the pinned npm (--ignore-scripts): nothing from the repository
+  # or its dependencies runs next to the OIDC token.
   publish:
     needs: [plan, ci]
     if: needs.plan.outputs.mode == 'publish'
@@ -148,6 +263,11 @@ jobs:
           node-version: 26.x
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
+
+      # setup-node's npm follows the Node release; pin the npm that publishes
+      # (trusted publishing needs npm >= 11.5.1).
+      - name: Pin npm
+        run: npm install -g npm@11.15.0 --ignore-scripts
 
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
@@ -276,6 +396,11 @@ jobs:
           node-version: 26.x
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
+
+      # setup-node's npm follows the Node release; pin the npm that publishes
+      # (trusted publishing needs npm >= 11.5.1).
+      - name: Pin npm
+        run: npm install -g npm@11.15.0 --ignore-scripts
 
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:

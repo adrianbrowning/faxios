@@ -8,7 +8,7 @@ faxios follows the semantic versioning scheme. This means that each version of f
 
 ### While faxios is `0.x`
 
-faxios is in its `0.x` series, where a breaking change ships as a **minor** release, not a major one: `0.2.x` to `0.3.0` may change or remove API, and a patch release (`0.2.4` to `0.2.5`) never breaks code that worked. Each release's [changelog](https://github.com/adrianbrowning/faxios/blob/main/packages/lib/CHANGELOG.md) marks its breaking entries with "Breaking:". To take patch releases only, depend on a tilde range such as `~0.2.4`; a caret range such as `^0.2.4` also stays within `0.2.x`.
+faxios is in its `0.x` series, where a breaking change ships as a **minor** release, not a major one: `0.2.x` to `0.3.0` may change or remove API, and a patch release (`0.2.4` to `0.2.5`) never breaks code that worked. Each release's [changelog](https://github.com/adrianbrowning/faxios/blob/main/packages/lib/CHANGELOG.md) marks its breaking entries with "Breaking:", and the migration guide's [Upgrading from faxios 0.2](https://github.com/adrianbrowning/faxios/blob/main/MIGRATION_GUIDE.md#upgrading-from-faxios-02) section lists what to change for `0.3.0`. To take patch releases only, depend on a tilde range such as `~0.2.4`; a caret range such as `^0.2.4` also stays within `0.2.x`.
 
 From `1.0.0` on, breaking changes ship as major releases, as described below.
 

@@ -32,7 +32,7 @@ sources:
   - src/lib/core/route.ts
   - src/lib/types.ts
   - src/lib/adapters/fetch.ts
-  - src/lib/helpers/composeSignals.ts
+  - src/lib/core/composeSignals.ts
   - src/lib/plugins/definePlugin.ts
   - src/lib/plugins/authBearer.ts
   - src/lib/plugins/forwardTo.ts
@@ -68,7 +68,8 @@ const { data, status } = await api.get<{ id: number; name: string }>("/users/1")
 ```
 
 - Install with `npm i @gcmdev/faxios`. From CommonJS, load it with `await import("@gcmdev/faxios")`;
-  there is no `require` build and no UMD/CDN bundle.
+  there is no CommonJS build and no UMD/CDN bundle. Node's `require(esm)` may also load it, but
+  that isn't a supported entry.
 - Check: the call resolves with a `FaxiosResponse` whose `data` is parsed JSON for JSON responses.
   The type parameters are `<T, D>` (response data, request body); every method resolves to
   `FaxiosResponse<T, D>`, and there is no third parameter to retype the result.
@@ -110,7 +111,7 @@ import faxios from "@gcmdev/faxios";
 
 const { data } = await faxios.get<ArrayBuffer>("https://example.com/report.zip", {
   responseType: "arraybuffer",
-  maxContentLength: 50 * 1024 * 1024, // the body is buffered; cap it for untrusted servers
+  maxContentLength: 50 * 1024 * 1024, // -1 or a finite byte count; buffered, so cap it for untrusted servers
 });
 console.log(data.byteLength);
 ```
@@ -236,8 +237,8 @@ catch (error) {
   from the signal once each request settles.
 - `controller.abort(reason)` keeps the reason: an `Error` becomes the `CanceledError`'s `cause`
   and message, a string becomes the message, at every stage.
-- A timeout always rejects with `ETIMEDOUT`. `ECONNABORTED` is never raised, and
-  `transitional.clarifyTimeoutError` has no effect. `timeout` must be 0 to 2147483647 ms;
+- A timeout always rejects with `ETIMEDOUT`; there is no `ECONNABORTED` code, and
+  `transitional.clarifyTimeoutError` rejects with `ERR_BAD_OPTION`. `timeout` must be 0 to 2147483647 ms;
   anything else (`-1`, `NaN`, `Infinity`, `2 ** 31`) rejects with `ERR_BAD_OPTION_VALUE`.
 - `timeout` bounds the whole request: it starts before middleware and covers middleware,
   schemas, every `retry` try and wait, and the fetch. It is not per try (unlike Axios), and a
@@ -284,7 +285,8 @@ catch (error) {
   name (`TypeError`, `SyntaxError`) from `error.cause`.
 - `error.toJSON()` never includes the response, masks `authorization`, `proxy-authorization`,
   `cookie` and `auth` at any depth and strips `user:pass@` from `url`/`baseURL`; list other
-  sensitive config keys in `redact` to mask them too. A request's `redact` adds to the
+  sensitive config keys in `redact` to mask them too. `authBearer` with a custom `header` adds
+  that header for you. A request's `redact` adds to the
   instance's. `config.data` is the body the caller passed (an object, not the JSON or form string
   sent), so `redact: ["password"]` masks a body password; a pre-serialized string body is logged
   as is. Schema `issues` keep only `message` and each path segment's `key`. Its `cause` is the
@@ -418,7 +420,7 @@ await faxios.get("https://api.example.com/feed", { fetchOptions: { cache: "no-st
 
 | Import | Status |
 | --- | --- |
-| `@gcmdev/faxios` | Stable: default `faxios`, `Faxios`, `FaxiosError`, `FaxiosHeaders`, `CanceledError`, `isCancel`, `isFaxiosError`, `isSchemaValidationError`, `mergeConfig`, `toFormData`, `formToJSON`, `HttpStatusCode`, `resolveRequestURL`, `all`, `create`, `VERSION`, and the types |
+| `@gcmdev/faxios` | Stable: default `faxios`, `Faxios`, `FaxiosError`, `FaxiosHeaders`, `CanceledError`, `isCancel`, `isFaxiosError`, `isSchemaValidationError`, `mergeConfig`, `toFormData`, `formToJSON`, `HttpStatusCode`, `resolveRequestURL`, `canceledFromSignal`, `assertSignal`, `onAbort`, `raceAbort`, `hasOwnInPrototypeChain`, `stripUserInfo`, `stripUserInfoInText`, `all`, `create`, `VERSION`, and the types |
 | `@gcmdev/faxios/plugins` | Stable: `definePlugin` only |
 | `@gcmdev/faxios/plugins/auth-bearer`, `/forward-to`, `/retry`, `/timing` | Stable: one plugin each |
 | `@gcmdev/faxios/unsafe/*` | Internal helpers (`buildFullPath`, `buildURL`, `combineURLs`, `isAbsoluteURL`). No stability promise; do not use them in application code, and say so if a task seems to need them |

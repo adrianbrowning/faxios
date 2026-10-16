@@ -8,7 +8,8 @@ import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import { validateSchema } from "../core/validateSchema.js";
 import raceAbort from "../helpers/raceAbort.js";
 import type { FaxiosResponse, InternalFaxiosRequestConfig } from "../types.js";
-import { getSafeProp, isFormData, isFunction, isSpecCompliantForm } from "../utils.js";
+import { getSafeProp, isFormData, isFunction, isReadableStream, isSpecCompliantForm } from "../utils.js";
+import { assertSizeLimit } from "./assertRequestConfig.js";
 import assertSignal from "./assertSignal.js";
 import type { RequestBodies } from "./requestDeadline.js";
 import resolveRequestURL from "./resolveRequestURL.js";
@@ -18,6 +19,11 @@ function throwIfCancellationRequested(config: InternalFaxiosRequestConfig): void
   if (config.signal && config.signal.aborted) {
     throw canceledFromSignal(config.signal, config);
   }
+}
+
+// An open stream body holds the request until it ends; when nobody gets it, end it.
+function cancelUnreadStream(data: unknown, reason: unknown): void {
+  if (isReadableStream(data) && !data.locked) data.cancel(reason).catch(() => {});
 }
 
 // An async schema is caller code that may take any time, so the caller's abort settles the request
@@ -109,8 +115,10 @@ function transformResponseData(config: InternalFaxiosRequestConfig, response: Fa
 }
 
 export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig, bodies?: RequestBodies): Promise<FaxiosResponse> {
-  // Middleware may pass on a signal of its own.
+  // Middleware may pass on a signal or size limits of its own.
   assertSignal(config.signal, config);
+  assertSizeLimit(config, "maxContentLength");
+  assertSizeLimit(config, "maxBodyLength");
   throwIfCancellationRequested(config);
 
   const preFlight = validatePreFlight(config);
@@ -140,15 +148,14 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
   // abort events.
   throwIfCancellationRequested(config);
 
-  const _adapter = getFetch(config);
-  if (!_adapter) {
+  const adapter = getFetch(config);
+  if (!adapter) {
     throw new FaxiosError(
       "Fetch API is not supported in this environment",
       FaxiosError.ERR_NOT_SUPPORT,
       config
     );
   }
-  const adapter = _adapter as (config: InternalFaxiosRequestConfig, body: unknown, url: string, bodies?: RequestBodies) => Promise<FaxiosResponse>;
    
   return (adapter(config, data, url, bodies))
     .then(
@@ -156,7 +163,14 @@ export default async function dispatchRequest(this: unknown, config: InternalFax
       function onAdapterResolution(response: FaxiosResponse) {
         throwIfCancellationRequested(config);
 
-        response.data = transformResponseData(config, response);
+        const raw = response.data;
+        try {
+          response.data = transformResponseData(config, response);
+        }
+        catch (transformErr) {
+          cancelUnreadStream(raw, transformErr);
+          throw transformErr;
+        }
         response.headers = FaxiosHeaders.from(response.headers);
 
         if (config.responseSchema) {

@@ -147,6 +147,19 @@ describe("plugins::authBearer", () => {
     assert.strictEqual(proto, null);
   });
 
+  it("masks a custom header's token in error.toJSON(), keeping the caller's redact keys", async () => {
+    const { fetch } = recordingFetch(() => 500);
+    const api = faxios.create({ baseURL: BASE, env: { fetch }, redact: [ "x-trace" ] })
+      .use(authBearer(() => "secret-key", { header: "X-Api-Key", scheme: "" }));
+
+    const err = await api.get(URL, { headers: { "X-Trace": "t1" } }).catch((e: unknown) => e);
+
+    assert.ok(err instanceof FaxiosError);
+    const json = JSON.stringify(err.toJSON());
+    assert.ok(!json.includes("secret-key"), json);
+    assert.ok(!json.includes("t1"), json);
+  });
+
   it("works with a refreshOn401 plugin that retries once with a fresh token", async () => {
     let token = "expired";
     const { fetch, authorizations } = recordingFetch(authorization => authorization === "Bearer fresh" ? 200 : 401);
