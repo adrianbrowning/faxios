@@ -6103,15 +6103,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/sizeLimits.test.ts": {
-      "fingerprint": "c36db8f7e1994ca311ab3077a20a6cda0950eef003c4432089f4e516c0526dd5",
+      "fingerprint": "4d875cb94f991594b0467b35ed26206fe213c386147c91de6d623649b566ecb0",
       "snapshot": {
-        "packages/tests/unit/adapters/sizeLimits.test.ts": "b5e88a5b2206309f3257d4fb54ee148d3f596b65cc0d83d5f3ca4d1405e20f80"
+        "packages/tests/unit/adapters/sizeLimits.test.ts": "d317089a4d3cb26b853c261664633d438a9add86a96fb3ef3f3e01dd504a5316"
       },
-      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "head": "af7ac3cb7f23a2efba3d3954a900f6fb4f7f70dd",
       "outcome": "no-change",
-      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
+      "reason": "test-only: wider invalid-value matrix for size limits set by middleware",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/sizeLimits.test.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
+        "Changed: packages/tests/unit/adapters/sizeLimits.test.ts at af7ac3cb7f23a2efba3d3954a900f6fb4f7f70dd"
       ]
     },
     "source:packages/tests/unit/helpers/utf8ByteLength.test.ts": {
