@@ -1,5 +1,0 @@
----
-"@gcmdev/faxios": minor
----
-
-Breaking: invalid request, serializer and schema inputs now reject instead of being quietly accepted. An explicit `method` of `""`, `0` or `false` rejects with `ERR_BAD_OPTION_VALUE` instead of sending `GET`; `undefined` and `null` still mean the default. An unknown `paramsSerializer` or `formSerializer` key (`indexs`, `dot`) rejects with `ERR_BAD_OPTION`, a serializer value of the wrong type with `ERR_BAD_OPTION_VALUE`, and these option errors now carry `error.config`. A `maxDepth` that isn't a non-negative integer or `Infinity` (`NaN`, `-1`) rejects with `ERR_BAD_OPTION_VALUE`. A `paramsSchema` whose output isn't an object, `URLSearchParams`, `null` or `undefined` rejects with `ERR_BAD_PARAMS_SCHEMA`. Standard Schema results that are Promises from another realm (an iframe or `vm` context) are now awaited. `getUri()` normalizes and checks the config like a request, so a `URL` instance `url` works and invalid options reject with the same error. A malformed percent-encoded XSRF cookie is sent as written instead of throwing a `URIError`.
