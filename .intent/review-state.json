@@ -1917,15 +1917,15 @@
       ]
     },
     "source:.github/workflows/release.yml": {
-      "fingerprint": "85f9bea7ace276f1cff8148bc552e82e8686aab4b235ee8dd14e5a36d56a6ae9",
+      "fingerprint": "bbf1b980a44f0815b4c9a393f0746300ed20523cce4faa6c986a5177ec8fbc45",
       "snapshot": {
-        ".github/workflows/release.yml": "a99c62d2ca1d2fd8b4e8f7880611a2d72530b0aa3734d2259249844728840c98"
+        ".github/workflows/release.yml": "c6d7f64bbe8ee8b36715d30a4ed07898dc8c17dc7db3ed34e0c9f3bf19be490c"
       },
-      "head": "f01d7dee195235c5d61c1544ed2017ce4e537c64",
+      "head": "6953db95ff3563aec2e4e697cc1df8be0868092e",
       "outcome": "no-change",
-      "reason": "release workflow only: push-version checks HEAD and the staged paths",
+      "reason": "Release workflow LICENSE-check fix only; the packaged skill teaches nothing about CI or publishing",
       "evidence": [
-        "Changed: .github/workflows/release.yml at f01d7dee195235c5d61c1544ed2017ce4e537c64"
+        "Changed: .github/workflows/release.yml at 6953db95ff3563aec2e4e697cc1df8be0868092e"
       ]
     },
     "source:COLLABORATOR_GUIDE.md": {
