@@ -254,9 +254,9 @@ describe.runIf(typeof fetch === "function")("adapters::fetch size limits at the 
 });
 
 describe("adapters::fetch size limits set by middleware", () => {
-  it.each([ "maxContentLength", "maxBodyLength" ] as const)("rejects a %s that middleware makes non-numeric", async key => {
+  it.each([ "maxContentLength", "maxBodyLength" ] as const)("rejects a %s that middleware sets to an invalid value", async key => {
     const sink = respondWith(() => new Response("a".repeat(LIMIT + 1)));
-    for (const value of [ "1048576", Number.NaN ]) {
+    for (const value of [ "1048576", Number.NaN, Number.POSITIVE_INFINITY, null, -2, -0.5 ]) {
       const instance = faxios.create({ [key]: LIMIT, env: { fetch: sink.fetch } as Env }).use(async (ctx, next) => {
         Object.assign(ctx.config, { [key]: value });
         return next(ctx);
