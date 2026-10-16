@@ -89,6 +89,15 @@ describe("core::Faxios unknown request config keys", () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
+  it("rejects the removed transitional option clarifyTimeoutError", async () => {
+    const fetch = okFetch();
+    const api = faxios.create({ env: { fetch } });
+    const err = await rejection(api.get("http://example.test/", untyped({ transitional: { clarifyTimeoutError: true } })));
+    expect(err.code).toBe(FaxiosError.ERR_BAD_OPTION);
+    expect(err.message).toContain("clarifyTimeoutError");
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
   it("rejects the removed transitional option advertiseZstdAcceptEncoding", async () => {
     const fetch = okFetch();
     const api = faxios.create({ env: { fetch } });
@@ -123,6 +132,8 @@ describe("FaxiosRequestConfig removed options", () => {
         { responseType: "response" },
         // @ts-expect-error TS2353 -- advertiseZstdAcceptEncoding never changed Accept-Encoding
         { transitional: { advertiseZstdAcceptEncoding: true } },
+        // @ts-expect-error TS2353 -- timeouts always reject with ETIMEDOUT
+        { transitional: { clarifyTimeoutError: true } },
         // @ts-expect-error TS2353 -- faxios always sends with fetch
         { adapter: "http" },
         // @ts-expect-error TS2353 -- formDataHeaderPolicy only applied to form-data package bodies

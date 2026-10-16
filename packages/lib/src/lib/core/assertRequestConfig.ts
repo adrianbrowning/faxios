@@ -152,7 +152,7 @@ export default function assertRequestConfig(config: InternalFaxiosRequestConfig,
 }
 
 // A bad limit must not switch the size guard off: -1 is the only "unlimited" value.
-function assertSizeLimit(config: InternalFaxiosRequestConfig, key: "maxBodyLength" | "maxContentLength"): void {
+export function assertSizeLimit(config: InternalFaxiosRequestConfig, key: "maxBodyLength" | "maxContentLength"): void {
   const limit: unknown = hasOwnProp(config, key) ? config[key] : undefined;
   if (limit === undefined || limit === -1 || (Number.isFinite(limit) && (limit as number) >= 0)) return;
   throw new FaxiosError(

@@ -2,7 +2,21 @@
 // types of a built `.js` module only from its `@ts-self-types` pragma and otherwise infers them
 // from the JS, which turns these exports into `any` or loose JS shapes. The assertions below
 // fail `deno check` when the pragma on one of these modules is missing.
-import faxios, { CanceledError, FaxiosError, isCancel, isFaxiosError, mergeConfig, toFormData, VERSION } from "faxios";
+import faxios, {
+  assertSignal,
+  CanceledError,
+  canceledFromSignal,
+  FaxiosError,
+  hasOwnInPrototypeChain,
+  isCancel,
+  isFaxiosError,
+  mergeConfig,
+  onAbort,
+  raceAbort,
+  toFormData,
+  VERSION
+} from "faxios";
+import type { AbortableSignal, InternalFaxiosRequestConfig } from "faxios";
 import buildFullPath from "faxios/unsafe/core/buildFullPath.js";
 import buildURL from "faxios/unsafe/helpers/buildURL.js";
 import combineURLs from "faxios/unsafe/helpers/combineURLs.js";
@@ -42,3 +56,21 @@ expectType<Equal<typeof combineURLs, (baseURL: string, relativeURL?: string) => 
 expectType<Equal<typeof isAbsoluteURL, (url: unknown) => boolean>>(true);
 expectType<Equal<typeof buildURL, (url: string, params?: unknown, options?: unknown) => string>>(true);
 expectType<Equal<typeof buildFullPath, (baseURL: string | undefined, requestedURL: string | undefined, allowAbsoluteUrls?: unknown, config?: unknown) => string | undefined>>(true);
+
+// Root exports re-exported from their own modules: each needs its own pragma.
+expectType<Equal<IsAny<typeof canceledFromSignal>, false>>(true);
+expectType<Equal<IsAny<typeof assertSignal>, false>>(true);
+expectType<Equal<IsAny<typeof raceAbort>, false>>(true);
+expectType<Equal<IsAny<typeof onAbort>, false>>(true);
+expectType<Equal<IsAny<typeof hasOwnInPrototypeChain>, false>>(true);
+expectType<Equal<IsAny<AbortableSignal>, false>>(true);
+expectType<Equal<typeof canceledFromSignal, (signal: { readonly aborted: boolean; reason?: unknown; }, config?: InternalFaxiosRequestConfig, request?: unknown) => FaxiosError>>(true);
+expectType<Equal<typeof assertSignal, (signal: unknown, config: InternalFaxiosRequestConfig) => void>>(true);
+expectType<Equal<typeof raceAbort, <T>(signal: AbortableSignal, run: () => PromiseLike<T> | T, abortError: () => unknown) => Promise<T>>>(true);
+expectType<Equal<typeof onAbort, (signal: AbortableSignal, listener: () => void) => () => void>>(true);
+expectType<Equal<typeof hasOwnInPrototypeChain, (thing: unknown, prop: PropertyKey) => boolean>>(true);
+expectType<Equal<AbortableSignal, {
+  readonly aborted: boolean;
+  addEventListener: (type: "abort", listener: () => void) => unknown;
+  removeEventListener: (type: "abort", listener: () => void) => unknown;
+}>>(true);

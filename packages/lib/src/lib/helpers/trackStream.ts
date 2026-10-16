@@ -1,4 +1,3 @@
-import FaxiosError from "../core/FaxiosError.js";
 import { isArrayBuffer, isArrayBufferView, isString, kindOf } from "../utils.js";
 
 type ReadableStreamController = {
@@ -21,9 +20,13 @@ const ReadableStreamGlobal = (globalThis as Record<string, unknown>)["ReadableSt
 
 const textEncoder = typeof TextEncoder === "function" ? new TextEncoder() : undefined;
 
+// Builds the error for a chunk that is not bytes. The caller knows the direction, so it picks the
+// code and attaches the config; the error is right when it is made, never rewritten later.
+export type BadChunkError = (message: string) => unknown;
+
 // View the chunk's bytes without copying them. Strings are UTF-8 encoded; anything else is not
 // a byte chunk and is rejected rather than silently converted.
-const toBytes = (chunk: unknown): Uint8Array => {
+const toBytes = (chunk: unknown, badChunk: BadChunkError): Uint8Array => {
   if (chunk instanceof Uint8Array) {
     return chunk;
   }
@@ -37,9 +40,8 @@ const toBytes = (chunk: unknown): Uint8Array => {
   if (isString(chunk) && textEncoder) {
     return textEncoder.encode(chunk as string);
   }
-  throw new FaxiosError(
-    "Stream chunk must be a Uint8Array, another ArrayBufferView, an ArrayBuffer or a string, got " + kindOf(chunk),
-    FaxiosError.ERR_BAD_REQUEST
+  throw badChunk(
+    "Stream chunk must be a Uint8Array, another ArrayBufferView, an ArrayBuffer or a string, got " + kindOf(chunk)
   );
 };
 
@@ -104,20 +106,26 @@ const openSource = (stream: unknown): Source => {
   };
 };
 
-const readBytes = async function* (source: Source, chunkSize?: number): AsyncGenerator<Uint8Array> {
+const readBytes = async function* (source: Source, chunkSize: number | undefined, badChunk: BadChunkError): AsyncGenerator<Uint8Array> {
   for (;;) {
     // eslint-disable-next-line no-await-in-loop
     const { done, value } = await source.read();
     if (done) {
       return;
     }
-    yield* streamChunk(toBytes(value), chunkSize);
+    yield* streamChunk(toBytes(value, badChunk), chunkSize);
   }
 };
 
-export const trackStream = (stream: unknown, chunkSize: number | undefined, onProgress?: ((bytes: number) => void) | null, onFinish?: ((err?: unknown) => void) | null): unknown => {
+export const trackStream = (
+  stream: unknown,
+  chunkSize: number | undefined,
+  badChunk: BadChunkError,
+  onProgress?: ((bytes: number) => void) | null,
+  onFinish?: ((err?: unknown) => void) | null
+): unknown => {
   const source = openSource(stream);
-  const iterator = readBytes(source, chunkSize);
+  const iterator = readBytes(source, chunkSize, badChunk);
 
   let bytes = 0;
   let done = false;

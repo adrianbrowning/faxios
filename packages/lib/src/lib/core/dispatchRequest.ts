@@ -9,6 +9,7 @@ import { validateSchema } from "../core/validateSchema.js";
 import raceAbort from "../helpers/raceAbort.js";
 import type { FaxiosResponse, InternalFaxiosRequestConfig } from "../types.js";
 import { getSafeProp, isFormData, isFunction, isReadableStream, isSpecCompliantForm } from "../utils.js";
+import { assertSizeLimit } from "./assertRequestConfig.js";
 import assertSignal from "./assertSignal.js";
 import type { RequestBodies } from "./requestDeadline.js";
 import resolveRequestURL from "./resolveRequestURL.js";
@@ -114,8 +115,10 @@ function transformResponseData(config: InternalFaxiosRequestConfig, response: Fa
 }
 
 export default async function dispatchRequest(this: unknown, config: InternalFaxiosRequestConfig, bodies?: RequestBodies): Promise<FaxiosResponse> {
-  // Middleware may pass on a signal of its own.
+  // Middleware may pass on a signal or size limits of its own.
   assertSignal(config.signal, config);
+  assertSizeLimit(config, "maxContentLength");
+  assertSizeLimit(config, "maxBodyLength");
   throwIfCancellationRequested(config);
 
   const preFlight = validatePreFlight(config);

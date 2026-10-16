@@ -424,12 +424,7 @@ class Faxios {
     body?: { data: unknown; headers: RawFaxiosRequestHeaders; }
   ): Promise<unknown> {
     // One shallow own-key copy: request() runs the one full merge, against the instance defaults.
-    const aliasConfig: FaxiosRequestConfig & Record<string, unknown> = Object.create(null);
-    if (config) {
-      for (const key of Object.keys(config)) {
-        if (!isDangerousKey(key)) aliasConfig[key] = (config as Record<string, unknown>)[key];
-      }
-    }
+    const aliasConfig: FaxiosRequestConfig & Record<string, unknown> = config ? cloneConfig(config) : Object.create(null);
     if (body) {
       aliasConfig.data = body.data;
       if (hasOwnProp(body.headers, "Content-Type")) {

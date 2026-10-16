@@ -3,24 +3,24 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "a6676de1779b6bce0ad4e26e7e5cc915e1ac6bb0b69c5e3e9705a4f3561cb754",
+      "fingerprint": "49819c6a4f28af3bfd0be64cc5cb5195e0765371f221b36c607cbb3a1fc94f16",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "a2ad27a445529243ff03c4721c48fba6cb2fe9ba4962721f2eff1372373ea03b",
+        "MIGRATION_GUIDE.md": "06b73573b58e7c0cf2b68c60bab2070dbd6cce1d7843b957d4e315bdfbd36b95",
         "packages/lib/package.json": "846f930dd5c06c75518741c518813aacf9cb526241b26f11d3370c0e50ae00ed",
         "packages/lib/skills/configure-requests/SKILL.md": "56a0040056f0a8a4dfbf85233c3e62524aeb6e13471f9951601ef0ebeda158c2",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "e7841075a87fab1a1bdcf7e2deee00b1177165cbc703547e777eaef417704e80",
         "packages/lib/skills/configure-requests/references/plugins.md": "8b9e1a7c90a81e2e07bc4a3184f4ccdfaf9e544a59b7452dcaee715836ea43b4",
         "packages/lib/src/index.ts": "fd921c2fe3d94631ecdf54d28b84ce244cd5d51b55045a0f96b13d6d0ed96d3d",
-        "packages/lib/src/lib/adapters/fetch.ts": "8e820867716bdc8de097b4c3ba66d86b9f68f498de7851f4535b5f6597c05f00",
-        "packages/lib/src/lib/core/Faxios.ts": "2b818cf6b061db124977bf912e5fafce3d840af3f9f8a16a38654cea26570c27",
+        "packages/lib/src/lib/adapters/fetch.ts": "cbeb583e9ffb55061f8ae3fdb69beda59fd95c0a65303d333de322785ad2a88c",
+        "packages/lib/src/lib/core/Faxios.ts": "e7469eacefc1de17be049a9ac7045bfd0f866fad805957b462591c1d534a17cb",
         "packages/lib/src/lib/core/FaxiosError.ts": "ba6ba0149fd924f9249db4909f3db56020e795e8a697fd2965a9ef04b49e9e34",
-        "packages/lib/src/lib/core/assertRequestConfig.ts": "f97a0f978f16013d10bcd5b4e0b500818991c502fdf917abce9d30fbd331bca7",
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "6cb679260d7a88b4794c312b241153336ad0befa4e51916329344c5244d21597",
         "packages/lib/src/lib/core/assertSignal.ts": "1198024df3bef8e27aca705897c1d9018f6399ede2bb7d4bcb46988861965da5",
         "packages/lib/src/lib/core/assertTimeout.ts": "f8204e9b0180dc9a720a003b86b01b95b9daa2ea937b8792ceec0cabf8f096ca",
         "packages/lib/src/lib/core/buildFullPath.ts": "e66967b07c75e6ae631b7294b4fbf35b31f3bc2f3dad75a727c0cbeff65555b8",
         "packages/lib/src/lib/core/composeSignals.ts": "bf39888cd60edf3d826351c25eaf59d2e745c245356bb7f5b6ed99a5f5cdb989",
         "packages/lib/src/lib/core/define.ts": "2939b0b995ccce9df8f5f0257fcae51bfaf4f0dc7ff066b5d78bcd57d42e5e25",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "bf7d75fa4c079a2e3a872231325ee3ce5a1c54f07a3453b9d5bf3d37b557e4d4",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "0cab20a6a95e4e48c1b0436555efcdd44d9fb1eb9f32ca5fb6ac4561dd3c70a8",
         "packages/lib/src/lib/core/headerLayers.ts": "23225f4be31a3cd60d6c35bcd776bdc575d357a89f682615bf8f24f2f9891e13",
         "packages/lib/src/lib/core/mergeConfig.ts": "6d42e94727f77f051226c8d328530eb0cb1caad2ccdc690bd9a6a87700ecb567",
         "packages/lib/src/lib/core/requestDeadline.ts": "cb6803d70ca9b4600a32ce580ecef0e609b02fc59de12a51430394bedf54b16d",
@@ -38,20 +38,20 @@
         "packages/tests/unit/plugins/authBearer.test.ts": "676015494660fe61f56303b21b93cafb78d9ef31e1e1c6210d1cc1a9fc0e86f2",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
         "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
-        "packages/tests/unit/plugins/retry.test.ts": "8541b4f51e07a864563876b32b131e7d41f27ad695a184cf9afb080bab1fa453",
+        "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "outcome": "no-change",
+      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/core/assertTimeout.ts, packages/lib/src/lib/core/buildFullPath.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/resolveRequestURL.ts, packages/lib/src/lib/core/route.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/lib/src/lib/types.ts, packages/tests/unit/api.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/tests/unit/plugins/retry.test.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "a90bd981ca2f6d1b24f5103686d1b456a7aa3520f2c07c10216138bfb6c130ef",
+      "fingerprint": "589eaf0a63de064c0a2391e8f3482c162ef5042716c7de1b5ee21eaac5b04492",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "a2ad27a445529243ff03c4721c48fba6cb2fe9ba4962721f2eff1372373ea03b",
+        "MIGRATION_GUIDE.md": "06b73573b58e7c0cf2b68c60bab2070dbd6cce1d7843b957d4e315bdfbd36b95",
         "_artifacts/domain_map.yaml": "6472bf0fa719fbc9a6bb2fc70343ca2804d53f7a37e185c26930d8bb0283ddfc",
         "_artifacts/skill_spec.md": "d63b29668e7ce92902de02f79cfb5a30fe4435db0d06aa6b588a08574dae6617",
         "_artifacts/skill_tree.yaml": "3feeffaf53d40b2b0ddbf118874eb314cbc208da7669fe05be1763f4bc98b77e",
@@ -60,16 +60,16 @@
         "packages/lib/skills/configure-requests/references/axios-differences.md": "e7841075a87fab1a1bdcf7e2deee00b1177165cbc703547e777eaef417704e80",
         "packages/lib/skills/configure-requests/references/plugins.md": "8b9e1a7c90a81e2e07bc4a3184f4ccdfaf9e544a59b7452dcaee715836ea43b4",
         "packages/lib/src/index.ts": "fd921c2fe3d94631ecdf54d28b84ce244cd5d51b55045a0f96b13d6d0ed96d3d",
-        "packages/lib/src/lib/adapters/fetch.ts": "8e820867716bdc8de097b4c3ba66d86b9f68f498de7851f4535b5f6597c05f00",
-        "packages/lib/src/lib/core/Faxios.ts": "2b818cf6b061db124977bf912e5fafce3d840af3f9f8a16a38654cea26570c27",
+        "packages/lib/src/lib/adapters/fetch.ts": "cbeb583e9ffb55061f8ae3fdb69beda59fd95c0a65303d333de322785ad2a88c",
+        "packages/lib/src/lib/core/Faxios.ts": "e7469eacefc1de17be049a9ac7045bfd0f866fad805957b462591c1d534a17cb",
         "packages/lib/src/lib/core/FaxiosError.ts": "ba6ba0149fd924f9249db4909f3db56020e795e8a697fd2965a9ef04b49e9e34",
-        "packages/lib/src/lib/core/assertRequestConfig.ts": "f97a0f978f16013d10bcd5b4e0b500818991c502fdf917abce9d30fbd331bca7",
+        "packages/lib/src/lib/core/assertRequestConfig.ts": "6cb679260d7a88b4794c312b241153336ad0befa4e51916329344c5244d21597",
         "packages/lib/src/lib/core/assertSignal.ts": "1198024df3bef8e27aca705897c1d9018f6399ede2bb7d4bcb46988861965da5",
         "packages/lib/src/lib/core/assertTimeout.ts": "f8204e9b0180dc9a720a003b86b01b95b9daa2ea937b8792ceec0cabf8f096ca",
         "packages/lib/src/lib/core/buildFullPath.ts": "e66967b07c75e6ae631b7294b4fbf35b31f3bc2f3dad75a727c0cbeff65555b8",
         "packages/lib/src/lib/core/composeSignals.ts": "bf39888cd60edf3d826351c25eaf59d2e745c245356bb7f5b6ed99a5f5cdb989",
         "packages/lib/src/lib/core/define.ts": "2939b0b995ccce9df8f5f0257fcae51bfaf4f0dc7ff066b5d78bcd57d42e5e25",
-        "packages/lib/src/lib/core/dispatchRequest.ts": "bf7d75fa4c079a2e3a872231325ee3ce5a1c54f07a3453b9d5bf3d37b557e4d4",
+        "packages/lib/src/lib/core/dispatchRequest.ts": "0cab20a6a95e4e48c1b0436555efcdd44d9fb1eb9f32ca5fb6ac4561dd3c70a8",
         "packages/lib/src/lib/core/headerLayers.ts": "23225f4be31a3cd60d6c35bcd776bdc575d357a89f682615bf8f24f2f9891e13",
         "packages/lib/src/lib/core/mergeConfig.ts": "6d42e94727f77f051226c8d328530eb0cb1caad2ccdc690bd9a6a87700ecb567",
         "packages/lib/src/lib/core/requestDeadline.ts": "cb6803d70ca9b4600a32ce580ecef0e609b02fc59de12a51430394bedf54b16d",
@@ -87,14 +87,14 @@
         "packages/tests/unit/plugins/authBearer.test.ts": "676015494660fe61f56303b21b93cafb78d9ef31e1e1c6210d1cc1a9fc0e86f2",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
         "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
-        "packages/tests/unit/plugins/retry.test.ts": "8541b4f51e07a864563876b32b131e7d41f27ad695a184cf9afb080bab1fa453",
+        "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "outcome": "no-change",
+      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md, packages/lib/skills/configure-requests/SKILL.md, packages/lib/skills/configure-requests/references/axios-differences.md, packages/lib/src/index.ts, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/FaxiosError.ts, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/core/assertTimeout.ts, packages/lib/src/lib/core/buildFullPath.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/lib/src/lib/core/resolveRequestURL.ts, packages/lib/src/lib/core/route.ts, packages/lib/src/lib/faxios.ts, packages/lib/src/lib/plugins/retry.ts, packages/lib/src/lib/plugins/timing.ts, packages/lib/src/lib/types.ts, packages/tests/unit/api.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: MIGRATION_GUIDE.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/core/Faxios.ts, packages/lib/src/lib/core/assertRequestConfig.ts, packages/lib/src/lib/core/dispatchRequest.ts, packages/tests/unit/plugins/retry.test.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
       ]
     },
     "source:knip.json": {
@@ -1917,15 +1917,15 @@
       ]
     },
     "source:.github/workflows/release.yml": {
-      "fingerprint": "a781a9a5af3b290b4ea52326bbfb5d217bee0b9b6908a66da6d4a13d40575e82",
+      "fingerprint": "fd84d99a06f43586e61279fd64d62d5abe46147f712bb1af2912e46f1e1d3ad9",
       "snapshot": {
-        ".github/workflows/release.yml": "bfb3806f0e7486bf42e23c1c4290b34349033cdbc128b399a58a133a399d1672"
+        ".github/workflows/release.yml": "1273ed667310e4e005cb403b965d54fed6def6a7e74d1d0f766b274382b1ec00"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "outcome": "no-change",
+      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
       "evidence": [
-        "Changed: .github/workflows/release.yml at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: .github/workflows/release.yml at fba7e018c121fe120baa6e3d377335e69a94b244"
       ]
     },
     "source:COLLABORATOR_GUIDE.md": {
@@ -1953,15 +1953,15 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "ff774921433e87d9782e64db8df2d7701ffc9dfc0db72743db4c639b9fca2b46",
+      "fingerprint": "46d94b4a969aa0af1695c365956c2735e1f857c1ad1264ea15f0cedbfe9b1328",
       "snapshot": {
-        "THREATMODEL.md": "71fe4eb23e33a3ae2e8f630345343c9c7306ff454875425b407d9a1316303271"
+        "THREATMODEL.md": "23453818bda43fab4bf57b3965f622f2f68c7e269ab0dcc05492a8f6821c661f"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "outcome": "no-change",
+      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
       "evidence": [
-        "Changed: THREATMODEL.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: THREATMODEL.md at fba7e018c121fe120baa6e3d377335e69a94b244"
       ]
     },
     "source:packages/docs/.vitepress/theme/index.ts": {
@@ -2192,15 +2192,15 @@
       ]
     },
     "source:packages/lib/src/lib/adapters/fetch-helpers.ts": {
-      "fingerprint": "6a8e7ee7211b533b2aa975d172b6f6556de66fbedaa01ff5d0faa0078eee0a70",
+      "fingerprint": "6747614f0a06f2b7af430b31472b19f74a6279536e882830f93ceb06344bdbfb",
       "snapshot": {
-        "packages/lib/src/lib/adapters/fetch-helpers.ts": "4a6a3afdf88ac8bac67d83d42ecd0e457bdb31dfcce7e354ca1ab258ed7c91e7"
+        "packages/lib/src/lib/adapters/fetch-helpers.ts": "929a834428f2b95ae2344b0795086c27019bfa50b6fe69a5376dadabb53f540c"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "outcome": "no-change",
+      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
       "evidence": [
-        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: packages/lib/src/lib/adapters/fetch-helpers.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
       ]
     },
     "source:packages/lib/src/lib/cancel/CanceledError.ts": {
@@ -2361,15 +2361,15 @@
       ]
     },
     "source:packages/lib/src/lib/helpers/trackStream.ts": {
-      "fingerprint": "34f3ca031582fb29d28487e884289e5f10c378e09cc4354bac35a3a3b03d7a73",
+      "fingerprint": "1d8fd78a11b3e1dee2074a285e3e5b365fec5c65b68edb00c9773f7958d8c469",
       "snapshot": {
-        "packages/lib/src/lib/helpers/trackStream.ts": "ed7b49a6c3c494867558ee74beb1fb63c40bf834302039b3b913f95e0eb6a643"
+        "packages/lib/src/lib/helpers/trackStream.ts": "d34bef03b680a7d59c2408edabb52d4148da683e0517696bd3b06f16266c62b3"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
-      "outcome": "updated",
-      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "outcome": "no-change",
+      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
       "evidence": [
-        "Changed: packages/lib/src/lib/helpers/trackStream.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+        "Changed: packages/lib/src/lib/helpers/trackStream.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
       ]
     },
     "source:packages/lib/src/lib/helpers/validator.ts": {
@@ -3667,15 +3667,15 @@
       ]
     },
     "source:packages/tests/unit/helpers/trackStream.test.ts": {
-      "fingerprint": "94a18f5cc41d3a0b4681fd947f165d1c54ad59c72afb672f3ee4a2517c5bce59",
+      "fingerprint": "fd75f58eb939fe1eb15a0d01432948742c6764c158a2ac8923e518a90e756dc1",
       "snapshot": {
-        "packages/tests/unit/helpers/trackStream.test.ts": "750f2c507cf118ae3903e5646446ecaf0b41a9725ce28e2f80bda6fa5600467a"
+        "packages/tests/unit/helpers/trackStream.test.ts": "e915393361bb765063f9337885a7ba0b6981efc161b262391cc302114be87cf0"
       },
-      "head": "31387657e7ec5328e8eb91a16b71d73c17fdfbb6",
+      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
       "outcome": "no-change",
-      "reason": "The configure-requests skill does not describe stream chunk handling or header lookup internals; FaxiosHeaders behaviour and the public API are unchanged, the new chunk rule is documented in advanced/request-config.md.",
+      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
       "evidence": [
-        "Changed: packages/tests/unit/helpers/trackStream.test.ts at 05ac94d71a2674b93106fda774dfeedc8f3cccc1"
+        "Changed: packages/tests/unit/helpers/trackStream.test.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
       ]
     },
     "source:.bumpy/adapter-resource-leaks.md": {
@@ -3907,15 +3907,15 @@
       ]
     },
     "source:packages/tests/smoke/deno/types/consumer.ts": {
-      "fingerprint": "e66028619b7612200e44d5a7665e47274a253a77408500f6e6b28318c370bf1d",
+      "fingerprint": "c543be66eb7495be93a4da0f2961970c29e26c81a4516cc39a1549cfc28b6006",
       "snapshot": {
-        "packages/tests/smoke/deno/types/consumer.ts": "c952bc047e5b3aedc8352062abaa749c12b6c56f8e25cbda393b42e0ca55402b"
+        "packages/tests/smoke/deno/types/consumer.ts": "629bc91d7efbc1ec1b5e2611550ba3ac16a0f34e1a683157f89158b075ddea2e"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "outcome": "no-change",
+      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
       "evidence": [
-        "Changed: packages/tests/smoke/deno/types/consumer.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: packages/tests/smoke/deno/types/consumer.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
       ]
     },
     "source:.bumpy/middleware-missing-response.md": {
@@ -4483,15 +4483,15 @@
       ]
     },
     "source:packages/tests/unit/core/unknownConfigKeys.test.ts": {
-      "fingerprint": "52d6c1eb1a5b1783498dac0ac1c7d16b1b0f9aef82b608fff9326ec6332be359",
+      "fingerprint": "1c2501f4b5afce9c79c5d7d2b46e3ffd0d42df52d40516aba72195299a4d2860",
       "snapshot": {
-        "packages/tests/unit/core/unknownConfigKeys.test.ts": "73a807442fc5d21fa8159ec6fc9e9f28d6b1a46a621a985f9bc89a6526fda01d"
+        "packages/tests/unit/core/unknownConfigKeys.test.ts": "2290f5708d578d71e2aac888924408545f0ff3cd98ceb3a6de5c259b1b9c1839"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
       "outcome": "no-change",
-      "reason": "#220: body Content-Type rules changed in core and docs; the configure-requests skill does not teach them.",
+      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
       "evidence": [
-        "Changed: packages/tests/unit/core/unknownConfigKeys.test.ts at 35099193395c2d4372a08d722867483dc192f54d"
+        "Changed: packages/tests/unit/core/unknownConfigKeys.test.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
       ]
     },
     "source:.bumpy/config-merge-precedence.md": {
@@ -6103,15 +6103,15 @@
       ]
     },
     "source:packages/tests/unit/adapters/sizeLimits.test.ts": {
-      "fingerprint": "610b17e4095c9fb435ce88888fde9941129a20530066b8b872b6d04249c5f0d5",
+      "fingerprint": "c36db8f7e1994ca311ab3077a20a6cda0950eef003c4432089f4e516c0526dd5",
       "snapshot": {
-        "packages/tests/unit/adapters/sizeLimits.test.ts": "ad476eee0dfd03ef96df53ef3266115cd0bc2d361bcc83eb87b8e248867ffbb9"
+        "packages/tests/unit/adapters/sizeLimits.test.ts": "b5e88a5b2206309f3257d4fb54ee148d3f596b65cc0d83d5f3ca4d1405e20f80"
       },
-      "head": "65f1d369230889444a3251f5c8d746d2a3096b1d",
-      "outcome": "updated",
-      "reason": "skill notes authBearer custom-header redaction and the valid size-limit values",
+      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "outcome": "no-change",
+      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/sizeLimits.test.ts at 65f1d369230889444a3251f5c8d746d2a3096b1d"
+        "Changed: packages/tests/unit/adapters/sizeLimits.test.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
       ]
     },
     "source:packages/tests/unit/helpers/utf8ByteLength.test.ts": {
@@ -6523,27 +6523,27 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/export-surface.ts": {
-      "fingerprint": "89e1b5cefaef91b18daf0b7ef72ef4db3f66640c9cccb944bb6c5d61b1dc96a7",
+      "fingerprint": "06c7b23f3599d0212760b481d6d1402bcf50c95883773589566a18d4d92af17d",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/export-surface.ts": "d6f5e6386c559b5fa8a6a47d925e99abc0a6bfeaf856215f44315c8e894ba74d"
+        "packages/tests/module/esm/tests/helpers/export-surface.ts": "471d55730b364c0f63a9c8bf9c189b3c215428b28fbb80ee1a4a307483b4d953"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "outcome": "no-change",
+      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
       "evidence": [
-        "Changed: packages/tests/module/esm/tests/helpers/export-surface.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: packages/tests/module/esm/tests/helpers/export-surface.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
       ]
     },
     "source:.bumpy/295-declarations.md": {
-      "fingerprint": "b63e934b4e13817fc9c8f0a574de5d6ce6e5a146097233a7761d9c3f43b0489b",
+      "fingerprint": "452769cb5b348b234abf4de4a5fac4748366e67690e4d868a0573699b5ced1a5",
       "snapshot": {
-        ".bumpy/295-declarations.md": "4d3b0a5aec34418a8728f64a263810ef5964265f3b441820c4037e0ad20adcff"
+        ".bumpy/295-declarations.md": "f3e8979037ecc48445231dff3c6d6267c9f53b5b2f6f4fa7cb56eef942cbfaf2"
       },
-      "head": "40816d83b4f6479ed001cd2d6471c1e2a82b72fe",
-      "outcome": "updated",
-      "reason": "Skill now teaches Headers/Map/pair headers on aliases and create(), spread contexts for next(), resolveRequestURL URL/no-url behaviour and redirect: error in the X-Api-Key example",
+      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "outcome": "no-change",
+      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
       "evidence": [
-        "Changed: .bumpy/295-declarations.md at 979a0ff75255295f68127fbf05c8d5d7c522aa2f"
+        "Changed: .bumpy/295-declarations.md at fba7e018c121fe120baa6e3d377335e69a94b244"
       ]
     },
     "source:packages/lib/src/lib/types/web-globals.d.ts": {
@@ -7459,15 +7459,15 @@
       ]
     },
     "source:.bumpy/error-config-leaks-and-codes.md": {
-      "fingerprint": "b997a8a6e937f167abfcc048801eaf2357a1b256a001eb9a42a84152e05aecb2",
+      "fingerprint": "94b0d06f8450894075da75e2a9c3ccaac18ba299e5aeb84904708965ccf8ce37",
       "snapshot": {
-        ".bumpy/error-config-leaks-and-codes.md": "e6bc469987a85010ab10488a2995705c630aff342757acb0d0048efaa2ad6d0b"
+        ".bumpy/error-config-leaks-and-codes.md": "6d08c1a408f0aa382aaa2edd442bf0e8185b18376d4d03536f8f237a3bb0cbf1"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "outcome": "no-change",
+      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
       "evidence": [
-        "Changed: .bumpy/error-config-leaks-and-codes.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: .bumpy/error-config-leaks-and-codes.md at fba7e018c121fe120baa6e3d377335e69a94b244"
       ]
     },
     "source:.bumpy/remove-legacy-aliases.md": {
@@ -7615,15 +7615,15 @@
       ]
     },
     "source:packages/tests/unit/auditRegressions.test.ts": {
-      "fingerprint": "a7033f311a9b5e4b199def98c8744f09f613fb2b30ed275836c0fe27b818c40a",
+      "fingerprint": "a3b7a90deb93d2bd62ee368b3faac43b18ce8c1a6e96b2a7e93d47d7cbe3bf37",
       "snapshot": {
-        "packages/tests/unit/auditRegressions.test.ts": "f51d400227654886e5af0f9a534c3e447716a4d2099cbe0eb3712f6894dfd0b1"
+        "packages/tests/unit/auditRegressions.test.ts": "e5ae883ee4eb8be619a0a5ae6b1779598ceae9d26b8467198ddbf01d2f2d0037"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "outcome": "no-change",
+      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
       "evidence": [
-        "Changed: packages/tests/unit/auditRegressions.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: packages/tests/unit/auditRegressions.test.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
       ]
     },
     "source:packages/tests/unit/core/statusError.test.ts": {
@@ -7636,6 +7636,18 @@
       "reason": "audit observations: docs, skill and sources updated",
       "evidence": [
         "Changed: packages/tests/unit/core/statusError.test.ts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+      ]
+    },
+    "source:packages/tests/unit/core/resolveRequestURL.test.ts": {
+      "fingerprint": "e5bf59f47231141dd07e53b007a518a360ec47a630b3f310dedd5b998efe6648",
+      "snapshot": {
+        "packages/tests/unit/core/resolveRequestURL.test.ts": "23ec692f6b2a4ed48f207a38e64e92ee0d2d6034e10c95264b292f1beb5be3f3"
+      },
+      "head": "fba7e018c121fe120baa6e3d377335e69a94b244",
+      "outcome": "no-change",
+      "reason": "re-review fixes: size limits rechecked after middleware, trackStream error factory, release push hardening, bump/migration text, type and regression tests; skill guidance unaffected",
+      "evidence": [
+        "Changed: packages/tests/unit/core/resolveRequestURL.test.ts at fba7e018c121fe120baa6e3d377335e69a94b244"
       ]
     }
   }

@@ -15,10 +15,11 @@ name: Release
 #
 # Trust (#270): only `publish` and `rc` get `id-token: write`. They run only
 # on main, in the `npm-publish` environment (npm trusted publishing (OIDC) is
-# bound to it once that npm setting is applied by hand), and they check out,
-# install and build nothing: they run
-# setup-node, the artifact download and the shell in this file. The build and
-# its dependencies run in run-ci.yml with a read-only token and no OIDC.
+# bound to it once that npm setting is applied by hand), and they check out
+# and build nothing and install only the pinned npm (`npm install -g
+# npm@11.15.0 --ignore-scripts`): they run setup-node, that npm, the artifact
+# download and the shell in this file. The build and its dependencies run in
+# run-ci.yml with a read-only token and no OIDC.
 #
 # BUMPY_GH_TOKEN (a PAT or app token) lets bumpy open the Version Packages PR
 # with CI running on it; without it, bumpy needs "Allow GitHub Actions to
@@ -110,26 +111,16 @@ jobs:
         env:
           FETCH_TOKEN: ${{ github.token }}
           BRANCH: bumpy/version-packages
-        run: &git-auth |
+        run: |
           set -euo pipefail
           # Credentials only in this step's environment: not in argv, not in .git/config
-          auth=$(printf 'x-access-token:%s' "${PUSH_TOKEN:-$FETCH_TOKEN}" | base64 -w0)
+          auth=$(printf 'x-access-token:%s' "$FETCH_TOKEN" | base64 -w0)
           echo "::add-mask::$auth"
           export GIT_CONFIG_COUNT=1
           export GIT_CONFIG_KEY_0="http.${GITHUB_SERVER_URL}/.extraheader"
           export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth"
-          if [[ -n "${PUSH_TOKEN:-}" ]]; then
-            if git diff --cached --quiet; then
-              exit 0
-            fi
-            git -c user.name="github-actions[bot]" \
-              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-              commit -m "chore(release): sync VERSION and record the skill review"
-            git push origin "HEAD:refs/heads/$BRANCH"
-          else
-            git fetch origin "$BRANCH"
-            git checkout -B "$BRANCH" FETCH_HEAD
-          fi
+          git fetch origin "$BRANCH"
+          git checkout -B "$BRANCH" FETCH_HEAD
 
       - name: Sync VERSION and record the skill review
         run: |
@@ -139,12 +130,52 @@ jobs:
             "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR."
           git add packages/lib/src/lib/env/data.ts packages/lib/skills/configure-requests/SKILL.md .intent/review-state.json
 
+      # The step above ran dependency code (`intent`) in this checkout, so it
+      # could have written .git/hooks or repo-local git config that would run
+      # here, next to the push token. This step:
+      # - fails if .git/config has any key outside a short allowlist (what
+      #   checkout and `git checkout -B` write), so an added include,
+      #   url.*.insteadOf, credential.*, http.* (proxy, extra headers),
+      #   core.sshCommand, gpg.* or diff/filter driver stops the push;
+      # - also overrides the risky settings on every git command: hooks off
+      #   (core.hooksPath=/dev/null and --no-verify), no fsmonitor, no
+      #   credential helper or askpass, no commit signing, no external diff
+      #   or textconv;
+      # - pushes to an explicit URL, not the `origin` remote.
+      # It does not guard against changes outside .git (e.g. a replaced git
+      # binary on PATH); those need code execution the runner already grants.
       - name: Push to the Version Packages PR
         env:
           PUSH_TOKEN: ${{ secrets.BUMPY_GH_TOKEN || github.token }}
-          FETCH_TOKEN: ''
           BRANCH: bumpy/version-packages
-        run: *git-auth
+        run: |
+          set -euo pipefail
+          bad=$(git config --local --name-only --list \
+            | grep -Eiv '^(core\.(repositoryformatversion|filemode|bare|logallrefupdates|ignorecase|precomposeunicode|symlinks|sparsecheckout)|remote\.origin\.(url|fetch)|branch\.[^.]+\.(remote|merge)|gc\.auto)$' || true)
+          if [[ -n "$bad" ]]; then
+            echo "::error::unexpected repo-local git config before push: ${bad//$'\n'/, }"
+            exit 1
+          fi
+          export GIT_CONFIG_NOSYSTEM=1 GIT_TERMINAL_PROMPT=0 GIT_ASKPASS=/bin/false
+          unset GIT_EXTERNAL_DIFF GIT_SSH GIT_SSH_COMMAND
+          git_safe() {
+            git -c core.hooksPath=/dev/null -c core.fsmonitor=false \
+              -c credential.helper= -c core.askPass=/bin/false \
+              -c commit.gpgSign=false "$@"
+          }
+          if git_safe diff --cached --quiet --no-ext-diff --no-textconv; then
+            exit 0
+          fi
+          git_safe -c user.name="github-actions[bot]" \
+            -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit --no-verify -m "chore(release): sync VERSION and record the skill review"
+          # Credentials only in this step's environment: not in argv, not in .git/config
+          auth=$(printf 'x-access-token:%s' "$PUSH_TOKEN" | base64 -w0)
+          echo "::add-mask::$auth"
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0="http.${GITHUB_SERVER_URL}/.extraheader"
+          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth"
+          git_safe push --no-verify "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/$BRANCH"
 
   # The publish gate (#162): the full PR suite on the commit that publishes.
   # It builds and packs the tarball that `publish` publishes.
@@ -155,8 +186,9 @@ jobs:
       contents: read
     uses: $/.github/workflows/run-ci.yml
 
-  # Publishes the tarball run-ci.yml tested. No checkout, install or build:
-  # nothing from the repository or its dependencies runs next to the OIDC token.
+  # Publishes the tarball run-ci.yml tested. No checkout or build, and the only
+  # install is the pinned npm (--ignore-scripts): nothing from the repository
+  # or its dependencies runs next to the OIDC token.
   publish:
     needs: [plan, ci]
     if: needs.plan.outputs.mode == 'publish'

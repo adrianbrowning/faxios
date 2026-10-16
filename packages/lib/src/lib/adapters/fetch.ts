@@ -410,6 +410,9 @@ const countUploadStream = (
   return trackStream(
     upload.stream,
     DEFAULT_CHUNK_SIZE,
+    // A chunk that isn't bytes is the caller's body, so it is a bad request. It becomes the body
+    // error, so it surfaces coded instead of as fetch's ERR_NETWORK.
+    (message: string) => (ctx.bodyError = new FaxiosError(message, FaxiosError.ERR_BAD_REQUEST, ctx.config)),
     (loadedBytes: number) => {
       if (maxBodyLength !== undefined && loadedBytes > maxBodyLength) {
         ctx.bodyError = bodyTooLarge(ctx);
@@ -417,14 +420,7 @@ const countUploadStream = (
       }
       upload.onProgress && upload.onProgress(loadedBytes);
     },
-    (err?: unknown) => {
-      // A chunk trackStream rejected (not bytes) surfaces as the coded error, not ERR_NETWORK.
-      if (err instanceof FaxiosError && !ctx.bodyError) {
-        err.config = ctx.config;
-        ctx.bodyError = err;
-      }
-      upload.flush && upload.flush();
-    }
+    upload.flush
   );
 };
 
@@ -519,15 +515,10 @@ const buildDownloadStream = (
     trackStream(
       response.body,
       DEFAULT_CHUNK_SIZE,
+      // The server sent a chunk that isn't bytes, so it is a bad response.
+      (message: string) => new FaxiosError(message, FaxiosError.ERR_BAD_RESPONSE, ctx.config, ctx.request),
       onChunkProgress,
       (err?: unknown) => {
-        // trackStream rejects a chunk that isn't bytes with a bare ERR_BAD_REQUEST; on the way
-        // down the server sent it, so it is a bad response, and it carries the request's config.
-        if (err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_REQUEST && !err.config) {
-          err.code = FaxiosError.ERR_BAD_RESPONSE;
-          err.config = ctx.config;
-          ctx.request && (err.request = ctx.request);
-        }
         flush && flush();
         received.release(err);
       }

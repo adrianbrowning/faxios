@@ -58,6 +58,7 @@ describe("response body errors", () => {
       assert.strictEqual(err.code, "ERR_BAD_RESPONSE");
       assert.ok(err.config);
       assert.strictEqual(err.config.url, `${BASE}/bytes`);
+      assert.ok(err.request);
       return true;
     });
   });
@@ -93,5 +94,21 @@ describe("a stream body and a throwing transformResponse", () => {
 
     // Without the cancel the source stays open and this never settles (the test times out).
     assert.strictEqual(await cancelled.promise, failure);
+  });
+
+  it("rejects with the transform's own FaxiosError, its code unchanged", async () => {
+    const fetch = async () => new Response(new ReadableStream({ pull() {} }));
+    const failure = new FaxiosError("x", "ERR_BAD_REQUEST");
+
+    await assert.rejects(faxios.get(`${BASE}/stream`, {
+      env: { fetch },
+      responseType: "stream",
+      transformResponse: [ () => { throw failure; } ],
+    }), (err: unknown) => {
+      assert.strictEqual(err, failure);
+      assert.strictEqual(failure.code, "ERR_BAD_REQUEST");
+      assert.strictEqual(failure.config, undefined);
+      return true;
+    });
   });
 });

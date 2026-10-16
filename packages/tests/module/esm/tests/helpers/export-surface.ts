@@ -3,8 +3,9 @@
 // - toFormData takes a FormData (or a FormData-like object) and FormSerializerOptions, and
 //   returns FormData when no target is passed
 // - URL request inputs compile without casts on the instance, its aliases and the Faxios class
-import faxios, { Faxios, toFormData } from "faxios";
+import faxios, { CanceledError, Faxios, toFormData } from "faxios";
 import type {
+  AbortableSignal,
   CustomParamsSerializer,
   FaxiosBasicCredentials,
   FaxiosDefaults,
@@ -13,10 +14,12 @@ import type {
   FaxiosRequestConfig,
   FaxiosRequestTransformer,
   FaxiosResponseTransformer,
+  FormDataVisitorHelpers,
   FormSerializerOptions,
   GenericAbortSignal,
   GenericFormData,
   ParamsSerializerOptions,
+  SerializerVisitor,
   TransitionalOptions
 } from "faxios";
 
@@ -36,6 +39,18 @@ function exportedTypes(): void {
     addEventListener: () => undefined,
     removeEventListener: () => undefined,
   };
+  // A polyfill whose listener methods only accept "abort" still fits.
+  const polyfill: {
+    aborted: boolean;
+    addEventListener: (type: "abort", l: () => void) => void;
+    removeEventListener: (type: "abort", l: () => void) => void;
+  } = { aborted: false, addEventListener: () => undefined, removeEventListener: () => undefined };
+  const polyfillSignal: GenericAbortSignal = polyfill;
+  const abortable: AbortableSignal = polyfill;
+  // @ts-expect-error TS2740 -- the config argument is an InternalFaxiosRequestConfig, not a bare headers bag
+  void new CanceledError("x", { headers: {} });
+  const visitor: SerializerVisitor | undefined = undefined;
+  const helpers: FormDataVisitorHelpers | undefined = undefined;
   const toRequest: FaxiosRequestTransformer = function (data) {
     return data;
   };
@@ -60,6 +75,10 @@ function exportedTypes(): void {
     transitional,
   });
   void progress;
+  void polyfillSignal;
+  void abortable;
+  void visitor;
+  void helpers;
   void formOptions;
   void spec;
   void defaults;

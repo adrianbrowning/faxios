@@ -87,7 +87,16 @@ describe("plugins::retry", () => {
         if (tries === 1) throw new FaxiosError("fetch failed", FaxiosError.ERR_NETWORK, ctx.config);
         return { config: ctx.config, data: { attempt: tries }, headers: new FaxiosHeaders(), status: 200, statusText: "OK" };
       });
-    const body: object = new Proxy({ a: 1 }, { getPrototypeOf: () => body });
+    // The trap answers with the proxy itself a few times, then throws: a walk that never stops
+    // at the cycle fails the test with "cycled" instead of hanging it.
+    let protoCalls = 0;
+    const body: object = new Proxy({ a: 1 }, {
+      getPrototypeOf() {
+        protoCalls += 1;
+        if (protoCalls > 5) throw new Error("cycled");
+        return body;
+      },
+    });
 
     const request = api.post(URL, body);
     await vi.runAllTimersAsync();

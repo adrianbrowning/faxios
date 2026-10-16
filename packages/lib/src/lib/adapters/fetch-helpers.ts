@@ -59,7 +59,8 @@ export type FetchContext = {
   bodyError: FaxiosError | undefined;
   config: InternalFaxiosRequestConfig;
   headers: FaxiosHeaders;
-  // maxContentLength and maxBodyLength; undefined when not set (a negative or non-number value).
+  // maxContentLength and maxBodyLength; undefined when unlimited (-1 or not set). Other values
+  // were rejected by assertSizeLimit, before and after middleware.
   limits: { body: number | undefined; content: number | undefined; };
   method: string;
   onDownloadProgress: unknown;

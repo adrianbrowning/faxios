@@ -252,3 +252,21 @@ describe.runIf(typeof fetch === "function")("adapters::fetch size limits at the 
     });
   });
 });
+
+describe("adapters::fetch size limits set by middleware", () => {
+  it.each([ "maxContentLength", "maxBodyLength" ] as const)("rejects a %s that middleware makes non-numeric", async key => {
+    const sink = respondWith(() => new Response("a".repeat(LIMIT + 1)));
+    for (const value of [ "1048576", Number.NaN ]) {
+      const instance = faxios.create({ [key]: LIMIT, env: { fetch: sink.fetch } as Env }).use(async (ctx, next) => {
+        Object.assign(ctx.config, { [key]: value });
+        return next(ctx);
+      });
+      await assert.rejects(
+        instance.post(URL, "a".repeat(LIMIT + 1)),
+        (err: unknown) => err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_OPTION_VALUE && err.message.includes(key),
+        `${key}: ${String(value)}`
+      );
+    }
+    assert.strictEqual(sink.calls, 0);
+  });
+});
