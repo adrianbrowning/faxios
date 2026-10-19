@@ -18,6 +18,8 @@ import { definePlugin } from "faxios/plugins";
 import { retry as pluginsEntryRetry } from "faxios/plugins";
 import { authBearer } from "faxios/plugins/auth-bearer";
 import type { AuthBearerCapability } from "faxios/plugins/auth-bearer";
+import { authenticate } from "faxios/plugins/authenticate";
+import type { Credentials } from "faxios/plugins/authenticate";
 import { forwardTo } from "faxios/plugins/forward-to";
 import type { ForwardToRequestOptions } from "faxios/plugins/forward-to";
 import { retry } from "faxios/plugins/retry";
@@ -65,11 +67,16 @@ void retryType;
 void forwardToType;
 void rootDefinePlugin;
 void pluginsEntryRetry;
+const legacyCredentials = async (): Promise<Credentials> => ({ query: { api_key: "k" }, cookies: { session: null } });
+const defaultAuthenticate = authenticate(legacyCredentials, { origins: [ "https://example.test" ], overwrite: true });
+const authenticateType: Equal<typeof defaultAuthenticate, FaxiosPlugin> = true;
+void authenticateType;
 
 async function middleware(): Promise<void> {
   const api = faxios.create({ baseURL: "https://example.test" })
     .use(addHeader)
     .use(authBearer(() => "token"))
+    .use(authenticate(() => ({ headers: { "X-Api-Key": "k" } })))
     .use(refreshOn401)
     .use(retry({ attempts: 2, methods: [ "get", "post" ] }))
     .use(timing(({ attempt, durationMs }: TimingEvent) => void (durationMs + attempt)))

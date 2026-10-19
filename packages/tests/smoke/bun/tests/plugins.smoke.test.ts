@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import faxios, * as root from "faxios";
 import * as pluginsEntry from "faxios/plugins";
 import { authBearer } from "faxios/plugins/auth-bearer";
+import { authenticate } from "faxios/plugins/authenticate";
 import { forwardTo } from "faxios/plugins/forward-to";
 import { retry } from "faxios/plugins/retry";
 import { timing } from "faxios/plugins/timing";
@@ -12,7 +13,7 @@ import { toRequest } from "./helpers.ts";
 describe("plugin subpaths", () => {
   test("faxios/plugins exports only definePlugin, the root no plugin API", () => {
     expect(Object.keys(pluginsEntry)).toEqual([ "definePlugin" ]);
-    for (const name of [ "authBearer", "forwardTo", "retry", "timing", "definePlugin" ]) {
+    for (const name of [ "authBearer", "authenticate", "forwardTo", "retry", "timing", "definePlugin" ]) {
       expect(Object.hasOwn(root, name)).toBe(false);
     }
   });
@@ -64,5 +65,20 @@ describe("plugin subpaths", () => {
       [ "http://gateway.example/", "https://api.example.com/items?q=1" ],
       [ "https://api.example.com/direct", null ],
     ]);
+  });
+
+  test("authenticate sends query and cookie credentials on a server runtime", async () => {
+    const calls: Array<Request> = [];
+    const fetch: MockFetch = async (input, init) => {
+      calls.push(toRequest(input, init));
+      return new Response(null, { status: 200 });
+    };
+    const api = faxios.create({ baseURL: "http://example.com", env: { fetch } })
+      .use(authenticate(() => ({ query: { api_key: "q" }, cookies: { session: "s" } })));
+
+    await api.get("/data");
+
+    expect(calls[0].url).toBe("http://example.com/data?api_key=q");
+    expect(calls[0].headers.get("cookie")).toBe("session=s");
   });
 });
