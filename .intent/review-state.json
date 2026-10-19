@@ -268,27 +268,27 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "4136c91a498162b598979695f56edf3c81dc17ca86397c2c149deb4dbc9bbb8f",
+      "fingerprint": "88cf6cb47f4618ddbd36a7c24a1f08068dd59b1b56839d0718a74f9d65f262a9",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "7eace1374287e4b6f24bf02760655f74bc82a95f95fe7db32977f65c7fd48fbf"
+        "packages/docs/pages/advanced/middleware.md": "5f38c31f73c83ad87ecfcf3aa8f8f044c350ab35687bdff13bc7facf3682d807"
       },
-      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "head": "2dad372afc9d8979ba655528b09c2cc72626d7c6",
       "outcome": "no-change",
-      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
+      "reason": "Docs-only: plugin pages move into a Plugins section, a stub keeps the old retry URL, links follow; the skill links no moved page. Checked: pnpm check exit 0 (docs examples, docs build)",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
+        "Changed: packages/docs/pages/advanced/middleware.md at 2dad372afc9d8979ba655528b09c2cc72626d7c6"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
-      "fingerprint": "83f32b473cf83eaeeb35ddde25d4a20abd9c1177c44d438e1cae2d233e14a764",
+      "fingerprint": "4fd49f09cff259e3ef2086948671f7c7c8a15ad596e57c0fe46b85dd4c644d12",
       "snapshot": {
-        "packages/docs/pages/advanced/migrating-from-interceptors.md": "1e1e015fcee0e4da0c92b266267f6f223789987306987184ecf41b645a765288"
+        "packages/docs/pages/advanced/migrating-from-interceptors.md": "4614160b69e2fca928e22bf39ead1f82042f0839b1f4b346db193635104d8aa4"
       },
-      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "head": "2dad372afc9d8979ba655528b09c2cc72626d7c6",
       "outcome": "no-change",
-      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
+      "reason": "Docs-only: plugin pages move into a Plugins section, a stub keeps the old retry URL, links follow; the skill links no moved page. Checked: pnpm check exit 0 (docs examples, docs build)",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/migrating-from-interceptors.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
+        "Changed: packages/docs/pages/advanced/migrating-from-interceptors.md at 2dad372afc9d8979ba655528b09c2cc72626d7c6"
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
@@ -304,15 +304,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
-      "fingerprint": "19bd6774b7cfe06d08095344adf9454915ec3e3b9bcce351331904b14fbc28aa",
+      "fingerprint": "556ca421ae117215336d2b25cab326ae35fc45220aee1b9542ef082f5d49d9bb",
       "snapshot": {
-        "packages/docs/pages/advanced/retry.md": null
+        "packages/docs/pages/advanced/retry.md": "bc7df464d03ea907eae8fc3ab0cd1355f45889934c0ca446e23f883d7300e2a9"
       },
-      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "head": "2dad372afc9d8979ba655528b09c2cc72626d7c6",
       "outcome": "no-change",
-      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
+      "reason": "Docs-only: plugin pages move into a Plugins section, a stub keeps the old retry URL, links follow; the skill links no moved page. Checked: pnpm check exit 0 (docs examples, docs build)",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/retry.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
+        "Changed: packages/docs/pages/advanced/retry.md at 2dad372afc9d8979ba655528b09c2cc72626d7c6"
       ]
     },
     "source:packages/docs/pages/advanced/schema-validation.md": {
