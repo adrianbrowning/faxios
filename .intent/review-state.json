@@ -3,13 +3,13 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "be88de482b902cd1fea82e04e374d134734f2afc53cef666a6bab71f7e9129c9",
+      "fingerprint": "0193e4af0ce533fd50d3e3f545e090aef8c97de9cb4c2b1465ff80e31c0e2bf8",
       "snapshot": {
         "MIGRATION_GUIDE.md": "cae546e787c02b7360e79afe3673b8b0d18cade4f48ff8c296fee43feee76dcc",
         "packages/lib/package.json": "a50c90ff4ccf8a7edaff6ed065de53f1fd10a785ce924ce53a2fb120f568405d",
         "packages/lib/skills/configure-requests/SKILL.md": "9366a9497c0b83d3dbe0b8bd9e8f009e6c8ff95613493e2b59e6fba304ea487b",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "e7841075a87fab1a1bdcf7e2deee00b1177165cbc703547e777eaef417704e80",
-        "packages/lib/skills/configure-requests/references/plugins.md": "354048739e3fc4fc887361adee7449e1e03eb58c35dfd40113b0b97c27479e55",
+        "packages/lib/skills/configure-requests/references/plugins.md": "ab4c4f7b1cdfc94eb260d4d91a27906c942d63518cc62e2b070b91d735cd095e",
         "packages/lib/src/index.ts": "39264439a2f273bd4c9479a29a9a1435b421f06bdf846d87d3f685311db947ea",
         "packages/lib/src/lib/adapters/fetch.ts": "cbeb583e9ffb55061f8ae3fdb69beda59fd95c0a65303d333de322785ad2a88c",
         "packages/lib/src/lib/core/Faxios.ts": "189c1330e4c53e434d32a4493a889811dc611b4d0e0dfdcc15c07c41da4210e5",
@@ -27,24 +27,24 @@
         "packages/lib/src/lib/core/resolveRequestURL.ts": "2d890984440b820141b4855b9894c93ec0d9b46ddea759b4f304d45c2a65869e",
         "packages/lib/src/lib/core/route.ts": "affd3e41358463e3b5f40a1cb661807bbccacdfd5265db649775894b6819a8a5",
         "packages/lib/src/lib/faxios.ts": "729e970f0b4013c195a6cca36b70774a91fec7c2b329fa180a4f0588311da63a",
-        "packages/lib/src/lib/plugins/authBearer.ts": "79be7faba1d12c8e250f44fc7d3e8b910cd6cb175fd818abb5d84e24ba3911b9",
-        "packages/lib/src/lib/plugins/authenticate.ts": "760fd07982cf090e909c3aa05d93127d7ad0b110d03993e94ef69d659665c63b",
-        "packages/lib/src/lib/plugins/credentials.ts": "ab57972312dfa8445734d34c4d5d150eb0d10ee297fc0e1e778ff1f7c355dc8f",
+        "packages/lib/src/lib/plugins/authBearer.ts": "77d1de3a841bc76ccf670c5896c144b2909812b27e5ff9856aa1f561af78ecf9",
+        "packages/lib/src/lib/plugins/authenticate.ts": "83ec153c232955d9251327c1394470f067ae7e5bf2c1bdd823f70378095af1ef",
+        "packages/lib/src/lib/plugins/credentials.ts": "3921c49ccdbcc4cb23a3e25db61c87ad0586b905cdacbb2e62be61b4a995982e",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
         "packages/lib/src/lib/plugins/retry.ts": "5baf85c4aa520de6ddb7c4b3f7fc13502bec3d1c26b5d04eb833ea660174d8a1",
         "packages/lib/src/lib/plugins/timing.ts": "8b4e233be25f4ba739937f540bdba3a5f432ff295bb8f72a8a921f07b53c10fc",
         "packages/lib/src/lib/types.ts": "15e39f3b3a1df6bfe7da0c667931ac027bcd49d9bc9644b3d573a352d61f2166",
-        "packages/tests/unit/api.test.ts": "990637f0d66f52ab670c55014c0c14888ddeb09ae80383007f25c0fab557fd80",
+        "packages/tests/unit/api.test.ts": "34607642342842fe6eed5ecba3ca367cd231ef092f44bf0a736cb5d55e25ab98",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "676015494660fe61f56303b21b93cafb78d9ef31e1e1c6210d1cc1a9fc0e86f2",
-        "packages/tests/unit/plugins/authenticate.test.ts": "855de923e258281155338715c26d3127fc65ffe8fc8b2c86399d59aea4613c34",
+        "packages/tests/unit/plugins/authenticate.test.ts": "d546df8f019cf191575ba28df73d3efe54e72007d38ac66f62a0787ad56bf2a8",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
         "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
       "outcome": "updated",
       "reason": "New authenticate plugin and authBearer rebuilt on it: SKILL.md lists the subpath, the import-table row and an authenticate bullet; references/plugins.md adds the credentials section and points the hand-written apiKey example at it",
       "evidence": [
@@ -53,16 +53,16 @@
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "c0e306ff3cd9b5345212bf4d87b2313411be3d88f35fcf3ee747ca7078fe9142",
+      "fingerprint": "c8e31e6a222ca50e9786357c65020280dd38a44283a6eecec25bd81e94a6975d",
       "snapshot": {
         "MIGRATION_GUIDE.md": "cae546e787c02b7360e79afe3673b8b0d18cade4f48ff8c296fee43feee76dcc",
-        "_artifacts/domain_map.yaml": "44069d605cfd510ae9b79905f953a312d20c45e156223d1a92da22ca4e79ac68",
-        "_artifacts/skill_spec.md": "a582d47880dc8ffbaaac6f0e49871cfe4fa806585b15197c40eab147193489de",
+        "_artifacts/domain_map.yaml": "1f199d324a7cb66882bf76110b9603eccc120709fa3344c9a0668f5591e7e03c",
+        "_artifacts/skill_spec.md": "7139e09e824fd5047d971ed988a38e6a7cc8b3fc319916e06b2d09827109ac5e",
         "_artifacts/skill_tree.yaml": "d5239b8b4e06002bad667e5955db864b95b7f8e4c6497067c4114933407e2e07",
         "packages/lib/package.json": "a50c90ff4ccf8a7edaff6ed065de53f1fd10a785ce924ce53a2fb120f568405d",
         "packages/lib/skills/configure-requests/SKILL.md": "9366a9497c0b83d3dbe0b8bd9e8f009e6c8ff95613493e2b59e6fba304ea487b",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "e7841075a87fab1a1bdcf7e2deee00b1177165cbc703547e777eaef417704e80",
-        "packages/lib/skills/configure-requests/references/plugins.md": "354048739e3fc4fc887361adee7449e1e03eb58c35dfd40113b0b97c27479e55",
+        "packages/lib/skills/configure-requests/references/plugins.md": "ab4c4f7b1cdfc94eb260d4d91a27906c942d63518cc62e2b070b91d735cd095e",
         "packages/lib/src/index.ts": "39264439a2f273bd4c9479a29a9a1435b421f06bdf846d87d3f685311db947ea",
         "packages/lib/src/lib/adapters/fetch.ts": "cbeb583e9ffb55061f8ae3fdb69beda59fd95c0a65303d333de322785ad2a88c",
         "packages/lib/src/lib/core/Faxios.ts": "189c1330e4c53e434d32a4493a889811dc611b4d0e0dfdcc15c07c41da4210e5",
@@ -80,24 +80,24 @@
         "packages/lib/src/lib/core/resolveRequestURL.ts": "2d890984440b820141b4855b9894c93ec0d9b46ddea759b4f304d45c2a65869e",
         "packages/lib/src/lib/core/route.ts": "affd3e41358463e3b5f40a1cb661807bbccacdfd5265db649775894b6819a8a5",
         "packages/lib/src/lib/faxios.ts": "729e970f0b4013c195a6cca36b70774a91fec7c2b329fa180a4f0588311da63a",
-        "packages/lib/src/lib/plugins/authBearer.ts": "79be7faba1d12c8e250f44fc7d3e8b910cd6cb175fd818abb5d84e24ba3911b9",
-        "packages/lib/src/lib/plugins/authenticate.ts": "760fd07982cf090e909c3aa05d93127d7ad0b110d03993e94ef69d659665c63b",
-        "packages/lib/src/lib/plugins/credentials.ts": "ab57972312dfa8445734d34c4d5d150eb0d10ee297fc0e1e778ff1f7c355dc8f",
+        "packages/lib/src/lib/plugins/authBearer.ts": "77d1de3a841bc76ccf670c5896c144b2909812b27e5ff9856aa1f561af78ecf9",
+        "packages/lib/src/lib/plugins/authenticate.ts": "83ec153c232955d9251327c1394470f067ae7e5bf2c1bdd823f70378095af1ef",
+        "packages/lib/src/lib/plugins/credentials.ts": "3921c49ccdbcc4cb23a3e25db61c87ad0586b905cdacbb2e62be61b4a995982e",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
         "packages/lib/src/lib/plugins/retry.ts": "5baf85c4aa520de6ddb7c4b3f7fc13502bec3d1c26b5d04eb833ea660174d8a1",
         "packages/lib/src/lib/plugins/timing.ts": "8b4e233be25f4ba739937f540bdba3a5f432ff295bb8f72a8a921f07b53c10fc",
         "packages/lib/src/lib/types.ts": "15e39f3b3a1df6bfe7da0c667931ac027bcd49d9bc9644b3d573a352d61f2166",
-        "packages/tests/unit/api.test.ts": "990637f0d66f52ab670c55014c0c14888ddeb09ae80383007f25c0fab557fd80",
+        "packages/tests/unit/api.test.ts": "34607642342842fe6eed5ecba3ca367cd231ef092f44bf0a736cb5d55e25ab98",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "676015494660fe61f56303b21b93cafb78d9ef31e1e1c6210d1cc1a9fc0e86f2",
-        "packages/tests/unit/plugins/authenticate.test.ts": "855de923e258281155338715c26d3127fc65ffe8fc8b2c86399d59aea4613c34",
+        "packages/tests/unit/plugins/authenticate.test.ts": "d546df8f019cf191575ba28df73d3efe54e72007d38ac66f62a0787ad56bf2a8",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
         "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
       "outcome": "updated",
       "reason": "domain_map adds the authenticate task and two failure modes; skill_spec records Batch 4 with decisions and checks; skill_tree sources synced by intent maintainer sync",
       "evidence": [
@@ -192,11 +192,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "6edec60e8fec826228cfabc70f707f88e5104f320bd8d451c42e13fbf4d8d69c",
+      "fingerprint": "b8bc05f066517a17964dd6eb6b5d42f583d0d165ca221acfd5d20935251e7929",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "8bf6bb5c75a37e135b409d020702f5b4fc4292e3196c2e25fe59783d2c9e2d09"
+        "packages/docs/pages/advanced/api-reference.md": "df5bbdc9e98985d6284cbca5fe625159308a959bbf37e18781770cbe702cf2e4"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
       "outcome": "no-change",
       "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
       "evidence": [
@@ -1961,11 +1961,11 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "e8027e44b1418e1cf8576f91db2e7525b89121ab4b9225fa53914aa8e1a2fa04",
+      "fingerprint": "a80f9c463755f712fa8ea64d006fe541ded3314122ffc96e6da9b4a37726f229",
       "snapshot": {
-        "THREATMODEL.md": "74d07876a6dbbaeaa803aa6a7a69da9b4cce571e37877be0ed73044dc00194cf"
+        "THREATMODEL.md": "9b66f5817b8cf644ce56f2b91f809fa96312b5a2d25ddcf210e97cfd5801f0d9"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
       "outcome": "no-change",
       "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
       "evidence": [
@@ -4647,11 +4647,11 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/middleware-index.ts": {
-      "fingerprint": "6bbe1c5135b567d79213392ae656162a3e9e7a05669e88516971f8ba3e095b0a",
+      "fingerprint": "a5cc528e9be2e6e7be0fd2cc04a421d193848465aea3da555890de1480f29798",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/middleware-index.ts": "7d870422c2fc3c414b99d91adc6a27bc674e85fc0045ee6884ccc58d1a9421a5"
+        "packages/tests/module/esm/tests/helpers/middleware-index.ts": "b70b192f7bf486447e00efbc8a5bd90fa8f92cc5bb2bbf172097542312edd660"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
       "outcome": "no-change",
       "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
       "evidence": [
@@ -4827,11 +4827,11 @@
       ]
     },
     "source:packages/tests/browser/plugins.browser.test.ts": {
-      "fingerprint": "c8c4808d9f1b5ddce38b3009c2bbfcd762e3f0b27540e9827d6b8b40ee9a62ba",
+      "fingerprint": "f3de05591695f1641e7ab1ac2a7a504da95e1c19b63074308a544be7489f33ff",
       "snapshot": {
-        "packages/tests/browser/plugins.browser.test.ts": "ff1ddc8be3f8c7832e553abedb8a9581cdcb84ab2bf7f6bef37da8be85be078c"
+        "packages/tests/browser/plugins.browser.test.ts": "48ad54ddc19c2f49bf8d2ea245b64b07096148a7025864670bbd9af161e4a6fd"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
       "outcome": "no-change",
       "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
       "evidence": [
@@ -7695,11 +7695,11 @@
       ]
     },
     "source:packages/docs/pages/plugins/auth-bearer.md": {
-      "fingerprint": "15ebaadba99c643d37e29716e4255669df6df73a0408136a4764889efcc1347c",
+      "fingerprint": "e3904cdaa2f2530246634dd72038b872464b0af6f25042abf5dff2b92a8e90b8",
       "snapshot": {
-        "packages/docs/pages/plugins/auth-bearer.md": "9a1478ba0f4227ace7e39a9379e4b76548fe4d099b7dfff9185f9b0980f9debd"
+        "packages/docs/pages/plugins/auth-bearer.md": "1065c31315fc1b233ac21648333ef326adee2031dbedcd86acc4ed8564336523"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
       "outcome": "no-change",
       "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
       "evidence": [
@@ -7707,11 +7707,11 @@
       ]
     },
     "source:packages/docs/pages/plugins/forward-to.md": {
-      "fingerprint": "e53d83af8f8df41721c37b46c9922332edaa9293b50610a00424d23550dc3db3",
+      "fingerprint": "ae15d5be6f5040edb982d5270acb079ae5ed9d591b8c37ab25e9e0af0c03f8a2",
       "snapshot": {
-        "packages/docs/pages/plugins/forward-to.md": "bd32fa0d244dd98885b06fdbd4f43d73e83c7350bf8b73b9996e5f29566c14b4"
+        "packages/docs/pages/plugins/forward-to.md": "8727d3f9f15945321a2bc16edd275be1273e63948ed7c8f6a1eea4abf7cb9814"
       },
-      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
       "outcome": "no-change",
       "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
       "evidence": [
@@ -7767,11 +7767,11 @@
       ]
     },
     "source:.bumpy/authenticate-plugin.md": {
-      "fingerprint": "a591c3d54b5fad96e4511bf9ba6d9539e3809a7bfb0e4a8a456b3484e38c075b",
+      "fingerprint": "b836f8e64efc5232c5e5d21ae81ee10652010bea032766797e5a49dbccde4cc3",
       "snapshot": {
-        ".bumpy/authenticate-plugin.md": "fac6023767a68c1a9195aee0042053b9c5618d42572b429bbe97625e88cd5375"
+        ".bumpy/authenticate-plugin.md": "a8e2c047d295a243906a4722ef0ccddee57ecc139ab621ead9c3ce698615b33b"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
       "outcome": "no-change",
       "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
       "evidence": [
@@ -7779,15 +7779,27 @@
       ]
     },
     "source:packages/docs/pages/plugins/authenticate.md": {
-      "fingerprint": "be910276325fa57e29d711ca97fd69b2c0e58acae9f57e9369c4f85ca580f71a",
+      "fingerprint": "99fe3d42ec9967316fbaf88d30a5488320fdb0c222c8c274869b6372d10be744",
       "snapshot": {
-        "packages/docs/pages/plugins/authenticate.md": "251f84256b07d834ae971dd651652e9b303b4930c8089a4b4b3af17072906232"
+        "packages/docs/pages/plugins/authenticate.md": "9d6e70b7df8f1bd9b8c730f801074512a88280a2ff58a04f9deb008c3b524633"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
       "outcome": "no-change",
       "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
       "evidence": [
         "Changed: packages/docs/pages/plugins/authenticate.md"
+      ]
+    },
+    "source:.bumpy/auth-bearer-browser-cookie.md": {
+      "fingerprint": "f6553eb30a81703f9de2c1d8e2212cd1a1bc7c24b11bdccd640394c260326ae9",
+      "snapshot": {
+        ".bumpy/auth-bearer-browser-cookie.md": "b8b3c974544afdff2e270d35ac200530213fc86318d192709f4a4137a6e46508"
+      },
+      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: .bumpy/auth-bearer-browser-cookie.md"
       ]
     }
   }

@@ -270,3 +270,10 @@ and stop generating Axios APIs it removed or never verified.
     Node, Bun and Deno send `Cookie` and the query credential.
   - Remaining: a token-refresh plugin (`refreshAuth`) is planned as the next batch; until then the
     skill keeps the hand-written `refreshOn401` example.
+  - Review fixes: query credentials refuse redirects too (`forwardTo` copies the URL into a
+    header); only the names the plugin sets go into `redact`; query placement moved into
+    `credentials.ts`. Types renamed to `AuthenticateCredentials` and
+    `AuthenticateCredentialValues`. `references/plugins.md` covers the redirect rule, the rename and
+    that a `paramsSchema` must accept query credential names; one failure mode added (a
+    `paramsSchema` stripping them). Checks: `authenticate.test.ts` redirect, `paramsSchema`,
+    `redact` and `params` cases.

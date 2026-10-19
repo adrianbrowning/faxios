@@ -26,7 +26,7 @@ await api.get("/orders", { params: { page: 2 } });
 | Place | Sent as |
 | --- | --- |
 | `headers` | One header per entry. The value is the whole header value, such as `{ Authorization: "Token abc" }`. |
-| `query` | Query string parameters, added to the request's `params` (an object or `URLSearchParams`). The caller's `params` object isn't changed. |
+| `query` | Query string parameters, added to the request's `params` (an object or `URLSearchParams`; other `params` reject with `ERR_BAD_OPTION_VALUE`). The caller's `params` object isn't changed. |
 | `cookies` | One `Cookie` header, `name=value` pairs joined with `; `. Server runtimes only, see [Cookies](#cookies). |
 
 A value other than a non-empty string (`null`, `undefined`, `""`) sends nothing for that name, and a `getCredentials` that gives `null` or `undefined` sends nothing at all. So a signed-out store never sends `api_key=null`.
@@ -36,6 +36,8 @@ A value other than a non-empty string (`null`, `undefined`, `""`) sends nothing 
 Credentials that can't be sent as given reject the request with a `FaxiosError` before anything is sent: `ERR_BAD_OPTION` for a place other than these three (such as `params`), and `ERR_BAD_OPTION_VALUE` for a result that isn't an object, a place that isn't an object, a header or cookie name that isn't a valid token, an empty query parameter name, or a cookie value with a character a cookie can't hold (whitespace, `"`, `,`, `;` or `\`). A cookie value with `;` would otherwise add a cookie of its own.
 
 A header, query parameter or `Cookie` header the request already has, set per request or in the instance defaults, is kept. Pass `overwrite: true` to replace it.
+
+Query credentials go into `params` before [`paramsSchema`](/pages/advanced/request-config#paramsschema) runs, so a `paramsSchema` must accept the credential names. A schema that strips unknown keys drops them, and a strict one rejects the request.
 
 ## Which requests get the credentials
 
@@ -55,9 +57,9 @@ await api.get("https://api.example.com/me");
 
 ## Redirects and logs
 
-When a redirect leaves the origin, `fetch` drops `Authorization` but sends every other header, `Cookie` included, on to the new host. So when `authenticate` sets any header other than `Authorization`, or a cookie, it sets [`fetchOptions.redirect`](/pages/advanced/fetch-adapter#fetch-options) to `"error"` unless the request sets `redirect` itself. A redirect then rejects with `ERR_NETWORK`. A query parameter doesn't need this: the redirect target's URL comes from the server, not from the request.
+When a redirect leaves the origin, `fetch` drops `Authorization` but sends every other header, `Cookie` included, on to the new host. So when `authenticate` sets any header other than `Authorization`, a cookie, or a query parameter, it sets [`fetchOptions.redirect`](/pages/advanced/fetch-adapter#fetch-options) to `"error"` unless the request sets `redirect` itself. A redirect then rejects with `ERR_NETWORK`. Query parameters refuse redirects too: [`forwardTo`](/pages/plugins/forward-to) copies the full URL, query string included, into a header, and that header would follow the redirect.
 
-`authenticate` adds every header name it sets other than `Authorization`, and every query parameter name, to the request's [`redact`](/pages/advanced/request-config#redact) list, so `error.toJSON()` masks the values. `Authorization` and `Cookie` are masked by default.
+`authenticate` adds every header name it sets other than `Authorization`, and every query parameter name it sets, to the request's [`redact`](/pages/advanced/request-config#redact) list, so `error.toJSON()` masks the values. `Authorization` and `Cookie` are masked by default.
 
 A query string credential still ends up in the URL, which servers, proxies and browser history record. Prefer a header when the API accepts one.
 

@@ -131,7 +131,7 @@ skills:
         priority: MEDIUM
         status: active
       - mistake: Putting an API key in instance headers or params
-        mechanism: 'Instance headers and params go to every URL the instance sends, absolute URLs to other hosts included, and a custom header follows a cross-origin redirect. authenticate sends credentials only to the API origin, refuses redirects for non-Authorization headers and cookies, and adds their names to redact.'
+        mechanism: 'Instance headers and params go to every URL the instance sends, absolute URLs to other hosts included, and a custom header follows a cross-origin redirect. authenticate sends credentials only to the API origin, refuses redirects for non-Authorization headers, cookies and query parameters, and adds their names to redact.'
         wrong_pattern: |
           faxios.create({ baseURL, params: { api_key: key }, headers: { "X-Api-Key": key } });
         correct_pattern: |
@@ -146,6 +146,15 @@ skills:
         correct_pattern: |
           faxios.create({ baseURL, withCredentials: true }); // browser: let it send its cookies
         source: 'src/lib/plugins/credentials.ts (keepsCookieHeader); packages/tests/browser/plugins.browser.test.ts'
+        priority: MEDIUM
+        status: active
+      - mistake: A paramsSchema that strips the authenticate query credentials
+        mechanism: 'authenticate adds query credentials to params in middleware, before paramsSchema runs and replaces params with its output. A strip-mode schema drops the credential names, so the request goes out unauthenticated; a strict one rejects it.'
+        wrong_pattern: |
+          api.use(authenticate(() => ({ query: { api_key: key } }))).get("/x", { paramsSchema: z.object({ page: z.number() }) });
+        correct_pattern: |
+          api.get("/x", { paramsSchema: z.object({ page: z.number(), api_key: z.string() }) });
+        source: 'src/lib/core/dispatchRequest.ts (validatePreFlight); packages/tests/unit/plugins/authenticate.test.ts'
         priority: MEDIUM
         status: active
       - mistake: Downloading a binary body without responseType

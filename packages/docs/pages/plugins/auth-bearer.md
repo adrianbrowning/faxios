@@ -61,7 +61,11 @@ Invalid options throw `ERR_BAD_OPTION_VALUE` and unknown ones `ERR_BAD_OPTION`.
 
 ### Other schemes and headers
 
-`scheme` (default `"Bearer"`) and `header` (default `"Authorization"`) change what is sent. An empty `scheme` sends the bare token, which suits API keys:
+`scheme` (default `"Bearer"`) and `header` (default `"Authorization"`) change what is sent. An empty `scheme` sends the bare token, which suits an API key in one header. For a key in the query string, or credentials in several places, use [`authenticate`](/pages/plugins/authenticate).
+
+In a browser, `header: "Cookie"` rejects with `ERR_BAD_OPTION_VALUE`, since `fetch` drops that header. Use [`withCredentials`](/pages/advanced/request-config#withcredentials) there.
+
+An example with `X-Api-Key`:
 
 ```ts
 import faxios from "@gcmdev/faxios";

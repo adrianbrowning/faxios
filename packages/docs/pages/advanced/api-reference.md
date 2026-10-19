@@ -11,7 +11,7 @@ The declaration blocks on this page are checked against the package's shipped Ty
 | `@gcmdev/faxios` | the default `faxios` instance, and the classes, functions, constants and types on this page |
 | `@gcmdev/faxios/plugins` | `definePlugin` only |
 | `@gcmdev/faxios/plugins/auth-bearer` | `authBearer` and the types `AuthBearerOptions` and `AuthBearerCapability` |
-| `@gcmdev/faxios/plugins/authenticate` | `authenticate` and the types `AuthenticateOptions`, `Credentials` and `CredentialValues` |
+| `@gcmdev/faxios/plugins/authenticate` | `authenticate` and the types `AuthenticateOptions`, `AuthenticateCredentials` and `AuthenticateCredentialValues` |
 | `@gcmdev/faxios/plugins/forward-to` | `forwardTo` and the types `ForwardToOptions` and `ForwardToRequestOptions` |
 | `@gcmdev/faxios/plugins/retry` | `retry` and the types `RetryOptions` and `RetryRequestOptions` |
 | `@gcmdev/faxios/plugins/timing` | `timing` and the type `TimingEvent` |
