@@ -206,10 +206,7 @@ await api.get("/reports/latest", { retry: { attempts: 6 } });
 
 ## Ordering with other plugins
 
-Middleware runs in the order it is installed, so where `retry` sits matters:
-
-- Install `timing` before `retry` to measure all tries together, or after it to measure each try.
-- Install `retry` before `authBearer` and the token is fetched again on every try.
+Middleware runs in the order it is installed, so where `retry` sits matters. See [Ordering](/pages/plugins/#ordering) for where to install it relative to `timing` and `authBearer`.
 
 Before each try, `retry` sets [`ctx.attempt`](/pages/advanced/middleware#the-context) to the try's number, counting from 1. Middleware installed after `retry` reads the current try's number there; `timing` reports it as `event.attempt`.
 
@@ -273,4 +270,4 @@ const api = faxios.create({ baseURL: "https://api.example.com" }).use(async (ctx
 await api.get("/users");
 ```
 
-See [Writing a plugin](/pages/advanced/middleware#writing-a-plugin) to package it with typed request options.
+See [Writing a plugin](/pages/plugins/writing-a-plugin) to package it with typed request options.

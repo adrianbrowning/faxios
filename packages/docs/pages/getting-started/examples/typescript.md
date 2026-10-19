@@ -117,7 +117,7 @@ const api = faxios.create({ baseURL: "https://api.example.com" })
 await api.get("/users");
 ```
 
-For bearer tokens, install the [`authBearer`](/pages/advanced/authentication) plugin instead of setting `Authorization` yourself. See [Middleware and plugins](/pages/advanced/middleware) for ordering, plugins and typed request options.
+For bearer tokens, install the [`authBearer`](/pages/plugins/auth-bearer) plugin instead of setting `Authorization` yourself. See [Middleware](/pages/advanced/middleware) for ordering and [Plugins](/pages/plugins/) for plugins and typed request options.
 
 ## Typing errors
 

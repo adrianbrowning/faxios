@@ -55,7 +55,7 @@ const sidebar = [
       { text: "Response schema", link: "/pages/advanced/response-schema" },
       { text: "Schema validation", link: "/pages/advanced/schema-validation" },
       { text: "Config defaults", link: "/pages/advanced/config-defaults" },
-      { text: "Middleware and plugins", link: "/pages/advanced/middleware" },
+      { text: "Middleware", link: "/pages/advanced/middleware" },
       {
         text: "Migrating from interceptors",
         link: "/pages/advanced/migrating-from-interceptors",
@@ -63,7 +63,6 @@ const sidebar = [
       { text: "Error handling", link: "/pages/advanced/error-handling" },
       { text: "Cancellation", link: "/pages/advanced/cancellation" },
       { text: "Authentication", link: "/pages/advanced/authentication" },
-      { text: "Retry & error recovery", link: "/pages/advanced/retry" },
       { text: "Testing", link: "/pages/advanced/testing" },
       {
         text: "x-www-form-urlencoded format",
@@ -92,6 +91,17 @@ const sidebar = [
       { text: "Fetch adapter 🔥", link: "/pages/advanced/fetch-adapter" },
       { text: "Promises", link: "/pages/advanced/promises" },
       { text: "TypeScript", link: "/pages/advanced/type-script" },
+    ],
+  },
+  {
+    text: "Plugins",
+    items: [
+      { text: "Overview", link: "/pages/plugins/" },
+      { text: "Writing a plugin", link: "/pages/plugins/writing-a-plugin" },
+      { text: "authBearer", link: "/pages/plugins/auth-bearer" },
+      { text: "forwardTo", link: "/pages/plugins/forward-to" },
+      { text: "retry", link: "/pages/plugins/retry" },
+      { text: "timing", link: "/pages/plugins/timing" },
     ],
   },
   {
