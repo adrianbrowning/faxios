@@ -99,6 +99,7 @@ const sidebar = [
       { text: "Overview", link: "/pages/plugins/" },
       { text: "Writing a plugin", link: "/pages/plugins/writing-a-plugin" },
       { text: "authBearer", link: "/pages/plugins/auth-bearer" },
+      { text: "authenticate", link: "/pages/plugins/authenticate" },
       { text: "forwardTo", link: "/pages/plugins/forward-to" },
       { text: "retry", link: "/pages/plugins/retry" },
       { text: "timing", link: "/pages/plugins/timing" },

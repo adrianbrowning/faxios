@@ -1,6 +1,6 @@
 # Plugins
 
-Read this before installing the built-in plugins (`authBearer`, `forwardTo`, `retry`, `timing`),
+Read this before installing the built-in plugins (`authBearer`, `authenticate`, `forwardTo`, `retry`, `timing`),
 writing a reusable faxios plugin, typing middleware options, or sharing a value between plugins. Plain
 one-off middleware (`api.use(async (ctx, next) => ...)`) does not need it.
 
@@ -42,6 +42,39 @@ const api = faxios.create({ baseURL: "https://api.example.com" })
 await api.get("/accounts/{id}", { pathParams: { id: "acme" } }); // X-Forward-To: https://api.example.com/accounts/acme
 await api.get("/health", { forward: false });                    // sent straight to the API
 ```
+
+## Send API keys, query string or cookie credentials
+
+`authenticate` from `@gcmdev/faxios/plugins/authenticate` sends credentials from one callback to
+the API's origin only (same rule as `authBearer`), asking on every request and try. Use it instead
+of instance `headers`/`params`, which go to every URL, absolute ones on other hosts included:
+
+```ts
+import faxios from "@gcmdev/faxios";
+import { authenticate } from "@gcmdev/faxios/plugins/authenticate";
+
+const store = { key: "k", session: "s" };
+const api = faxios.create({ baseURL: "https://legacy.example.com" })
+  .use(authenticate(() => ({
+    headers: { "X-Api-Key": store.key },
+    query: { api_key: store.key },
+    cookies: { session: store.session }, // server runtimes only
+  })));
+
+await api.get("/orders"); // /orders?api_key=k, X-Api-Key: k, Cookie: session=s
+```
+
+- A value other than a non-empty string sends nothing for that name; `null` from the callback sends
+  nothing at all.
+- A header, query parameter or `Cookie` the request already has is kept unless `overwrite: true`.
+- Any header but `Authorization`, and any cookie, sets `fetchOptions.redirect: "error"` unless the
+  request sets it; custom header and query names are added to `redact`.
+- In a browser a request can't set `Cookie`, so cookie credentials (or `authBearer` with
+  `header: "Cookie"`) reject with `ERR_BAD_OPTION_VALUE`; use `withCredentials` there.
+- An unknown place (`params`) rejects with `ERR_BAD_OPTION`; a bad header/cookie name or a cookie
+  value with `;`, `,`, whitespace, `"` or `\` with `ERR_BAD_OPTION_VALUE`, before anything is sent.
+
+`authBearer` is `authenticate` with one header; keep it for Bearer tokens and the `auth` capability.
 
 ## Define endpoints on a plugin instance
 
@@ -108,6 +141,9 @@ request rejects with, and `hasOwnInPrototypeChain` to read an option without tru
 error message) to remove `user:pass@` before logging.
 
 ## Read the URL a request goes to
+
+For credentials themselves, install `authenticate` rather than this hand-written plugin; the
+pattern below is for other origin-scoped headers.
 
 Import `resolveRequestURL(config)` from `@gcmdev/faxios`; never join `baseURL` and `url` by hand.
 It is the resolver core uses for the request and `getUri()`: `pathParams` filled in, `baseURL`
@@ -264,6 +300,7 @@ Don't keep the try number in a private symbol on `ctx.state`: other plugins can'
   options. `eject()` removes the defaults for the options the ejected plugin declared.
 
 Sources: `src/lib/plugins/definePlugin.ts`, `src/lib/types.ts` (`FaxiosContext`, `FaxiosPlugin`),
-`src/lib/core/Faxios.ts` (`use`), `packages/tests/unit/plugins/authBearer.test.ts`,
+`src/lib/core/Faxios.ts` (`use`), `src/lib/plugins/authenticate.ts`, `src/lib/plugins/credentials.ts`,
+`packages/tests/unit/plugins/authBearer.test.ts`, `packages/tests/unit/plugins/authenticate.test.ts`,
 `packages/tests/unit/plugins/definePlugin.test.ts`, `packages/tests/unit/plugins/forwardTo.test.ts`,
 `packages/tests/unit/plugins/timing.test.ts`.

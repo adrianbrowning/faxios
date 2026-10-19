@@ -250,3 +250,23 @@ and stop generating Axios APIs it removed or never verified.
     item with `pnpm exec intent maintainer review --base <base> --updated "<reason>"` (or
     `--unchanged`), commit `.intent/review-state.json`, and run `maintainer check` again until it
     reports 0 pending review items.
+- **Batch 4 (2026-10-19, `@gcmdev/faxios` 0.3.0, Intent 0.5.3): `authenticate` plugin.**
+  - New built-in plugin `authenticate` (`@gcmdev/faxios/plugins/authenticate`): one callback gives
+    `{ headers, query, cookies }`, sent only to the API origin by the `authBearer` rule.
+    `authBearer` is now `authenticate` with one header; the shared origin rule and header
+    placement live in `src/lib/plugins/credentials.ts`, the query/cookie parsing in
+    `authenticate.ts`, so `authBearer`'s bundle doesn't carry it.
+  - Decisions (maintainer, this session): keep `authBearer` as a preset rather than remove it; one
+    callback for all places rather than one plugin per place; the name `authenticate` (the request
+    config's `auth` option is HTTP Basic).
+  - Guidance: SKILL.md lists the subpath, adds an `authenticate` bullet and the import-table row;
+    `references/plugins.md` adds "Send API keys, query string or cookie credentials" and points the
+    hand-written `apiKey` example at it. Two failure modes added (instance headers/params for
+    keys; a hand-set `Cookie` in a browser).
+  - Checks: `packages/tests/unit/plugins/authenticate.test.ts` and the `authBearer` suite;
+    `packages/tests/browser/plugins.browser.test.ts` (Chromium, Firefox, WebKit) proves browsers
+    drop a constructed `Cookie` header, so cookie credentials reject there, and that a request
+    keeping its own `Cookie` is still sent (it failed with the earlier eager check); smoke tests on
+    Node, Bun and Deno send `Cookie` and the query credential.
+  - Remaining: a token-refresh plugin (`refreshAuth`) is planned as the next batch; until then the
+    skill keeps the hand-written `refreshOn401` example.

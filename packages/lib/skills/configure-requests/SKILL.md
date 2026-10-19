@@ -35,6 +35,8 @@ sources:
   - src/lib/core/composeSignals.ts
   - src/lib/plugins/definePlugin.ts
   - src/lib/plugins/authBearer.ts
+  - src/lib/plugins/authenticate.ts
+  - src/lib/plugins/credentials.ts
   - src/lib/plugins/forwardTo.ts
   - src/lib/plugins/retry.ts
   - src/lib/plugins/timing.ts
@@ -332,7 +334,8 @@ const api = faxios
 ### Use the built-in plugins from their subpaths
 
 Each built-in plugin has its own subpath and is not exported from the root:
-`authBearer` from `@gcmdev/faxios/plugins/auth-bearer`, `forwardTo` from
+`authBearer` from `@gcmdev/faxios/plugins/auth-bearer`, `authenticate` from
+`@gcmdev/faxios/plugins/authenticate`, `forwardTo` from
 `@gcmdev/faxios/plugins/forward-to`, `retry` from `@gcmdev/faxios/plugins/retry`, `timing` from
 `@gcmdev/faxios/plugins/timing`. Install them with `.use()` on the instance and keep the returned
 value, because it is the only value typed with the plugin's request options (such as
@@ -348,6 +351,11 @@ value, because it is the only value typed with the plugin's request options (suc
   A `getToken` result that isn't a non-empty string sends the request without the header.
   With a custom `header`, it sets `fetchOptions.redirect: "error"` unless the request sets
   `redirect`, because fetch strips only `Authorization` on a cross-origin redirect.
+- `authenticate(getCredentials, { origins, overwrite })` sends `{ headers, query, cookies }`
+  from one callback, by the same origin rule; `authBearer` is it with one header. Use it for API
+  keys in a header or the query string and for server-side session cookies, never instance
+  `headers`/`params`, which reach every host. Cookies reject in a browser (`ERR_BAD_OPTION_VALUE`),
+  which drops a hand-set `Cookie`; use `withCredentials` there.
 - `forwardTo(gateway, { header })` sends each request to `gateway` (absolute http/https URL)
   with the final target URL (`baseURL`, `pathParams`, validated `params` applied) in
   `X-Forward-To` or `header`. It wraps `env.fetch` (or the global fetch); never rewrite `url` in
@@ -422,7 +430,7 @@ await faxios.get("https://api.example.com/feed", { fetchOptions: { cache: "no-st
 | --- | --- |
 | `@gcmdev/faxios` | Stable: default `faxios`, `Faxios`, `FaxiosError`, `FaxiosHeaders`, `CanceledError`, `isCancel`, `isFaxiosError`, `isSchemaValidationError`, `mergeConfig`, `toFormData`, `formToJSON`, `HttpStatusCode`, `resolveRequestURL`, `canceledFromSignal`, `assertSignal`, `onAbort`, `raceAbort`, `hasOwnInPrototypeChain`, `stripUserInfo`, `stripUserInfoInText`, `all`, `create`, `VERSION`, and the types |
 | `@gcmdev/faxios/plugins` | Stable: `definePlugin` only |
-| `@gcmdev/faxios/plugins/auth-bearer`, `/forward-to`, `/retry`, `/timing` | Stable: one plugin each |
+| `@gcmdev/faxios/plugins/auth-bearer`, `/authenticate`, `/forward-to`, `/retry`, `/timing` | Stable: one plugin each |
 | `@gcmdev/faxios/unsafe/*` | Internal helpers (`buildFullPath`, `buildURL`, `combineURLs`, `isAbsoluteURL`). No stability promise; do not use them in application code, and say so if a task seems to need them |
 
 Use `faxios.create()` for instances. An instance made with `new Faxios()` has no `use()` or
@@ -484,5 +492,5 @@ export only. Instances from `create()` do not have them; import them by name ins
 
 - When porting an Axios codebase, read [Axios differences](references/axios-differences.md)
   before changing call sites.
-- When installing `authBearer`, `forwardTo`, `retry` or `timing`, or writing a reusable plugin or typed
+- When installing `authBearer`, `authenticate`, `forwardTo`, `retry` or `timing`, or writing a reusable plugin or typed
   middleware, read [plugins](references/plugins.md).
