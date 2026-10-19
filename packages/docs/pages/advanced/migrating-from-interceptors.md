@@ -49,7 +49,7 @@ await api.get("/users");
 
 `ctx.config` is the request config after it has been merged with the instance defaults, and `ctx.config.headers` is always a `FaxiosHeaders` instance. You change it in place; there is nothing to return except the result of `next`.
 
-For bearer tokens specifically, the built-in [`authBearer`](/pages/advanced/authentication) plugin does this for you, and only sends the token to your own API's origin.
+For bearer tokens specifically, the built-in [`authBearer`](/pages/plugins/auth-bearer) plugin does this for you, and only sends the token to your own API's origin.
 
 An interceptor that rewrites `config.url` to send requests through a forwarding gateway has to fill in path params, run `paramsSchema` and append `params` itself, because middleware runs before dispatch does those. Use the built-in [`forwardTo`](/pages/plugins/forward-to) plugin instead: it forwards the final URL, on every retry.
 
