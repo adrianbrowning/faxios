@@ -23,8 +23,8 @@ export type AuthenticateCredentials = {
   /** Header name to the whole header value, such as `{ Authorization: "Bearer abc" }`. */
   headers?: AuthenticateCredentialValues | undefined;
   /**
-   * Query string parameters, added to the request's `params` before `paramsSchema` runs: a
-   * `paramsSchema` must accept these names (a strip-mode schema drops them, a strict one rejects).
+   * Query string parameters, added to the request's `params`. With a `paramsSchema`, they are
+   * added to its output: the schema sees only the request's own params.
    */
   query?: AuthenticateCredentialValues | undefined;
 };
@@ -97,9 +97,8 @@ function withCredentials<TOptions, TCapabilities>(ctx: FaxiosContext<TOptions, T
  * `"error"` unless the request sets it: fetch sends headers other than Authorization on to
  * whatever host a redirect points at, and `forwardTo` copies the full URL into a header. The name
  * of each of those the plugin sets (not one the request keeps) is added to the request's `redact`
- * list; `Cookie` and `Authorization` are masked by default. Query credentials go into `params`
- * before `paramsSchema` runs, so a `paramsSchema` must accept their names: a strip-mode schema
- * drops them, a strict one rejects.
+ * list; `Cookie` and `Authorization` are masked by default. Query credentials go into `params`;
+ * with a `paramsSchema`, into its output, so the schema neither strips nor rejects them.
  */
 export function authenticate(
   getCredentials: () => AuthenticateCredentials | null | Promise<AuthenticateCredentials | null | undefined> | undefined,

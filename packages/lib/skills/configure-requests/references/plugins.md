@@ -70,8 +70,8 @@ await api.get("/orders"); // /orders?api_key=k, X-Api-Key: k, Cookie: session=s
 - Any header but `Authorization`, any cookie and any query parameter sets
   `fetchOptions.redirect: "error"` unless the request sets it (`forwardTo` copies the URL into a
   header); the custom header and query names it sets are added to `redact`.
-- Query credentials go into `params` before `paramsSchema` runs: the schema must accept their
-  names, or a strip-mode schema drops them and a strict one rejects.
+- With a `paramsSchema`, query credentials are added to its output: the schema sees only the
+  request's own params, so it needn't list the credential names.
 - Types: `AuthenticateOptions`, `AuthenticateCredentials`, `AuthenticateCredentialValues` (spread
   an interface-typed store, `{ ...store }`: interfaces have no index signature).
 - In a browser a request can't set `Cookie`, so cookie credentials (or `authBearer` with

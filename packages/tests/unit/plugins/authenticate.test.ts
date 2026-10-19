@@ -140,20 +140,51 @@ describe("plugins::authenticate", () => {
     assert.strictEqual(query.sent[0]!.redirect, "follow");
   });
 
-  it("puts query credentials into params before paramsSchema runs", async () => {
-    // Keeps only `page`, like a strip-mode schema.
-    const strip = makeSchema((value: unknown) => ({ value: { page: (value as Record<string, unknown>)["page"] } }));
-    const passThrough = makeSchema((value: unknown) => ({ value }));
-    const api = (fetch: ReturnType<typeof recordingFetch>["fetch"]) =>
-      faxios.create({ baseURL: BASE, env: { fetch } }).use(authenticate(() => ({ query: { key: "k" } })));
-    const stripped = recordingFetch();
-    const passed = recordingFetch();
+  it("adds query credentials after paramsSchema, which sees only the request's own params", async () => {
+    const seen: Array<unknown> = [];
+    // Keeps only `page`, like a strip-mode schema; rejects unknown keys, like a strict one.
+    const strip = makeSchema((value: unknown) => {
+      seen.push(value);
+      return { value: { page: (value as Record<string, unknown>)["page"] } };
+    });
+    const strict = makeSchema((value: unknown) =>
+      Object.keys(value as object).every(key => key === "page") ? { value } : { issues: [{ message: "unknown key" }] });
+    const asyncStrip = makeSchema(async (value: unknown) => ({ value: { page: (value as Record<string, unknown>)["page"] } }));
+    const { fetch, sent } = recordingFetch();
+    const api = faxios.create({ baseURL: BASE, env: { fetch } }).use(authenticate(() => ({ query: { key: "k" } })));
 
-    await api(stripped.fetch).get("/x", { params: { page: 1 }, paramsSchema: strip });
-    await api(passed.fetch).get("/x", { params: { page: 1 }, paramsSchema: passThrough });
+    await api.get("/x", { params: { page: 1 }, paramsSchema: strip });
+    await api.get("/x", { params: { page: 1 }, paramsSchema: strict });
+    await api.get("/x", { params: { page: 1 }, paramsSchema: asyncStrip });
 
-    assert.strictEqual(stripped.sent[0]!.url, `${BASE}/x?page=1`);
-    assert.strictEqual(passed.sent[0]!.url, `${BASE}/x?page=1&key=k`);
+    assert.deepStrictEqual(sent.map(s => s.url), [ `${BASE}/x?page=1&key=k`, `${BASE}/x?page=1&key=k`, `${BASE}/x?page=1&key=k` ]);
+    assert.deepStrictEqual(seen.map(value => ({ ...value as object })), [{ page: 1 }]);
+  });
+
+  it("leaves a malformed paramsSchema result, sync or async, for core to reject", async () => {
+    const { fetch, sent } = recordingFetch();
+    const api = faxios.create({ baseURL: BASE, env: { fetch } }).use(authenticate(() => ({ query: { key: "k" } })));
+    const coreRejects = (err: unknown) =>
+      err instanceof FaxiosError && err.code === FaxiosError.ERR_BAD_PARAMS_SCHEMA && err.message.includes("non-Result value");
+
+    await assert.rejects(api.get("/x", { paramsSchema: makeSchema(() => undefined as never) }), coreRejects);
+    await assert.rejects(api.get("/x", { paramsSchema: makeSchema(async () => undefined as never) }), coreRejects);
+    assert.strictEqual(sent.length, 0);
+  });
+
+  it("keeps a query parameter the paramsSchema output already has, unless overwrite", async () => {
+    const withKey = makeSchema(() => ({ value: { key: "own" } }));
+    const kept = recordingFetch();
+    const replaced = recordingFetch();
+    const credentials = () => ({ query: { key: "plugin" } });
+
+    await faxios.create({ baseURL: BASE, env: { fetch: kept.fetch } }).use(authenticate(credentials))
+      .get("/x", { paramsSchema: withKey });
+    await faxios.create({ baseURL: BASE, env: { fetch: replaced.fetch } }).use(authenticate(credentials, { overwrite: true }))
+      .get("/x", { paramsSchema: withKey });
+
+    assert.strictEqual(kept.sent[0]!.url, `${BASE}/x?key=own`);
+    assert.strictEqual(replaced.sent[0]!.url, `${BASE}/x?key=plugin`);
   });
 
   it("doesn't change the caller's plain-object params", async () => {

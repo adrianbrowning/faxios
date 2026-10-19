@@ -3,13 +3,13 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "0193e4af0ce533fd50d3e3f545e090aef8c97de9cb4c2b1465ff80e31c0e2bf8",
+      "fingerprint": "00a9fa1ac606d7316375d3b2cbc50c175a7079fb358e43d5ae897bf9118ae876",
       "snapshot": {
         "MIGRATION_GUIDE.md": "cae546e787c02b7360e79afe3673b8b0d18cade4f48ff8c296fee43feee76dcc",
         "packages/lib/package.json": "a50c90ff4ccf8a7edaff6ed065de53f1fd10a785ce924ce53a2fb120f568405d",
         "packages/lib/skills/configure-requests/SKILL.md": "9366a9497c0b83d3dbe0b8bd9e8f009e6c8ff95613493e2b59e6fba304ea487b",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "e7841075a87fab1a1bdcf7e2deee00b1177165cbc703547e777eaef417704e80",
-        "packages/lib/skills/configure-requests/references/plugins.md": "ab4c4f7b1cdfc94eb260d4d91a27906c942d63518cc62e2b070b91d735cd095e",
+        "packages/lib/skills/configure-requests/references/plugins.md": "3bee8b7ef73e12ee30abc79ea8eff60881b89f06775e219a720436a71809bf8c",
         "packages/lib/src/index.ts": "39264439a2f273bd4c9479a29a9a1435b421f06bdf846d87d3f685311db947ea",
         "packages/lib/src/lib/adapters/fetch.ts": "cbeb583e9ffb55061f8ae3fdb69beda59fd95c0a65303d333de322785ad2a88c",
         "packages/lib/src/lib/core/Faxios.ts": "189c1330e4c53e434d32a4493a889811dc611b4d0e0dfdcc15c07c41da4210e5",
@@ -28,8 +28,8 @@
         "packages/lib/src/lib/core/route.ts": "affd3e41358463e3b5f40a1cb661807bbccacdfd5265db649775894b6819a8a5",
         "packages/lib/src/lib/faxios.ts": "729e970f0b4013c195a6cca36b70774a91fec7c2b329fa180a4f0588311da63a",
         "packages/lib/src/lib/plugins/authBearer.ts": "77d1de3a841bc76ccf670c5896c144b2909812b27e5ff9856aa1f561af78ecf9",
-        "packages/lib/src/lib/plugins/authenticate.ts": "83ec153c232955d9251327c1394470f067ae7e5bf2c1bdd823f70378095af1ef",
-        "packages/lib/src/lib/plugins/credentials.ts": "3921c49ccdbcc4cb23a3e25db61c87ad0586b905cdacbb2e62be61b4a995982e",
+        "packages/lib/src/lib/plugins/authenticate.ts": "c6d6159f0499276292137aa87aff17855b89dae51a3ca31eb83286139b969d03",
+        "packages/lib/src/lib/plugins/credentials.ts": "985337e4e1e5a18ffa0cfb312b28f07fad563e49f5162b706a07fa8eba8d0d1d",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
         "packages/lib/src/lib/plugins/retry.ts": "5baf85c4aa520de6ddb7c4b3f7fc13502bec3d1c26b5d04eb833ea660174d8a1",
@@ -38,31 +38,31 @@
         "packages/tests/unit/api.test.ts": "34607642342842fe6eed5ecba3ca367cd231ef092f44bf0a736cb5d55e25ab98",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "676015494660fe61f56303b21b93cafb78d9ef31e1e1c6210d1cc1a9fc0e86f2",
-        "packages/tests/unit/plugins/authenticate.test.ts": "d546df8f019cf191575ba28df73d3efe54e72007d38ac66f62a0787ad56bf2a8",
+        "packages/tests/unit/plugins/authenticate.test.ts": "7187f7aefd7c698e99ccd44260d629efb7fd016e46f13e405a37350265ab4c7c",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
         "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
+      "head": "ba05c0eb7efa659df0493963be9fb069b3b0c867",
       "outcome": "updated",
-      "reason": "New authenticate plugin and authBearer rebuilt on it: SKILL.md lists the subpath, the import-table row and an authenticate bullet; references/plugins.md adds the credentials section and points the hand-written apiKey example at it",
+      "reason": "references/plugins.md: with a paramsSchema, authenticate adds query credentials to its output, so the schema needn't list them (was: must accept them)",
       "evidence": [
-        "src/lib/plugins/authenticate.ts, credentials.ts, authBearer.ts",
-        "unit/plugins (153 passed), browser-headless plugins (27 passed: Chromium, Firefox, WebKit), test:docs-examples (218 passed), intent validate (1 skill passed)"
+        "pnpm check exit 0 on this layer (unit incl. authenticate.test.ts paramsSchema cases, browser, module, Deno, Bun, docs examples, docs build); intent validate passed",
+        "Changed: packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/plugins/authenticate.ts, packages/lib/src/lib/plugins/credentials.ts, packages/tests/unit/plugins/authenticate.test.ts"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "c8e31e6a222ca50e9786357c65020280dd38a44283a6eecec25bd81e94a6975d",
+      "fingerprint": "28a3407e5bf9ef81f152a6f4c520f3f1f6504e440ca6da276e5eb0f66e29d8b1",
       "snapshot": {
         "MIGRATION_GUIDE.md": "cae546e787c02b7360e79afe3673b8b0d18cade4f48ff8c296fee43feee76dcc",
-        "_artifacts/domain_map.yaml": "1f199d324a7cb66882bf76110b9603eccc120709fa3344c9a0668f5591e7e03c",
-        "_artifacts/skill_spec.md": "7139e09e824fd5047d971ed988a38e6a7cc8b3fc319916e06b2d09827109ac5e",
+        "_artifacts/domain_map.yaml": "8fa1dbb637891377ac292e3e29f3082c613508bdb4a82778d895a706a40f1245",
+        "_artifacts/skill_spec.md": "ab1be33d707f248f1190ca6c6c6f4a8b30fa619911305ba3af42e0f3a29646bc",
         "_artifacts/skill_tree.yaml": "d5239b8b4e06002bad667e5955db864b95b7f8e4c6497067c4114933407e2e07",
         "packages/lib/package.json": "a50c90ff4ccf8a7edaff6ed065de53f1fd10a785ce924ce53a2fb120f568405d",
         "packages/lib/skills/configure-requests/SKILL.md": "9366a9497c0b83d3dbe0b8bd9e8f009e6c8ff95613493e2b59e6fba304ea487b",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "e7841075a87fab1a1bdcf7e2deee00b1177165cbc703547e777eaef417704e80",
-        "packages/lib/skills/configure-requests/references/plugins.md": "ab4c4f7b1cdfc94eb260d4d91a27906c942d63518cc62e2b070b91d735cd095e",
+        "packages/lib/skills/configure-requests/references/plugins.md": "3bee8b7ef73e12ee30abc79ea8eff60881b89f06775e219a720436a71809bf8c",
         "packages/lib/src/index.ts": "39264439a2f273bd4c9479a29a9a1435b421f06bdf846d87d3f685311db947ea",
         "packages/lib/src/lib/adapters/fetch.ts": "cbeb583e9ffb55061f8ae3fdb69beda59fd95c0a65303d333de322785ad2a88c",
         "packages/lib/src/lib/core/Faxios.ts": "189c1330e4c53e434d32a4493a889811dc611b4d0e0dfdcc15c07c41da4210e5",
@@ -81,8 +81,8 @@
         "packages/lib/src/lib/core/route.ts": "affd3e41358463e3b5f40a1cb661807bbccacdfd5265db649775894b6819a8a5",
         "packages/lib/src/lib/faxios.ts": "729e970f0b4013c195a6cca36b70774a91fec7c2b329fa180a4f0588311da63a",
         "packages/lib/src/lib/plugins/authBearer.ts": "77d1de3a841bc76ccf670c5896c144b2909812b27e5ff9856aa1f561af78ecf9",
-        "packages/lib/src/lib/plugins/authenticate.ts": "83ec153c232955d9251327c1394470f067ae7e5bf2c1bdd823f70378095af1ef",
-        "packages/lib/src/lib/plugins/credentials.ts": "3921c49ccdbcc4cb23a3e25db61c87ad0586b905cdacbb2e62be61b4a995982e",
+        "packages/lib/src/lib/plugins/authenticate.ts": "c6d6159f0499276292137aa87aff17855b89dae51a3ca31eb83286139b969d03",
+        "packages/lib/src/lib/plugins/credentials.ts": "985337e4e1e5a18ffa0cfb312b28f07fad563e49f5162b706a07fa8eba8d0d1d",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
         "packages/lib/src/lib/plugins/retry.ts": "5baf85c4aa520de6ddb7c4b3f7fc13502bec3d1c26b5d04eb833ea660174d8a1",
@@ -91,18 +91,18 @@
         "packages/tests/unit/api.test.ts": "34607642342842fe6eed5ecba3ca367cd231ef092f44bf0a736cb5d55e25ab98",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "676015494660fe61f56303b21b93cafb78d9ef31e1e1c6210d1cc1a9fc0e86f2",
-        "packages/tests/unit/plugins/authenticate.test.ts": "d546df8f019cf191575ba28df73d3efe54e72007d38ac66f62a0787ad56bf2a8",
+        "packages/tests/unit/plugins/authenticate.test.ts": "7187f7aefd7c698e99ccd44260d629efb7fd016e46f13e405a37350265ab4c7c",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
         "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
+      "head": "ba05c0eb7efa659df0493963be9fb069b3b0c867",
       "outcome": "updated",
-      "reason": "domain_map adds the authenticate task and two failure modes; skill_spec records Batch 4 with decisions and checks; skill_tree sources synced by intent maintainer sync",
+      "reason": "domain_map drops the paramsSchema-strips-credentials failure mode (fixed in code); skill_spec Batch 4 review-fix note updated",
       "evidence": [
-        "_artifacts/domain_map.yaml, skill_spec.md, skill_tree.yaml",
-        "unit/plugins (153 passed), browser-headless plugins (27 passed: Chromium, Firefox, WebKit), test:docs-examples (218 passed), intent validate (1 skill passed)"
+        "pnpm check exit 0 on this layer (unit incl. authenticate.test.ts paramsSchema cases, browser, module, Deno, Bun, docs examples, docs build); intent validate passed",
+        "Changed: _artifacts/domain_map.yaml, _artifacts/skill_spec.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/plugins/authenticate.ts, packages/lib/src/lib/plugins/credentials.ts, packages/tests/unit/plugins/authenticate.test.ts"
       ]
     },
     "source:knip.json": {
@@ -7767,26 +7767,28 @@
       ]
     },
     "source:.bumpy/authenticate-plugin.md": {
-      "fingerprint": "b836f8e64efc5232c5e5d21ae81ee10652010bea032766797e5a49dbccde4cc3",
+      "fingerprint": "23b58871d2f5f6d791a07c9abacc0ee014f647f4ac6947392944e5256172f558",
       "snapshot": {
-        ".bumpy/authenticate-plugin.md": "a8e2c047d295a243906a4722ef0ccddee57ecc139ab621ead9c3ce698615b33b"
+        ".bumpy/authenticate-plugin.md": "d2750d321ae631045e81003ce54343686be509b1fdd534cf01488efeb3fac5d8"
       },
-      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
+      "head": "ba05c0eb7efa659df0493963be9fb069b3b0c867",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "Bump text and authenticate docs page describe the paramsSchema fix; the guidance is in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (unit incl. authenticate.test.ts paramsSchema cases, browser, module, Deno, Bun, docs examples, docs build); intent validate passed",
         "Changed: .bumpy/authenticate-plugin.md"
       ]
     },
     "source:packages/docs/pages/plugins/authenticate.md": {
-      "fingerprint": "99fe3d42ec9967316fbaf88d30a5488320fdb0c222c8c274869b6372d10be744",
+      "fingerprint": "c431e1f6d028c5483676d2cec59f3910232b32a13247dfc259b2320f8fc36ef9",
       "snapshot": {
-        "packages/docs/pages/plugins/authenticate.md": "9d6e70b7df8f1bd9b8c730f801074512a88280a2ff58a04f9deb008c3b524633"
+        "packages/docs/pages/plugins/authenticate.md": "9c9908537faa3247e60d345cc375219f668b81977630a3c492a48853017864bc"
       },
-      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
+      "head": "ba05c0eb7efa659df0493963be9fb069b3b0c867",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "Bump text and authenticate docs page describe the paramsSchema fix; the guidance is in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (unit incl. authenticate.test.ts paramsSchema cases, browser, module, Deno, Bun, docs examples, docs build); intent validate passed",
         "Changed: packages/docs/pages/plugins/authenticate.md"
       ]
     },

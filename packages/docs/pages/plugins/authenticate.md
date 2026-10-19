@@ -37,7 +37,7 @@ Credentials that can't be sent as given reject the request with a `FaxiosError` 
 
 A header, query parameter or `Cookie` header the request already has, set per request or in the instance defaults, is kept. Pass `overwrite: true` to replace it.
 
-Query credentials go into `params` before [`paramsSchema`](/pages/advanced/request-config#paramsschema) runs, so a `paramsSchema` must accept the credential names. A schema that strips unknown keys drops them, and a strict one rejects the request.
+With a [`paramsSchema`](/pages/advanced/request-config#paramsschema), query credentials are added to the schema's output, not its input. The schema sees only the request's own params, so a schema that strips unknown keys doesn't drop them and a strict one doesn't reject them. A parameter the schema's output already has is kept unless `overwrite` is set.
 
 ## Which requests get the credentials
 

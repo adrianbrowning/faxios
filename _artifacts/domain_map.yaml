@@ -148,15 +148,6 @@ skills:
         source: 'src/lib/plugins/credentials.ts (keepsCookieHeader); packages/tests/browser/plugins.browser.test.ts'
         priority: MEDIUM
         status: active
-      - mistake: A paramsSchema that strips the authenticate query credentials
-        mechanism: 'authenticate adds query credentials to params in middleware, before paramsSchema runs and replaces params with its output. A strip-mode schema drops the credential names, so the request goes out unauthenticated; a strict one rejects it.'
-        wrong_pattern: |
-          api.use(authenticate(() => ({ query: { api_key: key } }))).get("/x", { paramsSchema: z.object({ page: z.number() }) });
-        correct_pattern: |
-          api.get("/x", { paramsSchema: z.object({ page: z.number(), api_key: z.string() }) });
-        source: 'src/lib/core/dispatchRequest.ts (validatePreFlight); packages/tests/unit/plugins/authenticate.test.ts'
-        priority: MEDIUM
-        status: active
       - mistake: Downloading a binary body without responseType
         mechanism: 'Unset responseType reads the body with response.text(), so binary bytes are decoded as UTF-8 and corrupted; data is also typed unknown.'
         wrong_pattern: |

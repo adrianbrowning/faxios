@@ -1,7 +1,7 @@
 // What `authenticate`, `authBearer` and `refreshAuth` share: which requests go to the API they
 // guard, and how credentials are put on a request. Not an entry point.
 
-import type { FaxiosContext, InternalFaxiosRequestConfig } from "../../index.js";
+import type { FaxiosContext, InternalFaxiosRequestConfig, StandardSchemaV1 } from "../../index.js";
 import FaxiosError from "../core/FaxiosError.js";
 import FaxiosHeaders from "../core/FaxiosHeaders.js";
 import { own, templateURL } from "./shared.js";
@@ -131,10 +131,10 @@ type SearchParams = { has: (name: string) => boolean; set: (name: string, value:
 const isSearchParams = (value: unknown): value is SearchParams =>
   Object.prototype.toString.call(value) === "[object URLSearchParams]";
 
-// A copy of the request's params with the query credentials set, never the caller's object, and
-// the names it set. A parameter the request already has is kept unless `overwrite`.
-function withQuery(config: InternalFaxiosRequestConfig, query: Array<[string, string]>, overwrite: boolean): { names: Array<string>; params: InternalFaxiosRequestConfig["params"]; } {
-  const params: unknown = own(config, "params");
+// A copy of `params` with the query credentials set, never the caller's object, and the names it
+// set; `null` when `params` isn't an object or URLSearchParams. A parameter the request already
+// has is kept unless `overwrite`.
+function withQuery(params: unknown, query: Array<[string, string]>, overwrite: boolean): null | { names: Array<string>; params: InternalFaxiosRequestConfig["params"]; } {
   const names: Array<string> = [];
   if (isSearchParams(params)) {
     const copy = new URLSearchParams(params.toString()) as unknown as SearchParams;
@@ -145,9 +145,7 @@ function withQuery(config: InternalFaxiosRequestConfig, query: Array<[string, st
     }
     return { names, params: copy };
   }
-  if (params !== undefined && params !== null && typeof params !== "object") {
-    throw new FaxiosError("authenticate: query credentials need params to be an object or URLSearchParams", FaxiosError.ERR_BAD_OPTION_VALUE, config);
-  }
+  if (params !== undefined && params !== null && typeof params !== "object") return null;
   // Null prototype, like ctx.config: own entries only, and `__proto__` stays a plain key.
   const copy: Record<string, unknown> = Object.create(null);
   for (const [ name, value ] of Object.entries(params ?? {})) copy[name] = value;
@@ -157,6 +155,33 @@ function withQuery(config: InternalFaxiosRequestConfig, query: Array<[string, st
     names.push(name);
   }
   return { names, params: copy };
+}
+
+// `schema` with the query credentials added to its output. Core runs paramsSchema after
+// middleware and sends its output, so a schema that strips unknown keys would drop credentials put
+// in params, and a strict one would reject them. The schema sees only the request's own params.
+// Output core rejects (not an object or URLSearchParams) is passed on as is, for core to report.
+function withQueryAfter(schema: StandardSchemaV1, query: Array<[string, string]>, overwrite: boolean): StandardSchemaV1 {
+  const standard = schema["~standard"];
+  const add = (result: StandardSchemaV1.Result<unknown>): StandardSchemaV1.Result<unknown> => {
+    // A malformed result goes to core as is, which reports it as ERR_BAD_PARAMS_SCHEMA.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- third-party schema
+    if (!result || typeof result !== "object" || result.issues) return result;
+    const placed = withQuery(result.value, query, overwrite);
+    return placed ? { value: placed.params } : result;
+  };
+  return {
+    "~standard": {
+      ...standard,
+      validate: (value: unknown) => {
+        const result: unknown = standard.validate(value);
+        // Awaited the way core awaits it: a Promise from another realm fails `instanceof`.
+        return result !== null && typeof result === "object" && typeof (result as { then?: unknown; }).then === "function"
+          ? Promise.resolve(result as PromiseLike<StandardSchemaV1.Result<unknown>>).then(add)
+          : add(result as StandardSchemaV1.Result<unknown>);
+      },
+    },
+  };
 }
 
 /**
@@ -175,13 +200,20 @@ export function putCredentials<TOptions, TCapabilities>(ctx: FaxiosContext<TOpti
   if (put.custom.includes("cookie") && !keepsCookieHeader()) {
     throw new FaxiosError("A browser doesn't let a request set the Cookie header; it sends its own cookies (see withCredentials)", FaxiosError.ERR_BAD_OPTION_VALUE, config);
   }
-  const placed = query.length > 0 ? withQuery(config, query, overwrite) : undefined;
-  const queryNames = placed?.names ?? [];
+  const schema = query.length > 0 ? own(config, "paramsSchema") : undefined;
+  let placed: undefined | { names: Array<string>; params: InternalFaxiosRequestConfig["params"]; };
+  if (query.length > 0 && !schema) {
+    placed = withQuery(own(config, "params"), query, overwrite) ?? undefined;
+    if (!placed) throw new FaxiosError("authenticate: query credentials need params to be an object or URLSearchParams", FaxiosError.ERR_BAD_OPTION_VALUE, config);
+  }
+  // With a paramsSchema, which names end up set is known only after it runs: mask them all.
+  const queryNames = schema ? query.map(([ name ]) => name) : placed?.names ?? [];
   if (put.set === 0 && queryNames.length === 0) return ctx;
   // Null prototype, like every ctx.config: later middleware must not read inherited keys.
   const next = Object.assign(Object.create(null) as typeof config, config);
   next.headers = put.headers;
   if (placed) next.params = placed.params;
+  if (schema) next.paramsSchema = withQueryAfter(schema, query, overwrite);
   // Every credential but Authorization: fetch sends other headers on to whatever host a redirect
   // points at, and forwardTo copies the full URL, query string and all, into a header.
   const redact = [ ...put.custom, ...queryNames ];

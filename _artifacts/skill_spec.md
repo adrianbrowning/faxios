@@ -274,6 +274,6 @@ and stop generating Axios APIs it removed or never verified.
     header); only the names the plugin sets go into `redact`; query placement moved into
     `credentials.ts`. Types renamed to `AuthenticateCredentials` and
     `AuthenticateCredentialValues`. `references/plugins.md` covers the redirect rule, the rename and
-    that a `paramsSchema` must accept query credential names; one failure mode added (a
-    `paramsSchema` stripping them). Checks: `authenticate.test.ts` redirect, `paramsSchema`,
+    that with a `paramsSchema` query credentials are added to its output (the schema sees only the
+    request's own params, so it can't strip or reject them). Checks: `authenticate.test.ts` redirect, `paramsSchema`,
     `redact` and `params` cases.
