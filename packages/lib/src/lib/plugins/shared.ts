@@ -5,6 +5,7 @@
 import type { InternalFaxiosRequestConfig } from "../../index.js";
 import FaxiosError from "../core/FaxiosError.js";
 import resolveRequestURL from "../core/resolveRequestURL.js";
+import { hasOwnInPrototypeChain } from "../utils.js";
 
 /** A caller-supplied field, read as an own property only (THREATMODEL T-R4b). */
 export const own = <T extends object, K extends keyof T>(source: T, key: K): T[K] | undefined =>
@@ -36,6 +37,9 @@ export const isBoolean: OptionCheck = value => typeof value === "boolean" || "a 
 export const isFunction: OptionCheck = value => typeof value === "function" || "a function";
 export const isHeaderName: OptionCheck = value => (typeof value === "string" && TOKEN.test(value)) || "a header name";
 
+const isStatus = (value: unknown) => Number.isInteger(value) && (value as number) >= 100 && (value as number) <= 599;
+export const isStatusList: OptionCheck = value => (Array.isArray(value) && value.every(isStatus)) || "an array of HTTP status codes (100-599)";
+
 /**
  * Rejects plugin options that aren't an object (`ERR_BAD_OPTION_VALUE`), have a key the schema
  * doesn't list (`ERR_BAD_OPTION`) or a value its check refuses (`ERR_BAD_OPTION_VALUE`). An own
@@ -51,4 +55,31 @@ export function assertOptions(value: unknown, schema: Readonly<Record<string, Op
     const result = option === undefined || check(option);
     if (result !== true) throw new FaxiosError(`option ${key} must be ${String(result)}`, FaxiosError.ERR_BAD_OPTION_VALUE, config);
   }
+}
+
+// A stream is consumed by the first try, so sending it again would send nothing.
+// The same stream checks the fetch adapter uses: web ReadableStreams, Node-style pipe streams and
+// async iterables (such as async generators), whose `pipe` or `Symbol.asyncIterator` the body or
+// its class defines. One only a polluted Object.prototype supplies doesn't make a plain object
+// body a stream.
+const ownMethod = (data: object, key: PropertyKey): boolean =>
+  hasOwnInPrototypeChain(data, key) && typeof Reflect.get(data, key) === "function";
+
+/** Whether a request body can be sent again: anything but a stream (see above). */
+export function canReplay(data: unknown): boolean {
+  if (Object.prototype.toString.call(data) === "[object ReadableStream]") return false;
+  if (typeof data !== "object" || data === null) return true;
+  return !ownMethod(data, "pipe") && !ownMethod(data, Symbol.asyncIterator);
+}
+
+/**
+ * Cancels a status error's `responseType: "stream"` body, which holds its connection open until
+ * it is read or cancelled, when the error is dropped for another try. One already being read is
+ * left alone.
+ */
+export function discardBody(reason: unknown): void {
+  const data: unknown = reason instanceof FaxiosError ? reason.response?.data : undefined;
+  if (Object.prototype.toString.call(data) !== "[object ReadableStream]") return;
+  const stream = data as InstanceType<typeof ReadableStream>;
+  if (!stream.locked) stream.cancel().catch(() => {});
 }

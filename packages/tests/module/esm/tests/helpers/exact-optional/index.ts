@@ -6,6 +6,7 @@ import type { FaxiosRequestConfig } from "faxios";
 import { authBearer } from "faxios/plugins/auth-bearer";
 import { authenticate } from "faxios/plugins/authenticate";
 import { forwardTo } from "faxios/plugins/forward-to";
+import { refreshAuth } from "faxios/plugins/refresh-auth";
 import { retry } from "faxios/plugins/retry";
 
 declare const maybeBoolean: boolean | undefined;
@@ -34,11 +35,12 @@ async function undefinedOptionals(): Promise<void> {
 async function undefinedNestedOptionals(): Promise<void> {
   await faxios.get("/user", { transitional: { validateStatusUndefinedResolves: maybeBoolean, forcedJSONParsing: undefined } });
   const api = create({ transitional: { validateStatusUndefinedResolves: maybeBoolean } })
+    .use(refreshAuth(() => {}, { statuses: undefined, shouldRefresh: undefined, origins: undefined }))
     .use(retry({ attempts: maybeNumber, attemptTimeout: undefined, jitter: undefined }))
     .use(authBearer(() => "token", { scheme: maybeString, header: undefined, overwrite: maybeBoolean }))
     .use(authenticate(() => ({ headers: undefined, query: { key: maybeString }, cookies: undefined }), { origins: undefined, overwrite: maybeBoolean }))
     .use(forwardTo("http://gateway.local/", { header: maybeString }));
-  await api.get("/user", { retry: { attempts: maybeNumber }, forward: undefined });
+  await api.get("/user", { retry: { attempts: maybeNumber }, forward: undefined, refreshAuth: undefined });
 }
 
 void undefinedOptionals;

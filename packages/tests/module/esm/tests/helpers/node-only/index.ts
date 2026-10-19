@@ -7,6 +7,7 @@ import { definePlugin } from "faxios/plugins";
 import { authBearer } from "faxios/plugins/auth-bearer";
 import { authenticate } from "faxios/plugins/authenticate";
 import { forwardTo } from "faxios/plugins/forward-to";
+import { refreshAuth } from "faxios/plugins/refresh-auth";
 import { retry } from "faxios/plugins/retry";
 import { timing } from "faxios/plugins/timing";
 import buildFullPath from "faxios/unsafe/core/buildFullPath.js";
@@ -29,6 +30,7 @@ async function nodeConsumer(): Promise<void> {
   const nodeSignal: GenericAbortSignal = AbortSignal.timeout(1000);
 
   const instance = create()
+    .use(refreshAuth(() => {}))
     .use(retry())
     .use(timing(event => void event))
     .use(authBearer(() => "t"))

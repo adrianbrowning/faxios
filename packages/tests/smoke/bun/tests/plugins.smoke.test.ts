@@ -4,6 +4,7 @@ import * as pluginsEntry from "faxios/plugins";
 import { authBearer } from "faxios/plugins/auth-bearer";
 import { authenticate } from "faxios/plugins/authenticate";
 import { forwardTo } from "faxios/plugins/forward-to";
+import { refreshAuth } from "faxios/plugins/refresh-auth";
 import { retry } from "faxios/plugins/retry";
 import { timing } from "faxios/plugins/timing";
 import type { TimingEvent } from "faxios/plugins/timing";
@@ -13,7 +14,7 @@ import { toRequest } from "./helpers.ts";
 describe("plugin subpaths", () => {
   test("faxios/plugins exports only definePlugin, the root no plugin API", () => {
     expect(Object.keys(pluginsEntry)).toEqual([ "definePlugin" ]);
-    for (const name of [ "authBearer", "authenticate", "forwardTo", "retry", "timing", "definePlugin" ]) {
+    for (const name of [ "authBearer", "authenticate", "forwardTo", "refreshAuth", "retry", "timing", "definePlugin" ]) {
       expect(Object.hasOwn(root, name)).toBe(false);
     }
   });
@@ -74,6 +75,7 @@ describe("plugin subpaths", () => {
       return new Response(null, { status: 200 });
     };
     const api = faxios.create({ baseURL: "http://example.com", env: { fetch } })
+      .use(refreshAuth(() => {}))
       .use(authenticate(() => ({ query: { api_key: "q" }, cookies: { session: "s" } })));
 
     await api.get("/data");
