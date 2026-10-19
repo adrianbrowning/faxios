@@ -208,44 +208,7 @@ console.log(status); // 404
 
 ### Refreshing a token after a 401
 
-This plugin refreshes the token once after a 401 and retries. Install it before [`authBearer`](/pages/plugins/auth-bearer). It never sets `Authorization` itself: `authBearer` runs again inside the second `next`, calls `getToken` again and applies its origin rule, so a 401 from a third-party URL is retried without your token. All 401s wait for one shared refresh, because with rotating refresh tokens a second refresh sends a token the first one already spent.
-
-```ts
-import faxios, { FaxiosError } from "@gcmdev/faxios";
-import { definePlugin } from "@gcmdev/faxios/plugins";
-import { authBearer } from "@gcmdev/faxios/plugins/auth-bearer";
-
-function refreshOn401(refresh: () => Promise<void>) {
-  let refreshing: Promise<void> | undefined;
-  return definePlugin({
-    name: "refreshOn401",
-    middleware: async (ctx, next) => {
-      try {
-        return await next(ctx);
-      }
-      catch (err) {
-        if (!(err instanceof FaxiosError) || err.response?.status !== 401) throw err;
-        refreshing ??= refresh().finally(() => {
-          refreshing = undefined;
-        });
-        await refreshing;
-        return next(ctx);
-      }
-    },
-  });
-}
-
-let token = "expired";
-const refreshToken = async () => {
-  token = "fresh";
-};
-
-const api = faxios.create({ baseURL: "https://api.example.com" })
-  .use(refreshOn401(refreshToken))
-  .use(authBearer(() => token));
-
-await api.get("/me");
-```
+The built-in [`refreshAuth`](/pages/plugins/refresh-auth) plugin is this pattern: it catches a 401 around `next`, refreshes once, and calls `next(ctx)` again, so `authBearer` or `authenticate` installed after it puts the new credentials on the second try.
 
 ### Returning without `next` skips the request
 

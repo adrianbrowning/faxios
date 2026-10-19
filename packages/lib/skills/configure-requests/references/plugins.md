@@ -1,6 +1,6 @@
 # Plugins
 
-Read this before installing the built-in plugins (`authBearer`, `authenticate`, `forwardTo`, `retry`, `timing`),
+Read this before installing the built-in plugins (`authBearer`, `authenticate`, `forwardTo`, `refreshAuth`, `retry`, `timing`),
 writing a reusable faxios plugin, typing middleware options, or sharing a value between plugins. Plain
 one-off middleware (`api.use(async (ctx, next) => ...)`) does not need it.
 
@@ -228,44 +228,38 @@ const api = faxios
   .use(requireSignIn());
 ```
 
-## Refresh a token after a 401
+## Refresh credentials after a 401
 
-Install the refresh plugin before `authBearer` and never set `Authorization` in it. The retry
-runs `authBearer` again, which calls `getToken` and applies its origin rule, so a third-party 401
-is retried without the token. Share one in-flight refresh so rotating refresh tokens aren't spent twice:
+Install `refreshAuth` from `@gcmdev/faxios/plugins/refresh-auth` first, before `retry` and the
+credential plugin, and never set credentials in it. The second try runs `authBearer` or
+`authenticate` again, which reads the refreshed store and applies its origin rule:
 
 ```ts
-import faxios, { FaxiosError } from "@gcmdev/faxios";
-import { definePlugin } from "@gcmdev/faxios/plugins";
+import faxios from "@gcmdev/faxios";
 import { authBearer } from "@gcmdev/faxios/plugins/auth-bearer";
-
-function refreshOn401(refresh: () => Promise<void>) {
-  let refreshing: Promise<void> | undefined;
-  return definePlugin({
-    name: "refreshOn401",
-    middleware: async (ctx, next) => {
-      try {
-        return await next(ctx);
-      }
-      catch (error) {
-        if (!(error instanceof FaxiosError) || error.response?.status !== 401) throw error;
-        refreshing ??= refresh().finally(() => { refreshing = undefined; });
-        await refreshing;
-        return next(ctx);
-      }
-    },
-  });
-}
+import { refreshAuth } from "@gcmdev/faxios/plugins/refresh-auth";
+import { retry } from "@gcmdev/faxios/plugins/retry";
 
 let token = "old";
 const api = faxios
   .create({ baseURL: "https://api.example.com" })
-  .use(refreshOn401(async () => { token = "new"; }))
+  .use(refreshAuth(async () => {
+    const { data } = await api.post<{ access_token: string }>("/auth/refresh", null, { refreshAuth: false });
+    token = data.access_token;
+  }))
+  .use(retry())
   .use(authBearer(() => token));
 ```
 
-Calling `next` again re-sends the body. A stream body is used up by the first try; sending it
-again rejects with `ERR_BAD_REQUEST`.
+- It refreshes on `statuses` (default `[401]`) or `shouldRefresh(error)`, only for the API origin
+  (`origins` like `authBearer`), and sends the request again once, any method. A stream body or an
+  aborted signal rejects with the original error.
+- Concurrent 401s share one `refresh` call, so rotating refresh tokens are spent once; a request
+  sent before the last refresh finished is retried without another one. A rejected `refresh`
+  rejects every waiting request with its error.
+- Put `refreshAuth: false` on the refresh call (or make it with another instance). Without it a
+  401 on the refresh call waits for the refresh it belongs to and never settles.
+- Add 403 to `statuses` only when the API sends 403 for expired credentials.
 
 ## Report the try number from your own retry
 
@@ -306,6 +300,7 @@ Don't keep the try number in a private symbol on `ctx.state`: other plugins can'
 
 Sources: `src/lib/plugins/definePlugin.ts`, `src/lib/types.ts` (`FaxiosContext`, `FaxiosPlugin`),
 `src/lib/core/Faxios.ts` (`use`), `src/lib/plugins/authenticate.ts`, `src/lib/plugins/credentials.ts`,
-`packages/tests/unit/plugins/authBearer.test.ts`, `packages/tests/unit/plugins/authenticate.test.ts`,
+`src/lib/plugins/refreshAuth.ts`, `packages/tests/unit/plugins/authBearer.test.ts`,
+`packages/tests/unit/plugins/authenticate.test.ts`, `packages/tests/unit/plugins/refreshAuth.test.ts`,
 `packages/tests/unit/plugins/definePlugin.test.ts`, `packages/tests/unit/plugins/forwardTo.test.ts`,
 `packages/tests/unit/plugins/timing.test.ts`.

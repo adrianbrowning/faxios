@@ -268,8 +268,7 @@ and stop generating Axios APIs it removed or never verified.
     drop a constructed `Cookie` header, so cookie credentials reject there, and that a request
     keeping its own `Cookie` is still sent (it failed with the earlier eager check); smoke tests on
     Node, Bun and Deno send `Cookie` and the query credential.
-  - Remaining: a token-refresh plugin (`refreshAuth`) is planned as the next batch; until then the
-    skill keeps the hand-written `refreshOn401` example.
+  - Remaining: a token-refresh plugin (`refreshAuth`) was planned as the next batch (Batch 5).
   - Review fixes: query credentials refuse redirects too (`forwardTo` copies the URL into a
     header); only the names the plugin sets go into `redact`; query placement moved into
     `credentials.ts`. Types renamed to `AuthenticateCredentials` and
@@ -277,3 +276,22 @@ and stop generating Axios APIs it removed or never verified.
     that with a `paramsSchema` query credentials are added to its output (the schema sees only the
     request's own params, so it can't strip or reject them). Checks: `authenticate.test.ts` redirect, `paramsSchema`,
     `redact` and `params` cases.
+- **Batch 5 (2026-10-19, `@gcmdev/faxios` 0.3.0, Intent 0.5.3): `refreshAuth` plugin.**
+  - New built-in plugin `refreshAuth` (`@gcmdev/faxios/plugins/refresh-auth`): on a 401 (or
+    `statuses`/`shouldRefresh`) from the API origin it runs one shared `refresh`, then sends the
+    request again once, any method. A request sent before the last refresh finished is retried
+    without another refresh. `refreshAuth: false` per request opts out.
+  - Decision (maintainer, this session): retry all methods after a refresh, since a 401 means the
+    server didn't act on the request. Decision (this batch): no automatic reentrancy detection; a
+    401 on the refresh call through the same instance would wait on itself, so the skill and docs
+    require `refreshAuth: false` on that call (or another instance). There is no cross-runtime way
+    to tell the refresh call from a concurrent app request (no AsyncLocalStorage in browsers).
+  - Guidance: SKILL.md lists the subpath, adds a `refreshAuth` bullet and the import-table row;
+    `references/plugins.md` replaces the hand-written `refreshOn401` with `refreshAuth`;
+    `references/axios-differences.md` maps the auth and 401-refresh interceptors. One HIGH failure
+    mode added (refresh call without the opt-out). `canReplay`/`discardBody`/`isStatusList` moved
+    from `retry.ts` to `plugins/shared.ts`, unchanged.
+  - Checks: `packages/tests/unit/plugins/refreshAuth.test.ts` (refresh and retry, one retry only,
+    one shared refresh, no second refresh after one finished, refresh rejection, origin/status/
+    stream limits, query credentials, abort during and after the refresh, invalid signal, the
+    opt-out with the same instance), the browser plugins suite, smoke on Node, Bun and Deno.
