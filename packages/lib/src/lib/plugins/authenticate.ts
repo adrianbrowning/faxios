@@ -3,7 +3,6 @@
 import type { FaxiosContext, FaxiosPlugin, InternalFaxiosRequestConfig } from "../../index.js";
 import FaxiosError from "../core/FaxiosError.js";
 import { goesToAPI, isOriginList, originsOption, putCredentials } from "./credentials.js";
-import type { QueryCredentials } from "./credentials.js";
 import { definePlugin } from "./definePlugin.js";
 import { assertOptions, isBoolean, own, TOKEN } from "./shared.js";
 import type { OptionCheck } from "./shared.js";
@@ -11,17 +10,23 @@ import type { OptionCheck } from "./shared.js";
 // `x?: T | undefined` lets a consumer with `exactOptionalPropertyTypes` pass the `undefined` the
 // option checks treat as unset.
 /* eslint-disable sonarjs/no-redundant-optional -- see above */
-/** Name to value. A value other than a non-empty string (`null`, `undefined`, `""`) sends nothing. */
-export type CredentialValues = Readonly<Record<string, null | string | undefined>>;
+/**
+ * Name to value. A value other than a non-empty string (`null`, `undefined`, `""`) sends nothing.
+ * An interface-typed store has no index signature, so pass a copy: `{ ...store }`.
+ */
+export type AuthenticateCredentialValues = Readonly<Record<string, null | string | undefined>>;
 
 /** Where `authenticate` puts credentials on a request. */
-export type Credentials = {
+export type AuthenticateCredentials = {
   /** Sent in one `Cookie` header. Server runtimes only: a browser doesn't let a request set it. */
-  cookies?: CredentialValues | undefined;
+  cookies?: AuthenticateCredentialValues | undefined;
   /** Header name to the whole header value, such as `{ Authorization: "Bearer abc" }`. */
-  headers?: CredentialValues | undefined;
-  /** Query string parameters, added to the request's `params`. */
-  query?: CredentialValues | undefined;
+  headers?: AuthenticateCredentialValues | undefined;
+  /**
+   * Query string parameters, added to the request's `params` before `paramsSchema` runs: a
+   * `paramsSchema` must accept these names (a strip-mode schema drops them, a strict one rejects).
+   */
+  query?: AuthenticateCredentialValues | undefined;
 };
 
 export type AuthenticateOptions = {
@@ -29,7 +34,7 @@ export type AuthenticateOptions = {
    * The origins (`"https://api.example.com"`) that get the credentials, replacing the default
    * rule: with an absolute instance `baseURL`, only its origin; otherwise only relative request URLs.
    */
-  origins?: Array<string> | undefined;
+  origins?: ReadonlyArray<string> | undefined;
   /** Replace a header or query parameter the request already has. Default `false`: it is kept. */
   overwrite?: boolean | undefined;
 };
@@ -47,7 +52,7 @@ const COOKIE_VALUE = /^[\x21\x23-\x2B\x2D-\x3A\x3C-\x5B\x5D-\x7E]+$/;
 // The own entries with a non-empty string value, in order; any other value sends nothing, so a
 // signed-out store never sends `null`. A name `valid` refuses rejects, as does a cookie value
 // that would add cookies of its own.
-function entriesOf(values: CredentialValues | undefined, place: string, valid: RegExp, config: InternalFaxiosRequestConfig): Array<[string, string]> {
+function entriesOf(values: AuthenticateCredentialValues | undefined, place: string, valid: RegExp, config: InternalFaxiosRequestConfig): Array<[string, string]> {
   const out: Array<[string, string]> = [];
   for (const [ name, value ] of Object.entries(values ?? {})) {
     if (!valid.test(name)) throw new FaxiosError(`authenticate: ${JSON.stringify(name)} is not a valid ${place} name`, FaxiosError.ERR_BAD_OPTION_VALUE, config);
@@ -60,30 +65,6 @@ function entriesOf(values: CredentialValues | undefined, place: string, valid: R
   return out;
 }
 
-type SearchParams = { has: (name: string) => boolean; set: (name: string, value: string) => void; toString: () => string; };
-
-const isSearchParams = (value: unknown): value is SearchParams =>
-  Object.prototype.toString.call(value) === "[object URLSearchParams]";
-
-// The request's params with the query credentials added: a copy, never the caller's object. A
-// parameter the request already has is kept unless `overwrite`.
-function withQuery(config: InternalFaxiosRequestConfig, query: Array<[string, string]>, overwrite: boolean): InternalFaxiosRequestConfig["params"] {
-  const params: unknown = own(config, "params");
-  if (isSearchParams(params)) {
-    const copy = new URLSearchParams(params.toString()) as unknown as SearchParams;
-    for (const [ name, value ] of query) if (overwrite || !copy.has(name)) copy.set(name, value);
-    return copy;
-  }
-  if (params !== undefined && params !== null && typeof params !== "object") {
-    throw new FaxiosError("authenticate: query credentials need params to be an object or URLSearchParams", FaxiosError.ERR_BAD_OPTION_VALUE, config);
-  }
-  // Null prototype, like ctx.config: own entries only, and `__proto__` stays a plain key.
-  const copy: Record<string, unknown> = Object.create(null);
-  for (const [ name, value ] of Object.entries(params ?? {})) copy[name] = value;
-  for (const [ name, value ] of query) if (overwrite || !Object.hasOwn(copy, name)) copy[name] = value;
-  return copy;
-}
-
 // `ctx` with `credentials` on a copy of its config, or `ctx` itself when there is nothing to send.
 // Throws a `FaxiosError` for credentials that can't be sent as given: not an object, an unknown
 // place, a bad name or cookie value, or a cookie in a browser.
@@ -94,16 +75,12 @@ function withCredentials<TOptions, TCapabilities>(ctx: FaxiosContext<TOptions, T
     throw new FaxiosError("authenticate: getCredentials must give an object, null or undefined", FaxiosError.ERR_BAD_OPTION_VALUE, config);
   }
   assertOptions(credentials, credentialsSchema, "authenticate", config);
-  const given = credentials as Credentials;
+  const given = credentials as AuthenticateCredentials;
   const headers = entriesOf(own(given, "headers"), "header", TOKEN, config);
   const query = entriesOf(own(given, "query"), "query", /./, config);
   const cookies = entriesOf(own(given, "cookies"), "cookie", TOKEN, config);
   if (cookies.length > 0) headers.push([ "Cookie", cookies.map(([ name, value ]) => `${name}=${value}`).join("; ") ]);
-  if (headers.length === 0 && query.length === 0) return ctx;
-  const queryCredentials: QueryCredentials | undefined = query.length > 0
-    ? { names: query.map(([ name ]) => name), params: withQuery(config, query, overwrite) }
-    : undefined;
-  return putCredentials(ctx, headers, overwrite, queryCredentials);
+  return putCredentials(ctx, headers, overwrite, query);
 }
 
 /**
@@ -116,12 +93,16 @@ function withCredentials<TOptions, TCapabilities>(ctx: FaxiosContext<TOptions, T
  * The credentials go only to the instance `baseURL` origin when that is absolute, otherwise only
  * to relative request URLs; a per-request `baseURL` doesn't widen the rule. `origins` replaces it.
  * A header or query parameter the request already has is kept unless `overwrite` is set. Any
- * header but `Authorization`, and so any cookie, sets `fetchOptions.redirect` to `"error"` unless
- * the request sets it, because fetch sends those on to whatever host a redirect points at. Every
- * credential name but `Authorization` and `Cookie` is added to the request's `redact` list.
+ * header but `Authorization`, any cookie, and any query parameter sets `fetchOptions.redirect` to
+ * `"error"` unless the request sets it: fetch sends headers other than Authorization on to
+ * whatever host a redirect points at, and `forwardTo` copies the full URL into a header. The name
+ * of each of those the plugin sets (not one the request keeps) is added to the request's `redact`
+ * list; `Cookie` and `Authorization` are masked by default. Query credentials go into `params`
+ * before `paramsSchema` runs, so a `paramsSchema` must accept their names: a strip-mode schema
+ * drops them, a strict one rejects.
  */
 export function authenticate(
-  getCredentials: () => Credentials | null | Promise<Credentials | null | undefined> | undefined,
+  getCredentials: () => AuthenticateCredentials | null | Promise<AuthenticateCredentials | null | undefined> | undefined,
   options: AuthenticateOptions = {}
 ): FaxiosPlugin {
   if (typeof getCredentials !== "function") {

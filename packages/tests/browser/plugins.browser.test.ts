@@ -85,8 +85,8 @@ describe("plugin entry points (vitest browser)", () => {
     const cookies = faxios.create().use(authenticate(() => ({ cookies: { session: "s" } })));
     const header = faxios.create().use(authBearer(() => "session=s", { header: "Cookie", scheme: "" }));
 
-    await expect(cookies.get("/data")).rejects.toMatchObject({ code: "ERR_BAD_OPTION_VALUE" });
-    await expect(header.get("/data")).rejects.toMatchObject({ code: "ERR_BAD_OPTION_VALUE" });
+    await expect(cookies.get("/data")).rejects.toMatchObject({ code: "ERR_BAD_OPTION_VALUE", message: expect.stringContaining("Cookie") });
+    await expect(header.get("/data")).rejects.toMatchObject({ code: "ERR_BAD_OPTION_VALUE", message: expect.stringContaining("Cookie") });
     expect(mock.requests).toHaveLength(0);
   });
 

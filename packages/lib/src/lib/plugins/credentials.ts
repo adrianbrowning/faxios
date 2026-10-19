@@ -108,32 +108,66 @@ function keepsCookieHeader(): boolean {
   return cookieHeaderKept;
 }
 
-// A copy of `headers` with the credential headers set, and the lower-cased names it set other
-// than Authorization: fetch strips only Authorization when a redirect leaves the origin, so those
+// A copy of `headers` with the credential headers set, how many it set, and the lower-cased names
+// it set other than Authorization: fetch strips only Authorization when a redirect leaves the origin, so those
 // would follow a redirect to whatever host it points at. On a copy, so middleware that calls
 // next() again (retry installed before this plugin) comes back through here without the
 // credentials, and every try asks for fresh ones.
-function withHeaders(headers: InternalFaxiosRequestConfig["headers"], credentials: Array<[string, string]>, overwrite: boolean): { custom: Array<string>; headers: FaxiosHeaders; } {
+function withHeaders(headers: InternalFaxiosRequestConfig["headers"], credentials: Array<[string, string]>, overwrite: boolean): { custom: Array<string>; headers: FaxiosHeaders; set: number; } {
   const sent = new FaxiosHeaders(headers);
   const custom: Array<string> = [];
+  let set = 0;
   for (const [ name, value ] of credentials) {
     if (!overwrite && sent.has(name)) continue;
     sent.set(name, value, true);
+    set++;
     if (name.toLowerCase() !== "authorization") custom.push(name.toLowerCase());
   }
-  return { custom, headers: sent };
+  return { custom, headers: sent, set };
 }
 
-/** Query string credentials: the request's params with them added, and their names to mask. */
-export type QueryCredentials = { names: ReadonlyArray<string>; params: InternalFaxiosRequestConfig["params"]; };
+type SearchParams = { has: (name: string) => boolean; set: (name: string, value: string) => void; toString: () => string; };
+
+const isSearchParams = (value: unknown): value is SearchParams =>
+  Object.prototype.toString.call(value) === "[object URLSearchParams]";
+
+// A copy of the request's params with the query credentials set, never the caller's object, and
+// the names it set. A parameter the request already has is kept unless `overwrite`.
+function withQuery(config: InternalFaxiosRequestConfig, query: Array<[string, string]>, overwrite: boolean): { names: Array<string>; params: InternalFaxiosRequestConfig["params"]; } {
+  const params: unknown = own(config, "params");
+  const names: Array<string> = [];
+  if (isSearchParams(params)) {
+    const copy = new URLSearchParams(params.toString()) as unknown as SearchParams;
+    for (const [ name, value ] of query) {
+      if (!overwrite && copy.has(name)) continue;
+      copy.set(name, value);
+      names.push(name);
+    }
+    return { names, params: copy };
+  }
+  if (params !== undefined && params !== null && typeof params !== "object") {
+    throw new FaxiosError("authenticate: query credentials need params to be an object or URLSearchParams", FaxiosError.ERR_BAD_OPTION_VALUE, config);
+  }
+  // Null prototype, like ctx.config: own entries only, and `__proto__` stays a plain key.
+  const copy: Record<string, unknown> = Object.create(null);
+  for (const [ name, value ] of Object.entries(params ?? {})) copy[name] = value;
+  for (const [ name, value ] of query) {
+    if (!overwrite && Object.hasOwn(copy, name)) continue;
+    copy[name] = value;
+    names.push(name);
+  }
+  return { names, params: copy };
+}
 
 /**
- * `ctx` with the credential `headers` (and `query`, when given) put on a copy of its config. A
- * header the request already has is kept unless `overwrite`. Any header but Authorization makes
- * the request refuse redirects unless it sets `redirect`, and is added to its `redact` list.
- * Throws `ERR_BAD_OPTION_VALUE` for a Cookie header in a browser, which would drop it unsent.
+ * `ctx` with the credential `headers` and `query` parameters put on a copy of its config, or
+ * `ctx` itself when it sets none. One the request already has is kept unless `overwrite`. Any
+ * header but Authorization, and any query parameter, makes the request refuse redirects unless
+ * it sets `redirect`, and is added to its `redact` list. Throws `ERR_BAD_OPTION_VALUE` for a
+ * Cookie header in a browser, which would drop it unsent, and for query credentials on params
+ * that aren't an object or URLSearchParams.
  */
-export function putCredentials<TOptions, TCapabilities>(ctx: FaxiosContext<TOptions, TCapabilities>, headers: Array<[string, string]>, overwrite: boolean, query?: QueryCredentials): FaxiosContext<TOptions, TCapabilities> {
+export function putCredentials<TOptions, TCapabilities>(ctx: FaxiosContext<TOptions, TCapabilities>, headers: Array<[string, string]>, overwrite: boolean, query: Array<[string, string]> = []): FaxiosContext<TOptions, TCapabilities> {
   const config = ctx.config;
   const put = withHeaders(config.headers, headers, overwrite);
   // From `cookies` or set as a header (`authBearer` with `header: "Cookie"`), alike. A Cookie the
@@ -141,20 +175,22 @@ export function putCredentials<TOptions, TCapabilities>(ctx: FaxiosContext<TOpti
   if (put.custom.includes("cookie") && !keepsCookieHeader()) {
     throw new FaxiosError("A browser doesn't let a request set the Cookie header; it sends its own cookies (see withCredentials)", FaxiosError.ERR_BAD_OPTION_VALUE, config);
   }
+  const placed = query.length > 0 ? withQuery(config, query, overwrite) : undefined;
+  const queryNames = placed?.names ?? [];
+  if (put.set === 0 && queryNames.length === 0) return ctx;
   // Null prototype, like every ctx.config: later middleware must not read inherited keys.
   const next = Object.assign(Object.create(null) as typeof config, config);
   next.headers = put.headers;
-  const refuseRedirects = put.custom.length > 0;
-  const redact = put.custom;
-  if (query) {
-    next.params = query.params;
-    for (const name of query.names) redact.push(name.toLowerCase());
-  }
+  if (placed) next.params = placed.params;
+  // Every credential but Authorization: fetch sends other headers on to whatever host a redirect
+  // points at, and forwardTo copies the full URL, query string and all, into a header.
+  const redact = [ ...put.custom, ...queryNames ];
   const fetchOptions = own(next, "fetchOptions");
-  if (refuseRedirects && (!fetchOptions || !Object.hasOwn(fetchOptions, "redirect") || fetchOptions.redirect === undefined)) {
+  if (redact.length > 0 && (!fetchOptions || !Object.hasOwn(fetchOptions, "redirect") || fetchOptions.redirect === undefined)) {
     next.fetchOptions = { ...fetchOptions, redirect: "error" };
   }
-  // Mask the credentials in error.toJSON(), as the default list masks Authorization and Cookie.
+  // Mask the credentials in error.toJSON() (which matches names lower-cased), as the default
+  // list masks Authorization and Cookie.
   if (redact.length > 0) next.redact = [ ...own(next, "redact") ?? [], ...redact ];
   return { ...ctx, config: next };
 }

@@ -3,6 +3,7 @@ import { describe, it, vi } from "vitest";
 import faxios, { FaxiosError } from "#src/index.ts";
 import { authenticate } from "#src/lib/plugins/authenticate.ts";
 import { retry } from "#src/lib/plugins/retry.ts";
+import { makeSchema } from "../core/_schemaTestHelpers.js";
 
 const BASE = "http://api.test";
 
@@ -116,10 +117,10 @@ describe("plugins::authenticate", () => {
     assert.strictEqual(getCredentials.mock.calls.length, 0);
   });
 
-  it("refuses redirects for any header but Authorization, and for cookies, unless the request sets redirect", async () => {
+  it("refuses redirects for any header but Authorization, cookies and query parameters, unless the request sets redirect", async () => {
     const cases: Array<[Parameters<typeof authenticate>[0], RequestRedirect | undefined]> = [
       [ () => ({ headers: { Authorization: "Basic abc" } }), "follow" ],
-      [ () => ({ query: { key: "k" } }), "follow" ],
+      [ () => ({ query: { key: "k" } }), "error" ],
       [ () => ({ headers: { "X-Api-Key": "k" } }), "error" ],
       [ () => ({ cookies: { session: "s" } }), "error" ],
     ];
@@ -133,6 +134,56 @@ describe("plugins::authenticate", () => {
     await faxios.create({ baseURL: BASE, env: { fetch } }).use(authenticate(() => ({ cookies: { session: "s" } })))
       .get("/x", { fetchOptions: { redirect: "follow" } });
     assert.strictEqual(sent[0]!.redirect, "follow");
+    const query = recordingFetch();
+    await faxios.create({ baseURL: BASE, env: { fetch: query.fetch } }).use(authenticate(() => ({ query: { key: "k" } })))
+      .get("/x", { fetchOptions: { redirect: "follow" } });
+    assert.strictEqual(query.sent[0]!.redirect, "follow");
+  });
+
+  it("puts query credentials into params before paramsSchema runs", async () => {
+    // Keeps only `page`, like a strip-mode schema.
+    const strip = makeSchema((value: unknown) => ({ value: { page: (value as Record<string, unknown>)["page"] } }));
+    const passThrough = makeSchema((value: unknown) => ({ value }));
+    const api = (fetch: ReturnType<typeof recordingFetch>["fetch"]) =>
+      faxios.create({ baseURL: BASE, env: { fetch } }).use(authenticate(() => ({ query: { key: "k" } })));
+    const stripped = recordingFetch();
+    const passed = recordingFetch();
+
+    await api(stripped.fetch).get("/x", { params: { page: 1 }, paramsSchema: strip });
+    await api(passed.fetch).get("/x", { params: { page: 1 }, paramsSchema: passThrough });
+
+    assert.strictEqual(stripped.sent[0]!.url, `${BASE}/x?page=1`);
+    assert.strictEqual(passed.sent[0]!.url, `${BASE}/x?page=1&key=k`);
+  });
+
+  it("doesn't change the caller's plain-object params", async () => {
+    const { fetch, sent } = recordingFetch();
+    const params = { page: 1 };
+    await faxios.create({ baseURL: BASE, env: { fetch } }).use(authenticate(() => ({ query: { key: "k" } })))
+      .get("/x", { params });
+
+    assert.strictEqual(sent[0]!.url, `${BASE}/x?page=1&key=k`);
+    assert.deepStrictEqual(params, { page: 1 });
+  });
+
+  it("rejects query credentials, sending nothing, when params isn't an object", async () => {
+    const { fetch, sent } = recordingFetch();
+    const api = faxios.create({ baseURL: BASE, env: { fetch } }).use(authenticate(() => ({ query: { key: "k" } })));
+
+    // @ts-expect-error TS2769 -- a JavaScript caller can pass a string
+    await assert.rejects(api.get("/x", { params: "page=1" }), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
+    assert.strictEqual(sent.length, 0);
+  });
+
+  it("masks only the query parameters it sets, not one the request keeps", async () => {
+    const { fetch } = recordingFetch(500);
+    const api = faxios.create({ baseURL: BASE, env: { fetch } })
+      .use(authenticate(() => ({ query: { api_key: "secret", page: "9" } })));
+
+    const err = await api.get("/x", { params: { page: "own-page" } }).catch((error: unknown) => error);
+
+    assert.ok(err instanceof FaxiosError);
+    assert.deepStrictEqual(err.config?.redact, [ "api_key" ]);
   });
 
   it("masks custom header and query credentials in error.toJSON()", async () => {
@@ -168,9 +219,12 @@ describe("plugins::authenticate", () => {
 
   it("rejects invalid options when the plugin is created", () => {
     const getCredentials = () => null;
-    assert.throws(() => authenticate("nope" as never), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
-    assert.throws(() => authenticate(getCredentials, { overwrite: "yes" as never }), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
+    // @ts-expect-error TS2345 -- getCredentials must be a function
+    assert.throws(() => authenticate("nope"), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
+    // @ts-expect-error TS2322 -- overwrite is a boolean
+    assert.throws(() => authenticate(getCredentials, { overwrite: "yes" }), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
     assert.throws(() => authenticate(getCredentials, { origins: [ "https://api.test/v1" ] }), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
-    assert.throws(() => authenticate(getCredentials, { header: "X" } as never), isCode(FaxiosError.ERR_BAD_OPTION));
+    // @ts-expect-error TS2353 -- header is an authBearer option, not an authenticate one
+    assert.throws(() => authenticate(getCredentials, { header: "X" }), isCode(FaxiosError.ERR_BAD_OPTION));
   });
 });
