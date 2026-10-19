@@ -1,24 +1,32 @@
 import assert from "node:assert";
-import { describe, it } from "vitest";
+import { describe, it, vi } from "vitest";
 import faxios, { CanceledError, FaxiosError } from "#src/index.ts";
 import { authBearer } from "#src/lib/plugins/authBearer.ts";
 import { authenticate } from "#src/lib/plugins/authenticate.ts";
 import { refreshAuth } from "#src/lib/plugins/refreshAuth.ts";
+import { retry } from "#src/lib/plugins/retry.ts";
 
 const BASE = "http://api.test";
 
 type Sent = { authorization: null | string; method: string; url: string; };
 
-// Answers 200 to the token `valid()` names and `status` (401) to anything else.
+// Answers 200 to the token `valid()` names and `status` (401) to anything else. `reached(n)`
+// resolves once n requests have reached fetch.
 function server(valid: () => string, status = 401) {
   const sent: Array<Sent> = [];
+  const waiting: Array<{ count: number; resolve: () => void; }> = [];
   const fetch = async (input: Request | string | URL, init?: RequestInit) => {
     const headers = new Headers(init?.headers);
     const url = input instanceof Request ? input.url : String(input);
     sent.push({ authorization: headers.get("authorization"), method: init?.method ?? "GET", url });
+    for (const { count, resolve } of waiting) if (sent.length >= count) resolve();
     return new Response(null, { status: headers.get("authorization") === `Bearer ${valid()}` ? 200 : status });
   };
-  return { fetch, sent };
+  const reached = async (count: number) => new Promise<void>(resolve => {
+    if (sent.length >= count) resolve();
+    else waiting.push({ count, resolve });
+  });
+  return { fetch, reached, sent };
 }
 
 // A refresh the test settles by hand.
@@ -71,7 +79,7 @@ describe("plugins::refreshAuth", () => {
     let token = "old";
     let refreshes = 0;
     const refresh = gate();
-    const { fetch, sent } = server(() => "new");
+    const { fetch, reached, sent } = server(() => "new");
     const api = faxios.create({ baseURL: BASE, env: { fetch } })
       .use(refreshAuth(async () => {
         refreshes++;
@@ -81,7 +89,7 @@ describe("plugins::refreshAuth", () => {
       .use(authBearer(() => token));
 
     const requests = Promise.all([ api.get("/a"), api.get("/b"), api.get("/c") ]);
-    while (sent.length < 3) await new Promise(resolve => setImmediate(resolve));
+    await reached(3);
     refresh.open();
     const responses = await requests;
 
@@ -143,6 +151,23 @@ describe("plugins::refreshAuth", () => {
     assert.strictEqual(attempt, 2);
   });
 
+  it("refreshes again on the next 401 after a refresh that threw synchronously", async () => {
+    let token = "old";
+    let refreshes = 0;
+    const failure = new Error("no refresh token stored");
+    const { fetch } = server(() => "new");
+    const api = faxios.create({ baseURL: BASE, env: { fetch } })
+      .use(refreshAuth(() => {
+        if (++refreshes === 1) throw failure;
+        token = "new";
+      }))
+      .use(authBearer(() => token));
+
+    await assert.rejects(api.get("/a"), failure);
+    assert.strictEqual((await api.get("/b")).status, 200);
+    assert.strictEqual(refreshes, 2);
+  });
+
   it("leaves other statuses, other origins and stream bodies alone", async () => {
     let refreshes = 0;
     const plugin = refreshAuth(() => {
@@ -168,7 +193,7 @@ describe("plugins::refreshAuth", () => {
     assert.deepStrictEqual([ forbidden.sent.length, other.sent.length, stream.sent.length ], [ 1, 1, 1 ]);
   });
 
-  it("refreshes on the statuses listed, or when shouldRefresh says so", async () => {
+  it("refreshes on the statuses listed, or when refreshOn says so", async () => {
     let refreshes = 0;
     const { fetch, sent } = server(() => "never", 403);
     const byStatus = faxios.create({ baseURL: BASE, env: { fetch } }).use(refreshAuth(() => {
@@ -176,13 +201,66 @@ describe("plugins::refreshAuth", () => {
     }, { statuses: [ 401, 403 ] }));
     const byPredicate = faxios.create({ baseURL: BASE, env: { fetch } }).use(refreshAuth(() => {
       refreshes++;
-    }, { shouldRefresh: error => error.response?.status === 403, statuses: [ 500 ] }));
+    }, { refreshOn: error => error.response?.status === 403, statuses: [ 500 ] }));
 
     await assert.rejects(byStatus.get("/a"));
     await assert.rejects(byPredicate.get("/b"));
 
     assert.strictEqual(refreshes, 2);
     assert.strictEqual(sent.length, 4);
+  });
+
+  it("cancels the stream body of the error when refreshOn throws, and rejects with refreshOn's error", async () => {
+    let cancelled = 0;
+    const failure = new Error("refreshOn failed");
+    const fetch = async () => new Response(new ReadableStream<Uint8Array>({
+      cancel() {
+        cancelled++;
+      },
+    }), { status: 401 });
+    const api = faxios.create({ baseURL: BASE, env: { fetch } }).use(refreshAuth(() => {}, {
+      refreshOn: () => {
+        throw failure;
+      },
+    }));
+
+    await assert.rejects(api.get("/a", { responseType: "stream" }), failure);
+    // The request rejects with refreshOn's error, so nothing reads the 401's body.
+    assert.strictEqual(cancelled, 1);
+  });
+
+  it("refreshes once in the documented order with retry, which retries the second try", async () => {
+    vi.useFakeTimers();
+    try {
+      let token = "old";
+      let refreshes = 0;
+      const sent: Array<null | string> = [];
+      // 401 to the old token; to the new one a 503, then a 200.
+      const fetch = async (_input: Request | string | URL, init?: RequestInit) => {
+        const authorization = new Headers(init?.headers).get("authorization");
+        sent.push(authorization);
+        if (authorization !== "Bearer new") return new Response(null, { status: 401 });
+        return new Response(null, { status: sent.length === 2 ? 503 : 200 });
+      };
+      const api = faxios.create({ baseURL: BASE, env: { fetch } })
+        .use(refreshAuth(() => {
+          refreshes++;
+          token = "new";
+        }))
+        .use(retry({ delay: 0 }))
+        .use(authBearer(() => token));
+
+      const request = api.get("/me");
+      await vi.runAllTimersAsync();
+      const response = await request;
+
+      assert.strictEqual(response.status, 200);
+      assert.strictEqual(refreshes, 1);
+      assert.deepStrictEqual(sent, [ "Bearer old", "Bearer new", "Bearer new" ]);
+    }
+    finally {
+      vi.useRealTimers();
+    }
   });
 
   it("works with authenticate's query credentials", async () => {
@@ -207,20 +285,23 @@ describe("plugins::refreshAuth", () => {
   describe("cancellation", () => {
     it("rejects a request aborted while the refresh runs at once, and the refresh goes on for the others", async () => {
       let token = "old";
+      const started = gate();
       const refresh = gate();
-      const { fetch, sent } = server(() => "new");
+      const { fetch, reached, sent } = server(() => "new");
       const api = faxios.create({ baseURL: BASE, env: { fetch } })
         .use(refreshAuth(async () => {
+          started.open();
           await refresh.promise;
           token = "new";
         }))
         .use(authBearer(() => token));
       const controller = new AbortController();
 
+      // The refresh starts from /a's 401, so /a is waiting on it.
       const aborted = api.get("/a", { signal: controller.signal });
+      await started.promise;
       const other = api.get("/b");
-      while (sent.length < 2) await new Promise(resolve => setImmediate(resolve));
-      await new Promise(resolve => setImmediate(resolve));
+      await reached(2);
       controller.abort();
 
       await assert.rejects(aborted, (err: unknown) => err instanceof CanceledError);
@@ -229,7 +310,7 @@ describe("plugins::refreshAuth", () => {
       assert.deepStrictEqual(sent.map(s => s.url), [ `${BASE}/a`, `${BASE}/b`, `${BASE}/b` ]);
     });
 
-    it("sends nothing again when the signal aborts after the refresh", async () => {
+    it("sends nothing again when the signal aborts inside refresh", async () => {
       let token = "old";
       const controller = new AbortController();
       const { fetch, sent } = server(() => "new");
@@ -244,7 +325,7 @@ describe("plugins::refreshAuth", () => {
       assert.strictEqual(sent.length, 1);
     });
 
-    it("sends nothing again when the signal aborts after the refresh has settled", async () => {
+    it("sends nothing more when the signal aborts during the second try", async () => {
       let token = "old";
       let tries = 0;
       const controller = new AbortController();
@@ -253,7 +334,7 @@ describe("plugins::refreshAuth", () => {
         .use(refreshAuth(() => {
           token = "new";
         }))
-        // Runs on each try after refreshAuth: the abort lands once the refresh is over.
+        // Runs on each try after refreshAuth: the abort lands once the second try has begun.
         .use(async (ctx, next) => {
           if (++tries === 2) controller.abort();
           return next(ctx);
@@ -265,18 +346,51 @@ describe("plugins::refreshAuth", () => {
       assert.strictEqual(sent.length, 1);
     });
 
-    it("rejects a signal it can't watch before refreshing", async () => {
+    it("sends nothing again when the signal aborts after the refresh settled, before the second try", async () => {
+      let token = "old";
+      let settled = false;
+      let tries = 0;
+      const controller = new AbortController();
+      // Aborts as refreshAuth stops watching the signal, which it does once the refresh has settled.
+      const removeEventListener = controller.signal.removeEventListener.bind(controller.signal);
+      Object.defineProperty(controller.signal, "removeEventListener", {
+        value: (type: string, listener: () => void) => {
+          removeEventListener(type, listener);
+          if (settled) controller.abort();
+        },
+      });
+      const { fetch, sent } = server(() => "new");
+      const api = faxios.create({ baseURL: BASE, env: { fetch } })
+        .use(refreshAuth(async () => {
+          token = "new";
+          settled = true;
+        }))
+        .use(async (ctx, next) => {
+          tries++;
+          return next(ctx);
+        })
+        .use(authBearer(() => token));
+
+      await assert.rejects(api.get("/a", { signal: controller.signal }), (err: unknown) => err instanceof CanceledError);
+      assert.strictEqual(tries, 1);
+      assert.strictEqual(sent.length, 1);
+    });
+
+    it("rejects a signal without listener methods that a middleware before it passes on, before refreshing", async () => {
       let refreshes = 0;
+      // Faxios checks the request's own signal; this one only middleware can introduce.
+      const listenerless = { aborted: false } as unknown as AbortSignal;
       const api = faxios.create({ baseURL: BASE })
+        .use(async (ctx, next) => next({ ...ctx, config: { ...ctx.config, signal: listenerless } }))
         .use(refreshAuth(() => {
           refreshes++;
         }))
-        // Stands in for a 401 from the API without core's own signal check.
+        // Stands in for a 401 from the API.
         .use(async ctx => {
           throw new FaxiosError("Unauthorized", FaxiosError.ERR_BAD_REQUEST, ctx.config, null, { status: 401 } as never);
         });
 
-      await assert.rejects(api.get("/a", { signal: { aborted: false } as never }), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
+      await assert.rejects(api.get("/a"), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
       assert.strictEqual(refreshes, 0);
     });
   });
@@ -324,17 +438,21 @@ describe("plugins::refreshAuth", () => {
       const { fetch, sent } = server(() => "never");
       const api = faxios.create({ baseURL: BASE, env: { fetch } }).use(refreshAuth(() => {}));
 
-      await assert.rejects(api.get("/a", { refreshAuth: true as never }), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
+      // @ts-expect-error TS2769 -- only false turns refreshing off
+      await assert.rejects(api.get("/a", { refreshAuth: true }), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
       assert.strictEqual(sent.length, 0);
     });
   });
 
   it("rejects invalid options when the plugin is created", () => {
     const refresh = () => {};
-    assert.throws(() => refreshAuth("nope" as never), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
+    // @ts-expect-error TS2345 -- refresh must be a function
+    assert.throws(() => refreshAuth("nope"), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
     assert.throws(() => refreshAuth(refresh, { statuses: [ 99 ] }), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
-    assert.throws(() => refreshAuth(refresh, { shouldRefresh: true as never }), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
+    // @ts-expect-error TS2322 -- refreshOn is a function
+    assert.throws(() => refreshAuth(refresh, { refreshOn: true }), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
     assert.throws(() => refreshAuth(refresh, { origins: [ "https://api.test/v1" ] }), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
-    assert.throws(() => refreshAuth(refresh, { methods: [ "get" ] } as never), isCode(FaxiosError.ERR_BAD_OPTION));
+    // @ts-expect-error TS2353 -- unknown option
+    assert.throws(() => refreshAuth(refresh, { methods: [ "get" ] }), isCode(FaxiosError.ERR_BAD_OPTION));
   });
 });

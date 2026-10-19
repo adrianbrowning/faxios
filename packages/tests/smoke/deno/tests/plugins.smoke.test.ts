@@ -65,18 +65,22 @@ Deno.test("Deno plugins: forwardTo sends every try to the gateway with the targe
   ]);
 });
 
-Deno.test("Deno plugins: authenticate sends query and cookie credentials on a server runtime", async () => {
+Deno.test("Deno plugins: refreshAuth refreshes authenticate's query and cookie credentials after a 401 on a server runtime", async () => {
   const calls: Array<Request> = [];
   const fetch = async (input: Request | string | URL, init?: RequestInit) => {
-    calls.push(new Request(input, init));
-    return new Response(null, { status: 200 });
+    const request = new Request(input, init);
+    calls.push(request);
+    return new Response(null, { status: request.url.endsWith("api_key=new") ? 200 : 401 });
   };
+  let key = "old";
   const api = faxios.create({ baseURL: "http://example.com", env: { fetch } })
-    .use(refreshAuth(() => {}))
-    .use(authenticate(() => ({ query: { api_key: "q" }, cookies: { session: "s" } })));
+    .use(refreshAuth(() => {
+      key = "new";
+    }))
+    .use(authenticate(() => ({ query: { api_key: key }, cookies: { session: "s" } })));
 
-  await api.get("/data");
+  assertEquals((await api.get("/data")).status, 200);
 
-  assertEquals(calls[0].url, "http://example.com/data?api_key=q");
-  assertEquals(calls[0].headers.get("cookie"), "session=s");
+  assertEquals(calls.map(call => call.url), [ "http://example.com/data?api_key=old", "http://example.com/data?api_key=new" ]);
+  assertEquals(calls[1].headers.get("cookie"), "session=s");
 });

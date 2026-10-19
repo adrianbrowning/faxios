@@ -1,6 +1,6 @@
 // @ts-self-types="./refreshAuth.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import type { FaxiosContext, FaxiosPlugin, InternalFaxiosRequestConfig } from "../../index.js";
+import type { FaxiosContext, FaxiosPlugin } from "../../index.js";
 import canceledFromSignal from "../cancel/canceledFromSignal.js";
 import assertSignal from "../core/assertSignal.js";
 import FaxiosError from "../core/FaxiosError.js";
@@ -23,8 +23,8 @@ export type RefreshAuthOptions = {
    * Whether a failed request should refresh and be sent again. Replaces the `statuses` check;
    * the origin rule and the other conditions still apply.
    */
-  shouldRefresh?: ((error: FaxiosError) => boolean) | undefined;
-  /** Response statuses that refresh. Default `[401]`. Ignored when `shouldRefresh` is set. */
+  refreshOn?: ((error: FaxiosError) => boolean) | undefined;
+  /** Response statuses that refresh. Default `[401]`. Ignored when `refreshOn` is set. */
   statuses?: Array<number> | undefined;
 };
 
@@ -32,14 +32,15 @@ export type RefreshAuthOptions = {
 export type RefreshAuthRequestOptions = { refreshAuth?: false | undefined; };
 /* eslint-enable sonarjs/no-redundant-optional */
 
-const optionsSchema = { origins: isOriginList, shouldRefresh: isFunction, statuses: isStatusList };
+const optionsSchema = { origins: isOriginList, refreshOn: isFunction, statuses: isStatusList };
 
 const DEFAULT_STATUSES: ReadonlyArray<number> = [ 401 ];
 
 /**
  * Refreshes credentials once when a request to the API fails with a 401 (or `statuses`, or
- * `shouldRefresh`), then sends the request again, once. Install it before `authenticate` or
+ * `refreshOn`), then sends the request again, once. Install it before `authenticate` or
  * `authBearer`, which put the refreshed credentials on the second try; it never sets any itself.
+ * `refresh` can return anything; faxios only waits for it.
  *
  * Concurrent failures share one call to `refresh`, which gets the first one's error, so rotating
  * refresh tokens are spent once. A request that was sent before the latest refresh finished is
@@ -52,42 +53,46 @@ const DEFAULT_STATUSES: ReadonlyArray<number> = [ 401 ];
  * Pass `refreshAuth: false` on the refresh call when it goes through this instance, or make it
  * with another instance: a 401 on it would otherwise wait for the refresh it is part of.
  */
-export function refreshAuth(refresh: (error: FaxiosError) => Promise<void> | void, options: RefreshAuthOptions = {}): FaxiosPlugin<{ options: RefreshAuthRequestOptions; }> {
+export function refreshAuth(refresh: (error: FaxiosError) => unknown, options: RefreshAuthOptions = {}): FaxiosPlugin<{ options: RefreshAuthRequestOptions; }> {
   if (typeof refresh !== "function") {
     throw new FaxiosError("refreshAuth: refresh must be a function", FaxiosError.ERR_BAD_OPTION_VALUE);
   }
   assertOptions(options, optionsSchema, "refreshAuth");
   const origins = originsOption(own(options, "origins"));
-  const shouldRefresh = own(options, "shouldRefresh");
+  const refreshOn = own(options, "refreshOn");
   const statuses = own(options, "statuses") ?? DEFAULT_STATUSES;
-  // One refresh at a time, and how many have finished: a request sent before the count moved
-  // failed with credentials that are already replaced.
-  let refreshing: Promise<void> | undefined;
-  let refreshed = 0;
-  const refreshOnce = (error: FaxiosError): Promise<void> => {
-    refreshing ??= (async () => {
-      try {
-        await refresh(error);
-        refreshed++;
-      }
-      finally {
-        refreshing = undefined;
-      }
-    })();
-    return refreshing;
+  // The refresh running, if any, and how many have finished: a request sent before the count
+  // moved failed with credentials that are already replaced.
+  let running: Promise<void> | undefined;
+  let finished = 0;
+  const run = async (failure: FaxiosError): Promise<void> => {
+    await refresh(failure);
+    finished++;
   };
-  // Whether a failed request refreshes: a FaxiosError on the refresh statuses (or shouldRefresh),
-  // from the API, with a body that can be sent again and a signal that hasn't aborted.
-  const refreshes = (error: unknown, ctx: FaxiosContext<RefreshAuthRequestOptions>): error is FaxiosError =>
-    error instanceof FaxiosError
-    && !own(ctx.config, "signal")?.aborted
-    && canReplay(own(ctx.config, "data"))
-    && goesToAPI(ctx.config, own(ctx, "instanceBaseURL"), origins)
-    && (shouldRefresh ? shouldRefresh(error) : statuses.includes(error.response?.status ?? 0));
-  // The refresh to wait for, raced against the signal so an abort rejects at once.
-  const waitForRefresh = (error: FaxiosError, config: InternalFaxiosRequestConfig): Promise<void> => {
-    const signal = own(config, "signal");
-    return signal ? raceAbort(signal, () => refreshOnce(error), () => canceledFromSignal(signal, config)) : refreshOnce(error);
+  // Cleared once the promise is stored, so a refresh that throws synchronously is cleared too.
+  const sharedRefresh = (failure: FaxiosError): Promise<void> => {
+    running ??= run(failure).finally(() => {
+      running = undefined;
+    });
+    return running;
+  };
+  // Whether a failed request triggers a refresh: on the refresh statuses (or refreshOn), from the
+  // API, with a body that can be sent again. The status check runs before the origin rule, which
+  // parses URLs; refreshOn, a caller's function, only runs for the API.
+  const triggers = (failure: FaxiosError, ctx: FaxiosContext<RefreshAuthRequestOptions>): boolean => {
+    if (!canReplay(own(ctx.config, "data"))) return false;
+    if (!refreshOn) {
+      return statuses.includes(failure.response?.status ?? 0) && goesToAPI(ctx.config, own(ctx, "instanceBaseURL"), origins);
+    }
+    if (!goesToAPI(ctx.config, own(ctx, "instanceBaseURL"), origins)) return false;
+    try {
+      return refreshOn(failure);
+    }
+    catch (reason) {
+      // Its error replaces the request's, so free the body the request's holds.
+      discardBody(failure);
+      throw reason;
+    }
   };
   return definePlugin({
     name: "refreshAuth",
@@ -98,7 +103,7 @@ export function refreshAuth(refresh: (error: FaxiosError) => Promise<void> | voi
       if (optOut !== undefined) {
         throw new FaxiosError("option refreshAuth must be false", FaxiosError.ERR_BAD_OPTION_VALUE, ctx.config);
       }
-      const sentAfter = refreshed;
+      const finishedBefore = finished;
       try {
         return await next(ctx);
       }
@@ -107,11 +112,13 @@ export function refreshAuth(refresh: (error: FaxiosError) => Promise<void> | voi
         const signal = own(config, "signal");
         // Read and listened on below, so check it as retry does.
         if (signal) assertSignal(signal, config);
-        if (!refreshes(error, ctx)) throw error;
+        if (!(error instanceof FaxiosError) || signal?.aborted || !triggers(error, ctx)) throw error;
         discardBody(error);
         // A refresh finished since this request was sent: it failed with replaced credentials, so
         // it only needs sending again.
-        if (refreshing || refreshed === sentAfter) await waitForRefresh(error, config);
+        if (running || finished === finishedBefore) {
+          await (signal ? raceAbort(signal, () => sharedRefresh(error), () => canceledFromSignal(signal, config)) : sharedRefresh(error));
+        }
         // An abort that landed after the refresh settled rejects here, before the second try.
         if (signal?.aborted) throw canceledFromSignal(signal, config);
         return next(ctx);

@@ -98,6 +98,11 @@ async function middleware(): Promise<void> {
   await api.post("/items", {}, { retry: { attempts: 3 } });
   await api.get("/health", { forward: false });
   await api.post("/auth/refresh", null, { refreshAuth: false });
+  // refresh can return the refresh call's promise; refreshAuth only waits for it. The return
+  // type annotation stops `refreshing` from being inferred from itself (TS7022).
+  const refreshing = faxios.create({ baseURL: "https://example.test" })
+    .use(refreshAuth((): Promise<FaxiosResponse> => refreshing.post("/auth/refresh", null, { refreshAuth: false })));
+  await refreshing.get("/me");
   api.eject(addHeader);
   faxios.create().use(assignHeaders);
   const child = faxios.create();
