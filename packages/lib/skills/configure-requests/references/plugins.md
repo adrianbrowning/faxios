@@ -241,24 +241,33 @@ import { refreshAuth } from "@gcmdev/faxios/plugins/refresh-auth";
 import { retry } from "@gcmdev/faxios/plugins/retry";
 
 let token = "old";
+let refreshToken = "r1";
 const api = faxios
   .create({ baseURL: "https://api.example.com" })
   .use(refreshAuth(async () => {
-    const { data } = await api.post<{ access_token: string }>("/auth/refresh", null, { refreshAuth: false });
+    const { data } = await api.post<{ access_token: string; refresh_token: string }>(
+      "/auth/refresh",
+      { refresh_token: refreshToken },
+      { refreshAuth: false, redact: ["refresh_token"], timeout: 10_000 },
+    );
     token = data.access_token;
+    refreshToken = data.refresh_token;
   }))
   .use(retry())
   .use(authBearer(() => token));
 ```
 
-- It refreshes on `statuses` (default `[401]`) or `shouldRefresh(error)`, only for the API origin
-  (`origins` like `authBearer`), and sends the request again once, any method. A stream body or an
-  aborted signal rejects with the original error.
+- `refresh` can return anything (the refresh call's promise too); `refreshAuth` only waits for it.
+- It refreshes on `statuses` (default `[401]`) or `refreshOn(error)`, only for requests to the API
+  origin (`origins` like `authBearer`), and sends the request again once, any method. A 401 from a
+  host an API request was redirected to counts. A stream body or an aborted signal rejects with the
+  original error. `ctx.attempt` doesn't count the second send.
 - Concurrent 401s share one `refresh` call, so rotating refresh tokens are spent once; a request
-  sent before the last refresh finished is retried without another one. A rejected `refresh`
-  rejects every waiting request with its error.
+  sent before the last refresh finished is retried without another one. A rejected or throwing
+  `refresh` rejects every waiting request with its error, so `redact` the refresh token's field.
 - Put `refreshAuth: false` on the refresh call (or make it with another instance). Without it a
-  401 on the refresh call waits for the refresh it belongs to and never settles.
+  401 on the refresh call waits for the refresh it belongs to and never settles. Give it a
+  `timeout`: every waiting request waits for it.
 - Add 403 to `statuses` only when the API sends 403 for expired credentials.
 
 ## Report the try number from your own retry

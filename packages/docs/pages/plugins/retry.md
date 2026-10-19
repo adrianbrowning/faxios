@@ -206,7 +206,7 @@ await api.get("/reports/latest", { retry: { attempts: 6 } });
 
 ## Ordering with other plugins
 
-Middleware runs in the order it is installed, so where `retry` sits matters. See [Ordering](/pages/plugins/#ordering) for where to install it relative to `timing` and `authBearer`.
+Middleware runs in the order it is installed, so where `retry` sits matters. See [Ordering](/pages/plugins/#ordering) for where to install it relative to `timing`, `refreshAuth`, `authBearer` and `authenticate`.
 
 Before each try, `retry` sets [`ctx.attempt`](/pages/advanced/middleware#the-context) to the try's number, counting from 1. Middleware installed after `retry` reads the current try's number there; `timing` reports it as `event.attempt`.
 

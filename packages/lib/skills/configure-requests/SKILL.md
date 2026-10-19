@@ -357,7 +357,8 @@ value, because it is the only value typed with the plugin's request options (suc
   use it for API keys and server-side cookies, never instance `headers`/`params` (every host).
   Cookies reject in a browser. See references/plugins.md.
 - `refreshAuth(refresh, options)` refreshes once on an API 401 and resends once; install it first.
-  Put `refreshAuth: false` on the refresh call, or its 401 never settles. See references/plugins.md.
+  Give the refresh call `refreshAuth: false` (or its 401 never settles), a `timeout`, and `redact`
+  for its token field. See references/plugins.md.
 - `forwardTo(gateway, { header })` sends each request to `gateway` (absolute http/https URL)
   with the final target URL (`baseURL`, `pathParams`, validated `params` applied) in
   `X-Forward-To` or `header`. It wraps `env.fetch` (or the global fetch); never rewrite `url` in

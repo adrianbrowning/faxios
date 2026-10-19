@@ -278,7 +278,7 @@ and stop generating Axios APIs it removed or never verified.
     `redact` and `params` cases.
 - **Batch 5 (2026-10-19, `@gcmdev/faxios` 0.3.0, Intent 0.5.3): `refreshAuth` plugin.**
   - New built-in plugin `refreshAuth` (`@gcmdev/faxios/plugins/refresh-auth`): on a 401 (or
-    `statuses`/`shouldRefresh`) from the API origin it runs one shared `refresh`, then sends the
+    `statuses`/`refreshOn`) from the API origin it runs one shared `refresh`, then sends the
     request again once, any method. A request sent before the last refresh finished is retried
     without another refresh. `refreshAuth: false` per request opts out.
   - Decision (maintainer, this session): retry all methods after a refresh, since a 401 means the
@@ -295,3 +295,13 @@ and stop generating Axios APIs it removed or never verified.
     one shared refresh, no second refresh after one finished, refresh rejection, origin/status/
     stream limits, query credentials, abort during and after the refresh, invalid signal, the
     opt-out with the same instance), the browser plugins suite, smoke on Node, Bun and Deno.
+  - Review fixes (this batch): the option `shouldRefresh` is renamed `refreshOn`, to match
+    `retry`'s `retryOn`. `refresh` is typed `(error) => unknown`, so `() => api.post(...)` is
+    accepted; faxios only waits for it. A `refresh` that throws synchronously no longer leaves the
+    shared refresh set for good. A throwing `refreshOn` still cancels the error's stream body.
+    Guidance: the skill and docs tell users to give the refresh call a `timeout` and a `redact` for
+    its token field, say a 401 from a redirect target of an API request can refresh, and that
+    `ctx.attempt` doesn't count the second send. Checks added: the sync throw, `refreshOn` throwing
+    with a stream body, `refreshAuth` → `retry` → `authBearer` under fake timers, a listenerless
+    signal from middleware, an abort after the refresh settled, smoke tests that refresh once, and
+    a module case where `refresh` returns the POST promise.
