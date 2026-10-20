@@ -2,6 +2,8 @@
 
 `authBearer(getToken, options?)` sets `Authorization: Bearer <token>` on requests to your API, calling `getToken` (which may return a string or a promise) on each of them. A header the request already has is kept unless you pass `overwrite: true`. By default the token goes only to the origin of the instance `baseURL` when that is absolute, and only to relative URLs otherwise; a per-request `baseURL` never gets it, and `origins` replaces the rule. A request core would reject (an absolute URL with `allowAbsoluteUrls: false`) gets no token, and `getToken` isn't called. It provides the `auth` capability, which [`requireSignIn`](/pages/plugins/writing-a-plugin#capabilities) uses. Install [`refreshOn401`](/pages/advanced/middleware#refreshing-a-token-after-a-401) before it, so a retry gets a fresh header.
 
+`authBearer` is [`authenticate`](/pages/plugins/authenticate) with one header, so the origin rule, redirect handling and `redact` work the same way. Use `authenticate` when an API reads credentials from more than one header, or from the query string or cookies.
+
 For Basic auth, API keys, token refresh and cookies, see [Authentication](/pages/advanced/authentication).
 
 ## Bearer tokens (JWT)
@@ -59,7 +61,11 @@ Invalid options throw `ERR_BAD_OPTION_VALUE` and unknown ones `ERR_BAD_OPTION`.
 
 ### Other schemes and headers
 
-`scheme` (default `"Bearer"`) and `header` (default `"Authorization"`) change what is sent. An empty `scheme` sends the bare token, which suits API keys:
+`scheme` (default `"Bearer"`) and `header` (default `"Authorization"`) change what is sent. An empty `scheme` sends the bare token, which suits an API key in one header. For a key in the query string, or credentials in several places, use [`authenticate`](/pages/plugins/authenticate).
+
+In a browser, `header: "Cookie"` rejects with `ERR_BAD_OPTION_VALUE`, since `fetch` drops that header. Use [`withCredentials`](/pages/advanced/request-config#withcredentials) there.
+
+An example with `X-Api-Key`:
 
 ```ts
 import faxios from "@gcmdev/faxios";

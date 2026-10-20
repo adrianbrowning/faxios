@@ -4,11 +4,12 @@ A plugin is middleware with a name, plus optional capabilities it provides to ot
 
 ## Built-in plugins
 
-faxios ships four plugins. Each one has its own entry point, which exports the plugin and its types. Neither the package root nor `@gcmdev/faxios/plugins` re-exports them, and there is no `faxios.plugins` property.
+faxios ships five plugins. Each one has its own entry point, which exports the plugin and its types. Neither the package root nor `@gcmdev/faxios/plugins` re-exports them, and there is no `faxios.plugins` property.
 
 | Plugin | Import | Adds |
 | --- | --- | --- |
 | [`authBearer`](/pages/plugins/auth-bearer) | `import { authBearer } from "@gcmdev/faxios/plugins/auth-bearer"` | the `auth` capability |
+| [`authenticate`](/pages/plugins/authenticate) | `import { authenticate } from "@gcmdev/faxios/plugins/authenticate"` | nothing |
 | [`forwardTo`](/pages/plugins/forward-to) | `import { forwardTo } from "@gcmdev/faxios/plugins/forward-to"` | the `forward` request option |
 | [`retry`](/pages/plugins/retry) | `import { retry } from "@gcmdev/faxios/plugins/retry"` | the `retry` request option |
 | [`timing`](/pages/plugins/timing) | `import { timing } from "@gcmdev/faxios/plugins/timing"` | nothing |
@@ -18,6 +19,6 @@ faxios ships four plugins. Each one has its own entry point, which exports the p
 Middleware runs in the order it is installed, so where each plugin sits matters:
 
 - Install `timing` before `retry` to measure all tries together, or after it to measure each try.
-- Install `retry` before `authBearer` and the token is fetched again on every try.
+- Install `retry` before `authBearer` or `authenticate` and the credentials are fetched again on every try.
 
 Each plugin's page covers how it works with the others.

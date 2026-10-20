@@ -38,27 +38,32 @@ const response = await faxios.get("https://api.example.com/data", {
 If `auth` is not supplied, faxios can also derive Basic auth credentials from the request URL, for example `https://myUser:myPassword@api.example.com/data`. Percent-encoded URL credentials are decoded before the `Authorization` header is generated. Prefer the explicit `auth` option for new code; it takes precedence over URL-embedded credentials.
 
 ::: tip
-`auth` is only for HTTP Basic. For Bearer tokens and API keys, use [`authBearer`](#bearer-tokens-jwt) or a custom header.
+`auth` is only for HTTP Basic. For Bearer tokens use [`authBearer`](#bearer-tokens-jwt); for API keys and other credentials, [`authenticate`](/pages/plugins/authenticate).
 :::
 
 ## API keys
 
-API keys are typically passed as a header or a query parameter, depending on what the API expects. A fixed key can go in the instance headers; to read it per request and keep it on your API's origin, use `authBearer` with `scheme: ""` as shown in [Other schemes and headers](/pages/plugins/auth-bearer#other-schemes-and-headers).
+API keys are typically passed as a header or a query parameter, depending on what the API expects. [`authenticate`](/pages/plugins/authenticate) reads the key on each request and sends it only to your API's origin, in whichever place you name:
 
-```js
+```ts
 import faxios from "@gcmdev/faxios";
+import { authenticate } from "@gcmdev/faxios/plugins/authenticate";
 
-// As a header
-const api = faxios.create({
-  baseURL: "https://api.example.com",
-  headers: { "X-API-Key": "your-api-key-here" },
-});
+const store = { key: "your-api-key-here" };
 
-// As a query parameter
-const response = await faxios.get("https://api.example.com/data", {
-  params: { apiKey: "your-api-key-here" },
-});
+// As a header: X-API-Key: your-api-key-here
+const api = faxios.create({ baseURL: "https://api.example.com" })
+  .use(authenticate(() => ({ headers: { "X-API-Key": store.key } })));
+
+// As a query parameter: /data?apiKey=your-api-key-here
+const legacy = faxios.create({ baseURL: "https://legacy.example.com" })
+  .use(authenticate(() => ({ query: { apiKey: store.key } })));
+
+await api.get("/data");
+await legacy.get("/data");
 ```
+
+Instance-level `headers` or `params` would also work for a fixed key, but they go to every URL the instance sends to, absolute ones to other hosts included.
 
 ## Token refresh
 
@@ -127,3 +132,24 @@ const api = faxios.create({
 ::: warning
 `withCredentials: true` requires the server to respond with `Access-Control-Allow-Credentials: true` and a specific (non-wildcard) `Access-Control-Allow-Origin`.
 :::
+
+### Cookies on a server
+
+On Node, Deno and Bun nothing sends cookies for you. Use `authenticate` with `cookies`, which sets the `Cookie` header on requests to your API. An API that wants a session cookie and a query string key gets both from one store:
+
+```ts
+import faxios from "@gcmdev/faxios";
+import { authenticate } from "@gcmdev/faxios/plugins/authenticate";
+
+const store = { key: "my-api-key", session: "abc123" };
+
+const api = faxios.create({ baseURL: "https://legacy.example.com" })
+  .use(authenticate(() => ({
+    query: { api_key: store.key },
+    cookies: { session: store.session },
+  })));
+
+await api.get("/orders");
+```
+
+In a browser, a request can't set `Cookie`, so `authenticate` rejects one whose credentials include a cookie. See [Cookies](/pages/plugins/authenticate#cookies).

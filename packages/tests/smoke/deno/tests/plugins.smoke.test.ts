@@ -2,6 +2,7 @@ import { assertEquals } from "@std/assert";
 import faxios, * as root from "faxios";
 import * as pluginsEntry from "faxios/plugins";
 import { authBearer } from "faxios/plugins/auth-bearer";
+import { authenticate } from "faxios/plugins/authenticate";
 import { forwardTo } from "faxios/plugins/forward-to";
 import { retry } from "faxios/plugins/retry";
 import { timing } from "faxios/plugins/timing";
@@ -9,7 +10,7 @@ import type { TimingEvent } from "faxios/plugins/timing";
 
 Deno.test("Deno plugins: faxios/plugins exports only definePlugin, the root no plugin API", () => {
   assertEquals(Object.keys(pluginsEntry), [ "definePlugin" ]);
-  for (const name of [ "authBearer", "forwardTo", "retry", "timing", "definePlugin" ]) {
+  for (const name of [ "authBearer", "authenticate", "forwardTo", "retry", "timing", "definePlugin" ]) {
     assertEquals(Object.hasOwn(root, name), false);
   }
 });
@@ -61,4 +62,19 @@ Deno.test("Deno plugins: forwardTo sends every try to the gateway with the targe
     [ "http://gateway.example/", "https://api.example.com/items?q=1" ],
     [ "https://api.example.com/direct", null ],
   ]);
+});
+
+Deno.test("Deno plugins: authenticate sends query and cookie credentials on a server runtime", async () => {
+  const calls: Array<Request> = [];
+  const fetch = async (input: Request | string | URL, init?: RequestInit) => {
+    calls.push(new Request(input, init));
+    return new Response(null, { status: 200 });
+  };
+  const api = faxios.create({ baseURL: "http://example.com", env: { fetch } })
+    .use(authenticate(() => ({ query: { api_key: "q" }, cookies: { session: "s" } })));
+
+  await api.get("/data");
+
+  assertEquals(calls[0].url, "http://example.com/data?api_key=q");
+  assertEquals(calls[0].headers.get("cookie"), "session=s");
 });

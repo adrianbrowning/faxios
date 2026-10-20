@@ -4,6 +4,7 @@
 import faxios, { create, FaxiosHeaders } from "faxios";
 import type { FaxiosRequestConfig } from "faxios";
 import { authBearer } from "faxios/plugins/auth-bearer";
+import { authenticate } from "faxios/plugins/authenticate";
 import { forwardTo } from "faxios/plugins/forward-to";
 import { retry } from "faxios/plugins/retry";
 
@@ -35,6 +36,7 @@ async function undefinedNestedOptionals(): Promise<void> {
   const api = create({ transitional: { validateStatusUndefinedResolves: maybeBoolean } })
     .use(retry({ attempts: maybeNumber, attemptTimeout: undefined, jitter: undefined }))
     .use(authBearer(() => "token", { scheme: maybeString, header: undefined, overwrite: maybeBoolean }))
+    .use(authenticate(() => ({ headers: undefined, query: { key: maybeString }, cookies: undefined }), { origins: undefined, overwrite: maybeBoolean }))
     .use(forwardTo("http://gateway.local/", { header: maybeString }));
   await api.get("/user", { retry: { attempts: maybeNumber }, forward: undefined });
 }

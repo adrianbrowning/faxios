@@ -29,6 +29,7 @@ export const entries: Array<Entry> = [
   { name: "isCancel", source: "import { isCancel } from \"@gcmdev/faxios\";\nconsole.log(isCancel);", budget: 1024 },
   { name: "retry", source: "import { retry } from \"@gcmdev/faxios/plugins/retry\";\nconsole.log(retry);", budget: 17 * 1024 },
   { name: "authBearer", source: "import { authBearer } from \"@gcmdev/faxios/plugins/auth-bearer\";\nconsole.log(authBearer);", budget: 20 * 1024 },
+  { name: "authenticate", source: "import { authenticate } from \"@gcmdev/faxios/plugins/authenticate\";\nconsole.log(authenticate);", budget: 21 * 1024 },
   { name: "forwardTo", source: "import { forwardTo } from \"@gcmdev/faxios/plugins/forward-to\";\nconsole.log(forwardTo);", budget: 12.5 * 1024 },
   { name: "timing", source: "import { timing } from \"@gcmdev/faxios/plugins/timing\";\nconsole.log(timing);", budget: 18.5 * 1024 },
   { name: "definePlugin", source: "import { definePlugin } from \"@gcmdev/faxios/plugins\";\nconsole.log(definePlugin);", budget: 1024 },

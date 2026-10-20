@@ -32,7 +32,7 @@ skills:
       - 'AbortSignal cancellation, timeout, isCancel, CanceledError'
       - 'FaxiosError codes, isFaxiosError, isSchemaValidationError, validateStatus'
       - '.use() middleware, eject, ctx.config/state/capabilities'
-      - 'built-in plugins: auth-bearer, forward-to, retry, timing; definePlugin'
+      - 'built-in plugins: auth-bearer, authenticate, forward-to, retry, timing; definePlugin'
       - 'env.fetch and fetchOptions as the only transport customisation'
       - 'stable root/plugin subpaths vs ./unsafe/* exports'
       - 'Axios-to-faxios porting boundaries'
@@ -40,6 +40,7 @@ skills:
       - Create a configured faxios instance with baseURL, headers and timeout
       - Cancel a request or apply a timeout and tell the failure codes apart
       - Add auth, retry or timing behaviour with .use() middleware and the built-in plugins
+      - Send API keys, query string or server-side cookie credentials to one API with authenticate
       - Port Axios-style code without assuming unverified Axios compatibility
     reference_candidates:
       - topic: plugin authoring with definePlugin
@@ -127,6 +128,24 @@ skills:
         correct_pattern: |
           api.use(retry({ methods: ["get", "post"] })); // only when the API dedupes repeats
         source: 'src/lib/plugins/retry.ts'
+        priority: MEDIUM
+        status: active
+      - mistake: Putting an API key in instance headers or params
+        mechanism: 'Instance headers and params go to every URL the instance sends, absolute URLs to other hosts included, and a custom header follows a cross-origin redirect. authenticate sends credentials only to the API origin, refuses redirects for non-Authorization headers, cookies and query parameters, and adds their names to redact.'
+        wrong_pattern: |
+          faxios.create({ baseURL, params: { api_key: key }, headers: { "X-Api-Key": key } });
+        correct_pattern: |
+          faxios.create({ baseURL }).use(authenticate(() => ({ query: { api_key: key } })));
+        source: 'src/lib/plugins/authenticate.ts; src/lib/plugins/credentials.ts'
+        priority: MEDIUM
+        status: active
+      - mistake: Setting a Cookie header by hand in a browser
+        mechanism: 'Cookie is a forbidden request header, so browser fetch drops it without an error and the request goes out unauthenticated. authenticate (and authBearer with header Cookie) rejects with ERR_BAD_OPTION_VALUE there; the browser sends its own cookies, cross-origin with withCredentials.'
+        wrong_pattern: |
+          api.use(authenticate(() => ({ cookies: { session } }))); // in a browser
+        correct_pattern: |
+          faxios.create({ baseURL, withCredentials: true }); // browser: let it send its cookies
+        source: 'src/lib/plugins/credentials.ts (keepsCookieHeader); packages/tests/browser/plugins.browser.test.ts'
         priority: MEDIUM
         status: active
       - mistake: Downloading a binary body without responseType

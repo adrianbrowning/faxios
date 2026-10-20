@@ -40,6 +40,8 @@ skills:
             src/lib/core/composeSignals.ts,
             src/lib/plugins/definePlugin.ts,
             src/lib/plugins/authBearer.ts,
+            src/lib/plugins/authenticate.ts,
+            src/lib/plugins/credentials.ts,
             src/lib/plugins/forwardTo.ts,
             src/lib/plugins/retry.ts,
             src/lib/plugins/timing.ts,

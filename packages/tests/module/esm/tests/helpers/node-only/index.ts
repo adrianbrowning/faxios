@@ -5,6 +5,7 @@ import faxios, { create, toFormData } from "faxios";
 import type { FaxiosRequestConfig, FaxiosResponse, GenericAbortSignal } from "faxios";
 import { definePlugin } from "faxios/plugins";
 import { authBearer } from "faxios/plugins/auth-bearer";
+import { authenticate } from "faxios/plugins/authenticate";
 import { forwardTo } from "faxios/plugins/forward-to";
 import { retry } from "faxios/plugins/retry";
 import { timing } from "faxios/plugins/timing";
@@ -31,6 +32,7 @@ async function nodeConsumer(): Promise<void> {
     .use(retry())
     .use(timing(event => void event))
     .use(authBearer(() => "t"))
+    .use(authenticate(() => ({ query: { key: "k" } })))
     .use(forwardTo("https://gateway.example.com"));
   void instance;
   void definePlugin;
