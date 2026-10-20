@@ -32,7 +32,7 @@ await api.get("/me");
 A failed request refreshes and is sent again when all of these hold:
 
 - It failed with a `FaxiosError` whose response status is in `statuses` (default `[401]`), or for which `refreshOn(error)` returns `true`. `refreshOn` replaces the status check.
-- It went to your API's origin, by the same rule as [`authBearer`](/pages/plugins/auth-bearer#which-requests-get-the-token): the origin of an absolute instance `baseURL`, or only relative URLs without one. `origins` replaces the rule; give it the same list as `authenticate` or `authBearer`. A request to another host never spends your refresh token. The rule checks the URL the request was sent to, so a 401 from a host that an API request was redirected to can refresh.
+- It went to your API's origin, by the same rule as [`authBearer`](/pages/plugins/auth-bearer#which-requests-get-the-token): the origin of an absolute instance `baseURL`, or only relative URLs without one. `origins` replaces the rule; give it the same list as `authenticate` or `authBearer`. A request to another host never spends your refresh token. The response must come from the API too: when the API redirects to another host and that host answers 401, nothing refreshes, because new credentials wouldn't help there. faxios reads this from [`response.redirected` and `response.url`](/pages/advanced/response-schema). A response fetch doesn't call redirected, such as one a test's `fetch` builds by hand, counts as the API's.
 - Its body can be sent again. A stream body is used up by the first try, so that request rejects with its 401.
 - Its signal hasn't aborted.
 - It doesn't set `refreshAuth: false`.

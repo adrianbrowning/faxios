@@ -193,6 +193,71 @@ describe("plugins::refreshAuth", () => {
     assert.deepStrictEqual([ forbidden.sent.length, other.sent.length, stream.sent.length ], [ 1, 1, 1 ]);
   });
 
+  describe("a 401 after a redirect", () => {
+    // A 401 whose Response reports `finalURL` and `redirected`, as fetch does after a redirect.
+    const answeredFrom = (finalURL: string, redirected = true) => {
+      const sent: Array<string> = [];
+      const fetch = async (input: Request | string | URL) => {
+        sent.push(input instanceof Request ? input.url : String(input));
+        const response = new Response(null, { status: 401 });
+        Object.defineProperties(response, { redirected: { value: redirected }, url: { value: finalURL } });
+        return response;
+      };
+      return { fetch, sent };
+    };
+
+    it("doesn't refresh when the 401 came from another origin", async () => {
+      let refreshes = 0;
+      const { fetch, sent } = answeredFrom("https://storage.other.test/file");
+      const api = faxios.create({ baseURL: BASE, env: { fetch } }).use(refreshAuth(() => {
+        refreshes++;
+      }));
+
+      const err = await api.get("/files/1").catch((error: unknown) => error);
+
+      assert.ok(err instanceof FaxiosError);
+      assert.strictEqual(err.response?.status, 401);
+      assert.strictEqual(err.response?.redirected, true);
+      assert.strictEqual(err.response?.url, "https://storage.other.test/file");
+      assert.strictEqual(refreshes, 0);
+      assert.strictEqual(sent.length, 1);
+    });
+
+    it("doesn't refresh a redirected 401 that doesn't say where it came from", async () => {
+      let refreshes = 0;
+      const { fetch, sent } = answeredFrom("");
+      const api = faxios.create({ baseURL: BASE, env: { fetch } }).use(refreshAuth(() => {
+        refreshes++;
+      }));
+
+      await assert.rejects(api.get("/files/1"), (err: unknown) => err instanceof FaxiosError && err.response?.url === undefined);
+      assert.strictEqual(refreshes, 0);
+      assert.strictEqual(sent.length, 1);
+    });
+
+    it("refreshes when the 401 came from the API's origin, from one in origins, or wasn't redirected", async () => {
+      let refreshes = 0;
+      const refresh = () => {
+        refreshes++;
+      };
+      const sameOrigin = answeredFrom(`${BASE}/v2/files/1`);
+      const listed = answeredFrom("https://files.api.test/1");
+      // A custom fetch may report any URL; without a redirect it is still the API's answer.
+      const notRedirected = answeredFrom("https://storage.other.test/file", false);
+
+      await assert.rejects(faxios.create({ baseURL: BASE, env: { fetch: sameOrigin.fetch } }).use(refreshAuth(refresh))
+        .get("/files/1"));
+      await assert.rejects(faxios.create({ baseURL: BASE, env: { fetch: listed.fetch } })
+        .use(refreshAuth(refresh, { origins: [ BASE, "https://files.api.test" ] }))
+        .get("/files/1"));
+      await assert.rejects(faxios.create({ baseURL: BASE, env: { fetch: notRedirected.fetch } }).use(refreshAuth(refresh))
+        .get("/files/1"));
+
+      assert.strictEqual(refreshes, 3);
+      assert.deepStrictEqual([ sameOrigin.sent.length, listed.sent.length, notRedirected.sent.length ], [ 2, 2, 2 ]);
+    });
+  });
+
   it("refreshes on the statuses listed, or when refreshOn says so", async () => {
     let refreshes = 0;
     const { fetch, sent } = server(() => "never", 403);

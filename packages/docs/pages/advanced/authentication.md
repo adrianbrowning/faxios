@@ -88,7 +88,7 @@ const api = faxios.create({ baseURL: "https://api.example.com" })
 await api.get("/me");
 ```
 
-Concurrent 401s share one refresh, so a rotating refresh token is spent once, and a request to another host never triggers one. A failed refresh call's error reaches every waiting request, so add the refresh token's field to that call's `redact`. A cookie session works the same way: in a browser, the refresh response's `Set-Cookie` updates the cookie the retry sends (for a cross-origin API, set `withCredentials: true` on the instance the refresh call goes through). See [`refreshAuth`](/pages/plugins/refresh-auth) for which failures refresh, 403s, and cancellation.
+Concurrent 401s share one refresh, so a rotating refresh token is spent once, and a 401 from another host never triggers one, whether the request was sent there or the API redirected to it. A failed refresh call's error reaches every waiting request, so add the refresh token's field to that call's `redact`. A cookie session works the same way: in a browser, the refresh response's `Set-Cookie` updates the cookie the retry sends (for a cross-origin API, set `withCredentials: true` on the instance the refresh call goes through). See [`refreshAuth`](/pages/plugins/refresh-auth) for which failures refresh, 403s, and cancellation.
 
 ## Cookie-based authentication
 

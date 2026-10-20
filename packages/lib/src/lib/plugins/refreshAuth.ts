@@ -9,6 +9,15 @@ import { goesToAPI, isOriginList, originsOption } from "./credentials.js";
 import { definePlugin } from "./definePlugin.js";
 import { assertOptions, canReplay, discardBody, isFunction, isStatusList, own } from "./shared.js";
 
+const originOf = (url: string): null | string => {
+  try {
+    return new URL(url).origin;
+  }
+  catch {
+    return null;
+  }
+};
+
 // `x?: T | undefined` lets a consumer with `exactOptionalPropertyTypes` pass the `undefined` the
 // option checks treat as unset.
 /* eslint-disable sonarjs/no-redundant-optional -- see above */
@@ -76,15 +85,30 @@ export function refreshAuth(refresh: (error: FaxiosError) => unknown, options: R
     });
     return running;
   };
+  // Whether a redirected response came from the origin the request was sent to, or one in
+  // `origins`. A 401 from a host the API redirected to isn't the API refusing the credentials, so
+  // a refresh wouldn't help it. A response fetch doesn't call redirected (a custom fetch, a
+  // hand-built Response) counts as the API's.
+  const answeredByAPI = (failure: FaxiosError): boolean => {
+    const response = failure.response;
+    if (response?.redirected !== true) return true;
+    const finalURL = response.url;
+    const sentURL = response.request?.url;
+    if (finalURL === undefined) return false;
+    const finalOrigin = originOf(finalURL);
+    if (finalOrigin === null) return false;
+    if (origins?.includes(finalOrigin)) return true;
+    return sentURL !== undefined && originOf(sentURL) === finalOrigin;
+  };
   // Whether a failed request triggers a refresh: on the refresh statuses (or refreshOn), from the
   // API, with a body that can be sent again. The status check runs before the origin rule, which
   // parses URLs; refreshOn, a caller's function, only runs for the API.
+  const fromAPI = (failure: FaxiosError, ctx: FaxiosContext<RefreshAuthRequestOptions>): boolean =>
+    goesToAPI(ctx.config, own(ctx, "instanceBaseURL"), origins) && answeredByAPI(failure);
   const triggers = (failure: FaxiosError, ctx: FaxiosContext<RefreshAuthRequestOptions>): boolean => {
     if (!canReplay(own(ctx.config, "data"))) return false;
-    if (!refreshOn) {
-      return statuses.includes(failure.response?.status ?? 0) && goesToAPI(ctx.config, own(ctx, "instanceBaseURL"), origins);
-    }
-    if (!goesToAPI(ctx.config, own(ctx, "instanceBaseURL"), origins)) return false;
+    if (!refreshOn) return statuses.includes(failure.response?.status ?? 0) && fromAPI(failure, ctx);
+    if (!fromAPI(failure, ctx)) return false;
     try {
       return refreshOn(failure);
     }

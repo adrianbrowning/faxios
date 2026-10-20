@@ -502,7 +502,7 @@ The package root exports these types. Import them with `import type { ... } from
 | `FaxiosConfigHeaders` | What the `headers` option takes: a header object, method header groups, a `Headers` or a `FaxiosHeaders` |
 | `RawFaxiosRequestHeaders` | A plain header object for a request |
 | `FaxiosHeaderValue` | One header value: a string, number, boolean, array of strings, `null` or `undefined` |
-| `FaxiosResponse` | The resolved response: `data`, `status`, `statusText`, `headers`, `config` and `request` |
+| `FaxiosResponse` | The resolved response: `data`, `status`, `statusText`, `headers`, `config`, `request`, `redirected` and `url` |
 | `FaxiosPromise` | `Promise<FaxiosResponse<T>>` |
 | `FaxiosErrorCode` | The union of the `FaxiosError` code statics |
 | `SchemaValidationError` | The `FaxiosError` that [`isSchemaValidationError`](#isschemavalidationerror) narrows to |

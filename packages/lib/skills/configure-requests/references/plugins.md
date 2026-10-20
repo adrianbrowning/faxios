@@ -260,8 +260,9 @@ const api = faxios
 - `refresh` can return anything (the refresh call's promise too); `refreshAuth` only waits for it.
 - It refreshes on `statuses` (default `[401]`) or `refreshOn(error)`, only for requests to the API
   origin (`origins` like `authBearer`), and sends the request again once, any method. A 401 from a
-  host an API request was redirected to counts. A stream body or an aborted signal rejects with the
-  original error. `ctx.attempt` doesn't count the second send.
+  host the API redirected to doesn't refresh (`response.redirected` and `response.url`); one not
+  marked redirected (a hand-built test `Response`) counts as the API's. A stream body or an aborted signal
+  rejects with the original error. `ctx.attempt` doesn't count the second send.
 - Concurrent 401s share one `refresh` call, so rotating refresh tokens are spent once; a request
   sent before the last refresh finished is retried without another one. A rejected or throwing
   `refresh` rejects every waiting request with its error, so `redact` the refresh token's field.

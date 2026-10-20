@@ -300,7 +300,7 @@ and stop generating Axios APIs it removed or never verified.
     accepted; faxios only waits for it. A `refresh` that throws synchronously no longer leaves the
     shared refresh set for good. A throwing `refreshOn` still cancels the error's stream body.
     Guidance: the skill and docs tell users to give the refresh call a `timeout` and a `redact` for
-    its token field, say a 401 from a redirect target of an API request can refresh, and that
+    its token field, say a 401 from a host the API redirected to doesn't refresh (the plugin checks the new `response.redirected` and `response.url`), and that
     `ctx.attempt` doesn't count the second send. Checks added: the sync throw, `refreshOn` throwing
     with a stream body, `refreshAuth` → `retry` → `authBearer` under fake timers, a listenerless
     signal from middleware, an abort after the refresh settled, smoke tests that refresh once, and
