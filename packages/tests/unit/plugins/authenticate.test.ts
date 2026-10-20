@@ -117,6 +117,20 @@ describe("plugins::authenticate", () => {
     assert.strictEqual(getCredentials.mock.calls.length, 0);
   });
 
+  it("sends credentials only to the listed origins when origins is set", async () => {
+    const { fetch, sent } = recordingFetch();
+    const api = faxios.create({ allowAbsoluteUrls: true, env: { fetch } })
+      .use(authenticate(() => ({ headers: { "X-Api-Key": "k" } }), { origins: [ "https://a.test", "https://b.test" ] }));
+
+    await api.get("https://b.test/x");
+    await api.get("https://c.test/x");
+
+    assert.deepStrictEqual(sent.map(s => [ s.url, s.headers.get("x-api-key") ]), [
+      [ "https://b.test/x", "k" ],
+      [ "https://c.test/x", null ],
+    ]);
+  });
+
   it("refuses redirects for any header but Authorization, cookies and query parameters, unless the request sets redirect", async () => {
     const cases: Array<[Parameters<typeof authenticate>[0], RequestRedirect | undefined]> = [
       [ () => ({ headers: { Authorization: "Basic abc" } }), "follow" ],
