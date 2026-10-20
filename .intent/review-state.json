@@ -148,15 +148,15 @@
       ]
     },
     "source:packages/docs/.vitepress/config.mts": {
-      "fingerprint": "91464ded680e6ad1c989786f9d7a5cc06028204f6f4e3f8ae8b25b65ac5010ae",
+      "fingerprint": "25b8900581cde0fabc529421fd4f5223c2a216f05eae3dc526b1e34cc009b1d6",
       "snapshot": {
-        "packages/docs/.vitepress/config.mts": "7f774e5b990b4a87822e237ec99dfe043334da159a9415857467337fb0d9cdf5"
+        "packages/docs/.vitepress/config.mts": "a72e7697d32fd49eff997f20b6aa281e3e67fe60afd77c146e3e30bc4a10d89a"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
       "evidence": [
-        "Changed: packages/docs/.vitepress/config.mts at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: packages/docs/.vitepress/config.mts at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
       ]
     },
     "source:packages/docs/es/pages/advanced/interceptors.md": {
@@ -184,27 +184,27 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "4e7bbe1ae22ba7191976ea2354c9793f55069a1d75b4cc139e2eb41c48e5ef80",
+      "fingerprint": "3588fa262570bf54e02c5d75903dba41e97f47e592f89eba1df2c694d13623dd",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "ed29fdced427bc096f0c0d9994df0e2093f37137f3b324b89f9ef096cdd51dae"
+        "packages/docs/pages/advanced/api-reference.md": "31b1a9263914b97560e1c30cfd67b184013d73fd2be9ba6bda7b01a77fbc1999"
       },
-      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
-      "outcome": "updated",
-      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/api-reference.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
+        "Changed: packages/docs/pages/advanced/api-reference.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
-      "fingerprint": "e648891dd5200f6483ff11ab268fd07b70d127da975b7c6cf6fb900295a27114",
+      "fingerprint": "676237cea5a1688ac8a2bae90ad88a001fd5c0d5a6f779c4000482cf4103a98f",
       "snapshot": {
-        "packages/docs/pages/advanced/authentication.md": "a4b739fafefd73912bd3ddd12ff26f083d3b9081b49a30d4b9df6b567da804dd"
+        "packages/docs/pages/advanced/authentication.md": "9c006792214b071fd49aa52cdcdd0900c569eb485254895a97cb55c2a3adc792"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/authentication.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: packages/docs/pages/advanced/authentication.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
       ]
     },
     "source:packages/docs/pages/advanced/create-an-instance.md": {
@@ -244,15 +244,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/headers.md": {
-      "fingerprint": "a4b5f0c2e8fb05d79333ac1058a0cf38ee596510cb9e088f6ca92700758b88fb",
+      "fingerprint": "843001b3dbe63efbc5fb1b25632ea61eb5f01ba83dc47068af7f894e5af2dbe2",
       "snapshot": {
-        "packages/docs/pages/advanced/headers.md": "aa2490bfe1e1a65dd3ae0e673a01db972f5dfce127ff23bb8d86802541854246"
+        "packages/docs/pages/advanced/headers.md": "b3ef7e81a16e218e23a9c80ca2574473ffa92f6e33879edeac8a6fbb2259999a"
       },
-      "head": "a04213f6ab625b902f556f82973792ed9d37cafa",
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
       "outcome": "no-change",
-      "reason": "Security fix only: dangerous header names skipped and plugin ctx.config copies stay null-prototype; no taught API or usage changes",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/headers.md at d38983f3d88fff4ea9c39285d8923af2b65bbfa3"
+        "Changed: packages/docs/pages/advanced/headers.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
       ]
     },
     "source:packages/docs/pages/advanced/interceptors.md": {
@@ -268,51 +268,51 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "360fe34d6470a8230be6b3a4faff4819ff58448e1df2c7610568f42e532f1ca4",
+      "fingerprint": "d7839da31964eeb24cd39d27e8e8fd58f27ad2a75c6a928aede24c65c9533261",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "ca5aab4885340e93e749f69e5ee9e886280b5c7893e10c80f0f20dd4e7fa4ae1"
+        "packages/docs/pages/advanced/middleware.md": "7dee585517e4fbb21b547e96520cc7f22ea3b81007f0b86432891612c913da29"
       },
-      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
-      "outcome": "updated",
-      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
+      "head": "93c0ead29149347a40368f2bcf6b31b5648561ad",
+      "outcome": "no-change",
+      "reason": "Docs-only: the middleware page points to the Plugins overview instead of listing the built-ins; the skill teaches the same APIs. Checked: docs:sync:check, test:docs-examples, docs:build",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
+        "Changed: packages/docs/pages/advanced/middleware.md at 93c0ead29149347a40368f2bcf6b31b5648561ad"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
-      "fingerprint": "49ede3ab20a5bc0724a6cc37cf5785de4c764e08c3a852c07690ed8bb0452c0d",
+      "fingerprint": "4fd49f09cff259e3ef2086948671f7c7c8a15ad596e57c0fe46b85dd4c644d12",
       "snapshot": {
-        "packages/docs/pages/advanced/migrating-from-interceptors.md": "9c07783541dcb518f5cd84b41396d86f9e1db3d2ae1f12e82aa1331451b81bdb"
+        "packages/docs/pages/advanced/migrating-from-interceptors.md": "4614160b69e2fca928e22bf39ead1f82042f0839b1f4b346db193635104d8aa4"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
-      "outcome": "updated",
-      "reason": "#144: the skill and planning artifacts now cover the forwardTo plugin.",
+      "head": "2dad372afc9d8979ba655528b09c2cc72626d7c6",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section, a stub keeps the old retry URL, links follow; the skill links no moved page. Checked: pnpm check exit 0 (docs examples, docs build)",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/migrating-from-interceptors.md at f59775c08419cb31e97d0b6395315f647aa499a1"
+        "Changed: packages/docs/pages/advanced/migrating-from-interceptors.md at 2dad372afc9d8979ba655528b09c2cc72626d7c6"
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
-      "fingerprint": "1c5c76f0b87d444a8e31a40511c999e1b920c5f43ee0f7418c8286550c6e3ca7",
+      "fingerprint": "39bcbbb37a3e1125856b5579b628372f3577f14a6c56f04ce32981fdbffef928",
       "snapshot": {
-        "packages/docs/pages/advanced/request-config.md": "0e2c34db9e03a1ecead37399a6f543c1fe96141e42a240a98545b37ec81e73a3"
+        "packages/docs/pages/advanced/request-config.md": "9af2f4a2a26ba12d482ac9dadb22ac7d1170f4e25c23303030a9a45acc9cf0db"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/request-config.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: packages/docs/pages/advanced/request-config.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
       ]
     },
     "source:packages/docs/pages/advanced/retry.md": {
-      "fingerprint": "550f31e3dfcd5c858dbb6565c39ba682ba5a600dd1dbf6f4b53e6e03bd85da92",
+      "fingerprint": "556ca421ae117215336d2b25cab326ae35fc45220aee1b9542ef082f5d49d9bb",
       "snapshot": {
-        "packages/docs/pages/advanced/retry.md": "461658cae880a88069a3c908c972a8c304bb3c94b23b38cebea6f63bc4f2b7f7"
+        "packages/docs/pages/advanced/retry.md": "bc7df464d03ea907eae8fc3ab0cd1355f45889934c0ca446e23f883d7300e2a9"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
-      "outcome": "updated",
-      "reason": "configure-requests SKILL.md now teaches the retry attempts cap of 10 (plugin and per request); size-limit fixes change no taught API",
+      "head": "2dad372afc9d8979ba655528b09c2cc72626d7c6",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section, a stub keeps the old retry URL, links follow; the skill links no moved page. Checked: pnpm check exit 0 (docs examples, docs build)",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/retry.md at 484d2ac2104da3e5946af6a25500ec7b40729206"
+        "Changed: packages/docs/pages/advanced/retry.md at 2dad372afc9d8979ba655528b09c2cc72626d7c6"
       ]
     },
     "source:packages/docs/pages/advanced/schema-validation.md": {
@@ -340,39 +340,39 @@
       ]
     },
     "source:packages/docs/pages/advanced/type-script.md": {
-      "fingerprint": "e5c5bb964ff8d488efc26189e89fdbd1ee942100d1dae4090eb2a5e2a822a815",
+      "fingerprint": "285623147da33f32986d99e569242ac23c8e805cffc73158836d85c70fb580d1",
       "snapshot": {
-        "packages/docs/pages/advanced/type-script.md": "8e65968b6408253cbf08a6f86cd40402e6ceaa51c3c0b51d7413d569d06f6f7d"
+        "packages/docs/pages/advanced/type-script.md": "652f99732e61cc912dbbced86f13819ab48a479cbc285b7d52544b9d37a91768"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/type-script.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: packages/docs/pages/advanced/type-script.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
       ]
     },
     "source:packages/docs/pages/getting-started/examples/typescript.md": {
-      "fingerprint": "8fa4b0a712e7bde6ba0836f080d7651af0e9e61eaf452f8a7164994650d41c06",
+      "fingerprint": "bef99974af753fc1a00d5f30edb7f366caa36c49ea71cc32154ab1dcbae931c2",
       "snapshot": {
-        "packages/docs/pages/getting-started/examples/typescript.md": "67ddb802125b99c484dbd231d426515db2e7c5543228b5e5699617acfa8da805"
+        "packages/docs/pages/getting-started/examples/typescript.md": "099eb69e3b25c9201ea72e21e849282c160987419a4e5d427162b308b15262c5"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
       "outcome": "no-change",
-      "reason": "#233: TypeScript 5.4 floor documented and checked; the skill does not state a TypeScript version.",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
       "evidence": [
-        "Changed: packages/docs/pages/getting-started/examples/typescript.md at a6926e1f507b0da9f07237183336e51a04704807"
+        "Changed: packages/docs/pages/getting-started/examples/typescript.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
       ]
     },
     "source:packages/docs/pages/getting-started/features.md": {
-      "fingerprint": "7eacb98834dacfbca5fb2d9c6ebe3c4c7b5a8e51ce8fb4c5f531efa016caab76",
+      "fingerprint": "bd02329fd739ee72bd13ef0c3c7cc11f216b47128601b25f1d4190c0389204be",
       "snapshot": {
-        "packages/docs/pages/getting-started/features.md": "c3cdfb831eae8532d251dfcf7fdec0d29aa5594ca3fc5c8dc0111a43d64c0578"
+        "packages/docs/pages/getting-started/features.md": "eb66628e352ecef2fe0fadb190b98a901494d5d91f1a7d493faec7787e3f6c2f"
       },
-      "head": "3e5686d320e78385f1ec031751acfb9708046ebe",
-      "outcome": "updated",
-      "reason": "#188: docs drop axios leftovers (Node 24 floor, upload progress, -1 limits, examples/sandbox/ECOSYSTEM removed); configure-requests axios-differences reference no longer says the guide is wrong",
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
       "evidence": [
-        "Changed: packages/docs/pages/getting-started/features.md at 0d29ef57a3fe515a24238021a15d55bf002bc8b9"
+        "Changed: packages/docs/pages/getting-started/features.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
       ]
     },
     "source:packages/docs/pages/getting-started/upgrade-guide.md": {
@@ -424,15 +424,15 @@
       ]
     },
     "source:packages/lib/README.md": {
-      "fingerprint": "2c6861db35f9ec52b3e291ec461a0173c23259d5c05d5e0f0f6d071c978e38b6",
+      "fingerprint": "6b629c40a1eb2fa41370ce607ed7d6e0fa72272afcb72fd9dd3f4c07b38b33da",
       "snapshot": {
-        "packages/lib/README.md": "74a111e24dcd1e9791d56c7995fa280ebe532d9282e5fcd2746be2dbe3b7c34d"
+        "packages/lib/README.md": "c3d5bd1c9316dfdaed11d0ed106c6d192438cd48bd74b25518da419a1d93dbac"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
       "evidence": [
-        "Changed: packages/lib/README.md at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: packages/lib/README.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
@@ -7672,6 +7672,90 @@
       "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
         "Changed: packages/tests/unit/helpers/stripUserInfo.test.ts at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
+      ]
+    },
+    "source:.bumpy/plugins-docs-section.md": {
+      "fingerprint": "979cc3ceecbebf2d0f4aae4add3f942cce20ccb0f9c081cbd5a5893842219d9a",
+      "snapshot": {
+        ".bumpy/plugins-docs-section.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+      },
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
+      "evidence": [
+        "Changed: .bumpy/plugins-docs-section.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
+      ]
+    },
+    "source:packages/docs/pages/plugins/auth-bearer.md": {
+      "fingerprint": "4e4330b1e6c56e724bb3bba5c676d37cc3357f3c2242994d7658168a71e119bc",
+      "snapshot": {
+        "packages/docs/pages/plugins/auth-bearer.md": "d09b35c81d30d35379f696bcff111e114a475dccc8dc4933bff06b0911ca5552"
+      },
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
+      "evidence": [
+        "Changed: packages/docs/pages/plugins/auth-bearer.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
+      ]
+    },
+    "source:packages/docs/pages/plugins/forward-to.md": {
+      "fingerprint": "e53d83af8f8df41721c37b46c9922332edaa9293b50610a00424d23550dc3db3",
+      "snapshot": {
+        "packages/docs/pages/plugins/forward-to.md": "bd32fa0d244dd98885b06fdbd4f43d73e83c7350bf8b73b9996e5f29566c14b4"
+      },
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
+      "evidence": [
+        "Changed: packages/docs/pages/plugins/forward-to.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
+      ]
+    },
+    "source:packages/docs/pages/plugins/index.md": {
+      "fingerprint": "38bb08274e6c22a97e66e0ddf7c8be3bedc09cf23eca854db1b43ef12bd593cd",
+      "snapshot": {
+        "packages/docs/pages/plugins/index.md": "32b456c046d0944d7307a23f6f16b81b136074e921dab38bf06c73667c95e2d3"
+      },
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
+      "evidence": [
+        "Changed: packages/docs/pages/plugins/index.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
+      ]
+    },
+    "source:packages/docs/pages/plugins/retry.md": {
+      "fingerprint": "c8a6b8bfa3b57e3a796edfdb11080271bfe1e4add84a93d99c084d639fbf8986",
+      "snapshot": {
+        "packages/docs/pages/plugins/retry.md": "13f0d2b8cc8ad208b79377e56b7c1adf68cbc8a3c83c7188e0b34df9ae5d7d0c"
+      },
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
+      "evidence": [
+        "Changed: packages/docs/pages/plugins/retry.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
+      ]
+    },
+    "source:packages/docs/pages/plugins/timing.md": {
+      "fingerprint": "073bdc62b72c2b57b705c2710cfb8f8335fd7ba65fda8702b60cd8488107f815",
+      "snapshot": {
+        "packages/docs/pages/plugins/timing.md": "4b689af063e3fc954ea2d6b4cb0b36d1771116f725163c5dc0e440dd8e2d7648"
+      },
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
+      "evidence": [
+        "Changed: packages/docs/pages/plugins/timing.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
+      ]
+    },
+    "source:packages/docs/pages/plugins/writing-a-plugin.md": {
+      "fingerprint": "5773f75d830d0326aef106f827cab9756e8964061f1092c44ea98ef55d885d43",
+      "snapshot": {
+        "packages/docs/pages/plugins/writing-a-plugin.md": "d496514502e4c726b2325dcf3901f8ae32b982a5cae9998cf1088765c941f825"
+      },
+      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "outcome": "no-change",
+      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
+      "evidence": [
+        "Changed: packages/docs/pages/plugins/writing-a-plugin.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
       ]
     }
   }

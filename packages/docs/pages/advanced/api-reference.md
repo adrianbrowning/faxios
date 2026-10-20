@@ -272,7 +272,7 @@ const merged = mergeConfig(base, override);
 
 ### `resolveRequestURL`
 
-Returns the URL a request with this config is sent to: `url` (a `URL` as its `href`) with its `{key}` placeholders filled from `pathParams`, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params` serialized with `paramsSerializer`. It is the resolver faxios itself uses for requests and `getUri()`, exported for plugins. It uses `allowAbsoluteUrls` as given: unset, an absolute `url` replaces `baseURL`; requests and `getUri()` set it from the instance defaults first. It throws the `FaxiosError` the request would reject with, `ERR_INVALID_URL` for a config with neither `url` nor `baseURL` and `ERR_BAD_OPTION_VALUE` for a `url` that isn't a string or `URL` included. See [Writing a plugin](/pages/advanced/middleware#writing-a-plugin).
+Returns the URL a request with this config is sent to: `url` (a `URL` as its `href`) with its `{key}` placeholders filled from `pathParams`, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params` serialized with `paramsSerializer`. It is the resolver faxios itself uses for requests and `getUri()`, exported for plugins. It uses `allowAbsoluteUrls` as given: unset, an absolute `url` replaces `baseURL`; requests and `getUri()` set it from the instance defaults first. It throws the `FaxiosError` the request would reject with, `ERR_INVALID_URL` for a config with neither `url` nor `baseURL` and `ERR_BAD_OPTION_VALUE` for a `url` that isn't a string or `URL` included. See [Writing a plugin](/pages/plugins/writing-a-plugin).
 
 ```ts contract=@gcmdev/faxios
 resolveRequestURL(config: FaxiosRequestConfig): string;
@@ -366,7 +366,7 @@ spread<TArgs extends Array<unknown>, TResult>(fn: (...args: TArgs) => TResult): 
 
 ## Middleware and plugins
 
-See [Middleware and plugins](/pages/advanced/middleware) for a guide with examples.
+See [Middleware](/pages/advanced/middleware) and [Plugins](/pages/plugins/) for guides with examples.
 
 ### `use`
 
