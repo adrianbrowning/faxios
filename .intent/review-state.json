@@ -268,15 +268,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "88cf6cb47f4618ddbd36a7c24a1f08068dd59b1b56839d0718a74f9d65f262a9",
+      "fingerprint": "d7839da31964eeb24cd39d27e8e8fd58f27ad2a75c6a928aede24c65c9533261",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "5f38c31f73c83ad87ecfcf3aa8f8f044c350ab35687bdff13bc7facf3682d807"
+        "packages/docs/pages/advanced/middleware.md": "7dee585517e4fbb21b547e96520cc7f22ea3b81007f0b86432891612c913da29"
       },
-      "head": "2dad372afc9d8979ba655528b09c2cc72626d7c6",
+      "head": "93c0ead29149347a40368f2bcf6b31b5648561ad",
       "outcome": "no-change",
-      "reason": "Docs-only: plugin pages move into a Plugins section, a stub keeps the old retry URL, links follow; the skill links no moved page. Checked: pnpm check exit 0 (docs examples, docs build)",
+      "reason": "Docs-only: the middleware page points to the Plugins overview instead of listing the built-ins; the skill teaches the same APIs. Checked: docs:sync:check, test:docs-examples, docs:build",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at 2dad372afc9d8979ba655528b09c2cc72626d7c6"
+        "Changed: packages/docs/pages/advanced/middleware.md at 93c0ead29149347a40368f2bcf6b31b5648561ad"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
