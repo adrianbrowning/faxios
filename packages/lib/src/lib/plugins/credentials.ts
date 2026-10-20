@@ -132,8 +132,8 @@ const isSearchParams = (value: unknown): value is SearchParams =>
   Object.prototype.toString.call(value) === "[object URLSearchParams]";
 
 // A copy of `params` with the query credentials set, never the caller's object, and the names it
-// set; `null` when `params` isn't an object or URLSearchParams. A parameter the request already
-// has is kept unless `overwrite`.
+// set; `null` when `params` isn't an object or URLSearchParams, or is an array. A parameter the
+// request already has is kept unless `overwrite`.
 function withQuery(params: unknown, query: Array<[string, string]>, overwrite: boolean): null | { names: Array<string>; params: InternalFaxiosRequestConfig["params"]; } {
   const names: Array<string> = [];
   if (isSearchParams(params)) {
@@ -145,7 +145,7 @@ function withQuery(params: unknown, query: Array<[string, string]>, overwrite: b
     }
     return { names, params: copy };
   }
-  if (params !== undefined && params !== null && typeof params !== "object") return null;
+  if (Array.isArray(params) || (params !== undefined && params !== null && typeof params !== "object")) return null;
   // Null prototype, like ctx.config: own entries only, and `__proto__` stays a plain key.
   const copy: Record<string, unknown> = Object.create(null);
   for (const [ name, value ] of Object.entries(params ?? {})) copy[name] = value;
@@ -160,13 +160,15 @@ function withQuery(params: unknown, query: Array<[string, string]>, overwrite: b
 // `schema` with the query credentials added to its output. Core runs paramsSchema after
 // middleware and sends its output, so a schema that strips unknown keys would drop credentials put
 // in params, and a strict one would reject them. The schema sees only the request's own params.
-// Output core rejects (not an object or URLSearchParams) is passed on as is, for core to report.
+// Output core rejects (not an object or URLSearchParams, an array, or a result with `issues`) is
+// passed on as is, for core to report.
 function withQueryAfter(schema: StandardSchemaV1, query: Array<[string, string]>, overwrite: boolean): StandardSchemaV1 {
   const standard = schema["~standard"];
   const add = (result: StandardSchemaV1.Result<unknown>): StandardSchemaV1.Result<unknown> => {
-    // A malformed result goes to core as is, which reports it as ERR_BAD_PARAMS_SCHEMA.
+    // A malformed result goes to core as is, which reports it as ERR_BAD_PARAMS_SCHEMA. Core
+    // fails any result whose `issues` isn't undefined, `null` and `false` too.
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- third-party schema
-    if (!result || typeof result !== "object" || result.issues) return result;
+    if (!result || typeof result !== "object" || result.issues !== undefined) return result;
     const placed = withQuery(result.value, query, overwrite);
     return placed ? { value: placed.params } : result;
   };

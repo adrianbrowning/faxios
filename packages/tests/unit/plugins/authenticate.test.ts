@@ -172,6 +172,16 @@ describe("plugins::authenticate", () => {
     assert.strictEqual(sent.length, 0);
   });
 
+  it("leaves a paramsSchema result core rejects, an array or one with issues, for core to reject", async () => {
+    const { fetch, sent } = recordingFetch();
+    const api = faxios.create({ baseURL: BASE, env: { fetch } }).use(authenticate(() => ({ query: { key: "k" } })));
+
+    await assert.rejects(api.get("/x", { paramsSchema: makeSchema(() => ({ value: [ "a" ] })) }), isCode(FaxiosError.ERR_BAD_PARAMS_SCHEMA));
+    // Core fails any `issues` that isn't undefined; it reads `null.map`, so the error is a TypeError.
+    await assert.rejects(api.get("/x", { paramsSchema: makeSchema(() => ({ value: { page: 1 }, issues: null }) as never) }));
+    assert.strictEqual(sent.length, 0);
+  });
+
   it("keeps a query parameter the paramsSchema output already has, unless overwrite", async () => {
     const withKey = makeSchema(() => ({ value: { key: "own" } }));
     const kept = recordingFetch();
@@ -197,12 +207,13 @@ describe("plugins::authenticate", () => {
     assert.deepStrictEqual(params, { page: 1 });
   });
 
-  it("rejects query credentials, sending nothing, when params isn't an object", async () => {
+  it("rejects query credentials, sending nothing, when params isn't an object or is an array", async () => {
     const { fetch, sent } = recordingFetch();
     const api = faxios.create({ baseURL: BASE, env: { fetch } }).use(authenticate(() => ({ query: { key: "k" } })));
 
     // @ts-expect-error TS2769 -- a JavaScript caller can pass a string
     await assert.rejects(api.get("/x", { params: "page=1" }), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
+    await assert.rejects(api.get("/x", { params: [ "a" ] }), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
     assert.strictEqual(sent.length, 0);
   });
 
