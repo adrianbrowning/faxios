@@ -438,6 +438,37 @@ describe("plugins::refreshAuth", () => {
     assert.strictEqual(sent.length, 4);
   });
 
+  it("doesn't refresh a 401 when refreshOn returns false", async () => {
+    let refreshes = 0;
+    const { fetch, sent } = server(() => "never");
+    const api = faxios.create({ baseURL: BASE, env: { fetch } }).use(refreshAuth(() => {
+      refreshes++;
+    }, { refreshOn: () => false }));
+
+    await assert.rejects(api.get("/a"), (err: unknown) => err instanceof FaxiosError && err.response?.status === 401);
+    assert.strictEqual(refreshes, 0);
+    assert.strictEqual(sent.length, 1);
+  });
+
+  it("cancels the stream body of a 401 before refresh runs", async () => {
+    let cancelled = 0;
+    let atRefresh = -1;
+    let calls = 0;
+    const fetch = async () => (++calls === 1
+      ? new Response(new ReadableStream<Uint8Array>({
+        cancel() {
+          cancelled++;
+        },
+      }), { status: 401 })
+      : new Response(null, { status: 200 }));
+    const api = faxios.create({ baseURL: BASE, env: { fetch } }).use(refreshAuth(() => {
+      atRefresh = cancelled;
+    }));
+
+    assert.strictEqual((await api.get("/a", { responseType: "stream" })).status, 200);
+    assert.strictEqual(atRefresh, 1);
+  });
+
   it("cancels the stream body of the error when refreshOn throws, and rejects with refreshOn's error", async () => {
     let cancelled = 0;
     const failure = new Error("refreshOn failed");
@@ -575,32 +606,45 @@ describe("plugins::refreshAuth", () => {
 
     it("sends nothing again when the signal aborts after the refresh settled, before the second try", async () => {
       let token = "old";
-      let settled = false;
-      let tries = 0;
-      const controller = new AbortController();
-      // Aborts as refreshAuth stops watching the signal, which it does once the refresh has settled.
-      const removeEventListener = controller.signal.removeEventListener.bind(controller.signal);
-      Object.defineProperty(controller.signal, "removeEventListener", {
-        value: (type: string, listener: () => void) => {
-          removeEventListener(type, listener);
-          if (settled) controller.abort();
-        },
+      let holdB!: () => void;
+      const bHeld = new Promise<void>(resolve => {
+        holdB = resolve;
       });
-      const { fetch, sent } = server(() => "new");
+      const controller = new AbortController();
+      const sent: Array<string> = [];
+      const tried: Array<string | undefined> = [];
+      const fetch = async (input: Request | string | URL, init?: RequestInit) => {
+        const url = input instanceof Request ? input.url : String(input);
+        sent.push(url);
+        // /b's first answer arrives only after /a's refresh settled.
+        if (url.endsWith("/b")) await bHeld;
+        return new Response(null, { status: new Headers(init?.headers).get("authorization") === "Bearer new" ? 200 : 401 });
+      };
       const api = faxios.create({ baseURL: BASE, env: { fetch } })
-        .use(refreshAuth(async () => {
+        .use(refreshAuth(() => {
           token = "new";
-          settled = true;
+        }, {
+          // /b's caller aborts as its 401 comes in. The refresh it needs already ran, so nothing
+          // waits on a refresh between this and the second try.
+          refreshOn: error => {
+            if (error.config?.url === "/b") controller.abort();
+            return error.response?.status === 401;
+          },
         }))
+        // Each try that got past refreshAuth.
         .use(async (ctx, next) => {
-          tries++;
+          tried.push(ctx.config.url);
           return next(ctx);
         })
         .use(authBearer(() => token));
 
-      await assert.rejects(api.get("/a", { signal: controller.signal }), (err: unknown) => err instanceof CanceledError);
-      assert.strictEqual(tries, 1);
-      assert.strictEqual(sent.length, 1);
+      const b = api.get("/b", { signal: controller.signal });
+      await api.get("/a");
+      holdB();
+
+      await assert.rejects(b, (err: unknown) => err instanceof CanceledError);
+      assert.deepStrictEqual(tried, [ "/b", "/a", "/a" ]);
+      assert.deepStrictEqual(sent, [ `${BASE}/b`, `${BASE}/a`, `${BASE}/a` ]);
     });
 
     it("rejects a signal without listener methods that a middleware before it passes on, before refreshing", async () => {

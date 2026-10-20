@@ -95,7 +95,7 @@ describe("static api", () => {
   it("keeps plugin exports off the root: definePlugin on /plugins, each built-in on its own subpath", () => {
     // @gcmdev/faxios/plugins exports definePlugin and nothing else, no built-ins.
     assert.deepStrictEqual(Object.keys(pluginsEntry), [ "definePlugin" ]);
-    for (const name of [ "authBearer", "authenticate", "forwardTo", "retry", "timing", "plugins", "definePlugin" ]) {
+    for (const name of [ "authBearer", "authenticate", "forwardTo", "refreshAuth", "retry", "timing", "plugins", "definePlugin" ]) {
       assert.strictEqual(Object.hasOwn(root, name), false, `root exports ${name}`);
     }
     // @ts-expect-error TS2339 -- the built-ins moved to their own subpaths
