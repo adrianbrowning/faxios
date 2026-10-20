@@ -49,9 +49,9 @@ await api.get("/users");
 
 `ctx.config` is the request config after it has been merged with the instance defaults, and `ctx.config.headers` is always a `FaxiosHeaders` instance. You change it in place; there is nothing to return except the result of `next`.
 
-For bearer tokens specifically, the built-in [`authBearer`](/pages/advanced/authentication) plugin does this for you, and only sends the token to your own API's origin.
+For bearer tokens specifically, the built-in [`authBearer`](/pages/plugins/auth-bearer) plugin does this for you, and only sends the token to your own API's origin.
 
-An interceptor that rewrites `config.url` to send requests through a forwarding gateway has to fill in path params, run `paramsSchema` and append `params` itself, because middleware runs before dispatch does those. Use the built-in [`forwardTo`](/pages/advanced/middleware#forwardto) plugin instead: it forwards the final URL, on every retry.
+An interceptor that rewrites `config.url` to send requests through a forwarding gateway has to fill in path params, run `paramsSchema` and append `params` itself, because middleware runs before dispatch does those. Use the built-in [`forwardTo`](/pages/plugins/forward-to) plugin instead: it forwards the final URL, on every retry.
 
 ## Response interceptors
 
@@ -141,7 +141,7 @@ await api.get("/me");
 
 The `_retry` flag is no longer needed. Calling `next(ctx)` again sends the request through the rest of the chain once more, and the second call is outside the `try`, so a second 401 is thrown to the caller. Each call to `next` starts from `ctx.config`; changes the request pipeline makes while sending (path parameters, `transformRequest`, header normalization) are made on a copy and don't build up between tries.
 
-With `authBearer` installed, a small `refreshOn401` plugin installed before it can do the same: it refreshes once and calls `next(ctx)` again, and `authBearer` sets the new token. See [Authentication](/pages/advanced/authentication). For retrying network errors and 5xx responses, use the built-in [`retry`](/pages/advanced/retry) plugin.
+With `authBearer` installed, the built-in [`refreshAuth`](/pages/plugins/refresh-auth) plugin installed before it does the same: it refreshes once and calls `next(ctx)` again, and `authBearer` sets the new token. For retrying network errors and 5xx responses, use the built-in [`retry`](/pages/plugins/retry) plugin.
 
 ## Order
 

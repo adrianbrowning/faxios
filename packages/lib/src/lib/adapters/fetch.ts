@@ -527,6 +527,13 @@ const buildDownloadStream = (
   ) as AnyResponse;
 };
 
+// Whether fetch followed a redirect, and the URL that answered. A custom fetch's hand-built
+// Response may leave either out (`url` is then "").
+const redirectInfo = (response: AnyResponse): Pick<FaxiosResponse, "redirected" | "url"> => ({
+  redirected: typeof response.redirected === "boolean" ? response.redirected : undefined,
+  url: typeof response.url === "string" && response.url !== "" ? response.url : undefined,
+});
+
 // One request through fetch; `input` holds the FetchAdapter arguments.
 const sendRequest = async (
   runtime: FetchRuntime,
@@ -609,6 +616,8 @@ const sendRequest = async (
       ? fetchFn(request, fetchInitFor(runtime, { init: requestInit, Request, request }))
       : fetchFn(url, requestInit));
     ctx.stage = undefined;
+    // Read before the download wrapper below replaces the Response with one that has no URL.
+    const origin = redirectInfo(response);
 
     // A fetch Response's headers is a Headers: an iterable of [name, value] pairs.
     const responseHeaders = FaxiosHeaders.from(response.headers as HeaderInput);
@@ -649,6 +658,7 @@ const sendRequest = async (
       statusText: response.statusText,
       config,
       request: request ?? null,
+      ...origin,
     };
     rejection = statusError(settled);
   }

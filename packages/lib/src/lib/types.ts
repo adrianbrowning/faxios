@@ -321,9 +321,16 @@ export interface FaxiosResponse<T = unknown, D = unknown> {
   config: InternalFaxiosRequestConfig<D>;
   data: T;
   headers: FaxiosHeaders;
+  /** Whether fetch followed a redirect to get this response. `undefined` when it doesn't say. */
+  redirected?: boolean | undefined;
   request?: null | WebRequest;
   status: number;
   statusText: string;
+  /**
+   * The URL that sent the response, after any redirects fetch followed. `undefined` when the
+   * runtime or a custom `fetch` doesn't report one (a `Response` built by hand has no URL).
+   */
+  url?: string | undefined;
 }
 
 export type FaxiosPromise<T = unknown> = Promise<FaxiosResponse<T>>;

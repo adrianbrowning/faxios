@@ -6,9 +6,8 @@ import isCancel from "../cancel/isCancel.js";
 import assertSignal from "../core/assertSignal.js";
 import FaxiosError from "../core/FaxiosError.js";
 import raceAbort, { onAbort } from "../helpers/raceAbort.js";
-import { hasOwnInPrototypeChain } from "../utils.js";
 import { definePlugin } from "./definePlugin.js";
-import { assertOptions, isBoolean, isFunction, own, TOKEN } from "./shared.js";
+import { assertOptions, canReplay, discardBody, isBoolean, isFunction, isStatusList, own, TOKEN } from "./shared.js";
 
 // setTimeout fires at once for anything longer: it keeps the delay as a signed 32-bit integer.
 const MAX_TIMER_MS = 2_147_483_647;
@@ -21,8 +20,6 @@ const isWait = (ms: unknown): ms is number => typeof ms === "number" && Number.i
 // A wait a timer can hold: setTimeout fires at once for anything longer.
 const isTimerWait = (ms: unknown) => isWait(ms) && ms <= MAX_TIMER_MS;
 
-const isStatus = (value: unknown) => Number.isInteger(value) && (value as number) >= 100 && (value as number) <= 599;
-
 // Bounded on purpose: NaN or Infinity would make a failing request loop forever.
 const optionsSchema = {
   attempts: (value: unknown) => (Number.isInteger(value) && (value as number) >= 1 && (value as number) <= MAX_ATTEMPTS) || `an integer from 1 to ${MAX_ATTEMPTS}`,
@@ -30,7 +27,7 @@ const optionsSchema = {
   retryOn: isFunction,
   delay: (value: unknown) => isWait(value) || typeof value === "function" || "a finite number of at least 0 or a function",
   methods: (value: unknown) => (Array.isArray(value) && value.every(m => typeof m === "string" && TOKEN.test(m))) || "an array of HTTP method names",
-  statuses: (value: unknown) => (Array.isArray(value) && value.every(isStatus)) || "an array of HTTP status codes (100-599)",
+  statuses: isStatusList,
   maxRetryAfter: (value: unknown) => isTimerWait(value) || `a number of milliseconds from 0 to ${MAX_TIMER_MS}`,
   maxDelay: (value: unknown) => isTimerWait(value) || `a number of milliseconds from 0 to ${MAX_TIMER_MS}`,
   jitter: (value: unknown) => value === "full" || value === "none" || "\"full\" or \"none\"",
@@ -158,29 +155,6 @@ function retryAfterMs(error: unknown): number | undefined {
 }
 
 const doublingDelay = (attempt: number) => 100 * 2 ** (attempt - 1);
-
-// A stream is consumed by the first try, so sending it again would send nothing.
-// The same stream checks the fetch adapter uses: web ReadableStreams, Node-style pipe streams and
-// async iterables (such as async generators), whose `pipe` or `Symbol.asyncIterator` the body or
-// its class defines. One only a polluted Object.prototype supplies doesn't make a plain object
-// body a stream.
-const ownMethod = (data: object, key: PropertyKey): boolean =>
-  hasOwnInPrototypeChain(data, key) && typeof Reflect.get(data, key) === "function";
-
-function canReplay(data: unknown): boolean {
-  if (Object.prototype.toString.call(data) === "[object ReadableStream]") return false;
-  if (typeof data !== "object" || data === null) return true;
-  return !ownMethod(data, "pipe") && !ownMethod(data, Symbol.asyncIterator);
-}
-
-// A status error's `responseType: "stream"` body holds its connection open until it is read or
-// cancelled. Retrying drops it, so it is cancelled; one onRetry started reading is left alone.
-function discardBody(reason: unknown): void {
-  const data: unknown = reason instanceof FaxiosError ? reason.response?.data : undefined;
-  if (Object.prototype.toString.call(data) !== "[object ReadableStream]") return;
-  const stream = data as InstanceType<typeof ReadableStream>;
-  if (!stream.locked) stream.cancel().catch(() => {});
-}
 
 // The wait before the next try, or undefined to rethrow `error`, after calling onRetry. A throwing
 // hook rejects the request with its own error, before any wait; so does a delay that gives no

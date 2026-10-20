@@ -11,7 +11,9 @@ The declaration blocks on this page are checked against the package's shipped Ty
 | `@gcmdev/faxios` | the default `faxios` instance, and the classes, functions, constants and types on this page |
 | `@gcmdev/faxios/plugins` | `definePlugin` only |
 | `@gcmdev/faxios/plugins/auth-bearer` | `authBearer` and the types `AuthBearerOptions` and `AuthBearerCapability` |
+| `@gcmdev/faxios/plugins/authenticate` | `authenticate` and the types `AuthenticateOptions`, `AuthenticateCredentials` and `AuthenticateCredentialValues` |
 | `@gcmdev/faxios/plugins/forward-to` | `forwardTo` and the types `ForwardToOptions` and `ForwardToRequestOptions` |
+| `@gcmdev/faxios/plugins/refresh-auth` | `refreshAuth` and the types `RefreshAuthOptions` and `RefreshAuthRequestOptions` |
 | `@gcmdev/faxios/plugins/retry` | `retry` and the types `RetryOptions` and `RetryRequestOptions` |
 | `@gcmdev/faxios/plugins/timing` | `timing` and the type `TimingEvent` |
 
@@ -272,7 +274,7 @@ const merged = mergeConfig(base, override);
 
 ### `resolveRequestURL`
 
-Returns the URL a request with this config is sent to: `url` (a `URL` as its `href`) with its `{key}` placeholders filled from `pathParams`, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params` serialized with `paramsSerializer`. It is the resolver faxios itself uses for requests and `getUri()`, exported for plugins. It uses `allowAbsoluteUrls` as given: unset, an absolute `url` replaces `baseURL`; requests and `getUri()` set it from the instance defaults first. It throws the `FaxiosError` the request would reject with, `ERR_INVALID_URL` for a config with neither `url` nor `baseURL` and `ERR_BAD_OPTION_VALUE` for a `url` that isn't a string or `URL` included. See [Writing a plugin](/pages/advanced/middleware#writing-a-plugin).
+Returns the URL a request with this config is sent to: `url` (a `URL` as its `href`) with its `{key}` placeholders filled from `pathParams`, joined to `baseURL` (honouring `allowAbsoluteUrls`), then `params` serialized with `paramsSerializer`. It is the resolver faxios itself uses for requests and `getUri()`, exported for plugins. It uses `allowAbsoluteUrls` as given: unset, an absolute `url` replaces `baseURL`; requests and `getUri()` set it from the instance defaults first. It throws the `FaxiosError` the request would reject with, `ERR_INVALID_URL` for a config with neither `url` nor `baseURL` and `ERR_BAD_OPTION_VALUE` for a `url` that isn't a string or `URL` included. See [Writing a plugin](/pages/plugins/writing-a-plugin).
 
 ```ts contract=@gcmdev/faxios
 resolveRequestURL(config: FaxiosRequestConfig): string;
@@ -366,7 +368,7 @@ spread<TArgs extends Array<unknown>, TResult>(fn: (...args: TArgs) => TResult): 
 
 ## Middleware and plugins
 
-See [Middleware and plugins](/pages/advanced/middleware) for a guide with examples.
+See [Middleware](/pages/advanced/middleware) and [Plugins](/pages/plugins/) for guides with examples.
 
 ### `use`
 
@@ -500,7 +502,7 @@ The package root exports these types. Import them with `import type { ... } from
 | `FaxiosConfigHeaders` | What the `headers` option takes: a header object, method header groups, a `Headers` or a `FaxiosHeaders` |
 | `RawFaxiosRequestHeaders` | A plain header object for a request |
 | `FaxiosHeaderValue` | One header value: a string, number, boolean, array of strings, `null` or `undefined` |
-| `FaxiosResponse` | The resolved response: `data`, `status`, `statusText`, `headers`, `config` and `request` |
+| `FaxiosResponse` | The resolved response: `data`, `status`, `statusText`, `headers`, `config`, `request`, `redirected` and `url` |
 | `FaxiosPromise` | `Promise<FaxiosResponse<T>>` |
 | `FaxiosErrorCode` | The union of the `FaxiosError` code statics |
 | `SchemaValidationError` | The `FaxiosError` that [`isSchemaValidationError`](#isschemavalidationerror) narrows to |

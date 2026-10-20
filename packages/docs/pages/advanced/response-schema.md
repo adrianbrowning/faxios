@@ -24,6 +24,14 @@ Every faxios request resolves to a response object with the following shape. The
 
   // The underlying request object — the fetch `Request` instance used for this request.
   request: {},
+
+  // Whether fetch followed a redirect to get this response.
+  // undefined when the runtime or a custom fetch doesn't say.
+  redirected: false,
+
+  // The URL that sent the response, after any redirects fetch followed.
+  // undefined when the runtime or a custom fetch doesn't report one.
+  url: "https://api.example.com/users/1",
 }
 ```
 

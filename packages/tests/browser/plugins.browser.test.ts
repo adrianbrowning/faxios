@@ -2,15 +2,17 @@ import { describe, expect, it } from "vitest";
 
 import faxios from "#src/index.js";
 import { authBearer } from "#src/lib/plugins/authBearer.js";
+import { authenticate } from "#src/lib/plugins/authenticate.js";
 import * as pluginsEntry from "#src/lib/plugins/definePlugin.js";
 import { forwardTo } from "#src/lib/plugins/forwardTo.js";
+import { refreshAuth } from "#src/lib/plugins/refreshAuth.js";
 import { retry } from "#src/lib/plugins/retry.js";
 import { timing } from "#src/lib/plugins/timing.js";
 import type { TimingEvent } from "#src/lib/plugins/timing.js";
 
 import { installFetchMock } from "./helpers/fetchMock.js";
 
-// The modules behind @gcmdev/faxios/plugins and the auth-bearer, forward-to, retry and timing subpaths.
+// The modules behind @gcmdev/faxios/plugins and the auth-bearer, authenticate, forward-to, refresh-auth, retry and timing subpaths.
 describe("plugin entry points (vitest browser)", () => {
   it("exports only definePlugin from the plugins entry point", () => {
     expect(Object.keys(pluginsEntry)).toEqual([ "definePlugin" ]);
@@ -66,6 +68,52 @@ describe("plugin entry points (vitest browser)", () => {
     expect(mock.requests.map(request => [ new URL(request.url).host === location.host, request.headers.get("authorization") ])).toEqual([
       [ true, "Bearer page-token" ],
     ]);
+  });
+
+  it("sends authenticate's headers and query to the page origin", async () => {
+    using mock = installFetchMock();
+    const api = faxios.create().use(authenticate(() => ({ headers: { "X-Api-Key": "k" }, query: { api_key: "q" } })));
+
+    await api.get("/data");
+
+    expect(mock.lastRequest!.url).toBe(`${location.origin}/data?api_key=q`);
+    expect(mock.lastRequest!.headers.get("x-api-key")).toBe("k");
+  });
+
+  // fetch drops a Cookie header a browser request sets, so the credentials would never be sent.
+  it("rejects a Cookie credential, from authenticate or authBearer, without sending the request", async () => {
+    using mock = installFetchMock();
+    const cookies = faxios.create().use(authenticate(() => ({ cookies: { session: "s" } })));
+    const header = faxios.create().use(authBearer(() => "session=s", { header: "Cookie", scheme: "" }));
+
+    await expect(cookies.get("/data")).rejects.toMatchObject({ code: "ERR_BAD_OPTION_VALUE", message: expect.stringContaining("Cookie") });
+    await expect(header.get("/data")).rejects.toMatchObject({ code: "ERR_BAD_OPTION_VALUE", message: expect.stringContaining("Cookie") });
+    expect(mock.requests).toHaveLength(0);
+  });
+
+  it("sends a request that keeps its own Cookie header, since no cookie credential is set", async () => {
+    using mock = installFetchMock();
+    const api = faxios.create().use(authenticate(() => ({ cookies: { session: "s" }, query: { key: "k" } })));
+
+    await api.get("/data", { headers: { Cookie: "own=1" } });
+
+    expect(mock.requests.map(request => request.url)).toEqual([ `${location.origin}/data?key=k` ]);
+  });
+
+  it("refreshes after a 401 from the page origin and sends the request again with the new token", async () => {
+    using mock = installFetchMock();
+    mock.respondWith({ status: 401 });
+    let token = "old";
+    const api = faxios.create()
+      .use(refreshAuth(() => {
+        token = "new";
+        mock.respondWith({ status: 200 });
+      }))
+      .use(authBearer(() => token));
+
+    await api.post("/orders", { item: 1 });
+
+    expect(mock.requests.map(request => request.headers.get("authorization"))).toEqual([ "Bearer old", "Bearer new" ]);
   });
 
   it("forwards a relative request to the gateway with its page-resolved URL in X-Forward-To", async () => {

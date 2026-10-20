@@ -175,7 +175,7 @@ await faxios.put(url, data, { headers });
 
 ## Setting headers in middleware
 
-[Middleware](/pages/advanced/middleware) is the right place to attach dynamic headers like auth tokens, because the token may not be available when the instance is first created. For bearer tokens, the built-in [`authBearer` plugin](/pages/advanced/authentication) does this for you.
+[Middleware](/pages/advanced/middleware) is the right place to attach dynamic headers like auth tokens, because the token may not be available when the instance is first created. For bearer tokens, the built-in [`authBearer` plugin](/pages/plugins/auth-bearer) does this for you.
 
 ```js
 import faxios from "@gcmdev/faxios";

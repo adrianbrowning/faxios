@@ -33,6 +33,28 @@ describe.runIf(typeof fetch === "function")(
         }
       });
 
+      it("reports the URL that sent the response, after a redirect", async () => {
+        const server = await startHTTPServer((req, res) => {
+          if (req.url === "/old") {
+            res.writeHead(302, { location: "/new?page=2" });
+            res.end();
+            return;
+          }
+          res.end("ok");
+        });
+        const base = `http://localhost:${(server.address() as AddressInfo).port}`;
+
+        try {
+          const response = await fetchFaxios.get(`${base}/old`, { fetchOptions: { redirect: "follow" } });
+
+          assert.strictEqual(response.url, `${base}/new?page=2`);
+          assert.strictEqual(response.redirected, true);
+        }
+        finally {
+          await stopHTTPServer(server);
+        }
+      });
+
       it("should support arraybuffer response type", async () => {
         const originalData = "my data";
 

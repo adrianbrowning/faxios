@@ -1,6 +1,6 @@
 # Plugins
 
-Read this before installing the built-in plugins (`authBearer`, `forwardTo`, `retry`, `timing`),
+Read this before installing the built-in plugins (`authBearer`, `authenticate`, `forwardTo`, `refreshAuth`, `retry`, `timing`),
 writing a reusable faxios plugin, typing middleware options, or sharing a value between plugins. Plain
 one-off middleware (`api.use(async (ctx, next) => ...)`) does not need it.
 
@@ -42,6 +42,44 @@ const api = faxios.create({ baseURL: "https://api.example.com" })
 await api.get("/accounts/{id}", { pathParams: { id: "acme" } }); // X-Forward-To: https://api.example.com/accounts/acme
 await api.get("/health", { forward: false });                    // sent straight to the API
 ```
+
+## Send API keys, query string or cookie credentials
+
+`authenticate` from `@gcmdev/faxios/plugins/authenticate` sends credentials from one callback to
+the API's origin only (same rule as `authBearer`), asking on every request and try. Use it instead
+of instance `headers`/`params`, which go to every URL, absolute ones on other hosts included:
+
+```ts
+import faxios from "@gcmdev/faxios";
+import { authenticate } from "@gcmdev/faxios/plugins/authenticate";
+
+const store = { key: "k", session: "s" };
+const api = faxios.create({ baseURL: "https://legacy.example.com" })
+  .use(authenticate(() => ({
+    headers: { "X-Api-Key": store.key },
+    query: { api_key: store.key },
+    cookies: { session: store.session }, // server runtimes only
+  })));
+
+await api.get("/orders"); // /orders?api_key=k, X-Api-Key: k, Cookie: session=s
+```
+
+- A value other than a non-empty string sends nothing for that name; `null` from the callback sends
+  nothing at all.
+- A header, query parameter or `Cookie` the request already has is kept unless `overwrite: true`.
+- Any header but `Authorization`, any cookie and any query parameter sets
+  `fetchOptions.redirect: "error"` unless the request sets it (`forwardTo` copies the URL into a
+  header); the custom header and query names it sets are added to `redact`.
+- With a `paramsSchema`, query credentials are added to its output: the schema sees only the
+  request's own params, so it needn't list the credential names.
+- Types: `AuthenticateOptions`, `AuthenticateCredentials`, `AuthenticateCredentialValues` (spread
+  an interface-typed store, `{ ...store }`: interfaces have no index signature).
+- In a browser a request can't set `Cookie`, so cookie credentials (or `authBearer` with
+  `header: "Cookie"`) reject with `ERR_BAD_OPTION_VALUE`; use `withCredentials` there.
+- An unknown place (`params`) rejects with `ERR_BAD_OPTION`; a bad header/cookie name or a cookie
+  value with `;`, `,`, whitespace, `"` or `\` with `ERR_BAD_OPTION_VALUE`, before anything is sent.
+
+`authBearer` is `authenticate` with one header; keep it for Bearer tokens and the `auth` capability.
 
 ## Define endpoints on a plugin instance
 
@@ -108,6 +146,9 @@ request rejects with, and `hasOwnInPrototypeChain` to read an option without tru
 error message) to remove `user:pass@` before logging.
 
 ## Read the URL a request goes to
+
+For credentials themselves, install `authenticate` rather than this hand-written plugin; the
+pattern below is for other origin-scoped headers.
 
 Import `resolveRequestURL(config)` from `@gcmdev/faxios`; never join `baseURL` and `url` by hand.
 It is the resolver core uses for the request and `getUri()`: `pathParams` filled in, `baseURL`
@@ -187,44 +228,54 @@ const api = faxios
   .use(requireSignIn());
 ```
 
-## Refresh a token after a 401
+## Refresh credentials after a 401
 
-Install the refresh plugin before `authBearer` and never set `Authorization` in it. The retry
-runs `authBearer` again, which calls `getToken` and applies its origin rule, so a third-party 401
-is retried without the token. Share one in-flight refresh so rotating refresh tokens aren't spent twice:
+Install `refreshAuth` from `@gcmdev/faxios/plugins/refresh-auth` first, before `retry` and the
+credential plugin, and never set credentials in it. The second try runs `authBearer` or
+`authenticate` again, which reads the refreshed store and applies its origin rule:
 
 ```ts
-import faxios, { FaxiosError } from "@gcmdev/faxios";
-import { definePlugin } from "@gcmdev/faxios/plugins";
+import faxios from "@gcmdev/faxios";
 import { authBearer } from "@gcmdev/faxios/plugins/auth-bearer";
-
-function refreshOn401(refresh: () => Promise<void>) {
-  let refreshing: Promise<void> | undefined;
-  return definePlugin({
-    name: "refreshOn401",
-    middleware: async (ctx, next) => {
-      try {
-        return await next(ctx);
-      }
-      catch (error) {
-        if (!(error instanceof FaxiosError) || error.response?.status !== 401) throw error;
-        refreshing ??= refresh().finally(() => { refreshing = undefined; });
-        await refreshing;
-        return next(ctx);
-      }
-    },
-  });
-}
+import { refreshAuth } from "@gcmdev/faxios/plugins/refresh-auth";
+import { retry } from "@gcmdev/faxios/plugins/retry";
 
 let token = "old";
+let refreshToken = "r1";
 const api = faxios
   .create({ baseURL: "https://api.example.com" })
-  .use(refreshOn401(async () => { token = "new"; }))
+  .use(refreshAuth(async () => {
+    const { data } = await api.post<{ access_token: string; refresh_token: string }>(
+      "/auth/refresh",
+      { refresh_token: refreshToken },
+      { refreshAuth: false, redact: ["refresh_token"], timeout: 10_000 },
+    );
+    token = data.access_token;
+    refreshToken = data.refresh_token;
+  }))
+  .use(retry())
   .use(authBearer(() => token));
 ```
 
-Calling `next` again re-sends the body. A stream body is used up by the first try; sending it
-again rejects with `ERR_BAD_REQUEST`.
+- `refresh` can return anything (the refresh call's promise too); `refreshAuth` only waits for it.
+- It refreshes on `statuses` (default `[401]`) or `refreshOn(error)`, only for requests to the API
+  origin (`origins` like `authBearer`), and sends the request again once, any method. After a 401
+  the server didn't act on the request; `statuses` or `refreshOn` matching a 5xx or a network
+  error can run a POST twice. A 401 from a host the API redirected to doesn't refresh
+  (`response.redirected` and `response.url`); one not marked redirected (a hand-built test
+  `Response`) counts as the API's, and an error without a response skips that check. A stream
+  body or an aborted signal rejects with the original error. `ctx.attempt` doesn't count the
+  second send.
+- Concurrent 401s share one `refresh` call, so rotating refresh tokens are spent once; a request
+  sent before the last refresh finished is retried without another one. A rejected or throwing
+  `refresh` rejects every waiting request with its error, so `redact` the refresh token's field.
+- A request to the API that starts while a refresh runs waits for it before it is sent, then goes
+  out once with the new credentials. If the refresh fails, it rejects with that error unsent; an
+  abort rejects it at once with `CanceledError`. Other origins and `refreshAuth: false` don't wait.
+- The refresh call must set `refreshAuth: false` (or use another instance). Without it the call
+  waits for the refresh it belongs to: it rejects with `ETIMEDOUT` at its `timeout`, or never
+  settles. Give it a `timeout` too: every waiting request waits for it.
+- Add 403 to `statuses` only when the API sends 403 for expired credentials.
 
 ## Report the try number from your own retry
 
@@ -264,6 +315,8 @@ Don't keep the try number in a private symbol on `ctx.state`: other plugins can'
   options. `eject()` removes the defaults for the options the ejected plugin declared.
 
 Sources: `src/lib/plugins/definePlugin.ts`, `src/lib/types.ts` (`FaxiosContext`, `FaxiosPlugin`),
-`src/lib/core/Faxios.ts` (`use`), `packages/tests/unit/plugins/authBearer.test.ts`,
+`src/lib/core/Faxios.ts` (`use`), `src/lib/plugins/authenticate.ts`, `src/lib/plugins/credentials.ts`,
+`src/lib/plugins/refreshAuth.ts`, `packages/tests/unit/plugins/authBearer.test.ts`,
+`packages/tests/unit/plugins/authenticate.test.ts`, `packages/tests/unit/plugins/refreshAuth.test.ts`,
 `packages/tests/unit/plugins/definePlugin.test.ts`, `packages/tests/unit/plugins/forwardTo.test.ts`,
 `packages/tests/unit/plugins/timing.test.ts`.

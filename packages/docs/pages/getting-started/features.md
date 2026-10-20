@@ -25,7 +25,7 @@ In addition to Node.js, faxios has Bun and Deno smoke tests that validate key ru
 ## Additional features
 
 - Supports the Promise API
-- [Middleware](/pages/advanced/middleware) around every request, with built-in [`authBearer`](/pages/advanced/authentication), `forwardTo`, `retry` and `timing` plugins
+- [Middleware](/pages/advanced/middleware) around every request, with built-in [`authBearer`](/pages/plugins/auth-bearer), [`authenticate`](/pages/plugins/authenticate), [`forwardTo`](/pages/plugins/forward-to), [`refreshAuth`](/pages/plugins/refresh-auth), [`retry`](/pages/plugins/retry) and [`timing`](/pages/plugins/timing) plugins
 - Transform request and response data
 - Abort controller
 - Timeouts
