@@ -5,13 +5,14 @@ import { authBearer } from "#src/lib/plugins/authBearer.js";
 import { authenticate } from "#src/lib/plugins/authenticate.js";
 import * as pluginsEntry from "#src/lib/plugins/definePlugin.js";
 import { forwardTo } from "#src/lib/plugins/forwardTo.js";
+import { refreshAuth } from "#src/lib/plugins/refreshAuth.js";
 import { retry } from "#src/lib/plugins/retry.js";
 import { timing } from "#src/lib/plugins/timing.js";
 import type { TimingEvent } from "#src/lib/plugins/timing.js";
 
 import { installFetchMock } from "./helpers/fetchMock.js";
 
-// The modules behind @gcmdev/faxios/plugins and the auth-bearer, authenticate, forward-to, retry and timing subpaths.
+// The modules behind @gcmdev/faxios/plugins and the auth-bearer, authenticate, forward-to, refresh-auth, retry and timing subpaths.
 describe("plugin entry points (vitest browser)", () => {
   it("exports only definePlugin from the plugins entry point", () => {
     expect(Object.keys(pluginsEntry)).toEqual([ "definePlugin" ]);
@@ -97,6 +98,22 @@ describe("plugin entry points (vitest browser)", () => {
     await api.get("/data", { headers: { Cookie: "own=1" } });
 
     expect(mock.requests.map(request => request.url)).toEqual([ `${location.origin}/data?key=k` ]);
+  });
+
+  it("refreshes after a 401 from the page origin and sends the request again with the new token", async () => {
+    using mock = installFetchMock();
+    mock.respondWith({ status: 401 });
+    let token = "old";
+    const api = faxios.create()
+      .use(refreshAuth(() => {
+        token = "new";
+        mock.respondWith({ status: 200 });
+      }))
+      .use(authBearer(() => token));
+
+    await api.post("/orders", { item: 1 });
+
+    expect(mock.requests.map(request => request.headers.get("authorization"))).toEqual([ "Bearer old", "Bearer new" ]);
   });
 
   it("forwards a relative request to the gateway with its page-resolved URL in X-Forward-To", async () => {

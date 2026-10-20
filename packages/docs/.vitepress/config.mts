@@ -101,6 +101,7 @@ const sidebar = [
       { text: "authBearer", link: "/pages/plugins/auth-bearer" },
       { text: "authenticate", link: "/pages/plugins/authenticate" },
       { text: "forwardTo", link: "/pages/plugins/forward-to" },
+      { text: "refreshAuth", link: "/pages/plugins/refresh-auth" },
       { text: "retry", link: "/pages/plugins/retry" },
       { text: "timing", link: "/pages/plugins/timing" },
     ],

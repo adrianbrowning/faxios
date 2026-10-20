@@ -3,6 +3,7 @@ import * as pluginsEntry from "faxios/plugins";
 import { authBearer } from "faxios/plugins/auth-bearer";
 import { authenticate } from "faxios/plugins/authenticate";
 import { forwardTo } from "faxios/plugins/forward-to";
+import { refreshAuth } from "faxios/plugins/refresh-auth";
 import { retry } from "faxios/plugins/retry";
 import { timing } from "faxios/plugins/timing";
 import { describe, expect, it } from "vitest";
@@ -11,7 +12,7 @@ import type { MockFetch } from "./helpers.js";
 describe("plugin subpaths (dist export only)", () => {
   it("exports definePlugin only from faxios/plugins, and no plugin API from the root", () => {
     expect(Object.keys(pluginsEntry)).toEqual([ "definePlugin" ]);
-    for (const name of [ "authBearer", "authenticate", "forwardTo", "retry", "timing", "definePlugin" ]) {
+    for (const name of [ "authBearer", "authenticate", "forwardTo", "refreshAuth", "retry", "timing", "definePlugin" ]) {
       expect(Object.hasOwn(root, name)).toBe(false);
     }
     expect(Reflect.get(faxios, "plugins")).toBeUndefined();
@@ -65,18 +66,23 @@ describe("plugin subpaths (dist export only)", () => {
     ]);
   });
 
-  it("authenticate sends query and cookie credentials on a server runtime", async () => {
+  it("refreshAuth refreshes authenticate's query and cookie credentials after a 401 on a server runtime", async () => {
     const calls: Array<Request> = [];
     const fetch: MockFetch = async (input, init) => {
-      calls.push(new Request(input, init));
-      return new Response(null, { status: 200 });
+      const request = new Request(input, init);
+      calls.push(request);
+      return new Response(null, { status: request.url.endsWith("api_key=new") ? 200 : 401 });
     };
+    let key = "old";
     const api = faxios.create({ baseURL: "http://example.com", env: { fetch } })
-      .use(authenticate(() => ({ query: { api_key: "q" }, cookies: { session: "s" } })));
+      .use(refreshAuth(() => {
+        key = "new";
+      }))
+      .use(authenticate(() => ({ query: { api_key: key }, cookies: { session: "s" } })));
 
-    await api.get("/data");
+    expect((await api.get("/data")).status).toBe(200);
 
-    expect(calls[0].url).toBe("http://example.com/data?api_key=q");
-    expect(calls[0].headers.get("cookie")).toBe("session=s");
+    expect(calls.map(call => call.url)).toEqual([ "http://example.com/data?api_key=old", "http://example.com/data?api_key=new" ]);
+    expect(calls[1].headers.get("cookie")).toBe("session=s");
   });
 });

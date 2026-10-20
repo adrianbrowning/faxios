@@ -43,6 +43,7 @@ skills:
             src/lib/plugins/authenticate.ts,
             src/lib/plugins/credentials.ts,
             src/lib/plugins/forwardTo.ts,
+            src/lib/plugins/refreshAuth.ts,
             src/lib/plugins/retry.ts,
             src/lib/plugins/timing.ts,
             package.json,

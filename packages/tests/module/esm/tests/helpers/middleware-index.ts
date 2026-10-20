@@ -22,6 +22,8 @@ import { authenticate } from "faxios/plugins/authenticate";
 import type { AuthenticateCredentials, AuthenticateCredentialValues } from "faxios/plugins/authenticate";
 import { forwardTo } from "faxios/plugins/forward-to";
 import type { ForwardToRequestOptions } from "faxios/plugins/forward-to";
+import { refreshAuth } from "faxios/plugins/refresh-auth";
+import type { RefreshAuthRequestOptions } from "faxios/plugins/refresh-auth";
 import { retry } from "faxios/plugins/retry";
 import type { RetryRequestOptions } from "faxios/plugins/retry";
 import { timing } from "faxios/plugins/timing";
@@ -77,10 +79,18 @@ const storeValues: AuthenticateCredentialValues = { api_key: "k" };
 const readonlyOrigins = authenticate(() => ({ query: storeValues }), { origins: apiOrigins });
 const readonlyOriginsType: Equal<typeof readonlyOrigins, FaxiosPlugin> = true;
 void readonlyOriginsType;
+// refreshAuth takes the same readonly origins list, and a readonly statuses list.
+const readonlyRefreshAuth = refreshAuth(async () => {}, { origins: apiOrigins, statuses: [ 401, 403 ] as const });
+const readonlyRefreshAuthType: Equal<typeof readonlyRefreshAuth, FaxiosPlugin<{ options: RefreshAuthRequestOptions; }>> = true;
+void readonlyRefreshAuthType;
+const defaultRefreshAuth = refreshAuth(async () => {}, { statuses: [ 401, 403 ] });
+const refreshAuthType: Equal<typeof defaultRefreshAuth, FaxiosPlugin<{ options: RefreshAuthRequestOptions; }>> = true;
+void refreshAuthType;
 
 async function middleware(): Promise<void> {
   const api = faxios.create({ baseURL: "https://example.test" })
     .use(addHeader)
+    .use(refreshAuth(() => {}))
     .use(authBearer(() => "token"))
     .use(authenticate(() => ({ headers: { "X-Api-Key": "k" } })))
     .use(refreshOn401)
@@ -91,6 +101,12 @@ async function middleware(): Promise<void> {
   await api.get("/items", { retry: false });
   await api.post("/items", {}, { retry: { attempts: 3 } });
   await api.get("/health", { forward: false });
+  await api.post("/auth/refresh", null, { refreshAuth: false });
+  // refresh can return the refresh call's promise; refreshAuth only waits for it. The return
+  // type annotation stops `refreshing` from being inferred from itself (TS7022).
+  const refreshing = faxios.create({ baseURL: "https://example.test" })
+    .use(refreshAuth((): Promise<FaxiosResponse> => refreshing.post("/auth/refresh", null, { refreshAuth: false })));
+  await refreshing.get("/me");
   api.eject(addHeader);
   faxios.create().use(assignHeaders);
   const child = faxios.create();
@@ -99,6 +115,9 @@ async function middleware(): Promise<void> {
 
   // @ts-expect-error TS2769 -- retry options need the retry plugin
   await faxios.create().get("/items", { retry: false });
+
+  // @ts-expect-error TS2769 -- refreshAuth: false needs the refreshAuth plugin
+  await faxios.create().get("/items", { refreshAuth: false });
 
   // @ts-expect-error TS2769 -- forward needs the forwardTo plugin
   await faxios.create().get("/items", { forward: false });

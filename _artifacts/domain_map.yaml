@@ -32,7 +32,7 @@ skills:
       - 'AbortSignal cancellation, timeout, isCancel, CanceledError'
       - 'FaxiosError codes, isFaxiosError, isSchemaValidationError, validateStatus'
       - '.use() middleware, eject, ctx.config/state/capabilities'
-      - 'built-in plugins: auth-bearer, authenticate, forward-to, retry, timing; definePlugin'
+      - 'built-in plugins: auth-bearer, authenticate, forward-to, refresh-auth, retry, timing; definePlugin'
       - 'env.fetch and fetchOptions as the only transport customisation'
       - 'stable root/plugin subpaths vs ./unsafe/* exports'
       - 'Axios-to-faxios porting boundaries'
@@ -41,6 +41,7 @@ skills:
       - Cancel a request or apply a timeout and tell the failure codes apart
       - Add auth, retry or timing behaviour with .use() middleware and the built-in plugins
       - Send API keys, query string or server-side cookie credentials to one API with authenticate
+      - Refresh credentials after a 401 and retry the request once with refreshAuth
       - Port Axios-style code without assuming unverified Axios compatibility
     reference_candidates:
       - topic: plugin authoring with definePlugin
@@ -147,6 +148,15 @@ skills:
           faxios.create({ baseURL, withCredentials: true }); // browser: let it send its cookies
         source: 'src/lib/plugins/credentials.ts (keepsCookieHeader); packages/tests/browser/plugins.browser.test.ts'
         priority: MEDIUM
+        status: active
+      - mistake: Refresh call through the refreshing instance without refreshAuth false
+        mechanism: 'A request to the API that starts while a refresh runs waits for that refresh, and the refresh call is one, so it waits for the refresh it belongs to: it rejects with ETIMEDOUT at its timeout, or never settles without one, and holds every waiting request. refreshAuth false on that call, or another instance, sends it at once. A timeout on that call keeps a hung refresh from holding every waiting request.'
+        wrong_pattern: |
+          api.use(refreshAuth(async () => { await api.post("/auth/refresh"); }));
+        correct_pattern: |
+          api.use(refreshAuth(async () => { await api.post("/auth/refresh", null, { refreshAuth: false, timeout: 10_000 }); }));
+        source: 'src/lib/plugins/refreshAuth.ts; packages/tests/unit/plugins/refreshAuth.test.ts'
+        priority: HIGH
         status: active
       - mistake: Downloading a binary body without responseType
         mechanism: 'Unset responseType reads the body with response.text(), so binary bytes are decoded as UTF-8 and corrupted; data is also typed unknown.'

@@ -101,7 +101,7 @@ Plugin options are typed on every config-taking member, including `defaults`, `d
 
 `create()` children start with no middleware and no plugin types, and without the defaults set for the parent's plugin options. `eject()` doesn't narrow the type: options a removed plugin added stay in it, but their values in `defaults` are removed.
 
-A plugin that requires a capability, such as a token-refresh plugin that needs `auth` from `authBearer`, is a type error when installed before the plugin that provides it. To write your own typed plugins with `definePlugin` and `FaxiosPlugin<{ requires?; provides?; options? }>`, see [Writing a plugin](/pages/plugins/writing-a-plugin) and [Typed request options](/pages/plugins/writing-a-plugin#typed-request-options).
+A plugin that requires a capability, such as a [`requireSignIn`](/pages/plugins/writing-a-plugin#capabilities) plugin that needs `auth` from `authBearer`, is a type error when installed before the plugin that provides it. To write your own typed plugins with `definePlugin` and `FaxiosPlugin<{ requires?; provides?; options? }>`, see [Writing a plugin](/pages/plugins/writing-a-plugin) and [Typed request options](/pages/plugins/writing-a-plugin#typed-request-options).
 
 ## Typing response data
 

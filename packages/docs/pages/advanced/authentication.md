@@ -67,54 +67,28 @@ Instance-level `headers` or `params` would also work for a fixed key, but they g
 
 ## Token refresh
 
-A refresh plugin retries a request once after a 401. Install it before `authBearer`, and let `authBearer` set the header:
+The built-in [`refreshAuth`](/pages/plugins/refresh-auth) plugin refreshes your credentials after a 401 and sends the request again, once. Install it before `authBearer` or `authenticate`, which put the new credentials on the second try:
 
 ```ts
-import faxios, { FaxiosError } from "@gcmdev/faxios";
-import { definePlugin } from "@gcmdev/faxios/plugins";
+import faxios from "@gcmdev/faxios";
 import { authBearer } from "@gcmdev/faxios/plugins/auth-bearer";
-
-function refreshOn401(refresh: () => Promise<void>) {
-  let refreshing: Promise<void> | undefined;
-  return definePlugin({
-    name: "refreshOn401",
-    middleware: async (ctx, next) => {
-      try {
-        return await next(ctx);
-      }
-      catch (err) {
-        if (!(err instanceof FaxiosError) || err.response?.status !== 401) throw err;
-        // Concurrent 401s wait for the same refresh.
-        refreshing ??= refresh().finally(() => {
-          refreshing = undefined;
-        });
-        await refreshing;
-        // authBearer runs again inside next, so the retry gets the new token.
-        return next(ctx);
-      }
-    },
-  });
-}
+import { refreshAuth } from "@gcmdev/faxios/plugins/refresh-auth";
 
 let token = "expired";
-const getToken = () => token;
-const refresh = async () => {
-  const { data } = await faxios.post<{ access_token?: string }>("https://api.example.com/auth/refresh");
-  token = data.access_token ?? token;
-};
 
 const api = faxios.create({ baseURL: "https://api.example.com" })
-  .use(refreshOn401(refresh))
-  .use(authBearer(getToken));
+  .use(refreshAuth(async () => {
+    // The refresh call needs refreshAuth: false. Without it, it waits for the refresh it is part of.
+    // The timeout keeps a hung refresh from holding every waiting request.
+    const { data } = await api.post<{ access_token: string }>("/auth/refresh", null, { refreshAuth: false, timeout: 10_000 });
+    token = data.access_token;
+  }))
+  .use(authBearer(() => token));
 
 await api.get("/me");
 ```
 
-A 401 arrives as a rejection, not a response, because the default `validateStatus` rejects non-2xx statuses. That's why the plugin catches a `FaxiosError` and checks `err.response?.status`.
-
-The plugin never sets `Authorization` itself. On the retry `authBearer` calls `getToken` again and applies its origin rule, so a 401 from a third-party URL is retried without your token. All 401s share one in-flight refresh: with rotating refresh tokens, a second refresh would send a token the first one already spent, and the server would log the user out.
-
-Calling `next` twice is safe when the body can be read again, such as a string, an object, a `Blob` or `FormData`. A stream body is used up by the first try, so sending it again rejects with a `FaxiosError` whose code is `ERR_BAD_REQUEST`.
+Concurrent 401s share one refresh, so a rotating refresh token is spent once, and a 401 from another host never triggers one, whether the request was sent there or the API redirected to it. A request to the API that starts while a refresh runs waits for it, then goes out once with the new credentials; if the refresh fails, it rejects with the refresh's error without being sent. That is why the refresh call must set `refreshAuth: false` or go through another instance. A failed refresh call's error reaches every waiting request, so add the refresh token's field to that call's `redact`. A cookie session works the same way: in a browser, the refresh response's `Set-Cookie` updates the cookie the retry sends (for a cross-origin API, set `withCredentials: true` on the instance the refresh call goes through). See [`refreshAuth`](/pages/plugins/refresh-auth) for which failures refresh, 403s, and cancellation.
 
 ## Cookie-based authentication
 

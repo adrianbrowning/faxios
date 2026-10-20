@@ -55,6 +55,7 @@
       "./plugins/auth-bearer": "./src/lib/plugins/authBearer.ts",
       "./plugins/authenticate": "./src/lib/plugins/authenticate.ts",
       "./plugins/forward-to": "./src/lib/plugins/forwardTo.ts",
+      "./plugins/refresh-auth": "./src/lib/plugins/refreshAuth.ts",
       "./plugins/retry": "./src/lib/plugins/retry.ts",
       "./plugins/timing": "./src/lib/plugins/timing.ts",
       "./unsafe/core/buildFullPath.js": "./src/lib/core/buildFullPath.ts",
@@ -89,6 +90,10 @@
     "./plugins/forward-to": {
       "types": "./dist/lib/plugins/forwardTo.d.ts",
       "default": "./dist/lib/plugins/forwardTo.js"
+    },
+    "./plugins/refresh-auth": {
+      "types": "./dist/lib/plugins/refreshAuth.d.ts",
+      "default": "./dist/lib/plugins/refreshAuth.js"
     },
     "./plugins/retry": {
       "types": "./dist/lib/plugins/retry.d.ts",

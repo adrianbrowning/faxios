@@ -28,6 +28,8 @@ behaviour outside this list as unverified until the installed types and a test p
 | `responseEncoding` | `responseType: "arraybuffer"` and a `TextDecoder` | Rejects with `ERR_BAD_OPTION`; text is decoded as UTF-8 |
 | retry via `axios-retry` | `retry()` from `@gcmdev/faxios/plugins/retry` | POST/PATCH excluded by default |
 | auth header interceptor | `authBearer()` from `@gcmdev/faxios/plugins/auth-bearer` | Sends only to the baseURL origin by default |
+| API key / cookie interceptor | `authenticate()` from `@gcmdev/faxios/plugins/authenticate` | Headers, query and server-side cookies; API origin only |
+| 401 refresh interceptor (`_retry` flag) | `refreshAuth()` from `@gcmdev/faxios/plugins/refresh-auth` | One shared refresh, one retry; `refreshAuth: false` on the refresh call |
 
 ## Behaviour that changes silently
 
