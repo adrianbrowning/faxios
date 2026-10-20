@@ -1,8 +1,9 @@
 // @ts-self-types="./authenticate.d.ts" — required for Deno: maps built .js to adjacent .d.ts in dist/
 
-import type { FaxiosContext, FaxiosPlugin, InternalFaxiosRequestConfig } from "../../index.js";
+import type { FaxiosContext, FaxiosPlugin, InternalFaxiosRequestConfig, StandardSchemaV1 } from "../../index.js";
 import FaxiosError from "../core/FaxiosError.js";
 import { goesToAPI, isOriginList, originsOption, putCredentials } from "./credentials.js";
+import type { MoreCredentials } from "./credentials.js";
 import { definePlugin } from "./definePlugin.js";
 import { assertOptions, isBoolean, own, TOKEN } from "./shared.js";
 import type { OptionCheck } from "./shared.js";
@@ -65,6 +66,69 @@ function entriesOf(values: AuthenticateCredentialValues | undefined, place: stri
   return out;
 }
 
+type SearchParams = { has: (name: string) => boolean; set: (name: string, value: string) => void; toString: () => string; };
+
+const isSearchParams = (value: unknown): value is SearchParams =>
+  Object.prototype.toString.call(value) === "[object URLSearchParams]";
+
+// A copy of `params` with the query credentials set, never the caller's object, and the names it
+// set; `null` when `params` isn't an object or URLSearchParams, or is an array. A parameter the
+// request already has is kept unless `overwrite`.
+function withQuery(params: unknown, query: Array<[string, string]>, overwrite: boolean): null | { names: Array<string>; params: NonNullable<InternalFaxiosRequestConfig["params"]>; } {
+  const names: Array<string> = [];
+  if (isSearchParams(params)) {
+    const copy = new URLSearchParams(params.toString()) as unknown as SearchParams;
+    for (const [ name, value ] of query) {
+      if (!overwrite && copy.has(name)) continue;
+      copy.set(name, value);
+      names.push(name);
+    }
+    return { names, params: copy };
+  }
+  if (Array.isArray(params) || (params !== undefined && params !== null && typeof params !== "object")) return null;
+  // Null prototype, like ctx.config: own entries only, and `__proto__` stays a plain key.
+  const copy: Record<string, unknown> = Object.create(null);
+  for (const [ name, value ] of Object.entries(params ?? {})) copy[name] = value;
+  for (const [ name, value ] of query) {
+    if (!overwrite && Object.hasOwn(copy, name)) continue;
+    copy[name] = value;
+    names.push(name);
+  }
+  return { names, params: copy };
+}
+
+// `schema` with the query credentials added to its output. Core runs paramsSchema after
+// middleware and sends its output, so a schema that strips unknown keys would drop credentials put
+// in params, and a strict one would reject them. The schema sees only the request's own params.
+// Output core rejects (not an object or URLSearchParams, an array, or a result with `issues`) is
+// passed on as is, for core to report.
+function withQueryAfter(schema: StandardSchemaV1, query: Array<[string, string]>, overwrite: boolean): StandardSchemaV1 {
+  const standard = schema["~standard"];
+  const add = (result: StandardSchemaV1.Result<unknown>): StandardSchemaV1.Result<unknown> => {
+    // A malformed result goes to core as is, which reports it as ERR_BAD_PARAMS_SCHEMA. Core
+    // fails any result whose `issues` isn't undefined, `null` and `false` too.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- third-party schema
+    if (!result || typeof result !== "object" || result.issues !== undefined) return result;
+    const placed = withQuery(result.value, query, overwrite);
+    return placed ? { value: placed.params } : result;
+  };
+  // Core awaits every result, so a sync schema can be made async here.
+  return { "~standard": { ...standard, validate: async (value: unknown) => add(await standard.validate(value)) } };
+}
+
+// What `putCredentials` must change to send `query`: the params, or with a paramsSchema, its
+// output. `undefined` when it sets nothing. Throws `ERR_BAD_OPTION_VALUE` for params that aren't
+// an object or URLSearchParams.
+function queryChanges(config: InternalFaxiosRequestConfig, query: Array<[string, string]>, overwrite: boolean): MoreCredentials | undefined {
+  if (query.length === 0) return undefined;
+  const schema = own(config, "paramsSchema");
+  // With a paramsSchema, which names end up set is known only after it runs: mask them all.
+  if (schema) return { paramsSchema: withQueryAfter(schema, query, overwrite), redact: query.map(([ name ]) => name) };
+  const placed = withQuery(own(config, "params"), query, overwrite);
+  if (!placed) throw new FaxiosError("authenticate: query credentials need params to be an object or URLSearchParams", FaxiosError.ERR_BAD_OPTION_VALUE, config);
+  return placed.names.length > 0 ? { params: placed.params, redact: placed.names } : undefined;
+}
+
 // `ctx` with `credentials` on a copy of its config, or `ctx` itself when there is nothing to send.
 // Throws a `FaxiosError` for credentials that can't be sent as given: not an object, an unknown
 // place, a bad name or cookie value, or a cookie in a browser.
@@ -80,7 +144,7 @@ function withCredentials<TOptions, TCapabilities>(ctx: FaxiosContext<TOptions, T
   const query = entriesOf(own(given, "query"), "query", /./, config);
   const cookies = entriesOf(own(given, "cookies"), "cookie", TOKEN, config);
   if (cookies.length > 0) headers.push([ "Cookie", cookies.map(([ name, value ]) => `${name}=${value}`).join("; ") ]);
-  return putCredentials(ctx, headers, overwrite, query);
+  return putCredentials(ctx, headers, overwrite, queryChanges(config, query, overwrite));
 }
 
 /**
