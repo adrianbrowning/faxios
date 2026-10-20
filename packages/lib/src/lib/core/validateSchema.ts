@@ -30,8 +30,12 @@ export async function validateSchema<S extends StandardSchemaV1>(
     wrapped.issues = [{ message: wrapped.message }];
     throw wrapped;
   }
+  // A Result is an object whose `issues`, when present, is an array. Anything else (a falsy value,
+  // `issues: null` from a non-conforming schema) would otherwise crash below with a TypeError.
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (!result) {
+  const issues: unknown = result?.issues;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!result || (issues !== undefined && !Array.isArray(issues))) {
     const error = new FaxiosError(
       `schema['~standard'].validate() returned a non-Result value`,
       errorCode, config, undefined, response

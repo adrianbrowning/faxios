@@ -79,6 +79,19 @@ describe("core::validateSchema", () => {
         (e: unknown) => e instanceof FaxiosError && e.code === FaxiosError.ERR_BAD_PARAMS_SCHEMA
       );
     });
+
+    it("throws a schema error when validate() returns issues that aren't an array", async () => {
+      for (const issues of [ null, false, "bad", { message: "bad" }]) {
+        const schema = makeSchema(() => ({ value: "x", issues }) as never);
+
+        await assert.rejects(
+          async () => validateSchema(schema, "x", FaxiosError.ERR_BAD_PARAMS_SCHEMA, dummyConfig),
+          (e: unknown) => e instanceof FaxiosError && e.code === FaxiosError.ERR_BAD_PARAMS_SCHEMA
+            && e.message.includes("non-Result value") && Array.isArray(e.issues) && e.issues.length === 0,
+          JSON.stringify(issues)
+        );
+      }
+    });
   });
 
   describe("schema-throws wrapping", () => {
