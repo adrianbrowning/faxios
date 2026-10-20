@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "esbuild": "^0.28.2",
-    "vue": "^3.5.32"
+    "vue": "^3.5.44"
   },
   "imports": {
     "#src/*.ts": "./src/*.ts"
