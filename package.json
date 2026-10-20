@@ -33,16 +33,16 @@
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",
     "@gingacodemonkey/config": "^0.1.0",
-    "@tanstack/intent": "0.5.3",
-    "@types/node": "^24.19.0",
+    "@tanstack/intent": "0.5.5",
+    "@types/node": "^24.19.2",
     "@varlock/bumpy": "1.18.1",
     "eslint": "^9.39.5",
     "husky": "^9.1.7",
-    "jscpd": "^5.0.12",
-    "knip": "6.26.0",
+    "jscpd": "^5.4.1",
+    "knip": "6.41.0",
     "lint-staged": "^17.6.0",
     "typescript": "^6.0.3",
-    "zod": "4.6.5"
+    "zod": "4.6.7"
   },
   "engines": {
     "node": ">=24.0.0",
