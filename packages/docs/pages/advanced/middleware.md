@@ -19,7 +19,7 @@ await api.get("/users");
 
 Middleware replaces interceptors, which faxios no longer has. If you're moving code over, see [Migrating from interceptors](/pages/advanced/migrating-from-interceptors).
 
-For the built-in plugins and how to write your own, see [Plugins](/pages/plugins/). Each built-in has its own page: [`authBearer`](/pages/plugins/auth-bearer), [`forwardTo`](/pages/plugins/forward-to), [`retry`](/pages/plugins/retry) and [`timing`](/pages/plugins/timing).
+For the built-in plugins and how to write your own, see [Plugins](/pages/plugins/). Its table links to each plugin's page.
 
 ## Ordering
 
