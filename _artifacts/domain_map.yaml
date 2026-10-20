@@ -150,7 +150,7 @@ skills:
         priority: MEDIUM
         status: active
       - mistake: Refresh call through the refreshing instance without refreshAuth false
-        mechanism: 'A 401 on the refresh request itself is a 401 from the API, so refreshAuth makes it wait for the refresh it belongs to, which never settles. refreshAuth false on that call, or another instance, rejects it with its 401 instead. A timeout on that call keeps a hung refresh from holding every waiting request.'
+        mechanism: 'A request to the API that starts while a refresh runs waits for that refresh, and the refresh call is one, so it waits for the refresh it belongs to: it rejects with ETIMEDOUT at its timeout, or never settles without one, and holds every waiting request. refreshAuth false on that call, or another instance, sends it at once. A timeout on that call keeps a hung refresh from holding every waiting request.'
         wrong_pattern: |
           api.use(refreshAuth(async () => { await api.post("/auth/refresh"); }));
         correct_pattern: |

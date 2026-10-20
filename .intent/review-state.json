@@ -3,15 +3,15 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "6a3c7c253282b3c099d12a308c3967f71f78d4ed9f934f2820fd2d86c31ea865",
+      "fingerprint": "d0d1b5a8a206f5774067f870a4fbeaccd95ad9933fa36180d5ccd312e92cc20e",
       "snapshot": {
         "MIGRATION_GUIDE.md": "cae546e787c02b7360e79afe3673b8b0d18cade4f48ff8c296fee43feee76dcc",
-        "packages/lib/package.json": "a50c90ff4ccf8a7edaff6ed065de53f1fd10a785ce924ce53a2fb120f568405d",
-        "packages/lib/skills/configure-requests/SKILL.md": "9366a9497c0b83d3dbe0b8bd9e8f009e6c8ff95613493e2b59e6fba304ea487b",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "e7841075a87fab1a1bdcf7e2deee00b1177165cbc703547e777eaef417704e80",
-        "packages/lib/skills/configure-requests/references/plugins.md": "3bee8b7ef73e12ee30abc79ea8eff60881b89f06775e219a720436a71809bf8c",
+        "packages/lib/package.json": "1923f4f83bb8848d93a7e11f6a511efb36d1e989edeb827081d8d2ad9f9ce01f",
+        "packages/lib/skills/configure-requests/SKILL.md": "52c705f387ddace04da55ba7095c346fa9e823bf8145e4c0a66383ba100705e4",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "c1ce9978066ae8e7bbe805ce0accf23544d1f15076d18975597a2a17bfa5ae4f",
+        "packages/lib/skills/configure-requests/references/plugins.md": "ade328b3a173ce36fe70ad033b2379a6c4871e4273b1c6d81fda125c94dbd52c",
         "packages/lib/src/index.ts": "39264439a2f273bd4c9479a29a9a1435b421f06bdf846d87d3f685311db947ea",
-        "packages/lib/src/lib/adapters/fetch.ts": "cbeb583e9ffb55061f8ae3fdb69beda59fd95c0a65303d333de322785ad2a88c",
+        "packages/lib/src/lib/adapters/fetch.ts": "848ec208d3351257d9e04215441c42e5ede8fa4ea2cccb674e990c9f8d540872",
         "packages/lib/src/lib/core/Faxios.ts": "189c1330e4c53e434d32a4493a889811dc611b4d0e0dfdcc15c07c41da4210e5",
         "packages/lib/src/lib/core/FaxiosError.ts": "2c179b2c7768477345905a5ac770cbdf8b990a862fed3cc6163d765b7523c3ca",
         "packages/lib/src/lib/core/assertRequestConfig.ts": "6cb679260d7a88b4794c312b241153336ad0befa4e51916329344c5244d21597",
@@ -32,39 +32,41 @@
         "packages/lib/src/lib/plugins/credentials.ts": "22b8de6c5e458ba279ec6cf86d339893bea0db584c503c30c4748eafe348b6d4",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
-        "packages/lib/src/lib/plugins/retry.ts": "5baf85c4aa520de6ddb7c4b3f7fc13502bec3d1c26b5d04eb833ea660174d8a1",
+        "packages/lib/src/lib/plugins/refreshAuth.ts": "5b31c50eba2beb6d337a9c0ce8158f41e1445a31a6ce77fed60fc95e4affe6b8",
+        "packages/lib/src/lib/plugins/retry.ts": "7c35f220d22130d88c11c36d89344cc86a49011103439a52a3437acecd795e98",
         "packages/lib/src/lib/plugins/timing.ts": "8b4e233be25f4ba739937f540bdba3a5f432ff295bb8f72a8a921f07b53c10fc",
-        "packages/lib/src/lib/types.ts": "15e39f3b3a1df6bfe7da0c667931ac027bcd49d9bc9644b3d573a352d61f2166",
-        "packages/tests/unit/api.test.ts": "34607642342842fe6eed5ecba3ca367cd231ef092f44bf0a736cb5d55e25ab98",
+        "packages/lib/src/lib/types.ts": "abe0b81280b714f8a318a417c7ab70d66f79733453650fef27fff3f8a2fece79",
+        "packages/tests/unit/api.test.ts": "e895f8c953242d78cbf3eb2a685b2f9ac6808e6c28f4165a0b29e2dea5dc772f",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "676015494660fe61f56303b21b93cafb78d9ef31e1e1c6210d1cc1a9fc0e86f2",
         "packages/tests/unit/plugins/authenticate.test.ts": "a2742facd045d41c7339bf5351f0303f69a15a75ae0c6d24d59b8390dc6da151",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
         "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
+        "packages/tests/unit/plugins/refreshAuth.test.ts": "7ee5de6d81fbe4cd89c52121d6f198d445ab777ac66df7097af6ace297c50b27",
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "88ee553adcb53f5a20e0f88aab6aa6ed63bea5f6",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "updated",
-      "reason": "references/plugins.md: with a paramsSchema, authenticate adds query credentials to its output, so the schema needn't list them (was: must accept them)",
+      "reason": "references/plugins.md: a 401 from a host the API redirected to does not refresh (response.redirected and response.url); a response not marked redirected counts as the API",
       "evidence": [
-        "pnpm check exit 0 on this layer (unit incl. authenticate.test.ts paramsSchema cases, browser, module, Deno, Bun, docs examples, docs build); intent validate passed",
-        "Changed: packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/plugins/authenticate.ts, packages/lib/src/lib/plugins/credentials.ts, packages/tests/unit/plugins/authenticate.test.ts"
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
+        "Changed: packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/plugins/refreshAuth.ts, packages/lib/src/lib/types.ts, packages/tests/unit/plugins/refreshAuth.test.ts"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "cb270135796a4a24be9fa77b08567c5da6a1d229300949bf1cedc9e3b10d67f3",
+      "fingerprint": "7e63599389eb492fc674dc0faef0cc6134b5605155edc703a153ad2d9dab0734",
       "snapshot": {
         "MIGRATION_GUIDE.md": "cae546e787c02b7360e79afe3673b8b0d18cade4f48ff8c296fee43feee76dcc",
-        "_artifacts/domain_map.yaml": "8fa1dbb637891377ac292e3e29f3082c613508bdb4a82778d895a706a40f1245",
-        "_artifacts/skill_spec.md": "ab1be33d707f248f1190ca6c6c6f4a8b30fa619911305ba3af42e0f3a29646bc",
-        "_artifacts/skill_tree.yaml": "d5239b8b4e06002bad667e5955db864b95b7f8e4c6497067c4114933407e2e07",
-        "packages/lib/package.json": "a50c90ff4ccf8a7edaff6ed065de53f1fd10a785ce924ce53a2fb120f568405d",
-        "packages/lib/skills/configure-requests/SKILL.md": "9366a9497c0b83d3dbe0b8bd9e8f009e6c8ff95613493e2b59e6fba304ea487b",
-        "packages/lib/skills/configure-requests/references/axios-differences.md": "e7841075a87fab1a1bdcf7e2deee00b1177165cbc703547e777eaef417704e80",
-        "packages/lib/skills/configure-requests/references/plugins.md": "3bee8b7ef73e12ee30abc79ea8eff60881b89f06775e219a720436a71809bf8c",
+        "_artifacts/domain_map.yaml": "2ac8ac166b24e9f249f46d37d509214939b6a134f04f2950242714d1bbf541f3",
+        "_artifacts/skill_spec.md": "5f66d1460a7b7a9d811b2bbe4c74f1a747d1edc2e263a213216d9450c037ace9",
+        "_artifacts/skill_tree.yaml": "3338f777a40585dd0281c0d1f6c141e43a7c38e52660d1dff00713aa8d5f6677",
+        "packages/lib/package.json": "1923f4f83bb8848d93a7e11f6a511efb36d1e989edeb827081d8d2ad9f9ce01f",
+        "packages/lib/skills/configure-requests/SKILL.md": "52c705f387ddace04da55ba7095c346fa9e823bf8145e4c0a66383ba100705e4",
+        "packages/lib/skills/configure-requests/references/axios-differences.md": "c1ce9978066ae8e7bbe805ce0accf23544d1f15076d18975597a2a17bfa5ae4f",
+        "packages/lib/skills/configure-requests/references/plugins.md": "ade328b3a173ce36fe70ad033b2379a6c4871e4273b1c6d81fda125c94dbd52c",
         "packages/lib/src/index.ts": "39264439a2f273bd4c9479a29a9a1435b421f06bdf846d87d3f685311db947ea",
-        "packages/lib/src/lib/adapters/fetch.ts": "cbeb583e9ffb55061f8ae3fdb69beda59fd95c0a65303d333de322785ad2a88c",
+        "packages/lib/src/lib/adapters/fetch.ts": "848ec208d3351257d9e04215441c42e5ede8fa4ea2cccb674e990c9f8d540872",
         "packages/lib/src/lib/core/Faxios.ts": "189c1330e4c53e434d32a4493a889811dc611b4d0e0dfdcc15c07c41da4210e5",
         "packages/lib/src/lib/core/FaxiosError.ts": "2c179b2c7768477345905a5ac770cbdf8b990a862fed3cc6163d765b7523c3ca",
         "packages/lib/src/lib/core/assertRequestConfig.ts": "6cb679260d7a88b4794c312b241153336ad0befa4e51916329344c5244d21597",
@@ -85,24 +87,26 @@
         "packages/lib/src/lib/plugins/credentials.ts": "22b8de6c5e458ba279ec6cf86d339893bea0db584c503c30c4748eafe348b6d4",
         "packages/lib/src/lib/plugins/definePlugin.ts": "0b097347ad8103f4d82d2ee804c45aeae7518818185402b244da464b86d3d380",
         "packages/lib/src/lib/plugins/forwardTo.ts": "8d8d87b60387eeeea48485cc39efc8b5b7509cd2f8c21bea274969a769ec42e9",
-        "packages/lib/src/lib/plugins/retry.ts": "5baf85c4aa520de6ddb7c4b3f7fc13502bec3d1c26b5d04eb833ea660174d8a1",
+        "packages/lib/src/lib/plugins/refreshAuth.ts": "5b31c50eba2beb6d337a9c0ce8158f41e1445a31a6ce77fed60fc95e4affe6b8",
+        "packages/lib/src/lib/plugins/retry.ts": "7c35f220d22130d88c11c36d89344cc86a49011103439a52a3437acecd795e98",
         "packages/lib/src/lib/plugins/timing.ts": "8b4e233be25f4ba739937f540bdba3a5f432ff295bb8f72a8a921f07b53c10fc",
-        "packages/lib/src/lib/types.ts": "15e39f3b3a1df6bfe7da0c667931ac027bcd49d9bc9644b3d573a352d61f2166",
-        "packages/tests/unit/api.test.ts": "34607642342842fe6eed5ecba3ca367cd231ef092f44bf0a736cb5d55e25ab98",
+        "packages/lib/src/lib/types.ts": "abe0b81280b714f8a318a417c7ab70d66f79733453650fef27fff3f8a2fece79",
+        "packages/tests/unit/api.test.ts": "e895f8c953242d78cbf3eb2a685b2f9ac6808e6c28f4165a0b29e2dea5dc772f",
         "packages/tests/unit/core/middleware.test.ts": "7b6fb604430261300a961aefa510303118e1a8715a41c35d69ddfd45bb8ccaf1",
         "packages/tests/unit/plugins/authBearer.test.ts": "676015494660fe61f56303b21b93cafb78d9ef31e1e1c6210d1cc1a9fc0e86f2",
         "packages/tests/unit/plugins/authenticate.test.ts": "a2742facd045d41c7339bf5351f0303f69a15a75ae0c6d24d59b8390dc6da151",
         "packages/tests/unit/plugins/definePlugin.test.ts": "de5d30507b752dd6ca024b23ba8b5b3afe791fb648c97a21614e0c387475cfbd",
         "packages/tests/unit/plugins/forwardTo.test.ts": "8b8f932b9bbb2efc923fc58234917b4cd8f8a2310b33c67f2e4f9791db6b105a",
+        "packages/tests/unit/plugins/refreshAuth.test.ts": "7ee5de6d81fbe4cd89c52121d6f198d445ab777ac66df7097af6ace297c50b27",
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "88ee553adcb53f5a20e0f88aab6aa6ed63bea5f6",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "updated",
-      "reason": "domain_map drops the paramsSchema-strips-credentials failure mode (fixed in code); skill_spec Batch 4 review-fix note updated",
+      "reason": "skill_spec Batch 5 notes the redirect check and the new response fields",
       "evidence": [
-        "pnpm check exit 0 on this layer (unit incl. authenticate.test.ts paramsSchema cases, browser, module, Deno, Bun, docs examples, docs build); intent validate passed",
-        "Changed: _artifacts/domain_map.yaml, _artifacts/skill_spec.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/plugins/authenticate.ts, packages/lib/src/lib/plugins/credentials.ts, packages/tests/unit/plugins/authenticate.test.ts"
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
+        "Changed: _artifacts/skill_spec.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/plugins/refreshAuth.ts, packages/lib/src/lib/types.ts, packages/tests/unit/plugins/refreshAuth.test.ts"
       ]
     },
     "source:knip.json": {
@@ -156,14 +160,15 @@
       ]
     },
     "source:packages/docs/.vitepress/config.mts": {
-      "fingerprint": "f837200c1cbb9a37772d71eaa806a3f2380345bcbdaf6ef793143670c75a4f77",
+      "fingerprint": "e41e4a890003e09cb1b5856ab6074dd4463ce6de4a4848761b0a557f772257ab",
       "snapshot": {
-        "packages/docs/.vitepress/config.mts": "6cfbd535d6797c66a8a3ab86381b5a52441064601cf64890a307f72627a8b23b"
+        "packages/docs/.vitepress/config.mts": "021aefbca1b3b0bafa9fa7b07e428b35629bed2e8b1148abe664def380d45583"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
         "Changed: packages/docs/.vitepress/config.mts"
       ]
     },
@@ -192,26 +197,28 @@
       ]
     },
     "source:packages/docs/pages/advanced/api-reference.md": {
-      "fingerprint": "b8bc05f066517a17964dd6eb6b5d42f583d0d165ca221acfd5d20935251e7929",
+      "fingerprint": "588445b8cbb912851d666d5cf43bf7af4f10e7ec1cb49593d12664c134ef2c56",
       "snapshot": {
-        "packages/docs/pages/advanced/api-reference.md": "df5bbdc9e98985d6284cbca5fe625159308a959bbf37e18781770cbe702cf2e4"
+        "packages/docs/pages/advanced/api-reference.md": "347cf9f61fe1fb201d2ff5223af3b58eb6fc6453018f4fcf6b29b09101fb4027"
       },
-      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "Redirect fix code, adapter fields, tests, docs, threat model or bump file; the guidance is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
         "Changed: packages/docs/pages/advanced/api-reference.md"
       ]
     },
     "source:packages/docs/pages/advanced/authentication.md": {
-      "fingerprint": "ef85e33660ae46979f5acfd0643707e79db31e235bbcca841587a030ed4da582",
+      "fingerprint": "0458bd2418b84ac79764326d61e68b912232c8cc32a03df9809916def1979f7d",
       "snapshot": {
-        "packages/docs/pages/advanced/authentication.md": "8fdad6df12c38b594776db2bb37e53f08e8ba4b3bfa66aeac6a3615fa27e3da8"
+        "packages/docs/pages/advanced/authentication.md": "ec882cb79005a36cbfd8ee4d67b7cdeaf8509d15ee7aff34d8b11f99f751313b"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "Redirect fix code, adapter fields, tests, docs, threat model or bump file; the guidance is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
         "Changed: packages/docs/pages/advanced/authentication.md"
       ]
     },
@@ -276,27 +283,29 @@
       ]
     },
     "source:packages/docs/pages/advanced/middleware.md": {
-      "fingerprint": "d7839da31964eeb24cd39d27e8e8fd58f27ad2a75c6a928aede24c65c9533261",
+      "fingerprint": "eb009f3d092bdc2f8d91b68a58fbf1f706bd54937444fee6261e7c49c6ed69b8",
       "snapshot": {
-        "packages/docs/pages/advanced/middleware.md": "7dee585517e4fbb21b547e96520cc7f22ea3b81007f0b86432891612c913da29"
+        "packages/docs/pages/advanced/middleware.md": "385077d9ac0ffcf0b7f7712c35bd11ce582dcd76c88d4d031d8bb8a8d6f1ab95"
       },
-      "head": "93c0ead29149347a40368f2bcf6b31b5648561ad",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs-only: the middleware page points to the Plugins overview instead of listing the built-ins; the skill teaches the same APIs. Checked: docs:sync:check, test:docs-examples, docs:build",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/middleware.md at 93c0ead29149347a40368f2bcf6b31b5648561ad"
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
+        "Changed: packages/docs/pages/advanced/middleware.md"
       ]
     },
     "source:packages/docs/pages/advanced/migrating-from-interceptors.md": {
-      "fingerprint": "4fd49f09cff259e3ef2086948671f7c7c8a15ad596e57c0fe46b85dd4c644d12",
+      "fingerprint": "fd0647f95cfd6aedd34a9a26f138f06b76d8cf349cdb1a9f8aef8bf2643c5ccb",
       "snapshot": {
-        "packages/docs/pages/advanced/migrating-from-interceptors.md": "4614160b69e2fca928e22bf39ead1f82042f0839b1f4b346db193635104d8aa4"
+        "packages/docs/pages/advanced/migrating-from-interceptors.md": "f08e4ffb9e8f993d2a84e5258397232b227eefffc77107df753107f464be768c"
       },
-      "head": "2dad372afc9d8979ba655528b09c2cc72626d7c6",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs-only: plugin pages move into a Plugins section, a stub keeps the old retry URL, links follow; the skill links no moved page. Checked: pnpm check exit 0 (docs examples, docs build)",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/migrating-from-interceptors.md at 2dad372afc9d8979ba655528b09c2cc72626d7c6"
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
+        "Changed: packages/docs/pages/advanced/migrating-from-interceptors.md"
       ]
     },
     "source:packages/docs/pages/advanced/request-config.md": {
@@ -348,15 +357,16 @@
       ]
     },
     "source:packages/docs/pages/advanced/type-script.md": {
-      "fingerprint": "285623147da33f32986d99e569242ac23c8e805cffc73158836d85c70fb580d1",
+      "fingerprint": "b53841bdae53d9160e80319c9246754cd454083d658959b4cdbc8aea7846e069",
       "snapshot": {
-        "packages/docs/pages/advanced/type-script.md": "652f99732e61cc912dbbced86f13819ab48a479cbc285b7d52544b9d37a91768"
+        "packages/docs/pages/advanced/type-script.md": "dc31e26f654f64665dccdad684749d4dd2d21deac8161670f843b1609f4a1584"
       },
-      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/type-script.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
+        "Changed: packages/docs/pages/advanced/type-script.md"
       ]
     },
     "source:packages/docs/pages/getting-started/examples/typescript.md": {
@@ -372,14 +382,15 @@
       ]
     },
     "source:packages/docs/pages/getting-started/features.md": {
-      "fingerprint": "de3e938659cad02d8b98f738a46bb39e6802dd65bc9eb558bf6ab153807c65f8",
+      "fingerprint": "825ca36ae2c88ac83ae76e5476a595934213a460afd9c1272485b936f68af6f8",
       "snapshot": {
-        "packages/docs/pages/getting-started/features.md": "f7c63f83e5f184c9e2a12f14df4d5e9550b71bf7c0b51262ff01f8d085ca7f24"
+        "packages/docs/pages/getting-started/features.md": "1b3e75ecfd89cca8dbbca252fb70934d38b5ee86cb094bcc35d8368548045a66"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
         "Changed: packages/docs/pages/getting-started/features.md"
       ]
     },
@@ -432,14 +443,15 @@
       ]
     },
     "source:packages/lib/README.md": {
-      "fingerprint": "740ef069ff307d132da9c1c569a02bd587429dbcc673537fc21c67280b1bd2e7",
+      "fingerprint": "3d8617a49eb3ca5d93ae8c0af6580ef79996fd39ede8a5c4db64b35aed809bc2",
       "snapshot": {
-        "packages/lib/README.md": "3ff6a7bc477f2ec6157862264ddeb4b3c77574032bf557afc14b183716eff526"
+        "packages/lib/README.md": "c021eaa4533413f478a923abcc9184bf34372e3513f8f2ec73d7b2ebdc41eed4"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
         "Changed: packages/lib/README.md"
       ]
     },
@@ -1961,14 +1973,15 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "a70ee0220bf3dcce3714d7ce627837147b485508cc18ae751f94faa59b7ac7cd",
+      "fingerprint": "9c4a2eb2053e6725edaec43d2609cc98fd408605abdfe527fc06cca925e34687",
       "snapshot": {
-        "THREATMODEL.md": "2b76742ad952b2fed1436bd587d8cafda8192f515d38c38ddd04c89cd90392ee"
+        "THREATMODEL.md": "c76eba385de85cdd218f5b77d38c23c4de3200fadcbd77193988118140362d6e"
       },
-      "head": "88ee553adcb53f5a20e0f88aab6aa6ed63bea5f6",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "Redirect fix code, adapter fields, tests, docs, threat model or bump file; the guidance is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
         "Changed: THREATMODEL.md"
       ]
     },
@@ -2678,14 +2691,15 @@
       ]
     },
     "source:packages/tests/smoke/deno/tests/plugins.smoke.test.ts": {
-      "fingerprint": "1cedf5a94e702fdd06101865720b3c03d557a22f6a5f4e606bc8d6518b53508a",
+      "fingerprint": "c57843e60a48d0c179482d42a997b8740bc0d563b43b554313b1f55799dbebc2",
       "snapshot": {
-        "packages/tests/smoke/deno/tests/plugins.smoke.test.ts": "6bdc6d617cd7e79f7c54a134bd8a4d3316f3cffd2c133200653cf021b5122143"
+        "packages/tests/smoke/deno/tests/plugins.smoke.test.ts": "a88f83a1893dc0d78b20f48562a4dba24806e46581c3d07a5fd8b1547afc20e4"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
         "Changed: packages/tests/smoke/deno/tests/plugins.smoke.test.ts"
       ]
     },
@@ -4635,26 +4649,28 @@
       ]
     },
     "source:packages/lib/src/lib/plugins/shared.ts": {
-      "fingerprint": "6799adefd3ced5d242f74b494941bf3ad27e8605eb7a913c540ac9c240046a43",
+      "fingerprint": "856920e53c233a2dd82501be21654f4f20779756c126d4e80778b9eedbc97d85",
       "snapshot": {
-        "packages/lib/src/lib/plugins/shared.ts": "411984cc1d99e0aa349c5ce3246e8b85ac7df3c61ea8944bea4cc2fa8f340643"
+        "packages/lib/src/lib/plugins/shared.ts": "209e678a66f7856da7d7cf391177f5e703c8a78b240250230e72b94232871163"
       },
-      "head": "4de5faca993ee73f8eb162f4ebeb544a68689acc",
-      "outcome": "updated",
-      "reason": "axios-differences reference now lists the XSRF redirect, config.data, responseType case and R-generic differences; retry signal check and plugin helper refactors change nothing the skill teaches",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
+      "outcome": "no-change",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
-        "Changed: packages/lib/src/lib/plugins/shared.ts at 4de5faca993ee73f8eb162f4ebeb544a68689acc"
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
+        "Changed: packages/lib/src/lib/plugins/shared.ts"
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/middleware-index.ts": {
-      "fingerprint": "a5cc528e9be2e6e7be0fd2cc04a421d193848465aea3da555890de1480f29798",
+      "fingerprint": "c4b0c9bb66edfbcb1dfc5ca7ec7e6c20bf8a486954ad3e4e338d39214fbc7d77",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/middleware-index.ts": "b70b192f7bf486447e00efbc8a5bd90fa8f92cc5bb2bbf172097542312edd660"
+        "packages/tests/module/esm/tests/helpers/middleware-index.ts": "e1c8a15b9509cb643d7acf39309fa78bed8c1eb53a3e38e84ca2991f6562ca80"
       },
-      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
         "Changed: packages/tests/module/esm/tests/helpers/middleware-index.ts"
       ]
     },
@@ -4827,38 +4843,41 @@
       ]
     },
     "source:packages/tests/browser/plugins.browser.test.ts": {
-      "fingerprint": "f3de05591695f1641e7ab1ac2a7a504da95e1c19b63074308a544be7489f33ff",
+      "fingerprint": "7e3ce2a656ec4f1b72e44859d28615c25762fab836d3401310ae0b2cea0534cf",
       "snapshot": {
-        "packages/tests/browser/plugins.browser.test.ts": "48ad54ddc19c2f49bf8d2ea245b64b07096148a7025864670bbd9af161e4a6fd"
+        "packages/tests/browser/plugins.browser.test.ts": "fa288bacc5ca12b90f7b99980ff994f2c01b4c9aa1de13abdb1fc1a3549209d5"
       },
-      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
         "Changed: packages/tests/browser/plugins.browser.test.ts"
       ]
     },
     "source:packages/tests/smoke/bun/tests/plugins.smoke.test.ts": {
-      "fingerprint": "222684c00c8ca22cefed2a43871b9d3498d58c16abdfd6e5076ff805e0fc4a83",
+      "fingerprint": "e3bca72bdfdf12557e531e332d456c815bcbfe6f6c73b8fd1ce40fb096311534",
       "snapshot": {
-        "packages/tests/smoke/bun/tests/plugins.smoke.test.ts": "d9288d297fa75db2d64501b48457ff232f003413d3d6a209dbd6661058f4b24e"
+        "packages/tests/smoke/bun/tests/plugins.smoke.test.ts": "f4e363201ed64ae3bcbab1271b183bd6055c84e32ac123cb8559fb648e9e2f1e"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
         "Changed: packages/tests/smoke/bun/tests/plugins.smoke.test.ts"
       ]
     },
     "source:packages/tests/smoke/esm/tests/plugins.smoke.test.ts": {
-      "fingerprint": "341445c659d3763db07a881a7fbb111dba9fffe9f43893b80c5f04bd3a4a63aa",
+      "fingerprint": "dc6b7a07a0dc6bdf2dab73982debd2e3b85c979e30b60a878505825898c0d9e2",
       "snapshot": {
-        "packages/tests/smoke/esm/tests/plugins.smoke.test.ts": "423c3905c7161edb75161b0c828b76ea22452e83b4284377049ce5c9cfb771e1"
+        "packages/tests/smoke/esm/tests/plugins.smoke.test.ts": "eb813b8a2029c085ab1b180b847cc2a4739646a563be5e28f4816b2563ceeffd"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
         "Changed: packages/tests/smoke/esm/tests/plugins.smoke.test.ts"
       ]
     },
@@ -5751,15 +5770,16 @@
       ]
     },
     "source:packages/tests/unit/adapters/fetch/responses.test.ts": {
-      "fingerprint": "3b79eea858614c28ee719dca5c05b4930f38db705562b4bbfd7360cea51f8e05",
+      "fingerprint": "a5f857705f59c0f7e215ef88e7303663abead81653b0f371ee76e229eb8643a1",
       "snapshot": {
-        "packages/tests/unit/adapters/fetch/responses.test.ts": "04a8b1e815f00e32c9d9eec2e86ade5d2c29a36f66f47d4ce2d00efc7dc3c445"
+        "packages/tests/unit/adapters/fetch/responses.test.ts": "27a850d33d9c98ea399f02d0ca98e12f83701db484900a054772e2fc83d6cd6a"
       },
-      "head": "9ce0b431c365668bbf36381e93707e8b0abbcf88",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Test-only reorganisation: suites split and pollution cleanup centralized; library behaviour and skill guidance unchanged",
+      "reason": "Redirect fix code, adapter fields, tests, docs, threat model or bump file; the guidance is reviewed in the skill item",
       "evidence": [
-        "Changed: packages/tests/unit/adapters/fetch/responses.test.ts at 51f39e0f1d6e3760d6065dedd5ef54c7a2c7ab0b"
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
+        "Changed: packages/tests/unit/adapters/fetch/responses.test.ts"
       ]
     },
     "source:packages/tests/unit/adapters/fetch/size-limits.test.ts": {
@@ -6435,14 +6455,15 @@
       ]
     },
     "source:packages/tests/scripts/bundle-size.ts": {
-      "fingerprint": "21a6a14eb85fce800eda0ce83f44dc80032a357b946c3823ade767fda717a6db",
+      "fingerprint": "bd326ce7287c52e9392792e41f5bc1ac2c5cd3d80cf081dbb96eb73b95e0a483",
       "snapshot": {
-        "packages/tests/scripts/bundle-size.ts": "e2ffb60a8dbfc0287d339b1223bffc2fa93e2cda4d0d4e9e473924876d66b954"
+        "packages/tests/scripts/bundle-size.ts": "430cd929696cdff82347a54fe53a7c592e1d2beeb927aa9124ba1a6774038485"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
         "Changed: packages/tests/scripts/bundle-size.ts"
       ]
     },
@@ -6591,14 +6612,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/exact-optional/index.ts": {
-      "fingerprint": "426f259c3cab84bd8ab2f75cbcf66e8114f9d78a46d92e819f3106f0eb2e34ec",
+      "fingerprint": "7ce458ce6ced29f81b4e00b1336ba0a2a95f11f828b51856f3e809bd593a81c2",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/exact-optional/index.ts": "6bc12753309031d32d810e2fd00086572fb9dffc946033fc8b8afd479ab7839b"
+        "packages/tests/module/esm/tests/helpers/exact-optional/index.ts": "e6051598f537cd5ff688646f896640f823e62f99f50f325dab96a29eff60060f"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
         "Changed: packages/tests/module/esm/tests/helpers/exact-optional/index.ts"
       ]
     },
@@ -6615,14 +6637,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/node-only/index.ts": {
-      "fingerprint": "f81640d823bbc80df2c9f77e3cee74501d69e0a6eed1acce2bd6521820ab2cf5",
+      "fingerprint": "31255493ec4bce500073cc10c1e4e746f888044fbbf644a6981fa5497db96671",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/node-only/index.ts": "b7d21d9ee3771dfff45885f974912b099cafb2e7707266b63f8cac721d4edb89"
+        "packages/tests/module/esm/tests/helpers/node-only/index.ts": "6269ca83b097f166a7bdd4bb8c756292182ea2edd648e8718aa2561103c10b3e"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
         "Changed: packages/tests/module/esm/tests/helpers/node-only/index.ts"
       ]
     },
@@ -6711,15 +6734,16 @@
       ]
     },
     "source:packages/docs/pages/advanced/response-schema.md": {
-      "fingerprint": "4856f76a271cfe828eefd16f47be6776cfc49cb61b19624e36c7294ba3a54f6d",
+      "fingerprint": "cf96399c8abce27bc0be46a85793c879edc0123ff637722c769cd677c4508c67",
       "snapshot": {
-        "packages/docs/pages/advanced/response-schema.md": "fcccbf5d239019c23f14a574c65fc7df3877ea78f117241cd2f5e5198541a599"
+        "packages/docs/pages/advanced/response-schema.md": "e1abcff04244d245a689c46695e62b55ed31ccfcb82e496fd8a74e424c54f8b1"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "reason": "Redirect fix code, adapter fields, tests, docs, threat model or bump file; the guidance is reviewed in the skill item",
       "evidence": [
-        "Changed files: packages/docs/pages/advanced/response-schema.md"
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
+        "Changed: packages/docs/pages/advanced/response-schema.md"
       ]
     },
     "source:packages/tests/module/esm/tests/expect-error.module.test.ts": {
@@ -7599,14 +7623,15 @@
       ]
     },
     "source:packages/tests/module/esm/tests/helpers/no-globals/index.ts": {
-      "fingerprint": "08226683f84b30e53f88fb035fdcf03222dd35776b046bade68012a2674858ed",
+      "fingerprint": "ff34b97b815fe17b84a77b9cb66602bd4d7a2dbfd6eae6f968e970d96fad097d",
       "snapshot": {
-        "packages/tests/module/esm/tests/helpers/no-globals/index.ts": "eab383b5ab3684b69da1164395f456f068994dc70329a221b6afe4d1ee7ca69b"
+        "packages/tests/module/esm/tests/helpers/no-globals/index.ts": "c3ac82309c5df35fc685dd3c6832f432f70be111b1c15b0c2961e82422591fcf"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
         "Changed: packages/tests/module/esm/tests/helpers/no-globals/index.ts"
       ]
     },
@@ -7695,14 +7720,15 @@
       ]
     },
     "source:packages/docs/pages/plugins/auth-bearer.md": {
-      "fingerprint": "e3904cdaa2f2530246634dd72038b872464b0af6f25042abf5dff2b92a8e90b8",
+      "fingerprint": "b40cc5f8cbb03dc455ae1c260398681104f6e275123296a07a21e8b2a14f1b15",
       "snapshot": {
-        "packages/docs/pages/plugins/auth-bearer.md": "1065c31315fc1b233ac21648333ef326adee2031dbedcd86acc4ed8564336523"
+        "packages/docs/pages/plugins/auth-bearer.md": "eab81df0b6ffb7f251cb7fcfceba4a77fea4d4245a3f8a31e3059bcaf1a8a6e9"
       },
-      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
         "Changed: packages/docs/pages/plugins/auth-bearer.md"
       ]
     },
@@ -7719,27 +7745,29 @@
       ]
     },
     "source:packages/docs/pages/plugins/index.md": {
-      "fingerprint": "c8a559e9969a12a9462c8f73d1dffd904ead4dc9c4b8972d536440b13fa7c49e",
+      "fingerprint": "d0a6c7c67cf3eb4ac8ed54290a7eb634ead1a88e345940023f9cbc9b849b00ef",
       "snapshot": {
-        "packages/docs/pages/plugins/index.md": "187498788d03bdd82799d44d8e84451113ce71ce18024a5d8784bb55c2dffae1"
+        "packages/docs/pages/plugins/index.md": "51e5fa42aa4d305daa60f3a16411090beb81ce6a93e7dc9098e2b0f72ae21f17"
       },
-      "head": "72fe04e32a9db8e0be722e8382e74478caa64fe9",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs, tests, bump file or threat model for the authenticate plugin; the skill guidance that teaches it is reviewed in the skill item",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
         "Changed: packages/docs/pages/plugins/index.md"
       ]
     },
     "source:packages/docs/pages/plugins/retry.md": {
-      "fingerprint": "c8a6b8bfa3b57e3a796edfdb11080271bfe1e4add84a93d99c084d639fbf8986",
+      "fingerprint": "c783ff324c40a6e8b79054c4d1355483e334051dde9c9eb54e08f8ddce63e1d6",
       "snapshot": {
-        "packages/docs/pages/plugins/retry.md": "13f0d2b8cc8ad208b79377e56b7c1adf68cbc8a3c83c7188e0b34df9ae5d7d0c"
+        "packages/docs/pages/plugins/retry.md": "1a63f7774c4476ac77fede545c95f4d4e6d9d2321eb0f241fffba7c87de16ea6"
       },
-      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
       "outcome": "no-change",
-      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
       "evidence": [
-        "Changed: packages/docs/pages/plugins/retry.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
+        "Changed: packages/docs/pages/plugins/retry.md"
       ]
     },
     "source:packages/docs/pages/plugins/timing.md": {
@@ -7802,6 +7830,45 @@
       "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
       "evidence": [
         "Changed files: .bumpy/auth-bearer-browser-cookie.md"
+      ]
+    },
+    "source:.bumpy/refresh-auth-plugin.md": {
+      "fingerprint": "0a9430c6d4e11bf4b7b3e3f9c7618116d6348065191264b89edb5d9e1b51dad8",
+      "snapshot": {
+        ".bumpy/refresh-auth-plugin.md": "4619151b6cc0f1921bee5a44677502e595d081b0f4dbc44c275e29ae866ca0f0"
+      },
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
+      "outcome": "no-change",
+      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
+      "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
+        "Changed: .bumpy/refresh-auth-plugin.md"
+      ]
+    },
+    "source:.bumpy/response-url.md": {
+      "fingerprint": "6fc97244b5fcad706961cb7d0f58e32a0387cb5d0f8026e663386c37de589180",
+      "snapshot": {
+        ".bumpy/response-url.md": "58fd47af28356e29fe55603d2c6579bfba8aa298dae6b4046aa6d1834efe6d75"
+      },
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
+      "outcome": "no-change",
+      "reason": "Redirect fix code, adapter fields, tests, docs, threat model or bump file; the guidance is reviewed in the skill item",
+      "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
+        "Changed: .bumpy/response-url.md"
+      ]
+    },
+    "source:packages/docs/pages/plugins/refresh-auth.md": {
+      "fingerprint": "6aad360e484c124c8f1f1868b804541f4202e1071956232ec19279add9374686",
+      "snapshot": {
+        "packages/docs/pages/plugins/refresh-auth.md": "76b76c7452409a21e61b70c3d83f8008efc6d2bfdf66c3e08aa5a048e416df13"
+      },
+      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
+      "outcome": "no-change",
+      "reason": "Redirect fix code, adapter fields, tests, docs, threat model or bump file; the guidance is reviewed in the skill item",
+      "evidence": [
+        "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
+        "Changed: packages/docs/pages/plugins/refresh-auth.md"
       ]
     }
   }

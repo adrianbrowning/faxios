@@ -305,3 +305,18 @@ and stop generating Axios APIs it removed or never verified.
     with a stream body, `refreshAuth` → `retry` → `authBearer` under fake timers, a listenerless
     signal from middleware, an abort after the refresh settled, smoke tests that refresh once, and
     a module case where `refresh` returns the POST promise.
+  - Second review round (this batch). Decision (maintainer): a request to the API that starts
+    while a refresh runs waits for it before it is sent, then goes out once with the new
+    credentials; if the refresh rejects, the request rejects with that error unsent; an abort
+    rejects it at once with `CanceledError`. Other origins and `refreshAuth: false` don't wait.
+    The refresh promise is stored before `refresh` runs, so a refresh call through the same
+    instance without the opt-out always waits for itself (before, only on a 401). Core's `timeout`
+    covers time in middleware, so such a call rejects with `ETIMEDOUT` at its timeout, or never
+    settles without one. The skill, docs and JSDoc now say the opt-out is required, and why; the
+    HIGH failure mode's mechanism changed to match. `origins` and `statuses` take readonly lists.
+    Guidance also limits "the server didn't act on it" to a 401: `statuses`/`refreshOn` matching a
+    5xx or a network error can run a POST twice, and an error without a response skips the
+    redirect check. Checks added: the pause (sent once with the new token, refresh rejection,
+    abort, other origins and the opt-out don't wait, a 401 after the wait refreshes again, the
+    timeout on a refresh call without the opt-out, a listenerless signal), a stream 401 body
+    cancelled before `refresh`, `refreshOn: () => false`, and a module case with `as const` lists.

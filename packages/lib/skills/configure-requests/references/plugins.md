@@ -259,16 +259,22 @@ const api = faxios
 
 - `refresh` can return anything (the refresh call's promise too); `refreshAuth` only waits for it.
 - It refreshes on `statuses` (default `[401]`) or `refreshOn(error)`, only for requests to the API
-  origin (`origins` like `authBearer`), and sends the request again once, any method. A 401 from a
-  host the API redirected to doesn't refresh (`response.redirected` and `response.url`); one not
-  marked redirected (a hand-built test `Response`) counts as the API's. A stream body or an aborted signal
-  rejects with the original error. `ctx.attempt` doesn't count the second send.
+  origin (`origins` like `authBearer`), and sends the request again once, any method. After a 401
+  the server didn't act on the request; `statuses` or `refreshOn` matching a 5xx or a network
+  error can run a POST twice. A 401 from a host the API redirected to doesn't refresh
+  (`response.redirected` and `response.url`); one not marked redirected (a hand-built test
+  `Response`) counts as the API's, and an error without a response skips that check. A stream
+  body or an aborted signal rejects with the original error. `ctx.attempt` doesn't count the
+  second send.
 - Concurrent 401s share one `refresh` call, so rotating refresh tokens are spent once; a request
   sent before the last refresh finished is retried without another one. A rejected or throwing
   `refresh` rejects every waiting request with its error, so `redact` the refresh token's field.
-- Put `refreshAuth: false` on the refresh call (or make it with another instance). Without it a
-  401 on the refresh call waits for the refresh it belongs to and never settles. Give it a
-  `timeout`: every waiting request waits for it.
+- A request to the API that starts while a refresh runs waits for it before it is sent, then goes
+  out once with the new credentials. If the refresh fails, it rejects with that error unsent; an
+  abort rejects it at once with `CanceledError`. Other origins and `refreshAuth: false` don't wait.
+- The refresh call must set `refreshAuth: false` (or use another instance). Without it the call
+  waits for the refresh it belongs to: it rejects with `ETIMEDOUT` at its `timeout`, or never
+  settles. Give it a `timeout` too: every waiting request waits for it.
 - Add 403 to `statuses` only when the API sends 403 for expired credentials.
 
 ## Report the try number from your own retry
