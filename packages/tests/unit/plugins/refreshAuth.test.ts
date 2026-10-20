@@ -151,6 +151,169 @@ describe("plugins::refreshAuth", () => {
     assert.strictEqual(attempt, 2);
   });
 
+  describe("a request that starts while a refresh runs", () => {
+    // /a's 401 starts a refresh that runs until the test settles `refresh`. The first refresh sets
+    // the token to "new", the next to "newer". `entered(n)` resolves once n requests have entered
+    // refreshAuth, which decides at once whether a request waits.
+    function refreshing(valid = "new") {
+      const state = { refreshes: 0, token: "old" };
+      const started = gate();
+      const refresh = gate();
+      const { fetch, reached, sent } = server(() => valid);
+      let entries = 0;
+      const waiting: Array<{ count: number; resolve: () => void; }> = [];
+      const entered = async (count: number) => new Promise<void>(resolve => {
+        if (entries >= count) resolve();
+        else waiting.push({ count, resolve });
+      });
+      const tried: Array<string | undefined> = [];
+      const api = faxios.create({ baseURL: BASE, allowAbsoluteUrls: true, env: { fetch } })
+        .use(async (ctx, next) => {
+          entries++;
+          for (const { count, resolve } of waiting) if (entries >= count) resolve();
+          return next(ctx);
+        })
+        .use(refreshAuth(async () => {
+          if (++state.refreshes === 1) {
+            started.open();
+            await refresh.promise;
+          }
+          state.token = state.refreshes === 1 ? "new" : "newer";
+        }))
+        // Each try that got past refreshAuth.
+        .use(async (ctx, next) => {
+          tried.push(ctx.config.url);
+          return next(ctx);
+        })
+        .use(authBearer(() => state.token));
+      const sentTo = (path: string) => sent.filter(s => s.url === `${BASE}${path}`).map(s => s.authorization);
+      return { api, entered, reached, refresh, sent, sentTo, started, state, tried };
+    }
+
+    it("waits for the refresh, then is sent once with the new credentials", async () => {
+      const { api, entered, refresh, sentTo, started, state } = refreshing();
+
+      const a = api.get("/a");
+      await started.promise;
+      const b = api.get("/b");
+      await entered(2);
+      refresh.open();
+
+      assert.deepStrictEqual((await Promise.all([ a, b ])).map(r => r.status), [ 200, 200 ]);
+      assert.deepStrictEqual(sentTo("/b"), [ "Bearer new" ]);
+      assert.strictEqual(state.refreshes, 1);
+    });
+
+    it("rejects with the refresh's error and sends nothing when the refresh rejects", async () => {
+      const { api, entered, refresh, sentTo, started } = refreshing();
+      const failure = new Error("refresh token expired");
+
+      const a = api.get("/a");
+      await started.promise;
+      const b = api.get("/b");
+      await entered(2);
+      refresh.fail(failure);
+
+      await assert.rejects(a, failure);
+      await assert.rejects(b, failure);
+      assert.deepStrictEqual(sentTo("/b"), []);
+    });
+
+    it("rejects at once with CanceledError and sends nothing when its signal aborts, and the refresh goes on", async () => {
+      const { api, entered, refresh, sentTo, started, tried } = refreshing();
+      const controller = new AbortController();
+
+      const a = api.get("/a");
+      await started.promise;
+      const b = api.get("/b", { signal: controller.signal });
+      await entered(2);
+      controller.abort();
+
+      await assert.rejects(b, (err: unknown) => err instanceof CanceledError);
+      refresh.open();
+      assert.strictEqual((await a).status, 200);
+      assert.deepStrictEqual(sentTo("/b"), []);
+      // Nothing after refreshAuth ran for /b, such as authBearer asking for a token.
+      assert.deepStrictEqual(tried, [ "/a", "/a" ]);
+    });
+
+    it("doesn't wait when it goes to another origin or sets refreshAuth: false", async () => {
+      const { api, reached, refresh, sent, started } = refreshing();
+
+      const a = api.get("/a");
+      await started.promise;
+      const other = api.get("https://other.test/x");
+      const optedOut = api.get("/c", { refreshAuth: false });
+      // Both reach fetch while the refresh still runs, and their 401s don't refresh.
+      await reached(3);
+      await assert.rejects(other, (err: unknown) => err instanceof FaxiosError && err.response?.status === 401);
+      await assert.rejects(optedOut, (err: unknown) => err instanceof FaxiosError && err.response?.status === 401);
+      refresh.open();
+
+      assert.strictEqual((await a).status, 200);
+      assert.deepStrictEqual(sent.map(s => s.url), [ `${BASE}/a`, "https://other.test/x", `${BASE}/c`, `${BASE}/a` ]);
+    });
+
+    it("refreshes once and is sent again once when it gets a 401 after waiting", async () => {
+      const { api, entered, refresh, sentTo, started, state } = refreshing("newer");
+
+      const a = api.get("/a");
+      await started.promise;
+      const b = api.get("/b");
+      await entered(2);
+      refresh.open();
+
+      // /a is sent again with "new", which the server refuses too; that was its last try.
+      await assert.rejects(a, (err: unknown) => err instanceof FaxiosError && err.response?.status === 401);
+      assert.strictEqual((await b).status, 200);
+      assert.deepStrictEqual(sentTo("/b"), [ "Bearer new", "Bearer newer" ]);
+      assert.strictEqual(state.refreshes, 2);
+    });
+
+    // The refresh call waits for the refresh it is part of. core's timeout covers the time a
+    // request spends in middleware, so it rejects the refresh call, and with it the refresh and /me.
+    it("holds a refresh call through the same instance without refreshAuth: false until its timeout", async () => {
+      vi.useFakeTimers();
+      try {
+        const { fetch, sent } = server(() => "new");
+        const api = faxios.create({ baseURL: BASE, env: { fetch } })
+          .use(refreshAuth(async () => {
+            await api.post("/auth/refresh", null, { timeout: 1000 });
+          }))
+          .use(authBearer(() => "old"));
+
+        const request = assert.rejects(api.get("/me"), isCode(FaxiosError.ETIMEDOUT));
+        await vi.runAllTimersAsync();
+        await request;
+        assert.deepStrictEqual(sent.map(s => s.url), [ `${BASE}/me` ]);
+      }
+      finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it("rejects a signal without listener methods that a middleware before it passes on, before waiting", async () => {
+      const started = gate();
+      const refresh = gate();
+      // Faxios checks the request's own signal; this one only middleware can introduce.
+      const listenerless = { aborted: false } as unknown as AbortSignal;
+      const { fetch, sent } = server(() => "new");
+      const api = faxios.create({ baseURL: BASE, env: { fetch } })
+        .use(async (ctx, next) => next(ctx.config.url === "/b" ? { ...ctx, config: { ...ctx.config, signal: listenerless } } : ctx))
+        .use(refreshAuth(async () => {
+          started.open();
+          await refresh.promise;
+        }));
+
+      const a = api.get("/a");
+      await started.promise;
+      await assert.rejects(api.get("/b"), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
+      refresh.open();
+      await assert.rejects(a, (err: unknown) => err instanceof FaxiosError && err.response?.status === 401);
+      assert.deepStrictEqual(sent.map(s => s.url), [ `${BASE}/a`, `${BASE}/a` ]);
+    });
+  });
+
   it("refreshes again on the next 401 after a refresh that threw synchronously", async () => {
     let token = "old";
     let refreshes = 0;
@@ -352,7 +515,7 @@ describe("plugins::refreshAuth", () => {
       let token = "old";
       const started = gate();
       const refresh = gate();
-      const { fetch, reached, sent } = server(() => "new");
+      const { fetch, sent } = server(() => "new");
       const api = faxios.create({ baseURL: BASE, env: { fetch } })
         .use(refreshAuth(async () => {
           started.open();
@@ -362,17 +525,16 @@ describe("plugins::refreshAuth", () => {
         .use(authBearer(() => token));
       const controller = new AbortController();
 
-      // The refresh starts from /a's 401, so /a is waiting on it.
+      // The refresh starts from /a's 401, so /a is waiting on it, and /b waits before it is sent.
       const aborted = api.get("/a", { signal: controller.signal });
       await started.promise;
       const other = api.get("/b");
-      await reached(2);
       controller.abort();
 
       await assert.rejects(aborted, (err: unknown) => err instanceof CanceledError);
       refresh.open();
       assert.strictEqual((await other).status, 200);
-      assert.deepStrictEqual(sent.map(s => s.url), [ `${BASE}/a`, `${BASE}/b`, `${BASE}/b` ]);
+      assert.deepStrictEqual(sent.map(s => [ s.url, s.authorization ]), [[ `${BASE}/a`, "Bearer old" ], [ `${BASE}/b`, "Bearer new" ]]);
     });
 
     it("sends nothing again when the signal aborts inside refresh", async () => {
@@ -461,7 +623,8 @@ describe("plugins::refreshAuth", () => {
   });
 
   describe("refreshAuth: false", () => {
-    it("lets the refresh call go through the same instance", async () => {
+    // Without the opt-out, the refresh call would wait for the refresh it is part of.
+    it("lets the refresh call go through the same instance while the refresh runs", async () => {
       let token = "old";
       const sent: Array<string> = [];
       const fetch = async (input: Request | string | URL, init?: RequestInit) => {

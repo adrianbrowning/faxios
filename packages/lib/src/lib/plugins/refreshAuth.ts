@@ -23,21 +23,26 @@ const originOf = (url: string): null | string => {
 /* eslint-disable sonarjs/no-redundant-optional -- see above */
 export type RefreshAuthOptions = {
   /**
-   * The origins (`"https://api.example.com"`) whose responses can trigger a refresh, replacing the
-   * default rule: with an absolute instance `baseURL`, only its origin; otherwise only relative
-   * request URLs. Use the same list as `authenticate` or `authBearer`.
+   * The origins (`"https://api.example.com"`) whose requests wait for a running refresh and whose
+   * responses can trigger one, replacing the default rule: with an absolute instance `baseURL`,
+   * only its origin; otherwise only relative request URLs. Use the same list as `authenticate` or
+   * `authBearer`.
    */
   origins?: Array<string> | undefined;
   /**
    * Whether a failed request should refresh and be sent again. Replaces the `statuses` check;
-   * the origin rule and the other conditions still apply.
+   * the origin rule and the other conditions still apply. An error without a response (a network
+   * error) skips the check that the response came from the API, since there is none.
    */
   refreshOn?: ((error: FaxiosError) => boolean) | undefined;
   /** Response statuses that refresh. Default `[401]`. Ignored when `refreshOn` is set. */
   statuses?: Array<number> | undefined;
 };
 
-/** `refreshAuth: false` sends that request once, without refreshing, such as the refresh call itself. */
+/**
+ * `refreshAuth: false` sends that request once, without waiting for a refresh or starting one. The
+ * refresh call needs it when it goes through the same instance.
+ */
 export type RefreshAuthRequestOptions = { refreshAuth?: false | undefined; };
 /* eslint-enable sonarjs/no-redundant-optional */
 
@@ -52,15 +57,18 @@ const DEFAULT_STATUSES: ReadonlyArray<number> = [ 401 ];
  * `refresh` can return anything; faxios only waits for it.
  *
  * Concurrent failures share one call to `refresh`, which gets the first one's error, so rotating
- * refresh tokens are spent once. A request that was sent before the latest refresh finished is
- * sent again without another refresh: it failed with the credentials that refresh replaced.
- * A rejected `refresh` rejects every request waiting on it with its error. Any method is sent
- * again, since the server refused it; a stream body, which the first try used up, isn't, and nor
- * is a request whose signal aborted. Aborting while the refresh runs rejects that request at once,
- * with `CanceledError`; the refresh goes on for the others.
+ * refresh tokens are spent once. A request to the API that starts while a refresh runs waits for
+ * it, then is sent once with the new credentials; if the refresh rejects, the request rejects with
+ * its error and isn't sent. A request that was sent before the latest refresh finished is sent
+ * again without another refresh: it failed with the credentials that refresh replaced. A rejected
+ * `refresh` rejects every request waiting on it with its error. Any method is sent again; a stream
+ * body, which the first try used up, isn't, and nor is a request whose signal aborted. Aborting
+ * while the refresh runs rejects that request at once, with `CanceledError`; the refresh goes on
+ * for the others.
  *
- * Pass `refreshAuth: false` on the refresh call when it goes through this instance, or make it
- * with another instance: a 401 on it would otherwise wait for the refresh it is part of.
+ * The refresh call must set `refreshAuth: false` when it goes through this instance, or use
+ * another instance. Otherwise it waits for the refresh it is part of: it rejects with `ETIMEDOUT`
+ * at its `timeout`, or never settles without one.
  */
 export function refreshAuth(refresh: (error: FaxiosError) => unknown, options: RefreshAuthOptions = {}): FaxiosPlugin<{ options: RefreshAuthRequestOptions; }> {
   if (typeof refresh !== "function") {
@@ -78,11 +86,13 @@ export function refreshAuth(refresh: (error: FaxiosError) => unknown, options: R
     await refresh(failure);
     finished++;
   };
-  // Cleared once the promise is stored, so a refresh that throws synchronously is cleared too.
+  // Stored before `refresh` runs, a tick later, so a request it sends through this instance
+  // without `refreshAuth: false` waits for it like any other, and a synchronous throw clears it.
   const sharedRefresh = (failure: FaxiosError): Promise<void> => {
-    running ??= run(failure).finally(() => {
-      running = undefined;
-    });
+    running ??= Promise.resolve(failure).then(run)
+      .finally(() => {
+        running = undefined;
+      });
     return running;
   };
   // Whether a redirected response came from the origin the request was sent to, or one in
@@ -100,11 +110,12 @@ export function refreshAuth(refresh: (error: FaxiosError) => unknown, options: R
     if (origins?.includes(finalOrigin)) return true;
     return sentURL !== undefined && originOf(sentURL) === finalOrigin;
   };
+  // Whether the request went to the API and the response came from it.
+  const fromAPI = (failure: FaxiosError, ctx: FaxiosContext<RefreshAuthRequestOptions>): boolean =>
+    goesToAPI(ctx.config, own(ctx, "instanceBaseURL"), origins) && answeredByAPI(failure);
   // Whether a failed request triggers a refresh: on the refresh statuses (or refreshOn), from the
   // API, with a body that can be sent again. The status check runs before the origin rule, which
   // parses URLs; refreshOn, a caller's function, only runs for the API.
-  const fromAPI = (failure: FaxiosError, ctx: FaxiosContext<RefreshAuthRequestOptions>): boolean =>
-    goesToAPI(ctx.config, own(ctx, "instanceBaseURL"), origins) && answeredByAPI(failure);
   const triggers = (failure: FaxiosError, ctx: FaxiosContext<RefreshAuthRequestOptions>): boolean => {
     if (!canReplay(own(ctx.config, "data"))) return false;
     if (!refreshOn) return statuses.includes(failure.response?.status ?? 0) && fromAPI(failure, ctx);
@@ -118,28 +129,44 @@ export function refreshAuth(refresh: (error: FaxiosError) => unknown, options: R
       throw reason;
     }
   };
+  // A request to the API waits for the running refresh, so it is sent once, with the new
+  // credentials. If the refresh rejects, so does the request, before it is sent.
+  const pause = async (paused: Promise<void>, ctx: FaxiosContext<RefreshAuthRequestOptions>): Promise<void> => {
+    const config = ctx.config;
+    if (!goesToAPI(config, own(ctx, "instanceBaseURL"), origins)) return;
+    const signal = own(config, "signal");
+    if (!signal) return paused;
+    // Listened on here, so check it as retry does.
+    assertSignal(signal, config);
+    return raceAbort(signal, () => paused, () => canceledFromSignal(signal, config));
+  };
   return definePlugin({
     name: "refreshAuth",
     options: { refreshAuth: true },
     middleware: async (ctx: FaxiosContext<RefreshAuthRequestOptions>, next) => {
-      const optOut: unknown = own(ctx.config, "refreshAuth");
+      const config = ctx.config;
+      const optOut: unknown = own(config, "refreshAuth");
       if (optOut === false) return next(ctx);
       if (optOut !== undefined) {
-        throw new FaxiosError("option refreshAuth must be false", FaxiosError.ERR_BAD_OPTION_VALUE, ctx.config);
+        throw new FaxiosError("option refreshAuth must be false", FaxiosError.ERR_BAD_OPTION_VALUE, config);
       }
+      // Only while a refresh runs, so other requests reach the adapter in the same tick.
+      if (running) await pause(running, ctx);
+      const signal = own(config, "signal");
+      // Taken after the wait: the request gets the credentials of the refresh it waited for, so a
+      // 401 on it refreshes again.
       const finishedBefore = finished;
       try {
         return await next(ctx);
       }
       catch (error) {
-        const config = ctx.config;
-        const signal = own(config, "signal");
-        // Read and listened on below, so check it as retry does.
+        // Read and listened on below.
         if (signal) assertSignal(signal, config);
         if (!(error instanceof FaxiosError) || signal?.aborted || !triggers(error, ctx)) throw error;
         discardBody(error);
-        // A refresh finished since this request was sent: it failed with replaced credentials, so
-        // it only needs sending again.
+        // Join the running refresh, or start one. Skip it only when a refresh finished since this
+        // request was sent: the request failed with the credentials that refresh replaced, so it
+        // only needs sending again.
         if (running || finished === finishedBefore) {
           await (signal ? raceAbort(signal, () => sharedRefresh(error), () => canceledFromSignal(signal, config)) : sharedRefresh(error));
         }
