@@ -28,7 +28,7 @@ export type RefreshAuthOptions = {
    * only its origin; otherwise only relative request URLs. Use the same list as `authenticate` or
    * `authBearer`.
    */
-  origins?: Array<string> | undefined;
+  origins?: ReadonlyArray<string> | undefined;
   /**
    * Whether a failed request should refresh and be sent again. Replaces the `statuses` check;
    * the origin rule and the other conditions still apply. An error without a response (a network
@@ -36,7 +36,7 @@ export type RefreshAuthOptions = {
    */
   refreshOn?: ((error: FaxiosError) => boolean) | undefined;
   /** Response statuses that refresh. Default `[401]`. Ignored when `refreshOn` is set. */
-  statuses?: Array<number> | undefined;
+  statuses?: ReadonlyArray<number> | undefined;
 };
 
 /**

@@ -79,6 +79,10 @@ const storeValues: AuthenticateCredentialValues = { api_key: "k" };
 const readonlyOrigins = authenticate(() => ({ query: storeValues }), { origins: apiOrigins });
 const readonlyOriginsType: Equal<typeof readonlyOrigins, FaxiosPlugin> = true;
 void readonlyOriginsType;
+// refreshAuth takes the same readonly origins list, and a readonly statuses list.
+const readonlyRefreshAuth = refreshAuth(async () => {}, { origins: apiOrigins, statuses: [ 401, 403 ] as const });
+const readonlyRefreshAuthType: Equal<typeof readonlyRefreshAuth, FaxiosPlugin<{ options: RefreshAuthRequestOptions; }>> = true;
+void readonlyRefreshAuthType;
 const defaultRefreshAuth = refreshAuth(async () => {}, { statuses: [ 401, 403 ] });
 const refreshAuthType: Equal<typeof defaultRefreshAuth, FaxiosPlugin<{ options: RefreshAuthRequestOptions; }>> = true;
 void refreshAuthType;
