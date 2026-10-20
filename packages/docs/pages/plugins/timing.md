@@ -12,7 +12,7 @@
 `attempt` is the context's [`ctx.attempt`](/pages/advanced/middleware#the-context) once the request settles:
 
 - installed after `retry`, `timing` reports each try with its own number;
-- installed before `retry`, one event covers every try and carries the final try's number, as long as no middleware between them passes `next` a copy of the context (`authBearer` does, so install it after `retry`);
+- installed before `retry`, one event covers every try and carries the final try's number, as long as no middleware between them passes `next` a copy of the context (`authBearer` and `authenticate` do, so install them after `retry`);
 - without `retry`, it is 1.
 
 If `onTiming` throws while reporting a failure, the request still rejects with its own error. If it throws while reporting a success, the request rejects with `onTiming`'s error.
