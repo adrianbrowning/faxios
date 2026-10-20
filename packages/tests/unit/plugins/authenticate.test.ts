@@ -227,6 +227,7 @@ describe("plugins::authenticate", () => {
 
     // @ts-expect-error TS2769 -- a JavaScript caller can pass a string
     await assert.rejects(api.get("/x", { params: "page=1" }), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
+    // @ts-expect-error TS2769 -- a JavaScript caller can pass an array
     await assert.rejects(api.get("/x", { params: [ "a" ] }), isCode(FaxiosError.ERR_BAD_OPTION_VALUE));
     assert.strictEqual(sent.length, 0);
   });
