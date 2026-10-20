@@ -2273,15 +2273,15 @@
       ]
     },
     "source:packages/lib/src/lib/core/validateSchema.ts": {
-      "fingerprint": "3522ea662d7fa4438e9f78ebf386d54de3e0d2349b5c78f18ceb002bc507ec6f",
+      "fingerprint": "875db75d813364bb332a5c560698e0d3dcfa440e6393cf4d283fe89173c1a799",
       "snapshot": {
-        "packages/lib/src/lib/core/validateSchema.ts": "340880c610c53b9954f879c65cad1056cbb0f34b2a721d7bcd4c49b0d123b3cb"
+        "packages/lib/src/lib/core/validateSchema.ts": "5be2dfbfe2ff4027b465b9162ee7ca541278c372b2bb7e1ec789dcd28a22cff6"
       },
-      "head": "c559986d15b688a23c851ca6c456700ad219eb00",
-      "outcome": "updated",
-      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "head": "8c46c190ff8b5365f728542495c5a52cab64ec98",
+      "outcome": "no-change",
+      "reason": "Core error-path fix: a schema result whose issues isn't an array now rejects with the schema error code instead of a TypeError; the skill doesn't teach malformed schema results. Checked: validateSchema.test.ts regression (failed before, passes after), unit/core 627 passed",
       "evidence": [
-        "Changed: packages/lib/src/lib/core/validateSchema.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
+        "Changed: packages/lib/src/lib/core/validateSchema.ts at 8c46c190ff8b5365f728542495c5a52cab64ec98"
       ]
     },
     "source:packages/lib/src/lib/helpers/HttpStatusCode.ts": {
@@ -5999,15 +5999,15 @@
       ]
     },
     "source:packages/tests/unit/core/validateSchema.test.ts": {
-      "fingerprint": "0364c238c1ae814a7325543ba5bb5a9cc4eee7e4f2b9fe312c95fe365bc1119f",
+      "fingerprint": "49ee512c2846076ed3747ac1e9fe64b2fa2a1f3d4410a3968be3e5b7290509ce",
       "snapshot": {
-        "packages/tests/unit/core/validateSchema.test.ts": "e6597819f1dc7a974fd79525e2ad283d5228ace962b1439df5b30f1641d10043"
+        "packages/tests/unit/core/validateSchema.test.ts": "9c12e3e74b5f93d0de9a0ae4960784733c0fb86a9dc7173894b4149a5463bd1e"
       },
-      "head": "8705bd3c5e25ebee67958c9896abab41ba7cd9a2",
-      "outcome": "updated",
-      "reason": "configure-requests teaches the stricter method, serializer option, maxDepth and getUri normalization rules from #269",
+      "head": "cb672c135896b48365ead7adea70e7d9b67a7720",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
       "evidence": [
-        "Changed: packages/tests/unit/core/validateSchema.test.ts at d1dc3dd005df014c9bd3dd7bec3bb505ae920f45"
+        "Changed files: packages/tests/unit/core/validateSchema.test.ts"
       ]
     },
     "source:.bumpy/275-plugin-atomic.md": {
@@ -7705,6 +7705,18 @@
       "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
       "evidence": [
         "Changed: packages/tests/unit/helpers/stripUserInfo.test.ts at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
+      ]
+    },
+    "source:.bumpy/schema-malformed-issues.md": {
+      "fingerprint": "45edb4500877e61baba414930249231511a78eff333709f8b0fb3756c2db98a7",
+      "snapshot": {
+        ".bumpy/schema-malformed-issues.md": "a99d781fcba45e96103a5a04cc7e862a51e2cc6c4cff129c6008f5709092afd6"
+      },
+      "head": "8c46c190ff8b5365f728542495c5a52cab64ec98",
+      "outcome": "no-change",
+      "reason": "Core error-path fix: a schema result whose issues isn't an array now rejects with the schema error code instead of a TypeError; the skill doesn't teach malformed schema results. Checked: validateSchema.test.ts regression (failed before, passes after), unit/core 627 passed",
+      "evidence": [
+        "Changed: .bumpy/schema-malformed-issues.md at 8c46c190ff8b5365f728542495c5a52cab64ec98"
       ]
     },
     "source:.bumpy/plugins-docs-section.md": {
