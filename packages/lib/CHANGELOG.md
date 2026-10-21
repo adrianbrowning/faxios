@@ -4,6 +4,21 @@
 
 
 
+
+## 0.4.0
+<sub>2026-10-21</sub>
+
+- [#346](https://github.com/adrianbrowning/faxios/pull/346)  *(minor)*
+  Breaking: In a browser, `authBearer` with `header: "Cookie"` now rejects with `ERR_BAD_OPTION_VALUE` before sending, instead of sending the request without the cookie, which fetch drops. Use `withCredentials` to send the browser's own cookies.
+- [#346](https://github.com/adrianbrowning/faxios/pull/346)  *(minor)*
+  New `authenticate` plugin (`@gcmdev/faxios/plugins/authenticate`): `authenticate(getCredentials, { origins, overwrite })` sends `{ headers, query, cookies }` from one callback, asked for on every request and try, to your API's origin only, by the same rule as `authBearer`. Query parameters are added to `params` and masked in `error.toJSON()`; cookies go in one `Cookie` header on Node, Deno and Bun. Any header but `Authorization`, any cookie, and any query parameter refuses redirects unless the request sets `redirect`. With a `paramsSchema`, query credentials are added to its output, so the schema needn't list them. Types: `AuthenticateOptions`, `AuthenticateCredentials`, `AuthenticateCredentialValues`. `authBearer` is now `authenticate` with one header. In a browser, which drops a `Cookie` header a request sets, cookie credentials reject with `ERR_BAD_OPTION_VALUE`.
+- [#347](https://github.com/adrianbrowning/faxios/pull/347)  *(minor)*
+  New `refreshAuth` plugin (`@gcmdev/faxios/plugins/refresh-auth`): `refreshAuth(refresh, { statuses, refreshOn, origins })` runs `refresh` when a request to your API fails with a 401, then sends the request again once, any method, so `authenticate` or `authBearer` installed after it puts the new credentials on the second try. Concurrent 401s share one `refresh` call, a request sent before the last refresh finished is retried without another one, and a request to another origin never triggers one. A request to your API that starts while a refresh runs waits for it, then goes out once with the new credentials; if the refresh fails, it rejects with the refresh's error without being sent. `refresh` can return anything, such as the refresh call's promise; faxios waits for it. A request whose signal aborts while it waits rejects with `CanceledError` at once. `refreshAuth: false` on a request sends it without waiting or refreshing; the refresh call needs it when it goes through the same instance, or it waits for itself.
+- [#347](https://github.com/adrianbrowning/faxios/pull/347)  *(minor)*
+  New `response.redirected` and `response.url`: whether fetch followed a redirect, and the URL that sent the response. Each is `undefined` when the runtime or a custom `fetch` doesn't report it, such as a hand-built `Response`. `refreshAuth` uses them: a 401 from a host the API redirected to doesn't trigger a refresh.
+- [#350](https://github.com/adrianbrowning/faxios/pull/350)  *(patch)*
+  A schema whose `validate()` returns `issues` that isn't an array, such as `issues: null`, now rejects with the request's schema error code (for example `ERR_BAD_PARAMS_SCHEMA`) and the "returned a non-Result value" message, instead of a plain `TypeError`.
+
 ## 0.3.0
 <sub>2026-10-16</sub>
 
