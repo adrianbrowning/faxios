@@ -3,11 +3,11 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "d0d1b5a8a206f5774067f870a4fbeaccd95ad9933fa36180d5ccd312e92cc20e",
+      "fingerprint": "0d38e6bacb12317b3cb690083d5ef8acb2d02df7bb2d4ec8f910b4f38a43002e",
       "snapshot": {
         "MIGRATION_GUIDE.md": "cae546e787c02b7360e79afe3673b8b0d18cade4f48ff8c296fee43feee76dcc",
-        "packages/lib/package.json": "1923f4f83bb8848d93a7e11f6a511efb36d1e989edeb827081d8d2ad9f9ce01f",
-        "packages/lib/skills/configure-requests/SKILL.md": "52c705f387ddace04da55ba7095c346fa9e823bf8145e4c0a66383ba100705e4",
+        "packages/lib/package.json": "07404c50e72fb095331efae3dce6ae9d383523fd86186a7b8428a7a10de88b54",
+        "packages/lib/skills/configure-requests/SKILL.md": "84c65f55046f2a5a83c71a1793439e605fc6cd6e3e7dfe86efdc3ae346a1e601",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "c1ce9978066ae8e7bbe805ce0accf23544d1f15076d18975597a2a17bfa5ae4f",
         "packages/lib/skills/configure-requests/references/plugins.md": "ade328b3a173ce36fe70ad033b2379a6c4871e4273b1c6d81fda125c94dbd52c",
         "packages/lib/src/index.ts": "39264439a2f273bd4c9479a29a9a1435b421f06bdf846d87d3f685311db947ea",
@@ -46,23 +46,22 @@
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
-      "outcome": "updated",
-      "reason": "references/plugins.md: a 401 from a host the API redirected to does not refresh (response.redirected and response.url); a response not marked redirected counts as the API",
+      "head": "b1f74f6373adb8a8686948bc1c846523b2056ce2",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
-        "Changed: packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/plugins/refreshAuth.ts, packages/lib/src/lib/types.ts, packages/tests/unit/plugins/refreshAuth.test.ts"
+        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md at b1f74f6373adb8a8686948bc1c846523b2056ce2"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "7e63599389eb492fc674dc0faef0cc6134b5605155edc703a153ad2d9dab0734",
+      "fingerprint": "4401dbff23f0e5feaa6d34ea050b80fa4809cf2279d546f6ad5461ffcca16e24",
       "snapshot": {
         "MIGRATION_GUIDE.md": "cae546e787c02b7360e79afe3673b8b0d18cade4f48ff8c296fee43feee76dcc",
         "_artifacts/domain_map.yaml": "2ac8ac166b24e9f249f46d37d509214939b6a134f04f2950242714d1bbf541f3",
         "_artifacts/skill_spec.md": "5f66d1460a7b7a9d811b2bbe4c74f1a747d1edc2e263a213216d9450c037ace9",
         "_artifacts/skill_tree.yaml": "3338f777a40585dd0281c0d1f6c141e43a7c38e52660d1dff00713aa8d5f6677",
-        "packages/lib/package.json": "1923f4f83bb8848d93a7e11f6a511efb36d1e989edeb827081d8d2ad9f9ce01f",
-        "packages/lib/skills/configure-requests/SKILL.md": "52c705f387ddace04da55ba7095c346fa9e823bf8145e4c0a66383ba100705e4",
+        "packages/lib/package.json": "07404c50e72fb095331efae3dce6ae9d383523fd86186a7b8428a7a10de88b54",
+        "packages/lib/skills/configure-requests/SKILL.md": "84c65f55046f2a5a83c71a1793439e605fc6cd6e3e7dfe86efdc3ae346a1e601",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "c1ce9978066ae8e7bbe805ce0accf23544d1f15076d18975597a2a17bfa5ae4f",
         "packages/lib/skills/configure-requests/references/plugins.md": "ade328b3a173ce36fe70ad033b2379a6c4871e4273b1c6d81fda125c94dbd52c",
         "packages/lib/src/index.ts": "39264439a2f273bd4c9479a29a9a1435b421f06bdf846d87d3f685311db947ea",
@@ -101,12 +100,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
-      "outcome": "updated",
-      "reason": "skill_spec Batch 5 notes the redirect check and the new response fields",
+      "head": "b1f74f6373adb8a8686948bc1c846523b2056ce2",
+      "outcome": "no-change",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
-        "Changed: _artifacts/skill_spec.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/plugins/refreshAuth.ts, packages/lib/src/lib/types.ts, packages/tests/unit/plugins/refreshAuth.test.ts"
+        "Changed: packages/lib/package.json, packages/lib/skills/configure-requests/SKILL.md at b1f74f6373adb8a8686948bc1c846523b2056ce2"
       ]
     },
     "source:knip.json": {
@@ -506,15 +504,15 @@
       ]
     },
     "source:packages/lib/src/lib/env/data.ts": {
-      "fingerprint": "651f006f957f614b73dd13219b313575de83b089169c894d81af199b098fb409",
+      "fingerprint": "bcbb8fcda08f0b5631703da2edef9036b00b5e8b9452b7f9626a66a94d2612bb",
       "snapshot": {
-        "packages/lib/src/lib/env/data.ts": "57c8b832989871274df822dca5ddd82dc7e1aac186165b2c14a90f3a94b99200"
+        "packages/lib/src/lib/env/data.ts": "e3ab8740050e38cca3d808f56948161810a9a414eee1e3e1b5133c9947d4d858"
       },
-      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "head": "b1f74f6373adb8a8686948bc1c846523b2056ce2",
       "outcome": "no-change",
       "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: packages/lib/src/lib/env/data.ts at 475cb1197d69db2b33befa58afeae774386b7f3e"
+        "Changed: packages/lib/src/lib/env/data.ts at b1f74f6373adb8a8686948bc1c846523b2056ce2"
       ]
     },
     "source:packages/tests/module/esm/pnpm-lock.yaml": {
@@ -2162,15 +2160,15 @@
       ]
     },
     "source:packages/lib/CHANGELOG.md": {
-      "fingerprint": "81f53f6895785b84adcfe9f21873468e2fcab7020b0df333185c49b4dd4a374c",
+      "fingerprint": "942813d3fe09c0df76b7300fd8dcc3f8a0f2cd8895959250f6107fd0640c9017",
       "snapshot": {
-        "packages/lib/CHANGELOG.md": "20f486e59a8dc3964cc443ed0acf0a4dd3f25a0bc1e19f005640d6d3fbf0af38"
+        "packages/lib/CHANGELOG.md": "9900e64c1a7df22e5cabb2c8a5e315fe47ab65ea449234e6c9ced7f578643a37"
       },
-      "head": "475cb1197d69db2b33befa58afeae774386b7f3e",
+      "head": "b1f74f6373adb8a8686948bc1c846523b2056ce2",
       "outcome": "no-change",
       "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: packages/lib/CHANGELOG.md at 475cb1197d69db2b33befa58afeae774386b7f3e"
+        "Changed: packages/lib/CHANGELOG.md at b1f74f6373adb8a8686948bc1c846523b2056ce2"
       ]
     },
     "source:packages/lib/eslint-rules/remove-signal-listeners.ts": {
@@ -7708,27 +7706,27 @@
       ]
     },
     "source:.bumpy/schema-malformed-issues.md": {
-      "fingerprint": "45edb4500877e61baba414930249231511a78eff333709f8b0fb3756c2db98a7",
+      "fingerprint": "71ec43fa6bf93712109b8cc3556fdcd3a259fb3138cfac4b3bff9b56acce7a71",
       "snapshot": {
-        ".bumpy/schema-malformed-issues.md": "a99d781fcba45e96103a5a04cc7e862a51e2cc6c4cff129c6008f5709092afd6"
+        ".bumpy/schema-malformed-issues.md": null
       },
-      "head": "8c46c190ff8b5365f728542495c5a52cab64ec98",
+      "head": "b1f74f6373adb8a8686948bc1c846523b2056ce2",
       "outcome": "no-change",
-      "reason": "Core error-path fix: a schema result whose issues isn't an array now rejects with the schema error code instead of a TypeError; the skill doesn't teach malformed schema results. Checked: validateSchema.test.ts regression (failed before, passes after), unit/core 627 passed",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/schema-malformed-issues.md at 8c46c190ff8b5365f728542495c5a52cab64ec98"
+        "Changed: .bumpy/schema-malformed-issues.md at b1f74f6373adb8a8686948bc1c846523b2056ce2"
       ]
     },
     "source:.bumpy/plugins-docs-section.md": {
-      "fingerprint": "979cc3ceecbebf2d0f4aae4add3f942cce20ccb0f9c081cbd5a5893842219d9a",
+      "fingerprint": "244092a94fa6c94097827d12e0ae68b2b1182c63cdb135a09ac253ea7645db0e",
       "snapshot": {
-        ".bumpy/plugins-docs-section.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+        ".bumpy/plugins-docs-section.md": null
       },
-      "head": "c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4",
+      "head": "b1f74f6373adb8a8686948bc1c846523b2056ce2",
       "outcome": "no-change",
-      "reason": "Docs-only: plugin pages move into a Plugins section and links follow them; the packaged skill links no moved page and teaches the same APIs",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed: .bumpy/plugins-docs-section.md at c0f424afa2086268b4b2e8e9e3e91955f3e4d5c4"
+        "Changed: .bumpy/plugins-docs-section.md at b1f74f6373adb8a8686948bc1c846523b2056ce2"
       ]
     },
     "source:packages/docs/pages/plugins/auth-bearer.md": {
@@ -7807,16 +7805,15 @@
       ]
     },
     "source:.bumpy/authenticate-plugin.md": {
-      "fingerprint": "23b58871d2f5f6d791a07c9abacc0ee014f647f4ac6947392944e5256172f558",
+      "fingerprint": "072391d6a3ddd08e555384355059c75e0f3d6b19f9a6be1d88849c13f445d5ee",
       "snapshot": {
-        ".bumpy/authenticate-plugin.md": "d2750d321ae631045e81003ce54343686be509b1fdd534cf01488efeb3fac5d8"
+        ".bumpy/authenticate-plugin.md": null
       },
-      "head": "ba05c0eb7efa659df0493963be9fb069b3b0c867",
+      "head": "b1f74f6373adb8a8686948bc1c846523b2056ce2",
       "outcome": "no-change",
-      "reason": "Bump text and authenticate docs page describe the paramsSchema fix; the guidance is in the skill item",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "pnpm check exit 0 on this layer (unit incl. authenticate.test.ts paramsSchema cases, browser, module, Deno, Bun, docs examples, docs build); intent validate passed",
-        "Changed: .bumpy/authenticate-plugin.md"
+        "Changed: .bumpy/authenticate-plugin.md at b1f74f6373adb8a8686948bc1c846523b2056ce2"
       ]
     },
     "source:packages/docs/pages/plugins/authenticate.md": {
@@ -7833,41 +7830,39 @@
       ]
     },
     "source:.bumpy/auth-bearer-browser-cookie.md": {
-      "fingerprint": "f6553eb30a81703f9de2c1d8e2212cd1a1bc7c24b11bdccd640394c260326ae9",
+      "fingerprint": "08bdcb9e0d26e2356f088d3261d7af5ed5cad452f94d53905ec9a03c16c1b203",
       "snapshot": {
-        ".bumpy/auth-bearer-browser-cookie.md": "b8b3c974544afdff2e270d35ac200530213fc86318d192709f4a4137a6e46508"
+        ".bumpy/auth-bearer-browser-cookie.md": null
       },
-      "head": "5d5bab3a0e0fe588f256fb90240f0e666265f68a",
+      "head": "b1f74f6373adb8a8686948bc1c846523b2056ce2",
       "outcome": "no-change",
-      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "Changed files: .bumpy/auth-bearer-browser-cookie.md"
+        "Changed: .bumpy/auth-bearer-browser-cookie.md at b1f74f6373adb8a8686948bc1c846523b2056ce2"
       ]
     },
     "source:.bumpy/refresh-auth-plugin.md": {
-      "fingerprint": "0a9430c6d4e11bf4b7b3e3f9c7618116d6348065191264b89edb5d9e1b51dad8",
+      "fingerprint": "6acb377a602f9a0bc0729f80b05ea47bddd728decbd86800931a5fea6c03a815",
       "snapshot": {
-        ".bumpy/refresh-auth-plugin.md": "4619151b6cc0f1921bee5a44677502e595d081b0f4dbc44c275e29ae866ca0f0"
+        ".bumpy/refresh-auth-plugin.md": null
       },
-      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
+      "head": "b1f74f6373adb8a8686948bc1c846523b2056ce2",
       "outcome": "no-change",
-      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
-        "Changed: .bumpy/refresh-auth-plugin.md"
+        "Changed: .bumpy/refresh-auth-plugin.md at b1f74f6373adb8a8686948bc1c846523b2056ce2"
       ]
     },
     "source:.bumpy/response-url.md": {
-      "fingerprint": "6fc97244b5fcad706961cb7d0f58e32a0387cb5d0f8026e663386c37de589180",
+      "fingerprint": "b2cf462d7b85f73fcc556a23b827b4c331a156f9c2df5b71acada23dbc17e13b",
       "snapshot": {
-        ".bumpy/response-url.md": "58fd47af28356e29fe55603d2c6579bfba8aa298dae6b4046aa6d1834efe6d75"
+        ".bumpy/response-url.md": null
       },
-      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
+      "head": "b1f74f6373adb8a8686948bc1c846523b2056ce2",
       "outcome": "no-change",
-      "reason": "Redirect fix code, adapter fields, tests, docs, threat model or bump file; the guidance is reviewed in the skill item",
+      "reason": "Version Packages PR made by bumpy: version bump, changelog entries, consumed bump files, the synced VERSION and the skill's synced library_version. No API or behaviour the skill teaches changes in this PR.",
       "evidence": [
-        "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
-        "Changed: .bumpy/response-url.md"
+        "Changed: .bumpy/response-url.md at b1f74f6373adb8a8686948bc1c846523b2056ce2"
       ]
     },
     "source:packages/docs/pages/plugins/refresh-auth.md": {
