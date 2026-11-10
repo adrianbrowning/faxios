@@ -16,7 +16,7 @@
     "lint:ts": "tsc --noEmit -p ."
   },
   "dependencies": {
-    "vitepress": "2.0.0-alpha.20"
+    "vitepress": "2.0.0-alpha.21"
   },
   "devDependencies": {
     "esbuild": "^0.28.2",
