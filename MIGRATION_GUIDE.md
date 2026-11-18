@@ -1,6 +1,6 @@
 # Migrating to faxios
 
-faxios started as a fork of axios and keeps most of its request API, but it uses the web-standard `fetch` API as its **only** HTTP transport in every runtime (browser, Node 24+, Deno, Bun). The axios adapters and their HTTP-stack dependencies are gone. This guide lists what behaves differently from axios and what to change in your code. If you already use faxios 0.2, see [Upgrading from faxios 0.2](#upgrading-from-faxios-02).
+faxios started as a fork of axios and keeps most of its request API, but it uses the web-standard `fetch` API as its **only** HTTP transport in every runtime (browser, Node 24+, Deno, Bun). The axios adapters and their HTTP-stack dependencies are gone. This guide lists what behaves differently from axios and what to change in your code. If you already use faxios 0.2 or 0.3, see [Upgrading from faxios 0.2](#upgrading-from-faxios-02) and [Upgrading from faxios 0.3](#upgrading-from-faxios-03).
 
 Install the package as `@gcmdev/faxios` and import its default export:
 
@@ -203,6 +203,12 @@ The release after 0.2.x is a breaking one. The changelog has the full entry for 
 - **Removed API.** The `Cancel` alias (use `CanceledError`), `FaxiosError.ECONNABORTED` (check `ETIMEDOUT` for a timeout), `FaxiosError.ERR_DEPRECATED`, `ECONNREFUSED` and `ERR_FR_TOO_MANY_REDIRECTS` (check `ERR_NETWORK` and `error.cause`), the legacy `FaxiosError` fields `description`, `number`, `fileName`, `lineNumber`, `columnNumber` and `event` (and their `toJSON()` keys), the `customProps` argument of `FaxiosError.from()`, the `event` key on progress events, `FaxiosHeaders.accessor()`, the `@gcmdev/faxios/unsafe/utils.js` subpath (and the `utils.is*` copies a `toFormData` visitor got), and the `RawFaxiosRequestConfig`, `FaxiosResponseHeadersLike` and `FaxiosRequestHeaders` types.
 - **Types.** TypeScript 5.4 or greater. Methods take `<T, D>` with no `R` parameter, a response generic must match `responseSchema`, and `toFormData` options are typed `FormSerializerOptions`. `mergeConfig` returns a `FaxiosRequestConfig` with no open index signature, `FaxiosHeaders` and `headers` values must be header values, and `fetchOptions` is checked as `FaxiosFetchOptions` (`{ cache: 42 }` is a type error). `GenericAbortSignal` now extends `AbortableSignal`: it requires `addEventListener` and `removeEventListener` typed `(type: "abort", listener: () => void) => unknown`; pass a real `AbortSignal` or a polyfill with those members. `new CanceledError(message, config)` and `canceledFromSignal(signal, config)` take an `InternalFaxiosRequestConfig` (pass `ctx.config`), and `unsafe/core/buildFullPath.js` takes and returns `string | undefined`.
 - **`formToJSON`** splits field names only on `.` and brackets.
+
+## Upgrading from faxios 0.3
+
+The release after 0.3.x is a breaking one. Check your code for this change:
+
+- **`authBearer` with a `Cookie` header in a browser.** In a browser, `authBearer(getToken, { header: "Cookie" })` now rejects with `ERR_BAD_OPTION_VALUE`, before the request is sent, whenever it would set the cookie: the request goes to the API origin, `getToken` returns a non-empty token, and the request has no `Cookie` header of its own (or `overwrite` is `true`). Before, faxios sent the request and fetch dropped the `Cookie` header, so the request went out without the credential. In browser code, remove that `authBearer` plugin (`withCredentials` does not stop it rejecting). To send a session cookie, let the server set it and pass `withCredentials: true`, which sends the browser's own cookies. Server runtimes keep the `Cookie` header, so `header: "Cookie"` still works there.
 
 ## Need help?
 

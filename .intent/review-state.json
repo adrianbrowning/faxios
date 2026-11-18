@@ -3,9 +3,9 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "d0d1b5a8a206f5774067f870a4fbeaccd95ad9933fa36180d5ccd312e92cc20e",
+      "fingerprint": "4d6ebc255d6906b27f2814df1c62a9e9761b6829ea57bf836aa631aed8bf5f81",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "cae546e787c02b7360e79afe3673b8b0d18cade4f48ff8c296fee43feee76dcc",
+        "MIGRATION_GUIDE.md": "94a7af949f00c7f5acbe91e6e3307d03273ca778d7e9a305e30ea4f64dbdcc5b",
         "packages/lib/package.json": "1923f4f83bb8848d93a7e11f6a511efb36d1e989edeb827081d8d2ad9f9ce01f",
         "packages/lib/skills/configure-requests/SKILL.md": "52c705f387ddace04da55ba7095c346fa9e823bf8145e4c0a66383ba100705e4",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "c1ce9978066ae8e7bbe805ce0accf23544d1f15076d18975597a2a17bfa5ae4f",
@@ -46,18 +46,17 @@
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
-      "outcome": "updated",
-      "reason": "references/plugins.md: a 401 from a host the API redirected to does not refresh (response.redirected and response.url); a response not marked redirected counts as the API",
+      "head": "6b80211c993019c388b3a9a5da4018e5313a91d2",
+      "outcome": "no-change",
+      "reason": "Docs only: MIGRATION_GUIDE.md gets an 'Upgrading from faxios 0.3' section for the pending authBearer Cookie-header breaking change (when it rejects, and to remove the plugin in browser code and use withCredentials), and two docs pages link it. The configure-requests skill already teaches the rule (references/plugins.md), so no guidance changes.",
       "evidence": [
-        "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
-        "Changed: packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/plugins/refreshAuth.ts, packages/lib/src/lib/types.ts, packages/tests/unit/plugins/refreshAuth.test.ts"
+        "Changed: MIGRATION_GUIDE.md at 6b80211c993019c388b3a9a5da4018e5313a91d2"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "7e63599389eb492fc674dc0faef0cc6134b5605155edc703a153ad2d9dab0734",
+      "fingerprint": "cfa7724fa542f16807f9693a54a1871b4411d251dbfc65fbaa47f468cd489cd3",
       "snapshot": {
-        "MIGRATION_GUIDE.md": "cae546e787c02b7360e79afe3673b8b0d18cade4f48ff8c296fee43feee76dcc",
+        "MIGRATION_GUIDE.md": "94a7af949f00c7f5acbe91e6e3307d03273ca778d7e9a305e30ea4f64dbdcc5b",
         "_artifacts/domain_map.yaml": "2ac8ac166b24e9f249f46d37d509214939b6a134f04f2950242714d1bbf541f3",
         "_artifacts/skill_spec.md": "5f66d1460a7b7a9d811b2bbe4c74f1a747d1edc2e263a213216d9450c037ace9",
         "_artifacts/skill_tree.yaml": "3338f777a40585dd0281c0d1f6c141e43a7c38e52660d1dff00713aa8d5f6677",
@@ -101,12 +100,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
-      "outcome": "updated",
-      "reason": "skill_spec Batch 5 notes the redirect check and the new response fields",
+      "head": "6b80211c993019c388b3a9a5da4018e5313a91d2",
+      "outcome": "no-change",
+      "reason": "Docs only: MIGRATION_GUIDE.md gets an 'Upgrading from faxios 0.3' section for the pending authBearer Cookie-header breaking change (when it rejects, and to remove the plugin in browser code and use withCredentials), and two docs pages link it. The configure-requests skill already teaches the rule (references/plugins.md), so no guidance changes.",
       "evidence": [
-        "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
-        "Changed: _artifacts/skill_spec.md, packages/lib/skills/configure-requests/references/plugins.md, packages/lib/src/lib/adapters/fetch.ts, packages/lib/src/lib/plugins/refreshAuth.ts, packages/lib/src/lib/types.ts, packages/tests/unit/plugins/refreshAuth.test.ts"
+        "Changed: MIGRATION_GUIDE.md at 6b80211c993019c388b3a9a5da4018e5313a91d2"
       ]
     },
     "source:knip.json": {
@@ -395,15 +393,15 @@
       ]
     },
     "source:packages/docs/pages/getting-started/upgrade-guide.md": {
-      "fingerprint": "5a5889fe0321d97a065daf55388d972be95e78708e9ace1d56faaeacc6873cfc",
+      "fingerprint": "09a01b1df148e3d2cfbe18308bbd5ffa6d4ffeb5d9057c508a8d3a1669d9bdd1",
       "snapshot": {
-        "packages/docs/pages/getting-started/upgrade-guide.md": "34daa11a88d856d873c7875fc14ee79853e80814bb0af27d5b0ca66968623d7f"
+        "packages/docs/pages/getting-started/upgrade-guide.md": "a443cc10fc91a7b1a2c6019eda776273b179795485173536d45fee2fd9b338fc"
       },
-      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
-      "outcome": "updated",
-      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
+      "head": "22311d1fffcbf27dc84a21b26362768674b2038a",
+      "outcome": "no-change",
+      "reason": "Docs only: MIGRATION_GUIDE.md gets an 'Upgrading from faxios 0.3' section for the pending authBearer Cookie-header breaking change, and two docs pages link it. The configure-requests skill already teaches the rule (references/plugins.md: authBearer with header: \"Cookie\" rejects with ERR_BAD_OPTION_VALUE in a browser; use withCredentials), so no guidance changes.",
       "evidence": [
-        "Changed: packages/docs/pages/getting-started/upgrade-guide.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
+        "Changed: packages/docs/pages/getting-started/upgrade-guide.md at 22311d1fffcbf27dc84a21b26362768674b2038a"
       ]
     },
     "source:packages/docs/zh/pages/advanced/interceptors.md": {
@@ -7095,15 +7093,15 @@
       ]
     },
     "source:packages/docs/pages/misc/semver.md": {
-      "fingerprint": "ff4d2558d655d0105d12b80ef65c66c4c6ccfc05da4deba74a24477efdc48fd6",
+      "fingerprint": "0b7da689f6433ee8cd96430f4d06996922cd31c6d39d4cc8044857385d6a6321",
       "snapshot": {
-        "packages/docs/pages/misc/semver.md": "f1b9d8bbaa4b3d160d326a993bb8451e749ce1cb3e657e2167ad7e028b226630"
+        "packages/docs/pages/misc/semver.md": "966ec1dee731c245c8f1fc89a05d081addffc1e050ff8d0dcc7718e8749ed16a"
       },
-      "head": "60c49fff6e96a23cd4587eaca2a099ae97544f8f",
-      "outcome": "updated",
-      "reason": "skill root row and plugins reference list the plugin helpers (signal helpers, hasOwnInPrototypeChain, stripUserInfo/stripUserInfoInText); GenericAbortSignal shares AbortableSignal's listener shape; release push moved to its own job",
+      "head": "22311d1fffcbf27dc84a21b26362768674b2038a",
+      "outcome": "no-change",
+      "reason": "Docs only: MIGRATION_GUIDE.md gets an 'Upgrading from faxios 0.3' section for the pending authBearer Cookie-header breaking change, and two docs pages link it. The configure-requests skill already teaches the rule (references/plugins.md: authBearer with header: \"Cookie\" rejects with ERR_BAD_OPTION_VALUE in a browser; use withCredentials), so no guidance changes.",
       "evidence": [
-        "Changed: packages/docs/pages/misc/semver.md at 60c49fff6e96a23cd4587eaca2a099ae97544f8f"
+        "Changed: packages/docs/pages/misc/semver.md at 22311d1fffcbf27dc84a21b26362768674b2038a"
       ]
     },
     "source:packages/tests/docs-examples/contract.test.ts": {

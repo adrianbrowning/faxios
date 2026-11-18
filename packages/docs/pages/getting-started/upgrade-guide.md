@@ -1,6 +1,6 @@
 # Coming from axios
 
-faxios keeps most of the axios request API, but it sends every request with the web-standard `fetch` API and has no adapters or interceptors. This page covers the changes most axios code needs. The [migration guide](https://github.com/adrianbrowning/faxios/blob/main/MIGRATION_GUIDE.md) lists every difference. Upgrading from faxios 0.2? See [Upgrading from faxios 0.2](https://github.com/adrianbrowning/faxios/blob/main/MIGRATION_GUIDE.md#upgrading-from-faxios-02).
+faxios keeps most of the axios request API, but it sends every request with the web-standard `fetch` API and has no adapters or interceptors. This page covers the changes most axios code needs. The [migration guide](https://github.com/adrianbrowning/faxios/blob/main/MIGRATION_GUIDE.md) lists every difference. Upgrading from faxios 0.2 or 0.3? See [Upgrading from faxios 0.2](https://github.com/adrianbrowning/faxios/blob/main/MIGRATION_GUIDE.md#upgrading-from-faxios-02) and [Upgrading from faxios 0.3](https://github.com/adrianbrowning/faxios/blob/main/MIGRATION_GUIDE.md#upgrading-from-faxios-03).
 
 ### Install and import
 
