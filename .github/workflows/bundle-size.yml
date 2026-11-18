@@ -1,9 +1,10 @@
 name: Bundle Size
 
 # Builds the library and bundles every consumer entry point in
-# scripts/bundle-size.ts with esbuild, fails the PR when any entry is over its
-# size budget, and writes the size table to the step summary. run-ci.yml's unit
-# tests (bundleSize.test.ts) check only a few entries and modules.
+# packages/tests/scripts/bundle-size.ts with esbuild, fails the PR when any
+# entry is over its size budget, and writes the size table to the step
+# summary. run-ci.yml's unit tests (bundleSize.test.ts) check only a few
+# entries and modules.
 
 on:
   pull_request:

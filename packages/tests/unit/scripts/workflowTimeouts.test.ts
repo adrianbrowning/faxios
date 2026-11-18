@@ -11,9 +11,9 @@ const repoWorkflows = resolve(import.meta.dirname, "../../../../.github/workflow
 const job = (id: string, settings: string) => `  ${id}:\n${settings}    steps:\n      - run: echo ok\n`;
 const workflow = (...jobs: Array<string>) => `name: ci\non: push\njobs:\n${jobs.join("")}`;
 
-// Each case starts a Node process. Under the full parallel `pnpm run test` one start took over 6 s,
-// past the unit project's 5 s default timeout. A hung run is killed after 20 s, inside the 30 s test
-// timeout, so the case fails with `status: null` and leaves no process behind.
+// Each case starts a Node process. Under the full parallel `pnpm run test` one start took over 6 s, so the
+// suite sets its own 30 s timeout instead of relying on the unit project's 10 s default. A hung run is killed
+// after 20 s, inside that timeout, so the case fails with `status: null` and leaves no process behind.
 describe("scripts/check-workflow-timeouts.ts", { timeout: 30_000 }, () => {
   let dir: string;
   const check = async (workflowsDir = dir) => {
@@ -42,7 +42,7 @@ describe("scripts/check-workflow-timeouts.ts", { timeout: 30_000 }, () => {
 
     const result = await check();
 
-    expect(result.status).not.toBe(0);
+    expect(result.status).toBe(1);
     expect(result.stderr).toContain("ci.yml");
     expect(result.stderr).toContain("job `test` has no timeout-minutes");
     expect(result.stderr).not.toContain("`build`");
@@ -53,7 +53,7 @@ describe("scripts/check-workflow-timeouts.ts", { timeout: 30_000 }, () => {
 
     const result = await check();
 
-    expect(result.status).not.toBe(0);
+    expect(result.status).toBe(1);
     expect(result.stderr).toContain("ci.yaml");
     expect(result.stderr).toContain("job `test` sets timeout-minutes");
   });
