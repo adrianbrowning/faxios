@@ -1925,15 +1925,15 @@
       ]
     },
     "source:.github/workflows/knip.yml": {
-      "fingerprint": "c4e0eedeffc10dfe904960ed8b8f2f96e3ac275ceeebe73a393fd065d79c0cf6",
+      "fingerprint": "a52c6e163b66396c926781faf908a131224813d7b300ab10d74ed25ca17da9f4",
       "snapshot": {
-        ".github/workflows/knip.yml": "c65d7cc4d0b53dee47cfb8c32b89818433ede3b94f69d1383549f592f32def83"
+        ".github/workflows/knip.yml": "19541524d0ec7aa85926daad80aeded679064164b6c3b9d64cb880e56ea1fab1"
       },
-      "head": "400a0fde95de52302927c996202aea02a275e730",
+      "head": "255ab28f4e5b79aab13d4ab6b7aa8df2c3f75736",
       "outcome": "no-change",
-      "reason": "Header comments in four pull-request workflows and a 30 s per-test timeout on one unit test. No API or behaviour the configure-requests skill teaches changes.",
+      "reason": "Stricter exit-code assertions in workflowTimeouts.test.ts and corrected header comments in bundle-size.yml and knip.yml. No API or behaviour the configure-requests skill teaches changes.",
       "evidence": [
-        "Changed: .github/workflows/knip.yml at 400a0fde95de52302927c996202aea02a275e730"
+        "Changed: .github/workflows/knip.yml at 255ab28f4e5b79aab13d4ab6b7aa8df2c3f75736"
       ]
     },
     "source:.github/workflows/release.yml": {
@@ -3245,15 +3245,15 @@
       ]
     },
     "source:.github/workflows/bundle-size.yml": {
-      "fingerprint": "89c3292fd7d04bb2dc5ba32c50d14499cc05339b456573a2df525503fdb4eada",
+      "fingerprint": "bf8ef8dbb835fefa9a692fa3e85427ceea62f5670e855e8ce2d2c030b3c71aec",
       "snapshot": {
-        ".github/workflows/bundle-size.yml": "6fac3edb5e8751d0115db7bed9394888f8f3ccc214a62c88592aede3d12f32e9"
+        ".github/workflows/bundle-size.yml": "1f82100689ed0f6947927ca129631f6247106d782beb6712a50a8a2a9b3588e3"
       },
-      "head": "400a0fde95de52302927c996202aea02a275e730",
+      "head": "255ab28f4e5b79aab13d4ab6b7aa8df2c3f75736",
       "outcome": "no-change",
-      "reason": "Header comments in four pull-request workflows and a 30 s per-test timeout on one unit test. No API or behaviour the configure-requests skill teaches changes.",
+      "reason": "Stricter exit-code assertions in workflowTimeouts.test.ts and corrected header comments in bundle-size.yml and knip.yml. No API or behaviour the configure-requests skill teaches changes.",
       "evidence": [
-        "Changed: .github/workflows/bundle-size.yml at 400a0fde95de52302927c996202aea02a275e730"
+        "Changed: .github/workflows/bundle-size.yml at 255ab28f4e5b79aab13d4ab6b7aa8df2c3f75736"
       ]
     },
     "source:.github/workflows/cache.yml": {
@@ -7884,15 +7884,15 @@
       ]
     },
     "source:packages/tests/unit/scripts/workflowTimeouts.test.ts": {
-      "fingerprint": "21f050e500eb502a9fb7b8b7a5c4bf9d092c9347954c9e09081a2293d9090c3b",
+      "fingerprint": "8b051c23d7ca4ab0daed63d997f93addfd63cd38c3901df7ec3b3d1d0ba07888",
       "snapshot": {
-        "packages/tests/unit/scripts/workflowTimeouts.test.ts": "bf493da85d608a670d3e5652d1a9615b02e79369902490df714033df7bf9a4ab"
+        "packages/tests/unit/scripts/workflowTimeouts.test.ts": "8fbf818c2cea139e0bb71c007759bda7e09db2e163d14589c044ea70afcacd99"
       },
-      "head": "e8827bdd63113dae2e00900139d3dd55e4916e7f",
+      "head": "255ab28f4e5b79aab13d4ab6b7aa8df2c3f75736",
       "outcome": "no-change",
-      "reason": "Test-only change: a Vitest regression test for scripts/check-workflow-timeouts.ts and a 10 s testTimeout on the unit Vitest project. No API or behaviour the configure-requests skill teaches changes.",
+      "reason": "Stricter exit-code assertions in workflowTimeouts.test.ts and corrected header comments in bundle-size.yml and knip.yml. No API or behaviour the configure-requests skill teaches changes.",
       "evidence": [
-        "Changed: packages/tests/unit/scripts/workflowTimeouts.test.ts at e8827bdd63113dae2e00900139d3dd55e4916e7f"
+        "Changed: packages/tests/unit/scripts/workflowTimeouts.test.ts at 255ab28f4e5b79aab13d4ab6b7aa8df2c3f75736"
       ]
     }
   }
