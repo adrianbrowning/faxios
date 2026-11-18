@@ -1,5 +1,9 @@
 name: Verify build reproducibility
 
+# Builds the library two times from a clean install and compares the SHA-256 of
+# each file in dist/. It warns (does not block) when the builds differ
+# (THREATMODEL.md T-S5). run-ci.yml builds only one time and does not compare.
+
 on:
   pull_request:
     paths:

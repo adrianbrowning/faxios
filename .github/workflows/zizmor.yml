@@ -1,5 +1,9 @@
 name: GitHub Actions Security Analysis with zizmor
 
+# Scans the GitHub Actions workflows for security problems with zizmor and
+# uploads the results to code scanning. run-ci.yml does not do a security scan
+# of the workflows.
+
 on:
   push:
     branches: [main]

@@ -1,5 +1,9 @@
 name: Bundle Size
 
+# Builds the library and bundles real consumer entry points with esbuild, then
+# fails the PR when an entry is larger than its size budget. run-ci.yml builds
+# and tests the library but does not measure bundle size.
+
 on:
   pull_request:
     types:
