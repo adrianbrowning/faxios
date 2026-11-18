@@ -1,7 +1,8 @@
 name: Knip
 
-# Runs knip to find unused files, exports and dependencies, and keeps one PR
-# comment with the findings. `pnpm run lint` in run-ci.yml does not run knip.
+# Runs knip to find unused files, exports and dependencies and fails on any
+# finding; on failure it keeps one PR comment with the findings.
+# `pnpm run lint` in run-ci.yml does not run knip.
 
 on:
   pull_request:
