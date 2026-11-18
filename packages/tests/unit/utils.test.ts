@@ -75,6 +75,7 @@ describe("utils", () => {
 
   // A browser without setImmediate has postMessage; scheduling must not leave a window listener.
   // The import is dynamic on purpose: the check is what loading the module does to the globals.
+  // The 30 s timeout: the cold import of all of #src after vi.resetModules() is slow when the full suite saturates the CPU.
   it("adds no message listener at import when setImmediate is missing", async () => {
     const listened: Array<string> = [];
     vi.stubGlobal("setImmediate", undefined);
@@ -91,5 +92,5 @@ describe("utils", () => {
       vi.resetModules();
     }
     assert.deepStrictEqual(listened.filter(type => type === "message"), []);
-  });
+  }, 30_000);
 });
