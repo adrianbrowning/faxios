@@ -3761,15 +3761,15 @@
       ]
     },
     "source:packages/tests/vitest.config.js": {
-      "fingerprint": "023b9b0de640e3bec2188ff5c3f4e2c947ced324e3b3c1cafdbdf8f314e3990f",
+      "fingerprint": "98936d352120d8d67e84fec639b6c38044873c94248303a7b5d24b1382257467",
       "snapshot": {
-        "packages/tests/vitest.config.js": "7311fdde6abd45a028dd5ffec676629d19c70cfee4352290037c6a61b6466789"
+        "packages/tests/vitest.config.js": "1772442bc89996a96d941a8d9c97ef7ba306d466fd3dfaae57d2d56ced4e0201"
       },
-      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
+      "head": "e8827bdd63113dae2e00900139d3dd55e4916e7f",
       "outcome": "no-change",
-      "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
+      "reason": "Test-only change: a Vitest regression test for scripts/check-workflow-timeouts.ts and a 10 s testTimeout on the unit Vitest project. No API or behaviour the configure-requests skill teaches changes.",
       "evidence": [
-        "Changed: packages/tests/vitest.config.js at 03009f7a217f136a32ed7d58306f67141aae2805"
+        "Changed: packages/tests/vitest.config.js at e8827bdd63113dae2e00900139d3dd55e4916e7f"
       ]
     },
     "source:packages/docs/pages/advanced/multipart-form-data-format.md": {
@@ -7881,6 +7881,18 @@
       "evidence": [
         "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
         "Changed: packages/docs/pages/plugins/refresh-auth.md"
+      ]
+    },
+    "source:packages/tests/unit/scripts/workflowTimeouts.test.ts": {
+      "fingerprint": "21f050e500eb502a9fb7b8b7a5c4bf9d092c9347954c9e09081a2293d9090c3b",
+      "snapshot": {
+        "packages/tests/unit/scripts/workflowTimeouts.test.ts": "bf493da85d608a670d3e5652d1a9615b02e79369902490df714033df7bf9a4ab"
+      },
+      "head": "e8827bdd63113dae2e00900139d3dd55e4916e7f",
+      "outcome": "no-change",
+      "reason": "Test-only change: a Vitest regression test for scripts/check-workflow-timeouts.ts and a 10 s testTimeout on the unit Vitest project. No API or behaviour the configure-requests skill teaches changes.",
+      "evidence": [
+        "Changed: packages/tests/unit/scripts/workflowTimeouts.test.ts at e8827bdd63113dae2e00900139d3dd55e4916e7f"
       ]
     }
   }

@@ -27,6 +27,8 @@ export default defineConfig({
         test: {
           name: "unit",
           environment: "node",
+          // Inline projects do not inherit the root testTimeout; match it for slow, loaded machines.
+          testTimeout: 10000,
           include: [ "unit/**/*.test.{js,ts}" ],
           setupFiles: [],
         },
