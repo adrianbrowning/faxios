@@ -12,12 +12,12 @@ const job = (id: string, settings: string) => `  ${id}:\n${settings}    steps:\n
 const workflow = (...jobs: Array<string>) => `name: ci\non: push\njobs:\n${jobs.join("")}`;
 
 // Each case starts a Node process. Under the full parallel `pnpm run test` one start took over 6 s,
-// past the unit project's 5 s default timeout. The spawn is async, so a hung run fails at the
-// timeout instead of blocking the worker.
+// past the unit project's 5 s default timeout. A hung run is killed after 20 s, inside the 30 s test
+// timeout, so the case fails with `status: null` and leaves no process behind.
 describe("scripts/check-workflow-timeouts.ts", { timeout: 30_000 }, () => {
   let dir: string;
   const check = async (workflowsDir = dir) => {
-    const child = spawn(process.execPath, [ script, workflowsDir ], { stdio: [ "ignore", "ignore", "pipe" ] });
+    const child = spawn(process.execPath, [ script, workflowsDir ], { stdio: [ "ignore", "ignore", "pipe" ], timeout: 20_000 });
     let stderr = "";
     child.stderr.setEncoding("utf8").on("data", (chunk: string) => {
       stderr += chunk;
