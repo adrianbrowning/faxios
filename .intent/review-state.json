@@ -1925,15 +1925,15 @@
       ]
     },
     "source:.github/workflows/knip.yml": {
-      "fingerprint": "7139bf18910c0ae27b705fc094efc3b89d8e31b7ad9b2d7a4b691f60317caaf7",
+      "fingerprint": "c4e0eedeffc10dfe904960ed8b8f2f96e3ac275ceeebe73a393fd065d79c0cf6",
       "snapshot": {
-        ".github/workflows/knip.yml": "d695f63829da8794a59e2a4a28c5629888c09b122061f8335d51108ae6ca1cc7"
+        ".github/workflows/knip.yml": "c65d7cc4d0b53dee47cfb8c32b89818433ede3b94f69d1383549f592f32def83"
       },
-      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
+      "head": "400a0fde95de52302927c996202aea02a275e730",
       "outcome": "no-change",
-      "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
+      "reason": "Header comments in four pull-request workflows and a 30 s per-test timeout on one unit test. No API or behaviour the configure-requests skill teaches changes.",
       "evidence": [
-        "Changed: .github/workflows/knip.yml at 03009f7a217f136a32ed7d58306f67141aae2805"
+        "Changed: .github/workflows/knip.yml at 400a0fde95de52302927c996202aea02a275e730"
       ]
     },
     "source:.github/workflows/release.yml": {
@@ -3245,15 +3245,15 @@
       ]
     },
     "source:.github/workflows/bundle-size.yml": {
-      "fingerprint": "65a9e46fceef7766f4159f9899a8e854c27ce7935b8299fd92a3badbc73f81f5",
+      "fingerprint": "89c3292fd7d04bb2dc5ba32c50d14499cc05339b456573a2df525503fdb4eada",
       "snapshot": {
-        ".github/workflows/bundle-size.yml": "621050cebb5179881275db9003e31a7a7ebc38d0239fe4e27b32f7d11171cc24"
+        ".github/workflows/bundle-size.yml": "6fac3edb5e8751d0115db7bed9394888f8f3ccc214a62c88592aede3d12f32e9"
       },
-      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
-      "outcome": "updated",
-      "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
+      "head": "400a0fde95de52302927c996202aea02a275e730",
+      "outcome": "no-change",
+      "reason": "Header comments in four pull-request workflows and a 30 s per-test timeout on one unit test. No API or behaviour the configure-requests skill teaches changes.",
       "evidence": [
-        "Changed: .github/workflows/bundle-size.yml at 5ad42be1a2d937845bb59cb73bfc8bc21f07a76f"
+        "Changed: .github/workflows/bundle-size.yml at 400a0fde95de52302927c996202aea02a275e730"
       ]
     },
     "source:.github/workflows/cache.yml": {
@@ -3329,15 +3329,15 @@
       ]
     },
     "source:.github/workflows/verify-build-reproducibility.yml": {
-      "fingerprint": "cbf7ccf017ad9aee498952d0b0be5b6565e162973e70575b3aa1498275b43572",
+      "fingerprint": "7826cbbf91e9f53289d352d43f72ba3452ce8df61c371839a387cb285a0b7b7b",
       "snapshot": {
-        ".github/workflows/verify-build-reproducibility.yml": "10ee171a24176d4ceab8a3c7b2f46d65a7de694c979e13e17c08de77e03fcdd7"
+        ".github/workflows/verify-build-reproducibility.yml": "16777d8637e2a697645a74a50a9e5e2b1cf969c504334759b63ef7c35838849d"
       },
-      "head": "66b1330177fb0b0cc67a6d2926d89627e99f95b0",
-      "outcome": "updated",
-      "reason": "audit observations: docs, skill and sources updated",
+      "head": "400a0fde95de52302927c996202aea02a275e730",
+      "outcome": "no-change",
+      "reason": "Header comments in four pull-request workflows and a 30 s per-test timeout on one unit test. No API or behaviour the configure-requests skill teaches changes.",
       "evidence": [
-        "Changed: .github/workflows/verify-build-reproducibility.yml at 66b1330177fb0b0cc67a6d2926d89627e99f95b0"
+        "Changed: .github/workflows/verify-build-reproducibility.yml at 400a0fde95de52302927c996202aea02a275e730"
       ]
     },
     "source:.github/workflows/links.yml": {
@@ -3437,15 +3437,15 @@
       ]
     },
     "source:.github/workflows/zizmor.yml": {
-      "fingerprint": "8622a3357e5cba12482d9a8c246ea12bd7a035fc844f143666abf093fda2bb95",
+      "fingerprint": "182f8420b06620dd7dcd1a69c05d861b6ae0c981d811a4b0764dbd38bc40d128",
       "snapshot": {
-        ".github/workflows/zizmor.yml": "0868cbf403850adb23a7fb829d92a5c73c161cc9c351741e461dbd44e0736a32"
+        ".github/workflows/zizmor.yml": "1bb42f5a5bee8765050885289fe27a3c9250929ac58f785f7e198ade1d7edf1b"
       },
-      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
+      "head": "400a0fde95de52302927c996202aea02a275e730",
       "outcome": "no-change",
-      "reason": "Release and CI plumbing for #162, #165 and #167, rebased onto #200: release.yml runs run-ci.yml before publishing, deploys docs and dispatches the skill review via the $/ self-repository syntax; bumpy publishes directly (npmStaged false); lint is check-only; duplicate lint, ts-check and cache workflows are removed. No API or behaviour the skill teaches changes.",
+      "reason": "Header comments in four pull-request workflows and a 30 s per-test timeout on one unit test. No API or behaviour the configure-requests skill teaches changes.",
       "evidence": [
-        "Changed: .github/workflows/zizmor.yml at 280f7e791c50e367a025fddc617941296f15f52a"
+        "Changed: .github/workflows/zizmor.yml at 400a0fde95de52302927c996202aea02a275e730"
       ]
     },
     "source:.lintstagedrc": {
@@ -4277,15 +4277,15 @@
       ]
     },
     "source:packages/tests/unit/utils.test.ts": {
-      "fingerprint": "4d6880ac409c918f347b895a544661de8aa4a74eab28dcfd032a9aee171c63a5",
+      "fingerprint": "8640fbfb4790f2ba5931fb4045d1d12fe777ae9ef9b5697a0a1452ccfaeb74ea",
       "snapshot": {
-        "packages/tests/unit/utils.test.ts": "57de60a996ee6f20ff08f1f80c4174cd9fed9052da4e75b886bc4b49fdc1d1e2"
+        "packages/tests/unit/utils.test.ts": "35ce610cda64c421494a4f29c718abd964810de1c750d857168eb6810f4d6a57"
       },
-      "head": "ed77cbef98aad1f5dac1e106d6703873f3bb2a37",
-      "outcome": "updated",
-      "reason": "Removed utils from the unsafe/* helper list: the unsafe/utils.js subpath is gone",
+      "head": "400a0fde95de52302927c996202aea02a275e730",
+      "outcome": "no-change",
+      "reason": "Header comments in four pull-request workflows and a 30 s per-test timeout on one unit test. No API or behaviour the configure-requests skill teaches changes.",
       "evidence": [
-        "Changed: packages/tests/unit/utils.test.ts at 458fccfef7925b8c39f1ae6dc8ed28e3e3e5d42a"
+        "Changed: packages/tests/unit/utils.test.ts at 400a0fde95de52302927c996202aea02a275e730"
       ]
     },
     "source:.bumpy/faxios-error-name.md": {
