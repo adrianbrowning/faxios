@@ -1,7 +1,9 @@
 name: Knip
 
-# Runs knip to find unused files, exports and dependencies and fails on any
-# finding; on failure it keeps one PR comment with the findings.
+# Runs knip to find unused files, exports and dependencies; any finding fails
+# the check. Only on a failure, it creates or updates one marked PR comment
+# with the output. That step can fail silently on fork PRs, and the comment is
+# not cleared when knip later passes.
 # `pnpm run lint` in run-ci.yml does not run knip.
 
 on:
