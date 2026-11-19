@@ -80,7 +80,7 @@ See [CONTRIBUTING.md](https://github.com/adrianbrowning/faxios/blob/main/CONTRIB
 
 ## Credits
 
-faxios is a fork of [axios](https://github.com/axios/axios). axios is heavily inspired by the [$http service](https://docs.angularjs.org/api/ng/service/$http) in [AngularJS](https://angularjs.org/), and provides a standalone `$http`-like service for use outside AngularJS.
+faxios is a fork of [axios](https://github.com/axios/axios). axios is heavily inspired by the [$http service](https://docs.angularjs.org/api/ng/service/$http) in [AngularJS](https://docs.angularjs.org/), and provides a standalone `$http`-like service for use outside AngularJS.
 
 ## License
 
