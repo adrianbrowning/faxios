@@ -441,16 +441,15 @@
       ]
     },
     "source:packages/lib/README.md": {
-      "fingerprint": "3d8617a49eb3ca5d93ae8c0af6580ef79996fd39ede8a5c4db64b35aed809bc2",
+      "fingerprint": "446ed854f7c2f192bb7f6d21a263a4caf3527f0095e985f29e5d2c1453bbf092",
       "snapshot": {
-        "packages/lib/README.md": "c021eaa4533413f478a923abcc9184bf34372e3513f8f2ec73d7b2ebdc41eed4"
+        "packages/lib/README.md": "de3c64c3ac8407d843a01bbd549d9f02f08bcea8b0525a03297a6fa0a13b3ed7"
       },
-      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
+      "head": "22311d1fffcbf27dc84a21b26362768674b2038a",
       "outcome": "no-change",
-      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
+      "reason": "README credits link only: the dead https://angularjs.org/ link now points to https://docs.angularjs.org/. No guidance the configure-requests skill teaches changes.",
       "evidence": [
-        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
-        "Changed: packages/lib/README.md"
+        "Changed: packages/lib/README.md at 22311d1fffcbf27dc84a21b26362768674b2038a"
       ]
     },
     "source:packages/lib/src/lib/defaults/index.ts": {
@@ -7891,6 +7890,18 @@
       "reason": "Stricter exit-code assertions in workflowTimeouts.test.ts and corrected header comments in bundle-size.yml and knip.yml. No API or behaviour the configure-requests skill teaches changes.",
       "evidence": [
         "Changed: packages/tests/unit/scripts/workflowTimeouts.test.ts at 255ab28f4e5b79aab13d4ab6b7aa8df2c3f75736"
+      ]
+    },
+    "source:.bumpy/readme-angularjs-link.md": {
+      "fingerprint": "babf7011ee686bc158c9fd5b3d535d88d75b6822cc5ef841d71bce4e4ae4bc22",
+      "snapshot": {
+        ".bumpy/readme-angularjs-link.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+      },
+      "head": "0b7b35fbe65cb32493818a2139609d74bb143115",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: .bumpy/readme-angularjs-link.md"
       ]
     }
   }
