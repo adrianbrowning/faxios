@@ -108,6 +108,7 @@ jobs:
         run: |
           set -euo pipefail
           name=$(pnpm pack --json | node -e 'let s = ""; process.stdin.on("data", d => s += d).on("end", () => console.log(JSON.parse(s).filename))')
+          echo "$name"
           sha256=$(sha256sum "$name" | cut -d ' ' -f 1)
           version=$(node -p 'require("./package.json").version')
           {
