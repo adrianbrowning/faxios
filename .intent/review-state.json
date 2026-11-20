@@ -589,18 +589,15 @@
       ]
     },
     "source:packages/tests/scripts/check-license.ts": {
-      "fingerprint": "dff705aa2e354fcfecbb0856489fa4d613e1905e5a6454fd02f28265be47fe17",
+      "fingerprint": "5c6aee53cabdf425db50642c2493216b755a9a5222cc694526666a54f7cbacbc",
       "snapshot": {
-        "packages/tests/scripts/check-license.ts": "85e9a87bc0ae90c69b0ac8b212a0fac95bdc0a80d83521dc764e3660fec4311c"
+        "packages/tests/scripts/check-license.ts": "58a0796c86e12fffab36f8a19381ecfe01fec8724a7c7ae90ff710284e8188bb"
       },
-      "head": "8b877b014e8187949cea68cb979b11bfe63f955b",
+      "head": "b79841dcb75aac4b98408cc96029146b5befe9a8",
       "outcome": "no-change",
-      "reason": "Matches main's a15418fe logic (npm on PATH); this PR only rewrites comments to name release.yml and bumpy's npm packing. Packaging check, no skill impact.",
+      "reason": "Slice 02 changes CI/release workflows, threat model and license check script only; no skill guidance changes.",
       "evidence": [
-        "git diff c76a2f60..HEAD -- packages/tests/scripts/check-license.ts",
-        "git diff origin/main..HEAD: comment lines only (+5 -4).",
-        "node packages/tests/scripts/check-license.ts passes after build.",
-        "pnpm check passed (exit 0) on this tree, after the define.ts JSDoc fix (lint, lint:ts, knip, run-tests.sh, test:docs-examples 166/166)."
+        "Changed: packages/tests/scripts/check-license.ts at b79841dcb75aac4b98408cc96029146b5befe9a8"
       ]
     },
     "source:packages/tests/docs-examples/examples.test.ts": {
@@ -1934,15 +1931,15 @@
       ]
     },
     "source:.github/workflows/release.yml": {
-      "fingerprint": "1db7f5b5cecade5cc08674907b4e1831d05242fd4bfdf927bc81a85c6fc43549",
+      "fingerprint": "de35948f452cf377c519b8c42ef87b0a9a9bd110a79b3809adb8a0a7b8d4bd66",
       "snapshot": {
-        ".github/workflows/release.yml": "1f369c5e46896df063b24ae1430b7d5eac8904d1ccfa195b9672bc26ee29497c"
+        ".github/workflows/release.yml": "0bd315596b8bc3816bc0231a525e3a0e14b895f731b39b4856a80d913d0baed4"
       },
-      "head": "6c1ff907c83e8705f10e4cfb15edc070986a16cb",
+      "head": "b79841dcb75aac4b98408cc96029146b5befe9a8",
       "outcome": "no-change",
-      "reason": "Release workflow npm publish path fix only; the packaged skill teaches nothing about CI or publishing",
+      "reason": "Slice 02 changes CI/release workflows, threat model and license check script only; no skill guidance changes.",
       "evidence": [
-        "Changed: .github/workflows/release.yml at 6c1ff907c83e8705f10e4cfb15edc070986a16cb"
+        "Changed: .github/workflows/release.yml at b79841dcb75aac4b98408cc96029146b5befe9a8"
       ]
     },
     "source:COLLABORATOR_GUIDE.md": {
@@ -1970,16 +1967,15 @@
       ]
     },
     "source:THREATMODEL.md": {
-      "fingerprint": "9c4a2eb2053e6725edaec43d2609cc98fd408605abdfe527fc06cca925e34687",
+      "fingerprint": "376ef61e293de5a3bb1f7ae68d24e1cd460e3bd08684a615e54d3b3c3b7ca991",
       "snapshot": {
-        "THREATMODEL.md": "c76eba385de85cdd218f5b77d38c23c4de3200fadcbd77193988118140362d6e"
+        "THREATMODEL.md": "35821aa05f0afe8d54a4c2d34aa0b6f18bd8bfb060edb4ed3617c1b3a7de7aca"
       },
-      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
+      "head": "b79841dcb75aac4b98408cc96029146b5befe9a8",
       "outcome": "no-change",
-      "reason": "Redirect fix code, adapter fields, tests, docs, threat model or bump file; the guidance is reviewed in the skill item",
+      "reason": "Slice 02 changes CI/release workflows, threat model and license check script only; no skill guidance changes.",
       "evidence": [
-        "pnpm check exit 0 on this layer (refreshAuth.test.ts redirect cases: off-origin redirect skips, same origin / origins list / not-redirected refresh; fetch adapter reports redirected and url after a real 302)",
-        "Changed: THREATMODEL.md"
+        "Changed: THREATMODEL.md at b79841dcb75aac4b98408cc96029146b5befe9a8"
       ]
     },
     "source:packages/docs/.vitepress/theme/index.ts": {
@@ -3302,15 +3298,15 @@
       ]
     },
     "source:.github/workflows/run-ci.yml": {
-      "fingerprint": "ee6cecfe98b4568712a0674ea7153a825c8665aedf425a5e1e8ddf088a38ea58",
+      "fingerprint": "164372c8b4ca20828638f20f07be46689dedc372e818cc1cd5d7f32c954b13a5",
       "snapshot": {
-        ".github/workflows/run-ci.yml": "9f27c1d31149dfa9287ed05521817212757d251a9468b0c52abaf7386dbc8254"
+        ".github/workflows/run-ci.yml": "0f79024d99cabdf3065d63f6424e431cfbbde688fe16b02b6843ac3122c7a1a3"
       },
-      "head": "5bcf364646a57ea5a331b054b072307fab2feb16",
+      "head": "b79841dcb75aac4b98408cc96029146b5befe9a8",
       "outcome": "no-change",
-      "reason": "CI step order, workflow comments, docs and test-harness changes only; nothing the configure-requests skill teaches changed",
+      "reason": "Slice 02 changes CI/release workflows, threat model and license check script only; no skill guidance changes.",
       "evidence": [
-        "Changed: .github/workflows/run-ci.yml at 5bcf364646a57ea5a331b054b072307fab2feb16"
+        "Changed: .github/workflows/run-ci.yml at b79841dcb75aac4b98408cc96029146b5befe9a8"
       ]
     },
     "source:.github/workflows/ts-check.yml": {

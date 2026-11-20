@@ -98,14 +98,18 @@ jobs:
       # Packed and hashed straight after the build, before any lint, test or docs tooling runs in
       # this workspace: only the install, the snapshot version step and the build run before it.
       # Nothing later can change what release.yml publishes unnoticed: a changed .tgz fails its
-      # sha256 check. npm, not pnpm: npm is the publisher, and check-license.ts checks npm's file
-      # list.
+      # sha256 check. pnpm, not npm: only pnpm rewrites the catalog: devDependency specs to real
+      # ranges, and release.yml's check-tarball step fails on a catalog: or workspace: spec.
+      # check-license.ts checks npm's stricter file list (pnpm adds the root LICENSE). pnpm pack runs
+      # no lifecycle scripts: the repo .npmrc sets ignore-scripts=true, and packages/lib has no
+      # prepack, prepare or postpack script.
       - name: Pack tarball
         id: pack
         working-directory: packages/lib
         run: |
           set -euo pipefail
-          name=$(npm pack --ignore-scripts --json | node -e 'let s = ""; process.stdin.on("data", d => s += d).on("end", () => console.log(JSON.parse(s)[0].filename))')
+          name=$(pnpm pack --json | node -e 'let s = ""; process.stdin.on("data", d => s += d).on("end", () => console.log(JSON.parse(s).filename))')
+          echo "$name"
           sha256=$(sha256sum "$name" | cut -d ' ' -f 1)
           version=$(node -p 'require("./package.json").version')
           {
