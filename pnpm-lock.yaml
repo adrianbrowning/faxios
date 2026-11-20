@@ -132,6 +132,9 @@ importers:
       '@gingacodemonkey/config':
         specifier: 'catalog:'
         version: 0.1.0(@commitlint/cli@21.2.1(@types/node@24.19.0)(conventional-commits-parser@7.1.2)(typescript@6.0.3))(@commitlint/config-conventional@21.2.0)(@typescript-eslint/eslint-plugin@8.71.0(@typescript-eslint/parser@8.71.0(eslint@9.39.5(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.5(jiti@2.7.0))(typescript@6.0.3))(@varlock/bumpy@1.18.1)(eslint@9.39.5(jiti@2.7.0))(husky@9.1.7)(jscpd@5.4.0)(knip@6.26.0)(lint-staged@17.0.8)(typescript@6.0.3)(vitest@4.1.11)
+      '@tanstack/query-core':
+        specifier: 5.107.1
+        version: 5.107.1
       '@types/node':
         specifier: 'catalog:'
         version: 24.19.0
@@ -1220,6 +1223,9 @@ packages:
     resolution: {integrity: sha512-2zeLGRJ+796daqv3DrwXsrXn7TZb4yOIogJgrqeF96YEIwOsJoDIW/eQBwZVAcR1OQ3znA3dGDizb5GBmxk4Zg==}
     engines: {node: '>=20.12.0'}
     hasBin: true
+
+  '@tanstack/query-core@5.107.1':
+    resolution: {integrity: sha512-PSyAik11oQBEVOiVy5hjZWHmoUqOXqK1WYy4v55mcxozEfKaQgpUMsgnXhWjuESzSht8JfzqMS1m6M/9CpNgvg==}
 
   '@total-typescript/ts-reset@0.6.1':
     resolution: {integrity: sha512-cka47fVSo6lfQDIATYqb/vO1nvFfbPw7uWLayIXIhGETj0wcOOlrlkobOMDNQOFr9QOafegUPq13V2+6vtD7yg==}
@@ -4854,6 +4860,8 @@ snapshots:
       picomatch: 4.0.7
 
   '@tanstack/intent@0.5.3': {}
+
+  '@tanstack/query-core@5.107.1': {}
 
   '@total-typescript/ts-reset@0.6.1': {}
 

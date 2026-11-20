@@ -31,6 +31,7 @@
   "devDependencies": {
     "@gcmdev/faxios": "workspace:*",
     "@gingacodemonkey/config": "catalog:",
+    "@tanstack/query-core": "5.107.1",
     "@types/node": "catalog:",
     "@vitest/browser": "^4.1.11",
     "@vitest/browser-playwright": "^4.1.11",

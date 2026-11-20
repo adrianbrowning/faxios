@@ -64,6 +64,7 @@ const sidebar = [
       { text: "Cancellation", link: "/pages/advanced/cancellation" },
       { text: "Authentication", link: "/pages/advanced/authentication" },
       { text: "Testing", link: "/pages/advanced/testing" },
+      { text: "TanStack Query", link: "/pages/advanced/tanstack-query" },
       {
         text: "x-www-form-urlencoded format",
         link: "/pages/advanced/x-www-form-urlencoded-format",
