@@ -5511,11 +5511,11 @@
       ]
     },
     "source:packages/tests/README.md": {
-      "fingerprint": "1ff382491908039b8c2fb34829672e1c82d9004250442b1ece624fb8be7c6ac8",
+      "fingerprint": "66fccc1eeed8aa130352a199910537fa9cc439d4d2072670dba81bfa0f88c0c3",
       "snapshot": {
-        "packages/tests/README.md": "3472c3d4c501e482b8ee5eba8061259c616334afa7e7f5b68eddad157926b241"
+        "packages/tests/README.md": "47d939d7e19a7518a628e98c5be6d91e742637483f387e074fc707ca64a745fa"
       },
-      "head": "32234c458f13a175aa56a692ac189f4129775038",
+      "head": "2b46e1c0d389d352ab01fbe76b1836c60a745bef",
       "outcome": "no-change",
       "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
       "evidence": [
@@ -6485,11 +6485,11 @@
       ]
     },
     "source:packages/tests/unit/scripts/bundleSize.test.ts": {
-      "fingerprint": "65bf2d2db798dbf98f15d087ab4391cdd3baf0aa6ebab32926a025bf4038c544",
+      "fingerprint": "8cfeed0298be78c9a986101c9b7d0223286abbca7d6451b1a24be0292cabdbc2",
       "snapshot": {
-        "packages/tests/unit/scripts/bundleSize.test.ts": "6876ac68a02bf90c52eb3f87b5aa3520bc9adbaaafd0dae26684c1da50e0706c"
+        "packages/tests/unit/scripts/bundleSize.test.ts": "11c33ffdc53815153a30f6f45814839140ce2639105d78ec77a58b2c53208cc2"
       },
-      "head": "a36d4fb504d613f600149ca02c3c54977a2a4342",
+      "head": "2b46e1c0d389d352ab01fbe76b1836c60a745bef",
       "outcome": "updated",
       "reason": "Built-in plugins now use what the package root exports (types from the root, runtime values from the modules it re-exports) so named imports tree-shake; SKILL.md plugin-authoring line updated, public API unchanged",
       "evidence": [

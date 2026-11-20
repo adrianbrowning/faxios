@@ -8,7 +8,7 @@ Run everything with `pnpm check` from the repo root. It runs [run-tests.sh](run-
 
 | Directory | Suite | Runs against | How it runs |
 | --- | --- | --- | --- |
-| [unit/](unit/) | Node behaviour tests | lib source through `#src/*` | `vitest run --project unit` |
+| [unit/](unit/) | Node behaviour tests | lib source through `#src/*`, except [unit/scripts/bundleSize.test.ts](unit/scripts/bundleSize.test.ts), which bundles the built `lib/dist` (run `pnpm run build` first in a fresh worktree) | `vitest run --project unit` |
 | [browser/](browser/) | Browser behaviour tests | lib source through `#src/*` | `vitest run --project browser-headless` (Chromium, Firefox, WebKit) |
 | [smoke/esm/](smoke/esm/) | Node ESM package smoke tests | the packed tarball | `pnpm test:smoke:esm:vitest` |
 | [smoke/deno/](smoke/deno/) | Deno smoke tests and type checks | the packed tarball | `pnpm test:smoke:deno` |
