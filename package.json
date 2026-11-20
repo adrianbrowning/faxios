@@ -18,6 +18,7 @@
     "lint:s": "pnpm -r --no-bail lint:s",
     "lint:fix": "pnpm -r --no-bail --if-present lint:fix",
     "lint:jscpd": "jscpd .",
+    "lint:actions": "uvx zizmor@1.32.0 --offline --config .github/zizmor.yml .github/",
     "lint:e18e": "pnpm dlx @e18e/cli analyze",
     "test:docs-examples": "pnpm --filter @faxios/tests test:docs-examples",
     "docs:sync": "pnpm --filter @faxios/tests docs:sync",
