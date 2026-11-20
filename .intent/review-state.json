@@ -1855,11 +1855,11 @@
       ]
     },
     "source:.claude/skills/do-work/SKILL.md": {
-      "fingerprint": "922ab1ab0ba36c4fb9037f1db12448ac4bcfbd1d46c47ae76380c8a8ba02e6a3",
+      "fingerprint": "5c29c81457f5a787539a3d37a40a07d1d8c371dd5d37b61f38aff8d9fed22bb6",
       "snapshot": {
-        ".claude/skills/do-work/SKILL.md": "fb266aa49831a1f66198456ed54afbaf81d12aba7332abe5bfb61adcf010cc83"
+        ".claude/skills/do-work/SKILL.md": "9707e713e18106d5417d6985ee5e4d6322a1d839e245db6e8afb6d2f2d164135"
       },
-      "head": "32234c458f13a175aa56a692ac189f4129775038",
+      "head": "38ba441d509c5d02a57db3296a14f9f5426beea3",
       "outcome": "no-change",
       "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
       "evidence": [
@@ -1955,11 +1955,11 @@
       ]
     },
     "source:CONTRIBUTING.md": {
-      "fingerprint": "2dd413035714350dbb55e6840e8156baca94a5ff674154e54758476a39f6574b",
+      "fingerprint": "52cb1e5f3a18806eedbb95d9c4fcc79114a47f1df98e8b844dac2160f7925c40",
       "snapshot": {
-        "CONTRIBUTING.md": "7e1f571e1a5df1cd28c3fc4a597940244ed6f96b379dcd4e7726746e34c888ba"
+        "CONTRIBUTING.md": "64147a772ca6e845d46ed60deb6e801a57e6eceefc6cb431df1e39645cf88717"
       },
-      "head": "32234c458f13a175aa56a692ac189f4129775038",
+      "head": "38ba441d509c5d02a57db3296a14f9f5426beea3",
       "outcome": "no-change",
       "reason": "Contributor wording only: README sources are linted by pnpm lint and type-checked by test:docs-examples after the build; the skill is unchanged.",
       "evidence": [
