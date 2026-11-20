@@ -296,6 +296,12 @@ jobs:
             echo "::error::the tarball holds $id, expected @gcmdev/faxios@$VERSION"
             exit 1
           fi
+          # Only pnpm pack rewrites catalog: and workspace: specs; npm copies them into the manifest.
+          specs=$(node -e 'const m = JSON.parse(process.argv[1]); for (const k of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) for (const [n, s] of Object.entries(m[k] ?? {})) if (/^(catalog|workspace):/.test(s)) console.log(k + "." + n + ": " + s)' "$manifest")
+          if [[ -n "$specs" ]]; then
+            echo "::error::the tarball's package.json has pnpm-only specs: ${specs//$'\n'/, }"
+            exit 1
+          fi
           # npm adds LICENSE only from packages/lib, so 0.2.0 shipped without it (#160).
           # List into a variable first: under pipefail, `tar | grep -q` fails when
           # grep exits on the first match and tar gets SIGPIPE.
