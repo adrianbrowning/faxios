@@ -24,7 +24,9 @@ overrides:
   undici@6: ^6.28.1
   undici@7: ^7.29.1
   vue@3: ^3.5.43
+  vite@8: ^8.1.6
   yaml@2: ^2.8.3
+  zod@4: ^4.6.6
 auditConfig:
   ignoreGhsas:
     # braces <=3.0.3 stack exhaustion on deeply nested patterns. No patched release exists.
@@ -33,5 +35,19 @@ auditConfig:
     # tool) and globs repo-controlled patterns at build time, never untrusted input, and braces
     # is not in the published package. Recheck when zshy or fast-glob updates.
     - GHSA-vfj7-8cjw-p6xm
+    # zod <4.6.6 memory exhaustion on oversized constrained collections. The zod@4 override
+    # patches zod 4; no patched zod 3 release exists. Checked 2026-11-20 with `pnpm why zod -r`:
+    # the only zod 3 path is @gingacodemonkey/config -> eslint-plugin-react-compiler@19.1.0-rc.2
+    # -> zod@3.25.76. It runs at lint time on repo-controlled config and is not in the published
+    # package. Recheck when eslint-plugin-react-compiler moves to zod 4.
+    - GHSA-mrhx-c7xc-m3w5
 allowBuilds:
   'unrs-resolver': true
+catalog:
+  '@gingacodemonkey/config': ^0.1.0
+  '@types/node': ^24.19.0
+  esbuild: ^0.28.2
+  eslint: ^9.39.5
+  typescript: ^6.0.3
+  typescript-eslint: ^8.71.0
+  zod: 4.6.6

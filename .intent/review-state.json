@@ -3,10 +3,10 @@
   "baseline": "01316e1099c60976353ebc6db91a69d83bcfd807",
   "items": {
     "skill:packages/lib/skills/configure-requests/SKILL.md": {
-      "fingerprint": "4d6ebc255d6906b27f2814df1c62a9e9761b6829ea57bf836aa631aed8bf5f81",
+      "fingerprint": "b846ae360230323f392741e87dcb04ae4b622ca5e71d3a1ebae612c63c9df2eb",
       "snapshot": {
         "MIGRATION_GUIDE.md": "94a7af949f00c7f5acbe91e6e3307d03273ca778d7e9a305e30ea4f64dbdcc5b",
-        "packages/lib/package.json": "1923f4f83bb8848d93a7e11f6a511efb36d1e989edeb827081d8d2ad9f9ce01f",
+        "packages/lib/package.json": "52c3cf636d84cc46e905bc4532230eb7f9f71b313d682b1dfe8c2ad59d0202a5",
         "packages/lib/skills/configure-requests/SKILL.md": "52c705f387ddace04da55ba7095c346fa9e823bf8145e4c0a66383ba100705e4",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "c1ce9978066ae8e7bbe805ce0accf23544d1f15076d18975597a2a17bfa5ae4f",
         "packages/lib/skills/configure-requests/references/plugins.md": "ade328b3a173ce36fe70ad033b2379a6c4871e4273b1c6d81fda125c94dbd52c",
@@ -46,21 +46,21 @@
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "6b80211c993019c388b3a9a5da4018e5313a91d2",
+      "head": "edb8b3689df521ac7b5a245db580803c931f6e60",
       "outcome": "no-change",
-      "reason": "Docs only: MIGRATION_GUIDE.md gets an 'Upgrading from faxios 0.3' section for the pending authBearer Cookie-header breaking change (when it rejects, and to remove the plugin in browser code and use withCredentials), and two docs pages link it. The configure-requests skill already teaches the rule (references/plugins.md), so no guidance changes.",
+      "reason": "Dev tool version catalog, audit overrides and lockfile updates only; no skill guidance or library behavior changes",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md at 6b80211c993019c388b3a9a5da4018e5313a91d2"
+        "Changed: packages/lib/package.json at edb8b3689df521ac7b5a245db580803c931f6e60"
       ]
     },
     "planning:_artifacts": {
-      "fingerprint": "cfa7724fa542f16807f9693a54a1871b4411d251dbfc65fbaa47f468cd489cd3",
+      "fingerprint": "928a946b8ad6e907e7d16e88c361cfb766bce858a5f1450d76a7d4e21ffb713a",
       "snapshot": {
         "MIGRATION_GUIDE.md": "94a7af949f00c7f5acbe91e6e3307d03273ca778d7e9a305e30ea4f64dbdcc5b",
         "_artifacts/domain_map.yaml": "2ac8ac166b24e9f249f46d37d509214939b6a134f04f2950242714d1bbf541f3",
         "_artifacts/skill_spec.md": "5f66d1460a7b7a9d811b2bbe4c74f1a747d1edc2e263a213216d9450c037ace9",
         "_artifacts/skill_tree.yaml": "3338f777a40585dd0281c0d1f6c141e43a7c38e52660d1dff00713aa8d5f6677",
-        "packages/lib/package.json": "1923f4f83bb8848d93a7e11f6a511efb36d1e989edeb827081d8d2ad9f9ce01f",
+        "packages/lib/package.json": "52c3cf636d84cc46e905bc4532230eb7f9f71b313d682b1dfe8c2ad59d0202a5",
         "packages/lib/skills/configure-requests/SKILL.md": "52c705f387ddace04da55ba7095c346fa9e823bf8145e4c0a66383ba100705e4",
         "packages/lib/skills/configure-requests/references/axios-differences.md": "c1ce9978066ae8e7bbe805ce0accf23544d1f15076d18975597a2a17bfa5ae4f",
         "packages/lib/skills/configure-requests/references/plugins.md": "ade328b3a173ce36fe70ad033b2379a6c4871e4273b1c6d81fda125c94dbd52c",
@@ -100,11 +100,11 @@
         "packages/tests/unit/plugins/retry.test.ts": "c488edba29d2771b27df54f4dd800bb1d0171e0cd7e88be6ad7834d69428d1fb",
         "packages/tests/unit/plugins/timing.test.ts": "ef659a9760dbdbcb791add3d877c1cd768172c5bf2b45a1ee5b13d7928a76712"
       },
-      "head": "6b80211c993019c388b3a9a5da4018e5313a91d2",
+      "head": "edb8b3689df521ac7b5a245db580803c931f6e60",
       "outcome": "no-change",
-      "reason": "Docs only: MIGRATION_GUIDE.md gets an 'Upgrading from faxios 0.3' section for the pending authBearer Cookie-header breaking change (when it rejects, and to remove the plugin in browser code and use withCredentials), and two docs pages link it. The configure-requests skill already teaches the rule (references/plugins.md), so no guidance changes.",
+      "reason": "Dev tool version catalog, audit overrides and lockfile updates only; no skill guidance or library behavior changes",
       "evidence": [
-        "Changed: MIGRATION_GUIDE.md at 6b80211c993019c388b3a9a5da4018e5313a91d2"
+        "Changed: packages/lib/package.json at edb8b3689df521ac7b5a245db580803c931f6e60"
       ]
     },
     "source:knip.json": {
@@ -515,27 +515,27 @@
       ]
     },
     "source:packages/tests/module/esm/pnpm-lock.yaml": {
-      "fingerprint": "161c9d20d21738ca6e471377be7e2b0087fa20ecb00a53f1ec4c1b201b44a072",
+      "fingerprint": "cc87a7ba7e66fc1409d9805205b54f40413d9baf24b98764aa25ed5ca4ddc656",
       "snapshot": {
-        "packages/tests/module/esm/pnpm-lock.yaml": "a1aa399d041c95daa90083c22e06f4b4284952b3b21e7894165042b126f99808"
+        "packages/tests/module/esm/pnpm-lock.yaml": "42dd358dd834e56665a1dc72041c7af4b8d4e3f9b6d02508c7be5aa99c4a46e7"
       },
-      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "head": "edb8b3689df521ac7b5a245db580803c931f6e60",
       "outcome": "no-change",
-      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "reason": "Dev tool version catalog, audit overrides and lockfile updates only; no skill guidance or library behavior changes",
       "evidence": [
-        "Changed: packages/tests/module/esm/pnpm-lock.yaml at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+        "Changed: packages/tests/module/esm/pnpm-lock.yaml at edb8b3689df521ac7b5a245db580803c931f6e60"
       ]
     },
     "source:packages/tests/smoke/esm/pnpm-lock.yaml": {
-      "fingerprint": "9c63d9b06d7a6eefb8dca5ef10b27916433062d037cf5e1a0d2314a117da64e3",
+      "fingerprint": "8ad68014878538f1769f29506bdb8ac39af2febe0dad34f796fb95398a84ffa5",
       "snapshot": {
-        "packages/tests/smoke/esm/pnpm-lock.yaml": "36a53cd09f310dad62d0071df1efa1ae78e60c12ee19054cf637405b65d2a669"
+        "packages/tests/smoke/esm/pnpm-lock.yaml": "d2def5e2409713bb664f02f6c73b8dd60d37357f724f2ba5fcc39f08be4e27d4"
       },
-      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "head": "edb8b3689df521ac7b5a245db580803c931f6e60",
       "outcome": "no-change",
-      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "reason": "Dev tool version catalog, audit overrides and lockfile updates only; no skill guidance or library behavior changes",
       "evidence": [
-        "Changed: packages/tests/smoke/esm/pnpm-lock.yaml at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+        "Changed: packages/tests/smoke/esm/pnpm-lock.yaml at edb8b3689df521ac7b5a245db580803c931f6e60"
       ]
     },
     "source:packages/tests/unit/version.test.ts": {
@@ -3176,15 +3176,15 @@
       ]
     },
     "source:pnpm-workspace.yaml": {
-      "fingerprint": "9ecb925a7f5108a064a39c2d69a6b3fbfb0a804cb4b059c69a3f1985c7086ea4",
+      "fingerprint": "d6e6ddcf0744f7249d1c594cff07491cf8cb608c87ee82a2b21b59e152f11a25",
       "snapshot": {
-        "pnpm-workspace.yaml": "e9a87e42dc6e0339ca63ae69a3a2dc0c079a1aa551524663425c1915a321a08c"
+        "pnpm-workspace.yaml": "a608648f75644874504c1bfdb1d94fe4b3146cb992a9f37fad5c5dc195b5d733"
       },
-      "head": "bf50cec6226b179c6225e63be666926f5f355d98",
+      "head": "edb8b3689df521ac7b5a245db580803c931f6e60",
       "outcome": "no-change",
-      "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
+      "reason": "Dev tool version catalog, audit overrides and lockfile updates only; no skill guidance or library behavior changes",
       "evidence": [
-        "Changed: pnpm-workspace.yaml at 003bc07716cf27a55462f6d045f74de4ffee59a6"
+        "Changed: pnpm-workspace.yaml at edb8b3689df521ac7b5a245db580803c931f6e60"
       ]
     },
     "source:sharedConfig/eslint.config.style.ts": {
@@ -7902,6 +7902,18 @@
       "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
       "evidence": [
         "Changed files: .bumpy/readme-angularjs-link.md"
+      ]
+    },
+    "source:.bumpy/dry-merry-seal.md": {
+      "fingerprint": "af3d0a8325097cc39990a32db267cbefdf5a836674cd3d06b461498b19b29653",
+      "snapshot": {
+        ".bumpy/dry-merry-seal.md": "d487269d2de0655a9ed127c83b0d1006d724e600385b32f4f4b39893c1e0164b"
+      },
+      "head": "edb8b3689df521ac7b5a245db580803c931f6e60",
+      "outcome": "no-change",
+      "reason": "Dev tool version catalog, audit overrides and lockfile updates only; no skill guidance or library behavior changes",
+      "evidence": [
+        "Changed: .bumpy/dry-merry-seal.md at edb8b3689df521ac7b5a245db580803c931f6e60"
       ]
     }
   }
