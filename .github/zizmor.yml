@@ -4,8 +4,8 @@
 rules:
   adhoc-packages:
     ignore:
-      # Both release jobs run `npm install -g npm@11.15.0 --ignore-scripts`:
-      # npm trusted publishing needs npm 11.15.0, newer than the npm the
-      # runner ships with.
+      # Both release jobs pin npm with `npm install -g npm@11.15.0 --ignore-scripts`:
+      # setup-node's npm follows the Node release, and npm trusted publishing
+      # needs npm >= 11.5.1.
       - release.yml:270
       - release.yml:407
