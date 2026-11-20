@@ -100,8 +100,9 @@ jobs:
       # Nothing later can change what release.yml publishes unnoticed: a changed .tgz fails its
       # sha256 check. pnpm, not npm: only pnpm rewrites the catalog: devDependency specs to real
       # ranges, and release.yml's check-tarball step fails on a catalog: or workspace: spec.
-      # check-license.ts checks npm's stricter file list (pnpm adds the root LICENSE). pnpm pack has
-      # no --ignore-scripts; packages/lib has no prepack, prepare or postpack script.
+      # check-license.ts checks npm's stricter file list (pnpm adds the root LICENSE). pnpm pack runs
+      # no lifecycle scripts: the repo .npmrc sets ignore-scripts=true, and packages/lib has no
+      # prepack, prepare or postpack script.
       - name: Pack tarball
         id: pack
         working-directory: packages/lib
