@@ -27,16 +27,6 @@ case "${PLAYWRIGHT_BROWSERS_PATH:-}" in
   /*) BROWSERS_DIR=$PLAYWRIGHT_BROWSERS_PATH ;;
   *) BROWSERS_DIR=${INIT_CWD:-$PWD}/$PLAYWRIGHT_BROWSERS_PATH ;;
 esac
-# On a platform with a revision override (WebKit on macOS 14), Playwright launches only that
-# build, from <name>_<platform>_special-<revision>. Only macOS platforms have overrides, so this
-# names the platform as Playwright's hostPlatform does there: mac<major version>, plus -arm64 on
-# Apple silicon. Playwright's own PLAYWRIGHT_HOST_PLATFORM_OVERRIDE wins, as it does in Playwright.
-HOST_PLATFORM=${PLAYWRIGHT_HOST_PLATFORM_OVERRIDE:-}
-if [ -z "$HOST_PLATFORM" ] && [[ $OSTYPE == darwin* ]]; then
-  HOST_PLATFORM=$(sw_vers -productVersion)
-  HOST_PLATFORM=mac${HOST_PLATFORM%%.*}
-  if [ "$(uname -m)" = arm64 ]; then HOST_PLATFORM=$HOST_PLATFORM-arm64; fi
-fi
 browser_installed() {
   local dir=${1//-/_} entry entry_re='"name":[[:space:]]*"'"$1"'",([^}]*)'
   [[ $BROWSERS_JSON =~ $entry_re ]] || return 1
@@ -53,6 +43,17 @@ browser_installed() {
 }
 if [ -f "$PLAYWRIGHT_CORE/browsers.json" ]; then
   BROWSERS_JSON=$(<"$PLAYWRIGHT_CORE/browsers.json")
+  # On a platform with a revision override (WebKit on macOS 14), Playwright launches only that
+  # build, from <name>_<platform>_special-<revision>. Only macOS platforms have overrides, so this
+  # names the platform as Playwright's hostPlatform does there: mac<major version>, plus -arm64 on
+  # Apple silicon. Playwright's own PLAYWRIGHT_HOST_PLATFORM_OVERRIDE wins, as it does in Playwright.
+  # Without sw_vers the platform stays unknown and no override applies.
+  HOST_PLATFORM=${PLAYWRIGHT_HOST_PLATFORM_OVERRIDE:-}
+  if [ -z "$HOST_PLATFORM" ] && [[ $OSTYPE == darwin* ]] &&
+    MAC_VERSION=$(sw_vers -productVersion 2>/dev/null); then
+    HOST_PLATFORM=mac${MAC_VERSION%%.*}
+    if [ "$(uname -m)" = arm64 ]; then HOST_PLATFORM=$HOST_PLATFORM-arm64; fi
+  fi
   for browser in chromium-headless-shell firefox webkit; do
     if ! browser_installed "$browser"; then
       MISSING="$MISSING
