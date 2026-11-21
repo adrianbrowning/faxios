@@ -5,7 +5,8 @@ import { delimiter, dirname, join, resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 const testsDir = resolve(import.meta.dirname, "../..");
-const BROWSERS = [ "chromium", "firefox", "webkit" ];
+// What the browser-headless project launches: headless Chromium runs chromium-headless-shell.
+const HEADLESS_EXECUTABLES = [ "chromium-headless-shell", "firefox", "webkit" ];
 
 // The script runs from a copy in a temp dir, so it takes its own lock and never builds this
 // checkout. Its PATH holds only the tools a test links or fakes, and PLAYWRIGHT_BROWSERS_PATH an
@@ -25,9 +26,12 @@ describe("run-tests.sh prerequisites", () => {
     writeFileSync(join(bin, name), `#!/bin/sh\n${body}\n`);
     chmodSync(join(bin, name), 0o755);
   };
-  // Creates an empty file wherever this checkout's Playwright looks for each browser.
+  // Creates an empty file wherever this checkout's Playwright looks for each executable, by its
+  // registry name ("chromium" is the headed build, "chromium-headless-shell" the headless one).
   const installBrowsers = (names: Array<string>) => {
-    const script = `const pw = require("playwright"); for (const n of ${JSON.stringify(names)}) console.log(pw[n].executablePath());`;
+    const script = `const core = require.resolve("playwright-core/lib/coreBundle", { paths: [ require.resolve("playwright") ] });
+const { registry } = require(core).registry;
+for (const n of ${JSON.stringify(names)}) console.log(registry.findExecutable(n).executablePath());`;
     const paths = execFileSync(process.execPath, [ "-e", script ], {
       cwd: testsDir,
       env: { PLAYWRIGHT_BROWSERS_PATH: browsersPath },
@@ -69,7 +73,7 @@ describe("run-tests.sh prerequisites", () => {
 
   it("exits non-zero within a second naming deno when deno is not on PATH", () => {
     fake("bun", "exit 0");
-    installBrowsers(BROWSERS);
+    installBrowsers(HEADLESS_EXECUTABLES);
 
     const result = run();
 
@@ -82,7 +86,7 @@ describe("run-tests.sh prerequisites", () => {
   });
 
   it("names every missing prerequisite at once, each with how to install it", () => {
-    installBrowsers([ "chromium" ]);
+    installBrowsers([ "chromium-headless-shell" ]);
 
     const result = run();
 
@@ -95,10 +99,24 @@ describe("run-tests.sh prerequisites", () => {
     expect(result.stdout).not.toContain("==> build faxios");
   });
 
+  it("names chromium when only the headed chromium build is installed, not the headless shell", () => {
+    fake("deno", "exit 0");
+    fake("bun", "exit 0");
+    installBrowsers([ "chromium", "firefox", "webkit" ]);
+
+    const result = run();
+
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toMatch(/chromium: .*playwright install chromium/);
+    expect(result.stderr).not.toMatch(/deno|bun|firefox|webkit/);
+    expect(result.stdout).not.toContain("==> build faxios");
+  });
+
+  // The headless shell alone (`playwright install --only-shell chromium`) is enough.
   it("continues to the lock, the lockfile guard and the build when every prerequisite is present", () => {
     fake("deno", "exit 0");
     fake("bun", "exit 0");
-    installBrowsers(BROWSERS);
+    installBrowsers(HEADLESS_EXECUTABLES);
 
     const result = run();
 

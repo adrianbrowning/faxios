@@ -14,12 +14,15 @@ if ! command -v bun >/dev/null 2>&1; then
   MISSING="$MISSING
   bun: install it from https://bun.sh/docs/installation"
 fi
-# The browser-headless project launches all three; Playwright resolves where each is installed.
+# The browser-headless project launches all three. Headless Chromium runs chromium-headless-shell,
+# not the headed build, so ask Playwright's registry (what launch() uses) for each executable.
 MISSING_BROWSERS=$(node -e '
   const fs = require("node:fs");
-  const playwright = require("playwright");
-  for (const name of [ "chromium", "firefox", "webkit" ]) {
-    if (!fs.existsSync(playwright[name].executablePath())) console.log(name);
+  const core = require.resolve("playwright-core/lib/coreBundle", { paths: [ require.resolve("playwright") ] });
+  const { registry } = require(core).registry;
+  const executables = { chromium: "chromium-headless-shell", firefox: "firefox", webkit: "webkit" };
+  for (const [ name, executable ] of Object.entries(executables)) {
+    if (!fs.existsSync(registry.findExecutable(executable).executablePath())) console.log(name);
   }
 ')
 for browser in $MISSING_BROWSERS; do
