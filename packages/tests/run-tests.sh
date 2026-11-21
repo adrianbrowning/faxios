@@ -3,6 +3,34 @@ set -e
 
 cd "$(dirname "$0")"
 
+# Check the tools later stages need before taking the lock, so a machine without them fails now
+# with what to install instead of after the build and the Node suites.
+MISSING=""
+if ! command -v deno >/dev/null 2>&1; then
+  MISSING="$MISSING
+  deno: install it from https://docs.deno.com/runtime/getting_started/installation/"
+fi
+if ! command -v bun >/dev/null 2>&1; then
+  MISSING="$MISSING
+  bun: install it from https://bun.sh/docs/installation"
+fi
+# The browser-headless project launches all three; Playwright resolves where each is installed.
+MISSING_BROWSERS=$(node -e '
+  const fs = require("node:fs");
+  const playwright = require("playwright");
+  for (const name of [ "chromium", "firefox", "webkit" ]) {
+    if (!fs.existsSync(playwright[name].executablePath())) console.log(name);
+  }
+')
+for browser in $MISSING_BROWSERS; do
+  MISSING="$MISSING
+  $browser: pnpm --filter @faxios/tests exec playwright install $browser"
+done
+if [ -n "$MISSING" ]; then
+  echo "run-tests.sh: missing prerequisites:$MISSING" >&2
+  exit 1
+fi
+
 # One run at a time: every run rebuilds dist/ and repacks faxios.tgz, so an overlapping run (or a
 # test:docs-examples run against dist/) reads half-written files and fails for no reason.
 LOCK_DIR=.run-tests.lock
