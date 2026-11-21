@@ -311,8 +311,6 @@ File: ${file}
 TypeScript errors to fix:
 ${errorList}
 
-Use \`--no-verify\` for git commit
-
 Last step: **Commit** — single commit. ALL changed files. Message format:
    \`fix(<scope>): ts errors in {{FILE}}\`
 
@@ -331,8 +329,6 @@ ${output.slice(0, 8000)}
 \`\`\`
 
 Fix the errors in the relevant files. Do NOT run the build.
-
-Use \`--no-verify\` for git commit
 
 Last step: **Commit** — single commit. ALL changed files. Message format:
    \`fix(build): build errors\`
@@ -360,8 +356,6 @@ File: ${file}
 
 Lint errors to fix:
 ${errorList}
-
-Use \`--no-verify\` for git commit
 
 Last step: **Commit** — single commit. ALL changed files. Message format:
    \`fix(<scope>): lint errors in {{FILE}}\`
