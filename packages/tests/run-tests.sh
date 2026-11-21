@@ -19,9 +19,14 @@ fi
 # registry in node, which takes most of a second on a busy machine. A browser counts as installed
 # when its registry directory holds the INSTALLATION_COMPLETE marker `playwright install` writes.
 PLAYWRIGHT_CORE=node_modules/playwright/../playwright-core
+# With PLAYWRIGHT_BROWSERS_PATH unset, the browsers are where Playwright's default cache directory
+# is for the OS: %LOCALAPPDATA%\ms-playwright on Windows (Git Bash, Cygwin), XDG_CACHE_HOME on Linux.
 case "${PLAYWRIGHT_BROWSERS_PATH:-}" in
   "")
     if [[ $OSTYPE == darwin* ]]; then BROWSERS_DIR=$HOME/Library/Caches/ms-playwright
+    elif [[ $OSTYPE == msys* || $OSTYPE == cygwin* ]]; then
+      if [ -n "${LOCALAPPDATA:-}" ]; then BROWSERS_DIR=$(cygpath -u "$LOCALAPPDATA")/ms-playwright
+      else BROWSERS_DIR=$HOME/AppData/Local/ms-playwright; fi
     else BROWSERS_DIR=${XDG_CACHE_HOME:-$HOME/.cache}/ms-playwright; fi ;;
   0) BROWSERS_DIR=$PLAYWRIGHT_CORE/.local-browsers ;;
   /*) BROWSERS_DIR=$PLAYWRIGHT_BROWSERS_PATH ;;
@@ -41,29 +46,34 @@ browser_installed() {
   fi
   [ -f "$BROWSERS_DIR/$dir/INSTALLATION_COMPLETE" ]
 }
+# As AGENTS.md says, Linux also needs the browsers' system libraries, which --with-deps installs.
+WITH_DEPS=""
+if [[ $OSTYPE == linux* ]]; then WITH_DEPS=" --with-deps"; fi
 if [ -f "$PLAYWRIGHT_CORE/browsers.json" ]; then
   BROWSERS_JSON=$(<"$PLAYWRIGHT_CORE/browsers.json")
   # On a platform with a revision override (WebKit on macOS 14), Playwright launches only that
   # build, from <name>_<platform>_special-<revision>. Only macOS platforms have overrides, so this
   # names the platform as Playwright's hostPlatform does there: mac<major version>, plus -arm64 on
-  # Apple silicon. Playwright's own PLAYWRIGHT_HOST_PLATFORM_OVERRIDE wins, as it does in Playwright.
+  # Apple silicon. hw.optional.arm64 is 1 on Apple silicon also under Rosetta, where uname -m
+  # prints x86_64, as Playwright's check of the CPU model does. Playwright's own
+  # PLAYWRIGHT_HOST_PLATFORM_OVERRIDE wins, as it does in Playwright.
   # Without sw_vers the platform stays unknown and no override applies.
   HOST_PLATFORM=${PLAYWRIGHT_HOST_PLATFORM_OVERRIDE:-}
   if [ -z "$HOST_PLATFORM" ] && [[ $OSTYPE == darwin* ]] &&
     MAC_VERSION=$(sw_vers -productVersion 2>/dev/null); then
     HOST_PLATFORM=mac${MAC_VERSION%%.*}
-    if [ "$(uname -m)" = arm64 ]; then HOST_PLATFORM=$HOST_PLATFORM-arm64; fi
+    if [ "$(sysctl -n hw.optional.arm64 2>/dev/null)" = 1 ]; then HOST_PLATFORM=$HOST_PLATFORM-arm64; fi
   fi
   for browser in chromium-headless-shell firefox webkit; do
     if ! browser_installed "$browser"; then
       MISSING="$MISSING
-  ${browser%-headless-shell}: pnpm --filter @faxios/tests exec playwright install ${browser%-headless-shell}"
+  ${browser%-headless-shell}: pnpm --filter @faxios/tests exec playwright install ${browser%-headless-shell}$WITH_DEPS"
     fi
   done
 else
-  # Before `pnpm install` there is no Playwright to list its browsers.
+  # Before `pnpm install` there is no Playwright to list its browsers, so all three are named.
   MISSING="$MISSING
-  playwright browsers: not checked, Playwright is not installed; run pnpm install"
+  chromium, firefox, webkit: not checked, Playwright is not installed; run pnpm install, then pnpm --filter @faxios/tests exec playwright install chromium firefox webkit$WITH_DEPS"
 fi
 if [ -n "$MISSING" ]; then
   echo "run-tests.sh: missing prerequisites:$MISSING" >&2
