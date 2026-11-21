@@ -297,3 +297,65 @@ await queryClient
 const attempts = queryClient.getQueryState(userKey)?.fetchFailureCount;
 console.log(`query attempts: ${attempts}, requests: ${requests}`); // query attempts: 1, requests: 3
 ```
+
+## Infinite queries
+
+An infinite query loads a list one page at a time. TanStack Query keeps the pagination state: the pages loaded so far, the page param each one was fetched with, and whether there is a next page. faxios keeps none of it: each call of the query function is one ordinary request, built from the `pageParam` TanStack Query passes in, here mapped to the typed `page` query param of a `define()` endpoint. `getNextPageParam` gets the last page with the endpoint's inferred response type and returns the next page's param, or `undefined` when there are no more pages.
+
+`InfiniteQueryObserver` is the query-core primitive that `useInfiniteQuery` wraps: `refetch` loads the first page, and `fetchNextPage` adds the next one while `hasNextPage` is true. This instance has no `retry` plugin and the `QueryClient` sets `retry: false`, so a failed page fails the query after one request; without it, an observer retries 3 times in the browser:
+
+```ts expect=request:GET%20https://api.example.com/users%3Fpage%3D1%0A,request:GET%20https://api.example.com/users%3Fpage%3D2%0A,log:page%20params%3A%201%2C%202%3B%20users%3A%20Ada%2C%20Grace%2C%20Linus%3B%20has%20next%20page%3A%20false
+import faxios from "@gcmdev/faxios";
+import { InfiniteQueryObserver, QueryClient } from "@tanstack/query-core";
+import { z } from "zod";
+
+// The pages the API in this example answers with, by their `page` query param.
+const userPages: Record<string, { users: Array<string>; nextPage: number | null; }> = {
+  1: { users: [ "Ada", "Grace" ], nextPage: 2 },
+  2: { users: [ "Linus" ], nextPage: null },
+};
+
+const api = faxios.create({
+  baseURL: "https://api.example.com",
+  // Stands in for the API: it sends each request on, then answers with the page it asked for.
+  env: {
+    fetch: async (input, init) => {
+      const request = new Request(input, init);
+      await fetch(request);
+      return Response.json(userPages[new URL(request.url).searchParams.get("page") ?? ""]);
+    },
+  },
+});
+
+const listUsers = api.define("get", "/users", {
+  paramsSchema: z.object({ page: z.number() }),
+  responseSchema: z.object({ users: z.array(z.string()), nextPage: z.number().nullable() }),
+});
+
+const queryClient = new QueryClient({
+  // No retry owner: a failed page fails the query after one request.
+  defaultOptions: { queries: { retry: false } },
+});
+
+const observer = new InfiniteQueryObserver(queryClient, {
+  queryKey: [ "users" ],
+  // `pageParam` is typed from `initialPageParam` and `getNextPageParam`: a number here.
+  queryFn: async ({ pageParam, signal }) => (await listUsers({ params: { page: pageParam }, signal })).data,
+  initialPageParam: 1,
+  // `lastPage` has the endpoint's inferred response type.
+  getNextPageParam: lastPage => lastPage.nextPage ?? undefined,
+});
+
+await observer.refetch();
+let result = observer.getCurrentResult();
+while (result.hasNextPage) result = await observer.fetchNextPage();
+
+const { pageParams = [], pages = [] } = result.data ?? {};
+const users: Array<string> = pages.flatMap(page => page.users);
+// @ts-expect-error TS2322 -- each page has the endpoint's response type, so `nextPage` isn't a string
+const wrong: Array<{ nextPage: string; }> = pages;
+console.log(`page params: ${pageParams.join(", ")}; users: ${users.join(", ")}; has next page: ${result.hasNextPage}`);
+// page params: 1, 2; users: Ada, Grace, Linus; has next page: false
+```
+
+The same `queryKey`, `queryFn`, `initialPageParam` and `getNextPageParam` options work unchanged with `useInfiniteQuery` in a framework adapter such as `@tanstack/react-query`, which returns the same `data`, `hasNextPage` and `fetchNextPage`. To load pages without an observer, `queryClient.infiniteQuery` takes the same options and resolves with the `{ pages, pageParams }` data.
