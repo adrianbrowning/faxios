@@ -9,7 +9,7 @@ Two files hold the rules, and this page only points at them:
 
 ## Setup
 
-You need Node.js 24 or later, pnpm 10 (the version in `packageManager` in `package.json`; `corepack enable` installs it), [Deno](https://deno.com/) and [Bun](https://bun.sh/). `pnpm check` runs the Deno and Bun smoke suites.
+You need Node.js 24 or later, pnpm 10 (the version in `packageManager` in `package.json`; `corepack enable` installs it), [Deno](https://deno.com/), [Bun](https://bun.sh/) and [uv](https://docs.astral.sh/uv/). `pnpm check` runs the Deno and Bun smoke suites, and uses `uvx` to run zizmor on `.github/` (`pnpm run lint:actions`).
 
 ```bash
 pnpm install --frozen-lockfile
@@ -25,7 +25,7 @@ The repo `.npmrc` sets `ignore-scripts=true`, so the install doesn't set up the 
 pnpm check
 ```
 
-`pnpm check` runs what CI runs: lint (including the type-checks), knip, `packages/tests/run-tests.sh` (build, pack, then the unit, browser, smoke, module, Deno and Bun suites), the docs examples and API contract checks, and the production docs build. [AGENTS.md](AGENTS.md) lists the few CI checks it leaves out. While you iterate, run one test file:
+`pnpm check` runs what CI runs: lint (including the type-checks), zizmor on `.github/` offline (`lint:actions`), knip, `packages/tests/run-tests.sh` (build, pack, then the unit, browser, smoke, module, Deno and Bun suites), the docs examples and API contract checks, and the production docs build. [AGENTS.md](AGENTS.md) lists the few CI checks it leaves out. While you iterate, run one test file:
 
 ```bash
 pnpm --filter @faxios/tests exec vitest run --project unit unit/core/mergeConfig.test.ts
