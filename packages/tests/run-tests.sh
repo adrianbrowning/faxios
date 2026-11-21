@@ -3,6 +3,73 @@ set -e
 
 cd "$(dirname "$0")"
 
+# Check the tools later stages need before taking the lock, so a machine without them fails now
+# with what to install instead of partway through the run, after the build.
+MISSING=""
+if ! command -v deno >/dev/null 2>&1; then
+  MISSING="$MISSING
+  deno: install it from https://docs.deno.com/runtime/getting_started/installation/"
+fi
+if ! command -v bun >/dev/null 2>&1; then
+  MISSING="$MISSING
+  bun: install it from https://bun.sh/docs/installation"
+fi
+# The browser-headless project launches all three; headless Chromium runs chromium-headless-shell,
+# not the headed build. This reads Playwright's browsers.json in the shell instead of loading its
+# registry in node, which takes most of a second on a busy machine. A browser counts as installed
+# when its registry directory holds the INSTALLATION_COMPLETE marker `playwright install` writes.
+PLAYWRIGHT_CORE=node_modules/playwright/../playwright-core
+case "${PLAYWRIGHT_BROWSERS_PATH:-}" in
+  "")
+    if [[ $OSTYPE == darwin* ]]; then BROWSERS_DIR=$HOME/Library/Caches/ms-playwright
+    else BROWSERS_DIR=${XDG_CACHE_HOME:-$HOME/.cache}/ms-playwright; fi ;;
+  0) BROWSERS_DIR=$PLAYWRIGHT_CORE/.local-browsers ;;
+  /*) BROWSERS_DIR=$PLAYWRIGHT_BROWSERS_PATH ;;
+  *) BROWSERS_DIR=${INIT_CWD:-$PWD}/$PLAYWRIGHT_BROWSERS_PATH ;;
+esac
+browser_installed() {
+  local dir=${1//-/_} entry entry_re='"name":[[:space:]]*"'"$1"'",([^}]*)'
+  [[ $BROWSERS_JSON =~ $entry_re ]] || return 1
+  entry=${BASH_REMATCH[1]}
+  if [ -n "$HOST_PLATFORM" ] && [[ $entry == *'"revisionOverrides":'* ]] &&
+    [[ ${entry#*'"revisionOverrides":'} =~ \""$HOST_PLATFORM"\":[[:space:]]*\"([^\"]+)\" ]]; then
+    dir=${dir}_${HOST_PLATFORM//-/_}_special-${BASH_REMATCH[1]}
+  elif [[ $entry =~ \"revision\":[[:space:]]*\"([^\"]+)\" ]]; then
+    dir=$dir-${BASH_REMATCH[1]}
+  else
+    return 1
+  fi
+  [ -f "$BROWSERS_DIR/$dir/INSTALLATION_COMPLETE" ]
+}
+if [ -f "$PLAYWRIGHT_CORE/browsers.json" ]; then
+  BROWSERS_JSON=$(<"$PLAYWRIGHT_CORE/browsers.json")
+  # On a platform with a revision override (WebKit on macOS 14), Playwright launches only that
+  # build, from <name>_<platform>_special-<revision>. Only macOS platforms have overrides, so this
+  # names the platform as Playwright's hostPlatform does there: mac<major version>, plus -arm64 on
+  # Apple silicon. Playwright's own PLAYWRIGHT_HOST_PLATFORM_OVERRIDE wins, as it does in Playwright.
+  # Without sw_vers the platform stays unknown and no override applies.
+  HOST_PLATFORM=${PLAYWRIGHT_HOST_PLATFORM_OVERRIDE:-}
+  if [ -z "$HOST_PLATFORM" ] && [[ $OSTYPE == darwin* ]] &&
+    MAC_VERSION=$(sw_vers -productVersion 2>/dev/null); then
+    HOST_PLATFORM=mac${MAC_VERSION%%.*}
+    if [ "$(uname -m)" = arm64 ]; then HOST_PLATFORM=$HOST_PLATFORM-arm64; fi
+  fi
+  for browser in chromium-headless-shell firefox webkit; do
+    if ! browser_installed "$browser"; then
+      MISSING="$MISSING
+  ${browser%-headless-shell}: pnpm --filter @faxios/tests exec playwright install ${browser%-headless-shell}"
+    fi
+  done
+else
+  # Before `pnpm install` there is no Playwright to list its browsers.
+  MISSING="$MISSING
+  playwright browsers: not checked, Playwright is not installed; run pnpm install"
+fi
+if [ -n "$MISSING" ]; then
+  echo "run-tests.sh: missing prerequisites:$MISSING" >&2
+  exit 1
+fi
+
 # One run at a time: every run rebuilds dist/ and repacks faxios.tgz, so an overlapping run (or a
 # test:docs-examples run against dist/) reads half-written files and fails for no reason.
 LOCK_DIR=.run-tests.lock
