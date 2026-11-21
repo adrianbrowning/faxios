@@ -7923,6 +7923,18 @@
       "evidence": [
         "Changed: .github/zizmor.yml at feb197366e86a33319bbe4d9534c62c7fe6de17a"
       ]
+    },
+    "source:.devcontainer/devcontainer.json": {
+      "fingerprint": "8a935ece3bff9557412e1d489baf162a5589fb6520a791b3a9f60f365b467e0f",
+      "snapshot": {
+        ".devcontainer/devcontainer.json": "4b9ec9ffa4d0e9a3515759c0ce111f18bd8e979bed723981eed094f3809a2f97"
+      },
+      "head": "4ed2cad376f4c03eaf85463beafcd9f1da560564",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: .devcontainer/devcontainer.json"
+      ]
     }
   }
 }
