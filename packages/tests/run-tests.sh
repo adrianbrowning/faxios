@@ -19,7 +19,6 @@ fi
 # registry in node, which takes most of a second on a busy machine. A browser counts as installed
 # when its registry directory holds the INSTALLATION_COMPLETE marker `playwright install` writes.
 PLAYWRIGHT_CORE=node_modules/playwright/../playwright-core
-BROWSERS_JSON=$(<"$PLAYWRIGHT_CORE/browsers.json")
 case "${PLAYWRIGHT_BROWSERS_PATH:-}" in
   "")
     if [[ $OSTYPE == darwin* ]]; then BROWSERS_DIR=$HOME/Library/Caches/ms-playwright
@@ -28,30 +27,43 @@ case "${PLAYWRIGHT_BROWSERS_PATH:-}" in
   /*) BROWSERS_DIR=$PLAYWRIGHT_BROWSERS_PATH ;;
   *) BROWSERS_DIR=${INIT_CWD:-$PWD}/$PLAYWRIGHT_BROWSERS_PATH ;;
 esac
+# On a platform with a revision override (WebKit on macOS 14), Playwright launches only that
+# build, from <name>_<platform>_special-<revision>. Only macOS platforms have overrides, so this
+# names the platform as Playwright's hostPlatform does there: mac<major version>, plus -arm64 on
+# Apple silicon. Playwright's own PLAYWRIGHT_HOST_PLATFORM_OVERRIDE wins, as it does in Playwright.
+HOST_PLATFORM=${PLAYWRIGHT_HOST_PLATFORM_OVERRIDE:-}
+if [ -z "$HOST_PLATFORM" ] && [[ $OSTYPE == darwin* ]]; then
+  HOST_PLATFORM=$(sw_vers -productVersion)
+  HOST_PLATFORM=mac${HOST_PLATFORM%%.*}
+  if [ "$(uname -m)" = arm64 ]; then HOST_PLATFORM=$HOST_PLATFORM-arm64; fi
+fi
 browser_installed() {
-  local dir=${1//-/_} entry overrides
-  local entry_re='"name":[[:space:]]*"'"$1"'",([^}]*)' pair_re='"([^"]+)":[[:space:]]*"([^"]+)"'
+  local dir=${1//-/_} entry entry_re='"name":[[:space:]]*"'"$1"'",([^}]*)'
   [[ $BROWSERS_JSON =~ $entry_re ]] || return 1
   entry=${BASH_REMATCH[1]}
-  [[ $entry =~ \"revision\":[[:space:]]*\"([^\"]+)\" ]] &&
-    [ -f "$BROWSERS_DIR/$dir-${BASH_REMATCH[1]}/INSTALLATION_COMPLETE" ] && return 0
-  # A host platform with a revision override (WebKit on macOS 14) installs to
-  # <name>_<platform>_special-<revision>. Working out the host platform needs more than the shell
-  # has, so any override's install counts; a wrong one still fails when the browser launches.
-  [[ $entry == *'"revisionOverrides":'* ]] || return 1
-  overrides=${entry#*'"revisionOverrides":'}
-  while [[ $overrides =~ $pair_re ]]; do
-    [ -f "$BROWSERS_DIR/${dir}_${BASH_REMATCH[1]//-/_}_special-${BASH_REMATCH[2]}/INSTALLATION_COMPLETE" ] && return 0
-    overrides=${overrides#*"${BASH_REMATCH[0]}"}
-  done
-  return 1
-}
-for browser in chromium-headless-shell firefox webkit; do
-  if ! browser_installed "$browser"; then
-    MISSING="$MISSING
-  ${browser%-headless-shell}: pnpm --filter @faxios/tests exec playwright install ${browser%-headless-shell}"
+  if [ -n "$HOST_PLATFORM" ] && [[ $entry == *'"revisionOverrides":'* ]] &&
+    [[ ${entry#*'"revisionOverrides":'} =~ \""$HOST_PLATFORM"\":[[:space:]]*\"([^\"]+)\" ]]; then
+    dir=${dir}_${HOST_PLATFORM//-/_}_special-${BASH_REMATCH[1]}
+  elif [[ $entry =~ \"revision\":[[:space:]]*\"([^\"]+)\" ]]; then
+    dir=$dir-${BASH_REMATCH[1]}
+  else
+    return 1
   fi
-done
+  [ -f "$BROWSERS_DIR/$dir/INSTALLATION_COMPLETE" ]
+}
+if [ -f "$PLAYWRIGHT_CORE/browsers.json" ]; then
+  BROWSERS_JSON=$(<"$PLAYWRIGHT_CORE/browsers.json")
+  for browser in chromium-headless-shell firefox webkit; do
+    if ! browser_installed "$browser"; then
+      MISSING="$MISSING
+  ${browser%-headless-shell}: pnpm --filter @faxios/tests exec playwright install ${browser%-headless-shell}"
+    fi
+  done
+else
+  # Before `pnpm install` there is no Playwright to list its browsers.
+  MISSING="$MISSING
+  playwright browsers: not checked, Playwright is not installed; run pnpm install"
+fi
 if [ -n "$MISSING" ]; then
   echo "run-tests.sh: missing prerequisites:$MISSING" >&2
   exit 1
