@@ -112,3 +112,72 @@ await query.catch((error: unknown) => {
 const state = queryClient.getQueryState(queryKey);
 console.log(`state: ${state?.status} ${state?.fetchStatus}`); // state: pending idle
 ```
+
+## Reading the query error
+
+When a faxios request rejects, the query function rejects with the same error, so TanStack Query stores the faxios error as the query's `error`, the value `useQuery` returns as `error`, and the promise `queryClient.query` returned rejects with it. A query function can reject with errors that aren't faxios errors too, such as an error your own code in it throws, so narrow the error before you read faxios fields: `isFaxiosError(error)` checks the faxios brand, so it also matches an error from another copy of faxios, and `error instanceof FaxiosError` works when only one copy is loaded.
+
+Build what you show from `status` and `code`. The error's `config`, `request` and `response` hold the request's headers, credentials included, and the response body, and `message` can name the request URL; see [Error handling](/pages/advanced/error-handling) for the codes and for `toJSON()`, which masks credentials when you log an error. This example turns TanStack Query's retries off with `retry: false`, so the error comes from a single request; choosing who retries a failed query is a separate decision:
+
+```ts status=404 expect=request:GET%20https://api.example.com/users/42,log:Request%20failed%20with%20404%20ERR_BAD_REQUEST,log:Something%20went%20wrong
+import faxios, { isFaxiosError } from "@gcmdev/faxios";
+import { QueryClient } from "@tanstack/query-core";
+import { z } from "zod";
+
+const api = faxios.create({ baseURL: "https://api.example.com" });
+
+const getUser = api.define("get", "/users/{id}", {
+  pathParamsSchema: z.object({ id: z.string() }),
+  responseSchema: z.object({ id: z.string(), name: z.string() }),
+});
+
+// A message that is safe to show: only the status and the code, never headers or bodies.
+function errorMessage(error: unknown): string {
+  if (isFaxiosError(error)) {
+    return error.status === undefined
+      ? `Request failed with ${error.code}`
+      : `Request failed with ${error.status} ${error.code}`;
+  }
+  // Anything else the query function threw.
+  return "Something went wrong";
+}
+
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { retry: false } },
+});
+
+const userKey = [ "user", "42" ];
+await queryClient
+  .query({
+    queryKey: userKey,
+    queryFn: async ({ signal }) => (await getUser({ pathParams: { id: "42" }, signal })).data,
+  })
+  .catch(() => {});
+
+// The query's error state: what `useQuery` returns as `error`.
+console.log(errorMessage(queryClient.getQueryState(userKey)?.error)); // Request failed with 404 ERR_BAD_REQUEST
+
+const settingsKey = [ "settings" ];
+await queryClient
+  .query({
+    queryKey: settingsKey,
+    queryFn: async (): Promise<string> => {
+      throw new Error("No saved settings");
+    },
+  })
+  .catch(() => {});
+
+console.log(errorMessage(queryClient.getQueryState(settingsKey)?.error)); // Something went wrong
+```
+
+TanStack Query types `error` as `Error | null`, so a guard such as `isFaxiosError` is what gives it the faxios type. To type every query error as a `FaxiosError` instead, declare `defaultError` on TanStack Query's `Register` interface. Augment the module you install (`@tanstack/react-query` for the React adapter, or `@tanstack/query-core`, which covers every adapter); do this only when every query function rejects with faxios errors alone, because the type doesn't check what a query function throws:
+
+```ts check=skip reason=signature
+import type { FaxiosError } from "@gcmdev/faxios";
+
+declare module "@tanstack/query-core" {
+  interface Register {
+    defaultError: FaxiosError;
+  }
+}
+```
