@@ -193,7 +193,7 @@ TanStack Query and the faxios [`retry` plugin](/pages/plugins/retry) can both re
 - **The faxios `retry` plugin**, when the `QueryClient` or the query sets `retry: false`. It retries inside one call of the query function, and only what the plugin retries: network errors, timeouts and transient statuses such as 503, for idempotent methods, honouring `Retry-After`.
 
 ::: warning Enabling both multiplies attempts
-With both on, every TanStack Query attempt runs all of the plugin's attempts, so one failing query sends TanStack Query's attempts times faxios's `attempts` requests: `retry: 2` (three TanStack Query attempts) with the plugin's default of 3 `attempts` sends 9 requests to a server that is already failing. See [Retry and error recovery](/pages/plugins/retry) for the plugin's `attempts` and backoff options.
+With both on, every TanStack Query attempt can run all of the plugin's attempts, so a query that keeps failing with an error the plugin retries sends up to TanStack Query's attempts times faxios's `attempts` requests: `retry: 2` (three TanStack Query attempts) with the plugin's default of 3 `attempts` sends 9 requests for a GET that keeps getting a 503, to a server that is already failing. See [Retry and error recovery](/pages/plugins/retry) for what the plugin retries and for its `attempts` and backoff options.
 :::
 
 None of the other examples on this page installs the `retry` plugin, so TanStack Query is their only retry owner; the error example turns its retries off as well.

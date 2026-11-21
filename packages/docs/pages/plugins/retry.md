@@ -72,7 +72,7 @@ await api.get("/users");
 
 `attempts` must be an integer from 1 to 10, in the plugin options and in a per-request override alike. Anything else, including `11` or `Infinity`, rejects with `ERR_BAD_OPTION_VALUE` before a request is sent. Each try is a full request, so the cap keeps one call from turning into a flood against a server that is already failing.
 
-If [TanStack Query](/pages/advanced/tanstack-query#choosing-one-retry-owner) also retries the query that makes the request, the attempts multiply; let only one of them retry.
+If [TanStack Query](/pages/advanced/tanstack-query#choosing-one-retry-owner) also retries the query that makes the request, the attempts can multiply; let only one of them retry.
 
 ## Waiting between tries
 
