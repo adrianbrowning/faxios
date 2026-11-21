@@ -29,7 +29,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 ## Setup And Safety
 
 - Install with `pnpm install --frozen-lockfile`. The repo `.npmrc` sets `ignore-scripts=true`, and CI installs with `--ignore-scripts` too. Keep that setting; if the git hooks are missing after a fresh clone, run `pnpm exec husky` once.
-- `pnpm check` also needs `deno` and `bun` on PATH and the chromium, firefox and webkit Playwright browsers: install Deno and Bun from their sites, and the browsers with `pnpm --filter @faxios/tests exec playwright install chromium firefox webkit` (add `--with-deps` on Linux). `run-tests.sh` checks for them before anything else and names every one that's missing.
+- `pnpm check` also needs `deno` and `bun` on PATH and the chromium, firefox and webkit Playwright browsers: install Deno and Bun from their sites, and the browsers with `pnpm --filter @faxios/tests exec playwright install chromium firefox webkit` (add `--with-deps` on Linux). The headless runs launch Chromium's headless shell, so `--only-shell` is enough for chromium. `run-tests.sh` checks for them before anything else and names every one that's missing.
 - Adding or updating dependencies is security-sensitive. Don't add runtime dependencies without discussion; the dependency surface is intentionally tiny.
 - Package, lockfile, and GitHub Actions update PRs are maintainer/bot-only; close these PRs from outside collaborators. Keep the 7-day Dependabot delay unless a critical vulnerability requires a maintainer-led manual update.
 - Build/test/lint tools still execute dependency code despite `ignore-scripts`; avoid unnecessary full builds when a focused check proves the change.
