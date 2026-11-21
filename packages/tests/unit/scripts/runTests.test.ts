@@ -134,6 +134,19 @@ console.log(JSON.stringify(installs.map(e => ({ directory: e.directory, executab
     expect(result.stdout).not.toContain("==> build faxios");
   });
 
+  // Without sw_vers the macOS platform is unknown, so no override applies; the check still finishes.
+  it("still names deno and bun when sw_vers is not on PATH", () => {
+    rmSync(join(bin, "sw_vers"), { force: true });
+    installBrowsers(HEADLESS_EXECUTABLES);
+
+    const result = run();
+
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toMatch(/missing prerequisites:\n {2}deno: .*\n {2}bun: /);
+    expect(result.stderr).not.toContain("sw_vers");
+    expect(result.stdout).not.toContain("==> build faxios");
+  });
+
   it("names chromium when only the headed chromium build is installed, not the headless shell", () => {
     fake("deno", "exit 0");
     fake("bun", "exit 0");
