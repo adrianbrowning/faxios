@@ -1,5 +1,5 @@
 import { execFileSync, spawnSync } from "node:child_process";
-import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { delimiter, dirname, join, resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -46,10 +46,12 @@ console.log(JSON.stringify(installs.map(e => ({ directory: e.directory, executab
       writeFileSync(join(directory, "INSTALLATION_COMPLETE"), "");
     }
   };
-  const run = () => {
+  // hostPlatform sets the Playwright platform the script checks for, through the variable Playwright
+  // itself reads; without it the script works out this machine's platform.
+  const run = (hostPlatform?: string) => {
     const started = performance.now();
     const result = spawnSync(join(bin, "bash"), [ join(dir, "run-tests.sh") ], {
-      env: { PATH: bin, HOME: dir, PLAYWRIGHT_BROWSERS_PATH: browsersPath },
+      env: { PATH: bin, HOME: dir, PLAYWRIGHT_BROWSERS_PATH: browsersPath, ...hostPlatform && { PLAYWRIGHT_HOST_PLATFORM_OVERRIDE: hostPlatform } },
       encoding: "utf8",
     });
     return { ...result, elapsed: performance.now() - started };
@@ -63,7 +65,8 @@ console.log(JSON.stringify(installs.map(e => ({ directory: e.directory, executab
     mkdirSync(browsersPath);
     cpSync(join(testsDir, "run-tests.sh"), join(dir, "run-tests.sh"));
     symlinkSync(join(testsDir, "node_modules"), join(dir, "node_modules"));
-    for (const tool of [ "bash", "dirname", "mkdir", "rm", "cat" ]) symlinkSync(realTool(tool), join(bin, tool));
+    for (const tool of [ "bash", "dirname", "mkdir", "rm", "cat", "uname" ]) symlinkSync(realTool(tool), join(bin, tool));
+    if (process.platform === "darwin") symlinkSync(realTool("sw_vers"), join(bin, "sw_vers"));
     symlinkSync(process.execPath, join(bin, "node"));
     // Past the prerequisite check: the lockfile guard passes and the build stops at the first pnpm.
     fake("git", "exit 0");
@@ -119,6 +122,18 @@ console.log(JSON.stringify(installs.map(e => ({ directory: e.directory, executab
     expect(result.stdout).not.toContain("==> build faxios");
   });
 
+  // A fresh clone before `pnpm install` has no Playwright to read the browser list from.
+  it("still names deno and bun, and says to run pnpm install, when node_modules is missing", () => {
+    unlinkSync(join(dir, "node_modules"));
+
+    const result = run();
+
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toMatch(/missing prerequisites:\n {2}deno: .*\n {2}bun: .*\n {2}playwright browsers: .*pnpm install/);
+    expect(result.stderr).not.toContain("No such file");
+    expect(result.stdout).not.toContain("==> build faxios");
+  });
+
   it("names chromium when only the headed chromium build is installed, not the headless shell", () => {
     fake("deno", "exit 0");
     fake("bun", "exit 0");
@@ -146,15 +161,45 @@ console.log(JSON.stringify(installs.map(e => ({ directory: e.directory, executab
   });
 
   // macOS 14 gets an older WebKit build, installed under its own directory name.
-  it("counts a browser installed for a platform's revision override", () => {
+  it("counts a browser installed for this platform's revision override", () => {
     fake("deno", "exit 0");
     fake("bun", "exit 0");
     installBrowsers([ "chromium-headless-shell", "firefox" ]);
     installBrowsers([ "webkit" ], "mac14-arm64");
 
-    const result = run();
+    const result = run("mac14-arm64");
 
     expect(result.stderr).not.toContain("missing prerequisites");
     expect(result.stdout).toContain("==> build faxios\n");
+  });
+
+  // A Mac upgraded from macOS 14 keeps the old override build, which macOS 15 doesn't launch.
+  it("names webkit when only another platform's revision override is installed", () => {
+    fake("deno", "exit 0");
+    fake("bun", "exit 0");
+    installBrowsers([ "chromium-headless-shell", "firefox" ]);
+    installBrowsers([ "webkit" ], "mac14-arm64");
+
+    const result = run("mac15-arm64");
+
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toMatch(/webkit: .*playwright install webkit/);
+    expect(result.stderr).not.toMatch(/deno|bun|chromium|firefox/);
+    expect(result.stdout).not.toContain("==> build faxios");
+  });
+
+  // Playwright launches the override build on a platform that has one, never the main revision.
+  it("names webkit when this platform has a revision override and only the main revision is installed", () => {
+    fake("deno", "exit 0");
+    fake("bun", "exit 0");
+    installBrowsers([ "chromium-headless-shell", "firefox" ]);
+    installBrowsers([ "webkit" ], "mac15-arm64");
+
+    const result = run("mac14-arm64");
+
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toMatch(/webkit: .*playwright install webkit/);
+    expect(result.stderr).not.toMatch(/deno|bun|chromium|firefox/);
+    expect(result.stdout).not.toContain("==> build faxios");
   });
 });
