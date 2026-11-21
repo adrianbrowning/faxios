@@ -2,7 +2,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { delimiter, dirname, join, resolve } from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 const testsDir = resolve(import.meta.dirname, "../..");
 // What the browser-headless project launches: headless Chromium runs chromium-headless-shell.
@@ -15,6 +15,7 @@ describe("run-tests.sh prerequisites", () => {
   let dir: string;
   let bin: string;
   let browsersPath: string;
+  let fakesDir: string;
 
   const realTool = (name: string) => {
     const found = (process.env.PATH ?? "").split(delimiter).map(d => join(d, name))
@@ -22,30 +23,60 @@ describe("run-tests.sh prerequisites", () => {
     if (!found) throw new Error(`${name} is not on PATH`);
     return found;
   };
-  // Replaces any linked tool of the same name rather than writing through the link.
+  // macOS checks a new executable the first time it runs, which takes a tenth of a second or more,
+  // so each distinct fake is written once for the file and linked into a test's bin. Linking
+  // replaces any linked tool of the same name rather than writing through the link.
+  const fakes = new Map<string, string>();
   const fake = (name: string, body: string) => {
+    let script = fakes.get(body);
+    if (!script) {
+      script = join(fakesDir, String(fakes.size));
+      writeFileSync(script, `#!/bin/sh\n${body}\n`);
+      chmodSync(script, 0o755);
+      fakes.set(body, script);
+    }
     rmSync(join(bin, name), { force: true });
-    writeFileSync(join(bin, name), `#!/bin/sh\n${body}\n`);
-    chmodSync(join(bin, name), 0o755);
+    symlinkSync(script, join(bin, name));
   };
-  // Lays out what `playwright install` leaves for each executable in this checkout's Playwright
-  // registry, by its registry name ("chromium" is the headed build, "chromium-headless-shell" the
-  // headless one): an empty file at the executable path and the browser directory's
-  // INSTALLATION_COMPLETE marker, under `into` (the test's PLAYWRIGHT_BROWSERS_PATH by default).
-  const installBrowsers = (names: Array<string>, hostPlatform?: string, into = browsersPath) => {
-    const script = `const core = require.resolve("playwright-core/lib/coreBundle", { paths: [ require.resolve("playwright") ] });
-const { registry } = require(core).registry;
-const installs = ${JSON.stringify(names)}.map(n => registry.findExecutable(n));
-console.log(JSON.stringify(installs.map(e => ({ directory: e.directory, executable: e.executablePath() }))));`;
-    const installs = JSON.parse(execFileSync(process.execPath, [ "-e", script ], {
+  // Where `playwright install` puts each executable in this checkout's Playwright registry, relative
+  // to the browsers dir, by host platform ("" is this machine's) and registry name ("chromium" is
+  // the headed build, "chromium-headless-shell" the headless one). Playwright reads
+  // PLAYWRIGHT_HOST_PLATFORM_OVERRIDE when its bundle loads, so one node process loads the bundle
+  // afresh for each platform the tests use; a node process per installBrowsers() call starved the
+  // other test workers.
+  let layouts: Record<string, Record<string, undefined | { directory: string; executable: string; }> | undefined>;
+  beforeAll(() => {
+    const script = `const { relative } = require("node:path");
+const core = require.resolve("playwright-core/lib/coreBundle", { paths: [ require.resolve("playwright") ] });
+const root = process.env.PLAYWRIGHT_BROWSERS_PATH;
+const layouts = {};
+for (const platform of [ "", "mac14", "mac14-arm64", "mac15-arm64", "ubuntu24.04-x64", "win64" ]) {
+  if (platform) process.env.PLAYWRIGHT_HOST_PLATFORM_OVERRIDE = platform;
+  else delete process.env.PLAYWRIGHT_HOST_PLATFORM_OVERRIDE;
+  delete require.cache[core];
+  const { registry } = require(core).registry;
+  layouts[platform] = Object.fromEntries(${JSON.stringify([ "chromium", ...HEADLESS_EXECUTABLES ])}.map(name => {
+    const e = registry.findExecutable(name);
+    return [ name, { directory: relative(root, e.directory), executable: relative(root, e.executablePath()) } ];
+  }));
+}
+console.log(JSON.stringify(layouts));`;
+    layouts = JSON.parse(execFileSync(process.execPath, [ "-e", script ], {
       cwd: testsDir,
-      env: { PLAYWRIGHT_BROWSERS_PATH: into, ...hostPlatform && { PLAYWRIGHT_HOST_PLATFORM_OVERRIDE: hostPlatform } },
+      env: { PLAYWRIGHT_BROWSERS_PATH: tmpdir() },
       encoding: "utf8",
-    })) as Array<{ directory: string; executable: string; }>;
-    for (const { directory, executable } of installs) {
-      mkdirSync(dirname(executable), { recursive: true });
-      writeFileSync(executable, "");
-      writeFileSync(join(directory, "INSTALLATION_COMPLETE"), "");
+    })) as typeof layouts;
+  });
+  // Lays out what `playwright install` leaves for each executable, by its registry name: an empty
+  // file at the executable path and the browser directory's INSTALLATION_COMPLETE marker, under
+  // `into` (the test's PLAYWRIGHT_BROWSERS_PATH by default).
+  const installBrowsers = (names: Array<string>, hostPlatform = "", into = browsersPath) => {
+    for (const name of names) {
+      const layout = layouts[hostPlatform]?.[name];
+      if (!layout) throw new Error(`no registry layout for ${name} on platform "${hostPlatform}"; add the platform in beforeAll`);
+      mkdirSync(dirname(join(into, layout.executable)), { recursive: true });
+      writeFileSync(join(into, layout.executable), "");
+      writeFileSync(join(into, layout.directory, "INSTALLATION_COMPLETE"), "");
     }
   };
   // hostPlatform sets the Playwright platform the script checks for, through the variable Playwright
@@ -59,6 +90,14 @@ console.log(JSON.stringify(installs.map(e => ({ directory: e.directory, executab
     });
     return { ...result, elapsed: performance.now() - started };
   };
+
+  beforeAll(() => {
+    fakesDir = mkdtempSync(join(tmpdir(), "faxios-run-tests-fakes-"));
+  });
+
+  afterAll(() => {
+    rmSync(fakesDir, { recursive: true, force: true });
+  });
 
   beforeEach(() => {
     dir = mkdtempSync(join(tmpdir(), "faxios-run-tests-"));
