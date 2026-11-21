@@ -72,6 +72,7 @@ Paths are relative to `packages/lib/src/lib/`.
 
 ## Tests
 
+- Run one unit test file from the repo root with `pnpm test:vitest:unit unit/helpers/combineURLs.test.ts`; the path is relative to `packages/tests`. Don't put `--` before the path: Vitest then ignores the filter and runs every file.
 - Use `packages/tests/setup/server.ts` for local HTTP servers and clean up with `try/finally`; leaked servers hang Vitest.
 - Browser tests mock `globalThis.fetch`; restore globals and reset spies in cleanup hooks.
 - Declaration changes need the module suite (`packages/tests/module/esm`, which pins its own TypeScript version); `run-tests.sh` runs it.
