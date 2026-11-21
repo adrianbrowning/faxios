@@ -26,21 +26,24 @@ describe("run-tests.sh prerequisites", () => {
     writeFileSync(join(bin, name), `#!/bin/sh\n${body}\n`);
     chmodSync(join(bin, name), 0o755);
   };
-  // Creates an empty file wherever this checkout's Playwright looks for each executable, by its
-  // registry name ("chromium" is the headed build, "chromium-headless-shell" the headless one).
-  const installBrowsers = (names: Array<string>) => {
+  // Lays out what `playwright install` leaves for each executable in this checkout's Playwright
+  // registry, by its registry name ("chromium" is the headed build, "chromium-headless-shell" the
+  // headless one): an empty file at the executable path and the browser directory's
+  // INSTALLATION_COMPLETE marker.
+  const installBrowsers = (names: Array<string>, hostPlatform?: string) => {
     const script = `const core = require.resolve("playwright-core/lib/coreBundle", { paths: [ require.resolve("playwright") ] });
 const { registry } = require(core).registry;
-for (const n of ${JSON.stringify(names)}) console.log(registry.findExecutable(n).executablePath());`;
-    const paths = execFileSync(process.execPath, [ "-e", script ], {
+const installs = ${JSON.stringify(names)}.map(n => registry.findExecutable(n));
+console.log(JSON.stringify(installs.map(e => ({ directory: e.directory, executable: e.executablePath() }))));`;
+    const installs = JSON.parse(execFileSync(process.execPath, [ "-e", script ], {
       cwd: testsDir,
-      env: { PLAYWRIGHT_BROWSERS_PATH: browsersPath },
+      env: { PLAYWRIGHT_BROWSERS_PATH: browsersPath, ...hostPlatform && { PLAYWRIGHT_HOST_PLATFORM_OVERRIDE: hostPlatform } },
       encoding: "utf8",
-    }).trim()
-      .split("\n");
-    for (const path of paths) {
-      mkdirSync(dirname(path), { recursive: true });
-      writeFileSync(path, "");
+    })) as Array<{ directory: string; executable: string; }>;
+    for (const { directory, executable } of installs) {
+      mkdirSync(dirname(executable), { recursive: true });
+      writeFileSync(executable, "");
+      writeFileSync(join(directory, "INSTALLATION_COMPLETE"), "");
     }
   };
   const run = () => {
@@ -140,5 +143,18 @@ for (const n of ${JSON.stringify(names)}) console.log(registry.findExecutable(n)
     expect(result.stderr).not.toContain("missing prerequisites");
     expect(result.stdout).toContain("==> build faxios\npnpm --dir ../lib build\n");
     expect(existsSync(join(dir, ".run-tests.lock"))).toBe(false);
+  });
+
+  // macOS 14 gets an older WebKit build, installed under its own directory name.
+  it("counts a browser installed for a platform's revision override", () => {
+    fake("deno", "exit 0");
+    fake("bun", "exit 0");
+    installBrowsers([ "chromium-headless-shell", "firefox" ]);
+    installBrowsers([ "webkit" ], "mac14-arm64");
+
+    const result = run();
+
+    expect(result.stderr).not.toContain("missing prerequisites");
+    expect(result.stdout).toContain("==> build faxios\n");
   });
 });
