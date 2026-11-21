@@ -74,6 +74,7 @@ Paths are relative to `packages/lib/src/lib/`.
 
 ## Tests
 
+- `pnpm test` needs a built `packages/lib/dist` (the bundle-size unit test bundles it): run `pnpm run build` first in a fresh worktree; `run-tests.sh` and CI build it first.
 - Use `packages/tests/setup/server.ts` for local HTTP servers and clean up with `try/finally`; leaked servers hang Vitest.
 - Browser tests mock `globalThis.fetch`; restore globals and reset spies in cleanup hooks.
 - Declaration changes need the module suite (`packages/tests/module/esm`, which pins its own TypeScript version); `run-tests.sh` runs it.
