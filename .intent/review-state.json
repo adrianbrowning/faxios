@@ -108,15 +108,15 @@
       ]
     },
     "source:knip.json": {
-      "fingerprint": "9ba75a88912c881e0eba1e53b82414d814f36f336512ce6747b7bac7934174b0",
+      "fingerprint": "8020de5490b0d3ebc0f87a1eb45196d2c3931c8448c3c14aac28b30708361c23",
       "snapshot": {
-        "knip.json": "17282b97649e3a6621edfc7714ca0c8230b322eca55d6a9abbc3297e192a649b"
+        "knip.json": "b9a9411899e8f0252b4c66dd151f284c07fe5cade1db591d122244ad3e4ce29f"
       },
-      "head": "ab071466995ffbd6071914c4aecc872688f368a9",
-      "outcome": "updated",
-      "reason": "configure-requests SKILL.md item 8 now says Deno and Bun can send a stream body but their Request ignores duplex, so onUploadProgress isn't called there (probed on Deno 2.4.2 and Bun 1.4.0); the rest of the skill already teaches URL url inputs, the root type exports and toFormData without naming the changed signatures, so URL alias inputs, toFormData typing, Faxios class overloads, the new root type exports, docs, tests, knip and bump file need no other skill change",
+      "head": "feb197366e86a33319bbe4d9534c62c7fe6de17a",
+      "outcome": "no-change",
+      "reason": "CI-only change: zizmor config, workflow pins and a knip binary ignore; the configure-requests skill teaches nothing about them",
       "evidence": [
-        "Changed: knip.json at 22f8a916c00ebcd2a3c783fff8c275765469824c"
+        "Changed: knip.json at feb197366e86a33319bbe4d9534c62c7fe6de17a"
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
@@ -1931,15 +1931,15 @@
       ]
     },
     "source:.github/workflows/release.yml": {
-      "fingerprint": "de35948f452cf377c519b8c42ef87b0a9a9bd110a79b3809adb8a0a7b8d4bd66",
+      "fingerprint": "3d1c7a8c1d4ef44449d57f6390b923739f0cec24def17d1cc6019e5a5882d96b",
       "snapshot": {
-        ".github/workflows/release.yml": "0bd315596b8bc3816bc0231a525e3a0e14b895f731b39b4856a80d913d0baed4"
+        ".github/workflows/release.yml": "6d3cd97e1c1cab76cc94c2572a0a86585e00ed850e881fcf4bf484c0045b00cd"
       },
-      "head": "b79841dcb75aac4b98408cc96029146b5befe9a8",
+      "head": "feb197366e86a33319bbe4d9534c62c7fe6de17a",
       "outcome": "no-change",
-      "reason": "Slice 02 changes CI/release workflows, threat model and license check script only; no skill guidance changes.",
+      "reason": "CI-only change: zizmor config, workflow pins and a knip binary ignore; the configure-requests skill teaches nothing about them",
       "evidence": [
-        "Changed: .github/workflows/release.yml at b79841dcb75aac4b98408cc96029146b5befe9a8"
+        "Changed: .github/workflows/release.yml at feb197366e86a33319bbe4d9534c62c7fe6de17a"
       ]
     },
     "source:COLLABORATOR_GUIDE.md": {
@@ -3430,15 +3430,15 @@
       ]
     },
     "source:.github/workflows/zizmor.yml": {
-      "fingerprint": "182f8420b06620dd7dcd1a69c05d861b6ae0c981d811a4b0764dbd38bc40d128",
+      "fingerprint": "485d611c1584a89147b175b41c46f7233cfba6285cf6489ff040d32bf0e2f124",
       "snapshot": {
-        ".github/workflows/zizmor.yml": "1bb42f5a5bee8765050885289fe27a3c9250929ac58f785f7e198ade1d7edf1b"
+        ".github/workflows/zizmor.yml": "6561ed67411894c24d17a139247306986afc78d86137edcc7fd72d219b261be4"
       },
-      "head": "400a0fde95de52302927c996202aea02a275e730",
+      "head": "feb197366e86a33319bbe4d9534c62c7fe6de17a",
       "outcome": "no-change",
-      "reason": "Header comments in four pull-request workflows and a 30 s per-test timeout on one unit test. No API or behaviour the configure-requests skill teaches changes.",
+      "reason": "CI-only change: zizmor config, workflow pins and a knip binary ignore; the configure-requests skill teaches nothing about them",
       "evidence": [
-        "Changed: .github/workflows/zizmor.yml at 400a0fde95de52302927c996202aea02a275e730"
+        "Changed: .github/workflows/zizmor.yml at feb197366e86a33319bbe4d9534c62c7fe6de17a"
       ]
     },
     "source:.lintstagedrc": {
@@ -7910,6 +7910,18 @@
       "reason": "Dev tool version catalog, audit overrides and lockfile updates only; no skill guidance or library behavior changes",
       "evidence": [
         "Changed: .bumpy/dry-merry-seal.md at edb8b3689df521ac7b5a245db580803c931f6e60"
+      ]
+    },
+    "source:.github/zizmor.yml": {
+      "fingerprint": "e382c2b05c608396031486e49dceb8df7eec4a71b3268f164a2657edf39a4fab",
+      "snapshot": {
+        ".github/zizmor.yml": "240513c78dd8d378e17dd4ca5ae9ffe2f8af9da54c00d850db7c2696fe83cb5b"
+      },
+      "head": "feb197366e86a33319bbe4d9534c62c7fe6de17a",
+      "outcome": "no-change",
+      "reason": "CI-only change: zizmor config, workflow pins and a knip binary ignore; the configure-requests skill teaches nothing about them",
+      "evidence": [
+        "Changed: .github/zizmor.yml at feb197366e86a33319bbe4d9534c62c7fe6de17a"
       ]
     }
   }
