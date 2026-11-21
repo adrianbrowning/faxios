@@ -2,7 +2,7 @@
 
 [TanStack Query](https://tanstack.com/query/latest) and faxios do different jobs, and they work together without an adapter:
 
-- **TanStack Query owns server state and the UI lifecycle:** caching by query key, deduplicating requests, background refetching, stale and garbage-collection timing, retries, and what a component shows while data loads.
+- **TanStack Query owns server state and the UI lifecycle:** caching by query key, deduplicating requests, background refetching, stale and garbage-collection timing, and what a component shows while data loads. Either layer can retry; see [Choosing one retry owner](#choosing-one-retry-owner).
 - **faxios is the typed request layer:** it builds and sends the request, applies instance defaults and [middleware](/pages/advanced/middleware), validates with your schemas, and types the response from them.
 
 A faxios endpoint made with [`define()`](/pages/advanced/define) or [`route()`](/pages/advanced/route) is a plain async function, so the query function only has to call it with the request's params and the query's `signal` and return `response.data`; TanStack Query then types the query's data with the endpoint's inferred response type. Don't pass the endpoint itself as `queryFn`: TanStack Query calls the query function with its query context (`queryKey`, `signal`, `meta` and more), and faxios rejects the keys it doesn't know, such as `queryKey` and `meta`, as unknown request options.
@@ -189,14 +189,14 @@ declare module "@tanstack/query-core" {
 
 TanStack Query and the faxios [`retry` plugin](/pages/plugins/retry) can both retry a failed request, so give each query exactly one retry owner:
 
-- **TanStack Query**, when the faxios instance doesn't install the `retry` plugin. It runs the whole query function again after any rejection, a 404 or a schema validation error included, unless a `retry` function you pass says otherwise. Set `retry` yourself: TanStack Query's default isn't the same in the browser as on the server. See TanStack Query's [query retries](https://tanstack.com/query/latest/docs/framework/react/guides/query-retries) guide for `retry` and `retryDelay`.
+- **TanStack Query**, when the faxios instance doesn't install the `retry` plugin. It runs the whole query function again after any rejection, a 404 or a schema validation error included, unless a `retry` function you pass says otherwise. Set `retry` yourself, because the default depends on the API: observers such as `useQuery` retry 3 times in the browser and not at all on the server, while `queryClient.query` (and the deprecated `fetchQuery`) doesn't retry unless `retry` is set. See TanStack Query's [query retries](https://tanstack.com/query/latest/docs/framework/react/guides/query-retries) guide for `retry` and `retryDelay`.
 - **The faxios `retry` plugin**, when the `QueryClient` or the query sets `retry: false`. It retries inside one call of the query function, and only what the plugin retries: network errors, timeouts and transient statuses such as 503, for idempotent methods, honouring `Retry-After`.
 
 ::: warning Enabling both multiplies attempts
 With both on, every TanStack Query attempt can run all of the plugin's attempts, so a query that keeps failing with an error the plugin retries sends up to TanStack Query's attempts times faxios's `attempts` requests: `retry: 2` (three TanStack Query attempts) with the plugin's default of 3 `attempts` sends 9 requests for a GET that keeps getting a 503, to a server that is already failing. See [Retry and error recovery](/pages/plugins/retry) for what the plugin retries and for its `attempts` and backoff options.
 :::
 
-None of the other examples on this page installs the `retry` plugin, so TanStack Query is their only retry owner; the error example turns its retries off as well.
+None of the other examples on this page installs the `retry` plugin or sets `retry`, so their `queryClient.query` calls don't retry at all; the error example sets `retry: false` to make that explicit.
 
 ### TanStack Query retries
 
