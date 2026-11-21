@@ -14,20 +14,43 @@ if ! command -v bun >/dev/null 2>&1; then
   MISSING="$MISSING
   bun: install it from https://bun.sh/docs/installation"
 fi
-# The browser-headless project launches all three. Headless Chromium runs chromium-headless-shell,
-# not the headed build, so ask Playwright's registry (what launch() uses) for each executable.
-MISSING_BROWSERS=$(node -e '
-  const fs = require("node:fs");
-  const core = require.resolve("playwright-core/lib/coreBundle", { paths: [ require.resolve("playwright") ] });
-  const { registry } = require(core).registry;
-  const executables = { chromium: "chromium-headless-shell", firefox: "firefox", webkit: "webkit" };
-  for (const [ name, executable ] of Object.entries(executables)) {
-    if (!fs.existsSync(registry.findExecutable(executable).executablePath())) console.log(name);
-  }
-')
-for browser in $MISSING_BROWSERS; do
-  MISSING="$MISSING
-  $browser: pnpm --filter @faxios/tests exec playwright install $browser"
+# The browser-headless project launches all three; headless Chromium runs chromium-headless-shell,
+# not the headed build. This reads Playwright's browsers.json in the shell instead of loading its
+# registry in node, which takes most of a second on a busy machine. A browser counts as installed
+# when its registry directory holds the INSTALLATION_COMPLETE marker `playwright install` writes.
+PLAYWRIGHT_CORE=node_modules/playwright/../playwright-core
+BROWSERS_JSON=$(<"$PLAYWRIGHT_CORE/browsers.json")
+case "${PLAYWRIGHT_BROWSERS_PATH:-}" in
+  "")
+    if [[ $OSTYPE == darwin* ]]; then BROWSERS_DIR=$HOME/Library/Caches/ms-playwright
+    else BROWSERS_DIR=${XDG_CACHE_HOME:-$HOME/.cache}/ms-playwright; fi ;;
+  0) BROWSERS_DIR=$PLAYWRIGHT_CORE/.local-browsers ;;
+  /*) BROWSERS_DIR=$PLAYWRIGHT_BROWSERS_PATH ;;
+  *) BROWSERS_DIR=${INIT_CWD:-$PWD}/$PLAYWRIGHT_BROWSERS_PATH ;;
+esac
+browser_installed() {
+  local dir=${1//-/_} entry overrides
+  local entry_re='"name":[[:space:]]*"'"$1"'",([^}]*)' pair_re='"([^"]+)":[[:space:]]*"([^"]+)"'
+  [[ $BROWSERS_JSON =~ $entry_re ]] || return 1
+  entry=${BASH_REMATCH[1]}
+  [[ $entry =~ \"revision\":[[:space:]]*\"([^\"]+)\" ]] &&
+    [ -f "$BROWSERS_DIR/$dir-${BASH_REMATCH[1]}/INSTALLATION_COMPLETE" ] && return 0
+  # A host platform with a revision override (WebKit on macOS 14) installs to
+  # <name>_<platform>_special-<revision>. Working out the host platform needs more than the shell
+  # has, so any override's install counts; a wrong one still fails when the browser launches.
+  [[ $entry == *'"revisionOverrides":'* ]] || return 1
+  overrides=${entry#*'"revisionOverrides":'}
+  while [[ $overrides =~ $pair_re ]]; do
+    [ -f "$BROWSERS_DIR/${dir}_${BASH_REMATCH[1]//-/_}_special-${BASH_REMATCH[2]}/INSTALLATION_COMPLETE" ] && return 0
+    overrides=${overrides#*"${BASH_REMATCH[0]}"}
+  done
+  return 1
+}
+for browser in chromium-headless-shell firefox webkit; do
+  if ! browser_installed "$browser"; then
+    MISSING="$MISSING
+  ${browser%-headless-shell}: pnpm --filter @faxios/tests exec playwright install ${browser%-headless-shell}"
+  fi
 done
 if [ -n "$MISSING" ]; then
   echo "run-tests.sh: missing prerequisites:$MISSING" >&2
