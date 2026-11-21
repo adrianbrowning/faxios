@@ -302,7 +302,7 @@ console.log(`query attempts: ${attempts}, requests: ${requests}`); // query atte
 
 An infinite query loads a list one page at a time. TanStack Query keeps the pagination state: the pages loaded so far, the page param each one was fetched with, and whether there is a next page. faxios keeps none of it: each call of the query function is one ordinary request, built from the `pageParam` TanStack Query passes in, here mapped to the typed `page` query param of a `define()` endpoint. `getNextPageParam` gets the last page with the endpoint's inferred response type and returns the next page's param, or `undefined` when there are no more pages.
 
-`InfiniteQueryObserver` is the query-core primitive that `useInfiniteQuery` wraps: `refetch` loads the first page, and `fetchNextPage` adds the next one while `hasNextPage` is true. This instance has no `retry` plugin and the `QueryClient` sets `retry: false`, so a failed page fails the query after one request; without it, an observer retries 3 times in the browser:
+`InfiniteQueryObserver` is the query-core primitive that `useInfiniteQuery` wraps: `refetch` loads the first page, and `fetchNextPage` adds the next one while `hasNextPage` is true. Both resolve with the error in the result when a page fails, and `hasNextPage` still describes the last page that loaded, so a loop over them passes `throwOnError: true` to stop at the first failed page. This instance has no `retry` plugin and the `QueryClient` sets `retry: false`, so a failed page fails the query after one request; without it, an observer retries 3 times in the browser:
 
 ```ts expect=request:GET%20https://api.example.com/users%3Fpage%3D1%0A,request:GET%20https://api.example.com/users%3Fpage%3D2%0A,log:page%20params%3A%201%2C%202%3B%20users%3A%20Ada%2C%20Grace%2C%20Linus%3B%20has%20next%20page%3A%20false
 import faxios from "@gcmdev/faxios";
@@ -346,9 +346,10 @@ const observer = new InfiniteQueryObserver(queryClient, {
   getNextPageParam: lastPage => lastPage.nextPage ?? undefined,
 });
 
-await observer.refetch();
+// `throwOnError` rejects on a failed page, so the loop can't keep asking for it.
+await observer.refetch({ throwOnError: true });
 let result = observer.getCurrentResult();
-while (result.hasNextPage) result = await observer.fetchNextPage();
+while (result.hasNextPage) result = await observer.fetchNextPage({ throwOnError: true });
 
 const { pageParams = [], pages = [] } = result.data ?? {};
 const users: Array<string> = pages.flatMap(page => page.users);
