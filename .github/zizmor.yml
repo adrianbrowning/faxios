@@ -1,0 +1,12 @@
+# zizmor config, shared by `pnpm run lint:actions` and
+# .github/workflows/zizmor.yml.
+
+rules:
+  adhoc-packages:
+    ignore:
+      # Both release jobs pin npm with `npm install -g npm@11.15.0 --ignore-scripts`:
+      # setup-node's npm follows the Node release, and npm trusted publishing
+      # needs npm >= 11.5.1. The entries are line numbers of the `run:` lines;
+      # a note above each `Pin npm` step in release.yml points back here.
+      - release.yml:271
+      - release.yml:415
