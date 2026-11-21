@@ -46,7 +46,7 @@
     "eslint": "catalog:",
     "typescript": "catalog:",
     "typescript-eslint": "catalog:",
-    "zshy": "0.8.0"
+    "zshy": "0.8.1"
   },
   "zshy": {
     "exports": {
