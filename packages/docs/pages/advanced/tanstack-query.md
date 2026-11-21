@@ -56,18 +56,25 @@ The same query function works unchanged with a framework adapter such as `useQue
 
 TanStack Query aborts the query function's `signal` when it cancels a query: when you call `queryClient.cancelQueries`, or when the last observer of a query that is still fetching unsubscribes, as `useQuery` does when its component unmounts. A query function that passes that `signal` to faxios cancels the faxios request with it, so the request rejects with a `CanceledError` (code `ERR_CANCELED`), just as an aborted [`AbortController`](/pages/advanced/cancellation) does. TanStack Query ignores that rejection: the query doesn't turn into an error, and it goes back to the state it had before the fetch started.
 
-```ts expect=log:faxios%3A%20CanceledError%20ERR_CANCELED,log:query%3A%20cancelled,log:state%3A%20pending%20idle
+```ts expect=log:fetch%3A%20aborted,log:faxios%3A%20CanceledError%20ERR_CANCELED,log:query%3A%20cancelled,log:state%3A%20pending%20idle
 import faxios, { isCancel } from "@gcmdev/faxios";
 import { QueryClient, isCancelledError } from "@tanstack/query-core";
 import { z } from "zod";
 
+// Settles once the request reaches fetch, so the example cancels it in flight.
+const fetchStarted = Promise.withResolvers<void>();
+
 const api = faxios.create({
   baseURL: "https://api.example.com",
-  // Stands in for a slow API: it answers only by rejecting once the request is aborted.
+  // Stands in for a slow API: it never answers, and rejects once the request is aborted.
   env: {
     fetch: (_input, init) =>
       new Promise((_resolve, reject) => {
-        init?.signal?.addEventListener("abort", () => reject(init.signal?.reason));
+        init?.signal?.addEventListener("abort", () => {
+          console.log("fetch: aborted");
+          reject(init.signal?.reason);
+        });
+        fetchStarted.resolve();
       }),
   },
 });
@@ -94,6 +101,7 @@ const query = queryClient.query({
 });
 
 // Cancel the query while its request is in flight.
+await fetchStarted.promise;
 await queryClient.cancelQueries({ queryKey });
 
 await query.catch((error: unknown) => {
