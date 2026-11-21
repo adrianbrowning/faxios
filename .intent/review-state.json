@@ -5607,11 +5607,11 @@
       ]
     },
     "source:packages/tests/run-tests.sh": {
-      "fingerprint": "76cca3c8e86c99fc557d9af0b2f32068501363d2f5548bfc8f4a48a122ecbab6",
+      "fingerprint": "52722bf2f70cf085fc9694f4ba1425547a5ecda8f5d8f4b89a1f97c5203b525d",
       "snapshot": {
-        "packages/tests/run-tests.sh": "2e0bc3e2a57c1c930d7b1881a72886401bacd76aaec1ec36604f543f7ab331ba"
+        "packages/tests/run-tests.sh": "d5b6eb65561865e46343ffd1863f96305ff5af48302eb1dfea96feb6218ba35f"
       },
-      "head": "72455d47be8550ed245dd946754902dae12c5704",
+      "head": "6888ccc62738310e131d056e299cc9fcbd1331d6",
       "outcome": "no-change",
       "reason": "CI, lockfile and test-harness install changes only; configure-requests teaches library request options, which this layer does not change",
       "evidence": [
@@ -7946,6 +7946,18 @@
       "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
       "evidence": [
         "Changed files: .sandcastle/fix-errors.ts"
+      ]
+    },
+    "source:packages/tests/unit/scripts/runTests.test.ts": {
+      "fingerprint": "7c0c16a71f4e93c76e2c9b07ed3a99acbc7f6705650d95ad3bbe0088a7fdf86b",
+      "snapshot": {
+        "packages/tests/unit/scripts/runTests.test.ts": "1837d7cbaf154d980fe02cac3e06dd890d930f1a2e37933ebbe62e9927db888c"
+      },
+      "head": "6888ccc62738310e131d056e299cc9fcbd1331d6",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: packages/tests/unit/scripts/runTests.test.ts"
       ]
     }
   }

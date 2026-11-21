@@ -4,7 +4,7 @@ set -e
 cd "$(dirname "$0")"
 
 # Check the tools later stages need before taking the lock, so a machine without them fails now
-# with what to install instead of after the build and the Node suites.
+# with what to install instead of partway through the run, after the build.
 MISSING=""
 if ! command -v deno >/dev/null 2>&1; then
   MISSING="$MISSING
