@@ -1,5 +1,5 @@
 import { execFileSync, spawnSync } from "node:child_process";
-import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { delimiter, dirname, join, resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -83,6 +83,23 @@ for (const n of ${JSON.stringify(names)}) console.log(registry.findExecutable(n)
     expect(result.stderr).not.toMatch(/bun|chromium|firefox|webkit/);
     expect(result.stdout).not.toContain("==> build faxios");
     expect(existsSync(join(dir, ".run-tests.lock"))).toBe(false);
+  });
+
+  it("checks prerequisites before the lock and the lockfile guard, leaving another run's lock alone", () => {
+    fake("bun", "exit 0");
+    installBrowsers(HEADLESS_EXECUTABLES);
+    // A live run holds the lock, and the harness lockfiles differ from HEAD.
+    const lock = join(dir, ".run-tests.lock");
+    mkdirSync(lock);
+    writeFileSync(join(lock, "pid"), `${process.pid}\n`);
+    fake("git", "exit 1");
+
+    const result = run();
+
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toMatch(/missing prerequisites:\n {2}deno: /);
+    expect(result.stderr).not.toMatch(/another run|lockfiles differ/);
+    expect(readFileSync(join(lock, "pid"), "utf8")).toBe(`${process.pid}\n`);
   });
 
   it("names every missing prerequisite at once, each with how to install it", () => {
