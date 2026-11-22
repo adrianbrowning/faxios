@@ -7960,15 +7960,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/tanstack-query.md": {
-      "fingerprint": "6f0283d0148873db99319b1b2f4dab3b8380732408bfc4ea6f14931958d42adc",
+      "fingerprint": "1bb548e9e167ffdab94a4f8866d8b722ff93d51fb7a47aafea8470d2177aae2c",
       "snapshot": {
-        "packages/docs/pages/advanced/tanstack-query.md": "2484072b1a1889f1973460436d8c582ae350745d3940f98ebdd63b07b86e6a21"
+        "packages/docs/pages/advanced/tanstack-query.md": "359e07efbe3bbf571a98a957fbd38dcd3519d49c1e6c5d86da8b92aaaa555728"
       },
-      "head": "f64933c99b306474a210c561c438b18874fa0c7d",
+      "head": "4c9c706e2b912caae8abffc7bc820df0c11c2649",
       "outcome": "no-change",
-      "reason": "Docs-only: the TanStack Query guide (packages/docs/pages/advanced/tanstack-query.md) now has a 'Cancelling a query' section whose queryFn passes the query context signal to faxios, rethrows non-cancel errors and detects TanStack's CancelledError with instanceof; no faxios API, option or behavior changed, so no skill under packages/lib/skills needs change",
+      "reason": "Docs-only: the TanStack Query guide (packages/docs/pages/advanced/tanstack-query.md) section \"Reading the query error\" narrows the query error with isFaxiosError or instanceof FaxiosError, builds the shown message from status and code, tells readers to log error.toJSON() (which masks authorization, proxy-authorization, cookie and auth, and redact keys) and notes a secret written into the url string (such as ?token=) stays in config.url, so pass it in params; no faxios API, option or behavior changed, so no skill under packages/lib/skills needs change",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/tanstack-query.md at a54bd0f48f28955c4927fea042d51615f5061e7d"
+        "Changed: packages/docs/pages/advanced/tanstack-query.md at ef2870d7548f82c76cbdbc1c2c385bb3fa51d1c6"
       ]
     }
   }
