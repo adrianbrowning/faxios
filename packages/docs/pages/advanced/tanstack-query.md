@@ -54,11 +54,11 @@ The same query function works unchanged with a framework adapter such as `useQue
 
 ## Cancelling a query
 
-TanStack Query aborts the query function's `signal` when it cancels a query: when you call `queryClient.cancelQueries`, or when the last observer of a query that is still fetching unsubscribes, as `useQuery` does when its component unmounts. A query function that passes that `signal` to faxios cancels the faxios request with it, so the request rejects with a `CanceledError` (code `ERR_CANCELED`), just as an aborted [`AbortController`](/pages/advanced/cancellation) does. TanStack Query ignores that rejection: the query doesn't turn into an error, and it goes back to the state it had before the fetch started. The promise that `queryClient.query` (or `fetchQuery`) returned still settles, though: it rejects with TanStack Query's own `CancelledError`, which `isCancelledError` from `@tanstack/query-core` detects, when the query had no data before the fetch, and resolves with the restored data when it did. That is why the example catches the query promise; `useQuery` observers see no error at all.
+TanStack Query aborts the query function's `signal` when it cancels a query: when you call `queryClient.cancelQueries`, or when the last observer of a query that is still fetching unsubscribes, as `useQuery` does when its component unmounts. A query function that passes that `signal` to faxios cancels the faxios request with it, so the request rejects with a `CanceledError` (code `ERR_CANCELED`), just as an aborted [`AbortController`](/pages/advanced/cancellation) does. TanStack Query ignores that rejection: the query doesn't turn into an error, and it goes back to the state it had before the fetch started. The promise that `queryClient.query` (or `fetchQuery`) returned still settles, though: it rejects with TanStack Query's own `CancelledError` (exported from `@tanstack/query-core`, detected with `error instanceof CancelledError`) when the query had no data before the fetch, and resolves with the restored data when it did. That is why the example catches the query promise, handling only the cancellation and rethrowing any other error. The cancellation adds no error of its own: `useQuery` observers see the state from before the fetch, which is the earlier error if the query had already failed.
 
 ```ts expect=log:fetch%3A%20aborted,log:faxios%3A%20CanceledError%20ERR_CANCELED,log:query%3A%20cancelled,log:state%3A%20pending%20idle
 import faxios, { isCancel } from "@gcmdev/faxios";
-import { QueryClient, isCancelledError } from "@tanstack/query-core";
+import { CancelledError, QueryClient } from "@tanstack/query-core";
 import { z } from "zod";
 
 // Settles once the request reaches fetch, so the example cancels it in flight.
@@ -105,7 +105,8 @@ await fetchStarted.promise;
 await queryClient.cancelQueries({ queryKey });
 
 await query.catch((error: unknown) => {
-  if (isCancelledError(error)) console.log("query: cancelled");
+  if (!(error instanceof CancelledError)) throw error;
+  console.log("query: cancelled");
 });
 
 const state = queryClient.getQueryState(queryKey);

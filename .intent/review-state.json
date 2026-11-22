@@ -7960,15 +7960,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/tanstack-query.md": {
-      "fingerprint": "d6607c96d68c8d79f84c8d9245997b728e76a3b29c1897c30ad22a3e8aea1adb",
+      "fingerprint": "6f0283d0148873db99319b1b2f4dab3b8380732408bfc4ea6f14931958d42adc",
       "snapshot": {
-        "packages/docs/pages/advanced/tanstack-query.md": "9589d2359206e4dfe9653cfe11e9447558962429ace6411aa411efb29dd0579f"
+        "packages/docs/pages/advanced/tanstack-query.md": "2484072b1a1889f1973460436d8c582ae350745d3940f98ebdd63b07b86e6a21"
       },
-      "head": "8155f7ca90382498c60c99e11a919ab2dfe016a4",
+      "head": "f64933c99b306474a210c561c438b18874fa0c7d",
       "outcome": "no-change",
-      "reason": "Docs-only: the TanStack Query guide (packages/docs/pages/advanced/tanstack-query.md) documents faxios usage as a typed queryFn with signal forwarding and error handling; no faxios API, option or behavior changed, so no skill under packages/lib/skills needs change",
+      "reason": "Docs-only: the TanStack Query guide (packages/docs/pages/advanced/tanstack-query.md) now has a 'Cancelling a query' section whose queryFn passes the query context signal to faxios, rethrows non-cancel errors and detects TanStack's CancelledError with instanceof; no faxios API, option or behavior changed, so no skill under packages/lib/skills needs change",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/tanstack-query.md at f73ee818d50cbd7253e9d5a8c26777055e1d13d1"
+        "Changed: packages/docs/pages/advanced/tanstack-query.md at a54bd0f48f28955c4927fea042d51615f5061e7d"
       ]
     }
   }
