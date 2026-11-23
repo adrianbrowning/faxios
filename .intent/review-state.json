@@ -7762,16 +7762,15 @@
       ]
     },
     "source:packages/docs/pages/plugins/retry.md": {
-      "fingerprint": "c783ff324c40a6e8b79054c4d1355483e334051dde9c9eb54e08f8ddce63e1d6",
+      "fingerprint": "af92569aa8ebb0b36b067a7f2ec6bc82711d1a475555ec321f56d5f7efa200f4",
       "snapshot": {
-        "packages/docs/pages/plugins/retry.md": "1a63f7774c4476ac77fede545c95f4d4e6d9d2321eb0f241fffba7c87de16ea6"
+        "packages/docs/pages/plugins/retry.md": "96e54ee0771238d01115757b025fe2316c727781d830864be1311abcf5e564f3"
       },
-      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
+      "head": "7c35b109cb4d5929a4e0303d64703be9c8e61d09",
       "outcome": "no-change",
-      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
+      "reason": "Docs only: the retry plugin page links the TanStack Query guide and says to pick one retry owner (the plugin or TanStack Query retry); retry plugin behavior and options are unchanged, so the configure-requests skill guidance holds.",
       "evidence": [
-        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
-        "Changed: packages/docs/pages/plugins/retry.md"
+        "Changed: packages/docs/pages/plugins/retry.md at 7ec0bbad"
       ]
     },
     "source:packages/docs/pages/plugins/timing.md": {
@@ -7960,15 +7959,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/tanstack-query.md": {
-      "fingerprint": "1bb548e9e167ffdab94a4f8866d8b722ff93d51fb7a47aafea8470d2177aae2c",
+      "fingerprint": "1506cf127ba1c09c933ae8aee207164060a57e7774bd229df9085b404bef75ce",
       "snapshot": {
-        "packages/docs/pages/advanced/tanstack-query.md": "359e07efbe3bbf571a98a957fbd38dcd3519d49c1e6c5d86da8b92aaaa555728"
+        "packages/docs/pages/advanced/tanstack-query.md": "0d41403008dcf4433c69fa78003c24abb41ee397ad5d7d407c279bed3d6fb10b"
       },
-      "head": "4c9c706e2b912caae8abffc7bc820df0c11c2649",
+      "head": "7c35b109cb4d5929a4e0303d64703be9c8e61d09",
       "outcome": "no-change",
-      "reason": "Docs-only: the TanStack Query guide (packages/docs/pages/advanced/tanstack-query.md) section \"Reading the query error\" narrows the query error with isFaxiosError or instanceof FaxiosError, builds the shown message from status and code, tells readers to log error.toJSON() (which masks authorization, proxy-authorization, cookie and auth, and redact keys) and notes a secret written into the url string (such as ?token=) stays in config.url, so pass it in params; no faxios API, option or behavior changed, so no skill under packages/lib/skills needs change",
+      "reason": "Docs only: the guide gives each example one retry owner; the plugin-owner example now explains that queryClient.query already does not retry and retry: false stops observers such as useQuery retrying on top of the retry plugin, with the delay: 0 comment next to retry({ delay: 0 }). No faxios API or behavior the configure-requests skill teaches changed.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/tanstack-query.md at ef2870d7548f82c76cbdbc1c2c385bb3fa51d1c6"
+        "Changed: packages/docs/pages/advanced/tanstack-query.md at 7ec0bbad (plugin-owner block: retry: false comment, retry({ delay: 0 }) comment)"
       ]
     }
   }

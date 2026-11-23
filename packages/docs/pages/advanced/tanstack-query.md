@@ -260,7 +260,6 @@ import { z } from "zod";
 let requests = 0;
 
 // The `retry` plugin owns retries for this instance, with its default of 3 attempts.
-// `delay: 0` retries at once for this example; keep the plugin's backoff in an app.
 const api = faxios.create({
   baseURL: "https://api.example.com",
   // Counts every request this example sends, then sends it.
@@ -270,7 +269,10 @@ const api = faxios.create({
       return fetch(input, init);
     },
   },
-}).use(retry({ delay: 0 }));
+}).use(
+  // `delay: 0` retries at once for this example; keep the plugin's backoff in an app.
+  retry({ delay: 0 }),
+);
 
 const getUser = api.define("get", "/users/{id}", {
   pathParamsSchema: z.object({ id: z.string() }),
@@ -278,7 +280,8 @@ const getUser = api.define("get", "/users/{id}", {
 });
 
 const queryClient = new QueryClient({
-  // TanStack Query doesn't retry, so a failing query makes one attempt.
+  // queryClient.query already doesn't retry; `retry: false` stops observers such as
+  // useQuery from retrying on top of the plugin, so a failing query makes one attempt.
   defaultOptions: { queries: { retry: false } },
 });
 
