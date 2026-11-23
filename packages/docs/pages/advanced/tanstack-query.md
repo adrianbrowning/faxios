@@ -433,7 +433,7 @@ The browser's `query` call returns the hydrated user without a request because t
 
 Three different caches can sit between a component and the API, and each does its own job:
 
-- **TanStack Query's cache** holds server state: the data each query function returned, by query key, in the `QueryClient`'s memory. `staleTime` decides when TanStack Query fetches a query again and `gcTime` when it drops a query nothing uses. While a query's data is fresh, TanStack Query doesn't call the query function, so faxios sends no request.
+- **TanStack Query's cache** holds server state: the data each query function returned, by query key, in the `QueryClient`'s memory. `staleTime` decides when TanStack Query fetches a query again and `gcTime` when it drops a query nothing uses. While a query's data is fresh, `queryClient.query` returns it from the cache and mounting, window focus and reconnecting refetch it only when their option is `"always"`, so faxios sends no request; `refetch`, `refetchInterval` and `invalidateQueries` still call the query function.
 - **Fetch HTTP caching** is the HTTP cache of the browser or runtime that `fetch` uses, driven by the response's `Cache-Control` and related headers. faxios has no cache option of its own: set the Fetch `cache` mode through [`fetchOptions`](/pages/advanced/request-config#fetchoptions), for example `fetchOptions: { cache: "no-store" }`, so a refetch TanStack Query starts reaches the server instead of an HTTP-cached response.
 - **A faxios response-cache plugin** doesn't exist. If one is added later, it is an HTTP-response cache inside faxios, distinct from TanStack Query's server-state cache and from Fetch HTTP caching.
 
