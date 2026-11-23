@@ -389,31 +389,38 @@ console.log(`page params: ${pageParams.join(", ")}; users: ${users.join(", ")}; 
 // page params: 1, 2; users: Ada, Grace, Linus; has next page: false
 ```
 
-The next example runs a failing page as a browser does, only so these docs, which run in Node, where TanStack Query treats observers as on a server, can show `retry: false` at work; app code in a browser doesn't need the override:
+The next example runs the same loop over a list whose `getNextPageParam` always names one more page, so it asks for page 3, which the API answers with a 503. It runs the loop as a browser does, only so these docs, which run in Node, where TanStack Query treats observers as on a server, can show `retry: false` at work; app code in a browser doesn't need the override:
 
-```ts status=503 expect=request:GET%20https://api.example.com/users%3Fpage%3D1%0A,log:page%201%3A%201%20request%2C%20failed%20with%20503
+```ts expect=request:GET%20https://api.example.com/users%3Fpage%3D3%0A,log:loaded%20pages%3A%201%2C%202%3B%20page%203%3A%201%20request%2C%20failed%20with%20503
 import faxios, { isFaxiosError } from "@gcmdev/faxios";
 import { InfiniteQueryObserver, QueryClient, environmentManager } from "@tanstack/query-core";
 
-let requests = 0;
+// The pages the API in this example answers with; it answers any other page with a 503.
+const userPages: Record<string, Array<string>> = { 1: [ "Ada", "Grace" ], 2: [ "Linus" ] };
+// How many requests the API got for each page.
+const pageRequests: Record<string, number> = {};
 
 const api = faxios.create({
   baseURL: "https://api.example.com",
-  // Counts every request this example sends, then sends it.
+  // Stands in for the API: it sends each request on, counts it, then answers with the page or a 503.
   env: {
     fetch: async (input, init) => {
-      requests += 1;
-      return fetch(input, init);
+      const request = new Request(input, init);
+      await fetch(request);
+      const page = new URL(request.url).searchParams.get("page") ?? "";
+      pageRequests[page] = (pageRequests[page] ?? 0) + 1;
+      return page in userPages ? Response.json(userPages[page]) : new Response(null, { status: 503 });
     },
   },
 });
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-const observer = new InfiniteQueryObserver(queryClient, {
-  queryKey: [ "users" ],
-  queryFn: async ({ pageParam, signal }) => (await api.get("/users", { params: { page: pageParam }, signal })).data,
+const pastTheEnd = new InfiniteQueryObserver(queryClient, {
+  queryKey: [ "users", "past the end" ],
+  queryFn: async ({ pageParam, signal }: { pageParam: number; signal: AbortSignal; }) =>
+    (await api.get<Array<string>>("/users", { params: { page: pageParam }, signal })).data,
   initialPageParam: 1,
-  getNextPageParam: () => undefined,
+  getNextPageParam: (_lastPage, _allPages, lastPageParam) => lastPageParam + 1,
 });
 
 // Docs only: treat this Node process as a browser, where observers retry unless `retry` says otherwise.
@@ -421,11 +428,15 @@ const observer = new InfiniteQueryObserver(queryClient, {
 const runsAsServer = environmentManager.isServer();
 environmentManager.setIsServer(() => false);
 try {
-  await observer.refetch({ throwOnError: true });
+  await pastTheEnd.refetch({ throwOnError: true });
+  let result = pastTheEnd.getCurrentResult();
+  while (result.hasNextPage) result = await pastTheEnd.fetchNextPage({ throwOnError: true });
 }
 catch (error) {
   if (!isFaxiosError(error)) throw error;
-  console.log(`page 1: ${requests} request, failed with ${error.status}`); // page 1: 1 request, failed with 503
+  const loaded = pastTheEnd.getCurrentResult().data?.pageParams ?? [];
+  console.log(`loaded pages: ${loaded.join(", ")}; page 3: ${pageRequests[3]} request, failed with ${error.status}`);
+  // loaded pages: 1, 2; page 3: 1 request, failed with 503
 }
 finally {
   environmentManager.setIsServer(() => runsAsServer);
