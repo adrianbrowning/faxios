@@ -324,11 +324,11 @@ console.log(`query attempts: ${attempts}, requests: ${requests}`); // query atte
 
 An infinite query loads a list one page at a time. TanStack Query keeps the pagination state: the pages loaded so far, the page param each one was fetched with, and whether there is a next page. faxios keeps none of it: each call of the query function is one ordinary request, built from the `pageParam` TanStack Query passes in, here mapped to the typed `page` query param of a `define()` endpoint. `getNextPageParam` gets the last page with the endpoint's inferred response type and returns the next page's param, or `undefined` when there are no more pages.
 
-`InfiniteQueryObserver` is the query-core primitive that `useInfiniteQuery` wraps: `refetch` loads the first page of a query that has no cached pages yet, as here, and otherwise fetches the cached pages again from the first page param, stopping early if `getNextPageParam` returns `undefined`; `fetchNextPage` adds the next page while `hasNextPage` is true. Both resolve with the error in the result when a page fails, and `hasNextPage` still describes the last page that loaded, so a loop over them passes `throwOnError: true` to stop at the first failed page. The example's second observer asks for a page the API answers with a 503, and its loop stops there after one request. This instance has no `retry` plugin, and the `QueryClient` sets `retry: false` so that a failed page fails the query after one request; see [Choosing one retry owner](#choosing-one-retry-owner) for TanStack Query's default:
+`InfiniteQueryObserver` is the query-core primitive that `useInfiniteQuery` wraps: `refetch` loads the first page of a query that has no cached pages yet, as here, and otherwise fetches the cached pages again from the first page param, stopping early if `getNextPageParam` returns `undefined`; `fetchNextPage` adds the next page while `hasNextPage` is true. Both resolve with the error in the result when a page fails, and `hasNextPage` still describes the last page that loaded, so a loop over them passes `throwOnError: true` to stop at the first failed page. The example's second observer asks for a page the API answers with a 503, and its loop stops there after one request. This instance has no `retry` plugin, and the `QueryClient` sets `retry: false` so that a failed page fails the query after one request; without it, observers in a browser retry a failed page 3 times, and on a server not at all (see [Choosing one retry owner](#choosing-one-retry-owner)). These docs run the example in Node, which TanStack Query treats as a server, so the example runs that loop as a browser does with query-core's `environmentManager.setIsServer(() => false)`, and restores the setting afterwards:
 
 ```ts expect=request:GET%20https://api.example.com/users%3Fpage%3D1%0A,request:GET%20https://api.example.com/users%3Fpage%3D2%0A,log:page%20params%3A%201%2C%202%3B%20users%3A%20Ada%2C%20Grace%2C%20Linus%3B%20has%20next%20page%3A%20false,log:loaded%20pages%3A%201%2C%202%3B%20page%203%3A%201%20request%2C%20failed%20with%20503
 import faxios, { isFaxiosError } from "@gcmdev/faxios";
-import { type InfiniteData, InfiniteQueryObserver, QueryClient, type QueryKey } from "@tanstack/query-core";
+import { type InfiniteData, InfiniteQueryObserver, QueryClient, type QueryKey, environmentManager } from "@tanstack/query-core";
 import { z } from "zod";
 
 // The pages the API in this example answers with, by their `page` query param; it answers any other page with a 503.
@@ -360,7 +360,7 @@ const listUsers = api.define("get", "/users", {
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
-// `pageParam` is typed from `initialPageParam` and `getNextPageParam`: a number here.
+// `pageParam` is the page number; it must match the type of `initialPageParam` and what `getNextPageParam` returns.
 const listUsersPage = async ({ pageParam, signal }: { pageParam: number; signal: AbortSignal; }) =>
   (await listUsers({ params: { page: pageParam }, signal })).data;
 type UsersPage = Awaited<ReturnType<typeof listUsersPage>>;
@@ -399,6 +399,9 @@ const pastTheEnd = new InfiniteQueryObserver(queryClient, {
   initialPageParam: 1,
   getNextPageParam: (_lastPage, _allPages, lastPageParam) => lastPageParam + 1,
 });
+// Run this loop as a browser does, where observers retry unless `retry` says otherwise.
+const runsAsServer = environmentManager.isServer();
+environmentManager.setIsServer(() => false);
 try {
   await loadAllPages(pastTheEnd);
 }
@@ -407,6 +410,9 @@ catch (error) {
   const loaded = pastTheEnd.getCurrentResult().data?.pageParams ?? [];
   console.log(`loaded pages: ${loaded.join(", ")}; page 3: ${pageRequests[3]} request, failed with ${error.status}`);
   // loaded pages: 1, 2; page 3: 1 request, failed with 503
+}
+finally {
+  environmentManager.setIsServer(() => runsAsServer);
 }
 ```
 
