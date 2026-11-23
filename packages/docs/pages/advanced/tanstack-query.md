@@ -365,14 +365,14 @@ The same `queryKey`, `queryFn`, `initialPageParam` and `getNextPageParam` option
 
 Server rendering with TanStack Query has three steps: prefetch the queries a page needs before you render it, dehydrate the cache into state you embed in the page, and hydrate that state into the browser's `QueryClient`, so the browser shows the data without fetching it again. The query function is the same faxios call on both sides.
 
-Create a new `QueryClient` for every request, never one at module level: a shared client keeps every user's data in one cache, so one user's data could reach another user's page. Prefetch with `queryClient.query`, which rejects when the request fails; catch that rejection to render the page anyway, because `dehydrate` leaves out failed queries by default, so the browser fetches them itself.
+Create a new `QueryClient` for every request, never one at module level: a shared client keeps every user's data in one cache, so one user's data could reach another user's page. The faxios instance can stay at module level only while it carries no per-user state: on the server, pass a visitor's cookie or token per request (for example `headers` in the query function's `getUser` call) or create the instance per request, never on a shared instance's `api.defaults.headers` or in a store a shared `authBearer`/`authenticate` getter reads, because concurrent renders would then send one user's credentials with another user's requests. Prefetch with `queryClient.query`, which rejects when the request fails; catch that rejection to render the page anyway, because `dehydrate` leaves out failed queries by default, so the browser fetches them itself.
 
-```ts expect=log:dehydrated%20queries%3A%201%2C%201,log:browser%3A%20Ada%20Lovelace%2C%20requests%3A%202
+```ts expect=log:dehydrated%20queries%3A%20user%3A42%20%7C%20user%3A7%20%7C%20none,log:browser%3A%20Ada%20Lovelace%2C%20requests%3A%203
 import faxios from "@gcmdev/faxios";
 import { type DehydratedState, QueryClient, dehydrate, hydrate } from "@tanstack/query-core";
 import { z } from "zod";
 
-// The users the API in this example answers with, by id.
+// The users the API in this example answers with, by id; any other id gets no name, so its response fails the schema.
 const userNames: Record<string, string> = { 42: "Ada Lovelace", 7: "Grace Hopper" };
 let requests = 0;
 
@@ -416,15 +416,17 @@ async function renderUserPage(id: string): Promise<DehydratedState> {
 
 const pageFor42 = await renderUserPage("42");
 const pageFor7 = await renderUserPage("7");
-// Each page carries only its own request's query.
-console.log(`dehydrated queries: ${pageFor42.queries.length}, ${pageFor7.queries.length}`); // dehydrated queries: 1, 1
+const pageForUnknown = await renderUserPage("404");
+// Each page carries only its own request's query, and the failed prefetch leaves its page without one.
+const keys = [ pageFor42, pageFor7, pageForUnknown ].map(page => page.queries.map(query => query.queryKey.join(":")).join(",") || "none");
+console.log(`dehydrated queries: ${keys.join(" | ")}`); // dehydrated queries: user:42 | user:7 | none
 
 // In the browser: hydrate the state the server embedded in the page.
 const browserClient = new QueryClient();
 hydrate(browserClient, pageFor42);
 const user = await browserClient.query(userQuery("42"));
-// The browser used the server's data, so the only requests are the two server renders.
-console.log(`browser: ${user.name}, requests: ${requests}`); // browser: Ada Lovelace, requests: 2
+// The browser used the server's data, so the only requests are the three server renders.
+console.log(`browser: ${user.name}, requests: ${requests}`); // browser: Ada Lovelace, requests: 3
 ```
 
 The browser's `query` call returns the hydrated user without a request because the query's `staleTime` keeps that data fresh. With a framework adapter, pass the same options to `useQuery` in the browser; `@tanstack/react-query` hydrates the state for you with `HydrationBoundary`. Choose `staleTime` and `gcTime` for server rendering with TanStack Query's [Server Rendering & Hydration](https://tanstack.com/query/latest/docs/framework/react/guides/ssr) guide, which also explains how to serialize the dehydrated state into the page safely: plain `JSON.stringify` output in a `<script>` tag is open to XSS. Its [Advanced Server Rendering](https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr) guide covers streaming and server components, and its [Caching](https://tanstack.com/query/latest/docs/framework/react/guides/caching) guide covers how `staleTime` and `gcTime` work together.
@@ -433,7 +435,7 @@ The browser's `query` call returns the hydrated user without a request because t
 
 Three different caches can sit between a component and the API, and each does its own job:
 
-- **TanStack Query's cache** holds server state: the data each query function returned, by query key, in the `QueryClient`'s memory. `staleTime` decides when TanStack Query fetches a query again and `gcTime` when it drops a query nothing uses. While a query's data is fresh, `queryClient.query` returns it from the cache and mounting, window focus and reconnecting refetch it only when their option is `"always"`, so faxios sends no request; `refetch`, `refetchInterval` and `invalidateQueries` still call the query function.
+- **TanStack Query's cache** holds server state: the data each query function returned, by query key, in the `QueryClient`'s memory. `staleTime` decides when TanStack Query fetches a query again and `gcTime` when it drops a query nothing uses. faxios sends a request only when TanStack Query calls the query function, so while a query's data is fresh `queryClient.query` returns it from the cache and faxios sends no request. Which triggers refetch a query (mounting, window focus, `refetchInterval`, `invalidateQueries`) is TanStack Query's to decide; see its [Important Defaults](https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults) and [Caching](https://tanstack.com/query/latest/docs/framework/react/guides/caching) guides.
 - **Fetch HTTP caching** is the HTTP cache of the browser or runtime that `fetch` uses, driven by the response's `Cache-Control` and related headers. faxios has no cache option of its own: set the Fetch `cache` mode through [`fetchOptions`](/pages/advanced/request-config#fetchoptions), for example `fetchOptions: { cache: "no-store" }`, so a refetch TanStack Query starts reaches the server instead of an HTTP-cached response.
 - **A faxios response-cache plugin** doesn't exist. If one is added later, it is an HTTP-response cache inside faxios, distinct from TanStack Query's server-state cache and from Fetch HTTP caching.
 
