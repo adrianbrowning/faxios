@@ -115,7 +115,7 @@ console.log(`state: ${state?.status} ${state?.fetchStatus}`); // state: pending 
 
 When a faxios request rejects, the query function rejects with the same error, so TanStack Query stores the faxios error as the query's `error`, the value `useQuery` returns as `error`, and the promise `queryClient.query` returned rejects with it. A query function can reject with errors that aren't faxios errors too, such as an error your own code in it throws, so narrow the error before you read faxios fields: `isFaxiosError(error)` checks the faxios brand, so it also matches an error from another copy of faxios, and `error instanceof FaxiosError` works when only one copy is loaded.
 
-Build what you show from `status` and `code`. The error's `config`, `request` and `response` hold the request's headers, credentials included, and the response body, and `message` can name the request URL; see [Error handling](/pages/advanced/error-handling) for the codes and for logging. Log `error.toJSON()`, not the error: a logger that prints the error's own fields (`console.log(error)` in Node, many structured loggers) prints its `config` with the credentials. `toJSON()` masks the `authorization`, `proxy-authorization`, `cookie` and `auth` values, and other secrets such as an API key header or a token in `params` only when you list their keys in `redact`. A secret written into the `url` string itself, such as `?token=…`, stays in the logged `config.url`, so pass it in `params` and list its key in `redact`, for example `redact: ["token"]`. The example below fails three queries: with a 404 response, with no response at all, and with an error its own query function throws. `queryClient.query` doesn't retry unless `retry` is set, so the 404 comes from a single request, as the example's request count shows; see [Choosing one retry owner](#choosing-one-retry-owner) for which layer should retry a failed query:
+Build what you show from `status` and `code`. The error's `config`, `request` and `response` hold the request's headers, credentials included, and the response body, and `message` can name the request URL; see [Error handling](/pages/advanced/error-handling) for the codes and for logging. Log `error.toJSON()`, not the error: a logger that prints the error's own fields (`console.log(error)` in Node, many structured loggers) prints its `config` with the credentials. `toJSON()` masks the `authorization`, `proxy-authorization`, `cookie` and `auth` values, and other secrets such as an API key header or a token in `params` only when you list their keys in `redact`. A secret written into the `url` string itself, such as `?token=…`, stays in the logged `config.url`, so pass it in `params` and list its key in `redact`, for example `redact: ["token"]`. faxios still sends `params` in the request URL, so `redact` masks only the logged error, and the token can still show up in browser history and in proxy or server logs. When the API accepts one, send the credential in a request header instead: an `authorization` header, which `toJSON()` masks by default, or an API key header listed in `redact`. The example below fails three queries: with a 404 response, with no response at all, and with an error its own query function throws. `queryClient.query` doesn't retry unless `retry` is set, so the 404 comes from a single request, as the example's request count shows; see [Choosing one retry owner](#choosing-one-retry-owner) for which layer should retry a failed query:
 
 ```ts status=404 expect=request:GET%20https://api.example.com/users/42%0A,log:user%3A%20error%20%5BRequest%20failed%20with%20404%20ERR_BAD_REQUEST%5D,log:requests%3A%201%2C%20same%20error%3A%20true,log:offline%20user%3A%20error%20%5BRequest%20failed%20with%20ERR_NETWORK%5D,log:settings%3A%20error%20%5BSomething%20went%20wrong%5D
 import faxios, { isFaxiosError } from "@gcmdev/faxios";
@@ -219,7 +219,7 @@ TanStack Query and the faxios [`retry` plugin](/pages/plugins/retry) can both re
 With both on, every TanStack Query attempt can run all of the plugin's attempts, so a query that keeps failing with an error the plugin retries sends up to TanStack Query's attempts times faxios's `attempts` requests: `retry: 2` (three TanStack Query attempts) with the plugin's default of 3 `attempts` sends 9 requests for a GET that keeps getting a 503, to a server that is already failing. See [Retry and error recovery](/pages/plugins/retry) for what the plugin retries and for its `attempts` and backoff options.
 :::
 
-None of the other examples on this page installs the `retry` plugin or turns on TanStack Query's retries. Their `queryClient.query` calls don't retry at all, as the error example's request count shows. The infinite query example uses observers, so it sets `retry: false`; see [Infinite queries](#infinite-queries).
+None of the other examples on this page installs the `retry` plugin or turns on TanStack Query's retries. Their `queryClient.query` calls don't retry, because `queryClient.query` doesn't retry unless `retry` is set. The infinite query example uses observers, so it sets `retry: false`; see [Infinite queries](#infinite-queries).
 
 ### TanStack Query retries
 
@@ -324,11 +324,11 @@ console.log(`query attempts: ${attempts}, requests: ${requests}`); // query atte
 
 An infinite query loads a list one page at a time. TanStack Query keeps the pagination state: the pages loaded so far, the page param each one was fetched with, and whether there is a next page. faxios keeps none of it: each call of the query function is one ordinary request, built from the `pageParam` TanStack Query passes in, here mapped to the typed `page` query param of a `define()` endpoint. `getNextPageParam` gets the last page with the endpoint's inferred response type and returns the next page's param, or `undefined` when there are no more pages.
 
-`InfiniteQueryObserver` is the query-core primitive that `useInfiniteQuery` wraps: `refetch` loads the first page of a query that has no cached pages yet, as here, and otherwise fetches the cached pages again from the first page param, stopping early if `getNextPageParam` returns `undefined`; `fetchNextPage` adds the next page while `hasNextPage` is true. Both resolve with the error in the result when a page fails, and `hasNextPage` still describes the last page that loaded, so a loop over them passes `throwOnError: true` to stop at the first failed page. The example's second observer asks for a page the API answers with a 503, and its loop stops there after one request. This instance has no `retry` plugin, and the `QueryClient` sets `retry: false` so that a failed page fails the query after one request in the browser too, where an observer retries 3 times unless `retry` is set; on the server an observer doesn't retry by default:
+`InfiniteQueryObserver` is the query-core primitive that `useInfiniteQuery` wraps: `refetch` loads the first page of a query that has no cached pages yet, as here, and otherwise fetches the cached pages again from the first page param, stopping early if `getNextPageParam` returns `undefined`; `fetchNextPage` adds the next page while `hasNextPage` is true. Both resolve with the error in the result when a page fails, and `hasNextPage` still describes the last page that loaded, so a loop over them passes `throwOnError: true` to stop at the first failed page. The example's second observer asks for a page the API answers with a 503, and its loop stops there after one request. This instance has no `retry` plugin, and the `QueryClient` sets `retry: false` so that a failed page fails the query after one request; see [Choosing one retry owner](#choosing-one-retry-owner) for TanStack Query's default:
 
 ```ts expect=request:GET%20https://api.example.com/users%3Fpage%3D1%0A,request:GET%20https://api.example.com/users%3Fpage%3D2%0A,log:page%20params%3A%201%2C%202%3B%20users%3A%20Ada%2C%20Grace%2C%20Linus%3B%20has%20next%20page%3A%20false,log:loaded%20pages%3A%201%2C%202%3B%20page%203%3A%201%20request%2C%20failed%20with%20503
 import faxios, { isFaxiosError } from "@gcmdev/faxios";
-import { InfiniteQueryObserver, QueryClient } from "@tanstack/query-core";
+import { type InfiniteData, InfiniteQueryObserver, QueryClient, type QueryKey } from "@tanstack/query-core";
 import { z } from "zod";
 
 // The pages the API in this example answers with, by their `page` query param; it answers any other page with a 503.
@@ -341,7 +341,7 @@ const pageRequests: Record<string, number> = {};
 
 const api = faxios.create({
   baseURL: "https://api.example.com",
-  // Stands in for the API: it sends each request on, counts it, then answers with the page it asked for.
+  // Stands in for the API: it sends each request on, counts it, then answers with the page it asked for, or a 503 for a page it doesn't have.
   env: {
     fetch: async (input, init) => {
       const request = new Request(input, init);
@@ -358,24 +358,32 @@ const listUsers = api.define("get", "/users", {
   responseSchema: z.object({ users: z.array(z.string()), nextPage: z.number().nullable() }),
 });
 
-const queryClient = new QueryClient({
-  // An observer retries 3 times in the browser by default; this keeps a failed page to one request there too.
-  defaultOptions: { queries: { retry: false } },
-});
+const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
+// `pageParam` is typed from `initialPageParam` and `getNextPageParam`: a number here.
+const listUsersPage = async ({ pageParam, signal }: { pageParam: number; signal: AbortSignal; }) =>
+  (await listUsers({ params: { page: pageParam }, signal })).data;
+type UsersPage = Awaited<ReturnType<typeof listUsersPage>>;
+
+// Loads every page. `throwOnError` rejects on a failed page, so the loop can't keep asking for it.
+async function loadAllPages<Key extends QueryKey>(
+  observer: InfiniteQueryObserver<UsersPage, Error, InfiniteData<UsersPage>, Key, number>,
+) {
+  await observer.refetch({ throwOnError: true });
+  let result = observer.getCurrentResult();
+  while (result.hasNextPage) result = await observer.fetchNextPage({ throwOnError: true });
+  return result;
+}
 
 const observer = new InfiniteQueryObserver(queryClient, {
   queryKey: [ "users" ],
-  // `pageParam` is typed from `initialPageParam` and `getNextPageParam`: a number here.
-  queryFn: async ({ pageParam, signal }) => (await listUsers({ params: { page: pageParam }, signal })).data,
+  queryFn: listUsersPage,
   initialPageParam: 1,
   // `lastPage` has the endpoint's inferred response type.
   getNextPageParam: lastPage => lastPage.nextPage ?? undefined,
 });
 
-// `throwOnError` rejects on a failed page, so the loop can't keep asking for it.
-await observer.refetch({ throwOnError: true });
-let result = observer.getCurrentResult();
-while (result.hasNextPage) result = await observer.fetchNextPage({ throwOnError: true });
+const result = await loadAllPages(observer);
 
 const { pageParams = [], pages = [] } = result.data ?? {};
 const users: Array<string> = pages.flatMap(page => page.users);
@@ -387,14 +395,12 @@ console.log(`page params: ${pageParams.join(", ")}; users: ${users.join(", ")}; 
 // A list whose `getNextPageParam` always names one more page, so the loop asks for page 3, which fails.
 const pastTheEnd = new InfiniteQueryObserver(queryClient, {
   queryKey: [ "users", "past the end" ],
-  queryFn: async ({ pageParam, signal }) => (await listUsers({ params: { page: pageParam }, signal })).data,
+  queryFn: listUsersPage,
   initialPageParam: 1,
   getNextPageParam: (_lastPage, _allPages, lastPageParam) => lastPageParam + 1,
 });
 try {
-  await pastTheEnd.refetch({ throwOnError: true });
-  let next = pastTheEnd.getCurrentResult();
-  while (next.hasNextPage) next = await pastTheEnd.fetchNextPage({ throwOnError: true });
+  await loadAllPages(pastTheEnd);
 }
 catch (error) {
   if (!isFaxiosError(error)) throw error;
