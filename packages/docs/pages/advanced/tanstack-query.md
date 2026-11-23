@@ -196,7 +196,7 @@ TanStack Query and the faxios [`retry` plugin](/pages/plugins/retry) can both re
 With both on, every TanStack Query attempt can run all of the plugin's attempts, so a query that keeps failing with an error the plugin retries sends up to TanStack Query's attempts times faxios's `attempts` requests: `retry: 2` (three TanStack Query attempts) with the plugin's default of 3 `attempts` sends 9 requests for a GET that keeps getting a 503, to a server that is already failing. See [Retry and error recovery](/pages/plugins/retry) for what the plugin retries and for its `attempts` and backoff options.
 :::
 
-None of the other examples on this page installs the `retry` plugin or turns on TanStack Query's retries. Their `queryClient.query` calls don't retry at all, and the error example sets `retry: false` to make that explicit. The [infinite query](#infinite-queries) example uses an observer instead, so its `retry: false` is what turns off the 3 retries an observer would otherwise make in the browser.
+None of the other examples on this page installs the `retry` plugin or turns on TanStack Query's retries. Their `queryClient.query` calls don't retry at all, and the error example sets `retry: false` to make that explicit. The infinite query example uses an observer, so it sets `retry: false`; see [Infinite queries](#infinite-queries).
 
 ### TanStack Query retries
 
@@ -333,7 +333,7 @@ const listUsers = api.define("get", "/users", {
 });
 
 const queryClient = new QueryClient({
-  // TanStack Query's retries are off and no retry plugin is installed: a failed page fails the query after one request.
+  // No retries, so a failed page fails the query after one request.
   defaultOptions: { queries: { retry: false } },
 });
 
@@ -359,4 +359,4 @@ console.log(`page params: ${pageParams.join(", ")}; users: ${users.join(", ")}; 
 // page params: 1, 2; users: Ada, Grace, Linus; has next page: false
 ```
 
-The same `queryKey`, `queryFn`, `initialPageParam` and `getNextPageParam` options work unchanged with `useInfiniteQuery` in a framework adapter such as `@tanstack/react-query`, which returns the same `data`, `hasNextPage` and `fetchNextPage`. Without an observer, `queryClient.infiniteQuery` takes the same options and resolves with the `{ pages, pageParams }` data, but it doesn't walk every page the way the `fetchNextPage` loop above does. On an empty cache it fetches and caches only the `initialPageParam` page, or up to `pages` pages from the start when you also pass `pages` along with `getNextPageParam`. When the query is already cached, it returns the cached pages if they are fresh, and otherwise fetches them again like `refetch`.
+The same `queryKey`, `queryFn`, `initialPageParam` and `getNextPageParam` options work unchanged with `useInfiniteQuery` in a framework adapter such as `@tanstack/react-query`, which returns the same `data`, `hasNextPage` and `fetchNextPage`. Without an observer, `queryClient.infiniteQuery` takes the same options and resolves with the `{ pages, pageParams }` data, but it doesn't walk every page the way the `fetchNextPage` loop above does. On an empty cache it fetches and caches only the `initialPageParam` page, or up to `pages` pages from the start when you also pass `pages` along with `getNextPageParam`. When the query is already cached, it returns the cached pages if they are fresh; otherwise it fetches them again from the first page param, like `refetch`, or fetches up to `pages` pages when you pass `pages`, and the cache keeps only those.
