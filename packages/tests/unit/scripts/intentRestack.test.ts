@@ -12,7 +12,7 @@ const recordedReport = ".bin/recorded.json";
 
 type Item = { changedFiles: Array<string>; id: string; };
 type FakeOptions = {
-  /** `--record` fails (exit 2) on this branch. */
+  /** `--record` fails on this branch, with exit 4: the code the script uses for a failed check. */
   failRecordOn?: string;
   /** `--json` items for these branches; the others get the default items. */
   perBranch?: Record<string, Array<Item>>;
@@ -34,7 +34,7 @@ case "$*" in
 ${arms.join("\n")}
     esac | tee "$dir/report.json" ;;
   *--record*)
-    if [ "$branch" = "${failRecordOn}" ]; then echo "record rejected" >&2; exit 2; fi
+    if [ "$branch" = "${failRecordOn}" ]; then echo "record rejected" >&2; exit 4; fi
     cp .intent/review.json "$dir/recorded.json"
     jq --slurpfile r .intent/review.json '.items += ($r[0].items | map(select(.outcome) | {key: .id, value: {outcome, reason, evidence}}) | from_entries)' ${state} > "$dir/state.json"
     mv "$dir/state.json" ${state} ;;
@@ -304,13 +304,14 @@ describe("scripts/intent-restack.sh stack", () => {
     });
   });
 
-  it("stops at a layer that fails for any other reason, leaving the layers above alone", () => {
+  it("stops at a layer that fails for any other reason, even with exit 4, leaving the layers above alone", () => {
     repo.tool("pnpm", fakePnpm(items, { perBranch, failRecordOn: "l1" }));
 
     const result = repo.run("stack");
 
-    expect(result.status).toBe(2);
+    expect(result.status).toBe(4);
     expect(result.stderr).toContain("record rejected");
+    expect(result.stderr).not.toContain("check failed on these layers");
     expect(result.stdout).not.toContain("== l2");
     expect(repo.git("rev-parse", "l2")).toBe(layer2);
   });

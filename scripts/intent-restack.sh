@@ -38,6 +38,9 @@ set -euo pipefail
 
 state=.intent/review-state.json
 usage="usage: scripts/intent-restack.sh rebase <base> | record <base> [<original>] | stack"
+# Set by `stack`: record() writes to this file when the check fails, so `stack` can tell a failed
+# check from another command that exits 4.
+check_failed=""
 
 in_rebase() {
   [ -d "$(git rev-parse --git-path rebase-merge)" ] || [ -d "$(git rev-parse --git-path rebase-apply)" ]
@@ -84,6 +87,7 @@ record() {
     echo "Amended the review into $(git log --oneline -1)."
   fi
   if ! pnpm exec intent maintainer check --base "$base" --artifacts _artifacts | tail -1; then
+    [ -z "$check_failed" ] || echo "$base" > "$check_failed"
     return 4
   fi
 }
@@ -126,6 +130,8 @@ stack() {
   local view trunk branch below old i status
   local -a branches=() olds=() failed=()
   view="$(gh stack view --json)"
+  check_failed="$(mktemp)"
+  trap 'rm -f "$check_failed"' EXIT
   trunk="origin/$(jq -r '.trunk' <<< "$view")"
   # `base` is the parent tip gh stack last saw in the branch: the commit the layer was built on.
   while IFS=$'\t' read -r branch old; do
@@ -140,7 +146,8 @@ stack() {
     echo "== $branch on $below"
     git checkout --quiet "$branch"
     # The subshell keeps errexit on inside rebase and record (an `if` or `||` around the call
-    # would turn it off), so only a failed check (exit 4) moves on to the next layer.
+    # would turn it off), so only a failed check moves on to the next layer.
+    : > "$check_failed"
     set +e
     (
       set -e
@@ -152,11 +159,11 @@ stack() {
     )
     status=$?
     set -e
-    case "$status" in
-      0) ;;
-      4) failed+=("$branch") ;;
-      *) exit "$status" ;;
-    esac
+    if [ "$status" -ne 0 ] && [ -s "$check_failed" ]; then
+      failed+=("$branch")
+    elif [ "$status" -ne 0 ]; then
+      exit "$status"
+    fi
   done
   if [ "${#failed[@]}" -gt 0 ]; then
     echo "intent maintainer check failed on these layers:" >&2
