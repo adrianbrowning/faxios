@@ -98,7 +98,7 @@ Rules:
 
 Done when the PR is open and every required check is green.
 
-1. **Record the Intent review.** First update `packages/lib/skills/configure-requests/` when the change alters what the skill teaches. Then record the review as **Per-PR Intent Review** in `AGENTS.md` says.
+1. **Record the Intent review.** First update `packages/lib/skills/configure-requests/` when the change alters what the skill teaches. Then record the review as [`docs/agents/intent-review.md`](../../../docs/agents/intent-review.md) says.
 2. **Push and open the PR.** `gh pr create` and `gh pr edit` fail here (see `docs/agents/issue-tracker.md`), so open it with `gh api repos/adrianbrowning/faxios/pulls -f title=… -f head=<branch> -f base=main -F body=@<file> -q .html_url`. The body has a Summary, `Closes #N` (or `Part of #N` when the issue keeps a later part), each test with what it failed with before the fix, and the checks you ran. Set the issue's milestone on the PR with `gh api -X PATCH repos/adrianbrowning/faxios/issues/<PR> -F milestone=<number>`.
 3. **Wait for CI.** `scripts/pr-ci-status.sh <PR>` exits 0 when every workflow is green. Fix a failure, push, and run it again.
 4. **Rebase with the review.** A rebase onto a new `main` or a lower stack layer conflicts on `.intent/review-state.json` and leaves the review pending. Run `scripts/intent-restack.sh rebase <base>` in the branch's worktree, or `scripts/intent-restack.sh record <base>` after `gh stack rebase`.

@@ -21,17 +21,7 @@ This file is the canonical contributor guide for both human and AI agents workin
 - **Docs:** `pnpm docs:dev` serves the site and `pnpm docs:build` builds it as the deploy does. `test:docs-examples` type-checks and runs the js/ts blocks of every first-party Markdown file (markers in `packages/tests/docs-examples/extract.ts`), checks every `contract=` declaration block against the shipped declarations, and checks that the API reference lists every root export and the Request config page has a section for every request config key. A change to a public signature, root export or request option updates those pages in the same PR.
 - **Code examples in Markdown:** [`mdcode.config.json`](mdcode.config.json) lists the Markdown files `mdcode-ts` keeps in sync. Every fenced block is one of three kinds. A block with `file=` (and optionally `region=`) is a copy of a source file under `packages/tests/docs-examples/sources/`; edit the source, never the copy. ESLint (`pnpm lint`) checks the source, and `test:docs-examples` type-checks and runs the copy against the built package like any other block. A js/ts block without `file=` is written in the Markdown and checked by `test:docs-examples` with its markers. Any other block must be in a language `extract.ts` lists in `NOT_EXAMPLES` with a reason (shell commands, diffs, output, data). `test:docs-examples` fails on a block of any other language, and on a tracked Markdown file that is neither in `mdcode.config.json` nor in `EXCLUDED` in `extract.ts`. The exclusions are the generated `packages/lib/CHANGELOG.md`, the installed agent skills in `.agents/skills/` and `.claude/skills/`, `_artifacts/` and `.intent/`; pending `.bumpy/` files are scanned but not synced, since they disappear at each release. To change a source-backed example: change the source and lint it (`pnpm lint`), review the Markdown change with `pnpm docs:sync` (a diff, writes nothing), apply it with `pnpm docs:sync:apply`, then run `pnpm check`, which type-checks and runs the copy. `pnpm docs:sync:check` (`mdcode update --project --check`) fails on drift, a missing source or region, malformed metadata or an unsafe path.
 - **Issues, PRs, stacks and CI status:** [`docs/agents/issue-tracker.md`](docs/agents/issue-tracker.md).
-
-## Per-PR Intent Review
-
-`check-skills` (`validate / Validate intent skills`) fails a PR with any pending Intent review item, so every PR whose changes Intent tracks, each stacked PR included, records its own review. CI checks against the PR base, so `<base>` is `$(git merge-base origin/main HEAD)` for a PR against main and `$(git merge-base <parent branch> HEAD)` for a stacked PR.
-
-1. Run `pnpm exec intent maintainer review --base <base> --json > .intent/review.json`. `.intent/**` is outside Intent's review.
-2. In that report, set `outcome`, `reason` and `evidence` on the items whose files this PR changed. Leave every other item unannotated: the list can include skill and planning items outside the diff.
-3. Run `pnpm exec intent maintainer review --record .intent/review.json` (it takes no `--base`), then delete `.intent/review.json`. After any further edit, start again at step 1: recording rejects an item whose files changed since the report.
-4. Commit `.intent/review-state.json` in the PR's last commit, and confirm `pnpm exec intent maintainer check --base <base>` passes.
-
-An item left unannotated still fails that check. When an untracked file the workflow made caused it, delete that file (only files the workflow made, never the user's) and start again at step 1. When the item belongs to a lower stack layer, record it in that layer.
+- **Per-PR Intent review (`check-skills`):** [`docs/agents/intent-review.md`](docs/agents/intent-review.md).
 
 ## AI Agent Marker
 

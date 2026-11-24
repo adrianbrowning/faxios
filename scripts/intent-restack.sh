@@ -54,7 +54,7 @@ record() {
   else
     git show "$original:$state" > "$previous" 2> /dev/null || echo '{"items":{}}' > "$previous"
     git diff --no-renames --name-only -z "$(git merge-base "$base" HEAD)" HEAD | jq -Rs 'split("\u0000") | map(select(length > 0))' > "$diff"
-    # Per-PR Intent Review in AGENTS.md: record only this layer's items, leave the rest unresolved.
+    # docs/agents/intent-review.md: record only this layer's items, leave the rest unresolved.
     jq --slurpfile previous "$previous" --slurpfile diff "$diff" '
       .items |= map(
         . as $item
