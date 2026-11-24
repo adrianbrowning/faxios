@@ -10,28 +10,30 @@
 #                               stops the script with exit 3 and leaves the rebase for you to finish
 #                               (then run `record`). Then records the reviews, as `record` does.
 #   record <base> [<original>]  Record this layer's pending review items against <base>: the ones
-#                               whose changed files are all in the layer's diff since <base>. An
-#                               item with a record in <original>'s review-state.json (default: the
-#                               branch's pushed tip, origin/<branch>) gets that outcome, reason and
-#                               evidence again. It prints every other item as left pending, even one
-#                               with an earlier record, since the layer that owns it records it.
-#                               Then it amends the review into the last commit. Use it after
-#                               `gh stack rebase` or `gh stack sync`.
+#                               that list changed files, all of them in the layer's diff since
+#                               <base>. An item with a record in <original>'s review-state.json
+#                               (default: the branch's pushed tip, origin/<branch>) gets that
+#                               outcome, reason and evidence again; the others get "no-change" with
+#                               their changed files as evidence. It prints every other item as left
+#                               pending, even one with an earlier record or no changed files, and
+#                               skips recording when no item is the layer's. Then it amends the
+#                               review into the last commit and runs `intent maintainer check`. Use
+#                               it after `gh stack rebase` or `gh stack sync`.
 #   stack                       For every layer of the current gh stack, bottom first: rebase it
 #                               onto the layer below (if that layer moved) and record its reviews.
 #                               Use it after amending a layer, e.g. to record that layer's review.
-#                               Every layer must be free to check out in this worktree. A conflict
+#                               Every layer must be free to check out in this worktree. A layer
+#                               whose check fails does not stop it: it lists those layers at the
+#                               end and exits 4. Any other error stops it at that layer. A conflict
 #                               outside .intent/review-state.json exits 3; finish that rebase, run
 #                               `record`, then run `stack` again.
 #
-# A layer item with no earlier record is recorded as "no-change" with its changed files as
-# evidence. Check that outcome when the layer changes what the skill teaches. An item left pending
-# still fails `intent maintainer check`: when a stray untracked file the workflow made caused it,
-# remove that file (only files the workflow made, never the user's); otherwise record it in the
-# stack layer that owns it.
+# Check a "no-change" outcome when the layer changes what the skill teaches. An item left pending
+# still fails `intent maintainer check`; docs/agents/intent-review.md says how to handle it.
 #
 # Run it in the branch's worktree, bottom layer first. For a stack, <base> is the branch below.
-# Exit: 0 done, 1 error, 3 a conflict outside .intent/review-state.json.
+# Exit: 0 done, 1 error, 3 a conflict outside .intent/review-state.json, 4 `intent maintainer check`
+# failed (an item is left pending).
 set -euo pipefail
 
 state=.intent/review-state.json
@@ -59,8 +61,8 @@ record() {
       .items |= map(
         . as $item
         | ($previous[0].items[$item.id] // null) as $old
-        | if ($item.changedFiles | length) == 0
-             or any($item.changedFiles[]; . as $file | $diff[0] | all(. != $file)) then .
+        | (($item.changedFiles | length) > 0 and ($item.changedFiles - $diff[0] | length) == 0) as $inLayer
+        | if ($inLayer | not) then .
           elif $old then . + {outcome: $old.outcome, reason: $old.reason, evidence: $old.evidence}
           else
             . + {outcome: "no-change",
@@ -81,7 +83,9 @@ record() {
     git commit --quiet --amend --no-edit
     echo "Amended the review into $(git log --oneline -1)."
   fi
-  pnpm exec intent maintainer check --base "$base" --artifacts _artifacts | tail -1
+  if ! pnpm exec intent maintainer check --base "$base" --artifacts _artifacts | tail -1; then
+    return 4
+  fi
 }
 
 # rebase <base> [<upstream>]: replay the commits after <upstream> (default <base>) onto <base>.
@@ -119,8 +123,8 @@ rebase() {
 }
 
 stack() {
-  local view trunk branch below old i
-  local -a branches=() olds=()
+  local view trunk branch below old i status
+  local -a branches=() olds=() failed=()
   view="$(gh stack view --json)"
   trunk="origin/$(jq -r '.trunk' <<< "$view")"
   # `base` is the parent tip gh stack last saw in the branch: the commit the layer was built on.
@@ -135,12 +139,30 @@ stack() {
     [ "$i" -gt 0 ] && below="${branches[$((i - 1))]}"
     echo "== $branch on $below"
     git checkout --quiet "$branch"
-    if [ "$i" -gt 0 ] && [ "$(git rev-parse "$below")" != "$old" ] && git merge-base --is-ancestor "$old" "$branch"; then
-      rebase "$below" "$old"
-    else
-      record "$below" "$(git rev-parse HEAD)"
-    fi
+    # The subshell keeps errexit on inside rebase and record (an `if` or `||` around the call
+    # would turn it off), so only a failed check (exit 4) moves on to the next layer.
+    set +e
+    (
+      set -e
+      if [ "$i" -gt 0 ] && [ "$(git rev-parse "$below")" != "$old" ] && git merge-base --is-ancestor "$old" "$branch"; then
+        rebase "$below" "$old"
+      else
+        record "$below" "$(git rev-parse HEAD)"
+      fi
+    )
+    status=$?
+    set -e
+    case "$status" in
+      0) ;;
+      4) failed+=("$branch") ;;
+      *) exit "$status" ;;
+    esac
   done
+  if [ "${#failed[@]}" -gt 0 ]; then
+    echo "intent maintainer check failed on these layers:" >&2
+    printf '  %s\n' "${failed[@]}" >&2
+    exit 4
+  fi
 }
 
 action="${1:?$usage}"
