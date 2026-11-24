@@ -54,8 +54,7 @@ record() {
   previous="$(mktemp)"
   diff="$(mktemp)"
 
-  # Exits non-zero while items are pending; the JSON report is what's needed.
-  pnpm exec intent maintainer review --base "$base" --json > "$pending" 2> /dev/null || true
+  pnpm exec intent maintainer review --base "$base" --json > "$pending"
   if [ "$(jq '.items | length' "$pending")" = "0" ]; then
     echo "No pending review items against $base."
   else

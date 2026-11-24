@@ -14,6 +14,8 @@ type Item = { changedFiles: Array<string>; id: string; };
 type FakeOptions = {
   /** `--record` fails on this branch, with exit 4: the code the script uses for a failed check. */
   failRecordOn?: string;
+  /** `review --json` prints its report but then fails (exit 2) on this branch. */
+  failReviewOn?: string;
   /** `check` fails skill validation on this branch, before it looks at anything else. */
   invalidOn?: string;
   /** `--json` items for these branches; the others get the default items. */
@@ -27,7 +29,7 @@ type FakeOptions = {
 // gives the real fields the script reads: problems, staleFiles and the pending review items.
 // `check` fails on validation first; otherwise, like Intent, it fails with "Maintainer check
 // failed." while a file is stale or an item of the last `--json` report has no recorded outcome.
-function fakePnpm(items: Array<Item>, { failRecordOn = "", invalidOn = "", perBranch = {}, staleOn = "" }: FakeOptions = {}) {
+function fakePnpm(items: Array<Item>, { failRecordOn = "", failReviewOn = "", invalidOn = "", perBranch = {}, staleOn = "" }: FakeOptions = {}) {
   const arms = [ ...Object.entries(perBranch), [ "*", items ] as const ]
     .map(([ branch, branchItems ]) => `      ${branch}) echo '${JSON.stringify({ items: branchItems })}' ;;`);
   return `#!/bin/sh
@@ -47,7 +49,8 @@ case "$*" in
     rm -f "$dir/recorded.json"
     case "$branch" in
 ${arms.join("\n")}
-    esac | tee "$dir/report.json" ;;
+    esac | tee "$dir/report.json"
+    if [ "$branch" = "${failReviewOn}" ]; then echo "review failed" >&2; exit 2; fi ;;
   *--record*)
     if [ "$branch" = "${failRecordOn}" ]; then echo "record rejected" >&2; exit 4; fi
     cp .intent/review.json "$dir/recorded.json"
@@ -351,6 +354,17 @@ describe("scripts/intent-restack.sh stack", () => {
     expect(result.status).toBe(4);
     expect(result.stderr).toContain("SKILL.md validation failed");
     expect(result.stderr).not.toContain("check failed on these layers");
+    expect(result.stdout).not.toContain("== l2");
+    expect(repo.git("rev-parse", "l2")).toBe(layer2);
+  });
+
+  it("stops at a layer whose review report fails, even when it printed a report", () => {
+    repo.tool("pnpm", fakePnpm(items, { perBranch, failReviewOn: "l1" }));
+
+    const result = repo.run("stack");
+
+    expect(result.status).toBe(2);
+    expect(result.stderr).toContain("review failed");
     expect(result.stdout).not.toContain("== l2");
     expect(repo.git("rev-parse", "l2")).toBe(layer2);
   });
