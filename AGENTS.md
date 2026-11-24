@@ -5,6 +5,7 @@ Use the repository’s installed Intent. If it is unavailable, report the missin
 Before substantial library source, documentation, examples, tests, or skill work, run `pnpm exec intent meta generate-skill` and follow the packaged maintainer procedure.
 Use the current request and repository evidence. For initial skills, propose a useful batch and reuse any scope already agreed with the maintainer.
 Before handing off a skill batch or library change, run `pnpm exec intent maintainer review --json`. Follow the maintainer procedure to update affected guidance, run task checks, and record completed review outcomes. Report an evidence-backed no-op or missing evidence explicitly.
+Every PR whose changes Intent tracks, each stacked PR included, records its own Intent review in its last commit: outcomes for the files that PR changed only, leaving other entries as they are. It must pass `pnpm exec intent maintainer check --base $(git merge-base origin/main HEAD)`.
 Create and incrementally maintain domain_map.yaml, skill_spec.md, and skill_tree.yaml in the established artifact location for every skill batch. Preserve prior tasks, maintainer decisions, and remaining work.
 Keep maintainer decisions and changes in the repository; do not require the user to repeat the procedure in later sessions.
 Use intent maintainer setup to initialize missing records, maintainer add to register skills, maintainer status to identify work, and maintainer sync to update generated metadata. Finish with intent maintainer check.
