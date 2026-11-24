@@ -404,7 +404,7 @@ const api = faxios.create({
 });
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-const pastTheEnd = new InfiniteQueryObserver(queryClient, {
+const observer = new InfiniteQueryObserver(queryClient, {
   queryKey: [ "users", "past the end" ],
   queryFn: async ({ pageParam, signal }: { pageParam: number; signal: AbortSignal; }) =>
     (await api.get<Array<string>>("/users", { params: { page: pageParam }, signal })).data,
@@ -417,13 +417,13 @@ const pastTheEnd = new InfiniteQueryObserver(queryClient, {
 const runsAsServer = environmentManager.isServer();
 environmentManager.setIsServer(() => false);
 try {
-  await pastTheEnd.refetch({ throwOnError: true });
-  let result = pastTheEnd.getCurrentResult();
-  while (result.hasNextPage) result = await pastTheEnd.fetchNextPage({ throwOnError: true });
+  await observer.refetch({ throwOnError: true });
+  let result = observer.getCurrentResult();
+  while (result.hasNextPage) result = await observer.fetchNextPage({ throwOnError: true });
 }
 catch (error) {
   if (!isFaxiosError(error)) throw error;
-  const loaded = pastTheEnd.getCurrentResult().data?.pageParams ?? [];
+  const loaded = observer.getCurrentResult().data?.pageParams ?? [];
   console.log(`loaded pages: ${loaded.join(", ")}; page 3: ${pageRequests[3]} request, failed with ${error.status}`);
   // loaded pages: 1, 2; page 3: 1 request, failed with 503
 }
