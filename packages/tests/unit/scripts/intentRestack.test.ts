@@ -128,7 +128,7 @@ describe("scripts/intent-restack.sh record", () => {
     expect(result.status).toBe(0);
     expect(result.stdout).toContain("skill:item: no-change");
     expect(result.stdout).toContain("skill:outside: left pending, outside this layer");
-    const recorded = JSON.parse(readFileSync(join(repo, state), "utf8")) as { items: Array<{ id: string; outcome?: string }> };
+    const recorded = JSON.parse(readFileSync(join(repo, state), "utf8")) as { items: Array<{ id: string; outcome?: string; }>; };
     expect(recorded.items).toEqual([
       expect.objectContaining({ id: "skill:item", outcome: "no-change" }),
       { id: "skill:outside", changedFiles: [ "b.txt" ] },
