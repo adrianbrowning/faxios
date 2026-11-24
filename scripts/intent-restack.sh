@@ -25,8 +25,9 @@
 #
 # A layer item with no earlier record is recorded as "no-change" with its changed files as
 # evidence. Check that outcome when the layer changes what the skill teaches. An item left pending
-# still fails `intent maintainer check`: remove the stray untracked file that made it, or record
-# it in the stack layer that owns it.
+# still fails `intent maintainer check`: when a stray untracked file the workflow made caused it,
+# remove that file (only files the workflow made, never the user's); otherwise record it in the
+# stack layer that owns it.
 #
 # Run it in the branch's worktree, bottom layer first. For a stack, <base> is the branch below.
 # Exit: 0 done, 1 error, 3 a conflict outside .intent/review-state.json.
