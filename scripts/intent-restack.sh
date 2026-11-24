@@ -9,9 +9,12 @@
 #                               .intent/review-state.json takes <base>'s copy; any other conflict
 #                               stops the script with exit 3 and leaves the rebase for you to finish
 #                               (then run `record`). Then records the reviews, as `record` does.
-#   record <base> [<original>]  Record every pending review item against <base>, copying outcome,
-#                               reason and evidence from <original>'s review-state.json (default:
-#                               the branch's pushed tip, origin/<branch>), and amend it into the
+#   record <base> [<original>]  Record this layer's pending review items against <base>: the ones
+#                               with a record in <original>'s review-state.json (default: the
+#                               branch's pushed tip, origin/<branch>), whose outcome, reason and
+#                               evidence it copies, and the ones whose files the layer changed
+#                               since <base>. It prints every other item as left pending, since the
+#                               layer that owns it records it. Then it amends the review into the
 #                               last commit. Use it after `gh stack rebase` or `gh stack sync`.
 #   stack                       For every layer of the current gh stack, bottom first: rebase it
 #                               onto the layer below (if that layer moved) and record its reviews.
@@ -20,8 +23,10 @@
 #                               outside .intent/review-state.json exits 3; finish that rebase, run
 #                               `record`, then run `stack` again.
 #
-# A pending item with no earlier record is recorded as "no-change" with its changed files as
-# evidence. Check that outcome when the layer changes what the skill teaches.
+# A layer item with no earlier record is recorded as "no-change" with its changed files as
+# evidence. Check that outcome when the layer changes what the skill teaches. An item left pending
+# still fails `intent maintainer check`: remove the stray untracked file that made it, or record
+# it in the stack layer that owns it.
 #
 # Run it in the branch's worktree, bottom layer first. For a stack, <base> is the branch below.
 # Exit: 0 done, 1 error, 3 a conflict outside .intent/review-state.json.
@@ -35,9 +40,10 @@ in_rebase() {
 }
 
 record() {
-  local base="$1" original="$2" pending previous
+  local base="$1" original="$2" pending previous diff
   pending="$(mktemp)"
   previous="$(mktemp)"
+  diff="$(mktemp)"
 
   # Exits non-zero while items are pending; the JSON report is what's needed.
   pnpm exec intent maintainer review --base "$base" --json > "$pending" 2> /dev/null || true
@@ -45,20 +51,26 @@ record() {
     echo "No pending review items against $base."
   else
     git show "$original:$state" > "$previous" 2> /dev/null || echo '{"items":{}}' > "$previous"
-    jq --slurpfile previous "$previous" '
+    git diff --name-only "$(git merge-base "$base" HEAD)" HEAD | jq -Rn '[inputs]' > "$diff"
+    # Per-PR Intent Review in AGENTS.md: record only this layer's items, leave the rest unresolved.
+    jq --slurpfile previous "$previous" --slurpfile diff "$diff" '
       .items |= map(
         . as $item
         | ($previous[0].items[$item.id] // null) as $old
-        | . + (if $old then {outcome: $old.outcome, reason: $old.reason, evidence: $old.evidence}
-               else {outcome: "no-change",
-                     reason: "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
-                     evidence: ["Changed files: \($item.changedFiles | join(", "))"]} end)
+        | if $old then . + {outcome: $old.outcome, reason: $old.reason, evidence: $old.evidence}
+          elif any($item.changedFiles[]; . as $file | $diff[0] | any(. == $file)) then
+            . + {outcome: "no-change",
+                 reason: "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+                 evidence: ["Changed files: \($item.changedFiles | join(", "))"]}
+          else . end
       )' "$pending" > .intent/review.json
-    jq -r '.items[] | "  \(.id): \(.outcome)"' .intent/review.json
-    pnpm exec intent maintainer review --record .intent/review.json > /dev/null
+    jq -r '.items[] | "  \(.id): \(.outcome // "left pending, outside this layer")"' .intent/review.json
+    if [ "$(jq '[.items[] | select(.outcome)] | length' .intent/review.json)" != "0" ]; then
+      pnpm exec intent maintainer review --record .intent/review.json > /dev/null
+    fi
     rm -f .intent/review.json
   fi
-  rm -f "$pending" "$previous"
+  rm -f "$pending" "$previous" "$diff"
 
   if ! git diff --quiet -- "$state"; then
     git add "$state"
