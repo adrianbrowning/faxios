@@ -14,20 +14,35 @@ type Item = { changedFiles: Array<string>; id: string; };
 type FakeOptions = {
   /** `--record` fails on this branch, with exit 4: the code the script uses for a failed check. */
   failRecordOn?: string;
+  /** `check` fails skill validation on this branch, before it looks at anything else. */
+  invalidOn?: string;
   /** `--json` items for these branches; the others get the default items. */
   perBranch?: Record<string, Array<Item>>;
+  /** A generated file is stale on this branch, which fails `check` and shows in `status --json`. */
+  staleOn?: string;
 };
 
 // Stands in for `pnpm exec intent maintainer`. `--json` prints the pending items. `--record` saves the
-// report to .bin/recorded.json and merges its annotated items into the review state. `check` fails
-// while an item of the last `--json` report has no outcome in the recorded report.
-function fakePnpm(items: Array<Item>, { perBranch = {}, failRecordOn = "" }: FakeOptions = {}) {
+// report to .bin/recorded.json and merges its annotated items into the review state. `status --json`
+// gives the real fields the script reads: problems, staleFiles and the pending review items.
+// `check` fails on validation first; otherwise, like Intent, it fails with "Maintainer check
+// failed." while a file is stale or an item of the last `--json` report has no recorded outcome.
+function fakePnpm(items: Array<Item>, { failRecordOn = "", invalidOn = "", perBranch = {}, staleOn = "" }: FakeOptions = {}) {
   const arms = [ ...Object.entries(perBranch), [ "*", items ] as const ]
     .map(([ branch, branchItems ]) => `      ${branch}) echo '${JSON.stringify({ items: branchItems })}' ;;`);
   return `#!/bin/sh
 dir="$(dirname "$0")"
 branch="$(git branch --show-current)"
+recorded="$dir/recorded.json"
+[ -f "$recorded" ] || recorded=/dev/null
+stale='[]'
+if [ "$branch" = "${staleOn}" ]; then stale='["packages/lib/package.json"]'; fi
+pending() {
+  jq -c --slurpfile r "$recorded" '[.items[].id] - [($r[0].items // [])[] | select(.outcome) | .id]' "$dir/report.json"
+}
 case "$*" in
+  *"maintainer status"*)
+    jq -n --argjson stale "$stale" --argjson items "$(pending)" '{problems: [], staleFiles: $stale, review: {items: $items}}' ;;
   *--json*)
     rm -f "$dir/recorded.json"
     case "$branch" in
@@ -39,10 +54,9 @@ ${arms.join("\n")}
     jq --slurpfile r .intent/review.json '.items += ($r[0].items | map(select(.outcome) | {key: .id, value: {outcome, reason, evidence}}) | from_entries)' ${state} > "$dir/state.json"
     mv "$dir/state.json" ${state} ;;
   *)
-    recorded="$dir/recorded.json"
-    [ -f "$recorded" ] || recorded=/dev/null
-    if ! jq -e --slurpfile r "$recorded" '[.items[].id] - [($r[0].items // [])[] | select(.outcome) | .id] | length == 0' "$dir/report.json" > /dev/null; then
-      echo "pending review items" >&2
+    if [ "$branch" = "${invalidOn}" ]; then echo "SKILL.md validation failed" >&2; exit 1; fi
+    if [ "$stale" != "[]" ] || [ "$(pending)" != "[]" ]; then
+      echo "Maintainer check failed. Resolve the authoring issues, run intent maintainer sync, and record review outcomes." >&2
       exit 1
     fi
     echo "checked" ;;
@@ -288,7 +302,7 @@ describe("scripts/intent-restack.sh stack", () => {
     rmSync(repo.repo, { recursive: true, force: true });
   });
 
-  it("goes on past a layer whose check fails, then lists that layer", () => {
+  it("goes on past a layer whose check fails only on pending review items, then lists that layer", () => {
     // l1 leaves skill:other pending.
     repo.tool("pnpm", fakePnpm(items, { perBranch }));
 
@@ -311,6 +325,31 @@ describe("scripts/intent-restack.sh stack", () => {
 
     expect(result.status).toBe(4);
     expect(result.stderr).toContain("record rejected");
+    expect(result.stderr).not.toContain("check failed on these layers");
+    expect(result.stdout).not.toContain("== l2");
+    expect(repo.git("rev-parse", "l2")).toBe(layer2);
+  });
+
+  it("stops at a layer whose check fails on a stale file, leaving the layers above alone", () => {
+    // l1 records all its items, so only the stale file fails its check.
+    repo.tool("pnpm", fakePnpm(items, { perBranch: { ...perBranch, l1: items.slice(0, 1) }, staleOn: "l1" }));
+
+    const result = repo.run("stack");
+
+    expect(result.status).toBe(4);
+    expect(result.stderr).toContain("Maintainer check failed.");
+    expect(result.stderr).not.toContain("check failed on these layers");
+    expect(result.stdout).not.toContain("== l2");
+    expect(repo.git("rev-parse", "l2")).toBe(layer2);
+  });
+
+  it("stops at a layer whose skills fail validation, even with review items pending", () => {
+    repo.tool("pnpm", fakePnpm(items, { perBranch, invalidOn: "l1" }));
+
+    const result = repo.run("stack");
+
+    expect(result.status).toBe(4);
+    expect(result.stderr).toContain("SKILL.md validation failed");
     expect(result.stderr).not.toContain("check failed on these layers");
     expect(result.stdout).not.toContain("== l2");
     expect(repo.git("rev-parse", "l2")).toBe(layer2);

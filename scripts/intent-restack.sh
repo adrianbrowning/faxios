@@ -23,8 +23,10 @@
 #                               onto the layer below (if that layer moved) and record its reviews.
 #                               Use it after amending a layer, e.g. to record that layer's review.
 #                               Every layer must be free to check out in this worktree. A layer
-#                               whose check fails does not stop it: it lists those layers at the
-#                               end and exits 4. Any other error stops it at that layer. A conflict
+#                               whose check fails only on pending review items does not stop it:
+#                               it lists those layers at the end and exits 4. Any other error stops
+#                               it at that layer, a check that fails for another reason (skill
+#                               validation, authoring problems, files to sync) included. A conflict
 #                               outside .intent/review-state.json exits 3; finish that rebase, run
 #                               `record`, then run `stack` again.
 #
@@ -33,21 +35,21 @@
 #
 # Run it in the branch's worktree, bottom layer first. For a stack, <base> is the branch below.
 # Exit: 0 done, 1 error, 3 a conflict outside .intent/review-state.json, 4 `intent maintainer check`
-# failed (an item is left pending).
+# failed.
 set -euo pipefail
 
 state=.intent/review-state.json
 usage="usage: scripts/intent-restack.sh rebase <base> | record <base> [<original>] | stack"
-# Set by `stack`: record() writes to this file when the check fails, so `stack` can tell a failed
-# check from another command that exits 4.
-check_failed=""
+# Set by `stack`: record() writes to this file when the check fails on pending review items alone,
+# so `stack` can tell that from any other failure, another command's exit 4 included.
+pending_only=""
 
 in_rebase() {
   [ -d "$(git rev-parse --git-path rebase-merge)" ] || [ -d "$(git rev-parse --git-path rebase-apply)" ]
 }
 
 record() {
-  local base="$1" original="$2" pending previous diff
+  local base="$1" original="$2" pending previous diff errors
   pending="$(mktemp)"
   previous="$(mktemp)"
   diff="$(mktemp)"
@@ -86,10 +88,22 @@ record() {
     git commit --quiet --amend --no-edit
     echo "Amended the review into $(git log --oneline -1)."
   fi
-  if ! pnpm exec intent maintainer check --base "$base" --artifacts _artifacts | tail -1; then
-    [ -z "$check_failed" ] || echo "$base" > "$check_failed"
-    return 4
+  errors="$(mktemp)"
+  if pnpm exec intent maintainer check --base "$base" --artifacts _artifacts 2> "$errors" | tail -1; then
+    rm -f "$errors"
+    return 0
   fi
+  cat "$errors" >&2
+  # `check` has no --json. It throws a skill validation error first and fails with "Maintainer
+  # check failed." only once validation passed; `status --json` then says whether pending review
+  # items alone caused that.
+  if [ -n "$pending_only" ] && grep -q '^Maintainer check failed\.' "$errors" \
+    && pnpm exec intent maintainer status --base "$base" --artifacts _artifacts --json \
+      | jq -e '(.problems | length) == 0 and (.staleFiles | length) == 0 and (.review.items | length) > 0' > /dev/null; then
+    echo "$base" > "$pending_only"
+  fi
+  rm -f "$errors"
+  return 4
 }
 
 # rebase <base> [<upstream>]: replay the commits after <upstream> (default <base>) onto <base>.
@@ -130,8 +144,8 @@ stack() {
   local view trunk branch below old i status
   local -a branches=() olds=() failed=()
   view="$(gh stack view --json)"
-  check_failed="$(mktemp)"
-  trap 'rm -f "$check_failed"' EXIT
+  pending_only="$(mktemp)"
+  trap 'rm -f "$pending_only"' EXIT
   trunk="origin/$(jq -r '.trunk' <<< "$view")"
   # `base` is the parent tip gh stack last saw in the branch: the commit the layer was built on.
   while IFS=$'\t' read -r branch old; do
@@ -146,8 +160,8 @@ stack() {
     echo "== $branch on $below"
     git checkout --quiet "$branch"
     # The subshell keeps errexit on inside rebase and record (an `if` or `||` around the call
-    # would turn it off), so only a failed check moves on to the next layer.
-    : > "$check_failed"
+    # would turn it off), so only a check that fails on pending review items alone moves on.
+    : > "$pending_only"
     set +e
     (
       set -e
@@ -159,7 +173,7 @@ stack() {
     )
     status=$?
     set -e
-    if [ "$status" -ne 0 ] && [ -s "$check_failed" ]; then
+    if [ "$status" -ne 0 ] && [ -s "$pending_only" ]; then
       failed+=("$branch")
     elif [ "$status" -ne 0 ]; then
       exit "$status"
