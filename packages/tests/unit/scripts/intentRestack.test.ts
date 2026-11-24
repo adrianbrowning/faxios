@@ -7,10 +7,11 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 const script = resolve(import.meta.dirname, "../../../../scripts/intent-restack.sh");
 const state = ".intent/review-state.json";
 
-// Stands in for `pnpm exec intent`: one pending item, and `--record` writes the review state.
+// Stands in for `pnpm exec intent`: two pending items, one in the feature layer's diff (a.txt) and one
+// outside it (b.txt), and `--record` writes the review state.
 const fakePnpm = `#!/bin/sh
 case "$*" in
-  *--json*) echo '{"items":[{"id":"skill:item","changedFiles":["a.txt"]}]}' ;;
+  *--json*) echo '{"items":[{"id":"skill:item","changedFiles":["a.txt"]},{"id":"skill:outside","changedFiles":["b.txt"]}]}' ;;
   *--record*) cp .intent/review.json ${state} ;;
   *) echo "checked" ;;
 esac
@@ -73,5 +74,64 @@ describe("scripts/intent-restack.sh rebase", () => {
     expect(result.stderr).toMatch(/unstaged changes|cannot rebase/i);
     expect(git("rev-parse", "HEAD")).toBe(head);
     expect(readFileSync(join(repo, state), "utf8")).toBe(reviewState);
+  });
+});
+
+describe("scripts/intent-restack.sh record", () => {
+  let repo: string;
+  let env: NodeJS.ProcessEnv;
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- the script runs the PATH git, so the test does too
+  const git = (...args: Array<string>) => execFileSync("git", args, { cwd: repo, env, encoding: "utf8" }).trim();
+
+  beforeEach(() => {
+    repo = mkdtempSync(join(tmpdir(), "faxios-restack-"));
+    const bin = join(repo, ".bin");
+    mkdirSync(bin);
+    writeFileSync(join(bin, "pnpm"), fakePnpm);
+    chmodSync(join(bin, "pnpm"), 0o755);
+    mkdirSync(join(repo, "scripts"));
+    cpSync(script, join(repo, "scripts/intent-restack.sh"));
+    env = {
+      ...process.env,
+      PATH: `${bin}:${process.env.PATH ?? ""}`,
+      GIT_AUTHOR_NAME: "t",
+      GIT_AUTHOR_EMAIL: "t@example.com",
+      GIT_COMMITTER_NAME: "t",
+      GIT_COMMITTER_EMAIL: "t@example.com",
+      GIT_CONFIG_GLOBAL: "/dev/null",
+      GIT_CONFIG_NOSYSTEM: "1",
+    };
+    git("init", "--quiet", "-b", "main");
+    writeFileSync(join(repo, ".gitignore"), ".bin/\n");
+    mkdirSync(join(repo, ".intent"));
+    writeFileSync(join(repo, "a.txt"), "a\n");
+    writeFileSync(join(repo, "b.txt"), "b\n");
+    // An earlier PR recorded the outside item; review-state.json is cumulative, so every layer carries it.
+    writeFileSync(join(repo, state), JSON.stringify({
+      items: { "skill:outside": { outcome: "no-change", reason: "earlier PR", evidence: [ "b.txt" ] } },
+    }));
+    git("add", ".");
+    git("commit", "--quiet", "-m", "base");
+    git("checkout", "--quiet", "-b", "feature");
+    writeFileSync(join(repo, "a.txt"), "feature\n");
+    git("commit", "--quiet", "-am", "feature");
+  });
+
+  afterEach(() => {
+    rmSync(repo, { recursive: true, force: true });
+  });
+
+  it("records only the items whose files are in the layer's diff, even when others have an earlier record", () => {
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- the PATH must hold the fake pnpm the script calls
+    const result = spawnSync("bash", [ "scripts/intent-restack.sh", "record", "main", "HEAD" ], { cwd: repo, env, encoding: "utf8" });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain("skill:item: no-change");
+    expect(result.stdout).toContain("skill:outside: left pending, outside this layer");
+    const recorded = JSON.parse(readFileSync(join(repo, state), "utf8")) as { items: Array<{ id: string; outcome?: string }> };
+    expect(recorded.items).toEqual([
+      expect.objectContaining({ id: "skill:item", outcome: "no-change" }),
+      { id: "skill:outside", changedFiles: [ "b.txt" ] },
+    ]);
   });
 });

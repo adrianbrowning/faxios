@@ -10,12 +10,13 @@
 #                               stops the script with exit 3 and leaves the rebase for you to finish
 #                               (then run `record`). Then records the reviews, as `record` does.
 #   record <base> [<original>]  Record this layer's pending review items against <base>: the ones
-#                               with a record in <original>'s review-state.json (default: the
-#                               branch's pushed tip, origin/<branch>), whose outcome, reason and
-#                               evidence it copies, and the ones whose files the layer changed
-#                               since <base>. It prints every other item as left pending, since the
-#                               layer that owns it records it. Then it amends the review into the
-#                               last commit. Use it after `gh stack rebase` or `gh stack sync`.
+#                               whose changed files are all in the layer's diff since <base>. An
+#                               item with a record in <original>'s review-state.json (default: the
+#                               branch's pushed tip, origin/<branch>) gets that outcome, reason and
+#                               evidence again. It prints every other item as left pending, even one
+#                               with an earlier record, since the layer that owns it records it.
+#                               Then it amends the review into the last commit. Use it after
+#                               `gh stack rebase` or `gh stack sync`.
 #   stack                       For every layer of the current gh stack, bottom first: rebase it
 #                               onto the layer below (if that layer moved) and record its reviews.
 #                               Use it after amending a layer, e.g. to record that layer's review.
@@ -58,12 +59,14 @@ record() {
       .items |= map(
         . as $item
         | ($previous[0].items[$item.id] // null) as $old
-        | if $old then . + {outcome: $old.outcome, reason: $old.reason, evidence: $old.evidence}
-          elif any($item.changedFiles[]; . as $file | $diff[0] | any(. == $file)) then
+        | if ($item.changedFiles | length) == 0
+             or any($item.changedFiles[]; . as $file | $diff[0] | all(. != $file)) then .
+          elif $old then . + {outcome: $old.outcome, reason: $old.reason, evidence: $old.evidence}
+          else
             . + {outcome: "no-change",
                  reason: "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
                  evidence: ["Changed files: \($item.changedFiles | join(", "))"]}
-          else . end
+          end
       )' "$pending" > .intent/review.json
     jq -r '.items[] | "  \(.id): \(.outcome // "left pending, outside this layer")"' .intent/review.json
     if [ "$(jq '[.items[] | select(.outcome)] | length' .intent/review.json)" != "0" ]; then
