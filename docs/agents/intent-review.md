@@ -8,5 +8,3 @@
 4. Commit `.intent/review-state.json` in the PR's last commit, and confirm `pnpm exec intent maintainer check --base <base>` passes.
 
 An item left unannotated still fails that check. When an untracked file the workflow made caused it, delete that file (only files the workflow made, never the user's) and start again at step 1. When the item belongs to a lower stack layer, record it in that layer.
-
-## AI Agent Marker
