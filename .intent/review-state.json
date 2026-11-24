@@ -4173,15 +4173,16 @@
       ]
     },
     "source:docs/agents/issue-tracker.md": {
-      "fingerprint": "c57884b09fb6ae3c93a95704d413731189a0e286c1fd6238e82251b3a1a96717",
+      "fingerprint": "ea43631ce1ea3b2680b2f15211a544574888da4f0801c704c9d5cb64c1a5f059",
       "snapshot": {
-        "docs/agents/issue-tracker.md": "c0f9d8fe4f9b18f38eb11620a3c873197dd4b9ca5f0bfe6855a2d659ee7653d7"
+        "docs/agents/issue-tracker.md": "653eb1f407a6266f3d680b8fbbb73bb871399fde6003a3d53f34c201cbcce93d"
       },
-      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
+      "head": "8e457c62db89f030707632cda17d3beb665c6674",
       "outcome": "no-change",
-      "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
+      "reason": "Contributor doc only: describes intent-restack.sh record recording only the layer's own items. Nothing the configure-requests skill teaches changes.",
       "evidence": [
-        "Changed: docs/agents/issue-tracker.md at 03009f7a217f136a32ed7d58306f67141aae2805"
+        "Changed files: docs/agents/issue-tracker.md",
+        "No change under packages/lib/"
       ]
     },
     "source:scripts/intent-restack.sh": {
