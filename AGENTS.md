@@ -10,7 +10,7 @@ Keep maintainer decisions and changes in the repository; do not require the user
 Use intent maintainer setup to initialize missing records, maintainer add to register skills, maintainer status to identify work, and maintainer sync to update generated metadata. Finish with intent maintainer check.
 <!-- intent-maintainer:end -->
 
-Every PR whose changes Intent tracks, each stacked PR included, records its own Intent review in its last commit: outcomes for the files that PR changed only, leaving other entries as they are. It must pass `pnpm exec intent maintainer check --base $(git merge-base origin/main HEAD)`.
+Every PR whose changes Intent tracks, each stacked PR included, records its own Intent review in its last commit: outcomes for the files that PR changed only, leaving other entries as they are. It must pass `pnpm exec intent maintainer check --base $(git merge-base <PR base branch> HEAD)`, where `<PR base branch>` is `origin/main` for a PR against main and the parent branch for a stacked PR, since CI checks against the PR base.
 
 # AGENTS.md
 
