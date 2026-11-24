@@ -303,8 +303,8 @@ const getUser = api.define("get", "/users/{id}", {
 });
 
 const queryClient = new QueryClient({
-  // `retry: false` stops TanStack Query from retrying on top of the plugin, so a failing
-  // query makes one attempt; see "Choosing one retry owner".
+  // `retry: false` keeps the plugin the only retry owner for every query this client runs,
+  // observers such as `useQuery` included; see "Choosing one retry owner".
   defaultOptions: { queries: { retry: false } },
 });
 
@@ -328,7 +328,7 @@ An infinite query loads a list one page at a time. TanStack Query keeps the pagi
 
 ```ts expect=request:GET%20https://api.example.com/users%3Fpage%3D1%0A,request:GET%20https://api.example.com/users%3Fpage%3D2%0A,log:page%20params%3A%201%2C%202%3B%20users%3A%20Ada%2C%20Grace%2C%20Linus%3B%20has%20next%20page%3A%20false
 import faxios from "@gcmdev/faxios";
-import { type InfiniteData, InfiniteQueryObserver, QueryClient } from "@tanstack/query-core";
+import { InfiniteQueryObserver, QueryClient } from "@tanstack/query-core";
 import { z } from "zod";
 
 // The pages the API in this example answers with, by their `page` query param.
@@ -356,30 +356,19 @@ const listUsers = api.define("get", "/users", {
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
-// `pageParam` is the page number; it must match the type of `initialPageParam` and what `getNextPageParam` returns.
-const listUsersPage = async ({ pageParam, signal }: { pageParam: number; signal: AbortSignal; }) =>
-  (await listUsers({ params: { page: pageParam }, signal })).data;
-type UsersPage = Awaited<ReturnType<typeof listUsersPage>>;
-
-// Loads every page. `throwOnError` rejects on a failed page, so the loop can't keep asking for it.
-async function loadAllPages(
-  observer: InfiniteQueryObserver<UsersPage, Error, InfiniteData<UsersPage>, Array<string>, number>,
-) {
-  await observer.refetch({ throwOnError: true });
-  let result = observer.getCurrentResult();
-  while (result.hasNextPage) result = await observer.fetchNextPage({ throwOnError: true });
-  return result;
-}
-
 const observer = new InfiniteQueryObserver(queryClient, {
   queryKey: [ "users" ],
-  queryFn: listUsersPage,
+  // `pageParam` is typed from `initialPageParam` and what `getNextPageParam` returns.
+  queryFn: async ({ pageParam, signal }) => (await listUsers({ params: { page: pageParam }, signal })).data,
   initialPageParam: 1,
   // `lastPage` has the endpoint's inferred response type.
   getNextPageParam: lastPage => lastPage.nextPage ?? undefined,
 });
 
-const result = await loadAllPages(observer);
+// `throwOnError` rejects on a failed page, so the loop can't keep asking for it.
+await observer.refetch({ throwOnError: true });
+let result = observer.getCurrentResult();
+while (result.hasNextPage) result = await observer.fetchNextPage({ throwOnError: true });
 
 const { pageParams = [], pages = [] } = result.data ?? {};
 const users: Array<string> = pages.flatMap(page => page.users);
@@ -389,7 +378,7 @@ console.log(`page params: ${pageParams.join(", ")}; users: ${users.join(", ")}; 
 // page params: 1, 2; users: Ada, Grace, Linus; has next page: false
 ```
 
-The next example runs the same loop over a list whose `getNextPageParam` always names one more page, so it asks for page 3, which the API answers with a 503. It runs the loop as a browser does, only so these docs, which run in Node, where TanStack Query treats observers as on a server, can show `retry: false` at work; app code in a browser doesn't need the override:
+The next example repeats the loop from the example above over a list whose `getNextPageParam` always names one more page, so it asks for page 3, which the API answers with a 503. It runs the loop as a browser does, only so these docs, which run in Node, where TanStack Query treats observers as on a server, can show `retry: false` at work; app code in a browser doesn't need the override:
 
 ```ts expect=request:GET%20https://api.example.com/users%3Fpage%3D3%0A,log:loaded%20pages%3A%201%2C%202%3B%20page%203%3A%201%20request%2C%20failed%20with%20503
 import faxios, { isFaxiosError } from "@gcmdev/faxios";
