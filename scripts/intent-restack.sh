@@ -53,7 +53,7 @@ record() {
     echo "No pending review items against $base."
   else
     git show "$original:$state" > "$previous" 2> /dev/null || echo '{"items":{}}' > "$previous"
-    git diff --name-only "$(git merge-base "$base" HEAD)" HEAD | jq -Rn '[inputs]' > "$diff"
+    git diff --no-renames --name-only -z "$(git merge-base "$base" HEAD)" HEAD | jq -Rs 'split("\u0000") | map(select(length > 0))' > "$diff"
     # Per-PR Intent Review in AGENTS.md: record only this layer's items, leave the rest unresolved.
     jq --slurpfile previous "$previous" --slurpfile diff "$diff" '
       .items |= map(

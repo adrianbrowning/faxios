@@ -134,4 +134,21 @@ describe("scripts/intent-restack.sh record", () => {
       { id: "skill:outside", changedFiles: [ "b.txt" ] },
     ]);
   });
+
+  it("records the items for both paths of a file the layer renamed", () => {
+    // Intent lists a rename as its old and its new path (`git diff --no-renames`).
+    writeFileSync(join(repo, ".bin/pnpm"), fakePnpm.replace(/\*--json\*\).*;;/, `*--json*) echo '{"items":[{"id":"source:b.txt","changedFiles":["b.txt"]},{"id":"source:c.txt","changedFiles":["c.txt"]}]}' ;;`));
+    git("mv", "b.txt", "c.txt");
+    git("commit", "--quiet", "-m", "rename");
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- the PATH must hold the fake pnpm the script calls
+    const result = spawnSync("bash", [ "scripts/intent-restack.sh", "record", "main", "HEAD" ], { cwd: repo, env, encoding: "utf8" });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).not.toContain("left pending");
+    const recorded = JSON.parse(readFileSync(join(repo, state), "utf8")) as { items: Array<{ id: string; outcome?: string; }>; };
+    expect(recorded.items).toEqual([
+      expect.objectContaining({ id: "source:b.txt", outcome: "no-change" }),
+      expect.objectContaining({ id: "source:c.txt", outcome: "no-change" }),
+    ]);
+  });
 });
