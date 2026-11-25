@@ -53,12 +53,12 @@ in_rebase() {
 
 record() {
   local base="$1" original="$2" pending previous diff
-  pending="$(mktemp)"
-  previous="$(mktemp)"
   if [ -n "$(git status --porcelain --untracked-files=no -- . ":!$state")" ]; then
     echo "Tracked files have uncommitted changes; commit or stash them, then run again." >&2
     exit 1
   fi
+  pending="$(mktemp)"
+  previous="$(mktemp)"
   diff="$(mktemp)"
 
   pnpm exec intent maintainer review --base "$base" --json > "$pending"
@@ -89,7 +89,7 @@ record() {
   fi
   rm -f "$pending" "$previous" "$diff"
 
-  if ! git diff --quiet -- "$state"; then
+  if ! git diff --quiet HEAD -- "$state"; then
     git add "$state"
     git commit --quiet --amend --no-edit
     echo "Amended the review into $(git log --oneline -1)."
