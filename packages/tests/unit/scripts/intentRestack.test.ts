@@ -9,6 +9,8 @@ const script = resolve(import.meta.dirname, "../../../../scripts/intent-restack.
 const state = ".intent/review-state.json";
 // The report the script passed to `--record`, which the fake pnpm saves.
 const recordedReport = ".bin/recorded.json";
+// Each test builds a git repo and runs bash, git and the fake pnpm, which run slowly under full-suite load.
+const subprocessTests = { timeout: 60_000 };
 
 type Item = { changedFiles: Array<string>; id: string; };
 type FakeOptions = {
@@ -147,7 +149,7 @@ function rebaseRepo() {
   return repo;
 }
 
-describe("scripts/intent-restack.sh rebase", () => {
+describe("scripts/intent-restack.sh rebase", subprocessTests, () => {
   it("exits non-zero and changes nothing when git refuses to rebase", () => {
     using repo = rebaseRepo();
     const head = repo.git("rev-parse", "HEAD");
@@ -180,7 +182,7 @@ function recordRepo() {
   return repo;
 }
 
-describe("scripts/intent-restack.sh record", () => {
+describe("scripts/intent-restack.sh record", subprocessTests, () => {
   it("records only the items whose files are in the layer's diff, even when others have an earlier record", () => {
     using repo = recordRepo();
     repo.tool("pnpm", fakePnpm([{ id: "skill:item", changedFiles: [ "a.txt" ] }, { id: "skill:outside", changedFiles: [ "b.txt" ] }]));
@@ -343,7 +345,7 @@ function stackRepo() {
   return repo;
 }
 
-describe("scripts/intent-restack.sh stack", () => {
+describe("scripts/intent-restack.sh stack", subprocessTests, () => {
   it("goes on past a layer whose check fails only on pending review items, then lists that layer", () => {
     using repo = stackRepo();
     repo.tool("pnpm", fakePnpm(items, { perBranch }));
