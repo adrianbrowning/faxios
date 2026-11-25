@@ -506,6 +506,22 @@ describe("scripts/intent-restack.sh record", subprocessTests, () => {
     expect(repo.git("rev-parse", "HEAD")).toBe(head);
   });
 
+  it("amends a full git rm of the review state into the layer's last commit", () => {
+    using repo = recordRepo();
+    repo.tool("pnpm-review", fakePnpm([{ id: "skill:outside", changedFiles: [ "b.txt" ] }]));
+    // `check` passes here, so the run's exit shows the amend alone.
+    repo.tool("pnpm", `#!/bin/sh\ncase "$*" in\n  *"maintainer check"*) echo checked ;;\n  *) exec "$(dirname "$0")/pnpm-review" "$@" ;;\nesac\n`);
+    const parent = repo.git("rev-parse", "HEAD~1");
+    repo.git("rm", "--quiet", state);
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.status).toBe(0);
+    expect(repo.git("rev-parse", "HEAD~1")).toBe(parent);
+    expect(repo.git("ls-tree", "HEAD", "--", state)).toBe("");
+    expect(repo.git("status", "--porcelain")).toBe("");
+  });
+
   it("refuses a staged edit to the review state whose working-tree copy was set back to HEAD's", () => {
     using repo = recordRepo();
     repo.tool("pnpm", fakePnpm([{ id: "skill:item", changedFiles: [ "a.txt" ] }]));
