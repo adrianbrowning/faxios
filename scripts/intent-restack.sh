@@ -34,9 +34,10 @@
 # still fails `intent maintainer check`; docs/agents/intent-review.md says how to handle it.
 #
 # Run it in the branch's worktree, bottom layer first. For a stack, <base> is the branch below.
-# Exit: 0 done, 3 a conflict outside .intent/review-state.json, 4 `intent maintainer check` failed
-# on pending review items alone (`stack` lists those layers); any other failure exits with the
-# failed command's own code (its error is on stderr).
+# Exit: 0 done, 3 a conflict outside .intent/review-state.json, 4 only when `intent maintainer
+# check` failed on pending review items alone (`stack` lists those layers). Any other failure exits
+# with the failed command's own code, except that another command's exit 4 becomes 1 (its error is
+# on stderr).
 set -euo pipefail
 
 state=.intent/review-state.json
@@ -166,7 +167,8 @@ stack() {
     echo "== $branch on $below"
     git checkout --quiet "$branch"
     # The subshell keeps errexit on inside rebase and record (an `if` or `||` around the call
-    # would turn it off), so any failure there stops `stack` with that command's code.
+    # would turn it off), so any failure there stops `stack` with that command's code; exit 4 is
+    # kept for a check that failed on pending items alone, so another command's 4 becomes 1.
     set +e
     (
       set -e
@@ -178,6 +180,7 @@ stack() {
     )
     status=$?
     set -e
+    [ "$status" -eq 4 ] && status=1
     [ "$status" -eq 0 ] || exit "$status"
     status=0
     check_layer "$below" || status=$?
@@ -201,10 +204,23 @@ if [ "$action" = stack ]; then
 fi
 base="${2:?$usage}"
 case "$action" in
-  rebase) rebase "$base" ;;
-  record) record "$base" "${3:-origin/$(git branch --show-current)}" ;;
+  rebase | record) ;;
   *) echo "$usage" >&2; exit 1 ;;
 esac
+# As in `stack`: errexit stays on in the subshell, and another command's exit 4 becomes 1.
+set +e
+(
+  set -e
+  if [ "$action" = rebase ]; then
+    rebase "$base"
+  else
+    record "$base" "${3:-origin/$(git branch --show-current)}"
+  fi
+)
+status=$?
+set -e
+[ "$status" -eq 4 ] && status=1
+[ "$status" -eq 0 ] || exit "$status"
 status=0
 check_layer "$base" || status=$?
 exit "$status"

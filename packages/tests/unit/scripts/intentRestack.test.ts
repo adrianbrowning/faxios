@@ -353,7 +353,7 @@ describe("scripts/intent-restack.sh stack", () => {
 
     const result = repo.run("stack");
 
-    expect(result.status).toBe(4);
+    expect(result.status).toBe(1);
     expect(result.stderr).toContain("record rejected");
     expect(result.stderr).not.toContain("check failed on these layers");
     expect(result.stdout).not.toContain("== l2");
