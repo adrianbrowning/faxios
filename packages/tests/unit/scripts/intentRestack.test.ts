@@ -517,6 +517,7 @@ describe("@tanstack/intent maintainer contract used by scripts/intent-restack.sh
     expect(status.review.items.length).toBeGreaterThan(0);
     for (const item of status.review.items) expect(item.problems).toEqual([]);
     // record finds no item in HEAD's own (empty) diff, so it records nothing and only checks.
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- the script runs the PATH pnpm and git, so it runs under the PATH bash
     const script = spawnSync("bash", [ "scripts/intent-restack.sh", "record", "HEAD", "HEAD" ], { cwd: repo.repo, encoding: "utf8" });
     expect(script.status).toBe(4);
   }, 30_000);
