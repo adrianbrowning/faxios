@@ -255,14 +255,16 @@ describe("scripts/intent-restack.sh record", subprocessTests, () => {
 
   it("amends a staged edit to the review state even when it records nothing", () => {
     using repo = recordRepo();
-    repo.tool("pnpm", fakePnpm([{ id: "skill:outside", changedFiles: [ "b.txt" ] }]));
+    repo.tool("pnpm-review", fakePnpm([{ id: "skill:outside", changedFiles: [ "b.txt" ] }]));
+    // `check` passes here, so the run's exit shows the amend alone.
+    repo.tool("pnpm", `#!/bin/sh\ncase "$*" in\n  *"maintainer check"*) echo checked ;;\n  *) exec "$(dirname "$0")/pnpm-review" "$@" ;;\nesac\n`);
     const staged = JSON.stringify({ items: { "skill:outside": outsideRecord, "skill:staged": outsideRecord } });
     repo.write(state, staged);
     repo.git("add", state);
 
     const result = repo.run("record", "main", "HEAD");
 
-    expect(result.status).toBe(4);
+    expect(result.status).toBe(0);
     expect(repo.git("show", `HEAD:${state}`)).toBe(staged);
     expect(repo.git("status", "--porcelain")).toBe("");
   });
