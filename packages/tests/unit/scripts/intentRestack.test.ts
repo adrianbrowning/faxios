@@ -427,6 +427,18 @@ describe("scripts/intent-restack.sh record", subprocessTests, () => {
     expect(existsSync(join(repo.repo, ".intent/review.json"))).toBe(false);
   });
 
+  it("removes its temp directory when the path holds a quote", () => {
+    using repo = recordRepo();
+    repo.tool("pnpm", fakePnpm([{ id: "skill:item", changedFiles: [ "a.txt" ] }], { failReviewOn: "feature" }));
+    // record makes only `mktemp -d`; a TMPDIR may hold any character.
+    repo.tool("mktemp", `#!/bin/sh\npath="$(dirname "$0")/it's tmp"\nmkdir "$path" && echo "$path"\n`);
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.status).toBe(2);
+    expect(existsSync(join(repo.repo, ".bin/it's tmp"))).toBe(false);
+  });
+
   it("amends a staged edit to the review state even when it records nothing", () => {
     using repo = recordRepo();
     repo.tool("pnpm-review", fakePnpm([{ id: "skill:outside", changedFiles: [ "b.txt" ] }]));

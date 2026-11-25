@@ -83,10 +83,11 @@ record() {
     exit 1
   fi
   # record runs in run_layer's subshell, so this EXIT trap removes the files on every exit from it.
-  # The path is expanded now: the locals are gone by the time the subshell exits.
+  # The path is expanded now, quoted for any character: the locals are gone by the time the
+  # subshell exits.
   tmp="$(mktemp -d)"
   # shellcheck disable=SC2064
-  trap "rm -rf '$tmp'" EXIT
+  trap "rm -rf $(printf %q "$tmp")" EXIT
   pending="$tmp/pending.json"
   previous="$tmp/previous.json"
   diff="$tmp/diff.json"
