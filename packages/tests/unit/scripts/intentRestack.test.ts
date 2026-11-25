@@ -1,6 +1,6 @@
 import type { SpawnSyncReturns } from "node:child_process";
 import { execFileSync, spawnSync } from "node:child_process";
-import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -407,14 +407,17 @@ describe("scripts/intent-restack.sh stack", () => {
   });
 });
 
-// The installed Intent CLI, which the script runs through `pnpm exec intent`.
-const intent = resolve(import.meta.dirname, "../../../../node_modules/.bin/intent");
+// The workspace's installed packages; the contract repo links them so `pnpm exec intent` finds Intent.
+const nodeModules = resolve(import.meta.dirname, "../../../../node_modules");
 
 // The stderr text and `status --json` fields check_layer reads, from the real Intent CLI.
 describe("@tanstack/intent maintainer contract used by scripts/intent-restack.sh", () => {
   it("fails check with 'Maintainer check failed.' and lists the pending item in status --json", () => {
     using repo = makeRepo();
-    const run = (...args: Array<string>) => spawnSync(intent, [ "maintainer", ...args, "--artifacts", "_artifacts" ], { cwd: repo.repo, encoding: "utf8" });
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- the script runs the PATH pnpm, so the test does too
+    const run = (...args: Array<string>) => spawnSync("pnpm", [ "exec", "intent", "maintainer", ...args, "--artifacts", "_artifacts" ], { cwd: repo.repo, encoding: "utf8" });
+    symlinkSync(nodeModules, join(repo.repo, "node_modules"));
+    repo.write(".gitignore", ".bin/\nnode_modules\n");
     mkdirSync(join(repo.repo, "src"));
     repo.write("package.json", JSON.stringify({ name: "x", version: "1.0.0" }));
     repo.write("src/a.ts", "a\n");
