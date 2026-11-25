@@ -412,7 +412,8 @@ describe("scripts/intent-restack.sh record", subprocessTests, () => {
   it.each([
     [ "review", 2, fakePnpm([{ id: "skill:item", changedFiles: [ "a.txt" ] }], { failReviewOn: "feature" }) ],
     [ "--record", 1, fakePnpm([{ id: "skill:item", changedFiles: [ "a.txt" ] }], { failRecordOn: "feature" }) ],
-    [ "jq", 5, "#!/bin/sh\necho 'not json'\n" ],
+    // jq's own exit code on a parse error differs between versions (1.6 exits 2, 1.7 exits 5).
+    [ "jq", null, "#!/bin/sh\necho 'not json'\n" ],
   ])("leaves no temp files when its %s command fails", (_command, status, pnpm) => {
     using repo = recordRepo();
     repo.tool("pnpm", pnpm);
@@ -422,7 +423,8 @@ describe("scripts/intent-restack.sh record", subprocessTests, () => {
 
     const result = repo.run("record", "main", "HEAD");
 
-    expect(result.status).toBe(status);
+    expect(result.status).not.toBe(0);
+    expect(result.status).toBe(status ?? result.status);
     const paths = repo.read(".bin/mktemp.log").trim()
       .split("\n");
     expect(paths.filter(path => existsSync(path))).toEqual([]);
@@ -476,18 +478,32 @@ describe("scripts/intent-restack.sh record", subprocessTests, () => {
     expect(repo.git("status", "--porcelain")).toBe("");
   });
 
-  it("amends an unstaged deletion of the review state", () => {
+  it("refuses an unstaged deletion of the review state", () => {
     using repo = recordRepo();
-    repo.tool("pnpm-review", fakePnpm([{ id: "skill:outside", changedFiles: [ "b.txt" ] }]));
-    // `check` passes here, so the run's exit shows the amend alone.
-    repo.tool("pnpm", `#!/bin/sh\ncase "$*" in\n  *"maintainer check"*) echo checked ;;\n  *) exec "$(dirname "$0")/pnpm-review" "$@" ;;\nesac\n`);
+    repo.tool("pnpm", fakePnpm([{ id: "skill:item", changedFiles: [ "a.txt" ] }]));
+    const head = repo.git("rev-parse", "HEAD");
     rmSync(join(repo.repo, state));
 
     const result = repo.run("record", "main", "HEAD");
 
-    expect(result.status).toBe(0);
-    expect(repo.git("ls-tree", "--name-only", "HEAD", state)).toBe("");
-    expect(repo.git("status", "--porcelain")).toBe("");
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain(`${state} was deleted; restore it (git restore -- ${state}), then run again.`);
+    expect(existsSync(join(repo.repo, ".bin/args.log"))).toBe(false);
+    expect(repo.git("rev-parse", "HEAD")).toBe(head);
+  });
+
+  it("refuses a staged deletion of the review state whose working-tree copy is still there", () => {
+    using repo = recordRepo();
+    repo.tool("pnpm", fakePnpm([{ id: "skill:item", changedFiles: [ "a.txt" ] }]));
+    const head = repo.git("rev-parse", "HEAD");
+    repo.git("rm", "--quiet", "--cached", state);
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain(`${state} has staged edits that differ from its working-tree copy`);
+    expect(existsSync(join(repo.repo, ".bin/args.log"))).toBe(false);
+    expect(repo.git("rev-parse", "HEAD")).toBe(head);
   });
 
   it("refuses a staged edit to the review state whose working-tree copy was set back to HEAD's", () => {

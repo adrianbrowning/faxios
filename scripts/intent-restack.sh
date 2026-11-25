@@ -41,12 +41,15 @@
 #
 # Run it in the branch's worktree, bottom layer first. `record` refuses (exit 1) a modified or
 # staged tracked file other than .intent/review-state.json, whose edits it would record but not
-# commit; a staged .intent/review-state.json whose working-tree copy differs from the staged one;
-# and any file on disk (untracked or ignored) at a path the layer deleted, whose content it would
-# record though CI has no such file. Other edits to .intent/review-state.json, staged or not, and a
+# commit; a staged .intent/review-state.json whose working-tree copy differs from the staged one,
+# or whose staged deletion (`git rm --cached`) left a working-tree copy; a tracked
+# .intent/review-state.json deleted from the working tree but not from the index; and any file on
+# disk (untracked or ignored) at a path the layer deleted, whose content it would record though CI
+# has no such file. Other edits to .intent/review-state.json, staged or not, a `git rm` of it, and a
 # review state that the first --record of a repo creates are amended into the layer's last commit.
 # It writes its own report to a temp file, so an agent's .intent/review.json is left as it is. For a
 # stack, <base> is the branch below.
+#
 # Exit: 0 done; 1 a usage error, a dirty tree, a `git rebase` that could not start, or a failed
 # `intent maintainer check` other than the case for 4; 3 a conflict outside .intent/review-state.json;
 # 4 only when `intent maintainer check` failed on pending review items alone (`stack` lists those
@@ -67,9 +70,17 @@ record() {
     echo "Tracked files have uncommitted changes; commit or stash them, then run again." >&2
     exit 1
   fi
-  # A staged edit that the working tree no longer holds: amending would commit one copy and drop the other.
-  if ! git diff --cached --quiet HEAD -- "$state" && ! git diff --quiet -- "$state"; then
+  # A staged edit whose working-tree copy differs: the amend would commit only one of the two copies.
+  # A staged deletion whose working-tree copy is still there counts too: `git diff` does not see it.
+  if ! git diff --cached --quiet HEAD -- "$state" \
+    && { ! git diff --quiet -- "$state" \
+      || { [ -e "$state" ] && ! git ls-files --error-unmatch -- "$state" > /dev/null 2>&1; }; }; then
     echo "$state has staged edits that differ from its working-tree copy; stage or restore it, then run again." >&2
+    exit 1
+  fi
+  # A tracked review state missing from the working tree: the amend would drop every earlier record.
+  if [ ! -e "$state" ] && git ls-files --error-unmatch -- "$state" > /dev/null 2>&1; then
+    echo "$state was deleted; restore it (git restore -- $state), then run again." >&2
     exit 1
   fi
   fork="$(git merge-base "$base" HEAD)"
@@ -125,10 +136,10 @@ record() {
   fi
 
   # Stage it first: the first --record of a repo creates the file untracked, which `git diff HEAD`
-  # does not see; -A also stages a deleted tracked copy. The guard above made sure no staged edit
-  # differs from this copy.
-  if [ -e "$state" ] || git ls-files --error-unmatch -- "$state" > /dev/null 2>&1; then
-    git add -A -- "$state"
+  # does not see. The guard above refused a staged edit that this copy does not hold, so staging it
+  # drops nothing.
+  if [ -e "$state" ]; then
+    git add -- "$state"
   fi
   if ! git diff --cached --quiet HEAD -- "$state"; then
     git commit --quiet --amend --no-edit
