@@ -1,5 +1,6 @@
 import type { SpawnSyncReturns } from "node:child_process";
 import { execFileSync, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -12,7 +13,7 @@ const recordedReport = ".bin/recorded.json";
 // Each test builds a git repo and runs bash, git and the fake pnpm, which run slowly under full-suite load.
 const subprocessTests = { timeout: 60_000 };
 
-type Item = { changedFiles: Array<string>; id: string; };
+type Item = { changedFiles: Array<string>; id: string; snapshot?: Record<string, string>; };
 type FakeOptions = {
   /** `--record` fails on this branch with exit 4, the code the script keeps for a check that failed on pending items alone, so a test can show another command's 4 becomes 1. */
   failRecordOn?: string;
@@ -183,6 +184,43 @@ function recordRepo() {
   return repo;
 }
 
+const sha256 = (content: string) => createHash("sha256").update(content)
+  .digest("hex");
+const skill = "skills/x/SKILL.md";
+const skillItem = `skill:${skill}`;
+const skillRecord = { outcome: "updated", reason: "earlier skill review", evidence: [ skill ] };
+const forkSkill = "---\nsources: [a.txt]\n---\n";
+const layerSkill = "---\nsources: [a.txt, b.txt]\n---\n";
+
+// The snapshot Intent takes of both items at the head of sourcesRepo().
+const headSnapshot = { "a.txt": sha256("a\n"), "b.txt": sha256("b\n"), [skill]: sha256(layerSkill) };
+
+// A feature branch that adds the unchanged b.txt (tracked, unless `untrackedB` is set) to the sources
+// of skills/x/SKILL.md. The review state records the skill item, and the planning item that covers
+// its files, as having seen `recordedSkill` (default: the fork's SKILL.md) and, only when
+// `recordedB` is set, a b.txt with that content. `review --json` lists both items with the snapshot
+// Intent takes at HEAD.
+function sourcesRepo({ recordedB, recordedSkill = forkSkill, untrackedB = false }: { recordedB?: string; recordedSkill?: string; untrackedB?: boolean; } = {}) {
+  const repo = makeRepo();
+  mkdirSync(join(repo.repo, "skills/x"), { recursive: true });
+  repo.write(skill, forkSkill);
+  repo.write("a.txt", "a\n");
+  const snapshot = { "a.txt": sha256("a\n"), [skill]: sha256(recordedSkill), ...recordedB === undefined ? {} : { "b.txt": sha256(recordedB) } };
+  repo.write(state, JSON.stringify({ items: { [skillItem]: { ...skillRecord, snapshot }, "planning:_artifacts": { ...outsideRecord, snapshot } } }));
+  if (!untrackedB) repo.write("b.txt", "b\n");
+  repo.git("add", ".");
+  repo.git("commit", "--quiet", "-m", "base");
+  repo.write("b.txt", "b\n");
+  repo.git("checkout", "--quiet", "-b", "feature");
+  repo.write(skill, layerSkill);
+  repo.git("commit", "--quiet", "-am", "cover b.txt");
+  repo.tool("pnpm", fakePnpm([
+    { id: "planning:_artifacts", changedFiles: [ "b.txt", skill ], snapshot: headSnapshot },
+    { id: skillItem, changedFiles: [ "b.txt", skill ], snapshot: headSnapshot },
+  ]));
+  return repo;
+}
+
 describe("scripts/intent-restack.sh record", subprocessTests, () => {
   it("records only the items whose files are in the layer's diff, even when others have an earlier record", () => {
     using repo = recordRepo();
@@ -350,6 +388,50 @@ esac
 
     expect(result.status).toBe(0);
     expect(result.stdout).toContain("source:café.txt: no-change");
+  });
+
+  it("gives a skill item its earlier record when the layer's own SKILL.md edit covers an unchanged file, but not the planning item", () => {
+    using repo = sourcesRepo();
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.status).toBe(4);
+    expect(result.stdout).toContain(`${skillItem}: updated`);
+    expect(result.stdout).toContain("planning:_artifacts: left pending, outside this layer");
+    expect(recorded(repo)).toEqual([
+      { id: "planning:_artifacts", changedFiles: [ "b.txt", skill ], snapshot: headSnapshot },
+      { id: skillItem, changedFiles: [ "b.txt", skill ], snapshot: headSnapshot, ...skillRecord },
+    ]);
+  });
+
+  it("leaves pending a skill item whose SKILL.md record was out of date at the fork, as a lower layer left it", () => {
+    using repo = sourcesRepo({ recordedSkill: "---\nsources: []\n---\n" });
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.status).toBe(4);
+    expect(result.stdout).toContain(`${skillItem}: left pending, outside this layer`);
+    expect(existsSync(join(repo.repo, recordedReport))).toBe(false);
+  });
+
+  it("leaves pending a skill item whose outside file the record saw with other content", () => {
+    using repo = sourcesRepo({ recordedB: "old b\n" });
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.status).toBe(4);
+    expect(result.stdout).toContain(`${skillItem}: left pending, outside this layer`);
+    expect(existsSync(join(repo.repo, recordedReport))).toBe(false);
+  });
+
+  it("leaves pending a skill item whose outside file is untracked", () => {
+    using repo = sourcesRepo({ untrackedB: true });
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.status).toBe(4);
+    expect(result.stdout).toContain(`${skillItem}: left pending, outside this layer`);
+    expect(existsSync(join(repo.repo, recordedReport))).toBe(false);
   });
 });
 

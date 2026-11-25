@@ -11,7 +11,9 @@
 #                               (then run `record`). Then records the reviews, as `record` does.
 #   record <base> [<original>]  Record this layer's pending review items against the merge-base of
 #                               <base> and HEAD: the ones that list changed files, all of them in
-#                               the layer's diff since that merge-base. An item with a record in
+#                               the layer's diff since that merge-base, except a tracked file that
+#                               the layer's own SKILL.md edit moved into or out of that skill's
+#                               sources (record() says when). An item with a record in
 #                               <original>'s review-state.json
 #                               (default: the branch's pushed tip, origin/<branch>) gets that
 #                               outcome, reason and evidence again; the others get "no-change" with
@@ -54,7 +56,7 @@ in_rebase() {
 }
 
 record() {
-  local base="$1" original="$2" pending previous diff fork
+  local base="$1" original="$2" pending previous diff fork recorded skills tracked skill
   if [ -n "$(git status --porcelain --untracked-files=no -- . ":!$state")" ]; then
     echo "Tracked files have uncommitted changes; commit or stash them, then run again." >&2
     exit 1
@@ -62,6 +64,9 @@ record() {
   pending="$(mktemp)"
   previous="$(mktemp)"
   diff="$(mktemp)"
+  recorded="$(mktemp)"
+  skills="$(mktemp)"
+  tracked="$(mktemp)"
 
   fork="$(git merge-base "$base" HEAD)"
   pnpm exec intent maintainer review --base "$fork" --json > "$pending"
@@ -70,12 +75,35 @@ record() {
   else
     git show "$original:$state" > "$previous" 2> /dev/null || echo '{"items":{}}' > "$previous"
     git diff --no-renames --name-only -z "$fork" HEAD | jq -Rs 'split("\u0000") | map(select(length > 0))' > "$diff"
-    # docs/agents/intent-review.md: record only this layer's items, leave the rest unresolved.
-    jq --slurpfile previous "$previous" --slurpfile diff "$diff" '
+    git ls-files -z | jq -Rs 'split("\u0000") | map(select(length > 0))' > "$tracked"
+    cat "$state" > "$recorded" 2> /dev/null || echo '{"items":{}}' > "$recorded"
+    # The hash Intent would have recorded at the fork for each SKILL.md the layer changed.
+    jq -j '.[] | select(. == "SKILL.md" or endswith("/SKILL.md")) | ., "\u0000"' "$diff" \
+      | while IFS= read -r -d '' skill; do
+          git cat-file -e "$fork:$skill" 2> /dev/null || continue
+          jq -n --arg skill "$skill" --arg hash "$(git show "$fork:$skill" | shasum -a 256 | cut -d ' ' -f 1)" '{($skill): $hash}'
+        done | jq -s 'add // {}' > "$skills"
+    # docs/agents/intent-review.md: record only this layer's items, leave the rest unresolved. An item
+    # is the layer's when it lists changed files, all of them in the layer's diff, with one exception.
+    # For an item with a record, Intent also lists a file that only one of the item's snapshot and its
+    # recorded snapshot holds: a skill whose SKILL.md sources gained or lost an unchanged file. Such a
+    # tracked file outside the diff counts as the layer's only for the skill item whose own SKILL.md
+    # the layer changed, and only when the working tree's record of that SKILL.md has its hash at the
+    # fork, so no lower layer left a sources edit unrecorded. A planning item, whose snapshot holds
+    # every skill's files, never takes the exception.
+    jq --slurpfile previous "$previous" --slurpfile diff "$diff" --slurpfile recorded "$recorded" \
+      --slurpfile skills "$skills" --slurpfile tracked "$tracked" '
       .items |= map(
         . as $item
         | ($previous[0].items[$item.id] // null) as $old
-        | (($item.changedFiles | length) > 0 and ($item.changedFiles - $diff[0] | length) == 0) as $inLayer
+        | ($recorded[0].items[$item.id].snapshot // {}) as $snapshot
+        | ($item.id | ltrimstr("skill:")) as $skill
+        | ($item.id != $skill and IN($diff[0][]; $skill) and $skills[0][$skill] != null
+            and $snapshot[$skill] == $skills[0][$skill]) as $ownSources
+        | ($item.changedFiles - $diff[0]
+            | map(select(($ownSources and IN($tracked[0][]; .)
+                and (($item.snapshot[.] != null) != ($snapshot[.] != null))) | not))) as $outside
+        | (any($item.changedFiles[]; IN($diff[0][]; .)) and ($outside | length) == 0) as $inLayer
         | if ($inLayer | not) then .
           elif $old then . + {outcome: $old.outcome, reason: $old.reason, evidence: $old.evidence}
           else
@@ -90,7 +118,7 @@ record() {
     fi
     rm -f .intent/review.json
   fi
-  rm -f "$pending" "$previous" "$diff"
+  rm -f "$pending" "$previous" "$diff" "$recorded" "$skills" "$tracked"
 
   if ! git diff --quiet HEAD -- "$state"; then
     git add "$state"
