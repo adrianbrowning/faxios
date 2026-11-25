@@ -34,22 +34,20 @@
 # still fails `intent maintainer check`; docs/agents/intent-review.md says how to handle it.
 #
 # Run it in the branch's worktree, bottom layer first. For a stack, <base> is the branch below.
-# Exit: 0 done, 1 error, 3 a conflict outside .intent/review-state.json, 4 `intent maintainer check`
-# failed.
+# Exit: 0 done, 3 a conflict outside .intent/review-state.json, 4 `intent maintainer check` failed
+# on pending review items alone (`stack` lists those layers); any other failure exits with the
+# failed command's own code (its error is on stderr).
 set -euo pipefail
 
 state=.intent/review-state.json
 usage="usage: scripts/intent-restack.sh rebase <base> | record <base> [<original>] | stack"
-# Set by `stack`: record() writes to this file when the check fails on pending review items alone,
-# so `stack` can tell that from any other failure, another command's exit 4 included.
-pending_only=""
 
 in_rebase() {
   [ -d "$(git rev-parse --git-path rebase-merge)" ] || [ -d "$(git rev-parse --git-path rebase-apply)" ]
 }
 
 record() {
-  local base="$1" original="$2" pending previous diff errors
+  local base="$1" original="$2" pending previous diff
   pending="$(mktemp)"
   previous="$(mktemp)"
   diff="$(mktemp)"
@@ -87,22 +85,33 @@ record() {
     git commit --quiet --amend --no-edit
     echo "Amended the review into $(git log --oneline -1)."
   fi
+}
+
+# check_layer <base>: run `intent maintainer check` against <base>. Returns 0 when it passes, 4 when
+# it fails on pending review items alone, 1 otherwise. Callers run it where errexit is off, so it
+# tests every command's status itself; a failed `status --json` or jq counts as 1.
+check_layer() {
+  local base="$1" output errors result=1
+  output="$(mktemp)"
   errors="$(mktemp)"
-  if pnpm exec intent maintainer check --base "$base" --artifacts _artifacts 2> "$errors" | tail -1; then
-    rm -f "$errors"
+  if pnpm exec intent maintainer check --base "$base" --artifacts _artifacts > "$output" 2> "$errors"; then
+    tail -1 "$output"
+    rm -f "$output" "$errors"
     return 0
   fi
+  cat "$output"
   cat "$errors" >&2
   # `check` has no --json. It throws a skill validation error first and fails with "Maintainer
   # check failed." only once validation passed; `status --json` then says whether pending review
-  # items alone caused that.
-  if [ -n "$pending_only" ] && grep -q '^Maintainer check failed\.' "$errors" \
-    && pnpm exec intent maintainer status --base "$base" --artifacts _artifacts --json \
-      | jq -e '(.problems | length) == 0 and (.staleFiles | length) == 0 and (.review.items | length) > 0' > /dev/null; then
-    echo "$base" > "$pending_only"
+  # items, none with authoring problems of its own, alone caused that.
+  if grep -q '^Maintainer check failed\.' "$errors" \
+    && pnpm exec intent maintainer status --base "$base" --artifacts _artifacts --json > "$output" \
+    && jq -e '(.problems | length) == 0 and (.staleFiles | length) == 0 and (.review.items | length) > 0
+      and all(.review.items[]; (.problems | length) == 0)' "$output" > /dev/null; then
+    result=4
   fi
-  rm -f "$errors"
-  return 4
+  rm -f "$output" "$errors"
+  return "$result"
 }
 
 # rebase <base> [<upstream>]: replay the commits after <upstream> (default <base>) onto <base>.
@@ -143,8 +152,6 @@ stack() {
   local view trunk branch below old i status
   local -a branches=() olds=() failed=()
   view="$(gh stack view --json)"
-  pending_only="$(mktemp)"
-  trap 'rm -f "$pending_only"' EXIT
   trunk="origin/$(jq -r '.trunk' <<< "$view")"
   # `base` is the parent tip gh stack last saw in the branch: the commit the layer was built on.
   while IFS=$'\t' read -r branch old; do
@@ -159,8 +166,7 @@ stack() {
     echo "== $branch on $below"
     git checkout --quiet "$branch"
     # The subshell keeps errexit on inside rebase and record (an `if` or `||` around the call
-    # would turn it off), so only a check that fails on pending review items alone moves on.
-    : > "$pending_only"
+    # would turn it off), so any failure there stops `stack` with that command's code.
     set +e
     (
       set -e
@@ -172,7 +178,10 @@ stack() {
     )
     status=$?
     set -e
-    if [ "$status" -ne 0 ] && [ -s "$pending_only" ]; then
+    [ "$status" -eq 0 ] || exit "$status"
+    status=0
+    check_layer "$below" || status=$?
+    if [ "$status" -eq 4 ]; then
       failed+=("$branch")
     elif [ "$status" -ne 0 ]; then
       exit "$status"
@@ -196,3 +205,6 @@ case "$action" in
   record) record "$base" "${3:-origin/$(git branch --show-current)}" ;;
   *) echo "$usage" >&2; exit 1 ;;
 esac
+status=0
+check_layer "$base" || status=$?
+exit "$status"

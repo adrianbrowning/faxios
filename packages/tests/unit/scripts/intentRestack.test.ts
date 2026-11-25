@@ -3,7 +3,7 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 const script = resolve(import.meta.dirname, "../../../../scripts/intent-restack.sh");
 const state = ".intent/review-state.json";
@@ -18,18 +18,24 @@ type FakeOptions = {
   failReviewOn?: string;
   /** `check` fails skill validation on this branch, before it looks at anything else. */
   invalidOn?: string;
+  /** On this branch every pending item of `status --json` carries an authoring problem. */
+  itemProblemsOn?: string;
   /** `--json` items for these branches; the others get the default items. */
   perBranch?: Record<string, Array<Item>>;
+  /** `status --json` lists an authoring problem on this branch, which also fails `check`. */
+  problemsOn?: string;
   /** A generated file is stale on this branch, which fails `check` and shows in `status --json`. */
   staleOn?: string;
 };
 
 // Stands in for `pnpm exec intent maintainer`. `--json` prints the pending items. `--record` saves the
 // report to .bin/recorded.json and merges its annotated items into the review state. `status --json`
-// gives the real fields the script reads: problems, staleFiles and the pending review items.
+// gives the real fields the script reads: problems, staleFiles and the pending review items with
+// their own problems.
 // `check` fails on validation first; otherwise, like Intent, it fails with "Maintainer check
-// failed." while a file is stale or an item of the last `--json` report has no recorded outcome.
-function fakePnpm(items: Array<Item>, { failRecordOn = "", failReviewOn = "", invalidOn = "", perBranch = {}, staleOn = "" }: FakeOptions = {}) {
+// failed." while a file is stale, a problem is listed or an item of the last `--json` report has
+// no recorded outcome.
+function fakePnpm(items: Array<Item>, { failRecordOn = "", failReviewOn = "", invalidOn = "", itemProblemsOn = "", perBranch = {}, problemsOn = "", staleOn = "" }: FakeOptions = {}) {
   const arms = [ ...Object.entries(perBranch), [ "*", items ] as const ]
     .map(([ branch, branchItems ]) => `      ${branch}) echo '${JSON.stringify({ items: branchItems })}' ;;`);
   return `#!/bin/sh
@@ -39,12 +45,17 @@ recorded="$dir/recorded.json"
 [ -f "$recorded" ] || recorded=/dev/null
 stale='[]'
 if [ "$branch" = "${staleOn}" ]; then stale='["packages/lib/package.json"]'; fi
+problems='[]'
+if [ "$branch" = "${problemsOn}" ]; then problems='["x: skill still needs authoring."]'; fi
+itemProblems='[]'
+if [ "$branch" = "${itemProblemsOn}" ]; then itemProblems='["Source matched no available files"]'; fi
 pending() {
   jq -c --slurpfile r "$recorded" '[.items[].id] - [($r[0].items // [])[] | select(.outcome) | .id]' "$dir/report.json"
 }
 case "$*" in
   *"maintainer status"*)
-    jq -n --argjson stale "$stale" --argjson items "$(pending)" '{problems: [], staleFiles: $stale, review: {items: $items}}' ;;
+    jq -n --argjson stale "$stale" --argjson problems "$problems" --argjson itemProblems "$itemProblems" --argjson items "$(pending)" \\
+      '{problems: $problems, staleFiles: $stale, review: {items: ($items | map({id: ., problems: $itemProblems}))}}' ;;
   *--json*)
     rm -f "$dir/recorded.json"
     case "$branch" in
@@ -58,7 +69,7 @@ ${arms.join("\n")}
     mv "$dir/state.json" ${state} ;;
   *)
     if [ "$branch" = "${invalidOn}" ]; then echo "SKILL.md validation failed" >&2; exit 1; fi
-    if [ "$stale" != "[]" ] || [ "$(pending)" != "[]" ]; then
+    if [ "$stale" != "[]" ] || [ "$problems" != "[]" ] || [ "$(pending)" != "[]" ]; then
       echo "Maintainer check failed. Resolve the authoring issues, run intent maintainer sync, and record review outcomes." >&2
       exit 1
     fi
@@ -67,7 +78,7 @@ esac
 `;
 }
 
-type Repo = {
+type Repo = Disposable & {
   git: (...args: Array<string>) => string;
   read: (path: string) => string;
   repo: string;
@@ -77,7 +88,8 @@ type Repo = {
   write: (path: string, content: string) => void;
 };
 
-// A temp git repo on branch main, with a copy of the script and a .bin directory (ignored) first on PATH.
+// A temp git repo on branch main, with a copy of the script and a .bin directory (ignored) first on
+// PATH. Disposing it deletes the repo.
 function makeRepo(): Repo {
   const repo = mkdtempSync(join(tmpdir(), "faxios-restack-"));
   const bin = join(repo, ".bin");
@@ -108,7 +120,7 @@ function makeRepo(): Repo {
   git("init", "--quiet", "-b", "main");
   write(".gitignore", ".bin/\n");
   mkdirSync(join(repo, ".intent"));
-  return { repo, git, run, tool, write, read };
+  return { repo, git, run, tool, write, read, [Symbol.dispose]: () => rmSync(repo, { recursive: true, force: true }) };
 }
 
 function recorded(repo: Repo) {
@@ -116,31 +128,28 @@ function recorded(repo: Repo) {
   return report.items;
 }
 
+// A feature branch that changes a.txt, checked out, while main has moved on.
+function rebaseRepo() {
+  const repo = makeRepo();
+  repo.tool("pnpm", fakePnpm([{ id: "skill:item", changedFiles: [ "a.txt" ] }]));
+  repo.write(state, "{\"items\":{}}\n");
+  repo.write("a.txt", "a\n");
+  repo.git("add", ".");
+  repo.git("commit", "--quiet", "-m", "base");
+  repo.git("checkout", "--quiet", "-b", "feature");
+  repo.write("a.txt", "feature\n");
+  repo.git("commit", "--quiet", "-am", "feature");
+  repo.git("checkout", "--quiet", "main");
+  repo.write("b.txt", "b\n");
+  repo.git("add", "b.txt");
+  repo.git("commit", "--quiet", "-m", "main moves");
+  repo.git("checkout", "--quiet", "feature");
+  return repo;
+}
+
 describe("scripts/intent-restack.sh rebase", () => {
-  let repo: Repo;
-
-  beforeEach(() => {
-    repo = makeRepo();
-    repo.tool("pnpm", fakePnpm([{ id: "skill:item", changedFiles: [ "a.txt" ] }]));
-    repo.write(state, "{\"items\":{}}\n");
-    repo.write("a.txt", "a\n");
-    repo.git("add", ".");
-    repo.git("commit", "--quiet", "-m", "base");
-    repo.git("checkout", "--quiet", "-b", "feature");
-    repo.write("a.txt", "feature\n");
-    repo.git("commit", "--quiet", "-am", "feature");
-    repo.git("checkout", "--quiet", "main");
-    repo.write("b.txt", "b\n");
-    repo.git("add", "b.txt");
-    repo.git("commit", "--quiet", "-m", "main moves");
-    repo.git("checkout", "--quiet", "feature");
-  });
-
-  afterEach(() => {
-    rmSync(repo.repo, { recursive: true, force: true });
-  });
-
   it("exits non-zero and changes nothing when git refuses to rebase", () => {
+    using repo = rebaseRepo();
     const head = repo.git("rev-parse", "HEAD");
     const reviewState = repo.read(state);
     repo.write("a.txt", "unstaged\n");
@@ -154,28 +163,26 @@ describe("scripts/intent-restack.sh rebase", () => {
   });
 });
 
+const outsideRecord = { outcome: "no-change", reason: "earlier PR", evidence: [ "b.txt" ] };
+
+// A feature branch on main that changes a.txt.
+function recordRepo() {
+  const repo = makeRepo();
+  repo.write("a.txt", "a\n");
+  repo.write("b.txt", "b\n");
+  // An earlier PR recorded the outside item; review-state.json is cumulative, so every layer carries it.
+  repo.write(state, JSON.stringify({ items: { "skill:outside": outsideRecord } }));
+  repo.git("add", ".");
+  repo.git("commit", "--quiet", "-m", "base");
+  repo.git("checkout", "--quiet", "-b", "feature");
+  repo.write("a.txt", "feature\n");
+  repo.git("commit", "--quiet", "-am", "feature");
+  return repo;
+}
+
 describe("scripts/intent-restack.sh record", () => {
-  let repo: Repo;
-  const outsideRecord = { outcome: "no-change", reason: "earlier PR", evidence: [ "b.txt" ] };
-
-  beforeEach(() => {
-    repo = makeRepo();
-    repo.write("a.txt", "a\n");
-    repo.write("b.txt", "b\n");
-    // An earlier PR recorded the outside item; review-state.json is cumulative, so every layer carries it.
-    repo.write(state, JSON.stringify({ items: { "skill:outside": outsideRecord } }));
-    repo.git("add", ".");
-    repo.git("commit", "--quiet", "-m", "base");
-    repo.git("checkout", "--quiet", "-b", "feature");
-    repo.write("a.txt", "feature\n");
-    repo.git("commit", "--quiet", "-am", "feature");
-  });
-
-  afterEach(() => {
-    rmSync(repo.repo, { recursive: true, force: true });
-  });
-
   it("records only the items whose files are in the layer's diff, even when others have an earlier record", () => {
+    using repo = recordRepo();
     repo.tool("pnpm", fakePnpm([{ id: "skill:item", changedFiles: [ "a.txt" ] }, { id: "skill:outside", changedFiles: [ "b.txt" ] }]));
 
     const result = repo.run("record", "main", "HEAD");
@@ -191,6 +198,7 @@ describe("scripts/intent-restack.sh record", () => {
   });
 
   it("gives an item in the layer's diff its earlier record and amends it into the last commit", () => {
+    using repo = recordRepo();
     const earlier = { outcome: "updated", reason: "earlier reason", evidence: [ "a.txt" ] };
     repo.write(state, JSON.stringify({ items: { "skill:outside": outsideRecord, "skill:item": earlier } }));
     repo.git("commit", "--quiet", "-am", "record");
@@ -204,9 +212,13 @@ describe("scripts/intent-restack.sh record", () => {
     expect(recorded(repo)).toEqual([{ id: "skill:item", changedFiles: [ "a.txt" ], ...earlier }]);
     expect(repo.git("rev-parse", "HEAD~1")).toBe(parent);
     expect(JSON.parse(repo.git("show", `HEAD:${state}`))).toEqual({ items: { "skill:outside": outsideRecord, "skill:item": earlier } });
+    // --record rewrote the file, so only an amend leaves the tree clean with HEAD holding that copy.
+    expect(repo.git("status", "--porcelain")).toBe("");
+    expect(repo.git("show", `HEAD:${state}`)).toBe(repo.read(state).trim());
   });
 
   it("leaves pending an item with only some of its files, or none, in the layer's diff", () => {
+    using repo = recordRepo();
     repo.tool("pnpm", fakePnpm([
       { id: "skill:both", changedFiles: [ "a.txt", "b.txt" ] },
       { id: "skill:none", changedFiles: [] },
@@ -225,6 +237,7 @@ describe("scripts/intent-restack.sh record", () => {
   });
 
   it("records nothing and amends nothing when no item is in the layer's diff", () => {
+    using repo = recordRepo();
     repo.tool("pnpm", fakePnpm([{ id: "skill:outside", changedFiles: [ "b.txt" ] }]));
     const head = repo.git("rev-parse", "HEAD");
     const reviewState = repo.read(state);
@@ -238,7 +251,24 @@ describe("scripts/intent-restack.sh record", () => {
     expect(repo.read(state)).toBe(reviewState);
   });
 
+  it("prints every line of a failed check, not only the last", () => {
+    using repo = recordRepo();
+    repo.tool("pnpm", `#!/bin/sh
+case "$*" in
+  *--json*) echo '{"items":[]}' ;;
+  *) printf 'Run intent maintainer sync: package.json\\n  Review skill x\\n'; echo "Maintainer check failed." >&2; exit 1 ;;
+esac
+`);
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain("Run intent maintainer sync: package.json");
+    expect(result.stdout).toContain("Review skill x");
+  });
+
   it("records the items for both paths of a file the layer renamed", () => {
+    using repo = recordRepo();
     // Intent lists a rename as its old and its new path (`git diff --no-renames`).
     repo.tool("pnpm", fakePnpm([{ id: "source:b.txt", changedFiles: [ "b.txt" ] }, { id: "source:c.txt", changedFiles: [ "c.txt" ] }]));
     repo.git("mv", "b.txt", "c.txt");
@@ -255,6 +285,7 @@ describe("scripts/intent-restack.sh record", () => {
   });
 
   it("records an item for a file whose path git would quote", () => {
+    using repo = recordRepo();
     // Intent lists raw paths (`git diff -z`); git quotes non-ASCII bytes in its plain output.
     repo.tool("pnpm", fakePnpm([{ id: "source:café.txt", changedFiles: [ "café.txt" ] }]));
     repo.write("café.txt", "c\n");
@@ -268,45 +299,39 @@ describe("scripts/intent-restack.sh record", () => {
   });
 });
 
+const items = [{ id: "skill:a", changedFiles: [ "a.txt" ] }, { id: "skill:other", changedFiles: [ "b.txt" ] }];
+const perBranch = { l2: [{ id: "skill:c", changedFiles: [ "c.txt" ] }] };
+
+// Two layers on main: l1 changes a.txt, l2 adds c.txt; on l1 skill:other stays pending.
+function stackRepo() {
+  const repo = makeRepo();
+  repo.write("a.txt", "a\n");
+  repo.write("b.txt", "b\n");
+  repo.write(state, "{\"items\":{}}\n");
+  repo.git("add", ".");
+  repo.git("commit", "--quiet", "-m", "base");
+  repo.git("update-ref", "refs/remotes/origin/main", "main");
+  repo.git("checkout", "--quiet", "-b", "l1");
+  repo.write("a.txt", "l1\n");
+  repo.git("commit", "--quiet", "-am", "l1");
+  repo.git("checkout", "--quiet", "-b", "l2");
+  repo.write("c.txt", "c\n");
+  repo.git("add", "c.txt");
+  repo.git("commit", "--quiet", "-m", "l2");
+  const view = {
+    trunk: "main",
+    branches: [
+      { name: "l1", base: repo.git("rev-parse", "main"), isMerged: false },
+      { name: "l2", base: repo.git("rev-parse", "l1"), isMerged: false },
+    ],
+  };
+  repo.tool("gh", `#!/bin/sh\necho '${JSON.stringify(view)}'\n`);
+  return repo;
+}
+
 describe("scripts/intent-restack.sh stack", () => {
-  let repo: Repo;
-  let layer2: string;
-  const items = [{ id: "skill:a", changedFiles: [ "a.txt" ] }, { id: "skill:other", changedFiles: [ "b.txt" ] }];
-  const perBranch = { l2: [{ id: "skill:c", changedFiles: [ "c.txt" ] }] };
-
-  // Two layers on main: l1 changes a.txt, l2 adds c.txt.
-  beforeEach(() => {
-    repo = makeRepo();
-    repo.write("a.txt", "a\n");
-    repo.write("b.txt", "b\n");
-    repo.write(state, "{\"items\":{}}\n");
-    repo.git("add", ".");
-    repo.git("commit", "--quiet", "-m", "base");
-    repo.git("update-ref", "refs/remotes/origin/main", "main");
-    repo.git("checkout", "--quiet", "-b", "l1");
-    repo.write("a.txt", "l1\n");
-    repo.git("commit", "--quiet", "-am", "l1");
-    repo.git("checkout", "--quiet", "-b", "l2");
-    repo.write("c.txt", "c\n");
-    repo.git("add", "c.txt");
-    repo.git("commit", "--quiet", "-m", "l2");
-    layer2 = repo.git("rev-parse", "l2");
-    const view = {
-      trunk: "main",
-      branches: [
-        { name: "l1", base: repo.git("rev-parse", "main"), isMerged: false },
-        { name: "l2", base: repo.git("rev-parse", "l1"), isMerged: false },
-      ],
-    };
-    repo.tool("gh", `#!/bin/sh\necho '${JSON.stringify(view)}'\n`);
-  });
-
-  afterEach(() => {
-    rmSync(repo.repo, { recursive: true, force: true });
-  });
-
   it("goes on past a layer whose check fails only on pending review items, then lists that layer", () => {
-    // l1 leaves skill:other pending.
+    using repo = stackRepo();
     repo.tool("pnpm", fakePnpm(items, { perBranch }));
 
     const result = repo.run("stack");
@@ -322,6 +347,8 @@ describe("scripts/intent-restack.sh stack", () => {
   });
 
   it("stops at a layer that fails for any other reason, even with exit 4, leaving the layers above alone", () => {
+    using repo = stackRepo();
+    const layer2 = repo.git("rev-parse", "l2");
     repo.tool("pnpm", fakePnpm(items, { perBranch, failRecordOn: "l1" }));
 
     const result = repo.run("stack");
@@ -333,13 +360,19 @@ describe("scripts/intent-restack.sh stack", () => {
     expect(repo.git("rev-parse", "l2")).toBe(layer2);
   });
 
-  it("stops at a layer whose check fails on a stale file, leaving the layers above alone", () => {
-    // l1 records all its items, so only the stale file fails its check.
-    repo.tool("pnpm", fakePnpm(items, { perBranch: { ...perBranch, l1: items.slice(0, 1) }, staleOn: "l1" }));
+  // l1 also leaves skill:other pending, so only the named cause stops `stack`.
+  it.each([
+    [ "a stale file", { staleOn: "l1" }],
+    [ "an authoring problem", { problemsOn: "l1" }],
+    [ "a review item with authoring problems", { itemProblemsOn: "l1" }],
+  ])("stops at a layer whose check fails on %s, leaving the layers above alone", (_cause, options) => {
+    using repo = stackRepo();
+    const layer2 = repo.git("rev-parse", "l2");
+    repo.tool("pnpm", fakePnpm(items, { perBranch, ...options }));
 
     const result = repo.run("stack");
 
-    expect(result.status).toBe(4);
+    expect(result.status).toBe(1);
     expect(result.stderr).toContain("Maintainer check failed.");
     expect(result.stderr).not.toContain("check failed on these layers");
     expect(result.stdout).not.toContain("== l2");
@@ -347,11 +380,13 @@ describe("scripts/intent-restack.sh stack", () => {
   });
 
   it("stops at a layer whose skills fail validation, even with review items pending", () => {
+    using repo = stackRepo();
+    const layer2 = repo.git("rev-parse", "l2");
     repo.tool("pnpm", fakePnpm(items, { perBranch, invalidOn: "l1" }));
 
     const result = repo.run("stack");
 
-    expect(result.status).toBe(4);
+    expect(result.status).toBe(1);
     expect(result.stderr).toContain("SKILL.md validation failed");
     expect(result.stderr).not.toContain("check failed on these layers");
     expect(result.stdout).not.toContain("== l2");
@@ -359,6 +394,8 @@ describe("scripts/intent-restack.sh stack", () => {
   });
 
   it("stops at a layer whose review report fails, even when it printed a report", () => {
+    using repo = stackRepo();
+    const layer2 = repo.git("rev-parse", "l2");
     repo.tool("pnpm", fakePnpm(items, { perBranch, failReviewOn: "l1" }));
 
     const result = repo.run("stack");
@@ -368,4 +405,35 @@ describe("scripts/intent-restack.sh stack", () => {
     expect(result.stdout).not.toContain("== l2");
     expect(repo.git("rev-parse", "l2")).toBe(layer2);
   });
+});
+
+// The installed Intent CLI, which the script runs through `pnpm exec intent`.
+const intent = resolve(import.meta.dirname, "../../../../node_modules/.bin/intent");
+
+// The stderr text and `status --json` fields check_layer reads, from the real Intent CLI.
+describe("@tanstack/intent maintainer contract used by scripts/intent-restack.sh", () => {
+  it("fails check with 'Maintainer check failed.' and lists the pending item in status --json", () => {
+    using repo = makeRepo();
+    const run = (...args: Array<string>) => spawnSync(intent, [ "maintainer", ...args, "--artifacts", "_artifacts" ], { cwd: repo.repo, encoding: "utf8" });
+    mkdirSync(join(repo.repo, "src"));
+    repo.write("package.json", JSON.stringify({ name: "x", version: "1.0.0" }));
+    repo.write("src/a.ts", "a\n");
+    expect(run("setup", "--distribution", "none").status).toBe(0);
+    expect(run("add", "x", "--domain", "core", "--description", "Use when testing x.", "--source", "src/a.ts").status).toBe(0);
+    repo.git("add", ".");
+    repo.git("commit", "--quiet", "-m", "base");
+    repo.write("src/a.ts", "b\n");
+    repo.git("commit", "--quiet", "-am", "change");
+
+    const check = run("check", "--base", "HEAD~1");
+    const status = JSON.parse(run("status", "--base", "HEAD~1", "--json").stdout) as Record<string, unknown> & { review: { items: Array<{ problems: unknown; }>; }; };
+
+    expect(check.status).not.toBe(0);
+    expect(check.stderr).toMatch(/^Maintainer check failed\./m);
+    expect(status.problems).toBeInstanceOf(Array);
+    expect(status.staleFiles).toBeInstanceOf(Array);
+    expect(status.review.items).toBeInstanceOf(Array);
+    expect(status.review.items.length).toBeGreaterThan(0);
+    for (const item of status.review.items) expect(item.problems).toBeInstanceOf(Array);
+  }, 30_000);
 });
