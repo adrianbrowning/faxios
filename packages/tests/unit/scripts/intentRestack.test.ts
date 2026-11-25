@@ -195,22 +195,20 @@ const layerSkill = "---\nsources: [a.txt, b.txt]\n---\n";
 // The snapshot Intent takes of both items at the head of sourcesRepo().
 const headSnapshot = { "a.txt": sha256("a\n"), "b.txt": sha256("b\n"), [skill]: sha256(layerSkill) };
 
-// A feature branch that adds the unchanged b.txt (tracked, unless `untrackedB` is set) to the sources
-// of skills/x/SKILL.md. The review state records the skill item, and the planning item that covers
-// its files, as having seen `recordedSkill` (default: the fork's SKILL.md) and, only when
-// `recordedB` is set, a b.txt with that content. `review --json` lists both items with the snapshot
-// Intent takes at HEAD.
-function sourcesRepo({ recordedB, recordedSkill = forkSkill, untrackedB = false }: { recordedB?: string; recordedSkill?: string; untrackedB?: boolean; } = {}) {
+// A feature branch that adds the unchanged, tracked b.txt to the sources of skills/x/SKILL.md. The
+// review state records the skill item, and the planning item that covers its files, as having seen
+// the fork's SKILL.md and no b.txt. `review --json` lists both items with the snapshot Intent takes
+// at HEAD, so b.txt is a changed file outside the layer's diff.
+function sourcesRepo() {
   const repo = makeRepo();
   mkdirSync(join(repo.repo, "skills/x"), { recursive: true });
   repo.write(skill, forkSkill);
   repo.write("a.txt", "a\n");
-  const snapshot = { "a.txt": sha256("a\n"), [skill]: sha256(recordedSkill), ...recordedB === undefined ? {} : { "b.txt": sha256(recordedB) } };
+  const snapshot = { "a.txt": sha256("a\n"), [skill]: sha256(forkSkill) };
   repo.write(state, JSON.stringify({ items: { [skillItem]: { ...skillRecord, snapshot }, "planning:_artifacts": { ...outsideRecord, snapshot } } }));
-  if (!untrackedB) repo.write("b.txt", "b\n");
+  repo.write("b.txt", "b\n");
   repo.git("add", ".");
   repo.git("commit", "--quiet", "-m", "base");
-  repo.write("b.txt", "b\n");
   repo.git("checkout", "--quiet", "-b", "feature");
   repo.write(skill, layerSkill);
   repo.git("commit", "--quiet", "-am", "cover b.txt");
@@ -390,47 +388,14 @@ esac
     expect(result.stdout).toContain("source:café.txt: no-change");
   });
 
-  it("gives a skill item its earlier record when the layer's own SKILL.md edit covers an unchanged file, but not the planning item", () => {
+  it("leaves pending the skill and planning items when the layer's own SKILL.md edit covers an unchanged file outside its diff", () => {
     using repo = sourcesRepo();
 
     const result = repo.run("record", "main", "HEAD");
 
     expect(result.status).toBe(4);
-    expect(result.stdout).toContain(`${skillItem}: updated`);
+    expect(result.stdout).toContain(`${skillItem}: left pending, outside this layer`);
     expect(result.stdout).toContain("planning:_artifacts: left pending, outside this layer");
-    expect(recorded(repo)).toEqual([
-      { id: "planning:_artifacts", changedFiles: [ "b.txt", skill ], snapshot: headSnapshot },
-      { id: skillItem, changedFiles: [ "b.txt", skill ], snapshot: headSnapshot, ...skillRecord },
-    ]);
-  });
-
-  it("leaves pending a skill item whose SKILL.md record was out of date at the fork, as a lower layer left it", () => {
-    using repo = sourcesRepo({ recordedSkill: "---\nsources: []\n---\n" });
-
-    const result = repo.run("record", "main", "HEAD");
-
-    expect(result.status).toBe(4);
-    expect(result.stdout).toContain(`${skillItem}: left pending, outside this layer`);
-    expect(existsSync(join(repo.repo, recordedReport))).toBe(false);
-  });
-
-  it("leaves pending a skill item whose outside file the record saw with other content", () => {
-    using repo = sourcesRepo({ recordedB: "old b\n" });
-
-    const result = repo.run("record", "main", "HEAD");
-
-    expect(result.status).toBe(4);
-    expect(result.stdout).toContain(`${skillItem}: left pending, outside this layer`);
-    expect(existsSync(join(repo.repo, recordedReport))).toBe(false);
-  });
-
-  it("leaves pending a skill item whose outside file is untracked", () => {
-    using repo = sourcesRepo({ untrackedB: true });
-
-    const result = repo.run("record", "main", "HEAD");
-
-    expect(result.status).toBe(4);
-    expect(result.stdout).toContain(`${skillItem}: left pending, outside this layer`);
     expect(existsSync(join(repo.repo, recordedReport))).toBe(false);
   });
 });
