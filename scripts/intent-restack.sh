@@ -13,8 +13,9 @@
 #                               <base> and HEAD: the ones that list changed files, all of them in
 #                               the layer's diff since that merge-base. An item changed only through
 #                               coverage (a SKILL.md sources edit that makes an unchanged file
-#                               covered or uncovered) lists that file too, so it stays pending for
-#                               a manual record (docs/agents/intent-review.md). An item with a record in
+#                               covered or uncovered) stays pending for a manual record
+#                               (docs/agents/intent-review.md): Intent lists that file in its changed
+#                               files, or, for an item with no record yet, only in its snapshot. An item with a record in
 #                               <original>'s review-state.json
 #                               (default: the branch's pushed tip, origin/<branch>) gets that
 #                               outcome, reason and evidence again; the others get "no-change" with
@@ -75,11 +76,14 @@ record() {
     git diff --no-renames --name-only -z "$fork" HEAD | jq -Rs 'split("\u0000") | map(select(length > 0))' > "$diff"
     # docs/agents/intent-review.md: record only this layer's items (see the header), leave the rest
     # unresolved; the script makes no ownership guess for coverage-only changes.
-    jq --slurpfile previous "$previous" --slurpfile diff "$diff" '
+    jq --slurpfile previous "$previous" --slurpfile diff "$diff" \
+      --slurpfile current <(cat "$state" 2> /dev/null || echo '{"items":{}}') '
       .items |= map(
         . as $item
         | ($previous[0].items[$item.id] // null) as $old
-        | (($item.changedFiles | length) > 0 and ($item.changedFiles - $diff[0] | length) == 0) as $inLayer
+        # A new item (no record in the working tree) lists outside covered files only in its snapshot.
+        | (($item.changedFiles | length) > 0 and ($item.changedFiles - $diff[0] | length) == 0
+           and ($current[0].items[$item.id] or ((($item.snapshot // {}) | keys) - $diff[0] | length) == 0)) as $inLayer
         | if ($inLayer | not) then .
           elif $old then . + {outcome: $old.outcome, reason: $old.reason, evidence: $old.evidence}
           else

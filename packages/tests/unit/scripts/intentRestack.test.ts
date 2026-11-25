@@ -275,6 +275,27 @@ describe("scripts/intent-restack.sh record", subprocessTests, () => {
     ]);
   });
 
+  // The layer adds skills/y/SKILL.md. With --base, Intent lists only base-diff files in a new item's
+  // changedFiles, while its snapshot lists every file the item covers.
+  it.each([
+    { covered: "b.txt", outcome: "left pending, outside this layer", recordsIt: false },
+    { covered: "a.txt", outcome: "no-change", recordsIt: true },
+  ])("for a new skill covering $covered, prints $outcome", ({ covered, outcome, recordsIt }) => {
+    using repo = recordRepo();
+    const newSkill = "skills/y/SKILL.md";
+    mkdirSync(join(repo.repo, "skills/y"), { recursive: true });
+    repo.write(newSkill, `---\nsources: [${covered}]\n---\n`);
+    repo.git("add", ".");
+    repo.git("commit", "--quiet", "-m", "new skill");
+    const item = { id: `skill:${newSkill}`, changedFiles: [ newSkill ], snapshot: { [covered]: "h1", [newSkill]: "h2" } };
+    repo.tool("pnpm", fakePnpm([{ id: "skill:item", changedFiles: [ "a.txt" ] }, item ]));
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.stdout).toContain(`${item.id}: ${outcome}`);
+    expect(recorded(repo).find(({ id }) => id === item.id)?.outcome).toBe(recordsIt ? "no-change" : undefined);
+  });
+
   it("records nothing and amends nothing when no item is in the layer's diff", () => {
     using repo = recordRepo();
     repo.tool("pnpm", fakePnpm([{ id: "skill:outside", changedFiles: [ "b.txt" ] }]));
