@@ -125,8 +125,11 @@ record() {
   fi
 
   # Stage it first: the first --record of a repo creates the file untracked, which `git diff HEAD`
-  # does not see. The guard above made sure no staged edit differs from this copy.
-  [ -e "$state" ] && git add "$state"
+  # does not see; -A also stages a deleted tracked copy. The guard above made sure no staged edit
+  # differs from this copy.
+  if [ -e "$state" ] || git ls-files --error-unmatch -- "$state" > /dev/null 2>&1; then
+    git add -A -- "$state"
+  fi
   if ! git diff --cached --quiet HEAD -- "$state"; then
     git commit --quiet --amend --no-edit
     echo "Amended the review into $(git log --oneline -1)."
