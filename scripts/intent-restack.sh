@@ -33,8 +33,9 @@
 # Check a "no-change" outcome when the layer changes what the skill teaches. An item left pending
 # still fails `intent maintainer check`; docs/agents/intent-review.md says how to handle it.
 #
-# Run it in the branch's worktree, bottom layer first. For a stack, <base> is the branch below.
-# Exit: 0 done; 1 a usage error, a `git rebase` that could not start, or a failed `intent maintainer
+# Run it in the branch's worktree, bottom layer first, with no modified or staged tracked file:
+# `record` refuses (exit 1) a dirty tree, whose edits it would record but not commit. For a stack, <base> is the branch below.
+# Exit: 0 done; 1 a usage error, a dirty tree, a `git rebase` that could not start, or a failed `intent maintainer
 # check` other than the case for 4; 3 a conflict outside .intent/review-state.json; 4 only when
 # `intent maintainer check` failed on pending review items alone (`stack` lists those layers). Any
 # other failed command (gh, git, jq, intent review/record) exits with its own code, but an exit 4
@@ -52,6 +53,10 @@ record() {
   local base="$1" original="$2" pending previous diff
   pending="$(mktemp)"
   previous="$(mktemp)"
+  if [ -n "$(git status --porcelain --untracked-files=no -- . ":!$state")" ]; then
+    echo "Tracked files have uncommitted changes; commit or stash them, then run again." >&2
+    exit 1
+  fi
   diff="$(mktemp)"
 
   pnpm exec intent maintainer review --base "$base" --json > "$pending"
@@ -158,8 +163,25 @@ fail() {
   exit "$status"
 }
 
+# run_layer <base> <command...>: run <command> (rebase or record), then set layer_status to
+# check_layer <base>'s status. The subshell keeps errexit on inside the command, so any failure there
+# exits with that command's code; exit 4 is kept for a check that failed on pending items alone, so
+# another command's 4 becomes 1. Call it bare: an `if` or `||` around the call would turn errexit
+# off inside the subshell too.
+run_layer() {
+  local base="$1" status
+  shift
+  set +e
+  ( set -e; "$@" )
+  status=$?
+  set -e
+  [ "$status" -eq 0 ] || fail "$status"
+  layer_status=0
+  check_layer "$base" || layer_status=$?
+}
+
 stack() {
-  local view trunk branch below old i status
+  local view trunk branch below old i
   local -a branches=() olds=() failed=()
   view="$(gh stack view --json)" || fail $?
   trunk="origin/$(jq -r '.trunk' <<< "$view")" || fail $?
@@ -175,27 +197,15 @@ stack() {
     [ "$i" -gt 0 ] && below="${branches[$((i - 1))]}"
     echo "== $branch on $below"
     git checkout --quiet "$branch" || fail $?
-    # The subshell keeps errexit on inside rebase and record (an `if` or `||` around the call
-    # would turn it off), so any failure there stops `stack` with that command's code; exit 4 is
-    # kept for a check that failed on pending items alone, so another command's 4 becomes 1.
-    set +e
-    (
-      set -e
-      if [ "$i" -gt 0 ] && [ "$(git rev-parse "$below")" != "$old" ] && git merge-base --is-ancestor "$old" "$branch"; then
-        rebase "$below" "$old"
-      else
-        record "$below" "$(git rev-parse HEAD)"
-      fi
-    )
-    status=$?
-    set -e
-    [ "$status" -eq 0 ] || fail "$status"
-    status=0
-    check_layer "$below" || status=$?
-    if [ "$status" -eq 4 ]; then
+    if [ "$i" -gt 0 ] && [ "$(git rev-parse "$below")" != "$old" ] && git merge-base --is-ancestor "$old" "$branch"; then
+      run_layer "$below" rebase "$below" "$old"
+    else
+      run_layer "$below" record "$below" "$(git rev-parse HEAD)"
+    fi
+    if [ "$layer_status" -eq 4 ]; then
       failed+=("$branch")
-    elif [ "$status" -ne 0 ]; then
-      exit "$status"
+    elif [ "$layer_status" -ne 0 ]; then
+      exit "$layer_status"
     fi
   done
   if [ "${#failed[@]}" -gt 0 ]; then
@@ -215,19 +225,9 @@ case "$action" in
   rebase | record) ;;
   *) echo "$usage" >&2; exit 1 ;;
 esac
-# As in `stack`: errexit stays on in the subshell, and another command's exit 4 becomes 1.
-set +e
-(
-  set -e
-  if [ "$action" = rebase ]; then
-    rebase "$base"
-  else
-    record "$base" "${3:-origin/$(git branch --show-current)}"
-  fi
-)
-status=$?
-set -e
-[ "$status" -eq 0 ] || fail "$status"
-status=0
-check_layer "$base" || status=$?
-exit "$status"
+if [ "$action" = rebase ]; then
+  run_layer "$base" rebase "$base"
+else
+  run_layer "$base" record "$base" "${3:-origin/$(git branch --show-current)}"
+fi
+exit "$layer_status"

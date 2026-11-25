@@ -12,7 +12,7 @@ const recordedReport = ".bin/recorded.json";
 
 type Item = { changedFiles: Array<string>; id: string; };
 type FakeOptions = {
-  /** `--record` fails on this branch, with exit 4: the code the script uses for a failed check. */
+  /** `--record` fails on this branch with exit 4, the code the script keeps for a check that failed on pending items alone, so a test can show another command's 4 becomes 1. */
   failRecordOn?: string;
   /** `review --json` prints its report but then fails (exit 2) on this branch. */
   failReviewOn?: string;
@@ -251,6 +251,20 @@ describe("scripts/intent-restack.sh record", () => {
     expect(repo.read(state)).toBe(reviewState);
   });
 
+  it("refuses to record when a tracked file has uncommitted changes", () => {
+    using repo = recordRepo();
+    repo.tool("pnpm", fakePnpm([{ id: "skill:item", changedFiles: [ "a.txt" ] }]));
+    const head = repo.git("rev-parse", "HEAD");
+    repo.write("a.txt", "dirty\n");
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain("uncommitted changes");
+    expect(existsSync(join(repo.repo, recordedReport))).toBe(false);
+    expect(repo.git("rev-parse", "HEAD")).toBe(head);
+  });
+
   it("prints every line of a failed check, not only the last", () => {
     using repo = recordRepo();
     repo.tool("pnpm", `#!/bin/sh
@@ -346,6 +360,34 @@ describe("scripts/intent-restack.sh stack", () => {
     });
   });
 
+  it("exits 0 when every layer passes its check, rebasing the layers above", () => {
+    using repo = stackRepo();
+    repo.tool("pnpm", fakePnpm([{ id: "skill:a", changedFiles: [ "a.txt" ] }], { perBranch }));
+
+    const result = repo.run("stack");
+
+    expect(result.status).toBe(0);
+    expect(result.stderr).not.toContain("check failed on these layers");
+    expect(repo.git("rev-parse", "l2~1")).toBe(repo.git("rev-parse", "l1"));
+  });
+
+  it("stops at the first layer when a tracked file has uncommitted changes", () => {
+    using repo = stackRepo();
+    const layer1 = repo.git("rev-parse", "l1");
+    const layer2 = repo.git("rev-parse", "l2");
+    repo.tool("pnpm", fakePnpm(items, { perBranch }));
+    repo.git("checkout", "--quiet", "l1");
+    repo.write("b.txt", "dirty\n");
+
+    const result = repo.run("stack");
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain("uncommitted changes");
+    expect(result.stdout).not.toContain("== l2");
+    expect(repo.git("rev-parse", "l1")).toBe(layer1);
+    expect(repo.git("rev-parse", "l2")).toBe(layer2);
+  });
+
   it("stops at a layer that fails for any other reason, even with exit 4, leaving the layers above alone", () => {
     using repo = stackRepo();
     const layer2 = repo.git("rev-parse", "l2");
@@ -436,10 +478,11 @@ describe("scripts/intent-restack.sh stack", () => {
 
 // The workspace's installed packages; the contract repo links them so `pnpm exec intent` finds Intent.
 const nodeModules = resolve(import.meta.dirname, "../../../../node_modules");
+const authoringMarker = "<!-- intent:needs-authoring -->";
 
 // The stderr text and `status --json` fields check_layer reads, from the real Intent CLI.
 describe("@tanstack/intent maintainer contract used by scripts/intent-restack.sh", () => {
-  it("fails check with 'Maintainer check failed.' and lists the pending item in status --json", () => {
+  it("fails check with 'Maintainer check failed.' on a pending item alone, which the script turns into exit 4", () => {
     using repo = makeRepo();
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- the script runs the PATH pnpm, so the test does too
     const run = (...args: Array<string>) => spawnSync("pnpm", [ "exec", "intent", "maintainer", ...args, "--artifacts", "_artifacts" ], { cwd: repo.repo, encoding: "utf8" });
@@ -450,20 +493,31 @@ describe("@tanstack/intent maintainer contract used by scripts/intent-restack.sh
     repo.write("src/a.ts", "a\n");
     expect(run("setup", "--distribution", "none").status).toBe(0);
     expect(run("add", "x", "--domain", "core", "--description", "Use when testing x.", "--source", "src/a.ts").status).toBe(0);
+    // setup and add mark skill_spec.md and the new SKILL.md as unauthored and record no task for the
+    // skill: authoring problems that status lists. Author them so only the review item stays.
+    repo.write("_artifacts/domain_map.yaml", repo.read("_artifacts/domain_map.yaml").replace("tasks: []", "tasks: [test x]"));
+    repo.git("add", ".");
+    for (const file of repo.git("ls-files").split("\n")) {
+      const content = repo.read(file);
+      if (content.includes(authoringMarker)) repo.write(file, content.replaceAll(authoringMarker, ""));
+    }
+    expect(run("sync").status).toBe(0);
     repo.git("add", ".");
     repo.git("commit", "--quiet", "-m", "base");
     repo.write("src/a.ts", "b\n");
     repo.git("commit", "--quiet", "-am", "change");
 
     const check = run("check", "--base", "HEAD~1");
-    const status = JSON.parse(run("status", "--base", "HEAD~1", "--json").stdout) as Record<string, unknown> & { review: { items: Array<{ problems: unknown; }>; }; };
+    const status = JSON.parse(run("status", "--base", "HEAD~1", "--json").stdout) as { problems: unknown; review: { items: Array<{ problems: unknown; }>; }; staleFiles: unknown; };
 
     expect(check.status).not.toBe(0);
     expect(check.stderr).toMatch(/^Maintainer check failed\./m);
-    expect(status.problems).toBeInstanceOf(Array);
-    expect(status.staleFiles).toBeInstanceOf(Array);
-    expect(status.review.items).toBeInstanceOf(Array);
+    expect(status.problems).toEqual([]);
+    expect(status.staleFiles).toEqual([]);
     expect(status.review.items.length).toBeGreaterThan(0);
-    for (const item of status.review.items) expect(item.problems).toBeInstanceOf(Array);
+    for (const item of status.review.items) expect(item.problems).toEqual([]);
+    // record finds no item in HEAD's own (empty) diff, so it records nothing and only checks.
+    const script = spawnSync("bash", [ "scripts/intent-restack.sh", "record", "HEAD", "HEAD" ], { cwd: repo.repo, encoding: "utf8" });
+    expect(script.status).toBe(4);
   }, 30_000);
 });
