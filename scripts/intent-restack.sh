@@ -33,13 +33,15 @@
 # Check a "no-change" outcome when the layer changes what the skill teaches. An item left pending
 # still fails `intent maintainer check`; docs/agents/intent-review.md says how to handle it.
 #
-# Run it in the branch's worktree, bottom layer first, with no modified or staged tracked file:
-# `record` refuses (exit 1) a dirty tree, whose edits it would record but not commit. For a stack, <base> is the branch below.
-# Exit: 0 done; 1 a usage error, a dirty tree, a `git rebase` that could not start, or a failed `intent maintainer
-# check` other than the case for 4; 3 a conflict outside .intent/review-state.json; 4 only when
-# `intent maintainer check` failed on pending review items alone (`stack` lists those layers). Any
-# other failed command (gh, git, jq, intent review/record) exits with its own code, but an exit 4
-# from it becomes 1. Errors go to stderr.
+# Run it in the branch's worktree, bottom layer first. `record` refuses (exit 1) a modified or
+# staged tracked file other than .intent/review-state.json, whose edits it would record but not
+# commit; edits to .intent/review-state.json itself are amended into the layer's last commit. For a
+# stack, <base> is the branch below.
+# Exit: 0 done; 1 a usage error, a dirty tree, a `git rebase` that could not start, or a failed
+# `intent maintainer check` other than the case for 4; 3 a conflict outside .intent/review-state.json;
+# 4 only when `intent maintainer check` failed on pending review items alone (`stack` lists those
+# layers). Any other failed command (gh, git, jq, intent review/record) exits with its own code, but
+# an exit 4 from it becomes 1. Errors go to stderr.
 set -euo pipefail
 
 state=.intent/review-state.json
