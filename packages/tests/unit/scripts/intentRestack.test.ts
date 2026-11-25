@@ -33,7 +33,7 @@ type FakeOptions = {
 // Stands in for `pnpm exec intent maintainer`. `--json` prints the pending items. `--record` saves the
 // report to .bin/recorded.json and merges its annotated items into the review state. `status --json`
 // gives the real fields the script reads: problems, staleFiles and the pending review items with
-// their own problems.
+// their own problems. Every call appends its arguments to .bin/args.log.
 // `check` fails on validation first; otherwise, like Intent, it fails with "Maintainer check
 // failed." while a file is stale, a problem is listed or an item of the last `--json` report has
 // no recorded outcome.
@@ -45,6 +45,7 @@ dir="$(dirname "$0")"
 branch="$(git branch --show-current)"
 recorded="$dir/recorded.json"
 [ -f "$recorded" ] || recorded=/dev/null
+echo "$*" >> "$dir/args.log"
 stale='[]'
 if [ "$branch" = "${staleOn}" ]; then stale='["packages/lib/package.json"]'; fi
 problems='[]'
@@ -251,6 +252,27 @@ describe("scripts/intent-restack.sh record", subprocessTests, () => {
     expect(existsSync(join(repo.repo, recordedReport))).toBe(false);
     expect(repo.git("rev-parse", "HEAD")).toBe(head);
     expect(repo.read(state)).toBe(reviewState);
+  });
+
+  it("reviews and checks the layer against its merge-base when the base has moved on", () => {
+    using repo = recordRepo();
+    repo.tool("pnpm", fakePnpm([{ id: "skill:item", changedFiles: [ "a.txt" ] }]));
+    const fork = repo.git("rev-parse", "main");
+    repo.git("checkout", "--quiet", "main");
+    repo.write("c.txt", "c\n");
+    repo.git("add", "c.txt");
+    repo.git("commit", "--quiet", "-m", "main moves");
+    repo.git("checkout", "--quiet", "feature");
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.status).toBe(0);
+    const calls = repo.read(".bin/args.log").trim();
+    expect(calls.split("\n")).toEqual([
+      `exec intent maintainer review --base ${fork} --json`,
+      "exec intent maintainer review --record .intent/review.json",
+      `exec intent maintainer check --base ${fork} --artifacts _artifacts`,
+    ]);
   });
 
   it("amends a staged edit to the review state even when it records nothing", () => {

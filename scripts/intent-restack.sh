@@ -9,15 +9,17 @@
 #                               .intent/review-state.json takes <base>'s copy; any other conflict
 #                               stops the script with exit 3 and leaves the rebase for you to finish
 #                               (then run `record`). Then records the reviews, as `record` does.
-#   record <base> [<original>]  Record this layer's pending review items against <base>: the ones
-#                               that list changed files, all of them in the layer's diff since
-#                               <base>. An item with a record in <original>'s review-state.json
+#   record <base> [<original>]  Record this layer's pending review items against the merge-base of
+#                               <base> and HEAD: the ones that list changed files, all of them in
+#                               the layer's diff since that merge-base. An item with a record in
+#                               <original>'s review-state.json
 #                               (default: the branch's pushed tip, origin/<branch>) gets that
 #                               outcome, reason and evidence again; the others get "no-change" with
 #                               their changed files as evidence. It prints every other item as left
 #                               pending, even one with an earlier record or no changed files, and
 #                               skips recording when no item is the layer's. Then it amends the
-#                               review into the last commit and runs `intent maintainer check`. Use
+#                               review into the last commit and runs `intent maintainer check`
+#                               against the same merge-base. Use
 #                               it after `gh stack rebase` or `gh stack sync`.
 #   stack                       For every layer of the current gh stack, bottom first: rebase it
 #                               onto the layer below (if that layer moved) and record its reviews.
@@ -52,7 +54,7 @@ in_rebase() {
 }
 
 record() {
-  local base="$1" original="$2" pending previous diff
+  local base="$1" original="$2" pending previous diff fork
   if [ -n "$(git status --porcelain --untracked-files=no -- . ":!$state")" ]; then
     echo "Tracked files have uncommitted changes; commit or stash them, then run again." >&2
     exit 1
@@ -61,12 +63,13 @@ record() {
   previous="$(mktemp)"
   diff="$(mktemp)"
 
-  pnpm exec intent maintainer review --base "$base" --json > "$pending"
+  fork="$(git merge-base "$base" HEAD)"
+  pnpm exec intent maintainer review --base "$fork" --json > "$pending"
   if [ "$(jq '.items | length' "$pending")" = "0" ]; then
     echo "No pending review items against $base."
   else
     git show "$original:$state" > "$previous" 2> /dev/null || echo '{"items":{}}' > "$previous"
-    git diff --no-renames --name-only -z "$(git merge-base "$base" HEAD)" HEAD | jq -Rs 'split("\u0000") | map(select(length > 0))' > "$diff"
+    git diff --no-renames --name-only -z "$fork" HEAD | jq -Rs 'split("\u0000") | map(select(length > 0))' > "$diff"
     # docs/agents/intent-review.md: record only this layer's items, leave the rest unresolved.
     jq --slurpfile previous "$previous" --slurpfile diff "$diff" '
       .items |= map(
@@ -96,14 +99,16 @@ record() {
   fi
 }
 
-# check_layer <base>: run `intent maintainer check` against <base>. Returns 0 when it passes, 4 when
+# check_layer <base>: run `intent maintainer check` against the merge-base of <base> and HEAD, as CI
+# does. Returns 0 when it passes, 4 when
 # it fails on pending review items alone, 1 otherwise. Callers run it where errexit is off, so it
 # tests every command's status itself; a failed `status --json` or jq counts as 1.
 check_layer() {
-  local base="$1" output errors result=1
+  local base="$1" output errors fork result=1
+  fork="$(git merge-base "$base" HEAD)" || return 1
   output="$(mktemp)"
   errors="$(mktemp)"
-  if pnpm exec intent maintainer check --base "$base" --artifacts _artifacts > "$output" 2> "$errors"; then
+  if pnpm exec intent maintainer check --base "$fork" --artifacts _artifacts > "$output" 2> "$errors"; then
     tail -1 "$output"
     rm -f "$output" "$errors"
     return 0
@@ -114,7 +119,7 @@ check_layer() {
   # check failed." only once validation passed; `status --json` then says whether pending review
   # items, none with authoring problems of its own, alone caused that.
   if grep -q '^Maintainer check failed\.' "$errors" \
-    && pnpm exec intent maintainer status --base "$base" --artifacts _artifacts --json > "$output" \
+    && pnpm exec intent maintainer status --base "$fork" --artifacts _artifacts --json > "$output" \
     && jq -e '(.problems | length) == 0 and (.staleFiles | length) == 0 and (.review.items | length) > 0
       and all(.review.items[]; (.problems | length) == 0)' "$output" > /dev/null; then
     result=4
