@@ -34,10 +34,11 @@
 # still fails `intent maintainer check`; docs/agents/intent-review.md says how to handle it.
 #
 # Run it in the branch's worktree, bottom layer first. For a stack, <base> is the branch below.
-# Exit: 0 done, 3 a conflict outside .intent/review-state.json, 4 only when `intent maintainer
-# check` failed on pending review items alone (`stack` lists those layers). Any other failure exits
-# with the failed command's own code, except that another command's exit 4 becomes 1 (its error is
-# on stderr).
+# Exit: 0 done; 1 a usage error, a `git rebase` that could not start, or a failed `intent maintainer
+# check` other than the case for 4; 3 a conflict outside .intent/review-state.json; 4 only when
+# `intent maintainer check` failed on pending review items alone (`stack` lists those layers). Any
+# other failed command (gh, git, jq, intent review/record) exits with its own code, but an exit 4
+# from it becomes 1. Errors go to stderr.
 set -euo pipefail
 
 state=.intent/review-state.json
