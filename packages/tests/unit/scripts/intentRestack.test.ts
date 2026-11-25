@@ -10,8 +10,8 @@ const script = resolve(import.meta.dirname, "../../../../scripts/intent-restack.
 const state = ".intent/review-state.json";
 // The report the script passed to `--record`, which the fake pnpm saves.
 const recordedReport = ".bin/recorded.json";
-// Each test builds a git repo and runs bash, git and the fake pnpm, which run slowly under full-suite load.
-const subprocessTests = { timeout: 60_000 };
+// Each test builds a git repo and runs bash, git and pnpm (the fake one, or the real Intent CLI several times in the contract test), which run slowly under full-suite load.
+const subprocessTests = { timeout: 120_000 };
 
 type Item = { changedFiles: Array<string>; id: string; snapshot?: Record<string, string>; };
 type FakeOptions = {
@@ -589,7 +589,7 @@ const nodeModules = resolve(import.meta.dirname, "../../../../node_modules");
 const authoringMarker = "<!-- intent:needs-authoring -->";
 
 // The stderr text and `status --json` fields check_layer reads, from the real Intent CLI.
-describe("@tanstack/intent maintainer contract used by scripts/intent-restack.sh", () => {
+describe("@tanstack/intent maintainer contract used by scripts/intent-restack.sh", subprocessTests, () => {
   it("fails check with 'Maintainer check failed.' on a pending item alone, which the script turns into exit 4", () => {
     using repo = makeRepo();
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- the script runs the PATH pnpm, so the test does too
@@ -628,5 +628,5 @@ describe("@tanstack/intent maintainer contract used by scripts/intent-restack.sh
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- the script runs the PATH pnpm and git, so it runs under the PATH bash
     const script = spawnSync("bash", [ "scripts/intent-restack.sh", "record", "HEAD", "HEAD" ], { cwd: repo.repo, encoding: "utf8" });
     expect(script.status).toBe(4);
-  }, 30_000);
+  });
 });
