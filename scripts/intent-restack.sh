@@ -43,9 +43,10 @@
 # staged tracked file other than .intent/review-state.json, whose edits it would record but not
 # commit; a staged .intent/review-state.json whose working-tree copy differs from the staged one;
 # and any file on disk (untracked or ignored) at a path the layer deleted, whose content it would
-# record though CI has no such file. Other edits to .intent/review-state.json, staged or not, are
-# amended into the layer's last commit. It writes its own report to a temp file, so an agent's
-# .intent/review.json is left as it is. For a stack, <base> is the branch below.
+# record though CI has no such file. Other edits to .intent/review-state.json, staged or not, and a
+# review state that the first --record of a repo creates are amended into the layer's last commit.
+# It writes its own report to a temp file, so an agent's .intent/review.json is left as it is. For a
+# stack, <base> is the branch below.
 # Exit: 0 done; 1 a usage error, a dirty tree, a `git rebase` that could not start, or a failed
 # `intent maintainer check` other than the case for 4; 3 a conflict outside .intent/review-state.json;
 # 4 only when `intent maintainer check` failed on pending review items alone (`stack` lists those
@@ -123,8 +124,10 @@ record() {
     fi
   fi
 
-  if ! git diff --quiet HEAD -- "$state"; then
-    git add "$state"
+  # Stage it first: the first --record of a repo creates the file untracked, which `git diff HEAD`
+  # does not see. The guard above made sure no staged edit differs from this copy.
+  [ -e "$state" ] && git add "$state"
+  if ! git diff --cached --quiet HEAD -- "$state"; then
     git commit --quiet --amend --no-edit
     echo "Amended the review into $(git log --oneline -1)."
   fi

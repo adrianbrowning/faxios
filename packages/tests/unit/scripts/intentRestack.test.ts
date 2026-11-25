@@ -70,6 +70,8 @@ ${arms.join("\n")}
     if [ "$branch" = "${failRecordOn}" ]; then echo "record rejected" >&2; exit 4; fi
     for report; do :; done
     cp "$report" "$dir/recorded.json"
+    # Like Intent, the first record of a repo creates the review state.
+    [ -f ${state} ] || echo '{"items":{}}' > ${state}
     jq --slurpfile r "$report" '.items += ($r[0].items | map(select(.outcome) | {key: .id, value: {outcome, reason, evidence}}) | from_entries)' ${state} > "$dir/state.json"
     mv "$dir/state.json" ${state} ;;
   *)
@@ -437,6 +439,25 @@ describe("scripts/intent-restack.sh record", subprocessTests, () => {
 
     expect(result.status).toBe(2);
     expect(existsSync(join(repo.repo, ".bin/it's tmp"))).toBe(false);
+  });
+
+  it("amends a review state that its first --record creates into the last commit", () => {
+    using repo = makeRepo();
+    repo.tool("pnpm", fakePnpm([{ id: "skill:item", changedFiles: [ "a.txt" ] }]));
+    repo.write("a.txt", "a\n");
+    repo.git("add", ".");
+    repo.git("commit", "--quiet", "-m", "base");
+    repo.git("checkout", "--quiet", "-b", "feature");
+    repo.write("a.txt", "feature\n");
+    repo.git("commit", "--quiet", "-am", "feature");
+    const parent = repo.git("rev-parse", "HEAD~1");
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.status).toBe(0);
+    expect(JSON.parse(repo.git("show", `HEAD:${state}`))).toEqual({ items: { "skill:item": expect.objectContaining({ outcome: "no-change" }) } });
+    expect(repo.git("rev-parse", "HEAD~1")).toBe(parent);
+    expect(repo.git("status", "--porcelain")).toBe("");
   });
 
   it("amends a staged edit to the review state even when it records nothing", () => {
