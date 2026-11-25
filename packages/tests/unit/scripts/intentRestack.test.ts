@@ -360,6 +360,33 @@ describe("scripts/intent-restack.sh stack", () => {
     expect(repo.git("rev-parse", "l2")).toBe(layer2);
   });
 
+  it("exits 1, not 4, when `gh stack view` fails with exit 4", () => {
+    using repo = stackRepo();
+    repo.tool("pnpm", fakePnpm(items, { perBranch }));
+    repo.tool("gh", "#!/bin/sh\necho 'gh failed' >&2\nexit 4\n");
+
+    const result = repo.run("stack");
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain("gh failed");
+  });
+
+  it("exits 1, not 4, when checking out a layer fails with exit 4, leaving the layers above alone", () => {
+    using repo = stackRepo();
+    const layer2 = repo.git("rev-parse", "l2");
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- the fake git hands every other call to the PATH git
+    const git = execFileSync("sh", [ "-c", "command -v git" ], { encoding: "utf8" }).trim();
+    repo.tool("pnpm", fakePnpm(items, { perBranch }));
+    repo.tool("git", `#!/bin/sh\nif [ "$1" = checkout ]; then echo 'checkout failed' >&2; exit 4; fi\nexec '${git}' "$@"\n`);
+
+    const result = repo.run("stack");
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain("checkout failed");
+    expect(result.stdout).not.toContain("== l2");
+    expect(repo.git("rev-parse", "l2")).toBe(layer2);
+  });
+
   // l1 also leaves skill:other pending, so only the named cause stops `stack`.
   it.each([
     [ "a stale file", { staleOn: "l1" }],

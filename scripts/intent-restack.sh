@@ -149,11 +149,19 @@ rebase() {
   record "$base" "$original"
 }
 
+# fail <status>: exit with <status>, but as 1 when it is 4, which only a check that failed on
+# pending review items alone may return.
+fail() {
+  local status="$1"
+  [ "$status" -eq 4 ] && status=1
+  exit "$status"
+}
+
 stack() {
   local view trunk branch below old i status
   local -a branches=() olds=() failed=()
-  view="$(gh stack view --json)"
-  trunk="origin/$(jq -r '.trunk' <<< "$view")"
+  view="$(gh stack view --json)" || fail $?
+  trunk="origin/$(jq -r '.trunk' <<< "$view")" || fail $?
   # `base` is the parent tip gh stack last saw in the branch: the commit the layer was built on.
   while IFS=$'\t' read -r branch old; do
     branches+=("$branch")
@@ -165,7 +173,7 @@ stack() {
     below="$trunk"
     [ "$i" -gt 0 ] && below="${branches[$((i - 1))]}"
     echo "== $branch on $below"
-    git checkout --quiet "$branch"
+    git checkout --quiet "$branch" || fail $?
     # The subshell keeps errexit on inside rebase and record (an `if` or `||` around the call
     # would turn it off), so any failure there stops `stack` with that command's code; exit 4 is
     # kept for a check that failed on pending items alone, so another command's 4 becomes 1.
@@ -180,8 +188,7 @@ stack() {
     )
     status=$?
     set -e
-    [ "$status" -eq 4 ] && status=1
-    [ "$status" -eq 0 ] || exit "$status"
+    [ "$status" -eq 0 ] || fail "$status"
     status=0
     check_layer "$below" || status=$?
     if [ "$status" -eq 4 ]; then
@@ -219,8 +226,7 @@ set +e
 )
 status=$?
 set -e
-[ "$status" -eq 4 ] && status=1
-[ "$status" -eq 0 ] || exit "$status"
+[ "$status" -eq 0 ] || fail "$status"
 status=0
 check_layer "$base" || status=$?
 exit "$status"
