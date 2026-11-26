@@ -596,20 +596,34 @@ describe("scripts/intent-restack.sh record", subprocessTests, () => {
     expect(repo.git("rev-parse", "HEAD")).toBe(head);
   });
 
-  it("records a layer that replaced a deleted file with a committed directory of the same name", () => {
+  it.each([
+    [ "an untracked directory", "" ],
+    [ "a gitignored directory", "b.txt/\n" ],
+    [ "a FIFO", "" ],
+  ])("refuses to record when %s is at a path the layer deleted", (kind, ignore) => {
     using repo = recordRepo();
-    repo.tool("pnpm", fakePnpm([{ id: "source:b.txt/c.txt", changedFiles: [ "b.txt/c.txt" ] }]));
+    repo.tool("pnpm", fakePnpm([{ id: "source:b.txt", changedFiles: [ "b.txt" ] }]));
     repo.git("rm", "--quiet", "b.txt");
-    mkdirSync(join(repo.repo, "b.txt"));
-    repo.write("b.txt/c.txt", "c\n");
-    repo.git("add", "b.txt/c.txt");
-    repo.git("commit", "--quiet", "-m", "b.txt becomes a directory");
+    repo.git("commit", "--quiet", "-m", "delete b.txt");
+    if (ignore) {
+      repo.write(".git/info/exclude", ignore);
+    }
+    if (kind === "a FIFO") {
+      // eslint-disable-next-line sonarjs/no-os-command-from-path -- mkfifo has no node:fs equivalent
+      execFileSync("mkfifo", [ join(repo.repo, "b.txt") ]);
+    }
+    else {
+      mkdirSync(join(repo.repo, "b.txt"));
+      repo.write("b.txt/c.txt", "local\n");
+    }
+    const head = repo.git("rev-parse", "HEAD");
 
     const result = repo.run("record", "main", "HEAD");
 
-    expect(result.stderr).toBe("");
-    expect(result.status).toBe(0);
-    expect(result.stdout).toContain("source:b.txt/c.txt: no-change");
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe("Files exist at paths this layer deleted; remove or move them, then run again:\n  b.txt\n");
+    expect(existsSync(join(repo.repo, recordedReport))).toBe(false);
+    expect(repo.git("rev-parse", "HEAD")).toBe(head);
   });
 
   it("prints every line of a failed check, not only the last", () => {
@@ -907,5 +921,43 @@ describe("@tanstack/intent maintainer contract used by scripts/intent-restack.sh
     expect(reviewState.items["skill:skills/x/SKILL.md"]).toMatchObject({ outcome: "no-change", reason: "earlier PR" });
     expect(repo.git("status", "--porcelain")).toBe("");
     expect(repo.git("rev-parse", "HEAD~1")).toBe(repo.git("rev-parse", "main"));
+  });
+
+  it("refuses a layer that replaced a deleted file with a committed directory, which Intent cannot review", () => {
+    using repo = intentRepo();
+    repo.write("b.txt", "b\n");
+    repo.git("add", "b.txt");
+    repo.git("commit", "--quiet", "-m", "add b.txt");
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- the script runs the PATH pnpm, so the test does too
+    execFileSync("pnpm", [ "exec", "intent", "maintainer", "review", "--unchanged", "earlier PR" ], { cwd: repo.repo });
+    repo.git("add", state);
+    repo.git("commit", "--quiet", "-m", "record");
+    repo.git("checkout", "--quiet", "-b", "feature");
+    repo.git("rm", "--quiet", "b.txt");
+    mkdirSync(join(repo.repo, "b.txt"));
+    repo.write("b.txt/c.txt", "c\n");
+    repo.git("add", "b.txt/c.txt");
+    repo.git("commit", "--quiet", "-m", "b.txt becomes a directory");
+    const head = repo.git("rev-parse", "HEAD");
+    const before = repo.read(state);
+
+    // Intent lists the deleted path itself and cannot hash the directory there, so neither a record
+    // nor CI's check can pass on this layer.
+    // eslint-disable-next-line sonarjs/no-os-command-from-path -- the script runs the PATH pnpm, so the test does too
+    const review = JSON.parse(execFileSync("pnpm", [ "exec", "intent", "maintainer", "review", "--base", "main", "--json" ], { cwd: repo.repo, encoding: "utf8" })) as { items: Array<{ id: string; problems: Array<string>; }>; };
+    expect(review.items.find(item => item.id === "source:b.txt")?.problems).toEqual([ "Cannot review non-file: \"b.txt\"" ]);
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toBe([
+      "Intent cannot review a path this layer deleted that is now a directory the layer committed, so neither record nor check-skills can pass;",
+      "delete the file and add the directory in separate PRs, or give the directory another name:",
+      "  b.txt",
+      "",
+    ].join("\n"));
+    expect(repo.git("rev-parse", "HEAD")).toBe(head);
+    expect(repo.read(state)).toBe(before);
+    expect(repo.git("status", "--porcelain")).toBe("");
   });
 });
