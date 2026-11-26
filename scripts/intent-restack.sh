@@ -43,9 +43,10 @@
 # staged tracked file other than .intent/review-state.json, whose edits it would record but not
 # commit; a staged .intent/review-state.json whose working-tree copy differs from the staged one,
 # or whose staged deletion (`git rm --cached`) left a working-tree copy; a tracked
-# .intent/review-state.json deleted from the working tree but not from the index; and any file on
-# disk (untracked or ignored) at a path the layer deleted, whose content it would record though CI
-# has no such file. Other edits to .intent/review-state.json, staged or not, a `git rm` of it, and a
+# .intent/review-state.json deleted from the working tree but not from the index; and any file or
+# symlink on disk (untracked or ignored) at a path the layer deleted, whose content it would record
+# though CI has no such file (a directory there, such as one the layer committed, is accepted).
+# Other edits to .intent/review-state.json, staged or not, a `git rm` of it, and a
 # review state that the first --record of a repo creates are amended into the layer's last commit.
 # It writes its own report to a temp file, so an agent's .intent/review.json is left as it is. For a
 # stack, <base> is the branch below.
@@ -85,9 +86,10 @@ record() {
   fi
   fork="$(git merge-base "$base" HEAD)"
   # Intent hashes the disk, so a file at a path the layer deleted would be recorded but absent on CI.
+  # A directory there holds files that Intent lists by their own paths, so it is not refused.
   local path present=()
   while IFS= read -r -d '' path; do
-    if [ -e "$path" ] || [ -L "$path" ]; then present+=("$path"); fi
+    if [ -L "$path" ] || [ -f "$path" ]; then present+=("$path"); fi
   done < <(git diff --no-renames --diff-filter=D --name-only -z "$fork" HEAD)
   if [ "${#present[@]}" -gt 0 ]; then
     echo "Files exist at paths this layer deleted; remove or move them, then run again:" >&2

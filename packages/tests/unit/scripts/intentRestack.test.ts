@@ -362,6 +362,9 @@ describe("scripts/intent-restack.sh record", subprocessTests, () => {
     expect(result.stdout).toContain("skill:outside: left pending, outside this layer");
     expect(existsSync(join(repo.repo, recordedReport))).toBe(false);
     expect(repo.git("rev-parse", "HEAD")).toBe(head);
+    // An amend with an unchanged tree in the same second keeps the hash, so check what it always changes.
+    expect(result.stdout).not.toContain("Amended the review");
+    expect(repo.git("reflog", "-1", "--format=%gs")).not.toMatch(/amend/);
     expect(repo.read(state)).toBe(reviewState);
   });
 
@@ -576,6 +579,37 @@ describe("scripts/intent-restack.sh record", subprocessTests, () => {
     expect(repo.git("rev-parse", "HEAD")).toBe(head);
     expect(repo.read(state)).toBe(before);
     expect(repo.git("status", "--porcelain")).toBe(ignore ? "" : "?? b.txt");
+  });
+
+  it("refuses to record when a symlink is at a path the layer deleted", () => {
+    using repo = recordRepo();
+    repo.tool("pnpm", fakePnpm([{ id: "source:b.txt", changedFiles: [ "b.txt" ] }]));
+    repo.git("rm", "--quiet", "b.txt");
+    repo.git("commit", "--quiet", "-m", "delete b.txt");
+    symlinkSync("a.txt", join(repo.repo, "b.txt"));
+    const head = repo.git("rev-parse", "HEAD");
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain("b.txt");
+    expect(repo.git("rev-parse", "HEAD")).toBe(head);
+  });
+
+  it("records a layer that replaced a deleted file with a committed directory of the same name", () => {
+    using repo = recordRepo();
+    repo.tool("pnpm", fakePnpm([{ id: "source:b.txt/c.txt", changedFiles: [ "b.txt/c.txt" ] }]));
+    repo.git("rm", "--quiet", "b.txt");
+    mkdirSync(join(repo.repo, "b.txt"));
+    repo.write("b.txt/c.txt", "c\n");
+    repo.git("add", "b.txt/c.txt");
+    repo.git("commit", "--quiet", "-m", "b.txt becomes a directory");
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.stderr).toBe("");
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain("source:b.txt/c.txt: no-change");
   });
 
   it("prints every line of a failed check, not only the last", () => {

@@ -15,7 +15,7 @@ The examples on this page use `@tanstack/query-core`, the framework-agnostic cor
 npm install @tanstack/query-core
 ```
 
-`QueryClient.query` runs the query function, caches the result under the query key, and resolves with the data. Pass the `signal` TanStack Query gives the query function on to faxios, so a query TanStack Query cancels also cancels its request:
+`QueryClient.query` resolves with the cached data when the query key holds data that is still fresh (see TanStack Query's [`staleTime`](https://tanstack.com/query/latest/docs/framework/react/guides/caching) docs); otherwise it runs the query function, caches the result under the query key, and resolves with the data. Pass the `signal` TanStack Query gives the query function on to faxios, so a query TanStack Query cancels also cancels its request:
 
 ```ts expect=log:Ada%20Lovelace,request:GET%20https://api.example.com/users/42%0A
 import faxios from "@gcmdev/faxios";
@@ -52,7 +52,7 @@ The same query function works unchanged with a framework adapter such as `useQue
 
 ## Cancelling a query
 
-TanStack Query aborts the query function's `signal` when it cancels a query: when you call `queryClient.cancelQueries`, or when the last observer of a query that is still fetching unsubscribes, as `useQuery` does when its component unmounts. A query function that passes that `signal` to faxios cancels the faxios request with it, so the request rejects with a `CanceledError` (code `ERR_CANCELED`), just as an aborted [`AbortController`](/pages/advanced/cancellation) does. TanStack Query ignores that rejection: the query doesn't turn into an error, and it goes back to the state it had before the fetch started. The promise that `queryClient.query` (or `fetchQuery`) returned still settles, though: it rejects with TanStack Query's own `CancelledError` (exported from `@tanstack/query-core`, detected with `error instanceof CancelledError`) when the query had no data before the fetch, and resolves with the restored data when it did. That is why the example catches the query promise, handling only the cancellation and rethrowing any other error. The cancellation adds no error of its own: `useQuery` observers see the state from before the fetch, which is the earlier error if the query had already failed.
+TanStack Query aborts the query function's `signal` when it cancels a query: when you call `queryClient.cancelQueries`, or when the last observer of a query that is still fetching unsubscribes, as `useQuery` does when its component unmounts. A query function that passes that `signal` to faxios cancels the faxios request with it, so the request rejects with a `CanceledError` (code `ERR_CANCELED`), just as an aborted [`AbortController`](/pages/advanced/cancellation) does. By default (`revert: true`, which `cancelQueries` uses unless you override it and which an observer that unsubscribes also uses), TanStack Query ignores that rejection: the query doesn't turn into an error, and it goes back to the state it had before the fetch started. The promise that `queryClient.query` (or `fetchQuery`) returned still settles, though: it rejects with TanStack Query's own `CancelledError` (exported from `@tanstack/query-core`, detected with `error instanceof CancelledError`) when the query had no data before the fetch, and resolves with the restored data when it did. That is why the example catches the query promise, handling only the cancellation and rethrowing any other error. With the default, the cancellation adds no error of its own: `useQuery` observers see the state from before the fetch, which is the earlier error if the query had already failed. With `queryClient.cancelQueries(filters, { revert: false })`, the query doesn't go back to its earlier state: it turns into an error whose `error` is TanStack Query's `CancelledError`, and the `queryClient.query` promise rejects with that `CancelledError` even when the query had data.
 
 ```ts expect=log:fetch%3A%20aborted,log:faxios%3A%20CanceledError%20ERR_CANCELED,log:query%3A%20cancelled,log:state%3A%20pending%20idle
 import faxios, { isCancel } from "@gcmdev/faxios";
@@ -113,7 +113,7 @@ console.log(`state: ${state?.status} ${state?.fetchStatus}`); // state: pending 
 
 ## Reading the query error
 
-When a faxios request rejects, the query function rejects with the same error, so TanStack Query stores the faxios error as the query's `error`, the value `useQuery` returns as `error`, and the promise `queryClient.query` returned rejects with it. A query function can reject with errors that aren't faxios errors too, such as an error your own code in it throws, so narrow the error before you read faxios fields: `isFaxiosError(error)` checks the faxios brand, so it also matches an error from another copy of faxios, and `error instanceof FaxiosError` works when only one copy is loaded.
+When a faxios request rejects, the query function rejects with the same error, so TanStack Query stores the faxios error as the query's `error`, the value `useQuery` returns as `error`, and the promise `queryClient.query` returned rejects with it. The exception is a request that TanStack Query cancels itself (`cancelQueries`, or an unmount that aborts the query signal): TanStack Query reverts that query as [Cancelling a query](#cancelling-a-query) says and doesn't store its `ERR_CANCELED` error. A faxios `ERR_CANCELED` from your own signal, or a faxios timeout, is still stored. A query function can reject with errors that aren't faxios errors too, such as an error your own code in it throws, so narrow the error before you read faxios fields: `isFaxiosError(error)` checks the faxios brand, so it also matches an error from another copy of faxios, and `error instanceof FaxiosError` works when only one copy is loaded.
 
 Build what you show from `status` and `code`. The error's `config`, `request` and `response` hold the request's headers, credentials included, and the response body, and `message` can name the request URL; see [Error handling](/pages/advanced/error-handling) for the codes and for logging. Log `error.toJSON()`, not the error: a logger that prints the error's own fields (`console.log(error)` in Node, many structured loggers) prints its `config` with the credentials. `toJSON()` masks the `authorization`, `proxy-authorization`, `cookie` and `auth` values, and other secrets such as an API key header or a token in `params` only when you list their keys in `redact`. A secret written into the `url` string itself, such as `?token=…`, stays in the logged `config.url`, so pass it in `params` and list its key in `redact`, for example `redact: ["token"]`. faxios still sends `params` in the request URL, so `redact` masks only the logged error, and the token can still show up in browser history and in proxy or server logs. When the API accepts one, send the credential in a request header instead: an `authorization` header, which `toJSON()` masks by default, or an API key header listed in `redact`. The example below fails three queries: with a 404 response, with no response at all, and with an error its own query function throws. The 404 comes from a single request, as the example's request count shows; see [Choosing one retry owner](#choosing-one-retry-owner) for why and for which layer should retry a failed query:
 
@@ -213,7 +213,7 @@ declare module "@tanstack/query-core" {
 TanStack Query and the faxios [`retry` plugin](/pages/plugins/retry) can both retry a failed request, so give each query exactly one retry owner:
 
 - **TanStack Query**, when the faxios instance doesn't install the `retry` plugin. It runs the whole query function again after any rejection, a 404 or a schema validation error included, unless a `retry` function you pass says otherwise. Set `retry` yourself, because the default depends on the API: observers such as `useQuery` retry 3 times in the browser and not at all on the server, while `queryClient.query` (and the deprecated `fetchQuery`) doesn't retry unless `retry` is set. See TanStack Query's [query retries](https://tanstack.com/query/latest/docs/framework/react/guides/query-retries) guide for `retry` and `retryDelay`.
-- **The faxios `retry` plugin**, when the `QueryClient` or the query sets `retry: false`. It retries inside one call of the query function, and only what the plugin retries: network errors, timeouts and transient statuses such as 503, for idempotent methods, honouring `Retry-After`.
+- **The faxios `retry` plugin**, when the `QueryClient` or the query sets `retry: false`. It retries inside one call of the query function, and only the errors, statuses and methods its options allow: by default network errors, timeouts and transient statuses for idempotent methods. See the [`retry` plugin](/pages/plugins/retry) page for the details.
 
 ::: warning Enabling both multiplies attempts
 With both on, every TanStack Query attempt can run all of the plugin's attempts, so a query that keeps failing with an error the plugin retries sends up to TanStack Query's attempts times faxios's `attempts` requests: `retry: 2` (three TanStack Query attempts) with the plugin's default of 3 `attempts` sends 9 requests for a GET that keeps getting a 503, to a server that is already failing. See [Retry and error recovery](/pages/plugins/retry) for what the plugin retries and for its `attempts` and backoff options.
@@ -451,7 +451,7 @@ let requests = 0;
 
 const api = faxios.create({
   baseURL: "https://api.example.com",
-  // Stands in for the API: it counts and sends each request, then answers with the user it asked for.
+  // Stands in for the API: it counts each request and sends it on, then answers with the user from userNames, or with no name for an unknown id.
   env: {
     fetch: async (input, init) => {
       requests += 1;
@@ -507,23 +507,25 @@ The browser's `query` call returns the hydrated user without a request because t
 
 Three different caches can sit between a component and the API, and each does its own job:
 
-- **TanStack Query's cache** holds server state: the data each query function returned, by query key, in the `QueryClient`'s memory. `staleTime` decides when TanStack Query fetches a query again and `gcTime` when it drops a query nothing uses. faxios sends a request only when TanStack Query calls the query function, so while a query's data is fresh `queryClient.query` returns it from the cache and faxios sends no request. Which triggers refetch a query (mounting, window focus, `refetchInterval`, `invalidateQueries`) is TanStack Query's to decide; see its [Important Defaults](https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults) and [Caching](https://tanstack.com/query/latest/docs/framework/react/guides/caching) guides.
+- **TanStack Query's cache** holds server state: the data each query function returned, by query key, in the `QueryClient`'s memory. `staleTime` sets how long a query's data stays fresh and `gcTime` when TanStack Query drops a query nothing uses. faxios sends a request only when TanStack Query calls the query function, so while a query's data is fresh `queryClient.query` returns it from the cache and faxios sends no request. Which triggers refetch a query (mounting, window focus, `refetchInterval`, `invalidateQueries`) is TanStack Query's to decide; see its [Important Defaults](https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults) and [Caching](https://tanstack.com/query/latest/docs/framework/react/guides/caching) guides.
 - **Fetch HTTP caching** is the HTTP cache of the browser or runtime that `fetch` uses, driven by the response's `Cache-Control` and related headers. faxios has no cache option of its own: set the Fetch `cache` mode through [`fetchOptions`](/pages/advanced/request-config#fetchoptions), for example `fetchOptions: { cache: "no-store" }`, so a refetch TanStack Query starts reaches the server instead of an HTTP-cached response.
 - **A faxios response-cache plugin** doesn't exist. If one is added later, it is an HTTP-response cache inside faxios, distinct from TanStack Query's server-state cache and from Fetch HTTP caching.
 
 This query function passes `fetchOptions` along with the `signal`, so every fetch of the query skips the HTTP cache:
 
-```ts expect=log:fetch%20cache%3A%20no-store
+```ts expect=log:fetch%20cache%3A%20no-store,request:GET%20https%3A%2F%2Fapi.example.com%2Fusers%2F42
 import faxios from "@gcmdev/faxios";
 import { QueryClient } from "@tanstack/query-core";
 import { z } from "zod";
 
 const api = faxios.create({
   baseURL: "https://api.example.com",
-  // Stands in for the API: it shows the Fetch cache mode the request was sent with.
+  // Stands in for the API: it sends each request on and shows the Fetch cache mode it was sent with.
   env: {
-    fetch: async (_input, init) => {
-      console.log(`fetch cache: ${init?.cache}`);
+    fetch: async (input, init) => {
+      const request = new Request(input, init);
+      await fetch(request);
+      console.log(`fetch cache: ${request.cache}`);
       return Response.json({ id: "42", name: "Ada Lovelace" });
     },
   },
