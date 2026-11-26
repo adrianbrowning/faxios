@@ -951,9 +951,9 @@ describe("@tanstack/intent maintainer contract used by scripts/intent-restack.sh
 
     expect(result.status).toBe(1);
     expect(result.stderr).toBe([
-      "Paths this layer deleted are now directories the layer committed. Unless Intent ignores such a path (its defaults or review.ignore),",
-      "it cannot review the directory there, so --record and CI's check-skills fail; record refuses every such path, ignored or not.",
-      "Delete the file and add the directory in separate PRs, or give the directory another name:",
+      "Paths this layer deleted are now directories the layer committed. Intent cannot review a directory at such a path unless it skips the path",
+      "(node_modules, or its review defaults and review.ignore when no skill or planning item covers the path), so --record and CI's check-skills fail; record refuses them all.",
+      "Give the directory another name, or add it in a later PR based on the deletion:",
       "  b.txt",
       "",
     ].join("\n"));

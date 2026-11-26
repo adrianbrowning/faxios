@@ -44,12 +44,13 @@
 # commit; a staged .intent/review-state.json whose working-tree copy differs from the staged one,
 # or whose staged deletion (`git rm --cached`) left a working-tree copy; a tracked
 # .intent/review-state.json deleted from the working tree but not from the index; and anything on
-# disk at a path the layer deleted. Unless Intent skips that path (node_modules, its review defaults
-# such as pnpm-lock.yaml and .intent/**, or review.ignore), it lists the path itself and hashes what is
-# there: it would record an untracked or ignored file's content, which CI does not have, and it
-# cannot review a symlink, directory, FIFO or device there. A directory the layer committed at such
-# a path fails CI's check-skills too, so it needs another name or a PR of its own after the
-# deletion. The refusal is conservative: it covers paths Intent ignores as well.
+# disk at a path the layer deleted. Unless Intent skips that path (node_modules, or its review
+# defaults such as pnpm-lock.yaml and .intent/** and review.ignore when no skill or planning item
+# covers the path), it lists the path itself and hashes what is there: it would record an untracked
+# or ignored file's content, which CI does not have, and it cannot review a symlink, directory, FIFO
+# or device there. A directory the layer committed at such a path fails CI's check-skills too, so
+# it needs another name or a later PR based on the deletion. The refusal is conservative: it covers
+# paths Intent skips as well.
 # Other edits to .intent/review-state.json, staged or not, a `git rm` of it, and a
 # review state that the first --record of a repo creates are amended into the layer's last commit.
 # It writes its own report to a temp file, so an agent's .intent/review.json is left as it is. For a
@@ -89,9 +90,9 @@ record() {
     exit 1
   fi
   fork="$(git merge-base "$base" HEAD)"
-  # Unless Intent ignores a path the layer deleted, it lists that path and hashes what is on disk
+  # Unless Intent skips a path the layer deleted, it lists that path and hashes what is on disk
   # there: it would record a file's content, which CI does not have, and it cannot review a symlink
-  # or a directory there. To stay simple this refuses paths Intent ignores too.
+  # or a directory there. To stay simple this refuses paths Intent skips too.
   local path present=() committed=()
   while IFS= read -r -d '' path; do
     if [ -d "$path" ] && [ ! -L "$path" ] && [ -n "$(git ls-files -- ":(literal)$path/")" ]; then
@@ -101,9 +102,9 @@ record() {
     fi
   done < <(git diff --no-renames --diff-filter=D --name-only -z "$fork" HEAD)
   if [ "${#committed[@]}" -gt 0 ]; then
-    echo "Paths this layer deleted are now directories the layer committed. Unless Intent ignores such a path (its defaults or review.ignore)," >&2
-    echo "it cannot review the directory there, so --record and CI's check-skills fail; record refuses every such path, ignored or not." >&2
-    echo "Delete the file and add the directory in separate PRs, or give the directory another name:" >&2
+    echo "Paths this layer deleted are now directories the layer committed. Intent cannot review a directory at such a path unless it skips the path" >&2
+    echo "(node_modules, or its review defaults and review.ignore when no skill or planning item covers the path), so --record and CI's check-skills fail; record refuses them all." >&2
+    echo "Give the directory another name, or add it in a later PR based on the deletion:" >&2
     printf '  %s\n' "${committed[@]}" >&2
     exit 1
   fi
