@@ -7959,11 +7959,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/tanstack-query.md": {
-      "fingerprint": "8acb67a506230b6712b8970f64932efe3b15fcc55ae1c14e97b2225b7c61c3b2",
+      "fingerprint": "76d70d76f2a2469e8ff7666447cde7c0b1fe691cd66d57df1d70f0837304daa6",
       "snapshot": {
-        "packages/docs/pages/advanced/tanstack-query.md": "9090275806ad3e80ee5d79179c6ed881d38aaf7593512ac17ea0289f1e0d2385"
+        "packages/docs/pages/advanced/tanstack-query.md": "dc866e7decedd7d34b1705c8b13a7f7e9a3843f4164e04deb00e94382a897663"
       },
-      "head": "6d88a96ecd95acb13e53dff86a2f6f80bb4f7843",
+      "head": "31c56421ee5f93940a4acc6bf138ce2e7cbedc63",
       "outcome": "no-change",
       "reason": "Docs only: the TanStack Query guide teaches faxios as the typed request layer under TanStack Query: a typed queryFn that wraps a define() endpoint and forwards the query signal, cancellation through that signal, reading FaxiosError from query error state, one retry owner per example, infinite queries, SSR client scope and the three cache layers. This round says queryClient.query returns fresh cached data without running the query function, that the cancel revert behaviour is the revert: true default and what revert: false does, that a TanStack-cancelled request is not stored as the query error, links the retry plugin page instead of restating its policy, calls staleTime the time data stays fresh, and sends the fetchOptions block request through the harness fetch. No skill guidance changes.",
       "evidence": [
