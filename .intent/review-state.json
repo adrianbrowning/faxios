@@ -4191,7 +4191,7 @@
       },
       "head": "40233fdaad8cc547d506c13e4e348d9b49a7b694",
       "outcome": "no-change",
-      "reason": "scripts/intent-restack.sh record now refuses only a regular file or symlink at a path the layer deleted, so a layer that replaced a deleted file with a committed directory of the same name is recorded; the header says so. No skill guidance changes.",
+      "reason": "scripts/intent-restack.sh record refuses (exit 1) anything on disk at a path the layer deleted: an untracked or ignored file, symlink, directory, FIFO or device gets 'remove or move them', and a directory the layer committed there gets its own refusal, because Intent cannot review a directory at a deleted path it does not skip ('Cannot review non-file'), so --record and CI's check-skills fail; the refusal is conservative for paths Intent skips. The header says so. No skill guidance changes.",
       "evidence": [
         "scripts/intent-restack.sh"
       ]
@@ -4928,7 +4928,7 @@
       },
       "head": "40233fdaad8cc547d506c13e4e348d9b49a7b694",
       "outcome": "no-change",
-      "reason": "Tests only: the amends-nothing record test also checks the stdout and reflog, which an amend always changes, and new record tests cover a symlink at a deleted path (refused) and a deleted file replaced by a committed directory (recorded). No skill guidance changes.",
+      "reason": "Tests only: the amends-nothing record test also checks the stdout and reflog, which an amend always changes; record tests cover a symlink, an untracked or ignored directory and a FIFO at a deleted path (refused), and a real-Intent contract test shows Intent gives a committed directory at a deleted path 'Cannot review non-file' and record refuses it. No skill guidance changes.",
       "evidence": [
         "packages/tests/unit/scripts/intentRestack.test.ts"
       ]
@@ -7979,7 +7979,7 @@
       },
       "head": "40233fdaad8cc547d506c13e4e348d9b49a7b694",
       "outcome": "no-change",
-      "reason": "The per-PR Intent review procedure now says, before step 1, that no file or symlink may be on disk (untracked or ignored) at a path the PR deleted, because Intent hashes the working tree and would record content CI does not have; scripts/intent-restack.sh record refuses that state. No skill guidance changes.",
+      "reason": "The per-PR Intent review procedure now says, before step 1, that nothing (file, symlink or directory, untracked or ignored) may be on disk at a path the PR deleted: unless Intent skips the path, it records a file's content CI does not have and cannot review a symlink or directory there; a directory the PR committed there fails check-skills too, so it needs another name or a later PR based on the deletion; scripts/intent-restack.sh record refuses both states. No skill guidance changes.",
       "evidence": [
         "docs/agents/intent-review.md"
       ]
