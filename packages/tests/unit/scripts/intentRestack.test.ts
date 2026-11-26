@@ -941,8 +941,8 @@ describe("@tanstack/intent maintainer contract used by scripts/intent-restack.sh
     const head = repo.git("rev-parse", "HEAD");
     const before = repo.read(state);
 
-    // Intent lists the deleted path itself and cannot hash the directory there, so neither a record
-    // nor CI's check can pass on this layer.
+    // b.txt is not one of the paths Intent ignores, so Intent lists the deleted path itself and
+    // cannot hash the directory there: neither a record nor CI's check can pass on this layer.
     // eslint-disable-next-line sonarjs/no-os-command-from-path -- the script runs the PATH pnpm, so the test does too
     const review = JSON.parse(execFileSync("pnpm", [ "exec", "intent", "maintainer", "review", "--base", "main", "--json" ], { cwd: repo.repo, encoding: "utf8" })) as { items: Array<{ id: string; problems: Array<string>; }>; };
     expect(review.items.find(item => item.id === "source:b.txt")?.problems).toEqual([ "Cannot review non-file: \"b.txt\"" ]);
@@ -951,8 +951,9 @@ describe("@tanstack/intent maintainer contract used by scripts/intent-restack.sh
 
     expect(result.status).toBe(1);
     expect(result.stderr).toBe([
-      "Intent cannot review a path this layer deleted that is now a directory the layer committed, so neither record nor check-skills can pass;",
-      "delete the file and add the directory in separate PRs, or give the directory another name:",
+      "Paths this layer deleted are now directories the layer committed. Unless Intent ignores such a path (its defaults or review.ignore),",
+      "it cannot review the directory there, so --record and CI's check-skills fail; record refuses every such path, ignored or not.",
+      "Delete the file and add the directory in separate PRs, or give the directory another name:",
       "  b.txt",
       "",
     ].join("\n"));

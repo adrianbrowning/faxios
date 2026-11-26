@@ -4185,11 +4185,11 @@
       ]
     },
     "source:scripts/intent-restack.sh": {
-      "fingerprint": "9bad37f552c8cd1fe54c9cf0d0fba92dc07b26059a6b5bf88c6346cb50026f3c",
+      "fingerprint": "a63a7840f8d5cd0576fca592a3590cf9aeb19ed11d50eef43ed5ef74ca462233",
       "snapshot": {
-        "scripts/intent-restack.sh": "2e75a3ac158c62d69e7094184603277034c732f1b1b62db28c677fe2bbdd1b3b"
+        "scripts/intent-restack.sh": "977751f226fcd828e308fed14af6915393e280297239d5349f455774076980ca"
       },
-      "head": "416a5aefc1caa3d4701d4cbb3eef13240e2542e4",
+      "head": "46297381cb17869aac8641d85ef14e0767a6b6c8",
       "outcome": "no-change",
       "reason": "scripts/intent-restack.sh record now refuses only a regular file or symlink at a path the layer deleted, so a layer that replaced a deleted file with a committed directory of the same name is recorded; the header says so. No skill guidance changes.",
       "evidence": [
@@ -4922,11 +4922,11 @@
       ]
     },
     "source:packages/tests/unit/scripts/intentRestack.test.ts": {
-      "fingerprint": "8beec10ba34be52e8589a9c2253e99bd2978b832479f7873d1e501297c4cee38",
+      "fingerprint": "ae53932c02a31a5dc4c8a0ba2565042fa01d8607df10fd8c5cac64b0685787db",
       "snapshot": {
-        "packages/tests/unit/scripts/intentRestack.test.ts": "b5d1b82dbf899e4a61b217fbb47504e32699067443994cb1476761decb1d3259"
+        "packages/tests/unit/scripts/intentRestack.test.ts": "29f524f8050966e824263a3853d3544d4f89dcbb06456094ee95470ff7af9423"
       },
-      "head": "416a5aefc1caa3d4701d4cbb3eef13240e2542e4",
+      "head": "46297381cb17869aac8641d85ef14e0767a6b6c8",
       "outcome": "no-change",
       "reason": "Tests only: the amends-nothing record test also checks the stdout and reflog, which an amend always changes, and new record tests cover a symlink at a deleted path (refused) and a deleted file replaced by a committed directory (recorded). No skill guidance changes.",
       "evidence": [
@@ -7973,11 +7973,11 @@
       ]
     },
     "source:docs/agents/intent-review.md": {
-      "fingerprint": "8bcdeb48de3959e5b4a5269dbfb92253d0f313e43885c3fecdcd2cf52b52d446",
+      "fingerprint": "e6dde24ba1c3845c1ac3f27bb325949bce71584ea5bbf1d4b13a378e22ab01c8",
       "snapshot": {
-        "docs/agents/intent-review.md": "3e0960de901a583e66f98e3dfb198655d31553c5b69023763c9f843e7279bfad"
+        "docs/agents/intent-review.md": "fb72d545708bd22934fcb86b0513bdd26b3c19f594f4ad78394c343f3c506a13"
       },
-      "head": "416a5aefc1caa3d4701d4cbb3eef13240e2542e4",
+      "head": "46297381cb17869aac8641d85ef14e0767a6b6c8",
       "outcome": "no-change",
       "reason": "The per-PR Intent review procedure now says, before step 1, that no file or symlink may be on disk (untracked or ignored) at a path the PR deleted, because Intent hashes the working tree and would record content CI does not have; scripts/intent-restack.sh record refuses that state. No skill guidance changes.",
       "evidence": [

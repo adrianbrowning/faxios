@@ -44,10 +44,12 @@
 # commit; a staged .intent/review-state.json whose working-tree copy differs from the staged one,
 # or whose staged deletion (`git rm --cached`) left a working-tree copy; a tracked
 # .intent/review-state.json deleted from the working tree but not from the index; and anything on
-# disk at a path the layer deleted. Intent lists that path itself and hashes what is there: it
-# would record an untracked or ignored file's content, which CI does not have, and it cannot review
-# a symlink, directory, FIFO or device there. A directory the layer committed at that path fails
-# CI's check-skills too, so it needs another name or a PR of its own after the deletion.
+# disk at a path the layer deleted. Unless Intent skips that path (node_modules, its review defaults
+# such as pnpm-lock.yaml and .intent/**, or review.ignore), it lists the path itself and hashes what is
+# there: it would record an untracked or ignored file's content, which CI does not have, and it
+# cannot review a symlink, directory, FIFO or device there. A directory the layer committed at such
+# a path fails CI's check-skills too, so it needs another name or a PR of its own after the
+# deletion. The refusal is conservative: it covers paths Intent ignores as well.
 # Other edits to .intent/review-state.json, staged or not, a `git rm` of it, and a
 # review state that the first --record of a repo creates are amended into the layer's last commit.
 # It writes its own report to a temp file, so an agent's .intent/review.json is left as it is. For a
@@ -87,8 +89,9 @@ record() {
     exit 1
   fi
   fork="$(git merge-base "$base" HEAD)"
-  # Intent lists each path the layer deleted and hashes what is on disk there: it would record a
-  # file's content, which CI does not have, and it cannot review a symlink or a directory there.
+  # Unless Intent ignores a path the layer deleted, it lists that path and hashes what is on disk
+  # there: it would record a file's content, which CI does not have, and it cannot review a symlink
+  # or a directory there. To stay simple this refuses paths Intent ignores too.
   local path present=() committed=()
   while IFS= read -r -d '' path; do
     if [ -d "$path" ] && [ ! -L "$path" ] && [ -n "$(git ls-files -- ":(literal)$path/")" ]; then
@@ -98,8 +101,9 @@ record() {
     fi
   done < <(git diff --no-renames --diff-filter=D --name-only -z "$fork" HEAD)
   if [ "${#committed[@]}" -gt 0 ]; then
-    echo "Intent cannot review a path this layer deleted that is now a directory the layer committed, so neither record nor check-skills can pass;" >&2
-    echo "delete the file and add the directory in separate PRs, or give the directory another name:" >&2
+    echo "Paths this layer deleted are now directories the layer committed. Unless Intent ignores such a path (its defaults or review.ignore)," >&2
+    echo "it cannot review the directory there, so --record and CI's check-skills fail; record refuses every such path, ignored or not." >&2
+    echo "Delete the file and add the directory in separate PRs, or give the directory another name:" >&2
     printf '  %s\n' "${committed[@]}" >&2
     exit 1
   fi
