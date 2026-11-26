@@ -4187,13 +4187,13 @@
       ]
     },
     "source:scripts/intent-restack.sh": {
-      "fingerprint": "9e7190ceac27a9cf60881166350eb70081a29db55e6f19ac470fdd8afcf34779",
+      "fingerprint": "3258da3628ccd24403a8c82f631dc424330e9ce86b5865d1d5400df9610d44a4",
       "snapshot": {
-        "scripts/intent-restack.sh": "e6f717472f10e2451c273e1870590483fa9a8f68dd89c20b81e3bf2a6c2227f9"
+        "scripts/intent-restack.sh": "c585f21b7aed9e40d07a0363179b890dad007c99599d22203155dae71d34df0e"
       },
-      "head": "79d41d5e29f1442387a88642840b33a9ad87a845",
+      "head": "5bba7a9d885c2cb6dc50bc986315494eedc1674b",
       "outcome": "no-change",
-      "reason": "Slice 08 modifies (not adds) scripts/intent-restack.sh and its test packages/tests/unit/scripts/intentRestack.test.ts, both on the base: record() now leaves pending any item whose changed files, or (for an item with no record) snapshot files, fall outside the layer's diff, and the tests cover it. No skill guidance changes.",
+      "reason": "Restack script and its tests only; no skill teaches this behavior.",
       "evidence": [
         "scripts/intent-restack.sh"
       ]
@@ -4924,13 +4924,13 @@
       ]
     },
     "source:packages/tests/unit/scripts/intentRestack.test.ts": {
-      "fingerprint": "53d8410f53461129b6b8a233b539d307894104532c7cb0fac676d145ec7cb7aa",
+      "fingerprint": "81ea922c10d21423c2c54ebb33fea26248a03ff74f24a4dcca7b1cf8b4574736",
       "snapshot": {
-        "packages/tests/unit/scripts/intentRestack.test.ts": "6219db7d27353a7e9bc6d6454c33ee35c45537bb094f697a4be0758d65d21462"
+        "packages/tests/unit/scripts/intentRestack.test.ts": "8d3363fa793cad7494095e0c7507d7236684479080e633c8753b6c4888fde9ee"
       },
-      "head": "79d41d5e29f1442387a88642840b33a9ad87a845",
+      "head": "5bba7a9d885c2cb6dc50bc986315494eedc1674b",
       "outcome": "no-change",
-      "reason": "Slice 08 modifies (not adds) scripts/intent-restack.sh and its test packages/tests/unit/scripts/intentRestack.test.ts, both on the base: record() now leaves pending any item whose changed files, or (for an item with no record) snapshot files, fall outside the layer's diff, and the tests cover it. No skill guidance changes.",
+      "reason": "Restack script and its tests only; no skill teaches this behavior.",
       "evidence": [
         "packages/tests/unit/scripts/intentRestack.test.ts"
       ]
