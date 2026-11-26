@@ -362,6 +362,31 @@ describe("scripts/intent-restack.sh record", subprocessTests, () => {
     expect(repo.git("rev-parse", "HEAD")).toBe(head);
   });
 
+  it.each([
+    [ "an untracked", "" ],
+    [ "a gitignored", "b.txt\n" ],
+  ])("refuses to record when %s file is at a path the layer deleted", (_kind, ignore) => {
+    using repo = recordRepo();
+    repo.tool("pnpm", fakePnpm([{ id: "source:b.txt", changedFiles: [ "b.txt" ] }]));
+    repo.git("rm", "--quiet", "b.txt");
+    repo.git("commit", "--quiet", "-m", "delete b.txt");
+    if (ignore) {
+      repo.write(".git/info/exclude", ignore);
+    }
+    repo.write("b.txt", "local\n");
+    const head = repo.git("rev-parse", "HEAD");
+    const before = repo.read(state);
+
+    const result = repo.run("record", "main", "HEAD");
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain("b.txt");
+    expect(existsSync(join(repo.repo, recordedReport))).toBe(false);
+    expect(repo.git("rev-parse", "HEAD")).toBe(head);
+    expect(repo.read(state)).toBe(before);
+    expect(repo.git("status", "--porcelain")).toBe(ignore ? "" : "?? b.txt");
+  });
+
   it("prints every line of a failed check, not only the last", () => {
     using repo = recordRepo();
     repo.tool("pnpm", `#!/bin/sh

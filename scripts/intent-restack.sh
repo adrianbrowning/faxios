@@ -41,7 +41,9 @@
 #
 # Run it in the branch's worktree, bottom layer first. `record` refuses (exit 1) a modified or
 # staged tracked file other than .intent/review-state.json, whose edits it would record but not
-# commit; edits to .intent/review-state.json itself are amended into the layer's last commit. For a
+# commit, and any file on disk (untracked or ignored) at a path the layer deleted, whose content it
+# would record though CI has no such file. Edits to .intent/review-state.json itself are amended
+# into the layer's last commit. For a
 # stack, <base> is the branch below.
 # Exit: 0 done; 1 a usage error, a dirty tree, a `git rebase` that could not start, or a failed
 # `intent maintainer check` other than the case for 4; 3 a conflict outside .intent/review-state.json;
@@ -63,11 +65,20 @@ record() {
     echo "Tracked files have uncommitted changes; commit or stash them, then run again." >&2
     exit 1
   fi
+  fork="$(git merge-base "$base" HEAD)"
+  # Intent hashes the disk, so a file at a path the layer deleted would be recorded but absent on CI.
+  local path present=()
+  while IFS= read -r -d '' path; do
+    if [ -e "$path" ] || [ -L "$path" ]; then present+=("$path"); fi
+  done < <(git diff --no-renames --diff-filter=D --name-only -z "$fork" HEAD)
+  if [ "${#present[@]}" -gt 0 ]; then
+    echo "Files exist at paths this layer deleted; remove or move them, then run again:" >&2
+    printf '  %s\n' "${present[@]}" >&2
+    exit 1
+  fi
   pending="$(mktemp)"
   previous="$(mktemp)"
   diff="$(mktemp)"
-
-  fork="$(git merge-base "$base" HEAD)"
   pnpm exec intent maintainer review --base "$fork" --json > "$pending"
   if [ "$(jq '.items | length' "$pending")" = "0" ]; then
     echo "No pending review items against $base."
