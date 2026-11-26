@@ -4184,18 +4184,6 @@
         "docs/agents/issue-tracker.md 'Rebasing a PR or a stack layer' bullet links the script header and docs/agents/intent-review.md"
       ]
     },
-    "source:scripts/intent-restack.sh": {
-      "fingerprint": "43013752a76ea65af8d14244681e08965748381f6244bcd455e9c4abe6fdf535",
-      "snapshot": {
-        "scripts/intent-restack.sh": "3fe46b6c132236afd8e0de0e4c0fb0565f24dbe452d94c983bc6ba5b3b49d5cc"
-      },
-      "head": "40233fdaad8cc547d506c13e4e348d9b49a7b694",
-      "outcome": "no-change",
-      "reason": "scripts/intent-restack.sh record refuses (exit 1) anything on disk at a path the layer deleted: an untracked or ignored file, symlink, directory, FIFO or device gets 'remove or move them', and a directory the layer committed there gets its own refusal, because Intent cannot review a directory at a deleted path it does not skip ('Cannot review non-file'), so --record and CI's check-skills fail; the refusal is conservative for paths Intent skips. The header says so. No skill guidance changes.",
-      "evidence": [
-        "scripts/intent-restack.sh"
-      ]
-    },
     "source:.bumpy/reject-absolute-url-with-base-url.md": {
       "fingerprint": "4f3cafc1997ff692579a0a09db902e49f98718bf20889feb8032067ea84bfd20",
       "snapshot": {
@@ -4919,18 +4907,6 @@
       "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
       "evidence": [
         "Changed: commitlint.config.js at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
-      ]
-    },
-    "source:packages/tests/unit/scripts/intentRestack.test.ts": {
-      "fingerprint": "b2306b88f9c1d82136d0645da7b5593014c6f24f13987f5efcf408d1ea491e9d",
-      "snapshot": {
-        "packages/tests/unit/scripts/intentRestack.test.ts": "52f930bb17e27e5727f57afd9c7f5ff5d68a8715264654681288b92e681bfb40"
-      },
-      "head": "40233fdaad8cc547d506c13e4e348d9b49a7b694",
-      "outcome": "no-change",
-      "reason": "Tests only: the amends-nothing record test also checks the stdout and reflog, which an amend always changes; record tests cover a symlink, an untracked or ignored directory and a FIFO at a deleted path (refused), and a real-Intent contract test shows Intent gives a committed directory at a deleted path 'Cannot review non-file' and record refuses it. No skill guidance changes.",
-      "evidence": [
-        "packages/tests/unit/scripts/intentRestack.test.ts"
       ]
     },
     "source:packages/lib/eslint-rules/plugin-imports.d.ts": {
@@ -7977,11 +7953,35 @@
       "snapshot": {
         "docs/agents/intent-review.md": "bb5b70949961cb7d77c283e21075b9c1ae72f73bffd1d7365d745a5ebaefe419"
       },
-      "head": "40233fdaad8cc547d506c13e4e348d9b49a7b694",
+      "head": "d1b49c816a071b587f84fed01d9621dd7c80c50a",
       "outcome": "no-change",
       "reason": "The per-PR Intent review procedure now says, before step 1, that nothing (file, symlink or directory, untracked or ignored) may be on disk at a path the PR deleted: unless Intent skips the path, it records a file's content CI does not have and cannot review a symlink or directory there; a directory the PR committed there fails check-skills too, so it needs another name or a later PR based on the deletion; scripts/intent-restack.sh record refuses both states. No skill guidance changes.",
       "evidence": [
         "docs/agents/intent-review.md"
+      ]
+    },
+    "source:packages/tests/unit/scripts/intentRestack.test.ts": {
+      "fingerprint": "b2306b88f9c1d82136d0645da7b5593014c6f24f13987f5efcf408d1ea491e9d",
+      "snapshot": {
+        "packages/tests/unit/scripts/intentRestack.test.ts": "52f930bb17e27e5727f57afd9c7f5ff5d68a8715264654681288b92e681bfb40"
+      },
+      "head": "d1b49c816a071b587f84fed01d9621dd7c80c50a",
+      "outcome": "no-change",
+      "reason": "Tests only: the amends-nothing record test also checks the stdout and reflog, which an amend always changes; record tests cover a symlink, an untracked or ignored directory and a FIFO at a deleted path (refused), and a real-Intent contract test shows Intent gives a committed directory at a deleted path 'Cannot review non-file' and record refuses it. No skill guidance changes.",
+      "evidence": [
+        "packages/tests/unit/scripts/intentRestack.test.ts"
+      ]
+    },
+    "source:scripts/intent-restack.sh": {
+      "fingerprint": "43013752a76ea65af8d14244681e08965748381f6244bcd455e9c4abe6fdf535",
+      "snapshot": {
+        "scripts/intent-restack.sh": "3fe46b6c132236afd8e0de0e4c0fb0565f24dbe452d94c983bc6ba5b3b49d5cc"
+      },
+      "head": "d1b49c816a071b587f84fed01d9621dd7c80c50a",
+      "outcome": "no-change",
+      "reason": "scripts/intent-restack.sh record refuses (exit 1) anything on disk at a path the layer deleted: an untracked or ignored file, symlink, directory, FIFO or device gets 'remove or move them', and a directory the layer committed there gets its own refusal, because Intent cannot review a directory at a deleted path it does not skip ('Cannot review non-file'), so --record and CI's check-skills fail; the refusal is conservative for paths Intent skips. The header says so. No skill guidance changes.",
+      "evidence": [
+        "scripts/intent-restack.sh"
       ]
     }
   }
