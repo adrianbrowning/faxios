@@ -108,15 +108,15 @@
       ]
     },
     "source:knip.json": {
-      "fingerprint": "8020de5490b0d3ebc0f87a1eb45196d2c3931c8448c3c14aac28b30708361c23",
+      "fingerprint": "79674174cfeeb86bcd3092967b346db3c886f7ac893b03529d2d6edbf5caf317",
       "snapshot": {
-        "knip.json": "b9a9411899e8f0252b4c66dd151f284c07fe5cade1db591d122244ad3e4ce29f"
+        "knip.json": "0ad3e1d94f3558520afaaa1aebdfd2fd6093bc48b8472e86dada95d21badd212"
       },
-      "head": "feb197366e86a33319bbe4d9534c62c7fe6de17a",
+      "head": "8155f7ca90382498c60c99e11a919ab2dfe016a4",
       "outcome": "no-change",
-      "reason": "CI-only change: zizmor config, workflow pins and a knip binary ignore; the configure-requests skill teaches nothing about them",
+      "reason": "Docs-only: adds the TanStack Query guide page, its sidebar link and a docs-harness devDependency; no faxios API, option or behavior the configure-requests skill teaches changed",
       "evidence": [
-        "Changed: knip.json at feb197366e86a33319bbe4d9534c62c7fe6de17a"
+        "Changed: knip.json at 90fb4b89b11cda555bbc2cd38bb1bb4cefa9aff3"
       ]
     },
     "source:PRE_RELEASE_CHANGELOG.md": {
@@ -158,16 +158,15 @@
       ]
     },
     "source:packages/docs/.vitepress/config.mts": {
-      "fingerprint": "e41e4a890003e09cb1b5856ab6074dd4463ce6de4a4848761b0a557f772257ab",
+      "fingerprint": "95c34d0fc2094fc4196691c702b666f5b5339e6abae3b3400f3ab715cb83c8da",
       "snapshot": {
-        "packages/docs/.vitepress/config.mts": "021aefbca1b3b0bafa9fa7b07e428b35629bed2e8b1148abe664def380d45583"
+        "packages/docs/.vitepress/config.mts": "9eebeffff61393cc6c1904fa60fb9dc82f2f7511c675a75adeace62c3dfd4f65"
       },
-      "head": "68def87386c46bd33efb5860f76a7f83cab2ef9d",
+      "head": "8155f7ca90382498c60c99e11a919ab2dfe016a4",
       "outcome": "no-change",
-      "reason": "refreshAuth code, tests, docs, threat model or bump file; what the skill teaches is reviewed in the skill item",
+      "reason": "Docs-only: adds the TanStack Query guide page, its sidebar link and a docs-harness devDependency; no faxios API, option or behavior the configure-requests skill teaches changed",
       "evidence": [
-        "pnpm check exit 0 on this layer (refreshAuth.test.ts incl. sync-throw, recommended-order, invalid-signal and post-refresh abort cases; browser; module; Deno; Bun; docs examples; docs build); intent validate passed",
-        "Changed: packages/docs/.vitepress/config.mts"
+        "Changed: packages/docs/.vitepress/config.mts at 90fb4b89b11cda555bbc2cd38bb1bb4cefa9aff3"
       ]
     },
     "source:packages/docs/es/pages/advanced/interceptors.md": {
@@ -7958,6 +7957,18 @@
       "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
       "evidence": [
         "Changed files: packages/tests/unit/scripts/runTests.test.ts"
+      ]
+    },
+    "source:packages/docs/pages/advanced/tanstack-query.md": {
+      "fingerprint": "d6607c96d68c8d79f84c8d9245997b728e76a3b29c1897c30ad22a3e8aea1adb",
+      "snapshot": {
+        "packages/docs/pages/advanced/tanstack-query.md": "9589d2359206e4dfe9653cfe11e9447558962429ace6411aa411efb29dd0579f"
+      },
+      "head": "8155f7ca90382498c60c99e11a919ab2dfe016a4",
+      "outcome": "no-change",
+      "reason": "Docs-only: the TanStack Query guide (packages/docs/pages/advanced/tanstack-query.md) documents faxios usage as a typed queryFn with signal forwarding and error handling; no faxios API, option or behavior changed, so no skill under packages/lib/skills needs change",
+      "evidence": [
+        "Changed: packages/docs/pages/advanced/tanstack-query.md at f73ee818d50cbd7253e9d5a8c26777055e1d13d1"
       ]
     }
   }

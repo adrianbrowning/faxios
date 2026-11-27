@@ -8,7 +8,9 @@
         "**/*.{js,ts,cjs,mjs}"
   ],
       "project": ["**/*.{js,ts,cjs,mjs,mts}"],
-      "ignoreDependencies": ["@gcmdev/faxios", "zod"]
+      // @tanstack/query-core: imported only by the docs example blocks that
+      // docs-examples/extract.ts writes to the git-ignored .generated/ directory.
+      "ignoreDependencies": ["@gcmdev/faxios", "zod", "@tanstack/query-core"]
     },
     "packages/docs": {
       "project": ["**/*.{js,ts,mts,vue}"],
