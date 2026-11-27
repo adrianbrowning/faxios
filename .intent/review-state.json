@@ -7959,15 +7959,15 @@
       ]
     },
     "source:packages/docs/pages/advanced/tanstack-query.md": {
-      "fingerprint": "1506cf127ba1c09c933ae8aee207164060a57e7774bd229df9085b404bef75ce",
+      "fingerprint": "135201ca1c7d2bb4ff1298e157a69001355bbf13be310ded557d280b6c593c08",
       "snapshot": {
-        "packages/docs/pages/advanced/tanstack-query.md": "0d41403008dcf4433c69fa78003c24abb41ee397ad5d7d407c279bed3d6fb10b"
+        "packages/docs/pages/advanced/tanstack-query.md": "a9fa3c456dad051b46ff16036b14c5b3e94450f8d2cdafcbd1d9783c72dad201"
       },
-      "head": "7c35b109cb4d5929a4e0303d64703be9c8e61d09",
+      "head": "31be80a8aeb3712d852b779370bcd134c323d2c4",
       "outcome": "no-change",
-      "reason": "Docs only: the guide gives each example one retry owner; the plugin-owner example now explains that queryClient.query already does not retry and retry: false stops observers such as useQuery retrying on top of the retry plugin, with the delay: 0 comment next to retry({ delay: 0 }). No faxios API or behavior the configure-requests skill teaches changed.",
+      "reason": "Docs only: the Infinite queries section now says queryClient.infiniteQuery on a stale cache refetches from the first page param like refetch, or up to `pages` pages when pages is passed (query-core 5.107.1 uses pages ?? oldPages.length), and the infinite example's retry: false reason lives only in its prose, with the retry-owner summary pointing to it. No faxios API or behavior the configure-requests skill teaches changed.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/tanstack-query.md at 7ec0bbad (plugin-owner block: retry: false comment, retry({ delay: 0 }) comment)"
+        "Changed: packages/docs/pages/advanced/tanstack-query.md at ffb387aa (Infinite queries: queryClient.infiniteQuery pages paragraph; Choosing one retry owner summary pointer; defaultOptions comment)"
       ]
     }
   }
