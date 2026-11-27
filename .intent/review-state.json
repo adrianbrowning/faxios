@@ -107,18 +107,6 @@
         "Changed: packages/lib/package.json at edb8b3689df521ac7b5a245db580803c931f6e60"
       ]
     },
-    "source:knip.json": {
-      "fingerprint": "79674174cfeeb86bcd3092967b346db3c886f7ac893b03529d2d6edbf5caf317",
-      "snapshot": {
-        "knip.json": "0ad3e1d94f3558520afaaa1aebdfd2fd6093bc48b8472e86dada95d21badd212"
-      },
-      "head": "8155f7ca90382498c60c99e11a919ab2dfe016a4",
-      "outcome": "no-change",
-      "reason": "Docs-only: adds the TanStack Query guide page, its sidebar link and a docs-harness devDependency; no faxios API, option or behavior the configure-requests skill teaches changed",
-      "evidence": [
-        "Changed: knip.json at 90fb4b89b11cda555bbc2cd38bb1bb4cefa9aff3"
-      ]
-    },
     "source:PRE_RELEASE_CHANGELOG.md": {
       "fingerprint": "a58acb1e6e246d5334baf323a27652ca550315714dbb0a0708e61b7b3930e214",
       "snapshot": {
@@ -4184,18 +4172,6 @@
         "docs/agents/issue-tracker.md 'Rebasing a PR or a stack layer' bullet links the script header and docs/agents/intent-review.md"
       ]
     },
-    "source:scripts/intent-restack.sh": {
-      "fingerprint": "9b9ed024a73bbe757d08d94cc224e4e60e1acc08950d7e15d160942db134b7d5",
-      "snapshot": {
-        "scripts/intent-restack.sh": "222e5449aa3ee78b7055d21c4c17b627f1bc11fe1147032717cf062735d9dda0"
-      },
-      "head": "dded15462d02203b65df308f91aa906d26d43468",
-      "outcome": "no-change",
-      "reason": "scripts/intent-restack.sh record now writes its own report to a temp directory, so an agent's .intent/review.json is left as it was, and removes that directory on every exit through an EXIT trap that quotes its path. It refuses (exit 1) a staged .intent/review-state.json whose working-tree copy differs from the staged one or whose staged deletion (git rm --cached) left a working-tree copy, and a tracked review state deleted from the working tree, and it stages an existing review state before its amend check, so a state file that the first --record creates is amended too; the header says so. Earlier, record already recorded only items whose changed files are all in the layer's diff and left the rest pending. No skill guidance changes.",
-      "evidence": [
-        "Changed files: scripts/intent-restack.sh"
-      ]
-    },
     "source:.bumpy/reject-absolute-url-with-base-url.md": {
       "fingerprint": "4f3cafc1997ff692579a0a09db902e49f98718bf20889feb8032067ea84bfd20",
       "snapshot": {
@@ -4919,18 +4895,6 @@
       "reason": "Contributor tooling only (pre-push hook, commitlint, intent-restack, gitignore, agent docs); nothing the configure-requests skill teaches changed.",
       "evidence": [
         "Changed: commitlint.config.js at 4f30051218eb0164827fbf54d6ea3fac008dbc80"
-      ]
-    },
-    "source:packages/tests/unit/scripts/intentRestack.test.ts": {
-      "fingerprint": "94da4d124595893465ee38b823bdda09f3b818f8625c6cce4cd6d601e8071a2d",
-      "snapshot": {
-        "packages/tests/unit/scripts/intentRestack.test.ts": "df2d5091761e5bcb7ef9a381805db96ffa27cc5a5bddb4e7b26fe1692a614af9"
-      },
-      "head": "dded15462d02203b65df308f91aa906d26d43468",
-      "outcome": "no-change",
-      "reason": "The restack tests now cover rebase onto a review-state conflict (base copy taken, layer recorded) and onto another-file conflict (exit 3, rebase left in progress), rebase refusal with exit 1 when git cannot start, status --json against the merge-base, the recorded-item snapshot exemption, the kept .intent/review.json, temp-directory cleanup after failed commands (a failed jq checked for any nonzero exit, as its code differs by version) and for a path holding a quote, refusal of a split staged state, a staged deletion with a working-tree copy and a deleted review state, the amend of a full git rm of the review state, the amend of a review state the first record creates, and a real-Intent record of an in-layer item; the fake pnpm records the report path it is given and creates a missing state. No skill guidance changes.",
-      "evidence": [
-        "Changed files: packages/tests/unit/scripts/intentRestack.test.ts"
       ]
     },
     "source:packages/lib/eslint-rules/plugin-imports.d.ts": {
@@ -7959,30 +7923,66 @@
       ]
     },
     "source:packages/docs/pages/advanced/tanstack-query.md": {
-      "fingerprint": "f9d5f3e585914589ff77cc17560477363a301a9328adb9ff06c28eca85f61bdf",
+      "fingerprint": "07f3935689c443b4dd8b0d5c94b00566e95fa7023bd8b559e418b316d5ccf44d",
       "snapshot": {
-        "packages/docs/pages/advanced/tanstack-query.md": "0cddcda9ddb83c919104fedd3674e2f491c0e7db997a4879c054eb5ba7aecdc7"
+        "packages/docs/pages/advanced/tanstack-query.md": "a5425de7ee582a514909b8b156f7379e715af657669ddd7931a2e058b5015e56"
       },
-      "head": "c207afe82105035e88a1d3033a9ad1e0e3bf85b8",
+      "head": "2d805d7810d5200bec9f3c2b68d43b5b6089a5a2",
       "outcome": "no-change",
-      "reason": "Docs only: the TanStack Query guide (packages/docs/pages/advanced/tanstack-query.md) teaches using faxios as the typed request layer under TanStack Query: a define() endpoint called from a queryFn with the query signal and returning response.data, run with queryClient.query (not the deprecated fetchQuery); cancellation through that signal (faxios CanceledError, TanStack CancelledError); reading FaxiosError from query error state with isFaxiosError and a status/code-only message, covering a 404, a network failure with no status and a non-faxios error, logging toJSON() with params secrets listed in redact, a note that params still go out in the request URL so credentials belong in a header where the API accepts one, and a Register.defaultError note that also types mutation errors; one retry owner per example (TanStack retry with no faxios retry plugin, or the plugin with retry: false) and a warning that enabling both multiplies attempts. The TanStack retry defaults (observers retry 3 times in the browser and not at all on the server; queryClient.query doesn't retry unless retry is set) are stated only in the 'Choosing one retry owner' bullet, and the other sections link to it. Infinite queries use InfiniteQueryObserver with typed page params and a throwOnError page loop over a full list; a separate docs-only block repeats that loop, written the same way, past the last page as a browser through query-core's environmentManager.setIsServer(() => false), restored afterwards, so its one-request marker fails when retry: false is removed. Then SSR with a QueryClient per request, per-request credentials and dehydrate/hydrate, and the three cache layers with fetchOptions cache. The executed examples check their requests and logged output through harness markers. No faxios API or behavior that the configure-requests skill teaches changed, so the skill needs no update.",
+      "reason": "Docs only: the TanStack Query guide teaches faxios as the typed request layer under TanStack Query: a typed queryFn that wraps a define() endpoint and forwards the query signal, cancellation through that signal, reading FaxiosError from query error state, one retry owner per example, infinite queries, SSR client scope and the three cache layers. Against its base this PR changes the guide prose and one example: QueryClient.query's fresh-cache case, the default revert: true and revert: false outcomes in the cancel prose (with silent: true still reverting but rejecting the query promise), the cancel exception in the error section, the retry-plugin bullet linking the plugin page, staleTime described as freshness, and the Three cache layers fetchOptions block, whose stand-in env.fetch now builds a Request, sends it through the global fetch and logs request.cache under a request= marker. No skill guidance changes.",
       "evidence": [
-        "Changed: packages/docs/pages/advanced/tanstack-query.md across slices 01-07, last at e7fb0c03 (the infinite example writes its queryFn and throwOnError loop inline again, and the browser-mode block repeats that loop with the same observer name; the retry plugin example comment says retry: false keeps the plugin the only retry owner; the queryClient.query retry default is stated only in the retry-owner bullet; the error block counter comment says a call with its own env.fetch is not counted)",
-        "packages/lib/src/lib/core/resolveRequestURL.ts serializes params into the request URL with buildURL; FaxiosError DEFAULT_REDACT_KEYS includes authorization",
-        "packages/lib/skills/configure-requests/SKILL.md already teaches signal, transformResponse, redact, env.fetch and fetchOptions, which the guide uses unchanged",
+        "packages/docs/pages/advanced/tanstack-query.md",
+        "@tanstack/query-core 5.107.1 queryClient.js query() and cancelQueries(), query.js fetch()",
         "No packages/lib source changed in this run"
       ]
     },
     "source:docs/agents/intent-review.md": {
-      "fingerprint": "3a55d40597758a3a742c08369f35345d1aedee2b50991add437e68836187106d",
+      "fingerprint": "55801640e40b0eadaa964868df5a34c066a1486356320f369c20df7343345d87",
       "snapshot": {
-        "docs/agents/intent-review.md": "1fff5c47024b3cae93b40dea9738791d5c15355f250895bb5f5fdebb1faa39a1"
+        "docs/agents/intent-review.md": "9f09e06cd0de83280edb23e06100548880d4bdf762e2f494df8a9d20f23137dc"
       },
-      "head": "7d42af9bc01a601372f71363789b723028d0e5a2",
+      "head": "1d89b4736246d9f01bd1f1e1c0b60a57602892f9",
       "outcome": "no-change",
-      "reason": "The per-PR Intent review procedure now says in step 2 that skill and planning items whose coverage the PR changed through a SKILL.md sources: edit are the PR's and get an outcome, and that such an item lists the newly covered file in its changedFiles or, with no record yet, only in its snapshot; its closing paragraph points back to step 2 for items intent-restack.sh record leaves pending. No skill guidance changes.",
+      "reason": "The per-PR Intent review procedure says, before step 1, that nothing (file, symlink or directory, untracked or ignored) may be on disk at a path the PR deleted. This round splits the reason by case: for a regular file Intent records its content, which CI does not have, so check-skills fails on CI even when the local check passes; for a symlink Intent reports 'Cannot review symbolic link', so --record refuses the item and the local intent maintainer check fails too. A directory there cannot be reviewed either; scripts/intent-restack.sh record refuses these states. No skill guidance changes.",
       "evidence": [
         "docs/agents/intent-review.md"
+      ]
+    },
+    "source:packages/tests/unit/scripts/intentRestack.test.ts": {
+      "fingerprint": "b2306b88f9c1d82136d0645da7b5593014c6f24f13987f5efcf408d1ea491e9d",
+      "snapshot": {
+        "packages/tests/unit/scripts/intentRestack.test.ts": "52f930bb17e27e5727f57afd9c7f5ff5d68a8715264654681288b92e681bfb40"
+      },
+      "head": "d1b49c816a071b587f84fed01d9621dd7c80c50a",
+      "outcome": "no-change",
+      "reason": "Tests only: the amends-nothing record test also checks the stdout and reflog, which an amend always changes; record tests cover a symlink, an untracked or ignored directory and a FIFO at a deleted path (refused), and a real-Intent contract test shows Intent gives a committed directory at a deleted path 'Cannot review non-file' and record refuses it. No skill guidance changes.",
+      "evidence": [
+        "packages/tests/unit/scripts/intentRestack.test.ts"
+      ]
+    },
+    "source:scripts/intent-restack.sh": {
+      "fingerprint": "43013752a76ea65af8d14244681e08965748381f6244bcd455e9c4abe6fdf535",
+      "snapshot": {
+        "scripts/intent-restack.sh": "3fe46b6c132236afd8e0de0e4c0fb0565f24dbe452d94c983bc6ba5b3b49d5cc"
+      },
+      "head": "d1b49c816a071b587f84fed01d9621dd7c80c50a",
+      "outcome": "no-change",
+      "reason": "scripts/intent-restack.sh record refuses (exit 1) anything on disk at a path the layer deleted: an untracked or ignored file, symlink, directory, FIFO or device gets 'remove or move them', and a directory the layer committed there gets its own refusal, because Intent cannot review a directory at a deleted path it does not skip ('Cannot review non-file'), so --record and CI's check-skills fail; the refusal is conservative for paths Intent skips. The header says so. No skill guidance changes.",
+      "evidence": [
+        "scripts/intent-restack.sh"
+      ]
+    },
+    "source:knip.json": {
+      "fingerprint": "6be9f175c6fdc1d7846305a36853c5293f35956116f7e9006172bd51bfbcbf09",
+      "snapshot": {
+        "knip.json": "90e7d4084920e331896a1ef89ca156d88515ccaff7a3287ca8bfa564ff53d4d6"
+      },
+      "head": "2d805d7810d5200bec9f3c2b68d43b5b6089a5a2",
+      "outcome": "no-change",
+      "reason": "Dev tooling only: knip.json lists mkfifo in ignoreBinaries because packages/tests/unit/scripts/intentRestack.test.ts creates a FIFO at a deleted path with the mkfifo binary; no faxios API, option or behavior the configure-requests skill teaches changed",
+      "evidence": [
+        "knip.json at 3ae1fa69: ignoreBinaries gains mkfifo",
+        "packages/tests/unit/scripts/intentRestack.test.ts runs mkfifo"
       ]
     }
   }
