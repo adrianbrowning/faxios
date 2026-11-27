@@ -1854,17 +1854,15 @@
       ]
     },
     "source:.claude/skills/do-work/SKILL.md": {
-      "fingerprint": "17b1ad11458a181c2daf015c6991c33b21d6a55b3114fdb4a4ce2244ab8ea433",
+      "fingerprint": "2af14a48fd1c570b5885bf0eb427cdcf9982400aecd0fb4439587e0ce8c593a8",
       "snapshot": {
-        ".claude/skills/do-work/SKILL.md": "2fde780baa3aa77aece6c331fd3eba5f2ad06e7c37d6bbef5e951bf1e0d86eb6"
+        ".claude/skills/do-work/SKILL.md": "a1a9dff08c02814f60315f8f7499569f5aac68335561fd3df498d72b0550bd46"
       },
-      "head": "79d41d5e29f1442387a88642840b33a9ad87a845",
+      "head": "7d42af9bc01a601372f71363789b723028d0e5a2",
       "outcome": "no-change",
-      "reason": "Contributor workflow docs only. The per-PR Intent review procedure moved out of do-work step 6.1 into the new docs/agents/intent-review.md, and changed: it builds a --json report against the PR's merge-base <base>, sets outcomes only on the items whose files the PR changed, records the report with --record, commits .intent/review-state.json in the PR's last commit, then runs intent maintainer check --base <base>. AGENTS.md gains a navigation link to it. Nothing the configure-requests skill teaches changes.",
+      "reason": "do-work step 6.4 now points to the Rebasing a PR or a stack layer bullet in docs/agents/issue-tracker.md instead of a partial copy of the intent-restack.sh commands. No skill guidance changes.",
       "evidence": [
-        "do-work step 6.1 now points to docs/agents/intent-review.md; it no longer runs check --base origin/main and records every item with --updated/--unchanged",
-        "docs/agents/intent-review.md holds the new procedure: --json report against the merge-base, outcomes for the PR's own files, --record, review-state committed last, then check",
-        "AGENTS.md navigation list links docs/agents/intent-review.md"
+        ".claude/skills/do-work/SKILL.md"
       ]
     },
     "source:.github/actions/setup/action.yml": {
@@ -4187,15 +4185,15 @@
       ]
     },
     "source:scripts/intent-restack.sh": {
-      "fingerprint": "3258da3628ccd24403a8c82f631dc424330e9ce86b5865d1d5400df9610d44a4",
+      "fingerprint": "9b9ed024a73bbe757d08d94cc224e4e60e1acc08950d7e15d160942db134b7d5",
       "snapshot": {
-        "scripts/intent-restack.sh": "c585f21b7aed9e40d07a0363179b890dad007c99599d22203155dae71d34df0e"
+        "scripts/intent-restack.sh": "222e5449aa3ee78b7055d21c4c17b627f1bc11fe1147032717cf062735d9dda0"
       },
-      "head": "5bba7a9d885c2cb6dc50bc986315494eedc1674b",
+      "head": "dded15462d02203b65df308f91aa906d26d43468",
       "outcome": "no-change",
-      "reason": "Restack script and its tests only; no skill teaches this behavior.",
+      "reason": "scripts/intent-restack.sh record now writes its own report to a temp directory, so an agent's .intent/review.json is left as it was, and removes that directory on every exit through an EXIT trap that quotes its path. It refuses (exit 1) a staged .intent/review-state.json whose working-tree copy differs from the staged one or whose staged deletion (git rm --cached) left a working-tree copy, and a tracked review state deleted from the working tree, and it stages an existing review state before its amend check, so a state file that the first --record creates is amended too; the header says so. Earlier, record already recorded only items whose changed files are all in the layer's diff and left the rest pending. No skill guidance changes.",
       "evidence": [
-        "scripts/intent-restack.sh"
+        "Changed files: scripts/intent-restack.sh"
       ]
     },
     "source:.bumpy/reject-absolute-url-with-base-url.md": {
@@ -4924,15 +4922,15 @@
       ]
     },
     "source:packages/tests/unit/scripts/intentRestack.test.ts": {
-      "fingerprint": "81ea922c10d21423c2c54ebb33fea26248a03ff74f24a4dcca7b1cf8b4574736",
+      "fingerprint": "94da4d124595893465ee38b823bdda09f3b818f8625c6cce4cd6d601e8071a2d",
       "snapshot": {
-        "packages/tests/unit/scripts/intentRestack.test.ts": "8d3363fa793cad7494095e0c7507d7236684479080e633c8753b6c4888fde9ee"
+        "packages/tests/unit/scripts/intentRestack.test.ts": "df2d5091761e5bcb7ef9a381805db96ffa27cc5a5bddb4e7b26fe1692a614af9"
       },
-      "head": "5bba7a9d885c2cb6dc50bc986315494eedc1674b",
+      "head": "dded15462d02203b65df308f91aa906d26d43468",
       "outcome": "no-change",
-      "reason": "Restack script and its tests only; no skill teaches this behavior.",
+      "reason": "The restack tests now cover rebase onto a review-state conflict (base copy taken, layer recorded) and onto another-file conflict (exit 3, rebase left in progress), rebase refusal with exit 1 when git cannot start, status --json against the merge-base, the recorded-item snapshot exemption, the kept .intent/review.json, temp-directory cleanup after failed commands (a failed jq checked for any nonzero exit, as its code differs by version) and for a path holding a quote, refusal of a split staged state, a staged deletion with a working-tree copy and a deleted review state, the amend of a full git rm of the review state, the amend of a review state the first record creates, and a real-Intent record of an in-layer item; the fake pnpm records the report path it is given and creates a missing state. No skill guidance changes.",
       "evidence": [
-        "packages/tests/unit/scripts/intentRestack.test.ts"
+        "Changed files: packages/tests/unit/scripts/intentRestack.test.ts"
       ]
     },
     "source:packages/lib/eslint-rules/plugin-imports.d.ts": {
@@ -7976,15 +7974,15 @@
       ]
     },
     "source:docs/agents/intent-review.md": {
-      "fingerprint": "d1e62077fa65c01205657266ca9e5947d7ddade686001349365294706cd39d9e",
+      "fingerprint": "3a55d40597758a3a742c08369f35345d1aedee2b50991add437e68836187106d",
       "snapshot": {
-        "docs/agents/intent-review.md": "50f1cc9912106c220281b2db043527c43a9cf263b09c1c8e982a7a744ce3025f"
+        "docs/agents/intent-review.md": "1fff5c47024b3cae93b40dea9738791d5c15355f250895bb5f5fdebb1faa39a1"
       },
-      "head": "79d41d5e29f1442387a88642840b33a9ad87a845",
+      "head": "7d42af9bc01a601372f71363789b723028d0e5a2",
       "outcome": "no-change",
-      "reason": "Slice 08 adds scripts/intent-restack.sh, its tests and the per-PR Intent review docs for maintainers; none of it changes the faxios API or guidance the configure-requests skill teaches.",
+      "reason": "The per-PR Intent review procedure now says in step 2 that skill and planning items whose coverage the PR changed through a SKILL.md sources: edit are the PR's and get an outcome, and that such an item lists the newly covered file in its changedFiles or, with no record yet, only in its snapshot; its closing paragraph points back to step 2 for items intent-restack.sh record leaves pending. No skill guidance changes.",
       "evidence": [
-        "Changed files: docs/agents/intent-review.md"
+        "docs/agents/intent-review.md"
       ]
     }
   }

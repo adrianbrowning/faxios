@@ -41,10 +41,15 @@
 #
 # Run it in the branch's worktree, bottom layer first. `record` refuses (exit 1) a modified or
 # staged tracked file other than .intent/review-state.json, whose edits it would record but not
-# commit, and any file on disk (untracked or ignored) at a path the layer deleted, whose content it
-# would record though CI has no such file. Edits to .intent/review-state.json itself are amended
-# into the layer's last commit. For a
+# commit; a staged .intent/review-state.json whose working-tree copy differs from the staged one,
+# or whose staged deletion (`git rm --cached`) left a working-tree copy; a tracked
+# .intent/review-state.json deleted from the working tree but not from the index; and any file on
+# disk (untracked or ignored) at a path the layer deleted, whose content it would record though CI
+# has no such file. Other edits to .intent/review-state.json, staged or not, a `git rm` of it, and a
+# review state that the first --record of a repo creates are amended into the layer's last commit.
+# It writes its own report to a temp file, so an agent's .intent/review.json is left as it is. For a
 # stack, <base> is the branch below.
+#
 # Exit: 0 done; 1 a usage error, a dirty tree, a `git rebase` that could not start, or a failed
 # `intent maintainer check` other than the case for 4; 3 a conflict outside .intent/review-state.json;
 # 4 only when `intent maintainer check` failed on pending review items alone (`stack` lists those
@@ -60,9 +65,22 @@ in_rebase() {
 }
 
 record() {
-  local base="$1" original="$2" pending previous diff fork
+  local base="$1" original="$2" tmp pending previous diff report fork
   if [ -n "$(git status --porcelain --untracked-files=no -- . ":!$state")" ]; then
     echo "Tracked files have uncommitted changes; commit or stash them, then run again." >&2
+    exit 1
+  fi
+  # A staged edit whose working-tree copy differs: the amend would commit only one of the two copies.
+  # A staged deletion whose working-tree copy is still there counts too: `git diff` does not see it.
+  if ! git diff --cached --quiet HEAD -- "$state" \
+    && { ! git diff --quiet -- "$state" \
+      || { [ -e "$state" ] && ! git ls-files --error-unmatch -- "$state" > /dev/null 2>&1; }; }; then
+    echo "$state has staged edits that differ from its working-tree copy; stage or restore it, then run again." >&2
+    exit 1
+  fi
+  # A tracked review state missing from the working tree: the amend would drop every earlier record.
+  if [ ! -e "$state" ] && git ls-files --error-unmatch -- "$state" > /dev/null 2>&1; then
+    echo "$state was deleted; restore it (git restore -- $state), then run again." >&2
     exit 1
   fi
   fork="$(git merge-base "$base" HEAD)"
@@ -76,9 +94,17 @@ record() {
     printf '  %s\n' "${present[@]}" >&2
     exit 1
   fi
-  pending="$(mktemp)"
-  previous="$(mktemp)"
-  diff="$(mktemp)"
+  # record runs in run_layer's subshell, so this EXIT trap removes the files on every exit from it.
+  # The path is expanded now, quoted for any character: the locals are gone by the time the
+  # subshell exits.
+  tmp="$(mktemp -d)"
+  # shellcheck disable=SC2064
+  trap "rm -rf $(printf %q "$tmp")" EXIT
+  pending="$tmp/pending.json"
+  previous="$tmp/previous.json"
+  diff="$tmp/diff.json"
+  # The script's own report, so an agent's .intent/review.json is never touched.
+  report="$tmp/review.json"
   pnpm exec intent maintainer review --base "$fork" --json > "$pending"
   if [ "$(jq '.items | length' "$pending")" = "0" ]; then
     echo "No pending review items against $base."
@@ -102,17 +128,20 @@ record() {
                  reason: "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
                  evidence: ["Changed files: \($item.changedFiles | join(", "))"]}
           end
-      )' "$pending" > .intent/review.json
-    jq -r '.items[] | "  \(.id): \(.outcome // "left pending, outside this layer")"' .intent/review.json
-    if [ "$(jq '[.items[] | select(.outcome)] | length' .intent/review.json)" != "0" ]; then
-      pnpm exec intent maintainer review --record .intent/review.json > /dev/null
+      )' "$pending" > "$report"
+    jq -r '.items[] | "  \(.id): \(.outcome // "left pending, outside this layer")"' "$report"
+    if [ "$(jq '[.items[] | select(.outcome)] | length' "$report")" != "0" ]; then
+      pnpm exec intent maintainer review --record "$report" > /dev/null
     fi
-    rm -f .intent/review.json
   fi
-  rm -f "$pending" "$previous" "$diff"
 
-  if ! git diff --quiet HEAD -- "$state"; then
-    git add "$state"
+  # Stage it first: the first --record of a repo creates the file untracked, which `git diff HEAD`
+  # does not see. The guard above refused a staged edit that this copy does not hold, so staging it
+  # drops nothing.
+  if [ -e "$state" ]; then
+    git add -- "$state"
+  fi
+  if ! git diff --cached --quiet HEAD -- "$state"; then
     git commit --quiet --amend --no-edit
     echo "Amended the review into $(git log --oneline -1)."
   fi
