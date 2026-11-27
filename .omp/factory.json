@@ -1,0 +1,3 @@
+{
+  "checks": ["pnpm run lint", "pnpm run lint:knip", "CI=true pnpm run test"]
+}

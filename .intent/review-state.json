@@ -7984,6 +7984,18 @@
         "knip.json at 3ae1fa69: ignoreBinaries gains mkfifo",
         "packages/tests/unit/scripts/intentRestack.test.ts runs mkfifo"
       ]
+    },
+    "source:.omp/factory.json": {
+      "fingerprint": "24111762dc8ccd9ba513fdd4df00e984d94d1c8207dedfbfdc899db7854e287a",
+      "snapshot": {
+        ".omp/factory.json": "2951500bacbb467fe06b881cfa4a44a18f0fb44d496effae7c4ad2d7588a5469"
+      },
+      "head": "b3469a24f8330b8ad05409e309068f647735c7d3",
+      "outcome": "no-change",
+      "reason": "Rebased onto the branch below; this layer changes no guidance the skill teaches beyond what its PR describes.",
+      "evidence": [
+        "Changed files: .omp/factory.json"
+      ]
     }
   }
 }
