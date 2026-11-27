@@ -1,3 +1,10 @@
 {
-  "checks": ["pnpm run lint", "pnpm run lint:knip", "CI=true pnpm run test"]
+  "checks": [
+    "pnpm run lint",
+    "pnpm run lint:knip",
+    "CI=true pnpm run test",
+    "pnpm run test:docs-examples",
+    "pnpm run docs:sync:check",
+    "pnpm run docs:build"
+  ]
 }

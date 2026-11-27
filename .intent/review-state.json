@@ -7986,15 +7986,16 @@
       ]
     },
     "source:.omp/factory.json": {
-      "fingerprint": "24111762dc8ccd9ba513fdd4df00e984d94d1c8207dedfbfdc899db7854e287a",
+      "fingerprint": "eb6530ae730502a4460f8023e0ad752b8d56d975ec46f221472e92dd4df22c2e",
       "snapshot": {
-        ".omp/factory.json": "2951500bacbb467fe06b881cfa4a44a18f0fb44d496effae7c4ad2d7588a5469"
+        ".omp/factory.json": "4454678af48187e263f6dca95ac6fcef24af2abd7d7588c4aee6cb8a04e1ba15"
       },
-      "head": "3ac3373cc57506db293f1b0cd246fe2bc119400e",
+      "head": "913b212954ef543609112233ddcb9d0b7608188d",
       "outcome": "no-change",
-      "reason": "New factory checks file .omp/factory.json listing pnpm run lint, pnpm run lint:knip and CI=true pnpm run test for software-factory runs; no skill guidance or library behaviour changed.",
+      "reason": "Factory checks file .omp/factory.json lists pnpm run lint, pnpm run lint:knip, CI=true pnpm run test, pnpm run test:docs-examples, pnpm run docs:sync:check and pnpm run docs:build for software-factory runs; pnpm run lint:actions is left out because it needs uv. No skill guidance or library behaviour changed.",
       "evidence": [
-        ".omp/factory.json: checks = [\"pnpm run lint\", \"pnpm run lint:knip\", \"CI=true pnpm run test\"]",
+        ".omp/factory.json: checks = [\"pnpm run lint\", \"pnpm run lint:knip\", \"CI=true pnpm run test\", \"pnpm run test:docs-examples\", \"pnpm run docs:sync:check\", \"pnpm run docs:build\"]",
+        "lint:actions runs uvx zizmor, which needs uv",
         "No file under packages/lib changed in this layer"
       ]
     }
