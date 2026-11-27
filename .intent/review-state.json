@@ -7986,15 +7986,16 @@
       ]
     },
     "source:.omp/factory.json": {
-      "fingerprint": "eb6530ae730502a4460f8023e0ad752b8d56d975ec46f221472e92dd4df22c2e",
+      "fingerprint": "27019d2a30cfa0774a46201e154fabc31313ce1a078a1eccd300649f50621c63",
       "snapshot": {
-        ".omp/factory.json": "4454678af48187e263f6dca95ac6fcef24af2abd7d7588c4aee6cb8a04e1ba15"
+        ".omp/factory.json": "707a394f11fed1b7311946417c254d22ebb90009bc8782f52e557eb501fb67e3"
       },
-      "head": "913b212954ef543609112233ddcb9d0b7608188d",
+      "head": "3f8a0cfcc469477e8248bbaf8d7913fc60305c08",
       "outcome": "no-change",
-      "reason": "Factory checks file .omp/factory.json lists pnpm run lint, pnpm run lint:knip, CI=true pnpm run test, pnpm run test:docs-examples, pnpm run docs:sync:check and pnpm run docs:build for software-factory runs; pnpm run lint:actions is left out because it needs uv. No skill guidance or library behaviour changed.",
+      "reason": "Factory checks file .omp/factory.json lists pnpm run lint, pnpm run lint:knip, pnpm run build, CI=true pnpm run test, pnpm run test:docs-examples, pnpm run docs:sync:check and pnpm run docs:build for software-factory runs; the build runs before the tests so they use a fresh packages/lib/dist, as CI and pnpm check do; pnpm run lint:actions is left out because it needs uv. No skill guidance or library behaviour changed.",
       "evidence": [
-        ".omp/factory.json: checks = [\"pnpm run lint\", \"pnpm run lint:knip\", \"CI=true pnpm run test\", \"pnpm run test:docs-examples\", \"pnpm run docs:sync:check\", \"pnpm run docs:build\"]",
+        ".omp/factory.json: checks = [\"pnpm run lint\", \"pnpm run lint:knip\", \"pnpm run build\", \"CI=true pnpm run test\", \"pnpm run test:docs-examples\", \"pnpm run docs:sync:check\", \"pnpm run docs:build\"]",
+        "test:docs-examples resolves @gcmdev/faxios to packages/lib/dist, which pnpm run build writes",
         "lint:actions runs uvx zizmor, which needs uv",
         "No file under packages/lib changed in this layer"
       ]
