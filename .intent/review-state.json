@@ -1854,15 +1854,17 @@
       ]
     },
     "source:.claude/skills/do-work/SKILL.md": {
-      "fingerprint": "5c29c81457f5a787539a3d37a40a07d1d8c371dd5d37b61f38aff8d9fed22bb6",
+      "fingerprint": "17b1ad11458a181c2daf015c6991c33b21d6a55b3114fdb4a4ce2244ab8ea433",
       "snapshot": {
-        ".claude/skills/do-work/SKILL.md": "9707e713e18106d5417d6985ee5e4d6322a1d839e245db6e8afb6d2f2d164135"
+        ".claude/skills/do-work/SKILL.md": "2fde780baa3aa77aece6c331fd3eba5f2ad06e7c37d6bbef5e951bf1e0d86eb6"
       },
-      "head": "38ba441d509c5d02a57db3296a14f9f5426beea3",
+      "head": "79d41d5e29f1442387a88642840b33a9ad87a845",
       "outcome": "no-change",
-      "reason": "Docs-example tooling only: mdcode-ts 0.1.0 sync check, source-backed README examples, and check= markers on skill and migration-guide fences; what the configure-requests skill teaches is unchanged. pnpm test:docs-examples runs the skill's blocks (206 passed).",
+      "reason": "Contributor workflow docs only. The per-PR Intent review procedure moved out of do-work step 6.1 into the new docs/agents/intent-review.md, and changed: it builds a --json report against the PR's merge-base <base>, sets outcomes only on the items whose files the PR changed, records the report with --record, commits .intent/review-state.json in the PR's last commit, then runs intent maintainer check --base <base>. AGENTS.md gains a navigation link to it. Nothing the configure-requests skill teaches changes.",
       "evidence": [
-        "Changed: .claude/skills/do-work/SKILL.md at 02bc02539714e48c32c881c43720b5d34bb375f7"
+        "do-work step 6.1 now points to docs/agents/intent-review.md; it no longer runs check --base origin/main and records every item with --updated/--unchanged",
+        "docs/agents/intent-review.md holds the new procedure: --json report against the merge-base, outcomes for the PR's own files, --record, review-state committed last, then check",
+        "AGENTS.md navigation list links docs/agents/intent-review.md"
       ]
     },
     "source:.github/actions/setup/action.yml": {
@@ -4173,27 +4175,27 @@
       ]
     },
     "source:docs/agents/issue-tracker.md": {
-      "fingerprint": "c57884b09fb6ae3c93a95704d413731189a0e286c1fd6238e82251b3a1a96717",
+      "fingerprint": "a25dc40486cabc771c47ed6c1f5d669a7117d4ad02e1fb0c39cb880d07154c14",
       "snapshot": {
-        "docs/agents/issue-tracker.md": "c0f9d8fe4f9b18f38eb11620a3c873197dd4b9ca5f0bfe6855a2d659ee7653d7"
+        "docs/agents/issue-tracker.md": "9b5112b0b5c56b9af232bc630b98d2a80a8a7d2bdae0f709c568e1a53afe44c3"
       },
-      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
+      "head": "79d41d5e29f1442387a88642840b33a9ad87a845",
       "outcome": "no-change",
-      "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
+      "reason": "Contributor workflow docs only. The rebasing bullet now says when to run each scripts/intent-restack.sh subcommand (rebase, record per layer after gh stack rebase or sync, stack after amending a layer), that each records only the layer's own items and amends them into the layer's last commit (the script header gives the rules and exit codes), and that items left pending are handled as the new docs/agents/intent-review.md says, where the per-PR Intent review procedure moved out of do-work step 6.1. Nothing the configure-requests skill teaches changes.",
       "evidence": [
-        "Changed: docs/agents/issue-tracker.md at 03009f7a217f136a32ed7d58306f67141aae2805"
+        "docs/agents/issue-tracker.md 'Rebasing a PR or a stack layer' bullet links the script header and docs/agents/intent-review.md"
       ]
     },
     "source:scripts/intent-restack.sh": {
-      "fingerprint": "2eaeca381afefdd96f25b0e289f6e2d879c632852890598dba93e42f40accaa0",
+      "fingerprint": "3258da3628ccd24403a8c82f631dc424330e9ce86b5865d1d5400df9610d44a4",
       "snapshot": {
-        "scripts/intent-restack.sh": "39d426bdbd0a71bdd1fe26d4df6e45b14d5da7735a795f95e44857b08ee5be69"
+        "scripts/intent-restack.sh": "c585f21b7aed9e40d07a0363179b890dad007c99599d22203155dae71d34df0e"
       },
-      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
+      "head": "5bba7a9d885c2cb6dc50bc986315494eedc1674b",
       "outcome": "no-change",
-      "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
+      "reason": "Restack script and its tests only; no skill teaches this behavior.",
       "evidence": [
-        "Changed: scripts/intent-restack.sh at 03009f7a217f136a32ed7d58306f67141aae2805"
+        "scripts/intent-restack.sh"
       ]
     },
     "source:.bumpy/reject-absolute-url-with-base-url.md": {
@@ -4922,15 +4924,15 @@
       ]
     },
     "source:packages/tests/unit/scripts/intentRestack.test.ts": {
-      "fingerprint": "ab2c6faa03ecf1d18d7f2218ef0c4c97aa0965d1efe6b1e4fc6e788e88ed9a0d",
+      "fingerprint": "81ea922c10d21423c2c54ebb33fea26248a03ff74f24a4dcca7b1cf8b4574736",
       "snapshot": {
-        "packages/tests/unit/scripts/intentRestack.test.ts": "229c109835cca6c3915eee47c66be8131e09a109e0c06331db821b59b9b7599f"
+        "packages/tests/unit/scripts/intentRestack.test.ts": "8d3363fa793cad7494095e0c7507d7236684479080e633c8753b6c4888fde9ee"
       },
-      "head": "03009f7a217f136a32ed7d58306f67141aae2805",
+      "head": "5bba7a9d885c2cb6dc50bc986315494eedc1674b",
       "outcome": "no-change",
-      "reason": "Repo tooling only (restack script, hooks, CI, lint scripts); no library behaviour or skill guidance changes.",
+      "reason": "Restack script and its tests only; no skill teaches this behavior.",
       "evidence": [
-        "Changed: packages/tests/unit/scripts/intentRestack.test.ts at 03009f7a217f136a32ed7d58306f67141aae2805"
+        "packages/tests/unit/scripts/intentRestack.test.ts"
       ]
     },
     "source:packages/lib/eslint-rules/plugin-imports.d.ts": {
@@ -7971,6 +7973,18 @@
         "packages/lib/src/lib/core/resolveRequestURL.ts serializes params into the request URL with buildURL; FaxiosError DEFAULT_REDACT_KEYS includes authorization",
         "packages/lib/skills/configure-requests/SKILL.md already teaches signal, transformResponse, redact, env.fetch and fetchOptions, which the guide uses unchanged",
         "No packages/lib source changed in this run"
+      ]
+    },
+    "source:docs/agents/intent-review.md": {
+      "fingerprint": "d1e62077fa65c01205657266ca9e5947d7ddade686001349365294706cd39d9e",
+      "snapshot": {
+        "docs/agents/intent-review.md": "50f1cc9912106c220281b2db043527c43a9cf263b09c1c8e982a7a744ce3025f"
+      },
+      "head": "79d41d5e29f1442387a88642840b33a9ad87a845",
+      "outcome": "no-change",
+      "reason": "Slice 08 adds scripts/intent-restack.sh, its tests and the per-PR Intent review docs for maintainers; none of it changes the faxios API or guidance the configure-requests skill teaches.",
+      "evidence": [
+        "Changed files: docs/agents/intent-review.md"
       ]
     }
   }
