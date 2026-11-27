@@ -7935,11 +7935,11 @@
       ]
     },
     "source:packages/docs/pages/advanced/tanstack-query.md": {
-      "fingerprint": "76d70d76f2a2469e8ff7666447cde7c0b1fe691cd66d57df1d70f0837304daa6",
+      "fingerprint": "429b191fc700f3a2a0b9759f6515d9ea53dde3de90419b7d852f47ff2893a12c",
       "snapshot": {
-        "packages/docs/pages/advanced/tanstack-query.md": "dc866e7decedd7d34b1705c8b13a7f7e9a3843f4164e04deb00e94382a897663"
+        "packages/docs/pages/advanced/tanstack-query.md": "3ab8506d7fd8bcb31494071ca12b6d5a1084cd44e338457850d4f6d223a63a69"
       },
-      "head": "31c56421ee5f93940a4acc6bf138ce2e7cbedc63",
+      "head": "1d89b4736246d9f01bd1f1e1c0b60a57602892f9",
       "outcome": "no-change",
       "reason": "Docs only: the TanStack Query guide teaches faxios as the typed request layer under TanStack Query: a typed queryFn that wraps a define() endpoint and forwards the query signal, cancellation through that signal, reading FaxiosError from query error state, one retry owner per example, infinite queries, SSR client scope and the three cache layers. This round says queryClient.query returns fresh cached data without running the query function, that the cancel revert behaviour is the revert: true default and what revert: false does, that a TanStack-cancelled request is not stored as the query error, links the retry plugin page instead of restating its policy, calls staleTime the time data stays fresh, and sends the fetchOptions block request through the harness fetch. No skill guidance changes.",
       "evidence": [
@@ -7949,11 +7949,11 @@
       ]
     },
     "source:docs/agents/intent-review.md": {
-      "fingerprint": "8f2ec802774393ff549b39f39ea38681a6bce35e92e5547910da9f799eace410",
+      "fingerprint": "55801640e40b0eadaa964868df5a34c066a1486356320f369c20df7343345d87",
       "snapshot": {
-        "docs/agents/intent-review.md": "bb5b70949961cb7d77c283e21075b9c1ae72f73bffd1d7365d745a5ebaefe419"
+        "docs/agents/intent-review.md": "9f09e06cd0de83280edb23e06100548880d4bdf762e2f494df8a9d20f23137dc"
       },
-      "head": "d1b49c816a071b587f84fed01d9621dd7c80c50a",
+      "head": "1d89b4736246d9f01bd1f1e1c0b60a57602892f9",
       "outcome": "no-change",
       "reason": "The per-PR Intent review procedure now says, before step 1, that nothing (file, symlink or directory, untracked or ignored) may be on disk at a path the PR deleted: unless Intent skips the path, it records a file's content CI does not have and cannot review a symlink or directory there; a directory the PR committed there fails check-skills too, so it needs another name or a later PR based on the deletion; scripts/intent-restack.sh record refuses both states. No skill guidance changes.",
       "evidence": [

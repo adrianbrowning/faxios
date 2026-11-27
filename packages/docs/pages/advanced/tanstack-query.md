@@ -451,7 +451,7 @@ let requests = 0;
 
 const api = faxios.create({
   baseURL: "https://api.example.com",
-  // Stands in for the API: it counts each request and sends it on, then answers with the user from userNames, or with no name for an unknown id.
+  // Stands in for the API: it counts each request and hands it to the global fetch, ignoring the reply, then answers with the user from userNames, or with no name for an unknown id.
   env: {
     fetch: async (input, init) => {
       requests += 1;
@@ -520,7 +520,7 @@ import { z } from "zod";
 
 const api = faxios.create({
   baseURL: "https://api.example.com",
-  // Stands in for the API: it sends each request on and shows the Fetch cache mode it was sent with.
+  // Stands in for the API: it hands each request to the global fetch, ignoring the reply, and shows the Fetch cache mode it was sent with.
   env: {
     fetch: async (input, init) => {
       const request = new Request(input, init);
