@@ -2,7 +2,7 @@
 
 [TanStack Query](https://tanstack.com/query/latest) and faxios do different jobs, and they work together without an adapter:
 
-- **TanStack Query owns server state and the UI lifecycle:** caching by query key, deduplicating requests, background refetching, stale and garbage-collection timing, retries, and what a component shows while data loads.
+- **TanStack Query owns server state and the UI lifecycle:** caching by query key, deduplicating requests, background refetching, stale and garbage-collection timing, and what a component shows while data loads. Either layer can retry; see [Choosing one retry owner](#choosing-one-retry-owner).
 - **faxios is the typed request layer:** it builds and sends the request, applies instance defaults and [middleware](/pages/advanced/middleware), validates with your schemas, and types the response from them.
 
 A faxios endpoint made with [`define()`](/pages/advanced/define) or [`route()`](/pages/advanced/route) is a plain async function, so the query function only has to call it with the request's params and the query's `signal` and return `response.data`; TanStack Query then types the query's data with the endpoint's inferred response type. Don't pass the endpoint itself as `queryFn`: TanStack Query calls the query function with its query context (`queryKey`, `signal`, `meta` and more), and faxios rejects the keys it doesn't know, such as `queryKey` and `meta`, as unknown request options.
@@ -117,7 +117,7 @@ console.log(`state: ${state?.status} ${state?.fetchStatus}`); // state: pending 
 
 When a faxios request rejects, the query function rejects with the same error, so TanStack Query stores the faxios error as the query's `error`, the value `useQuery` returns as `error`, and the promise `queryClient.query` returned rejects with it. A query function can reject with errors that aren't faxios errors too, such as an error your own code in it throws, so narrow the error before you read faxios fields: `isFaxiosError(error)` checks the faxios brand, so it also matches an error from another copy of faxios, and `error instanceof FaxiosError` works when only one copy is loaded.
 
-Build what you show from `status` and `code`. The error's `config`, `request` and `response` hold the request's headers, credentials included, and the response body, and `message` can name the request URL; see [Error handling](/pages/advanced/error-handling) for the codes and for logging. Log `error.toJSON()`, not the error: a logger that prints the error's own fields (`console.log(error)` in Node, many structured loggers) prints its `config` with the credentials. `toJSON()` masks the `authorization`, `proxy-authorization`, `cookie` and `auth` values, and other secrets such as an API key header or a token in `params` only when you list their keys in `redact`. A secret written into the `url` string itself, such as `?token=…`, stays in the logged `config.url`, so pass it in `params` instead. This example turns TanStack Query's retries off with `retry: false`, so the error comes from a single request; which layer retries a failed query is owned by the retry section of this guide:
+Build what you show from `status` and `code`. The error's `config`, `request` and `response` hold the request's headers, credentials included, and the response body, and `message` can name the request URL; see [Error handling](/pages/advanced/error-handling) for the codes and for logging. Log `error.toJSON()`, not the error: a logger that prints the error's own fields (`console.log(error)` in Node, many structured loggers) prints its `config` with the credentials. `toJSON()` masks the `authorization`, `proxy-authorization`, `cookie` and `auth` values, and other secrets such as an API key header or a token in `params` only when you list their keys in `redact`. A secret written into the `url` string itself, such as `?token=…`, stays in the logged `config.url`, so pass it in `params` instead. This example turns TanStack Query's retries off with `retry: false`, so the error comes from a single request; see [Choosing one retry owner](#choosing-one-retry-owner) for which layer should retry a failed query:
 
 ```ts status=404 expect=request:GET%20https://api.example.com/users/42,log:Request%20failed%20with%20404%20ERR_BAD_REQUEST,log:same%20error%3A%20true,log:Something%20went%20wrong
 import faxios, { isFaxiosError } from "@gcmdev/faxios";
@@ -183,4 +183,117 @@ declare module "@tanstack/query-core" {
     defaultError: FaxiosError;
   }
 }
+```
+
+## Choosing one retry owner
+
+TanStack Query and the faxios [`retry` plugin](/pages/plugins/retry) can both retry a failed request, so give each query exactly one retry owner:
+
+- **TanStack Query**, when the faxios instance doesn't install the `retry` plugin. It runs the whole query function again after any rejection, a 404 or a schema validation error included, unless a `retry` function you pass says otherwise. Set `retry` yourself, because the default depends on the API: observers such as `useQuery` retry 3 times in the browser and not at all on the server, while `queryClient.query` (and the deprecated `fetchQuery`) doesn't retry unless `retry` is set. See TanStack Query's [query retries](https://tanstack.com/query/latest/docs/framework/react/guides/query-retries) guide for `retry` and `retryDelay`.
+- **The faxios `retry` plugin**, when the `QueryClient` or the query sets `retry: false`. It retries inside one call of the query function, and only what the plugin retries: network errors, timeouts and transient statuses such as 503, for idempotent methods, honouring `Retry-After`.
+
+::: warning Enabling both multiplies attempts
+With both on, every TanStack Query attempt can run all of the plugin's attempts, so a query that keeps failing with an error the plugin retries sends up to TanStack Query's attempts times faxios's `attempts` requests: `retry: 2` (three TanStack Query attempts) with the plugin's default of 3 `attempts` sends 9 requests for a GET that keeps getting a 503, to a server that is already failing. See [Retry and error recovery](/pages/plugins/retry) for what the plugin retries and for its `attempts` and backoff options.
+:::
+
+None of the other examples on this page installs the `retry` plugin or turns on TanStack Query's retries, so their `queryClient.query` calls don't retry at all; the error example sets `retry: false` to make that explicit.
+
+### TanStack Query retries
+
+This instance has no `retry` plugin, and the `QueryClient` sets `retry: 2`, so a query that keeps failing makes three attempts of one request each. The example counts the requests its `fetch` sends:
+
+```ts status=503 expect=request:GET%20https://api.example.com/users/42,log:query%20attempts%3A%203%2C%20requests%3A%203
+import faxios from "@gcmdev/faxios";
+import { QueryClient } from "@tanstack/query-core";
+import { z } from "zod";
+
+let requests = 0;
+
+// No `retry` plugin: TanStack Query owns retries for this instance.
+const api = faxios.create({
+  baseURL: "https://api.example.com",
+  // Counts every request this example sends, then sends it.
+  env: {
+    fetch: async (input, init) => {
+      requests += 1;
+      return fetch(input, init);
+    },
+  },
+});
+
+const getUser = api.define("get", "/users/{id}", {
+  pathParamsSchema: z.object({ id: z.string() }),
+  responseSchema: z.object({ id: z.string(), name: z.string() }),
+});
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    // TanStack Query is the retry owner: up to 2 retries, so 3 attempts in all.
+    // `retryDelay: 0` retries at once for this example; keep TanStack Query's backoff in an app.
+    queries: { retry: 2, retryDelay: 0 },
+  },
+});
+
+const userKey = [ "user", "42" ];
+await queryClient
+  .query({
+    queryKey: userKey,
+    queryFn: async ({ signal }) => (await getUser({ pathParams: { id: "42" }, signal })).data,
+  })
+  .catch(() => {});
+
+// Every attempt failed with the 503, so the query's failure count is its attempt count.
+const attempts = queryClient.getQueryState(userKey)?.fetchFailureCount;
+console.log(`query attempts: ${attempts}, requests: ${requests}`); // query attempts: 3, requests: 3
+```
+
+### The faxios `retry` plugin retries
+
+This instance installs the `retry` plugin with its default of 3 `attempts`, and the `QueryClient` sets `retry: false`, so a query that keeps failing makes one attempt, and the plugin sends its request three times inside it:
+
+```ts status=503 expect=request:GET%20https://api.example.com/users/42,log:query%20attempts%3A%201%2C%20requests%3A%203
+import faxios from "@gcmdev/faxios";
+import { retry } from "@gcmdev/faxios/plugins/retry";
+import { QueryClient } from "@tanstack/query-core";
+import { z } from "zod";
+
+let requests = 0;
+
+// The `retry` plugin owns retries for this instance, with its default of 3 attempts.
+const api = faxios.create({
+  baseURL: "https://api.example.com",
+  // Counts every request this example sends, then sends it.
+  env: {
+    fetch: async (input, init) => {
+      requests += 1;
+      return fetch(input, init);
+    },
+  },
+}).use(
+  // `delay: 0` retries at once for this example; keep the plugin's backoff in an app.
+  retry({ delay: 0 }),
+);
+
+const getUser = api.define("get", "/users/{id}", {
+  pathParamsSchema: z.object({ id: z.string() }),
+  responseSchema: z.object({ id: z.string(), name: z.string() }),
+});
+
+const queryClient = new QueryClient({
+  // queryClient.query already doesn't retry; `retry: false` stops observers such as
+  // useQuery from retrying on top of the plugin, so a failing query makes one attempt.
+  defaultOptions: { queries: { retry: false } },
+});
+
+const userKey = [ "user", "42" ];
+await queryClient
+  .query({
+    queryKey: userKey,
+    queryFn: async ({ signal }) => (await getUser({ pathParams: { id: "42" }, signal })).data,
+  })
+  .catch(() => {});
+
+// The query failed once, after the plugin's 3 requests.
+const attempts = queryClient.getQueryState(userKey)?.fetchFailureCount;
+console.log(`query attempts: ${attempts}, requests: ${requests}`); // query attempts: 1, requests: 3
 ```
